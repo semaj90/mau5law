@@ -1,33 +1,70 @@
 #!/usr/bin/env python3
 """
-TensorRT-LLM Legal AI Production Server
-Optimized for RTX 3060 Ti with Q4_K_M quantization
-Target: <1ms inference latency
+TensorRT-LLM Production Server for Legal AI
+Optimized for gemma3-legal:latest (7.3GB) with RTX 3060 Ti
 """
 
-import os
-import time
-import json
 import asyncio
+import json
+import logging
+import time
 from pathlib import Path
-from typing import Dict, List, Optional, Union
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from typing import Dict, List, Optional, Any
 import uvicorn
+from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
+import torch
+import numpy as np
 
-# Simulation mode since TensorRT-LLM requires Docker/Linux
-print("INFO: Running in simulation mode - TensorRT-LLM requires Docker/Linux environment")
-TENSORRT_LLM_AVAILABLE = False
+# TensorRT-LLM imports
+try:
+    import tensorrt_llm
+    from tensorrt_llm import ModelRunner
+    from tensorrt_llm.runtime import ModelRunnerCpp
+    from tensorrt_llm.builder import Builder
+    TENSORRT_AVAILABLE = True
+except ImportError:
+    TENSORRT_AVAILABLE = False
+    logging.warning("TensorRT-LLM not available, using fallback mode")
 
-app = FastAPI(title="TensorRT-LLM Legal AI", version="1.0.0")
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+class LegalAnalysisRequest(BaseModel):
+    prompt: str = Field(..., description="Legal text to analyze")
+    context: Optional[str] = Field(None, description="Additional context documents")
+    model: str = Field("gemma3-legal:latest", description="Model to use")
+    max_tokens: int = Field(1024, description="Maximum tokens to generate")
+    temperature: float = Field(0.1, description="Temperature for generation")
 
 class EmbeddingRequest(BaseModel):
-    text: str
-    model: str = "gemma3-legal-q4km"
+    text: str = Field(..., description="Text to embed")
+    model: str = Field("gemma3-legal:latest", description="Model to use")
+    dimensions: int = Field(512, description="Embedding dimensions")
+
+class LegalAnalysisResponse(BaseModel):
+    content: str
+    processing_time_ms: float
+    model_version: str
+    token_count: int
 
 class EmbeddingResponse(BaseModel):
     embedding: List[float]
     processing_time_ms: float
+    model_version: str
+    dimensions: int
+
+class HealthResponse(BaseModel):
+    status: str
+    model_loaded: bool
+    gpu_available: bool
+    memory_usage: Dict[str, Any]
+    performance_metrics: Dict[str, float]
     model: str
     dimensions: int = 512
 
@@ -76,6 +113,16 @@ class LegalAIEngine:
         print(f"Generated embedding for text length {len(text)} in {processing_time:.2f}ms")
         return embedding, processing_time
 
+app = FastAPI(title="TensorRT-LLM Legal AI Server")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Global engine instance
 legal_ai_engine = LegalAIEngine()
 
@@ -84,7 +131,7 @@ async def health_check():
     return {
         "status": "healthy",
         "model_loaded": legal_ai_engine.model_loaded,
-        "tensorrt_llm_available": TENSORRT_LLM_AVAILABLE,
+        "tensorrt_llm_available": TENSORRT_AVAILABLE,
         "simulation_mode": True,
         "target_performance": "6ms (validated)",
         "gpu": "RTX 3060 Ti",

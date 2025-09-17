@@ -711,15 +711,15 @@ thon setup.py build_ext --inplace --cuda_architectures '8.6'
 
   Once this 3.9GB download completes and installs, we should have a fully functional
   TensorRT-LLM that can import without errors and be ready for model conversion.
-
-● The NVIDIA pre-compiled wheel is downloading. This is exactly what we needed - the proper
-   command from their documentation that gives us the real compiled bindings instead of
-  trying to build from source.
-
-  Your insight was spot-on: we don't need to compile anything locally. NVIDIA provides the
-  pre-built wheels with all C++ bindings for exactly our configuration (Python 3.12, Linux
-  x86_64, CUDA 12.x).
-
-  Once this completes, we'll have a working TensorRT-LLM ready for model conversion!
-
+ 
 > is it
+
+shOutput(Reading shell output)
+  ⎿  PyTorch: 2.7.1+cu126
+     CUDA available: True
+     CUDA version: 12.6
+     GPU count: 1
+  ⎿ /home/james/legal-ai-system/tensorrt_env/lib/python3.12/site-packages/torch     
+    /cuda/__init__.py:61: FutureWarning: The pynvml package is deprecated. Plea     
+    se install nvidia-ml-py instead. If you did not install pynvml directly, pl     
+    … +3 lines (ctrl+o to expand)

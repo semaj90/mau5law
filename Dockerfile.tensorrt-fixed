@@ -1,0 +1,104 @@
+# Simplified TensorRT + Ollama Integration Container
+# Uses existing TensorRT environment and adds Ollama compatibility
+
+FROM nvcr.io/nvidia/tensorrt:24.09-py3
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV CUDA_HOME=/usr/local/cuda
+ENV PATH=$PATH:$CUDA_HOME/bin
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CUDA_HOME/lib64
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies with compatible versions
+RUN pip install --upgrade pip && \
+    # Install PyTorch with CUDA support
+    pip install torch==2.4.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 && \
+    # Install FastAPI and server dependencies
+    pip install \
+    fastapi==0.104.1 \
+    uvicorn[standard]==0.24.0 \
+    transformers==4.44.0 \
+    numpy==1.24.3 \
+    pydantic==2.5.0 \
+    requests==2.31.0 \
+    accelerate==0.33.0 \
+    tokenizers==0.19.1 \
+    huggingface-hub==0.24.0 \
+    safetensors==0.4.3 \
+    && rm -rf /root/.cache/pip
+
+# Install Ollama client for model access
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
+# Create working directory
+WORKDIR /app
+
+# Copy server files
+COPY tensorrt-llm-production-server.py /app/
+COPY convert-ollama-to-tensorrt.py /app/
+
+# Create directories for models and engines
+RUN mkdir -p /app/models /app/engines /root/.ollama
+
+# Environment variables for model configuration
+ENV MODEL_NAME=gemma3-legal:latest
+ENV MODEL_PATH=/root/.ollama/models/blobs
+ENV ENGINE_PATH=/app/engines
+ENV GPU_OPTIMIZATION=RTX_3060_Ti
+ENV TARGET_LATENCY=1ms
+ENV QUANTIZATION=Q4_K_M
+ENV BATCH_SIZE=4
+ENV MAX_INPUT_LEN=2048
+ENV MAX_OUTPUT_LEN=1024
+
+# Expose port for API server
+EXPOSE 8100
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8100/health || exit 1
+
+# Create start script
+RUN cat > /app/start.sh << 'EOF'
+#!/bin/bash
+set -e
+
+echo "🚀 Starting TensorRT-LLM Legal AI Server"
+echo "Model: $MODEL_NAME"
+echo "GPU Optimization: $GPU_OPTIMIZATION"
+echo "Target Latency: $TARGET_LATENCY"
+
+# Check if Ollama models are mounted
+if [ -d "/root/.ollama/models" ] && [ "$(ls -A /root/.ollama/models)" ]; then
+    echo "✅ Ollama models directory found and contains files"
+    ls -la /root/.ollama/models/
+else
+    echo "⚠️ Ollama models directory is empty or not mounted"
+    echo "Please mount your Ollama models directory to /root/.ollama"
+fi
+
+# Check GPU availability
+if nvidia-smi >/dev/null 2>&1; then
+    echo "✅ GPU detected:"
+    nvidia-smi --query-gpu=name,memory.total,memory.free --format=csv,noheader,nounits
+else
+    echo "⚠️ No GPU detected, running in CPU mode"
+fi
+
+# Start the Python server
+echo "🌐 Starting server on port 8100..."
+exec python /app/tensorrt-llm-production-server.py
+EOF
+
+RUN chmod +x /app/start.sh
+
+# Default command
+CMD ["/app/start.sh"]

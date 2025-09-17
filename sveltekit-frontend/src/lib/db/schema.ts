@@ -1,53 +1,124 @@
 /**
- * Enhanced Drizzle Schema with pgvector Support
- * PostgreSQL + pgvector integration for YoRHa Legal AI Platform
+ * Legal AI Database Schema with Drizzle ORM
+ * Optimized for pgvector embeddings and gemma3-legal:latest integration
+ * Production-ready schema for SvelteKit 2 + TensorRT-LLM stack
  */
 
-import { pgTable, text, serial, timestamp, integer, vector, uuid, boolean, jsonb, numeric } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, timestamp, integer, vector, uuid, boolean, jsonb, numeric, real, index } from "drizzle-orm/pg-core";
 import { relations } from 'drizzle-orm';
 import { createSelectSchema, createUpdateSchema, createInsertSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
-// Users table with enhanced authentication
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  email: text("email").notNull().unique(),
-  password_hash: text("password_hash").notNull(),
-  created_at: timestamp("created_at").defaultNow().notNull(),
-  updated_at: timestamp("updated_at").defaultNow().notNull()
-});
+// Legal Documents with vector embeddings from gemma3-legal:latest
+export const legalDocuments = pgTable('legal_documents', {
+  id: serial('id').primaryKey(),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  documentType: text('document_type').notNull(), // 'contract', 'brief', 'evidence', 'correspondence'
 
-// Documents table with proper pgvector support (384 dimensions for nomic-embed-text)
-export const documents = pgTable("documents", {
-  id: text("id").primaryKey(), // UUID as text for flexibility
-  filename: text("filename").notNull(),
-  content: text("content").notNull(),
-  summary: text("summary"),
-  embedding: vector("embedding", { dimensions: 384 }), // nomic-embed-text embeddings (optimized)
-  user_id: integer("user_id").references(() => users.id).notNull(),
-  created_at: timestamp("created_at").defaultNow().notNull(),
-  updated_at: timestamp("updated_at").defaultNow().notNull(),
-  metadata: jsonb("metadata").default('{}')
-});
+  // Vector embeddings from gemma3-legal:latest (512 dimensions)
+  embedding: vector('embedding', { dimensions: 512 }).notNull(),
 
-// Legal cases table (enhanced from existing schema)
-export const cases = pgTable("cases", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  title: text("title").notNull(),
-  description: text("description"),
-  status: text("status").default('open'),
-  priority: text("priority").default('medium'),
-  user_id: integer("user_id").references(() => users.id).notNull(),
-  case_embedding: vector("case_embedding", { dimensions: 384 }), // nomic-embed-text
-  created_at: timestamp("created_at").defaultNow().notNull(),
-  updated_at: timestamp("updated_at").defaultNow().notNull(),
-  metadata: jsonb("metadata").default('{}')
-});
+  // Legal metadata
+  practiceArea: text('practice_area'), // 'corporate', 'litigation', 'ip', 'employment'
+  jurisdiction: text('jurisdiction'),
+  caseId: text('case_id'),
+  clientId: text('client_id'),
 
-// Evidence table with embeddings
-export const evidence = pgTable("evidence", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  case_id: uuid("case_id").references(() => cases.id, { onDelete: 'cascade' }).notNull(),
+  // Document classification
+  confidentialityLevel: text('confidentiality_level').default('standard'), // 'public', 'standard', 'confidential', 'privileged'
+  documentStatus: text('document_status').default('active'), // 'draft', 'active', 'archived', 'deleted'
+
+  // Performance and versioning
+  processingTimeMs: real('processing_time_ms'),
+  modelVersion: text('model_version').default('gemma3-legal:latest'),
+  documentHash: text('document_hash'), // SHA-256 for duplicate detection
+
+  // File metadata
+  originalFilename: text('original_filename'),
+  fileSize: real('file_size'),
+  mimeType: text('mime_type'),
+
+  // Timestamps
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+  lastAccessedAt: timestamp('last_accessed_at')
+}, (table) => ({
+  // Indexes for performance
+  embeddingIndex: index('embedding_idx').on(table.embedding),
+  documentTypeIndex: index('document_type_idx').on(table.documentType),
+  practiceAreaIndex: index('practice_area_idx').on(table.practiceArea),
+  caseIdIndex: index('case_id_idx').on(table.caseId),
+  clientIdIndex: index('client_id_idx').on(table.clientId),
+  createdAtIndex: index('created_at_idx').on(table.createdAt),
+  documentHashIndex: index('document_hash_idx').on(table.documentHash)
+}));
+
+// Vector similarity queries for analytics
+export const vectorSimilarityQueries = pgTable('vector_similarity_queries', {
+  id: serial('id').primaryKey(),
+  queryText: text('query_text').notNull(),
+  queryEmbedding: vector('query_embedding', { dimensions: 512 }).notNull(),
+
+  // Query metadata
+  userId: text('user_id'),
+  sessionId: text('session_id'),
+  practiceAreaFilter: text('practice_area_filter'),
+  documentTypeFilter: text('document_type_filter'),
+
+  // Performance metrics
+  responseTimeMs: real('response_time_ms').notNull(),
+  resultsCount: real('results_count').notNull(),
+  similarityThreshold: real('similarity_threshold').default(0.7),
+
+  // Results data
+  topResults: jsonb('top_results'),
+
+  // Analytics
+  queryIntent: text('query_intent'), // 'research', 'analysis', 'template', 'precedent'
+  userSatisfaction: real('user_satisfaction'), // 1-5 rating
+
+  timestamp: timestamp('timestamp').defaultNow()
+}, (table) => ({
+  userIdIndex: index('user_id_idx').on(table.userId),
+  sessionIdIndex: index('session_id_idx').on(table.sessionId),
+  timestampIndex: index('timestamp_idx').on(table.timestamp),
+  queryIntentIndex: index('query_intent_idx').on(table.queryIntent)
+}));
+
+// Legal analysis results cache
+export const legalAnalysisCache = pgTable('legal_analysis_cache', {
+  id: serial('id').primaryKey(),
+
+  // Input hash for cache key
+  inputHash: text('input_hash').notNull().unique(),
+
+  // Input data
+  promptText: text('prompt_text').notNull(),
+  contextDocuments: jsonb('context_documents'),
+  analysisType: text('analysis_type').notNull(), // 'comprehensive', 'risk', 'compliance', 'template'
+
+  // Generated analysis
+  analysisContent: text('analysis_content').notNull(),
+  analysisEmbedding: vector('analysis_embedding', { dimensions: 512 }),
+
+  // Metadata
+  modelVersion: text('model_version').default('gemma3-legal:latest'),
+  processingTimeMs: real('processing_time_ms'),
+  tokenCount: real('token_count'),
+
+  // Cache management
+  accessCount: real('access_count').default(1),
+  lastAccessedAt: timestamp('last_accessed_at').defaultNow(),
+  expiresAt: timestamp('expires_at'),
+
+  createdAt: timestamp('created_at').defaultNow()
+}, (table) => ({
+  inputHashIndex: index('input_hash_idx').on(table.inputHash),
+  analysisTypeIndex: index('analysis_type_idx').on(table.analysisType),
+  lastAccessedIndex: index('last_accessed_idx').on(table.lastAccessedAt),
+  expiresAtIndex: index('expires_at_idx').on(table.expiresAt)
+}));
   user_id: integer("user_id").references(() => users.id).notNull(),
   title: text("title").notNull(),
   description: text("description"),
