@@ -285,21 +285,21 @@ Clear All
   }
 
   /* Custom scrollbar for recent glyphs */
-  .overflow-y-auto::-webkit-scrollbar {
+  .overflow-y-auto: :-webkit-scrollbar {
     width: 4px;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-track {
+  .overflow-y-auto: :-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 2px;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-thumb {
+  .overflow-y-auto: :-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 2px;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  .overflow-y-auto: :-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
 </style>

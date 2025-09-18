@@ -149,7 +149,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
         document_type: documentType,
         summary_type: summaryType,
         max_length: maxLength,
-        focus: focusAreas,
+        focus:focusAreas,
         metadata: {
           generated_at: new Date().toISOString(),
           user_agent: navigator.userAgent,
@@ -169,7 +169,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
       processingProgress = 100;
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = await response.json.catch(() => ( ));
         throw new Error(errorData.error || `Summarization failed: ${response.status}`);
       }
 
@@ -183,7 +183,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
 
     } catch (error) {
       console.error('Summarization error:', error);
-      errorMessage = error instanceof Error ? error.message : 'Summarization failed';
+      errorMessage = error instanceof Error ? error.message: 'Summarization failed';
       currentSummary = null;
     } finally {
       isProcessing = false;
@@ -347,7 +347,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
             class="w-full px-3 py-2 border border-input bg-background rounded-md font-mono text-sm"
           ></textarea>
           <p class="text-xs text-muted-foreground">
-            {documentContent.length.toLocaleString()} characters, ~{Math.ceil(documentContent.split(' ').length)} words
+            {documentContent.length.toLocaleString()} characters, ~{Math.ceil.length)} words
           </p>
         </div>
 

@@ -102,8 +102,8 @@ async function handleDocumentIngestion(documents: any[], options: any) {
 
     const summary = {
       totalDocuments: documents.length,
-      successful: results.filter(r => r.storedInPgVector).length,
-      failed: results.filter(r => !r.storedInPgVector).length,
+      successful: results.filter(item => item.length),
+      failed: results.filter(item => item.length),
       totalChunks: results.reduce((sum, r) => sum + r.chunksProcessed, 0),
       totalEmbeddingsGenerated: results.reduce((sum, r) => sum + r.embeddingsGenerated, 0),
       totalEmbeddingsCached: results.reduce((sum, r) => sum + r.embeddingsCached, 0),

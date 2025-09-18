@@ -140,12 +140,12 @@ https://svelte.dev/e/js_parse_error -->
   function isFileTypeAccepted(file: File): boolean {
     if (accept === '*/*') return true;
     
-    const acceptedTypes = accept.split(',').map(type => type.trim());
+    const acceptedTypes = accept.split.map(type => type.trim());
     
     return acceptedTypes.some(type => {
       if (type.startsWith('.')) {
         // Extension match
-        return file.name.toLowerCase().endsWith(type.toLowerCase());
+        return file.name.toLowerCase.endsWith(type.toLowerCase());
       } else if (type.includes('*')) {
         // MIME type with wildcard
         const pattern = type.replace('*', '.*');

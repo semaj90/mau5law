@@ -194,7 +194,7 @@ async function fallbackToDirectOllama(
       response_time_ms: totalTime
     });
   } catch (error) {
-    throw new Error(`Fallback to direct Ollama failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(`Fallback to direct Ollama failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
   }
 }
 

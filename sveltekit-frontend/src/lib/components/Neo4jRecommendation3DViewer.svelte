@@ -320,7 +320,7 @@ https://svelte.dev/e/js_parse_error -->
     // Create command encoder
     const commandEncoder = gpuDevice.createCommandEncoder();
     // Get current texture
-    const textureView = context.getCurrentTexture().createView();
+    const textureView = context.getCurrentTexture.createView();
     // Create render pass
     const renderPass = commandEncoder.beginRenderPass({
       colorAttachments: [{
@@ -571,15 +571,7 @@ https://svelte.dev/e/js_parse_error -->
     background: linear-gradient(135deg, #111827 0%, #1f2937 50%, #374151 100%);
   }
 
-  .render-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    transition: filter 0.3s ease;
-  }
-
-  .loading .render-canvas {
+  .render-canv.loading .render-canvas {
     filter: blur(2px) brightness(0.7);
   }
 

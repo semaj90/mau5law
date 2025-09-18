@@ -49,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
   let currentMessage = $state('');
   let isLoading = $state(false);
   let isStreaming = $state(false);
-  let conversationId = $state(`conv_${Date.now()}_${Math.random().toString(36).slice(2)}`);
+  let conversationId = $state(`conv_${Date.now()}_${Math.random.toString-slice(2)}`);
   let webAssemblyMode = $state(false);
   let ollamaConnected = $state(false);
 
@@ -387,7 +387,7 @@ https://svelte.dev/e/js_parse_error -->
     }
 
     // Add recent messages for context
-    const recentMessages = $messages.slice(-10).filter(m => m.role !== 'system');
+    const recentMessages = $messages.slice.filter(m => m.role !== 'system');
     context.push(...recentMessages.map(m => ({
       role: m.role,
       content: m.content
@@ -424,7 +424,7 @@ https://svelte.dev/e/js_parse_error -->
   function clearConversation() {
     if (confirm('Are you sure you want to clear this conversation?')) {
       messages.set([]);
-      conversationId = `conv_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      conversationId = `conv_${Date.now()}_${Math.random.toString-slice(2)}`;
     }
   }
 
@@ -440,8 +440,8 @@ https://svelte.dev/e/js_parse_error -->
   // Get source display
   function getSourceDisplay(sources: any[]): string {
     if (!sources || sources.length === 0) return '';
-    const evidenceSources = sources.filter(s => s.type === 'evidence').length;
-    const citationSources = sources.filter(s => s.type === 'citation').length;
+    const evidenceSources = sources.filter(item => item.length);
+    const citationSources = sources.filter(item => item.length);
     let display = '';
     if (evidenceSources > 0) display += `${evidenceSources} evidence`;
     if (citationSources > 0) {

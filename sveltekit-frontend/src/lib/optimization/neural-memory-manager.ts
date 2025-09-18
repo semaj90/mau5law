@@ -555,7 +555,7 @@ export class NeuralMemoryManager extends EventEmitter {
     let current = input;
 
     for (const weights of this.neuralWeights) {
-      const next = new Array(weights[0] ? weights[0].length : 0).fill(0);
+      const next = new Array(weights[0] ? weights[0].length: 0).fill(0);
       for (let i = 0; i < weights.length; i++) {
         if (weights[i]) {
           for (let j = 0; j < weights[i].length; j++) {
@@ -606,8 +606,7 @@ export class NeuralMemoryManager extends EventEmitter {
         recent.reduce((sum, h) => sum + h.operations, 0) / recent.length,
       trend:
         recent.length > 1
-          ? recent[recent.length - 1].memory - recent[0].memory
-          : 0,
+          ? recent[recent.length - 1].memory - recent[0].memory: 0,
       cacheHitRate: 0.75, // Placeholder
     };
   }

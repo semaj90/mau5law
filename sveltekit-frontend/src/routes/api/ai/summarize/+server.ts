@@ -115,7 +115,7 @@ function buildSummarizerPrompt(text: string, mode: SummarizeOptions['mode'], bul
 }
 
 function naiveFallbackSummary(text: string, bullets = 3) {
-  const sentences = text.replace(/\s+/g, ' ').split(/(?<=[.!?])\s+/).filter(s => s.length > 0).slice(0, bullets * 3);
+  const sentences = text.replace(/\s+/g, ' ').split(/(?<=[.!?])\s+/).filter(item => item.slice)(0, bullets * 3);
   const keywords = [/contract/i, /liabil/i, /court/i, /risk/i, /evidence/i, /statut/i, /claim/i];
   const scored = sentences.map(s => ({ s, score: s.length * 0.001 + keywords.reduce((acc, k) => acc + (k.test(s) ? 1 : 0), 0) }));
   scored.sort((a, b) => b.score - a.score);
@@ -284,7 +284,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const rawSummary = String((result as { response?: any; eval_count?: any; prompt_eval_count?: any }).response || '').trim();
     let summary = rawSummary;
     if (mode === 'bullets' && !/^\s*- /.test(rawSummary)) {
-      const segmented = rawSummary.split(/\n+|(?<=\.)\s+/).map(l => l.trim()).filter(Boolean).slice(0, bullets);
+      const segmented = rawSummary.split(/\n+|(?<=\.)\s+/).map(l => l.trim()).filter(item => item.slice)(0, bullets);
       summary = segmented.map(s => s.startsWith('- ') ? s : `- ${s}`).join('\n');
     }
     const performance: SummarizeResponseMeta = { duration, tokens: (result as { response?: any; eval_count?: any; prompt_eval_count?: any }).eval_count || 0, promptTokens: (result as { response?: any; eval_count?: any; prompt_eval_count?: any }).prompt_eval_count || 0, tokensPerSecond: (result as { response?: any; eval_count?: any; prompt_eval_count?: any }).eval_count ? ((result as { response?: any; eval_count?: any; prompt_eval_count?: any }).eval_count / (duration / 1000)).toFixed(2) : 0, modelUsed, fallbackUsed };

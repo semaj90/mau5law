@@ -26,7 +26,7 @@ export class EmbeddingAdapter {
     const vector = new Float32Array(this.dimensions);
     if (this.deterministic) {
       let hash = 0;
-      for (let i = 0; i < text.length; i++) hash = (hash * 31 + text.charCodeAt(i)) >>> 0;
+      for (let i = 0; i < text.length; i++) hash = (hash * 31 + text.charCodeAt(i)) > 0;
       for (let i = 0; i < this.dimensions; i++) {
         const v = Math.sin(hash + i) * 10000;
         vector[i] = (v - Math.floor(v));

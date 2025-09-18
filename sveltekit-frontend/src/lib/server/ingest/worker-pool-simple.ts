@@ -92,8 +92,8 @@ export class WorkerPool {
   getStats() {
     return {
       totalWorkers: this.pool.length,
-      busyWorkers: this.free.filter(f => !f).length,
-      freeWorkers: this.free.filter(f => f).length,
+      busyWorkers: this.free.filter(item => item.length),
+      freeWorkers: this.free.filter(item => item.length),
       queuedJobs: this.queue.length,
       pendingCallbacks: this.jobCallbacks.size
     };

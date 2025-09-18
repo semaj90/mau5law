@@ -21,8 +21,8 @@ https://svelte.dev/e/js_parse_error -->
   // REACTIVE STATE
   // ========================================================================
   // Reactive queries from Dexie - automatically update UI
-  let messages = $derived($chatHistory || [];);
-  let nodes = $derived($graphNodes || [];);
+  let messages = $derived($chatHistory || [];
+  let nodes = $derived($graphNodes || [];
   // Component state
   let searchQuery = $state('');
   let searchResults = $state<any[] >([]);
@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
   let performanceStats = $state<any >(null);
   // GPU canvas for visualization
   let canvas = $state<HTMLCanvasElement;
-  let animationFrame = $state<number// | null>(null)(>(======================================================================
+  let animationFrame = $state<number//  | null>(null); const data = >(======================================================================
   // LIFECYCLE
   // ========================================================================
   onMount(async () => {
@@ -147,9 +147,7 @@ https://svelte.dev/e/js_parse_error -->
       });
       searchResults = (result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).results;
       // Add AI response to chat
-      await db.addChatMessage({
-        role: 'assistant',
-        content: `Found ${(result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).results.length} results in ${(result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).metrics.totalTime}ms`,
+      await db.addChatMessage.results.length} results in ${(result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).metrics.totalTime}ms`,
         metadata: {
           responseTime: (result as { results?: unknown; metrics?: unknown; score?: unknown; id?: unknown; content?: unknown; metadata?: unknown }).metrics.totalTime,
           legalContext: {
@@ -558,15 +556,7 @@ https://svelte.dev/e/js_parse_error -->
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
-  .graph-canvas {
-    width: 100%;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    cursor: crosshair;
-    background: #fafbfc;
-  }
-
-  .node-details {
+  .graph-canv.node-details {
     margin-top: 1rem;
     padding: 0.75rem;
     background: #f8f9fa;

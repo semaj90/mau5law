@@ -641,7 +641,7 @@ export class LokiRedisCache extends EventEmitter {
 
     try {
       const key = `${CACHE_CONFIG.redis.keyPrefix}${cacheKey}`;
-      await this.redis?.setex(key, CACHE_CONFIG.redis.ttl.searches, JSON.stringify(results));
+  await this.redis?.setex(key, CACHE_CONFIG.redis.ttl.searches, JSON.stringify(results));
     } catch (error: any) {
       console.error('❌ Search cache storage failed:', error);
     }
@@ -767,8 +767,8 @@ export class LokiRedisCache extends EventEmitter {
 
   private startPerformanceMonitoring(): void {
     setInterval(() => {
-      this.updateMemoryStats();
-      this.emit('stats', this.getStats());
+  this.updateMemoryStats();
+  this.emit('stats', this.getStats());
     }, 10000); // Every 10 seconds
   }
 

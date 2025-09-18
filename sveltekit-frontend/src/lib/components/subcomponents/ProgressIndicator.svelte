@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
         }>;
     }
 
-    let { steps = [], currentStep = 0, validationResults = {} }: Props = $props();
+    let { steps = [], currentStep = 0, validationResults = }: Props = $props();
 
     const dispatch = createEventDispatcher();
 

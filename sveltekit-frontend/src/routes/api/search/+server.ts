@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           error: 'Unable to connect to Ollama for embedding generation',
           code: 'OLLAMA_CONNECTION_ERROR',
-          details: error instanceof Error ? error.message : 'Unknown connection error'
+          details: error instanceof Error ? error.message: 'Unknown connection error'
         }, { status: 502 });
       }
     }
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       error: 'Internal server error during search',
       code: 'INTERNAL_ERROR',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

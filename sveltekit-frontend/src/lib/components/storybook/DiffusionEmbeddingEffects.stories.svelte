@@ -80,8 +80,7 @@ https://svelte.dev/e/expected_token -->
 			
 			webgpuDevice = await adapter.requestDevice({
 				requiredFeatures: [],
-				requiredLimits: {}
-			});
+				requiredLimits: });
 			
 			isWebGPUSupported = true;
 			featureFlags.webgpuAccel = true;
@@ -347,7 +346,7 @@ https://svelte.dev/e/expected_token -->
 		}
 		
 		// Apply CSS classes based on flags
-		Object.entries(featureFlags).forEach(([flag, enabled]) => {
+		Object.entries.forEach(([flag, enabled]) => {
 			if (enabled) {
 				root.classList.add(`fx-${flag.replace(/([A-Z])/g, '-$1').toLowerCase()}`);
 			}
@@ -657,7 +656,7 @@ https://svelte.dev/e/expected_token -->
 		filter: contrast(1.1) saturate(1.2);
 	}
 	
-	.ps1-scanlines::before {
+	.ps1-scanlines: :before {
 		content: '';
 		position: absolute;
 		top: 0;

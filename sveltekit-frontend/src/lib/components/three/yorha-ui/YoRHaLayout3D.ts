@@ -126,8 +126,8 @@ export class YoRHaLayout3D extends THREE.Group {
     
     this.children3D.forEach(({ component, layout }) => {
       const bounds = this.getComponentBounds(component);
-      const mainSize = isRow ? bounds.x : bounds.y;
-      const crossSize = isRow ? bounds.y : bounds.x;
+      const mainSize = isRow ? bounds.x: bounds.y;
+      const crossSize = isRow ? bounds.y: bounds.x;
       const flex = layout.flex || layout.grow || 0;
       
       childSizes.push({ main: mainSize, cross: crossSize, flex });
@@ -138,10 +138,10 @@ export class YoRHaLayout3D extends THREE.Group {
     
     // Calculate available space
     const containerBounds = this.getContainerBounds();
-    const availableMain = (isRow ? containerBounds.x : containerBounds.y) - 
+    const availableMain = (isRow ? containerBounds.x: containerBounds.y) - 
                          padding.left - padding.right - 
                          (gap * (this.children3D.length - 1));
-    const availableCross = (isRow ? containerBounds.y : containerBounds.x) - 
+    const availableCross = (isRow ? containerBounds.y: containerBounds.x) - 
                           padding.top - padding.bottom;
     
     // Distribute extra space among flex items
@@ -197,8 +197,8 @@ export class YoRHaLayout3D extends THREE.Group {
       let column: number, row: number;
       
       if (layout.gridColumn !== undefined && layout.gridRow !== undefined) {
-        column = typeof layout.gridColumn === 'number' ? layout.gridColumn : parseInt(layout.gridColumn) - 1;
-        row = typeof layout.gridRow === 'number' ? layout.gridRow : parseInt(layout.gridRow) - 1;
+        column = typeof layout.gridColumn === 'number' ? layout.gridColumn: parseInt(layout.gridColumn) - 1;
+        row = typeof layout.gridRow === 'number' ? layout.gridRow: parseInt(layout.gridRow) - 1;
       } else {
         column = index % columns;
         row = Math.floor(index / columns);

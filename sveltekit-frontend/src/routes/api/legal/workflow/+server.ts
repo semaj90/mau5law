@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Internal server error',
+      error: error instanceof Error ? error.message: 'Internal server error',
     }, { status: 500 });
   }
 };
@@ -103,7 +103,7 @@ export const GET: RequestHandler = async () => {
     
     // Calculate total messages across all queues
     const totalMessages = Object.values(queueStats).reduce((total, stat: any) => {
-      return total + (typeof stat.messageCount === 'number' ? stat.messageCount : 0);
+      return total + (typeof stat.messageCount === 'number' ? stat.messageCount: 0);
     }, 0);
     
     return json({
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async () => {
     
     return json({
       status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString(),
     }, { status: 500 });
   }

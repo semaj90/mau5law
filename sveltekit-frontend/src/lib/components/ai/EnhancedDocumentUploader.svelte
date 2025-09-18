@@ -124,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
   // File input reference
   let fileInput = $state<HTMLInputElement;
   let dropZone = $state<HTMLDivElement// Document types for legal AI
-  const documentTypes | null>(null)([
+  const documentTypes | null>(null) => [
     { value: "contract", label: "Contract" },
     { value: "motion", label: "Motion" },
     { value: "brief", label: "Brief" },
@@ -183,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
   function processSelectedFiles(selectedFiles: File[]) {
     const validFiles = selectedFiles.filter((file) => {
       // Check file type
-      const extension = "." + file.name.split(".").pop()?.toLowerCase();
+      const extension = "." + file.name.split.pop()?.toLowerCase();
       if (!acceptedTypes.includes(extension)) {
         console.warn(`File type ${extension} not accepted`);
         return false;

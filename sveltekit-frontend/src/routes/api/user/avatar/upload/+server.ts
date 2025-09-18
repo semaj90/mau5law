@@ -99,7 +99,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   } catch (error: any) {
     console.error("Avatar upload error:", error);
     const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
+      error instanceof Error ? error.message: "Unknown error";
     return json({ error: `Upload failed: ${errorMessage}` }, { status: 500 });
   }
 };

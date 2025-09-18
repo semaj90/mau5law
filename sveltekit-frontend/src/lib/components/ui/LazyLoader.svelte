@@ -8,7 +8,6 @@
   let { fallback } = $props();: string = 'Loading component...';
   let { errorFallback } = $props();: string = 'Failed to load component';
   let { props } = $props();: Record<string, any> = {};
-
   let Component: unknown = null;
   let isLoading = true;
   let error: Error | null = null;

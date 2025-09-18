@@ -46,7 +46,7 @@ export const GET: RequestHandler = async ({ params }) => {
 		console.error('Job status error:', error);
 		return json({
 			success: false,
-			error: error instanceof Error ? error.message : 'Unknown error'
+			error: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 });
 	}
 };
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		console.error('Job action error:', error);
 		return json({
 			success: false,
-			error: error instanceof Error ? error.message : 'Unknown error'
+			error: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 });
 	}
 };

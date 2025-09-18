@@ -117,7 +117,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         this.postResponse({
           taskId,
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message: 'Unknown error',
         });
       } finally {
         this.currentTask = null;
@@ -140,7 +140,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       const uploadResults: UploadResult[] = [];
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const originalName = file instanceof File ? file.name : `document_${i}.bin`;
+        const originalName = file instanceof File ? file.name: `document_${i}.bin`;
 
         const uploadResult = await this.simulateMinIOUpload(file, originalName, {
           bucket: options.bucket,
@@ -237,7 +237,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       // Simulate MinIO upload process
       await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000 + 500));
 
-      const fileSize = file instanceof File ? file.size : file.length;
+      const fileSize = file instanceof File ? file.size: file.length;
       const fileId = `${Date.now()}-${Math.random().toString(36).substring(2)}`;
 
       return {

@@ -7,7 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   import 'nes.css/css/nes.min.css';
   import { onMount, tick } from 'svelte';
   	import { browser } from '$app/environment';
-  	import { createDialog } from 'melt';
+  	import * as Dialog from 'bits-ui';
   	import * as Dialog from '$lib/components/ui/dialog';
   	import * as Button from '$lib/components/ui/button';
   	import * as Input from '$lib/components/ui/input';
@@ -48,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
   		isTyping: false,
   		lastActivity: Date.now(),
   		attentionLevel: 'medium',
-  		currentPage: browser ? window.location.pathname : ''
+  		currentPage: browser ? window.location.pathname: ''
   	});
 
   	// Chat session state
@@ -61,8 +61,7 @@ https://svelte.dev/e/js_parse_error -->
   			userIntent: 'general',
   			confidence: 0.8,
   			recentActions: [],
-  			preferences: {}
-  		},
+  			preferences: },
   		createdAt: new Date(),
   		updatedAt: new Date(),
   		isActive: true
@@ -82,118 +81,7 @@ https://svelte.dev/e/js_parse_error -->
   	let activitySocket: WebSocket | null = $state(null);
 
   	// XState machine for chat flow
-  	const chatMachine = createMachine({
-  		id: 'yorhaChat',
-  		initial: 'disconnected',
-  		context: {
-  			sessionID: chatSession.id,
-  			userID,
-  			retryCount: 0,
-  			lastError: null
-  		},
-  		states: {
-  			disconnected: {
-  				on: {
-  					CONNECT: 'connecting'
-  				}
-  			},
-  			connecting: {
-  				on: {
-  					CONNECTED: 'idle',
-  					ERROR: 'error'
-  				}
-  			},
-  			idle: {
-  				on: {
-  					SEND_MESSAGE: 'sending',
-  					START_STREAMING: 'streaming',
-  					DISCONNECT: 'disconnected'
-  				}
-  			},
-  			sending: {
-  				on: {
-  					MESSAGE_SENT: 'waiting_response',
-  					ERROR: 'error'
-  				}
-  			},
-  			waiting_response: {
-  				on: {
-  					RESPONSE_RECEIVED: 'idle',
-  					START_STREAMING: 'streaming',
-  					ERROR: 'error'
-  				}
-  			},
-  			streaming: {
-  				on: {
-  					STREAM_TOKEN: 'streaming',
-  					STREAM_COMPLETE: 'idle',
-  					ERROR: 'error'
-  				}
-  			},
-  			error: {
-  				on: {
-  					RETRY: 'connecting',
-  					RESET: 'disconnected'
-  				}
-  			}
-  		}
-  	});
-
-  	let chatService: Interpreter<any> | null = $state(null);
-  	let currentState = $derived(chatService?.getSnapshot()?.value || 'disconnected');
-
-  	// Types
-  	interface ChatMessage {
-  		id: string;
-  		role: 'user' | 'assistant' | 'system';
-  		content: string;
-  		timestamp: Date;
-  		metadata?: Record<string, any>;
-  		streaming?: boolean;
-  	}
-
-  	interface ChatSession {
-  		id: string;
-  		userID: string;
-  		messages: ChatMessage[];
-  		context: ChatContext;
-  		createdAt: Date;
-  		updatedAt: Date;
-  		isActive: boolean;
-  	}
-
-  	interface ChatContext {
-  		caseID?: string;
-  		userIntent: string;
-  		confidence: number;
-  		recentActions: any[];
-  		preferences: Record<string, any>;
-  	}
-
-  	interface UserActivity {
-  		isTyping: boolean;
-  		lastActivity: number;
-  		attentionLevel: 'low' | 'medium' | 'high';
-  		currentPage: string;
-  	}
-
-  	interface PerformanceMetrics {
-  		totalMessages: number;
-  		averageResponseTime: number;
-  		gpuUtilization: number;
-  		cacheHitRate: number;
-  		connectionLatency: number;
-  	}
-
-  	// Melt UI Dialog
-  	const {
-  		elements: { trigger, overlay, content, title, description, close },
-  		states: { open }
-  	} = createDialog({
-  		preventScroll: true,
-  		closeOnOutsideClick: false,
-  		forceVisible: true
-  	});
+  	// Melt UI component creation removed - replace with bits-ui declarative components
 
   	// Reactive derived values
   	let connectionStatus = $derived(
@@ -215,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
 
   	let hasMessages = $derived(chatSession.messages.length > 0);
   	let lastAssistantMessage = $derived(
-  		chatSession.messages.filter(m => m.role === 'assistant').pop()
+  		chatSession.messages.filter(item => item.pop)()
   	);
 
   	// Lifecycle
@@ -619,7 +507,7 @@ https://svelte.dev/e/js_parse_error -->
   	// Setup activity tracking
   	function setupActivityTracking() {
   		// Track typing in message input
-  let typingTimeout = $state<numberconst updateTyping | null>(null)(() => {
+  let typingTimeout = $state<numberconst updateTyping  | null>(null); const data = () => {
   			clearTimeout(typingTimeout));
   			updateUserActivity({ action: 'typing' });
 
@@ -988,7 +876,7 @@ https://svelte.dev/e/js_parse_error -->
 		position: relative;
 	}
 
-	:global(.gpu-indicator::after) {
+	:global(.gpu-indicator: :after) {
 		content: '';
 		position: absolute;
 		top: -2px;

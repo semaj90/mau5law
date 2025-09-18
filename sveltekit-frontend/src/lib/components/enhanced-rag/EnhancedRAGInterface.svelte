@@ -131,8 +131,8 @@
         });
         if ((response as { ok?: unknown; json?: unknown }).ok) {
           const result = await (response as { ok?: unknown; json?: unknown }).json();
-          embeddings.set(doc.id, (result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).embedding);
-          console.log(`✅ Generated ${(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).embedding?.length || 0}-dim embedding for doc ${doc.id}`);
+          embeddings.set.embedding);
+          console.log.embedding?.length || 0}-dim embedding for doc ${doc.id}`);
         }
       } catch (error) {
         console.warn(`⚠️ Embedding failed for doc ${doc.id}:`, error);
@@ -160,11 +160,9 @@
     const labelCounts = documents.reduce((acc, doc) => {
       acc[doc.label] = (acc[doc.label] || 0) + 1;
       return acc;
-    }, {});
-    analytics.topLabels = Object.entries(labelCounts)
-      .sort(([,a], [,b]) => b - a)
-      .slice(0, 3)
-      .map(([label]) => label);
+    }, );
+    analytics.topLabels = Object.entries.sort(([,a], [,b]) => b - a)
+      .slice.map(([label]) => label);
   }
   // Search functionality
   function performSearch() {
@@ -173,9 +171,7 @@
       return;
     }
     const results = fuseSearch.search(searchQuery);
-    searchResults = results.map(result => ({
-      ...(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).item,
-      searchScore: 1 - ((result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).score || 0) // Convert distance to similarity
+    searchResults = results.map.score || 0) // Convert distance to similarity
     }));
     console.log(`🔍 Search "${searchQuery}" returned ${searchResults.length} results`);
   }

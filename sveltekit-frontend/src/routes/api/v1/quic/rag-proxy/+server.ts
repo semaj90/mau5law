@@ -137,7 +137,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       service: 'rag-quic-proxy',
       status: 'error',
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error',
       timestamp: new Date().toISOString(),
     });
   }
@@ -220,7 +220,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         503,
         ensureError({
           message: 'RAG service unavailable',
-          error: quicError instanceof Error ? quicError.message : 'Unknown error',
+          error: quicError instanceof Error ? quicError.message: 'Unknown error',
         })
       );
     }
@@ -270,7 +270,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     });
   } catch (err: any) {
     console.error('RAG QUIC Proxy error:', err);
-    error(500, err instanceof Error ? err.message : 'RAG operation failed');
+    error(500, err instanceof Error ? err.message: 'RAG operation failed');
   }
 };
 
@@ -319,7 +319,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       500,
       ensureError({
         message: 'Document update failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error',
       })
     );
   }
@@ -367,7 +367,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Document deletion failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error',
       })
     );
   }

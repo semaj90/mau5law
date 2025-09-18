@@ -24,7 +24,7 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       services: {
         postgresql: false,
         redis: false,

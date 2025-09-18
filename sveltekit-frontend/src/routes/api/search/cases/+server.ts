@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         results: [],
         error: "Search failed",
-        message: error instanceof Error ? error.message : "Unknown error",
+        message: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );

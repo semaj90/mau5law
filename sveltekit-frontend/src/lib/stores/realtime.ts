@@ -21,7 +21,7 @@ export interface StageStatus {
 	final?: boolean;
 	receivedAt?: number;
 	completedAt?: number;
-	stageTimestamps?: Partial<Record<PipelineStage, number>>; // per-stage arrival timestamps
+	stageTimestamps?: Partial<Record<PipelineStage, number>; // per-stage arrival timestamps
 	// Allow additional dynamic stage flags without TS complaints
 	[key: string]: unknown; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
@@ -34,7 +34,7 @@ export interface FinalResultEntry {
 }
 
 export const connectionStatus = writable<string>('disconnected');
-export const stages = writable<Record<string, StageStatus>>({}); // traceId -> stage status object;
+export const stages = writable<Record<string, StageStatus>({}); // traceId -> stage status object;
 export const finalResults = writable<FinalResultEntry[]>([]); // list of final LLM outputs;
 export const recentEvents = writable<any[]>([]); // rolling window (loosely typed)
 let ws: WebSocket | null = null;

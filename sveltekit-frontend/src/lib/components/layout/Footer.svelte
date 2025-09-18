@@ -121,7 +121,7 @@
             © {currentYear} YoRHa Legal AI Platform. All rights reserved.
           </p>
           <p class="version-info nes-text is-disabled">
-            Version 2.0.0 | Build: {Date.now().toString(36).slice(-6)}
+            Version 2.0.0 | Build: {Date.now.toString-slice(-6)}
           </p>
         </div>
 

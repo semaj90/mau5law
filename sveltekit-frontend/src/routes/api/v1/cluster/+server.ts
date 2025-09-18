@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types.js';
 
 /*
  * Cluster API Endpoint - Service Orchestration & Health
- * Routes to: cluster-http.exe:8213, modular-cluster-service-production.exe:8215
+ * Routes to: cluster-http.exe: 8213, modular-cluster-service-production.exe:8215
  */
 
 import { productionServiceClient } from '$lib/services/productionServiceClient';
@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }
     } catch (err: any) {
         console.error('Cluster API Error:', err);
-        return error(500, `Cluster service unavailable: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        return error(500, `Cluster service unavailable: ${err instanceof Error ? err.message: 'Unknown error'}`);
     }
 };
 
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
     } catch (err: any) {
         console.error('Cluster Action Error:', err);
-        return error(500, `Cluster action failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        return error(500, `Cluster action failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
     }
 };
 
@@ -54,7 +54,7 @@ async function handleHealthCheck(): Promise<any> {
     const health = await productionServiceClient.checkAllServicesHealth();
     const metrics = await productionServiceClient.getPerformanceMetrics();
     const totalServices = Object.keys(health).length;
-    const healthyServices = Object.values(health).filter(Boolean).length;
+    const healthyServices = Object.values(health).filter(item => item.length);
     const healthPercentage = totalServices > 0 ? (healthyServices / totalServices) * 100 : 0;
     return json({
         cluster: {
@@ -90,7 +90,7 @@ async function handleServicesStatus(): Promise<any> {
         services: serviceDetails,
         summary: {
             total: Object.keys(health).length,
-            running: Object.values(health).filter(Boolean).length,
+            running: Object.values(health).filter(item => item.length),
             down: Object.values(health).filter((h) => !h).length
         },
         timestamp: new Date().toISOString()
@@ -110,8 +110,8 @@ async function handleMetrics(): Promise<any> {
             }
         },
         availability: {
-            uptime_percentage: (Object.values(health).filter(Boolean).length / Object.keys(health).length) * 100,
-            services_up: Object.values(health).filter(Boolean).length,
+            uptime_percentage: (Object.values(health).filter(item => item.length) / Object.keys(health).length) * 100,
+            services_up: Object.values(health).filter(item => item.length),
             services_total: Object.keys(health).length
         },
         protocols: {

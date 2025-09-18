@@ -89,15 +89,13 @@ https://svelte.dev/e/js_parse_error -->
       ...poi,
       name: formData.name,
       aliases: formData.aliases
-        .split(",")
-        .map((a) => a.trim())
+        .split.map((a) => a.trim())
         .filter((a) => a),
       relationship: formData.relationship,
       threatLevel: formData.threatLevel,
       status: formData.status,
       tags: formData.tags
-        .split(",")
-        .map((t) => t.trim())
+        .split.map((t) => t.trim())
         .filter((t) => t),
       profileData: formData.profileData,
     };

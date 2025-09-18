@@ -29,7 +29,7 @@ export async function processLegalDocumentWithONNX(documentText: string) {
     const embeddings = await ollamaService.generateEmbeddings(documentText);
     console.log(
       '🧮 Embeddings generated:',
-      Array.isArray(embeddings) ? embeddings.length : 'unknown',
+      Array.isArray(embeddings) ? embeddings.length: 'unknown',
       'dimensions'
     );
 

@@ -11,7 +11,7 @@ Tests the demo RAG functionality with a working interface
 
   let query = $state('');
   let isLoading = $state(false);
-  let chatHistory = $state<any[]>([])([]);
+  let chatHistory = $state<any[]>([]) => []);
 
   // Sample queries for testing
   const sampleQueries = [
@@ -41,7 +41,7 @@ Tests the demo RAG functionality with a working interface
       let response: RAGDemoResponse;
 
       // Handle special case for summary
-      if (userQuery.toLowerCase().includes('summary')) {
+      if (userQuery.toLowerCase.includes('summary')) {
         const summaryText = await demoGenerateCaseSummary(currentCase?.id || '1');
         response = {
           response: summaryText,

@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       throw error(400, err.message);
     }
 
-    throw error(500, `Upload failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Upload failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -354,6 +354,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   } catch (err) {
     console.error('Upload status error:', err);
-    throw error(500, `Failed to get upload status: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to get upload status: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };

@@ -47,7 +47,7 @@ class LokiMemoryAdapter {
 class Loki {
 	filename: string;
 	options: any;
-	private collections = new Map<string, MemoryCollection<any>>();
+	private collections = new Map<string, MemoryCollection<any>();
 	static LokiMemoryAdapter = LokiMemoryAdapter;
 
 	constructor(filename: string, options?: any) {

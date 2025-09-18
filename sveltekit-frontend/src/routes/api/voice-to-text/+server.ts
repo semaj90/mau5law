@@ -115,7 +115,7 @@ async function tryRemoteTTS(text: string, voice: string, format: string): Promis
 async function binaryExists(bin: string): Promise<boolean> {
   const { spawn } = await import("node:child_process");
   return await new Promise((resolve) => {
-    const cmd = process.platform === "win32" ? "where" : "which";
+    const cmd = process.platform === "win32" ? "where" : "which");
     const p = spawn(cmd, [bin]);
     p.on("error", () => resolve(false));
     p.on("close", (code) => resolve(code === 0));
@@ -137,7 +137,7 @@ async function tryPiper(text: string, voice: string, format: string): Promise<Ar
   return await new Promise<ArrayBuffer | null>((resolve) => {
     const proc = spawn("piper", ["--model", model, "--config", config, "--output_file", outFile], {
       stdio: ["pipe", "ignore", "ignore"]
-    });
+    }));
     proc.stdin.write(text);
     proc.stdin.end();
     proc.on("close", async (code) => {
@@ -169,7 +169,7 @@ async function tryEdgeTTS(text: string, voice: string, format: string): Promise<
   const { spawn } = await import("node:child_process");
   const args = ["--voice", voice, "--text", text, "--write-media", outFile];
   return await new Promise<ArrayBuffer | null>((resolve) => {
-    const proc = spawn("edge-tts", args, { stdio: "ignore" });
+    const proc = spawn("edge-tts", args, { stdio: "ignore" }));
     proc.on("close", async (code) => {
       if (code !== 0) return resolve(null);
       try {

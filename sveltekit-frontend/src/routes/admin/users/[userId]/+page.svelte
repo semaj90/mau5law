@@ -106,7 +106,7 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
         <div class="bg-gray-800 p-3 rounded border border-amber-300">
           <div class="font-semibold mb-1">USER ID</div>
-          <div class="font-mono text-amber-400">#{(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id.toString().padStart(6, '0')}</div>
+          <div class="font-mono text-amber-400">#{(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id.toString.padStart(6, '0')}</div>
         </div>
         <div class="bg-gray-800 p-3 rounded border border-amber-300">
           <div class="font-semibold mb-1">EMAIL</div>
@@ -502,24 +502,24 @@
   }
   
   /* Custom scrollbar */
-  .overflow-y-auto::-webkit-scrollbar,
+  .overflow-y-auto: :-webkit-scrollbar,
   .overflow-x-auto::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   
-  .overflow-y-auto::-webkit-scrollbar-track,
+  .overflow-y-auto: :-webkit-scrollbar-track,
   .overflow-x-auto::-webkit-scrollbar-track {
     background: #1f2937;
   }
   
-  .overflow-y-auto::-webkit-scrollbar-thumb,
+  .overflow-y-auto: :-webkit-scrollbar-thumb,
   .overflow-x-auto::-webkit-scrollbar-thumb {
     background: #fbbf24;
     border-radius: 4px;
   }
   
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover,
+  .overflow-y-auto: :-webkit-scrollbar-thumb:hover,
   .overflow-x-auto::-webkit-scrollbar-thumb:hover {
     background: #f59e0b;
   }

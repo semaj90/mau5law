@@ -37,10 +37,9 @@ https://svelte.dev/e/js_parse_error -->
   let totalEntities = $derived(processedDocuments.reduce((sum, doc) => sum + (doc?.entityCount || 0), 0);
   let averageProsecutionScore = $derived(
     processedDocuments.length > 0
-      ? processedDocuments.reduce((sum, doc) => sum + (doc?.prosecutionScore || 0), 0) / processedDocuments.length
-      : 0
+      ? processedDocuments.reduce((sum, doc) => sum + (doc?.prosecutionScore || 0), 0) / processedDocuments.length: 0
   );
-  let canQuery = $derived(ragQuery.trim().length > 0);
+  let canQuery = $derived(ragQuery.trim.length > 0);
 
   onMount(async () => {
     await checkSystemStatus();
@@ -55,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
       (file) =>
         file &&
         (file.type === 'application/pdf' ||
-          (file.name && file.name.toLowerCase().endsWith('.pdf')))
+          (file.name && file.name.toLowerCase.endsWith('.pdf')))
     );
     addLog(`📄 Selected ${selectedFiles.length} PDF files for processing`);
   }
@@ -620,21 +619,21 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* Custom scrollbar for logs */
-  :global(.max-h-64::-webkit-scrollbar) {
+  :global(.max-h-64: :-webkit-scrollbar) {
     width: 6px;
   }
 
-  :global(.max-h-64::-webkit-scrollbar-track) {
+  :global(.max-h-64: :-webkit-scrollbar-track) {
     background: #f1f1f1;
     border-radius: 3px;
   }
 
-  :global(.max-h-64::-webkit-scrollbar-thumb) {
+  :global(.max-h-64: :-webkit-scrollbar-thumb) {
     background: #c1c1c1;
     border-radius: 3px;
   }
 
-  :global(.max-h-64::-webkit-scrollbar-thumb:hover) {
+  :global(.max-h-64: :-webkit-scrollbar-thumb:hover) {
     background: #a8a8a8;
   }
 </style>

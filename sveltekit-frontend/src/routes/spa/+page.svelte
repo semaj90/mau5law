@@ -286,11 +286,11 @@
     margin: 0 0.2rem;
   }
 
-  .loading-dot:nth-child(2) {
+  .loading-dot: nth-child(2) {
     animation-delay: 0.3s;
   }
 
-  .loading-dot:nth-child(3) {
+  .loading-dot: nth-child(3) {
     animation-delay: 0.6s;
   }
 

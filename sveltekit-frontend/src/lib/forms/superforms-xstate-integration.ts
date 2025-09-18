@@ -32,7 +32,7 @@ export interface FormMachineIntegration<M extends { getSnapshot: () => any }> {
   context: Writable<any>;
   isValid: Readable<boolean>;
   isSubmitting: Readable<boolean>;
-  errors: Readable<Record<string, string[]>>;
+  errors: Readable<Record<string, string[]>;
   progress: Readable<number>;
   autoSaveDelay?: number;
   resetOnSuccess?: boolean;
@@ -52,7 +52,7 @@ export interface FormOptions {
 // ============================================================================
 
 export function createDocumentUploadForm(
-  data: any, // SuperValidated<Infer<typeof DocumentUploadSchema>>,
+  data: any, // SuperValidated<Infer<typeof DocumentUploadSchema>,
   options: FormOptions = {}
 ): unknown { // FormMachineIntegration<Infer<typeof DocumentUploadSchema>, DocumentUploadActor> {
 
@@ -184,7 +184,7 @@ export function createDocumentUploadForm(
 // ============================================================================
 
 export function createCaseCreationForm(
-  data: any, // SuperValidated<Infer<typeof CaseCreationSchema>>,
+  data: any, // SuperValidated<Infer<typeof CaseCreationSchema>,
   options: FormOptions = {}
 ): unknown { // FormMachineIntegration<Infer<typeof CaseCreationSchema>, CaseCreationActor> {
 
@@ -289,7 +289,7 @@ export function createCaseCreationForm(
 // ============================================================================
 
 export function createSearchForm(
-  data: any, // SuperValidated<Infer<typeof SearchQuerySchema>>,
+  data: any, // SuperValidated<Infer<typeof SearchQuerySchema>,
   options: FormOptions = {}
 ): unknown { // FormMachineIntegration<Infer<typeof SearchQuerySchema>, SearchActor> {
 
@@ -304,7 +304,7 @@ export function createSearchForm(
     invalidateAll: false,
     onUpdated: ({ form }) => {
       // Don't auto-submit on every change for search
-      if ((form as any).data?.query && (form as any).(data as { query?: any }).query.length > 2) {
+      if ((form as any).data?.query && (form as any).data.query.length > 2) {
         // Optional: Trigger search suggestions
       }
     },
@@ -397,7 +397,7 @@ export function createSearchForm(
 // ============================================================================
 
 export function createAIAnalysisForm(
-  data: any, // SuperValidated<Infer<typeof AIAnalysisSchema>>,
+  data: any, // SuperValidated<Infer<typeof AIAnalysisSchema>,
   options: FormOptions = {}
 ): unknown { // FormMachineIntegration<Infer<typeof AIAnalysisSchema>, AIAnalysisActor> {
 
@@ -507,7 +507,7 @@ export function createFormValidator<T extends z.ZodType>(schema: T) {
       if ((result as { success?: any; error?: any }).success) return {};
       return (result as { success?: any; error?: any }).error.flatten().fieldErrors;
     },
-    validateAsync: async (data: any): Promise<z.infer<T>> => {
+    validateAsync: async (data: any): Promise<z.infer<T> => {
       return schema.parseAsync(data);
     }
   };

@@ -408,7 +408,7 @@ export class ConcurrentJSONSerializer {
           processingTime,
           method: 'cpu'
         },
-        error: error instanceof Error ? error.message : 'Unknown serialization error'
+        error: error instanceof Error ? error.message: 'Unknown serialization error'
       };
     }
   }

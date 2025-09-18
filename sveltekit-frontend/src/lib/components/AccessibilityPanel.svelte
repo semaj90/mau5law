@@ -448,7 +448,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       const url = URL.createObjectURL(dataBlob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `accessibility-audit-${new Date().toISOString().split("T")[0]}.json`;
+      link.download = `accessibility-audit-${new Date().toISOString.split("T")[0]}.json`;
       link.click();
       URL.revokeObjectURL(url);
     }

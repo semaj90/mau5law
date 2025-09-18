@@ -64,7 +64,7 @@ Features: Case management, evidence upload, AI chat, vector search
   const loadCases = async () => {
     try {
   let response = $state<Responsetry {
-          response | null>(null)(await fetch('/api/cases?role=prosecutor');
+          response  | null>(null); const data = await fetch('/api/cases?role=prosecutor');
           if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
             throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
           }
@@ -86,7 +86,7 @@ Features: Case management, evidence upload, AI chat, vector search
   const loadPersonsOfInterest = async () => {
     try {
   let response = $state<Responsetry {
-          response | null>(null)(await fetch(`/api/persons-of-interest?caseId=${selectedCaseId}`);
+          response  | null>(null); const data = await fetch(`/api/persons-of-interest?caseId=${selectedCaseId}`);
           if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
             throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
           }
@@ -104,7 +104,7 @@ Features: Case management, evidence upload, AI chat, vector search
   const loadRecentEvidence = async () => {
     try {
   let response = $state<Responsetry {
-          response | null>(null)(await fetch(`/api/evidence?caseId=${selectedCaseId}&limit=10`);
+          response  | null>(null); const data = await fetch(`/api/evidence?caseId=${selectedCaseId}&limit=10`);
           if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
             throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
           }
@@ -274,7 +274,7 @@ selectCase(caseItem.id)}
                           </div>
                         {/if}
                       </div>
-                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round((result as { data?: unknown; results?: unknown; payload?: unknown; id?: unknown; score?: unknown }).score * 100)}% match</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round.score * 100)}% match</span>
                     </div>
                   </div>
                 {/each}
@@ -449,7 +449,7 @@ selectCase(caseItem.id)}
     position: relative;
   }
 
-  :global(.gpu-accelerated::after) {
+  :global(.gpu-accelerated: :after) {
     content: '⚡';
     position: absolute;
     top: -8px;

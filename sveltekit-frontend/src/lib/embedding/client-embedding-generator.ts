@@ -30,8 +30,7 @@ export class ClientEmbeddingGenerator {
       
       // Wait for worker initialization
       await new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('Worker initialization timeout')), 30000);
-        
+        const timeout = setTimeout(() => reject(new Error('Worker initialization timeout')), 30000));
         this.worker!.onmessage = (event: any) => {
           if (event.data.type === 'initialized') {
             clearTimeout(timeout);

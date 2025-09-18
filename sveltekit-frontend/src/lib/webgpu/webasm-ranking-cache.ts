@@ -59,7 +59,7 @@ export class WebASMRankingCache {
   private wasmInstance: WebAssembly.Instance | null = null;
   private serviceWorker: ServiceWorkerRegistration | null = null;
   private cache = new Map<string, WASMRankingEntry>();
-  private pendingRequests = new Map<string, Promise<RankingResponse>>();
+  private pendingRequests = new Map<string, Promise<RankingResponse>();
   private metrics: CacheMetrics = {
     hits: 0,
     misses: 0,
@@ -247,7 +247,7 @@ export class WebASMRankingCache {
         env: {
           memory: new WebAssembly.Memory({ initial: 256, maximum: 1024 }),
           __wbindgen_throw: (a: number, b: number) => {
-            throw new Error(`WASM error: ${a}, ${b}`);
+            throw new Error(`WASM error: ${a}, ${b}`));
           }
         }
       });
@@ -271,7 +271,7 @@ export class WebASMRankingCache {
         await new Promise<void>((resolve) => {
           this.serviceWorker!.installing!.addEventListener('statechange', function() {
             if (this.state === 'activated') {
-              resolve();
+              resolve()));
             }
           });
         });
@@ -480,7 +480,7 @@ export class WebASMRankingCache {
 
   private createCacheEntry(
     key: string,
-    rankings: Array<,
+    rankings: Array<any>,
     vectorData: Float32Array
   ): WASMRankingEntry {
     // Create compact summary of vector data
@@ -498,7 +498,7 @@ export class WebASMRankingCache {
       hash: key,
       summary,
       rankings: rankingsArray,
-      confidence: rankings.length > 0 ? rankings[0].score : 0,
+      confidence: rankings.length > 0 ? rankings[0].score: 0,
       timestamp: Date.now(),
       crc32: this.calculateCRC32(rankingsArray.buffer)
     };
@@ -557,7 +557,7 @@ export class WebASMRankingCache {
       rankings.rankings.length,
       Math.floor(rankings.processingTime * 100),
       rankings.cached ? 1 : 0,
-      Date.now() >>> 0 // Timestamp lower 32 bits
+      Date.now() > 0 // Timestamp lower 32 bits
     ]);
 
     const rankingData = new Float32Array(rankings.rankings.length * 2);
@@ -610,7 +610,7 @@ export class WebASMRankingCache {
     for (let i = 0; i < 256; i++) {
       let c = i;
       for (let j = 0; j < 8; j++) {
-        c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+        c = (c & 1) ? (0xEDB88320 ^ (c > 1)) : (c > 1);
       }
       crcTable[i] = c;
     }
@@ -618,7 +618,7 @@ export class WebASMRankingCache {
     const data = new Uint8Array(buffer);
     let crc = 0xFFFFFFFF;
     for (let i = 0; i < data.length; i++) {
-      crc = crcTable[(crc ^ data[i]) & 0xFF] ^ (crc >>> 8);
+      crc = crcTable[(crc ^ data[i]) & 0xFF] ^ (crc > 8);
     }
     return crc ^ 0xFFFFFFFF;
   }

@@ -99,12 +99,12 @@ https://svelte.dev/e/attribute_duplicate -->
       evidenceActions.setSorting(field, "desc");
   }}
   function toggleSelection(item: Evidence) {
-    evidenceActions.toggleSelection((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id);
+    evidenceActions.toggleSelection.id);
   }
   function selectAll() {
     filteredData.forEach((item) => {
-      if (!selectedItems.has((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id)) {
-        evidenceActions.toggleSelection((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id);
+      if (!selectedItems.has.id)) {
+        evidenceActions.toggleSelection.id);
   }
     });
   }
@@ -133,13 +133,7 @@ https://svelte.dev/e/attribute_duplicate -->
   }}  function formatDate(date: string | Date | undefined): string {
     if (!date) return 'Unknown';
     const dateObj = typeof date === 'string' ? new Date(date) : date;
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(dateObj);
+    return new Intl.DateTimeFormat.format(dateObj);
   }
   async function downloadEvidence(item: Evidence) {
     if (!(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).fileUrl) return;
@@ -165,7 +159,7 @@ https://svelte.dev/e/attribute_duplicate -->
   async function deleteEvidence(item: Evidence) {
     if (confirm(`Are you sure you want to delete "${(item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).title}"?`)) {
       try {
-        await evidenceActions.deleteEvidence((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id);
+        await evidenceActions.deleteEvidence.id);
       } catch (error) {
         console.error("Delete failed:", error);
         alert("Failed to delete evidence. Please try again.");
@@ -179,7 +173,7 @@ https://svelte.dev/e/attribute_duplicate -->
     event.preventDefault();
     selectedItem = item;
     // For now, just select the item - can be enhanced later with actual context menu
-    if (!selectedItems.has((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id)) {
+    if (!selectedItems.has.id)) {
       toggleSelection(item);
   }}
   // Context menu actions
@@ -350,7 +344,7 @@ evidenceActions.loadEvidence(caseId)}
         >
           {#each filteredData as item ((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id)}
             <div
-              class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow cursor-pointer {selectedItems.has((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id) ? 'ring-2 ring-blue-500' : ''}"
+              class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow cursor-pointer {selectedItems.has.id) ? 'ring-2 ring-blue-500' : ''}"
               role="button" tabindex="0"
                 onclick={() => toggleSelection(item)}
               oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item); }}
@@ -377,7 +371,7 @@ evidenceActions.loadEvidence(caseId)}
                 <div class="space-y-4">
                   <input
                     type="checkbox"
-                    checked={selectedItems.has((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id)}
+                    checked={selectedItems.has.id)}
                     onchange={() => toggleSelection(item)}
                     class="space-y-4"
                   />
@@ -451,7 +445,7 @@ evidenceActions.loadEvidence(caseId)}
               <!-- Selection checkbox -->
               <input
                 type="checkbox"
-                checked={selectedItems.has((item as { id?: unknown; fileUrl?: unknown; fileName?: unknown; title?: unknown; mimeType?: unknown; evidenceType?: unknown; description?: unknown; uploadedAt?: unknown; fileSize?: unknown; tags?: unknown }).id)} onchange={() => toggleSelection(item)}
+                checked={selectedItems.has.id)} onchange={() => toggleSelection(item)}
                 class="space-y-4"
               />
 

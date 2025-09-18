@@ -707,7 +707,7 @@
 		animation: vertexPulse 1.5s ease-in-out infinite;
 	}
 
-	.ps1-dithered::before {
+	.ps1-dithered: :before {
 		content: '';
 		position: absolute;
 		top: 0;
@@ -855,7 +855,7 @@
 	}
 
 	/* PS1 Effects */
-	.ps1-scanlines::before {
+	.ps1-scanlines: :before {
 		content: '';
 		position: absolute;
 		top: 0;

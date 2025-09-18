@@ -58,10 +58,7 @@
     // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(row => {
-        return columns.some(col => {
-          const value = row[col.key];
-          return value?.toString().toLowerCase().includes(query);
+      filtered = filtered.filter(item => item.toLowerCase()).includes(query);
         });
       });
     }

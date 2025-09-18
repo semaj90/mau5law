@@ -77,7 +77,7 @@ const createFallbackAnalysis = (
   sentiment: 0,
   classification: 'fallback_analysis',
   keywords: evidence.tags || [],
-  summary: `${evidence.title}${evidence.description ? ' — ' + evidence.description : ''}`.slice(0, 2000),
+  summary: `${evidence.title}${evidence.description ? ' — ' + evidence.description: ''}`.slice(0, 2000),
   relationships: [],
   timestamp: new Date(),
   processingTime: 0,
@@ -172,7 +172,7 @@ class EvidenceAIService {
             prompt: `${context.title}\n\n${context.description}`
           });
 
-          const respText = typeof completion?.response === 'string' ? completion.response : JSON.stringify(completion);
+          const respText = typeof completion?.response === 'string' ? completion.response: JSON.stringify(completion);
           try {
             analysisResult = JSON.parse(respText);
           } catch {
@@ -189,7 +189,7 @@ class EvidenceAIService {
         } catch (err: any) {
           console.warn('Fallback completion failed:', err);
           analysisResult = {
-            summary: `${context.title}${context.description ? ' — ' + context.description : ''}`.slice(0, 2000),
+            summary: `${context.title}${context.description ? ' — ' + context.description: ''}`.slice(0, 2000),
             confidence: 0.5,
             entities: [],
             keywords: context.tags,
@@ -203,7 +203,7 @@ class EvidenceAIService {
 
       return {
         id: randomUUID(),
-        model: options.useGPUAcceleration ? 'enhanced-rag-gpu' : (analysisResult??.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal'),
+        model: options.useGPUAcceleration ? 'enhanced-rag-gpu' : (analysisResult?.model || 'gemma3-legal'),
         confidence: analysisResult?.confidence ?? 0.8,
         entities: analysisResult?.entities ?? [],
         sentiment: analysisResult?.sentiment ?? 0,
@@ -310,7 +310,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Evidence fetch error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -525,7 +525,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     console.error('Evidence update error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -552,7 +552,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     console.error('Evidence deletion error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

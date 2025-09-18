@@ -89,8 +89,8 @@ https://svelte.dev/e/js_parse_error -->
         shader.metadata.tags?.forEach((tag: string) => tagSet.add(tag);
         if (shader.metadata.operation) operationSet.add(shader.metadata.operation);
       });
-      availableTags = Array.from(tagSet).sort();
-      availableOperations = Array.from(operationSet).sort();
+      availableTags = Array.from.sort();
+      availableOperations = Array.from.sort();
     } catch (error) {
       console.error('Failed to load filters:', error);
     }
@@ -181,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `shader_search_results_${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `shader_search_results_${new Date().toISOString.slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
   }

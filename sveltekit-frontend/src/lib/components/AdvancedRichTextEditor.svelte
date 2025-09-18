@@ -155,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
   ];
 
   // Auto-save functionality
-  let autoSaveTimeout = $state<NodeJS.TimeoutonMount(() = | null>(null)() {
+  let autoSaveTimeout = $state({}) {
     initializeEditor();
     setupKeyboardShortcuts();
   });
@@ -224,9 +224,8 @@ https://svelte.dev/e/js_parse_error -->
   function updateEditorState() {
     if (!editor) return;
 
-    editorState.set({
-      canUndo: editor.can().undo(),
-      canRedo: editor.can().redo(),
+    editorState.set.undo(),
+      canRedo: editor.can.redo(),
       isBold: editor.isActive("bold"),
       isItalic: editor.isActive("italic"),
       isUnderline: editor.isActive("underline"),
@@ -238,11 +237,11 @@ https://svelte.dev/e/js_parse_error -->
           : editor.isActive({ textAlign: "justify" })
             ? "justify"
             : "left",
-      currentColor: editor.getAttributes("textStyle").color || "#000000",
-      currentHighlight: editor.getAttributes("highlight").color || "",
+      currentColor: editor.getAttributes.color || "#000000",
+      currentHighlight: editor.getAttributes.color || "",
       currentFontFamily:
-        editor.getAttributes("textStyle").fontFamily || "Inter",
-      currentFontSize: editor.getAttributes("textStyle").fontSize || 16,
+        editor.getAttributes.fontFamily || "Inter",
+      currentFontSize: editor.getAttributes.fontSize || 16,
       isTable: editor.isActive("table"),
       isCode: editor.isActive("code"),
       isList: editor.isActive("bulletList"),
@@ -254,7 +253,7 @@ https://svelte.dev/e/js_parse_error -->
   function updateWordCount() {
     if (!editor) return;
     const text = editor.getText();
-    wordCount = text.split(/\s+/).filter((word: string) => word.length > 0).length;
+    wordCount = text.split.filter((word: string) => word.length > 0).length;
     characterCount = text.length;
   }
 
@@ -287,7 +286,7 @@ https://svelte.dev/e/js_parse_error -->
           html,
           wordCount,
           characterCount,
-        });
+        }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -306,7 +305,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error("Auto-save failed:", error);
     
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
   }
 
   function showSaveIndicator() {
@@ -357,44 +356,42 @@ https://svelte.dev/e/js_parse_error -->
 
   // Toolbar actions
   function toggleBold() {
-    editor?.chain().focus().toggleBold().run();
+    editor?.chain.focus().toggleBold.run();
   }
   function toggleItalic() {
-    editor?.chain().focus().toggleItalic().run();
+    editor?.chain.focus().toggleItalic.run();
   }
   function toggleUnderline( {
-    editor?.chain().focus().toggleMark("underline").run();
+    editor?.chain.focus().toggleMark.run();
   }
   function toggleStrike() {
-    editor?.chain().focus().toggleStrike().run();
+    editor?.chain.focus().toggleStrike.run();
   }
 
   function setAlignment(align: string) {
-    editor?.chain().focus().setTextAlign(align).run();
+    editor?.chain.focus().setTextAlign.run();
   }
 
   function setTextColor(color: string) {
-    editor?.chain().focus().setColor(color).run();
+    editor?.chain.focus().setColor.run();
   }
 
   function setHighlight(color: string) {
     if (color === "transparent") {
-      editor?.chain().focus().unsetHighlight().run();
+      editor?.chain.focus().unsetHighlight.run();
     } else {
-      editor?.chain().focus().setHighlight({ color }).run();
+      editor?.chain.focus().setHighlight.run();
     }
   }
 
   function setFontFamily(family: string) {
-    editor?.chain().focus().setFontFamily(family).run();
+    editor?.chain.focus().setFontFamily.run();
   }
 
   function insertTable() {
     editor
-      ?.chain()
-      .focus()
-      .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-      .run();
+      ?.chain.focus()
+      .insertTable.run();
   }
 
   function insertImage() {
@@ -407,7 +404,7 @@ https://svelte.dev/e/js_parse_error -->
         const reader = new FileReader();
         reader.onload = (e) => {
           const src = e.target?.result as string;
-          editor?.chain().focus().setImage({ src }).run();
+          editor?.chain.focus().setImage.run();
         };
         reader.readAsDataURL(file);
       }
@@ -664,7 +661,7 @@ https://svelte.dev/e/js_parse_error -->
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "justify"}
         onclick={(event: MouseEvent) => /* JSX syntax converted to Svelte */}
-        onclick={(event: MouseEvent) => ) => editor?.chain().focus().toggleBulletList().run(}
+        onclick={(event: MouseEvent) => ) => editor?.chain.focus().toggleBulletList.run(}
         title="Bullet List"
       >
         <List size="18" />
@@ -672,7 +669,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isOrderedList}
-        onclick={(event: MouseEvent) => ) => editor?.chain().focus().toggleOrderedList().run(}
+        onclick={(event: MouseEvent) => ) => editor?.chain.focus().toggleOrderedList.run(}
         title="Numbered List"
       >
         <ListOrdered size="18" />
@@ -680,7 +677,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isQuote}
-        onclick={(event: MouseEvent) => ) => editor?.chain().focus().toggleBlockquote().run(}
+        onclick={(event: MouseEvent) => ) => editor?.chain.focus().toggleBlockquote.run(}
         title="Quote"
       >
         <Quote size="18" />

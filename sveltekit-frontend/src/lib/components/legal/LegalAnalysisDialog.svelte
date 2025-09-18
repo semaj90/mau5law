@@ -13,8 +13,7 @@ https://svelte.dev/e/js_parse_error -->
     isOpen = false,
     caseId = undefined,
     evidenceId = undefined,
-    onAnalysisComplete = > void = () => {}
-  } = $props();
+    onAnalysisComplete = > void = () => } = $props();
 
 
 
@@ -77,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
       analysis = await response.json();
       onAnalysisComplete(analysis);
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Analysis failed';
+      error = err instanceof Error ? err.message: 'Analysis failed';
       console.error('Legal analysis error:', err);
     } finally {
       loading = false;

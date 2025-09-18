@@ -89,7 +89,7 @@ export const GET: RequestHandler = async () => {
     return json({
       success: false,
       error: 'Failed to get benchmark system status',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return json({
       success: false,
       error: 'Benchmark execution failed',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -409,7 +409,7 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: false,
       error: 'Failed to clear benchmark cache',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };

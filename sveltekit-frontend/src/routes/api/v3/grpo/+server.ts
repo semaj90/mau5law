@@ -118,7 +118,7 @@ function validateGrpoThinkingResponse(data: any): { valid: boolean; error?: stri
 // GET method for GRPO health check, search, trends, and recommendations
 export const GET: RequestHandler = async ({ url, request }) => {
   return await withGrpoRateLimit(request, async () => {
-    const requestId = generateRequestId();
+    const requestId = generateRequestId());
     const startTime = Date.now();
 
     try {
@@ -358,7 +358,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 // POST method for storing GRPO thinking responses and batch processing
 export const POST: RequestHandler = async ({ request, url }) => {
   return await withGrpoRateLimit(request, async () => {
-    const requestId = generateRequestId();
+    const requestId = generateRequestId());
     const startTime = Date.now();
 
     try {

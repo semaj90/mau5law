@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Failed to start distillation job',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );
@@ -393,7 +393,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
     console.error(`❌ Distillation job ${jobId} failed in processing:`, error);
     updateStatus({
       status: 'failed',
-      error: error instanceof Error ? error.message : 'Unknown processing error',
+      error: error instanceof Error ? error.message: 'Unknown processing error',
     });
 
     // Cleanup any partial models
@@ -446,7 +446,7 @@ async function runValidationTests(
     return {
       passed: false,
       accuracy: 0,
-      reason: `Validation error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      reason: `Validation error: ${error instanceof Error ? error.message: 'Unknown error'}`,
     };
   }
 }

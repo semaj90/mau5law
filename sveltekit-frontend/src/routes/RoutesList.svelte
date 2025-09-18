@@ -16,10 +16,8 @@
 
   function humanize(segment: string) {
     return segment
-      .replace(/[:]/g, '')
-      .replace(/-/g, ' ')
-      .split(' ')
-      .map((s) => (s ? s[0].toUpperCase() + s.slice(1) : ''))
+      .replace.replace(/-/g, ' ')
+      .split.map((s) => (s ? s[0].toUpperCase() + s.slice(1) : ''))
       .join(' ');
   }
 
@@ -28,18 +26,18 @@
       mod?.routeMeta?.title ||
       mod?.metadata?.title ||
       mod?.title ||
-      (path === '/' ? 'Home' : humanize(path.split('/').filter(Boolean).pop() || 'Index'))
+      (path === '/' ? 'Home' : humanize(path.split.filter-pop() || 'Index'))
     );
   }
 
   function buildDiscovered(): DiscoveredRoute[] {
-    const pages = Object.keys(pageModules).map((filePath) => {
-      let routePath = filePath.replace(/^\/src\/routes/, '').replace(/\/\+page\.(svelte|ts)$/, '');
+    const pages = Object.keys.map((filePath) => {
+      let routePath = filePath.replace.replace(/\/\+page\.(svelte|ts)$/, '');
       if (routePath === '') routePath = '/';
       const pathForLink = routePath.replace(/\[([^\]]+)\]/g, ':$1');
       const mod = pageModules[filePath];
       const dynamic = /:/.test(pathForLink);
-      const segments = pathForLink.split('/').filter(Boolean);
+      const segments = pathForLink.split.filter(Boolean);
       const group = segments[0] || 'root';
       return {
         path: pathForLink,
@@ -50,12 +48,12 @@
         kind: 'page' as const
       };
     });
-    const apis = Object.keys(apiModules).map((filePath) => {
-      let apiPath = filePath.replace(/^\/src\/routes/, '').replace(/\/\+server\.ts$/, '');
+    const apis = Object.keys.map((filePath) => {
+      let apiPath = filePath.replace.replace(/\/\+server\.ts$/, '');
       apiPath = apiPath || '/api';
       const pathForLink = apiPath.replace(/\[([^\]]+)\]/g, ':$1');
       const dynamic = /:/.test(pathForLink);
-      const segments = pathForLink.split('/').filter(Boolean);
+      const segments = pathForLink.split.filter(Boolean);
       const group = segments[1] ? `api:${segments[1]}` : 'api';
       return {
         path: pathForLink,
@@ -87,8 +85,8 @@
           path: pr.path,
             label: pr.label,
             dynamic: /:\w+/.test(pr.path),
-            segments: pr.path.split('/').filter(Boolean),
-            group: pr.path.split('/').filter(Boolean)[0] || 'external',
+            segments: pr.path.split.filter(Boolean),
+            group: pr.path.split.filter(Boolean)[0] || 'external',
             kind: 'page'
         });
       }
@@ -100,7 +98,7 @@
   let search = $state('');
   let showAPI = $state(true);
   let showPages = $state(true);
-  let groupCollapse: Record<string, boolean> = $state({});
+  let groupCollapse: Record<string, boolean> = $state( );
 
   const filtered = $derived.by(() =>
     merged.filter(r => {
@@ -108,16 +106,16 @@
       if (!showPages && r.kind === 'page') return false;
       if (!search.trim()) return true;
       const q = search.toLowerCase();
-      return r.path.toLowerCase().includes(q) || r.label.toLowerCase().includes(q);
+      return r.path.toLowerCase.includes(q) || r.label.toLowerCase.includes(q);
     })
   );
 
   const grouped = $derived.by(() =>
-    filtered.reduce<Record<string, DiscoveredRoute[]>>((acc, r) => {
+    filtered.reduce<Record<string, DiscoveredRoute[]>((acc, r) => {
       const g = r.group;
       (acc[g] ||= []).push(r);
       return acc;
-    }, {})
+    }, )
   );
 
   function toggleGroup(g: string) {
@@ -144,7 +142,7 @@
     <p class="empty" role="status">No routes match your filter.</p>
   {:else}
     <div class="groups">
-      {#each Object.keys(grouped).sort() as g}
+      {#each Object.keys.sort() as g}
         <section class="group" aria-labelledby={`group-${g}`}>
           <button class="group-header" type="button" onclick={() => toggleGroup(g)} aria-expanded={!groupCollapse[g]} id={`group-${g}`}>
             <span>{g === 'root' ? 'Root' : g}</span>
@@ -194,7 +192,7 @@
   .label { font-weight:500; }
   .badge { background:#2563eb; color:#fff; font-size:.55rem; padding:.15rem .4rem; border-radius:.4rem; text-transform:uppercase; letter-spacing:.05em; }
   .badge.api { background:#059669; }
-  .route-(item as { is?: unknown }).is-dynamic code { background:#92400e; }
+  .route-.is-dynamic code { background:#92400e; }
   .empty { padding:2rem; text-align:center; color:#6b7280; }
   @media (min-width: 700px){ .route-list { grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); } }
 </style>

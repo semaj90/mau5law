@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const detailedBuckets = await Promise.allSettled(
         buckets.map(async (bucket) => {
           try {
-            const files = await minioService.listFiles(bucket.name, undefined, 1000);
+            const files = await minioService.listFiles(bucket.name, undefined, 1000)));
             return {
               name: bucket.name,
               creationDate: bucket.creationDate,
@@ -49,14 +49,14 @@ export const GET: RequestHandler = async ({ url }) => {
               creationDate: bucket.creationDate,
               fileCount: 0,
               totalSize: 0,
-              error: error instanceof Error ? error.message : 'Unknown error'
+              error: error instanceof Error ? error.message: 'Unknown error'
             };
           }
         })
       );
 
       bucketDetails = detailedBuckets.map(result =>
-        (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value : (result as { status?: any; value?: any; reason?: any }).reason
+        (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value: (result as { status?: any; value?: any; reason?: any }).reason
       );
     }
 
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Bucket listing error:', error);
     return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Failed to list buckets',
+      error: error instanceof Error ? error.message: 'Failed to list buckets',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Bucket management error:', error);
     return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Failed to manage buckets',
+      error: error instanceof Error ? error.message: 'Failed to manage buckets',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
@@ -226,7 +226,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Bucket deletion error:', error);
     return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Failed to delete bucket',
+      error: error instanceof Error ? error.message: 'Failed to delete bucket',
       timestamp: new Date().toISOString()
     }), {
       status: 500,

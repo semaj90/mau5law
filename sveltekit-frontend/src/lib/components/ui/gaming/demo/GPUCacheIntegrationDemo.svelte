@@ -71,7 +71,7 @@
     if (enableRealTimeMetrics) {
       const interval = setInterval(() => {
         // Simulate queries
-        cacheActor.send({ type: 'QUERY', query: `demo-query-${Date.now()}`, params: {} });
+        cacheActor.send({ type: 'QUERY', query: `demo-query-${Date.now()}`, params: });
         // Simulate cache hits/misses
         if (Math.random() > 0.3) {
           cacheActor.send({ 

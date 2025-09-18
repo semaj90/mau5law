@@ -40,7 +40,7 @@
     isDisabled ? 'loading-button--disabled' : '',
     loading ? 'loading-button--loading' : '',
     className
-  ].filter(Boolean).join(' '));
+  ].filter(item => item.join)(' '));
   
   function handleClick(event: MouseEvent) {
     if (isDisabled) {

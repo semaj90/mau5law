@@ -1,11 +1,41 @@
 
 import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { claudeAgent } from '$lib/ai/claude-agent';
+import {
+  context7Service,
+  autoGenAgent,
+  crewAIAgent,
+  enhancedRAGService,
+} from '$lib/services/agent-stubs';
 
 /*
  * Agent Orchestrator API Endpoint
  * Coordinates multiple AI agents with Context7 MCP integration and auto-fix capabilities
  */
 
+// Define interfaces for context properties
+export interface Context7Analysis {
+  documentation?: string;
+  recommendations?: string[];
+  codeExamples?: any[];
+  bestPractices?: string[];
+  timestamp?: string;
+}
+
+export interface AutoFixResults {
+  applied?: boolean;
+  area?: string;
+  changes?: any[];
+  summary?: string;
+  timestamp?: string;
+}
+
+export interface AgentOrchestrationContext {
+  context7Analysis?: Context7Analysis;
+  autoFixResults?: AutoFixResults;
+  [key: string]: any;
+}
 
 // import { autoGenAgent } from '../../../../../agents/autogen-agent.js';
 
@@ -13,7 +43,7 @@ import type { RequestHandler } from './$types.js';
 
 export interface AgentOrchestrationRequest {
   prompt: string;
-  context?: unknown;
+  context?: AgentOrchestrationContext;
   agents?: string[]; // ['claude', 'autogen', 'crewai', 'rag']
   options?: {
     includeContext7?: boolean;
@@ -46,37 +76,40 @@ export interface AgentOrchestrationResponse {
 
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
-  
+
   try {
     const requestData: AgentOrchestrationRequest = await request.json();
-    
+
     const {
       prompt,
       context = {},
       agents = ['claude', 'autogen', 'crewai', 'rag'],
-      options = {}
+      options = {},
     } = requestData;
 
     // Validate request
     if (!prompt || prompt.trim().length === 0) {
-      return json({
-        success: false,
-        error: 'Prompt is required',
-        results: [],
-        synthesis: {
-          bestResult: '',
-          consensusScore: 0,
-          recommendations: [],
-          nextSteps: []
+      return json(
+        {
+          success: false,
+          error: 'Prompt is required',
+          results: [],
+          synthesis: {
+            bestResult: '',
+            consensusScore: 0,
+            recommendations: [],
+            nextSteps: [],
+          },
+          orchestrationMetadata: {
+            totalProcessingTime: Date.now() - startTime,
+            agentsUsed: 0,
+            context7Enhanced: false,
+            autoFixApplied: false,
+            timestamp: new Date().toISOString(),
+          },
         },
-        orchestrationMetadata: {
-          totalProcessingTime: Date.now() - startTime,
-          agentsUsed: 0,
-          context7Enhanced: false,
-          autoFixApplied: false,
-          timestamp: new Date().toISOString()
-        }
-      }, { status: 400 });
+        { status: 400 }
+      );
     }
 
     const results: any[] = [];
@@ -93,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (options.autoFix) {
       const autoFixResult = await context7Service.autoFixCodebase({
         area: options.autoFixArea as any,
-        dryRun: false
+        dryRun: false,
       });
       context.autoFixResults = autoFixResult;
       autoFixApplied = true;
@@ -103,103 +136,115 @@ export const POST: RequestHandler = async ({ request }) => {
     const agentPromises: Promise<any>[] = [];
 
     if (agents.includes('claude')) {
-      const claudePromise = claudeAgent.execute({
-        prompt,
-        context,
-        options: {
-          includeContext7: options.includeContext7,
-          autoFix: options.autoFix,
-          area: options.autoFixArea
-        }
-      }).then((result: any) => ({
-        agent: 'claude',
-        ...result,
-        error: undefined
-      })).catch((error: any) => ({
-        agent: 'claude',
-        output: '',
-        score: 0,
-        metadata: Record<string, any>,
-        error: error.message
-      }));
-      
+      const claudePromise = claudeAgent
+        .execute({
+          prompt,
+          context,
+          options: {
+            includeContext7: options.includeContext7,
+            autoFix: options.autoFix,
+            area: options.autoFixArea,
+          },
+        })
+        .then((result: any) => ({
+          agent: 'claude',
+          ...result,
+          error: undefined,
+        }))
+        .catch((error: any) => ({
+          agent: 'claude',
+          output: '',
+          score: 0,
+          metadata: { error: true },
+          error: error.message,
+        }));
+
       agentPromises.push(claudePromise);
     }
 
     if (agents.includes('autogen')) {
-      const autogenPromise = autoGenAgent.execute({
-        prompt,
-        context,
-        options: {
-          analysisType: 'legal_research',
-          priority: options.priority || 'medium',
-          caseId: options.caseId,
-          includeContext7: options.includeContext7,
-          autoFix: options.autoFix
-        }
-      }).then((result: any) => ({
-        agent: 'autogen',
-        ...result,
-        error: undefined
-      })).catch((error: any) => ({
-        agent: 'autogen',
-        output: '',
-        score: 0,
-        metadata: Record<string, any>,
-        error: error.message
-      }));
-      
+      const autogenPromise = autoGenAgent
+        .execute({
+          prompt,
+          context,
+          options: {
+            analysisType: 'legal_research',
+            priority: options.priority || 'medium',
+            caseId: options.caseId,
+            includeContext7: options.includeContext7,
+            autoFix: options.autoFix,
+          },
+        })
+        .then((result: any) => ({
+          agent: 'autogen',
+          ...result,
+          error: undefined,
+        }))
+        .catch((error: any) => ({
+          agent: 'autogen',
+          output: '',
+          score: 0,
+          metadata: { error: true },
+          error: error.message,
+        }));
+
       agentPromises.push(autogenPromise);
     }
 
     if (agents.includes('crewai')) {
-      const crewaiPromise = crewAIAgent.execute({
-        prompt,
-        context,
-        options: {
-          crewType: 'legal_research',
-          includeContext7: options.includeContext7,
-          autoFix: options.autoFix
-        }
-      }).then((result: any) => ({
-        agent: 'crewai',
-        ...result,
-        error: undefined
-      })).catch((error: any) => ({
-        agent: 'crewai',
-        output: '',
-        score: 0,
-        metadata: Record<string, any>,
-        error: error.message
-      }));
-      
+      const crewaiPromise = crewAIAgent
+        .execute({
+          prompt,
+          context,
+          options: {
+            crewType: 'legal_research',
+            includeContext7: options.includeContext7,
+            autoFix: options.autoFix,
+          },
+        })
+        .then((result: any) => ({
+          agent: 'crewai',
+          ...result,
+          error: undefined,
+        }))
+        .catch((error: any) => ({
+          agent: 'crewai',
+          output: '',
+          score: 0,
+          metadata: { error: true },
+          error: error.message,
+        }));
+
       agentPromises.push(crewaiPromise);
     }
 
     if (agents.includes('rag')) {
-      const ragPromise = enhancedRAGService.query({
-        query: prompt,
-        context,
-        options: {
-          caseId: options.caseId,
-          includeContext7: options.includeContext7,
-          autoFix: options.autoFix,
-          maxResults: 5,
-          confidenceThreshold: 0.7
-        }
-      }).then((result: any) => ({
-        agent: 'rag',
-        ...result,
-        error: undefined
-      })).catch((error: any) => ({
-        agent: 'rag',
-        output: '',
-        score: 0,
-        sources: [],
-        metadata: Record<string, any>,
-        error: error.message
-      }));
-      
+      const ragPromise = enhancedRAGService
+        .query({
+          query: prompt,
+          context,
+          options: {
+            caseId: options.caseId,
+            includeContext7: options.includeContext7,
+            autoFix: options.autoFix,
+            maxResults: 5,
+            confidenceThreshold: 0.7,
+          },
+        })
+        .then((result: any) => ({
+          agent: 'rag',
+          ...result,
+          error: undefined,
+        }))
+        .catch((error: any) => ({
+          agent: 'rag',
+          output: '',
+          score: 0,
+          sources: [],
+          metadata: { error: true },
+          error: error.message,
+        }));
+
       agentPromises.push(ragPromise);
     }
 
@@ -207,26 +252,33 @@ export const POST: RequestHandler = async ({ request }) => {
     if (options.parallel !== false) {
       // Execute in parallel with timeout
       const timeout = options.timeout || 30000;
-      const timeoutPromise = new Promise((_, reject) => 
+      const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Agent execution timeout')), timeout)
       );
-      
+
       try {
-        const agentResults = await Promise.race([
+        const agentResults = (await Promise.race([
           Promise.allSettled(agentPromises),
-          timeoutPromise
-        ]) as PromiseSettledResult<any>[];
+          timeoutPromise,
+        ])) as PromiseSettledResult<any>[];
 
         agentResults.forEach((result, index) => {
-          if ((result as { status?: any; value?: any; reason?: any; score?: any }).status === 'fulfilled') {
-            results.push((result as { status?: any; value?: any; reason?: any; score?: any }).value);
+          if (
+            (result as { status?: any; value?: any; reason?: any; score?: any }).status ===
+            'fulfilled'
+          ) {
+            results.push(
+              (result as { status?: any; value?: any; reason?: any; score?: any }).value
+            );
           } else {
             results.push({
               agent: agents[index] || 'unknown',
               output: '',
               score: 0,
-              metadata: Record<string, any>,
-              error: (result as { status?: any; value?: any; reason?: any; score?: any }).reason?.message || 'Agent execution failed'
+              metadata: { error: true },
+              error:
+                (result as { status?: any; value?: any; reason?: any; score?: any }).reason
+                  ?.message || 'Agent execution failed',
             });
           }
         });
@@ -237,8 +289,8 @@ export const POST: RequestHandler = async ({ request }) => {
           agent: 'orchestrator',
           output: '',
           score: 0,
-          metadata: Record<string, any>,
-          error: 'Execution timeout - partial results may be available'
+          metadata: { error: true },
+          error: 'Execution timeout - partial results may be available',
         });
       }
     } else {
@@ -252,8 +304,8 @@ export const POST: RequestHandler = async ({ request }) => {
             agent: 'unknown',
             output: '',
             score: 0,
-            metadata: Record<string, any>,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            metadata: { error: true },
+            error: error instanceof Error ? error.message : 'Unknown error',
           });
         }
       }
@@ -261,7 +313,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Synthesize results
     const synthesis = synthesizeResults(results, prompt);
-    
+
     const totalProcessingTime = Date.now() - startTime;
 
     const response: AgentOrchestrationResponse = {
@@ -273,68 +325,75 @@ export const POST: RequestHandler = async ({ request }) => {
         agentsUsed: results.length,
         context7Enhanced,
         autoFixApplied,
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     };
 
     return json(response);
-
   } catch (error: any) {
     console.error('Agent orchestration failed:', error);
-    
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown orchestration error',
-      results: [],
-      synthesis: {
-        bestResult: '',
-        consensusScore: 0,
-        recommendations: ['Check agent configurations', 'Verify service availability'],
-        nextSteps: ['Review error logs', 'Test individual agents']
+
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown orchestration error',
+        results: [],
+        synthesis: {
+          bestResult: '',
+          consensusScore: 0,
+          recommendations: ['Check agent configurations', 'Verify service availability'],
+          nextSteps: ['Review error logs', 'Test individual agents'],
+        },
+        orchestrationMetadata: {
+          totalProcessingTime: Date.now() - startTime,
+          agentsUsed: 0,
+          context7Enhanced: false,
+          autoFixApplied: false,
+          timestamp: new Date().toISOString(),
+        },
       },
-      orchestrationMetadata: {
-        totalProcessingTime: Date.now() - startTime,
-        agentsUsed: 0,
-        context7Enhanced: false,
-        autoFixApplied: false,
-        timestamp: new Date().toISOString()
-      }
-    }, { status: 500 });
+      { status: 500 }
+    );
   }
 };
 
 function synthesizeResults(results: any[], originalPrompt: string) {
   // Find best result by score
   const validResults = results.filter((r: any) => !r.error && r.score > 0);
-  
+
   if (validResults.length === 0) {
     return {
       bestResult: 'No valid results from agents',
       consensusScore: 0,
       recommendations: ['Check agent configurations', 'Review error logs'],
-      nextSteps: ['Test individual agent endpoints', 'Verify Context7 integration']
+      nextSteps: ['Test individual agent endpoints', 'Verify Context7 integration'],
     };
   }
 
-  const bestResult = validResults.reduce((best, current) => 
+  const bestResult = validResults.reduce((best, current) =>
     current.score > best.score ? current : best
   );
 
   // Calculate consensus score
-  const avgScore = validResults.reduce((sum, result) => sum + (result as { status?: any; value?: any; reason?: any; score?: any }).score, 0) / validResults.length;
-  
+  const avgScore =
+    validResults.reduce(
+      (sum, result) =>
+        sum + (result as { status?: any; value?: any; reason?: any; score?: any }).score,
+      0
+    ) / validResults.length;
+
   // Generate recommendations based on results
   const recommendations = [
     `Best performing agent: ${bestResult.agent} (score: ${bestResult.score.toFixed(2)})`,
     `Average confidence: ${avgScore.toFixed(2)}`,
-    `${validResults.length}/${results.length} agents completed successfully`
+    `${validResults.length}/${results.length} agents completed successfully`,
   ];
 
   // Generate next steps
   const nextSteps = [
     'Review best result for actionable insights',
     'Consider running additional analysis if needed',
-    'Document findings for case records'
+    'Document findings for case records',
   ];
 
   if (avgScore < 0.6) {
@@ -346,7 +405,7 @@ function synthesizeResults(results: any[], originalPrompt: string) {
     bestResult: bestResult.output,
     consensusScore: avgScore,
     recommendations,
-    nextSteps
+    nextSteps,
   };
 }
 

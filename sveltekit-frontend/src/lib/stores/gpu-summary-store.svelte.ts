@@ -196,21 +196,21 @@ function createGPUSummaryStore() {
     }
 
     // Calculate FPS stats
-    const fpsValues = recentMetrics.filter(m => m.fps).map(m => m.fps!);
+    const fpsValues = recentMetrics.filter(item => item.map)(m => m.fps!);
     const avgFps = fpsValues.length > 0 ?
-      fpsValues.reduce((a, b) => a + b, 0) / fpsValues.length : 0;
+      fpsValues.reduce((a, b) => a + b, 0) / fpsValues.length: 0;
     const minFps = fpsValues.length > 0 ? Math.min(...fpsValues) : 0;
     const maxFps = fpsValues.length > 0 ? Math.max(...fpsValues) : 0;
 
     // Calculate frame time
-    const frameTimeValues = recentMetrics.filter(m => m.frameTime).map(m => m.frameTime!);
+    const frameTimeValues = recentMetrics.filter(item => item.map)(m => m.frameTime!);
     const frameTimeMs = frameTimeValues.length > 0 ?
-      frameTimeValues.reduce((a, b) => a + b, 0) / frameTimeValues.length : 0;
+      frameTimeValues.reduce((a, b) => a + b, 0) / frameTimeValues.length: 0;
 
     // Memory usage
-    const memoryValues = recentMetrics.filter(m => m.memoryUsage).map(m => m.memoryUsage!);
+    const memoryValues = recentMetrics.filter(item => item.map)(m => m.memoryUsage!);
     const memoryUsageMB = memoryValues.length > 0 ?
-      memoryValues.reduce((a, b) => a + b, 0) / memoryValues.length : 0;
+      memoryValues.reduce((a, b) => a + b, 0) / memoryValues.length: 0;
 
     // Active effects analysis
     const effectsMap = new Map<string, number>();
@@ -230,9 +230,9 @@ function createGPUSummaryStore() {
     const activeInferences = recentInferences.length;
     const totalInferenceTime = recentInferences.reduce((sum, m) => sum + m.inferenceTime, 0);
     const avgTokensPerSecond = recentInferences.length > 0 ?
-      recentInferences.reduce((sum, m) => sum + m.tokensPerSecond, 0) / recentInferences.length : 0;
+      recentInferences.reduce((sum, m) => sum + m.tokensPerSecond, 0) / recentInferences.length: 0;
     const wasmMemoryUsage = recentInferences.length > 0 ?
-      recentInferences.reduce((sum, m) => sum + m.memoryUsage, 0) / recentInferences.length : 0;
+      recentInferences.reduce((sum, m) => sum + m.memoryUsage, 0) / recentInferences.length: 0;
 
     // Vector search performance
     const recentSearches = state.vectorSearchMetrics.filter(m =>
@@ -240,9 +240,9 @@ function createGPUSummaryStore() {
     );
     const activeQueries = recentSearches.length;
     const avgSearchTime = recentSearches.length > 0 ?
-      recentSearches.reduce((sum, m) => sum + m.searchTime, 0) / recentSearches.length : 0;
+      recentSearches.reduce((sum, m) => sum + m.searchTime, 0) / recentSearches.length: 0;
     const vectorCacheHitRate = recentSearches.length > 0 ?
-      recentSearches.reduce((sum, m) => sum + m.cacheHitRate, 0) / recentSearches.length : 0;
+      recentSearches.reduce((sum, m) => sum + m.cacheHitRate, 0) / recentSearches.length: 0;
     const totalVectorOperations = recentSearches.reduce((sum, m) => sum + m.candidateCount, 0);
 
     // MinIO cache stats
@@ -250,7 +250,7 @@ function createGPUSummaryStore() {
       now - m.timestamp <= recentWindow
     );
     const minIOCacheHitRate = recentMinIOOps.length > 0 ?
-      recentMinIOOps.filter(m => m.cacheHit).length / recentMinIOOps.length : 0;
+      recentMinIOOps.filter(item => item.length) / recentMinIOOps.length: 0;
     const totalTransferMB = recentMinIOOps.reduce((sum, m) => sum + m.transferSize, 0) / (1024 * 1024);
     const avgCompressionRatio = recentMinIOOps
       .filter(m => m.compressionRatio)
@@ -465,13 +465,13 @@ function createGPUSummaryStore() {
     }
 
     // Calculate FPS stability (coefficient of variation)
-    const fpsValues = recentMetrics.filter(m => m.fps).map(m => m.fps!);
+    const fpsValues = recentMetrics.filter(item => item.map)(m => m.fps!);
     const avgFps = fpsValues.reduce((a, b) => a + b, 0) / fpsValues.length;
     const fpsVariance = fpsValues.reduce((sum, fps) => sum + Math.pow(fps - avgFps, 2), 0) / fpsValues.length;
     const fpsStability = avgFps > 0 ? Math.max(0, 100 - (Math.sqrt(fpsVariance) / avgFps * 100)) : 0;
 
     // Memory trend analysis
-    const memoryValues = recentMetrics.filter(m => m.memoryUsage).map(m => m.memoryUsage!);
+    const memoryValues = recentMetrics.filter(item => item.map)(m => m.memoryUsage!);
     const firstHalf = memoryValues.slice(0, Math.floor(memoryValues.length / 2));
     const secondHalf = memoryValues.slice(Math.floor(memoryValues.length / 2));
     const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;

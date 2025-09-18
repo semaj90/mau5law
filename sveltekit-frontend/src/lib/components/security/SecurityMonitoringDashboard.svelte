@@ -128,7 +128,7 @@
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `security_events_${new Date().toISOString().split("T")[0]}.json`;
+    link.download = `security_events_${new Date().toISOString.split("T")[0]}.json`;
     link.click();
     URL.revokeObjectURL(url);
   }

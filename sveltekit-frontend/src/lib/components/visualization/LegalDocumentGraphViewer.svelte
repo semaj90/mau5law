@@ -75,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
   // ============================================================================
   // WEBGPU & CANVAS MANAGEMENT
   // ============================================================================
-  let canvas = $state<HTMLCanvasElementlet graphEngine: WebGPULegalDocumentGraph | null>(null)(null);
+  let canvas = $state<HTMLCanvasElementlet graphEngine: WebGPULegalDocumentGraph  | null>(null); const data = null);
   let tensorStore = $state<DimensionalTensorStore | null >(null);
   let animationFrame = $state<number | null >(null);
   let resizeObserver = $state<ResizeObserver | null >(null);
@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
       $isInitialized = true;
     } catch (err) {
       console.error('[Graph Viewer] Initialization failed:', err);
-      $error = err instanceof Error ? err.message : 'Unknown error occurred';
+      $error = err instanceof Error ? err.message: 'Unknown error occurred';
     }
   });
 
@@ -378,7 +378,7 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       // Extract related document IDs
-      const relatedIds = relatedDocs.map(doc => doc.id).filter(id => id !== documentId);
+      const relatedIds = relatedDocs.map.filter(id => id !== documentId);
       // Highlight related nodes in the visualization
       const allHighlighted = new Set([documentId, ...relatedIds]);
       renderState.update(state => ({
@@ -507,7 +507,7 @@ https://svelte.dev/e/js_parse_error -->
         edges: [], // Would get from engine
         layout: {
           algorithm: 'force-directed',
-          parameters: {},
+          parameters: ,
           dimensions: 3
         },
         cameraPosition: {
@@ -696,14 +696,7 @@ https://svelte.dev/e/js_parse_error -->
     background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 100%);
   }
 
-  .graph-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    cursor: grab;
-  }
-
-  .graph-canvas.interactive:active {
+  .graph-canv.graph-canvas.interactive:active {
     cursor: grabbing;
   }
 

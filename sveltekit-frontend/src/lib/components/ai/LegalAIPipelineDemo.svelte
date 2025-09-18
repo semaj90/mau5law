@@ -30,7 +30,7 @@ https://svelte.dev/e/expected_token -->
       jurisdiction: 'federal',
       confidence: 0.95,
       content: 'This contract contains provisions under 15 U.S.C. § 1001 and references Supreme Court case 456 U.S. 789. The parties agree to binding arbitration in the District Court.',
-      vectorEmbedding: Array(384).fill(0).map(() => Math.random() * 2 - 1),
+      vectorEmbedding: Array(384).fill.map(() => Math.random() * 2 - 1),
       entities: [
         { type: 'statute', text: '15 U.S.C. § 1001', confidence: 0.9 }
       ]
@@ -136,7 +136,7 @@ https://svelte.dev/e/expected_token -->
           jurisdiction: 'federal',
           confidence: 0.8,
           content: doc.content,
-          vectorEmbedding: Array(384).fill(0).map(() => Math.random() * 2 - 1)
+          vectorEmbedding: Array(384).fill.map(() => Math.random() * 2 - 1)
         }
       }));
 
@@ -145,7 +145,7 @@ https://svelte.dev/e/expected_token -->
         batchSize: 3,
         enableClustering: true,
         progressCallback: (progress, message) => {
-          addLog(`📊 ${message} (${progress.toFixed(1)}%)`);
+          addLog(`📊 ${message} (${progress.toFixed(1)}%)`));
         }
       });
 

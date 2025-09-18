@@ -291,7 +291,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     console.error('CRUD GET error:', err);
     return error(500, ensureError({
       message: 'Internal server error',
-      details: err instanceof Error ? err.message : String(err)
+      details: err instanceof Error ? err.message: String(err)
     }));
   }
 };
@@ -414,7 +414,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('CRUD POST error:', err);
     return error(500, ensureError({
       message: 'Internal server error',
-      details: err instanceof Error ? err.message : String(err)
+      details: err instanceof Error ? err.message: String(err)
     }));
   }
 };

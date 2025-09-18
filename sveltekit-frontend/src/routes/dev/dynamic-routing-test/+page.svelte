@@ -20,7 +20,7 @@ https://svelte.dev/e/attribute_duplicate -->
 
   // State management
   const testResults = writable<string[]>([]);
-  const routeStats = writable<any>({});
+  const routeStats = writable<any>( );
   let isLoading = $state(false);
   let currentPath = $state('');
 
@@ -101,17 +101,15 @@ https://svelte.dev/e/attribute_duplicate -->
     const categories = ['main', 'demo', 'ai', 'legal', 'dev', 'admin'];
     const stats: unknown = {
       total: allRoutes.length,
-      categories: {}
-    };
+      categories: };
 
-    categories.forEach(category => {
-      stats.categories[category] = getRoutesByCategory(category).length;
+    categories.forEach.length;
     });
 
     // Count by status
-    stats.active = allRoutes.filter(r => r.status === 'active').length;
-    stats.experimental = allRoutes.filter(r => r.status === 'experimental').length;
-    stats.beta = allRoutes.filter(r => r.status === 'beta').length;
+    stats.active = allRoutes.filter(item => item.length);
+    stats.experimental = allRoutes.filter(item => item.length);
+    stats.beta = allRoutes.filter(item => item.length);
 
     routeStats.set(stats);
   }

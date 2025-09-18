@@ -26,8 +26,7 @@
     type: 'prosecution',
     strategy: 'evidence-based',
     description: '',
-    errors: {}
-  });
+    errors: });
   
   // Theory building components
   let evidenceItems = $state([]);
@@ -41,7 +40,7 @@
   let aiSuggestions = $state([]);
   let logicalChain = $state([]);
   let riskAssessment = $state(null);
-  let theoryScores = $state({});
+  let theoryScores = $state( );
 
   const theoryTypes = [
     { id: 'prosecution', label: 'Prosecution Theory', icon: Scale },
@@ -108,7 +107,7 @@
         body: JSON.stringify({
           query: caseTitle,
           mode: 'semantic',
-          filters: {},
+          filters: ,
           sort: 'relevance',
           page: 1,
           limit: 10
@@ -181,7 +180,7 @@
           counterarguments: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).counterarguments || [],
           logicalChain: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).logicalChain || [],
           strength: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).strengthScore || 0.5,
-          riskAssessment: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).riskAssessment || {},
+          riskAssessment: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).riskAssessment || ,
           aiSuggestions: (result as { legalArguments?: unknown; counterarguments?: unknown; logicalChain?: unknown; strengthScore?: unknown; riskAssessment?: unknown; suggestions?: unknown }).suggestions || [],
           createdAt: new Date(),
           updatedAt: new Date()
@@ -291,8 +290,7 @@
       type: 'prosecution',
       strategy: 'evidence-based',
       description: '',
-      errors: {}
-    };
+      errors: };
   }
 
   function selectTheory(theory) {

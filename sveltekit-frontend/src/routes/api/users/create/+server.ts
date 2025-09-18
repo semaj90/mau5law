@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         message: "Failed to create user",
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );

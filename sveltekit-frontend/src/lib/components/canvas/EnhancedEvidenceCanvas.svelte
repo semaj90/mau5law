@@ -116,12 +116,11 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const fabricModule = await import("fabric");
       const fabricLib = fabricModule.default;
-  let fabricObject = $state<anyif ((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).type | null>(null)(== "image" && (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).thumbnailUrl) {
+  let fabricObject = $state<anyif ((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).type  | null>(null); const data = == "image" && (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).thumbnailUrl) {
         // Add image
         try {
-          const img = await fabricLib.FabricImage.fromURL((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).thumbnailUrl));
-          img.set({
-            left: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).x || 100,
+          const img = await fabricLib.FabricImage.fromURL.thumbnailUrl));
+          img.set.x || 100,
             top: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).y || 100,
             scaleX: ((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).width || 200) / img.width,
             scaleY: ((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).height || 150) / img.height,
@@ -132,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
         } catch (imgError) {
           console.error("Failed to load image:", imgError);
           // Fallback to text representation
-          fabricObject = new fabricLib.Textbox(`🖼️ ${(item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).title}`, {
+          fabricObject = new fabricLib.Textbox.title}`, {
             left: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).x || 100,
             top: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).y || 100,
             width: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).width || 200,
@@ -146,8 +145,7 @@ https://svelte.dev/e/js_parse_error -->
       } else {
         // Add as text/document representation
         const text = `${getTypeIcon((item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).type)} ${(item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).title}`;
-        fabricObject = new fabricLib.Textbox(text, {
-          left: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).x || 100,
+        fabricObject = new fabricLib.Textbox.x || 100,
           top: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).y || 100,
           width: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).width || 200,
           fontSize: 14,
@@ -162,8 +160,7 @@ https://svelte.dev/e/js_parse_error -->
         });
   }
       // Add metadata
-      fabricObject.set({
-        evidenceId: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).id,
+      fabricObject.set.id,
         evidenceType: (item as { type?: any; thumbnailUrl?: any; x?: any; y?: any; width?: any; height?: any; title?: any; id?: any }).type,
         customType: "evidence",
       });
@@ -211,7 +208,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const fabricModule = await import("fabric");
       const fabricLib = fabricModule.default;
-  let fabricObject = $state<anyif (shape | null>(null)(== "rectangle") {
+  let fabricObject = $state<anyif (shape  | null>(null); const data = == "rectangle") {
         fabricObject = new fabricLib.Rect({
           left: 100,
           top: 100,
@@ -365,8 +362,7 @@ https://svelte.dev/e/js_parse_error -->
       fabricCanvas.toJSON(["evidenceId", "evidenceType", "customType"])
     );
     const positions = fabricCanvas
-      .getObjects()
-      .filter((obj: any) => obj.evidenceId)
+      .getObjects.filter((obj: any) => obj.evidenceId)
       .map((obj: any) => ({
         evidenceId: obj.evidenceId,
         x: obj.left,

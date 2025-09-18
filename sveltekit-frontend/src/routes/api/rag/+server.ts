@@ -332,10 +332,10 @@ async function handleStatus(): Promise<any> {
     );
 
     const health =
-      healthResult.status === "fulfilled" ? healthResult.value : null;
+      healthResult.status === "fulfilled" ? healthResult.value: null;
     const metrics =
-      metricsResult.status === "fulfilled" ? metricsResult.value : null;
-    const stats = statsResult.status === "fulfilled" ? statsResult.value : null;
+      metricsResult.status === "fulfilled" ? metricsResult.value: null;
+    const stats = statsResult.status === "fulfilled" ? statsResult.value: null;
 
     const isHealthy = health?.status === "healthy";
 

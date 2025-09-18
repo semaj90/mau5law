@@ -19,7 +19,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   let {
     // Lazy loading configuration
     preset = 'NORMAL' as LazyLoadPreset,
-    customOptions = {} as LazyLoadOptions,
+    customOptions = as LazyLoadOptions,
     // Loading states
     showPlaceholder = true,
     placeholderHeight = '200px',

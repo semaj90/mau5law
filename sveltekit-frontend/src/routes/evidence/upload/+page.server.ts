@@ -232,7 +232,7 @@ export const actions: Actions = {
           const textContent = fileBuffer.toString('utf-8');
           metadata = {
             kind: 'TEXT',
-            wordCount: textContent.split(/\s+/).filter(word => word.length > 0).length,
+            wordCount: textContent.split(/\s+/).filter(item => item.length),
             characterCount: textContent.length,
             language: 'unknown', // Could detect with a language detection library
             fileSize: file.size,

@@ -50,9 +50,9 @@
   function updateStats() {
     errorStats = {
       total: errorLog.length,
-      errors: errorLog.filter(e => e.level === 'error').length,
-      warnings: errorLog.filter(e => e.level === 'warn').length,
-      info: errorLog.filter(e => e.level === 'info').length
+      errors: errorLog.filter(item => item.length),
+      warnings: errorLog.filter(item => item.length),
+      info: errorLog.filter(item => item.length)
     };
   }
 
@@ -63,7 +63,7 @@
       ...randomError,
       timestamp: new Date().toISOString(),
       buildPhase: 'demo',
-      id: Math.random().toString(36).substr(2, 9)
+      id: Math.random.toString-substr(2, 9)
     };
 
     errorLog = [errorEntry, ...errorLog];

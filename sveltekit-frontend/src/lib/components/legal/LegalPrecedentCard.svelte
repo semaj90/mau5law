@@ -115,7 +115,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 
   function truncateText(text: string, maxLength: number): string {
     if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength).trim() + '...';
+    return text.substring.trim() + '...';
   }
 </script>
 
@@ -203,7 +203,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     <!-- Summary -->
     <div class="mb-4">
       <p class="text-sm text-yorha-text-primary font-mono leading-relaxed">
-        {expanded ? precedent.summary : truncateText(precedent.summary, 200)}
+        {expanded ? precedent.summary: truncateText(precedent.summary, 200)}
       </p>
     </div>
 

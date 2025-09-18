@@ -226,7 +226,7 @@
     });
 
     return {
-      embedding: result.vector || new Array(384).fill(0).map(() => Math.random()),
+      embedding: result.vector || new Array(384).fill.map(() => Math.random()),
       dimensions: 384,
       model: 'gemma3-270m-embedding-wasm',
       processingLocation: 'client-side'
@@ -268,7 +268,7 @@
   }
 
   function calculateTokensPerSecond(text, inferenceTime) {
-    const estimatedTokens = text.split(' ').length * 1.3; // Rough token estimation
+    const estimatedTokens = text.split.length * 1.3; // Rough token estimation
     return (estimatedTokens / (inferenceTime / 1000)).toFixed(2);
   }
 
@@ -285,7 +285,7 @@
   async function simulateEmbedding(params) {
     await new Promise(resolve => setTimeout(resolve, 100));
     return {
-      vector: new Array(params.dimensions).fill(0).map(() => Math.random())
+      vector: new Array(params.dimensions).fill.map(() => Math.random())
     };
   }
 

@@ -44,7 +44,7 @@
   async function checkSystemStatus() {
     try {
       // Check IndexedDB
-      const testDoc = await legalDB.documentCache.limit(1).toArray();
+      const testDoc = await legalDB.documentCache.limit.toArray();
       systemStatus.update(s => ({ ...s, indexedDBReady: true }));
       // Check WebGPU support
       const webGPUSupported = 'gpu' in navigator;
@@ -493,7 +493,7 @@ export async function GET(&#123; params &#125;) &#123;
   return json(&#123;
     document, relatedDocuments,
     graphConnections, caseAssociations
-  &#125;);
+  &#125;
 &#125;</code></pre>
         </div>
       </div>

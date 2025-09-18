@@ -104,12 +104,7 @@
 
 /* Responsive design for both regular and canvas components */
 @media (max-width: 768px) {
-  .glyph-engine-canvas {
-    max-width: 100%;
-    height: auto;
-  }
-
-  .enhanced-bits-card {
+  .glyph-engine-canv.enhanced-bits-card {
     margin: 0.5rem;
     padding: 1rem;
   }

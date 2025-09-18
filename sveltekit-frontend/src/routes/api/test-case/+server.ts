@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Database error occurred',
+        error: error instanceof Error ? error.message: 'Database error occurred',
         details: error instanceof Error ? error.stack : undefined,
         timestamp: new Date().toISOString(),
       },
@@ -130,7 +130,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         status: 'Database connection failed',
-        error: error instanceof Error ? error.message : 'Unknown database error',
+        error: error instanceof Error ? error.message: 'Unknown database error',
         timestamp: new Date().toISOString(),
         features: {
           'postgresql-integration': '❌ Failed',

@@ -676,21 +676,21 @@
   }
   
   /* NES-style scrollbar */
-  .texture-viewer::-webkit-scrollbar {
+  .texture-viewer: :-webkit-scrollbar {
     width: 16px;
   }
   
-  .texture-viewer::-webkit-scrollbar-track {
+  .texture-viewer: :-webkit-scrollbar-track {
     background: #222;
     border: 1px solid #333;
   }
   
-  .texture-viewer::-webkit-scrollbar-thumb {
+  .texture-viewer: :-webkit-scrollbar-thumb {
     background: #555;
     border: 1px solid #666;
   }
   
-  .texture-viewer::-webkit-scrollbar-thumb:hover {
+  .texture-viewer: :-webkit-scrollbar-thumb:hover {
     background: #666;
   }
   

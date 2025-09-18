@@ -173,7 +173,7 @@ async function performCudaVectorSearch(params: {
 	max_results: number;
 	use_gpu: boolean;
 	legal_filter: any;
-}): Promise<Array<{ content: string; score: number; metadata: any }>> {
+}): Promise<Array<{ content: string; score: number; metadata: any }> {
 	try {
 		// Step 1: Generate embedding with our CUDA service (8097)
 		const embeddingResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/search`, {
@@ -254,7 +254,7 @@ async function fallbackKnowledgeGraphSearch(params: {
 	context: string[];
 	max_results: number;
 	legal_filter: any;
-}): Promise<Array<{ content: string; score: number; metadata: any }>> {
+}): Promise<Array<{ content: string; score: number; metadata: any }> {
 	try {
 		const kgResponse = await fetch('http://localhost:8099/api/v1/knowledge-graph', {
 			method: 'POST',
@@ -302,7 +302,7 @@ async function fallbackPostgreSQLSearch(params: {
 	context: string[];
 	max_results: number;
 	legal_filter: any;
-}): Promise<Array<{ content: string; score: number; metadata: any }>> {
+}): Promise<Array<{ content: string; score: number; metadata: any }> {
 	// In production, this would query PostgreSQL 17 with pgvector
 	// Using Drizzle ORM for type-safe queries
 	// Example: SELECT content, 1 - (embedding <=> $1) as similarity FROM legal_documents
@@ -327,7 +327,7 @@ async function reinforcementLearningRanking(
 	results: Array<{ content: string; score: number; metadata: any }>,
 	query: string,
 	legal_filter: any
-): Promise<Array<{ content: string; score: number; metadata: any }>> {
+): Promise<Array<{ content: string; score: number; metadata: any }> {
 	// Apply RL-trained model optimized for legal document relevance:
 	// 1. Legal precedent weight (case law > statutes > regulations)
 	// 2. Jurisdiction relevance (local > federal > international)
@@ -451,7 +451,7 @@ export const GET: RequestHandler = async () => {
 				expected_response_time_ms: overallHealth ? 15 : 50,
 				cache_hit_optimization: '2ms response',
 				gpu_acceleration_speedup: cudaAvailable ? '10x vector operations' : 'CPU fallback',
-				service_count: [cudaAvailable, extractionAvailable, kgAvailable, gpuManagerAvailable].filter(Boolean).length
+				service_count: [cudaAvailable, extractionAvailable, kgAvailable, gpuManagerAvailable].filter(item => item.length)
 			}
 		});
 	} catch (err) {

@@ -449,7 +449,7 @@ Upgrade Now
   .nier-border-glow {
     position: relative;
 }
-  .nier-border-glow::before {
+  .nier-border-glow: :before {
     content: '';
     position: absolute;
     inset: -1px;

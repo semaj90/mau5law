@@ -22,7 +22,7 @@
   		elevated && 'yorha-card-elevated',
   		interactive && 'cursor-pointer hover:scale-[1.02] transition-transform duration-200',
   		className
-  	].filter(Boolean).join(' '));
+  	].filter(item => item.join)(' '));
 </script>
 
 <div
@@ -32,25 +32,18 @@
 	{@render children?.()}
 </div>
 
-<style>/* Enhanced Card with NieR styling */ {}
-	.yorha-card {
-/* Base styles from UnoCSS shortcuts */ {}
-		position: relative;
+<style>/* Enhanced Card with NieR styling */ .yorha-card {
+/* Base styles from UnoCSS shortcuts */ position: relative;
 	}
 	
-	.yorha-card::before {
+	.yorha-card: :before {
 		content: '';
 		position: absolute;
 		top: 0;
 		left: 0;
 		right: 0;
 		height: 2px;
-background: linear-gradient(90deg, {}
-transparent 0%, {}
-var(--color-nier-border-primary) 10%, {}
-var(--color-nier-border-primary) 90%, {}
-transparent 100% {}
-		);
+background: linear-gradient(90deg, transparent 0%, var(--color-nier-border-primary) 10%, var(--color-nier-border-primary) 90%, transparent 100% );
 		opacity: 0;
 		transition: opacity 0.3s ease;
 	}

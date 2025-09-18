@@ -125,7 +125,7 @@ async function enhanceMessageWithWASM(
       
       // Allocate WASM memory
       const inputPtr = (wasmModule.instance.exports.__new as Function)(length * 4, 0);
-      const inputOffset = inputPtr >>> 2;
+      const inputOffset = inputPtr > 2;
       
       // Copy data to WASM
       for (let i = 0; i < length; i++) {
@@ -134,7 +134,7 @@ async function enhanceMessageWithWASM(
       
       // Normalize using WASM
       const normalizedPtr = (wasmModule.instance.exports.normalizeVector as Function)(inputPtr, length);
-      const normalizedOffset = normalizedPtr >>> 2;
+      const normalizedOffset = normalizedPtr > 2;
       
       // Copy normalized data back
       const normalizedEmbeddings = [];
@@ -161,7 +161,7 @@ async function enhanceMessageWithWASM(
       if (numVectors > 0 && vectorLength > 0) {
         // Allocate memory for all vectors
         const vectorsPtr = (wasmModule.instance.exports.__new as Function)(numVectors * vectorLength * 4, 0);
-        const vectorsOffset = vectorsPtr >>> 2;
+        const vectorsOffset = vectorsPtr > 2;
         
         // Copy all vectors to WASM
         for (let v = 0; v < numVectors; v++) {
@@ -175,7 +175,7 @@ async function enhanceMessageWithWASM(
         const normalizedPtr = (wasmModule.instance.exports.batchNormalizeVectors as Function)(
           vectorsPtr, numVectors, vectorLength
         );
-        const normalizedOffset = normalizedPtr >>> 2;
+        const normalizedOffset = normalizedPtr > 2;
         
         // Copy normalized vectors back
         const normalizedVectors = [];
@@ -237,13 +237,13 @@ export async function computeVectorSimilarityWASM(
     const resultsPtr = (wasmModule.instance.exports.__new as Function)(vectorCount * 4, 0);
     
     // Copy query vector
-    const queryOffset = queryPtr >>> 2;
+    const queryOffset = queryPtr > 2;
     for (let i = 0; i < vectorDim; i++) {
       floatView[queryOffset + i] = queryVec[i];
     }
     
     // Copy target vectors
-    const vectorsOffset = vectorsPtr >>> 2;
+    const vectorsOffset = vectorsPtr > 2;
     for (let v = 0; v < vectorCount; v++) {
       const vector = new Float32Array(targetVectors[v]);
       for (let i = 0; i < vectorDim; i++) {
@@ -258,7 +258,7 @@ export async function computeVectorSimilarityWASM(
     
     // Extract results
     const similarities = [];
-    const resultsOffset = resultsPtr >>> 2;
+    const resultsOffset = resultsPtr > 2;
     for (let i = 0; i < vectorCount; i++) {
       similarities.push(floatView[resultsOffset + i]);
     }

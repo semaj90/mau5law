@@ -156,7 +156,7 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
     } catch (error) {
       console.error('Failed to initialize N64 Legal AI:', error);
       systemStatus = 'error';
-      errorMessage = error instanceof Error ? error.message : 'Unknown initialization error';
+      errorMessage = error instanceof Error ? error.message: 'Unknown initialization error';
     }
   });
 
@@ -186,7 +186,7 @@ The lease agreement is unambiguous. California Civil Code Section 1638 requires 
     } catch (error) {
       console.error('Document processing failed:', error);
       systemStatus = 'error';
-      errorMessage = `Processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      errorMessage = `Processing failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
       isProcessing = false;
       systemStatus = 'ready';

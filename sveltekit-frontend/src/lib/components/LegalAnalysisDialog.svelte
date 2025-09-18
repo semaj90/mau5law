@@ -15,7 +15,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     onOpenChange: (open: boolean) => void;
   }
 
-  let { open = $bindable(), onOpenChange }: Props = $props();
+  let { open = $bindable(), onOpenChange  }: Props = $props();
 
   // Store access
   const {

@@ -11,7 +11,7 @@ mcp<script lang="ts">
 
   // Events now handled via props in Svelte 5
   // const dispatch = createEventDispatcher();
-  let container = $state<HTMLElementlet notificationElements | null>(null)(new Map<string, HTMLElement>());
+  let container = $state<HTMLElementlet notificationElements  | null>(null); const data = new Map<string, HTMLElement>());
   let isVisible = $state(false);
   let maxVisible = $state(5);
   let position = $state<| "top-right"
@@ -47,9 +47,7 @@ mcp<script lang="ts">
 
   function announceNotification(notification: Notification) {
     const message = `${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).type} notification: ${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).title}. ${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).message}`;
-    FocusManager.announceToScreenReader(
-      message,
-      (notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).type === "error" ? "assertive" : "polite"
+    FocusManager.announceToScreenReader.type === "error" ? "assertive" : "polite"
     );
   }
   function playNotificationSound(type: Notification["type"]) {

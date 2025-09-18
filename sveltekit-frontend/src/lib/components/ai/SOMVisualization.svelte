@@ -25,13 +25,13 @@ https://svelte.dev/e/js_parse_error -->
   let isInitialized = $state(false);
   let isTraining = $state(false);
   let visualizationData = $state<unknown[]>([]);
-  let stats = $state<IngestionStats & { queue_size: number; is_processing: booleansom_visualization: any } | null>(null)({
+  let stats = $state<IngestionStats & { queue_size: number; is_processing: booleansom_visualization: any }  | null>(null); const data = {
     total_processed: 0,
     successful: 0,
     failed: 0,
     avg_processing_time: 0,
-    cluster_distribution: {},
-    evidence_type_distribution: {},
+    cluster_distribution: ,
+    evidence_type_distribution: ,
     queue_size: 0,
     is_processing: false,
     som_visualization: []
@@ -267,7 +267,7 @@ https://svelte.dev/e/js_parse_error -->
       ctx.fillRect(legendX, y - 8, 12, 12);
       // Label
       ctx.fillStyle = '#ffffff';
-      ctx.fillText((item as { color?: any; label?: any }).label, legendX + 20, y);
+      ctx.fillText.label, legendX + 20, y);
     });
     // Cluster info
     ctx.fillStyle = '#cccccc';
@@ -431,7 +431,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
       
-      {#if Object.keys(stats.evidence_type_distribution).length > 0}
+      {#if Object.keys.length > 0}
         <div class="mt-4">
           <h4 class="text-sm font-medium text-gray-300 mb-2">Evidence Types</h4>
           {#each Object.entries(stats.evidence_type_distribution) as [type, count]}

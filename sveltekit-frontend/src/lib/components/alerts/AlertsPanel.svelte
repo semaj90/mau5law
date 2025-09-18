@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
   let autoRefresh = $state(true);
   let interval = $state<anyasync function load(){
     try {
-      const res | null>(null)(await fetch('/api/v1/alerts'));
+      const res  | null>(null); const data = await fetch('/api/v1/alerts'));
       const data = await res.json();
       alerts = data.alerts || [];
       const quicRes = await fetch('/api/v1/quic/push', { method:'POST', body: JSON.stringify({ latencySamples: [] }), headers:{'content-type':'application/json'} });

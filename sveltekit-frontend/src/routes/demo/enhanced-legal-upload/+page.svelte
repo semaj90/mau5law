@@ -675,7 +675,7 @@
     margin-bottom: 0.5rem;
   }
 
-  .service-(item as { offline?: unknown }).offline {
+  .service-.offline {
     border-color: #ff6b6b;
     background: rgba(255, 107, 107, 0.1);
   }

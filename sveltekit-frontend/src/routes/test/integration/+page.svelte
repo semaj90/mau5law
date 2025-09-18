@@ -23,10 +23,10 @@
   import { Tabs, TabsContent, TabsList, TabsTrigger } from '$lib/components/ui/tabs';
 
   // Test state
-  let testResults = $state<Record<string, { status: 'pending' | 'passed' | 'failed'; message: stringdetails?: unknown } | null>(null)()>({});
+  let testResults = $state({})>( );
   let isRunningTests = $state(false);
   let postgresStatus = $state<'connecting' | 'connected' | 'error'>('connecting');
-  let apiEndpoints = $state<Record<string, { status: 'pending' | 'online' | 'offline'latency?: number } | null>(null)()>({});
+  let apiEndpoints = $state({})>( );
 
   // API test endpoints to check
   const testEndpoints = [
@@ -46,7 +46,6 @@
   async function runIntegrationTests() {
     isRunningTests = true;
     testResults = {};
-
     // Test 1: GPU Cache Integration
     await testGPUCache();
 
@@ -107,7 +106,7 @@
       testResults['gaming'] = {
         status: 'passed',
         message: 'Gaming components and constants loaded',
-        details: { nesColors: Object.keys(NES_COLOR_PALETTE).length }
+        details: { nesColors: Object.keys.length }
       };
     } catch (error) {
       testResults['gaming'] = {
@@ -302,7 +301,7 @@
                 {#if (result as { status?: unknown; message?: unknown; details?: unknown }).details}
                   <details class="text-xs text-gray-400">
                     <summary class="cursor-pointer">Details</summary>
-                    <pre class="mt-2 p-2 bg-gray-900 rounded text-xs overflow-auto">{JSON.stringify((result as { status?: unknown; message?: unknown; details?: unknown }).details, null, 2)}</pre>
+                    <pre class="mt-2 p-2 bg-gray-900 rounded text-xs overflow-auto">{JSON.stringify.details, null, 2)}</pre>
                   </details>
                 {/if}
               </div>

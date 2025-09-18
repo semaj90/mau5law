@@ -27,14 +27,14 @@
 
   // Group events by date
   let groupedEvents = $derived(() => {
-    return (sortedEvents as any as Array<any>).reduce((groups: Record<string, Array<any>>, event: any) => {
+    return (sortedEvents as any as Array<any>).reduce((groups: Record<string, Array<any>, event: any) => {
       const dateKey = event.date;
       if (!groups[dateKey]) {
         groups[dateKey] = [];
       }
       groups[dateKey].push(event);
       return groups;
-    }, {} as Record<string, Array<any>>);
+    }, as Record<string, Array<any>);
   });
 
   // Category styling
@@ -228,7 +228,7 @@
 
       <div class="flex items-center justify-between">
         <div class="text-sm text-gray-600">
-          {timelineEvents.length} events across {Object.keys(groupedEvents).length} day{Object.keys(groupedEvents).length !== 1 ? 's' : ''}
+          {timelineEvents.length} events across {Object.keys.length} day{Object.keys.length !== 1 ? 's' : ''}
         </div>
 
         <div class="flex gap-2">

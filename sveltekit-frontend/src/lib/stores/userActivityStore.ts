@@ -87,7 +87,7 @@ class UserActivityDetector {
     const activityEvent: ActivityEvent = {
       type: eventType,
       timestamp: now,
-      target: event?.target ? (event.target as Element).tagName : undefined
+      target: event?.target ? (event.target as Element).tagName: undefined
     };
 
     // Add to history

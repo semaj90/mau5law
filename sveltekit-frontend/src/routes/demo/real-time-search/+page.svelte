@@ -15,12 +15,12 @@
 	let searchProgress = $state(0);
 	let liveResults = $state((data as { query?: unknown; searchType?: unknown; searchResults?: unknown; searchCategories?: unknown; recentQueries?: unknown; searchStats?: unknown; suggestedQueries?: unknown; searchFilters?: unknown }).searchResults);
 	let showSuggestions = $state(false);
-	let selectedFilters = $state<Record<string, string>('')>({});
+	let selectedFilters = $state<Record<string, string>('')>( );
 	
 	let tabs = $derived([
 		{ id: 'search', label: 'Live Search', count: liveResults.length },
 		{ id: 'categories', label: 'Categories', count: (data as { query?: unknown; searchType?: unknown; searchResults?: unknown; searchCategories?: unknown; recentQueries?: unknown; searchStats?: unknown; suggestedQueries?: unknown; searchFilters?: unknown }).searchCategories.length },
-		{ id: 'filters', label: 'Advanced Filters', count: Object.keys(selectedFilters).length },
+		{ id: 'filters', label: 'Advanced Filters', count: Object.keys.length },
 		{ id: 'activity', label: 'Recent Activity', count: (data as { query?: unknown; searchType?: unknown; searchResults?: unknown; searchCategories?: unknown; recentQueries?: unknown; searchStats?: unknown; suggestedQueries?: unknown; searchFilters?: unknown }).recentQueries.length },
 		{ id: 'analytics', label: 'Search Analytics', count: 4 }
 	]);
@@ -65,7 +65,7 @@
 	}
 
 	function formatNumber(num: number): string {
-		return new Intl.NumberFormat().format(num);
+		return new Intl.NumberFormat.format(num);
 	}
 
 	function formatPercentage(value: number): string {
@@ -370,7 +370,7 @@
 						<div class="flex justify-end gap-4">
 							<button 
 								class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-								onclick={() => selectedFilters = {}}
+								onclick={() => selectedFilters = }
 							>
 								Clear Filters
 							</button>

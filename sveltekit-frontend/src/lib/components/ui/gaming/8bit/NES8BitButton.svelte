@@ -184,8 +184,7 @@
 
 <style>
   :global(.nes-8bit-button) {
-/* Base NES button styling */ {}
-    font-family: 'Press Start 2P', 'Courier New', monospace !important;
+/* Base NES button styling */ font-family: 'Press Start 2P', 'Courier New', monospace !important;
     background-color: var(--button-color);
     color: white;
     border: 2px solid #000000;
@@ -193,40 +192,30 @@
     padding: var(--button-padding);
     font-size: var(--button-font-size);
     min-height: var(--button-min-height);
-/* Pixel perfect rendering */ {}
-    image-rendering: pixelated;
+/* Pixel perfect rendering */ image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
-/* 3D button effect */ {}
-box-shadow: {}
-2px 2px 0px #000000, {}
-      0px 0px 0px 2px var(--button-color);
+/* 3D button effect */ box-shadow: 2px 2px 0px #000000, 0px 0px 0px 2px var(--button-color);
     
     transform: var(--press-transform);
     transition: transform 50ms ease-out;
-/* Remove default button styles */ {}
-    -webkit-appearance: none;
+/* Remove default button styles */ -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     outline: none;
-/* Prevent text selection */ {}
-    -webkit-user-select: none;
+/* Prevent text selection */ -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-/* Cursor */ {}
-    cursor: pointer;
-/* Text styling */ {}
-    text-transform: uppercase;
+/* Cursor */ cursor: pointer;
+/* Text styling */ text-transform: uppercase;
     letter-spacing: 1px;
     text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.8);
-/* Flexbox for content alignment */ {}
-    display: inline-flex;
+/* Flexbox for content alignment */ display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
   }
-/* Variant colors */ {}
-  :global(.nes-8bit-button.is-primary) {
+/* Variant colors */ :global(.nes-8bit-button.is-primary) {
     background-color: #3cbcfc;
     --button-color: #3cbcfc;
   }
@@ -247,8 +236,7 @@ box-shadow: {}
     background-color: #f83800;
     --button-color: #f83800;
   }
-:global(.nes-8bit-button.is-disabled), {}
-  :global(.nes-8bit-button:disabled) {
+:global(.nes-8bit-button.is-disabled), :global(.nes-8bit-button:disabled) {
     background-color: #7c7c7c;
     --button-color: #7c7c7c;
     cursor: not-allowed;
@@ -256,26 +244,18 @@ box-shadow: {}
     transform: none !important;
     box-shadow: 1px 1px 0px #000000;
   }
-/* Hover effects */ {}
-  :global(.nes-8bit-button:not(:disabled):hover) {
+/* Hover effects */ :global(.nes-8bit-button: not(:disabled):hover) {
     filter: brightness(1.1);
-box-shadow: {}
-3px 3px 0px #000000, {}
-      0px 0px 0px 2px var(--button-color);
+box-shadow: 3px 3px 0px #000000, 0px 0px 0px 2px var(--button-color);
   }
-/* Active/Pressed state */ {}
-  :global(.nes-8bit-button:not(:disabled):active) {
-box-shadow: {}
-1px 1px 0px #000000, {}
-      0px 0px 0px 2px var(--button-color);
+/* Active/Pressed state */ :global(.nes-8bit-button: not(:disabled):active) {
+box-shadow: 1px 1px 0px #000000, 0px 0px 0px 2px var(--button-color);
   }
-/* Focus styles for accessibility */ {}
-  :global(.nes-8bit-button:focus-visible) {
+/* Focus styles for accessibility */ :global(.nes-8bit-button:focus-visible) {
     outline: 2px solid #ffffff;
     outline-offset: 2px;
   }
-/* Loading spinner */ {}
-  .loading-spinner {
+/* Loading spinner */ .loading-spinner {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -297,33 +277,22 @@ box-shadow: {}
     75% { transform: rotate(270deg); }
     100% { transform: rotate(360deg); }
   }
-/* Scanlines effect (optional) */ {}
-  :global(.nes-8bit-button.enable-scanlines::after) {
+/* Scanlines effect (optional) */ :global(.nes-8bit-button.enable-scanlines: :after) {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-background: repeating-linear-gradient( {}
-0deg, {}
-transparent, {}
-transparent 1px, {}
-rgba(0, 0, 0, 0.1) 1px, {}
-rgba(0, 0, 0, 0.1) 2px {}
-    );
+background: repeating-linear-gradient( 0deg, transparent, transparent 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 2px );
     pointer-events: none;
   }
-/* CRT effect (optional) */ {}
-  :global(.nes-8bit-button.enable-crt) {
+/* CRT effect (optional) */ :global(.nes-8bit-button.enable-crt) {
     filter: contrast(1.2) brightness(1.1);
     border-radius: 2px;
-box-shadow: {}
-inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
-      2px 2px 0px #000000;
+box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 2px 2px 0px #000000;
   }
-/* Retro bounce animation */ {}
-  :global(.nes-8bit-button.retro-bounce:hover) {
+/* Retro bounce animation */ :global(.nes-8bit-button.retro-bounce:hover) {
     animation: retroBounce 0.3s ease-in-out;
   }
 
@@ -331,8 +300,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
     0%, 100% { transform: translateY(0px) scale(1); }
     50% { transform: translateY(-2px) scale(1.02); }
   }
-/* Glitch transition effect */ {}
-  :global(.nes-8bit-button.glitch-transition:hover) {
+/* Glitch transition effect */ :global(.nes-8bit-button.glitch-transition:hover) {
     animation: glitchTransition 0.2s ease-in-out;
   }
 
@@ -344,26 +312,20 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
     80% { transform: translateY(1px) translateX(-1px); }
     100% { transform: translateY(0px); }
   }
-/* Mobile optimizations */ {}
-  @media (max-width: 480px) {
+/* Mobile optimizations */ @media (max-width: 480px) {
     :global(.nes-8bit-button) {
       min-height: 44px; /* iOS touch target minimum */
       font-size: 10px;
     }
   }
-/* High DPI displays */ {}
-  @media (-webkit-min-device-pixel-ratio: 2) {
+/* High DPI displays */ @media (-webkit-min-device-pixel-ratio: 2) {
     :global(.nes-8bit-button) {
       border-width: 1px;
-box-shadow: {}
-1px 1px 0px #000000, {}
-        0px 0px 0px 1px var(--button-color);
+box-shadow: 1px 1px 0px #000000, 0px 0px 0px 1px var(--button-color);
     }
     
-    :global(.nes-8bit-button:not(:disabled):hover) {
-box-shadow: {}
-2px 2px 0px #000000, {}
-        0px 0px 0px 1px var(--button-color);
+    :global(.nes-8bit-button: not(:disabled):hover) {
+box-shadow: 2px 2px 0px #000000, 0px 0px 0px 1px var(--button-color);
     }
   }
 </style>

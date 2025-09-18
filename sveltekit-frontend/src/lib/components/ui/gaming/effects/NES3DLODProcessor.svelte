@@ -546,8 +546,7 @@
     if (now - lastQualityAdjustment < 2000) return;
     // Calculate average FPS over recent frames
     const avgFPS = performanceHistory.length > 0 
-      ? performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length
-      : 60;
+      ? performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length: 60;
     // Calculate performance score (0-1, where 1 is perfect)
     const performanceScore = calculatePerformanceScore(avgFPS);
     // Determine if adjustment is needed
@@ -710,8 +709,7 @@
     performanceScore: number;
   } {
     const avgFPS = performanceHistory.length > 0 
-      ? performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length
-      : 60;
+      ? performanceHistory.reduce((sum, fps) => sum + fps, 0) / performanceHistory.length: 60;
     return {
       tier: qualityTier.name,
       fps: Math.round(avgFPS),

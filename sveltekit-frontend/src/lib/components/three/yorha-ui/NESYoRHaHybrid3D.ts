@@ -1148,8 +1148,7 @@ export function createNESContainer(options: {
     variant: 'outlined',
     renderMode: '2d-overlay',
     backgroundColor: options.dark
-      ? NES_YORHA_PALETTE.nesBlack
-      : NES_YORHA_PALETTE.yorhaBeige,
+      ? NES_YORHA_PALETTE.nesBlack: NES_YORHA_PALETTE.yorhaBeige,
     pixelPerfect: true
   });
 }

@@ -524,7 +524,7 @@ export class Phase13IntegrationManager {
    */
   getIntegrationStatus() {
     const totalServices = Object.keys(this.serviceHealth).length;
-    const activeServices = Object.values(this.serviceHealth).filter(Boolean).length;
+    const activeServices = Object.values(this.serviceHealth).filter(item => item.length);
     const integrationLevel = (activeServices / totalServices) * 100;
 
     return {
@@ -567,7 +567,7 @@ export class Phase13IntegrationManager {
       return {
         success: false,
         action: `Failed to apply ${suggestion.type} suggestion`,
-        result: error instanceof Error ? error.message : 'Unknown error'
+        result: error instanceof Error ? error.message: 'Unknown error'
       };
     }
   }

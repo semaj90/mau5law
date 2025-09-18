@@ -172,8 +172,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = {
       analysis:
         analysisResult.status === 'fulfilled'
-          ? analysisResult.value
-          : {
+          ? analysisResult.value:  {
               evidence_type: validatedRequest.evidence_type,
               confidence_score: 0.5,
               prosecution_strength: 50,
@@ -221,7 +220,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         message: 'Evidence enhancement service temporarily unavailable',
-        details: err instanceof Error ? err.message : 'Unknown error',
+        details: err instanceof Error ? err.message: 'Unknown error',
       },
       { status: 500 }
     );

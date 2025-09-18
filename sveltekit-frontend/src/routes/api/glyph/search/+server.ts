@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Search failed'
+      error: error instanceof Error ? error.message: 'Search failed'
     }, { status: 500 });
   }
 };
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Vector search failed'
+      error: error instanceof Error ? error.message: 'Vector search failed'
     }, { status: 500 });
   }
 };

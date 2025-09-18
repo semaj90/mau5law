@@ -480,7 +480,7 @@ export class AutoencoderContextSwitcher {
     const legalTerms = ['whereas', 'heretofore', 'pursuant', 'notwithstanding'];
     const complexity = Math.min(
       (query.length / 1000) + 
-      (legalTerms.filter(term => query.toLowerCase().includes(term)).length * 0.2),
+      (legalTerms.filter(item => item.includes)(term)).length * 0.2),
       1.0
     );
     return complexity;

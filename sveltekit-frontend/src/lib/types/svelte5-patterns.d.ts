@@ -1,14 +1,23 @@
 // Svelte 5 TypeScript Patterns - Progressive Type Replacement
 // Replaces generic 'any' shims with proper Svelte 5 type definitions
 
-import type {     Component, ComponentProps, Snippet     } from 'svelte';
+import type { Component, ComponentProps, Snippet } from 'svelte';
 import type { HTMLButtonAttributes, HTMLInputAttributes } from 'svelte/elements';
 
 // === COMPONENT PROPS PATTERNS ===
 
 // Enhanced Button Component Props (replaces generic Button any type)
 export interface EnhancedButtonProps extends HTMLButtonAttributes {
-  variant?: 'default' | 'legal' | 'evidence' | 'case' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  variant?:
+    | 'default'
+    | 'legal'
+    | 'evidence'
+    | 'case'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'link';
   size?: 'default' | 'sm' | 'lg' | 'icon';
   loading?: boolean;
   disabled?: boolean;
@@ -220,7 +229,8 @@ export interface BulkOperationResponse {
   processed: number;
   successful: number;
   failed: number;
-  errors?: Array<any>
+  errors?: Array<any>;
+}
 
 // === DATABASE TYPES ===
 
@@ -284,6 +294,7 @@ export interface StoreState {
     sidebarOpen: boolean;
     loading: boolean;
     notifications: Array<any>;
+  };
   cases: {
     current?: CaseState;
     list: CaseState[];
@@ -297,16 +308,4 @@ export interface StoreState {
   };
 }
 
-export default {
-  // Export all types for easy importing
-  UserState,
-  CaseState,
-  EvidenceState,
-  AITask,
-  AIResponse,
-  WorkerStatus,
-  VectorSearchResult,
-  VectorSearchOptions,
-  FormSubmissionResult,
-  BulkOperationResponse
-};
+// (Removed invalid default export of types; types should be imported individually)

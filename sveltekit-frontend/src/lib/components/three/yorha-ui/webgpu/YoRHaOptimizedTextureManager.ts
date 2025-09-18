@@ -229,14 +229,14 @@ export class YoRHaOptimizedTextureManager {
 
       // Calculate memory usage
       const textureMemory = this.calculateTextureMemory(sourceTexture);
-      const mipmapMemory = mipmapResult ? mipmapResult.memoryUsed : 0;
+      const mipmapMemory = mipmapResult ? mipmapResult.memoryUsed: 0;
       const totalMemory = textureMemory + mipmapMemory;
 
       // Create texture entry
       const textureEntry: TextureEntry = {
         id: textureId,
         texture: sourceTexture,
-        mipmaps: mipmapResult ? mipmapResult.mipmapLevels : [],
+        mipmaps: mipmapResult ? mipmapResult.mipmapLevels: [],
         memoryBank: bankName,
         lastAccessed: Date.now(),
         memoryUsed: totalMemory,

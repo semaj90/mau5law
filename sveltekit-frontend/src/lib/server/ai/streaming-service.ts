@@ -126,8 +126,7 @@ class StreamingService extends EventEmitter {
       
       // Stage 1: Query Analysis (0-20%)
       await this.processStage(streamId, 'query_analysis', async () => {
-        options.onStage?.('query_analysis', { status: 'starting' });
-        
+        options.onStage?.('query_analysis', { status: 'starting' }));
         const result = await this.simulateQueryAnalysis(options.input.query);
         
         options.onProgress?.('query_analysis', 100, result);
@@ -138,12 +137,11 @@ class StreamingService extends EventEmitter {
       
       // Stage 2: Multi-Strategy Retrieval (20-50%)
       const sources = await this.processStage(streamId, 'retrieval', async () => {
-        options.onStage?.('retrieval', { status: 'starting' });
-        
+        options.onStage?.('retrieval', { status: 'starting' }));
         const sources = await this.streamRetrieval(
           options.input,
           (source, index, total) => {
-            const progress = (index / total) * 100;
+            const progress = (index / total) * 100);
             options.onProgress?.('retrieval', progress, { source, index, total });
             options.onSource?.(source);
             
@@ -165,10 +163,9 @@ class StreamingService extends EventEmitter {
       
       // Stage 3: Ranking and Processing (50-70%)
       const rankedSources = await this.processStage(streamId, 'ranking', async () => {
-        options.onStage?.('ranking', { status: 'starting' });
-        
+        options.onStage?.('ranking', { status: 'starting' }));
         const ranked = await this.streamRanking(sources, (progress) => {
-          options.onProgress?.('ranking', progress);
+          options.onProgress?.('ranking', progress));
         });
         
         options.onStage?.('ranking', { 
@@ -181,13 +178,12 @@ class StreamingService extends EventEmitter {
       
       // Stage 4: Prompt Construction (70-85%)
       const prompt = await this.processStage(streamId, 'prompt_construction', async () => {
-        options.onStage?.('prompt_construction', { status: 'starting' });
-        
+        options.onStage?.('prompt_construction', { status: 'starting' }));
         const prompt = await this.constructPromptWithProgress(
           options.input,
           rankedSources,
           (progress) => {
-            options.onProgress?.('prompt_construction', progress);
+            options.onProgress?.('prompt_construction', progress));
           }
         );
         
@@ -201,8 +197,7 @@ class StreamingService extends EventEmitter {
       
       // Stage 5: Quality Assessment (85-100%)
       const finalResult = await this.processStage(streamId, 'quality_assessment', async () => {
-        options.onStage?.('quality_assessment', { status: 'starting' });
-        
+        options.onStage?.('quality_assessment', { status: 'starting' }));
         // Actually call the synthesizer for the complete result
         const result = await aiAssistantSynthesizer.synthesizeInput({
           query: options.input.query,

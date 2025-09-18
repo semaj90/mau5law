@@ -108,19 +108,17 @@
   	function handleRealtimeUpdate(data: any) {
   		switch ((data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).type) {
   			case 'cluster-metrics-update':
-  				clusterMetrics.set((data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics);
+  				clusterMetrics.set.metrics);
   				break;
   			case 'mcp-tool-status':
-  				mcpTools.update(tools => 
-  					tools.map(tool => 
-  						tool.id === (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).toolId 
+  				mcpTools.update.toolId 
   							? { ...tool, status: (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).status, lastUsed: new Date() }
   							: tool
   					)
   				);
   				break;
   			case 'query-result':
-  				queryResults.update(results => [(data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).result, ...results.slice(0, 9)]);
+  				queryResults.update.result, ...results.slice(0, 9)]);
   				break;
   		}
   	}
@@ -196,8 +194,7 @@
   			if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
   				const data = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json();
   				if ((data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).success) {
-  					clusterMetrics.set({
-  						activeWorkers: (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics.connections || 0,
+  					clusterMetrics.set.metrics.connections || 0,
   						totalRequests: (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics.totalRequests || 0,
   						successRate: 1 - ((data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics.errorRate || 0),
   						averageResponseTime: (data as { type?: any; metrics?: any; toolId?: any; status?: any; result?: any; success?: any }).metrics.averageResponseTime || 0,
@@ -209,7 +206,7 @@
   			console.error('Failed to update cluster metrics:', error);
   		}
   	}
-  	async function executeMCPTool(toolId: string, args: any = {}) {
+  	async function executeMCPTool(toolId: string, args: any = ) {
   		if (isProcessing) return;
   		isProcessing = true;
   		const startTime = Date.now();
@@ -440,9 +437,9 @@
 						<div class="result-query">{(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).query}</div>
 						<div class="result-content">
 							{#if (result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).success}
-								<pre>{JSON.stringify((result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).result, null, 2)}</pre>
+								<pre>{JSON.stringify.result, null, 2)}</pre>
 							{:else}
-								<div class="error-message">Error: {(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).error}</div>
+								<div class="error-message">Error: {(result as { success?: any; source?: any; responseTime?: any; timestamp?: any; query?: any; result?: any }).result.error}</div>
 							{/if}
 						</div>
 					</div>

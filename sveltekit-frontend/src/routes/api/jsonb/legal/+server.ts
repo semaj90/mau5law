@@ -208,7 +208,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }
   } catch (err: any) {
     const duration = performance.now() - startTime;
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    const errorMessage = err instanceof Error ? err.message: 'Unknown error';
     
     await logger.logAPIResponse({
       requestId,
@@ -712,7 +712,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     });
   } catch (err: any) {
     const duration = performance.now() - startTime;
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    const errorMessage = err instanceof Error ? err.message: 'Unknown error';
     
     await logger.logAPIResponse({
       requestId,

@@ -298,7 +298,7 @@ Reset Demo
           <div class="status-item">
             <label>Critical:</label>
             <span class="status-value critical">
-              {mockRecommendations.filter(r => r.priority === 'critical').length}
+              {mockRecommendations.filter(item => item.length)}
             </span>
           </div>
           <div class="status-item">

@@ -103,7 +103,7 @@ export class EnhancedCaseAPI {
       console.error('❌ Enhanced case creation failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
         data: undefined
       };
     }
@@ -153,7 +153,7 @@ export class EnhancedCaseAPI {
       console.error('❌ Worker trigger failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
         data: undefined
       };
     }
@@ -230,7 +230,8 @@ export class EnhancedCaseAPI {
     caseType?: string[];
     priority?: string[];
     includeClusterData?: boolean;
-  } = {}): Promise<APIResponse;
+  } = {}): Promise<APIResponse<{
+      daily: Array<any>;
       weekly: Array<any>;
   }>> {
     const searchParams = new URLSearchParams();
@@ -263,7 +264,8 @@ export class EnhancedCaseAPI {
     algorithm?: 'kmeans' | 'som' | 'hierarchical';
     k?: number;
     includeEmbeddings?: boolean;
-  }): Promise<APIResponse;
+  }): Promise<APIResponse<{
+    clusters: Array<any>;
     silhouetteScore: number;
     totalCases: number;
   }>> {

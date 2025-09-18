@@ -9,10 +9,9 @@
   import { z } from 'zod';
 
   // Simple test schema
-  const testSchema = z.object({
-    name: z.string().min(1, 'Name is required'),
-    email: z.string().email('Invalid email'),
-    message: z.string().min(10, 'Message must be at least 10 characters')
+  const testSchema = z.object.min(1, 'Name is required'),
+    email: z.string.email('Invalid email'),
+    message: z.string.min(10, 'Message must be at least 10 characters')
   });
 
   // Mock form data
@@ -135,7 +134,7 @@
     </div>
 
     <!-- Errors Display -->
-    {#if Object.keys($errors).length > 0}
+    {#if Object.keys.length > 0}
       <div class="mt-4 p-4 bg-red-900 rounded border border-red-600">
         <h3 class="text-lg font-medium text-red-400 mb-2">Validation Errors</h3>
         <pre class="text-sm text-red-300">{JSON.stringify($errors, null, 2)}</pre>

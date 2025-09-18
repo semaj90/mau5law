@@ -47,11 +47,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     performanceMonitor = initializePerformanceMonitor();
     
     // Subscribe to stats
-    const statsUnsubscribe = gpuCache.getStats().subscribe(stats => {
+    const statsUnsubscribe = gpuCache.getStats.subscribe(stats => {
       cacheStats = stats;
     });
     
-    const metricsUnsubscribe = performanceMonitor.getMetrics().subscribe(metrics => {
+    const metricsUnsubscribe = performanceMonitor.getMetrics.subscribe(metrics => {
       performanceMetrics = metrics;
     });
     
@@ -69,7 +69,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     
     // Test 1: Basic cache operations
     const test1Start = performance.now();
-    await gpuCache.set('test-key-1', { data: 'Test data for GPU cache', array: new Array(1000).fill(1) });
+    await gpuCache.set.fill(1) });
     const cachedData1 = await gpuCache.get('test-key-1');
     const test1Time = performance.now() - test1Start;
     
@@ -83,7 +83,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     // Test 2: Large data caching
     const test2Start = performance.now();
     const largeData = {
-      vectors: new Array(10000).fill(0).map(() => Math.random()),
+      vectors: new Array(10000).fill.map(() => Math.random()),
       metadata: { test: true, timestamp: Date.now() }
     };
     await gpuCache.set('large-data', largeData, { compress: true, gpu: true });
@@ -94,7 +94,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       name: 'Large Data with Compression',
       status: cachedLarge ? '✅ Passed' : '❌ Failed',
       time: `${test2Time.toFixed(2)}ms`,
-      details: `Cached ${GPUCacheUtils.formatBytes(JSON.stringify(largeData).length)} of data`
+      details: `Cached ${GPUCacheUtils.formatBytes.length)} of data`
     }];
     
     // Test 3: Cache hit rate
@@ -380,7 +380,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     will-change: transform;
   }
   
-  .yorha-button::before {
+  .yorha-button: :before {
     content: '';
     position: absolute;
     top: 0;
@@ -437,7 +437,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     overflow: hidden;
   }
   
-  .scan-lines::after {
+  .scan-lines: :after {
     content: '';
     position: absolute;
     top: 0;

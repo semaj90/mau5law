@@ -81,7 +81,7 @@
   );
 
   let uploadResults = $derived(machineState?.context?.uploadResults || []);
-  let pipelineStatus = $derived(machineState?.context?.pipeline || {});
+  let pipelineStatus = $derived(machineState?.context?.pipeline || );
 
   // Initialize analytics
   onMount(() => {
@@ -489,11 +489,11 @@
 
       <div class="results-summary">
         <div class="summary-stat">
-          <span class="stat-value">{uploadResults.filter(r => r.success).length}</span>
+          <span class="stat-value">{uploadResults.filter(item => item.length)}</span>
           <span class="stat-label">Successful</span>
         </div>
         <div class="summary-stat">
-          <span class="stat-value">{uploadResults.filter(r => !r.success).length}</span>
+          <span class="stat-value">{uploadResults.filter(item => item.length)}</span>
           <span class="stat-label">Failed</span>
         </div>
         <div class="summary-stat">
@@ -909,11 +909,11 @@
     border-left: 4px solid #e5e7eb;
   }
 
-  .result-(item as { success?: any; error?: any }).success {
+  .result-.success {
     border-left-color: #10b981;
   }
 
-  .result-(item as { success?: any; error?: any }).error {
+  .result-.error {
     border-left-color: #ef4444;
   }
 

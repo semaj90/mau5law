@@ -55,7 +55,7 @@ export async function safeFetch<T = unknown>(
     const data = await response.json();
     return { data, success: true };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error ? error.message: 'Unknown error';
     console.error('API call failed:', error);
     return { error: errorMessage, success: false };
   }
@@ -70,7 +70,7 @@ export function safeJsonParse<T = unknown>(
     const data = JSON.parse(json) as T;
     return { data, success: true };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'JSON parsing failed';
+    const errorMessage = error instanceof Error ? error.message: 'JSON parsing failed';
     console.error('JSON parsing error:', error);
     return {
       data: fallback,
@@ -179,20 +179,15 @@ export function checkWebGLError(gl: WebGLRenderingContext | WebGL2RenderingConte
   if (error !== gl.NO_ERROR) {
     let errorString: string;
     switch (error) {
-      case gl.INVALID_ENUM:
-        errorString = 'INVALID_ENUM';
+      case gl.INVALID_ENUM: errorString = 'INVALID_ENUM';
         break;
-      case gl.INVALID_VALUE:
-        errorString = 'INVALID_VALUE';
+      case gl.INVALID_VALUE: errorString = 'INVALID_VALUE';
         break;
-      case gl.INVALID_OPERATION:
-        errorString = 'INVALID_OPERATION';
+      case gl.INVALID_OPERATION: errorString = 'INVALID_OPERATION';
         break;
-      case gl.OUT_OF_MEMORY:
-        errorString = 'OUT_OF_MEMORY';
+      case gl.OUT_OF_MEMORY: errorString = 'OUT_OF_MEMORY';
         break;
-      case gl.CONTEXT_LOST_WEBGL:
-        errorString = 'CONTEXT_LOST_WEBGL';
+      case gl.CONTEXT_LOST_WEBGL: errorString = 'CONTEXT_LOST_WEBGL';
         break;
       default:
         errorString = `Unknown error ${error}`;

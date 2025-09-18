@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Auto-save functionality
-  let autoSaveTimeout = $state<NodeJS.Timeout$effect(() = | null>(null)() {
+  let autoSaveTimeout = $state({}) {
     if ($formData) {
       clearTimeout(autoSaveTimeout));
       autoSaveTimeout = setTimeout(() => {
@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
       formData.update(data => ({
         ...data,
         documents: {
-          ...(data as { documents?: unknown }).documents,
+          ...data.documents,
           uploaded_files: files,
           processing_status: 'processing'
         }
@@ -203,7 +203,7 @@ https://svelte.dev/e/js_parse_error -->
       formData.update(data => ({
         ...data,
         documents: {
-          ...(data as { documents?: unknown }).documents,
+          ...data.documents,
           ocr_results: ocrResults,
           processing_status: 'completed'
         }
@@ -221,7 +221,7 @@ https://svelte.dev/e/js_parse_error -->
       formData.update(data => ({
         ...data,
         documents: {
-          ...(data as { documents?: unknown }).documents,
+          ...data.documents,
           processing_status: 'error'
         }
       }));

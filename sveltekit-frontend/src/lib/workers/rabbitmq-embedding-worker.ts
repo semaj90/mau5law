@@ -181,7 +181,7 @@ class RabbitMQEmbeddingWorker {
 
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
         processingTime,
       };
     }
@@ -231,7 +231,7 @@ class RabbitMQEmbeddingWorker {
                 success: false,
                 entity_id: batch[index].entity_id,
                 error:
-                  (result as { status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { status?: any; value?: any; reason?: any }).reason.message : String((result as { status?: any; value?: any; reason?: any }).reason),
+                  (result as { status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { status?: any; value?: any; reason?: any }).reason.message: String((result as { status?: any; value?: any; reason?: any }).reason),
               };
             }
           });
@@ -275,7 +275,7 @@ class RabbitMQEmbeddingWorker {
           successful: successCount,
           failed: failCount,
           results,
-          averageTimePerEntity: results.length > 0 ? processingTime / results.length : 0,
+          averageTimePerEntity: results.length > 0 ? processingTime / results.length: 0,
         },
         processingTime,
       };
@@ -285,7 +285,7 @@ class RabbitMQEmbeddingWorker {
 
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
         processingTime,
       };
     }
@@ -546,7 +546,7 @@ class RabbitMQEmbeddingWorker {
       return {
         success: false,
         entity_id: entity.entity_id,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
       };
     }
   }

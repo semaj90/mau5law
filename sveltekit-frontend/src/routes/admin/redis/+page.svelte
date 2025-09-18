@@ -152,7 +152,7 @@
     box-shadow: 0 5px 15px rgba(60, 188, 252, 0.3);
   }
 
-  .quick-link.external::after {
+  .quick-link.external: :after {
     content: "↗";
     margin-left: 8px;
     opacity: 0.7;

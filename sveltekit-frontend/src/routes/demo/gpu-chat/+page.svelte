@@ -54,7 +54,7 @@
 
     } catch (error) {
       console.error('Error:', error);
-      messages[messages.length - 1].content = `Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`;
+      messages[messages.length - 1].content = `Error: ${error instanceof Error ? error.message: 'Unknown error occurred'}`;
     } finally {
       isLoading = false;
     }

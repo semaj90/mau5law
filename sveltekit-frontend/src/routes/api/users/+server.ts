@@ -66,8 +66,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     // Add sorting
     const orderColumn =
       sortBy === "name"
-        ? users.name
-        : sortBy === "email"
+        ? users.name: sortBy === "email"
           ? users.email
           : sortBy === "role"
             ? users.role
@@ -160,7 +159,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       firstName: data.firstName?.trim() || null,
       lastName: data.lastName?.trim() || null,
       role: data.role || "prosecutor",
-      isActive: data.isActive !== undefined ? data.isActive : true,
+      isActive: data.isActive !== undefined ? data.isActive: true,
       avatarUrl: data.avatarUrl?.trim() || null,
     };
 

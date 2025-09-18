@@ -111,7 +111,7 @@ async function reportError(jobId: string, chunkIndex: number, error: any) {
   try {
     await cache.set(`job:${jobId}:error`, {
       chunkIndex,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString(),
       workerId
     }, 3600); // 1 hour TTL for error debugging

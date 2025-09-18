@@ -182,7 +182,7 @@
     }
   }
   function generateMatrixString(length: number): string {
-    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[]{}|;:,.<>?';
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[] |;:,.<>?';
     let result = '';
     for (let i = 0; i < length; i++) {
       result += chars[Math.floor(Math.random() * chars.length)];
@@ -282,7 +282,7 @@
   function renderWebGPU() {
     // WebGPU rendering (simplified for this example)
     const commandEncoder = gpu!.createCommandEncoder();
-    const textureView = context!.getCurrentTexture().createView();
+    const textureView = context!.getCurrentTexture.createView();
     const renderPassDescriptor: GPURenderPassDescriptor = {
       colorAttachments: [
         {
@@ -371,7 +371,7 @@
     for (const node of consciousnessNodes) {
       const color = colors[node.cluster];
       const alpha = 0.3 + 0.7 * node.luminosity;
-      ctx.fillStyle = color + Math.floor(alpha * 255).toString(16).padStart(2, '0');
+      ctx.fillStyle = color + Math.floor.toString-padStart(2, '0');
       ctx.beginPath();
       ctx.arc(node.x, node.y, 3 + node.awareness * 5, 0, Math.PI * 2);
       ctx.fill();
@@ -435,7 +435,7 @@
     ></canvas>
     
     <div class="absolute top-2 left-2 text-xs text-gray-400 bg-black/50 px-2 py-1 rounded">
-      Mode: {visualizationMode.replace('-', ' ').toUpperCase()}
+      Mode: {visualizationMode.replace.toUpperCase()}
     </div>
     
     {#if !isInitialized}

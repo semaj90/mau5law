@@ -59,7 +59,7 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
     };
   });
 
-  const healthyCount = serviceResults.filter(s => s.status === 'healthy').length;
+  const healthyCount = serviceResults.filter(item => item.length);
 
   return {
     system_overview: {

@@ -21,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
   import { CheckCircle, AlertCircle, Cpu, Database, Zap, Activity } from 'lucide-svelte';
 
   // Phase 13 system instances
-  let canvas = $state<HTMLCanvasElementlet phase13System: unknown | null>(null)(null);
+  let canvas = $state<HTMLCanvasElementlet phase13System: unknown  | null>(null); const data = null);
   let apiCoordinator = $state<any >(null);
   let ragEngine = $state<any >(null);
   let context7Integration = $state<any >(null);

@@ -1,7 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
 
-  import { createContextMenu, melt } from "melt";
+  // Replaced melt with bits-ui components
   import { setContext } from "svelte";
   interface Props {
     children?: import('svelte').Snippet;

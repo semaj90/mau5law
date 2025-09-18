@@ -1,14 +1,14 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  let testResults = $state<any[]>([])([]);
+  let testResults = $state<any[]>([]) => []);
   let isRunning = $state(false);
   async function runSystemTests() {
     isRunning = true;
     testResults = [];
     // Test 1: Basic API connectivity 
     await runTest('API Health Check', async () => {
-      const response = await fetch('/api/health');
+      const response = await fetch('/api/health'));
       if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
         return `API is healthy: ${(data as { status?: unknown }).status}`;
@@ -18,7 +18,7 @@
     });
     // Test 2: Database connectivity
     await runTest('Database Connectivity', async () => {
-      const response = await fetch('/api/database/health');
+      const response = await fetch('/api/database/health'));
       if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
         return `Database: ${(data as { status?: unknown }).status}`;
@@ -28,7 +28,7 @@
     });
     // Test 3: Basic AI endpoint
     await runTest('AI Endpoint Test', async () => {
-      const response = await fetch('/api/ai/health');
+      const response = await fetch('/api/ai/health'));
       if ((response as { ok?: unknown; json?: unknown; status?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown; status?: unknown }).json();
         return `AI service: ${(data as { status?: unknown }).status || 'Available'}`;
@@ -39,7 +39,7 @@
     // Test 4: Frontend functionality
     await runTest('Frontend Systems', async () => {
       // Test local storage
-      localStorage.setItem('test-key', 'test-value');
+      localStorage.setItem('test-key', 'test-value'));
       const retrieved = localStorage.getItem('test-key');
       localStorage.removeItem('test-key');
       if (retrieved === 'test-value') {
@@ -142,11 +142,11 @@
       </div>
       <div class="grid grid-cols-3 gap-4 text-center">
         <div>
-          <div class="text-2xl font-bold text-green-600">{testResults.filter(t => t.status === 'success').length}</div>
+          <div class="text-2xl font-bold text-green-600">{testResults.filter(item => item.length)}</div>
           <div class="text-sm text-gray-600 dark:text-gray-400">Passed</div>
         </div>
         <div>
-          <div class="text-2xl font-bold text-red-600">{testResults.filter(t => t.status === 'error').length}</div>
+          <div class="text-2xl font-bold text-red-600">{testResults.filter(item => item.length)}</div>
           <div class="text-sm text-gray-600 dark:text-gray-400">Failed</div>
         </div>
         <div>

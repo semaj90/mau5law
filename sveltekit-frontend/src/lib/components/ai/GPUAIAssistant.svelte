@@ -226,7 +226,7 @@
 
       if (streamingMessageId) {
         updateStreamingMessage(streamingMessageId,
-          `I'm sorry, I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          `I'm sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`,
           true
         );
       }
@@ -331,7 +331,7 @@
     <div class="flex items-center gap-4 text-xs text-muted-foreground">
       <div class="flex items-center gap-1">
         <Signal class="w-3 h-3" />
-        {gpuAIService.getConnectionInfo().using_quic ? 'QUIC/HTTP3' : 'HTTP/2'}
+        {gpuAIService.getConnectionInfo.using_quic ? 'QUIC/HTTP3' : 'HTTP/2'}
       </div>
       <div>Model: {gpuStatus.model}</div>
       {#if gpuStatus.queue_length > 0}

@@ -77,7 +77,7 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
       status: 'error',
       error: 'Failed to retrieve cache statistics',
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

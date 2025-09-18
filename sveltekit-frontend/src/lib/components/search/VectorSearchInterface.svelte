@@ -48,7 +48,7 @@
         limit: 20,
         threshold: 0.1,
         filters: {
-          documentType: selectedFilters.documentType.length > 0 ? selectedFilters.documentType : undefined,
+          documentType: selectedFilters.documentType.length > 0 ? selectedFilters.documentType: undefined,
           jurisdiction: selectedFilters.jurisdiction.length > 0 ? selectedFilters.jurisdiction : undefined,
           riskLevel: selectedFilters.riskLevel.length > 0 ? selectedFilters.riskLevel : undefined,
           minimumConfidence: selectedFilters.minimumConfidence
@@ -346,11 +346,11 @@
             <div class="text-xs text-gray-500">Documents</div>
           </div>
           <div class="bg-gray-800/30 rounded-lg p-3">
-            <div class="text-2xl font-bold text-cyan-400">{Object.keys(searchStats.documentTypes).length}</div>
+            <div class="text-2xl font-bold text-cyan-400">{Object.keys.length}</div>
             <div class="text-xs text-gray-500">Types</div>
           </div>
           <div class="bg-gray-800/30 rounded-lg p-3">
-            <div class="text-2xl font-bold text-cyan-400">{Object.keys(searchStats.jurisdictions).length}</div>
+            <div class="text-2xl font-bold text-cyan-400">{Object.keys.length}</div>
             <div class="text-xs text-gray-500">Jurisdictions</div>
           </div>
           <div class="bg-gray-800/30 rounded-lg p-3">

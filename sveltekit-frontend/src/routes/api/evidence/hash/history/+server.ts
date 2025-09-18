@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         error: "Failed to record verification",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );

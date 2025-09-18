@@ -386,7 +386,7 @@ export class ProductionMoogleService {
     });
   }
 
-  private calculateBounds(positions: Array<): { minX: number; maxX: number; minY: number; maxY: number } {
+  private calculateBounds(positions: Array<any>): { minX: number; maxX: number; minY: number; maxY: number } {
     if (positions.length === 0) {
       return { minX: 0, maxX: 0, minY: 0, maxY: 0 };
     }
@@ -488,7 +488,7 @@ export async function performLegalGraphQuery(
 
     return paths;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error ? error.message: 'Unknown error';
     soraStore.update(state => ({ ...state, error: errorMessage, isLoading: false }));
     throw error;
   }
@@ -516,7 +516,7 @@ export async function generateLegalVisualization(
 
     return visualization;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error ? error.message: 'Unknown error';
     moogleStore.update(state => ({ ...state, error: errorMessage, isRendering: false }));
     throw error;
   }

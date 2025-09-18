@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to discover legal precedents',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message: 'Unknown error'
       },
       { status: 500 }
     );

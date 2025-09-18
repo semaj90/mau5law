@@ -117,7 +117,7 @@ class AIService {
       return result;
 
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown AI service error';
+      const errorMessage = error instanceof Error ? error.message: 'Unknown AI service error';
 
       // Add error message to store
       aiAssistant.addMessage(caseId, {

@@ -87,7 +87,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let frameCount = $state(0);
 
   // Generate unique IDs
-  const componentId = id || `n64-input-${Math.random().toString(36).substr(2, 9)}`;
+  const componentId = id || `n64-input-${Math.random.toString-substr(2, 9)}`;
 
   // Dynamic CSS classes based on props
   const inputClasses = $derived(() => {
@@ -116,7 +116,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   onMount(async () => {
     if (spatialAudio && typeof window !== 'undefined') {
       try {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
         spatialPanner = audioContext.createPanner();
         spatialPanner.positionX.setValueAtTime(0, audioContext.currentTime);
         spatialPanner.positionY.setValueAtTime(0, audioContext.currentTime);
@@ -620,14 +620,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
 
   /* Placeholder styling */
-  .n64-input::placeholder {
+  .n64-input: :placeholder {
     color: #808080;
     font-family: 'Press Start 2P', monospace;
     font-size: 10px;
   }
 
   /* Selection styling */
-  .n64-input::selection {
+  .n64-input: :selection {
     background: rgba(255, 215, 0, 0.3);
     color: #ffffff;
   }

@@ -98,7 +98,7 @@
         request.maxResults = maxResults;
         request.confidenceThreshold = confidenceThreshold;
         if (ragCaseId) request.caseId = ragCaseId;
-        if (documentTypes) request.documentTypes = documentTypes.split(',').map(t => t.trim());
+        if (documentTypes) request.documentTypes = documentTypes.split.map(t => t.trim());
         break;
       case 'rag-upload-document':
         request.filePath = filePath;
@@ -144,7 +144,7 @@
       result = formatMCPResponse(mockResponse);
 
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Unknown error occurred';
+      error = err instanceof Error ? err.message: 'Unknown error occurred';
     } finally {
       loading = false;
     }
@@ -262,7 +262,7 @@
   ### File Structure
   \`\`\`
   src/
-  ├── routes/api/${request.feature?.toLowerCase().replace(/\s+/g, '-')}/
+  ├── routes/api/${request.feature?.toLowerCase.replace(/\s+/g, '-')}/
   │   └── +server.ts
   ├── lib/components/${request.feature}/
   │   ├── ${request.feature}Component.svelte
@@ -318,7 +318,7 @@
   Library: ${request.library}
   Resolved ID: ${resolved}
 
-  Available documentation: ${Object.keys(libraryMap).join(', ')}`
+  Available documentation: ${Object.keys.join(', ')}`
           }]
         };
 

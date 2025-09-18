@@ -47,7 +47,7 @@ export async function GET() {
     return json(
       {
         error: 'Failed to load route data',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString()
       },
       { status: 500 }

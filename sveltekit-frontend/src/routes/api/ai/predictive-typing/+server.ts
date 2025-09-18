@@ -449,7 +449,7 @@ function extractSuggestionFromGlyph(glyph: any, query: string) {
 
 function calculateCacheHitRate(glyphContext: any[], analyticsResult: any): number {
   // Simple heuristic for cache hit rate
-  const glyphCacheHits = glyphContext.filter(g => g.retrieval_metadata?.extraction_confidence > 0.8).length;
+  const glyphCacheHits = glyphContext.filter(item => item.length);
   const analyticsCacheBonus = analyticsResult?.analytics_performance?.cache_hit_rate || 0;
   
   return Math.min(1.0, (glyphCacheHits / Math.max(1, glyphContext.length)) * 0.7 + analyticsCacheBonus * 0.3);

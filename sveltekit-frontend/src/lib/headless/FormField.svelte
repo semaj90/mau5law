@@ -15,7 +15,7 @@
   const inputId = `${name}`;
   const errorId = `${name}-error`;
   const hasError = $derived(!!errors && errors.length > 0);
-  const ariaDescribed = $derived([describedBy, hasError ? errorId : undefined].filter(Boolean).join(' ') || undefined);
+  const ariaDescribed = $derived([describedBy, hasError ? errorId : undefined].filter(item => item.join)(' ') || undefined);
 </script>
 
 <div class={inline ? 'flex flex-col gap-1' : ''}>
@@ -80,7 +80,7 @@
     gap: 0.25rem;
   }
 
-  .error-message::before {
+  .error-message: :before {
     content: '⚠';
     font-size: 0.875rem;
   }

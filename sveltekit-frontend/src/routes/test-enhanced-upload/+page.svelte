@@ -25,7 +25,7 @@
   } as any);
 
   let uploadResults = $state<any[]>([]);
-  let systemStatus = $state<any>({});
+  let systemStatus = $state<any>( );
   let componentErrors = $state<string[]>([]);
 
   function handleUploadComplete(result: unknown) {
@@ -50,8 +50,7 @@
 
     const statusChecks = await Promise.allSettled(
       services.map(async (service) => {
-        if (!service.expected) return { name: service.name, status: 'unknown' };
-        
+        if (!service.expected) return { name: service.name, status: 'unknown' }));
         try {
           const response = await fetch(service.url, { 
             method: 'GET',
@@ -74,9 +73,7 @@
     );
 
     systemStatus = {
-      services: statusChecks.map(result => 
-        (result as { status?: unknown; value?: unknown; filename?: unknown; success?: unknown; enhancedProcessing?: unknown; documentId?: unknown; caseId?: unknown; size?: unknown; type?: unknown; analysis?: unknown; webhookTriggered?: unknown; error?: unknown }).status === 'fulfilled' ? (result as { status?: unknown; value?: unknown; filename?: unknown; success?: unknown; enhancedProcessing?: unknown; documentId?: unknown; caseId?: unknown; size?: unknown; type?: unknown; analysis?: unknown; webhookTriggered?: unknown; error?: unknown }).value : 
-        { name: 'unknown', status: 'error' }
+      services: statusChecks.map.status === 'fulfilled' ? (result as { status?: unknown; value?: unknown; filename?: unknown; success?: unknown; enhancedProcessing?: unknown; documentId?: unknown; caseId?: unknown; size?: unknown; type?: unknown; analysis?: unknown; webhookTriggered?: unknown; error?: unknown }).value:  { name: 'unknown', status: 'error' }
       ),
       timestamp: new Date().toISOString()
     };

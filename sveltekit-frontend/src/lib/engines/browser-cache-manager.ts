@@ -409,7 +409,7 @@ export class BrowserCacheManager {
 
   private updateCacheIndex(): void {
     try {
-      const index: Record<string, Omit<CachedSprite, "data">> = {};
+      const index: Record<string, Omit<CachedSprite, "data"> = {};
 
       const cacheEntries = Array.from(this.memoryCache.entries());
       for (let i = 0; i < cacheEntries.length; i++) {
@@ -464,7 +464,7 @@ export class BrowserCacheManager {
     try {
       const request = indexedDB.deleteDatabase(`${this.config.cachePrefix}db`);
       await new Promise((resolve) => {
-        request.onsuccess = () => resolve(void 0);
+        request.onsuccess = () => resolve(void 0));
         request.onerror = () => resolve(void 0);
       });
     } catch (error: any) {

@@ -128,7 +128,7 @@ TODO: Implement RAG functionality, vector search, document context
 											<p class="text-sm">{(result as { title?: unknown; snippet?: unknown; relevance?: unknown }).snippet}</p>
 											<div class="flex justify-between items-center mt-2">
 												<span class="nes-badge is-success">
-													{Math.round((result as { title?: unknown; snippet?: unknown; relevance?: unknown }).relevance * 100)}% match
+													{Math.round.relevance * 100)}% match
 												</span>
 												<Button size="sm" class="nes-btn">
 													View Document

@@ -180,7 +180,7 @@ Content: ${content.slice(0, 2000)}`;
     return json(
       {
         error: "Failed to process content for tagging",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );
@@ -463,7 +463,7 @@ function attemptJsonRepair(jsonStr: string): string | null {
 
     // Fix missing quotes around keys
     repaired = repaired.replace(
-      /([{,]\s*)([a-zA-Z_][a-zA-Z0-9_]*)\s*:/g,
+      /([{,]\s*) => [a-zA-Z_][a-zA-Z0-9_]*)\s*:/g,
       '$1"$2":',
     );
 

@@ -685,7 +685,7 @@ Provide structured JSON analysis:
       };
     } catch (parseError) {
       return {
-        summary: (result as { document_id?: any; embedding?: any; response?: any }).(response as { ok?: any; json?: any; status?: any }).substring(0, 500),
+        summary: (result as { document_id?: any; embedding?: any; response?: any }).response.substring(0, 500),
         keyPoints: [],
         categories: [],
         confidence: 0.5,

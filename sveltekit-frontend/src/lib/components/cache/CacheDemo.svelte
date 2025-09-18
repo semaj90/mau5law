@@ -60,7 +60,7 @@
       const response = await fetch('/api/cache?action=stats');
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) {
-        cacheStats.set((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).stats);
+        cacheStats.set.stats);
       }
     } catch (error) {
       console.error('Failed to load cache stats:', error);
@@ -72,7 +72,7 @@
       const response = await fetch('/api/cache?action=health');
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) {
-        healthStatus.set((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).health);
+        healthStatus.set.health);
       }
     } catch (error) {
       console.error('Failed to load health status:', error);
@@ -87,7 +87,7 @@
 
     isLoading.set(true);
     try {
-      const tags = selectedTags.split(',').map(t => t.trim()).filter(t => t);
+      const tags = selectedTags.split.map(t => t.trim()).filter(t => t);
       const response = await fetch('/api/cache', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -130,7 +130,7 @@
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) {
         if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).cached) {
-          addTestResult('success', `Retrieved "${cacheKey}": ${JSON.stringify((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).value)}`);
+          addTestResult('success', `Retrieved "${cacheKey}": ${JSON.stringify(value)}`);
         } else {
           addTestResult('warning', `Key "${cacheKey}" not found in cache`);
         }
@@ -209,10 +209,7 @@
 
       // Generate test data
       for (let i = 0; i < testSize; i++) {
-        testData.push({
-          operation: 'set',
-          key: `perf_test_${i}`,
-          value: `Test data ${i} - ${Math.random().toString(36)}`,
+        testData.push.toString(36)}`,
           options: {
             ttl: 300000, // 5 minutes
             priority: i % 3 === 0 ? 'high' : 'medium',
@@ -302,11 +299,7 @@
   // ============================================================================
 
   function addTestResult(type: 'success' | 'error' | 'warning' | 'info', message: string) {
-    testResults.update(results => [
-      {
-        type,
-        message,
-        timestamp: new Date().toLocaleTimeString()
+    testResults.update.toLocaleTimeString()
       },
       ...results.slice(0, 49) // Keep last 50 results
     ]);

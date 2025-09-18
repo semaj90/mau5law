@@ -33,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
     query = '',
     startNodeId = '',
     neo4jDriver = null,
-    config = {},
+    config = ,
     mode = '2d',
     width = 800,
     height = 600,
@@ -50,7 +50,7 @@ https://svelte.dev/e/js_parse_error -->
   const paths: Writable<SoraTraversalPath[]> = writable([]);
   const visualization2D: Writable<Moogle2DOutput | null> = writable(null);
   const visualization3D: Writable<Moogle3DMesh | null> = writable(null);
-  const stats: Writable<any> = writable({});
+  const stats: Writable<any> = writable( );
   const error: Writable<string | null> = writable(null);
 
   // Component instances
@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
   let canvas2D = $state<HTMLCanvasElement;
   let canvas3D: HTMLCanvasElement;
   let container: HTMLDivElement// GPU and memory integrations
-  let gpuIntegration: NESGPUIntegration | null>(null)(null);
+  let gpuIntegration: NESGPUIntegration  | null>(null); const data = null);
   let memoryArch = $state<NESMemoryArchitecture | null >(null);
   let semanticPipeline = $state<SemanticAnalysisPipeline | null >(null);
   let tensorStore = $state<DimensionalTensorStore | null >(null);
@@ -414,7 +414,7 @@ https://svelte.dev/e/js_parse_error -->
     paths.set([]);
     visualization2D.set(null);
     visualization3D.set(null);
-    stats.set({});
+    stats.set( );
     error.set(null);
   }
 
@@ -536,7 +536,7 @@ https://svelte.dev/e/js_parse_error -->
               <span class="path-length">Nodes: {path.nodes.length}</span>
             </div>
             <div class="path-preview">
-              {path.nodes.slice(0, 3).map(n => n.type).join(' → ')}
+              {path.nodes.slice.map-join(' → ')}
               {path.nodes.length > 3 ? '...' : ''}
             </div>
           </div>
@@ -546,7 +546,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 
   <!-- Statistics panel -->
-  {#if Object.keys($stats).length > 0}
+  {#if Object.keys.length > 0}
     <div class="stats-panel">
       <h4>📊 Performance Stats</h4>
       <div class="stat-grid">
@@ -650,14 +650,7 @@ https://svelte.dev/e/js_parse_error -->
     display: none;
   }
 
-  .visualization-canvas {
-    width: 100%;
-    height: 100%;
-    cursor: crosshair;
-    transition: opacity 0.3s ease;
-  }
-
-  .visualization-canvas:hover {
+  .visualization-canv.visualization-canvas:hover {
     opacity: 0.95;
   }
 
@@ -756,7 +749,7 @@ https://svelte.dev/e/js_parse_error -->
     border-color: rgba(74, 158, 255, 0.3);
   }
 
-  .path-(item as { high?: any }).high-score {
+  .path-.high-score {
     border-color: rgba(6, 255, 165, 0.4);
     background: rgba(6, 255, 165, 0.1);
   }

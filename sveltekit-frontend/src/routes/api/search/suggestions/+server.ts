@@ -181,7 +181,7 @@ export const GET: RequestHandler = async ({ url }) => {
         query: url.searchParams.get('q') || '',
         timestamp: new Date().toISOString(),
         fallbackMode: true,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error'
       }
     });
   }
@@ -203,7 +203,7 @@ async function processEnhancedSuggestions(
         score: s.relevanceScore || s.score || 0.8,
         trending: s.trending || false,
         description: s.description || s.explanation,
-        definition: includeDefinitions ? s.definition : undefined,
+        definition: includeDefinitions ? s.definition: undefined,
         practiceArea: s.practiceArea,
         confidence: s.confidence || 0.7,
         source: 'contextual'

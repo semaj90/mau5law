@@ -37,7 +37,7 @@ class SSEConnectionManager {
 
       for (const channel of channels) {
         await this.redisSubscriber.subscribe(channel, (message: string) => {
-          this.broadcastToConnections(channel, message);
+          this.broadcastToConnections(channel, message));
         });
       }
       this.isInitialized = true;

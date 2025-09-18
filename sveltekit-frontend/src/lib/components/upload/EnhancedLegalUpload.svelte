@@ -188,7 +188,7 @@
         if (ragResponse.ok) {
           semanticEmbeddings = await ragResponse.json();
           processingStage = `Semantic analysis complete: ${semanticEmbeddings.data?.som_cluster ? 
-            `Clustered to region [${semanticEmbeddings.(data as { form?: unknown; som_cluster?: unknown }).som_cluster.x},${semanticEmbeddings.(data as { form?: unknown; som_cluster?: unknown }).som_cluster.y}]` : 
+            `Clustered to region [${semanticEmbeddings.data.som_cluster.x},${semanticEmbeddings.data.som_cluster.y}]` : 
             'Vector embeddings generated'}`;
         }
       }
@@ -218,7 +218,7 @@
             title: $form.title,
             evidenceType: $form.evidenceType,
             description: $form.description,
-            tags: $form.tags?.split(',').map(tag => tag.trim()).filter(Boolean),
+            tags: $form.tags?.split.map(tag => tag.trim()).filter(Boolean),
             flags: {
               enableAiAnalysis: $form.enableAiAnalysis,
               enableOcr: $form.enableOcr,
@@ -456,7 +456,7 @@
                     <strong>Semantic Analysis:</strong>
                     <div class="semantic-stats">
                       {semanticEmbeddings.data?.som_cluster ? 
-                        `Clustered to region [${semanticEmbeddings.(data as { form?: unknown; som_cluster?: unknown }).som_cluster.x},${semanticEmbeddings.(data as { form?: unknown; som_cluster?: unknown }).som_cluster.y}]` :
+                        `Clustered to region [${semanticEmbeddings.data.som_cluster.x},${semanticEmbeddings.data.som_cluster.y}]` :
                         'Vector embeddings generated'
                       }
                     </div>
@@ -735,7 +735,7 @@
                 <div class="semantic-visualization">
                   {#if semanticEmbeddings.data?.som_cluster}
                     <p class="nes-text is-primary">
-                      🗺️ Document clustered to region: [{semanticEmbeddings.(data as { form?: unknown; som_cluster?: unknown }).som_cluster.x}, {semanticEmbeddings.(data as { form?: unknown; som_cluster?: unknown }).som_cluster.y}]
+                      🗺️ Document clustered to region: [{semanticEmbeddings.data.som_cluster.x}, {semanticEmbeddings.data.som_cluster.y}]
                     </p>
                   {:else}
                     <p class="nes-text is-success">✅ Vector embeddings generated successfully</p>

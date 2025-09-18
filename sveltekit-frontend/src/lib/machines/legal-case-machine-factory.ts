@@ -122,8 +122,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
 
 /**
  * Svelte integration helper - use with $page params
- * Example usage in +page.svelte:
- * 
+ * Example usage in +page.svelte: * 
  * ```svelte
  * <script>
  *   import { page } from '$app/stores';

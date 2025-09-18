@@ -18,7 +18,7 @@ export const GET: RequestHandler = async () => {
     console.error('Health check error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

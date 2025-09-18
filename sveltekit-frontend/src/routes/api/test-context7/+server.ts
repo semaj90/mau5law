@@ -38,7 +38,7 @@ const summarize = (r: LibraryDocResult) => {
     tokenCount: ok ? (r.metadata?.tokenCount ?? 0) : 0,
     snippets: ok ? (r.snippets?.length ?? 0) : 0,
     firstSnippet,
-    error: isErrorResult(r) ? r.error : null,
+    error: isErrorResult(r) ? r.error: null,
   };
 };
 
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
     // Test remaining helper functions with event.fetch
     const [svelteRunes, xstateMachine]: LibraryDocResult[] = await Promise.all([
       getSvelte5Docs('runes', fetch).catch((e: unknown) => ({
-        error: e instanceof Error ? e.message : String(e),
+        error: e instanceof Error ? e.message: String(e),
       })),
       getXStateDocs('machine', fetch).catch((e: unknown) => ({
         error: e instanceof Error ? e.message : String(e),
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
     });
   } catch (error: unknown) {
     console.error('❌ Context7 test error:', error);
-    const message = error instanceof Error ? error.message : 'Context7 test failed';
+    const message = error instanceof Error ? error.message: 'Context7 test failed';
 
     return json(
       {

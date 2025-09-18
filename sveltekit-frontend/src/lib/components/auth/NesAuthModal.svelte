@@ -11,9 +11,8 @@
   let {
     open = false,
     title = 'Sign in',
-    onClose = () => {},
-    onSubmit = () => {}
-  }: Props = $props();
+    onClose = () => ,
+    onSubmit = () => }: Props = $props();
 
   let email = $state('');
   let password = $state('');

@@ -23,8 +23,7 @@
             serverAlertCounts = aData.counts || serverAlertCounts;
             if (serverAlerts.some(a=>a.Level==='crit'||a.level==='crit')) highestAlertLevel='crit'; else if (serverAlerts.some(a=>a.Level==='warn'||a.level==='warn')) highestAlertLevel='warn'; else highestAlertLevel='none';
           }
-        } catch {}
-      }, 3000);
+        } catch }, 3000);
     } else {
       if (fastAlertInterval) clearInterval(fastAlertInterval);
     }
@@ -76,7 +75,7 @@
   let lastProfilingFetched: number | null = $state(null);
 
   async function fetchCudaEndpoint(path: string) {
-    try { const r = await fetch(`/api/cuda${path}`); if (r.ok) return await r.json(); } catch {}; return null;
+    try { const r = await fetch(`/api/cuda${path}`); if (r.ok) return await r.json(); } catch ; return null;
   }
   async function refreshEnginesWorkersProfiling() {
     const [eng, wrk, prof, profHist] = await Promise.all([
@@ -151,8 +150,7 @@
             }
             return;
           }
-        } catch {}
-      }
+        } catch }
 
       // Simulate realistic cache metrics based on performance optimization principles
       const mockData = {
@@ -195,9 +193,7 @@
         }
         return;
       }
-    } catch {}
-
-    // Simulate WebAssembly metrics
+    } catch // Simulate WebAssembly metrics
     const mockWasm = {
       modules: [
         {
@@ -258,9 +254,7 @@
         }
         return;
       }
-    } catch {}
-
-    // Simulate Node.js metrics
+    } catch // Simulate Node.js metrics
     const mockNode = {
       eventLoop: {
         lag: Math.random() * 25 + 2, // 2-27ms lag
@@ -300,9 +294,7 @@
         serviceHealth.set(data.services || []);
         return;
       }
-    } catch {}
-
-    // Mock service health
+    } catch // Mock service health
     const services = [
       { name: 'PostgreSQL', status: 'running', port: 5432, health: 'excellent', latency: 2.1, uptime: 345600 },
       { name: 'Redis', status: 'running', port: 6379, health: 'good', latency: 0.8, uptime: 345550 },
@@ -347,9 +339,7 @@
           if (cacheRecentSeries.length > 300) cacheRecentSeries.shift();
         }
       }
-    } catch {}
-
-    await Promise.all([
+    } catch await Promise.all([
       loadCacheMetrics(),
       loadWasmMetrics(),
       loadNodeMetrics(),
@@ -388,13 +378,11 @@
           if (typeof redisBytes === 'number') historyRedisMemSeries.push(redisBytes/1024/1024);
         }
       }
-    } catch {}
-    // anomaly stats
+    } catch // anomaly stats
     try {
       const aRes = await fetch('/api/cuda/metrics/anomalies');
       if (aRes.ok) { anomalyStats = await aRes.json(); }
-    } catch {}
-  }
+    } catch }
 
   async function load() {
     try {
@@ -439,9 +427,7 @@
             }
           }
         }
-      } catch {}
-
-      // Load enhanced metrics
+      } catch // Load enhanced metrics
   await loadAllEnhancedMetrics();
 
   error.set(null);
@@ -542,7 +528,7 @@
     <div class="text-xs text-gray-500">No recent server alerts</div>
   {:else}
     <ul class="space-y-1 text-sm max-h-48 overflow-auto pr-1">
-      {#each serverAlerts.slice(-40).reverse() as a}
+      {#each serverAlerts.slice.reverse() as a}
   <li class="flex items-start gap-2 p-2 rounded border text-xs {a.level === 'crit' ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-700' : 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-700'} {a.anomaly ? 'outline outline-2 outline-indigo-400/70 dark:outline-indigo-500/60' : ''}">
           <span class="mt-0.5 font-bold {a.level === 'crit' ? 'text-red-600 dark:text-red-300' : 'text-amber-600 dark:text-amber-300'}">{a.level?.toUpperCase?.() || a.level}</span>
           <span class="flex-1">{a.message}</span>
@@ -929,7 +915,7 @@
     <div class="p-4 border rounded bg-white/50 shadow">
       <h3 class="font-medium mb-3">Cache Distribution by Type</h3>
       <div class="space-y-2 text-sm">
-        {#each Object.entries($cacheMetrics.types || {}) as [type, count]}
+        {#each Object.entries($cacheMetrics.types || ) as [type, count]}
         <div class="flex items-center justify-between">
           <span class="capitalize">{type.replace('-', ' ')}:</span>
           <div class="flex items-center gap-2">

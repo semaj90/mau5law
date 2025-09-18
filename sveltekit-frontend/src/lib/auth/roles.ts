@@ -244,7 +244,7 @@ export class AccessControl {
    */
   static canDelegate(userRole: UserRole): boolean {
     const role = ROLES[userRole];
-    return role ? role.canDelegate : false;
+    return role ? role.canDelegate: false;
   }
 
   /**

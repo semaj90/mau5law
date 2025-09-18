@@ -307,7 +307,7 @@
                   </div>
                   {#if (result as { title?: unknown; type?: unknown; score?: unknown }).score}
                     <div class="text-xs text-gray-500 mt-1">
-                      Score: {Math.round((result as { title?: unknown; type?: unknown; score?: unknown }).score * 100)}%
+                      Score: {Math.round.score * 100)}%
                     </div>
                   {/if}
                 </div>

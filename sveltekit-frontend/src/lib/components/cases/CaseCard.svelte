@@ -2,7 +2,7 @@
 
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { createContextMenu } from '@melt-ui/svelte';
+  import * as ContextMenu from 'bits-ui';
   import { fly, scale } from 'svelte/transition';
   import {
     FileText,
@@ -58,100 +58,13 @@
 
   let {
     caseItem: caseData,
-    onView = () => {},
-    onEdit = () => {},
-    onArchive = () => {},
-    onDelete = () => {}
-  } = $props()
+    onView = () => ,
+    onEdit = () => ,
+    onArchive = () => ,
+    onDelete = () => } = $props()
 
   // Create context menu
-  const {
-    elements: { trigger, menu, item, separator },
-    states: { open }
-  } = createContextMenu({
-    forceVisible: true,
-  })
-
-  // Status configurations
-  const statusConfig = {
-    active: {
-      icon: CheckCircle,
-      class: 'nier-badge-success',
-      label: 'Active'
-    },
-    pending: {
-      icon: Clock,
-      class: 'nier-badge-warning',
-      label: 'Pending'
-    },
-    closed: {
-      icon: CheckCircle,
-      class: 'nier-badge-error',
-      label: 'Closed'
-    },
-    archived: {
-      icon: Archive,
-      class: 'text-nier-gray dark:text-nier-silver',
-      label: 'Archived'
-    }
-  }
-
-  // Priority configurations
-  const priorityConfig = {
-    critical: {
-      class: 'priority-critical',
-      icon: '🚨',
-      color: 'text-harvard-crimson'
-    },
-    high: {
-      class: 'priority-high',
-      icon: '⚠️',
-      color: 'text-digital-orange'
-    },
-    medium: {
-      class: 'priority-medium',
-      icon: '📌',
-      color: 'text-nier-amber'
-    },
-    low: {
-      class: 'priority-low',
-      icon: '📍',
-      color: 'text-digital-green'
-    }
-  }
-
-  // Format date
-  const formatDate = (date: Date | string) => {
-    const d = new Date(date)
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    }).format(d)
-  }
-
-  // Calculate days ago
-  const daysAgo = (date: Date | string) => {
-    const d = new Date(date)
-    const now = new Date()
-    const diff = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24))
-    if (diff === 0) return 'Today'
-    if (diff === 1) return 'Yesterday'
-    return `${diff} days ago`
-  }
-
-  const currentStatus = statusConfig[caseData.status]
-  const currentPriority = priorityConfig[caseData.priority]
-</script>
-
-<Card.Root
-  class="case-nier-bits-card {currentPriority.class} group relative overflow-hidden"
-  role="article"
-  aria-label="Case {caseData.id}"
->
-  <!-- Background Pattern -->
-  <div class="absolute inset-0 opacity-5 dark:opacity-10 pointer-events-none">
-    <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' stroke=\'%23000\' stroke-width=\'0.5\' opacity=\'0.3\'%3E%3Cpath d=\'M0 0h40v40H0z\'/%3E%3Cpath d=\'M0 0l40 40M40 0L0 40\'/%3E%3C/g%3E%3C/svg%3E');"></div>
+  // Melt UI component creation removed - replace with bits-ui declarative components"></div>
   </div>
 
   <!-- Card Content -->
@@ -272,7 +185,7 @@
             {:else}
               <div class="w-6 h-6 rounded-full bg-nier-gradient-crimson flex items-center justify-center">
                 <span class="text-xs font-bold text-nier-white">
-                  {caseData.assignee.name.charAt(0).toUpperCase()}
+                  {caseData.assignee.name.charAt.toUpperCase()}
                 </span>
               </div>
             {/if}

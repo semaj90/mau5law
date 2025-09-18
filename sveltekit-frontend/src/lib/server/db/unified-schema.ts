@@ -679,7 +679,7 @@ export const notes = pgTable(
     // Type-safe JSON fields
     tags: jsonb("tags").$type<string[]>().default([]).notNull(),
     metadata: jsonb("metadata")
-      .$type<Record<string, unknown>>()
+      .$type<Record<string, unknown>()
       .default({})
       .notNull(),
 
@@ -736,7 +736,7 @@ export const savedCitations = pgTable(
     citationData: jsonb("citation_data").$type<Citation>().notNull(),
     tags: jsonb("tags").$type<string[]>().default([]).notNull(),
     metadata: jsonb("metadata")
-      .$type<Record<string, unknown>>()
+      .$type<Record<string, unknown>()
       .default({})
       .notNull(),
 

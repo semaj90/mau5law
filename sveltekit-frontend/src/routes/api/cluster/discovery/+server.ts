@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     console.error('Service Discovery error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 });
   }
@@ -211,7 +211,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         service,
         instances,
-        healthy: instances.filter(i => i.status === 'healthy').length,
+        healthy: instances.filter(item => item.length),
         total: instances.length,
         timestamp: Date.now()
       });
@@ -251,7 +251,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 });
   }
@@ -261,7 +261,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 async function getServiceRegistry(): Promise<DiscoveryRegistry> {
   const allServices = Array.from(serviceRegistry.values()).flat();
-  const healthyServices = allServices.filter(s => s.status === 'healthy').length;
+  const healthyServices = allServices.filter(item => item.length);
 
   const services: Record<string, ServiceInstance[]> = {};
   serviceRegistry.forEach((instances, name) => {
@@ -390,7 +390,7 @@ async function performFullHealthCheck(force: boolean = false): Promise<any> {
     allServices.map(service => checkServiceHealth(service.id, force))
   );
 
-  const healthy = results.filter(r => r.status === 'healthy').length;
+  const healthy = results.filter(item => item.length);
   const total = results.length;
 
   return {

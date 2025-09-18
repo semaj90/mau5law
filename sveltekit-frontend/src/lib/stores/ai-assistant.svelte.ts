@@ -16,7 +16,7 @@ export class AIAssistantStore {
   availableBackends = $state<Backend[]>(['vllm', 'ollama', 'webasm', 'go-micro']);
   
   // Performance metrics
-  backendLatency = $state<Record<Backend, number>>({
+  backendLatency = $state<Record<Backend, number>({
     vllm: 0,
     ollama: 0,
     webasm: 0,
@@ -183,7 +183,7 @@ export class AIAssistantStore {
     // Semantic search through history for relevant context
     const searchResults = await this.searchConversationHistory(query);
     const relevantMessages = searchResults
-      .filter(result => (result as { score?: any; item?: any }).score && (result as { score?: any; item?: any }).score < 0.5) // Lower score = better match in Fuse.js
+      .filter(item => item.score) && (result as { score?: any; item?: any }).score < 0.5) // Lower score = better match in Fuse.js
       .slice(0, 5)
       .map(result => (result as { score?: any; item?: any }).item);
 
@@ -428,7 +428,7 @@ export class AIAssistantStore {
   /**
    * Get health scores for all backends
    */
-  private async getBackendHealthScores(): Promise<Record<Backend, number>> {
+  private async getBackendHealthScores(): Promise<Record<Backend, number> {
     try {
       const healthResponse = await fetch('/api/ai/health');
       const healthData = await healthResponse.json();

@@ -1,37 +1,71 @@
-# Global options
+#!/usr/bin/env pwsh
+# PowerShell wrapper that emits the Caddyfile content to a generated file.
+# This prevents PowerShell from trying to parse Caddy directives (like @matchers and braces)
+# when the file is opened as a PowerShell script in some editors/linters.
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+$caddy = @'
+# Global options for local development
 {
     admin off
     auto_https off
+    log {
+        level INFO
+    }
 }
 
-# Main application reverse proxy with dynamic port support
+# Main app reverse proxy (HTTP) - Fixed for local SvelteKit
 :8080 {
     # Enable CORS for API endpoints
     header {
         Access-Control-Allow-Origin *
         Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
         Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+        -Server
     }
 
-    # Load balance across multiple SvelteKit instances
-    reverse_proxy frontend:5173 frontend:5174 frontend:5175 frontend:5176 frontend:5177 frontend:5178 frontend:5179 {
+    # Handle preflight OPTIONS requests
+    @cors_preflight method OPTIONS
+    respond @cors_preflight 204
+
+    # Proxy to local SvelteKit instances.
+    # Upstream ports are picked from env vars if present, otherwise fall back to 5173/5174.
+    # This allows "dynamic" dev-port selection by setting VITE_PORT_1/VITE_PORT_2 or leaving defaults.
+    reverse_proxy localhost:{env.VITE_PORT_1 5173} localhost:{env.VITE_PORT_2 5174} {
         header_up Host {host}
-        header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
+        header_up X-Real-IP {remote_host}
         lb_policy round_robin
         health_uri /
         health_interval 30s
         health_timeout 5s
+        fail_duration 30s
+        transport http {
+            versions h2c
+        }
     }
 
-    # Handle WebSocket connections for HMR across all ports
-    @websocket {
+    # Handle WebSocket connections (Vite HMR) and route to the same upstream set.
+    @ws {
         header Connection *Upgrade*
         header Upgrade websocket
     }
-    reverse_proxy @websocket frontend:5173 frontend:5174 frontend:5175 frontend:5176 frontend:5177 frontend:5178 frontend:5179 {
+    reverse_proxy @ws localhost:{env.VITE_PORT_1 5173} localhost:{env.VITE_PORT_2 5174} {
         lb_policy least_conn
+        transport http {
+            versions h2c
+        }
+    }
+
+    # Optional: if you run a QUIC-enabled dev server on a different backend port, set env CADDY_QUIC_BACKEND_PORT
+    @quic_ws {
+        header Connection *Upgrade*
+        header Upgrade websocket
+        protocol http/3
+    }
+    reverse_proxy @quic_ws localhost:{env.CADDY_QUIC_BACKEND_PORT 0} {
+        lb_policy least_conn
+        # If CADDY_QUIC_BACKEND_PORT is not set (0), this upstream will be ignored by health checks.
     }
 
     # Logging
@@ -42,33 +76,53 @@
     }
 }
 
-# Individual port access for development (5173-5179)
-:5170 { reverse_proxy frontend:5173 }
-:5171 { reverse_proxy frontend:5174 }
-:5172 { reverse_proxy frontend:5175 }
-:5180 { reverse_proxy frontend:5176 }
-:5181 { reverse_proxy frontend:5177 }
-:5182 { reverse_proxy frontend:5178 }
-:5183 { reverse_proxy frontend:5179 }
-
-# HTTPS configuration (optional, for production)
-https://localhost {
-    tls internal
-
-    # Proxy to SvelteKit frontend
-    reverse_proxy frontend:5173 {
-        header_up Host {host}
-        header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
+# API Gateway for local services - Fixed for local development
+:8090 {
+    # Enable CORS
+    header {
+        Access-Control-Allow-Origin *
+        Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
     }
 
-    # Handle WebSocket connections
-    @websocket {
-        header Connection *Upgrade*
-        header Upgrade websocket
+    # Handle preflight OPTIONS
+    @cors_preflight method OPTIONS
+    respond @cors_preflight 200
+
+    # TensorRT Bridge (our new optimized bridge)
+    handle_path /api/tensorrt/* {
+        reverse_proxy localhost:8087 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+        }
     }
-    reverse_proxy @websocket frontend:5173
+
+    # Original TensorRT Bridge
+    handle_path /api/ai/* {
+        reverse_proxy localhost:8086 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+        }
+    }
+
+    # Ollama API
+    handle_path /api/ollama/* {
+        reverse_proxy localhost:11434 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+        }
+    }
+
+    # Go microservices (if any are running)
+    handle_path /api/go/* {
+        reverse_proxy localhost:8095 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+        }
+    }
+
+    # Default response
+    respond "API Gateway - Legal AI Platform" 200
 
     log {
         output stdout
@@ -77,29 +131,51 @@ https://localhost {
     }
 }
 
-# API endpoints (if you have separate backend services)
-:8090 {
-    # Proxy to Go microservices
-    handle /api/legal/* {
-        reverse_proxy host.docker.internal:8095 {
-            header_up Host {host}
-            header_up X-Real-IP {remote}
-            header_up X-Forwarded-For {remote}
-        }
+# Development port access (direct access to SvelteKit instances)
+:5170 {
+    reverse_proxy localhost:5173 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
     }
+}
 
-    # Proxy to FastAPI embedding service
-    handle /api/embed/* {
-        reverse_proxy fastapi-embed:8000 {
-            header_up Host {host}
-            header_up X-Real-IP {remote}
-            header_up X-Forwarded-For {remote}
-        }
+:5171 {
+    reverse_proxy localhost:5174 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
     }
+}
 
-    log {
-        output stdout
-        format console
-        level INFO
+# Health check endpoint
+:8888 {
+    header Content-Type "application/json"
+
+    @health {
+        path /health
     }
+    respond @health "{\"status\":\"healthy\",\"timestamp\":\"{time}\",\"services\":{\"sveltekit\":\"localhost:5173,5174\",\"tensorrt_optimized\":\"localhost:8087\",\"tensorrt_original\":\"localhost:8086\",\"ollama\":\"localhost:11434\"},\"load_balancer\":\"round_robin\",\"cors\":\"enabled\"}" 200
+
+    respond "Caddy Health Check" 200
+}
+'@
+
+# Write the Caddyfile content to a generated file so editors/linters won't attempt
+# to parse the directives when this script is opened as PowerShell.
+
+# Determine script directory robustly: prefer $PSScriptRoot when available, otherwise fall back to the invocation path.
+$scriptDir = if ($PSScriptRoot -and (Test-Path $PSScriptRoot)) {
+    $PSScriptRoot
+} else {
+    Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
+}
+
+$outPath = Join-Path -Path $scriptDir -ChildPath 'Caddyfile.generated'
+
+try {
+    # Use Out-File with UTF8 encoding to ensure consistent encoding across platforms.
+    $caddy | Out-File -FilePath $outPath -Encoding utf8 -Force
+    Write-Host "Generated Caddyfile written to: $outPath"
+} catch {
+    Write-Error "Failed to write generated Caddyfile: $_"
+    exit 1
 }

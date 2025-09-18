@@ -8,7 +8,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
 
 // Auto-generated default export
-export default {};
+export default ;
 </script>
   
   

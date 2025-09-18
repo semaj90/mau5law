@@ -2,7 +2,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
-  import { Dialog as BitsDialog } from 'bits-ui';
+  // import { Dialog as BitsDialog } from 'bits-ui';
   import { fade, fly } from 'svelte/transition';
   import { cn } from '$lib/utils/cn';
 
@@ -31,8 +31,7 @@
     content?: import('svelte').Snippet;
   }
 
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     onOpenChange,
     size = 'md',
     legal = false,
@@ -43,7 +42,7 @@
     contentClass = '',
     children,
     content
-  }: DialogProps = $props();
+   }: DialogProps = $props();
 
   // Reactive size classes using $derived
   let sizeClasses = $derived({
@@ -75,7 +74,7 @@
       'font-gothic': legal
     },
     contentClass
-  ));
+  );
 
   // Reactive overlay classes using $derived
   let overlayClasses = $derived(cn(
@@ -93,13 +92,23 @@
     onOpenChange?.(newOpen);
   }
 
+  // Handle close dialog
+  function handleClose() {
+    handleOpenChange(false);
+  }
+</script>
 
 <!-- SSR-safe Dialog rendering with proper hydration -->
-<BitsDialog.Root {open} openchange={handleOpenChange}>
-  {@render children?.()}
+{#if open}
+  <div class="dialog-overlay" on:click={handleClose} role="presentation">
+    <div class="dialog-content" on:click|stopPropagation role="dialog" aria-modal="true">
+      {@render children?.()}
+    </div>
+  </div>
+{/if}
 
-  <!-- Portal rendering for dialog content with SSR compatibility -->
-  <BitsDialog.Portal>
+<!-- Portal rendering for dialog content with SSR compatibility -->
+<!-- <BitsDialog.Portal>
     <BitsDialog.Overlay
       class={overlayClasses}
       data-ssr-dialog-overlay="true"
@@ -112,13 +121,13 @@
       tabindex="-1"
     >
       {@render content?.()}
-    </BitsDialog.Content>
+    <!-- </BitsDialog.Content>
   </BitsDialog.Portal>
-</BitsDialog.Root>
+</BitsDialog.Root> -->
+
 
 <!-- Export sub-components for easy use -->
-<script lang="ts" module>
-
+<!-- <script lang="ts" module>
   export { BitsDialog as Dialog };
 
   // Re-export commonly used sub-components
@@ -129,15 +138,12 @@
   export const DialogTitle = BitsDialog.Title;
   export const DialogDescription = BitsDialog.Description;
   export const DialogClose = BitsDialog.Close;
-;
   // Create custom header and footer components since they don't exist in newer Bits UI
   export const DialogHeader = 'div';
   export const DialogFooter = 'div';
+</script> -->
 
-
-<style>/* @unocss-include */ {}
-/* Enhanced dialog animations for legal AI context */ {}
-  :global(.bits-dialog-overlay) {
+<style>/* @unocss-include */ /* Enhanced dialog animations for legal AI context */ :global(.bits-dialog-overlay) {
     animation: overlay-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -164,13 +170,8 @@
       transform: translate(-50%, -50%) scale(1);
     }
   }
-/* Legal AI specific styling */ {}
-  :global(.nier-bits-dialog) {
-background: linear-gradient( {}
-135deg, {}
-var(--color-nier-bg-primary) 0%, {}
-var(--color-nier-bg-secondary) 100% {}
-    );
+/* Legal AI specific styling */ :global(.nier-bits-dialog) {
+background: linear-gradient( 135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100% );
     border: 2px solid var(--color-nier-border-primary);
   }
 
@@ -181,29 +182,15 @@ var(--color-nier-bg-secondary) 100% {}
     left: 0;
     right: 0;
     height: 4px;
-background: linear-gradient( {}
-90deg, {}
-var(--color-nier-accent-warm), {}
-var(--color-nier-accent-cool), {}
-var(--color-nier-accent-warm) {}
-    );
+background: linear-gradient( 90deg, var(--color-nier-accent-warm), var(--color-nier-accent-cool), var(--color-nier-accent-warm) );
   }
-/* Evidence analysis specific styling */ {}
-  :global([data-evidence-analysis] .bits-dialog-content) {
-background-image: {}
-linear-gradient(45deg, transparent 25%, rgba(0,0,0,0.02) 25%), {}
-linear-gradient(-45deg, transparent 25%, rgba(0,0,0,0.02) 25%), {}
-linear-gradient(45deg, rgba(0,0,0,0.02) 75%, transparent 75%), {}
-      linear-gradient(-45deg, rgba(0,0,0,0.02) 75%, transparent 75%);
+/* Evidence analysis specific styling */ :global([data-evidence-analysis] .bits-dialog-content) {
+background-image: linear-gradient(45deg, transparent 25%, rgba(0,0,0,0.02) 25%), linear-gradient(-45deg, transparent 25%, rgba(0,0,0,0.02) 25%), linear-gradient(45deg, rgba(0,0,0,0.02) 75%, transparent 75%), linear-gradient(-45deg, rgba(0,0,0,0.02) 75%, transparent 75%);
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
   }
-/* Case management specific styling */ {}
-  :global([data-case-management] .bits-dialog-content) {
-box-shadow: {}
-0 20px 25px -5px rgba(0, 0, 0, 0.1), {}
-0 10px 10px -5px rgba(0, 0, 0, 0.04), {}
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+/* Case management specific styling */ :global([data-case-management] .bits-dialog-content) {
+box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 /* SSR-specific optimizations for dialog rendering */
   :global([data-ssr-dialog-overlay]) {
@@ -256,13 +243,11 @@ box-shadow: {}
     }
   }
 
-/* Enhanced focus and accessibility */ {}
-  :global(.bits-dialog-content:focus) {
+/* Enhanced focus and accessibility */ :global(.bits-dialog-content:focus) {
     outline: 2px solid var(--color-nier-border-primary);
     outline-offset: 2px;
   }
-/* Responsive adjustments */ {}
-  @media (max-width: 640px) {
+/* Responsive adjustments */ @media (max-width: 640px) {
     :global(.bits-dialog-content) {
       margin: 1rem;
       max-width: calc(100vw - 2rem);

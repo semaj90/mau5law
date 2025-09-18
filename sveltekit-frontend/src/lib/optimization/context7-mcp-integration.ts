@@ -289,7 +289,7 @@ export class Context7MCPOptimizationIntegrator extends EventEmitter {
     } catch (error: any) {
       const errorResponse: Context7MCPResponse = {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
       };
 
       this.emit("context7_request_error", { request, error });
@@ -619,7 +619,7 @@ const db = drizzle(pool, {
   private async estimatePerformanceImpact(
     area: string,
     context: NonNullable<Context7MCPRequest["optimization_context"]>
-  ): Promise<NonNullable<Context7MCPResponse["performance_impact"]>> {
+  ): Promise<NonNullable<Context7MCPResponse["performance_impact"]> {
     const impactEstimates: Record<
       string,
       NonNullable<Context7MCPResponse["performance_impact"]>

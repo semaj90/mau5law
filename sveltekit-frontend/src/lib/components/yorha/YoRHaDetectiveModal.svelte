@@ -7,7 +7,7 @@
   let { 
     showModal = false, 
     title = '', 
-    onClose = () => {},
+    onClose = () => ,
     children 
   } = $props();
 
@@ -147,14 +147,12 @@
       opacity: 1;
     }
   }
-/* Responsive */ {}
-  @media (max-width: 640px) {
+/* Responsive */ @media (max-width: 640px) {
     .modal-panel {
       max-width: 95vw;
       margin: 1rem;
     }
-.modal-header, {}
-    .modal-content {
+.modal-header, .modal-content {
       padding: 1rem;
     }
   }

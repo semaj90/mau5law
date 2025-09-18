@@ -286,7 +286,7 @@ export class SelfPromptingIntelligence {
 
   private calculateConfidence(query: string): number {
     // Calculate confidence based on query clarity, specificity, and known patterns
-    const specificTerms = query.split(/\s+/).filter(word => word.length > 4).length;
+    const specificTerms = query.split(/\s+/).filter(item => item.length);
     const totalWords = query.split(/\s+/).length;
     const specificityRatio = specificTerms / totalWords;
 
@@ -417,7 +417,7 @@ export class SelfPromptingIntelligence {
     // Based on user's previous interaction patterns
     const recentCategories = intent.context.previousQueries.slice(-3);
 
-    if (recentCategories.filter(cat => cat === 'legal-research').length >= 2) {
+    if (recentCategories.filter(item => item.length) >= 2) {
       followUps.push({
         id: `followup-legal-${Date.now()}`,
         suggestion: `Should I prepare a comprehensive legal brief based on your recent research?`,

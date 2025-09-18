@@ -39,12 +39,12 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
     // Add filters (use correct schema)
     if (caseId) {
       conditions.push(
-        eq(useAiReports ? aiReports.caseId : reports.caseId, caseId)
+        eq(useAiReports ? aiReports.caseId: reports.caseId, caseId)
       );
     }
     if (reportType) {
       conditions.push(
-        eq(useAiReports ? aiReports.reportType : reports.reportType, reportType)
+        eq(useAiReports ? aiReports.reportType: reports.reportType, reportType)
       );
     }
     if (status && !useAiReports) {
@@ -55,7 +55,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
     if (search) {
       conditions.push(
         or(
-          like(useAiReports ? aiReports.title : reports.title, `%${search}%`),
+          like(useAiReports ? aiReports.title: reports.title, `%${search}%`),
           like(
             useAiReports ? aiReports.content : reports.content,
             `%${search}%`
@@ -71,8 +71,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
     const orderColumn =
       sortBy === "title"
         ? useAiReports
-          ? aiReports.title
-          : reports.title
+          ? aiReports.title: reports.title
         : sortBy === "reportType"
           ? useAiReports
             ? aiReports.reportType
@@ -116,8 +115,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
             .select()
             .from(canvasStates)
             .where(eq(canvasStates.caseId, report.caseId))
-            .limit(1);
-
+            .limit(1)));
           return {
             ...report,
             canvasState: canvasState[0] || null,

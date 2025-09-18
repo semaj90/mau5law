@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Use the message directly or get the last user message from messages array
-    const userMessage = message || messages?.filter(m => m.role === 'user').pop()?.content || '';
+    const userMessage = message || messages?.filter(item => item.pop)()?.content || '';
 
     if (!userMessage) {
       return json({
@@ -284,7 +284,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Failed to process chat request',
-      details: error instanceof Error ? error.message : String(error),
+      details: error instanceof Error ? error.message: String(error),
       processingTimeMs: Date.now() - startTime,
       timestamp: new Date().toISOString()
     }, { status: 500 });

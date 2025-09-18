@@ -138,8 +138,7 @@
       const executionTime = performance.now() - startTime;
       similarityResults = results;
       // Find top similarities
-      const topSimilarities = Array.from(results)
-        .map((similarity, index) => ({ similarity, index }))
+      const topSimilarities = Array.from.map((similarity, index) => ({ similarity, index }))
         .sort((a, b) => b.similarity - a.similarity)
         .slice(0, 10);
       console.log(`✅ ${selectedScenario.name} completed in ${Math.round(executionTime)}ms`);
@@ -407,7 +406,7 @@
               {#each benchmarkResults as result}
                 <tr class="border-b border-gray-700/50">
                   <td class="py-2 px-4 font-medium">{(result as { operation?: any; time?: any; throughput?: any }).operation}</td>
-                  <td class="py-2 px-4 text-right font-mono">{Math.round((result as { operation?: any; time?: any; throughput?: any }).time)}</td>
+                  <td class="py-2 px-4 text-right font-mono">{Math.round.time)}</td>
                   <td class="py-2 px-4 text-right font-mono">{formatThroughput((result as { operation?: any; time?: any; throughput?: any }).throughput)}</td>
                   <td class="py-2 px-4 text-right">
                     <span class="{(result as { operation?: any; time?: any; throughput?: any }).throughput > 2000 ? 'text-green-400' : (result as { operation?: any; time?: any; throughput?: any }).throughput > 1000 ? 'text-yellow-400' : 'text-red-400'}">
@@ -440,7 +439,7 @@
         <div class="bg-gray-700 rounded-lg p-4">
           <h4 class="font-semibold mb-2">Top 10 Similarities</h4>
           <div class="grid grid-cols-2 gap-2 text-sm font-mono">
-            {#each Array.from(similarityResults).slice(0, 10) as similarity, index}
+            {#each Array.from.slice(0, 10) as similarity, index}
               <div class="flex justify-between">
                 <span class="text-gray-400">#{index + 1}:</span>
                 <span class="{similarity > 0.8 ? 'text-green-400' : similarity > 0.6 ? 'text-yellow-400' : 'text-gray-300'}">

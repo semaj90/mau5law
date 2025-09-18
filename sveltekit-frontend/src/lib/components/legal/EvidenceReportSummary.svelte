@@ -93,7 +93,7 @@
 
   Case ID: ${caseId}
   Evidence Item: ${report.evidence.itemNumber}
-  Report Type: ${report.type.replace("_", " ").toUpperCase()}
+  Report Type: ${report.type.replace.toUpperCase()}
   Priority Level: ${report.priority.toUpperCase()}
   Status: ${report.status.toUpperCase()}
 
@@ -191,7 +191,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `evidence-report-${evidenceId}-${new Date().toISOString().split("T")[0]}.md`;
+    a.download = `evidence-report-${evidenceId}-${new Date().toISOString.split("T")[0]}.md`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -229,7 +229,7 @@
                 reportData.status
               )}"
             >
-              {reportData.status.replace("_", " ").toUpperCase()}
+              {reportData.status.replace.toUpperCase()}
             </span>
           </div>
           <div

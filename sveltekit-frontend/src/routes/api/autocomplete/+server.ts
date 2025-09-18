@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         message: 'Autocomplete service temporarily unavailable',
-        details: err instanceof Error ? err.message : 'Unknown error',
+        details: err instanceof Error ? err.message: 'Unknown error',
       },
       { status: 500 }
     );
@@ -248,7 +248,7 @@ async function getDatabaseSuggestions(
                 spr.frequency,
                 spr.correlation_strength as prosecution_correlation
             FROM semantic_phrases_ranking spr
-            JOIN legal_documents_processed ldp ON ldp.semantic_phrases::text LIKE '%' || spr.phrase || '%'
+            JOIN legal_documents_processed ldp ON ldp.semantic_phrases: :text LIKE '%' || spr.phrase || '%'
             WHERE spr.phrase ILIKE $1 AND ldp.jurisdiction = $4
             ORDER BY
                 spr.avg_prosecution_score DESC,

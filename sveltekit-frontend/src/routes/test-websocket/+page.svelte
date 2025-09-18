@@ -19,7 +19,7 @@
   let sendTyping = $state(false);
   
   // Mock user data
-  const userId = `test-user-${Math.random().toString(36).substr(2, 6)}`;
+  const userId = `test-user-${Math.random.toString-substr(2, 6)}`;
   
   onMount(() => {
     initializeWebSocket();
@@ -102,7 +102,7 @@
         typingEndTime: Date.now(),
         typingDuration: 5000,
         charactersTyped: testMessage.length,
-        wordsTyped: testMessage.split(' ').length,
+        wordsTyped: testMessage.split.length,
         deletionsCount: 0,
         submissionsCount: 0,
         sessionStartTime: Date.now() - 60000,
@@ -180,7 +180,7 @@
         typingEndTime: Date.now(),
         typingDuration: 5000,
         charactersTyped: testMessage.length,
-        wordsTyped: testMessage.split(' ').length,
+        wordsTyped: testMessage.split.length,
         deletionsCount: 0,
         submissionsCount: 0,
         sessionStartTime: Date.now() - 60000,

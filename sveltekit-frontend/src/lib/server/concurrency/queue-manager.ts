@@ -196,7 +196,7 @@ export class QueueManager {
         job.entityType as LockType,
         job.entityId,
         async () => {
-          return await processor(job);
+          return await processor(job));
         },
         'exclusive',
         {

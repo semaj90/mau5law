@@ -800,7 +800,7 @@
     </div>
   {/if}
 
-  {#if Object.values(testResults).some(r => r.tested)}
+  {#if Object.values.some(r => r.tested)}
     <div class="results-grid">
       {#if testResults.webgpu.tested}
         <div class="result-card">

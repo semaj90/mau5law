@@ -123,11 +123,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (err: any) {
     console.error("❌ Copilot self-prompt API error:", err);
 
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    const errorMessage = err instanceof Error ? err.message: "Unknown error";
     const statusCode =
       err && typeof err === "object" && "status" in err
-        ? (err as any).status
-        : 500;
+        ? (err as any).status: 500;
 
     throw error(statusCode, errorMessage);
   }

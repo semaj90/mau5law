@@ -94,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error("Manual API test failed:", error);
       manualTestError =
-        error instanceof Error ? error.message : "Unknown error occurred";
+        error instanceof Error ? error.message: "Unknown error occurred";
     } finally {
       manualTestLoading = false;
   }}
@@ -153,7 +153,7 @@ https://svelte.dev/e/js_parse_error -->
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `ai-conversation-${new Date().toISOString().split("T")[0]}.json`;
+    a.download = `ai-conversation-${new Date().toISOString.split("T")[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
   }

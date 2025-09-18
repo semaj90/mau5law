@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
           monetaryAmounts: [...(node.aiTags.monetaryAmounts || [])],
           actions: [...(node.aiTags.actions || [])],
           qualityScore: node.aiTags.qualityScore || 0,
-          extractionConfidence: { ...newFormData.extractionConfidence, ...(node.aiTags.extractionConfidence || {}) },
+          extractionConfidence: { ...newFormData.extractionConfidence, ...(node.aiTags.extractionConfidence || ) },
           redFlags: [...(node.aiTags.redFlags || [])],
           recommendations: [...(node.aiTags.recommendations || [])]
         });
@@ -218,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
           monetaryAmounts: [...(aiTags.monetaryAmounts || [])],
           actions: [...(aiTags.actions || [])],
           qualityScore: aiTags.qualityScore || 0,
-          extractionConfidence: { ...formData.extractionConfidence, ...(aiTags.extractionConfidence || {}) },
+          extractionConfidence: { ...formData.extractionConfidence, ...(aiTags.extractionConfidence || ) },
           redFlags: [...(aiTags.redFlags || [])],
           recommendations: [...(aiTags.recommendations || [])]
         });
@@ -241,75 +241,65 @@ https://svelte.dev/e/js_parse_error -->
     if (customTag.trim() && !$formData.customTags.includes(customTag.trim())) {
       formData.update(data => ({
         ...data,
-        customTags: [...(data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).customTags, customTag.trim()]
+        customTags: [...data.customTags, customTag.trim()]
       }));
       customTag = '';
   }
   }
   function removeCustomTag(tag: string) {
-    formData.update(data => ({
-      ...data,
-      customTags: (data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).customTags.filter(t => t !== tag)
+    formData.update.customTags.filter(t => t !== tag)
     }));
   }
   function addCustomPerson() {
     if (customPerson.trim() && !$formData.people.includes(customPerson.trim())) {
       formData.update(data => ({
         ...data,
-        people: [...(data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).people, customPerson.trim()]
+        people: [...data.people, customPerson.trim()]
       }));
       customPerson = '';
   }
   }
   function removePerson(person: string) {
-    formData.update(data => ({
-      ...data,
-      people: (data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).people.filter(p => p !== person)
+    formData.update.people.filter(p => p !== person)
     }));
   }
   function addCustomLocation() {
     if (customLocation.trim() && !$formData.locations.includes(customLocation.trim())) {
       formData.update(data => ({
         ...data,
-        locations: [...(data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).locations, customLocation.trim()]
+        locations: [...data.locations, customLocation.trim()]
       }));
       customLocation = '';
   }
   }
   function removeLocation(location: string) {
-    formData.update(data => ({
-      ...data,
-      locations: (data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).locations.filter(l => l !== location)
+    formData.update.locations.filter(l => l !== location)
     }));
   }
   function addCustomOrganization() {
     if (customOrganization.trim() && !$formData.organizations.includes(customOrganization.trim())) {
       formData.update(data => ({
         ...data,
-        organizations: [...(data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).organizations, customOrganization.trim()]
+        organizations: [...data.organizations, customOrganization.trim()]
       }));
       customOrganization = '';
   }
   }
   function removeOrganization(org: string) {
-    formData.update(data => ({
-      ...data,
-      organizations: (data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).organizations.filter(o => o !== org)
+    formData.update.organizations.filter(o => o !== org)
     }));
   }
   function addCustomAction() {
     if (customAction.trim() && !$formData.actions.includes(customAction.trim())) {
       formData.update(data => ({
         ...data,
-        actions: [...(data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).actions, customAction.trim()]
+        actions: [...data.actions, customAction.trim()]
       }));
       customAction = '';
   }
   }
   function removeAction(action: string) {
-    formData.update(data => ({
-      ...data,
-      actions: (data as { customTags?: unknown; people?: unknown; locations?: unknown; organizations?: unknown; actions?: unknown }).actions.filter(a => a !== action)
+    formData.update.actions.filter(a => a !== action)
     }));
   }
   // Auto-save functionality
@@ -332,8 +322,7 @@ https://svelte.dev/e/js_parse_error -->
         customTags: $formData.customTags,
         aiTags: {
           ...selectedNode.aiTags,
-          ...Object.fromEntries(
-            Object.entries($formData).filter(([key]) => 
+          ...Object.fromEntries.filter(([key]) => 
               !['customTags'].includes(key)
             )
           )
@@ -372,8 +361,7 @@ https://svelte.dev/e/js_parse_error -->
         customTags: $formData.customTags,
         aiTags: {
           ...selectedNode.aiTags,
-          ...Object.fromEntries(
-            Object.entries($formData).filter(([key]) => 
+          ...Object.fromEntries.filter(([key]) => 
               !['customTags'].includes(key)
             )
           )

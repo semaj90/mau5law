@@ -53,7 +53,7 @@ export interface QueuedTask {
 // Core stores
 export const redisStats = writable<RedisStats | null>(null);
 export const isRedisHealthy = writable<boolean>(true);
-export const queuedTasks = writable<Map<string, QueuedTask>>(new Map());
+export const queuedTasks = writable<Map<string, QueuedTask>(new Map());
 export const cacheHitRate = writable<number>(0);
 export const processingTimes = writable<Array<any>([]);
 
@@ -329,7 +329,7 @@ export class RedisOrchestratorClient {
       const data = await (response as { ok?: any; statusText?: any; json?: any }).json();
       
       const stats: RedisStats = {
-        ...(data as { redis_stats?: any; status?: any }).redis_stats,
+        ...data.redis_stats,
         last_updated: new Date().toISOString()
       };
 

@@ -262,41 +262,41 @@
   }
 
   /* Type-specific styling */
-  .yorha-(notification as { info?: unknown; success?: unknown; warning?: unknown; error?: unknown; system?: unknown }).info {
+  .yorha-.info {
     border-left: 4px solid var(--yorha-accent, #00ff41);
   }
 
-  .yorha-(notification as { info?: unknown; success?: unknown; warning?: unknown; error?: unknown; system?: unknown }).info .notification-icon {
+  .yorha-.info .notification-icon {
     color: var(--yorha-accent, #00ff41);
   }
 
-  .yorha-(notification as { info?: unknown; success?: unknown; warning?: unknown; error?: unknown; system?: unknown }).success {
+  .yorha-.success {
     border-left: 4px solid var(--yorha-accent, #00ff41);
     background: var(--yorha-bg-secondary, #1a1a1a);
   }
 
-  .yorha-(notification as { info?: unknown; success?: unknown; warning?: unknown; error?: unknown; system?: unknown }).success .notification-icon {
+  .yorha-.success .notification-icon {
     color: var(--yorha-accent, #00ff41);
     background: rgba(0, 255, 65, 0.1);
   }
 
-  .yorha-(notification as { info?: unknown; success?: unknown; warning?: unknown; error?: unknown; system?: unknown }).warning {
+  .yorha-.warning {
     border-left: 4px solid var(--yorha-warning, #ffaa00);
   }
 
-  .yorha-(notification as { info?: unknown; success?: unknown; warning?: unknown; error?: unknown; system?: unknown }).warning .notification-icon {
+  .yorha-.warning .notification-icon {
     color: var(--yorha-warning, #ffaa00);
   }
 
-  .yorha-(notification as { info?: unknown; success?: unknown; warning?: unknown; error?: unknown; system?: unknown }).error {
+  .yorha-.error {
     border-left: 4px solid var(--yorha-danger, #ff0041);
   }
 
-  .yorha-(notification as { info?: unknown; success?: unknown; warning?: unknown; error?: unknown; system?: unknown }).error .notification-icon {
+  .yorha-.error .notification-icon {
     color: var(--yorha-danger, #ff0041);
   }
 
-  .yorha-(notification as { info?: unknown; success?: unknown; warning?: unknown; error?: unknown; system?: unknown }).system {
+  .yorha-.system {
     border: 2px solid var(--yorha-secondary, #ffd700);
     background: var(--yorha-bg-primary, #0a0a0a);
     box-shadow:
@@ -305,7 +305,7 @@
       inset 0 0 20px rgba(255, 215, 0, 0.1);
   }
 
-  .yorha-(notification as { info?: unknown; success?: unknown; warning?: unknown; error?: unknown; system?: unknown }).system .notification-icon {
+  .yorha-.system .notification-icon {
     color: var(--yorha-secondary, #ffd700);
     animation: pulse 2s infinite;
   }

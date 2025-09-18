@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Service orchestration failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString(),
       },
       { status: 500 }
@@ -94,7 +94,7 @@ export const GET: RequestHandler = async () => {
 			service: 'Comprehensive Service Orchestrator',
 			status: 'degraded',
 			error: 'Unable to get system status',
-			details: error instanceof Error ? error.message : 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString(),
 		}, { status: 503 });
 	}
@@ -118,7 +118,7 @@ export const GET_HEALTH: RequestHandler = async () => {
 		return json({
 			overall_health: 'critical',
 			error: 'Health check system failure',
-			details: error instanceof Error ? error.message : 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString(),
 		}, { status: 503 });
 	}
@@ -162,7 +162,7 @@ export const POST_EMERGENCY: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: 'Emergency orchestration failed',
-			details: error instanceof Error ? error.message : 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString(),
 		}, { status: 500 });
 	}

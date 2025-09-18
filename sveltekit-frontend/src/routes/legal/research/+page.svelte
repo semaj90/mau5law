@@ -480,7 +480,7 @@
                   
                   <div class="flex items-center space-x-2 ml-4">
                     <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {getRelevanceColor((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).relevanceScore)}">
-                      {Math.round((result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).relevanceScore * 100)}% match
+                      {Math.round.relevanceScore * 100)}% match
                     </span>
                     
                     <button

@@ -557,7 +557,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
         chunks: [],
         totalSize: (data as { length?: any }).length,
         parseTime,
-        errors: [error instanceof Error ? error.message : String(error)]
+        errors: [error instanceof Error ? error.message: String(error)]
       };
     }
   }
@@ -591,7 +591,7 @@ export class UltraHighPerformanceJSONProcessor extends EventEmitter {
         metadata: {
           created: new Date().toISOString(),
           tags: [`tag${i % 10}`, `category${i % 5}`],
-          settings: { theme: "dark", notifications: true },
+          }); const settings = { theme: "dark", notifications: true },
         },
       })),
     };

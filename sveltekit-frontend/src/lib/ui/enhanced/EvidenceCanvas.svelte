@@ -45,7 +45,7 @@
       return {
         processing_result: { 
           document_id: evidence.id, 
-          embedding: new Array(384).fill(0).map(() => Math.random() - 0.5), 
+          embedding: new Array(384).fill.map(() => Math.random() - 0.5), 
           cluster_id: Math.floor(Math.random() * 8), 
           processing_time: 2000,
           extraction_metadata: {
@@ -210,10 +210,10 @@
   function collectObjects() {
     const objs = (fabricCanvas?.getObjects?.() ?? []).map((o: unknown) => {
       const type = o.type || "object";
-      const left = typeof o.left === "number" ? o.left : 0;
-      const top = typeof o.top === "number" ? o.top : 0;
-      const text = typeof o.text === "string" ? o.text : undefined;
-      return { type, position: { x: left, y: top }, ...(text ? { text } : {}) };
+      const left = typeof o.left === "number" ? o.left: 0;
+      const top = typeof o.top === "number" ? o.top: 0;
+      const text = typeof o.text === "string" ? o.text: undefined;
+      return { type, position: { x: left, y: top }, ...(text ? { text } : ) };
     });
     return objs;
   }
@@ -226,10 +226,10 @@
       // Use concurrency orchestrator for analysis
       const analysisTaskId = await concurrencyOrchestrator.submitAnalysisTask(
         {
-          canvas_json: fabricCanvas?.toJSON() || {},
+          canvas_json: fabricCanvas?.toJSON() || ,
           objects: collectObjects(),
           canvas_size: { width: canvasEl.width, height: canvasEl.height },
-          uploaded_files: uploadedFiles.filter(f => f.status === 'completed').map(f => ({
+          uploaded_files: uploadedFiles.filter(item => item.map)(f => ({
             id: f.id,
             fileName: f.file.name,
             minioPath: f.minioPath,
@@ -246,9 +246,9 @@
         );
         if (completedResult) {
           result = {
-            analysis: completedResult.(data as { response?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processingTime?: unknown }).response || completedResult.(data as { response?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processingTime?: unknown }).analysis || 'Analysis completed',
-            summary: completedResult.(data as { response?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processingTime?: unknown }).summary || 'Summary generated',
-            confidence: completedResult.(data as { response?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processingTime?: unknown }).confidence || 0.85,
+            analysis: completedResult.data.response || completedResult.data.analysis || 'Analysis completed',
+            summary: completedResult.data.summary || 'Summary generated',
+            confidence: completedResult.data.confidence || 0.85,
             processing_time_ms: completedResult.duration,
             status: 'success'
           };
@@ -273,7 +273,7 @@
         }
       }, 30000);
     } catch (e: unknown) {
-      error = e instanceof Error ? e.message : String(e);
+      error = e instanceof Error ? e.message: String(e);
       analyzing = false;
     }
   }
@@ -324,7 +324,7 @@
       }
       const isValidType = acceptedTypes.some(type => {
         if (type.startsWith('.')) {
-          return file.name.toLowerCase().endsWith(type.toLowerCase());
+          return file.name.toLowerCase.endsWith(type.toLowerCase());
         }
         return file.type.match(type.replace('*', '.*'));
       });
@@ -381,7 +381,7 @@
           uploadFile.status = 'ingestion';
           uploadFile.progress = 100;
           uploadFile.cudaProcessed = cudaProcessed;
-          uploadFile.minioPath = (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).(data as { response?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processingTime?: unknown }).minioPath;
+          uploadFile.minioPath = (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).data.minioPath;
           // Start enhanced ingestion processing
           try {
             const ingestionResult = await processEnhancedIngestion(uploadFile);
@@ -426,7 +426,7 @@
       performanceStats.throughputMBps = totalSizeMB / (totalTime / 1000);
 
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Upload failed';
+      const errorMsg = error instanceof Error ? error.message: 'Upload failed';
       console.error('🎮 Upload error:', errorMsg);
     } finally {
       uploading = false;
@@ -501,7 +501,7 @@
       return {
         success: true,
         data: {
-          ...(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown; status?: unknown; analysis?: unknown; summary?: unknown; confidence?: unknown; processing_time_ms?: unknown }).data[0],
+          ...result.data[0],
           cudaOptimized: cudaProcessed
         } as UploadResult
       };
@@ -666,7 +666,7 @@
       console.error('Detective analysis failed:', error);
       return {
         ocrResults: { text: '', confidence: 0, boundingBoxes: [], handwritingDetected: false },
-        embeddings: {},
+        embeddings: ,
         analysis: { detectedPatterns: [], legalRelevance: 'low', conflictIndicators: [], contextualClues: [], suggestedActions: [] },
         conflicts: [],
         processingTime: 0
@@ -694,8 +694,7 @@
     });
     // Add tooltip on hover (simplified)
     insightsIcon.on('mouseover', () => {
-      const tooltip = new fabric.Text(
-        `Detective Analysis:\n${detectiveResult.analysis.detectedPatterns.slice(0, 3).join('\n')}`,
+      const tooltip = new fabric.Text.join('\n')}`,
         {
           left: insightsIcon.left + 20,
           top: insightsIcon.top,
@@ -733,8 +732,7 @@
       });
 
       if ((response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).success) {
-        console.log(`✅ Evidence processing initiated:`, {
-          jobIds: (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).jobIds,
+        console.log.jobIds,
           evidenceCount: (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).evidenceCount
         });
 
@@ -743,7 +741,7 @@
 
         return response;
       } else {
-        console.error('❌ Evidence processing failed:', (response as { ok?: unknown; statusText?: unknown; json?: unknown; success?: unknown; jobIds?: unknown; evidenceCount?: unknown; jobStatuses?: unknown; error?: unknown }).error);
+        console.error(error);
         return null;
       }
     } catch (error) {
@@ -826,7 +824,7 @@
       type: getEvidenceType(file.file),
       size: file.file.size,
       canvasPosition: file.canvasObjectId ? getCanvasObjectPosition(file.canvasObjectId) : null,
-      metadata: file.detectiveAnalysis || {},
+      metadata: file.detectiveAnalysis || ,
       uploadTime: file.timestamp
     }));
 
@@ -840,7 +838,7 @@
   // Helper function to get canvas object position
   function getCanvasObjectPosition(objectId: string) {
     if (!fabricCanvas) return null;
-    const obj = fabricCanvas.getObjects().find((o: unknown) => o.id === objectId);
+    const obj = fabricCanvas.getObjects.find((o: unknown) => o.id === objectId);
     return obj ? { x: obj.left, y: obj.top } : null;
   }
 
@@ -937,7 +935,7 @@
         <span class="font-semibold">
           {enableN64Style ? '🧠 ENHANCED INGESTION PIPELINE:' : 'Enhanced Ingestion:'}
         </span>
-        <span>{uploadedFiles.filter(f => f.ingestionResult).length}/{uploadedFiles.length} processed</span>
+        <span>{uploadedFiles.filter(item => item.length)}/{uploadedFiles.length} processed</span>
       </div>
       
       <div class="progress-stages">
@@ -1180,14 +1178,7 @@
 </div>
 
 <style>
-  .enhanced-evidence-canvas {
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 1rem;
-  }
-  
-  .n64-style {
+  .enhanced-evidence-canv.n64-style {
     font-family: 'Courier New', monospace;
     background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
     border: 2px solid #FFD700;
@@ -1326,16 +1317,7 @@
     transition: all 0.3s ease;
   }
   
-  .n64-canvas {
-    border: 4px solid #FFD700;
-    border-radius: 0;
-    background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
-    box-shadow: 
-      inset 0 0 20px rgba(255, 215, 0, 0.1),
-      0 0 20px rgba(255, 215, 0, 0.3);
-  }
-  
-  .evidence-canvas-wrapper.drag-over {
+  .n64-canv.evidence-canvas-wrapper.drag-over {
     border-color: #4090FF;
     background: #e8f4fd;
     transform: scale(1.02);
@@ -1468,15 +1450,15 @@
     color: #FFD700;
   }
   
-  .file-(item as { status?: unknown }).status-completed {
+  .file-.status-completed {
     border-color: #28a745;
   }
   
-  .file-(item as { status?: unknown }).status-error {
+  .file-.status-error {
     border-color: #dc3545;
   }
   
-  .file-(item as { status?: unknown }).status-uploading {
+  .file-.status-uploading {
     border-color: #007bff;
   }
   
@@ -1714,7 +1696,7 @@
     box-shadow: 0 0 5px rgba(139, 92, 246, 0.5);
   }
   
-  .file-(item as { status?: unknown }).status-ingestion {
+  .file-.status-ingestion {
     border-color: #4090FF;
     background: linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 100%);
   }
@@ -1724,7 +1706,7 @@
     background: linear-gradient(135deg, #1a1a3e 0%, #0a0a2a 100%);
   }
 
-  .file-(item as { status?: unknown }).status-detective_analysis {
+  .file-.status-detective_analysis {
     border-color: #8B5CF6;
     background: linear-gradient(135deg, #f3e8ff 0%, #faf5ff 100%);
   }
@@ -1735,11 +1717,7 @@
   }
   
   @media (max-width: 768px) {
-    .enhanced-evidence-canvas {
-      padding: 0.5rem;
-    }
-    
-    .toolbar {
+    .enhanced-evidence-canv.toolbar {
       flex-direction: column;
       align-items: flex-start;
       gap: 0.5rem;

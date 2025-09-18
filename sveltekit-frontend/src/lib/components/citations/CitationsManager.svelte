@@ -147,11 +147,7 @@ https://svelte.dev/e/attribute_duplicate -->
   	}
 
   	function updateCategoryCounts() {
-  		citationCategories = citationCategories.map(category => ({
-  			...category,
-  			count: category.id === 'all' 
-  				? citations.length 
-  				: citations.filter(c => c.category === category.id).length
+  		citationCategories = citationCategories.map.length
   		}));
   	}
 
@@ -166,12 +162,11 @@ https://svelte.dev/e/attribute_duplicate -->
   		// Filter by search query
   		if (searchQuery.trim()) {
   			const query = searchQuery.toLowerCase();
-  			filtered = filtered.filter(c => 
-  				c.title.toLowerCase().includes(query) ||
-  				c.authors.toLowerCase().includes(query) ||
-  				c.source.toLowerCase().includes(query) ||
-  				c.notes.toLowerCase().includes(query) ||
-  				c.tags.some(tag => tag.toLowerCase().includes(query))
+  			filtered = filtered.filter(item => item.includes)(query) ||
+  				c.authors.toLowerCase.includes(query) ||
+  				c.source.toLowerCase.includes(query) ||
+  				c.notes.toLowerCase.includes(query) ||
+  				c.tags.some.includes(query))
   			);
   		}
 
@@ -320,7 +315,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		const url = URL.createObjectURL(blob);
   		const a = document.createElement('a');
   		a.href = url;
-  		a.download = `citations-${caseId || 'export'}-${new Date().toISOString().split('T')[0]}.json`;
+  		a.download = `citations-${caseId || 'export'}-${new Date().toISOString.split('T')[0]}.json`;
   		a.click();
   		URL.revokeObjectURL(url);
   	}
@@ -797,15 +792,15 @@ Close
 		scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
 	}
 	
-	.overflow-y-auto::-webkit-scrollbar {
+	.overflow-y-auto: :-webkit-scrollbar {
 		width: 6px;
 	}
 	
-	.overflow-y-auto::-webkit-scrollbar-track {
+	.overflow-y-auto: :-webkit-scrollbar-track {
 		background: hsl(var(--muted));
 	}
 	
-	.overflow-y-auto::-webkit-scrollbar-thumb {
+	.overflow-y-auto: :-webkit-scrollbar-thumb {
 		background: hsl(var(--muted-foreground));
 		border-radius: 3px;
 	}

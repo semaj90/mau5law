@@ -34,7 +34,7 @@ export const GET: RequestHandler = async () => {
 			status: 'error',
 			cuda_available: false,
 			error: 'Failed to connect to CUDA server',
-			details: error instanceof Error ? error.message : String(error)
+			details: error instanceof Error ? error.message: String(error)
 		}, { status: 503 });
 	}
 };

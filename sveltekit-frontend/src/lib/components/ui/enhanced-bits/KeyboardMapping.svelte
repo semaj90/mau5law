@@ -173,8 +173,7 @@
   const allShortcuts = $derived(() => {
     const combined = [...defaultLegalShortcuts, ...shortcuts];
     return combined
-      .filter(s => s.enabled !== false)
-      .sort((a, b) => (b.priority || 0) - (a.priority || 0));
+      .filter(item => item.sort)((a, b) => (b.priority || 0) - (a.priority || 0));
   });
 
   // Key mapping utilities
@@ -252,7 +251,7 @@
       pressedKeys.add(key);
     }
 
-    addDebugLog(`Keys pressed: ${Array.from(pressedKeys).join(', ')}`);
+    addDebugLog(`Keys pressed: ${Array.from.join(', ')}`);
 
     // Check for matching shortcuts
     const matchingShortcut = findMatchingShortcut(pressedKeys);
@@ -276,7 +275,7 @@
         addDebugLog(`Error executing shortcut: ${error}`, 'error');
         onshortcutblocked?.({
           shortcut: matchingShortcut,
-          reason: error instanceof Error ? error.message : 'Unknown error'
+          reason: error instanceof Error ? error.message: 'Unknown error'
         });
       }
     }
@@ -349,7 +348,7 @@
   // Categories for organization
   const categories = $derived(() => {
     const cats = new Set(allShortcuts.map(s => s.category));
-    return Array.from(cats).sort();
+    return Array.from.sort();
   });
 </script>
 
@@ -364,7 +363,7 @@
         <div class="mb-2">
           <span class="text-xs text-gray-300">Pressed:</span>
           <span class="text-xs font-mono text-yellow-300">
-            {Array.from(pressedKeys).join(' + ')}
+            {Array.from.join(' + ')}
           </span>
         </div>
       {/if}

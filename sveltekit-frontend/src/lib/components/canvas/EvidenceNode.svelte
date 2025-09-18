@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   let canvasEl = $state<HTMLCanvasElement | null>(null);
   let fabricCanvas: FabricCanvas | null = null; // fabric.Canvas when Fabric.js is loaded
   let nodeElement: HTMLElement;
-  let canvasState = $state({});
+  let canvasState = $state( );
   onMount(async () => {
     // Dynamically import Fabric.js to avoid SSR issues
     try {
@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
       // Load background image if provided
       // Fix for Fabric.js v5+ (Image.fromURL returns a Promise)
       if (fileUrl) {
-        (window as any).fabric.Image.fromURL(fileUrl).then((img: unknown) => {
+        (window as any).fabric.Image.fromURL.then((img: unknown) => {
           // Scale image to fit canvas
           const scale = Math.min(
             (size.width - 20) / (img.width || 100),
@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   function clearAnnotations() {
     if (fabricCanvas) {
-      fabricCanvas.getObjects().forEach((obj: FabricObject) => {
+      fabricCanvas.getObjects.forEach((obj: FabricObject) => {
         if (obj !== fabricCanvas.backgroundImage) {
           fabricCanvas.remove(obj);
   }
@@ -338,13 +338,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 12px;
     height: calc(100% - 60px);
 }
-  .evidence-canvas {
-    width: 100%;
-    height: 100%;
-    border: 1px dashed #d1d5db;
-    border-radius: 4px;
-}
-  .resize-handles {
+  .evidence-canv.resize-handles {
     position: absolute;
     bottom: 0;
     right: 0;

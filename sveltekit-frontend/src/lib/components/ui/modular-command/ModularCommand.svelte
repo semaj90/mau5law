@@ -28,8 +28,7 @@
     onSearchChange?: (query: string) => void;
   }
 
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     onOpenChange,
     placeholder = 'Search cases, evidence, documents...',
     class: className = '',
@@ -40,10 +39,10 @@
     includeVectorSearch = true,
     userId,
     caseId,
-    filters = {},
+    filters = ,
     onSelect,
     onSearchChange
-  }: Props = $props();
+   }: Props = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -242,7 +241,7 @@
                       {formatResultText(item, type)}
                       {#if (item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).similarity !== undefined}
                         <span class="text-xs nes-text is-disabled ml-2">
-                          ({Math.round((item as { title?: unknown; caseNumber?: unknown; id?: unknown; status?: unknown; evidenceType?: unknown; caseId?: unknown; documentType?: unknown; name?: unknown; role?: unknown; email?: unknown; description?: unknown; priority?: unknown; createdAt?: unknown; collectedAt?: unknown; metadata?: unknown; department?: unknown; similarity?: unknown }).similarity * 100)}% match)
+                          ({Math.round.similarity * 100)}% match)
                         </span>
                       {/if}
                     </div>

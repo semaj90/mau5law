@@ -310,7 +310,7 @@ async function getStandardEmbedding(
 
 // Batch processing endpoint
 export async function handleBatchProcessing(
-  texts: Array<,
+  texts: Array<any>,
   config: Partial<TextTileConfig>
 ): Promise<any[]> {
   console.log(`🚀 SIMD batch processing: ${texts.length} texts`);

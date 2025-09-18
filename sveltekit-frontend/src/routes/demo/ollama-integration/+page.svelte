@@ -555,27 +555,27 @@ responses = []}
                   </div>
                   <div class="yorha-panel-content pt-2">
                     <!-- Response Content -->
-                    {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).response}
+                    {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.response}
                       <div class="mb-3">
                         <p class="text-sm font-medium">Response:</p>
                         <p class="text-sm bg-muted p-2 rounded mt-1 whitespace-pre-wrap">
-                          {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).substring(0, 300)}{(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).length > 300 ? '...' : ''}
+                          {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.response.substring(0, 300)}{(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.response.length > 300 ? '...' : ''}
                         </p>
                       </div>
                     {/if}
 
                     <!-- Summary -->
-                    {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).summary}
+                    {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.summary}
                       <div class="mb-3">
                         <p class="text-sm font-medium">Summary:</p>
                         <p class="text-sm bg-blue-50 p-2 rounded mt-1">
-                          {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).summary.summary?.substring(0, 200)}...
+                          {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.summary.summary?.substring(0, 200)}...
                         </p>
-                        {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).summary.keyPoints?.length}
+                        {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.summary.keyPoints?.length}
                           <div class="mt-2">
                             <p class="text-xs font-medium">Key Points:</p>
                             <ul class="text-xs list-disc list-inside mt-1">
-                              {#each (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).summary.keyPoints.slice(0, 3) as point}
+                              {#each (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.summary.keyPoints.slice(0, 3) as point}
                                 <li>{point}</li>
                               {/each}
                             </ul>
@@ -585,19 +585,19 @@ responses = []}
                     {/if}
 
                     <!-- Performance -->
-                    {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).performance}
+                    {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.performance}
                       <div class="flex gap-4 text-xs nes-text is-disabled">
-                        <span>Duration: {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).performance.duration}ms</span>
-                        <span>Tokens: {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).performance.tokens}</span>
-                        <span>Model: {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).performance.model}</span>
+                        <span>Duration: {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.performance.duration}ms</span>
+                        <span>Tokens: {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.performance.tokens}</span>
+                        <span>Model: {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.performance.model}</span>
                       </div>
                     {/if}
 
                     <!-- Integration Info -->
-                    {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).integration}
+                    {#if (result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.integration}
                       <div class="mt-2 p-2 bg-green-50 rounded text-xs">
-                        <p><strong>Integration:</strong> {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).integration.processingPath}</p>
-                        <p><strong>Services:</strong> {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).(response as { json?: unknown; substring?: unknown; length?: unknown }).integration.servicesUsed.join(', ')}</p>
+                        <p><strong>Integration:</strong> {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.integration.processingPath}</p>
+                        <p><strong>Services:</strong> {(result as { type?: unknown; processingTime?: unknown; timestamp?: unknown; response?: unknown }).response.integration.servicesUsed.join(', ')}</p>
                       </div>
                     {/if}
                   </div>

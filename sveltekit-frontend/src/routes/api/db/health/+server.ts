@@ -129,7 +129,7 @@ export const GET: RequestHandler = async () => {
         error: {
           message: err.message,
           code: err.code || 'DATABASE_ERROR',
-          details: dev ? err.stack : undefined,
+          details: dev ? err.stack: undefined,
         }
       },
       meta: {

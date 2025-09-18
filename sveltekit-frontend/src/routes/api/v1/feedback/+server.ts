@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           } catch (error: any) {
             results.push({ 
               success: false, 
-              error: error instanceof Error ? error.message : 'Unknown error',
+              error: error instanceof Error ? error.message: 'Unknown error',
               rating: rating.interactionId 
             });
           }
@@ -85,8 +85,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true, 
           results,
           processed: results.length,
-          successful: results.filter(r => r.success).length,
-          failed: results.filter(r => !r.success).length
+          successful: results.filter(item => item.length),
+          failed: results.filter(item => item.length)
         });
       }
 
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error: any) {
     console.error('❌ Feedback API Error:', error);
     return json({ 
-      error: error instanceof Error ? error.message : 'Internal server error' 
+      error: error instanceof Error ? error.message: 'Internal server error' 
     }, { status: 500 });
   }
 };
@@ -156,7 +156,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('❌ Feedback API Error:', error);
     return json({ 
-      error: error instanceof Error ? error.message : 'Internal server error' 
+      error: error instanceof Error ? error.message: 'Internal server error' 
     }, { status: 500 });
   }
 };

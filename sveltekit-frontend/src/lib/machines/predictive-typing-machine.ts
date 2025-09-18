@@ -249,7 +249,7 @@ export const predictiveTypingMachine = setup({
         return context.currentQuery;
       },
       lastKeystroke: ({ event }) => 
-        event.type === 'TYPE' || event.type === 'DELETE' ? event.timestamp : Date.now(),
+        event.type === 'TYPE' || event.type === 'DELETE' ? event.timestamp: Date.now(),
       keystrokePattern: ({ context, event }) => {
         if (event.type === 'TYPE' || event.type === 'DELETE') {
           const newPattern = [...context.keystrokePattern, event.timestamp];
@@ -261,7 +261,7 @@ export const predictiveTypingMachine = setup({
     
     recordAnalyticsSuccess: assign({
       predictiveResults: ({ event }) => 
-        event.type === 'ANALYTICS_SUCCESS' ? event.results : null,
+        event.type === 'ANALYTICS_SUCCESS' ? event.results: null,
       predictionLatency: ({ event }) =>
         event.type === 'ANALYTICS_SUCCESS' ? 
         event.results.analytics_performance.total_analysis_time : 0,
@@ -302,7 +302,7 @@ export const predictiveTypingMachine = setup({
     
     selectSuggestion: assign({
       currentQuery: ({ event }) => 
-        event.type === 'SELECT_SUGGESTION' ? event.suggestion : '',
+        event.type === 'SELECT_SUGGESTION' ? event.suggestion: '',
       lastKeystroke: () => Date.now(),
       queryHistory: ({ context, event }) => 
         event.type === 'SELECT_SUGGESTION' ? 
@@ -596,8 +596,8 @@ export const predictiveTypingMachine = setup({
               cacheHitRate: ({ context }) => {
                 // Calculate cache hit rate from recent interactions
                 const recentInteractions = context.interactionPatterns.slice(-10);
-                const cacheHits = recentInteractions.filter(i => i.confidence > 0.8).length;
-                return recentInteractions.length > 0 ? cacheHits / recentInteractions.length : 0;
+                const cacheHits = recentInteractions.filter(item => item.length);
+                return recentInteractions.length > 0 ? cacheHits / recentInteractions.length: 0;
               }
             })
           ],
@@ -644,7 +644,7 @@ export const predictiveTypingMachine = setup({
             input: ({ context, event }) => ({
               originalQuery: context.previousQuery,
               predictiveResults: context.predictiveResults!,
-              userFeedback: event.type === 'PROVIDE_FEEDBACK' ? event.feedback : Record<string, any>,
+              userFeedback: event.type === 'PROVIDE_FEEDBACK' ? event.feedback: Record<string, any>,
               sessionContext: {
                 session_id: context.sessionId,
                 interaction_timestamp: Date.now(),

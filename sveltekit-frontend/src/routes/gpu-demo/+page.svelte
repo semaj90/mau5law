@@ -43,8 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   let isProcessing = $state(false);
 
   	// Real-time updates
-  let metricsInterval = $state<NodeJS.Timeout;
-  let statusInterval = $state<NodeJS.TimeoutonMount(async () = | null>(null)() { {
+  let metricsInterval = $state({}) { {
   		await loadGPUData();
   		startRealtimeUpdates();
   		return () => { {
@@ -184,8 +183,8 @@ https://svelte.dev/e/js_parse_error -->
   	// Helper function for simple text to float array conversion
   	function textToFloatArray(text: string): number[] {
   		// Simplified version for demo - in production use proper tokenization
-  		const normalized = text.toLowerCase().replace(/[^\w\s]/g, '');
-  		const words = normalized.split(/\s+/).filter(w => w.length > 0);
+  		const normalized = text.toLowerCase.replace(/[^\w\s]/g, '');
+  		const words = normalized.split.filter(w => w.length > 0);
   		// Create 384-dimensional embedding
   		const embedding = new Array(384).fill(0);
   		for (let i = 0; i < words.length; i++) {
@@ -402,7 +401,7 @@ https://svelte.dev/e/js_parse_error -->
 					</div>
 					
 					<div class="space-y-4 max-h-96 overflow-y-auto">
-						{#each processingResults.slice().reverse() as result}
+						{#each processingResults.slice.reverse() as result}
 							<div class={`border-l-4 pl-4 py-2 ${(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).success ? 'border-green-400 bg-green-50' : 'border-red-400 bg-red-50'}`}>
 								<div class="flex justify-between items-start">
 									<div class="flex-1">
@@ -415,16 +414,16 @@ https://svelte.dev/e/js_parse_error -->
 										{#if (result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).success && (result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).result}
 											<div class="mt-2">
 												<p class="text-xs text-green-800">
-													Status: {(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).status}
+													Status: {(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).result.status}
 												</p>
-												{#if (result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).result}
+												{#if (result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).result.result}
 													<p class="text-xs text-gray-600">
-														Result: {(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).length} values generated
+														Result: {(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).result.result.length} values generated
 													</p>
 												{/if}
-												{#if (result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).process_time}
+												{#if (result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).result.process_time}
 													<p class="text-xs text-gray-600">
-														Process time: {(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).process_time}ms
+														Process time: {(result as { status?: unknown; success?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; result?: unknown; length?: unknown; error?: unknown }).result.process_time}ms
 													</p>
 												{/if}
 											</div>
@@ -530,21 +529,21 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
 	/* Custom scrollbar for processing results */
-	:global(.space-y-4::-webkit-scrollbar) {
+	:global(.space-y-4: :-webkit-scrollbar) {
 		width: 6px;
 	}
 
-	:global(.space-y-4::-webkit-scrollbar-track) {
+	:global(.space-y-4: :-webkit-scrollbar-track) {
 		background: #f1f5f9;
 		border-radius: 3px;
 	}
 
-	:global(.space-y-4::-webkit-scrollbar-thumb) {
+	:global(.space-y-4: :-webkit-scrollbar-thumb) {
 		background: #cbd5e1;
 		border-radius: 3px;
 	}
 
-	:global(.space-y-4::-webkit-scrollbar-thumb:hover) {
+	:global(.space-y-4: :-webkit-scrollbar-thumb:hover) {
 		background: #94a3b8;
 	}
 </style>

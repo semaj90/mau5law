@@ -71,7 +71,7 @@ function logMetricsForDevelopment(payload: ClientMetricsPayload, requestId: stri
       path: metric.pathname,
       loadTime: `${Math.round(metric.loadTime)}ms`,
       renderTime: `${Math.round(metric.renderTime)}ms`,
-      serverTiming: Object.keys(metric.serverTiming).length > 0 ? metric.serverTiming : 'none',
+      serverTiming: Object.keys(metric.serverTiming).length > 0 ? metric.serverTiming: 'none',
       webVitals: metric.webVitals ? {
         lcp: metric.webVitals.lcp ? `${Math.round(metric.webVitals.lcp)}ms` : 'N/A',
         fid: metric.webVitals.fid ? `${Math.round(metric.webVitals.fid)}ms` : 'N/A',

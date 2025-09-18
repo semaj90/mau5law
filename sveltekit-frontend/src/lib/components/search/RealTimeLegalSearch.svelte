@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
   // Handle input changes
   function handleInputChange(value: string) {
     inputValue = value;
-    if (autoSearch && value.trim().length >= 2) {
+    if (autoSearch && value.trim.length >= 2) {
       debouncedSearch(value);
     }
   }
@@ -112,7 +112,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Manual search trigger
   function handleSearch() {
-    if (inputValue.trim().length >= 2) {
+    if (inputValue.trim.length >= 2) {
       debouncedSearch(inputValue);
       open = true;
     }
@@ -361,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
           {searchMetrics.lastQueryTime}ms • 
           {enableVectorSearch ? 'Vector' : 'Text'} + {enableAI ? 'AI' : 'Standard'} search
         </div>
-      {:else if inputValue.trim().length >= 2}
+      {:else if inputValue.trim.length >= 2}
         <!-- No Results -->
         <div class="p-4 text-center text-sm text-gray-500">
           <Search class="h-8 w-8 mx-auto mb-2 text-gray-300" />

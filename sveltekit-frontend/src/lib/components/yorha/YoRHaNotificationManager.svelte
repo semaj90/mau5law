@@ -46,7 +46,7 @@
       }
       groups[position].push(notification);
       return groups;
-    }, {} as Record<string, Notification[]>);
+    }, as Record<string, Notification[]>);
   }
 
   const groupedNotifications = $derived(groupNotificationsByPosition(notifications));

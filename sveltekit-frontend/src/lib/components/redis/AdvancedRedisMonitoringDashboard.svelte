@@ -593,12 +593,12 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     margin-bottom: 10px;
   }
 
-  .alert-(item as { warning?: unknown; error?: unknown }).warning {
+  .alert-.warning {
     background: rgba(252, 252, 84, 0.1);
     border-left: 4px solid #fcfc54;
   }
 
-  .alert-(item as { warning?: unknown; error?: unknown }).error {
+  .alert-.error {
     background: rgba(252, 84, 84, 0.1);
     border-left: 4px solid #fc5454;
   }

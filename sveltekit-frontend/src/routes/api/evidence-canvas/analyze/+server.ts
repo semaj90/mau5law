@@ -67,7 +67,7 @@ ${shapeObjects > 0 ? `- Identified ${shapeObjects} visual element(s) that could 
     return json(
       { 
         error: 'Internal server error during analysis',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message: 'Unknown error'
       },
       { status: 500 }
     );

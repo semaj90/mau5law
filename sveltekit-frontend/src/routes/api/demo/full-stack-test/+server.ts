@@ -237,7 +237,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: 'Demo failed',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }
@@ -294,7 +294,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Custom test failed',
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

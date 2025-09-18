@@ -19,7 +19,7 @@ export const createComponentId = () => crypto.randomUUID();
 ;
 // UnoCSS class helpers for dynamic styling
 export const mergeClasses = (...classes: (string | undefined)[]) => {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(item => item.join)(" ");
 };
 
 // Theme helpers

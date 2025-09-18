@@ -1,7 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import Button from 'bits-ui';
-  // import { createDialog, melt } from 'melt'; // Removed melt dependency
+  // import * as Dialog from 'bits-ui'; // Removed melt dependency
   import { fly, fade } from 'svelte/transition';
   import { writable } from 'svelte/store';
   // Demo states

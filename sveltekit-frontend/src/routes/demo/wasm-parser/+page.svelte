@@ -43,7 +43,7 @@ https://svelte.dev/e/expected_token -->
       const { instance } = await WebAssembly.instantiate(bytes, {
         env: {
           abort() {
-            throw new Error('WASM abort called');
+            throw new Error('WASM abort called'));
           }
         }
       });
@@ -301,7 +301,7 @@ https://svelte.dev/e/expected_token -->
         <div class="flex items-center space-x-2">
           <div class="w-3 h-3 rounded-full {getStatusColor(status)} bg-current"></div>
           <span class="font-medium {getStatusColor(status)}">
-            {status.replace('-', ' ').toUpperCase()}
+            {status.replace.toUpperCase()}
           </span>
         </div>
         
@@ -466,15 +466,15 @@ https://svelte.dev/e/expected_token -->
 
 <style>
   /* Custom scrollbar for log */
-  .overflow-y-auto::-webkit-scrollbar {
+  .overflow-y-auto: :-webkit-scrollbar {
     width: 6px;
   }
   
-  .overflow-y-auto::-webkit-scrollbar-track {
+  .overflow-y-auto: :-webkit-scrollbar-track {
     background: #1f1f1f;
   }
   
-  .overflow-y-auto::-webkit-scrollbar-thumb {
+  .overflow-y-auto: :-webkit-scrollbar-thumb {
     background: #4ade80;
     border-radius: 3px;
   }

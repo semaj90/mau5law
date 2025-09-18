@@ -5,9 +5,9 @@
   import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
 
   // Svelte 5 runes
-  let systemStatus = $state<Record<string, any>('')>({});
+  let systemStatus = $state<Record<string, any>('')>( );
   let authStatus = $state<any>(null);
-  let testResults = $state<Record<string, any>('')>({});
+  let testResults = $state<Record<string, any>('')>( );
   let isRunning = $state(false);
 
   const tests = [
@@ -75,7 +75,7 @@
     } catch (error) {
       testResults[test.name] = {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
         endpoint: test.endpoint,
         timestamp: new Date().toISOString()
       };
@@ -88,7 +88,6 @@
   async function runAllTests() {
     isRunning = true;
     testResults = {};
-
     for (const test of tests) {
       await runTest(test);
       await new Promise(resolve => setTimeout(resolve, 300));

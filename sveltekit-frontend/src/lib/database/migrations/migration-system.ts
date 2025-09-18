@@ -279,7 +279,7 @@ export class DatabaseMigrator {
 
     } catch (error) {
       const executionTime = Date.now() - startTime;
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = error instanceof Error ? error.message: String(error);
 
       console.error(`❌ Migration ${migration.version} failed:`, errorMessage);
 
@@ -345,8 +345,8 @@ export class DatabaseMigrator {
         }
       }
 
-      const successful = results.filter(r => r.success && r.applied).length;
-      const failed = results.filter(r => !r.success).length;
+      const successful = results.filter(item => item.length);
+      const failed = results.filter(item => item.length);
 
       console.log(`✅ Migration complete: ${successful} applied, ${failed} failed`);
 
@@ -397,7 +397,6 @@ export class DatabaseMigrator {
       await this.sql.begin(async sql => {
         // Execute the rollback SQL
         await sql.unsafe(migration.rollback_sql!);
-
         // Remove migration record
         await sql`
           DELETE FROM schema_migrations
@@ -416,7 +415,7 @@ export class DatabaseMigrator {
       };
 
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = error instanceof Error ? error.message: String(error);
       console.error('❌ Rollback failed:', errorMessage);
 
       return {
@@ -450,7 +449,7 @@ export class DatabaseMigrator {
         .limit(1);
 
       const pendingCount = allMigrations.length - appliedVersions.length;
-      const lastMigration = lastMigrationResult.length > 0 ? lastMigrationResult[0].version : null;
+      const lastMigration = lastMigrationResult.length > 0 ? lastMigrationResult[0].version: null;
 
       // Check for failed migrations
       const failedMigrations = await this.db
@@ -557,7 +556,7 @@ export class DatabaseMigrator {
       };
 
     } catch (error) {
-      issues.push(`Validation error: ${error instanceof Error ? error.message : String(error)}`);
+      issues.push(`Validation error: ${error instanceof Error ? error.message: String(error)}`);
       return {
         valid: false,
         issues

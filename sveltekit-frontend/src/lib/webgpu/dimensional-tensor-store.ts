@@ -87,7 +87,7 @@ export class DimensionalTensorStore {
   private accessHistory: Map<string, number> = new Map();
   
   // Streaming State
-  private streamingQueue: Map<string, Promise<void>> = new Map();
+  private streamingQueue: Map<string, Promise<void> = new Map();
   private lodManager: LODManager;
   private compressionPipeline: CompressionPipeline | null = null;
 
@@ -476,7 +476,7 @@ export class DimensionalTensorStore {
       allocatedMemory: this.allocatedMemory,
       textureCount: this.tensorTextures.size,
       cacheHitRatio: totalAccesses > 0 ? cacheHits / totalAccesses : 0,
-      averageLOD: this.tensorTextures.size > 0 ? lodSum / this.tensorTextures.size : 0,
+      averageLOD: this.tensorTextures.size > 0 ? lodSum / this.tensorTextures.size: 0,
       streamingQueueSize: this.streamingQueue.size
     };
   }

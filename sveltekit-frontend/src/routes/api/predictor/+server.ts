@@ -139,7 +139,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 
     const results = await Promise.all(
       body.map(async (req) => {
-        const context = req.context || {};
+        const context = req.context || {}));
         const topK = req.topK || 3;
 
         let predictions;

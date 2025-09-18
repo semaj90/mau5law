@@ -100,7 +100,7 @@ const isMaxAttemptsReached = ({ context }: { context: AuthContext }) => {
 };
 
 const isAccountLocked = ({ context }: { context: AuthContext }) => {
-  return context.lockoutUntil ? new Date() < context.lockoutUntil : false;
+  return context.lockoutUntil ? new Date() < context.lockoutUntil: false;
 };
 
 export const authMachine = setup({
@@ -165,7 +165,7 @@ export const authMachine = setup({
       return context.loginAttempts >= context.maxLoginAttempts;
     },
     isAccountLocked: ({ context }) => {
-      return context.lockoutUntil ? new Date() < context.lockoutUntil : false;
+      return context.lockoutUntil ? new Date() < context.lockoutUntil: false;
     }
   },
   actors: {

@@ -118,7 +118,7 @@ export class LokiRedisCache extends EventEmitter {
   private nesMemory: any = null;
 
   // Loki collections by document type
-  private collections: Map<string, Collection<CachedDocument>> = new Map();
+  private collections: Map<string, Collection<CachedDocument> = new Map();
 
   // Performance tracking
   private stats = {
@@ -981,7 +981,7 @@ export class LokiRedisCache extends EventEmitter {
       if (this.loki) {
         await new Promise<void>((resolve, reject) => {
           this.loki!.saveDatabase((err) => {
-            if (err) reject(new Error(`Loki save failed: ${err.message || err}`));
+            if (err) reject(new Error(`Loki save failed: ${err.message || err}`))));
             else resolve();
           });
         });

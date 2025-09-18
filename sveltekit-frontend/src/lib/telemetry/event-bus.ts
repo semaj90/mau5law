@@ -217,7 +217,7 @@ export class TelemetryEventBus {
       metrics: this.getMetrics(),
       events: [...this.eventBuffer],
       environment: {
-        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent: 'unknown',
         viewport: typeof window !== 'undefined' 
           ? { width: window.innerWidth, height: window.innerHeight }
           : null,

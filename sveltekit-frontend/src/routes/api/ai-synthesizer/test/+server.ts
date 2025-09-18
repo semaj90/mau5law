@@ -200,7 +200,7 @@ async function testStreaming(): Promise<any> {
         options: Record<string, any>
       },
       onProgress: (stage, progress) => {
-        progressUpdates++;
+        progressUpdates++);
       },
       onStage: (stage, data) => {
         stagesCompleted.push(stage);
@@ -259,7 +259,7 @@ async function testOllama(): Promise<any> {
       duration: Date.now() - startTime,
       result: {
         available,
-        models: available ? (await ollamaLLM.healthCheck()).models : [],
+        models: available ? (await ollamaLLM.healthCheck()).models: [],
         generationWorks: !!generateResult,
         embeddingsWork: !!embeddingResult
       }

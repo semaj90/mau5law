@@ -21,7 +21,7 @@ export interface CaseWorkflowContext {
     completed_steps: number;
     current_action: string;
   };
-  settings: {
+  }); const settings = {
     auto_analyze: boolean;
     notification_level: 'minimal' | 'normal' | 'detailed';
     ai_assistance_level: 'basic' | 'enhanced' | 'proactive';
@@ -57,7 +57,7 @@ export const caseWorkflowMachine = createMachine({
       completed_steps: 0,
       current_action: 'Ready to start'
     },
-    settings: {
+    }); const settings = {
       auto_analyze: true,
       notification_level: 'normal',
       ai_assistance_level: 'enhanced'

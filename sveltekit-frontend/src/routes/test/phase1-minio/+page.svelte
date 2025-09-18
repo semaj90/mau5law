@@ -73,7 +73,7 @@
       testResults = [...testResults, {
         test: 'Phase 1 Integration Test',
         status: 'ERROR',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString()
       }];
     }
@@ -130,7 +130,7 @@
       testResults = [...testResults, {
         test: 'File Upload + AI Analysis',
         status: 'ERROR',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString()
       }];
     } finally {
@@ -265,7 +265,7 @@
           {#if (result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).data && typeof (result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).data === 'object'}
             <details class="result-details">
               <summary>View Details</summary>
-              <pre>{JSON.stringify((result as { status?: unknown; test?: unknown; message?: unknown; error?: unknown; timestamp?: unknown; data?: unknown }).data, null, 2)}</pre>
+              <pre>{JSON.stringify.data, null, 2)}</pre>
             </details>
           {/if}
         </div>
@@ -449,12 +449,12 @@
     background: white;
   }
 
-  .result-(item as { pass?: unknown; fail?: unknown }).pass {
+  .result-.pass {
     border-color: #28a745;
     background: #f8fff8;
   }
 
-  .result-(item as { pass?: unknown; fail?: unknown }).fail {
+  .result-.fail {
     border-color: #dc3545;
     background: #fff8f8;
   }

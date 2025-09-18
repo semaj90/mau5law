@@ -296,7 +296,7 @@ export const globalUserStore = {
         body: JSON.stringify({
           userId: globalUserState.user?.id,
           sessionId: globalUserState.session?.id,
-          query: message.role === 'user' ? message.content : '',
+          query: message.role === 'user' ? message.content: '',
           response: message.role === 'assistant' ? message.content : '',
           embedding: message.embedding,
           metadata: message.metadata,
@@ -317,7 +317,7 @@ export const globalUserStore = {
     metrics.duration = Date.now() - metrics.startTime.getTime();
 
     // Update success rate
-    const successfulMessages = globalUserState.chatHistory.filter(m => m.isSuccessful).length;
+    const successfulMessages = globalUserState.chatHistory.filter(item => item.length);
     metrics.successRate = successfulMessages / globalUserState.chatHistory.length;
 
     // Update average response time

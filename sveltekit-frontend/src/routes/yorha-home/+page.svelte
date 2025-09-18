@@ -88,12 +88,12 @@
 
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
-        const results = Array.isArray(data?.results) ? (data as { results?: unknown }).results : [];
+        const results = Array.isArray(data?.results) ? (data as { results?: unknown }).results: [];
   searchResults = results.map((item: unknown, index: number) => ({
           id: (item && ((item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).id ?? (item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown })._id)) || index + 1,
           title: (item && ((item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).title ?? (item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).name)) || `Document ${index + 1}`,
           type: (item && (item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).type) || 'Legal Document',
-          relevance: Math.round(((item && ((item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).relevance ?? (item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).score)) ?? Math.random()) * 100),
+          relevance: Math.round.relevance ?? (item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).score)) ?? Math.random()) * 100),
           status: (item && (item as { id?: unknown; _id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; score?: unknown; status?: unknown }).status) || 'active',
           metadata: item
         }));

@@ -31,8 +31,8 @@ export interface CanvasState {
  */
 export function useEvidenceCanvas() {
 	// Evidence items state
-	let evidenceItems = $state<Map<string, EvidenceItem>>(new Map());
-	let selectedItems = $state<Set<string>>(new Set());
+	let evidenceItems = $state<Map<string, EvidenceItem>(new Map());
+	let selectedItems = $state<Set<string>(new Set());
 	let hoveredItem = $state<string | null>(null);
 
 	// Canvas state
@@ -48,7 +48,7 @@ export function useEvidenceCanvas() {
 	// Interaction state
 	let isDragging = $state(false);
 	let dragStartPos = $state<{ x: number; y: number } | null>(null);
-	let draggedItems = $state<Set<string>>(new Set());
+	let draggedItems = $state<Set<string>(new Set());
 
 	// Canvas dimensions
 	let canvasSize = $state({ width: 1024, height: 768 });

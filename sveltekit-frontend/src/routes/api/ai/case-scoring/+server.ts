@@ -140,10 +140,10 @@ const originalGETHandler: RequestHandler = async () => {
   const totalCases = cases.length;
   const avgRiskScore = Math.round(cases.reduce((sum, case_) => sum + case_.score, 0) / totalCases);
   const priorityBreakdown = {
-    critical: cases.filter(c => c.priority === 'critical').length,
-    high: cases.filter(c => c.priority === 'high').length,
-    medium: cases.filter(c => c.priority === 'medium').length,
-    low: cases.filter(c => c.priority === 'low').length
+    critical: cases.filter(item => item.length),
+    high: cases.filter(item => item.length),
+    medium: cases.filter(item => item.length),
+    low: cases.filter(item => item.length)
   };
   
   return json({ 

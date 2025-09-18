@@ -145,7 +145,7 @@ async function performVectorSearch(
 
     const caseResults = await db.execute(sql`
       SELECT ce.id, ce.content, ce.embedding, c.title, c.case_number, c.created_at, 'cases' as table_type,
-             1 - (ce.embedding::text::vector <=> ${embeddingStr}::vector) as similarity
+             1 - (ce.embedding: :text::vector <=> ${embeddingStr}::vector) as similarity
       FROM case_embeddings ce JOIN cases c ON ce.case_id = c.id
       WHERE 1 - (ce.embedding::text::vector <=> ${embeddingStr}::vector) > ${threshold}
       ORDER BY ce.embedding::text::vector <=> ${embeddingStr}::vector LIMIT ${Math.ceil(limit / 2)}

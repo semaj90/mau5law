@@ -127,7 +127,7 @@
   }
 
   /* Connection lines effect */
-  .evidence-card.selected::after {
+  .evidence-card.selected: :after {
     content: '';
     position: absolute;
     top: 50%;

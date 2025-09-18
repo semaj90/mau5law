@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
       searchTerms = data.searchTerms;
       processingTime = data.processingTime;
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Search failed';
+      error = err instanceof Error ? err.message: 'Search failed';
       console.error('Precedent search error:', err);
     } finally {
       loading = false;
@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   let totalPages = $derived(Math.ceil(totalCount / itemsPerPage));
-  let startItem = $derived((currentPage - 1) * itemsPerPage + 1;);
+  let startItem = $derived((currentPage - 1) * itemsPerPage + 1;
   let endItem = $derived(Math.min(currentPage * itemsPerPage, totalCount));
 </script>
 

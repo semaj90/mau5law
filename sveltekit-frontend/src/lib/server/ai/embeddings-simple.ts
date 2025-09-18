@@ -239,7 +239,7 @@ async function generateOpenAIBatchEmbeddings(texts: string[]): Promise<(number[]
     throw new Error(`OpenAI API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText}`);
   }
   const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
-  return (data as { data?: any; embedding?: any; embeddings?: any }).(data as { data?: any; embedding?: any; embeddings?: any }).map((item: any) => ensureDim((item as { embedding?: any }).embedding, TARGET_DIM));
+  return (data as { data?: any; embedding?: any; embeddings?: any }).data.map((item: any) => ensureDim((item as { embedding?: any }).embedding, TARGET_DIM));
 }
 
 // Nomic batch embedding generation

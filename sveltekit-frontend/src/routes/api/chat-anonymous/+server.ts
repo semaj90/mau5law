@@ -123,7 +123,7 @@ Currently running in demo mode. For detailed legal analysis, please ensure the O
     return json(
       { 
         error: 'Failed to process chat request', 
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message: 'Unknown error'
       }, 
       { status: 500 }
     );

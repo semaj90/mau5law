@@ -41,7 +41,7 @@
   // Simple native toast system
   let toasts = $state<any[]>([]);
   function addToast(toast: { data: ToastData }) {
-    const id = Date.now().toString();
+    const id = Date.now.toString();
     toasts = [...toasts, { id, data: toast.data }];
     // Auto-remove after 5 seconds
     setTimeout(() => {

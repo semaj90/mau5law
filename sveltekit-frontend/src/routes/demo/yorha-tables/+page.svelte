@@ -330,7 +330,7 @@
       </div>
       <div class="yorha-stat-item">
         <div class="yorha-stat-value">
-          {sampleEvidence.filter(e => e.ai_processed).length}
+          {sampleEvidence.filter(item => item.length)}
         </div>
         <div class="yorha-stat-label">AI PROCESSED</div>
       </div>

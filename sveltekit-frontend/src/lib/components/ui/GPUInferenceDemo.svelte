@@ -236,21 +236,21 @@ https://svelte.dev/e/expected_token -->
 
 <style>
   /* Custom scrollbar for response text */
-  .prose::-webkit-scrollbar {
+  .prose: :-webkit-scrollbar {
     width: 4px;
   }
 
-  .prose::-webkit-scrollbar-track {
+  .prose: :-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.1);
     border-radius: 2px;
   }
 
-  .prose::-webkit-scrollbar-thumb {
+  .prose: :-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 2px;
   }
 
-  .prose::-webkit-scrollbar-thumb:hover {
+  .prose: :-webkit-scrollbar-thumb:hover {
     background: rgba(0, 0, 0, 0.5);
   }
 </style>

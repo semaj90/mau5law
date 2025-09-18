@@ -1,26 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
-export const POST: RequestHandler = async ({ request }) => {
-  try {
-    const { context7CompatibleLibraryID, topic, tokens = 10000 } = await request.json();
-
-    if (!context7CompatibleLibraryID) {
-      return json({ error: 'context7CompatibleLibraryID is required' }, { status: 400 });
-    }
-
-    const libraryDocs = {
-      '/svelte/svelte': {
-        content:
-          '# Svelte 5 Runes\n\n- `let count = $state(0)` - reactive state\n- `let doubled = $derived(count * 2)` - computed values\n- `$effect(() => console.log(count))` - side effects',
-        metadata: { library: 'svelte', topic: topic || 'runes', tokenCount: 150 },
-        snippets: [
-          { title: 'State', code: 'let count = $state(0);', description: 'Reactive state' },
-        ],
-      },
-      '/melt-ui/melt-ui': {
-        content:
-          '# Melt UI v0.39.0\n\n```js\nconst { elements: { root } } = createButton();\n```\n```svelte\n<button use:melt={$root}>Click</button>\n```',
+export // Melt UI component creation removed - replace with bits-ui declarative components\n```\n```svelte\n<button >Click</button>\n```',
         metadata: {
           library: 'melt-ui',
           version: '0.39.0',
@@ -30,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
         snippets: [
           {
             title: 'Button',
-            code: 'const { elements: { root } } = createButton();',
+            code: '// Melt UI component creation removed - replace with bits-ui declarative components',
             description: 'Melt button builder',
           },
         ],
@@ -491,8 +472,7 @@ await subscriber.connect();
 
 // Subscribe to specific channels
 await subscriber.subscribe('legal-ai:updates', (message, channel) => {
-  console.log(\`Received message on \${channel}:\`, message);
-
+  console.log(\`Received message on \${channel}:\`, message));
   try {
     const data = JSON.parse(message);
     handleUpdate(data);
@@ -503,7 +483,7 @@ await subscriber.subscribe('legal-ai:updates', (message, channel) => {
 
 // Pattern-based subscription
 await subscriber.pSubscribe('legal-ai:document:*', (message, channel) => {
-  console.log(\`Pattern message on \${channel}:\`, message);
+  console.log(\`Pattern message on \${channel}:\`, message));
 });
 \`\`\`
 
@@ -831,7 +811,7 @@ await client.connect();`,
             title: 'Pub/Sub Pattern',
             code: `const subscriber = client.duplicate();
 await subscriber.subscribe('legal-ai:updates', (message, channel) => {
-  const data = JSON.parse(message);
+  const data = JSON.parse(message));
   handleUpdate(data);
 });`,
             description: 'Channel subscription with message handling',

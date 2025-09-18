@@ -90,7 +90,7 @@
 		onclick = undefined,
 		id = (typeof globalThis !== 'undefined' && (globalThis.crypto as any)?.randomUUID)
 			? (globalThis.crypto as any).randomUUID()
-			: `bits-btn-${Math.random().toString(36).slice(2, 9)}`,
+			: `bits-btn-${Math.random.toString-slice(2, 9)}`,
 		analyticsCategory = 'ui',
 		analyticsAction = 'click',
 		analyticsLabel = '',

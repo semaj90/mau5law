@@ -7,12 +7,12 @@
     class_ = ""
   }: Props = $props();
 
-  import { melt } from "melt";
+  // Replaced melt with bits-ui components
   import { getContext } from "svelte";
   import { fly } from "svelte/transition";
 
   const contextMenu = (getContext("contextMenu") as any) || {
-    elements: { menu: { subscribe: () => {} } },
+    elements: { menu: { subscribe: () => } },
   };
 
   const { elements } = contextMenu;
@@ -28,8 +28,7 @@
   </div>
 {/if}
 
-<style>/* @unocss-include */ {}
-  .context-menu {
+<style>/* @unocss-include */ .context-menu {
     animation: contextMenuFadeIn 150ms ease-out;
 }
   @keyframes contextMenuFadeIn {

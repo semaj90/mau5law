@@ -11,7 +11,6 @@
 
   let uploadResults: UploadResult[] = [];
   let systemStatus: SystemStatus = {};
-
   function handleUploadComplete(result: UploadResult) {
     console.log('Upload completed:', result);
     uploadResults = [...uploadResults, result];

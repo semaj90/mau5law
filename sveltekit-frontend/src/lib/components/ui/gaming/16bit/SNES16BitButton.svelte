@@ -206,8 +206,7 @@
 
 <style>
   :global(.snes-16bit-button) {
-/* Base SNES button styling */ {}
-    font-family: 'Orbitron', 'Arial', sans-serif;
+/* Base SNES button styling */ font-family: 'Orbitron', 'Arial', sans-serif;
     background: var(--button-gradient);
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -216,60 +215,43 @@
     font-size: var(--button-font-size);
     min-height: var(--button-min-height);
     font-weight: 500;
-/* Enhanced rendering (smoother than 8-bit) */ {}
-    image-rendering: auto;
+/* Enhanced rendering (smoother than 8-bit) */ image-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-/* Enhanced 3D effect */ {}
-box-shadow: {}
-0 2px 0px rgba(0, 0, 0, 0.3), {}
-inset 0 1px 0px rgba(255, 255, 255, 0.4), {}
-      inset 0 -1px 0px rgba(0, 0, 0, 0.2);
+/* Enhanced 3D effect */ box-shadow: 0 2px 0px rgba(0, 0, 0, 0.3), inset 0 1px 0px rgba(255, 255, 255, 0.4), inset 0 -1px 0px rgba(0, 0, 0, 0.2);
     
     transform: var(--mode7-transform, none);
     transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
-/* Remove default button styles */ {}
-    -webkit-appearance: none;
+/* Remove default button styles */ -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     outline: none;
-/* Prevent text selection */ {}
-    -webkit-user-select: none;
+/* Prevent text selection */ -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-/* Cursor */ {}
-    cursor: pointer;
-/* Text styling */ {}
-    text-transform: uppercase;
+/* Cursor */ cursor: pointer;
+/* Text styling */ text-transform: uppercase;
     letter-spacing: 0.5px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-/* Flexbox for content alignment */ {}
-    display: inline-flex;
+/* Flexbox for content alignment */ display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-/* Layer effects support */ {}
-    position: relative;
+/* Layer effects support */ position: relative;
     overflow: hidden;
   }
-/* Layer effects (pseudo-Mode 7 layering) */ {}
-  :global(.snes-16bit-button.layer-effects::before) {
+/* Layer effects (pseudo-Mode 7 layering) */ :global(.snes-16bit-button.layer-effects: :before) {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-background: linear-gradient(135deg, {}
-rgba(255, 255, 255, 0.2) 0%, {}
-transparent 50%, {}
-rgba(0, 0, 0, 0.1) 100% {}
-    );
+background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100% );
     pointer-events: none;
     opacity: 0.6;
   }
-/* Plasma effect */ {}
-  :global(.snes-16bit-button.plasma) {
+/* Plasma effect */ :global(.snes-16bit-button.plasma) {
     animation: plasmaShift 3s ease-in-out infinite alternate;
     background-size: 200% 200%;
   }
@@ -279,46 +261,31 @@ rgba(0, 0, 0, 0.1) 100% {}
     50% { background-position: 100% 100%; }
     100% { background-position: 0% 0%; }
   }
-/* Mode 7 perspective effects */ {}
-  :global(.snes-16bit-button.mode7) {
+/* Mode 7 perspective effects */ :global(.snes-16bit-button.mode7) {
     transform-style: preserve-3d;
   }
-/* Hover effects */ {}
-  :global(.snes-16bit-button:not(:disabled):hover) {
+/* Hover effects */ :global(.snes-16bit-button: not(:disabled):hover) {
     border-color: rgba(255, 255, 255, 0.5);
-box-shadow: {}
-0 3px 0px rgba(0, 0, 0, 0.3), {}
-inset 0 1px 0px rgba(255, 255, 255, 0.6), {}
-inset 0 -1px 0px rgba(0, 0, 0, 0.1), {}
-      0 4px 8px rgba(0, 0, 0, 0.2);
+box-shadow: 0 3px 0px rgba(0, 0, 0, 0.3), inset 0 1px 0px rgba(255, 255, 255, 0.6), inset 0 -1px 0px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2);
     
     filter: brightness(1.1) saturate(1.1);
   }
-/* Active/Pressed state */ {}
-  :global(.snes-16bit-button:not(:disabled):active) {
-box-shadow: {}
-0 1px 0px rgba(0, 0, 0, 0.3), {}
-inset 0 1px 0px rgba(255, 255, 255, 0.3), {}
-      inset 0 2px 4px rgba(0, 0, 0, 0.3);
+/* Active/Pressed state */ :global(.snes-16bit-button: not(:disabled):active) {
+box-shadow: 0 1px 0px rgba(0, 0, 0, 0.3), inset 0 1px 0px rgba(255, 255, 255, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.3);
   }
-/* Disabled state */ {}
-  :global(.snes-16bit-button:disabled) {
+/* Disabled state */ :global(.snes-16bit-button:disabled) {
     background: linear-gradient(to bottom, #7c7c7c, #5c5c5c, #3c3c3c);
     color: #bcbcbc;
     cursor: not-allowed;
     opacity: 0.7;
     transform: none !important;
-box-shadow: {}
-0 1px 0px rgba(0, 0, 0, 0.2), {}
-      inset 0 1px 0px rgba(255, 255, 255, 0.1);
+box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2), inset 0 1px 0px rgba(255, 255, 255, 0.1);
   }
-/* Focus styles for accessibility */ {}
-  :global(.snes-16bit-button:focus-visible) {
+/* Focus styles for accessibility */ :global(.snes-16bit-button:focus-visible) {
     outline: 2px solid #ffffff;
     outline-offset: 2px;
   }
-/* Enhanced loading spinner */ {}
-  .loading-spinner {
+/* Enhanced loading spinner */ .loading-spinner {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -341,8 +308,7 @@ box-shadow: {}
     50% { transform: rotate(180deg); border-radius: 30%; }
     100% { transform: rotate(360deg); border-radius: 50%; }
   }
-/* Variant-specific enhancements */ {}
-  :global(.snes-16bit-button.variant-primary) {
+/* Variant-specific enhancements */ :global(.snes-16bit-button.variant-primary) {
     background: linear-gradient(to bottom, #5cb3ff, #3cbcfc, #0084ff);
   }
 
@@ -359,34 +325,22 @@ box-shadow: {}
   :global(.snes-16bit-button.variant-error) {
     background: linear-gradient(to bottom, #fc5c5c, #f83800, #cc2800);
   }
-/* Scanlines effect (optional) */ {}
-  :global(.snes-16bit-button.enable-scanlines::after) {
+/* Scanlines effect (optional) */ :global(.snes-16bit-button.enable-scanlines: :after) {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-background: repeating-linear-gradient( {}
-0deg, {}
-transparent, {}
-transparent 1.5px, {}
-rgba(0, 0, 0, 0.05) 1.5px, {}
-rgba(0, 0, 0, 0.05) 3px {}
-    );
+background: repeating-linear-gradient( 0deg, transparent, transparent 1.5px, rgba(0, 0, 0, 0.05) 1.5px, rgba(0, 0, 0, 0.05) 3px );
     pointer-events: none;
   }
-/* CRT effect (enhanced for 16-bit) */ {}
-  :global(.snes-16bit-button.enable-crt) {
+/* CRT effect (enhanced for 16-bit) */ :global(.snes-16bit-button.enable-crt) {
     filter: contrast(1.1) brightness(1.05) saturate(1.2);
     border-radius: 3px;
-box-shadow: {}
-inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
-0 2px 0px rgba(0, 0, 0, 0.3), {}
-      0 0 6px rgba(0, 0, 0, 0.2);
+box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 2px 0px rgba(0, 0, 0, 0.3), 0 0 6px rgba(0, 0, 0, 0.2);
   }
-/* Smooth animation style */ {}
-  :global(.snes-16bit-button.smooth) {
+/* Smooth animation style */ :global(.snes-16bit-button.smooth) {
     transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
@@ -398,8 +352,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
     0%, 100% { transform: translateY(0px) scale(1); }
     50% { transform: translateY(-1px) scale(1.01); }
   }
-/* Enhanced glitch transition */ {}
-  :global(.snes-16bit-button.glitch-transition:hover) {
+/* Enhanced glitch transition */ :global(.snes-16bit-button.glitch-transition:hover) {
     animation: enhancedGlitch 0.3s ease-in-out;
   }
 
@@ -411,14 +364,12 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
     80% { transform: translateY(0.5px) translateX(-0.5px); filter: hue-rotate(360deg); }
     100% { transform: translateY(0px); filter: hue-rotate(0deg); }
   }
-/* Mobile optimizations */ {}
-  @media (max-width: 480px) {
+/* Mobile optimizations */ @media (max-width: 480px) {
     :global(.snes-16bit-button) {
       min-height: 44px; /* iOS touch target minimum */
       font-size: 11px;
     }
-/* Disable complex effects on mobile for performance */ {}
-    :global(.snes-16bit-button.plasma) {
+/* Disable complex effects on mobile for performance */ :global(.snes-16bit-button.plasma) {
       animation: none;
       background-size: 100% 100%;
     }
@@ -427,8 +378,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
       transform: none !important;
     }
   }
-/* Reduced motion support */ {}
-  @media (prefers-reduced-motion: reduce) {
+/* Reduced motion support */ @media (prefers-reduced-motion: reduce) {
     :global(.snes-16bit-button) {
       animation: none;
       transition: opacity 150ms ease;
@@ -443,21 +393,16 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
       border: 2px solid currentColor;
     }
   }
-/* High contrast mode */ {}
-  @media (prefers-contrast: high) {
+/* High contrast mode */ @media (prefers-contrast: high) {
     :global(.snes-16bit-button) {
       border-width: 2px;
       border-color: currentColor;
       text-shadow: none;
     }
   }
-/* Dark mode adjustments */ {}
-  @media (prefers-color-scheme: dark) {
+/* Dark mode adjustments */ @media (prefers-color-scheme: dark) {
     :global(.snes-16bit-button) {
-box-shadow: {}
-0 2px 0px rgba(255, 255, 255, 0.1), {}
-inset 0 1px 0px rgba(255, 255, 255, 0.2), {}
-        inset 0 -1px 0px rgba(0, 0, 0, 0.4);
+box-shadow: 0 2px 0px rgba(255, 255, 255, 0.1), inset 0 1px 0px rgba(255, 255, 255, 0.2), inset 0 -1px 0px rgba(0, 0, 0, 0.4);
     }
   }
 </style>

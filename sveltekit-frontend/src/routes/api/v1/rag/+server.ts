@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       async () => {
         // Check dimensional cache first if enabled (remote)
         if (body.useCache !== false) {
-          const cacheResult = await checkDimensionalCache(body.query, body.userId);
+          const cacheResult = await checkDimensionalCache(body.query, body.userId));
           if (cacheResult?.hit) {
             return {
               success: true,

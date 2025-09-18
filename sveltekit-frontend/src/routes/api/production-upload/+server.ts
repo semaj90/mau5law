@@ -316,7 +316,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       processingTime
     }, { status: 500 });
   }
@@ -364,7 +364,7 @@ export const GET: RequestHandler = async () => {
     logger.error('Health check failed', error);
     return json({
       status: 'unhealthy',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

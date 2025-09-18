@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Configuration failed'
+      error: error instanceof Error ? error.message: 'Configuration failed'
     }, { status: 500 });
   }
 };
@@ -176,9 +176,9 @@ export const GET: RequestHandler = async ({ url }) => {
         jobs: filteredJobs,
         summary: {
           totalConfigs: configs.length,
-          activeJobs: jobs.filter(j => j.status === 'processing').length,
-          completedJobs: jobs.filter(j => j.status === 'completed').length,
-          failedJobs: jobs.filter(j => j.status === 'failed').length
+          activeJobs: jobs.filter(item => item.length),
+          completedJobs: jobs.filter(item => item.length),
+          failedJobs: jobs.filter(item => item.length)
         }
       }
     });
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Request failed'
+      error: error instanceof Error ? error.message: 'Request failed'
     }, { status: 500 });
   }
 };
@@ -232,7 +232,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Update failed'
+      error: error instanceof Error ? error.message: 'Update failed'
     }, { status: 500 });
   }
 };
@@ -284,7 +284,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Delete failed'
+      error: error instanceof Error ? error.message: 'Delete failed'
     }, { status: 500 });
   }
 };
@@ -331,7 +331,7 @@ async function processDocuments(jobId: string): Promise<void> {
     
   } catch (error) {
     job.status = 'failed';
-    job.errors = [error instanceof Error ? error.message : 'Processing failed'];
+    job.errors = [error instanceof Error ? error.message: 'Processing failed'];
     job.endTime = new Date();
     throw error;
   }

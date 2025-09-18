@@ -106,15 +106,13 @@
       type: f.file.type,
       status: f.status === 'uploading' || f.status === 'processing' ? 'pending' : f.status,
       attempts: f.attempts || 0,
-      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt : null
+      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt: null
     }));
-    if (pending.length === 0) { try { sessionStorage.removeItem(STORAGE_KEY); } catch {}; return; }
-    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now(), files: pending })); } catch {}
-  }
+    if (pending.length === 0) { try { sessionStorage.removeItem(STORAGE_KEY); } catch ; return; }
+    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ ts: Date.now(), files: pending })); } catch }
   function restoreSession() {
     if (!enablePersistence) return;
-    try { const raw = sessionStorage.getItem(STORAGE_KEY); if (!raw) return; const data = JSON.parse(raw); if (!data?.files) return; const restored: FileState[] = []; for (const m of data.files) { const ph = new File([], m.name, { type: m.type || 'application/octet-stream' }); restored.push({ file: ph, placeholder: true, originalSize: m.size, status: 'pending', progress: 0, attempts: m.attempts || 0, nextRetryAt: m.nextRetryAt || null }); } if (restored.length) { fileStates = [...fileStates, ...restored]; files = [...files, ...restored.map(r=>r.file)]; liveMessage = `Restored ${restored.length} pending file(s)`; if (enableToastNotifications) toastService.info('Session Restored', `Recovered ${restored.length} pending file(s). Re-select originals to resume.`, { duration: 6000 }); ensureRetryTicker(); } } catch {}
-  }
+    try { const raw = sessionStorage.getItem(STORAGE_KEY); if (!raw) return; const data = JSON.parse(raw); if (!data?.files) return; const restored: FileState[] = []; for (const m of data.files) { const ph = new File([], m.name, { type: m.type || 'application/octet-stream' }); restored.push({ file: ph, placeholder: true, originalSize: m.size, status: 'pending', progress: 0, attempts: m.attempts || 0, nextRetryAt: m.nextRetryAt || null }); } if (restored.length) { fileStates = [...fileStates, ...restored]; files = [...files, ...restored.map(r=>r.file)]; liveMessage = `Restored ${restored.length} pending file(s)`; if (enableToastNotifications) toastService.info('Session Restored', `Recovered ${restored.length} pending file(s). Re-select originals to resume.`, { duration: 6000 }); ensureRetryTicker(); } } catch }
   function matchPlaceholders(incoming: File[]) { for (const f of incoming) { const idx = fileStates.findIndex(ps => ps.placeholder && ps.file.name === f.name && ps.originalSize === f.size); if (idx !== -1) { const prev = fileStates[idx]; fileStates[idx] = { ...prev, file: f, placeholder: false }; } } }
 
   function isRetryable(message: string, statusCode?: number): boolean {
@@ -174,11 +172,10 @@
     // Abort active controllers
     fileStates = fileStates.map(fs => {
       if (fs.controller) {
-        try { fs.controller.abort(); } catch {}
-      }
-      if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch {}; fs.retryTimeoutId = null; }
+        try { fs.controller.abort(); } catch }
+      if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch ; fs.retryTimeoutId = null; }
       if (['uploading','pending','processing'].includes(fs.status)) {
-        return { ...fs, status: 'canceled', progress: fs.status === 'uploading' ? fs.progress : 0, controller: null };
+        return { ...fs, status: 'canceled', progress: fs.status === 'uploading' ? fs.progress: 0, controller: null };
       }
       return fs;
     });
@@ -256,7 +253,7 @@
     if (uploading) return; // prevent removal mid-batch
     const target = fileStates[index];
     if (target && target.status === 'uploading') return; // active upload
-  if (target?.retryTimeoutId) { try { clearTimeout(target.retryTimeoutId); } catch {}; }
+  if (target?.retryTimeoutId) { try { clearTimeout(target.retryTimeoutId); } catch ; }
     files = files.filter((_, i) => i !== index);
     fileStates = fileStates.filter((_, i) => i !== index);
   serializeSession();
@@ -265,8 +262,7 @@
   function cancelUpload(index: number) {
     const fs = fileStates[index];
     if (!fs || fs.status !== 'uploading') return;
-    try { fs.controller?.abort(); } catch {}
-  if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch {}; fs.retryTimeoutId = null; }
+    try { fs.controller?.abort(); } catch if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId); } catch ; fs.retryTimeoutId = null; }
     fs.status = 'canceled';
     fs.progress = 0;
     liveMessage = `Upload canceled for ${fs.file.name}`;
@@ -305,9 +301,9 @@
 
     // Complete batch toast
     if (enableToastNotifications && batchToastId) {
-      const completed = fileStates.filter(f => f.status === 'completed').length;
-      const failed = fileStates.filter(f => f.status === 'error').length;
-      const canceled = fileStates.filter(f => f.status === 'canceled').length;
+      const completed = fileStates.filter(item => item.length);
+      const failed = fileStates.filter(item => item.length);
+      const canceled = fileStates.filter(item => item.length);
 
       if (uploadStatus === 'completed' && failed === 0) {
         toastService.completeUpload(
@@ -389,7 +385,7 @@
     activeUploads = 0;
 
     // Initialize performance metrics
-  performanceMetrics.totalFiles = fileStates.filter(fs => fs.status === 'pending' && !fs.placeholder).length;
+  performanceMetrics.totalFiles = fileStates.filter(item => item.length);
   telemetry.emit('upload_batch_start', { total: performanceMetrics.totalFiles, concurrency: maxConcurrency });
     performanceMetrics.completedFiles = 0;
     performanceMetrics.totalUploadTime = 0;
@@ -421,10 +417,9 @@
       await finalizeAggregateStatus();
     }
   serializeSession();
-    telemetry.emit('upload_batch_end', {
-      completed: fileStates.filter(f=>f.status==='completed').length,
-      failed: fileStates.filter(f=>f.status==='error').length,
-      canceled: fileStates.filter(f=>f.status==='canceled').length
+    telemetry.emit.length,
+      failed: fileStates.filter(item => item.length),
+      canceled: fileStates.filter(item => item.length)
     });
   }
 
@@ -445,7 +440,7 @@
 
       // Update batch toast
       if (enableToastNotifications && batchToastId) {
-        const completed = fileStates.filter(f => f.status === 'completed').length;
+        const completed = fileStates.filter(item => item.length);
         const total = performanceMetrics.totalFiles;
         toastService.updateUploadProgress(
           batchToastId,
@@ -590,7 +585,7 @@
             embeddingVector = Array.from({ length: 384 }, () => Math.random() - 0.5);
             embeddingDims = 384;
             embeddingModel = 'fallback-random-384';
-            telemetry.emit('embedding_error', { file: file.name, error: e instanceof Error ? e.message : 'unknown' });
+            telemetry.emit('embedding_error', { file: file.name, error: e instanceof Error ? e.message: 'unknown' });
             console.warn('Embedding generation failed, using fallback vector:', e);
           }
 
@@ -612,18 +607,11 @@
         fetch('/api/v1/redis/publish', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            channel: 'evidence_update',
-            data: {
-              type: 'EVIDENCE_UPLOADED',
-              evidenceId: data[0].id,
-              caseId,
-              fileName: file.name,
-              timestamp: new Date().toISOString(),
+          body: JSON.stringify.toISOString(),
               gpuTaskIds: fs.gpuTaskIds
             }
           })
-        }).catch(() => {});
+        }).catch(() => );
 
         fs.progress = 100;
         fs.status = 'completed';
@@ -665,7 +653,7 @@
 
       fs.endTime = new Date();
       fs.status = controller.signal.aborted ? 'canceled' : 'error';
-      fs.error = err instanceof Error ? err.message : 'Upload failed';
+      fs.error = err instanceof Error ? err.message: 'Upload failed';
       errorMessage = fs.error;
       onUploadError?.(fs.error);
       liveMessage = `${fs.status === 'canceled' ? 'Canceled' : 'Failed'} upload for ${file.name}`;

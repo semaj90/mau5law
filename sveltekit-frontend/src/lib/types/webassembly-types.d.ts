@@ -5,7 +5,7 @@
 
 // Global WebAssembly module declarations
 declare module '*.wasm' {
-  const wasmModule: (imports?: WebAssembly.Imports) => Promise<;
+  const wasmModule: (imports?: WebAssembly.Imports) => Promise<WebAssembly.Instance>;
   export default wasmModule;
 }
 
@@ -32,17 +32,22 @@ export interface LegalWASMModule {
   memory: WebAssembly.Memory;
   allocate: (size: number) => number;
   deallocate: (ptr: number) => void;
-  
+
   // Text processing functions
   extract_entities: (textPtr: number, textLen: number) => number;
   calculate_confidence: (dataPtr: number, dataLen: number) => number;
   process_legal_text: (inputPtr: number, inputLen: number, outputPtr: number) => number;
-  
+
   // Vector operations
   normalize_embeddings: (vectorPtr: number, dimension: number) => void;
   cosine_similarity: (vec1Ptr: number, vec2Ptr: number, dimension: number) => number;
-  batch_similarity: (vectorsPtr: number, queryPtr: number, count: number, dimension: number) => number;
-  
+  batch_similarity: (
+    vectorsPtr: number,
+    queryPtr: number,
+    count: number,
+    dimension: number
+  ) => number;
+
   // Legal-specific operations
   classify_document: (contentPtr: number, contentLen: number) => number;
   extract_legal_entities: (textPtr: number, textLen: number, resultPtr: number) => number;
@@ -53,16 +58,17 @@ export interface LegalWASMModule {
 export interface LegalWASMBridge {
   module: LegalWASMModule;
   memory: WASMMemoryManager;
-  
+
   // High-level document processing methods
-  processLegalDocument(content: string): Promise<;
+  processLegalDocument(content: string): Promise<{
+    entities: Array<any>;
     classification: string;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     confidence: number;
   }>;
-  
+
   extractMetadata(content: string): Promise<Record<string, unknown>>;
-  
+
   // Vector operations
   normalizeEmbeddings(embeddings: Float32Array): Float32Array;
   calculateSimilarity(vec1: Float32Array, vec2: Float32Array): number;
@@ -139,7 +145,10 @@ export class WASMError extends Error {
 export interface WASMLoader {
   loadModule(url: string, options?: WASMInstantiationOptions): Promise<LegalWASMBridge>;
   precompileModule(bytes: ArrayBuffer): Promise<WebAssembly.Module>;
-  instantiateModule(module: WebAssembly.Module, imports?: WebAssembly.Imports): Promise<WebAssembly.Instance>;
+  instantiateModule(
+    module: WebAssembly.Module,
+    imports?: WebAssembly.Imports
+  ): Promise<WebAssembly.Instance>;
 }
 
 // Vector operations result types
@@ -162,7 +171,7 @@ declare global {
     wasmModules?: Map<string, LegalWASMBridge>;
     wasmPerformance?: WASMPerformanceMetrics;
   }
-  
+
   interface Performance {
     wasmMark?: (name: string) => void;
     wasmMeasure?: (name: string, startMark: string, endMark?: string) => PerformanceMeasure;

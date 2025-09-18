@@ -129,7 +129,7 @@
   }
 
   function processCommand(cmd: string) {
-    const [command, ...args] = cmd.toLowerCase().split(' ');
+    const [command, ...args] = cmd.toLowerCase.split(' ');
     switch (command) {
       case 'help':
         terminalHistory = [...terminalHistory,
@@ -401,15 +401,15 @@
     scrollbar-color: var(--yorha-secondary, #ffd700) var(--yorha-bg-primary, #0a0a0a);
   }
 
-  .terminal-content::-webkit-scrollbar {
+  .terminal-content: :-webkit-scrollbar {
     width: 12px;
   }
 
-  .terminal-content::-webkit-scrollbar-track {
+  .terminal-content: :-webkit-scrollbar-track {
     background: var(--yorha-bg-primary, #0a0a0a);
   }
 
-  .terminal-content::-webkit-scrollbar-thumb {
+  .terminal-content: :-webkit-scrollbar-thumb {
     background: var(--yorha-secondary, #ffd700);
     border: 2px solid var(--yorha-bg-primary, #0a0a0a);
   }

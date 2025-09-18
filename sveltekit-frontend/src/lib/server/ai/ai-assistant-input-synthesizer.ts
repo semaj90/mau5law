@@ -325,7 +325,7 @@ export class AIAssistantInputSynthesizer {
     // Default & merge options
     const defaults: Required<Pick<RetrievalOptions,
       'enableRAG' | 'maxSources' | 'similarityThreshold' | 'enableMMR' | 'enableCrossEncoder'
-    >> = {
+    > = {
       enableRAG: true,
       maxSources: 10,
       similarityThreshold: 0.7,
@@ -770,8 +770,7 @@ export class AIAssistantInputSynthesizer {
       return {
         abstractive: summary.summary.abstractive,
         extractive: Array.isArray(summary.summary.extractive)
-          ? summary.summary.extractive
-          : [summary.summary.extractive || ''],
+          ? summary.summary.extractive: [summary.summary.extractive || ''],
         keyPoints: Array.isArray(summary.summary.keyPoints)
           ? summary.summary.keyPoints
           : [summary.summary.keyPoints || ''],

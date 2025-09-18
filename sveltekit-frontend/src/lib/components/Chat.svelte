@@ -57,7 +57,7 @@ https://svelte.dev/e/js_parse_error -->
   let componentError = $state<Error | null>(null);
   let messagesContainer = $state<HTMLElement;
   let messageInput = $state<HTMLTextAreaElement// Messages store (keeping as writable for complex state management)
-  let messages | null>(null)(writable<
+  let messages  | null>(null); const data = writable<
     Array;
       isTyping?: boolean;
       isError?: boolean;
@@ -123,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
       if ((response as { ok?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; json?: any }).json();
         if ((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).success && (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).conversation) {
-          messages.set((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).conversation);
+          messages.set.conversation);
         }
       }
     } catch (error) {
@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
       if ((result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).success && (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).message) {
         // Add AI response with enhanced features
         const aiMessage = {
-          ...(result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).message,
+          ...result.message,
           contextUsed: (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).contextUsed,
           suggestions: (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).suggestions,
           actions: (result as { success?: any; conversation?: any; message?: any; contextUsed?: any; suggestions?: any; actions?: any; error?: any }).actions,
@@ -295,11 +295,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function formatTimestamp(timestamp: Date): string {
-    return new Intl.DateTimeFormat("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    }).format(timestamp);
+    return new Intl.DateTimeFormat.format(timestamp);
   }
 
   function handleActionClick(action: any) {

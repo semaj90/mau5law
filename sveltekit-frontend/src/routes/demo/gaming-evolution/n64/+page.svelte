@@ -806,7 +806,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     overflow-x: hidden;
   }
 
-  .n64-container::before {
+  .n64-container: :before {
     content: '';
     position: fixed;
     top: 0;
@@ -1720,11 +1720,11 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     animation: audioBar3D 2s infinite ease-in-out;
   }
 
-  .audio-bar-3d:nth-child(odd) {
+  .audio-bar-3d: nth-child(odd) {
     animation-delay: -0.5s;
   }
 
-  .audio-bar-3d:nth-child(even) {
+  .audio-bar-3d: nth-child(even) {
     animation-delay: -1s;
   }
 
@@ -2048,11 +2048,11 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       transform: perspective(400px) rotateX(15deg) translateY(20px);
     }
 
-    .recommendation-card-3d:nth-child(1) { animation-delay: 0.1s; }
-    .recommendation-card-3d:nth-child(2) { animation-delay: 0.2s; }
-    .recommendation-card-3d:nth-child(3) { animation-delay: 0.3s; }
-    .recommendation-card-3d:nth-child(4) { animation-delay: 0.4s; }
-    .recommendation-card-3d:nth-child(5) { animation-delay: 0.5s; }
+    .recommendation-card-3d: nth-child(1) { animation-delay: 0.1s; }
+    .recommendation-card-3d: nth-child(2) { animation-delay: 0.2s; }
+    .recommendation-card-3d: nth-child(3) { animation-delay: 0.3s; }
+    .recommendation-card-3d: nth-child(4) { animation-delay: 0.4s; }
+    .recommendation-card-3d: nth-child(5) { animation-delay: 0.5s; }
   }
 
   @keyframes legalResultsEntrance {

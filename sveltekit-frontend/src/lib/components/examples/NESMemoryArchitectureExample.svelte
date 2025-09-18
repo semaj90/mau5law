@@ -159,10 +159,10 @@
     if (!isInitialized) return;
     
     registryStats = componentTextureRegistry.getStats();
-    warmingStats = cacheWarmer?.getWarmingStats() || {};
+    warmingStats = cacheWarmer?.getWarmingStats() || ;
     
     // Create memory bank visualization data
-    memoryBankData = Object.entries(NES_MEMORY_MAP).map(([bank, config]) => {
+    memoryBankData = Object.entries.map(([bank, config]) => {
       const stats = registryStats.memoryBanks?.[bank];
       return {
         bank,

@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         metadata: {
           insightType,
           depth,
-          evidenceCount: evidenceResult.(data as { length?: any }).length,
+          evidenceCount: evidenceResult.data.length,
           lastUpdated: new Date().toISOString(),
           confidence: insights.overallConfidence,
         },
@@ -163,7 +163,7 @@ async function generateDetectiveInsights(
     return {
       ...insights,
       error: 'Insight generation failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }

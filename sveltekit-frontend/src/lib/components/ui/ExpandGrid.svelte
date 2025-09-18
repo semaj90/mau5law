@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   let isExpanded = $state(false);
   let containerElement = $state<HTMLDivElementfunction handleMouseEnter() {
     if (expandOnHover) {
-      isExpanded | null>(null)(true);
+      isExpanded  | null>(null); const data = true);
       onexpand?.();
   }}
   function handleMouseLeave() {
@@ -70,8 +70,7 @@ https://svelte.dev/e/js_parse_error -->
   {@render children}
 </div>
 
-<style>/* @unocss-include */ {}
-  .expand-grid {
+<style>/* @unocss-include */ .expand-grid {
     display: grid;
     grid-template-columns: repeat(var(--columns), 1fr);
     gap: var(--gap);
@@ -91,22 +90,20 @@ https://svelte.dev/e/js_parse_error -->
     border-color: #e5e7eb;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
-/* Grid item styling */ {}
-  .expand-grid :global(.grid-item) {
+/* Grid item styling */ .expand-grid: global(.grid-item) {
     transition: all var(--expand-duration) var(--easing);
     border-radius: 0.375rem;
     overflow: hidden;
     position: relative;
 }
-  .expand-grid.expanded :global(.grid-item) {
+  .expand-grid.expanded: global(.grid-item) {
     transform: scale(1.02);
 }
-  .expand-grid :global(.grid-item:hover) {
+  .expand-grid: global(.grid-item:hover) {
     transform: scale(1.05);
     z-index: 10;
 }
-/* Responsive design */ {}
-  @media (max-width: 768px) {
+/* Responsive design */ @media (max-width: 768px) {
     .expand-grid {
       grid-template-columns: 1fr;
 }
@@ -114,8 +111,7 @@ https://svelte.dev/e/js_parse_error -->
       grid-template-columns: repeat(2, 1fr);
 }}
   @media (max-width: 480px) {
-.expand-grid, {}
-    .expand-grid.expanded {
+.expand-grid, .expand-grid.expanded {
       grid-template-columns: 1fr;
 }}
 </style>

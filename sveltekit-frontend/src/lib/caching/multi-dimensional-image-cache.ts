@@ -83,7 +83,7 @@ export class MultiDimensionalImageCache {
   private rlCache = reinforcementLearningCache;
 
   // Multi-dimensional storage
-  private dimensionalIndices: Map<string, Set<string>> = new Map();
+  private dimensionalIndices: Map<string, Set<string> = new Map();
   private imageEntries: Map<string, ImageCacheEntry> = new Map();
   private gpuTextures: Map<string, GPUTextureMatrix> = new Map();
 
@@ -443,7 +443,7 @@ export class MultiDimensionalImageCache {
       img.src = imageData;
 
       await new Promise((resolve) => {
-        img.onload = resolve;
+        img.onload = resolve);
       });
 
       ctx.drawImage(img, 0, 0, dimensions.width, dimensions.height);
@@ -563,7 +563,7 @@ export class MultiDimensionalImageCache {
         return scoreB - scoreA;
       });
 
-      return candidates.length > 0 ? candidates[0].entry : null;
+      return candidates.length > 0 ? candidates[0].entry: null;
     } catch (error) {
       console.error('SOM similarity search failed:', error);
       return null;
@@ -597,7 +597,7 @@ export class MultiDimensionalImageCache {
         return scoreB - scoreA;
       });
 
-      return candidates.length > 0 ? candidates[0].entry : null;
+      return candidates.length > 0 ? candidates[0].entry: null;
     } catch (error) {
       console.error('Pattern matching search failed:', error);
       return null;
@@ -776,7 +776,7 @@ export class MultiDimensionalImageCache {
     return {
       ...this.metrics,
       hitRatio:
-        this.metrics.totalQueries > 0 ? this.metrics.cacheHits / this.metrics.totalQueries : 0,
+        this.metrics.totalQueries > 0 ? this.metrics.cacheHits / this.metrics.totalQueries: 0,
       avgRetrievalTime:
         this.metrics.totalQueries > 0 ? this.metrics.retrieval_time / this.metrics.totalQueries : 0,
       compressionEfficiency: this.metrics.compressionSavings,

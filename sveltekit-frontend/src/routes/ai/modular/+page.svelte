@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
   import 'nes.css/css/nes.min.css';
   import ModularAIExperience from '$lib/components/ai/ModularAIExperience.svelte';
   import { onMount } from 'svelte';
-  let userId = $state('demo_user_' + Math.random().toString(36).substring(2, 11));
+  let userId = $state('demo_user_' + Math.random.toString-substring(2, 11));
   let showAdvancedSettings = $state(false);
   let systemStatus = $state({
     cudaService: false,

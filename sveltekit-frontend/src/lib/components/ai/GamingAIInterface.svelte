@@ -103,7 +103,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: content,
-          settings: {
+          }); const settings = {
             model: 'gemma3-legal',
             temperature: 0.1
           }
@@ -144,7 +144,7 @@
       const errorMessage: AIMessage = {
         id: crypto.randomUUID(),
         role: 'system',
-        content: `ERROR: AI system unavailable - ${error instanceof Error ? error.message : 'Unknown error'}`,
+        content: `ERROR: AI system unavailable - ${error instanceof Error ? error.message: 'Unknown error'}`,
         timestamp: new Date(),
         metadata: { confidence: 0 }
       }
@@ -211,7 +211,7 @@
 
     // Add user message
     const userMessage: AIMessage = {
-      id: Date.now().toString(),
+      id: Date.now.toString(),
       role: 'user',
       content: command,
       timestamp: new Date(),
@@ -226,11 +226,11 @@
     let response = ''
     let confidence = Math.floor(Math.random() * 20) + 80
 
-    if (command.toLowerCase().includes('analyze')) {
+    if (command.toLowerCase.includes('analyze')) {
       response = `[ANALYSIS COMPLETE]\n\nDetected patterns in case evidence suggest high probability of digital tampering.\nCross-referencing with legal precedent database...\n\nRecommendation: Focus investigation on metadata inconsistencies found in Evidence-ID: ${Math.floor(Math.random() * 1000)}`
-    } else if (command.toLowerCase().includes('search')) {
+    } else if (command.toLowerCase.includes('search')) {
       response = `[SEARCH INITIATED]\n\nScanning ${Math.floor(Math.random() * 500 + 100)} case files...\nFound ${Math.floor(Math.random() * 15 + 3)} relevant matches.\n\nHighest correlation: Case #2024-${Math.floor(Math.random() * 999)} (${confidence}% similarity)`
-    } else if (command.toLowerCase().includes('status')) {
+    } else if (command.toLowerCase.includes('status')) {
       response = `[SYSTEM STATUS]\n\nYoRHa Legal AI: OPERATIONAL\nDatabase Connection: STABLE\nAnalysis Engine: ${systemStatus.toUpperCase()}\nCase Context: ${caseContext?.title || 'None'}\n\nAll systems nominal.`
     } else {
       response = `[PROCESSING COMPLETE]\n\nQuery processed successfully.\nAnalysis confidence: ${confidence}%\n\nAdditional context required for enhanced analysis. Please provide specific case parameters or evidence identifiers.`
@@ -417,8 +417,7 @@
                     class="px-4 py-3 rounded-lg {message.role === 'user'
                       ? 'bg-blue-600 text-white ml-auto'
                       : message.role === 'system'
-                      ? 'bg-gray-700/50 border border-gray-600/50 ' + theme.secondary
-                      : 'bg-gray-700/30 border border-gray-600/30 ' + theme.primary}"
+                      ? 'bg-gray-700/50 border border-gray-600/50 ' + theme.secondary: 'bg-gray-700/30 border border-gray-600/30 ' + theme.primary}"
                   >
                     <pre class="text-sm whitespace-pre-wrap font-mono">{message.content}</pre>
 

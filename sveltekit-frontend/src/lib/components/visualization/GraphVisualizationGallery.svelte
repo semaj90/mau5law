@@ -117,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
     for (let i = 0; i < algorithms.length; i++) {
       const algorithm = algorithms[i];
       try {
-        const cacheKey = `graph_vis_${algorithm}_${JSON.stringify(currentGraphData).slice(0, 100)}`;
+        const cacheKey = `graph_vis_${algorithm}_${JSON.stringify.slice(0, 100)}`;
         let visualization: GraphVisualizationResult | null = null;
         // Try cache first if enabled
         if (cacheResults && multiLayerCache) {
@@ -190,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
 
         // Update cache
         if (cacheResults && multiLayerCache) {
-          const cacheKey = `graph_vis_${algorithm}_${JSON.stringify(currentGraphData).slice(0, 100)}`;
+          const cacheKey = `graph_vis_${algorithm}_${JSON.stringify.slice(0, 100)}`;
           await multiLayerCache.set('visualization', cacheKey, visualization, 3600);
         }
       }
@@ -688,7 +688,7 @@ generateVisualizationsForAllAlgorithms()}
     50% { opacity: 1; }
   }
 
-  .gallery-item:has(.generate-btn:disabled) {
+  .gallery-item: has(.generate-btn:disabled) {
     animation: pulse 2s infinite;
   }
 </style>

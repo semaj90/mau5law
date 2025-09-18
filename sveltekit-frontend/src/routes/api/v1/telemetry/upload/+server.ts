@@ -146,8 +146,7 @@ function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
   const avgUploadTime =
     uploadCompletes.length > 0
       ? uploadCompletes.reduce((sum, e) => sum + (e.data.durationMs || 0), 0) /
-        uploadCompletes.length
-      : 0;
+        uploadCompletes.length: 0;
 
   const successRate =
     uploadCompletes.length > 0

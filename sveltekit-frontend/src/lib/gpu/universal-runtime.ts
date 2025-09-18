@@ -1671,8 +1671,7 @@ For optimal performance with WASM SIMD and SharedArrayBuffer:
    Cross-Origin-Opener-Policy: same-origin
    Cross-Origin-Embedder-Policy: require-corp
 
-2. In SvelteKit, add to app.html:
-   <meta http-equiv="origin-trial" content="your-token">
+2. In SvelteKit, add to app.html: <meta http-equiv="origin-trial" content="your-token">
 
 3. For development, use:
    npm run dev -- --host --https

@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
       results.push({
         test: 'webgpu_polyfill_import',
         status: 'error',
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message: String(error)
       });
     }
 
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ url }) => {
       results.push({
         test: 'webgl_shader_cache_import',
         status: 'error',
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message: String(error)
       });
     }
 
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ url }) => {
       results.push({
         test: 'nes_memory_import',
         status: 'error',
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message: String(error)
       });
     }
 
@@ -110,9 +110,9 @@ export const GET: RequestHandler = async ({ url }) => {
       tests: results,
       summary: {
         total: results.length,
-        passed: results.filter(r => r.status === 'success').length,
-        failed: results.filter(r => r.status === 'error').length,
-        warnings: results.filter(r => r.status === 'warning').length
+        passed: results.filter(item => item.length),
+        failed: results.filter(item => item.length),
+        warnings: results.filter(item => item.length)
       },
       note: "WebGPU and WebGL tests require browser context. Server-side tests validate imports and architecture."
     });
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

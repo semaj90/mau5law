@@ -429,7 +429,7 @@
     cursor: pointer
   }
 
-  .size-slider::-webkit-slider-thumb {
+  .size-slider: :-webkit-slider-thumb {
     appearance: none
     width: 20px;
     height: 20px;
@@ -453,14 +453,7 @@
     background: #000;
   }
 
-  .yorha-canvas {
-    border: 1px solid #00ff88;
-    background: #000;
-    cursor: crosshair
-    transition: all 0.3s ease;
-  }
-
-  .yorha-canvas:hover {
+  .yorha-canv.yorha-canvas:hover {
     box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
   }
 

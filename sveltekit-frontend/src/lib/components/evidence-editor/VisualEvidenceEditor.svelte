@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   // Store for selected node
   export const selectedNode = writable(null);
   // Props
-  let canvasComponent = $state<CanvasEditorlet currentSelectedNode = $state<any | null>(null)(null);
+  let canvasComponent = $state<CanvasEditorlet currentSelectedNode = $state<any  | null>(null); const data = null);
   // Subscribe to selected node changes
   selectedNode.subscribe(node >(> {
     currentSelectedNode = node);
@@ -86,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
 }
   /* Responsive adjustments */
   @media (max-width: 768px) {
-    .visual-evidence-editor :global(.grid) {
+    .visual-evidence-editor: global(.grid) {
       grid-template-columns: 1fr;
       grid-template-rows: 60% 20% 20%;
 }

@@ -134,7 +134,7 @@ export async function exportCases(
       filename: "",
       size: 0,
       recordCount: 0,
-      errors: [error instanceof Error ? error.message : "Unknown export error"],
+      errors: [error instanceof Error ? error.message: "Unknown export error"],
       warnings: [],
     };
   }
@@ -216,7 +216,7 @@ export async function exportEvidence(
       filename: "",
       size: 0,
       recordCount: 0,
-      errors: [error instanceof Error ? error.message : "Unknown export error"],
+      errors: [error instanceof Error ? error.message: "Unknown export error"],
       warnings: [],
     };
   }
@@ -289,7 +289,7 @@ export async function importCases(
       success: false,
       imported: 0,
       skipped: 0,
-      errors: [error instanceof Error ? error.message : "Unknown import error"],
+      errors: [error instanceof Error ? error.message: "Unknown import error"],
       warnings: [],
       summary: Record<string, any>,
     };
@@ -347,7 +347,7 @@ function convertToCSV(data: any[]): string {
   const headers = Object.keys(data[0]);
   const csvContent = [
     headers.join(","),
-    ...(data as { cases?: any; length?: any; map?: any; evidence?: any }).map((row) =>
+    ...data.map((row) =>
       headers
         .map((header) => {
           const value = row[header];

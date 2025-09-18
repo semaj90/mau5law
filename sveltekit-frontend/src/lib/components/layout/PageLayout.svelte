@@ -108,15 +108,13 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   </main>
 </div>
 
-<style>/* Ensure consistent flexbox behavior */ {}
-  :global(.page-content) {
+<style>/* Ensure consistent flexbox behavior */ :global(.page-content) {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0; /* Allow shrinking */
   }
-/* Grid layout utilities */ {}
-  :global(.grid-responsive) {
+/* Grid layout utilities */ :global(.grid-responsive) {
     display: grid;
     gap: 1.5rem;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -133,8 +131,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     gap: 2rem;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   }
-/* Flex utilities */ {}
-  :global(.flex-center) {
+/* Flex utilities */ :global(.flex-center) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -152,8 +149,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     align-items: center;
     justify-content: center;
   }
-/* Spacing utilities */ {}
-  :global(.space-y-consistent > * + *) {
+/* Spacing utilities */ :global(.space-y-consistent > * + *) {
     margin-top: 1.5rem;
   }
 
@@ -164,8 +160,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   :global(.space-y-loose > * + *) {
     margin-top: 2.5rem;
   }
-/* Responsive spacing */ {}
-  @media (max-width: 768px) {
+/* Responsive spacing */ @media (max-width: 768px) {
     :global(.grid-responsive) {
       grid-template-columns: 1fr;
       gap: 1rem;

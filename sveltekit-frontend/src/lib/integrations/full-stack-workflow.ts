@@ -571,12 +571,12 @@ export class FullStackLegalAIWorkflow {
       orchestrator: this.systemStatus.orchestrator,
       flashattention: this.systemStatus.flashattention,
       multicore: this.systemStatus.multicore,
-      multicoreWorkers: this.systemStatus.multicore ? multicoreService.getSystemStatus().workers.length : 0
+      multicoreWorkers: this.systemStatus.multicore ? multicoreService.getSystemStatus().workers.length: 0
     };
   }
 
   private getSystemHealth(): 'excellent' | 'good' | 'degraded' | 'critical' {
-    const activeServices = Object.values(this.systemStatus).filter(Boolean).length;
+    const activeServices = Object.values(this.systemStatus).filter(item => item.length);
     if (activeServices === 3) return 'excellent';
     if (activeServices === 2) return 'good';
     if (activeServices === 1) return 'degraded';

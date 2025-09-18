@@ -22,11 +22,11 @@ https://svelte.dev/e/js_parse_error -->
       loading = false;
   }
   });
-  let filteredLaws = $derived(laws.filter(law => 
+  let filteredLaws = $derived(laws.filter(law =>
     law.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     law.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     law.code?.toLowerCase().includes(searchQuery.toLowerCase())
-  ));
+  );
 </script>
 
 <svelte:head>

@@ -73,8 +73,8 @@
       updatedAt: new Date('2024-01-16')
   }
   ];
-  onMount(() => {/* JSX syntax converted to Svelte */},
-      settings: {
+  onMount(() => {
+      }); const settings = {
         autoSave: true,
         theme: 'light' as const,
         layout: 'dual' as const

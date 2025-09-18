@@ -214,19 +214,19 @@
             <div class="mt-6 grid grid-cols-3 gap-4">
               <div class="text-center">
                 <div class="text-2xl font-bold text-green-400">
-                  {testResults.filter(r => r.status === 'pass').length}
+                  {testResults.filter(item => item.length)}
                 </div>
                 <div class="text-sm text-nier-text-muted">Passed</div>
               </div>
               <div class="text-center">
                 <div class="text-2xl font-bold text-yellow-400">
-                  {testResults.filter(r => r.status === 'warning').length}
+                  {testResults.filter(item => item.length)}
                 </div>
                 <div class="text-sm text-nier-text-muted">Warnings</div>
               </div>
               <div class="text-center">
                 <div class="text-2xl font-bold text-red-400">
-                  {testResults.filter(r => r.status === 'fail').length}
+                  {testResults.filter(item => item.length)}
                 </div>
                 <div class="text-sm text-nier-text-muted">Failed</div>
               </div>

@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     });
   } catch (error: any) {
     const executionTime = Date.now() - startTime;
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    const errorMessage = error instanceof Error ? error.message: 'Unknown error occurred';
 
     console.error('❌ MCP Tool Error:', {
       tool,
@@ -184,7 +184,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         status: 'error',
         timestamp: Date.now(),
-        error: error instanceof Error ? error.message : 'Health check failed',
+        error: error instanceof Error ? error.message: 'Health check failed',
         endpoint: url.pathname,
       },
       { status: 500 }

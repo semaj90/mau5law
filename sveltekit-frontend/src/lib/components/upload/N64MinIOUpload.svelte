@@ -133,11 +133,11 @@
       type: f.file.type,
       status: f.status === 'uploading' || f.status === 'processing' ? 'pending' : f.status,
       attempts: f.attempts || 0,
-      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt : null,
+      nextRetryAt: f.nextRetryAt && f.nextRetryAt > Date.now() ? f.nextRetryAt: null,
       gamingProgress: f.gamingProgress
     }));
     if (pending.length === 0) {
-      try { sessionStorage.removeItem(STORAGE_KEY); } catch {};
+      try { sessionStorage.removeItem(STORAGE_KEY); } catch ;
       return;
     }
     try {
@@ -146,8 +146,7 @@
         files: pending,
         evolutionStage
       }));
-    } catch {}
-  }
+    } catch }
 
   function restoreSession() {
     if (!enablePersistence) return;
@@ -183,8 +182,7 @@
         }
         ensureRetryTicker();
       }
-    } catch {}
-  }
+    } catch }
 
   function matchPlaceholders(incoming: File[]) {
     for (const f of incoming) {
@@ -280,17 +278,16 @@
   function cancelAllUploads() {
     fileStates = fileStates.map(fs => {
       if (fs.controller) {
-        try { fs.controller.abort(); } catch {}
-      }
+        try { fs.controller.abort(); } catch }
       if (fs.retryTimeoutId) {
-        try { clearTimeout(fs.retryTimeoutId); } catch {};
+        try { clearTimeout(fs.retryTimeoutId); } catch ;
         fs.retryTimeoutId = null;
       }
       if (['uploading','pending','processing'].includes(fs.status)) {
         return {
           ...fs,
           status: 'canceled',
-          progress: fs.status === 'uploading' ? fs.progress : 0,
+          progress: fs.status === 'uploading' ? fs.progress: 0,
           controller: null
         };
       }
@@ -371,7 +368,7 @@
     const target = fileStates[index];
     if (target && target.status === 'uploading') return;
     if (target?.retryTimeoutId) {
-      try { clearTimeout(target.retryTimeoutId); } catch {};
+      try { clearTimeout(target.retryTimeoutId); } catch ;
     }
     files = files.filter((_, i) => i !== index);
     fileStates = fileStates.filter((_, i) => i !== index);
@@ -381,9 +378,8 @@
   function cancelUpload(index: number) {
     const fs = fileStates[index];
     if (!fs || fs.status !== 'uploading') return;
-    try { fs.controller?.abort(); } catch {}
-    if (fs.retryTimeoutId) {
-      try { clearTimeout(fs.retryTimeoutId); } catch {};
+    try { fs.controller?.abort(); } catch if (fs.retryTimeoutId) {
+      try { clearTimeout(fs.retryTimeoutId); } catch ;
       fs.retryTimeoutId = null;
     }
     fs.status = 'canceled';
@@ -433,9 +429,9 @@
     }
 
     if (enableToastNotifications && batchToastId) {
-      const completed = fileStates.filter(f => f.status === 'completed').length;
-      const failed = fileStates.filter(f => f.status === 'error').length;
-      const canceled = fileStates.filter(f => f.status === 'canceled').length;
+      const completed = fileStates.filter(item => item.length);
+      const failed = fileStates.filter(item => item.length);
+      const canceled = fileStates.filter(item => item.length);
 
       if (uploadStatus === 'completed' && failed === 0) {
         toastService.completeUpload(
@@ -511,7 +507,7 @@
     uploading = true;
     activeUploads = 0;
 
-    performanceMetrics.totalFiles = fileStates.filter(fs => fs.status === 'pending' && !fs.placeholder).length;
+    performanceMetrics.totalFiles = fileStates.filter(item => item.length);
     telemetry.emit('upload_batch_start', { total: performanceMetrics.totalFiles, concurrency: maxConcurrency });
     performanceMetrics.completedFiles = 0;
     performanceMetrics.totalUploadTime = 0;
@@ -538,10 +534,9 @@
       await finalizeAggregateStatus();
     }
     serializeSession();
-    telemetry.emit('upload_batch_end', {
-      completed: fileStates.filter(f=>f.status==='completed').length,
-      failed: fileStates.filter(f=>f.status==='error').length,
-      canceled: fileStates.filter(f=>f.status==='canceled').length
+    telemetry.emit.length,
+      failed: fileStates.filter(item => item.length),
+      canceled: fileStates.filter(item => item.length)
     });
   }
 
@@ -557,7 +552,7 @@
       uploadProgress = aggregateProgress();
 
       if (enableToastNotifications && batchToastId) {
-        const completed = fileStates.filter(f => f.status === 'completed').length;
+        const completed = fileStates.filter(item => item.length);
         const total = performanceMetrics.totalFiles;
         toastService.updateUploadProgress(
           batchToastId,
@@ -719,7 +714,7 @@
             embeddingModel = 'fallback-random-384';
             telemetry.emit('embedding_error', {
               file: file.name,
-              error: e instanceof Error ? e.message : 'unknown'
+              error: e instanceof Error ? e.message: 'unknown'
             });
             console.warn('Embedding generation failed, using fallback vector:', e);
           }
@@ -742,18 +737,11 @@
         fetch('/api/v1/redis/publish', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            channel: 'evidence_update',
-            data: {
-              type: 'EVIDENCE_UPLOADED',
-              evidenceId: data[0].id,
-              caseId,
-              fileName: file.name,
-              timestamp: new Date().toISOString(),
+          body: JSON.stringify.toISOString(),
               gpuTaskIds: fs.gpuTaskIds
             }
           })
-        }).catch(() => {});
+        }).catch(() => );
 
         fs.progress = 100;
         fs.status = 'completed';
@@ -801,7 +789,7 @@
 
       fs.endTime = new Date();
       fs.status = controller.signal.aborted ? 'canceled' : 'error';
-      fs.error = err instanceof Error ? err.message : 'Upload failed';
+      fs.error = err instanceof Error ? err.message: 'Upload failed';
       errorMessage = fs.error;
       onUploadError?.(fs.error);
       liveMessage = `🎮 ${fs.status === 'canceled' ? 'Canceled' : 'Failed'} upload for ${file.name}`;
@@ -1216,7 +1204,7 @@
       0 0 20px rgba(255, 215, 0, 0.3);
   }
 
-  .n64-drop-zone::before {
+  .n64-drop-zone: :before {
     content: '';
     position: absolute;
     top: -4px;
@@ -1340,7 +1328,7 @@
       0 0 10px rgba(0, 0, 0, 0.5);
   }
 
-  .n64-file-item::before {
+  .n64-file-item: :before {
     content: '';
     position: absolute;
     top: 4px;
@@ -1351,18 +1339,18 @@
     pointer-events: none;
   }
 
-  .n64-file-(item as { status?: unknown }).status-uploading {
+  .n64-file-.status-uploading {
     border-color: #4090FF;
     background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 100%);
     animation: processingGlow 1.5s ease-in-out infinite alternate;
   }
 
-  .n64-file-(item as { status?: unknown }).status-completed {
+  .n64-file-.status-completed {
     border-color: #40FF40;
     background: linear-gradient(135deg, #1a2e1a 0%, #0a1a0a 100%);
   }
 
-  .n64-file-(item as { status?: unknown }).status-error {
+  .n64-file-.status-error {
     border-color: #FF3030;
     background: linear-gradient(135deg, #2e1a1a 0%, #1a0a0a 100%);
   }

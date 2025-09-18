@@ -163,7 +163,7 @@ export class SecureStorageClient {
     files: File[], 
     bucket: string = 'legal-documents',
     onProgress?: (completed: number, total: number) => void
-  ): Promise<any>> {
+  ): Promise<any> {
     const successful: UploadResponse[] = [];
     const failed: Array<any> = [];
 
@@ -243,7 +243,7 @@ export class ReactiveStorageManager {
         return false;
       }
     } catch (error) {
-      this.error = error instanceof Error ? error.message : 'Upload failed';
+      this.error = error instanceof Error ? error.message: 'Upload failed';
       return false;
     } finally {
       this.loading = false;
@@ -269,7 +269,7 @@ export class ReactiveStorageManager {
         return false;
       }
     } catch (error) {
-      this.error = error instanceof Error ? error.message : 'Delete failed';
+      this.error = error instanceof Error ? error.message: 'Delete failed';
       return false;
     } finally {
       this.loading = false;

@@ -309,7 +309,7 @@ Instructions:
       {
         success: false,
         error: "Failed to process AI request",
-        details: error instanceof Error ? error.message : "Unknown error"
+        details: error instanceof Error ? error.message: "Unknown error"
       },
       { status: 500 }
     );

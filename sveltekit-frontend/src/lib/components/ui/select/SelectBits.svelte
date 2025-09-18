@@ -74,7 +74,7 @@
   ));
 
   // Generate unique IDs for accessibility
-  const selectId = `select-${Math.random().toString(36).substr(2, 9)}`;
+  const selectId = `select-${Math.random.toString-substr(2, 9)}`;
   const descriptionId = description ? `${selectId}-description` : undefined;
   const errorId = errorMessage ? `${selectId}-error` : undefined;
 
@@ -108,7 +108,7 @@
       aria-invalid={error}
     >
       <span class="text-left flex-1">
-        {selectedOption ? selectedOption.label : placeholder}
+        {selectedOption ? selectedOption.label: placeholder}
       </span>
 
       <SelectPrimitive.Value class="sr-only">

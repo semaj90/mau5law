@@ -61,12 +61,11 @@ https://svelte.dev/e/js_parse_error -->
     }
   ];
 
-  let sectionScores = writable<Record<string, number>>({});
+  let sectionScores = writable<Record<string, number>( );
 
   function calculateQualityScore() {
     let totalScore = 0;
     const scores: Record<string, number> = {};
-
     qualityCriteria.forEach(criterion => {
       let score = 0;
 

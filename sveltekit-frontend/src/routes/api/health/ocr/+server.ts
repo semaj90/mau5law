@@ -164,7 +164,7 @@ export const GET: RequestHandler = async () => {
       status: 'unhealthy',
       timestamp,
       error: 'OCR health check system failure',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
         checkDuration,
         environment: process.env.NODE_ENV || 'development'

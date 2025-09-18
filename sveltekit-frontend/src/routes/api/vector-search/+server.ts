@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
               vector_type: sql`'${vectorType}'::text`,
               similarity: sql`1 - (${vectorColumn} <=> ${JSON.stringify(queryEmbedding)}::vector)`,
               title: documents.title,
-              content: include_content ? documents.content : sql`NULL`,
+              content: include_content ? documents.content: sql`NULL`,
               summary: documents.ai_summary,
               document_type: documents.document_type,
               risk_level: documents.risk_level,
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request }) => {
           vector_type: sql`'content'::text`,
           similarity: sql`1 - (${document_chunks.embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`,
           title: document_chunks.section_title,
-          content: include_content ? document_chunks.chunk_text : sql`NULL`,
+          content: include_content ? document_chunks.chunk_text: sql`NULL`,
           summary: document_chunks.chunk_summary,
           document_type: documents.document_type,
           risk_level: documents.risk_level,
@@ -223,7 +223,7 @@ export const POST: RequestHandler = async ({ request }) => {
           vector_type: sql`'content'::text`,
           similarity: sql`1 - (${cases.case_embedding} <=> ${JSON.stringify(queryEmbedding)}::vector)`,
           title: cases.title,
-          content: include_content ? cases.description : sql`NULL`,
+          content: include_content ? cases.description: sql`NULL`,
           summary: sql`NULL`,
           document_type: sql`'case'::text`,
           risk_level: sql`NULL`,
@@ -310,7 +310,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Vector search failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -365,7 +365,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Vector search failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );

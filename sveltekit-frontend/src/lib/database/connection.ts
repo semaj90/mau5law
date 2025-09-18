@@ -82,7 +82,7 @@ export async function vectorSimilaritySearch(
     return {
       success: true,
       results: result,
-      count: Array.isArray(result) ? (result as { length?: any }).length : 0,
+      count: Array.isArray(result) ? (result as { length?: any }).length: 0,
     };
   } catch (error: any) {
     return {
@@ -159,7 +159,7 @@ export async function hybridSemanticSearch(
     return {
       success: true,
       results: result,
-      count: Array.isArray(result) ? (result as { length?: any }).length : 0,
+      count: Array.isArray(result) ? (result as { length?: any }).length: 0,
       query,
       queryEmbedding: queryEmbedding.slice(0, 5),
     };
@@ -222,7 +222,7 @@ export async function closeDatabaseConnection(): Promise<any> {
 export async function executeSQL(query: string, params: any[] = []) {
   try {
     const result = await pool.unsafe(query, params);
-    return { success: true, data: result, rowCount: Array.isArray(result) ? (result as { length?: any }).length : 0 };
+    return { success: true, data: result, rowCount: Array.isArray(result) ? (result as { length?: any }).length: 0 };
   } catch (error: any) {
     return { success: false, error: error.message };
   }

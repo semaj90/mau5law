@@ -4,7 +4,7 @@
   import EnhancedFileUpload from '$lib/components/ai/EnhancedFileUpload.svelte';
   	import { onMount } from 'svelte';
   	let uploadResults: unknown[] = $state([]);
-  	let systemHealth = $state<any>({});
+  	let systemHealth = $state<any>( );
   	let isLoadingHealth = $state(true);
   	function handleUploadComplete(result: unknown) {
   		console.log('Upload completed:', result);

@@ -29,7 +29,7 @@ https://svelte.dev/e/tag_invalid_name -->
   let aiResponse = $state<string | null>(null);
   let aiProcessing = $state(false);
   let aiError = $state<string | null>(null);
-  let conversationHistory = $state<any[]>([])([]);
+  let conversationHistory = $state<any[]>([]) => []);
 
   // Document Processing State
   let currentDocument = $state<any>({
@@ -145,7 +145,7 @@ https://svelte.dev/e/tag_invalid_name -->
       }
 
     } catch (error) {
-      aiError = error instanceof Error ? error.message : 'Unknown error occurred';
+      aiError = error instanceof Error ? error.message: 'Unknown error occurred';
       console.error('❌ AI request failed:', error);
     } finally {
       aiProcessing = false;

@@ -12,8 +12,8 @@
   // Stores
   const isProcessing = writable(false);
   const results = writable<UnifiedVectorResponse | null>(null);
-  const health = writable<Record<string, boolean>>({});
-  const analytics = writable<Record<string, any>>({});
+  const health = writable<Record<string, boolean>( );
+  const analytics = writable<Record<string, any>( );
   const logs = writable<string[]>([]);
 
   // Form state
@@ -47,8 +47,7 @@
   ];
 
   function addLog(message: string) {
-    logs.update(currentLogs => [
-      `[${new Date().toLocaleTimeString()}] ${message}`,
+    logs.update.toLocaleTimeString()}] ${message}`,
       ...currentLogs.slice(0, 99) // Keep last 100 logs
     ]);
   }
@@ -57,7 +56,7 @@
     try {
       const response = await fetch('/api/unified-vector?action=health');
       const data = await (response as { json?: unknown }).json();
-      health.set((data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).health || {});
+      health.set.health || );
       const healthStatus = (data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).allSystemsOperational ? 'All systems operational' : 'Some systems offline';
       addLog(`Health check: ${healthStatus}`);
     } catch (error: unknown) {
@@ -69,7 +68,7 @@
     try {
       const response = await fetch('/api/unified-vector?action=analytics');
       const data = await (response as { json?: unknown }).json();
-      analytics.set((data as { health?: unknown; allSystemsOperational?: unknown; analytics?: unknown; success?: unknown; results?: unknown; metadata?: unknown; componentsUsed?: unknown; performance?: unknown; errors?: unknown }).analytics || {});
+      analytics.set.analytics || );
       addLog('Analytics updated');
     } catch (error: unknown) {
       addLog(`Analytics failed: ${error.message}`);
@@ -341,7 +340,7 @@
           </div>
 
           <!-- Performance Breakdown -->
-          {#if Object.keys($results.metadata.performance).length > 0}
+          {#if Object.keys.length > 0}
             <div class="border border-green-600 p-3">
               <div class="text-green-200 mb-2">PERFORMANCE</div>
               <div class="space-y-1 text-xs">

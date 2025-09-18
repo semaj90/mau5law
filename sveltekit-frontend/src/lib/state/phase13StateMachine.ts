@@ -592,7 +592,7 @@ export const phase13StateMachine = setup({
         id: "enhancedRAG",
         src: "enhancedRAGService",
         input: ({ context, event }) => ({
-          query: event.type === "ENHANCED_RAG_QUERY" ? event.query : "",
+          query: event.type === "ENHANCED_RAG_QUERY" ? event.query: "",
           context: event.type === "ENHANCED_RAG_QUERY" ? event.context : Record<string, any>,
           pageRankScores: context.pageRankScores,
         }),

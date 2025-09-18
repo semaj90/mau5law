@@ -9,8 +9,7 @@
       const data = await res.json();
       count = data.count;
       items = data.items;
-    } catch {}
-  });
+    } catch });
 </script>
 
 <h1>Svelte Suggestions</h1>

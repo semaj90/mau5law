@@ -59,7 +59,7 @@
                 uploadedFile,
                 processingOptions,
                 (progress) => {
-                    uploadProgress = progress;
+                    uploadProgress = progress);
                 }
             );
 
@@ -175,7 +175,7 @@
                     id="file-upload"
                 />
                 <label for="file-upload" class="file-input-label">
-                    {uploadedFile ? uploadedFile.name : 'Choose legal document...'}
+                    {uploadedFile ? uploadedFile.name: 'Choose legal document...'}
                 </label>
             </div>
 

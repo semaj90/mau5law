@@ -10,7 +10,7 @@
   // In Svelte runes mode use the built-in $props() to access page props
   const { form } = $props() as { form?: ActionData };
   let isSubmitting = $state(false);
-  let caseData = $state({});
+  let caseData = $state( );
 
   async function handleSubmit(event: CustomEvent) {
     const { data } = event.detail;

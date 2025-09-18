@@ -22,7 +22,7 @@
 
   // Reactive state using Svelte 5 runes
   let currentPrompt = $state('');
-  let chatHistory = $state<any[]>([])([]);
+  let chatHistory = $state<any[]>([]) => []);
   let conversationId = $state('');
   let isStreamingActive = $state(false);
   // Service status
@@ -226,7 +226,7 @@
 
       // Update metrics
       const elapsed = (performance.now() - startTime) / 1000;
-      const tokenCount = data.response.split(' ').length;
+      const tokenCount = data.response.split.length;
       metrics.tokensPerSecond = tokenCount / elapsed;
       metrics.totalTokens = tokenCount;
       metrics.inferenceTime = elapsed;
@@ -290,7 +290,7 @@
 
   // Reactive derived values
   let allServicesReady = $derived(
-    Object.values(serviceStatus).every(s => s.status === 'ready' || s.status === 'connected')
+    Object.values.every(s => s.status === 'ready' || s.status === 'connected')
   );
 
   let currentMethod = $derived(useWebAssembly ? 'WebAssembly' : 'Go Backend');

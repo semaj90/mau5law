@@ -113,7 +113,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 		box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
 	}
 
-	.nav-btn::before {
+	.nav-btn: :before {
 		content: '';
 		position: absolute;
 		top: 0;
@@ -166,7 +166,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 		}
 	}
 /* PS1 Scanline effect for the entire page */
-	.ps1-stories-page::before {
+	.ps1-stories-page: :before {
 		content: '';
 		position: fixed;
 		top: 0;

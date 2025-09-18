@@ -145,7 +145,7 @@
       }
 
       ctx.fillStyle = colorPalette.yorhaWhite;
-      ctx.fillText((item as { id?: unknown; title?: unknown; confidence?: unknown }).title, 15, y);
+      ctx.fillText.title, 15, y);
 
       // Confidence indicator
       const confWidth = ((item as { id?: unknown; title?: unknown; confidence?: unknown }).confidence / 100) * 50;
@@ -264,7 +264,7 @@
     const tempCtx = tempCanvas.getContext('2d');
     if (!tempCtx) return;
 
-    tempCanvas.width = ctx.measureText(text).width;
+    tempCanvas.width = ctx.measureText.width;
     tempCanvas.height = 16;
 
     tempCtx.font = ctx.font;
@@ -315,10 +315,10 @@
   <!-- Accessibility text for screen readers -->
   <div class="sr-only">
     {#if (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence}
-      Evidence items: {(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence.map(e => e.title).join(', ')}
+      Evidence items: {(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence.map.join(', ')}
     {/if}
     {#if (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents}
-      Documents: {(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents.map(d => d.title).join(', ')}
+      Documents: {(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents.map.join(', ')}
     {/if}
   </div>
 </div>
@@ -331,14 +331,7 @@
     position: relative;
   }
 
-  .glyph-engine-canvas {
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    display: block;
-  }
-
-  .sr-only {
+  .glyph-engine-canv.sr-only {
     position: absolute;
     width: 1px;
     height: 1px;

@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
       stats: {
         totalErrors: processedErrors.length,
         processedErrors: processedErrors.length,
-        fixableErrors: processedErrors.filter(e => e.fixable).length,
+        fixableErrors: processedErrors.filter(item => item.length),
         gpuAccelerated: true,
         model: 'gemma3-legal:latest',
         embeddingModel: 'nomic-embed-text:latest'

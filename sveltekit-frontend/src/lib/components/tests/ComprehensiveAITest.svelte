@@ -21,7 +21,7 @@
     local?: { time: number; tokens: number; device: string };
     cuda?: { time: number; tokens: number; gpu: number };
     unified?: { time: number; tokens: number; acceleration: string };
-  }>({});
+  }>( );
 
   // Check system capabilities on mount
   $effect(() => {
@@ -63,7 +63,6 @@
     isRunning = true;
     testResults = [];
     performanceMetrics = {};
-
     try {
       if (testType === 'all') {
         await runAllTests();
@@ -137,7 +136,7 @@
         duration: Math.round(duration),
         timestamp: new Date().toLocaleTimeString(),
         success: true,
-        metrics: result.metrics || {},
+        metrics: result.metrics || ,
         acceleration: result.acceleration || 'none'
       };
 
@@ -161,14 +160,14 @@
 
       const testResult = {
         type: testType,
-        name: testType.charAt(0).toUpperCase() + testType.slice(1),
+        name: testType.charAt.toUpperCase() + testType.slice(1),
         query: testQuery,
         response: '',
         duration: performance.now() - startTime,
         timestamp: new Date().toLocaleTimeString(),
         success: false,
-        error: error instanceof Error ? error.message : String(error),
-        metrics: {},
+        error: error instanceof Error ? error.message: String(error),
+        metrics: ,
         acceleration: 'failed'
       };
 
@@ -277,7 +276,7 @@
   ];
 
   function formatMetrics(metrics: any): string {
-    if (!metrics || Object.keys(metrics).length === 0) return 'No metrics available';
+    if (!metrics || Object.keys.length === 0) return 'No metrics available';
 
     const items = [];
     if (metrics.processingTime) items.push(`${metrics.processingTime.toFixed(1)}ms`);
@@ -463,7 +462,7 @@
   </div>
 
   <!-- Performance Comparison -->
-  {#if Object.keys(performanceMetrics).length > 0}
+  {#if Object.keys.length > 0}
     <Card class="mb-6">
       <CardHeader>
         <CardTitle>📊 Performance Comparison</CardTitle>

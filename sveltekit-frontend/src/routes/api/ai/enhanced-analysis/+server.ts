@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request }) => {
           const reasoningResults = await Promise.allSettled(reasoningPromises);
           analysisResults = reasoningResults.map((result, index) => ({
             documentId: documents[index].id,
-            reasoning: (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).status === 'fulfilled' ? (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).value : null,
+            reasoning: (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).status === 'fulfilled' ? (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).value: null,
             error: (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).status === 'rejected' ? String((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).reason) : null
           }));
         }

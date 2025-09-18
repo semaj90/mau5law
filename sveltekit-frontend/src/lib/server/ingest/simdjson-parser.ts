@@ -72,7 +72,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       metadata: {
         parser: 'native',
         originalSize,
@@ -134,7 +134,7 @@ export async function parseJsonStream(
       success: false,
       extractedTexts: [],
       totalChunks: 0,
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message: String(error)
     };
   }
 }

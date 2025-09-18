@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
         .where(eq(documents.userId, session.userId));
 
       const totalUploads = userUploadStats.length;
-      const successfulUploads = uploadResults.filter(r => r.success).length;
+      const successfulUploads = uploadResults.filter(item => item.length);
       const successRate = totalUploads > 0 ? successfulUploads / totalUploads : 1.0;
 
       // Update user session with analytics
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Database storage error:', error);
     return json({
       error: 'Failed to store documents',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -213,7 +213,7 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'unhealthy',
       database: 'disconnected',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

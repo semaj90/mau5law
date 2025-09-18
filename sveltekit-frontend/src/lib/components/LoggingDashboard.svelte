@@ -30,8 +30,8 @@ https://svelte.dev/e/element_unclosed -->
     const matchesLevel = selectedLevel === 'all' || entry.level === selectedLevel;
     const matchesCategory = selectedCategory === 'all' || entry.category === selectedCategory;
     const matchesSearch = !searchQuery ||
-      entry.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entry.category.toLowerCase().includes(searchQuery.toLowerCase());
+      entry.message.toLowerCase.includes(searchQuery.toLowerCase()) ||
+      entry.category.toLowerCase.includes(searchQuery.toLowerCase());
 
     return matchesLevel && matchesCategory && matchesSearch;
   }));
@@ -141,7 +141,7 @@ https://svelte.dev/e/element_unclosed -->
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `logs-${new Date().toISOString().slice(0, 19)}.json`;
+    a.download = `logs-${new Date().toISOString.slice(0, 19)}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -482,25 +482,25 @@ showDetails = false}>
     word-wrap: break-word;
   }
 
-  :global(.logging-dashboard .log-entry:nth-child(even)) {
+  :global(.logging-dashboard .log-entry: nth-child(even)) {
     background-color: rgba(255, 255, 255, 0.02);
   }
 
   /* Scrollbar styling */
-  .overflow-y-auto::-webkit-scrollbar {
+  .overflow-y-auto: :-webkit-scrollbar {
     width: 8px;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-track {
+  .overflow-y-auto: :-webkit-scrollbar-track {
     background: #1f2937;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-thumb {
+  .overflow-y-auto: :-webkit-scrollbar-thumb {
     background: #4b5563;
     border-radius: 4px;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  .overflow-y-auto: :-webkit-scrollbar-thumb:hover {
     background: #6b7280;
   }
 </style>

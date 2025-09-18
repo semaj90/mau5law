@@ -345,7 +345,7 @@ export class UnifiedAPIRouter {
       meta: {
         requestId: context.requestId || 'unknown',
         timestamp: new Date().toISOString(),
-        processingTime: context.startTime ? Date.now() - context.startTime : 0,
+        processingTime: context.startTime ? Date.now() - context.startTime: 0,
         encoding: context.encoding || 'json',
         version: '2.0.0'
       }
@@ -478,7 +478,7 @@ export interface CachedResponse {
 class ServiceRegistry {
   private services: Map<string, ServiceInfo> = new Map();
 
-  async getHealthStatus(): Promise<Record<string, string>> {
+  async getHealthStatus(): Promise<Record<string, string> {
     const health: Record<string, string> = {};
     
     for (const [name, info] of this.services.entries()) {

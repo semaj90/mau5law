@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
   // Component state
   let mounted = $state(false);
   let canvasElement = $state<HTMLCanvasElement;
-  let ctx: CanvasRenderingContext2Dlet ws: WebSocket | null>(null)(null);
+  let ctx: CanvasRenderingContext2Dlet ws: WebSocket  | null>(null); const data = null);
   let reconnectTimeout: ReturnType<typeof setTimeout = $state(undefined as any);
 
   // Lifecycle management
@@ -55,8 +55,7 @@ https://svelte.dev/e/js_parse_error -->
   async function initializeCanvas() {
     if (!canvasElement) return;
     ctx = canvasElement.getContext('2d')!;
-    canvas.set({
-      id: canvasId || Date.now().toString(),
+    canvas.set.toString(),
       nodes: [],
       connections: []
     });
@@ -168,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
   function createNode(x: number, y: number) {
     if (readonly || !$canCreateNode) return;
     const newNode: EditableNode = {
-      id: `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `node_${Date.now()}_${Math.random.toString-substr(2, 9)}`,
       x,
       y,
       width: 200,
@@ -259,8 +258,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function resetCanvas() {
     if (readonly) return;
-    canvas.set({
-      id: Date.now().toString(),
+    canvas.set.toString(),
       nodes: [],
       connections: []
     });
@@ -441,7 +439,7 @@ https://svelte.dev/e/js_parse_error -->
     color: hsl(0 84% 60%);
   }
 
-  .status::before {
+  .status: :before {
     content: '';
     width: 8px;
     height: 8px;

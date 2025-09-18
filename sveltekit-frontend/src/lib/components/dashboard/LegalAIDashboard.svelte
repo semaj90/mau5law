@@ -62,10 +62,10 @@
       ]);
 
       // Update state with proper fallbacks
-      cases = Array.isArray(casesResponse.data) ? casesResponse.data : [];
-      evidence = Array.isArray(evidenceResponse.data) ? evidenceResponse.data : [];
-      reports = Array.isArray(reportsResponse.data) ? reportsResponse.data : [];
-      personsOfInterest = Array.isArray(personsResponse.data) ? personsResponse.data : [];
+      cases = Array.isArray(casesResponse.data) ? casesResponse.data: [];
+      evidence = Array.isArray(evidenceResponse.data) ? evidenceResponse.data: [];
+      reports = Array.isArray(reportsResponse.data) ? reportsResponse.data: [];
+      personsOfInterest = Array.isArray(personsResponse.data) ? personsResponse.data: [];
 
       // Calculate statistics
       stats = {
@@ -73,8 +73,8 @@
         totalEvidence: evidenceResponse.total || 0,
         totalReports: reportsResponse.total || 0,
         totalPersons: personsResponse.total || 0,
-        activeCases: cases.filter(c => c?.status === 'open').length,
-        pendingAnalysis: evidence.filter(e => !e?.aiSummary).length,
+        activeCases: cases.filter(item => item.length),
+        pendingAnalysis: evidence.filter(item => item.length),
         recentActivity: cases.filter(c => {
           if (!c?.updatedAt) return false;
           const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -87,7 +87,7 @@
 
     } catch (err: any) {
       console.error('Dashboard load error:', err);
-      error = err instanceof Error ? err.message : 'Failed to load dashboard data';
+      error = err instanceof Error ? err.message: 'Failed to load dashboard data';
       toast.error('Failed to load dashboard', { description: error });
     } finally {
       loading = false;

@@ -321,7 +321,7 @@ class EnhancedAuthStore {
       const result = await (response as { json?: any; ok?: any }).json();
       
       if ((result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).success) {
-        this._state.user = { ...this._state.user!, ...(result as { success?: any; user?: any; session?: any; error?: any; requiresVerification?: any }).user };
+        this._state.user = { ...this._state.user!, ...result.user };
       }
 
       return result;

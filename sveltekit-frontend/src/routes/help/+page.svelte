@@ -430,9 +430,9 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       const query = searchQuery.toLowerCase();
       results = results.filter(
         (article) =>
-          article.title.toLowerCase().includes(query) ||
-          article.description.toLowerCase().includes(query) ||
-          article.content.toLowerCase().includes(query)
+          article.title.toLowerCase.includes(query) ||
+          article.description.toLowerCase.includes(query) ||
+          article.content.toLowerCase.includes(query)
       );
     }
     // Sort by popularity
@@ -619,10 +619,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                     <!-- Article preview -->
                     <div class="prose prose-sm max-w-none text-gray-700 mb-4">
                       {@html article.content
-                        .split("\n")
-                        .slice(0, 3)
-                        .join("<br>")
-                        .substring(0, 200)}...
+                        .split.slice(0, 3)
+                        .join.substring(0, 200)}...
                     </div>
 
                     <Button class="bits-btn" variant="outline" size="sm">
@@ -706,26 +704,26 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   .prose {
     max-width: none;
   }
-  .prose :global(h1) {
+  .prose: global(h1) {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
   }
-  .prose :global(h2) {
+  .prose: global(h2) {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 0.75rem;
     margin-top: 1.5rem;
   }
-  .prose :global(p) {
+  .prose: global(p) {
     margin-bottom: 1rem;
     line-height: 1.6;
   }
-  .prose :global(ul) {
+  .prose: global(ul) {
     margin-bottom: 1rem;
     padding-left: 1.5rem;
   }
-  .prose :global(li) {
+  .prose: global(li) {
     margin-bottom: 0.5rem;
   }
 </style>

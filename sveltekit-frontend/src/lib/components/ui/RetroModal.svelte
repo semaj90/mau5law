@@ -79,8 +79,7 @@ https://svelte.dev/e/slot_snippet_conflict -->
   </Dialog.Portal>
 </Dialog.Root>
 
-<style>/* Additional custom styling to enhance nes.css */ {}
-  :global(.nes-dialog) {
+<style>/* Additional custom styling to enhance nes.css */ :global(.nes-dialog) {
     animation: modalSlideIn 0.3s ease-out;
   }
   
@@ -94,13 +93,12 @@ https://svelte.dev/e/slot_snippet_conflict -->
       transform: translateY(0);
     }
   }
-/* Custom modal content styling */ {}
-  .modal-content {
+/* Custom modal content styling */ .modal-content {
     max-height: 400px;
     overflow-y: auto;
   }
   
-  .modal-content :global(.nes-field) {
+  .modal-content: global(.nes-field) {
     margin-bottom: 1rem;
   }
 </style>

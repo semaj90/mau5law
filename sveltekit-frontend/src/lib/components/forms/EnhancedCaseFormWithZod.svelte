@@ -147,8 +147,7 @@ https://svelte.dev/e/js_parse_error -->
       });
 
       // Add metadata
-      formData.append('metadata', JSON.stringify({
-        submitTime: new Date().toISOString(),
+      formData.append.toISOString(),
         userAgent: navigator.userAgent,
         validationStatus,
         autoSaved: lastSaved !== null

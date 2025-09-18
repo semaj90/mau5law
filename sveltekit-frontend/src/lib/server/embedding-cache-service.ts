@@ -444,8 +444,7 @@ class EmbeddingCacheService {
     try {
       const prefix =
         type === 'embeddings'
-          ? this.EMBEDDING_PREFIX
-          : type === 'queries'
+          ? this.EMBEDDING_PREFIX: type === 'queries'
             ? this.QUERY_PREFIX
             : this.SESSION_PREFIX;
       const keys = await redisService.keys(`${prefix}*`);

@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
             throw err;
         }
         
-        throw error(500, `GPU chat service error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        throw error(500, `GPU chat service error: ${err instanceof Error ? err.message: 'Unknown error'}`);
     }
 };
 
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async () => {
     } catch (err: any) {
         return new Response(JSON.stringify({
             status: 'error',
-            error: err instanceof Error ? err.message : 'Unknown error',
+            error: err instanceof Error ? err.message: 'Unknown error',
             url: GO_GPU_SERVER_URL,
             timestamp: new Date().toISOString()
         }), {

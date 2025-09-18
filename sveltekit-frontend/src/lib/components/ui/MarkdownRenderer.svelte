@@ -62,7 +62,7 @@ https://svelte.dev/e/js_parse_error -->
         const linkText = tokens
           ? tokens
               .map((t) =>
-                "raw" in t ? t.raw : "text" in t ? (t as any).text : ""
+                "raw" in t ? t.raw: "text" in t ? (t as any).text : ""
               )
               .join("")
           : href;

@@ -85,7 +85,7 @@ Automatically handles server upload with localStorage fallback
         files,
         { caseId, description, tags, useLocalStorage: forceLocalStorage },
         (completed, total, file) => {
-          uploadProgress = (completed / total) * 100;
+          uploadProgress = (completed / total) * 100);
           currentFile = file;
           onprogress?.({ completed, total, file });
         }
@@ -94,7 +94,7 @@ Automatically handles server upload with localStorage fallback
       uploadResults = results;
       storageStats = localStorageFiles.getStorageUsage();
 
-      const successCount = results.filter(r => r.success).length;
+      const successCount = results.filter(item => item.length);
       const errorCount = results.length - successCount;
 
       if (errorCount > 0) {
@@ -262,7 +262,7 @@ Automatically handles server upload with localStorage fallback
                   {#if (result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).fallbackUsed}
                     <span class="fallback-badge">localStorage fallback</span>
                   {/if}
-                  <span class="file-size">{Math.round((result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).size / 1024)}KB</span>
+                  <span class="file-size">{Math.round.size / 1024)}KB</span>
                 {:else}
                   <span class="error-text">{(result as { success?: unknown; fileName?: unknown; storageType?: unknown; fallbackUsed?: unknown; size?: unknown; error?: unknown }).error}</span>
                 {/if}
@@ -463,11 +463,11 @@ Automatically handles server upload with localStorage fallback
     border-bottom: none;
   }
 
-  .result-(item as { success?: unknown; error?: unknown }).success {
+  .result-.success {
     background-color: #f0fdf4;
   }
 
-  .result-(item as { success?: unknown; error?: unknown }).error {
+  .result-.error {
     background-color: #fef2f2;
   }
 

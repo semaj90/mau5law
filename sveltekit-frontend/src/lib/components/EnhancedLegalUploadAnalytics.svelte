@@ -45,15 +45,14 @@
 
   let {
     caseId = '',
-    userId = page.(data as { user?: unknown }).user?.id || '',
+    userId = page.data.user?.id || '',
     maxFiles = 10,
     allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'text/plain', 'application/msword'],
     enableAnalytics = true,
     enableAIPrompts = true,
     expertiseLevel = 'associate',
     mode = 'standard',
-    legalContext = {}
-  }: Props = $props();
+    legalContext = }: Props = $props();
 
   // Enhanced state management
   let uploadActor = $state<ReturnType<typeof createUploadAnalyticsActor> | null>(null);
@@ -107,14 +106,14 @@
   let hasErrors = $derived(machineState?.context?.errors?.length > 0 || false);
 
   let uploadResults = $derived(machineState?.context?.uploadResults || []);
-  let pipelineStatus = $derived(machineState?.context?.pipeline || {});
+  let pipelineStatus = $derived(machineState?.context?.pipeline || );
 
   // Legal-specific derived state
   let legalInsights = $derived(() => {
     if (!aiAnalysisResults.length) return null;
 
     return {
-      privilegedDocuments: aiAnalysisResults.filter(r => r.privileged).length,
+      privilegedDocuments: aiAnalysisResults.filter(item => item.length),
       evidenceQuality: calculateEvidenceQuality(aiAnalysisResults),
       recommendedActions: generateLegalRecommendations(aiAnalysisResults, legalContext),
       riskAssessment: assessLegalRisks(aiAnalysisResults)
@@ -395,7 +394,7 @@
   function generateLegalRecommendations(results: unknown[], context: unknown): string[] {
     const recommendations: string[] = [];
 
-    const privilegedCount = results.filter(r => r.privileged).length;
+    const privilegedCount = results.filter(item => item.length);
     const qualityScore = calculateEvidenceQuality(results);
 
     if (privilegedCount > 0) {
@@ -419,8 +418,8 @@
     const risks: string[] = [];
     let level = 'low';
 
-    const privilegedCount = results.filter(r => r.privileged).length;
-    const redactedCount = results.filter(r => r.needsRedaction).length;
+    const privilegedCount = results.filter(item => item.length);
+    const redactedCount = results.filter(item => item.length);
 
     if (privilegedCount > 0) {
       risks.push('Privileged material detected');
@@ -926,7 +925,7 @@
                           ></div>
                         </div>
                         <span class="confidence-value">
-                          {Math.round((result as { success?: unknown; fileName?: unknown; documentId?: unknown; aiInsights?: unknown; errorMessage?: unknown }).aiInsights.confidenceScore * 100)}%
+                          {Math.round.aiInsights.confidenceScore * 100)}%
                         </span>
                       </div>
                     {/if}
@@ -1214,7 +1213,7 @@
     border-radius: 0.25rem;
   }
 
-  .insight-(item as { warning?: unknown; success?: unknown }).warning {
+  .insight-.warning {
     background: rgba(255, 107, 107, 0.3);
     color: #ff6b6b;
   }
@@ -1435,7 +1434,7 @@
     margin-bottom: 1rem;
   }
 
-  .result-(item as { warning?: unknown; success?: unknown }).success {
+  .result-.success {
     border-left: 4px solid #51cf66;
   }
 

@@ -370,7 +370,7 @@ export class SoraGraphTraversal {
    */
   private async selectBestAction(
     stateId: string,
-    actions: Array<,
+    actions: Array<any>,
     qTable: Map<string, Map<string, number>>,
     queryEmbedding: Float32Array
   ): Promise<any> {
@@ -398,7 +398,7 @@ export class SoraGraphTraversal {
    * Heuristic action selection for unexplored states
    */
   private async heuristicActionSelection(
-    actions: Array<,
+    actions: Array<any>,
     queryEmbedding: Float32Array
   ): Promise<any> {
     let bestAction = actions[0];
@@ -1091,7 +1091,7 @@ export class SoraGraphTraversal {
   /**
    * Get reinforcement learning statistics
    */
-  public getReinforcementStats(): { totalNodes: number; avgVisitCount: number; topNodes: Array< } {
+  public getReinforcementStats(): { totalNodes: number; avgVisitCount: number; topNodes: Array<any> } {
     const entries = Array.from(this.reinforcementModel.entries());
     const totalVisits = entries.reduce((sum, [_, visits]) => sum + visits, 0);
     

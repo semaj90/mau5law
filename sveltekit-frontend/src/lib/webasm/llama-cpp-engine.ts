@@ -472,7 +472,7 @@ export class WebASMLlamaCppEngine {
       totalInferences: this.totalInferences,
       totalTokens: this.totalTokens,
       averageLatency: this.averageLatency,
-      tokensPerSecond: this.averageLatency > 0 ? 1000 / this.averageLatency : 0,
+      tokensPerSecond: this.averageLatency > 0 ? 1000 / this.averageLatency: 0,
       memoryUsage: this.getMemoryUsage()
     };
   }

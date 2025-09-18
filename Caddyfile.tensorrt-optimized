@@ -67,8 +67,8 @@
 			# Primary TensorRT-LLM server (WSL2)
 			to localhost:8100
 
-			# Fallback to Go SIMD optimizer
-			to localhost:8103
+			# Fallback to Go TensorRT Bridge
+			to localhost:8087
 
 			# Health check and failover
 			health_uri /health
@@ -129,6 +129,24 @@
 		}
 	}
 
+	# MCP Context7 API proxy
+	@mcp_api {
+		path /mcp/*
+		path /api/context7/*
+	}
+
+	handle @mcp_api {
+		reverse_proxy {
+			to localhost:3002
+
+			# Remove /mcp prefix when forwarding
+			rewrite strip_prefix /mcp
+
+			# MCP headers
+			header_up X-MCP-Client "caddy-tensorrt"
+		}
+	}
+
 	# Metrics and monitoring endpoints
 	@metrics {
 		path /metrics
@@ -138,11 +156,26 @@
 
 	handle @metrics {
 		reverse_proxy {
-			to localhost:8103  # SIMD optimizer metrics
-			to localhost:8100  # TensorRT metrics
+			to localhost:8087  # TensorRT Bridge metrics
+			to localhost:3002  # MCP Context7 metrics
 
 			lb_policy first
 			fail_duration 5s
+		}
+	}
+
+	# API Gateway routes (fallback to API gateway)
+	@api_routes {
+		path /api/*
+	}
+
+	handle @api_routes {
+		reverse_proxy {
+			to localhost:8090
+
+			# API Gateway failover
+			fail_duration 5s
+			health_uri /health
 		}
 	}
 
@@ -162,10 +195,22 @@
 		file_server
 	}
 
-	# SvelteKit application
+	# SvelteKit application (with multiple fallbacks)
 	handle {
 		reverse_proxy {
-			to localhost:5173  # SvelteKit dev server
+			# Try multiple SvelteKit dev servers
+			to localhost:5173
+			to localhost:5174
+			to localhost:5175
+			to localhost:5176
+			to localhost:5177
+
+			# Health check and failover
+			health_uri /
+			health_interval 10s
+			health_timeout 5s
+			fail_duration 30s
+			max_fails 2
 
 			# WebSocket support for HMR
 			transport http {
@@ -174,6 +219,7 @@
 
 			# SvelteKit headers
 			header_up X-Forwarded-Host {host}
+			header_up X-Forwarded-Proto {scheme}
 		}
 	}
 

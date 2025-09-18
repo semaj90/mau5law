@@ -92,7 +92,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       }
     } catch (e) {
       logger.warn(
-        `RAG context fetch failed (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`
+        `RAG context fetch failed (requestId=${requestId}): ${e instanceof Error ? e.message: String(e)}`
       );
     }
   }
@@ -116,7 +116,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           });
         } catch (e) {
           logger.error(
-            `Persist assistant message failed (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`
+            `Persist assistant message failed (requestId=${requestId}): ${e instanceof Error ? e.message: String(e)}`
           );
         }
       };
@@ -178,7 +178,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
               }
             } catch (e) {
               logger.warn(
-                `Stream parse error (requestId=${requestId}) lineSnippet='${line.slice(0, 120)}' err=${e instanceof Error ? e.message : String(e)}`
+                `Stream parse error (requestId=${requestId}) lineSnippet='${line.slice(0, 120)}' err=${e instanceof Error ? e.message: String(e)}`
               );
             }
           }
@@ -186,12 +186,12 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
         }
       } catch (e) {
         logger.error(
-          `Streaming failure (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`
+          `Streaming failure (requestId=${requestId}): ${e instanceof Error ? e.message: String(e)}`
         );
         await persist(true);
         send({
           type: 'error',
-          error: e instanceof Error ? e.message : 'Streaming failed',
+          error: e instanceof Error ? e.message: 'Streaming failed',
           timestamp: new Date().toISOString(),
         });
       } finally {

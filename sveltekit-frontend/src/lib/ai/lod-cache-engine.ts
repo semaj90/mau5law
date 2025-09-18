@@ -903,7 +903,7 @@ class VectorMetadataEncoder {
 
   private adaptDimensions(): number {
     // Adaptive scaling based on backend and performance profile
-    const backend = this.cacheEngine?.getHybridGPU() ? (this.cacheEngine as any).activeBackend : 'cpu';
+    const backend = this.cacheEngine?.getHybridGPU() ? (this.cacheEngine as any).activeBackend: 'cpu';
     // Access environment performance profile via global CLIENT_ENV if available
     const profile = (globalThis as any).CLIENT_ENV?.PERFORMANCE_PROFILE || 'auto';
 
@@ -1021,7 +1021,7 @@ class VectorMetadataEncoder {
         }
 
         // Normalize and apply semantic weighting
-        value = tanh(value / f32(segmentLength + 1));
+        value = tanh(value / f32(segmentLength + 1);
         embeddings[embeddingIndex] = value;
       }
     `;
@@ -1273,7 +1273,7 @@ LODCacheEngine.prototype.createWebGPUEmbeddingShader = function(): string {
         }
 
         // Normalize with LOD consideration
-        value = tanh(value / f32(segmentLength + 1));
+        value = tanh(value / f32(segmentLength + 1);
         embeddings[embeddingIndex] = value;
       }
     `;
@@ -1357,7 +1357,7 @@ LODCacheEngine.prototype.createWebGPUSimilarityShader = function(): string {
             similarity = similarity / normProduct;
           }
         } else if (similarityType == 1) { // Euclidean distance (inverted)
-          similarity = 1.0 / (1.0 + sqrt(abs(queryNorm + docNorm - 2.0 * similarity)));
+          similarity = 1.0 / (1.0 + sqrt(abs(queryNorm + docNorm - 2.0 * similarity));
         }
         // For dot product (type 2), use similarity as-is
 

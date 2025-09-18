@@ -177,7 +177,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
     
     return json({
       error: 'Failed to process evidence',
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error',
       processingTime: performance.now() - startTime
     }, { status: 500 });
   }
@@ -299,8 +299,7 @@ function extractLegalConcepts(text: string): string[] {
     'substantive', 'discovery', 'motion', 'pleading', 'settlement'
   ];
 
-  const concepts = legalTerms.filter(term => 
-    text.toLowerCase().includes(term.toLowerCase())
+  const concepts = legalTerms.filter(item => item.includes(term.toLowerCase())
   );
 
   return [...new Set(concepts)]; // Remove duplicates

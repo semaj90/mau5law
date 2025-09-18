@@ -73,7 +73,7 @@ export const chatMachine = createMachine({
     messages: [],
     error: null,
     status: 'idle',
-    settings: {
+    }); const settings = {
       model: 'gemma3-legal',
       temperature: 0.3,
       maxTokens: 500,
@@ -128,7 +128,7 @@ export const chatMachine = createMachine({
         onError: {
           target: 'error',
           actions: assign({
-            error: ({ event }) => `Chat error: ${event.error instanceof Error ? event.error.message : 'Unknown error'}`,
+            error: ({ event }) => `Chat error: ${event.error instanceof Error ? event.error.message: 'Unknown error'}`,
             status: 'error',
           }),
         },

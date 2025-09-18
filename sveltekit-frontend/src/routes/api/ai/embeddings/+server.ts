@@ -88,7 +88,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -303,7 +303,7 @@ async function checkOllamaHealth(): Promise<any> {
   } catch (error) {
     return {
       healthy: false,
-      error: error instanceof Error ? error.message : 'Connection failed',
+      error: error instanceof Error ? error.message: 'Connection failed',
     };
   }
 }
@@ -331,7 +331,7 @@ async function checkVLLMHealth(): Promise<any> {
   } catch (error) {
     return {
       healthy: false,
-      error: error instanceof Error ? error.message : 'Connection failed',
+      error: error instanceof Error ? error.message: 'Connection failed',
     };
   }
 }

@@ -79,8 +79,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
     const queryEmbedding = await this.generateEmbedding(text);
     const responseEmbedding = await this.generateEmbedding(
       typeof baseAnalysis.analysis === 'string'
-        ? baseAnalysis.analysis
-        : JSON.stringify(baseAnalysis.analysis)
+        ? baseAnalysis.analysis: JSON.stringify(baseAnalysis.analysis)
     );
 
     // Get recommendation context from similar responses
@@ -101,8 +100,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
       query: text,
       response:
         typeof baseAnalysis.analysis === 'string'
-          ? baseAnalysis.analysis
-          : JSON.stringify(baseAnalysis.analysis),
+          ? baseAnalysis.analysis: JSON.stringify(baseAnalysis.analysis),
       thinkingContent: baseAnalysis.thinking,
       structuredReasoning,
       queryEmbedding,

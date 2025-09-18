@@ -44,7 +44,7 @@ async function ocrWithTesseract(filePath: string): Promise<string> {
     // createWorker may return a Promise or a worker directly depending on version
     const worker: any = await createWorker({
       logger: (m: any) => {
-        if (import.meta.env.MCP_DEBUG === 'true') console.log('TESSERACT:', m);
+        if (import.meta.env.MCP_DEBUG === 'true') console.log('TESSERACT:', m));
       },
     });
 
@@ -350,7 +350,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       results,
       totalFiles: files.length,
-      successfulUploads: results.filter(r => r.status === 'processed').length,
+      successfulUploads: results.filter(item => item.length),
       processingPipeline: {
         storage: 'Local file system',
         database: 'PostgreSQL with pgvector',

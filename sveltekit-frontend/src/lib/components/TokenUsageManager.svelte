@@ -34,7 +34,7 @@
   let autoOptimize = $state(true);
 
   // Token usage history
-  let usageHistory = $state<any[]>([])([]);
+  let usageHistory = $state<any[]>([]) => []);
 
   // Token usage breakdown
   let currentSession = $state({
@@ -204,14 +204,14 @@
       efficiency: 100
     };
 
-    dispatch('sessionReset', {});
+    dispatch('sessionReset', );
   }
 
   function exportUsageData() {
     const data = {
       session: currentSession,
       history: usageHistory,
-      settings: {
+      }); const settings = {
         tokenLimit,
         currentModel,
         autoOptimize
@@ -473,7 +473,7 @@ Export
 </div>
 
 <style>
-  .slider::-webkit-slider-thumb {
+  .slider: :-webkit-slider-thumb {
     appearance: none;
     height: 20px;
     width: 20px;
@@ -482,7 +482,7 @@ Export
     cursor: pointer;
   }
 
-  .slider::-moz-range-thumb {
+  .slider: :-moz-range-thumb {
     height: 20px;
     width: 20px;
     background: #3b82f6;
@@ -506,7 +506,7 @@ Export
     background: #3b82f6;
   }
 
-  .toggle::before {
+  .toggle: :before {
     content: '';
     position: absolute;
     width: 18px;

@@ -775,7 +775,7 @@ https://svelte.dev/e/js_parse_error -->
 		transition: all 0.3s ease;
 	}
 
-	.status-(item as { active?: unknown }).active {
+	.status-.active {
 		border-color: #00ff88;
 		background: rgba(0, 255, 136, 0.1);
 	}
@@ -823,14 +823,7 @@ https://svelte.dev/e/js_parse_error -->
 		border: 1px solid #333;
 	}
 
-	.three-canvas {
-		display: block;
-		width: 100%;
-		height: 600px;
-		max-width: 100%;
-	}
-
-	.loading-overlay {
+	.three-canv.loading-overlay {
 		position: absolute;
 		top: 0;
 		left: 0;

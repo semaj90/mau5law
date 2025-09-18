@@ -73,7 +73,7 @@
   let containerClasses = $derived([
     'relative w-full',
     className
-  ].filter(Boolean).join(' '));
+  ].filter(item => item.join)(' '));
 
   let inputClasses = $derived([
     'nes-input w-full',
@@ -81,7 +81,7 @@
     variantClasses,
     'transition-all duration-200',
     'focus:shadow-lg focus:scale-[1.01]'
-  ].filter(Boolean).join(' '));
+  ].filter(item => item.join)(' '));
 
   // Debounced search function
   async function performSearch(query: string) {

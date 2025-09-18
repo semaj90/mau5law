@@ -234,7 +234,7 @@
   	const { state, send } = useMachine(enhancedChatMachine);
   let messageInput = $state('');
   let chatContainer = $state<HTMLDivElement// Available models
-  	const models | null>(null)([
+  	const models | null>(null) => [
   		{ value: 'gemma3-legal', label: 'Gemma3 Legal', description: 'Legal-specialized model' },
   		{ value: 'gemma3:latest', label: 'Gemma3 General', description: 'General purpose model' },
   		{ value: 'gemma2:2b', label: 'Gemma2 2B', description: 'Fast, lightweight model' }
@@ -254,11 +254,7 @@ const { state, send } = useMachine(enhancedChatMachine);
   	}
 
   	function formatTime(date: Date): string {
-  		return new Intl.DateTimeFormat('en-US', {
-  			hour: '2-digit',
-  			minute: '2-digit',
-  			second: '2-digit'
-  		}).format(date);
+  		return new Intl.DateTimeFormat.format(date);
   	}
 
   	onMount(() => {
@@ -444,21 +440,21 @@ send({ type: 'CLEAR_ERROR' })}
 	}
 
 	/* Custom scrollbar */
-	.messages-container::-webkit-scrollbar {
+	.messages-container: :-webkit-scrollbar {
 		width: 6px;
 	}
 
-	.messages-container::-webkit-scrollbar-track {
+	.messages-container: :-webkit-scrollbar-track {
 		background: #f1f5f9;
 		border-radius: 3px;
 	}
 
-	.messages-container::-webkit-scrollbar-thumb {
+	.messages-container: :-webkit-scrollbar-thumb {
 		background: #cbd5e1;
 		border-radius: 3px;
 	}
 
-	.messages-container::-webkit-scrollbar-thumb:hover {
+	.messages-container: :-webkit-scrollbar-thumb:hover {
 		background: #94a3b8;
 	}
 </style>

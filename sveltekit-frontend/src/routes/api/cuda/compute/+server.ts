@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json(
 			{ 
 				error: 'Failed to connect to CUDA server',
-				details: error instanceof Error ? error.message : String(error)
+				details: error instanceof Error ? error.message: String(error)
 			}, 
 			{ status: 500 }
 		);
@@ -64,7 +64,7 @@ export const GET: RequestHandler = async () => {
 			{ 
 				status: 'disconnected',
 				error: 'CUDA server unreachable',
-				details: error instanceof Error ? error.message : String(error)
+				details: error instanceof Error ? error.message: String(error)
 			}, 
 			{ status: 503 }
 		);

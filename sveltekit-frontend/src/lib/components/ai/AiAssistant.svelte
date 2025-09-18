@@ -123,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
         }
       } catch (error) {
         console.error('Error saving summary:', error);
-        errorMessage = error instanceof Error ? error.message : 'An error occurred';
+        errorMessage = error instanceof Error ? error.message: 'An error occurred';
       }
     }
   </script>

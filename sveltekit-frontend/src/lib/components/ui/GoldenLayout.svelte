@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
   let calculatedSidebarFlex = $state<number// TODO: Convert to $derived: {
     switch (ratio) {
       case "golden":
-        calculatedMainFlex | null>(null)(1.618)
+        calculatedMainFlex  | null>(null); const data = 1.618)
         calculatedSidebarFlex >(1);
         break;
       case "thirds":
@@ -135,8 +135,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 </div>
 
-<style>/* @unocss-include */ {}
-  .golden-layout {
+<style>/* @unocss-include */ .golden-layout {
     display: flex;
     height: 100%;
     min-height: 0;
@@ -208,8 +207,7 @@ https://svelte.dev/e/js_parse_error -->
   .collapsed .sidebar-toggle:hover {
     background: var(--pico-primary-background, #f3f4f6);
 }
-/* Responsive design */ {}
-  @media (max-width: 768px) {
+/* Responsive design */ @media (max-width: 768px) {
     .golden-layout {
       flex-direction: column;
 }
@@ -233,8 +231,7 @@ https://svelte.dev/e/js_parse_error -->
       left: 50%;
       transform: translateX(-50%);
 }
-.sidebar-toggle.left, {}
-    .sidebar-toggle.right {
+.sidebar-toggle.left, .sidebar-toggle.right {
       left: 50%;
       right: auto;
       transform: translateX(-50%);
@@ -245,18 +242,17 @@ https://svelte.dev/e/js_parse_error -->
       left: auto;
       transform: none;
 }}
-/* Smooth scrollbar for sidebar */ {}
-  .sidebar-content::-webkit-scrollbar {
+/* Smooth scrollbar for sidebar */ .sidebar-content: :-webkit-scrollbar {
     width: 6px;
 }
-  .sidebar-content::-webkit-scrollbar-track {
+  .sidebar-content: :-webkit-scrollbar-track {
     background: transparent;
 }
-  .sidebar-content::-webkit-scrollbar-thumb {
+  .sidebar-content: :-webkit-scrollbar-thumb {
     background: var(--pico-border-color, #e2e8f0);
     border-radius: 3px;
 }
-  .sidebar-content::-webkit-scrollbar-thumb:hover {
+  .sidebar-content: :-webkit-scrollbar-thumb:hover {
     background: var(--pico-muted-color, #6b7280);
 }
 </style>

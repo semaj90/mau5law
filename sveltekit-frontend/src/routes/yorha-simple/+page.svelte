@@ -73,7 +73,7 @@
 
   lastUpdated = new Date();
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to fetch system metrics';
+      error = err instanceof Error ? err.message: 'Failed to fetch system metrics';
       console.error('System metrics fetch error:', err);
     } finally {
   loading = false;
@@ -108,7 +108,7 @@
       systemData.aiQueries += 1;
 
     } catch (err) {
-      error = err instanceof Error ? err.message : 'RAG query failed';
+      error = err instanceof Error ? err.message: 'RAG query failed';
       console.error('RAG query error:', err);
     } finally {
   loading = false;
@@ -145,7 +145,7 @@
       }
 
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Semantic search failed';
+      error = err instanceof Error ? err.message: 'Semantic search failed';
       console.error('Semantic search error:', err);
     } finally {
       loading = false;
@@ -175,7 +175,7 @@
       systemData.systemLoad = healthData.systemLoad || systemData.systemLoad;
 
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Health check failed';
+      error = err instanceof Error ? err.message: 'Health check failed';
       console.error('Health check error:', err);
     } finally {
       loading = false;
@@ -202,7 +202,7 @@
       console.log('Database query successful:', dbData);
 
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Database query failed';
+      error = err instanceof Error ? err.message: 'Database query failed';
       console.error('Database query error:', err);
     } finally {
       loading = false;

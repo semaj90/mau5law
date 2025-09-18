@@ -135,8 +135,7 @@
   // Filter options based on search term
   let filteredOptions = $derived(
     searchable && searchTerm
-      ? options.filter(option =>
-          option.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ? options.filter(item => item.includes(searchTerm.toLowerCase()) ||
           option.value.toLowerCase().includes(searchTerm.toLowerCase())
         )
       : options
@@ -148,7 +147,7 @@
 
     try {
       if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
       }
 
       const oscillator = audioContext.createOscillator();
@@ -354,7 +353,7 @@
     const materialMap = {
       basic: {
         background: colors.base,
-        borderColor: isFocused ? colors.border : colors.highlight,
+        borderColor: isFocused ? colors.border: colors.highlight,
         boxShadow: `inset 0 ${depth}px 0 ${colors.shadow}`
       },
       phong: {
@@ -779,7 +778,7 @@
     border-color: var(--material-border);
   }
 
-  .search-input::placeholder {
+  .search-input: :placeholder {
     color: rgba(255, 255, 255, 0.5);
   }
 

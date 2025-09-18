@@ -150,7 +150,7 @@ export const cacheActor = fromPromise(
  * Cache-aware XState machine mixin
  * Adds caching capabilities to any XState machine
  */
-export function withCache<TContext extends Record<string, any>>(
+export function withCache<TContext extends Record<string, any>(
   baseContext: TContext,
   cacheKeyGenerator?: (context: TContext) => string
 ) {

@@ -640,20 +640,20 @@ https://svelte.dev/e/js_parse_error -->
 	}
 
 	/* Custom scrollbar */
-	.messages-container::-webkit-scrollbar {
+	.messages-container: :-webkit-scrollbar {
 		width: 6px;
 	}
 
-	.messages-container::-webkit-scrollbar-track {
+	.messages-container: :-webkit-scrollbar-track {
 		background: var(--pico-background-color);
 	}
 
-	.messages-container::-webkit-scrollbar-thumb {
+	.messages-container: :-webkit-scrollbar-thumb {
 		background: var(--pico-muted-border-color);
 		border-radius: 3px;
 	}
 
-	.messages-container::-webkit-scrollbar-thumb:hover {
+	.messages-container: :-webkit-scrollbar-thumb:hover {
 		background: var(--pico-primary);
 	}
 

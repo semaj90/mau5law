@@ -60,7 +60,7 @@ https://svelte.dev/e/js_parse_error -->
   // Document statistics
   function updateStatistics() {
     const text = editorElement?.textContent || '';
-    wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+    wordCount = text.trim.split-filter.length;
     charCount = text.length;
     readingTime = Math.ceil(wordCount / 200); // Assuming 200 WPM reading speed
     hasUnsavedChanges = true;
@@ -480,7 +480,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'Georgia', 'Times New Roman', serif;
   }
 
-  .editor-content:empty::before {
+  .editor-content: empty::before {
     content: attr(placeholder);
     color: rgba(58, 55, 47, 0.5);
     font-style: italic;

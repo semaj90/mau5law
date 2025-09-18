@@ -316,7 +316,7 @@ export class PerformanceMonitor {
   private checkQualityAdjustment(): void {
     if (!this.metrics.adaptiveEnabled) return;
 
-    const avgFrameTime = this.metrics.frameRate > 0 ? 1000 / this.metrics.frameRate : 100;
+    const avgFrameTime = this.metrics.frameRate > 0 ? 1000 / this.metrics.frameRate: 100;
     const { excellent, good, poor } = this.qualitySettings.adaptiveThresholds;
 
     let qualityAdjustment = 0;

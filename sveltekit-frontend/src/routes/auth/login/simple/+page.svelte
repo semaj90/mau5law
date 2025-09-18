@@ -53,7 +53,7 @@ https://svelte.dev/e/js_parse_error -->
         window.location.href = (result as { success?: unknown; redirectTo?: unknown; error?: unknown }).redirectTo || '/dashboard';
       } else {
         // Fall back to auto-fill if auto-login fails
-        console.warn('⚠️ Auto-login failed, falling back to auto-fill:', (result as { success?: unknown; redirectTo?: unknown; error?: unknown }).error);
+        console.warn.error);
         autoLoginDemo();
       }
     } catch (error) {

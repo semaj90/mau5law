@@ -924,21 +924,21 @@ window.open('/api/v1/cluster/health', '_blank')}
 
 <style>
   /* Custom scrollbar for chat */
-  :global(.overflow-y-auto::-webkit-scrollbar) {
+  :global(.overflow-y-auto: :-webkit-scrollbar) {
     width: 6px;
   }
 
-  :global(.overflow-y-auto::-webkit-scrollbar-track) {
+  :global(.overflow-y-auto: :-webkit-scrollbar-track) {
     background: #f1f1f1;
     border-radius: 3px;
   }
 
-  :global(.overflow-y-auto::-webkit-scrollbar-thumb) {
+  :global(.overflow-y-auto: :-webkit-scrollbar-thumb) {
     background: #c1c1c1;
     border-radius: 3px;
   }
 
-  :global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
+  :global(.overflow-y-auto: :-webkit-scrollbar-thumb:hover) {
     background: #a8a8a8;
   }
 </style>

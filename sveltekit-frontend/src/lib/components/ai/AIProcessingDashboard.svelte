@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
   		switch (taskType) {
   			case 'embedding':
   				return {
-  					embedding: Array(384).fill(0).map(() => Math.random() - 0.5),
+  					embedding: Array(384).fill.map(() => Math.random() - 0.5),
   					dimensions: 384
   				};
   			case 'analysis':
@@ -360,7 +360,7 @@ https://svelte.dev/e/js_parse_error -->
 							{#if (result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).success && (result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).result}
 								<div class="text-sm bg-yorha-bg-primary p-2 rounded border">
 									<pre class="whitespace-pre-wrap text-yorha-text-primary overflow-x-auto">
-{JSON.stringify((result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).result, null, 2)}
+{JSON.stringify.result, null, 2)}
 									</pre>
 								</div>
 							{/if}

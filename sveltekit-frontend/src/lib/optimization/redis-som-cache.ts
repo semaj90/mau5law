@@ -579,7 +579,8 @@ export class RedisSOMapCache extends EventEmitter {
   }
 
   // === Neural Network Analysis Methods ===
-  async analyzeAccessPatterns(): Promise<;
+  async analyzeAccessPatterns(): Promise<{
+    clusters: Array<any>;
     recommendations: string[];
   }> {
     const som_stats = this.som.getClusterStats();
@@ -605,7 +606,7 @@ export class RedisSOMapCache extends EventEmitter {
   }
 
   private generateRecommendations(
-    clusters: Array<,
+    clusters: Array<any>,
     som_stats: any
   ): string[] {
     const recommendations: string[] = [];

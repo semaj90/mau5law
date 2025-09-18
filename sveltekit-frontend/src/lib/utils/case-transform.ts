@@ -157,7 +157,7 @@ export function transformUserForFrontend(dbUser: DatabaseUser): FrontendUser {
 }
 
 export function transformUserForDatabase(frontendUser: Partial<FrontendUser>): Partial<DatabaseUser> {
-  return toSnakeCase<Partial<DatabaseUser>>(frontendUser);
+  return toSnakeCase<Partial<DatabaseUser>(frontendUser);
 }
 
 /**

@@ -36,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
   let processing = $state(false);
   let inputText = $state('Analyze the semantic structure of this legal document: "This agreement shall be governed by the laws of the state of California and any disputes will be resolved through binding arbitration."');
   let results = $state<any>(null);
-  let spatialPoints = $state<any[]>([])([]);
+  let spatialPoints = $state<any[]>([]) => []);
   let processingStats = $state({
     tokensProcessed: 0,
     embeddingsGenerated: 0,
@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
       // Update statistics
       processingStats = {
         tokensProcessed: Math.ceil(inputText.length / 4),
-        embeddingsGenerated: Math.floor(inputText.split(' ').length * 1.2),
+        embeddingsGenerated: Math.floor.length * 1.2),
         spatialMappings: spatialPoints.length,
         processingTime: processingTime,
         lodLevel: calculateLODLevel(inputText.length)
@@ -114,13 +114,13 @@ https://svelte.dev/e/js_parse_error -->
 
   async function generateSpatialMappings() {
     // Generate spatial points based on semantic analysis
-    const words = inputText.split(/\s+/).filter(w => w.length > 3);
+    const words = inputText.split.filter(w => w.length > 3);
     const newPoints: Array = [];
     
     words.forEach((word, index) => {
       if (index < maxConcurrent) {
         // Use deterministic positioning based on word characteristics
-        const hash = word.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const hash = word.split.reduce((acc, char) => acc + char.charCodeAt(0), 0);
         const x = (hash % 100 - 50) / 10 * spatialScale;
         const y = ((hash * 7) % 100 - 50) / 10 * spatialScale;
         const z = ((hash * 13) % 100 - 50) / 10 * spatialScale;

@@ -11,9 +11,9 @@
     action = '/api/submit-form',
     method = 'POST' as 'GET' | 'POST',
     // Data props
-    initialData = {} as Record<string, any>,
+    initialData = as Record<string, any>,
     // Configuration props
-    config = {} as Partial<ProgressiveEnhancementConfig>,
+    config = as Partial<ProgressiveEnhancementConfig>,
     // Event handlers
     onsubmit = undefined as ((data: FormData) => void) | undefined,
     onsuccess = undefined as ((result: unknown) => void) | undefined,
@@ -54,7 +54,7 @@
         return progressiveForm.validateRequired(value, 'Password') ||
                progressiveForm.validateLength(value, 8, 128);
       case 'confirmPassword':
-        if (value !== formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).password) {
+        if (value !== formState.data.password) {
           return 'Passwords do not match';
         }
         return null;
@@ -142,7 +142,7 @@
         submitMessageType = 'error';
         // Handle server validation errors
         if ((result as { type?: unknown; data?: unknown }).data?.errors) {
-          formState.errors = { ...formState.errors, ...(result as { type?: unknown; data?: unknown }).(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).errors };
+          formState.errors = { ...formState.errors, ...result.data.errors };
         }
         if (onerror) {
           onerror(submitMessage);
@@ -230,7 +230,7 @@
   ></div>
 
   <!-- Form errors summary -->
-  {#if Object.keys(formState.errors).length > 0 && progressiveForm.config.showSummaryErrors}
+  {#if Object.keys.length > 0 && progressiveForm.config.showSummaryErrors}
     <div class="error-summary" role="alert" aria-labelledby="{formId}-error-heading">
       <h3 id="{formId}-error-heading">Please correct the following errors:</h3>
       <ul>
@@ -257,7 +257,7 @@
           type="text"
           name="firstName"
           class="form-input {hasError('firstName') ? 'error' : ''}"
-          bind:value={formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).firstName}
+          bind:value={formState.data.firstName}
           oninput={(e) => handleFieldChange('firstName', e.target.value)}
           onblur={() => formState.touched.firstName = true}
           required
@@ -282,7 +282,7 @@
           type="text"
           name="lastName"
           class="form-input {hasError('lastName') ? 'error' : ''}"
-          bind:value={formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).lastName}
+          bind:value={formState.data.lastName}
           oninput={(e) => handleFieldChange('lastName', e.target.value)}
           onblur={() => formState.touched.lastName = true}
           required
@@ -313,7 +313,7 @@
         type="email"
         name="email"
         class="form-input {hasError('email') ? 'error' : ''}"
-        bind:value={formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).email}
+        bind:value={formState.data.email}
         oninput={(e) => handleFieldChange('email', e.target.value)}
         onblur={() => formState.touched.email = true}
         autocomplete="email"
@@ -339,7 +339,7 @@
         type="password"
         name="password"
         class="form-input {hasError('password') ? 'error' : ''}"
-        bind:value={formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).password}
+        bind:value={formState.data.password}
         oninput={(e) => handleFieldChange('password', e.target.value)}
         onblur={() => formState.touched.password = true}
         autocomplete="new-password"
@@ -369,7 +369,7 @@
         type="password"
         name="confirmPassword"
         class="form-input {hasError('confirmPassword') ? 'error' : ''}"
-        bind:value={formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).confirmPassword}
+        bind:value={formState.data.confirmPassword}
         oninput={(e) => handleFieldChange('confirmPassword', e.target.value)}
         onblur={() => formState.touched.confirmPassword = true}
         autocomplete="new-password"
@@ -397,7 +397,7 @@
         type="checkbox"
         name="terms"
         class="form-checkbox"
-        bind:checked={formState.(data as { password?: unknown; firstName?: unknown; lastName?: unknown; email?: unknown; confirmPassword?: unknown; terms?: unknown }).terms}
+        bind:checked={formState.data.terms}
         onchange={(e) => handleFieldChange('terms', e.target.checked)}
         aria-describedby={hasError('terms') ? progressiveForm.generateErrorId(fieldIds.terms) : undefined}
         required
@@ -573,7 +573,7 @@
     color: #374151;
   }
 
-  .form-label.required::after {
+  .form-label.required: :after {
     content: ' *';
     color: #dc2626;
   }

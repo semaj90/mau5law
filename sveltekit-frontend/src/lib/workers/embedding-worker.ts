@@ -93,7 +93,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         this.postResponse({
           id,
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message: 'Unknown error'
         });
       }
     }
@@ -132,7 +132,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
             errors.push({
               index: i + index,
               content: text.substring(0, 100) + '...',
-              error: error instanceof Error ? error.message : 'Unknown error'
+              error: error instanceof Error ? error.message: 'Unknown error'
             });
           });
         }
@@ -143,7 +143,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       return {
         results,
         totalProcessed: results.length,
-        averageTime: results.length > 0 ? totalTime / results.length : 0,
+        averageTime: results.length > 0 ? totalTime / results.length: 0,
         errors,
         metrics: {
           tokenCount: this.estimateTokenCount(texts),
@@ -369,7 +369,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       word = word.replace(/^y/, '');
       const matches = word.match(/[aeiouy]{1,2}/g);
       
-      return matches ? matches.length : 1;
+      return matches ? matches.length: 1;
     }
     
     private extractKeyPhrases(text: string): string[] {

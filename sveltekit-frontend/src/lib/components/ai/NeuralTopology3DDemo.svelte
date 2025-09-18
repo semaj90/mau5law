@@ -25,7 +25,7 @@ https://svelte.dev/e/js_parse_error -->
   let predictions = $state([]);
   let animations = $state([]);
   let searchResults = $state([]);
-  let performanceMetrics = $state({});
+  let performanceMetrics = $state( );
   let neuralTopologyStatus = $state({
     transformer: 'idle',
     autoencoder: 'idle', 
@@ -167,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
     
     // STEP 3: Transformer Topology - Semantic 3D asset search  
     console.log('🔤 Transformer: Performing semantic 3D asset search...');
-    const searchQuery = userAction.replace('_', ' ').replace(/[A-Z]/g, ' $&').toLowerCase();
+    const searchQuery = userAction.replace.replace-toLowerCase();
     const assetSearchResults = await searchPredictive3DAssets(searchQuery, {
       documentType: step % 2 === 0 ? 'contract' : 'evidence',
       complexity: predicted3D?.geometryComplexity || 'medium',
@@ -260,10 +260,9 @@ https://svelte.dev/e/js_parse_error -->
       totalAnimations: animations.length, 
       totalSearches: searchResults.reduce((sum, s) => sum + s.count, 0),
       averageCacheHitRatio: asset3DMetrics.cacheHitRatio,
-      neuralTopologiesActive: Object.values(neuralTopologyStatus).filter(s => s === 'active').length,
-      avgProcessingTime: Object.values(performanceMetrics)
-        .map((m: any) => m.processingTime)
-        .reduce((sum: number, time: number) => sum + time, 0) / Object.keys(performanceMetrics).length
+      neuralTopologiesActive: Object.values.filter-length,
+      avgProcessingTime: Object.values.map((m: any) => m.processingTime)
+        .reduce((sum: number, time: number) => sum + time, 0) / Object.keys.length
     };
     
     performanceMetrics = { ...performanceMetrics, summary };

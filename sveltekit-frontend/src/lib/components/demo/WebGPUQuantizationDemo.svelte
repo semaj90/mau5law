@@ -145,9 +145,7 @@ https://svelte.dev/e/expected_token -->
     // Generate legal document embeddings
     const documentEmbeddings = generateLegalDocumentEmbeddings();
     
-    results.push({
-      step: 'Generated legal document data',
-      details: `${documentCount} documents × ${embeddingDimensions}D = ${(documentEmbeddings.length * 4 / 1024).toFixed(2)} KB`
+    results.push.toFixed(2)} KB`
     });
 
     // Upload with selected legal AI profile
@@ -249,13 +247,7 @@ https://svelte.dev/e/expected_token -->
       uploadResult.buffer.destroy();
     }
 
-    results.push({
-      step: 'Batch processing complete',
-      details: {
-        documents: batchResults,
-        summary: {
-          totalDocuments: legalDocuments.length,
-          totalOriginalSize: `${(totalOriginalSize / 1024).toFixed(2)} KB`,
+    results.push.toFixed(2)} KB`,
           totalCompressedSize: `${(totalCompressedSize / 1024).toFixed(2)} KB`,
           overallCompressionRatio: `${(totalOriginalSize / totalCompressedSize).toFixed(2)}x`,
           spaceSavings: `${(((totalOriginalSize - totalCompressedSize) / totalOriginalSize) * 100).toFixed(1)}%`
@@ -550,7 +542,7 @@ https://svelte.dev/e/expected_token -->
               <h4 class="font-medium text-gray-800 mb-2">{(result as { step?: any; details?: any }).step}</h4>
               {#if typeof (result as { step?: any; details?: any }).details === 'string'}
                 <p class="text-sm text-gray-600">{(result as { step?: any; details?: any }).details}</p>
-              {:else if Array.isArray((result as { step?: any; details?: any }).details)}
+              {:else if Array.isArray.details)}
                 <div class="space-y-2">
                   {#each (result as { step?: any; details?: any }).details as item}
                     <div class="text-sm bg-white p-2 rounded border">
@@ -565,7 +557,7 @@ https://svelte.dev/e/expected_token -->
                 </div>
               {:else}
                 <div class="text-sm space-y-1">
-                  {#each Object.entries((result as { step?: any; details?: any }).details) as [key, value]}
+                  {#each Object.entries.details) as [key, value]}
                     <div class="flex justify-between">
                       <span class="font-medium text-gray-700">{key}:</span>
                       <span class="text-gray-600">

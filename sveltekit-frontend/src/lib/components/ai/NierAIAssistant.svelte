@@ -4,7 +4,7 @@
     user?: unknown;
     isDarkMode?: boolean;
   }
-  let { user = {}, isDarkMode = $bindable(false) }: Props = $props();
+  let { user = , isDarkMode = $bindable(false) }: Props = $props();
   let messages = $state<any[]>([]);
   let currentMessage = $state('');
   function sendMessage() {
@@ -71,15 +71,15 @@
     scrollbar-color: #00ff00 #000000;
   }
   
-  .messages::-webkit-scrollbar {
+  .messages: :-webkit-scrollbar {
     width: 8px;
   }
   
-  .messages::-webkit-scrollbar-track {
+  .messages: :-webkit-scrollbar-track {
     background: #000000;
   }
   
-  .messages::-webkit-scrollbar-thumb {
+  .messages: :-webkit-scrollbar-thumb {
     background-color: #00ff00;
     border-radius: 4px;
   }

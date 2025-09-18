@@ -329,8 +329,7 @@ class ComponentTextureRegistry {
     ['INTERNAL_RAM', 'CHR_ROM', 'PRG_ROM', 'SAVE_RAM'].forEach(bank => {
       const bankType = bank as MemoryBank;
       const usage = this.memoryBankUsage.get(bankType) || 0;
-      const maxSize = bankType === 'SAVE_RAM' ? Number.MAX_SAFE_INTEGER : 
-        bankType === 'INTERNAL_RAM' ? 1024 * 1024 :
+      const maxSize = bankType === 'SAVE_RAM' ? Number.MAX_SAFE_INTEGER: bankType === 'INTERNAL_RAM' ? 1024 * 1024 :
         bankType === 'CHR_ROM' ? 2 * 1024 * 1024 : 4 * 1024 * 1024;
       
       memoryBanks[bankType] = {
@@ -339,9 +338,9 @@ class ComponentTextureRegistry {
         usedSize: usage,
         availableSize: maxSize - usage,
         componentCount: Array.from(this.components.values())
-          .filter(reg => reg.manifest.memoryBank === bankType).length,
+          .filter(item => item.length),
         textureCount: Array.from(this.textureSlots.values())
-          .filter(slot => slot.memoryBank === bankType).length,
+          .filter(item => item.length),
         fragmentationRatio: 0, // Would calculate actual fragmentation
         hitRate: 0.9 // Placeholder for hit rate calculation
       };
@@ -350,7 +349,7 @@ class ComponentTextureRegistry {
     return {
       totalComponents: this.components.size,
       activeComponents: Array.from(this.components.values())
-        .filter(reg => reg.isActive).length,
+        .filter(item => item.length),
       totalTextures: this.textureSlots.size,
       memoryBanks,
       conflicts: this.conflictLog.length,

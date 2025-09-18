@@ -179,9 +179,9 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
             library: library.name,
             library_id: library.id,
             topic: req.topic,
-            content: (result as { success?: any; result?: any }).(result as { success?: any; result?: any }).content,
-            metadata: (result as { success?: any; result?: any }).(result as { success?: any; result?: any }).metadata,
-            snippets: (result as { success?: any; result?: any }).(result as { success?: any; result?: any }).snippets
+            content: (result as { success?: any; result?: any }).result.content,
+            metadata: (result as { success?: any; result?: any }).result.metadata,
+            snippets: (result as { success?: any; result?: any }).result.snippets
           });
         }
       }

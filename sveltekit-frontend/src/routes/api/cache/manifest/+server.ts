@@ -48,8 +48,8 @@ export const GET: RequestHandler = async ({ url }) => {
     // Calculate statistics
     const stats = {
       totalKeys: filteredKeys.length,
-      activeKeys: entries.filter(e => !e.expired).length,
-      expiredKeys: entries.filter(e => e.expired).length,
+      activeKeys: entries.filter(item => item.length),
+      expiredKeys: entries.filter(item => item.length),
       totalSize: entries.reduce((sum, e) => sum + e.size, 0),
       oldestEntry: Math.min(...entries.map(e => e.timestamp)),
       newestEntry: Math.max(...entries.map(e => e.timestamp))

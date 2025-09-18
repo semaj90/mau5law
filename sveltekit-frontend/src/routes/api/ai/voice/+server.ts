@@ -42,7 +42,7 @@ export async function POST({ request }): Promise<any> {
     return json({
       success: false,
       error: 'Failed to transcribe audio',
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 }

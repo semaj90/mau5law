@@ -39,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
   let performanceMetrics = $state({ fps: 0, latency: 0, throughput: 0 });
 
   // WebGPU visualization
-  let canvas = $state<HTMLCanvasElementlet ctx: GPUCanvasContext | null>(null)(null);
+  let canvas = $state<HTMLCanvasElementlet ctx: GPUCanvasContext  | null>(null); const data = null);
   let device = $state<GPUDevice | null >(null);
   let animationFrame: number;
 
@@ -131,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
       const commandEncoder = device.createCommandEncoder();
 
       // Get current texture
-      const textureView = ctx.getCurrentTexture().createView();
+      const textureView = ctx.getCurrentTexture.createView();
 
       // Create render pass
       const renderPass = commandEncoder.beginRenderPass({
@@ -164,8 +164,8 @@ https://svelte.dev/e/js_parse_error -->
         // Test WebGPU status in service worker
         const channel = new MessageChannel();
         channel.port1.onmessage = (event) => {
-          if (event.(data as { type?: unknown; data?: unknown; error?: unknown }).type === 'WEBGPU_STATUS') {
-            console.log('Service Worker WebGPU Status:', event.(data as { type?: unknown; data?: unknown; error?: unknown }).data);
+          if (event.data.type === 'WEBGPU_STATUS') {
+            console.log('Service Worker WebGPU Status:', event.data.data);
           }
         };
 
@@ -229,10 +229,10 @@ https://svelte.dev/e/js_parse_error -->
 
       const result = await new Promise((resolve, reject) => {
         channel.port1.onmessage = (event) => {
-          if (event.(data as { type?: unknown; data?: unknown; error?: unknown }).type === 'WEBGPU_RESULT') {
-            resolve(event.(data as { type?: unknown; data?: unknown; error?: unknown }).data);
-          } else if (event.(data as { type?: unknown; data?: unknown; error?: unknown }).type === 'WEBGPU_ERROR') {
-            reject(new Error(event.(data as { type?: unknown; data?: unknown; error?: unknown }).error));
+          if (event.data.type === 'WEBGPU_RESULT') {
+            resolve(event.data.data));
+          } else if (event.data.type === 'WEBGPU_ERROR') {
+            reject(new Error(event.data.error));
           }
         };
 
@@ -574,7 +574,7 @@ Export Data
                 <div class="mt-4">
                   <h4 class="text-sm font-medium text-slate-300 mb-2">Performance Metrics</h4>
                   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-                    {#each Object.entries((result as { id?: unknown; type?: unknown; timestamp?: unknown; input?: unknown; output?: unknown; metrics?: unknown }).metrics) as [key, value]}
+                    {#each Object.entries.metrics) as [key, value]}
                       <div class="bg-slate-700 rounded p-2">
                         <div class="text-slate-400 capitalize">{key.replace(/([A-Z])/g, ' $1')}</div>
                         <div class="font-mono text-white">

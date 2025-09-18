@@ -24,7 +24,7 @@ export interface TableNotification {
 }
 
 class TableManager {
-  private tables: Map<string, Writable<TableState>> = new Map();
+  private tables: Map<string, Writable<TableState> = new Map();
   private notifications = writable<TableNotification[]>([]);
 
   createTable(id: string, initialState?: Partial<TableState>): Writable<TableState> {

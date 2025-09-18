@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           jobId,
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           processTime: performance.now() - startTime,
           timestamp: Date.now()
         }, { status: 500 });
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 });
   }
@@ -202,7 +202,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 });
   }

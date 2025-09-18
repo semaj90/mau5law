@@ -58,7 +58,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     console.error('❌ RTX API Error:', error);
     return json({
       error: 'RTX system error',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     console.error('❌ RTX POST Error:', error);
     return json({
       error: 'RTX processing error',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }
@@ -344,7 +344,7 @@ async function handleProcessRequest(request: Request) {
   } catch (error) {
     return json({
       error: 'Processing failed',
-      message: error instanceof Error ? error.message : 'Unknown processing error',
+      message: error instanceof Error ? error.message: 'Unknown processing error',
       pipeline: {
         svelteKit: '✅ Request received',
         goMicroservice: '❌ Processing error',
@@ -401,7 +401,7 @@ async function handleConfigureRequest(request: Request) {
   } catch (error) {
     return json({
       error: 'Configuration failed',
-      message: error instanceof Error ? error.message : 'Unknown configuration error'
+      message: error instanceof Error ? error.message: 'Unknown configuration error'
     }, { status: 500 });
   }
 }
@@ -447,12 +447,12 @@ async function handleRunBenchmarkRequest(request: Request) {
   } catch (error) {
     return json({
       error: 'Benchmark run failed',
-      message: error instanceof Error ? error.message : 'Unknown benchmark error'
+      message: error instanceof Error ? error.message: 'Unknown benchmark error'
     }, { status: 500 });
   }
 }
 
-async function testPipelineComponents(): Promise<Record<string, string>> {
+async function testPipelineComponents(): Promise<Record<string, string> {
   const health: Record<string, string> = {};
 
   try {

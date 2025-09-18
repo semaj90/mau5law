@@ -155,7 +155,8 @@ class UserIntentPredictionSystem {
   /**
    * Fast task assistance: Provide immediate help based on user query
    */
-  async provideFastTaskAssistance(query: string, userContext: any): Promise<;
+  async provideFastTaskAssistance(query: string, userContext: any): Promise<{
+    quickActions: Array<any>;
     contextualHelp: Array<any>;
     personalizedSuggestions: string[];
     nextStepPrediction: string;
@@ -387,9 +388,7 @@ class UserIntentPredictionSystem {
 
     let featureIndex = 5;
     Object.entries(intentKeywords).forEach(([intent, keywords]) => {
-      features[featureIndex++] = keywords.filter(keyword =>
-        query.toLowerCase().includes(keyword)
-      ).length / keywords.length;
+      features[featureIndex++] = keywords.filter(keyword => query.toLowerCase().includes(keyword)).length / keywords.length;
     });
 
     // Temporal indicators
@@ -616,7 +615,7 @@ class IntentClassifierModel {
 }
 
 class SpellingCorrectionEngine {
-  async correct(query: string): Promise<Array<any> {
+  async correct(query: string): Promise<Array<any>> {
     // Simplified spell checking
     const corrections: Array<any> = [];
     const words = query.split(' ');
@@ -646,7 +645,7 @@ class SpellingCorrectionEngine {
   }
 }
 class SynonymExpansionEngine {
-  async expand(query: string, intent: string): Promise<Array<any> {
+  async expand(query: string, intent: string): Promise<Array<any>> {
     const expansions: Array<any> = [];
 
     const legalSynonyms: Record<string, string> = {

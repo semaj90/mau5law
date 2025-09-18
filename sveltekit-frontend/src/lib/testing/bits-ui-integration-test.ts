@@ -151,9 +151,9 @@ export class BitsUIIntegrationTester {
   }
 
   generateReport(): string {
-    const passCount = this.results.filter(r => r.status === 'pass').length;
-    const failCount = this.results.filter(r => r.status === 'fail').length;
-    const warnCount = this.results.filter(r => r.status === 'warning').length;
+    const passCount = this.results.filter(item => item.length);
+    const failCount = this.results.filter(item => item.length);
+    const warnCount = this.results.filter(item => item.length);
 
     let report = `
 🧪 Bits-UI Integration Test Report

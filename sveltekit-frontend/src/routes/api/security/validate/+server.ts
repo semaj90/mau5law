@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       hasSpecialChars: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
     };
 
-    const passwordStrength = Object.values(passwordChecks).filter(Boolean).length;
+    const passwordStrength = Object.values(passwordChecks).filter(item => item.length);
     
     if (passwordStrength < 3) {
       response.riskLevel = 'high';

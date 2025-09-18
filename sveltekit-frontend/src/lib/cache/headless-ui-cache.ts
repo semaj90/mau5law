@@ -455,7 +455,7 @@ export class HeadlessUICache {
   }
 
   private updateHitRatio(): void {
-    this.hitRatio = this.totalRequests > 0 ? this.cacheHits / this.totalRequests : 0;
+    this.hitRatio = this.totalRequests > 0 ? this.cacheHits / this.totalRequests: 0;
   }
 
   // IndexedDB helpers

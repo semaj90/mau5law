@@ -77,7 +77,7 @@
       console.error('System initialization failed:', error);
       addSystemMessage('System initialization failed. Running in degraded mode.');
     
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
   });
   onDestroy(() => {
     cleanup();
@@ -284,7 +284,7 @@
           stage.status = 'pending';
           stage.progress = 0;
         
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
       });
       throw error;
     }
@@ -344,7 +344,7 @@
   }
   function updateProgressAnimations(time: number) {
     // Calculate overall progress
-    const completedStages = progressStages.filter(s => s.status === 'completed').length;
+    const completedStages = progressStages.filter(item => item.length);
     const totalStages = progressStages.length;
     currentProgress = completedStages / totalStages;
     // Animate progress bars with easing
@@ -462,7 +462,7 @@
       }
     } catch (error) {
       console.error('Processing failed:', error);
-      addSystemMessage(`Processing failed: ${error instanceof Error ? error.message : 'Unknown error'
+      addSystemMessage(`Processing failed: ${error instanceof Error ? error.message: 'Unknown error'
     errorMessage = error instanceof Error ? error.message : 'An error occurred';}`);
     } finally {
       isProcessing = false;
@@ -659,16 +659,7 @@
     overflow: hidden;
   }
   
-  .visualization-canvas {
-    grid-column: 1;
-    grid-row: 1;
-    border: 2px solid #00d4aa;
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 0 20px rgba(0, 212, 170, 0.3);
-  }
-  
-  .progress-canvas {
+  .visualization-canv.progress-canvas {
     grid-column: 1;
     grid-row: 2;
     border: 1px solid #444;
@@ -1086,12 +1077,7 @@
     background: linear-gradient(135deg, #2c1810 0%, #1a1a2e 100%);
   }
   
-  .yorha .visualization-canvas {
-    border-color: #d4af37;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-  }
-  
-  .yorha .status-indicator.active {
+  .yorha .visualization-canv.yorha .status-indicator.active {
     color: #d4af37;
   }
   
@@ -1129,13 +1115,7 @@
       grid-template-rows: 300px auto auto auto auto;
     }
     
-    .visualization-canvas {
-      grid-column: 1;
-      grid-row: 1;
-      height: 300px;
-    }
-    
-    .progress-canvas {
+    .visualization-canv.progress-canvas {
       grid-column: 1;
       grid-row: 2;
       height: 80px;

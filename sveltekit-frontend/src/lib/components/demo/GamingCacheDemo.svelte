@@ -68,9 +68,9 @@ and performance monitoring across N64 and YoRHa gaming components
   ]);
 
   // Demo data generators
-  let textureTestData = $state<any[]>([])([]);
-  let shaderTestData = $state<any[]>([])([]);
-  let performanceHistory = $state<any[]>([])([]);
+  let textureTestData = $state<any[]>([]) => []);
+  let shaderTestData = $state<any[]>([]) => []);
+  let performanceHistory = $state<any[]>([]) => []);
 
   // Real-time demo stats
   let demoStats = $state({

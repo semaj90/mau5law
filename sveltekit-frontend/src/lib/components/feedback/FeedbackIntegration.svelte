@@ -35,7 +35,7 @@ https://svelte.dev/e/js_parse_error -->
   let mounted = $state(false);
   let visible = $state(false);
   let interactionId: string | null = $state(null);
-  let element = $state<HTMLElementonMount(() = | null>(null)() {
+  let element = $state({}) {
     mounted = true);
     if (trackOnMount) {
       triggerFeedback();
@@ -53,7 +53,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Trigger feedback collection for this interaction
    */
-  export function triggerFeedback(customContext: Record<string, any> = {}) {
+  export function triggerFeedback(customContext: Record<string, any> = ) {
     const finalContext = { ...context, ...customContext };
     interactionId = store.trackInteraction(interactionType, finalContext, {
       autoTrigger,
@@ -79,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Mark interaction as completed successfully
    */
-  export function markCompleted(result: unknown = {}) {
+  export function markCompleted(result: unknown = ) {
     if (interactionId) {
       updateContext({ 
         completed: true, 
@@ -92,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Mark interaction as failed
    */
-  export function markFailed(error: unknown = {}) {
+  export function markFailed(error: unknown = ) {
     if (interactionId) {
       updateContext({ 
         failed: true, 
@@ -181,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
     },
 
     // Feature usage feedback
-    featureUsed: (featureName: string, usageContext: Record<string, any> = {}) => {
+    featureUsed: (featureName: string, usageContext: Record<string, any> = ) => {
       triggerFeedback({
         featureName,
         ...usageContext,

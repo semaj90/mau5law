@@ -25,7 +25,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Notification state
-  let notifications = $state<any[]>([])([]);
+  let notifications = $state<any[]>([]) => []);
 
   // Navigation sections
   const navigationSections = [
@@ -442,7 +442,7 @@ https://svelte.dev/e/js_parse_error -->
     position: relative;
   }
 
-  .nav-item::before {
+  .nav-item: :before {
     content: '';
     position: absolute;
     left: 0;
@@ -455,7 +455,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .nav-item:hover::before,
-  .nav-(item as { active?: unknown }).active::before {
+  .nav-.active::before {
     transform: scaleY(1);
   }
 
@@ -487,7 +487,7 @@ https://svelte.dev/e/js_parse_error -->
     overflow: hidden;
   }
 
-  .action-button::before {
+  .action-button: :before {
     content: '';
     position: absolute;
     top: 0;

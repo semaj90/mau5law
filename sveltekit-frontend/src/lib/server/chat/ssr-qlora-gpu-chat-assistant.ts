@@ -165,7 +165,7 @@ export class SSRQLorAGPUChatAssistant {
     sessionId: string,
     userMessage: string,
     requestEvent: RequestEvent
-  ): Promise<ReadableStream<Uint8Array>> {
+  ): Promise<ReadableStream<Uint8Array> {
     const ssrContext = this.ssrContextCache.get(sessionId);
     if (!ssrContext) {
       throw new Error('SSR context not found');
@@ -309,7 +309,7 @@ export class SSRQLorAGPUChatAssistant {
   /**
    * Generate preloaded responses for common user patterns
    */
-  private async generatePreloadedResponses(userDictionary: UserDictionary): Promise<Map<string, string>> {
+  private async generatePreloadedResponses(userDictionary: UserDictionary): Promise<Map<string, string> {
     const responses = new Map<string, string>();
 
     // Generate responses based on user's domain expertise

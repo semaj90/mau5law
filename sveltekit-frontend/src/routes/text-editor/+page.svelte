@@ -26,10 +26,10 @@ https://svelte.dev/e/expected_token -->
   
   // Document metadata
   let documentStats = $derived(() => ({
-    words: editorValue.trim() ? editorValue.trim().split(/\s+/).length : 0,
+    words: editorValue.trim() ? editorValue.trim.split-length: 0,
     characters: editorValue.length,
-    charactersNoSpaces: editorValue.replace(/\s/g, '').length,
-    paragraphs: editorValue.trim() ? editorValue.split(/\n\s*\n/).length : 0
+    charactersNoSpaces: editorValue.replace.length,
+    paragraphs: editorValue.trim() ? editorValue.split.length : 0
   }));
 
   function handleEditorChange(value: string) {
@@ -240,7 +240,7 @@ https://svelte.dev/e/expected_token -->
     cursor: not-allowed;
   }
 
-  .save-btn:not(:disabled) {
+  .save-btn: not(:disabled) {
     background: var(--nes-green, #92cc41);
     border-color: var(--nes-green, #92cc41);
     color: #000;

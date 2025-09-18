@@ -498,7 +498,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
           if (done) break;
 
           const chunk = decoder.decode(value);
-          const lines = chunk.split('\n').filter(line => line.trim());
+          const lines = chunk.split.filter(line => line.trim());
           for (const line of lines) {
             try {
               const data = JSON.parse(line);
@@ -875,7 +875,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
       // Simulate research metrics based on response
       const responseLength = research.response?.length || 0;
       const confidenceScore = Math.min(95, Math.max(60, responseLength / 50));
-      const keywordMatches = (research.response?.match(new RegExp(topic.split(' ').join('|'), 'gi')) || []).length;
+      const keywordMatches = (research.response?.match.join('|'), 'gi')) || []).length;
 
       await addSystemMessage(`📚 **Legal Research Results for "${topic}"**
 
@@ -965,7 +965,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
 
   // Utility functions
   function generateId(): string {
-    return Math.random().toString(36).slice(2, 11);
+    return Math.random.toString-slice(2, 11);
   }
 
   function scrollToBottom() {
@@ -1106,7 +1106,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
         if (done) break;
 
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\n').filter(line => line.trim());
+        const lines = chunk.split.filter(line => line.trim());
 
         for (const line of lines) {
           try {
@@ -1616,7 +1616,7 @@ copyToClipboard(message.content)}>
     margin-left: 8px;
   }
 
-  .streaming-indicator::after {
+  .streaming-indicator: :after {
     content: '';
     width: 4px;
     height: 4px;

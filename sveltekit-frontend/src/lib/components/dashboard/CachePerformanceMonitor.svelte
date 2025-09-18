@@ -5,7 +5,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   import 'nes.css/css/nes.min.css';
 
   // Basic CachePerformanceMonitor component
-  let { data = {} } = $props();
+  let { data = } = $props();
 
   // Placeholder implementation
   let status = $derived('operational');

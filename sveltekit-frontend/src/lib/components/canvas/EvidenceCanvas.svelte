@@ -16,8 +16,8 @@
   function calculateRiskScore(file: CaseFile): number {
     // Simple heuristic based on file properties
     let risk = 0;
-    if (file.title?.toLowerCase().includes('confidential')) risk += 30;
-    if (file.title?.toLowerCase().includes('classified')) risk += 50;
+    if (file.title?.toLowerCase.includes('confidential')) risk += 30;
+    if (file.title?.toLowerCase.includes('classified')) risk += 50;
     if ((file.fileSize || 0) > 10000000) risk += 20; // Large files
     return Math.min(risk + Math.random() * 30, 100); // Add some randomness, cap at 100
   }

@@ -156,20 +156,18 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
       ),
       totalWordCount: recentDocuments.reduce((sum, doc) => sum + doc.wordCount, 0),
       documentsByStatus: {
-        draft: recentDocuments.filter(d => d.status === 'draft').length,
-        review: recentDocuments.filter(d => d.status === 'review').length,
-        finalized: recentDocuments.filter(d => d.status === 'finalized').length
+        draft: recentDocuments.filter(item => item.length),
+        review: recentDocuments.filter(item => item.length),
+        finalized: recentDocuments.filter(item => item.length)
       },
       documentsByCategory: recentDocuments.reduce((acc, doc) => {
         acc[doc.category] = (acc[doc.category] || 0) + 1;
         return acc;
       }, {} as Record<string, number>),
       recentActivity: {
-        last24Hours: recentDocuments.filter(d => 
-          new Date(d.lastModified).getTime() > Date.now() - 24 * 60 * 60 * 1000
+        last24Hours: recentDocuments.filter(item => item.getTime)() > Date.now() - 24 * 60 * 60 * 1000
         ).length,
-        lastWeek: recentDocuments.filter(d => 
-          new Date(d.lastModified).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000
+        lastWeek: recentDocuments.filter(item => item.getTime)() > Date.now() - 7 * 24 * 60 * 60 * 1000
         ).length
       }
     };

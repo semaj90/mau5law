@@ -68,9 +68,9 @@ https://svelte.dev/e/js_parse_error -->
       chatActions.setTyping(true);
 
       // Check if this is an analysis request
-      const isAnalysisRequest = userMessage.toLowerCase().includes('analyze') ||
-                               userMessage.toLowerCase().includes('evidence') ||
-                               userMessage.toLowerCase().includes('case');
+      const isAnalysisRequest = userMessage.toLowerCase.includes('analyze') ||
+                               userMessage.toLowerCase.includes('evidence') ||
+                               userMessage.toLowerCase.includes('case');
   let response: Response;
 
       if (isAnalysisRequest && (caseId || thinkingStyleEnabled)) {
@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
         title: "Chat Error",
         message: "Failed to get response from AI assistant",
 
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';});
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';});
     } finally {
       chatActions.setLoading(false);
       chatActions.setTyping(false);
@@ -256,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error("Proactive response error:", error);
 
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';} finally {
       chatActions.setLoading(false);
       chatActions.setTyping(false);
     }
@@ -308,7 +308,7 @@ https://svelte.dev/e/js_parse_error -->
         title: "Analysis Failed",
         message: "Failed to analyze case evidence.",
 
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';});
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';});
     }
   }
 

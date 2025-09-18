@@ -262,7 +262,7 @@ export const generateContextualPromptsService = fromPromise(
         body: JSON.stringify({
           context: input.context,
           timing: input.timing,
-          model: input.context.ollamaConfig??.model || "unknown" // @ts-ignore - Model property access || 'gemma3:270m',
+          model: input.context.ollamaConfig?.model || 'gemma3:270m',
           legalContext: input.context.legalContext
         })
       });
@@ -334,7 +334,7 @@ export const performAIAnalysisService = fromPromise(
         formData.append('file', file);
         formData.append('caseId', input.context.caseId || '');
         formData.append('legalContext', JSON.stringify(input.context.legalContext));
-        formData.append('model', input.context.ollamaConfig??.model || "unknown" // @ts-ignore - Model property access || 'gemma3:270m');
+        formData.append('model', input.context.ollamaConfig?.model || 'gemma3:270m');
         formData.append('analysisType', 'comprehensive_legal');
 
         const response = await fetch('/api/ai/ollama/analyze-legal-document', {
@@ -636,8 +636,8 @@ export const comprehensiveUploadAnalyticsMachine = setup({
               // Enhanced tracking for legal workflows
               caseContext: {
                 ...context.userAnalytics.caseContext,
-                activeCases: event.(data as { caseId?: any }).caseId && !context.userAnalytics.caseContext.activeCases.includes(event.(data as { caseId?: any }).caseId)
-                  ? [...context.userAnalytics.caseContext.activeCases, event.(data as { caseId?: any }).caseId]
+                activeCases: event.data.caseId && !context.userAnalytics.caseContext.activeCases.includes(event.data.caseId)
+                  ? [...context.userAnalytics.caseContext.activeCases, event.data.caseId]
                   : context.userAnalytics.caseContext.activeCases
               }
             })

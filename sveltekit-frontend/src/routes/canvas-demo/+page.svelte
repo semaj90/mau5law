@@ -400,20 +400,20 @@ showEventLog = !showEventLog}
   }
 
   /* Scrollbar styling for event log */
-  .event-log-content::-webkit-scrollbar {
+  .event-log-content: :-webkit-scrollbar {
     width: 8px;
   }
 
-  .event-log-content::-webkit-scrollbar-track {
+  .event-log-content: :-webkit-scrollbar-track {
     background: #1a1a1a;
   }
 
-  .event-log-content::-webkit-scrollbar-thumb {
+  .event-log-content: :-webkit-scrollbar-thumb {
     background: #00ff88;
     border-radius: 4px;
   }
 
-  .event-log-content::-webkit-scrollbar-thumb:hover {
+  .event-log-content: :-webkit-scrollbar-thumb:hover {
     background: #00cc77;
   }
 </style>

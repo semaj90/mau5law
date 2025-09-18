@@ -133,7 +133,7 @@ https://svelte.dev/e/js_parse_error -->
   const searchFilters = writable<SearchFilters>({
     documentTypes: [],
     jurisdictions: [],
-    dateRange: {},
+    dateRange: ,
     similarityThreshold: 0.7,
     maxResults: maxResults,
     tags: [],
@@ -147,7 +147,7 @@ https://svelte.dev/e/js_parse_error -->
     averageSimilarity: 0,
     responseTime: 0,
     clickThroughRate: 0,
-    commonFilters: {},
+    commonFilters: ,
     performanceMetrics: {
       vectorSearchTime: 0,
       rankingTime: 0,
@@ -370,7 +370,7 @@ https://svelte.dev/e/js_parse_error -->
     searchFilters.set({
       documentTypes: [],
       jurisdictions: [],
-      dateRange: {},
+      dateRange: ,
       similarityThreshold: 0.7,
       maxResults: maxResults,
       tags: [],

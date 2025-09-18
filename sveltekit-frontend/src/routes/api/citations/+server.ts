@@ -141,7 +141,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Citations fetch error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       citations: []
     }, { status: 500 });
   }
@@ -222,7 +222,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Citation creation error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -270,7 +270,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     console.error('Citation update error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -312,7 +312,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     console.error('Citation deletion error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

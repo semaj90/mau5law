@@ -331,7 +331,7 @@ export const POST: RequestHandler = async ({ request }) => {
           seed: enhancedRequest.seed,
           model: 'Fallback Generator (Error)',
           parameters: enhancedRequest,
-          error: providerError instanceof Error ? providerError.message : 'Unknown error'
+          error: providerError instanceof Error ? providerError.message: 'Unknown error'
         }
       };
       provider = 'fallback';
@@ -349,7 +349,7 @@ export const POST: RequestHandler = async ({ request }) => {
       processingTime,
       provider,
       metadata: {
-        ...(result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).metadata,
+        ...result.metadata,
         size: {
           width: enhancedRequest.width,
           height: enhancedRequest.height
@@ -366,7 +366,7 @@ export const POST: RequestHandler = async ({ request }) => {
       throw error(400, err.message);
     }
     
-    throw error(500, `Image generation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Image generation failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 

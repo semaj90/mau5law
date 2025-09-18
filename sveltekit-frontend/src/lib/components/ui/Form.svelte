@@ -23,7 +23,7 @@
   }
 
   let { children,
-    options = {},
+    options = ,
     submitText = "Submit",
     submitVariant = "primary",
     showSubmitButton = true,
@@ -126,7 +126,7 @@
   {/if}
 
   <!-- Form status -->
-  {#if $form.submitCount > 0 && Object.keys($form.errors).length > 0}
+  {#if $form.submitCount > 0 && Object.keys.length > 0}
     <div class="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg">
       <div class="flex items-start gap-3">
         <div class="text-red-600 dark:text-red-400 mt-0.5">⚠</div>

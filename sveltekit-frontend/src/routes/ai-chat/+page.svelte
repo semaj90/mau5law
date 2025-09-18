@@ -1,10 +1,9 @@
 <script lang="ts">
 	import 'nes.css/css/nes.min.css';
 	import { onMount } from 'svelte';
-	import { writable } from 'svelte/store';
 
-	// Svelte 5 runes
-	let messages = $state<Array<{id: string, role: 'user' | 'assistant', content: string, timestamp: Date}>>([]);
+	// Svelte 5 runes - simplified for NES.css retro style
+	let messages = $state<Array<{id: string, role: 'user' | 'assistant', content: string, timestamp: Date}>([]);
 	let currentMessage = $state('');
 	let isLoading = $state(false);
 	let chatContainer: HTMLElement;
@@ -18,11 +17,11 @@
 	async function checkServiceHealth() {
 		try {
 			connectionStatus = 'connecting';
-			const response = await fetch('http://localhost:8101/health');
+			const response = await fetch('http://localhost:8086/health');
 			const data = await response.json();
 			connectionStatus = 'connected';
 			modelInfo = {
-				name: 'Gemma3-Legal Q4_K_M',
+				name: 'TensorRT Bridge - Gemma3-Legal',
 				status: data.status || 'Running'
 			};
 		} catch (error) {
@@ -54,16 +53,19 @@
 		}, 100);
 
 		try {
-			const response = await fetch('http://localhost:8101/infer', {
+			const response = await fetch('http://localhost:8086/api/generate', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
+					model: 'gemma3-legal:latest',
 					prompt: messageToSend,
-					max_tokens: 512,
-					temperature: 0.7,
-					legal_context: true
+					stream: false,
+					options: {
+						temperature: 0.7,
+						max_tokens: 512
+					}
 				})
 			});
 
@@ -87,7 +89,7 @@
 			const errorMessage = {
 				id: crypto.randomUUID(),
 				role: 'assistant' as const,
-				content: `❌ Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`,
+				content: `❌ Error: ${error instanceof Error ? error.message: 'Unknown error occurred'}`,
 				timestamp: new Date()
 			};
 			messages = [...messages, errorMessage];
@@ -129,391 +131,319 @@
 	<meta name="description" content="Legal AI Chat powered by TensorRT and Gemma3-Legal" />
 </svelte:head>
 
-<div class="nes-container with-title chat-container">
-	<!-- Header -->
-	<p class="title">🧠 LEGAL AI CHAT SYSTEM</p>
-	<div class="nes-container is-dark header-box">
-		<div class="header-content">
-			<div class="model-info">
-				{#if modelInfo}
-					<span class="nes-text is-success">📡 {modelInfo.name}</span>
-				{:else}
-					<span class="nes-text is-warning">📡 CONNECTING...</span>
-				{/if}
+<!-- 8-bit Retro Legal AI Chat Interface -->
+<div class="retro-chat-app">
+	<!-- NES.css Header -->
+	<div class="nes-container with-title is-dark">
+		<p class="title">🧠 LEGAL AI CHAT SYSTEM v1.0</p>
+		<div class="status-bar">
+			<div class="nes-badge">
+				<span class="is-primary">📡 TENSORRT</span>
 			</div>
-
-			<div class="connection-status">
-				{#if connectionStatus === 'connected'}
-					<span class="nes-text is-success">● ONLINE</span>
-				{:else if connectionStatus === 'connecting'}
-					<span class="nes-text is-warning">● CONNECTING</span>
-				{:else}
-					<span class="nes-text is-error">● OFFLINE</span>
-				{/if}
-			</div>
+			{#if connectionStatus === 'connected'}
+				<div class="nes-badge">
+					<span class="is-success">● ONLINE</span>
+				</div>
+			{:else if connectionStatus === 'connecting'}
+				<div class="nes-badge">
+					<span class="is-warning">● CONNECTING</span>
+				</div>
+			{:else}
+				<div class="nes-badge">
+					<span class="is-error">● OFFLINE</span>
+				</div>
+			{/if}
 		</div>
 	</div>
 
-	<!-- Chat Messages -->
-	<div class="nes-container is-dark chat-messages" bind:this={chatContainer}>
+	<!-- Chat Messages Container -->
+	<div class="nes-container is-dark chat-area" bind:this={chatContainer}>
 		{#if messages.length === 0}
-			<div class="welcome-message">
-				<div class="nes-container welcome-content">
-					<h2 class="nes-text is-primary">👋 LEGAL AI SYSTEM READY</h2>
-					<p class="nes-text">POWERED BY TENSORRT + GEMMA3-LEGAL Q4_K_M</p>
-					<div class="example-prompts">
-						<p class="nes-text">SELECT QUERY TYPE:</p>
-						<button class="nes-btn is-primary example-btn"
-						        onclick={() => currentMessage = "What are the key elements of a valid contract?"}>
-							📋 CONTRACT ELEMENTS
-						</button>
-						<button class="nes-btn is-success example-btn"
-						        onclick={() => currentMessage = "Explain intellectual property basics"}>
-							💡 IP LAW BASICS
-						</button>
-						<button class="nes-btn is-warning example-btn"
-						        onclick={() => currentMessage = "What is due diligence in M&A?"}>
-							🔍 DUE DILIGENCE
-						</button>
-					</div>
-				</div>
+			<!-- Welcome Screen -->
+			<div class="nes-container is-rounded welcome-screen">
+				<h2>👋 SYSTEM READY</h2>
+				<p>GEMMA3-LEGAL Q4_K_M LOADED</p>
+				<p>SELECT A QUERY TYPE:</p>
+
+				<button class="nes-btn is-primary"
+				        onclick={() => currentMessage = "What are the key elements of a valid contract?"}>
+					📋 CONTRACT LAW
+				</button>
+
+				<button class="nes-btn is-success"
+				        onclick={() => currentMessage = "Explain intellectual property basics"}>
+					💡 IP BASICS
+				</button>
+
+				<button class="nes-btn is-warning"
+				        onclick={() => currentMessage = "What is due diligence in M&A?"}>
+					🔍 M&A DUE DILIGENCE
+				</button>
 			</div>
 		{/if}
 
+		<!-- Message List -->
 		{#each messages as message (message.id)}
-			<div class="message" class:user={message.role === 'user'} class:assistant={message.role === 'assistant'}>
-				<div class="message-avatar">
-					{#if message.role === 'user'}
-						👤
-					{:else}
-						🧠
-					{/if}
+			{#if message.role === 'user'}
+				<!-- User Message -->
+				<div class="nes-balloon from-right is-dark user-message">
+					<p>👤 {message.content}</p>
+					<small class="timestamp">{formatTime(message.timestamp)}</small>
 				</div>
-				<div class="message-content">
-					<div class="message-text">{message.content}</div>
-					<div class="message-time">{formatTime(message.timestamp)}</div>
+			{:else}
+				<!-- AI Message -->
+				<div class="nes-balloon from-left ai-message">
+					<p>🧠 {message.content}</p>
+					<small class="timestamp">{formatTime(message.timestamp)}</small>
 				</div>
-			</div>
+			{/if}
 		{/each}
 
+		<!-- Typing Indicator -->
 		{#if typingIndicator}
-			<div class="message assistant">
-				<div class="message-avatar">🧠</div>
-				<div class="message-content">
-					<div class="typing-indicator">
-						<span></span>
-						<span></span>
-						<span></span>
-					</div>
-				</div>
+			<div class="nes-balloon from-left">
+				<p>🧠 Processing legal query...</p>
 			</div>
 		{/if}
-	</main>
+	</div>
 
-	<!-- Input Area -->
-	<footer class="chat-input">
-		<div class="input-container">
+	<!-- Input Section -->
+	<div class="nes-container input-section">
+		<div class="nes-field">
+			<label for="chat_input">ENTER LEGAL QUERY:</label>
 			<textarea
+				id="chat_input"
+				class="nes-textarea"
 				bind:value={currentMessage}
 				onkeydown={handleKeydown}
-				placeholder="Ask a legal question..."
-				rows="1"
-				class="message-input"
+				placeholder="Type your legal question here..."
+				rows="2"
 				disabled={isLoading || connectionStatus === 'disconnected'}
 			></textarea>
+		</div>
+
+		<div class="button-row">
 			<button
+				type="button"
+				class="nes-btn is-primary"
 				onclick={sendMessage}
 				disabled={!currentMessage.trim() || isLoading || connectionStatus === 'disconnected'}
-				class="send-button"
 			>
 				{#if isLoading}
-					⏳
+					⏳ PROCESSING...
 				{:else}
-					📤
+					📤 SEND QUERY
 				{/if}
 			</button>
+
+			<button
+				type="button"
+				class="nes-btn"
+				onclick={() => {
+					messages = [];
+					currentMessage = '';
+				}}
+			>
+				🗑️ CLEAR
+			</button>
 		</div>
-	</footer>
+	</div>
+
+	<!-- Status Footer -->
+	<div class="nes-container is-dark footer-info">
+		<div class="lists">
+			<ul class="nes-list is-disc">
+				<li>TensorRT Bridge: localhost:8086</li>
+				<li>Model: Gemma3-Legal Q4_K_M</li>
+				<li>GPU Acceleration: RTX 3060 Ti</li>
+			</ul>
+		</div>
+	</div>
 </div>
 
 <style>
-	.chat-container {
-		display: flex;
-		flex-direction: column;
-		height: 100vh;
+	/* 8-bit Retro Legal AI Chat Styling */
+	:global(body) {
+		background: #212529 !important;
+		font-family: 'Courier New', monospace !important;
+		color: #ffffff;
+	}
+
+	.retro-chat-app {
+		min-height: 100vh;
+		padding: 16px;
+		background: #212529;
 		max-width: 1200px;
 		margin: 0 auto;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	}
 
-	.chat-header {
-		background: rgba(255, 255, 255, 0.95);
-		backdrop-filter: blur(10px);
-		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-		padding: 1rem;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-	}
-
-	.header-content {
+	.status-bar {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-	}
-
-	.model-info h1 {
-		margin: 0;
-		font-size: 1.5rem;
-		color: #2d3748;
-	}
-
-	.model-name {
-		font-size: 0.875rem;
-		color: #718096;
-		font-weight: 500;
-	}
-
-	.connection-status {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.5rem 1rem;
-		border-radius: 20px;
-		font-size: 0.875rem;
-		font-weight: 500;
-	}
-
-	.connection-status.connected {
-		background: #48bb78;
-		color: white;
-	}
-
-	.connection-status.connecting {
-		background: #ed8936;
-		color: white;
-	}
-
-	.connection-status.disconnected {
-		background: #e53e3e;
-		color: white;
-	}
-
-	.status-indicator {
-		width: 8px;
-		height: 8px;
-		border-radius: 50%;
-		background: currentColor;
-	}
-
-	.chat-messages {
-		flex: 1;
-		overflow-y: auto;
-		padding: 1rem;
-		display: flex;
-		flex-direction: column;
 		gap: 1rem;
+		margin-top: 1rem;
 	}
 
-	.welcome-message {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 100%;
+	.chat-area {
+		min-height: 400px;
+		max-height: 500px;
+		overflow-y: auto;
+		margin: 16px 0;
+		padding: 16px;
 	}
 
-	.welcome-content {
+	.welcome-screen {
 		text-align: center;
-		background: rgba(255, 255, 255, 0.95);
+		background: #ffffff;
+		color: #212529;
 		padding: 2rem;
-		border-radius: 20px;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+		margin: 2rem 0;
 	}
 
-	.welcome-content h2 {
-		margin: 0 0 0.5rem 0;
-		color: #2d3748;
+	.welcome-screen h2 {
+		margin: 0 0 1rem 0;
+		font-size: 1.5rem;
 	}
 
-	.example-prompts {
-		margin-top: 1.5rem;
+	.welcome-screen p {
+		margin: 0.5rem 0;
+		font-weight: bold;
 	}
 
-	.example-prompts p {
-		margin-bottom: 1rem;
-		color: #718096;
-	}
-
-	.example-btn {
+	.welcome-screen button {
 		display: block;
 		width: 100%;
-		margin: 0.5rem 0;
-		padding: 0.75rem;
-		background: linear-gradient(135deg, #667eea, #764ba2);
-		color: white;
-		border: none;
-		border-radius: 10px;
-		cursor: pointer;
-		transition: transform 0.2s, box-shadow 0.2s;
+		margin: 0.75rem 0;
+		font-size: 0.875rem;
 	}
 
-	.example-btn:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-	}
-
-	.message {
-		display: flex;
-		gap: 1rem;
-		max-width: 80%;
-	}
-
-	.message.user {
+	.user-message {
+		margin: 1rem 0;
+		background: #0066cc !important;
+		color: white !important;
 		align-self: flex-end;
-		flex-direction: row-reverse;
+		max-width: 70%;
+		margin-left: auto;
 	}
 
-	.message.assistant {
+	.ai-message {
+		margin: 1rem 0;
+		background: #ffffff !important;
+		color: #212529 !important;
 		align-self: flex-start;
+		max-width: 70%;
+		margin-right: auto;
 	}
 
-	.message-avatar {
-		width: 40px;
-		height: 40px;
-		border-radius: 50%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 1.2rem;
-		background: rgba(255, 255, 255, 0.9);
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-	}
-
-	.message-content {
-		flex: 1;
-	}
-
-	.message-text {
-		background: rgba(255, 255, 255, 0.95);
-		padding: 1rem;
-		border-radius: 15px;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-		white-space: pre-wrap;
-		line-height: 1.5;
-	}
-
-	.user .message-text {
-		background: linear-gradient(135deg, #667eea, #764ba2);
-		color: white;
-	}
-
-	.message-time {
+	.timestamp {
+		display: block;
+		margin-top: 0.5rem;
+		opacity: 0.7;
 		font-size: 0.75rem;
-		color: rgba(255, 255, 255, 0.7);
-		margin-top: 0.25rem;
-		text-align: right;
 	}
 
-	.user .message-time {
-		text-align: left;
+	.input-section {
+		margin: 16px 0;
+		background: #ffffff;
+		color: #212529;
 	}
 
-	.typing-indicator {
-		display: flex;
-		gap: 0.25rem;
-		padding: 1rem;
+	.input-section label {
+		font-weight: bold;
+		color: #212529;
+		margin-bottom: 0.5rem;
+		display: block;
 	}
 
-	.typing-indicator span {
-		width: 8px;
-		height: 8px;
-		background: #718096;
-		border-radius: 50%;
-		animation: typing 1.4s infinite ease-in-out;
-	}
-
-	.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-	.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-
-	@keyframes typing {
-		0%, 80%, 100% { transform: scale(0); }
-		40% { transform: scale(1); }
-	}
-
-	.chat-input {
-		background: rgba(255, 255, 255, 0.95);
-		backdrop-filter: blur(10px);
-		border-top: 1px solid rgba(0, 0, 0, 0.1);
-		padding: 1rem;
-	}
-
-	.input-container {
+	.button-row {
 		display: flex;
 		gap: 1rem;
-		align-items: flex-end;
+		margin-top: 1rem;
+		flex-wrap: wrap;
 	}
 
-	.message-input {
+	.button-row button {
 		flex: 1;
-		padding: 1rem;
-		border: 2px solid #e2e8f0;
-		border-radius: 15px;
-		font-size: 1rem;
-		resize: none;
-		font-family: inherit;
-		transition: border-color 0.2s;
+		min-width: 150px;
 	}
 
-	.message-input:focus {
-		outline: none;
-		border-color: #667eea;
+	.footer-info {
+		margin-top: 16px;
+		font-size: 0.875rem;
 	}
 
-	.message-input:disabled {
-		background: #f7fafc;
-		color: #a0aec0;
+	.footer-info ul {
+		margin: 0;
 	}
 
-	.send-button {
-		padding: 1rem;
-		background: linear-gradient(135deg, #667eea, #764ba2);
-		color: white;
-		border: none;
-		border-radius: 50%;
-		cursor: pointer;
-		font-size: 1.2rem;
-		width: 50px;
-		height: 50px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		transition: transform 0.2s, box-shadow 0.2s;
+	.footer-info li {
+		color: #ffffff;
+		margin: 0.25rem 0;
 	}
 
-	.send-button:hover:not(:disabled) {
-		transform: translateY(-2px);
-		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+	/* NES.css balloon positioning */
+	.nes-balloon.from-right {
+		float: right;
+		clear: both;
 	}
 
-	.send-button:disabled {
-		background: #e2e8f0;
-		cursor: not-allowed;
-		transform: none;
-		box-shadow: none;
+	.nes-balloon.from-left {
+		float: left;
+		clear: both;
 	}
 
-	/* Responsive design */
+	/* Scrollbar styling for dark theme */
+	.chat-area: :-webkit-scrollbar {
+		width: 8px;
+	}
+
+	.chat-area: :-webkit-scrollbar-track {
+		background: #333;
+	}
+
+	.chat-area: :-webkit-scrollbar-thumb {
+		background: #666;
+		border-radius: 4px;
+	}
+
+	.chat-area: :-webkit-scrollbar-thumb:hover {
+		background: #888;
+	}
+
+	/* Responsive design for mobile */
 	@media (max-width: 768px) {
-		.chat-container {
-			height: 100vh;
+		.retro-chat-app {
+			padding: 8px;
 		}
 
-		.message {
-			max-width: 95%;
+		.user-message,
+		.ai-message {
+			max-width: 85%;
 		}
 
-		.header-content {
+		.button-row {
 			flex-direction: column;
-			gap: 1rem;
-			align-items: flex-start;
 		}
+
+		.button-row button {
+			width: 100%;
+			min-width: auto;
+		}
+
+		.status-bar {
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+	}
+
+	/* Animation for typing indicator */
+	@keyframes blink {
+		0%, 50% { opacity: 1; }
+		51%, 100% { opacity: 0; }
+	}
+
+	.nes-balloon: has-text("Processing") {
+		animation: blink 1s infinite;
 	}
 </style>

@@ -145,7 +145,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       throw error(statusCode, err.message);
     }
     
-    throw error(500, `Download failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Download failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 

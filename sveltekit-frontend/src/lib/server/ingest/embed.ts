@@ -104,7 +104,7 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message: String(error)
     };
   }
 }
@@ -167,7 +167,7 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message: String(error)
     };
   }
 }
@@ -231,7 +231,7 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message: String(error)
     };
   }
 }
@@ -289,7 +289,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
         if (failFast) throw error;
         return {
           success: false,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         };
       }
     });
@@ -411,7 +411,7 @@ export async function checkEmbeddingEndpointHealth(): Promise<any> {
     return {
       healthy: false,
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message: String(error)
     };
   }
 }

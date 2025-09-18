@@ -391,7 +391,7 @@ export const componentRegistry = new ComponentAdapterRegistry();
  */
 export const svelte5Utils = {
   // Safe prop access for Svelte 5 components
-  safeProps: <T extends Record<string, any>>(props: T, defaults: Partial<T>): T => {
+  safeProps: <T extends Record<string, any>(props: T, defaults: Partial<T>): T => {
     return { ...defaults, ...props };
   },
 

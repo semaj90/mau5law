@@ -48,10 +48,7 @@
 		// Simulate AI search
 		setTimeout(() => {
 			testStatus = 'completed';
-			testMessages.push({
-				role: 'user',
-				content: query,
-				timestamp: new Date().toLocaleTimeString(),
+			testMessages.push.toLocaleTimeString(),
 				references: []
 			});
 			testMessages.push({

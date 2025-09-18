@@ -260,7 +260,7 @@ export class ColorContrast {
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   }
   static hexToRgb(hex: string): { r: number; g: number; b: number } | null {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    const result = /^#?([a-f\d]{2}) => [a-f\d]{2}) => [a-f\d]{2})$/i.exec(hex);
     return result
       ? {
           r: parseInt(result[1], 16),
@@ -488,7 +488,7 @@ export class AccessibilityValidator {
       ) {
         if (!ColorContrast.meetsWCAG(color, backgroundColor)) {
           errors.push(
-            `Poor color contrast in element: ${element.tagName}${element.id ? "#" + element.id : ""}${element.className ? "." + element.className.split(" ").join(".") : ""}`
+            `Poor color contrast in element: ${element.tagName}${element.id ? "#" + element.id: ""}${element.className ? "." + element.className.split(" ").join(".") : ""}`
           );
         }
       }

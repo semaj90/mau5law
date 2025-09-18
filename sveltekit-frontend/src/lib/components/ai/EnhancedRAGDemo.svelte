@@ -83,7 +83,7 @@
       console.log('Semantic Analysis Result:', result);
     } catch (error) {
       console.error('Analysis failed:', error);
-      alert(`Analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(`Analysis failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     } finally {
       isAnalyzingStore.set(false);
     }
@@ -119,7 +119,7 @@
       console.log('RAG Query Response:', response);
     } catch (error) {
       console.error('RAG query failed:', error);
-      alert(`RAG query failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(`RAG query failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     } finally {
       isAnalyzingStore.set(false);
     }
@@ -130,8 +130,7 @@
    */
   function formatEntityType(type: string): string {
     return type
-      .split('_')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .split.map((word) => word.charAt.toUpperCase() + word.slice.toLowerCase())
       .join(' ');
   }
 
@@ -209,8 +208,7 @@
 
             <div class="flex justify-between items-center">
               <div class="text-sm text-gray-500">
-                {sampleLegalText.length} characters, ~{Math.ceil(
-                  sampleLegalText.split(/\s+/).length
+                {sampleLegalText.length} characters, ~{Math.ceil.length
                 )} words
               </div>
               <Button
@@ -337,8 +335,7 @@
                 </div>
                 <div class="embedding-preview p-2 bg-gray-50 rounded text-xs font-mono">
                   [{analysisResult.summaryEmbedding
-                    .slice(0, 10)
-                    .map((x) => x.toFixed(4))
+                    .slice.map((x) => x.toFixed(4))
                     .join(', ')}, ...]
                 </div>
                 <div class="text-xs text-gray-500">
@@ -456,7 +453,7 @@
                     <div class="flex justify-between items-start mb-2">
                       <h4 class="font-medium text-gray-900">{(result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).title}</h4>
                       <span class="text-sm text-blue-600 font-medium">
-                        {Math.round((result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).relevanceScore * 100)}% match
+                        {Math.round.relevanceScore * 100)}% match
                       </span>
                     </div>
                     <p class="text-sm text-gray-600 mb-3">{(result as { title?: any; relevanceScore?: any; excerpt?: any; entities?: any }).excerpt}</p>

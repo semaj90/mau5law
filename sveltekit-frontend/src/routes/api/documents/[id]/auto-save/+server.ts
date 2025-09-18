@@ -106,7 +106,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
         document: {
           id: documentId,
           lastSavedAt: new Date().toISOString(),
-          wordCount: wordCount || (content ? content.split(/\s+/).length : 0),
+          wordCount: wordCount || (content ? content.split(/\s+/).length: 0),
           isDirty: false,
         },
       });

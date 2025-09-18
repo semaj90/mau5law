@@ -105,8 +105,8 @@ export const GET: RequestHandler = async ({ url }) => {
     ]);
     
     // Determine overall status
-    const errorCount = serviceChecks.filter(s => s.status === 'error').length;
-    const warningCount = serviceChecks.filter(s => s.status === 'warning').length;
+    const errorCount = serviceChecks.filter(item => item.length);
+    const warningCount = serviceChecks.filter(item => item.length);
     
     let overallStatus: 'healthy' | 'warning' | 'error' = 'healthy';
     if (errorCount > 0) {

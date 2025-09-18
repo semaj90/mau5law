@@ -20,7 +20,7 @@ Production-ready with native Windows support
   }
   let { 
     caseId = '', 
-    onImageGenerated = () => {}, 
+    onImageGenerated = () => , 
     initialPrompt = '',
     compact = false 
   }: Props = $props();
@@ -86,7 +86,7 @@ Production-ready with native Windows support
       onImageGenerated(result);
     } catch (error) {
       console.error('Image generation failed:', error);
-      alert(`Image generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(`Image generation failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
 
@@ -123,7 +123,7 @@ Production-ready with native Windows support
   }
 
   function copyPrompt(text: string) {
-    navigator.clipboard.writeText(text).then(() => {
+    navigator.clipboard.writeText.then(() => {
       // Could add a toast notification here
     });
   }

@@ -17,8 +17,7 @@
     trigger?: Snippet;
   }
 
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     onOpenChange,
     placement = 'bottom-start',
     closeOnEscape = true,
@@ -26,7 +25,7 @@
     class: className = '',
     children,
     trigger
-  }: Props = $props();
+   }: Props = $props();
 
   let contentClasses = $derived(cn(
     "legal-ai-dropdown z-50 min-w-48 bg-slate-900/95 backdrop-blur-md border border-amber-500/20 rounded-xl shadow-2xl shadow-amber-500/10 p-2",

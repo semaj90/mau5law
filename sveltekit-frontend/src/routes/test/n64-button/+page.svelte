@@ -79,10 +79,7 @@
     console.log(`Button clicked: ${testName} (Total clicks: ${buttonClickCount})`);
 
     // Add to test results
-    testResults.push({
-      test: testName,
-      result: 'Click handler executed successfully',
-      timestamp: new Date().toLocaleTimeString()
+    testResults.push.toLocaleTimeString()
     });
 
     // Force reactivity update
@@ -95,10 +92,7 @@
 
     // Check if component loaded
     const componentExists = typeof N643DButton !== 'undefined';
-    testResults.push({
-      test: 'Component Import',
-      result: componentExists ? 'SUCCESS' : 'FAILED',
-      timestamp: new Date().toLocaleTimeString()
+    testResults.push.toLocaleTimeString()
     });
 
     // Test DOM rendering after a short delay
@@ -111,13 +105,10 @@
       });
 
       // Test CSS classes
-      const hasCorrectClasses = Array.from(buttons).some(btn =>
+      const hasCorrectClasses = Array.from.some(btn =>
         btn.classList.contains('n64-3d-button')
       );
-      testResults.push({
-        test: 'CSS Classes',
-        result: hasCorrectClasses ? 'SUCCESS' : 'FAILED',
-        timestamp: new Date().toLocaleTimeString()
+      testResults.push.toLocaleTimeString()
       });
 
       isTestingComplete = true;
@@ -170,7 +161,7 @@
         {:else}
           <div class="results-list">
             {#each testResults as result}
-              <div class="result-item" class:success={(result as { result?: unknown; test?: unknown; timestamp?: unknown }).(result as { result?: unknown; test?: unknown; timestamp?: unknown }).includes('SUCCESS')} class:failed={(result as { result?: unknown; test?: unknown; timestamp?: unknown }).(result as { result?: unknown; test?: unknown; timestamp?: unknown }).includes('FAILED')}>
+              <div class="result-item" class:success={(result as { result?: unknown; test?: unknown; timestamp?: unknown }).result.includes('SUCCESS')} class:failed={(result as { result?: unknown; test?: unknown; timestamp?: unknown }).result.includes('FAILED')}>
                 <span class="test-name">{(result as { result?: unknown; test?: unknown; timestamp?: unknown }).test}</span>
                 <span class="test-result">{(result as { result?: unknown; test?: unknown; timestamp?: unknown }).result}</span>
                 <span class="test-time">{(result as { result?: unknown; test?: unknown; timestamp?: unknown }).timestamp}</span>
@@ -333,11 +324,11 @@
     border-left: 4px solid #6c757d;
   }
 
-  .result-(item as { success?: unknown; failed?: unknown }).success {
+  .result-.success {
     border-left-color: #28a745;
   }
 
-  .result-(item as { success?: unknown; failed?: unknown }).failed {
+  .result-.failed {
     border-left-color: #dc3545;
   }
 

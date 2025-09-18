@@ -319,7 +319,7 @@ export class CopilotIndexOptimizer {
       nextHeaderRegex.lastIndex = headerStart + match[0].length;
       const nextMatch = nextHeaderRegex.exec(content);
 
-      const sectionEnd = nextMatch ? nextMatch.index : content.length;
+      const sectionEnd = nextMatch ? nextMatch.index: content.length;
       const sectionContent = content.substring(headerStart, sectionEnd);
 
       sections.push({

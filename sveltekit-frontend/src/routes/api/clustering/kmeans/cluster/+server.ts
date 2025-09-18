@@ -340,8 +340,7 @@ export const POST: RequestHandler = async ({ request }) => {
         status: "failed",
         error:
           clusteringError instanceof Error
-            ? clusteringError.message
-            : "Unknown error",
+            ? clusteringError.message: "Unknown error",
         failedAt: Date.now(),
       });
 
@@ -355,8 +354,7 @@ export const POST: RequestHandler = async ({ request }) => {
             status: "failed",
             error:
               clusteringError instanceof Error
-                ? clusteringError.message
-                : "Unknown error",
+                ? clusteringError.message: "Unknown error",
           }),
         ),
       );
@@ -368,8 +366,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error:
             clusteringError instanceof Error
-              ? clusteringError.message
-              : "Clustering failed",
+              ? clusteringError.message: "Clustering failed",
           metadata: {
             timestamp: new Date().toISOString(),
             processingTime: Date.now() - startTime,
@@ -384,7 +381,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Internal server error",
+        error: error instanceof Error ? error.message: "Internal server error",
         metadata: {
           timestamp: new Date().toISOString(),
           processingTime: Date.now() - startTime,
@@ -454,7 +451,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Prediction failed",
+        error: error instanceof Error ? error.message: "Prediction failed",
         metadata: {
           timestamp: new Date().toISOString(),
           processingTime: 0,

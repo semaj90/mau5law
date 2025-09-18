@@ -102,7 +102,7 @@ class TimingMetricsCollector {
 
     return {
       // Navigation timing
-      pageLoad: navigation ? navigation.loadEventEnd - performance.timeOrigin : 0,
+      pageLoad: navigation ? navigation.loadEventEnd - performance.timeOrigin: 0,
       domContentLoaded: navigation
         ? navigation.domContentLoadedEventEnd - performance.timeOrigin
         : 0,
@@ -142,7 +142,7 @@ class TimingMetricsCollector {
       try {
         performance.measure(name, startMark, endMark);
         const measure = performance.getEntriesByName(name, 'measure')[0];
-        return measure ? measure.duration : 0;
+        return measure ? measure.duration: 0;
       } catch (error) {
         console.warn('Performance measure failed:', error);
         return 0;
@@ -199,7 +199,7 @@ class TimingMetricsCollector {
         serverTiming: Record<string, any>,
         requestId,
         status: 0,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: Date.now(),
       });
 

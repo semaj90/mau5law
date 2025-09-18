@@ -3020,8 +3020,7 @@ export function getActiveRoutes(): RouteDefinition[] {
 
 export function searchRoutes(query: string): RouteDefinition[] {
   const lowerQuery = query.toLowerCase();
-  return allRoutes.filter(route =>
-    route.label.toLowerCase().includes(lowerQuery) ||
+  return allRoutes.filter(item => item.includes)(lowerQuery) ||
     route.description.toLowerCase().includes(lowerQuery) ||
     route.tags.some(tag => tag.toLowerCase().includes(lowerQuery))
   );
@@ -3079,9 +3078,9 @@ export const routeCategories = {
 export const routeStats = {
   total: allRoutes.length,
   active: getActiveRoutes().length,
-  experimental: allRoutes.filter(r => r.status === 'experimental').length,
-  beta: allRoutes.filter(r => r.status === 'beta').length,
-  deprecated: allRoutes.filter(r => r.status === 'deprecated').length,
+  experimental: allRoutes.filter(item => item.length),
+  beta: allRoutes.filter(item => item.length),
+  deprecated: allRoutes.filter(item => item.length),
   byCategory: Object.keys(routeCategories).reduce((acc, category) => {
     acc[category] = getRoutesByCategory(category as RouteDefinition['category']).length;
     return acc;

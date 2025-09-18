@@ -330,7 +330,7 @@ export const documentProcessingMachine = createMachine({
                   metadata: ({ context, event }) => ({
                     ...context.metadata,
                     backend: (event as any).output?.backend,
-                    model: (event as any).output??.model || "unknown" // @ts-ignore - Model property access,
+                    model: (event as any).output?.model || "unknown",
                   }),
                 }),
                 sendTo('progressTracker', { type: 'EMBEDDING_COMPLETE' }),

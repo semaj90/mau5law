@@ -37,14 +37,13 @@
     }
     // Check for existing session
     const sessionCookie = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('session_id='));
+      .split.find(row => row.startsWith('session_id='));
     if (sessionCookie) {
       sessionInfo = `Active session: ${sessionCookie.split('=')[1].substring(0, 8)}...`;
     } else if (localStorageEnabled) {
       const devSession = localStorage.getItem('dev_session') || 
                         (() => {
-                          const id = `dev_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                          const id = `dev_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
                           localStorage.setItem('dev_session', id);
                           return id;
                         })();

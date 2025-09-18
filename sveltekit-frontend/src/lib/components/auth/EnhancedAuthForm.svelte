@@ -16,8 +16,7 @@
   import { quartOut } from 'svelte/easing';
   import type { EnhancedAuthFormProps } from '$lib/types/component-props.js';
 
-  let { 
-    mode = $bindable('login'),
+  let { mode = $bindable('login'),
     open = $bindable(false),
     onOpenChange,
     onSuccess,
@@ -26,7 +25,7 @@
     class: className = '',
     id,
     'data-testid': testId
-  }: EnhancedAuthFormProps = $props();
+   }: EnhancedAuthFormProps = $props();
 
   // Enhanced Svelte 5 reactive state
   let formData = $state({
@@ -62,7 +61,7 @@
       /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(formData.password);
     if (mode === 'register') {
       const passwordsMatch = formData.confirmPassword === formData.password;
-      const hasName = formData.firstName.trim().length >= 2 && formData.lastName.trim().length >= 2;
+      const hasName = formData.firstName.trim.length >= 2 && formData.lastName.trim.length >= 2;
       const termsAccepted = formData.acceptTerms;
       return {
         isValid: hasValidEmail && hasStrongPassword && passwordsMatch && hasName && termsAccepted,

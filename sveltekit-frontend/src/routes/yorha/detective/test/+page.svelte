@@ -24,7 +24,7 @@
       if ((response as { json?: unknown; ok?: unknown }).ok) {
         testResult = `✅ Case created successfully!\nID: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.id}\nCase Number: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.caseNumber}\nTitle: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.title}`;
       } else {
-        testResult = `❌ Error: ${(result as { data?: unknown; error?: unknown; details?: unknown }).error}\nDetails: ${JSON.stringify((result as { data?: unknown; error?: unknown; details?: unknown }).details, null, 2)}`;
+        testResult = `❌ Error: ${(result as { data?: unknown; error?: unknown; details?: unknown }).error}\nDetails: ${JSON.stringify.details, null, 2)}`;
       }
     } catch (error) {
       testResult = `❌ Network error: ${error.message}`;
@@ -39,7 +39,7 @@
       const response = await fetch('/api/cases');
       const result = await (response as { json?: unknown; ok?: unknown }).json();
       if ((response as { json?: unknown; ok?: unknown }).ok) {
-        testResult = `✅ Cases retrieved successfully!\nTotal: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.length}\nFirst few cases:\n${JSON.stringify((result as { data?: unknown; error?: unknown; details?: unknown }).data.slice(0, 3), null, 2)}`;
+        testResult = `✅ Cases retrieved successfully!\nTotal: ${(result as { data?: unknown; error?: unknown; details?: unknown }).data.length}\nFirst few cases:\n${JSON.stringify.data.slice(0, 3), null, 2)}`;
       } else {
         testResult = `❌ Error: ${(result as { data?: unknown; error?: unknown; details?: unknown }).error}`;
       }

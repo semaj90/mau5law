@@ -16,7 +16,6 @@
 
   // Aggregated metrics
   let backendStats: Record<string, { count: number; success: number; totalDuration: number; lastMs: number }> = {};
-
   let currentBackend = '';
   let embeddingDimension = 0;
   let upscaleCooldownRemaining = 0;
@@ -55,7 +54,7 @@
       if (!ev || !ev.type) return;
       recordEvent(ev);
       if (ev.type === 'gpu.vector.process.end') {
-        const { backend, durationMs, success } = ev.meta || {};
+        const { backend, durationMs, success } = ev.meta || ;
         if (!backendStats[backend]) backendStats[backend] = { count: 0, success: 0, totalDuration: 0, lastMs: 0 };
         backendStats[backend].count++;
         backendStats[backend].lastMs = durationMs || 0;

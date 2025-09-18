@@ -124,12 +124,12 @@ class ProductionServiceClient {
   }
 
   // Bulk health check for multiple services
-  async checkServicesHealth(services: string[]): Promise<Record<string, boolean>> {
+  async checkServicesHealth(services: string[]): Promise<Record<string, boolean> {
     const results: Record<string, boolean> = {};
 
     await Promise.all(
       services.map(async (service) => {
-        results[service] = await this.checkServiceHealth(`/${service}/health`);
+        results[service] = await this.checkServiceHealth(`/${service}/health`)));
       })
     );
 

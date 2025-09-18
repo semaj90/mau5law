@@ -169,10 +169,10 @@ class RecommendationsService {
       analytics: {
         totalRecommendations: filteredRecommendations.length,
         priorityBreakdown: {
-          critical: filteredRecommendations.filter(r => r.priority === 'critical').length,
-          high: filteredRecommendations.filter(r => r.priority === 'high').length,
-          medium: filteredRecommendations.filter(r => r.priority === 'medium').length,
-          low: filteredRecommendations.filter(r => r.priority === 'low').length
+          critical: filteredRecommendations.filter(item => item.length),
+          high: filteredRecommendations.filter(item => item.length),
+          medium: filteredRecommendations.filter(item => item.length),
+          low: filteredRecommendations.filter(item => item.length)
         },
         avgConfidence: filteredRecommendations.reduce((sum, r) => sum + r.confidence, 0) / filteredRecommendations.length
       }

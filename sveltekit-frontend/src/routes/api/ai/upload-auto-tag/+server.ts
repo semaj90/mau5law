@@ -224,8 +224,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         taggedDocuments: taggedDocuments.length,
         documentsWithEmbeddings: documentsWithEmbeddings.length,
         averageTagsPerDocument: taggedDocuments.length > 0 
-          ? taggedDocuments.reduce((sum, doc) => sum + (doc.tags?.length || 0), 0) / taggedDocuments.length 
-          : 0
+          ? taggedDocuments.reduce((sum, doc) => sum + (doc.tags?.length || 0), 0) / taggedDocuments.length: 0
       },
       services: {
         aiAutoTagging: 'operational',

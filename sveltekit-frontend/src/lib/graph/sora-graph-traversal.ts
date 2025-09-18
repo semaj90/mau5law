@@ -704,7 +704,7 @@ export class SoraGraphTraversal {
     return `${query.startNodes.join(',')}_${query.maxDepth}_${query.traversalStrategy}_${JSON.stringify(query.filters)}`;
   }
 
-  private async getSemanticEmbeddings(nodeIds: string[]): Promise<Map<string, Float32Array>> {
+  private async getSemanticEmbeddings(nodeIds: string[]): Promise<Map<string, Float32Array> {
     const embeddings = new Map<string, Float32Array>();
 
     for (const nodeId of nodeIds) {

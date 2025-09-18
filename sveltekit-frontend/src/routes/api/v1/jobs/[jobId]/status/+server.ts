@@ -138,7 +138,7 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get job status',
+        error: error instanceof Error ? error.message: 'Failed to get job status',
       },
       { status: 500 }
     );
@@ -284,7 +284,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to update job status',
+        error: error instanceof Error ? error.message: 'Failed to update job status',
       },
       { status: 500 }
     );
@@ -392,7 +392,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to cancel job',
+        error: error instanceof Error ? error.message: 'Failed to cancel job',
       },
       { status: 500 }
     );

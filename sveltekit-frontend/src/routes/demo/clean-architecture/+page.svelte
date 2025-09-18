@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
         throw new Error((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).error || 'Failed to load cases');
       }
     } catch (e) {
-      error = `Failed to load cases: ${e instanceof Error ? e.message : 'Unknown error'}`;
+      error = `Failed to load cases: ${e instanceof Error ? e.message: 'Unknown error'}`;
       console.error('Load cases error:', e);
     } finally {
       isLoading = false;
@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
         throw new Error((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).error || 'Failed to create case');
       }
     } catch (e) {
-      error = `Failed to create caseItem: ${e instanceof Error ? e.message : 'Unknown error'}`;
+      error = `Failed to create caseItem: ${e instanceof Error ? e.message: 'Unknown error'}`;
       console.error('Create case error:', e);
     } finally {
       isLoading = false;
@@ -152,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
         throw new Error((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).error || 'Failed to load case');
       }
     } catch (e) {
-      error = `Failed to load caseItem: ${e instanceof Error ? e.message : 'Unknown error'}`;
+      error = `Failed to load caseItem: ${e instanceof Error ? e.message: 'Unknown error'}`;
       console.error('Load case error:', e);
     } finally {
       isLoading = false;
@@ -202,7 +202,7 @@ https://svelte.dev/e/js_parse_error -->
       // Step 2: Upload directly to MinIO using pre-signed POST
       const formData = new FormData();
       // Add required fields from pre-signed POST
-      Object.entries(presignedPost.fields).forEach(([key, value]) => {
+      Object.entries.forEach(([key, value]) => {
         formData.append(key, value as string);
       });
       // Add the file (must be last)
@@ -229,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
       uploadFile = null;
 
     } catch (e) {
-      error = `Upload failed: ${e instanceof Error ? e.message : 'Unknown error'}`;
+      error = `Upload failed: ${e instanceof Error ? e.message: 'Unknown error'}`;
       console.error('Upload error:', e);
       uploadProgress = 0;
       uploadStatus = '';
@@ -259,7 +259,7 @@ https://svelte.dev/e/js_parse_error -->
           }
 
           // Stop polling if job is complete or failed
-          if (['completed', 'failed'].includes((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).data.job.status)) {
+          if (['completed', 'failed'].includes.data.job.status)) {
             if (statusPollingInterval) {
               clearInterval(statusPollingInterval);
               statusPollingInterval = null;
@@ -358,7 +358,7 @@ https://svelte.dev/e/js_parse_error -->
         throw new Error((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).error || 'Search failed');
       }
     } catch (e) {
-      error = `Search failed: ${e instanceof Error ? e.message : 'Unknown error'}`;
+      error = `Search failed: ${e instanceof Error ? e.message: 'Unknown error'}`;
       console.error('Search error:', e);
       searchResults = [];
       ragResponse = null;
@@ -863,7 +863,7 @@ https://svelte.dev/e/js_parse_error -->
                   <span>
                     Created: {formatDate((result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).createdAt)}
                     {#if (result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).filePath}
-                      • File: {(result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).filePath.split('/').pop()}
+                      • File: {(result as { success?: unknown; data?: unknown; error?: unknown; id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; content?: unknown; createdAt?: unknown; filePath?: unknown }).filePath.split.pop()}
                     {/if}
                   </span>
                   <span>

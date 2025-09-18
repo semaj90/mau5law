@@ -130,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
   {#if displayedItems.length === 0 && !isLoading}
     <div class="empty-state" transitionfade={{ duration: 200 }}>
       <div class="empty-icon">
-        <svelte:component this={getItemIcon({})} size={48} />
+        <svelte:component this={getItemIcon( )} size={48} />
       </div>
       <p class="empty-text">No {itemType} found</p>
     </div>
@@ -363,17 +363,17 @@ https://svelte.dev/e/js_parse_error -->
       transform: rotate(360deg);
 }}
   /* Custom scrollbar */
-  .infinite-scroll-container::-webkit-scrollbar {
+  .infinite-scroll-container: :-webkit-scrollbar {
     width: 6px;
 }
-  .infinite-scroll-container::-webkit-scrollbar-track {
+  .infinite-scroll-container: :-webkit-scrollbar-track {
     background: var(--pico-background-color);
 }
-  .infinite-scroll-container::-webkit-scrollbar-thumb {
+  .infinite-scroll-container: :-webkit-scrollbar-thumb {
     background: var(--pico-muted-border-color);
     border-radius: 3px;
 }
-  .infinite-scroll-container::-webkit-scrollbar-thumb:hover {
+  .infinite-scroll-container: :-webkit-scrollbar-thumb:hover {
     background: var(--pico-primary);
 }
 </style>

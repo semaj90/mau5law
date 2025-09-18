@@ -136,7 +136,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
     // Add valid files
     const evidenceFiles: EvidenceFile[] = validFiles.map(file => ({
-      id: `evidence_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `evidence_${Date.now()}_${Math.random.toString-substr(2, 9)}`,
       file,
       status: 'pending',
       progress: 0,
@@ -188,8 +188,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
     await Promise.allSettled(processingPromises);
     // Update final stats
-    processingStats.completed = files.filter(f => f.status === 'completed').length;
-    processingStats.failed = files.filter(f => f.status === 'error').length;
+    processingStats.completed = files.filter(item => item.length);
+    processingStats.failed = files.filter(item => item.length);
     processingStats.processing = 0;
     isProcessing = false;
     dispatch('complete', { files, stats: processingStats });
@@ -232,7 +232,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       dispatch('upload', { file: evidenceFile });
     } catch (error) {
       evidenceFile.status = 'error';
-      evidenceFile.error = error instanceof Error ? error.message : 'Processing failed';
+      evidenceFile.error = error instanceof Error ? error.message: 'Processing failed';
       files = [...files];
       dispatch('error', { 
         message: `Failed to process "${evidenceFile.file.name}": ${evidenceFile.error}`,
@@ -311,12 +311,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       });
 
       const result = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
-      if ((result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).success && (result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).(data as { extractedText?: unknown; tags?: unknown; confidence?: unknown; aiAnalysis?: unknown }).result) {
+      if ((result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).success && (result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).data.result) {
         return {
-          aiAnalysis: `GPU-accelerated analysis completed with ${(result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).(data as { extractedText?: unknown; tags?: unknown; confidence?: unknown; aiAnalysis?: unknown }).(result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).metadata?.confidence || 85}% confidence`,
-          confidence: (result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).(data as { extractedText?: unknown; tags?: unknown; confidence?: unknown; aiAnalysis?: unknown }).(result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).metadata?.confidence || 0.85,
+          aiAnalysis: `GPU-accelerated analysis completed with ${(result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).data.result.metadata?.confidence || 85}% confidence`,
+          confidence: (result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).data.result.metadata?.confidence || 0.85,
           tags: [...(evidenceFile.metadata?.tags || []), 'gpu-analyzed', 'ai-processed'],
-          processingTime: (result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).(data as { extractedText?: unknown; tags?: unknown; confidence?: unknown; aiAnalysis?: unknown }).(result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).processingTime
+          processingTime: (result as { success?: unknown; data?: unknown; metadata?: unknown; processingTime?: unknown }).data.result.processingTime
         };
       }
       throw new Error('Analysis failed');
@@ -688,17 +688,17 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     border-radius: 8px;
   }
 
-  .stat-(item as { completed?: unknown; processing?: unknown; failed?: unknown }).completed {
+  .stat-.completed {
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.3);
   }
 
-  .stat-(item as { completed?: unknown; processing?: unknown; failed?: unknown }).processing {
+  .stat-.processing {
     background: rgba(59, 130, 246, 0.2);
     border: 1px solid rgba(59, 130, 246, 0.3);
   }
 
-  .stat-(item as { completed?: unknown; processing?: unknown; failed?: unknown }).failed {
+  .stat-.failed {
     background: rgba(239, 68, 68, 0.2);
     border: 1px solid rgba(239, 68, 68, 0.3);
   }

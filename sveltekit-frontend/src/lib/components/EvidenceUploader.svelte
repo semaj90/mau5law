@@ -26,7 +26,7 @@
     audio: ['audio/mp3', 'audio/wav', 'audio/m4a', 'audio/aac']
   };
 
-  const allAllowedTypes = Object.values(allowedTypes).flat();
+  const allAllowedTypes = Object.values.flat();
 
   function handleDragOver(e: DragEvent) {
     e.preventDefault();
@@ -117,7 +117,7 @@
       }, 2000);
 
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      const errorMsg = error instanceof Error ? error.message: 'Unknown error';
       uploadStatus = `Upload error: ${errorMsg}`;
       componentError = error instanceof Error ? error : new Error(errorMsg);
     } finally {

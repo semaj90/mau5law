@@ -35,7 +35,7 @@
 
   // Svelte 5 props with enhanced defaults
   let {
-    onUploadComplete = () => {},
+    onUploadComplete = () => ,
     accept = '.pdf,.docx,.txt,.jpg,.png,.tiff,.json,.csv,.xml,.html',
     maxSize = 100 * 1024 * 1024, // 100MB
     enableOCR = true,
@@ -53,11 +53,10 @@
   let isDragOver = $state(false);
   let fileInput: HTMLInputElement | undefined = $state();
   let systemStatus = $state<any>({
-    services: {},
-    performance: {},
-    queues: {},
-    storage: {}
-  });
+    services: ,
+    performance: ,
+    queues: ,
+    storage: });
   let uploadMachine = $state<ActorRefFrom<typeof fileUploadMachine>(null) | null >(null);
 
   // XState Machine for Upload Management
@@ -176,9 +175,8 @@
     uploadMachine.send({ type: 'CHECK_SERVICES' });
 
     try {
-      const [ragStatus, systemHealth] = await Promise.all([
-        fetch('/api/v1/rag/status').then(r => r.json()).catch(() => ({})),
-        fetch('/api/v1/cluster/health').then(r => r.json()).catch(() => ({}))
+      const [ragStatus, systemHealth] = await Promise.all.then(r => r.json()).catch(() => ( )),
+        fetch('/api/v1/cluster/health').then(r => r.json()).catch(() => ( ))
       ]);
 
       systemStatus = {
@@ -191,10 +189,9 @@
           ollama: ragStatus.ollama || false,
           webgpu: enableWebGPU && (await checkWebGPUSupport())
         },
-        performance: systemHealth.performance || {},
-        queues: ragStatus.queues || {},
-        storage: ragStatus.storage || {}
-      };
+        performance: systemHealth.performance || ,
+        queues: ragStatus.queues || ,
+        storage: ragStatus.storage || };
     } catch (error) {
       console.error('Failed to fetch system status:', error);
       notificationStore.error('Failed to connect to backend services');
@@ -271,14 +268,12 @@
         embeddingId: null,
         vectorId: null,
         tags: [],
-        metadata: {}
-      },
+        metadata: },
       performance: {
         startTime: Date.now(),
         endTime: null,
         totalTime: null,
-        stageTimings: {}
-      }
+        stageTimings: }
     };
 
     uploadStates.set(fileId, initialState);
@@ -368,14 +363,14 @@
       const errorState = uploadStates.get(fileId);
       if (errorState) {
         errorState.status = 'error';
-        errorState.error = error instanceof Error ? error.message : 'Unknown error';
+        errorState.error = error instanceof Error ? error.message: 'Unknown error';
         errorState.performance.endTime = Date.now();
         errorState.performance.totalTime = errorState.performance.endTime - errorState.performance.startTime;
         uploadStates.set(fileId, errorState);
         uploadStates = new Map(uploadStates);
       }
 
-      notificationStore.error(`Failed to process ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      notificationStore.error(`Failed to process ${file.name}: ${error instanceof Error ? error.message: 'Unknown error'}`);
       throw error;
     }
   }
@@ -405,8 +400,8 @@
       throw new Error(`File too large (max ${Math.round(maxSize / 1024 / 1024)}MB)`);
     }
 
-    const allowedTypes = accept.split(',').map(t => t.trim());
-    const fileExt = '.' + file.name.split('.').pop()?.toLowerCase();
+    const allowedTypes = accept.split.map(t => t.trim());
+    const fileExt = '.' + file.name.split.pop()?.toLowerCase();
 
     if (!allowedTypes.includes(fileExt) && !allowedTypes.includes(file.type)) {
       throw new Error(`File type not supported: ${file.type || fileExt}`);
@@ -828,7 +823,7 @@
           <!-- Processing Stages -->
           <div class="mb-4">
             <div class="grid grid-cols-4 md:grid-cols-8 gap-2">
-              {#each Object.entries(state.stages || {}) as [stageName, stageStatus]}
+              {#each Object.entries(state.stages || ) as [stageName, stageStatus]}
                 {@const IconComponent = getStageIcon(stageName)}
                 <div class="flex flex-col items-center p-2 rounded-lg {
                   stageStatus === 'completed' ? 'bg-green-100 border border-green-200' :

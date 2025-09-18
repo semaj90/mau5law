@@ -72,7 +72,7 @@ const initialContext: ChatContext = {
   error: null,
   stream: null,
   modelStatus: "unknown",
-  settings: {
+  }); const settings = {
     model: "gemma3-legal",
     temperature: 0.1,
     maxTokens: 1024,
@@ -349,7 +349,7 @@ export const chatMachine = setup({
             target: "error",
             actions: assign({
               error: ({ event }) =>
-                event.type === "STREAM_ERROR" ? event.error : null,
+                event.type === "STREAM_ERROR" ? event.error: null,
               stream: () => null,
             }),
           },

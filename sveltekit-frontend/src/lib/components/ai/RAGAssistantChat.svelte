@@ -25,7 +25,7 @@
 	// Workflow state using $state
 	let workflowActive = $state(false);
 	let currentStep = $state(0);
-	let workflowData = $state<Record<string, any>>({
+	let workflowData = $state<Record<string, any>({
 		what: '',
 		who: '',
 		when: '',
@@ -40,7 +40,7 @@
 	// RAG ingestion state using $state
 	let isIngesting = $state(false);
 	let ingestionProgress = $state(0);
-	let ragContext = $state<Array<any>>([]);
+	let ragContext = $state<Array<any>([]);
 
 	const workflowSteps = [
 		{
@@ -112,7 +112,7 @@
 	}
 
 	// Add message helper
-	function addMessage(content: string, type: 'user' | 'assistant' | 'system' = 'assistant', metadata = {}) {
+	function addMessage(content: string, type: 'user' | 'assistant' | 'system' = 'assistant', metadata = ) {
 		pushMessage({
 			id: crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random(),
 			content,
@@ -123,7 +123,7 @@
 	}
 
 	// Typewriter effect for AI messages
-	async function typeMessage(content: string, metadata = {}) {
+	async function typeMessage(content: string, metadata = ) {
 		isTyping = true;
 		const messageId = crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random();
 
@@ -271,7 +271,7 @@
 					// swallow callback errors
 				}
 			} else {
-				const text = await (response as { ok?: any; json?: any; text?: any; status?: any }).text().catch(() => '');
+				const text = await (response as { ok?: any; json?: any; text?: any; status?: any }).text.catch(() => '');
 				throw new Error('Failed to create case: ' + (text || (response as { ok?: any; json?: any; text?: any; status?: any }).status));
 			}
 		} catch (error) {
@@ -328,8 +328,7 @@
 			if (chatContainer) {
 				try {
 					chatContainer.scrollTop = chatContainer.scrollHeight;
-				} catch {}
-			}
+				} catch }
 		}, 100);
 	}
 

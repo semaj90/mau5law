@@ -32,7 +32,7 @@ export interface PerformanceMetrics {
 class MonitoringService extends EventEmitter {
   private metrics: Map<string, unknown[]> = new Map();
   private alerts: AlertRule[] = [];
-  private healthChecks: Map<string, () => Promise<boolean>> = new Map();
+  private healthChecks: Map<string, () => Promise<boolean> = new Map();
   private performanceHistory: number[] = [];
   private errorLog: Array<any> = [];
   private requestTracking: Map<string, any> = new Map();
@@ -285,7 +285,7 @@ class MonitoringService extends EventEmitter {
           count: numericValues.length,
           min: numericValues.length > 0 ? Math.min(...numericValues) : 0,
           max: numericValues.length > 0 ? Math.max(...numericValues) : 0,
-          mean: numericValues.length > 0 ? numericValues.reduce((a, b) => a + b, 0) / numericValues.length : 0,
+          mean: numericValues.length > 0 ? numericValues.reduce((a, b) => a + b, 0) / numericValues.length: 0,
           latest: numericValues[numericValues.length - 1] || 0,
           trend: this.calculateTrend(numericValues),
         };

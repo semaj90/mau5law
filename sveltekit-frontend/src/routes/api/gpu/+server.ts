@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		return json(
 			{
 				error: 'GPU service unavailable',
-				details: error instanceof Error ? error.message : 'Unknown error'
+				details: error instanceof Error ? error.message: 'Unknown error'
 			},
 			{ status: 503 }
 		);
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		return json(
 			{
 				error: 'Task processing failed',
-				details: error instanceof Error ? error.message : 'Unknown error'
+				details: error instanceof Error ? error.message: 'Unknown error'
 			},
 			{ status: 500 }
 		);

@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: "Gemma3 inference failed",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
         troubleshooting: [
           "Ensure the desktop application is running",
           "Check that Gemma3 model files are available",
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async () => {
       status: {
         available: false,
         initialized: false,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message: "Unknown error",
       },
     });
   }

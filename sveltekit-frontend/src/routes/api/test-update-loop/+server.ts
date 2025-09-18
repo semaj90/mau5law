@@ -103,7 +103,7 @@ class UpdateLoopTester {
       return this.testResults;
     } catch (err: any) {
       this.testResults.status = 'failed';
-      this.testResults.error = err instanceof Error ? err.message : 'Unknown error';
+      this.testResults.error = err instanceof Error ? err.message: 'Unknown error';
       this.testResults.totalTime = Date.now() - startTime;
 
       console.error('❌ Update loop test failed:', err);
@@ -157,7 +157,7 @@ class UpdateLoopTester {
     } catch (err: any) {
       this.testResults.steps.setup = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'Setup failed',
+        error: err instanceof Error ? err.message: 'Setup failed',
       };
       throw err;
     }
@@ -243,7 +243,7 @@ class UpdateLoopTester {
     } catch (err: any) {
       this.testResults.steps[scenarioName] = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'Scenario failed',
+        error: err instanceof Error ? err.message: 'Scenario failed',
       };
 
       console.error(`❌ Scenario ${scenario.name} failed:`, err);
@@ -320,7 +320,7 @@ class UpdateLoopTester {
     } catch (err: any) {
       this.testResults.steps.searchImpact = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'Search testing failed',
+        error: err instanceof Error ? err.message: 'Search testing failed',
       };
     }
   }
@@ -341,8 +341,7 @@ class UpdateLoopTester {
       const avgProcessingTime =
         processingTimes.length > 0
           ? processingTimes.reduce((sum: number, time: number) => sum + time, 0) /
-            processingTimes.length
-          : 0;
+            processingTimes.length: 0;
 
       this.testResults.performance = {
         avgProcessingTime,
@@ -363,7 +362,7 @@ class UpdateLoopTester {
       console.log('✅ Performance analysis completed');
     } catch (err: any) {
       this.testResults.performance = {
-        error: err instanceof Error ? err.message : 'Performance analysis failed',
+        error: err instanceof Error ? err.message: 'Performance analysis failed',
       };
     }
   }
@@ -392,7 +391,7 @@ class UpdateLoopTester {
     } catch (err: any) {
       this.testResults.steps.cleanup = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'Cleanup failed',
+        error: err instanceof Error ? err.message: 'Cleanup failed',
       };
     }
   }
@@ -422,7 +421,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ Update loop test error:', err);
     return json({
       success: false,
-      error: err instanceof Error ? err.message : 'Test failed'
+      error: err instanceof Error ? err.message: 'Test failed'
     }, { status: 500 });
   }
 };
@@ -465,7 +464,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     return json({
       success: false,
-      error: err instanceof Error ? err.message : 'Request failed'
+      error: err instanceof Error ? err.message: 'Request failed'
     }, { status: 500 });
   }
 };

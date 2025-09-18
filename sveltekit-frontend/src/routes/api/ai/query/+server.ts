@@ -80,7 +80,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     return json(
       { 
         error: 'AI query processing failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message: 'Unknown error'
       }, 
       { status: 500 }
     );

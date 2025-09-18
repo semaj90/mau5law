@@ -96,7 +96,7 @@ export class YoRHaWebGPUMath {
     // Vector operations shader
     const vectorOpsShader = `
       struct VectorData {
-        data: array<vec3<f32>>,
+        data: array<vec3<f32>,
       }
 
       @group(0) @binding(0) var<storage, read> inputA: VectorData;
@@ -118,7 +118,7 @@ export class YoRHaWebGPUMath {
     // Matrix operations shader
     const matrixOpsShader = `
       struct MatrixData {
-        data: array<mat4x4<f32>>,
+        data: array<mat4x4<f32>,
       }
 
       @group(0) @binding(0) var<storage, read> inputA: MatrixData;
@@ -442,7 +442,7 @@ export class YoRHaWebGPUMath {
 
   // Layout Computation
   async computeLayout(
-    nodes: Array<,
+    nodes: Array<any>,
     containerSize: Vector3GPU,
     layoutType: 'row' | 'column' | 'grid'
   ): Promise<YoRHaComputeResult> {
@@ -478,7 +478,7 @@ export class YoRHaWebGPUMath {
 
   // Physics Simulation
   async simulatePhysics(
-    particles: Array<,
+    particles: Array<any>,
     deltaTime: number,
     gravity: Vector3GPU
   ): Promise<YoRHaComputeResult> {

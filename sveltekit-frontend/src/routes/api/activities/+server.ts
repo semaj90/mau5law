@@ -61,8 +61,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     // Determine the column for sorting
     const orderColumn =
       sortBy === "title"
-        ? caseActivities.title
-        : sortBy === "activityType"
+        ? caseActivities.title: sortBy === "activityType"
           ? caseActivities.activityType
           : sortBy === "status"
             ? caseActivities.status

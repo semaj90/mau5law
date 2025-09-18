@@ -356,7 +356,7 @@ export class BrowserLocalAI {
       text: request.documents[index].text,
       similarity,
       metadata: request.documents[index].metadata
-    }));
+    });
   }
 
   // Utility methods

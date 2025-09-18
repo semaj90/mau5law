@@ -254,7 +254,7 @@ export class AuthStore {
         // Update local user data
         authState.update(state => ({
           ...state,
-          user: state.user ? { ...state.user, ...(result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user } : null
+          user: state.user ? { ...state.user, ...result.user } : null
         }));
         
         return { success: true };

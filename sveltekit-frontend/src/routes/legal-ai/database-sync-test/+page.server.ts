@@ -52,8 +52,8 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
       langExtractService.listAvailableModels().catch(() => [])
     ]);
 
-    const isOllamaAvailable = ollamaAvailable.status === 'fulfilled' ? ollamaAvailable.value : false;
-    const availableModels = ollamaModels.status === 'fulfilled' ? ollamaModels.value : [];
+    const isOllamaAvailable = ollamaAvailable.status === 'fulfilled' ? ollamaAvailable.value: false;
+    const availableModels = ollamaModels.status === 'fulfilled' ? ollamaModels.value: [];
 
     // Enhanced database queries for testing
     const [
@@ -116,11 +116,11 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
     ]);
 
     // Process results with error handling
-    const sessions = recentSessions.status === 'fulfilled' ? recentSessions.value : [];
-    const documents = recentDocuments.status === 'fulfilled' ? recentDocuments.value : [];
-    const counts = totalCounts.status === 'fulfilled' ? totalCounts.value : [{ count: 0 }, { count: 0 }];
-    const todayDocs = todayDocuments.status === 'fulfilled' ? todayDocuments.value : [{ count: 0 }];
-    const metrics = processingMetrics.status === 'fulfilled' ? processingMetrics.value : [{
+    const sessions = recentSessions.status === 'fulfilled' ? recentSessions.value: [];
+    const documents = recentDocuments.status === 'fulfilled' ? recentDocuments.value: [];
+    const counts = totalCounts.status === 'fulfilled' ? totalCounts.value: [{ count: 0 }, { count: 0 }];
+    const todayDocs = todayDocuments.status === 'fulfilled' ? todayDocuments.value: [{ count: 0 }];
+    const metrics = processingMetrics.status === 'fulfilled' ? processingMetrics.value: [{
       avgProcessingTime: 0,
       cacheHits: 0,
       totalProcessed: 0
@@ -133,8 +133,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
           const [{ count: docCount }] = await db
             .select({ count: count() })
             .from(legalDocuments)
-            .where(eq(legalDocuments.sessionId, session.id));
-
+            .where(eq(legalDocuments.sessionId, session.id);
           return {
             id: session.id,
             sessionName: session.sessionName || `Test Session ${session.id.slice(0, 8)}`,
@@ -232,7 +231,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<DatabaseSync
         langchainService: {
           isAvailable: false,
           models: [],
-          error: `Failed to load service data: ${error instanceof Error ? error.message : 'Unknown error'}`
+          error: `Failed to load service data: ${error instanceof Error ? error.message: 'Unknown error'}`
         },
         recentSessions: [],
         recentDocuments: [],

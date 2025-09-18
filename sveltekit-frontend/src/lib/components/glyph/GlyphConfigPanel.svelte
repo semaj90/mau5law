@@ -13,7 +13,7 @@ https://svelte.dev/e/expected_token -->
     initialConfig?: Partial<GlyphEmbedRequest>;
   }
   
-  let { onGenerate, onGenerateVariations, isLoading = false, initialConfig = {} }: Props = $props();
+  let { onGenerate, onGenerateVariations, isLoading = false, initialConfig = }: Props = $props();
   
   // Form state
   let evidenceId = $state(initialConfig.evidence_id?.toString() || 'demo_evidence_001');

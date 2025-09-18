@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   // Reactive state using Svelte 5 runes
   let status = $state($connectionStatus);
   let messageList = $state<RealtimeMessage[]>([]);
-  let streamingList = $state(new Map(););
+  let streamingList = $state(new Map();
   let isInitialized = $state(false);
   let isInitializing = $state(false);
 
@@ -48,8 +48,7 @@ https://svelte.dev/e/js_parse_error -->
     totalMessages: 0,
     connectionUptime: 0,
   });
-  let metricsInterval = $state<number// Subscribe to stores
-  $effect(() = | null>(null)() {
+  let metricsInterval = $state({}) {
     status = $connectionStatus);
     messageList = $messages.slice(-50); // Keep last 50 messages for display
     streamingList = new Map($streamingResponses);
@@ -63,7 +62,7 @@ https://svelte.dev/e/js_parse_error -->
 
     try {
       const userId = `user_${Date.now()}`;
-      const sessionId = `session_${Math.random().toString(36).substr(2, 9)}`;
+      const sessionId = `session_${Math.random.toString-substr(2, 9)}`;
 
       await realtimeComm.initialize(userId, sessionId);
 
@@ -109,11 +108,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!isInitialized) return;
 
     try {
-      await realtimeComm.sendMessage(
-        selectedMessageType,
-        {
-          content: testMessage,
-          timestamp: new Date().toISOString(),
+      await realtimeComm.sendMessage.toISOString(),
           metadata: {
             source: 'demo',
             userAgent: navigator.userAgent,
@@ -515,7 +510,7 @@ Run Performance Test
       </div>
       <div class="yorha-panel-content">
         <div class="message-log max-h-96 overflow-y-auto space-y-2">
-          {#each messageList.slice().reverse() as message}
+          {#each messageList.slice.reverse() as message}
             <div class="message-item p-3 border border-gray-200 rounded-lg">
               <div class="flex items-start justify-between">
                 <div class="flex-1">
@@ -531,8 +526,7 @@ Run Performance Test
                   </div>
                   <div class="text-sm text-gray-900">
                     {typeof message.data === 'string'
-                      ? message.data
-                      : JSON.stringify(message.data).substring(0, 200)}...
+                      ? message.data: JSON.stringify.substring(0, 200)}...
                   </div>
                 </div>
                 <div class="ml-4">
@@ -631,15 +625,15 @@ Run Performance Test
     scrollbar-color: #d1d5db #f9fafb;
   }
 
-  .message-log::-webkit-scrollbar {
+  .message-log: :-webkit-scrollbar {
     width: 6px;
   }
 
-  .message-log::-webkit-scrollbar-track {
+  .message-log: :-webkit-scrollbar-track {
     background: #f9fafb;
   }
 
-  .message-log::-webkit-scrollbar-thumb {
+  .message-log: :-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 3px;
   }

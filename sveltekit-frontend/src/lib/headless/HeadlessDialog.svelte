@@ -24,7 +24,7 @@
     ariaDescribedby,
     onOpen,
     onClose
-  }: HeadlessDialogProps = $props();
+   }: HeadlessDialogProps = $props();
 
   let container = $state<HTMLElement | null>(null);
   let previousActive = $state<HTMLElement | null>(null);

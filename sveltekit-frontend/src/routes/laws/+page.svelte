@@ -45,7 +45,7 @@ let isSearching = $state<boolean >(false);
         searchResults = (result as { success?: unknown; laws?: unknown; error?: unknown }).laws || [];
       } else {
         searchResults = [];
-        console.error('Search failed:', (result as { success?: unknown; laws?: unknown; error?: unknown }).error);
+        console.error(error);
       }
     } catch (error) {
       console.error('Search error:', error);

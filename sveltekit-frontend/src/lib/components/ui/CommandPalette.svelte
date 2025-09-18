@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
     open?: boolean;
   }
 
-  let { open = $bindable(false) }: Props = $props();
+  let { open = $bindable(false)  }: Props = $props();
   // Define the command item type
   interface CommandItem {
     id: string;
@@ -29,9 +29,8 @@ https://svelte.dev/e/js_parse_error -->
   let searchQuery = $state('');
   let selectedIndex = $state(0);
   let filteredItems = $derived(searchQuery 
-    ? allItems.filter(item => 
-        (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).description.toLowerCase().includes(searchQuery.toLowerCase())
+    ? allItems.filter(item => item.title).toLowerCase.includes(searchQuery.toLowerCase()) ||
+        (item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).description.toLowerCase.includes(searchQuery.toLowerCase())
       )
     : allItems);
   const allItems: CommandItem[] = [
@@ -195,7 +194,7 @@ https://svelte.dev/e/js_parse_error -->
                 if (!acc[(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).category]) acc[(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).category] = [];
                 acc[(item as { title?: unknown; description?: unknown; href?: unknown; action?: unknown; category?: unknown; icon?: unknown; shortcut?: unknown }).category].push(item);
                 return acc;
-              }, {})
+              }, )
             ) as entry, categoryIndex}
               {@const [category, items] = entry as [string, CommandItem[]]}
               
@@ -298,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
     position: relative;
     box-shadow: 0 0 30px rgba(165, 28, 48, 0.3);
 }
-  .nier-border-glow::before {
+  .nier-border-glow: :before {
     content: '';
     position: absolute;
     inset: -1px;

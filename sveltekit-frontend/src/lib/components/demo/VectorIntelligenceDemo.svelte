@@ -231,7 +231,7 @@ useSampleQuery(query)}
 
                   <!-- Metadata -->
                   <div class="flex flex-wrap gap-2 mt-3">
-                    {#each Object.entries((result as { content?: any; similarity?: any; metadata?: any }).metadata) as [key, value]}
+                    {#each Object.entries.metadata) as [key, value]}
                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{key}: {value}</span>
                     {/each}
                   </div>

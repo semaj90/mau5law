@@ -53,7 +53,7 @@ export const GET: RequestHandler = async () => {
         available: false,
         error:
           "Cloud AI test failed: " +
-          (testError instanceof Error ? testError.message : "Unknown error"),
+          (testError instanceof Error ? testError.message: "Unknown error"),
       });
     }
   } catch (error: any) {
@@ -62,7 +62,7 @@ export const GET: RequestHandler = async () => {
       {
         success: false,
         available: false,
-        error: error instanceof Error ? error.message : "Health check failed",
+        error: error instanceof Error ? error.message: "Health check failed",
       },
       { status: 500 },
     );

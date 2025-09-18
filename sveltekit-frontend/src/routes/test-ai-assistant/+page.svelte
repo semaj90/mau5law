@@ -97,7 +97,7 @@
     } catch (error) {
       testResults[test.name] = {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
         endpoint: test.endpoint,
         timestamp: new Date().toISOString()
       };
@@ -110,7 +110,6 @@
   async function runAllTests() {
     isRunning = true;
     testResults = {};
-
     for (const test of tests) {
       await runTest(test);
       // Small delay between tests
@@ -164,7 +163,7 @@
     } catch (error) {
       testResults['SSE Stream Test'] = {
         success: false,
-        error: error instanceof Error ? error.message : 'Stream test failed',
+        error: error instanceof Error ? error.message: 'Stream test failed',
         timestamp: new Date().toISOString()
       };
     }
@@ -265,7 +264,7 @@
                   <details class="mt-2">
                     <summary class="font-medium cursor-pointer">Response Data</summary>
                     <pre class="mt-2 p-2 bg-gray-100 rounded text-xs overflow-auto max-h-40">
-{JSON.stringify((result as { success?: unknown; status?: unknown; error?: unknown; data?: unknown; streamSample?: unknown; timestamp?: unknown }).data, null, 2)}
+{JSON.stringify((result as { data?: unknown }).data, null, 2)}
                     </pre>
                   </details>
                 {/if}
@@ -338,8 +337,8 @@
     <div class="mt-6 p-6 nes-container">
       {#snippet children()}
         <h2 class="text-xl font-semibold mb-4">Test Summary</h2>
-        {@const totalTests = Object.keys(testResults).length}
-        {@const passedTests = Object.values(testResults).filter(r => r.success).length}
+  {@const totalTests = Object.keys(testResults).length}
+  {@const passedTests = Object.values(testResults).filter((r: any) => r?.success).length}
 
         <div class="grid grid-cols-3 gap-4 text-center">
           <div class="p-4 bg-blue-50 rounded">

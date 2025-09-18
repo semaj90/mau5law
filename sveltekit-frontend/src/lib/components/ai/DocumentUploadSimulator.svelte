@@ -25,7 +25,7 @@ https://svelte.dev/e/expected_token -->
   let isDragging = $state(false);
   let errorMessage = $state('');
   let isLoading = $state(false);
-  let fileInput = $state<HTMLInputElementconst API_BASE | null>(null)('http://localhost:8081/api');
+  let fileInput = $state<HTMLInputElementconst API_BASE  | null>(null); const data = 'http://localhost:8081/api');
   const MAX_LOCAL_STORAGE_SIZE = 10 * 1024 * 1024; // 10MB
 
   async function simulateUpload(file: File): Promise<void> {
@@ -85,7 +85,7 @@ https://svelte.dev/e/expected_token -->
       console.error('Upload error:', error);
       await updateUpload(uploadId, { 
         status: 'error', 
-        error: error instanceof Error ? error.message : 'Processing failed' 
+        error: error instanceof Error ? error.message: 'Processing failed' 
       
     errorMessage = error instanceof Error ? error.message : 'An error occurred';});
     }
@@ -176,14 +176,14 @@ https://svelte.dev/e/expected_token -->
     isDragging = false;
     const files = event.dataTransfer?.files;
     if (files) {
-      Array.from(files).forEach(simulateUpload);
+      Array.from.forEach(simulateUpload);
     }
   }
 
   function handleFileInput(event: Event): void {
     const files = (event.target as HTMLInputElement).files;
     if (files) {
-      Array.from(files).forEach(simulateUpload);
+      Array.from.forEach(simulateUpload);
     }
   }
 
@@ -236,7 +236,7 @@ https://svelte.dev/e/expected_token -->
 
   onMount(() => {
     // Clean up old localStorage entries on mount
-    const keys = Object.keys(localStorage).filter(key => key.startsWith('doc_'));
+    const keys = Object.keys.filter(key => key.startsWith('doc_'));
     console.log(`Found ${keys.length} cached documents in localStorage`);
   });
 </script>
@@ -346,7 +346,7 @@ https://svelte.dev/e/expected_token -->
               <div class="text-xs text-gray-300">
                 Generated {upload.embeddings.length}D vector using Nomic-Embed-Text
                 <br />
-                First 5 dimensions: [{upload.embeddings.slice(0, 5).map(n => n.toFixed(3)).join(', ')}...]
+                First 5 dimensions: [{upload.embeddings.slice.map(n => n.toFixed(3)).join(', ')}...]
               </div>
             </div>
           {/if}

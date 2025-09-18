@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             compressionRatio: undefined, // Will be calculated if binary
             resultCount: results.length,
             totalResultCount: rankingSet.results.length,
-            truncated: limit ? results.length < rankingSet.results.length : false,
+            truncated: limit ? results.length < rankingSet.results.length: false,
           }
         : undefined,
     };
@@ -84,8 +84,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       // Normalize to ArrayBuffer to avoid SharedArrayBuffer typing issues, then wrap in a Blob
       const arrayBuffer =
         binaryData.buffer instanceof ArrayBuffer
-          ? binaryData.buffer
-          : Uint8Array.from(binaryData).buffer;
+          ? binaryData.buffer: Uint8Array.from(binaryData).buffer;
       const body = new Blob([arrayBuffer]);
       return new Response(body, {
         status: 200,

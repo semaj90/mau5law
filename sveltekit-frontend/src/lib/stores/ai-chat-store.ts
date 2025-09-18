@@ -275,7 +275,7 @@ class AIChatStore {
       chatStore.update(state => {
         state.connectionStatus = 'disconnected';
         state.isLoading = false;
-        state.lastError = error instanceof Error ? error.message : 'Unknown error';
+        state.lastError = error instanceof Error ? error.message: 'Unknown error';
         return state;
       });
 

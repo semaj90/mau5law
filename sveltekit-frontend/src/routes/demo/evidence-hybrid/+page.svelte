@@ -16,7 +16,7 @@
       isLoading = true;
 
       // Generate mock data on the client only
-      caseFiles = Array.from({ length: 120 }).map((_, i) => ({
+      caseFiles = Array.from.map((_, i) => ({
         id: `case-${i + 1}`,
         title: `Case ${i + 1} - Example Title${i % 5 === 0 ? ' - extended' : ''}`,
         summary: `Summary for case ${i + 1}`,
@@ -29,7 +29,7 @@
       Intelligent = mod.default;
       hydrated = true;
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to load evidence list component';
+      error = err instanceof Error ? err.message: 'Failed to load evidence list component';
       console.error('Evidence hybrid demo error:', err);
     } finally {
       isLoading = false;

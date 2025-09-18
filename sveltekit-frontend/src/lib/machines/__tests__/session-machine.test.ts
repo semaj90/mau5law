@@ -115,7 +115,7 @@ const sessionMachine = createMachine({
         input: ({ event, context }) => ({
           type: event.type,
           sessionId: context.sessionId,
-          collaborator: event.type === 'ADD_COLLABORATOR' ? event.collaborator : undefined,
+          collaborator: event.type === 'ADD_COLLABORATOR' ? event.collaborator: undefined,
           caseData: event.type === 'UPDATE_CASE' ? event.caseData : undefined
         }),
         onDone: {

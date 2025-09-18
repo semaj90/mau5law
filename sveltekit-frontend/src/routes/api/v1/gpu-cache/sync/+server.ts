@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
             break;
         }
       } catch (error: any) {
-        const errMsg = error instanceof Error ? error.message : String(error);
+        const errMsg = error instanceof Error ? error.message: String(error);
         if (db in syncResults) {
           // @ts-ignore
           syncResults[db] = { status: 'failed', entries: 0, errors: [errMsg] };
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to synchronize databases',
-        details: dev ? (error instanceof Error ? error.message : String(error)) : undefined,
+        details: dev ? (error instanceof Error ? error.message: String(error)) : undefined,
       },
       { status: 500 }
     );

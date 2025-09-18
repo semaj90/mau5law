@@ -428,7 +428,7 @@ https://svelte.dev/e/js_parse_error -->
 
   ## Legal Strategy
   ### Primary Charges
-  ${synthesis.legalStrategy.primaryCharges.map(charge => `- ${charge}`).join('\n')}
+  ${synthesis.legalStrategy.primaryCharges.map.join('\n')}
 
   ### Prosecution Approach
   ${synthesis.legalStrategy.prosecutionApproach}
@@ -437,14 +437,14 @@ https://svelte.dev/e/js_parse_error -->
   ${synthesis.recommendations.map(rec => `### ${rec.priority.toUpperCase()} - ${rec.action}\n${rec.rationale}\n`).join('\n')}
 
   ## Next Steps
-  ${synthesis.nextSteps.map(step => `- ${step}`).join('\n')}
+  ${synthesis.nextSteps.map.join('\n')}
   `;
 
     const blob = new Blob([content], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `case-synthesis-${caseId}-${new Date().toISOString().split('T')[0]}.md`;
+    a.download = `case-synthesis-${caseId}-${new Date().toISOString.split('T')[0]}.md`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

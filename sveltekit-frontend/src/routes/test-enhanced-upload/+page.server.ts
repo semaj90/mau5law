@@ -96,7 +96,7 @@ export const actions: Actions = {
 
       return fail(500, {
         form,
-        message: `Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: `Upload failed: ${error instanceof Error ? error.message: 'Unknown error'}`
       });
     }
   }

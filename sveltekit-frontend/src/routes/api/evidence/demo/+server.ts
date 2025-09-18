@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Upload failed',
+      error: error instanceof Error ? error.message: 'Upload failed',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }
@@ -131,7 +131,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Failed to list evidence'
+      error: error instanceof Error ? error.message: 'Failed to list evidence'
     }, { status: 500 });
   }
 };

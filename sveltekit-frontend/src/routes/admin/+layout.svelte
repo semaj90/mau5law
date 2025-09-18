@@ -93,11 +93,11 @@ https://svelte.dev/e/js_parse_error -->
 
   // Derived display values for safer template usage
   let userEmail = $derived(currentUserValue?.email ?? '');
-  let userRoleLabel = $derived(currentUserValue?.role ? currentUserValue.role.toUpperCase().replace(/_/g, ' ') : 'UNKNOWN');
+  let userRoleLabel = $derived(currentUserValue?.role ? currentUserValue.role.toUpperCase.replace(/_/g, ' ') : 'UNKNOWN');
 
   $effect(() => {
     visibleNavItems = currentUserValue && currentUserValue.role
-      ? navItems.filter(item => AccessControl.hasPermission(currentUserValue.role, (item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).permission))
+      ? navItems.filter(item => hasPermission(currentUserValue.role, item.permission))
       : [];
   });
 
@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function navClass(item: { path: string; label: string; icon: string; permission: Permission; description: string }) {
-    return (isActivePath((item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).path) ? executiveClasses.navLinkActive : executiveClasses.navLink) + ' w-full block text-left group';
+    return (isActivePath((item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).path) ? executiveClasses.navLinkActive: executiveClasses.navLink) + ' w-full block text-left group';
   }
 
   onMount(async () => {
@@ -273,7 +273,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
             <div class="bg-slate-800/60 border border-amber-500/20 rounded-lg p-4">
               <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Access Level</div>
-              <div class="text-amber-400 font-semibold">{currentUserValue?.role ? currentUserValue.role.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Standard User'}</div>
+              <div class="text-amber-400 font-semibold">{currentUserValue?.role ? currentUserValue.role.replace.replace(/\b\w/g, l => l.toUpperCase()) : 'Standard User'}</div>
               <div class="text-xs text-slate-500 mt-1">Administrator privileges active</div>
             </div>
           </div>
@@ -292,7 +292,7 @@ https://svelte.dev/e/js_parse_error -->
       <h1 class="text-2xl font-bold text-white mb-4">Access Restricted</h1>
       <div class="bg-slate-800/60 border border-red-500/20 rounded-lg p-6 mb-6">
         <div class="text-sm text-slate-400 mb-2">Administrative access required</div>
-        <div class="text-red-400 font-semibold">Current Role: {currentUserValue?.role ? currentUserValue.role.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Unauthorized'}</div>
+        <div class="text-red-400 font-semibold">Current Role: {currentUserValue?.role ? currentUserValue.role.replace.replace(/\b\w/g, l => l.toUpperCase()) : 'Unauthorized'}</div>
         <div class="text-xs text-slate-500 mt-2">Contact your system administrator for access</div>
       </div>
       <Button

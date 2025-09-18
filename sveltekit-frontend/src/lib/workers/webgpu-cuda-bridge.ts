@@ -164,7 +164,7 @@ class WebGPUCudaBridge {
 			self.postMessage({
 				type: 'task-error',
 				taskId: task.id,
-				error: error instanceof Error ? error.message : String(error),
+				error: error instanceof Error ? error.message: String(error),
 				timestamp: new Date().toISOString()
 			});
 		} finally {
@@ -345,7 +345,7 @@ class WebGPUCudaBridge {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					model: config?.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal',
+					model: config?.model || 'gemma3-legal',
 					prompt: config.prompt || 'Analyze the provided legal document.',
 					stream: false,
 					options: {
@@ -385,7 +385,7 @@ class WebGPUCudaBridge {
 					session_id: config.session_id,
 					metadata: {
 						webgpu_bridge: true,
-						data_length: data instanceof Float32Array ? (data as { length?: any; byteLength?: any }).length : (data as { length?: any; byteLength?: any }).byteLength,
+						data_length: data instanceof Float32Array ? (data as { length?: any; byteLength?: any }).length: (data as { length?: any; byteLength?: any }).byteLength,
 						optimization_level: 'rtx_3060_ti'
 					}
 				})
@@ -421,7 +421,7 @@ class WebGPUCudaBridge {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					model: config?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text',
+					model: config?.model || 'nomic-embed-text',
 					prompt: config.text || config.prompt,
 					options: config.options || {}
 				})
@@ -613,7 +613,7 @@ self.onmessage = async (event: MessageEvent<WebGPUCudaBridgeMessage>) => {
 		self.postMessage({
 			type: 'error',
 			requestId,
-			error: error instanceof Error ? error.message : String(error)
+			error: error instanceof Error ? error.message: String(error)
 		});
 	}
 };

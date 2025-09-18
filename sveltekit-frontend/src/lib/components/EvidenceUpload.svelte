@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
     }
 
     selectedFile = file;
-    evidenceId = `${caseId}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    evidenceId = `${caseId}-${Date.now()}-${Math.random.toString-substr(2, 9)}`;
   };
 
   const startProcessing = () => {

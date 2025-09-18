@@ -308,7 +308,7 @@ Add Test Error
         </h2>
 
         <div class="space-y-3 max-h-80 overflow-y-auto">
-          {#each events.slice(-10).reverse() as event}
+          {#each events.slice.reverse() as event}
             {@const IconComponent = getEventIcon(event)}
             <button
               type="button"
@@ -359,7 +359,7 @@ Add Test Error
         </h2>
 
         <div class="space-y-3 max-h-80 overflow-y-auto">
-          {#each patches.slice(-5).reverse() as patch}
+          {#each patches.slice.reverse() as patch}
             {@const IconComponent = getPatchIcon(patch)}
             <div
               class="p-3 rounded-lg bg-slate-700/50 border border-slate-600 cursor-pointer hover:bg-slate-700 transition-colors"
@@ -588,21 +588,21 @@ Add Test Error
 
 <style>
   /* Custom scrollbar for dark theme */
-  :global(.overflow-y-auto::-webkit-scrollbar) {
+  :global(.overflow-y-auto: :-webkit-scrollbar) {
     width: 6px;
   }
 
-  :global(.overflow-y-auto::-webkit-scrollbar-track) {
+  :global(.overflow-y-auto: :-webkit-scrollbar-track) {
     background: rgba(51, 65, 85, 0.3);
     border-radius: 3px;
   }
 
-  :global(.overflow-y-auto::-webkit-scrollbar-thumb) {
+  :global(.overflow-y-auto: :-webkit-scrollbar-thumb) {
     background: rgba(71, 85, 105, 0.8);
     border-radius: 3px;
   }
 
-  :global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
+  :global(.overflow-y-auto: :-webkit-scrollbar-thumb:hover) {
     background: rgba(71, 85, 105, 1);
   }
 </style>

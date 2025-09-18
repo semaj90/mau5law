@@ -191,8 +191,7 @@ export class LegalRAGPipeline {
 
         const chunkRecords = await Promise.all(
           batch.map(async (chunk, idx) => {
-            const embedding = await this.generateEmbedding(chunk);
-
+            const embedding = await this.generateEmbedding(chunk)));
             return {
               documentId: document.id,
               documentType,
@@ -266,7 +265,7 @@ export class LegalRAGPipeline {
           dc.content,
           dc.metadata,
           dc.document_id,
-          1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
+          1 - (dc.embedding: :vector <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
         FROM document_chunks dc
         WHERE
           1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) > ${threshold}

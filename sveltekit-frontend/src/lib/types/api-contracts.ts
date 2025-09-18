@@ -350,24 +350,24 @@ export namespace HealthAPI {
 // ==================== TYPE UTILITY FUNCTIONS ====================
 
 // Extract request type from API contract
-export type RequestOf<T extends ApiContract<any, any>> = T['request'];
+export type RequestOf<T extends ApiContract<any, any> = T['request'];
 
 // Extract response type from API contract
-export type ResponseOf<T extends ApiContract<any, any>> = T['response'];
+export type ResponseOf<T extends ApiContract<any, any> = T['response'];
 
 // Extract data type from API response
-export type DataOf<T extends ApiContract<any, StandardApiResponse<any>>> = 
+export type DataOf<T extends ApiContract<any, StandardApiResponse<any> = 
   T['response'] extends StandardApiResponse<infer U> ? U : never;
 
 // ==================== CLIENT API HELPERS ====================
 
 // Type-safe API client function generator
-export type ApiClient<T extends ApiContract<any, any>> = (
+export type ApiClient<T extends ApiContract<any, any> = (
   request: RequestOf<T>
-) => Promise<ResponseOf<T>>;
+) => Promise<ResponseOf<T>;
 
 // API endpoint configuration
-export interface ApiEndpoint<T extends ApiContract<any, any>> {
+export interface ApiEndpoint<T extends ApiContract<any, any> {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   path: string;
   contract: T;

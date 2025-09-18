@@ -64,7 +64,7 @@ https://svelte.dev/e/js_parse_error -->
 
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; evidence?: unknown }).success) {
-        evidence = { ...evidence, ...(result as { success?: unknown; evidence?: unknown }).evidence };
+        evidence = { ...evidence, ...result.evidence };
         onevidenceUpdated?.();
   }
     } catch (error) {
@@ -74,7 +74,7 @@ https://svelte.dev/e/js_parse_error -->
   }}
   async function updateTags() {
     if (!evidence || !newTags.trim()) return;
-    const tags = newTags.split(',').map(t => t.trim()).filter(Boolean);
+    const tags = newTags.split.map(t => t.trim()).filter(Boolean);
     try {
       const response = await fetch('/api/evidence', {
         method: 'PUT',

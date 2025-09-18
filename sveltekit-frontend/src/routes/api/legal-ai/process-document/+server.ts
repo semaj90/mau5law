@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				console.error('❌ Error checking job status:', error);
 				return json({ 
 					error: 'Failed to check job status',
-					details: error instanceof Error ? error.message : 'Unknown error'
+					details: error instanceof Error ? error.message: 'Unknown error'
 				}, { status: 500 });
 			}
 		}
@@ -188,7 +188,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 			console.error('❌ Direct processing error:', fetchError);
 			return json({ 
 				error: 'Processing failed',
-				details: fetchError instanceof Error ? fetchError.message : 'Unknown error'
+				details: fetchError instanceof Error ? fetchError.message: 'Unknown error'
 			}, { status: 503 });
 		}
 
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		console.error('❌ API endpoint error:', error);
 		return json({ 
 			error: 'Internal server error',
-			details: error instanceof Error ? error.message : 'Unknown error'
+			details: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 });
 	}
 };
@@ -234,7 +234,7 @@ export const GET: RequestHandler = async () => {
 		console.error('❌ Go server health check failed:', error);
 		return json({ 
 			error: 'Go server unreachable',
-			details: error instanceof Error ? error.message : 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error',
 			go_server_url: GO_SERVER_URL
 		}, { status: 503 });
 	}

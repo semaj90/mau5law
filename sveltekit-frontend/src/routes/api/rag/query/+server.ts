@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
       success: true,
       data: {
         answer: ragResponse.answer,
-        sources: includeMetadata ? ragResponse.sources : ragResponse.sources.map(source => ({
+        sources: includeMetadata ? ragResponse.sources: ragResponse.sources.map(source => ({
           id: source.id,
           title: source.title,
           documentType: source.documentType,

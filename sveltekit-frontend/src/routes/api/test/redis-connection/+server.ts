@@ -28,7 +28,7 @@ export const GET: RequestHandler = async () => {
 
     // Wait for connection to be ready
     await new Promise((resolve, reject) => {
-      redis.on('ready', resolve);
+      redis.on('ready', resolve));
       redis.on('error', reject);
       setTimeout(() => reject(new Error('Connection timeout')), 5000);
     });

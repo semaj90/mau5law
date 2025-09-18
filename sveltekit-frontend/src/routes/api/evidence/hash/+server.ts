@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json(
       {
         error: "Failed to search evidence by hash",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         error: "Failed to verify evidence hash",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );

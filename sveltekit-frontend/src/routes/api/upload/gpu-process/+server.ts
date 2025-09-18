@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			} catch (gpuError) {
 				gpuProcessingResult = {
 					error: 'GPU processing error',
-					details: gpuError instanceof Error ? gpuError.message : String(gpuError),
+					details: gpuError instanceof Error ? gpuError.message: String(gpuError),
 					fallback_used: true
 				};
 			}
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		console.error('GPU upload processing error:', error);
 		return json({
 			error: 'Processing pipeline failed',
-			details: error instanceof Error ? error.message : String(error),
+			details: error instanceof Error ? error.message: String(error),
 			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}
@@ -204,7 +204,7 @@ export const GET: RequestHandler = async () => {
 		return json({
 			pipeline_status: 'error',
 			error: 'Pipeline health check failed',
-			details: error instanceof Error ? error.message : String(error)
+			details: error instanceof Error ? error.message: String(error)
 		}, { status: 500 });
 	}
 };

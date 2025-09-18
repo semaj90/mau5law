@@ -60,8 +60,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
         // Normalize recommendations array safely (support either an object with .recommendations or an array directly)
         const recs = Array.isArray(rlRecommendations?.recommendations)
-          ? rlRecommendations.recommendations
-          : Array.isArray(rlRecommendations)
+          ? rlRecommendations.recommendations: Array.isArray(rlRecommendations)
             ? rlRecommendations
             : [];
 
@@ -349,9 +348,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (err: any) {
     console.error('❌ Enhanced Recommendations API error:', err);
 
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    const errorMessage = err instanceof Error ? err.message: 'Unknown error';
     const statusCode =
-      err && typeof err === 'object' && 'status' in err ? (err as any).status : 500;
+      err && typeof err === 'object' && 'status' in err ? (err as any).status: 500;
 
     // Return structured error JSON
     return json(
@@ -589,7 +588,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error("❌ Enhanced Recommendations GET error:", err);
     throw error(
       500,
-      err instanceof Error ? err.message : "Enhanced recommendations failed",
+      err instanceof Error ? err.message: "Enhanced recommendations failed",
     );
   }
 };

@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Legal AI Integration API error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Document processing error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Document processing failed',
+      error: error instanceof Error ? error.message: 'Document processing failed',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }
@@ -127,7 +127,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     console.error('Config update error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Config update failed',
+      error: error instanceof Error ? error.message: 'Config update failed',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

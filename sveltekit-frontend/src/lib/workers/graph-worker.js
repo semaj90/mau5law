@@ -412,7 +412,7 @@ class GraphWorker {
             cache_hits: this.telemetry.cacheHits,
             cache_misses: this.telemetry.cacheMisses,
             hit_rate: totalQueries > 0 ? (this.telemetry.cacheHits / totalQueries * 100) : 0,
-            avg_latency_ms: latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : 0,
+            avg_latency_ms: latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length: 0,
             p95_latency_ms: latencies.length > 0 ? this.calculatePercentile(latencies, 95) : 0,
             p99_latency_ms: latencies.length > 0 ? this.calculatePercentile(latencies, 99) : 0,
             last_query_time: Date.now()

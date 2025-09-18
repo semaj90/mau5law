@@ -162,7 +162,7 @@ export const Interactive: Story = {
     const canvas = within(canvasElement);
     
     await step('Click new case action', async () => {
-      const newCaseButton = canvas.getByText('Create New Case');
+      const newCaseButton = canvas.getByText('Create New Case'));
       await userEvent.click(newCaseButton);
       
       // Modal should appear

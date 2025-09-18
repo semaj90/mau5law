@@ -260,9 +260,7 @@ class PhysicsAwareGpuOrchestrator {
 
   private calculateEstimatedWaitTime(task: GpuTask): number {
     // Estimate wait time based on queue and running tasks
-    const queuePosition = this.taskQueue.filter(t => 
-      t.status === 'queued' && t.priority >= task.priority
-    ).length;
+    const queuePosition = this.taskQueue.filter(item => item.length);
     
     const averageTaskDuration = 5000; // 5 seconds average
     return queuePosition * averageTaskDuration;
@@ -295,7 +293,7 @@ class PhysicsAwareGpuOrchestrator {
 
     return {
       devices: [...this.availableDevices],
-      queuedTasks: this.taskQueue.filter(t => t.status === 'queued').length,
+      queuedTasks: this.taskQueue.filter(item => item.length),
       runningTasks: this.runningTasks.size,
       completedTasks: this.completedTasks.length,
       totalUtilization: this.totalGpuUtilization,
@@ -337,9 +335,7 @@ class PhysicsAwareGpuOrchestrator {
    * Health check for GPU orchestrator
    */
   async healthCheck(): Promise<any> {
-    const availableDevices = this.availableDevices.filter(device => 
-      device.temperature < 85 && device.load < 0.95
-    ).length;
+    const availableDevices = this.availableDevices.filter(item => item.length);
     
     const averageLoad = this.availableDevices.reduce((sum, device) => 
       sum + device.load, 0) / this.availableDevices.length;

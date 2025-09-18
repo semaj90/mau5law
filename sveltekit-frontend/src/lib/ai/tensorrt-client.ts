@@ -315,7 +315,7 @@ Provide a detailed, professional legal analysis:`;
       return {
         connected: false,
         latency,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error'
       };
     }
   }

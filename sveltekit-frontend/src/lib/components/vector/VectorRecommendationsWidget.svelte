@@ -49,8 +49,7 @@ Compact AI recommendations component for sidebar/dashboard use
     autoRefresh = false,
     refreshInterval = 30,
     compact = false,
-    onRecommendationClick = () => {}
-  }: Props = $props();
+    onRecommendationClick = () => }: Props = $props();
 
   let recommendations = $state<IntelligenceRecommendation[]>([]);
   let isLoading = $state(false);

@@ -332,7 +332,7 @@ export function generateAuditReport(results: FormAuditResult[]): string {
   const totalForms = results.length;
   const averageScore = results.reduce((sum, r) => sum + r.compliance.score, 0) / totalForms;
   const criticalIssues = results.flatMap(r => r.compliance.issues.filter(i => i.type === 'critical'));
-  const excellentForms = results.filter(r => r.compliance.level === 'excellent').length;
+  const excellentForms = results.filter(item => item.length);
 
   return `
 # Progressive Enhancement Audit Report

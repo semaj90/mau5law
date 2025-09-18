@@ -690,9 +690,7 @@
 
     // Begin render pass
     const commandEncoder = gpuDevice.createCommandEncoder();
-    const renderPass = commandEncoder.beginRenderPass({
-      colorAttachments: [{
-        view: context.getCurrentTexture().createView(),
+    const renderPass = commandEncoder.beginRenderPass.createView(),
         clearValue: { r: 0.2, g: 0.1, b: 0.4, a: 1.0 }, // N64-style purple background
         loadOp: 'clear',
         storeOp: 'store'
@@ -1060,16 +1058,7 @@
     overflow: hidden;
   }
 
-  .visualization-canvas {
-    display: block;
-    cursor: grab;
-    /* N64-style pixelated rendering for retro effect */
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-  }
-
-  .visualization-canvas:active {
+  .visualization-canv.visualization-canvas:active {
     cursor: grabbing;
   }
 
@@ -1183,12 +1172,7 @@
       justify-self: center;
     }
 
-    .visualization-canvas {
-      width: 100%;
-      height: 400px;
-    }
-
-    .stats-grid {
+    .visualization-canv.stats-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }

@@ -11,8 +11,8 @@ import './polyfills.js';
 import { barrelStore } from './stores/barrel-functions.js';
 
 // Enhanced Type Definitions - Import to register module augmentations
-import './types/drizzle-enhanced.js';
-import './types/lokijs-enhanced.js';
+// import './types/drizzle-enhanced.js';  // Temporarily disabled - file does not exist
+// import './types/lokijs-enhanced.js';   // Temporarily disabled - file does not exist
 import path from "path";
 
 // ===== CENTRALIZED TYPES (SINGLE SOURCE OF TRUTH) =====

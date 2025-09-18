@@ -35,8 +35,7 @@
     error?: unknown;
   }
 
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     title = '',
     description = '',
     size = 'md',
@@ -56,7 +55,7 @@
     footer,
     loading,
     error
-  }: Props = $props();
+   }: Props = $props();
 
   const dispatch = createEventDispatcher();
 
@@ -107,7 +106,7 @@
         dispatch('dataLoad', data);
       }
     } catch (err) {
-      const error = err instanceof Error ? err.message : 'Failed to load data';
+      const error = err instanceof Error ? err.message: 'Failed to load data';
       errorMessage = error;
       onError?.(error);
       dispatch('error', error);

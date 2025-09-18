@@ -316,8 +316,8 @@ async function generateShadersFromTiles(tiles: unknown[]): Promise<void> {
     const shaderKey = `tile_${tile.tileX}_${tile.tileY}_${tile.metadata.evidenceType}`;
     
     // Analyze tile data to determine shader complexity
-    const avgValue = tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).reduce((sum: number, val: number) => sum + val, 0) / tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).length;
-    const variance = tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).reduce((sum: number, val: number) => sum + (val - avgValue) ** 2, 0) / tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).length;
+    const avgValue = tile.data.reduce((sum: number, val: number) => sum + val, 0) / tile.data.length;
+    const variance = tile.data.reduce((sum: number, val: number) => sum + (val - avgValue) ** 2, 0) / tile.data.length;
     
     const shader = generateShaderCode({
       tileData: tile.data,
@@ -478,7 +478,7 @@ async function applyCHRROMCompression(tiles: unknown[]): Promise {
   const startTime = performance.now();
   
   // Calculate original size
-  const originalSize = tiles.reduce((total, tile) => total + tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).byteLength, 0);
+  const originalSize = tiles.reduce((total, tile) => total + tile.data.byteLength, 0);
   
   // Generate CHR-ROM patterns (ultra-compressed representations)
   const chrPatterns = [];
@@ -563,7 +563,7 @@ async function renderTiledVisualization(): Promise<void> {
     // Create ImageData from tile
     const imageData = ctx.createImageData(tile.width, tile.height);
     
-    for (let i = 0; i < tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).length; i++) {
+    for (let i = 0; i < tile.data.length; i++) {
       const pixelIndex = i * 4;
       const value = Math.floor(tile.data[i] * 255);
       
@@ -621,7 +621,7 @@ async function predictiveAssetCaching(): Promise<void> {
     };
     
     const result = await ultimateNeuralTopologyOrchestrator.processWithUnifiedIntelligence(request);
-    console.log('🔮 Predictive caching completed:', (result as { predictions?: unknown }).predictions.recommendedAssets.length, 'assets predicted');
+    console.log.predictions.recommendedAssets.length, 'assets predicted');
     
   } catch (error) {
     console.warn('Predictive caching failed:', error);
@@ -632,9 +632,9 @@ async function predictiveAssetCaching(): Promise<void> {
  * Update memory usage metrics
  */
 function updateMemoryUsage(): void {
-  const gpuMemory = tiledData.reduce((total, tile) => total + tile.(data as { evidenceType?: unknown; reduce?: unknown; length?: unknown; confidence?: unknown; byteLength?: unknown }).byteLength, 0);
+  const gpuMemory = tiledData.reduce((total, tile) => total + tile.data.byteLength, 0);
   const systemMemory = generatedShaders.size * 1024; // Estimate 1KB per shader
-  const cacheMemory = compressionResults ? compressionResults.compressedSize : 0;
+  const cacheMemory = compressionResults ? compressionResults.compressedSize: 0;
   
   memoryUsage = {
     gpu: Math.round(gpuMemory / 1024 / 1024 * 100) / 100, // MB
@@ -696,7 +696,7 @@ export function getCHRPatterns(): string[] {
     </div>
     
     <div class="quality-indicator">
-      🎮 Quality: {currentQuality.replace(/-/g, ' ').replace(/_/g, ' ')}
+      🎮 Quality: {currentQuality.replace.replace(/_/g, ' ')}
     </div>
   </div>
 
@@ -928,15 +928,7 @@ export function getCHRPatterns(): string[] {
   overflow: hidden;
 }
 
-.tiled-canvas {
-  width: 100%;
-  height: auto;
-  max-height: 400px;
-  object-fit: contain;
-  image-rendering: pixelated;
-}
-
-.processing-overlay {
+.tiled-canv.processing-overlay {
   position: absolute;
   top: 0;
   left: 0;

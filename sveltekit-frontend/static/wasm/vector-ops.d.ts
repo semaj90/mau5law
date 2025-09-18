@@ -103,6 +103,62 @@ export declare function dotProductSIMD(aPtr: number, bPtr: number, length: numbe
  */
 export declare function cosineSimilaritySIMD(aPtr: number, bPtr: number, length: number): number;
 /**
+ * src/wasm/vector-operations/prepareVectorForServer
+ * @param vectorPtr `usize`
+ * @param length `i32`
+ */
+export declare function prepareVectorForServer(vectorPtr: number, length: number): void;
+/**
+ * src/wasm/vector-operations/processServerResponse
+ * @param responsePtr `usize`
+ * @param resultPtr `usize`
+ * @param length `i32`
+ */
+export declare function processServerResponse(responsePtr: number, resultPtr: number, length: number): void;
+/**
+ * src/wasm/vector-operations/hybridCosineSimilarity
+ * @param aPtr `usize`
+ * @param bPtr `usize`
+ * @param length `i32`
+ * @param useServer `bool`
+ * @returns `f32`
+ */
+export declare function hybridCosineSimilarity(aPtr: number, bPtr: number, length: number, useServer: boolean): number;
+/**
+ * src/wasm/vector-operations/batchVectorChunking
+ * @param vectorsPtr `usize`
+ * @param numVectors `i32`
+ * @param vectorLength `i32`
+ * @param chunkSize `i32`
+ * @param resultsPtr `usize`
+ * @returns `i32`
+ */
+export declare function batchVectorChunking(vectorsPtr: number, numVectors: number, vectorLength: number, chunkSize: number, resultsPtr: number): number;
+/**
+ * src/wasm/vector-operations/prepareTensorForCUDA
+ * @param tensorPtr `usize`
+ * @param dimensions `~lib/array/Array<i32>`
+ * @param dimCount `i32`
+ * @param outputPtr `usize`
+ */
+export declare function prepareTensorForCUDA(tensorPtr: number, dimensions: Array<number>, dimCount: number, outputPtr: number): void;
+/**
+ * src/wasm/vector-operations/optimizedEmbeddingTransfer
+ * @param embeddingPtr `usize`
+ * @param length `i32`
+ * @param compressionLevel `i32`
+ * @returns `usize`
+ */
+export declare function optimizedEmbeddingTransfer(embeddingPtr: number, length: number, compressionLevel: number): number;
+/**
+ * src/wasm/vector-operations/shouldUseServer
+ * @param operationType `i32`
+ * @param dataSize `i32`
+ * @param complexityScore `i32`
+ * @returns `bool`
+ */
+export declare function shouldUseServer(operationType: number, dataSize: number, complexityScore: number): boolean;
+/**
  * src/wasm/vector-operations/cosineSimJS
  * @param aPtr `usize`
  * @param bPtr `usize`
@@ -131,3 +187,11 @@ export declare function cosineSimSIMDJS(aPtr: number, bPtr: number, length: numb
  * @returns `i32`
  */
 export declare function getMemoryStats(): number;
+/**
+ * src/wasm/vector-operations/benchmarkOperation
+ * @param operation `i32`
+ * @param dataSize `i32`
+ * @param iterations `i32`
+ * @returns `f32`
+ */
+export declare function benchmarkOperation(operation: number, dataSize: number, iterations: number): number;

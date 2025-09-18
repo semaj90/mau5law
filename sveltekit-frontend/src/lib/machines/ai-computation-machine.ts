@@ -96,7 +96,7 @@ const processRabbitMQQueue = fromPromise(async ({ input }: {
               timestamp: Date.now(),
             }),
           500
-        );
+        ));
       });
       results.push(result);
     } catch (error: any) {

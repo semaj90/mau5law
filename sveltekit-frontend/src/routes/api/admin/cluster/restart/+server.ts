@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Don't await the full restart - return immediately
     restartPromise
       .then(() => {
-        console.log('✅ Rolling restart completed successfully');
+        console.log('✅ Rolling restart completed successfully'));
         globalThis.clusterRestarting = false;
       })
       .catch((error) => {
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({
       error: 'Failed to initiate rolling restart',
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async () => {
     
     return json({
       error: 'Failed to get restart status',
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

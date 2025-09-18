@@ -70,7 +70,7 @@ class EnhancedLokiDB {
   private websocket: WebSocket | null = null;
   private sse: EventSource | null = null;
   private maxBytes: number = (() => {
-    const winBytes = typeof window !== 'undefined' ? (window as any).LOKI_MAX_BYTES : undefined;
+    const winBytes = typeof window !== 'undefined' ? (window as any).LOKI_MAX_BYTES: undefined;
     const globBytes = (globalThis as any).__LOKI_MAX_BYTES__;
     const mb = Number(winBytes ?? globBytes ?? 512);
     return (Number.isFinite(mb) && mb > 0 ? mb : 512) * 1024 * 1024; // default 512MB
@@ -557,7 +557,7 @@ class EnhancedLokiDB {
         rel.accessCount = (rel.accessCount || 0) + 1;
         col.update(rel);
 
-        const nextId = rel.fromId === currentId ? rel.toId : rel.fromId;
+        const nextId = rel.fromId === currentId ? rel.toId: rel.fromId;
         traverse(nextId, depth + 1);
       }
     };

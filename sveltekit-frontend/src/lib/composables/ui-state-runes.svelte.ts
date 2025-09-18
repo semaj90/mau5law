@@ -123,10 +123,10 @@ export function useToast() {
 }
 
 // Form state management
-export function useForm<T extends Record<string, any>>(initialValues: T) {
+export function useForm<T extends Record<string, any>(initialValues: T) {
   let values = $state<T>({ ...initialValues });
-  let errors = $state<Partial<Record<keyof T, string>>>({});
-  let touched = $state<Partial<Record<keyof T, boolean>>>({});
+  let errors = $state<Partial<Record<keyof T, string>({});
+  let touched = $state<Partial<Record<keyof T, boolean>({});
   let isSubmitting = $state(false);
   let isValid = $derived(Object.keys(errors).length === 0);
   let isDirty = $derived(
@@ -171,7 +171,7 @@ export function useForm<T extends Record<string, any>>(initialValues: T) {
   }
 
   function validate(validators: Partial<Record<keyof T, (value: any) => string | null>>): boolean {
-    const newErrors: Partial<Record<keyof T, string>> = {};
+    const newErrors: Partial<Record<keyof T, string> = {};
     let hasErrors = false;
 
     Object.keys(validators).forEach(field => {
@@ -280,7 +280,7 @@ export function useAsync<T>(asyncFn: () => Promise<T>) {
 export function useSidebar(initialOpen = true) {
   let isOpen = $state(initialOpen);
   let activeSection = $state<string | null>(null);
-  let pinnedSections = $state<Set<string>>(new Set());
+  let pinnedSections = $state<Set<string>(new Set());
 
   let isPinned = $derived((section: string) => pinnedSections.has(section));
 

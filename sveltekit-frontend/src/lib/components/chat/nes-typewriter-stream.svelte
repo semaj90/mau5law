@@ -108,7 +108,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
   }
   
   async function preloadAlphabetTextures(): Promise<void> {
-    const commonChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:!?-()[]{}"\' ';
+    const commonChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:!?-()[] "\' ';
     
     for (const char of commonChars) {
       await cacheCharacterTexture(char);
@@ -477,7 +477,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
   }
   
   /* Emphasis effect for special characters */
-  .nes-typewriter-text :global(.nes-text-emphasis) {
+  .nes-typewriter-text: global(.nes-text-emphasis) {
     animation: emphasize 0.3s ease-out;
   }
   
@@ -522,7 +522,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
     position: relative;
   }
   
-  .nes-typewriter-container.loading::after {
+  .nes-typewriter-container.loading: :after {
     content: '';
     position: absolute;
     top: 0;
@@ -572,7 +572,7 @@ https://svelte.dev/e/legacy_reactive_statement_invalid -->
       opacity: 1;
     }
     
-    .nes-typewriter-text :global(.nes-text-emphasis) {
+    .nes-typewriter-text: global(.nes-text-emphasis) {
       animation: none;
     }
   }

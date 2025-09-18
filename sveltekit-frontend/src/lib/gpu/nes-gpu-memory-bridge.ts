@@ -160,7 +160,7 @@ export class NESGPUMemoryBridge {
     
     try {
       // Calculate total buffer size
-      const metadataSize = document.metadata ? JSON.stringify(document.metadata).length : 0;
+      const metadataSize = document.metadata ? JSON.stringify(document.metadata).length: 0;
       const embeddingSize = document.metadata?.vectorEmbedding?.length || 0;
       const totalSize = 64 + metadataSize + (embeddingSize * 4); // Headers + metadata + embeddings
       
@@ -516,9 +516,9 @@ export class NESGPUMemoryBridge {
       binaryCacheSize: this.binaryCache.size,
       textureCacheSize: this.textureCache.size,
       activeBankMappings: Object.fromEntries(this.activeBankMappings),
-      cudaRegionsMapped: Array.from(this.cudaRegions.values()).filter(r => r.mapped).length,
+      cudaRegionsMapped: Array.from(this.cudaRegions.values()).filter(item => item.length),
       memoryEfficiencyRatio: this.performanceMetrics.flatBufferParseTime > 0 ? 
-        this.performanceMetrics.jsonParseTime / this.performanceMetrics.flatBufferParseTime : 0
+        this.performanceMetrics.jsonParseTime / this.performanceMetrics.flatBufferParseTime: 0
     };
   }
 
@@ -683,7 +683,7 @@ export class NESGPUMemoryBridge {
     );
     
     const results = await Promise.all(loadPromises);
-    const successCount = results.filter(Boolean).length;
+    const successCount = results.filter(item => item.length);
     
     console.log(`✅ Batch loaded ${successCount}/${patterns.length} CHR-ROM patterns`);
     return successCount;

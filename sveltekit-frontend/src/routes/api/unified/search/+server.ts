@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       { 
         error: 'Search failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message: 'Unknown error'
       }, 
       { status: 500 }
     );

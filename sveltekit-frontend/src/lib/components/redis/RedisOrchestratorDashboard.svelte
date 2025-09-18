@@ -271,7 +271,7 @@
         </div>
         
         <div class="processing-list">
-          {#each recentProcessingTimes.slice(-5).reverse() as time}
+          {#each recentProcessingTimes.slice.reverse() as time}
             <div class="processing-item">
               <span class="endpoint">{time.endpoint}</span>
               <span class="time" style="color: {time.time < 100 ? '#00d800' : time.time < 1000 ? '#fc9838' : '#f83800'}">
@@ -457,19 +457,19 @@
     border-left: 3px solid #7c7c7c;
   }
 
-  .task-(item as { queued?: unknown; processing?: unknown; completed?: unknown; failed?: unknown }).queued {
+  .task-.queued {
     border-left-color: #fc9838;
   }
 
-  .task-(item as { queued?: unknown; processing?: unknown; completed?: unknown; failed?: unknown }).processing {
+  .task-.processing {
     border-left-color: #3cbcfc;
   }
 
-  .task-(item as { queued?: unknown; processing?: unknown; completed?: unknown; failed?: unknown }).completed {
+  .task-.completed {
     border-left-color: #00d800;
   }
 
-  .task-(item as { queued?: unknown; processing?: unknown; completed?: unknown; failed?: unknown }).failed {
+  .task-.failed {
     border-left-color: #f83800;
   }
 

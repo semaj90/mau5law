@@ -25,14 +25,13 @@
     deadline: ''
   });
 
-  let formErrors = $state<Record<string, string>('')>({});
+  let formErrors = $state<Record<string, string>('')>( );
   let isSubmitting = $state(false);
   let activeTab = $state('basic');
 
   // Form validation
   function validateForm(): boolean {
     const errors: Record<string, string> = {};
-
     if (!formData.caseTitle.trim()) {
       errors.caseTitle = 'Case title is required';
     }
@@ -54,7 +53,7 @@
     }
 
     formErrors = errors;
-    return Object.keys(errors).length === 0;
+    return Object.keys.length === 0;
   }
 
   // Form submission
@@ -156,7 +155,7 @@
   // Progress calculation
   let formProgress = $derived(() => {
     const totalFields = 12;
-    const filledFields = Object.values(formData).filter(value => value.trim()).length;
+    const filledFields = Object.values.filter(value => value.trim()).length;
     return Math.round((filledFields / totalFields) * 100);
   });
 </script>
@@ -636,7 +635,7 @@
       justify-content: stretch;
     }
 
-    .action-buttons :global(button) {
+    .action-buttons: global(button) {
       flex: 1;
     }
   }

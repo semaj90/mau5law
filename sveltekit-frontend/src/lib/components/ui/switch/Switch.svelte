@@ -27,7 +27,7 @@
   .track.on {
     background: #22c55e;
   }
-  .track::after {
+  .track: :after {
     content: '';
     position: absolute;
     top: 3px;
@@ -38,7 +38,7 @@
     border-radius: 9999px;
     transition: transform 0.2s;
   }
-  .track.on::after {
+  .track.on: :after {
     transform: translateX(18px);
   }
 </style>

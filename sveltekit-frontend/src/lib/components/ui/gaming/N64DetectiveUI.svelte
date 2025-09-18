@@ -251,11 +251,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
   // Computed values
   const totalMemoryUsed = $derived(
-    Object.values(memoryBankStatus).reduce((sum, bank) => sum + bank.used, 0)
+    Object.values.reduce((sum, bank) => sum + bank.used, 0)
   );
 
   const totalMemoryAvailable = $derived(
-    Object.values(memoryBankStatus).reduce((sum, bank) => sum + bank.total, 0)
+    Object.values.reduce((sum, bank) => sum + bank.total, 0)
   );
 
   const memoryUtilization = $derived(
@@ -481,7 +481,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
             {#each conflicts as conflict}
               <div class="conflict-item" class:critical={conflict.severity === 'critical'}>
                 <div class="conflict-header">
-                  <div class="conflict-type">{conflict.type.replace(/_/g, ' ').toUpperCase()}</div>
+                  <div class="conflict-type">{conflict.type.replace.toUpperCase()}</div>
                   <div class="conflict-severity severity-{conflict.severity}">
                     {conflict.severity.toUpperCase()}
                   </div>
@@ -630,7 +630,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     position: relative;
   }
 
-  .n64-detective-ui.scanlines::before {
+  .n64-detective-ui.scanlines: :before {
     content: '';
     position: absolute;
     top: 0;
@@ -1032,7 +1032,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     padding: 1rem;
   }
 
-  .conflict-(item as { critical?: unknown }).critical {
+  .conflict-.critical {
     border-color: #ff0000;
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
   }

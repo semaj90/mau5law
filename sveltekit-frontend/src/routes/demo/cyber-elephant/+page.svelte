@@ -225,7 +225,7 @@ https://svelte.dev/e/js_parse_error -->
   			return { index, distance: dx * dx + dy * dy + dz * dz };
   		});
   		distances.sort((a, b) => a.distance - b.distance);
-  		return distances.slice(0, k).map(d => d.index);
+  		return distances.slice.map(d => d.index);
   	}
   	function highlightNearestNeighbors(indices) {
   		// Remove previous highlights

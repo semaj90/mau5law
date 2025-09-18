@@ -84,7 +84,6 @@ export const load: ServerLoad = async (event): Promise<LayoutData> => {
         initTime: 0,
         bitsUICompatible: true,
       };
-
       // Store the result in cache
       setCache(cacheKey, startupStatus, STARTUP_TTL_SECONDS);
 

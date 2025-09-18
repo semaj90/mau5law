@@ -411,7 +411,7 @@ async function runComprehensivePerformanceTest(testConfig: any): Promise<any> {
     duration: performance.now() - docProcessingStart,
     documentsProcessed: docResults.length,
     averageTime: (performance.now() - docProcessingStart) / docResults.length,
-    cacheHits: docResults.filter(r => r.performance?.cacheHit).length,
+    cacheHits: docResults.filter(item => item.length),
     processingPaths: docResults.map(r => r.processingPath)
   });
   

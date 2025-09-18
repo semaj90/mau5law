@@ -134,7 +134,7 @@ export const GET: RequestHandler = async () => {
   } catch (err: any) {
     return json({
       status: 'unhealthy',
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error',
       config: {
         model: config.embeddingModel,
         ollamaBaseUrl: config.ollamaBaseUrl

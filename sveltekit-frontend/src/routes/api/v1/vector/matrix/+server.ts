@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
   } catch (err) {
     console.error('Matrix API error:', err);
-    throw error(500, `Matrix operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Matrix operation failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -435,7 +435,7 @@ async function processCPUBatchOperation(params: {
       chunk.map(async (matrix) => {
         switch (operation) {
           case 'batch_multiply':
-            if (!transformMatrix) throw new Error('transformMatrix required for batch_multiply');
+            if (!transformMatrix) throw new Error('transformMatrix required for batch_multiply')));
             return multiplyMatrices(matrix, transformMatrix);
 
           case 'batch_transpose':

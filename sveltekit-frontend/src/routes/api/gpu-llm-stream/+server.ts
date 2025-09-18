@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
           console.error('Streaming error:', err);
           const errorData = JSON.stringify({
             type: 'error',
-            message: err instanceof Error ? err.message : 'Unknown error'
+            message: err instanceof Error ? err.message: 'Unknown error'
           });
           controller.enqueue(new TextEncoder().encode(`data: ${errorData}\n\n`));
           controller.close();
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
   } catch (err) {
     console.error('API error:', err);
-    throw error(500, err instanceof Error ? err.message : 'Internal server error');
+    throw error(500, err instanceof Error ? err.message: 'Internal server error');
   }
 };
 

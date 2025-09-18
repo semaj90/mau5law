@@ -415,12 +415,12 @@ export class DetectiveWebSocketManager {
   getCollaborationStats() {
     return {
       connectedUsers: this.collaborativeUsers.size,
-      typingUsers: Array.from(this.collaborativeUsers.values()).filter(u => u.typing).length,
+      typingUsers: Array.from(this.collaborativeUsers.values()).filter(item => item.length),
       lastActivity: Math.max(...Array.from(this.collaborativeUsers.values()).map(u => new Date(u.lastActivity).getTime())),
       focusDistribution: {
-        evidence: Array.from(this.collaborativeUsers.values()).filter(u => u.currentFocus === 'evidence').length,
-        connections: Array.from(this.collaborativeUsers.values()).filter(u => u.currentFocus === 'connections').length,
-        analysis: Array.from(this.collaborativeUsers.values()).filter(u => u.currentFocus === 'analysis').length
+        evidence: Array.from(this.collaborativeUsers.values()).filter(item => item.length),
+        connections: Array.from(this.collaborativeUsers.values()).filter(item => item.length),
+        analysis: Array.from(this.collaborativeUsers.values()).filter(item => item.length)
       }
     };
   }

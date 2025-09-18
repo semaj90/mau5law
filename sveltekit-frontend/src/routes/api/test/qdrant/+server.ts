@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'qdrant_health_check',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'collection_setup',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'vector_search',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'vector_upsert',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -167,7 +167,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'postgresql_sync_test',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -190,7 +190,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
 
         const searchResults = await Promise.all(searchPromises);
-        const cacheHits = searchResults.filter(r => r.stats.cacheHit).length;
+        const cacheHits = searchResults.filter(item => item.length);
 
         results.push({
           test: 'performance_test',
@@ -202,7 +202,7 @@ export const GET: RequestHandler = async ({ url }) => {
             avg_search_time: Math.round(
               searchResults.reduce((sum, r) => sum + r.stats.searchTimeMs, 0) / searchResults.length
             ),
-            som_clusters_used: searchResults.filter(r => r.stats.somClusterUsed).length
+            som_clusters_used: searchResults.filter(item => item.length)
           },
           duration: Date.now() - startTime
         });
@@ -210,7 +210,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'performance_test',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -223,9 +223,9 @@ export const GET: RequestHandler = async ({ url }) => {
       tests: results,
       summary: {
         total: results.length,
-        passed: results.filter(r => r.status === 'success').length,
-        failed: results.filter(r => r.status === 'error').length,
-        warnings: results.filter(r => r.status === 'warning').length,
+        passed: results.filter(item => item.length),
+        failed: results.filter(item => item.length),
+        warnings: results.filter(item => item.length),
         avg_duration: Math.round(
           results.reduce((sum, r) => sum + (r.duration || 0), 0) / results.length
         )
@@ -243,7 +243,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }
@@ -273,7 +273,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       return json({
         success: false,
         action: 'postgresql_sync',
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
         timestamp: new Date().toISOString()
       }, { status: 500 });
     }

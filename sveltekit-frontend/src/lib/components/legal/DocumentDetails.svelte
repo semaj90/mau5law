@@ -9,7 +9,7 @@ https://svelte.dev/e/js_parse_error -->
   import type { DocumentCache, VectorSearchCache } from '$lib/db/client-db.js';
   let { documentId = $bindable()  }: { documentId = $bindable() : unknown } = $props(); // string;
   let { isVisible = $bindable()  }: { isVisible = $bindable() : unknown } = $props(); // false;
-  let { onClose = $bindable()  }: { onClose = $bindable() : unknown } = $props(); // () => void = () => {};
+  let { onClose = $bindable()  }: { onClose = $bindable() : unknown } = $props(); // () => void = () => ;
   // Reactive state management
   const documentData = writable<any>(null);
   const isLoading = writable<boolean>(false);
@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
       await fetchAndCacheDocument(docId, forceRefresh);
     } catch (error) {
       console.error('Document loading failed:', error);
-      errorMessage.set(error instanceof Error ? error.message : 'Failed to load document');
+      errorMessage.set(error instanceof Error ? error.message: 'Failed to load document');
       isLoading.set(false);
       loadingSource.set(null);
     }
@@ -95,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
       },
       hash: data.document.content_hash || `hash_${Date.now()}`,
       lastAccessed: new Date(),
-      cacheSize: JSON.stringify(data).length
+      cacheSize: JSON.stringify.length
     };
     // Store in IndexedDB with error handling
     try {
@@ -113,7 +113,7 @@ https://svelte.dev/e/js_parse_error -->
   function displayDocumentDetails(data: unknown) {
     // Handle both cached format and direct server response format
     const doc = data.document || data;
-    const metadata = data.metadata || {};
+    const metadata = data.metadata || ;
     documentData.set({
       id: doc.id || doc.documentId,
       title: doc.title,

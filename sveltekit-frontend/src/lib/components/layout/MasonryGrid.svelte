@@ -34,7 +34,7 @@ https://svelte.dev/e/js_parse_error -->
     initLayout = true,
     transitionDuration = '0.3s',
     dragDisabled = false,
-    dropTargetStyle = {},
+    dropTargetStyle = ,
     dropFromOthersDisabled = false
   }: Props = $props();
 
@@ -191,10 +191,10 @@ https://svelte.dev/e/js_parse_error -->
   :global(.masonry-item.drag-disabled) {
     cursor: default;
   }
-  :global(.masonry-item:not(.drag-disabled)) {
+  :global(.masonry-item: not(.drag-disabled)) {
     cursor: grab;
 }
-  :global(.masonry-item:not(.drag-disabled):active) {
+  :global(.masonry-item: not(.drag-disabled):active) {
     cursor: grabbing;
 }
   :global(.masonry-item.drag-shadow) {
@@ -206,7 +206,7 @@ https://svelte.dev/e/js_parse_error -->
     transform: rotate(5deg);
   }
   /* Loading state */
-  .masonry-grid:empty::before {
+  .masonry-grid: empty::before {
     content: 'Loading...';
     display: block;
     text-align: center;

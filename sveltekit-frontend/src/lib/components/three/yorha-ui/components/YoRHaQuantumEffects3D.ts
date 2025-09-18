@@ -764,8 +764,8 @@ export class YoRHaQuantumEffects3D extends YoRHa3DComponent {
     collapsed: number;
     tunneling: number;
   } {
-    const collapsed = this.quantumParticles.filter(p => p.collapsed).length;
-    const entangled = this.quantumParticles.filter(p => p.entangled).length;
+    const collapsed = this.quantumParticles.filter(item => item.length);
+    const entangled = this.quantumParticles.filter(item => item.length);
     
     return {
       coherence: this.quantumOptions.quantumCoherence,

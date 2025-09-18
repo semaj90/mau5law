@@ -576,7 +576,7 @@ export class MasterCognitiveHub {
 
     for (const item of warmupData) {
       await reinforcementLearningCache.set((item as { key?: any; value?: any }).key, {
-        ...(item as { key?: any; value?: any }).value,
+        ...item.value,
         priority: 0.9,
         cognitiveValue: 0.8,
         semanticTags: ['system', 'warmup', 'cognitive']
@@ -1125,7 +1125,7 @@ export class MasterCognitiveHub {
   private measureQuantumEntanglement(): number { return Math.random() * 0.5 + 0.1; }
   private measureSuperpositionProcessing(): number { return Math.random() * 0.4 + 0.1; }
   private calculateTimeToSingularity(): number { return Math.max(0, 100 - this.state.intelligence.collective * 100); }
-  private calculateDeveloperLevel(): number { return Object.values(this.state.secretModes).filter(Boolean).length * 10; }
+  private calculateDeveloperLevel(): number { return Object.values(this.state.secretModes).filter(item => item.length) * 10; }
 
   // Placeholder methods for complex operations
   private extractSuccessfulPatterns(insights: any): any[] { return []; }

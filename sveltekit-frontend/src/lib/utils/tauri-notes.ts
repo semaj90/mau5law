@@ -257,7 +257,7 @@ class TauriNotesService {
   private async notesToHtml(notes: SavedNote[]): Promise<string> {
     const htmlParts = await Promise.all(
       notes.map(async (note) => {
-        const title = `<h1>${note.title}</h1>`;
+        const title = `<h1>${note.title}</h1>`));
         const metadata = `
         <div class="note-metadata">
           <p><strong>Created:</strong> ${note.savedAt.toLocaleDateString()}</p>

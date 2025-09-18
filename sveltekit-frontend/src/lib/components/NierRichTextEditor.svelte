@@ -22,7 +22,7 @@ https://svelte.dev/e/component_invalid_directive -->
   import { Select } from "$lib/components/ui/select";
   import { Separator } from "$lib/components/ui/separator";
   let editor = $state<Editor | null >(null);
-  let editorElement = $state<HTMLElementonMount(() = | null>(null)() {
+  let editorElement = $state({}) {
     editor = new Editor({
       element: editorElement,
       extensions: [StarterKit],
@@ -94,7 +94,7 @@ editor?.commands.redo()}
         class="nier-toolbar-btn bits-btn bits-btn"
         class:active={editor?.isActive('bold')}
         onclick={() =>
-editor?.chain().focus().toggleBold().run()}
+editor?.chain.focus().toggleBold.run()}
       >
         <strong>B</strong>
 
@@ -104,7 +104,7 @@ editor?.chain().focus().toggleBold().run()}
         class="nier-toolbar-btn bits-btn bits-btn"
         class:active={editor?.isActive('italic')}
         onclick={() =>
-editor?.chain().focus().toggleItalic().run()}
+editor?.chain.focus().toggleItalic.run()}
       >
         <em>I</em>
 

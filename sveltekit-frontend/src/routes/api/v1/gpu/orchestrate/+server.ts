@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(
       {
         error: 'GPU orchestration failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );
@@ -310,7 +310,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         status: 'unhealthy',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

@@ -17,7 +17,7 @@
     children,
     footer,
     trigger
-   }: { open = $bindable(),
+    }: { open = $bindable(),
     title = $bindable(),
     description = $bindable(),
     size = $bindable(),

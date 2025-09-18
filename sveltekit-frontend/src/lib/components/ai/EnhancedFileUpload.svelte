@@ -24,7 +24,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Svelte 5 props with defaults
   let {
-    onUploadComplete = () => {},
+    onUploadComplete = () => ,
     accept = '.pdf,.docx,.txt,.jpg,.png,.tiff',
     maxSize = 50 * 1024 * 1024, // 50MB
     enableOCR = true,
@@ -39,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
   let searchQuery = $state('');
   let searchResults = $state<unknown[]>([]);
   let isSearching = $state(false);
-  let systemStatus = $state<any>({});
+  let systemStatus = $state<any>( );
 
   // === MCP INTEGRATION LAYER ===
   const MCP_ENDPOINTS = {
@@ -56,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
       statusSocket.onopen = () => console.debug('[UploadWS] connected');
       statusSocket.onmessage = (ev) => {
         try {
-          const msg = JSON.parse(ev.data || '{}');
+          const msg = JSON.parse(ev.data || ' ');
           if (!msg.filename) return;
           const entryId = Array.from(fileStates.keys()).find(
             (id) => fileStates.get(id)?.name === msg.filename
@@ -65,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
             const current = fileStates.get(entryId);
             fileStates.set(entryId, {
               ...current,
-              progress: typeof msg.progress === 'number' ? msg.progress : current.progress,
+              progress: typeof msg.progress === 'number' ? msg.progress: current.progress,
               status: msg.status || current.status,
               error: msg.error || current.error,
               documentId: msg.documentId || current.documentId,
@@ -91,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const aggregate = await fetch(MCP_ENDPOINTS.status).catch(() => null);
       if (aggregate?.ok) {
-        const json = await aggregate.json().catch(() => ({}));
+        const json = await aggregate.json.catch(() => ( ));
         status.ocr = !!json.ocr?.healthy || !!json.ocr;
         status.embeddings = !!json.embeddings?.healthy || !!json.embeddings;
         status.search = !!json.search?.healthy || !!json.search;
@@ -106,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
         await Promise.all(
           probes.map(async ([k, url]) => {
             try {
-              const r = await fetch(url);
+              const r = await fetch(url)));
               if (r.ok) status[k] = true;
             } catch {
               /* ignore */
@@ -189,7 +189,7 @@ https://svelte.dev/e/js_parse_error -->
 
       if ((response as { ok?: any; json?: any }).ok) {
         const result = await (response as { ok?: any; json?: any }).json();
-        toast.success(`Successfully processed ${(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).successfulUploads} of ${(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).totalFiles} files`);
+        toast.success.successfulUploads} of ${(result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).totalFiles} files`);
 
         // Update file states with results
         (result as { successfulUploads?: any; totalFiles?: any; results?: any; success?: any; error?: any; filename?: any; excerpt?: any; similarity?: any; searchType?: any; matchedBy?: any }).results.forEach((fileResult: any) => {

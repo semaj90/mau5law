@@ -18,8 +18,7 @@
     description?: string;
   }
 
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     onOpenChange,
     size = 'md',
     closeOnEscape = true,
@@ -29,7 +28,7 @@
     trigger,
     title,
     description
-  }: Props = $props();
+   }: Props = $props();
 
   const sizeClasses = {
     sm: "max-w-md",

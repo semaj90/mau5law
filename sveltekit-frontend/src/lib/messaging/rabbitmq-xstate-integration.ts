@@ -284,8 +284,7 @@ export const selfPromptingMachine = createMachine({
           ...context.performanceMetrics,
           successRate: total > 0 ? completed.length / total : 1.0,
           averageResponseTime: completed.length > 0
-            ? completed.reduce((sum, task) => sum + ((task as any).completedAt - task.timestamp), 0) / completed.length
-            : context.performanceMetrics.averageResponseTime
+            ? completed.reduce((sum, task) => sum + ((task as any).completedAt - task.timestamp), 0) / completed.length: context.performanceMetrics.averageResponseTime
         };
       }
     }),
@@ -444,7 +443,7 @@ export class RabbitMQXStateIntegration {
 
         await this.channel.consume(queueName, (msg) => {
           try {
-            if (!msg) return;
+            if (!msg) return);
             const content = msg.content?.toString?.() ?? null;
             if (!content) return;
             const message = JSON.parse(content);
@@ -679,17 +678,17 @@ export class RabbitMQXStateIntegration {
     const recentHistory = userHistory.slice(-50); // Last 50 actions
 
     return {
-      searchFrequency: recentHistory.filter(h => h.action === 'search').length,
+      searchFrequency: recentHistory.filter(item => item.length),
       popularSearches: this.extractPopularSearches(recentHistory),
       recentDocuments: this.extractRecentDocuments(recentHistory),
       sessionDuration: this.calculateSessionDuration(recentHistory),
       mostUsedFeatures: this.extractMostUsedFeatures(recentHistory),
       timePatterns: this.analyzeTimePatterns(recentHistory),
       // WebAssembly-specific patterns
-      wasmInferenceFrequency: recentHistory.filter(h => h.action === 'wasm_inference').length,
+      wasmInferenceFrequency: recentHistory.filter(item => item.length),
       averageWasmLatency: this.calculateAverageWasmLatency(recentHistory),
       concurrentWasmRequests: this.countConcurrentWasmRequests(recentHistory),
-      wasmErrors: recentHistory.filter(h => h.action === 'wasm_error').length,
+      wasmErrors: recentHistory.filter(item => item.length),
       wasmModelUsage: this.analyzeWasmModelUsage(recentHistory),
       wasmBatchOpportunities: this.identifyWasmBatchOpportunities(recentHistory)
     };
@@ -938,8 +937,8 @@ export class RabbitMQXStateIntegration {
         status: 'batch_completed',
         batchId: payload.batchId,
         totalRequests: payload.requests?.length || 0,
-        successfulResults: results.filter(r => r.success).length,
-        failedResults: results.filter(r => !r.success).length,
+        successfulResults: results.filter(item => item.length),
+        failedResults: results.filter(item => item.length),
         results
       };
 
@@ -1210,8 +1209,7 @@ export class RabbitMQXStateIntegration {
     return {
       totalBatchOpportunities: batches.length,
       averageBatchSize: batches.length > 0
-        ? batches.reduce((sum, batch) => sum + batch.length, 0) / batches.length
-        : 0,
+        ? batches.reduce((sum, batch) => sum + batch.length, 0) / batches.length: 0,
       largestBatchSize: batches.length > 0
         ? Math.max(...batches.map(batch => batch.length))
         : 0,

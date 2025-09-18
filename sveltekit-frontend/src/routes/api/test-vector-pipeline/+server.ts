@@ -92,7 +92,7 @@ class VectorPipelineTest {
 
     } catch (err: any) {
       this.testResults.status = 'failed';
-      this.testResults.error = err instanceof Error ? err.message : 'Unknown error';
+      this.testResults.error = err instanceof Error ? err.message: 'Unknown error';
       this.testResults.totalTime = Date.now() - startTime;
       
       console.error('❌ Pipeline test failed:', err);
@@ -120,7 +120,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.ollama = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'Connection failed'
+        error: err instanceof Error ? err.message: 'Connection failed'
       };
       throw new Error(`Ollama connection failed: ${err}`);
     }
@@ -168,7 +168,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.testData = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'Test data creation failed'
+        error: err instanceof Error ? err.message: 'Test data creation failed'
       };
       throw err;
     }
@@ -231,7 +231,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.embedding = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'Embedding failed'
+        error: err instanceof Error ? err.message: 'Embedding failed'
       };
       throw err;
     }
@@ -295,7 +295,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.search = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'Search failed'
+        error: err instanceof Error ? err.message: 'Search failed'
       };
       throw err;
     }
@@ -323,7 +323,7 @@ class VectorPipelineTest {
     } catch (err: any) {
       this.testResults.steps.mcp = {
         status: 'failed',
-        error: err instanceof Error ? err.message : 'MCP integration failed'
+        error: err instanceof Error ? err.message: 'MCP integration failed'
       };
       
       // Don't throw - MCP is optional
@@ -390,7 +390,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ Test pipeline error:', err);
     return json({
       error: 'Pipeline test failed',
-      details: err instanceof Error ? err.message : 'Unknown error'
+      details: err instanceof Error ? err.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -431,7 +431,7 @@ export const GET: RequestHandler = async () => {
   } catch (err: any) {
     return json({
       status: 'not_ready',
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error',
       suggestions: [
         'Ensure Ollama is running on http://localhost:11434',
         'Verify nomic-embed-text model is installed',

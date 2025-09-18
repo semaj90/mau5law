@@ -342,7 +342,7 @@ Schedule Review
     position: relative;
   }
 
-  :global(.debug-golden-grid::before) {
+  :global(.debug-golden-grid: :before) {
     content: '';
     position: fixed;
     top: 0;

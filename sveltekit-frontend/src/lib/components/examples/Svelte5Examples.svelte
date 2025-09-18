@@ -180,8 +180,7 @@
     border-top: 1px solid var(--border-color);
     text-align: center;
   }
-/* Responsive layouts */ {}
-  .layout-mobile .main-content {
+/* Responsive layouts */ .layout-mobile .main-content {
     grid-template-columns: 1fr;
     padding: 0.5rem;
   }
@@ -193,8 +192,7 @@
   .layout-desktop .main-content {
     grid-template-columns: 250px 1fr;
   }
-/* Theme variations */ {}
-  .theme-light {
+/* Theme variations */ .theme-light {
     --border-color: #e5e5e5;
     --accent-color: #3b82f6;
     --accent-bg: #dbeafe;

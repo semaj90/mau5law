@@ -270,10 +270,7 @@
         console.log(`📤 Processing file: ${file.name}`);
 
         // Store evidence through system integration
-        const fileId = await systemIntegration.storeEvidence(
-          'demo-case-123',
-          file,
-          { uploadedBy: 'demo-user', timestamp: new Date().toISOString() }
+        const fileId = await systemIntegration.storeEvidence.toISOString() }
         );
 
         console.log(`✅ File stored with ID: ${fileId}`);
@@ -665,7 +662,7 @@
                     <div class="result-meta">
                       <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{(result as { title?: unknown; source?: unknown; similarity?: unknown; content?: unknown; url?: unknown }).source}</span>
                       <span class="similarity">
-                        {Math.round((result as { title?: unknown; source?: unknown; similarity?: unknown; content?: unknown; url?: unknown }).similarity * 100)}% match
+                        {Math.round.similarity * 100)}% match
                       </span>
                     </div>
                   </div>
@@ -1542,7 +1539,7 @@
       -ms-overflow-style: none;
     }
 
-    .tab-nav::-webkit-scrollbar {
+    .tab-nav: :-webkit-scrollbar {
       display: none;
     }
 

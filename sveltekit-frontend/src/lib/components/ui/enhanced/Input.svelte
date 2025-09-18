@@ -33,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
   		icon && 'pl-10',
   		loading && 'pr-10',
   		class
-  	].filter(Boolean).join(' '));
+  	].filter(item => item.join)(' '));
 </script>
 
 <div class="space-y-2">

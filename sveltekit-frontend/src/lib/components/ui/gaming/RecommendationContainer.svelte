@@ -37,7 +37,7 @@
     recommendations = $bindable([]),
     documents = [],
     query = '',
-    recommendationContext = {},
+    recommendationContext = ,
     userProfile = null,
     enableEnhancedMode = true
   }: Props = $props();
@@ -70,10 +70,10 @@
       if (!acc[rec.type]) acc[rec.type] = [];
       acc[rec.type].push(rec);
       return acc;
-    }, {} as Record<string, typeof recommendations>);
+    }, as Record<string, typeof recommendations>);
 
     // Sort by priority within each group
-    Object.keys(groups).forEach(type => {
+    Object.keys.forEach(type => {
       groups[type].sort((a, b) => {
         const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
         return priorityOrder[b.priority] - priorityOrder[a.priority];
@@ -85,11 +85,11 @@
 
   // Critical recommendations count
   let criticalCount = $derived(
-    recommendations.filter(r => r.priority === 'critical').length
+    recommendations.filter(item => item.length)
   );
 
   let highCount = $derived(
-    recommendations.filter(r => r.priority === 'high').length
+    recommendations.filter(item => item.length)
   );
 
   // Feedback tracking
@@ -169,7 +169,7 @@
       const enhancedRecs = await enhancedRecommendationIntegration.generateEnhancedRecommendations(
         query,
         documents,
-        recommendationContext || {},
+        recommendationContext || ,
         userProfile || createDefaultUserProfile()
       );
 
@@ -178,7 +178,7 @@
 
     } catch (error) {
       console.error('Enhanced recommendation generation failed:', error);
-      recommendationError = error instanceof Error ? error.message : 'Unknown error';
+      recommendationError = error instanceof Error ? error.message: 'Unknown error';
     } finally {
       loadingEnhancedRecommendations = false;
     }
@@ -231,8 +231,7 @@
           recommendationId,
           feedback,
           recommendation,
-          recommendationContext || {}
-        );
+          recommendationContext || );
 
         if (!(result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).success) {
           throw new Error('Enhanced feedback submission failed');
@@ -243,9 +242,7 @@
           await fetch('/api/qlora-distillation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              trigger: 'feedback_threshold',
-              feedbackCount: (result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).totalFeedbackCount
+            body: JSON.stringify.totalFeedbackCount
             })
           });
         }
@@ -290,9 +287,7 @@
           await fetch('/api/qlora-distillation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              trigger: 'feedback_threshold',
-              feedbackCount: (result as { success?: unknown; shouldTriggerDistillation?: unknown; totalFeedbackCount?: unknown }).totalFeedbackCount
+            body: JSON.stringify.totalFeedbackCount
             })
           });
         }
@@ -359,7 +354,7 @@
       try {
         const prediction = await enhancedRecommendationIntegration.predictRecommendationNeeds(
           query,
-          recommendationContext || {},
+          recommendationContext || ,
           userProfile || createDefaultUserProfile()
         );
         console.log('Predicted recommendation needs:', prediction);
@@ -468,7 +463,7 @@
               <div.Header class="nier-bits-yorha-panel-header">
                 <div class="nier-bits-nes-text is-primary">
                   <span class="type-icon">{categoryIcons[type]}</span>
-                  <span class="type-name">{type.charAt(0).toUpperCase() + type.slice(1)}</span>
+                  <span class="type-name">{type.charAt.toUpperCase() + type.slice(1)}</span>
                   <Badge.Root variant="outline" class="count-badge">
                     {recs.length}
                   </Badge.Root>

@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
   }>();
 
   // Navigation state
-  let expandedSections = $state(new Set(['main', 'demo', 'admin']););
+  let expandedSections = $state(new Set(['main', 'demo', 'admin']);
   let searchQuery = $state('');
   let filteredRoutes = $state(routes);
   let hoveredRoute = $state<string | null>(null);
@@ -36,8 +36,7 @@ https://svelte.dev/e/js_parse_error -->
   // Filter routes based on search
   $effect(() => {
     if (searchQuery.trim()) {
-      filteredRoutes = routes.filter(route => 
-        route.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      filteredRoutes = routes.filter(item => item.includes(searchQuery.toLowerCase()) ||
         route.id.toLowerCase().includes(searchQuery.toLowerCase())
       );
     } else {
@@ -82,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Auto-scroll to active route
   onMount(() => {
-    const activeElement = document.querySelector('.nav-(item as { active?: unknown }).active');
+    const activeElement = document.querySelector.active');
     if (activeElement) {
       activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
@@ -243,7 +242,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'JetBrains Mono', monospace;
   }
 
-  .nav-(item as { active?: unknown }).active {
+  .nav-.active {
     box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
   }
 
@@ -256,22 +255,22 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   /* Custom Scrollbar */
-  .custom-scrollbar::-webkit-scrollbar {
+  .custom-scrollbar: :-webkit-scrollbar {
     width: 8px;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-track {
+  .custom-scrollbar: :-webkit-scrollbar-track {
     background: var(--yorha-darker);
     border-radius: 4px;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb {
+  .custom-scrollbar: :-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, var(--yorha-accent-warm) 0%, #b8941f 100%);
     border-radius: 4px;
     border: 1px solid var(--yorha-accent-warm);
   }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  .custom-scrollbar: :-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, var(--yorha-accent-cool) 0%, #6bb8e6 100%);
   }
 
@@ -282,7 +281,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   /* Glow effect for active items */
-  .nav-(item as { active?: unknown }).active::before {
+  .nav-.active: :before {
     content: '';
     position: absolute;
     top: 0;

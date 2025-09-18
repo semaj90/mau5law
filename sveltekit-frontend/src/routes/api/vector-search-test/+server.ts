@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('Vector ranking test failed', error);
         results.tests.vectorRanking = {
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message: 'Unknown error'
         };
       }
     }
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('Legal analysis test failed', error);
         results.tests.legalAnalysis = {
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message: 'Unknown error'
         };
       }
     }
@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('Enhanced RAG test failed', error);
         results.tests.enhancedRAG = {
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message: 'Unknown error'
         };
       }
     }
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('LangChain RAG test failed', error);
         results.tests.langchainRAG = {
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message: 'Unknown error'
         };
       }
     }
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           resultsCount: qdrantResults.length,
           averageScore: qdrantResults.length > 0 ?
-            qdrantResults.reduce((sum, r) => sum + (r.score || 0), 0) / qdrantResults.length : 0,
+            qdrantResults.reduce((sum, r) => sum + (r.score || 0), 0) / qdrantResults.length: 0,
           embeddingDimensions: embeddingResult.dimensions
         };
         logger.info(`Qdrant search: ${qdrantResults.length} results found`);
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request }) => {
         logger.error('Qdrant search test failed', error);
         results.tests.qdrantSearch = {
           success: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message: 'Unknown error'
         };
       }
     }
@@ -188,7 +188,7 @@ export const POST: RequestHandler = async ({ request }) => {
     logger.error('Vector search test failed', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       processingTime: Date.now() - startTime
     }, { status: 500 });
   }
@@ -215,7 +215,7 @@ export const GET: RequestHandler = async () => {
     logger.error('Health check failed', error);
     return json({
       status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

@@ -104,7 +104,7 @@ https://svelte.dev/e/js_parse_error -->
             operation: 'cache_hit',
             documentId: docId,
             processingTime: performance.now() - startTime,
-            cacheSize: JSON.stringify(cachedData).length
+            cacheSize: JSON.stringify.length
           });
           // Still fetch fresh data in background for next time
           loadFromServerInBackground(docId);
@@ -115,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
       // Step 2: Fetch from server (Slow Path)
       await loadFromServer(docId, forceRefresh);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      const errorMessage = err instanceof Error ? err.message: 'Unknown error';
       error = errorMessage;
       await logger.logError({
         error: errorMessage,
@@ -190,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
     await logger.logAPIResponse({
       requestId: crypto.randomUUID(),
       statusCode: 200,
-      responseSize: JSON.stringify(data).length,
+      responseSize: JSON.stringify.length,
       processingTime: serverTime,
       success: true
     });
@@ -564,7 +564,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
 
                 <!-- Metadata -->
-                {#if document.metadata && Object.keys(document.metadata).length > 0}
+                {#if document.metadata && Object.keys.length > 0}
                   <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-3">Metadata</h3>
                     <div class="bg-white border border-gray-200 rounded-lg p-4">
@@ -648,7 +648,7 @@ https://svelte.dev/e/js_parse_error -->
                                 {connection.type}
                               </span>
                               <span class="text-xs text-gray-500">
-                                {connection.connection_type.replace('_', ' ').toUpperCase()}
+                                {connection.connection_type.replace.toUpperCase()}
                               </span>
                             </div>
                             <h4 class="mt-2 font-semibold text-gray-900">{connection.targetTitle}</h4>

@@ -119,7 +119,7 @@ interface UserData {
               includeUserActivity: false,
               enableStreaming: false,
               userId: user.id
-            });
+            }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -135,12 +135,12 @@ interface UserData {
             // Optionally show a success notification here
             console.log('Summary saved successfully');
           } else {
-            console.error('Failed to save summary:', (result as { success?: any; error?: any }).error);
+            console.error(error);
           }
         } catch (error) {
           console.error('Error saving summary:', error);
         
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
       }
     </script>
 

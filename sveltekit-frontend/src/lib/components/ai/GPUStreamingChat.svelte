@@ -8,7 +8,7 @@
   
   // Svelte 5 runes
   let prompt = $state('');
-  let messages = $state<any[]>([])([]);
+  let messages = $state<any[]>([]) => []);
   let isStreaming = $state(false);
   let currentStreamContent = $state('');
   let memoryStats = $state({
@@ -17,7 +17,7 @@
     availableVRAM: 0,
     chunksInMemory: 0
   });
-  let similarDocuments = $state<any[]>([])([]);
+  let similarDocuments = $state<any[]>([]) => []);
   
   // Pipeline instance
   let pipeline: GPULLMStreamingPipeline;
@@ -141,8 +141,7 @@
   
   async function searchSimilarDocuments(embedding: Float32Array) {
     try {
-      const results = await pipeline.semanticSearch(
-        Array.from(embedding).join(','), // Convert embedding to query
+      const results = await pipeline.semanticSearch.join(','), // Convert embedding to query
         5, // Get top 5 similar
         0.7 // Similarity threshold
       );
@@ -539,20 +538,20 @@
   }
   
   /* Scrollbar styling */
-  .chat-container::-webkit-scrollbar {
+  .chat-container: :-webkit-scrollbar {
     width: 8px;
   }
   
-  .chat-container::-webkit-scrollbar-track {
+  .chat-container: :-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.2);
   }
   
-  .chat-container::-webkit-scrollbar-thumb {
+  .chat-container: :-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
   }
   
-  .chat-container::-webkit-scrollbar-thumb:hover {
+  .chat-container: :-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
   }
 </style>

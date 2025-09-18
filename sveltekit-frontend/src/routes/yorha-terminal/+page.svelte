@@ -134,7 +134,7 @@
 		try {
 			await processCommand(cmd);
 		} catch (error) {
-			addToHistory(`ERROR: ${error instanceof Error ? error.message : "Unknown error"}`);
+			addToHistory(`ERROR: ${error instanceof Error ? error.message: "Unknown error"}`);
 		} finally {
 			isProcessing = false;
 			terminalInput = "";
@@ -142,7 +142,7 @@
 	}
 
 	async function processCommand(cmd: string) {
-		const [command, ...args] = cmd.toLowerCase().split(" ");
+		const [command, ...args] = cmd.toLowerCase.split(" ");
 		switch (command) {
 			case "help":
 				addToHistory("YoRHa Legal AI Commands:");
@@ -234,7 +234,7 @@
 					context7Status = "CONNECTED";
 				} catch (error) {
 					addToHistory("Context7 integration: ERROR");
-					addToHistory(`Error: ${error instanceof Error ? error.message : "Unknown error"}`);
+					addToHistory(`Error: ${error instanceof Error ? error.message: "Unknown error"}`);
 					context7Status = "ERROR";
 				}
 				break;

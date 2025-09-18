@@ -333,7 +333,7 @@ export const focusModeStyles = `;
     transition: var(--focus-transition);
   }
 
-  .focus-mode-active .focus-dim:hover {
+  .focus-mode-active .focus-dim: hover {
     opacity: 1;
   }
 
@@ -356,7 +356,7 @@ export const focusModeStyles = `;
     transition: opacity 0.3s ease;
   }
 
-  .focus-mode-active.zen-mode .toolbar:hover,
+  .focus-mode-active.zen-mode .toolbar: hover,
   .focus-mode-active.zen-mode .sidebar:hover,
   .focus-mode-active.zen-mode .status-bar:hover,
   .focus-mode-active.zen-mode .header-actions:hover {

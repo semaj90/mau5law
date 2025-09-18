@@ -68,7 +68,7 @@ export const GET: RequestHandler = async () => {
 			status: 'unhealthy',
 			timestamp: new Date().toISOString(),
 			error: 'Health check failed',
-			message: error instanceof Error ? error.message : 'Unknown error'
+			message: error instanceof Error ? error.message: 'Unknown error'
 		}, { 
 			status: 503,
 			headers: {

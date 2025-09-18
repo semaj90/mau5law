@@ -5,7 +5,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   import 'nes.css/css/nes.min.css';
   import { goto } from "$app/navigation";
   import { citationStore } from "$lib/stores/citations";
-  // import { createPopover, melt } from "melt"; // Removed melt dependency
+  // // Replaced melt with bits-ui components // Removed melt dependency
   import {
     Calendar,
     FileText,
@@ -21,7 +21,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   let {
     triggerText = "#",
     placeholder = "Type a command...",
-    onInsert = () => {},
+    onInsert = () => ,
     textareaElement = undefined
   }: {
     triggerText?: string;
@@ -37,7 +37,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // const {
   //   elements: { trigger, content, arrow, close },
   //   states: { open },
-  // } | null>(null)(createPopover({
+  // }  | null>(null); const data = createPopover({
   //   positioning: { placement: "bottom-start" },
   //   forceVisible: true,
   //   preventScroll: true,
@@ -121,8 +121,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // Filter commands based on search query
   let filteredCommands = $derived(commands.filter(
     (cmd) =>
-      cmd.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cmd.category.toLowerCase().includes(searchQuery.toLowerCase())
+      cmd.label.toLowerCase.includes(searchQuery.toLowerCase()) ||
+      cmd.category.toLowerCase.includes(searchQuery.toLowerCase())
   ));
 
   // Group commands by category
@@ -133,8 +133,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
       }
       acc[cmd.category].push(cmd);
       return acc;
-    },
-    {} as Record<string, typeof commands>
+    }, as Record<string, typeof commands>
   ));
 
   // Handle keyboard navigation
@@ -316,7 +315,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     font-size: 1rem;
     color: #111827;
 }
-  .command-input::placeholder {
+  .command-input: :placeholder {
     color: #6b7280;
 }
   .command-results {
@@ -353,7 +352,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     text-align: left;
 }
   .command-item:hover,
-  .command-(item as { selected?: unknown }).selected {
+  .command-.selected {
     background: #f3f4f6;
     color: #3b82f6;
 }
@@ -396,17 +395,17 @@ https://svelte.dev/e/rune_missing_parentheses -->
     font-size: 0.875rem;
 }
   /* Scrollbar styling */
-  .command-results::-webkit-scrollbar {
+  .command-results: :-webkit-scrollbar {
     width: 6px;
 }
-  .command-results::-webkit-scrollbar-track {
+  .command-results: :-webkit-scrollbar-track {
     background: transparent;
 }
-  .command-results::-webkit-scrollbar-thumb {
+  .command-results: :-webkit-scrollbar-thumb {
     background: #e5e7eb;
     border-radius: 3px;
 }
-  .command-results::-webkit-scrollbar-thumb:hover {
+  .command-results: :-webkit-scrollbar-thumb:hover {
     background: #6b7280;
 }
 </style>

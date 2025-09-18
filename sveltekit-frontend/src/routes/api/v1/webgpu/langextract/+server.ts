@@ -53,7 +53,7 @@ export const GET: RequestHandler = async () => {
     return json({
       success: false,
       error: 'Failed to get WebGPU LangExtract status',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return json({
       success: false,
       error: 'WebGPU LangExtract processing failed',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -185,8 +185,8 @@ async function handleBatchDocumentProcessing(request: WebGPULangExtractRequest) 
   // Calculate aggregate statistics
   const totalTime = results.reduce((sum, r) => sum + r.performance.totalTime, 0);
   const avgThroughput = results.reduce((sum, r) => sum + r.performance.throughput, 0) / results.length;
-  const cacheHitRatio = results.filter(r => r.embeddings.cacheHit).length / results.length;
-  const webgpuUtilization = results.filter(r => r.performance.webgpuUtilized).length / results.length;
+  const cacheHitRatio = results.filter(item => item.length) / results.length;
+  const webgpuUtilization = results.filter(item => item.length) / results.length;
   
   return {
     batchResults: results.map(r => ({
@@ -270,7 +270,7 @@ async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
       totalTime: webgpuTime,
       avgTimePerDoc: webgpuTime / iterations,
       throughput: (iterations / webgpuTime) * 1000,
-      avgCacheHitRatio: webgpuResults.filter(r => r.embeddings.cacheHit).length / iterations,
+      avgCacheHitRatio: webgpuResults.filter(item => item.length) / iterations,
       avgCompressionRatio: webgpuResults.reduce((sum, r) => sum + r.embeddings.compressionRatio, 0) / iterations
     },
     standardResults: compareStandard ? {
@@ -322,7 +322,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Failed to update configuration',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -353,7 +353,7 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: false,
       error: 'Failed to reset system',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };

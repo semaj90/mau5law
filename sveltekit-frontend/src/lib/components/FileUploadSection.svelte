@@ -67,7 +67,7 @@ https://svelte.dev/e/js_parse_error -->
   import TagList from './TagList.svelte';
 
   let uploadFiles: UploadFile[] = $state([]);
-  let aiSystem = $state<ComprehensiveAISystemIntegrationlet docStatus: string | null>(null)('');
+  let aiSystem = $state<ComprehensiveAISystemIntegrationlet docStatus: string  | null>(null); const data = '');
   let docs = $state<any >(null);
   let availableTags = $state<string[] >([]);
   let summaryType = $state<'key_points' | 'narrative' | 'prosecutorial' >('narrative');
@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
   			};
   		}
   		// Check file type
-  		const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+  		const fileExtension = '.' + file.name.split.pop()?.toLowerCase();
   		if (!acceptedTypes.some(type => type.toLowerCase() === fileExtension)) {
   			return {
   				valid: false,
@@ -189,8 +189,7 @@ https://svelte.dev/e/js_parse_error -->
           classification: 'evidence',
           confidentialityLevel: 'internal',
           retentionPolicy: 'standard',
-          customFields: {}
-        },
+          customFields: },
         stages: [],
         currentStage: 0,
         startTime: new Date(),
@@ -220,7 +219,7 @@ https://svelte.dev/e/js_parse_error -->
 
     } catch (error) {
       file.status = 'error';
-      file.error = error instanceof Error ? error.message : 'Upload failed';
+      file.error = error instanceof Error ? error.message: 'Upload failed';
       uploadFiles = [...uploadFiles];
       docStatus = 'Error: ' + file.error;
     }
@@ -231,8 +230,7 @@ https://svelte.dev/e/js_parse_error -->
     uploadFiles = uploadFiles.filter(f => f.id !== fileId);
     // Also notify parent of successful uploads for final callback
     const successfulFiles = uploadFiles
-      .filter(f => f.status === 'completed')
-      .map(f => f.file);
+      .filter(item => item.map)(f => f.file);
     if (successfulFiles.length > 0) {
       onupload?.({ files: successfulFiles, tags: [] });
     }
@@ -265,7 +263,7 @@ https://svelte.dev/e/js_parse_error -->
     remove={handleFileRemove}
     dragDropText="Drop evidence files here or click to browse"
     browseText="Browse Evidence Files"
-    supportedFormats={acceptedTypes.map(type => type.replace('.', '').toUpperCase())}
+    supportedFormats={acceptedTypes.map.toUpperCase())}
   />
 
   <!-- Analysis Controls -->

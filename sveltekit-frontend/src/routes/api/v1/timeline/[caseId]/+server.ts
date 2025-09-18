@@ -153,8 +153,8 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         start: timelineEvents[sortOrder === 'asc' ? 0 : timelineEvents.length - 1].eventDate,
         end: timelineEvents[sortOrder === 'asc' ? timelineEvents.length - 1 : 0].eventDate,
       } : null,
-      criticalEvents: timelineEvents.filter(e => e.importance === 'critical').length,
-      publicEvents: timelineEvents.filter(e => e.isPublic).length,
+      criticalEvents: timelineEvents.filter(item => item.length),
+      publicEvents: timelineEvents.filter(item => item.length),
     };
 
     return json({

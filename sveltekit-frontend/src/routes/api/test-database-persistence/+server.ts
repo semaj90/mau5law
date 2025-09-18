@@ -32,7 +32,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       });
     }
     
-    const userId = testUser.(data as { userId?: any; sessionId?: any; messageId?: any }).userId;
+    const userId = testUser.data.userId;
     
     // Test 2: Create chat session
     const testSession = await testCreateChatSession(userId);
@@ -46,7 +46,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       });
     }
     
-    const sessionId = testSession.(data as { userId?: any; sessionId?: any; messageId?: any }).sessionId;
+    const sessionId = testSession.data.sessionId;
     
     // Test 3: Generate and store embedding
     const testEmbedding = await testEmbeddingGeneration(testContent);
@@ -64,7 +64,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       });
     }
     
-    const messageId = testMessage.(data as { userId?: any; sessionId?: any; messageId?: any }).messageId;
+    const messageId = testMessage.data.messageId;
     
     // Test 5: Store recommendations
     const testRecommendations = await testStoreRecommendations(userId, messageId);
@@ -86,7 +86,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
     await cleanupTestData(userId, sessionId);
     
     // Calculate overall results
-    const successCount = testResults.filter(r => r.success).length;
+    const successCount = testResults.filter(item => item.length);
     const totalTests = testResults.length;
     
     return json({
@@ -105,7 +105,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
     return json({
       success: false,
       error: 'Database persistence test failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error',
       results: testResults,
       processingTime: Date.now() - startTime
     }, { status: 500 });
@@ -138,7 +138,7 @@ async function testCreateUser(): Promise<any> {
       test: 'Create User',
       success: false,
       message: 'Failed to create test user',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
     };
   }
@@ -173,7 +173,7 @@ async function testCreateChatSession(userId: string): Promise<any> {
       test: 'Create Chat Session',
       success: false,
       message: 'Failed to create chat session',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
     };
   }
@@ -209,7 +209,7 @@ async function testEmbeddingGeneration(content: string): Promise<any> {
       test: 'Embedding Generation',
       success: false,
       message: 'Failed to generate embedding',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
     };
   }
@@ -268,7 +268,7 @@ async function testStoreMessage(sessionId: string, content: string, embedding?: 
       test: 'Store Message',
       success: false,
       message: 'Failed to store message',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
     };
   }
@@ -330,7 +330,7 @@ async function testStoreRecommendations(userId: string, messageId: string): Prom
       test: 'Store Recommendations',
       success: false,
       message: 'Failed to store recommendations',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
     };
   }
@@ -361,7 +361,7 @@ async function testVectorSimilaritySearch(embedding?: number[]): Promise<any> {
       message: `Found ${similarResults.length} similar messages`,
       data: {
         resultsCount: similarResults.length,
-        topSimilarity: similarResults.length > 0 ? similarResults[0].similarity : 0,
+        topSimilarity: similarResults.length > 0 ? similarResults[0].similarity: 0,
         results: similarResults.map(r => ({
           id: r.id,
           similarity: r.similarity,
@@ -375,7 +375,7 @@ async function testVectorSimilaritySearch(embedding?: number[]): Promise<any> {
       test: 'Vector Similarity Search',
       success: false,
       message: 'Vector similarity search failed',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
     };
   }
@@ -419,7 +419,7 @@ async function testRetrieveRecommendations(userId: string): Promise<any> {
       test: 'Retrieve Recommendations',
       success: false,
       message: 'Failed to retrieve recommendations',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
     };
   }
@@ -470,7 +470,7 @@ async function testUpdateRecommendationFeedback(userId: string): Promise<any> {
       test: 'Update Recommendation Feedback',
       success: false,
       message: 'Failed to update recommendation feedback',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       responseTime: Date.now() - startTime
     };
   }
@@ -507,7 +507,7 @@ export async function GET(): Promise<any> {
     return json({
       status: 'unhealthy',
       message: 'Database connection failed',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

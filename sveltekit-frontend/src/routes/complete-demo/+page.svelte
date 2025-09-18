@@ -15,7 +15,7 @@
   let typingState = $state<TypingState>('idle');
   let typingContext: TypingContext = $state(undefined as any);
   let contextualPrompts = $state<string[]>([]);
-  let userAnalytics = $state<any>({});
+  let userAnalytics = $state<any>( );
   let mcpWorkerStatus = $state<'idle' | 'processing' | 'ready'>('idle');
 
   // Upload results
@@ -23,7 +23,7 @@
   let uploadStatus = $state<'idle' | 'uploading' | 'completed' | 'error'>('idle');
 
   // Chat/RAG interface
-  let chatMessages = $state<any[]>([])([]);
+  let chatMessages = $state<any[]>([]);
   let isProcessingChat = $state(false);
 
   // Real-time analytics
@@ -63,7 +63,7 @@
         }];
       } else {
         uploadStatus = 'error';
-        console.error('Upload failed:', (result as { success?: unknown; data?: unknown; error?: unknown }).error);
+        console.error(error);
       }
     } catch (error) {
       uploadStatus = 'error';
@@ -97,9 +97,9 @@
         response = `Based on the uploaded document "${uploadResults.file.name}" (${uploadResults.embeddingsCount} embeddings), I can help you with: "${userMessage}". `;
         
         // Add contextual response based on content
-        if (userMessage.toLowerCase().includes('legal') || userMessage.toLowerCase().includes('law')) {
+        if (userMessage.toLowerCase.includes('legal') || userMessage.toLowerCase.includes('law')) {
           response += `This appears to be a legal query. The document contains ${uploadResults.textLength} characters of legal text that has been processed through our Gemma embeddings pipeline.`;
-        } else if (userMessage.toLowerCase().includes('summary') || userMessage.toLowerCase().includes('summarize')) {
+        } else if (userMessage.toLowerCase.includes('summary') || userMessage.toLowerCase.includes('summarize')) {
           response += `I can provide a summary based on the processed chunks (${uploadResults.chunksCount} total chunks) from the document.`;
         } else {
           response += `The document has been fully indexed and is searchable through our vector similarity system.`;

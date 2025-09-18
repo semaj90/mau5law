@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Test failed',
+        error: error instanceof Error ? error.message: 'Test failed',
         operation: body?.operation || 'unknown',
       },
       { status: 500 }
@@ -295,7 +295,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Service unavailable',
+      error: error instanceof Error ? error.message: 'Service unavailable',
     }, { status: 500 });
   }
 };

@@ -924,7 +924,7 @@
     padding-left: 1.5rem;
   }
 
-  .step-item::before {
+  .step-item: :before {
     content: counter(step-counter);
     position: absolute;
     left: 0;

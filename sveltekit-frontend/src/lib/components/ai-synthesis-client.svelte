@@ -83,7 +83,7 @@
 
       if (enableStreaming && (data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).streamId) {
         // Connect to SSE stream
-        streamId.set((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).streamId);
+        streamId.set.streamId);
         connectToStream((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).streamId);
       } else {
         // Non-streaming result
@@ -115,7 +115,7 @@
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'status', data, timestamp: Date.now() }]);
       if ((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).message) {
-        currentStage.set((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).message);
+        currentStage.set.message);
       }
     });
 
@@ -123,7 +123,7 @@
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'progress', data, timestamp: Date.now() }]);
       if ((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).stage) {
-        currentStage.set(`${(data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).stage}: ${(data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).progress.toFixed(0)}%`);
+        currentStage.set.stage}: ${(data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).progress.toFixed(0)}%`);
       }
       // Update overall progress based on stage
       const stageProgress = {
@@ -142,7 +142,7 @@
       const data = JSON.parse(event.data);
       events.update(e => [...e, { type: 'stage', data, timestamp: Date.now() }]);
       if ((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).stage === 'retrieval' && (data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).status === 'complete') {
-        console.log(`Found ${(data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).sourceCount} sources`);
+        console.log.sourceCount} sources`);
       }
     });
 
@@ -169,7 +169,7 @@
 
     eventSource.addEventListener('error', (event) => {
       const data = event.data ? JSON.parse(event.data) : { error: 'Stream error' };
-      error.set((data as { streamId?: any; message?: any; stage?: any; progress?: any; status?: any; sourceCount?: any; error?: any; requestId?: any }).error || 'Stream error');
+      error.set.error || 'Stream error');
       processing.set(false);
       if (eventSource) {
         eventSource.close();
@@ -247,9 +247,7 @@
       timestamp: new Date()
     });
     if ((response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).enhancedPrompt) {
-      conversationHistory.push({
-        role: 'assistant',
-        content: (response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).enhancedPrompt.queryPrompt,
+      conversationHistory.push.enhancedPrompt.queryPrompt,
         timestamp: new Date()
       });
     }
@@ -443,7 +441,7 @@
     <details class="event-log">
       <summary>Event Log ({$events.length})</summary>
       <div class="events-list">
-        {#each $events.slice(-20).reverse() as event}
+        {#each $events.slice.reverse() as event}
           <div class="event-item">
             <span class="event-type">{event.type}</span>
             <span class="event-time">{new Date(event.timestamp).toLocaleTimeString()}</span>

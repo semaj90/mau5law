@@ -180,7 +180,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function deleteDocument(id: string) {
     if (confirm('Confirm deletion of classified document?')) {
-      demoData = demoData.filter(item => (item as { id?: unknown }).id !== id);
+      demoData = demoData.filter(item => item.id) !== id);
       addNotification('success', 'Document securely deleted from YoRHa archives');
     }
   }
@@ -248,7 +248,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function handleTerminalCommand(command: string) {
-    const parts = command.toLowerCase().split(' ');
+    const parts = command.toLowerCase.split(' ');
     const cmd = parts[0];
 
     switch (cmd) {
@@ -273,7 +273,7 @@ https://svelte.dev/e/js_parse_error -->
         addNotification('info', 'Document creation interface activated');
         break;
       case 'list':
-        addNotification('info', `Active documents: ${demoData.map(d => d.yorha_id).join(', ')}`);
+        addNotification('info', `Active documents: ${demoData.map.join(', ')}`);
         break;
       case 'classify':
         if (parts[1] && parts[2]) {
@@ -309,7 +309,7 @@ https://svelte.dev/e/js_parse_error -->
     notifications = [...notifications, notification];
 
     setTimeout(() => {
-      notifications = notifications.filter(n => n.id !== (notification as { id?: unknown; type?: unknown; message?: unknown }).id);
+      notifications = notifications.filter(item => item.id));
     }, 5000);
   }
 
@@ -528,7 +528,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <button
           class="notification-close"
-          onclick={() => notifications = notifications.filter(n => n.id !== (notification as { id?: unknown; type?: unknown; message?: unknown }).id)}
+          onclick={() => notifications = notifications.filter(item => item.id))}
         >
           ✕
         </button>

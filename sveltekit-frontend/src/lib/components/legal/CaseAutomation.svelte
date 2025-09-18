@@ -77,7 +77,7 @@
     try {
       // Create automation configuration
       const automationConfig = {
-        id: `automation_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: `automation_${Date.now()}_${Math.random.toString-substr(2, 9)}`,
         type: selectedAutomationType,
         source: selectedSource,
         autoProcessing: enableAutoProcessing,
@@ -129,7 +129,7 @@
       enableAutoProcessing = false;
       selectedProcessingOptions.clear();
     } catch (error) {
-      dispatch('automationError', error instanceof Error ? error.message : 'Configuration failed');
+      dispatch('automationError', error instanceof Error ? error.message: 'Configuration failed');
     } finally {
       processing = false;
     }
@@ -371,21 +371,21 @@
 
 <style>
   /* Custom scrollbar for processing options */
-  .overflow-y-auto::-webkit-scrollbar {
+  .overflow-y-auto: :-webkit-scrollbar {
     width: 4px;
   }
   
-  .overflow-y-auto::-webkit-scrollbar-track {
+  .overflow-y-auto: :-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 2px;
   }
   
-  .overflow-y-auto::-webkit-scrollbar-thumb {
+  .overflow-y-auto: :-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 2px;
   }
   
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  .overflow-y-auto: :-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
 </style>

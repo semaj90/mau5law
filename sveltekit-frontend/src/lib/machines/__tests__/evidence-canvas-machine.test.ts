@@ -136,7 +136,7 @@ const evidenceCanvasMachine = createMachine({
         input: ({ event, context }) => ({
           type: event.type,
           canvasId: context.canvasId,
-          evidence: event.type === 'ADD_EVIDENCE' ? event.evidence : undefined,
+          evidence: event.type === 'ADD_EVIDENCE' ? event.evidence: undefined,
           itemId: event.type === 'MOVE_EVIDENCE' ? event.itemId : undefined,
           position: event.type === 'MOVE_EVIDENCE' ? event.position : undefined,
           connection: event.type === 'CREATE_CONNECTION' ? event.connection : undefined

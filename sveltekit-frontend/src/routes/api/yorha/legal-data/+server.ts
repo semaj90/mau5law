@@ -111,7 +111,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           )
           .limit(limit)
           .offset(offset)
-    .orderBy(order === "asc" ? legalDocuments.created_at : desc(legalDocuments.created_at));
+    .orderBy(order === "asc" ? legalDocuments.created_at: desc(legalDocuments.created_at));
 
         data = await documentsQuery;
 

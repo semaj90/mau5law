@@ -45,7 +45,7 @@ export interface ServiceHealthStatus {
 /*
  * Check health of all GPU services
  */
-async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus>> {
+async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus> {
   const services = Object.entries(GPU_SERVICES);
   const healthChecks = services.map(async ([name, url]) => {
     try {
@@ -136,7 +136,7 @@ function selectOptimalService(
     case 'tensor_parsing':
       // Memory-intensive -> advanced or enhanced based on size
       const dataSize = JSON.stringify(request.data).length;
-      return dataSize > 10000 ? GPU_SERVICES.enhanced : GPU_SERVICES.advanced;
+      return dataSize > 10000 ? GPU_SERVICES.enhanced: GPU_SERVICES.advanced;
 
     default:
       return GPU_SERVICES[healthyServices[0][0] as keyof typeof GPU_SERVICES];
@@ -156,7 +156,7 @@ export const GET: RequestHandler = async () => {
       services: healthStatus,
       configuration: {
         total_services: Object.keys(GPU_SERVICES).length,
-        healthy_services: Object.values(healthStatus).filter(s => s.healthy).length,
+        healthy_services: Object.values(healthStatus).filter(item => item.length),
         routing_strategy: 'intelligent_workload_based',
         gpu_device: 'NVIDIA GeForce RTX 3060 Ti',
         gpu_memory: '8GB',
@@ -254,7 +254,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ GPU hybrid operation error:', error);
     return json({ 
       success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

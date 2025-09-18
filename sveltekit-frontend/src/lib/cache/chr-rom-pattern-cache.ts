@@ -525,7 +525,7 @@ export class CHRROMPatternCache {
       totalPatterns: this.cache.patterns.size,
       hotPatterns: [...this.cache.hotPatterns],
       hitRate: this.cache.metrics.totalRequests > 0 ? 
-        this.cache.metrics.cacheHits / this.cache.metrics.totalRequests : 0
+        this.cache.metrics.cacheHits / this.cache.metrics.totalRequests: 0
     };
   }
 

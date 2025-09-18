@@ -325,7 +325,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
   }
 
   private async compileToWASM(
-    sources: Array<,
+    sources: Array<any>,
     options: LLVMCompileOptions
   ): Promise<CompilationResult> {
     // Mock LLVM compilation process
@@ -364,13 +364,13 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         memoryUsage: 0,
         optimizations: [],
         warnings: [],
-        error: error instanceof Error ? error.message : 'Unknown compilation error'
+        error: error instanceof Error ? error.message: 'Unknown compilation error'
       };
     }
   }
 
   private generateMockWASMBinary(
-    sources: Array<,
+    sources: Array<any>,
     options: LLVMCompileOptions
   ): ArrayBuffer {
     // Generate a minimal WASM binary that can be instantiated
@@ -450,7 +450,7 @@ int32_t ${baseName}_process(const char* input, int32_t input_length, char* outpu
         env: {
           memory: module.memory,
           abort: (msg: number, file: number, line: number, column: number) => {
-            console.error(`WASM abort in ${module.name}:`, { msg, file, line, column });
+            console.error(`WASM abort in ${module.name}:`, { msg, file, line, column }));
           },
           console_log: (ptr: number) => {
             // Read string from WASM memory

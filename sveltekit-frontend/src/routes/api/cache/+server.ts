@@ -31,11 +31,11 @@ export const GET: RequestHandler = async ({ url }) => {
     const layerStats = cacheManager.getLayerStats();
     const systemMetrics = {
       totalLayers: Object.keys(layerStats).length,
-      activeLayers: Object.values(layerStats).filter(layer => layer.enabled).length,
+      activeLayers: Object.values(layerStats).filter(item => item.length),
       avgHitRate: Object.values(layerStats).reduce((sum, layer) => sum + layer.hitRate, 0) / Object.keys(layerStats).length,
       avgResponseTime: Object.values(layerStats)
         .filter(layer => layer.enabled)
-        .reduce((sum, layer) => sum + layer.avgResponseTime, 0) / Object.values(layerStats).filter(layer => layer.enabled).length
+        .reduce((sum, layer) => sum + layer.avgResponseTime, 0) / Object.values(layerStats).filter(item => item.length)
     };
 
     logger.info('📊 Cache stats requested', { 
@@ -105,13 +105,13 @@ export const GET: RequestHandler = async ({ url }) => {
     logger.error('💥 Cache retrieval error', {
       key,
       type,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     });
 
     return json({
       success: false,
       error: 'Cache retrieval failed',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Use SIMD-accelerated JSON parsing for cache payloads
     const body = await (async () => {
       try {
-        const { readBodyFastWithMetrics } = await import('$lib/simd/simd-json-integration.js');
+        const { readBodyFastWithMetrics } = await import('$lib/simd/simd-json-integration.js'));
         return await readBodyFastWithMetrics(request);
       } catch {
         // Fallback if SIMD module not available
@@ -287,13 +287,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (error: any) {
     logger.error('💥 Cache storage error', {
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     });
 
     return json({
       success: false,
       error: 'Cache storage failed',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -318,7 +318,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       return json({
         success: false,
         error: 'Failed to clear all caches',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message: 'Unknown error'
       }, { status: 500 });
     }
   }
@@ -350,7 +350,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: 'Cache deletion failed',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         error: "Qdrant operation failed",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 }
     );
@@ -285,8 +285,7 @@ async function createTagEmbeddings(
                 prompt: tag,
               }),
             }
-          );
-
+          )));
           if (embeddingResponse.ok) {
             const embeddingData = await embeddingResponse.json();
             return {
@@ -446,7 +445,7 @@ async function batchTagDocuments(data: any, userId: string): Promise<any> {
       } catch (error: any) {
         errors.push({
           batchIndex: Math.floor(i / batchSize),
-          error: error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error.message: "Unknown error",
         });
       }
     }
@@ -698,7 +697,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json(
       {
         error: "Failed to retrieve data",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 }
     );
@@ -791,7 +790,7 @@ async function getHealthStatus(): Promise<any> {
     return json({
       success: false,
       status: "unhealthy",
-      error: error instanceof Error ? error.message : "Unknown error",
+      error: error instanceof Error ? error.message: "Unknown error",
       timestamp: new Date().toISOString(),
     });
   }

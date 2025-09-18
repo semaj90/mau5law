@@ -287,7 +287,7 @@
     
     // Create render pass for page rendering
     const commandEncoder = gpuDevice.createCommandEncoder();
-    const textureView = context.getCurrentTexture().createView();
+    const textureView = context.getCurrentTexture.createView();
     
     const renderPass = commandEncoder.beginRenderPass({
       colorAttachments: [{
@@ -643,16 +643,7 @@
     margin-bottom: 1rem;
   }
 
-  .document-canvas {
-    display: block;
-    cursor: grab;
-    image-rendering: pixelated; /* N64-style pixelated rendering */
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    transition: transform 0.2s ease;
-  }
-
-  .document-canvas:active {
+  .document-canv.document-canvas:active {
     cursor: grabbing;
   }
 

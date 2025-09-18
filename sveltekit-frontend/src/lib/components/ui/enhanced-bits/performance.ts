@@ -17,7 +17,7 @@ export interface ComponentModule {
 }
 
 // Lazy loading registry
-const componentRegistry = new Map<string, () => Promise<ComponentModule>>();
+const componentRegistry = new Map<string, () => Promise<ComponentModule>();
 
 // Performance metrics tracking
 export interface PerformanceMetrics {
@@ -86,7 +86,7 @@ function getMemoryUsage(): number {
  */
 export class OptimizedComponentFactory {
   private loadedComponents = new Map<string, ComponentModule>();
-  private loadingPromises = new Map<string, Promise<ComponentModule>>();
+  private loadingPromises = new Map<string, Promise<ComponentModule>();
 
   async getComponent(name: string): Promise<ComponentModule> {
     // Return cached component if already loaded
@@ -475,8 +475,7 @@ export class PerformanceMonitor {
   getAverageMetric(name: string): number {
     const values = this.getMetrics(name);
     return values.length > 0
-      ? values.reduce((a, b) => a + b, 0) / values.length
-      : 0;
+      ? values.reduce((a, b) => a + b, 0) / values.length: 0;
   }
 
   stopMonitoring(): void {

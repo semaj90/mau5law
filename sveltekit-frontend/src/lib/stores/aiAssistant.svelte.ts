@@ -157,7 +157,7 @@ export class AIAssistantManager {
     aiAssistantState.currentQuery = context.currentQuery;
     aiAssistantState.response = context.response;
     aiAssistantState.conversationHistory = context.conversationHistory;
-    aiAssistantState?.model || "unknown" // @ts-ignore - Model property access = context?.model || "unknown" // @ts-ignore - Model property access;
+    aiAssistantState.model = context?.model || 'unknown';
     aiAssistantState.temperature = context.temperature;
     aiAssistantState.maxTokens = context.maxTokens;
     aiAssistantState.error = context.error;
@@ -187,8 +187,8 @@ export class AIAssistantManager {
 
     try {
       // Set model and temperature if provided
-      if (options??.model || "unknown" // @ts-ignore - Model property access) {
-        this.setModel(options?.model || "unknown" // @ts-ignore - Model property access);
+      if (options?.model) {
+        this.setModel(options.model);
       }
       if (options?.temperature !== undefined) {
         this.setTemperature(options.temperature);
@@ -237,7 +237,7 @@ export class AIAssistantManager {
       const response: WebAssemblyAIResponse = await webAssemblyAIAdapter.sendMessage(message, {
         conversationHistory: aiAssistantState.conversationHistory,
         useContext: options?.useContext7,
-        model: options??.model || "unknown" // @ts-ignore - Model property access || aiAssistantState?.model || "unknown" // @ts-ignore - Model property access,
+        model: options?.model || aiAssistantState.model || 'unknown',
         temperature: options?.temperature || aiAssistantState.temperature,
         maxTokens: aiAssistantState.maxTokens
       });
@@ -337,7 +337,7 @@ export class AIAssistantManager {
         content: message,
         timestamp: new Date(),
         metadata: {
-          model: options??.model || "unknown" // @ts-ignore - Model property access || aiAssistantState?.model || "unknown" // @ts-ignore - Model property access,
+          model: options?.model || aiAssistantState.model || 'unknown',
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: 0,
           tokenCount: message.split(' ').length * 1.5,
@@ -533,7 +533,7 @@ export class AIAssistantManager {
     const stats = this.getConversationStats();
     const exportData = {
       timestamp: new Date().toISOString(),
-      model: aiAssistantState?.model || "unknown" // @ts-ignore - Model property access,
+      model: aiAssistantState.model || 'unknown',
       temperature: aiAssistantState.temperature,
       conversation: aiAssistantState.conversationHistory,
       statistics: stats,
@@ -573,8 +573,8 @@ export class AIAssistantManager {
         }));
 
         // Restore settings if available
-        if (data?.model || "unknown" // @ts-ignore - Model property access) {
-          this.setModel(data?.model || "unknown" // @ts-ignore - Model property access);
+        if (data?.model) {
+          this.setModel(data.model);
         }
         if (data.temperature !== undefined) {
           this.setTemperature(data.temperature);
@@ -593,7 +593,7 @@ export class AIAssistantManager {
   // Get cluster status summary
   getClusterStatus() {
     const health = aiAssistantState.ollamaClusterHealth;
-    const healthyCount = Object.values(health).filter(Boolean).length;
+    const healthyCount = Object.values(health).filter(item => item.length);
     const totalCount = Object.keys(health).length;
 
     return {
@@ -701,7 +701,7 @@ export const isAIActive = () => aiAssistantState.isActive;
 export const isProcessing = () => aiAssistantState.isProcessing;
 export const currentResponse = () => aiAssistantState.response;
 export const conversationHistory = () => aiAssistantState.conversationHistory;
-export const currentModel = () => aiAssistantState?.model || "unknown" // @ts-ignore - Model property access;
+export const currentModel = () => aiAssistantState.model || 'unknown';
 export const currentTemperature = () => aiAssistantState.temperature;
 export const aiError = () => aiAssistantState.error;
 export const clusterHealth = () => aiAssistantState.ollamaClusterHealth;

@@ -19,7 +19,7 @@ export default defineConfig({
   globalSetup: './test/global-setup.mjs',
   globalTeardown: './test/global-teardown.mjs',
   use: {
-    baseURL: 'http://localhost:5177',
+    baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure'
@@ -47,7 +47,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:5177',
+    url: 'http://localhost:5173',
     reuseExistingServer: true, // Use existing server
     timeout: 120000
   }

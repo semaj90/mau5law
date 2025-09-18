@@ -235,8 +235,8 @@ export function validateCaseData(data: any): ValidationResult {
 
   for (const [field, fieldConfig] of Object.entries(config)) {
     const result = validateField(data[field], fieldConfig);
-    errors.push(...(result as { errors?: any; warnings?: any }).errors.map((e: any) => `${field}: ${e}`));
-    warnings.push(...(result as { errors?: any; warnings?: any }).warnings.map((w) => `${field}: ${w}`));
+    errors.push(...result.errors.map((e: any) => `${field}: ${e}`));
+    warnings.push(...result.warnings.map((w) => `${field}: ${w}`));
   }
   return createValidationResult(errors.length === 0, errors, warnings, data);
 }
@@ -356,11 +356,11 @@ export class FormValidator {
       const result = validateField(value, config);
 
       if ((result as { errors?: any; warnings?: any }).errors.length > 0) {
-        allErrors.push(...(result as { errors?: any; warnings?: any }).errors.map((e: any) => `${name}: ${e}`));
+        allErrors.push(...result.errors.map((e: any) => `${name}: ${e}`));
         this.errors.set(name, (result as { errors?: any; warnings?: any }).errors);
       }
       if ((result as { errors?: any; warnings?: any }).warnings.length > 0) {
-        allWarnings.push(...(result as { errors?: any; warnings?: any }).warnings.map((w) => `${name}: ${w}`));
+        allWarnings.push(...result.warnings.map((w) => `${name}: ${w}`));
         this.warnings.set(name, (result as { errors?: any; warnings?: any }).warnings);
       }
     }
@@ -419,8 +419,8 @@ export function validateObject(
 
   for (const [key, config] of Object.entries(schema)) {
     const result = validateField(obj[key], config);
-    errors.push(...(result as { errors?: any; warnings?: any }).errors.map((e: any) => `${key}: ${e}`));
-    warnings.push(...(result as { errors?: any; warnings?: any }).warnings.map((w) => `${key}: ${w}`));
+    errors.push(...result.errors.map((e: any) => `${key}: ${e}`));
+    warnings.push(...result.warnings.map((w) => `${key}: ${w}`));
   }
   return createValidationResult(errors.length === 0, errors, warnings, obj);
 }

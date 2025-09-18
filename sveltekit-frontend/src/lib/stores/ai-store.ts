@@ -244,8 +244,7 @@ export const aiStore = {
         isInitializing: false,
         error:
           error instanceof Error
-            ? error.message
-            : "Failed to initialize AI system",
+            ? error.message: "Failed to initialize AI system",
       }));
     }
   },
@@ -326,7 +325,7 @@ export const aiStore = {
         ...state,
         isLoading: false,
         error:
-          error instanceof Error ? error.message : "Failed to send message",
+          error instanceof Error ? error.message: "Failed to send message",
       }));
       return null;
     }
@@ -390,7 +389,7 @@ export const aiStore = {
           messageCount: conversation.messages.length,
           lastModel:
             conversation.messages[conversation.messages.length - 1]?.metadata
-              ??.model || "unknown" // @ts-ignore - Model property access || "unknown",
+              ?.model || "unknown",
         },
       };
 

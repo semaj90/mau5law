@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('GPU/WASM Integration API error:', error);
     return json({
       error: 'Service unavailable',
-      details: error instanceof Error ? error.message : String(error),
+      details: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 503 });
   }
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     console.error('GPU/WASM Integration API error:', error);
     return json({
       error: 'Processing failed',
-      details: error instanceof Error ? error.message : String(error),
+      details: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }
@@ -357,7 +357,7 @@ async function handleLegalAnalysis(body: any): Promise<any> {
     return json({
       success: false,
       error: 'Legal analysis failed',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 }
@@ -389,7 +389,7 @@ async function handleEmbeddingGeneration(body: any): Promise<any> {
           const result = await llvmWasmBridge.computeEmbedding(
             text.split('').map(char => char.charCodeAt(0)),
             dimensions
-          );
+          )));
           processingTime += (result as { processingTime?: any; embedding?: any; resolved?: any }).processingTime;
           return new Float32Array((result as { processingTime?: any; embedding?: any; resolved?: any }).embedding);
         })
@@ -411,7 +411,7 @@ async function handleEmbeddingGeneration(body: any): Promise<any> {
     return json({
       success: false,
       error: 'Embedding generation failed',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 }
@@ -436,7 +436,7 @@ async function handleErrorProcessing(body: any): Promise<any> {
     return json({
       success: false,
       error: 'Error processing failed',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 }
@@ -479,7 +479,7 @@ async function handleWASMCompilation(body: any): Promise<any> {
     return json({
       success: false,
       error: 'WASM compilation failed',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 }
@@ -501,7 +501,7 @@ async function handleIntegrationTest(body: any): Promise<any> {
     } catch (error: any) {
       results.tests.gpuService = {
         success: false,
-        details: error instanceof Error ? error.message : String(error)
+        details: error instanceof Error ? error.message: String(error)
       };
     }
     
@@ -518,7 +518,7 @@ async function handleIntegrationTest(body: any): Promise<any> {
     } catch (error: any) {
       results.tests.wasmBridge = {
         success: false,
-        details: error instanceof Error ? error.message : String(error)
+        details: error instanceof Error ? error.message: String(error)
       };
     }
     
@@ -532,7 +532,7 @@ async function handleIntegrationTest(body: any): Promise<any> {
     } catch (error: any) {
       results.tests.flashAttention = {
         success: false,
-        details: error instanceof Error ? error.message : String(error)
+        details: error instanceof Error ? error.message: String(error)
       };
     }
     
@@ -550,7 +550,7 @@ async function handleIntegrationTest(body: any): Promise<any> {
     return json({
       success: false,
       error: 'Integration test failed',
-      details: error instanceof Error ? error.message : String(error),
+      details: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

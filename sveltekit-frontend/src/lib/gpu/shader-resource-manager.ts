@@ -185,7 +185,7 @@ export class ShaderResourceManager {
         type: 'error',
         message: `Shader compilation failed: ${error}`,
         component: 'ShaderResourceManager',
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack: undefined
       });
 
       telemetryBus.emitPerformanceEvent({

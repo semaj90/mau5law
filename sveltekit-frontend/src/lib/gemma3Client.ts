@@ -123,7 +123,7 @@ export class Gemma3Client {
     request: ChatCompletionRequest,
   ): Promise<ChatCompletionResponse> {
     const payload = {
-      model: request?.model || "unknown" // @ts-ignore - Model property access || this.defaultModel,
+      model: request?.model || this.defaultModel,
       messages: request.messages,
       temperature: request.temperature ?? 0.1,
       top_p: request.top_p ?? 0.9,
@@ -157,7 +157,7 @@ export class Gemma3Client {
     request: CompletionRequest,
   ): Promise<CompletionResponse> {
     const payload = {
-      model: request?.model || "unknown" // @ts-ignore - Model property access || this.defaultModel,
+      model: request?.model || this.defaultModel,
       prompt: request.prompt,
       temperature: request.temperature ?? 0.1,
       top_p: request.top_p ?? 0.9,

@@ -334,7 +334,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           } catch (error) {
             results.push({
               success: false,
-              error: error instanceof Error ? error.message : String(error),
+              error: error instanceof Error ? error.message: String(error),
             });
           }
         }
@@ -432,7 +432,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       {
         success: false,
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
         processingTime: Date.now() - startTime,
       },
       { status: 500 }
@@ -519,7 +519,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );

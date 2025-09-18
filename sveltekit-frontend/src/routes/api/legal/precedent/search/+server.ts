@@ -150,21 +150,17 @@ async function performPrecedentSearch(request: PrecedentSearchRequest) {
   
   // Apply filters
   if (jurisdiction) {
-    mockMatches = mockMatches.filter(match => 
-      match.jurisdiction.toLowerCase().includes(jurisdiction.toLowerCase())
+    mockMatches = mockMatches.filter(item => item.includes(jurisdiction.toLowerCase())
     );
   }
   
   if (courtLevel) {
-    mockMatches = mockMatches.filter(match => 
-      match.court.toLowerCase().includes(courtLevel.toLowerCase())
+    mockMatches = mockMatches.filter(item => item.includes(courtLevel.toLowerCase())
     );
   }
   
   if (practiceArea) {
-    mockMatches = mockMatches.filter(match => 
-      match.practiceAreas.some(area => 
-        area.toLowerCase().includes(practiceArea.toLowerCase())
+    mockMatches = mockMatches.filter(item => item.includes(practiceArea.toLowerCase())
       )
     );
   }
@@ -239,7 +235,7 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
     {
       stepNumber: 3,
       legalPrinciple: 'Precedential Hierarchy Application',
-      supportingCases: matches.filter(m => m.precedentialValue === 'BINDING').map(m => m.id),
+      supportingCases: matches.filter(item => item.map)(m => m.id),
       factualBasis: 'Binding precedent requires consistent legal treatment',
       logicalConnection: 'Hierarchical precedent system mandates adherence to higher court rulings',
       strengthScore: 0.96,
@@ -280,8 +276,8 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
 }
 
 async function analyzeApplicability(matches: PrecedentMatch[], request: PrecedentSearchRequest) {
-  const bindingCount = matches.filter(m => m.precedentialValue === 'BINDING').length;
-  const persuasiveCount = matches.filter(m => m.precedentialValue === 'PERSUASIVE').length;
+  const bindingCount = matches.filter(item => item.length);
+  const persuasiveCount = matches.filter(item => item.length);
   const avgSimilarity = matches.reduce((sum, m) => sum + m.similarityScore, 0) / matches.length;
   const recentCount = matches.filter(m => new Date(m.dateDecided) > new Date('2020-01-01')).length;
 
@@ -514,7 +510,7 @@ function generateMockClusters(practiceAreas: string[]): string[] {
 function calculateOverallConfidence(matches: PrecedentMatch[]): number {
   if (matches.length === 0) return 0;
   const avgSimilarity = matches.reduce((sum, match) => sum + match.similarityScore, 0) / matches.length;
-  const bindingCount = matches.filter(m => m.precedentialValue === 'BINDING').length;
+  const bindingCount = matches.filter(item => item.length);
   const bindingBonus = Math.min(0.2, bindingCount * 0.05);
   return Math.round((avgSimilarity + bindingBonus) * 100);
 }

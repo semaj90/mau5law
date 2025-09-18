@@ -57,7 +57,7 @@ https://svelte.dev/e/js_parse_error -->
     let currentStep = $state(0);
     let isProcessing = $state(false);
     let autoSaveEnabled = $state(true);
-    let validationResults = $state<Record<number, ValidationResult>(0)>({});
+    let validationResults = $state<Record<number, ValidationResult>(0)>( );
     let processingQueue = $state<string[]>([]);
 
     // Case data with enhanced tracking using Svelte 5 runes
@@ -138,11 +138,11 @@ https://svelte.dev/e/js_parse_error -->
     let isFirstStep = $derived(currentStep === 0);
     let isLastStep = $derived(currentStep === steps.length - 1);
     let estimatedTimeRemaining = $derived(
-        steps.slice(currentStep + 1).reduce((sum, step) => sum + step.estimatedTime, 0)
+        steps.slice.reduce((sum, step) => sum + step.estimatedTime, 0)
     );
 
     // Auto-save functionality using Svelte 5 $effect
-  let autoSaveTimeout = $state<NodeJS.Timeoutconst AUTOSAVE_DELAY | null>(null)(3000); // 3 seconds
+  let autoSaveTimeout = $state<NodeJS.Timeoutconst AUTOSAVE_DELAY  | null>(null); const data = 3000); // 3 seconds
 
     $effect(() => {
         if (autoSaveEnabled && caseData) {
@@ -338,7 +338,7 @@ https://svelte.dev/e/js_parse_error -->
             // Update case status
             caseData.status = 'submitted';
             caseData.metadata = {
-                ...(typeof caseData.metadata === 'object' && caseData.metadata !== null ? caseData.metadata : {}),
+                ...(typeof caseData.metadata === 'object' && caseData.metadata !== null ? caseData.metadata: ),
                 submittedAt: new Date()
             };
 
@@ -358,9 +358,7 @@ https://svelte.dev/e/js_parse_error -->
             const result = await (response as { ok?: unknown; json?: unknown }).json();
 
             // Track analytics
-            analyticsStore.logEvent({
-                type: 'case_submitted',
-                caseId: (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).id,
+            analyticsStore.logEvent.id,
                 stepCount: steps.length,
                 documentCount: caseData.documents.length,
                 evidenceCount: caseData.evidence.length
@@ -416,7 +414,6 @@ https://svelte.dev/e/js_parse_error -->
 
             currentStep = 0;
             validationResults = {};
-
             notifications.add({
                 type: 'info',
                 title: 'Reset',
@@ -514,7 +511,7 @@ https://svelte.dev/e/js_parse_error -->
         });
 
         ocrProcessor.on('processing:complete', (result) => {
-            processingQueue = processingQueue.filter(filename => filename !== (result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).metadata.filename);
+            processingQueue = processingQueue.filter(item => item.metadata).filename);
         });
 
         // Setup voice commands
@@ -524,7 +521,7 @@ https://svelte.dev/e/js_parse_error -->
         analyticsStore.logEvent({ type: 'page_view', page: '/case/new' });
 
         // Check for case ID in URL (edit mode)
-  let pageStore = $state<anyconst unsubscribe | null>(null)(page.subscribe(value => pageStore = value));
+  let pageStore = $state<anyconst unsubscribe  | null>(null); const data = page.subscribe(value => pageStore = value));
         const caseId = pageStore?.url.searchParams.get('id');
         unsubscribe();
         if (caseId) {
@@ -655,7 +652,7 @@ https://svelte.dev/e/js_parse_error -->
                         bind:caseData={caseData}
                         validationresult={validationResults[currentStep]}
                         data-changed={() => {
-                            caseData.metadata = { ...(typeof caseData.metadata === 'object' && caseData.metadata !== null ? caseData.metadata : {}), updatedAt: new Date() };
+                            caseData.metadata = { ...(typeof caseData.metadata === 'object' && caseData.metadata !== null ? caseData.metadata: ), updatedAt: new Date() };
                         }}
                         request-validation={validateCurrentStep}
                     />

@@ -17,7 +17,7 @@
   }
 
   let {
-    initialData = {},
+    initialData = ,
     isEditing = false,
     formApi = $bindable(),
     onsuccess,
@@ -361,10 +361,10 @@
 <style>
   /* @unocss-include */
   /* Custom validation styles */
-  .legal-input:invalid {
+  .legal-input: invalid {
     border-color: #ef4444;
 }
-  .legal-input:valid {
+  .legal-input: valid {
     border-color: #10b981;
 }
 </style>

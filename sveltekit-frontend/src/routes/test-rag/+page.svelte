@@ -27,7 +27,7 @@
 
       const results = await Promise.allSettled(
         tests.map(async (test) => {
-          const start = Date.now();
+          const start = Date.now()));
           const response = await fetch(test.endpoint);
           const time = Date.now() - start;
           const data = await (response as { json?: unknown; ok?: unknown }).json();
@@ -43,7 +43,7 @@
 
       systemStatus = results.map((result, index) => ({
         ...tests[index],
-        ...((result as { status?: unknown; value?: unknown; reason?: unknown }).status === 'fulfilled' ? (result as { status?: unknown; value?: unknown; reason?: unknown }).value : { status: 'error', error: (result as { status?: unknown; value?: unknown; reason?: unknown }).reason })
+        ...((result as { status?: unknown; value?: unknown; reason?: unknown }).status === 'fulfilled' ? (result as { status?: unknown; value?: unknown; reason?: unknown }).value:  { status: 'error', error: (result as { status?: unknown; value?: unknown; reason?: unknown }).reason })
       }));
 
     } catch (error) {
@@ -132,7 +132,7 @@
           timestamp: new Date().toISOString()
         }];
       } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : String(error);
+        const message = error instanceof Error ? error.message: String(error);
         integrationTests = [...integrationTests, {
           ...test,
           success: false,
@@ -218,10 +218,10 @@
       <h2>📊 Integration Test Results</h2>
       <div class="test-summary">
         <span class="test-stat success">
-          ✅ Passed: {integrationTests.filter(t => t.success).length}
+          ✅ Passed: {integrationTests.filter(item => item.length)}
         </span>
         <span class="test-stat error">
-          ❌ Failed: {integrationTests.filter(t => !t.success).length}
+          ❌ Failed: {integrationTests.filter(item => item.length)}
         </span>
         <span class="test-stat total">
           📝 Total: {integrationTests.length}

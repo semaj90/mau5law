@@ -8,7 +8,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
 // Auto-generated default export
-export default {};
+export default ;
 </script>
   
    // e.g. "OK", "WARN", "ERROR"

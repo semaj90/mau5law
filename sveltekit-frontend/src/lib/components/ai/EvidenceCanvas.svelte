@@ -192,15 +192,15 @@
   function collectObjects() {
     const objs = (fabricCanvas?.getObjects?.() ?? []).map((o: any) => {
       const type = o.type || "object";
-      const left = typeof o.left === "number" ? o.left : 0;
-      const top = typeof o.top === "number" ? o.top : 0;
-      const text = typeof o.text === "string" ? o.text : undefined;
+      const left = typeof o.left === "number" ? o.left: 0;
+      const top = typeof o.top === "number" ? o.top: 0;
+      const text = typeof o.text === "string" ? o.text: undefined;
       const evidenceId = o.evidenceId;
       return {
         type,
         position: { x: left, y: top },
-        ...(text ? { text } : {}),
-        ...(evidenceId ? { evidenceId } : {})
+        ...(text ? { text } : ),
+        ...(evidenceId ? { evidenceId } : )
       };
     });
     return objs;
@@ -270,7 +270,7 @@
       }
 
     } catch (e: any) {
-      error = e instanceof Error ? e.message : String(e);
+      error = e instanceof Error ? e.message: String(e);
       analysisStatus = 'error';
       console.error('Analysis failed:', e);
     }
@@ -588,7 +588,7 @@
       <div class="nes-container is-rounded compliance-card">
         <h4 class="nes-text">Compliance Status</h4>
         <div class="compliance-status">
-          <span class="nes-badge {analysisResult.complianceStatus.toLowerCase().includes('compliant') ? 'is-success' : analysisResult.complianceStatus.toLowerCase().includes('violation') ? 'is-error' : 'is-warning'}">
+          <span class="nes-badge {analysisResult.complianceStatus.toLowerCase.includes('compliant') ? 'is-success' : analysisResult.complianceStatus.toLowerCase.includes('violation') ? 'is-error' : 'is-warning'}">
             {analysisResult.complianceStatus}
           </span>
         </div>
@@ -722,17 +722,17 @@
     padding: 1rem;
   }
 
-  .evidence-(item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).uploading {
+  .evidence-.uploading {
     border-color: #ffc107;
     background-color: #fff8e1;
   }
 
-  .evidence-(item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).uploaded {
+  .evidence-.uploaded {
     border-color: #28a745;
     background-color: #f1f8e9;
   }
 
-  .evidence-(item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).failed {
+  .evidence-.failed {
     border-color: #dc3545;
     background-color: #ffebee;
   }
@@ -852,15 +852,15 @@
     line-height: 1.4;
   }
 
-  .timeline-(item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).high {
+  .timeline-.high {
     border-color: #dc3545;
   }
 
-  .timeline-(item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).medium {
+  .timeline-.medium {
     border-color: #ffc107;
   }
 
-  .timeline-(item as { id?: any; title?: any; name?: any; type?: any; evidenceType?: any; createdAt?: any; color?: any; status?: any; uploadedAt?: any; uploading?: any; uploaded?: any; failed?: any; high?: any; medium?: any; low?: any }).low {
+  .timeline-.low {
     border-color: #28a745;
   }
 

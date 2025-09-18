@@ -19,14 +19,14 @@ https://svelte.dev/e/js_parse_error -->
   // Chat input
   let messageInput = $state('');
   let chatContainer = $state<HTMLDivElement// Enhanced RAG service URL
-  const RAG_SERVICE_URL | null>(null)('http://localhost:8093');
+  const RAG_SERVICE_URL  | null>(null); const data = 'http://localhost:8093');
 
   // Initialize with welcome message
   onMount(async () => {
     // Check Enhanced RAG service connection
     try {
   let response = $state<Responsetry {
-          response | null>(null)(await fetch(`${RAG_SERVICE_URL}/health`));
+          response  | null>(null); const data = await fetch(`${RAG_SERVICE_URL}/health`));
           if (!(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).ok) {
             throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).status}: ${(response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
           }
@@ -96,7 +96,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!messageInput.trim()) return;
 
     const userMessage = {
-      id: Date.now().toString(),
+      id: Date.now.toString(),
       role: 'user',
       content: messageInput.trim(),
       timestamp: new Date(),
@@ -141,13 +141,12 @@ https://svelte.dev/e/js_parse_error -->
 
       const result = await (response as { ok?: unknown; status?: unknown; statusText?: unknown; json?: unknown }).json();
       const assistantMessage = {
-        id: Date.now().toString(),
+        id: Date.now.toString(),
         role: 'assistant',
         content: formatRAGResponse(result),
         timestamp: new Date(),
         type: 'assistant',
-        metadata: (result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).metadata || {}
-      };
+        metadata: (result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).metadata || };
 
       $messages = [...$messages, assistantMessage];
       aiChatStore.addMessage(assistantMessage);
@@ -155,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.error('Chat error:', error);
       const errorMessage = {
-        id: Date.now().toString(),
+        id: Date.now.toString(),
         role: 'assistant',
         content: `❌ **Error Processing Request**
 
@@ -178,7 +177,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   async function handleCommand(command: string) {
-    const [cmd, ...args] = command.slice(1).split(' ');
+    const [cmd, ...args] = command.slice.split(' ');
     const arg = args.join(' ');
   let response = $state('');
 
@@ -258,7 +257,7 @@ https://svelte.dev/e/js_parse_error -->
     }
 
     const commandResponse = {
-      id: Date.now().toString(),
+      id: Date.now.toString(),
       role: 'assistant',
       content: response,
       timestamp: new Date(),
@@ -288,7 +287,7 @@ https://svelte.dev/e/js_parse_error -->
     }
 
     if ((result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).confidence) {
-      formatted += `🎯 **Confidence:** ${Math.round((result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).confidence * 100)}%\n`;
+      formatted += `🎯 **Confidence:** ${Math.round.confidence * 100)}%\n`;
     }
 
     if ((result as { metadata?: unknown; document_type?: unknown; confidence?: unknown; entities?: unknown; summary?: unknown; response?: unknown; sources?: unknown; processing_time?: unknown }).processing_time) {
@@ -377,7 +376,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <div class="flex items-center gap-4">
         <span>Messages: {$messages.length}</span>
-        <span>Session: yorha-{Date.now().toString().slice(-6)}</span>
+        <span>Session: yorha-{Date.now.toString().slice(-6)}</span>
       </div>
     </div>
   </div>
@@ -408,20 +407,20 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* Scrollbar styling for chat container */
-  :global(.h-full .overflow-y-auto::-webkit-scrollbar) {
+  :global(.h-full .overflow-y-auto: :-webkit-scrollbar) {
     width: 6px;
   }
 
-  :global(.h-full .overflow-y-auto::-webkit-scrollbar-track) {
+  :global(.h-full .overflow-y-auto: :-webkit-scrollbar-track) {
     background: var(--yorha-darker);
   }
 
-  :global(.h-full .overflow-y-auto::-webkit-scrollbar-thumb) {
+  :global(.h-full .overflow-y-auto: :-webkit-scrollbar-thumb) {
     background: var(--yorha-accent-warm);
     border-radius: 3px;
   }
 
-  :global(.h-full .overflow-y-auto::-webkit-scrollbar-thumb:hover) {
+  :global(.h-full .overflow-y-auto: :-webkit-scrollbar-thumb:hover) {
     background: var(--yorha-accent-cool);
   }
 </style>

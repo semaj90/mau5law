@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     console.error('Advanced evidence analysis error:', error);
     return json({
       error: 'Analysis failed',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -95,7 +95,7 @@ async function handleAnalyzeEvidence(data: any) {
                 currentTask: progress.task,
                 timestamp: new Date().toISOString()
               }
-            });
+            }));
           }
         }
       }
@@ -133,7 +133,7 @@ async function handleAnalyzeEvidence(data: any) {
         data: {
           analysisId,
           evidenceId,
-          error: error instanceof Error ? error.message : 'Analysis failed',
+          error: error instanceof Error ? error.message: 'Analysis failed',
           timestamp: new Date().toISOString()
         }
       });
@@ -206,7 +206,7 @@ async function handleBatchAnalyze(data: any) {
                   totalItems: evidenceIds.length,
                   timestamp: new Date().toISOString()
                 }
-              });
+              }));
             }
           }
         }
@@ -226,7 +226,7 @@ async function handleBatchAnalyze(data: any) {
     } catch (error) {
       errors.push({
         evidenceId,
-        error: error instanceof Error ? error.message : 'Analysis failed'
+        error: error instanceof Error ? error.message: 'Analysis failed'
       });
     }
   }
@@ -341,7 +341,7 @@ async function handleSynthesis(data: any) {
                 currentTask: progress.task,
                 timestamp: new Date().toISOString()
               }
-            });
+            }));
           }
         }
       }
@@ -374,7 +374,7 @@ async function handleSynthesis(data: any) {
         type: 'synthesis_error',
         data: {
           synthesisId,
-          error: error instanceof Error ? error.message : 'Synthesis failed',
+          error: error instanceof Error ? error.message: 'Synthesis failed',
           timestamp: new Date().toISOString()
         }
       });
@@ -420,7 +420,7 @@ async function handleRealTimeAnalysis(data: any) {
             task: progress.task,
             timestamp: new Date().toISOString()
           }
-        });
+        }));
       }
     }
   );
@@ -511,7 +511,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Advanced evidence analysis API error:', error);
     return json({
       error: 'Service error',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

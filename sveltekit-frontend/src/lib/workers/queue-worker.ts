@@ -119,7 +119,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
 
     await jobMachine.completeJob(job.id);
     try {
-      await globalLoki.completeJob(job.id, { embeddingSize: Array.isArray(emb) ? emb.length : 0 });
+      await globalLoki.completeJob(job.id, { embeddingSize: Array.isArray(emb) ? emb.length: 0 });
     } catch {}
     // Notify clients to invalidate embedding caches
     try {
@@ -155,7 +155,7 @@ async function runRabbitConsumer() {
     const { consumeFromQueue } = await import('$lib/server/rabbitmq');
     await consumeFromQueue('evidence.embedding.queue', async (payload, ack, nack) => {
       try {
-        await processJob(payload as any);
+        await processJob(payload as any));
         ack();
       } catch (err: any) {
         console.error('❌ Error processing rabbitmq job:', err?.message || err);

@@ -77,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
   // UI state
   let yorhaUI = $state<any | null >(null);
   let canvasContainer = $state<HTMLElement// Component variants and options
-  const componentTypes | null>(null)([
+  const componentTypes | null>(null) => [
     { id: 'button', label: 'Button 3D', icon: Gamepad2, description: '3D interactive buttons with hover effects' },
     { id: 'panel', label: 'Panel 3D', icon: Monitor, description: 'Floating 3D panels with content areas' },
     { id: 'input', label: 'Input 3D', icon: Code, description: 'Terminal-style 3D input fields' },
@@ -198,7 +198,7 @@ https://svelte.dev/e/js_parse_error -->
       case 'panel': return panelConfig;
       case 'input': return inputConfig;
       case 'modal': return modalConfig;
-      default: return {};
+      default: return ;
     }
   }
 

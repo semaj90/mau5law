@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Test failed',
+      error: error instanceof Error ? error.message: 'Test failed',
       testType: body?.testType || 'unknown',
     }, { status: 500 });
   }
@@ -349,7 +349,7 @@ async function testWebGPUFallback(testData?: any): Promise<any> {
   } catch (error: any) {
     return {
       testInput: testText,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       success: false,
     };
   }
@@ -397,7 +397,7 @@ async function testStressLoad(testData?: any): Promise<any> {
     } catch (error: any) {
       return {
         index: i,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
         success: false,
       };
     }
@@ -408,7 +408,7 @@ async function testStressLoad(testData?: any): Promise<any> {
   const endTime = Date.now();
   const totalTime = endTime - startTime;
   
-  const successfulJobs = jobResults.filter(r => r.status === 'fulfilled' && r.value.success).length;
+  const successfulJobs = jobResults.filter(item => item.length);
   const failedJobs = concurrentJobs - successfulJobs;
 
   return {
@@ -480,7 +480,7 @@ export const GET: RequestHandler = async () => {
       console.error('Vector sync health check failed:', syncError);
     }
 
-    const overallHealth = Object.values(health).filter(v => typeof v === 'boolean' && v).length;
+    const overallHealth = Object.values(health).filter(item => item.length);
     const totalChecks = 4;
 
     return json({
@@ -493,7 +493,7 @@ export const GET: RequestHandler = async () => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Health check failed',
+      error: error instanceof Error ? error.message: 'Health check failed',
       health: Record<string, any>,
       healthScore: 0,
       ready: false,

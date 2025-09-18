@@ -59,8 +59,7 @@ export class TransactionManager {
     try {
       return (await sql.begin(async (tx) => {
         // Set isolation level
-        await tx`SET TRANSACTION ISOLATION LEVEL ${sql(isolationLevel)}`;
-
+        await tx`SET TRANSACTION ISOLATION LEVEL ${sql(isolationLevel)}`);
         // Set statement timeout
         if (timeout) {
           await tx`SET statement_timeout = ${timeout}`;
@@ -166,7 +165,7 @@ export class TransactionManager {
     isReadOnly: boolean = false,
     options: TransactionOptions = {}
   ): Promise<T> {
-    const mode = isReadOnly ? LOCK_MODES.SHARED : LOCK_MODES.EXCLUSIVE;
+    const mode = isReadOnly ? LOCK_MODES.SHARED: LOCK_MODES.EXCLUSIVE;
 
     return this.withTransactionAndLock('document', documentId, fn, mode, {
       ...options,
@@ -205,7 +204,7 @@ export class TransactionManager {
    * Batch operation with multiple entity locks
    */
   async withMultiEntityTransaction<T>(
-    entities: Array<,
+    entities: Array<any>,
     fn: (ctx: TransactionContext) => Promise<T>,
     options: TransactionOptions = {}
   ): Promise<T> {

@@ -95,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
       timeout: 5000,
       expectedStatus: 200,
       description: 'Real-time system health and performance metrics',
-      headers: {},
+      headers: ,
       validation: {
         required: ['status', 'uptime', 'services'],
         statusCodes: [200]
@@ -240,8 +240,7 @@ https://svelte.dev/e/js_parse_error -->
       expectedStatus: 200,
       payload: {
         query: 'MATCH (c:Case)-[:RELATED_TO]->(d:Document) RETURN c.title, d.type LIMIT 10',
-        parameters: {}
-      },
+        parameters: },
       description: 'Neo4j knowledge graph traversal and analysis',
       headers: { 'Content-Type': 'application/json' },
       validation: {
@@ -423,19 +422,17 @@ https://svelte.dev/e/js_parse_error -->
 
   function updatePerformanceMetrics() {
     const now = Date.now();
-    const recentResults = testResults.filter(result =>
-      new Date((result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).startTime).getTime() > (now - 300000) // Last 5 minutes
+    const recentResults = testResults.filter(item => item.startTime)).getTime() > (now - 300000) // Last 5 minutes
     );
 
     if (recentResults.length > 0) {
       const latencies = recentResults
-        .filter(r => r.status === 'success' && r.latency)
-        .map(r => r.latency)
+        .filter(item => item.map)(r => r.latency)
         .sort((a, b) => a - b);
 
       performanceMetrics.totalTests = testResults.length;
-      performanceMetrics.passedTests = testResults.filter(r => r.status === 'success').length;
-      performanceMetrics.failedTests = testResults.filter(r => r.status === 'error').length;
+      performanceMetrics.passedTests = testResults.filter(item => item.length);
+      performanceMetrics.failedTests = testResults.filter(item => item.length);
 
       if (latencies.length > 0) {
         performanceMetrics.averageLatency = Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length);
@@ -470,7 +467,7 @@ https://svelte.dev/e/js_parse_error -->
       error: null,
       statusCode: null,
       responseSize: 0,
-      headers: {},
+      headers: ,
       validation: {
         passed: false,
         errors: []
@@ -493,7 +490,7 @@ https://svelte.dev/e/js_parse_error -->
       // Prepare request options
       const requestOptions = {
         method: endpoint.method,
-        headers: endpoint.headers || {},
+        headers: endpoint.headers || ,
         signal: AbortSignal.timeout(endpoint.timeout || 30000)
       };
 
@@ -528,7 +525,7 @@ https://svelte.dev/e/js_parse_error -->
       testResult.response = responseData;
       testResult.statusCode = (response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).status;
       testResult.responseSize = responseSize;
-      testResult.headers = Object.fromEntries((response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).headers.entries());
+      testResult.headers = Object.fromEntries.headers.entries());
       // Validation
       if (endpoint.validation) {
         testResult.validation = validateResponse(responseData, endpoint.validation, (response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).status);
@@ -537,8 +534,7 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       // Emit event for monitoring
-      yorhaAPI.emit('api:response', {
-        success: (response as { text?: unknown; ok?: unknown; status?: unknown; headers?: unknown }).ok,
+      yorhaAPI.emit.ok,
         latency,
         responseSize,
         endpoint: endpoint.id
@@ -640,12 +636,11 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       // Calculate suite results
-      const suiteTestResults = testResults.filter(result =>
-        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).startTime.getTime() >= suiteStartTime &&
-        suite.endpoints.includes((result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).endpointId)
+      const suiteTestResults = testResults.filter(item => item.startTime).getTime() >= suiteStartTime &&
+        suite.endpoints.includes.endpointId)
       );
 
-      const successCount = suiteTestResults.filter(r => r.status === 'success').length;
+      const successCount = suiteTestResults.filter(item => item.length);
       const totalCount = suiteTestResults.length;
 
       testSuites[suiteIndex].status = successCount === totalCount ? 'success' : 'partial';
@@ -736,16 +731,15 @@ https://svelte.dev/e/js_parse_error -->
 
     // Filter by status
     if (filterStatus !== 'all') {
-      filtered = filtered.filter(result => (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).status === filterStatus);
+      filtered = filtered.filter(item => item.status) === filterStatus);
     }
 
     // Filter by search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(result =>
-        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).endpoint.toLowerCase().includes(term) ||
-        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).category?.toLowerCase().includes(term) ||
-        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).url.toLowerCase().includes(term)
+      filtered = filtered.filter(item => item.endpoint).toLowerCase.includes(term) ||
+        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).category?.toLowerCase.includes(term) ||
+        (result as { startTime?: unknown; passed?: unknown; errors?: unknown; endpointId?: unknown; status?: unknown; endpoint?: unknown; category?: unknown; url?: unknown; method?: unknown; latency?: unknown; statusCode?: unknown; responseSize?: unknown }).url.toLowerCase.includes(term)
       );
     }
 
@@ -1199,20 +1193,20 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   /* Custom scrollbar for YoRHa theme */
-  :global(.overflow-y-auto::-webkit-scrollbar) {
+  :global(.overflow-y-auto: :-webkit-scrollbar) {
     width: 6px;
   }
 
-  :global(.overflow-y-auto::-webkit-scrollbar-track) {
+  :global(.overflow-y-auto: :-webkit-scrollbar-track) {
     background: rgba(0, 0, 0, 0.2);
   }
 
-  :global(.overflow-y-auto::-webkit-scrollbar-thumb) {
+  :global(.overflow-y-auto: :-webkit-scrollbar-thumb) {
     background: rgba(251, 191, 36, 0.3);
     border-radius: 3px;
   }
 
-  :global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
+  :global(.overflow-y-auto: :-webkit-scrollbar-thumb:hover) {
     background: rgba(251, 191, 36, 0.5);
   }
 

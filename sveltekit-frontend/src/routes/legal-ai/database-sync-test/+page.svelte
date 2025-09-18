@@ -556,7 +556,7 @@
     background: #f8f9fa;
   }
   
-  .session-(item as { selected?: unknown }).selected {
+  .session-.selected {
     border-color: #0066cc;
     background: #e3f2fd;
   }
@@ -643,7 +643,7 @@
     color: white;
   }
   
-  .test-btn:not(.primary):not(.danger):not(.secondary) {
+  .test-btn: not(.primary):not(.danger):not(.secondary) {
     background: #f8f9fa;
     border: 1px solid #ddd;
     color: #333;

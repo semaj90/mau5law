@@ -1,6 +1,7 @@
 // src/hooks.server.ts - SvelteKit hooks for Lucia v3 authentication
 import { lucia } from '$lib/server/auth';
-import { createWebSocketServer } from '$lib/server/webSocketServer';
+// Temporarily disabled due to SSR import errors
+// import { createWebSocketServer } from '$lib/server/webSocketServer';
 import type { Handle } from '@sveltejs/kit';
 
 interface DatabaseUser {
@@ -24,16 +25,15 @@ declare global {
 console.log('🚀 [hooks.server.ts] Redis service imported successfully');
 
 // Initialize WebSocket server for binary QLoRA streaming
-console.log('🔌 [hooks.server.ts] Initializing Binary QLoRA WebSocket server...');
-try {
-  const wss = createWebSocketServer();
-  console.log('✅ [hooks.server.ts] Binary QLoRA WebSocket server ready');
-
-  // Store WebSocket server reference for potential use in routes
-  globalThis.__qloraWebSocketServer = wss;
-} catch (error) {
-  console.error('❌ [hooks.server.ts] WebSocket server initialization failed:', error);
-}
+// Temporarily disabled due to SSR import errors
+console.log('🔌 [hooks.server.ts] WebSocket server temporarily disabled');
+// try {
+//   const wss = createWebSocketServer();
+//   console.log('✅ [hooks.server.ts] Binary QLoRA WebSocket server ready');
+//   globalThis.__qloraWebSocketServer = wss;
+// } catch (error) {
+//   console.error('❌ [hooks.server.ts] WebSocket server initialization failed:', error);
+// }
 
 console.log('📋 [hooks.server.ts] Starting request handling...');
 

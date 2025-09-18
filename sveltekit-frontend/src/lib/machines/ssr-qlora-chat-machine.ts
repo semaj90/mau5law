@@ -325,7 +325,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     },
 
     setUserSession: assign({
-      userId: (_, event) => event.type === 'INITIALIZE' ? event.userId : '',
+      userId: (_, event) => event.type === 'INITIALIZE' ? event.userId: '',
       sessionId: (_, event) => event.type === 'INITIALIZE' ? event.sessionId : ''
     }),
 
@@ -444,7 +444,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         }
         return context.messages;
       },
-      qloraJobId: (_, event) => event.type === 'QLORA_RESPONSE' ? event.jobId : undefined,
+      qloraJobId: (_, event) => event.type === 'QLORA_RESPONSE' ? event.jobId: undefined,
       performanceMetrics: (context) => ({
         ...context.performanceMetrics,
         qloraJobsTriggered: context.performanceMetrics.qloraJobsTriggered + 1
@@ -613,7 +613,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     },
 
     setError: assign({
-      errorMessage: (_, event) => event.type === 'ERROR' ? event.error : undefined
+      errorMessage: (_, event) => event.type === 'ERROR' ? event.error: undefined
     }),
 
     setTimeoutError: assign({

@@ -272,7 +272,8 @@ export class QdrantPostgreSQLService {
       usePostgreSQL?: boolean;
       useQdrant?: boolean;
     } = {}
-  ): Promise<;
+  ): Promise<{
+    results: Array<any>;
     performance: {
       postgresqlTime?: number;
       qdrantTime?: number;

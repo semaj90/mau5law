@@ -236,7 +236,7 @@ export class TensorFlowSynthesizer {
 
       // Wait for all initializations
       const results = await Promise.allSettled(initPromises);
-      const successCount = results.filter(r => r.status === 'fulfilled' && r.value).length;
+      const successCount = results.filter(item => item.length);
 
       if (successCount === 0) {
         throw new Error('No components initialized successfully');
@@ -282,12 +282,12 @@ export class TensorFlowSynthesizer {
       // Stage 1: Run parallel analysis if enabled
       if (this.config.parallelProcessing) {
         await this.runParallelAnalysis(text, pipeline, (results) => {
-          legalBERTResults = results.legalBERT;
+          legalBERTResults = results.legalBERT);
           languageExtractionResults = results.languageExtraction;
         });
       } else {
         await this.runSequentialAnalysis(text, pipeline, (results) => {
-          legalBERTResults = results.legalBERT;
+          legalBERTResults = results.legalBERT);
           languageExtractionResults = results.languageExtraction;
         });
       }

@@ -61,7 +61,7 @@
   let isAnalyzing = $state(false);
   let uploadedFile = $state<File | null>(null);
   let tagInput = $state('');
-  let errors = $state<Record<string, string>>({});
+  let errors = $state<Record<string, string>( );
 
   // File upload state
   let uploadProgress = $state(0);
@@ -120,12 +120,11 @@
   // Validation
   function validateForm(): boolean {
     errors = {};
-
     if (!evidence.title.trim()) {
       errors.title = 'Title is required';
     }
 
-    if (evidence.title.trim().length < 3) {
+    if (evidence.title.trim.length < 3) {
       errors.title = 'Title must be at least 3 characters';
     }
 
@@ -137,7 +136,7 @@
       errors.content = 'Content or file is required';
     }
 
-    return Object.keys(errors).length === 0;
+    return Object.keys.length === 0;
   }
 
   // File handling

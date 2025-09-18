@@ -243,7 +243,7 @@ export async function* streamRagGenerator(
         query: base.query,
         contextIds: base.contextIds ?? [],
         intent: base.intent,
-        model: base?.model || "unknown" // @ts-ignore - Model property access ?? 'default',
+        model: base?.model || "unknown", // @ts-ignore - Model property access ?? 'default'
         ingestionId: base.ingestionId,
         ...(base.extra || {}),
       });
@@ -282,7 +282,7 @@ export async function* streamRagGenerator(
         const ev = evt.event || 'message';
         if (ev === 'token' || ev === 'message') {
           if (evt.data)
-            for (const piece of evt.(data as { split?: any; length?: any }).split(/\n+/))
+            for (const piece of evt.data.split(/\n+/))
               if (piece) queue.push({ type: 'token', token: piece });
         } else if (ev === 'patch') {
           if (evt.data) {
@@ -422,7 +422,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
 
   function getStorage(storage?: 'local' | 'session') {
     if (typeof window === 'undefined') return undefined;
-    return storage === 'session' ? window.sessionStorage : window.localStorage;
+    return storage === 'session' ? window.sessionStorage: window.localStorage;
   }
 
   function loadPersisted(query: string) {
@@ -441,7 +441,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
         parsed.version === 1 &&
         typeof parsed.data === 'string'
       ) {
-        return parsed.(data as { split?: any; length?: any }).length ? parsed.(data as { split?: any; length?: any }).split('\n') : [];
+        return parsed.data.length ? parsed.data.split('\n') : [];
       }
     } catch {}
     return [];
@@ -655,7 +655,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
                 ...m,
                 errors: m.errors + 1,
                 endedAt: Date.now(),
-                durationMs: m.startedAt ? Date.now() - m.startedAt : undefined,
+                durationMs: m.startedAt ? Date.now() - m.startedAt: undefined,
               }));
             }
             break;
@@ -664,7 +664,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
             metricsW.update((m) => ({
               ...m,
               endedAt: Date.now(),
-              durationMs: m.startedAt ? Date.now() - m.startedAt : undefined,
+              durationMs: m.startedAt ? Date.now() - m.startedAt: undefined,
             }));
             // Generate local summary if allowed and none received
             if (!get(summaryW) && initial?.summarization?.localOnMissing) {
@@ -691,7 +691,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
           ...m,
           errors: m.errors + 1,
           endedAt: Date.now(),
-          durationMs: m.startedAt ? Date.now() - m.startedAt : undefined,
+          durationMs: m.startedAt ? Date.now() - m.startedAt: undefined,
         }));
       }
     } finally {
@@ -807,7 +807,7 @@ export function createRagStreamStore(initial?: RagStreamStoreInit): RagStreamSto
   function rebuildApplied(upToIndex?: number) {
     if (!initial?.patches?.autoApply) return;
     const all = get(patchesW);
-    const limit = upToIndex == null ? all.length : Math.max(0, Math.min(upToIndex, all.length));
+    const limit = upToIndex == null ? all.length: Math.max(0, Math.min(upToIndex, all.length));
     let base = initial?.patches?.initialObject
       ? JSON.parse(JSON.stringify(initial.patches.initialObject))
       : Record<string, any>;

@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		const enhancedResult = {
 			...result,
 			metadata: {
-				...(result as { metadata?: any; fixes_applied?: any; remaining_errors?: any }).metadata,
+				...result.metadata,
 				processed_at: new Date().toISOString(),
 				api_version: '2.0.0',
 				go_service_url: apiUrl,
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: 'Internal server error during TypeScript optimization',
-			details: error instanceof Error ? error.message : 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString(),
 		}, { status: 500 });
 	}
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async () => {
 			service: 'TypeScript Error Optimizer',
 			status: 'degraded',
 			error: 'Unable to connect to Go service',
-			details: error instanceof Error ? error.message : 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString(),
 		}, { status: 503 });
 	}

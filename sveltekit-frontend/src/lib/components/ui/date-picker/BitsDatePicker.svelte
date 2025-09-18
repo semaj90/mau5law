@@ -79,7 +79,7 @@ https://svelte.dev/e/expected_token -->
   }
 
   // Generate unique ID for accessibility
-  const inputId = `datepicker-${Math.random().toString(36).substr(2, 9)}`;
+  const inputId = `datepicker-${Math.random.toString-substr(2, 9)}`;
 </script>
 
 <div class="legal-datepicker-container w-full space-y-2">

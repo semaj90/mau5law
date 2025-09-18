@@ -248,7 +248,7 @@ export class NatsQuicSearchService {
           const errorResponse: SearchResponse = {
             id: 'error',
             success: false,
-            error: error instanceof Error ? error.message : 'Search processing failed',
+            error: error instanceof Error ? error.message: 'Search processing failed',
             timestamp: Date.now(),
           };
           this.nats.publish(msg.reply, this.codec.encode(errorResponse));
@@ -268,7 +268,7 @@ export class NatsQuicSearchService {
       // Generate embedding for semantic/hybrid search
       if (request.searchType === 'semantic' || request.searchType === 'hybrid') {
         // Use internal fetch for embeddings
-        queryEmbedding = await this.generateEmbedding(request.query, request.options??.model || "unknown" // @ts-ignore - Model property access);
+        queryEmbedding = await this.generateEmbedding(request.query, request.options?.model || 'unknown');
 
         if (queryEmbedding) {
           const vectorResults = await this.performVectorSearch(
@@ -313,7 +313,7 @@ export class NatsQuicSearchService {
       return {
         id: request.id,
         success: false,
-        error: error instanceof Error ? error.message : 'Search execution failed',
+        error: error instanceof Error ? error.message: 'Search execution failed',
         timestamp: Date.now(),
       };
     }
@@ -357,7 +357,7 @@ export class NatsQuicSearchService {
       options: {
         limit: request.options?.limit,
         threshold: request.options?.threshold,
-        model: request.options??.model || "unknown" // @ts-ignore - Model property access,
+        model: request.options?.model || 'unknown',
       }
     };
 

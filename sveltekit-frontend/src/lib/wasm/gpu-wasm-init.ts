@@ -207,7 +207,7 @@ export class WasmGpuInitService {
         phase: 'error',
         progress: 0,
         message: 'Initialization failed',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error'
       });
     }
   }
@@ -242,7 +242,7 @@ export class WasmGpuInitService {
         env: {
           memory,
           abort: (msg: number, file: number, line: number, col: number) => {
-            console.error('WebAssembly abort:', { msg, file, line, col });
+            console.error('WebAssembly abort:', { msg, file, line, col }));
           }
         },
         gpu: {
@@ -645,9 +645,9 @@ export class WasmGpuInitService {
 
     // Matrix transformation shader for UI elements
     const matrixShader = `
-      @group(0) @binding(0) var<storage, read> input_matrices: array<mat4x4<f32>>;
+      @group(0) @binding(0) var<storage, read> input_matrices: array<mat4x4<f32>;
       @group(0) @binding(1) var<storage, read> transform_matrix: mat4x4<f32>;
-      @group(0) @binding(2) var<storage, read_write> output_matrices: array<mat4x4<f32>>;
+      @group(0) @binding(2) var<storage, read_write> output_matrices: array<mat4x4<f32>;
 
       @compute @workgroup_size(16)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {

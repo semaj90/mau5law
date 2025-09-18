@@ -135,7 +135,7 @@ Displays detailed integrity verification results with AI analysis
       <svelte:component this={getStatusIcon(integrityStatus)} class="w-6 h-6" />
       <div class="flex-1">
         <h3 class="font-semibold text-lg">
-          Integrity Status: {integrityStatus.toUpperCase().replace('-', ' ')}
+          Integrity Status: {integrityStatus.toUpperCase.replace('-', ' ')}
         </h3>
         <p class="text-sm opacity-90">
           Overall verification score: {getOverallScore()}%

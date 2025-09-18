@@ -44,8 +44,8 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
       langExtractService.listAvailableModels().catch(() => [])
     ]);
 
-    const isOllamaAvailable = ollamaAvailable.status === 'fulfilled' ? ollamaAvailable.value : false;
-    const availableModels = ollamaModels.status === 'fulfilled' ? ollamaModels.value : [];
+    const isOllamaAvailable = ollamaAvailable.status === 'fulfilled' ? ollamaAvailable.value: false;
+    const availableModels = ollamaModels.status === 'fulfilled' ? ollamaModels.value: [];
 
     // Fetch recent sessions with document counts
     const recentSessionsQuery = db
@@ -87,8 +87,7 @@ export const load: PageServerLoad = async ({ url, fetch }): Promise<LegalAIPageD
         const [{ count }] = await db
           .select({ count: legalDocuments.id })
           .from(legalDocuments)
-          .where(eq(legalDocuments.sessionId, session.id));
-
+          .where(eq(legalDocuments.sessionId, session.id);
         return {
           id: session.id,
           sessionName: session.sessionName || `Session ${session.id.slice(0, 8)}`,

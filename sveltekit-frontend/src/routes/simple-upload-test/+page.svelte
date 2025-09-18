@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
         searchResults = (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).results || [];
         console.log('Search results:', result);
       } else {
-        console.error('Search failed:', await (response as { ok?: unknown; json?: unknown; text?: unknown }).text();
+        console.error.text();
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="text-sm mt-2">{(result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).content}</div>
             {#if (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).metadata}
               <div class="text-xs text-gray-500 mt-2">
-                {JSON.stringify((result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).metadata)}
+                {JSON.stringify(metadata)}
               </div>
             {/if}
           </div>

@@ -88,7 +88,7 @@ export async function consume(queue, onMessage, options = { noAck: false }) {
   await ch.consume(
 	queue,
 	async (msg) => {
-	  if (!msg) return;
+	  if (!msg) return);
 	  let content = null;
 	  try {
 		const text = msg.content.toString();

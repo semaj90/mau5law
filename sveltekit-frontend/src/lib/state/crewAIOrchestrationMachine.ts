@@ -104,8 +104,7 @@ export const crewAIOrchestrationMachine = setup({
     // Check if all agents completed
     allAgentsCompleted: ({ context }) => {
       return context.currentTask 
-        ? context.agentResponses.length === context.currentTask.assignedAgents.length
-        : false;
+        ? context.agentResponses.length === context.currentTask.assignedAgents.length: false;
     },
     
     // Check if user has been idle too long

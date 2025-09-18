@@ -205,7 +205,7 @@ export async function withApiHandler<T>(
 
     // Log error for monitoring
     console.error(`API Error [${requestId}]:`, {
-      error: error instanceof Error ? error.message : error,
+      error: error instanceof Error ? error.message: error,
       stack: error instanceof Error ? error.stack : undefined,
       url: event.url.pathname,
       method: event.request.method,

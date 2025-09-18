@@ -161,7 +161,7 @@
 
     } catch (error) {
       console.error('❌ Evidence analysis failed:', error);
-      showError(`Analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      showError(`Analysis failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     } finally {
       isAnalyzing = false;
       analysisProgress = 0;

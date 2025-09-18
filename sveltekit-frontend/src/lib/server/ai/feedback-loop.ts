@@ -79,7 +79,7 @@ class FeedbackLoop {
       
       // Track strategy usage
       if (interaction.result?.metadata?.strategies) {
-        for (const strategy of interaction.(result as { metadata?: any; retrievedContext?: any }).metadata.strategies) {
+        for (const strategy of interaction.result.metadata.strategies) {
           const count = this.learningMetrics.strategyEffectiveness.get(strategy) || 0;
           this.learningMetrics.strategyEffectiveness.set(strategy, count + 1);
         }
@@ -319,7 +319,7 @@ class FeedbackLoop {
   ): Promise<void> {
     // Increase weights for strategies that led to high satisfaction
     if (interaction.result?.metadata?.strategies) {
-      for (const strategy of interaction.(result as { metadata?: any; retrievedContext?: any }).metadata.strategies) {
+      for (const strategy of interaction.result.metadata.strategies) {
         const currentWeight = this.modelWeights.get(strategy) || 1.0;
         this.modelWeights.set(strategy, currentWeight * 1.05); // 5% increase
       }
@@ -327,7 +327,7 @@ class FeedbackLoop {
     
     // Track successful source types
     if (interaction.result?.retrievedContext?.sources) {
-      for (const source of interaction.(result as { metadata?: any; retrievedContext?: any }).retrievedContext.sources) {
+      for (const source of interaction.result.retrievedContext.sources) {
         const sourceType = source.type;
         const count = this.learningMetrics.sourcePreferences.get(sourceType) || 0;
         this.learningMetrics.sourcePreferences.set(sourceType, count + 1);
@@ -341,7 +341,7 @@ class FeedbackLoop {
   ): Promise<void> {
     // Decrease weights for strategies that led to low satisfaction
     if (interaction.result?.metadata?.strategies) {
-      for (const strategy of interaction.(result as { metadata?: any; retrievedContext?: any }).metadata.strategies) {
+      for (const strategy of interaction.result.metadata.strategies) {
         const currentWeight = this.modelWeights.get(strategy) || 1.0;
         this.modelWeights.set(strategy, currentWeight * 0.95); // 5% decrease
       }
@@ -562,7 +562,7 @@ class FeedbackLoop {
     
     for (const interaction of interactions) {
       if (interaction.result?.metadata?.strategies) {
-        for (const strategy of interaction.(result as { metadata?: any; retrievedContext?: any }).metadata.strategies) {
+        for (const strategy of interaction.result.metadata.strategies) {
           strategyCounts.set(strategy, (strategyCounts.get(strategy) || 0) + 1);
         }
       }

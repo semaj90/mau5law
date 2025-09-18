@@ -12,18 +12,17 @@ https://svelte.dev/e/rune_missing_parentheses -->
   const dispatch = createEventDispatcher();
 
   // Enhanced Zod schema for case creation with legal AI context
-  const CaseCreationSchema = z.object({
-    title: z.string().min(3, 'Title must be at least 3 characters'),
-    description: z.string().min(10, 'Description must be at least 10 characters'),
-    priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
-    status: z.enum(['open', 'investigating', 'pending', 'closed', 'archived']).default('open'),
+  const CaseCreationSchema = z.object.min(3, 'Title must be at least 3 characters'),
+    description: z.string.min(10, 'Description must be at least 10 characters'),
+    priority: z.enum(['low', 'medium', 'high']).default('medium'),
+    status: z.enum(['low', 'medium', 'high']).default('open'),
     location: z.string().optional(),
     jurisdiction: z.string().optional(),
-    caseType: z.enum(['civil', 'criminal', 'corporate', 'family', 'intellectual_property']).default('civil'),
+    caseType: z.enum(['low', 'medium', 'high']).default('civil'),
     assignedTo: z.string().optional(),
     clientName: z.string().optional(),
     tags: z.array(z.string()).default([]),
-    notes: z.string().optional()
+    notes: z.string.optional()
   });
 
   // Initialize form state persistence
@@ -32,9 +31,9 @@ https://svelte.dev/e/rune_missing_parentheses -->
   let formIntegration: unknown = $state(null);
   let currentStep = $state(0);
   let totalSteps = $state(3); // Basic Info, Legal Details, Review
-  let unsubscribe = $state<(() =>(null) {});
+  let unsubscribe = $state<(() =>(null) );
   let formState = $derived(formIntegration?.state?.get() || 'idle');
-  let formContext = $derived(formIntegration?.context?.get() || {});
+  let formContext = $derived(formIntegration?.context?.get() || );
 
   // Initialize form integration on mount
   onMount(async () => {
@@ -90,13 +89,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     console.log('🚀 Enhanced case creation starting:', formData);
     try {
       // Use the enhanced case API for full workflow integration
-      const caseResponse = await enhancedCaseAPI.createCase({
-        ...formData,
-        metadata: {
-          createdVia: 'yorha-command-center',
-          formVersion: '2.0',
-          workflowStep: 'case-creation',
-          timestamp: new Date().toISOString()
+      const caseResponse = await enhancedCaseAPI.createCase.toISOString()
         }
       });
 
@@ -221,7 +214,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
             id="case-title"
             name="title"
             type="text"
-            value={formIntegration.form.get().title || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, title: e.target.value }))}
+            value={formIntegration.form.get.title || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, title: e.target.value }))}
             placeholder="e.g., Corporate Fraud Investigation - TechCorp"
             required
             class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors"
@@ -240,7 +233,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
           <textarea
             id="case-description"
             name="description"
-            value={formIntegration.form.get().description || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, description: e.target.value }))}
+            value={formIntegration.form.get.description || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, description: e.target.value }))}
             rows="4"
             placeholder="Initial details and background of the investigation..."
             class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors resize-none"
@@ -261,7 +254,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
             <select
               id="case-priority"
               name="priority"
-              value={formIntegration.form.get().priority || 'medium'} onchange={(e) => formIntegration.form.update(data => ({ ...data, priority: e.target.value }))}
+              value={formIntegration.form.get.priority || 'medium'} onchange={(e) => formIntegration.form.update(data => ({ ...data, priority: e.target.value }))}
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light focus:border-yorha-accent-warm focus:outline-none transition-colors"
             >
               <option value="low">🟢 Low Priority</option>
@@ -279,7 +272,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
             <select
               id="case-type"
               name="caseType"
-              value={formIntegration.form.get().caseType || 'civil'} onchange={(e) => formIntegration.form.update(data => ({ ...data, caseType: e.target.value }))}
+              value={formIntegration.form.get.caseType || 'civil'} onchange={(e) => formIntegration.form.update(data => ({ ...data, caseType: e.target.value }))}
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light focus:border-yorha-accent-warm focus:outline-none transition-colors"
             >
               <option value="civil">⚖️ Civil</option>
@@ -297,7 +290,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
         <button
           type="button"
           onclick={nextStep}
-          disabled={!formIntegration.form.get().title || !formIntegration.form.get().description}
+          disabled={!formIntegration.form.get.title || !formIntegration.form.get.description}
           class="next-btn px-6 py-3 bg-yorha-accent-warm text-yorha-dark rounded font-bold hover:bg-yorha-accent-warm/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next: Legal Details →
@@ -319,7 +312,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
               id="case-location"
               name="location"
               type="text"
-              value={formIntegration.form.get().location || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, location: e.target.value }))}
+              value={formIntegration.form.get.location || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, location: e.target.value }))}
               placeholder="e.g., Downtown Financial District"
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors"
             />
@@ -334,7 +327,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
               id="case-jurisdiction"
               name="jurisdiction"
               type="text"
-              value={formIntegration.form.get().jurisdiction || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, jurisdiction: e.target.value }))}
+              value={formIntegration.form.get.jurisdiction || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, jurisdiction: e.target.value }))}
               placeholder="e.g., Federal, State, Local"
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors"
             />
@@ -352,7 +345,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
               id="assigned-to"
               name="assignedTo"
               type="text"
-              value={formIntegration.form.get().assignedTo || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, assignedTo: e.target.value }))}
+              value={formIntegration.form.get.assignedTo || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, assignedTo: e.target.value }))}
               placeholder="e.g., Agent Smith, Detective Jones"
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors"
             />
@@ -367,7 +360,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
               id="client-name"
               name="clientName"
               type="text"
-              value={formIntegration.form.get().clientName || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, clientName: e.target.value }))}
+              value={formIntegration.form.get.clientName || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, clientName: e.target.value }))}
               placeholder="e.g., TechCorp Industries"
               class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors"
             />
@@ -382,7 +375,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
           <textarea
             id="case-notes"
             name="notes"
-            value={formIntegration.form.get().notes || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, notes: e.target.value }))}
+            value={formIntegration.form.get.notes || ''} oninput={(e) => formIntegration.form.update(data => ({ ...data, notes: e.target.value }))}
             rows="3"
             placeholder="Additional case notes, preliminary observations, or special instructions..."
             class="form-input w-full p-3 bg-yorha-darker border border-yorha-accent-warm/30 rounded text-yorha-light placeholder-yorha-muted focus:border-yorha-accent-warm focus:outline-none transition-colors resize-none"
@@ -417,23 +410,23 @@ https://svelte.dev/e/rune_missing_parentheses -->
           <!-- Case Summary -->
           <div class="review-item p-4 bg-yorha-darker rounded border border-yorha-accent-warm/20">
             <h4 class="font-bold text-yorha-light mb-2">Case Title</h4>
-            <p class="text-yorha-muted">{formIntegration.form.get().title || 'Not specified'}</p>
+            <p class="text-yorha-muted">{formIntegration.form.get.title || 'Not specified'}</p>
           </div>
           
           <div class="review-item p-4 bg-yorha-darker rounded border border-yorha-accent-warm/20">
             <h4 class="font-bold text-yorha-light mb-2">Description</h4>
-            <p class="text-yorha-muted text-sm">{formIntegration.form.get().description || 'Not specified'}</p>
+            <p class="text-yorha-muted text-sm">{formIntegration.form.get.description || 'Not specified'}</p>
           </div>
           
           <div class="review-grid grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="review-item p-4 bg-yorha-darker rounded border border-yorha-accent-warm/20">
               <h4 class="font-bold text-yorha-light mb-2">Priority</h4>
-              <p class="text-yorha-muted capitalize">{formIntegration.form.get().priority || 'medium'}</p>
+              <p class="text-yorha-muted capitalize">{formIntegration.form.get.priority || 'medium'}</p>
             </div>
             
             <div class="review-item p-4 bg-yorha-darker rounded border border-yorha-accent-warm/20">
               <h4 class="font-bold text-yorha-light mb-2">Case Type</h4>
-              <p class="text-yorha-muted capitalize">{formIntegration.form.get().caseType || 'civil'}</p>
+              <p class="text-yorha-muted capitalize">{formIntegration.form.get.caseType || 'civil'}</p>
             </div>
           </div>
           
@@ -515,7 +508,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
           <p><strong>Is Valid:</strong> {isValid}</p>
           <p><strong>Is Submitting:</strong> {isSubmitting}</p>
           <p><strong>Progress:</strong> {progress}%</p>
-          <p><strong>Errors:</strong> {Object.keys(errors).length > 0 ? JSON.stringify(errors, null, 2) : 'None'}</p>
+          <p><strong>Errors:</strong> {Object.keys.length > 0 ? JSON.stringify(errors, null, 2) : 'None'}</p>
         </div>
       </details>
     </div>
@@ -625,7 +618,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
   }
   
-  .next-btn::before, .submit-btn::before {
+  .next-btn: :before, .submit-btn::before {
     content: '';
     position: absolute;
     top: 0;

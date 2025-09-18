@@ -80,7 +80,7 @@ export const agentShellMachine = createMachine({
         onDone: {
           target: "idle",
           actions: assign({
-            response: (_, e) => (e && "data" in e ? (e as any).data : ""),
+            response: (_, e) => (e && "data" in e ? (e as any).data: ""),
           }),
         },
         onError: "idle",

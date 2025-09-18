@@ -2,7 +2,7 @@
 // Standardizes on REDIS_URL or localhost:6379.
 
 let client: any | null = null;
-const pending = new Map<string, Promise<any>>();
+const pending = new Map<string, Promise<any>();
 
 function getRedisUrl() {
   return process.env.REDIS_URL || 'redis://localhost:6379';

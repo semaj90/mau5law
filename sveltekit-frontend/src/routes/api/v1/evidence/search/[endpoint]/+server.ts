@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           relevantLaws: ['Bank Secrecy Act', '31 USC 5311'],
           type: 'document'
         }
-      ].filter(item => (item as { similarity?: any }).similarity >= threshold)
+      ].filter(item => item.similarity) >= threshold)
        .slice(0, limit);
 
       return json({

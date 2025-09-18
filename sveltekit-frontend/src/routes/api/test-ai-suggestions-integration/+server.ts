@@ -60,9 +60,9 @@ export async function GET({ url }: RequestEvent): Promise<any> {
   testResults.push(await testHealthCheckAPI());
   
   // Calculate overall status
-  const passCount = testResults.filter(r => r.status === 'pass').length;
-  const failCount = testResults.filter(r => r.status === 'fail').length;
-  const warningCount = testResults.filter(r => r.status === 'warning').length;
+  const passCount = testResults.filter(item => item.length);
+  const failCount = testResults.filter(item => item.length);
+  const warningCount = testResults.filter(item => item.length);
   
   const overallStatus = failCount > 0 ? 'critical' : 
                        warningCount > 0 ? 'warning' : 'healthy';
@@ -115,7 +115,7 @@ async function testDatabaseConnection(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Database connection test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -151,7 +151,7 @@ async function testPgVectorIntegration(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'pgvector test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -195,7 +195,7 @@ async function testEmbeddingGeneration(content: string): Promise<IntegrationTest
       status: 'fail',
       message: 'Embedding generation failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -235,7 +235,7 @@ async function testOllamaService(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Ollama test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -276,7 +276,7 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Enhanced RAG test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -312,7 +312,7 @@ async function testProtobufGRPCService(): Promise<IntegrationTestResult> {
       status: 'warning',
       message: 'gRPC test failed (HTTP fallback available)',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -366,7 +366,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -406,7 +406,7 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Streaming API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -446,7 +446,7 @@ async function testRatingAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Rating API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -482,7 +482,7 @@ async function testHealthCheckAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Health check API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }

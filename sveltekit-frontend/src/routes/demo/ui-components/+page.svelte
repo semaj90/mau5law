@@ -1,17 +1,11 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import Button from '$lib/components/ui/enhanced-bits';
-  import { createAccordion, melt } from 'melt';
+  import * as Accordion from 'bits-ui';
   // Bits UI Dialog
-  const {
-    elements: { trigger: dialogTrigger, content: dialogContent, overlay: dialogOverlay, close: dialogClose, title: dialogTitle },
-    states: { open: dialogOpen }
-  } = createDialog();
+  // Melt UI component creation removed - replace with bits-ui declarative components
   // Melt UI Accordion  
-  const {
-    elements: { root: accordionRoot, item: accordionItem, trigger: accordionTrigger, content: accordionContent },
-    helpers: { isSelected }
-  } = createAccordion();
+  // Melt UI component creation removed - replace with bits-ui declarative components
   let selectedDemo = $state('overview');
   const demoItems = [
     { id: 'overview', label: 'Overview', description: 'Component library integration summary' },

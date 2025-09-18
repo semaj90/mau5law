@@ -269,7 +269,7 @@
         centerX + faceVertices[0][0], 
         centerY + faceVertices[0][1]
       );
-      faceVertices.slice(1).forEach(([x, y]) => {
+      faceVertices.slice.forEach(([x, y]) => {
         ctx.lineTo(centerX + x, centerY + y);
       });
       ctx.closePath();
@@ -515,15 +515,7 @@
     font-family: 'Courier New', monospace;
   }
 
-  .evolution-canvas {
-    border: 2px solid #333;
-    background: #000;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-  }
-
-  .stage-indicator {
+  .evolution-canv.stage-indicator {
     width: 100%;
     text-align: center;
   }
@@ -600,12 +592,7 @@
 
   /* Responsive design */
   @media (max-width: 640px) {
-    .evolution-canvas {
-      width: 300px;
-      height: 300px;
-    }
-    
-    .controls {
+    .evolution-canv.controls {
       flex-wrap: wrap;
     }
     

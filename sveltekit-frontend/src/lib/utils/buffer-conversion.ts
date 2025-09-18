@@ -163,7 +163,7 @@ export class WebGPUBufferUtils {
   } {
     const buffer = toArrayBuffer(data);
     const byteLength = buffer.byteLength;
-    const elementCount = data instanceof Float32Array ? data.length : byteLength / 4;
+    const elementCount = data instanceof Float32Array ? data.length: byteLength / 4;
     
     return { buffer, byteLength, elementCount };
   }
@@ -284,7 +284,7 @@ export class WebGPUBufferUtils_Advanced {
   } {
     const buffer = toArrayBuffer(data);
     const byteLength = buffer.byteLength;
-    const elementCount = data instanceof Float32Array ? data.length : byteLength / 4;
+    const elementCount = data instanceof Float32Array ? data.length: byteLength / 4;
     
     // Recommend quantization based on size and hint
     let recommendedQuantization: 'fp32' | 'fp16' | 'int8_symmetric' = 'fp32';

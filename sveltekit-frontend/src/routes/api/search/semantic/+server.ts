@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
         console.error('Semantic search API error:', error);
         return json({ 
             success: false, 
-            error: `Semantic search failed: ${error instanceof Error ? error.message : 'Unknown error'}` 
+            error: `Semantic search failed: ${error instanceof Error ? error.message: 'Unknown error'}` 
         }, { status: 500 });
     }
 };
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async () => {
         return json({
             status: 'error',
             service: 'semantic-search',
-            error: error instanceof Error ? error.message : 'Unknown error',
+            error: error instanceof Error ? error.message: 'Unknown error',
             timestamp: new Date().toISOString()
         }, { status: 503 });
     }

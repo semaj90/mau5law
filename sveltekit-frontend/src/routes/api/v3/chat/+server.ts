@@ -188,7 +188,7 @@ function sanitizeThinkingType(t?: string): AllowedThinking | undefined {
 // GET method for health check and service info
 export const GET: RequestHandler = async ({ url, request }) => {
   return await withRateLimit(request, async () => {
-    const requestId = generateRequestId();
+    const requestId = generateRequestId());
     const requestLogger = logger.withRequestId(requestId);
     const startTime = Date.now();
 
@@ -301,7 +301,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 // POST method for enhanced chat with vector embeddings
 export const POST: RequestHandler = async ({ request }) => {
   return await withRateLimit(request, async () => {
-    const requestId = generateRequestId();
+    const requestId = generateRequestId());
     const requestLogger = logger.withRequestId(requestId);
     const startTime = Date.now();
 
@@ -349,7 +349,7 @@ export const POST: RequestHandler = async ({ request }) => {
         thinkingType = 'analysis'      // Default thinking type
       } = body;
 
-      const userMessage = message || messages?.filter(m => m.role === 'user').pop()?.content || '';
+      const userMessage = message || messages?.filter(item => item.pop)()?.content || '';
       // Use requestLogger directly since withConversation might not be available
     const conversationLogger = requestLogger;
 

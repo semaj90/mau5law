@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
   };
       data = awaitawait (async () => {
       try {
-        return await  res.json();
+        return await  res.json());
       } catch (error) {
         console.error('JSON parsing failed:', error);
         throw new Error('Invalid JSON response');
@@ -65,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
     const res = await fetch('/api/ollama/pull', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: required });
+        body: JSON.stringify({ model: required }));
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }

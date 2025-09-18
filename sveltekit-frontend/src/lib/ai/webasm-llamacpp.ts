@@ -345,7 +345,10 @@ class WebAssemblyLlamaService {
     title: string,
     content: string,
     analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive'
-  ): Promise<;
+  ): Promise<{
+    summary: string;
+    keyTerms: string[];
+    entities: Array<any>;
     risks: Array<any>;
     recommendations: string[];
     confidence: number;
@@ -454,8 +457,7 @@ class WebAssemblyLlamaService {
     const now = Date.now();
     this.cacheMetrics.hitRatio =
       this.cacheMetrics.totalRequests > 0
-        ? this.cacheMetrics.cacheHits / this.cacheMetrics.totalRequests
-        : 0;
+        ? this.cacheMetrics.cacheHits / this.cacheMetrics.totalRequests: 0;
     this.cacheMetrics.lastUpdated = now;
     // Optionally pull memory usage from ranking cache metrics
     if (this.rankingCache) {
@@ -742,8 +744,8 @@ Provide analysis in structured format:
     const analysis = {
       summary: '',
       keyTerms: [] as string[],
-      entities: [] as Array<,
-      risks: [] as Array<,
+      entities: [] as Array<any>,
+      risks: [] as Array<any>,
       recommendations: [] as string[],
       confidence: 0.8,
     };

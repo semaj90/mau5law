@@ -177,7 +177,7 @@
   
   function formatDuration(duration: string): string {
     // Convert duration string to human readable format
-    const match = duration.match(/(\d+)([dhm])/);
+    const match = duration.match(/(\d+) => [dhm])/);
     if (match) {
       const value = match[1];
       const unit = match[2];

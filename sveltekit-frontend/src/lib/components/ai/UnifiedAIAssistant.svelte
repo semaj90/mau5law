@@ -159,7 +159,7 @@
   							handleWebGPUTaskComplete(data);
   							break;
   						case 'error':
-  							console.error('❌ WebGPU Worker Error:', (data as { success?: any; error?: any; gpuUtilization?: any }).error);
+  							console.error(error);
   							break;
   					}
   				};
@@ -245,7 +245,7 @@
   			const errorMessage = {
   				id: `msg-${Date.now()}-error`,
   				role: 'assistant',
-  				content: `Sorry, I encountered an error processing your request: ${error instanceof Error ? error.message : String(error)}`,
+  				content: `Sorry, I encountered an error processing your request: ${error instanceof Error ? error.message: String(error)}`,
   				timestamp: new Date().toISOString(),
   				isError: true,
   				caseId
@@ -280,14 +280,14 @@
   		}
 
   		if (evidenceContext.length > 0) {
-  			contextPrompt += `Available evidence context: ${evidenceContext.map(e => e.title).join(', ')}. `;
+  			contextPrompt += `Available evidence context: ${evidenceContext.map.join(', ')}. `;
   		}
 
   		// Add recent conversation context
   		const recentMessages = messages.slice(-5);
   		if (recentMessages.length > 0) {
   			contextPrompt += 'Recent conversation: ';
-  			contextPrompt += recentMessages.map(m => `${m.role}: ${m.content}`).join(' | ') + ' | ';
+  			contextPrompt += recentMessages.map.join(' | ') + ' | ';
   		}
 
   		contextPrompt += `User question: ${message}`;
@@ -509,7 +509,7 @@
   		const url = URL.createObjectURL(blob);
   		const a = document.createElement('a');
   		a.href = url;
-  		a.download = `conversation-${caseId || 'export'}-${new Date().toISOString().split('T')[0]}.json`;
+  		a.download = `conversation-${caseId || 'export'}-${new Date().toISOString.split('T')[0]}.json`;
   		a.click();
   		URL.revokeObjectURL(url);
   	}
@@ -744,15 +744,15 @@ currentMessage = 'Find relevant precedents'}>
 		scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
 	}
 	
-	.overflow-y-auto::-webkit-scrollbar {
+	.overflow-y-auto: :-webkit-scrollbar {
 		width: 6px;
 	}
 	
-	.overflow-y-auto::-webkit-scrollbar-track {
+	.overflow-y-auto: :-webkit-scrollbar-track {
 		background: hsl(var(--muted));
 	}
 	
-	.overflow-y-auto::-webkit-scrollbar-thumb {
+	.overflow-y-auto: :-webkit-scrollbar-thumb {
 		background: hsl(var(--muted-foreground));
 		border-radius: 3px;
 	}

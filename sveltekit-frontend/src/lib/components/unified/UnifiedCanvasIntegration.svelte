@@ -102,16 +102,16 @@ https://svelte.dev/e/attribute_duplicate -->
   			if (analysisResult.success) {
   				activeAnalysis = [...activeAnalysis, {
   					evidenceId: evidenceItem.id,
-  					...analysisResult.(data as { analysis?: unknown }).analysis,
+  					...analysisResult.data.analysis,
   					timestamp: new Date().toISOString()
   				}];
-  				console.log('✅ Evidence analysis completed:', analysisResult.(data as { analysis?: unknown }).analysis.summary);
+  				console.log('✅ Evidence analysis completed:', analysisResult.data.analysis.summary);
   			}
   		} catch (error) {
   			console.error('❌ Evidence analysis failed:', error);
   		} finally {
   			// Remove from processing queue
-  			processingQueue = processingQueue.filter(item => (item as { id?: unknown }).id !== evidenceItem.id);
+  			processingQueue = processingQueue.filter(item => item.id) !== evidenceItem.id);
   		}
   	}
 
@@ -141,7 +141,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		// Combine evidence from both canvas and board
   		const allEvidence = [...canvasEvidence, ...evidence];
   		for (const item of allEvidence) {
-  			if (!activeAnalysis.find(analysis => analysis.evidenceId === (item as { id?: unknown }).id)) {
+  			if (!activeAnalysis.find.id)) {
   				await handleEvidenceAnalysis(item);
   			}
   		}

@@ -58,8 +58,7 @@
       const response = await fetch('/demo/gpu-inference/api/session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionName: `GPU Demo Session ${new Date().toLocaleString()}`,
+        body: JSON.stringify.toLocaleString()}`,
           userId: 'demo-user'
         })
       });
@@ -95,7 +94,7 @@
     }
     engineStatus.set(status);
     // Update performance metrics
-    const onlineEngines = Object.values(status).filter(s => s.online).length;
+    const onlineEngines = Object.values.filter-length;
     performanceMetrics.update(m => ({
       ...m,
       activeEngines: onlineEngines

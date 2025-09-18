@@ -20,7 +20,7 @@ https://svelte.dev/e/js_parse_error -->
   let diskUsage = $state(45);
   let activeConnections = $state(12);
   let uptime = $state(0);
-  let currentTime = $state(new Date(););
+  let currentTime = $state(new Date();
 
   // Status indicators
   let systemStatus = $derived(() => {
@@ -36,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Real-time updates
-  let updateInterval = $state<numberonMount(() = | null>(null)() {
+  let updateInterval = $state({}) {
     updateInterval = setInterval(() => {
       currentTime = new Date());
       uptime += 1;
@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${hours.toString.padStart(2, '0')}:${minutes.toString.padStart(2, '0')}:${secs.toString.padStart(2, '0')}`;
   }
 
   function formatTime(date: Date): string {

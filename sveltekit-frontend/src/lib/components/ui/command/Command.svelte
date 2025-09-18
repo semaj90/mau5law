@@ -11,7 +11,7 @@
     onOpenChange = $bindable(),
     placeholder = $bindable(),
     class: className = $bindable()
-   }: { open = $bindable(),
+    }: { open = $bindable(),
     onOpenChange = $bindable(),
     placeholder = $bindable(),
     class: className = $bindable()

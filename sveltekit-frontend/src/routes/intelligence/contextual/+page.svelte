@@ -169,11 +169,11 @@
   
   let totalInsights = $derived(contextualInsights.length + optimisticInsights.length);
   let highConfidenceInsights = $derived(
-    contextualInsights.filter(insight => insight.confidence > 0.8).length
+    contextualInsights.filter(item => item.length)
   );
   
   let processingProgress = $derived(
-    processingTasks.filter(task => task.status === 'processing').length > 0
+    processingTasks.filter(item => item.length) > 0
   );
   
   // Initialize real-time updates
@@ -268,12 +268,12 @@
       };
       
       contextualInsights = [realInsight, ...contextualInsights];
-      optimisticInsights = optimisticInsights.filter(item => (item as { id?: unknown; data?: unknown; optimistic?: unknown }).id !== optimisticInsight.id);
+      optimisticInsights = optimisticInsights.filter(item => item.id) !== optimisticInsight.id);
       
       analysisQuery = '';
     } catch (error) {
       console.error('Analysis failed:', error);
-      optimisticInsights = optimisticInsights.filter(item => (item as { id?: unknown; data?: unknown; optimistic?: unknown }).id !== optimisticInsight.id);
+      optimisticInsights = optimisticInsights.filter(item => item.id) !== optimisticInsight.id);
     } finally {
       isAnalyzing = false;
     }
@@ -311,7 +311,7 @@
       <div class="header-stats">
         <Badge variant="outline" class="status-{systemStatus}">
           <Activity class="w-3 h-3 mr-1" />
-          {systemStatus.charAt(0).toUpperCase() + systemStatus.slice(1)}
+          {systemStatus.charAt.toUpperCase() + systemStatus.slice(1)}
         </Badge>
         <div class="stat-item">
           <span class="stat-value">{totalInsights}</span>
@@ -444,7 +444,7 @@
                   </div>
                   <div class="insight-confidence">
                     <Badge variant="secondary">
-                      {Math.round((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.confidence * 100)}%
+                      {Math.round.data.confidence * 100)}%
                     </Badge>
                   </div>
                 </div>
@@ -841,7 +841,7 @@
     background-color: #f9fafb;
   }
 
-  .insight-(item as { id?: unknown; data?: unknown; optimistic?: unknown }).optimistic {
+  .insight-.optimistic {
     opacity: 0.7;
     background-color: rgba(59, 130, 246, 0.05);
     border: 1px dashed rgba(59, 130, 246, 0.3);

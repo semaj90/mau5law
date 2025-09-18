@@ -1,7 +1,7 @@
 <!-- FOAF Recommendations Modal - SSR compatible with Svelte 5 runes + Melt-UI -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { createDialog, melt } from 'melt';
+  import * as Dialog from 'bits-ui';
   import { fade, fly } from 'svelte/transition';
   import { X, Users, UserCheck, Briefcase, Mail } from 'lucide-svelte';
   interface Person {
@@ -20,19 +20,14 @@
     onClose?: () => void;
   }
 
-  let { open = $bindable(false), personId, onClose }: Props = $props();
+  let { open = $bindable(false), personId, onClose  }: Props = $props();
   // Svelte 5 runes for reactive state
   let loading = $state(false);
   let foafData = $state(null);
   let error = $state<string | null>(null);
 
   // Melt-UI dialog builder
-  const {
-    elements: { trigger, overlay, content, title, description, close },
-    states: { open: dialogOpen }
-  } = createDialog({
-    forceVisible: true,
-  });
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // Sync with parent open state
   $effect(() => {
@@ -53,7 +48,7 @@
         if (!response.ok) throw new Error('Failed to load recommendations');
         foafData = await response.json();
       } catch (err) {
-        error = err instanceof Error ? err.message : 'Unknown error';
+        error = err instanceof Error ? err.message: 'Unknown error';
       } finally {
         loading = false;
       }

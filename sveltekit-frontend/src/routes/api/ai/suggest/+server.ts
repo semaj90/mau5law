@@ -136,7 +136,7 @@ function extractSuggestions(response: string, prompt: string): string[] {
 
   // Try to extract specific suggestions from the AI response
   const suggestionPattern =
-    /(?:suggest|recommend|consider|try|should|could)([^.!?]+)/gi;
+    /(?:suggest|recommend|consider|try|should|could) => [^.!?]+)/gi;
   const matches = response.match(suggestionPattern);
 
   if (matches && matches.length > 0) {

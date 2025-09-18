@@ -252,7 +252,7 @@ class NotesManager {
 
     const notes = await new Promise<SavedNote[]>((resolve) => {
       const unsubscribe = savedNotes.subscribe((notes) => {
-        resolve(notes);
+        resolve(notes)));
         unsubscribe();
       });
     });

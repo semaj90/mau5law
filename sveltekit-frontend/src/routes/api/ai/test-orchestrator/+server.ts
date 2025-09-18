@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         type: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString(),
       },
       { status: 500 }
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
         modelUsed: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).modelUsed,
         confidence: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).confidence,
         executionMetrics: {
-          ...(result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).executionMetrics,
+          ...result.executionMetrics,
           apiLatency,
         },
         error: (result as { success?: any; response?: any; orchestratorUsed?: any; modelUsed?: any; confidence?: any; executionMetrics?: any; error?: any }).error,
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         type: 'custom_test_error',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

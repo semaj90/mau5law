@@ -140,7 +140,7 @@
 			height: 56px;
 		}
 
-		.fab-icon :global(svg) {
+		.fab-icon: global(svg) {
 			width: 20px;
 			height: 20px;
 		}

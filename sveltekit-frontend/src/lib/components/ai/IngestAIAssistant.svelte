@@ -185,7 +185,7 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   onMount(() => {
     // Initialize AI agent connection following your patterns
-    aiAgentStore.connect().catch(console.error);
+    aiAgentStore.connect.catch(console.error);
   });
 </script>
 

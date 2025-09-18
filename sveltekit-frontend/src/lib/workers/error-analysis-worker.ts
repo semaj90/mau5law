@@ -245,7 +245,7 @@ self.addEventListener('message', (event: MessageEvent) => {
   } catch (error: any) {
     self.postMessage({
       type: 'error',
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       id
     });
   }

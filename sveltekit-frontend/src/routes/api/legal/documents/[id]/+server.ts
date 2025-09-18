@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ params }) => {
     // Calculate word count
     const documentWithWordCount = {
       ...document,
-      wordCount: document.content ? document.content.split(/\s+/).length : 0,
+      wordCount: document.content ? document.content.split(/\s+/).length: 0,
     };
 
     return json(documentWithWordCount);
@@ -79,7 +79,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
         id: documentId,
         ...data,
         updatedAt: new Date(),
-        wordCount: data.content ? data.content.split(/\s+/).length : 0,
+        wordCount: data.content ? data.content.split(/\s+/).length: 0,
       });
     }
     // Calculate word count if content is provided

@@ -251,7 +251,7 @@ https://svelte.dev/e/expected_token -->
   function generateLiveHTML(result) {
     const tiles = (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).compressedTiles || [];
     
-    return tiles.slice(0, 10).map((tile, index) => { // Show first 10 tiles
+    return tiles.slice.map((tile, index) => { // Show first 10 tiles
       const tileId = `tile-${(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).id}-${index}`;
       return `<div class="text-tile-${tileId} inline-block p-2 m-1 rounded border">
         <span class="text-xs">${tile.metadata?.categories?.join(' ') || 'tile'}</span>
@@ -629,15 +629,15 @@ processingLogs = []} variant="outline" size="sm">
     scrollbar-color: #22c55e #000;
   }
   
-  .bg-black::-webkit-scrollbar {
+  .bg-black: :-webkit-scrollbar {
     width: 8px;
   }
   
-  .bg-black::-webkit-scrollbar-track {
+  .bg-black: :-webkit-scrollbar-track {
     background: #000;
   }
   
-  .bg-black::-webkit-scrollbar-thumb {
+  .bg-black: :-webkit-scrollbar-thumb {
     background: #22c55e;
     border-radius: 4px;
   }

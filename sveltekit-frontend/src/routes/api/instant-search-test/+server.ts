@@ -162,7 +162,7 @@ export const GET: RequestHandler = async ({ url }) => {
             query,
             resultCount: searchResults.length,
             avgResponseTime: searchResults.length > 0 ? 
-              searchResults.reduce((sum, r) => sum + r.responseTime, 0) / searchResults.length : 0,
+              searchResults.reduce((sum, r) => sum + r.responseTime, 0) / searchResults.length: 0,
             resultTypes: [...new Set(searchResults.map(r => r.resultType))]
           });
         }
@@ -240,11 +240,7 @@ export const GET: RequestHandler = async ({ url }) => {
     results.status = results.errors.length === 0 ? 'success' : 'partial';
     results.summary = {
       testsRun: Object.keys(results.results).length,
-      testsSucceeded: Object.keys(results.results).filter(key => 
-        results.results[key].status === 'connected' || 
-        results.results[key].status === 'working' || 
-        results.results[key].status === 'healthy'
-      ).length,
+      testsSucceeded: Object.keys(results.results).filter(item => item.length),
       errorCount: results.errors.length,
       totalTime: totalTime
     };

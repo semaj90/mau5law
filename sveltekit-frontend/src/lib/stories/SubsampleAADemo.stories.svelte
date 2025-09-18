@@ -353,14 +353,7 @@ function resetBenchmarks() {
   margin-bottom: 30px;
 }
 
-.demo-canvas {
-  border: 2px solid #00ff88;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
-  background: #000;
-}
-
-.canvas-overlay {
+.demo-canv.canvas-overlay {
   position: absolute;
   top: 10px;
   left: 10px;

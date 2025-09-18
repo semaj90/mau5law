@@ -99,8 +99,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       success: true,
       testSuite,
       summary: {
-        passed: testSuite.results.filter(r => r.success).length,
-        failed: testSuite.results.filter(r => !r.success).length,
+        passed: testSuite.results.filter(item => item.length),
+        failed: testSuite.results.filter(item => item.length),
         total: testSuite.results.length,
         duration: testSuite.totalDuration
       }
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       step: 'test_execution',
       success: false,
       duration: testSuite.totalDuration,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     });
 
     return json({
@@ -171,7 +171,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       step: 'authentication_system',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -216,7 +216,7 @@ async function testSessionManagement(authData: any): Promise<AuthFlowTestResult>
       step: 'session_management',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -237,7 +237,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
       testMode: true
     });
 
-    const healthyServices = Object.values(serviceHealth).filter(Boolean).length;
+    const healthyServices = Object.values(serviceHealth).filter(item => item.length);
     const totalServices = Object.keys(serviceHealth).length;
 
     if (healthyServices === 0) {
@@ -264,7 +264,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
       step: 'production_services',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -283,8 +283,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
       fetch('http://localhost:11436/api/tags')
     ]);
 
-    const healthyOllama = ollamaHealthChecks.filter(result => 
-      (result as { success?: any; status?: any; value?: any }).status === 'fulfilled' && ((result as { success?: any; status?: any; value?: any }).value as Response).ok
+    const healthyOllama = ollamaHealthChecks.filter(item => item.status) === 'fulfilled' && ((result as { success?: any; status?: any; value?: any }).value as Response).ok
     ).length;
 
     if (healthyOllama === 0) {
@@ -322,7 +321,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
       step: 'ai_assistant',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -368,7 +367,7 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
       step: 'gpu_acceleration',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -391,7 +390,7 @@ async function testEndToEndIntegration(testUser: string): Promise<AuthFlowTestRe
     };
 
     // Test workflow completion
-    const workflowSteps = Object.values(workflow).filter(Boolean).length;
+    const workflowSteps = Object.values(workflow).filter(item => item.length);
     const totalSteps = Object.keys(workflow).length;
 
     if (workflowSteps !== totalSteps) {
@@ -418,7 +417,7 @@ async function testEndToEndIntegration(testUser: string): Promise<AuthFlowTestRe
       step: 'end_to_end_integration',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }

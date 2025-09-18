@@ -180,8 +180,9 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mx-auto px-4 max-w-7xl" bind:this={suggestionsContainer}>
         <input
           bind:this={inputElement}
-          bind:value={inputValue} oninput={handleInput}
-          keydown={handleKeyDown}
+          bind:value={inputValue}
+          oninput={handleInput}
+          onkeydown={handleKeyDown}
           onfocus={handleFocus}
           class="mx-auto px-4 max-w-7xl"
           type="text"

@@ -50,8 +50,8 @@ Displays the chronological chain of custody events with detailed audit trail
   }
 
   function formatEventTitle(eventType: string) {
-    return eventType.split('-').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
+    return eventType.split.map(word => 
+      word.charAt.toUpperCase() + word.slice(1)
     ).join(' ');
   }
 
@@ -177,7 +177,7 @@ Displays the chronological chain of custody events with detailed audit trail
             {/if}
             
             <!-- Detailed information (expandable) -->
-            {#if event.details && Object.keys(event.details).length > 0}
+            {#if event.details && Object.keys.length > 0}
               <details class="mt-2 pt-2 border-t border-gray-100">
                 <summary class="cursor-pointer text-xs text-blue-600 hover:text-blue-800">
                   View detailed information
@@ -231,21 +231,21 @@ Displays the chronological chain of custody events with detailed audit trail
   }
   
   /* Custom scrollbar */
-  .custody-timeline::-webkit-scrollbar {
+  .custody-timeline: :-webkit-scrollbar {
     width: 6px;
   }
   
-  .custody-timeline::-webkit-scrollbar-track {
+  .custody-timeline: :-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 3px;
   }
   
-  .custody-timeline::-webkit-scrollbar-thumb {
+  .custody-timeline: :-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
   }
   
-  .custody-timeline::-webkit-scrollbar-thumb:hover {
+  .custody-timeline: :-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
 </style>

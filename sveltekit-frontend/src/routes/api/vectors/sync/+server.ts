@@ -177,7 +177,7 @@ export const POST: RequestHandler = async ({ request }) => {
         .update(vectorJobs)
         .set({
           status: 'failed',
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message: 'Unknown error',
           completedAt: new Date(),
         })
         .where(eq(vectorJobs.jobId, body.jobId))
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );
@@ -235,7 +235,7 @@ async function handleVectorUpsert(
   // Prepare point data for Qdrant
   const pointData = {
     id: ownerId,
-    vector: Array.isArray(vector.embedding) ? vector.embedding : [],
+    vector: Array.isArray(vector.embedding) ? vector.embedding: [],
     payload: {
       ownerType,
       title: sourceData.title || '',
@@ -318,7 +318,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Health check failed',
+        error: error instanceof Error ? error.message: 'Health check failed',
       },
       { status: 500 }
     );

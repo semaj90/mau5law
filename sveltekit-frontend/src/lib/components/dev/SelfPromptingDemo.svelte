@@ -13,7 +13,7 @@
   } from '$lib/utils/mcp-helpers';
 
   // Agent orchestration state
-  const activeAgents = writable<Set<string>>(new Set());
+  const activeAgents = writable<Set<string>(new Set());
   const agentResults = writable<AgentResult[]>([]);
   const orchestrationLog = writable<Array>([]);
   const isRunning = writable(false);
@@ -82,7 +82,7 @@
     currentTask: string;
     progress: number;
     lastUpdate: string;
-  }>>({});
+  }>( );
 
   /**
    * Execute the self-prompting orchestration workflow
@@ -107,7 +107,7 @@
       await runOrchestrationLoop(selectedWorkflowConfig, initialPrompt);
     } catch (error) {
       console.error('Workflow execution error:', error);
-      addLogEntry('error', '', `Workflow failed: ${error}`, {});
+      addLogEntry('error', '', `Workflow failed: ${error}`, );
     } finally {
       isRunning.set(false);
       currentPhase.set('completed');
@@ -122,7 +122,7 @@
 
     for (let i = 0; i < maxIterations; i++) {
       currentIteration = i + 1;
-      addLogEntry('iteration-start', '', `Starting iteration ${i + 1}/${maxIterations}`, {});
+      addLogEntry('iteration-start', '', `Starting iteration ${i + 1}/${maxIterations}`, );
 
       // Phase 1: Semantic Search and Memory Analysis
       currentPhase.set('semantic-search');
@@ -189,7 +189,7 @@
    * Execute semantic search with Context7 MCP integration
    */
   async function executeSemanticSearch(prompt: string) {
-    addLogEntry('semantic-search', 'context7', `Executing semantic search for: ${prompt}`, {});
+    addLogEntry('semantic-search', 'context7', `Executing semantic search for: ${prompt}`, );
 
     updateAgentStatus('context7', 'processing', 'Performing semantic search');
 
@@ -224,7 +224,7 @@
    * Execute memory graph analysis
    */
   async function executeMemoryAnalysis(prompt: string) {
-    addLogEntry('memory-analysis', 'memory-server', `Reading memory graph for: ${prompt}`, {});
+    addLogEntry('memory-analysis', 'memory-server', `Reading memory graph for: ${prompt}`, );
 
     updateAgentStatus('memory-server', 'processing', 'Analyzing memory graph');
 
@@ -262,7 +262,7 @@
    * Generate self-prompting suggestions
    */
   async function generateSelfPrompt(results: any, agents: string[]) {
-    addLogEntry('self-prompting', 'meta-agent', 'Analyzing results for self-prompting', {});
+    addLogEntry('self-prompting', 'meta-agent', 'Analyzing results for self-prompting', );
 
     // Simulate meta-analysis by the orchestration system
     await new Promise(resolve => setTimeout(resolve, 500));
@@ -301,7 +301,7 @@
    * Synthesize results from each iteration
    */
   async function synthesizeIterationResults(results: any, iteration: number) {
-    addLogEntry('synthesis', 'synthesizer', `Synthesizing iteration ${iteration} results`, {});
+    addLogEntry('synthesis', 'synthesizer', `Synthesizing iteration ${iteration} results`, );
 
     const synthesis = {
       iteration,
@@ -339,7 +339,7 @@
    */
   async function generateFinalReport() {
     currentPhase.set('final-report');
-    addLogEntry('final-report', 'orchestrator', 'Generating comprehensive final report', {});
+    addLogEntry('final-report', 'orchestrator', 'Generating comprehensive final report', );
 
     const finalReport = {
       summary: 'Multi-agent legal evidence analysis completed successfully',
@@ -377,7 +377,7 @@
 
     for (const query of mcpQueries) {
       const prompt = generateMCPPrompt(query);
-      addLogEntry('context7-demo', 'context7', `Executing: ${prompt}`, {});
+      addLogEntry('context7-demo', 'context7', `Executing: ${prompt}`, );
 
       // Simulate MCP tool execution
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -400,8 +400,7 @@
    * Utility functions
    */
   function addLogEntry(phase: string, agent: string, prompt: string, result: any) {
-    orchestrationLog.update(log => [...log, {
-      timestamp: new Date().toISOString(),
+    orchestrationLog.update.toISOString(),
       phase,
       agent,
       prompt,
@@ -411,23 +410,13 @@
   }
 
   function updateAgentStatus(agent: string, status: 'idle' | 'processing' | 'completed' | 'error', task: string) {
-    agentStatus.update(statusMap => ({
-      ...statusMap,
-      [agent]: {
-        status,
-        currentTask: task,
-        progress: status === 'completed' ? 100 : status === 'processing' ? 50 : 0,
-        lastUpdate: new Date().toISOString()
+    agentStatus.update.toISOString()
       }
     }));
   }
 
   function addAgentCommunication(from: string, to: string, message: string, type: 'prompt' | 'result' | 'self-prompt') {
-    agentCommunications.update(comms => [...comms, {
-      from,
-      to,
-      message,
-      timestamp: new Date().toISOString(),
+    agentCommunications.update.toISOString(),
       type
     }]);
   }
@@ -436,7 +425,7 @@
     orchestrationLog.set([]);
     agentResults.set([]);
     agentCommunications.set([]);
-    agentStatus.set({});
+    agentStatus.set( );
     currentPhase.set('idle');
   }
 
@@ -651,7 +640,7 @@
             </span>
           </div>
           <div class="text-sm text-gray-700 mb-1">{entry.prompt}</div>
-          {#if entry.result && Object.keys(entry.result).length > 0}
+          {#if entry.result && Object.keys.length > 0}
             <details class="text-xs">
               <summary class="cursor-pointer text-blue-600 hover:text-blue-800">View Details</summary>
               <pre class="mt-2 p-2 bg-white rounded text-gray-600 overflow-x-auto">{JSON.stringify(entry.result, null, 2)}</pre>
@@ -710,7 +699,7 @@
           <div class="border border-gray-200 rounded-lg p-4">
             <h4 class="font-medium text-gray-900 mb-2">{(result as { selfPrompt?: any; agent?: any; result?: any }).agent}</h4>
             <div class="text-sm text-gray-600 mb-2">
-              {typeof (result as { selfPrompt?: any; agent?: any; result?: any }).result === 'string' ? (result as { selfPrompt?: any; agent?: any; result?: any }).result : JSON.stringify((result as { selfPrompt?: any; agent?: any; result?: any }).result).substring(0, 100) + '...'}
+              {typeof (result as { selfPrompt?: any; agent?: any; result?: any }).result === 'string' ? (result as { selfPrompt?: any; agent?: any; result?: any }).result: JSON.stringify(result).substring(0, 100) + '...'}
             </div>
             <div class="flex items-center justify-between text-xs">
               <span class="text-green-600">Completed</span>
@@ -792,17 +781,17 @@
     width: 6px;
   }
 
-  .max-h-96::-webkit-scrollbar-track {
+  .max-h-96: :-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 3px;
   }
 
-  .max-h-96::-webkit-scrollbar-thumb {
+  .max-h-96: :-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
   }
 
-  .max-h-96::-webkit-scrollbar-thumb:hover {
+  .max-h-96: :-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
 </style>

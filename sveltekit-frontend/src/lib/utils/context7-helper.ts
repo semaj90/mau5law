@@ -38,7 +38,7 @@ export async function getLibraryDocs(
     return response.content;
   } catch (error) {
     console.error('Failed to get library docs:', error);
-    return `Error fetching documentation for ${libraryId}: ${error instanceof Error ? error.message : 'Unknown error'}`;
+    return `Error fetching documentation for ${libraryId}: ${error instanceof Error ? error.message: 'Unknown error'}`;
   }
 }
 

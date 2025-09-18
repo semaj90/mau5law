@@ -296,7 +296,7 @@
             {#if (result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).data}
               <details class="mt-2">
                 <summary class="text-sm font-medium text-gray-700 cursor-pointer">View Details</summary>
-                <pre class="mt-2 p-2 bg-gray-50 rounded text-xs overflow-x-auto">{JSON.stringify((result as { test?: any; status?: any; summary?: any; timestamp?: any; error?: any; data?: any }).data, null, 2)}</pre>
+                <pre class="mt-2 p-2 bg-gray-50 rounded text-xs overflow-x-auto">{JSON.stringify.data, null, 2)}</pre>
               </details>
             {/if}
           </div>

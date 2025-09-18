@@ -42,7 +42,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       orchestrator: chatResult.orchestratorUsed,
       model: chatResult.modelUsed,
       latency: chatResult.executionMetrics.totalLatency,
-      response: chatResult.(response as { substring?: any; length?: any }).substring(0, 100) + '...',
+      response: chatResult.response.substring(0, 100) + '...',
     });
 
     if (chatResult.success) {
@@ -52,11 +52,11 @@ export async function testOrchestratorIntegration(): Promise<any> {
       console.log(`❌ Chat test failed: ${chatResult.error}`);
     }
   } catch (error) {
-    console.log(`❌ Chat test error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.log(`❌ Chat test error: ${error instanceof Error ? error.message: 'Unknown error'}`);
     results.push({
       test: 'Basic Chat',
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
     });
   }
 
@@ -94,7 +94,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       model: legalResult.modelUsed,
       latency: legalResult.executionMetrics.totalLatency,
       confidence: legalResult.confidence,
-      response: legalResult.(response as { substring?: any; length?: any }).substring(0, 100) + '...',
+      response: legalResult.response.substring(0, 100) + '...',
     });
 
     if (legalResult.success) {
@@ -105,12 +105,12 @@ export async function testOrchestratorIntegration(): Promise<any> {
     }
   } catch (error) {
     console.log(
-      `❌ Legal analysis test error: ${error instanceof Error ? error.message : 'Unknown error'}`
+      `❌ Legal analysis test error: ${error instanceof Error ? error.message: 'Unknown error'}`
     );
     results.push({
       test: 'Legal Analysis',
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
     });
   }
 
@@ -146,7 +146,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       latency: embeddingResult.executionMetrics.totalLatency,
       response:
         typeof embeddingResult.response === 'string'
-          ? `Generated ${embeddingResult.(response as { substring?: any; length?: any }).length} chars`
+          ? `Generated ${embeddingResult.response.length} chars`
           : 'Embedding generated',
     });
 
@@ -158,12 +158,12 @@ export async function testOrchestratorIntegration(): Promise<any> {
     }
   } catch (error) {
     console.log(
-      `❌ Embedding test error: ${error instanceof Error ? error.message : 'Unknown error'}`
+      `❌ Embedding test error: ${error instanceof Error ? error.message: 'Unknown error'}`
     );
     results.push({
       test: 'Embedding Generation',
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
     });
   }
 
@@ -201,7 +201,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
       model: realtimeResult.modelUsed,
       latency: realtimeResult.executionMetrics.totalLatency,
       metLatencyTarget: realtimeResult.executionMetrics.totalLatency < 500,
-      response: realtimeResult.(response as { substring?: any; length?: any }).substring(0, 100) + '...',
+      response: realtimeResult.response.substring(0, 100) + '...',
     });
 
     if (realtimeResult.success) {
@@ -214,12 +214,12 @@ export async function testOrchestratorIntegration(): Promise<any> {
     }
   } catch (error) {
     console.log(
-      `❌ Realtime test error: ${error instanceof Error ? error.message : 'Unknown error'}`
+      `❌ Realtime test error: ${error instanceof Error ? error.message: 'Unknown error'}`
     );
     results.push({
       test: 'Realtime Chat',
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
     });
   }
 
@@ -250,12 +250,12 @@ export async function testOrchestratorIntegration(): Promise<any> {
     );
   } catch (error) {
     console.log(
-      `❌ Status check error: ${error instanceof Error ? error.message : 'Unknown error'}`
+      `❌ Status check error: ${error instanceof Error ? error.message: 'Unknown error'}`
     );
     results.push({
       test: 'Bridge Status',
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
     });
   }
 
@@ -291,7 +291,7 @@ export async function quickHealthCheck(): Promise<any> {
   } catch (error) {
     return {
       healthy: false,
-      status: { error: error instanceof Error ? error.message : 'Unknown error' },
+      status: { error: error instanceof Error ? error.message: 'Unknown error' },
       timestamp: new Date().toISOString(),
     };
   }
@@ -343,7 +343,7 @@ export async function testSpecificOrchestrator(
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       expectedOrchestrator: orchestratorType,
     };
   }

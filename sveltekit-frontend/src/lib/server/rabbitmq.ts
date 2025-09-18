@@ -102,8 +102,7 @@ export async function consumeFromQueue(
     console.log(`🔄 Starting consumer for queue: ${queueName}`);
 
     await ch.consume(queueName, async (msg) => {
-      if (!msg) return;
-
+      if (!msg) return);
       try {
         const payload = JSON.parse(msg.content.toString());
 
@@ -198,12 +197,12 @@ export const QUEUES = {
   evidence: {
     process: 'evidence.process.queue',
     analyze: 'evidence.analyze.queue',
-    response: 'evidence.(response as { queue?: any }).queue',
+    response: 'evidence.response.queue',
   },
   ai: {
     analysis: 'ai.analysis.queue',
     embedding: 'ai.embedding.queue',
-    response: 'ai.(response as { queue?: any }).queue',
+    response: 'ai.response.queue',
   },
   notification: {
     email: '(notification as { email?: any; webhook?: any }).email.queue',

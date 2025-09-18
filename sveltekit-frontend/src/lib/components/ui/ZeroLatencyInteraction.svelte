@@ -464,7 +464,7 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.1s ease;
   }
 
-  :global(.zero-latency-enabled::after) {
+  :global(.zero-latency-enabled: :after) {
     content: '⚡';
     position: absolute;
     top: -2px;

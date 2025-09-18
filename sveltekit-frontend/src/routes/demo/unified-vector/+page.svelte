@@ -25,7 +25,7 @@
       const response = await fetch('/api/unified-vector?action=health');
       const data = await response.json();
       if (data.success && data.health) {
-        systemStats.activeServices = Object.values(data.health).filter(Boolean).length;
+        systemStats.activeServices = Object.values.filter-length;
       }
     } catch (error) {
       console.error('Failed to check system status:', error);

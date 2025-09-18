@@ -10,8 +10,7 @@
 
   let {
     caseId,
-    onEvidenceDrop = () => {}
-  }: Props = $props();
+    onEvidenceDrop = () => }: Props = $props();
 
   // State using Svelte 5 runes
   let evidenceList = $state<Evidence[]>([]);

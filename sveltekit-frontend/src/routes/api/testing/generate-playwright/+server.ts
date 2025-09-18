@@ -339,7 +339,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
       
       // Wait for all files to complete
       await page.waitForFunction(() => {
-        const progress = document.querySelector('[data-testid="upload-progress"]')?.textContent;
+        const progress = document.querySelector('[data-testid="upload-progress"]')?.textContent);
         return progress?.includes('100%');
       }, { timeout: 60000 });
       
@@ -623,7 +623,7 @@ async function measureProcessingTime(page: Page, operation: () => Promise<void>)
 
 function countGeneratedTests(testContent: string): number {
   const testMatches = testContent.match(/test\(/g);
-  return testMatches ? testMatches.length : 0;
+  return testMatches ? testMatches.length: 0;
 }
 
 function calculateEstimatedRunTime(testResults: any): string {

@@ -74,7 +74,7 @@
 
     } catch (err) {
       console.error('🎮 WebGPU initialization failed:', err);
-      error = err instanceof Error ? err.message : 'WebGPU failed';
+      error = err instanceof Error ? err.message: 'WebGPU failed';
       textureData = generateFallbackPattern();
       isLoading = false;
     }
@@ -113,7 +113,7 @@
       }
 
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Streaming failed';
+      error = err instanceof Error ? err.message: 'Streaming failed';
       textureData = generateFallbackPattern();
       isLoading = false;
     }
@@ -125,7 +125,7 @@
   function generateFallbackPattern(): string {
     // Generate simple NES-style pattern as SVG
     const color = hashToColor(assetId);
-    const pattern = assetId.slice(0, 2).toUpperCase();
+    const pattern = assetId.slice.toUpperCase();
 
     return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"
              style="image-rendering: pixelated;" xmlns="http://www.w3.org/2000/svg">
@@ -272,7 +272,7 @@
       {:else}
         <div class="nes-fallback-pattern">
           <div class="nes-pattern-block" style:background={hashToColor(assetId)}>
-            {assetId.slice(0, 2).toUpperCase()}
+            {assetId.slice.toUpperCase()}
           </div>
         </div>
       {/if}

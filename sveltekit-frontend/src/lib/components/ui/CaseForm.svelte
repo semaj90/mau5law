@@ -25,7 +25,7 @@ https://svelte.dev/e/js_parse_error -->
     },
     validators: {
       title: (value: string) => {
-        if (!value || value.trim().length < 3) {
+        if (!value || value.trim.length < 3) {
           return "Title must be at least 3 characters long";
   }
         if (value.length > 100) {
@@ -34,7 +34,7 @@ https://svelte.dev/e/js_parse_error -->
         return null;
       },
       description: (value: string) => {
-        if (!value || value.trim().length < 10) {
+        if (!value || value.trim.length < 10) {
           return "Description must be at least 10 characters long";
   }
         return null;
@@ -59,8 +59,8 @@ https://svelte.dev/e/js_parse_error -->
   let isSubmitting = $state(false);
 
   // Store form state
-  let formValues = $state<Record<string, any>('') >({});
-  let formErrors = $state<Record<string, string>('') >({});
+  let formValues = $state<Record<string, any>('') >( );
+  let formErrors = $state<Record<string, string>('') >( );
   let isFormValid = $state(false);
   let isFormDirty = $state(false);
 
@@ -117,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
       isSubmitting = false;
   }}
   function addTag() {
-    const currentTags = formApi.getValues().tags || "";
+    const currentTags = formApi.getValues.tags || "";
     formApi.setField(
       "tags",
       currentTags + (currentTags ? ", " : "") + "New Tag"
@@ -348,8 +348,7 @@ addTag()}
           </div>
 
           <div class="container mx-auto px-4">
-            Valid: {isValid ? "✅" : "❌"} | Fields: {Object.keys(values)
-              .length} | Errors: {Object.keys(errors).length}
+            Valid: {isValid ? "✅" : "❌"} | Fields: {Object.keys.length} | Errors: {Object.keys.length}
           </div>
         </div>
       </div>

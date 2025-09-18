@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Test execution failed',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );

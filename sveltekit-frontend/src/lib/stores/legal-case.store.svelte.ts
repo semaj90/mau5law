@@ -60,7 +60,7 @@ export function createLegalCaseStore() {
   // State using Svelte 5 runes
   let cases: LegalCase[] = $state([]);
   const selectedCase = $state<LegalCase | null>(null);
-  const aiInsights = $state<Record<string, AIInsights>>({});
+  const aiInsights = $state<Record<string, AIInsights>({});
   let auditLog: AuditLogEntry[] = $state([]);
   const currentUser = $state<User | null>({
     id: 'demo-user-001',
@@ -199,7 +199,7 @@ export function createLegalCaseStore() {
 
       const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
       // Extract the analysis data from the API response format
-      const insights = (result as { cases?: any; success?: any; analysis?: any }).success ? (result as { cases?: any; success?: any; analysis?: any }).analysis : result;
+      const insights = (result as { cases?: any; success?: any; analysis?: any }).success ? (result as { cases?: any; success?: any; analysis?: any }).analysis: result;
       aiInsights[caseId] = insights;
 
       // Log successful analysis

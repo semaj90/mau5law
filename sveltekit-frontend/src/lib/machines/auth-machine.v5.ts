@@ -157,7 +157,7 @@ export const authMachine = setup({
       return context.loginAttempts >= context.maxLoginAttempts;
     },
     isAccountLocked: ({ context }) => {
-      return context.lockoutUntil ? new Date() < context.lockoutUntil : false;
+      return context.lockoutUntil ? new Date() < context.lockoutUntil: false;
     }
   },
   actors: {
@@ -184,7 +184,7 @@ export const authMachine = setup({
           },
         };
       } catch (error: any) {
-        throw new Error(error instanceof Error ? error.message : 'Authentication failed');
+        throw new Error(error instanceof Error ? error.message: 'Authentication failed');
       }
     }),
     register: fromPromise(async ({ input }: { input: RegistrationData }) => {
@@ -213,7 +213,7 @@ export const authMachine = setup({
           },
         };
       } catch (error: any) {
-        throw new Error(error instanceof Error ? error.message : 'Registration failed');
+        throw new Error(error instanceof Error ? error.message: 'Registration failed');
       }
     }),
     logout: fromPromise(async () => {
@@ -237,7 +237,7 @@ export const authMachine = setup({
         await (authService as any).requestPasswordReset(input.email);
         return { success: true };
       } catch (error: any) {
-        throw new Error(error instanceof Error ? error.message : 'Password reset failed');
+        throw new Error(error instanceof Error ? error.message: 'Password reset failed');
       }
     })
   }
@@ -356,7 +356,7 @@ export const authMachine = setup({
       entry: 'setLoading',
       invoke: {
         src: 'resetPassword',
-        input: ({ event }) => ({ email: (event as any).(data as { email?: any }).email }),
+        input: ({ event }) => ({ email: (event as any).data.email }),
         onDone: {
           target: 'passwordResetSent',
           actions: 'clearLoading'

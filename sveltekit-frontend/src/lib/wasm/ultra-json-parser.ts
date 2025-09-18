@@ -270,7 +270,7 @@ export class UltraJSONParser {
       return result;
 
     } catch (error) {
-      console.warn('Ultra JSON parse failed, falling back to native JSON.parse:', error);
+      console.warn('Ultra JSON parse failed, falling back to native JSON.parse: ', error);
       return JSON.parse(jsonString);
     }
   }
@@ -644,8 +644,7 @@ export class UltraJSONParser {
   } {
     const cachedMetrics = Array.from(this.performanceCache.values());
     const avgParseTime = cachedMetrics.length > 0 
-      ? cachedMetrics.reduce((sum, m) => sum + m.parseTime, 0) / cachedMetrics.length
-      : 0;
+      ? cachedMetrics.reduce((sum, m) => sum + m.parseTime, 0) / cachedMetrics.length: 0;
 
     return {
       capabilities: this.capabilities,

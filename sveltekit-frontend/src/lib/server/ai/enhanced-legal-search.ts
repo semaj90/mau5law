@@ -264,7 +264,7 @@ export class EnhancedLegalSearchService {
                   relevance: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).relevance_level || 'medium',
                   searchType: 'vector' as const,
                   metadata: {
-                    ...(result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).metadata,
+                    ...result.metadata,
                     semantic_score: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).semantic_score,
                     distance: (result as { id?: any; title?: any; content?: any; metadata?: any; document_type?: any; semantic_score?: any; distance?: any; relevance_level?: any; score?: any; relevanceFactors?: any; jurisdiction?: any; category?: any }).distance,
                     source: 'enhanced_semantic_search',

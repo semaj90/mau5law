@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
 // Auto-generated default export
-export default {};
+export default ;
 </script>
   import { createEventDispatcher } from 'svelte';
 
@@ -53,7 +53,7 @@ export default {};
 	  }
 	  // Basic accept check: compare MIME or file extension when MIME absent
 	  if (accept) {
-		const patterns = accept.split(',').map(s => s.trim()).filter(Boolean);
+		const patterns = accept.split.map(s => s.trim()).filter(Boolean);
 		const ok = patterns.some(p => {
 		  if (p === '*/*') return true;
 		  if (p.endsWith('/*')) {
@@ -61,7 +61,7 @@ export default {};
 		  }
 		  // extension match
 		  if (p.startsWith('.')) {
-			return f.name.toLowerCase().endsWith(p.toLowerCase());
+			return f.name.toLowerCase.endsWith(p.toLowerCase());
 		  }
 		  return f.type === p;
 		});
@@ -96,7 +96,7 @@ export default {};
 
   function removeAt(index) {
 	if (disabled) return;
-	files = files.slice(0, index).concat(files.slice(index + 1));
+	files = files.slice.concat(files.slice(index + 1));
 	dispatch('change', { files });
   }
 

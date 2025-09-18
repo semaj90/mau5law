@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             status: 'offline',
             lastCheck: new Date(),
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message: 'Unknown error'
           }
         });
       }
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Request processing failed'
+      error: error instanceof Error ? error.message: 'Request processing failed'
     }, { status: 500 });
   }
 };
@@ -241,7 +241,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         id: req.id,
         success: true,
         result: {
-          processedData: req.operation === 'process' ? Array.from(mockTensorData(Array.isArray(req.data) ? req.(data as { length?: any }).length : 768)) : undefined,
+          processedData: req.operation === 'process' ? Array.from(mockTensorData(Array.isArray(req.data) ? req.data.length: 768)) : undefined,
           embeddings: ['vectorize', 'analyze'].includes(req.operation) ? Array.from(mockTensorData(768)) : undefined,
           metadata: {
             operation: req.operation,
@@ -269,7 +269,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Batch processing failed'
+      error: error instanceof Error ? error.message: 'Batch processing failed'
     }, { status: 500 });
   }
 };

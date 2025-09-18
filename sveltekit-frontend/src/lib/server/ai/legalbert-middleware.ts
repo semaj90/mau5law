@@ -327,7 +327,7 @@ export class LegalBERTMiddleware {
 
   private async generateLocalEmbedding(text: string): Promise<number[]> {
     return await withRetry(async () => {
-      const embedding = await generateEmbedding(text, { model: 'local' });
+      const embedding = await generateEmbedding(text, { model: 'local' }));
       if (!embedding || embedding.length === 0) {
         throw new Error('Local embedding generation failed');
       }
@@ -347,8 +347,7 @@ export class LegalBERTMiddleware {
           inputs: text,
           options: { wait_for_model: true },
         }),
-      });
-
+      }));
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`HuggingFace API error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
@@ -370,8 +369,7 @@ export class LegalBERTMiddleware {
           model: this.modelConfig.embedding,
           input: text,
         }),
-      });
-
+      }));
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`OpenAI API error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
@@ -704,7 +702,7 @@ export class LegalBERTMiddleware {
     const intersection = concepts1.filter((c) => concepts2.includes(c));
     const union = Array.from(new Set([...concepts1, ...concepts2]));
 
-    return union.length > 0 ? intersection.length / union.length : 0;
+    return union.length > 0 ? intersection.length / union.length: 0;
   }
 
   private extractBasicConcepts(text: string): string[] {
@@ -752,7 +750,7 @@ export class LegalBERTMiddleware {
     const textLower = text.toLowerCase();
     return legalTerms.reduce((count, term) => {
       const matches = textLower.match(new RegExp(`\\b${term}\\b`, 'g'));
-      return count + (matches ? matches.length : 0);
+      return count + (matches ? matches.length: 0);
     }, 0);
   }
 

@@ -95,7 +95,7 @@ export class RabbitMQService {
     await this.channel.consume(queue, async (msg) => {
       if (msg) {
         try {
-          const content = JSON.parse(msg.content.toString());
+          const content = JSON.parse(msg.content.toString()));
           await handler(content, msg);
           this.channel!.ack(msg);
         } catch (error: any) {
@@ -119,7 +119,7 @@ export class RabbitMQService {
     } catch (error: any) {
       return {
         status: 'unhealthy',
-        details: { error: error instanceof Error ? error.message : 'Unknown error' }
+        details: { error: error instanceof Error ? error.message: 'Unknown error' }
       };
     }
   }

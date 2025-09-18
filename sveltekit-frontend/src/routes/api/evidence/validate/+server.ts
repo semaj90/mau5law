@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         error: "Failed to record validation",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );
@@ -171,7 +171,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       {
         success: false,
         error: "Failed to retrieve validations",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );

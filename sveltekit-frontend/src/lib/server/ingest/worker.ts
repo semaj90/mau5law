@@ -93,7 +93,7 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
   } catch (error) {
     const response: WorkerJobResult = {
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime,
       workerId
     };

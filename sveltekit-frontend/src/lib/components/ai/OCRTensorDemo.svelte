@@ -130,8 +130,7 @@
       const batchResults = await ocrTensorProcessor.batchProcessImages(sampleImages);
       results = [...batchResults, ...results];
       // Update stats
-      batchResults.forEach(result => {
-        if ((result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).cacheHit) cacheStats.hits++;
+      batchResults.forEach.cacheHit) cacheStats.hits++;
         else cacheStats.misses++;
         cacheStats.totalProcessingTime += (result as { processingTime?: any; cacheHit?: any; ocr?: any; embeddings?: any }).processingTime;
       });
@@ -268,7 +267,7 @@
     </div>
 
     <!-- Performance Metrics -->
-    {#if Object.values(performanceMetrics).some(v => v > 0)}
+    {#if Object.values.some(v => v > 0)}
       <div class="metrics-section">
         <h3>⚡ Performance Metrics</h3>
         <div class="metrics-grid">

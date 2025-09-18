@@ -77,7 +77,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         sources: (result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).sources,
         confidence: (result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).confidence,
         metadata: {
-          ...(result as { synthesis?: any; sources?: any; confidence?: any; metadata?: any }).metadata,
+          ...result.metadata,
           requestId,
           processingTime,
         },

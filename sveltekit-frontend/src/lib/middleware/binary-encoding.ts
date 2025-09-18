@@ -145,8 +145,8 @@ export class AdvancedBinaryEncodingService {
       const metrics: EncodingMetrics = {
         format: targetFormat,
         originalSize,
-        encodedSize: cached.data instanceof ArrayBuffer ? cached.(data as { byteLength?: any; length?: any; some?: any }).byteLength : new TextEncoder().encode(cached.data).length,
-        compressionRatio: originalSize / (cached.data instanceof ArrayBuffer ? cached.(data as { byteLength?: any; length?: any; some?: any }).byteLength : new TextEncoder().encode(cached.data).length),
+        encodedSize: cached.data instanceof ArrayBuffer ? cached.data.byteLength: new TextEncoder().encode(cached.data).length,
+        compressionRatio: originalSize / (cached.data instanceof ArrayBuffer ? cached.data.byteLength : new TextEncoder().encode(cached.data).length),
         encodeTime: 0.1, // Cache hit time
         decodeTime: 0,
         bandwidth: 0,
@@ -254,7 +254,7 @@ export class AdvancedBinaryEncodingService {
       }
 
       const decodeTime = performance.now() - startTime;
-      const dataSize = data instanceof ArrayBuffer ? (data as { byteLength?: any; length?: any; some?: any }).byteLength : new TextEncoder().encode(data).length;
+      const dataSize = data instanceof ArrayBuffer ? (data as { byteLength?: any; length?: any; some?: any }).byteLength: new TextEncoder().encode(data).length;
       
       const metrics: EncodingMetrics = {
         format,
@@ -488,19 +488,19 @@ export class AdvancedBinaryEncodingService {
     const decodings = metrics.filter(m => m.decodeTime > 0);
     
     const formatDistribution: Record<EncodingFormat, number> = {
-      cbor: metrics.filter(m => m.format === 'cbor').length,
-      msgpack: metrics.filter(m => m.format === 'msgpack').length,
-      json: metrics.filter(m => m.format === 'json').length
+      cbor: metrics.filter(item => item.length),
+      msgpack: metrics.filter(item => item.length),
+      json: metrics.filter(item => item.length)
     };
     
     const efficiencyDistribution = {
-      excellent: metrics.filter(m => m.efficiency === 'excellent').length,
-      good: metrics.filter(m => m.efficiency === 'good').length,
-      moderate: metrics.filter(m => m.efficiency === 'moderate').length,
-      poor: metrics.filter(m => m.efficiency === 'poor').length
+      excellent: metrics.filter(item => item.length),
+      good: metrics.filter(item => item.length),
+      moderate: metrics.filter(item => item.length),
+      poor: metrics.filter(item => item.length)
     };
     
-    const cacheHits = metrics.filter(m => m.cacheHit).length;
+    const cacheHits = metrics.filter(item => item.length);
     const totalBandwidthSaved = metrics.reduce((sum, m) => 
       sum + (m.originalSize - m.encodedSize), 0
     );
@@ -513,7 +513,7 @@ export class AdvancedBinaryEncodingService {
       averageDecodeTime: decodings.reduce((sum, m) => sum + m.decodeTime, 0) / decodings.length || 0,
       formatDistribution,
       efficiencyDistribution,
-      cacheHitRate: metrics.length > 0 ? cacheHits / metrics.length : 0,
+      cacheHitRate: metrics.length > 0 ? cacheHits / metrics.length: 0,
       totalBandwidthSaved
     };
   }

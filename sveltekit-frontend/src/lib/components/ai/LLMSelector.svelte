@@ -2,7 +2,7 @@
   import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
-  // import { createSelect, melt } from 'melt'; // Removed melt dependency
+  // import * as Select from 'bits-ui'; // Removed melt dependency
   import { fade, fly } from 'svelte/transition';
   import { 
     ChevronDown, 
@@ -40,7 +40,7 @@
     allowMultiSelect?: boolean
     filterBy?: 'all' | 'legal' | 'general' | 'code'
   }
-  let { 
+  let {
     selectedModel = $bindable(),
     onModelChange = () => {},
     showMetrics = true,
@@ -171,13 +171,15 @@
       default: return AlertCircle
     }
   }
+  // State for dropdown
+  let isOpen = $state(false);
+
   // Handle model selection
-  $effect(() => {
-    if ($selected) {
-      selectedModel = $selected.value
-      onModelChange($selected.value)
-    }
-  })
+  function selectModel(model: LLMModel) {
+    selectedModel = model;
+    onModelChange(model);
+    isOpen = false;
+  }
   // Load model statuses on mount
   onMount(async () => {
     await refreshModelStatuses()
@@ -238,9 +240,10 @@
   
   <!-- Trigger Button -->
   <button
-    class="flex h-12 w-full items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600 
-           bg-white dark:bg-gray-800 px-3 py-2 text-sm 
-           hover:bg-gray-50 dark:hover:bg-gray-700 
+    onclick={() => (isOpen = !isOpen)}
+    class="flex h-12 w-full items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600
+           bg-white dark:bg-gray-800 px-3 py-2 text-sm
+           hover:bg-gray-50 dark:hover:bg-gray-700
            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
            disabled:cursor-not-allowed disabled:opacity-50
            transition-colors duration-200"
@@ -269,11 +272,11 @@
       {/if}
     </div>
     
-    <ChevronDown class="h-4 w-4 text-gray-400 transition-transform duration-200 {open ? 'rotate-180' : ''}" />
+    <ChevronDown class="h-4 w-4 text-gray-400 transition-transform duration-200 {isOpen ? 'rotate-180' : ''}" />
   </button>
   
   <!-- Dropdown Menu -->
-  {#if open}
+  {#if isOpen}
     <div
       class="z-50 mt-1 w-full rounded-lg border border-gray-200 dark:border-gray-700 
              bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5
@@ -286,16 +289,17 @@
           {@const SvelteComponent_2 = getProviderIcon(model.provider)}
           {@const SvelteComponent_3 = getStatusIcon(model.status)}
           <button
+            onclick={() => selectModel(model)}
             class="flex w-full items-center justify-between px-4 py-3 text-sm
                    hover:bg-gray-100 dark:hover:bg-gray-700
                    focus:bg-gray-100 dark:focus:bg-gray-700 focus:outline-none
-                   {isSelected(model) ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-gray-100'}"
+                   {selectedModel?.id === model.id ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-gray-100'}"
           >
             <div class="flex items-center gap-3 flex-1 min-w-0">
               <!-- Provider Icon -->
               <div class="flex-shrink-0">
-                <SvelteComponent_2 
-                  class="h-5 w-5 {isSelected(model) ? 'text-blue-500' : 'text-gray-400'}" 
+                <SvelteComponent_2
+                  class="h-5 w-5 {selectedModel?.id === model.id ? 'text-blue-500' : 'text-gray-400'}"
                 />
               </div>
               
@@ -356,7 +360,7 @@
                 {/if}
                 
                 <!-- Selected Indicator -->
-                {#if $isSelected(model)}
+                {#if selectedModel?.id === model.id}
                   <CheckCircle class="h-4 w-4 text-blue-500" />
                 {/if}
               </div>
@@ -384,7 +388,7 @@
           </button>
           
           <div class="text-xs text-gray-500 dark:text-gray-400">
-            {filteredModels.filter(m => m.status === 'online').length} / {filteredModels.length} online
+            {filteredModels.filter(model => model.status === 'online').length} / {filteredModels.length} online
           </div>
         </div>
       </div>

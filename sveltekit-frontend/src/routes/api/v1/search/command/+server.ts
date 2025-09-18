@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
               // Add vector result with high similarity score
               existing.push({
                 id: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).id,
-                ...(result as { metadata?: any; id?: any; content?: any; similarity?: any }).metadata,
+                ...result.metadata,
                 content: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).content,
                 similarity: (result as { metadata?: any; id?: any; content?: any; similarity?: any }).similarity,
               });

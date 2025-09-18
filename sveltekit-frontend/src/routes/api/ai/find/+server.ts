@@ -444,7 +444,7 @@ async function performMCPAnalysis(query: string): Promise<MCPContextAnalysis | n
     const analysis: MCPContextAnalysis = {
       stackAnalysis: mcpResults.codebase || {},
       bestPractices: Array.isArray(mcpResults.bestPractices) ? 
-        mcpResults.bestPractices : [mcpResults.bestPractices].filter(Boolean),
+        mcpResults.bestPractices: [mcpResults.bestPractices].filter(Boolean),
       recommendations: [],
       integrationSuggestions: mcpResults.agentResults || []
     };
@@ -722,7 +722,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     // Step 7: Update memory graph
     const processingTime = Date.now() - startTime;
     const avgConfidence = results.length > 0 ? 
-      results.reduce((acc, r) => acc + (r.aiConfidence || 0), 0) / results.length : 0;
+      results.reduce((acc, r) => acc + (r.aiConfidence || 0), 0) / results.length: 0;
 
     await updateMemoryGraph(query, results, {
       confidence: avgConfidence,
@@ -785,7 +785,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         aiAnalysis: false,
         mcpAnalysis: false,
         fromCache: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error'
       }
     } as AIFindResponse, { status: 500 });
   }

@@ -98,7 +98,7 @@ export default class NeuralSpriteAutoencoder {
    */
   static deserialize(s: string): NeuralSpriteAutoencoder {
 	const parsed = JSON.parse(s);
-	const latentSize = typeof parsed?.latentSize === 'number' ? parsed.latentSize : 16;
+	const latentSize = typeof parsed?.latentSize === 'number' ? parsed.latentSize: 16;
 	return new NeuralSpriteAutoencoder(latentSize);
   }
 }

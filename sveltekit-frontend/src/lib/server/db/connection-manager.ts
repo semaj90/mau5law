@@ -184,7 +184,7 @@ export async function testDatabaseConnection(): Promise<any> {
     console.error('Database connection test failed:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -257,7 +257,7 @@ export async function getDatabaseHealth() {
   } catch (error) {
     return {
       status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       config: null
     };
   }

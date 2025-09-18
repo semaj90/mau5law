@@ -37,7 +37,7 @@ Showcases the service worker-based AI orchestration system
   let selectedModel: LLMModel | undefined = $state();
   let userPrompt = $state('Analyze the following legal document for key terms, potential issues, and recommendations...');
   let isProcessing = $state(false);
-  let demoResults = $state<any[]>([])([]);
+  let demoResults = $state<any[]>([]) => []);
 
   // Demo scenarios
   const demoScenarios = [
@@ -74,21 +74,6 @@ Showcases the service worker-based AI orchestration system
   ];
 
   onMount(() => {
-    // Initialize with default model if available
-    if (!selectedModel) {
-      selectedModel = {
-        id: 'gemma3-legal',
-        name: 'gemma3:legal',
-        displayName: 'Gemma3 Legal Specialist',
-        provider: 'ollama',
-        size: '7.3GB',
-        specialization: 'legal',
-        status: 'online',
-        performance: {
-          tokensPerSecond: 25,
-          memoryUsage: '6.8GB',
-          responseTime: 1200
-        },
         capabilities: ['legal-analysis', 'case-research', 'document-review'],
         endpoint: 'http://localhost:11434'
       };

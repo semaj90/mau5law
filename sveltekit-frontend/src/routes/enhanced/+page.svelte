@@ -93,19 +93,18 @@ https://svelte.dev/e/js_parse_error -->
   				buffer += decoder.decode(value, { stream: true });
   				let idx;
   				while ((idx = buffer.indexOf('\n\n')) !== -1) {
-  					const raw = buffer.slice(0, idx).trim();
+  					const raw = buffer.slice.trim();
   					buffer = buffer.slice(idx + 2);
   					if (!raw) continue;
   					const lines = raw.split('\n');
   let event = $state('message');
   let dataStr = $state('');
   					for (const line of lines) {
-  						if (line.startsWith('event:')) event = line.slice(6).trim();
-  						else if (line.startsWith('data:')) dataStr += line.slice(5).trim();
+  						if (line.startsWith('event:')) event = line.slice.trim();
+  						else if (line.startsWith('data:')) dataStr += line.slice.trim();
   					}
   					if (dataStr) {
-  						try { handleStreamEvent(event, JSON.parse(dataStr)); } catch {}
-  					}
+  						try { handleStreamEvent(event, JSON.parse(dataStr)); } catch }
   				}
   			}
   		} catch (e: unknown) {
@@ -118,14 +117,14 @@ https://svelte.dev/e/js_parse_error -->
 
   	function handleStreamEvent(event: string, data: unknown) {
   		if (event === 'meta') {
-  			responseMeta = { ...(responseMeta || {}), ...data };
+  			responseMeta = { ...(responseMeta || ), ...data };
   		} else if (event === 'result') {
   			results = [...results, data];
   			streamedCount = results.length;
   		} else if (event === 'error') {
   			errorMsg = data.message || 'Stream error';
   		} else if (event === 'done') {
-  			responseMeta = { ...(responseMeta || {}), ...data, count: results.length };
+  			responseMeta = { ...(responseMeta || ), ...data, count: results.length };
   		}
   	}
 

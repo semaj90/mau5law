@@ -61,8 +61,8 @@ https://svelte.dev/e/js_parse_error -->
   let {
     shaderId,
     aaConfig = AntiAliasingUtils.createAAPreset('balanced'),
-    shaderEnhancements = {},
-    style = {},
+    shaderEnhancements = ,
+    style = ,
     targetFPS = 60,
     adaptiveQuality = true,
     enablePrecompilation = true,
@@ -495,7 +495,7 @@ https://svelte.dev/e/js_parse_error -->
         compilationTime,
         validationErrors: [],
         bindGroupLayouts: [],
-        uniforms: {},
+        uniforms: ,
         lastCompiled: Date.now(),
         useCount: 1
       };
@@ -695,7 +695,7 @@ https://svelte.dev/e/js_parse_error -->
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash;
     }
-    return Math.abs(hash).toString(16);
+    return Math.abs.toString(16);
   }
 
   function calculateAAQualityScore(): number {

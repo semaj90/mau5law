@@ -78,10 +78,10 @@ class EnhancedApiClient {
       retries?: number;
       requestId?: string;
     } = {}
-  ): Promise<StandardApiResponse<TResponse>> {
+  ): Promise<StandardApiResponse<TResponse> {
     const requestId = options.requestId || `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const timeout = options.timeout || this.config.timeout;
-    const maxRetries = options.retries !== undefined ? options.retries : this.config.retries;
+    const maxRetries = options.retries !== undefined ? options.retries: this.config.retries;
     
     let lastError: Error | null = null;
     
@@ -189,7 +189,7 @@ class EnhancedApiClient {
     path: string,
     params?: Record<string, any>,
     options?: { headers?: Record<string, string>; timeout?: number; }
-  ): Promise<StandardApiResponse<TResponse>> {
+  ): Promise<StandardApiResponse<TResponse> {
     const url = params ? `${path}?${new URLSearchParams(params).toString()}` : path;
     return this.request<TResponse>('GET', url, undefined, options);
   }
@@ -199,7 +199,7 @@ class EnhancedApiClient {
     path: string,
     data?: any,
     options?: { headers?: Record<string, string>; timeout?: number; }
-  ): Promise<StandardApiResponse<TResponse>> {
+  ): Promise<StandardApiResponse<TResponse> {
     return this.request<TResponse>('POST', path, data, options);
   }
 
@@ -208,7 +208,7 @@ class EnhancedApiClient {
     path: string,
     data?: any,
     options?: { headers?: Record<string, string>; timeout?: number; }
-  ): Promise<StandardApiResponse<TResponse>> {
+  ): Promise<StandardApiResponse<TResponse> {
     return this.request<TResponse>('PUT', path, data, options);
   }
 
@@ -217,7 +217,7 @@ class EnhancedApiClient {
     path: string,
     params?: Record<string, any>,
     options?: { headers?: Record<string, string>; timeout?: number; }
-  ): Promise<StandardApiResponse<TResponse>> {
+  ): Promise<StandardApiResponse<TResponse> {
     const url = params ? `${path}?${new URLSearchParams(params).toString()}` : path;
     return this.request<TResponse>('DELETE', url, undefined, options);
   }
@@ -241,32 +241,32 @@ class EnhancedApiClient {
 
   // ===================== CASE API METHODS =====================
 
-  public async listCases(params: RequestOf<CaseAPI.List>): Promise<ResponseOf<CaseAPI.List>> {
+  public async listCases(params: RequestOf<CaseAPI.List>): Promise<ResponseOf<CaseAPI.List> {
     return this.get('/api/cases', params);
   }
 
-  public async createCase(data: RequestOf<CaseAPI.Create>): Promise<ResponseOf<CaseAPI.Create>> {
+  public async createCase(data: RequestOf<CaseAPI.Create>): Promise<ResponseOf<CaseAPI.Create> {
     return this.post('/api/cases', data);
   }
 
   public async updateCase(
     id: string, 
     data: RequestOf<CaseAPI.Update>
-  ): Promise<ResponseOf<CaseAPI.Update>> {
+  ): Promise<ResponseOf<CaseAPI.Update> {
     return this.put(`/api/cases?id=${id}`, data);
   }
 
-  public async getCase(id: string): Promise<ResponseOf<CaseAPI.Get>> {
+  public async getCase(id: string): Promise<ResponseOf<CaseAPI.Get> {
     return this.get(`/api/cases?id=${id}`);
   }
 
   // ===================== EVIDENCE API METHODS =====================
 
-  public async listEvidence(params: RequestOf<EvidenceAPI.List>): Promise<ResponseOf<EvidenceAPI.List>> {
+  public async listEvidence(params: RequestOf<EvidenceAPI.List>): Promise<ResponseOf<EvidenceAPI.List> {
     return this.get('/api/evidence', params);
   }
 
-  public async createEvidence(data: RequestOf<EvidenceAPI.Create>): Promise<ResponseOf<EvidenceAPI.Create>> {
+  public async createEvidence(data: RequestOf<EvidenceAPI.Create>): Promise<ResponseOf<EvidenceAPI.Create> {
     return this.post('/api/evidence', data);
   }
 
@@ -274,7 +274,7 @@ class EnhancedApiClient {
     id: string, 
     data: RequestOf<EvidenceAPI.Update>,
     custodyNotes?: string
-  ): Promise<ResponseOf<EvidenceAPI.Update>> {
+  ): Promise<ResponseOf<EvidenceAPI.Update> {
     const url = custodyNotes 
       ? `/api/evidence?id=${id}&custodyNotes=${encodeURIComponent(custodyNotes)}`
       : `/api/evidence?id=${id}`;
@@ -284,7 +284,7 @@ class EnhancedApiClient {
   public async deleteEvidence(
     id: string, 
     reason?: string
-  ): Promise<ResponseOf<EvidenceAPI.Delete>> {
+  ): Promise<ResponseOf<EvidenceAPI.Delete> {
     const params: any = { id };
     if (reason) params.reason = reason;
     return this.delete('/api/evidence', params);
@@ -292,23 +292,23 @@ class EnhancedApiClient {
 
   // ===================== AI/CHAT API METHODS =====================
 
-  public async chat(data: RequestOf<ChatAPI.Chat>): Promise<ResponseOf<ChatAPI.Chat>> {
+  public async chat(data: RequestOf<ChatAPI.Chat>): Promise<ResponseOf<ChatAPI.Chat> {
     return this.post('/api/ai/enhanced-chat', data, { timeout: 60000 }); // 60 second timeout for AI
   }
 
   // ===================== VECTOR SEARCH API METHODS =====================
 
-  public async vectorSearch(data: RequestOf<VectorSearchAPI.Search>): Promise<ResponseOf<VectorSearchAPI.Search>> {
+  public async vectorSearch(data: RequestOf<VectorSearchAPI.Search>): Promise<ResponseOf<VectorSearchAPI.Search> {
     return this.post('/api/vector-search', data);
   }
 
   // ===================== HEALTH API METHODS =====================
 
-  public async healthCheck(detailed = false): Promise<ResponseOf<HealthAPI.Health>> {
+  public async healthCheck(detailed = false): Promise<ResponseOf<HealthAPI.Health> {
     return this.get('/api/health', { detailed });
   }
 
-  public async performMaintenance(action: RequestOf<HealthAPI.Maintenance>['action']): Promise<ResponseOf<HealthAPI.Maintenance>> {
+  public async performMaintenance(action: RequestOf<HealthAPI.Maintenance>['action']): Promise<ResponseOf<HealthAPI.Maintenance> {
     return this.post('/api/health', { action });
   }
 }

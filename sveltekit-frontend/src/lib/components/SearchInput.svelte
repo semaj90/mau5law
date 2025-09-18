@@ -116,7 +116,7 @@
 	color: var(--text-primary);
 	font-size: 0.875rem;
   }
-  .search-input::placeholder {
+  .search-input: :placeholder {
 	color: var(--text-muted);
   }
   .clear-button {

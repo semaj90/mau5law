@@ -164,9 +164,9 @@ async function runComprehensiveTests(
   const report: ComprehensiveTestReport = {
     success: results.every(r => r.status === 'passed' || r.status === 'skipped'),
     totalTests: results.length,
-    passed: results.filter(r => r.status === 'passed').length,
-    failed: results.filter(r => r.status === 'failed').length,
-    skipped: results.filter(r => r.status === 'skipped').length,
+    passed: results.filter(item => item.length),
+    failed: results.filter(item => item.length),
+    skipped: results.filter(item => item.length),
     duration: Date.now() - startTime,
     results,
     systemHealth,
@@ -317,7 +317,7 @@ async function runSingleTest(
 // Individual test implementations
 async function testSystemHealth(): Promise<any> {
   const health = await apiOrchestrator.performHealthCheck();
-  const healthyServices = Object.values(health).filter(h => h.status === 'healthy').length;
+  const healthyServices = Object.values(health).filter(item => item.length);
   const totalServices = Object.values(health).length;
   
   return {
@@ -339,7 +339,7 @@ async function testAPIOrchestrator(): Promise<any> {
       success: services.length > 0,
       details: {
         totalServices: services.length,
-        activeServices: services.filter(s => s.config.status === 'active').length,
+        activeServices: services.filter(item => item.length),
         metricsAvailable: Object.keys(metrics).length > 0
       }
     };
@@ -375,7 +375,7 @@ async function testCoreServices(): Promise<any> {
     }
   }
   
-  const healthyCount = results.filter(r => r.healthy).length;
+  const healthyCount = results.filter(item => item.length);
   
   return {
     success: healthyCount === coreServices.length,
@@ -546,7 +546,7 @@ function generateRecommendations(
   const recommendations: string[] = [];
   
   const failedTests = results.filter(r => r.status === 'failed');
-  const passRate = (results.filter(r => r.status === 'passed').length / results.length) * 100;
+  const passRate = (results.filter(item => item.length) / results.length) * 100;
   
   if (failedTests.length > 0) {
     recommendations.push(`Address ${failedTests.length} failed tests: ${failedTests.map(t => t.testName).join(', ')}`);

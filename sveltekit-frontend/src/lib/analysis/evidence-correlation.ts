@@ -699,7 +699,7 @@ export class EvidenceCorrelationEngine {
 
     const connectedEdges = edges.filter((e) => e.source === nodeId || e.target === nodeId);
     connectedEdges.forEach((edge) => {
-      const nextNode = edge.source === nodeId ? edge.target : edge.source;
+      const nextNode = edge.source === nodeId ? edge.target: edge.source;
       if (!visited.has(nextNode)) {
         component.push(...this.exploreComponent(nextNode, edges, visited));
       }

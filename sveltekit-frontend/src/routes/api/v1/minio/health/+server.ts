@@ -16,7 +16,7 @@ export const GET: RequestHandler = async () => {
   } catch (error) {
     return new Response(JSON.stringify({
       status: 'unhealthy',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
   } catch (error) {
     return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

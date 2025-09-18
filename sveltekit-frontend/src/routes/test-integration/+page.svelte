@@ -5,7 +5,7 @@
   import { fade, fly } from 'svelte/transition';
 
   // Test state
-  let testResults: unknown = $state({});
+  let testResults: unknown = $state( );
   let isRunning = $state(false);
   let currentTest = $state('');
   let testLog: string[] = $state([]);

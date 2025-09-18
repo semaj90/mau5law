@@ -285,7 +285,7 @@ https://svelte.dev/e/attribute_duplicate -->
             <div 
               class="recommendation-item"
               class:selected={index === selectedIndex}
-              style:border-color={index === selectedIndex ? currentTheme.colors.selected : 'transparent'}
+              style:border-color={index === selectedIndex ? currentTheme.colors.selected: 'transparent'}
               style:background-color={index === selectedIndex ? `${currentTheme.colors.selected}20` : 'transparent'}
               role="button" 
                 onclick={() => { selectedIndex = index; rec.action?.(); handleClose(); }}
@@ -418,7 +418,7 @@ https://svelte.dev/e/attribute_duplicate -->
     position: relative;
   }
 
-  .retro-modal.yorha::before {
+  .retro-modal.yorha: :before {
     content: '';
     position: absolute;
     top: -2px;
@@ -500,7 +500,7 @@ https://svelte.dev/e/attribute_duplicate -->
     transform: translateX(4px);
   }
 
-  .recommendation-(item as { selected?: unknown }).selected {
+  .recommendation-.selected {
     transform: translateX(8px);
   }
 
@@ -576,15 +576,15 @@ https://svelte.dev/e/attribute_duplicate -->
   }
 
   /* Scrollbar styling */
-  .modal-content::-webkit-scrollbar {
+  .modal-content: :-webkit-scrollbar {
     width: 8px;
   }
 
-  .modal-content::-webkit-scrollbar-track {
+  .modal-content: :-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.2);
   }
 
-  .modal-content::-webkit-scrollbar-thumb {
+  .modal-content: :-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.3);
     border-radius: 4px;
   }

@@ -109,7 +109,7 @@
     maxPixelRatio = 2,
 
     enableFabricJS = false,
-    fabricConfig = {},
+    fabricConfig = ,
 
     onCanvasReady,
     onDraw,
@@ -581,26 +581,7 @@
     transform-style: preserve-3d;
   }
 
-  .n64-canvas {
-    display: block;
-    max-width: 100%;
-    max-height: 100%;
-    
-    /* Enhanced rendering */
-    image-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    
-    /* N64-style texture filtering */
-    filter: 
-      contrast(1.02)
-      brightness(1.01)
-      saturate(1.05);
-    
-    transition: filter 300ms ease;
-  }
-
-  .n64-canvas.webgl {
+  .n64-canv.n64-canvas.webgl {
     /* WebGL-specific optimizations */
     image-rendering: auto;
     will-change: contents;
@@ -727,24 +708,14 @@
 
   /* Mobile optimizations */
   @media (max-width: 480px) {
-    .n64-canvas {
-      /* Reduce expensive effects on mobile */
-      filter: contrast(1.02) brightness(1.01);
-    }
-
-    .post-processing-overlay {
+    .n64-canv.post-processing-overlay {
       display: none;
     }
   }
 
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
-    .n64-canvas {
-      filter: none;
-      transition: none;
-    }
-
-    .n64-spinner {
+    .n64-canv.n64-spinner {
       animation: none;
       border: 3px solid #4a90e2;
       border-right-color: transparent;
@@ -753,23 +724,14 @@
 
   /* High contrast mode */
   @media (prefers-contrast: high) {
-    .n64-canvas {
-      filter: contrast(1.5) brightness(1.1);
-    }
-
-    .post-processing-overlay {
+    .n64-canv.post-processing-overlay {
       display: none;
     }
   }
 
   /* Performance optimization for low-end devices */
   @media (max-device-memory: 2GB) {
-    .n64-canvas {
-      filter: none;
-      will-change: auto;
-    }
-
-    .post-processing-overlay {
+    .n64-canv.post-processing-overlay {
       display: none;
     }
   }

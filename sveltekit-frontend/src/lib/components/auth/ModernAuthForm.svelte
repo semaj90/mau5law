@@ -17,12 +17,11 @@
     onSuccess?: (user: any) => void;
   }
 
-  let { 
-    mode = $bindable('login'),
+  let { mode = $bindable('login'),
     open = $bindable(false),
     onOpenChange,
     onSuccess
-  }: Props = $props();
+   }: Props = $props();
 
   // Svelte 5 runes for reactive state
   let formData = $state({
@@ -114,9 +113,7 @@
       } else {
         error = (result as { message?: any; user?: any; error?: any }).error || 'Authentication failed';
         // Log failed authentication attempt for security analysis
-        await mcpGPUOrchestrator.routeAPIRequest(
-          '/api/security/log-failed-auth',
-          { ...authContext, error: (result as { message?: any; user?: any; error?: any }).error },
+        await mcpGPUOrchestrator.routeAPIRequest.error },
           { userId: null, securityLevel: 'high' }
         );
       }

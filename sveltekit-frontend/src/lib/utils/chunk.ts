@@ -39,5 +39,5 @@ export function hashString32(str: string): string {
     hash = (hash << 5) - hash + chr;
     hash |= 0;
   }
-  return String(hash >>> 0);
+  return String(hash > 0);
 }

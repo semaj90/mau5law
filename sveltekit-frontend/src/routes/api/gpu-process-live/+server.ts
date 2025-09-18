@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('GPU Live Processing error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('GPU Live Processing GET error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

@@ -70,7 +70,7 @@
 			startRenderLoop();
 
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to initialize canvas';
+			error = err instanceof Error ? err.message: 'Failed to initialize canvas';
 			console.error('Canvas initialization error:', err);
 		}
 	});
@@ -377,7 +377,7 @@
 
 			return texture;
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load evidence photo';
+			error = err instanceof Error ? err.message: 'Failed to load evidence photo';
 			throw err;
 		}
 	}
@@ -405,7 +405,7 @@
 
 			return textures;
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load document scan';
+			error = err instanceof Error ? err.message: 'Failed to load document scan';
 			throw err;
 		}
 	}
@@ -416,7 +416,7 @@
 			currentTexture = texture;
 			return texture;
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load case visualization';
+			error = err instanceof Error ? err.message: 'Failed to load case visualization';
 			throw err;
 		}
 	}
@@ -429,7 +429,7 @@
 			}
 			return textures;
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load courtroom display';
+			error = err instanceof Error ? err.message: 'Failed to load courtroom display';
 			throw err;
 		}
 	}
@@ -467,7 +467,7 @@
 		onmouseup={handleMouseUp}
 		onwheel={handleWheel}
 		class="texture-canvas"
-		class:gpu-enabled={textureStreaming.stats().hasWebGL}
+		class:gpu-enabled={textureStreaming.stats.hasWebGL}
 		class:error={!!error}
 	/>
 
@@ -487,17 +487,17 @@
 
 	{#if mode !== 'courtroom' && isReady}
 		<div class="controls-overlay">
-			<button onclick={() => evidenceCanvas.setMode('view')} class:active={evidenceCanvas.getCanvasState().mode === 'view'}>
+			<button onclick={() => evidenceCanvas.setMode('view')} class:active={evidenceCanvas.getCanvasState.mode === 'view'}>
 				View
 			</button>
-			<button onclick={() => evidenceCanvas.setMode('edit')} class:active={evidenceCanvas.getCanvasState().mode === 'edit'}>
+			<button onclick={() => evidenceCanvas.setMode('edit')} class:active={evidenceCanvas.getCanvasState.mode === 'edit'}>
 				Edit
 			</button>
-			<button onclick={() => evidenceCanvas.setMode('present')} class:active={evidenceCanvas.getCanvasState().mode === 'present'}>
+			<button onclick={() => evidenceCanvas.setMode('present')} class:active={evidenceCanvas.getCanvasState.mode === 'present'}>
 				Present
 			</button>
 			<button onclick={() => evidenceCanvas.toggleConnections()}>
-				{evidenceCanvas.getCanvasState().showConnections ? 'Hide' : 'Show'} Connections
+				{evidenceCanvas.getCanvasState.showConnections ? 'Hide' : 'Show'} Connections
 			</button>
 			<button onclick={fitToContent}>Fit to Content</button>
 			<button onclick={clearCanvas}>Clear</button>
@@ -506,15 +506,7 @@
 </div>
 
 <style>
-	.legal-texture-canvas {
-		position: relative;
-		border: 2px solid #333;
-		border-radius: 4px;
-		overflow: hidden;
-		background: #000;
-	}
-
-	.texture-canvas {
+	.legal-texture-canv.texture-canvas {
 		display: block;
 		cursor: grab;
 		transition: filter 0.2s ease;

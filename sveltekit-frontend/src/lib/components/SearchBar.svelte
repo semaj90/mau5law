@@ -227,7 +227,7 @@
 		cursor: pointer;
 		min-width: 100px;
 }
-	.sort-container :global(svg) {
+	.sort-container: global(svg) {
 		position: absolute;
 		right: 0.5rem;
 		top: 50%;

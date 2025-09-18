@@ -167,7 +167,7 @@ export const GET: RequestHandler = async () => {
         endpoint: `${GO_BASE}/api/gpu-status`,
         source: gpuStatus.status === "fulfilled" ? "go" : "shim",
         version: "v1",
-        raw: gpuStatus.status === "fulfilled" ? gpuStatus.value : undefined,
+        raw: gpuStatus.status === "fulfilled" ? gpuStatus.value: undefined,
         health: health.status === "fulfilled" ? health.value : undefined
       },
       ai_summarize_checks: {
@@ -198,7 +198,7 @@ export const GET: RequestHandler = async () => {
     console.error('GPU validation error:', error);
     return json({
       ok: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     });
   }

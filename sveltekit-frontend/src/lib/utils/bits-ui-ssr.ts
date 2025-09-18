@@ -15,7 +15,7 @@ export async function fetchSSRData<T>(
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
     body?: any;
   }
-): Promise<APIResponse<T>> {
+): Promise<APIResponse<T> {
   const { params, method = 'GET', body } = options || {};
 
   const url = new URL(endpoint, window.location.origin);
@@ -114,7 +114,7 @@ export async function submitForm<T>(
     onSuccess?: (data: T) => void;
     onError?: (error: string) => void;
   }
-): Promise<APIResponse<T>> {
+): Promise<APIResponse<T> {
   const { method = 'POST', onSuccess, onError } = options || {};
 
   try {
@@ -142,13 +142,13 @@ export async function submitForm<T>(
 /**
  * Batch data loader for complex Bits UI components
  */
-export async function loadBatchData<T extends Record<string, any>>(
+export async function loadBatchData<T extends Record<string, any>(
   endpoints: Record<keyof T, string>
-): Promise<Record<keyof T, any>> {
+): Promise<Record<keyof T, any> {
   const promises = Object.entries(endpoints).map(async ([key, endpoint]) => {
     try {
       const response = await fetchSSRData(endpoint);
-      return [key, response.success ? response.data : null];
+      return [key, response.success ? response.data: null];
     } catch {
       return [key, null];
     }

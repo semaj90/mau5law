@@ -476,20 +476,20 @@ Reset Demo
     scrollbar-color: rgb(203 213 225) transparent;
   }
 
-  :global(.enhanced-inline-editor .editor-content::-webkit-scrollbar) {
+  :global(.enhanced-inline-editor .editor-content: :-webkit-scrollbar) {
     width: 8px;
   }
 
-  :global(.enhanced-inline-editor .editor-content::-webkit-scrollbar-track) {
+  :global(.enhanced-inline-editor .editor-content: :-webkit-scrollbar-track) {
     background: transparent;
   }
 
-  :global(.enhanced-inline-editor .editor-content::-webkit-scrollbar-thumb) {
+  :global(.enhanced-inline-editor .editor-content: :-webkit-scrollbar-thumb) {
     background: rgb(203 213 225);
     border-radius: 4px;
   }
 
-  :global(.enhanced-inline-editor .editor-content::-webkit-scrollbar-thumb:hover) {
+  :global(.enhanced-inline-editor .editor-content: :-webkit-scrollbar-thumb:hover) {
     background: rgb(148 163 184);
   }
 </style>

@@ -125,8 +125,8 @@ export class SimpleWorkerPool {
   getStats() {
     return {
       totalWorkers: this.pool.length,
-      busyWorkers: this.free.filter(f => !f).length,
-      freeWorkers: this.free.filter(f => f).length,
+      busyWorkers: this.free.filter(item => item.length),
+      freeWorkers: this.free.filter(item => item.length),
       queuedJobs: this.queue.length,
       pendingCallbacks: this.jobCallbacks.size
     };
@@ -354,7 +354,7 @@ export class AdvancedWorkerPool extends EventEmitter {
         jobId: jobData.id,
         type: jobData.type,
         workerId: availableWorker.id,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message: String(error)
       });
 
       // Retry logic
@@ -464,8 +464,8 @@ export class AdvancedWorkerPool extends EventEmitter {
       activeJobs: this.activeJobs,
       queuedJobs: this.jobQueue.length,
       totalProcessed: this.totalProcessed,
-      busyWorkers: Array.from(this.workers.values()).filter(w => w.busy).length,
-      idleWorkers: Array.from(this.workers.values()).filter(w => !w.busy).length
+      busyWorkers: Array.from(this.workers.values()).filter(item => item.length),
+      idleWorkers: Array.from(this.workers.values()).filter(item => item.length)
     };
   }
 

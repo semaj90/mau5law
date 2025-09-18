@@ -24,7 +24,7 @@
     const res = await fetch("/api/ai/ollama-gemma3", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: `Summarize: ${input}` });
+        body: JSON.stringify({ prompt: `Summarize: ${input}` }));
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
@@ -35,7 +35,7 @@
       });
       const data = awaitawait (async () => {
       try {
-        return await  res.json();
+        return await  res.json());
       } catch (error) {
         console.error('JSON parsing failed:', error);
         throw new Error('Invalid JSON response');

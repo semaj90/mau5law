@@ -71,7 +71,7 @@ export interface VectorPipelineContext {
 
 export type VectorPipelineEvent =
   | { type: 'SUBMIT_JOB'; job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> }
-  | { type: 'SUBMIT_BATCH'; jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>> }
+  | { type: 'SUBMIT_BATCH'; jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> }
   | { type: 'JOB_PROGRESS'; jobId: string; progress: number; status: string }
   | { type: 'JOB_COMPLETED'; jobId: string; result: any }
   | { type: 'JOB_FAILED'; jobId: string; error: string }
@@ -138,8 +138,8 @@ export const vectorPipelineMachine = setup({
           job.jobId === jobId ? { ...job, progress, status } : job
         );
         
-        const completedJobs = jobs.filter(j => j.status === 'succeeded').length;
-        const failedJobs = jobs.filter(j => j.status === 'failed').length;
+        const completedJobs = jobs.filter(item => item.length);
+        const failedJobs = jobs.filter(item => item.length);
         const overallProgress = jobs.length > 0 
           ? Math.floor((completedJobs + failedJobs) / jobs.length * 100)
           : 0;
@@ -240,14 +240,12 @@ export const vectorPipelineMachine = setup({
       metrics: ({ context }) => {
         const completedJobs = context.batch.jobs.filter(j => j.status === 'succeeded');
         const averageTime = completedJobs.length > 0
-          ? completedJobs.reduce((sum, job) => sum + (job.estimatedTime || 1000), 0) / completedJobs.length
-          : context.metrics.averageProcessingTime;
+          ? completedJobs.reduce((sum, job) => sum + (job.estimatedTime || 1000), 0) / completedJobs.length: context.metrics.averageProcessingTime;
 
         // Calculate throughput (jobs per minute)
         const now = Date.now();
         const oneMinuteAgo = now - 60 * 1000;
-        const recentJobs = completedJobs.filter(job => 
-          new Date(job.createdAt).getTime() > oneMinuteAgo
+        const recentJobs = completedJobs.filter(item => item.getTime)() > oneMinuteAgo
         );
 
         return {
@@ -315,14 +313,14 @@ export const vectorPipelineMachine = setup({
             ownerType: job.ownerType,
             ownerId: job.ownerId,
             event: job.event,
-          });
+          })));
         })
       );
 
       return retryResults.map((result, index) => ({
         job: failedJobs[index],
         success: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled',
-        result: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value : (result as { status?: any; value?: any; reason?: any }).reason,
+        result: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value: (result as { status?: any; value?: any; reason?: any }).reason,
       }));
     }),
 
@@ -534,7 +532,7 @@ export const vectorPipelineActions = {
     vectorPipelineActor.send({ type: 'SUBMIT_JOB', job });
   },
 
-  submitBatch: (jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>>) => {
+  submitBatch: (jobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>) => {
     vectorPipelineActor.send({ type: 'SUBMIT_BATCH', jobs });
   },
 

@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ url }) => {
               FROM information_schema.tables 
               WHERE table_schema = 'public' 
               AND table_name IN ('users', 'cases', 'evidence', 'legal_documents')
-              ORDER BY table_name;
+              ORDER BY table_name);
             `);
             testResults.tables = tableQuery.length > 0 ? 'ok' : 'missing';
             testResults.found_tables = tableQuery.map((row: any) => row.table_name);
@@ -163,7 +163,7 @@ export const GET: RequestHandler = async ({ url }) => {
           return json({
             success: false,
             error: 'Database test failed',
-            details: error instanceof Error ? error.message : 'Unknown error'
+            details: error instanceof Error ? error.message: 'Unknown error'
           }, { status: 500 });
         }
 
@@ -180,7 +180,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -230,7 +230,7 @@ export const POST: RequestHandler = async ({ request }) => {
           const vectorTest = await db.execute(`
             SELECT 
               '[1,2,3]'::vector as test_vector,
-              '[1,2,3]'::vector <-> '[1,2,4]'::vector as cosine_distance;
+              '[1,2,3]'::vector <-> '[1,2,4]'::vector as cosine_distance);
           `);
 
           return json({
@@ -243,7 +243,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return json({
             success: false,
             error: 'Vector test failed',
-            details: error instanceof Error ? error.message : 'Unknown error',
+            details: error instanceof Error ? error.message: 'Unknown error',
             suggestion: 'Ensure pgvector extension is installed: CREATE EXTENSION vector;'
           });
         }
@@ -261,7 +261,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Failed to process POST request',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

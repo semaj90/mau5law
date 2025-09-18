@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   let { enableModularSwitching = $bindable()  }: { enableModularSwitching = $bindable() : any } = $props(); // boolean = true;
 
   // State
-  let aiActor = $state<anylet currentComputation: any | null>(null)(null);
+  let aiActor = $state<anylet currentComputation: any  | null>(null); const data = null);
   let recommendations = $state<any >(null);
   let isProcessing = $state(false);
   let processingTime = $state(0);
@@ -83,8 +83,8 @@ https://svelte.dev/e/js_parse_error -->
   async function processComputation() {
     if (isProcessing) return;
 
-    const data = inputData.split(',').map(Number);
-    const weights = attentionWeights.split(',').map(Number);
+    const data = inputData.split.map(Number);
+    const weights = attentionWeights.split.map(Number);
 
     const startTime = performance.now();
 
@@ -228,7 +228,7 @@ https://svelte.dev/e/js_parse_error -->
   function formatArray(arr: any): string {
     if (!arr) return '';
     if (Array.isArray(arr)) {
-      return arr.slice(0, 8).map(n => n.toFixed(3)).join(', ') + (arr.length > 8 ? '...' : '');
+      return arr.slice.map(n => n.toFixed(3)).join(', ') + (arr.length > 8 ? '...' : '');
     }
     if (arr.constructor === Float32Array) {
       return Array.from(arr.slice(0, 8)).map(n => n.toFixed(3)).join(', ') + (arr.length > 8 ? '...' : '');
@@ -248,7 +248,7 @@ https://svelte.dev/e/js_parse_error -->
         <span class="text-sm">WebGPU {webgpuSupported ? 'Supported' : 'Not Available'}</span>
       </div>
       <div class="flex items-center gap-2">
-        <div class="w-3 h-3 rounded-full {aiActor?.getSnapshot().context.isOnline ? 'bg-green-500' : 'bg-red-500'}"></div>
+        <div class="w-3 h-3 rounded-full {aiActor?.getSnapshot.context.isOnline ? 'bg-green-500' : 'bg-red-500'}"></div>
         <span class="text-sm">Online Status</span>
       </div>
     </div>
@@ -266,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
               : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}"
             onclick={() => switchModule(module)}
           >
-            {module.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+            {module.replace.replace(/\b\w/g, l => l.toUpperCase())}
           </button>
         {/each}
       </div>

@@ -108,8 +108,8 @@ https://svelte.dev/e/js_parse_error -->
   	function updateFeatureFlags() {
   		const root = document.documentElement;
   		// Apply feature flag classes
-  		Object.entries(featureFlags).forEach(([name, flag]) => {
-  			const className = `fx-${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+  		Object.entries.forEach(([name, flag]) => {
+  			const className = `fx-${name.toLowerCase.replace(/[^a-z0-9]/g, '-')}`;
   			if (flag.enabled) {
   				root.classList.add(className);
   			} else {
@@ -220,7 +220,7 @@ https://svelte.dev/e/js_parse_error -->
   			memory_usage: performanceStats.memory || 0,
   			fps: performanceStats.fps || 0,
   			lod_level: lodLevel,
-  			features_enabled: Object.keys(featureFlags).filter(key => featureFlags[key].enabled),
+  			features_enabled: Object.keys.filter(key => featureFlags[key].enabled),
   			timestamp: Date.now(),
   			viewport: {
   				width: window.innerWidth,
@@ -754,14 +754,14 @@ https://svelte.dev/e/js_parse_error -->
 		border-radius: 50%;
 	}
 	
-	.crosshair::before,
+	.crosshair: :before,
 	.crosshair::after {
 		content: '';
 		position: absolute;
 		background: var(--ps1-accent-4);
 	}
 	
-	.crosshair::before {
+	.crosshair: :before {
 		top: 50%;
 		left: -8px;
 		width: 36px;
@@ -769,7 +769,7 @@ https://svelte.dev/e/js_parse_error -->
 		transform: translateY(-1px);
 	}
 	
-	.crosshair::after {
+	.crosshair: :after {
 		left: 50%;
 		top: -8px;
 		width: 2px;

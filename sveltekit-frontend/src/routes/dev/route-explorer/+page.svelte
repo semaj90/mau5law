@@ -64,9 +64,7 @@
   let filteredRoutes = $derived.by(() => {
     if (!routeData) return [];
 
-    return routeData.data.configRoutes.filter(route => {
-      const matchesSearch = !searchTerm ||
-        route.label?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    return routeData.data.configRoutes.filter(item => item.includes(searchTerm.toLowerCase()) ||
         route.route?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         route.id?.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -109,7 +107,7 @@
       routeData = await response.json();
     } catch (err) {
       console.error('Failed to load route data:', err);
-      error = err instanceof Error ? err.message : 'Unknown error';
+      error = err instanceof Error ? err.message: 'Unknown error';
     } finally {
       loading = false;
     }

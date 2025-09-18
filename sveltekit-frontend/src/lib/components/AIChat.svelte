@@ -33,7 +33,7 @@
   							if (done) break;
 
   							const chunk = decoder.decode(value, { stream: true });
-  							const lines = chunk.split('\n').filter(line => line.trim() !== '');
+  							const lines = chunk.split.filter(line => line.trim() !== '');
 
   							for (const line of lines) {
   								try {
@@ -75,7 +75,7 @@
   	$effect(() => {
   		if (snapshot.context.messages && typeof window !== 'undefined') {
   			// Use a microtask to wait for the DOM to update
-  			Promise.resolve().then(() => {
+  			Promise.resolve.then(() => {
   				if (chatContainer) {
   					chatContainer.scrollTop = chatContainer.scrollHeight;
   				}

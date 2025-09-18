@@ -97,7 +97,7 @@
         description: method.description,
         query: testQuery,
         response: '',
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
         duration: Math.round(performance.now() - startTime),
         timestamp: new Date().toLocaleTimeString(),
         success: false,
@@ -207,7 +207,7 @@
       };
     } catch (error: unknown) {
       console.error('[Test] Health check failed:', error);
-      return { error: error instanceof Error ? error.message : String(error) };
+      return { error: error instanceof Error ? error.message: String(error) };
     }
   }
 

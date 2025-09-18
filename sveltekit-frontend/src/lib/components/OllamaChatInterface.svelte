@@ -65,7 +65,7 @@
   let successMessage = $state("");
 
   // Reactive computations
-  let canSend = $derived(message.trim().length > 0 && !isLoading);
+  let canSend = $derived(message.trim.length > 0 && !isLoading);
   let messageCount = $derived(chatHistory.length);
   let lastResponse = $derived(
     chatHistory.find((msg) => msg.type === "assistant" && msg.performance)
@@ -108,7 +108,7 @@
     if (!canSend) return;
 
     const userMessage = message.trim();
-    const messageId = Date.now().toString();
+    const messageId = Date.now.toString();
 
     // Add user message to history
     chatHistory.push({
@@ -160,11 +160,10 @@
     } catch (error) {
       console.error("Chat error:", error);
       errorMessage =
-        error instanceof Error ? error.message : "Unknown error occurred";
+        error instanceof Error ? error.message: "Unknown error occurred";
 
       // Add error message to chat
-      chatHistory.push({
-        id: Date.now().toString(),
+      chatHistory.push.toString(),
         type: "assistant",
         content: `❌ Error: ${errorMessage}`,
         timestamp: new Date(),
@@ -553,26 +552,26 @@ Export
     padding: 1rem;
   }
 
-  .ollama-chat-interface :global(.scroll-area) {
+  .ollama-chat-interface: global(.scroll-area) {
     max-height: 24rem;
     overflow-y: auto;
   }
 
   /* Custom scrollbar */
-  .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar) {
+  .ollama-chat-interface: global(.scroll-area::-webkit-scrollbar) {
     width: 0.5rem;
   }
 
-  .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar-track) {
+  .ollama-chat-interface: global(.scroll-area::-webkit-scrollbar-track) {
     background-color: #f5f5f5;
   }
 
-  .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar-thumb) {
+  .ollama-chat-interface: global(.scroll-area::-webkit-scrollbar-thumb) {
     background-color: #d1d5db;
     border-radius: 0.25rem;
   }
 
-  .ollama-chat-interface :global(.scroll-area::-webkit-scrollbar-thumb:hover) {
+  .ollama-chat-interface: global(.scroll-area::-webkit-scrollbar-thumb:hover) {
     background-color: #9ca3af;
   }
 </style>

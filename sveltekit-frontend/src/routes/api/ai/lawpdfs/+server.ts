@@ -105,7 +105,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     return json(response);
   } catch (error: any) {
     console.error('[LawPDF API] Processing failed:', error);
-    const message = error instanceof Error ? error.message : String(error);
+    const message = error instanceof Error ? error.message: String(error);
 
     return json(
       {
@@ -198,12 +198,12 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
         results.push({
           filename: file.name,
           success: false,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
     
-    const successCount = results.filter(r => r.success).length;
+    const successCount = results.filter(item => item.length);
     
     return json({
       success: successCount > 0,
@@ -220,7 +220,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
       {
         success: false,
         error: 'File upload processing failed',
-        details: error instanceof Error ? error.message : String(error)
+        details: error instanceof Error ? error.message: String(error)
       },
       { status: 500 }
     );

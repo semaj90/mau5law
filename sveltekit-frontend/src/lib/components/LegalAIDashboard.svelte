@@ -22,8 +22,8 @@
   let filteredCases = $derived(
     websocketStore.dashboardData.cases.filter((case_: any) =>
       searchQuery === '' ||
-      case_.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      case_.description.toLowerCase().includes(searchQuery.toLowerCase())
+      case_.title.toLowerCase.includes(searchQuery.toLowerCase()) ||
+      case_.description.toLowerCase.includes(searchQuery.toLowerCase())
     )
   );
 
@@ -52,7 +52,7 @@
       }
 
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to load dashboard';
+      error = err instanceof Error ? err.message: 'Failed to load dashboard';
       console.error('Dashboard load error:', err);
     } finally {
       loading = false;
@@ -99,7 +99,7 @@
         error = response.error || 'Failed to create case';
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to create case';
+      error = err instanceof Error ? err.message: 'Failed to create case';
     }
   }
 
@@ -125,7 +125,7 @@
           }
         }
       } catch (err) {
-        error = err instanceof Error ? err.message : 'Failed to upload evidence';
+        error = err instanceof Error ? err.message: 'Failed to upload evidence';
       }
     };
 

@@ -433,7 +433,7 @@ https://svelte.dev/e/js_parse_error -->
 
     // Redistribute remaining width
     const remaining = 100 - newWidth;
-    const otherPanels = Object.keys(panelLayout).filter((p) => p !== panelName);
+    const otherPanels = Object.keys.filter((p) => p !== panelName);
     otherPanels.forEach((panel) => {
       panelLayout[panel].width = remaining / otherPanels.length;
     });

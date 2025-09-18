@@ -74,7 +74,7 @@ async function checkExistingServices() {
 
 export const GET: RequestHandler = async ({ url }) => {
   const services = await checkExistingServices();
-  const healthyCount = services.filter(s => s.status === 'healthy').length;
+  const healthyCount = services.filter(item => item.length);
   
   const response: HealthResponse = {
     overall_status: healthyCount === services.length ? 'healthy' : healthyCount > 0 ? 'degraded' : 'critical',
@@ -216,7 +216,7 @@ This legal matter requires consideration of several key factors:
   } catch (error) {
     return json({
       error: 'Query processing failed',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

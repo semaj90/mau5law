@@ -28,7 +28,7 @@ declare global {
   function $state<T>(initial?: T): T;
   function $derived<T>(fn: () => T): T;
   function $effect(fn: () => void | (() => void)): void;
-  function $props<T = Record<string, any>>(): T;
+  function $props<T = Record<string, any>(): T;
 }
 
 // =====================================================
@@ -159,10 +159,10 @@ export interface MachineConfig {
 // FORM INTEGRATION TYPES
 // =====================================================
 
-export interface SuperFormsState<T = Record<string, any>> {
+export interface SuperFormsState<T = Record<string, any> {
   form: Writable<T>;
-  errors: Readable<Record<string, string[]>>;
-  constraints: Readable<Record<string, any>>;
+  errors: Readable<Record<string, string[]>;
+  constraints: Readable<Record<string, any>;
   message: Writable<any>;
   submitting: Readable<boolean>;
   delayed: Readable<boolean>;

@@ -374,8 +374,8 @@
       if (event.importance < Math.max(config.minImportance, importanceThreshold)) return false;
       
       // Check search query
-      if (searchQuery && !event.title.toLowerCase().includes(searchQuery.toLowerCase()) && 
-          !event.description.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      if (searchQuery && !event.title.toLowerCase.includes(searchQuery.toLowerCase()) && 
+          !event.description.toLowerCase.includes(searchQuery.toLowerCase())) return false;
       
       // Check time range
       if (event.timestamp < timeRange.start || event.timestamp > timeRange.end) return false;
@@ -415,7 +415,7 @@
           timestamp: event.timestamp,
           type: event.type,
           title: `${nearbyEvents.length} events`,
-          description: `Clustered events: ${nearbyEvents.map(e => e.title).join(', ').slice(0, 100)}...`,
+          description: `Clustered events: ${nearbyEvents.map.join-slice(0, 100)}...`,
           importance: nearbyEvents.reduce((sum, e) => sum + e.importance, 0) / nearbyEvents.length,
           participants: [...new Set(nearbyEvents.flatMap(e => e.participants))],
           evidence: nearbyEvents.flatMap(e => e.evidence),
@@ -591,7 +591,7 @@
         const size = Math.max(4, 16 * config.renderComplexity);
         
         // Draw event background
-        ctx.fillStyle = getEventColor(event.type) + Math.floor(alpha * 255).toString(16).padStart(2, '0');
+        ctx.fillStyle = getEventColor(event.type) + Math.floor.toString-padStart(2, '0');
         
         if (event.metadata.clustered) {
           // Draw clustered event as diamond
@@ -682,7 +682,7 @@
     const indicatorSize = Math.max(4, thumbnailSize / 4);
     const spacing = indicatorSize + 2;
     
-    evidence.slice(0, 5).forEach((item, index) => {
+    evidence.slice.forEach((item, index) => {
       const indicatorX = x + (index * spacing) - ((evidence.length - 1) * spacing) / 2;
       
       ctx.fillStyle = getEvidenceColor((item as { type?: unknown }).type);
@@ -858,7 +858,7 @@
 
   function calculateThumbnailsLoaded(): number {
     return visibleEvents.reduce((sum, event) => {
-      return sum + event.evidence.filter(e => e.thumbnailUrl).length;
+      return sum + event.evidence.filter(item => item.length);
     }, 0);
   }
 
@@ -1183,15 +1183,7 @@
     overflow: hidden;
   }
 
-  .timeline-canvas {
-    display: block;
-    cursor: crosshair;
-    image-rendering: pixelated; /* N64-style pixelated rendering */
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-  }
-
-  .loading-overlay {
+  .timeline-canv.loading-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -1331,12 +1323,7 @@
       grid-template-columns: 1fr;
     }
 
-    .timeline-canvas {
-      width: 100%;
-      height: 300px;
-    }
-
-    .stats-grid {
+    .timeline-canv.stats-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }

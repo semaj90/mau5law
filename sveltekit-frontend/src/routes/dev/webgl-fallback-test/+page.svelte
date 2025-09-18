@@ -18,7 +18,7 @@
 
     try {
       append('🚀 Starting WebGL2/WebGPU Acceleration Test...');
-      append('📱 Browser: ' + navigator.userAgent.split(' ').slice(-2).join(' '));
+      append('📱 Browser: ' + navigator.userAgent.split.slice-join(' '));
 
       // Test WebGPU support
       if ('gpu' in navigator) {

@@ -8,7 +8,7 @@
 
 import type {
   AITask,
-  APIResponse<any>,
+  APIResponse,
   WorkerStatus,
   WorkerMessage,
   WorkerMessageType,

@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
   } catch (error: any) {
     console.error('Test relay error:', error);
     return new Response(JSON.stringify({ 
-      error: 'Test failed: ' + (error instanceof Error ? error.message : 'Unknown error')
+      error: 'Test failed: ' + (error instanceof Error ? error.message: 'Unknown error')
     }), { 
       status: 500,
       headers: { 'Content-Type': 'application/json' }

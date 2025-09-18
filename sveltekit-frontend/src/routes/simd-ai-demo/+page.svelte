@@ -117,8 +117,7 @@ https://svelte.dev/e/expected_token -->
   
   async function loadSystemStatus() {
     try {
-      const [ollamaStatus, simdStatus, glyphStatus] = await Promise.all([
-        fetch('/api/ai/ollama-simd').then(r => r.json()).catch(() => ({ success: false })),
+      const [ollamaStatus, simdStatus, glyphStatus] = await Promise.all.then(r => r.json()).catch(() => ({ success: false })),
         fetch('/api/ocr/simd-langextract').then(r => r.json()).catch(() => ({ success: false })),
         fetch('/api/glyph/simd-embeds').then(r => r.json()).catch(() => ({ success: false }))
       ]);
@@ -136,8 +135,7 @@ https://svelte.dev/e/expected_token -->
         },
         glyph: {
           available: glyphStatus.success,
-          features: glyphStatus.features || {}
-        },
+          features: glyphStatus.features || },
         overall: 'healthy'
       };
       

@@ -238,7 +238,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       {
         success: false,
         error: 'Internal server error',
-        details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined,
+        details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined,
         timestamp: new Date().toISOString(),
       },
       { status: 500 }
@@ -398,7 +398,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       {
         success: false,
         error: 'Internal server error',
-        details: dev ? (error instanceof Error ? error.message : 'Unknown error') : undefined,
+        details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined,
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

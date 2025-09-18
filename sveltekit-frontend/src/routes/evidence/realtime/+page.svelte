@@ -29,7 +29,7 @@
   const { isConnected, evidence, isLoading, error } = evidenceStore;
 
   // Analytics data
-  let stats = $state({ total: 0, byType: {}, byCase: {}, recentCount: 0 });
+  let stats = $state({ total: 0, byType: , byCase: , recentCount: 0 });
   let syncStatus: {
     pending: number;
     failed: number;
@@ -151,7 +151,7 @@
     try {
       await lokiEvidenceService.clearLocalData();
       evidenceStore.evidence.set([]);
-      stats = { total: 0, byType: {}, byCase: {}, recentCount: 0 };
+      stats = { total: 0, byType: , byCase: , recentCount: 0 };
     } catch (err) {
       console.error("Failed to clear evidence:", err);
   }}
@@ -287,7 +287,7 @@ clearAllEvidence()}>
     </div>
 
     <!-- Evidence Type Breakdown -->
-    {#if Object.keys(stats.byType).length > 0}
+    {#if Object.keys.length > 0}
       <div class="space-y-4">
         <h3 class="space-y-4">Evidence by Type</h3>
         <div class="space-y-4">

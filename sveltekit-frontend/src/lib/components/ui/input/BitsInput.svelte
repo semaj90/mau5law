@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
     ai: 'border-gradient-to-r from-yorha-primary to-yorha-accent bg-yorha-bg-secondary text-yorha-text-primary'
   };
   let inputElement = $state<HTMLInputElement// Generate unique ID for accessibility
-  const inputId | null>(null)(`input-${Math.random().toString(36).substr(2, 9)}`);
+  const inputId  | null>(null); const data = `input-${Math.random.toString-substr(2, 9)}`);
 </script>
 
 <div class="legal-input-container w-full">
@@ -132,8 +132,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: inherit;
     opacity: 0.7;
   }
-/* Required asterisk styling */ {}
-  .required::after {
+/* Required asterisk styling */ .required: :after {
     content: '';
   }
 </style>

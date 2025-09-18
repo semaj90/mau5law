@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       message: 'Failed to enqueue compute job',
     }, { status: 500 });
   }
@@ -189,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };

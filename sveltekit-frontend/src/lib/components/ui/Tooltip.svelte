@@ -44,8 +44,7 @@
   {/if}
 </div>
 
-<style>/* @unocss-include */ {}
-  .tooltip-wrapper {
+<style>/* @unocss-include */ .tooltip-wrapper {
     position: relative;
     display: inline-block;
 }

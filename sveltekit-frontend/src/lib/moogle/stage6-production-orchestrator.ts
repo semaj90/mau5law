@@ -568,7 +568,7 @@ export class MoogleGraphSynthesizerOrchestrator {
 
   // Reactive stores for UI integration
   public systemStatus: Writable<'initializing' | 'ready' | 'processing' | 'error'> = writable('initializing');
-  public componentStatuses: Writable<Record<ComponentType, ComponentStatus>> = writable({} as any);
+  public componentStatuses: Writable<Record<ComponentType, ComponentStatus> = writable({} as any);
   public overallPerformance: Writable<ComponentPerformance> = writable({
     latency_ms: 0,
     throughput_ops_sec: 0,
@@ -609,7 +609,7 @@ export class MoogleGraphSynthesizerOrchestrator {
               await orchestrator.initialize() : true;
 
             componentStatuses[componentType as ComponentType] =
-              initialized ? ComponentStatus.READY : ComponentStatus.ERROR;
+              initialized ? ComponentStatus.READY: ComponentStatus.ERROR;
 
             return { componentType, initialized };
           } catch (error) {
@@ -621,7 +621,7 @@ export class MoogleGraphSynthesizerOrchestrator {
       );
 
       const results = await Promise.all(initPromises);
-      const successCount = results.filter(r => r.initialized).length;
+      const successCount = results.filter(item => item.length);
 
       this.componentStatuses.set(componentStatuses);
 
@@ -715,29 +715,22 @@ export class MoogleGraphSynthesizerOrchestrator {
     if (!orchestrator) return null;
 
     switch (componentType) {
-      case ComponentType.ENHANCED_BITS_UI:
-        return orchestrator.renderLegalComponent('QueryProcessor', { query: query.text });
+      case ComponentType.ENHANCED_BITS_UI: return orchestrator.renderLegalComponent('QueryProcessor', { query: query.text });
 
-      case ComponentType.BVH_ACCELERATOR_WASM:
-        return orchestrator.queryNearest([1, 2, 3], 10); // Mock query vector
+      case ComponentType.BVH_ACCELERATOR_WASM: return orchestrator.queryNearest([1, 2, 3], 10); // Mock query vector
 
-      case ComponentType.CYBER_ELEPHANT_3D:
-        return orchestrator.createDocumentVisualization([{ id: '1', title: query.text }]);
+      case ComponentType.CYBER_ELEPHANT_3D: return orchestrator.createDocumentVisualization([{ id: '1', title: query.text }]);
 
-      case ComponentType.MULTIPASS_COORDINATOR:
-        return orchestrator.extractFromDocument(
+      case ComponentType.MULTIPASS_COORDINATOR: return orchestrator.extractFromDocument(
           { id: query.id, content: query.text },
           ['entities', 'sentiment', 'topics']
         );
 
-      case ComponentType.NEO4J_RERANKER:
-        return orchestrator.enhancedRerank(query.text, [], query.user_context);
+      case ComponentType.NEO4J_RERANKER: return orchestrator.enhancedRerank(query.text, [], query.user_context);
 
-      case ComponentType.WEBGPU_RAG_SERVICE:
-        return webgpuRAGService.processQuery(query.text, query.context);
+      case ComponentType.WEBGPU_RAG_SERVICE: return webgpuRAGService.processQuery(query.text, query.context);
 
-      case ComponentType.CHR_ROM_MEMORY:
-        const textData = new TextEncoder().encode(query.text);
+      case ComponentType.CHR_ROM_MEMORY: const textData = new TextEncoder().encode(query.text);
         return orchestrator.compressData(textData, 'legal_document');
 
       default:
@@ -794,7 +787,7 @@ export class MoogleGraphSynthesizerOrchestrator {
 
   getSystemHealth(): { healthy: boolean; score: number; issues: string[] } {
     const statuses = Array.from(this.components.values());
-    const healthyCount = statuses.filter(c => c.status === ComponentStatus.READY).length;
+    const healthyCount = statuses.filter(item => item.length);
     const totalCount = statuses.length;
     const score = totalCount > 0 ? healthyCount / totalCount : 0;
 
@@ -819,7 +812,7 @@ export const systemHealth = derived(
   ([$systemStatus, $componentStatuses]) => {
     const totalComponents = Object.keys($componentStatuses).length;
     const healthyComponents = Object.values($componentStatuses)
-      .filter(status => status === ComponentStatus.READY).length;
+      .filter(item => item.length);
 
     return {
       status: $systemStatus,

@@ -76,7 +76,7 @@ export class FlashAttentionMulticoreBridge {
       flashAttention2Service.initialize(),
       new Promise<void>(resolve => {
         const checkMulticore = () => {
-          const status = this.multicoreService.getSystemStatus();
+          const status = this.multicoreService.getSystemStatus()));
           if (status.workers.length > 0) {
             resolve();
           } else {
@@ -273,7 +273,7 @@ export class FlashAttentionMulticoreBridge {
     const orchestrationRequest: ComprehensiveAgentRequest = {
       prompt: `Analyze the following with FlashAttention2 context: ${request.text.substring(0, 500)}...`,
       context: {
-        attentionWeights: Array.from(attentionResult.(result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).attentionWeights),
+        attentionWeights: Array.from(attentionResult.result.attentionWeights),
         legalAnalysis: attentionResult.legalAnalysis,
         multicoreTaskCount: multicoreTasks.length
       },
@@ -321,7 +321,7 @@ export class FlashAttentionMulticoreBridge {
     }
 
     // Performance recommendations
-    if (attentionResult.(result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).processingTime > 5000) {
+    if (attentionResult.result.processingTime > 5000) {
       recommendations.push('Consider GPU optimization for better performance');
     }
 
@@ -337,18 +337,18 @@ export class FlashAttentionMulticoreBridge {
     const status = flashAttentionService.getStatus();
     const multicoreStatus = this.multicoreService.getSystemStatus();
 
-    const completedTasks = multicoreTasks.filter(t => t.status === 'completed').length;
+    const completedTasks = multicoreTasks.filter(item => item.length);
     const totalTasks = multicoreTasks.length;
 
     return {
       totalProcessingTime,
       gpuUtilization: status.gpuEnabled ? 0.75 + Math.random() * 0.2 : 0,
-      memoryEfficiency: attentionResult.(result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).memoryUsage > 0 ? 
-        Math.max(0.6, 1 - (attentionResult.(result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).memoryUsage / (1024 * 1024 * 100))) : 0.8,
+      memoryEfficiency: attentionResult.result.memoryUsage > 0 ? 
+        Math.max(0.6, 1 - (attentionResult.result.memoryUsage / (1024 * 1024 * 100))) : 0.8,
       confidence: {
-        attention: attentionResult.(result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).confidence,
+        attention: attentionResult.result.confidence,
         multicore: completedTasks / Math.max(1, totalTasks),
-        overall: (attentionResult.(result as { embeddings?: any; attentionWeights?: any; contextualEmbeddings?: any; processingTime?: any; memoryUsage?: any; confidence?: any; sequenceLength?: any; legalAnalysis?: any }).confidence + (completedTasks / Math.max(1, totalTasks))) / 2
+        overall: (attentionResult.result.confidence + (completedTasks / Math.max(1, totalTasks))) / 2
       }
     };
   }

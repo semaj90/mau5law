@@ -6,7 +6,7 @@ https://svelte.dev/e/script_duplicate -->
   
 
 // Auto-generated default export
-export default {};
+export default ;
 </script>` element
   https://svelte.dev/e/script_duplicate -->
   <!-- Tiptap Editor with AI Assistant Integration -->
@@ -426,7 +426,7 @@ export default {};
   function updateWordCount(): void {
     if (editor) {
       const text = editor.getText();
-      wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
+      wordCount = text.split.filter-length;
     }
   }
 
@@ -607,12 +607,12 @@ export default {};
     outline: none;
   }
 
-  .tiptap-editor :global(.ProseMirror) {
+  .tiptap-editor: global(.ProseMirror) {
     outline: none;
     min-height: 200px;
   }
 
-  .tiptap-editor :global(.ProseMirror p.is-editor-empty:first-child::before) {
+  .tiptap-editor: global(.ProseMirror p.is-editor-empty:first-child::before) {
     content: attr(data-placeholder);
     float: left;
     color: #9ca3af;

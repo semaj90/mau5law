@@ -522,7 +522,7 @@ export function createRouteAwareNavigation(routeId: string) {
       const route = routeRegistry.getRoute(routeId);
       if (!route) return false;
 
-      const routePath = 'route' in route ? route.route : route.path;
+      const routePath = 'route' in route ? route.route: route.path;
       return path === routePath || path.startsWith(routePath + '/');
     }),
 
@@ -530,7 +530,7 @@ export function createRouteAwareNavigation(routeId: string) {
       const route = routeRegistry.getRoute(routeId);
       if (!route) return '#';
 
-      return 'route' in route ? route.route : route.path;
+      return 'route' in route ? route.route: route.path;
     }),
   };
 }

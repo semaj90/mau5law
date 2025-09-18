@@ -566,7 +566,7 @@ export const canRetryUpload = (state: any): boolean => {
 export const getUploadMetrics = (state: any) => {
   const context = state.context;
   return {
-    uploadTime: context.uploadEndTime ? context.uploadEndTime - context.uploadStartTime : 0,
+    uploadTime: context.uploadEndTime ? context.uploadEndTime - context.uploadStartTime: 0,
     processingTime: context.processingEndTime ? context.processingEndTime - context.processingStartTime! : 0,
     totalTime: context.processingEndTime ? context.processingEndTime - context.uploadStartTime : 0,
     fileSize: context.fileSize,

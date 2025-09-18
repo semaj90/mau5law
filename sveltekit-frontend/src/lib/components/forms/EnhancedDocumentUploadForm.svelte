@@ -47,7 +47,7 @@
 </script>
 
   // Props
-  let { data }: { data: unknown } = $props(); // SuperValidated<Infer<typeof DocumentUploadSchema>>;
+  let { data }: { data: unknown } = $props(); // SuperValidated<Infer<typeof DocumentUploadSchema>;
   let { onSuccess = $bindable()  }: { onSuccess = $bindable() : unknown } = $props(); // ((result: unknown) => void) | undefined = undefined;
   let { onError = $bindable()  }: { onError = $bindable() : unknown } = $props(); // ((error: string) => void) | undefined = undefined;
   let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string | undefined = undefined;
@@ -457,8 +457,7 @@
               value={$formData.tags.join(", ")} oninput={(e) => {
                 const value = e.currentTarget.value;
                 $formData.tags = value
-                  .split(",")
-                  .map((tag) => tag.trim())
+                  .split.map((tag) => tag.trim())
                   .filter((tag) => tag);
               }}
               placeholder="contract, litigation, corporate"
@@ -519,7 +518,7 @@
             </Checkbox>
           </div>
 
-          {#if Object.values($formData.aiProcessing).some(Boolean)}
+          {#if Object.values.some(Boolean)}
             <Alert>
               <Zap class="h-4 w-4" />
               <AlertDescription>

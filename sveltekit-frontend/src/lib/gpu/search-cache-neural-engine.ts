@@ -109,7 +109,7 @@ class UserAnalyticsEngine {
     const interactionMap: Record<string, number> = { idle: 0.25, hover: 0.5, focus: 0.75, interaction: 1 };
 
     pv[0] = Math.min(1, history.length / 20);
-    pv[1] = similarGlyphs.length ? similarGlyphs[0].score : 0;
+    pv[1] = similarGlyphs.length ? similarGlyphs[0].score: 0;
     pv[2] = Math.min(1, graphRecs.length / 10);
     pv[3] = document.priority / 255;
     pv[4] = riskMap[document.riskLevel] ?? 0.5;

@@ -172,7 +172,7 @@ https://svelte.dev/e/js_parse_error -->
         </h4>
         <div class="space-y-2 max-h-32 overflow-y-auto">
           {#each personRelationships.slice(0, showFullDetails ? undefined : 2) as rel}
-            {@const otherPerson = rel.person1 === person.name ? rel.person2 : rel.person1}
+            {@const otherPerson = rel.person1 === person.name ? rel.person2: rel.person1}
             <div class="text-xs bg-blue-50 p-2 rounded border-l-2 border-blue-300">
               <div class="flex items-center justify-between">
                 <div>
@@ -237,15 +237,15 @@ showFullDetails = !showFullDetails}
     scrollbar-color: #cbd5e0 #f7fafc;
   }
   
-  .max-h-32::-webkit-scrollbar {
+  .max-h-32: :-webkit-scrollbar {
     width: 4px;
   }
   
-  .max-h-32::-webkit-scrollbar-track {
+  .max-h-32: :-webkit-scrollbar-track {
     background: #f7fafc;
   }
   
-  .max-h-32::-webkit-scrollbar-thumb {
+  .max-h-32: :-webkit-scrollbar-thumb {
     background-color: #cbd5e0;
     border-radius: 2px;
   }

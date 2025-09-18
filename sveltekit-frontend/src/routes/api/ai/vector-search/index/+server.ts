@@ -108,7 +108,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json(
       {
         error: "Document indexing failed",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 }
     );
@@ -195,7 +195,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
         results.push({
           documentId,
           status: "error",
-          error: error instanceof Error ? error.message : "Unknown error",
+          error: error instanceof Error ? error.message: "Unknown error",
         });
         errorCount++;
       }
@@ -217,7 +217,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
     return json(
       {
         error: "Batch indexing failed",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 }
     );
@@ -288,7 +288,7 @@ Respond in JSON format:
       if (analysisMatch) {
         const analysis = JSON.parse(analysisMatch[0]);
         return {
-          summary: generateSummary ? analysis.summary : undefined,
+          summary: generateSummary ? analysis.summary: undefined,
           keywords: extractKeywords ? analysis.keywords : undefined,
         };
       }

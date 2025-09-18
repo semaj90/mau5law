@@ -11,5 +11,5 @@ export const GET: RequestHandler = async () => {
     return json({ status: 'unhealthy', error: upstream.error }, { status: 200 });
   }
   const parse = healthResponseSchema.safeParse(upstream.data);
-  return json(parse.success ? parse.data : { status: 'degraded' });
+  return json(parse.success ? parse.data:  { status: 'degraded' });
 };

@@ -28,8 +28,7 @@ https://svelte.dev/e/script_duplicate -->
       const ws = new WebSocket('ws://localhost:7071/logs')
       ws.onmessage = (e) => { wsMsg = e.data }
       return () => ws.close()
-    } catch {}
-  })
+    } catch })
 
   <h1>Vector Search Demo</h1>
   <div class="row">
@@ -137,7 +136,7 @@ https://svelte.dev/e/script_duplicate -->
         error = errorData.error || 'Search failed';
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Network error';
+      error = err instanceof Error ? err.message: 'Network error';
     } finally {
       isSearching = false;
     }
@@ -172,7 +171,7 @@ https://svelte.dev/e/script_duplicate -->
         alert('Indexing failed: ' + (errorData.error || 'Unknown error');
       }
     } catch (err) {
-      alert('Indexing error: ' + (err instanceof Error ? err.message : 'Unknown error');
+      alert('Indexing error: ' + (err instanceof Error ? err.message: 'Unknown error');
     }
   }
 
@@ -197,7 +196,7 @@ https://svelte.dev/e/script_duplicate -->
         <div class="status success">✅ Vector search service running</div>
         <div class="service-info">
           <p><strong>Supported Models:</strong> {serviceHealth.supportedModels?.join(', ') || 'N/A'}</p>
-          <p><strong>Cache Stats:</strong> {JSON.stringify(serviceHealth.cacheStats || {})}</p>
+          <p><strong>Cache Stats:</strong> {JSON.stringify(serviceHealth.cacheStats || )}</p>
         </div>
       {/if}
     {:else}

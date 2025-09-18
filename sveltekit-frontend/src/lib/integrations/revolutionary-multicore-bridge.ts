@@ -546,7 +546,7 @@ export class RevolutionaryMulticoreBridge {
     return {
       ...this.systemMetrics,
       revolutionaryHitRate: this.systemMetrics.totalRequests > 0 ? 
-        this.systemMetrics.revolutionaryHits / this.systemMetrics.totalRequests : 0,
+        this.systemMetrics.revolutionaryHits / this.systemMetrics.totalRequests: 0,
       performanceRating: this.systemMetrics.overallEfficiency > 50 ? 'excellent' :
                         this.systemMetrics.overallEfficiency > 25 ? 'good' :
                         this.systemMetrics.overallEfficiency > 10 ? 'fair' : 'needs_improvement'

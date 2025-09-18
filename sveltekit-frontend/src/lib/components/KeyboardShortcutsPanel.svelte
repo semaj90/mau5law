@@ -33,9 +33,7 @@ https://svelte.dev/e/js_parse_error -->
   let selectedCategory = $state('all');
   let showRemoteOnly = $state(false);
 
-  let filteredShortcuts = $derived($shortcuts.filter(shortcut => {
-    const matchesSearch = !searchQuery ||
-      shortcut.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  let filteredShortcuts = $derived($shortcuts.filter(item => item.includes(searchQuery.toLowerCase()) ||
       shortcut.key.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesCategory = selectedCategory === 'all' || shortcut.category === selectedCategory;
@@ -46,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   let categories = $derived($shortcutCategories);
-  let recentCommands = $derived($remoteCommands.slice(-10).reverse());
+  let recentCommands = $derived($remoteCommands.slice.reverse());
   let helpModalVisible = $state(false);
   let remoteStatusVisible = $state(false);
 
@@ -84,7 +82,7 @@ https://svelte.dev/e/js_parse_error -->
     keyboardShortcutsService.executeRemoteCommand({
       id: crypto.randomUUID(),
       command: shortcut.id,
-      args: {},
+      args: ,
       source: 'api',
       timestamp: Date.now()
     });

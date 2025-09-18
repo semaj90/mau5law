@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		return json(
 			{
 				error: 'Internal server error',
-				details: error instanceof Error ? error.message : String(error)
+				details: error instanceof Error ? error.message: String(error)
 			},
 			{ status: 500 }
 		);
@@ -174,7 +174,7 @@ async function handleErrorProcessing(request: Request): Promise<any> {
 			{
 				success: false,
 				error: 'Processing failed',
-				details: error instanceof Error ? error.message : String(error)
+				details: error instanceof Error ? error.message: String(error)
 			},
 			{ status: 500 }
 		);
@@ -225,7 +225,7 @@ async function handleSystemTest(): Promise<any> {
 		return json({
 			success: false,
 			results: testResults,
-			error: error instanceof Error ? error.message : String(error)
+			error: error instanceof Error ? error.message: String(error)
 		});
 	}
 }

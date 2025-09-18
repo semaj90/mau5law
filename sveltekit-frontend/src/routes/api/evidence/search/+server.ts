@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
       filename: row.filename,
       content: row.summary || row.content,
       similarity: 0.8, // Mock similarity score
-      tags: Array.isArray(row.tags) ? row.tags : [],
+      tags: Array.isArray(row.tags) ? row.tags: [],
       prosecutionScore: typeof row.prosecutionScore === 'object' 
         ? (row.prosecutionScore as any)?.prosecutionScore || 0 
         : 0,

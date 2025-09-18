@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (err) {
     console.error('Vector similarity API error:', err);
-    throw error(500, `Vector operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Vector operation failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 

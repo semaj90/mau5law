@@ -88,19 +88,19 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
   // Reactive selection based on activeTab (using $derived)
   let currentData = $derived(activeTab === 'documents'
     ? documentsData
-    : activeTab === 'cases'
+    :activeTab === 'cases'
       ? casesData
       : evidenceData);
 
   let currentColumns = $derived(activeTab === 'documents'
     ? documentsColumns
-    : activeTab === 'cases'
+    :activeTab === 'cases'
       ? casesColumns
       : evidenceColumns);
 
   let currentFormFields = $derived(activeTab === 'documents'
     ? documentFormFields
-    : activeTab === 'cases'
+    :activeTab === 'cases'
       ? caseFormFields
       : evidenceFormFields);
 
@@ -173,7 +173,7 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query,
-          dataType: activeTab,
+          dataType:activeTab,
           analysisType: 'comprehensive',
           includeRecommendations: true,
           includeMetadata: true
@@ -299,24 +299,24 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
 
     // Auto-remove after 5 seconds
     setTimeout(() => {
-      notifications = notifications.filter(n => n.id !== (notification as { id?: unknown; type?: unknown; message?: unknown }).id);
+      notifications = notifications.filter(item => item.id));
     }, 5000);
   }
 
   // Terminal command handler
   function handleTerminalCommand(command: string) {
-    const parts = command.toLowerCase().split(' ');
+    const parts = command.toLowerCase.split(' ');
     const cmd = parts[0];
 
     switch (cmd) {
       case 'analyze':
         if (parts[1]) {
-          performEnhancedAnalysis(parts.slice(1).join(' '));
+          performEnhancedAnalysis(parts.slice.join(' '));
         }
         break;
       case 'search':
         if (parts[1]) {
-          searchQuery = parts.slice(1).join(' ');
+          searchQuery = parts.slice.join(' ');
           loadData();
         }
         break;
@@ -416,7 +416,7 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
         <div class="section-header">
           <h2 class="section-title">{activeTab.toUpperCase()} MANAGEMENT</h2>
           <button class="create-btn" onclick={openCreateModal}>
-            CREATE NEW {activeTab.toUpperCase().slice(0, -1)}
+            CREATE NEW {activeTab.toUpperCase.slice(0, -1)}
           </button>
         </div>
 
@@ -525,11 +525,11 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
   {#if modalOpen}
     <YoRHaModal
       open={modalOpen}
-      title="{modalType === 'create' ? 'Create' : 'Edit'} {activeTab.toUpperCase().slice(0, -1)}"
+      title="{modalType === 'create' ? 'Create' : 'Edit'} {activeTab.toUpperCase.slice(0, -1)}"
       onClose={closeModal}
     >
       <YoRHaForm
-        title="{modalType === 'create' ? 'Create New' : 'Edit'} {activeTab.toUpperCase().slice(0, -1)}"
+        title="{modalType === 'create' ? 'Create New' : 'Edit'} {activeTab.toUpperCase.slice(0, -1)}"
         fields={currentFormFields}
         submitLabel={modalType === 'create' ? 'Create' : 'Update'}
         onsubmit={(data) => {
@@ -550,7 +550,7 @@ let ragRecommendations = $state<RagRecommendation[] >([]);
       <YoRHaNotification
         type={(notification as { id?: unknown; type?: unknown; message?: unknown }).type}
         message={(notification as { id?: unknown; type?: unknown; message?: unknown }).message}
-        close={() => notifications = notifications.filter(n => n.id !== (notification as { id?: unknown; type?: unknown; message?: unknown }).id)}
+        close={() => notifications = notifications.filter(item => item.id))}
       />
     {/each}
   </div>

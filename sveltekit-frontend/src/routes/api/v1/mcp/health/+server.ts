@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ getClientAddress }) => {
     return json({
       success: false,
       timestamp: Date.now(),
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       services: {
         mcp: 'error',
         database: 'unknown',

@@ -65,8 +65,7 @@ https://svelte.dev/e/attribute_duplicate -->
     class?: string;
   }
 
-  let {
-    era = 'n64',
+  let { era = 'n64',
     variant = 'primary',
     size = 'medium',
     disabled = false,
@@ -110,7 +109,7 @@ https://svelte.dev/e/attribute_duplicate -->
     footer,
     children,
     class: className = ''
-  }: Props = $props();
+   }: Props = $props();
 
   // Events now handled via props in Svelte 5
   // const dispatch = createEventDispatcher();
@@ -138,7 +137,7 @@ https://svelte.dev/e/attribute_duplicate -->
 
     try {
       if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
       }
 
       const oscillator = audioContext.createOscillator();
@@ -496,8 +495,7 @@ https://svelte.dev/e/attribute_duplicate -->
   </div>
 {/if}
 
-<style>/* Backdrop styling */ {}
-  .n64-dialog-backdrop {
+<style>/* Backdrop styling */ .n64-dialog-backdrop {
     position: fixed;
     top: 0;
     left: 0;
@@ -509,8 +507,7 @@ https://svelte.dev/e/attribute_duplicate -->
     justify-content: center;
     z-index: 1000;
     padding: 20px;
-/* 3D perspective for dialog */ {}
-    perspective: var(--perspective);
+/* 3D perspective for dialog */ perspective: var(--perspective);
     perspective-origin: center center;
   }
 
@@ -525,10 +522,7 @@ https://svelte.dev/e/attribute_duplicate -->
     left: 0;
     right: 0;
     bottom: 0;
-background: {}
-radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, transparent 50%), {}
-radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%), {}
-      radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
+background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%), radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
     opacity: var(--atmosphere-intensity);
     pointer-events: none;
     animation: atmosphereSwirl 20s ease-in-out infinite;
@@ -552,8 +546,7 @@ radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%),
       opacity: calc(var(--atmosphere-intensity) * 1.1);
     }
   }
-/* Dialog styling */ {}
-  .n64-dialog {
+/* Dialog styling */ .n64-dialog {
     font-family: 'Rajdhani', 'Arial', sans-serif;
     background: var(--material-bg);
     color: #ffffff;
@@ -566,21 +559,16 @@ radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%),
     flex-direction: column;
     overflow: hidden;
     position: relative;
-/* 3D transformations */ {}
-    transform-style: preserve-3d;
-/* Enhanced rendering */ {}
-    -webkit-font-smoothing: antialiased;
+/* 3D transformations */ transform-style: preserve-3d;
+/* Enhanced rendering */ -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-/* Advanced shadows and lighting */ {}
-    box-shadow: var(--material-shadow);
-/* Remove default styles */ {}
-    -webkit-appearance: none;
+/* Advanced shadows and lighting */ box-shadow: var(--material-shadow);
+/* Remove default styles */ -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     outline: none;
-/* Text styling */ {}
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+/* Text styling */ text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
   }
 
   .n64-dialog.fullscreen {
@@ -590,8 +578,7 @@ radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%),
     height: 100vh;
     border-radius: 0;
   }
-/* Entrance animations */ {}
-  .n64-dialog.entrance-zoom {
+/* Entrance animations */ .n64-dialog.entrance-zoom {
     animation: dialogZoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
@@ -672,8 +659,7 @@ radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%),
       filter: blur(0px);
     }
   }
-/* Dialog sections */ {}
-  .dialog-header {
+/* Dialog sections */ .dialog-header {
     padding: 24px 28px 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
@@ -741,8 +727,7 @@ radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%),
     gap: 12px;
     justify-content: flex-end;
   }
-/* Loading overlay */ {}
-  .loading-overlay {
+/* Loading overlay */ .loading-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -796,44 +781,30 @@ radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%),
     0%, 100% { opacity: 1; }
     50% { opacity: 0.6; }
   }
-/* Lighting overlay */ {}
-  .lighting-overlay {
+/* Lighting overlay */ .lighting-overlay {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-background: linear-gradient( {}
-135deg, {}
-rgba(255, 255, 255, 0.2) 0%, {}
-rgba(255, 255, 255, 0.05) 30%, {}
-transparent 60%, {}
-rgba(0, 0, 0, 0.3) 100% {}
-    );
+background: linear-gradient( 135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 30%, transparent 60%, rgba(0, 0, 0, 0.3) 100% );
     pointer-events: none;
     z-index: 1;
     border-radius: 8px;
   }
-/* Reflection overlay */ {}
-  .reflection-overlay {
+/* Reflection overlay */ .reflection-overlay {
     position: absolute;
     top: 15%;
     left: 20%;
     right: 60%;
     bottom: 60%;
-background: linear-gradient( {}
-45deg, {}
-rgba(255, 255, 255, 0.4) 0%, {}
-rgba(255, 255, 255, 0.1) 50%, {}
-transparent 100% {}
-    );
+background: linear-gradient( 45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100% );
     border-radius: 6px;
     pointer-events: none;
     z-index: 3;
     opacity: 0.8;
   }
-/* Particle overlay */ {}
-  .particle-overlay {
+/* Particle overlay */ .particle-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -844,8 +815,7 @@ transparent 100% {}
     overflow: hidden;
     border-radius: 8px;
   }
-.particle-overlay::before, {}
-  .particle-overlay::after {
+.particle-overlay: :before, .particle-overlay::after {
     content: '';
     position: absolute;
     width: 3px;
@@ -855,13 +825,13 @@ transparent 100% {}
     animation: floatParticles 8s ease-in-out infinite;
   }
 
-  .particle-overlay::before {
+  .particle-overlay: :before {
     top: 20%;
     left: 10%;
     animation-delay: 0s;
   }
 
-  .particle-overlay::after {
+  .particle-overlay: :after {
     top: 60%;
     right: 15%;
     animation-delay: -4s;
@@ -881,35 +851,25 @@ transparent 100% {}
       opacity: 0.4;
     }
   }
-/* Material type variations */ {}
-  .n64-dialog.pbr {
+/* Material type variations */ .n64-dialog.pbr {
     background-blend-mode: overlay, normal;
   }
-/* Mesh complexity variations */ {}
-  .n64-dialog.mesh-ultra {
+/* Mesh complexity variations */ .n64-dialog.mesh-ultra {
     border-radius: 12px;
   }
 
   .n64-dialog.mesh-ultra .lighting-overlay {
-background: {}
-linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 40%), {}
-linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), {}
-radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), {}
-      radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.2) 0%, transparent 50%);
+background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 40%), linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.2) 0%, transparent 50%);
   }
 
   .n64-dialog.mesh-low {
     border-radius: 4px;
     transform-style: flat;
   }
-/* Enhanced texture filtering */ {}
-  .n64-dialog.texture-ultra {
+/* Enhanced texture filtering */ .n64-dialog.texture-ultra {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-filter: {}
-contrast(1.03) {}
-brightness(1.02) {}
-      saturate(1.08);
+filter: contrast(1.03) brightness(1.02) saturate(1.08);
   }
 
   .n64-dialog.filtering-bilinear {
@@ -923,26 +883,20 @@ brightness(1.02) {}
   .n64-dialog.anisotropic-16x {
     filter: contrast(1.1) brightness(1.03);
   }
-/* Fog effects */ {}
-  .n64-dialog::before {
+/* Fog effects */ .n64-dialog: :before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-background: radial-gradient( {}
-ellipse at center, {}
-transparent 0%, {}
-var(--fog-color, #404040) 100% {}
-    );
+background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color, #404040) 100% );
     opacity: 0.1;
     pointer-events: none;
     z-index: 0;
     border-radius: 8px;
   }
-/* Mobile optimizations */ {}
-  @media (max-width: 480px) {
+/* Mobile optimizations */ @media (max-width: 480px) {
     .n64-dialog-backdrop {
       padding: 10px;
     }
@@ -965,19 +919,15 @@ var(--fog-color, #404040) 100% {}
     .dialog-footer {
       padding: 12px 20px 20px;
     }
-.lighting-overlay, {}
-.reflection-overlay, {}
-.particle-overlay, {}
-    .atmosphere-layer {
+.lighting-overlay, .reflection-overlay, .particle-overlay, .atmosphere-layer {
       display: none;
     }
 
-    .n64-dialog::before {
+    .n64-dialog: :before {
       display: none;
     }
   }
-/* Reduced motion support */ {}
-  @media (prefers-reduced-motion: reduce) {
+/* Reduced motion support */ @media (prefers-reduced-motion: reduce) {
     .n64-dialog {
       animation: none !important;
     }
@@ -990,8 +940,7 @@ var(--fog-color, #404040) 100% {}
     .atmosphere-layer {
       animation: none;
     }
-.particle-overlay::before, {}
-    .particle-overlay::after {
+.particle-overlay: :before, .particle-overlay::after {
       animation: none;
     }
 
@@ -1005,8 +954,7 @@ var(--fog-color, #404040) 100% {}
       animation: none;
     }
   }
-/* High contrast mode */ {}
-  @media (prefers-contrast: high) {
+/* High contrast mode */ @media (prefers-contrast: high) {
     .n64-dialog {
       border: 3px solid currentColor;
       text-shadow: none;
@@ -1015,15 +963,11 @@ var(--fog-color, #404040) 100% {}
     .n64-dialog-backdrop {
       background: rgba(0, 0, 0, 0.95);
     }
-.lighting-overlay, {}
-.reflection-overlay, {}
-.particle-overlay, {}
-    .atmosphere-layer {
+.lighting-overlay, .reflection-overlay, .particle-overlay, .atmosphere-layer {
       display: none;
     }
   }
-/* Performance optimization for low-end devices */ {}
-  @media (max-device-memory: 2GB) {
+/* Performance optimization for low-end devices */ @media (max-device-memory: 2GB) {
     .n64-dialog {
       transform: none;
       box-shadow: 0 12px 0 rgba(0, 0, 0, 0.4), 0 24px 48px rgba(0, 0, 0, 0.3);
@@ -1033,11 +977,7 @@ var(--fog-color, #404040) 100% {}
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
     }
-.lighting-overlay, {}
-.reflection-overlay, {}
-.particle-overlay, {}
-.atmosphere-layer, {}
-    .n64-dialog::before {
+.lighting-overlay, .reflection-overlay, .particle-overlay, .atmosphere-layer, .n64-dialog: :before {
       display: none;
     }
   }

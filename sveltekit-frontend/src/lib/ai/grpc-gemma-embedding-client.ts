@@ -500,7 +500,7 @@ export class GRPCGemmaEmbeddingClient {
     responses: EmbeddingResponse[],
     batchTime: number
   ): BatchStatistics {
-    const successful = responses.filter(r => r.status.code === 0).length;
+    const successful = responses.filter(item => item.length);
     const failed = responses.length - successful;
     const avgProcessingTime = responses.reduce((sum, r) => sum + r.processing_time, 0) / responses.length;
     const throughput = responses.length / (batchTime / 1000);

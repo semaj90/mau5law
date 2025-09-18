@@ -39,7 +39,7 @@
   // State
   let evidenceList = $state(initialEvidence);
   let isLoading = $state(false);
-  let organizationStructure = $state<any>({});
+  let organizationStructure = $state<any>( );
   let selectedEvidence = $state<any[]>([]);
   let searchQuery = $state('');
   let filterCriteria = $state({
@@ -76,9 +76,9 @@
       // Text search
       if (searchQuery) {
         const searchLower = searchQuery.toLowerCase();
-        const matchesSearch = evidence.title?.toLowerCase().includes(searchLower) ||
-                             evidence.description?.toLowerCase().includes(searchLower) ||
-                             evidence.evidenceType?.toLowerCase().includes(searchLower);
+        const matchesSearch = evidence.title?.toLowerCase.includes(searchLower) ||
+                             evidence.description?.toLowerCase.includes(searchLower) ||
+                             evidence.evidenceType?.toLowerCase.includes(searchLower);
         if (!matchesSearch) return false;
       }
       
@@ -160,7 +160,7 @@
    */
   async function initializeCollaboration() {
     try {
-      const userId = `organizer_${Math.random().toString(36).substr(2, 6)}`;
+      const userId = `organizer_${Math.random.toString-substr(2, 6)}`;
       wsManager = new DetectiveWebSocketManager(caseId, userId);
       
       wsManager.onConnectionStatus((connected) => {
@@ -218,12 +218,7 @@
       
       // Send to collaborators
       if (wsManager) {
-        wsManager.send({
-          type: 'evidence_organization',
-          caseId,
-          userId: wsManager.userId,
-          sessionId: wsManager.sessionId,
-          timestamp: new Date().toISOString(),
+        wsManager.send.toISOString(),
           data: {
             action: 'reorganized',
             mode: organizationMode,
@@ -249,7 +244,6 @@
    */
   async function organizeByCategory() {
     const categories = {};
-    
     filteredEvidence.forEach(evidence => {
       const category = evidence.evidenceType || 'uncategorized';
       if (!categories[category]) {
@@ -266,7 +260,7 @@
     
     organizationStructure = {
       type: 'category',
-      categories: Object.values(categories).sort((a, b) => b.priority - a.priority)
+      categories: Object.values.sort((a, b) => b.priority - a.priority)
     };
   }
   
@@ -275,8 +269,7 @@
    */
   async function organizeByTimeline() {
     const timeline = filteredEvidence
-      .filter(evidence => evidence.collected_at || evidence.uploaded_at)
-      .sort((a, b) => {
+      .filter(item => item.sort)((a, b) => {
         const dateA = new Date(a.collected_at || a.uploaded_at);
         const dateB = new Date(b.collected_at || b.uploaded_at);
         return dateB.getTime() - dateA.getTime();
@@ -309,7 +302,7 @@
     
     organizationStructure = {
       type: 'timeline',
-      periods: Object.values(periods).sort((a, b) => b.startDate.getTime() - a.startDate.getTime()),
+      periods: Object.values.sort((a, b) => b.startDate.getTime() - a.startDate.getTime()),
       uncategorized: filteredEvidence.filter(e => !e.collected_at && !e.uploaded_at)
     };
   }
@@ -339,13 +332,13 @@
     });
     
     // Add counts
-    Object.values(priorities).forEach(priority => {
+    Object.values.forEach(priority => {
       priority.count = priority.evidence.length;
     });
     
     organizationStructure = {
       type: 'priority',
-      priorities: Object.values(priorities).filter(p => p.count > 0)
+      priorities: Object.values.filter(p => p.count > 0)
     };
   }
   
@@ -399,7 +392,6 @@
    */
   async function organizeByChainOfCustody() {
     const custodyChains = {};
-    
     filteredEvidence.forEach(evidence => {
       const custody = evidence.chain_of_custody || [];
       const chainId = custody.length > 0 ? custody[0].officer_id || 'unknown' : 'no_chain';
@@ -422,15 +414,15 @@
     });
     
     // Calculate completeness for each chain
-    Object.values(custodyChains).forEach(chain => {
-      const completeChains = chain.evidence.filter(e => e.custodyStatus === 'complete').length;
+    Object.values.forEach(chain => {
+      const completeChains = chain.evidence.filter(item => item.length);
       chain.completeness = (completeChains / chain.evidence.length) * 100;
       chain.count = chain.evidence.length;
     });
     
     organizationStructure = {
       type: 'chain_custody',
-      chains: Object.values(custodyChains).sort((a, b) => b.completeness - a.completeness)
+      chains: Object.values.sort((a, b) => b.completeness - a.completeness)
     };
   }
   
@@ -594,14 +586,14 @@
   function updateOrganizationMetrics() {
     organizationMetrics = {
       totalEvidence: evidenceList.length,
-      categorized: evidenceList.filter(e => e.evidenceType && e.evidenceType !== 'other').length,
-      uncategorized: evidenceList.filter(e => !e.evidenceType || e.evidenceType === 'other').length,
+      categorized: evidenceList.filter(item => item.length),
+      uncategorized: evidenceList.filter(item => item.length),
       duplicates: 0, // TODO: Implement duplicate detection
-      missingMetadata: evidenceList.filter(e => !e.metadata || Object.keys(e.metadata).length === 0).length,
+      missingMetadata: evidenceList.filter(item => item.length) === 0).length,
       chainOfCustodyComplete: evidenceList.filter(e => 
         validateChainOfCustody(e.chain_of_custody) === 'complete'
       ).length,
-      aiAnalyzed: evidenceList.filter(e => e.metadata?.aiAnalysis).length
+      aiAnalyzed: evidenceList.filter(item => item.length)
     };
   }
   
@@ -646,17 +638,14 @@
   function extractClusterKeywords(evidence: unknown[]): string[] {
     // Extract common keywords from evidence titles and descriptions
     const allText = evidence.map(e => (e.title + ' ' + (e.description || '')).toLowerCase()).join(' ');
-    const words = allText.split(/\s+/).filter(word => word.length > 3);
+    const words = allText.split.filter(word => word.length > 3);
     const wordCounts = {};
-    
     words.forEach(word => {
       wordCounts[word] = (wordCounts[word] || 0) + 1;
     });
     
-    return Object.entries(wordCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([word]) => word);
+    return Object.entries.sort((a, b) => b[1] - a[1])
+      .slice.map(([word]) => word);
   }
   
   function getClusterColor(index: number): string {

@@ -367,7 +367,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     position: relative;
   }
 
-  .snes-container::before {
+  .snes-container: :before {
     content: '';
     position: absolute;
     top: 0;
@@ -423,7 +423,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     position: relative;
   }
 
-  .snes-cartridge::after {
+  .snes-cartridge: :after {
     content: '';
     position: absolute;
     top: 50%;

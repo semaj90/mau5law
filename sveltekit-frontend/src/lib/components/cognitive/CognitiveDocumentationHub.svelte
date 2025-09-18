@@ -335,7 +335,7 @@
     const results = [];
     for (const [key, section] of Object.entries(documentationSections)) {
       for (const item of section.content) {
-        if (JSON.stringify(item).toLowerCase().includes(query.toLowerCase())) {
+        if (JSON.stringify.toLowerCase().includes(query.toLowerCase())) {
           results.push({
             section: key,
             sectionTitle: section.title,

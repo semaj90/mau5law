@@ -591,7 +591,7 @@ export class IntelligentWebAnalyzer {
   }
 
   private calculateChunkConfidence(elements: WebElement[]): number {
-    const highImportanceCount = elements.filter(e => e.metadata.importance === 'high').length;
+    const highImportanceCount = elements.filter(item => item.length);
     const totalElements = elements.length;
     
     return Math.min(0.9, 0.5 + (highImportanceCount / totalElements) * 0.4);

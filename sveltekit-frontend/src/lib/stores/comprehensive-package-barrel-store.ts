@@ -37,7 +37,7 @@ export const svelte5RunesStore = {
       const cleanup = fn();
       return typeof cleanup === 'function' ? cleanup : () => { };
     },
-    props: <T extends Record<string, any>>(): T => {
+    props: <T extends Record<string, any>(): T => {
       if (typeof globalThis !== 'undefined' && '$props' in globalThis) {
         return (globalThis as any).$props();
       }

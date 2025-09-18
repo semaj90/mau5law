@@ -53,7 +53,7 @@ export interface ShaderSearchResult extends CompiledShader {
 export class ShaderCacheManager {
   private device: GPUDevice | null = null;
   private shaders = new Map<string, CompiledShader>();
-  private compileQueue = new Map<string, Promise<CompiledShader>>();
+  private compileQueue = new Map<string, Promise<CompiledShader>();
   private readonly SHADER_CACHE_PREFIX = 'webgpu_shader:';
   private readonly EMBEDDING_CACHE_PREFIX = 'shader_embed:';
 
@@ -144,7 +144,7 @@ export class ShaderCacheManager {
           layout: 'auto',
           vertex: {
             module: shaderModule,
-            entryPoint: config.type === 'vertex' ? config.entryPoint : 'main'
+            entryPoint: config.type === 'vertex' ? config.entryPoint: 'main'
           },
           fragment: config.type === 'fragment' ? {
             module: shaderModule,
@@ -402,7 +402,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         metadata.description,
         metadata.operation,
         ...metadata.tags
-      ].filter(Boolean).join(' ');
+      ].filter(item => item.join)(' ');
 
       // Use existing embedding service
       const response = await fetch('/api/ocr/langextract', {
@@ -476,8 +476,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         if (query.operation && shaderData.metadata.operation !== query.operation) continue;
         
         if (query.tags && query.tags.length > 0) {
-          const matchingTags = shaderData.metadata.tags.filter(tag => 
-            query.tags!.some(queryTag => tag.toLowerCase().includes(queryTag.toLowerCase()))
+          const matchingTags = shaderData.metadata.tags.filter(item => item.includes(queryTag.toLowerCase()))
           );
           if (matchingTags.length === 0) continue;
           relevanceScore += matchingTags.length * 0.2;
@@ -641,7 +640,10 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   /**
    * Get shader cache statistics
    */
-  async getShaderStats(): Promise<;
+  async getShaderStats(): Promise<{
+    totalShaders: number;
+    memoryCount: number;
+    topOperations: Record<string, number>;
     averagePerformance: number;
     totalUsage: number;
   }> {

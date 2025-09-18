@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to get worker information',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(
       {
         error: 'Worker operation failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -133,7 +133,7 @@ async function getQueueInfo(): Promise<Response> {
     return json(
       {
         error: 'Failed to get queue information',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -150,7 +150,7 @@ async function startWorker(): Promise<Response> {
     });
   } catch (error) {
     return json(
-      { error: 'Failed to start worker', details: error instanceof Error ? error.message : String(error) },
+      { error: 'Failed to start worker', details: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     );
   }
@@ -166,7 +166,7 @@ async function stopWorker(): Promise<Response> {
     });
   } catch (error) {
     return json(
-      { error: 'Failed to stop worker', details: error instanceof Error ? error.message : String(error) },
+      { error: 'Failed to stop worker', details: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     );
   }
@@ -184,7 +184,7 @@ async function restartWorker(): Promise<Response> {
     });
   } catch (error) {
     return json(
-      { error: 'Failed to restart worker', details: error instanceof Error ? error.message : String(error) },
+      { error: 'Failed to restart worker', details: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     );
   }
@@ -219,7 +219,7 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
     // Queue job
     const ok = await rabbitMQService.publish(
       'embeddings', // exchange name
-      payload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING : QUEUES.DOCUMENT_EMBEDDING, // routing key
+      payload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING: QUEUES.DOCUMENT_EMBEDDING, // routing key
       {
         type: jobType,
         payload,
@@ -235,7 +235,7 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
       {
         published: ok,
         job_type: jobType,
-        queue: payload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING : QUEUES.DOCUMENT_EMBEDDING,
+        queue: payload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING: QUEUES.DOCUMENT_EMBEDDING,
         message: 'Embedding job queued successfully',
         timestamp: new Date().toISOString(),
       },
@@ -245,7 +245,7 @@ async function queueEmbeddingJob(request: Request): Promise<Response> {
     return json(
       {
         error: 'Failed to queue embedding job',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -309,7 +309,7 @@ async function queueBulkEmbeddingJob(request: Request): Promise<Response> {
     return json(
       {
         error: 'Failed to queue bulk embedding job',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -355,7 +355,7 @@ async function testWorker(request: Request): Promise<Response> {
     // Queue test job
     const ok = await rabbitMQService.publish(
       'embeddings', // exchange name
-      testPayload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING : QUEUES.DOCUMENT_EMBEDDING, // routing key
+      testPayload.entity_type === 'case' ? QUEUES.CASE_EMBEDDING: QUEUES.DOCUMENT_EMBEDDING, // routing key
       {
         type: `test_${testPayload.entity_type}_embedding`,
         payload: testPayload,
@@ -378,7 +378,7 @@ async function testWorker(request: Request): Promise<Response> {
     return json(
       {
         error: 'Failed to queue test job',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );

@@ -236,7 +236,7 @@
         if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
           event.preventDefault();
           const currentTab = document.activeElement as HTMLElement;
-          const currentIndex = Array.from(tabs).indexOf(currentTab);
+          const currentIndex = Array.from.indexOf(currentTab);
 
           let nextIndex: number;
           if (event.key === 'ArrowRight') {

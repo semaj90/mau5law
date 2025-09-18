@@ -251,7 +251,7 @@ class MultidimensionalRoutingMatrix {
     const recentDecisions = this.routingHistory.slice(-100); // Last 100 decisions
     if (recentDecisions.length === 0) return;
 
-    const successRate = recentDecisions.filter(d => d.success).length / recentDecisions.length;
+    const successRate = recentDecisions.filter(item => item.length) / recentDecisions.length;
     const averageLatency = recentDecisions.reduce((sum, d) => sum + d.route.latency, 0) / recentDecisions.length;
     const averageQuality = recentDecisions.reduce((sum, d) => sum + d.route.quality, 0) / recentDecisions.length;
 

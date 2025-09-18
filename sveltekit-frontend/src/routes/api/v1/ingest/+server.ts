@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     return json(
       {
         error: 'Internal server error',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error',
         service: 'sveltekit-ingest-proxy',
       },
       { status: 500 }
@@ -168,7 +168,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
       {
         status: 'error',
         service: 'ingest-service',
-        error: error instanceof Error ? error.message : 'Connection failed',
+        error: error instanceof Error ? error.message: 'Connection failed',
       },
       { status: 503 }
     );

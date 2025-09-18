@@ -46,7 +46,7 @@ interface WorkflowStep {
 // Workflow orchestration class
 class LegalAIOrchestrator {
   private activeWorkflows = new Map<string, OrchestrationResult>();
-  private stepExecutors = new Map<string, (params: any, options?: any) => Promise<any>>();
+  private stepExecutors = new Map<string, (params: any, options?: any) => Promise<any>();
 
   constructor() {
     this.initializeStepExecutors();
@@ -123,7 +123,7 @@ class LegalAIOrchestrator {
           
         } catch (error) {
           step.status = 'failed';
-          step.error = error instanceof Error ? error.message : String(error);
+          step.error = error instanceof Error ? error.message: String(error);
           (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status = 'failed';
           (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).error = `Workflow failed at step: ${stepConfig.name}`;
           break;
@@ -139,7 +139,7 @@ class LegalAIOrchestrator {
 
     } catch (error) {
       (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).status = 'failed';
-      (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).error = error instanceof Error ? error.message : String(error);
+      (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).error = error instanceof Error ? error.message: String(error);
     }
 
     (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).metrics.totalTime = Date.now() - startTime;
@@ -412,7 +412,7 @@ class LegalAIOrchestrator {
     const results = this.getPreviousResults(steps);
     const baseResult = {
       workflow,
-      completedSteps: steps.filter(s => s.status === 'completed').length,
+      completedSteps: steps.filter(item => item.length),
       totalSteps: steps.length,
       timestamp: new Date()
     };
@@ -495,7 +495,7 @@ export const POST: RequestHandler = withSSRHandler(async ({ request }) => {
     });
   } catch (error) {
     return createSSRErrorResponse(
-      `Orchestration failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      `Orchestration failed: ${error instanceof Error ? error.message: 'Unknown error'}`,
       500
     );
   }

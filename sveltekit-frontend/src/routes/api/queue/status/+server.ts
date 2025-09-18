@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		return json({ 
 			success: false,
 			error: 'Failed to get queue status',
-			details: error instanceof Error ? error.message : 'Unknown error'
+			details: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 });
 	}
 };
@@ -89,7 +89,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 		return json({ 
 			success: false,
 			error: 'Delete operation failed',
-			details: error instanceof Error ? error.message : 'Unknown error'
+			details: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 });
 	}
 };

@@ -108,7 +108,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Calculate word count for each document
     const documentsWithWordCount = documents.map((doc) => ({
       ...doc,
-      wordCount: doc.content ? doc.content.split(/\s+/).length : 0,
+      wordCount: doc.content ? doc.content.split(/\s+/).length: 0,
     }));
 
     return json(documentsWithWordCount);
@@ -188,7 +188,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
         id: documentId,
         ...data,
         updatedAt: new Date(),
-        wordCount: data.content ? data.content.split(/\s+/).length : 0,
+        wordCount: data.content ? data.content.split(/\s+/).length: 0,
       });
     }
     // Calculate word count if content is provided

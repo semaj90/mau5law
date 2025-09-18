@@ -67,7 +67,7 @@
     const actionId = await userAnalyticsRLIntegration.trackUserAction(
       'search',
       `demo_switch_${demo}`,
-      { previousDemo: activeDemo, newDemo: demo },
+      { previousDemo:activeDemo, newDemo: demo },
       { complexity: 0.2 }
     );
 
@@ -228,7 +228,7 @@
                     • {currentProfile.reinforcement.rewardHistory.length} actions tracked
                   </div>
                   <div class="text-sm">
-                    • {Object.keys(currentProfile.reinforcement.actionPreferences).length} learned preferences
+                    • {Object.keys.length} learned preferences
                   </div>
                   <div class="text-sm">
                     • {(currentProfile.reinforcement.explorationTendency * 100).toFixed(0)}% exploration rate
@@ -365,7 +365,7 @@
                       </div>
                       <div>
                         <span class="text-gray-400">Learned Actions:</span>
-                        <div class="font-bold text-purple-400">{Object.keys(currentProfile.reinforcement.actionPreferences).length}</div>
+                        <div class="font-bold text-purple-400">{Object.keys.length}</div>
                       </div>
                     </div>
                   </div>

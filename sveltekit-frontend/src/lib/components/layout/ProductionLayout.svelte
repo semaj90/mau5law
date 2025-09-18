@@ -121,9 +121,9 @@
   });
 
   // Derived state
-  let currentPath = $derived(browser && page.url ? page.url.pathname : '/');
+  let currentPath = $derived(browser && page.url ? page.url.pathname: '/');
   let currentNavItem = $derived(
-    mainNavItems.find(item => currentPath === (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href || currentPath.startsWith((item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href + '/'))
+    mainNavItems.find.href || currentPath.startsWith.href + '/'))
   );
 
   // Update time every second
@@ -194,15 +194,14 @@
 
   // Breadcrumbs generation
   let breadcrumbs = $derived(() => {
-    const pathSegments = currentPath.split('/').filter(Boolean);
+    const pathSegments = currentPath.split.filter(Boolean);
     const crumbs = [{ label: 'Home', href: '/' }];
     
     let currentHref = '';
     pathSegments.forEach((segment, index) => {
       currentHref += '/' + segment;
-      const navItem = mainNavItems.find(item => (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href === currentHref);
-      crumbs.push({
-        label: navItem ? navItem.label : segment.charAt(0).toUpperCase() + segment.slice(1),
+      const navItem = mainNavItems.find.href === currentHref);
+      crumbs.push.toUpperCase() + segment.slice(1),
         href: currentHref
       });
     });
@@ -266,13 +265,13 @@
             <button
               class={cn(
                 "w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group relative",
-                currentPath === (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href || currentPath.startsWith((item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href + '/')
+                currentPath === (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href || currentPath.startsWith.href + '/')
                   ? "bg-gradient-to-r from-amber-500/20 to-amber-600/20 border border-amber-500/50 text-amber-400 shadow-lg shadow-amber-500/25"
                   : "text-slate-400 hover:text-amber-400 hover:bg-slate-800/60 border border-transparent hover:border-amber-500/30",
                 !isSidebarOpen && "justify-center"
               )}
               onclick={(e) => handleNavigation((item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href, e)}
-              title={!isSidebarOpen ? (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).label : ''}
+              title={!isSidebarOpen ? (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).label: ''}
             >
               <(item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).icon class="w-6 h-6 flex-shrink-0" />
               {#if isSidebarOpen}
@@ -294,13 +293,13 @@
             <button
               class={cn(
                 "w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group",
-                currentPath === (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href || currentPath.startsWith((item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href + '/')
+                currentPath === (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href || currentPath.startsWith.href + '/')
                   ? "bg-gradient-to-r from-amber-500/20 to-amber-600/20 border border-amber-500/50 text-amber-400 shadow-lg shadow-amber-500/25"
                   : "text-slate-400 hover:text-amber-400 hover:bg-slate-800/60 border border-transparent hover:border-amber-500/30",
                 !isSidebarOpen && "justify-center"
               )}
               onclick={(e) => handleNavigation((item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).href, e)}
-              title={!isSidebarOpen ? (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).label : ''}
+              title={!isSidebarOpen ? (item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).label: ''}
             >
               <(item as { href?: unknown; label?: unknown; icon?: unknown; description?: unknown }).icon class="w-6 h-6 flex-shrink-0" />
               {#if isSidebarOpen}

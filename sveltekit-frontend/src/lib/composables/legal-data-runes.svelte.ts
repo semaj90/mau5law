@@ -188,7 +188,7 @@ export function useEvidence(caseId?: string) {
   let currentEvidence = $state<Evidence | null>(null);
   let isLoading = $state(false);
   let error = $state<string | null>(null);
-  let uploadProgress = $state<Map<string, number>>(new Map());
+  let uploadProgress = $state<Map<string, number>(new Map());
 
   // Derived values
   let evidenceCount = $derived(evidence.length);
@@ -208,7 +208,7 @@ export function useEvidence(caseId?: string) {
   // Recent evidence (last 7 days)
   let recentEvidence = $derived(() => {
     const weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-    return evidence.filter(e => new Date(e.createdAt).getTime() > weekAgo);
+    return evidence.filter(item => item.getTime)() > weekAgo);
   });
 
   // Effect to load evidence when caseId changes
@@ -336,8 +336,7 @@ export function usePersonsOfInterest() {
     if (!searchQuery.trim()) return persons;
     
     const query = searchQuery.toLowerCase();
-    return persons.filter(p => 
-      p.name.toLowerCase().includes(query) ||
+    return persons.filter(item => item.includes)(query) ||
       p.alias?.some(alias => alias.toLowerCase().includes(query)) ||
       p.notes?.toLowerCase().includes(query)
     );

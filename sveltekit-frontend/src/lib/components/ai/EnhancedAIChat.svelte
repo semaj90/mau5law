@@ -57,10 +57,7 @@
   });
 
   // Dialog state for analysis panel
-  const {
-    elements: { trigger, overlay, content, title, description, close },
-    states: { open }
-  } = createDialog();
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // Initialize WebSocket connection
   async function initializeConnection() {
@@ -130,7 +127,7 @@
       case 'stream_complete':
         if (streamingResponse) {
           messages = [...messages, {
-            id: Date.now().toString(),
+            id: Date.now.toString(),
             role: 'assistant',
             content: streamingResponse,
             timestamp: new Date(),
@@ -149,7 +146,7 @@
     if (!currentMessage.trim() || !isConnected || isTyping) return;
 
     const userMessage: ChatMessage = {
-      id: Date.now().toString(),
+      id: Date.now.toString(),
       role: 'user',
       content: currentMessage,
       timestamp: new Date()
@@ -187,7 +184,7 @@
         const data = await response.json();
         if (response.ok && data.message) {
           messages = [...messages, {
-            id: Date.now().toString(),
+            id: Date.now.toString(),
             role: 'assistant',
             content: data.message,
             timestamp: new Date(),
@@ -198,7 +195,7 @@
       } catch (error) {
         console.error('Failed to send message:', error);
         messages = [...messages, {
-          id: Date.now().toString(),
+          id: Date.now.toString(),
           role: 'assistant',
           content: 'Sorry, I encountered an error. Please try again.',
           timestamp: new Date()
@@ -243,7 +240,7 @@
   // Initialize on mount
   onMount(async () => {
     if (!sessionId) {
-      sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      sessionId = `session_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
     }
     await initializeConnection();
     await initializeWebGPU();

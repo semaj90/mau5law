@@ -49,7 +49,7 @@ async function httpCheck(url: string): Promise<HttpCheck> {
     return {
       url,
       ok: false,
-      error: e instanceof Error ? e.message : String(e),
+      error: e instanceof Error ? e.message: String(e),
     };
   }
 }
@@ -194,7 +194,7 @@ export const GET: RequestHandler = async () => {
   // Overall system health calculation
   const healthyServices = Object.values(services)
     .flatMap(category => Object.values(category))
-    .filter(service => service.status === "healthy").length;
+    .filter(item => item.length);
 
   const totalServices = Object.values(services)
     .flatMap(category => Object.values(category)).length;

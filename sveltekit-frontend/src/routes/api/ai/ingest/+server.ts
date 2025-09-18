@@ -75,7 +75,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json(
       {
         error: "Document ingestion failed",
-        message: error instanceof Error ? error.message : "Unknown error",
+        message: error instanceof Error ? error.message: "Unknown error",
         timestamp: new Date().toISOString(),
       },
       { status: 500 }
@@ -99,7 +99,7 @@ const originalGETHandler: RequestHandler = async () => {
     return json(
       {
         error: "Failed to get statistics",
-        message: error instanceof Error ? error.message : "Unknown error",
+        message: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 }
     );

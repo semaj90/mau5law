@@ -188,8 +188,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     const headerGeometry = new THREE.PlaneGeometry(width - 0.1, headerHeight);
     const headerMaterial = new THREE.MeshStandardMaterial({
       color: this.options.variant === 'terminal' 
-        ? YORHA_COLORS.primary.black 
-        : YORHA_COLORS.primary.grey,
+        ? YORHA_COLORS.primary.black: YORHA_COLORS.primary.grey,
       transparent: true,
       opacity: 0.9
     });
@@ -222,8 +221,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     );
     const titleMaterial = new THREE.MeshBasicMaterial({
       color: this.options.variant === 'terminal' 
-        ? YORHA_COLORS.accent.gold 
-        : YORHA_COLORS.primary.white,
+        ? YORHA_COLORS.accent.gold: YORHA_COLORS.primary.white,
       transparent: true
     });
     

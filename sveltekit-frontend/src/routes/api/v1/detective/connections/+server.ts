@@ -215,7 +215,7 @@ async function generateConnectionMap(
     return {
       ...map,
       error: 'Connection map generation failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -228,8 +228,7 @@ async function generateEvidenceNodes(evidence: any[]): Promise<any[]> {
   const mcpEndpoint = 'http://localhost:3002';
   
   return await Promise.all(evidence.map(async (item, index) => {
-    let semanticData = null;
-    
+    let semanticData = null));
     // Call MCP server for Gemma embeddings semantic analysis
     try {
       const response = await fetch(`${mcpEndpoint}/mcp/semantic-analyze`, {
@@ -567,9 +566,9 @@ async function generateClusters(nodes: any[], edges: any[]): Promise<any[]> {
  * Calculate connection statistics
  */
 function calculateConnectionStatistics(nodes: any[], edges: any[]): any {
-  const strongConnections = edges.filter(e => e.weight > 0.7).length;
-  const weakConnections = edges.filter(e => e.weight <= 0.5).length;
-  const predictedConnections = edges.filter(e => e.metadata?.predicted).length;
+  const strongConnections = edges.filter(item => item.length);
+  const weakConnections = edges.filter(item => item.length);
+  const predictedConnections = edges.filter(item => item.length);
 
   return {
     strongConnections,

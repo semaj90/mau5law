@@ -88,9 +88,9 @@
 
     if (showProgressiveDisclosure && typeof aiResult === 'object') {
       // Create progressive disclosure for complex results
-      const summary = aiResult.summary || `${operation} completed with ${Object.keys(aiResult).length} sections`;
-      const levels = Object.entries(aiResult).map(([key, value], index) => ({
-        label: key.charAt(0).toUpperCase() + key.slice(1),
+      const summary = aiResult.summary || `${operation} completed with ${Object.keys.length} sections`;
+      const levels = Object.entries.map(([key, value], index) => ({
+        label: key.charAt.toUpperCase() + key.slice(1),
         content: value,
         level: index + 1
       }));

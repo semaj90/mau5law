@@ -7,7 +7,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
-  import { Accordion } from 'melt';
+  // import { Accordion } from 'bits-ui'; // Replaced melt with bits-ui components
   import { 
     legalFormMachine, 
     getStateDescription, 
@@ -32,16 +32,13 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   let matrixCompiler: MatrixUICompiler;
   let reranker: LegalAIReranker;
   let prefetcher: PredictivePrefetcher;
-  // Melt UI Accordion for multi-step form
-  const accordion = Accordion({ 
-    multiple: false,
-    value: $derived(getAccordionValue($state.value))
-  });
+  // Simple accordion state management (replaced melt-ui)
+  let activeAccordionItem = $state('step-1');
   // Reactive state calculations
-  let currentStateDescription = $derived(getStateDescription($state.value));
-  let aiSuggestions = $derived(getAISuggestions($context, $state.value));
-  let progressPercentage = $derived(calculateProgressPercentage($context));
-  let possibleActions = $derived(getNextPossibleActions($state.value));
+  let currentStateDescription = $derived(getStateDescription($state.value);
+  let aiSuggestions = $derived(getAISuggestions($context, $state.value);
+  let progressPercentage = $derived(calculateProgressPercentage($context);
+  let possibleActions = $derived(getNextPossibleActions($state.value);
   let aiConfidence = $derived($context.confidence);
   // Form data
   let fileInput: HTMLInputElement;
@@ -169,7 +166,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     // Update matrix UI based on file types
     updateMatrixUINodes();
     // Trigger AI reranking for file suggestions
-    performAIReranking('file_upload', files.map(f => f.name));
+    performAIReranking('file_upload', files.map(f => f.name);
   }
 
   function handleCaseDetailsUpdate(): void {
@@ -200,7 +197,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       const query = context.join(' ');
       const results = await enhancedSearch(query, userContext, 5);
       // Update AI suggestions based on reranked results
-      const suggestions = results.map(r => r.content).slice(0, 3);
+      const suggestions = results.slice(0, 3);
       send({ type: 'AI_SUGGESTION', suggestions });
     } catch (error) {
       console.warn('AI reranking failed:', error);
@@ -249,7 +246,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   });
 </script>
 
-<div class="xstate-phase8-integration {className}">
+<div class="xstate-phase8-integration {class}">
   <!-- Progress Header -->
   <div class="progress-header yorha-panel p-6 mb-6">
     <div class="flex justify-between items-center mb-4">
@@ -287,13 +284,13 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   <div class="form-content grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Main Form -->
     <div class="lg:col-span-2">
-      <div use:accordion.root class="accordion-root space-y-4">
+      <div class="accordion-root space-y-4">
         
         <!-- Step 1: Evidence Upload -->
-        <div use:accordion.item value="step-1" class="accordion-item">
-          <h3 use:accordion.header class="accordion-header">
+        <div data-accordion-item value="step-1" class="accordion-item">
+          <h3 data-accordion-header class="accordion-header">
             <button 
-              use:accordion.trigger
+              data-accordion-trigger
               class="accordion-trigger yorha-button w-full text-left p-4 data-[state=open]:bg-blue-900/30"
             >
               <span class="flex items-center gap-3">
@@ -306,7 +303,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
             </button>
           </h3>
           
-          <div use:accordion.content class="accordion-content p-4 border-l-4 border-blue-400">
+          <div data-accordion-content class="accordion-content p-4 border-l-4 border-blue-400">
             <div class="space-y-4">
               <div class="file-upload-zone border-2 border-dashed border-gray-600 rounded-lg p-8 text-center">
                 <input 
@@ -355,10 +352,10 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
         </div>
 
         <!-- Step 2: Case Details -->
-        <div use:accordion.item value="step-2" class="accordion-item">
-          <h3 use:accordion.header class="accordion-header">
+        <div data-accordion-item value="step-2" class="accordion-item">
+          <h3 data-accordion-header class="accordion-header">
             <button 
-              use:accordion.trigger
+              data-accordion-trigger
               class="accordion-trigger yorha-button w-full text-left p-4 data-[state=open]:bg-yellow-900/30"
             >
               <span class="flex items-center gap-3">
@@ -371,7 +368,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
             </button>
           </h3>
           
-          <div use:accordion.content class="accordion-content p-4 border-l-4 border-yellow-400">
+          <div data-accordion-content class="accordion-content p-4 border-l-4 border-yellow-400">
             <div class="space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-300 mb-2" for="-case-title-">
@@ -439,10 +436,10 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
         </div>
 
         <!-- Step 3: Review -->
-        <div use:accordion.item value="step-3" class="accordion-item">
-          <h3 use:accordion.header class="accordion-header">
+        <div data-accordion-item value="step-3" class="accordion-item">
+          <h3 data-accordion-header class="accordion-header">
             <button 
-              use:accordion.trigger
+              data-accordion-trigger
               class="accordion-trigger yorha-button w-full text-left p-4 data-[state=open]:bg-purple-900/30"
             >
               <span class="flex items-center gap-3">
@@ -452,7 +449,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
             </button>
           </h3>
           
-          <div use:accordion.content class="accordion-content p-4 border-l-4 border-purple-400">
+          <div data-accordion-content class="accordion-content p-4 border-l-4 border-purple-400">
             <div class="space-y-4">
               <div class="review-summary yorha-panel p-4">
                 <h4 class="text-lg font-semibold text-purple-400 mb-3">Case Summary</h4>

@@ -231,7 +231,7 @@ export const GET: RequestHandler = async ({ url }) => {
         aiEnhanced: aiSuggestions,
         searchStrategy: vectorSearch ? 'hybrid_vector_semantic' : 'semantic_only',
         confidence: enhancedResults.length > 0 ? 
-          enhancedResults.reduce((sum, r) => sum + (r.score || 0), 0) / enhancedResults.length : 0,
+          enhancedResults.reduce((sum, r) => sum + (r.score || 0), 0) / enhancedResults.length: 0,
         servicesUsed: {
           enhancedRAG: true,
           uploadService: categories.includes('documents'),
@@ -263,7 +263,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: 'Enhanced search failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString(),
       fallbackAvailable: true
     }, { status: 500 });
@@ -653,7 +653,7 @@ async function enhanceWithAI(results: SearchResult[], query: string): Promise<Se
           },
           // Enhanced metadata with AI insights
           metadata: {
-            ...(result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).metadata,
+            ...result.metadata,
             aiEnhanced: true,
             relevanceFactors: analysis.relevanceFactors || [],
             practiceAreaMatch: analysis.practiceAreaMatch || 'general'

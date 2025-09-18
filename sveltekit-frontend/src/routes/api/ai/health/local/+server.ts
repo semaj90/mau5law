@@ -39,7 +39,7 @@ async function testOllamaConnection(): Promise<any> {
   } catch (error: any) {
     return {
       success: false,
-      message: `Ollama connection failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      message: `Ollama connection failed: ${error instanceof Error ? error.message: "Unknown error"}`,
     };
   }
 }
@@ -63,7 +63,7 @@ async function testLlamaCppConnection(): Promise<any> {
   } catch (error: any) {
     return {
       success: false,
-      message: `llama.cpp connection failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      message: `llama.cpp connection failed: ${error instanceof Error ? error.message: "Unknown error"}`,
     };
   }
 }
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async () => {
         // Service-based check
         (async () => {
           try {
-            const isAvailable = ollamaService.getIsAvailable();
+            const isAvailable = ollamaService.getIsAvailable()));
             if (!isAvailable) {
               // Try to initialize
               await ollamaService.initialize();
@@ -91,7 +91,7 @@ export const GET: RequestHandler = async () => {
             return {
               available: false,
               error:
-                error instanceof Error ? error.message : "Service check failed",
+                error instanceof Error ? error.message: "Service check failed",
             };
           }
         })(),
@@ -138,7 +138,7 @@ export const GET: RequestHandler = async () => {
       {
         success: false,
         available: false,
-        error: error instanceof Error ? error.message : "Health check failed",
+        error: error instanceof Error ? error.message: "Health check failed",
         services: {
           ollama: { available: false },
           llamaCpp: { available: false },
@@ -229,7 +229,7 @@ export const POST: RequestHandler = async ({ request }) => {
         result = {
           success: false,
           provider: "ollama",
-          error: `Generation error: ${error instanceof Error ? error.message : "Unknown error"}`,
+          error: `Generation error: ${error instanceof Error ? error.message: "Unknown error"}`,
           executionTime: Date.now() - startTime,
         };
       }
@@ -253,7 +253,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+          error instanceof Error ? error.message: "Unknown error occurred",
       },
       { status: 500 },
     );

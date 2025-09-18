@@ -126,8 +126,7 @@ function extractKeyPhrases(text: string): string[] {
     'arbitration', 'jurisdiction', 'governing law', 'attorney fees'
   ];
   
-  const foundTerms = legalTerms.filter(term => 
-    text.toLowerCase().includes(term.toLowerCase())
+  const foundTerms = legalTerms.filter(item => item.includes)(term.toLowerCase())
   );
   
   return foundTerms.slice(0, 5);

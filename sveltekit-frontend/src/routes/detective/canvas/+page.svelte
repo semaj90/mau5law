@@ -58,23 +58,20 @@
     if (!evidenceCanvas) return;
     evidenceCanvas.clear();
     // Render each evidence item
-    evidenceData.forEach(item => {
-      const ctx = evidenceCanvas.ctx;
-      // Draw background
-      ctx.fillStyle = (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).color;
-      ctx.fillRect((item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).x, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).width, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).height);
+    evidenceData.forEach.color;
+      ctx.fillRect.x, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).width, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).height);
       // Draw border
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 2;
-      ctx.strokeRect((item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).x, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).width, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).height);
+      ctx.strokeRect.x, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).width, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).height);
       // Draw title
       ctx.fillStyle = '#ffffff';
       ctx.font = '14px system-ui';
-      ctx.fillText((item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).title, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).x + 10, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y + 25);
+      ctx.fillText.title, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).x + 10, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y + 25);
       // Draw type indicator
       ctx.fillStyle = '#000000';
       ctx.font = '12px system-ui';
-      ctx.fillText(`Type: ${(item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).type}`, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).x + 10, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y + 45);
+      ctx.fillText.type}`, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).x + 10, (item as { color?: unknown; x?: unknown; y?: unknown; width?: unknown; height?: unknown; title?: unknown; type?: unknown }).y + 45);
     });
   }
 

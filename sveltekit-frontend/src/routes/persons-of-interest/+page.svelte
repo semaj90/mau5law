@@ -110,10 +110,10 @@
       const response = await fetch('/api/persons-of-interest');
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const result = await (response as { ok?: unknown; json?: unknown }).json();
-        const apiPersons = (result as { success?: unknown; data?: unknown }).success ? (result as { success?: unknown; data?: unknown }).data : [];
+        const apiPersons = (result as { success?: unknown; data?: unknown }).success ? (result as { success?: unknown; data?: unknown }).data: [];
         // Transform API data to FugitiveDex format
         const transformedPersons = apiPersons.map((person: unknown) => ({
-          id: (apiPersons.indexOf(person) + 1).toString().padStart(3, '0'),
+          id: (apiPersons.indexOf(person) + 1).toString.padStart(3, '0'),
           name: person.name,
           alias: (person.aliases && person.aliases.length > 0) ? person.aliases[0] : (person.name ? person.name.split(' ')[0] : 'Unknown'),
           role: person.profileData?.role || 'Unknown',
@@ -369,7 +369,7 @@
     position: relative;
   }
 
-  .fugitive-dex::before {
+  .fugitive-dex: :before {
     content: '';
     position: fixed;
     top: 0;

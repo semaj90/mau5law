@@ -11,8 +11,7 @@
     closeOnEscape?: boolean;
     onclose?: () => void;
   }
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     title = '',
     size = 'md',
     closeOnOutsideClick = true,
@@ -20,7 +19,7 @@
     onclose,
     children,
     footer
-  }: Props & { children?: unknown, footer?: unknown } = $props();
+   }: Props & { children?: unknown, footer?: unknown } = $props();
   let modalElement: HTMLDivElement = $state();
   function handleClose() {
     open = false;
@@ -112,8 +111,7 @@
   </div>
 {/if}
 
-<style>/* @unocss-include */ {}
-  .modal-backdrop {
+<style>/* @unocss-include */ .modal-backdrop {
     position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.5);

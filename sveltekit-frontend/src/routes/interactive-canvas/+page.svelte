@@ -74,16 +74,16 @@ https://svelte.dev/e/js_parse_error -->
   		updateCanvasDimensions();
   }
   	// Enhanced file upload state
-  let uploadProgress = $state({});
-  let uploadingFiles = $state({});
-  let completedUploads = $state({});
+  let uploadProgress = $state( );
+  let uploadingFiles = $state( );
+  let completedUploads = $state( );
 
   	// Handle file drops with hash calculation
   	async function handleFileDrop(event: DragEvent) {
   		event.preventDefault();
   		const files = event.dataTransfer?.files;
   		if (files && files.length > 0) {
-  			await processFileUploads(Array.from(files));
+  			await processFileUploads(Array.from(files);
   }}
   	function handleDragOver(event: DragEvent) {
   		event.preventDefault();
@@ -140,7 +140,7 @@ https://svelte.dev/e/js_parse_error -->
   		// Simulate progress for demo (real implementation would process chunks)
   		if (onProgress) {
   			for (let i = 0; i <= 100; i += 10) {
-  				await new Promise(resolve => setTimeout(resolve, 10));
+  				await new Promise(resolve => setTimeout(resolve, 10);
   				onProgress(i / 100);
   }}
   		return Array.from(new Uint8Array(hash))
@@ -148,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
   			.join('');
   }
   	// Upload file with calculated hash
-  	async function uploadFileWithHash(file: File, hash: string, onProgress?: (progress: number) => void): Promise {
+  	async function uploadFileWithHash(file: File, hash: string, onProgress?: (progress: number) => void): Promise<any> {
   		const formData = new FormData();
   		formData.append('files', file);
   		formData.append('caseId', caseId);
@@ -157,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
   		// Simulate upload progress
   		if (onProgress) {
   			for (let i = 0; i <= 100; i += 5) {
-  				await new Promise(resolve => setTimeout(resolve, 50));
+  				await new Promise(resolve => setTimeout(resolve, 50);
   				onProgress(i / 100);
   }}
   		const response = await fetch('/api/evidence/upload', {
@@ -216,7 +216,7 @@ https://svelte.dev/e/js_parse_error -->
 				<FileUploadSection />
 
 				<!-- Upload Progress Indicators -->
-				{#if Object.keys(uploadingFiles).length > 0}
+				{#if Object.keys.length > 0}
 					<div class="space-y-4">
 						<h4>🔄 Uploading Files</h4>
 						{#each Object.entries(uploadingFiles) as [fileId, file]}
@@ -251,7 +251,7 @@ https://svelte.dev/e/js_parse_error -->
 				{/if}
 
 				<!-- Completed Uploads -->
-				{#if Object.keys(completedUploads).length > 0}
+				{#if Object.keys.length > 0}
 					<div class="space-y-4">
 						<h4>✅ Upload Complete</h4>
 						{#each Object.entries(completedUploads) as [fileId, upload]}

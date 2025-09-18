@@ -8,10 +8,10 @@
     disabled = false
   }: Props = $props();
 
-  import { melt } from "melt";
+  // Replaced melt with bits-ui components
 
     const contextMenu = (getContext("contextMenu") as any) || {
-    elements: { item: { subscribe: () => {}, set: () => {} } },
+    elements: { item: { subscribe: () => , set: () => } },
   };
 
   const { elements } = contextMenu;

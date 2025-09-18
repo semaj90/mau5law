@@ -23,22 +23,20 @@
   import { z } from 'zod';
 
   // Enhanced registration schema for legal professionals
-  const registerSchema = z.object({
-    email: z.string().email('Please enter a valid email address'),
-    firstName: z.string().min(2, 'First name must be at least 2 characters'),
-    lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-    password: z.string()
-      .min(12, 'Password must be at least 12 characters')
+  const registerSchema = z.object.email('Please enter a valid email address'),
+    firstName: z.string.min(2, 'First name must be at least 2 characters'),
+    lastName: z.string.min(2, 'Last name must be at least 2 characters'),
+    password: z.string.min(12, 'Password must be at least 12 characters')
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
         'Password must include uppercase, lowercase, number, and special character'),
     confirmPassword: z.string(),
     role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),
-    department: z.string().min(2, 'Department is required'),
-    jurisdiction: z.string().min(2, 'Jurisdiction is required'),
+    department: z.string.min(2, 'Department is required'),
+    jurisdiction: z.string.min(2, 'Jurisdiction is required'),
     badgeNumber: z.string().optional(),
-    agreeToTerms: z.boolean().refine(val => val === true, 'You must agree to the terms'),
-    agreeToPrivacy: z.boolean().refine(val => val === true, 'You must agree to privacy policy'),
-    enableTwoFactor: z.boolean().default(false)
+    agreeToTerms: z.boolean.refine(val => val === true, 'You must agree to the terms'),
+    agreeToPrivacy: z.boolean.refine(val => val === true, 'You must agree to privacy policy'),
+    enableTwoFactor: z.boolean.default(false)
   }).refine((data) => (data as { password?: any; confirmPassword?: any }).password === (data as { password?: any; confirmPassword?: any }).confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
@@ -158,7 +156,7 @@
             userAgent: navigator.userAgent,
             platform: navigator.platform,
             language: navigator.language,
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            timezone: Intl.DateTimeFormat.resolvedOptions().timeZone,
             securityScore
           }
         }
@@ -209,7 +207,7 @@
       platform: navigator.platform,
       screenResolution: `${screen.width}x${screen.height}`,
       colorDepth: screen.colorDepth,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      timezone: Intl.DateTimeFormat.resolvedOptions().timeZone,
       canvas: canvas.toDataURL(),
       cookieEnabled: navigator.cookieEnabled,
       onlineStatus: navigator.onLine,

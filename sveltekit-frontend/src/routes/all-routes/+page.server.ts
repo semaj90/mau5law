@@ -81,8 +81,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
   const serviceResults = await Promise.allSettled(
     services.map(async (service) => {
       try {
-        const startTime = Date.now();
-
+        const startTime = Date.now()));
         // For HTTP services, try a simple fetch with timeout
         if ([8094, 8093, 7474, 9000, 6333, 11436].includes(service.port)) {
           let response: any = null;
@@ -137,8 +136,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
     },
     services: serviceResults.map((result) =>
       (result as { status?: any; value?: any }).status === 'fulfilled'
-        ? (result as { status?: any; value?: any }).value
-        : {
+        ? (result as { status?: any; value?: any }).value:  {
             name: 'Unknown Service',
             status: 'down' as const,
           }
@@ -204,7 +202,7 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
     // Load system health data in parallel
     const [systemHealth, userSession] = await Promise.all([
       checkServiceHealth().catch((error) => {
-        console.error('System health check failed:', error);
+        console.error('System health check failed:', error)));
         return null;
       }),
       getUserSession(cookies),

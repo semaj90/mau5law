@@ -224,7 +224,7 @@ const idleDetectionActions = {
   // Update last activity timestamp
   updateActivity: assign({
     lastActivity: (_, event) =>
-      event.type === 'USER_ACTIVITY' ? event.timestamp : Date.now()
+      event.type === 'USER_ACTIVITY' ? event.timestamp: Date.now()
   }),
 
   // Queue a new background job
@@ -363,9 +363,9 @@ export const idleDetectionMachine = createMachine<IdleDetectionContext, IdleDete
           target: 'monitoring',
           actions: [
             assign({
-              neo4jConnected: (_, event) => event.(data as { neo4j?: any; minio?: any; rabbitmq?: any }).neo4j,
-              minioConnected: (_, event) => event.(data as { neo4j?: any; minio?: any; rabbitmq?: any }).minio,
-              rabbitmqConnected: (_, event) => event.(data as { neo4j?: any; minio?: any; rabbitmq?: any }).rabbitmq
+              neo4jConnected: (_, event) => event.data.neo4j,
+              minioConnected: (_, event) => event.data.minio,
+              rabbitmqConnected: (_, event) => event.data.rabbitmq
             })
           ]
         },

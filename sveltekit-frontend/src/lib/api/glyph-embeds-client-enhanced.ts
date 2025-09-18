@@ -158,9 +158,9 @@ export class EnhancedGlyphEmbedsClient {
       
       // Convert tiled_data back to Float32Array if it exists
       if ((result as { data?: any; status?: any; value?: any; reason?: any }).data?.simd_shader_data?.tiled_data) {
-        const tiledDataArray = (result as { data?: any; status?: any; value?: any; reason?: any }).(data as { tiled_data?: any }).simd_shader_data.tiled_data;
+        const tiledDataArray = (result as { data?: any; status?: any; value?: any; reason?: any }).data.simd_shader_data.tiled_data;
         if (Array.isArray(tiledDataArray)) {
-          (result as { data?: any; status?: any; value?: any; reason?: any }).(data as { tiled_data?: any }).simd_shader_data.tiled_data = new Float32Array(tiledDataArray);
+          (result as { data?: any; status?: any; value?: any; reason?: any }).data.simd_shader_data.tiled_data = new Float32Array(tiledDataArray);
         }
       }
 
@@ -170,7 +170,7 @@ export class EnhancedGlyphEmbedsClient {
       console.error('SIMD glyph generation failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred'
+        error: error instanceof Error ? error.message: 'Unknown error occurred'
       };
     }
   }
@@ -194,7 +194,7 @@ export class EnhancedGlyphEmbedsClient {
       console.error('Health check failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Health check failed'
+        error: error instanceof Error ? error.message: 'Health check failed'
       };
     }
   }
@@ -217,8 +217,7 @@ export class EnhancedGlyphEmbedsClient {
 
     return results.map(result => 
       (result as { data?: any; status?: any; value?: any; reason?: any }).status === 'fulfilled' 
-        ? (result as { data?: any; status?: any; value?: any; reason?: any }).value 
-        : { success: false, error: (result as { data?: any; status?: any; value?: any; reason?: any }).reason?.message || 'Generation failed' }
+        ? (result as { data?: any; status?: any; value?: any; reason?: any }).value:  { success: false, error: (result as { data?: any; status?: any; value?: any; reason?: any }).reason?.message || 'Generation failed' }
     );
   }
 
@@ -226,14 +225,15 @@ export class EnhancedGlyphEmbedsClient {
    * Fetch articles and process with RAG chunking for glyph synthesis
    */
   async processArticlesWithRAG(
-    articles: Array<,
+    articles: Array<any>,
     options: {
       chunk_size?: number;
       overlap_size?: number;
       enable_summarization?: boolean;
       enable_vector_store?: boolean;
     } = {}
-  ): Promise<;
+  ): Promise<{
+    chunks: Array<any>;
     error?: string;
   }> {
     try {
@@ -361,7 +361,7 @@ export class EnhancedGlyphEmbedsClient {
       console.error('RAG processing failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'RAG processing failed'
+        error: error instanceof Error ? error.message: 'RAG processing failed'
       };
     }
   }
@@ -462,7 +462,7 @@ export class EnhancedGlyphEmbedsClient {
       console.error('Glyph synthesis failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Synthesis failed'
+        error: error instanceof Error ? error.message: 'Synthesis failed'
       };
     }
   }
@@ -477,7 +477,9 @@ export class EnhancedGlyphEmbedsClient {
       threshold?: number;
       include_synthesized?: boolean;
     } = {}
-  ): Promise<;
+  ): Promise<{
+    success: boolean;
+    matches?: Array<any>;
     error?: string;
   }> {
     try {
@@ -528,7 +530,7 @@ export class EnhancedGlyphEmbedsClient {
       console.error('Semantic glyph search failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Search failed'
+        error: error instanceof Error ? error.message: 'Search failed'
       };
     }
   }
@@ -572,7 +574,7 @@ export class EnhancedGlyphEmbedsClient {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Shader creation failed'
+        error: error instanceof Error ? error.message: 'Shader creation failed'
       };
     }
   }
@@ -601,7 +603,7 @@ export class EnhancedGlyphEmbedsClient {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Download failed'
+        error: error instanceof Error ? error.message: 'Download failed'
       };
     }
   }

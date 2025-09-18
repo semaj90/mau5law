@@ -258,7 +258,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      error: error instanceof Error ? error.message: 'Unknown error occurred',
       grpmo_context_provided: !!body.grpmo_context
     }, { status: 500 });
   }

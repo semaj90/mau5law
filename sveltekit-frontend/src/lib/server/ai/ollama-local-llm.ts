@@ -317,7 +317,7 @@ TEMPLATE """{{ if .System }}<|system|>
   /**
    * Chat completion with conversation history
    */
-  async chat(messages: Array<, model?: string): Promise<string | null> {
+  async chat(messages: Array<any>, model?: string): Promise<string | null> {
     try {
       const selectedModel = this.selectBestModel(model);
       

@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 
 
 // Auto-generated default export
-export default {};
+export default ;
 </script>
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
@@ -26,7 +26,7 @@ export default {};
   }
   
   let {
-    initialContext = {},
+    initialContext = ,
     enableSIMD = true,
     useWebWorker = true
   }: Props = $props();
@@ -611,15 +611,15 @@ processingLogs = []} variant="outline" size="sm">
   }
   
   /* Enhanced scrollbars */
-  .bg-black::-webkit-scrollbar {
+  .bg-black: :-webkit-scrollbar {
     width: 8px;
   }
   
-  .bg-black::-webkit-scrollbar-track {
+  .bg-black: :-webkit-scrollbar-track {
     background: #000;
   }
   
-  .bg-black::-webkit-scrollbar-thumb {
+  .bg-black: :-webkit-scrollbar-thumb {
     background: #22c55e;
     border-radius: 4px;
   }

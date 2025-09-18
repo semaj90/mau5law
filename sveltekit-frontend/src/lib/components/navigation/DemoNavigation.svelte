@@ -53,7 +53,7 @@
 
   function navigateTo(item: NavItem) {
     if ((item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).external) {
-      window.open((item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).href, '_blank');
+      window.open.href, '_blank');
     } else {
       goto((item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).href);
       isOpen = false;
@@ -182,7 +182,7 @@
     box-shadow: 0 20px 64px rgba(0, 0, 0, 0.4);
   }
 
-  .nav-(item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).active {
+  .nav-.active {
     background: rgba(34, 197, 94, 0.1);
     border-color: rgb(34, 197, 94);
   }

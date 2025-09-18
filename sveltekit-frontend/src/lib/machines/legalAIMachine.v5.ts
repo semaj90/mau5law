@@ -273,7 +273,7 @@ export const legalAIMachine = setup({
 
         if (response.success && response.data) {
           // Ensure returned data is array of cases
-          const cases = Array.isArray(response.data) ? response.data : response.data.cases || [];
+          const cases = Array.isArray(response.data) ? response.data: response.data.cases || [];
           return cases.map((caseData: any) => ({
             id: caseData.id,
             title: caseData.title,

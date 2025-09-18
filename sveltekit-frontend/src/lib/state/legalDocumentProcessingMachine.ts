@@ -469,7 +469,7 @@ export const legalDocumentProcessingMachine = createMachine({
           actions: assign({
             documentId: ({ event }) => event.output.documentId,
             processingDuration: ({ context }) => 
-              context.startTime ? Date.now() - context.startTime : 0
+              context.startTime ? Date.now() - context.startTime: 0
           })
         },
         onError: {

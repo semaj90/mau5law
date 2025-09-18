@@ -70,7 +70,7 @@ export async function GET({ url }: RequestEvent): Promise<any> {
       status: 'error',
       timestamp: new Date().toISOString(),
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       services: {
         ollama: { status: 'unknown', error: 'Health check failed' },
         enhancedRAG: { status: 'unknown', error: 'Health check failed' },
@@ -95,7 +95,7 @@ async function checkOllamaService(): Promise<any> {
   } catch (error: any) {
     return {
       status: 'down',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -115,7 +115,7 @@ async function checkEnhancedRAGService(): Promise<any> {
   } catch (error: any) {
     return {
       status: 'down',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -133,7 +133,7 @@ async function checkGRPCService(): Promise<any> {
   } catch (error: any) {
     return {
       status: 'down',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }

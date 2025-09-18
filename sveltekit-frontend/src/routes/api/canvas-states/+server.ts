@@ -56,8 +56,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
       // Determine the column for sorting
       const orderColumn =
         sortBy === "name"
-          ? canvasLayouts.name
-          : sortBy === "createdAt"
+          ? canvasLayouts.name: sortBy === "createdAt"
             ? canvasLayouts.createdAt
             : canvasLayouts.updatedAt; // Default to updatedAt
 

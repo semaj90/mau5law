@@ -80,7 +80,6 @@
 
   // Cached compiled shader programs
   const shaderPrograms: Record<string, any> = {};
-
   // Subscriptions (track to unsubscribe on destroy)
   let gpuMetricsSub = $state(null);
   let shaderMetricsSub = $state(null);
@@ -151,7 +150,7 @@
       console.log('✅ WebGL context initialized');
 
       if (gpuManager) {
-        gpuMetricsSub = gpuManager.getMetrics().subscribe((metrics: unknown) => {
+        gpuMetricsSub = gpuManager.getMetrics.subscribe((metrics: unknown) => {
           gpuMetrics = {
             totalContexts: metrics.totalContexts,
             activeContexts: metrics.activeContexts,
@@ -165,7 +164,7 @@
       }
 
       if (shaderCache) {
-        shaderMetricsSub = shaderCache.getMetrics().subscribe((metrics: unknown) => {
+        shaderMetricsSub = shaderCache.getMetrics.subscribe((metrics: unknown) => {
           shaderMetrics = {
             totalShaders: metrics.totalShaders,
             cacheHits: metrics.cacheHits,

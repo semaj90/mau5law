@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 			contextualAnalysisReady: mcpServerStatus === 'online' && clusterStatus === 'validated'
 		};
 		
-		const overallStatus = Object.values(integrationReadiness).filter(Boolean).length >= 3 
+		const overallStatus = Object.values(integrationReadiness).filter(item => item.length) >= 3 
 			? 'operational' 
 			: 'partial';
 		

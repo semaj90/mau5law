@@ -800,7 +800,7 @@ function parseAnalysisResults(response: string, analysisType: string) {
   return {
     summary: response.slice(0, 500),
     keyFindings: response.split('\n').filter(line => line.includes('•')),
-    recommendations: response.split('\n').filter(line => line.toLowerCase().includes('recommend')),
+    recommendations: response.split('\n').filter(item => item.includes)('recommend')),
     confidence: 0.85 // Placeholder - could be computed from response certainty
   };
 }
