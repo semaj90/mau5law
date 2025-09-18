@@ -285,7 +285,7 @@ export const graphCacheMachine = createMachine({
     }),
 
     setQuery: assign({
-      query: ({ event }) => event.type === 'QUERY' ? event.query : null,
+      query: ({ event }) => event.type === 'QUERY' ? event.query: null,
       params: ({ event }) => event.type === 'QUERY' ? (event.params || {}) : Record<string, any>,
       queryHash: ({ event }) => {
         if (event.type === 'QUERY') {
@@ -312,7 +312,7 @@ export const graphCacheMachine = createMachine({
     }),
 
     setCacheResult: assign({
-      result: ({ event }) => event.type === 'CACHE_HIT' ? event.result : null,
+      result: ({ event }) => event.type === 'CACHE_HIT' ? event.result: null,
       source: ({ event }) => event.type === 'CACHE_HIT' ? event.source as any : 'indexeddb_cache',
       cacheHit: true,
       latency: ({ event }) => event.type === 'CACHE_HIT' ? event.latency : 0,
@@ -447,7 +447,7 @@ export const graphCacheMachine = createMachine({
       if (context.worker) {
         context.worker.postMessage({
           type: 'cache_clear',
-          key: event.type === 'INVALIDATE_CACHE' ? event.key : undefined
+          key: event.type === 'INVALIDATE_CACHE' ? event.key: undefined
         });
       }
     },

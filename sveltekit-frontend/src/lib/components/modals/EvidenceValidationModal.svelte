@@ -100,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
         showCorrections = false;
         open = false;
       } else {
-        console.error("Validation failed:", (result as { success?: unknown; error?: unknown }).error);
+        console.error(error);
         alert("Failed to submit validation. Please try again.");
       }
     } catch (error) {

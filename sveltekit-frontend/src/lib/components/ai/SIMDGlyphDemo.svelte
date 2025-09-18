@@ -34,7 +34,7 @@ https://svelte.dev/e/expected_token -->
     cumulativeStats: []
   });
   
-  async function generateSIMDGlyph(prompt, customSettings = {}) {
+  async function generateSIMDGlyph(prompt, customSettings = ) {
     try {
       isGenerating = true;
       
@@ -81,12 +81,12 @@ https://svelte.dev/e/expected_token -->
           prompt: prompt.text,
           style: prompt.style,
           evidence_id: prompt.evidence_id,
-          glyph_url: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).(data as { compression_ratio?: any }).glyph_url,
-          enhanced_artifact_url: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).(data as { compression_ratio?: any }).enhanced_artifact_url,
-          simd_data: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).(data as { compression_ratio?: any }).simd_shader_data,
-          processing_time: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).(data as { compression_ratio?: any }).generation_time_ms,
-          tensor_count: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).(data as { compression_ratio?: any }).tensor_ids.length,
-          cache_hits: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).(data as { compression_ratio?: any }).cache_hits,
+          glyph_url: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).data.glyph_url,
+          enhanced_artifact_url: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).data.enhanced_artifact_url,
+          simd_data: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).data.simd_shader_data,
+          processing_time: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).data.generation_time_ms,
+          tensor_count: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).data.tensor_ids.length,
+          cache_hits: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).data.cache_hits,
           metadata: (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).metadata
         };
         
@@ -117,8 +117,7 @@ https://svelte.dev/e/expected_token -->
     processingStats.cumulativeStats.push(result);
     
     const compressionRatios = processingStats.cumulativeStats
-      .filter(r => r.simd_data?.compression_ratio)
-      .map(r => r.simd_data.compression_ratio);
+      .filter(item => item.map)(r => r.simd_data.compression_ratio);
     
     if (compressionRatios.length > 0) {
       processingStats.averageCompressionRatio = compressionRatios.reduce((a, b) => a + b, 0) / compressionRatios.length;

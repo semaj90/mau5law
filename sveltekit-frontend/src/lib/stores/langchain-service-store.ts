@@ -103,7 +103,7 @@ class LangChainServiceLogic {
       langchainState.set({
         isProcessing: false,
         isAvailable: false,
-        error: error instanceof Error ? error.message : 'Initialization failed',
+        error: error instanceof Error ? error.message: 'Initialization failed',
         models: []
       });
     }
@@ -167,7 +167,7 @@ class LangChainServiceLogic {
         isProcessing: false,
         progress: 0,
         result: null,
-        error: error instanceof Error ? error.message : 'Document processing failed',
+        error: error instanceof Error ? error.message: 'Document processing failed',
         sessionId: null,
         documentId: null
       });
@@ -214,7 +214,7 @@ class LangChainServiceLogic {
       documentProcessingState.update(state => ({
         ...state,
         isProcessing: false,
-        error: error instanceof Error ? error.message : 'Failed to load session'
+        error: error instanceof Error ? error.message: 'Failed to load session'
       }));
     }
   }
@@ -246,7 +246,7 @@ class LangChainServiceLogic {
     } catch (error) {
       documentProcessingState.update(state => ({
         ...state,
-        error: error instanceof Error ? error.message : 'Failed to delete document'
+        error: error instanceof Error ? error.message: 'Failed to delete document'
       }));
     }
   }
@@ -273,7 +273,7 @@ class LangChainServiceLogic {
       chatState.update(state => ({
         ...state,
         isTyping: false,
-        error: error instanceof Error ? error.message : 'Chat message failed'
+        error: error instanceof Error ? error.message: 'Chat message failed'
       }));
     }
   }

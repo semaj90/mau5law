@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   	import type { ComponentProps } from 'svelte';
   	import { cva, type VariantProps } from 'class-variance-authority';
   	import { cn } from '$lib/utils';
-  	import { createButton, melt } from 'melt';
+  	// Replaced melt with bits-ui components
   	import { Button as BitsButton } from 'bits-ui';
   	import type { Button as BitsButtonType } from 'bits-ui';
 

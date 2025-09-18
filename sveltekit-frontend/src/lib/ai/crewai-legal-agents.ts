@@ -124,8 +124,7 @@ export class CrewAILegalReviewSystem {
 
     const responses: AgentResponse[] = [];
     const assignedAgents = task.assignedAgents.length > 0
-      ? task.assignedAgents
-      : ['contract-analyst', 'compliance-auditor', 'risk-assessor'];
+      ? task.assignedAgents: ['contract-analyst', 'compliance-auditor', 'risk-assessor'];
 
     // Process with all assigned agents in parallel
     const agentPromises = assignedAgents.map(agentId =>
@@ -231,7 +230,7 @@ Please provide your analysis in the following JSON format:
         riskLevel: 'high',
         confidence: 0,
         processingTime: Date.now() - startTime,
-        errors: [error instanceof Error ? error.message : String(error)]
+        errors: [error instanceof Error ? error.message: String(error)]
       };
     }
   }

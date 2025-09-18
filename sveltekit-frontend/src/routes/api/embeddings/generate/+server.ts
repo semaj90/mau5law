@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
       dimensions: 384,
       timestamp: new Date().toISOString(),
       fallback: true,
-      error: `Failed to generate embedding: ${err instanceof Error ? err.message : "Unknown error"}`
+      error: `Failed to generate embedding: ${err instanceof Error ? err.message: "Unknown error"}`
     });
   }
 };

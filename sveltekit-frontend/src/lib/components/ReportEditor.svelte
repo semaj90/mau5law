@@ -9,7 +9,7 @@ https://svelte.dev/e/props_duplicate -->
 
   let { report = $bindable()  }: { report = $bindable() : unknown } = $props(); // Report | null = null;
   let { caseId = $bindable()  }: { caseId = $bindable() : unknown } = $props(); // string;
-  let { onSave = $bindable()  }: { onSave = $bindable() : unknown } = $props(); // (report: Report) => Promise<void> = async () => {};
+  let { onSave = $bindable()  }: { onSave = $bindable() : unknown } = $props(); // (report: Report) => Promise<void> = async () => ;
   let { autoSaveEnabled = $bindable()  }: { autoSaveEnabled = $bindable() : unknown } = $props(); // true;
   let { readOnly = $bindable()  }: { readOnly = $bindable() : unknown } = $props(); // false;
 
@@ -220,8 +220,7 @@ https://svelte.dev/e/props_duplicate -->
   function updateWordCount() {
     const textContent = editorElement.textContent || "";
     const words = textContent
-      .trim()
-      .split(/\s+/)
+      .trim.split(/\s+/)
       .filter((word: string) => word.length > 0);
     wordCount = words.length;
     characterCount = textContent.length;
@@ -250,8 +249,7 @@ https://svelte.dev/e/props_duplicate -->
         caseId,
         metadata: {
           ...(report?.metadata && typeof report.metadata === "object"
-            ? report.metadata
-            : {}),
+            ? report.metadata: ),
           wordCount,
           estimatedReadTime,
         },
@@ -650,7 +648,7 @@ https://svelte.dev/e/props_duplicate -->
     cursor: default;
 }
   /* Citation token styling */
-  .content-editor :global(.citation-token) {
+  .content-editor: global(.citation-token) {
     background: #dbeafe;
     color: #1d4ed8;
     padding: 2px 6px;
@@ -661,7 +659,7 @@ https://svelte.dev/e/props_duplicate -->
     cursor: pointer;
     white-space: nowrap;
 }
-  .content-editor :global(.citation-token:hover) {
+  .content-editor: global(.citation-token:hover) {
     background: #bfdbfe;
 }
   .citation-sidebar {

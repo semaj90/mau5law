@@ -29,8 +29,7 @@ let currentUser = $state({
     if (browser) {
       try {
         // Fetch real system data from your APIs
-        const [systemStatusResponse, legalDataResponse] = await Promise.all([
-          fetch('/api/yorha/system/status').catch(() => null),
+        const [systemStatusResponse, legalDataResponse] = await Promise.all.catch(() => null),
           fetch('/api/yorha/legal-data').catch(() => null)
         ]);
 

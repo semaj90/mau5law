@@ -199,7 +199,7 @@ async function performFullStackSearch() {
 
 	} catch (err) {
 		console.error('Full-stack search failed:', err);
-		errorMessage = err instanceof Error ? err.message : 'Search failed. Please try again.';
+		errorMessage = err instanceof Error ? err.message: 'Search failed. Please try again.';
 
 		// Try client-side fallback if available
 		await tryClientSideFallback();
@@ -519,20 +519,20 @@ $effect(() => {
 	}
 
 	/* Custom scrollbar for result content */
-	.full-stack-legal-ai :global(.overflow-auto::-webkit-scrollbar) {
+	.full-stack-legal-ai: global(.overflow-auto::-webkit-scrollbar) {
 		width: 6px;
 	}
 
-	.full-stack-legal-ai :global(.overflow-auto::-webkit-scrollbar-track) {
+	.full-stack-legal-ai: global(.overflow-auto::-webkit-scrollbar-track) {
 		background: rgb(var(--muted));
 	}
 
-	.full-stack-legal-ai :global(.overflow-auto::-webkit-scrollbar-thumb) {
+	.full-stack-legal-ai: global(.overflow-auto::-webkit-scrollbar-thumb) {
 		background: rgb(var(--border));
 		border-radius: 3px;
 	}
 
-	.full-stack-legal-ai :global(.overflow-auto::-webkit-scrollbar-thumb:hover) {
+	.full-stack-legal-ai: global(.overflow-auto::-webkit-scrollbar-thumb:hover) {
 		background: rgb(var(--primary));
 	}
 
@@ -542,7 +542,7 @@ $effect(() => {
 		50% { box-shadow: 0 0 20px rgb(var(--primary) / 0.6); }
 	}
 
-	.full-stack-legal-ai :global(.animate-pulse-glow) {
+	.full-stack-legal-ai: global(.animate-pulse-glow) {
 		animation: pulse-glow 2s ease-in-out infinite;
 	}
 </style>

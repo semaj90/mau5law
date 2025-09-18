@@ -34,8 +34,7 @@
 	</div>
 {/if}
 
-<style>/* @unocss-include */ {}
-	.modal-overlay {
+<style>/* @unocss-include */ .modal-overlay {
 		position: fixed;
 		top: 0;
 		left: 0;

@@ -121,16 +121,16 @@ export class GPUVectorProcessor {
     const ctxType = hybrid?.getActiveContextType?.();
     const device: GPUDevice | null = ctxType === 'webgpu' ? hybrid.gpuDevice : null;
     if (!device) return null;
-    
+
     // Generate cache key based on dimension and vec4 compatibility
     const dim = dimension || this.embeddingDimension || 384;
     const vec4Compatible = dim % 4 === 0 && dim >= 128;
     const cacheKey = `${dim}-${vec4Compatible ? 'vec4' : 'scalar'}-${count}`;
-    
+
     // Check existing cache
     const existing = this.webgpuCache.get(cacheKey);
     if (existing && existing.capacity >= count) return existing;
-    
+
     // Dispose old cache entry if exists
     if (existing) {
       try {
@@ -148,19 +148,19 @@ export class GPUVectorProcessor {
       }
       this.webgpuCache.delete(cacheKey);
     }
-    
+
     const workgroupSize = 128;
     const compileStart = performance.now();
-    
+
     // Enhanced shader with vec4 optimization for compatible dimensions
     let wgsl: string;
     if (vec4Compatible) {
       const vec4Count = Math.ceil(count / 4);
       wgsl = `
-        @group(0) @binding(0) var<storage, read> inData: array<vec4<f32>>;
-        @group(0) @binding(1) var<storage, read_write> outData: array<vec4<f32>>;
-        
-        @compute @workgroup_size(${workgroupSize}) 
+        @group(0) @binding(0) var<storage, read> inData: array<vec4<f32>;
+        @group(0) @binding(1) var<storage, read_write> outData: array<vec4<f32>;
+
+        @compute @workgroup_size(${workgroupSize})
         fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
           let i = gid.x;
           if (i < ${vec4Count}u) {
@@ -176,8 +176,8 @@ export class GPUVectorProcessor {
       wgsl = `
         @group(0) @binding(0) var<storage, read> inData: array<f32>;
         @group(0) @binding(1) var<storage, read_write> outData: array<f32>;
-        
-        @compute @workgroup_size(${workgroupSize}) 
+
+        @compute @workgroup_size(${workgroupSize})
         fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
           let i = gid.x;
           if (i < ${count}u) {
@@ -187,52 +187,52 @@ export class GPUVectorProcessor {
           }
         }`;
     }
-    
+
     const module = device.createShaderModule({ code: wgsl, label: `legal-vector-${cacheKey}` });
     const compileTime = performance.now() - compileStart;
-    
-    const bindGroupLayout = device.createBindGroupLayout({ 
+
+    const bindGroupLayout = device.createBindGroupLayout({
       entries: [
         { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
-        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } }
+        { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
       ],
-      label: `legal-vector-bgl-${cacheKey}`
+      label: `legal-vector-bgl-${cacheKey}`,
     });
-    
-    const pipeline = device.createComputePipeline({ 
-      layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }), 
+
+    const pipeline = device.createComputePipeline({
+      layout: device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }),
       compute: { module, entryPoint: 'main' },
-      label: `legal-vector-pipeline-${cacheKey}`
+      label: `legal-vector-pipeline-${cacheKey}`,
     });
-    
+
     const bytes = count * 4;
     const usage = GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC;
     const inBuffer = device.createBuffer({ size: bytes, usage, label: `legal-in-${cacheKey}` });
     const outBuffer = device.createBuffer({ size: bytes, usage, label: `legal-out-${cacheKey}` });
-    const readBuffer = device.createBuffer({ 
-      size: bytes, 
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ, 
-      label: `legal-read-${cacheKey}` 
+    const readBuffer = device.createBuffer({
+      size: bytes,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+      label: `legal-read-${cacheKey}`,
     });
-    
-    const bindGroup = device.createBindGroup({ 
-      layout: bindGroupLayout, 
+
+    const bindGroup = device.createBindGroup({
+      layout: bindGroupLayout,
       entries: [
         { binding: 0, resource: { buffer: inBuffer } },
-        { binding: 1, resource: { buffer: outBuffer } }
+        { binding: 1, resource: { buffer: outBuffer } },
       ],
-      label: `legal-bg-${cacheKey}`
+      label: `legal-bg-${cacheKey}`,
     });
-    
-    const cache = { 
-      device, 
-      pipeline, 
-      bindGroupLayout, 
-      bindGroup, 
-      inBuffer, 
-      outBuffer, 
-      readBuffer, 
-      capacity: count, 
+
+    const cache = {
+      device,
+      pipeline,
+      bindGroupLayout,
+      bindGroup,
+      inBuffer,
+      outBuffer,
+      readBuffer,
+      capacity: count,
       workgroupSize,
       dimension: dim,
       vec4Optimized: vec4Compatible,
@@ -240,24 +240,24 @@ export class GPUVectorProcessor {
       uploadTime: 0,
       executeTime: 0,
       readbackTime: 0,
-      reduction: null 
+      reduction: null,
     };
-    
+
     this.webgpuCache.set(cacheKey, cache);
-    
+
     // Emit telemetry for program caching
-    telemetryBus.publish({ 
-      type: 'gpu.vector.pipeline.compile' as any, 
-      meta: { 
-        cacheKey, 
-        dimension: dim, 
-        vec4Optimized: vec4Compatible, 
+    telemetryBus.publish({
+      type: 'gpu.vector.pipeline.compile' as any,
+      meta: {
+        cacheKey,
+        dimension: dim,
+        vec4Optimized: vec4Compatible,
         compileTimeMs: compileTime,
         capacity: count,
-        backend: 'webgpu' 
-      } 
+        backend: 'webgpu',
+      },
     });
-    
+
     return cache;
   }
   /** Ensure two-pass mean/std/energy (abs-mean) reduction resources (single workgroup per segment) */
@@ -321,28 +321,42 @@ export class GPUVectorProcessor {
     const firstKey = Object.keys(input)[0];
     if (!firstKey) return {};
     const arr = input[firstKey];
-    const floatArray = arr instanceof Float32Array ? arr : new Float32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
+    const floatArray =
+      arr instanceof Float32Array
+        ? arr
+        : new Float32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
     const count = floatArray.length;
-    
+
     // Detect dimension for optimal caching
     const detectedDim = this.embeddingDimension || 384;
     const cache = this.ensureWebGPUPipeline(count, detectedDim);
     if (!cache) {
-      telemetryBus.publish({ type: 'gpu.vector.webgpu.compute' as any, meta: { backend: 'webgpu', durationMs: 0, reason: 'no-device' } });
+      telemetryBus.publish({
+        type: 'gpu.vector.webgpu.compute' as any,
+        meta: { backend: 'webgpu', durationMs: 0, reason: 'no-device' },
+      });
       return { ...input };
     }
     const device = cache.device;
-    
+
     try {
       // Detailed timing: Upload phase
       const uploadStart = performance.now();
-      device.queue.writeBuffer(cache.inBuffer, 0, floatArray.buffer, floatArray.byteOffset, floatArray.byteLength);
+      device.queue.writeBuffer(
+        cache.inBuffer,
+        0,
+        floatArray.buffer,
+        floatArray.byteOffset,
+        floatArray.byteLength
+      );
       const uploadTime = performance.now() - uploadStart;
       cache.uploadTime = uploadTime;
-      
+
       // Detailed timing: Execute phase
       const executeStart = performance.now();
-      const workgroups = cache.vec4Optimized ? Math.ceil(count / 4 / cache.workgroupSize) : Math.ceil(count / cache.workgroupSize);
+      const workgroups = cache.vec4Optimized
+        ? Math.ceil(count / 4 / cache.workgroupSize)
+        : Math.ceil(count / cache.workgroupSize);
       const encoder = device.createCommandEncoder({ label: 'legal-vector-compute' });
       const pass = encoder.beginComputePass({ label: 'legal-vector-pass' });
       pass.setPipeline(cache.pipeline);
@@ -379,7 +393,7 @@ export class GPUVectorProcessor {
       await device.queue.onSubmittedWorkDone();
       const executeTime = performance.now() - executeStart;
       cache.executeTime = executeTime;
-      
+
       // Detailed timing: Readback phase
       const readbackStart = performance.now();
       await cache.readBuffer.mapAsync(GPUMapMode.READ);
@@ -396,58 +410,64 @@ export class GPUVectorProcessor {
           // Raw layout stride 4 floats per segment (mean,std,energy,pad)
           const segments = raw.length / 4;
           const compact = new Float32Array(segments * 3);
-            for (let i = 0; i < segments; i++) {
-              compact[i * 3] = raw[i * 4];
-              compact[i * 3 + 1] = raw[i * 4 + 1];
-              compact[i * 3 + 2] = raw[i * 4 + 2];
-            }
+          for (let i = 0; i < segments; i++) {
+            compact[i * 3] = raw[i * 4];
+            compact[i * 3 + 1] = raw[i * 4 + 1];
+            compact[i * 3 + 2] = raw[i * 4 + 2];
+          }
           stats = compact; // [mean,std,energy]*
           cache.reduction.statsReadBuffer.unmap();
         } catch {}
       }
 
       const durationMs = performance.now() - start;
-      
+
       // Enhanced telemetry with detailed timing breakdown
-      telemetryBus.publish({ 
-        type: 'gpu.vector.webgpu.compute' as any, 
-        meta: { 
-          backend: 'webgpu', 
-          durationMs, 
-          count, 
-          workgroups, 
+      telemetryBus.publish({
+        type: 'gpu.vector.webgpu.compute' as any,
+        meta: {
+          backend: 'webgpu',
+          durationMs,
+          count,
+          workgroups,
           dimension: cache.dimension,
           vec4Optimized: cache.vec4Optimized,
-          reused: true, 
+          reused: true,
           reduction: !!stats,
           timing: {
             compile: cache.compileTime,
             upload: uploadTime,
             execute: executeTime,
             readback: readbackTime,
-            total: durationMs
-          }
-        } 
+            total: durationMs,
+          },
+        },
       });
-      
+
       if (stats) {
-        telemetryBus.publish({ 
-          type: 'gpu.vector.webgpu.reduction' as any, 
-          meta: { 
-            segments: stats.length / 3, 
-            dimension: dim, 
-            durationMs, 
+        telemetryBus.publish({
+          type: 'gpu.vector.webgpu.reduction' as any,
+          meta: {
+            segments: stats.length / 3,
+            dimension: dim,
+            durationMs,
             energy: true,
-            vec4Optimized: cache.vec4Optimized
-          } 
+            vec4Optimized: cache.vec4Optimized,
+          },
         });
       }
-      
-      const out: Record<string, ArrayBufferView> = { [firstKey]: transformed, transform: transformed };
+
+      const out: Record<string, ArrayBufferView> = {
+        [firstKey]: transformed,
+        transform: transformed,
+      };
       if (stats) out['stats'] = stats; // [mean0,std0,energy0, mean1,std1,energy1, ...]
       return out;
     } catch (e) {
-      telemetryBus.publish({ type: 'gpu.vector.webgpu.compute' as any, meta: { backend: 'webgpu', error: (e as Error).message } });
+      telemetryBus.publish({
+        type: 'gpu.vector.webgpu.compute' as any,
+        meta: { backend: 'webgpu', error: (e as Error).message },
+      });
       return { ...input };
     }
   }
@@ -566,8 +586,8 @@ export class GPUVectorProcessor {
     if (backend === 'cpu' || backend === 'webgl1') return;
     const now = performance.now();
     if (now - this.lastDemotionAt < this.demotionCooldownMs) return;
-    const failures = this.failureWindow.filter(f => f.backend === backend).length;
-    if (failures < 3) return;
+  const failures = this.failureWindow.length;
+  if (failures < 3) return;
     const target = backend === 'webgpu' ? 'webgl2' : 'webgl1';
     telemetryBus.publish({ type: 'gpu.backend', meta: { demotion: true, from: backend, to: target, reason: 'failure-threshold' } });
     gpuTelemetryService.recordDemotion({ from: backend, to: target, reason: 'failure-threshold', timestamp: Date.now() });
@@ -632,8 +652,8 @@ export class GPUVectorProcessor {
     }
 
     // Enough successes recently?
-    const stableCount = this.successWindow.filter(s => s.backend === currentBackend).length;
-    if (stableCount < this.upscaleSuccessThreshold) return;
+  const stableCount = this.successWindow.length;
+  if (stableCount < this.upscaleSuccessThreshold) return;
 
     // Decide whether to upscale dimension or backend
     const backendOrder: string[] = ['cpu', 'webgl1', 'webgl2', 'webgpu'];
@@ -804,7 +824,12 @@ export class GPUVectorProcessor {
     try {
       const hybrid = (gpuContextProvider as any).getHybridContext?.();
       const ctxType = hybrid?.getActiveContextType?.();
-      const gl: WebGLRenderingContext | null = ctxType === 'webgl' ? hybrid.webglContext : ctxType === 'webgl2' ? hybrid.webgl2Context : null;
+      const gl: WebGLRenderingContext | null =
+        ctxType === 'webgl'
+          ? hybrid.webglContext
+          : ctxType === 'webgl2'
+            ? hybrid.webgl2Context
+            : null;
       if (!gl) {
         telemetryBus.publish({ type: 'gpu.vector.webgl1.compute' as any, meta: { backend: 'webgl1', durationMs: 0, passes: 0, floatMode: 'unavailable', reason: 'no-gl-context' } });
         return { ...input }; // fallback echo
@@ -941,7 +966,12 @@ export class GPUVectorProcessor {
       if (!this.webgl1Cache) return;
       const hybrid = (gpuContextProvider as any).getHybridContext?.();
       const ctxType = hybrid?.getActiveContextType?.();
-      const gl: WebGLRenderingContext | null = ctxType === 'webgl' ? hybrid.webglContext : ctxType === 'webgl2' ? hybrid.webgl2Context : null;
+      const gl: WebGLRenderingContext | null =
+        ctxType === 'webgl'
+          ? hybrid.webglContext
+          : ctxType === 'webgl2'
+            ? hybrid.webgl2Context
+            : null;
       if (gl) {
         gl.deleteBuffer(this.webgl1Cache.vbo);
         gl.deleteProgram(this.webgl1Cache.program);
@@ -974,7 +1004,17 @@ export class GPUVectorProcessor {
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, texSize, texSize, 0, gl.RGBA, isFloat ? gl.FLOAT : gl.UNSIGNED_BYTE, null);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        texSize,
+        texSize,
+        0,
+        gl.RGBA,
+        isFloat ? gl.FLOAT : gl.UNSIGNED_BYTE,
+        null
+      );
       gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffers[i]);
       gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, textures[i], 0);
     }
@@ -994,7 +1034,12 @@ export class GPUVectorProcessor {
       const evict = bucket.free.splice(0, bucket.free.length - 6);
       const hybrid = (gpuContextProvider as any).getHybridContext?.();
       const ctxType = hybrid?.getActiveContextType?.();
-      const gl: WebGLRenderingContext | null = ctxType === 'webgl' ? hybrid.webglContext : ctxType === 'webgl2' ? hybrid.webgl2Context : null;
+      const gl: WebGLRenderingContext | null =
+        ctxType === 'webgl'
+          ? hybrid.webglContext
+          : ctxType === 'webgl2'
+            ? hybrid.webgl2Context
+            : null;
       if (gl) {
         evict.forEach(e => {
           e.textures.forEach(t => gl.deleteTexture(t));
@@ -1007,7 +1052,12 @@ export class GPUVectorProcessor {
   private disposeWebGL1Pool() {
     const hybrid = (gpuContextProvider as any).getHybridContext?.();
     const ctxType = hybrid?.getActiveContextType?.();
-    const gl: WebGLRenderingContext | null = ctxType === 'webgl' ? hybrid.webglContext : ctxType === 'webgl2' ? hybrid.webgl2Context : null;
+    const gl: WebGLRenderingContext | null =
+      ctxType === 'webgl'
+        ? hybrid.webglContext
+        : ctxType === 'webgl2'
+          ? hybrid.webgl2Context
+          : null;
     if (gl) {
       this.webgl1Pool.forEach(bucket => {
         bucket.free.forEach(e => {

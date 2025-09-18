@@ -203,7 +203,7 @@ export class RAGPipelineIntegrator {
     query: string,
     documents: LegalDocument[],
     request?: Partial<SummaryRequest>
-  ): Promise<ReadableStream<string>> {
+  ): Promise<ReadableStream<string> {
     if (!this.config.enableStreaming) {
       // Non-streaming fallback
       const result = await this.processRAGQuery(query, documents, request);
@@ -488,7 +488,7 @@ export async function processLegalQueryStreaming(
   query: string,
   documents: LegalDocument[],
   config?: Partial<RAGPipelineConfig>
-): Promise<ReadableStream<string>> {
+): Promise<ReadableStream<string> {
   const pipeline = new RAGPipelineIntegrator(config);
   return pipeline.processRAGQueryStreaming(query, documents);
 }

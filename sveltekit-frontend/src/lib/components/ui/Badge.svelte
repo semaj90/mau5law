@@ -34,7 +34,7 @@
     variants[variant],
     sizes[size],
     className
-  ].filter(Boolean).join(' '));
+  ].filter(item => item.join)(' '));
 </script>
 
 <span class={classes}>

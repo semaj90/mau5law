@@ -54,7 +54,7 @@
 
       if ((data as { success?: any; data?: any; error?: any }).success) {
         result = (data as { success?: any; data?: any; error?: any }).data;
-        console.log('✅ Cached RAG query successful:', (data as { success?: any; data?: any; error?: any }).data);
+        console.log.data);
       } else {
         error = (data as { success?: any; data?: any; error?: any }).error || 'Query failed';
       }
@@ -73,7 +73,7 @@
       const data = await (response as { json?: any }).json();
 
       if ((data as { success?: any; data?: any; error?: any }).success) {
-        cacheMetrics = (data as { success?: any; data?: any; error?: any }).(data as { success?: any; data?: any; error?: any }).metrics;
+        cacheMetrics = (data as { success?: any; data?: any; error?: any }).data.metrics;
       }
     } catch (err: any) {
       console.error('Failed to load cache metrics:', err);

@@ -20,7 +20,7 @@ https://svelte.dev/e/props_duplicate -->
     caseNumber: case_?.caseNumber || "",
     name: case_?.name || "",
     incidentDate: case_?.incidentDate
-      ? new Date(case_.incidentDate).toISOString().split("T")[0]
+      ? new Date(case_.incidentDate).toISOString.split("T")[0]
       : "",
     location: case_?.location || "",
     priority: case_?.priority || "medium",
@@ -32,15 +32,14 @@ https://svelte.dev/e/props_duplicate -->
     leadProsecutor: case_?.leadProsecutor || user?.id || "",
     assignedTeam: case_?.assignedTeam || [],
     tags: case_?.tags || [],
-    metadata: case_?.metadata || {},
+    metadata: case_?.metadata || ,
   });
   let loading = $state(false);
-  let errors = $state<Record<string, string>('') >({});
+  let errors = $state<Record<string, string>('') >( );
 
   // Form validation
   function validateForm() {
     errors = {};
-
     if (!formData.title.trim()) {
       errors.title = "Title is required";
   }
@@ -53,7 +52,7 @@ https://svelte.dev/e/props_duplicate -->
     if (formData.estimatedValue && isNaN(Number(formData.estimatedValue))) {
       errors.estimatedValue = "Estimated value must be a number";
   }
-    return Object.keys(errors).length === 0;
+    return Object.keys.length === 0;
   }
   // Handle form submission
   async function handleSubmit() {
@@ -133,8 +132,7 @@ https://svelte.dev/e/props_duplicate -->
         title: "Save Error",
         message:
           error instanceof Error
-            ? error.message
-            : "Failed to save case. Please try again.",
+            ? error.message: "Failed to save case. Please try again.",
       });
     } finally {
       loading = false;
@@ -440,7 +438,7 @@ https://svelte.dev/e/props_duplicate -->
     font-weight: 500;
     color: #374151;
 }
-  label.required::after {
+  label.required: :after {
     content: "*";
     color: #ef4444;
     margin-left: 0.25rem;

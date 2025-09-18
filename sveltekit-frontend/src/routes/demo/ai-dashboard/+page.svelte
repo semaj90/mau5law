@@ -9,8 +9,8 @@
   // State machine actors
   let evidenceActor = $state<any >(null);
   let uploadActor = $state<any >(null);
-  let evidenceState = $state({ value: 'idle', context: {} as EvidenceProcessingContext });
-  let uploadState = $state({ value: 'idle', context: {} as DocumentUploadContext });
+  let evidenceState = $state({ value: 'idle', context: as EvidenceProcessingContext });
+  let uploadState = $state({ value: 'idle', context: as DocumentUploadContext });
   // Performance metrics stores
   let aiMetrics = $state<AIMetrics | null>(null);
   let queueMetrics = $state<QueueMetrics | null>(null);
@@ -21,7 +21,7 @@
   // Demo state
   let selectedTab = $state<'overview' | 'processing' | 'queues' | 'cache' | 'system'>('overview');
   let isProcessingDemo = $state(false);
-  let demoLog = $state<any[]>([])([]);
+  let demoLog = $state<any[]>([]) => []);
   // Demo document content
   const DEMO_DOCUMENT = `
   CASE FILE: People v. Johnson
@@ -358,7 +358,7 @@
           <p class="text-gray-500 text-sm">No recent activity</p>
         {:else}
           <div class="space-y-2">
-            {#each demoLog.slice().reverse() as log}
+            {#each demoLog.slice.reverse() as log}
               <div class="flex items-center text-sm">
                 <span class="text-gray-400 w-20">{log.timestamp}</span>
                 <span class="w-2 h-2 rounded-full mx-3 {getLogColor(log.level).replace('text-', 'bg-')}"></span>
@@ -408,7 +408,7 @@
           {/if}
 
           <!-- Processing Times -->
-          {#if Object.keys(evidenceState.context.processingTimes || {}).length > 0}
+          {#if Object.keys.length > 0}
             <div class="space-y-2">
               <span class="text-sm font-medium text-gray-700">Processing Times:</span>
               <div class="space-y-1">

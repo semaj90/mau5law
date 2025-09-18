@@ -184,7 +184,7 @@
         onchange={(e) => handleProfileChange(e.target.value)}
       >
         {#each availableProfiles as profile}
-          <option value={profile.name.toLowerCase().replace(/\s+/g, '-')}>
+          <option value={profile.name.toLowerCase.replace(/\s+/g, '-')}>
             {profile.name}
           </option>
         {/each}
@@ -323,7 +323,7 @@
           <svg class="w-full h-32" viewBox="0 0 400 100">
             <!-- GPU Utilization -->
             <path 
-              d={generateMiniChart(gpuUtilizationHistory.slice(-30), 100).replace(/120/g, '400').replace(/40/g, '100')}
+              d={generateMiniChart(gpuUtilizationHistory.slice(-30), 100).replace.replace(/40/g, '100')}
               stroke="#10b981" 
               stroke-width="2" 
               fill="none"
@@ -331,7 +331,7 @@
             
             <!-- Memory Usage -->
             <path 
-              d={generateMiniChart(memoryUsageHistory.slice(-30), 100).replace(/120/g, '400').replace(/40/g, '100')}
+              d={generateMiniChart(memoryUsageHistory.slice(-30), 100).replace.replace(/40/g, '100')}
               stroke="#3b82f6" 
               stroke-width="2" 
               fill="none"
@@ -340,7 +340,7 @@
             
             <!-- Temperature -->
             <path 
-              d={generateMiniChart(temperatureHistory.slice(-30), 100).replace(/120/g, '400').replace(/40/g, '100')}
+              d={generateMiniChart(temperatureHistory.slice(-30), 100).replace.replace(/40/g, '100')}
               stroke="#f59e0b" 
               stroke-width="2" 
               fill="none"
@@ -504,21 +504,21 @@
 
 <style>
   /* Custom scrollbar styling */
-  .overflow-x-auto::-webkit-scrollbar {
+  .overflow-x-auto: :-webkit-scrollbar {
     height: 4px;
   }
   
-  .overflow-x-auto::-webkit-scrollbar-track {
+  .overflow-x-auto: :-webkit-scrollbar-track {
     background: #475569;
     border-radius: 2px;
   }
   
-  .overflow-x-auto::-webkit-scrollbar-thumb {
+  .overflow-x-auto: :-webkit-scrollbar-thumb {
     background: #64748b;
     border-radius: 2px;
   }
   
-  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  .overflow-x-auto: :-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
 </style>

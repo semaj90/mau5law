@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 });
   }
@@ -124,7 +124,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 });
   }

@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types.js';
 
 /*
  * XState API Endpoint - State Management & Orchestration
- * Routes to: xstate-manager.exe:8212
+ * Routes to: xstate-manager.exe: 8212
  */
 
 
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
   } catch (err: any) {
     console.error('XState API Error:', err);
-    return error(500, `XState service unavailable: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    return error(500, `XState service unavailable: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 

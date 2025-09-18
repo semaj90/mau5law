@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		
 		return json({
 			error: 'Failed to publish message',
-			details: error instanceof Error ? error.message : 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}

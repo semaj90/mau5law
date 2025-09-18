@@ -256,7 +256,7 @@
       // Process with Gemma3:legal-latest
       const gemmaResult = await processGemmaResponse(currentMessage);
       
-      orchestrationLog.push(`📊 Confidence: ${(gemmaResult.confidence * 100).toFixed(1)}%`);
+      orchestrationLog.push.toFixed(1)}%`);
       orchestrationLog.push(`⚖️ Legal Type: ${gemmaResult.legalClassification.documentType}`);
       orchestrationLog.push(`🎯 Risk Level: ${gemmaResult.legalClassification.riskLevel}`);
       
@@ -754,13 +754,7 @@
     font-size: 0.9rem;
   }
   
-  .glyph-canvas, .pattern-canvas {
-    border: 1px solid #FFD700;
-    background: #000000;
-    image-rendering: pixelated;
-  }
-  
-  .embedding-canvas {
+  .glyph-canvas, .pattern-canv.embedding-canvas {
     border: 1px solid #00FF00;
     background: #001100;
   }
@@ -972,7 +966,7 @@
     background: rgba(50, 205, 50, 0.1);
   }
   
-  .validation-status:not(.success) {
+  .validation-status: not(.success) {
     color: #FFA500;
     border-color: #FFA500;
     background: rgba(255, 165, 0, 0.1);
@@ -994,11 +988,11 @@
     border-left: 4px solid;
   }
   
-  .validation-(item as { success?: unknown }).success {
+  .validation-.success {
     border-left-color: #32CD32;
   }
   
-  .validation-item:not(.success) {
+  .validation-item: not(.success) {
     border-left-color: #FF6B6B;
   }
   

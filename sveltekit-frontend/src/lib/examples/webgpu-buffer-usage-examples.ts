@@ -155,15 +155,15 @@ export async function legalAIComputePipeline(device: GPUDevice) {
   const uploader = new WebGPUBufferUploader(device);
   
   // Upload for compute shader
-  const weightsBuffer = await uploader.uploadBuffer(weightsQuantized.(data as { data?: any; originalType?: any; length?: any }).data as any, {
+  const weightsBuffer = await uploader.uploadBuffer(weightsQuantized.data.data as any, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-    quantization: weightsQuantized.(data as { data?: any; originalType?: any; length?: any }).originalType,
+    quantization: weightsQuantized.data.originalType,
     label: 'legal-ai-weights'
   });
   
-  const inputBuffer = await uploader.uploadBuffer(inputQuantized.(data as { data?: any; originalType?: any; length?: any }).data as any, {
+  const inputBuffer = await uploader.uploadBuffer(inputQuantized.data.data as any, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-    quantization: inputQuantized.(data as { data?: any; originalType?: any; length?: any }).originalType,
+    quantization: inputQuantized.data.originalType,
     label: 'legal-ai-input'
   });
   
@@ -184,7 +184,7 @@ export async function legalAIComputePipeline(device: GPUDevice) {
     true // debug mode
   );
   
-  console.log('📥 Download result length:', downloadResult.(data as { data?: any; originalType?: any; length?: any }).length);
+  console.log('📥 Download result length:', downloadResult.data.length);
   console.log('📈 Download stats:', downloadResult.downloadStats);
   
   // Cleanup

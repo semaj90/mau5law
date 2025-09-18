@@ -223,7 +223,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
     });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
+    const message = error instanceof Error ? error.message: 'Unknown error';
     productionLogger.error(`Performance metrics collection failed: ${message}`);
 
     return json(
@@ -474,7 +474,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Performance action failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );

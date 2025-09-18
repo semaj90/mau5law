@@ -164,7 +164,7 @@ export const userWorkflowMachine = createMachine({
               actions: assign({
                 collaborators: ({ context, event }) => {
                   const exists = context.collaborators.some((c: any) => c.id === event.collaborator.id);
-                  return exists ? context.collaborators : [...context.collaborators, event.collaborator];
+                  return exists ? context.collaborators: [...context.collaborators, event.collaborator];
                 }
               })
             },
@@ -371,8 +371,8 @@ export const userWorkflowMachine = createMachine({
               ...context.notifications,
               {
                 id: `notification_${Date.now()}`,
-                type: event.(notification as { type?: any; message?: any }).type,
-                message: event.(notification as { type?: any; message?: any }).message,
+                type: event.notification.type,
+                message: event.notification.message,
                 timestamp: new Date(),
                 read: false
               }

@@ -121,9 +121,12 @@
 
   /* Interactive elements styling */
   .evidence-item {
-    @apply nes-container is-rounded p-4 cursor-pointer transition-all duration-200;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
     background: white;
     border: 2px solid #ccc;
+    border-radius: 0.5rem;
   }
 
   .evidence-item:hover {
@@ -132,12 +135,12 @@
     transform: translateY(-2px);
   }
 
-  .evidence-(item as { active?: unknown; pending?: unknown }).active {
+  .evidence-item.active {
     border-color: #28a745;
     background: #f8fff9;
   }
 
-  .evidence-(item as { active?: unknown; pending?: unknown }).pending {
+  .evidence-item.pending {
     border-color: #ffc107;
     background: #fffbf0;
   }

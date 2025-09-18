@@ -124,13 +124,13 @@ class UnifiedClientLLMOrchestrator {
       if (cacheResult.hit) {
         return {
           success: true,
-          response: cacheResult.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).response,
-          modelUsed: cacheResult.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).modelUsed,
+          response: cacheResult.data.response,
+          modelUsed: cacheResult.data.modelUsed,
           executionMetrics: {
             totalLatency: performance.now() - startTime,
             cacheHitRate: 1.0,
             memoryUsed: 0,
-            qualityScore: cacheResult.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).qualityScore
+            qualityScore: cacheResult.data.qualityScore
           }
         };
       }
@@ -163,7 +163,7 @@ class UnifiedClientLLMOrchestrator {
         modelUsed: selectedModel.id,
         executionMetrics: {
           totalLatency,
-          modelSwitchTime: contextSwitch.required ? contextSwitch.switchTime : undefined,
+          modelSwitchTime: contextSwitch.required ? contextSwitch.switchTime: undefined,
           cacheHitRate: 0.0,
           memoryUsed: selectedModel.memoryFootprint.gpuMemoryMB + selectedModel.memoryFootprint.ddrRAMCacheMB,
           qualityScore: inferenceResult.qualityScore
@@ -662,12 +662,12 @@ class UnifiedClientLLMOrchestrator {
       const messageId = Math.random().toString(36);
 
       const handleMessage = (event: MessageEvent) => {
-        if (event.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).id === messageId) {
+        if (event.data.id === messageId) {
           worker.removeEventListener('message', handleMessage);
-          if (event.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).type === 'ERROR') {
-            reject(new Error(event.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).message));
+          if (event.data.type === 'ERROR') {
+            reject(new Error(event.data.data.message));
           } else {
-            resolve(event.(data as { response?: any; modelUsed?: any; qualityScore?: any; id?: any; type?: any; data?: any }).data || event.data);
+            resolve(event.data.data || event.data);
           }
         }
       };

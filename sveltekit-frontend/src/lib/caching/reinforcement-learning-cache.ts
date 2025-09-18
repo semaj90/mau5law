@@ -43,7 +43,7 @@ export class ReinforcementLearningCache {
   private userInteractionSequence: string[] = [];
   
   // RNN-like sequence learning for component prediction
-  private componentTransitionMatrix = new Map<string, Map<string, number>>();
+  private componentTransitionMatrix = new Map<string, Map<string, number>();
   private animationTriggerPatterns = new Map<string, number[]>();
 
   async get(key: string) {

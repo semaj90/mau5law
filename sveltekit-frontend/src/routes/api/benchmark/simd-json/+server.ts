@@ -231,7 +231,7 @@ export const GET: RequestHandler = async ({ url }) => {
             simd: simdStatus,
             metrics: stats,
             system: {
-              platform: typeof navigator !== 'undefined' ? navigator.platform : 'server',
+              platform: typeof navigator !== 'undefined' ? navigator.platform: 'server',
               userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'node',
               hardwareConcurrency: typeof navigator !== 'undefined' ? navigator.hardwareConcurrency : 'unknown',
               memory: typeof performance !== 'undefined' && (performance as any).memory ? {

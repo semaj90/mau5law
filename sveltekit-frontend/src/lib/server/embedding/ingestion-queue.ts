@@ -57,7 +57,7 @@ export async function processNext(processor: (payload: IngestionJobRequest, upda
     status.completedAt = nowISO();
   } catch (e: any) {
     status.status = 'failed';
-    status.error = e instanceof Error ? e.message : String(e);
+    status.error = e instanceof Error ? e.message: String(e);
   }
   STATUS_STORE.set(jobId, status);
   return status;

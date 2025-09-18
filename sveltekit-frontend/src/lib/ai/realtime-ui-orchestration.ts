@@ -499,7 +499,7 @@ class VectorVisualization {
 
 export class LokiCacheManager {
   private db: Loki | null = null;
-  private collections: Map<string, Collection<any>> = new Map();
+  private collections: Map<string, Collection<any> = new Map();
   private isInitialized = false;
 
   constructor() {
@@ -879,7 +879,7 @@ export class RabbitMQRealtimeMessenger {
     await this.channel.consume(queue.queue, (msg) => {
       if (msg) {
         try {
-          const progressData = JSON.parse(msg.content.toString());
+          const progressData = JSON.parse(msg.content.toString();
           handler(progressData);
           this.channel!.ack(msg);
         } catch (error) {
@@ -941,7 +941,7 @@ export class RabbitMQRealtimeMessenger {
     await this.channel.consume(queue.queue, (msg) => {
       if (msg) {
         try {
-          const updateData = JSON.parse(msg.content.toString());
+          const updateData = JSON.parse(msg.content.toString();
           if (updateData.canvasId === canvasId) {
             handler(updateData);
           }
@@ -1002,7 +1002,7 @@ export class RabbitMQRealtimeMessenger {
     await this.channel.consume(queue.queue, (msg) => {
       if (msg) {
         try {
-          const vectorData = JSON.parse(msg.content.toString());
+          const vectorData = JSON.parse(msg.content.toString();
           handler(vectorData);
           this.channel!.ack(msg);
         } catch (error) {

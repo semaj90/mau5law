@@ -75,10 +75,7 @@ https://svelte.dev/e/js_parse_error -->
   	};
 
   	// Intervals and timeouts
-  let typingInterval = $state<NodeJS.Timeout;
-  let cursorInterval = $state<NodeJS.Timeout;
-  	let thinkingInterval: NodeJS.Timeout;
-  	let activityTimeout: NodeJS.TimeoutonMount(() = | null>(null)() {
+  let typingInterval = $state({}) {
   		if (autoStart) {
   			startTypewriter());
   		}

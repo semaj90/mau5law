@@ -472,7 +472,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 		z-index: 2;
 	}
 
-	.n64-slider-thumb::before {
+	.n64-slider-thumb: :before {
 		content: '';
 		position: absolute;
 		top: 50%;
@@ -569,7 +569,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 	}
 
 	/* Hover effects */
-	.n64-slider:not(.disabled):hover .n64-slider-thumb {
+	.n64-slider: not(.disabled):hover .n64-slider-thumb {
 		transform: translate(-50%, -50%) scale(1.05);
 		filter: brightness(1.1);
 	}

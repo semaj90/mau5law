@@ -424,7 +424,7 @@ class EnhancedErrorHandler {
       id: this.generateErrorId(),
       code: "NETWORK_ERROR",
       message: "Network connection failed",
-      details: error instanceof Error ? error.message : "Unknown network error",
+      details: error instanceof Error ? error.message: "Unknown network error",
       timestamp: new Date(),
       severity: 'error',
       category: 'network',

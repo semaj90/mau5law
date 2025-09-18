@@ -152,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
 					const response = await fetch('http://localhost:40000/mcp/memory/read-graph', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({})
+						body: JSON.stringify( )
 					});
 					return response.ok;
 				}

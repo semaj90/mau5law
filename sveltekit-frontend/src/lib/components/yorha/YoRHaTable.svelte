@@ -77,9 +77,7 @@
   const filteredData = $derived.by(() => {
     let filtered = data;
     if (searchQuery) {
-      filtered = data.filter(row => 
-        Object.values(row).some(value => 
-          String(value).toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = data.filter(item => item.some)-toLowerCase.includes(searchQuery.toLowerCase())
         )
       );
     }
@@ -364,10 +362,9 @@
     box-shadow: 0 0 20px rgba(255, 191, 0, 0.3);
   }
 
-  .yorha-table-container::before {
+  .yorha-table-container: :before {
     content: '';
-position: absolute {}
-    top: 0;
+position: absolute top: 0;
     left: 0;
     right: 0;
     height: 2px;
@@ -424,8 +421,7 @@ position: absolute {}
 
   .yorha-table {
     @apply w-full text-amber-400 font-mono text-sm;
-border-collapse: separate {}
-    border-spacing: 0;
+border-collapse: separate border-spacing: 0;
   }
 
   .yorha-table-striped .yorha-row-even {
@@ -464,8 +460,7 @@ border-collapse: separate {}
   .yorha-sortable {
     @apply cursor-pointer hover:bg-amber-300 transition-colors;
   }
-.yorha-sorted-asc, {}
-  .yorha-sorted-desc {
+.yorha-sorted-asc, .yorha-sorted-desc {
     @apply bg-amber-300;
   }
 
@@ -497,18 +492,13 @@ border-collapse: separate {}
   .yorha-status {
     @apply inline-block px-2 py-1 text-xs font-mono rounded border;
   }
-.yorha-status-active, {}
-.yorha-status-online, {}
-  .yorha-status-success {
+.yorha-status-active, .yorha-status-online, .yorha-status-success {
     @apply bg-green-600 text-green-100 border-green-400;
   }
-.yorha-status-inactive, {}
-.yorha-status-offline, {}
-  .yorha-status-failed {
+.yorha-status-inactive, .yorha-status-offline, .yorha-status-failed {
     @apply bg-red-600 text-red-100 border-red-400;
   }
-.yorha-status-pending, {}
-  .yorha-status-processing {
+.yorha-status-pending, .yorha-status-processing {
     @apply bg-yellow-600 text-yellow-100 border-yellow-400;
     animation: pulse 1.5s infinite;
   }
@@ -533,12 +523,10 @@ border-collapse: separate {}
     @apply bg-amber-400 text-black px-2 py-1 text-xs font-mono hover:bg-amber-300 transition-colors;
     border: 1px solid #ffbf00;
   }
-.yorha-loading-row, {}
-  .yorha-empty-row {
+.yorha-loading-row, .yorha-empty-row {
     @apply border-none;
   }
-.yorha-loading-cell, {}
-  .yorha-empty-cell {
+.yorha-loading-cell, .yorha-empty-cell {
     @apply py-8 text-center border-none;
   }
 

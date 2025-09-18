@@ -642,8 +642,7 @@ class IntelligentModelSwitcher {
     return {
       totalSwitches: this.performanceMonitor.totalSwitches,
       successRate: this.performanceMonitor.totalSwitches > 0 
-        ? this.performanceMonitor.successfulSwitches / this.performanceMonitor.totalSwitches 
-        : 0,
+        ? this.performanceMonitor.successfulSwitches / this.performanceMonitor.totalSwitches: 0,
       avgSwitchTime: this.performanceMonitor.avgSwitchTime,
       userSatisfactionImprovement: this.performanceMonitor.userSatisfactionImprovement,
       activeUserProfiles: this.userProfiles.size,

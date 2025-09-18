@@ -1,30 +1,33 @@
 <script lang="ts">
   import { accessibilityService } from '$lib/services/accessibility-service';
-  import { Settings, Eye, Type, MousePointer, Keyboard, Volume2 } from 'lucide-svelte';
+  import { Settings, Eye, Type } from 'lucide-svelte';
   import Button from '$lib/components/ui/bits/button';
 
-  let { isOpen } = $props();: boolean = false;
+  // Props (runes style)
+  let { isOpen = $bindable(false) } = $props();
 
-  let config = accessibilityService.getConfig();
+  // Local reactive state wrapper of service config
+  let config = $state(accessibilityService.getConfig());
+
+  function refresh() {
+    config = accessibilityService.getConfig();
+  }
 
   function updateFontSize(size: typeof config.fontSize) {
     accessibilityService.setFontSize(size);
-    config = accessibilityService.getConfig();
+    refresh();
   }
-
   function toggleHighContrast() {
     accessibilityService.toggleHighContrast();
-    config = accessibilityService.getConfig();
+    refresh();
   }
-
   function toggleReducedMotion() {
     accessibilityService.toggleReducedMotion();
-    config = accessibilityService.getConfig();
+    refresh();
   }
-
   function updateConfig(key: keyof typeof config, value: unknown) {
     accessibilityService.updateConfig({ [key]: value });
-    config = accessibilityService.getConfig();
+    refresh();
   }
 </script>
 
@@ -83,7 +86,7 @@ isOpen = false}
                     aria-pressed={config.fontSize === size}
                   >
                     {size.charAt(0).toUpperCase() + size.slice(1).replace('-', ' ')}
-</Button>
+                      </button>
                 {/each}
               </div>
             </div>
@@ -106,7 +109,7 @@ isOpen = false}
                   class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
                     {config.enableHighContrast ? 'translate-x-6' : 'translate-x-1'}"
                 ></span>
-</Button>
+              </div>
             </div>
 
             <!-- Reduced Motion -->
@@ -247,7 +250,7 @@ isOpen = false}
       <div class="flex justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700">
         <Button variant="outline" onclick={() => isOpen = false}>
           Close
-        </Button>
+                    </div>
       </div>
     </div>
   </div>

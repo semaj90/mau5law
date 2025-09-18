@@ -72,7 +72,7 @@ https://svelte.dev/e/expected_token -->
       }
       
     } catch (error) {
-      renderError = `Rendering failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      renderError = `Rendering failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
       isRendering = false;
     }
   }
@@ -154,8 +154,7 @@ https://svelte.dev/e/expected_token -->
     `;
     
     const fragmentShaderSource = glyphResult.simd_shader_data.shader_code.includes('precision')
-      ? glyphResult.simd_shader_data.shader_code
-      : `
+      ? glyphResult.simd_shader_data.shader_code: `
       precision mediump float;
       uniform sampler2D u_texture;
       varying vec2 v_texCoord;
@@ -250,7 +249,7 @@ https://svelte.dev/e/expected_token -->
     const commandEncoder = webgpuDevice.createCommandEncoder();
     const renderPassDescriptor: GPURenderPassDescriptor = {
       colorAttachments: [{
-        view: (canvas.getContext('webgpu') as GPUCanvasContext).getCurrentTexture().createView(),
+        view: (canvas.getContext('webgpu') as GPUCanvasContext).getCurrentTexture.createView(),
         clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
         loadOp: 'clear',
         storeOp: 'store',

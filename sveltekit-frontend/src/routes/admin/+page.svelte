@@ -198,6 +198,7 @@
       >
 <RefreshCw class="w-4 h-4 {isLoading ? 'animate-spin' : ''}" />
         Refresh
+      </Button>
 
     </div>
   </div>
@@ -210,6 +211,7 @@
     >
       <Users class="w-6 h-6" />
       <span>Manage Users</span>
+    </button>
 
     <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/admin/cluster')}
@@ -217,6 +219,7 @@
     >
       <Server class="w-6 h-6" />
       <span>Cluster Status</span>
+    </button>
 
     <button class="nes-btn h-20 flex-col gap-2"
       onclick={() => goto('/admin/gpu-demo')}

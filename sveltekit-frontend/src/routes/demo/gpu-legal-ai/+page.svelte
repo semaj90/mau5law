@@ -557,7 +557,7 @@
                     <span class="font-medium text-sm">{test.name}</span>
                     <Badge variant="secondary">{test.unit}</Badge>
                   </div>
-                  <p class="text-2xl font-bold text-primary">{test.(result as { toLocaleString?: unknown }).toLocaleString()}</p>
+                  <p class="text-2xl font-bold text-primary">{test.result.toLocaleString()}</p>
                 </div>
               {/each}
             </div>

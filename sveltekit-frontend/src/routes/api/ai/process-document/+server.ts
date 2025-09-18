@@ -415,7 +415,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Processing failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
         gpu_accelerated: false,
         processing_time_ms: 0
       },
@@ -439,7 +439,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     return json(
-      { error: 'Status check failed', details: error instanceof Error ? error.message : 'Unknown error' },
+      { error: 'Status check failed', details: error instanceof Error ? error.message: 'Unknown error' },
       { status: 500 }
     );
   }

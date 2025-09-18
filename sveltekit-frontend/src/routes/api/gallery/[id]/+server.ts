@@ -127,7 +127,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       processedAt: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).processedAt?.toISOString(),
       caseId: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).caseId || undefined,
       caseTitle: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).caseTitle || undefined,
-      tags: Array.isArray((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).tags) ? (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).tags : [],
+      tags: Array.isArray((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).tags) ? (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).tags: [],
       metadata: ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).metadata as Record<string, any>) || {},
       isPublic: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).isPublic || false,
       ocrText: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).ocrText || undefined,
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       throw error(404, 'Gallery item not found');
     }
     
-    throw error(500, `Failed to fetch gallery item: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to fetch gallery item: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -259,7 +259,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       throw error(parseInt(err.message.split(' ')[0]) || 500, err.message);
     }
     
-    throw error(500, `Failed to update gallery item: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to update gallery item: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -338,7 +338,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       throw error(parseInt(err.message.split(' ')[0]) || 500, err.message);
     }
     
-    throw error(500, `Failed to delete gallery item: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to delete gallery item: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 

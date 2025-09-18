@@ -261,8 +261,7 @@ export async function copilotOrchestrator(
   if (options.useMultiAgent || (options.agents && options.agents.length > 0)) {
     const agentsToRun =
       options.agents && options.agents.length > 0
-        ? options.agents
-        : ["autogen", "crewai"];
+        ? options.agents: ["autogen", "crewai"];
     results.agentResults = [];
     for (const agent of agentsToRun) {
       if (agentRegistry[agent]) {

@@ -120,7 +120,7 @@ https://svelte.dev/e/expected_token -->
         <span class="stat-label">Total Machines</span>
       </div>
       <div class="stat-nier-bits-card">
-        <span class="stat-number">{machines.filter(m => m.status === 'running').length}</span>
+        <span class="stat-number">{machines.filter(item => item.length)}</span>
         <span class="stat-label">Running</span>
       </div>
       <div class="stat-nier-bits-card">

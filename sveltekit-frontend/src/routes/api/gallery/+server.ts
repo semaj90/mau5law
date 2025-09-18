@@ -146,7 +146,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   } catch (err) {
     console.error('Gallery API error:', err);
-    throw error(500, `Failed to fetch gallery data: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to fetch gallery data: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -218,11 +218,11 @@ async function getEvidenceItems(filters: GalleryFilters, page: number, pageSize:
       uploadedBy: 'System', // TODO: Add user tracking
       caseId: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).caseId || undefined,
       caseTitle: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).caseTitle || undefined,
-      tags: Array.isArray((item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).tags) ? (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).tags : [],
+      tags: Array.isArray((item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).tags) ? (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).tags: [],
       metadata: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).metadata as Record<string, any> || {},
       isPublic: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).isPublic || false,
       category: 'Legal Evidence',
-      searchableText: [(item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).title, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).description, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).contentText].filter(Boolean).join(' ')
+      searchableText: [(item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).title, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).description, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).contentText].filter(item => item.join)(' ')
     }));
 
     return { items, total: items.length };
@@ -351,7 +351,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     
   } catch (err) {
     console.error('Gallery POST error:', err);
-    throw error(500, `Gallery operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Gallery operation failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 

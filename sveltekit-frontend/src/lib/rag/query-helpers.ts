@@ -40,8 +40,7 @@ export async function buildIntentAwareRetrieval(input: RAGInputs): Promise<any> 
 
     // Calculate confidence based on scores
     const avgScore = chunks.length > 0
-      ? chunks.reduce((sum, chunk) => sum + chunk.score, 0) / chunks.length
-      : 0;
+      ? chunks.reduce((sum, chunk) => sum + chunk.score, 0) / chunks.length: 0;
 
     const confidence = Math.min(avgScore * 100, 100); // Convert to percentage
 

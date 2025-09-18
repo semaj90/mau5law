@@ -446,7 +446,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 		}
 
 		const totalTime = Date.now() - startTime;
-		const successCount = results.filter(r => r.success).length;
+		const successCount = results.filter(item => item.length);
 
 		return json({
 			success: successCount > 0,

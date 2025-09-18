@@ -346,7 +346,7 @@ https://svelte.dev/e/js_parse_error -->
     overflow: hidden;
   }
 
-  .scan-effect::after {
+  .scan-effect: :after {
     content: '';
     position: absolute;
     top: -100%;

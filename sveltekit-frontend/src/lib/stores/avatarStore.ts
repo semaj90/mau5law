@@ -137,7 +137,7 @@ function createAvatarStore() {
         }
       } catch (error: any) {
         const errorMessage =
-          error instanceof Error ? error.message : "Upload failed";
+          error instanceof Error ? error.message: "Upload failed";
         update((state) => ({
           ...state,
           isUploading: false,
@@ -180,7 +180,7 @@ function createAvatarStore() {
         }
       } catch (error: any) {
         const errorMessage =
-          error instanceof Error ? error.message : "Removal failed";
+          error instanceof Error ? error.message: "Removal failed";
         update((state) => ({ ...state, error: errorMessage }));
         return { success: false, error: errorMessage };
       }

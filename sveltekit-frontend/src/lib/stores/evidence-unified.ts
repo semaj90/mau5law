@@ -103,7 +103,7 @@ class UnifiedEvidenceStore {
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const hostname = window.location.hostname;
     const port =
-      import.meta.env.NODE_ENV === "production" ? window.location.port : "3030";
+      import.meta.env.NODE_ENV === "production" ? window.location.port: "3030";
     const wsUrl = `${protocol}//${hostname}:${port}`;
 
     try {

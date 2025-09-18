@@ -101,8 +101,7 @@ async function handleUnifiedSearch(searchParams: z.infer<typeof unifiedSearchSch
 
   // 4. Filter by categories if specified
   if (categories && categories.length > 0) {
-    results = results.filter(result =>
-      categories.includes((result as { type?: any; metadata?: any }).type as any) ||
+    results = results.filter(item => item.type) as any) ||
       categories.some(cat => (result as { type?: any; metadata?: any }).metadata?.category?.includes(cat))
     );
   }
@@ -163,7 +162,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         error: 'Search failed',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message: 'Unknown error'
       },
       { status: 500 }
     );

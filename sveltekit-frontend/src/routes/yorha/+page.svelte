@@ -199,7 +199,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         id: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).id || index + 1,
         title: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).title || (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).name || `Document ${index + 1}`,
         type: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).type || 'Legal Document',
-        relevance: Math.round(((item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).relevance || Math.random()) * 100),
+        relevance: Math.round.relevance || Math.random()) * 100),
         status: (item as { id?: unknown; title?: unknown; name?: unknown; type?: unknown; relevance?: unknown; status?: unknown }).status || 'active',
         metadata: item
       }));

@@ -33,7 +33,7 @@ export const enhancedRagMachine = createMachine({
         EXECUTE: {
           target: 'retrieving',
           actions: assign(({ context, event }) => ({
-            query: event.type === 'EXECUTE' ? event.query : context.query
+            query: event.type === 'EXECUTE' ? event.query: context.query
           }))
         },
         RESET: { actions: assign(() => ({ query: '', results: [], error: null, loading: false })) }

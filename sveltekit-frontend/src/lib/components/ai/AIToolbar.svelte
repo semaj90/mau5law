@@ -65,7 +65,7 @@
             useVector: true,
             similarityThreshold: 0.7,
           },
-        });
+        }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -79,16 +79,15 @@
 
       if ((result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).success) {
         aiSearchResults = (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).results || [];
-        console.log(
-          `🔍 Enhanced AI search found ${aiSearchResults.length} results in ${(result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).searchTime}`
+        console.log.searchTime}`
         );
-        console.log('Search analytics:', (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).analytics);
+        console.log.analytics);
 
         if (onAISearch) {
           onAISearch(result);
         }
       } else {
-        console.error('Enhanced AI search failed:', (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).error);
+        console.error(error);
         // Fallback to basic search
         await performFallbackSearch();
       }
@@ -97,7 +96,7 @@
       // Fallback to basic search
       await performFallbackSearch();
     
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';} finally {
       isAISearching = false;
     }
   }
@@ -114,7 +113,7 @@
           jurisdiction: 'all',
           category: 'all',
           useAI: true,
-        });
+        }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -152,7 +151,7 @@
         body: JSON.stringify({
           message: aiChatMessage,
           temperature: 0.7,
-        });
+        }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -170,12 +169,12 @@
           onAIChat(result);
         }
       } else {
-        console.error('AI chat failed:', (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).error);
+        console.error(error);
       }
     } catch (error) {
       console.error('AI chat error:', error);
     
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';} finally {
       isAIChatting = false;
     }
   }
@@ -196,7 +195,7 @@
           text: summarizeText,
           type: 'legal',
           options: { max_tokens: 500 },
-        });
+        }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -214,12 +213,12 @@
           onAISummarize(result);
         }
       } else {
-        console.error('AI summarization failed:', (result as { success?: any; results?: any; searchTime?: any; analytics?: any; error?: any; laws?: any; response?: any; summary?: any; title?: any; jurisdiction?: any }).error);
+        console.error(error);
       }
     } catch (error) {
       console.error('AI summarization error:', error);
     
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';} finally {
       isSummarizing = false;
     }
   }

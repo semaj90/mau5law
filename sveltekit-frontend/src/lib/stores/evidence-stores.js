@@ -81,7 +81,7 @@ export const processingProgress = derived(
   [processingQueue, recursionMetrics],
   ([$queue, $metrics]) => {
     const totalJobs = $queue.length;
-    const completedJobs = $queue.filter(job => job.status === 'completed').length;
+    const completedJobs = $queue.filter(item => item.length);
 
     return {
       percentage: totalJobs > 0 ? (completedJobs / totalJobs) * 100 : 0,
@@ -438,7 +438,7 @@ function calculateHierarchyStatistics(hierarchy: any): any {
   traverse(hierarchy);
 
   // Calculate average confidence
-  stats.avgConfidence = stats.totalNodes > 0 ? stats.avgConfidence / stats.totalNodes : 0;
+  stats.avgConfidence = stats.totalNodes > 0 ? stats.avgConfidence / stats.totalNodes: 0;
 
   return stats;
 }
@@ -491,8 +491,7 @@ function analyzeChainIntegrityOverview(hierarchy: any): any {
 
   // Calculate average
   integrity.averageIntegrity = integrity.totalChains > 0
-    ? integrity.averageIntegrity / integrity.totalChains
-    : 0;
+    ? integrity.averageIntegrity / integrity.totalChains: 0;
 
   return integrity;
 }

@@ -311,8 +311,8 @@ async function testLegalAPIIntegration(userId: string) {
     }
   }
 
-  const successfulCalls = results.filter(r => r.success).length;
-  const cachedCalls = results.filter(r => r.cached).length;
+  const successfulCalls = results.filter(item => item.length);
+  const cachedCalls = results.filter(item => item.length);
   const avgResponseTime = results
     .filter(r => r.success)
     .reduce((sum, r) => sum + (r.responseTime || 0), 0) / (successfulCalls || 1);

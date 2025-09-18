@@ -8,7 +8,7 @@
   	// Svelte 5 runes for reactive state
   	let query = $state('');
   	let isProcessing = $state(false);
-  	let searchResults = $state<any[]>([])([]);
+  	let searchResults = $state<any[]>([]) => []);
   	let gpuStatus = $state(null);
   	let performanceMetrics = $state(null);
 
@@ -150,10 +150,7 @@
   					cuda_operations: Math.ceil(similarities.length / 16)
   				};
 
-  				console.log('🚀 GPU Legal Search completed:', {
-  					results_found: searchResults.length,
-  					processing_time: totalTime,
-  					gpu_utilized: (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).gpu_utilized
+  				console.log.gpu_utilized
   				});
 
   			} else {
@@ -170,7 +167,7 @@
 
   	// Simplified query-to-vector conversion (in production, use your embedding service)
   	function convertQueryToVector(query: string): number[] {
-  		const words = query.toLowerCase().split(' ');
+  		const words = query.toLowerCase.split(' ');
   		const vector = new Array(8).fill(0);
   		// Simple word-based vector generation for demo
   		words.forEach((word, index) => {

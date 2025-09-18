@@ -118,7 +118,7 @@
       console.error('Failed to save note:', error);
   }}
   function generateNoteId(): string {
-    return `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `note-${Date.now()}-${Math.random.toString-substr(2, 9)}`;
   }
   function createNewNote() {
     currentNote = {
@@ -203,7 +203,7 @@
                 placeholder="Add tags (comma separated)"
                 class="space-y-4"
                 onblur={(e) => {
-                  const tags = (e.target as HTMLInputElement).value.split(',').map(t => t.trim()).filter(t => t);
+                  const tags = (e.target as HTMLInputElement).value.split.map(t => t.trim()).filter(t => t);
                   currentNote.tags = tags;
                 }}
               />

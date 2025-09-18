@@ -62,8 +62,7 @@
           limit: searchConfig.limit,
           threshold: searchConfig.threshold,
           // Optional filters can be added here
-          filters: {}
-        })
+          filters: })
       });
 
       if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
@@ -91,7 +90,7 @@
 
             if (ragResponseFetch.ok) {
               const ragData = await ragResponseFetch.json();
-              ragResponse = ragData.success ? ragData.answer : null;
+              ragResponse = ragData.success ? ragData.answer: null;
             }
           } catch (ragError) {
             console.warn('RAG response generation failed:', ragError);
@@ -100,9 +99,7 @@
         }
 
         // Add to search history
-        searchHistory.unshift({
-          query: searchQuery,
-          resultCount: (data as { success?: unknown; results?: unknown; processingTime?: unknown; error?: unknown }).results.length,
+        searchHistory.unshift.results.length,
           timestamp: new Date(),
           hasRAGResponse: !!ragResponse,
           processingTime: (data as { success?: unknown; results?: unknown; processingTime?: unknown; error?: unknown }).processingTime || 0
@@ -159,7 +156,7 @@
 
         const result = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
         // Show success notification
-        console.log(`✅ Document ingested: ${(result as { chunks?: unknown; similarity?: unknown; entityInfo?: unknown; chunk_sequence?: unknown; chunk_text?: unknown }).chunks.length} chunks created`);
+        console.log.chunks.length} chunks created`);
       } catch (error) {
         errorMessage = `Document ingestion failed: ${error.message}`;
       }
@@ -206,7 +203,7 @@
         <div class="w-3 h-3 rounded-full {systemStatus.healthScore > 80 ? 'bg-green-500' : systemStatus.healthScore > 60 ? 'bg-yellow-500' : 'bg-red-500'}"></div>
         <span class="font-mono">Health: {systemStatus.healthScore}%</span>
         <span class="text-nier-text-muted">
-          ({systemStatus.services.filter(s => s.healthy).length}/{systemStatus.services.length} services)
+          ({systemStatus.services.filter(item => item.length)}/{systemStatus.services.length} services)
         </span>
       </div>
     {/if}
@@ -439,15 +436,15 @@
   }
 
   /* Custom scrollbar for results */
-  .space-y-4::-webkit-scrollbar {
+  .space-y-4: :-webkit-scrollbar {
     width: 6px;
   }
 
-  .space-y-4::-webkit-scrollbar-track {
+  .space-y-4: :-webkit-scrollbar-track {
     background: var(--nier-bg-tertiary);
   }
 
-  .space-y-4::-webkit-scrollbar-thumb {
+  .space-y-4: :-webkit-scrollbar-thumb {
     background: var(--nier-accent-warm);
     border-radius: 3px;
   }

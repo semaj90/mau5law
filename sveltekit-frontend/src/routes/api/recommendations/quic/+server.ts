@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: err instanceof Error ? err.message : 'QUIC recommendation failed',
+        error: err instanceof Error ? err.message: 'QUIC recommendation failed',
         fallback: 'Consider using /api/search for HTTP fallback',
         timestamp: new Date().toISOString(),
       },
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
         totalQueries: batchQueries.length,
         successfulQueries: successful.length,
         results: batchResults.map((result) =>
-          (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value : { error: (result as { status?: any; value?: any; reason?: any }).reason?.message }
+          (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value:  { error: (result as { status?: any; value?: any; reason?: any }).reason?.message }
         ),
         performance: {
           totalBatchTime: totalTime,
@@ -211,7 +211,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: err instanceof Error ? err.message : 'QUIC recommendation failed',
+        error: err instanceof Error ? err.message: 'QUIC recommendation failed',
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

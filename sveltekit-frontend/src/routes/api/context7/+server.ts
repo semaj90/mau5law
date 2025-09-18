@@ -270,8 +270,7 @@ async function syncWithOrchestrator(data: any): Promise<any> {
     }
 
     const processedCount = Array.isArray((recommendationResponse as any)?.result?.recommendations)
-      ? (recommendationResponse as any).(result as { recommendations?: any }).recommendations.length
-      : 0;
+      ? (recommendationResponse as any).result.recommendations.length: 0;
 
     return json({
       success: true,

@@ -24,7 +24,7 @@
   let connectionMap = $state<any>(null);
   let isLoading = $state(true);
   let error = $state<string | null>(null);
-  let analytics = $state<any>({});
+  let analytics = $state<any>( );
   
   // Event handlers
   let connectionMapGenerated = false;
@@ -71,7 +71,7 @@
       const response = await fetch(`/api/v1/evidence/by-case/${caseId}?includeAnalysis=true&limit=100`);
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
-        evidenceList = (data as { data?: unknown }).(data as { data?: unknown }).evidence || [];
+        evidenceList = (data as { data?: unknown }).data.evidence || [];
       } else {
         throw new Error('Failed to load evidence');
       }
@@ -130,9 +130,8 @@
     const { evidence, analysis } = event.detail;
     
     // Update evidence in the list with new analysis
-    evidenceList = evidenceList.map(item => 
-      (item as { id?: unknown; metadata?: unknown }).id === evidence.id 
-        ? { ...item, metadata: { ...(item as { id?: unknown; metadata?: unknown }).metadata, aiAnalysis: analysis } }
+    evidenceList = evidenceList.map.id === evidence.id 
+        ? { ...item, metadata: { ...item.metadata, aiAnalysis: analysis } }
         : item
     );
     
@@ -203,7 +202,7 @@
     </main>
 
     <!-- Analytics sidebar (optional) -->
-    {#if Object.keys(analytics).length > 0}
+    {#if Object.keys.length > 0}
       <aside class="analytics-sidebar">
         <h3>Session Analytics</h3>
         

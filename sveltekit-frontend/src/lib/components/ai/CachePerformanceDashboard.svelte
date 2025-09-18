@@ -904,12 +904,12 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .query-(item as { cached?: any; uncached?: any }).cached {
+  .query-.cached {
     background: rgba(34, 197, 94, 0.1);
     border-color: rgba(34, 197, 94, 0.3);
   }
 
-  .query-(item as { cached?: any; uncached?: any }).uncached {
+  .query-.uncached {
     background: rgba(239, 68, 68, 0.1);
     border-color: rgba(239, 68, 68, 0.3);
   }

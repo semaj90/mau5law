@@ -21,8 +21,8 @@
     ({
       selected: writable(null),
       open: writable(false),
-      onSelect: () => {},
-      onToggle: () => {},
+      onSelect: () => ,
+      onToggle: () => ,
     } as SelectContext);
   const { selected, open, onSelect, onToggle } = context;
 
@@ -47,8 +47,7 @@
   {/if}
 </div>
 
-<style>/* @unocss-include */ {}
-  .select-item {
+<style>/* @unocss-include */ .select-item {
     padding: 8px 12px;
     cursor: pointer;
     font-size: 14px;

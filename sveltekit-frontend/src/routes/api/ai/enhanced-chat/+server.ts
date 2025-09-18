@@ -98,7 +98,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json(
       { 
         error: 'Internal server error', 
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error',
         processingTime: Date.now() - startTime 
       },
       { status: 500 }
@@ -147,7 +147,7 @@ const originalGETHandler: RequestHandler = async () => {
 
     return json(status);
   } catch (error: any) {
-    return json({ error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
+    return json({ error: error instanceof Error ? error.message: 'Unknown error' }, { status: 500 });
   }
 };
 

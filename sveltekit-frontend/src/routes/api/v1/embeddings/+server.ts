@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       { 
         error: 'Failed to generate embeddings',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message: 'Unknown error'
       },
       { status: 500 }
     );
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async () => {
     return json(
       { 
         error: 'Failed to get service status',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message: 'Unknown error'
       },
       { status: 500 }
     );

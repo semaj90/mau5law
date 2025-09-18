@@ -62,7 +62,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
   let currentResult = $state<CopilotSelfPromptResult | null>(null);
   let processingStage = $state('');
   let processingProgress = $state(0);
-  let executionHistory = $state<any[]>([])([]);
+  let executionHistory = $state<any[]>([]) => []);
 
   // Demo examples
   const demoExamples = [

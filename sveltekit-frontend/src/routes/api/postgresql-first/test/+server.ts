@@ -423,9 +423,7 @@ async function checkSystemHealth(): Promise<any> {
   }
 
   // Determine overall health
-  const healthyServices = Object.values(health).filter(service => 
-    typeof service === 'object' && service.status === 'healthy'
-  ).length;
+  const healthyServices = Object.values(health).filter(item => item.length);
   
   const totalServices = 4;
   

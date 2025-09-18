@@ -1043,12 +1043,12 @@ export class ContextualEngineeringMachine {
       const conceptGraph = context.contextualMemory.conceptGraph;
       
       console.log('🏢 Organizations identified:');
-      entities.filter(e => e.type === 'organization').forEach(entity => {
+      entities.filter(item => item.forEach)(entity => {
         console.log(`   ${entity.entity} (mentioned ${entity.frequency} times)`);
       });
       
       console.log('📜 Legal concepts mapped:');
-      entities.filter(e => e.type === 'legal_concept').forEach(entity => {
+      entities.filter(item => item.forEach)(entity => {
         console.log(`   ${entity.entity} -> ${conceptGraph.get(entity.entity)?.join(', ') || 'No relations'}`);
       });
       
@@ -1270,8 +1270,7 @@ export class ContextualEngineeringMachine {
       .map(e => e.entity);
     
     // Find concepts mentioned together in the same message
-    const mentionedConcepts = concepts.filter(concept => 
-      message.toLowerCase().includes(concept)
+    const mentionedConcepts = concepts.filter(item => item.includes)(concept)
     );
     
     // Create relationships between co-mentioned concepts
@@ -1359,7 +1358,7 @@ export class ContextualEngineeringMachine {
     const longSentences = content.split('.').some(sentence => sentence.split(' ').length > 15);
     
     let complexity = 0;
-    complexity += complexTerms.filter(term => content.toLowerCase().includes(term)).length * 0.2;
+    complexity += complexTerms.filter(item => item.includes(term)).length * 0.2;
     complexity += legalCitations ? 0.3 : 0;
     complexity += longSentences ? 0.2 : 0;
     complexity += content.length > 100 ? 0.1 : 0;
@@ -1405,7 +1404,7 @@ export class ContextualEngineeringMachine {
 
   private generateTestSummary(): void {
     const totalTests = this.testResults.length;
-    const passedTests = this.testResults.filter(result => (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).success).length;
+    const passedTests = this.testResults.filter(item => item.success)).length;
     const totalExecutionTime = this.testResults.reduce((sum, result) => sum + (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).executionTime, 0);
     
     console.log('\n📊 CONTEXTUAL ENGINEERING MACHINE TEST SUMMARY');

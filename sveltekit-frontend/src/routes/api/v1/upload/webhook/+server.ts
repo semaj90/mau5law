@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       for (const key of keys) {
         const data = await redisService.get(key);
         if (data) {
-          const metadata = parseMaybeString<Record<string, any>>(data);
+          const metadata = parseMaybeString<Record<string, any>(data);
           if (metadata?.objectName === webhookEvent.objectName) {
             uploadId = metadata.uploadId;
             uploadMetadata = metadata;
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       const uploadKey = `upload:${uploadId}`;
       const data = await redisService.get(uploadKey);
       if (data) {
-        uploadMetadata = parseMaybeString<Record<string, any>>(data);
+        uploadMetadata = parseMaybeString<Record<string, any>(data);
       }
     }
 

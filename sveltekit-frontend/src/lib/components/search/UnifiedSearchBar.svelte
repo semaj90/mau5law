@@ -200,8 +200,7 @@
     }
 
     const results = fuseIndex.search(searchQuery);
-    return results.map(result => ({
-      id: (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.id,
+    return results.map.item.id,
       title: (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.title,
       content: (result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).item.content.substring(0, 150) + '...',
       source: 'minio' as const,
@@ -272,17 +271,16 @@
   // Utility functions
   function deduplicateResults(results: SearchResult[]): SearchResult[] {
     const seen = new Map();
-    return results.filter(result => {
-      if (seen.has((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).id)) {
+    return results.filter(item => item.id))) {
         // Keep highest scoring result
-        const existing = seen.get((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).id);
+        const existing = seen.get.id);
         if ((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).similarity > existing.similarity) {
-          seen.set((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).id, result);
+          seen.set.id, result);
           return true;
         }
         return false;
       }
-      seen.set((result as { item?: unknown; score?: unknown; matches?: unknown; id?: unknown; similarity?: unknown; title?: unknown; highlight?: unknown; source?: unknown; content?: unknown; metadata?: unknown }).id, result);
+      seen.set.id, result);
       return true;
     });
   }
@@ -290,8 +288,8 @@
   function rankResults(results: SearchResult[], query: string): SearchResult[] {
     return results.sort((a, b) => {
       // Boost exact matches in title
-      const aExactTitle = a.title.toLowerCase().includes(query.toLowerCase()) ? 0.2 : 0;
-      const bExactTitle = b.title.toLowerCase().includes(query.toLowerCase()) ? 0.2 : 0;
+      const aExactTitle = a.title.toLowerCase.includes(query.toLowerCase()) ? 0.2 : 0;
+      const bExactTitle = b.title.toLowerCase.includes(query.toLowerCase()) ? 0.2 : 0;
       const aScore = a.similarity + aExactTitle;
       const bScore = b.similarity + bExactTitle;
       return bScore - aScore;

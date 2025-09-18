@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       } catch (error: any) {
         nesIntegration = {
           cached: false,
-          error: error instanceof Error ? error.message : 'NES cache failed',
+          error: error instanceof Error ? error.message: 'NES cache failed',
         };
       }
     }
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       } catch (error: any) {
         webgpuIntegration = {
           processed: false,
-          error: error instanceof Error ? error.message : 'WebGPU failed',
+          error: error instanceof Error ? error.message: 'WebGPU failed',
         };
       }
     }
@@ -204,7 +204,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(
       {
         error: 'Failed to store in enhanced GPU cache',
-        details: dev ? (error instanceof Error ? error.message : error) : undefined,
+        details: dev ? (error instanceof Error ? error.message: error) : undefined,
       },
       { status: 500 }
     );
@@ -256,7 +256,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to retrieve from GPU cache',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );
@@ -300,7 +300,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to analyze image with GPU cache',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );
@@ -374,7 +374,7 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to synchronize databases',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );
@@ -460,7 +460,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Shader cache operation failed',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );
@@ -535,7 +535,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to get GPU cache metrics',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );
@@ -570,7 +570,7 @@ export const HEAD: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to get user history',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );
@@ -615,7 +615,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to perform bulk operation',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );

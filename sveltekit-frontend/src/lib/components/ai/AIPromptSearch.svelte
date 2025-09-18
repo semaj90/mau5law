@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
     });
   });
 
-  let results = $derived(query && fuse ? fuse.search(query).map((r) => r.item) : history);
+  let results = $derived(query && fuse ? fuse.search.map((r) => r.item) : history);
 </script>
 
 <div class="container mx-auto px-4">

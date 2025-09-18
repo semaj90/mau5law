@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('File download error:', error);
     return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Failed to download file',
+      error: error instanceof Error ? error.message: 'Failed to download file',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Presigned URL generation error:', error);
     return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Failed to generate download URL',
+      error: error instanceof Error ? error.message: 'Failed to generate download URL',
       timestamp: new Date().toISOString()
     }), {
       status: 500,

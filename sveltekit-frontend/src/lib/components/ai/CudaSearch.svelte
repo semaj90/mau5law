@@ -86,7 +86,7 @@ let performanceHistory = $state<Array<{
   gpu_utilization: number;
   query_length: number;
   results_count: number;
-}>>([]);
+}>([]);
 
 const dispatch = createEventDispatcher();
 
@@ -166,7 +166,7 @@ async function performSearch() {
           metadata: {
             document_type: 'contract',
             jurisdiction: 'federal',
-            date: new Date().toISOString().split('T')[0],
+            date: new Date().toISOString.split('T')[0],
             legal_domain: legalDomain
           },
           performance: {
@@ -213,7 +213,7 @@ async function performSearch() {
           metadata: {
             document_type: result.document_type || 'unknown',
             jurisdiction: result.jurisdiction || 'unknown',
-            date: result.date || new Date().toISOString().split('T')[0],
+            date: result.date || new Date().toISOString.split('T')[0],
             legal_domain: result.legal_domain || legalDomain
           },
           performance: {
@@ -258,7 +258,7 @@ async function performSearch() {
 
   } catch (error) {
     console.error('Search failed:', error);
-    errorMessage = error instanceof Error ? error.message : 'Search failed';
+    errorMessage = error instanceof Error ? error.message: 'Search failed';
     results = [];
   } finally {
     isSearching = false;
@@ -353,7 +353,7 @@ function getDocumentTypeColor(type: string): string {
         <!-- Search Options -->
         <div class="flex flex-wrap gap-2">
           <span class="{getSearchTypeColor(searchType)} px-2 py-1 rounded text-sm font-medium">
-            {searchType.charAt(0).toUpperCase() + searchType.slice(1)} Search
+            {searchType.charAt.toUpperCase() + searchType.slice(1)} Search
           </span>
 
           {#if enableGpuAcceleration}

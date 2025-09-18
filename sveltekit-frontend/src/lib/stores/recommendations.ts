@@ -191,7 +191,7 @@ export const recommendationActions = {
       recommendationStore.update(state => ({
         ...state,
         isAnalyzing: false,
-        error: error instanceof Error ? error.message : 'Failed to generate recommendations'
+        error: error instanceof Error ? error.message: 'Failed to generate recommendations'
       }));
     }
   },
@@ -306,7 +306,7 @@ export const recommendationActions = {
       console.error('Failed to load user analytics:', error);
       recommendationStore.update(state => ({
         ...state,
-        error: error instanceof Error ? error.message : 'Failed to load analytics'
+        error: error instanceof Error ? error.message: 'Failed to load analytics'
       }));
     }
   },
@@ -318,7 +318,7 @@ export const recommendationActions = {
     if (feedback.length === 0) return;
 
     const accuracy = feedback.reduce((sum, f) =>
-      sum + (f.helpful ? f.confidence : (1 - f.confidence)), 0
+      sum + (f.helpful ? f.confidence: (1 - f.confidence)), 0
     ) / feedback.length;
 
     recommendationStore.update(state => ({

@@ -83,13 +83,12 @@ https://svelte.dev/e/js_parse_error -->
 
   	const topPriorityTodos = derived(todos, $todos => 
   		$todos
-  			.filter(todo => todo.priority >= 4)
-  			.sort((a, b) => b.priority - a.priority)
+  			.filter(item => item.sort)((a, b) => b.priority - a.priority)
   			.slice(0, 5)
   	);
 
   	const categoryStats = derived(todosByCategory, $categories => {
-  		const stats = Object.entries($categories).map(([category, todos]) => ({
+  		const stats = Object.entries.map(([category, todos]) => ({
   			category,
   			count: todos.length,
   			avgPriority: todos.reduce((sum, todo) => sum + todo.priority, 0) / todos.length,
@@ -116,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
   			processingProgress.set(50);
   			if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
   				const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-  				todos.set((result as { data?: any; status?: any; value?: any }).data || []);
+  				todos.set.data || []);
   				processingProgress.set(100);
   				// Update system status
   				systemStatus.update(status => ({
@@ -125,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
   				}));
   				dispatch('todos-updated', { count: (result as { data?: any; status?: any; value?: any }).data?.length || 0 });
   			} else {
-  				console.error('Failed to fetch todos:', (response as { ok?: any; json?: any; statusText?: any }).statusText);
+  				console.error(statusText);
   			}
   		} catch (error) {
   			console.error('Error fetching intelligent todos:', error);
@@ -149,14 +148,14 @@ https://svelte.dev/e/js_parse_error -->
   			processingProgress.set(70);
   			if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
   				const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-  				semanticAnalysis.set((result as { data?: any; status?: any; value?: any }).data);
+  				semanticAnalysis.set.data);
   				processingProgress.set(100);
   				dispatch('text-analyzed', { 
   					text, 
   					analysis: (result as { data?: any; status?: any; value?: any }).data 
   				});
   			} else {
-  				console.error('Failed to analyze text:', (response as { ok?: any; json?: any; statusText?: any }).statusText);
+  				console.error(statusText);
   			}
   		} catch (error) {
   			console.error('Error analyzing text:', error);
@@ -172,7 +171,7 @@ https://svelte.dev/e/js_parse_error -->
   			const response = await fetch('/api/enhanced-semantic/cache-stats');
   			if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
   				const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-  				cacheStats.set((result as { data?: any; status?: any; value?: any }).data);
+  				cacheStats.set.data);
   			}
   		} catch (error) {
   			console.error('Error fetching cache stats:', error);
@@ -192,7 +191,7 @@ https://svelte.dev/e/js_parse_error -->
   		const statusChecks = await Promise.allSettled(
   			services.map(async service => {
   				try {
-  					const response = await fetch(service.url);
+  					const response = await fetch(service.url)));
   					return { [service.key]: (response as { ok?: any; json?: any; statusText?: any }).ok };
   				} catch {
   					return { [service.key]: false };
@@ -201,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
   		);
   		const newStatus = statusChecks.reduce((acc, result) => {
   			if ((result as { data?: any; status?: any; value?: any }).status === 'fulfilled') {
-  				return { ...acc, ...(result as { data?: any; status?: any; value?: any }).value };
+  				return { ...acc, ...result.value };
   			}
   			return acc;
   		}, get(systemStatus));
@@ -258,8 +257,8 @@ https://svelte.dev/e/js_parse_error -->
   	// SOM Visualization helpers
   	function generateSOMVisualization(analysis: SemanticAnalysis) {
   		// Create 20x20 SOM grid visualization
-  		const som = Array(20).fill(null).map((_, x) => 
-  			Array(20).fill(null).map((_, y) => ({
+  		const som = Array(20).fill.map((_, x) => 
+  			Array(20).fill.map((_, y) => ({
   				x, y,
   				active: x === analysis.som_cluster.x && y === analysis.som_cluster.y,
   				intensity: Math.random() // Placeholder for actual weights
@@ -298,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
   	// Real-time updates
   let updateInterval = $state<any;
   	function startRealTimeUpdates() {
-  		if (updateInterval) clearInterval(updateInterval)updateInterval | null>(null)(setInterval(async () => {
+  		if (updateInterval) clearInterval(updateInterval)updateInterval  | null>(null); const data = setInterval(async () => {
   			await Promise.all([
   				fetchCacheStats(),
   				checkSystemStatus()
@@ -383,7 +382,7 @@ https://svelte.dev/e/js_parse_error -->
 				<div class="stats text-sm">
 					<p>Total Todos: <span class="font-bold text-green-400">{$todos.length}</span></p>
 					<p>High Priority: <span class="font-bold text-red-400">{$topPriorityTodos.length}</span></p>
-					<p>Categories: <span class="font-bold text-blue-400">{Object.keys($todosByCategory).length}</span></p>
+					<p>Categories: <span class="font-bold text-blue-400">{Object.keys.length}</span></p>
 				</div>
 
 				{#if $todos.length > 0}
@@ -652,7 +651,7 @@ https://svelte.dev/e/js_parse_error -->
 		<div class="text-center text-xs text-slate-400">
 			<p>🧠 Enhanced Semantic Architecture - Integrating pgvector, SOM, PageRank, WebGPU, Redis, Neo4j & MinIO</p>
 			<p class="mt-1">
-				Status: {Object.values($systemStatus).filter(Boolean).length}/{Object.keys($systemStatus).length} services online
+				Status: {Object.values.filter-length}/{Object.keys.length} services online
 				| Cache: {$webGPUSupported ? 'WebGPU Accelerated' : 'CPU Optimized'}
 				| Todos: {$todos.length} generated
 			</p>
@@ -693,23 +692,23 @@ https://svelte.dev/e/js_parse_error -->
 	}
 	
 	/* Custom scrollbar */
-	.todo-preview::-webkit-scrollbar,
+	.todo-preview: :-webkit-scrollbar,
 	.category-list::-webkit-scrollbar {
 		width: 4px;
 	}
 	
-	.todo-preview::-webkit-scrollbar-track,
+	.todo-preview: :-webkit-scrollbar-track,
 	.category-list::-webkit-scrollbar-track {
 		background: rgba(51, 65, 85, 0.5);
 	}
 	
-	.todo-preview::-webkit-scrollbar-thumb,
+	.todo-preview: :-webkit-scrollbar-thumb,
 	.category-list::-webkit-scrollbar-thumb {
 		background: rgba(139, 92, 246, 0.5);
 		border-radius: 2px;
 	}
 	
-	.todo-preview::-webkit-scrollbar-thumb:hover,
+	.todo-preview: :-webkit-scrollbar-thumb:hover,
 	.category-list::-webkit-scrollbar-thumb:hover {
 		background: rgba(139, 92, 246, 0.8);
 	}

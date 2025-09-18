@@ -7,7 +7,10 @@
     "dev": "node start-development.js",
     "dev:full": "cd sveltekit-frontend && npm run dev:full",
     "dev:local": "node scripts/start-local-dev.mjs",
-    "dev:quic": "node scripts/start-quic-stack.mjs",
+    "dev:quic:stack": "node scripts/start-quic-stack.mjs",
+    "dev:quic:fast": "node scripts/start-quic-dev.mjs",
+    "dev:quic:frontend": "npm --prefix sveltekit-frontend run dev:quic",
+    "dev:quic": "node scripts/start-quic-dev.mjs",
     "stop:quic": "node scripts/stop-quic-stack.mjs",
     "start": "node start-production.js",
     "start:development": "node start-development.js",
@@ -24,25 +27,34 @@
     "test:debug": "playwright test --debug",
     "test:report": "playwright show-report",
     "playwright:install": "playwright install",
-    "playwright:install-deps": "playwright install-deps"
+    "playwright:install-deps": "playwright install-deps",
+    "check:ultra-fast": "npm --prefix sveltekit-frontend run check:ultra-fast",
+    "check:svelte": "npm --prefix sveltekit-frontend run check:svelte",
+    "check:svelte:fast": "npm --prefix sveltekit-frontend run check:svelte:fast",
+    "check:all": "npm run check:ultra-fast && npm run check:svelte:fast"
   },
   "dependencies": {
     "@lucia-auth/adapter-drizzle": "^1.1.0",
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/jwt": "^0.3.0",
     "axios": "^1.12.2",
+    "fabric": "^6.7.1",
     "node-fetch": "^3.3.2",
     "pg": "^8.16.3",
     "playwright": "^1.55.0",
-    "protobufjs": "^7.5.4"
+    "protobufjs": "^7.5.4",
+    "svelte": "^5.39.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
+    "@sveltejs/adapter-auto": "^6.1.0",
+    "@types/fabric": "^5.3.10",
     "@types/node": "^24.3.3",
     "@unocss/preset-icons": "^66.5.1",
     "@unocss/preset-typography": "^66.5.1",
     "@unocss/preset-uno": "^66.5.1",
     "glob": "^10.4.5",
+    "typescript": "^5.9.2",
     "unocss": "^66.5.1",
     "vite": "^7.1.5"
   }

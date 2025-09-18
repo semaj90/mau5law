@@ -25,7 +25,7 @@ export const GET: RequestHandler = async () => {
 	} catch (error) {
 		return json({
 			error: 'Failed to retrieve CUDA stats',
-			details: error instanceof Error ? error.message : String(error),
+			details: error instanceof Error ? error.message: String(error),
 			timestamp: Date.now()
 		}, { status: 500 });
 	}

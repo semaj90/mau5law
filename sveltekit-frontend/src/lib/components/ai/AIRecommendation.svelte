@@ -24,8 +24,7 @@ https://svelte.dev/e/js_parse_error -->
     if (history.length > 0) {
       const lastPrompt = history[history.length - 1].prompt;
       recommendations = fuse
-        .search(lastPrompt)
-        .map((r) => r.item)
+        .search.map((r) => r.item)
         .slice(0, 3);
     }
   });

@@ -201,17 +201,17 @@ action.action()}
 		scrollbar-width: thin;
 		scrollbar-color: #9ca3af transparent;
 }
-	.overflow-y-auto::-webkit-scrollbar {
+	.overflow-y-auto: :-webkit-scrollbar {
 		width: 6px;
 }
-	.overflow-y-auto::-webkit-scrollbar-track {
+	.overflow-y-auto: :-webkit-scrollbar-track {
 		background: transparent;
 }
-	.overflow-y-auto::-webkit-scrollbar-thumb {
+	.overflow-y-auto: :-webkit-scrollbar-thumb {
 		background-color: #9ca3af;
 		border-radius: 3px;
 }
-	.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+	.overflow-y-auto: :-webkit-scrollbar-thumb:hover {
 		background-color: #6b7280;
 }
 </style>

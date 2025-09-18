@@ -40,13 +40,13 @@ export const POST: RequestHandler = async ({ request }) => {
 			}));
 		}
 
-		if (!body.data || !Array.isArray(body.data) || body.(data as { length?: any }).length === 0) {
+		if (!body.data || !Array.isArray(body.data) || body.data.length === 0) {
 			throw error(400, ensureError({
 				message: 'Invalid GPU request: data array is required and cannot be empty'
 			}));
 		}
 
-		console.log(`🔥 GPU API: Processing ${body.service}/${body.operation} with ${body.(data as { length?: any }).length} data points`);
+		console.log(`🔥 GPU API: Processing ${body.service}/${body.operation} with ${body.data.length} data points`);
 
 		// Route to appropriate GPU service endpoint
 		const serviceEndpoints = {
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: 'GPU processing service unavailable',
-			details: err instanceof Error ? err.message : 'Unknown error',
+			details: err instanceof Error ? err.message: 'Unknown error',
 			fallback_available: true,
 			gpu_utilized: false
 		}, { status: 503 });
@@ -161,7 +161,7 @@ export const GET: RequestHandler = async () => {
 			gpu_service_url: GPU_SERVICE_URL,
 			health: { status: 'error', message: 'GPU service unavailable' },
 			gpu_status: { gpu_available: false },
-			error: err instanceof Error ? err.message : 'Unknown error',
+			error: err instanceof Error ? err.message: 'Unknown error',
 			timestamp: new Date().toISOString()
 		}, { status: 503 });
 	}

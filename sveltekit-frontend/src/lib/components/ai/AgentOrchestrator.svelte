@@ -612,7 +612,7 @@ Clear
               <div class="flex-shrink-0">
                 <div class="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
                   <span class="text-xs font-medium text-blue-600 dark:text-blue-400">
-                    {message.sender.substring(0, 2).toUpperCase()}
+                    {message.sender.substring.toUpperCase()}
                   </span>
                 </div>
               </div>

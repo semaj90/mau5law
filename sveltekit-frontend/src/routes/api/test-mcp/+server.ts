@@ -22,7 +22,7 @@ export const GET: RequestHandler = async () => {
     return json({
       success: false,
       error: 'MCP helpers import failed',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined
     }, { status: 500 });
   }

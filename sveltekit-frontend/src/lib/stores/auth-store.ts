@@ -70,7 +70,7 @@ if (browser) {
   authActor.subscribe((state) => {
     authState.update(currentState => ({
       ...currentState,
-      machineState: typeof state.value === 'string' ? state.value : JSON.stringify(state.value),
+      machineState: typeof state.value === 'string' ? state.value: JSON.stringify(state.value),
       user: state.context.user,
       session: state.context.session,
       isAuthenticated: state.context.user !== null,
@@ -187,7 +187,7 @@ export const authStore = {
   
   get isLocked() {
     const state = get(authState);
-    return state.lockoutUntil ? new Date() < state.lockoutUntil : false;
+    return state.lockoutUntil ? new Date() < state.lockoutUntil: false;
   },
   
   // Enhanced login with GPU security analysis

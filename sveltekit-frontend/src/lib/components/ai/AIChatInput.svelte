@@ -5,14 +5,26 @@
   import { browser } from "$app/environment";
   import { createEventDispatcher, onMount } from "svelte";
 
-  // Props (standard Svelte exports)
-  export let placeholder: string = "Type your message...";
-  export let disabled: boolean = false;
-  export let autoFocus: boolean = false;
-  export let value: string = "";
-  export let maxLength: number = 2000;
-  export let rows: number = 1;
-  export let maxRows: number = 6;
+  // Props using Svelte 5 syntax
+  interface Props {
+    placeholder?: string;
+    disabled?: boolean;
+    autoFocus?: boolean;
+    value?: string;
+    maxLength?: number;
+    rows?: number;
+    maxRows?: number;
+  }
+
+  let {
+    placeholder = "Type your message...",
+    disabled = false,
+    autoFocus = false,
+    value = $bindable(""),
+    maxLength = 2000,
+    rows = 1,
+    maxRows = 6
+  }: Props = $props();
 
   // Event dispatcher
   const dispatch = createEventDispatcher();
@@ -111,7 +123,7 @@
   }
 
   // Character count reactive values
-  $: characterCount = value ? value.length : 0;
+  $: characterCount = value ? value.length: 0;
   $: isNearLimit = characterCount > maxLength * 0.8;
   $: isAtLimit = characterCount >= maxLength;
 </script>
@@ -152,7 +164,7 @@
         type="button"
         class="send-button"
         disabled={disabled}
-        class:has-content={value.trim().length > 0}
+        class:has-content={value.trim.length > 0}
         onclick={(event: MouseEvent) => ) => handleSend(}
         title="Send message (Enter)"
         aria-label="Send message"
@@ -220,7 +232,7 @@
     overflow-y: auto;
     scrollbar-width: thin;
 }
-  .chat-input::placeholder {
+  .chat-input: :placeholder {
     color: var(--text-placeholder, #94a3b8);
 }
   .chat-input:disabled {
@@ -297,17 +309,17 @@
     color: var(--text-secondary, #64748b);
 }
   /* Scrollbar styling */
-  .chat-input::-webkit-scrollbar {
+  .chat-input: :-webkit-scrollbar {
     width: 4px;
 }
-  .chat-input::-webkit-scrollbar-track {
+  .chat-input: :-webkit-scrollbar-track {
     background: transparent;
 }
-  .chat-input::-webkit-scrollbar-thumb {
+  .chat-input: :-webkit-scrollbar-thumb {
     background: var(--border-color, #e2e8f0);
     border-radius: 2px;
 }
-  .chat-input::-webkit-scrollbar-thumb:hover {
+  .chat-input: :-webkit-scrollbar-thumb:hover {
     background: var(--text-muted, #94a3b8);
 }
   /* Dark mode support */

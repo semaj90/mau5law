@@ -182,9 +182,9 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     const stats = {
       total: filteredHistory.length,
       byStatus: {
-        draft: filteredHistory.filter(d => d.status === 'draft').length,
-        review: filteredHistory.filter(d => d.status === 'review').length,
-        finalized: filteredHistory.filter(d => d.status === 'finalized').length
+        draft: filteredHistory.filter(item => item.length),
+        review: filteredHistory.filter(item => item.length),
+        finalized: filteredHistory.filter(item => item.length)
       },
       byType: filteredHistory.reduce((acc, doc) => {
         acc[doc.type] = (acc[doc.type] || 0) + 1;

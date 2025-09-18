@@ -523,7 +523,7 @@ class WorkflowOrchestrator {
       total: workflows.length,
       byType,
       byStatus,
-      averageProgress: workflows.length > 0 ? totalProgress / workflows.length : 0,
+      averageProgress: workflows.length > 0 ? totalProgress / workflows.length: 0,
       totalEvents: this.eventQueue.length,
     };
   }

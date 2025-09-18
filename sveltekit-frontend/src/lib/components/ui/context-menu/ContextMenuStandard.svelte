@@ -10,14 +10,13 @@
     contentProps?: WithoutChild<ContextMenu.ContentProps>;
   }
 
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     trigger,
     items,
     contentProps,
     children,
     ...restProps
-  }: Props = $props();
+   }: Props = $props();
 </script>
 
 <ContextMenu.Root bind:open {...restProps}>

@@ -125,7 +125,7 @@
 
     try {
       if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
       }
 
       const oscillator1 = audioContext.createOscillator();
@@ -310,11 +310,11 @@
     };
 
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
-    const stateColors = isOn ? colors.on : colors.off;
+    const stateColors = isOn ? colors.on: colors.off;
 
     const materialMap = {
       basic: {
-        trackBackground: isOn ? stateColors.base : '#2d3748',
+        trackBackground: isOn ? stateColors.base: '#2d3748',
         knobBackground: stateColors.base,
         knobShadow: `0 ${depth}px 0 ${stateColors.shadow}`
       },
@@ -742,7 +742,7 @@
     outline-offset: 2px;
   }
 
-  .n64-switch.hovered:not(.disabled) .switch-track {
+  .n64-switch.hovered: not(.disabled) .switch-track {
     box-shadow: 
       inset 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
       inset 0 2px 0 rgba(0, 0, 0, 0.6),
@@ -819,7 +819,7 @@
   }
 
   /* Spring physics animation for enabled switches */
-  .n64-switch:not(.disabled).animating .switch-knob {
+  .n64-switch: not(.disabled).animating .switch-knob {
     transition: transform var(--animation-duration) cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 

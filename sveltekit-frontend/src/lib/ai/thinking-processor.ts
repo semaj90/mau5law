@@ -75,7 +75,7 @@ export class ThinkingProcessor {
         confidence: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.confidence,
         reasoning_steps: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.reasoning_steps || [],
         metadata: {
-          ...(result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).metadata,
+          ...result.metadata,
           grpo_enhanced: true,
           recommendations_count: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.recommendations?.length || 0,
           temporal_score: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.temporal_score,
@@ -247,7 +247,7 @@ export class ThinkingProcessor {
     }
 
     const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
-    return (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).success ? (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analyses : [];
+    return (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).success ? (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analyses: [];
   }
 }
 

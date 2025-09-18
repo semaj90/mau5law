@@ -8,7 +8,7 @@ https://svelte.dev/e/expected_token -->
 
 
 // Auto-generated default export
-export default {};
+export default ;
 </script>, template, and <style>.
 -->
 <script lang="ts">
@@ -78,17 +78,16 @@ export default {};
     maxFiles = multiple ? 10 : 1,
     maxSizeMB = 100,
     acceptedTypes = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png', '.txt'],
-    onupload = () => {},
-    oncancel = () => {},
-    onprogress = () => {}
-  }: Props = $props();
+    onupload = () => ,
+    oncancel = () => ,
+    onprogress = () => }: Props = $props();
 
   // State
   let fileInput: HTMLInputElement;
   let isDragOver = $state(false);
   let selectedFiles = $state<File[] >([]);
-  let uploadProgress = $state<Record<string, number>(0) >({});
-  let previews = $state<Record<string, string>('') >({});
+  let uploadProgress = $state<Record<string, number>(0) >( );
+  let previews = $state<Record<string, string>('') >( );
   let isUploading = $state(false);
   let currentUploadFile = $state("");
 
@@ -108,7 +107,7 @@ export default {};
     enableSummarization: false,
     isAdmissible: false,
   });
-  let errors = $state<Record<string, string[]>([]) >({});
+  let errors = $state<Record<string, string[]>([]) >( );
 
   // Options
   const evidenceTypes = [
@@ -196,7 +195,7 @@ export default {};
     }
 
     const isValidType = acceptedTypes.some((type) => {
-      if (type.startsWith(".")) return file.name.toLowerCase().endsWith(type.toLowerCase());
+      if (type.startsWith(".")) return file.name.toLowerCase.endsWith(type.toLowerCase());
       if (type.includes("*")) {
         const category = type.split("/")[0];
         return file.type.startsWith(category);
@@ -491,7 +490,7 @@ Add
 oncancel?.()} disabled={isUploading}>Cancel
 </Button>
 
-        <button class="nes-btn" onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
+        <button class="nes-btn" onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys.length > 0} class="min-w-24">
           {#if isUploading}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />Uploading...
           {:else}
@@ -501,7 +500,7 @@ oncancel?.()} disabled={isUploading}>Cancel
       </div>
     </div>
 
-    {#if Object.keys(errors).length > 0 && selectedFiles.length > 0}
+    {#if Object.keys.length > 0 && selectedFiles.length > 0}
       <div class="border border-destructive bg-destructive/10 rounded p-3 flex items-start gap-3">
         <AlertCircle class="h-4 w-4" />
         <div>

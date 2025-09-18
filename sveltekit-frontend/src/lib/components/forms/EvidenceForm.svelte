@@ -18,19 +18,14 @@
   } from '$lib/components/ui/enhanced-bits';;
   import { Label } from "$lib/components/ui/label";
   import type { Evidence } from "$lib/types/api";
-  import { createSelect, melt } from "melt";
+  import * as Select from 'bits-ui';
 
   // Bindable props already defined above; redundant redeclarations removed
 
   const dispatch = createEventDispatcher();
 
   // Melt UI builder for the Select component with proper typing
-  const {
-    elements: { trigger, menu, option },
-    states: { selectedLabel },
-  } = createSelect({
-    defaultValue: evidence?.type || undefined,
-  });
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   const { form, enhance, errors, submitting } = superForm(
     evidence || data.form,
@@ -69,13 +64,13 @@
   <div>
     <Label>Type</Label>
     <button
-      use:melt={$trigger}
+      
       aria-label="Select evidence type"
       class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
     >
       <span>{$selectedLabel || "Select a type"}</span>
     </button>
-    <div use:melt={$menu} class="absolute z-50 bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+    <div  class="absolute z-50 bg-white border border-gray-300 rounded-md shadow-lg mt-1">
       <div use:melt={$option({ value: 'Document' })}>
         Document
       </div>

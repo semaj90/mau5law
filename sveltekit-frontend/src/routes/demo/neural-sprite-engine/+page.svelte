@@ -193,7 +193,7 @@ let currentPredictionAccuracy = 85;
     });
 
     // Add document text
-    const title = new fabric.Text(spriteName.replace('_', ' ').toUpperCase(), {
+    const title = new fabric.Text.toUpperCase(), {
       left: 120,
       top: 120,
       fontSize: 16,
@@ -924,14 +924,7 @@ let currentFrame = $state(0);
     align-items: center;
   }
 
-  .nes-canvas {
-    border: 2px solid #333;
-    border-radius: 4px;
-    background: #1a1a2e;
-    box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
-  }
-
-  .canvas-overlay {
+  .nes-canv.canvas-overlay {
     position: absolute;
     top: 1rem;
     left: 1rem;

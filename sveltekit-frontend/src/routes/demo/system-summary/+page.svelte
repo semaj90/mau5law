@@ -50,7 +50,7 @@
   	);
   	let completedFeatures = $derived(() =>
   		implementedFeatures.reduce((sum, category) => 
-  			sum + category.items.filter(item => (item as { status?: unknown; name?: unknown; description?: unknown }).status === 'complete').length, 0
+  			sum + category.items.filter(item => item.status === 'complete').length, 0
   		)
   	);
   	let completionPercentage = $derived(() =>

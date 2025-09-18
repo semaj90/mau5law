@@ -12,8 +12,7 @@
     ...props 
    }: { items = [],
     trigger = 'Menu',
-    ...props 
-  : unknown } = $props();
+    ...props: unknown } = $props();
 </script>
 
 <DropdownMenuRoot {...props}>

@@ -11,7 +11,7 @@ export const GET: RequestHandler = async () => {
   const startTime = Date.now();
   const healthData: any = {
     timestamp: new Date().toISOString(),
-    services: Record<string, any>,
+    services: {} as Record<string, any>,
     overall: 'checking'
   };
   
@@ -107,7 +107,7 @@ export const GET: RequestHandler = async () => {
   
   // Calculate overall health
   const serviceStatuses = Object.values(healthData.services).map((s: any) => s.status);
-  const healthyCount = serviceStatuses.filter(s => s === 'healthy').length;
+  const healthyCount = serviceStatuses.filter(item => item.length);
   const totalServices = serviceStatuses.length;
   
   if (healthyCount === totalServices) {
@@ -124,8 +124,8 @@ export const GET: RequestHandler = async () => {
   healthData.summary = {
     total_services: totalServices,
     healthy_services: healthyCount,
-    degraded_services: serviceStatuses.filter(s => s === 'unhealthy').length,
-    unavailable_services: serviceStatuses.filter(s => s === 'unavailable').length,
+    degraded_services: serviceStatuses.filter(item => item.length),
+    unavailable_services: serviceStatuses.filter(item => item.length),
     total_check_time: Date.now() - startTime
   };
   

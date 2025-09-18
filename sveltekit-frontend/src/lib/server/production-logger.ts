@@ -236,7 +236,7 @@ export class ProductionLogger {
         ? {
             name: error.name,
             message: error.message,
-            stack: this.config.includeStack ? error.stack : undefined,
+            stack: this.config.includeStack ? error.stack: undefined,
             code: (error as any).code,
           }
         : undefined;
@@ -546,7 +546,7 @@ export class ProductionLogger {
 
   private parseSize(sizeStr: string): number {
     const units: Record<string, number> = { B: 1, K: 1024, M: 1024 * 1024, G: 1024 * 1024 * 1024 };
-    const match = sizeStr.match(/^(\d+)([BKMG]?)$/i);
+    const match = sizeStr.match(/^(\d+) => [BKMG]?)$/i);
     if (!match) return 10 * 1024 * 1024; // Default 10MB
 
     const size = parseInt(match[1]);

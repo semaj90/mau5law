@@ -155,7 +155,7 @@ export async function hashPayload(data: string): Promise<string> {
     return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
   let h = 0; for (let i = 0; i < data.length; i++) { h = (h * 31 + data.charCodeAt(i)) | 0; }
-  return `fh_${h >>> 0}`;
+  return `fh_${h > 0}`;
 }
 
 export const CACHE_CONSTANTS = { MAX_ITEMS, TTL_MS, REDIS_TTL_SECS };

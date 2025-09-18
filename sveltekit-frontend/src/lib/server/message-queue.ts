@@ -99,7 +99,7 @@ class InMemoryQueue extends EventEmitter {
 
   async llen(queueName: string): Promise<number> {
     const queue = this.messages.get(queueName);
-    return queue ? queue.length : 0;
+    return queue ? queue.length: 0;
   }
 
   // RabbitMQ-compatible methods

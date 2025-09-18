@@ -412,8 +412,7 @@ export class ApiServiceRegistry {
       !results.existing.some(existing => existing === endpoint || existing.startsWith(endpoint))
     );
 
-    results.extra = results.existing.filter(existing =>
-      !Array.from(registeredEndpoints).some(registered => 
+    results.extra = results.existing.filter(item => item.some)(registered => 
         existing === registered || existing.startsWith((registered as string).split('/')[0])
       )
     );

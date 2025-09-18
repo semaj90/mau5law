@@ -257,8 +257,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   </div>
 </div>
 
-<style>/* @unocss-include */ {}
-  .chat-message {
+<style>/* @unocss-include */ .chat-message {
     margin: 16px 0;
     padding: 16px;
     border-radius: 8px;
@@ -349,14 +348,12 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     white-space: pre-wrap;
     word-wrap: break-word;
 }
-.sources-section, {}
-  .metadata-section {
+.sources-section, .metadata-section {
     margin-top: 16px;
     border-top: 1px solid var(--border-color, #e2e8f0);
     padding-top: 12px;
 }
-.sources-toggle, {}
-  .metadata-toggle {
+.sources-toggle, .metadata-toggle {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -368,16 +365,13 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     cursor: pointer;
     transition: color 0.2s ease;
 }
-.sources-toggle:hover, {}
-  .metadata-toggle:hover {
+.sources-toggle:hover, .metadata-toggle:hover {
     color: var(--text-primary, #1e293b);
 }
-.sources-toggle svg, {}
-  .metadata-toggle svg {
+.sources-toggle svg, .metadata-toggle svg {
     transition: transform 0.2s ease;
 }
-.sources-toggle svg.rotated, {}
-  .metadata-toggle svg.rotated {
+.sources-toggle svg.rotated, .metadata-toggle svg.rotated {
     transform: rotate(180deg);
 }
   .sources-list {
@@ -444,8 +438,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
   .metadata-item .value.cache {
     color: var(--text-info, #0369a1);
 }
-/* Dark mode support */ {}
-  @media (prefers-color-scheme: dark) {
+/* Dark mode support */ @media (prefers-color-scheme: dark) {
     .chat-message {
       background: var(--bg-primary, #1e293b);
       border-color: var(--border-color, #475569);
@@ -454,13 +447,11 @@ https://svelte.dev/e/element_invalid_closing_tag -->
       background: var(--bg-assistant, #0f172a);
       border-color: var(--border-assistant, #334155);
 }
-.source-item, {}
-    .metadata-item {
+.source-item, .metadata-item {
       background: var(--bg-secondary, #334155);
     }
   }
-/* Responsive design */ {}
-  @media (max-width: 768px) {
+/* Responsive design */ @media (max-width: 768px) {
     .chat-message.user {
       margin-left: 10%;
     }

@@ -225,7 +225,7 @@ Real-time collaboration interface for multiple investigators working on evidence
           <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
             <div class="flex items-center space-x-3">
               <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                {participant.userId.substring(0, 2).toUpperCase()}
+                {participant.userId.substring.toUpperCase()}
               </div>
               <div>
                 <div class="flex items-center space-x-2">
@@ -384,7 +384,7 @@ showAnnotationInput = false} variant="outline" size="sm">
                 <div class="flex items-start justify-between mb-2">
                   <div class="flex items-center space-x-2">
                     <div class="w-6 h-6 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">
-                      {annotation.userId.substring(0, 1).toUpperCase()}
+                      {annotation.userId.substring.toUpperCase()}
                     </div>
                     <span class="text-sm font-medium">{annotation.userId}</span>
                   </div>
@@ -466,21 +466,21 @@ showAnnotationInput = false} variant="outline" size="sm">
   }
 
   /* Custom scrollbar for chat */
-  .collaboration-panel ::-webkit-scrollbar {
+  .collaboration-panel: :-webkit-scrollbar {
     width: 4px;
   }
   
-  .collaboration-panel ::-webkit-scrollbar-track {
+  .collaboration-panel: :-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 2px;
   }
   
-  .collaboration-panel ::-webkit-scrollbar-thumb {
+  .collaboration-panel: :-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 2px;
   }
   
-  .collaboration-panel ::-webkit-scrollbar-thumb:hover {
+  .collaboration-panel: :-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
 </style>

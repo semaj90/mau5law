@@ -194,8 +194,8 @@ class GPUMetricsStore {
   // Create batch data for sending
   createBatch(): BatchedMetrics {
     const now = Date.now();
-    const startTime = this.state.metrics.length > 0 ? this.state.metrics[0].timestamp : now;
-    const fpsSamples = this.state.metrics.filter(m => m.fps).map(m => m.fps!);
+    const startTime = this.state.metrics.length > 0 ? this.state.metrics[0].timestamp: now;
+    const fpsSamples = this.state.metrics.filter(item => item.map)(m => m.fps!);
     
     const effectsSummary: Record<string, number> = {};
     this.state.metrics.forEach(metric => {
@@ -209,7 +209,7 @@ class GPUMetricsStore {
       startTime,
       endTime: now,
       samples: [...this.state.metrics], // Copy to avoid mutation
-      avgFps: fpsSamples.length > 0 ? fpsSamples.reduce((a, b) => a + b, 0) / fpsSamples.length : 0,
+      avgFps: fpsSamples.length > 0 ? fpsSamples.reduce((a, b) => a + b, 0) / fpsSamples.length: 0,
       minFps: fpsSamples.length > 0 ? Math.min(...fpsSamples) : 0,
       maxFps: fpsSamples.length > 0 ? Math.max(...fpsSamples) : 0,
       effectsSummary,

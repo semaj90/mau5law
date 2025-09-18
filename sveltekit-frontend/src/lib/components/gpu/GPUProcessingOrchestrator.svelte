@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!newDocumentContent.trim()) return;
 
     const document: DocumentInput = {
-      documentId: `doc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      documentId: `doc_${Date.now()}_${Math.random.toString-substr(2, 9)}`,
       content: newDocumentContent,
       title: newDocumentTitle || undefined,
       options: {
@@ -333,10 +333,10 @@ https://svelte.dev/e/js_parse_error -->
               <div class="result-summary">
                 ✅ Processed in {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).processingTime}ms
                 {#if (result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).result?.extractedText}
-                  <br/>📄 Extracted {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).extractedText.length} characters
+                  <br/>📄 Extracted {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).result.extractedText.length} characters
                 {/if}
                 {#if (result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).result?.embeddings}
-                  <br/>🔢 Generated {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).embeddings.length} embeddings
+                  <br/>🔢 Generated {(result as { documentId?: unknown; processingTime?: unknown; result?: unknown; timestamp?: unknown; error?: unknown }).result.embeddings.length} embeddings
                 {/if}
               </div>
               <div class="timestamp">
@@ -595,17 +595,17 @@ https://svelte.dev/e/js_parse_error -->
     transform: translateY(-1px);
   }
 
-  .document-(item as { processing?: unknown; completed?: unknown; error?: unknown }).processing {
+  .document-.processing {
     border-color: #ffc107;
     background: #fffbf0;
   }
 
-  .document-(item as { processing?: unknown; completed?: unknown; error?: unknown }).completed {
+  .document-.completed {
     border-color: #28a745;
     background: #f8fff9;
   }
 
-  .document-(item as { processing?: unknown; completed?: unknown; error?: unknown }).error {
+  .document-.error {
     border-color: #dc3545;
     background: #fff5f5;
   }

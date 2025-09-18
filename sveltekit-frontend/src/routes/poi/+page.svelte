@@ -33,8 +33,7 @@
     }
   ]);
 
-  let filteredPersons = $derived(persons.filter(person =>
-    person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  let filteredPersons = $derived(persons.filter(item => item.includes(searchQuery.toLowerCase()) ||
     person.alias.toLowerCase().includes(searchQuery.toLowerCase()) ||
     person.status.toLowerCase().includes(searchQuery.toLowerCase())
   ));

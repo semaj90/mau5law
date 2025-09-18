@@ -25,8 +25,8 @@ https://svelte.dev/e/expected_token -->
   }
   let { 
     isVisible = $bindable(true),
-    onToggle = () => {},
-    onSettingsClick = () => {},
+    onToggle = () => ,
+    onSettingsClick = () => ,
     isConnected = true,
     aiMode = $bindable('idle')
   }: Props = $props()

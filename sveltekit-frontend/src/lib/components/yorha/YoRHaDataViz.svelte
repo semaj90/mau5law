@@ -58,7 +58,7 @@
   });
 
   // Calculate max value for scaling
-  let maxValue = $derived(() => Math.max(...(data as { map?: unknown; reduce?: unknown; length?: unknown }).map(d => d.value)));
+  let maxValue = $derived(() => Math.max(...data.map(d => d.value)));
 
   // Status colors mapping
   const statusColors = {
@@ -211,7 +211,7 @@
       </div>
       <div class="stat">
         <span class="stat-label">AVG</span>
-        <span class="stat-value">{Math.round((data as { map?: unknown; reduce?: unknown; length?: unknown }).reduce((sum, item) => sum + (item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value, 0) / (data as { map?: unknown; reduce?: unknown; length?: unknown }).length)}</span>
+        <span class="stat-value">{Math.round.reduce((sum, item) => sum + (item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).value, 0) / (data as { map?: unknown; reduce?: unknown; length?: unknown }).length)}</span>
       </div>
       <div class="stat">
         <span class="stat-label">MAX</span>
@@ -462,7 +462,7 @@
     transition: all 0.3s ease;
   }
 
-  .status-(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).animated {
+  .status-.animated {
     animation: slideIn 0.6s ease-out;
   }
 
@@ -543,7 +543,7 @@
     transform: translate(-50%, -50%);
   }
 
-  .timeline-(item as { color?: unknown; status?: unknown; value?: unknown; label?: unknown; animated?: unknown }).animated {
+  .timeline-.animated {
     animation: fadeInUp 0.8s ease-out;
   }
 

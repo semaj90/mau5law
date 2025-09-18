@@ -157,7 +157,7 @@
           uploadProgress = `${file.name} uploaded successfully`;
         }
       } catch (err) {
-        error = `Failed to upload ${file.name}: ${err instanceof Error ? err.message : 'Unknown error'}`;
+        error = `Failed to upload ${file.name}: ${err instanceof Error ? err.message: 'Unknown error'}`;
         console.error(err);
       }
     }
@@ -183,13 +183,13 @@
 
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
-        uploadProgress = `Backfill complete! Processed: ${(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).processed}, Success: ${(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success}, Failed: ${(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).failed}`;
+        uploadProgress = `Backfill complete! Processed: ${(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).result.processed}, Success: ${(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).result.success}, Failed: ${(result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).result.failed}`;
         await loadEmbeddingStats();
       } else {
         throw new Error((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).error);
       }
     } catch (err) {
-      error = `Embedding backfill failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
+      error = `Embedding backfill failed: ${err instanceof Error ? err.message: 'Unknown error'}`;
       console.error(err);
     } finally {
       loading.backfill = false;
@@ -217,7 +217,7 @@
         throw new Error((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).error);
       }
     } catch (err) {
-      error = `Search failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
+      error = `Search failed: ${err instanceof Error ? err.message: 'Unknown error'}`;
       console.error(err);
     } finally {
       loading.search = false;
@@ -276,7 +276,7 @@
 
 
 // Auto-generated default export
-export default {};
+export default ;
 </script>
 
 <div class="evidence-manager">
@@ -433,7 +433,7 @@ fileInput?.click()}
                       </div>
                       <div class="text-right ml-4">
                         <div class="similarity-score text-lg font-bold text-green-600">
-                          {Math.round((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).similarity * 100)}%
+                          {Math.round.similarity * 100)}%
                         </div>
                         <div class="text-xs text-gray-500">similarity</div>
                       </div>
@@ -568,7 +568,7 @@ fileInput?.click()}
     position: relative;
     overflow: hidden;
   }
-  .stat-item::after {
+  .stat-item: :after {
     content:'';
     position:absolute;
     inset:0;
@@ -627,14 +627,14 @@ fileInput?.click()}
     position:relative;
     overflow:hidden;
   }
-  .error-box::before,
+  .error-box: :before,
   .error-box::after {
     content:'';
     position:absolute;
     inset:0;
     pointer-events:none;
   }
-  .error-box::before {
+  .error-box: :before {
     background:
       repeating-linear-gradient(
         135deg,
@@ -644,7 +644,7 @@ fileInput?.click()}
     mix-blend-mode: overlay;
     opacity:0.25;
   }
-  .error-box::after {
+  .error-box: :after {
     background:
       linear-gradient(90deg,
         transparent,
@@ -718,7 +718,7 @@ fileInput?.click()}
   .retro-scan {
     position:relative;
   }
-  .retro-scan::before {
+  .retro-scan: :before {
     content:'';
     position:absolute;
     inset:0;
@@ -758,7 +758,7 @@ fileInput?.click()}
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .error-box::after,
+    .error-box: :after,
     .error-icon,
     .retro-scan::before,
     .flicker,

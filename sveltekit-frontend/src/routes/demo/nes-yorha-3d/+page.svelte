@@ -815,16 +815,7 @@ https://svelte.dev/e/js_parse_error -->
     overflow: hidden;
   }
 
-  .nes-3d-canvas {
-    display: block;
-    width: 100%;
-    height: 600px;
-    image-rendering: pixelated; /* Preserve pixel-perfect rendering */
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-  }
-
-  .dom-overlay {
+  .nes-3d-canv.dom-overlay {
     position: absolute;
     top: 10px;
     left: 10px;
@@ -882,11 +873,7 @@ https://svelte.dev/e/js_parse_error -->
       gap: 1rem;
     }
 
-    .nes-3d-canvas {
-      height: 300px;
-    }
-
-    .controls .flex {
+    .nes-3d-canv.controls .flex {
       flex-direction: column;
     }
   }

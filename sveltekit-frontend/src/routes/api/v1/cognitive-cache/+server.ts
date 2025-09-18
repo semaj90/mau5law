@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to store in cognitive cache',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to retrieve from cognitive cache',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );
@@ -249,7 +249,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to perform cognitive analysis',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );
@@ -303,7 +303,7 @@ export const DELETE: RequestHandler = async ({ url, request }) => {
     return json(
       {
         error: 'Failed to invalidate cache entry',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );
@@ -326,7 +326,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
       performance: {
         totalRequests: metrics.totalRequests,
         cacheHits: metrics.cacheHits,
-        hitRate: metrics.totalRequests > 0 ? metrics.cacheHits / metrics.totalRequests : 0,
+        hitRate: metrics.totalRequests > 0 ? metrics.cacheHits / metrics.totalRequests: 0,
         averageLatency: metrics.averageLatency,
         cognitiveAccuracy: metrics.cognitiveAccuracy,
       },
@@ -383,7 +383,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to get cognitive cache metrics',
-        details: dev ? error.message : undefined,
+        details: dev ? error.message: undefined,
       },
       { status: 500 }
     );

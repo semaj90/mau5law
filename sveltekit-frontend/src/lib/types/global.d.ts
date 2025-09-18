@@ -1,10 +1,11 @@
 
 // Global type definitions for TypeScript error resolution
+export {};
 declare global {
   interface Window {
     fs?: unknown;
   }
-  
+
   namespace svelteHTML {
     interface HTMLAttributes<T> {
       'data-testid'?: string;
@@ -21,18 +22,18 @@ declare module '@qdrant/js-client-rest' {
     getCollection(name: string): Promise<any>;
     createCollection(name: string, options: any): Promise<any>;
   }
-  
+
   export interface PointStruct {
     id: string;
     vector: number[];
     payload?: Record<string, any>;
   }
-  
+
   export interface Filter {
     must?: Array<Record<string, any>>;
     should?: Array<Record<string, any>>;
   }
-  
+
   export interface SearchRequest {
     vector: number[];
     limit?: number;

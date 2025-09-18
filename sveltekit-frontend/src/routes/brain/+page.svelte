@@ -6,15 +6,15 @@ https://svelte.dev/e/js_parse_error -->
   import { onMount } from 'svelte';
   import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import * as THREE from 'three';
-  let layout = $state<any >(null);
-  let graphData = $state<any >({ nodes: [], links: [] });
+  let layout = $state<any>(null);
+  let graphData = $state<any>({ nodes: [], links: [] });
   const client = new YoRHaAPIClient({ onData: (id, data) => { if (id === 'brainGraph') { graphData = data; updateScene(); } }});
-  let canvasContainer = $state<HTMLDivElement | null >(null);
+  let canvasContainer = $state<HTMLDivElement | null>(null);
   let renderer = $state<THREE.WebGLRenderer | null>(null);
   let scene: THREE.Scene;
   let camera: THREE.PerspectiveCamera;
   let animationId: number;
-  let nodeMeshes = $state<Record<string, THREE.Mesh>('')>({});
+  let nodeMeshes = $state<Record<string, THREE.Mesh>({});
   let linkLines = $state<THREE.Line[]>([]);
 
   const nodeGeometry = new THREE.SphereGeometry(0.25, 24, 24);
@@ -44,13 +44,13 @@ https://svelte.dev/e/js_parse_error -->
     const light = new THREE.DirectionalLight(0xffffff, 0.8);
     light.position.set(4, 6, 5);
     scene.add(light);
-  scene.add(new THREE.AmbientLight(0x404040));
+  scene.add(new THREE.AmbientLight(0x404040);
   }
 
   function buildGraph() {
     // Clear existing
-  Object.values(nodeMeshes).forEach(m => scene.remove(m));
-  linkLines.forEach(l => scene.remove(l));
+  Object.values(nodeMeshes).forEach(m => scene.remove(m);
+  linkLines.forEach(l => scene.remove(l);
     nodeMeshes = {};
     linkLines = [];
 
@@ -75,8 +75,8 @@ https://svelte.dev/e/js_parse_error -->
       const to = nodeMeshes[l.target];
       if (!from || !to) return;
       const pts = [from.position, to.position];
-      const geom = new THREE.BufferGeometry().setFromPoints(pts);
-  const line = new THREE.Line(geom, new THREE.LineBasicMaterial({ color: 0x334155 }));
+      const geom = new THREE.BufferGeometry.setFromPoints(pts);
+  const line = new THREE.Line(geom, new THREE.LineBasicMaterial({ color: 0x334155 });
       scene.add(line);
       linkLines.push(line);
     });
@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
   function animate() {
     animationId = requestAnimationFrame(animate);
     // Light weight drift animation
-    Object.values(nodeMeshes).forEach(m => {
+    Object.values.forEach(m => {
       m.rotation.y += 0.005;
     });
     if (renderer) {

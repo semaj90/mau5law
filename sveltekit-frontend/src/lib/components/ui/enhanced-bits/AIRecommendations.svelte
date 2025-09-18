@@ -12,8 +12,8 @@
   }
 
   const {
-    userContext = {},
-    neo4jContext = {},
+    userContext = null,
+    neo4jContext = null,
     analyticsLog = () => {},
     onRecommendations = () => {}
   }: Props = $props();

@@ -151,12 +151,12 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
           formData.append('title', `${evidenceTitle} - ${file.name}`);
           formData.append('description', evidenceDescription);
           formData.append('type', evidenceType);
-          formData.append('tags', JSON.stringify(tags.split(',').map(t => t.trim()).filter(Boolean)));
+          formData.append.map(t => t.trim()).filter(Boolean)));
           formData.append('collectedBy', collectedBy);
           formData.append('location', location);
           formData.append('isAdmissible', isAdmissible.toString());
   let response = $state<Responsetry {
-          response | null>(null)(await fetch('/api/evidence/upload', {
+          response  | null>(null); const data = await fetch('/api/evidence/upload', {
             method: 'POST',
             body: formData
           }));

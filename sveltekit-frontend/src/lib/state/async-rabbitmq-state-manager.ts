@@ -765,12 +765,12 @@ const asyncStateMachine = createMachine(
 export class AsyncRabbitMQStateManager {
   private static instance: AsyncRabbitMQStateManager;
   private stateService: any;
-  private svelteStores: Map<string, Writable<any>> = new Map();
+  private svelteStores: Map<string, Writable<any> = new Map();
   private enableN64Logging = false;
 
   // Svelte stores for reactive UI updates
-  public readonly jobStates: Readable<Map<string, JobState>>;
-  public readonly queueStates: Readable<Map<string, QueueState>>;
+  public readonly jobStates: Readable<Map<string, JobState>;
+  public readonly queueStates: Readable<Map<string, QueueState>;
   public readonly globalState: Readable<GlobalSystemState>;
   public readonly syncStatus: Readable<SyncStatus>;
 

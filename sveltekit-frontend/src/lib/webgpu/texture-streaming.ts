@@ -398,8 +398,7 @@ export class WebGPUTextureStreamer {
 
     // Upload texture data with proper buffer handling
     const textureData = BufferTypeGuards.isArrayBuffer(nesTexture.data) 
-      ? nesTexture.data 
-      : toArrayBuffer(nesTexture.data);
+      ? nesTexture.data: toArrayBuffer(nesTexture.data);
       
     this.device.queue.writeTexture(
       { texture },

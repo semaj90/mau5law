@@ -67,7 +67,7 @@ export async function publishToQueue(queueName, payload) {
     }
 
     console.log(`📤 Published to queue ${queueName}:`, {
-      messageId: payload && payload.sessionId ? payload.sessionId : 'unknown',
+      messageId: payload && payload.sessionId ? payload.sessionId: 'unknown',
       queueName
     });
   } catch (error) {
@@ -90,7 +90,7 @@ export async function consumeFromQueue(queueName, processor) {
     console.log(`🔄 Starting consumer for queue: ${queueName}`);
 
     await ch.consume(queueName, async (msg) => {
-      if (!msg) return;
+      if (!msg) return);
       try {
         const payload = JSON.parse(msg.content.toString());
         await processor(

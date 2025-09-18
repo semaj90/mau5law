@@ -122,7 +122,7 @@
 
     try {
       if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
       }
 
       const oscillator = audioContext.createOscillator();
@@ -438,8 +438,7 @@
 
 <style>
   .n64-card {
-/* Base N64 card styling */ {}
-    font-family: 'Rajdhani', 'Arial', sans-serif;
+/* Base N64 card styling */ font-family: 'Rajdhani', 'Arial', sans-serif;
     background: var(--material-bg);
     color: #ffffff;
     border: 1px solid var(--material-border);
@@ -449,30 +448,23 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-/* 3D transformations */ {}
-    transform: var(--transform-3d);
+/* 3D transformations */ transform: var(--transform-3d);
     transform-origin: center center;
     transform-style: preserve-3d;
-/* Enhanced rendering */ {}
-    -webkit-font-smoothing: antialiased;
+/* Enhanced rendering */ -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-/* Advanced shadows and lighting */ {}
-    box-shadow: var(--material-shadow);
+/* Advanced shadows and lighting */ box-shadow: var(--material-shadow);
 
     transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
-/* Remove default styles */ {}
-    -webkit-appearance: none;
+/* Remove default styles */ -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     outline: none;
-/* Text styling */ {}
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-/* Performance optimization */ {}
-    will-change: transform;
+/* Text styling */ text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+/* Performance optimization */ will-change: transform;
   }
-/* Clickable cards */ {}
-  .n64-card.clickable {
+/* Clickable cards */ .n64-card.clickable {
     cursor: pointer;
   }
 
@@ -480,8 +472,7 @@
     outline: 3px solid rgba(74, 144, 226, 0.6);
     outline-offset: 2px;
   }
-/* Card sections */ {}
-  .card-header {
+/* Card sections */ .card-header {
     padding-bottom: 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     margin-bottom: 16px;
@@ -504,8 +495,7 @@
     font-size: 0.9em;
     opacity: 0.8;
   }
-/* Loading overlay */ {}
-  .loading-overlay {
+/* Loading overlay */ .loading-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -559,71 +549,48 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.6; }
   }
-/* Lighting overlay */ {}
-  .lighting-overlay {
+/* Lighting overlay */ .lighting-overlay {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-background: linear-gradient( {}
-135deg, {}
-rgba(255, 255, 255, 0.3) 0%, {}
-rgba(255, 255, 255, 0.1) 30%, {}
-transparent 60%, {}
-rgba(0, 0, 0, 0.2) 100% {}
-    );
+background: linear-gradient( 135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 30%, transparent 60%, rgba(0, 0, 0, 0.2) 100% );
     pointer-events: none;
     z-index: 1;
     border-radius: 6px;
   }
-/* Reflection overlay */ {}
-  .reflection-overlay {
+/* Reflection overlay */ .reflection-overlay {
     position: absolute;
     top: 10%;
     left: 15%;
     right: 60%;
     bottom: 60%;
-background: linear-gradient( {}
-45deg, {}
-rgba(255, 255, 255, 0.5) 0%, {}
-rgba(255, 255, 255, 0.2) 50%, {}
-transparent 100% {}
-    );
+background: linear-gradient( 45deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100% );
     border-radius: 3px;
     pointer-events: none;
     z-index: 3;
     opacity: 0.7;
   }
-/* Atmosphere overlay for depth */ {}
-  .atmosphere-overlay {
+/* Atmosphere overlay for depth */ .atmosphere-overlay {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-background: radial-gradient( {}
-ellipse at center, {}
-transparent 0%, {}
-var(--fog-color, #404040) 100% {}
-    );
+background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color, #404040) 100% );
     opacity: 0.1;
     pointer-events: none;
     z-index: 0;
     border-radius: 6px;
   }
-/* Depth shadow */ {}
-  .depth-shadow {
+/* Depth shadow */ .depth-shadow {
     position: absolute;
     top: 100%;
     left: 5%;
     right: 5%;
     height: var(--card-elevation);
-background: linear-gradient( {}
-to bottom, {}
-rgba(0, 0, 0, 0.4) 0%, {}
-transparent 100% {}
-    );
+background: linear-gradient( to bottom, rgba(0, 0, 0, 0.4) 0%, transparent 100% );
     transform: perspective(var(--card-elevation)) rotateX(90deg);
     transform-origin: top center;
     pointer-events: none;
@@ -631,59 +598,41 @@ transparent 100% {}
     filter: blur(8px);
     opacity: 0.6;
   }
-/* Material type variations */ {}
-  .n64-card.pbr {
+/* Material type variations */ .n64-card.pbr {
     background-blend-mode: overlay, normal;
   }
-/* Mesh complexity variations */ {}
-  .n64-card.mesh-ultra {
+/* Mesh complexity variations */ .n64-card.mesh-ultra {
     border-radius: 8px;
   }
 
   .n64-card.mesh-ultra .lighting-overlay {
-background: {}
-linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 40%), {}
-linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), {}
-radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 50%), {}
-      radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.2) 0%, transparent 50%);
+background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 40%), linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.2) 0%, transparent 50%);
   }
 
   .n64-card.mesh-low {
     border-radius: 3px;
     transform-style: flat;
   }
-/* State variations */ {}
-  .n64-card.disabled {
+/* State variations */ .n64-card.disabled {
     background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%);
     color: #a0aec0;
     cursor: not-allowed;
     opacity: 0.6;
     transform: perspective(1000px) scale(0.95);
-box-shadow: {}
-0 4px 0 #1a202c, {}
-inset 0 1px 0 rgba(255,255,255,0.05), {}
-      0 6px 12px rgba(0,0,0,0.2);
+box-shadow: 0 4px 0 #1a202c, inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 12px rgba(0,0,0,0.2);
   }
 
   .n64-card.hovered {
-box-shadow: {}
-var(--material-shadow), {}
-      0 0 30px rgba(255, 255, 255, calc(var(--glow-intensity) * 0.3));
+box-shadow: var(--material-shadow), 0 0 30px rgba(255, 255, 255, calc(var(--glow-intensity) * 0.3));
   }
 
   .n64-card.focused {
-box-shadow: {}
-var(--material-shadow), {}
-      0 0 0 3px rgba(74, 144, 226, 0.4);
+box-shadow: var(--material-shadow), 0 0 0 3px rgba(74, 144, 226, 0.4);
   }
-/* Enhanced texture filtering */ {}
-  .n64-card.texture-ultra {
+/* Enhanced texture filtering */ .n64-card.texture-ultra {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-filter: {}
-contrast(1.02) {}
-brightness(1.01) {}
-      saturate(1.05);
+filter: contrast(1.02) brightness(1.01) saturate(1.05);
   }
 
   .n64-card.filtering-bilinear {
@@ -705,43 +654,33 @@ brightness(1.01) {}
   .n64-card.anisotropic-16x {
     filter: contrast(1.08) brightness(1.02);
   }
-/* Fog effects */ {}
-  .n64-card::before {
+/* Fog effects */ .n64-card: :before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-background: radial-gradient( {}
-ellipse at center bottom, {}
-var(--fog-color, #404040) 0%, {}
-transparent 70% {}
-    );
+background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040) 0%, transparent 70% );
     opacity: 0.2;
     pointer-events: none;
     z-index: 0;
     border-radius: 6px;
   }
-/* Mobile optimizations */ {}
-  @media (max-width: 480px) {
+/* Mobile optimizations */ @media (max-width: 480px) {
     .n64-card {
       transform: scale(var(--dynamic-scale, 1));
       transition: transform 150ms ease;
     }
-.lighting-overlay, {}
-.reflection-overlay, {}
-.atmosphere-overlay, {}
-    .depth-shadow {
+.lighting-overlay, .reflection-overlay, .atmosphere-overlay, .depth-shadow {
       display: none;
     }
 
-    .n64-card::before {
+    .n64-card: :before {
       display: none;
     }
   }
-/* Reduced motion support */ {}
-  @media (prefers-reduced-motion: reduce) {
+/* Reduced motion support */ @media (prefers-reduced-motion: reduce) {
     .n64-card {
       transform: none !important;
       transition: box-shadow 150ms ease, opacity 150ms ease;
@@ -757,34 +696,25 @@ transparent 70% {}
       animation: none;
     }
   }
-/* High contrast mode */ {}
-  @media (prefers-contrast: high) {
+/* High contrast mode */ @media (prefers-contrast: high) {
     .n64-card {
       border: 3px solid currentColor;
       text-shadow: none;
     }
-.lighting-overlay, {}
-.reflection-overlay, {}
-    .atmosphere-overlay {
+.lighting-overlay, .reflection-overlay, .atmosphere-overlay {
       display: none;
     }
   }
-/* Performance optimization for low-end devices */ {}
-  @media (max-device-memory: 2GB) {
+/* Performance optimization for low-end devices */ @media (max-device-memory: 2GB) {
     .n64-card {
       transform: none;
       box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3), 0 12px 24px rgba(0, 0, 0, 0.2);
     }
-.lighting-overlay, {}
-.reflection-overlay, {}
-.atmosphere-overlay, {}
-.depth-shadow, {}
-    .n64-card::before {
+.lighting-overlay, .reflection-overlay, .atmosphere-overlay, .depth-shadow, .n64-card: :before {
       display: none;
     }
   }
-/* Dark mode variations */ {}
-  @media (prefers-color-scheme: dark) {
+/* Dark mode variations */ @media (prefers-color-scheme: dark) {
     .n64-card {
       --fog-color: #101010;
     }

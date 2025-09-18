@@ -51,14 +51,14 @@
 
   let selectedTool = $state<'select' | 'evidence' | 'connection' | 'note' | 'highlight' | 'draw'>('select');
   let isDrawing = $state(false);
-  let canvasState = $state<any>({});
-  let collaborators = $state<Map<string, any>>(new Map());
-  let cursors = $state<Map<string, any>>(new Map());
+  let canvasState = $state<any>( );
+  let collaborators = $state<Map<string, any>(new Map());
+  let cursors = $state<Map<string, any>(new Map());
 
   // Evidence mapping
-  let evidenceNodes = $state<Map<string, any>>(new Map());
-  let connections = $state<Map<string, any>>(new Map());
-  let annotations = $state<Map<string, any>>(new Map());
+  let evidenceNodes = $state<Map<string, any>(new Map());
+  let connections = $state<Map<string, any>(new Map());
+  let annotations = $state<Map<string, any>(new Map());
 
   // AI suggestions
   let aiSuggestions = $state<any[]>([]);
@@ -472,7 +472,7 @@
     fabricCanvas.setActiveObject(node);
     propertiesPanel = {
       type: node.nodeType,
-      data: node.nodeType === 'evidence' ? node.evidenceData : node,
+      data: node.nodeType === 'evidence' ? node.evidenceData: node,
       position: { x: node.left, y: node.top }
     };
   }
@@ -619,7 +619,7 @@
       saveCanvasState();
 
       if (collaborative) {
-        broadcastCanvasChange('objects_deleted', { count: activeObjects.length });
+        broadcastCanvasChange('objects_deleted', { count:activeObjects.length });
       }
     }
   }
@@ -877,10 +877,9 @@
   async function loadCanvasFromJSON(jsonData: string) {
     try {
       await fabricCanvas.loadFromJSON(jsonData, () => {
-        fabricCanvas.renderAll();
-
+        fabricCanvas.renderAll());
         // Rebuild node maps
-        fabricCanvas.getObjects().forEach(obj => {
+        fabricCanvas.getObjects.forEach(obj => {
           if (obj.nodeType === 'evidence') {
             evidenceNodes.set(obj.evidenceId, obj);
           } else if (obj.nodeType === 'connection') {
@@ -1341,12 +1340,7 @@
     border-color: rgba(74, 144, 226, 0.5);
   }
 
-  .evidence-item.on-canvas {
-    border-color: rgba(76, 175, 80, 0.5);
-    background: rgba(76, 175, 80, 0.1);
-  }
-
-  .evidence-icon {
+  .evidence-item.on-canv.evidence-icon {
     font-size: 24px;
     width: 32px;
     height: 32px;

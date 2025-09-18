@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
             {#if documentId}
               Document ID: {documentId}
             {:else if $state.context.documentType}
-              {$state.context.documentType.charAt(0).toUpperCase() +
+              {$state.context.documentType.charAt.toUpperCase() +
                 $state.context.documentType.slice(1)} Analysis
             {/if}
           </p>
@@ -418,7 +418,7 @@ https://svelte.dev/e/js_parse_error -->
                     currentSection.importance
                   )}"
                 >
-                  {currentSection.importance.charAt(0).toUpperCase() +
+                  {currentSection.importance.charAt.toUpperCase() +
                     currentSection.importance.slice(1)} Priority
                 </span>
               </div>
@@ -510,7 +510,7 @@ https://svelte.dev/e/js_parse_error -->
                         (result as { type?: unknown; score?: unknown; explanation?: unknown; recommendations?: unknown }).score
                       )}"
                     >
-                      {Math.round((result as { type?: unknown; score?: unknown; explanation?: unknown; recommendations?: unknown }).score * 100)}%
+                      {Math.round.score * 100)}%
                     </span>
                   </div>
                   <p class="text-gray-700 mb-3">{(result as { type?: unknown; score?: unknown; explanation?: unknown; recommendations?: unknown }).explanation}</p>

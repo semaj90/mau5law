@@ -1,11 +1,13 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once
-https://svelte.dev/e/props_duplicate -->
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  let { currentStep = $bindable()  }: { currentStep = $bindable() : unknown } = $props(); // number;
-  let { totalSteps = $bindable()  }: { totalSteps = $bindable() : unknown } = $props(); // number;
-  let { stepLabels = $bindable()  }: { stepLabels = $bindable() : unknown } = $props(); // string[] = [];
+
+  interface Props {
+    currentStep: number;
+    totalSteps: number;
+    stepLabels?: string[];
+  }
+
+  let { currentStep = 0, totalSteps = 5, stepLabels = [] }: Props = $props();
 
   function getStepStatus(stepIndex: number): 'completed' | 'current' | 'upcoming' {
     if (stepIndex < currentStep) return 'completed';

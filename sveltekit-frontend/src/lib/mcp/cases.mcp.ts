@@ -123,7 +123,7 @@ export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | '
 
   } catch (error: any) {
     console.error('❌ MCP Tool createCase error:', error);
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    return { success: false, error: error instanceof Error ? error.message: 'Unknown error' };
   }
 }
 
@@ -164,7 +164,7 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
 
   } catch (error: any) {
     console.error('❌ MCP Tool updateCase error:', error);
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    return { success: false, error: error instanceof Error ? error.message: 'Unknown error' };
   }
 }
 
@@ -214,7 +214,7 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
 
   } catch (error: any) {
     console.error('❌ MCP Tool addEvidence error:', error);
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    return { success: false, error: error instanceof Error ? error.message: 'Unknown error' };
   }
 }
 
@@ -392,7 +392,7 @@ export async function healthCheck(): Promise<any> {
     return {
       status: 'unhealthy',
       details: {
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error'
       }
     };
   }

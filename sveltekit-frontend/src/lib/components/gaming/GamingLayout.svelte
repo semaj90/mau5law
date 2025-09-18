@@ -146,45 +146,36 @@
 
 <style>
 	.gaming-layout {
-position: relative {}
-		min-height: 100vh;
+position: relative min-height: 100vh;
 		font-family: var(--gaming-font-secondary);
 	}
 	
 	.main-container {
-display: flex {}
-		min-height: 100vh;
+display: flex min-height: 100vh;
 		transition: padding-top 0.3s ease;
 	}
 	
 	.main-container.hud-offset {
 		padding-top: 120px; /* Adjust based on HUD height */
 	}
-/* YoRHa Terminal Sidebar */ {}
-	.sidebar {
-position: fixed {}
-		left: 0;
+/* YoRHa Terminal Sidebar */ .sidebar {
+position: fixed left: 0;
 		top: 0;
 		bottom: 0;
 		width: 280px;
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border-right: 3px solid var(--yorha-secondary, #ffd700);
-box-shadow: {}
-3px 0 0 0 var(--yorha-secondary, #ffd700), {}
-			6px 0 20px rgba(0, 0, 0, 0.8);
+box-shadow: 3px 0 0 0 var(--yorha-secondary, #ffd700), 6px 0 20px rgba(0, 0, 0, 0.8);
 		transition: all 0.2s ease;
 		z-index: 900;
-overflow-y: auto {}
-	}
+overflow-y: auto }
 	
 	.sidebar.collapsed {
 		width: 80px;
 	}
 	
 	.sidebar-header {
-display: flex {}
-align-items: center {}
-		justify-content: space-between;
+display: flex align-items: center justify-content: space-between;
 		padding: 20px;
 		border-bottom: 2px solid var(--yorha-secondary, #ffd700);
 		margin-top: 120px; /* Offset for HUD */
@@ -192,17 +183,12 @@ align-items: center {}
 	}
 	
 	.logo-section {
-display: flex {}
-align-items: center {}
-		gap: 12px;
+display: flex align-items: center gap: 12px;
 	}
 	
 	.logo-icon {
 		font-size: 24px;
-display: flex {}
-align-items: center {}
-justify-content: center {}
-		width: 40px;
+display: flex align-items: center justify-content: center width: 40px;
 		height: 40px;
 		background: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-bg-primary, #0a0a0a);
@@ -213,38 +199,30 @@ justify-content: center {}
 	
 	.logo-text {
 		flex: 1;
-overflow: hidden {}
-	}
+overflow: hidden }
 	
 	.app-name {
 		font-family: var(--yorha-font-secondary, 'Orbitron', monospace);
 		font-size: 14px;
 		font-weight: 700;
 		color: var(--yorha-secondary, #ffd700);
-text-transform: uppercase {}
-		letter-spacing: 2px;
-white-space: nowrap {}
-	}
+text-transform: uppercase letter-spacing: 2px;
+white-space: nowrap }
 	
 	.app-subtitle {
 		font-size: 11px;
 		color: var(--yorha-text-muted, #808080);
-white-space: nowrap {}
-		font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
+white-space: nowrap font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
 	}
 	
 	.collapse-button {
-display: flex {}
-align-items: center {}
-justify-content: center {}
-		width: 32px;
+display: flex align-items: center justify-content: center width: 32px;
 		height: 32px;
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-text-muted, #808080);
 		border-radius: 0;
 		color: var(--yorha-text-secondary, #b0b0b0);
-cursor: pointer {}
-		transition: all 0.2s ease;
+cursor: pointer transition: all 0.2s ease;
 		font-size: 12px;
 	}
 	
@@ -254,28 +232,21 @@ cursor: pointer {}
 		color: var(--yorha-bg-primary, #0a0a0a);
 		box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700);
 	}
-/* Navigation */ {}
-	.navigation {
+/* Navigation */ .navigation {
 		flex: 1;
 		padding: 20px 12px;
 	}
 	
 	.nav-item {
-position: relative {}
-display: flex {}
-align-items: center {}
-		gap: 12px;
+position: relative display: flex align-items: center gap: 12px;
 		padding: 12px 16px;
 		margin-bottom: 8px;
 		color: var(--yorha-text-secondary, #b0b0b0);
-text-decoration: none {}
-		border-radius: 0;
+text-decoration: none border-radius: 0;
 		border: 2px solid transparent;
 		transition: all 0.2s ease;
-overflow: hidden {}
-		font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
-text-transform: uppercase {}
-		letter-spacing: 1px;
+overflow: hidden font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
+text-transform: uppercase letter-spacing: 1px;
 	}
 	
 	.nav-item:hover {
@@ -285,62 +256,49 @@ text-transform: uppercase {}
 		transform: translateX(2px);
 	}
 	
-	.nav-(item as { active?: unknown }).active {
+	.nav-.active {
 		background: var(--yorha-bg-tertiary, #2a2a2a);
 		border-color: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-secondary, #ffd700);
-box-shadow: {}
-inset 3px 0 0 var(--yorha-secondary, #ffd700), {}
-			0 0 10px rgba(255, 215, 0, 0.2);
+box-shadow: inset 3px 0 0 var(--yorha-secondary, #ffd700), 0 0 10px rgba(255, 215, 0, 0.2);
 	}
 	
 	.nav-icon {
 		font-size: 18px;
 		width: 24px;
-text-align: center {}
-	}
+text-align: center }
 	
 	.nav-label {
 		font-weight: 500;
 		letter-spacing: 0.5px;
-white-space: nowrap {}
-	}
+white-space: nowrap }
 	
 	.active-indicator {
-position: absolute {}
-		right: 8px;
+position: absolute right: 8px;
 		top: 50%;
 		transform: translateY(-50%);
 		width: 6px;
 		height: 20px;
 		background: var(--yorha-secondary, #ffd700);
 		border-radius: 0;
-box-shadow: {}
-0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), {}
-			0 0 8px rgba(255, 215, 0, 0.5);
+box-shadow: 0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), 0 0 8px rgba(255, 215, 0, 0.5);
 	}
-/* Sidebar Footer */ {}
-	.sidebar-footer {
+/* Sidebar Footer */ .sidebar-footer {
 		padding: 20px;
 		border-top: 2px solid var(--yorha-secondary, #ffd700);
 		background: var(--yorha-bg-tertiary, #2a2a2a);
 	}
 	
 	.system-status {
-display: flex {}
-flex-direction: column {}
-		gap: 8px;
+display: flex flex-direction: column gap: 8px;
 	}
 	
 	.status-item {
-display: flex {}
-align-items: center {}
-		gap: 8px;
+display: flex align-items: center gap: 8px;
 		font-size: 12px;
 		color: var(--yorha-text-muted, #808080);
 		font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
-text-transform: uppercase {}
-		letter-spacing: 1px;
+text-transform: uppercase letter-spacing: 1px;
 	}
 	
 	.status-dot {
@@ -354,12 +312,9 @@ text-transform: uppercase {}
 	.status-dot.online {
 		background: var(--yorha-accent, #00ff41);
 		border-color: var(--yorha-accent, #00ff41);
-box-shadow: {}
-0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), {}
-			0 0 8px rgba(0, 255, 65, 0.5);
+box-shadow: 0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), 0 0 8px rgba(0, 255, 65, 0.5);
 	}
-/* Content Area */ {}
-	.content-area {
+/* Content Area */ .content-area {
 		flex: 1;
 		margin-left: 280px;
 		padding: 24px;
@@ -372,21 +327,17 @@ box-shadow: {}
 	.content-area.sidebar-collapsed {
 		margin-left: 80px;
 	}
-/* YoRHa Terminal Effects */ {}
-	.scan-overlay {
-position: fixed {}
-		top: 0;
+/* YoRHa Terminal Effects */ .scan-overlay {
+position: fixed top: 0;
 		left: 0;
 		right: 0;
 		height: 1px;
 		background: linear-gradient(90deg, transparent 0%, var(--yorha-secondary, #ffd700) 50%, transparent 100%);
 		opacity: 0.8;
 		animation: scan-horizontal 6s ease-in-out infinite;
-pointer-events: none {}
-		z-index: 1100;
+pointer-events: none z-index: 1100;
 	}
-/* Animations */ {}
-	@keyframes pulse {
+/* Animations */ @keyframes pulse {
 		0%, 100% {
 			opacity: 1;
 		}
@@ -405,8 +356,7 @@ pointer-events: none {}
 			opacity: 0.6;
 		}
 	}
-/* Responsive Design */ {}
-	@media (max-width: 1024px) {
+/* Responsive Design */ @media (max-width: 1024px) {
 		.main-container.hud-offset {
 			padding-top: 100px;
 		}
@@ -445,6 +395,5 @@ pointer-events: none {}
 		.content-area.sidebar-collapsed {
 			margin-left: 0;
 		}
-/* Mobile sidebar toggle would need JavaScript implementation */ {}
-	}
+/* Mobile sidebar toggle would need JavaScript implementation */ }
 </style>

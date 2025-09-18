@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({
       error: 'Failed to scale cluster',
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async () => {
     
     return json({
       error: 'Failed to get scaling information',
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

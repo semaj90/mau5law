@@ -15,8 +15,7 @@
     children?: unknown;
     footer?: unknown;
   }
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     title = "",
     description = "",
     size = "md",
@@ -26,7 +25,7 @@
     onclose,
     children,
     footer
-  }: Props = $props();
+   }: Props = $props();
   // Size mappings
   const sizeClasses = {
     sm: "max-w-sm",

@@ -193,7 +193,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
 		return json({
 			success: false,
-			error: error instanceof Error ? error.message : 'Unknown error',
+			error: error instanceof Error ? error.message: 'Unknown error',
 			total_time: Date.now() - startTime
 		}, { status: 500 });
 	}

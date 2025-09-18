@@ -172,7 +172,7 @@ export class LLMOrchestratorBridge {
           routingTime: 0,
           processingTime: 0,
         },
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
         requestId,
       };
     } finally {
@@ -185,7 +185,7 @@ export class LLMOrchestratorBridge {
    */
   private async determineOrchestrator(request: LLMBridgeRequest): Promise<any> {
     // Force server orchestrator for specific model requests
-    if (request.options??.model || "unknown" // @ts-ignore - Model property access === 'server-orchestrator') {
+    if (request.options?.model === 'server-orchestrator') {
       return {
         orchestrator: 'server',
         reasoning: 'Explicitly requested server orchestrator',
@@ -194,10 +194,10 @@ export class LLMOrchestratorBridge {
     }
 
     // Force client orchestrator for specific models
-    if (request.options??.model || "unknown" // @ts-ignore - Model property access && ['gemma270m', 'legal-bert'].includes(request.options?.model || "unknown" // @ts-ignore - Model property access)) {
+    if (request.options?.model && ['gemma270m', 'legal-bert'].includes(request.options.model)) {
       return {
         orchestrator: 'client',
-        reasoning: `Client-side model requested: ${request.options?.model || "unknown" // @ts-ignore - Model property access}`,
+        reasoning: `Client-side model requested: ${request.options?.model || 'unknown'}`,
         confidence: 1.0,
       };
     }
@@ -320,7 +320,7 @@ export class LLMOrchestratorBridge {
         requestId: request.id,
       };
     } catch (error) {
-      throw new Error(`Server orchestrator failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Server orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
 
@@ -345,7 +345,7 @@ export class LLMOrchestratorBridge {
           previousContext: request.context?.previousContext,
         },
         modelPreferences: {
-          preferredModel: request.options??.model || "unknown" // @ts-ignore - Model property access === 'auto' ? 'auto' : request.options??.model || "unknown" // @ts-ignore - Model property access as any,
+          preferredModel: request.options?.model === 'auto' ? 'auto' : request.options?.model as any,
           maxLatency: request.options?.maxLatency,
           qualityThreshold: 0.8,
           enableRLTraining: false,
@@ -378,7 +378,7 @@ export class LLMOrchestratorBridge {
         requestId: request.id,
       };
     } catch (error) {
-      throw new Error(`Client orchestrator failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Client orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
 
@@ -398,7 +398,7 @@ export class LLMOrchestratorBridge {
           content: request.content,
           context: request.context,
           options: {
-            model: request.options??.model || "unknown" // @ts-ignore - Model property access || 'auto',
+            model: request.options?.model || 'auto',
             temperature: request.options?.temperature || 0.3,
             maxTokens: request.options?.maxTokens || 1024,
             useGPU: request.options?.useGPU !== false,
@@ -417,7 +417,7 @@ export class LLMOrchestratorBridge {
         success: true,
         response: mcpResponse.result?.response || mcpResponse.result?.content || JSON.stringify(mcpResponse.result),
         orchestratorUsed: 'hybrid' as const,
-        modelUsed: mcpResponse.metadata??.model || "unknown" // @ts-ignore - Model property access || 'mcp-worker',
+        modelUsed: mcpResponse.metadata?.model || 'mcp-worker',
         executionMetrics: {
           totalLatency: mcpResponse.processingTime,
           routingTime: 0,
@@ -429,7 +429,7 @@ export class LLMOrchestratorBridge {
         requestId: request.id,
       };
     } catch (error) {
-      throw new Error(`MCP orchestrator failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`MCP orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
 
@@ -454,7 +454,7 @@ export class LLMOrchestratorBridge {
         const serverConfidence = serverResult.value.confidence || 0;
         const clientConfidence = clientResult.value.confidence || 0;
 
-        bestResult = serverConfidence > clientConfidence ? serverResult.value : clientResult.value;
+        bestResult = serverConfidence > clientConfidence ? serverResult.value: clientResult.value;
         bestResult.orchestratorUsed = 'hybrid';
       } else if (serverResult.status === 'fulfilled') {
         bestResult = serverResult.value;
@@ -468,7 +468,7 @@ export class LLMOrchestratorBridge {
 
       return bestResult;
     } catch (error) {
-      throw new Error(`Hybrid orchestrator failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Hybrid orchestrator failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
 
@@ -579,8 +579,7 @@ export class LLMOrchestratorBridge {
         activeRequests: this.activeRequests.size,
         totalRequests: this.performanceMetrics.totalRequests,
         successRate: this.performanceMetrics.totalRequests > 0
-          ? this.performanceMetrics.successfulRequests / this.performanceMetrics.totalRequests
-          : 0,
+          ? this.performanceMetrics.successfulRequests / this.performanceMetrics.totalRequests: 0,
         averageLatency: this.performanceMetrics.averageLatency,
       },
       serverOrchestrator: serverHealthy ? await enhancedOrchestrator.health() : { status: 'offline' },

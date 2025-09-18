@@ -56,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
     height?: number;
     readOnly?: boolean;
   } = $props();
-  let canvasElement = $state<HTMLCanvasElementlet canvas: fabric.Canvas | null>(null)(null);
+  let canvasElement = $state<HTMLCanvasElementlet canvas: fabric.Canvas  | null>(null); const data = null);
   let lokiDb = $state<Loki | null >(null);
   let canvasCollection = $state<Collection<any>(null) | null >(null);
   let searchEngine = $state<Fuse<any>(null) | null >(null);
@@ -645,7 +645,7 @@ https://svelte.dev/e/js_parse_error -->
     const activeObjects = canvas.getActiveObjects();
     canvasState.update((state) => ({
       ...state,
-      selectedObjects: activeObjects,
+      selectedObjects:activeObjects,
     }));
   }
 
@@ -654,7 +654,7 @@ https://svelte.dev/e/js_parse_error -->
 
     canvasState.update((state) => ({
       ...state,
-      objectCount: canvas.getObjects().length,
+      objectCount: canvas.getObjects.length,
       canUndo: historyIndex > 0,
       canRedo: historyIndex < historyStack.length - 1,
     }));
@@ -722,7 +722,7 @@ https://svelte.dev/e/js_parse_error -->
         data: canvas.toJSON(),
         thumbnail: canvas.toDataURL({ format: "png", multiplier: 0.1 }),
         metadata: {
-          objectCount: canvas.getObjects().length,
+          objectCount: canvas.getObjects.length,
           width: canvas.getWidth(),
           height: canvas.getHeight(),
           zoom: get(canvasState).zoom,
@@ -902,10 +902,10 @@ https://svelte.dev/e/js_parse_error -->
 
   function pasteClipboard() {
     // Implement clipboard paste functionality
-    navigator.clipboard.read().then((items) => {
+    navigator.clipboard.read.then((items) => {
       for (const item of items) {
         if ((item as { types?: unknown; getType?: unknown }).types.includes("image/png")) {
-          (item as { types?: unknown; getType?: unknown }).getType("image/png").then((blob) => {
+          (item as { types?: unknown; getType?: unknown }).getType.then((blob) => {
             const reader = new FileReader();
             reader.onload = async (e) => {
               const imgUrl = e.target?.result as string;
@@ -936,7 +936,7 @@ https://svelte.dev/e/js_parse_error -->
   let dataUrl = $state<string;
   let filename = $state<stringswitch (format) {
       case "png":
-        dataUrl | null>(null)(canvas.toDataURL({
+        dataUrl  | null>(null); const data = canvas.toDataURL({
           format: "png",
           quality: 1,
           multiplier: 1,

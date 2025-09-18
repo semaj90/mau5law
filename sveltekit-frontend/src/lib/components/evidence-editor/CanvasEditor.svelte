@@ -20,10 +20,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let canvasContainer: HTMLDivElement;
 
   // Enhanced file nodes with connections
-  let fileNodes = $state<any[]>([])([]);
+  let fileNodes = $state<any[]>([]) => []);
 
   // Node connections for relationship visualization
-  let nodeConnections = $state<any[]>([])([]);
+  let nodeConnections = $state<any[]>([]) => []);
   let selectedNodeId = $state<string | null>(null);
   let hoveredNodeId = $state<string | null>(null);
   let isDragging = $state(false);
@@ -325,10 +325,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     ctx.closePath();
   }
   function truncateText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string {
-    if (ctx.measureText(text).width <= maxWidth) return text;
+    if (ctx.measureText.width <= maxWidth) return text;
 
     let truncated = text;
-    while (ctx.measureText(truncated + '...').width > maxWidth && truncated.length > 0) {
+    while (ctx.measureText.width > maxWidth && truncated.length > 0) {
       truncated = truncated.slice(0, -1);
   }
     return truncated + '...';

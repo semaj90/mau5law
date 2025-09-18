@@ -14,7 +14,7 @@
     enableAIEnhancements?: boolean;
   }
   let {
-    initialContext = {},
+    initialContext = ,
     enableStreamingMode = false,
     preferredProtocol = 'http',
     userId = 'anonymous',
@@ -351,7 +351,7 @@
       {#each context.processingQueue as job}
         <div class="bg-white p-3 rounded mb-2">
           <div class="flex items-center justify-between mb-2">
-            <span class="font-medium">{job.type?.replace(/_/g, ' ').toUpperCase() || 'Unknown Job'}</span>
+            <span class="font-medium">{job.type?.replace.toUpperCase() || 'Unknown Job'}</span>
             <span class="text-sm text-gray-500">{Math.round((job.progress || 0) * 100)}%</span>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2">
@@ -449,7 +449,7 @@
         {#each context.collaborationUsers as user}
           <div class="flex items-center gap-3 p-3 border rounded-lg">
             <div class="w-8 h-8 rounded-full bg-gray-600 text-white flex items-center justify-center text-sm font-bold">
-              {user.name.split(' ').map(n => n[0]).join('')}
+              {user.name.split.map-join('')}
             </div>
             <div>
               <div class="font-medium">{user.name}</div>

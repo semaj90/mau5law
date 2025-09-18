@@ -47,7 +47,7 @@
     return ({ result }) => {
       isLoading = false;
       if ((result as { type?: unknown; data?: unknown }).type === 'success' && (result as { type?: unknown; data?: unknown }).data?.response) {
-        ragResponse = (result as { type?: unknown; data?: unknown }).(data as { documents?: unknown; caseData?: unknown; processed?: unknown; ragHistory?: unknown }).response;
+        ragResponse = (result as { type?: unknown; data?: unknown }).data.response;
         queryText = ''; // Clear input after successful query
       }
     };

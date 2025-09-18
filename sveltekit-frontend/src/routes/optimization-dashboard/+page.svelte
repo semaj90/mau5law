@@ -35,7 +35,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   let isMonitoring = $state(false);
-  let lastUpdate = $state(new Date(););
+  let lastUpdate = $state(new Date();
 
   // Real-time performance metrics
   let performanceChart = $state({
@@ -352,7 +352,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="text-xs text-green-300">
                 ✅ Success! Processing time: {testJobResult.processingTime}ms
                 {#if testJobResult.result?.summary}
-                  <p class="mt-2 text-slate-300">Summary: {testJobResult.(result as { summary?: unknown }).summary}</p>
+                  <p class="mt-2 text-slate-300">Summary: {testJobResult.result.summary}</p>
                 {/if}
               </div>
             {:else}

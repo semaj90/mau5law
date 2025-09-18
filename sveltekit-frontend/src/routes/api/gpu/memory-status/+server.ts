@@ -29,8 +29,7 @@ export const GET: RequestHandler = async () => {
             total: data?.memory?.total ?? null,
             used:
                 data?.memory?.total != null && data?.memory?.free != null
-                    ? data.memory.total - data.memory.free
-                    : null
+                    ? data.memory.total - data.memory.free: null
         };
         return json({ ok: true, source: 'go', memory });
     } catch (err: any) {

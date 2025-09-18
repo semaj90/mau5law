@@ -728,11 +728,10 @@ export class SIMDGPUTilingEngine {
   getPerformanceMetrics() {
     const avgSIMDTime =
       this.metrics.tilesProcessed > 0
-        ? this.metrics.totalSIMDTime / this.metrics.tilesProcessed
-        : 0;
+        ? this.metrics.totalSIMDTime / this.metrics.tilesProcessed: 0;
 
     const avgGPUTime =
-      this.metrics.tilesProcessed > 0 ? this.metrics.totalGPUTime / this.metrics.tilesProcessed : 0;
+      this.metrics.tilesProcessed > 0 ? this.metrics.totalGPUTime / this.metrics.tilesProcessed: 0;
 
     return {
       tilesProcessed: this.metrics.tilesProcessed,

@@ -144,11 +144,10 @@ export const POST: RequestHandler = async ({ request }) => {
         tier: 'gpu_accelerated',
         speedup_vs_cpu: `${gpuStats.performance_vs_cpu_multiplier.toFixed(1)}x`,
         target_achieved: gpuOptimizedRequest.target_latency
-          ? gpuStats.throughput_errors_per_second >= 1000 / gpuOptimizedRequest.target_latency
-          : false,
+          ? gpuStats.throughput_errors_per_second >= 1000 / gpuOptimizedRequest.target_latency: false,
       },
       metadata: {
-        ...(result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).optimization_meta,
+        ...result.optimization_meta,
         processed_at: new Date().toISOString(),
         api_version: '2.0.0',
         gpu_accelerated: true,
@@ -166,7 +165,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'GPU processing failed',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString(),
         gpu_processing: true,
         fallback_available: true,
@@ -216,7 +215,7 @@ export const GET: RequestHandler = async () => {
         service: 'GPU-Accelerated TypeScript Processor',
         gpu_available: false,
         error: 'Unable to check GPU status',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString(),
       },
       { status: 503 }

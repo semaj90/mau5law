@@ -166,7 +166,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('QUIC services status check failed:', err);
     error(500, ensureError({
       message: 'Failed to check QUIC services status',
-      error: err instanceof Error ? err.message : 'Unknown error'
+      error: err instanceof Error ? err.message: 'Unknown error'
     }));
   }
 };
@@ -207,7 +207,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       } catch (commandError) {
         results[serviceName] = {
           success: false,
-          error: commandError instanceof Error ? commandError.message : 'Unknown error'
+          error: commandError instanceof Error ? commandError.message: 'Unknown error'
         };
       }
     }
@@ -223,7 +223,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     console.error('QUIC services command execution failed:', err);
     error(500, ensureError({
       message: 'Command execution failed',
-      error: err instanceof Error ? err.message : 'Unknown error'
+      error: err instanceof Error ? err.message: 'Unknown error'
     }));
   }
 };
@@ -264,7 +264,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     console.error('QUIC configuration update failed:', err);
     error(500, ensureError({
       message: 'Configuration update failed',
-      error: err instanceof Error ? err.message : 'Unknown error'
+      error: err instanceof Error ? err.message: 'Unknown error'
     }));
   }
 };
@@ -333,7 +333,7 @@ async function checkServiceHealth(
 
     } catch (fallbackError) {
       status = 'error';
-      serviceError = `Primary: ${primaryError instanceof Error ? primaryError.message : 'Unknown'}, Fallback: ${fallbackError instanceof Error ? fallbackError.message : 'Unknown'}`;
+      serviceError = `Primary: ${primaryError instanceof Error ? primaryError.message: 'Unknown'}, Fallback: ${fallbackError instanceof Error ? fallbackError.message : 'Unknown'}`;
     }
   }
 

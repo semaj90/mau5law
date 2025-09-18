@@ -36,7 +36,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(
       {
         error: 'Vector processing failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -64,7 +64,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Request failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -303,7 +303,7 @@ async function getHealthStatus(): Promise<any> {
     return json(
       {
         overall: 'unhealthy',
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
         timestamp: new Date().toISOString(),
       },
       { status: 500 }
@@ -319,7 +319,7 @@ async function getSystemMetrics(): Promise<any> {
     ]);
 
     const metrics = {
-      queues: queueMetrics.status === 'fulfilled' ? queueMetrics.value : Record<string, any>,
+      queues: queueMetrics.status === 'fulfilled' ? queueMetrics.value: Record<string, any>,
       performance: performanceMetrics.status === 'fulfilled' ? performanceMetrics.value : Record<string, any>,
       timestamp: new Date().toISOString(),
     };
@@ -328,7 +328,7 @@ async function getSystemMetrics(): Promise<any> {
   } catch (error: any) {
     return json(
       {
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
         timestamp: new Date().toISOString(),
       },
       { status: 500 }
@@ -349,7 +349,7 @@ async function getQueueStatus(): Promise<any> {
     return json(
       {
         error: 'Queue status unavailable',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 503 }
     );
@@ -479,7 +479,7 @@ export const GET_STATUS: RequestHandler = async ({ params, url }) => {
     return json(
       {
         error: 'Status query failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );

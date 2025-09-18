@@ -126,7 +126,7 @@
       console.log('Vector search results:', data);
     } catch (err) {
       console.error('Search error:', err);
-      error = err instanceof Error ? err.message : 'Search failed';
+      error = err instanceof Error ? err.message: 'Search failed';
     } finally {
       loading = false;
     }

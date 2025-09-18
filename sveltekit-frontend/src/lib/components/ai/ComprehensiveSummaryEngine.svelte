@@ -28,12 +28,21 @@ https://svelte.dev/e/props_duplicate -->
   } from 'lucide-svelte';
 
   // Props
-  let { targetId = $bindable()  }: { targetId = $bindable() : any } = $props(); // string;
-  let { targetType = $bindable()  }: { targetType = $bindable() : any } = $props(); // 'case' | 'evidence' | 'legal_document' | 'cross_analysis' = 'case';
-  let { depth = $bindable()  }: { depth = $bindable() : any } = $props(); // 'quick' | 'comprehensive' | 'forensic' = 'comprehensive';
-  let { enableStreaming = $bindable()  }: { enableStreaming = $bindable() : any } = $props(); // true;
-  let { enableUserActivity = $bindable()  }: { enableUserActivity = $bindable() : any } = $props(); // true;
-  let { enableRAG = $bindable()  }: { enableRAG = $bindable() : any } = $props(); // true;
+  let {
+    targetId = $bindable(),
+    targetType = $bindable('case'),
+    depth = $bindable('comprehensive'),
+    enableStreaming = $bindable(true),
+    enableUserActivity = $bindable(true),
+    enableRAG = $bindable(true)
+  }: {
+    targetId?: string;
+    targetType?: 'case' | 'evidence' | 'legal_document' | 'cross_analysis';
+    depth?: 'quick' | 'comprehensive' | 'forensic';
+    enableStreaming?: boolean;
+    enableUserActivity?: boolean;
+    enableRAG?: boolean;
+  } = $props();
 
   // XState machine integration
   const { state, send, context } = useMachine(aiSummaryMachine);
@@ -251,12 +260,11 @@ https://svelte.dev/e/props_duplicate -->
 
     const result = await (response as { ok?: any; statusText?: any; body?: any; json?: any }).json();
     if ((result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).success) {
-      synthesisResult.set((result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).result);
-      processingStats.set({
-        totalTime: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).metadata.processingTime,
-        tokensGenerated: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).(result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).sources.find(s => s.type === 'llm')?.details.tokens || 0,
-        documentsRetrieved: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).(result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).sources.find(s => s.type === 'rag')?.details.documentsUsed || 0,
-        confidenceScore: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).(result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).confidence
+      synthesisResult.set.result);
+      processingStats.set.metadata.processingTime,
+        tokensGenerated: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).result.sources.find(s => s.type === 'llm')?.details.tokens || 0,
+        documentsRetrieved: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).result.sources.find(s => s.type === 'rag')?.details.documentsUsed || 0,
+        confidenceScore: (result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).result.confidence
       });
       summaryProgress.set(100);
       currentStep = 'Summary completed successfully';
@@ -271,17 +279,15 @@ https://svelte.dev/e/props_duplicate -->
     switch ((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).type) {
       case 'status':
         currentStep = (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).message;
-        summaryProgress.set((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).progress);
+        summaryProgress.set.progress);
         break;
       case 'llm_chunk':
-        streamingData.update(chunks => [...chunks, {
-          type: 'llm',
-          content: (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).content,
+        streamingData.update.content,
           timestamp: Date.now()
         }]);
         break;
       case 'complete':
-        synthesisResult.set((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).result);
+        synthesisResult.set.result);
         summaryProgress.set(100);
         currentStep = 'Summary completed successfully';
         isProcessing = false;
@@ -294,11 +300,9 @@ https://svelte.dev/e/props_duplicate -->
   }
 
   function updateStreamingProgress(data) {
-    summaryProgress.set((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).progress * 100);
+    summaryProgress.set.progress * 100);
     if ((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).result) {
-      streamingData.update(chunks => [...chunks, {
-        type: 'chunk',
-        content: (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).(result as { success?: any; result?: any; metadata?: any; error?: any; summary?: any; keyInsights?: any; actionItems?: any; confidence?: any; sources?: any; nextSteps?: any }).content,
+      streamingData.update.result.content,
         chunkIndex: (data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).chunkIndex,
         timestamp: Date.now()
       }]);
@@ -306,7 +310,7 @@ https://svelte.dev/e/props_duplicate -->
   }
 
   function handleSummaryCompletion(data) {
-    synthesisResult.set((data as { type?: any; message?: any; progress?: any; content?: any; result?: any; error?: any; chunkIndex?: any; summary?: any }).summary);
+    synthesisResult.set.summary);
     isProcessing = false;
     summaryProgress.set(100);
     currentStep = 'Summary completed successfully';

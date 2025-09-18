@@ -100,8 +100,8 @@ export class FlatBufferNodeSerializer {
 
       for (const node of nodes) {
         let nodeSize = FLATBUFFER_SCHEMA.NODE.TOTAL_SIZE;
-        nodeSize += node.embedding ? node.embedding.byteLength : 0;
-        nodeSize += node.metadata ? JSON.stringify(node.metadata).length : 0;
+        nodeSize += node.embedding ? node.embedding.byteLength: 0;
+        nodeSize += node.metadata ? JSON.stringify(node.metadata).length: 0;
         // Align to 8-byte boundary for GPU optimization
         nodeSize = Math.ceil(nodeSize / 8) * 8;
         nodeDataSizes.push(nodeSize);
@@ -425,7 +425,7 @@ export class FlatBufferNodeSerializer {
       ...this.metrics,
       cacheSize: this.binaryCache.size,
       cacheHitRate: isNaN(cacheHitRate) ? 0 : cacheHitRate,
-      avgSerializeTime: this.metrics.totalNodes > 0 ? this.metrics.serializeTime / this.metrics.totalNodes : 0,
+      avgSerializeTime: this.metrics.totalNodes > 0 ? this.metrics.serializeTime / this.metrics.totalNodes: 0,
       avgDeserializeTime: this.metrics.totalNodes > 0 ? this.metrics.deserializeTime / this.metrics.totalNodes : 0
     };
   }

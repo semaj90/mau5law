@@ -34,7 +34,7 @@
     if (selectedFile) {
       // Auto-generate title from filename if not provided
       if (!title) {
-        title = selectedFile.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+        title = selectedFile.name.replace.replace(/[-_]/g, ' ');
       }
     }
   }
@@ -130,7 +130,7 @@
       <label for="file-input" class="file-input-label">
         <span class="file-icon">📎</span>
         <span class="file-text">
-          {selectedFile ? selectedFile.name : 'Choose legal document to upload'}
+          {selectedFile ? selectedFile.name: 'Choose legal document to upload'}
         </span>
       </label>
       <input

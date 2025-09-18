@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown upload error',
+      error: error instanceof Error ? error.message: 'Unknown upload error',
       details: 'An error occurred during document processing'
     }, { status: 500 });
   }

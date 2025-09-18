@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
   } catch (err) {
     console.error('🎮 Redis orchestrator status check failed:', err);
-    throw error(500, `Redis status check failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Redis status check failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
   } catch (err) {
     console.error('🎮 Redis orchestrator processing failed:', err);
-    throw error(500, `Query processing failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Query processing failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -146,7 +146,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     
   } catch (err) {
     console.error('🎮 Manual cache operation failed:', err);
-    throw error(500, `Cache operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Cache operation failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -183,7 +183,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     
   } catch (err) {
     console.error('🎮 Cache clear failed:', err);
-    throw error(500, `Cache clear failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Cache clear failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -216,7 +216,7 @@ async function handleTaskQuery(url: URL) {
     
   } catch (err) {
     console.error('🎮 Task queue status failed:', err);
-    throw error(500, `Task queue status failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Task queue status failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -260,7 +260,7 @@ export const POST_TASKS: RequestHandler = async ({ request }) => {
     
   } catch (err) {
     console.error('🎮 Task queuing failed:', err);
-    throw error(500, `Task queuing failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Task queuing failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -282,7 +282,7 @@ function generatePerformanceRecommendations(stats: any): string[] {
     recommendations.push('Task queue is building up - consider scaling worker processes');
   }
   
-  const memoryMatch = stats.redis_memory?.match(/(\d+)([A-Z]+)/);
+  const memoryMatch = stats.redis_memory?.match(/(\d+) => [A-Z]+)/);
   if (memoryMatch) {
     const [, amount, unit] = memoryMatch;
     if (unit === 'GB' && parseInt(amount) > 2) {

@@ -78,7 +78,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Reactive calculations
   // TODO: Convert to $derived: {
-    wordCount = reportText.trim() ? reportText.trim().split(/\s+/).length : 0
+    wordCount = reportText.trim() ? reportText.trim.split-length: 0
     charCount = reportText.length;
     // Estimate processing time based on document length (roughly 1 second per 1000 chars)
     estimatedProcessingTime = Math.ceil(charCount / 1000);

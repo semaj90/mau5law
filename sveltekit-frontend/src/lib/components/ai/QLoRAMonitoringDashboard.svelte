@@ -344,4 +344,4 @@
 			</div>
 		</div>
 	</div>
-</div>
+<!-- Removed stray extra closing div -->

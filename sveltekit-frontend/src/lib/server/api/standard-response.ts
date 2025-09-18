@@ -127,7 +127,7 @@ export function withErrorHandling<T extends RequestEvent>(
         error.message || 'Internal server error',
         500,
         error.code || 'INTERNAL_ERROR',
-        process.env.NODE_ENV === 'development' ? error.stack : undefined,
+        process.env.NODE_ENV === 'development' ? error.stack: undefined,
         requestId
       );
     }

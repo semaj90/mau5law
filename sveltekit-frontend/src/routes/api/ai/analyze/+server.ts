@@ -183,8 +183,7 @@ Comprehensive Analysis:`;
       {
         error:
           error instanceof Error
-            ? error.message
-            : "Failed to generate analysis",
+            ? error.message: "Failed to generate analysis",
       },
       { status: 500 },
     );

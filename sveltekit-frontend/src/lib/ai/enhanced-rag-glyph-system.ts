@@ -399,7 +399,7 @@ class EnhancedRAGGlyphSystem {
       });
 
       for (const result of lodResults.results) {
-        const glyphContext = await this.convertLODToGlyphContext((result as { entry?: any; entry_id?: any; glyph_summary?: any; svg_visualization?: any; relevance_score?: any; vector_similarity?: any; lod_match?: any; predictive_confidence?: any }).entry, 'lod_direct');
+        const glyphContext = await this.convertLODToGlyphContext(result.entry, 'lod_direct');
         allCandidateGlyphs.set(glyphContext.glyph_id, glyphContext);
       }
     }
@@ -473,13 +473,13 @@ class EnhancedRAGGlyphSystem {
     result: any,
     retrievalMethod: string
   ): Promise<GlyphContext> {
-    const glyphId = `glyph-${(result as { entry?: any; entry_id?: any; glyph_summary?: any; svg_visualization?: any; relevance_score?: any; vector_similarity?: any; lod_match?: any; predictive_confidence?: any }).entry_id}-${Date.now()}`;
+    const glyphId = `glyph-${result.entry_id}-${Date.now()}`;
 
     // Extract compressed representation from result
     const compressedRep = new Uint8Array(7);
-    if ((result as { entry?: any; entry_id?: any; glyph_summary?: any; svg_visualization?: any; relevance_score?: any; vector_similarity?: any; lod_match?: any; predictive_confidence?: any }).glyph_summary && (result as { entry?: any; entry_id?: any; glyph_summary?: any; svg_visualization?: any; relevance_score?: any; vector_similarity?: any; lod_match?: any; predictive_confidence?: any }).glyph_summary.visual_representation) {
+    if (result.glyph_summary && result.glyph_summary.visual_representation) {
       // Parse visual representation to compressed bytes
-      const visualData = (result as { entry?: any; entry_id?: any; glyph_summary?: any; svg_visualization?: any; relevance_score?: any; vector_similarity?: any; lod_match?: any; predictive_confidence?: any }).glyph_summary.visual_representation;
+      const visualData = result.glyph_summary.visual_representation;
       for (let i = 0; i < 7; i++) {
         compressedRep[i] = (visualData.charCodeAt(i % visualData.length) * (i + 1)) & 0x7F;
       }
@@ -493,14 +493,14 @@ class EnhancedRAGGlyphSystem {
     return {
       glyph_id: glyphId,
       compressed_representation: compressedRep,
-      visual_signature: (result as { entry?: any; entry_id?: any; glyph_summary?: any; svg_visualization?: any; relevance_score?: any; vector_similarity?: any; lod_match?: any; predictive_confidence?: any }).svg_visualization || this.generateDefaultSVG(compressedRep),
-      semantic_summary: (result as { entry?: any; entry_id?: any; glyph_summary?: any; svg_visualization?: any; relevance_score?: any; vector_similarity?: any; lod_match?: any; predictive_confidence?: any }).glyph_summary?.semantic_summary || 'Relevant context from vector search',
-      contextual_weight: (result as { entry?: any; entry_id?: any; glyph_summary?: any; svg_visualization?: any; relevance_score?: any; vector_similarity?: any; lod_match?: any; predictive_confidence?: any }).relevance_score || 0.5,
-      topology_position: new Float32Array([(result as { entry?: any; entry_id?: any; glyph_summary?: any; svg_visualization?: any; relevance_score?: any; vector_similarity?: any; lod_match?: any; predictive_confidence?: any }).vector_similarity || 0.5, Math.random(), Math.random()]),
+      visual_signature: result.svg_visualization || this.generateDefaultSVG(compressedRep),
+      semantic_summary: result.glyph_summary?.semantic_summary || 'Relevant context from vector search',
+      contextual_weight: result.relevance_score || 0.5,
+      topology_position: new Float32Array([result.vector_similarity || 0.5, Math.random(), Math.random()]),
       retrieval_metadata: {
-        source_entry_id: (result as { entry?: any; entry_id?: any; glyph_summary?: any; svg_visualization?: any; relevance_score?: any; vector_similarity?: any; lod_match?: any; predictive_confidence?: any }).entry_id,
-        lod_level: (result as { entry?: any; entry_id?: any; glyph_summary?: any; svg_visualization?: any; relevance_score?: any; vector_similarity?: any; lod_match?: any; predictive_confidence?: any }).lod_match || 'tile',
-        extraction_confidence: (result as { entry?: any; entry_id?: any; glyph_summary?: any; svg_visualization?: any; relevance_score?: any; vector_similarity?: any; lod_match?: any; predictive_confidence?: any }).predictive_confidence || 0.7,
+        source_entry_id: result.entry_id,
+        lod_level: result.lod_match || 'tile',
+        extraction_confidence: result.predictive_confidence || 0.7,
         semantic_clusters: [0, 1, 2], // Would extract from actual metadata
         related_glyphs: []
       }
@@ -638,9 +638,9 @@ class EnhancedRAGGlyphSystem {
         }
       });
 
-      if ((response as { response?: any; processing_time?: any; performance_metrics?: any; visual_context?: any }).response) {
+      if (response.response) {
         return {
-          text: (response as { response?: any; processing_time?: any; performance_metrics?: any; visual_context?: any }).response,
+          text: response.response,
           confidence: 0.85, // Would calculate based on response characteristics
           semantic_accuracy: 0.87 // Would calculate based on context alignment
         };
@@ -653,7 +653,7 @@ class EnhancedRAGGlyphSystem {
 
       // Fallback response based on glyph context
       return {
-        text: 'I have relevant context from compressed glyphs, but encountered an issue generating a complete (response as { response?: any; processing_time?: any; performance_metrics?: any; visual_context?: any }). Please try rephrasing your question.',
+        text: 'I have relevant context from compressed glyphs, but encountered an issue generating a complete response. Please try rephrasing your question.',
         confidence: 0.3,
         semantic_accuracy: 0.4
       };
@@ -674,7 +674,7 @@ class EnhancedRAGGlyphSystem {
     } else if (optimization === 'coherence') {
       baseParts.push('Maintain logical flow and coherence across different glyph contexts.');
     } else {
-      baseParts.push('Balance accuracy, creativity, and coherence in your (response as { response?: any; processing_time?: any; performance_metrics?: any; visual_context?: any }).');
+      baseParts.push('Balance accuracy, creativity, and coherence in your response.');
     }
 
     if (queryAnalysis.complexity_score > 0.7) {
@@ -750,18 +750,18 @@ class EnhancedRAGGlyphSystem {
     this.performanceStats.total_queries_processed++;
     this.performanceStats.average_response_time =
       (this.performanceStats.average_response_time * (this.performanceStats.total_queries_processed - 1) +
-       (response as { response?: any; processing_time?: any; performance_metrics?: any; visual_context?: any }).processing_time) / this.performanceStats.total_queries_processed;
+       response.processing_time) / this.performanceStats.total_queries_processed;
 
     this.performanceStats.cache_hit_rate =
       (this.performanceStats.cache_hit_rate * (this.performanceStats.total_queries_processed - 1) +
-       (response as { response?: any; processing_time?: any; performance_metrics?: any; visual_context?: any }).performance_metrics.cache_hit_rate) / this.performanceStats.total_queries_processed;
+       response.performance_metrics.cache_hit_rate) / this.performanceStats.total_queries_processed;
 
-    this.performanceStats.semantic_accuracy_scores.push((response as { response?: any; processing_time?: any; performance_metrics?: any; visual_context?: any }).performance_metrics.semantic_accuracy_score);
+    this.performanceStats.semantic_accuracy_scores.push(response.performance_metrics.semantic_accuracy_score);
     if (this.performanceStats.semantic_accuracy_scores.length > 100) {
       this.performanceStats.semantic_accuracy_scores = this.performanceStats.semantic_accuracy_scores.slice(-100);
     }
 
-    this.performanceStats.compression_ratios.push((response as { response?: any; processing_time?: any; performance_metrics?: any; visual_context?: any }).visual_context.compression_statistics.compression_ratio);
+    this.performanceStats.compression_ratios.push(response.visual_context.compression_statistics.compression_ratio);
     if (this.performanceStats.compression_ratios.length > 100) {
       this.performanceStats.compression_ratios = this.performanceStats.compression_ratios.slice(-100);
     }

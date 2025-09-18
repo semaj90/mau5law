@@ -57,13 +57,13 @@ https://svelte.dev/e/js_parse_error -->
     chartLazyState?.hasBeenVisible,
     analysisLazyState?.hasBeenVisible,
     customLazyState?.hasBeenVisible
-  ].filter(Boolean).length);
+  ].filter(item => item.length));
 
   let visibleComponents = $derived(() => [
     chartLazyState?.isVisible,
     analysisLazyState?.isVisible,
     customLazyState?.isVisible
-  ].filter(Boolean).length);
+  ].filter(item => item.length));
  </script>
 
 <svelte:head>

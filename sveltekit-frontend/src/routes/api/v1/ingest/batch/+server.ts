@@ -130,8 +130,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         performance: {
           total_processing_time_ms: processingTime,
           average_document_time_ms: (result as { results?: any; processed?: any; errors?: any }).results.length > 0
-            ? (result as { results?: any; processed?: any; errors?: any }).results.reduce((sum, r) => sum + r.process_time_ms, 0) / (result as { results?: any; processed?: any; errors?: any }).results.length
-            : 0,
+            ? (result as { results?: any; processed?: any; errors?: any }).results.reduce((sum, r) => sum + r.process_time_ms, 0) / (result as { results?: any; processed?: any; errors?: any }).results.length: 0,
           documents_per_second: (result as { results?: any; processed?: any; errors?: any }).processed > 0
             ? ((result as { results?: any; processed?: any; errors?: any }).processed / (processingTime / 1000)).toFixed(2)
             : 0
@@ -182,7 +181,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     return json(
       {
         error: 'Internal server error during batch processing',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error',
         service: 'sveltekit-batch-ingest-proxy',
         processing_time_ms: processingTime
       },

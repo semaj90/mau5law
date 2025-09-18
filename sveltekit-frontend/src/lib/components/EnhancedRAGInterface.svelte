@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
     ragState.somClusters.map(cluster => ({
       ...cluster,
       isSelected: selectedClusters.includes(cluster.id),
-      relevantResults: optimizedResults.filter(result => (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).clusterId === cluster.id)
+      relevantResults: optimizedResults.filter(item => item.clusterId) === cluster.id)
     }))
   );
 
@@ -409,7 +409,7 @@ visualizationMode = 'clusters'}
                       {(result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).document.title || `Document ${(result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).id}`}
                     </h4>
                     <div class="flex items-center gap-4 text-sm text-gray-600">
-                      <span>Relevance: {Math.round((result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).score * 100)}%</span>
+                      <span>Relevance: {Math.round.score * 100)}%</span>
                       {#if (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).cacheLayer}
                         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).cacheLayer}</span>
                       {/if}
@@ -423,7 +423,7 @@ visualizationMode = 'clusters'}
                   {#if (result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).legalRelevance}
                     <div class="text-right">
                       <div class="text-2xl font-bold text-blue-600">
-                        {Math.round((result as { clusterId?: unknown; document?: unknown; id?: unknown; score?: unknown; cacheLayer?: unknown; legalRelevance?: unknown; highlights?: unknown }).legalRelevance.overall * 100)}
+                        {Math.round.legalRelevance.overall * 100)}
                       </div>
                       <div class="text-xs text-gray-500">Legal Score</div>
                     </div>
@@ -563,7 +563,7 @@ visualizationMode = 'clusters'}
     50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
   }
 
-  .enhanced-rag-interface :global(.searching) {
+  .enhanced-rag-interface: global(.searching) {
     animation: pulse-glow 2s infinite;
   }
 </style>

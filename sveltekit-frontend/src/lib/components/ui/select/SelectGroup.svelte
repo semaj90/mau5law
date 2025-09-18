@@ -20,8 +20,7 @@ https://svelte.dev/e/expected_token -->
   {/if}
 </div>
 
-<style>/* @unocss-include */ {}
-  .select-group {
+<style>/* @unocss-include */ .select-group {
     padding: 4px 0;
 }
 </style>

@@ -40,8 +40,8 @@ Compact searchable component for embedding in other interfaces
     placeholder = 'Search documents, cases, evidence...',
     maxResults = 5,
     threshold = 0.7,
-    contextFilter = {},
-    onResultSelect = () => {},
+    contextFilter = ,
+    onResultSelect = () => ,
     compact = false
   }: Props = $props();
 

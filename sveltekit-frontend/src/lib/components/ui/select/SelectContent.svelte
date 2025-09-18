@@ -19,9 +19,8 @@
     ({
       open: writable(false),
       selected: writable(null),
-      onSelect: () => {},
-      onToggle: () => {}
-    } satisfies SelectContext);
+      onSelect: () => ,
+      onToggle: () => } satisfies SelectContext);
   const { open } = context;
 </script>
 
@@ -33,8 +32,7 @@
   </div>
 {/if}
 
-<style>/* @unocss-include */ {}
-  .select-content {
+<style>/* @unocss-include */ .select-content {
     position: absolute;
     top: 100%;
     left: 0;

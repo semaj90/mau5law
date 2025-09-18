@@ -167,7 +167,7 @@ export class JobOrchestrator extends EventEmitter {
     this.stats.queuedJobs = this.jobQueue.size - this.results.size;
 
     // Calculate system health
-    const errorRate = this.stats.totalJobs > 0 ? this.stats.failedJobs / this.stats.totalJobs : 0;
+    const errorRate = this.stats.totalJobs > 0 ? this.stats.failedJobs / this.stats.totalJobs: 0;
     if (errorRate > 0.2) {
       this.stats.systemHealth = 'critical';
     } else if (errorRate > 0.1 || this.stats.activeWorkers === 0) {
@@ -190,7 +190,7 @@ export class JobOrchestrator extends EventEmitter {
     await this.channel.consume('job_results', (msg) => {
       if (msg) {
         try {
-          const result: WorkerResult = JSON.parse(msg.content.toString());
+          const result: WorkerResult = JSON.parse(msg.content.toString()));
           this.results.set((result as { jobId?: any; success?: any }).jobId, result);
 
           if ((result as { jobId?: any; success?: any }).success) {
@@ -296,7 +296,7 @@ export abstract class SpecializedWorker extends EventEmitter {
 
     await this.channel.consume(queueName, async (msg) => {
       if (msg) {
-        this.isProcessing = true;
+        this.isProcessing = true);
         const startTime = Date.now();
 
         try {
@@ -336,7 +336,7 @@ export abstract class SpecializedWorker extends EventEmitter {
           const errorResult: WorkerResult = {
             jobId,
             success: false,
-            error: error instanceof Error ? error.message : 'Unknown error',
+            error: error instanceof Error ? error.message: 'Unknown error',
             processingTime,
             workerInfo: {
               id: this.workerId,

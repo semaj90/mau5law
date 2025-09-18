@@ -10,7 +10,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
   // System status and metrics stores
   const systemStatus = writable({
     status: 'unknown',
-    services: {},
+    services: ,
     metrics: {
       totalProcessed: 0,
       gpuProcessed: 0, 
@@ -28,7 +28,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
   // Derived stores for computed values
   const healthyServices = derived(systemStatus, ($status) => {
     const services = Object.values($status.services);
-    const healthy = services.filter(s => s === 'healthy').length;
+    const healthy = services.filter(item => item.length);
     return { healthy, total: services.length };
   });
   const performanceMetrics = derived(systemStatus, ($status) => {
@@ -109,7 +109,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
             timestamp: Date.now(),
             document: testDocument,
             result: (data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).result,
-            processingTime: (data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).processingTime
+            processingTime: (data as { success?: unknown; result?: unknown; document_type?: unknown; court_level?: unknown; gpuUtilization?: unknown }).result.processingTime
           }, ...results.slice(0, 9)]); // Keep last 10 results
           // Update test document ID for next test
           testDocument.id = 'demo_doc_' + Date.now();
@@ -339,9 +339,9 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
             <div class="bg-gray-700 rounded-lg p-4">
               <div class="flex justify-between items-start mb-2">
                 <div class="flex items-center">
-                  <span class="mr-2">{getProcessingPathIcon((result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).processingPath)}</span>
-                  <span class={`font-medium ${getProcessingPathColor((result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).processingPath)}`}>
-                    {(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).processingPath.toUpperCase()} Path
+                  <span class="mr-2">{getProcessingPathIcon((result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).result.processingPath)}</span>
+                  <span class={`font-medium ${getProcessingPathColor((result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).result.processingPath)}`}>
+                    {(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).result.processingPath.toUpperCase()} Path
                   </span>
                 </div>
                 <span class="text-xs text-gray-400">
@@ -360,18 +360,18 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
                 </div>
                 <div>
                   <span class="text-gray-400">Score:</span>
-                  <span class="text-white ml-1">{(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).ranking.finalScore.toFixed(3)}</span>
+                  <span class="text-white ml-1">{(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).result.ranking.finalScore.toFixed(3)}</span>
                 </div>
                 <div>
                   <span class="text-gray-400">Confidence:</span>
-                  <span class="text-white ml-1">{((result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).analysis.confidence * 100).toFixed(1)}%</span>
+                  <span class="text-white ml-1">{((result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).result.analysis.confidence * 100).toFixed(1)}%</span>
                 </div>
               </div>
               
-              {#if (result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).metadata.gpuUtilization > 0}
+              {#if (result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).result.metadata.gpuUtilization > 0}
                 <div class="mt-2 text-xs">
                   <span class="text-purple-400">GPU Utilization:</span>
-                  <span class="text-white ml-1">{((result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).(result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).metadata.gpuUtilization * 100).toFixed(1)}%</span>
+                  <span class="text-white ml-1">{((result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).result.metadata.gpuUtilization * 100).toFixed(1)}%</span>
                 </div>
               {/if}
             </div>
@@ -423,21 +423,21 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
   }
   
   /* Custom scrollbar for results */
-  .max-h-96::-webkit-scrollbar {
+  .max-h-96: :-webkit-scrollbar {
     width: 6px;
   }
   
-  .max-h-96::-webkit-scrollbar-track {
+  .max-h-96: :-webkit-scrollbar-track {
     background: #374151;
     border-radius: 3px;
   }
   
-  .max-h-96::-webkit-scrollbar-thumb {
+  .max-h-96: :-webkit-scrollbar-thumb {
     background: #6b7280;
     border-radius: 3px;
   }
   
-  .max-h-96::-webkit-scrollbar-thumb:hover {
+  .max-h-96: :-webkit-scrollbar-thumb:hover {
     background: #9ca3af;
   }
 </style>

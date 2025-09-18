@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Internal server error',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -243,7 +243,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: 'Internal server error',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };
@@ -275,7 +275,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Heartbeat failed',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };

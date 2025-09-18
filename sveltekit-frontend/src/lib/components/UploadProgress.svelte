@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
     stage: 'idle',
     progress: 0,
     status: 'pending',
-    metrics: {},
+    metrics: ,
     error: null as string | null,
   });
 
@@ -39,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
     clusters: [],
     embeddings: [],
     interpolationResults: [],
-    metrics: {},
+    metrics: ,
   });
 
   // AI context suggestions
@@ -97,28 +97,22 @@ https://svelte.dev/e/js_parse_error -->
     // Upload progress updates
     socket.on('upload-progress', (data) => {
       console.log('📊 Upload progress:', data);
-      progressData.update(current => ({
-        ...current,
-        stage: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).stage || current.stage,
+      progressData.update.stage || current.stage,
         progress: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).progress || current.progress,
         status: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).status || current.status,
-        metrics: { ...current.metrics, ...(data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics },
+        metrics: { ...current.metrics, ...data.metrics },
       }));
 
       // Update XState machine
       if ((data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).stage && (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).progress !== undefined) {
-        uploadStore.send({
-          type: 'PROCESSING_PROGRESS',
-          stage: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).stage,
+        uploadStore.send.stage,
           progress: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).progress,
         });
       }
 
       // Update real-time metrics
       if ((data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics) {
-        realtimeMetrics.update(current => ({
-          ...current,
-          uploadSpeed: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics.uploadSpeed || current.uploadSpeed,
+        realtimeMetrics.update.metrics.uploadSpeed || current.uploadSpeed,
           processingTime: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics.processingTime || current.processingTime,
           memoryUsage: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics.memoryUsage || current.memoryUsage,
         }));
@@ -137,24 +131,19 @@ https://svelte.dev/e/js_parse_error -->
       if (showTensorMetrics) {
         tensorResults.update(current => ({
           ...current,
-          ...(data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).result,
-          metrics: { ...current.metrics, ...(data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).result.metrics },
+          ...data.result,
+          metrics: { ...current.metrics, ...data.result.metrics },
         }));
 
         // Update GPU utilization if available
         if ((data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).result.metrics?.gpuUtilization) {
-          realtimeMetrics.update(current => ({
-            ...current,
-            gpuUtilization: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).result.metrics.gpuUtilization,
+          realtimeMetrics.update.result.metrics.gpuUtilization,
           }));
         }
       }
 
       // Notify XState machine of tensor completion
-      uploadStore.send({
-        type: 'PROCESSING_COMPLETE',
-        stage: 'tensor',
-        result: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).result,
+      uploadStore.send.result,
       });
     });
 
@@ -167,15 +156,10 @@ https://svelte.dev/e/js_parse_error -->
     // Error handling
     socket.on('upload-error', (data) => {
       console.error('❌ Upload error:', data);
-      progressData.update(current => ({
-        ...current,
-        status: 'failed',
-        error: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).error.message || 'Unknown error',
+      progressData.update.error.message || 'Unknown error',
       }));
 
-      uploadStore.send({
-        type: 'PROCESSING_FAILED',
-        stage: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).stage || 'unknown',
+      uploadStore.send.stage || 'unknown',
         error: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).error.message || 'Unknown error',
       });
     });
@@ -205,9 +189,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!socket) return;
 
     const trackEvent = (type: string, metadata?: unknown) => {
-      socket?.emit('user-attention', {
-        type,
-        timestamp: new Date().toISOString(),
+      socket?.emit.toISOString(),
         metadata,
       });
     };
@@ -223,7 +205,7 @@ https://svelte.dev/e/js_parse_error -->
     );
 
     // Scroll tracking (throttled)
-  let scrollTimeout = $state<numberconst scrollHandler | null>(null)(() => {
+  let scrollTimeout = $state<numberconst scrollHandler  | null>(null); const data = () => {
       clearTimeout(scrollTimeout));
       scrollTimeout = setTimeout(() => {
         trackEvent('scroll', { 
@@ -244,7 +226,7 @@ https://svelte.dev/e/js_parse_error -->
       trackEvent('click', {
         x: e.clientX,
         y: e.clientY,
-        target: e.target instanceof Element ? e.target.tagName : null,
+        target: e.target instanceof Element ? e.target.tagName: null,
       });
     };
 
@@ -260,9 +242,7 @@ https://svelte.dev/e/js_parse_error -->
   // Typing event tracking
   export function trackTyping(query: string) {
     if (!socket || !enableAttentionTracking) return;
-    socket.emit('user-attention', {
-      type: 'typing',
-      timestamp: new Date().toISOString(),
+    socket.emit.toISOString(),
       metadata: { query },
     });
   }
@@ -374,7 +354,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <!-- Tensor Processing Results -->
-{#if showTensorMetrics && Object.keys($tensorResults.metrics).length > 0}
+{#if showTensorMetrics && Object.keys.length > 0}
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
       Tensor Processing Results
@@ -404,7 +384,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
 
     <!-- Detailed Metrics -->
-    {#if Object.keys($tensorResults.metrics).length > 0}
+    {#if Object.keys.length > 0}
       <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
         <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Processing Metrics

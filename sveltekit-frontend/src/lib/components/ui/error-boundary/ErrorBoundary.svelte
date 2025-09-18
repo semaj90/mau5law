@@ -37,7 +37,7 @@
       err.stack = `${event.filename}:${event.lineno}:${event.colno}`;
       hasError = true;
       error = err;
-      errorId = `ERR_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      errorId = `ERR_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
       logError(err, { type: 'global', event });
     }
   }
@@ -47,7 +47,7 @@
       const err = new Error(event.reason?.message || 'Unhandled promise rejection');
       hasError = true;
       error = err;
-      errorId = `ERR_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      errorId = `ERR_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
       logError(err, { type: 'unhandled_rejection', reason: event.reason });
     }
   }
@@ -169,8 +169,7 @@
   {@render children()}
 {/if}
 
-<style>/* Ensure error boundary styles don't interfere with global styles */ {}
-  details summary::-webkit-details-marker {
+<style>/* Ensure error boundary styles don't interfere with global styles */ details summary::-webkit-details-marker {
     display: none;
   }
   

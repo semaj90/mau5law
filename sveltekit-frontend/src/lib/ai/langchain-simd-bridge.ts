@@ -506,7 +506,7 @@ export class LangChainSIMDBridge {
       return {
         success: false,
         performance: Record<string, any>,
-        results: { error: error instanceof Error ? error.message : 'Unknown error' }
+        results: { error: error instanceof Error ? error.message: 'Unknown error' }
       };
     }
   }

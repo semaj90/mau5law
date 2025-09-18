@@ -292,11 +292,11 @@
                     description={(result as { title?: unknown; content?: unknown; type?: unknown; score?: unknown; source?: unknown }).content.substring(0, 200) + "..."}
                     status="active"
                     type={(result as { title?: unknown; content?: unknown; type?: unknown; score?: unknown; source?: unknown }).type}
-                    connections={Math.round((result as { title?: unknown; content?: unknown; type?: unknown; score?: unknown; source?: unknown }).score * 100)}
+                    connections={Math.round.score * 100)}
                   >
                     {#snippet children()}
                       <div class="flex justify-between text-xs">
-                        <span>Match: {Math.round((result as { title?: unknown; content?: unknown; type?: unknown; score?: unknown; source?: unknown }).score * 100)}%</span>
+                        <span>Match: {Math.round.score * 100)}%</span>
                         <span>Source: {(result as { title?: unknown; content?: unknown; type?: unknown; score?: unknown; source?: unknown }).source}</span>
                       </div>
                     {/snippet}

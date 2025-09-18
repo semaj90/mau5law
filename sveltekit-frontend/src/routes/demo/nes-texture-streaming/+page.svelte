@@ -334,13 +334,13 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   
-  .status-(item as { connected?: unknown; active?: unknown; healthy?: unknown; error?: unknown }).connected,
-  .status-(item as { connected?: unknown; active?: unknown; healthy?: unknown; error?: unknown }).active,
-  .status-(item as { connected?: unknown; active?: unknown; healthy?: unknown; error?: unknown }).healthy {
+  .status-.connected,
+  .status-.active,
+  .status-.healthy {
     border-color: #22c55e;
   }
   
-  .status-(item as { connected?: unknown; active?: unknown; healthy?: unknown; error?: unknown }).error {
+  .status-.error {
     border-color: #ef4444;
   }
   

@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ url }) => {
         };
       } catch (vectorError) {
         vectorHealth = {
-          error: vectorError instanceof Error ? vectorError.message : 'Vector ops failed',
+          error: vectorError instanceof Error ? vectorError.message: 'Vector ops failed',
         };
       }
     }
@@ -163,7 +163,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       service: 'enhanced-rag-integration',
       status: 'error',
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error',
       timestamp: new Date().toISOString(),
     });
   }

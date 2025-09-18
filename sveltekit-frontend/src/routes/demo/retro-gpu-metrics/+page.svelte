@@ -263,7 +263,7 @@ https://svelte.dev/e/tag_invalid_name -->
         class="h-48 bg-black rounded-lg border-4 border-gray-700 flex items-center justify-center relative overflow-hidden"
       >
         <div class="text-green-400 font-mono text-lg">
-          >>> TERMINAL READY <<<
+          > TERMINAL READY <<<
         </div>
       </div>
     </div>
@@ -380,7 +380,7 @@ https://svelte.dev/e/tag_invalid_name -->
     position: relative;
   }
 
-  .crt-scan-deep::before {
+  .crt-scan-deep: :before {
     content: '';
     position: absolute;
     top: 0;

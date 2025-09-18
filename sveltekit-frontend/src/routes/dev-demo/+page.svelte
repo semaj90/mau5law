@@ -18,19 +18,18 @@
   // Svelte 5 runes for state management
   let authStatus = $state<any>(null);
   let cases = $state<any[]>([]);
-  let apiStatus = $state<Record<string, any>('')>({});
+  let apiStatus = $state<Record<string, any>({});
   let chatMessages = $state<any[]>([]);
   let currentMessage = $state('');
   let isStreaming = $state(false);
 
   // Zod schema for case creation (matching API schema)
-  const caseSchema = z.object({
-    title: z.string().min(1, "Case title is required").max(500, "Case title too long"),
+  const caseSchema = z.object.min-max(500, "Case title too long"),
     description: z.string().optional(),
-    priority: z.enum(["low", "medium", "high", "critical"]).default("medium"),
-    status: z.enum(["open", "investigating", "pending", "closed", "archived"]).default("open"),
+    priority: z.enum.default("medium"),
+    status: z.enum.default("open"),
     location: z.string().optional(),
-    jurisdiction: z.string().optional()
+    jurisdiction: z.string.optional()
   });
 
   // Superforms setup
@@ -78,7 +77,7 @@
         } catch (error) {
           apiStatus[endpoint.name] = {
             status: 'unreachable',
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message: 'Unknown error'
           };
         }
       }
@@ -100,7 +99,7 @@
       if ((result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).success) {
         cases = (result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).data.cases || [];
       } else {
-        console.error('Failed to load cases:', (result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).error);
+        console.error(error);
       }
     } catch (error) {
       console.error('Error loading cases:', error);
@@ -120,7 +119,7 @@
       const result = await (response as { json?: unknown; ok?: unknown }).json();
 
       if ((result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).success) {
-        console.log('Case created successfully:', (result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).data);
+        console.log.data);
         await loadCases(); // Refresh case list
         // Reset form
         $form = {
@@ -132,7 +131,7 @@
           jurisdiction: ''
         };
       } else {
-        console.error('Failed to create caseItem:', (result as { success?: unknown; data?: unknown; error?: unknown; response?: unknown }).error);
+        console.error(error);
       }
     } catch (error) {
       console.error('Error creating caseItem:', error);
@@ -185,7 +184,7 @@
     } catch (error) {
       const errorMessage = {
         role: 'system',
-        content: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        content: `Error: ${error instanceof Error ? error.message: 'Unknown error'}`,
         timestamp: new Date()
       };
       chatMessages = [...chatMessages, errorMessage];

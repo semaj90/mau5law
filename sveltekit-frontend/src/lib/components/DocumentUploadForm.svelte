@@ -54,8 +54,8 @@
   } = $props();
 let dragActive = $state(false);
 let fileInput: HTMLInputElement = $state(undefined as any);
-let uploadProgress = $state<Record<string, number>(0)>({});
-let processingErrors = $state<Record<string, string>('')>({});
+let uploadProgress = $state<Record<string, number>(0)>( );
+let processingErrors = $state<Record<string, string>('')>( );
 
   // Accepted file types (combine user allowedTypes with a canonical set; de-dupe)
   const canonicalTypes = [
@@ -193,7 +193,7 @@ let processingErrors = $state<Record<string, string>('')>({});
       console.error('OCR processing failed:', error);
       processingErrors = {
         ...processingErrors,
-        [file.name]: `Processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        [file.name]: `Processing failed: ${error instanceof Error ? error.message: 'Unknown error'}`
       };
     }
 
@@ -214,8 +214,7 @@ let processingErrors = $state<Record<string, string>('')>({});
     formData.uploaded_files = formData.uploaded_files.filter((_, i) => i !== index);
 
     // Remove corresponding OCR result
-    formData.ocr_results = formData.ocr_results.filter(result =>
-      (result as { metadata?: any; confidence?: any }).metadata.title !== removedFile.name
+    formData.ocr_results = formData.ocr_results.filter(item => item.metadata).title !== removedFile.name
     );
 
     // Clear any errors for this file
@@ -287,7 +286,7 @@ let processingErrors = $state<Record<string, string>('')>({});
           Drag and drop files here, or <span class="text-blue-600 underline">browse</span>
         </p>
         <p class="text-sm text-gray-500 mt-2">
-      Supports: {acceptedTypes.map(t => t.split('/')[1]).slice(0,7).join(', ')} (max {formatFileSize(maxFileSize)} each)
+      Supports: {acceptedTypes.map(t => t.split('/')[1]).slice.join(', ')} (max {formatFileSize(maxFileSize)} each)
         </p>
       </div>
     </div>
@@ -413,7 +412,7 @@ let processingErrors = $state<Record<string, string>('')>({});
   {/if}
 
   <!-- Error Summary -->
-  {#if Object.keys(processingErrors).length > 0}
+  {#if Object.keys.length > 0}
     <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4" transition:fade>
       <h4 class="text-sm font-medium text-red-800 mb-2">Processing Errors:</h4>
       <ul class="text-xs text-red-600 space-y-1">

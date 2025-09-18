@@ -44,7 +44,7 @@ function validateAndBuildEnv(): EnvConfig {
   const profile = normalizePerformanceProfile(RAW_ENV.VITE_PERFORMANCE_PROFILE);
 
   const cfg: EnvConfig = {
-    OLLAMA_URL: RAW_ENV.OLLAMA_URL || 'http://localhost:11434',
+    OLLAMA_URL: RAW_ENV.OLLAMA_URL || 'http://localhost:8086',
     OLLAMA_MODEL: RAW_ENV.OLLAMA_MODEL || 'gemma3:legal-latest',
     OPENAI_API_KEY: RAW_ENV.OPENAI_API_KEY || '',
     DATABASE_URL: RAW_ENV.DATABASE_URL || '',
@@ -58,8 +58,7 @@ function validateAndBuildEnv(): EnvConfig {
     SHADER_DEBUG: RAW_ENV.VITE_SHADER_DEBUG === 'true',
     REDUCTION_MODE:
       RAW_ENV.VITE_REDUCTION_MODE === 'gpu' || RAW_ENV.VITE_REDUCTION_MODE === 'cpu'
-        ? RAW_ENV.VITE_REDUCTION_MODE
-        : 'auto',
+        ? RAW_ENV.VITE_REDUCTION_MODE: 'auto',
   };
 
   if (cfg.GPU_DEBUG) {
@@ -73,7 +72,7 @@ export const ENV_CONFIG: EnvConfig = validateAndBuildEnv();
 
 // Client-safe environment access with GPU configuration
 export const CLIENT_ENV = Object.freeze({
-  OLLAMA_URL: typeof window !== 'undefined' ? 'http://localhost:11434' : ENV_CONFIG.OLLAMA_URL,
+  OLLAMA_URL: typeof window !== 'undefined' ? 'http://localhost:8086' : ENV_CONFIG.OLLAMA_URL,
   APP_URL: ENV_CONFIG.PUBLIC_APP_URL,
   GPU_ACCELERATION: ENV_CONFIG.GPU_ACCELERATION,
   WEBGPU_ENABLED: ENV_CONFIG.WEBGPU_ENABLED,

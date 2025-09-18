@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ url }) => {
           ready: await startupFlagService.isReady(),
           criticalServices: Object.entries(summary.services)
             .filter(([, service]) => !service.isOptional)
-            .reduce<Record<string, { status: string; health: string; startupTime?: number }>>(
+            .reduce<Record<string, { status: string; health: string; startupTime?: number }>(
               (acc, [name, service]) => {
                 acc[name] = {
                   status: service.status,
@@ -71,7 +71,7 @@ export const GET: RequestHandler = async ({ url }) => {
           return json(
             {
               error: 'Failed to load startup diff',
-              message: error instanceof Error ? error.message : 'Unknown error',
+              message: error instanceof Error ? error.message: 'Unknown error',
             },
             { status: 500 }
           );
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ url }) => {
           return json(
             {
               error: 'Failed to read ready flag',
-              message: error instanceof Error ? error.message : 'Unknown error',
+              message: error instanceof Error ? error.message: 'Unknown error',
             },
             { status: 500 }
           );
@@ -119,7 +119,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to get startup status',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to control startup monitoring',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );

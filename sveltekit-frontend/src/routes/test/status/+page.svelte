@@ -19,8 +19,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const options = {
         method: test.method || 'GET',
-        headers: test.headers || {}
-      };
+        headers: test.headers || };
 
       const response = await fetch(test.path, options);
       const endTime = Date.now();
@@ -152,7 +151,7 @@ window.location.href = '/test'}
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
       <div>
         <div class="text-2xl font-bold text-green-600">
-          {routeTests.filter(t => t.status === 'success').length}
+          {routeTests.filter(item => item.length)}
         </div>
         <div class="text-sm text-gray-600">Successful</div>
       </div>
@@ -164,13 +163,13 @@ window.location.href = '/test'}
       </div>
       <div>
         <div class="text-2xl font-bold text-red-600">
-          {routeTests.filter(t => t.status === 'failed').length}
+          {routeTests.filter(item => item.length)}
         </div>
         <div class="text-sm text-gray-600">Failed</div>
       </div>
       <div>
         <div class="text-2xl font-bold text-yellow-600">
-          {routeTests.filter(t => t.status === 'pending').length}
+          {routeTests.filter(item => item.length)}
         </div>
         <div class="text-sm text-gray-600">Pending</div>
       </div>

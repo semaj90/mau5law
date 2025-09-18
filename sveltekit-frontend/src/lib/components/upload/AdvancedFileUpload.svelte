@@ -103,13 +103,13 @@
         document.removeEventListener("paste", handlePaste);
   }
       if (recordingStream) {
-        recordingStream.getTracks().forEach((track) => track.stop());
+        recordingStream.getTracks.forEach((track) => track.stop());
   }
     };
   });
 
   function generateId(): string {
-    return Math.random().toString(36).substr(2, 9);
+    return Math.random.toString-substr(2, 9);
   }
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -317,7 +317,7 @@
       });
     } catch (error) {
       fileItem.status = "error";
-      fileItem.error = error instanceof Error ? error.message : "Upload failed";
+      fileItem.error = error instanceof Error ? error.message: "Upload failed";
 
       notifications.add({
         type: "error",
@@ -442,7 +442,7 @@
 
       // Take photo logic would go here
       // For now, just stop the stream
-      stream.getTracks().forEach((track) => track.stop());
+      stream.getTracks.forEach((track) => track.stop());
 
       notifications.add({
         type: "info",
@@ -501,7 +501,7 @@
       isRecording = false;
 
       if (recordingStream) {
-        recordingStream.getTracks().forEach((track) => track.stop());
+        recordingStream.getTracks.forEach((track) => track.stop());
         recordingStream = null;
   }
       notifications.add({
@@ -872,7 +872,7 @@ removeFile(file.id)}
   .file-item:hover {
     background: #f9fafb;
 }
-  .file-(item as { kind?: unknown; getAsFile?: unknown; size?: unknown; uploading?: unknown }).uploading {
+  .file-.uploading {
     background: #eff6ff;
 }
   .file-preview {

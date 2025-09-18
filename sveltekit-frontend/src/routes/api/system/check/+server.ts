@@ -106,7 +106,7 @@ async function checkDatabaseStatus(): Promise<any> {
     
     return {
       status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       type: 'PostgreSQL'
     };
   }

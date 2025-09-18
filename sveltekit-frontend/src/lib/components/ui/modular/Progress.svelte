@@ -136,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
     position: relative;
   }
 
-  :global(.yorha-progress::after) {
+  :global(.yorha-progress: :after) {
     content: '';
     position: absolute;
     top: 0;

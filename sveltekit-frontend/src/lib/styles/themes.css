@@ -149,7 +149,7 @@ body {
   color: var(--accent-foreground);
 }
 
-/* Accessibility: focus visible for keyboard users */
+/* Accessibility:focus visible for keyboard users */
 :focus:not(:focus-visible) { outline: none; }
 
 /* Lightweight code / syntax highlight background */

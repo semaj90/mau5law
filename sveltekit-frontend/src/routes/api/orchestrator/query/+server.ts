@@ -309,7 +309,7 @@ export const POST: RequestHandler = async ({ request }) => {
         memory_bank_used: 'none',
         response_time_ms: Date.now() - startTime,
         cost_saved: 0,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );

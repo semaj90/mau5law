@@ -175,7 +175,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
   } catch (error) {
     return json({
-      error: `Request processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      error: `Request processing failed: ${error instanceof Error ? error.message: 'Unknown error'}`,
       action,
       responseTime: `${Date.now() - startTime}ms`,
       timestamp: new Date().toISOString()
@@ -217,7 +217,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   } catch (error) {
     return json({
-      error: `GET request failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      error: `GET request failed: ${error instanceof Error ? error.message: 'Unknown error'}`,
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

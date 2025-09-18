@@ -185,13 +185,11 @@
     text-transform: none;
     letter-spacing: normal;
   }
-/* Hover effects */ {}
-  .modern-btn:hover:not(:disabled) {
+/* Hover effects */ .modern-btn:hover:not(:disabled) {
     box-shadow: var(--yorha-shadow-md);
     transform: translateY(-1px);
   }
-/* Golden ratio responsive sizing */ {}
-  @media (max-width: 768px) {
+/* Golden ratio responsive sizing */ @media (max-width: 768px) {
     .modern-btn {
       font-size: 0.875rem;
     }

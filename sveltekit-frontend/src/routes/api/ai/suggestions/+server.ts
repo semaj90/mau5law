@@ -134,7 +134,7 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
       suggestions,
       model,
       reportType,
-      confidence: suggestions.length > 0 ? suggestions[0].confidence : 0,
+      confidence: suggestions.length > 0 ? suggestions[0].confidence: 0,
       servicesUsed: {
         vectorSearch: useVectorSearch,
         ollamaAI: useOllamaAI,
@@ -153,7 +153,7 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
     console.error('Error generating AI suggestions:', error);
     return json({ 
       error: 'Failed to generate suggestions',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 }

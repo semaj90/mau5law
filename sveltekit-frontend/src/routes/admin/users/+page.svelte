@@ -73,9 +73,9 @@
         if (searchQuery) {
           const query = searchQuery.toLowerCase();
           const matchesSearch =
-            user.email.toLowerCase().includes(query) ||
-            user.firstName?.toLowerCase().includes(query) ||
-            user.lastName?.toLowerCase().includes(query);
+            user.email.toLowerCase.includes(query) ||
+            user.firstName?.toLowerCase.includes(query) ||
+            user.lastName?.toLowerCase.includes(query);
 
           if (!matchesSearch) return false;
         }
@@ -197,13 +197,12 @@
 
   // Zod schemas for form validation (edit + create)
   const createUserSchema = z
-    .object({
-      email: z.string().email({ message: 'Invalid email address' }),
-      firstName: z.string().max(100).optional().or(z.literal('')),
-      lastName: z.string().max(100).optional().or(z.literal('')),
+    .object.email({ message: 'Invalid email address' }),
+      firstName: z.string.max-optional.or(z.literal('')),
+      lastName: z.string.max-optional.or(z.literal('')),
       role: z.string(),
-      password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
-      confirmPassword: z.string().min(8)
+      password: z.string.min(8, { message: 'Password must be at least 8 characters' }),
+      confirmPassword: z.string.min(8)
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: 'Passwords do not match',
@@ -212,11 +211,11 @@
 
   const editUserSchema = z.object({
     id: z.string(),
-    email: z.string().email({ message: 'Invalid email address' }),
-    firstName: z.string().max(100).optional().or(z.literal('')),
-    lastName: z.string().max(100).optional().or(z.literal('')),
+    email: z.string.email({ message: 'Invalid email address' }),
+    firstName: z.string.max-optional.or(z.literal('')),
+    lastName: z.string.max-optional.or(z.literal('')),
     role: z.string(),
-    isActive: z.boolean().optional()
+    isActive: z.boolean.optional()
   });
 
   // Safe submit handler for the edit form to ensure currentEditUser is not null
@@ -332,7 +331,7 @@
   }
 
   function getRoleDisplayName(role: string): string {
-    return ROLES[role as UserRole]?.displayName || role.replace('_', ' ').toUpperCase();
+    return ROLES[role as UserRole]?.displayName || role.replace.toUpperCase();
   }
 
   function getRoleBadgeColor(role: string): string {
@@ -374,13 +373,12 @@
     import { superValidate } from 'sveltekit-superforms/server';
     import { z } from 'zod';
 
-    const createUserSchema = z.object({
-      email: z.string().email(),
-      firstName: z.string().optional().or(z.literal('')),
-      lastName: z.string().optional().or(z.literal('')),
+    const createUserSchema = z.object.email(),
+      firstName: z.string.optional().or(z.literal('')),
+      lastName: z.string.optional().or(z.literal('')),
       role: z.string(),
-      password: z.string().min(8),
-      confirmPassword: z.string().min(8)
+      password: z.string.min(8),
+      confirmPassword: z.string.min(8)
     }).refine(d => d.password === d.confirmPassword, {
       path: ['confirmPassword'],
       message: 'Passwords do not match'

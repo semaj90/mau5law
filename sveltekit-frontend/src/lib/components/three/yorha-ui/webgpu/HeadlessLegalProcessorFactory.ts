@@ -508,7 +508,7 @@ Format your response as structured JSON.`;
    * Process multiple documents in batch
    */
   async processBatch(
-    documents: Array<,
+    documents: Array<any>,
     config: Partial<HeadlessProcessingConfig> = {}
   ): Promise<HeadlessProcessingResult[]> {
     console.log(`📦 Processing ${documents.length} documents in headless batch mode`);

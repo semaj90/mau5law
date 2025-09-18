@@ -60,7 +60,7 @@ class GraphSpatialLayout {
   async computeBFSLayout(
     nodes: GraphNode[], 
     edges: GraphEdge[]
-  ): Promise<Map<string, number>> {
+  ): Promise<Map<string, number> {
     // Build adjacency map
     const adjacency = new Map<string, string[]>();
     for (const node of nodes) {
@@ -366,7 +366,7 @@ export class GraphTextureManager {
       const node = orderedNodes[i];
       const neighbors = edges
         .filter(edge => edge.fromNodeId === node.nodeId || edge.toNodeId === node.nodeId)
-        .map(edge => edge.fromNodeId === node.nodeId ? edge.toNodeId : edge.fromNodeId)
+        .map(edge => edge.fromNodeId === node.nodeId ? edge.toNodeId: edge.fromNodeId)
         .map(neighborId => memoryLayout.get(neighborId) || 0)
         .filter((value, index, arr) => arr.indexOf(value) === index); // Remove duplicates
       

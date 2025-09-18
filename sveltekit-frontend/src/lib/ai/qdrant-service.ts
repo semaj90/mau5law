@@ -117,7 +117,7 @@ export class QdrantService {
     vector: number[],
     limit: number = 10,
     filter?: Record<string, any>,
-  ): Promise<Array<any>> {
+  ): Promise<Array<any> {
     await this.ensureCollection();
 
     const searchResult = await this.client.search(this.collectionName, {

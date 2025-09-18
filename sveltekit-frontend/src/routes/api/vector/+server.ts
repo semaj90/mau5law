@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Internal server error",
+        error: error instanceof Error ? error.message: "Internal server error",
       },
       { status: 500 }
     );
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async () => {
         success: false,
         status: "unhealthy",
         error: "Failed to connect to Ollama",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 503 }
     );

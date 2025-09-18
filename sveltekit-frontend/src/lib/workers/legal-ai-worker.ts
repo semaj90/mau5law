@@ -199,7 +199,7 @@ export function createLegalAIWorker(): Worker {
             .update(evidence)
             .set({
               aiAnalysis: {
-                error: error instanceof Error ? error.message : 'Unknown error',
+                error: error instanceof Error ? error.message: 'Unknown error',
                 processing_time: `${processingTime}ms`,
                 processed_at: new Date().toISOString(),
                 success: false,

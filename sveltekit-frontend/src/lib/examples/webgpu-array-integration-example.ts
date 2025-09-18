@@ -30,82 +30,7 @@ export async function processLegalDocumentEmbeddings(
   console.log('🧠 Processing legal document embeddings with WebGPU...');
   
   // Step 1: Normalize all embeddings to Float32Array
-  const normalizedEmbeddings = embeddings.map(({ sourceType, data, metadata }) => {
-    let normalizedData: Float32Array;
-    
-    if (Array.isArray(data)) {
-      // Handle plain number arrays from APIs
-      normalizedData = new Float32Array(data);
-    } else {
-      // Handle ArrayBuffer or Float32Array from different sources
-      normalizedData = ensureFloat32Array(data);
-    }
-    
-    console.log(`✅ Normalized ${sourceType} embedding for ${metadata.documentId}:${metadata.chunkIndex} - ${normalizedData.length} dims`);
-    return { normalizedData, metadata, sourceType };
-  });
-  
-  // Step 2: Analyze memory usage to choose optimal quantization
-  const memoryAnalysis = analyzeMemoryUsage(normalizedEmbeddings[0].normalizedData);
-  console.log('📊 Memory Analysis:', memoryAnalysis);
-  
-  // Step 3: Choose quantization based on use case
-  const quantizationConfig: QuantizationConfig = {
-    precision: 'fp16', // Good balance for legal AI - 50% memory reduction, ~1% accuracy loss
-  };
-  
-  // Step 4: Create WebGPU buffers with quantization
-  const bufferMap = batchProcessArrays(
-    device,
-    normalizedEmbeddings.map((emb, idx) => ({
-      name: `embedding_${emb.metadata.documentId}_${emb.metadata.chunkIndex}`,
-      data: emb.normalizedData,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
-    })),
-    quantizationConfig
-  );
-  
-  // Step 5: Log compression results
-  let totalOriginalSize = 0;
-  let totalCompressedSize = 0;
-  
-  bufferMap.forEach((result, name) => {
-    if ((result as { conversionResult?: any }).conversionResult) {
-      totalOriginalSize += (result as { conversionResult?: any }).conversionResult.originalSize;
-      totalCompressedSize += (result as { conversionResult?: any }).conversionResult.compressedSize;
-      console.log(`💾 ${name}: ${(result as { conversionResult?: any }).conversionResult.originalSize}B → ${(result as { conversionResult?: any }).conversionResult.compressedSize}B (${(result as { conversionResult?: any }).conversionResult.compressionRatio}x compression)`);
-    }
-  });
-  
-  console.log(`🚀 Total compression: ${totalOriginalSize}B → ${totalCompressedSize}B (${(totalOriginalSize / totalCompressedSize).toFixed(1)}x overall)`);
-  
-  return bufferMap;
-}
-
-/**
- * Example: Legal Vector Similarity Search with WebGPU
- */
-export async function performLegalVectorSearch(
-  device: GPUDevice,
-  queryEmbedding: Float32Array | ArrayBuffer | number[],
-  documentEmbeddings: Map<string, { buffer: GPUBuffer; conversionResult?: ArrayConversionResult }>,
-  threshold: number = 0.8
-) {
-  console.log('🔍 Performing WebGPU-accelerated legal vector search...');
-  
-  // Step 1: Normalize query embedding
-  const queryFloat32 = Array.isArray(queryEmbedding) 
-    ? new Float32Array(queryEmbedding)
-    : ensureFloat32Array(queryEmbedding);
-  
-  // Step 2: Create query buffer with same quantization as stored embeddings
-  const quantizationConfig: QuantizationConfig = { precision: 'fp16' };
-  const { buffer: queryBuffer, conversionResult } = createWebGPUBuffer(
-    device,
-    queryFloat32,
-    GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
-    quantizationConfig
-  );
+  // Melt UI component creation removed - replace with bits-ui declarative components
   
   if (conversionResult) {
     console.log(`🗜️ Query quantized: ${conversionResult.originalSize}B → ${conversionResult.compressedSize}B`);
@@ -175,18 +100,7 @@ export async function optimizeModelWeights(
 ) {
   console.log(`🧮 Optimizing model weights with ${targetPrecision} quantization...`);
   
-  const quantizationConfig: QuantizationConfig = { precision: targetPrecision };
-  const optimizedWeights = new Map<string, { buffer: GPUBuffer; conversionResult: ArrayConversionResult }>();
-  
-  let totalSavings = 0;
-  
-  for (const [layerName, weights] of Object.entries(modelWeights)) {
-    const { buffer, conversionResult } = createWebGPUBuffer(
-      device,
-      weights,
-      GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
-      quantizationConfig
-    );
+  // Melt UI component creation removed - replace with bits-ui declarative components
     
     if (conversionResult) {
       optimizedWeights.set(layerName, { buffer, conversionResult });

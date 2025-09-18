@@ -132,7 +132,7 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
       insights: relatedInsights,
       stats: {
         total: evidenceItems.length,
-        high_priority: evidenceItems.filter(e => e.priority === 'high').length,
+        high_priority: evidenceItems.filter(item => item.length),
         recent: evidenceItems.filter(e => 
           Date.now() - new Date(e.created_at).getTime() < 24 * 60 * 60 * 1000
         ).length

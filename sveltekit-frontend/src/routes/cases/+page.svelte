@@ -35,11 +35,10 @@
   import FeedbackIntegration from '$lib/components/feedback/FeedbackIntegration.svelte';
 
   // Zod schemas for validation
-  const createCaseSchema = z.object({
-    title: z.string().min(1, 'Case title is required').max(500, 'Case title too long'),
+  const createCaseSchema = z.object({ title: z.string().min(1).max(500, 'Case title too long'),
     description: z.string().optional(),
-    priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
-    status: z.enum(['open', 'investigating', 'pending', 'closed', 'archived']).default('open'),
+    priority: z.enum(['low', 'medium', 'high']).default('medium'),
+    status: z.enum(['low', 'medium', 'high']).default('open'),
     incidentDate: z.string().optional(),
     location: z.string().optional(),
     jurisdiction: z.string().optional()
@@ -47,9 +46,9 @@
 
   const addEvidenceSchema = z.object({
     caseId: z.string().min(1, 'Case ID is required'),
-    title: z.string().min(1, 'Evidence title is required').max(255, 'Title too long'),
+    title: z.string().min(1).max(255, 'Title too long'),
     description: z.string().optional(),
-    evidenceType: z.enum(['document', 'photo', 'video', 'audio', 'physical', 'digital', 'testimony']).default('document'),
+    evidenceType: z.enum(['document', 'image', 'video']).default('document'),
     tags: z.string().optional()
   });
 
@@ -69,20 +68,18 @@
         if (caseCreationFeedback) {
           caseCreationFeedback.markCompleted({
             success: true,
-            caseTitle: form.(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).title,
-            casePriority: form.(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).priority,
-            caseStatus: form.(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).status
+            caseTitle: form.data.title,
+            casePriority: form.data.priority,
+            caseStatus: form.data.status
           });
         }
       }
     },
     onError: ({ result }) => {
       isCreatingCase = false;
-      toast.error((result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).error.message || 'Failed to create case');
+      toast.error.error.message || 'Failed to create case');
       if (caseCreationFeedback) {
-        caseCreationFeedback.markFailed({
-          errorType: 'case_creation_error',
-          errorMessage: (result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).error.message
+        caseCreationFeedback.markFailed.error.message
         });
       }
     }
@@ -105,7 +102,7 @@
       if (optimisticEvidence.length) {
         optimisticEvidence = optimisticEvidence.filter(e => !e.__optimistic);
       }
-      toast.error((result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).error.message || 'Failed to add evidence');
+      toast.error.error.message || 'Failed to add evidence');
     }
   });
 
@@ -207,7 +204,6 @@
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(c =>
-        c.title?.toLowerCase().includes(query) ||
         c.description?.toLowerCase().includes(query) ||
         c.location?.toLowerCase().includes(query) ||
         c.jurisdiction?.toLowerCase().includes(query)
@@ -350,7 +346,7 @@
       } else if (evidenceFormData && typeof evidenceFormData.set === 'function') {
         const current = get(evidenceFormData);
         if (current && typeof current === 'object') {
-          evidenceFormData.set({ ...current, caseId: (data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).activeCase.id });
+          evidenceFormData.set.activeCase.id });
         }
       }
     }
@@ -554,7 +550,7 @@
             </div>
           {:else}
             <div class="grid gap-4">
-              {#each [...(data as { createCaseForm?: unknown; title?: unknown; priority?: unknown; status?: unknown; addEvidenceForm?: unknown; activeCase?: unknown; caseStats?: unknown; caseEvidence?: unknown }).caseEvidence, ...optimisticEvidence] as item}
+              {#each [...data.caseEvidence, ...optimisticEvidence] as item}
                 <div class="p-6 nes-container">
                   {#snippet children()}
                     <div class="mb-4">
@@ -679,7 +675,7 @@
                     <div class="mb-4">
                       <div class="flex items-start justify-between">
                         <h3 class="text-lg font-semibold line-clamp-2">{(result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).title}</h3>
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round((result as { error?: unknown; title?: unknown; similarity?: unknown; description?: unknown }).similarity * 100)}% match</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{Math.round.similarity * 100)}% match</span>
                       </div>
                     </div>
                     <p class="text-sm nes-text is-disabled line-clamp-3 mb-2">

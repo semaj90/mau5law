@@ -8,12 +8,11 @@
   }
   let { children,
     disabled = false,
-    onclick= () => {}
-  }: Props = $props();
+    onclick= () => }: Props = $props();
   interface ContextMenuContext {
     close: () => void;
   }
-  const { close } = getContext<ContextMenuContext>('context-menu') || { close: () => {} };
+  const { close } = getContext<ContextMenuContext>('context-menu') || { close: () => };
   function handleClick() {
     if (!disabled) {
       onclick?.();
@@ -33,8 +32,7 @@
   {@render children?.()}
 </button>
 
-<style>/* @unocss-include */ {}
-  .context-menu-item {
+<style>/* @unocss-include */ .context-menu-item {
     display: flex;
     align-items: center;
     width: 100%;
@@ -54,7 +52,7 @@
     outline: 2px solid #3b82f6;
     outline-offset: -2px;
 }
-  .context-menu-(item as { disabled?: unknown }).disabled {
+  .context-menu-.disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }

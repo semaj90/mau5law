@@ -40,10 +40,10 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const response = await fetch('/api/gpu/cuda-status');
       const data = await (response as { json?: unknown }).json();
-      gpuStatus.set((data as { gpu_status?: unknown; cuda?: unknown }).gpu_status);
-      cudaHealth.set((data as { gpu_status?: unknown; cuda?: unknown }).cuda.available);
+      gpuStatus.set.gpu_status);
+      cudaHealth.set.cuda.available);
       if ((data as { gpu_status?: unknown; cuda?: unknown }).gpu_status?.performanceMetrics) {
-        performanceMetrics.set((data as { gpu_status?: unknown; cuda?: unknown }).gpu_status.performanceMetrics);
+        performanceMetrics.set.gpu_status.performanceMetrics);
       }
     } catch (error) {
       console.error('Failed to check GPU status:', error);
@@ -54,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
     isProcessing.set(true);
     try {
       // Convert text to simple numeric array for processing
-      const textData = Array.from(testText).map((char, i) => char.charCodeAt(0) + i * 0.01);
+      const textData = Array.from.map((char, i) => char.charCodeAt(0) + i * 0.01);
       const response = await fetch('/api/gpu/cuda-status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -73,9 +73,7 @@ https://svelte.dev/e/js_parse_error -->
       });
       const result = await (response as { json?: unknown }).json();
       // Add to results
-      processingResults.update(results => [
-        {
-          timestamp: new Date().toISOString(),
+      processingResults.update.toISOString(),
           service: selectedService,
           operation: selectedOperation,
           priority: selectedPriority,
@@ -91,14 +89,12 @@ https://svelte.dev/e/js_parse_error -->
       await checkGPUStatus();
     } catch (error) {
       console.error('GPU processing failed:', error);
-      processingResults.update(results => [
-        {
-          timestamp: new Date().toISOString(),
+      processingResults.update.toISOString(),
           service: selectedService,
           operation: selectedOperation,
           priority: selectedPriority,
           success: false,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         },
         ...results
       ]);
@@ -119,9 +115,7 @@ https://svelte.dev/e/js_parse_error -->
         })
       });
       const result = await (response as { json?: unknown }).json();
-      processingResults.update(results => [
-        {
-          timestamp: new Date().toISOString(),
+      processingResults.update.toISOString(),
           service: 'flashattention2',
           operation: 'legal_text_processing',
           priority: 'high',
@@ -335,9 +329,9 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
               </div>
 
-              {#if (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).result && (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).vector}
+              {#if (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).result && (result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).result.vector}
                 <p class="text-xs text-gray-600 mt-2">
-                  Vector Result: [{(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).vector.slice(0, 5).map(v => v.toFixed(3)).join(', ')}...]
+                  Vector Result: [{(result as { success?: unknown; result?: unknown; error?: unknown; processingTime?: unknown; memoryUsage?: unknown; service?: unknown; operation?: unknown; timestamp?: unknown; priority?: unknown; memoryUsed?: unknown }).result.vector.slice.map(v => v.toFixed(3)).join(', ')}...]
                 </p>
               {/if}
             {:else}

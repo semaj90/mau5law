@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
         return text;
   }
       if (node.children) {
-        const childText = node.children.map(nodeToMd).join('');
+        const childText = node.children.map.join('');
         switch (node.type) {
           case 'paragraph':
             return childText + '\n\n';
@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
       return '';
     };
 
-    return nodes.map(nodeToMd).join('');
+    return nodes.map.join('');
   }
   // Convert markdown to ContentNode array (simplified)
   function markdownToContent(markdown: string): ContentNode[] {

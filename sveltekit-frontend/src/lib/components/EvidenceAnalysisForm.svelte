@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
     const facts: string[] = [];
 
     for (const result of ocrResults) {
-      const sentences = (result as { text?: unknown }).text.split(/[.!?]+/).filter(s => s.trim().length > 20);
+      const sentences = (result as { text?: unknown }).text.split.filter(s => s.trim.length > 20);
 
       // Mock fact identification (in production, use ML models)
       const factIndicators = [
@@ -135,10 +135,10 @@ https://svelte.dev/e/js_parse_error -->
 
       for (const sentence of sentences) {
         const factScore = factIndicators.reduce((score, indicator) => {
-          return score + (sentence.toLowerCase().includes(indicator) ? 1 : 0);
+          return score + (sentence.toLowerCase.includes(indicator) ? 1 : 0);
         }, 0);
 
-        if (factScore >= 2 && sentence.trim().length > 30) {
+        if (factScore >= 2 && sentence.trim.length > 30) {
           facts.push(sentence.trim());
         }
       }
@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
   async function analyzeLegalIssues(): Promise<string[]> {
     const issues: string[] = [];
 
-    const combinedText = ocrResults.map(r => r.text).join(' ').toLowerCase();
+    const combinedText = ocrResults.map.join-toLowerCase();
 
     // Mock legal issue analysis
     const issuePatterns = [

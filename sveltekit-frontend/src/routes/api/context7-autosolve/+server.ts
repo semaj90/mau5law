@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     return json(
       {
         error: 'Enhanced autosolve operation failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString(),
         requestId: crypto.randomUUID()
       },
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return json(
       {
         error: 'Enhanced autosolve operation failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString(),
         requestId: crypto.randomUUID()
       },
@@ -205,7 +205,7 @@ async function handleEnhancedAutosolveStatus(userId: string): Promise<Response> 
     error_analysis: {
       categories_tracked: Object.keys(ENHANCED_AUTOSOLVE_CONFIG.errorCategories).length,
       ml_enhanced_categories: Object.values(ENHANCED_AUTOSOLVE_CONFIG.errorCategories)
-        .filter(cat => cat.useML).length,
+        .filter(item => item.length),
       total_estimated_errors: Object.values(ENHANCED_AUTOSOLVE_CONFIG.errorCategories)
         .reduce((sum, cat) => sum + cat.count, 0),
       gpu_accelerated_fixes: 1247,

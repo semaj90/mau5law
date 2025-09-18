@@ -44,7 +44,7 @@ export interface CachedGlyphShader {
 
 class GlyphShaderCacheBridge {
   private glyphShaderCache = new Map<string, CachedGlyphShader>();
-  private activeRenderingTasks = new Map<string, Promise<CachedGlyphShader>>();
+  private activeRenderingTasks = new Map<string, Promise<CachedGlyphShader>();
   private glyphTextureAtlas: GPUTexture | null = null;
   private device: GPUDevice | null = null;
 

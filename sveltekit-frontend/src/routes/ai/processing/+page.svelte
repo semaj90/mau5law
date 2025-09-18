@@ -41,8 +41,7 @@
     analysisType: 'semantic',
     priority: 'normal',
     useGPU: true,
-    errors: {}
-  });
+    errors: });
   let selectedBankView = $state('RAM');
   let realTimeStats = $state(true);
 
@@ -96,7 +95,7 @@
         gpuUtilization: Math.max(0, Math.min(100, systemMetrics.gpuUtilization + (Math.random() - 0.5) * 10)),
         vectorProcessingRate: Math.max(0, systemMetrics.vectorProcessingRate + (Math.random() - 0.5) * 500),
         glyphCacheHitRate: glyphStats.cacheHitRate * 100,
-        bankSwitchingFreq: nesGPUMetrics.activeBankMappings ? Object.keys(nesGPUMetrics.activeBankMappings).length : 0,
+        bankSwitchingFreq: nesGPUMetrics.activeBankMappings ? Object.keys.length: 0,
         chrRomPatterns: nesGPUMetrics.textureCacheSize
       };
 
@@ -187,7 +186,6 @@
 
     isProcessing = true;
     newJobForm.errors = {};
-
     try {
       // Create processing job with NES-GPU optimization
       const job = {
@@ -216,8 +214,7 @@
         analysisType: 'semantic',
         priority: 'normal', 
         useGPU: true,
-        errors: {}
-      };
+        errors: };
 
     } catch (error) {
       console.error('Failed to submit job:', error);

@@ -217,8 +217,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
     }
 
     const assets: ArrayBuffer[] = Array.isArray(webgpuShader.binaryAssets)
-      ? webgpuShader.binaryAssets
-      : [webgpuShader.binaryAssets as ArrayBuffer];
+      ? webgpuShader.binaryAssets: [webgpuShader.binaryAssets as ArrayBuffer];
     return json({
       shaderModule: webgpuShader.shaderModule,
       binaryAssets: assets.map((buffer) => Array.from(new Uint8Array(buffer))),

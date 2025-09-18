@@ -71,7 +71,7 @@ export class RabbitMQLegalQueue {
   private reconnectTimeout: NodeJS.Timeout | null = null;
   
   // Queue management
-  private messageHandlers: Map<string, (message: LegalDocumentMessage) => Promise<void>> = new Map();
+  private messageHandlers: Map<string, (message: LegalDocumentMessage) => Promise<void> = new Map();
   private pendingAcks: Map<string, () => void> = new Map();
   private processingQueue: Map<string, LegalDocumentMessage> = new Map();
   
@@ -385,7 +385,7 @@ export class RabbitMQLegalQueue {
         success: false,
         documentId: message.documentId,
         operation: message.operation,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
         processingTime: performance.now() - startTime,
         gpuUsed: false
       });

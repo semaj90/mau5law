@@ -19,7 +19,7 @@
 	let lastSearchTime = $state(0);
 
 	// Derived state for search button
-	let canSearch = $derived(query.trim().length > 0 && !isSearching);
+	let canSearch = $derived(query.trim.length > 0 && !isSearching);
 
 	// Search function that calls the CUDA service /search endpoint
 	async function performSearch() {
@@ -87,7 +87,7 @@
 		try {
 			return typeof metadata === 'string' ? JSON.parse(metadata) : metadata;
 		} catch {
-			return {};
+			return ;
 		}
 	}
 </script>

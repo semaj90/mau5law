@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
   }: Props & { children?: unknown } = $props();
 
   let classes = $derived(
-    ['nier-card-title', className].filter(Boolean).join(' ')
+    ['nier-card-title', className].filter(item => item.join)(' ')
   );
 </script>
 

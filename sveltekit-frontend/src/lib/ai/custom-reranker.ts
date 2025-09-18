@@ -218,7 +218,7 @@ export async function enhancedSearchWithNeo4j(
     id: (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).id,
     content: (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.text || "",
     metadata: {
-      ...(result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload,
+      ...result.payload,
       neo4jPath: neo4jContext ? calculatePathScore(result, neo4jContext) : 0,
       relatedCases: neo4jContext?.relatedCases || [],
       userFrequency: neo4jContext

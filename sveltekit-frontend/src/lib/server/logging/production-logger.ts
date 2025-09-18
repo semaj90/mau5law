@@ -194,7 +194,7 @@ export class ProductionLogger {
       message: `AI operation: ${model}`,
       data: {
         prompt: typeof prompt === 'string' ? prompt.substring(0, 100) + '...' : 'No prompt',
-        responseLength: typeof response === 'string' ? response.length : Array.isArray(response) ? response.length : 0,
+        responseLength: typeof response === 'string' ? response.length: Array.isArray(response) ? response.length : 0,
         tokenUsage: (performanceMetrics as any)?.tokens || 0
       },
       error,

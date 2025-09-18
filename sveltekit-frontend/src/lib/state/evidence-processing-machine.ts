@@ -548,9 +548,7 @@ export const evidenceProcessingMachine = createMachine(
 // Helper functions for working with the machine
 export function getProcessingProgress(context: EvidenceProcessingContext): number {
   const totalSteps = 5; // upload, analysis, glyph, png, storage
-  const completedSteps = context.streamingUpdates.filter(
-    update => update.status === 'completed'
-  ).length;
+  const completedSteps = context.streamingUpdates.filter(item => item.length);
   return Math.round((completedSteps / totalSteps) * 100);
 }
 

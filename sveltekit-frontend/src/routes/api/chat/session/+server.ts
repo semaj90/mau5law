@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to create chat session',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to fetch chat sessions',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );

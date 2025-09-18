@@ -227,7 +227,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       throw new QdrantAPIError(
         'Sync operation failed',
         500,
-        dev ? (syncError instanceof Error ? syncError.message : 'Unknown error') : undefined
+        dev ? (syncError instanceof Error ? syncError.message: 'Unknown error') : undefined
       );
     }
 
@@ -249,7 +249,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       {
         success: false,
         error: "Failed to sync with Qdrant",
-        details: dev ? (error instanceof Error ? error.message : "Unknown error") : undefined,
+        details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined,
         timestamp: new Date().toISOString()
       },
       { status: 500 }
@@ -356,7 +356,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           throw new QdrantAPIError(
             'Failed to get Qdrant collections/info',
             500,
-            dev ? (err instanceof Error ? err.message : 'Unknown error') : undefined
+            dev ? (err instanceof Error ? err.message: 'Unknown error') : undefined
           );
         }
 
@@ -420,7 +420,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
       {
         success: false,
         error: "Failed to get Qdrant status",
-        details: dev ? (error instanceof Error ? error.message : "Unknown error") : undefined,
+        details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined,
         timestamp: new Date().toISOString()
       },
       { status: 500 }
@@ -541,7 +541,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
       {
         success: false,
         error: "Failed to create collection",
-        details: dev ? (error instanceof Error ? error.message : "Unknown error") : undefined,
+        details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined,
         timestamp: new Date().toISOString()
       },
       { status: 500 }
@@ -680,7 +680,7 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
       {
         success: false,
         error: "Failed to delete collection",
-        details: dev ? (error instanceof Error ? error.message : "Unknown error") : undefined,
+        details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined,
         timestamp: new Date().toISOString()
       },
       { status: 500 }

@@ -159,7 +159,7 @@ async function handleBatchPatterns(data: any, startTime: number) {
   const batchResults = await chrROMCacheReader.getBatchPatterns(validRequests);
   
   // Calculate batch statistics
-  const cacheHits = batchResults.filter(r => r.source === 'cache').length;
+  const cacheHits = batchResults.filter(item => item.length);
   const avgLatency = batchResults.reduce((sum, r) => sum + r.latency, 0) / batchResults.length;
   
   return json({

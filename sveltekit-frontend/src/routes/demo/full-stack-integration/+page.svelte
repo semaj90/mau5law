@@ -194,9 +194,7 @@
     for (const testCase of tests) {
       try {
         const result = await testCase.test();
-        testResults.push({
-          name: testCase.name,
-          status: (result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).success ? 'passed' : 'failed',
+        testResults.push.success ? 'passed' : 'failed',
           details: (result as { system_overview?: unknown; service?: unknown; status?: unknown; database?: unknown; success?: unknown; details?: unknown; name?: unknown; timestamp?: unknown }).details,
           timestamp: new Date().toISOString()
         });
@@ -207,11 +205,7 @@
           systemHealth.integration.failed_tests++;
         }
       } catch (error) {
-        testResults.push({
-          name: testCase.name,
-          status: 'error',
-          details: error instanceof Error ? error.message : 'Unknown error',
-          timestamp: new Date().toISOString()
+        testResults.push.toISOString()
         });
         systemHealth.integration.failed_tests++;
       }
@@ -241,9 +235,7 @@
         }
 
         const response = await fetch(endpoint);
-        results.push({
-          protocol,
-          status: (response as { ok?: unknown; text?: unknown; json?: unknown; status?: unknown }).ok ? 'available' : 'unavailable',
+        results.push.ok ? 'available' : 'unavailable',
           latency: Date.now(), // Simplified latency measurement
           endpoint
         });
@@ -251,7 +243,7 @@
         results.push({
           protocol,
           status: 'error',
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message: 'Unknown error',
           endpoint: ''
         });
       }

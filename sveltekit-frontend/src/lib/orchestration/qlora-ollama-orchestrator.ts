@@ -647,8 +647,7 @@ Synthesis:`;
   getPerformanceStats() {
     const successfulRuns = this.workflowHistory.filter(h => h.success);
     const avgDuration = successfulRuns.length > 0 
-      ? successfulRuns.reduce((sum, h) => sum + h.duration, 0) / successfulRuns.length 
-      : 0;
+      ? successfulRuns.reduce((sum, h) => sum + h.duration, 0) / successfulRuns.length: 0;
 
     return {
       totalQueries: this.workflowHistory.length,

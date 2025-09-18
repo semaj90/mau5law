@@ -50,7 +50,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       // Interactive states
       hover: {
         shadow: {
-          enabled: options.hover?.shadow?.enabled !== undefined ? options.hover.shadow.enabled : true,
+          enabled: options.hover?.shadow?.enabled !== undefined ? options.hover.shadow.enabled: true,
           intensity: 0.4,
           offsetY: -0.15,
           ...options.hover?.shadow

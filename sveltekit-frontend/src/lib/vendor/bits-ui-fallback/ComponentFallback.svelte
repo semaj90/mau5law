@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
     size && `size-${size}`,
     disabled && 'disabled',
     'bits-ui-fallback'
-  ].filter(Boolean).join(' ')
+  ].filter(item => item.join)(' ')
 </script>
 
 <div
@@ -56,8 +56,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 </div>
 
-<style>/* Enhanced fallback styling for better compatibility */ {}
-  :global(.bits-ui-fallback) {
+<style>/* Enhanced fallback styling for better compatibility */ :global(.bits-ui-fallback) {
     display: contents;
   }
 
@@ -80,8 +79,7 @@ https://svelte.dev/e/js_parse_error -->
     opacity: 0.5;
     pointer-events: none;
   }
-/* Button-like fallback */ {}
-  :global(.bits-ui-fallback[role="button"]) {
+/* Button-like fallback */ :global(.bits-ui-fallback[role="button"]) {
     cursor: pointer;
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;

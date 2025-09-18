@@ -120,7 +120,7 @@ https://svelte.dev/e/js_parse_error -->
     fileInput?.click()}
 
   function onFileChange(event: Event) {
-    const target | null>(null)(event.target as HTMLInputElement);
+    const target  | null>(null); const data = event.target as HTMLInputElement);
     if (target.files) {
       handleAddEvidence(target.files);
     }
@@ -261,7 +261,7 @@ Create Case
               class="py-2 px-1 border-b-2 font-medium text-sm {activeTab === tab ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
               onclick={() => handleTabSwitch(tab)}
             >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {tab.charAt.toUpperCase() + tab.slice(1)}
 
           {/each}
         </nav>

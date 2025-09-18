@@ -35,7 +35,7 @@ https://svelte.dev/e/js_parse_error -->
   let searchBarRef = $state<HTMLInputElement;
   let chatContainerRef: HTMLDivElement;
   let evidenceEditorRef: HTMLDivElement// Golden ratio dimensions
-  const GOLDEN_RATIO | null>(null)(1.618);
+  const GOLDEN_RATIO  | null>(null); const data = 1.618);
   let containerWidth = $state(800);
   let containerHeight = $state(containerWidth / GOLDEN_RATIO);
 
@@ -1061,19 +1061,19 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   /* Scrollbar Styling */
-  :global(.chat-container::-webkit-scrollbar),
+  :global(.chat-container: :-webkit-scrollbar),
   :global(.evidence-grid::-webkit-scrollbar),
   :global(.analysis-container::-webkit-scrollbar) {
     width: 8px;
   }
 
-  :global(.chat-container::-webkit-scrollbar-track),
+  :global(.chat-container: :-webkit-scrollbar-track),
   :global(.evidence-grid::-webkit-scrollbar-track),
   :global(.analysis-container::-webkit-scrollbar-track) {
     background: #1a1a1a;
   }
 
-  :global(.chat-container::-webkit-scrollbar-thumb),
+  :global(.chat-container: :-webkit-scrollbar-thumb),
   :global(.evidence-grid::-webkit-scrollbar-thumb),
   :global(.analysis-container::-webkit-scrollbar-thumb) {
     background: #ffd700;

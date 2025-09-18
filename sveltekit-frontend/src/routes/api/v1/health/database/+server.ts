@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Database health check error:', err);
     return json({
       success: false,
-      error: err instanceof Error ? err.message : 'Database health check failed',
+      error: err instanceof Error ? err.message: 'Database health check failed',
       metadata: {
         processingTime: Date.now() - startTime,
         timestamp: new Date().toISOString()
@@ -125,7 +125,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Database health check POST error:', err);
     return json({
       success: false,
-      error: err instanceof Error ? err.message : 'Database health check failed',
+      error: err instanceof Error ? err.message: 'Database health check failed',
       metadata: {
         processingTime: Date.now() - startTime
       }

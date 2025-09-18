@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request }) => {
       throw err; // Re-throw SvelteKit errors
     }
     
-    throw error(500, `CrewAI review failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `CrewAI review failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -274,7 +274,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     return json({
       success: false,
-      error: err instanceof Error ? err.message : 'Unknown error'
+      error: err instanceof Error ? err.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -316,7 +316,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       throw err;
     }
     
-    throw error(500, `Failed to cancel review: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to cancel review: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 

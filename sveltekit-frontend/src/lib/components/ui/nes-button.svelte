@@ -46,7 +46,7 @@
     sizeClass,
     loading && 'is-disabled',
     className
-  ].filter(Boolean).join(' '));
+  ].filter(item => item.join)(' '));
 
   function handleClick(e: MouseEvent) {
     if (disabled || loading) {

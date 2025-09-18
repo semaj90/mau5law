@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
             lc.title,
             1 - (dm.content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
           FROM legal_cases lc
-          JOIN document_metadata dm ON dm.case_id = lc.id::text
+          JOIN document_metadata dm ON dm.case_id = lc.id: :text
           WHERE lc.id != ${caseId}
             AND dm.content_embedding IS NOT NULL
           ORDER BY similarity DESC
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     return json({
       success: false,
       error: 'Failed to analyze case',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

@@ -117,7 +117,7 @@ export async function extractTextFromImage(buffer: Buffer, options: {
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
     };
   }
@@ -177,8 +177,7 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
         '-f', 'wav',
         '-y', // Overwrite output
         outputPath!
-      ], { stdio: 'pipe' });
-
+      ], { stdio: 'pipe' }));
       let stderr = '';
       ffmpeg.stderr?.on('data', (data) => {
         stderr += data.toString();
@@ -220,7 +219,7 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
 
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
     };
   } finally {
@@ -274,8 +273,7 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
           '-s', '1280x720', // Resize to standard size
           '-y',
           outputPath
-        ], { stdio: 'pipe' });
-
+        ], { stdio: 'pipe' }));
         let stderr = '';
         ffmpeg.stderr?.on('data', (data) => {
           stderr += data.toString();
@@ -312,7 +310,7 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
     };
   } finally {
@@ -343,13 +341,13 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
           metadata: {
             parser: 'simdjson-wasm',
             originalSize: jsonText.length,
-            jsonKeys: typeof parsed === 'object' ? Object.keys(parsed || {}).length : 0
+            jsonKeys: typeof parsed === 'object' ? Object.keys(parsed || {}).length: 0
           },
           processingTime: Date.now() - startTime
         };
       } catch (simdjsonError) {
         // Fallback to native JSON.parse
-        console.warn('simdjson-wasm failed, falling back to JSON.parse:', simdjsonError);
+        console.warn('simdjson-wasm failed, falling back to JSON.parse: ', simdjsonError);
       }
     }
 
@@ -362,14 +360,14 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
       metadata: {
         parser: 'native',
         originalSize: jsonText.length,
-        jsonKeys: typeof parsed === 'object' ? Object.keys(parsed || {}).length : 0
+        jsonKeys: typeof parsed === 'object' ? Object.keys(parsed || {}).length: 0
       },
       processingTime: Date.now() - startTime
     };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
     };
   }
@@ -511,7 +509,7 @@ export async function extractContent(buffer: Buffer, contentType: string, filena
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       processingTime: Date.now() - startTime
     };
   }

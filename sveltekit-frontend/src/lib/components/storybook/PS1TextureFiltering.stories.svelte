@@ -90,7 +90,7 @@ https://svelte.dev/e/expected_token -->
     demoElements.forEach(el =&gt; {
       // Remove all filtering classes
       filteringTypes.forEach(filter =&gt; {
-        el.classList.remove(...filter.cssClass.split(' '));
+        el.classList.remove(...filter(item => item.cssClass).split(' '));
       });
       // Add current filtering class
       if (currentFilter) {
@@ -340,7 +340,7 @@ https://svelte.dev/e/expected_token -->
     transition: all 0.2s ease;
   }
 
-  .sample-(item as { active?: unknown }).active {
+  .sample-.active {
     border-color: var(--ps1-accent);
     box-shadow: 0 0 10px var(--ps1-glow);
   }

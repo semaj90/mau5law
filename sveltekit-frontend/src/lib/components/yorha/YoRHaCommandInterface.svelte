@@ -19,9 +19,9 @@ https://svelte.dev/e/js_parse_error -->
   const commandHistory = writable<CommandResult[]>([]);
   const holographicData = writable<HolographicData[]>([]);
   // 3D visualization elements
-  let canvas3D = $state<HTMLCanvasElementlet glContext: WebGLRenderingContext | null>(null)(null);
+  let canvas3D = $state<HTMLCanvasElementlet glContext: WebGLRenderingContext  | null>(null); const data = null);
   let animationId = $state<number// System metrics
-  let metrics | null>(null)(writable<SystemMetrics>({
+  let metrics  | null>(null); const data = writable<SystemMetrics>({
     cpu_usage: 45.2,
     memory_usage: 67.8,
     gpu_utilization: 89.3,
@@ -222,11 +222,7 @@ https://svelte.dev/e/js_parse_error -->
     // 3D holographic rendering implementation
     const time = timestamp * 0.001;
     // Update holographic data rotations
-    holographicData.update(data => 
-      (data as { map?: unknown; summary?: unknown }).map(item => ({
-        ...item,
-        rotation: {
-          x: (item as { rotation?: unknown; animation?: unknown }).rotation.x + ((item as { rotation?: unknown; animation?: unknown }).animation === 'rotate' ? 0.01 : 0),
+    holographicData.update.map-rotation.x + ((item as { rotation?: unknown; animation?: unknown }).animation === 'rotate' ? 0.01 : 0),
           y: (item as { rotation?: unknown; animation?: unknown }).rotation.y + ((item as { rotation?: unknown; animation?: unknown }).animation === 'rotate' ? 0.02 : 0),
           z: (item as { rotation?: unknown; animation?: unknown }).rotation.z + ((item as { rotation?: unknown; animation?: unknown }).animation === 'rotate' ? 0.005 : 0)
         }
@@ -254,16 +250,15 @@ https://svelte.dev/e/js_parse_error -->
       (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).data = (response as { output?: unknown; data?: unknown; ok?: unknown; json?: unknown }).data;
     } catch (error) {
       (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).status = 'ERROR';
-      (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).output = error instanceof Error ? error.message : 'Unknown error';
+      (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).output = error instanceof Error ? error.message: 'Unknown error';
     } finally {
       isProcessingCommand = false;
-      commandHistory.update(history => 
-        history.map(cmd => cmd.id === (result as { status?: unknown; output?: unknown; data?: unknown; id?: unknown; command?: unknown; module?: unknown; timestamp?: unknown }).id ? result : cmd)
+      commandHistory.update.id ? result : cmd)
       );
     }
   }
   async function routeCommand(command: string) {
-    const cmd = command.toLowerCase().trim();
+    const cmd = command.toLowerCase.trim();
     if (cmd.startsWith('legal')) {
       return await executeLegalCommand(cmd);
     } else if (cmd.startsWith('analyze')) {
@@ -452,7 +447,7 @@ https://svelte.dev/e/js_parse_error -->
     width: 100%;
   }
   
-  .command-input::placeholder {
+  .command-input: :placeholder {
     color: rgba(0, 255, 136, 0.5);
   }
   
@@ -469,17 +464,7 @@ https://svelte.dev/e/js_parse_error -->
     100% { opacity: 1; }
   }
   
-  .holographic-canvas {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    opacity: 0.6;
-    z-index: 0;
-  }
-  
-  .data-stream {
+  .holographic-canv.data-stream {
     position: absolute;
     width: 2px;
     height: 100px;

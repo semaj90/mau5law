@@ -124,11 +124,11 @@ https://svelte.dev/e/unexpected_reserved_word -->
 
   // Update metrics
   function updateMetrics() {
-    const successful = results.filter(r => r.success).length;
+    const successful = results.filter(item => item.length);
     const totalTime = results.reduce((sum, r) => sum + r.metrics.totalProcessingTime, 0);
     metrics = {
       totalOperations: results.length,
-      averageTime: results.length > 0 ? totalTime / results.length : 0,
+      averageTime: results.length > 0 ? totalTime / results.length: 0,
       successRate: results.length > 0 ? (successful / results.length) * 100 : 0,
       lastUpdate: new Date()
     };

@@ -278,8 +278,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           error: "Analysis failed",
           details:
             analysisError instanceof Error
-              ? analysisError.message
-              : "Unknown error",
+              ? analysisError.message: "Unknown error",
           sessionId,
         },
         { status: 500 },

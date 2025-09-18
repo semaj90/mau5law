@@ -106,7 +106,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         caseId: evidence.caseId,
         caseTitle: cases.title,
         tags: evidence.tags,
-        metadata: includeMetadata ? evidence.metadata : sql`NULL`,
+        metadata: includeMetadata ? evidence.metadata: sql`NULL`,
         ocrText: includeContent ? evidence.ocrText : sql`NULL`,
         contentText: includeContent ? evidence.contentText : sql`NULL`,
         embedding: evidence.embedding,
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   } catch (err) {
     console.error('Search error:', err);
-    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Search failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -331,7 +331,7 @@ async function processSearchResult(item: any, filters: SearchFilters): Promise<S
     uploadedAt: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).uploadedAt?.toISOString() || new Date().toISOString(),
     caseId: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).caseId || undefined,
     caseTitle: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).caseTitle || undefined,
-    tags: Array.isArray((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags) ? (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags : [],
+    tags: Array.isArray((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags) ? (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags: [],
     metadata: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).metadata || undefined,
     relevanceScore,
     matchedFields,
@@ -536,7 +536,7 @@ async function generateSuggestions(query?: string): Promise<string[]> {
   ];
 
   return suggestions
-    .filter(s => s.toLowerCase().includes(query.toLowerCase()))
+    .filter(item => item.includes(query.toLowerCase()))
     .slice(0, 5);
 }
 
@@ -611,6 +611,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   } catch (err) {
     console.error('GET search error:', err);
-    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Search failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };

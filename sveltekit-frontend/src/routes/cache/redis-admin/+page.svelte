@@ -41,8 +41,7 @@
 
   // Derived state for filtered keys
   let filteredKeys = $derived(
-    data.recentKeys.filter(key => 
-      key.key.toLowerCase().includes(keyFilter.toLowerCase())
+    data.recentKeys.filter(item => item.includes(keyFilter.toLowerCase())
     )
   );
 

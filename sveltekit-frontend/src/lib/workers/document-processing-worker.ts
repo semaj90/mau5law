@@ -300,7 +300,7 @@ class DocumentProcessingWorker {
           chunkIndex: chunks.length,
           startPosition: i,
           endPosition: Math.min(i + chunkSize, extractedText.length),
-          wordCount: chunkContent.split(/\s+/).filter(Boolean).length
+          wordCount: chunkContent.split(/\s+/).filter(item => item.length)
         }
       });
     }
@@ -367,7 +367,7 @@ class DocumentProcessingWorker {
         start_position: chunk.metadata.startPosition,
         end_position: chunk.metadata.endPosition,
         word_count: chunk.metadata.wordCount,
-        embedding: embedding ? embedding.embedding : null,
+        embedding: embedding ? embedding.embedding: null,
         embedding_model: embedding ? embedding?.model || "unknown" // @ts-ignore - Model property access : null,
         created_at: new Date(),
         updated_at: new Date()

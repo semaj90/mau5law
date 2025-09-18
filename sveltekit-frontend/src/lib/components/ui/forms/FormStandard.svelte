@@ -26,7 +26,7 @@
 
   let {
     onSubmit,
-    validationErrors = {},
+    validationErrors = ,
     isSubmitting = false,
     variant = 'default',
     size = 'md',
@@ -72,7 +72,7 @@
   };
 
   // Global form error display
-  let hasErrors = $derived(Object.keys(validationErrors).length > 0);
+  let hasErrors = $derived(Object.keys.length > 0);
 </script>
 
 <form 

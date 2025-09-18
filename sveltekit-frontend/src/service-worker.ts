@@ -22,7 +22,7 @@ interface CacheWarmingTask {
 }
 
 const warmingQueue: CacheWarmingTask[] = [];
-const activeWarmingTasks = new Map<string, Promise<any>>();
+const activeWarmingTasks = new Map<string, Promise<any>();
 
 /**
  * Initialize integrated systems on service worker startup

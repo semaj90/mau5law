@@ -34,7 +34,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       onsuccess?.();
       open = false;
     } catch (e) {
-      error = e instanceof Error ? e.message : "Registration failed";
+      error = e instanceof Error ? e.message: "Registration failed";
     } finally {
       loading = false;
     }

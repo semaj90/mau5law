@@ -543,7 +543,7 @@ export class LegalDatabaseBridge {
   }
 
   // Statistics
-  async getDatabaseStats(): Promise<Record<string, any>> {
+  async getDatabaseStats(): Promise<Record<string, any> {
     try {
       const stats = {
         legal_documents: await this.executeQuery('SELECT COUNT(*) FROM legal_documents'),
@@ -568,7 +568,7 @@ export class LegalDatabaseBridge {
 export const legalDB = new LegalDatabaseBridge();
 
 // API integration helpers
-export async function apiCreateDocument(documentData: Partial<LegalDocument>): Promise<SSRResponse<LegalDocument>> {
+export async function apiCreateDocument(documentData: Partial<LegalDocument>): Promise<SSRResponse<LegalDocument> {
   try {
     const document = await legalDB.createLegalDocument(documentData);
     return {
@@ -589,12 +589,12 @@ export async function apiCreateDocument(documentData: Partial<LegalDocument>): P
         cached: false,
         source: 'api'
       },
-      error: error instanceof Error ? error.message : 'Document creation failed'
+      error: error instanceof Error ? error.message: 'Document creation failed'
     };
   }
 }
 
-export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRResponse<LegalCase>> {
+export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRResponse<LegalCase> {
   try {
     const legalCase = await legalDB.createLegalCase(caseData);
     return {
@@ -615,7 +615,7 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
         cached: false,
         source: 'api'
       },
-      error: error instanceof Error ? error.message : 'Case creation failed'
+      error: error instanceof Error ? error.message: 'Case creation failed'
     };
   }
 }
@@ -623,7 +623,7 @@ export async function apiCreateCase(caseData: Partial<LegalCase>): Promise<SSRRe
 export async function apiSearchDocuments(
   searchQuery: any,
   options: any = {}
-): Promise<SSRResponse<LegalDocument[]>> {
+): Promise<SSRResponse<LegalDocument[]> {
   try {
     const documents = await legalDB.searchLegalDocuments(searchQuery, options);
     return {
@@ -644,7 +644,7 @@ export async function apiSearchDocuments(
         cached: false,
         source: 'api'
       },
-      error: error instanceof Error ? error.message : 'Document search failed'
+      error: error instanceof Error ? error.message: 'Document search failed'
     };
   }
 }

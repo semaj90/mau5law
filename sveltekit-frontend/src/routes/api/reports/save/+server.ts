@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: "Failed to save report",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: "Failed to load reports",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );

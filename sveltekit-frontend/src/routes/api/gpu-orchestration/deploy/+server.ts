@@ -525,7 +525,7 @@ export const deployComplete = async (): Promise<any> => {
     }
   }
 
-  const successCount = results.filter(r => r.status === 'success').length;
+  const successCount = results.filter(item => item.length);
   const totalSteps = results.length;
 
   return {

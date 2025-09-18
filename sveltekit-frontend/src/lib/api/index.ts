@@ -482,7 +482,7 @@ export const API_ROUTES = {
 
   // External Services
   EXTERNAL: {
-    OLLAMA_HEALTH: "http://localhost:11434/api/version",
+    OLLAMA_HEALTH: "http://localhost:8086/api/version",
     GO_SERVICE_HEALTH: "http://localhost:8080/health",
     REDIS_PING: "redis://localhost:6379/ping",
     POSTGRES_HEALTH: "postgresql://localhost:5432/health",
@@ -531,8 +531,8 @@ export const DEFAULT_CONFIG: ServiceEndpoints = {
     },
   },
   ollama: {
-    baseUrl: "http://localhost:11434",
-    port: 11434,
+    baseUrl: "http://localhost:8086",
+    port: 8086,
     healthCheck: "/api/version",
     endpoints: {
       generate: "/api/generate",

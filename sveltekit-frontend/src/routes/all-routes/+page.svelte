@@ -34,9 +34,8 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 		const apiRoutes = routes.filter(route => route.path.startsWith('/api/'));
 		const clusters: { [key: string]: any[] } = {};
 
-		apiRoutes.forEach(route => {
-			// Extract service name from API path
-			const pathParts = route.path.split('/').filter(Boolean);
+		apiRoutes.filter(Boolean).forEach(route => {
+			const pathParts = route.path.split('/');
 			let serviceName = 'other';
 
 			if (pathParts.length >= 3) {
@@ -171,26 +170,30 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 
 		// Add configured routes
 		if (data.availableRoutes) {
-			routes.push(...data.availableRoutes.map(route => ({
-				path: route.path,
-				name: route.name || route.title || (route.path || '').replace(/^\//, '').replace(/\//g, ' → '),
-				type: 'configured',
-				icon: route.icon || '📄',
-				description: route.description,
-				category: categorizeRoute(route.path)
-			})));
+			data.availableRoutes.forEach(route => {
+				routes.push({
+					path: route.path,
+					name: route.path.replace(/\//g, ' → '),
+					type: 'configured',
+					icon: route.icon || '📄',
+					description: route.description,
+					category: categorizeRoute(route.path)
+				});
+			});
 		}
 
 		// Add file-based routes from inventory
 		if (data.routeInventory?.fileRoutesSample) {
-			routes.push(...data.routeInventory.fileRoutesSample.map(route => ({
-				path: route.route,
-				name: route.title || (route.route || '').replace(/^\//, '').replace(/\//g, ' → '),
-				type: 'file-based',
-				icon: '🔗',
-				description: `Auto-discovered route`,
-				category: categorizeRoute(route.route)
-			})));
+			data.routeInventory.fileRoutesSample.forEach(route => {
+				routes.push({
+					path: route,
+					name: route.replace(/\//g, ' → '),
+					type: 'file-based',
+					icon: '🔗',
+					description: `Auto-discovered route`,
+					category: categorizeRoute(route)
+				});
+			});
 		}
 
 		return routes.sort((a, b) => a.path.localeCompare(b.path));
@@ -273,7 +276,6 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 		// Filter by search term
 		if (searchTerm) {
 			routes = routes.filter(route =>
-				route.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
 				route.path.toLowerCase().includes(searchTerm.toLowerCase()) ||
 				route.description?.toLowerCase().includes(searchTerm.toLowerCase())
 			);
@@ -632,7 +634,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 			<div class="mb-8">
 				<h3 class="text-xl font-bold mb-4 flex items-center gap-2">
 					🔗 API Service Clusters
-					<span class="text-sm font-normal text-gray-600">({Object.keys(clusteredAPIs).length} services, {Object.values(clusteredAPIs).flat().length} endpoints)</span>
+					<span class="text-sm font-normal text-gray-600">({Object.keys.length} services, {Object.values.flat().length} endpoints)</span>
 				</h3>
 
 				<!-- Enhanced SSR-optimized API service cluster grid -->
@@ -1040,7 +1042,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 	align-items: start;
 
 	/* Responsive grid template with proper proportions */
-	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr);
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
@@ -1177,7 +1179,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 @supports not (display: flex) {
 	.ssr-flexbox-container {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr);
 		gap: 1.5rem;
 	}
 

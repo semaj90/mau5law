@@ -96,7 +96,7 @@
       setTimeout(() => (exportSuccess = false), 3000);
     } catch (error) {
       console.error("Export failed:", error);
-      exportError = error instanceof Error ? error.message : "Export failed";
+      exportError = error instanceof Error ? error.message: "Export failed";
     } finally {
       exportLoading = false;
   }}

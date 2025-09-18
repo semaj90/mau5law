@@ -353,7 +353,7 @@ export function createEnhancedRAGStore() {
         recommendations,
       };
     } catch (error: any) {
-      const errorMessage = error instanceof Error ? error.message : 'Search failed';
+      const errorMessage = error instanceof Error ? error.message: 'Search failed';
       state.update((s) => ({ ...s, error: errorMessage }));
       ragActor.send({ type: 'SEARCH_ERROR', error: errorMessage });
 
@@ -387,7 +387,7 @@ export function createEnhancedRAGStore() {
       // Update caching layers
       await updateCachingLayers(document, embeddings);
     } catch (error: any) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to add document';
+      const errorMessage = error instanceof Error ? error.message: 'Failed to add document';
       state.update((s) => ({ ...s, error: errorMessage }));
     }
   }
@@ -444,11 +444,11 @@ export function createEnhancedRAGStore() {
 
   async function exportSystemState(): Promise<any> {
     const currentState = await new Promise((resolve) => {
-      state.subscribe((s) => resolve(s))();
+      state.subscribe((s) => resolve(s))());
     });
 
     const currentMetrics = await new Promise((resolve) => {
-      performanceMetrics.subscribe((p) => resolve(p))();
+      performanceMetrics.subscribe((p) => resolve(p))());
     });
 
     return {
@@ -510,7 +510,7 @@ export function createEnhancedRAGStore() {
 
   function updateCacheMetrics() {
     performanceMetrics.subscribe((p) => {
-      const hitRate = p.totalQueries > 0 ? p.cacheHits / p.totalQueries : 0;
+      const hitRate = p.totalQueries > 0 ? p.cacheHits / p.totalQueries: 0;
       state.update((s) => ({
         ...s,
         cacheMetrics: { ...s.cacheMetrics, hitRate },
@@ -522,7 +522,7 @@ export function createEnhancedRAGStore() {
     // Update throughput and efficiency metrics
     const now = Date.now();
     state.subscribe((s) => {
-      const lastSync = typeof s.status.lastSync === 'number' ? s.status.lastSync : now;
+      const lastSync = typeof s.status.lastSync === 'number' ? s.status.lastSync: now;
       const timeDiff = (now - lastSync) / 1000;
 
       performanceMetrics.update((p) => ({

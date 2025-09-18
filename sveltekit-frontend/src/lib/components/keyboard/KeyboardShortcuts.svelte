@@ -3,11 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  interface Props {
-
-  }
-
-  import type { User } from '$lib/types/user';
+  interface Props import type { User } from '$lib/types/user';
   import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
   import Button from "$lib/components/ui/button/Button.svelte";
@@ -27,7 +23,7 @@ https://svelte.dev/e/js_parse_error -->
   // Convert to Svelte 5 $props
   let { open = $bindable(false),
     shortcutsHelp
-   }: { open = $bindable(false),
+    }: { open = $bindable(false),
     shortcutsHelp
   : unknown } = $props();
 
@@ -196,7 +192,7 @@ https://svelte.dev/e/js_parse_error -->
   let commandInput: HTMLInputElement;
 
   // Subscribe to keyboardShortcuts store for dynamic/AI-driven shortcuts
-  let allShortcuts = $state(get(keyboardShortcuts););
+  let allShortcuts = $state(get(keyboardShortcuts);
   const unsubscribeShortcuts = keyboardShortcuts.subscribe((shortcuts) => {
     allShortcuts = shortcuts;
     filterShortcuts();
@@ -206,8 +202,8 @@ https://svelte.dev/e/js_parse_error -->
     if (searchQuery.trim()) {
       filteredShortcuts = allShortcuts.filter(
         (s) =>
-          s.key.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          s.description.toLowerCase().includes(searchQuery.toLowerCase())
+          s.key.toLowerCase.includes(searchQuery.toLowerCase()) ||
+          s.description.toLowerCase.includes(searchQuery.toLowerCase())
       );
     } else {
       filteredShortcuts = allShortcuts;
@@ -311,10 +307,10 @@ https://svelte.dev/e/js_parse_error -->
     if (searchQuery.trim()) {
       filteredCommands = commands.filter(
         (cmd) =>
-          cmd.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          cmd.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          cmd.title.toLowerCase.includes(searchQuery.toLowerCase()) ||
+          cmd.description.toLowerCase.includes(searchQuery.toLowerCase()) ||
           cmd.keywords.some((keyword) =>
-            keyword.toLowerCase().includes(searchQuery.toLowerCase())
+            keyword.toLowerCase.includes(searchQuery.toLowerCase())
           )
       );
     } else {
@@ -633,8 +629,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Shortcut definitions for screen readers -->
 <div class="space-y-4" aria-live="polite" id="shortcuts-announcements"></div>
 
-<style>/* @unocss-include */ {}
-  .command-palette-overlay {
+<style>/* @unocss-include */ .command-palette-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -659,9 +654,7 @@ https://svelte.dev/e/js_parse_error -->
   .command-palette {
     background: white;
     border-radius: 12px;
-box-shadow: {}
-0 25px 50px -12px rgba(0, 0, 0, 0.25), {}
-      0 0 0 1px rgba(0, 0, 0, 0.05);
+box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
     width: 100%;
     max-width: 600px;
     max-height: 70vh;
@@ -696,7 +689,7 @@ box-shadow: {}
     background: transparent;
     color: #111827;
 }
-  .search-input::placeholder {
+  .search-input: :placeholder {
     color: #9ca3af;
 }
   .close-button {
@@ -721,8 +714,7 @@ box-shadow: {}
     cursor: pointer;
     transition: background-color 0.1s ease;
 }
-.command-item:hover, {}
-  .command-(item as { selected?: unknown }).selected {
+.command-item:hover, .command-.selected {
     background: #f3f4f6;
 }
   .command-icon {
@@ -787,8 +779,7 @@ box-shadow: {}
   .shortcuts-help.hidden {
     display: none;
 }
-/* Screen reader only content */ {}
-  .sr-only {
+/* Screen reader only content */ .sr-only {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -799,8 +790,7 @@ box-shadow: {}
     white-space: nowrap;
     border: 0;
 }
-/* Dark mode */ {}
-  @media (prefers-color-scheme: dark) {
+/* Dark mode */ @media (prefers-color-scheme: dark) {
     .command-palette {
       background: #1f2937;
       border: 1px solid #374151;
@@ -811,11 +801,10 @@ box-shadow: {}
     .search-input {
       color: #f9fafb;
 }
-    .search-input::placeholder {
+    .search-input: :placeholder {
       color: #9ca3af;
 }
-.command-item:hover, {}
-    .command-(item as { selected?: unknown }).selected {
+.command-item:hover, .command-.selected {
       background: #374151;
 }
     .command-icon {
@@ -836,8 +825,7 @@ box-shadow: {}
       background: #4b5563;
       color: #f9fafb;
 }}
-/* Responsive design */ {}
-  @media (max-width: 640px) {
+/* Responsive design */ @media (max-width: 640px) {
     .command-palette-overlay {
       padding: 1rem;
       padding-top: 5vh;
@@ -852,19 +840,16 @@ box-shadow: {}
       flex-wrap: wrap;
       gap: 0.5rem;
 }}
-/* High contrast mode */ {}
-  @media (prefers-contrast: high) {
+/* High contrast mode */ @media (prefers-contrast: high) {
     .command-palette {
       border: 2px solid #000;
 }
-    .command-(item as { selected?: unknown }).selected {
+    .command-.selected {
       background: #000;
       color: #fff;
 }}
-/* Reduced motion */ {}
-  @media (prefers-reduced-motion: reduce) {
-.command-palette-overlay, {}
-    .command-palette {
+/* Reduced motion */ @media (prefers-reduced-motion: reduce) {
+.command-palette-overlay, .command-palette {
       animation: none;
 }
     .command-item {

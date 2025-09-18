@@ -546,7 +546,7 @@ self.addEventListener('message', async (event) => {
     self.postMessage({
       id: message.id,
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     });
   }
 });

@@ -139,14 +139,8 @@
   </div>
 {/if}
 
-<style>/* Final Fantasy Corner Styles */ {}
-  .ff-corner-classic {
-clip-path: polygon( {}
-0% 8px, 8px 0%, {}
-calc(100% - 8px) 0%, 100% 8px, {}
-100% calc(100% - 8px), calc(100% - 8px) 100%, {}
-8px 100%, 0% calc(100% - 8px) {}
-    );
+<style>/* Final Fantasy Corner Styles */ .ff-corner-classic {
+clip-path: polygon( 0% 8px, 8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px) );
   }
 
   .ff-corner-modern {
@@ -154,7 +148,7 @@ calc(100% - 8px) 0%, 100% 8px, {}
     position: relative;
   }
 
-  .ff-corner-modern::before {
+  .ff-corner-modern: :before {
     content: '';
     position: absolute;
     inset: -2px;
@@ -164,43 +158,35 @@ calc(100% - 8px) 0%, 100% 8px, {}
   }
 
   .ff-corner-hybrid {
-clip-path: polygon( {}
-0% 12px, 12px 0%, {}
-calc(100% - 12px) 0%, 100% 12px, {}
-100% calc(100% - 12px), calc(100% - 12px) 100%, {}
-12px 100%, 0% calc(100% - 12px) {}
-    );
+clip-path: polygon( 0% 12px, 12px 0%, calc(100% - 12px) 0%, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0% calc(100% - 12px) );
     border-radius: 0.25rem;
   }
-/* Custom Scrollbar */ {}
-  .custom-scrollbar::-webkit-scrollbar {
+/* Custom Scrollbar */ .custom-scrollbar: :-webkit-scrollbar {
     width: 8px;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-track {
+  .custom-scrollbar: :-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb {
+  .custom-scrollbar: :-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #fbbf24, #d97706);
     border-radius: 4px;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  .custom-scrollbar: :-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, #f59e0b, #b45309);
   }
-/* Text Shadow Utility */ {}
-  .text-shadow-lg {
+/* Text Shadow Utility */ .text-shadow-lg {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   }
-/* FF-Style Animations */ {}
-  @keyframes ff-shimmer {
+/* FF-Style Animations */ @keyframes ff-shimmer {
     0%, 100% { opacity: 0.8; }
     50% { opacity: 1; }
   }
 
-  .ff-corner-classic::after {
+  .ff-corner-classic: :after {
     content: '';
     position: absolute;
     inset: 0;

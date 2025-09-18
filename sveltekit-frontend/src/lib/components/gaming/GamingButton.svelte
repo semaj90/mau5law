@@ -105,8 +105,7 @@
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		color: var(--yorha-text-primary, #e0e0e0);
 	}
-/* Size Variants */ {}
-	.gaming-button.sm {
+/* Size Variants */ .gaming-button.sm {
 		padding: 8px 16px;
 		font-size: 12px;
 		min-height: 32px;
@@ -123,23 +122,18 @@
 		font-size: 16px;
 		min-height: 48px;
 	}
-/* Color Variants */ {}
-	.gaming-button.primary {
+/* Color Variants */ .gaming-button.primary {
 		background: var(--yorha-bg-tertiary, #2a2a2a);
 		border: 2px solid var(--yorha-secondary, #ffd700);
 		color: var(--yorha-secondary, #ffd700);
-box-shadow: {}
-0 0 0 1px var(--yorha-secondary, #ffd700), {}
-			inset 0 0 10px rgba(255, 215, 0, 0.1);
+box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700), inset 0 0 10px rgba(255, 215, 0, 0.1);
 	}
 	
 	.gaming-button.primary:hover:not(:disabled) {
 		background: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-bg-primary, #0a0a0a);
 		border-color: var(--yorha-secondary, #ffd700);
-box-shadow: {}
-0 0 0 2px var(--yorha-secondary, #ffd700), {}
-			0 0 20px rgba(255, 215, 0, 0.5);
+box-shadow: 0 0 0 2px var(--yorha-secondary, #ffd700), 0 0 20px rgba(255, 215, 0, 0.5);
 		transform: translateY(-1px);
 	}
 	
@@ -147,18 +141,14 @@ box-shadow: {}
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-text-secondary, #b0b0b0);
 		color: var(--yorha-text-secondary, #b0b0b0);
-box-shadow: {}
-0 0 0 1px var(--yorha-text-secondary, #b0b0b0), {}
-			inset 0 0 5px rgba(176, 176, 176, 0.1);
+box-shadow: 0 0 0 1px var(--yorha-text-secondary, #b0b0b0), inset 0 0 5px rgba(176, 176, 176, 0.1);
 	}
 	
 	.gaming-button.secondary:hover:not(:disabled) {
 		background: var(--yorha-text-secondary, #b0b0b0);
 		color: var(--yorha-bg-primary, #0a0a0a);
 		border-color: var(--yorha-text-secondary, #b0b0b0);
-box-shadow: {}
-0 0 0 2px var(--yorha-text-secondary, #b0b0b0), {}
-			0 0 15px rgba(176, 176, 176, 0.3);
+box-shadow: 0 0 0 2px var(--yorha-text-secondary, #b0b0b0), 0 0 15px rgba(176, 176, 176, 0.3);
 		transform: translateY(-1px);
 	}
 	
@@ -166,18 +156,14 @@ box-shadow: {}
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-accent, #00ff41);
 		color: var(--yorha-accent, #00ff41);
-box-shadow: {}
-0 0 0 1px var(--yorha-accent, #00ff41), {}
-			inset 0 0 10px rgba(0, 255, 65, 0.1);
+box-shadow: 0 0 0 1px var(--yorha-accent, #00ff41), inset 0 0 10px rgba(0, 255, 65, 0.1);
 	}
 	
 	.gaming-button.success:hover:not(:disabled) {
 		background: var(--yorha-accent, #00ff41);
 		color: var(--yorha-bg-primary, #0a0a0a);
 		border-color: var(--yorha-accent, #00ff41);
-box-shadow: {}
-0 0 0 2px var(--yorha-accent, #00ff41), {}
-			0 0 20px rgba(0, 255, 65, 0.5);
+box-shadow: 0 0 0 2px var(--yorha-accent, #00ff41), 0 0 20px rgba(0, 255, 65, 0.5);
 		transform: translateY(-1px);
 	}
 	
@@ -185,18 +171,14 @@ box-shadow: {}
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-danger, #ff0041);
 		color: var(--yorha-danger, #ff0041);
-box-shadow: {}
-0 0 0 1px var(--yorha-danger, #ff0041), {}
-			inset 0 0 10px rgba(255, 0, 65, 0.1);
+box-shadow: 0 0 0 1px var(--yorha-danger, #ff0041), inset 0 0 10px rgba(255, 0, 65, 0.1);
 	}
 	
 	.gaming-button.danger:hover:not(:disabled) {
 		background: var(--yorha-danger, #ff0041);
 		color: var(--yorha-text-primary, #e0e0e0);
 		border-color: var(--yorha-danger, #ff0041);
-box-shadow: {}
-0 0 0 2px var(--yorha-danger, #ff0041), {}
-			0 0 20px rgba(255, 0, 65, 0.5);
+box-shadow: 0 0 0 2px var(--yorha-danger, #ff0041), 0 0 20px rgba(255, 0, 65, 0.5);
 		transform: translateY(-1px);
 	}
 	
@@ -204,22 +186,17 @@ box-shadow: {}
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-warning, #ffaa00);
 		color: var(--yorha-warning, #ffaa00);
-box-shadow: {}
-0 0 0 1px var(--yorha-warning, #ffaa00), {}
-			inset 0 0 10px rgba(255, 170, 0, 0.1);
+box-shadow: 0 0 0 1px var(--yorha-warning, #ffaa00), inset 0 0 10px rgba(255, 170, 0, 0.1);
 	}
 	
 	.gaming-button.warning:hover:not(:disabled) {
 		background: var(--yorha-warning, #ffaa00);
 		color: var(--yorha-bg-primary, #0a0a0a);
 		border-color: var(--yorha-warning, #ffaa00);
-box-shadow: {}
-0 0 0 2px var(--yorha-warning, #ffaa00), {}
-			0 0 20px rgba(255, 170, 0, 0.5);
+box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 0.5);
 		transform: translateY(-1px);
 	}
-/* States */ {}
-	.gaming-button:disabled {
+/* States */ .gaming-button:disabled {
 		opacity: 0.4;
 		cursor: not-allowed;
 		transform: none !important;
@@ -237,8 +214,7 @@ box-shadow: {}
 	.gaming-button.glow {
 		animation: gaming-glow 2s ease-in-out infinite alternate;
 	}
-/* Button Content */ {}
-	.button-content {
+/* Button Content */ .button-content {
 		position: relative;
 		z-index: 2;
 		display: flex;
@@ -250,8 +226,7 @@ box-shadow: {}
 	.button-content.loading {
 		opacity: 0.7;
 	}
-/* Loading Spinner */ {}
-	.loading-spinner {
+/* Loading Spinner */ .loading-spinner {
 		position: absolute;
 		width: 20px;
 		height: 20px;
@@ -261,8 +236,7 @@ box-shadow: {}
 		animation: spin 1s linear infinite;
 		z-index: 3;
 	}
-/* Gaming Effects */ {}
-	.button-overlay {
+/* Gaming Effects */ .button-overlay {
 		position: absolute;
 		top: 0;
 		left: -100%;
@@ -288,23 +262,17 @@ box-shadow: {}
 		animation: scan 3s ease-in-out infinite;
 		z-index: 1;
 	}
-/* Animations */ {}
-	@keyframes spin {
+/* Animations */ @keyframes spin {
 		0% { transform: rotate(0deg); }
 		100% { transform: rotate(360deg); }
 	}
 	
 	@keyframes gaming-glow {
 		0% {
-box-shadow: {}
-0 0 20px currentColor, {}
-				inset 0 1px 0 rgba(255, 255, 255, 0.2);
+box-shadow: 0 0 20px currentColor, inset 0 1px 0 rgba(255, 255, 255, 0.2);
 		}
 		100% {
-box-shadow: {}
-0 0 40px currentColor, {}
-0 0 60px currentColor, {}
-				inset 0 1px 0 rgba(255, 255, 255, 0.3);
+box-shadow: 0 0 40px currentColor, 0 0 60px currentColor, inset 0 1px 0 rgba(255, 255, 255, 0.3);
 		}
 	}
 	
@@ -318,8 +286,7 @@ box-shadow: {}
 			opacity: 0.6;
 		}
 	}
-/* Focus styles for accessibility */ {}
-	.gaming-button:focus-visible {
+/* Focus styles for accessibility */ .gaming-button:focus-visible {
 		outline: 2px solid currentColor;
 		outline-offset: 2px;
 	}

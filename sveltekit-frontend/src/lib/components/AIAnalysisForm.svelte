@@ -34,9 +34,8 @@
   }
 
   let {
-    formData = {},
-    evidenceData = {}
-  }: Props = $props();
+    formData = ,
+    evidenceData = }: Props = $props();
 
   const dispatch = createEventDispatcher();
   let isAnalyzing = $state(false);

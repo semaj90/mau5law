@@ -106,7 +106,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Failed to collect system metrics',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
       {
         success: false,
         error: 'Action execution failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -423,8 +423,7 @@ async function exportMetricsData(timeRange: string): Promise<any> {
       avgWebGPUUtilization:
         filteredHistory.length > 0
           ? filteredHistory.reduce((sum, m) => sum + m.webgpu.utilization, 0) /
-            filteredHistory.length
-          : 0,
+            filteredHistory.length: 0,
       avgCacheHitRatio:
         filteredHistory.length > 0
           ? filteredHistory.reduce((sum, m) => sum + m.cache.hitRatio, 0) / filteredHistory.length
@@ -455,7 +454,7 @@ export const DELETE: RequestHandler = async () => {
       {
         success: false,
         error: 'Failed to clear monitoring history',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );

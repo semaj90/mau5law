@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Embedding backfill error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred'
+      error: error instanceof Error ? error.message: 'Unknown error occurred'
     }, { status: 500 });
   }
 };
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Evidence embeddings API error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred'
+      error: error instanceof Error ? error.message: 'Unknown error occurred'
     }, { status: 500 });
   }
 };
@@ -170,7 +170,7 @@ async function performSemanticSearch(
     console.error('Semantic search error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Semantic search failed'
+      error: error instanceof Error ? error.message: 'Semantic search failed'
     }, { status: 500 });
   }
 }

@@ -39,9 +39,9 @@ https://svelte.dev/e/js_parse_error -->
   // State management
   let evidenceItems = writable<any[]>([]);
   let selectedEvidence = writable<string[]>([]);
-  let detectiveInsights = writable<any>({});
+  let detectiveInsights = writable<any>( );
   let connectionMap = writable<any[]>([]);
-  let analysisResults = writable<any>({});
+  let analysisResults = writable<any>( );
   // UI state
   let searchQuery = '';
   let filterType = 'all';
@@ -73,7 +73,6 @@ https://svelte.dev/e/js_parse_error -->
   let canvas: HTMLCanvasElement | null = null;
   let ctx: CanvasRenderingContext2D | null;
   let networkLayout: unknown = {};
-
   onMount(async () => {
     await loadEvidence();
     if (detectiveMode) {
@@ -161,9 +160,9 @@ https://svelte.dev/e/js_parse_error -->
       const query = searchQuery?.toLowerCase?.() || '');
       const matchesSearch =
         !query ||
-        evidence.title?.toLowerCase().includes(query) ||
-        evidence.description?.toLowerCase().includes(query) ||
-        evidence.evidenceNumber?.toLowerCase().includes(query);
+        evidence.title?.toLowerCase.includes(query) ||
+        evidence.description?.toLowerCase.includes(query) ||
+        evidence.evidenceNumber?.toLowerCase.includes(query);
       const matchesType = filterType === 'all' || evidence.evidenceType === filterType;
       return matchesSearch && matchesType;
     });
@@ -306,7 +305,7 @@ https://svelte.dev/e/js_parse_error -->
     ctx.fillStyle = '#ffffff';
     ctx.font = '12px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(evidence.evidenceType.charAt(0).toUpperCase(), x, y + 4);
+    ctx.fillText.toUpperCase(), x, y + 4);
   }
   // Reactive updates for network view
   // Reactive: re-render when network view is active and canvas is ready
@@ -333,7 +332,7 @@ https://svelte.dev/e/js_parse_error -->
           {$evidenceItems.length} Evidence Items
         </span>
         <span class="stat">
-          {$evidenceItems.filter(e => e.analyzed).length} Analyzed
+          {$evidenceItems.filter(item => item.length)} Analyzed
         </span>
         {#if detectiveMode}
           <span class="stat suspicious">
@@ -884,7 +883,7 @@ https://svelte.dev/e/js_parse_error -->
     border-left: 4px solid #f59e0b;
   }
 
-  .insight-(item as { high?: unknown }).high-confidence {
+  .insight-.high-confidence {
     border-left-color: #dc2626;
   }
 
@@ -1041,7 +1040,7 @@ https://svelte.dev/e/js_parse_error -->
     padding-left: 2rem;
   }
 
-  .evidence-timeline::before {
+  .evidence-timeline: :before {
     content: '';
     position: absolute;
     left: 0.875rem;
@@ -1079,15 +1078,7 @@ https://svelte.dev/e/js_parse_error -->
     height: 600px;
   }
 
-  .network-canvas {
-    width: 100%;
-    height: 100%;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.5rem;
-    background: white;
-  }
-
-  .network-legend {
+  .network-canv.network-legend {
     position: absolute;
     top: 1rem;
     right: 1rem;

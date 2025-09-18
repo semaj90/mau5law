@@ -151,7 +151,7 @@ export async function checkRedisHealth(): Promise<any> {
   } catch (error) {
     return { 
       status: 'error', 
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message: String(error)
     };
   }
 }

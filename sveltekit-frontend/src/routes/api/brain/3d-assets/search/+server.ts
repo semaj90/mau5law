@@ -197,7 +197,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ 3D Asset Search failed:', error);
     return json({
       error: 'Asset search failed',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       results: []
     }, { status: 500 });
   }

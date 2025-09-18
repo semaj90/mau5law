@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('CUDA preprocessing error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'CUDA processing failed',
+      error: error instanceof Error ? error.message: 'CUDA processing failed',
       metadata: {
         originalSize: 0,
         processingTime: Date.now() - startTime,
@@ -104,7 +104,7 @@ async function checkCudaWorkerAvailability(workerPath: string): Promise<any> {
   } catch (error) {
     return {
       available: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }
@@ -184,7 +184,7 @@ async function processFileWithCuda(
     
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'CUDA processing failed',
+      error: error instanceof Error ? error.message: 'CUDA processing failed',
       metadata: {
         originalSize: file.size,
         processingTime,
@@ -271,7 +271,7 @@ export const GET: RequestHandler = async () => {
   } catch (error) {
     return json({
       cudaWorkerAvailable: false,
-      error: error instanceof Error ? error.message : 'Health check failed'
+      error: error instanceof Error ? error.message: 'Health check failed'
     }, { status: 500 });
   }
 };

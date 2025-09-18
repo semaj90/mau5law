@@ -119,7 +119,7 @@ export class ComprehensiveIntegration {
         const cleanupScoring = await caseScoringServiceGrpc.streamScoringUpdates(
           [], // Will be populated with active case IDs
           (update) => {
-            console.log('📊 Real-time scoring update:', update);
+            console.log('📊 Real-time scoring update:', update));
             this.broadcastScoringUpdate(update);
           }
         );

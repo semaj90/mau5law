@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
   let sortOrder = $state<"asc" | "desc" >("desc");
   let pageSize = $state(20);
   let currentPage = $state(0);
-  let selectedEvidence = $state<Set<string>>(new Set());
+  let selectedEvidence = $state<Set<string>(new Set());
   let editingEvidence = $state<string | null >(null);
 
   // Filtered and sorted evidence
@@ -87,13 +87,12 @@ https://svelte.dev/e/js_parse_error -->
             (item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).type,
             ...((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).tags || []),
           ]
-            .join(" ")
-            .toLowerCase();
+            .join.toLowerCase();
 
           if (!searchableText.includes(query)) return false;
         }
 
-        if (selectedTypes.length > 0 && !selectedTypes.includes((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).type)) {
+        if (selectedTypes.length > 0 && !selectedTypes.includes.type)) {
           return false;
         }
 
@@ -176,7 +175,7 @@ https://svelte.dev/e/js_parse_error -->
       await syncWithServer();
     } catch (err) {
       console.error("Failed to initialize real-time evidence:", err);
-      error = err instanceof Error ? err.message : "Initialization failed";
+      error = err instanceof Error ? err.message: "Initialization failed";
     }
   }
 
@@ -236,7 +235,7 @@ https://svelte.dev/e/js_parse_error -->
       editingEvidence = evidenceId;
     } catch (err) {
       console.error("Failed to create evidence:", err);
-      error = err instanceof Error ? err.message : "Failed to create evidence";
+      error = err instanceof Error ? err.message: "Failed to create evidence";
     }
   }
 
@@ -249,7 +248,7 @@ https://svelte.dev/e/js_parse_error -->
       editingEvidence = null;
     } catch (err) {
       console.error("Failed to update evidence:", err);
-      error = err instanceof Error ? err.message : "Failed to update evidence";
+      error = err instanceof Error ? err.message: "Failed to update evidence";
     }
   }
 
@@ -262,7 +261,7 @@ https://svelte.dev/e/js_parse_error -->
       selectedEvidence = selectedEvidence;
     } catch (err) {
       console.error("Failed to delete evidence:", err);
-      error = err instanceof Error ? err.message : "Failed to delete evidence";
+      error = err instanceof Error ? err.message: "Failed to delete evidence";
     }
   }
 
@@ -557,7 +556,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="mx-auto px-4 max-w-7xl">
                 <input
                   type="checkbox"
-                  checked={selectedEvidence.has((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+                  checked={selectedEvidence.has.id)}
                   onchange={() => toggleSelection((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
                   class="mx-auto px-4 max-w-7xl"
                 />
@@ -572,7 +571,7 @@ https://svelte.dev/e/js_parse_error -->
                   <span
                     class="mx-auto px-4 max-w-7xl"
                   >
-                    {Math.round((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).classification.relevance * 100)}%
+                    {Math.round.classification.relevance * 100)}%
                   </span>
                 {/if}
 
@@ -713,7 +712,7 @@ https://svelte.dev/e/js_parse_error -->
                 <td class="mx-auto px-4 max-w-7xl">
                   <input
                     type="checkbox"
-                    checked={selectedEvidence.has((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
+                    checked={selectedEvidence.has.id)}
                   onchange={() => toggleSelection((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).id)}
                     class="mx-auto px-4 max-w-7xl"
                   />
@@ -749,7 +748,7 @@ https://svelte.dev/e/js_parse_error -->
                     <span
                       class="mx-auto px-4 max-w-7xl"
                     >
-                      {Math.round((item as { caseId?: unknown; title?: unknown; description?: unknown; type?: unknown; tags?: unknown; id?: unknown; classification?: unknown; timeline?: unknown }).classification.relevance * 100)}%
+                      {Math.round.classification.relevance * 100)}%
                     </span>
                   {:else}
                     <span class="mx-auto px-4 max-w-7xl">-</span>

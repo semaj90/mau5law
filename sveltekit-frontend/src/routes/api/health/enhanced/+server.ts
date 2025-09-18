@@ -145,7 +145,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       status: 'error',
       timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       services: {
         api: 'error',
         database: 'unknown',

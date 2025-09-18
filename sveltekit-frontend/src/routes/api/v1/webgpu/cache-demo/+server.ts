@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ url }) => {
       {
         success: false,
         error: 'Failed to get WebGPU cache system status',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       {
         success: false,
         error: 'WebGPU cache demo failed',
-        details: error instanceof Error ? error.message : String(error),
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -218,7 +218,7 @@ async function benchmarkTensorCompression(testTensors: Float32Array[]): Promise<
   const webgpuStart = Date.now();
   const webgpuResults = await Promise.all(
     testTensors.map(async (tensor, i) => {
-      const key = `benchmark_webgpu_${i}`;
+      const key = `benchmark_webgpu_${i}`));
       await optimizedCache.set(key, tensor, 300);
       return await optimizedCache.get(key);
     })
@@ -229,7 +229,7 @@ async function benchmarkTensorCompression(testTensors: Float32Array[]): Promise<
   const standardStart = Date.now();
   const standardResults = await Promise.all(
     testTensors.map(async (tensor, i) => {
-      const key = `benchmark_standard_${i}`;
+      const key = `benchmark_standard_${i}`));
       const serialized = JSON.stringify(Array.from(tensor));
       // Simulate standard cache operations
       await new Promise((resolve) => setTimeout(resolve, 1));
@@ -619,7 +619,7 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: false,
       error: 'Failed to clear demo data',
-      details: error instanceof Error ? error.message : String(error)
+      details: error instanceof Error ? error.message: String(error)
     }, { status: 500 });
   }
 };

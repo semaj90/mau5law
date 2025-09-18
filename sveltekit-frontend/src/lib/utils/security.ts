@@ -147,7 +147,7 @@ class SessionManager {
   }
 
   getSession(): UserSession | null {
-    return this.isSessionValid() ? this.session : null;
+    return this.isSessionValid() ? this.session: null;
   }
 
   hasPermission(permission: string): boolean {
@@ -576,7 +576,7 @@ export function secureDataExport(data: any, userId: string, legalContext?: unkno
     userId,
     details: {
       dataType: typeof data,
-      recordCount: Array.isArray(data) ? data.length : 1,
+      recordCount: Array.isArray(data) ? data.length: 1,
       fields:
         Array.isArray(data) && data.length > 0 ? Object.keys(data[0]) : [],
     },

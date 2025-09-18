@@ -26,7 +26,7 @@
     rounded && 'is-rounded',
     centered && 'is-centered',
     className
-  ].filter(Boolean).join(' '));
+  ].filter(item => item.join)(' '));
 </script>
 
 <div class={containerClass} {...restProps}>

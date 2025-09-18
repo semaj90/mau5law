@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types.js';
 
 /*
  * AI API Endpoint - Comprehensive AI Services
- * Routes to: ai-enhanced.exe:8096, enhanced-legal-ai.exe:8202, live-agent-enhanced.exe:8200
+ * Routes to: ai-enhanced.exe: 8096, enhanced-legal-ai.exe:8202, live-agent-enhanced.exe:8200
  */
 
 
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
   } catch (err: any) {
     console.error('AI API Error:', err);
-    return error(500, `AI service unavailable: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    return error(500, `AI service unavailable: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 

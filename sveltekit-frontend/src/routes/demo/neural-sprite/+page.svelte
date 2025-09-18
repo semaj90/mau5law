@@ -26,8 +26,7 @@
 
   function updatePreview() {
   	if (previewUrl) {
-  	  try { URL.revokeObjectURL(previewUrl); } catch (e) {}
-  	  previewUrl = '';
+  	  try { URL.revokeObjectURL(previewUrl); } catch (e) previewUrl = '';
   	}
   	if (file) {
   	  previewUrl = URL.createObjectURL(file);
@@ -36,8 +35,7 @@
 
   onDestroy(() => {
   	if (previewUrl) {
-  	  try { URL.revokeObjectURL(previewUrl); } catch (e) {}
-  	}
+  	  try { URL.revokeObjectURL(previewUrl); } catch (e) }
   });
 </script>
 

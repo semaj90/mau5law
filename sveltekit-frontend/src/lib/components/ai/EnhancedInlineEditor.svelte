@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
       aiActor.send({ type: 'START_PROCESSING', task: completionTask });
       const result = await waitForAIResult(completionTask.id);
       if (result?.success && (result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).result?.completions) {
-        suggestions.push(...(result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).(result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).completions.map((completion: string, index: number) => ({
+        suggestions.push(...result.result.completions.map((completion: string, index: number) => ({
           id: `completion_${index}`,
           type: 'completion' as const,
           text: completion,
@@ -148,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
       aiActor.send({ type: 'START_PROCESSING', task: grammarTask });
       const result = await waitForAIResult(grammarTask.id);
       if (result?.success && (result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).result?.suggestions) {
-        suggestions.push(...(result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).(result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).suggestions.map((suggestion: any, index: number) => ({
+        suggestions.push(...result.result.suggestions.map((suggestion: any, index: number) => ({
           id: `grammar_${index}`,
           type: 'grammar' as const,
           text: suggestion.text,
@@ -171,11 +171,7 @@ https://svelte.dev/e/js_parse_error -->
       const embeddingResult = await waitForAIResult(semanticTask.id);
       if (embeddingResult?.success) {
         // Use RAG to find related legal terms and concepts
-        const ragResults = await enhancedRAGStore.queryRAG(
-          context.contextBefore,
-          { 
-            userId: 'inline-editor',
-            sessionId: Date.now().toString()
+        const ragResults = await enhancedRAGStore.queryRAG.toString()
           },
           {
             topK: 5,
@@ -185,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
         );
 
         if (ragResults.results?.length > 0) {
-          suggestions.push(...ragResults.results.slice(0, 2).map((result, index) => ({
+          suggestions.push.map((result, index) => ({
             id: `semantic_${index}`,
             type: 'legal_term' as const,
             text: (result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).summary || (result as { result?: any; summary?: any; content?: any; confidence?: any; metadata?: any }).content.slice(0, 100),
@@ -238,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
     const target = event.target as HTMLDivElement;
     value = target.textContent || '';
     const selection = window.getSelection();
-    const cursorPos = selection ? selection.anchorOffset : 0;
+    const cursorPos = selection ? selection.anchorOffset: 0;
     generateSuggestions(value, cursorPos);
   }
 
@@ -417,7 +413,7 @@ https://svelte.dev/e/js_parse_error -->
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
 
-  .editor-content:empty:before {
+  .editor-content: empty:before {
     content: attr(placeholder);
     color: #9ca3af;
     pointer-events: none;
@@ -509,11 +505,11 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .suggestion-item:hover,
-  .suggestion-(item as { selected?: any }).selected {
+  .suggestion-.selected {
     background: #f3f4f6;
   }
 
-  .suggestion-(item as { selected?: any }).selected {
+  .suggestion-.selected {
     background: #eff6ff;
     border-left: 3px solid #3b82f6;
   }

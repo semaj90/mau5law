@@ -128,20 +128,15 @@
     const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
 
     // Show notification
-    if (typeof window !== 'undefined') {/* JSX syntax converted to Svelte */} joined the case</span>
-        </div>
-      `;
+    if (typeof window !== 'undefined') {
+      console.log(`${randomUser.name} joined the case`);
+    }
 
-      document.body.appendChild(notification);
+    // Simulated notification timeout
+    setTimeout(() => {
+      console.log('Notification dismissed');
+    }, 3000);
 
-      // Remove after 3 seconds
-      setTimeout(() => {
-        (notification as { style?: unknown }).style.transform = 'translateX(100%)';
-        setTimeout(() => {
-          document.body.removeChild(notification);
-        }, 300);
-      }, 3000);
-  }
     console.log('🚀 Collaboration demo:', randomUser.name, 'joined the case');
   }
 </script>

@@ -67,7 +67,7 @@
       }
 
     } catch (error) {
-      addResult(`❌ GET operations - Network error: ${error instanceof Error ? error.message : 'Unknown'}`);
+      addResult(`❌ GET operations - Network error: ${error instanceof Error ? error.message: 'Unknown'}`);
     }
 
     isLoading = false;
@@ -101,7 +101,7 @@
         }
       }
     } catch (error) {
-      addResult(`❌ POST operation - Network error: ${error instanceof Error ? error.message : 'Unknown'}`);
+      addResult(`❌ POST operation - Network error: ${error instanceof Error ? error.message: 'Unknown'}`);
     }
 
     isLoading = false;
@@ -143,7 +143,7 @@
         addResult(`❌ PUT /api/test-cases?id=${targetId} - Failed: ${data.error}`);
       }
     } catch (error) {
-      addResult(`❌ PUT operation - Network error: ${error instanceof Error ? error.message : 'Unknown'}`);
+      addResult(`❌ PUT operation - Network error: ${error instanceof Error ? error.message: 'Unknown'}`);
     }
 
     isLoading = false;
@@ -174,7 +174,7 @@
         addResult(`❌ DELETE /api/test-cases?id=${targetId} - Failed: ${data.error}`);
       }
     } catch (error) {
-      addResult(`❌ DELETE operation - Network error: ${error instanceof Error ? error.message : 'Unknown'}`);
+      addResult(`❌ DELETE operation - Network error: ${error instanceof Error ? error.message: 'Unknown'}`);
     }
 
     isLoading = false;
@@ -227,25 +227,24 @@
     </div>
     <div class="yorha-panel-content">
       <div class="flex flex-wrap gap-3">
-  <Button class="bits-btn" onclick={runFullCRUDTest} disabled={isLoading} variant="default">
-{isLoading ? '⏳ Testing...' : '🚀 Run Full CRUD Test'}
-
-  <Button class="bits-btn" onclick={testGETOperations} disabled={isLoading} variant="secondary">
+        <Button class="bits-btn" onclick={runFullCRUDTest} disabled={isLoading} variant="default">
+          {isLoading ? '⏳ Testing...' : '🚀 Run Full CRUD Test'}
+        </Button>
+        <Button class="bits-btn" onclick={testGETOperations} disabled={isLoading} variant="secondary">
           🔍 Test GET
-
-  <Button class="bits-btn" onclick={testPOSTOperation} disabled={isLoading} variant="secondary">
+        </Button>
+        <Button class="bits-btn" onclick={testPOSTOperation} disabled={isLoading} variant="secondary">
           📝 Test POST
-
-  <Button class="bits-btn" onclick={() => testPUTOperation()} disabled={isLoading} variant="secondary">
+        </Button>
+        <Button class="bits-btn" onclick={() => testPUTOperation()} disabled={isLoading} variant="secondary">
           ✏️ Test PUT
-
-  <Button class="bits-btn" onclick={() =>
-testDELETEOperation()} disabled={isLoading} variant="secondary">
+        </Button>
+        <Button class="bits-btn" onclick={() => testDELETEOperation()} disabled={isLoading} variant="secondary">
           🗑️ Test DELETE
-
-  <Button class="bits-btn" onclick={clearResults} variant="ghost">
-🧹 Clear Results
-
+        </Button>
+        <Button class="bits-btn" onclick={clearResults} variant="ghost">
+          🧹 Clear Results
+        </Button>
       </div>
     </div>
   </div>

@@ -285,8 +285,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
           const analysis: any = await wasmProcessor.processDocument({
             content: `Mock content for ${e.filename}`,
             metadata: { filename: e.filename, type: e.type }
-          } as any);
-
+          } as any)));
           return {
             evidenceId: e.id,
             entities: (analysis?.entities as string[]) || [],

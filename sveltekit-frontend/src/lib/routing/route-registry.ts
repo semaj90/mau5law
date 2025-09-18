@@ -206,13 +206,7 @@ export class RouteRegistry {
    */
   public searchRoutes(query: string): (RouteDefinition | GeneratedRoute)[] {
     const lowerQuery = query.toLowerCase();
-    return this.getAllRoutes().filter(route => {
-      const label = 'label' in route ? route.label : route.id;
-      const description = 'description' in route ? route.description : '';
-      const tags = 'tags' in route ? route.tags : route.metadata?.tags || [];
-      
-      return (
-        label.toLowerCase().includes(lowerQuery) ||
+    return this.getAllRoutes().filter(item => item.includes)(lowerQuery) ||
         description.toLowerCase().includes(lowerQuery) ||
         tags.some(tag => tag.toLowerCase().includes(lowerQuery))
       );
@@ -324,7 +318,7 @@ export class RouteRegistry {
     const categories: Record<string, number> = {};
     
     for (const route of this.getAllRoutes()) {
-      const category = 'category' in route ? route.category : route.metadata?.category || 'unknown';
+      const category = 'category' in route ? route.category: route.metadata?.category || 'unknown';
       categories[category] = (categories[category] || 0) + 1;
     }
     
@@ -481,7 +475,7 @@ export const routeStatistics = derived(routeRegistry.getState(), state => {
   ];
   
   for (const route of allRoutes) {
-    const category = 'category' in route ? route.category : (route as any).metadata?.category || 'unknown';
+    const category = 'category' in route ? route.category: (route as any).metadata?.category || 'unknown';
     categories[category] = (categories[category] || 0) + 1;
   }
   

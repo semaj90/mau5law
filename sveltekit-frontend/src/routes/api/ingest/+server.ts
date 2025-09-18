@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: err instanceof Error ? err.message : String(err),
+        error: err instanceof Error ? err.message: String(err),
       },
       { status: 500 }
     );
@@ -161,7 +161,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: err instanceof Error ? err.message : String(err),
+        error: err instanceof Error ? err.message: String(err),
       },
       { status: 500 }
     );

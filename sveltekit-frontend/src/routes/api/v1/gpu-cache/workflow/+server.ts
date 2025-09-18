@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to optimize workflow',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );
@@ -171,7 +171,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Failed to retrieve workflow profiles',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );
@@ -225,7 +225,7 @@ export const PUT: RequestHandler = async ({ request }) => {
         results.encoding.failed++;
         results.encoding.details.push({
           cacheKey,
-          error: error instanceof Error ? error.message : 'Encoding failed',
+          error: error instanceof Error ? error.message: 'Encoding failed',
         });
       }
     }
@@ -253,7 +253,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       } catch (error: any) {
         results.nesCache.failed++;
         results.nesCache.details.push({
-          error: error instanceof Error ? error.message : 'NES optimization failed',
+          error: error instanceof Error ? error.message: 'NES optimization failed',
         });
       }
     }
@@ -277,7 +277,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       } catch (error: any) {
         results.webgpu.failed++;
         results.webgpu.details.push({
-          error: error instanceof Error ? error.message : 'WebGPU optimization failed',
+          error: error instanceof Error ? error.message: 'WebGPU optimization failed',
         });
       }
     }
@@ -305,7 +305,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to apply workflow optimizations',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );

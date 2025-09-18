@@ -58,7 +58,7 @@
   }
   
   async function sendMessage() {
-    const input = $chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).currentInput;
+    const input = $chatState.data.currentInput;
     if (!input.trim()) return;
     
     chatAdapter.actions.addMessage({ role: 'user', content: input });
@@ -70,9 +70,7 @@
       const result = $documentProcessing.result;
       
       if (result?.summary) {
-        chatAdapter.actions.addMessage({ 
-          role: 'assistant', 
-          content: (result as { summary?: unknown; keyTerms?: unknown; entities?: unknown }).summary 
+        chatAdapter.actions.addMessage.summary 
         });
       }
     } finally {
@@ -166,25 +164,25 @@
       <div class="result-grid">
         <div class="result-nier-bits-card">
           <h3>Summary</h3>
-          <p>{documentState.(result as { summary?: unknown; keyTerms?: unknown; entities?: unknown }).summary}</p>
+          <p>{documentState.result.summary}</p>
         </div>
         
-        {#if documentState.(result as { summary?: unknown; keyTerms?: unknown; entities?: unknown }).keyTerms?.length}
+        {#if documentState.result.keyTerms?.length}
           <div class="result-nier-bits-card">
             <h3>Key Terms</h3>
             <ul>
-              {#each documentState.(result as { summary?: unknown; keyTerms?: unknown; entities?: unknown }).keyTerms as term}
+              {#each documentState.result.keyTerms as term}
                 <li>{term}</li>
               {/each}
             </ul>
           </div>
         {/if}
         
-        {#if documentState.(result as { summary?: unknown; keyTerms?: unknown; entities?: unknown }).entities?.length}
+        {#if documentState.result.entities?.length}
           <div class="result-nier-bits-card">
             <h3>Legal Entities</h3>
             <ul>
-              {#each documentState.(result as { summary?: unknown; keyTerms?: unknown; entities?: unknown }).entities as entity}
+              {#each documentState.result.entities as entity}
                 <li>{entity.text || entity}</li>
               {/each}
             </ul>
@@ -231,7 +229,7 @@
         </div>
         
         <div class="chat-messages" role="log" aria-label="Chat messages">
-          {#each $chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).messages as message}
+          {#each $chatState.data.messages as message}
             <div 
               class="message {message.role}"
               role="listitem"
@@ -241,7 +239,7 @@
             </div>
           {/each}
           
-          {#if $chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).isTyping}
+          {#if $chatState.data.isTyping}
             <div class="message assistant typing" aria-live="polite">
               <strong>AI:</strong> <span aria-label="AI is typing">⟳ Thinking...</span>
             </div>
@@ -251,19 +249,19 @@
         <div class="chat-input">
           <input
             bind:this={chatInput}
-            bind:value={$chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).currentInput}
+            bind:value={$chatState.data.currentInput}
             onkeydown={(e) => e.key === 'Enter' && sendMessage()}
             placeholder="Ask about legal documents..."
             aria-label="Chat message input"
-            disabled={$chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).isTyping}
+            disabled={$chatState.data.isTyping}
           />
           <button
             use:accessibleClick={{
               handler: sendMessage,
               label: 'Send message',
-              disabled: $chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).isTyping || !$chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).currentInput.trim()
+              disabled: $chatState.data.isTyping || !$chatState.data.currentInput.trim()
             }}
-            disabled={$chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).isTyping || !$chatState.(data as { currentInput?: unknown; messages?: unknown; isTyping?: unknown }).currentInput.trim()}
+            disabled={$chatState.data.isTyping || !$chatState.data.currentInput.trim()}
           >
             Send
           </button>

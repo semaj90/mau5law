@@ -258,8 +258,7 @@ function findChunkSection(chunk: string, sections: any[]): string {
 }
 
 function extractChunkConcepts(chunk: string, concepts: string[]): string[] {
-  return concepts.filter(concept => 
-    chunk.toLowerCase().includes(concept.toLowerCase())
+  return concepts.filter(item => item.includes(concept.toLowerCase())
   );
 }
 

@@ -22,7 +22,7 @@
   } from 'lucide-svelte';
 
   // Test state
-  let testResults = $state<Record<string, any>('')>({});
+  let testResults = $state<Record<string, any>('')>( );
   let testRunning = $state(false);
   let currentTab = $state('auth');
 
@@ -59,7 +59,6 @@
   async function runInitialTests() {
     testRunning = true;
     testResults = {};
-
     try {
       // Test 1: GPU Cluster Status
       console.log('🧪 Testing GPU cluster status...');
@@ -80,8 +79,8 @@
       ]);
 
       testResults.context7 = {
-        success: docsTest.every(result => (result as { status?: unknown; value?: unknown }).status === 'fulfilled'),
-        data: docsTest.map(result => (result as { status?: unknown; value?: unknown }).status === 'fulfilled' ? (result as { status?: unknown; value?: unknown }).value : null),
+        success: docsTest.every.status === 'fulfilled'),
+        data: docsTest.map.status === 'fulfilled' ? (result as { status?: unknown; value?: unknown }).value: null),
         timestamp: new Date().toISOString()
       };
       context7Docs = testResults.context7.data;
@@ -151,7 +150,7 @@
       console.error('Test failed:', error);
       testResults.error = {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString()
       };
     } finally {
@@ -192,7 +191,7 @@
       if (passwordInput) passwordInput.value = testCredentials.login.password;
     } else {
       // Fill register form with test data
-      Object.entries(testCredentials.register).forEach(([key, value]) => {
+      Object.entries.forEach(([key, value]) => {
         const input = document.getElementById(key) as HTMLInputElement;
         if (input) {
           if (input.type === 'checkbox') {

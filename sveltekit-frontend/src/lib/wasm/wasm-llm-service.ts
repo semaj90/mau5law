@@ -91,7 +91,7 @@ export class WASMLLMService {
 				env: {
 					memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }), // 16MB - 32MB
 					abort: (msg: number, file: number, line: number, column: number) => {
-						console.error('WASM abort:', msg, file, line, column);
+						console.error('WASM abort:', msg, file, line, column));
 					},
 					console_log: (ptr: number) => {
 						// Mock console log from WASM
@@ -337,7 +337,7 @@ export class WASMLLMService {
 		
 		// Increase confidence for proper legal terminology
 		const legalTerms = ['plaintiff', 'defendant', 'precedent', 'statute', 'jurisdiction', 'liability', 'contract', 'tort'];
-		const foundTerms = legalTerms.filter(term => text.toLowerCase().includes(term));
+		const foundTerms = legalTerms.filter(item => item.includes(term));
 		confidence += Math.min(foundTerms.length * 0.02, 0.1);
 		
 		return Math.min(Math.max(confidence, 0), 1);

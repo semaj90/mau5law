@@ -40,8 +40,8 @@ export const websocketStore = {
   }),
 
   // Collaborative editing state
-  activeEditors: $state<Map<string, any>>(new Map()),
-  evidenceBeingEdited: $state<Set<number>>(new Set()),
+  activeEditors: $state<Map<string, any>(new Map()),
+  evidenceBeingEdited: $state<Set<number>(new Set()),
 
   // Methods
   connect,
@@ -101,7 +101,7 @@ async function connect(userId?: string): Promise<void> {
 
   } catch (error) {
     websocketStore.connecting = false;
-    websocketStore.error = error instanceof Error ? error.message : 'Connection failed';
+    websocketStore.error = error instanceof Error ? error.message: 'Connection failed';
     console.error('Failed to connect to WebSocket:', error);
   }
 }

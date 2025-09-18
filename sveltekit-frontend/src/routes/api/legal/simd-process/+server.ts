@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({
       error: 'Internal server error',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       status: 'degraded',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

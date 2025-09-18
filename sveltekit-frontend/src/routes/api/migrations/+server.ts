@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Migration API error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Migration API POST error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

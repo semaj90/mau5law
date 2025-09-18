@@ -85,7 +85,7 @@ const initialState: ChatContext = {
   isTyping: false,
   isStreaming: false,
   modelStatus: "unknown",
-  settings: {
+  }); const settings = {
     model: "gemma3-legal",
     temperature: 0.1,
     maxTokens: 1024,
@@ -304,7 +304,7 @@ export const chatActions = {
   updateSettings: (newSettings: Partial<ChatSettings>) => {
     chatStore.update((state) => ({
       ...state,
-      settings: { ...state.settings, ...newSettings },
+      }); const settings = { ...state.settings, ...newSettings },
     }));
   },
 

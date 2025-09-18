@@ -22,7 +22,7 @@
   }: Props = $props();
 
   import { onMount, createEventDispatcher } from 'svelte';
-  import { createDialog, melt } from 'melt';
+  import * as Dialog from 'bits-ui';
   import { writable } from 'svelte/store';
   import type {     Writable     } from 'svelte/store';
 
@@ -40,33 +40,10 @@
   const charCount: Writable<number> = writable(0);
 
   // Melt UI Dialog for AI Assistant
-  const {
-    elements: {
-      trigger: aiTrigger,
-      overlay: aiOverlay,
-      content: aiContent,
-      title: aiTitle,
-      description: aiDescription,
-      close: aiClose,
-      portalled: aiPortalled
-    },
-    states: { open: aiOpen }
-  } = createDialog({
-    forceVisible: true,
-  });
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // Melt UI Dialog for Citations
-  const {
-    elements: {
-      trigger: citeTrigger,
-      overlay: citeOverlay,
-      content: citeContent,
-      title: citeTitle,
-      close: citeClose,
-      portalled: citePortalled
-    },
-    states: { open: citeOpen }
-  } = createDialog();
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // AI Assistant state
   let aiQuery = $state('');
@@ -91,14 +68,13 @@
       hugerte = {
         getContent: () => content,
         setContent: (newContent: string) => content = newContent,
-        destroy: () => {},
-        on: () => {},
-        off: () => {},
+        destroy: () => ,
+        on: () => ,
+        off: () => ,
         ui: {
           registry: {
-            addButton: () => {},
-            addIcon: () => {}
-          }
+            addButton: () => ,
+            addIcon: () => }
         },
         config: {
           readonly,
@@ -208,7 +184,7 @@
   }
   function updateCounts(text: string) {
     const plainText = text.replace(/<[^>]*>/g, '');
-    wordCount.set(plainText.trim().split(/\s+/).filter(word => word.length > 0).length);
+    wordCount.set.split-filter.length);
     charCount.set(plainText.length);
   }
   function openAIAssistant(text: string) {

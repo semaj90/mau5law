@@ -356,7 +356,7 @@ export class LegalBertONNXService extends EventEmitter {
   /**
    * Prepare inputs for ONNX inference
    */
-  private async prepareONNXInputs(tokens: any): Promise<Record<string, any>> {
+  private async prepareONNXInputs(tokens: any): Promise<Record<string, any> {
     // Use the ONNX runtime that was loaded during initialization
     const ort = await this.loadONNXRuntime();
     
@@ -399,7 +399,7 @@ export class LegalBertONNXService extends EventEmitter {
       { text: 'defendant', label: 'LEGAL_ROLE', confidence: 0.88, start: 100, end: 109 },
     ];
     
-    return mockEntities.filter(entity => originalText.toLowerCase().includes(entity.text.toLowerCase()));
+    return mockEntities.filter(item => item.includes(entity.text.toLowerCase()));
   }
 
   /**

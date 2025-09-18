@@ -379,7 +379,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
       success: false,
-      error: error instanceof Error ? error.message : 'SIMD glyph generation failed'
+      error: error instanceof Error ? error.message: 'SIMD glyph generation failed'
     }, { status: 500 });
   }
 };

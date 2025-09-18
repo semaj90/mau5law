@@ -32,7 +32,7 @@ export function prepareSearchSessionInsert(input: SearchSessionInsertInput) {
     results: input.results ? JSON.stringify(input.results) : null,
     searchType: input.searchType || 'hybrid',
     queryEmbedding: input.queryEmbedding ? JSON.stringify(input.queryEmbedding) : null,
-    resultCount: input.resultCount ?? (Array.isArray(input.results) ? input.results.length : null),
+    resultCount: input.resultCount ?? (Array.isArray(input.results) ? input.results.length: null),
     createdAt: new Date(),
   } as any;
 }

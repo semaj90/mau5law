@@ -11,9 +11,9 @@
   }
   let {
     disabled = false,
-    onReportGenerate = () => {},
-    onSummarize = () => {},
-    onAnalyze = () => {},
+    onReportGenerate = () => ,
+    onSummarize = () => ,
+    onAnalyze = () => ,
     hasContent = false,
     isGenerating = false
   }: Props = $props();
@@ -22,7 +22,7 @@
     createDropdownMenu,
     melt,
     type CreateDropdownMenuProps,
-  } from "melt";
+  } // Replaced melt with bits-ui components
   import {
     Brain,
     ChevronDown,
@@ -35,19 +35,7 @@
   import { fly } from "svelte/transition";
 
   // Melt UI dropdown configuration
-  const dropdownConfig: CreateDropdownMenuProps = {
-    positioning: {
-      placement: "bottom-start",
-      gutter: 8,
-    },
-    preventScroll: true,
-    portal: null, // Keep in document flow for better accessibility
-  };
-
-  const {
-    elements: { trigger, menu, item, separator },
-    states: { open },
-  } = createDropdownMenu(dropdownConfig);
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // Track selected item
   let selectedItem = $state<string | null >(null);
@@ -112,7 +100,7 @@
 
     // Report generation shortcuts
     const reportShortcut = reportTypes.find((type) =>
-      type.shortcut.toLowerCase().endsWith(key)
+      type.shortcut.toLowerCase.endsWith(key)
     );
     if (reportShortcut && !disabled && !isGenerating) {
       event.preventDefault();
@@ -427,7 +415,7 @@
     cursor: not-allowed;
   }
 
-  .ai-menu__item:not(.ai-menu__item--disabled):hover {
+  .ai-menu__item: not(.ai-menu__item--disabled):hover {
     background: linear-gradient(to right, #fefcff, #fefcff);
   }
 

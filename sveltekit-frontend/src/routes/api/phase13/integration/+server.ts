@@ -151,7 +151,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: 'Integration API failed',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
         processingTime: Date.now() - startTime,
         timestamp: new Date().toISOString()
@@ -261,7 +261,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Integration configuration failed',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
         processingTime: Date.now() - startTime,
         timestamp: new Date().toISOString()
@@ -300,7 +300,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Integration update failed',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
         processingTime: Date.now() - startTime,
         timestamp: new Date().toISOString()
@@ -336,7 +336,7 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: false,
       error: 'Integration reset failed',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
         processingTime: Date.now() - startTime,
         timestamp: new Date().toISOString()

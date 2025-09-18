@@ -50,13 +50,13 @@
   let isLoading = $state(true);
 
   // Evidence visualization objects
-  let evidenceNodes = $state<Map<string, THREE.Object3D>>(new Map());
+  let evidenceNodes = $state<Map<string, THREE.Object3D>(new Map());
   let relationshipLines = $state<THREE.Group>(new THREE.Group());
   let timelineVisualization = $state<THREE.Group>(new THREE.Group());
 
   // Collaborative features
-  let collaboratorCursors = $state<Map<string, THREE.Object3D>>(new Map());
-  let sharedSelections = $state<Map<string, string>>(new Map());
+  let collaboratorCursors = $state<Map<string, THREE.Object3D>(new Map());
+  let sharedSelections = $state<Map<string, string>(new Map());
 
   // Lifecycle
   onMount(async () => {
@@ -435,7 +435,7 @@
 
     if (!node1 || !node2) return null;
 
-    const geometry = new THREE.BufferGeometry().setFromPoints([
+    const geometry = new THREE.BufferGeometry.setFromPoints([
       node1.position,
       node2.position
     ]);
@@ -456,7 +456,7 @@
       new THREE.Vector3((index - sortedEvidence.length / 2) * 5, -1, 0)
     );
 
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const geometry = new THREE.BufferGeometry.setFromPoints(points);
     const material = new THREE.LineBasicMaterial({
       color: 0x2196F3,
       linewidth: 3
@@ -520,7 +520,7 @@
   function areRelated(evidence1: any, evidence2: any): boolean {
     // Simple relationship detection
     return evidence1.caseId === evidence2.caseId &&
-           Math.abs(new Date(evidence1.createdAt).getTime() - new Date(evidence2.createdAt).getTime()) < 86400000; // 1 day
+           Math.abs.getTime() - new Date(evidence2.createdAt).getTime()) < 86400000; // 1 day
   }
 
   function highlightEvidence(node: THREE.Object3D, highlight: boolean) {

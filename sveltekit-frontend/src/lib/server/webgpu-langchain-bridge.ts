@@ -51,7 +51,7 @@ export interface ProcessingResult {
 
 export class WebGPULangChainBridge {
   private config: LangChainWebGPUConfig;
-  
+
   constructor(config: Partial<LangChainWebGPUConfig> = {}) {
     this.config = {
       useWebGPUCache: config.useWebGPUCache ?? true,
@@ -59,7 +59,7 @@ export class WebGPULangChainBridge {
       cacheEmbeddings: config.cacheEmbeddings ?? true,
       compressVectors: config.compressVectors ?? true,
       practiceArea: config.practiceArea || 'general',
-      documentType: config.documentType || 'general'
+      documentType: config.documentType || 'general',
     };
   }
 
@@ -72,17 +72,17 @@ export class WebGPULangChainBridge {
   ): Promise<ProcessingResult> {
     const startTime = Date.now();
     const mergedConfig = { ...this.config, ...options };
-    
+
     console.log(`🔗 WebGPU-LangChain Bridge: Processing ${documentText.length} chars`);
-    
+
     // Phase 1: Parallel LangChain extraction and embedding generation
     const [extractionResult, embeddingResult] = await Promise.all([
       this.extractWithLangChain(documentText, mergedConfig),
-      this.generateEmbeddingsWithWebGPU(documentText, mergedConfig)
+      this.generateEmbeddingsWithWebGPU(documentText, mergedConfig),
     ]);
-    
+
     const totalTime = Date.now() - startTime;
-    
+
     return {
       extraction: extractionResult.data,
       embeddings: embeddingResult,
@@ -91,14 +91,14 @@ export class WebGPULangChainBridge {
         extractionTime: extractionResult.processingTime,
         embeddingTime: embeddingResult.processingTime,
         webgpuUtilized: embeddingResult.webgpuUtilized,
-        throughput: documentText.length / (totalTime / 1000) // chars per second
+        throughput: documentText.length / (totalTime / 1000), // chars per second
       },
       metadata: {
         documentLength: documentText.length,
         embeddingDimensions: embeddingResult.documentEmbedding.length,
         sectionsProcessed: embeddingResult.sectionEmbeddings?.length || 1,
-        cacheStrategy: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : 'standard'
-      }
+        cacheStrategy: mergedConfig.useWebGPUCache ? 'webgpu-optimized' : 'standard',
+      },
     };
   }
 
@@ -111,58 +111,77 @@ export class WebGPULangChainBridge {
   ): Promise<ProcessingResult[]> {
     const mergedConfig = { ...this.config, ...options };
     const batchSize = mergedConfig.batchSize;
-    
+
     console.log(`📦 Batch processing ${documents.length} documents (batch size: ${batchSize})`);
-    
+
     const results: ProcessingResult[] = [];
-    
+
     // Process in optimized batches
     for (let i = 0; i < documents.length; i += batchSize) {
       const batch = documents.slice(i, i + batchSize);
-      
+
       // Process batch in parallel
       const batchResults = await Promise.all(
-        batch.map(doc => this.processLegalDocument(doc.content, mergedConfig))
+        batch.map((doc) => this.processLegalDocument(doc.content, mergedConfig))
       );
-      
+
       results.push(...batchResults);
-      
+
       // Log progress
-      console.log(`✅ Processed batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(documents.length / batchSize)}`);
+      console.log(
+        `✅ Processed batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(documents.length / batchSize)}`
+      );
     }
-    
+
     return results;
   }
 
   /**
    * Extract legal information using LangChain + Ollama
    */
-  private async extractWithLangChain(
-    text: string,
-    config: LangChainWebGPUConfig
-  ): Promise<any> {
+  private async extractWithLangChain(text: string, config: LangChainWebGPUConfig): Promise<any> {
     const startTime = Date.now();
-    
+
     try {
       // Check if Ollama is available
       const isAvailable = await langExtractService.isOllamaAvailable();
       if (!isAvailable) {
         throw new Error('Ollama service not available');
       }
-      
+
       // Parallel extraction of different legal elements
       const [summary, contractTerms, entities, risks] = await Promise.all([
-        langExtractService.generateLegalSummary(text, config.documentType === 'general' ? 'evidence' : config.documentType === 'case' ? 'case_law' : config.documentType).catch(() => null),
-        config.documentType === 'contract' 
+        langExtractService
+          .generateLegalSummary(
+            text,
+            config.documentType === 'general'
+              ? 'evidence'
+              : config.documentType === 'case'
+                ? 'case_law'
+                : config.documentType
+          )
+          .catch(() => null),
+        config.documentType === 'contract'
           ? langExtractService.extractContractTerms(text).catch(() => null)
           : Promise.resolve(null),
-        langExtractService.extractLegalEntities({ text, documentType: config.documentType === 'general' ? 'evidence' : config.documentType === 'case' ? 'case_law' : config.documentType, extractionType: 'entities' }).catch(() => []),
+        langExtractService
+          .extractLegalEntities({
+            text,
+            documentType:
+              config.documentType === 'general'
+                ? 'evidence'
+                : config.documentType === 'case'
+                  ? 'case_law'
+                  : config.documentType,
+            extractionType: 'entities',
+          })
+          .catch(() => []),
         // assessLegalRisks not available, return empty array
-        Promise.resolve([])
+        Promise.resolve([]),
       ]);
-      
+
       const processingTime = Date.now() - startTime;
-      
+
       return {
         data: {
           summary: summary?.summary || 'Summary not available',
@@ -171,14 +190,13 @@ export class WebGPULangChainBridge {
           contractTerms: contractTerms?.terms || [],
           caseCitations: [], // Would extract if document type is case
           legalDates: [], // Would extract legal dates
-          risks: risks || []
+          risks: risks || [],
         },
-        processingTime
+        processingTime,
       };
-      
     } catch (error) {
       console.error('LangChain extraction failed:', error);
-      
+
       return {
         data: {
           summary: 'Extraction failed - using fallback',
@@ -187,9 +205,9 @@ export class WebGPULangChainBridge {
           contractTerms: [],
           caseCitations: [],
           legalDates: [],
-          risks: []
+          risks: [],
         },
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       };
     }
   }
@@ -204,63 +222,61 @@ export class WebGPULangChainBridge {
     const startTime = Date.now();
     let cacheHit = false;
     let webgpuUtilized = config.useWebGPUCache;
-    
+
     try {
       // Split document into sections for hierarchical embeddings
       const sections = this.splitIntoSections(text);
-      
+
       if (config.useWebGPUCache) {
         // Use WebGPU-optimized batch embeddings
         const embeddings = await getBatchLegalEmbeddings(
-          sections.map(section => ({
+          sections.map((section) => ({
             text: section,
             documentType: config.documentType === 'general' ? 'case' : config.documentType,
-            practiceArea: config.practiceArea
+            practiceArea: config.practiceArea,
           }))
         );
-        
+
         const documentEmbedding = embeddings[0]; // Use first section as main embedding
         const sectionEmbeddings = embeddings.length > 1 ? embeddings.slice(1) : undefined;
-        
+
         return {
           documentEmbedding,
           sectionEmbeddings,
           compressionRatio: config.compressVectors ? 4.2 : 1.0,
           processingTime: Date.now() - startTime,
           cacheHit,
-          webgpuUtilized: true
+          webgpuUtilized: true,
         };
-        
       } else {
         // Standard embedding generation
         const legalQuery = {
           text,
           documentType: config.documentType === 'general' ? 'case' : config.documentType,
-          practiceArea: config.practiceArea
+          practiceArea: config.practiceArea,
         };
-        
+
         const result = await getLegalEmbedding(legalQuery);
         cacheHit = (result as { metadata?: any; embedding?: any }).metadata.cacheHit;
-        
+
         return {
           documentEmbedding: (result as { metadata?: any; embedding?: any }).embedding,
           compressionRatio: 1.0,
           processingTime: Date.now() - startTime,
           cacheHit,
-          webgpuUtilized: false
+          webgpuUtilized: false,
         };
       }
-      
     } catch (error) {
       console.error('WebGPU embedding generation failed:', error);
-      
+
       // Fallback to dummy embedding
       return {
         documentEmbedding: new Float32Array(768).fill(0.1),
         compressionRatio: 1.0,
         processingTime: Date.now() - startTime,
         cacheHit: false,
-        webgpuUtilized: false
+        webgpuUtilized: false,
       };
     }
   }
@@ -270,12 +286,12 @@ export class WebGPULangChainBridge {
    */
   private splitIntoSections(text: string, maxSectionLength: number = 2000): string[] {
     const sections: string[] = [];
-    
+
     // Split by paragraphs first
-    const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
-    
+    const paragraphs = text.split(/\n\s*\n/).filter((item) => item.length > 0);
+
     let currentSection = '';
-    
+
     for (const paragraph of paragraphs) {
       if ((currentSection + paragraph).length > maxSectionLength && currentSection) {
         sections.push(currentSection.trim());
@@ -284,11 +300,11 @@ export class WebGPULangChainBridge {
         currentSection += (currentSection ? '\n\n' : '') + paragraph;
       }
     }
-    
+
     if (currentSection.trim()) {
       sections.push(currentSection.trim());
     }
-    
+
     // Ensure we have at least one section
     return sections.length > 0 ? sections : [text];
   }
@@ -298,22 +314,40 @@ export class WebGPULangChainBridge {
    */
   private extractKeyTermsFallback(text: string): string[] {
     const legalTerms = [
-      'contract', 'agreement', 'party', 'parties', 'defendant', 'plaintiff',
-      'court', 'judge', 'jury', 'evidence', 'witness', 'testimony',
-      'liability', 'damages', 'breach', 'negligence', 'statute',
-      'regulation', 'compliance', 'violation', 'penalty', 'fine'
+      'contract',
+      'agreement',
+      'party',
+      'parties',
+      'defendant',
+      'plaintiff',
+      'court',
+      'judge',
+      'jury',
+      'evidence',
+      'witness',
+      'testimony',
+      'liability',
+      'damages',
+      'breach',
+      'negligence',
+      'statute',
+      'regulation',
+      'compliance',
+      'violation',
+      'penalty',
+      'fine',
     ];
-    
+
     const words = text.toLowerCase().match(/\b\w+\b/g) || [];
     const wordCount = new Map<string, number>();
-    
+
     // Count occurrences of legal terms
-    words.forEach(word => {
+    words.forEach((word) => {
       if (legalTerms.includes(word)) {
         wordCount.set(word, (wordCount.get(word) || 0) + 1);
       }
     });
-    
+
     // Return top terms by frequency
     return Array.from(wordCount.entries())
       .sort(([, a], [, b]) => b - a)
@@ -328,16 +362,16 @@ export class WebGPULangChainBridge {
     const [webgpuStats, cacheStats, ollamaAvailable] = await Promise.all([
       webgpuRedisOptimizer.getOptimizationStats(),
       embeddingCache.getCacheStats(),
-      langExtractService.isOllamaAvailable()
+      langExtractService.isOllamaAvailable(),
     ]);
-    
+
     return {
       webgpuOptimizer: webgpuStats,
       embeddingCache: cacheStats,
       langchainService: {
         available: ollamaAvailable,
-        models: ollamaAvailable ? await langExtractService.listAvailableModels() : []
-      }
+        models: ollamaAvailable ? await langExtractService.listAvailableModels() : [],
+      },
     };
   }
 

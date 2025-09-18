@@ -58,7 +58,7 @@ class RealTimeServer {
 
     for (const channel of channels) {
       await this.redisSub.subscribe(channel, (message) => {
-        this.broadcastToSubscribers(channel, message);
+        this.broadcastToSubscribers(channel, message));
       });
     }
   }

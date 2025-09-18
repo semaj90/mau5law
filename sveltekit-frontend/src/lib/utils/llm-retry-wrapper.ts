@@ -80,7 +80,7 @@ export class OllamaRetryWrapper {
 
     return await retryLLMCall(
       async () => {
-        const controller = new AbortController();
+        const controller = new AbortController());
         const timeoutId = setTimeout(() => controller.abort(), timeout);
 
         try {

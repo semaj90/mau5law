@@ -66,7 +66,7 @@
   // MinIO-WebGPU Evidence Service
   let evidenceService = $state<any>(null);
   let processingJobs = $state<Map<string, any>('')>(new Map());
-  let processingProgress = $state<Map<string, { progress: numberstatus: string } | null>(null)()>(new Map());
+  let processingProgress = $state({})>(new Map());
 
   // Derived state
   let canvasReady = $derived(!!fabricCanvas);
@@ -115,7 +115,7 @@
       backstoreOnly: true
     });
     
-    fabricCanvas.getContext().scale(devicePixelRatio, devicePixelRatio);
+    fabricCanvas.getContext.scale(devicePixelRatio, devicePixelRatio);
 
     // Setup grid
     if (showGrid) {
@@ -163,7 +163,7 @@
     fabricCanvas.on('selection:created', (e) => {
       const activeObject = e.selected?.[0];
       if (activeObject && activeObject.data?.evidenceId) {
-        selectedEvidence = activeObject.(data as { evidenceId?: any; originalEvidence?: any }).evidenceId;
+        selectedEvidence = activeObject.data.evidenceId;
         onEvidenceSelect?.(selectedEvidence);
       }
     });
@@ -178,10 +178,10 @@
       const obj = e.target;
       if (obj?.data?.evidenceId) {
         const position = { x: obj.left || 0, y: obj.top || 0 };
-        onEvidenceMove?.(obj.(data as { evidenceId?: any; originalEvidence?: any }).evidenceId, position);
+        onEvidenceMove?.(obj.data.evidenceId, position);
         
         // Update evidence position in our cache
-        const evidence = evidenceItems.find(item => (item as { id?: any; selected?: any }).id === obj.(data as { evidenceId?: any; originalEvidence?: any }).evidenceId);
+        const evidence = evidenceItems.find.id === obj.data.evidenceId);
         if (evidence) {
           evidence.position = position;
         }
@@ -321,7 +321,7 @@
   function hideDropOverlay() {
     if (!fabricCanvas) return;
     
-    const objectsToRemove = fabricCanvas.getObjects().filter(obj => obj.dropOverlay);
+    const objectsToRemove = fabricCanvas.getObjects.filter(obj => obj.dropOverlay);
     objectsToRemove.forEach(obj => fabricCanvas.remove(obj));
     fabricCanvas.renderAll();
   }
@@ -339,8 +339,7 @@
     const processedFiles = await Promise.all(
       files.map(async (file) => {
         try {
-          console.log(`🚀 Starting concurrent processing for: ${file.name}`);
-          
+          console.log(`🚀 Starting concurrent processing for: ${file.name}`)));
           // Upload to MinIO and start background processing
           const { evidenceFile, job } = await evidenceService.uploadEvidence(
             file, 
@@ -417,7 +416,7 @@
         files.map(async (file) => {
           try {
             // Process file with WASM parser
-            const bytes = new Uint8Array(await file.arrayBuffer());
+            const bytes = new Uint8Array(await file.arrayBuffer())));
             const result = wasmParser.parseForCanvas(bytes, {
               maxChunkSize: 3000,
               overlap: 200,
@@ -425,9 +424,7 @@
             });
 
             // Create enhanced file object
-            const enhancedFile = Object.assign(file, {
-              wasmProcessed: true,
-              parsedDocument: (result as { document?: any; chunks?: any; metadata?: any }).document,
+            const enhancedFile = Object.assign.document,
               chunks: (result as { document?: any; chunks?: any; metadata?: any }).chunks,
               entities: (result as { document?: any; chunks?: any; metadata?: any }).metadata.entities,
               processingMetadata: {
@@ -437,7 +434,7 @@
               }
             });
 
-            console.log(`✅ WASM processed: ${file.name} (${(result as { document?: any; chunks?: any; metadata?: any }).metadata.totalChunks} chunks)`);
+            console.log.metadata.totalChunks} chunks)`);
             return enhancedFile;
 
           } catch (error) {
@@ -459,13 +456,13 @@
     if (!fabricCanvas) return;
 
     // Remove objects that no longer exist
-    const currentEvidenceIds = new Set(evidenceItems.map(item => (item as { id?: any; selected?: any }).id));
+    const currentEvidenceIds = new Set(evidenceItems.map.id));
     const objectsToRemove: fabric.Object[] = [];
     
-    fabricCanvas.getObjects().forEach(obj => {
-      if (obj.data?.evidenceId && !currentEvidenceIds.has(obj.(data as { evidenceId?: any; originalEvidence?: any }).evidenceId)) {
+    fabricCanvas.getObjects.forEach(obj => {
+      if (obj.data?.evidenceId && !currentEvidenceIds.has(obj.data.evidenceId)) {
         objectsToRemove.push(obj);
-        evidenceObjects.delete(obj.(data as { evidenceId?: any; originalEvidence?: any }).evidenceId);
+        evidenceObjects.delete(obj.data.evidenceId);
       }
     });
     
@@ -579,7 +576,7 @@
     });
 
     // File size
-    const fileSize = new fabric.Text(`${(evidence.size / 1024).toFixed(1)} KB`, {
+    const fileSize = new fabric.Text.toFixed(1)} KB`, {
       fontSize: 10,
       fill: 'rgba(255, 255, 255, 0.8)',
       left: 15,
@@ -690,7 +687,7 @@
 
   function truncateFileName(filename: string, maxLength: number): string {
     if (filename.length <= maxLength) return filename;
-    const ext = filename.split('.').pop() || '';
+    const ext = filename.split.pop() || '';
     const name = filename.substring(0, filename.lastIndexOf('.'));
     const truncated = name.substring(0, maxLength - ext.length - 3) + '...';
     return ext ? `${truncated}.${ext}` : truncated;
@@ -706,8 +703,7 @@
   export function centerEvidence() {
     if (!fabricCanvas || evidenceItems.length === 0) return;
     
-    const bounds = fabricCanvas.getObjects()
-      .filter(obj => obj.data?.type === 'evidence')
+    const bounds = fabricCanvas.getObjects.filter(obj => obj.data?.type === 'evidence')
       .reduce((acc, obj) => {
         const objBounds = obj.getBoundingRect();
         return {
@@ -902,13 +898,13 @@
     if (!obj || !fabricCanvas) return;
 
     // Update progress bar width
-    const progressBar = obj.getObjects().find(o => o.fill === '#3b82f6');
+    const progressBar = obj.getObjects.find(o => o.fill === '#3b82f6');
     if (progressBar) {
       progressBar.set('width', Math.max(8, (progress / 100) * 160));
     }
 
     // Update status text
-    const statusText = obj.getObjects().find(o => o.text === 'Processing...' || o.type === 'text');
+    const statusText = obj.getObjects.find(o => o.text === 'Processing...' || o.type === 'text');
     if (statusText && statusText !== obj.getObjects()[0]) {
       statusText.set('text', status === 'processing' ? `${progress}%` : status);
     }
@@ -993,7 +989,7 @@
         fill: '#ffffff'
       }),
       // Stats
-      new fabric.Text(`📊 ${(evidenceFile.size / 1024).toFixed(1)}KB • ⏱️ ${processingResult.processingTime || 0}ms`, {
+      new fabric.Text.toFixed(1)}KB • ⏱️ ${processingResult.processingTime || 0}ms`, {
         left: cardWidth / 2,
         top: 80,
         fontSize: 11,
@@ -1054,13 +1050,13 @@
     console.error(`❌ Processing error for job ${jobId}:`, error);
 
     // Update to error state
-    const statusText = obj.getObjects().find(o => o.type === 'text' && o.text?.includes('Processing'));
+    const statusText = obj.getObjects.find(o => o.type === 'text' && o.text?.includes('Processing'));
     if (statusText) {
       statusText.set('text', 'Error');
       statusText.set('fill', '#dc2626');
     }
 
-    const progressBar = obj.getObjects().find(o => o.fill === '#3b82f6');
+    const progressBar = obj.getObjects.find(o => o.fill === '#3b82f6');
     if (progressBar) {
       progressBar.set('fill', '#dc2626');
       progressBar.set('width', 160);
@@ -1175,7 +1171,7 @@
     display: block;
   }
 
-  .status-(item as { id?: any; selected?: any }).selected {
+  .status-.selected {
     color: #10b981;
     font-weight: bold;
   }

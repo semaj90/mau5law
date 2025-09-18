@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
 				description: 'The Enhanced Semantic Architecture service at port 8095 is not responding. This service integrates SOM clustering, PageRank analysis, and deep learning modules for intelligent todo generation.',
 				priority: 5,
 				category: 'Infrastructure',
-				error: `Cannot connect to http://localhost:8095/api/intelligent-todos - ${error instanceof Error ? error.message : 'Unknown error'}`,
+				error: `Cannot connect to http://localhost:8095/api/intelligent-todos - ${error instanceof Error ? error.message: 'Unknown error'}`,
 				solution: 'Start the Enhanced Semantic Architecture service: ./enhanced-semantic-architecture.exe',
 				created_at: new Date().toISOString(),
 				pagerank_score: 0.95,
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		
 		return json({
 			success: false,
-			error: error instanceof Error ? error.message : 'Unknown error',
+			error: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}

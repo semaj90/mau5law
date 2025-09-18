@@ -24,7 +24,7 @@
   let isLoading = $state(true);
   let error = $state<string | null>(null);
   let selectedEvidence = $state<any[]>([]);
-  let organizationStats = $state<any>({});
+  let organizationStats = $state<any>( );
   
   /**
    * Initialize the page

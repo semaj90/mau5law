@@ -263,7 +263,7 @@ export const POST: RequestHandler = async ({ request }) => {
       throw err; // Re-throw SvelteKit errors
     }
     
-    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -313,7 +313,7 @@ export const GET: RequestHandler = async ({ url }) => {
       throw err;
     }
     
-    throw error(500, `History retrieval failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `History retrieval failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -353,6 +353,6 @@ export const DELETE: RequestHandler = async ({ url }) => {
       throw err;
     }
     
-    throw error(500, `History clear failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `History clear failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };

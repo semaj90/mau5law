@@ -107,7 +107,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                     type: 'error',
                     source: 'ollama',
                     message: 'Ollama streaming failed',
-                    error: error instanceof Error ? error.message : 'Unknown error'
+                    error: error instanceof Error ? error.message: 'Unknown error'
                   })}\\n\\n`));
                 }
               })()
@@ -153,7 +153,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                     type: 'error',
                     source: 'enhanced-rag',
                     message: 'Enhanced RAG streaming failed',
-                    error: error instanceof Error ? error.message : 'Unknown error'
+                    error: error instanceof Error ? error.message: 'Unknown error'
                   })}\\n\\n`));
                 }
               })()
@@ -176,7 +176,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({
             type: 'error',
             message: 'Streaming failed',
-            error: error instanceof Error ? error.message : 'Unknown error',
+            error: error instanceof Error ? error.message: 'Unknown error',
             timestamp: new Date().toISOString()
           })}\\n\\n`));
         } finally {
@@ -193,7 +193,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
     return new Response(
       JSON.stringify({ 
         error: 'Failed to start streaming', 
-        details: error instanceof Error ? error.message : 'Unknown error' 
+        details: error instanceof Error ? error.message: 'Unknown error' 
       }), 
       { 
         status: 500, 

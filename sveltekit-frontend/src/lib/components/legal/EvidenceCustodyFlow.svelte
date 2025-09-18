@@ -244,7 +244,7 @@ and AI-powered verification features.
   }
 
   function getStageDisplayName(stage: string) {
-    return stage.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    return stage.split.map(word => word.charAt.toUpperCase() + word.slice(1)).join(' ');
   }
 </script>
 

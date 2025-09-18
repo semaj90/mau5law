@@ -1257,7 +1257,7 @@ export const aiAssistantMachine = createMachine({
 
           // Check comprehensive service health
           const healthStatus = await productionServiceRegistry.getClusterHealth();
-          console.log(`🏥 Service Health Check: ${healthStatus.overall} (${Object.values(healthStatus.services).filter(Boolean).length}/${Object.keys(healthStatus.services).length} services healthy)`);
+          console.log(`🏥 Service Health Check: ${healthStatus.overall} (${Object.values(healthStatus.services).filter(item => item.length)}/${Object.keys(healthStatus.services).length} services healthy)`);
 
           // Initialize NATS connection with retry
           let natsConnected = false;
@@ -1443,7 +1443,7 @@ export const aiAssistantMachine = createMachine({
                   context7: (event as any).output.context7Available
                 },
                 microservices: {
-                  available: Object.values(health.services || {}).filter(Boolean).length,
+                  available: Object.values(health.services || {}).filter(item => item.length),
                   total: 37,
                   failing: Object.entries(health.services || {})
                     .filter(([_, healthy]) => !healthy)
@@ -1617,7 +1617,7 @@ export const aiAssistantMachine = createMachine({
         COLLABORATION_USER_LEFT: {
           actions: assign({
             collaborationUsers: ({ context, event }) =>
-              context.collaborationUsers.filter(user => user.id !== (event as any).userId)
+              context.collaborationUsers.filter(item => item.userId))
           })
         },
         CACHE_CLEAR: {
@@ -1707,10 +1707,9 @@ export const aiAssistantMachine = createMachine({
                       svelteDocsResponse?.content,
                       bitsUIResponse?.content,
                       xstateDocsResponse?.content
-                    ].filter(Boolean).join('\n\n'),
+                    ].filter(item => item.join)('\n\n'),
                     confidence: 0.85,
-                    libraries: ['svelte', 'bits-ui', 'xstate'].filter(lib =>
-                      query.toLowerCase().includes(lib)
+                    libraries: ['svelte', 'bits-ui', 'xstate'].filter(item => item.includes)(lib)
                     ),
                     apiEndpoints: []
                   };
@@ -2245,7 +2244,7 @@ export const aiAssistantMachine = createMachine({
               ]);
 
               analysisResult = {
-                semantic: semantic.status === 'fulfilled' ? semantic.value : null,
+                semantic: semantic.status === 'fulfilled' ? semantic.value: null,
                 legal: legal.status === 'fulfilled' ? legal.value : null
               };
               break;
@@ -2268,8 +2267,7 @@ export const aiAssistantMachine = createMachine({
             assign({
               semanticAnalysis: ({ event }) =>
                 (event as any).output.analysisType === 'semantic' || (event as any).output.analysisType === 'full'
-                  ? (event as any).output.result
-                  : undefined,
+                  ? (event as any).output.result: undefined,
               legalAnalysis: ({ event }) =>
                 (event as any).output.analysisType === 'legal' || (event as any).output.analysisType === 'full'
                   ? (event as any).output.result
@@ -2562,7 +2560,7 @@ export const aiAssistantMachine = createMachine({
           return {
             overall: healthStatus.overall,
             database: {
-              postgres: databaseHealth[0].status === 'fulfilled' ? databaseHealth[0].value : false,
+              postgres: databaseHealth[0].status === 'fulfilled' ? databaseHealth[0].value: false,
               qdrant: databaseHealth[1].status === 'fulfilled' ? databaseHealth[1].value : false,
               neo4j: databaseHealth[2].status === 'fulfilled' ? databaseHealth[2].value : false,
               redis: databaseHealth[3].status === 'fulfilled' ? databaseHealth[3].value : false
@@ -2573,7 +2571,7 @@ export const aiAssistantMachine = createMachine({
               context7: aiHealth[2].status === 'fulfilled' ? aiHealth[2].value : false
             },
             microservices: {
-              available: Object.values(healthStatus.services).filter(Boolean).length,
+              available: Object.values(healthStatus.services).filter(item => item.length),
               total: Object.keys(healthStatus.services).length,
               failing: Object.entries(healthStatus.services)
                 .filter(([_, healthy]) => !healthy)
@@ -2625,7 +2623,7 @@ export const aiAssistantMachine = createMachine({
             ]);
 
             const validResponses = [svelteDocsResponse, bitsUIResponse, xstateDocsResponse]
-              .filter(result => (result as { expires?: any; value?: any; totalFound?: any; results?: any; result?: any; precedents?: any; status?: any }).status === 'fulfilled')
+              .filter(item => item.status) === 'fulfilled')
               .map(result => (result as any).value);
 
             const analysis: Context7Analysis = {
@@ -2638,8 +2636,7 @@ export const aiAssistantMachine = createMachine({
               codeExamples: validResponses.flatMap(response => (response as { ok?: any; status?: any; statusText?: any; json?: any; snippets?: any; content?: any; apiEndpoints?: any }).snippets || []),
               documentation: validResponses.map(response => (response as { ok?: any; status?: any; statusText?: any; json?: any; snippets?: any; content?: any; apiEndpoints?: any }).content).join('\n\n'),
               confidence: validResponses.length > 0 ? 0.85 : 0.3,
-              libraries: ['svelte', 'bits-ui', 'xstate'].filter(lib =>
-                topic.toLowerCase().includes(lib) || validResponses.some(r => r.content?.toLowerCase().includes(lib))
+              libraries: ['svelte', 'bits-ui', 'xstate'].filter(item => item.includes)(lib) || validResponses.some(r => r.content?.toLowerCase().includes(lib))
               ),
               apiEndpoints: validResponses.flatMap(response => (response as { ok?: any; status?: any; statusText?: any; json?: any; snippets?: any; content?: any; apiEndpoints?: any }).apiEndpoints || [])
             };
@@ -3075,7 +3072,7 @@ export const aiAssistantMachine = createMachine({
 
           workerPool.terminate();
 
-          const successCount = results.filter(r => r.status === 'fulfilled').length;
+          const successCount = results.filter(item => item.length);
           const failureCount = results.length - successCount;
 
           console.log(`✅ Batch analysis completed: ${successCount} successful, ${failureCount} failed`);

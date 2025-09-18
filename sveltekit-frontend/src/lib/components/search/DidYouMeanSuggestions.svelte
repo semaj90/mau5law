@@ -4,7 +4,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 <!-- AI-Enhanced "Did You Mean?" Suggestions Component with Intent Prediction -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { createCombobox, melt } from 'melt';
+  // Replaced melt with bits-ui components
   import { Check, ChevronDown, Search, FileText, User, Folder, Tag, Brain, Zap, Target } from 'lucide-svelte';
   import { fly, fade } from 'svelte/transition';
   interface Suggestion {
@@ -73,7 +73,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   let userProfile = $state<UserProfile | null>(null);
   let loading = $state(false);
   let error = $state<string | null>(null);
-  let metadata = $state({});
+  let metadata = $state( );
   let debounceTimer = $state<NodeJS.Timeout | null>(null);
 
   // Melt-UI combobox builder
@@ -148,7 +148,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       onSearch?.(searchQuery);
     } catch (err) {
       console.error('Search error:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Search failed';
+      const errorMessage = err instanceof Error ? err.message: 'Search failed';
       error = errorMessage;
       suggestions = [];
       taskSuggestions = [];
@@ -450,20 +450,20 @@ https://svelte.dev/e/attribute_invalid_name -->
   }
   
   /* Custom scrollbar for suggestions */
-  .suggestions-scroll::-webkit-scrollbar {
+  .suggestions-scroll: :-webkit-scrollbar {
     width: 6px;
   }
   
-  .suggestions-scroll::-webkit-scrollbar-track {
+  .suggestions-scroll: :-webkit-scrollbar-track {
     background: #f1f1f1;
   }
   
-  .suggestions-scroll::-webkit-scrollbar-thumb {
+  .suggestions-scroll: :-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
   }
   
-  .suggestions-scroll::-webkit-scrollbar-thumb:hover {
+  .suggestions-scroll: :-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
 </style>

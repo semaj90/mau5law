@@ -448,11 +448,7 @@
     min-height: 600px;
   }
 
-  .graph-canvas {
-    @apply w-full h-full;
-  }
-
-  .loading-overlay {
+  .graph-canv.loading-overlay {
     @apply absolute inset-0 flex flex-col items-center justify-center bg-gray-900/90;
   }
 

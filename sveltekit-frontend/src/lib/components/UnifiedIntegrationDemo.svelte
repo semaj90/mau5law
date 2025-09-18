@@ -35,10 +35,7 @@
 
   Both parties acknowledge they have read and agree to these terms.`,
     performInference: JSON.stringify([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]),
-    processCanvas: JSON.stringify({
-      width: 64,
-      height: 64,
-      data: Array(64 * 64 * 4).fill(0).map((_, i) => {
+    processCanvas: JSON.stringify.fill-map((_, i) => {
         const pixel = Math.floor(i / 4);
         const component = i % 4;
         if (component === 3) return 255; // Alpha
@@ -53,10 +50,9 @@
       n: 3,
       k: 3
     }),
-    attention: JSON.stringify({
-      query: Array(64).fill(0).map(() => Math.random()),
-      key: Array(64).fill(0).map(() => Math.random()),
-      value: Array(64).fill(0).map(() => Math.random()),
+    attention: JSON.stringify.fill-map(() => Math.random()),
+      key: Array(64).fill.map(() => Math.random()),
+      value: Array(64).fill.map(() => Math.random()),
       seq_len: 8,
       dim: 8
     })
@@ -79,7 +75,7 @@
       const response = await fetch('/api/v1/orchestrator?endpoint=health');
       const data = await (response as { json?: unknown }).json();
       if ((data as { success?: unknown; data?: unknown }).success) {
-        systemHealth.set((data as { success?: unknown; data?: unknown }).data);
+        systemHealth.set.data);
       }
     } catch (error) {
       console.error('Failed to fetch system health:', error);
@@ -91,7 +87,7 @@
       const response = await fetch('/api/v1/orchestrator?endpoint=metrics');
       const data = await (response as { json?: unknown }).json();
       if ((data as { success?: unknown; data?: unknown }).success) {
-        metrics.set((data as { success?: unknown; data?: unknown }).data);
+        metrics.set.data);
       }
     } catch (error) {
       console.error('Failed to fetch metrics:', error);
@@ -379,8 +375,8 @@
                 
                 <div class="bg-gray-50 rounded p-2 text-xs font-mono">
                   {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data?.success !== undefined}
-                    <p class="text-{(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).(data as { success?: unknown; data?: unknown }).success ? 'green' : 'red'}-600 mb-1">
-                      Status: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).(data as { success?: unknown; data?: unknown }).success ? 'Success' : 'Failed'}
+                    <p class="text-{(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data.success ? 'green' : 'red'}-600 mb-1">
+                      Status: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data.success ? 'Success' : 'Failed'}
                     </p>
                   {/if}
                   

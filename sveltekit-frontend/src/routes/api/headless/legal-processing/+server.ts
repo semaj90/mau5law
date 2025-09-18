@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       legal: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).legalAnalysis,
 
       // SVG visualizations (if requested)
-      visualizations: processingConfig.generateSVGSummaries ? (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).svgVisualizations : undefined,
+      visualizations: processingConfig.generateSVGSummaries ? (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).svgVisualizations: undefined,
 
       // Performance metrics
       performance: {
@@ -206,8 +206,8 @@ export const PUT: RequestHandler = async ({ request }) => {
     // Calculate batch statistics
     const batchStats = {
       totalDocuments: body.documents.length,
-      successful: results.filter(r => r.success).length,
-      failed: results.filter(r => !r.success).length,
+      successful: results.filter(item => item.length),
+      failed: results.filter(item => item.length),
       totalProcessingTime: results.reduce((sum, r) => sum + r.processingTime, 0),
       averageProcessingTime: results.reduce((sum, r) => sum + r.processingTime, 0) / results.length,
       totalMemoryUsed: results.reduce((sum, r) => sum + (r.mipmapChain?.totalMemoryUsed || 0), 0),

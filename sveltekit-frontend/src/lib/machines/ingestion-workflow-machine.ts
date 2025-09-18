@@ -233,8 +233,7 @@ export const ingestionWorkflowMachine = setup({
         const batch = job.chunks.slice(i, i + batchSize);
         const batchResults = await Promise.all(
           batch.map(async (text, index) => {
-            const chunkId = `${job.id}_chunk_${i + index}`;
-            
+            const chunkId = `${job.id}_chunk_${i + index}`));
             // Check cache first
             const cached = await cache.get(`embedding:${chunkId}`);
             if (cached) {
@@ -293,7 +292,7 @@ export const ingestionWorkflowMachine = setup({
         chunks,
         processingTime,
         totalChunks: chunks.length,
-        embeddedChunks: chunks.filter(c => c.embedding?.length > 0).length,
+        embeddedChunks: chunks.filter(item => item.length),
         averageConfidence: chunks.reduce((sum, c) => sum + (c.metadata.confidence || 0), 0) / chunks.length
       };
     }),
@@ -608,7 +607,7 @@ export const ingestionWorkflowMachine = setup({
           target: 'idle',
           actions: assign({
             currentJob: () => null,
-            jobQueue: ({ context, event }) => context.jobQueue.filter(j => j.id !== (event as any).jobId)
+            jobQueue: ({ context, event }) => context.jobQueue.filter(item => item.jobId))
           })
         }
       }

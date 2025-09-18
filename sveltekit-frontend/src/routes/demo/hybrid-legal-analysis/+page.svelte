@@ -46,7 +46,7 @@ https://svelte.dev/e/expected_token -->
 
   // Derived state for analysis capabilities
   let availableAnalyses = $derived(
-    Object.entries((data as { analysisCapabilities?: unknown; sampleDocuments?: unknown; recentAnalyses?: unknown }).analysisCapabilities).map(([key, capability]) => ({
+    Object.entries.analysisCapabilities).map(([key, capability]) => ({
       id: key,
       ...capability
     }))

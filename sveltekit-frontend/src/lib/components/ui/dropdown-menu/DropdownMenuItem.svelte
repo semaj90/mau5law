@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
-  import { melt } from 'melt';
+  // Replaced melt with bits-ui components
 
   interface Props {
     item?: unknown;

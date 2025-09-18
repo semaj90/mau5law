@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
     });
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : 'Unknown system status error';
+    const msg = error instanceof Error ? error.message: 'Unknown system status error';
     console.error('System status check failed:', error);
     return json(
       {

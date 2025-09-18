@@ -297,8 +297,7 @@ class AdvancedSimilarityEngine {
 
   static assessLegalRelevance(themes: string[]): string {
     const legalKeywords = ['contract', 'violation', 'statute', 'regulation', 'compliance', 'liability'];
-    const relevantThemes = themes.filter(theme =>
-      legalKeywords.some(keyword => theme.toLowerCase().includes(keyword))
+    const relevantThemes = themes.filter(item => item.includes(keyword))
     );
 
     if (relevantThemes.length >= 3) return 'High';
@@ -421,7 +420,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           totalFound: results.length,
           searchMetrics: {
             avgSimilarity: results.reduce((sum, r) => sum + r.similarity, 0) / results.length || 0,
-            highConfidenceCount: results.filter(r => r.confidenceScore >= 0.8).length,
+            highConfidenceCount: results.filter(item => item.length),
             processingTimeMs: Date.now() % 1000 // Mock processing time
           }
         }
@@ -482,9 +481,9 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         strongestCluster: clusters.reduce((max, c) =>
           c.clusterStrength > max.clusterStrength ? c : max, clusters[0]),
         legalRelevanceDistribution: {
-          high: clusters.filter(c => c.legalRelevance === 'High').length,
-          medium: clusters.filter(c => c.legalRelevance === 'Medium').length,
-          low: clusters.filter(c => c.legalRelevance === 'Low').length
+          high: clusters.filter(item => item.length),
+          medium: clusters.filter(item => item.length),
+          low: clusters.filter(item => item.length)
         }
       };
 
@@ -549,8 +548,7 @@ function extractLegalTerms(text: string): string[] {
     'jurisdiction', 'plaintiff', 'defendant', 'motion', 'injunction', 'settlement'
   ];
 
-  return legalTerms.filter(term =>
-    text.toLowerCase().includes(term.toLowerCase())
+  return legalTerms.filter(item => item.includes(term.toLowerCase())
   );
 }
 
@@ -578,8 +576,7 @@ function extractTopics(text: string): string[] {
     'corporate liability', 'intellectual property', 'data breach', 'privacy violation'
   ];
 
-  return topicKeywords.filter(topic =>
-    text.toLowerCase().includes(topic.toLowerCase())
+  return topicKeywords.filter(item => item.includes(topic.toLowerCase())
   );
 }
 

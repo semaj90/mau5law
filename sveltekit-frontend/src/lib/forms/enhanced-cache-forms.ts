@@ -68,8 +68,8 @@ export class CacheFirstFormManager {
   
   // Form state stores
   public activeForms = writable<string[]>([]);
-  public formErrors = writable<Record<string, any>>({});
-  public formProgress = writable<Record<string, number>>({});
+  public formErrors = writable<Record<string, any>({});
+  public formProgress = writable<Record<string, number>({});
 
   // ===== ENHANCED CASE FORM =====
 
@@ -101,7 +101,7 @@ export class CacheFirstFormManager {
     this.updateActiveForm(formId);
 
     const form = superForm(
-      { data: defaultData } as SuperValidated<Infer<typeof EnhancedCaseFormSchema>>,
+      { data: defaultData } as SuperValidated<Infer<typeof EnhancedCaseFormSchema>,
       {
         SPA: true,
         validators: zod(EnhancedCaseFormSchema),
@@ -182,7 +182,7 @@ export class CacheFirstFormManager {
     this.updateActiveForm(formId);
 
     const form = superForm(
-      { data: defaultData } as SuperValidated<Infer<typeof EvidenceUploadFormSchema>>,
+      { data: defaultData } as SuperValidated<Infer<typeof EvidenceUploadFormSchema>,
       {
         SPA: true,
         validators: zod(EvidenceUploadFormSchema),

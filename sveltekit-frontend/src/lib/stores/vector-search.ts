@@ -137,7 +137,7 @@ export const vectorSearchActions = {
       vectorSearchStore.update(state => ({
         ...state,
         isSearching: false,
-        error: error instanceof Error ? error.message : 'Search failed'
+        error: error instanceof Error ? error.message: 'Search failed'
       }));
     }
   },
@@ -194,7 +194,7 @@ export const vectorSearchActions = {
       vectorSearchStore.update(state => ({
         ...state,
         isGeneratingResponse: false,
-        error: error instanceof Error ? error.message : 'RAG query failed'
+        error: error instanceof Error ? error.message: 'RAG query failed'
       }));
     }
   },
@@ -233,7 +233,7 @@ export const vectorSearchActions = {
       vectorSearchStore.update(state => ({
         ...state,
         isSearching: false,
-        error: error instanceof Error ? error.message : 'Similar cases search failed'
+        error: error instanceof Error ? error.message: 'Similar cases search failed'
       }));
     }
   },

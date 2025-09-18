@@ -296,15 +296,15 @@
 		scrollbar-color: #cbd5e0 #f7fafc;
 	}
 	
-	:global(.prose::-webkit-scrollbar) {
+	:global(.prose: :-webkit-scrollbar) {
 		width: 4px;
 	}
 	
-	:global(.prose::-webkit-scrollbar-track) {
+	:global(.prose: :-webkit-scrollbar-track) {
 		background: #f7fafc;
 	}
 	
-	:global(.prose::-webkit-scrollbar-thumb) {
+	:global(.prose: :-webkit-scrollbar-thumb) {
 		background: #cbd5e0;
 		border-radius: 2px;
 	}

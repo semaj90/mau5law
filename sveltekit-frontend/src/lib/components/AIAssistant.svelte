@@ -4,13 +4,13 @@
   import { useMachine } from '@xstate/svelte';
   // Toast notifications removed - using simple state instead
 
-  import Button from '$lib/components/ui/enhanced-bits';;
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import {
     Card,
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
+  } from '$lib/components/ui/enhanced-bits';
   import { Textarea } from '$lib/components/ui/textarea';
   import EnhancedButton from '$lib/components/ui/EnhancedButton.svelte';
 
@@ -133,7 +133,7 @@
   let isLoading = $derived(snapshot.matches('querying'));
   let currentResponse = $derived(snapshot.context.response);
   let errorMessage = $derived(snapshot.context.error);
-  let canSubmit = $derived(promptInput.trim().length > 0 && !isLoading);
+  let canSubmit = $derived(promptInput.trim.length > 0 && !isLoading);
 
   // Simple notification state (replacing melt-ui toaster)
   let notifications = $state([]);
@@ -181,7 +181,7 @@
     <div class="text-sm">{(notification as { id?: any; title?: any; description?: any }).description}</div>
     <button
       class="absolute top-2 right-2 text-white hover:text-gray-200"
-      onclick={() => notifications = notifications.filter(n => n.id !== (notification as { id?: any; title?: any; description?: any }).id)}
+      onclick={() => notifications = notifications.filter(item => item.id))}
     >
       &times;
     </button>
@@ -318,7 +318,7 @@
                 {new Date((item as { timestamp?: any; prompt?: any; response?: any }).timestamp).toLocaleTimeString()}
               </div>
               <div class="text-sm font-medium mb-1">Q: {(item as { timestamp?: any; prompt?: any; response?: any }).prompt.slice(0, 100)}...</div>
-              <div class="text-xs text-gray-600">A: {(item as { timestamp?: any; prompt?: any; response?: any }).(response as { ok?: any; status?: any; statusText?: any; json?: any }).slice(0, 150)}...</div>
+              <div class="text-xs text-gray-600">A: {(item as { timestamp?: any; prompt?: any; response?: any }).response.slice(0, 150)}...</div>
             </div>
           {/each}
         </div>
@@ -358,7 +358,7 @@
     overflow: hidden;
   }
 
-  :global(.yorha-response::before) {
+  :global(.yorha-response: :before) {
     content: '';
     position: absolute;
     top: 0;

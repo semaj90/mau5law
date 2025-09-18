@@ -11,12 +11,12 @@ https://svelte.dev/e/rune_missing_parentheses -->
     multiple?: boolean;
   }
 
-  let { onFileSelected = () => {}, accept = "*", multiple = false }: Props = $props();
+  let { onFileSelected = () => , accept = "*", multiple = false }: Props = $props();
   let dragActive = $state(false);
   let fileInput = $state<HTMLInputElement;
 
   function handleDrop(e: DragEvent) {
-    e.preventDefault()dragActive | null>(null)(false);
+    e.preventDefault()dragActive  | null>(null); const data = false);
 
     if (e.dataTransfer?.files) {
       const files = Array.from(e.dataTransfer.files);

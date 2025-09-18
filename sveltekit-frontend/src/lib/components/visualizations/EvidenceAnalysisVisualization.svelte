@@ -71,14 +71,13 @@
     if (!ctx) return;
 
     const entityTypes = ['person', 'organization', 'location', 'date', 'amount', 'object'];
-    const entityCounts = entityTypes.map(type =>
-      analysis.keyEntities.filter(e => e.type === type).length
+    const entityCounts = entityTypes.map.length
     );
 
     const chart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: entityTypes.map(t => t.charAt(0).toUpperCase() + t.slice(1)),
+        labels: entityTypes.map.toUpperCase() + t.slice(1)),
         datasets: [{
           label: 'Entity Count',
           data: entityCounts,
@@ -116,7 +115,7 @@
     const chart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: sortedEvents.map(e => new Date(e.timestamp).toLocaleDateString()),
+        labels: sortedEvents.map.toLocaleDateString()),
         datasets: [{
           label: 'Event Confidence',
           data: sortedEvents.map(e => e.confidence * 100),
@@ -196,9 +195,9 @@
     const chart = new Chart(ctx, {
       type: 'polarArea',
       data: {
-        labels: Object.keys(emotions).map(e => e.charAt(0).toUpperCase() + e.slice(1)),
+        labels: Object.keys.map(e => e.charAt.toUpperCase() + e.slice(1)),
         datasets: [{
-          data: Object.values(emotions).map(v => v * 100),
+          data: Object.values.map(v => v * 100),
           backgroundColor: [
             'rgba(239, 68, 68, 0.7)',   // anger - red
             'rgba(156, 163, 175, 0.7)',  // fear - gray

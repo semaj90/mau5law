@@ -21,7 +21,7 @@
 
   // State
   let chatInput = $state('');
-  let messages = $state<any[]>([])([]);
+  let messages = $state<any[]>([]) => []);
   let isProcessing = $state(false);
   let isInitialized = $state(false);
   let error = $state<string | null>(null);
@@ -70,7 +70,7 @@
         throw new Error('Failed to initialize AI adapter');
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Unknown initialization error';
+      error = err instanceof Error ? err.message: 'Unknown initialization error';
       console.error('❌ AI initialization failed:', err);
     }
   }
@@ -98,11 +98,7 @@
     try {
       console.log('🚀 Processing:', message);
       
-      const response = await webAssemblyAIAdapter.sendMessage(message, {
-        maxTokens: 300,
-        temperature: 0.1,
-        useGPUAcceleration: systemStatus.webgpu,
-        conversationHistory: messages.slice(-6).map(msg => ({
+      const response = await webAssemblyAIAdapter.sendMessage.map(msg => ({
           type: msg.role,
           content: msg.content,
           timestamp: msg.timestamp
@@ -125,7 +121,7 @@
       });
       
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to process message';
+      error = err instanceof Error ? err.message: 'Failed to process message';
       console.error('❌ Message processing failed:', err);
     } finally {
       isProcessing = false;
@@ -323,15 +319,15 @@
     scrollbar-color: #4B5563 transparent;
   }
 
-  .messages-container::-webkit-scrollbar {
+  .messages-container: :-webkit-scrollbar {
     width: 4px;
   }
 
-  .messages-container::-webkit-scrollbar-track {
+  .messages-container: :-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .messages-container::-webkit-scrollbar-thumb {
+  .messages-container: :-webkit-scrollbar-thumb {
     background: #4B5563;
     border-radius: 2px;
   }

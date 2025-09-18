@@ -89,8 +89,7 @@ https://svelte.dev/e/attribute_duplicate -->
   Timestamp: ${new Date().toISOString()}`;
 
     navigator.clipboard
-      .writeText(errorText)
-      .then(() => {
+      .writeText.then(() => {
         notifications.add({
           type: "success",
           title: "Copied",

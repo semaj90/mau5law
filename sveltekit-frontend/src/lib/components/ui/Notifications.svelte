@@ -32,7 +32,7 @@
   };
 
   function handleClose(notification: Notification) {
-    notifications.remove((notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).id);
+    notifications.remove.id);
   }
 
   // Clean up notifications on component destroy (e.g., app shutdown or navigation)
@@ -45,7 +45,7 @@
     action: NonNullable<Notification["actions"]>[0]
   ) {
     action.action();
-    notifications.remove((notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).id);
+    notifications.remove.id);
   }
 </script>
 

@@ -95,9 +95,9 @@ export const GET: RequestHandler = async ({ url }) => {
 			includeMetrics ? fetchGatewayMetrics() : Promise.resolve(null)
 		]);
 
-		const health = healthResponse.status === 'fulfilled' ? healthResponse.value : null;
-		const services = servicesResponse.status === 'fulfilled' ? servicesResponse.value : null;
-		const metrics = metricsResponse.status === 'fulfilled' ? metricsResponse.value : null;
+		const health = healthResponse.status === 'fulfilled' ? healthResponse.value: null;
+		const services = servicesResponse.status === 'fulfilled' ? servicesResponse.value: null;
+		const metrics = metricsResponse.status === 'fulfilled' ? metricsResponse.value: null;
 
 		// Filter by service name if specified
 		let filteredServices = services;
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		console.error('Multi-protocol gateway status check failed:', err);
 		error(500, ensureError({
 			message: 'Failed to check gateway status',
-			error: err instanceof Error ? err.message : 'Unknown error'
+			error: err instanceof Error ? err.message: 'Unknown error'
 		}));
 	}
 };
@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		console.error('Multi-protocol request failed:', err);
 		error(500, ensureError({
 			message: 'Multi-protocol request failed',
-			error: err instanceof Error ? err.message : 'Unknown error'
+			error: err instanceof Error ? err.message: 'Unknown error'
 		}));
 	}
 };
@@ -201,7 +201,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 		console.error('Gateway configuration update failed:', err);
 		error(500, ensureError({
 			message: 'Configuration update failed',
-			error: err instanceof Error ? err.message : 'Unknown error'
+			error: err instanceof Error ? err.message: 'Unknown error'
 		}));
 	}
 };
@@ -245,7 +245,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 		console.error('Circuit breaker reset failed:', err);
 		error(500, ensureError({
 			message: 'Circuit breaker reset failed',
-			error: err instanceof Error ? err.message : 'Unknown error'
+			error: err instanceof Error ? err.message: 'Unknown error'
 		}));
 	}
 };
@@ -336,7 +336,7 @@ async function executeProtocolFallback(request: ProtocolFallbackRequest): Promis
 			attempt_count: 1,
 			total_latency: totalLatency,
 			protocol_latency: totalLatency,
-			error: err instanceof Error ? err.message : 'Gateway communication failed',
+			error: err instanceof Error ? err.message: 'Gateway communication failed',
 			metadata: { gateway_communication_error: true }
 		};
 	}
@@ -525,8 +525,7 @@ export const ProtocolUtils = {
 				total: endpoints.length,
 				healthy: healthy.length,
 				avg_response_time: healthy.length > 0
-					? healthy.reduce((sum, e) => sum + e.response_time, 0) / healthy.length
-					: 0,
+					? healthy.reduce((sum, e) => sum + e.response_time, 0) / healthy.length: 0,
 				avg_success_rate: healthy.length > 0
 					? healthy.reduce((sum, e) => sum + e.success_rate, 0) / healthy.length
 					: 0

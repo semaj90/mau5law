@@ -8,12 +8,11 @@ https://svelte.dev/e/js_parse_error -->
 
   // Dashboard data store
   const dashboardData = writable({
-    jobs: { active: [], recent: [], stats: {} },
-    workers: { active: [], stats: {} },
-    metrics: { recentActivity: [], performance: {} },
-    workflow: { state: 'idle', context: {} },
-    system: {}
-  });
+    jobs: { active: [], recent: [], stats: },
+    workers: { active: [], stats: },
+    metrics: { recentActivity: [], performance: },
+    workflow: { state: 'idle', context: },
+    system: });
 
   let pollInterval;
   let isConnected = false;
@@ -35,7 +34,7 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/ingestion/comprehensive?action=get_dashboard');
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; dashboard?: unknown; error?: unknown; jobId?: unknown; message?: unknown }).success) {
-        dashboardData.set((result as { success?: unknown; dashboard?: unknown; error?: unknown; jobId?: unknown; message?: unknown }).dashboard);
+        dashboardData.set.dashboard);
         isConnected = true;
         errorMessage = '';
       } else {
@@ -60,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
       const chunkSize = Math.ceil(words.length / newJob.chunks);
       const chunks = [];
       for (let i = 0; i < words.length; i += chunkSize) {
-        chunks.push(words.slice(i, i + chunkSize).join(' ');
+        chunks.push.join(' ');
       }
 
       const response = await fetch('/api/ingestion/comprehensive', {
@@ -93,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function controlWorkflow(action, params = {}) {
+  async function controlWorkflow(action, params = ) {
     try {
       const response = await fetch('/api/ingestion/comprehensive', {
         method: 'POST',
@@ -103,10 +102,10 @@ https://svelte.dev/e/js_parse_error -->
 
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; dashboard?: unknown; error?: unknown; jobId?: unknown; message?: unknown }).success) {
-        console.log(`✅ ${action}:`, (result as { success?: unknown; dashboard?: unknown; error?: unknown; jobId?: unknown; message?: unknown }).message);
+        console.log.message);
         await fetchDashboardData();
       } else {
-        console.error(`❌ ${action}:`, (result as { success?: unknown; dashboard?: unknown; error?: unknown; jobId?: unknown; message?: unknown }).error);
+        console.error(error);
       }
     } catch (error) {
       console.error(`❌ ${action} failed:`, error);

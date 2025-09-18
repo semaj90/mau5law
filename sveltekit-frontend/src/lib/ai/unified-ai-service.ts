@@ -201,7 +201,7 @@ export class UnifiedAIService {
       return {
         ...cached,
         metadata: { 
-          model: cached.metadata??.model || "unknown" // @ts-ignore - Model property access || 'cached',
+          model: cached.metadata?.model || 'cached',
           ...cached.metadata, 
           cacheHit: true 
         }
@@ -268,7 +268,7 @@ export class UnifiedAIService {
         mode: 'wasm',
         processingTime: wasmResponse.processingTimeMs,
         metadata: {
-          model: wasmResponse.metadata??.model || "unknown" // @ts-ignore - Model property access || 'wasm-model',
+          model: wasmResponse.metadata?.model || 'wasm-model',
           tokenCount: wasmResponse.tokens,
           confidence: wasmResponse.confidence
         }
@@ -306,7 +306,7 @@ export class UnifiedAIService {
         processingTime: langChainResponse.processingTime,
         sources: langChainResponse.sources,
         metadata: {
-          model: this.config.langChainConfig??.model || "unknown" // @ts-ignore - Model property access || 'langchain-model',
+          model: this.config.langChainConfig?.model || 'langchain-model',
           confidence: langChainResponse.confidence
         }
       };

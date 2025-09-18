@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
-  let testResults = $state<any[]>([])([]);
+  let testResults = $state<any[]>([]) => []);
   let isRunning = $state(false);
   async function runCompleteAITest() {
     isRunning = true;
@@ -21,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
             saveQuery: true
           }
         })
-      });
+      }));
       if (!(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).ok) {
         throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).status}: ${await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).text()}`);
       }
@@ -29,7 +29,7 @@ https://svelte.dev/e/js_parse_error -->
       if (!(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).success) {
         throw new Error((data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).error || 'Query failed');
       }
-      return `AI response generated (confidence: ${((data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).confidence * 100).toFixed(1)}%)`;
+      return `AI response generated (confidence: ${((data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).data.confidence * 100).toFixed(1)}%)`;
     });
     // Test 2: Evidence Analysis
     await runTest('Evidence Analysis', async () => {
@@ -41,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
           content: 'Bank transaction records showing suspicious patterns of money movement through offshore accounts with amounts just below reporting thresholds.',
           forceReanalyze: true
         })
-      });
+      }));
       // This might fail if evidence doesn't exist, but we can test the API structure
       const data = await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).json();
       if ((response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).status === 404) {
@@ -62,7 +62,7 @@ https://svelte.dev/e/js_parse_error -->
           limit: 5,
           threshold: 0.6
         })
-      });
+      }));
       if (!(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).ok) {
         throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).status}: ${await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).text()}`);
       }
@@ -70,11 +70,11 @@ https://svelte.dev/e/js_parse_error -->
       if (!(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).success) {
         throw new Error((data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).error || 'Search failed');
       }
-      return `Vector search completed: ${(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).results.length} results found`;
+      return `Vector search completed: ${(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).data.results.length} results found`;
     });
     // Test 4: Ollama Health Check
     await runTest('Ollama Service Health', async () => {
-      const response = await fetch('http://localhost:11434/api/tags');
+      const response = await fetch('http://localhost:11434/api/tags'));
       if (!(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).ok) {
         throw new Error('Ollama service not accessible');
       }
@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
     });
     // Test 5: Database Connectivity
     await runTest('Database Connectivity', async () => {
-      const response = await fetch('/api/health/database');
+      const response = await fetch('/api/health/database'));
       if ((response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).status === 404) {
         return 'Database health endpoint not implemented (this is expected)';
       }
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
     });
     // Test 6: Query Suggestions
     await runTest('Query Suggestions', async () => {
-      const response = await fetch('/api/ai/query?q=money laundering analysis');
+      const response = await fetch('/api/ai/query?q=money laundering analysis'));
       if (!(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).ok) {
         throw new Error(`HTTP ${(response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).status}: ${await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).text()}`);
       }
@@ -109,11 +109,11 @@ https://svelte.dev/e/js_parse_error -->
       if (!(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).success) {
         throw new Error((data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).error || 'Suggestions failed');
       }
-      return `Query suggestions working: ${(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).suggestions.length} similar queries found`;
+      return `Query suggestions working: ${(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).data.suggestions.length} similar queries found`;
     });
     // Test 7: Embedding Generation
     await runTest('Embedding Generation Test', async () => {
-      const testText = 'Legal document analysis for prosecution evidence review';
+      const testText = 'Legal document analysis for prosecution evidence review');
       // Test direct embedding through Ollama
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
@@ -127,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
         throw new Error('Embedding generation failed');
       }
       const data = await (response as { ok?: unknown; status?: unknown; text?: unknown; json?: unknown }).json();
-      if (!(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).embedding || !Array.isArray((data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).embedding)) {
+      if (!(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).embedding || !Array.isArray.embedding)) {
         throw new Error('Invalid embedding response');
       }
       return `Embedding generated: ${(data as { success?: unknown; error?: unknown; data?: unknown; models?: unknown; status?: unknown; embedding?: unknown }).embedding.length} dimensions`;
@@ -226,11 +226,11 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <div class="grid grid-cols-3 gap-4 text-center">
         <div>
-          <div class="text-2xl font-bold text-green-600">{testResults.filter(t => t.status === 'success').length}</div>
+          <div class="text-2xl font-bold text-green-600">{testResults.filter(item => item.length)}</div>
           <div class="text-sm text-gray-600 dark:text-gray-400">Passed</div>
         </div>
         <div>
-          <div class="text-2xl font-bold text-red-600">{testResults.filter(t => t.status === 'error').length}</div>
+          <div class="text-2xl font-bold text-red-600">{testResults.filter(item => item.length)}</div>
           <div class="text-sm text-gray-600 dark:text-gray-400">Failed</div>
         </div>
         <div>
@@ -240,7 +240,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
 
-    {#if testResults.filter(t => t.status === 'success').length === testResults.length}
+    {#if testResults.filter(item => item.length) === testResults.length}
       <div class="mt-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg">
         <div class="flex items-center gap-2">
           <span class="text-2xl">🎉</span>

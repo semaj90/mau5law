@@ -227,7 +227,7 @@ export async function withErrorHandling<T>(
       errorType,
       errorMessage,
       {
-        originalError: error instanceof Error ? error.message : error,
+        originalError: error instanceof Error ? error.message: error,
         stack: error instanceof Error ? error.stack : undefined,
       },
       "high",
@@ -252,7 +252,7 @@ export async function safeFetch(url: string, options?: RequestInit): Promise<any
     errorHandler.network(`Failed to fetch ${url}`, {
       url,
       method: options?.method || "GET",
-      status: error instanceof Error ? error.message : "Unknown error",
+      status: error instanceof Error ? error.message: "Unknown error",
     });
     throw error;
   }

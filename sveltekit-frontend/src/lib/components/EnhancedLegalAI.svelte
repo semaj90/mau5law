@@ -63,9 +63,9 @@
   let serviceStatus = $state({
     healthy: false,
     loading: true,
-    services: {} as Record<string, string>,
+    services: as Record<string, string>,
     version: "",
-    config: {} as Record<string, any>,
+    config: as Record<string, any>,
   });
 
   let documentContent = $state("");
@@ -124,9 +124,9 @@
         serviceStatus = {
           healthy: true,
           loading: false,
-          services: health.services || {},
+          services: health.services || ,
           version: health.version || "",
-          config: health.config || {},
+          config: health.config || ,
         };
       } else {
         throw new Error(`HTTP ${(response as { ok?: unknown; json?: unknown; status?: unknown; statusText?: unknown }).status}`);
@@ -136,9 +136,9 @@
       serviceStatus = {
         healthy: false,
         loading: false,
-        services: {},
+        services: ,
         version: "",
-        config: {},
+        config: ,
       };
     }
   }
@@ -623,7 +623,7 @@
               </div>
               <p class="text-slate-600 mb-3">{(result as { id?: unknown; score?: unknown; content?: unknown; metadata?: unknown }).content}</p>
               <div class="flex flex-wrap gap-2 text-xs">
-                {#each Object.entries((result as { id?: unknown; score?: unknown; content?: unknown; metadata?: unknown }).metadata) as [key, value]}
+                {#each Object.entries.metadata) as [key, value]}
                   <span class="px-2 py-1 bg-slate-100 text-slate-700 rounded">
                     {key}: {value}
                   </span>

@@ -416,7 +416,7 @@ class RateLimiter {
 class MetricsCollector {
   private metrics = new Map<string, number[]>();
   private counters = new Map<string, number>();
-  private labels = new Map<string, Map<string, number>>();
+  private labels = new Map<string, Map<string, number>();
 
   recordTiming(operation: string, duration: number, labels?: Record<string, string>): void {
     const timings = this.metrics.get(operation) || [];
@@ -559,7 +559,7 @@ class LegalChunker {
           const sections = content.split(pattern).filter(Boolean);
 
           structuredChunks = sections
-            .filter(section => section.trim().length > 50)
+            .filter(item => item.length) > 50)
             .map(section => section.trim());
 
           if (structuredChunks.length > 1) break;
@@ -706,7 +706,7 @@ export class EnhancedLegalRAGPipeline {
         password: this.config.database.password,
         max: this.config.database.max,
         idle_timeout: this.config.database.idle_timeout,
-        ssl: typeof this.config.database.ssl === 'boolean' ? this.config.database.ssl : this.config.database.ssl === 'require' ? 'require' : false,
+        ssl: typeof this.config.database.ssl === 'boolean' ? this.config.database.ssl: this.config.database.ssl === 'require' ? 'require' : false,
         prepare: true,
         connect_timeout: this.config.database.connect_timeout,
         onnotice: (notice: any) => console.debug('[DB] Notice:', notice),
@@ -889,8 +889,7 @@ export class EnhancedLegalRAGPipeline {
               source: 'rag_pipeline'
             }
           })
-          .returning();
-
+          .returning());
         return [doc];
       });
 
@@ -923,7 +922,7 @@ export class EnhancedLegalRAGPipeline {
           const chunkRecords = await Promise.all(
             batch.map(async (chunk, idx) => {
               try {
-                const embedding = await this.generateEmbedding(chunk);
+                const embedding = await this.generateEmbedding(chunk)));
                 successfulChunks++;
 
                 return {
@@ -1057,7 +1056,7 @@ export class EnhancedLegalRAGPipeline {
       const queryEmbedding = await this.generateEmbedding(query);
 
       // Build SQL conditions using template literals
-      let vectorWhereClause = `1 - (dc.embedding::vector <=> '${JSON.stringify(queryEmbedding)}'::vector) > ${threshold}`;
+      let vectorWhereClause = `1 - (dc.embedding: :vector <=> '${JSON.stringify(queryEmbedding)}'::vector) > ${threshold}`;
       let keywordWhereClause = `to_tsvector('english', dc.content) @@ plainto_tsquery('english', '${query.replace(/'/g, "''")}')`;
 
       if (caseId && this.validator.validateUUID(caseId)) {
@@ -1079,7 +1078,7 @@ export class EnhancedLegalRAGPipeline {
           dc.document_id,
           ld.title,
           ld.confidentiality_level,
-          1 - (dc.embedding::vector <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
+          1 - (dc.embedding: :vector <=> ${JSON.stringify(queryEmbedding)}::vector) as similarity
         FROM document_chunks dc
         LEFT JOIN legal_documents ld ON dc.document_id = ld.id
         WHERE ${sql.raw(vectorWhereClause)}
@@ -1159,7 +1158,7 @@ export class EnhancedLegalRAGPipeline {
         score: r.score,
         similarity: r.similarity || 0,
         textRank: r.text_rank || 0,
-        metadata: includeMetadata ? r.metadata : Record<string, any>,
+        metadata: includeMetadata ? r.metadata: Record<string, any>,
         confidentialityLevel: r.confidentiality_level,
         highlights: r.highlights
       }));
@@ -1361,7 +1360,7 @@ Answer:
           response: '',
           model: this.config.ollama.llmModel,
           isSuccessful: false,
-          errorMessage: error instanceof Error ? error.message : 'Unknown error',
+          errorMessage: error instanceof Error ? error.message: 'Unknown error',
           processingTime,
         });
       } catch (logError) {
@@ -1578,7 +1577,7 @@ Limit to 10 most relevant tags.
    */
   private async analyzeAnswer(answer: string, sources: SearchResult[]) {
     // Calculate confidence based on source relevance and answer characteristics
-    const avgScore = sources.length > 0 ? sources.reduce((sum, doc) => sum + doc.score, 0) / sources.length : 0;
+    const avgScore = sources.length > 0 ? sources.reduce((sum, doc) => sum + doc.score, 0) / sources.length: 0;
 
     // Adjust confidence based on answer length and citation count
     const citations = (answer.match(/\[Source \d+\]/g) || []).length;
@@ -1714,7 +1713,7 @@ Limit to 10 most relevant tags.
       contractType: '',
       parties: [] as string[],
       keyTerms: [] as string[],
-      risks: [] as Array<,
+      risks: [] as Array<any>,
       legalIssues: [] as string[],
       recommendations: [] as string[],
     };
@@ -1820,7 +1819,7 @@ Limit to 10 most relevant tags.
     return checks.map((result, index) => ({
       service: services[index],
       status: (result as { processingTime?: any; status?: any; reason?: any }).status === 'fulfilled' ? 'healthy' : 'unhealthy',
-      error: (result as { processingTime?: any; status?: any; reason?: any }).status === 'rejected' ? (result as { processingTime?: any; status?: any; reason?: any }).reason?.message : undefined,
+      error: (result as { processingTime?: any; status?: any; reason?: any }).status === 'rejected' ? (result as { processingTime?: any; status?: any; reason?: any }).reason?.message: undefined,
       timestamp: new Date().toISOString()
     }));
   }

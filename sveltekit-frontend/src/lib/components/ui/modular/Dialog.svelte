@@ -28,8 +28,7 @@ https://svelte.dev/e/js_parse_error -->
     closeOnOutsideClick?: boolean;
   }
 
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     onOpenChange,
     variant = 'default',
     size = 'default',
@@ -43,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     closeOnEscape = true,
     closeOnOutsideClick = true,
     ...restProps
-  }: Props = $props();
+   }: Props = $props();
 
   // UnoCSS-based dialog variants
   const contentVariants = cva(
@@ -152,16 +151,14 @@ https://svelte.dev/e/js_parse_error -->
   </DialogPrimitive.Portal>
 </DialogPrimitive.Root>
 
-<style>/* YoRHa-specific dialog styling */ {}
-  :global(.yorha-dialog) {
+<style>/* YoRHa-specific dialog styling */ :global(.yorha-dialog) {
     font-family: 'JetBrains Mono', monospace;
   }
 
   :global(.yorha-dialog .dialog-body) {
     color: rgb(212, 175, 55);
   }
-/* Animate dialog entrance */ {}
-  :global([data-state="open"]) {
+/* Animate dialog entrance */ :global([data-state="open"]) {
     animation: dialog-content-show 0.2s ease-out;
   }
 

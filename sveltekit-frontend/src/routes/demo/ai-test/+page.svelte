@@ -5,14 +5,14 @@
   import { multiLayerCache } from '$lib/services/multiLayerCache';
   // Initialize services
   const ollamaService = new OllamaService();
-  let testResults = $state<any[]>([])([]);
+  let testResults = $state<any[]>([]) => []);
   let isRunning = $state(false);
   async function runAITests() {
     isRunning = true;
     testResults = [];
     // Test 1: Ollama Service Health Check
     await runTest('Ollama Health Check', async () => {
-      const health = await ollamaService.healthCheck();
+      const health = await ollamaService.healthCheck());
       if (health.status === 'healthy') {
         return `Ollama is healthy. Models: ${health.models.join(', ')}`;
       } else {
@@ -24,7 +24,7 @@
       await multiLayerCache.set('test-key', { message: 'Hello AI!' }, {
         type: 'query',
         ttl: 300
-      });
+      }));
       const retrieved = await multiLayerCache.get('test-key');
       if (retrieved?.message === 'Hello AI!') {
         return 'Cache system working correctly';
@@ -34,7 +34,7 @@
     });
     // Test 3: Text Analysis
     await runTest('Text Analysis Test', async () => {
-      const testText = "This is a legal document regarding evidence in case 2024-001.";
+      const testText = "This is a legal document regarding evidence in case 2024-001.");
       const analysis = await ollamaService.analyzeDocument(testText, 'summary');
       if (analysis && analysis.length > 0) {
         return `Analysis completed: ${analysis.substring(0, 100)}...`;
@@ -44,7 +44,7 @@
     });
     // Test 4: Embedding Generation
     await runTest('Embedding Generation Test', async () => {
-      const testText = "Legal document embedding test";
+      const testText = "Legal document embedding test");
       const embedding = await ollamaService.generateEmbedding(testText);
       if (embedding && embedding.length > 0) {
         return `Embedding generated: ${embedding.length} dimensions`;

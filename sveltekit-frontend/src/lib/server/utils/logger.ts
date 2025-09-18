@@ -224,17 +224,13 @@ class Logger {
       const formatted = this.formatForConsole(entry);
       
       switch (level) {
-        case LogLevel.DEBUG:
-          console.debug(formatted);
+        case LogLevel.DEBUG: console.debug(formatted);
           break;
-        case LogLevel.INFO:
-          console.info(formatted);
+        case LogLevel.INFO: console.info(formatted);
           break;
-        case LogLevel.WARN:
-          console.warn(formatted);
+        case LogLevel.WARN: console.warn(formatted);
           break;
-        case LogLevel.ERROR:
-        case LogLevel.FATAL:
+        case LogLevel.ERROR: case LogLevel.FATAL:
           console.error(formatted);
           if (entry.error) {
             console.error('Error details:', entry.error);

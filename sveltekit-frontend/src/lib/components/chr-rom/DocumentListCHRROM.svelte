@@ -27,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   
   // Reactive state for CHR-ROM patterns
-  let documentPatterns = new Map<string, Map<string, CHRROMPattern | null>>();
+  let documentPatterns = new Map<string, Map<string, CHRROMPattern | null>();
   let performanceStats: any = null;
   let hoveredDocument: string | null = null;
   
@@ -103,11 +103,11 @@ https://svelte.dev/e/js_parse_error -->
       
       // Store results in reactive state
       for (const result of batchResults) {
-        if (!documentPatterns.has((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).docId)) {
-          documentPatterns.set((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).docId, new Map());
+        if (!documentPatterns.has.docId)) {
+          documentPatterns.set.docId, new Map());
         }
         
-        documentPatterns.get((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).docId)!.set((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).patternType, (result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).pattern);
+        documentPatterns.get.docId)!.set.patternType, (result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).pattern);
         
         // Track performance
         totalRequests++;
@@ -180,14 +180,14 @@ https://svelte.dev/e/js_parse_error -->
           documentPatterns.set(docId, new Map());
         }
         
-        documentPatterns.get(docId)!.set(patternType, (result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).pattern);
+        documentPatterns.get(docId)!.set.pattern);
         
         // Trigger reactivity
         documentPatterns = new Map(documentPatterns);
         
         // Log sub-millisecond performance
         if ((result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).latency < 1) {
-          console.log(`⚡ Sub-1ms hover pattern load: ${patternType} in ${(result as { docId?: any; patternType?: any; pattern?: any; source?: any; latency?: any }).latency.toFixed(2)}ms`);
+          console.log.latency.toFixed(2)}ms`);
         }
       }
     }

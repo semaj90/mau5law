@@ -129,7 +129,7 @@
       results = searchResults;
       onResults?.(searchResults);
     } catch (err) {
-      error = err instanceof Error ? err.message : "Search failed";
+      error = err instanceof Error ? err.message: "Search failed";
       console.error("Search error:", err);
     } finally {
       loading = false;
@@ -154,8 +154,7 @@
     if (!query) return content;
 
     const terms = query
-      .toLowerCase()
-      .split(" ")
+      .toLowerCase.split(" ")
       .filter((term: string) => term.length > 2);
     let highlighted = content;
 

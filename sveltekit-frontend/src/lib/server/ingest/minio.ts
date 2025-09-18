@@ -115,7 +115,7 @@ export async function batchFetchMinioObjects(minioUrls: string[], options: {
         const data = await fetchMinioObject(url);
         return { url, success: true, data };
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : String(error);
+        const errorMsg = error instanceof Error ? error.message: String(error);
         if (failFast) throw error;
         return { url, success: false, error: errorMsg };
       }

@@ -17,9 +17,9 @@
       return async ({ result, update }) => {
         isSubmitting = false;
         if ((result as { type?: unknown; data?: unknown }).type === 'success') {
-          console.log('✅ Form submitted successfully:', (result as { type?: unknown; data?: unknown }).data);
+          console.log.data);
         } else if ((result as { type?: unknown; data?: unknown }).type === 'failure') {
-          console.log('❌ Form submission failed:', (result as { type?: unknown; data?: unknown }).data);
+          console.log.data);
         }
 
         await update();
@@ -47,7 +47,7 @@
   {/if}
 
   <!-- Form Errors -->
-  {#if page.form?.errors && Object.keys(page.form.errors).length > 0}
+  {#if page.form?.errors && Object.keys.length > 0}
     <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
       <h3 class="text-red-800 font-semibold">Form Errors:</h3>
       {#each Object.entries(page.form.errors) as [field, error]}
@@ -72,7 +72,7 @@
         id="title"
         name="title"
         type="text"
-        value={(data as { form?: unknown; title?: unknown; description?: unknown; priority?: unknown }).form.(data as { form?: unknown; title?: unknown; description?: unknown; priority?: unknown }).title}
+        value={(data as { form?: unknown; title?: unknown; description?: unknown; priority?: unknown }).form.data.title}
         placeholder="Enter a title"
         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         class:border-red-500={page.form?.errors?.title}
@@ -92,7 +92,7 @@
         id="description"
         name="description"
         rows="4"
-        value={(data as { form?: unknown; title?: unknown; description?: unknown; priority?: unknown }).form.(data as { form?: unknown; title?: unknown; description?: unknown; priority?: unknown }).description}
+        value={(data as { form?: unknown; title?: unknown; description?: unknown; priority?: unknown }).form.data.description}
         placeholder="Enter a description (optional)"
         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       ></textarea>
@@ -106,7 +106,7 @@
       <select
         id="priority"
         name="priority"
-        value={(data as { form?: unknown; title?: unknown; description?: unknown; priority?: unknown }).form.(data as { form?: unknown; title?: unknown; description?: unknown; priority?: unknown }).priority}
+        value={(data as { form?: unknown; title?: unknown; description?: unknown; priority?: unknown }).form.data.priority}
         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       >
         <option value="low">Low Priority</option>
@@ -141,7 +141,7 @@
   <div class="mt-8 p-4 bg-gray-50 rounded-lg">
     <h3 class="text-lg font-semibold mb-3">Debug Information</h3>
     <div class="space-y-2 text-sm">
-      <div><strong>Form Data:</strong> {JSON.stringify((data as { form?: unknown; title?: unknown; description?: unknown; priority?: unknown }).form.data, null, 2)}</div>
+      <div><strong>Form Data:</strong> {JSON.stringify.form.data, null, 2)}</div>
       <div><strong>Page Form:</strong> {JSON.stringify(page.form, null, 2)}</div>
       <div><strong>Is Submitting:</strong> {isSubmitting}</div>
     </div>

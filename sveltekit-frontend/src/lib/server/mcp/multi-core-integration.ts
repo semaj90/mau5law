@@ -229,7 +229,7 @@ export class MCPMultiCoreClient {
         coreId: task.assignedCore || 'unknown',
         result: null,
         processingTime: Date.now() - startTime,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
       };
     }
   }
@@ -304,7 +304,7 @@ export class MCPMultiCoreClient {
           coreId: 'unknown',
           result: null,
           processingTime: 0,
-          error: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason.message : 'Parallel task failed',
+          error: (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason instanceof Error ? (result as { data?: any; result?: any; tokens?: any; cacheHit?: any; gpuAccelerated?: any; status?: any; value?: any; reason?: any }).reason.message: 'Parallel task failed',
         };
       }
     });
@@ -339,8 +339,7 @@ export class MCPMultiCoreClient {
       averageResponseTime:
         onlineCores.length > 0
           ? onlineCores.reduce((sum, core) => sum + core.averageResponseTime, 0) /
-            onlineCores.length
-          : 0,
+            onlineCores.length: 0,
       activeTasks: this.activeTasks.size,
       loadBalancingStrategy: this.loadBalancingStrategy,
     };

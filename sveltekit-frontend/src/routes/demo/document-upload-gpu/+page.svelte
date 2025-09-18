@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
       }
 
     } catch (error) {
-      uploadError = error instanceof Error ? error.message : 'Upload failed';
+      uploadError = error instanceof Error ? error.message: 'Upload failed';
     } finally {
       uploadLoading = false;
     }

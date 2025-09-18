@@ -107,7 +107,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json(createResponse(false, null, `Unknown action: ${action}`));
     }
   } catch (error: any) {
-    return json(createResponse(false, null, error instanceof Error ? error.message : 'Unknown error'), {
+    return json(createResponse(false, null, error instanceof Error ? error.message: 'Unknown error'), {
       status: 500
     });
   }
@@ -160,7 +160,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json(createResponse(false, null, `Unknown action: ${action}`));
     }
   } catch (error: any) {
-    return json(createResponse(false, null, error instanceof Error ? error.message : 'Unknown error'), {
+    return json(createResponse(false, null, error instanceof Error ? error.message: 'Unknown error'), {
       status: 500
     });
   }

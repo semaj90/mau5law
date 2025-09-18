@@ -620,15 +620,15 @@
   }
 
   /* Custom NES.css enhancements */
-  .nes-progress.is-success::-webkit-progress-value {
+  .nes-progress.is-success: :-webkit-progress-value {
     background-color: #92cc41;
   }
 
-  .nes-progress.is-success::-moz-progress-bar {
+  .nes-progress.is-success: :-moz-progress-bar {
     background-color: #92cc41;
   }
 
-  .nes-balloon.from-left::after {
+  .nes-balloon.from-left: :after {
     border-color: transparent white transparent transparent;
   }
 

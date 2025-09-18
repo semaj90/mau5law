@@ -22,7 +22,7 @@
   let isProcessing = $state(false);
   let results = writable<any>(null);
   let systemStatus = writable<any>(null);
-  let userFeedback = writable<Map<string, boolean>>(new Map());
+  let userFeedback = writable<Map<string, boolean>(new Map());
 
   // Auto-refresh interval
   let refreshInterval: NodeJS.Timeout;
@@ -544,21 +544,21 @@
   }
 
   /* Custom scrollbar for overflow areas */
-  .overflow-x-auto::-webkit-scrollbar {
+  .overflow-x-auto: :-webkit-scrollbar {
     height: 6px;
   }
 
-  .overflow-x-auto::-webkit-scrollbar-track {
+  .overflow-x-auto: :-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 3px;
   }
 
-  .overflow-x-auto::-webkit-scrollbar-thumb {
+  .overflow-x-auto: :-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
   }
 
-  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  .overflow-x-auto: :-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
   }
 </style>

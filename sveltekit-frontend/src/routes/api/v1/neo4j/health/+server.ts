@@ -26,7 +26,7 @@ export const GET: RequestHandler = async () => {
         neo4j: {
           connected: false,
           mode: 'error',
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message: 'Unknown error',
           timestamp: new Date().toISOString(),
         },
       }),

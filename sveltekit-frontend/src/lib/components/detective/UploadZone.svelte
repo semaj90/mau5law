@@ -99,7 +99,7 @@
               embeddingDims = embedding.dimensions;
               // store mapping
               try {
-                await vectorService.updateFileMapping((result as { id?: any; url?: any }).id || (result as { id?: any; url?: any }).url || file.name, {
+                await vectorService.updateFileMapping.id || (result as { id?: any; url?: any }).url || file.name, {
                   textChunks: [text],
                   embeddings: [embedding.vector],
                   analysisResults: { fileType: file.type, size: file.size, embeddingModel: embedding.model, embeddingDims }
@@ -107,7 +107,7 @@
               } catch (ve) { console.warn('Vector mapping failed:', ve); }
               telemetry.emit('embedding_complete', { file: file.name, dims: embeddingDims, model: embedding.model, latencyMs: embedding.latencyMs });
             } catch (embErr) {
-              telemetry.emit('embedding_error', { file: file.name, error: embErr instanceof Error ? embErr.message : 'unknown' });
+              telemetry.emit('embedding_error', { file: file.name, error: embErr instanceof Error ? embErr.message: 'unknown' });
               console.warn('Embedding failed (UploadZone)', embErr);
             }
           }
@@ -146,7 +146,7 @@
             try {
               const json = JSON.parse(xhr.responseText);
               resolve({ url: json.url, id: json.id });
-            } catch { resolve({}); }
+            } catch { resolve( ); }
           } else {
             reject(Object.assign(new Error(`Upload failed (${xhr.status})`), { statusCode: xhr.status }));
           }

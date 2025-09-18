@@ -11,10 +11,9 @@ https://svelte.dev/e/attribute_invalid_name -->
   import { evidenceSchema } from '$lib/schemas/client';
   import { createMachine } from 'xstate';
   // Props
-  let {
-    item,
+  let { item,
     open = $bindable(false)
-  }: {
+   }: {
     item: {
       jsonData: {
         title: string;
@@ -67,7 +66,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       form.values.jsonData.type = type;
       form.values.jsonData.tagsString = tagsString;
       form.values.jsonData.tags = tagsString
-        ? tagsString.split(',').map((t: string) => t.trim()).filter(Boolean)
+        ? tagsString.split.map((t: string) => t.trim()).filter(Boolean)
         : [];
     }
     state = evidenceMachine.transition(state, { type: 'SAVE' });

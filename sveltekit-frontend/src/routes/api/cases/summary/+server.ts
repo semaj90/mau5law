@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Internal server error"
+        error: error instanceof Error ? error.message: "Internal server error"
       } as CaseSummaryResponse,
       { status: 500 }
     );
@@ -168,7 +168,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Internal server error"
+        error: error instanceof Error ? error.message: "Internal server error"
       } as CaseSummaryResponse,
       { status: 500 }
     );

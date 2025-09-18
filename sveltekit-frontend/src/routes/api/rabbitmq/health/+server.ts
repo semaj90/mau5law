@@ -66,7 +66,7 @@ export const GET: RequestHandler = async () => {
 					durable: true
 				}
 			},
-			serviceDetails: serviceHealth.status === 'fulfilled' ? serviceHealth.value.details : null,
+			serviceDetails: serviceHealth.status === 'fulfilled' ? serviceHealth.value.details: null,
 			version: '3.8.9',
 			uptime: '2d 14h 32m',
 			memory: {
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async () => {
 		return json({
 			status: 'unhealthy',
 			timestamp: new Date().toISOString(),
-			error: error instanceof Error ? error.message : 'Unknown error',
+			error: error instanceof Error ? error.message: 'Unknown error',
 			connection: {
 				status: 'disconnected'
 			},

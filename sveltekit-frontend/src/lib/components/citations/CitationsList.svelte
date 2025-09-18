@@ -81,11 +81,11 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       const result = await (response as { json?: any }).json();
 
       if ((result as { success?: any; citations?: any; pagination?: any; error?: any }).success) {
-        citations.set((result as { success?: any; citations?: any; pagination?: any; error?: any }).citations);
+        citations.set.citations);
         totalPages = (result as { success?: any; citations?: any; pagination?: any; error?: any }).pagination?.totalPages || 1;
         applyClientSideSort();
       } else {
-        console.error('Failed to load citations:', (result as { success?: any; citations?: any; pagination?: any; error?: any }).error);
+        console.error(error);
       }
     } catch (error) {
       console.error('Citation loading error:', error);
@@ -125,8 +125,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     if (editMode === 'create') {
       citations.update(items => [citation, ...items]);
     } else {
-      citations.update(items => 
-        items.map(item => (item as { id?: any }).id === citation.id ? citation : item)
+      citations.update.id === citation.id ? citation : item)
       );
     }
 
@@ -139,7 +138,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   // Handle citation deletion
   function handleCitationDelete(event: CustomEvent<string>) {
     const citationId = event.detail;
-    citations.update(items => items.filter(item => (item as { id?: any }).id !== citationId));
+    citations.update.id !== citationId));
     applyClientSideSort();
     showEditor = false;
     selectedCitation = null;

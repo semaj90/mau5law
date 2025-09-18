@@ -368,7 +368,7 @@ export class ShaderCache {
     const operations = (vertexSource + fragmentSource).match(
       /(\*|\/|\+|\-|texture|mix|clamp)/g,
     );
-    return operations ? operations.length : 1;
+    return operations ? operations.length: 1;
   }
 
   private evictOldPrograms(): void {

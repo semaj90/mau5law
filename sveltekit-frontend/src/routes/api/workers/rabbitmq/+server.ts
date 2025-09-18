@@ -158,12 +158,12 @@ export const POST: RequestHandler = async ({ request }) => {
                 publishedVia: 'bulk_api',
                 timestamp: Date.now()
               }
-            );
+            )));
             return { queueName: msg.queueName, success, messageId: msg.message.id };
           })
         );
 
-        const successCount = results.filter(r => r.success).length;
+        const successCount = results.filter(item => item.length);
 
         return json({
           status: 'success',
@@ -212,7 +212,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
         const loadResults = await Promise.all(
           loadTestJobs.map(async (job) => {
-            const success = await rabbitmqServiceWorker.publishMessage(job.queueName, job.message);
+            const success = await rabbitmqServiceWorker.publishMessage(job.queueName, job.message)));
             return { ...job, success };
           })
         );

@@ -126,8 +126,8 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     
     const totalTime = Date.now() - startTime;
-    const successfulTasks = results.filter(r => r.success).length;
-    const failedTasks = results.filter(r => !r.success).length;
+    const successfulTasks = results.filter(item => item.length);
+    const failedTasks = results.filter(item => item.length);
     const averageProcessingTime = results.reduce((sum, r) => sum + r.processingTime, 0) / results.length;
     
     console.log(`✅ Batch processing complete: ${successfulTasks}/${tasks.length} successful in ${totalTime}ms`);

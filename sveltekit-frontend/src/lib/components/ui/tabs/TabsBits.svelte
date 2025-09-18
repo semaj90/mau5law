@@ -1,23 +1,36 @@
 <script lang="ts" context="module">
-  import { Tabs } from "bits-ui";
+  import {
+    TabsRoot,
+    TabsList,
+    TabsTrigger,
+    TabsContent
+  } from "bits-ui";
 
-  // Export compound components
-  export const List = Tabs.List;
-  export const Trigger = Tabs.Trigger;
-  export const Content = Tabs.Content;
+  // Re-export components for compatibility
+  export const Root = TabsRoot;
+  export const List = TabsList;
+  export const Trigger = TabsTrigger;
+  export const Content = TabsContent;
 </script>
 
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { Tabs as TabsPrimitive } from "bits-ui";
-  import type { Snippet } from 'svelte';
-  import { cn } from '$lib/utils';
-
+  import {
+    TabsRoot,
+    TabsList,
+    TabsTrigger,
+    TabsContent
+  } from "bits-ui";
+  // Simple classname utility fallback in case $lib/utils doesn't export `cn`
+  function cn(...classes: Array<string | false | null | undefined>) {
+    return classes.filter(Boolean).join(' ');
+  }
   interface TabItem {
     value: string;
     label: string;
     disabled?: boolean;
-    content?: Snippet;
+    // content is a render function (returns renderable nodes)
+    content?: () => any;
   }
 
   interface Props {
@@ -27,23 +40,13 @@
     variant?: 'default' | 'pills' | 'underline';
     size?: 'sm' | 'md' | 'lg';
     class?: string;
-    children?: Snippet;
+    // children is a render function (used with {@render children()})
+    children?: () => any;
+  }
   }
 
   let {
     tabs = [],
-    value = $bindable(),
-    onValueChange,
-    variant = 'default',
-    size = 'md',
-    class: className = '',
-    children
-  }: Props = $props();
-    children?: Snippet;
-  }
-
-  let {
-    tabs,
     value = $bindable(tabs[0]?.value || ''),
     onValueChange,
     variant = 'default',
@@ -85,7 +88,7 @@
   }
 </script>
 
-<TabsPrimitive.Root
+<TabsRoot
   bind:value
   onValueChange={handleValueChange}
   class={cn("legal-ai-tabs w-full", className)}
@@ -95,14 +98,14 @@
     {@render children()}
   {:else}
     <!-- Array-based mode -->
-    <TabsPrimitive.List
+    <TabsList
       class={cn(
         "legal-ai-tabs-list flex",
         variantClasses[variant].list
       )}
     >
       {#each tabs as tab}
-        <TabsPrimitive.Trigger
+        <TabsTrigger
           value={tab.value}
           disabled={tab.disabled}
           class={cn(
@@ -110,17 +113,16 @@
             sizeClasses[size],
             variantClasses[variant].trigger,
             value === tab.value
-              ? variantClasses[variant].triggerActive
-              : variantClasses[variant].triggerInactive
+              ? variantClasses[variant].triggerActive : variantClasses[variant].triggerInactive
           )}
         >
           {tab.label}
-        </TabsPrimitive.Trigger>
+        </TabsTrigger>
       {/each}
-    </TabsPrimitive.List>
+    </TabsList>
 
     {#each tabs as tab}
-      <TabsPrimitive.Content
+      <TabsContent
         value={tab.value}
         class="legal-ai-tabs-content mt-6 focus:outline-none"
       >
@@ -131,10 +133,10 @@
             Content for {tab.label} tab
           </div>
         {/if}
-      </TabsPrimitive.Content>
+      </TabsContent>
     {/each}
   {/if}
-</TabsPrimitive.Root>
+</TabsRoot>
 
 <style>
   :global(.legal-ai-tabs) {

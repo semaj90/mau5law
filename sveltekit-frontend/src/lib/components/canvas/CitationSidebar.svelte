@@ -32,11 +32,11 @@ https://svelte.dev/e/js_parse_error -->
     filteredCitations = citations.filter((citation) => {
       const matchesSearch =
         searchQuery === "" ||
-        citation.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        citation.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        citation.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        citation.title.toLowerCase.includes(searchQuery.toLowerCase()) ||
+        citation.content.toLowerCase.includes(searchQuery.toLowerCase()) ||
+        citation.source.toLowerCase.includes(searchQuery.toLowerCase()) ||
         citation.tags.some((tag) =>
-          tag.toLowerCase().includes(searchQuery.toLowerCase())
+          tag.toLowerCase.includes(searchQuery.toLowerCase())
         )
 
       const matchesCategory =

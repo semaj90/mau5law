@@ -165,7 +165,7 @@ class SIMDBodyParser {
   /**
    * Streaming body parser for large legal documents
    */
-  async readStreamingBodyFast<T = any>(event: RequestEvent): Promise<AsyncGenerator<T, void, unknown>> {
+  async readStreamingBodyFast<T = any>(event: RequestEvent): Promise<AsyncGenerator<T, void, unknown> {
     const endpoint = event.url.pathname;
     const shouldUseSIMD = this.simdEnabled && this.isHotEndpoint(endpoint);
     
@@ -258,7 +258,9 @@ class SIMDBodyParser {
   /**
    * Legal document-specific body parser with entity extraction
    */
-  async readLegalDocumentFast(event: RequestEvent): Promise<;
+  async readLegalDocumentFast(event: RequestEvent): Promise<{
+    document: any;
+    entities: Array<any>;
     citations: Array<any>;
     parseTime: number;
   } | null> {
@@ -402,12 +404,10 @@ class SIMDBodyParser {
     const standardMetrics = this.metrics.filter(m => !m.simdUsed);
     
     const avgSimdTime = simdMetrics.length > 0 
-      ? simdMetrics.reduce((sum, m) => sum + m.parseTime, 0) / simdMetrics.length 
-      : 0;
+      ? simdMetrics.reduce((sum, m) => sum + m.parseTime, 0) / simdMetrics.length: 0;
     
     const avgStandardTime = standardMetrics.length > 0
-      ? standardMetrics.reduce((sum, m) => sum + m.parseTime, 0) / standardMetrics.length
-      : 0;
+      ? standardMetrics.reduce((sum, m) => sum + m.parseTime, 0) / standardMetrics.length: 0;
     
     const speedup = avgStandardTime > 0 ? avgStandardTime / avgSimdTime : 1;
     

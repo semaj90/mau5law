@@ -564,7 +564,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
             dateRange
           },
           totalFound: precedents.length,
-          highRelevanceCount: precedents.filter(p => p.relevance > 0.8).length
+          highRelevanceCount: precedents.filter(item => item.length)
         }
       });
 
@@ -683,11 +683,7 @@ async function searchLegalPrecedents(
   ];
 
   // Filter by relevance to legal issues
-  return mockPrecedents.filter(precedent =>
-    precedent.relevance > 0.7 &&
-    legalIssues.some(issue =>
-      precedent.keyHoldings.some(holding =>
-        holding.toLowerCase().includes(issue.toLowerCase())
+  return mockPrecedents.filter(item => item.includes(issue.toLowerCase())
       )
     )
   );

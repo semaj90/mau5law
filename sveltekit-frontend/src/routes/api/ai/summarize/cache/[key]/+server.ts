@@ -54,7 +54,7 @@ const originalGETHandler: RequestHandler = async ({ params, url }) => {
     perf: cached.entry.perf,
     redisTTL: ttl,
     memory: memoryStats(),
-    summary: includeSummary ? cached.entry.summary : undefined,
+    summary: includeSummary ? cached.entry.summary: undefined,
     structuredPayload: includeSummary ? cached.entry.structured : undefined
   });
 };

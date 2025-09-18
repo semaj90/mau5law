@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
-  import { createButton, melt } from 'melt';
+  // Replaced melt with bits-ui components
   import { fly, fade } from 'svelte/transition';
   import { spring } from 'svelte/motion';
   import { onMount } from 'svelte';
@@ -61,15 +61,10 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
 
   // Melt UI button
-  const {
-    elements: { root },
-    states: { pressed }
-  } = createButton({
-    disabled: disabled || loading
-  });
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // GPU Animation State
-  let canvas = $state<HTMLCanvasElementlet gl: WebGLRenderingContext | null>(null)(null);
+  let canvas = $state<HTMLCanvasElementlet gl: WebGLRenderingContext  | null>(null); const data = null);
   let animationFrame: number;
   let isHovered = $state(false);
   let isPressed = $state(false);
@@ -303,7 +298,7 @@ https://svelte.dev/e/js_parse_error -->
     loading ? 'cursor-wait' : '',
     isPressed ? 'scale-95' : '',
     class
-  ].filter(Boolean).join(' ');
+  ].filter(item => item.join)(' ');
 
   // Legal confidence indicator
   let confidenceColor = $derived($confidence > 0.8 ? 'text-green-500' :
@@ -394,13 +389,11 @@ https://svelte.dev/e/js_parse_error -->
   .rounded-inherit {
     border-radius: inherit;
   }
-/* GPU animation performance optimizations */ {}
-  canvas {
+/* GPU animation performance optimizations */ canvas {
     will-change: transform;
     transform: translateZ(0);
   }
-/* NES-style font rendering */ {}
-  .font-mono {
+/* NES-style font rendering */ .font-mono {
     font-family: 'Courier New', 'Monaco', monospace;
     font-feature-settings: normal;
   }

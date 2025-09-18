@@ -543,13 +543,13 @@ export function setQuality(tier: QualityTier) {
     bind:this={canvasElement}
     width={currentQuality.targetResolution}
     height={Math.round(currentQuality.targetResolution * 0.75)}
-    class="rendering-canvas {currentQuality.tier.toLowerCase().replace(/_/g, '-')}"
+    class="rendering-canvas {currentQuality.tier.toLowerCase.replace(/_/g, '-')}"
   ></canvas>
   
   <!-- Quality Indicator -->
   {#if isMonitoring}
     <div class="quality-indicator">
-      <div class="tier-badge {currentQuality.tier.toLowerCase().replace(/_/g, '-')}">
+      <div class="tier-badge {currentQuality.tier.toLowerCase.replace(/_/g, '-')}">
         {currentQuality.tier.replace(/_/g, ' ')}
       </div>
       <div class="performance-stats">
@@ -576,12 +576,7 @@ export function setQuality(tier: QualityTier) {
   overflow: hidden;
 }
 
-.rendering-canvas {
-  display: block;
-  transition: filter 0.3s ease;
-}
-
-.rendering-canvas.8-bit-nes {
+.rendering-canv.rendering-canvas.8-bit-nes {
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;

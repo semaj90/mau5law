@@ -104,7 +104,7 @@ select, textarea {
   background: #b0c4de;
   cursor: not-allowed;
 }
-.run-btn:not(:disabled):hover {
+.run-btn: not(:disabled):hover {
   background: #0056b3;
 }
 .result {

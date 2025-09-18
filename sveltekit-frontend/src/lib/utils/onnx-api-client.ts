@@ -55,7 +55,7 @@ export class ONNXApiClient {
   /**
    * Process multiple tasks in batch
    */
-  async batchProcess(tasks: Array<, options: ONNXApiOptions = {}): Promise<any> {
+  async batchProcess(tasks: Array<any>, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/batch-process', {
       tasks,
       options: { ...this.defaultOptions, ...options }
@@ -65,7 +65,7 @@ export class ONNXApiClient {
   /**
    * Process multiple requests in parallel
    */
-  async parallelProcess(requests: Array<, options: ONNXApiOptions = {}): Promise<any> {
+  async parallelProcess(requests: Array<any>, options: ONNXApiOptions = {}): Promise<any> {
     const promises = requests.map(async (req) => {
       switch (req.type) {
         case 'extract-entities':
@@ -88,7 +88,7 @@ export class ONNXApiClient {
       results: results.map((r, i) => ({
         requestId: requests[i].id,
         success: r.status === 'fulfilled',
-        result: r.status === 'fulfilled' ? r.value : null,
+        result: r.status === 'fulfilled' ? r.value: null,
         error: r.status === 'rejected' ? r.reason?.message : null
       })),
       totalTime,

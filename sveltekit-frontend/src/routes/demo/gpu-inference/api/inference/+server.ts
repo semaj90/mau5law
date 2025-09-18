@@ -258,7 +258,7 @@ async function routeToFastEmbed(message: string, generateEmbedding: boolean) {
     }
 
     return {
-      response: `FastEmbed GPU Processing: Generated ${embedding ? embedding.length : 768}-dimensional embedding vector for semantic search and similarity analysis. GPU acceleration provides 5-20ms embedding generation for your query.`,
+      response: `FastEmbed GPU Processing: Generated ${embedding ? embedding.length: 768}-dimensional embedding vector for semantic search and similarity analysis. GPU acceleration provides 5-20ms embedding generation for your query.`,
       embedding,
       tokensGenerated: 25,
       cacheHit: Math.random() > 0.3 // Simulate cache behavior

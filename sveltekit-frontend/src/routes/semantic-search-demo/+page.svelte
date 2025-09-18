@@ -80,7 +80,7 @@
 					filters: {
 						...(filters.category && { category: filters.category }),
 						...(filters.jurisdiction && { jurisdiction: filters.jurisdiction }),
-						...(filters.parties && { parties: filters.parties.split(',').map(p => p.trim()) })
+						...(filters.parties && { parties: filters.parties.split.map(p => p.trim()) })
 					}
 				})
 			};
@@ -108,7 +108,7 @@
 				results = [];
 			}
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Network error';
+			error = err instanceof Error ? err.message: 'Network error';
 			results = [];
 		} finally {
 			loading = false;

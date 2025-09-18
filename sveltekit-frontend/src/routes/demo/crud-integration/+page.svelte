@@ -53,7 +53,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         error = (result as { success?: unknown; data?: unknown; error?: unknown }).error || 'Failed to load cases';
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to load cases';
+      error = err instanceof Error ? err.message: 'Failed to load cases';
       console.error('❌ Error loading cases:', err);
     } finally {
       isLoading = false;
@@ -84,12 +84,12 @@ https://svelte.dev/e/unexpected_reserved_word -->
         newCaseForm = { title: '', description: '', priority: 'medium', status: 'open' };
         // Reload cases
         await loadCases();
-        console.log(`✅ Case created: ${(result as { success?: unknown; data?: unknown; error?: unknown }).data.caseId}`);
+        console.log.data.caseId}`);
       } else {
         error = (result as { success?: unknown; data?: unknown; error?: unknown }).error || 'Failed to create case';
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to create case';
+      error = err instanceof Error ? err.message: 'Failed to create case';
       console.error('❌ Error creating caseItem:', err);
     } finally {
       isLoading = false;
@@ -110,7 +110,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         error = (result as { success?: unknown; data?: unknown; error?: unknown }).error || 'Failed to load case details';
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to load case details';
+      error = err instanceof Error ? err.message: 'Failed to load case details';
       console.error('❌ Error loading case details:', err);
     } finally {
       isLoading = false;
@@ -125,7 +125,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       successMessage = null;
       const evidenceData = {
         ...newEvidenceForm,
-        tags: newEvidenceForm.tags.split(',').map(t => t.trim()).filter(Boolean)
+        tags: newEvidenceForm.tags.split.map(t => t.trim()).filter(Boolean)
       };
 
       console.log('📋 Adding evidence to caseItem:', selectedCase.id);
@@ -142,12 +142,12 @@ https://svelte.dev/e/unexpected_reserved_word -->
         newEvidenceForm = { content: '', evidenceType: 'document', source: '', tags: '' };
         // Reload case details to show new evidence
         await loadCaseDetails(selectedCase.id);
-        console.log(`✅ Evidence added: ${(result as { success?: unknown; data?: unknown; error?: unknown }).data.evidenceId}`);
+        console.log.data.evidenceId}`);
       } else {
         error = (result as { success?: unknown; data?: unknown; error?: unknown }).error || 'Failed to add evidence';
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to add evidence';
+      error = err instanceof Error ? err.message: 'Failed to add evidence';
       console.error('❌ Error adding evidence:', err);
     } finally {
       isLoading = false;
@@ -177,7 +177,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         error = (result as { success?: unknown; data?: unknown; error?: unknown }).error || 'Failed to update case status';
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Failed to update case status';
+      error = err instanceof Error ? err.message: 'Failed to update case status';
       console.error('❌ Error updating case status:', err);
     } finally {
       isLoading = false;
@@ -514,21 +514,21 @@ https://svelte.dev/e/unexpected_reserved_word -->
 
 <style>
   /* Custom scrollbar for evidence list */
-  .max-h-96::-webkit-scrollbar {
+  .max-h-96: :-webkit-scrollbar {
     width: 6px;
   }
 
-  .max-h-96::-webkit-scrollbar-track {
+  .max-h-96: :-webkit-scrollbar-track {
     background: #f1f5f9;
     border-radius: 3px;
   }
 
-  .max-h-96::-webkit-scrollbar-thumb {
+  .max-h-96: :-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
   }
 
-  .max-h-96::-webkit-scrollbar-thumb:hover {
+  .max-h-96: :-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
 </style>

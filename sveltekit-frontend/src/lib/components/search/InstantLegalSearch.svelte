@@ -130,7 +130,7 @@ https://svelte.dev/e/expected_token -->
       });
 
       instantSearchEngine.on('indexRefreshed', (data) => {
-        console.log(`🔍 Search index refreshed with ${(data as { responseTime?: unknown; documentCount?: unknown; jurisdiction?: unknown }).documentCount} documents`);
+        console.log.documentCount} documents`);
       });
 
     } catch (error) {
@@ -151,7 +151,7 @@ https://svelte.dev/e/expected_token -->
       clearTimeout(searchTimeout);
     }
 
-    if (searchQuery.trim().length < 2) {
+    if (searchQuery.trim.length < 2) {
       searchResults = [];
       isSearching = false;
       return;

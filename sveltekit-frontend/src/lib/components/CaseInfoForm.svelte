@@ -25,7 +25,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   let { formData }: Props = $props();
-  let validationErrors = $state<Record<string, string>>({});
+  let validationErrors = $state<Record<string, string>( );
 
   // Case type options
   const caseTypes = [
@@ -56,7 +56,6 @@ https://svelte.dev/e/js_parse_error -->
 
   function validateForm() {
     validationErrors = {};
-
     if (!formData.title.trim()) {
       validationErrors.title = 'Case title is required';
     }
@@ -77,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
       validationErrors.description = 'Case description is required';
     }
 
-    return Object.keys(validationErrors).length === 0;
+    return Object.keys.length === 0;
   }
 
   function addKeyDate() {
@@ -191,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
         </select>
         <div class="mt-2">
           <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border {getPriorityColor(formData.priority)}">
-            {formData.priority.charAt(0).toUpperCase() + formData.priority.slice(1)} Priority
+            {formData.priority.charAt.toUpperCase() + formData.priority.slice(1)} Priority
           </span>
         </div>
       </div>

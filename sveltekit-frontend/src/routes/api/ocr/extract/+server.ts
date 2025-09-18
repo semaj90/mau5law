@@ -106,8 +106,8 @@ export const POST: RequestHandler = async ({ request }) => {
       citations,
       extractedAt: new Date().toISOString(),
       processingStats: {
-        ocrPages: ocrResults.filter(r => r.method === 'ocr').length,
-        extractedPages: ocrResults.filter(r => r.method === 'text_extraction').length
+        ocrPages: ocrResults.filter(item => item.length),
+        extractedPages: ocrResults.filter(item => item.length)
       }
     };
 

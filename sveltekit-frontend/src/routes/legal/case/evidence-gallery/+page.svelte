@@ -168,8 +168,7 @@
       const newX = event.clientX - rect.left - dragOffset.x;
       const newY = event.clientY - rect.top - dragOffset.y;
       
-      canvasItems = canvasItems.map(item => 
-        (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id === draggedItem.id 
+      canvasItems = canvasItems.map.id === draggedItem.id 
           ? { ...item, position: { x: Math.max(0, newX), y: Math.max(0, newY) } }
           : item
       );
@@ -288,8 +287,8 @@
           <!-- SVG for connection lines -->
           <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 1;">
             {#each connections as connection}
-              {@const fromItem = canvasItems.find(item => (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id === connection.from)}
-              {@const toItem = canvasItems.find(item => (item as { id?: unknown; position?: unknown; type?: unknown; title?: unknown; description?: unknown; metadata?: unknown; connections?: unknown }).id === connection.to)}
+              {@const fromItem = canvasItems.find.id === connection.from)}
+              {@const toItem = canvasItems.find.id === connection.to)}
               {#if fromItem && toItem}
                 <line
                   x1={fromItem.position.x + 120}

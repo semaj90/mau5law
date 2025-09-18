@@ -18,7 +18,17 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import safetensors.torch as st
 
 class OllamaToHFConverter:
-    """Convert Ollama GGUF blob to Hugging Face format"""
+    """(DEPRECATED PLACEHOLDER) Attempt to convert an Ollama GGUF blob to a Hugging Face format.
+
+    IMPORTANT: A quantized GGUF (e.g. Q4_K_M) cannot be losslessly restored to the original
+    full‑precision (FP16/BF16) weights required for a legitimate TensorRT‑LLM build.
+    This class previously fabricated random tensors matching Gemma3 shapes which is
+    UNSAFE / INVALID for any benchmarking, quality, or deployment claims.
+
+    Guard rails have been added: by default conversion will abort unless the caller
+    explicitly passes the environment variable ALLOW_SYNTHETIC_GGUF_RECON=1 for
+    controlled testing of the rest of the toolchain mechanics (NOT MODEL QUALITY).
+    """
 
     def __init__(self, ollama_blob_path, output_dir):
         self.ollama_blob_path = Path(ollama_blob_path)
@@ -87,51 +97,42 @@ class OllamaToHFConverter:
         return config
 
     def convert_weights_to_safetensors(self):
-        """Convert Q4_K_M weights to safetensors format"""
-        print("Converting Q4_K_M weights to safetensors...")
+        """Guarded synthetic tensor fabrication (disabled by default).
 
-        # For demo - in practice you'd parse the full GGUF structure
-        # This creates placeholder weights with proper shapes for Gemma 3 11.8B
+        Returns:
+            dict | None: Returns fabricated weights only if explicitly allowed.
+        """
+        if os.environ.get("ALLOW_SYNTHETIC_GGUF_RECON") != "1":
+            raise RuntimeError(
+                "Synthetic GGUF -> HF reconstruction is disabled. Provide real base FP16/BF16 "
+                "Gemma3 weights (e.g. via official release + any LoRA merge) to proceed with a "
+                "legitimate TensorRT-LLM build. Set ALLOW_SYNTHETIC_GGUF_RECON=1 ONLY to test "
+                "pipeline mechanics (NOT accuracy)."
+            )
 
+        print("[WARN] Fabricating RANDOM placeholder weights (test harness mode)")
         config = self.extract_model_config()
         vocab_size = config["vocab_size"]
         hidden_size = config["hidden_size"]
         num_layers = config["num_hidden_layers"]
         intermediate_size = config["intermediate_size"]
-
-        # Create model weights dictionary
         weights = {}
-
-        # Embedding
         weights["model.embed_tokens.weight"] = torch.randn(vocab_size, hidden_size, dtype=torch.bfloat16)
-
-        # Layers
         for i in range(num_layers):
             prefix = f"model.layers.{i}"
-
-            # Self attention
             weights[f"{prefix}.self_attn.q_proj.weight"] = torch.randn(hidden_size, hidden_size, dtype=torch.bfloat16)
             weights[f"{prefix}.self_attn.k_proj.weight"] = torch.randn(hidden_size, hidden_size, dtype=torch.bfloat16)
             weights[f"{prefix}.self_attn.v_proj.weight"] = torch.randn(hidden_size, hidden_size, dtype=torch.bfloat16)
             weights[f"{prefix}.self_attn.o_proj.weight"] = torch.randn(hidden_size, hidden_size, dtype=torch.bfloat16)
-
-            # MLP
             weights[f"{prefix}.mlp.gate_proj.weight"] = torch.randn(intermediate_size, hidden_size, dtype=torch.bfloat16)
             weights[f"{prefix}.mlp.up_proj.weight"] = torch.randn(intermediate_size, hidden_size, dtype=torch.bfloat16)
             weights[f"{prefix}.mlp.down_proj.weight"] = torch.randn(hidden_size, intermediate_size, dtype=torch.bfloat16)
-
-            # Layer norms
             weights[f"{prefix}.input_layernorm.weight"] = torch.ones(hidden_size, dtype=torch.bfloat16)
             weights[f"{prefix}.post_attention_layernorm.weight"] = torch.ones(hidden_size, dtype=torch.bfloat16)
-
-        # Final layer norm and LM head
         weights["model.norm.weight"] = torch.ones(hidden_size, dtype=torch.bfloat16)
         weights["lm_head.weight"] = torch.randn(vocab_size, hidden_size, dtype=torch.bfloat16)
-
-        # Save as safetensors
         st.save_file(weights, self.output_dir / "model.safetensors")
-
-        print(f"Converted {len(weights)} weight tensors to safetensors")
+        print(f"[WARN] Saved {len(weights)} RANDOM tensors -> {self.output_dir / 'model.safetensors'}")
         return weights
 
 class TensorRTLLMBuilder:
@@ -269,33 +270,37 @@ class OptimizedTRTLLMServer:
             print("❌ TensorRT-LLM server not found")
             return None
 
-def create_optimized_stack():
-    """Create complete optimized stack with all components"""
+def create_optimized_stack(real_hf_model_dir=None):
+    """Create complete optimized stack.
 
-    # Paths
-    ollama_blob = r"C:\Users\james\blobs\sha256-c6f6f9cd9fca55297e91ed31a52a4c9931e6396a504176b0c7a9390812dc8124"
-    hf_model_dir = "./models/gemma3-legal-hf"
-    engine_dir = "./engines/gemma3-legal-q4km-trtllm"
+    If real_hf_model_dir is provided (directory containing true Gemma3 HF weights), the
+    synthetic GGUF reconstruction step is skipped and those weights are used for build.
+    """
+
+    #    ollama show gemma3-legal:latest --modelfile
 
     print("=== TensorRT-LLM Q4_K_M Optimization Pipeline ===")
     print("Components: CUDA Graphs + FlashAttention v2 + Paged KV + Streaming")
     print()
 
     # Step 1: Convert Ollama → HF
-    print("Step 1: Converting Ollama GGUF to Hugging Face format...")
-    converter = OllamaToHFConverter(ollama_blob, hf_model_dir)
-
-    try:
-        header_info = converter.parse_gguf_header()
-        weights = converter.convert_weights_to_safetensors()
-        print(f"✅ Converted to HF format: {len(weights)} tensors")
-    except Exception as e:
-        print(f"❌ Conversion failed: {e}")
-        return False
+    if real_hf_model_dir:
+        print("Step 1: Using provided real HF model directory (skipping synthetic GGUF conversion)")
+    else:
+        print("Step 1: (Legacy) Attempting GGUF -> synthetic HF placeholder (NOT FOR PRODUCTION)")
+        converter = OllamaToHFConverter(ollama_blob, hf_model_dir)
+        try:
+            header_info = converter.parse_gguf_header()
+            weights = converter.convert_weights_to_safetensors()
+            print(f"✅ Synthetic placeholder produced: {len(weights)} tensors")
+        except Exception as e:
+            print(f"❌ Aborting: {e}")
+            return False
 
     # Step 2: Build TensorRT-LLM engine
     print("\nStep 2: Building TensorRT-LLM Q4_K_M engine...")
-    builder = TensorRTLLMBuilder(hf_model_dir, engine_dir)
+    model_source_dir = real_hf_model_dir if real_hf_model_dir else hf_model_dir
+    builder = TensorRTLLMBuilder(model_source_dir, engine_dir)
 
     if not builder.build_engine():
         print("❌ Engine build failed")
@@ -336,13 +341,14 @@ def main():
     parser.add_argument('--action', choices=['convert', 'build', 'serve', 'full'],
                        default='full', help='Pipeline action')
     parser.add_argument('--model-dir', default='./models/gemma3-legal-hf')
+    parser.add_argument('--real-hf-model-dir', default=None, help='Path to REAL Gemma3 HF weights (skips synthetic GGUF reconstruction)')
     parser.add_argument('--engine-dir', default='./engines/gemma3-legal-q4km-trtllm')
     parser.add_argument('--port', type=int, default=8100)
 
     args = parser.parse_args()
 
     if args.action == 'full':
-        process = create_optimized_stack()
+    process = create_optimized_stack(real_hf_model_dir=args.real_hf_model_dir)
         if process:
             try:
                 process.wait()  # Keep server running

@@ -6,8 +6,8 @@
 import { WebSocketServer, type WebSocket } from 'ws';
 import type { IncomingMessage } from 'http';
 import * as pako from 'pako';
-import { UnifiedCacheEnhancedOrchestrator } from '$lib/ai/unified-cache-enhanced-orchestrator.js';
-import { QLoRABinaryCodec, type QLoRAProtobufTopologyResponse } from '$lib/types/qlora-protobuf.js';
+import { UnifiedCacheEnhancedOrchestrator } from '$lib/ai/unified-cache-enhanced-orchestrator';
+import { QLoRABinaryCodec, type QLoRAProtobufTopologyResponse } from '$lib/types/qlora-protobuf';
 
 export interface StreamingQLoRARequest {
   query: string;

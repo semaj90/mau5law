@@ -664,7 +664,7 @@ export class GraphPatternAutoEncoder {
     features.push(
       graphData.metadata.density,
       graphData.metadata.averageDegree / 10, // Normalized
-      graphData.nodes.length > 0 ? graphData.edges.length / graphData.nodes.length : 0 // Edge-to-node ratio
+      graphData.nodes.length > 0 ? graphData.edges.length / graphData.nodes.length: 0 // Edge-to-node ratio
     );
 
     // Connectivity patterns (simplified)
@@ -981,8 +981,7 @@ export class GraphPatternAutoEncoder {
     // Simplified structural fidelity
     const nodeEdgeRatio =
       decoded.reconstructedNodes.length > 0
-        ? decoded.reconstructedEdges.length / decoded.reconstructedNodes.length
-        : 0;
+        ? decoded.reconstructedEdges.length / decoded.reconstructedNodes.length: 0;
     return Math.min(nodeEdgeRatio / 2, 1.0);
   }
 
@@ -1000,8 +999,7 @@ export class GraphPatternAutoEncoder {
     const patterns = Array.from(this.patternLibrary.values());
     const avgCompressionRatio =
       patterns.length > 0
-        ? patterns.reduce((sum, p) => sum + p.compressionRatio, 0) / patterns.length
-        : 0;
+        ? patterns.reduce((sum, p) => sum + p.compressionRatio, 0) / patterns.length: 0;
     const totalSavings = patterns.reduce((sum, p) => sum + (p.originalSize - p.encodedSize), 0);
 
     return {

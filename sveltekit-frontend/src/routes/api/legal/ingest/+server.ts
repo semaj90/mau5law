@@ -298,7 +298,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
         return json({
             success: false,
-            error: err instanceof Error ? err.message : 'Unknown processing error',
+            error: err instanceof Error ? err.message: 'Unknown processing error',
             processingTime
         }, { status: 500 });
     }
@@ -328,7 +328,7 @@ function detectJurisdiction(text: string, providedJurisdiction: string): string 
     );
 
     // Use detected if score is high enough, otherwise use provided
-    return detectedJurisdiction.score > 3 ? detectedJurisdiction.jurisdiction : providedJurisdiction;
+    return detectedJurisdiction.score > 3 ? detectedJurisdiction.jurisdiction: providedJurisdiction;
 }
 
 function extractLegalEntities(text: string, jurisdiction: string): LegalEntity[] {

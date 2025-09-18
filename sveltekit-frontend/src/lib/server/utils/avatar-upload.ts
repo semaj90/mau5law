@@ -172,7 +172,7 @@ export async function handleAvatarUpload(
     console.error("Avatar upload error:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Upload failed",
+      error: error instanceof Error ? error.message: "Upload failed",
     };
   }
 }

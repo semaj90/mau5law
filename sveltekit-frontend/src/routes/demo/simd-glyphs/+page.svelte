@@ -75,7 +75,7 @@ https://svelte.dev/e/expected_token -->
       }
       
     } catch (error) {
-      errorMessage = `Error: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      errorMessage = `Error: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
       isLoading = false;
     }
@@ -98,12 +98,12 @@ https://svelte.dev/e/expected_token -->
         dimensions: [512, 512]
       };
       
-      const variations = Object.entries(GLYPH_PRESETS).map(([key, preset]) => ({
+      const variations = Object.entries.map(([key, preset]) => ({
         style: preset.style,
         simd_config: preset.simd_config
       });
       const results = await glyphEmbedsClient.generateGlyphVariations(baseRequest, variations);
-      const successful = results.filter(r => r.success && r.data).map(r => r.data!);
+      const successful = results.filter(item => item.map)(r => r.data!);
       
       if (successful.length > 0) {
         glyphResults = [...successful, ...glyphResults];
@@ -113,7 +113,7 @@ https://svelte.dev/e/expected_token -->
       }
       
     } catch (error) {
-      errorMessage = `Error: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      errorMessage = `Error: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
       isLoading = false;
     }
@@ -413,7 +413,7 @@ https://svelte.dev/e/expected_token -->
                     
                     {#if (result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).simd_shader_data}
                       <button 
-                        onclick={() => navigator.clipboard.writeText((result as { success?: unknown; data?: unknown; error?: unknown; glyph_url?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; simd_shader_data?: unknown; enhanced_artifact_url?: unknown }).simd_shader_data.shader_code)}
+                        onclick={() => navigator.clipboard.writeText.simd_shader_data.shader_code)}
                         class="w-full bg-gray-600 hover:bg-gray-500 text-white text-sm font-medium py-2 px-3 rounded transition-colors"
                       >
                         Copy Shader Code

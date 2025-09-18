@@ -576,9 +576,7 @@ export class WebGPULegalDocumentGraph {
 
       // Calculate connection counts
       this.nodes.forEach((node, index) => {
-        node.metadata.connections = this.edges.filter(
-          edge => edge.source === index || edge.target === index
-        ).length;
+        node.metadata.connections = this.edges.filter(item => item.length);
       });
 
       this.renderState.nodeCount = this.nodes.length;

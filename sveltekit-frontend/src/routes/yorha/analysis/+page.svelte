@@ -401,7 +401,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     color: #d4af37;
   }
 
-  .nav-(item as { analysis?: unknown; critical?: unknown; high?: unknown; medium?: unknown; low?: unknown }).analysis-active {
+  .nav-.analysis-active {
     background: #1a2a1a;
     color: #d4af37;
     border-left: 3px solid #d4af37;
@@ -579,19 +579,19 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     font-size: 10px;
   }
 
-  .threat-(item as { analysis?: unknown; critical?: unknown; high?: unknown; medium?: unknown; low?: unknown }).critical .threat-number {
+  .threat-.critical .threat-number {
     color: #ef4444;
   }
 
-  .threat-(item as { analysis?: unknown; critical?: unknown; high?: unknown; medium?: unknown; low?: unknown }).high .threat-number {
+  .threat-.high .threat-number {
     color: #f97316;
   }
 
-  .threat-(item as { analysis?: unknown; critical?: unknown; high?: unknown; medium?: unknown; low?: unknown }).medium .threat-number {
+  .threat-.medium .threat-number {
     color: #fbbf24;
   }
 
-  .threat-(item as { analysis?: unknown; critical?: unknown; high?: unknown; medium?: unknown; low?: unknown }).low .threat-number {
+  .threat-.low .threat-number {
     color: #4ade80;
   }
 

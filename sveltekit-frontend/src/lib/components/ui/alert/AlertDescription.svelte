@@ -9,7 +9,7 @@
     children,
     ...restProps  }: { class: className = '',
     children,
-    ...restProps : unknown } = $props();
+    ...restProps: unknown } = $props();
 </script>
 
 <div class="text-sm [&_p]:leading-relaxed {className}" {...restProps}>

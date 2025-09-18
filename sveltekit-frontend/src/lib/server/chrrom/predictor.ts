@@ -14,7 +14,7 @@ interface PredictionResult {
 
 class MarkovPredictorWithRedis {
   private redis: Redis;
-  private localTransitions = new Map<Action, Map<Action, number>>();
+  private localTransitions = new Map<Action, Map<Action, number>();
   private localLastByUser = new Map<string, Action>();
   private syncBatchSize = 50;
   private pendingUpdates = 0;
@@ -175,7 +175,7 @@ class MarkovPredictorWithRedis {
     const words2 = new Set(query2.toLowerCase().split(/\s+/));
     const intersection = new Set([...words1].filter(x => words2.has(x)));
     const union = new Set([...words1, ...words2]);
-    return union.size > 0 ? intersection.size / union.size : 0;
+    return union.size > 0 ? intersection.size / union.size: 0;
   }
 
   private async updateRedisTransition(prev: Action, action: Action) {

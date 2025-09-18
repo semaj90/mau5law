@@ -169,8 +169,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     );
     const textMaterial = new THREE.MeshBasicMaterial({
       color: this.options.readonly 
-        ? YORHA_COLORS.interaction.disabled 
-        : (this.style.textColor || YORHA_COLORS.primary.black),
+        ? YORHA_COLORS.interaction.disabled: (this.style.textColor || YORHA_COLORS.primary.black),
       transparent: true,
       side: THREE.DoubleSide
     });
@@ -233,8 +232,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const iconGeometry = this.getIconGeometry(this.options.icon);
     const iconMaterial = new THREE.MeshBasicMaterial({
       color: this.options.readonly 
-        ? YORHA_COLORS.interaction.disabled 
-        : YORHA_COLORS.primary.grey,
+        ? YORHA_COLORS.interaction.disabled: YORHA_COLORS.primary.grey,
       transparent: true
     });
 
@@ -478,8 +476,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     // Reset visual state
     this.setStyle({
       borderColor: this.options.error 
-        ? YORHA_COLORS.status.error 
-        : (this.options.success ? YORHA_COLORS.status.success : YORHA_COLORS.primary.grey),
+        ? YORHA_COLORS.status.error: (this.options.success ? YORHA_COLORS.status.success : YORHA_COLORS.primary.grey),
       borderWidth: 0.02
     });
     

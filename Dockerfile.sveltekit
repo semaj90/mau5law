@@ -1,0 +1,77 @@
+# Multi-stage build for SvelteKit 2 with QUIC/HTTP3 support
+FROM node:20-alpine AS base
+
+# Install dependencies for building
+RUN apk add --no-cache libc6-compat git python3 make g++
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY pnpm-lock.yaml* ./
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
+COPY . .
+
+# Build arguments
+ARG NODE_ENV=development
+ARG DATABASE_URL
+ARG REDIS_URL
+ARG VITE_API_URL
+
+ENV NODE_ENV=$NODE_ENV
+ENV DATABASE_URL=$DATABASE_URL
+ENV REDIS_URL=$REDIS_URL
+ENV VITE_API_URL=$VITE_API_URL
+
+# Build for development
+FROM base AS development
+
+# Install development dependencies
+RUN pnpm install --dev
+
+# Expose ports
+EXPOSE 5173 5174
+
+# Start development server with QUIC optimization
+CMD ["pnpm", "run", "dev", "--host", "0.0.0.0"]
+
+# Build for production
+FROM base AS build
+
+# Build the application
+RUN pnpm run build
+
+# Production image
+FROM node:20-alpine AS production
+
+WORKDIR /app
+
+# Install production dependencies only
+COPY package*.json ./
+COPY pnpm-lock.yaml* ./
+RUN npm install -g pnpm && pnpm install --frozen-lockfile --prod
+
+# Copy built application
+COPY --from=build /app/build ./build
+COPY --from=build /app/static ./static
+COPY --from=build /app/package.json ./package.json
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S sveltekit -u 1001
+
+# Change ownership
+RUN chown -R sveltekit:nodejs /app
+USER sveltekit
+
+EXPOSE 3000
+
+# Start production server
+CMD ["node", "build"]

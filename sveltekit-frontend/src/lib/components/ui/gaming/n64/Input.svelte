@@ -127,7 +127,7 @@
 
     try {
       if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
       }
 
       const oscillator = audioContext.createOscillator();
@@ -223,7 +223,7 @@
     const materialMap = {
       basic: {
         background: colors.base,
-        borderColor: isFocused ? colors.border : colors.highlight,
+        borderColor: isFocused ? colors.border: colors.highlight,
         boxShadow: `inset 0 ${depth}px 0 ${colors.shadow}`
       },
       phong: {
@@ -441,14 +441,14 @@
   }
 
   /* Placeholder styling */
-  :global(.n64-input::placeholder) {
+  :global(.n64-input: :placeholder) {
     color: rgba(255, 255, 255, 0.6);
     text-shadow: none;
     font-weight: 400;
   }
 
   /* Autofill styling */
-  :global(.n64-input:-webkit-autofill) {
+  :global(.n64-input: -webkit-autofill) {
     -webkit-box-shadow: inset 0 0 0 50px var(--material-bg) !important;
     -webkit-text-fill-color: #ffffff !important;
   }
@@ -638,7 +638,7 @@
   }
 
   /* Fog effects */
-  :global(.n64-input::before) {
+  :global(.n64-input: :before) {
     content: '';
     position: absolute;
     top: 0;
@@ -713,7 +713,7 @@
     .lighting-overlay,
     .reflection-overlay,
     .input-glow-effect,
-    :global(.n64-input::before) {
+    :global(.n64-input: :before) {
       display: none;
     }
   }

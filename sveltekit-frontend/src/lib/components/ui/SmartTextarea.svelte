@@ -190,17 +190,17 @@ https://svelte.dev/e/js_parse_error -->
     cursor: not-allowed;
     background: var(--pico-card-sectioning-background-color, #f8fafc);
 }
-  .smart-textarea:read-only {
+  .smart-textarea: read-only {
     background: var(--pico-card-sectioning-background-color, #f8fafc);
 }
-  .smart-textarea::placeholder {
+  .smart-textarea: :placeholder {
     color: var(--pico-muted-color, #6b7280);
 }
   .command-menu-overlay {
     pointer-events: auto;
 }
   /* Help text styling */
-  .smart-textarea-container::after {
+  .smart-textarea-container: :after {
     content: "Tip: Use # for commands or Ctrl/Cmd + K";
     position: absolute;
     bottom: -1.5rem;

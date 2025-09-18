@@ -323,7 +323,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         
         return json({
           success: true,
-          results: results.map(r => r.status === 'fulfilled' ? r.value : { error: r.reason }),
+          results: results.map(r => r.status === 'fulfilled' ? r.value:  { error: r.reason }),
           totalRequests: requests.length,
           processingTime: totalTime,
           parallelExecution: true

@@ -32,7 +32,7 @@ export const GET: RequestHandler = async () => {
       { 
         error: 'Database health check failed', 
         healthy: false,
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message: 'Unknown error'
       },
       { status: 503 }
     );

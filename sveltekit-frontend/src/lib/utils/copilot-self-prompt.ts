@@ -263,7 +263,7 @@ export async function copilotSelfPrompt(
       const { mcpLogErrorOrContextLoss } = await import('./mcp-helpers.js');
       await mcpLogErrorOrContextLoss(`Copilot self-prompt failed: ${error?.message || error}`);
     } catch (logErr) {
-      console.error('Failed to log error to MCP_TODO_LOG.md:', logErr);
+      console.error('Failed to log error to MCP_TODO_LOG.md: ', logErr);
     }
     console.error('❌ Copilot self-prompt failed:', error);
     throw error;

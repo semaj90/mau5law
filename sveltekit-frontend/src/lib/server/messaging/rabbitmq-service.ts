@@ -172,7 +172,7 @@ class RabbitMQService extends EventEmitter {
     }
   }
 
-  async getQueueStats(): Promise<Record<string, any>> {
+  async getQueueStats(): Promise<Record<string, any> {
     if (!this.isConnected || !this.channel) {
       throw new Error('RabbitMQ not connected');
     }

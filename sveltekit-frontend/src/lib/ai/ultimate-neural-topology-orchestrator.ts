@@ -119,7 +119,8 @@ export interface UnifiedProcessingResult {
   embeddings?: Float32Array;
   tiledData?: any[];
   visualizations?: string[];
-  generatedAssets?: Array<any>
+  generatedAssets?: Array<any>;
+}
 
 export class UltimateNeuralTopologyOrchestrator {
   // Core AI systems
@@ -284,7 +285,8 @@ export class UltimateNeuralTopologyOrchestrator {
   /**
    * Real-time neural topology visualization data
    */
-  async getNeuralTopologyVisualization(): Promise<;
+  async getNeuralTopologyVisualization(): Promise<{
+    nodes: Array<any>;
     edges: Array<any>;
     metrics: {
       totalNodes: number;
@@ -349,7 +351,7 @@ export class UltimateNeuralTopologyOrchestrator {
       edges,
       metrics: {
         totalNodes: nodes.length,
-        activeConnections: edges.filter(e => e.dataFlow > 0.5).length,
+        activeConnections: edges.filter(item => item.length),
         networkEfficiency: this.currentState.memoryEfficiency,
         predictionAccuracy: this.currentState.currentAccuracy
       }
@@ -526,7 +528,7 @@ export class UltimateNeuralTopologyOrchestrator {
     ]);
 
     return {
-      extraction: results[0].status === 'fulfilled' ? results[0].value : null,
+      extraction: results[0].status === 'fulfilled' ? results[0].value: null,
       tiledData: results[1].status === 'fulfilled' ? results[1].value : null,
       uiComponent: results[2].status === 'fulfilled' ? results[2].value : null,
       predictions: results[3].status === 'fulfilled' ? results[3].value : null,

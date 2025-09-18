@@ -41,7 +41,7 @@ export const GET: RequestHandler = async () => {
     );
     
     const storageResults = await Promise.all(storagePromises);
-    const successfulStores = storageResults.filter(Boolean).length;
+    const successfulStores = storageResults.filter(item => item.length);
     
     // Test 2: Concurrent retrieval operations
     console.log('📖 Testing concurrent document retrieval...');
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async () => {
     );
     
     const retrievalResults = await Promise.all(retrievalPromises);
-    const successfulRetrieves = retrievalResults.filter(Boolean).length;
+    const successfulRetrieves = retrievalResults.filter(item => item.length);
     
     // Test 3: JSONB queries with concurrent access
     console.log('🔍 Testing concurrent JSONB queries...');
@@ -67,9 +67,7 @@ export const GET: RequestHandler = async () => {
     const cacheStats = cognitiveCache.getCacheStats();
     
     // Test 5: GPU acceleration verification
-    const gpuProcessedCount = queryResults[0]?.filter(doc => 
-      doc.metadata.gpuProcessed
-    ).length || 0;
+    const gpuProcessedCount = queryResults[0]?.filter(item => item.length) || 0;
     
     const results = {
       timestamp: new Date().toISOString(),
@@ -119,7 +117,7 @@ export const GET: RequestHandler = async () => {
     console.error('❌ Cache concurrency test failed:', error);
     return json({
       error: 'Cache concurrency test failed',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }
@@ -158,8 +156,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const results = await Promise.allSettled(operations);
     const endTime = Date.now();
     
-    const successful = results.filter(r => r.status === 'fulfilled').length;
-    const failed = results.filter(r => r.status === 'rejected').length;
+    const successful = results.filter(item => item.length);
+    const failed = results.filter(item => item.length);
     
     return json({
       stress_test: {
@@ -179,7 +177,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ Stress test failed:', error);
     return json({
       error: 'Stress test failed',
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

@@ -127,7 +127,7 @@ https://svelte.dev/e/js_parse_error -->
   let visibleEvidence = $derived(getPaginatedEvidence());
   onMount(() => {
     // Initialize store with SSR data
-    evidenceActions.setItems((data as { evidence?: unknown }).evidence || []);
+    evidenceActions.setItems(data.evidence || []);
     // Set case context if available
     if (caseId) {
       evidenceActions.loadEvidence(caseId);
@@ -142,10 +142,10 @@ https://svelte.dev/e/js_parse_error -->
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (e) =>
-          e.title?.toLowerCase().includes(query) ||
-          e.description?.toLowerCase().includes(query) ||
-          e.collectedBy?.toLowerCase().includes(query) ||
-          e.tags?.some((tag) => tag.toLowerCase().includes(query))
+          e.title?.toLowerCase.includes(query) ||
+          e.description?.toLowerCase.includes(query) ||
+          e.collectedBy?.toLowerCase.includes(query) ||
+          e.tags?.some((tag) => tag.toLowerCase.includes(query))
       );
     }
 
@@ -166,7 +166,7 @@ https://svelte.dev/e/js_parse_error -->
     // Apply collector filter
     if (selectedCollector) {
       filtered = filtered.filter((e) =>
-        e.collectedBy?.toLowerCase().includes(selectedCollector.toLowerCase())
+        e.collectedBy?.toLowerCase.includes(selectedCollector.toLowerCase())
       );
     }
 
@@ -248,7 +248,7 @@ https://svelte.dev/e/js_parse_error -->
       notifications.add({
         type: "error",
         title: "Analysis Failed",
-        message: `Failed to analyze evidence: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        message: `Failed to analyze evidence: ${error instanceof Error ? error.message: 'Unknown error'}`,
       });
     } finally {
       analysisInProgress.delete(evidence.id);
@@ -466,7 +466,7 @@ https://svelte.dev/e/js_parse_error -->
       const url = URL.createObjectURL(dataBlob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `evidence_export_${new Date().toISOString().split("T")[0]}.json`;
+      link.download = `evidence_export_${new Date().toISOString.split("T")[0]}.json`;
       link.click();
       URL.revokeObjectURL(url);
     }
@@ -526,8 +526,8 @@ https://svelte.dev/e/js_parse_error -->
     console.log('🔍 Unified search results received:', searchResults.length, 'items');
 
     // Convert search results to evidence format for display
-    const convertedEvidence = searchResults.map(result => ({
-      id: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).id,
+    const convertedEvidence = searchResults.map((result: any) => ({
+      id: result.id,
       title: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).title,
       description: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).content.substring(0, 200) + '...',
       evidenceType: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata.documentType || 'document',
@@ -544,7 +544,7 @@ https://svelte.dev/e/js_parse_error -->
         highlight: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).highlight
       },
       metadata: (result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).metadata
-    });
+    }));
     // Update evidence display with search results
     if (convertedEvidence.length > 0) {
       evidenceActions.setSearchResults(convertedEvidence);
@@ -610,7 +610,8 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Reactive statements
-  // TODO: Convert to $derived: if (
+  // TODO: Convert to $derived
+  $: if (
     searchQuery ||
     selectedType ||
     selectedStatus ||
@@ -1034,7 +1035,7 @@ selectAllEvidence()}
                       Verified
                     </span>
                   {/if}
-                  {#if evidence.aiAnalysis && Object.keys(evidence.aiAnalysis).length > 0}
+                  {#if evidence.aiAnalysis && Object.keys.length > 0}
                     <span class="neural-sprite-active flex items-center gap-1">
                       <Brain class="w-3 h-3" />
                       AI Analyzed
@@ -1047,8 +1048,7 @@ selectAllEvidence()}
                   {evidence.description
                     ? evidence.description.length > 120
                       ? evidence.description.substring(0, 120) + "..."
-                      : evidence.description
-                    : "No description available"}
+                      : evidence.description: "No description available"}
                 </p>
 
                 <!-- Metadata -->
@@ -1152,7 +1152,7 @@ analyzeEvidence(evidence)}
                           Verified
                         </div>
                       {/if}
-                      {#if evidence.aiAnalysis && Object.keys(evidence.aiAnalysis).length > 0}
+                      {#if evidence.aiAnalysis && Object.keys.length > 0}
                         <div class="mx-auto px-4 max-w-7xl">
                           <Brain class="mx-auto px-4 max-w-7xl" />
                           AI Analyzed
@@ -1343,11 +1343,11 @@ analyzeEvidence(evidence)}
           <div class="mx-auto px-4 max-w-7xl">{formatAnalysisForDisplay(analysisModal.result)}</div>
         </div>
 
-        {#if analysisModal.(result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).reasoning_steps && analysisModal.(result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).reasoning_steps.length > 0}
+        {#if analysisModal.result.reasoning_steps && analysisModal.result.reasoning_steps.length > 0}
           <div class="mx-auto px-4 max-w-7xl">
             <h4 class="mx-auto px-4 max-w-7xl">Reasoning Steps:</h4>
             <ol class="mx-auto px-4 max-w-7xl">
-              {#each analysisModal.(result as { id?: unknown; title?: unknown; content?: unknown; metadata?: unknown; confidence?: unknown; similarity?: unknown; source?: unknown; highlight?: unknown; reasoning_steps?: unknown }).reasoning_steps as step}
+              {#each analysisModal.result.reasoning_steps as step}
                 <li class="mx-auto px-4 max-w-7xl">{step}</li>
               {/each}
             </ol>

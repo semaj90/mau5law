@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
 
   let apiTests = $state([]);
   let isTestingInProgress = $state(false);
-  let testResults = $state({});
+  let testResults = $state( );
 
   interface ApiTest {
     name: string;
@@ -117,9 +117,9 @@ https://svelte.dev/e/js_parse_error -->
         statusText: (response as { headers?: unknown; json?: unknown; text?: unknown; status?: unknown; statusText?: unknown }).statusText,
         responseTime,
         data: responseData,
-        headers: Object.fromEntries((response as { headers?: unknown; json?: unknown; text?: unknown; status?: unknown; statusText?: unknown }).headers.entries()),
+        headers: Object.fromEntries.headers.entries()),
         expectedStatus: test.expectedStatus,
-        statusMatch: test.expectedStatus ? (response as { headers?: unknown; json?: unknown; text?: unknown; status?: unknown; statusText?: unknown }).status === test.expectedStatus : true
+        statusMatch: test.expectedStatus ? (response as { headers?: unknown; json?: unknown; text?: unknown; status?: unknown; statusText?: unknown }).status === test.expectedStatus: true
       };
 
     } catch (error) {
@@ -139,7 +139,6 @@ https://svelte.dev/e/js_parse_error -->
   async function runAllTests() {
     isTestingInProgress = true;
     testResults = {};
-
     console.log('Starting Gallery API Tests...');
 
     for (const test of galleryApiTests) {
@@ -220,13 +219,13 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <div class="overview-item">
           <span class="overview-label">Completed</span>
-          <span class="overview-value">{Object.keys(testResults).length}</span>
+          <span class="overview-value">{Object.keys.length}</span>
         </div>
         <div class="overview-item">
           <span class="overview-label">Success Rate</span>
           <span class="overview-value">
-            {Object.keys(testResults).length > 0
-              ? Math.round((Object.values(testResults).filter(r => r.success).length / Object.keys(testResults).length) * 100)
+            {Object.keys.length > 0
+              ? Math.round.filter-length / Object.keys.length) * 100)
               : 0}%
           </span>
         </div>
@@ -237,7 +236,7 @@ https://svelte.dev/e/js_parse_error -->
     <section class="test-results">
       <h2>Test Results</h2>
 
-      {#if Object.keys(testResults).length === 0 && !isTestingInProgress}
+      {#if Object.keys.length === 0 && !isTestingInProgress}
         <div class="no-results">
           <p>No test results yet. Click "Run All Tests" to start testing.</p>
         </div>

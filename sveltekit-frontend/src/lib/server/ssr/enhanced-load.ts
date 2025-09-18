@@ -160,7 +160,7 @@ export const createEnhancedLayoutLoad = () => {
           layoutData.recentEvidence = recentEvidence;
         } catch (error: any) {
           console.error('Error loading user layout data:', error);
-          metrics.errors.push(error instanceof Error ? error.message : 'Unknown error');
+          metrics.errors.push(error instanceof Error ? error.message: 'Unknown error');
         }
       }
 
@@ -188,7 +188,7 @@ export const createEnhancedLayoutLoad = () => {
       };
     } catch (error: any) {
       console.error('Layout load error:', error);
-      metrics.errors.push(error instanceof Error ? error.message : 'Layout load failed');
+      metrics.errors.push(error instanceof Error ? error.message: 'Layout load failed');
       metrics.loadTime = Date.now() - startTime;
 
       // Return minimal safe data on error
@@ -207,7 +207,7 @@ export const createEnhancedLayoutLoad = () => {
         systemStatus: { apiHealthy: false, pgvectorEnabled: false, aiServicesOnline: false },
         hydrationContext: createHydrationContext(url, request, locals.user),
         _metrics: metrics,
-        _error: error instanceof Error ? error.message : 'Unknown error',
+        _error: error instanceof Error ? error.message: 'Unknown error',
       };
     }
   };
@@ -282,7 +282,7 @@ export const createEnhancedCasePageLoad = () => {
       };
     } catch (error: any) {
       console.error('Case page load error:', error);
-      metrics.errors.push(error instanceof Error ? error.message : 'Case load failed');
+      metrics.errors.push(error instanceof Error ? error.message: 'Case load failed');
       metrics.loadTime = Date.now() - startTime;
 
       throw error; // Re-throw to trigger SvelteKit error handling

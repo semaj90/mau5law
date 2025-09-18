@@ -102,11 +102,11 @@
           success: true,
           resultCount: results.length,
           searchTime: Date.now() - searchStartTime,
-          averageScore: results.length > 0 ? results.reduce((sum, r) => sum + r.similarity, 0) / results.length : 0
+          averageScore: results.length > 0 ? results.reduce((sum, r) => sum + r.similarity, 0) / results.length: 0
         });
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Search failed';
+      error = err instanceof Error ? err.message: 'Search failed';
 
       // Track failed search for feedback
       if (searchInteractionId && vectorSearchFeedback) {
@@ -297,7 +297,7 @@
               </div>
               <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
                 <TooltipProvider>
-                  {#each Object.entries((result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).rankingFactors) as [factor, value]}
+                  {#each Object.entries.rankingFactors) as [factor, value]}
                     <Tooltip>
                       <TooltipTrigger>
                         <div class="text-center p-2 bg-muted rounded">
@@ -341,9 +341,9 @@
             {/if}
 
             <!-- Metadata -->
-            {#if (result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).metadata && Object.keys((result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).metadata).length > 0}
+            {#if (result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).metadata && Object.keys.metadata).length > 0}
               <div class="flex flex-wrap gap-2">
-                {#each Object.entries((result as { metadata?: unknown; score?: unknown; content?: unknown; rankingFactors?: unknown; explanation?: unknown }).metadata).slice(0, 5) as [key, value]}
+                {#each Object.entries.metadata).slice(0, 5) as [key, value]}
                   {#if typeof value === 'string' || typeof value === 'number'}
                     <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{key}: {value}</span>
                   {/if}

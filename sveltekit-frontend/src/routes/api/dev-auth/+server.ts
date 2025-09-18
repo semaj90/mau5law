@@ -71,7 +71,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
     return json({ success: true, user: { id: userInfo.id, email: 'dev@example.com' }, sessionId, expires: expiresAt.toISOString(), seeded: seed, createdUser: userInfo.created });
   } catch (error) {
     logger.error('dev-auth.error', error);
-    return json({ error: 'Failed to create development session', details: error instanceof Error ? error.message : 'Unknown error', stack: dev && error instanceof Error ? error.stack : undefined }, { status: 500 });
+    return json({ error: 'Failed to create development session', details: error instanceof Error ? error.message: 'Unknown error', stack: dev && error instanceof Error ? error.stack : undefined }, { status: 500 });
   }
 };
 

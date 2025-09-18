@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				auto_optimization: true,
 			},
 			metadata: {
-				...(result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).optimization_meta,
+				...result.optimization_meta,
 				batch_size: errorCount,
 				processed_at: new Date().toISOString(),
 				api_version: '2.0.0',
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: 'Batch processing failed',
-			details: error instanceof Error ? error.message : 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString(),
 			batch_processing: true,
 		}, { status: 500 });

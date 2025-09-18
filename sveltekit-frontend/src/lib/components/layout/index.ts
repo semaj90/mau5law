@@ -12,5 +12,5 @@ export interface LayoutConfig {
   type: GridLayout;
   columns?: number;
   gap?: number;
-  responsive?: Partial<Record<ResponsiveBreakpoint, { columns: number; gap: number }>>;
+  responsive?: Partial<Record<ResponsiveBreakpoint, { columns: number; gap: number }>;
 }

@@ -102,7 +102,7 @@ export class OptimizationTestSuite {
           name: 'VS Code Extension Initialization',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -146,7 +146,7 @@ export class OptimizationTestSuite {
           name: 'Command Execution Performance',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -172,7 +172,7 @@ export class OptimizationTestSuite {
           name: 'Memory Usage Monitoring',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -217,7 +217,7 @@ export class OptimizationTestSuite {
           name: 'Basic Cache Operations',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -255,7 +255,7 @@ export class OptimizationTestSuite {
           name: 'Self-Organizing Map Clustering',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -290,7 +290,7 @@ export class OptimizationTestSuite {
           name: 'Memory Pressure Handling',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -340,7 +340,7 @@ export class OptimizationTestSuite {
           name: 'Container Resource Monitoring',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -371,7 +371,7 @@ export class OptimizationTestSuite {
           name: 'Optimization Preset Application',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -399,7 +399,7 @@ export class OptimizationTestSuite {
           name: 'Docker Compose Generation',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -439,7 +439,7 @@ export class OptimizationTestSuite {
           passed: parse_successful && reasonable_performance,
           duration_ms: performance.now() - start,
           details: {
-            parsed_items: Array.isArray(data.data) ? data.data.length : 0,
+            parsed_items: Array.isArray(data.data) ? data.data.length: 0,
             parse_time_ms: stats.parse_time_ms,
             wasm_acceleration: stats.wasm_acceleration
           },
@@ -454,7 +454,7 @@ export class OptimizationTestSuite {
           name: 'JSON Parsing Performance',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -485,7 +485,7 @@ export class OptimizationTestSuite {
           name: 'JSON Compression',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -510,7 +510,7 @@ export class OptimizationTestSuite {
           name: 'WebAssembly Initialization',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -559,7 +559,7 @@ export class OptimizationTestSuite {
           name: 'Stack Analysis with Optimization',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -585,7 +585,7 @@ export class OptimizationTestSuite {
           name: 'Best Practices Generation',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -614,7 +614,7 @@ export class OptimizationTestSuite {
           name: 'Comprehensive Analysis',
           passed: false,
           duration_ms: performance.now() - start,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }

@@ -199,7 +199,7 @@
 
   // Reactive computations
   let healthRatio = $derived(
-    clusterHealth.totalWorkers > 0 ? clusterHealth.healthyWorkers / clusterHealth.totalWorkers : 0
+    clusterHealth.totalWorkers > 0 ? clusterHealth.healthyWorkers / clusterHealth.totalWorkers: 0
   );
   let memoryUsagePercent = $derived(
     clusterHealth.memoryUsage.average > 0
@@ -533,21 +533,21 @@ scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
 
 <style>
   /* Custom scrollbar for tables */
-  .overflow-x-auto::-webkit-scrollbar {
+  .overflow-x-auto: :-webkit-scrollbar {
     height: 6px;
   }
 
-  .overflow-x-auto::-webkit-scrollbar-track {
+  .overflow-x-auto: :-webkit-scrollbar-track {
     background: rgba(51, 65, 85, 0.3);
     border-radius: 3px;
   }
 
-  .overflow-x-auto::-webkit-scrollbar-thumb {
+  .overflow-x-auto: :-webkit-scrollbar-thumb {
     background: rgba(71, 85, 105, 0.8);
     border-radius: 3px;
   }
 
-  .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  .overflow-x-auto: :-webkit-scrollbar-thumb:hover {
     background: rgba(71, 85, 105, 1);
   }
 </style>

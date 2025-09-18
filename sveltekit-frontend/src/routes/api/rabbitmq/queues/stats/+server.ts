@@ -153,7 +153,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		
 		return json({
 			error: 'Failed to fetch queue statistics',
-			details: error instanceof Error ? error.message : 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		
 		return json({
 			error: 'Queue management action failed',
-			details: error instanceof Error ? error.message : 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error',
 			timestamp: new Date().toISOString()
 		}, { status: 500 });
 	}

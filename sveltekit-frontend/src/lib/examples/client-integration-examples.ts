@@ -47,8 +47,7 @@ export async function integrateLegalChatWithWebGPU() {
           documentType: doc.type,
           enableCaching: true,
           debugMode: true
-        });
-
+        })));
         return {
           ...doc,
           webgpuBuffer: (result as { buffer?: any; compressionStats?: any; processingTime?: any }).buffer,
@@ -233,8 +232,8 @@ export async function enableRealTimeLegalAnalysis() {
 
     console.log('✅ Real-time legal analysis enabled:', {
       textSamplesProcessed: legalTextSamples.length,
-      webgpuBuffersCreated: processedEmbeddings.filter(e => e instanceof GPUBuffer || e.constructor.name === 'GPUBuffer').length,
-      cpuFallbacks: processedEmbeddings.filter(e => e instanceof Float32Array).length,
+      webgpuBuffersCreated: processedEmbeddings.filter(item => item.length),
+      cpuFallbacks: processedEmbeddings.filter(item => item.length),
       performanceMetrics: LegalAIIntegration.getLegalAIPerformanceMetrics()
     });
 

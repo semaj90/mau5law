@@ -241,7 +241,7 @@ export class TextureRankingMatrices {
         (this.performanceMetrics.rankingOperations + 1);
       
       console.log(`💾 Cache hit for ranking computation`);
-      return cached.(result as { slice?: any }).slice(0, maxResults);
+      return cached.result.slice(0, maxResults);
     }
 
     if (!this.device || this.computePipelines.size === 0) {

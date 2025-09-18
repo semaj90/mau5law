@@ -108,7 +108,7 @@
   async function initializeCollaboration() {
     try {
       // Create WebSocket manager (mock user ID for now)
-      const userId = `user_${Math.random().toString(36).substr(2, 9)}`;
+      const userId = `user_${Math.random.toString-substr(2, 9)}`;
       wsManager = new DetectiveWebSocketManager(caseId, userId);
       
       // Set up event handlers
@@ -140,9 +140,8 @@
       wsManager.onMessage('evidence_analysis', (data) => {
         if ((data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).action === 'completed') {
           // Update evidence list with remote analysis
-          evidenceList = evidenceList.map(item => 
-            (item as { id?: any; metadata?: any }).id === (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).evidenceId 
-              ? { ...item, metadata: { ...(item as { id?: any; metadata?: any }).metadata, aiAnalysis: (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).analysis } }
+          evidenceList = evidenceList.map.id === (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).evidenceId 
+              ? { ...item, metadata: { ...item.metadata, aiAnalysis: (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).analysis } }
               : item
           );
           console.log('[Collaboration] Evidence analysis updated by remote user');
@@ -192,13 +191,13 @@
     contextualPrompts = [...event.detail.prompts];
     
     // Add detective-specific contextual prompts
-    if (userInput.toLowerCase().includes('evidence')) {
+    if (userInput.toLowerCase.includes('evidence')) {
       contextualPrompts.push('Analyze evidence connections?');
     }
-    if (userInput.toLowerCase().includes('suspect') || userInput.toLowerCase().includes('person')) {
+    if (userInput.toLowerCase.includes('suspect') || userInput.toLowerCase.includes('person')) {
       contextualPrompts.push('Map person relationships?');
     }
-    if (userInput.toLowerCase().includes('location') || userInput.toLowerCase().includes('place')) {
+    if (userInput.toLowerCase.includes('location') || userInput.toLowerCase.includes('place')) {
       contextualPrompts.push('Generate location timeline?');
     }
     
@@ -277,16 +276,16 @@
       
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
-        connectionMap = (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).(data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).connectionMap;
+        connectionMap = (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).data.connectionMap;
         
         // Send to collaborators
         if (wsManager) {
-          wsManager.sendConnectionMapUpdate(connectionMap, (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).(data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).metadata);
+          wsManager.sendConnectionMapUpdate.data.metadata);
         }
         
         dispatch('connectionMapGenerated', {
           map: connectionMap,
-          metadata: (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).(data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).metadata
+          metadata: (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).data.metadata
         });
       }
     } catch (error) {

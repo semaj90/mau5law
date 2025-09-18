@@ -63,8 +63,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     let filtered = persons;
 
     if (searchQuery.trim()) {
-      filtered = filtered.filter(person =>
-        person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      filtered = filtered.filter(item => item.includes(searchQuery.toLowerCase()) ||
         person.alias.toLowerCase().includes(searchQuery.toLowerCase()) ||
         person.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -253,11 +252,11 @@ showNewPersonModal = true}>
           <span class="stat-label">Total Persons</span>
         </div>
         <div class="stat-item critical">
-          <span class="stat-number">{persons.filter(p => p.threat_level === 'critical').length}</span>
+          <span class="stat-number">{persons.filter(item => item.length)}</span>
           <span class="stat-label">Critical</span>
         </div>
         <div class="stat-item high">
-          <span class="stat-number">{persons.filter(p => p.status === 'wanted').length}</span>
+          <span class="stat-number">{persons.filter(item => item.length)}</span>
           <span class="stat-label">Wanted</span>
         </div>
       </div>
@@ -498,7 +497,7 @@ showNewPersonModal = false}>
     color: #d4af37;
   }
 
-  .nav-(item as { persons?: unknown; critical?: unknown; high?: unknown }).persons-active {
+  .nav-.persons-active {
     background: #1a2a1a;
     color: #d4af37;
     border-left: 3px solid #d4af37;
@@ -637,11 +636,11 @@ showNewPersonModal = false}>
     color: #888;
   }
 
-  .stat-(item as { persons?: unknown; critical?: unknown; high?: unknown }).critical .stat-number {
+  .stat-.critical .stat-number {
     color: #ef4444;
   }
 
-  .stat-(item as { persons?: unknown; critical?: unknown; high?: unknown }).high .stat-number {
+  .stat-.high .stat-number {
     color: #f97316;
   }
 
@@ -692,14 +691,7 @@ showNewPersonModal = false}>
     margin-bottom: 2px;
   }
 
-  .person-alias {
-    font-size: 12px;
-    color: #888;
-    font-style: italic;
-    margin-bottom: 4px;
-  }
-
-  .person-id {
+  .person-ali.person-id {
     font-size: 10px;
     color: #666;
     font-family: 'JetBrains Mono', monospace;

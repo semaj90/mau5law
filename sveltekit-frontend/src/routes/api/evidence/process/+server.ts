@@ -178,7 +178,7 @@ class EvidenceProcessingService {
 
       // Best-effort persist results
       await this.updateEvidenceWithResults(request.evidenceId, results).catch((e: any) => {
-        console.warn('Failed to persist results:', e);
+        console.warn('Failed to persist results:', e));
       });
     } catch (err: any) {
       (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).status = 'error';

@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Export failed",
+        error: error instanceof Error ? error.message: "Export failed",
       },
       { status: 500 },
     );

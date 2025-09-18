@@ -18,8 +18,7 @@
     footer?: unknown;
   }
 
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     title = '',
     description = '',
     size = 'md',
@@ -29,7 +28,7 @@
     children,
     trigger,
     footer
-  }: Props = $props();
+   }: Props = $props();
 
   const sizeClasses = {
     sm: 'max-w-sm',
@@ -108,8 +107,7 @@
   </Dialog.Portal>
 </Dialog.Root>
 
-<style>/* Legal AI App Specific Styling */ {}
-  :global(.legal-dialog) {
+<style>/* Legal AI App Specific Styling */ :global(.legal-dialog) {
     @apply border-yorha-border bg-yorha-bg-secondary;
   }
 

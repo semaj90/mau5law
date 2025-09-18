@@ -236,10 +236,10 @@
 		background: var(--bg-secondary, #f3f4f6);
 		color: var(--text-primary, #111827);
 }
-	.dropdown-(item as { logout?: unknown }).logout {
+	.dropdown-.logout {
 		color: #dc2626;
 }
-	.dropdown-(item as { logout?: unknown }).logout:hover {
+	.dropdown-.logout:hover {
 		background: #fef2f2;
 		color: #b91c1c;
 }

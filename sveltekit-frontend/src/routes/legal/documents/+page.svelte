@@ -72,9 +72,9 @@ https://svelte.dev/e/js_parse_error -->
   // Computed properties
   let documentStats = $derived(() => {
     const total = documents.length;
-    const processing = documents.filter(d => d.status === 'processing').length;
-    const completed = documents.filter(d => d.status === 'final').length;
-    const withAI = documents.filter(d => d.aiAnalysis).length;
+    const processing = documents.filter(item => item.length);
+    const completed = documents.filter(item => item.length);
+    const withAI = documents.filter(item => item.length);
     return { total, processing, completed, withAI };
   });
 
@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(doc => 
+      filtered = filtered.filter(doc =>
         doc.title.toLowerCase().includes(query) ||
         doc.author.toLowerCase().includes(query) ||
         doc.tags.some(tag => tag.toLowerCase().includes(query))

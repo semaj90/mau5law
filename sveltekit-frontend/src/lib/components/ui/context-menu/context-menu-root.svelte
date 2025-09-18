@@ -33,8 +33,7 @@
   {@render children()}
 </div>
 
-<style>/* @unocss-include */ {}
-  .context-menu-root {
+<style>/* @unocss-include */ .context-menu-root {
     position: relative;
 }
 </style>

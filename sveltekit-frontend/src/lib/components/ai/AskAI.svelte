@@ -105,7 +105,7 @@
       } catch (error) {
         console.warn("Storage failed:", error);
   
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
     },
   });
 
@@ -118,7 +118,7 @@
     } catch (error) {
       console.warn("Activity tracking failed:", error);
   
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}}
   onMount(() => {
     // Initialize speech recognition if supported and enabled
     if (enableVoiceInput && "webkitSpeechRecognition" in window) {
@@ -159,7 +159,7 @@
     } catch (error) {
       console.warn("Failed to load conversation history:", error);
   
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}}
   async function saveConversationHistory() {
     try {
       const contextKey = caseId ? `case_${caseId}` : "general";
@@ -171,7 +171,7 @@
     } catch (error) {
       console.warn("Failed to save conversation history:", error);
   
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}}
   async function askAI() {
     if (!query.trim() || isLoading) return;
 
@@ -194,7 +194,7 @@
       timestamp: Date.now(),
       references: [],
       confidence: undefined,
-      metadata: {},
+      metadata: ,
     });
     conversation = [...conversation, aiMessage];
     // Auto-resize textarea
@@ -203,12 +203,7 @@
   }
     try {
       // Simple activity tracking (could be enhanced with analytics)
-      console.log("User activity:", {
-        type: "search",
-        target: caseId ? "case" : "evidence",
-        targetId: caseId || "general",
-        query: currentQuery,
-        timestamp: new Date().toISOString(),
+      console.log.toISOString(),
       });
       // Prepare request
       const requestBody = {
@@ -235,7 +230,7 @@
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestBody);
+        body: JSON.stringify(requestBody));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -246,7 +241,7 @@
         signal: controller.signal,
       });
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = await response.json.catch(() => ( ));
         throw new Error(errorData.error || "Failed to get AI response");
   }
       if (selectedModel === "ollama" && response.body) {
@@ -256,7 +251,7 @@
   let done = $state(false);
   let buffer = $state("");
         // In the streaming loop:
-  let meta = $state<Record<string, any>('') >({});
+  let meta = $state<Record<string, any>('') >( );
         while (!done) {
           const { value, done: doneReading } = await reader.read();
           done = doneReading;
@@ -301,7 +296,7 @@
         // Non-streaming (OpenAI or fallback)
         const aiResponse = awaitawait (async () => {
       try {
-        return await  response.json();
+        return await  response.json());
       } catch (error) {
         console.error('JSON parsing failed:', error);
         throw new Error('Invalid JSON response');
@@ -326,7 +321,7 @@
         dispatch("response", aiResponse);
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : "An error occurred";
+      error = err instanceof Error ? err.message: "An error occurred";
       console.error("AI request failed:", err);
       dispatch("error", error);
     } finally {
@@ -379,7 +374,7 @@
     try {
       // Try Coqui TTS HTTP API via SvelteKit endpoint
       try {
-    const res = await fetch(`/api/tts?text=${encodeURIComponent(text);
+    const res = await fetch(`/api/tts?text=${encodeURIComponent(text));
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
@@ -431,7 +426,7 @@
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return crypto.randomUUID();
   }
-  return Math.random().toString(36).substr(2, 9);
+  return Math.random.toString-substr(2, 9);
   }
 
   function formatTime(timestamp: number): string {

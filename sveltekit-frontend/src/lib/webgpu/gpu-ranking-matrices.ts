@@ -372,7 +372,7 @@ export class GPURankingMatrices {
     };
   }
 
-  async queryRankingMatrices(documentIds: string[]): Promise<Map<string, RankingMatrix>> {
+  async queryRankingMatrices(documentIds: string[]): Promise<Map<string, RankingMatrix> {
     const results = new Map<string, RankingMatrix>();
 
     if (this.config.enableCaching) {

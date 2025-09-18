@@ -111,8 +111,7 @@ export class UserAuthService {
       // Create user with transaction
       const result = await userDb.transaction(async (tx) => {
         // Insert user
-        const [newUser] = await tx.insert(users).values(validatedUser).returning();
-
+        const [newUser] = await tx.insert(users).values(validatedUser).returning());
         // Create profile if profile data provided
         let profile: UserProfile | undefined;
         if (userData.profileData) {
@@ -146,7 +145,7 @@ export class UserAuthService {
       return { 
         user: Record<string, any> as User, 
         success: false, 
-        error: error instanceof Error ? error.message : 'Registration failed' 
+        error: error instanceof Error ? error.message: 'Registration failed' 
       };
     }
   }
@@ -233,7 +232,7 @@ export class UserAuthService {
       console.error('Authentication error:', error);
       return { 
         success: false, 
-        error: error instanceof Error ? error.message : 'Authentication failed' 
+        error: error instanceof Error ? error.message: 'Authentication failed' 
       };
     }
   }
@@ -357,7 +356,7 @@ export class UserProfileService {
   ): Promise<any> {
     try {
       const result = await userDb.transaction(async (tx) => {
-        let updatedUser: User | undefined;
+        let updatedUser: User | undefined);
         let updatedProfile: UserProfile | undefined;
 
         // Update user table fields
@@ -449,7 +448,7 @@ export class UserProfileService {
       console.error('Update profile error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Profile update failed',
+        error: error instanceof Error ? error.message: 'Profile update failed',
       };
     }
   }
@@ -468,8 +467,7 @@ export class UserProfileService {
             deletedAt: new Date(),
             updatedAt: new Date(),
           })
-          .where(eq(users.id, userId));
-
+          .where(eq(users.id, userId)));
         // Invalidate all sessions
         await tx
           .update(userSessions)
@@ -492,7 +490,7 @@ export class UserProfileService {
       console.error('Delete user error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'User deletion failed',
+        error: error instanceof Error ? error.message: 'User deletion failed',
       };
     }
   }
@@ -579,7 +577,7 @@ export class UserActivityService {
   /**
    * Get activity statistics for user
    */
-  static async getActivityStats(userId: number, days: number = 30): Promise<any>> {
+  static async getActivityStats(userId: number, days: number = 30): Promise<any> {
     try {
       const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 

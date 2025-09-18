@@ -1,169 +1,83 @@
 <script lang="ts">
-  import 'nes.css/css/nes.min.css';
   import type { HTMLInputAttributes } from 'svelte/elements';
-  import { cn } from '$lib/utils/cn';
-  import { Search, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-svelte';
-  import { accessibleClick } from '$lib/actions/accessibleClick';
 
-  interface InputProps extends Omit<HTMLInputAttributes, 'size'> {
-    /** Input variant */
-    variant?: 'default' | 'search' | 'password' | 'email' | 'legal' | 'evidence';
-    /** Input size */
-    size?: 'sm' | 'md' | 'lg';
-    /** Error state */
-    error?: boolean;
-    /** Success state */
-    success?: boolean;
-    /** Loading state */
-    loading?: boolean;
-    /** Error message */
-    errorMessage?: string;
-    /** Help text */
-    helpText?: string;
-    /** Label */
+  interface InputProps extends HTMLInputAttributes {
     label?: string;
-    /** Required field indicator */
-    required?: boolean;
-    /** Legal context styling */
-    legal?: boolean;
-    /** Evidence search specific styling */
-    evidenceSearch?: boolean;
-    /** Case number input styling */
-    caseNumber?: boolean;
-    /** AI confidence for auto-completed fields */
-    aiAssisted?: boolean;
-    /** Full width */
+    error?: string;
+    hint?: string;
+    nesStyle?: boolean;
+    variant?: 'default' | 'legal' | 'success' | 'warning' | 'error';
     fullWidth?: boolean;
-    /** Show character count */
-    showCharCount?: boolean;
-    /** Maximum character count */
-    maxlength?: number;
-    /** Icon to display */
-    icon?: unknown;
-    /** Icon position */
-    iconPosition?: 'left' | 'right';
-    class?: string;
-    
-    // Accessibility props
-    /** ARIA label for screen readers */
-    'aria-label'?: string;
-    /** ID of element that describes this input */
-    'aria-describedby'?: string;
-    /** Screen reader text for password toggle */
-    passwordToggleText?: string;
   }
 
   let {
-    variant = 'default',
-    size = 'md',
-    error = false,
-    success = false,
-    loading = false,
-    errorMessage = '',
-    helpText = '',
-    label = '',
-    required = false,
-    legal = false,
-    evidenceSearch = false,
-    caseNumber = false,
-    aiAssisted = false,
-    fullWidth = false,
-    showCharCount = false,
-    maxlength,
-    icon,
-    iconPosition = 'left',
-    class: className = '',
+    value = $bindable(''),
     type = 'text',
-    value = $bindable(),
-    passwordToggleText,
+    placeholder = '',
+    disabled = false,
+    readonly = false,
+    required = false,
+    label,
+    error,
+    hint,
+    nesStyle = false,
+    variant = 'default',
+    fullWidth = false,
+    class: className = '',
+    id = `input-${Math.random().toString().substr(2, 9)}`,
+    oninput,
     ...restProps
   }: InputProps = $props();
 
-  // Extract accessibility props for explicit handling
-  const ariaLabel = restProps['aria-label'];
-  const ariaDescribedby = restProps['aria-describedby'];
+  // Reactive class computation
+  let inputClasses = $derived.by(() => {
+    const classes = [];
 
-  // Generate unique IDs for accessibility
-  const inputId = restProps.id || `input-${Math.random().toString(36).substr(2, 9)}`;
-  const errorId = `${inputId}-error`;
-  const helpId = `${inputId}-help`;
-  const charCountId = `${inputId}-count`;
-  const aiIndicatorId = `${inputId}-ai`;
+    if (!nesStyle) {
+      // UnoCSS classes
+      classes.push('flex h-10 w-full rounded-md border px-3 py-2 text-sm');
+      classes.push('ring-offset-white file:border-0 file:bg-transparent');
+      classes.push('file:text-sm file:font-medium placeholder:text-gray-500');
+      classes.push('focus-visible:outline-none focus-visible:ring-2');
+      classes.push('focus-visible:ring-offset-2 disabled:cursor-not-allowed');
+      classes.push('disabled:opacity-50 transition-all duration-200');
 
-  // Build aria-describedby string
-  let describedByIds = $derived(() => {
-    const ids = [];
-    if (ariaDescribedby) ids.push(ariaDescribedby);
-    if (errorMessage && error) ids.push(errorId);
-    else if (helpText) ids.push(helpId);
-    if (showCharCount && maxlength) ids.push(charCountId);
-    if (aiAssisted) ids.push(aiIndicatorId);
-    return ids.join(' ') || undefined;
+      // Variant classes
+      const variantClasses = {
+        default: 'border-gray-300 bg-white text-gray-900 focus-visible:ring-gray-400 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100',
+        legal: 'border-legal-secondary bg-legal-primary/5 text-legal-secondary focus-visible:ring-legal-accent font-mono uppercase tracking-wider',
+        success: 'border-green-500 focus-visible:ring-green-500',
+        warning: 'border-amber-500 focus-visible:ring-amber-500',
+        error: 'border-red-500 focus-visible:ring-red-500 bg-red-50 dark:bg-red-950'
+      };
+
+      classes.push(error ? variantClasses.error: variantClasses[variant] || variantClasses.default);
+    }
+
+    if (fullWidth) classes.push('!w-full');
+    if (className) classes.push(className);
+
+    return classes.join(' ');
   });
 
-  // Password visibility toggle for password inputs
-  let showPassword = $state(false);
-  let inputElement: HTMLInputElement | undefined = $state();
+  // NES.css classes
+  let nesClasses = $derived.by(() => {
+    if (!nesStyle) return '';
 
-  // Determine if this is a password input
-  let isPassword = $derived(variant === 'password' || type === 'password');
-  // Actual input type to use
-  let inputType = $derived(
-    isPassword ? (showPassword ? 'text' : 'password') : type
-  );
+    const classes = ['nes-input'];
+    if (error || variant === 'error') classes.push('is-error');
+    if (variant === 'success') classes.push('is-success');
+    if (variant === 'warning') classes.push('is-warning');
 
-  // Character count
-  let charCount = $derived(typeof value === 'string' ? value.length : 0);
-
-  // Reactive input classes using $derived
-  let inputClasses = $derived(cn(
-    'bits-input',
-    {
-      'pl-10': variant === 'search' || (icon && iconPosition === 'left'),
-      'pr-10': variant === 'password' || (icon && iconPosition === 'right'),
-      'yorha-input font-gothic tracking-wide': variant === 'legal',
-      'yorha-input border-2 border-nier-border-secondary': variant === 'evidence',
-      'h-8 px-3 text-xs': size === 'sm',
-      'h-10 px-3 text-sm': size === 'md',
-      'h-12 px-4 text-base': size === 'lg',
-      'w-full': fullWidth,
-      'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-500': error,
-      'border-green-500 bg-green-50 focus:border-green-500 focus:ring-green-500': success,
-      'nier-bits-input': legal,
-      'vector-search-input': evidenceSearch,
-      'border-gothic-border-primary bg-gothic-bg-primary': caseNumber,
-      'border-blue-500 bg-blue-50': aiAssisted,
-      'animate-pulse': loading,
-      'pr-16': showCharCount && maxlength,
-      'pr-20': isPassword || (icon && iconPosition === 'right' && showCharCount)
-    },
-    class
-  ));
-
-  // Focus the input programmatically
-  export function focus() {
-    inputElement?.focus();
-  }
-
-  // Clear the input
-  export function clear() {
-    value = '';
-    inputElement?.focus();
-  }
+    return classes.join(' ');
+  });
 </script>
 
 <div class="input-wrapper" class:w-full={fullWidth}>
   {#if label}
-    <label 
-      for={restProps.id} 
-      class={cn(
-        'bits-label block text-sm font-medium mb-2',
-        {
-          'text-red-600': error,
-          'text-green-600': success,
-          'font-gothic tracking-wide': legal
-        }
-      )}
+    <label
+      for={id}
+      class={nesStyle ? 'nes-label' : 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'}
     >
       {label}
       {#if required}
@@ -172,280 +86,65 @@
     </label>
   {/if}
 
-  <div class="relative">
-    <!-- Left icon -->
-    {#if icon && iconPosition === 'left'}
-      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" aria-hidden="true">
-        {#if icon}
-          {@const IconComponent = icon}
-          <IconComponent class="h-4 w-4 nes-text is-disabled" />
-        {/if}
-      </div>
-    {/if}
-
-    <!-- Search icon for search variant -->
-    {#if variant === 'search'}
-      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none" aria-hidden="true">
-        <Search class="h-4 w-4 nes-text is-disabled" />
-      </div>
-    {/if}
-
-    <!-- Input field -->
+  {#if nesStyle}
+    <!-- NES.css styled input -->
+    <div class={nesStyle ? 'nes-field' : ''}>
+      <input
+        {id}
+        class={nesClasses}
+        {type}
+        {placeholder}
+        bind:value
+        {disabled}
+        {readonly}
+        {required}
+        {oninput}
+        {...restProps}
+      />
+    </div>
+  {:else}
+    <!-- UnoCSS styled input -->
     <input
-      bind:this={inputElement}
-      bind:value
-      type={inputType}
+      {id}
       class={inputClasses}
-      {maxlength}
-      id={inputId}
-      aria-label={ariaLabel}
-      aria-describedby={describedByIds()}
-      aria-invalid={error}
-      aria-required={required}
-      data-success={success}
+      {type}
+      {placeholder}
+      bind:value
+      {disabled}
+      {readonly}
+      {required}
+      {oninput}
       {...restProps}
     />
-
-    <!-- Password visibility toggle -->
-    {#if isPassword}
-      <button
-        type="button"
-        class="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        use:accessibleClick={{ 
-          handler: () => showPassword = !showPassword,
-          label: passwordToggleText || (showPassword ? 'Hide password' : 'Show password')
-        }}
-      >
-        {#if showPassword}
-          <EyeOff class="h-4 w-4 nes-text is-disabled hover:text-foreground transition-colors" aria-hidden="true" />
-        {:else}
-          <Eye class="h-4 w-4 nes-text is-disabled hover:text-foreground transition-colors" aria-hidden="true" />
-        {/if}
-        <span class="sr-only">{passwordToggleText || (showPassword ? 'Hide password' : 'Show password')}</span>
-      </button>
-    {/if}
-
-    <!-- Right icon -->
-    {#if icon && iconPosition === 'right' && !isPassword}
-      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none" aria-hidden="true">
-        {#if icon}
-          {@const IconComponent = icon}
-          <IconComponent class="h-4 w-4 nes-text is-disabled" />
-        {/if}
-      </div>
-    {/if}
-
-    <!-- Status indicators -->
-    {#if error}
-      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none" aria-hidden="true">
-        <AlertCircle class="h-4 w-4 text-red-500" />
-      </div>
-    {:else if success}
-      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none" aria-hidden="true">
-        <CheckCircle class="h-4 w-4 text-green-500" />
-      </div>
-    {/if}
-
-    <!-- Character count -->
-    {#if showCharCount && maxlength}
-      <div 
-        id={charCountId}
-        class={cn(
-          'absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-xs',
-          {
-            'text-red-500': charCount > maxlength * 0.9,
-            'text-yellow-600': charCount > maxlength * 0.8,
-            'text-muted-foreground': charCount <= maxlength * 0.8,
-            'pr-12': isPassword
-          }
-        )}
-        aria-live="polite"
-      >
-        <span class="sr-only">
-          {charCount} of {maxlength} characters used
-          {#if charCount > maxlength * 0.9}, nearing limit{/if}
-        </span>
-        <span aria-hidden="true">{charCount}/{maxlength}</span>
-      </div>
-    {/if}
-
-    <!-- Loading indicator -->
-    {#if loading}
-      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none" aria-hidden="true">
-        <div class="ai-status-indicator ai-status-processing w-4 h-4"></div>
-        <span class="sr-only">Processing...</span>
-      </div>
-    {/if}
-  </div>
-
-  <!-- Help text or error message -->
-  {#if errorMessage && error}
-    <div id={errorId} class="mt-1 text-xs text-red-600 font-medium flex items-center gap-1" role="alert">
-      <AlertCircle class="h-3 w-3" aria-hidden="true" />
-      {errorMessage}
-    </div>
-  {:else if helpText}
-    <div id={helpId} class="mt-1 text-xs nes-text is-disabled">
-      {helpText}
-    </div>
   {/if}
 
-  <!-- AI assistance indicator -->
-  {#if aiAssisted}
-    <div id={aiIndicatorId} class="mt-1 text-xs text-blue-600 font-medium flex items-center gap-1" role="status" aria-live="polite">
-      <div class="ai-status-indicator ai-status-online w-2 h-2" aria-hidden="true"></div>
-      AI-assisted field
-    </div>
+  {#if error}
+    <p class={nesStyle ? 'nes-text is-error' : 'mt-1 text-sm text-red-600 dark:text-red-400'}>
+      {error}
+    </p>
+  {/if}
+
+  {#if hint && !error}
+    <p class={nesStyle ? 'nes-text is-disabled' : 'mt-1 text-sm text-gray-500 dark:text-gray-400'}>
+      {hint}
+    </p>
   {/if}
 </div>
 
 <style>
-  /* @unocss-include */
+  @import 'nes.css/css/nes.min.css';
+
   .input-wrapper {
-    position: relative;
+    @apply space-y-1;
   }
 
-  /* Enhanced input styling for legal AI context */
-  :global(.nier-bits-input) {
-    background: linear-gradient(
-      135deg,
-      var(--color-nier-bg-primary) 0%,
-      var(--color-nier-bg-secondary) 100%
-    );
-    border: 2px solid var(--color-nier-border-secondary);
-    transition: all 0.2s ease;
+  /* Additional NES.css enhancements */
+  :global(.nes-field) {
+    margin-bottom: 0;
   }
 
-  :global(.nier-bits-input:focus) {
-    border-color: var(--color-nier-border-primary);
-    box-shadow: 
-      0 0 0 1px var(--color-nier-border-primary),
-      0 0 0 3px rgba(58, 55, 47, 0.1);
-  }
-
-  /* Evidence search specific styling */
-  :global(.vector-search-input) {
-    background: linear-gradient(
-      to right,
-      var(--color-nier-bg-primary) 0%,
-      var(--color-nier-bg-secondary) 50%,
-      var(--color-nier-bg-primary) 100%
-    );
-    background-size: 200% 100%;
-    animation: search-gradient 3s ease-in-out infinite;
-  }
-
-  @keyframes search-gradient {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
-  /* Case number input styling */
-  :global([data-case-number] .bits-input) {
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  /* AI-assisted field styling */
-  :global([data-ai-assisted] .bits-input) {
-    position: relative;
-  }
-
-  :global([data-ai-assisted] .bits-input::before) {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--color-ai-status-online),
-      transparent
-    );
-    animation: ai-assistance 2s ease-in-out infinite;
-  }
-
-  @keyframes ai-assistance {
-    0%, 100% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
-  }
-
-  /* Enhanced focus states for accessibility */
-  :global(.bits-input:focus-visible) {
-    outline: 2px solid var(--color-nier-border-primary);
-    outline-offset: 2px;
-  }
-
-  /* Password visibility button styling */
-  :global(.bits-input + button) {
-    transition: all 0.2s ease;
-  }
-
-  :global(.bits-input + button:hover) {
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
-  }
-
-  /* Legal context enhancements */
-  :global(.font-gothic) {
-    font-family: var(--font-gothic);
-  }
-
-  /* Error state animations */
-  :global(.bits-input[aria-invalid="true"]) {
-    animation: input-error 0.3s ease-in-out;
-  }
-
-  @keyframes input-error {
-    0%, 100% {
-      transform: translateX(0);
-    }
-    25% {
-      transform: translateX(-2px);
-    }
-    75% {
-      transform: translateX(2px);
-    }
-  }
-
-  /* Success state animations */
-  :global(.bits-input[data-success="true"]) {
-    animation: input-success 0.5s ease-in-out;
-  }
-
-  @keyframes input-success {
-    0% {
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
-    }
-    70% {
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0);
-    }
-    100% {
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-    }
-  }
-
-  /* Screen reader only utility for accessibility */
-  :global(.sr-only) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+  /* Legal AI specific input glow effect */
+  input:focus {
+    box-shadow: 0 0 0 3px rgba(80, 227, 194, 0.1);
   }
 </style>

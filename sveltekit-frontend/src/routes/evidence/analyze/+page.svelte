@@ -167,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
       // Start polling for results
       pollResults();
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Analysis failed';
+      error = err instanceof Error ? err.message: 'Analysis failed';
       analyzing = false;
     }
   }
@@ -469,7 +469,7 @@ Reset
               <div class="yorha-panel-header">
                 <h3 class="nes-text is-primary text-lg">
                   {steps.find((s) => s.key === key)?.icon || '📄'}
-                  {key.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                  {key.replace.replace(/\b\w/g, (l) => l.toUpperCase())}
                 </h3>
               </div>
               <div class="yorha-panel-content">

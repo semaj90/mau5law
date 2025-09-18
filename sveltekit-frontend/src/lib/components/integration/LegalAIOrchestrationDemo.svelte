@@ -144,7 +144,7 @@
 
       workflowResult = result;
     } catch (error) {
-      errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      errorMessage = error instanceof Error ? error.message: 'Unknown error occurred';
     } finally {
       isProcessing = false;
     }
@@ -179,9 +179,9 @@
         </span>
       </div>
       
-      {#if Object.keys(systemHealth).length > 0}
+      {#if Object.keys.length > 0}
         <div class="text-xs text-gray-500">
-          Services: {Object.values(systemHealth).filter(Boolean).length}/{Object.keys(systemHealth).length} online
+          Services: {Object.values.filter-length}/{Object.keys.length} online
         </div>
       {/if}
     </div>
@@ -271,7 +271,7 @@ Load Demo Data
       <div class="nes-container">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary">
-            {selectedWorkflow.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Workflow
+            {selectedWorkflow.split.map(w => w.charAt.toUpperCase() + w.slice(1)).join(' ')} Workflow
           </h3>
         </div>
         <div class="yorha-panel-content space-y-4">
@@ -386,7 +386,7 @@ Load Demo Data
                   <span>Processing...</span>
                 </div>
               {:else}
-                Execute {selectedWorkflow.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Workflow
+                Execute {selectedWorkflow.split.map(w => w.charAt.toUpperCase() + w.slice(1)).join(' ')} Workflow
               {/if}
 </Button>
           </div>

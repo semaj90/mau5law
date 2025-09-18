@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Internal server error during vector search",
+        error: error instanceof Error ? error.message: "Internal server error during vector search",
         timestamp: new Date().toISOString(),
       },
       { status: 500 }
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         status: "error",
-        error: error instanceof Error ? error.message : "Health check failed",
+        error: error instanceof Error ? error.message: "Health check failed",
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

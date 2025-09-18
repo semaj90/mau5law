@@ -15,8 +15,8 @@ https://svelte.dev/e/js_parse_error -->
   Termination requires 30 days notice from either party.`);
   	let autoTagResult = writable(null);
   	let isProcessing = $state(false);
-  	let systemHealth = writable({});
-  	let benchmarkResults = writable({});
+  	let systemHealth = writable( );
+  	let benchmarkResults = writable( );
   	// Demo functions
   	async function runAutoTagging() {
   		isProcessing = true;
@@ -71,10 +71,7 @@ https://svelte.dev/e/js_parse_error -->
   			const goHealth = await goMicroservice.healthCheck();
   			const autoTagStatus = await fetch('/api/ai/upload-auto-tag');
   			const autoTagData = await autoTagStatus.json();
-  			systemHealth.set({
-  				goMicroservice: goHealth,
-  				autoTagging: autoTagData,
-  				timestamp: new Date().toISOString()
+  			systemHealth.set.toISOString()
   			});
   		} catch (error) {
   			console.error('Health check failed:', error);
@@ -356,7 +353,7 @@ https://svelte.dev/e/js_parse_error -->
 				</button>
 			</h2>
 			
-			{#if $benchmarkResults && Object.keys($benchmarkResults).length > 0}
+			{#if $benchmarkResults && Object.keys.length > 0}
 				<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
 					<div class="p-4 bg-gray-700/50 rounded border text-center">
 						<h3 class="font-semibold text-yellow-400">Embeddings/sec</h3>

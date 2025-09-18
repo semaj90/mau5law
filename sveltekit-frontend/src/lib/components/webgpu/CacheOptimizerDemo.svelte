@@ -223,7 +223,7 @@ https://svelte.dev/e/expected_token -->
           <h4>Performance Benchmarks</h4>
           {#each demoResults.benchmarks as benchmark}
             <div class="benchmark-item">
-              <h5>{benchmark.operation.replace('-', ' ').toUpperCase()}</h5>
+              <h5>{benchmark.operation.replace.toUpperCase()}</h5>
               <div class="benchmark-stats">
                 <div class="stat">
                   <span class="label">WebGPU Time:</span>
@@ -398,7 +398,7 @@ https://svelte.dev/e/expected_token -->
     border: 1px solid #e5e7eb;
   }
   
-  .status-(item as { enabled?: unknown }).enabled .icon {
+  .status-.enabled .icon {
     color: #10b981;
   }
   

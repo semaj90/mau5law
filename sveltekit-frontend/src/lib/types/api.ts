@@ -357,7 +357,7 @@ export interface ApiError {
 // Generic API Handler Types
 export type ApiHandler<TRequest = any, TResponse = any> = (
   request: TRequest
-) => Promise<ApiResponse<TResponse>>;
+) => Promise<ApiResponse<TResponse>;
 
 export type ApiErrorHandler = (error: Error) => ApiResponse<never>;
 

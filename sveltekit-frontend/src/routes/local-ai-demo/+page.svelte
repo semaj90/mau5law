@@ -159,7 +159,7 @@
         const result = await aiService.analyzeLegalDocument(legalAnalysisText);
         analysisResults = {
           ...result,
-          keyEntities: Array.isArray((result as { keyEntities?: unknown; source?: unknown; title?: unknown; score?: unknown; content?: unknown; type?: unknown }).keyEntities) && typeof (result as { keyEntities?: unknown; source?: unknown; title?: unknown; score?: unknown; content?: unknown; type?: unknown }).keyEntities[0] === 'string'
+          keyEntities: Array.isArray.keyEntities) && typeof (result as { keyEntities?: unknown; source?: unknown; title?: unknown; score?: unknown; content?: unknown; type?: unknown }).keyEntities[0] === 'string'
             ? (result as { keyEntities?: unknown; source?: unknown; title?: unknown; score?: unknown; content?: unknown; type?: unknown }).keyEntities.map((entity: string) => ({ text: entity, type: 'entity', confidence: 1.0 }))
             : (result as { keyEntities?: unknown; source?: unknown; title?: unknown; score?: unknown; content?: unknown; type?: unknown }).keyEntities || []
         };
@@ -182,14 +182,14 @@
           const data = await (response as { ok?: unknown; json?: unknown }).json();
           analysisResults = {
             classification: { category: "document", confidence: 0.8 },
-            summary: (data as { data?: unknown }).(data as { data?: unknown }).answer,
+            summary: (data as { data?: unknown }).data.answer,
             keyEntities: ["Legal Document"].map(entity => ({ text: entity, type: "document", confidence: 1.0 })),
             riskAssessment: "Analysis completed using cloud AI",
           };
   }}
     } catch (error) {
       analysisResults = {
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message: "Unknown error",
         keyEntities: [], // Required property
         classification: { category: "error", confidence: 0 },
         summary: "Analysis failed",
@@ -617,7 +617,7 @@
                             </h5>
                             <div class="space-y-4">
                               <span class="space-y-4">
-                                {Math.round((result as { keyEntities?: unknown; source?: unknown; title?: unknown; score?: unknown; content?: unknown; type?: unknown }).score * 100)}% match
+                                {Math.round.score * 100)}% match
                               </span>
                               <SvelteComponent
                                 class="space-y-4"

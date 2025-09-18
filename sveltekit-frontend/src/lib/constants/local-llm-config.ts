@@ -10,8 +10,8 @@ export const LOCAL_LLM_CONFIG = {
   // Force local-only operation
   ENFORCE_LOCAL_ONLY: true,
 
-  // Local Ollama configuration
-  OLLAMA_BASE_URL: "http://localhost:11434",
+  // Local TensorRT Bridge configuration
+  OLLAMA_BASE_URL: "http://localhost:8086",
   OLLAMA_MODELS: {
     LEGAL_DETAILED: "gemma3-legal:latest",
     GENERAL: "gemma3-legal:latest",

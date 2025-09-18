@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Workflow demo error:', err);
     return json({
       success: false,
-      error: err instanceof Error ? err.message : String(err)
+      error: err instanceof Error ? err.message: String(err)
     }, { status: 500 });
   }
 };

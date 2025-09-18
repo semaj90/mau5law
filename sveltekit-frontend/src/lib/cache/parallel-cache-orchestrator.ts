@@ -79,7 +79,7 @@ class ParallelCacheOrchestrator {
   };
 
   private circuitBreakerState = new Map<string, { failures: number; lastFailure: number; isOpen: boolean }>();
-  private activeRequests = new Map<string, Promise<any>>();
+  private activeRequests = new Map<string, Promise<any>();
   private executionMetrics: CacheExecutionMetrics = this.initializeMetrics();
 
   constructor() {
@@ -91,7 +91,7 @@ class ParallelCacheOrchestrator {
    * Group 0: Memory/GPU operations (fast) - target 300ms
    * Group 1: Network/disk operations (slower) - target 200ms additional
    */
-  async executeParallel(request: ParallelCacheRequest): Promise<any>> {
+  async executeParallel(request: ParallelCacheRequest): Promise<any> {
     const startTime = performance.now();
     this.resetMetrics();
 
@@ -164,7 +164,7 @@ class ParallelCacheOrchestrator {
     // Flatten successful results
     return results
       .filter((result): result is PromiseFulfilledResult<any> => (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).status === 'fulfilled')
-      .flatMap(result => Array.isArray((result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value) ? (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value : [(result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value])
+      .flatMap(result => Array.isArray((result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value) ? (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value: [(result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value])
       .filter(Boolean);
   }
 
@@ -177,8 +177,7 @@ class ParallelCacheOrchestrator {
     group0Results: any[]
   ): Promise<Array<any> {
     // Only execute if we didn't get enough hits from Group 0
-    const missingKeys = request.keys.filter(key => 
-      !group0Results.some(result => (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).key === key && (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).hit)
+    const missingKeys = request.keys.filter(item => item.key) === key && (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).hit)
     );
 
     if (missingKeys.length === 0) {
@@ -203,7 +202,7 @@ class ParallelCacheOrchestrator {
     
     return results
       .filter((result): result is PromiseFulfilledResult<any> => (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).status === 'fulfilled')
-      .flatMap(result => Array.isArray((result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value) ? (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value : [(result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value])
+      .flatMap(result => Array.isArray((result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value) ? (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value: [(result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).value])
       .filter(Boolean);
   }
 
@@ -236,12 +235,12 @@ class ParallelCacheOrchestrator {
     keys: string[],
     tier: 'l1' | 'l2'
   ): Promise<Array<any> {
-    const cache = tier === 'l1' ? this.l1Memory : this.l2Memory;
+    const cache = tier === 'l1' ? this.l1Memory: this.l2Memory;
     const source = tier === 'l1' ? 'l1_memory' : 'l2_memory';
     
     const results = await Promise.all(
       keys.map(async (key) => {
-        const data = await cache.get(key);
+        const data = await cache.get(key)));
         return {
           key,
           hit: data !== undefined,
@@ -252,7 +251,7 @@ class ParallelCacheOrchestrator {
     );
 
     // Update metrics
-    const hits = results.filter(r => r.hit).length;
+    const hits = results.filter(item => item.length);
     if (tier === 'l1') {
       this.executionMetrics.layerPerformance.l1MemoryHits += hits;
     } else {
@@ -344,7 +343,7 @@ class ParallelCacheOrchestrator {
     try {
       // Use cached embeddings from Group 0 to accelerate RAG lookup
       const cachedEmbeddings = group0Results
-        .filter(result => (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).source.includes('embedding'))
+        .filter(item => item.source).includes('embedding'))
         .map(result => (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).data);
 
       if (cachedEmbeddings.length === 0) {
@@ -380,7 +379,7 @@ class ParallelCacheOrchestrator {
   ): Promise<Array<any> {
     const results = await Promise.all(
       keys.map(async (key) => {
-        const data = await this.l3Storage.get(key);
+        const data = await this.l3Storage.get(key)));
         return {
           key,
           hit: data !== undefined,
@@ -390,7 +389,7 @@ class ParallelCacheOrchestrator {
       })
     );
 
-    const hits = results.filter(r => r.hit).length;
+    const hits = results.filter(item => item.length);
     this.executionMetrics.layerPerformance.l3StorageHits += hits;
     
     return results.filter(r => r.hit);
@@ -405,7 +404,7 @@ class ParallelCacheOrchestrator {
     const results = await Promise.all(
       keys.map(async (key) => {
         try {
-          const data = await getCache(key);
+          const data = await getCache(key)));
           return {
             key,
             hit: data !== null,
@@ -534,7 +533,7 @@ class ParallelCacheOrchestrator {
 
   private updateMetrics(totalLatency: number, results: any[]): void {
     const totalResults = results.length;
-    const hits = results.filter(r => r.hit).length;
+    const hits = results.filter(item => item.length);
     
     this.executionMetrics.totalLatency = totalLatency;
     this.executionMetrics.cacheHitRate = totalResults > 0 ? hits / totalResults : 0;

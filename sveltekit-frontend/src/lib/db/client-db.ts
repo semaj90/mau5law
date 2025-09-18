@@ -278,7 +278,7 @@ export class LegalDBUtils {
   /**
    * Get database statistics
    */
-  static async getStorageStats(): Promise<any>> {
+  static async getStorageStats(): Promise<any> {
     const stats = {
       totalRecords: 0,
       storageUsed: 'Unknown',
@@ -345,7 +345,7 @@ export class LegalDBUtils {
       .where('hitCount')
       .below(2) // Remove rarely used cached searches
       .and(item => {
-        const daysSinceCreated = (Date.now() - (item as { timestamp?: any }).timestamp.getTime()) / (1000 * 60 * 60 * 24);
+        const daysSinceCreated = (Date.now() - (item as { timestamp?: any }).timestamp.getTime()) / (1000 * 60 * 60 * 24));
         return daysSinceCreated > 7; // Older than a week
       })
       .delete();

@@ -67,7 +67,7 @@ export interface CourtroomDisplay {
   caseId: string;
   displayType: 'evidence' | 'timeline' | 'comparison' | 'analysis';
   content: LegalDocumentTexture[];
-  settings: {
+  }); const settings = {
     contrast: number;
     brightness: number;
     zoom: number;

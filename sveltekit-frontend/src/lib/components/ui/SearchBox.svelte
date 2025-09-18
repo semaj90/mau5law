@@ -11,7 +11,7 @@
 	let {
 		placeholder = "Search legal documents...",
 		searchEndpoint = "/api/v1/search",
-		onResults = () => {},
+		onResults = () => ,
 		className = ""
 	}: Props = $props();
 

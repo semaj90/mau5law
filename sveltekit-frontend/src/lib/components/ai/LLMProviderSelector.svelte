@@ -12,7 +12,7 @@ https://svelte.dev/e/js_parse_error -->
     PerformanceMetrics 
   } from '$lib/types/component-props.js';
 
-  	import { createSelect, melt } from 'melt';
+  	import * as Select from 'bits-ui';
   	// Updated to use melt-ui components
   	// TODO: Replace with melt-ui equivalents when available
   	// import { Badge } from 'bits-ui';
@@ -88,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
   	]);
 
   	// Real-time status checking
-  let statusCheckInterval = $state<numberconst checkProviderStatus | null>(null)(async (provider: LLMProvider): Promise<LLMStatus> => {
+  let statusCheckInterval = $state<numberconst checkProviderStatus  | null>(null); const data = async (provider: LLMProvider): Promise<LLMStatus> => {
   		try {
   			const response = await fetch(`${provider.endpoint}/health`, {
   				method: 'GET',

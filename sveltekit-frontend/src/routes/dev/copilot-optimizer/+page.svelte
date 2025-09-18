@@ -886,7 +886,7 @@ https://svelte.dev/e/js_parse_error -->
     overflow: hidden;
   }
 
-  .slider::-webkit-slider-thumb {
+  .slider: :-webkit-slider-thumb {
     appearance: none;
     height: 20px;
     width: 20px;
@@ -896,7 +896,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid #a855f7;
   }
 
-  .slider::-webkit-slider-thumb:hover {
+  .slider: :-webkit-slider-thumb:hover {
     background: #8b5cf6;
   }
 </style>

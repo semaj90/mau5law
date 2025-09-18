@@ -342,7 +342,7 @@ export class SelfOrganizingMapRAG {
       });
 
       const avgConfidence =
-        clusterNodes.length > 0 ? totalConfidence / clusterNodes.length : 0;
+        clusterNodes.length > 0 ? totalConfidence / clusterNodes.length: 0;
       const dominantType = this.getMostFrequent(evidenceTypes) || "unknown";
 
       this.clusters.set(i, {
@@ -644,7 +644,7 @@ export class SelfOrganizingMapRAG {
   /**
    * Get cluster visualization data for UI
    */
-  getVisualizationData(): Array< {
+  getVisualizationData(): Array<any> {
     const vizData: Array<any> = [];
 
     for (let x = 0; x < this.config.mapWidth; x++) {

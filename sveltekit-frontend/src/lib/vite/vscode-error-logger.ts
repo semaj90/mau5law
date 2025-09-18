@@ -32,7 +32,7 @@ export function vscodeErrorLogger(options: any = {}) {
             lastUpdated: parsed?.metadata?.lastUpdated || new Date().toISOString(),
             version: parsed?.metadata?.version || 1
           },
-          errors: Array.isArray(parsed?.errors) ? parsed.errors : []
+          errors: Array.isArray(parsed?.errors) ? parsed.errors: []
         };
       }
     } catch (e: any) {
@@ -47,7 +47,7 @@ export function vscodeErrorLogger(options: any = {}) {
       // Ensure metadata and errors exist before mutating
       errorLog.metadata = errorLog.metadata || { version: 1 };
       errorLog.metadata.lastUpdated = new Date().toISOString();
-      errorLog.errors = Array.isArray(errorLog.errors) ? errorLog.errors : [];
+      errorLog.errors = Array.isArray(errorLog.errors) ? errorLog.errors: [];
       writeFileSync(config.logFile, JSON.stringify(errorLog, null, 2));
     } catch (e: any) {
     // ignore

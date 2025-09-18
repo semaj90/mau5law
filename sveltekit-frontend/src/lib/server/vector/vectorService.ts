@@ -253,7 +253,7 @@ export class VectorService {
       const results: EmbeddingResult[] = searchResult.map((point: any) => ({
         id: point.id.toString(),
         score: point.score,
-        metadata: includeMetadata ? point.payload : Record<string, any>,
+        metadata: includeMetadata ? point.payload: Record<string, any>,
         content: (point.payload?.content as string) || '',
       }));
 

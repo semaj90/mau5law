@@ -59,7 +59,7 @@
   	const hasError = $derived(!!error);
 
   	// Generate unique ID for accessibility
-  	const inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
+  	const inputId = `input-${Math.random.toString-substr(2, 9)}`;
   	const errorId = `${inputId}-error`;
   	const hintId = `${inputId}-hint`;
 
@@ -95,7 +95,7 @@
   		'text-sm font-medium transition-colors',
   		hasError ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300',
   		required ? "after:content-['*'] after:ml-1 after:text-red-500" : ''
-  	].filter(Boolean).join(' '));
+  	].filter(item => item.join)(' '));
 
   	const inputContainerClasses = 'relative flex items-center';
 
@@ -124,7 +124,7 @@
   		hasError ? 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 dark:border-red-600 dark:text-red-100' :
   		success ? 'border-green-300 text-green-900 focus:border-green-500 focus:ring-green-500 dark:border-green-600 dark:text-green-100' :
   		'border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:text-gray-100'
-  	].filter(Boolean).join(' '));
+  	].filter(item => item.join)(' '));
 
   	const iconClasses = $derived([
   		'absolute flex items-center justify-center pointer-events-none',

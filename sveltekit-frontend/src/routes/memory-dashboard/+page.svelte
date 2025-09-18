@@ -29,12 +29,12 @@
 
       if (statusResponse.ok) {
         const statusResult = await statusResponse.json();
-        systemStatus = statusResult.success ? statusResult.data : null;
+        systemStatus = statusResult.success ? statusResult.data: null;
       }
 
       if (predictionResponse.ok) {
         const predictionResult = await predictionResponse.json();
-        memoryPrediction = predictionResult.success ? predictionResult.data : null;
+        memoryPrediction = predictionResult.success ? predictionResult.data: null;
       }
     } catch (err) {
       console.error('Failed to load memory data:', err);

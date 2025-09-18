@@ -313,7 +313,7 @@
     width: 90vw;
   }
 
-  .nes-dialog::before {
+  .nes-dialog: :before {
     content: '';
     position: fixed;
     top: 0;

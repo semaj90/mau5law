@@ -34,7 +34,7 @@ export interface VectorMetadata {
 
 export interface EncodingBatch {
   vectors: Float32Array[];
-  metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>>;
+  metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>;
   totalSize: number;
 }
 
@@ -364,7 +364,7 @@ export class VectorMetadataEncoder {
 
   private async encodeBatchGPU(
     vectors: Float32Array[],
-    metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>>,
+    metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>,
     config: VectorEncodingConfig
   ): Promise<VectorMetadata[]> {
     // GPU batch processing would be more efficient
@@ -388,7 +388,7 @@ export class VectorMetadataEncoder {
 
   private async encodeBatchCPU(
     vectors: Float32Array[],
-    metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>>,
+    metadata: Array<Omit<VectorMetadata, 'encoding' | 'processingTime'>,
     config: VectorEncodingConfig
   ): Promise<VectorMetadata[]> {
     return vectors.map((vector, i) => {

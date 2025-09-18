@@ -30,7 +30,7 @@
 
 
 // Auto-generated default export
-export default {};
+export default ;
 </script>
 -->
 

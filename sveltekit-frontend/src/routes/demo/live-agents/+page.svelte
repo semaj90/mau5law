@@ -19,7 +19,7 @@ https://svelte.dev/e/js_parse_error -->
   // Reactive state / stores
   const connectionStats = liveAgentOrchestrator.getConnectionStats();
   let connectionStatus = $state('');
-  let agentHealth = $state({});
+  let agentHealth = $state( );
   let activeRequests = $state([]);
 
   // Demo form state
@@ -171,8 +171,8 @@ https://svelte.dev/e/js_parse_error -->
       <div class="bg-gray-800 p-4 rounded-lg">
         <h3 class="text-sm font-medium text-gray-400 mb-2">Agent Health</h3>
         <div class="text-lg font-semibold">
-          {Object.entries(agentHealth).filter(([_, status]) => status === 'healthy').length} /
-          {Object.keys(agentHealth).length} Healthy
+          {Object.entries.filter(([_, status]) => status === 'healthy').length} /
+          {Object.keys.length} Healthy
         </div>
       </div>
 
@@ -337,7 +337,7 @@ https://svelte.dev/e/js_parse_error -->
                     <div class="text-red-300 text-sm">Error: {(response as { status?: unknown; agent?: unknown; confidence?: unknown; processingTime?: unknown; error?: unknown; result?: unknown }).error}</div>
                   {:else if (response as { status?: unknown; agent?: unknown; confidence?: unknown; processingTime?: unknown; error?: unknown; result?: unknown }).result}
                     <div class="bg-gray-900 p-2 rounded text-sm font-mono overflow-x-auto">
-                      {JSON.stringify((response as { status?: unknown; agent?: unknown; confidence?: unknown; processingTime?: unknown; error?: unknown; result?: unknown }).result, null, 2)}
+                      {JSON.stringify.result, null, 2)}
                     </div>
                   {/if}
                 </div>
@@ -349,7 +349,7 @@ https://svelte.dev/e/js_parse_error -->
               <div class="mt-4">
                 <h4 class="font-medium text-gray-300 mb-2">Synthesized Result</h4>
                 <div class="bg-gray-900 p-3 rounded">
-                  <pre class="text-sm overflow-x-auto">{JSON.stringify((result as { requestId?: unknown; totalTime?: unknown; successRate?: unknown; bestAgent?: unknown; responses?: unknown; synthesized?: unknown }).synthesized, null, 2)}</pre>
+                  <pre class="text-sm overflow-x-auto">{JSON.stringify.synthesized, null, 2)}</pre>
                 </div>
               </div>
             {/if}

@@ -377,7 +377,7 @@ class SSRLegalAPICache {
   }
 
   private async executeAPICall(endpoint: string, options: any): Promise<LegalAPIResponse> {
-    const url = new URL(endpoint, browser ? window.location.origin : 'http://localhost:5173');
+    const url = new URL(endpoint, browser ? window.location.origin: 'http://localhost:5173');
     
     if (options.method === 'GET' && options.params) {
       Object.entries(options.params).forEach(([key, value]) => {
@@ -436,7 +436,7 @@ class ResponseQuantizer {
     
     // Compress data arrays
     if (Array.isArray(quantized.data)) {
-      quantized.data = quantized.(data as { data?: any; map?: any }).map(item => this.quantizeObject(item));
+      quantized.data = quantized.data.map(item => this.quantizeObject(item));
     } else if (typeof quantized.data === 'object') {
       quantized.data = this.quantizeObject(quantized.data);
     }

@@ -82,7 +82,7 @@ export const prefetchMachine = createMachine({
         onDone: {
           target: 'idle',
           actions: assign({
-            modelWeights: ({ event }) => event.type === 'xstate.done.actor.initializePredictionModel' ? (event as any).output?.weights : null,
+            modelWeights: ({ event }) => event.type === 'xstate.done.actor.initializePredictionModel' ? (event as any).output?.weights: null,
           })
         },
         onError: 'idle'

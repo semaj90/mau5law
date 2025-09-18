@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'embedding_service_config',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'embedding_generation',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -149,7 +149,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'document_chunking',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -200,7 +200,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'similarity_search',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -238,7 +238,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'legal_analysis_integration',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -270,7 +270,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'performance_metrics',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -283,9 +283,9 @@ export const GET: RequestHandler = async ({ url }) => {
       tests: results,
       summary: {
         total: results.length,
-        passed: results.filter(r => r.status === 'success').length,
-        failed: results.filter(r => r.status === 'error').length,
-        warnings: results.filter(r => r.status === 'warning').length,
+        passed: results.filter(item => item.length),
+        failed: results.filter(item => item.length),
+        warnings: results.filter(item => item.length),
         avg_duration: Math.round(
           results.reduce((sum, r) => sum + (r.duration || 0), 0) / results.length
         )
@@ -312,7 +312,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }
@@ -358,7 +358,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
   let buttonElement: HTMLButtonElement | null = null;
   let showTooltip = $state(false);
   let buttonElement = $state<HTMLButtonElement// Size configurations
-  	const sizeClasses | null>(null)({
+  	const sizeClasses  | null>(null); const data = {
   		sm: 'w-12 h-12 text-sm',
   		md: 'w-16 h-16 text-base',
   		lg: 'w-20 h-20 text-lg'

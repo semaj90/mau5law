@@ -87,7 +87,7 @@ export class EmbeddingBackfillWorker {
               console.log(`✅ Processed ${file.title} (ID: ${file.id})`);
             } catch (error) {
               (result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).failed++;
-              const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+              const errorMsg = error instanceof Error ? error.message: 'Unknown error';
               (result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).errors.push({ id: file.id, error: errorMsg });
               console.error(`❌ Failed to process ${file.title} (ID: ${file.id}):`, errorMsg);
             }

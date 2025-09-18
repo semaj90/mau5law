@@ -317,7 +317,7 @@ const createEvidenceStore = () => {
     // Update evidence with optimistic updates and chain of custody
     updateEvidence: async (
       evidenceId: string,
-      updates: Partial<Omit<Evidence, "id" | "caseId" | "created_at">>,
+      updates: Partial<Omit<Evidence, "id" | "caseId" | "created_at">,
       chainOfCustodyAction?: {
         action: ChainOfCustodyEntry['action'];
         person: string;
@@ -527,8 +527,8 @@ const createEvidenceStore = () => {
         const searchTerm = case_sensitive ? query : query.toLowerCase();
 
         const filtered = state.evidence.filter((evidence) => {
-          const title = case_sensitive ? evidence.title : evidence.title.toLowerCase();
-          const ocrText = evidence.ocr_text ? (case_sensitive ? evidence.ocr_text : evidence.ocr_text.toLowerCase()) : '';
+          const title = case_sensitive ? evidence.title: evidence.title.toLowerCase();
+          const ocrText = evidence.ocr_text ? (case_sensitive ? evidence.ocr_text: evidence.ocr_text.toLowerCase()) : '';
           const tags = evidence.tags?.join(' ') || '';
           const notes = evidence.notes?.map(n => n.content).join(' ') || '';
 
@@ -849,7 +849,7 @@ export const securityAlerts = derived(evidenceStore, ($s) => $s.security_alerts.
 
 // Helper utilities (exported as standalone functions)
 export function getUnprocessedEvidence(evidence: Evidence[]): Evidence[] {
-  return evidence.filter(item => !(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).processed);
+  return evidence.filter(item => item.processed));
 }
 
 export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {

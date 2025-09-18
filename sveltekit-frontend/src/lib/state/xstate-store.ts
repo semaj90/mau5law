@@ -337,7 +337,7 @@ class XStateStoreManager {
         appSend({ type: 'NAVIGATE', path, title }),
 
       // Settings helpers
-      settings: {
+      }); const settings = {
         update: (settings: Partial<AppContext['settings']>) => 
           appSend({ type: 'UPDATE_SETTINGS', settings }),
         reset: () => appSend({ type: 'RESET_SETTINGS' })

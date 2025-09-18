@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (err) {
     console.error('Chunking API error:', err);
-    throw error(500, `Chunking failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Chunking failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -271,7 +271,7 @@ async function performParagraphAwareChunking(
   const { chunkSize, chunkOverlap, minChunkSize, maxChunkSize, extractMetadata } = options;
 
   // Split by paragraphs first
-  const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+  const paragraphs = text.split(/\n\s*\n/).filter(item => item.length) > 0);
 
   if (paragraphs.length === 0) {
     return [];
@@ -466,7 +466,7 @@ function splitIntoSentences(text: string): string[] {
   // Enhanced sentence splitting for legal documents
   return text
     .split(/(?<=[.!?])\s+(?=[A-Z])/)
-    .filter(sentence => sentence.trim().length > 10) // Filter out very short sentences
+    .filter(item => item.length) > 10) // Filter out very short sentences
     .map(sentence => sentence.trim());
 }
 
@@ -502,8 +502,7 @@ function extractKeyTerms(text: string): string[] {
     'breach', 'default', 'negligence', 'fraud', 'misrepresentation'
   ];
 
-  const foundTerms = legalTerms.filter(term =>
-    text.toLowerCase().includes(term.toLowerCase())
+  const foundTerms = legalTerms.filter(item => item.includes(term.toLowerCase())
   );
 
   return foundTerms;
@@ -517,7 +516,7 @@ function calculateComplexity(text: string): number {
   // Legal documents complexity factors
   const legalTermCount = extractKeyTerms(text).length;
   const citationCount = (text.match(/\b\d{1,3}\s+[A-Z]\.\s*\d+d?\s+\d+/g) || []).length;
-  const longSentenceCount = sentences.filter(s => s.split(/\s+/).length > 25).length;
+  const longSentenceCount = sentences.filter(item => item.length) > 25).length;
 
   // Complexity score (0-100)
   return Math.min(100, Math.round(

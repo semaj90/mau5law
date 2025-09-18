@@ -213,7 +213,7 @@ https://svelte.dev/e/attribute_invalid_name -->
                   model: 'gemma3-legal-wasm',
                   processingTime: (result as { text?: any; processingTime?: any; analysis?: any }).processingTime,
                   sources,
-                  ...(result as { text?: any; processingTime?: any; analysis?: any }).analysis
+                  ...result.analysis
                 }
               };
             } else {
@@ -287,7 +287,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       await new Promise((resolve) => {
         const unsubscribe = ragMachine.subscribe((state) => {
           if (state.matches('idle')) {
-            unsubscribe();
+            unsubscribe()));
             resolve(state.context);
           }
         });

@@ -297,14 +297,14 @@ let uploadProgress = $state(new Map<string, number>());
     if (!files || files.length === 0) return;
 
     // Upload files in parallel for better performance
-    const uploadPromises = Array.from(files).map(file => uploadEvidence(file));
+    const uploadPromises = Array.from.map(file => uploadEvidence(file));
     await Promise.allSettled(uploadPromises);
 
     input.value = ''; // Reset input
   }
 
   async function uploadEvidence(file: File) {
-    const fileId = `${Date.now()}-${Math.random().toString(36).substring(2)}`;
+    const fileId = `${Date.now()}-${Math.random.toString-substring(2)}`;
 
     try {
       isLoading = true;
@@ -405,7 +405,7 @@ let uploadProgress = $state(new Map<string, number>());
     fabricCanvas.renderAll();
 
     if (evidenceId) {
-      evidenceItems = evidenceItems.filter(item => (item as { id?: any }).id !== evidenceId);
+      evidenceItems = evidenceItems.filter(item => item.id) !== evidenceId);
       onDelete?.({ objectId: evidenceId });
     }
 
@@ -442,7 +442,7 @@ let uploadProgress = $state(new Map<string, number>());
 
   function updateCanvasObjects() {
     if (!fabricCanvas) return;
-    canvasObjects = fabricCanvas.getObjects().map((obj: any) => ({
+    canvasObjects = fabricCanvas.getObjects.map((obj: any) => ({
       type: obj.type,
       left: obj.left,
       top: obj.top,

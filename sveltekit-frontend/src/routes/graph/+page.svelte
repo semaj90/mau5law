@@ -334,9 +334,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
                     <span class="font-mono text-xs text-nier-text-muted">{node.id}</span>
                   </div>
                   <div class="text-sm text-nier-text-primary">{node.label}</div>
-                  {#if Object.keys(node.properties).length > 0}
+                  {#if Object.keys.length > 0}
                     <div class="text-xs text-nier-text-muted mt-2">
-                      {JSON.stringify(node.properties, null, 2).substring(0, 100)}...
+                      {JSON.stringify.substring(0, 100)}...
                     </div>
                   {/if}
                 </div>
@@ -404,8 +404,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
               </div>
             </div>
             <div class="text-xs text-nier-text-secondary">
-              Results: {historyItem.(result as { metadata?: unknown }).metadata.resultCount} •
-              Source: {historyItem.(result as { metadata?: unknown }).metadata.source}
+              Results: {historyItem.result.metadata.resultCount} •
+              Source: {historyItem.result.metadata.source}
             </div>
           </div>
         {/each}
@@ -416,20 +416,20 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 
 <style>
   /* Custom scrollbar for query results */
-  .overflow-y-auto::-webkit-scrollbar {
+  .overflow-y-auto: :-webkit-scrollbar {
     width: 6px;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-track {
+  .overflow-y-auto: :-webkit-scrollbar-track {
     background: var(--nier-bg-tertiary);
   }
 
-  .overflow-y-auto::-webkit-scrollbar-thumb {
+  .overflow-y-auto: :-webkit-scrollbar-thumb {
     background: var(--nier-accent-warm);
     border-radius: 3px;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  .overflow-y-auto: :-webkit-scrollbar-thumb:hover {
     background: var(--nier-accent-cool);
   }
 </style>

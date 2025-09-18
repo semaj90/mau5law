@@ -254,13 +254,13 @@
   	}
 
   	function handleViewEvidence(item: any) {
-  		console.log('Viewing evidence:', (item as { id?: any; title?: any; x?: any; y?: any }).title);
+  		console.log.title);
   		// Add your logic to open a modal or navigate to a details page
-  		window.open(`/evidence/${(item as { id?: any; title?: any; x?: any; y?: any }).id}`, '_blank');
+  		window.open.id}`, '_blank');
   	}
 
   	function handleShowMoreOptions(item: any) {
-  		console.log('Showing more options for:', (item as { id?: any; title?: any; x?: any; y?: any }).title);
+  		console.log.title);
   		// Add your logic to show a context menu
   		contextMenu.show = true;
   		contextMenu.item = item;
@@ -446,8 +446,7 @@
   		if (rect) {
   			const newX = event.clientX - rect.left;
   			const newY = event.clientY - rect.top;
-  			canvasEvidence = canvasEvidence.map(e =>
-  				e.id === (item as { id?: any; title?: any; x?: any; y?: any }).id ? { ...e, x: newX, y: newY } : e
+  			canvasEvidence = canvasEvidence.map.id ? { ...e, x: newX, y: newY } : e
   			);
   			broadcastPositionUpdate((item as { id?: any; title?: any; x?: any; y?: any }).id, newX, newY);
   		}
@@ -603,8 +602,8 @@
 								{#each column.items as item ((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 									<div
 										class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105"
-										class:highlighted={aiHighlightedEvidence.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
-										class:selected={selectedEvidenceIds.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
+										class:highlighted={aiHighlightedEvidence.includes.id)}
+										class:selected={selectedEvidenceIds.includes.id)}
 										oncontextmenu={(e) => handleRightClick(e, item)}
 										onclick={() => handleEvidenceSelect((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 										role="button"
@@ -639,8 +638,8 @@
 						{#each canvasEvidence as item ((item as { id?: any; title?: any; x?: any; y?: any }).id)}
 							<div
 								class="absolute p-4 bg-background border-2 border-border rounded-lg shadow-lg cursor-move hover:shadow-xl transition-shadow"
-								class:highlighted={aiHighlightedEvidence.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
-								class:selected={selectedEvidenceIds.includes((item as { id?: any; title?: any; x?: any; y?: any }).id)}
+								class:highlighted={aiHighlightedEvidence.includes.id)}
+								class:selected={selectedEvidenceIds.includes.id)}
 								style="left: {(item as { id?: any; title?: any; x?: any; y?: any }).x || 100}px; top: {(item as { id?: any; title?: any; x?: any; y?: any }).y || 100}px; min-width: 200px;"
 								draggable="true"
 								ondragstart={(e) => handleCanvasDragStart(e, item)}

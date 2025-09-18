@@ -102,33 +102,27 @@ function extractStructuredReasoning(thinking: string) {
   const lines = thinking.split('\n').filter(line => line.trim());
   
   return {
-    premises: lines.filter(line => 
-      line.toLowerCase().includes('premise') || 
+    premises: lines.filter(item => item.includes)('premise') || 
       line.toLowerCase().includes('given') ||
       line.toLowerCase().includes('established')
     ).slice(0, 5),
-    inferences: lines.filter(line => 
-      line.toLowerCase().includes('therefore') || 
+    inferences: lines.filter(item => item.includes)('therefore') || 
       line.toLowerCase().includes('infer') ||
       line.toLowerCase().includes('follows')
     ).slice(0, 5),
-    conclusions: lines.filter(line => 
-      line.toLowerCase().includes('conclude') || 
+    conclusions: lines.filter(item => item.includes)('conclude') || 
       line.toLowerCase().includes('conclusion') ||
       line.toLowerCase().includes('result')
     ).slice(0, 3),
-    legal_principles: lines.filter(line => 
-      line.toLowerCase().includes('principle') || 
+    legal_principles: lines.filter(item => item.includes)('principle') || 
       line.toLowerCase().includes('rule') ||
       line.toLowerCase().includes('doctrine')
     ).slice(0, 3),
-    counter_arguments: lines.filter(line => 
-      line.toLowerCase().includes('however') || 
+    counter_arguments: lines.filter(item => item.includes)('however') || 
       line.toLowerCase().includes('but') ||
       line.toLowerCase().includes('although')
     ).slice(0, 3),
-    confidence_factors: lines.filter(line => 
-      line.toLowerCase().includes('confident') || 
+    confidence_factors: lines.filter(item => item.includes)('confident') || 
       line.toLowerCase().includes('certain') ||
       line.toLowerCase().includes('established')
     ).slice(0, 3)

@@ -37,7 +37,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	let error = $state<string | null>(null);
 
 	// Streaming state
-	let loadedTextures = $state<Map<string, any>>(new Map());
+	let loadedTextures = $state<Map<string, any>(new Map());
 	let streamingProgress = $state(0);
 	let currentDocument = $state<string | null>(null);
 
@@ -76,7 +76,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 
 			console.log('Legal texture streaming pipeline initialized');
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Initialization failed';
+			error = err instanceof Error ? err.message: 'Initialization failed';
 			console.error('Failed to initialize texture streaming:', err);
 		}
 	}
@@ -99,7 +99,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 			updateStats();
 			return texture;
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load evidence photo';
+			error = err instanceof Error ? err.message: 'Failed to load evidence photo';
 			throw err;
 		} finally {
 			isLoading = false;
@@ -130,7 +130,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 			updateStats();
 			return textures;
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load document scan';
+			error = err instanceof Error ? err.message: 'Failed to load document scan';
 			throw err;
 		} finally {
 			isLoading = false;
@@ -156,7 +156,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 			updateStats();
 			return texture;
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load case visualization';
+			error = err instanceof Error ? err.message: 'Failed to load case visualization';
 			throw err;
 		} finally {
 			isLoading = false;
@@ -186,7 +186,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 			updateStats();
 			return textures;
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load courtroom display';
+			error = err instanceof Error ? err.message: 'Failed to load courtroom display';
 			throw err;
 		} finally {
 			isLoading = false;

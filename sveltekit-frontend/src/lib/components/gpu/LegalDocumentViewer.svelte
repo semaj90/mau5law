@@ -614,9 +614,9 @@ https://svelte.dev/e/expected_token -->
       const bankOffset = getBankLayoutOffset(doc.bankAssignment || 'PRG_ROM');
       const memoryPalacePos = calculateMemoryPalacePosition(doc, index);
       
-      const baseX = visualMemoryPalace ? memoryPalacePos.x : (index % 10) * 0.2 - 1.0 + bankOffset.x;
-      const baseY = visualMemoryPalace ? memoryPalacePos.y : Math.floor(index / 10) * 0.2 - 1.0 + bankOffset.y;
-      const baseZ = visualMemoryPalace ? memoryPalacePos.z : (doc.score || 0) * 0.1 + bankOffset.z;
+      const baseX = visualMemoryPalace ? memoryPalacePos.x: (index % 10) * 0.2 - 1.0 + bankOffset.x;
+      const baseY = visualMemoryPalace ? memoryPalacePos.y: Math.floor(index / 10) * 0.2 - 1.0 + bankOffset.y;
+      const baseZ = visualMemoryPalace ? memoryPalacePos.z: (doc.score || 0) * 0.1 + bankOffset.z;
       
       // Enhanced attributes with full NES integration
       const elementId = index;
@@ -860,9 +860,7 @@ https://svelte.dev/e/expected_token -->
     const startTime = performance.now();
     
     const commandEncoder = device.createCommandEncoder();
-    const renderPass = commandEncoder.beginRenderPass({
-      colorAttachments: [{
-        view: context.getCurrentTexture().createView(),
+    const renderPass = commandEncoder.beginRenderPass.createView(),
         clearValue: { r: 0.05, g: 0.1, b: 0.15, a: 1.0 }, // Dark background for NES aesthetic
         loadOp: 'clear',
         storeOp: 'store'
@@ -943,7 +941,7 @@ https://svelte.dev/e/expected_token -->
     const baseSize = 64;
     const embeddingSize = file.metadata?.vectorEmbedding ? file.metadata.vectorEmbedding.length * 4 : 384 * 4;
     const matrixSize = 16 * 4;
-    const metadataSize = file.metadata ? JSON.stringify(file.metadata).length : 0;
+    const metadataSize = file.metadata ? JSON.stringify.length: 0;
     return baseSize + embeddingSize + matrixSize + metadataSize;
   }
   
@@ -1095,9 +1093,9 @@ https://svelte.dev/e/expected_token -->
   }
   
   function calculateQuantizationSavings(docs: EnhancedLegalDocument[]): number {
-    const fp32Count = docs.filter(d => d.quantizationLevel === 'FP32').length;
-    const fp16Count = docs.filter(d => d.quantizationLevel === 'FP16').length;
-    const int8Count = docs.filter(d => d.quantizationLevel === 'INT8').length;
+    const fp32Count = docs.filter(item => item.length);
+    const fp16Count = docs.filter(item => item.length);
+    const int8Count = docs.filter(item => item.length);
     
     const originalSize = docs.length * 4; // Assume 4 bytes per element for FP32
     const actualSize = fp32Count * 4 + fp16Count * 2 + int8Count * 1;
@@ -1147,7 +1145,7 @@ https://svelte.dev/e/expected_token -->
     const baseSize = 64;
     const embeddingSize = 384 * 4;
     const matrixSize = 16 * 4;
-    const metadataSize = doc.metadata ? JSON.stringify(doc.metadata).length : 0;
+    const metadataSize = doc.metadata ? JSON.stringify.length: 0;
     return baseSize + embeddingSize + matrixSize + metadataSize;
   }
   

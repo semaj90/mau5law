@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
   import 'nes.css/css/nes.min.css';
   import { createEventDispatcher, onMount } from 'svelte';
   	// Updated to use melt-ui components
-  	import Button from '$lib/components/ui/bitsbutton.svelte';
+  	import Button from '$lib/components/ui/Button.svelte';
   	import Card from '$lib/components/ui/MeltCard.svelte';
 
   	// TODO: Replace with melt-ui equivalents when available
@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
   	const dispatch = createEventDispatcher();
 
   	// Component state
-  let fileInput = $state<HTMLInputElementlet uploadedFile: File | null>(null)(null);
+  let fileInput = $state<HTMLInputElementlet uploadedFile: File  | null>(null); const data = null);
   let populatedFields = $state<FormField[] >([...formSchema]);
   let isProcessing = $state(false);
   let showPreview = $state(false);
@@ -44,18 +44,15 @@ https://svelte.dev/e/js_parse_error -->
   	let extractedFields = $derived(ocrService.extractedFields$);
 
   	// Form validation
-  	const formErrors = writable<Record<string, string>>({});
+  	const formErrors = writable<Record<string, string>( );
   let isFormValid = $state(false);
 
   	// Smart suggestions
-  let activeSuggestions = $state<Record<string, string[]>([]) >({});
-  let suggestionLoading = $state<Record<string, boolean>(false) >({});
+  let activeSuggestions = $state<Record<string, string[]>([]) >( );
+  let suggestionLoading = $state<Record<string, boolean>(false) >( );
 
   	// Default form schema if none provided
   	onMount(() => {
-  		if (formSchema.length === 0) {
-  			populatedFields = [
-  				{ name: 'client_name', type: 'name', label: 'Client Name', required: true },
   				{ name: 'case_number', type: 'case_number', label: 'Case Number', required: false },
   				{ name: 'document_date', type: 'date', label: 'Document Date', required: true },
   				{ name: 'jurisdiction', type: 'text_block', label: 'Jurisdiction', required: false },
@@ -161,8 +158,8 @@ https://svelte.dev/e/js_parse_error -->
   		}
 
   		formErrors.set(errors);
-  		isFormValid = Object.keys(errors).length === 0 &&
-  			populatedFields.filter(f => f.required).every(f => f.value?.trim());
+  		isFormValid = Object.keys.length === 0 &&
+  			populatedFields.filter(item => item.every)(f => f.value?.trim());
   	};
 
   	// Form submission
@@ -176,7 +173,7 @@ https://svelte.dev/e/js_parse_error -->
   			const formData = populatedFields.reduce((acc, field) => {
   				acc[field.name] = field.value || '';
   				return acc;
-  			}, {} as Record<string, any>);
+  			}, as Record<string, any>);
 
   			dispatch('submit', { formData, extractedFields: $extractedFields });
   		}
@@ -245,7 +242,7 @@ https://svelte.dev/e/js_parse_error -->
 					>
 						<option value="auto">Auto-detect</option>
 						{#each documentTypes as type}
-							<option value={type}>{type.replace('_', ' ').toUpperCase()}</option>
+							<option value={type}>{type.replace.toUpperCase()}</option>
 						{/each}
 					</select>
 				</div>
@@ -438,7 +435,7 @@ applySuggestion(field.name, suggestion)}
 
 						{#if enableOCR && $extractedFields.length > 0}
 							<span class="text-xs text-yorha-text-secondary">
-								{populatedFields.filter(f => f.value).length} / {populatedFields.length} fields completed
+								{populatedFields.filter(item => item.length)} / {populatedFields.length} fields completed
 							</span>
 						{/if}
 					</div>
@@ -449,7 +446,7 @@ applySuggestion(field.name, suggestion)}
 							onclick={() =>
 {
 								populatedFields = populatedFields.map(f => ({ ...f, value: '' }));
-								formErrors.set({});
+								formErrors.set( );
 							}}
 						>
 							Clear All

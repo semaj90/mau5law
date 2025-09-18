@@ -58,7 +58,7 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
     
   } catch (err) {
     console.error('AI chat error:', err);
-    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Chat processing failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 

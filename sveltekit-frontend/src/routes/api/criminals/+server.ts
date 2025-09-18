@@ -54,8 +54,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     // Add sorting
     const orderColumn =
       sortBy === "firstName"
-        ? criminals.firstName
-        : sortBy === "lastName"
+        ? criminals.firstName: sortBy === "lastName"
           ? criminals.lastName
           : sortBy === "threatLevel"
             ? criminals.threatLevel

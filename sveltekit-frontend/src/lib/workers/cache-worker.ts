@@ -92,7 +92,7 @@ class CacheWorker {
       self.postMessage({
         type: 'error',
         id,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
         success: false
       });
     }
@@ -337,7 +337,7 @@ class CacheWorker {
         batch.map(async (op) => {
           switch (op.type) {
             case 'compress':
-              return await this.compressData(op.data);
+              return await this.compressData(op.data)));
             case 'decompress':
               return await this.decompressData(op.data);
             case 'serialize':

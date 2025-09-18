@@ -179,7 +179,7 @@ async function checkOCRHealth(): Promise<ServiceHealthStatus> {
       status: (result as { status?: any; details?: any; responseTime?: any }).status,
       message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'OCR processing service operational' : 'OCR service issues',
       details: {
-        ...(result as { status?: any; details?: any; responseTime?: any }).details,
+        ...result.details,
         endpoint: `${ocrBaseUrl}/status`,
         capabilities: (result as { status?: any; details?: any; responseTime?: any }).details?.features || []
       },
@@ -265,7 +265,7 @@ async function checkClusterHealth(): Promise<ServiceHealthStatus> {
 
 function calculateOverallHealth(services: AggregatedHealthResponse['services']): AggregatedHealthResponse['status'] {
   const serviceStatuses = Object.values(services).map(s => s.status);
-  const healthyCount = serviceStatuses.filter(s => s === 'healthy').length;
+  const healthyCount = serviceStatuses.filter(item => item.length);
   const totalCount = serviceStatuses.length;
 
   if (healthyCount === totalCount) return 'healthy';
@@ -341,10 +341,10 @@ export const GET: RequestHandler = async () => {
     };
 
     const serviceStatuses = Object.values(services).map(s => s.status);
-    const healthyServices = serviceStatuses.filter(s => s === 'healthy').length;
-    const degradedServices = serviceStatuses.filter(s => s === 'degraded').length;
-    const unhealthyServices = serviceStatuses.filter(s => s === 'unhealthy').length;
-    const unknownServices = serviceStatuses.filter(s => s === 'unknown').length;
+    const healthyServices = serviceStatuses.filter(item => item.length);
+    const degradedServices = serviceStatuses.filter(item => item.length);
+    const unhealthyServices = serviceStatuses.filter(item => item.length);
+    const unknownServices = serviceStatuses.filter(item => item.length);
 
     const response: AggregatedHealthResponse = {
       status: calculateOverallHealth(services),
@@ -397,7 +397,7 @@ export const GET: RequestHandler = async () => {
       status: 'unhealthy',
       timestamp,
       error: 'Health check system failure',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       services: Record<string, any>,
       summary: {
         totalServices: 0,

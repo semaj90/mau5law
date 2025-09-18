@@ -530,7 +530,7 @@ export const uploadMachine = createMachine({
 
 // Types for Svelte components
 export type UploadState = StateFrom<typeof uploadMachine>;
-export type UploadActor = ReturnType<typeof createActor<typeof uploadMachine>>;
+export type UploadActor = ReturnType<typeof createActor<typeof uploadMachine>;
 
 // Svelte store integration
 function createUploadStore() {

@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       testResults.push({
         test: 'health-check',
         status: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error'
       });
     }
 
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       testResults.push({
         test: 'initialization',
         status: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error'
       });
     }
 
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       testResults.push({
         test: 'bucket-management',
         status: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error'
       });
     }
 
@@ -161,14 +161,14 @@ Test ID: ${Math.random().toString(36).substring(7)}
       testResults.push({
         test: 'file-operations',
         status: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error'
       });
     }
 
     const totalTime = Date.now() - startTime;
-    const passedTests = testResults.filter(t => t.status === 'passed').length;
-    const failedTests = testResults.filter(t => t.status === 'failed').length;
-    const errorTests = testResults.filter(t => t.status === 'error').length;
+    const passedTests = testResults.filter(item => item.length);
+    const failedTests = testResults.filter(item => item.length);
+    const errorTests = testResults.filter(item => item.length);
 
     return new Response(JSON.stringify({
       testSuite: 'MinIO Integration Phase 1',
@@ -191,7 +191,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
   } catch (error) {
     return new Response(JSON.stringify({
       testSuite: 'MinIO Integration Phase 1',
-      error: error instanceof Error ? error.message : 'Test suite failed',
+      error: error instanceof Error ? error.message: 'Test suite failed',
       partialResults: testResults,
       timestamp: new Date().toISOString()
     }), {

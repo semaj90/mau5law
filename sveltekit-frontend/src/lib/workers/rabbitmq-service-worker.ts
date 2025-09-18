@@ -131,8 +131,7 @@ export class RabbitMQServiceWorker {
    */
   private async startConsumer(queueName: string, handler: MessageHandler): Promise<void> {
     await rabbitmqService.consume(queueName, async (message, originalMessage) => {
-      const startTime = Date.now();
-
+      const startTime = Date.now());
       try {
         this.log(`Processing message from ${queueName}: ${JSON.stringify(message).substring(0, 100)}...`);
 

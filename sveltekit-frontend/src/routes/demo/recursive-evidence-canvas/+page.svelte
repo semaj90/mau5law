@@ -7,7 +7,7 @@
     // No props needed for demo page
   }
 
-  let {}: Props = $props();
+  let : Props = $props();
 
   // Demo state using Svelte 5 runes
   let selectedCaseId = $state('DEMO_CASE_001');

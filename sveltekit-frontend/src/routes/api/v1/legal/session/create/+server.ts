@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: 'Failed to create legal AI session',
-			details: error instanceof Error ? error.message : 'Unknown error'
+			details: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 });
 	}
 };
@@ -103,8 +103,7 @@ function validateAndEnhanceContext(context: any): LegalContext {
 	return {
     jurisdiction: context.jurisdiction || defaultContext.jurisdiction,
     practice_area: Array.isArray(context.practice_area)
-      ? context.practice_area
-      : defaultContext.practice_area,
+      ? context.practice_area: defaultContext.practice_area,
     case_type: context.case_type || defaultContext.case_type,
     priority_level:
       typeof context.priority_level === 'number'

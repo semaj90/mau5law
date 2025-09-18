@@ -7,7 +7,7 @@ export const chatMachine = createMachine({
     messages: [],
     error: null,
     status: "idle",
-    settings: {
+    }); const settings = {
       model: "gemma3-legal",
       temperature: 0.3,
       maxTokens: 500,

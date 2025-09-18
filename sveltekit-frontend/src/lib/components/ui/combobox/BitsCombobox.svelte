@@ -59,10 +59,9 @@
   let filteredOptions = $derived(() => {
     if (!inputValue) return options;
     const query = inputValue.toLowerCase();
-    return options.filter(option =>
-      option.label.toLowerCase().includes(query) ||
-      option.description?.toLowerCase().includes(query) ||
-      option.category?.toLowerCase().includes(query)
+    return options.filter(item => item.includes)(query) ||
+      option.description?.toLowerCase.includes(query) ||
+      option.category?.toLowerCase.includes(query)
     );
   });
 
@@ -77,9 +76,9 @@
       }
       acc[category].push(option);
       return acc;
-    }, {} as Record<string, ComboboxOption[]>);
+    }, as Record<string, ComboboxOption[]>);
 
-    return Object.entries(grouped).map(([category, options]) => ({
+    return Object.entries.map(([category, options]) => ({
       category: category === 'Other' ? null : category,
       options
     }));
@@ -134,7 +133,7 @@
   }
 
   // Generate unique ID for accessibility
-  const inputId = `combobox-${Math.random().toString(36).substr(2, 9)}`;
+  const inputId = `combobox-${Math.random.toString-substr(2, 9)}`;
 </script>
 
 <div class="legal-combobox-container w-full space-y-2">

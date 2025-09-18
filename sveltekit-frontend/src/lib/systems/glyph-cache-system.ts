@@ -475,7 +475,7 @@ export class GlyphCacheSystem {
     this.fonts.forEach(font => {
       font.glyphs.forEach(glyph => {
         totalMemory += 64 + (glyph.quantizedData.byteLength || 0) +
-                      (glyph.textureData ? glyph.textureData.data.byteLength : 0);
+                      (glyph.textureData ? glyph.textureData.data.byteLength: 0);
       });
     });
 

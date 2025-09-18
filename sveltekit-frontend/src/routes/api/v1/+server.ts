@@ -221,7 +221,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: false,
       error: {
         code: 'INTERNAL_ERROR',
-        message: dev ? e.message : 'Service temporarily unavailable'
+        message: dev ? e.message: 'Service temporarily unavailable'
       },
       metadata: {
         timestamp: new Date().toISOString(),
@@ -274,7 +274,7 @@ async function handleHealthCheck(): Promise<Response> {
   await Promise.allSettled(checkPromises);
 
   const totalServices = Object.keys(healthChecks).length;
-  const healthyServices = Object.values(healthChecks).filter(h => h.status === 'healthy').length;
+  const healthyServices = Object.values(healthChecks).filter(item => item.length);
   const healthScore = totalServices > 0 ? Math.round((healthyServices / totalServices) * 100) : 0;
 
   const data = {
@@ -308,13 +308,13 @@ async function handleServiceDiscovery(): Promise<Response> {
     name,
     config,
     protocols: getServiceProtocols(config),
-    tier: 'tier' in config ? config.tier : 'STANDARD'
+    tier: 'tier' in config ? config.tier: 'STANDARD'
   }));
   const data = {
     services,
     total: services.length,
-    active: services.filter(s => s.config.status === 'active').length,
-    experimental: services.filter(s => s.config.status === 'experimental').length,
+    active: services.filter(item => item.length),
+    experimental: services.filter(item => item.length),
     protocolSupport: {
       HTTP: services.filter(s => s.protocols.includes('HTTP')).length,
       gRPC: services.filter(s => s.protocols.includes('gRPC')).length,

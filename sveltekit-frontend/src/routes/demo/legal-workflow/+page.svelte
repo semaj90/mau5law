@@ -27,7 +27,7 @@ Shows: Case creation → Evidence upload → Canvas positioning → Timeline →
   let isRunning = $state(false);
   let caseId = $state<string | null>(null);
   let chatQuery = $state('What evidence supports the prosecution\'s case?');
-  let demoResults = $state<any>({});
+  let demoResults = $state<any>( );
 
   // Demo case data
   const demoCase = {
@@ -66,7 +66,6 @@ Shows: Case creation → Evidence upload → Canvas positioning → Timeline →
     isRunning = true;
     currentStep = 0;
     demoResults = {};
-
     try {
       // Step 1: Create Case
       await runStep(1, 'create_case', {
@@ -270,16 +269,16 @@ Shows: Case creation → Evidence upload → Canvas positioning → Timeline →
 
           {#if step.result?.message}
             <div class="step-result">
-              <p><strong>Result:</strong> {step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).message}</p>
-              {#if step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).nextStep}
-                <p class="nes-text is-disabled"><em>Next: {step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).nextStep}</em></p>
+              <p><strong>Result:</strong> {step.result.message}</p>
+              {#if step.result.nextStep}
+                <p class="nes-text is-disabled"><em>Next: {step.result.nextStep}</em></p>
               {/if}
             </div>
           {/if}
 
           {#if step.result?.error}
             <div class="step-error nes-text is-error">
-              <strong>Error:</strong> {step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).error}
+              <strong>Error:</strong> {step.result.error}
             </div>
           {/if}
 
@@ -288,10 +287,10 @@ Shows: Case creation → Evidence upload → Canvas positioning → Timeline →
             <div class="case-details">
               <h4>📁 Case Created:</h4>
               <ul>
-                <li><strong>Case #:</strong> {step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).case.caseNumber}</li>
-                <li><strong>Title:</strong> {step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).case.title}</li>
-                <li><strong>Status:</strong> {step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).case.status}</li>
-                <li><strong>Priority:</strong> {step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).case.priority}</li>
+                <li><strong>Case #:</strong> {step.result.case.caseNumber}</li>
+                <li><strong>Title:</strong> {step.result.case.title}</li>
+                <li><strong>Status:</strong> {step.result.case.status}</li>
+                <li><strong>Priority:</strong> {step.result.case.priority}</li>
               </ul>
             </div>
           {/if}
@@ -300,7 +299,7 @@ Shows: Case creation → Evidence upload → Canvas positioning → Timeline →
             <div class="evidence-details">
               <h4>📄 Evidence Uploaded:</h4>
               <ul>
-                {#each step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).results as evidence}
+                {#each step.result.results as evidence}
                   <li>
                     <strong>{evidence.filename}</strong>
                     ({evidence.status})
@@ -313,9 +312,9 @@ Shows: Case creation → Evidence upload → Canvas positioning → Timeline →
 
           {#if step.action === 'generate_timeline' && step.result?.timeline}
             <div class="timeline-details">
-              <h4>⏱️ Timeline Events ({step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).timeline.length}):</h4>
+              <h4>⏱️ Timeline Events ({step.result.timeline.length}):</h4>
               <div class="timeline-preview">
-                {#each step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).timeline.slice(-3) as event}
+                {#each step.result.timeline.slice(-3) as event}
                   <div class="timeline-event">
                     <span class="timestamp">{new Date(event.timestamp).toLocaleTimeString()}</span>
                     <span class="event-type">{event.type}</span>
@@ -333,11 +332,11 @@ Shows: Case creation → Evidence upload → Canvas positioning → Timeline →
                 <strong>Query:</strong> {chatQuery}
               </div>
               <div class="chat-response nes-textarea">
-                {step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).response}
+                {step.result.response}
               </div>
-              {#if step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).context}
+              {#if step.result.context}
                 <p class="context-info">
-                  <em>Used {step.(result as { success?: unknown; case?: unknown; error?: unknown; message?: unknown; nextStep?: unknown; results?: unknown; timeline?: unknown; response?: unknown; context?: unknown }).context.documentsAnalyzed} documents with embedding search</em>
+                  <em>Used {step.result.context.documentsAnalyzed} documents with embedding search</em>
                 </p>
               {/if}
             </div>

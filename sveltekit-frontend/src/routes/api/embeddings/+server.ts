@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         error: "Failed to generate embedding",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );
@@ -138,7 +138,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         error: "Failed to generate batch embeddings",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );
@@ -242,7 +242,7 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         error: "Failed to sync embeddings",
-        details: error instanceof Error ? error.message : "Unknown error",
+        details: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );

@@ -25,7 +25,7 @@
   }
   function switchDocumentType(type: typeof selectedDocumentType) {
     selectedDocumentType = type;
-    editorTitle = `${type.charAt(0).toUpperCase() + type.slice(1)} Demo`;
+    editorTitle = `${type.charAt.toUpperCase() + type.slice(1)} Demo`;
   }
 </script>
 

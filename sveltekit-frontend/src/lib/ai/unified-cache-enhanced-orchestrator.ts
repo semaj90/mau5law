@@ -17,24 +17,24 @@
  * that learns from every interaction and continuously improves prediction accuracy.
  */
 
-import { comprehensiveAISynthesisOrchestrator } from './comprehensive-ai-synthesis-orchestrator.js';
-import type { SynthesisRequest, SynthesisResponse } from './comprehensive-ai-synthesis-orchestrator.js';
-import { qloraTopologyPredictor } from './qlora-topology-predictor.js';
-import type { QLoRATopologyState, TopologyPrediction } from './qlora-topology-predictor.js';
-import { searchCacheNeuralEngine } from '../gpu/search-cache-neural-engine.js';
-import type { RenderContext, NeuralOptimizationResult } from '../gpu/search-cache-neural-engine.js';
+import { comprehensiveAISynthesisOrchestrator } from './comprehensive-ai-synthesis-orchestrator';
+import type { SynthesisRequest, SynthesisResponse } from './comprehensive-ai-synthesis-orchestrator';
+import { qloraTopologyPredictor } from './qlora-topology-predictor';
+import type { QLoRATopologyState, TopologyPrediction } from './qlora-topology-predictor';
+import { searchCacheNeuralEngine } from '../gpu/search-cache-neural-engine';
+import type { RenderContext, NeuralOptimizationResult } from '../gpu/search-cache-neural-engine';
 
 // Import existing cache systems
-import MultiTierCache from './cache/multiTierCache.js';
-import type { CacheEntry } from './cache/multiTierCache.js';
-import { optimizedCache } from '../server/webgpu-redis-optimizer.js';
-import type { GPUMetrics, CacheWorkload } from '../server/webgpu-redis-optimizer.js';
-import { setCache, getCache, hashPayload } from '../server/summarizeCache.js';
-import type { SummarizeCacheEntry, CachePerformanceMeta } from '../server/summarizeCache.js';
+import MultiTierCache from './cache/multiTierCache';
+import type { CacheEntry } from './cache/multiTierCache';
+import { optimizedCache } from '../server/webgpu-redis-optimizer';
+import type { GPUMetrics, CacheWorkload } from '../server/webgpu-redis-optimizer';
+import { setCache, getCache, hashPayload } from '../server/summarizeCache';
+import type { SummarizeCacheEntry, CachePerformanceMeta } from '../server/summarizeCache';
 
 // Orchestration integration (these would be actual imports in production)
-// import { OptimizedRabbitMQOrchestrator } from '../orchestration/optimized-rabbitmq-orchestrator.js';
-// import { AsyncRabbitMQStateManager } from '../state/async-rabbitmq-state-manager.js';
+// import { OptimizedRabbitMQOrchestrator } from '../orchestration/optimized-rabbitmq-orchestrator';
+// import { AsyncRabbitMQStateManager } from '../state/async-rabbitmq-state-manager';
 
 // Enhanced system types
 export interface UnifiedCacheRequest extends SynthesisRequest {
@@ -865,7 +865,7 @@ export class UnifiedCacheEnhancedOrchestrator {
       groups.get(groupKey)!.push(request);
     }
     
-    return Array.from(groups.values());
+    return Array.from(groups.values();
   }
 
   private async prefetchCacheForGroup(group: UnifiedCacheRequest[]): Promise<void> {
@@ -885,7 +885,7 @@ export class UnifiedCacheEnhancedOrchestrator {
     const complexity = group.reduce((sum, req) => sum + this.calculateRequestComplexity(req), 0) / group.length;
     const baseConcurrency = 4;
     
-    return Math.max(2, Math.min(8, Math.floor(baseConcurrency * (1.5 - complexity))));
+    return Math.max(2, Math.min(8, Math.floor(baseConcurrency * (1.5 - complexity)));
   }
 
   private async processConcurrentGroup(group: UnifiedCacheRequest[], concurrency: number): Promise<UnifiedCacheResponse[]> {
@@ -905,7 +905,7 @@ export class UnifiedCacheEnhancedOrchestrator {
   private async updateSystemLearningFromBatch(results: UnifiedCacheResponse[]): Promise<void> {
     // Update system-wide learning parameters based on batch results
     const avgAccuracy = results.reduce((sum, result) => sum + (result as { accuracyMetrics?: any; success?: any }).accuracyMetrics.actualAccuracy, 0) / results.length;
-    const successRate = results.filter(result => (result as { accuracyMetrics?: any; success?: any }).success).length / results.length;
+    const successRate = results.filter(item => item.success).length / results.length;
     
     console.log(`📊 BATCH LEARNING: Avg accuracy: ${avgAccuracy.toFixed(3)}, Success rate: ${successRate.toFixed(3)}`);
     

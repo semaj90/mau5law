@@ -85,7 +85,7 @@ export class LegalVectorService {
     clientId?: string;
     confidentialityLevel?: string;
     excludeDocumentIds?: number[];
-  } = {}): Promise<Array<LegalDocument & { similarity: number }>> {
+  } = {}): Promise<Array<LegalDocument & { similarity: number }> {
     const threshold = options.threshold ?? 0.7;
     const limit = options.limit ?? 10;
 
@@ -296,7 +296,7 @@ export class LegalVectorService {
     threshold?: number;
     limit?: number;
     filters?: any;
-  }>): Promise<Array<Array<LegalDocument & { similarity: number }>>> {
+  }>): Promise<Array<Array<LegalDocument & { similarity: number }> {
     const results = await Promise.all(
       queries.map(query =>
         this.findSimilarDocuments(
@@ -348,7 +348,7 @@ export class LegalVectorService {
             updatedAt: sql`NOW()`
           })
           .where(eq(legalDocuments.id, id))
-          .returning({ id: legalDocuments.id, title: legalDocuments.title });
+          .returning({ id: legalDocuments.id, title: legalDocuments.title })));
       })
     );
 

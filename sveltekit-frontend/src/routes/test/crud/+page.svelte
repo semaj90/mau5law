@@ -467,9 +467,7 @@ confirmDelete(caseItem)}
 
         <div class="mt-4 p-3 bg-muted rounded-lg">
           <h5 class="font-medium mb-2">Debug Info:</h5>
-          <pre class="text-xs overflow-auto">{JSON.stringify({
-            hasData: !!data,
-            casesCount: (data as { health?: unknown; cases?: unknown }).cases?.length || 0,
+          <pre class="text-xs overflow-auto">{JSON.stringify.cases?.length || 0,
             databaseConnected: (data as { health?: unknown; cases?: unknown }).health?.database?.connected || false,
             gamingEra,
             timestamp: new Date().toISOString()

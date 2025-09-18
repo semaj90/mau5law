@@ -278,7 +278,7 @@ export const GET: RequestHandler = async () => {
     const serviceStatus = await Promise.all(
       Object.entries(GO_SERVICES).map(async ([name, config]) => {
         try {
-          const healthCheck = await makeServiceRequest(config, config.healthPath || '/health', 'GET', undefined, {}, 5000);
+          const healthCheck = await makeServiceRequest(config, config.healthPath || '/health', 'GET', undefined, {}, 5000)));
           return {
             name,
             status: healthCheck.success ? 'healthy' : 'unhealthy',
@@ -304,7 +304,7 @@ export const GET: RequestHandler = async () => {
       })
     );
 
-    const healthyServices = serviceStatus.filter(s => s.status === 'healthy').length;
+    const healthyServices = serviceStatus.filter(item => item.length);
     const totalServices = serviceStatus.length;
 
     return json({

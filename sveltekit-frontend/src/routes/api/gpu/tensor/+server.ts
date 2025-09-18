@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
 
     // Validate tensor data
     const expectedSize = tensorData.shape.reduce((a: number, b: number) => a * b, 1);
-    if (!Array.isArray(tensorData.data) || tensorData.(data as { length?: any }).length !== expectedSize) {
+    if (!Array.isArray(tensorData.data) || tensorData.data.length !== expectedSize) {
       stats.failedRequests++;
       throw error(400, ensureError({
         message: 'Tensor data size mismatch'

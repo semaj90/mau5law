@@ -135,7 +135,7 @@
     overflow: hidden;
   }
 
-  .action-card::before {
+  .action-card: :before {
     content: '';
     position: absolute;
     top: 0;

@@ -49,7 +49,7 @@ class WebGPUComputeService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown WebGPU error',
+        error: error instanceof Error ? error.message: 'Unknown WebGPU error',
         performance: {
           executionTime: performance.now() - startTime
         }

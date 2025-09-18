@@ -24,7 +24,7 @@ https://svelte.dev/e/js_parse_error -->
   let analysisResult = $state<any>(null);
 
   // Feedback integration
-  let feedbackIntegration = $state<anylet currentInteractionId: string | null>(null)(null);
+  let feedbackIntegration = $state<anylet currentInteractionId: string  | null>(null); const data = null);
   let uploadStartTime = $state(0);
 
   async function handleUpload() {
@@ -40,13 +40,7 @@ https://svelte.dev/e/js_parse_error -->
     uploadStartTime = Date.now();
 
     // Track upload interaction for feedback
-    currentInteractionId = feedbackIntegration?.triggerFeedback({
-      filename: files[0].name,
-      fileSize: files[0].size,
-      fileType: files[0].type,
-      verboseMode,
-      thinkingMode,
-      uploadStarted: new Date().toISOString()
+    currentInteractionId = feedbackIntegration?.triggerFeedback.toISOString()
     });
 
     const formData = new FormData();
@@ -72,24 +66,16 @@ https://svelte.dev/e/js_parse_error -->
         uploadProgress = 100;
         // Track successful upload for feedback
         if (currentInteractionId && feedbackIntegration) {
-          feedbackIntegration.markCompleted({
-            success: true,
-            processingTime,
-            responseSize: xhr.responseText.length,
-            analysisResultKeys: Object.keys(analysisResult).join(','),
+          feedbackIntegration.markCompleted.join(','),
             uploadCompleted: new Date().toISOString()
           });
         }
       } else {
-        const errorText = JSON.parse(xhr.responseText).error || "An unknown error occurred.";
+        const errorText = JSON.parse.error || "An unknown error occurred.";
         error = errorText;
         // Track failed upload for feedback
         if (currentInteractionId && feedbackIntegration) {
-          feedbackIntegration.markFailed({
-            httpStatus: xhr.status,
-            errorMessage: errorText,
-            processingTime,
-            uploadFailed: new Date().toISOString()
+          feedbackIntegration.markFailed.toISOString()
           });
         }
       }

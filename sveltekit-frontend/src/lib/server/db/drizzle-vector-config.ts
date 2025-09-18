@@ -419,7 +419,7 @@ export async function healthCheck(): Promise<any> {
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
       connection: 'failed',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }

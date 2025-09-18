@@ -22,7 +22,7 @@
       const res = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: prompt, model: 'gemma3-legal', config: {} })
+        body: JSON.stringify({ text: prompt, model: 'gemma3-legal', config: })
       });
       proxyBackend = res.headers.get('X-Proxy-Backend');
       if (!res.body) return;
@@ -43,8 +43,7 @@
           const parsed = JSON.parse(fullText);
           const cached = parsed?.metadata?.cached;
           if (typeof cached === 'boolean') lastCached = cached;
-        } catch {}
-      }
+        } catch }
     } catch (err) {
       console.error(err);
       messages[messages.length - 1].content = 'Sorry, something went wrong.';

@@ -181,16 +181,13 @@ export const evidenceProcessingMachine = setup({
         // Extract results, handling potential failures
         const embeddings =
           embeddingResponse.status === 'fulfilled'
-            ? embeddingResponse.value
-            : { vector: [], confidence: 0 };
+            ? embeddingResponse.value:  { vector: [], confidence: 0 };
         const tags =
           taggingResponse.status === 'fulfilled'
-            ? taggingResponse.value
-            : { tags: [], confidence: 0 };
+            ? taggingResponse.value:  { tags: [], confidence: 0 };
         const analysis =
           analysisResponse.status === 'fulfilled'
-            ? analysisResponse.value
-            : { analysis: Record<string, any>, confidence: 0 };
+            ? analysisResponse.value:  { analysis: Record<string, any>, confidence: 0 };
 
         const processingTime = Date.now() - startTime;
 

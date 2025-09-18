@@ -21,7 +21,7 @@ https://svelte.dev/e/tag_invalid_name -->
   import { ScrollArea } from '$lib/components/ui/scroll-area';
 
   // Svelte 5 runes for state management
-  let messages = $state<any[]>([])([]);
+  let messages = $state<any[]>([]) => []);
 
   let inputMessage = $state('');
   let isLoading = $state(false);

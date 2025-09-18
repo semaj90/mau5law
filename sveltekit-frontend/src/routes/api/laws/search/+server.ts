@@ -106,9 +106,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Search by query (simple text search)
     if (query.trim()) {
       const searchTerm = query.toLowerCase();
-      results = results.filter(law => {
-        return (
-          law.title.toLowerCase().includes(searchTerm) ||
+      results = results.filter(item => item.includes)(searchTerm) ||
           law.description.toLowerCase().includes(searchTerm) ||
           law.code.toLowerCase().includes(searchTerm) ||
           law.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm))

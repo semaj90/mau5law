@@ -543,8 +543,8 @@ https://svelte.dev/e/expected_token -->
 		color: #aaa;
 	}
 	
-	.status-(item as { status?: unknown }).status-ok { color: #00ff88; }
-	.status-(item as { status?: unknown }).status-warn { color: #ffaa00; }
+	.status-.status-ok { color: #00ff88; }
+	.status-.status-warn { color: #ffaa00; }
 	
 	.parallax-viewport {
 		position: relative;
@@ -726,14 +726,14 @@ https://svelte.dev/e/expected_token -->
 		border-radius: 50%;
 	}
 	
-	.crosshair::before,
+	.crosshair: :before,
 	.crosshair::after {
 		content: '';
 		position: absolute;
 		background: #ffff00;
 	}
 	
-	.crosshair::before {
+	.crosshair: :before {
 		top: 50%;
 		left: -5px;
 		width: 30px;
@@ -741,7 +741,7 @@ https://svelte.dev/e/expected_token -->
 		transform: translateY(-1px);
 	}
 	
-	.crosshair::after {
+	.crosshair: :after {
 		left: 50%;
 		top: -5px;
 		width: 2px;
@@ -773,7 +773,7 @@ https://svelte.dev/e/expected_token -->
 		position: relative;
 	}
 	
-	.reference-cross::before,
+	.reference-cross: :before,
 	.reference-cross::after {
 		content: '';
 		position: absolute;
@@ -783,12 +783,12 @@ https://svelte.dev/e/expected_token -->
 		transform: translate(-50%, -50%);
 	}
 	
-	.reference-cross::before {
+	.reference-cross: :before {
 		width: 20px;
 		height: 1px;
 	}
 	
-	.reference-cross::after {
+	.reference-cross: :after {
 		width: 1px;
 		height: 20px;
 	}
@@ -860,7 +860,7 @@ https://svelte.dev/e/expected_token -->
 	}
 	
 	/* PS1 Effects */
-	.ps1-scanlines::before {
+	.ps1-scanlines: :before {
 		content: '';
 		position: absolute;
 		top: 0;

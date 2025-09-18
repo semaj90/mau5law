@@ -34,8 +34,7 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/evidence-files?limit=10');
       const data = await (response as { json?: unknown }).json();
       if ((data as { success?: unknown; items?: unknown; mimeType?: unknown; fileSize?: unknown }).success) {
-        contextItems = (data as { success?: unknown; items?: unknown; mimeType?: unknown; fileSize?: unknown }).items.map(item => ({
-          id: (item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).id.toString(),
+        contextItems = (data as { success?: unknown; items?: unknown; mimeType?: unknown; fileSize?: unknown }).items.map(item => ({ id: item.id.toString(),
           title: (item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).title,
           content: `${(item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).evidence_type} - ${(item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).mime_type}`,
           uploadedAt: (item as { id?: unknown; title?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; content?: unknown; similarity?: unknown }).uploaded_at
@@ -65,8 +64,7 @@ https://svelte.dev/e/js_parse_error -->
     const results = event.detail.results;
     if (results && results.length > 0) {
       // Update context with search results
-      contextItems = results.map(result => ({
-        id: (result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).id.toString(),
+      contextItems = results.map(item => ({ id: item.id.toString(),
         title: (result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).title,
         content: `${(result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).evidenceType} - Similarity: ${((result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).similarity * 100).toFixed(1)}%`,
         similarity: (result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).similarity
@@ -200,7 +198,7 @@ https://svelte.dev/e/js_parse_error -->
                       });
                       const result = await (response as { json?: unknown }).json();
                       if ((result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).success) {
-                        alert(`Embedding backfill completed: ${(result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).(result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).success} files processed`);
+                        alert(`Embedding backfill completed: ${(result as { id?: unknown; title?: unknown; evidenceType?: unknown; similarity?: unknown; success?: unknown; result?: unknown }).result.success} files processed`);
                       }
                     } catch (error) {
                       alert('Error processing embeddings: ' + error.message);

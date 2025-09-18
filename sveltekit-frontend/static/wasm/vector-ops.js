@@ -12,6 +12,10 @@ async function instantiate(module, imports = {}) {
           throw Error(`${message} in ${fileName}:${lineNumber}:${columnNumber}`);
         })();
       },
+      "Date.now"() {
+        // ~lib/bindings/dom/Date.now() => f64
+        return Date.now();
+      },
     }, Object.assign(Object.create(globalThis), imports.env || {})),
   };
   const { exports } = await WebAssembly.instantiate(module, adaptedImports);
@@ -20,6 +24,24 @@ async function instantiate(module, imports = {}) {
     allocateVectorMemory(length) {
       // src/wasm/vector-operations/allocateVectorMemory(i32) => usize
       return exports.allocateVectorMemory(length) >>> 0;
+    },
+    hybridCosineSimilarity(aPtr, bPtr, length, useServer) {
+      // src/wasm/vector-operations/hybridCosineSimilarity(usize, usize, i32, bool) => f32
+      useServer = useServer ? 1 : 0;
+      return exports.hybridCosineSimilarity(aPtr, bPtr, length, useServer);
+    },
+    prepareTensorForCUDA(tensorPtr, dimensions, dimCount, outputPtr) {
+      // src/wasm/vector-operations/prepareTensorForCUDA(usize, ~lib/array/Array<i32>, i32, usize) => void
+      dimensions = __lowerArray(__setU32, 4, 2, dimensions) || __notnull();
+      exports.prepareTensorForCUDA(tensorPtr, dimensions, dimCount, outputPtr);
+    },
+    optimizedEmbeddingTransfer(embeddingPtr, length, compressionLevel) {
+      // src/wasm/vector-operations/optimizedEmbeddingTransfer(usize, i32, i32) => usize
+      return exports.optimizedEmbeddingTransfer(embeddingPtr, length, compressionLevel) >>> 0;
+    },
+    shouldUseServer(operationType, dataSize, complexityScore) {
+      // src/wasm/vector-operations/shouldUseServer(i32, i32, i32) => bool
+      return exports.shouldUseServer(operationType, dataSize, complexityScore) != 0;
     },
   }, exports);
   function __liftString(pointer) {
@@ -32,6 +54,33 @@ async function instantiate(module, imports = {}) {
       string = "";
     while (end - start > 1024) string += String.fromCharCode(...memoryU16.subarray(start, start += 1024));
     return string + String.fromCharCode(...memoryU16.subarray(start, end));
+  }
+  function __lowerArray(lowerElement, id, align, values) {
+    if (values == null) return 0;
+    const
+      length = values.length,
+      buffer = exports.__pin(exports.__new(length << align, 1)) >>> 0,
+      header = exports.__pin(exports.__new(16, id)) >>> 0;
+    __setU32(header + 0, buffer);
+    __dataview.setUint32(header + 4, buffer, true);
+    __dataview.setUint32(header + 8, length << align, true);
+    __dataview.setUint32(header + 12, length, true);
+    for (let i = 0; i < length; ++i) lowerElement(buffer + (i << align >>> 0), values[i]);
+    exports.__unpin(buffer);
+    exports.__unpin(header);
+    return header;
+  }
+  function __notnull() {
+    throw TypeError("value must not be null");
+  }
+  let __dataview = new DataView(memory.buffer);
+  function __setU32(pointer, value) {
+    try {
+      __dataview.setUint32(pointer, value, true);
+    } catch {
+      __dataview = new DataView(memory.buffer);
+      __dataview.setUint32(pointer, value, true);
+    }
   }
   return adaptedExports;
 }
@@ -55,10 +104,18 @@ export const {
   freeVectorMemory,
   dotProductSIMD,
   cosineSimilaritySIMD,
+  prepareVectorForServer,
+  processServerResponse,
+  hybridCosineSimilarity,
+  batchVectorChunking,
+  prepareTensorForCUDA,
+  optimizedEmbeddingTransfer,
+  shouldUseServer,
   cosineSimJS,
   dotProductJS,
   cosineSimSIMDJS,
   getMemoryStats,
+  benchmarkOperation,
 } = await (async url => instantiate(
   await (async () => {
     const isNodeOrBun = typeof process != "undefined" && process.versions != null && (process.versions.node != null || process.versions.bun != null);

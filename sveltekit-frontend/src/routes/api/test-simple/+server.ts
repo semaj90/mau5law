@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Failed to parse request',
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 400 });
   }
 };

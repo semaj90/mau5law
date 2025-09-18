@@ -127,7 +127,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       service: 'quic-ai-stream',
       status: 'error',
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error',
       timestamp: new Date().toISOString(),
     });
   }
@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         503,
         ensureError({
           message: 'AI streaming service unavailable',
-          error: quicError instanceof Error ? quicError.message : 'Unknown error',
+          error: quicError instanceof Error ? quicError.message: 'Unknown error',
         })
       );
     }
@@ -243,7 +243,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       500,
       ensureError({
         message: 'AI streaming failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error',
       })
     );
   }
@@ -292,7 +292,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Session termination failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error',
       })
     );
   }
@@ -332,7 +332,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       500,
       ensureError({
         message: 'Configuration update failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error',
       })
     );
   }

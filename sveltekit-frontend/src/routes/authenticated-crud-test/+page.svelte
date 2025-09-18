@@ -104,7 +104,7 @@
       return false;
     } catch (error) {
       authError = 'Failed to check authentication';
-      addResult(`Authentication check error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
+      addResult(`Authentication check error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
       return false;
     }
   }
@@ -153,14 +153,14 @@
         const singleData = await singleResponse.json();
 
         if (singleResponse.ok && singleData.success) {
-          addResult(`GET specific case - Success with ${singleData.(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).documents?.length || 0} docs, ${singleData.(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).activities?.length || 0} activities`, 'success');
+          addResult(`GET specific case - Success with ${singleData.data.documents?.length || 0} docs, ${singleData.data.activities?.length || 0} activities`, 'success');
         } else {
           addResult(`GET specific case - Failed: ${singleData.error}`, 'error');
         }
       }
 
     } catch (error) {
-      addResult(`GET operations error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
+      addResult(`GET operations error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
     }
 
     isLoading = false;
@@ -201,15 +201,15 @@
 
         // Refresh cases list
         await testAuthenticatedGET();
-        return (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).id;
+        return (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).data.id;
       } else {
         addResult(`POST /api/test-cases - Failed: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).message || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).error}`, 'error');
         if ((data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).details) {
-          addResult(`   Details: ${JSON.stringify((data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).details)}`, 'error');
+          addResult(`   Details: ${JSON.stringify(details)}`, 'error');
         }
       }
     } catch (error) {
-      addResult(`POST operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
+      addResult(`POST operation error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
     }
 
     isLoading = false;
@@ -277,7 +277,7 @@
         addResult(`PUT /api/test-cases - Failed: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).message || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).error}`, 'error');
       }
     } catch (error) {
-      addResult(`PUT operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
+      addResult(`PUT operation error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
     }
 
     isLoading = false;
@@ -328,7 +328,7 @@
         addResult(`DELETE /api/test-cases - Failed: ${(data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).message || (data as { user?: unknown; documents?: unknown; activities?: unknown; success?: unknown; data?: unknown; message?: unknown; error?: unknown; details?: unknown }).error}`, 'error');
       }
     } catch (error) {
-      addResult(`DELETE operation error: ${error instanceof Error ? error.message : 'Unknown'}`, 'error');
+      addResult(`DELETE operation error: ${error instanceof Error ? error.message: 'Unknown'}`, 'error');
     }
 
     isLoading = false;

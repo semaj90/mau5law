@@ -73,7 +73,7 @@ export async function reRankWithPgVector(query: string, current: any[], endpoint
     if (!Array.isArray(scores) || scores.length === 0) return current;
     const scoreMap = new Map<any, number>();
     for (const s of scores) {
-      const norm = typeof s.score === 'number' ? s.score : (s.relevance || 0);
+      const norm = typeof s.score === 'number' ? s.score: (s.relevance || 0);
       scoreMap.set(s.id ?? s.document_id ?? s.documentId, norm);
     }
     return current.map(item => {

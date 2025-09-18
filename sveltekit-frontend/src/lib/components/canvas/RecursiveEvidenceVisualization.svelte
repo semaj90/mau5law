@@ -54,7 +54,7 @@
   let evidenceWorker: Worker | null = null;
 
   // Visualization state
-  let hierarchyNodes = $state<Map<string, fabric.Group>>(new Map());
+  let hierarchyNodes = $state<Map<string, fabric.Group>(new Map());
   let connectionLines = $state<fabric.Line[]>([]);
   let layoutMode = $state<'tree' | 'radial' | 'force'>('tree');
   let showChainIntegrity = $state(true);
@@ -67,7 +67,7 @@
   let centerY = $state(height / 2);
 
   // Evidence processing metrics
-  let activeProcessingJobs = $state<Map<string, any>>(new Map());
+  let activeProcessingJobs = $state<Map<string, any>(new Map());
   let visualizationMetrics = $state({
     nodesRendered: 0,
     connectionsDrawn: 0,
@@ -423,7 +423,7 @@
     // Legal implications icons
     const implicationIcons: fabric.Object[] = [];
     if (showLegalImplications && node.legalImplications) {
-      node.legalImplications.slice(0, 3).forEach((implication: string, index: number) => {
+      node.legalImplications.slice.forEach((implication: string, index: number) => {
         const icon = new fabric.Text(getImplicationIcon(implication), {
           fontSize: 14,
           top: 35 + index * 15,
@@ -518,7 +518,7 @@
     };
 
     for (const [key, icon] of Object.entries(icons)) {
-      if (implication.toLowerCase().includes(key.replace('_', ' '))) {
+      if (implication.toLowerCase.includes(key.replace('_', ' '))) {
         return icon;
       }
     }
@@ -894,12 +894,7 @@
     overflow: hidden;
   }
 
-  .evidence-hierarchy-canvas {
-    display: block;
-    cursor: grab;
-  }
-
-  .evidence-hierarchy-canvas:active {
+  .evidence-hierarchy-canv.evidence-hierarchy-canvas:active {
     cursor: grabbing;
   }
 

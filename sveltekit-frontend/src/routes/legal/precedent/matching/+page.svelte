@@ -383,8 +383,8 @@
       factualAlignment: 'MODERATE',
       legalPrincipleAlignment: 'STRONG',
       factors: {
-        bindingPrecedents: precedentMatches.filter(p => p.precedentialValue === 'BINDING').length,
-        persuasivePrecedents: precedentMatches.filter(p => p.precedentialValue === 'PERSUASIVE').length,
+        bindingPrecedents: precedentMatches.filter(item => item.length),
+        persuasivePrecedents: precedentMatches.filter(item => item.length),
         averageSimilarity: precedentMatches.reduce((sum, p) => sum + p.similarityScore, 0) / precedentMatches.length,
         recentAuthority: precedentMatches.filter(p => new Date(p.dateDecided) > new Date('2020-01-01')).length
       },
@@ -426,7 +426,7 @@
   function generateMockCitingCases(count: number): string[] {
     const cases = [];
     for (let i = 0; i < Math.min(count, 20); i++) {
-      cases.push(`CITING-CASE-${String(i + 1).padStart(3, '0')}`);
+      cases.push.padStart(3, '0')}`);
     }
     return cases;
   }
@@ -434,7 +434,7 @@
   function generateMockCitedCases(count: number): string[] {
     const cases = [];
     for (let i = 0; i < count; i++) {
-      cases.push(`CITED-CASE-${String(i + 1).padStart(3, '0')}`);
+      cases.push.padStart(3, '0')}`);
     }
     return cases;
   }

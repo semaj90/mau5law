@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       { 
         error: 'Failed to perform semantic search',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message: 'Unknown error'
       },
       { status: 500 }
     );

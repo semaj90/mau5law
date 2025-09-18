@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (err) {
     console.error('Vector search API error:', err);
-    throw error(500, `Vector search failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Vector search failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -307,13 +307,13 @@ async function performVectorSearch(params: {
         id: row.id,
         content: row.content,
         similarity: parseFloat(row.similarity),
-        metadata: includeMetadata ? row.metadata : undefined,
+        metadata: includeMetadata ? row.metadata: undefined,
         embedding: includeMetadata ? row.embedding : undefined
       }));
 
   } catch (dbError) {
     console.error('Database query error:', dbError);
-    throw new Error(`Database search failed: ${dbError instanceof Error ? dbError.message : 'Unknown error'}`);
+    throw new Error(`Database search failed: ${dbError instanceof Error ? dbError.message: 'Unknown error'}`);
   }
 }
 
@@ -392,6 +392,6 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString()
     });
   } catch (err) {
-    throw error(500, `Health check failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Health check failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };

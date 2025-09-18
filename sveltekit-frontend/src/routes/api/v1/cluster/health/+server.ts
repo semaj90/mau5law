@@ -33,8 +33,8 @@ export const GET: RequestHandler = async ({ url }) => {
       rabbitmq: rabbitmqHealth.status === 'healthy'
     };
     
-    const totalHealthy = Object.values(internalServices).filter(Boolean).length + 
-                        Object.values(externalServices).filter(Boolean).length;
+    const totalHealthy = Object.values(internalServices).filter(item => item.length) + 
+                        Object.values(externalServices).filter(item => item.length);
     const totalServices = Object.keys(internalServices).length + Object.keys(externalServices).length;
 
     const response = {
@@ -64,7 +64,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         error: 'Health check failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString(),
         status: 'error'
       },
@@ -103,12 +103,12 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json({ 
       error: 'Action failed', 
-      message: error instanceof Error ? error.message : 'Unknown error' 
+      message: error instanceof Error ? error.message: 'Unknown error' 
     }, { status: 500 });
   }
 };
 
-async function checkExternalServices(): Promise<Record<string, boolean>> {
+async function checkExternalServices(): Promise<Record<string, boolean> {
   const externalChecks = [
     { name: 'enhanced_rag', url: 'http://localhost:8095/health' },
     { name: 'upload_service', url: 'http://localhost:8093/health' },
@@ -124,7 +124,7 @@ async function checkExternalServices(): Promise<Record<string, boolean>> {
         const response = await fetch(url, { 
           method: 'GET',
           signal: AbortSignal.timeout(2000)
-        });
+        })));
         results[name] = response.ok || response.status < 500;
       } catch {
         results[name] = false;

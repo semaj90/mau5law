@@ -131,7 +131,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testResults.enhancedRag = {
         test: 'Enhanced RAG Query',
         status: 'ERROR',
-        error: ragError instanceof Error ? ragError.message : 'Unknown error',
+        error: ragError instanceof Error ? ragError.message: 'Unknown error',
       };
       overallSuccess = false;
     }
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testResults.vectorService = {
         test: 'Vector Semantic Search',
         status: 'ERROR',
-        error: vectorError instanceof Error ? vectorError.message : 'Unknown error',
+        error: vectorError instanceof Error ? vectorError.message: 'Unknown error',
       };
       overallSuccess = false;
     }
@@ -182,7 +182,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testResults.uploadService = {
         test: 'Upload Service Health',
         status: 'ERROR',
-        error: uploadError instanceof Error ? uploadError.message : 'Unknown error',
+        error: uploadError instanceof Error ? uploadError.message: 'Unknown error',
       };
       overallSuccess = false;
     }
@@ -215,7 +215,7 @@ export const GET: RequestHandler = async ({ url }) => {
       testResults.quicEndpoints = {
         test: 'QUIC RAG Proxy Integration',
         status: 'ERROR',
-        error: quicError instanceof Error ? quicError.message : 'Unknown error',
+        error: quicError instanceof Error ? quicError.message: 'Unknown error',
       };
       overallSuccess = false;
     }
@@ -250,7 +250,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       message: 'QUIC-Go Integration Test Failed',
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error',
       timestamp: new Date().toISOString(),
     });
   }
@@ -310,7 +310,7 @@ export const POST: RequestHandler = async ({ request }) => {
       500,
       ensureError({
         message: 'Custom integration test failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error',
       })
     );
   }

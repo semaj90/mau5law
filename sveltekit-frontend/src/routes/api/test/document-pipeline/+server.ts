@@ -68,14 +68,14 @@ export const GET: RequestHandler = async () => {
   // Step 1: Test API Client Health
   testResults.push(
     await testStep('API Client Health Check', async () => {
-      return await apiClient.healthCheck();
+      return await apiClient.healthCheck());
     })
   );
 
   // Step 2: Test OCR Service Health
   testResults.push(
     await testStep('OCR Service Health Check', async () => {
-      return await apiClient.getOCRStatus();
+      return await apiClient.getOCRStatus());
     })
   );
 
@@ -85,8 +85,7 @@ export const GET: RequestHandler = async () => {
       const response = await fetch('/api/database/health', {
         method: 'GET',
         headers: { Accept: 'application/json' },
-      });
-
+      }));
       if (!response.ok) {
         throw new Error(`Database health check returned ${response.status}`);
       }
@@ -101,8 +100,7 @@ export const GET: RequestHandler = async () => {
       const response = await fetch('/api/health/all', {
         method: 'GET',
         headers: { Accept: 'application/json' },
-      });
-
+      }));
       if (!response.ok) {
         throw new Error(`Aggregated health check returned ${response.status}`);
       }
@@ -124,8 +122,7 @@ export const GET: RequestHandler = async () => {
       const response = await fetch('/api/health/ocr', {
         method: 'GET',
         headers: { Accept: 'application/json' },
-      });
-
+      }));
       // OCR service might not be running, so we check for appropriate response
       const ocrHealthData = await response.json();
 
@@ -149,7 +146,7 @@ export const GET: RequestHandler = async () => {
         // Create a test document blob
         const testDocument = new Blob(['This is a test legal document for OCR processing.'], {
           type: 'text/plain',
-        });
+        }));
         const testFile = new File([testDocument], 'test-document.txt', { type: 'text/plain' });
 
         // Test OCR processing
@@ -176,7 +173,7 @@ export const GET: RequestHandler = async () => {
             {
               type: 'text/plain',
             }
-          );
+          ));
           const testFile = new File([testDocument], 'test-evidence.txt', { type: 'text/plain' });
 
           // This would create evidence with OCR processing
@@ -219,8 +216,7 @@ export const GET: RequestHandler = async () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'initialize' }),
-      });
-
+      }));
       const dbResult = await response.json();
 
       return {
@@ -299,13 +295,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
       testResults.push(
         await testStep('OCR Health Check', async () => {
-          return await apiClient.getOCRStatus();
+          return await apiClient.getOCRStatus());
         })
       );
 
       testResults.push(
         await testStep('OCR Processing Test', async () => {
-          const testDoc = new File(['Test OCR content'], 'test.txt', { type: 'text/plain' });
+          const testDoc = new File(['Test OCR content'], 'test.txt', { type: 'text/plain' }));
           return await apiClient.processDocumentOCR(testDoc);
         })
       );
@@ -323,14 +319,14 @@ export const POST: RequestHandler = async ({ request }) => {
 
       testResults.push(
         await testStep('Aggregated Health', async () => {
-          const response = await fetch('/api/health/all');
+          const response = await fetch('/api/health/all'));
           return await response.json();
         })
       );
 
       testResults.push(
         await testStep('OCR Health', async () => {
-          const response = await fetch('/api/health/ocr');
+          const response = await fetch('/api/health/ocr'));
           return await response.json();
         })
       );

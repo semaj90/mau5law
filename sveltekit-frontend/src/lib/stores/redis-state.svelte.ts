@@ -74,7 +74,7 @@ class RedisStateStore {
   channelsSummary = $derived(() => {
     return Array.from(this.state.activeChannels).map(channel => ({
       name: channel,
-      messageCount: this.recentMessages.filter(m => m.channel === channel).length
+      messageCount: this.recentMessages.filter(item => item.length)
     }));
   });
   

@@ -53,7 +53,7 @@
     } catch (error) {
       computeResult = {
         error: 'Computation failed',
-        details: error instanceof Error ? error.message : String(error)
+        details: error instanceof Error ? error.message: String(error)
       };
     } finally {
       computeLoading = false;

@@ -212,9 +212,9 @@ export class OCRTensorProcessor {
       });
 
       const ocrResult: OCRResult = {
-        text: (result as { data?: any; status?: any; value?: any }).(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).text,
-        confidence: (result as { data?: any; status?: any; value?: any }).(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).confidence,
-        boundingBoxes: (result as { data?: any; status?: any; value?: any }).(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).words.map((word: any) => ({
+        text: (result as { data?: any; status?: any; value?: any }).data.text,
+        confidence: (result as { data?: any; status?: any; value?: any }).data.confidence,
+        boundingBoxes: (result as { data?: any; status?: any; value?: any }).data.words.map((word: any) => ({
           text: word.text,
           bbox: word.bbox,
           confidence: word.confidence
@@ -573,12 +573,12 @@ export class OCRTensorProcessor {
       }
 
       const messageHandler = (event: MessageEvent) => {
-        if (event.(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).type === 'ocr-result') {
+        if (event.data.type === 'ocr-result') {
           this.worker!.removeEventListener('message', messageHandler);
-          resolve(event.(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).result);
-        } else if (event.(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).type === 'ocr-error') {
+          resolve(event.data.result);
+        } else if (event.data.type === 'ocr-error') {
           this.worker!.removeEventListener('message', messageHandler);
-          reject(new Error(event.(data as { embedding?: any; fromCache?: any; type?: any; result?: any; error?: any; tensor_id?: any }).error));
+          reject(new Error(event.data.error));
         }
       };
 

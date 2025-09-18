@@ -70,7 +70,7 @@
         
       } catch (error) {
         console.warn('WebGPU test failed:', error);
-        testResults.error = error instanceof Error ? error.message : 'Unknown WebGPU error';
+        testResults.error = error instanceof Error ? error.message: 'Unknown WebGPU error';
       }
       
       // Get performance stats
@@ -80,7 +80,7 @@
       console.error('Vector similarity test failed:', error);
       testResults = { 
         cpu: 0, 
-        error: error instanceof Error ? error.message : 'Test failed' 
+        error: error instanceof Error ? error.message: 'Test failed' 
       };
     } finally {
       isRunning = false;
@@ -197,7 +197,7 @@
               <h4>WebGPU Implementation</h4>
               <div class="result-value">{testResults.webgpu.toFixed(6)}</div>
               <div class="diff">
-                Δ: {Math.abs(testResults.cpu - testResults.webgpu).toExponential(2)}
+                Δ: {Math.abs.toExponential(2)}
               </div>
             </div>
           {/if}

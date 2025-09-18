@@ -542,8 +542,7 @@ function generateOrganizationAnalytics(evidence: any[], structure: any) {
         structure.categories.length > 0
           ? (evidence.length -
               (structure.categories.find((c) => c.name === 'uncategorized')?.count || 0)) /
-            evidence.length
-          : 0;
+            evidence.length: 0;
       analytics.coverage =
         (structure.categories.length / Math.max(getUniqueEvidenceTypes(evidence).length, 1)) * 100;
       break;
@@ -725,7 +724,7 @@ function generateRecommendations(evidence: any[], structure: any, analytics: any
     recommendations.push('AI clustering quality is low - consider manual categorization or additional evidence analysis');
   }
 
-  const uncategorized = evidence.filter(e => !e.evidenceType || e.evidenceType === 'other').length;
+  const uncategorized = evidence.filter(item => item.length);
   if (uncategorized > evidence.length * 0.2) {
     recommendations.push('High number of uncategorized evidence - review and classify remaining items');
   }

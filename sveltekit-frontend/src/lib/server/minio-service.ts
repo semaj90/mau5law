@@ -198,7 +198,7 @@ export class MinIOService {
     } catch (error) {
       const processingTime = Date.now() - startTime;
       console.error(`MinIO text extraction failed for ${minioUrl}:`, error);
-      throw new Error(`MinIO extraction failed (${processingTime}ms): ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`MinIO extraction failed (${processingTime}ms): ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
 
@@ -387,7 +387,7 @@ export class MinIOService {
         } catch (error) {
           return {
             url,
-            error: error instanceof Error ? error.message : 'Unknown error'
+            error: error instanceof Error ? error.message: 'Unknown error'
           };
         }
       });

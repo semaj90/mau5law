@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
         results.performance.database = Date.now() - dbStartTime;
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message : 'Unknown database error';
+        const msg = error instanceof Error ? error.message: 'Unknown database error';
         results.errors.push(`Database test failed: ${msg}`);
         results.results.database = { status: 'error', message: msg };
       }
@@ -96,7 +96,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
         results.performance.redis = Date.now() - redisStartTime;
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message : 'Unknown redis error';
+        const msg = error instanceof Error ? error.message: 'Unknown redis error';
         results.errors.push(`Redis test failed: ${msg}`);
         results.results.redis = { status: 'error', message: msg };
       }
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
         results.performance.nats = Date.now() - natsStartTime;
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message : 'Unknown NATS error';
+        const msg = error instanceof Error ? error.message: 'Unknown NATS error';
         results.errors.push(`NATS test failed: ${msg}`);
         results.results.nats = { status: 'error', message: msg };
       }
@@ -149,7 +149,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
         results.performance.loki = Date.now() - lokiStartTime;
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message : 'Unknown loki error';
+        const msg = error instanceof Error ? error.message: 'Unknown loki error';
         results.errors.push(`Loki test failed: ${msg}`);
         results.results.loki = { status: 'error', message: msg };
       }
@@ -170,7 +170,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
         results.performance.instantSearch = Date.now() - searchStartTime;
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message : 'Unknown search error';
+        const msg = error instanceof Error ? error.message: 'Unknown search error';
         results.errors.push(`Instant search test failed: ${msg}`);
         results.results.instantSearch = { status: 'error', message: msg };
       }
@@ -191,7 +191,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
         results.performance.ragPipeline = Date.now() - ragStartTime;
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message : 'Unknown rag error';
+        const msg = error instanceof Error ? error.message: 'Unknown rag error';
         results.errors.push(`RAG pipeline test failed: ${msg}`);
         results.results.ragPipeline = { status: 'error', message: msg };
       }
@@ -220,7 +220,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json(results);
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : 'Unknown system integration error';
+    const msg = error instanceof Error ? error.message: 'Unknown system integration error';
     console.error('❌ System integration test failed:', error);
     return json(
       {
@@ -251,7 +251,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({ success: false, error: 'Unknown action' }, { status: 400 });
     }
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : 'Unknown request error';
+    const msg = error instanceof Error ? error.message: 'Unknown request error';
     return json({ success: false, error: msg }, { status: 500 });
   }
 };
@@ -371,7 +371,7 @@ async function runEndToEndTest(options: any = {}): Promise<Response> {
       },
     });
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : 'Unknown end-to-end test error';
+    const msg = error instanceof Error ? error.message: 'Unknown end-to-end test error';
     results.errors.push(msg);
     results.success = false;
 
@@ -420,7 +420,7 @@ async function cleanupTestData(): Promise<Response> {
       },
     });
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : 'Unknown cleanup error';
+    const msg = error instanceof Error ? error.message: 'Unknown cleanup error';
     return json({ success: false, error: msg }, { status: 500 });
   }
 }

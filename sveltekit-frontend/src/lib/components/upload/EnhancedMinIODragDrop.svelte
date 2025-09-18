@@ -129,7 +129,7 @@
       }
       const isValidType = acceptedTypes.some(type => {
         if (type.startsWith('.')) {
-          return file.name.toLowerCase().endsWith(type.toLowerCase());
+          return file.name.toLowerCase.endsWith(type.toLowerCase());
         }
         return file.type.match(type.replace('*', '.*'));
       });
@@ -192,7 +192,7 @@
           uploadFile.status = 'completed';
           uploadFile.progress = 100;
           uploadFile.cudaProcessed = cudaProcessed;
-          results.push((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data);
+          results.push.data);
           // Publish real-time sync event
           await publishMinIOSyncEvent((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data, caseId);
         } else {
@@ -214,7 +214,7 @@
       dispatch('uploadComplete', results);
 
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : 'Upload failed';
+      const errorMsg = error instanceof Error ? error.message: 'Upload failed';
       errorMessage = errorMsg;
       dispatch('uploadError', errorMsg);
     } finally {
@@ -299,7 +299,7 @@
       return {
         success: true,
         data: {
-          ...(result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data[0],
+          ...result.data[0],
           cudaOptimized: cudaProcessed,
           processingTime
         } as UploadResult
@@ -317,16 +317,7 @@
       await fetch('/api/v1/redis/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          channel: 'evidence_update',
-          data: {
-            type: 'EVIDENCE_UPLOADED',
-            evidenceId: uploadResult.id,
-            caseId,
-            fileName: uploadResult.fileName,
-            minioPath: uploadResult.minioPath,
-            cudaOptimized: uploadResult.cudaOptimized,
-            timestamp: new Date().toISOString()
+        body: JSON.stringify.toISOString()
           }
         })
       });

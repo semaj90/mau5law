@@ -14,8 +14,7 @@ https://svelte.dev/e/js_parse_error -->
   import { onDestroy, onMount } from "svelte";
 
   // Props with Svelte 5 runes and centralized types
-  let {
-    modelName = 'gemma3-legal',
+  let { modelName = 'gemma3-legal',
     endpoint = 'http://localhost:11434',
     systemPrompt = '',
     temperature = 0.7,
@@ -29,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
     open = $bindable(false),
     docId = null,
     initialPrompt = "",
-  }: OllamaAgentShellProps & {
+   }: OllamaAgentShellProps & {
     open?: boolean;
     docId?: string | null;
     initialPrompt?: string;
@@ -52,7 +51,7 @@ https://svelte.dev/e/js_parse_error -->
   let copiedIndex = $state<number | null>(null);
   let terminalElement = $state<HTMLDivElement;
   let inputElement = $state<HTMLTextAreaElement// WebSocket for real-time updates
-  let ws: WebSocket | null>(null)(null);
+  let ws: WebSocket  | null>(null); const data = null);
 
   onMount(() => {
     // Initialize with system message
@@ -214,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function handleCommand(cmd: string) {
-    const command = cmd.slice(1).toLowerCase();
+    const command = cmd.slice.toLowerCase();
 
     switch (command) {
       case "help":
@@ -248,8 +247,7 @@ https://svelte.dev/e/js_parse_error -->
           messages.push({
             role: "system",
             content: `Embeddings (first 10): [${lastEmbed.embeddings
-              .slice(0, 10)
-              .map((e: number) => e.toFixed(3))
+              .slice.map((e: number) => e.toFixed(3))
               .join(", ")}...]`,
             timestamp: new Date(),
             status: "complete",

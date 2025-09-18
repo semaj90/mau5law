@@ -475,7 +475,7 @@ class TopologyPredictiveAnalyticsEngine {
       min_confidence?: number;
       include_contextual?: boolean;
     } = {}
-  ): Promise<Array<any>> {
+  ): Promise<Array<any> {
     if (!this.config.enable_query_completion || partialQuery.length < 2) {
       return [];
     }
@@ -535,7 +535,7 @@ class TopologyPredictiveAnalyticsEngine {
     semantic_features: Float32Array;
     temporal_weight: number;
     user_interaction_weight: number;
-  }>> {
+  }> {
     const topologyState = new Map();
     
     // Process each glyph as a topology node

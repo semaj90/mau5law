@@ -102,7 +102,7 @@ https://svelte.dev/e/component_invalid_directive -->
       }
 
       const data = await response.json();
-      dashboardData = data.data || {};
+      dashboardData = data.data || ;
 
     } catch (err: unknown) {
       console.error('❌ Failed to load feedback analytics:', err);
@@ -322,7 +322,7 @@ https://svelte.dev/e/component_invalid_directive -->
           {#each dashboardData.breakdown || [] as category}
             <div class="breakdown-nier-bits-card">
               <div class="breakdown-header">
-                <h3 class="breakdown-title">{category.ratingType.replace('_', ' ').toUpperCase()}</h3>
+                <h3 class="breakdown-title">{category.ratingType.replace.toUpperCase()}</h3>
                 <div class="breakdown-count">{category.count} ratings</div>
               </div>
               

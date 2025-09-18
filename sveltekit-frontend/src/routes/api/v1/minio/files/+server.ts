@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('File listing error:', error);
     return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Failed to list files',
+      error: error instanceof Error ? error.message: 'Failed to list files',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
@@ -106,7 +106,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('File deletion error:', error);
     return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Failed to delete file',
+      error: error instanceof Error ? error.message: 'Failed to delete file',
       timestamp: new Date().toISOString()
     }), {
       status: 500,

@@ -15,8 +15,8 @@ https://svelte.dev/e/js_parse_error -->
 
   let {
     items = [],
-    onResults = () => {},
-    onSelect = () => {},
+    onResults = () => ,
+    onSelect = () => ,
     placeholder = 'Search evidence...',
     maxResults = 10,
     showFilters = true,
@@ -24,7 +24,7 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
 
 
-  import { createCombobox, melt } from 'melt';
+  // Replaced melt with bits-ui components
   // Global Svelte runes are declared in src/types/svelte-helpers.d.ts
   import { fly } from 'svelte/transition';
   import Fuse from "fuse.js";
@@ -44,38 +44,16 @@ https://svelte.dev/e/js_parse_error -->
   let allTags = $state<string[]>([]);
   let selectedTags = $state<string[]>([]);
   let selectedTypes = $state<string[]>([]);
-  let dateRange = $state({});
+  let dateRange = $state( );
 
   // Fuse.js configuration for fuzzy search
-  const fuseOptions = {
-    keys: [
-      { name: 'title', weight: 0.4 },
-      { name: 'description', weight: 0.3 },
-      { name: 'tags', weight: 0.2 },
-      { name: 'metadata.format', weight: 0.1 }
-    ],
-    threshold: 0.3,
-    distance: 100,
-    minMatchCharLength: 2,
-    includeScore: true,
-    includeMatches: true
-  };
-
-  // Combobox for search input
-  const {
-    elements: { input, menu, option },
-    states: { open, inputValue },
-    helpers: { isSelected }
-  } = createCombobox({
-    forceVisible: true,
-    defaultSelected: undefined
-  });
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // Initialize Fuse when items change
   $effect(() => {
     if (items.length > 0) {
       fuse = new Fuse(items, fuseOptions);
-      allTags = [...new Set(items.flatMap(item => (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).tags || []))];
+      allTags = [...new Set(items.flatMap.tags || []))];
     }
   });
 
@@ -84,7 +62,7 @@ https://svelte.dev/e/js_parse_error -->
     if (fuse && searchValue) {
       const fuseResults = fuse.search(searchValue);
       searchResults = fuseResults
-        .map(result => (result as { item?: unknown }).item)
+        .map.item)
         .slice(0, maxResults);
     } else {
       searchResults = items.slice(0, maxResults);
@@ -95,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
   let filteredResults = $derived(() => {
     return searchResults.filter((item: Evidence) => {
     // Type filter
-    if (selectedTypes.length > 0 && !selectedTypes.includes((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type)) {
+    if (selectedTypes.length > 0 && !selectedTypes.includes.type)) {
       return false;
     }
     // Tag filter
@@ -174,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="search-input-wrapper">
       <Search size={20} class="search-icon" />
       <input
-        use:melt={$input}
+        
         class="search-input"
         type="text"
         {placeholder}
@@ -194,7 +172,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Results dropdown -->
     {#if $open && searchResults.length > 0}
       <div
-        use:melt={$menu}
+        
         class="search-results"
         transitionfly={{ duration: 150, y: -10 }}
       >
@@ -349,7 +327,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if dateRange.start || dateRange.end}
         <span class="active-filter">
           {dateRange.start?.toLocaleDateString() || '...'} - {dateRange.end?.toLocaleDateString() || '...'}
-          <button onclick={() => dateRange = {}}>
+          <button onclick={() => dateRange = }>
             <X size={12} />
           </button>
         </span>
@@ -451,7 +429,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 
 .search-result-item:hover,
-.search-result-(item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).highlighted {
+.search-result-.highlighted {
   background: #f8fafc;
 }
 

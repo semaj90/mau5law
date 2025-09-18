@@ -25,11 +25,11 @@ export interface ServiceResponse<T = any> {
 }
 
 export interface ProtocolClient {
-  request<T>(url: string, options: ServiceRequest): Promise<ServiceResponse<T>>;
+  request<T>(url: string, options: ServiceRequest): Promise<ServiceResponse<T>;
 }
 
 class HTTPClient implements ProtocolClient {
-  async request<T>(url: string, options: ServiceRequest): Promise<ServiceResponse<T>> {
+  async request<T>(url: string, options: ServiceRequest): Promise<ServiceResponse<T> {
     const startTime = Date.now();
     
     const response = await fetch(url, {
@@ -59,7 +59,7 @@ class HTTPClient implements ProtocolClient {
 class WebSocketClient implements ProtocolClient {
   private connections: Map<string, WebSocket> = new Map();
 
-  async request<T>(url: string, options: ServiceRequest): Promise<ServiceResponse<T>> {
+  async request<T>(url: string, options: ServiceRequest): Promise<ServiceResponse<T> {
     return new Promise((resolve, reject) => {
       const startTime = Date.now();
       const wsUrl = url.replace('http://', 'ws://').replace('https://', 'wss://');
@@ -82,7 +82,7 @@ class WebSocketClient implements ProtocolClient {
         resolve({
           data,
           status: 200,
-          headers: Record<string, any>,
+          headers: {} as Record<string, any>,
           protocol: 'websocket',
           service: new URL(url).host,
           latency
@@ -105,7 +105,7 @@ class WebSocketClient implements ProtocolClient {
 
 // QUIC Client (fallback to HTTP for browser compatibility)
 class QUICClient implements ProtocolClient {
-  async request<T>(url: string, options: ServiceRequest): Promise<ServiceResponse<T>> {
+  async request<T>(url: string, options: ServiceRequest): Promise<ServiceResponse<T> {
     // In browser environment, fallback to HTTP
     // In Node.js, this would use a proper QUIC client
     const httpClient = new HTTPClient();
@@ -116,7 +116,7 @@ class QUICClient implements ProtocolClient {
 
 // gRPC Client (uses gRPC-Web for browser compatibility)
 class GRPCClient implements ProtocolClient {
-  async request<T>(url: string, options: ServiceRequest): Promise<ServiceResponse<T>> {
+  async request<T>(url: string, options: ServiceRequest): Promise<ServiceResponse<T> {
     // For browser environment, would use grpc-web
     // For Node.js, would use @grpc/grpc-js
     const httpClient = new HTTPClient();
@@ -133,7 +133,7 @@ export class ProductionAPIClient {
   
   private requestMetrics: Map<string, number[]> = new Map();
 
-  async request<T = any>(options: ServiceRequest): Promise<ServiceResponse<T>> {
+  async request<T = any>(options: ServiceRequest): Promise<ServiceResponse<T> {
     const routeMapping = productionServiceRegistry.getServiceForRoute(options.route);
     
     if (!routeMapping) {
@@ -169,7 +169,7 @@ export class ProductionAPIClient {
     service: ServiceDefinition, 
     protocol: 'http' | 'grpc' | 'quic' | 'websocket',
     options: ServiceRequest
-  ): Promise<ServiceResponse<T>> {
+  ): Promise<ServiceResponse<T> {
     const baseUrl = `http://localhost:${service.port}`;
     const fullUrl = `${baseUrl}${options.route}`;
 
@@ -225,7 +225,9 @@ export class ProductionAPIClient {
     };
   }
 
-  async getClusterStatus(this: ProductionAPIClient): Promise<;
+  async getClusterStatus(this: ProductionAPIClient): Promise<{
+    health: any;
+    metrics: Record<string, any>;
     activeRoutes: string[];
   }> {
     const health = await productionServiceRegistry.getClusterHealth();

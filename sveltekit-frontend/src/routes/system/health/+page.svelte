@@ -57,8 +57,7 @@ https://svelte.dev/e/js_parse_error -->
   		try {
   			loading.set(true);
   			// Fetch from both legacy and new coordinator APIs
-  			const [legacyResponse, coordinatorResponse] = await Promise.all([
-  				fetch('/api/v1/health/cuda').catch(() => null),
+  			const [legacyResponse, coordinatorResponse] = await Promise.all.catch(() => null),
   				fetch('/api/v1/coordinator?action=health').catch(() => null)
   			]);
   let legacyData = $state(null);
@@ -75,7 +74,7 @@ https://svelte.dev/e/js_parse_error -->
   			error.set(null);
   		} catch (err) {
   			console.error('Health check failed:', err);
-  			error.set(err instanceof Error ? err.message : 'Unknown error');
+  			error.set(err instanceof Error ? err.message: 'Unknown error');
   		} finally {
   			loading.set(false);
   		}
@@ -100,7 +99,7 @@ https://svelte.dev/e/js_parse_error -->
   				},
   				services: mapServicesToHealthFormat(systemStatus.services),
   				summary: {
-  					critical_services: systemStatus.errors.filter(e => e.priority === 'critical').map(e => e.description),
+  					critical_services: systemStatus.errors.filter(item => item.map)(e => e.description),
   					degraded_services: Array.from(systemStatus.services.entries())
   						.filter(([_, status]) => status.status === 'degraded')
   						.map(([id, _]) => {

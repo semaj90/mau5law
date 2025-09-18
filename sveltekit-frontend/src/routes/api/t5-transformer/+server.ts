@@ -229,7 +229,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
         timestamp: Date.now(),
       },
       { status: 500 }
@@ -338,7 +338,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: error instanceof Error ? error.message: String(error),
         timestamp: Date.now(),
       },
       { status: 500 }
@@ -521,7 +521,7 @@ async function generateMockT5Response(
   input: string,
   task: string,
   domain: string
-): Promise<Partial<T5TransformResponse>> {
+): Promise<Partial<T5TransformResponse> {
   // Fallback mock responses for development
   const processingTime = 1500 + Math.random() * 1000;
 

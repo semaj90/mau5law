@@ -48,13 +48,6 @@ https://svelte.dev/e/js_parse_error -->
   let isOrderedList = $state(false);
 
   onMount(() => {
-    editor = new Editor({
-      element,
-      extensions: [
-        StarterKit.configure({
-          heading: {
-            levels: [1, 2, 3],
-          },
         }),
         Image.configure({
           inline: true,
@@ -138,38 +131,35 @@ https://svelte.dev/e/js_parse_error -->
         );
       })
       .replace(/<p[^>]*>(.*?)<\/p>/g, "$1\n\n")
-      .replace(/<br\s*\/?>/g, "\n")
-      .replace(/<[^>]+>/g, "") // Remove remaining HTML tags
+      .replace.replace(/<[^>]+>/g, "") // Remove remaining HTML tags
       .replace(/\n{3,}/g, "\n\n") // Clean up excessive newlines
       .trim();
   }
   // Toolbar actions
   function toggleBold() {
-    editor?.chain().focus().toggleBold().run();
+    editor?.chain.focus().toggleBold.run();
   }
   function toggleItalic() {
-    editor?.chain().focus().toggleItalic().run();
+    editor?.chain.focus().toggleItalic.run();
   }
   function toggleBulletList() {
-    editor?.chain().focus().toggleBulletList().run();
+    editor?.chain.focus().toggleBulletList.run();
   }
   function toggleOrderedList() {
-    editor?.chain().focus().toggleOrderedList().run();
+    editor?.chain.focus().toggleOrderedList.run();
   }
   function addImage() {
     const url = prompt("Enter image URL:");
     if (url) {
-      editor?.chain().focus().setImage({ src: url }).run();
+      editor?.chain.focus().setImage.run();
   }}
   function setHeading(level: number) {
     if (level === 0) {
-      editor?.chain().focus().setParagraph().run();
+      editor?.chain.focus().setParagraph.run();
     } else {
       editor
-        ?.chain()
-        .focus()
-        .toggleHeading({ level: level as 1 | 2 | 3 | 4 | 5 | 6 })
-        .run();
+        ?.chain.focus()
+        .toggleHeading.run();
   }}
   function saveContent() {
     if (!editor || !isReady) return;

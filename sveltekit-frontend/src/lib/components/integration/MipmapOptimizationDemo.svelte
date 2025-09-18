@@ -132,7 +132,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       console.log(`🚀 Processing document: ${document.title}`);
 
       // Parse texture size
-      const [width, height] = document.textureSize.split('x').map(Number);
+      const [width, height] = document.textureSize.split.map(Number);
       const mockTexture = createMockTexture(width, height);
       if (!mockTexture) {
         throw new Error('Failed to create texture');
@@ -164,7 +164,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       // Update system stats
       systemStats = yorhaTextureManager.getStatistics();
 
-      console.log(`✅ Document processed: ${(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).mipmaps.length} mip levels generated`);
+      console.log.mipmaps.length} mip levels generated`);
 
     } catch (error) {
       console.error('Document processing failed:', error);
@@ -183,8 +183,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       console.log('🚀 Starting batch processing of all legal documents');
 
       // Create mock textures for all documents
-      const documentsWithTextures = legalDocuments.map(doc => {
-        const [width, height] = doc.textureSize.split('x').map(Number);
+      const documentsWithTextures = legalDocuments.map.map(Number);
         const texture = createMockTexture(width, height);
         return {
           ...doc,
@@ -265,7 +264,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         timestamp: new Date()
       }, ...processingResults.slice(0, 9)];
 
-      console.log(`✅ Mipmap demo completed: ${(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).mipmapLevels.length} levels generated in ${(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).totalGenerationTime.toFixed(2)}ms`);
+      console.log.mipmapLevels.length} levels generated in ${(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).totalGenerationTime.toFixed(2)}ms`);
 
     } catch (error) {
       console.error('Mipmap demo failed:', error);
@@ -281,7 +280,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       totalTexturesProcessed: performanceMetrics.totalTexturesProcessed + 1,
       totalMipmapsGenerated: performanceMetrics.totalMipmapsGenerated + (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).mipmaps.length,
       averageProcessingTime: (performanceMetrics.averageProcessingTime * (performanceMetrics.totalTexturesProcessed - 1) + (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).processingTime) / performanceMetrics.totalTexturesProcessed,
-      memoryEfficiency: Math.min(95, performanceMetrics.memoryEfficiency + ((result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).memoryUsed > 0 ? 5 : 0)),
+      memoryEfficiency: Math.min.memoryUsed > 0 ? 5 : 0)),
       rtxAccelerationUsage: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration ? performanceMetrics.rtxAccelerationUsage + 1 : performanceMetrics.rtxAccelerationUsage
     };
   }

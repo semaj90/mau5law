@@ -68,8 +68,8 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   const systemHealthScore = derived([serviceStatus], ([$status]) => {
-    const services = Object.values($status).filter(s => typeof s === 'string') as string[];
-    const healthyCount = services.filter(s => s === 'healthy').length;
+    const services = Object.values.filter(s => typeof s === 'string') as string[];
+    const healthyCount = services.filter(item => item.length);
     const totalServices = services.length;
     if (totalServices === 0) return { score: 0, status: 'Initializing', color: 'text-gray-400' };
     const percentage = (healthyCount / totalServices) * 100;
@@ -306,7 +306,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="service-info">
           <h4>GPU Acceleration</h4>
           <span class="service-status-text {getServiceStatusColor($serviceStatus.gpu)}">
-            {$serviceStatus.gpu.charAt(0).toUpperCase() + $serviceStatus.gpu.slice(1)}
+            {$serviceStatus.gpu.charAt.toUpperCase() + $serviceStatus.gpu.slice(1)}
           </span>
         </div>
       </div>
@@ -316,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="service-info">
           <h4>WebGPU Compute</h4>
           <span class="service-status-text {getServiceStatusColor($serviceStatus.webgpu)}">
-            {$serviceStatus.webgpu.charAt(0).toUpperCase() + $serviceStatus.webgpu.slice(1)}
+            {$serviceStatus.webgpu.charAt.toUpperCase() + $serviceStatus.webgpu.slice(1)}
           </span>
         </div>
       </div>
@@ -326,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="service-info">
           <h4>Neural Networks</h4>
           <span class="service-status-text {getServiceStatusColor($serviceStatus.neural)}">
-            {$serviceStatus.neural.charAt(0).toUpperCase() + $serviceStatus.neural.slice(1)}
+            {$serviceStatus.neural.charAt.toUpperCase() + $serviceStatus.neural.slice(1)}
           </span>
         </div>
       </div>
@@ -336,7 +336,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="service-info">
           <h4>Vector Database</h4>
           <span class="service-status-text {getServiceStatusColor($serviceStatus.vectordb)}">
-            {$serviceStatus.vectordb.charAt(0).toUpperCase() + $serviceStatus.vectordb.slice(1)}
+            {$serviceStatus.vectordb.charAt.toUpperCase() + $serviceStatus.vectordb.slice(1)}
           </span>
         </div>
       </div>

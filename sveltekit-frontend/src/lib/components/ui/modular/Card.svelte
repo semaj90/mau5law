@@ -107,8 +107,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
 </div>
 
-<style>/* YoRHa-specific animations */ {}
-  .yorha-glow {
+<style>/* YoRHa-specific animations */ .yorha-glow {
     animation: yorha-pulse 2s ease-in-out infinite alternate;
   }
 

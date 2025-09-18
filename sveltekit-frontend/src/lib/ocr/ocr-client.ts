@@ -21,7 +21,7 @@ async function toImageData(src: ImageSource): Promise<ImageData> {
 
   if (src instanceof HTMLImageElement) {
     await new Promise<void>((resolve, reject) => {
-      if (src.complete) return resolve();
+      if (src.complete) return resolve());
       src.onload = () => resolve();
       src.onerror = (e) => reject(e);
     });
@@ -68,7 +68,7 @@ export async function extractTextFromImage(source: ImageSource, lang = 'eng'): P
     const blob = source instanceof Blob || source instanceof File
       ? source
       : await (async () => {
-          const canvas = document.createElement('canvas');
+          const canvas = document.createElement('canvas'));
           const ctx = canvas.getContext('2d');
           if (!ctx) throw new Error('Canvas 2D context unavailable');
           const imgData = await toImageData(source);

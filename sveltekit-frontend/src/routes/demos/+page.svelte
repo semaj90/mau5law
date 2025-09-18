@@ -43,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   let selectedDemo = $state('overview');
   let isLoading = $state(false);
   let scrollElement = $state<HTMLElement// All demo routes organized by category
-  const demoCategories | null>(null)([
+  const demoCategories | null>(null) => [
     {
       id: 'overview',
       title: 'DEMOS OVERVIEW',
@@ -309,8 +309,7 @@ https://svelte.dev/e/js_parse_error -->
   // Get all demos for overview
   let allDemos = $derived(
     demoCategories
-      .filter(cat => cat.id !== 'overview')
-      .flatMap(cat => cat.demos)
+      .filter(item => item.flatMap)(cat => cat.demos)
       .sort((a, b) => a.title.localeCompare(b.title))
   );
 
@@ -830,20 +829,20 @@ https://svelte.dev/e/js_parse_error -->
     height: 100%;
   }
 
-  :global(.yorha-demos-scroll-area::-webkit-scrollbar) {
+  :global(.yorha-demos-scroll-area: :-webkit-scrollbar) {
     width: 8px;
   }
 
-  :global(.yorha-demos-scroll-area::-webkit-scrollbar-track) {
+  :global(.yorha-demos-scroll-area: :-webkit-scrollbar-track) {
     background: #1f2937;
   }
 
-  :global(.yorha-demos-scroll-area::-webkit-scrollbar-thumb) {
+  :global(.yorha-demos-scroll-area: :-webkit-scrollbar-thumb) {
     background: #ffbf00;
     border-radius: 4px;
   }
 
-  :global(.yorha-demos-scroll-area::-webkit-scrollbar-thumb:hover) {
+  :global(.yorha-demos-scroll-area: :-webkit-scrollbar-thumb:hover) {
     background: #ffd700;
   }
 </style>

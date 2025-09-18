@@ -92,10 +92,10 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   // Computed properties
   let totalEvidence = $derived(evidenceItems.length);
   let processingCount = $derived(
-    evidenceItems.filter(item => (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).status === 'processing').length
+    evidenceItems.filter(item => item.status) === 'processing').length
   );
   let readyCount = $derived(
-    evidenceItems.filter(item => (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).status === 'ready').length
+    evidenceItems.filter(item => item.status) === 'ready').length
   );
 
   onMount(async () => {
@@ -189,17 +189,15 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     let filtered = evidenceItems;
 
     if (searchQuery.trim()) {
-      filtered = filtered.filter(item =>
-        (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis?.summary?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis?.relevantLaws?.some(law =>
-          law.toLowerCase().includes(searchQuery.toLowerCase())
+      filtered = filtered.filter(item => item.filename).toLowerCase.includes(searchQuery.toLowerCase()) ||
+        (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis?.summary?.toLowerCase.includes(searchQuery.toLowerCase()) ||
+        (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis?.relevantLaws?.some.includes(searchQuery.toLowerCase())
         )
       );
     }
 
     if (selectedFilter !== 'all') {
-      filtered = filtered.filter(item => (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).type === selectedFilter);
+      filtered = filtered.filter(item => item.type) === selectedFilter);
     }
 
     filteredEvidence = filtered;
@@ -226,7 +224,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown }).json();
-        searchSuggestions = (data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).(data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).suggestions;
+        searchSuggestions = (data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).data.suggestions;
         showSuggestions = true;
       }
     } catch (error) {
@@ -352,12 +350,11 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               const putResp = await fetch(uploadUrl, { method: 'PUT', body: file });
               if (putResp.ok) {
                 // Update status to processing and store storage metadata
-                evidenceItems = evidenceItems.map(item =>
-                  (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id === evidenceId ? ({
+                evidenceItems = evidenceItems.map.id === evidenceId ? ({
                     ...item,
                     status: 'processing',
                     aiAnalysis: {
-                      ...((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis || {}),
+                      ...((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis || ),
                       storage: { bucket: signedJson.bucket || currentBucket, key: namespacedKey, url: signedJson.url }
                     }
                   } as EvidenceItem) : item
@@ -371,8 +368,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                 await analyzeEvidence(evidenceId, file);
               } else {
                 console.error('Direct PUT failed:', await putResp.text());
-                evidenceItems = evidenceItems.map(item =>
-                  (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id === evidenceId ? { ...item, status: 'error' } : item
+                evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'error' } : item
                 );
               }
             } else {
@@ -381,31 +377,27 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               const uploadResp = await fetch('/api/v1/storage/upload', { method: 'POST', credentials: 'include', body: formData });
               if (uploadResp.ok) {
                 const uploadJson = await uploadResp.json();
-                evidenceItems = evidenceItems.map(item =>
-                  (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id === evidenceId ? ({
+                evidenceItems = evidenceItems.map.id === evidenceId ? ({
                     ...item,
                     status: 'processing',
-                    aiAnalysis: { ...((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis || {}), storage: { bucket: uploadJson.bucket, key: uploadJson.key, url: uploadJson.url } }
+                    aiAnalysis: { ...((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis || ), storage: { bucket: uploadJson.bucket, key: uploadJson.key, url: uploadJson.url } }
                   } as EvidenceItem) : item
                 );
                 await analyzeEvidence(evidenceId, file);
               } else {
-                evidenceItems = evidenceItems.map(item =>
-                  (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id === evidenceId ? { ...item, status: 'error' } : item
+                evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'error' } : item
                 );
               }
             }
           } catch (err) {
             console.error('Upload exception:', err);
-            evidenceItems = evidenceItems.map(item =>
-              (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id === evidenceId ? { ...item, status: 'error' } : item
+            evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'error' } : item
             );
           }
         } else {
           // Fallback/demo mode: simulate upload and trigger AI analysis
           setTimeout(async () => {
-            evidenceItems = evidenceItems.map(item =>
-              (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id === evidenceId ? { ...item, status: 'processing' } : item
+            evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'processing' } : item
             );
             await analyzeEvidence(evidenceId, file);
           }, 1000);
@@ -447,24 +439,21 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         const analysisResult = await (response as { ok?: unknown; json?: unknown }).json();
 
         // Update evidence with AI analysis
-        evidenceItems = evidenceItems.map(item =>
-          (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id === evidenceId ? {
+        evidenceItems = evidenceItems.map.id === evidenceId ? {
             ...item,
             status: 'ready',
-            aiAnalysis: analysisResult.(data as { buckets?: unknown; data?: unknown; analysis?: unknown; files?: unknown; x?: unknown; y?: unknown }).analysis
+            aiAnalysis: analysisResult.data.analysis
           } : item
         );
       } else {
         // Mark as error if analysis fails
-        evidenceItems = evidenceItems.map(item =>
-          (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id === evidenceId ? { ...item, status: 'error' } : item
+        evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'error' } : item
         );
       }
 
     } catch (error) {
       console.error('AI analysis failed:', error);
-      evidenceItems = evidenceItems.map(item =>
-        (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id === evidenceId ? { ...item, status: 'error' } : item
+      evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, status: 'error' } : item
       );
     }
 
@@ -522,7 +511,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           method: 'DELETE',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json', 'x-api-key': (window as any).__MINIO_API_KEY__ || '' },
-          body: JSON.stringify({ bucket: (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis.storage.bucket, key: (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis.storage.key })
+          body: JSON.stringify.aiAnalysis.storage.bucket, key: (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis.storage.key })
         });
 
         const txt = await resp.text();
@@ -560,8 +549,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
   // Cleanup object URLs when component unmounts
   onDestroy(() => {
-    evidenceItems.forEach(item => {
-      if ((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).previewUrl) revokePreview((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).previewUrl);
+    evidenceItems.forEach.previewUrl) revokePreview((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).previewUrl);
     });
   });
 
@@ -585,8 +573,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   function startRealTimeUpdates() {
     setInterval(() => {
       // Simulate processing completion
-      evidenceItems = evidenceItems.map(item => {
-        if ((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).status === 'processing' && Math.random() > 0.8) {
+      evidenceItems = evidenceItems.map.status === 'processing' && Math.random() > 0.8) {
           return {
             ...item,
             status: 'ready',
@@ -646,25 +633,24 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         aiAnalysisResults = analysis;
 
         // Update evidence with comprehensive AI insights
-        evidenceItems = evidenceItems.map(item => {
-          if (selectedEvidence.includes((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id)) {
+        evidenceItems = evidenceItems.map.id)) {
             // Enhance evidence with unified analysis results
             const correlations = (analysis.correlationAnalysis?.correlations || []).filter((c: unknown) =>
               c.evidenceA === (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id || c.evidenceB === (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id
             );
 
             const vectorGroup = (analysis.vectorAnalysis?.similarityGroups || []).find((g: unknown) =>
-              Array.isArray(g.evidenceIds) && g.evidenceIds.includes((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id)
+              Array.isArray(g.evidenceIds) && g.evidenceIds.includes.id)
             );
 
             const recs = (analysis.unifiedInsights?.recommendations || []).filter((r: unknown) =>
-              String(r.action || '').toLowerCase().includes((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).filename.toLowerCase())
+              String(r.action || '').toLowerCase.includes-filename.toLowerCase())
             );
 
             return {
               ...item,
               aiAnalysis: {
-                ...((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis || {}),
+                ...((item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).aiAnalysis || ),
                 unifiedInsights: {
                   correlations,
                   vectorGroup,
@@ -729,8 +715,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   // Fabric.js Canvas Event Handlers
   function handleEvidenceMove(evidenceId: string, position: { x: number; y: number }) {
     // Update evidence position in our data
-    evidenceItems = evidenceItems.map(item =>
-      (item as { status?: unknown; filename?: unknown; aiAnalysis?: unknown; type?: unknown; id?: unknown; previewUrl?: unknown }).id === evidenceId ? { ...item, position } : item
+    evidenceItems = evidenceItems.map.id === evidenceId ? { ...item, position } : item
     );
 
     // Optionally save to backend
@@ -1278,7 +1263,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     overflow: hidden;
   }
 
-  .evidence-canvas-container::before {
+  .evidence-canvas-container: :before {
     content: '';
     position: absolute;
     top: 0;
@@ -1312,7 +1297,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   }
 
   /* Pixel / scanline / chromatic edge layering */
-  :global(.retro-glow) .evidence-canvas-container::after,
+  :global(.retro-glow) .evidence-canvas-container: :after,
   :global(.retro-glow) .evidence-canvas-container::before {
     content: '';
     pointer-events: none;
@@ -1322,7 +1307,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   }
 
   /* Subtle animated radial / scanline hybrid (N64 + CRT feel) */
-  :global(.retro-glow) .evidence-canvas-container::before {
+  :global(.retro-glow) .evidence-canvas-container: :before {
     background:
       repeating-linear-gradient(
         to bottom,
@@ -1339,7 +1324,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   }
 
   /* NES-style pixel grid & edge glow */
-  :global(.retro-glow) .evidence-canvas-container::after {
+  :global(.retro-glow) .evidence-canvas-container: :after {
     background:
       linear-gradient(145deg,
         rgba(var(--accent-a) / 0.18),
@@ -1390,7 +1375,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   /* Accessibility: respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     :global(.retro-glow) .evidence-canvas-container,
-    :global(.retro-glow) .evidence-canvas-container::before,
+    :global(.retro-glow) .evidence-canvas-container: :before,
     :global(.retro-glow) .evidence-canvas-container::after {
       animation: none !important;
     }

@@ -138,7 +138,7 @@ async function checkSystemHealth(fetch: any) {
     } catch (error) {
       health[check.name] = {
         status: 'error',
-        details: error instanceof Error ? error.message : 'Connection failed'
+        details: error instanceof Error ? error.message: 'Connection failed'
       };
     }
   }

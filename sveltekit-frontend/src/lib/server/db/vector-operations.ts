@@ -407,8 +407,7 @@ export class GRPMOOrchestrator {
     if (!cached) return null;
 
     const age = Date.now() - cached.timestamp;
-    const threshold = layer === 'hot' ? this.config.hotCacheThreshold : 
-                     layer === 'warm' ? this.config.warmCacheThreshold :
+    const threshold = layer === 'hot' ? this.config.hotCacheThreshold: layer === 'warm' ? this.config.warmCacheThreshold :
                      this.config.coldCacheThreshold;
 
     return age < threshold ? { data: cached.data, timestamp: cached.timestamp } : null;

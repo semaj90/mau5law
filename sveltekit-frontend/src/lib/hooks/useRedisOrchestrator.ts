@@ -39,7 +39,7 @@ export function useRedisAI() {
       lastResult = result;
       return result;
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Unknown error';
+      error = err instanceof Error ? err.message: 'Unknown error';
       throw err;
     } finally {
       isProcessing = false;
@@ -59,7 +59,7 @@ export function useRedisAI() {
       const taskId = await redisOrchestratorClient.queueTask(taskType, query, metadata, priority);
       return taskId;
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Unknown error';
+      error = err instanceof Error ? err.message: 'Unknown error';
       throw err;
     } finally {
       isProcessing = false;
@@ -192,7 +192,7 @@ export function useRedisInit(options: { pollInterval?: number; autoStart?: boole
       isInitialized = true;
       initError = null;
     } catch (error) {
-      initError = error instanceof Error ? error.message : 'Initialization failed';
+      initError = error instanceof Error ? error.message: 'Initialization failed';
       console.error('Redis orchestrator initialization failed:', error);
     }
   };
@@ -341,7 +341,7 @@ export function useRedisForm() {
       return lastSubmission;
 
     } catch (error) {
-      submitError = error instanceof Error ? error.message : 'Submission failed';
+      submitError = error instanceof Error ? error.message: 'Submission failed';
       throw error;
     } finally {
       isSubmitting = false;

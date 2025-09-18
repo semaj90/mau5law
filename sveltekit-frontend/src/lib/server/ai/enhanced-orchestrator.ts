@@ -1294,7 +1294,7 @@ TEMPLATE """{{ if .System }}<|system|>
   async processWithStreaming(
     query: string,
     options?: Record<string, any>
-  ): Promise<AsyncGenerator<any>> {
+  ): Promise<AsyncGenerator<any> {
     const self = this;
 
     async function* streamResults() {

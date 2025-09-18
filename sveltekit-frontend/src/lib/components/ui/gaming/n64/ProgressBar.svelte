@@ -134,7 +134,7 @@
 
     try {
       if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
       }
 
       const oscillator = audioContext.createOscillator();
@@ -173,7 +173,7 @@
 
     try {
       if (!audioContext) {
-        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
       }
 
       const oscillator = audioContext.createOscillator();
@@ -670,7 +670,7 @@
     border-radius: var(--progress-border-radius);
   }
 
-  .progress-particles::before,
+  .progress-particles: :before,
   .progress-particles::after {
     content: '';
     position: absolute;
@@ -681,13 +681,13 @@
     animation: floatProgressParticles 1.5s ease-out infinite;
   }
 
-  .progress-particles::before {
+  .progress-particles: :before {
     top: 30%;
     left: 20%;
     animation-delay: 0s;
   }
 
-  .progress-particles::after {
+  .progress-particles: :after {
     top: 70%;
     left: 60%;
     animation-delay: -0.75s;
@@ -848,7 +848,7 @@
 
     .texture-stream,
     .wave-effect,
-    .progress-particles::before,
+    .progress-particles: :before,
     .progress-particles::after {
       animation: none;
     }

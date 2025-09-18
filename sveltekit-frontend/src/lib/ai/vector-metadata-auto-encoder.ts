@@ -44,7 +44,7 @@ interface EncodedVectorMetadata {
     spatial_index: Float32Array;
     temporal_index: number[];
     frequency_index: Map<string, number>;
-    similarity_graph: Map<string, Array<any>;
+    similarity_graph: Map<string, Array<any>>;
   };
 
   // Compressed glyph representations for instant retrieval
@@ -135,7 +135,9 @@ class VectorMetadataAutoEncoder {
       optimize_for?: 'retrieval' | 'storage' | 'accuracy';
       enable_predictive?: boolean;
     } = {}
-  ): Promise<;
+  ): Promise<{
+    encoded_metadata: any;
+    index_operations: any;
     encoding_stats: any;
   }> {
     console.log(`🔄 Encoding LOD entry ${lodEntry.id} to vector metadata...`);
@@ -227,10 +229,12 @@ class VectorMetadataAutoEncoder {
       boost_recent?: boolean;
       include_svg_context?: boolean;
     } = {}
-  ): Promise<;
+  ): Promise<{
+    results: Array<any>;
     enhanced_context: string;
     predictive_queries: string[];
-    topology_insights: Array<any>> {
+    topology_insights: Array<any>;
+  }> {
     console.log(`🔍 Glyph-based RAG retrieval for: "${query}"`);
 
     const startTime = Date.now();
@@ -421,7 +425,7 @@ class VectorMetadataAutoEncoder {
     });
 
     // Build similarity graph (simplified)
-    const similarityGraph = new Map<string, Array<any>();
+    const similarityGraph = new Map<string, Array<any>>();
     similarityGraph.set(lodEntry.id, [
       { id: `similar-${lodEntry.id}-1`, weight: 0.8 },
       { id: `similar-${lodEntry.id}-2`, weight: 0.6 },
@@ -511,7 +515,7 @@ class VectorMetadataAutoEncoder {
       related_id: `semantic-${lodEntry.id}-${index}`,
       relationship_type: this.determineRelationshipType(anchor, index, clusteringResults),
       strength: Math.random() * 0.5 + 0.5 // Simplified strength calculation
-    }));
+    });
   }
 
   private determineRelationshipType(anchor: string, index: number, clusteringResults: any): string {
@@ -542,7 +546,7 @@ class VectorMetadataAutoEncoder {
     entryId: string,
     encodedMetadata: EncodedVectorMetadata,
     targetIndexes?: string[]
-  ): Promise<Array<any> {
+  ): Promise<Array<any>> {
     const operations: Array<any> = [];
     const indexesToUpdate = targetIndexes || Array.from(this.searchIndexes.keys());
 
@@ -632,7 +636,7 @@ class VectorMetadataAutoEncoder {
     queryEmbedding: Float32Array,
     lodPreference: string,
     maxResults: number
-  ): Promise<Array<any> {
+  ): Promise<Array<any>> {
     const results = [];
 
     for (const [entryId, metadata] of this.encodingCache.entries()) {
@@ -681,8 +685,8 @@ class VectorMetadataAutoEncoder {
 
   private async applyTopologyFiltering(results: any[], query: string): Promise<any[]> {
     // Apply topology-aware filtering based on structural relationships
-    return results.filter(result => {
-      const metadata = this.encodingCache.get((result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).entry_id);
+    return results.filter(item => {
+      const metadata = this.encodingCache.get(item.entry_id);
       if (!metadata) return false;
 
       // Simple topology filtering - would be more sophisticated

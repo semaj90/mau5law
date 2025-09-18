@@ -235,7 +235,7 @@ const assignEvidence = assign({
   evidence: (_ctx, event: any) => (event?.data ?? []),
   stats: (context: LegalCaseContext, event: any) => ({
     ...context.stats,
-    totalEvidence: Array.isArray(event?.data) ? event.data.length : context.stats.totalEvidence,
+    totalEvidence: Array.isArray(event?.data) ? event.data.length: context.stats.totalEvidence,
     processedEvidence: Array.isArray(event?.data)
       ? event.data.filter((e: any) => !!e.aiSummary).length
       : context.stats.processedEvidence

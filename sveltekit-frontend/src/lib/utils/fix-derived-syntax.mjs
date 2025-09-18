@@ -21,7 +21,7 @@ async function fixDerivedSyntax() {
         .replace(/\$derived\(([^;)]+);\)/g, '$derived($1)')
         // Fix: $derived($store.value;) -> $derived($store.value)
         .replace(/\$derived\((\$[^;)]+);\)/g, '$derived($1)')
-        // Fix: let value = $derived(expr;); -> let value = $derived(expr);
+        // Fix: let value = $derived(expr; -> let value = $derived(expr);
         .replace(/(\w+)\s*=\s*\$derived\(([^;)]+);\)/g, '$1 = $derived($2)')
         // Fix other malformed patterns
         .replace(/\$derived\(([^)]+);\s*\)/g, '$derived($1)');

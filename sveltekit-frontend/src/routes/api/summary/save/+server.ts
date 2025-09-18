@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     return json({
       error: 'Failed to save summary',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error'
     }, { status: 500 });
   }
 };

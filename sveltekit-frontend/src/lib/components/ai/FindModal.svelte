@@ -84,7 +84,7 @@ https://svelte.dev/e/component_invalid_directive -->
           processingTime: (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).metadata?.processingTime
         });
       } else {
-        console.error('Search failed:', (data as { success?: any; results?: any; mcpContext?: any; metadata?: any; error?: any; suggestions?: any; data?: any }).error);
+        console.error(error);
         searchResults = [];
       }
     } catch (error) {
@@ -159,12 +159,7 @@ https://svelte.dev/e/component_invalid_directive -->
       await fetch('/api/mcp/memory/create-relations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          source: interaction.userId,
-          target: `search:${interaction.query}`,
-          relationType: 'ai-search',
-          properties: {
-            timestamp: new Date().toISOString(),
+        body: JSON.stringify.toISOString(),
             resultsCount: interaction.results,
             model: interaction.aiModel,
             confidence: interaction.confidence,
@@ -277,7 +272,7 @@ https://svelte.dev/e/component_invalid_directive -->
       }
     } catch (error) {
       console.error('❌ Failed to apply suggestion:', error);
-      alert(`❌ Failed to apply suggestion: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(`❌ Failed to apply suggestion: ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
 </script>
@@ -502,7 +497,7 @@ https://svelte.dev/e/component_invalid_directive -->
                       {#if (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).aiConfidence}
                         <div class="nier-confidence-badge flex-shrink-0" data-testid="ai-confidence">
                           <Brain class="w-3 h-3" />
-                          {Math.round((result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).aiConfidence * 100)}%
+                          {Math.round.aiConfidence * 100)}%
                         </div>
                       {/if}
                     </div>
@@ -520,7 +515,7 @@ https://svelte.dev/e/component_invalid_directive -->
                       {#if (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).relevanceScore}
                         <span class="text-blue-400 flex items-center gap-1">
                           <Target class="w-3 h-3" />
-                          {Math.round((result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).relevanceScore * 100)}% relevant
+                          {Math.round.relevanceScore * 100)}% relevant
                         </span>
                       {/if}
                       
@@ -588,7 +583,7 @@ https://svelte.dev/e/component_invalid_directive -->
                       </p>
                       <div class="flex items-center gap-2">
                         <span class="nier-type-badge bg-gray-900 border border-gray-700 px-2 py-1 text-xs">
-                          {suggestion.type.replace('-', ' ').toUpperCase()}
+                          {suggestion.type.replace.toUpperCase()}
                         </span>
                         <span class="text-{suggestion.priority === 'high' ? 'red' : suggestion.priority === 'medium' ? 'yellow' : 'green'}-400 text-xs font-mono">
                           {suggestion.priority.toUpperCase()}
@@ -628,7 +623,7 @@ https://svelte.dev/e/component_invalid_directive -->
     max-height: 90vh;
   }
 
-  .nier-container::before {
+  .nier-container: :before {
     content: '';
     position: absolute;
     top: -2px;
@@ -679,7 +674,7 @@ https://svelte.dev/e/component_invalid_directive -->
     overflow: hidden;
   }
 
-  .nier-search-btn::before {
+  .nier-search-btn: :before {
     content: '';
     position: absolute;
     top: 0;
@@ -698,7 +693,7 @@ https://svelte.dev/e/component_invalid_directive -->
     position: relative;
   }
 
-  .nier-result-item::before {
+  .nier-result-item: :before {
     content: '';
     position: absolute;
     left: 0;
@@ -736,7 +731,7 @@ https://svelte.dev/e/component_invalid_directive -->
     -webkit-appearance: none;
   }
 
-  .nier-slider::-webkit-slider-thumb {
+  .nier-slider: :-webkit-slider-thumb {
     @apply bg-yellow-400 rounded-none w-4 h-4 cursor-pointer;
     -webkit-appearance: none;
     clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));

@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js';
 
 
 // Minimal SSE endpoint: emits keepalive and relays posted messages to connected clients
-const clients = new Set<WritableStreamDefaultWriter<string>>();
+const clients = new Set<WritableStreamDefaultWriter<string>();
 
 export const GET: RequestHandler = async () => {
   const stream = new TransformStream();

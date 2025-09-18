@@ -17,7 +17,7 @@
     if (!currentMessage.trim() || isTyping) return;
 
     const userMessage = {
-      id: Date.now().toString(),
+      id: Date.now.toString(),
       role: 'user',
       content: currentMessage.trim(),
       timestamp: new Date()

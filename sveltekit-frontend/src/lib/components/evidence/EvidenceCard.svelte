@@ -40,7 +40,7 @@ https://svelte.dev/e/block_unexpected_character -->
   } from "lucide-svelte";
   import { quintOut } from "svelte/easing";
   import { fly, scale } from "svelte/transition";
-  import { createTooltip, melt } from '@melt-ui/svelte';
+  // import { createTooltip, melt } from '@melt-ui/svelte'; // Replaced with bits-ui
   import type { Evidence } from '$lib/stores/report';
 
   type ExtendedEvidence = Evidence & { evidenceType?: string;
@@ -51,14 +51,7 @@ https://svelte.dev/e/block_unexpected_character -->
 
                   export const showPreview = true;
 
-  const {
-    elements: { trigger: tooltipTrigger, content: tooltipContent },
-    states: { open: tooltipOpen }
-  } = createTooltip({
-    positioning: { placement: "top" },
-    openDelay: 500,
-    closeDelay: 0
-  });
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   const getIcon = (type: Evidence["type"]) => { switch (type) {
       case "document":
@@ -79,7 +72,7 @@ https://svelte.dev/e/block_unexpected_character -->
   const formatFileSize = (bytes: number): string => { if (bytes === 0) return "0 Bytes";
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const i = Math.floor(Math.log(bytes) / Math.log(k);
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
    };
 
@@ -90,7 +83,7 @@ https://svelte.dev/e/block_unexpected_character -->
     ["document", "image", "video", "audio", "link"].includes(evidence.evidenceType || evidence.type)
       ? (evidence.evidenceType || evidence.type) as Evidence["type"]
       : "document"
-  ));
+  );
 
   function handleMouseEnter() { if (expandOnHover) {
       isHovered = true;
@@ -108,7 +101,7 @@ https://svelte.dev/e/block_unexpected_character -->
     { compact ? 'text-sm' : '' }
     { draggable ? 'cursor-grab active:cursor-grabbing' : '' }
     { isHovered ? 'scale-105 z-10 shadow-2xl' : '' }"
-  transitionscale={{ duration: 200, easing: quintOut }}
+  transition:scale={{ duration: 200, easing: quintOut }}
   onmouseenter={ handleMouseEnter }
   onmouseleave={ handleMouseLeave }
   role="article"
@@ -267,26 +260,5 @@ https://svelte.dev/e/block_unexpected_character -->
   { /if }
 </div>
 
-<!-- Tooltip -->
-{ #if $tooltipOpen }
-  <div
-    
-    class="mx-auto px-4"
-    transitionfly={{ y: -5, duration: 150 }}
-  >
-    <div class="mx-auto px-4">
-      <strong>{ evidence.title }</strong>
-      { #if evidence.description }
-        <p>{ evidence.description }</p>
-      { /if }
-      { #if evidence.metadata }
-        <div class="mx-auto px-4">
-          { #each Object.entries(evidence.metadata) as [key, value] }
-            <div><strong>{ key }:</strong> { value }</div>
-          { /each }
-        </div>
-      { /if }
-    </div>
-  </div>
-{ /if }
+<!-- Tooltip section removed - replaced with native title attributes -->
 

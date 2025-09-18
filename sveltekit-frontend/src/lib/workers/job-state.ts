@@ -26,7 +26,7 @@ class JobStore extends EventEmitter {
       id: job.id,
       state: job.state ?? (existing?.state ?? 'queued'),
       payload: job.payload ?? existing?.payload,
-      retries: typeof job.retries === 'number' ? job.retries : existing?.retries ?? 0,
+      retries: typeof job.retries === 'number' ? job.retries: existing?.retries ?? 0,
       lastError: job.lastError ?? existing?.lastError ?? null,
       createdAt: existing?.createdAt ?? this.nowIso(),
       updatedAt: this.nowIso(),

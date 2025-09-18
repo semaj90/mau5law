@@ -46,12 +46,7 @@
 	}
 
 	function formatCurrency(amount: number): string {
-		return new Intl.NumberFormat('en-US', {
-			style: 'currency',
-			currency: 'USD',
-			minimumFractionDigits: 0,
-			maximumFractionDigits: 0
-		}).format(amount);
+		return new Intl.NumberFormat.format(amount);
 	}
 
 	function formatPercentage(value: number): string {
@@ -123,7 +118,7 @@
 								{#each data.caseDetails.assignedLawyers as lawyer}
 									<div class="flex items-center gap-3">
 										<div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-											{lawyer.split(' ').map(n => n[0]).join('')}
+											{lawyer.split.map-join('')}
 										</div>
 										<span>{lawyer}</span>
 									</div>
@@ -423,7 +418,7 @@
 							{#each data.recentActivity as activity}
 								<div class="flex items-start gap-4 p-4 bg-white rounded-lg border border-gray-200">
 									<div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium">
-										{activity.user === 'AI System' ? 'AI' : activity.user.split(' ').map(n => n[0]).join('')}
+										{activity.user === 'AI System' ? 'AI' : activity.user.split.map-join('')}
 									</div>
 									<div class="flex-1">
 										<div class="font-medium text-gray-900">{activity.action}</div>

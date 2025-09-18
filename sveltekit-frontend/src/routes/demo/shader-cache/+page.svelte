@@ -184,7 +184,7 @@
       if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
         const data = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
         if ((data as { success?: unknown; metrics?: unknown; shaderType?: unknown; usageCount?: unknown; legalContext?: unknown }).success && (data as { success?: unknown; metrics?: unknown; shaderType?: unknown; usageCount?: unknown; legalContext?: unknown }).metrics.shaderCache) {
-          metrics.set((data as { success?: unknown; metrics?: unknown; shaderType?: unknown; usageCount?: unknown; legalContext?: unknown }).metrics.shaderCache);
+          metrics.set.metrics.shaderCache);
         }
       }
     } catch (error) {
@@ -208,16 +208,13 @@
     }
   }
   function addLog(message: string) {
-    systemLog.update(log => {
-      const newLog = [...log, `[${new Date().toLocaleTimeString()}] ${message}`];
+    systemLog.update.toLocaleTimeString()}] ${message}`];
       return newLog.slice(-20); // Keep last 20 log entries
     });
   }
   function updateShaderResults(result: unknown) {
     if ((result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).success && (result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader) {
-      shaderResults.update(results => {
-        const newResults = [...results];
-        const existingIndex = newResults.findIndex(r => r.shader.key === (result as { shader?: unknown; message?: unknown; count?: unknown; shaders?: unknown; success?: unknown }).shader.key);
+      shaderResults.update.shader.key);
         if (existingIndex >= 0) {
           newResults[existingIndex] = result;
         } else {

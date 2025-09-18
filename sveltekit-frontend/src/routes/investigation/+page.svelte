@@ -139,8 +139,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     console.log('🧠 Analysis complete:', analysis);
 
     // Update evidence with analysis
-    evidence = evidence.map(item => {
-      if ((item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).title === fileId || (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).id === fileId) {
+    evidence = evidence.map.title === fileId || (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).id === fileId) {
         return {
           ...item,
           status: 'analyzed',
@@ -453,7 +452,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 
                       {#if (item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).confidence}
                         <div class="confidence-meter">
-                          <span class="confidence-label">Confidence: {Math.round((item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).confidence * 100)}%</span>
+                          <span class="confidence-label">Confidence: {Math.round.confidence * 100)}%</span>
                           <div class="confidence-bar">
                             <div
                               class="confidence-fill"
@@ -642,7 +641,7 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     transition: all 0.3s ease;
   }
 
-  .status-(item as { title?: unknown; id?: unknown; status?: unknown; confidence?: unknown; aiAnalysis?: unknown; tags?: unknown; active?: unknown }).active {
+  .status-.active {
     background: rgba(0, 255, 136, 0.2);
     border-color: #00ff88;
     color: #00ff88;

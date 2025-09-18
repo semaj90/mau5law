@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       } catch (aiError) {
         console.warn('AI analysis failed, continuing without it:', aiError);
         aiAnalysis = {
-          error: aiError instanceof Error ? aiError.message : 'AI analysis failed',
+          error: aiError instanceof Error ? aiError.message: 'AI analysis failed',
           fallback: true
         };
       }
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error) {
     console.error('File processing error:', error);
     return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Processing failed',
+      error: error instanceof Error ? error.message: 'Processing failed',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
@@ -188,7 +188,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Processing status error:', error);
     return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : 'Status check failed',
+      error: error instanceof Error ? error.message: 'Status check failed',
       timestamp: new Date().toISOString()
     }), {
       status: 500,
@@ -222,9 +222,7 @@ function extractKeyTerms(content: string): string[] {
     'jurisdiction', 'precedent', 'statute', 'liability', 'damages', 'testimony'
   ];
 
-  const foundTerms = legalTerms.filter(term =>
-    content.toLowerCase().includes(term.toLowerCase())
-  );
+  const foundTerms = legalTerms.filter(item => item.includes(term.toLowerCase()));
 
   return foundTerms.slice(0, 10); // Limit to top 10 terms
 }
@@ -239,9 +237,7 @@ function assessComplexity(content: string): 'low' | 'medium' | 'high' {
 
 function assessRiskLevel(content: string): 'low' | 'medium' | 'high' | 'critical' {
   const riskKeywords = ['criminal', 'felony', 'urgent', 'emergency', 'critical'];
-  const foundRiskTerms = riskKeywords.filter(term =>
-    content.toLowerCase().includes(term.toLowerCase())
-  );
+  const foundRiskTerms = riskKeywords.filter(item => item.includes(term.toLowerCase()));
 
   if (foundRiskTerms.length >= 2) return 'critical';
   if (foundRiskTerms.length >= 1) return 'high';
@@ -251,7 +247,7 @@ function assessRiskLevel(content: string): 'low' | 'medium' | 'high' | 'critical
 
 function generateSummary(content: string): string {
   // Basic summary generation - first few sentences
-  const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  const sentences = content.split(/[.!?]+/).filter(item => item.length) > 0);
   const summary = sentences.slice(0, 3).join('. ');
 
   return summary.substring(0, 200) + (summary.length > 200 ? '...' : '');

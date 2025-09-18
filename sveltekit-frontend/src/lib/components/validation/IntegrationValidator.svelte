@@ -125,7 +125,7 @@
         }
       } catch (error) {
         test.status = 'failed';
-        test.error = error instanceof Error ? error.message : 'Unknown error';
+        test.error = error instanceof Error ? error.message: 'Unknown error';
         test.duration = Date.now() - testStartTime;
         suite.failed++;
       }
@@ -291,7 +291,7 @@
       }
     } catch (error) {
       test.status = 'failed';
-      test.error = `Network error: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      test.error = `Network error: ${error instanceof Error ? error.message: 'Unknown error'}`;
     }
   }
   async function testDocumentClassification(test: ValidationTest) {

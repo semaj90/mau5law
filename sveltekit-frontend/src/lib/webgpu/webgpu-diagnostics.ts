@@ -72,7 +72,7 @@ export class WebGPUDiagnosticsService {
 
   private getBrowserSupport() {
     const hasNavigatorGPU = typeof navigator !== 'undefined' && 'gpu' in navigator;
-    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent: '';
     
     const isChrome = /Chrome/.test(userAgent) && !/Edg/.test(userAgent);
     const isFirefox = /Firefox/.test(userAgent);
@@ -280,7 +280,7 @@ export function checkBrowserCompatibility(): { compatible: boolean; message: str
   }
 
   const userAgent = navigator.userAgent;
-  const isSecureContext = typeof window !== 'undefined' ? window.isSecureContext : false;
+  const isSecureContext = typeof window !== 'undefined' ? window.isSecureContext: false;
 
   if (!isSecureContext) {
     return { compatible: false, message: 'WebGPU requires HTTPS or localhost (secure context)' };

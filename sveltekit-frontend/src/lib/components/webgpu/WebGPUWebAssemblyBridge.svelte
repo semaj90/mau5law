@@ -140,7 +140,7 @@ https://svelte.dev/e/js_parse_error -->
       console.log(`🔧 Processing modes: [${processingModes.join(', ')}]`);
 
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Unknown initialization error';
+      error = err instanceof Error ? err.message: 'Unknown initialization error';
       console.error('❌ Initialization failed:', err);
     } finally {
       loading = false;
@@ -200,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
       demoResult = `**Method:** ${method}\n**Processing Time:** ${processingTime.toFixed(2)}ms\n**Throughput:** ${metrics.throughput.toFixed(0)} chars/sec\n\n**Result:**\n${result}`;
       
     } catch (err) {
-      demoResult = `❌ Demo failed: ${err instanceof Error ? err.message : 'Unknown error'}`;
+      demoResult = `❌ Demo failed: ${err instanceof Error ? err.message: 'Unknown error'}`;
     } finally {
       demoProcessing = false;
     }

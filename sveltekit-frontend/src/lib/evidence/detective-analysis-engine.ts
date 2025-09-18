@@ -216,7 +216,7 @@ export class DetectiveAnalysisEngine {
       const imageUrl = URL.createObjectURL(imageBlob);
       
       await new Promise((resolve, reject) => {
-        img.onload = resolve;
+        img.onload = resolve);
         img.onerror = reject;
         img.src = imageUrl;
       });
@@ -452,7 +452,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           tileCount: tilingResults.chunks.length,
           processing: tilingResults.simdMetrics,
           memoryRegions: tilingResults.chunks.reduce((acc: any, chunk) => {
-            acc[chunk.memoryRegion] = (acc[chunk.memoryRegion] || 0) + 1;
+            acc[chunk.memoryRegion] = (acc[chunk.memoryRegion] || 0) + 1)));
             return acc;
           }, {}),
           highConfidenceTiles: tilingResults.chunks
@@ -528,7 +528,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   /**
    * Detect handwriting in evidence
    */
-  private async detectHandwriting(data: Blob | File | string): Promise<any>> {
+  private async detectHandwriting(data: Blob | File | string): Promise<any> {
     // Simplified handwriting detection - would use ML model in production
     try {
       // Check cache first
@@ -562,7 +562,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   /**
    * Process handwritten text with specialized algorithms
    */
-  private async processHandwriting(data: Blob | File | string): Promise<any>> {
+  private async processHandwriting(data: Blob | File | string): Promise<any> {
     // Mock handwriting processing - would integrate with specialized ML models
     return {
       text: "Handwritten note detected: Meeting at 3pm tomorrow",

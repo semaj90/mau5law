@@ -92,7 +92,7 @@
       const status = await yorhaAPI.getSystemStatus();
       systemStatus = {
         connected: true,
-        services: Object.keys(status).length,
+        services: Object.keys.length,
         errors: 0
       };
     } catch (error) {

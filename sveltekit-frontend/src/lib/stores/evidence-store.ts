@@ -210,7 +210,7 @@ export const evidenceActions = {
         ...state,
         isLoading: false,
         error:
-          error instanceof Error ? error.message : "Failed to load evidence",
+          error instanceof Error ? error.message: "Failed to load evidence",
       }));
     }
   },
@@ -359,7 +359,7 @@ export const uploadActions = {
 
     try {
       const state = await new Promise<UploadModalState>((resolve) => {
-        uploadModal.subscribe(resolve)();
+        uploadModal.subscribe(resolve)());
       });
 
       for (const uploadFile of state.files) {
@@ -396,7 +396,7 @@ export const uploadActions = {
         await new Promise<void>((resolve, reject) => {
           xhr.onload = () => {
             if (xhr.status === 200 || xhr.status === 201) {
-              const result = JSON.parse(xhr.responseText);
+              const result = JSON.parse(xhr.responseText));
               uploadModal.update((modalState) => ({
                 ...modalState,
                 files: modalState.files.map((f) =>
@@ -455,7 +455,7 @@ export const uploadActions = {
       uploadModal.update((state) => ({
         ...state,
         isProcessing: false,
-        error: error instanceof Error ? error.message : "Upload failed",
+        error: error instanceof Error ? error.message: "Upload failed",
       }));
     }
   },

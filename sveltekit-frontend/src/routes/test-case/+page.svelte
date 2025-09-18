@@ -56,7 +56,7 @@ let formData = $state({
         submitResult = `❌ Error: ${(result as { id?: unknown; error?: unknown }).error || 'Unknown error'}`;
       }
     } catch (error) {
-      submitResult = `❌ Network Error: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      submitResult = `❌ Network Error: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
       isSubmitting = false;
     }
@@ -173,7 +173,7 @@ let formData = $state({
             }}
           >
             Clear Form
-
+          </Button>
           <Button
             type="submit"
             disabled={isSubmitting || !formData.caseNumber || !formData.title}
@@ -186,8 +186,8 @@ let formData = $state({
               <Save class="mr-2 h-4 w-4" />
               Create Case
             {/if}
-
-        </div>
+          </Button>
+  </div>
       </form>
     </div.Content>
   </div.Root>

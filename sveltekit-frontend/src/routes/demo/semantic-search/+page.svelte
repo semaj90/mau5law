@@ -95,10 +95,10 @@ https://svelte.dev/e/js_parse_error -->
 
       if ((result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).success) {
         searchResults = (result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).results || [];
-        searchAnalytics.set((result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).metadata || {]);
-        searchSuggestions.set((result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).suggestions || []);
+        searchAnalytics.set.metadata || {]);
+        searchSuggestions.set.suggestions || []);
       } else {
-        searchError.set((result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).error || 'Search failed');
+        searchError.set.error || 'Search failed');
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -442,7 +442,7 @@ https://svelte.dev/e/js_parse_error -->
                 Metadata & Technical Details
               </summary>
               <div class="mt-2 p-3 bg-gray-50 rounded text-xs">
-                <pre class="whitespace-pre-wrap text-gray-700">{JSON.stringify((result as { success?: unknown; results?: unknown; metadata?: unknown; suggestions?: unknown; error?: unknown; title?: unknown; score?: unknown; semanticRelevance?: unknown; id?: unknown; snippet?: unknown; highlights?: unknown; reasoning?: unknown; content?: unknown }).metadata, null, 2)}</pre>
+                <pre class="whitespace-pre-wrap text-gray-700">{JSON.stringify.metadata, null, 2)}</pre>
               </div>
             </details>
           {/if}

@@ -36,7 +36,7 @@ export const lastConnectionTime = writable<Date | null>(null);
 ;
 // Real-time communication
 export const isTyping = writable(false);
-export const typingUsers = writable<Set<string>>(new Set());
+export const typingUsers = writable<Set<string>(new Set());
 export const streamingResponse = writable('');
 export const streamingMessageId = writable<string | null>(null);
 ;
@@ -88,16 +88,16 @@ export const chatConfig = writable({
 export const messageCount = derived(chatMessages, ($messages) => $messages.length);
 
 export const lastUserMessage = derived(chatMessages, ($messages) => 
-  $messages.filter(m => m.role === 'user').slice(-1)[0] || null
+  $messages.filter(item => item.slice)(-1)[0] || null
 );
 
 export const lastAIResponse = derived(chatMessages, ($messages) => 
-  $messages.filter(m => m.role === 'assistant').slice(-1)[0] || null
+  $messages.filter(item => item.slice)(-1)[0] || null
 );
 
 export const conversationSummary = derived(chatMessages, ($messages) => {
-  const userMessages = $messages.filter(m => m.role === 'user').length;
-  const aiMessages = $messages.filter(m => m.role === 'assistant').length;
+  const userMessages = $messages.filter(item => item.length);
+  const aiMessages = $messages.filter(item => item.length);
   const totalTokens = $messages.reduce((sum, m) => sum + (m.token_count || 0), 0);
   
   return {
@@ -286,7 +286,7 @@ export const chatActions = {
   setRAGContext: (context: RAGContext): void => {
     ragContext.set(context);
     recommendations.set(context.recommendations || []);
-    didYouMean.set(Array.isArray(context.did_you_mean) ? context.did_you_mean : []);
+    didYouMean.set(Array.isArray(context.did_you_mean) ? context.did_you_mean: []);
   },
 
   // User interaction tracking

@@ -31,6 +31,6 @@ export const GET: RequestHandler = async () => {
       uptime: os.uptime()
     });
   } catch (error) {
-    return json({ error: 'Failed to get system information', details: error instanceof Error ? error.message : String(error) }, { status: 500 });
+    return json({ error: 'Failed to get system information', details: error instanceof Error ? error.message: String(error) }, { status: 500 });
   }
 };

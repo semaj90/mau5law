@@ -116,7 +116,7 @@ https://svelte.dev/e/props_duplicate -->
     color: #fcd34d;
   }
   
-  .star-button:not(.active):hover {
+  .star-button: not(.active):hover {
     color: #fef3c7;
   }
   

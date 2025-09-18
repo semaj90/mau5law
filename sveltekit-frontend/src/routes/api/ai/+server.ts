@@ -92,7 +92,7 @@ class LegalAIService {
 
     } catch (error) {
       console.error('Legal AI Service Error:', error);
-      throw new Error(`AI processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`AI processing failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
 
@@ -244,7 +244,7 @@ Provide comprehensive legal guidance as appropriate for the query.`
 
     // Increase confidence for legal terminology
     const legalTerms = ['evidence', 'legal', 'court', 'case', 'precedent', 'statute', 'regulation'];
-    const foundTerms = legalTerms.filter(term => response.toLowerCase().includes(term));
+    const foundTerms = legalTerms.filter(item => item.includes(term));
     confidence += (foundTerms.length / legalTerms.length) * 0.2;
 
     // Increase confidence for specific context-appropriate content
@@ -257,7 +257,7 @@ Provide comprehensive legal guidance as appropriate for the query.`
 
     if (context && contextKeywords[context as keyof typeof contextKeywords]) {
       const keywords = contextKeywords[context as keyof typeof contextKeywords];
-      const foundKeywords = keywords.filter(keyword => response.toLowerCase().includes(keyword));
+      const foundKeywords = keywords.filter(item => item.includes(keyword));
       confidence += (foundKeywords.length / keywords.length) * 0.2;
     }
 
@@ -323,7 +323,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Internal server error',
-        message: error instanceof Error ? error.message : 'Unknown error occurred'
+        message: error instanceof Error ? error.message: 'Unknown error occurred'
       },
       { status: 500 }
     );
@@ -354,7 +354,7 @@ export const GET: RequestHandler = async () => {
     return json(
       {
         status: 'unhealthy',
-        error: error instanceof Error ? error.message : 'Service check failed',
+        error: error instanceof Error ? error.message: 'Service check failed',
         timestamp: new Date().toISOString()
       },
       { status: 503 }

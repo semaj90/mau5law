@@ -63,11 +63,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (err: any) {
     console.error("❌ Vector intelligence search API error:", err);
 
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    const errorMessage = err instanceof Error ? err.message: "Unknown error";
     const statusCode =
       err && typeof err === "object" && "status" in err
-        ? (err as any).status
-        : 500;
+        ? (err as any).status: 500;
 
     throw error(statusCode, errorMessage);
   }
@@ -138,6 +137,6 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (err: any) {
     console.error("❌ Vector intelligence GET search error:", err);
-    throw error(500, err instanceof Error ? err.message : "Search failed");
+    throw error(500, err instanceof Error ? err.message: "Search failed");
   }
 };

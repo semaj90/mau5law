@@ -132,7 +132,7 @@ export async function GET({ url }): Promise<any> {
       {
         success: false,
         error: "Failed to retrieve AI context",
-        message: error instanceof Error ? error.message : "Unknown error",
+        message: error instanceof Error ? error.message: "Unknown error",
       },
       { status: 500 },
     );

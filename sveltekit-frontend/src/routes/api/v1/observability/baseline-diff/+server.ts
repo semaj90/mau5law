@@ -106,9 +106,9 @@ export const GET: RequestHandler = async ({ url }) => {
     // Calculate summary
     const summary = {
       total_metrics: diffs.length,
-      normal_count: diffs.filter(d => d.status === 'normal').length,
-      drift_count: diffs.filter(d => d.status === 'drift').length,
-      significant_drift_count: diffs.filter(d => d.status === 'significant_drift').length
+      normal_count: diffs.filter(item => item.length),
+      drift_count: diffs.filter(item => item.length),
+      significant_drift_count: diffs.filter(item => item.length)
     };
 
     // Determine overall status

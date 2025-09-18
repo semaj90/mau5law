@@ -69,15 +69,15 @@ https://svelte.dev/e/bind_invalid_expression -->
   let selectedMode = $state<'auto' | 'wasm' | 'langchain' | 'gpu'>('auto');
 
   // Derived state for UI
-  let canSend = $derived(() => currentMessage.trim().length > 0 && !isProcessing());
+  let canSend = $derived(() => currentMessage.trim.length > 0 && !isProcessing());
   let hasConversation = $derived(() => conversationHistory().length > 0);
   let clusterStatus = $derived(() => {
     const health = clusterHealth();
-    const healthyCount = Object.values(health).filter(Boolean).length;
+    const healthyCount = Object.values.filter-length;
     return {
-      healthy: healthyCount === Object.keys(health).length,
+      healthy: healthyCount === Object.keys.length,
       count: healthyCount,
-      total: Object.keys(health).length
+      total: Object.keys.length
     };
   });
 
@@ -95,7 +95,7 @@ https://svelte.dev/e/bind_invalid_expression -->
     } catch (error) {
       console.error('Failed to initialize Unified AI Service:', error);
     
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
 
     // Load available models
     try {
@@ -103,7 +103,7 @@ https://svelte.dev/e/bind_invalid_expression -->
     } catch (error) {
       console.warn('Failed to load available models:', error);
     
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
 
     // Check cluster health
     aiAssistantManager.checkClusterHealth();
@@ -181,7 +181,7 @@ https://svelte.dev/e/bind_invalid_expression -->
     } catch (error) {
       console.error('Failed to send message:', error);
     
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
 
     // Focus back to input
     if (messageInput) {
@@ -200,11 +200,7 @@ https://svelte.dev/e/bind_invalid_expression -->
 
   // Format timestamp
   function formatTime(date: Date): string {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    }).format(date);
+    return new Intl.DateTimeFormat.format(date);
   }
 
   // Get message role color
@@ -435,7 +431,7 @@ Retry
         <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
           <span>Queries: {aiUsage().totalQueries}</span>
           <span>Tokens: {aiUsage().totalTokens.toLocaleString()}</span>
-          <span>Avg Response: {Math.round(aiUsage().averageResponseTime)}ms</span>
+          <span>Avg Response: {Math.round.averageResponseTime)}ms</span>
         </div>
       {/if}
     </div>

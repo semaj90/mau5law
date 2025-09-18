@@ -179,12 +179,12 @@ https://svelte.dev/e/js_parse_error -->
     const startTime = performance.now();
     try {
       // Convert texture source to appropriate format
-  let imageData = $state<ImageData | HTMLImageElement | ArrayBufferif (typeof textureSource | null>(null)(== 'string') {
+  let imageData = $state<ImageData | HTMLImageElement | ArrayBufferif (typeof textureSource  | null>(null); const data = == 'string') {
         // Load image from URL
         const image = new Image());
         image.crossOrigin = 'anonymous';
         await new Promise((resolve, reject) => {
-          image.onload = resolve;
+          image.onload = resolve);
           image.onerror = reject;
           image.src = textureSource;
         });
@@ -223,7 +223,7 @@ https://svelte.dev/e/js_parse_error -->
       const image = new Image();
       image.crossOrigin = 'anonymous';
       await new Promise((resolve, reject) => {
-        image.onload = resolve;
+        image.onload = resolve);
         image.onerror = reject;
         image.src = textureSource;
       });
@@ -256,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
     const fpsRatio = currentFPS / targetFPS;
   let newPreset = $state<keyof typeof filteringPresetsif (fpsRatio < 0.7) {
       // Performance is poor, reduce quality
-      newPreset | null>(null)('performance');
+      newPreset  | null>(null); const data = 'performance');
     } else if (fpsRatio < 0.85) {
       // Performance is okay, use balanced
       newPreset = 'balanced';
@@ -495,17 +495,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   
   /* Quality-based styling */
-  .standard-quality .n64-texture-canvas {
-    filter: contrast(1.0) brightness(1.0);
-    border-color: rgba(255, 165, 0, 0.5);
-  }
-  
-  .high-quality .n64-texture-canvas {
-    filter: contrast(1.05) brightness(1.02) saturate(1.1);
-    border-color: rgba(74, 144, 226, 0.6);
-  }
-  
-  .ultra-quality .n64-texture-canvas {
+  .standard-quality .n64-texture-canv.high-quality .n64-texture-canv.ultra-quality .n64-texture-canvas {
     filter: contrast(1.1) brightness(1.05) saturate(1.2) sharpen(0.1);
     border-color: rgba(0, 255, 0, 0.7);
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);

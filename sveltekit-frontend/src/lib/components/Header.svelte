@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   import 'nes.css/css/nes.min.css';
 </script>
   // Keep module import for Svelte runes; ambient types are provided globally.
-  export {};
+  export ;
 </script>
 
 <script lang="ts">

@@ -240,7 +240,7 @@ export const actions: Actions = {
           // If we have an embed helper locally, create a small embedding now and store it in a lightweight table
           if (locals.embed?.embedText) {
             try {
-              const text = [title, description].filter(Boolean).join('\n\n');
+              const text = [title, description].filter(item => item.join)('\n\n');
               const vector = await locals.embed.embedText(text); // returns number[]
               // store the vector payload in a lightweight 'pending_vectors' table for later ingestion
               await locals.db.pendingVector.create({
@@ -315,7 +315,7 @@ export const actions: Actions = {
       // Create case in database and persist embedding/vector (Drizzle/Prisma compatible best-effort)
       try {
         // 1) generate embedding (nomic preferred, fallback to local embed / llama wasm)
-        const textForEmbedding = [title, description].filter(Boolean).join('\n\n');
+        const textForEmbedding = [title, description].filter(item => item.join)('\n\n');
         let vector: number[] | null = null;
         try {
           if (typeof (globalThis as any).nomicEmbedText === 'function') {

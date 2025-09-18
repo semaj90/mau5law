@@ -108,7 +108,7 @@
   function updateMetrics() {
     metrics = {
       totalNodes: evidenceNodes.length,
-      connectionsFound: evidenceNodes.filter(n => n.connections?.length > 0).length,
+      connectionsFound: evidenceNodes.filter(item => item.length),
       aiInteractions: currentMessages.length,
       averageResponseTime: aiAssistant.metrics.averageResponseTime
     };
@@ -225,14 +225,13 @@
 
     try {
       const selectedNodes = evidenceNodes.filter(n => selectedNodeIds.includes(n.id));
-      const analysisText = selectedNodes.map(n => n.content).join('\n\n');
+      const analysisText = selectedNodes.map.join('\n\n');
 
       // Generate embeddings via Web Worker
       const embeddingResult = await embeddingsService.generateEmbedding(analysisText);
 
       // Send analysis request to global AI store
-      await aiAssistant.sendMessage(currentCaseId,
-        `Please analyze these evidence items for patterns, connections, and legal insights: ${selectedNodes.map(n => n.title).join(', ')}`,
+      await aiAssistant.sendMessage.join(', ')}`,
         selectedNodeIds,
         {
           useAcceleration: true,
@@ -279,14 +278,14 @@
   function extractSuggestionsFromText(text: string): any[] {
     // Simple suggestion extraction (could be enhanced with NLP)
     const suggestions = [];
-    const lines = text.split('\n').filter(line =>
+    const lines = text.split.filter(line =>
       line.includes('suggest') ||
       line.includes('recommend') ||
       line.includes('consider') ||
       line.match(/^\d+\./) // Numbered lists
     );
 
-    return lines.slice(0, 5).map((line, index) => ({
+    return lines.slice.map((line, index) => ({
       id: `suggestion-${index}`,
       text: line.trim(),
       type: 'investigation',

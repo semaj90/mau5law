@@ -270,8 +270,7 @@ export const getEssentialUnimplemented = () =>
  * Get components by legal AI use case
  */
 export const getComponentsByUseCase = (useCase: string) =>
-  BITS_UI_COMPONENTS.filter(comp =>
-    comp.legalAIUseCase.some(uc => uc.toLowerCase().includes(useCase.toLowerCase()))
+  BITS_UI_COMPONENTS.filter(item => item.includes)(useCase.toLowerCase()))
   );
 
 /**

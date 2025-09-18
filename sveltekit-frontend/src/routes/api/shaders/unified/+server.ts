@@ -254,8 +254,8 @@ export const POST: RequestHandler = async ({ request }) => {
         searchTime,
         query,
         breakdown: {
-          webgpu: limitedResults.filter(s => s.shaderType === 'webgpu').length,
-          webgl: limitedResults.filter(s => s.shaderType === 'webgl').length
+          webgpu: limitedResults.filter(item => item.length),
+          webgl: limitedResults.filter(item => item.length)
         }
       }
     };

@@ -175,7 +175,7 @@ export const GET: RequestHandler = async () => {
       },
       healthSummary: {
         totalServices: 7,
-        healthyServices: [postgresHealthy, redisHealthy, qdrantHealthy, embeddingsHealthy, ocrHealthy, storageHealthy, searchHealthy].filter(Boolean).length,
+        healthyServices: [postgresHealthy, redisHealthy, qdrantHealthy, embeddingsHealthy, ocrHealthy, storageHealthy, searchHealthy].filter(item => item.length),
         dockerRequired: true,
         dockerRunning: dockerDesktop.running
       },

@@ -56,7 +56,7 @@ export interface GPUApiResponse {
 }
 
 // Health check for all GPU services
-async function checkGPUHealth(): Promise<Record<string, any>> {
+async function checkGPUHealth(): Promise<Record<string, any> {
 	const health: Record<string, any> = {};
 
 	try {
@@ -71,7 +71,7 @@ async function checkGPUHealth(): Promise<Record<string, any>> {
 		health.nvidia_llama = {
 			available: false,
 			status: 'error',
-			error: error instanceof Error ? error.message : 'Unknown error'
+			error: error instanceof Error ? error.message: 'Unknown error'
 		};
 	}
 
@@ -88,7 +88,7 @@ async function checkGPUHealth(): Promise<Record<string, any>> {
 		health.gpu_service_integration = {
 			available: false,
 			status: 'error',
-			error: error instanceof Error ? error.message : 'Unknown error'
+			error: error instanceof Error ? error.message: 'Unknown error'
 		};
 	}
 
@@ -103,7 +103,7 @@ async function checkGPUHealth(): Promise<Record<string, any>> {
 		health.wasm_llvm = {
 			available: false,
 			status: 'error',
-			error: error instanceof Error ? error.message : 'Unknown error'
+			error: error instanceof Error ? error.message: 'Unknown error'
 		};
 	}
 
@@ -125,7 +125,7 @@ async function checkGPUHealth(): Promise<Record<string, any>> {
 			available: false,
 			status: 'error',
 			note: 'External WASM-LLVM service not running on port 8225',
-			error: error instanceof Error ? error.message : 'Unknown error'
+			error: error instanceof Error ? error.message: 'Unknown error'
 		};
 	}
 
@@ -252,7 +252,7 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 				memoryUsed = task.memoryUsed || 0;
 				gpuUtilization = 0.5;
 			} catch (error: any) {
-				throw new Error(`GPU processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+				throw new Error(`GPU processing failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
 			}
 		}
 
@@ -278,7 +278,7 @@ async function performHybridOperation(data: any, options: any = {}): Promise<GPU
 		return {
 			success: false,
 			operation: 'hybrid',
-			error: error instanceof Error ? error.message : 'Unknown error',
+			error: error instanceof Error ? error.message: 'Unknown error',
 			serviceUsed: 'error',
 			performance: {
 				processingTime: Date.now() - startTime,
@@ -332,7 +332,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 		console.error('GPU API GET error:', error);
 		return json({
 			success: false,
-			error: error instanceof Error ? error.message : 'Unknown error'
+			error: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 });
 	}
 };
@@ -374,7 +374,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 					response = {
 						success: false,
 						operation,
-						error: error instanceof Error ? error.message : 'LLaMA generation failed',
+						error: error instanceof Error ? error.message: 'LLaMA generation failed',
 						serviceUsed: 'nvidia_llama',
 						performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
 						metadata: Record<string, any>
@@ -414,7 +414,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 					response = {
 						success: false,
 						operation,
-						error: error instanceof Error ? error.message : 'WASM operation failed',
+						error: error instanceof Error ? error.message: 'WASM operation failed',
 						serviceUsed: 'wasm_llvm_service',
 						performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
 						metadata: Record<string, any>
@@ -448,7 +448,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 					response = {
 						success: false,
 						operation,
-						error: error instanceof Error ? error.message : 'GPU compute failed',
+						error: error instanceof Error ? error.message: 'GPU compute failed',
 						serviceUsed: 'gpu_service_integration',
 						performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
 						metadata: Record<string, any>
@@ -492,7 +492,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			operation: 'unknown',
-			error: error instanceof Error ? error.message : 'Unknown error',
+			error: error instanceof Error ? error.message: 'Unknown error',
 			serviceUsed: 'error',
 			performance: { processingTime: 0, memoryUsed: 0, gpuUtilization: 0 },
 			metadata: Record<string, any>

@@ -42,7 +42,7 @@
   // Derived state for UI feedback
   const hasResults = $derived(results.length > 0)
   const showMetrics = $derived(metrics !== null)
-  const searchButtonDisabled = $derived(isSearching || query.trim().length === 0);
+  const searchButtonDisabled = $derived(isSearching || query.trim.length === 0);
 
   // Vector intelligence search function
   async function performSemanticSearch() {
@@ -88,7 +88,7 @@
       };
 
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Search failed';
+      error = err instanceof Error ? err.message: 'Search failed';
       results = [];
       metrics = null;
     } finally {
@@ -320,7 +320,7 @@
         {/each}
       </div>
     </div>
-  {:else if !isSearching && query.trim().length > 0}
+  {:else if !isSearching && query.trim.length > 0}
     <!-- No results state -->
     <div class="nes-container">
       <div class="yorha-panel-content pt-6 text-center space-y-2">
@@ -334,7 +334,7 @@
   {/if}
 
   <!-- Demo Notice -->
-  {#if !hasResults && !isSearching && query.trim().length === 0}
+  {#if !hasResults && !isSearching && query.trim.length === 0}
     <div class="border-dashed nes-container">
       <div class="yorha-panel-content pt-6 text-center space-y-4">
         <div class="flex justify-center">

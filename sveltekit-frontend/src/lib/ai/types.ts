@@ -161,7 +161,7 @@ export async function performContext7Search(
         caseId: options.caseId,
         query: options.query,
         timestamp: new Date().toISOString(),
-        ...(result as { content?: any; text?: any; score?: any; type?: any; file?: any; path?: any; line?: any; metadata?: any; selfPrompt?: any; summary?: any; fixes?: any; recommendations?: any; configImprovements?: any; status?: any; todoId?: any; agentTriggered?: any }).metadata
+        ...result.metadata
       }
     }));
   } catch (error: any) {

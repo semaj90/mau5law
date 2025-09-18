@@ -91,7 +91,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           try {
             // Check if evidence already has analysis
             if (evidence.metadata?.aiAnalysis) {
-              return evidence;
+              return evidence));
             }
 
             // Call MCP server for Gemma embeddings analysis
@@ -145,8 +145,8 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     const totalSize = enhancedEvidence.reduce((sum, e) => sum + (e.metadata?.fileSize || 0), 0);
     const analysisStatus = {
       total: enhancedEvidence.length,
-      analyzed: enhancedEvidence.filter(e => e.metadata?.aiAnalysis).length,
-      pending: enhancedEvidence.filter(e => !e.metadata?.aiAnalysis).length
+      analyzed: enhancedEvidence.filter(item => item.length),
+      pending: enhancedEvidence.filter(item => item.length)
     };
 
     return json({

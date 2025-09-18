@@ -200,7 +200,7 @@ async function performAIAnalysis(
     return {
       ...analysisResults,
       error: 'Analysis failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }

@@ -319,7 +319,7 @@ class MetricsCollector {
 
   getAverageTime(operation: string): number {
     const timings = this.metrics.get(operation) || [];
-    return timings.length > 0 ? timings.reduce((a, b) => a + b, 0) / timings.length : 0;
+    return timings.length > 0 ? timings.reduce((a, b) => a + b, 0) / timings.length: 0;
   }
 
   getCounter(name: string): number {
@@ -359,7 +359,7 @@ export const metrics = new MetricsCollector();
  * Timing decorator for measuring function execution time
  */
 export function measureTime(operation: string) {
-  return function <T extends (...args: any[]) => Promise<any>>(
+  return function <T extends (...args: any[]) => Promise<any>(
     _target: any,
     _propertyName: string,
     descriptor: TypedPropertyDescriptor<T>
@@ -457,7 +457,7 @@ export async function checkServiceHealth(name: string, checkFn: () => Promise<an
       service: name,
       status: 'unhealthy',
       responseTime: Date.now() - start,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
 };
   }
 }

@@ -6,7 +6,7 @@
     platform: '',
     gpuInfo: '',
     memoryUsage: '',
-    services: {},
+    services: ,
     port: 5173
   });
   let performanceMetrics = $state({
@@ -31,8 +31,7 @@
               port = fallbackPort;
               break;
             }
-          } catch {}
-        }
+          } catch }
       }
       if (response.ok) {
         systemInfo = {
@@ -54,8 +53,7 @@
     try {
       await fetch(`http://localhost:${systemInfo.port}/api/health`);
       performanceMetrics.latency = Math.round(performance.now() - start);
-    } catch {}
-    // Estimate throughput and GPU utilization
+    } catch // Estimate throughput and GPU utilization
     performanceMetrics.throughput = Math.round(Math.random() * 1000 + 500); // Messages/sec
     performanceMetrics.gpuUtilization = Math.round(Math.random() * 30 + 50); // 50-80%
   }

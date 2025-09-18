@@ -150,7 +150,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         return {
           ...result,
           metadata: {
-            ...(result as { metadata?: any; nodes?: any }).metadata,
+            ...result.metadata,
             source: 'wasm',
             queryTime: Date.now() - startTime
           }
@@ -304,9 +304,8 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           const cacheKey = this.hashQuery(hotQuery.query);
           if (!this.queryCache.has(cacheKey)) {
             // Transform stored result to GraphResult format if needed
-            const result: GraphResult = hotQuery.(result as { metadata?: any; nodes?: any }).nodes ? 
-              hotQuery.result : 
-              this.transformStoredResult(hotQuery.result);
+            const result: GraphResult = hotQuery.result.nodes ? 
+              hotQuery.result: this.transformStoredResult(hotQuery.result);
             
             this.queryCache.set(cacheKey, result);
             hydratedCount++;

@@ -392,7 +392,7 @@ https://svelte.dev/e/expected_token -->
 
 		{:else}
 			<div class="feature-view" transition:fade={{ duration: 300 }}>
-				<h2>🚧 {activeView.charAt(0).toUpperCase() + activeView.slice(1)} Feature</h2>
+				<h2>🚧 {activeView.charAt.toUpperCase() + activeView.slice(1)} Feature</h2>
 				<p>This feature is fully implemented in the platform. Click around to explore!</p>
 				<div class="feature-grid">
 					<div class="feature-nier-bits-card">
@@ -541,7 +541,7 @@ https://svelte.dev/e/expected_token -->
 		font-size: 0.875rem;
 	}
 
-	.nav-item:hover, .nav-(item as { active?: unknown }).active {
+	.nav-item:hover, .nav-.active {
 		background: rgba(16, 185, 129, 0.1);
 		border-color: #10b981;
 		color: #10b981;

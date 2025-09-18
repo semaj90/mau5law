@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { } from 'svelte';
+  import from 'svelte';
 
   interface Props {
     class?: string;
@@ -27,10 +27,10 @@ https://svelte.dev/e/js_parse_error -->
   };
 
   // Extract data with fallbacks
-  let evidence = $derived(analysisData?.evidenceAnalysis ?? {});
+  let evidence = $derived(analysisData?.evidenceAnalysis ?? );
   let persons = $derived(analysisData?.personsData?.persons ?? []);
   let relationships = $derived(analysisData?.personsData?.relationships ?? []);
-  let synthesis = $derived(analysisData?.caseSynthesis ?? {});
+  let synthesis = $derived(analysisData?.caseSynthesis ?? );
   // Case strength styling
   let strengthColor = $derived({
     strong: 'text-green-600 bg-green-50',

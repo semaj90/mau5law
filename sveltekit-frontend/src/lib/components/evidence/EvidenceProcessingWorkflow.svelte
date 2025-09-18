@@ -82,7 +82,7 @@
   // Prepare initial snapshot with safe context access (actor may not have started yet)
   const rawSnapshot = (actor.getSnapshot && (actor.getSnapshot() as any)) || null;
   const initialSnapshot: unknown = rawSnapshot || {
-    context: {},
+    context: ,
     value: 'idle',
     matches: (_: string) => false
   };
@@ -91,7 +91,7 @@
   let currentState: EvidenceActorState = {
     ...initialSnapshot,
     context: {
-      ...(initialSnapshot.context || {}),
+      ...(initialSnapshot.context || ),
       streamingUpdates: initialSnapshot?.context?.streamingUpdates || [],
       errors: initialSnapshot?.context?.errors || [],
       processingTimeMs: initialSnapshot?.context?.processingTimeMs || 0
@@ -130,8 +130,7 @@
         reconnectDelay: 4000,
         heartbeatIncoming: 10000,
         heartbeatOutgoing: 10000,
-        debug: () => {}
-      });
+        debug: () => });
 
       rabbitClient.onConnect = () => {
         const destination = `/exchange/${rabbitConfig.exchange}/${rabbitConfig.routingKey}`;
@@ -179,8 +178,7 @@
     try {
       rabbitSubscription?.unsubscribe();
       rabbitClient?.deactivate();
-    } catch {}
-    rabbitSubscription = null;
+    } catch rabbitSubscription = null;
     rabbitClient = null;
   }
 
@@ -358,7 +356,7 @@
         disconnectStream();
       };
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = err instanceof Error ? err.message: String(err);
       console.error('Failed to start processing:', err);
       actor.send({ type: 'ANALYSIS_ERROR', error: message });
     }

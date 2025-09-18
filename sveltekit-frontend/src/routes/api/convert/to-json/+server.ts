@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
         structure: {
           sections: identifyDocumentSections(ocrData.text || ''),
           headings: extractHeadings(ocrData.text || ''),
-          paragraphs: (ocrData.text || '').split(/\n\s*\n/).filter(p => p.trim().length > 0),
+          paragraphs: (ocrData.text || '').split(/\n\s*\n/).filter(item => item.length) > 0),
           tableOfContents: generateTableOfContents(ocrData.text || '')
         },
         vectorization: {

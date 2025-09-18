@@ -324,16 +324,14 @@ export const getConsumerConfig = (queueName: string): ConsumerConfig => {
 
   // Queue-specific configurations
   switch (queueName) {
-    case QUEUES.DOCUMENT_EMBEDDING:
-    case QUEUES.CASE_EMBEDDING:
+    case QUEUES.DOCUMENT_EMBEDDING: case QUEUES.CASE_EMBEDDING:
       return {
         ...baseConfig,
         concurrency: 2, // Embedding generation is CPU intensive
         prefetchCount: 5
       };
 
-    case QUEUES.DOCUMENT_ANALYSIS:
-    case QUEUES.AI_SUMMARIZATION:
+    case QUEUES.DOCUMENT_ANALYSIS: case QUEUES.AI_SUMMARIZATION:
       return {
         ...baseConfig,
         concurrency: 1, // AI operations are resource intensive
@@ -342,15 +340,13 @@ export const getConsumerConfig = (queueName: string): ConsumerConfig => {
         retryDelay: 30000 // 30 seconds
       };
 
-    case QUEUES.VECTOR_SEARCH_UPDATE:
-      return {
+    case QUEUES.VECTOR_SEARCH_UPDATE: return {
         ...baseConfig,
         concurrency: 5, // Fast database operations
         prefetchCount: 20
       };
 
-    case QUEUES.AI_ENTITY_EXTRACTION:
-    case QUEUES.AI_CLASSIFICATION:
+    case QUEUES.AI_ENTITY_EXTRACTION: case QUEUES.AI_CLASSIFICATION:
       return {
         ...baseConfig,
         concurrency: 2,

@@ -41,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
   } from "lucide-svelte";
 
   // State
-  let editorComponent = $state<RichTextEditorlet cleanupAutoSave: (() = | null>(null)() {
+  let editorComponent = $state({}) {
         single: "layout-single",
         dual: "layout-dual",
         masonry: "layout-masonry",

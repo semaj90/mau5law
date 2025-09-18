@@ -306,7 +306,7 @@ export class DatabaseSyncManager {
   }
   // Batch operations for multiple entities
   async batchOperation(
-    operations: Array<,
+    operations: Array<any>,
   ): Promise<any[]> {
     const results: any[] = [];
 
@@ -369,7 +369,7 @@ export class DatabaseSyncManager {
     }
   }
   private getRequiredFields(entity: string, operation: string): string[] {
-    const requiredFields: Record<string, Record<string, string[]>> = {
+    const requiredFields: Record<string, Record<string, string[]> = {
       cases: {
         create: ["title", "caseNumber"],
       },

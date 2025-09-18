@@ -372,7 +372,7 @@ https://svelte.dev/e/js_parse_error -->
               description="Choose from individuals, corporations, or government entities"
               onValueChange={handleEntityChange}
               onCreateOption={async (inputValue) => ({
-                value: inputValue.toLowerCase().replace(/\s+/g, '_'),
+                value: inputValue.toLowerCase.replace(/\s+/g, '_'),
                 label: inputValue,
                 category: 'Custom'
               })}

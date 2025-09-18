@@ -1479,7 +1479,7 @@ export class AdvancedMemoryOptimizer {
       parsedDocuments.map(async (doc) => {
         // Generate embeddings if not present
         if (!doc.embeddings && doc.content) {
-          doc.embeddings = await this.generateDocumentEmbeddings(doc.content);
+          doc.embeddings = await this.generateDocumentEmbeddings(doc.content)));
         }
 
         // Allocate optimized memory based on document characteristics

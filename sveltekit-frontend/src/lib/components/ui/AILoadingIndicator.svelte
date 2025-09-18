@@ -420,7 +420,7 @@
     overflow: hidden;
   }
 
-  .loading-shimmer::after {
+  .loading-shimmer: :after {
     position: absolute;
     top: 0;
     right: 0;

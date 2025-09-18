@@ -23,11 +23,11 @@ https://svelte.dev/e/js_parse_error -->
   	import { evidenceStore } from "../stores/evidenceStore";
 
   	// Note: Fabric.js needs to be imported dynamically in browser
-  let fabric = $state<anylet { canvasState | null>(null)($bindable() } = $props()); // CanvasState | null = null;
+  let fabric = $state<anylet { canvasState  | null>(null); const data = $bindable() } = $props()); // CanvasState | null = null;
   	let { reportId = $bindable()  }: { reportId = $bindable() : any } = $props(); // string;
   	let { evidence = $bindable()  }: { evidence = $bindable() : any } = $props(); // Evidence[] = [];
   	let { citationPoints = $bindable()  }: { citationPoints = $bindable() : any } = $props(); // CitationPoint[] = [];
-  	let { onSave = $bindable()  }: { onSave = $bindable() : any } = $props(); // (canvasState: CanvasState) => Promise<void> = async () => {};
+  	let { onSave = $bindable()  }: { onSave = $bindable() : any } = $props(); // (canvasState: CanvasState) => Promise<void> = async () => ;
   	let { readOnly = $bindable()  }: { readOnly = $bindable() : any } = $props(); // false;
   	let { width = $bindable()  }: { width = $bindable() : any } = $props(); // 800;
   	let { height = $bindable()  }: { height = $bindable() : any } = $props(); // 600;
@@ -86,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
   				fabric = fabricModule; // fallback
   			}
   		} catch (error) {
-  			console.error('Failed to load Fabric.js:', error);
+  			console.error('Failed to load Fabric.js: ', error);
   			// Fallback: load from CDN with matching version
   			await loadFabricFromCDN();
   		}
@@ -156,7 +156,7 @@ https://svelte.dev/e/js_parse_error -->
 
   		try {
   			// Handle both string and object formats for canvasData
-  let canvasData = $state<CanvasStateDataif (typeof canvasState.canvasData | null>(null)(== 'string') {
+  let canvasData = $state<CanvasStateDataif (typeof canvasState.canvasData  | null>(null); const data = == 'string') {
   				canvasData = JSON.parse(canvasState.canvasData));
   			} else {
   				canvasData = canvasState.canvasData as CanvasStateData;
@@ -579,7 +579,7 @@ https://svelte.dev/e/js_parse_error -->
   		try {
   			// Get canvas data
   			const canvasData: CanvasStateData = {
-  				objects: fabricCanvas.toObject().objects,
+  				objects: fabricCanvas.toObject.objects,
   				background: fabricCanvas.backgroundColor,
   				dimensions: { width, height },
   				viewport: {
@@ -632,7 +632,7 @@ https://svelte.dev/e/js_parse_error -->
 
   	function getEvidenceIds(): string[] {
   		const evidenceIds: string[] = [];
-  		fabricCanvas.getObjects().forEach((obj: any) => {
+  		fabricCanvas.getObjects.forEach((obj: any) => {
   			if (obj.evidenceId) {
   				evidenceIds.push(obj.evidenceId);
   			}
@@ -642,7 +642,7 @@ https://svelte.dev/e/js_parse_error -->
 
   	function getCitationIds(): string[] {
   		const citationIds: string[] = [];
-  		fabricCanvas.getObjects().forEach((obj: any) => {
+  		fabricCanvas.getObjects.forEach((obj: any) => {
   			if (obj.citationId) {
   				citationIds.push(obj.citationId);
   			}
@@ -663,7 +663,7 @@ https://svelte.dev/e/js_parse_error -->
   	function exportCanvas(format: 'png' | 'svg' | 'pdf' = 'png') {
   let dataUrl = $state<stringswitch (format) {
   			case 'svg':
-  				dataUrl | null>(null)('data:image/svg+xml);base64,' + btoa(fabricCanvas.toSVG());
+  				dataUrl  | null>(null); const data = 'data:image/svg+xml);base64,' + btoa(fabricCanvas.toSVG());
   				break;
   			case 'png':
   			default:
@@ -879,14 +879,7 @@ https://svelte.dev/e/js_parse_error -->
 		border-bottom: 1px solid #e2e8f0;
 		background: #f8fafc;
 	}
-.fabric-canvas {
-		border: 1px solid #d1d5db;
-		border-radius: 4px;
-		background: white;
-		box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-	}
-
-	.evidence-panel,
+.fabric-canv.evidence-panel,
 	.citation-panel {
 		position: absolute;
 		right: 16px;

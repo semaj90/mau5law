@@ -161,7 +161,7 @@ export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<any> 
       }
     } catch (statError) {
       // File doesn't exist yet or access error
-      const msg = statError instanceof Error ? statError.message : String(statError);
+      const msg = statError instanceof Error ? statError.message: String(statError);
       console.warn(`File ${document.minioPath} not accessible:`, msg);
     }
 

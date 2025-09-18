@@ -56,9 +56,9 @@ https://svelte.dev/e/js_parse_error -->
     oncancel
   : unknown } = $props();
 
-  let formData = $state<Record<string, any>('')>({});
-  let errors = $state<Record<string, string>('')>({});
-  let touched = $state<Record<string, boolean>(false)>({});
+  let formData = $state<Record<string, any>('')>( );
+  let errors = $state<Record<string, string>('')>( );
+  let touched = $state<Record<string, boolean>(false)>( );
 
   // Initialize form data
   $effect(() => {
@@ -116,7 +116,6 @@ https://svelte.dev/e/js_parse_error -->
     // Validate all fields
     let hasErrors = false;
     const newErrors: Record<string, string> = {};
-
     fields.forEach(field => {
       const error = validateField(field, formData[field.id]);
       if (error) {
@@ -292,7 +291,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         type="submit"
         class="form-button submit"
-        disabled={loading || Object.keys(errors).length > 0}
+        disabled={loading || Object.keys.length > 0}
         onclick={handleSubmit}
       >
         {#if loading}
@@ -432,7 +431,7 @@ https://svelte.dev/e/js_parse_error -->
       inset 0 0 10px rgba(255, 215, 0, 0.1);
   }
 
-  .field-input::placeholder,
+  .field-input: :placeholder,
   .field-textarea::placeholder {
     color: var(--yorha-text-muted, #808080);
   }
@@ -558,7 +557,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer
   }
 
-  .field-file::-webkit-file-upload-button {
+  .field-file: :-webkit-file-upload-button {
     background: var(--yorha-secondary, #ffd700);
     color: var(--yorha-bg-primary, #0a0a0a);
     border: none

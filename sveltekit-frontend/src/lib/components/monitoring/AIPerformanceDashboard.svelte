@@ -106,7 +106,7 @@
   function updatePerformanceHistory() {
     const now = Date.now();
     const recentMessages = messages.filter(m => now - m.timestamp < 60000); // Last minute
-    const errors = recentMessages.filter(m => m.metadata?.error).length;
+    const errors = recentMessages.filter(item => item.length);
 
     performanceHistory = [
       ...performanceHistory.slice(-19), // Keep last 19 entries
@@ -128,17 +128,17 @@
       const analytics = await pgVectorSearch.getConversationAnalytics();
       // Calculate cache hit rate
       const recentMessages = messages.slice(-100);
-      const cacheHits = recentMessages.filter(m => m.metadata?.cacheHit).length;
+      const cacheHits = recentMessages.filter(item => item.length);
       const cacheHitRate = recentMessages.length > 0 ? (cacheHits / recentMessages.length) * 100 : 0;
 
       // Calculate error rate
-      const errors = recentMessages.filter(m => m.metadata?.error).length;
+      const errors = recentMessages.filter(item => item.length);
       const errorRate = recentMessages.length > 0 ? (errors / recentMessages.length) * 100 : 0;
 
       systemMetrics = {
         memoryUsage: Math.random() * 80 + 10, // Simulated - would get from actual monitoring
         cpuUsage: Math.random() * 60 + 5,
-        activeConnections: availableBackends.filter(b => backendLatency[b] > 0).length,
+        activeConnections: availableBackends.filter(item => item.length),
         cacheHitRate,
         totalRequests: analytics.totalMessages,
         errorRate
@@ -364,7 +364,7 @@
         <div class="metric-row">
           <span class="metric-label">Avg Response Time</span>
           <span class="metric-value">
-            {Math.round(Object.values(backendLatency).reduce((a, b) => a + b, 0) / availableBackends.length)}ms
+            {Math.round.reduce((a, b) => a + b, 0) / availableBackends.length)}ms
           </span>
         </div>
         
@@ -388,7 +388,7 @@
             <!-- Simple ASCII-style chart -->
             {#each performanceHistory.slice(-10) as point, index}
               <div class="history-point">
-                <div class="point-time">{new Date(point.timestamp).toLocaleTimeString().slice(-8, -3)}</div>
+                <div class="point-time">{new Date(point.timestamp).toLocaleTimeString.slice(-8, -3)}</div>
                 <div class="point-metrics">
                   <div class="metric-bar">
                     <div class="bar-label">Req</div>

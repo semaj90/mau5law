@@ -123,9 +123,9 @@ https://svelte.dev/e/js_parse_error -->
     if (file.size > maxSize) {
       return `File size exceeds ${formatFileSize(maxSize)}`;
     }
-    if (accept !== '*/*' && !accept.split(',').some(type => 
+    if (accept !== '*/*' && !accept.split.some(type => 
       type.trim() === file.type || 
-      file.name.toLowerCase().endsWith(type.trim().replace('*', ''))
+      file.name.toLowerCase.endsWith(type.trim.replace('*', ''))
     )) {
       return `File type not supported`;
     }

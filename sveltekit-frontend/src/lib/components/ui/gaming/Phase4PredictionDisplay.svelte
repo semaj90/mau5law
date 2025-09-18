@@ -8,7 +8,7 @@
   let {
     caseId,
     consoleTheme = 'n64',
-    onPredictionRequest = () => {},
+    onPredictionRequest = () => ,
     autoLoad = true
   } = $props();
 
@@ -186,7 +186,7 @@
                 transitionfly={{ x: -20, delay: index * 100 }}
               >
                 <div class="factor-header">
-                  <span class="factor-type">{factor.factorType.replace('_', ' ').toUpperCase()}</span>
+                  <span class="factor-type">{factor.factorType.replace.toUpperCase()}</span>
                   <div
                     class="impact-bar"
                     class:positive={factor.impact > 0}
@@ -252,7 +252,7 @@
              prediction.gameTheme.displayAs === 'quest_completion' ? '🎯' : '🎲'}
           </span>
           <span class="achievement-text">
-            {prediction.gameTheme.displayAs.replace('_', ' ').toUpperCase()} Analysis Complete
+            {prediction.gameTheme.displayAs.replace.toUpperCase()} Analysis Complete
           </span>
         </div>
       </div>

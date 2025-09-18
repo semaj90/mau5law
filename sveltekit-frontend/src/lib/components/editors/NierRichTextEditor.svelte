@@ -141,7 +141,7 @@ https://svelte.dev/e/attribute_duplicate -->
   	function updateStats() {
   		const textContent = editorContainer?.textContent || '';
   		characterCount = textContent.length;
-  		wordCount = textContent.trim() ? textContent.trim().split(/\s+/).length : 0;
+  		wordCount = textContent.trim() ? textContent.trim.split-length: 0;
   	}
 
   	function playTypingSound() {
@@ -222,12 +222,7 @@ https://svelte.dev/e/attribute_duplicate -->
   			const response = await fetch('/api/legal/investigation-notes', {
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify({
-  					caseId,
-  					content: editorContent,
-  					wordCount,
-  					characterCount,
-  					timestamp: new Date().toISOString()
+  				body: JSON.stringify.toISOString()
   				})
   			});
 
@@ -540,7 +535,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	}
 
 	/* Scanlines Effect */
-	.scanlines::after {
+	.scanlines: :after {
 		content: '';
 		position: absolute;
 		top: 0;

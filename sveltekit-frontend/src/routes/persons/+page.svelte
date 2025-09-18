@@ -141,12 +141,11 @@
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(person =>
-        person.name.toLowerCase().includes(query) ||
-        person.aliases.some(alias => alias.toLowerCase().includes(query)) ||
-        person.relationship.toLowerCase().includes(query) ||
-        person.profileData.occupation?.toLowerCase().includes(query) ||
-        person.tags.some(tag => tag.toLowerCase().includes(query))
+      filtered = filtered.filter(item => item.includes)(query) ||
+        person.aliases.some.includes(query)) ||
+        person.relationship.toLowerCase.includes(query) ||
+        person.profileData.occupation?.toLowerCase.includes(query) ||
+        person.tags.some.includes(query))
       );
     }
 
@@ -220,7 +219,7 @@
   function exportData() {
     const dataStr = JSON.stringify(filteredPersons, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    const exportFileDefaultName = `persons_of_interest_${new Date().toISOString().split('T')[0]}.json`;
+    const exportFileDefaultName = `persons_of_interest_${new Date().toISOString.split('T')[0]}.json`;
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -431,7 +430,7 @@
                     <img src={person.profileData.photo} alt={person.name} class="w-full h-full object-cover" />
                   {:else}
                     <div class="w-full h-full flex items-center justify-center text-yellow-400 font-bold text-lg">
-                      {person.name.split(' ').map(n => n[0]).join('')}
+                      {person.name.split.map-join('')}
                     </div>
                   {/if}
                 </div>
@@ -531,7 +530,7 @@
                       <img src={person.profileData.photo} alt={person.name} class="w-full h-full object-cover" />
                     {:else}
                       <div class="w-full h-full flex items-center justify-center text-yellow-400 font-bold">
-                        {person.name.split(' ').map(n => n[0]).join('')}
+                        {person.name.split.map-join('')}
                       </div>
                     {/if}
                   </div>

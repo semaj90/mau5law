@@ -71,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
       } catch (error) {
         systemHealth[check.name] = {
           status: 'error',
-          details: error instanceof Error ? error.message : 'Connection failed'
+          details: error instanceof Error ? error.message: 'Connection failed'
         };
       }
     }
@@ -95,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
         
         if ((response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).ok) {
           const result = await (response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).json();
-          return (result as { success?: unknown; data?: unknown; error?: unknown }).success ? (result as { success?: unknown; data?: unknown; error?: unknown }).(data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).embedding.slice(0, 3) : null; // Take first 3 dimensions for 3D viz
+          return (result as { success?: unknown; data?: unknown; error?: unknown }).success ? (result as { success?: unknown; data?: unknown; error?: unknown }).data.embedding.slice(0, 3) : null; // Take first 3 dimensions for 3D viz
         }
         return null;
       });
@@ -158,7 +158,7 @@ https://svelte.dev/e/js_parse_error -->
 
       if ((response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).ok) {
         const data = await (response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).json();
-        console.log('Ollama Analysis Response:', (data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).response);
+        console.log.response);
 
         // Trigger prefetch based on analysis success
         prefetchSend({
@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
         const result = await (response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).json();
         
         if ((result as { success?: unknown; data?: unknown; error?: unknown }).success) {
-          console.log('Generated embedding:', (result as { success?: unknown; data?: unknown; error?: unknown }).(data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).embedding?.slice(0, 5));
+          console.log.data.embedding?.slice(0, 5));
           performanceMetrics.embeddingsGenerated++;
 
           // Cache hit simulation
@@ -210,7 +210,7 @@ https://svelte.dev/e/js_parse_error -->
             performanceMetrics.cacheHitRate + Math.random() * 10
           );
 
-          return (result as { success?: unknown; data?: unknown; error?: unknown }).(data as { systemHealth?: unknown; initialEmbeddings?: unknown; initialLabels?: unknown; performanceMetrics?: unknown; demoDocuments?: unknown; response?: unknown }).embedding;
+          return (result as { success?: unknown; data?: unknown; error?: unknown }).data.embedding;
         } else {
           throw new Error((result as { success?: unknown; data?: unknown; error?: unknown }).error || 'Embedding generation failed');
         }
@@ -243,7 +243,7 @@ https://svelte.dev/e/js_parse_error -->
         const result = await (response as { ok?: unknown; status?: unknown; json?: unknown; statusText?: unknown }).json();
         
         if ((result as { success?: unknown; data?: unknown; error?: unknown }).success) {
-          console.log('Similarity search results:', (result as { success?: unknown; data?: unknown; error?: unknown }).data);
+          console.log.data);
 
           // Update cache statistics
           prefetchSend({ type: 'CACHE_HIT', resource: 'similarity_search' });

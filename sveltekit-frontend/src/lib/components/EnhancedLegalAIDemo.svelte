@@ -138,7 +138,7 @@ https://svelte.dev/e/attribute_duplicate -->
       id: `evidence-${Date.now()}`,
       updatedAt: new Date(),
       title: 'Custom Evidence',
-      summary: evidenceText.trim().substring(0, 100) + '...',
+      summary: evidenceText.trim.substring(0, 100) + '...',
       description: evidenceText.trim(),
       location: '',
       tags: [],
@@ -157,11 +157,11 @@ https://svelte.dev/e/attribute_duplicate -->
       chainOfCustody: [],
       collectedAt: new Date(),
       collectedBy: '',
-      labAnalysis: {},
-      aiAnalysis: {},
+      labAnalysis: ,
+      aiAnalysis: ,
       isAdmissible: false,
       confidentialityLevel: 'internal',
-      canvasPosition: {},
+      canvasPosition: ,
       uploadedBy: null,
       uploadedAt: new Date(),
       content: evidenceText.trim(),
@@ -546,7 +546,7 @@ https://svelte.dev/e/attribute_duplicate -->
           <div class="space-y-2 max-h-32 overflow-y-auto">
             {#each realTimeUpdates.slice(-5) as update}
               <div class="flex items-center justify-between text-sm bg-blue-50 rounded p-2">
-                <span>{update.type || 'Update'}: {JSON.stringify(update).slice(0, 50)}...</span>
+                <span>{update.type || 'Update'}: {JSON.stringify.slice(0, 50)}...</span>
                 <span class="text-xs text-gray-500">
                   {formatTimestamp(update.timestamp || new Date())}
                 </span>
@@ -577,21 +577,21 @@ https://svelte.dev/e/attribute_duplicate -->
   }
 
   /* Custom scrollbar for better UX */
-  .overflow-y-auto::-webkit-scrollbar {
+  .overflow-y-auto: :-webkit-scrollbar {
     width: 4px;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-track {
+  .overflow-y-auto: :-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 2px;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-thumb {
+  .overflow-y-auto: :-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 2px;
   }
 
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  .overflow-y-auto: :-webkit-scrollbar-thumb:hover {
     background: #555;
   }
 </style>

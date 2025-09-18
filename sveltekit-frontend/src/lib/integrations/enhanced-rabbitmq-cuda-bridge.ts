@@ -146,7 +146,7 @@ class EnhancedRabbitMQCudaBridge {
     // Consumer for tensor computation
     await this.channel.consume('legal.cuda.tensor.compute', async (msg) => {
       if (msg) {
-        await this.processTensorJob(msg);
+        await this.processTensorJob(msg));
         this.channel.ack(msg);
       }
     }, { noAck: false });
@@ -154,7 +154,7 @@ class EnhancedRabbitMQCudaBridge {
     // Consumer for vector similarity
     await this.channel.consume('legal.cuda.vector.similarity', async (msg) => {
       if (msg) {
-        await this.processVectorSimilarityJob(msg);
+        await this.processVectorSimilarityJob(msg));
         this.channel.ack(msg);
       }
     }, { noAck: false });
@@ -162,7 +162,7 @@ class EnhancedRabbitMQCudaBridge {
     // Consumer for embedding normalization
     await this.channel.consume('legal.cuda.embedding.normalize', async (msg) => {
       if (msg) {
-        await this.processEmbeddingJob(msg);
+        await this.processEmbeddingJob(msg));
         this.channel.ack(msg);
       }
     }, { noAck: false });

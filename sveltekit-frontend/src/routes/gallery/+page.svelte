@@ -32,10 +32,10 @@ Displays all media: evidence, generated images, documents, uploads
   let galleryStats = $derived(() => {
     const stats = {
       total: mediaItems.length,
-      evidence: mediaItems.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category === 'evidence').length,
-      images: mediaItems.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category === 'images').length,
-      documents: mediaItems.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category === 'documents').length,
-      aiGenerated: mediaItems.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).metadata?.aiGenerated).length
+      evidence: mediaItems.filter(item => item.category === 'evidence').length,
+      images: mediaItems.filter(item => item.category === 'images').length,
+      documents: mediaItems.filter(item => item.category === 'documents').length,
+      aiGenerated: mediaItems.filter(item => item.metadata)?.aiGenerated).length
     };
     return stats;
   });
@@ -47,25 +47,24 @@ Displays all media: evidence, generated images, documents, uploads
     // Filter by category
     if (selectedCategory !== 'all') {
       if (selectedCategory === 'ai-generated') {
-        items = items.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).metadata?.aiGenerated);
+        items = items.filter(item => item.metadata)?.aiGenerated);
       } else {
-        items = items.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category === selectedCategory);
+        items = items.filter(item => item.category) === selectedCategory);
       }
     }
 
     // Filter by case
     if (selectedCaseId !== 'all') {
-      items = items.filter(item => (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).caseId === selectedCaseId);
+      items = items.filter(item => item.caseId) === selectedCaseId);
     }
 
     // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      items = items.filter(item =>
-        (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).title?.toLowerCase().includes(query) ||
-        (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).description?.toLowerCase().includes(query) ||
-        (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).tags?.some((tag: string) => tag.toLowerCase().includes(query)) ||
-        (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).caseTitle?.toLowerCase().includes(query)
+      items = items.filter(item => item.title)?.toLowerCase.includes(query) ||
+        (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).description?.toLowerCase.includes(query) ||
+        (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).tags?.some((tag: string) => tag.toLowerCase.includes(query)) ||
+        (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).caseTitle?.toLowerCase.includes(query)
       );
     }
 
@@ -128,7 +127,7 @@ Displays all media: evidence, generated images, documents, uploads
 
     } catch (err) {
       console.error('Failed to load gallery data:', err);
-      error = err instanceof Error ? err.message : 'Failed to load gallery';
+      error = err instanceof Error ? err.message: 'Failed to load gallery';
       mediaItems = [];
     } finally {
       isLoading = false;
@@ -203,7 +202,7 @@ Displays all media: evidence, generated images, documents, uploads
       });
 
       if ((response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
-        mediaItems = mediaItems.filter(i => i.id !== (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).id);
+        mediaItems = mediaItems.filter(item => item.id));
         selectedItem = null;
       } else {
         alert('Failed to delete item');

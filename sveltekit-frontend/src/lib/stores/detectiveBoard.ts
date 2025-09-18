@@ -63,7 +63,7 @@ export interface AIInsight {
 }
 
 // Store for AI contexts per case
-export const aiAssistantContexts = writable<Record<string, CaseAIContext>>({});
+export const aiAssistantContexts = writable<Record<string, CaseAIContext>({});
 
 // Current active case AI context
 export const currentAIContext = writable<CaseAIContext | null>(null);
@@ -228,7 +228,7 @@ export async function sendToAI(
 
     const errorMessage: AIMessage = {
       id: crypto.randomUUID(),
-      text: `I'm sorry, I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      text: `I'm sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`,
       type: 'assistant',
       timestamp: Date.now(),
       confidence: 0

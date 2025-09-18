@@ -154,27 +154,27 @@
     font-family: "Press Start 2P", cursive;
   }
 
-  .toast-(item as { is?: unknown; removing?: unknown }).is-success {
+  .toast-.is-success {
     border-color: #92cc41;
     background: #f8fff8;
   }
 
-  .toast-(item as { is?: unknown; removing?: unknown }).is-error {
+  .toast-.is-error {
     border-color: #e76e55;
     background: #fff8f8;
   }
 
-  .toast-(item as { is?: unknown; removing?: unknown }).is-warning {
+  .toast-.is-warning {
     border-color: #f7d51d;
     background: #fffef8;
   }
 
-  .toast-(item as { is?: unknown; removing?: unknown }).is-primary {
+  .toast-.is-primary {
     border-color: #209cee;
     background: #f8fcff;
   }
 
-  .toast-(item as { is?: unknown; removing?: unknown }).is-dark {
+  .toast-.is-dark {
     border-color: #212529;
     background: #f5f5f5;
   }
@@ -275,7 +275,7 @@
     }
   }
 
-  .toast-(item as { is?: unknown; removing?: unknown }).removing {
+  .toast-.removing {
     animation: slideOutRight 0.3s ease-in forwards;
   }
 
@@ -324,31 +324,31 @@
   }
 
   /* Hide default progress styling and add pixel styling */
-  .nes-progress::-webkit-progress-bar {
+  .nes-progress: :-webkit-progress-bar {
     background-color: #e5e7eb;
     border: 1px solid #212529;
   }
 
-  .nes-progress::-webkit-progress-value {
+  .nes-progress: :-webkit-progress-value {
     background-color: #92cc41;
     border-right: 2px solid #212529;
   }
 
-  .nes-progress.is-primary::-webkit-progress-value {
+  .nes-progress.is-primary: :-webkit-progress-value {
     background-color: #209cee;
   }
 
-  .nes-progress.is-success::-webkit-progress-value {
+  .nes-progress.is-success: :-webkit-progress-value {
     background-color: #92cc41;
   }
 
   /* Firefox */
-  .nes-progress::-moz-progress-bar {
+  .nes-progress: :-moz-progress-bar {
     background-color: #92cc41;
     border: 1px solid #212529;
   }
 
-  .nes-progress.is-primary::-moz-progress-bar {
+  .nes-progress.is-primary: :-moz-progress-bar {
     background-color: #209cee;
   }
 </style>

@@ -47,21 +47,20 @@ https://svelte.dev/e/js_parse_error -->
       userId,
       sessionId,
       messages: [],
-      userDictionary: ssrContext?.userDictionary || {},
-      systemStatus: ssrContext?.systemStatus || {}
-    }
+      userDictionary: ssrContext?.userDictionary || ,
+      systemStatus: ssrContext?.systemStatus || }
   });
   // Reactive state
   const messages = writable<any[]>([]);
   const currentMessage = writable('');
   const isStreaming = writable(false);
   const neuralSprites = writable<any[]>([]);
-  const userDictionary = writable(ssrContext?.userDictionary || {});
-  const systemStatus = writable(ssrContext?.systemStatus || {});
+  const userDictionary = writable(ssrContext?.userDictionary || );
+  const systemStatus = writable(ssrContext?.systemStatus || );
   // Derived state
   const canSend = derived(
     [currentMessage, isStreaming],
-    ([$currentMessage, $isStreaming]) => $currentMessage.trim().length > 0 && !$isStreaming
+    ([$currentMessage, $isStreaming]) => $currentMessage.trim.length > 0 && !$isStreaming
   );
   const statusIndicator = derived(systemStatus, ($status) => ({
     nes: $status.nesMemoryReady ? '🟢' : '🔴',
@@ -78,7 +77,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!browser) return;
     // Initialize session if not provided
     if (!sessionId) {
-      sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      sessionId = `session_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
     }
     // Load SSR context if not provided
     if (!ssrContext) {
@@ -166,12 +165,7 @@ https://svelte.dev/e/js_parse_error -->
     const response = await fetch('/api/chat/ssr-qlora', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sessionId,
-        message,
-        metadata: {
-          userDictionary: $userDictionary,
-          timestamp: new Date().toISOString()
+      body: JSON.stringify.toISOString()
         }
       })
     });
@@ -249,11 +243,7 @@ https://svelte.dev/e/js_parse_error -->
     fetch('/api/chat/ssr-qlora', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sessionId,
-        interactionId: messageId,
-        feedback,
-        timestamp: new Date().toISOString()
+      body: JSON.stringify.toISOString()
       })
     });
     // Update XState machine

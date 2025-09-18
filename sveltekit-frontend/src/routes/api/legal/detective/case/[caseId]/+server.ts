@@ -430,7 +430,7 @@ function calculateTimelineSpan(timeline: TimelineEvent[]): string {
 function calculateOverallRiskLevel(suspects: Suspect[]): string {
   if (suspects.length === 0) return 'UNKNOWN';
   
-  const highRiskCount = suspects.filter(s => s.overallThreatLevel === 'HIGH' || s.overallThreatLevel === 'CRITICAL').length;
+  const highRiskCount = suspects.filter(item => item.length);
   const totalSuspects = suspects.length;
   
   if (highRiskCount / totalSuspects >= 0.5) return 'HIGH';

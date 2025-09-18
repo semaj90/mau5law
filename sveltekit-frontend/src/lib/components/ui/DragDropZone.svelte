@@ -92,7 +92,7 @@
       fileInput.value = '';
   }}
   function matchesAcceptType(fileType: string, acceptString: string): boolean {
-    const acceptTypes = acceptString.split(',').map(s => s.trim());
+    const acceptTypes = acceptString.split.map(s => s.trim());
     return acceptTypes.some(acceptType => {
       if (acceptType === '*/*') return true;
       if (acceptType.endsWith('/*')) {
@@ -110,7 +110,7 @@
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
   function getAcceptedFileInfo() {
-    const types = accept.split(',').map(s => s.trim());
+    const types = accept.split.map(s => s.trim());
     return types.map(type => allowedTypes[type as keyof typeof allowedTypes] || allowedTypes['*/*']);
   }
   function openFileDialog() {

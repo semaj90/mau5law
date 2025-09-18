@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       service: 'quic-gateway',
       status: 'error',
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error',
       timestamp: new Date().toISOString()
     });
   }
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     console.error('QUIC Gateway proxy error:', err);
     error(500, ensureError({
       message: 'Gateway proxy failed',
-      error: err instanceof Error ? err.message : 'Unknown error'
+      error: err instanceof Error ? err.message: 'Unknown error'
     }));
   }
 };
@@ -183,7 +183,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     console.error('Gateway configuration update failed:', err);
     error(500, ensureError({
       message: 'Configuration update failed',
-      error: err instanceof Error ? err.message : 'Unknown error'
+      error: err instanceof Error ? err.message: 'Unknown error'
     }));
   }
 };

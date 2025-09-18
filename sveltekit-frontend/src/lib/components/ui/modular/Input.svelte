@@ -111,14 +111,14 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Generate unique ID if not provided
-  let inputId = $derived(restProps.id || `input-${Math.random().toString(36).substr(2, 9)}`);
+  let inputId = $derived(restProps.id || `input-${Math.random.toString-substr(2, 9)}`);
   // Computed classes
   let inputClass = $derived(cn(inputVariants({ variant, size, state }), class));
   let helperClass = $derived(helperTextVariants({ state }));
 
   // Handle input events
   function handleInput(event: Event & { currentTarget: HTMLInputElement }) {
-    value = type === 'number' ? +event.currentTarget.value : event.currentTarget.value;
+    value = type === 'number' ? +event.currentTarget.value: event.currentTarget.value;
     oninput?.(event);
   }
 </script>

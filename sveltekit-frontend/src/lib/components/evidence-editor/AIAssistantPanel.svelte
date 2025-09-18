@@ -222,7 +222,7 @@ Clear
                     {/if}
                   </div>
                   {#if (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).score !== undefined}
-                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round((1 - (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).score) * 100)}% match</span>
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round.score) * 100)}% match</span>
                   {/if}
                 </div>
 

@@ -289,7 +289,7 @@ export const GET: RequestHandler = async () => {
   ]);
   
   const results = {
-    neo4j: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value : false,
+    neo4j: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value: false,
     postgresql: healthChecks[1].status === 'fulfilled' ? healthChecks[1].value : false,
     qdrant: healthChecks[2].status === 'fulfilled' ? healthChecks[2].value : false,
     redis: healthChecks[3].status === 'fulfilled' ? healthChecks[3].value : false

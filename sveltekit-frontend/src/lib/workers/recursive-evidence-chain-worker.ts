@@ -106,7 +106,7 @@ class RecursiveEvidenceChainProcessor {
             related.evidenceId,
             currentDepth + 1,
             [...recursionPath, rootEvidenceId]
-          );
+          )));
         })
       );
 
@@ -207,7 +207,7 @@ class RecursiveEvidenceChainProcessor {
 
       // Transform correlation results to RelatedEvidence format
       return correlationResults.correlations?.map((corr: any) => ({
-        evidenceId: corr.evidenceB === evidenceId ? corr.evidenceA : corr.evidenceB,
+        evidenceId: corr.evidenceB === evidenceId ? corr.evidenceA: corr.evidenceB,
         relationshipType: corr.correlationType,
         strength: corr.strength,
         metadata: corr
@@ -428,8 +428,7 @@ class RecursiveEvidenceChainProcessor {
   ): number {
     const chainValidation = this.validateChainCompleteness(chainOfCustody);
     const relationshipStrength = relationships.length > 0
-      ? relationships.reduce((sum, rel) => sum + rel.confidence, 0) / relationships.length
-      : 0.5;
+      ? relationships.reduce((sum, rel) => sum + rel.confidence, 0) / relationships.length: 0.5;
 
     return (chainValidation * 0.6) + (relationshipStrength * 0.4);
   }

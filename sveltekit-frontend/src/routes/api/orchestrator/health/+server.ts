@@ -122,7 +122,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Check all HTTP services in parallel
     const serviceChecks = await Promise.all(
       services.slice(0, 3).map(async (service) => {
-        const { healthy, responseTime } = await checkServiceHealth(service.url);
+        const { healthy, responseTime } = await checkServiceHealth(service.url)));
         return {
           service: service.name,
           status: healthy ? 'healthy' : 'down',
@@ -153,7 +153,7 @@ export const GET: RequestHandler = async ({ url }) => {
     memoryBanks.L3_REDIS_CACHE.utilization = Math.round((memoryBanks.L3_REDIS_CACHE.used_mb / memoryBanks.L3_REDIS_CACHE.total_mb) * 100);
 
     // Determine overall status
-    const healthyServices = serviceChecks.filter(s => s.status === 'healthy').length;
+    const healthyServices = serviceChecks.filter(item => item.length);
     const totalServices = serviceChecks.length;
     
     let overallStatus: 'healthy' | 'degraded' | 'critical';

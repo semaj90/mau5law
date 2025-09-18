@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
         metadata: context.metadata,
       },
       options: {
-        model: ragRequest.options??.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal:latest',
+        model: ragRequest.options?.model || 'gemma3-legal:latest',
         contextLimit: ragRequest.options?.contextLimit || 5,
         temperature: ragRequest.options?.temperature || 0.7,
         threshold: ragRequest.options?.threshold || 0.4,
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         error: 'Failed to process RAG query',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );

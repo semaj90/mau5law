@@ -333,7 +333,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           console.error('Streaming error:', error);
           const errorMessage = {
             type: 'error',
-            error: error instanceof Error ? error.message : 'Unknown streaming error',
+            error: error instanceof Error ? error.message: 'Unknown streaming error',
           };
           controller.enqueue(`data: ${JSON.stringify(errorMessage)}\n\n`);
         } finally {
@@ -357,7 +357,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       {
         error: 'Failed to process chat request',
-        details: error instanceof Error ? error.message : 'Unknown error',
+        details: error instanceof Error ? error.message: 'Unknown error',
       },
       { status: 500 }
     );

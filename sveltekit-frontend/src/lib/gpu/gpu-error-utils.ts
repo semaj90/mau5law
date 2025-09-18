@@ -14,7 +14,7 @@ const TIMEOUT_HINTS = ['timeout', 'hung'];
 const UNSUPPORTED_HINTS = ['unsupported', 'not implemented'];
 
 export function classifyGPUError(err: unknown): ClassifiedGPUError {
-  const msg = (err instanceof Error ? err.message : String(err || ''))?.toLowerCase();
+  const msg = (err instanceof Error ? err.message: String(err || ''))?.toLowerCase();
 
   const match = (hints: string[]) => hints.some(h => msg.includes(h));
 

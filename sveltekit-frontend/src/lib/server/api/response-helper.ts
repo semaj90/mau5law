@@ -132,8 +132,7 @@ export function withErrorHandling(handler: Function) {
       // Default server error
       return apiResponses.serverError(
         process.env.NODE_ENV === 'development'
-          ? error.message
-          : 'Internal server error'
+          ? error.message: 'Internal server error'
       );
     }
   };

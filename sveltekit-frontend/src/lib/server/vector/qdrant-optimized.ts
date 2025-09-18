@@ -96,7 +96,7 @@ class OptimizedQdrantService {
     queryHistory: 0,
     total: 0,
   };
-  private operationQueue = new Map<string, Promise<any>>();
+  private operationQueue = new Map<string, Promise<any>();
   private concurrentQueries = 0;
   private performanceMetrics = {
     totalQueries: 0,
@@ -144,8 +144,7 @@ class OptimizedQdrantService {
   private initializeClient(): void {
     const qdrantUrl =
       typeof process !== 'undefined'
-        ? import.meta.env.QDRANT_URL || import.meta.env.VITE_QDRANT_URL
-        : undefined;
+        ? import.meta.env.QDRANT_URL || import.meta.env.VITE_QDRANT_URL: undefined;
 
     if (!qdrantUrl) {
       logger.warn('Qdrant not configured - vector operations will be disabled', {
@@ -157,8 +156,7 @@ class OptimizedQdrantService {
     try {
       const qdrantApiKey =
         typeof process !== 'undefined'
-          ? import.meta.env.QDRANT_API_KEY || import.meta.env.VITE_QDRANT_API_KEY
-          : undefined;
+          ? import.meta.env.QDRANT_API_KEY || import.meta.env.VITE_QDRANT_API_KEY: undefined;
 
       this.client = new QdrantClient({
         url: qdrantUrl,

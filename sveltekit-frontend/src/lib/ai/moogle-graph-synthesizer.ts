@@ -872,7 +872,7 @@ export class MoogleGraphSynthesizer {
         // Store in GPU texture cache
         const textureRegion: TextureRegion = {
           id,
-          width: 'canvas' in visualization ? visualization.canvas.width : 512,
+          width: 'canvas' in visualization ? visualization.canvas.width: 512,
           height: 'canvas' in visualization ? visualization.canvas.height : 512,
           format: 'rgba8unorm',
           data: new Uint8Array(data)
@@ -1384,7 +1384,7 @@ export class MoogleGraphSynthesizer {
   }
 
   private hexToRgb(hex: string): { r: number; g: number; b: number } {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    const result = /^#?([a-f\d]{2}) => [a-f\d]{2}) => [a-f\d]{2})$/i.exec(hex);
     return result ? {
       r: parseInt(result[1], 16) / 255,
       g: parseInt(result[2], 16) / 255,
@@ -1706,7 +1706,7 @@ export class MoogleGraphSynthesizer {
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
     config: MoogleVisualizationConfig
-  ): Promise<Map<string, { x: number; y: number; z: number }>> {
+  ): Promise<Map<string, { x: number; y: number; z: number }> {
     try {
       // Use GPU integration for 3D force-directed layout
       const nodeArray = Array.from(nodes.values());

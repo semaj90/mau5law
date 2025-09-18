@@ -77,7 +77,7 @@
 				evidenceData = data.data || [];
 				if (evidenceData.length > 0) {
 					config.caseId = evidenceData[0].case_id || '';
-					config.evidenceIds = evidenceData.slice(0, 3).map(e => e.id);
+					config.evidenceIds = evidenceData.slice.map(e => e.id);
 				}
 			}
 		} catch (error) {
@@ -450,7 +450,7 @@
 		<div class="bg-white rounded-lg shadow-lg p-6">
 			<h2 class="text-2xl font-semibold mb-4">📜 Test History</h2>
 			<div class="space-y-2">
-				{#each testResults.slice().reverse() as test, index}
+				{#each testResults.slice.reverse() as test, index}
 					<div class={`p-3 rounded-lg ${test.success ? 'bg-green-50' : 'bg-red-50'}`}>
 						<div class="flex justify-between items-center">
 							<div>

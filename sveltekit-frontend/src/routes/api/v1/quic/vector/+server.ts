@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       service: 'quic-vector-proxy',
       status: 'error',
-      error: err instanceof Error ? err.message : 'Unknown error',
+      error: err instanceof Error ? err.message: 'Unknown error',
       timestamp: new Date().toISOString(),
     });
   }
@@ -159,8 +159,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           timestamp: new Date().toISOString(),
           metrics: {
             totalResults: Array.isArray((ragSearchResponse as any).results)
-              ? (ragSearchResponse as any).results.length
-              : Array.isArray(ragSearchResponse)
+              ? (ragSearchResponse as any).results.length: Array.isArray(ragSearchResponse)
                 ? (ragSearchResponse as any).length
                 : 0,
             executionTimeMs: 0,
@@ -201,8 +200,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         timestamp: new Date().toISOString(),
         metrics: {
           totalResults: Array.isArray(direct as any)
-            ? (direct as any).length
-            : ((direct as any).totalCount ?? (direct as any).results?.length ?? 0),
+            ? (direct as any).length: ((direct as any).totalCount ?? (direct as any).results?.length ?? 0),
           executionTimeMs: 0,
           cacheHit: false,
         },
@@ -235,7 +233,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       500,
       ensureError({
         message: 'Vector search failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error',
       })
     );
   }
@@ -282,7 +280,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       500,
       ensureError({
         message: 'Cache clear failed',
-        error: err instanceof Error ? err.message : 'Unknown error',
+        error: err instanceof Error ? err.message: 'Unknown error',
       })
     );
   }
@@ -321,7 +319,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     console.error('Vector proxy configuration update failed:', err);
     error(500, ensureError({
       message: 'Configuration update failed',
-      error: err instanceof Error ? err.message : 'Unknown error'
+      error: err instanceof Error ? err.message: 'Unknown error'
     }));
   }
 };

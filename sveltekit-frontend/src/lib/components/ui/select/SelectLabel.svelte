@@ -20,8 +20,7 @@ https://svelte.dev/e/expected_token -->
   {/if}
 </span>
 
-<style>/* @unocss-include */ {}
-  .select-label {
+<style>/* @unocss-include */ .select-label {
     font-size: 12px;
     font-weight: 500;
     color: #6b7280;

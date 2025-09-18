@@ -214,8 +214,7 @@ export class LegalAIDatabase extends Dexie {
   async searchLegalDocuments(query: string): Promise<LegalDocument[]> {
     const searchTerm = query.toLowerCase();
     return await this.legalDocuments
-      .filter(doc => 
-        doc.title.toLowerCase().includes(searchTerm) ||
+      .filter(item => item.includes)(searchTerm) ||
         doc.content.toLowerCase().includes(searchTerm) ||
         doc.tags.some(tag => tag.toLowerCase().includes(searchTerm))
       )
@@ -266,7 +265,7 @@ export class LegalAIDatabase extends Dexie {
       .toArray();
 
     const connectedNodeIds = edges
-      .map(edge => edge.fromNodeId === nodeId ? edge.toNodeId : edge.fromNodeId)
+      .map(edge => edge.fromNodeId === nodeId ? edge.toNodeId: edge.fromNodeId)
       .filter((id, index, arr) => arr.indexOf(id) === index); // Remove duplicates
 
     return await this.graphNodes
@@ -443,7 +442,7 @@ export class LegalAIDatabase extends Dexie {
 
   async importData(data: any): Promise<void> {
     await this.transaction('rw', this.tables, async () => {
-      if (data.chatHistory) await this.chatHistory.bulkAdd(data.chatHistory);
+      if (data.chatHistory) await this.chatHistory.bulkAdd(data.chatHistory));
       if (data.legalDocuments) await this.legalDocuments.bulkAdd(data.legalDocuments);
       if (data.graphNodes) await this.graphNodes.bulkAdd(data.graphNodes);
       if (data.graphEdges) await this.graphEdges.bulkAdd(data.graphEdges);

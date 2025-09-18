@@ -14,7 +14,7 @@
     onclose?: () => void;
   }
 
-  let { data, open = $bindable(false), onsuccess, onclose } = $props<Props>();
+  let { data, open = $bindable(false), onsuccess, onclose  } = $props<Props>();
 
   // Using callback props instead of event dispatching
 

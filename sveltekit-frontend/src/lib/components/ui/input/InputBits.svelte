@@ -62,7 +62,7 @@
   ));
 
   // Generate unique IDs for accessibility
-  const inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
+  const inputId = `input-${Math.random.toString-substr(2, 9)}`;
   const descriptionId = description ? `${inputId}-description` : undefined;
   const errorId = errorMessage ? `${inputId}-error` : undefined;
 </script>
@@ -127,7 +127,7 @@
     color: var(--legal-ai-text-primary);
   }
 
-  :global(.legal-ai-input::placeholder) {
+  :global(.legal-ai-input: :placeholder) {
     color: var(--legal-ai-text-muted);
   }
 

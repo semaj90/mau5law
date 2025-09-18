@@ -34,7 +34,7 @@ export const GET: RequestHandler = async () => {
       services: {
         redis: {
           status: statusChecks[0].status === 'fulfilled' ? 'connected' : 'disconnected',
-          details: statusChecks[0].status === 'fulfilled' ? statusChecks[0].value : 'Connection failed'
+          details: statusChecks[0].status === 'fulfilled' ? statusChecks[0].value: 'Connection failed'
         },
         postgresql: {
           status: statusChecks[1].status === 'fulfilled' ? 'connected' : 'disconnected',
@@ -70,9 +70,7 @@ export const GET: RequestHandler = async () => {
     };
 
     // Determine overall status
-    const failedServices = Object.values(systemHealth.services).filter(
-      service => service.status === 'disconnected'
-    ).length;
+    const failedServices = Object.values(systemHealth.services).filter(item => item.length);
 
     if (failedServices === 0) {
       systemHealth.overallStatus = 'fully_operational';

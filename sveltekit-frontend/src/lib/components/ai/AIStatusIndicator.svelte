@@ -280,7 +280,7 @@
     min-width: 200px;
   }
 
-  .status-tooltip::after {
+  .status-tooltip: :after {
     content: "";
     position: absolute;
     top: 100%;
@@ -334,7 +334,7 @@
       border: 1px solid var(--border-color, #334155);
     }
 
-    .status-tooltip::after {
+    .status-tooltip: :after {
       border-top-color: var(--bg-tooltip, #0f172a);
     }
   }

@@ -18,18 +18,18 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-// Legal Recommendation Engine
-type LegalRecommendationEngine struct {
+// LocalLegal Recommendation Engine (renamed types to avoid collisions)
+type LocalLegalRecommendationEngine struct {
 	redisClient    *redis.Client
-	caseDatabase   *LegalCaseDatabase
-	vectorDatabase *VectorDatabase
-	precedentIndex *PrecedentIndex
-	riskModel      *RiskAssessmentModel
+	caseDatabase   *LocalLegalCaseDatabase
+	vectorDatabase *LocalVectorDatabase
+	precedentIndex *LocalPrecedentIndex
+	riskModel      *LocalRiskAssessmentModel
 	mu             sync.RWMutex
 }
 
-// Legal Case structures
-type LegalCase struct {
+// Local Legal Case structures (prefixed with Local to avoid duplicate-type collisions)
+type LocalLegalCase struct {
 	CaseID         string            `json:"case_id"`
 	Title          string            `json:"title"`
 	Court          string            `json:"court"`
@@ -43,15 +43,15 @@ type LegalCase struct {
 	DamagesAwarded int64             `json:"damages_awarded"`
 	CourtLevel     string            `json:"court_level"`
 	Precedents     []string          `json:"precedents"`
-	Citations      []Citation        `json:"citations"`
+	Citations      []LocalCitation   `json:"citations"`
 	Embedding      []float32         `json:"embedding"`
-	RiskFactors    []RiskFactor      `json:"risk_factors"`
+	RiskFactors    []LocalRiskFactor `json:"risk_factors"`
 	Tags           []string          `json:"tags"`
 	Complexity     int32             `json:"complexity"`
 	Metadata       map[string]string `json:"metadata"`
 }
 
-type Citation struct {
+type LocalCitation struct {
 	Title          string  `json:"title"`
 	Author         string  `json:"author"`
 	Source         string  `json:"source"`
@@ -60,7 +60,7 @@ type Citation struct {
 	RelevanceScore float32 `json:"relevance_score"`
 }
 
-type RiskFactor struct {
+type LocalRiskFactor struct {
 	FactorName     string                 `json:"factor_name"`
 	ImpactScore    float32                `json:"impact_score"`
 	Probability    float32                `json:"probability"`
@@ -69,72 +69,73 @@ type RiskFactor struct {
 	HistoricalData map[string]interface{} `json:"historical_data"`
 }
 
-type RiskAssessment struct {
-	OverallRiskScore     float32      `json:"overall_risk_score"`
-	RiskLevel            string       `json:"risk_level"`
-	RiskFactors          []RiskFactor `json:"risk_factors"`
-	MitigationStrategies []string     `json:"mitigation_strategies"`
-	Confidence           float32      `json:"confidence"`
-	PredictedOutcome     string       `json:"predicted_outcome"`
-	OutcomeProbability   float32      `json:"outcome_probability"`
+type LocalRiskAssessment struct {
+	OverallRiskScore     float32            `json:"overall_risk_score"`
+	RiskLevel            string             `json:"risk_level"`
+	RiskFactors          []LocalRiskFactor  `json:"risk_factors"`
+	MitigationStrategies []string           `json:"mitigation_strategies"`
+	Confidence           float32            `json:"confidence"`
+	// Keep fields for compatibility; named to avoid collision if other packages differ
+	PredictedOutcome   string  `json:"predicted_outcome"`
+	OutcomeProbability float32 `json:"outcome_probability"`
 }
 
-type LegalRecommendation struct {
-	ID                   string            `json:"id"`
-	Title                string            `json:"title"`
-	Description          string            `json:"description"`
-	ConfidenceScore      float32           `json:"confidence_score"`
-	LegalDomain          string            `json:"legal_domain"`
-	Jurisdiction         string            `json:"jurisdiction"`
-	RelevantCases        []LegalCase       `json:"relevant_cases"`
-	LegalConcepts        []string          `json:"legal_concepts"`
-	RiskAssessment       *RiskAssessment   `json:"risk_assessment"`
-	RecommendationType   string            `json:"recommendation_type"`
-	Priority             int32             `json:"priority"`
-	EstimatedOutcome     string            `json:"estimated_outcome"`
-	SupportingPrecedents []LegalPrecedent  `json:"supporting_precedents"`
-	Metadata             map[string]string `json:"metadata"`
+type LocalLegalRecommendation struct {
+	ID                   string                 `json:"id"`
+	Title                string                 `json:"title"`
+	Description          string                 `json:"description"`
+	ConfidenceScore      float32                `json:"confidence_score"`
+	LegalDomain          string                 `json:"legal_domain"`
+	Jurisdiction         string                 `json:"jurisdiction"`
+	RelevantCases        []LocalLegalCase       `json:"relevant_cases"`
+	LegalConcepts        []string               `json:"legal_concepts"`
+	RiskAssessment       *LocalRiskAssessment   `json:"risk_assessment"`
+	RecommendationType   string                 `json:"recommendation_type"`
+	Priority             int32                  `json:"priority"`
+	EstimatedOutcome     string                 `json:"estimated_outcome"`
+	SupportingPrecedents []LocalLegalPrecedent  `json:"supporting_precedents"`
+	Metadata             map[string]string      `json:"metadata"`
 }
 
-type LegalPrecedent struct {
-	PrecedentID     string     `json:"precedent_id"`
-	CaseName        string     `json:"case_name"`
-	Court           string     `json:"court"`
-	Year            int32      `json:"year"`
-	Jurisdiction    string     `json:"jurisdiction"`
-	LegalPrinciples []string   `json:"legal_principles"`
-	Holding         string     `json:"holding"`
-	Reasoning       string     `json:"reasoning"`
-	RelevanceScore  float32    `json:"relevance_score"`
-	Citations       []Citation `json:"citations"`
-	CourtLevel      string     `json:"court_level"`
-	BindingStatus   string     `json:"binding_status"`
+type LocalLegalPrecedent struct {
+	PrecedentID     string           `json:"precedent_id"`
+	CaseName        string           `json:"case_name"`
+	Court           string           `json:"court"`
+	Year            int32            `json:"year"`
+	Jurisdiction    string           `json:"jurisdiction"`
+	LegalPrinciples []string         `json:"legal_principles"`
+	Holding         string           `json:"holding"`
+	Reasoning       string           `json:"reasoning"`
+	RelevanceScore  float32          `json:"relevance_score"`
+	Citations       []LocalCitation  `json:"citations"`
+	CourtLevel      string           `json:"court_level"`
+	BindingStatus   string           `json:"binding_status"`
 }
 
-// Database implementations
-type LegalCaseDatabase struct {
-	cases map[string]LegalCase
+// Local Database implementations
+type LocalLegalCaseDatabase struct {
+	cases map[string]LocalLegalCase
 	mu    sync.RWMutex
 }
 
-type VectorDatabase struct {
+type LocalVectorDatabase struct {
 	vectors map[string][]float32
 	mu      sync.RWMutex
 }
 
-type PrecedentIndex struct {
-	precedents map[string]LegalPrecedent
+type LocalPrecedentIndex struct {
+	precedents map[string]LocalLegalPrecedent
 	conceptMap map[string][]string // concept -> precedent IDs
 	mu         sync.RWMutex
 }
 
-type RiskAssessmentModel struct {
-	historicalOutcomes map[string][]OutcomeData
+type LocalRiskAssessmentModel struct {
+	historicalOutcomes map[string][]LocalOutcomeData
 	riskWeights        map[string]float32
 	mu                 sync.RWMutex
 }
 
-type OutcomeData struct {
+type LocalOutcomeData struct {
 	CaseID         string            `json:"case_id"`
 	Outcome        string            `json:"outcome"`
 	DamagesAwarded int64             `json:"damages_awarded"`
@@ -167,14 +168,13 @@ type RecommendationResponseLocal struct {
 	Error            string                `json:"error,omitempty"`
 }
 
-// Initialize databases with mock data
-func NewLegalCaseDatabase() *LegalCaseDatabase {
-	db := &LegalCaseDatabase{
-		cases: make(map[string]LegalCase),
+func NewLocalLegalCaseDatabase() *LocalLegalCaseDatabase {
+	db := &LocalLegalCaseDatabase{
+		cases: make(map[string]LocalLegalCase),
 	}
 
 	// Add comprehensive mock legal cases
-	mockCases := []LegalCase{
+	mockCases := []LocalLegalCase{
 		{
 			CaseID:       "case_contract_001",
 			Title:        "TechCorp vs. ServiceProvider LLC - Software License Breach",
@@ -196,7 +196,7 @@ func NewLegalCaseDatabase() *LegalCaseDatabase {
 			Precedents:     []string{"prec_software_001", "prec_contract_002"},
 			Tags:           []string{"software", "technology", "licensing", "breach"},
 			Complexity:     8,
-			RiskFactors: []RiskFactor{
+			RiskFactors: []LocalRiskFactor{
 				{
 					FactorName:   "Contract Ambiguity",
 					ImpactScore:  0.7,
@@ -234,7 +234,7 @@ func NewLegalCaseDatabase() *LegalCaseDatabase {
 			Precedents:     []string{"prec_employment_001", "prec_whistleblower_001"},
 			Tags:           []string{"employment", "whistleblower", "safety", "retaliation"},
 			Complexity:     6,
-			RiskFactors: []RiskFactor{
+			RiskFactors: []LocalRiskFactor{
 				{
 					FactorName:   "Documentation Quality",
 					ImpactScore:  0.8,
@@ -265,7 +265,7 @@ func NewLegalCaseDatabase() *LegalCaseDatabase {
 			Precedents:     []string{"prec_patent_001", "prec_injunction_001"},
 			Tags:           []string{"patent", "AI", "algorithm", "infringement"},
 			Complexity:     9,
-			RiskFactors: []RiskFactor{
+			RiskFactors: []LocalRiskFactor{
 				{
 					FactorName:   "Patent Validity",
 					ImpactScore:  0.9,
@@ -286,14 +286,14 @@ func NewLegalCaseDatabase() *LegalCaseDatabase {
 
 	return db
 }
-
-func NewPrecedentIndex() *PrecedentIndex {
-	idx := &PrecedentIndex{
-		precedents: make(map[string]LegalPrecedent),
+}
+func NewLocalPrecedentIndex() *LocalPrecedentIndex {
+	idx := &LocalPrecedentIndex{
+		precedents: make(map[string]LocalLegalPrecedent),
 		conceptMap: make(map[string][]string),
 	}
 
-	precedents := []LegalPrecedent{
+	precedents := []LocalLegalPrecedent{
 		{
 			PrecedentID:     "prec_software_001",
 			CaseName:        "Oracle America v. Google (2021)",
@@ -336,10 +336,10 @@ func NewPrecedentIndex() *PrecedentIndex {
 
 	return idx
 }
-
-func NewRiskAssessmentModel() *RiskAssessmentModel {
-	model := &RiskAssessmentModel{
-		historicalOutcomes: make(map[string][]OutcomeData),
+}
+func NewLocalRiskAssessmentModel() *LocalRiskAssessmentModel {
+	model := &LocalRiskAssessmentModel{
+		historicalOutcomes: make(map[string][]LocalOutcomeData),
 		riskWeights: map[string]float32{
 			"contract_ambiguity":    0.7,
 			"payment_history":       0.5,
@@ -351,13 +351,13 @@ func NewRiskAssessmentModel() *RiskAssessmentModel {
 	}
 
 	// Add historical outcome data
-	model.historicalOutcomes["contract_law"] = []OutcomeData{
+	model.historicalOutcomes["contract_law"] = []LocalOutcomeData{
 		{CaseID: "hist_001", Outcome: "plaintiff_victory", Probability: 0.35},
 		{CaseID: "hist_002", Outcome: "defendant_victory", Probability: 0.28},
 		{CaseID: "hist_003", Outcome: "settlement", Probability: 0.37},
 	}
 
-	model.historicalOutcomes["employment_law"] = []OutcomeData{
+	model.historicalOutcomes["employment_law"] = []LocalOutcomeData{
 		{CaseID: "hist_004", Outcome: "settlement", Probability: 0.55},
 		{CaseID: "hist_005", Outcome: "plaintiff_victory", Probability: 0.25},
 		{CaseID: "hist_006", Outcome: "defendant_victory", Probability: 0.20},
@@ -365,11 +365,12 @@ func NewRiskAssessmentModel() *RiskAssessmentModel {
 
 	return model
 }
-
-func NewVectorDatabase() *VectorDatabase {
-	return &VectorDatabase{
+}
+func NewLocalVectorDatabase() *LocalVectorDatabase {
+	return &LocalVectorDatabase{
 		vectors: make(map[string][]float32),
 	}
+}
 }
 
 func generateMockEmbedding(text string) []float32 {
@@ -386,9 +387,8 @@ func generateMockEmbedding(text string) []float32 {
 
 	return embedding
 }
-
-// FIXED: Corrected cosine similarity calculation with proper square root
-func cosineSimilarity(a, b []float32) float32 {
+// FIXED (local): Corrected cosine similarity calculation with proper square root
+func cosineSimilarityLocal(a, b []float32) float32 {
 	if len(a) != len(b) || len(a) == 0 {
 		return 0
 	}
@@ -407,11 +407,11 @@ func cosineSimilarity(a, b []float32) float32 {
 	// FIXED: Added proper square root for vector norms
 	return dotProduct / (float32(math.Sqrt(float64(normA))) * float32(math.Sqrt(float64(normB))))
 }
-
-func NewLegalRecommendationEngine() *LegalRecommendationEngine {
+}
+func NewLocalLegalRecommendationEngine() *LocalLegalRecommendationEngine {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     getEnvOrDefault("REDIS_URL", "localhost:6379"),
-		Password: getEnvOrDefault("REDIS_PASSWORD", ""),
+		Addr:     getEnvOrDefaultLocal("REDIS_URL", "localhost:6379"),
+		Password: getEnvOrDefaultLocal("REDIS_PASSWORD", ""),
 		DB:       0,
 	})
 
@@ -424,12 +424,12 @@ func NewLegalRecommendationEngine() *LegalRecommendationEngine {
 		log.Println("✅ Redis connection established")
 	}
 
-	engine := &LegalRecommendationEngine{
+	engine := &LocalLegalRecommendationEngine{
 		redisClient:    rdb,
-		caseDatabase:   NewLegalCaseDatabase(),
-		vectorDatabase: NewVectorDatabase(),
-		precedentIndex: NewPrecedentIndex(),
-		riskModel:      NewRiskAssessmentModel(),
+		caseDatabase:   NewLocalLegalCaseDatabase(),
+		vectorDatabase: NewLocalVectorDatabase(),
+		precedentIndex: NewLocalPrecedentIndex(),
+		riskModel:      NewLocalRiskAssessmentModel(),
 	}
 
 	// Populate vector database
@@ -439,24 +439,24 @@ func NewLegalRecommendationEngine() *LegalRecommendationEngine {
 
 	return engine
 }
-
-func (engine *LegalRecommendationEngine) GenerateRecommendations(req RecommendationRequestLocal) RecommendationResponseLocal {
+}
+func (engine *LocalLegalRecommendationEngine) GenerateRecommendations(req RecommendationRequestLocal) RecommendationResponseLocal {
 	startTime := time.Now()
 
-	recommendations := []LegalRecommendation{}
+	recommendations := []LocalLegalRecommendation{}
 
 	// 1. Find similar cases using vector similarity
 	if req.IncludeSimilarCases && len(req.QueryEmbedding) > 0 {
 		similarCases := engine.findSimilarCases(req.QueryEmbedding, req.SimilarityThreshold, int(req.MaxRecommendations))
 		for _, similar := range similarCases {
-			recommendations = append(recommendations, LegalRecommendation{
+			recommendations = append(recommendations, LocalLegalRecommendation{
 				ID:                 fmt.Sprintf("rec_similar_%s", similar.CaseID),
 				Title:              fmt.Sprintf("Similar Case: %s", similar.Case.Title),
 				Description:        fmt.Sprintf("Found similar case with %d%% similarity", int(similar.Similarity*100)),
 				ConfidenceScore:    similar.Similarity,
 				LegalDomain:        similar.LegalDomain,
 				Jurisdiction:       similar.Jurisdiction,
-				RelevantCases:      []LegalCase{similar.Case},
+				RelevantCases:      []LocalLegalCase{similar.Case},
 				RecommendationType: "similar_case",
 				Priority:           1,
 			})
@@ -467,14 +467,14 @@ func (engine *LegalRecommendationEngine) GenerateRecommendations(req Recommendat
 	if req.IncludePrecedents {
 		precedents := engine.findRelevantPrecedents(req.CaseFacts, req.LegalDomain)
 		for _, prec := range precedents {
-			recommendations = append(recommendations, LegalRecommendation{
+			recommendations = append(recommendations, LocalLegalRecommendation{
 				ID:                   fmt.Sprintf("rec_precedent_%s", prec.PrecedentID),
 				Title:                fmt.Sprintf("Relevant Precedent: %s", prec.CaseName),
 				Description:          fmt.Sprintf("Binding precedent: %s", prec.Holding),
 				ConfidenceScore:      prec.RelevanceScore,
 				LegalDomain:          req.LegalDomain,
 				Jurisdiction:         prec.Jurisdiction,
-				SupportingPrecedents: []LegalPrecedent{prec},
+				SupportingPrecedents: []LocalLegalPrecedent{prec},
 				RecommendationType:   "precedent",
 				Priority:             2,
 			})
@@ -484,7 +484,7 @@ func (engine *LegalRecommendationEngine) GenerateRecommendations(req Recommendat
 	// 3. Generate risk assessment
 	if req.IncludeRiskAssessment {
 		riskAssessment := engine.assessRisk(req.CaseFacts, req.LegalDomain)
-		recommendations = append(recommendations, LegalRecommendation{
+		recommendations = append(recommendations, LocalLegalRecommendation{
 			ID:                 fmt.Sprintf("rec_risk_%s", req.CaseID),
 			Title:              "Risk Assessment & Strategy",
 			Description:        fmt.Sprintf("Overall risk level: %s", riskAssessment.RiskLevel),
@@ -528,16 +528,16 @@ func (engine *LegalRecommendationEngine) GenerateRecommendations(req Recommendat
 		Success:          true,
 	}
 }
-
+}
 type SimilarCaseResult struct {
-	Case         LegalCase
+	Case         LocalLegalCase
 	CaseID       string
 	Similarity   float32
 	LegalDomain  string
 	Jurisdiction string
 }
-
-func (engine *LegalRecommendationEngine) findSimilarCases(queryEmbedding []float32, threshold float32, maxResults int) []SimilarCaseResult {
+}
+func (engine *LocalLegalRecommendationEngine) findSimilarCases(queryEmbedding []float32, threshold float32, maxResults int) []SimilarCaseResult {
 	if len(queryEmbedding) == 0 {
 		return nil
 	}
@@ -551,7 +551,7 @@ func (engine *LegalRecommendationEngine) findSimilarCases(queryEmbedding []float
 	var results []SimilarCaseResult
 
 	for caseID, vector := range engine.vectorDatabase.vectors {
-		similarity := cosineSimilarity(queryEmbedding, vector)
+		similarity := cosineSimilarityLocal(queryEmbedding, vector)
 		if similarity >= threshold {
 			if case_, exists := engine.caseDatabase.cases[caseID]; exists {
 				results = append(results, SimilarCaseResult{
@@ -575,12 +575,12 @@ func (engine *LegalRecommendationEngine) findSimilarCases(queryEmbedding []float
 
 	return results
 }
-
-func (engine *LegalRecommendationEngine) findRelevantPrecedents(caseFacts []string, legalDomain string) []LegalPrecedent {
+}
+func (engine *LocalLegalRecommendationEngine) findRelevantPrecedents(caseFacts []string, legalDomain string) []LocalLegalPrecedent {
 	engine.precedentIndex.mu.RLock()
 	defer engine.precedentIndex.mu.RUnlock()
 
-	var relevantPrecedents []LegalPrecedent
+	var relevantPrecedents []LocalLegalPrecedent
 	conceptCount := make(map[string]int)
 
 	// Extract concepts from case facts
@@ -599,14 +599,14 @@ func (engine *LegalRecommendationEngine) findRelevantPrecedents(caseFacts []stri
 	}
 
 	// Remove duplicates and sort by relevance
-	uniquePrecedents := make(map[string]LegalPrecedent)
+	uniquePrecedents := make(map[string]LocalLegalPrecedent)
 	for _, prec := range relevantPrecedents {
 		if _, exists := uniquePrecedents[prec.PrecedentID]; !exists {
 			uniquePrecedents[prec.PrecedentID] = prec
 		}
 	}
 
-	var result []LegalPrecedent
+	var result []LocalLegalPrecedent
 	for _, prec := range uniquePrecedents {
 		result = append(result, prec)
 	}
@@ -618,19 +618,19 @@ func (engine *LegalRecommendationEngine) findRelevantPrecedents(caseFacts []stri
 
 	return result
 }
-
-func (engine *LegalRecommendationEngine) assessRisk(caseFacts []string, legalDomain string) *RiskAssessment {
+}
+func (engine *LocalLegalRecommendationEngine) assessRisk(caseFacts []string, legalDomain string) *LocalRiskAssessment {
 	engine.riskModel.mu.RLock()
 	defer engine.riskModel.mu.RUnlock()
 
-	var riskFactors []RiskFactor
+	var riskFactors []LocalRiskFactor
 	var overallRisk float32
 
 	// Analyze risk factors based on case facts
 	factText := strings.ToLower(strings.Join(caseFacts, " "))
 
 	if strings.Contains(factText, "contract") && strings.Contains(factText, "ambig") {
-		factor := RiskFactor{
+		factor := LocalRiskFactor{
 			FactorName:  "Contract Ambiguity",
 			ImpactScore: 0.7,
 			Probability: 0.6,
@@ -641,7 +641,7 @@ func (engine *LegalRecommendationEngine) assessRisk(caseFacts []string, legalDom
 	}
 
 	if strings.Contains(factText, "payment") || strings.Contains(factText, "money") {
-		factor := RiskFactor{
+		factor := LocalRiskFactor{
 			FactorName:  "Financial Dispute",
 			ImpactScore: 0.6,
 			Probability: 0.8,
@@ -687,7 +687,7 @@ func (engine *LegalRecommendationEngine) assessRisk(caseFacts []string, legalDom
 		}
 	}
 
-	return &RiskAssessment{
+	return &LocalRiskAssessment{
 		OverallRiskScore:     overallRisk,
 		RiskLevel:            riskLevel,
 		RiskFactors:          riskFactors,
@@ -697,9 +697,9 @@ func (engine *LegalRecommendationEngine) assessRisk(caseFacts []string, legalDom
 		OutcomeProbability:   outcomeProbability,
 	}
 }
+}
 
-// HTTP handlers
-func (engine *LegalRecommendationEngine) handleRecommendations(w http.ResponseWriter, r *http.Request) {
+func (engine *LocalLegalRecommendationEngine) handleRecommendations(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -721,8 +721,8 @@ func (engine *LegalRecommendationEngine) handleRecommendations(w http.ResponseWr
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
-
-func (engine *LegalRecommendationEngine) handleHealth(w http.ResponseWriter, r *http.Request) {
+}
+func (engine *LocalLegalRecommendationEngine) handleHealth(w http.ResponseWriter, r *http.Request) {
 	// Check Redis connection status
 	redisStatus := "disconnected"
 	if engine.redisClient != nil {
@@ -736,7 +736,7 @@ func (engine *LegalRecommendationEngine) handleHealth(w http.ResponseWriter, r *
 	status := map[string]interface{}{
 		"status":       "healthy",
 		"timestamp":    time.Now(),
-		"service":      "Legal Recommendation Engine",
+		"service":      "Local Legal Recommendation Engine",
 		"redis_status": redisStatus,
 		"databases": map[string]interface{}{
 			"cases":      len(engine.caseDatabase.cases),
@@ -754,8 +754,8 @@ func (engine *LegalRecommendationEngine) handleHealth(w http.ResponseWriter, r *
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(status)
 }
-
-func (engine *LegalRecommendationEngine) handleCaseDetails(w http.ResponseWriter, r *http.Request) {
+}
+func (engine *LocalLegalRecommendationEngine) handleCaseDetails(w http.ResponseWriter, r *http.Request) {
 	caseID := r.URL.Query().Get("case_id")
 	if caseID == "" {
 		http.Error(w, "Missing case_id parameter", http.StatusBadRequest)
@@ -774,16 +774,16 @@ func (engine *LegalRecommendationEngine) handleCaseDetails(w http.ResponseWriter
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(case_)
 }
-
-func getEnvOrDefault(key, defaultValue string) string {
+}
+func getEnvOrDefaultLocal(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
 	}
 	return defaultValue
 }
-
-// findAvailablePort tries to find an available port starting from the preferred port
-func findAvailablePort(preferredPort string) string {
+}
+// findAvailablePortLocal tries to find an available port starting from the preferred port
+func findAvailablePortLocal(preferredPort string) string {
 	startPort, _ := strconv.Atoi(preferredPort)
 	if startPort == 0 {
 		startPort = 8080
@@ -799,29 +799,15 @@ func findAvailablePort(preferredPort string) string {
 	}
 	return preferredPort // fallback
 }
+}
+/*
+ The standalone main has been removed from this file to avoid duplicate-main conflicts
+ in multi-file builds; use the main in the primary server file to start the service.
+ To construct a local engine programmatically, call NewLocalLegalRecommendationEngine().
+*/
 
-func main() {
-	engine := NewLegalRecommendationEngine()
-
-	// Setup HTTP routes
-	mux := http.NewServeMux()
-	mux.HandleFunc("/recommend", engine.handleRecommendations)
-	mux.HandleFunc("/health", engine.handleHealth)
-	mux.HandleFunc("/case", engine.handleCaseDetails)
-
-	preferredPort := getEnvOrDefault("PORT", "8080")
-	port := findAvailablePort(preferredPort)
-
-	log.Println("🎯 Legal Recommendation Engine starting on :" + port)
-	log.Printf("📚 Loaded %d legal cases", len(engine.caseDatabase.cases))
-	log.Printf("⚖️  Loaded %d precedents", len(engine.precedentIndex.precedents))
-	log.Printf("🔍 Vector database ready with %d embeddings", len(engine.vectorDatabase.vectors))
-	log.Println("🌐 API Endpoints:")
-	log.Printf("   - POST /recommend     (Generate Legal Recommendations)")
-	log.Printf("   - GET  /health        (Service Health)")
-	log.Printf("   - GET  /case?case_id  (Case Details)")
-
-	if err := http.ListenAndServe(":"+port, mux); err != nil {
-		log.Fatal("❌ Failed to start recommendation engine:", err)
-	}
+func StartLocalEngineExample() *LocalLegalRecommendationEngine {
+	engine := NewLocalLegalRecommendationEngine()
+	return engine
+}}
 }

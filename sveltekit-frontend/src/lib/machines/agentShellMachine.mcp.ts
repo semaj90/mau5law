@@ -164,7 +164,7 @@ export const agentShellMachineMCP = createMachine({
         onDone: {
           target: "idle",
           actions: assign({
-            response: (_, e) => (e && "data" in e ? (e as any).data : ""),
+            response: (_, e) => (e && "data" in e ? (e as any).data: ""),
           }),
         },
         onError: {
@@ -554,7 +554,7 @@ export const agentShellServicesMCP = {
       ]);
 
       return {
-        production: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value : null,
+        production: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value: null,
         legacy: healthChecks[1].status === 'fulfilled' ? healthChecks[1].value : null,
         mcpDatabase: healthChecks[2].status === 'fulfilled' ? true : false,
       };
@@ -621,7 +621,7 @@ export const agentShellServicesMCP = {
     const [caseAnalytics, evidenceAnalytics, userAnalytics] = await Promise.allSettled(promises);
 
     return {
-      cases: caseAnalytics.status === 'fulfilled' ? caseAnalytics.value : null,
+      cases: caseAnalytics.status === 'fulfilled' ? caseAnalytics.value: null,
       evidence: evidenceAnalytics.status === 'fulfilled' ? evidenceAnalytics.value : null,
       users: userAnalytics.status === 'fulfilled' ? userAnalytics.value : null,
     };

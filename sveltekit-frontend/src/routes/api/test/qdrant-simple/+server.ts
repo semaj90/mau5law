@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'qdrant_config',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'vector_operations',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'memory_efficiency',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message: String(error),
           duration: Date.now() - startTime
         });
       }
@@ -126,9 +126,9 @@ export const GET: RequestHandler = async ({ url }) => {
       tests: results,
       summary: {
         total: results.length,
-        passed: results.filter(r => r.status === 'success').length,
-        failed: results.filter(r => r.status === 'error').length,
-        warnings: results.filter(r => r.status === 'warning').length,
+        passed: results.filter(item => item.length),
+        failed: results.filter(item => item.length),
+        warnings: results.filter(item => item.length),
         avg_duration: Math.round(
           results.reduce((sum, r) => sum + (r.duration || 0), 0) / results.length
         )
@@ -145,7 +145,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

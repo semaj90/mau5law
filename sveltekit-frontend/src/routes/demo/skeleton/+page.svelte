@@ -105,7 +105,7 @@
       // Initialize WASM + Web Workers
       await embeddingsService.initialize();
       systemStatus.embedding_service = true;
-      systemStatus.webWorkers = embeddingsService.getWorkerStats().totalWorkers;
+      systemStatus.webWorkers = embeddingsService.getWorkerStats.totalWorkers;
       systemStatus.wasm = true;
 
       // Check GPU AI service

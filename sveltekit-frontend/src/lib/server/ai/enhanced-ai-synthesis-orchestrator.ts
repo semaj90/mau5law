@@ -434,7 +434,7 @@ export class EnhancedAISynthesisOrchestrator {
     this.machine = orchestrationMachine.provide({
       guards: {
         cacheHit: ({ context, event }) => {
-          return event.data && event.(data as { cached?: any }).cached === true;
+          return event.data && event.data.cached === true;
         },
       },
       actors: {

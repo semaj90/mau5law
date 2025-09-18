@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'database_connection',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'users_read',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'cases_read',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'reports_read',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'evidence_read',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'persons_of_interest_read',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -185,7 +185,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'criminals_read',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -203,7 +203,7 @@ export const GET: RequestHandler = async ({ url }) => {
         results.push({
           test: 'pgvector_extension',
           status: 'error',
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message: String(error)
         });
       }
     }
@@ -214,15 +214,15 @@ export const GET: RequestHandler = async ({ url }) => {
       tests: results,
       summary: {
         total: results.length,
-        passed: results.filter(r => r.status === 'success').length,
-        failed: results.filter(r => r.status === 'error').length
+        passed: results.filter(item => item.length),
+        failed: results.filter(item => item.length)
       }
     });
 
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

@@ -87,7 +87,7 @@ export class RedisWebGPUSIMDIntegration {
     ]);
 
     const [redisOK, webgpuOK, indexdbOK, simdOK] = results.map((r) =>
-      r.status === 'fulfilled' ? r.value : false
+      r.status === 'fulfilled' ? r.value: false
     );
 
     console.log(
@@ -383,7 +383,7 @@ export class RedisWebGPUSIMDIntegration {
         switch (type) {
           case 'legal_document':
             for (const op of ops) {
-              const result = await this.processLegalDocument(op.data, op.options);
+              const result = await this.processLegalDocument(op.data, op.options)));
               results[op.index] = result;
             }
             break;

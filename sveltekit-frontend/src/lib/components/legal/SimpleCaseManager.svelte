@@ -23,7 +23,7 @@ https://svelte.dev/e/js_parse_error -->
   let isEditDialogOpen = writable(false);
 
   // Form state
-  let formData = writable<Partial<CaseData>>({
+  let formData = writable<Partial<CaseData>({
     title: '',
     description: '',
     priority: 'medium',
@@ -66,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
         error.set(response.error || 'Failed to load cases');
       }
     } catch (err) {
-      error.set(err instanceof Error ? err.message : 'Unknown error');
+      error.set(err instanceof Error ? err.message: 'Unknown error');
     } finally {
       loading.set(false);
     }
@@ -75,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
   // Search cases with debouncing
   let searchTimeout = $state<NodeJS.Timeout;
   async function handleSearch() {
-    clearTimeout(searchTimeout)searchTimeout | null>(null)(setTimeout(async () => {
+    clearTimeout(searchTimeout)searchTimeout  | null>(null); const data = setTimeout(async () => {
       const query = $searchQuery.trim());
       if (!query) {
         await loadCases();
@@ -92,7 +92,7 @@ https://svelte.dev/e/js_parse_error -->
           error.set(response.error || 'Search failed');
         }
       } catch (err) {
-        error.set(err instanceof Error ? err.message : 'Search error');
+        error.set(err instanceof Error ? err.message: 'Search error');
       } finally {
         loading.set(false);
       }
@@ -128,7 +128,7 @@ https://svelte.dev/e/js_parse_error -->
         error.set(response.error || 'Failed to create case');
       }
     } catch (err) {
-      error.set(err instanceof Error ? err.message : 'Creation failed');
+      error.set(err instanceof Error ? err.message: 'Creation failed');
     } finally {
       loading.set(false);
     }
@@ -154,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
         error.set(response.error || 'Failed to update case');
       }
     } catch (err) {
-      error.set(err instanceof Error ? err.message : 'Update failed');
+      error.set(err instanceof Error ? err.message: 'Update failed');
     } finally {
       loading.set(false);
     }
@@ -176,7 +176,7 @@ https://svelte.dev/e/js_parse_error -->
         error.set(response.error || 'Failed to delete case');
       }
     } catch (err) {
-      error.set(err instanceof Error ? err.message : 'Deletion failed');
+      error.set(err instanceof Error ? err.message: 'Deletion failed');
     } finally {
       loading.set(false);
     }

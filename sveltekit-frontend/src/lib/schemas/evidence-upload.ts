@@ -332,7 +332,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
           const content = e.target?.result as string || '';
           resolve({
             kind: 'TEXT',
-            wordCount: content.split(/\s+/).filter(word => word.length > 0).length,
+            wordCount: content.split(/\s+/).filter(item => item.length),
             characterCount: content.length,
             language: 'unknown', // Could be enhanced with language detection
             ...baseMetadata,

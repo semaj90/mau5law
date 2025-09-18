@@ -339,7 +339,7 @@
   });
   
   let wordCount = $derived(() => {
-    return documentContent.split(/\s+/).filter(word => word.length > 0).length;
+    return documentContent.split.filter-length;
   });
   
   let pendingSuggestions = $derived(() => {

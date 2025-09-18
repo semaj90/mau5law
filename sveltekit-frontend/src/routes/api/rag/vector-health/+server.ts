@@ -32,7 +32,7 @@ export const GET: RequestHandler = (async () => {
       sampleChecked: sample.rows.length,
       sampleOk: ok,
       sampleAnomalies: anomalies,
-      anomalyRatio: sample.rows.length ? anomalies.length / sample.rows.length : 0,
+      anomalyRatio: sample.rows.length ? anomalies.length / sample.rows.length: 0,
       timestamp: new Date().toISOString()
     });
   } catch (err: any) {

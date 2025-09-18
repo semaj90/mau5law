@@ -217,7 +217,7 @@ async function detectSuspiciousPatterns(
     return {
       ...results,
       error: 'Pattern detection failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
+      details: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }

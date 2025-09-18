@@ -209,7 +209,7 @@ async function performCitationVerification(
       error: 'Verification process failed',
       details: {
         ...verification.details,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
       },
     };
   }
@@ -228,7 +228,7 @@ async function validateCitationFormat(citationText: string): Promise<any> {
     properCapitalization: /^[A-Z]/.test(citationText.trim()),
   };
 
-  const passedChecks = Object.values(formatChecks).filter(Boolean).length;
+  const passedChecks = Object.values(formatChecks).filter(item => item.length);
   const totalChecks = Object.keys(formatChecks).length;
   const score = passedChecks / totalChecks;
 
@@ -264,8 +264,7 @@ async function verifyWithLegalDatabases(citationText: string): Promise<any> {
     }));
 
   const averageConfidence = sources.length > 0
-    ? sources.reduce((sum, source) => sum + source.confidence, 0) / sources.length
-    : 0;
+    ? sources.reduce((sum, source) => sum + source.confidence, 0) / sources.length: 0;
 
   return {
     sources,

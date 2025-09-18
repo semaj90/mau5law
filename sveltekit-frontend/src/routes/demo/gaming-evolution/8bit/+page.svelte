@@ -527,7 +527,7 @@ dialogOpen = false}>CANCEL
     z-index: 1000;
   }
 
-  :global(.nes-balloon.from-left::after) {
+  :global(.nes-balloon.from-left: :after) {
     border-color: transparent white transparent transparent;
   }
 

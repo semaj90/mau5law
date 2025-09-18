@@ -133,7 +133,7 @@ export class GpuVectorProcessor {
     // Create new or resize
     const buffer = gl.createBuffer()!;
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    const usage = type === 'input' ? gl.STREAM_DRAW : gl.DYNAMIC_READ;
+    const usage = type === 'input' ? gl.STREAM_DRAW: gl.DYNAMIC_READ;
     gl.bufferData(gl.ARRAY_BUFFER, sizeBytes, usage);
     // Cache it
     if (cached) gl.deleteBuffer(cached.buffer); // replace old smaller one

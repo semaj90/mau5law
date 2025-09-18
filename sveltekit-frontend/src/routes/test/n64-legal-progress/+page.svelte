@@ -314,7 +314,7 @@ Reset
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {#each ['classic', 'gold', 'red', 'blue', 'green', 'purple'] as theme}
           <div class="space-y-2">
-            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{theme.charAt(0).toUpperCase() + theme.slice(1)}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{theme.charAt.toUpperCase() + theme.slice(1)}</span>
             <N64ProgressBar 
               value={75} 
               max={100}

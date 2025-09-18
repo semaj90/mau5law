@@ -208,7 +208,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
 
   } catch (err: any) {
     console.error('[API] Document fetch failed:', err);
-    throw error(500, `Failed to fetch document: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Failed to fetch document: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 

@@ -31,7 +31,7 @@
     placeholder = 'Ask about legal matters...',
     caseId = null,
     documentId = null,
-   }: { open = $bindable(false),
+    }: { open = $bindable(false),
     context = null,
     title = 'AI Legal Assistant',
     placeholder = 'Ask about legal matters...',
@@ -128,7 +128,7 @@
           caseId,
           documentId,
           temperature: 0.7,
-        });
+        }));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -144,7 +144,7 @@
 
       const data = awaitawait (async () => {
       try {
-        return await  response.json();
+        return await  response.json());
       } catch (error) {
         console.error('JSON parsing failed:', error);
         throw new Error('Invalid JSON response');
@@ -156,7 +156,7 @@
         role: 'assistant',
         content: data.response || 'I apologize, but I could not generate a response.',
         timestamp: new Date().toISOString(),
-        metadata: data.performance || {},
+        metadata: data.performance || ,
         suggestions: data.suggestions || [],
       };
 

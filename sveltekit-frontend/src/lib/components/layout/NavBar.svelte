@@ -375,7 +375,7 @@
       scrollbar-width: none;
     }
 
-    .navbar-center::-webkit-scrollbar {
+    .navbar-center: :-webkit-scrollbar {
       display: none;
     }
   }

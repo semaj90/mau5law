@@ -139,7 +139,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   	});
 
   	// Add message to chat
-  	function addMessage(role: Message['role'], content: string, options: Partial<Message> = {}): Message {
+  	function addMessage(role: Message['role'], content: string, options: Partial<Message> = ): Message {
   		const message: Message = {
   			id: crypto.randomUUID(),
   			role,
@@ -187,7 +187,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   			console.error('Chat error:', error);
   			messages = messages.filter((msg) => msg.id !== typingMessage.id);
   			addMessage('assistant', "Sorry, I'm having trouble connecting. Please try again.", { error: true 
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';});
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';});
   			isConnected = false;
   		} finally {
   			isTyping = false;
@@ -211,7 +211,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({
   					model: settings.model,
-  					prompt: formatPromptForGemma3(message);
+  					prompt: formatPromptForGemma3(message)));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -237,7 +237,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   			if (response.ok) {
   				const data = awaitawait (async () => {
       try {
-        return await  response.json();
+        return await  response.json());
       } catch (error) {
         console.error('JSON parsing failed:', error);
         throw new Error('Invalid JSON response');
@@ -249,7 +249,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   			console.warn('Primary API failed:', error);
   			isConnected = false;
   		
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
 
   		return null;
   	}
@@ -269,7 +269,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   					max_tokens: settings.maxTokens,
   					temperature: settings.temperature,
   					top_p: settings.topP
-  				});
+  				}));
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -285,7 +285,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   			if (response.ok) {
   				const data = awaitawait (async () => {
       try {
-        return await  response.json();
+        return await  response.json());
       } catch (error) {
         console.error('JSON parsing failed:', error);
         throw new Error('Invalid JSON response');
@@ -296,7 +296,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   		} catch (error) {
   			console.warn('Fallback API failed:', error);
   		
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
 
   		return null;
   	}
@@ -606,7 +606,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         (event: SubmitEvent) => e) => { e.preventDefault(); sendMessage();(event);
       } catch (error) {
         console.error('Form submission error:', error);
-        errorMessage = error instanceof Error ? error.message : 'Form submission failed';
+        errorMessage = error instanceof Error ? error.message: 'Form submission failed';
       }
     }}} role="search" aria-label="Send message to AI">
 					<textarea

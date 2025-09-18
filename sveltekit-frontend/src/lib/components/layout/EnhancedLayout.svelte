@@ -232,12 +232,12 @@
     color: #ffd700;
   }
 
-  .nav-(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).active {
+  .nav-.active {
     background: var(--nes-primary-color, #000);
     color: #fff;
   }
 
-  .enhanced-layout[data-variant="yorha"] .nav-(item as { href?: unknown; label?: unknown; icon?: unknown; active?: unknown }).active {
+  .enhanced-layout[data-variant="yorha"] .nav-.active {
     background: #ffd700;
     color: #000;
   }

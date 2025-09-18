@@ -108,7 +108,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       aiAssistant.messages.push({
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: `❌ Sorry, I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        content: `❌ Sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`,
         timestamp: Date.now(),
         sessionId: aiAssistant.sessionId,
         metadata: { error: true }
@@ -422,7 +422,7 @@ https://svelte.dev/e/effect_invalid_placement -->
           >
             <div class="result-content">{(result as { content?: any; similarity?: any; timestamp?: any }).content}</div>
             <div class="result-meta">
-              Similarity: {Math.round((result as { content?: any; similarity?: any; timestamp?: any }).similarity * 100)}% | 
+              Similarity: {Math.round.similarity * 100)}% | 
               {formatTime((result as { content?: any; similarity?: any; timestamp?: any }).timestamp)}
             </div>
           </div>

@@ -80,7 +80,7 @@
     // Simple filtering logic (STUB)
     filteredCases = cases.filter(c => {
       if (statusFilter !== 'all' && c.status !== statusFilter) return false;
-      if (searchQuery && !c.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      if (searchQuery && !c.title.toLowerCase.includes(searchQuery.toLowerCase())) return false;
       return true;
     });
 

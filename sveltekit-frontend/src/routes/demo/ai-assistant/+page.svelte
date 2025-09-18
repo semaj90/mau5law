@@ -44,12 +44,11 @@ https://svelte.dev/e/js_parse_error -->
   	let performanceMetrics = $derived({
   		totalQueries: aiResponses.length,
   		averageConfidence: aiResponses.length > 0
-  			? aiResponses.reduce((sum, r) => sum + (r.confidence || 0), 0) / aiResponses.length
-  			: 0,
+  			? aiResponses.reduce((sum, r) => sum + (r.confidence || 0), 0) / aiResponses.length: 0,
   		averageResponseTime: aiResponses.length > 0
   			? aiResponses.reduce((sum, r) => sum + (r.processingTime || 0), 0) / aiResponses.length
   			: 0,
-  		gpuProcessed: aiResponses.filter(r => r.gpuProcessed).length
+  		gpuProcessed: aiResponses.filter(item => item.length)
   	});
   	onMount(async () => {
   		await loadSystemStatus();
@@ -222,7 +221,7 @@ https://svelte.dev/e/js_parse_error -->
   	}
   	function extractKeyTerms(query: string): string[] {
   		const legalTerms = ['contract', 'liability', 'evidence', 'case', 'legal', 'dispute', 'clause', 'testimony', 'precedent'];
-  		return query.toLowerCase().split(' ')
+  		return query.toLowerCase.split(' ')
   			.filter(word => legalTerms.some(term => word.includes(term)))
   			.slice(0, 5);
   	}
@@ -430,7 +429,7 @@ https://svelte.dev/e/js_parse_error -->
 				{/if}
 
 				<div class="space-y-6 max-h-96 overflow-y-auto">
-					{#each aiResponses.slice().reverse() as response, index}
+					{#each aiResponses.slice.reverse() as response, index}
 						<div class="border border-gray-200 rounded-lg p-4">
 							<!-- Query Header -->
 							<div class="flex items-start justify-between mb-3">

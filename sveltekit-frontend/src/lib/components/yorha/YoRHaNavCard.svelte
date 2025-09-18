@@ -39,5 +39,5 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 
 <!-- Styling inherits from parent page; only minimal overrides if needed -->
-<style>/*$$__STYLE_CONTENT__$$*/ {}</style>
+<style>/*$$__STYLE_CONTENT__$$*/ </style>
 

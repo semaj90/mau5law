@@ -414,7 +414,7 @@ class ParallaxDynamic {
 			currentTime,
 			this.performance.frameTime / 1000,
 			this.config.maxOffset,
-			this.config.enableAutoRotate ? this.config.autoRotateSpeed : 0
+			this.config.enableAutoRotate ? this.config.autoRotateSpeed: 0
 		]);
 		
 		const paramsBuffer = this.webgpuDevice.createBuffer({

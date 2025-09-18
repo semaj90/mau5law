@@ -424,7 +424,7 @@
   bottom: -4px;
   border: 2px solid #00ff00;
   border-radius: 8px;
-  animation: focus-pulse 1s infinite;
+  animation:focus-pulse 1s infinite;
 }
 
 @keyframes focus-pulse {

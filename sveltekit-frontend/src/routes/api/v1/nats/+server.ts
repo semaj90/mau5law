@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: 'NATS operation failed',
-			details: error instanceof Error ? error.message : 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error',
 		}, { status: 500 });
 	}
 };
@@ -136,7 +136,7 @@ export const GET: RequestHandler = async () => {
 			service: 'Enhanced NATS Messaging',
 			status: 'degraded',
 			error: 'Unable to get NATS status',
-			details: error instanceof Error ? error.message : 'Unknown error',
+			details: error instanceof Error ? error.message: 'Unknown error',
 		}, { status: 503 });
 	}
 };

@@ -144,7 +144,7 @@ export default class MultiTierCache<V = unknown> {
   }
 
   async set(key: string, value: V, ttlMs?: number | null): Promise<void> {
-	const effectiveTtl = ttlMs === undefined ? this.defaultTtlMs : ttlMs;
+	const effectiveTtl = ttlMs === undefined ? this.defaultTtlMs: ttlMs;
 	const expiresAt = typeof effectiveTtl === 'number' && effectiveTtl > 0 ? this.now() + effectiveTtl : null;
 
 	// set in memory and mark as recently used

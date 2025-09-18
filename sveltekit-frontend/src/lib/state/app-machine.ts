@@ -41,7 +41,7 @@ export interface AppContext {
   legalCaseMachine?: ActorRefFrom<typeof legalCaseMachine>;
 
   // Global notifications
-  notifications: Array<any>>;
+  notifications: Array<any>;
 
   // Global loading states
   globalLoading: boolean;
@@ -67,7 +67,7 @@ export interface AppContext {
   features: Record<string, boolean>;
 
   // Application settings
-  settings: {
+  }); const settings = {
     autoSave: boolean;
     autoSaveInterval: number;
     enableAnalytics: boolean;
@@ -218,12 +218,12 @@ const clearUser = assign({
 
 const setTheme = assign({
   theme: ({ event }: { event: AppEvents }) =>
-    'theme' in event ? event.theme : 'light'
+    'theme' in event ? event.theme: 'light'
 });
 
 const setLayout = assign({
   layout: ({ event }: { event: AppEvents }) =>
-    'layout' in event ? event.layout : 'desktop'
+    'layout' in event ? event.layout: 'desktop'
 });
 
 const addNotification = assign({
@@ -235,14 +235,14 @@ const addNotification = assign({
       type: 'info' as const,
       title: '',
       message: '',
-      ...('notification' in event ? event.notification : Record<string, any>)
+      ...('notification' in event ? event.notification: Record<string, any>)
     }
   ]
 });
 
 const dismissNotification = assign({
   notifications: ({ context, event }: { context: AppContext; event: AppEvents }) =>
-    context.notifications.filter((n) => n.id !== ('id' in event ? event.id : ''))
+    context.notifications.filter((n) => n.id !== ('id' in event ? event.id: ''))
 });
 
 const clearNotifications = assign({
@@ -251,7 +251,7 @@ const clearNotifications = assign({
 
 const setError = assign({
   error: ({ event }: { event: AppEvents }) =>
-    'error' in event ? event.error : null,
+    'error' in event ? event.error: null,
   globalLoading: false
 });
 
@@ -262,7 +262,7 @@ const clearError = assign({
 const setGlobalLoading = assign({
   globalLoading: true,
   loadingMessage: ({ event }: { event: AppEvents }) =>
-    'message' in event ? event.message : undefined
+    'message' in event ? event.message: undefined
 });
 
 const clearGlobalLoading = assign({
@@ -273,7 +273,7 @@ const clearGlobalLoading = assign({
 const updateSettings = assign({
   settings: ({ context, event }: { context: AppContext; event: AppEvents }) => ({
     ...context.settings,
-    ...('settings' in event ? event.settings : Record<string, any>)
+    ...('settings' in event ? event.settings: Record<string, any>)
   })
 });
 
@@ -288,7 +288,7 @@ const setOffline = assign({
 const connectWebSocket = assign({
   websocket: ({ event }: { event: AppEvents }) => ({
     connected: true,
-    connectionId: 'connectionId' in event ? event.connectionId : null,
+    connectionId: 'connectionId' in event ? event.connectionId: null,
     lastActivity: new Date()
   })
 });
@@ -326,7 +326,7 @@ const destroyLegalCaseMachine = assign({
 
 const navigate = assign({
   currentRoute: ({ event }: { event: AppEvents }) =>
-    'path' in event ? event.path : '/',
+    'path' in event ? event.path: '/',
   breadcrumbs: ({ event }: { event: AppEvents }) => {
     // Generate breadcrumbs based on path
     const path = 'path' in event ? event.path : '/';
@@ -363,7 +363,7 @@ export const appMachine = createMachine({
       cacheHitRate: 0
     },
     features: Record<string, any>,
-    settings: {
+    }); const settings = {
       autoSave: true,
       autoSaveInterval: 30000,
       enableAnalytics: true,

@@ -3,7 +3,7 @@
 
   	import { tweened } from 'svelte/motion';
   import { cubicInOut, elasticOut } from 'svelte/easing';
-  	import { createProgress } from 'melt';
+  	// import * as Progress from 'bits-ui'; // Removed - not needed for this component
   	import { onMount } from 'svelte';
 
   	// Props
@@ -53,15 +53,8 @@
   		easing: cubicInOut
   	});
 
-  	// Melt UI Progress
-  	const {
-  		elements: { root, indicator },
-  		helpers: { isIndeterminate },
-  		options: { max }
-  	} = createProgress({
-  		max: 100,
-  		value: progress
-  	});
+  	// Progress state management
+  	let progressMax = 100;
 
   	// Reactive animations based on status
   	$effect(() => {
@@ -142,11 +135,9 @@
 		<div class="relative w-full h-full bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-lg overflow-hidden">
 			<!-- Progress Bar -->
 			<div
-				use:root
 				class="relative w-full h-8 bg-amber-100 rounded-md overflow-hidden"
 			>
 				<div
-					use:indicator
 					class="h-full bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600 transition-all duration-500 rounded-md relative overflow-hidden"
 					style:width="{$progressValue}%"
 				>
@@ -258,21 +249,21 @@
 	}
 
 	/* Custom scrollbar for AI output */
-	.ai-output::-webkit-scrollbar {
+	.ai-output: :-webkit-scrollbar {
 		width: 4px;
 	}
 
-	.ai-output::-webkit-scrollbar-track {
+	.ai-output: :-webkit-scrollbar-track {
 		background: rgba(251, 191, 36, 0.1);
 		border-radius: 2px;
 	}
 
-	.ai-output::-webkit-scrollbar-thumb {
+	.ai-output: :-webkit-scrollbar-thumb {
 		background: rgba(251, 191, 36, 0.5);
 		border-radius: 2px;
 	}
 
-	.ai-output::-webkit-scrollbar-thumb:hover {
+	.ai-output: :-webkit-scrollbar-thumb:hover {
 		background: rgba(251, 191, 36, 0.7);
 	}
 </style>

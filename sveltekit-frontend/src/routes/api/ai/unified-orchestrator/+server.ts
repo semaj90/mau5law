@@ -77,7 +77,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       {
         service: 'unified-ai-orchestrator',
         status: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString(),
       },
       { status: 500 }
@@ -124,7 +124,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
         previousContext: requestData.previousContext || requestData.context?.previousContext,
       },
       options: {
-        model: requestData?.model || "unknown" // @ts-ignore - Model property access || requestData.options??.model || "unknown" // @ts-ignore - Model property access || 'auto',
+        model: requestData?.model || requestData.options?.model || 'auto',
         priority: requestData.priority || requestData.options?.priority || 'normal',
         useGPU: requestData.useGPU ?? requestData.options?.useGPU ?? true,
         enableStreaming: requestData.stream ?? requestData.options?.enableStreaming ?? false,
@@ -159,7 +159,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
     
     const errorResponse = {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message: 'Unknown error',
       details: error instanceof Error ? error.stack : undefined,
       orchestratorUsed: 'none',
       executionMetrics: {
@@ -209,7 +209,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
           controller.enqueue(new TextEncoder().encode(data));
           controller.close();
         } catch (error) {
-          const errorData = `data: ${JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' })}\n\n`;
+          const errorData = `data: ${JSON.stringify({ error: error instanceof Error ? error.message: 'Unknown error' })}\n\n`;
           controller.enqueue(new TextEncoder().encode(errorData));
           controller.close();
         }
@@ -225,7 +225,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
     });
   } catch (error) {
     return json(
-      { error: error instanceof Error ? error.message : 'Streaming failed' },
+      { error: error instanceof Error ? error.message: 'Streaming failed' },
       { status: 500 }
     );
   }
@@ -284,7 +284,7 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
     orchestratorUsed: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).orchestratorUsed,
     model: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).modelUsed,
     executionMetrics: {
-      ...(result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).executionMetrics,
+      ...result.executionMetrics,
       apiLatency: performance.now() - startTime,
     },
     confidence: (result as { orchestratorUsed?: any; executionMetrics?: any; success?: any; response?: any; modelUsed?: any; confidence?: any; requestId?: any; citations?: any; followupSuggestions?: any; entities?: any; keyTerms?: any; metadata?: any; searchResults?: any; totalResults?: any }).confidence,

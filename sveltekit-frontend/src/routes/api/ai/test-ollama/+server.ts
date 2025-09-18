@@ -48,7 +48,7 @@ export const GET = (async (): Promise<any> => {
     return json(
       {
         status: "error",
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message: "Unknown error",
         timestamp: new Date().toISOString(),
       },
       { status: 500 },
@@ -108,8 +108,7 @@ export const POST = (async ({ request }): Promise<any> => {
           error: "Model generation failed",
           details:
             generateError instanceof Error
-              ? generateError.message
-              : "Unknown generation error",
+              ? generateError.message: "Unknown generation error",
           suggestion: "Check if gemma3-legal model is imported: ollama list",
         },
         { status: 500 },
@@ -119,7 +118,7 @@ export const POST = (async ({ request }): Promise<any> => {
     return json(
       {
         status: "error",
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message: "Unknown error",
         timestamp: new Date().toISOString(),
       },
       { status: 500 },

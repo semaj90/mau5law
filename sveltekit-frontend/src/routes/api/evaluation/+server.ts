@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error("Evaluation API error:", error);
     return json(
-      { success: false, error: error instanceof Error ? error.message : "Evaluation operation failed" },
+      { success: false, error: error instanceof Error ? error.message: "Evaluation operation failed" },
       { status: 500 }
     );
   }
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error("Evaluation record error:", error);
     return json(
-      { success: false, error: error instanceof Error ? error.message : "Failed to record evaluation data" },
+      { success: false, error: error instanceof Error ? error.message: "Failed to record evaluation data" },
       { status: 500 }
     );
   }

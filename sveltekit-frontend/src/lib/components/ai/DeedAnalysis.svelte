@@ -48,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
         similarDocuments = [];
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Search failed';
+      error = err instanceof Error ? err.message: 'Search failed';
       similarDocuments = [];
     } finally {
       isLoading = false;
@@ -56,13 +56,13 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   // Reactive search when query changes
-  // TODO: Convert to $derived: if (searchQuery && searchQuery.trim().length) {
+  // TODO: Convert to $derived: if (searchQuery && searchQuery.trim.length) {
   // simple reactive trigger (debounce could be added later)
   performSemanticSearch(searchQuery)
   }
 
   onMount(() => {
-  if (searchQuery && searchQuery.trim().length) {
+  if (searchQuery && searchQuery.trim.length) {
     performSemanticSearch(searchQuery);
   }
   });

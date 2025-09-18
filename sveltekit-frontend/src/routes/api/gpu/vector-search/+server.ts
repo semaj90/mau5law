@@ -260,7 +260,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const errorResponse: VectorSearchAPIResponse = {
       success: false,
       error: {
-        message: err instanceof Error ? err.message : 'Unknown error occurred',
+        message: err instanceof Error ? err.message: 'Unknown error occurred',
         code: err instanceof Error && 'code' in err ? (err as any).code : 'INTERNAL_ERROR',
         details: dev ? (err instanceof Error ? err.stack : String(err)) : undefined,
       },

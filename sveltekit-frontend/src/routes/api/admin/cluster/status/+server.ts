@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     return json({
       error: 'Failed to get cluster status',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      message: error instanceof Error ? error.message: 'Unknown error',
       fallback: {
         health: {
           totalWorkers: 1,

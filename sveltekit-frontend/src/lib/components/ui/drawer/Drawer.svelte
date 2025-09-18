@@ -6,7 +6,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   import { createEventDispatcher } from "svelte";
   import { X } from "lucide-svelte";
 
-  let { open = $bindable()  }: { open = $bindable() : unknown } = $props(); // false;
+  let { open = $bindable()   }: { open = $bindable() : unknown } = $props(); // false;
   let { title = $bindable()  }: { title = $bindable() : unknown } = $props(); // "";
   let { description = $bindable()  }: { description = $bindable() : unknown } = $props(); // "";
   let { side = $bindable()  }: { side = $bindable() : unknown } = $props(); // "left" | "right" | "top" | "bottom" = "right";
@@ -60,8 +60,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   </div>
 {/if}
 
-<style>/* @unocss-include */ {}
-  .drawer-overlay {
+<style>/* @unocss-include */ .drawer-overlay {
     position: fixed;
     top: 0;
     left: 0;

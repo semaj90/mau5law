@@ -17,7 +17,7 @@ export interface MachineState<TContext = any> {
 }
 
 export interface MachineService<TContext = any> {
-  state: Readable<MachineState<TContext>>;
+  state: Readable<MachineState<TContext>;
   send: (event: AnyEventObject | string) => void;
   start: () => void;
   stop: () => void;
@@ -61,7 +61,7 @@ export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
     // Subscribe to actor state changes
     this.actor.subscribe((snapshot) => {
       const simpleState: MachineState = {
-        value: typeof snapshot.value === 'string' ? snapshot.value : JSON.stringify(snapshot.value),
+        value: typeof snapshot.value === 'string' ? snapshot.value: JSON.stringify(snapshot.value),
         context: snapshot.context,
         matches: (value: string) => snapshot.matches(value),
         can: (event: string) => snapshot.can({ type: event }),

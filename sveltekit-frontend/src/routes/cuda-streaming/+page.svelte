@@ -44,7 +44,7 @@
 
   // Derived states
   let gpuStatus = $derived((data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.gpuAvailable ? 'available' : 'unavailable');
-  let canStream = $derived(!isStreaming && inputText.trim().length > 0);
+  let canStream = $derived(!isStreaming && inputText.trim.length > 0);
   let gpuUtilizationColor = $derived(
     (data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.utilization?.gpu > 80 ? 'text-red-600' :
     (data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).gpuInfo.utilization?.gpu > 50 ? 'text-yellow-600' : 'text-green-600'
@@ -301,7 +301,7 @@
             >
               {#each (data as { sessionStats?: unknown; gpuInfo?: unknown; supportedOperations?: unknown; recentProcessing?: unknown }).supportedOperations as operation}
                 <option value={operation}>
-                  {operation.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  {operation.replace.replace(/\b\w/g, l => l.toUpperCase())}
                 </option>
               {/each}
             </select>
@@ -445,7 +445,7 @@
                       <span>{(result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).gpuAccelerated ? 'GPU' : 'CPU'}</span>
                       {#if (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).results?.confidence}
                         <span class={getConfidenceClass((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).results.confidence)}>
-                          {Math.round((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).results.confidence * 100)}% confidence
+                          {Math.round.results.confidence * 100)}% confidence
                         </span>
                       {/if}
                     </div>

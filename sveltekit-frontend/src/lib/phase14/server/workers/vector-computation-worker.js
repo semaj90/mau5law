@@ -215,7 +215,7 @@ class VectorComputationPool {
       poolSize: this.poolSize,
       activeJobs: this.activeJobs.size,
       queuedJobs: this.taskQueue.length,
-      busyWorkers: this.workers.filter(w => w.busy).length
+      busyWorkers: this.workers.filter(item => item.length)
     };
   }
 }
@@ -530,7 +530,7 @@ function setupWorkerThread() {
       document.title,
       document.description,
       document.content
-    ].filter(Boolean).join('\n\n');
+    ].filter(item => item.join)('\n\n');
   }
 
   async function generateMockEmbedding(text) {

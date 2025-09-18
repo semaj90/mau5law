@@ -45,7 +45,7 @@
         }
       }
     } catch (err) {
-      error = `Network error: ${err instanceof Error ? err.message : "Unknown error"}`;
+      error = `Network error: ${err instanceof Error ? err.message: "Unknown error"}`;
     } finally {
       isLoading = false;
     }

@@ -248,7 +248,7 @@ export function notModifiedResponse(etag?: string, lastModified?: Date): Respons
 /**
  * Middleware wrapper for adding cache headers to endpoint responses
  */
-export function withCacheHeaders<T extends (...args: any[]) => Promise<Response>>(
+export function withCacheHeaders<T extends (...args: any[]) => Promise<Response>(
   handler: T,
   strategy: keyof typeof CACHE_STRATEGIES | CacheConfig,
   options: {

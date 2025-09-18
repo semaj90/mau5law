@@ -48,7 +48,7 @@ export interface StoreConfig<T> {
  */
 export class BarrelStoreManager {
   private stores = new Map<string, BarrelStoreEntry>();
-  private computedStores = new Map<string, Readable<any>>();
+  private computedStores = new Map<string, Readable<any>();
   private subscriptions = new Map<string, (() => void)[]>();
 
   constructor() {
@@ -197,7 +197,7 @@ export class BarrelStoreManager {
   /**
    * Export store values for persistence or debugging
    */
-  async exportStores(): Promise<Record<string, any>> {
+  async exportStores(): Promise<Record<string, any> {
     const exports: Record<string, any> = {};
 
     for (const [id, entry] of this.stores) {
@@ -263,7 +263,7 @@ export class BarrelStoreManager {
    */
   getStoreMetadata(id: string): StoreMetadata | null {
     const entry = this.stores.get(id);
-    return entry ? entry.metadata : null;
+    return entry ? entry.metadata: null;
   }
 
   /**
@@ -497,7 +497,7 @@ export const storeUtils = {
   /**
    * Get all store values for debugging
    */
-  async debug(): Promise<Record<string, any>> {
+  async debug(): Promise<Record<string, any> {
     return await barrelStore.exportStores();
   },
 };

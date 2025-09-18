@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		console.error('Error saving chat messages:', error);
 		return json({ 
 			error: 'Failed to save chat messages',
-			details: error instanceof Error ? error.message : 'Unknown error'
+			details: error instanceof Error ? error.message: 'Unknown error'
 		}, { status: 500 });
 	}
 };

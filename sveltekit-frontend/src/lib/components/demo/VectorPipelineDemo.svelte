@@ -13,7 +13,7 @@
   let machineState = $vectorPipelineState;
 
   // Sample job data
-  const sampleJobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>> = [
+  const sampleJobs: Array<Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'> = [
     { ownerType: 'evidence', ownerId: 'evidence-001', event: 'upsert' },
     { ownerType: 'document', ownerId: 'doc-legal-brief-2024', event: 'reembed' },
     { ownerType: 'case', ownerId: 'case-murder-investigation', event: 'upsert' },
@@ -50,10 +50,7 @@
   }
 
   // Get status indicators (using derived values from Svelte 4 store)
-  // TODO: Convert to $derived: pipelineStatus = machineState.context?.pipeline || {}
-  // TODO: Convert to $derived: batchInfo = machineState.context?.batch || {}
-  // TODO: Convert to $derived: metrics = machineState.context?.metrics || {}
-  // TODO: Convert to $derived: currentState = typeof machineState.value === 'string' ? machineState.value : 'unknown'
+  // TODO: Convert to $derived: pipelineStatus = machineState.context?.pipeline || // TODO: Convert to $derived: batchInfo = machineState.context?.batch || // TODO: Convert to $derived: metrics = machineState.context?.metrics || // TODO: Convert to $derived: currentState = typeof machineState.value === 'string' ? machineState.value: 'unknown'
   // TODO: Convert to $derived: errors = machineState.context?.errors || []
 
   function getStatusColor(status: boolean): string {

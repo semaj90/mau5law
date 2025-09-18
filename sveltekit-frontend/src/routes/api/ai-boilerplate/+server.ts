@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
         return json({
             message: 'AI Boilerplate service temporarily unavailable',
-            details: err instanceof Error ? err.message : 'Unknown error'
+            details: err instanceof Error ? err.message: 'Unknown error'
         }, { status: 500 });
     }
 };
@@ -157,7 +157,7 @@ async function getHighPerformingPhrases(
             spr.correlation_strength,
             COUNT(ldp.id) as usage_count
         FROM semantic_phrases_ranking spr
-        JOIN legal_documents_processed ldp ON ldp.semantic_phrases::text LIKE '%' || spr.phrase || '%'
+        JOIN legal_documents_processed ldp ON ldp.semantic_phrases: :text LIKE '%' || spr.phrase || '%'
         WHERE spr.avg_prosecution_score >= $1
     `;
     
@@ -196,7 +196,7 @@ async function getHighPerformingPhrases(
 
 function getTypeSpecificFilter(type: string, paramIndex: number, params: any[]): string {
     const typeFilters = {
-        'prosecution_argument': " AND (ldp.semantic_phrases::text ILIKE '%prosecution%' OR ldp.semantic_phrases::text ILIKE '%argument%' OR ldp.semantic_phrases::text ILIKE '%evidence%')",
+        'prosecution_argument': " AND (ldp.semantic_phrases: :text ILIKE '%prosecution%' OR ldp.semantic_phrases::text ILIKE '%argument%' OR ldp.semantic_phrases::text ILIKE '%evidence%')",
         'evidence_summary': " AND (ldp.semantic_phrases::text ILIKE '%evidence%' OR ldp.semantic_phrases::text ILIKE '%testimony%' OR ldp.semantic_phrases::text ILIKE '%proof%')",
         'legal_motion': " AND (ldp.semantic_phrases::text ILIKE '%motion%' OR ldp.semantic_phrases::text ILIKE '%request%' OR ldp.semantic_phrases::text ILIKE '%order%')",
         'case_analysis': " AND (ldp.semantic_phrases::text ILIKE '%analysis%' OR ldp.semantic_phrases::text ILIKE '%precedent%' OR ldp.semantic_phrases::text ILIKE '%ruling%')",
@@ -255,7 +255,7 @@ Generate the boilerplate text:`;
         }
 
         const data = await (response as { ok?: any; status?: any; json?: any }).json();
-        const generatedText = (data as { response?: any }).(response as { ok?: any; status?: any; json?: any }).trim();
+        const generatedText = (data as { response?: any }).response.trim();
 
         // Calculate confidence based on phrase usage
         const phrasesUsed = sourcePhrases.filter((p: any) => generatedText.toLowerCase().includes(p.phrase.toLowerCase())

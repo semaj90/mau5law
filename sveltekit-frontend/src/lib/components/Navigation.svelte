@@ -36,7 +36,7 @@
   		{ href: '/terminal', label: 'TERMINAL', icon: Terminal }
   	];
 
-  		let currentPath = browser && page?.url ? page.url.pathname : '/';
+  		let currentPath = browser && page?.url ? page.url.pathname: '/';
 
   	// Authentication state using the auth store
   	const auth = useAuth();

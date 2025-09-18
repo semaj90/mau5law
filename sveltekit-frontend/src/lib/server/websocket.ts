@@ -3,10 +3,10 @@ import { WebSocketServer } from "ws";
 import type { IncomingMessage } from "http";
 import type { Socket } from "net";  // Store active connections per case
 import { URL } from "url";
-const caseConnections = new Map<string, Set<any>>();
+const caseConnections = new Map<string, Set<any>();
 
 // Mock active users per case
-const activeUsers = new Map<string, Set<any>>();
+const activeUsers = new Map<string, Set<any>();
 
 export function setupWebSocketServer(server: any) {
   const wss = new WebSocketServer({ server });

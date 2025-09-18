@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
   onMount(() => {
     const stored = localStorage.getItem('legalSearchHistory');
     if (stored) {
-      recentSearches = JSON.parse(stored).slice(0, 5);
+      recentSearches = JSON.parse.slice(0, 5);
     }
     // Load AI suggestions if enabled
     if (aiSuggestions) {
@@ -130,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
         }));
         dispatch('search', { query, results: searchResults });
       } else {
-        console.error('Search failed:', (data as { toString?: unknown; success?: unknown; results?: unknown; error?: unknown; suggestions?: unknown }).error);
+        console.error(error);
         searchResults = [];
       }
     } catch (error) {
@@ -170,7 +170,7 @@ https://svelte.dev/e/js_parse_error -->
     value = inputValue;
     open = false;
     // Add to recent searches
-    if (!recentSearches.includes((result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).title)) {
+    if (!recentSearches.includes.title)) {
       recentSearches = [(result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).title, ...recentSearches.slice(0, 4)];
       localStorage.setItem('legalSearchHistory', JSON.stringify(recentSearches));
     }
@@ -192,8 +192,7 @@ https://svelte.dev/e/js_parse_error -->
         type: 'recent' as any,
         content: 'Recent search',
         score: 1,
-        metadata: {}
-      })) as SearchResult[]
+        metadata: })) as SearchResult[]
     : searchResults;
 </script>
 
@@ -356,7 +355,7 @@ https://svelte.dev/e/js_parse_error -->
                   </p>
                   {#if (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).score}
                     <span class="flex-shrink-0 ml-2 text-xs text-gray-500 bg-gray-100 rounded px-1.5 py-0.5">
-                      {Math.round((result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).score * 100)}%
+                      {Math.round.score * 100)}%
                     </span>
                   {/if}
                 </div>

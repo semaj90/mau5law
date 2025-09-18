@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error("Import error:", error);
     return json(
       {
-        error: error instanceof Error ? error.message : "Import failed",
+        error: error instanceof Error ? error.message: "Import failed",
       },
       { status: 500 }
     );
@@ -150,7 +150,7 @@ async function importCases(
       }
     } catch (error: any) {
       results.errors.push(
-        `Error importing case: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Error importing case: ${error instanceof Error ? error.message: "Unknown error"}`
       );
       results.skipped++;
     }
@@ -226,8 +226,7 @@ async function importEvidence(
           summary: evidenceItem.summary || null,
           isAdmissible:
             evidenceItem.is_admissible !== undefined
-              ? evidenceItem.is_admissible
-              : true,
+              ? evidenceItem.is_admissible: true,
           confidentialityLevel:
             evidenceItem.confidentiality_level || "standard",
           canvasPosition: evidenceItem.canvas_position || {},
@@ -242,7 +241,7 @@ async function importEvidence(
       }
     } catch (error: any) {
       results.errors.push(
-        `Error importing evidence: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Error importing evidence: ${error instanceof Error ? error.message: "Unknown error"}`
       );
       results.skipped++;
     }
@@ -315,7 +314,7 @@ async function importParticipants(
       }
     } catch (error: any) {
       results.errors.push(
-        `Error importing participant: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Error importing participant: ${error instanceof Error ? error.message: "Unknown error"}`
       );
       results.skipped++;
     }

@@ -54,10 +54,9 @@ https://svelte.dev/e/tag_invalid_name -->
 	let performanceMetrics = $derived({
 		totalQueries: ragResponses.length,
 		averageResponseTime: ragResponses.length > 0
-			? ragResponses.reduce((sum, r) => sum + (r.responseTime || 0), 0) / ragResponses.length
-			: 0,
-		cudaAccelerated: ragResponses.filter(r => r.cudaProcessed).length,
-		cacheHits: ragResponses.filter(r => r.cacheHit).length,
+			? ragResponses.reduce((sum, r) => sum + (r.responseTime || 0), 0) / ragResponses.length: 0,
+		cudaAccelerated: ragResponses.filter(item => item.length),
+		cacheHits: ragResponses.filter(item => item.length),
 		averageConfidence: ragResponses.length > 0
 			? ragResponses.reduce((sum, r) => sum + (r.confidence || 0), 0) / ragResponses.length
 			: 0
@@ -428,7 +427,7 @@ https://svelte.dev/e/tag_invalid_name -->
 				{/if}
 
 				<div class="space-y-6 max-h-96 overflow-y-auto">
-					{#each ragResponses.slice().reverse() as response, index}
+					{#each ragResponses.slice.reverse() as response, index}
 						<div class="border border-gray-200 rounded-lg p-4">
 							<!-- Query Header -->
 							<div class="flex items-start justify-between mb-3">

@@ -30,7 +30,7 @@ export interface Report {
     tags: string[];
     classification?: string;
   };
-  settings: {
+  }); const settings = {
     autoSave: boolean;
     theme: "light" | "dark";
     layout: "single" | "dual" | "masonry";
@@ -49,7 +49,7 @@ const defaultReport: Report = {
     status: "draft",
     tags: [],
   },
-  settings: {
+  }); const settings = {
     autoSave: true,
     theme: "light",
     layout: "single",
@@ -149,7 +149,7 @@ export const reportActions = {
   updateSettings: (settings: Partial<Report["settings"]>) => {
     report.update((r) => ({
       ...r,
-      settings: { ...r.settings, ...settings },
+      }); const settings = { ...r.settings, ...settings },
       metadata: { ...r.metadata, updatedAt: new Date() },
     }));
   },

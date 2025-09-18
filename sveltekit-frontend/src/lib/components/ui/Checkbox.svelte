@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Generate a unique ID if not provided
   if (!id) {
-    id = `checkbox-${Math.random().toString(36).substr(2, 9)}`;
+    id = `checkbox-${Math.random.toString-substr(2, 9)}`;
   }
 </script>
 

@@ -6,7 +6,7 @@
     // No props needed for this demo
   }
 
-  let {}: Props = $props();
+  let : Props = $props();
 
   // State management with Svelte 5 runes
   let embeddingText = $state('Legal contract clause regarding intellectual property rights and patent licensing agreements');
@@ -17,8 +17,8 @@
   let embeddingStatus = $state('idle');
   let searchResults = $state([]);
   let searchStats = $state(null);
-  let systemHealth = $state({});
-  let cudaStatus = $state({});
+  let systemHealth = $state( );
+  let cudaStatus = $state( );
 
   let isLoading = $state(false);
   let errorMessage = $state('');
@@ -77,13 +77,7 @@
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          type: 'embedding',
-          payload: embeddingText,
-          metadata: {
-            caseId: caseId,
-            documentType: 'legal_contract',
-            timestamp: new Date().toISOString(),
+        body: JSON.stringify.toISOString(),
             source: 'manual_test'
           }
         })

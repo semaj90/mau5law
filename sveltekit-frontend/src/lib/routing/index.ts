@@ -331,7 +331,7 @@ export function validateRoute(route: GeneratedRoute | RouteDefinition): {
     errors.push('Route ID is required');
   }
   
-  const path = 'route' in route ? route.route : route.path;
+  const path = 'route' in route ? route.route: route.path;
   if (!path) {
     errors.push('Route path is required');
   }

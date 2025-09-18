@@ -30,8 +30,8 @@ interface CachedQuery {
 }
 
 class DatabasePoolService {
-  private pools: Map<string, ReturnType<typeof postgres>> = new Map();
-  private drizzleInstances: Map<string, PostgresJsDatabase<Record<string, never>>> = new Map();
+  private pools: Map<string, ReturnType<typeof postgres> = new Map();
+  private drizzleInstances: Map<string, PostgresJsDatabase<Record<string, never> = new Map();
   private connectionString: string;
   private config: DatabasePoolConfig;
   private queryCache: Map<string, CachedQuery> = new Map();
@@ -62,7 +62,7 @@ class DatabasePoolService {
   /**
    * Get or create a connection pool for a specific context
    */
-  async getPool(context: string = 'default'): Promise<ReturnType<typeof postgres>> {
+  async getPool(context: string = 'default'): Promise<ReturnType<typeof postgres> {
     const poolKey = `${context}:${this.config.database}`;
 
     if (this.pools.has(poolKey)) {
@@ -94,7 +94,7 @@ class DatabasePoolService {
    */
   async getDrizzle(
     context: string = 'default'
-  ): Promise<PostgresJsDatabase<Record<string, never>>> {
+  ): Promise<PostgresJsDatabase<Record<string, never> {
     const poolKey = `drizzle:${context}`;
 
     if (this.drizzleInstances.has(poolKey)) {
@@ -207,7 +207,7 @@ class DatabasePoolService {
   /**
    * Dynamically adjust pool size based on Redis stats
    */
-  private async adjustPoolSize(stats: any): Promise<Partial<DatabasePoolConfig>> {
+  private async adjustPoolSize(stats: any): Promise<Partial<DatabasePoolConfig> {
     const baseSize = this.config.max;
     let adjustedSize = baseSize;
 

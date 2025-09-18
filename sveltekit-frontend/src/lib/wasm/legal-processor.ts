@@ -531,12 +531,12 @@ export class WasmProcessingWorker {
       const id = Math.random().toString(36);
 
       const handleMessage = (e: MessageEvent) => {
-        if (e.(data as { id?: any; error?: any; result?: any }).id === id) {
+        if (e.data.id === id) {
           this.worker!.removeEventListener('message', handleMessage);
-          if (e.(data as { id?: any; error?: any; result?: any }).error) {
-            reject(new Error(e.(data as { id?: any; error?: any; result?: any }).error));
+          if (e.data.error) {
+            reject(new Error(e.data.error));
           } else {
-            resolve(e.(data as { id?: any; error?: any; result?: any }).result);
+            resolve(e.data.result);
           }
         }
       };

@@ -1,7 +1,7 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
   import { goto } from '$app/navigation';
-  // import { createTooltip, melt } from 'melt'; // Removed melt dependency
+  // import * as Tooltip from 'bits-ui'; // Removed melt dependency
   import { Brain, MessageSquare, Sparkles, Mic, MicOff, Settings } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import { Badge } from '$lib/components/ui/badge/index.js';
@@ -128,7 +128,7 @@
   <button
     class={buttonClasses}
   data-status={aiStatus}
-  onclick={(event: MouseEvent) => handleClick}
+  onclick={handleClick}
     {disabled}
     aria-label="Open AI Assistant"
   >
@@ -157,7 +157,7 @@
   <button aria-label="Action button"
     class={buttonClasses}
   data-status={aiStatus}
-  onclick={(event: MouseEvent) => handleClick}
+  onclick={handleClick}
     {disabled}
   >
     <div class="flex items-center gap-3 px-4 py-3">
@@ -185,7 +185,7 @@
           class="ml-auto p-1 hover:bg-yorha-bg-hover rounded inline-flex items-center justify-center cursor-pointer"
           role="button"
           tabindex="0"
-          onclick={(event: MouseEvent) => e) => { e.stopPropagation(); toggleVoiceInput(); }}
+          onclick={(e) => { e.stopPropagation(); toggleVoiceInput(); }}
           onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleVoiceInput(); } }}
           aria-label={isListening ? 'Stop listening' : 'Start voice input'}
         >
@@ -210,7 +210,7 @@
     <button
       class={buttonClasses}
       data-status={aiStatus}
-      onclick={(event: MouseEvent) => handleClick}
+      onclick={handleClick}
       {disabled}
       aria-label="AI Assistant"
       title={`AI Assistant — Status: ${aiStatus}${unreadCount > 0 ? ` — ${unreadCount} new` : ''}`}
@@ -231,7 +231,7 @@
   <button aria-label="Action button"
     class={buttonClasses}
   data-status={aiStatus}
-  onclick={(event: MouseEvent) => handleClick}
+  onclick={handleClick}
     {disabled}
   >
     <div class="flex items-center justify-between w-full">
@@ -272,7 +272,7 @@
             class="p-2 hover:bg-yorha-bg-hover rounded-lg inline-flex items-center justify-center cursor-pointer"
             role="button"
             tabindex="0"
-            onclick={(event: MouseEvent) => e) => { e.stopPropagation(); toggleVoiceInput(); }}
+            onclick={(e) => { e.stopPropagation(); toggleVoiceInput(); }}
             onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleVoiceInput(); } }}
             aria-label={isListening ? 'Stop listening' : 'Start voice input'}
           >
@@ -307,7 +307,7 @@
     overflow: hidden;
   }
 
-  .ai-assistant-btn::before {
+  .ai-assistant-btn: :before {
     content: '';
     position: absolute;
     top: 0;

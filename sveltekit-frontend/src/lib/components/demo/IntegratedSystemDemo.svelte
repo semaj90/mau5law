@@ -66,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
   let activeSession = $derived(() => isSessionActive() && currentUser());
   let aiClusterReady = $derived(() => {
     const health = clusterHealth();
-    return Object.values(health).some(Boolean);
+    return Object.values.some(Boolean);
   });
 
   // Component lifecycle
@@ -93,12 +93,12 @@ https://svelte.dev/e/js_parse_error -->
       const sessionHealthy = sessionHealth().isValid;
       // Check AI assistant cluster
       const aiHealth = clusterHealth();
-      const aiHealthy = Object.values(aiHealth).some(Boolean);
+      const aiHealthy = Object.values.some(Boolean);
       // Check production services
   let servicesHealthy = $state(false);
       try {
         const serviceHealth = await productionServiceClient.checkAllServicesHealth();
-        servicesHealthy = Object.values(serviceHealth).some(Boolean);
+        servicesHealthy = Object.values.some(Boolean);
       } catch (error) {
         console.warn('Service health check failed:', error);
       }
@@ -115,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
         sessionHealthy,
         aiHealthy,
         servicesHealthy
-      ].filter(Boolean).length;
+      ].filter(item => item.length);
 
       if (healthyComponents === 4) {
         systemStatus.overallHealth = 'healthy';
@@ -154,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
         console.log('Demo login successful');
         demoMode = 'session';
       } else {
-        console.error('Demo login failed:', (result as { success?: any; error?: any }).error);
+        console.error(error);
       }
     } catch (error) {
       console.error('Demo login error:', error);

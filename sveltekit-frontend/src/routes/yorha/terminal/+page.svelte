@@ -98,7 +98,7 @@
     isExecuting = true;
     addOutput(`> ${command}`, 'user');
 
-    const parts = command.trim().split(' ');
+    const parts = command.trim.split(' ');
     const cmd = parts[0].toLowerCase();
     const args = parts.slice(1);
 
@@ -128,7 +128,7 @@
       }
     } else {
       addOutput('Available commands:', 'info');
-  Object.entries(availableCommands).forEach(([cmd, info]: [string, { description: string; usage: string; execute: (args: string[]) => void | Promise<void> }]) => {
+  Object.entries.forEach(([cmd, info]: [string, { description: string; usage: string; execute: (args: string[]) => void | Promise<void> }]) => {
         addOutput(`  ${cmd.padEnd(10)} - ${info.description}`, 'info');
       });
     }

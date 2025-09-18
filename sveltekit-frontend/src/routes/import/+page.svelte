@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
         document.removeEventListener("dragleave", handleDragLeave);
       };
   }
-    return () => {}; // Return empty cleanup function if not in browser
+    return () => ; // Return empty cleanup function if not in browser
   });
 
   function handleDragOver(e: DragEvent) {
@@ -167,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
           raw: content.substring(0, 500) + (content.length > 500 ? "..." : ""),
         };
       } else if (file.type === "text/csv" || file.name.endsWith(".csv")) {
-        const lines = content.split("\n").slice(0, 5);
+        const lines = content.split.slice(0, 5);
         filePreview = {
           name: file.name,
           size: file.size,
@@ -214,10 +214,7 @@ https://svelte.dev/e/js_parse_error -->
 
       if ((response as { json?: unknown; ok?: unknown }).ok) {
         importResults = result;
-        notifications.add({
-          type: "success",
-          title: "Import Successful",
-          message: (result as { message?: unknown; error?: unknown }).message,
+        notifications.add.message,
         });
       } else {
         throw new Error((result as { message?: unknown; error?: unknown }).error || "Import failed");
@@ -227,7 +224,7 @@ https://svelte.dev/e/js_parse_error -->
       notifications.add({
         type: "error",
         title: "Import Failed",
-        message: error instanceof Error ? error.message : "Import failed",
+        message: error instanceof Error ? error.message: "Import failed",
       });
     } finally {
       isImporting = false;
@@ -408,12 +405,7 @@ fileInput?.click()}>
           {#if filePreview.type === "json"}
             <div class="space-y-4">
               <pre
-                class="space-y-4">{JSON.stringify(
-                  filePreview.data,
-                  null,
-                  2
-                ).substring(0, 1000)}{JSON.stringify(filePreview.data, null, 2)
-                  .length > 1000
+                class="space-y-4">{JSON.stringify.substring(0, 1000)}{JSON.stringify.length > 1000
                   ? "\n..."
                   : ""}</pre>
             </div>

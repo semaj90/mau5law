@@ -25,12 +25,12 @@
     message: error.message,
     stack: error.stack,
     timestamp: new Date().toISOString(),
-    userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
+    userAgent: typeof navigator !== 'undefined' ? navigator.userAgent: 'Unknown',
     url: typeof window !== 'undefined' ? window.location.href : 'Unknown'
   } : null);
 
   function handleError(event: ErrorEvent | PromiseRejectionEvent) {
-    const err = 'error' in event ? event.error : event.reason;
+    const err = 'error' in event ? event.error: event.reason;
 
     if (err instanceof Error) {
       error = err;

@@ -42,7 +42,7 @@
   let newDocType = $state('contract');
 
   // Derived states
-  let canQuery = $derived(!isQuerying && currentQuery.trim().length > 0);
+  let canQuery = $derived(!isQuerying && currentQuery.trim.length > 0);
   let totalDocuments = $derived((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).vectorStats?.totalDocuments || 0);
   let knowledgeBaseHealth = $derived(
     ((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).knowledgeBase?.qualityScore || 0) > 0.85 ? 'excellent' :
@@ -143,7 +143,7 @@
         class="gap-1"
       >
         <TrendingUp class="w-3 h-3" />
-        {Math.round(((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).knowledgeBase?.qualityScore || 0) * 100)}% Quality
+        {Math.round.knowledgeBase?.qualityScore || 0) * 100)}% Quality
       </Badge>
     </div>
   </div>
@@ -360,7 +360,7 @@
           {#if (data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).knowledgeBase?.categories}
             <div class="space-y-3">
               <h4 class="font-medium">Document Categories</h4>
-              {#each Object.entries((data as { vectorStats?: unknown; knowledgeBase?: unknown; modelInfo?: unknown; demoQueries?: unknown; ragCapabilities?: unknown; recentQueries?: unknown }).knowledgeBase.categories) as [category, stats]}
+              {#each Object.entries.knowledgeBase.categories) as [category, stats]}
                 <div class="flex items-center justify-between p-2 bg-muted/30 rounded">
                   <div class="flex items-center gap-2">
                     <span class="font-medium capitalize">{category}</span>

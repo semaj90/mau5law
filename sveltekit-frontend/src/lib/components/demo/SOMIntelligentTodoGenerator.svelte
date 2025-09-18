@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function extractErrorsFromOutput(output: string): NPMError[] {
-    const lines = output.trim().split('\n');
+    const lines = output.trim.split('\n');
     const extractedErrors: NPMError[] = [];
 
     lines.forEach(line => {
@@ -148,8 +148,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   let filteredTodos = $derived(() => todos
-    .filter(todo => filterCategory === 'all' || todo.category === filterCategory)
-    .sort((a, b) => {
+    .filter(item => item.sort)((a, b) => {
       switch (sortBy) {
         case 'priority': return b.priority - a.priority;
         case 'confidence': return b.confidence - a.confidence;

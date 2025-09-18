@@ -65,8 +65,7 @@ function createModalStore() {
         );
         const newActiveModal =
           remainingModals.length > 0
-            ? remainingModals[remainingModals.length - 1].id
-            : null;
+            ? remainingModals[remainingModals.length - 1].id: null;
 
         return {
           modals: remainingModals,

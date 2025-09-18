@@ -174,7 +174,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
                 progress: 33,
               })}\n\n`
             )
-          );
+          ));
         });
 
         // Step 2: Enhanced RAG

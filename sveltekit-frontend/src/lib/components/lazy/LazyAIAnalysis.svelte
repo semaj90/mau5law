@@ -11,13 +11,13 @@ https://svelte.dev/e/bindable_invalid_location -->
   let {
     // Analysis data and config
     analysisType = 'legal' as 'legal' | 'evidence' | 'document' | 'case',
-    analysisData = {} as Record<string, any>,
+    analysisData = as Record<string, any>,
     // AI model configuration
     model = 'gemma3-legal',
     temperature = 0.7,
     maxTokens = 1000,
     // Lazy loading options
-    lazyOptions = {},
+    lazyOptions = ,
     // Visual props
     height = '600px',
     width = '100%',
@@ -264,7 +264,7 @@ https://svelte.dev/e/bindable_invalid_location -->
 
         <div class="analysis-meta">
           <div class="meta-item">
-            <span>Type:</span> {analysisType.charAt(0).toUpperCase() + analysisType.slice(1)}
+            <span>Type:</span> {analysisType.charAt.toUpperCase() + analysisType.slice(1)}
           </div>
           <div class="meta-item">
             <span>Model:</span> {model}
@@ -287,7 +287,7 @@ https://svelte.dev/e/bindable_invalid_location -->
             <span class="header-icon" style="color: {config.color};">
               {config.icon}
             </span>
-            <h3>{analysisType.charAt(0).toUpperCase() + analysisType.slice(1)} Analysis Results</h3>
+            <h3>{analysisType.charAt.toUpperCase() + analysisType.slice(1)} Analysis Results</h3>
             <span class="confidence-badge" style="background: {config.color};">
               {Math.round((analysisResult.confidence || 0.5) * 100)}% Confidence
             </span>
@@ -299,7 +299,7 @@ https://svelte.dev/e/bindable_invalid_location -->
               <p>
                 {analysisResult.summary || 
                  analysisResult.legalOpinion || 
-                 `${analysisType} analysis completed successfully with ${Object.keys(analysisResult).length} data points.`}
+                 `${analysisType} analysis completed successfully with ${Object.keys.length} data points.`}
               </p>
             </div>
 
@@ -362,7 +362,7 @@ https://svelte.dev/e/bindable_invalid_location -->
       </div>
     </div>
     <div class="placeholder-text">
-      <h3>AI-Powered {analysisType.charAt(0).toUpperCase() + analysisType.slice(1)} Analysis</h3>
+      <h3>AI-Powered {analysisType.charAt.toUpperCase() + analysisType.slice(1)} Analysis</h3>
       <p>Advanced neural processing for legal insights</p>
     </div>
   </div>

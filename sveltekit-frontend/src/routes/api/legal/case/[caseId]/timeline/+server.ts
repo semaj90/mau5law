@@ -119,7 +119,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       metadata: {
         totalEvents: timelineData.events.length,
         dateRange: {
-          start: timelineData.events.length > 0 ? timelineData.events[0].timestamp : null,
+          start: timelineData.events.length > 0 ? timelineData.events[0].timestamp: null,
           end: timelineData.events.length > 0 ? timelineData.events[timelineData.events.length - 1].timestamp : null
         },
         filters: request,

@@ -115,7 +115,7 @@ export class IngestionService {
       console.error('❌ Failed to submit document:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message: String(error)
       };
     }
   }
@@ -280,7 +280,7 @@ export class IngestionService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message: String(error)
       };
     }
   }
@@ -318,7 +318,7 @@ export class IngestionService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message: String(error)
       };
     }
   }
@@ -342,7 +342,7 @@ export class IngestionService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message: String(error)
       };
     }
   }

@@ -128,7 +128,7 @@ export const GET: RequestHandler = async () => {
   // Run all health checks in parallel
   const results = await Promise.allSettled(
     checks.map(async ({ name, check }) => {
-      const result = await check();
+      const result = await check()));
       return { name, ...result };
     })
   );

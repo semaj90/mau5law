@@ -71,7 +71,7 @@
     } catch (error) {
       dispatch('error', {
         citation,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error'
       });
     } finally {
       isSaving = false;
@@ -91,7 +91,7 @@
     } catch (error) {
       dispatch('error', {
         citation,
-        error: error instanceof Error ? error.message : 'Failed to remove citation'
+        error: error instanceof Error ? error.message: 'Failed to remove citation'
       });
     } finally {
       isSaving = false;
@@ -115,7 +115,7 @@
     } catch (error) {
       dispatch('error', {
         citation,
-        error: error instanceof Error ? error.message : 'Failed to save to collection'
+        error: error instanceof Error ? error.message: 'Failed to save to collection'
       });
     }
   }

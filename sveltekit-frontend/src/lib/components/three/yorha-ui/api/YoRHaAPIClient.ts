@@ -92,9 +92,9 @@ export class YoRHaAPIClient {
   private eventSource?: EventSource;
   private sseAttempts = 0;
   private cache = new Map<string, any>();
-  private subscribers = new Map<string, Set<Function>>();
+  private subscribers = new Map<string, Set<Function>();
   private layout: any = null;
-  private dataSourceIntervals = new Map<string, ReturnType<typeof setInterval>>();
+  private dataSourceIntervals = new Map<string, ReturnType<typeof setInterval>();
 
   constructor(config: Partial<YoRHaAPIConfig> = {}) {
     this.config = {

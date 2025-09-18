@@ -258,7 +258,7 @@ class GPUTensorWorker {
 
     // Create GPU buffers
     const inputBuffer = this.gpuDevice.createBuffer({
-      size: tensorData.(data as { z?: any; x?: any; byteLength?: any; length?: any }).byteLength,
+      size: tensorData.data.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
       mappedAtCreation: true
     });
@@ -267,7 +267,7 @@ class GPUTensorWorker {
     inputBuffer.unmap();
 
     const outputBuffer = this.gpuDevice.createBuffer({
-      size: tensorData.(data as { z?: any; x?: any; byteLength?: any; length?: any }).byteLength,
+      size: tensorData.data.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
     });
 
@@ -293,7 +293,7 @@ class GPUTensorWorker {
     const metadataArray = new Int32Array(metadataBuffer.getMappedRange());
     metadataArray[0] = tensorData.dimensions;
     metadataArray[1] = tensorData.lodLevel;
-    metadataArray[2] = tensorData.(data as { z?: any; x?: any; byteLength?: any; length?: any }).length;
+    metadataArray[2] = tensorData.data.length;
     metadataArray[3] = 0; // padding
     metadataBuffer.unmap();
 
@@ -317,7 +317,7 @@ class GPUTensorWorker {
     passEncoder.setBindGroup(0, bindGroup);
 
     // Dispatch compute shader
-    const workgroupsX = Math.ceil(tensorData.(data as { z?: any; x?: any; byteLength?: any; length?: any }).length / 256);
+    const workgroupsX = Math.ceil(tensorData.data.length / 256);
     passEncoder.dispatchWorkgroups(workgroupsX, 1, 1);
     passEncoder.end();
 
@@ -325,12 +325,12 @@ class GPUTensorWorker {
 
     // Read results back
     const resultBuffer = this.gpuDevice.createBuffer({
-      size: tensorData.(data as { z?: any; x?: any; byteLength?: any; length?: any }).byteLength,
+      size: tensorData.data.byteLength,
       usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
     });
 
     const copyEncoder = this.gpuDevice.createCommandEncoder();
-    copyEncoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, tensorData.(data as { z?: any; x?: any; byteLength?: any; length?: any }).byteLength);
+    copyEncoder.copyBufferToBuffer(outputBuffer, 0, resultBuffer, 0, tensorData.data.byteLength);
     this.gpuDevice.queue.submit([copyEncoder.finish()]);
 
     await resultBuffer.mapAsync(GPUMapMode.READ);
@@ -376,7 +376,7 @@ class GPUTensorWorker {
       }
 
       return {
-        ...(result as { success?: any; error?: any; data?: any }).data,
+        ...result.data,
         timestamp: Date.now()
       };
     } catch (error: any) {
@@ -483,7 +483,7 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
     tensorWorker.postMessage({
       type: 'ERROR',
       id,
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message: String(error)
     });
   }
 };

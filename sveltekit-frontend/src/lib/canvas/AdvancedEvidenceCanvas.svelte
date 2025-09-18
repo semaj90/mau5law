@@ -160,7 +160,7 @@ https://svelte.dev/e/expected_token -->
     } catch (error) {
       console.error('Effect error:', error);
     
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
   });
 
   // Selection change effect
@@ -172,7 +172,7 @@ https://svelte.dev/e/expected_token -->
     } catch (error) {
       console.error('Effect error:', error);
     
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';}
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';}
   });
 
   function initCanvas(): void {
@@ -501,7 +501,7 @@ https://svelte.dev/e/expected_token -->
 
   // Public methods
   export function addNode(node: Omit<EvidenceNode, 'id'>): string {
-    const id = `node_${Date.now()}_${Math.random().toString(36).substring(2)}`;
+    const id = `node_${Date.now()}_${Math.random.toString-substring(2)}`;
     const newNode: EvidenceNode = { ...node, id };
     canvasNodes = [...canvasNodes, newNode];
     render();

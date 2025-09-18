@@ -13,7 +13,7 @@ I've successfully architected and implemented your comprehensive authenticated l
 - ✅ **Preferences**: AI model selection, caching, RL enablement
 
 ### **2. Multi-Model AI Orchestration**
-- ✅ **vLLM Gemma3 Legal**: Server-side legal model with memory-mapped KV caches
+- ✅ ** Gemma3 Legal**: Server-side legal model with memory-mapped KV caches
 - ✅ **WebAssembly Gemma 270MB**: Browser-side llama.cpp with ONNX
 - ✅ **AutoGen Multi-Agent**: Legal researcher, contract analyst, compliance checker
 - ✅ **CrewAI Workflows**: Sequential legal analysis workflows
@@ -150,7 +150,7 @@ webgpu-redis-starter-repo/
     ▼                           ▼                               ▼
 ┌─────────┐              ┌─────────────┐              ┌─────────────┐
 │   Go    │              │   FastAPI   │              │   Storage   │
-│Micro-   │◄────────────►│   vLLM      │◄────────────►│   Layer     │
+│Micro-   │◄────────────►│             │◄────────────►│   Layer     │
 │service  │              │ Gemma3      │              │             │
 └─────────┘              └─────────────┘              └─────────────┘
 │ mmap    │              │ Memory      │              │ Redis       │
@@ -255,7 +255,7 @@ class ReinforcementLearningOptimizer:
         return await self._action_to_params(action, case_id)
 ```
 
-### **4. vLLM Integration with KV Cache Reuse**
+### **4. pytorch Integration with KV Cache Reuse**
 ```python
 class CustomvLLMEngine:
     """Custom vLLM engine with memory-mapped caches"""
@@ -322,7 +322,7 @@ class LocalLlamaEngine {
 - Encrypted tensor storage
 
 ### **AI Model Integration**
-- vLLM Gemma3 legal model (server-side)
+- pytorch Gemma3 legal model (server-side)
 - WebAssembly Gemma 270MB (client-side)
 - AutoGen multi-agent collaboration
 - CrewAI sequential workflows
@@ -397,7 +397,7 @@ chmod +x tmux-dev.sh
 - **Cache Hit Rate**: 85-95% with RL optimization
 
 ### **Latency Targets**
-- **Legal Query Response**: < 2 seconds (vLLM Gemma3)
+- **Legal Query Response**: < 2 seconds (pytorch Gemma3)
 - **Local Inference**: < 5 seconds (WebASM Gemma 270MB)
 - **Multi-Agent Analysis**: < 30 seconds (AutoGen/CrewAI)
 - **Tensor Retrieval**: < 100ms (GPU/Redis cache)

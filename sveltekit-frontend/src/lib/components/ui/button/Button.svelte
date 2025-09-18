@@ -36,7 +36,7 @@
     fullWidth && 'w-full',
     loading && 'btn-loading',
     className
-  ].filter(Boolean).join(' '));
+  ].filter(item => item.join)(' '));
 </script>
 
 {#if to}

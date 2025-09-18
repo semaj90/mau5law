@@ -60,7 +60,7 @@ const originalAnalysisHandler: RequestHandler = async ({ request }) => {
     
   } catch (err) {
     console.error('AI analysis error:', err);
-    throw error(500, `Analysis failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Analysis failed: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 };
 
@@ -112,7 +112,7 @@ function parseAnalysisResponse(response: string, analysisType: string): any {
       summary: response.substring(0, 200) + '...',
       raw_analysis: response,
       confidence: 0.7,
-      parsing_error: error instanceof Error ? error.message : 'Unknown parsing error'
+      parsing_error: error instanceof Error ? error.message: 'Unknown parsing error'
     };
   }
 }
@@ -128,7 +128,7 @@ function extractKeyPoints(text: string): string[] {
   
   return keyPointsSection[1]
     .split(/\n[-*•]\s*/)
-    .filter(point => point.trim().length > 0)
+    .filter(item => item.length) > 0)
     .map(point => point.trim())
     .slice(0, 5); // Top 5 key points
 }
@@ -139,7 +139,7 @@ function extractRisks(text: string): string[] {
   
   return risksSection[1]
     .split(/\n[-*•]\s*/)
-    .filter(risk => risk.trim().length > 0)
+    .filter(item => item.length) > 0)
     .map(risk => risk.trim())
     .slice(0, 3); // Top 3 risks
 }
@@ -150,7 +150,7 @@ function extractRecommendations(text: string): string[] {
   
   return recommendationsSection[1]
     .split(/\n[-*•]\s*/)
-    .filter(rec => rec.trim().length > 0)
+    .filter(item => item.length) > 0)
     .map(rec => rec.trim())
     .slice(0, 3); // Top 3 recommendations
 }

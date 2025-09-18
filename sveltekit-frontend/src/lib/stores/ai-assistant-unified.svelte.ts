@@ -64,7 +64,7 @@ export interface AssistantConfig {
 // Global AI Assistant Store using Svelte 5 Runes
 class AIAssistantGlobalStore {
   // Core state using proper Svelte 5 runes
-  cases = $state<Record<string, CaseAIContext>>({});
+  cases = $state<Record<string, CaseAIContext>({});
   currentCaseId = $state<string | undefined>(undefined);
   isLoading = $state<boolean>(false);
   error = $state<string | undefined>(undefined);
@@ -72,7 +72,7 @@ class AIAssistantGlobalStore {
   // Multi-backend support
   currentBackend = $state<Backend>('ollama');
   availableBackends = $state<Backend[]>(['vllm', 'ollama', 'webasm', 'go-micro']);
-  backendHealth = $state<Record<Backend, number>>({
+  backendHealth = $state<Record<Backend, number>({
     vllm: 0.8,
     ollama: 0.9,
     webasm: 0.7,
@@ -109,7 +109,7 @@ class AIAssistantGlobalStore {
     description: string;
     affectedCases: string[];
     timestamp: number;
-  }>>([]);
+  }>([]);
 
   // Derived states using $derived rune
   currentCase = $derived(this.currentCaseId ? this.cases[this.currentCaseId] : undefined);
@@ -249,7 +249,7 @@ class AIAssistantGlobalStore {
 
     } catch (error) {
       console.error('❌ AI message failed:', error);
-      this.error = error instanceof Error ? error.message : String(error);
+      this.error = error instanceof Error ? error.message: String(error);
 
       // Try fallback backends
       if (!options?.backend && this.config.autoSwitchBackend) {

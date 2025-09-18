@@ -156,8 +156,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
         pipeline.stages.vectorSearch.status = "processing";
 
         const embeddings =
-          pipeline.stages.embedding.(result as { embeddings?: any; vector?: any }).embeddings ||
-          pipeline.stages.embedding.(result as { embeddings?: any; vector?: any }).vector;
+          pipeline.stages.embedding.result.embeddings ||
+          pipeline.stages.embedding.result.vector;
 
         const searchResponse = await fetch("/api/vector/search", {
           method: "POST",

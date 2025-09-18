@@ -138,7 +138,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
   } catch (err: any) {
     console.error('API Error:', err);
-    throw error(500, err instanceof Error ? err.message : 'Internal server error');
+    throw error(500, err instanceof Error ? err.message: 'Internal server error');
   }
 };
 
@@ -387,7 +387,7 @@ async function handleDocumentOperations(req: LegalPlatformRequest): Promise<any>
           documentType: req.data.documentType || 'brief',
           status: 'draft',
           version: 1,
-          wordCount: req.data.content ? req.data.content.split(' ').length : 0,
+          wordCount: req.data.content ? req.data.content.split(' ').length: 0,
           createdAt: new Date(),
           updatedAt: new Date(),
         })
@@ -477,7 +477,7 @@ async function handleUploadOperations(req: LegalPlatformRequest): Promise<any> {
       message: 'Upload processed successfully'
     });
   } catch (err: any) {
-    throw error(500, `Upload service error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `Upload service error: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 }
 
@@ -516,7 +516,7 @@ async function handleAIOperations(req: LegalPlatformRequest): Promise<any> {
       message: `AI operation ${operation} completed successfully`
     });
   } catch (err: any) {
-    throw error(500, `AI service error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    throw error(500, `AI service error: ${err instanceof Error ? err.message: 'Unknown error'}`);
   }
 }
 

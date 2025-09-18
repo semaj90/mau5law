@@ -17,7 +17,7 @@
     interactionId,
     sessionId,
     userId,
-    context = {},
+    context = ,
     show = false,
     ratingType = 'response_quality'
   }: Props = $props();
@@ -33,7 +33,7 @@
   // Auto-generate IDs using $effect for side effects
   $effect(() => {
     if (!interactionId) {
-      interactionId = `interaction_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      interactionId = `interaction_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
     }
   });
 

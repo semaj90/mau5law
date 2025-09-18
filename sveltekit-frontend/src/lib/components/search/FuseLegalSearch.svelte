@@ -81,11 +81,11 @@
         query = `search | warrant | "fourth amendment" | seizure`;
       }
 
-      const results = fuse.search(query).slice(0, maxResults);
+      const results = fuse.search.slice(0, maxResults);
 
       // Process results with highlighting and scoring
       searchResults = results.map((result) => ({
-        ...(result as { item?: unknown; score?: unknown; matches?: unknown }).item,
+        ...result.item,
         fuseScore: (result as { item?: unknown; score?: unknown; matches?: unknown }).score,
         matches: (result as { item?: unknown; score?: unknown; matches?: unknown }).matches || [],
         highlighted: highlightMatches((result as { item?: unknown; score?: unknown; matches?: unknown }).item, (result as { item?: unknown; score?: unknown; matches?: unknown }).matches || []),

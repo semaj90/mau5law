@@ -109,7 +109,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: Date.now(),
         fallback: {
           status: 'error',
-          message: error instanceof Error ? error.message : 'Unknown error'
+          message: error instanceof Error ? error.message: 'Unknown error'
         }
       },
       { status: 500 }

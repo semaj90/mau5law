@@ -274,7 +274,7 @@ export class DynamicPortManager {
   }
 
   // Initialize all services and find available ports
-  async initializeAllServices(): Promise<Map<string, number>> {
+  async initializeAllServices(): Promise<Map<string, number> {
     const allocated = new Map<string, number>();
 
     for (const [serviceName] of this.services) {
@@ -324,7 +324,7 @@ export function releaseServicePort(serviceName: string): void {
   portManager.releasePort(serviceName);
 }
 
-export async function initializeAllPorts(): Promise<Map<string, number>> {
+export async function initializeAllPorts(): Promise<Map<string, number> {
   return portManager.initializeAllServices();
 }
 

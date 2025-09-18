@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       case 'model-operation': {
         const modelOp: ModelOperation = body;
 
-        if (!modelOp?.model || "unknown" // @ts-ignore - Model property access || !modelOp.operation) {
+        if (!modelOp?.model || !modelOp.operation) {
           return json({
             success: false,
             error: 'Model and operation are required'
@@ -189,7 +189,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     console.error('Ollama Cluster Management error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 });
   }
@@ -256,7 +256,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: error instanceof Error ? error.message: String(error),
       timestamp: Date.now()
     }, { status: 500 });
   }
@@ -279,7 +279,7 @@ export async function getClusterStatus(detailed: boolean = false): Promise<Clust
   // Query all instances in parallel, resilient to individual failures
   const results = await Promise.allSettled(
     OLLAMA_CLUSTER.map(async (config) => {
-      return await getInstanceStatus(config.id, config);
+      return await getInstanceStatus(config.id, config)));
     })
   );
 
@@ -300,7 +300,7 @@ export async function getClusterStatus(detailed: boolean = false): Promise<Clust
     } as OllamaInstance;
   });
 
-  const healthyInstances = instances.filter(i => i.status === 'healthy').length;
+  const healthyInstances = instances.filter(item => item.length);
   const totalRequests = instances.reduce((sum, i) => sum + (i.performance?.requestsPerMinute ?? 0), 0);
   const averageLatency = instances.length > 0
     ? Math.round(instances.reduce((sum, i) => sum + (i.performance?.averageLatency ?? 0), 0) / instances.length)
@@ -502,13 +502,12 @@ async function executeModelOperation(operation: ModelOperation): Promise<any> {
 
   // Fallback to safe simulated operation with audit-friendly result
   const affectedInstances = operation.instances && operation.instances.length > 0
-    ? operation.instances
-    : OLLAMA_CLUSTER.map(c => c.id);
+    ? operation.instances: OLLAMA_CLUSTER.map(c => c.id);
 
   const baseResult = await (async () => {
     switch (operation.operation) {
       case 'pull':
-          return { pulled: true, model: operation?.model || "unknown" // @ts-ignore - Model property access, size: `${(Math.random() * 4 + 1).toFixed(2)}GB` };
+          return { pulled: true, model: operation?.model || "unknown" // @ts-ignore - Model property access, size: `${(Math.random() * 4 + 1).toFixed(2)}GB` });
         case 'remove':
           return { removed: true, model: operation?.model || "unknown" // @ts-ignore - Model property access, freedSpace: `${(Math.random() * 2 + 0.2).toFixed(2)}GB` };
         case 'switch':

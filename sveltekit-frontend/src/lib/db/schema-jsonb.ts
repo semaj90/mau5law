@@ -132,7 +132,7 @@ export interface UserPreferences {
   max_summary_length: number;
   include_citations: boolean;
   auto_summarize: boolean;
-  notification_settings: {
+  notification_}); const settings = {
     email: boolean;
     push: boolean;
     webhook_url?: string;

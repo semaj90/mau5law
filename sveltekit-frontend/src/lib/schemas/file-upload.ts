@@ -142,7 +142,7 @@ export const multipleFileUploadSchema = z.object({
     .min(1, 'At least one file is required')
     .max(10, 'Cannot upload more than 10 files at once')
     .refine((files) => {
-      const totalSize = files.reduce((sum: number, file: any) => sum + ((file && typeof file.size === 'number') ? file.size : 0), 0);
+      const totalSize = files.reduce((sum: number, file: any) => sum + ((file && typeof file.size === 'number') ? file.size: 0), 0);
       return totalSize <= 500 * 1024 * 1024; // 500MB total limit
     }, { message: 'Total file size cannot exceed 500MB' }),
 

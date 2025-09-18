@@ -132,7 +132,7 @@ export class NeuralSpriteEngine {
 
   // Enhanced stores for self-organizing features
   public somVisualization = writable;
-    connections: Array<any>>({ nodes: [], connections: [] });
+    connections: Array<any>({ nodes: [], connections: [] });
 
   public multiCoreMetrics = writable({
     activeWorkers: 0,
@@ -671,8 +671,7 @@ export class NeuralSpriteEngine {
         ? recentTasks.reduce(
             (sum: number, task: any) => sum + (task.processingTime || 0),
             0
-          ) / recentTasks.length
-        : 0;
+          ) / recentTasks.length: 0;
 
     this.multiCoreMetrics.set({
       activeWorkers: this.activeWorkers,

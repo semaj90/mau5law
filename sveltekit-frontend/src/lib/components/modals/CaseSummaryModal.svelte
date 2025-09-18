@@ -25,7 +25,7 @@ https://svelte.dev/e/js_parse_error -->
     Users,
   } from "lucide-svelte";
 
-  let { open = $bindable()  }: { open = $bindable() : unknown } = $props(); // boolean = false;
+  let { open = $bindable()   }: { open = $bindable() : unknown } = $props(); // boolean = false;
   // SSR-compatible: all dates as strings
   let { caseData = $bindable()  }: { caseData = $bindable() : unknown } = $props(); // {
     id: string;
@@ -134,11 +134,7 @@ https://svelte.dev/e/js_parse_error -->
   // SSR: parse date string only on client
   function formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }).format(date);
+    return new Intl.DateTimeFormat.format(date);
   }
 </script>
 

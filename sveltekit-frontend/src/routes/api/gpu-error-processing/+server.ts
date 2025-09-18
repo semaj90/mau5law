@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(
       {
         error: 'GPU processing failed',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message: 'Unknown error',
         status: 'failed'
       },
       { status: 500 }

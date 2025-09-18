@@ -429,7 +429,7 @@ class LokiIndexedAdapter {
       const getRequest = store.get(dbname);
 
       getRequest.onsuccess = () => {
-        callback(getRequest.result ? getRequest.(result as { data?: any }).data : null);
+        callback(getRequest.result ? getRequest.result.data: null);
       };
 
       getRequest.onerror = () => callback(null);

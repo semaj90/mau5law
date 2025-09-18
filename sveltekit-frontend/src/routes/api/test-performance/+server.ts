@@ -63,9 +63,9 @@ export const POST: RequestHandler = async ({ request }) => {
       const overallTime = Date.now() - overallStart;
       
       // Calculate averages
-      results.memory.avg = results.memory.iterations > 0 ? results.memory.total / results.memory.iterations : 0;
-      results.redis.avg = results.redis.iterations > 0 ? results.redis.total / results.redis.iterations : 0;
-      results.qdrant.avg = results.qdrant.iterations > 0 ? results.qdrant.total / results.qdrant.iterations : 0;
+      results.memory.avg = results.memory.iterations > 0 ? results.memory.total / results.memory.iterations: 0;
+      results.redis.avg = results.redis.iterations > 0 ? results.redis.total / results.redis.iterations: 0;
+      results.qdrant.avg = results.qdrant.iterations > 0 ? results.qdrant.total / results.qdrant.iterations: 0;
       results.overall.avg = results.overall.total / iterations;
       
       return json({

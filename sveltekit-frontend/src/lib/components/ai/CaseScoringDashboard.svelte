@@ -211,7 +211,7 @@
           const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
           cases = (data as { cases?: any }).cases || [];
         } else {
-          console.error('Failed to load case scores:', (response as { ok?: any; json?: any; statusText?: any }).statusText);
+          console.error(statusText);
           // Fall back to mock data on error
           cases = generateMockCases();
         }
@@ -221,12 +221,12 @@
       // Fall back to mock data on error
       cases = generateMockCases();
     
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';} finally {
       isLoading = false;
     }
   }
 
-  async function scoreCase(caseId: string, options: Partial<ScoringRequest> = {}) {
+  async function scoreCase(caseId: string, options: Partial<ScoringRequest> = ) {
     scoringInProgress = true;
     try {
       if (useMockData) {
@@ -270,7 +270,7 @@
           const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
           const caseIndex = cases.findIndex(c => c.id === caseId);
           if (caseIndex !== -1) {
-            cases[caseIndex] = { ...cases[caseIndex], ...(result as { caseScore?: any }).caseScore };
+            cases[caseIndex] = { ...cases[caseIndex], ...result.caseScore };
           } else {
             cases = [...cases, (result as { caseScore?: any }).caseScore];
           }
@@ -283,7 +283,7 @@
       console.error('Error scoring case:', error);
       throw error;
     
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';} finally {
+    errorMessage = error instanceof Error ? error.message: 'An error occurred';} finally {
       scoringInProgress = false;
     }
   }
@@ -323,9 +323,8 @@
     // Apply search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(case_ =>
-        case_.title.toLowerCase().includes(query) ||
-        case_.description.toLowerCase().includes(query)
+      filtered = filtered.filter(item => item.includes)(query) ||
+        case_.description.toLowerCase.includes(query)
       );
     }
 

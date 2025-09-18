@@ -71,7 +71,7 @@ export const GET: RequestHandler = async ({ fetch }) => {
 			url: 'http://localhost:8095',
 			status: 'offline',
 			lastCheck: Date.now(),
-			details: { error: error instanceof Error ? error.message : 'Connection failed' }
+			details: { error: error instanceof Error ? error.message: 'Connection failed' }
 		});
 	}
 
@@ -129,13 +129,13 @@ export const GET: RequestHandler = async ({ fetch }) => {
 				url: service.url,
 				status: 'offline',
 				lastCheck: Date.now(),
-				details: { error: error instanceof Error ? error.message : 'Connection failed' }
+				details: { error: error instanceof Error ? error.message: 'Connection failed' }
 			});
 		}
 	}
 
 	// Calculate overall system health
-	const onlineServices = healthChecks.filter(s => s.status === 'online').length;
+	const onlineServices = healthChecks.filter(item => item.length);
 	const totalServices = healthChecks.length;
 	const healthPercentage = Math.round((onlineServices / totalServices) * 100);
 
@@ -165,8 +165,8 @@ export const GET: RequestHandler = async ({ fetch }) => {
 			critical_services: healthChecks.filter(s => 
 				['cuda-service', 'enhanced-rag', 'postgres'].includes(s.name) && s.status !== 'online'
 			).map(s => s.name),
-			degraded_services: healthChecks.filter(s => s.status === 'degraded').map(s => s.name),
-			offline_services: healthChecks.filter(s => s.status === 'offline').map(s => s.name)
+			degraded_services: healthChecks.filter(item => item.map)(s => s.name),
+			offline_services: healthChecks.filter(item => item.map)(s => s.name)
 		},
 		recommendations: generateRecommendations(healthChecks)
 	});

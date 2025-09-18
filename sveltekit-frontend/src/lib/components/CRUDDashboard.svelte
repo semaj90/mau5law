@@ -406,7 +406,7 @@
                 <span class="space-y-4">Type: {(item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || "N/A"}</span>
                 <span class="space-y-4"
                   >Size: {(item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileSize
-                    ? `${Math.round((item as { title?: any; evidenceType?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileSize / 1024)}KB`
+                    ? `${Math.round.fileSize / 1024)}KB`
                     : "N/A"}</span
                 >
                 <span class="space-y-4"

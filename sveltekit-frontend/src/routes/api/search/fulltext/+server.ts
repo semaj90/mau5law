@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
         searchTime: Date.now(),
         searchMode,
         sources: {
-          postgresql: postgresResults.status === 'fulfilled' ? postgresResults.value.length : 0,
+          postgresql: postgresResults.status === 'fulfilled' ? postgresResults.value.length: 0,
           loki: lokiResults.status === 'fulfilled' ? lokiResults.value.length : 0
         }
       }

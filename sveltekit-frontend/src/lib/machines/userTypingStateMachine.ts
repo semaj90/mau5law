@@ -189,7 +189,7 @@ export const userTypingStateMachine = createMachine({
           actions: assign({
             typingEndTime: () => Date.now(),
             typingDuration: ({ context }) => Date.now() - context.typingStartTime,
-            wordsTyped: ({ event }) => event.text.split(/\s+/).filter(word => word.length > 0).length,
+            wordsTyped: ({ event }) => event.text.split(/\s+/).filter(item => item.length),
             userBehavior: ({ context, event }) => {
               const typingSpeed = context.charactersTyped / ((Date.now() - context.typingStartTime) / 60000);
               return {

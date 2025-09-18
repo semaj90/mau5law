@@ -46,13 +46,13 @@ https://svelte.dev/e/js_parse_error -->
       const res = await fetch('/api/audit/semantic', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: `Audit evidence ${(item as { id?: any; fileUrl?: any; fileName?: any }).id}` })
+        body: JSON.stringify.id}` })
       });
       if (!res.ok) throw new Error('Failed to audit evidence');
       const data = await res.json();
       onauditResults?.();
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
+      const message = error instanceof Error ? error.message: String(error);
       onauditError?.({ message, evidence: item });
     }
     closeMenu();
@@ -63,7 +63,7 @@ https://svelte.dev/e/js_parse_error -->
       const res = await fetch('/api/agent/trigger', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ evidenceId: (item as { id?: any; fileUrl?: any; fileName?: any }).id })
+        body: JSON.stringify.id })
       });
       if (!res.ok) throw new Error('Failed to trigger agent review');
     closeMenu();
@@ -97,7 +97,7 @@ https://svelte.dev/e/js_parse_error -->
     closeMenu();
   }
   function viewEvidence() {
-    if (item) window.open(`/evidence/${(item as { id?: any; fileUrl?: any; fileName?: any }).id}`, "_blank");
+    if (item) window.open.id}`, "_blank");
     closeMenu();
   }
   function editEvidence() {
@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
   function deleteEvidence() {
     if (item && confirm("Are you sure you want to delete this evidence?")) {
       // Implementation for deleting evidence
-      console.log("Delete evidence:", (item as { id?: any; fileUrl?: any; fileName?: any }).id);
+      console.log.id);
   }
     closeMenu();
   }

@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             results.push({
               chunk: r.pageContent,
               score: r.score,
-              semantic_score: r.score ? 1 - r.score : undefined,
+              semantic_score: r.score ? 1 - r.score: undefined,
               relevance_level: r.score
                 ? r.score < 0.3
                   ? 'high'
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           results.push({
             chunk: r.pageContent,
             score: r.score,
-            semantic_score: r.score ? 1 - r.score : undefined,
+            semantic_score: r.score ? 1 - r.score: undefined,
             relevance_level: r.score
               ? r.score < 0.3
                 ? 'high'

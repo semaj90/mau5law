@@ -178,7 +178,7 @@ async function getCacheKeys(pattern: string, limit: number): Promise<any> {
   
   const keyDetails = await Promise.all(
     limitedKeys.map(async (key) => {
-      const client = redisService.getClient();
+      const client = redisService.getClient()));
       if (!client) return { key, error: 'Redis unavailable' };
 
       try {

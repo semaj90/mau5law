@@ -69,7 +69,7 @@ export interface UIState {
 // Global Evidence Store using Svelte 5 Runes
 class EvidenceGlobalStore {
   // Core data using $state
-  cases = $state<Record<string, LegalCase>>({});
+  cases = $state<Record<string, LegalCase>({});
   currentCaseId = $state<string | null>(null);
 
   // UI state

@@ -309,7 +309,7 @@
             pollingInterval = null;
 
           } else if ((result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).status === 'failed') {
-            console.error('AI job failed:', (result as { status?: unknown; summary?: unknown; embedding?: unknown; textHash?: unknown; error?: unknown }).error);
+            console.error(error);
             isProcessingSummary = false;
             jobId = null;
             clearInterval(pollingInterval!);
@@ -355,7 +355,7 @@
     const data = encoder.encode(text);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashArray.map.padStart(2, '0')).join('');
   }
 
   async function cacheResult(textHash: string, summary: string) {

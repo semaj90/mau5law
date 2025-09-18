@@ -215,8 +215,7 @@
     z-index: 50;
     max-width: 20rem;
   }
-/* Golden ratio responsive breakpoints */ {}
-  @container (min-width: 768px) {
+/* Golden ratio responsive breakpoints */ @container (min-width: 768px) {
     .modern-card {
       border-radius: 1rem;
     }

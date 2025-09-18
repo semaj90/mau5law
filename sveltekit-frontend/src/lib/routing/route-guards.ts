@@ -86,7 +86,7 @@ export class RouteGuards {
 
       // Merge guard data into context
       if ((result as { allowed?: any; data?: any }).data) {
-        context = { ...context, ...(result as { allowed?: any; data?: any }).data };
+        context = { ...context, ...result.data };
       }
     }
 
@@ -442,12 +442,12 @@ export async function checkMultipleRoutePermissions(
   routeIds: string[],
   user: any,
   params: Record<string, string> = {}
-): Promise<Record<string, boolean>> {
+): Promise<Record<string, boolean> {
   const results: Record<string, boolean> = {};
   
   await Promise.all(
     routeIds.map(async (routeId) => {
-      results[routeId] = await checkRoutePermission(routeId, user, params);
+      results[routeId] = await checkRoutePermission(routeId, user, params)));
     })
   );
   

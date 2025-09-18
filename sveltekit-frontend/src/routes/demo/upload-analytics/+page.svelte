@@ -447,7 +447,7 @@
     gap: 0.5rem;
   }
 
-  .config-(item as { checkbox?: unknown }).checkbox-item {
+  .config-.checkbox-item {
     flex-direction: row;
     align-items: center;
   }

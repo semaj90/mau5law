@@ -315,7 +315,7 @@
         center,
         radius,
         importance,
-        label: `${type.charAt(0).toUpperCase() + type.slice(1)}s (${nodes.length})`
+        label: `${type.charAt.toUpperCase() + type.slice(1)}s (${nodes.length})`
       };
     });
   }
@@ -496,7 +496,7 @@
       if (source && target) {
         // Apply LOD-based edge styling
         const alpha = Math.max(0.1, lodConfig[currentLOD as keyof typeof lodConfig].renderComplexity);
-        ctx.strokeStyle = `${edge.color}${Math.floor(alpha * 255).toString(16).padStart(2, '0')}`;
+        ctx.strokeStyle = `${edge.color}${Math.floor.toString-padStart(2, '0')}`;
         ctx.lineWidth = edge.strength * 3;
         
         ctx.beginPath();
@@ -517,7 +517,7 @@
       const lodAlpha = Math.max(0.3, 1 - (currentLOD / 3));
       const size = node.size * Math.max(0.5, 1 - (currentLOD * 0.2));
       
-      ctx.fillStyle = node.color + Math.floor(lodAlpha * 255).toString(16).padStart(2, '0');
+      ctx.fillStyle = node.color + Math.floor.toString-padStart(2, '0');
       
       // Draw node based on type
       ctx.beginPath();
@@ -936,15 +936,7 @@
     overflow: hidden;
   }
 
-  .graph-canvas {
-    display: block;
-    cursor: crosshair;
-    image-rendering: pixelated; /* N64-style pixelated rendering */
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-  }
-
-  .loading-overlay {
+  .graph-canv.loading-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -1034,12 +1026,7 @@
       justify-self: center;
     }
 
-    .graph-canvas {
-      width: 100%;
-      height: 400px;
-    }
-
-    .node-info-panel {
+    .graph-canv.node-info-panel {
       position: static;
       margin-top: 1rem;
     }

@@ -34,7 +34,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     if (!files?.length) return;
 
     const formData = new FormData();
-    Array.from(files).forEach((file) => {
+    Array.from.forEach((file) => {
       formData.append("files", file);
     });
 
@@ -51,7 +51,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     } catch (error) {
       dispatch(
         "error",
-        error instanceof Error ? error.message : "Upload failed"
+        error instanceof Error ? error.message: "Upload failed"
       );
     }
   }

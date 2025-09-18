@@ -6,7 +6,7 @@
   interface Props {
     open?: boolean;
   }
-  let { open = $bindable(false) }: Props = $props();
+  let { open = $bindable(false)  }: Props = $props();
   import { cn } from "$lib/utils";
   import {
     BarChart3,

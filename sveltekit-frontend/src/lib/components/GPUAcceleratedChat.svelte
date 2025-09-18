@@ -98,9 +98,7 @@
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         return PRIMARY_PORT;
       }
-    } catch {}
-
-    // Try fallback ports
+    } catch // Try fallback ports
     for (const port of FALLBACK_PORTS) {
       try {
         const response = await fetch(`http://localhost:${port}/api/health`, {
@@ -110,8 +108,7 @@
           console.log(`Using fallback port ${port}`);
           return port;
         }
-      } catch {}
-    }
+      } catch }
 
     // Default to primary if all fail
     return PRIMARY_PORT;
@@ -119,7 +116,7 @@
 
   // Generate client ID
   function generateClientId(): string {
-    const id = `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const id = `client_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
     sessionStorage.setItem('clientId', id);
     return id;
   }
@@ -174,7 +171,7 @@
         break;
 
       case 'error':
-        console.error('Server error:', (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).error);
+        console.error(error);
         showNotification('Error: ' + (data as { type?: unknown; clientId?: unknown; gpuConfig?: unknown; response?: unknown; content?: unknown; metadata?: unknown; isTyping?: unknown; results?: unknown; error?: unknown; summary?: unknown; documentId?: unknown; embeddings?: unknown; model?: unknown; processingTime?: unknown; gpuUsed?: unknown; tensorRT?: unknown; port?: unknown }).error, 'error');
         isTyping = false;
         break;
@@ -272,11 +269,7 @@
 
         // Send to WebSocket for processing
         if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify({
-            type: 'document_upload',
-            document: {
-              name: file.name,
-              content: (result as { summary?: unknown; content?: unknown; embeddings?: unknown }).content,
+          ws.send.content,
               embeddings: (result as { summary?: unknown; content?: unknown; embeddings?: unknown }).embeddings
             }
           }));
@@ -375,7 +368,7 @@
 
   // Handle batch results
   function handleBatchResults(results: unknown[]) {
-    const summary = `Batch processing complete:\n${results.map(r => `• ${r.summary || r.content}`).join('\n')}`;
+    const summary = `Batch processing complete:\n${results.map.join('\n')}`;
 
     messages = [...messages, {
       id: crypto.randomUUID(),
@@ -1156,21 +1149,21 @@
   }
 
   /* Scrollbar Styling */
-  .messages-scroll::-webkit-scrollbar {
+  .messages-scroll: :-webkit-scrollbar {
     width: 8px;
   }
 
-  .messages-scroll::-webkit-scrollbar-track {
+  .messages-scroll: :-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 4px;
   }
 
-  .messages-scroll::-webkit-scrollbar-thumb {
+  .messages-scroll: :-webkit-scrollbar-thumb {
     background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%);
     border-radius: 4px;
   }
 
-  .messages-scroll::-webkit-scrollbar-thumb:hover {
+  .messages-scroll: :-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, #00ff88 20%, #00ccff 80%);
   }
 </style>

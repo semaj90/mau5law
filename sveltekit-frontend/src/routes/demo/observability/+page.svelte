@@ -28,9 +28,7 @@ https://svelte.dev/e/js_parse_error -->
     await checkServerHealth();
     // Load initial metrics
     await loadClientMetrics();
-    console.log('🔍 Observability Demo Loaded:', {
-      status: observabilityStatus,
-      timestamp: new Date().toISOString()
+    console.log.toISOString()
     });
   });
 
@@ -314,7 +312,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
         <h3 class="text-xl font-semibold text-yellow-400 mb-4">Recent Operations</h3>
         <div class="space-y-2 max-h-64 overflow-y-auto">
-          {#each demoResults.slice().reverse() as result ((result as { id?: unknown; timestamp?: unknown; action?: unknown; type?: unknown; result?: unknown }).id)}
+          {#each demoResults.slice.reverse() as result ((result as { id?: unknown; timestamp?: unknown; action?: unknown; type?: unknown; result?: unknown }).id)}
             <div class="flex justify-between items-center py-2 border-b border-gray-700 last:border-b-0">
               <div class="flex items-center space-x-3">
                 <span class="text-gray-400 text-sm">{(result as { id?: unknown; timestamp?: unknown; action?: unknown; type?: unknown; result?: unknown }).timestamp}</span>

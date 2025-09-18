@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     return error(
       500,
-      `Worker trigger failed: ${validationError instanceof Error ? validationError.message : 'Unknown error'}`
+      `Worker trigger failed: ${validationError instanceof Error ? validationError.message: 'Unknown error'}`
     );
   }
 };
@@ -199,7 +199,7 @@ export const GET: RequestHandler = async ({ url }) => {
           : null,
         recentEvents: events,
         workerStatus: 'active', // TODO: Implement actual worker health check
-        lastProcessed: events.length > 0 ? events[0].timestamp : null,
+        lastProcessed: events.length > 0 ? events[0].timestamp: null,
       },
       metadata: {
         timestamp: new Date().toISOString(),
@@ -242,8 +242,7 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     const streamInfo = await redisService.xInfoStream(streamName).catch(() => null);
     // xInfoStream can return various structures; ensure numeric fallback
     const deletedCount = Array.isArray(streamInfo)
-      ? streamInfo.length
-      : typeof streamInfo === 'object' &&
+      ? streamInfo.length: typeof streamInfo === 'object' &&
           streamInfo !== null &&
           'length' in (streamInfo as any) &&
           typeof (streamInfo as any).length === 'number'

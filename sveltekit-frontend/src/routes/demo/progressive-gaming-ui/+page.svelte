@@ -462,11 +462,11 @@ https://svelte.dev/e/js_parse_error -->
     border-left: 3px solid #666;
   }
 
-  .status-(item as { healthy?: unknown; error?: unknown }).healthy {
+  .status-.healthy {
     border-left-color: #00ff41;
   }
 
-  .status-(item as { healthy?: unknown; error?: unknown }).error {
+  .status-.error {
     border-left-color: #ff0041;
   }
 
@@ -741,11 +741,11 @@ https://svelte.dev/e/js_parse_error -->
       border-width: 2px;
     }
 
-    .status-(item as { healthy?: unknown; error?: unknown }).healthy {
+    .status-.healthy {
       background: rgba(0, 255, 65, 0.2);
     }
 
-    .status-(item as { healthy?: unknown; error?: unknown }).error {
+    .status-.error {
       background: rgba(255, 0, 65, 0.2);
     }
   }

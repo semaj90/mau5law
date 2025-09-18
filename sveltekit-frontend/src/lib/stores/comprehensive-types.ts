@@ -21,7 +21,7 @@ export interface EffectRune {
   (): void | (() => void);
 }
 
-export interface PropsRune<T extends Record<string, any>> {
+export interface PropsRune<T extends Record<string, any> {
   (): T;
 }
 
@@ -85,7 +85,7 @@ export interface LoadEvent {
     set(name: string, value: string, options?: any): void;
   };
   locals: Record<string, any>;
-  parent(): Promise<Record<string, any>>;
+  parent(): Promise<Record<string, any>;
   depends(...deps: string[]): void;
   fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 }
@@ -170,7 +170,7 @@ export interface QueryResult<T = any> {
   fields?: Array<any>
 
 export interface DatabaseConnection {
-  query<T = any>(sql: string, params?: any[]): Promise<QueryResult<T>>;
+  query<T = any>(sql: string, params?: any[]): Promise<QueryResult<T>;
   transaction<T>(callback: (client: DatabaseConnection) => Promise<T>): Promise<T>;
   end(): Promise<void>;
 }
@@ -247,7 +247,7 @@ export interface DrizzleColumnHelpers {
   sql: any;
 }
 
-export interface DrizzleTable<T extends Record<string, any> = Record<string, any>> {
+export interface DrizzleTable<T extends Record<string, any> = Record<string, any> {
   _: {
     name: string;
     columns: T;
@@ -532,7 +532,7 @@ export interface MockFunction<T extends (...args: any[]) => any = (...args: any[
   (...args: Parameters<T>): ReturnType<T>;
   mockImplementation(fn: T): this;
   mockReturnValue(value: ReturnType<T>): this;
-  mockResolvedValue(value: Awaited<ReturnType<T>>): this;
+  mockResolvedValue(value: Awaited<ReturnType<T>): this;
   mockRejectedValue(error: any): this;
   mockClear(): this;
   mockReset(): this;
@@ -585,9 +585,9 @@ export type DeepPartial<T> = {
       : T[P];
 };
 
-export type RequiredBy<T, K extends keyof T> = T & Required<Pick<T, K>>;
+export type RequiredBy<T, K extends keyof T> = T & Required<Pick<T, K>;
 
-export type OptionalBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+export type OptionalBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>;
 
 export type Nullable<T> = T | null | undefined;
 

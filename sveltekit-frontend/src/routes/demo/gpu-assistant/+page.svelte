@@ -51,8 +51,7 @@
         sessionId = data.sessionId;
         messages = data.messages || [];
       }
-    } catch {}
-  });
+    } catch });
 </script>
 
 <div class="max-w-4xl mx-auto space-y-6">

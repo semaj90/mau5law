@@ -189,10 +189,10 @@ https://svelte.dev/e/js_parse_error -->
   	`;
 
   	// Component variables
-  let canvas = $state<HTMLCanvasElementlet computePipelines: Map<string, GPUComputePipeline | null>(null)() >(new Map());
+  let canvas = $state({}) >(new Map());
   let bufferPool = $state<Map<string, GPUBuffer>('') >(new Map());
   let operationId = $state(0);
-  let animationFrame = $state<numberlet attentionTracker = $state<AttentionTracker | null>(null)(null);
+  let animationFrame = $state<numberlet attentionTracker = $state<AttentionTracker  | null>(null); const data = null);
 
   	// Attention tracking class
   	class AttentionTracker {
@@ -552,7 +552,7 @@ https://svelte.dev/e/js_parse_error -->
   	}
 
   	// Queue tensor operation
-  	function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: unknown = {}) {
+  	function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: unknown = ) {
   		const operation: TensorOperation = {
   			id: `op_${++operationId}`,
   			type,
@@ -870,12 +870,7 @@ https://svelte.dev/e/js_parse_error -->
 		font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
 	}
 
-	.webgpu-canvas {
-		border: 1px solid #ddd;
-		border-radius: 4px;
-	}
-
-	.status-panel {
+	.webgpu-canv.status-panel {
 		@apply grid grid-cols-2 md:grid-cols-4 gap-4 mb-4;
 	}
 
@@ -1031,12 +1026,12 @@ https://svelte.dev/e/js_parse_error -->
 	}
 
 	/* Performance indicator colors */
-	.value.enabled::before {
+	.value.enabled: :before {
 		content: '●';
 		@apply text-green-400 mr-1;
 	}
 
-	.value.disabled::before {
+	.value.disabled: :before {
 		content: '●';
 		@apply text-red-400 mr-1;
 	}

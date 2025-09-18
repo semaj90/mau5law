@@ -34,17 +34,14 @@ https://svelte.dev/e/js_parse_error -->
     // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(row =>
-        columns.some(col => 
-          String(row[col.key] || '').toLowerCase().includes(query)
+      filtered = filtered.filter(item => item.toLowerCase()).includes(query)
         )
       );
     }
     // Apply column filters
     for (const [column, filter] of columnFilters) {
       if (filter.trim()) {
-        filtered = filtered.filter(row =>
-          String(row[column] || '').toLowerCase().includes(filter.toLowerCase())
+        filtered = filtered.filter(item => item.toLowerCase()).includes(filter.toLowerCase())
         );
       }
     }
@@ -478,8 +475,7 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes spin {
     to { transform: rotate(360deg); }
   }
-/* Responsive design */ {}
-  @media (max-width: 768px) {
+/* Responsive design */ @media (max-width: 768px) {
     .grid-toolbar {
       flex-direction: column;
       gap: 1rem;

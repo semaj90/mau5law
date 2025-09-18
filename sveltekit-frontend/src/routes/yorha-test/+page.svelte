@@ -325,9 +325,9 @@ https://svelte.dev/e/element_invalid_closing_tag -->
     const allTests = testSuites.flatMap(suite => suite.tests);
     return {
       total: allTests.length,
-      passed: allTests.filter(test => test.status === 'passed').length,
-      failed: allTests.filter(test => test.status === 'failed').length,
-      warnings: allTests.filter(test => test.status === 'warning').length
+      passed: allTests.filter(item => item.length),
+      failed: allTests.filter(item => item.length),
+      warnings: allTests.filter(item => item.length)
     };
   }
 

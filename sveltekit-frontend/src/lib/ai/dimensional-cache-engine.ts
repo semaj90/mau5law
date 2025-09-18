@@ -381,8 +381,7 @@ export class DimensionalCacheEngine {
       .map(slice => slice.attentionScore);
     
     const avgAttentionScore = totalAttentionScores.length > 0
-      ? totalAttentionScores.reduce((sum, score) => sum + score, 0) / totalAttentionScores.length
-      : 0;
+      ? totalAttentionScores.reduce((sum, score) => sum + score, 0) / totalAttentionScores.length: 0;
 
     return {
       cacheSize: this.cache.size,

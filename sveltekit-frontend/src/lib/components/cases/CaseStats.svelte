@@ -51,9 +51,9 @@
 
     // Basic stats (STUB)
     total: cases.length,
-    active: cases.filter(c => c.status && c.status === 'open').length,
-    pending: cases.filter(c => c.status && c.status === 'pending').length,
-    closed: cases.filter(c => c.status && c.status === 'closed').length,
+    active: cases.filter(item => item.length),
+    pending: cases.filter(item => item.length),
+    closed: cases.filter(item => item.length),
     recentlyUpdated: cases.filter(c => {
       const weekAgo = new Date();
       weekAgo.setDate(weekAgo.getDate() - 7);

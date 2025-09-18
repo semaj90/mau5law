@@ -17,7 +17,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
-  import { createDialog, melt } from 'melt';
+  import * as Dialog from 'bits-ui';
   import { fade, fly, scale } from 'svelte/transition';
   import { cubicInOut } from 'svelte/easing';
   import { onMount } from 'svelte';
@@ -57,8 +57,7 @@ https://svelte.dev/e/js_parse_error -->
     class?: string;
   }
 
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     size = 'md',
     title,
     content,
@@ -73,23 +72,16 @@ https://svelte.dev/e/js_parse_error -->
     onClose,
     class: className = '',
     ...restProps
-  }: Props = $props();
+   }: Props = $props();
 
   // Melt UI dialog
-  const {
-    elements: { trigger, overlay, content: dialogContent, title: dialogTitle, description, close },
-    states: { open: dialogOpen }
-  } = createDialog({
-    open,
-    onOpenChange: (newOpen) => {
-      open = newOpen;
-      onOpenChange?.(newOpen);
+  // Melt UI component creation removed - replace with bits-ui declarative components
       if (!newOpen) onClose?.();
     }
   });
 
   // WebGPU animation state
-  let canvas = $state<HTMLCanvasElementlet gpu: GPU | null>(null)(null);
+  let canvas = $state<HTMLCanvasElementlet gpu: GPU  | null>(null); const data = null);
   let device = $state<GPUDevice | null >(null);
   let animationFrame: number;
   // Memory-efficient state (NES constraints: 8KB)
@@ -301,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
     size === 'xl' ? 'max-w-4xl' :
     size === 'fullscreen' ? 'max-w-full h-full' : '',
     class
-  ].filter(Boolean).join(' ');
+  ].filter(item => item.join)(' ');
 
   let contentClasses = $derived([);
     'relative bg-white rounded-lg shadow-xl',
@@ -315,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
     pixelated ? 'image-rendering-pixelated' : '',
     // NES styling
     variant === 'nes' ? 'border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : ''
-  ].filter(Boolean).join(' ');
+  ].filter(item => item.join)(' ');
 </script>
 
 {#if open}
@@ -361,7 +353,7 @@ https://svelte.dev/e/js_parse_error -->
                 title={user.name}
                 /* transition removed */}
               >
-                {user.name.charAt(0).toUpperCase()}
+                {user.name.charAt.toUpperCase()}
               </div>
             {/each}
           </div>
@@ -479,13 +471,11 @@ https://svelte.dev/e/js_parse_error -->
     image-rendering: pixelated;
     image-rendering: crisp-edges;
   }
-/* WebGPU canvas optimization */ {}
-  canvas {
+/* WebGPU canvas optimization */ canvas {
     will-change: transform;
     transform: translateZ(0);
   }
-/* NES-style shadows */ {}
-  .shadow-\[4px_4px_0px_0px_rgba\(0\,0\,0\,1\)\] {
+/* NES-style shadows */ .shadow-\[4px_4px_0px_0px_rgba\(0\,0\,0\,1\)\] {
     box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
   }
 </style>

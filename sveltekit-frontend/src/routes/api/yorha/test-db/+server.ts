@@ -220,7 +220,7 @@ export const POST: RequestHandler = async ({ request }) => {
         results.results.cleanup = {
           deletedRows:
             (cleanupResult as any)?.rowCount ??
-            (Array.isArray(cleanupResult) ? cleanupResult.length : 0),
+            (Array.isArray(cleanupResult) ? cleanupResult.length: 0),
           status: 'completed',
         };
         break;

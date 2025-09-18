@@ -83,7 +83,7 @@ export class ComprehensiveAgentOrchestrator {
     // Wait for multicore service to be ready
     await new Promise(resolve => {
       const checkReady = () => {
-        const status = this.multicoreService.getSystemStatus();
+        const status = this.multicoreService.getSystemStatus());
         if (status.workers.length > 0 && status.workers.some(w => w.status === 'healthy')) {
           resolve(true);
         } else {
@@ -248,7 +248,7 @@ export class ComprehensiveAgentOrchestrator {
       ],
       errorPatterns,
       performanceMetrics,
-      tasksCompleted: results.filter(r => r.status === 'fulfilled').length
+      tasksCompleted: results.filter(item => item.length)
     };
   }
 

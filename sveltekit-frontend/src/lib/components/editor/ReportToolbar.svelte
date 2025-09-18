@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
 
-  import { createDropdownMenu, createToolbar, melt } from "melt";
+  import * as DropdownMenu from 'bits-ui';
   import {
     Download,
     Eye,
@@ -29,33 +29,16 @@ https://svelte.dev/e/js_parse_error -->
   } from '$lib/stores/report';
 
   // File menu dropdown
-  const {
-    elements: { trigger: fileTrigger, menu: fileMenu, item: fileItem },
-    states: { open: fileOpen },
-  } = createDropdownMenu({
-    positioning: { placement: "bottom-start" },
-  });
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // Edit menu dropdown
-  const {
-    elements: { trigger: editTrigger, menu: editMenu, item: editItem },
-    states: { open: editOpen },
-  } = createDropdownMenu({
-    positioning: { placement: "bottom-start" },
-  });
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // View menu dropdown
-  const {
-    elements: { trigger: viewTrigger, menu: viewMenu, item: viewItem },
-    states: { open: viewOpen },
-  } = createDropdownMenu({
-    positioning: { placement: "bottom-start" },
-  });
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // Toolbar
-  const {
-    elements: { root: toolbarRoot, button: toolbarButton, link: toolbarLink },
-  } = createToolbar();
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // Actions
   const handleSave = () => {

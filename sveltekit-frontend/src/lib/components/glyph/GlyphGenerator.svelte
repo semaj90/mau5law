@@ -116,7 +116,7 @@
   }
   function generateMockEmbedding(text: string): number[] {
     // Generate deterministic embedding from text
-    const hash = text.split('').reduce((a, b) => {
+    const hash = text.split.reduce((a, b) => {
       a = ((a << 5) - a) + b.charCodeAt(0);
       return a & a;
     }, 0);
@@ -145,7 +145,7 @@
         grpmo_context: {
           thinking_stages: grpmoResult.thinkingStages,
           cache_performance: grpmoResult.cachePerformance,
-          similar_results: grpmoResult.(result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).slice(0, 3), // Top 3 similar items
+          similar_results: grpmoResult.result.slice(0, 3), // Top 3 similar items
           glyph_embedding: glyphEmbedding
         }
       })
@@ -594,7 +594,7 @@
                     <span>Cache Efficiency:</span>
                     <span class="font-mono text-green-600">
                       {(() => {
-                        const perf = (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).grpmo_metadata.cache_performance || {};
+                        const perf = (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).grpmo_metadata.cache_performance || ;
                         const total = (perf.hot || 0) + (perf.warm || 0) + (perf.cold || 0);
                         if (total === 0) return 'N/A';
                         const efficiency = ((perf.hot || 0) * 100 + (perf.warm || 0) * 50) / total;

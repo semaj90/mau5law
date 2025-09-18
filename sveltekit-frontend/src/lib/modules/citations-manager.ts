@@ -303,8 +303,7 @@ export class CitationsManager {
     // Text search
     if (query.trim()) {
       const lowercaseQuery = query.toLowerCase();
-      citations = citations.filter(c =>
-        c.title.toLowerCase().includes(lowercaseQuery) ||
+      citations = citations.filter(item => item.includes)(lowercaseQuery) ||
         c.citation.toLowerCase().includes(lowercaseQuery) ||
         c.keyPoints.some(kp => kp.toLowerCase().includes(lowercaseQuery)) ||
         c.notes?.toLowerCase().includes(lowercaseQuery) ||

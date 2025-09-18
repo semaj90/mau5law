@@ -42,7 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     relevanceScore: citation?.relevanceScore || 5,
     citationPurpose: citation?.citationPurpose || 'support',
     publicationDate: citation?.publicationDate ? 
-      new Date(citation.publicationDate).toISOString().split('T')[0] : '',
+      new Date(citation.publicationDate).toISOString.split('T')[0] : '',
     jurisdiction: citation?.jurisdiction || '',
     court: citation?.court || '',
     verified: citation?.verified || false,
@@ -53,7 +53,7 @@ https://svelte.dev/e/js_parse_error -->
   let quillEditor: any = null;
   let editorContainer: HTMLElement;
   let isLoading = $state(false);
-  let errors = writable<Record<string, string>>({});
+  let errors = writable<Record<string, string>( );
 
   // Citation types
   const citationTypes = [
@@ -139,7 +139,6 @@ https://svelte.dev/e/js_parse_error -->
   // Validate form data
   function validateForm(): boolean {
     const newErrors: Record<string, string> = {};
-
     if (!formData.title.trim()) {
       newErrors.title = 'Title is required';
     }
@@ -153,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
     }
 
     errors.set(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object.keys.length === 0;
   }
 
   function isValidUrl(url: string): boolean {
@@ -191,7 +190,7 @@ https://svelte.dev/e/js_parse_error -->
       if ((result as { success?: any; citation?: any; error?: any }).success) {
         dispatch('save', (result as { success?: any; citation?: any; error?: any }).citation);
       } else {
-        console.error('Save failed:', (result as { success?: any; citation?: any; error?: any }).error);
+        console.error(error);
       }
     } catch (error) {
       console.error('Save error:', error);
@@ -219,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
       if ((result as { success?: any; citation?: any; error?: any }).success) {
         dispatch('delete', citation.id);
       } else {
-        console.error('Delete failed:', (result as { success?: any; citation?: any; error?: any }).error);
+        console.error(error);
       }
     } catch (error) {
       console.error('Delete error:', error);
@@ -233,7 +232,7 @@ https://svelte.dev/e/js_parse_error -->
     if (event.key === 'Enter' && event.target) {
       event.preventDefault();
       const input = event.target as HTMLInputElement;
-      const tag = input.value.trim().toLowerCase();
+      const tag = input.value.trim.toLowerCase();
       if (tag && !formData.tags.includes(tag)) {
         formData.tags = [...formData.tags, tag];
         input.value = '';

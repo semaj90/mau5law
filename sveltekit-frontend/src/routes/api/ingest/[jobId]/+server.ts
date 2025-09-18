@@ -130,7 +130,7 @@ export const GET: RequestHandler = async ({ params }) => {
       success: false,
       jobId: params.jobId || 'unknown',
       status: 'failed',
-      error: err instanceof Error ? err.message : String(err)
+      error: err instanceof Error ? err.message: String(err)
     } as JobStatusResponse, { status: 500 });
   }
 };

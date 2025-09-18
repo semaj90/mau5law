@@ -343,8 +343,7 @@ Delete Action
   </div>
 {/snippet}
 
-<style>/* Enhanced Nier theme styles */ {}
-  :global(:root) {
+<style>/* Enhanced Nier theme styles */ :global(:root) {
     --nier-bg: #0a0a0a;
     --nier-surface: #1a1a1a;
     --nier-surface-light: #2a2a2a;

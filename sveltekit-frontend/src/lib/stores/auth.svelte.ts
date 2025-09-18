@@ -307,7 +307,7 @@ export class AuthService {
       const result = await (response as { ok?: any; json?: any }).json();
 
       if ((response as { ok?: any; json?: any }).ok) {
-        authState.user = { ...authState.user, ...(result as { user?: any; error?: any }).user };
+        authState.user = { ...authState.user, ...result.user };
         
         // Log profile update for audit trail
         await mcpGPUOrchestrator.routeAPIRequest(

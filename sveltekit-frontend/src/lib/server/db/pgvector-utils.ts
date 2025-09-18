@@ -38,7 +38,7 @@ export async function initializePgVector(): Promise<boolean> {
       CREATE OR REPLACE FUNCTION cosine_similarity(a vector, b vector)
       RETURNS float AS $$
       SELECT 1 - (a <=> b)
-      $$ LANGUAGE SQL IMMUTABLE STRICT;
+      $$ LANGUAGE SQL IMMUTABLE STRICT);
     `);
 
     // Create vector search function for chat messages
@@ -65,7 +65,7 @@ export async function initializePgVector(): Promise<boolean> {
       WHERE chat_messages.embedding IS NOT NULL
         AND cosine_similarity(chat_messages.embedding, query_embedding) > similarity_threshold
       ORDER BY similarity DESC
-      LIMIT result_limit;
+      LIMIT result_limit);
       $$ LANGUAGE SQL STABLE;
     `);
 
@@ -105,7 +105,7 @@ export async function initializePgVector(): Promise<boolean> {
           COALESCE(cosine_similarity(e.content_embedding, query_embedding), 0)
         ) > similarity_threshold
       ORDER BY similarity DESC
-      LIMIT result_limit;
+      LIMIT result_limit);
       $$ LANGUAGE SQL STABLE;
     `);
 
@@ -180,7 +180,7 @@ export async function searchSimilarMessages(
       id: row.id,
       content: row.content,
       similarity: row.similarity,
-      metadata: includeMetadata ? row.metadata : undefined,
+      metadata: includeMetadata ? row.metadata: undefined,
       documentType: 'chat_message'
     }));
   } catch (error: any) {
@@ -430,7 +430,7 @@ export async function pgvectorHealthCheck(): Promise<any> {
     return {
       available: false,
       functions: [],
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error'
     };
   }
 }

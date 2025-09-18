@@ -90,7 +90,7 @@ export class WebGPUSOMCache {
         doc_norm += d_val * d_val;
       }
 
-      let cosine_sim = dot_product / (sqrt(query_norm) * sqrt(doc_norm));
+      let cosine_sim = dot_product / (sqrt(query_norm) * sqrt(doc_norm);
       similarities[doc_id] = cosine_sim;
     }
   `;
@@ -199,7 +199,7 @@ export class WebGPUSOMCache {
         // Advanced hash for legal document clustering
         let hash1 = (char_code * 23u + i * 47u) % embedding_dim;
         let hash2 = (char_code * 31u + i * 53u) % embedding_dim;
-        
+
         if (hash1 == embedding_id || hash2 == embedding_id) {
           value += char_contribution;
         }
@@ -226,11 +226,11 @@ export class WebGPUSOMCache {
       if (vector_id >= vector_count * vector_dim) { return; }
 
       let value = input_vectors[vector_id];
-      
+
       // Quantize to 8-bit signed integer (-128 to 127)
       let scaled_value = (value + offset) * scale_factor;
-      let quantized = i32(clamp(scaled_value, -128.0, 127.0));
-      
+      let quantized = i32(clamp(scaled_value, -128.0, 127.0);
+
       quantized_vectors[vector_id] = quantized;
     }
   `;
@@ -266,7 +266,7 @@ export class WebGPUSOMCache {
         doc_norm += d_val * d_val;
       }
 
-      var cosine_sim = dot_product / (sqrt(query_norm) * sqrt(doc_norm));
+      var cosine_sim = dot_product / (sqrt(query_norm) * sqrt(doc_norm);
 
       // Apply legal domain-specific boosts
       let doc_metadata = legal_metadata[doc_id];
@@ -605,7 +605,9 @@ export class WebGPUSOMCache {
       });
 
       if (!(response as { ok?: any; status?: any; json?: any }).ok) {
-        throw new Error(`SOM analyzer failed: ${(response as { ok?: any; status?: any; json?: any }).status}`);
+        throw new Error(
+          `SOM analyzer failed: ${(response as { ok?: any; status?: any; json?: any }).status}`
+        );
       }
 
       return await (response as { ok?: any; status?: any; json?: any }).json();
@@ -1128,7 +1130,7 @@ export class WebGPUSOMCache {
                 severity: 'medium' as const,
                 category: 'cache',
                 type: 'webgpu-cache-error',
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
               } satisfies NPMError,
             ]);
             const embedding = embeddings[0];
@@ -1199,11 +1201,31 @@ export class WebGPUSOMCache {
     const clusters: Record<string, any[]> = {} as Record<string, any[]>;
 
     for (const data of trainingData) {
-      const key = (data as { features?: any; metadata?: any; legalWeight?: any; caseWeight?: any; forEach?: any }).features.map((f: number) => Math.round(f * 10)).join(',');
+      const key = (
+        data as {
+          features?: any;
+          metadata?: any;
+          legalWeight?: any;
+          caseWeight?: any;
+          forEach?: any;
+        }
+      ).features
+        .map((f: number) => Math.round(f * 10))
+        .join(',');
       if (!clusters[key]) {
         clusters[key] = [];
       }
-      clusters[key].push((data as { features?: any; metadata?: any; legalWeight?: any; caseWeight?: any; forEach?: any }).metadata);
+      clusters[key].push(
+        (
+          data as {
+            features?: any;
+            metadata?: any;
+            legalWeight?: any;
+            caseWeight?: any;
+            forEach?: any;
+          }
+        ).metadata
+      );
     }
 
     return {
@@ -1575,19 +1597,22 @@ export class WebGPUSOMCache {
 
       // Write data
       this.device.queue.writeBuffer(textDataBuffer, 0, textBuffer);
-      
+
       const config = new Uint32Array([
-        textBuffer.length, 
-        embeddingDim, 
+        textBuffer.length,
+        embeddingDim,
         metadata.legalWeight || 150, // Boost legal terms by 50%
-        metadata.caseWeight || 120,  // Boost case refs by 20%
-        0, 0, 0, 0
+        metadata.caseWeight || 120, // Boost case refs by 20%
+        0,
+        0,
+        0,
+        0,
       ]);
       this.device.queue.writeBuffer(configBuffer, 0, config);
 
       // Create and run compute pipeline
-      const shaderModule = this.device.createShaderModule({ 
-        code: this.legalDocumentEmbeddingShader 
+      const shaderModule = this.device.createShaderModule({
+        code: this.legalDocumentEmbeddingShader,
       });
       const pipeline = this.device.createComputePipeline({
         layout: 'auto',
@@ -1641,8 +1666,8 @@ export class WebGPUSOMCache {
   }
 
   async searchLegalDocuments(
-    queryEmbedding: Float32Array, 
-    documentEmbeddings: Float32Array[], 
+    queryEmbedding: Float32Array,
+    documentEmbeddings: Float32Array[],
     metadata: any[]
   ): Promise<Array<any>> {
     try {
@@ -1695,7 +1720,7 @@ export class WebGPUSOMCache {
         let encoded = 0;
         if (meta.docType === 'contract') encoded |= 1;
         else if (meta.docType === 'caselaw') encoded |= 2;
-        if (meta.jurisdiction === 'federal') encoded |= (1 << 8);
+        if (meta.jurisdiction === 'federal') encoded |= 1 << 8;
         metadataArray[i] = encoded;
       });
       this.device.queue.writeBuffer(metadataBuffer, 0, metadataArray);
@@ -1704,8 +1729,8 @@ export class WebGPUSOMCache {
       this.device.queue.writeBuffer(configBuffer, 0, config);
 
       // Run compute
-      const shaderModule = this.device.createShaderModule({ 
-        code: this.legalSimilarityShader 
+      const shaderModule = this.device.createShaderModule({
+        code: this.legalSimilarityShader,
       });
       const pipeline = this.device.createComputePipeline({
         layout: 'auto',
@@ -1747,7 +1772,7 @@ export class WebGPUSOMCache {
 
       const results = Array.from(similarities)
         .map((similarity, index) => ({ similarity, index, metadata: metadata[index] }))
-        .filter(result => (result as { value?: any; similarity?: any }).similarity > 0.1)
+        .filter((item) => item.similarity > 0.1)
         .sort((a, b) => b.similarity - a.similarity);
 
       // Clean up
@@ -1794,8 +1819,9 @@ export class WebGPUSOMCache {
 
       // Flatten input vectors and calculate scale/offset
       const inputData = new Float32Array(totalElements);
-      let min = Infinity, max = -Infinity;
-      
+      let min = Infinity,
+        max = -Infinity;
+
       vectors.forEach((vector, i) => {
         for (let j = 0; j < vectorDim; j++) {
           const val = vector[j];
@@ -1809,13 +1835,15 @@ export class WebGPUSOMCache {
       const offset = -min;
 
       this.device.queue.writeBuffer(inputBuffer, 0, inputData);
-      this.device.queue.writeBuffer(paramsBuffer, 0, new Float32Array([
-        vectorCount, vectorDim, scale, offset, 0, 0, 0, 0
-      ]));
+      this.device.queue.writeBuffer(
+        paramsBuffer,
+        0,
+        new Float32Array([vectorCount, vectorDim, scale, offset, 0, 0, 0, 0])
+      );
 
       // Run quantization
-      const shaderModule = this.device.createShaderModule({ 
-        code: this.vectorQuantizationShader 
+      const shaderModule = this.device.createShaderModule({
+        code: this.vectorQuantizationShader,
       });
       const pipeline = this.device.createComputePipeline({
         layout: 'auto',
@@ -1881,7 +1909,7 @@ export class WebGPUSOMCache {
   private computeLegalEmbeddingCPU(text: string, metadata: any): Float32Array {
     const embedding = new Float32Array(768);
     const textBytes = new TextEncoder().encode(text);
-    
+
     for (let i = 0; i < 768; i++) {
       let value = 0;
       for (let j = 0; j < textBytes.length; j++) {
@@ -1892,40 +1920,41 @@ export class WebGPUSOMCache {
       }
       embedding[i] = Math.tanh(value * 0.7);
     }
-    
+
     return embedding;
   }
 
   private searchLegalDocumentsCPU(
-    query: Float32Array, 
-    docs: Float32Array[], 
+    query: Float32Array,
+    docs: Float32Array[],
     metadata: any[]
   ): Array<{ similarity: number; index: number; metadata: any }> {
-    return docs.map((doc, index) => {
-      let dotProduct = 0, queryNorm = 0, docNorm = 0;
-      
-      for (let i = 0; i < query.length; i++) {
-        dotProduct += query[i] * doc[i];
-        queryNorm += query[i] * query[i];
-        docNorm += doc[i] * doc[i];
-      }
-      
-      const similarity = dotProduct / (Math.sqrt(queryNorm) * Math.sqrt(docNorm));
-      return { similarity, index, metadata: metadata[index] };
-    })
-    .filter(result => (result as { value?: any; similarity?: any }).similarity > 0.1)
-    .sort((a, b) => b.similarity - a.similarity);
+    return docs
+      .map((doc, index) => {
+        let dotProduct = 0,
+          queryNorm = 0,
+          docNorm = 0;
+
+        for (let i = 0; i < query.length; i++) {
+          dotProduct += query[i] * doc[i];
+          queryNorm += query[i] * query[i];
+          docNorm += doc[i] * doc[i];
+        }
+
+        const similarity = dotProduct / (Math.sqrt(queryNorm) * Math.sqrt(docNorm));
+        return { similarity, index, metadata: metadata[index] };
+      })
+      .filter((item) => item.similarity > 0.1)
+      .sort((a, b) => b.similarity - a.similarity);
   }
 
   private quantizeVectorsCPU(vectors: Float32Array[]): Int8Array[] {
-    return vectors.map(vector => {
+    return vectors.map((vector) => {
       const min = Math.min(...vector);
       const max = Math.max(...vector);
       const scale = 255 / (max - min);
-      
-      return new Int8Array(vector.map(val => 
-        Math.round((val - min) * scale) - 128
-      ));
+
+      return new Int8Array(Array.from(vector, (val) => Math.round((val - min) * scale) - 128));
     });
   }
 

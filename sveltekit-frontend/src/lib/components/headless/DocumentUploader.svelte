@@ -226,7 +226,7 @@
           
         } catch (error) {
           onUploadError?.({ 
-            error: error instanceof Error ? error.message : 'Upload failed', 
+            error: error instanceof Error ? error.message: 'Upload failed', 
             file 
           });
         } finally {

@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json(
       { 
         error: "Failed to save evidence", 
-        details: error instanceof Error ? error.message : "Unknown error" 
+        details: error instanceof Error ? error.message: "Unknown error" 
       },
       { status: 500 }
     );
@@ -146,7 +146,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json(
       { 
         error: "Failed to load evidence", 
-        details: error instanceof Error ? error.message : "Unknown error" 
+        details: error instanceof Error ? error.message: "Unknown error" 
       },
       { status: 500 }
     );

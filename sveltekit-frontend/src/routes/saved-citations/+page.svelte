@@ -35,19 +35,6 @@ https://svelte.dev/e/js_parse_error -->
 
   // Initialize with sample data
   onMount(() => {
-    savedCitations = [
-      {
-        id: '1',
-        title: 'Miranda Rights',
-        content: 'The defendant must be clearly informed of their rights...',
-        source: 'Miranda v. Arizona, 384 U.S. 436 (1966)',
-        category: 'case-law',
-        tags: ['constitutional', 'police-procedure', 'rights'],
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isFavorite: true,
-        notes: 'Landmark case establishing Miranda warnings',
-      },
     ];
   });
 
@@ -77,11 +64,11 @@ https://svelte.dev/e/js_parse_error -->
     filteredCitations = savedCitations.filter((citation) => {
       const matchesSearch =
         searchQuery === '' ||
-        citation.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        citation.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        citation.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  (citation.notes && citation.notes.toLowerCase().includes(searchQuery.toLowerCase())) ||
-  citation.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+        citation.title.toLowerCase.includes(searchQuery.toLowerCase()) ||
+        citation.content.toLowerCase.includes(searchQuery.toLowerCase()) ||
+        citation.source.toLowerCase.includes(searchQuery.toLowerCase()) ||
+  (citation.notes && citation.notes.toLowerCase.includes(searchQuery.toLowerCase())) ||
+  citation.tags.some((tag: string) => tag.toLowerCase.includes(searchQuery.toLowerCase()));
       const matchesCategory = selectedCategory === 'all' || citation.category === selectedCategory;
 
       return matchesSearch && matchesCategory;
@@ -92,8 +79,7 @@ https://svelte.dev/e/js_parse_error -->
       const citation = {
         ...newCitation,
         tags: newCitation.tags
-          .split(',')
-          .map((tag) => tag.trim())
+          .split.map((tag) => tag.trim())
           .filter((tag: string) => tag.length > 0),
         id: crypto.randomUUID(),
         isFavorite: false,
@@ -150,10 +136,8 @@ https://svelte.dev/e/js_parse_error -->
       const updated = {
         ...editingCitation,
         tags: Array.isArray(editingCitation.tags)
-          ? editingCitation.tags
-          : (editingCitation.tags as any as string)
-              ?.split(',')
-              .map((tag: string) => tag.trim())
+          ? editingCitation.tags: (editingCitation.tags as any as string)
+              ?.split.map((tag: string) => tag.trim())
               .filter((tag: string) => tag.length > 0),
       };
 
@@ -174,7 +158,7 @@ https://svelte.dev/e/js_parse_error -->
     savedCitations.reduce((acc, citation) => {
       acc[citation.category] = (acc[citation.category] || 0) + 1;
       return acc;
-    }, {})
+    }, )
   );
 </script>
 
@@ -400,7 +384,7 @@ https://svelte.dev/e/js_parse_error -->
 
 <!-- Add Citation Dialog -->
 <DialogRoot open={showAddDialog} openchange={(open) => showAddDialog = open}>
-  <DialogContent class="sm:max-w-[425px]" overlay={{}} content={{}} openState={showAddDialog}>
+  <DialogContent class="sm:max-w-[425px]" overlay={ } content={ } openState={showAddDialog}>
     <DialogHeader>
       <DialogTitle title="Add New Citation" />
       <DialogDescription description="Create a new citation to save for future reference." />
@@ -489,7 +473,7 @@ saveCitation()}
 <!-- Edit Citation Dialog -->
 {#if editingCitation}
   <DialogRoot open={true} openchange={() => (editingCitation = null)}>
-    <DialogContent class="sm:max-w-[425px]" overlay={{}} content={{}} openState={true}>
+    <DialogContent class="sm:max-w-[425px]" overlay={ } content={ } openState={true}>
       <DialogHeader>
         <DialogTitle title="Edit Citation" />
       </DialogHeader>

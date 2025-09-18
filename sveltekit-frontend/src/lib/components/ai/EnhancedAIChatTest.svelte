@@ -28,11 +28,10 @@
   } from 'lucide-svelte';
 
   // Props using Svelte 5 runes
-  let {
-    open = $bindable(false),
+  let { open = $bindable(false),
     caseId = undefined,
     title = 'Enhanced AI Legal Assistant',
-  }: {
+   }: {
     open?: boolean;
     caseId?: string;
     title?: string;
@@ -481,8 +480,7 @@
   </Dialog.Portal>
 </Dialog.Root>
 
-<style>/* Custom styles for enhanced appearance */ {}
-  :global(.chat-message-content) {
+<style>/* Custom styles for enhanced appearance */ :global(.chat-message-content) {
     line-height: 1.6;
   }
 

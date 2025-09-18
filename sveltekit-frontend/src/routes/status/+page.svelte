@@ -19,7 +19,7 @@
 
   // System status state
   let systemHealth = $state<any>(null);
-  let integrationTests = $state<Record<string, { status: 'success' | 'warning' | 'error'; message: stringdetails?: unknown } | null>(null)()>({});
+  let integrationTests = $state({})>( );
   let isLoading = $state(true);
   let lastUpdated = $state<string>('');
 
@@ -73,8 +73,7 @@
         '--gpu-cache-state-idle'
       ];
 
-      const loadedVars = gpuVars.filter(varName =>
-        computedStyle.getPropertyValue(varName).trim() !== ''
+      const loadedVars = gpuVars.filter(item => item.trim)() !== ''
       );
 
       if (loadedVars.length === gpuVars.length) {
@@ -108,8 +107,8 @@
           status: 'success',
           message: 'Gaming components and constants loaded successfully',
           details: {
-            nesColors: Object.keys(NES_COLOR_PALETTE).length,
-            n64Presets: Object.keys(N64_TEXTURE_PRESETS).length
+            nesColors: Object.keys.length,
+            n64Presets: Object.keys.length
           }
         };
       } else {
@@ -284,7 +283,7 @@
               <details class="text-xs text-gray-400">
                 <summary class="cursor-pointer">Details</summary>
                 <pre class="mt-2 p-2 bg-gray-900 rounded text-xs overflow-auto">
-{JSON.stringify((result as { status?: unknown; message?: unknown; details?: unknown }).details, null, 2)}
+{JSON.stringify.details, null, 2)}
                 </pre>
               </details>
             {/if}

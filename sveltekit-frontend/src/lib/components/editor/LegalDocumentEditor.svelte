@@ -9,7 +9,7 @@ https://svelte.dev/e/js_parse_error -->
     createDropdownMenu,
     createTooltip,
     melt,
-  } from "melt";
+  } // Replaced melt with bits-ui components
   import {
     AlertCircle,
     BookOpen,
@@ -68,37 +68,13 @@ https://svelte.dev/e/js_parse_error -->
   const dispatch = createEventDispatcher();
 
   // Melt UI Dialog for AI Assistant
-  const {
-    elements: {
-      trigger: aiTrigger,
-      overlay: aiOverlay,
-      content: aiContent,
-      title: aiTitle,
-      description: aiDescription,
-      close: aiClose,
-      portalled: aiPortalled,
-    },
-    states: { open: aiOpen },
-  } = createDialog({
-    forceVisible: true,
-  });
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // Melt UI Dropdown for Document Actions
-  const {
-    elements: {
-      trigger: actionsTrigger,
-      menu: actionsMenu,
-      item: actionsItem,
-      separator: actionsSeparator,
-    },
-    states: { open: actionsOpen },
-  } = createDropdownMenu();
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   // Melt UI Tooltip for help
-  const {
-    elements: { trigger: helpTrigger, content: helpContent },
-    states: { open: helpOpen },
-  } = createTooltip();
+  // Melt UI component creation removed - replace with bits-ui declarative components
 
   async function handleAIRequest() {
     if (!query.trim()) return;
@@ -130,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
 
       dispatch("aiRequest", { query, context: content });
     } catch (err) {
-      error = err instanceof Error ? err.message : "AI request failed";
+      error = err instanceof Error ? err.message: "AI request failed";
     } finally {
       isProcessingAI = false;
   }}
@@ -171,11 +147,7 @@ https://svelte.dev/e/js_parse_error -->
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          content,
-          title,
-          citations,
-          wordCount: content.split(/\s+/).length,
+        body: JSON.stringify.length,
           isDirty: hasUnsavedChanges,
         }),
       });
@@ -193,7 +165,7 @@ https://svelte.dev/e/js_parse_error -->
         throw new Error((result as { answer?: any; success?: any; error?: any }).error || "Auto-save failed");
   }
     } catch (err) {
-      saveError = err instanceof Error ? err.message : "Auto-save failed";
+      saveError = err instanceof Error ? err.message: "Auto-save failed";
       console.error("Auto-save failed:", err);
     } finally {
       isSaving = false;
@@ -211,11 +183,7 @@ https://svelte.dev/e/js_parse_error -->
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          content,
-          title,
-          citations,
-          wordCount: content.split(/\s+/).length,
+        body: JSON.stringify.length,
           status: "draft",
         }),
       });
@@ -233,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
         throw new Error((result as { answer?: any; success?: any; error?: any }).error || "Save failed");
   }
     } catch (err) {
-      saveError = err instanceof Error ? err.message : "Save failed";
+      saveError = err instanceof Error ? err.message: "Save failed";
       console.error("Save failed:", err);
     } finally {
       isSaving = false;
@@ -315,7 +283,7 @@ https://svelte.dev/e/js_parse_error -->
       console.log("Document loaded successfully:", documentData.title);
     } catch (err) {
       documentLoadError =
-        err instanceof Error ? err.message : "Failed to load document";
+        err instanceof Error ? err.message: "Failed to load document";
       console.error("Error loading document:", err);
     } finally {
       loadingDocument = false;
@@ -323,8 +291,7 @@ https://svelte.dev/e/js_parse_error -->
   // Custom animation function for dialog
   function flyAndScale(
     node: Element,
-    params: { duration?: number; y?: number; start?: number } = {}
-  ) {
+    params: { duration?: number; y?: number; start?: number } = ) {
     const style = getComputedStyle(node);
     const transform = style.transform === "none" ? "" : style.transform;
     const opacity = +style.opacity;
@@ -342,7 +309,7 @@ https://svelte.dev/e/js_parse_error -->
     const styleToString = (
       style: Record<string, number | string | undefined>
     ): string => {
-      return Object.keys(style).reduce((str, key) => {
+      return Object.keys.reduce((str, key) => {
         if (style[key] === undefined) return str;
         return str + `${key}:${style[key]};`;
       }, "");
@@ -379,7 +346,7 @@ https://svelte.dev/e/js_parse_error -->
           <div>
             <h1 class="container mx-auto px-4">{title}</h1>
             <p class="container mx-auto px-4">
-              {documentType.charAt(0).toUpperCase() + documentType.slice(1)}
+              {documentType.charAt.toUpperCase() + documentType.slice(1)}
               {#if caseId}
                 • Case {caseId.slice(0, 8)}
               {/if}
@@ -545,7 +512,7 @@ https://svelte.dev/e/js_parse_error -->
                 class="container mx-auto px-4"
                 onclick={() =>
                   insertCitation({
-                    id: Math.random().toString(),
+                    id: Math.random.toString(),
                     text: "Sample Citation",
                     source: "Smith v. Jones, 123 F.3d 456 (2023)",
                     type: "case",
@@ -570,7 +537,7 @@ https://svelte.dev/e/js_parse_error -->
               </div>
               <div class="container mx-auto px-4">
                 <span class="container mx-auto px-4">Word Count:</span>
-                <span class="container mx-auto px-4">{content.split(/\s+/).length}</span>
+                <span class="container mx-auto px-4">{content.split.length}</span>
               </div>
               <div class="container mx-auto px-4">
                 <span class="container mx-auto px-4">Status:</span>

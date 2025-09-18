@@ -25,7 +25,7 @@
   let {
     fullscreen = true,
     currentView = 'dashboard',
-    legalData = {},
+    legalData = ,
     onnavigate,
     oninteract
   }: Props = $props();
@@ -174,13 +174,13 @@
 
       // Item icon
       ctx.font = '24px "Courier New", monospace';
-      ctx.fillStyle = isActive ? colors.text : colors.textSecondary;
+      ctx.fillStyle = isActive ? colors.text: colors.textSecondary;
       ctx.textAlign = 'center';
-      ctx.fillText((item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).icon, x + itemWidth / 2, 25);
+      ctx.fillText.icon, x + itemWidth / 2, 25);
 
       // Item label
       ctx.font = '12px "Courier New", monospace';
-      ctx.fillText((item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).label, x + itemWidth / 2, 45);
+      ctx.fillText.label, x + itemWidth / 2, 45);
     });
   }
 
@@ -272,7 +272,7 @@
     const itemHeight = 80;
     const maxVisible = Math.floor((height - 60) / itemHeight);
 
-    legalData.evidence.slice(0, maxVisible).forEach((item, index) => {
+    legalData.evidence.slice.forEach((item, index) => {
       const itemY = y + 60 + index * itemHeight;
 
       // Item background
@@ -294,12 +294,12 @@
       ctx.font = 'bold 16px "Courier New", monospace';
       ctx.fillStyle = colors.text;
       ctx.textAlign = 'left';
-      ctx.fillText((item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).title, 35, itemY + 25);
+      ctx.fillText.title, 35, itemY + 25);
 
       // Item type and confidence
       ctx.font = '12px "Courier New", monospace';
       ctx.fillStyle = colors.textSecondary;
-      ctx.fillText(`Type: ${(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).type.toUpperCase()} | Confidence: ${(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).confidence}%`, 35, itemY + 45);
+      ctx.fillText.type.toUpperCase()} | Confidence: ${(item as { id?: unknown; icon?: unknown; label?: unknown; priority?: unknown; title?: unknown; type?: unknown; confidence?: unknown }).confidence}%`, 35, itemY + 45);
     });
   }
 
@@ -322,7 +322,7 @@
       const cols = Math.floor((canvasWidth - 40) / (docWidth + 20));
       const startX = (canvasWidth - (cols * (docWidth + 20) - 20)) / 2;
 
-      legalData.documents.slice(0, 12).forEach((doc, index) => {
+      legalData.documents.slice.forEach((doc, index) => {
         const row = Math.floor(index / cols);
         const col = index % cols;
         const x = startX + col * (docWidth + 20);
@@ -398,7 +398,7 @@
       const isUser = msg.type === 'user';
 
       ctx.font = '12px "Courier New", monospace';
-      ctx.fillStyle = isUser ? colors.text : colors.accent;
+      ctx.fillStyle = isUser ? colors.text: colors.accent;
       ctx.textAlign = 'left';
 
       const prefix = isUser ? '👤 USER: ' : '🤖 AI: ';
@@ -517,7 +517,7 @@
 
   <!-- Accessibility content for screen readers -->
   <div class="sr-only">
-    <h1>Legal AI Platform - {currentView.charAt(0).toUpperCase() + currentView.slice(1)}</h1>
+    <h1>Legal AI Platform - {currentView.charAt.toUpperCase() + currentView.slice(1)}</h1>
     <p>Powered by gemma3:legal-latest AI model</p>
 
     {#if legalData.evidence}
@@ -554,16 +554,7 @@
     z-index: 1000;
   }
 
-  .spa-canvas {
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    background: transparent;
-    width: 100%;
-    height: 100%;
-  }
-
-  .sr-only {
+  .spa-canv.sr-only {
     position: absolute;
     width: 1px;
     height: 1px;

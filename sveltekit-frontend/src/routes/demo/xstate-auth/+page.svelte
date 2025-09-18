@@ -15,7 +15,7 @@
     Cpu, Zap, Brain, FileText, Users
   } from 'lucide-svelte';
 
-  let testResults = $state<any[]>([])([]);
+  let testResults = $state<any[]>([]) => []);
 
   let isRunningTests = $state(false);
   let overallStatus = $state<'idle' | 'testing' | 'complete'>('idle');
@@ -104,8 +104,7 @@
       }];
 
       // Update to running
-      testResults = testResults.map(result =>
-        (result as { name?: unknown; status?: unknown; message?: unknown; duration?: unknown }).name === name
+      testResults = testResults.map.name === name
           ? { ...result, status: 'running', message: 'Running test...' }
           : result
       );
@@ -116,19 +115,17 @@
         const duration = Date.now() - startTime;
 
         // Update to success
-        testResults = testResults.map(result =>
-          (result as { name?: unknown; status?: unknown; message?: unknown; duration?: unknown }).name === name
+        testResults = testResults.map.name === name
             ? { ...result, status: 'success', message, duration }
             : result
         );
       } catch (error) {
         // Update to error
-        testResults = testResults.map(result =>
-          (result as { name?: unknown; status?: unknown; message?: unknown; duration?: unknown }).name === name
+        testResults = testResults.map.name === name
             ? {
                 ...result,
                 status: 'error',
-                message: error instanceof Error ? error.message : 'Test failed'
+                message: error instanceof Error ? error.message: 'Test failed'
               }
             : result
         );
@@ -169,7 +166,7 @@
     }
   }
 
-  let successfulTests = $derived(testResults.filter(t => t.status === 'success').length);
+  let successfulTests = $derived(testResults.filter(item => item.length));
   let totalTests = $derived(testSuite.length);
   let allTestsPassed = $derived(successfulTests === totalTests && overallStatus === 'complete');
 </script>

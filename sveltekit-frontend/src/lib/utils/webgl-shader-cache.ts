@@ -726,7 +726,7 @@ export class WebGLShaderCache {
       cacheMisses: this.cacheMisses,
       totalCompilationTime,
       averageCompilationTime: this.shaderPrograms.size > 0 ?
-        totalCompilationTime / this.shaderPrograms.size : 0,
+        totalCompilationTime / this.shaderPrograms.size: 0,
       memoryUsage: this.estimateMemoryUsage()
     };
 
@@ -779,7 +779,7 @@ export class WebGLShaderCache {
         metadata.description,
         metadata.operation,
         ...metadata.tags
-      ].filter(Boolean).join(' ');
+      ].filter(item => item.join)(' ');
 
       // Use existing embedding service
       const response = await fetch('/api/ocr/langextract', {

@@ -13,7 +13,7 @@ export const GET: RequestHandler = (async () => {
     const data = await res.json();
     return json({ ok: true, upstream: baseUrl, health: data }, { status: 200 });
   } catch (err: any) {
-    const msg = err instanceof Error ? err.message : String(err);
+    const msg = err instanceof Error ? err.message: String(err);
     return json({ ok: false, upstream: baseUrl, error: msg }, { status: 502 });
   }
 });
@@ -30,7 +30,7 @@ export const POST: RequestHandler = (async ({ request }) => {
     const data = await res.json();
     return json(data, { status: res.status });
   } catch (err: any) {
-    const msg = err instanceof Error ? err.message : String(err);
+    const msg = err instanceof Error ? err.message: String(err);
     return json({ error: msg, upstream: baseUrl }, { status: 502 });
   }
 });

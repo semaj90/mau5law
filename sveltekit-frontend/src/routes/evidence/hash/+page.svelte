@@ -62,7 +62,7 @@
       loading = false;
   }}
   function copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text).then(() => {
+    navigator.clipboard.writeText.then(() => {
       alert('Copied to clipboard!');
     });
   }

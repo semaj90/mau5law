@@ -81,7 +81,7 @@ export class SOMNeuralNetwork {
       learningRate: config.learningRate || 0.1,
       neighborhoodRadius: config.neighborhoodRadius || 2.0,
       epochs: config.epochs || 100,
-      enableGPU: config.enableGPU !== undefined ? config.enableGPU : true,
+      enableGPU: config.enableGPU !== undefined ? config.enableGPU: true,
       decayRate: config.decayRate || 0.99,
       inputDimension: config.inputDimension || 384
     };
@@ -448,7 +448,7 @@ export class SOMNeuralNetwork {
     return neighbors;
   }
 
-  private async generateDecomposition(inputData: number[][]): Promise<Omit<SOMDecomposition, 'processingTime' | 'convergenceHistory'>> {
+  private async generateDecomposition(inputData: number[][]): Promise<Omit<SOMDecomposition, 'processingTime' | 'convergenceHistory'> {
     const clusters = await this.identifyClusters();
     const topologyMap = this.generateTopologyMap();
     const legalConcepts = this.extractLegalConcepts(inputData);

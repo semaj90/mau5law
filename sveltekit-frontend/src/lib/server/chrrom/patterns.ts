@@ -248,5 +248,5 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
 function hashKey(s: string): string {
   let h = 0;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  return (h >>> 0).toString(16);
+  return (h > 0).toString(16);
 }

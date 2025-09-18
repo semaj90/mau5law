@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   import 'nes.css/css/nes.min.css';
 </script>
 // Svelte runes are declared globally in `src/types/svelte-helpers.d.ts`.
-export {};
+export ;
 </script>
 
 <script lang="ts">
@@ -46,7 +46,7 @@ export {};
   // Compute search results reactively
   // TODO: Convert to $derived: searchResults = (() => {
     if (searchQuery && fuse) {
-      return fuse.search(searchQuery).map((r) => r.item)
+      return fuse.search.map((r) => r.item)
     }
     if (activeTab === "evidence") return evidenceItems;
     if (activeTab === "notes") return notesItems;
@@ -320,7 +320,7 @@ Which components to swap (recommended)
 - TagList: keep or convert to Melt chips/buttons later
 
 Behavior decisions
-- Keep current behaviors: hover-to-open, pin/unpin, Fuse search, InfiniteScrollList.
+- Keep current behaviors:hover-to-open, pin/unpin, Fuse search, InfiniteScrollList.
 - Use xstate on the frontend to represent auth/login state (so UI can show/hide or change behavior when logged in).
 - Keep DB usage (postgres-js + drizzle) on backend endpoints; call them from the frontend via fetch.
 

@@ -22,7 +22,16 @@ const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {
 type QdrantVectorStore = any;
 type QdrantClient = any;
 
-import type { LegalDocumentMetadata } from './qdrant-service.js';
+// Import types
+interface LegalDocumentMetadata {
+  id: string;
+  title: string;
+  documentType: string;
+  jurisdiction?: string;
+  practiceArea?: string;
+  createdAt: string;
+  [key: string]: any;
+}
 
 export interface LegalRAGConfig {
   qdrantUrl: string;
@@ -273,13 +282,13 @@ Only return the queries, one per line.`),
                   (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).content ||
                   `${(result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).title}\n\n${(result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).metadata?.summary || 'No content available'}`,
                 metadata: {
-                  ...(result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).metadata,
+                  ...result.metadata,
                   title: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).title,
                   score: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).semantic_score || 1 - (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).distance,
                   document_type: (result as { content?: any; title?: any; metadata?: any; semantic_score?: any; distance?: any; document_type?: any; answer?: any; value?: any }).document_type,
                   source: 'enhanced_semantic_search',
                 },
-              }));
+              });
 
               // Generate answer using enhanced RAG with semantic context
               const contextText = formatDocumentsAsString(enhancedRetrievedDocs);
@@ -469,7 +478,7 @@ Only return the queries, one per line.`),
           totalChunks: chunks.length,
           chunkSize: chunk.length,
         },
-      }));
+      });
 
       // Add to vector store
       const ids = await this.vectorStore.addDocuments(documents);
@@ -479,7 +488,7 @@ Only return the queries, one per line.`),
     } catch (error: any) {
       console.error('Error indexing document:', error);
       throw new Error(
-        `Document indexing failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Document indexing failed: ${error instanceof Error ? error.message: 'Unknown error'}`
       );
     }
   }
@@ -740,7 +749,7 @@ Only return the queries, one per line.`),
     } catch (error: any) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error during document processing',
+        error: error instanceof Error ? error.message: 'Unknown error during document processing',
         processingDetails: {
           fileSize: 0,
           extractedLength: 0,

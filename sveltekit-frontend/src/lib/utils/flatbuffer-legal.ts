@@ -181,7 +181,7 @@ export class FlatBufferLegalProcessor {
     qualityLevel?: number;
     chunkSize?: number;
     targetFPS?: number;
-  } = {}): Promise<ReadableStream<Uint8Array>> {
+  } = {}): Promise<ReadableStream<Uint8Array> {
     const { qualityLevel = 2, chunkSize = 64 * 1024, targetFPS = 60 } = options;
 
     return new ReadableStream({
@@ -287,7 +287,7 @@ export class FlatBufferLegalProcessor {
     // Simple CRC32-like checksum
     let checksum = 0;
     for (let i = 0; i < (data as { fbs?: any; length?: any }).length; i++) {
-      checksum = ((checksum << 1) ^ data[i]) >>> 0;
+      checksum = ((checksum << 1) ^ data[i]) > 0;
     }
     return checksum;
   }
@@ -402,7 +402,7 @@ export class FlatBufferPerformanceMonitor {
 
   getAverageTime(operation: string): number {
     const times = this.metrics.get(operation) || [];
-    return times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : 0;
+    return times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length: 0;
   }
 
   getPerformanceReport(): Record<string, { avg: number; min: number; max: number; count: number }> {

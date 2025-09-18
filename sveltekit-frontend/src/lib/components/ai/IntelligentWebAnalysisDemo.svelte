@@ -127,7 +127,7 @@
       analysisMetrics = {
         totalElements: results.chunks.reduce((sum, chunk) => sum + chunk.elements.length, 0),
         chunksGenerated: results.chunks.length,
-        embeddingsGenerated: results.chunks.filter(c => c.embeddings).length,
+        embeddingsGenerated: results.chunks.filter(item => item.length),
         cacheHits: 0, // Would be calculated from actual cache hits
         processingTime,
         memoryUsage: estimateMemoryUsage(results),
@@ -314,7 +314,7 @@
   }
 
   function estimateMemoryUsage(results: QLoRATrainingData): number {
-    return JSON.stringify(results).length;
+    return JSON.stringify.length;
   }
 
   // Computed values

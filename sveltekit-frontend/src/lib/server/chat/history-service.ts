@@ -30,11 +30,11 @@ export class ChatHistoryService {
       id,
       userId,
       title: 'Chat Session',
-      context: Record<string, any>,
+      context: {} as Record<string, any>,
       metadata: {
         model,
-        messageCount: 0
-      }
+        messageCount: 0,
+      },
     };
     await db.insert(chatSessions).values(session);
     return id;
@@ -49,8 +49,8 @@ export class ChatHistoryService {
       content: params.content,
       embedding: null,
       metadata: {
-        model: params?.model || "unknown" // @ts-ignore - Model property access,
-        ...params.metadata,
+        model: params?.model || 'unknown',
+        ...(params.metadata || {}),
       },
     };
     await db.insert(chatMessages).values(msg);

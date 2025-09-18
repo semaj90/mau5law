@@ -224,13 +224,13 @@ TODO: Implement document upload, AI summarization, export functionality
 								<div class="grid grid-cols-3 gap-2">
 									<div class="text-center">
 										<div class="nes-text is-success text-sm">
-											{summary.split(' ').length}
+											{summary.split.length}
 										</div>
 										<div class="nes-text is-disabled text-xs">Words</div>
 									</div>
 									<div class="text-center">
 										<div class="nes-text is-success text-sm">
-											{Math.ceil(summary.split(' ').length / 200)}
+											{Math.ceil.length / 200)}
 										</div>
 										<div class="nes-text is-disabled text-xs">Min Read</div>
 									</div>

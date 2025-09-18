@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
              0.5,  0.5, 0.0, 1.0, 1.0,
             -0.5,  0.5, 0.0, 0.0, 1.0
           ]);
-          lodSystem.buildLODCache(sourceNode.id, vertices, sourceNode.metadata || {});
+          lodSystem.buildLODCache(sourceNode.id, vertices, sourceNode.metadata || );
         }
       });
       // Render components to demo container
@@ -183,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
         }
       ];
       const rerankedResults = await reranker.rerank(mockResults, sampleUserContext);
-      performanceMetrics.aiBoosts = rerankedResults.filter(r => r.rerankScore > r.originalScore).length;
+      performanceMetrics.aiBoosts = rerankedResults.filter(item => item.length);
       // Simulate predictive prefetching
       const intentPrediction = await prefetcher.predictIntent(sampleUserContext.context);
       if (intentPrediction) {
@@ -198,7 +198,7 @@ https://svelte.dev/e/js_parse_error -->
   function switchDemo(demo: typeof currentDemo): void {
     currentDemo = demo;
     // Reset visual indicators
-    document.querySelectorAll('[id^="evidence-"], [id^="analyze-"]').forEach(el => {
+    document.querySelectorAll.forEach(el => {
       el.classList.remove('demo-highlight', 'ai-enhanced', 'lod-demo');
     });
     // Apply demo-specific styling
@@ -210,7 +210,7 @@ https://svelte.dev/e/js_parse_error -->
         document.getElementById('analyze-btn-1')?.classList.add('ai-enhanced');
         break;
       case 'lod':
-        document.querySelectorAll('[id^="evidence-"]').forEach(el => {
+        document.querySelectorAll.forEach(el => {
           el.classList.add('lod-demo');
         });
         break;

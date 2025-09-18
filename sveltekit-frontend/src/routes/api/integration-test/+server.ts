@@ -86,12 +86,12 @@ export const GET: RequestHandler = async ({ url }) => {
               return await db.select()
                 .from(users)
                 .where(eq(users.email, testUser.email))
-                .limit(1);
+                .limit(1));
             }
             throw error;
           });
 
-        const userId = Array.isArray(newUser) ? newUser[0]?.id : newUser.id;
+        const userId = Array.isArray(newUser) ? newUser[0]?.id: newUser.id;
 
         // CREATE - Insert test case
         const testCase = {

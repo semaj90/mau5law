@@ -165,7 +165,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
     } catch (error) {
       console.error('Search failed:', error);
-      processingStage = `Search failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      processingStage = `Search failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
       isProcessing = false;
     }
@@ -203,7 +203,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
     } catch (error) {
       console.error('Recommendation generation failed:', error);
-      processingStage = `Failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      processingStage = `Failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
       isProcessing = false;
     }
@@ -223,7 +223,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
 
     } catch (error) {
       console.error('Semantic analysis failed:', error);
-      processingStage = `Analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      processingStage = `Analysis failed: ${error instanceof Error ? error.message: 'Unknown error'}`;
     } finally {
       isProcessing = false;
     }
@@ -535,7 +535,7 @@ showAdvancedOptions = !showAdvancedOptions}
                     <h3 class="font-semibold text-sm">{(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).id}</h3>
                     <div class="flex items-center gap-2">
                       <Badge class={getConfidenceColor((result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).similarity)}>
-                        {Math.round((result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).similarity * 100)}%
+                        {Math.round.similarity * 100)}%
                       </Badge>
                       <Badge class="bits-badge-outline text-xs">{(result as { id?: unknown; similarity?: unknown; source?: unknown; content?: unknown; highlights?: unknown; relevanceScore?: unknown }).source}</Badge>
                     </div>
