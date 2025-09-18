@@ -21,12 +21,12 @@ import type { RequestHandler } from './$types.js';
 import { getEmbeddingRepository } from '../../../../lib/server/embedding/embedding-repository.js';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-// GET: smoke test description
+// GET: smoke test description;
 const originalGETHandler: RequestHandler = async () => {
   return json({ status: 'ok', info: 'POST { query, limit?, model? } to run kNN search' });
 };
 
-// POST: embed query and return kNN results via repository
+// POST: embed query and return kNN results via repository;
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();

@@ -9,7 +9,7 @@ import path from 'path';
 import type { RequestHandler } from './$types.js';
 
 
-// GET /api/v1/observability/state - Get current observability state with enhanced persistence
+// GET /api/v1/observability/state - Get current observability state with enhanced persistence;
 export const GET: RequestHandler = async () => {
   try {
     // Load enhanced persistent state
@@ -20,7 +20,7 @@ export const GET: RequestHandler = async () => {
     const file = path.join(runtimeDir, 'observability-state.json');
     let legacyPersisted: any = null;
     if(fs.existsSync(file)){
-      try { legacyPersisted = JSON.parse(fs.readFileSync(file,'utf8')); } catch {}
+      try { legacyPersisted = JSON.parse(fs.readFileSync(file,'utf8'); } catch {}
     }
 
     return json({
@@ -32,7 +32,7 @@ export const GET: RequestHandler = async () => {
       sustained: getSustainedP99Info(),
       persisted: legacyPersisted,
       // Additional metadata
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch(error: any){
     console.error('[observability-state] GET error:', error);
@@ -40,13 +40,13 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// POST /api/v1/observability/state - Update observability state
+// POST /api/v1/observability/state - Update observability state;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const updates = await request.json();
     const currentState = await loadObservabilityState();
 
-    // Merge updates with current state
+    // Merge updates with current state;
     const newState = {
       ...currentState,
       ...updates,
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
       daily_budgets: { ...currentState.daily_budgets, ...updates.daily_budgets },
       metadata: {
         ...currentState.metadata,
-        last_updated: new Date().toISOString()
+        last_updated: new Date().toISOString(),
       }
     };
 
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       state: newState,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
     console.error('[observability-state] POST error:', error);

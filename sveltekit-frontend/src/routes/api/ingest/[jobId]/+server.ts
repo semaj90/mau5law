@@ -55,14 +55,14 @@ export const GET: RequestHandler = async ({ params }) => {
         status: 'processing',
         progress: {
           stage: activeJob.stage || 'processing',
-          percentage: activeJob.progress || 0
+          percentage: activeJob.progress || 0,
         }
       } as JobStatusResponse);
     }
 
     // Check database for completed jobs
     // Jobs are stored with source containing the jobId
-    const documents = await db
+    const documents = await db;
       .select({
         id: userDocuments.id,
         source: userDocuments.source,
@@ -70,10 +70,10 @@ export const GET: RequestHandler = async ({ params }) => {
         contentType: userDocuments.contentType,
         embedding: userDocuments.embedding,
         metadata: userDocuments.metadata,
-        createdAt: userDocuments.createdAt
+        createdAt: userDocuments.createdAt,
       })
       .from(userDocuments)
-      .where(like(userDocuments.source, `%${jobId}%`))
+      .where(like(userDocuments.source, `%${jobId}%`)
       .limit(1);
 
     if (documents.length > 0) {
@@ -98,11 +98,11 @@ export const GET: RequestHandler = async ({ params }) => {
           metadata
         },
         createdAt: doc.createdAt?.toISOString(),
-        completedAt: metadata.completedAt || doc.createdAt?.toISOString()
+        completedAt: metadata.completedAt || doc.createdAt?.toISOString(),
       } as JobStatusResponse);
     }
 
-    // Check if job might be queued (if queue size > 0 and no active match)
+    // Check if job might be queued (if queue size > 0 and no active match);
     if (queuedJobs > 0) {
       return json({
         success: true,
@@ -110,17 +110,17 @@ export const GET: RequestHandler = async ({ params }) => {
         status: 'queued',
         progress: {
           stage: 'queued',
-          percentage: 0
+          percentage: 0,
         }
       } as JobStatusResponse);
     }
 
-    // Job not found
+    // Job not found;
     return json({
       success: true,
       jobId,
       status: 'not-found',
-      error: 'Job not found in queue or database'
+      error: 'Job not found in queue or database',
     } as JobStatusResponse);
 
   } catch (err) {
@@ -130,7 +130,7 @@ export const GET: RequestHandler = async ({ params }) => {
       success: false,
       jobId: params.jobId || 'unknown',
       status: 'failed',
-      error: err instanceof Error ? err.message: String(err)
+      error: err instanceof Error ? err.message: String(err),
     } as JobStatusResponse, { status: 500 });
   }
 };

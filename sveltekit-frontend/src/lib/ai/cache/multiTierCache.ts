@@ -4,7 +4,7 @@ export type CacheEntry<T> = {
 };
 
 export default class MultiTierCache<T = unknown> {
-  private memory = new Map<string, CacheEntry<T>>();
+  private memory = new Map<string, CacheEntry<T>();
   private memoryLimit: number;
   private storagePrefix: string;
 
@@ -42,7 +42,7 @@ export default class MultiTierCache<T = unknown> {
 	  if (entry === undefined) {
 		window.localStorage.removeItem(sKey);
 	  } else {
-		window.localStorage.setItem(sKey, JSON.stringify(entry));
+		window.localStorage.setItem(sKey, JSON.stringify(entry);
 	  }
 	} catch {
 	  // ignore storage errors (quota, private mode, etc.)
@@ -52,7 +52,7 @@ export default class MultiTierCache<T = unknown> {
   private loadFromStorage(key: string): CacheEntry<T> | undefined {
 	if (typeof window === 'undefined' || !window.localStorage) return undefined;
 	try {
-	  const s = window.localStorage.getItem(this.storageKey(key));
+	  const s = window.localStorage.getItem(this.storageKey(key);
 	  if (!s) return undefined;
 	  const parsed = JSON.parse(s) as CacheEntry<T>;
 	  return parsed;

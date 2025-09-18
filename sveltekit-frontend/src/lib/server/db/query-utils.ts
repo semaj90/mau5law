@@ -2,6 +2,7 @@
 // Production database query utilities with type safety
 import { eq, and, or, like, desc, asc, sql, SQL, count } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
+}
 
 export interface QueryFilters {
   search?: string;
@@ -22,27 +23,27 @@ export interface QueryFilters {
 export interface PaginationParams {
   page: number;
   limit: number;
-  offset: number;
+  offset: number;,
 }
 
 export class QueryBuilder {
   static buildFilters(table: any, filters: QueryFilters): SQL[] {
     const conditions: SQL[] = [];
 
-    // Search filters
+    // Search filters;
     if (filters.search) {
       const searchConditions: SQL[] = [];
 
       if (table.title)
-        searchConditions.push(like(table.title, `%${filters.search}%`));
+        searchConditions.push(like(table.title, `%${filters.search}%`);
       if (table.description)
-        searchConditions.push(like(table.description, `%${filters.search}%`));
+        searchConditions.push(like(table.description, `%${filters.search}%`);
       if (table.name)
-        searchConditions.push(like(table.name, `%${filters.search}%`));
+        searchConditions.push(like(table.name, `%${filters.search}%`);
       if (table.firstName)
-        searchConditions.push(like(table.firstName, `%${filters.search}%`));
+        searchConditions.push(like(table.firstName, `%${filters.search}%`);
       if (table.lastName)
-        searchConditions.push(like(table.lastName, `%${filters.search}%`));
+        searchConditions.push(like(table.lastName, `%${filters.search}%`);
       if (table.socialSecurityNumber)
         searchConditions.push(
           like(table.socialSecurityNumber, `%${filters.search}%`)
@@ -53,48 +54,48 @@ export class QueryBuilder {
         );
 
       if (searchConditions.length > 0) {
-        conditions.push(or(...searchConditions));
+        conditions.push(or(...searchConditions);
       }
     }
 
-    // Status filters
+    // Status filters;
     if (filters.status && table.status) {
-      conditions.push(eq(table.status, filters.status));
+      conditions.push(eq(table.status, filters.status);
     }
 
-    // Priority filters
+    // Priority filters;
     if (filters.priority && table.priority) {
-      conditions.push(eq(table.priority, filters.priority));
+      conditions.push(eq(table.priority, filters.priority);
     }
 
-    // Case ID filters
+    // Case ID filters;
     if (filters.caseId && table.caseId) {
-      conditions.push(eq(table.caseId, filters.caseId));
+      conditions.push(eq(table.caseId, filters.caseId);
     }
 
-    // Evidence type filters
+    // Evidence type filters;
     if (filters.evidenceType && table.evidenceType) {
-      conditions.push(eq(table.evidenceType, filters.evidenceType));
+      conditions.push(eq(table.evidenceType, filters.evidenceType);
     }
 
-    // Activity type filters
+    // Activity type filters;
     if (filters.activityType && table.activityType) {
-      conditions.push(eq(table.activityType, filters.activityType));
+      conditions.push(eq(table.activityType, filters.activityType);
     }
 
-    // Assignment filters
+    // Assignment filters;
     if (filters.assignedTo && table.assignedTo) {
-      conditions.push(eq(table.assignedTo, filters.assignedTo));
+      conditions.push(eq(table.assignedTo, filters.assignedTo);
     }
 
-    // Threat level filters
+    // Threat level filters;
     if (filters.threatLevel && table.threatLevel) {
-      conditions.push(eq(table.threatLevel, filters.threatLevel));
+      conditions.push(eq(table.threatLevel, filters.threatLevel);
     }
 
-    // User ID filters
+    // User ID filters;
     if (filters.userId && table.userId) {
-      conditions.push(eq(table.userId, filters.userId));
+      conditions.push(eq(table.userId, filters.userId);
     }
 
     return conditions;
@@ -107,7 +108,7 @@ export class QueryBuilder {
   static applySorting(
     table: any,
     sortBy: string,
-    order: "asc" | "desc" = "desc"
+    order: "asc" | "desc" = "desc";
   ): SQL {
     const column = table[sortBy];
     if (!column) {
@@ -120,10 +121,10 @@ export class QueryBuilder {
 
   static getPaginationParams(
     page?: string | null,
-    limit?: string | null
+    limit?: string | null;
   ): PaginationParams {
-    const pageNum = Math.max(1, parseInt(page || "1"));
-    const limitNum = Math.min(100, Math.max(1, parseInt(limit || "20")));
+    const pageNum = Math.max(1, parseInt(page || "1");
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit || "20"));
     const offset = (pageNum - 1) * limitNum;
 
     return { page: pageNum, limit: limitNum, offset };
@@ -132,7 +133,7 @@ export class QueryBuilder {
   static async executeQuery<T>(
     baseQuery: any,
     filters: QueryFilters,
-    table: any
+    table: any;
   ): Promise<any> {
     // Build filter conditions
     const conditions = this.buildFilters(table, filters);
@@ -147,7 +148,7 @@ export class QueryBuilder {
     // Apply sorting
     const sortBy = filters.sortBy || "updatedAt";
     const sortOrder = filters.sortOrder || "desc";
-    query = query.orderBy(this.applySorting(table, sortBy, sortOrder));
+    query = query.orderBy(this.applySorting(table, sortBy, sortOrder);
 
     // Get pagination params
     const pagination = this.getPaginationParams(
@@ -174,7 +175,7 @@ export class QueryBuilder {
   }
 }
 
-// Export helper functions
+// Export helper functions;
 export const {
   buildFilters,
   applyFilters,

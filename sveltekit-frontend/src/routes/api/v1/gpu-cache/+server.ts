@@ -18,7 +18,7 @@ import { dev } from '$app/environment';
 
 // === GPU Cache API Handlers ===
 
-// POST /api/v1/gpu-cache/store - Enhanced with Binary Encoding + NES Cache
+// POST /api/v1/gpu-cache/store - Enhanced with Binary Encoding + NES Cache;
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     await gpuCacheOrchestrator.initialize();
@@ -55,12 +55,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
       return json({ error: 'Missing required fields: key, data' }, { status: 400 });
     }
 
-    // Process vertex buffers if provided
+    // Process vertex buffers if provided;
     if (options.vertexBuffers) {
-      options.vertexBuffers = options.vertexBuffers.map((vb: number[]) => new Float32Array(vb));
+      options.vertexBuffers = options.vertexBuffers.map((vb: number[]) => new Float32Array(vb);
     }
 
-    // Process embedding if provided
+    // Process embedding if provided;
     if (options.embedding) {
       options.embedding = new Float32Array(options.embedding);
     }
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     let webgpuIntegration = null;
     let shaderCacheResult = null;
 
-    // Binary shader cache integration
+    // Binary shader cache integration;
     if (shaderData && enableBinaryEncoding) {
       try {
         shaderCacheResult = await binaryGPUShaderCache.storeShader({
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           },
         });
 
-        // Get workflow optimization
+        // Get workflow optimization;
         if (workflowType) {
           const workflowOpt = await binaryGPUShaderCache.optimizeForLegalWorkflow(workflowType);
           binaryOptimization = {
@@ -102,10 +102,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
     }
 
-    // NES cache orchestrator integration
+    // NES cache orchestrator integration;
     if (enableNESCache) {
       try {
-        // Cache as YoRHa component if applicable
+        // Cache as YoRHa component if applicable;
         if (options.isYoRHaComponent) {
           await nesCacheOrchestrator.cacheYoRHaComponent({
             name: key,
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             webgpuShaders: shaderData ? [shaderData.sourceCode] : [],
           });
         }
-        // Cache as GPU animation if applicable
+        // Cache as GPU animation if applicable;
         else if (options.isAnimation && shaderData) {
           await nesCacheOrchestrator.cacheGPUAnimation({
             id: key,
@@ -139,10 +139,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
     }
 
-    // WebGPU RAG service integration
+    // WebGPU RAG service integration;
     if (enableWebGPU) {
       try {
-        const webgpuResult = await webgpuRAGService.processQuery(`cache-store:${key}`, [
+        const webgpuResult = await webgpuRAGService.processQuery(`cache-store:${key}`, [)
           { data, options, metadata: result },
         ]);
         webgpuIntegration = {
@@ -158,7 +158,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
     }
 
-    // Convert Float32Arrays back to regular arrays for JSON response
+    // Convert Float32Arrays back to regular arrays for JSON response;
     const response = {
       success: true,
       entry: {
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         binaryOptimization,
         nesCache: nesIntegration,
         webgpu: webgpuIntegration,
-        shaderCache: shaderCacheResult
+        shaderCache: shaderCacheResult;
           ? {
               id: shaderCacheResult.id,
               cacheKey: shaderCacheResult.cacheKey,
@@ -201,7 +201,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json(response);
   } catch (error: any) {
     console.error('Enhanced GPU Cache store error:', error);
-    return json(
+    return json();
       {
         error: 'Failed to store in enhanced GPU cache',
         details: dev ? (error instanceof Error ? error.message: error) : undefined,
@@ -211,7 +211,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   }
 };
 
-// GET /api/v1/gpu-cache/[key]
+// GET /api/v1/gpu-cache/[key];
 export const GET: RequestHandler = async ({ url }) => {
   try {
     await gpuCacheOrchestrator.initialize();
@@ -238,7 +238,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({ error: 'Cache entry not found' }, { status: 404 });
     }
 
-    // Convert Float32Arrays for JSON response
+    // Convert Float32Arrays for JSON response;
     const response = {
       ...result,
       vertexBuffers: (result as { vertexBuffers?: any; embedding?: any }).vertexBuffers?.map((vb) => Array.from(vb)),
@@ -253,17 +253,16 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     console.error('GPU Cache retrieve error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to retrieve from GPU cache',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// PATCH /api/v1/gpu-cache/analyze-image
+// PATCH /api/v1/gpu-cache/analyze-image;
 export const PATCH: RequestHandler = async ({ request }) => {
   try {
     await gpuCacheOrchestrator.initialize();
@@ -283,7 +282,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
       analysisOptions
     );
 
-    // Convert typed arrays for JSON response
+    // Convert typed arrays for JSON response;
     const response = {
       ...result,
       vertexBuffers: (result as { vertexBuffers?: any; embedding?: any }).vertexBuffers?.map((vb) => Array.from(vb)),
@@ -297,11 +296,10 @@ export const PATCH: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error('GPU Cache image analysis error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to analyze image with GPU cache',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }
@@ -309,7 +307,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
 
 // === Database Synchronization Endpoints ===
 
-// POST /api/v1/gpu-cache/sync
+// POST /api/v1/gpu-cache/sync;
 export const _POST_sync: RequestHandler = async ({ request }) => {
   try {
     await gpuCacheOrchestrator.initialize();
@@ -326,7 +324,7 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
       indexeddb: { status: 'pending', entries: 0, errors: [] },
     };
 
-    // Simulate database synchronization
+    // Simulate database synchronization;
     for (const db of databases) {
       try {
         switch (db) {
@@ -371,11 +369,10 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error('GPU Cache sync error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to synchronize databases',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }
@@ -383,7 +380,7 @@ export const _POST_sync: RequestHandler = async ({ request }) => {
 
 // === Shader Cache Endpoints (NEW) ===
 
-// DELETE /api/v1/gpu-cache/shaders (Handles shader cache operations)
+// DELETE /api/v1/gpu-cache/shaders (Handles shader cache operations);
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -457,11 +454,10 @@ export const DELETE: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     console.error('Shader cache operation error:', error);
-    return json(
-      {
+    return json({
         error: 'Shader cache operation failed',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }
@@ -469,7 +465,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
 
 // === Analytics & Metrics Endpoints ===
 
-// GET /api/v1/gpu-cache/metrics
+// GET /api/v1/gpu-cache/metrics;
 export const OPTIONS: RequestHandler = async ({ url }) => {
   try {
     await gpuCacheOrchestrator.initialize();
@@ -532,11 +528,10 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     console.error('GPU Cache metrics error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to get GPU cache metrics',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }
@@ -544,7 +539,7 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
 
 // === User History Endpoints ===
 
-// GET /api/v1/gpu-cache/users/[userId]/history
+// GET /api/v1/gpu-cache/users/[userId]/history;
 export const HEAD: RequestHandler = async ({ url }) => {
   try {
     const userId = url.searchParams.get('userId');
@@ -567,11 +562,10 @@ export const HEAD: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     console.error('User history error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to get user history',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }
@@ -579,7 +573,7 @@ export const HEAD: RequestHandler = async ({ url }) => {
 
 // === Bulk Operations ===
 
-// PUT /api/v1/gpu-cache/bulk
+// PUT /api/v1/gpu-cache/bulk;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     await gpuCacheOrchestrator.initialize();
@@ -612,11 +606,10 @@ export const PUT: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error('Bulk operation error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to perform bulk operation',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }
@@ -626,28 +619,28 @@ export const PUT: RequestHandler = async ({ request }) => {
 
 async function simulatePostgreSQLSync(): Promise<void> {
   console.log('📊 Syncing embeddings with PostgreSQL + pgvector');
-  await new Promise((resolve) => setTimeout(resolve, 500));
+  await new Promise((resolve) => setTimeout(resolve, 500);
 }
 
 async function simulateQdrantSync(): Promise<void> {
   console.log('🏷️ Syncing tags with Qdrant');
-  await new Promise((resolve) => setTimeout(resolve, 300));
+  await new Promise((resolve) => setTimeout(resolve, 300);
 }
 
 async function simulateNeo4jSync(): Promise<void> {
   console.log('🕸️ Syncing graph relationships with Neo4j');
-  await new Promise((resolve) => setTimeout(resolve, 400));
+  await new Promise((resolve) => setTimeout(resolve, 400);
 }
 
 async function simulateIndexedDBSync(): Promise<void> {
   console.log('💾 Syncing client cache with IndexedDB');
-  await new Promise((resolve) => setTimeout(resolve, 200));
+  await new Promise((resolve) => setTimeout(resolve, 200);
 }
 
 async function simulateGetUserHistory(
   userId: string,
   limit: number,
-  includeAnalytics: boolean
+  includeAnalytics: boolean;
 ): Promise<any> {
   const history = [];
 
@@ -663,7 +656,7 @@ async function simulateGetUserHistory(
         retrievalLatencyMs: 10 + Math.random() * 20,
         gpuUtilization: 0.7 + Math.random() * 0.2,
       },
-      analytics: includeAnalytics
+      analytics: includeAnalytics;
         ? {
             similarityScores: [0.8 + Math.random() * 0.15],
             pageRankScores: [0.6 + Math.random() * 0.2],
@@ -687,7 +680,7 @@ async function handleBulkStore(entries: any[]): Promise<BulkStoreResult> {
         continue;
       }
 
-      // Process vertex buffers
+      // Process vertex buffers;
       if (entry.options?.vertexBuffers) {
         entry.options.vertexBuffers = entry.options.vertexBuffers.map(
           (vb: number[]) => new Float32Array(vb)
@@ -716,7 +709,7 @@ async function handleBulkRetrieve(keys: string[]): Promise<BulkRetrieveResult> {
       const entry = await gpuCacheOrchestrator.retrieve(key);
 
       if (entry) {
-        // Convert typed arrays for JSON response
+        // Convert typed arrays for JSON response;
         const response = {
           key,
           entry: {

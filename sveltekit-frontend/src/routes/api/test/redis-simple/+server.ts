@@ -28,7 +28,7 @@ export const GET: RequestHandler = async () => {
     // Get value using cache method
     const getValue = await redisService.getCache(testKey);
 
-    // Delete value using cache method (if available)
+    // Delete value using cache method (if available);
     try {
       await redisService.deleteCache?.(testKey);
     } catch (e) {
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error.message,

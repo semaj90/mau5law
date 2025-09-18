@@ -8,7 +8,7 @@
 import { createMachine, assign, spawn } from 'xstate';
 import type { ActorRefFrom } from 'xstate';
 
-// Types for the chat machine
+// Types for the chat machine;
 export interface ChatContext {
   userId: string;
   sessionId: string;
@@ -20,7 +20,7 @@ export interface ChatContext {
   errorMessage?: string;
   streamingMessage?: ChatMessage;
   qloraJobId?: string;
-  performanceMetrics: PerformanceMetrics;
+  performanceMetrics: PerformanceMetrics;,
 }
 
 export interface ChatMessage {
@@ -50,7 +50,7 @@ export interface SystemStatus {
   qloraReady: boolean;
   wasmBridgeReady: boolean;
   ollamaReady: boolean;
-  gemma3Ready: boolean;
+  gemma3Ready: boolean;,
 }
 
 export interface PerformanceMetrics {
@@ -59,7 +59,7 @@ export interface PerformanceMetrics {
   qloraJobsTriggered: number;
   gemma3Requests: number;
   userSatisfaction: number;
-  totalMessages: number;
+  totalMessages: number;,
 }
 
 // Events
@@ -86,7 +86,7 @@ export type ChatEvent =
 /**
  * SSR QLoRA Chat Machine
  * Orchestrates the complete chat experience with multiple AI backends
- */
+ */;
 export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
   id: 'ssrQloraChat',
   initial: 'initializing',
@@ -100,7 +100,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       preferredStyle: 'adaptive',
       domainExpertise: [],
       termCount: 0,
-      interactionCount: 0
+      interactionCount: 0,
     },
     systemStatus: {
       nesMemoryReady: false,
@@ -108,7 +108,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       qloraReady: false,
       wasmBridgeReady: false,
       ollamaReady: false,
-      gemma3Ready: false
+      gemma3Ready: false,
     },
     processingMode: 'instant',
     performanceMetrics: {
@@ -117,7 +117,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       qloraJobsTriggered: 0,
       gemma3Requests: 0,
       userSatisfaction: 0,
-      totalMessages: 0
+      totalMessages: 0,
     }
   },
 
@@ -127,7 +127,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       on: {
         INITIALIZE: {
           actions: ['setUserSession'],
-          target: 'loading'
+          target: 'loading',
         }
       }
     },
@@ -137,17 +137,17 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       on: {
         CONTEXT_LOADED: {
           actions: ['loadContext'],
-          target: 'idle'
+          target: 'idle',
         },
         ERROR: {
           actions: ['setError'],
-          target: 'error'
+          target: 'error',
         }
       },
       after: {
         10000: {
           target: 'error',
-          actions: ['setTimeoutError']
+          actions: ['setTimeoutError'],
         }
       }
     },
@@ -157,17 +157,17 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       on: {
         SEND_MESSAGE: {
           actions: ['addUserMessage'],
-          target: 'processing'
+          target: 'processing',
         },
         CLEAR_CHAT: {
           actions: ['clearMessages'],
-          target: 'idle'
+          target: 'idle',
         },
         UPDATE_DICTIONARY: {
-          actions: ['updateUserDictionary']
+          actions: ['updateUserDictionary'],
         },
         SYSTEM_STATUS_UPDATED: {
-          actions: ['updateSystemStatus']
+          actions: ['updateSystemStatus'],
         }
       }
     },
@@ -178,21 +178,21 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       states: {
         determiningMode: {
           entry: ['analyzeMessage'],
-          always: [
+          always: [;
             {
               guard: 'hasInstantResponse',
-              target: 'instantResponse'
+              target: 'instantResponse',
             },
             {
               guard: 'hasCacheHit',
-              target: 'cachedResponse'
+              target: 'cachedResponse',
             },
             {
               guard: 'shouldUseGemma3',
-              target: 'gemma3Processing'
+              target: 'gemma3Processing',
             },
             {
-              target: 'qloraProcessing'
+              target: 'qloraProcessing',
             }
           ]
         },
@@ -202,7 +202,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
           on: {
             INSTANT_RESPONSE: {
               actions: ['addInstantResponse'],
-              target: '#ssrQloraChat.idle'
+              target: '#ssrQloraChat.idle',
             }
           }
         },
@@ -212,7 +212,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
           on: {
             CACHE_HIT: {
               actions: ['addCachedResponse'],
-              target: '#ssrQloraChat.idle'
+              target: '#ssrQloraChat.idle',
             }
           }
         },
@@ -222,15 +222,15 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
           on: {
             STREAM_STARTED: {
               actions: ['startStreaming'],
-              target: 'streaming'
+              target: 'streaming',
             },
             QLORA_RESPONSE: {
               actions: ['addQLoRAResponse'],
-              target: '#ssrQloraChat.idle'
+              target: '#ssrQloraChat.idle',
             },
             ERROR: {
               actions: ['setError'],
-              target: '#ssrQloraChat.error'
+              target: '#ssrQloraChat.error',
             }
           }
         },
@@ -240,15 +240,15 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
           on: {
             STREAM_STARTED: {
               actions: ['startStreaming'],
-              target: 'streaming'
+              target: 'streaming',
             },
             GEMMA3_RESPONSE: {
               actions: ['addGemma3Response'],
-              target: '#ssrQloraChat.idle'
+              target: '#ssrQloraChat.idle',
             },
             ERROR: {
               actions: ['setError'],
-              target: '#ssrQloraChat.error'
+              target: '#ssrQloraChat.error',
             }
           }
         },
@@ -256,15 +256,15 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         streaming: {
           on: {
             STREAM_CHUNK: {
-              actions: ['addStreamChunk']
+              actions: ['addStreamChunk'],
             },
             STREAM_COMPLETE: {
               actions: ['completeStreaming'],
-              target: 'postProcessing'
+              target: 'postProcessing',
             },
             ERROR: {
               actions: ['setError'],
-              target: '#ssrQloraChat.error'
+              target: '#ssrQloraChat.error',
             }
           }
         },
@@ -274,12 +274,12 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
           on: {
             NEURAL_SPRITE_GENERATED: {
               actions: ['attachNeuralSprite'],
-              target: '#ssrQloraChat.idle'
+              target: '#ssrQloraChat.idle',
             }
           },
           after: {
             2000: {
-              target: '#ssrQloraChat.idle'
+              target: '#ssrQloraChat.idle',
             }
           }
         }
@@ -288,7 +288,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       on: {
         ERROR: {
           actions: ['setError'],
-          target: 'error'
+          target: 'error',
         }
       }
     },
@@ -298,15 +298,15 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       on: {
         RETRY_MESSAGE: {
           actions: ['clearError'],
-          target: 'processing'
+          target: 'processing',
         },
         CLEAR_CHAT: {
           actions: ['clearMessages', 'clearError'],
-          target: 'idle'
+          target: 'idle',
         },
         INITIALIZE: {
           actions: ['clearError'],
-          target: 'loading'
+          target: 'loading',
         }
       }
     }
@@ -318,7 +318,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     }
   }
 }, {
-  // Actions
+  // Actions;
   actions: {
     logInitialization: () => {
       console.log('🔄 SSR QLoRA Chat Machine initializing...');
@@ -343,7 +343,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       },
       performanceMetrics: (context) => ({
         ...context.performanceMetrics,
-        totalMessages: context.performanceMetrics.totalMessages + 1
+        totalMessages: context.performanceMetrics.totalMessages + 1,
       })
     }),
 
@@ -392,7 +392,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
               content: event.response,
               source: 'nes_memory',
               streaming: false,
-              processingTime: 0
+              processingTime: 0,
             }
           ];
         }
@@ -411,7 +411,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
               content: event.response,
               source: 'gpu_cache',
               streaming: false,
-              processingTime: 50 // Typical cache response time
+              processingTime: 50 // Typical cache response time,
             }
           ];
         }
@@ -421,7 +421,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
         if (event.type === 'CACHE_HIT') {
           return {
             ...context.performanceMetrics,
-            cacheHitRate: (context.performanceMetrics.cacheHitRate + 1) / 2
+            cacheHitRate: (context.performanceMetrics.cacheHitRate + 1) / 2,
           };
         }
         return context.performanceMetrics;
@@ -438,7 +438,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
               ...lastMessage,
               content: event.response,
               source: 'qlora',
-              streaming: false
+              streaming: false,
             }
           ];
         }
@@ -447,7 +447,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       qloraJobId: (_, event) => event.type === 'QLORA_RESPONSE' ? event.jobId: undefined,
       performanceMetrics: (context) => ({
         ...context.performanceMetrics,
-        qloraJobsTriggered: context.performanceMetrics.qloraJobsTriggered + 1
+        qloraJobsTriggered: context.performanceMetrics.qloraJobsTriggered + 1,
       })
     }),
 
@@ -461,7 +461,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
               ...lastMessage,
               content: event.response,
               source: 'gemma3',
-              streaming: false
+              streaming: false,
             }
           ];
         }
@@ -469,12 +469,12 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
       },
       performanceMetrics: (context) => ({
         ...context.performanceMetrics,
-        gemma3Requests: context.performanceMetrics.gemma3Requests + 1
+        gemma3Requests: context.performanceMetrics.gemma3Requests + 1,
       })
     }),
 
     startStreaming: assign({
-      streamingMessage: (context) => context.messages[context.messages.length - 1]
+      streamingMessage: (context) => context.messages[context.messages.length - 1],
     }),
 
     addStreamChunk: assign({
@@ -487,7 +487,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
             {
               ...lastMessage,
               chunks: updatedChunks,
-              content: updatedChunks.join(' ')
+              content: updatedChunks.join(' '),
             }
           ];
         }
@@ -503,13 +503,13 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
             ...context.messages.slice(0, -1),
             {
               ...lastMessage,
-              streaming: false
+              streaming: false,
             }
           ];
         }
         return context.messages;
       },
-      streamingMessage: undefined
+      streamingMessage: undefined,
     }),
 
     generateNeuralSprite: (context) => {
@@ -525,7 +525,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
             ...context.messages.slice(0, -1),
             {
               ...lastMessage,
-              neuralSprite: event.sprite
+              neuralSprite: event.sprite,
             }
           ];
         }
@@ -550,7 +550,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
           const newSatisfaction = (currentSatisfaction + event.feedback) / 2;
           return {
             ...context.performanceMetrics,
-            userSatisfaction: newSatisfaction
+            userSatisfaction: newSatisfaction,
           };
         }
         return context.performanceMetrics;
@@ -560,7 +560,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     triggerLearning: (context, event) => {
       if (event.type === 'FEEDBACK_PROVIDED') {
         console.log(`🧠 Triggering learning from feedback: ${event.feedback}`);
-        // Trigger QLoRA retraining if feedback is strong
+        // Trigger QLoRA retraining if feedback is strong;
         if (Math.abs(event.feedback) > 0.8) {
           console.log('🔥 Strong feedback detected - triggering QLoRA retraining');
         }
@@ -570,7 +570,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     clearMessages: assign({
       messages: [],
       streamingMessage: undefined,
-      errorMessage: undefined
+      errorMessage: undefined,
     }),
 
     updateUserDictionary: assign({
@@ -598,7 +598,7 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
 
         return {
           ...context.performanceMetrics,
-          averageResponseTime: avgTime
+          averageResponseTime: avgTime,
         };
       }
     }),
@@ -617,11 +617,11 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     }),
 
     setTimeoutError: assign({
-      errorMessage: 'System initialization timed out'
+      errorMessage: 'System initialization timed out',
     }),
 
     clearError: assign({
-      errorMessage: undefined
+      errorMessage: undefined,
     }),
 
     logError: (context) => {
@@ -629,14 +629,14 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     }
   },
 
-  // Guards
+  // Guards;
   guards: {
     hasInstantResponse: (context, event) => {
-      // Check if message matches NES memory patterns
+      // Check if message matches NES memory patterns;
       if (event.type === 'SEND_MESSAGE') {
         const message = event.message.content.toLowerCase();
         const commonPatterns = ['hello', 'help', 'contract review', 'legal research'];
-        return commonPatterns.some(pattern => message.includes(pattern));
+        return commonPatterns.some(pattern => message.includes(pattern);
       }
       return false;
     },
@@ -647,12 +647,12 @@ export const ssrQloraChatMachine = createMachine<ChatContext, ChatEvent>({
     },
 
     shouldUseGemma3: (context, event) => {
-      // Use Gemma3 for complex legal analysis
+      // Use Gemma3 for complex legal analysis;
       if (event.type === 'SEND_MESSAGE') {
         const message = event.message.content;
         const complexPatterns = ['analyze', 'compare', 'summarize', 'explain'];
         const isComplex = message.length > 100 ||
-                         complexPatterns.some(pattern => message.toLowerCase().includes(pattern));
+                         complexPatterns.some(pattern => message.toLowerCase().includes(pattern);
         return context.systemStatus.gemma3Ready && isComplex;
       }
       return false;

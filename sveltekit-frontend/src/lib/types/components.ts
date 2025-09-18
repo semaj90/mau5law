@@ -5,7 +5,8 @@ import type { UploadedFile } from './global.js';
 
 // =====================================================
 // FILE UPLOAD COMPONENT FIX
-// =====================================================
+// =====================================================;
+}
 
 export interface FileUploadSectionProps {
   onFileUpload?: (files: File[]) => void;
@@ -16,7 +17,8 @@ export interface FileUploadSectionProps {
 
 // =====================================================
 // COMPONENT PROPS INTERFACE FIXES
-// =====================================================
+// =====================================================;
+}
 
 export interface ComponentPropsBase {
   class?: string;
@@ -54,7 +56,8 @@ export interface FileUploadProps extends ComponentPropsBase {
 
 // =====================================================
 // ENHANCED DOCUMENT TYPE FIX
-// =====================================================
+// =====================================================;
+}
 
 export interface LegalDocumentExtended {
   id: string;
@@ -83,23 +86,25 @@ export type SubmitHandler = (event: Event & { currentTarget: HTMLFormElement }) 
 
 // =====================================================
 // CUSTOM EVENT TYPES
-// =====================================================
+// =====================================================;
+}
 
 export interface CustomEventDetail<T = any> {
-  detail: T;
+  detail: T;,
 }
 
 export type CustomEventHandler<T = any> = (event: CustomEvent<T>) => void;
 
 // =====================================================
 // FORM STATE FIXES
-// =====================================================
+// =====================================================;
+}
 
 export interface FormFieldState {
   value: any;
   error?: string;
   touched: boolean;
-  dirty: boolean;
+  dirty: boolean;,
 }
 
 export interface FormValidationState {
@@ -112,30 +117,32 @@ export interface FormValidationState {
 
 // =====================================================
 // SIDEBAR & LAYOUT STATE FIXES
-// =====================================================
+// =====================================================;
+}
 
 export interface SidebarState {
   open: boolean;
   collapsed: boolean;
-  pinned: boolean;
+  pinned: boolean;,
 }
 
 export interface LayoutState {
   sidebar: SidebarState;
   theme: 'light' | 'dark' | 'auto';
-  fullscreen: boolean;
+  fullscreen: boolean;,
 }
 
 // =====================================================
 // SEARCH COMPONENT FIXES
-// =====================================================
+// =====================================================;
+}
 
 export interface SearchFilters {
   type?: string;
   caseId?: string;
   dateRange?: {
     start: string;
-    end: string;
+    end: string;,
   };
   status?: string[];
   tags?: string[];
@@ -148,7 +155,8 @@ export interface SearchFacets {
 
 // =====================================================
 // AI & ML COMPONENT FIXES
-// =====================================================
+// =====================================================;
+}
 
 export interface AIModel {
   id: string;
@@ -169,12 +177,13 @@ export interface ModelAvailability {
   ollama: boolean;
   openai: boolean;
   claude: boolean;
-  local: boolean;
+  local: boolean;,
 }
 
 // =====================================================
 // NOTIFICATION FIXES
-// =====================================================
+// =====================================================;
+}
 
 export interface Toast {
   id: string;
@@ -182,12 +191,13 @@ export interface Toast {
   title: string;
   message: string;
   duration?: number;
-  actions?: Array<any>
+  actions?: Array<any>;
+}
 
 export interface Notification extends Toast {
   read: boolean;
   timestamp: string;
-  category: string;
+  category: string;,
 }
 
 // (All interfaces exported individually above; no aggregate export block to avoid conflicts)

@@ -17,7 +17,7 @@ async function checkServiceHealth(url: string, timeout = 5000): Promise<boolean>
 
     const response = await fetch(url, {
       signal: controller.signal,
-      method: 'GET'
+      method: 'GET',
     });
 
     clearTimeout(timeoutId);
@@ -32,12 +32,12 @@ async function checkDockerDesktop(): Promise<any> {
     const { stdout } = await execAsync('docker info --format "{{.ServerVersion}}"');
     return {
       running: true,
-      version: stdout.trim()
+      version: stdout.trim(),
     };
   } catch (error: any) {
     return {
       running: false,
-      error: error.message || 'Docker Desktop not running'
+      error: error.message || 'Docker Desktop not running',
     };
   }
 }
@@ -48,12 +48,12 @@ async function checkDockerContainer(containerName: string): Promise<any> {
     const status = stdout.trim();
     return {
       running: status.toLowerCase().includes('up'),
-      status: status || 'Not found'
+      status: status || 'Not found',
     };
   } catch (error: any) {
     return {
       running: false,
-      error: error.message || 'Container check failed'
+      error: error.message || 'Container check failed',
     };
   }
 }
@@ -64,7 +64,7 @@ async function checkPostgresHealth(host: string, port: number): Promise<boolean>
     const { stdout } = await execAsync(`PGPASSWORD=123456 psql -h ${host} -p ${port} -U legal_admin -d legal_ai_db -c "SELECT 1;" --quiet --tuples-only`);
     return stdout.trim() === '1';
   } catch (error: any) {
-    // Try alternative Docker exec approach
+    // Try alternative Docker exec approach;
     try {
       await execAsync('docker exec legal-ai-postgres pg_isready -U legal_admin -d legal_ai_db');
       return true;
@@ -80,7 +80,7 @@ async function checkRedisHealth(host: string, port: number): Promise<boolean> {
     const { stdout } = await execAsync(`redis-cli -h ${host} -p ${port} ping`);
     return stdout.trim().toLowerCase() === 'pong';
   } catch (error: any) {
-    // Try alternative Docker exec approach
+    // Try alternative Docker exec approach;
     try {
       const { stdout } = await execAsync('docker exec legal-ai-redis redis-cli ping');
       return stdout.trim().toLowerCase() === 'pong';
@@ -134,61 +134,61 @@ export const GET: RequestHandler = async () => {
       overall: dockerDesktop.running && allServicesHealthy,
       docker: {
         desktop: dockerDesktop,
-        containers: dockerContainers
+        containers: dockerContainers,
       },
       services: {
         postgresql: {
           healthy: postgresHealthy,
           url: 'localhost:5433',
-          type: 'docker-container'
+          type: 'docker-container',
         },
         redis: {
           healthy: redisHealthy,
           url: 'localhost:6379',
-          type: 'docker-container'
+          type: 'docker-container',
         },
         qdrant: {
           healthy: qdrantHealthy,
           url: 'localhost:6333',
-          type: 'docker-container'
+          type: 'docker-container',
         },
         embeddings: {
           healthy: embeddingsHealthy,
           url: 'http://localhost:11434',
-          type: 'native-service'
+          type: 'native-service',
         },
         ocr: {
           healthy: ocrHealthy,
           url: 'native-processing',
-          type: 'native'
+          type: 'native',
         },
         storage: {
           healthy: storageHealthy,
           url: 'file-system',
-          type: 'native'
+          type: 'native',
         },
         search: {
           healthy: searchHealthy,
           url: 'built-in',
-          type: 'native'
+          type: 'native',
         }
       },
       healthSummary: {
         totalServices: 7,
         healthyServices: [postgresHealthy, redisHealthy, qdrantHealthy, embeddingsHealthy, ocrHealthy, storageHealthy, searchHealthy].filter(item => item.length),
         dockerRequired: true,
-        dockerRunning: dockerDesktop.running
+        dockerRunning: dockerDesktop.running,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     return json(status);
   } catch (error: any) {
-    return json(
+    return json();
       {
         error: 'Failed to check system status',
         details: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );

@@ -74,15 +74,15 @@ export class RedisIntegration {
   compressData(data) {
     const serialized = JSON.stringify(data);
     if (this.options.useCompression && serialized.length > COMPRESSION_THRESHOLD) {
-      const compressed = gzipSync(Buffer.from(serialized));
+      const compressed = gzipSync(Buffer.from(serialized);
       return {
         compressed: true,
-        data: compressed.toString('base64')
+        data: compressed.toString('base64'),
       };
     }
     return {
       compressed: false,
-      data: serialized
+      data: serialized,
     };
   }
 
@@ -119,7 +119,7 @@ export class RedisIntegration {
     // Try Redis first
     if (this.isConnected && this.client) {
       try {
-        await this.client.setex(finalKey, finalTTL, JSON.stringify(compressed));
+        await this.client.setex(finalKey, finalTTL, JSON.stringify(compressed);
         return true;
       } catch (error) {
         console.warn('Redis set failed, falling back to memory:', error.message);
@@ -243,7 +243,7 @@ export class RedisIntegration {
     const entry = {
       value,
       expires: Date.now() + ttl,
-      accessed: Date.now()
+      accessed: Date.now(),
     };
     
     if (!memoryCache.has(key)) {
@@ -357,7 +357,7 @@ export class RedisIntegration {
       redis: false,
       memory: true,
       memoryCacheSize,
-      connectionAttempts: this.connectionAttempts
+      connectionAttempts: this.connectionAttempts,
     };
 
     if (this.isConnected && this.client) {
@@ -384,7 +384,7 @@ export class RedisIntegration {
       memoryCacheSize,
       maxMemorySize: MAX_MEMORY_CACHE_SIZE,
       connectionAttempts: this.connectionAttempts,
-      options: this.options
+      options: this.options,
     };
   }
 

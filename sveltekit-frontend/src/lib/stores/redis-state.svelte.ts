@@ -12,7 +12,7 @@ interface RedisConnectionState {
   activeChannels: Set<string>;
   messageCount: number;
   cacheHits: number;
-  cacheMisses: number;
+  cacheMisses: number;,
 }
 
 interface RedisMessage {
@@ -23,7 +23,7 @@ interface RedisMessage {
 }
 
 class RedisStateStore {
-  // Core connection state using runes
+  // Core connection state using runes;
   private state = $state<RedisConnectionState>({
     isConnected: false,
     connectionAttempts: 0,
@@ -33,13 +33,13 @@ class RedisStateStore {
     activeChannels: new Set(),
     messageCount: 0,
     cacheHits: 0,
-    cacheMisses: 0
+    cacheMisses: 0,
   });
 
   // Recent messages buffer
   private recentMessages = $state<RedisMessage[]>([]);
   
-  // Derived connection status
+  // Derived connection status;
   connectionStatus = $derived(() => {
     if (this.state.isConnected) {
       return { status: 'connected', color: 'green', text: 'Connected' };
@@ -50,35 +50,35 @@ class RedisStateStore {
     }
   });
   
-  // Connection health indicator
+  // Connection health indicator;
   connectionHealth = $derived(() => {
     if (!this.state.isConnected) return 'unhealthy';
     if (this.state.lastError) return 'warning';
     return 'healthy';
   });
   
-  // Connection uptime
+  // Connection uptime;
   uptime = $derived(() => {
     if (!this.state.isConnected || !this.state.lastConnected) return 0;
     return Date.now() - this.state.lastConnected;
   });
   
-  // Cache hit ratio
+  // Cache hit ratio;
   cacheHitRatio = $derived(() => {
     const total = this.state.cacheHits + this.state.cacheMisses;
     if (total === 0) return 0;
     return Math.round((this.state.cacheHits / total) * 100);
   });
   
-  // Active channels summary
+  // Active channels summary;
   channelsSummary = $derived(() => {
     return Array.from(this.state.activeChannels).map(channel => ({
       name: channel,
-      messageCount: this.recentMessages.filter(item => item.length)
-    }));
+      messageCount: this.recentMessages.filter(item => item.length),
+    });
   });
   
-  // Recent activity summary
+  // Recent activity summary;
   recentActivity = $derived(() => {
     const now = Date.now();
     const lastMinute = this.recentMessages.filter(m => now - m.timestamp < 60000);
@@ -87,7 +87,7 @@ class RedisStateStore {
     return {
       lastMinute: lastMinute.length,
       lastHour: lastHour.length,
-      total: this.recentMessages.length
+      total: this.recentMessages.length,
     };
   });
 
@@ -96,7 +96,7 @@ class RedisStateStore {
   }
 
   private setupReactiveEffects(): void {
-    // React to connection status changes
+    // React to connection status changes;
     $effect(() => {
       const { status, text } = this.connectionStatus;
       if (status === 'connected' && this.state.lastConnected) {
@@ -106,14 +106,14 @@ class RedisStateStore {
       }
     });
     
-    // React to connection health changes
+    // React to connection health changes;
     $effect(() => {
       if (this.connectionHealth === 'unhealthy' && this.state.connectionAttempts > 3) {
         console.warn('⚠️ Redis connection health degraded after', this.state.connectionAttempts, 'attempts');
       }
     });
     
-    // React to cache performance
+    // React to cache performance;
     $effect(() => {
       const ratio = this.cacheHitRatio;
       if (ratio < 50 && this.state.cacheHits + this.state.cacheMisses > 10) {
@@ -121,19 +121,19 @@ class RedisStateStore {
       }
     });
     
-    // Cleanup old messages
+    // Cleanup old messages;
     $effect(() => {
       const now = Date.now();
       const oneHour = 3600000;
       
-      // Keep messages for 1 hour
+      // Keep messages for 1 hour;
       if (this.recentMessages.length > 100) {
         this.recentMessages = this.recentMessages.filter(m => now - m.timestamp < oneHour);
       }
     });
   }
 
-  // Connection management methods
+  // Connection management methods;
   setConnected(connected: boolean): void {
     this.state.isConnected = connected;
     if (connected) {
@@ -161,7 +161,7 @@ class RedisStateStore {
     this.state.clientCount = count;
   }
 
-  // Channel management
+  // Channel management;
   addChannel(channel: string): void {
     this.state.activeChannels = new Set([...this.state.activeChannels, channel]);
   }
@@ -172,7 +172,7 @@ class RedisStateStore {
     this.state.activeChannels = newChannels;
   }
 
-  // Message handling
+  // Message handling;
   addMessage(channel: string, data: any, userId?: string): void {
     const message: RedisMessage = {
       channel,
@@ -185,7 +185,7 @@ class RedisStateStore {
     this.state.messageCount++;
   }
 
-  // Cache statistics
+  // Cache statistics;
   recordCacheHit(): void {
     this.state.cacheHits++;
   }
@@ -203,7 +203,7 @@ class RedisStateStore {
   get messageCount(): number { return this.state.messageCount; }
   get messages(): RedisMessage[] { return [...this.recentMessages]; }
 
-  // Reset all statistics
+  // Reset all statistics;
   resetStats(): void {
     this.state.messageCount = 0;
     this.state.cacheHits = 0;
@@ -215,7 +215,7 @@ class RedisStateStore {
 // Create and export the store instance
 export const redisStateStore = new RedisStateStore();
 
-// Helper functions for components
+// Helper functions for components;
 export function useRedisState() {
   return {
     store: redisStateStore,
@@ -228,14 +228,14 @@ export function useRedisState() {
     isConnected: () => redisStateStore.isConnected,
     lastError: () => redisStateStore.lastError,
     activeChannels: () => redisStateStore.activeChannels,
-    messageCount: () => redisStateStore.messageCount
+    messageCount: () => redisStateStore.messageCount,
   };
 }
 
-// Integration helper for existing Redis service
+// Integration helper for existing Redis service;
 export function createRedisStateIntegration(redisService: any) {
   return {
-    // Call these methods from your existing Redis service
+    // Call these methods from your existing Redis service;
     onConnected: () => {
       redisStateStore.setConnected(true);
       redisStateStore.resetConnectionAttempts();

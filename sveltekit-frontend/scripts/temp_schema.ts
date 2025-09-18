@@ -91,7 +91,7 @@ export const legalDocuments = pgTable("legal_documents", {
   embedding: vector("embedding", { dimensions: 384 }),
   keywords: jsonb("keywords").$type<string[]>().default([]),
   topics: jsonb("topics").$type<string[]>().default([]),
-  parties: jsonb("parties")
+  parties: jsonb("parties");
     .$type<{
       plaintiff?: string;
       defendant?: string;
@@ -663,7 +663,7 @@ export const reportsRelations = relations(reports, ({ one }) => ({
     fields: [reports.createdBy],
     references: [users.id],
   }),
-}));
+});
 
 export const canvasStatesRelations = relations(canvasStates, ({ one }) => ({
   case: one(cases, {
@@ -674,7 +674,7 @@ export const canvasStatesRelations = relations(canvasStates, ({ one }) => ({
     fields: [canvasStates.createdBy],
     references: [users.id],
   }),
-}));
+});
 
 export const aiReportsRelations = relations(aiReports, ({ one }) => ({
   case: one(cases, {
@@ -685,7 +685,7 @@ export const aiReportsRelations = relations(aiReports, ({ one }) => ({
     fields: [aiReports.createdBy],
     references: [users.id],
   }),
-}));
+});
 
 export const personsOfInterestRelations = relations(
   personsOfInterest,
@@ -727,14 +727,14 @@ export const legalDocumentsRelations = relations(legalDocuments, ({ one, many })
     references: [evidence.id],
   }),
   documentSections: many(documentSections),
-}));
+});
 
 export const documentSectionsRelations = relations(documentSections, ({ one }) => ({
   document: one(legalDocuments, {
     fields: [documentSections.documentId],
     references: [legalDocuments.id],
   }),
-}));
+});
 
 export const legalPrecedentsRelations = relations(
   legalPrecedents,
@@ -767,14 +767,14 @@ export const usersRelations = relations(users, ({ many }) => ({
   activitiesCreated: many(caseActivities, { relationName: "createdBy" }),
   criminalsCreated: many(criminals),
   sessions: many(sessions),
-}));
+});
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
     references: [users.id],
   }),
-}));
+});
 
 export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
@@ -789,7 +789,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   }),
   evidence: many(evidence),
   activities: many(caseActivities),
-}));
+});
 
 export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
@@ -797,7 +797,7 @@ export const criminalsRelations = relations(criminals, ({ one, many }) => ({
     references: [users.id],
   }),
   evidence: many(evidence),
-}));
+});
 
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
@@ -808,7 +808,7 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     fields: [evidence.caseId],
     references: [cases.id],
   }),
-}));
+});
 
 export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
   case: one(cases, {
@@ -825,7 +825,7 @@ export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
     references: [users.id],
     relationName: "createdBy",
   }),
-}));
+});
 
 export const attachmentVerificationsRelations = relations(
   attachmentVerifications,
@@ -842,7 +842,7 @@ export const themesRelations = relations(themes, ({ one }) => ({
     fields: [themes.createdBy],
     references: [users.id],
   }),
-}));
+});
 
 export const contentEmbeddingsRelations = relations(
   contentEmbeddings,
@@ -859,14 +859,14 @@ export const ragSessionsRelations = relations(ragSessions, ({ one }) => ({
     fields: [ragSessions.userId],
     references: [users.id],
   }),
-}));
+});
 
 export const ragMessagesRelations = relations(ragMessages, ({ one }) => ({
   session: one(ragSessions, {
     fields: [ragMessages.sessionId],
     references: [ragSessions.sessionId],
   }),
-}));
+});
 
 // === NEW RELATIONS FOR AI SYSTEM ===
 
@@ -879,7 +879,7 @@ export const userAiQueriesRelations = relations(userAiQueries, ({ one }) => ({
     fields: [userAiQueries.caseId],
     references: [cases.id],
   }),
-}));
+});
 
 // === AUTO-TAGGING SYSTEM ===
 
@@ -902,7 +902,7 @@ export const autoTagsRelations = relations(autoTags, ({ one }) => ({
     fields: [autoTags.confirmedBy],
     references: [users.id],
   }),
-}));
+});
 
 // === VECTOR CACHE AND METADATA TABLES ===
 
@@ -1039,7 +1039,7 @@ export const chatSessionsRelations = relations(chatSessions, ({ one, many }) => 
     references: [users.id],
   }),
   messages: many(chatMessages),
-}));
+});
 
 export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
   session: one(chatSessions, {
@@ -1050,18 +1050,18 @@ export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
     fields: [chatMessages.userId],
     references: [users.id],
   }),
-}));
+});
 
 export const userProfilesRelations = relations(userProfiles, ({ one }) => ({
   user: one(users, {
     fields: [userProfiles.userId],
     references: [users.id],
   }),
-}));
+});
 
 export const embeddingJobsRelations = relations(embeddingJobs, ({ one }) => ({
   // Optional relation to legal documents if needed
-// === EXTENDED USER RELATIONS ===
+// === EXTENDED USER RELATIONS ===;
 export const usersExtendedRelations = relations(users, ({ one, many }) => ({
   // Existing relations preserved
   sessions: many(sessions),
@@ -1072,6 +1072,6 @@ export const usersExtendedRelations = relations(users, ({ one, many }) => ({
   chatSessions: many(chatSessions),
   chatMessages: many(chatMessages),
   // ... other existing relations would be here
-}));
+,});
 
 // Additional relation exports can go here if needed

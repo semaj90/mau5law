@@ -11,7 +11,7 @@ const SW_CONFIG = {
   maxConcurrentTasks: 6,
   recursionDepthLimit: 50,
   enableOfflineMode: true,
-  enableRecursiveCache: true
+  enableRecursiveCache: true,
 };
 
 // Recursive Processing State
@@ -77,7 +77,7 @@ class RecursiveDocumentProcessor {
       content: document.content,
       metadata: document.metadata,
       isBaseCase: true,
-      aiAnalysis: this.performBasicAIAnalysis(document)
+      aiAnalysis: this.performBasicAIAnalysis(document),
     };
   }
 
@@ -106,7 +106,7 @@ class RecursiveDocumentProcessor {
       embedding,
       entities,
       processingTime: performance.now() - startTime,
-      isBaseCase: false
+      isBaseCase: false,
     };
   }
 
@@ -185,8 +185,8 @@ class RecursiveDocumentProcessor {
         metadata: {
           depth,
           id: document.id,
-          timestamp: Date.now()
-        }
+          timestamp: Date.now(),
+        },
       });
 
       analysisWorker.onmessage = (event) => {
@@ -201,8 +201,10 @@ class RecursiveDocumentProcessor {
     return {
       type: 'basic',
       wordCount: document.content.split(' ').length,
-      hasLegalTerms: /\b(contract|agreement|clause|defendant|plaintiff|evidence)\b/i.test(document.content),
-      complexity: 'low'
+      hasLegalTerms: /\b(contract|agreement|clause|defendant|plaintiff|evidence)\b/i.test(
+        document.content
+      ),
+      complexity: 'low',
     };
   }
 
@@ -223,7 +225,7 @@ class RecursiveDocumentProcessor {
     const entities = {
       parties: content.match(/\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/g) || [],
       dates: content.match(/\b\d{1,2}\/\d{1,2}\/\d{4}\b/g) || [],
-      amounts: content.match(/\$[\d,]+\.?\d*/g) || []
+      amounts: content.match(/\$[\d,]+\.?\d*/g) || [],
     };
 
     return entities;
@@ -249,7 +251,7 @@ class RecursiveDocumentProcessor {
       id: document.id,
       type: 'error',
       error: error.message,
-      isBaseCase: true
+      isBaseCase: true,
     };
   }
 }
@@ -276,7 +278,7 @@ class RecursiveEvidenceProcessor {
           id: evidenceId,
           type: 'leaf_evidence',
           data: evidence,
-          isBaseCase: true
+          isBaseCase: true,
         };
       }
 
@@ -292,15 +294,15 @@ class RecursiveEvidenceProcessor {
         type: 'evidence_chain',
         data: evidence,
         relatedChains,
-        chainDepth: Math.max(...relatedChains.map(c => (c.chainDepth || 0) + 1)),
-        isBaseCase: false
+        chainDepth: Math.max(...relatedChains.map((c) => (c.chainDepth || 0) + 1)),
+        isBaseCase: false,
       };
     } catch (error) {
       return {
         id: evidenceId,
         type: 'error',
         error: error.message,
-        isBaseCase: true
+        isBaseCase: true,
       };
     }
   }
@@ -318,7 +320,7 @@ self.addEventListener('install', (event) => {
       return cache.addAll([
         '/workers/legal-bert-onnx-worker.js',
         '/workers/embedding-worker.js',
-        '/static/models/legal-bert-onnx/model.onnx'
+        '/static/models/legal-bert-onnx/model.onnx',
       ]);
     })
   );
@@ -354,8 +356,8 @@ self.addEventListener('message', async (event) => {
           result,
           stats: {
             totalNodes: docProcessor.processedNodes.size,
-            maxDepthReached: result.depth || 0
-          }
+            maxDepthReached: result.depth || 0,
+          },
         });
         break;
 
@@ -366,7 +368,7 @@ self.addEventListener('message', async (event) => {
         event.ports[0].postMessage({
           id,
           type: 'EVIDENCE_CHAIN_PROCESSED',
-          result: chainResult
+          result: chainResult,
         });
         break;
 
@@ -377,7 +379,7 @@ self.addEventListener('message', async (event) => {
         event.ports[0].postMessage({
           id,
           type: 'CACHED',
-          success: true
+          success: true,
         });
         break;
 
@@ -385,14 +387,14 @@ self.addEventListener('message', async (event) => {
         event.ports[0].postMessage({
           id,
           type: 'ERROR',
-          error: `Unknown message type: ${type}`
+          error: `Unknown message type: ${type}`,
         });
     }
   } catch (error) {
     event.ports[0].postMessage({
       id,
       type: 'ERROR',
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -401,6 +403,6 @@ self.addEventListener('message', async (event) => {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     RecursiveDocumentProcessor,
-    RecursiveEvidenceProcessor
+    RecursiveEvidenceProcessor,
   };
 }

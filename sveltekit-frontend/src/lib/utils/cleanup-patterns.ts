@@ -7,7 +7,7 @@ export function createEventListener<T extends keyof HTMLElementEventMap>(
   element: HTMLElement,
   event: T,
   handler: (event: HTMLElementEventMap[T]) => void,
-  options?: AddEventListenerOptions
+  options?: AddEventListenerOptions;
 ) {
   element.addEventListener(event, handler, options);
 
@@ -47,7 +47,7 @@ export function createWebSocket(url: string, protocols?: string | string[]) {
 
 export function createResizeObserver(
   callback: ResizeObserverCallback,
-  element: Element
+  element: Element;
 ) {
   const observer = new ResizeObserver(callback);
   observer.observe(element);
@@ -60,7 +60,7 @@ export function createResizeObserver(
 export function createIntersectionObserver(
   callback: IntersectionObserverCallback,
   element: Element,
-  options?: IntersectionObserverInit
+  options?: IntersectionObserverInit;
 ) {
   const observer = new IntersectionObserver(callback, options);
   observer.observe(element);
@@ -98,11 +98,11 @@ export function createAbortController() {
   return {
     signal: controller.signal,
     abort: () => controller.abort(),
-    cleanup: () => controller.abort()
+    cleanup: () => controller.abort(),
   };
 }
 
-// Utility for combining multiple cleanup functions
+// Utility for combining multiple cleanup functions;
 export function combineCleanups(...cleanupFns: (() => void)[]): () => void {
   return () => {
     cleanupFns.forEach(cleanup => {
@@ -115,7 +115,7 @@ export function combineCleanups(...cleanupFns: (() => void)[]): () => void {
   };
 }
 
-// Hook-like pattern for Svelte 5
+// Hook-like pattern for Svelte 5;
 export function useCleanup() {
   const cleanupFunctions: (() => void)[] = [];
 

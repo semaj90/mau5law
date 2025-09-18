@@ -7,6 +7,7 @@ import { users, cases, evidence } from '$lib/server/db/schema-unified.js';
 import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js';
 import { eq, ne, and, sql } from 'drizzle-orm';
 import { URL } from "url";
+}
 
 export interface FOAFRequest {
   personId: string;
@@ -22,14 +23,14 @@ export interface Person {
   role: string;
   specialization: string;
   confidence: number;
-  relationshipPath: string;
+  relationshipPath: string;,
 }
 
 export interface FOAFResponse {
   people: Person[];
   summary: string;
   totalFound: number;
-  processingTimeMs: number;
+  processingTimeMs: number;,
 }
 
 export const GET: RequestHandler = async ({ params, url, fetch }) => {
@@ -58,7 +59,7 @@ export const GET: RequestHandler = async ({ params, url, fetch }) => {
       console.log('Using default recommendations port');
     }
 
-    // Generate FOAF recommendations from database
+    // Generate FOAF recommendations from database;
     const foafRecommendations = await generateDatabaseFOAFRecommendations(personId, {
       limit,
       maxDepth,
@@ -73,14 +74,14 @@ export const GET: RequestHandler = async ({ params, url, fetch }) => {
         role: rec.role || 'user',
         specialization: rec.specialization || 'general',
         confidence: rec.connectionStrength,
-        relationshipPath: rec.relationshipPath
+        relationshipPath: rec.relationshipPath,
       })),
       summary: `Found ${foafRecommendations.length} legal professionals in your extended network`,
       totalFound: foafRecommendations.length,
-      processingTimeMs: Date.now() - startTime
+      processingTimeMs: Date.now() - startTime,
     };
     
-    // Enhance with LangChain summarization if available
+    // Enhance with LangChain summarization if available;
     try {
       const langchainUrl = `http://localhost:8106/api/summarize`;
       const summaryResponse = await fetch(langchainUrl, {
@@ -89,7 +90,7 @@ export const GET: RequestHandler = async ({ params, url, fetch }) => {
         body: JSON.stringify({
           text: `FOAF recommendations for ${personId}: ${foafData.people.map(p => p.name).join(', ')}`,
           context: 'professional network analysis',
-          style: 'brief'
+          style: 'brief',
         })
       });
 
@@ -122,7 +123,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
       maxDepth: body.maxDepth || 3,
       caseContext: body.caseContext,
       includeEmbedding: true,
-      minConnectionStrength: 0.2
+      minConnectionStrength: 0.2,
     });
 
     const enhancedResponse: FOAFResponse = {
@@ -133,11 +134,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
         role: rec.role || 'user',
         specialization: rec.specialization || 'general',
         confidence: rec.connectionStrength,
-        relationshipPath: rec.relationshipPath
+        relationshipPath: rec.relationshipPath,
       })),
       summary: `Enhanced analysis found ${foafRecommendations.length} professionals with ${body.caseContext ? 'case-specific' : 'general'} relevance`,
       totalFound: foafRecommendations.length,
-      processingTimeMs: Date.now() - startTime
+      processingTimeMs: Date.now() - startTime,
     };
 
     return json(enhancedResponse);
@@ -146,6 +147,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     throw error(500, 'Failed to generate enhanced FOAF recommendations');
   }
 };
+}
 
 export interface DatabaseFOAFRecommendation {
   id: string;
@@ -182,15 +184,15 @@ async function generateDatabaseFOAFRecommendations(
 
   try {
     // Get the target person's information
-    const targetPerson = await db
+    const targetPerson = await db;
       .select({
         id: users.id,
         displayName: users.displayName,
         email: users.email,
-        role: users.role
+        role: users.role,
       })
       .from(users)
-      .where(eq(users.id, personId))
+      .where(eq(users.id, personId)
       .limit(1);
 
     if (!targetPerson.length) {
@@ -200,7 +202,7 @@ async function generateDatabaseFOAFRecommendations(
     const person = targetPerson[0];
 
     // Get shared case connections
-    const sharedCaseConnections = await db
+    const sharedCaseConnections = await db;
       .select({
         userId: users.id,
         displayName: users.displayName,
@@ -209,7 +211,7 @@ async function generateDatabaseFOAFRecommendations(
         sharedCases: sql<number>`count(distinct ${cases.id})`.as('sharedCases')
       })
       .from(users)
-      .leftJoin(cases, eq(cases.userId, users.id))
+      .leftJoin(cases, eq(cases.userId, users.id)
       .where(
         and(
           ne(users.id, personId),
@@ -225,7 +227,7 @@ async function generateDatabaseFOAFRecommendations(
       .having(sql`count(distinct ${cases.id}) > 0`);
 
     // Get shared evidence connections
-    const sharedEvidenceConnections = await db
+    const sharedEvidenceConnections = await db;
       .select({
         userId: users.id,
         displayName: users.displayName,
@@ -234,7 +236,7 @@ async function generateDatabaseFOAFRecommendations(
         sharedEvidence: sql<number>`count(distinct ${evidence.id})`.as('sharedEvidence')
       })
       .from(users)
-      .leftJoin(evidence, eq(evidence.userId, users.id))
+      .leftJoin(evidence, eq(evidence.userId, users.id)
       .where(
         and(
           ne(users.id, personId),
@@ -249,7 +251,7 @@ async function generateDatabaseFOAFRecommendations(
       .having(sql`count(distinct ${evidence.id}) > 0`);
 
     // Get role-based connections
-    const roleBasedConnections = await db
+    const roleBasedConnections = await db;
       .select({
         id: users.id,
         displayName: users.displayName,
@@ -258,7 +260,7 @@ async function generateDatabaseFOAFRecommendations(
         caseCount: sql<number>`count(distinct ${cases.id})`.as('caseCount')
       })
       .from(users)
-      .leftJoin(cases, eq(cases.userId, users.id))
+      .leftJoin(cases, eq(cases.userId, users.id)
       .where(
         and(
           ne(users.id, personId),
@@ -271,7 +273,7 @@ async function generateDatabaseFOAFRecommendations(
     // Combine and score connections
     const recommendations: DatabaseFOAFRecommendation[] = [];
 
-    // Process shared case connections
+    // Process shared case connections;
     for (const conn of sharedCaseConnections) {
       const connectionStrength = Math.min(0.9, (conn.sharedCases || 0) * 0.2 + 0.4);
       if (connectionStrength >= minConnectionStrength) {
@@ -291,7 +293,7 @@ async function generateDatabaseFOAFRecommendations(
       }
     }
 
-    // Process shared evidence connections
+    // Process shared evidence connections;
     for (const conn of sharedEvidenceConnections) {
       const existingIndex = recommendations.findIndex(r => r.id === conn.userId);
       const evidenceScore = Math.min(0.6, (conn.sharedEvidence || 0) * 0.1 + 0.3);
@@ -318,7 +320,7 @@ async function generateDatabaseFOAFRecommendations(
       }
     }
 
-    // Process role-based connections
+    // Process role-based connections;
     for (const conn of roleBasedConnections) {
       const exists = recommendations.some(r => r.id === conn.id);
       if (!exists) {
@@ -340,7 +342,7 @@ async function generateDatabaseFOAFRecommendations(
       }
     }
 
-    // Apply embedding-based enhancements if requested
+    // Apply embedding-based enhancements if requested;
     if (includeEmbedding && recommendations.length > 0) {
       await enhanceRecommendationsWithEmbeddings(personId, recommendations);
     }
@@ -358,16 +360,16 @@ async function generateDatabaseFOAFRecommendations(
 
 async function enhanceRecommendationsWithEmbeddings(
   personId: string,
-  recommendations: DatabaseFOAFRecommendation[]
+  recommendations: DatabaseFOAFRecommendation[];
 ): Promise<void> {
   try {
     // Get the target person's case content for embedding
-    const targetActivity = await db
+    const targetActivity = await db;
       .select({
-        content: cases.description
+        content: cases.description,
       })
       .from(cases)
-      .where(eq(cases.userId, personId))
+      .where(eq(cases.userId, personId)
       .limit(10);
 
     if (targetActivity.length === 0) return;
@@ -382,18 +384,18 @@ async function enhanceRecommendationsWithEmbeddings(
     const targetEmbedding = await generateEnhancedEmbedding(targetProfile, {
       provider: 'nomic-embed',
       legalDomain: true,
-      cache: true
+      cache: true,
     }) as number[];
 
-    // Enhance each recommendation
+    // Enhance each recommendation;
     for (const rec of recommendations) {
       try {
-        const recActivity = await db
+        const recActivity = await db;
           .select({
-            content: cases.description
+            content: cases.description,
           })
           .from(cases)
-          .where(eq(cases.userId, rec.id))
+          .where(eq(cases.userId, rec.id)
           .limit(10);
 
         if (recActivity.length > 0) {
@@ -406,13 +408,13 @@ async function enhanceRecommendationsWithEmbeddings(
             const recEmbedding = await generateEnhancedEmbedding(recProfile, {
               provider: 'nomic-embed',
               legalDomain: true,
-              cache: true
+              cache: true,
             }) as number[];
 
             const similarity = cosineSimilarity(targetEmbedding, recEmbedding);
             
             // Boost connection strength based on semantic similarity
-            rec.connectionStrength = Math.min(0.99, rec.connectionStrength + (similarity * 0.15));
+            rec.connectionStrength = Math.min(0.99, rec.connectionStrength + (similarity * 0.15);
             rec.reasoning += ` (${Math.round(similarity * 100)}% content similarity)`;
             rec.metadata = { ...rec.metadata, semanticSimilarity: similarity };
           }
@@ -441,5 +443,5 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
     normB += vecB[i] * vecB[i];
   }
   
-  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
 }

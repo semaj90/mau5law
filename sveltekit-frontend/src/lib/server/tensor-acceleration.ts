@@ -10,7 +10,7 @@ interface GPUTensorConfig {
   tileSize: number;
   workgroupSize: [number, number, number];
   precision: 'fp16' | 'fp32';
-  memoryOptimized: boolean;
+  memoryOptimized: boolean;,
 }
 
 interface GPUTensorMeta {
@@ -19,7 +19,7 @@ interface GPUTensorMeta {
   computeTime: number;
   memoryUsage: number;
   kernelType: string;
-  precision: string;
+  precision: string;,
 }
 
 export interface TensorAccelerationOptions {
@@ -47,7 +47,7 @@ export class TensorAccelerator {
 
   /**
    * Lazy initialization of WebGPU device
-   */
+   */;
   async initialize(): Promise<boolean> {
     if (this.initialized) return true;
 
@@ -89,7 +89,7 @@ export class TensorAccelerator {
 
   /**
    * Create specialized compute pipelines for different operations
-   */
+   */;
   private async createComputePipelines(): Promise<void> {
     if (!this.device) return;
 
@@ -100,7 +100,7 @@ export class TensorAccelerator {
       @group(0) @binding(2) var<storage, read_write> result: array<f32>;
       @group(0) @binding(3) var<uniform> params: vec4<u32>; // [length, tile_size, 0, 0]
 
-      @compute @workgroup_size(16, 16, 1)
+      @compute @workgroup_size(16, 16, 1);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         let length = params.x;
@@ -128,7 +128,7 @@ export class TensorAccelerator {
       @group(0) @binding(1) var<storage, read_write> output: array<f32>;
       @group(0) @binding(2) var<uniform> params: vec4<u32>; // [length, transform_type, scale, offset]
 
-      @compute @workgroup_size(64, 1, 1)
+      @compute @workgroup_size(64, 1, 1);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         let length = params.x;
@@ -139,15 +139,15 @@ export class TensorAccelerator {
         let value = input[index];
         var result_value = value;
 
-        // L2 normalization
+        // L2 normalization;
         if (transform_type == 0u) {
           result_value = value * f32(params.z) / 1000.0; // Scale factor
         }
-        // Quantization
+        // Quantization;
         else if (transform_type == 1u) {
           result_value = round(value * f32(params.z)) / f32(params.z);
         }
-        // Activation function (ReLU)
+        // Activation function (ReLU);
         else if (transform_type == 2u) {
           result_value = max(0.0, value);
         }
@@ -162,7 +162,7 @@ export class TensorAccelerator {
       @group(0) @binding(1) var<storage, read_write> features: array<f32>;
       @group(0) @binding(2) var<uniform> params: vec4<u32>; // [width, height, channels, tile_size]
 
-      @compute @workgroup_size(16, 16, 1)
+      @compute @workgroup_size(16, 16, 1);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let x = global_id.x;
         let y = global_id.y;
@@ -248,7 +248,7 @@ export class TensorAccelerator {
     const numTiles = Math.ceil(vectorA.length / tileSize);
 
     try {
-      // Create buffers
+      // Create buffers;
       const bufferA = this.device.createBuffer({
         size: vectorA.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
@@ -300,10 +300,10 @@ export class TensorAccelerator {
 
       computePass.setPipeline(pipeline);
       computePass.setBindGroup(0, bindGroup);
-      computePass.dispatchWorkgroups(Math.ceil(vectorA.length / 16));
+      computePass.dispatchWorkgroups(Math.ceil(vectorA.length / 16);
       computePass.end();
 
-      // Read results
+      // Read results;
       const stagingBuffer = this.device.createBuffer({
         size: numTiles * 4,
         usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
@@ -313,7 +313,7 @@ export class TensorAccelerator {
       this.device.queue.submit([commandEncoder.finish()]);
 
       await stagingBuffer.mapAsync(GPUMapMode.READ);
-      const results = new Float32Array(stagingBuffer.getMappedRange());
+      const results = new Float32Array(stagingBuffer.getMappedRange();
 
       // Sum partial results
       let similarity = 0;
@@ -322,13 +322,13 @@ export class TensorAccelerator {
       }
 
       // Normalize by vector magnitudes
-      const magnitudeA = Math.sqrt(vectorA.reduce((sum, val) => sum + val * val, 0));
-      const magnitudeB = Math.sqrt(vectorB.reduce((sum, val) => sum + val * val, 0));
+      const magnitudeA = Math.sqrt(vectorA.reduce((sum, val) => sum + val * val, 0);
+      const magnitudeB = Math.sqrt(vectorB.reduce((sum, val) => sum + val * val, 0);
       similarity = similarity / (magnitudeA * magnitudeB);
 
       // Cleanup
       stagingBuffer.unmap();
-      [bufferA, bufferB, resultBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy());
+      [bufferA, bufferB, resultBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy();
 
       const computeTime = performance.now() - startTime;
 
@@ -368,7 +368,7 @@ export class TensorAccelerator {
     }
 
     try {
-      // Create buffers
+      // Create buffers;
       const inputBuffer = this.device.createBuffer({
         size: embedding.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
@@ -413,10 +413,10 @@ export class TensorAccelerator {
 
       computePass.setPipeline(pipeline);
       computePass.setBindGroup(0, bindGroup);
-      computePass.dispatchWorkgroups(Math.ceil(embedding.length / 64));
+      computePass.dispatchWorkgroups(Math.ceil(embedding.length / 64);
       computePass.end();
 
-      // Read results
+      // Read results;
       const stagingBuffer = this.device.createBuffer({
         size: embedding.byteLength,
         usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
@@ -426,10 +426,10 @@ export class TensorAccelerator {
       this.device.queue.submit([commandEncoder.finish()]);
 
       await stagingBuffer.mapAsync(GPUMapMode.READ);
-      const transformed = new Float32Array(stagingBuffer.getMappedRange().slice(0));
+      const transformed = new Float32Array(stagingBuffer.getMappedRange().slice(0);
 
       stagingBuffer.unmap();
-      [inputBuffer, outputBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy());
+      [inputBuffer, outputBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy();
 
       const computeTime = performance.now() - startTime;
 
@@ -475,7 +475,7 @@ export class TensorAccelerator {
     const numFeatures = tilesX * tilesY * 4; // 4 features per tile (R,G,B,Luminance)
 
     try {
-      // Create buffers
+      // Create buffers;
       const imageBuffer = this.device.createBuffer({
         size: imageData.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
@@ -519,7 +519,7 @@ export class TensorAccelerator {
       computePass.dispatchWorkgroups(tilesX, tilesY);
       computePass.end();
 
-      // Read results
+      // Read results;
       const stagingBuffer = this.device.createBuffer({
         size: numFeatures * 4,
         usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
@@ -529,7 +529,7 @@ export class TensorAccelerator {
       this.device.queue.submit([commandEncoder.finish()]);
 
       await stagingBuffer.mapAsync(GPUMapMode.READ);
-      const features = new Float32Array(stagingBuffer.getMappedRange().slice(0));
+      const features = new Float32Array(stagingBuffer.getMappedRange().slice(0);
 
       // Normalize features by pixels per tile
       const pixelsPerTile = tileSize * tileSize;
@@ -538,7 +538,7 @@ export class TensorAccelerator {
       }
 
       stagingBuffer.unmap();
-      [imageBuffer, featureBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy());
+      [imageBuffer, featureBuffer, uniformBuffer, stagingBuffer].forEach((b) => b.destroy();
 
       const computeTime = performance.now() - startTime;
 
@@ -561,20 +561,20 @@ export class TensorAccelerator {
 
   /**
    * Check if WebGPU is available
-   */
+   */;
   static isAvailable(): boolean {
     return typeof navigator !== 'undefined' && !!navigator.gpu;
   }
 
   /**
    * Get device capabilities
-   */
+   */;
   async getCapabilities() {
     if (!this.initialized && !(await this.initialize())) {
       return null;
     }
 
-    return this.device
+    return this.device;
       ? {
           maxBufferSize: this.device.limits.maxBufferSize,
           maxComputeWorkgroupSizeX: this.device.limits.maxComputeWorkgroupSizeX,
@@ -586,7 +586,7 @@ export class TensorAccelerator {
 
   /**
    * Cleanup resources
-   */
+   */;
   destroy(): void {
     if (this.device) {
       this.device.destroy();
@@ -621,7 +621,7 @@ export async function acceleratedSimilarity(
     normB += vectorB[i] * vectorB[i];
   }
 
-  const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+  const similarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
 
   return {
     similarity,
@@ -649,7 +649,7 @@ export async function acceleratedTransform(
   const transformed = new Float32Array(embedding.length);
 
   if (operation === 'normalize') {
-    const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+    const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
     for (let i = 0; i < embedding.length; i++) {
       transformed[i] = embedding[i] / norm;
     }

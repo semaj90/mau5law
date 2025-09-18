@@ -4,7 +4,7 @@ import { json } from '@sveltejs/kit';
 // Go inference service search endpoint
 const GO_SEARCH_URL = process.env.GO_GPU_SERVER_URL || 'http://localhost:8080/api/v1/search';
 
-// Semantic search using pgvector in Go service
+// Semantic search using pgvector in Go service;
 export const POST: RequestHandler = async ({ request }) => {
     try {
         const body = await request.json();
@@ -12,19 +12,19 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!body || !body.query || body.query.trim().length === 0) {
             return json({ 
                 success: false, 
-                error: 'Query is required' 
+                error: 'Query is required' ,
             }, { status: 400 });
         }
 
         console.log('Semantic search request:', body.query.substring(0, 100) + '...');
 
-        // Forward search request to Go service
+        // Forward search request to Go service;
         const searchResponse = await fetch(`${GO_SEARCH_URL}?q=${encodeURIComponent(body.query)}&limit=${body.limit || 5}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             },
-            signal: AbortSignal.timeout(15000) // 15 second timeout
+            signal: AbortSignal.timeout(15000) // 15 second timeout,
         });
 
         if (!searchResponse.ok) {
@@ -38,13 +38,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
         const searchData = await searchResponse.json();
         
-        // Return semantic search results with similarity scores
+        // Return semantic search results with similarity scores;
         return json({
             success: searchData.success,
             query: searchData.query,
             results: searchData.results || [],
             count: searchData.count || 0,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         });
 
     } catch (error: any) {
@@ -56,11 +56,11 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 };
 
-// GET endpoint for health check
+// GET endpoint for health check;
 export const GET: RequestHandler = async () => {
     try {
         const healthResponse = await fetch(GO_SEARCH_URL.replace('/search', '/health'), {
-            signal: AbortSignal.timeout(5000)
+            signal: AbortSignal.timeout(5000),
         });
         
         const healthData = await healthResponse.json();
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async () => {
             service: 'semantic-search',
             backend_status: healthData.status,
             pgvector_enabled: true,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         });
         
     } catch (error: any) {
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async () => {
             status: 'error',
             service: 'semantic-search',
             error: error instanceof Error ? error.message: 'Unknown error',
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         }, { status: 503 });
     }
 };

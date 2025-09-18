@@ -8,7 +8,7 @@ import type {     ComponentType     } from 'svelte';
  */
 
 
-// Tree-shaking utilities
+// Tree-shaking utilities;
 export interface ComponentModule {
   default: ComponentType;
   name: string;
@@ -19,13 +19,13 @@ export interface ComponentModule {
 // Lazy loading registry
 const componentRegistry = new Map<string, () => Promise<ComponentModule>();
 
-// Performance metrics tracking
+// Performance metrics tracking;
 export interface PerformanceMetrics {
   componentLoadTime: number;
   renderTime: number;
   memoryUsage: number;
   bundleSize: number;
-  dependencies: string[];
+  dependencies: string[];,
 }
 
 const performanceMetrics = new Map<string, PerformanceMetrics>();
@@ -42,7 +42,7 @@ export function registerComponent(
 
 /**
  * Lazy load a component with performance tracking
- */
+ */;
 export async function loadComponent(name: string): Promise<ComponentModule> {
   const loader = componentRegistry.get(name);
   if (!loader) {
@@ -55,7 +55,7 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
     const module = await loader();
     const loadTime = performance.now() - startTime;
 
-    // Track performance metrics
+    // Track performance metrics;
     performanceMetrics.set(name, {
       componentLoadTime: loadTime,
       renderTime: 0, // Will be updated during render
@@ -73,7 +73,7 @@ export async function loadComponent(name: string): Promise<ComponentModule> {
 
 /**
  * Get current memory usage (if available)
- */
+ */;
 function getMemoryUsage(): number {
   if ("memory" in performance && performance.memory) {
     return (performance.memory as any).usedJSHeapSize;
@@ -83,18 +83,18 @@ function getMemoryUsage(): number {
 
 /**
  * Component factory with tree-shaking optimization
- */
+ */;
 export class OptimizedComponentFactory {
   private loadedComponents = new Map<string, ComponentModule>();
   private loadingPromises = new Map<string, Promise<ComponentModule>();
 
   async getComponent(name: string): Promise<ComponentModule> {
-    // Return cached component if already loaded
+    // Return cached component if already loaded;
     if (this.loadedComponents.has(name)) {
       return this.loadedComponents.get(name)!;
     }
 
-    // Return existing loading promise if component is being loaded
+    // Return existing loading promise if component is being loaded;
     if (this.loadingPromises.has(name)) {
       return this.loadingPromises.get(name)!;
     }
@@ -121,7 +121,7 @@ export class OptimizedComponentFactory {
   }
 
   getLoadedComponents(): string[] {
-    return Array.from(this.loadedComponents.keys());
+    return Array.from(this.loadedComponents.keys();
   }
 
   getPerformanceMetrics(name: string): PerformanceMetrics | undefined {
@@ -135,7 +135,7 @@ export class OptimizedComponentFactory {
 
 /**
  * Virtual scrolling for large lists of legal documents/evidence
- */
+ */;
 export interface VirtualScrollOptions {
   itemHeight: number;
   bufferSize?: number;
@@ -208,7 +208,7 @@ export function createDebouncedSearch<T>(
 
       timeoutId = setTimeout(async () => {
         try {
-          // Cancel previous request if still pending
+          // Cancel previous request if still pending;
           if (currentPromise) {
             // Note: This would need to be implemented based on your API client
             console.log("Cancelling previous search request");
@@ -251,7 +251,7 @@ export function memoize<Args extends unknown[], Return>(
 
 /**
  * Intersection Observer for lazy loading evidence cards
- */
+ */;
 export class LazyLoadManager {
   private observer: IntersectionObserver;
   private loadingCallbacks = new Map<Element, () => void>();
@@ -297,7 +297,7 @@ export class LazyLoadManager {
 
 /**
  * Resource pool for managing expensive resources
- */
+ */;
 export class ResourcePool<T> {
   private available: T[] = [];
   private inUse = new Set<T>();
@@ -343,7 +343,7 @@ export class ResourcePool<T> {
   }
 
   clear(): void {
-    // Destroy all available resources
+    // Destroy all available resources;
     if (this.destructor) {
       this.available.forEach(this.destructor);
     }
@@ -364,22 +364,22 @@ export class ResourcePool<T> {
 
 /**
  * Bundle analyzer for component dependencies
- */
+ */;
 export interface BundleAnalysis {
   totalSize: number;
   gzippedSize: number;
   components: Array<any>;
   duplicates: Array<any>;
-  recommendations: string[];
+  recommendations: string[];,
 }
 
 export function analyzeBundleSize(): BundleAnalysis {
   // This would integrate with your build tool to provide real bundle analysis
-  // For now, return mock data for demonstration
+  // For now, return mock data for demonstration;
   return {
     totalSize: 245000, // 245KB
     gzippedSize: 89000, // 89KB
-    components: [
+    components: [;
       {
         name: "Button",
         size: 12000,
@@ -405,7 +405,7 @@ export function analyzeBundleSize(): BundleAnalysis {
         critical: false,
       },
     ],
-    duplicates: [
+    duplicates: [;
       {
         module: "lucide-svelte",
         count: 3,
@@ -422,13 +422,13 @@ export function analyzeBundleSize(): BundleAnalysis {
 
 /**
  * Performance monitoring utilities
- */
+ */;
 export class PerformanceMonitor {
   private metrics: Map<string, number[]> = new Map();
   private observers: PerformanceObserver[] = [];
 
   startMonitoring(): void {
-    // Monitor long tasks
+    // Monitor long tasks;
     if ("PerformanceObserver" in window) {
       const longTaskObserver = new PerformanceObserver((list) => {
         list.getEntries().forEach((entry) => {
@@ -443,7 +443,7 @@ export class PerformanceMonitor {
         // Long task API not supported
       }
 
-      // Monitor layout shifts
+      // Monitor layout shifts;
       const layoutShiftObserver = new PerformanceObserver((list) => {
         list.getEntries().forEach((entry) => {
           if ("value" in entry) {
@@ -479,7 +479,7 @@ export class PerformanceMonitor {
   }
 
   stopMonitoring(): void {
-    this.observers.forEach((observer) => observer.disconnect());
+    this.observers.forEach((observer) => observer.disconnect();
     this.observers = [];
   }
 
@@ -492,32 +492,32 @@ export class PerformanceMonitor {
 export const componentFactory = new OptimizedComponentFactory();
 export const performanceMonitor = new PerformanceMonitor();
 ;
-// Register enhanced Bits UI components for lazy loading
+// Register enhanced Bits UI components for lazy loading;
 registerComponent("Button", async () => ({
   name: "Button",
-  default: (await import("./Button.svelte")).default
-}));
+  default: (await import("./Button.svelte")).default,
+});
 registerComponent("Dialog", async () => ({
   name: "Dialog", 
-  default: (await import("./Dialog.svelte")).default
-}));
+  default: (await import("./Dialog.svelte")).default,
+});
 registerComponent("Select", async () => ({
   name: "Select",
-  default: (await import("./Select.svelte")).default
-}));
+  default: (await import("./Select.svelte")).default,
+});
 registerComponent("Input", async () => ({
   name: "Input",
-  default: (await import("./Input.svelte")).default
-}));
+  default: (await import("./Input.svelte")).default,
+});
 registerComponent("Card", async () => ({
   name: "Card",
-  default: (await import("./Card.svelte")).default
-}));
+  default: (await import("./Card.svelte")).default,
+});
 registerComponent("EnhancedBitsDemo", async () => ({
   name: "EnhancedBitsDemo",
-  default: (await import("./EnhancedBitsDemo.svelte")).default
-}));
+  default: (await import("./EnhancedBitsDemo.svelte")).default,
+});
 registerComponent("VectorIntelligenceDemo", async () => ({
   name: "VectorIntelligenceDemo", 
-  default: (await import("./VectorIntelligenceDemo.svelte")).default
-}));
+  default: (await import("./VectorIntelligenceDemo.svelte")).default,
+});

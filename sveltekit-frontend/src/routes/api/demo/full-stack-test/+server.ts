@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const processResult = await unifiedLegalProcessor.processAndStoreLegalDocument(
         sampleLegalDoc,
         'Sample Legal Brief - Contract Dispute',
-        'brief',
+        'brief',);
         {
           jurisdiction: 'Federal District Court',
           practiceAreas: ['Contract Law', 'Commercial Litigation']
@@ -74,12 +74,12 @@ export const GET: RequestHandler = async ({ url }) => {
         const results = await unifiedLegalProcessor.semanticSearch(query, {
           documentType: 'brief',
           similarityThreshold: 0.5,
-          limit: 5
+          limit: 5,
         });
         searchResults.push({
           query,
           resultCount: results.length,
-          topResult: results[0] || null
+          topResult: results[0] || null,
         });
       }
       
@@ -87,12 +87,12 @@ export const GET: RequestHandler = async ({ url }) => {
       console.log('📊 Step 4: Gathering system performance statistics...');
       const systemStats = await unifiedLegalProcessor.getSystemStats();
       
-      // Demo results summary
+      // Demo results summary;
       const demoResults = {
         timestamp: new Date().toISOString(),
         demo_status: 'completed',
         
-        // Document processing results
+        // Document processing results;
         document_processing: {
           document_id: processResult.documentId,
           entities_found: processResult.parsedDocument.entities.length,
@@ -100,36 +100,36 @@ export const GET: RequestHandler = async ({ url }) => {
           confidence_score: processResult.parsedDocument.confidence,
           gpu_accelerated: true,
           vectorized_in_pgvector: processResult.vectorized,
-          processing_stats: processResult.processingStats
+          processing_stats: processResult.processingStats,
         },
         
-        // Search performance results
+        // Search performance results;
         semantic_search: {
           queries_tested: searchQueries.length,
           results_summary: searchResults,
           redis_caching: 'enabled',
-          avg_search_time: searchResults.length > 0 ? '< 100ms' : 'N/A'
+          avg_search_time: searchResults.length > 0 ? '< 100ms' : 'N/A',
         },
         
         // System performance
         system_performance: systemStats,
         
-        // Component status
+        // Component status;
         components_status: {
           simd_gpu_parser: 'operational',
           pgvector_indexing: 'operational',
           redis_caching: 'operational',
           gpu_orchestrator: 'operational',
-          cognitive_cache: 'operational'
+          cognitive_cache: 'operational',
         },
         
-        // Hardware utilization
+        // Hardware utilization;
         hardware_stats: {
           rtx_3060_ti_utilization: systemStats.gpu_utilization,
           pgvector_efficiency: systemStats.pgvector_index_efficiency,
           redis_hit_rate: systemStats.cache_hit_rate,
           total_documents_indexed: systemStats.total_documents,
-          total_vectors_stored: systemStats.total_vectors
+          total_vectors_stored: systemStats.total_vectors,
         }
       };
       
@@ -150,7 +150,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     
     if (action === 'health') {
-      // Comprehensive health check
+      // Comprehensive health check;
       const healthCheck = {
         timestamp: new Date().toISOString(),
         overall_status: 'healthy',
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async ({ url }) => {
           simd_parser: 'operational',
           pgvector_db: 'operational',
           redis_cache: 'operational',
-          gpu_orchestrator: 'operational'
+          gpu_orchestrator: 'operational',
         }
       };
       
@@ -198,7 +198,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const result = await unifiedLegalProcessor.processAndStoreLegalDocument(
           `${testDocuments[i]}. This is a detailed legal document with complex analysis and multiple legal entities involved in the proceedings.`,
           `Stress Test Document ${i + 1}`,
-          'contract',
+          'contract',)>
           { jurisdiction: 'Test Court', practiceAreas: ['Test Law'] }
         );
         
@@ -221,7 +221,7 @@ export const GET: RequestHandler = async ({ url }) => {
           average_processing_time: `${avgProcessingTime.toFixed(2)}ms`,
           total_time: `${stressResults.reduce((sum, r) => sum + r.processing_time, 0).toFixed(2)}ms`,
           throughput: `${(testDocuments.length / (avgProcessingTime / 1000)).toFixed(2)} docs/second`,
-          detailed_results: stressResults
+          detailed_results: stressResults,
         }
       });
     }
@@ -238,7 +238,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: false,
       error: 'Demo failed',
       message: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -254,7 +254,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const result = await unifiedLegalProcessor.processAndStoreLegalDocument(
         content,
         title,
-        documentType,
+        documentType,)
         {}
       );
       
@@ -279,7 +279,7 @@ export const POST: RequestHandler = async ({ request }) => {
         action: 'custom_semantic_search',
         query: searchQuery,
         results: searchResults,
-        cached: searchResults.length > 0 // Indicates if this was likely cached
+        cached: searchResults.length > 0 // Indicates if this was likely cached,
       });
     }
     
@@ -294,7 +294,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Custom test failed',
-      message: error instanceof Error ? error.message: 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };

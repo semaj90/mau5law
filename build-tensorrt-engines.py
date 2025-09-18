@@ -11,6 +11,15 @@ import subprocess
 import time
 from pathlib import Path
 
+# Python version guard (stable lane 3.11.x). Override with ALLOW_PY312_EXPERIMENTAL=1
+if not os.environ.get("ALLOW_PY312_EXPERIMENTAL"):
+    if (sys.version_info.major, sys.version_info.minor) != (3, 11):
+        print(f"ERROR Python {sys.version.split()[0]} not supported for stable TensorRT-LLM builds.")
+        print("Use Python 3.11.x or export ALLOW_PY312_EXPERIMENTAL=1 to continue (unsupported).")
+        sys.exit(1)
+else:
+    print("WARNING Using experimental Python version for build (override active).")
+
 def main():
     print("TensorRT-LLM Gemma3-Legal Engine Builder")
     print("=" * 50)

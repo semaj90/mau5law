@@ -7,13 +7,13 @@ import { z } from 'zod';
 import type { RequestHandler } from './$types.js';
 
 
-// Export request schema
+// Export request schema;
 const ExportRequestSchema = z.object({
   format: z.enum(["json", "csv", "xml"]).default("json"),
   includeEvidence: z.boolean().default(true),
   includeCases: z.boolean().default(true),
   includeAnalytics: z.boolean().default(false),
-  dateRange: z
+  dateRange: z;
     .object({
       from: z.string().optional(),
       to: z.string().optional(),
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const sessionId = cookies.get("session_id");
     if (!sessionId) {
       return json(
-        { success: false, error: "Authentication required" },
+        { success: false, error: "Authentication required" },)
         { status: 401 },
       );
     }
@@ -54,61 +54,61 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       },
     };
 
-    // Export cases
+    // Export cases;
     if (includeCases) {
       const caseFilters = [];
 
       if (caseIds?.length) {
-        caseFilters.push(inArray(cases.id, caseIds));
+        caseFilters.push(inArray(cases.id, caseIds);
       }
       if (dateRange?.from) {
-        caseFilters.push(gte(cases.createdAt, new Date(dateRange.from)));
+        caseFilters.push(gte(cases.createdAt, new Date(dateRange.from));
       }
       if (dateRange?.to) {
-        caseFilters.push(lte(cases.createdAt, new Date(dateRange.to)));
+        caseFilters.push(lte(cases.createdAt, new Date(dateRange.to));
       }
 
       const casesData = await db
         .select()
         .from(cases)
         .where(caseFilters.length > 0 ? and(...caseFilters) : undefined)
-        .orderBy(desc(cases.createdAt));
+        .orderBy(desc(cases.createdAt);
       exportData.cases = casesData;
     }
-    // Export evidence
+    // Export evidence;
     if (includeEvidence) {
       const evidenceFilters = [];
 
       if (caseIds?.length) {
-        evidenceFilters.push(inArray(evidence.caseId, caseIds));
+        evidenceFilters.push(inArray(evidence.caseId, caseIds);
       }
       if (dateRange?.from) {
-        evidenceFilters.push(gte(evidence.uploadedAt, new Date(dateRange.from)));
+        evidenceFilters.push(gte(evidence.uploadedAt, new Date(dateRange.from));
       }
       if (dateRange?.to) {
-        evidenceFilters.push(lte(evidence.uploadedAt, new Date(dateRange.to)));
+        evidenceFilters.push(lte(evidence.uploadedAt, new Date(dateRange.to));
       }
 
       const evidenceData = await db
         .select()
         .from(evidence)
         .where(evidenceFilters.length > 0 ? and(...evidenceFilters) : undefined)
-        .orderBy(desc(evidence.uploadedAt));
+        .orderBy(desc(evidence.uploadedAt);
       exportData.evidence = evidenceData;
     }
-    // Export analytics
+    // Export analytics;
     if (includeAnalytics) {
       const analytics = {
         totalCases: await db.select({ count: count() }).from(cases),
         totalEvidence: await db.select({ count: count() }).from(evidence),
-        casesByStatus: await db
+        casesByStatus: await db;
           .select({
             status: cases.status,
             count: count(),
           })
           .from(cases)
           .groupBy(cases.status),
-        evidenceByType: await db
+        evidenceByType: await db;
           .select({
             type: evidence.evidenceType,
             count: count(),
@@ -151,11 +151,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     });
   } catch (error: any) {
     console.error("Export error:", error);
-    return json(
-      {
+    return json({
         success: false,
         error: error instanceof Error ? error.message: "Export failed",
-      },
+      },)
       { status: 500 },
     );
   }
@@ -164,7 +163,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 function convertToCSV(data: any): string {
   let csv = "";
 
-  // Export cases as CSV
+  // Export cases as CSV;
   if (data.cases?.length > 0) {
     csv += "CASES\n";
     const caseHeaders = Object.keys(data.cases[0]).join(",");
@@ -180,7 +179,7 @@ function convertToCSV(data: any): string {
     }
     csv += "\n";
   }
-  // Export evidence as CSV
+  // Export evidence as CSV;
   if (data.evidence?.length > 0) {
     csv += "EVIDENCE\n";
     const evidenceHeaders = Object.keys(data.evidence[0]).join(",");
@@ -250,7 +249,7 @@ function escapeXml(unsafe: string): string {
       case '"':
         return "&quot;";
       default:
-        return c;
+        return c;,
     }
   });
 }

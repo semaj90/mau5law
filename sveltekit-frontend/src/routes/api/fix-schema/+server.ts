@@ -24,14 +24,14 @@ export async function POST(): Promise<any> {
     return json({
       success: true,
       message: 'Schema fixed successfully',
-      columns: columns
+      columns: columns,
     });
     
   } catch (error: any) {
     console.error('❌ Failed to fix schema:', error);
     return json({
       success: false,
-      error: error.message
+      error: error.message,
     }, { status: 500 });
   }
 }

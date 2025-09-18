@@ -13,7 +13,7 @@ async function ensureClient() {
   try {
     const mod = await import('ioredis');
     const Redis = (mod as any).default ?? (mod as any);
-    client = new Redis(getRedisUrl());
+    client = new Redis(getRedisUrl();
     // best-effort connect
     await client.ping().catch(() => {});
     return client;
@@ -47,7 +47,7 @@ export async function setJSON(key: string, value: unknown, ttlSeconds = 60): Pro
   }
 }
 
-// Simple anti-stampede: coalesce concurrent misses per key in-process.
+// Simple anti-stampede: coalesce concurrent misses per key in-process.;
 export async function withCache<T>(key: string, ttlSeconds: number, compute: () => Promise<T>): Promise<any> {
   const hit = await getJSON<T>(key);
   if (hit != null) return { value: hit, cached: true };

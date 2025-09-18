@@ -4,7 +4,7 @@ import { sql } from 'drizzle-orm';
 import type { RequestHandler } from './$types.js';
 
 
-// Assumes pgvector extension is enabled and evidence table has a 'embedding' vector column
+// Assumes pgvector extension is enabled and evidence table has a 'embedding' vector column;
 async function vectorSearch(queryVector: number[], topK: number): Promise<any> {
     // Use raw SQL for pgvector similarity search
     const results = await db
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!Array.isArray(queryVector) || queryVector.length === 0) {
         return json({ error: "Missing or invalid queryVector" }, { status: 400 });
     }
-    const results = await vectorSearch(queryVector, Math.min(topK, 50));
+    const results = await vectorSearch(queryVector, Math.min(topK, 50);
     return json({ results, count: results.length }, { status: 200 });
 };
 

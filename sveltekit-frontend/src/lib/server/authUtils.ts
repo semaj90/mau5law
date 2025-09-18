@@ -2,7 +2,7 @@ import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
 import * as crypto from "crypto";
 
-// JWT Payload type definition
+// JWT Payload type definition;
 export interface JWTPayload {
   userId: string;
   exp: number;
@@ -18,7 +18,7 @@ const JWT_EXPIRATION = import.meta.env.JWT_EXPIRATION || "86400"; // 24 hours
  * Hashes a plain-text password using Bcrypt.
  * @param password The plain-text password.
  * @returns A promise that resolves to the hashed password.
- */
+ */;
 export async function hashPassword(password: string): Promise<string> {
   const rounds = parseInt(import.meta.env.BCRYPT_ROUNDS || "12");
   return bcrypt.hash(password, rounds);
@@ -37,7 +37,7 @@ export async function verifyPassword(
 }
 /**
  * Signs a JWT token with the given payload.
- */
+ */;
 export function signJWT(payload: object): string {
   return jwt.sign(payload, JWT_SECRET, {
     expiresIn: "7d", // Use string format for expiration
@@ -45,7 +45,7 @@ export function signJWT(payload: object): string {
 }
 /**
  * Verifies a JWT token and returns the payload.
- */
+ */;
 export function verifyJWT(token: string): JWTPayload | null {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
@@ -56,7 +56,7 @@ export function verifyJWT(token: string): JWTPayload | null {
 }
 /**
  * Generates a secure random token.
- */
+ */;
 export function generateSecureToken(): string {
   return crypto.randomUUID();
 }

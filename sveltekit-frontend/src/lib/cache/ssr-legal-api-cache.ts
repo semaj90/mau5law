@@ -7,6 +7,7 @@
 import { parallelCacheOrchestrator, type ParallelCacheRequest } from './parallel-cache-orchestrator.js';
 import { dev } from '$app/environment';
 import { browser } from '$app/environment';
+}
 
 export interface SSRCacheConfig {
   defaultTTL: number;
@@ -14,7 +15,7 @@ export interface SSRCacheConfig {
   staleWhileRevalidate: number;
   quantizeResponses: boolean;
   enableRAG: boolean;
-  legalOptimizations: boolean;
+  legalOptimizations: boolean;,
 }
 
 export interface LegalAPIResponse {
@@ -34,7 +35,7 @@ export interface LegalAPIResponse {
     total: number;
     totalPages: number;
     hasNext: boolean;
-    hasPrev: boolean;
+    hasPrev: boolean;,
   };
 }
 
@@ -56,7 +57,7 @@ class SSRLegalAPICache {
     staleWhileRevalidate: 86400, // 24 hours
     quantizeResponses: true,
     enableRAG: true,
-    legalOptimizations: true
+    legalOptimizations: true,
   };
 
   private responseQuantizer = new ResponseQuantizer();
@@ -79,13 +80,13 @@ class SSRLegalAPICache {
     const startTime = performance.now();
 
     try {
-      // Create parallel cache request
+      // Create parallel cache request;
       const cacheRequest: ParallelCacheRequest = {
         id: `ssr-${Date.now()}`,
         type: options.ragContext ? 'rag' : 'hybrid',
         priority: this.determinePriority(endpoint),
         keys: [cacheKey],
-        ttl: options.ttl || this.config.defaultTTL
+        ttl: options.ttl || this.config.defaultTTL,
       };
 
       // Execute parallel cache lookup
@@ -95,7 +96,7 @@ class SSRLegalAPICache {
         const cacheHit = (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults[0];
         const response = this.deserializeResponse(cacheHit.data);
         
-        // Add cache metadata
+        // Add cache metadata;
         if ((response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta) {
           (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.cached = true;
           (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.cacheLayer = cacheHit.source;
@@ -138,12 +139,12 @@ class SSRLegalAPICache {
         processedResponse = await this.responseQuantizer.quantize(response);
       }
 
-      // Store RAG context if provided
+      // Store RAG context if provided;
       if (options.ragContext && this.config.enableRAG) {
         this.ragContextCache.set(cacheKey, options.ragContext);
       }
 
-      // Create cache entry
+      // Create cache entry;
       const cacheEntry: SSRCacheEntry = {
         key: cacheKey,
         data: processedResponse,
@@ -152,7 +153,7 @@ class SSRLegalAPICache {
         etag: this.generateETag(processedResponse),
         contentType: 'application/json',
         quantized: options.quantize !== false && this.config.quantizeResponses,
-        ragContext: options.ragContext
+        ragContext: options.ragContext,
       };
 
       // Store across cache tiers
@@ -163,7 +164,7 @@ class SSRLegalAPICache {
           tier: this.selectOptimalTier(endpoint, processedResponse),
           ttl: cacheEntry.ttl,
           priority: this.determinePriority(endpoint) as 'low' | 'normal' | 'high',
-          type: 'ssr_legal_api'
+          type: 'ssr_legal_api',
         }
       );
 
@@ -201,7 +202,7 @@ class SSRLegalAPICache {
       ragContext = false
     } = options;
 
-    // Only cache GET requests
+    // Only cache GET requests;
     if (method === 'GET') {
       const cached = await this.cacheGet(endpoint, params, { ttl, quantize, ragContext, userId });
       if (cached) {
@@ -209,7 +210,7 @@ class SSRLegalAPICache {
       }
     }
 
-    // Execute actual API call
+    // Execute actual API call;
     const response = await this.executeAPICall(endpoint, {
       method,
       params,
@@ -217,7 +218,7 @@ class SSRLegalAPICache {
       headers
     });
 
-    // Cache successful GET responses
+    // Cache successful GET responses;
     if (method === 'GET' && (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).success) {
       const ragContextData = ragContext ? await this.extractRAGContext(response) : undefined;
       await this.cacheSet(endpoint, params, response, {
@@ -233,7 +234,7 @@ class SSRLegalAPICache {
 
   /**
    * Generate HTTP cache headers for SSR
-   */
+   */;
   generateCacheHeaders(endpoint: string, response: LegalAPIResponse): Record<string, string> {
     const headers: Record<string, string> = {};
 
@@ -242,7 +243,7 @@ class SSRLegalAPICache {
       headers['ETag'] = this.generateETag(response);
       headers['Vary'] = 'Accept, Authorization, X-User-ID';
       
-      // Legal-specific headers
+      // Legal-specific headers;
       if (this.config.legalOptimizations) {
         headers['X-Legal-Cache'] = 'enabled';
         headers['X-Content-Type'] = 'legal-api-response';
@@ -262,7 +263,7 @@ class SSRLegalAPICache {
 
   /**
    * Invalidate cache entries by pattern
-   */
+   */;
   async invalidatePattern(pattern: string, userId?: string): Promise<number> {
     // This would need to be implemented in the parallel cache orchestrator
     // For now, we'll clear specific known patterns
@@ -283,7 +284,7 @@ class SSRLegalAPICache {
 
   /**
    * Get cache statistics
-   */
+   */;
   async getCacheStats(): Promise<any> {
     const perfStats = await parallelCacheOrchestrator.getPerformanceStats();
     
@@ -301,7 +302,7 @@ class SSRLegalAPICache {
       avgResponseTime: perfStats.currentMetrics.totalLatency,
       cacheSize: perfStats.cacheStats.l1Size + perfStats.cacheStats.l2Size + perfStats.cacheStats.l3Size,
       quantizedResponses: 0, // Would need to track this
-      ragContextEntries: this.ragContextCache.size
+      ragContextEntries: this.ragContextCache.size,
     };
   }
 
@@ -330,17 +331,17 @@ class SSRLegalAPICache {
   private selectOptimalTier(endpoint: string, response: LegalAPIResponse): 'l1' | 'l2' | 'l3' | 'all' {
     const dataSize = JSON.stringify(response).length;
     
-    // Critical endpoints -> all tiers
+    // Critical endpoints -> all tiers;
     if (endpoint.includes('/detective/') || endpoint.includes('/recommendations')) {
       return 'all';
     }
     
-    // Large responses -> L2/L3 only
+    // Large responses -> L2/L3 only;
     if (dataSize > 50000) {
       return 'l3';
     }
     
-    // Small frequent responses -> all tiers
+    // Small frequent responses -> all tiers;
     if (dataSize < 10000) {
       return 'all';
     }
@@ -349,12 +350,12 @@ class SSRLegalAPICache {
   }
 
   private isCacheable(endpoint: string, response: LegalAPIResponse): boolean {
-    // Don't cache errors
+    // Don't cache errors;
     if (!(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).success) {
       return false;
     }
 
-    // Don't cache user-specific real-time data
+    // Don't cache user-specific real-time data;
     if (endpoint.includes('/auth/') || endpoint.includes('/session/')) {
       return false;
     }
@@ -381,7 +382,7 @@ class SSRLegalAPICache {
     
     if (options.method === 'GET' && options.params) {
       Object.entries(options.params).forEach(([key, value]) => {
-        url.searchParams.append(key, String(value));
+        url.searchParams.append(key, String(value);
       });
     }
 
@@ -391,7 +392,7 @@ class SSRLegalAPICache {
         'Content-Type': 'application/json',
         ...options.headers
       },
-      body: options.body ? JSON.stringify(options.body) : undefined
+      body: options.body ? JSON.stringify(options.body) : undefined,
     });
 
     if (!(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).ok) {
@@ -402,7 +403,7 @@ class SSRLegalAPICache {
   }
 
   private async extractRAGContext(response: LegalAPIResponse): Promise<any[]> {
-    // Extract RAG context from response metadata
+    // Extract RAG context from response metadata;
     if ((response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta && (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.aiModel) {
       return [{
         model: (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.aiModel,
@@ -428,15 +429,15 @@ class SSRLegalAPICache {
 
 /**
  * Response Quantizer - Compress API responses
- */
+ */;
 class ResponseQuantizer {
   async quantize(response: LegalAPIResponse): Promise<LegalAPIResponse> {
     // Simple quantization - in production this would use more sophisticated compression
     const quantized = { ...response };
     
-    // Compress data arrays
+    // Compress data arrays;
     if (Array.isArray(quantized.data)) {
-      quantized.data = quantized.data.map(item => this.quantizeObject(item));
+      quantized.data = quantized.data.map(item => this.quantizeObject(item);
     } else if (typeof quantized.data === 'object') {
       quantized.data = this.quantizeObject(quantized.data);
     }
@@ -457,7 +458,7 @@ class ResponseQuantizer {
         // Round numbers to reduce precision
         quantized[key] = Math.round(value * 100) / 100;
       } else if (Array.isArray(value)) {
-        quantized[key] = value.map(item => this.quantizeObject(item));
+        quantized[key] = value.map(item => this.quantizeObject(item);
       } else if (typeof value === 'object') {
         quantized[key] = this.quantizeObject(value);
       } else {

@@ -46,7 +46,7 @@ declare const db: any;
 declare const desc: any;
 declare const asc: any;
 
-// Allow access to $env/static/private keys referenced in files
+// Allow access to $env/static/private keys referenced in files;
 declare module '$env/static/private' {
   const env: { [k: string]: string | undefined };
   export = env;

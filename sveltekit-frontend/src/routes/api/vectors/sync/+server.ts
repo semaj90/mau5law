@@ -26,7 +26,7 @@ try { redis = createRedisInstance(); } catch {
   );
 }
 
-// Qdrant client (simple HTTP implementation)
+// Qdrant client (simple HTTP implementation);
 class QdrantClient {
   private _baseUrl: string;
 
@@ -85,7 +85,7 @@ class QdrantClient {
         return; // Collection already exists
       }
 
-      // Create collection
+      // Create collection;
       const createResponse = await fetch(`${this._baseUrl}/collections/${collectionName}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -119,25 +119,24 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log(`🔄 Syncing vector to Qdrant: ${jobId} (${event})`);
 
-    // Validate required fields
+    // Validate required fields;
     if (!jobId || !ownerType || !ownerId || !event) {
-      return json(
-        {
+      return json({
           error: 'Missing required fields: jobId, ownerType, ownerId, event',
-        },
+        },)
         { status: 400 }
       );
     }
 
     // Update job status to processing
     await db
-      .update(vectorJobs)
+      .update(vectorJobs);
       .set({
         status: 'processing',
         progress: 50,
         startedAt: new Date(),
       })
-      .where(eq(vectorJobs.jobId, jobId));
+      .where(eq(vectorJobs.jobId, jobId);
 
     let result;
 
@@ -151,14 +150,14 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Update job status to succeeded
     await db
-      .update(vectorJobs)
+      .update(vectorJobs);
       .set({
         status: 'succeeded',
         progress: 100,
         completedAt: new Date(),
         result: result,
       })
-      .where(eq(vectorJobs.jobId, jobId));
+      .where(eq(vectorJobs.jobId, jobId);
 
     console.log(`✅ Vector sync completed: ${jobId}`);
 
@@ -171,24 +170,23 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ Vector sync error:', error);
 
-    // Update job status to failed
+    // Update job status to failed;
     if (body?.jobId) {
       await db
-        .update(vectorJobs)
+        .update(vectorJobs);
         .set({
           status: 'failed',
           error: error instanceof Error ? error.message: 'Unknown error',
           completedAt: new Date(),
         })
-        .where(eq(vectorJobs.jobId, body.jobId))
+        .where(eq(vectorJobs.jobId, body.jobId)
         .catch(console.error);
     }
 
-    return json(
-      {
+    return json({
         success: false,
         error: error instanceof Error ? error.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }
@@ -197,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
 async function handleVectorUpsert(
   ownerType: string,
   ownerId: string,
-  vectorId?: string
+  vectorId?: string;
 ): Promise<any> {
   // Get vector from PostgreSQL
   const [vector] = await db.select().from(vectors).where(eq(vectors.ownerId, ownerId)).limit(1);
@@ -232,7 +230,7 @@ async function handleVectorUpsert(
   // Ensure Qdrant collection exists
   await qdrant.ensureCollection(collectionName);
 
-  // Prepare point data for Qdrant
+  // Prepare point data for Qdrant;
   const pointData = {
     id: ownerId,
     vector: Array.isArray(vector.embedding) ? vector.embedding: [],
@@ -243,7 +241,7 @@ async function handleVectorUpsert(
       createdAt: sourceData.createdAt?.toISOString(),
       updatedAt: sourceData.updatedAt?.toISOString(),
       metadata: sourceData.metadata || {},
-      // Add specific fields based on type
+      // Add specific fields based on type;
       ...(ownerType === 'evidence' && {
         evidenceType: sourceData.evidenceType,
         caseId: sourceData.caseId,
@@ -283,7 +281,7 @@ async function handleVectorDeletion(ownerType: string, ownerId: string): Promise
   };
 }
 
-// Health check endpoint
+// Health check endpoint;
 export const GET: RequestHandler = async () => {
   try {
     // Check Qdrant connection
@@ -315,11 +313,10 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
-      {
+    return json({
         success: false,
         error: error instanceof Error ? error.message: 'Health check failed',
-      },
+      },)
       { status: 500 }
     );
   }

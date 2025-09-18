@@ -16,7 +16,7 @@ export { default as BitsUIAccessibilityWrapper } from '../BitsUIAccessibilityWra
 // Re-export bits-ui primitives for advanced usage
 export * from 'bits-ui';
 
-// Professional theme utilities
+// Professional theme utilities;
 export const LEGAL_AI_VARIANTS = {
   button: ['primary', 'secondary', 'ghost', 'outline', 'destructive', 'success', 'warning', 'info'] as const,
   card: ['default', 'elevated', 'outlined', 'filled'] as const,

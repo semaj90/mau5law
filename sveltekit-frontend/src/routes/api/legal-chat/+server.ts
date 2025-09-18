@@ -36,7 +36,7 @@ interface ChatResponse {
 /**
  * POST /api/legal-chat
  * Process legal AI chat with Redis-based memory management
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
   
@@ -52,14 +52,14 @@ export const POST: RequestHandler = async ({ request }) => {
       maxHistoryContext = 10
     } = body;
     
-    // Validate required fields
+    // Validate required fields;
     if (!sessionId || !message) {
       throw error(400, 'sessionId and message are required');
     }
     
     console.log(`🎮 Processing legal chat for session: ${sessionId}`);
     
-    // REDIS OPTIMIZATION: Check LLM cache first - fastest path
+    // REDIS OPTIMIZATION: Check LLM cache first - fastest path;
     const cachedResponse = await RedisLLMCache.getCachedResponse(message, {
       caseId,
       legalCategory,
@@ -75,18 +75,18 @@ export const POST: RequestHandler = async ({ request }) => {
         confidence: cachedResponse.confidence,
         processing_time: performance.now() - startTime,
         cache_stats: { cache_hit: true, cached_at: cachedResponse.timestamp },
-        conversation_context: undefined
+        conversation_context: undefined,
       });
     }
     
-    // Step 1: Add user message to history
+    // Step 1: Add user message to history;
     const userMessage: ChatMessage = {
       role: 'user',
       content: message,
       metadata: {
         caseId,
         legalCategory,
-        sources: []
+        sources: [],
       }
     };
     
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
       caseId,
       legalCategory,
       practiceArea,
-      priority: 150 // Medium priority for chat
+      priority: 150 // Medium priority for chat,
     };
     
     await legalChatMemory.addMessageToHistory(sessionId, userMessage, conversationContext);
@@ -114,11 +114,11 @@ export const POST: RequestHandler = async ({ request }) => {
         
         const searchResults = await cachedVectorSearch.searchSimilarEvidence(
           message,
-          caseId,
+          caseId,);
           {
             maxResults: 5,
             similarityThreshold: 0.7,
-            includeCHRRomPatterns: true
+            includeCHRRomPatterns: true,
           }
         );
         
@@ -129,12 +129,12 @@ export const POST: RequestHandler = async ({ request }) => {
             similarity: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).similarity,
             memoryBank: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).memoryBank,
             priority: (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).priority
-          }));
+          });
           
           // Build context from search results
           ragContext = searchResults
             .slice(0, 3) // Top 3 results
-            .map(result => (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).content.substring(0, 500))
+            .map(result => (result as { documentId?: any; content?: any; similarity?: any; memoryBank?: any; priority?: any }).content.substring(0, 500)
             .join('\n\n');
           
           console.log(`🎮 RAG search found ${searchResults.length} relevant documents`);
@@ -159,8 +159,8 @@ export const POST: RequestHandler = async ({ request }) => {
       { role: 'system', content: systemPrompt },
       ...chatHistory.slice(-8).map(msg => ({ // Last 8 messages for context
         role: msg.role,
-        content: msg.content
-      }))
+        content: msg.content,
+      })
     ];
     
     // Step 6: Generate AI response with Gemma
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request }) => {
         temperature: 0.7,
         top_p: 0.9,
         max_tokens: 1000,
-        num_ctx: 4096 // Larger context for legal conversations
+        num_ctx: 4096 // Larger context for legal conversations,
       }
     });
     
@@ -184,7 +184,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const responseContent = aiResponse.message.content;
     const confidence = 0.85; // Could be calculated based on model confidence
     
-    // Step 7: Add AI response to history
+    // Step 7: Add AI response to history;
     const assistantMessage: ChatMessage = {
       role: 'assistant',
       content: responseContent,
@@ -192,13 +192,13 @@ export const POST: RequestHandler = async ({ request }) => {
         caseId,
         legalCategory,
         confidence,
-        sources: ragSources.map(s => s.documentId)
+        sources: ragSources.map(s => s.documentId),
       }
     };
     
     await legalChatMemory.addMessageToHistory(sessionId, assistantMessage, conversationContext);
     
-    // REDIS OPTIMIZATION: Cache successful response for future queries
+    // REDIS OPTIMIZATION: Cache successful response for future queries;
     await RedisLLMCache.cacheResponse(message, responseContent, {
       confidence,
       model_used: 'gemma3:legal-latest',
@@ -232,26 +232,26 @@ export const POST: RequestHandler = async ({ request }) => {
         chat_memory: {
           hit_rate: chatStats.cacheHitRate,
           total_messages: chatStats.totalMessages,
-          avg_response_time: chatStats.avgResponseTime
+          avg_response_time: chatStats.avgResponseTime,
         },
         vector_search: {
           hit_rate: vectorSearchStats.hitRate,
           total_queries: vectorSearchStats.totalQueries,
-          cache_hits: vectorSearchStats.cacheHits
+          cache_hits: vectorSearchStats.cacheHits,
         },
         embeddings: {
           hit_rate: embeddingStats.hitRate,
           total_requests: embeddingStats.totalRequests,
-          model_usage: embeddingStats.modelUsage
+          model_usage: embeddingStats.modelUsage,
         },
         redis_orchestrator: {
           llm_cache: redisStats.llm_cache,
           agent_memory: redisStats.agent_memory,
           task_queue: redisStats.task_queue,
-          memory_usage: redisStats.redis_memory
+          memory_usage: redisStats.redis_memory,
         }
       },
-      conversation_context: updatedContext || undefined
+      conversation_context: updatedContext || undefined,
     };
     
     return json(response);
@@ -270,7 +270,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /**
  * GET /api/legal-chat?sessionId=xxx&limit=20
  * Retrieve chat history for a session
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = performance.now();
   
@@ -303,7 +303,7 @@ export const GET: RequestHandler = async ({ url }) => {
       summary: summary ? JSON.parse(summary) : null,
       message_count: messages.length,
       processing_time: processingTime,
-      stats: legalChatMemory.getStats()
+      stats: legalChatMemory.getStats(),
     });
     
   } catch (err) {
@@ -320,7 +320,7 @@ export const GET: RequestHandler = async ({ url }) => {
 /**
  * DELETE /api/legal-chat?sessionId=xxx
  * Clear chat history for a session
- */
+ */;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');

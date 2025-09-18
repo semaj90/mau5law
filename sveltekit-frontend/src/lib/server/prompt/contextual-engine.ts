@@ -2,6 +2,7 @@ import type { UserProfile } from "$lib/server/db/schema/user-management";
 import { db } from "$lib/server/database";
 import { users, userProfiles } from "$lib/server/db/schema/user-management";
 import { eq } from "drizzle-orm";
+}
 
 export interface ContextOptions {
   jurisdictionHint?: boolean;
@@ -15,8 +16,8 @@ export async function buildUserContextPrompt(userId?: string, opts: ContextOptio
     const rows = await db
       .select()
       .from(users)
-      .leftJoin(userProfiles, eq(users.id as any, (userProfiles as any).userId))
-      .where(eq(users.id as any, userId as any))
+      .leftJoin(userProfiles, eq(users.id as any, (userProfiles as any).userId)
+      .where(eq(users.id as any, userId as any)
       .limit(1);
     if (!rows?.length) return '';
     const u: any = rows[0].users;

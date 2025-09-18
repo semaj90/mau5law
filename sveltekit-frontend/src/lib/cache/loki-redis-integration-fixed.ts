@@ -28,12 +28,12 @@ export interface LegalDocument {
   confidenceLevel?: number;
   metadata?: Record<string, any>;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
 
-// Cache configuration optimized for legal AI workloads
+// Cache configuration optimized for legal AI workloads;
 const CACHE_CONFIG = {
-  // Loki.js settings
+  // Loki.js settings;
   loki: {
     autosave: true,
     autosaveInterval: 5000, // 5 seconds
@@ -42,7 +42,7 @@ const CACHE_CONFIG = {
     serializationMethod: 'pretty' as const,
   },
 
-  // Redis settings
+  // Redis settings;
   redis: {
     host: 'localhost',
     port: 6379,
@@ -56,7 +56,7 @@ const CACHE_CONFIG = {
     },
   },
 
-  // Memory management
+  // Memory management;
   memory: {
     maxLokiSize: 50 * 1024 * 1024, // 50MB in-memory limit
     evictionThreshold: 0.85, // Evict when 85% full
@@ -64,13 +64,14 @@ const CACHE_CONFIG = {
     nesIntegration: true, // Use NES memory for overflow
   },
 } as const;
+}
 
 export interface CachedDocument extends LegalDocument {
   cacheTimestamp: number;
   accessCount: number;
   cacheLocation: 'loki' | 'redis' | 'nes';
   compressed: boolean;
-  syncStatus: 'synced' | 'dirty' | 'pending';
+  syncStatus: 'synced' | 'dirty' | 'pending';,
 }
 
 export interface SearchResult {
@@ -88,7 +89,7 @@ export interface CacheStats {
     memoryUsage: number;
     queries: number;
     hits: number;
-    misses: number;
+    misses: number;,
   };
   redis: {
     connected: boolean;
@@ -96,18 +97,18 @@ export interface CacheStats {
     memoryUsage: number;
     operations: number;
     hits: number;
-    misses: number;
+    misses: number;,
   };
   nes: {
     documentsStored: number;
     memoryUsage: number;
-    bankSwitches: number;
+    bankSwitches: number;,
   };
   overall: {
     hitRatio: number;
     avgResponseTime: number;
     totalDocuments: number;
-    syncConflicts: number;
+    syncConflicts: number;,
   };
 }
 
@@ -120,7 +121,7 @@ export class LokiRedisCache extends EventEmitter {
   // Loki collections by document type
   private collections: Map<string, Collection<CachedDocument> = new Map();
 
-  // Performance tracking
+  // Performance tracking;
   private stats = {
     loki: { collections: 0, documents: 0, memoryUsage: 0, queries: 0, hits: 0, misses: 0 },
     redis: { connected: false, keys: 0, memoryUsage: 0, operations: 0, hits: 0, misses: 0 },
@@ -175,7 +176,7 @@ export class LokiRedisCache extends EventEmitter {
         ...CACHE_CONFIG.loki,
         autoloadCallback: (err) => {
           if (err) {
-            reject(new Error(`Loki initialization failed: ${err.message || err}`));
+            reject(new Error(`Loki initialization failed: ${err.message || err}`);
             return;
           }
 
@@ -199,7 +200,7 @@ export class LokiRedisCache extends EventEmitter {
 
             // Search results collection
             const searchCollection =
-              this.loki!.getCollection('search_results') ||
+              this.loki!.getCollection('search_results') ||;
               this.loki!.addCollection('search_results', {
                 indices: ['query', 'timestamp'],
               });
@@ -210,7 +211,7 @@ export class LokiRedisCache extends EventEmitter {
             console.log(`✅ Loki initialized with ${this.collections.size} collections`);
             resolve();
           } catch (error: any) {
-            reject(new Error(`Loki collection setup failed: ${error.message}`));
+            reject(new Error(`Loki collection setup failed: ${error.message}`);
           }
         },
       });
@@ -225,12 +226,12 @@ export class LokiRedisCache extends EventEmitter {
         return;
       }
 
-      // Initialize Redis if it has an initialize method
+      // Initialize Redis if it has an initialize method;
       if (typeof this.redis.initialize === 'function') {
         await this.redis.initialize();
       }
 
-      // Get client and subscriber
+      // Get client and subscriber;
       if (typeof this.redis.getClient === 'function') {
         this.redis = this.redis.getClient();
       }
@@ -257,7 +258,7 @@ export class LokiRedisCache extends EventEmitter {
     if (!this.subscriber) return;
 
     try {
-      // Subscribe to document updates
+      // Subscribe to document updates;
       if (typeof this.subscriber.psubscribe === 'function') {
         await this.subscriber.psubscribe('legal_ai:document:*');
         
@@ -270,7 +271,7 @@ export class LokiRedisCache extends EventEmitter {
         }
       }
 
-      // Subscribe to search invalidation
+      // Subscribe to search invalidation;
       if (typeof this.subscriber.subscribe === 'function') {
         await this.subscriber.subscribe('legal_ai:search:invalidate');
         
@@ -298,9 +299,9 @@ export class LokiRedisCache extends EventEmitter {
 
       const { documentId, operation, document } = data;
 
-      // Update local Loki cache based on Redis changes
+      // Update local Loki cache based on Redis changes;
       switch (operation) {
-        case 'update':
+        case 'update':;
           if (document) {
             this.updateLocalDocument(documentId, document);
           }
@@ -308,7 +309,7 @@ export class LokiRedisCache extends EventEmitter {
         case 'delete':
           this.removeLocalDocument(documentId);
           break;
-        case 'create':
+        case 'create':;
           if (document) {
             this.addLocalDocument(document);
           }
@@ -344,7 +345,7 @@ export class LokiRedisCache extends EventEmitter {
       // Store in Redis for distribution
       await this.storeRedisDocument(cachedDoc, data);
 
-      // If memory pressure or suitable for NES, store there
+      // If memory pressure or suitable for NES, store there;
       if (this.shouldUseNESMemory(cachedDoc)) {
         await this.storeNESDocument(cachedDoc, data);
       }
@@ -366,7 +367,7 @@ export class LokiRedisCache extends EventEmitter {
     // Check memory pressure
     if (
       this.stats.loki.memoryUsage >
-      CACHE_CONFIG.memory.maxLokiSize * CACHE_CONFIG.memory.evictionThreshold
+      CACHE_CONFIG.memory.maxLokiSize * CACHE_CONFIG.memory.evictionThreshold;
     ) {
       await this.evictLokiDocuments();
     }
@@ -403,7 +404,7 @@ export class LokiRedisCache extends EventEmitter {
 
       this.stats.redis.operations++;
 
-      // Publish update notification
+      // Publish update notification;
       if (typeof this.redis.publish === 'function') {
         await this.redis.publish(
           `legal_ai:document:${document.type}`,
@@ -448,7 +449,7 @@ export class LokiRedisCache extends EventEmitter {
   }
 
   private selectNESBank(document: CachedDocument): string {
-    // Select NES bank based on document characteristics
+    // Select NES bank based on document characteristics;
     if (document.riskLevel === 'critical' || document.priority > 200) {
       return 'INTERNAL_RAM'; // Fastest access
     }
@@ -491,7 +492,7 @@ export class LokiRedisCache extends EventEmitter {
       // Try NES memory last
       document = await this.getNESDocument(documentId);
       if (document) {
-        // Promote to higher cache levels if frequently accessed
+        // Promote to higher cache levels if frequently accessed;
         if (document.accessCount > 5) {
           await this.storeLokiDocument(document);
         }
@@ -617,7 +618,7 @@ export class LokiRedisCache extends EventEmitter {
           lokiQuery.priority = { $gte: filters.priorityMin };
         }
 
-        // Text search (simple contains for now, could be enhanced with full-text search)
+        // Text search (simple contains for now, could be enhanced with full-text search);
         if (query) {
           lokiQuery.$or = [
             { id: { $contains: query } },
@@ -643,7 +644,7 @@ export class LokiRedisCache extends EventEmitter {
       results.sort((a, b) => b.score - a.score);
       results = results.slice(0, limit);
 
-      // Cache results if enabled
+      // Cache results if enabled;
       if (cacheResults) {
         await this.cacheSearchResults(cacheKey, results);
       }
@@ -663,7 +664,7 @@ export class LokiRedisCache extends EventEmitter {
     score += document.priority * 0.01;
     score += (document.confidenceLevel || 0) * 100;
 
-    // Risk level scoring
+    // Risk level scoring;
     switch (document.riskLevel) {
       case 'critical':
         score += 50;
@@ -717,9 +718,9 @@ export class LokiRedisCache extends EventEmitter {
       const key = `${CACHE_CONFIG.redis.keyPrefix}${cacheKey}`;
       
       if (typeof this.redis.setex === 'function') {
-        await this.redis.setex(key, CACHE_CONFIG.redis.ttl.searches, JSON.stringify(results));
+        await this.redis.setex(key, CACHE_CONFIG.redis.ttl.searches, JSON.stringify(results);
       } else if (typeof this.redis.set === 'function') {
-        await this.redis.set(key, JSON.stringify(results));
+        await this.redis.set(key, JSON.stringify(results);
         if (typeof this.redis.expire === 'function') {
           await this.redis.expire(key, CACHE_CONFIG.redis.ttl.searches);
         }
@@ -749,7 +750,7 @@ export class LokiRedisCache extends EventEmitter {
       }
     }
 
-    // Sort by access patterns (LRU + priority)
+    // Sort by access patterns (LRU + priority);
     candidates.sort((a, b) => {
       const scoreA = a.document.accessCount + (a.document.priority / 255) * 10;
       const scoreB = b.document.accessCount + (b.document.priority / 255) * 10;
@@ -797,14 +798,14 @@ export class LokiRedisCache extends EventEmitter {
     if (collection) {
       const existing = collection.findOne({ id: documentId });
       if (existing) {
-        // Update existing document
+        // Update existing document;
         Object.assign(existing, document, {
           syncStatus: 'synced' as const,
           cacheTimestamp: Date.now(),
         });
         collection.update(existing);
       } else {
-        // Insert new document
+        // Insert new document;
         collection.insert({
           ...document,
           syncStatus: 'synced' as const,
@@ -860,7 +861,7 @@ export class LokiRedisCache extends EventEmitter {
   private startPerformanceMonitoring(): void {
     setInterval(() => {
       this.updateMemoryStats();
-      this.emit('stats', this.getStats());
+      this.emit('stats', this.getStats();
     }, 10000); // Every 10 seconds
   }
 
@@ -868,7 +869,7 @@ export class LokiRedisCache extends EventEmitter {
     // Estimate Loki memory usage
     this.stats.loki.memoryUsage = this.stats.loki.documents * 2048; // Rough estimate
 
-    // Get NES memory stats if available
+    // Get NES memory stats if available;
     if (this.nesMemory && typeof this.nesMemory.getMemoryStats === 'function') {
       try {
         const nesStats = this.nesMemory.getMemoryStats();
@@ -884,10 +885,10 @@ export class LokiRedisCache extends EventEmitter {
   }
 
   getStats(): CacheStats {
-    return JSON.parse(JSON.stringify(this.stats));
+    return JSON.parse(JSON.stringify(this.stats);
   }
 
-  // Public methods for accessing cached data
+  // Public methods for accessing cached data;
   async get(key: string): Promise<string | null> {
     if (!this.redis) return null;
 
@@ -930,14 +931,14 @@ export class LokiRedisCache extends EventEmitter {
 
   async clear(): Promise<void> {
     try {
-      // Clear Loki collections
+      // Clear Loki collections;
       for (const collection of this.collections.values()) {
         if (collection && typeof collection.clear === 'function') {
           collection.clear();
         }
       }
 
-      // Clear Redis cache
+      // Clear Redis cache;
       if (this.redis && typeof this.redis.keys === 'function' && typeof this.redis.del === 'function') {
         const pattern = `${CACHE_CONFIG.redis.keyPrefix}*`;
         const keys = await this.redis.keys(pattern);
@@ -946,7 +947,7 @@ export class LokiRedisCache extends EventEmitter {
         }
       }
 
-      // Reset stats
+      // Reset stats;
       this.stats = {
         loki: {
           collections: this.collections.size,
@@ -977,17 +978,17 @@ export class LokiRedisCache extends EventEmitter {
 
   async destroy(): Promise<void> {
     try {
-      // Save Loki database
+      // Save Loki database;
       if (this.loki) {
         await new Promise<void>((resolve, reject) => {
           this.loki!.saveDatabase((err) => {
-            if (err) reject(new Error(`Loki save failed: ${err.message || err}`))));
+            if (err) reject(new Error(`Loki save failed: ${err.message || err}`)));
             else resolve();
           });
         });
       }
 
-      // Close Redis connections
+      // Close Redis connections;
       if (this.redis && typeof this.redis.quit === 'function') {
         await this.redis.quit();
       }
@@ -1013,7 +1014,7 @@ export class LokiRedisCache extends EventEmitter {
 // Export singleton instance
 export const lokiRedisCache = new LokiRedisCache();
 
-// Initialize on module load in server environment
+// Initialize on module load in server environment;
 if (typeof window === 'undefined') {
   lokiRedisCache.initialize().catch((error) => {
     console.error('❌ Loki-Redis cache auto-initialization failed:', error.message);

@@ -15,7 +15,7 @@ export async function POST({ request }): Promise<any> {
 
         console.log(`Received ${processedFiles.length} processed files for storage.`);
 
-        // Store in PostgreSQL using Drizzle
+        // Store in PostgreSQL using Drizzle;
         const insertPromises = processedFiles.map(async (file) => {
             try {
                 await db.insert(indexedFiles).values({

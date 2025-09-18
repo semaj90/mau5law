@@ -2,11 +2,12 @@
 // Tries Tesseract.js (dynamic import) if present; falls back to server OCR endpoint if configured
 
 export type ImageSource = HTMLImageElement | HTMLCanvasElement | Blob | File | ImageBitmap;
+}
 
 export interface OCRResult {
   text: string;
   confidence?: number;
-  engine: 'tesseract' | 'server' | 'none';
+  engine: 'tesseract' | 'server' | 'none';,
 }
 
 async function toImageData(src: ImageSource): Promise<ImageData> {
@@ -21,7 +22,7 @@ async function toImageData(src: ImageSource): Promise<ImageData> {
 
   if (src instanceof HTMLImageElement) {
     await new Promise<void>((resolve, reject) => {
-      if (src.complete) return resolve());
+      if (src.complete) return resolve();
       src.onload = () => resolve();
       src.onerror = (e) => reject(e);
     });
@@ -52,10 +53,10 @@ async function toImageData(src: ImageSource): Promise<ImageData> {
 }
 
 export async function extractTextFromImage(source: ImageSource, lang = 'eng'): Promise<OCRResult> {
-  // Try Tesseract.js
+  // Try Tesseract.js;
   try {
     // @ts-ignore dynamic optional dep
-    const Tesseract = (await import('tesseract.js')).default || (await import('tesseract.js'));
+    const Tesseract = (await import('tesseract.js')).default || (await import('tesseract.js');
     const imageData = await toImageData(source);
     const { data } = await Tesseract.recognize(imageData, lang);
     return { text: data?.text || '', confidence: data?.confidence, engine: 'tesseract' };
@@ -63,19 +64,19 @@ export async function extractTextFromImage(source: ImageSource, lang = 'eng'): P
     // ignore, try server
   }
 
-  // Optional server OCR fallback
+  // Optional server OCR fallback;
   try {
     const blob = source instanceof Blob || source instanceof File
-      ? source
+      ? source;
       : await (async () => {
-          const canvas = document.createElement('canvas'));
+          const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
           if (!ctx) throw new Error('Canvas 2D context unavailable');
           const imgData = await toImageData(source);
           canvas.width = imgData.width;
           canvas.height = imgData.height;
           ctx.putImageData(imgData, 0, 0);
-          const b = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+          const b = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png');
           if (!b) throw new Error('Failed to create blob from canvas');
           return b;
         })();

@@ -9,8 +9,8 @@ import {
   transformerDirectives,
   transformerVariantGroup,
   transformerCompileClass,
-} from "unocss";
-import extractorSvelte from "@unocss/extractor-svelte";
+} from 'unocss';
+import extractorSvelte from '@unocss/extractor-svelte';
 
 export default defineConfig({
   presets: [
@@ -229,15 +229,15 @@ export default defineConfig({
       'nes-2': '16px',
       'nes-3': '24px',
       'nes-4': '32px',
-      'court': '1.5rem',
-      'legal': '2rem',
+      court: '1.5rem',
+      legal: '2rem',
     },
     animation: {
       'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       'bounce-subtle': 'bounce 2s ease-in-out infinite',
       'fade-in': 'fadeIn 0.5s ease-in-out',
       'slide-up': 'slideUp 0.3s ease-out',
-      'glow': 'glow 2s ease-in-out infinite alternate',
+      glow: 'glow 2s ease-in-out infinite alternate',
       'matrix-rain': 'matrixRain 3s linear infinite',
       'nes-blink': 'nesBlink 1s step-end infinite',
       processing: 'processing 2s linear infinite',
@@ -289,19 +289,26 @@ export default defineConfig({
     'stretch-fit': 'w-full h-full object-cover',
 
     // Legal AI Component Styles
-    'btn-justice': 'bg-justice-600 hover:bg-justice-700 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
-    'btn-court': 'bg-court-500 hover:bg-court-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
-    'btn-law': 'bg-law-600 hover:bg-law-700 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
-    'btn-gaming': 'bg-gaming-nes hover:bg-gaming-retro text-white font-nes text-sm px-4 py-2 border-2 border-current transition-all duration-200',
+    'btn-justice':
+      'bg-justice-600 hover:bg-justice-700 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
+    'btn-court':
+      'bg-court-500 hover:bg-court-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
+    'btn-law':
+      'bg-law-600 hover:bg-law-700 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200',
+    'btn-gaming':
+      'bg-gaming-nes hover:bg-gaming-retro text-white font-nes text-sm px-4 py-2 border-2 border-current transition-all duration-200',
 
     // Card Styles with Gaming Aesthetics
     'card-legal': 'bg-white border border-court-200 rounded-lg shadow-sm p-6',
-    'card-gaming': 'bg-court-900 border-2 border-gaming-neon rounded-none p-4 font-nes text-xs shadow-lg shadow-gaming-neon/25',
+    'card-gaming':
+      'bg-court-900 border-2 border-gaming-neon rounded-none p-4 font-nes text-xs shadow-lg shadow-gaming-neon/25',
     'card-nier': 'bg-gaming-nier border border-court-400 rounded-sm p-6 font-nier shadow-md',
 
     // Input Styles
-    'input-legal': 'border border-court-300 rounded-lg px-4 py-3 bg-white focus:ring-2 focus:ring-justice-500 focus:border-justice-500 transition-colors',
-    'input-gaming': 'border-2 border-gaming-neon bg-court-900 text-gaming-neon px-3 py-2 font-mono text-sm focus:outline-none focus:shadow-glow',
+    'input-legal':
+      'border border-court-300 rounded-lg px-4 py-3 bg-white focus:ring-2 focus:ring-justice-500 focus:border-justice-500 transition-colors',
+    'input-gaming':
+      'border-2 border-gaming-neon bg-court-900 text-gaming-neon px-3 py-2 font-mono text-sm focus:outline-none focus:shadow-glow',
 
     // Typography Patterns
     'text-legal-heading': 'font-legal font-bold text-court-900 leading-tight',
@@ -329,7 +336,8 @@ export default defineConfig({
     // CUDA/WASM Performance Indicators
     'cuda-active': 'shadow-lg shadow-gaming-neon/50 border-2 border-gaming-neon animate-glow',
     'wasm-active': 'shadow-lg shadow-gaming-nes/50 border-2 border-gaming-nes animate-glow',
-    'intel-gpu-active': 'shadow-lg shadow-gaming-cyber/50 border-2 border-gaming-cyber animate-glow',
+    'intel-gpu-active':
+      'shadow-lg shadow-gaming-cyber/50 border-2 border-gaming-cyber animate-glow',
 
     // NieR Flexbox Layout
     'yorha-flex-container': 'flex h-full w-full',

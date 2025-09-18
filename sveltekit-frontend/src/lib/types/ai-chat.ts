@@ -1,6 +1,7 @@
 /**
  * AI Chat Types - Type definitions for the AI chat system
- */
+ */;
+}
 
 export interface ChatMessage {
   id: string;
@@ -92,6 +93,7 @@ export interface AttentionData {
 }
 
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
+}
 
 export interface ChatStore {
   messages: ChatMessage[];
@@ -100,5 +102,5 @@ export interface ChatStore {
   connectionStatus: ConnectionStatus;
   isTyping: boolean;
   userActivity: UserActivity[];
-  recommendations: Recommendation[];
+  recommendations: Recommendation[];,
 }

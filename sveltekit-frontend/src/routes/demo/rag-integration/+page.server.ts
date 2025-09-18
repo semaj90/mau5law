@@ -54,12 +54,12 @@ export const actions: Actions = {
     try {
       const startTime = Date.now();
       
-      // Perform comprehensive RAG query
+      // Perform comprehensive RAG query;
       const ragResult = await performComprehensiveRAG(query, {
         includeContext,
         maxResults,
         similarityThreshold,
-        userId: locals.user?.id
+        userId: locals.user?.id,
       });
 
       const processingTime = Date.now() - startTime;
@@ -69,9 +69,9 @@ export const actions: Actions = {
         result: {
           ...ragResult,
           processingTime,
-          query: query.trim()
+          query: query.trim(),
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (err) {
       console.error('RAG query failed:', err);
@@ -92,13 +92,13 @@ export const actions: Actions = {
     try {
       const documentResult = await addDocumentToRAG(title, content, {
         documentType,
-        userId: locals.user?.id
+        userId: locals.user?.id,
       });
 
       return json({
         success: true,
         document: documentResult,
-        message: 'Document added to knowledge base successfully'
+        message: 'Document added to knowledge base successfully',
       });
     } catch (err) {
       console.error('Failed to add document to RAG:', err);
@@ -116,13 +116,13 @@ export const actions: Actions = {
 
     try {
       const batchResult = await processBatchEmbedding(documents, {
-        userId: locals.user?.id
+        userId: locals.user?.id,
       });
 
       return json({
         success: true,
         batchResult,
-        processedCount: documents.length
+        processedCount: documents.length,
       });
     } catch (err) {
       console.error('Batch embedding failed:', err);
@@ -138,21 +138,21 @@ async function getRAGCapabilities() {
       dimensions: 768,
       indexType: 'ivfflat',
       totalDocuments: 12847,
-      totalVectors: 156392
+      totalVectors: 156392,
     },
     embeddingModel: {
       name: 'nomic-embed-text',
       provider: 'Ollama',
       dimensions: 768,
       contextLength: 2048,
-      avgLatency: 45 // ms
+      avgLatency: 45 // ms,
     },
     llmModel: {
       name: 'gemma2:27b',
       provider: 'Ollama', 
       contextLength: 8192,
       avgLatency: 1250, // ms
-      accuracy: 0.89
+      accuracy: 0.89,
     },
     retrievalMethods: [
       'semantic_similarity',
@@ -181,13 +181,13 @@ async function getVectorDatabaseStats() {
       p50: 23, // ms
       p90: 45,
       p95: 67,
-      p99: 120
+      p99: 120,
     },
     similarityDistribution: {
       veryHigh: 1247, // >0.9
       high: 4892, // 0.8-0.9
       medium: 8934, // 0.7-0.8
-      low: 2774 // 0.6-0.7
+      low: 2774 // 0.6-0.7,
     }
   };
 }
@@ -201,7 +201,7 @@ async function getModelInformation() {
       maxTokens: 2048,
       avgLatency: 45,
       throughput: 850, // vectors/sec
-      accuracy: 0.91
+      accuracy: 0.91,
     },
     llm: {
       model: 'gemma2:27b',
@@ -210,18 +210,18 @@ async function getModelInformation() {
       contextWindow: 8192,
       avgLatency: 1250,
       throughput: 45, // tokens/sec
-      accuracy: 0.89
+      accuracy: 0.89,
     },
     reranker: {
       enabled: true,
       model: 'cross-encoder/ms-marco-MiniLM-L-6-v2',
-      accuracy: 0.87
+      accuracy: 0.87,
     }
   };
 }
 
 async function getRecentRAGQueries() {
-  return [
+  return [;
     {
       id: 'query_001',
       query: 'Contract liability provisions for software development',
@@ -229,7 +229,7 @@ async function getRecentRAGQueries() {
       avgSimilarity: 0.87,
       processingTime: 1234,
       timestamp: new Date(Date.now() - 300000).toISOString(), // 5 min ago
-      userId: 'user_123'
+      userId: 'user_123',
     },
     {
       id: 'query_002',
@@ -238,7 +238,7 @@ async function getRecentRAGQueries() {
       avgSimilarity: 0.82,
       processingTime: 987,
       timestamp: new Date(Date.now() - 900000).toISOString(), // 15 min ago
-      userId: 'user_456'
+      userId: 'user_456',
     },
     {
       id: 'query_003',
@@ -247,7 +247,7 @@ async function getRecentRAGQueries() {
       avgSimilarity: 0.79,
       processingTime: 1456,
       timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
-      userId: 'user_789'
+      userId: 'user_789',
     }
   ];
 }
@@ -269,7 +269,7 @@ async function getKnowledgeBaseStats() {
       contractLaw: 0.89,
       intellectualProperty: 0.85,
       employment: 0.78,
-      criminal: 0.72
+      criminal: 0.72,
     }
   };
 }
@@ -277,7 +277,7 @@ async function getKnowledgeBaseStats() {
 async function performComprehensiveRAG(query: string, options: any) {
   // Mock comprehensive RAG processing - replace with actual implementation
   const simulatedProcessing = Math.random() * 1500 + 500;
-  await new Promise(resolve => setTimeout(resolve, simulatedProcessing));
+  await new Promise(resolve => setTimeout(resolve, simulatedProcessing);
 
   // Generate mock results based on query content
   const mockSources = generateMockSources(query, options.maxResults);
@@ -293,12 +293,12 @@ async function performComprehensiveRAG(query: string, options: any) {
       llmModel: 'gemma2:27b',
       avgSimilarity: mockSources.reduce((acc, s) => acc + s.similarity, 0) / mockSources.length,
       contextUsed: Math.floor(Math.random() * 4000) + 1000,
-      tokensGenerated: Math.floor(Math.random() * 500) + 100
+      tokensGenerated: Math.floor(Math.random() * 500) + 100,
     },
     performance: {
       retrievalTime: Math.floor(Math.random() * 200) + 50,
       generationTime: Math.floor(Math.random() * 1000) + 300,
-      totalTime: simulatedProcessing
+      totalTime: simulatedProcessing,
     }
   };
 }
@@ -318,13 +318,13 @@ function generateMockSources(query: string, maxResults: number) {
         id: `chunk_${i}`,
         startIndex: i * 512,
         endIndex: (i + 1) * 512,
-        pageNumber: i + 1
+        pageNumber: i + 1,
       },
       metadata: {
         jurisdiction: 'Federal',
         year: 2020 + i,
         court: i % 2 === 0 ? 'District Court' : 'Appeals Court',
-        confidence: 0.90 - (i * 0.02)
+        confidence: 0.90 - (i * 0.02),
       }
     });
   }
@@ -354,7 +354,7 @@ This analysis is based on ${sources.length} highly relevant legal sources with s
 }
 
 async function addDocumentToRAG(title: string, content: string, options: any) {
-  // Mock document addition - replace with actual implementation
+  // Mock document addition - replace with actual implementation;
   return {
     id: `doc_${Date.now()}`,
     title,
@@ -363,18 +363,18 @@ async function addDocumentToRAG(title: string, content: string, options: any) {
     vectors: Math.ceil(content.length / 512),
     documentType: options.documentType,
     processingTime: Math.floor(Math.random() * 2000) + 500,
-    status: 'processed'
+    status: 'processed',
   };
 }
 
 async function processBatchEmbedding(documents: any[], options: any) {
-  // Mock batch processing - replace with actual implementation
+  // Mock batch processing - replace with actual implementation;
   return {
     processed: documents.length,
     totalChunks: documents.reduce((acc, doc) => acc + Math.ceil(doc.content.length / 512), 0),
     totalVectors: documents.reduce((acc, doc) => acc + Math.ceil(doc.content.length / 512), 0),
     processingTime: Math.floor(Math.random() * 5000) + 2000,
-    avgConfidence: 0.85 + Math.random() * 0.1
+    avgConfidence: 0.85 + Math.random() * 0.1,
   };
 }
 
@@ -385,6 +385,6 @@ function getDefaultRAGData() {
     modelInfo: { embedding: Record<string, any>, llm: Record<string, any> },
     recentQueries: [],
     knowledgeBase: { categories: Record<string, any>, recentAdditions: 0 },
-    demoQueries: []
+    demoQueries: [],
   };
 }

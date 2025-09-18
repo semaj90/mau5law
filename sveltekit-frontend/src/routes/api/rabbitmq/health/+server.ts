@@ -30,40 +30,40 @@ export const GET: RequestHandler = async () => {
 				host: 'localhost',
 				port: 5672,
 				vhost: '/',
-				heartbeat: 60
+				heartbeat: 60,
 			},
 			queues: {
 				'legal.docs.process': {
 					status: isServiceHealthy ? 'ready' : 'unknown',
 					messages: 0,
-					consumers: 0
+					consumers: 0,
 				},
 				'legal.chunks.embed': {
 					status: isServiceHealthy ? 'ready' : 'unknown', 
 					messages: 0,
-					consumers: 0
+					consumers: 0,
 				},
 				'legal.chunks.store': {
 					status: isServiceHealthy ? 'ready' : 'unknown',
 					messages: 0,
-					consumers: 0
+					consumers: 0,
 				},
 				'legal.dlq': {
 					status: isServiceHealthy ? 'ready' : 'unknown',
 					messages: 0,
-					consumers: 0
+					consumers: 0,
 				}
 			},
 			exchanges: {
 				'legal.main': {
 					status: isServiceHealthy ? 'ready' : 'unknown',
 					type: 'direct',
-					durable: true
+					durable: true,
 				},
 				'legal.dlx': {
 					status: isServiceHealthy ? 'ready' : 'unknown',
 					type: 'direct', 
-					durable: true
+					durable: true,
 				}
 			},
 			serviceDetails: serviceHealth.status === 'fulfilled' ? serviceHealth.value.details: null,
@@ -72,11 +72,11 @@ export const GET: RequestHandler = async () => {
 			memory: {
 				used: '124MB',
 				limit: '512MB',
-				percentage: 24
+				percentage: 24,
 			},
 			worker: {
 				available: true,
-				endpoint: '/api/workers/rabbitmq'
+				endpoint: '/api/workers/rabbitmq',
 			}
 		};
 
@@ -95,11 +95,11 @@ export const GET: RequestHandler = async () => {
 			timestamp: new Date().toISOString(),
 			error: error instanceof Error ? error.message: 'Unknown error',
 			connection: {
-				status: 'disconnected'
+				status: 'disconnected',
 			},
 			worker: {
 				available: false,
-				error: 'Service unavailable'
+				error: 'Service unavailable',
 			}
 		}, { 
 			status: 503,

@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log('🔮 WebGPU Topology Prediction Request:', { query, documentType, complexity });
 
-    // Create mock legal document
+    // Create mock legal document;
     const document: LegalDocument = {
       id: `doc_${Date.now()}`,
       type: documentType || 'contract',
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timeConstraints: userPattern?.timeConstraints ?? 0.6,
     } satisfies UserBehaviorPattern;
 
-    // Performance requirements
+    // Performance requirements;
     const perfReqs = {
       maxLatency: performanceRequirements?.maxLatency || 1000,
       minAccuracy: performanceRequirements?.minAccuracy || 0.85,
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Initialize WebGPU service if available
     const webgpuInit = await webgpuRAGService.initializeWebGPU();
 
-    // Process query with WebGPU acceleration
+    // Process query with WebGPU acceleration;
     const webgpuResult = await webgpuRAGService.processQuery(query || 'topology optimization', {
       useGPU: true,
       topologyConfig: topologyPrediction.predictedConfig,
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error) {
     console.error('❌ WebGPU Topology Prediction Error:', error);
-    return json(
+    return json();
       {
         success: false,
         error: error instanceof Error ? error.message: 'Unknown error',
@@ -109,16 +109,16 @@ export const GET: RequestHandler = async () => {
 			services: {
 				qloraTopology: 'ready',
 				hmmPredictor: 'ready',
-				webgpuRag: webgpuInit.adapter ? 'ready' : 'fallback'
+				webgpuRag: webgpuInit.adapter ? 'ready' : 'fallback',
 			},
 			metrics: {
 				hmmAccuracy: hmmMetrics.overallAccuracy,
 				hmmConfidence: hmmMetrics.modelConfidence,
 				totalPredictions: hmmMetrics.totalPredictions,
-				cacheHitRate: hmmMetrics.cacheHitRate
+				cacheHitRate: hmmMetrics.cacheHitRate,
 			},
 			webgpu: webgpuInit,
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		});
 
 	} catch (error) {
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async () => {
 		return json({
 			status: 'error',
 			error: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		}, { status: 500 });
 	}
 };

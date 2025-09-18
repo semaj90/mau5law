@@ -6,7 +6,7 @@
 import { createMachine, assign, fromPromise } from 'xstate';
 import { browser } from '$app/environment';
 
-// RabbitMQ Web STOMP configuration (free tier)
+// RabbitMQ Web STOMP configuration (free tier);
 export interface RabbitMQConfig {
   host: string;
   port: number;
@@ -14,7 +14,7 @@ export interface RabbitMQConfig {
   username: string;
   password: string;
   ssl: boolean;
-  heartbeat: number;
+  heartbeat: number;,
 }
 
 // Legal AI message types (enhanced for WebAssembly inference)
@@ -35,6 +35,7 @@ export type LegalAIMessageType =
   | 'wasm_stream_inference'    // NEW: Streaming WebAssembly inference
   | 'wasm_health_check'        // NEW: WebAssembly service health
   | 'error_recovery';
+}
 
 export interface LegalAIMessage {
   id: string;
@@ -48,7 +49,7 @@ export interface LegalAIMessage {
   replyTo?: string;
 }
 
-// Self-prompting context for legal AI
+// Self-prompting context for legal AI;
 export interface SelfPromptingContext {
   userHistory: any[];
   activeSession: string | null;
@@ -59,15 +60,15 @@ export interface SelfPromptingContext {
     averageResponseTime: number;
     successRate: number;
     cacheHitRate: number;
-    gpuUtilization: number;
+    gpuUtilization: number;,
   };
   rabbitMQConnection: any;
   isConnected: boolean;
   reconnectAttempts: number;
-  lastHeartbeat: number;
+  lastHeartbeat: number;,
 }
 
-// XState machine for self-prompting legal AI
+// XState machine for self-prompting legal AI;
 export const selfPromptingMachine = createMachine({
   id: 'legalAISelfPrompting',
   initial: 'initializing',
@@ -81,12 +82,12 @@ export const selfPromptingMachine = createMachine({
       averageResponseTime: 0,
       successRate: 0.95,
       cacheHitRate: 0.8,
-      gpuUtilization: 0
+      gpuUtilization: 0,
     },
     rabbitMQConnection: null,
     isConnected: false,
     reconnectAttempts: 0,
-    lastHeartbeat: 0
+    lastHeartbeat: 0,
   } as SelfPromptingContext,
 
   states: {
@@ -101,7 +102,7 @@ export const selfPromptingMachine = createMachine({
           actions: assign({
             rabbitMQConnection: ({ event }) => event.output.connection,
             isConnected: true,
-            reconnectAttempts: 0
+            reconnectAttempts: 0,
           })
         },
         onError: {
@@ -131,17 +132,17 @@ export const selfPromptingMachine = createMachine({
             },
             SELF_PROMPT_TRIGGER: {
               target: 'selfPrompting',
-              actions: 'triggerSelfAnalysis'
+              actions: 'triggerSelfAnalysis',
             },
             USER_HISTORY_UPDATE: {
               actions: assign({
                 userHistory: ({ context, event }) => [
-                  ...context.userHistory.slice(-100), // Keep last 100 entries
+                  ...context.userHistory.slice(-100), // Keep last 100 entries;
                   {
                     action: event.action,
                     timestamp: Date.now(),
                     data: event.data,
-                    sessionId: context.activeSession
+                    sessionId: context.activeSession,
                   }
                 ]
               })
@@ -157,18 +158,18 @@ export const selfPromptingMachine = createMachine({
               return await RabbitMQXStateIntegration.processLegalAIMessage(message);
             }),
             input: ({ context }) => ({
-              message: context.pendingTasks[0]
+              message: context.pendingTasks[0],
             }),
             onDone: {
               target: 'idle',
-              actions: [
+              actions: [;
                 assign({
                   completedTasks: ({ context, event }) => [
-                    ...context.completedTasks.slice(-50), // Keep last 50
+                    ...context.completedTasks.slice(-50), // Keep last 50;
                     {
                       ...context.pendingTasks[0],
                       result: event.output,
-                      completedAt: Date.now()
+                      completedAt: Date.now(),
                     }
                   ],
                   pendingTasks: ({ context }) => context.pendingTasks.slice(1)
@@ -178,14 +179,14 @@ export const selfPromptingMachine = createMachine({
             },
             onError: {
               target: 'idle',
-              actions: [
+              actions: [;
                 assign({
                   errorTasks: ({ context, event }) => [
-                    ...context.errorTasks.slice(-20), // Keep last 20 errors
+                    ...context.errorTasks.slice(-20), // Keep last 20 errors;
                     {
                       ...context.pendingTasks[0],
                       error: event.error,
-                      errorAt: Date.now()
+                      errorAt: Date.now(),
                     }
                   ],
                   pendingTasks: ({ context }) => context.pendingTasks.slice(1)
@@ -205,23 +206,23 @@ export const selfPromptingMachine = createMachine({
             }),
             input: ({ context }) => ({
               context,
-              userHistory: context.userHistory
+              userHistory: context.userHistory,
             }),
             onDone: {
               target: 'idle',
-              actions: [
+              actions: [;
                 assign({
                   pendingTasks: ({ context, event }) => [
                     ...context.pendingTasks,
                     ...event.output.recommendedActions
                   ]
-                }),
+                ,}),
                 'publishSelfPromptResults'
               ]
             },
             onError: {
               target: 'idle',
-              actions: 'logSelfPromptError'
+              actions: 'logSelfPromptError',
             }
           }
         }
@@ -231,11 +232,11 @@ export const selfPromptingMachine = createMachine({
         CONNECTION_LOST: {
           target: 'reconnecting',
           actions: assign({
-            isConnected: false
+            isConnected: false,
           })
         },
         HEARTBEAT_TIMEOUT: {
-          target: 'reconnecting'
+          target: 'reconnecting',
         }
       }
     },
@@ -256,7 +257,7 @@ export const selfPromptingMachine = createMachine({
     error: {
       entry: 'logConnectionError',
       after: {
-        60000: 'initializing' // Retry after 1 minute
+        60000: 'initializing' // Retry after 1 minute,
       }
     }
   }
@@ -267,7 +268,7 @@ export const selfPromptingMachine = createMachine({
     },
 
     startHeartbeat: assign({
-      lastHeartbeat: Date.now()
+      lastHeartbeat: Date.now(),
     }),
 
     triggerSelfAnalysis: ({ context }) => {
@@ -294,7 +295,7 @@ export const selfPromptingMachine = createMachine({
         RabbitMQXStateIntegration.publishMessage({
           type: 'self_prompt',
           payload: event.output,
-          priority: 8
+          priority: 8,
         });
       }
     },
@@ -313,13 +314,13 @@ export const selfPromptingMachine = createMachine({
   }
 });
 
-// RabbitMQ integration class
+// RabbitMQ integration class;
 export class RabbitMQXStateIntegration {
   private static connection: any = null;
   private static channel: any = null;
   private static isInitialized = false;
 
-  // Free RabbitMQ configuration (CloudAMQP free tier)
+  // Free RabbitMQ configuration (CloudAMQP free tier);
   private static config: RabbitMQConfig = {
     host: import.meta.env.RABBITMQ_HOST || 'localhost',
     port: parseInt(import.meta.env.RABBITMQ_PORT || '15674'), // Web STOMP port
@@ -327,10 +328,10 @@ export class RabbitMQXStateIntegration {
     username: import.meta.env.RABBITMQ_USERNAME || 'guest',
     password: import.meta.env.RABBITMQ_PASSWORD || 'guest',
     ssl: import.meta.env.RABBITMQ_SSL === 'true',
-    heartbeat: 60
+    heartbeat: 60,
   };
 
-  // Legal AI queues (enhanced for WebAssembly inference)
+  // Legal AI queues (enhanced for WebAssembly inference);
   private static queues = {
     HIGH_PRIORITY: 'legal_ai_high_priority',
     NORMAL_PRIORITY: 'legal_ai_normal',
@@ -342,12 +343,12 @@ export class RabbitMQXStateIntegration {
     WASM_INFERENCE: 'legal_ai_wasm_inference',           // NEW: WebAssembly inference queue
     WASM_BATCH: 'legal_ai_wasm_batch',                   // NEW: WebAssembly batch processing
     WASM_STREAMING: 'legal_ai_wasm_streaming',           // NEW: WebAssembly streaming queue
-    WASM_MODEL_MANAGEMENT: 'legal_ai_wasm_models'        // NEW: WebAssembly model operations
+    WASM_MODEL_MANAGEMENT: 'legal_ai_wasm_models'        // NEW: WebAssembly model operations,
   };
 
   /**
    * Initialize RabbitMQ connection (free tier compatible)
-   */
+   */;
   static async initialize(): Promise<any> {
     try {
       if (browser) {
@@ -412,7 +413,7 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Setup legal AI message queues
-   */
+   */;
   private static async setupQueues(): Promise<void> {
     if (browser && this.connection) {
       // Browser STOMP setup (defensive)
@@ -431,7 +432,7 @@ export class RabbitMQXStateIntegration {
         }
       }
     } else if (this.channel) {
-      // Server AMQP setup
+      // Server AMQP setup;
       for (const queueName of Object.values(this.queues)) {
         await this.channel.assertQueue(queueName, {
           durable: true,
@@ -462,7 +463,7 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Publish legal AI message
-   */
+   */;
   static async publishMessage(message: Omit<LegalAIMessage, 'id' | 'timestamp'>): Promise<void> {
     if (!this.isInitialized) {
       throw new Error('RabbitMQ not initialized');
@@ -477,7 +478,7 @@ export class RabbitMQXStateIntegration {
     const queueName = this.selectQueue(message.priority || 5, message.type);
 
     if (browser && this.connection) {
-      // Browser STOMP publish
+      // Browser STOMP publish;
       this.connection.publish({
         destination: `/queue/${queueName}`,
         body: JSON.stringify(fullMessage),
@@ -494,7 +495,7 @@ export class RabbitMQXStateIntegration {
         {
           priority: message.priority || 5,
           persistent: true,
-          contentType: 'application/json'
+          contentType: 'application/json',
         }
       );
     }
@@ -502,7 +503,7 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Process legal AI message based on type
-   */
+   */;
   static async processLegalAIMessage(message: LegalAIMessage): Promise<any> {
     const startTime = Date.now();
 
@@ -570,7 +571,7 @@ export class RabbitMQXStateIntegration {
    */
   static async performSelfPromptingAnalysis(
     context: SelfPromptingContext,
-    userHistory: any[]
+    userHistory: any[];
   ): Promise<any> {
 
     // Analyze user behavior patterns
@@ -579,46 +580,46 @@ export class RabbitMQXStateIntegration {
     // Generate self-prompting recommendations
     const recommendations = [];
 
-    // Pattern: Frequent document searches
+    // Pattern: Frequent document searches;
     if (patterns.searchFrequency > 10) {
       recommendations.push({
         type: 'cache_invalidation' as LegalAIMessageType,
         payload: {
           action: 'preload_popular_searches',
-          searches: patterns.popularSearches
+          searches: patterns.popularSearches,
         },
         priority: 7,
-        correlationId: context.activeSession
+        correlationId: context.activeSession,
       });
     }
 
-    // Pattern: GPU underutilization
+    // Pattern: GPU underutilization;
     if (context.performanceMetrics.gpuUtilization < 0.3) {
       recommendations.push({
         type: 'gpu_task' as LegalAIMessageType,
         payload: {
           action: 'batch_vector_processing',
-          documents: patterns.recentDocuments
+          documents: patterns.recentDocuments,
         },
         priority: 6,
-        correlationId: context.activeSession
+        correlationId: context.activeSession,
       });
     }
 
-    // Pattern: Low cache hit rate
+    // Pattern: Low cache hit rate;
     if (context.performanceMetrics.cacheHitRate < 0.7) {
       recommendations.push({
         type: 'cache_invalidation' as LegalAIMessageType,
         payload: {
           action: 'rebuild_cache',
-          strategy: 'user_behavior_based'
+          strategy: 'user_behavior_based',
         },
         priority: 8,
-        correlationId: context.activeSession
+        correlationId: context.activeSession,
       });
     }
 
-    // Pattern: WebAssembly optimization opportunities
+    // Pattern: WebAssembly optimization opportunities;
     if (patterns.wasmInferenceFrequency > 5 && patterns.averageWasmLatency > 1000) {
       recommendations.push({
         type: 'wasm_model_load' as LegalAIMessageType,
@@ -626,38 +627,38 @@ export class RabbitMQXStateIntegration {
           action: 'preload_model',
           modelPath: '/models/gemma3-legal-q4.wasm',
           optimization: 'latency_focused',
-          reason: 'frequent_usage_detected'
+          reason: 'frequent_usage_detected',
         },
         priority: 7,
-        correlationId: context.activeSession
+        correlationId: context.activeSession,
       });
     }
 
-    // Pattern: WebAssembly batch opportunities
+    // Pattern: WebAssembly batch opportunities;
     if (patterns.concurrentWasmRequests > 3) {
       recommendations.push({
         type: 'wasm_batch_inference' as LegalAIMessageType,
         payload: {
           action: 'suggest_batching',
           batchSize: Math.min(patterns.concurrentWasmRequests, 8),
-          reason: 'concurrent_requests_detected'
+          reason: 'concurrent_requests_detected',
         },
         priority: 6,
-        correlationId: context.activeSession
+        correlationId: context.activeSession,
       });
     }
 
-    // Pattern: WebAssembly health monitoring
+    // Pattern: WebAssembly health monitoring;
     if (patterns.wasmErrors > 2) {
       recommendations.push({
         type: 'wasm_health_check' as LegalAIMessageType,
         payload: {
           action: 'health_check',
           focus: 'error_investigation',
-          reason: 'error_threshold_exceeded'
+          reason: 'error_threshold_exceeded',
         },
         priority: 8,
-        correlationId: context.activeSession
+        correlationId: context.activeSession,
       });
     }
 
@@ -665,15 +666,15 @@ export class RabbitMQXStateIntegration {
       recommendedActions: recommendations.map(rec => ({
         ...rec,
         id: this.generateId(),
-        timestamp: Date.now()
+        timestamp: Date.now(),
       })),
-      analysis: patterns
+      analysis: patterns,
     };
   }
 
   /**
    * Analyze user behavior patterns for self-prompting (enhanced for WebAssembly)
-   */
+   */;
   private static analyzeUserPatterns(userHistory: any[]): any {
     const recentHistory = userHistory.slice(-50); // Last 50 actions
 
@@ -690,11 +691,11 @@ export class RabbitMQXStateIntegration {
       concurrentWasmRequests: this.countConcurrentWasmRequests(recentHistory),
       wasmErrors: recentHistory.filter(item => item.length),
       wasmModelUsage: this.analyzeWasmModelUsage(recentHistory),
-      wasmBatchOpportunities: this.identifyWasmBatchOpportunities(recentHistory)
+      wasmBatchOpportunities: this.identifyWasmBatchOpportunities(recentHistory),
     };
   }
 
-  // Message processing methods
+  // Message processing methods;
   private static async processDocumentIngestion(payload: any): Promise<any> {
     // Implementation would handle document ingestion with NES memory + GPU
     return { status: 'ingested', documents: payload.documents?.length || 0 };
@@ -737,7 +738,7 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Process WebAssembly inference request
-   */
+   */;
   private static async processWASMInference(payload: any): Promise<any> {
     try {
       console.log('🧠 Processing WASM inference request:', payload.id);
@@ -745,12 +746,12 @@ export class RabbitMQXStateIntegration {
       // Import WebAssembly inference service dynamically
       const { WASMInferenceRAGService } = await import('../services/webasm-inference-rag.js');
 
-      // Validate payload
+      // Validate payload;
       if (!payload.prompt) {
         throw new Error('Missing prompt in WASM inference request');
       }
 
-      // Create inference request
+      // Create inference request;
       const request = {
         id: payload.id || this.generateId(),
         prompt: payload.prompt,
@@ -760,10 +761,10 @@ export class RabbitMQXStateIntegration {
         priority: payload.priority || 'medium',
         systemMessage: payload.systemMessage,
         contextDocuments: payload.contextDocuments,
-        stopSequences: payload.stopSequences
+        stopSequences: payload.stopSequences,
       };
 
-      // Process inference with RAG context
+      // Process inference with RAG context;
       const result = await WASMInferenceRAGService.processInferenceWithRAG(request, {
         wasmModule: null,
         wasmInstance: null,
@@ -774,7 +775,7 @@ export class RabbitMQXStateIntegration {
           contextLength: payload.contextLength || 4096,
           enableGPU: payload.enableGPU !== false,
           batchSize: payload.batchSize || 4,
-          quantization: payload.quantization || 'q4_0'
+          quantization: payload.quantization || 'q4_0',
         },
         activeRequests: new Map(),
         results: new Map(),
@@ -782,23 +783,23 @@ export class RabbitMQXStateIntegration {
           totalInferences: 0,
           averageLatency: 0,
           cacheHitRate: 0,
-          memoryPeak: 0
+          memoryPeak: 0,
         },
-        error: null
+        error: null,
       });
 
-      // Publish result back to RabbitMQ
+      // Publish result back to RabbitMQ;
       await this.publishMessage({
         type: 'wasm_inference_result',
         payload: {
           originalRequestId: payload.id,
           result,
           success: true,
-          processingTime: Date.now() - (payload.startTime || Date.now())
+          processingTime: Date.now() - (payload.startTime || Date.now(),
         },
         priority: payload.priority === 'critical' ? 9 : 7,
         correlationId: payload.correlationId,
-        replyTo: payload.replyTo
+        replyTo: payload.replyTo,
       });
 
       return {
@@ -813,16 +814,16 @@ export class RabbitMQXStateIntegration {
     } catch (error: any) {
       console.error('❌ WASM inference processing failed:', error);
 
-      // Publish error result
+      // Publish error result;
       await this.publishMessage({
         type: 'wasm_inference_result',
         payload: {
           originalRequestId: payload.id,
           error: error.message,
-          success: false
+          success: false,
         },
         priority: 8,
-        correlationId: payload.correlationId
+        correlationId: payload.correlationId,
       });
 
       throw error;
@@ -831,11 +832,11 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Process WebAssembly inference result
-   */
+   */;
   private static async processWASMInferenceResult(payload: any): Promise<any> {
     console.log('📤 Processing WASM inference result:', payload.originalRequestId);
 
-    // Store result for client retrieval or trigger callbacks
+    // Store result for client retrieval or trigger callbacks;
     if (payload.success) {
       console.log(`✅ WASM inference completed: ${payload.result?.text?.slice(0, 100)}...`);
     } else {
@@ -845,13 +846,13 @@ export class RabbitMQXStateIntegration {
     return {
       processed: true,
       success: payload.success,
-      originalRequestId: payload.originalRequestId
+      originalRequestId: payload.originalRequestId,
     };
   }
 
   /**
    * Process WebAssembly model loading
-   */
+   */;
   private static async processWASMModelLoad(payload: any): Promise<any> {
     try {
       console.log('📥 Loading WASM model:', payload.modelPath);
@@ -864,7 +865,7 @@ export class RabbitMQXStateIntegration {
         contextLength: payload.contextLength || 4096,
         enableGPU: payload.enableGPU !== false,
         batchSize: payload.batchSize || 4,
-        quantization: payload.quantization || 'q4_0'
+        quantization: payload.quantization || 'q4_0',
       };
 
       const result = await WASMInferenceRAGService.initialize(config);
@@ -885,7 +886,7 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Process WebAssembly model unloading
-   */
+   */;
   private static async processWASMModelUnload(payload: any): Promise<any> {
     try {
       console.log('📤 Unloading WASM model:', payload.modelPath);
@@ -896,7 +897,7 @@ export class RabbitMQXStateIntegration {
       return {
         status: 'unloaded',
         modelPath: payload.modelPath,
-        cleanupCompleted: true
+        cleanupCompleted: true,
       };
 
     } catch (error: any) {
@@ -907,7 +908,7 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Process WebAssembly batch inference
-   */
+   */;
   private static async processWASMBatchInference(payload: any): Promise<any> {
     try {
       console.log('🔄 Processing WASM batch inference:', payload.requests?.length || 0, 'requests');
@@ -915,20 +916,20 @@ export class RabbitMQXStateIntegration {
       const { WASMInferenceRAGService } = await import('../services/webasm-inference-rag.js');
       const results = [];
 
-      // Process each request in the batch
+      // Process each request in the batch;
       for (const request of payload.requests || []) {
         try {
           const result = await WASMInferenceRAGService.processInferenceWithRAG(request, payload.context);
           results.push({
             requestId: request.id,
             result,
-            success: true
+            success: true,
           });
         } catch (error: any) {
           results.push({
             requestId: request.id,
             error: error.message,
-            success: false
+            success: false,
           });
         }
       }
@@ -950,7 +951,7 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Process WebAssembly streaming inference
-   */
+   */;
   private static async processWASMStreamInference(payload: any): Promise<any> {
     try {
       console.log('🌊 Processing WASM streaming inference:', payload.id);
@@ -958,7 +959,7 @@ export class RabbitMQXStateIntegration {
       const { WASMInferenceRAGService } = await import('../services/webasm-inference-rag.js');
 
       // For streaming, we would set up a series of partial results
-      // This is a simplified implementation
+      // This is a simplified implementation;
       const request = {
         ...payload.request,
         maxTokens: Math.min(payload.request.maxTokens || 2048, 512), // Smaller chunks for streaming
@@ -979,20 +980,20 @@ export class RabbitMQXStateIntegration {
             chunkIndex: i,
             totalChunks: chunks.length,
             isComplete: i === chunks.length - 1,
-            success: true
+            success: true,
           },
           priority: 7,
-          correlationId: payload.correlationId
+          correlationId: payload.correlationId,
         });
 
         // Small delay to simulate streaming
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise(resolve => setTimeout(resolve, 50);
       }
 
       return {
         status: 'streaming_completed',
         streamId: payload.id,
-        totalChunks: chunks.length
+        totalChunks: chunks.length,
       };
 
     } catch (error: any) {
@@ -1003,7 +1004,7 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Process WebAssembly health check
-   */
+   */;
   private static async processWASMHealthCheck(payload: any): Promise<any> {
     try {
       console.log('🏥 Performing WASM health check');
@@ -1016,7 +1017,7 @@ export class RabbitMQXStateIntegration {
         timestamp: Date.now(),
         health: healthStatus,
         uptime: Date.now() - (payload.startTime || Date.now()),
-        version: '1.0.0'
+        version: '1.0.0',
       };
 
     } catch (error: any) {
@@ -1029,7 +1030,7 @@ export class RabbitMQXStateIntegration {
           status: 'unhealthy',
           wasm: false,
           rag: false,
-          messaging: false
+          messaging: false,
         }
       };
     }
@@ -1037,18 +1038,18 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Helper method to chunk text for streaming
-   */
+   */;
   private static chunkText(text: string, chunkSize: number = 50): string[] {
     const chunks: string[] = [];
     for (let i = 0; i < text.length; i += chunkSize) {
-      chunks.push(text.slice(i, i + chunkSize));
+      chunks.push(text.slice(i, i + chunkSize);
     }
     return chunks;
   }
 
-  // Utility methods
+  // Utility methods;
   private static selectQueue(priority: number, messageType?: LegalAIMessageType): string {
-    // WebAssembly-specific queue routing
+    // WebAssembly-specific queue routing;
     if (messageType?.startsWith('wasm_')) {
       switch (messageType) {
         case 'wasm_inference':
@@ -1113,7 +1114,7 @@ export class RabbitMQXStateIntegration {
   }
 
   private static analyzeTimePatterns(history: any[]): any {
-    const hours = history.map(h => new Date(h.timestamp).getHours());
+    const hours = history.map(h => new Date(h.timestamp).getHours();
     const hourCounts: Record<number, number> = {};
     hours.forEach(h => hourCounts[h] = (hourCounts[h] || 0) + 1);
 
@@ -1121,13 +1122,13 @@ export class RabbitMQXStateIntegration {
       mostActiveHour: Object.keys(hourCounts).reduce((a, b) =>
         hourCounts[a] > hourCounts[b] ? a : b
       ),
-      activityDistribution: hourCounts
+      activityDistribution: hourCounts,
     };
   }
 
   /**
    * Calculate average WebAssembly inference latency
-   */
+   */;
   private static calculateAverageWasmLatency(history: any[]): number {
     const wasmInferences = history.filter(h => h.action === 'wasm_inference' && h.data?.latency);
     if (wasmInferences.length === 0) return 0;
@@ -1138,7 +1139,7 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Count concurrent WebAssembly requests
-   */
+   */;
   private static countConcurrentWasmRequests(history: any[]): number {
     const wasmRequests = history.filter(h => h.action === 'wasm_inference');
     if (wasmRequests.length <= 1) return 0;
@@ -1159,7 +1160,7 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Analyze WebAssembly model usage patterns
-   */
+   */;
   private static analyzeWasmModelUsage(history: any[]): any {
     const modelActions = history.filter(h => h.action?.includes('wasm_model') || h.action === 'wasm_inference');
 
@@ -1180,7 +1181,7 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Identify WebAssembly batch processing opportunities
-   */
+   */;
   private static identifyWasmBatchOpportunities(history: any[]): any {
     const wasmInferences = history.filter(h => h.action === 'wasm_inference');
     const timeWindow = 10000; // 10 seconds
@@ -1201,7 +1202,7 @@ export class RabbitMQXStateIntegration {
       lastTimestamp = inference.timestamp;
     });
 
-    // Don't forget the last batch
+    // Don't forget the last batch;
     if (currentBatch.length > 1) {
       batches.push(currentBatch);
     }
@@ -1211,7 +1212,7 @@ export class RabbitMQXStateIntegration {
       averageBatchSize: batches.length > 0
         ? batches.reduce((sum, batch) => sum + batch.length, 0) / batches.length: 0,
       largestBatchSize: batches.length > 0
-        ? Math.max(...batches.map(batch => batch.length))
+        ? Math.max(...batches.map(batch => batch.length)
         : 0,
       potentialLatencySavings: batches.length > 0
         ? batches.reduce((sum, batch) => sum + (batch.length - 1) * 200, 0) // Est. 200ms saved per batched request
@@ -1221,7 +1222,7 @@ export class RabbitMQXStateIntegration {
 
   /**
    * Cleanup and close connections
-   */
+   */;
   static async cleanup(): Promise<void> {
     if (browser && this.connection) {
       this.connection.deactivate();

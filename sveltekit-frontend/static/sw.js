@@ -1,5 +1,5 @@
 // High-Performance Service Worker for YoRHa Legal AI
-// - Aggressive caching with WASM SIMD support  
+// - Aggressive caching with WASM SIMD support
 // - WebGPU resource optimization
 // - Smart cache strategies for maximum speed
 
@@ -10,7 +10,16 @@ const WASM_CACHE = `legal-ai-wasm-${CACHE_VERSION}`;
 const API_CACHE = `legal-ai-api-${CACHE_VERSION}`;
 const WEBGPU_CACHE = `legal-ai-webgpu-${CACHE_VERSION}`;
 
-const SHELL = ['/', '/evidence', '/cases', '/evidenceboard', '/chat', '/yorha', '/yorha-home', '/admin/gpu-demo'];
+const SHELL = [
+  '/',
+  '/evidence',
+  '/cases',
+  '/evidenceboard',
+  '/chat',
+  '/yorha',
+  '/yorha-home',
+  '/admin/gpu-demo',
+];
 
 // High-priority resources for instant loading
 const CRITICAL_RESOURCES = [
@@ -18,7 +27,7 @@ const CRITICAL_RESOURCES = [
   '/_app/immutable/chunks/performance.js',
   '/_app/immutable/chunks/webgpu-ai.js',
   '/wasm/vector-ops.wasm',
-  '/static/wasm/vector-ops.wasm'
+  '/static/wasm/vector-ops.wasm',
 ];
 
 // WASM and WebGPU patterns for special handling
@@ -46,13 +55,16 @@ self.addEventListener('activate', (event) => {
       .keys()
       .then((keys) =>
         Promise.all(
-          keys.filter((k) => 
-            !k.startsWith('yorha-shell-') && 
-            !k.startsWith('legal-ai-static-') &&
-            !k.startsWith('legal-ai-wasm-') &&
-            !k.startsWith('legal-ai-api-') &&
-            !k.startsWith('legal-ai-webgpu-')
-          ).map((k) => caches.delete(k))
+          keys
+            .filter(
+              (k) =>
+                !k.startsWith('yorha-shell-') &&
+                !k.startsWith('legal-ai-static-') &&
+                !k.startsWith('legal-ai-wasm-') &&
+                !k.startsWith('legal-ai-api-') &&
+                !k.startsWith('legal-ai-webgpu-')
+            )
+            .map((k) => caches.delete(k))
         )
       )
   );
@@ -94,22 +106,24 @@ self.addEventListener('message', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
-  
+
   // Skip cross-origin
   if (!req.url.startsWith(self.location.origin)) return;
 
   // WASM files: cache-first with long TTL
-  if (WASM_PATTERNS.some(pattern => pattern.test(req.url))) {
+  if (WASM_PATTERNS.some((pattern) => pattern.test(req.url))) {
     event.respondWith(
-      caches.open(WASM_CACHE).then(cache => 
-        cache.match(req).then(hit => {
+      caches.open(WASM_CACHE).then((cache) =>
+        cache.match(req).then((hit) => {
           if (hit) return hit;
-          return fetch(req).then(res => {
-            if (res.status === 200 && req.method === 'GET') {
-              cache.put(req, res.clone());
-            }
-            return res;
-          }).catch(() => hit || new Response('WASM unavailable', { status: 504 }));
+          return fetch(req)
+            .then((res) => {
+              if (res.status === 200 && req.method === 'GET') {
+                cache.put(req, res.clone());
+              }
+              return res;
+            })
+            .catch(() => hit || new Response('WASM unavailable', { status: 504 }));
         })
       )
     );
@@ -117,30 +131,33 @@ self.addEventListener('fetch', (event) => {
   }
 
   // API: smart network-first with fallback caching
-  if (API_PATTERNS.some(pattern => pattern.test(req.url))) {
+  if (API_PATTERNS.some((pattern) => pattern.test(req.url))) {
     event.respondWith(
       fetch(req)
-        .then(res => {
+        .then((res) => {
           if (res.status === 200 && req.method === 'GET') {
-            caches.open(API_CACHE).then(cache => {
+            caches.open(API_CACHE).then((cache) => {
               // Cache successful GET responses with TTL headers
               const clonedRes = res.clone();
               const headers = new Headers(clonedRes.headers);
               headers.set('sw-cached', new Date().toISOString());
               headers.set('cache-control', 'max-age=300'); // 5 min TTL
-              cache.put(req, new Response(clonedRes.body, {
-                status: clonedRes.status,
-                statusText: clonedRes.statusText,
-                headers: headers
-              }));
+              cache.put(
+                req,
+                new Response(clonedRes.body, {
+                  status: clonedRes.status,
+                  statusText: clonedRes.statusText,
+                  headers: headers,
+                })
+              );
             });
           }
           return res;
         })
         .catch(() => {
           // Fallback to cache for offline support
-          return caches.open(API_CACHE).then(cache => 
-            cache.match(req).then(hit => {
+          return caches.open(API_CACHE).then((cache) =>
+            cache.match(req).then((hit) => {
               if (hit) {
                 console.log('SW: Serving cached API response for', req.url);
                 return hit;
@@ -151,7 +168,7 @@ self.addEventListener('fetch', (event) => {
                   offline: true,
                   url: req.url,
                   method: req.method,
-                  timestamp: new Date().toISOString()
+                  timestamp: new Date().toISOString(),
                 }),
                 {
                   status: 503,
@@ -166,12 +183,12 @@ self.addEventListener('fetch', (event) => {
   }
 
   // WebGPU and critical resources: aggressive caching
-  if (CRITICAL_RESOURCES.some(resource => req.url.includes(resource))) {
+  if (CRITICAL_RESOURCES.some((resource) => req.url.includes(resource))) {
     event.respondWith(
-      caches.open(WEBGPU_CACHE).then(cache =>
-        cache.match(req).then(hit => {
+      caches.open(WEBGPU_CACHE).then((cache) =>
+        cache.match(req).then((hit) => {
           if (hit) return hit;
-          return fetch(req).then(res => {
+          return fetch(req).then((res) => {
             if (res.status === 200) {
               cache.put(req, res.clone());
             }
@@ -208,10 +225,12 @@ self.addEventListener('fetch', (event) => {
       // Stale-while-revalidate: return cache immediately if available
       if (hit) {
         // Update cache in background
-        fetchPromise.catch(() => {/* ignore background update failures */});
+        fetchPromise.catch(() => {
+          /* ignore background update failures */
+        });
         return hit;
       }
-      
+
       return fetchPromise;
     })
   );

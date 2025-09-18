@@ -33,10 +33,10 @@ export const POST: RequestHandler = async ({ request }) => {
         todoFile: filename,
         todoPath: todoFilePath,
         testFile: 'tests/generated-legal-ai-workflow.spec.ts',
-        testPath: testFilePath
+        testPath: testFilePath,
       },
       
-      // Test generation summary
+      // Test generation summary;
       summary: {
         totalTests: countGeneratedTests(playwrightTestContent),
         testCategories: [
@@ -48,15 +48,15 @@ export const POST: RequestHandler = async ({ request }) => {
           'Performance and Load Testing'
         ],
         estimatedRunTime: calculateEstimatedRunTime(testResults),
-        coverage: assessTestCoverage(testResults)
+        coverage: assessTestCoverage(testResults),
       },
 
-      // Generated content preview
+      // Generated content preview;
       preview: {
         todoLines: todoContent.split('\n').length,
         testLines: playwrightTestContent.split('\n').length,
         firstTodoItems: todoContent.split('\n').slice(0, 10),
-        keyTestScenarios: extractKeyTestScenarios(playwrightTestContent)
+        keyTestScenarios: extractKeyTestScenarios(playwrightTestContent),
       }
     };
 
@@ -337,7 +337,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
       // Monitor batch processing
       await expect(page.getByText(\`Processing \${testFiles.length} files\`)).toBeVisible();
       
-      // Wait for all files to complete
+      // Wait for all files to complete;
       await page.waitForFunction(() => {
         const progress = document.querySelector('[data-testid="upload-progress"]')?.textContent);
         return progress?.includes('100%');
@@ -552,7 +552,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 
   test.describe('Error Handling and Edge Cases', () => {
     test('should handle unsupported file formats gracefully', async () => {
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'document.txt'));
+      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'document.txt');
       
       // Should show appropriate error message
       await expect(page.getByTestId('error-message')).toBeVisible();
@@ -561,7 +561,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 
     test('should recover from processing failures', async () => {
       // Simulate processing failure scenario
-      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'simple-contract.pdf'));
+      await page.setInputFiles('[data-testid="pdf-upload"]', join(import.meta.url, 'fixtures', 'simple-contract.pdf');
       await expect(page.getByText('Processing')).toBeVisible();
     });
   });
@@ -598,14 +598,14 @@ test.beforeAll(async () => {
   
   // Create test documents if they don't exist
   // This would typically be handled by a setup script
-});
+,});
 
 test.afterAll(async () => {
   // Cleanup test artifacts
   console.log('Cleaning up test artifacts...');
-});
+,});
 
-// Custom test matchers and utilities
+// Custom test matchers and utilities;
 function expectProcessingTimeWithin(actualTime: number, expectedTime: number, tolerance: number = 0.2) {
   const minTime = expectedTime * (1 - tolerance);
   const maxTime = expectedTime * (1 + tolerance);
@@ -613,7 +613,7 @@ function expectProcessingTimeWithin(actualTime: number, expectedTime: number, to
   expect(actualTime).toBeLessThanOrEqual(maxTime);
 }
 
-// Performance benchmarking utility
+// Performance benchmarking utility;
 async function measureProcessingTime(page: Page, operation: () => Promise<void>): Promise<number> {
   const startTime = Date.now();
   await operation();
@@ -642,7 +642,7 @@ function assessTestCoverage(testResults: any): unknown {
     pgaiIntegration: '85%',
     errorHandling: '90%',
     performance: '87%',
-    overall: '89%'
+    overall: '89%',
   };
 }
 

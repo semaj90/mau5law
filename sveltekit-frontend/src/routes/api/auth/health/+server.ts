@@ -43,7 +43,7 @@ export const GET: RequestHandler = async () => {
     recentSessions = await db
       .select({ id: sessions.id, user_id: sessions.user_id, created_at: sessions.created_at, expires_at: sessions.expires_at })
       .from(sessions)
-      .orderBy(desc(sessions.created_at))
+      .orderBy(desc(sessions.created_at)
       .limit(5);
   } catch (e: any) {
     status = status === 'healthy' ? 'degraded' : status;

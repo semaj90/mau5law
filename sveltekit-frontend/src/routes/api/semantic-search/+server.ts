@@ -24,12 +24,12 @@ import { fastStringify, fastParse } from '$lib/utils/fast-json';
 const EmbeddingSearchCache = new Map();
 const SEARCH_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
-// Precision detection configuration
+// Precision detection configuration;
 const PRECISION_CONFIG = {
   SUBTLE_DIFF_THRESHOLD: 0.02,   // fp32 vs fp64 escalation threshold
   GPU_BATCH_THRESHOLD: 10,       // Use GPU for batch processing
   MIN_CANDIDATES_FOR_GPU: 3,     // Minimum candidates for GPU re-ranking
-  TENSOR_CORE_THRESHOLD: 100     // Use tensor cores for large operations
+  TENSOR_CORE_THRESHOLD: 100     // Use tensor cores for large operations,
 };
 
 async function generateGemmaEmbedding(text: string): Promise<number[]> {
@@ -39,7 +39,7 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: fastStringify({
         model: 'nomic-embed-text',
-        input: text
+        input: text,
       })
     });
 
@@ -52,7 +52,7 @@ async function generateGemmaEmbedding(text: string): Promise<number[]> {
   }
 }
 
-// GPU-accelerated similarity computation via CUDA service
+// GPU-accelerated similarity computation via CUDA service;
 async function computeGPUSimilarity(queryEmbedding: number[], candidates: any[]): Promise<any[]> {
   try {
     const response = await fetch('http://localhost:8097/search', {
@@ -62,7 +62,7 @@ async function computeGPUSimilarity(queryEmbedding: number[], candidates: any[])
         query: queryEmbedding,
         vectors: candidates.map(c => c.embedding),
         k: candidates.length,
-        precision: 'fp64'  // Use higher precision for subtle differences
+        precision: 'fp64'  // Use higher precision for subtle differences,
       })
     });
 
@@ -72,15 +72,15 @@ async function computeGPUSimilarity(queryEmbedding: number[], candidates: any[])
     return candidates.map((candidate, idx) => ({
       ...candidate,
       gpu_similarity: result.similarities[idx],
-      precision_used: 'fp64'
-    }));
+      precision_used: 'fp64',
+    });
   } catch (error) {
     console.error('GPU similarity computation failed:', error);
     return candidates;
   }
 }
 
-// Precision detection and escalation logic
+// Precision detection and escalation logic;
 function detectSubtleDifferences(candidates: any[]): { needsGPU: boolean; needsFP64: boolean } {
   if (candidates.length < PRECISION_CONFIG.MIN_CANDIDATES_FOR_GPU) {
     return { needsGPU: false, needsFP64: false };
@@ -100,12 +100,12 @@ function detectSubtleDifferences(candidates: any[]): { needsGPU: boolean; needsF
 
   return {
     needsGPU: candidates.length >= PRECISION_CONFIG.GPU_BATCH_THRESHOLD,
-    needsFP64: hasSubtleDiffs
+    needsFP64: hasSubtleDiffs,
   };
 }
 
 function rerankLegalResults(results: any[], query: string): any[] {
-  return results
+  return results;
     .map((result) => {
       let boost = 0;
       const content = ((result as { embedding?: any; content?: any; title?: any; table?: any; similarity?: any }).content || (result as { embedding?: any; content?: any; title?: any; table?: any; similarity?: any }).title || '').toLowerCase();
@@ -129,7 +129,7 @@ function rerankLegalResults(results: any[], query: string): any[] {
 async function performVectorSearch(
   embedding: number[],
   limit: number = 20,
-  threshold: number = 0.7
+  threshold: number = 0.7;
 ): Promise<any[]> {
   const embeddingStr = `[${embedding.join(',')}]`;
 
@@ -151,7 +151,7 @@ async function performVectorSearch(
       ORDER BY ce.embedding::text::vector <=> ${embeddingStr}::vector LIMIT ${Math.ceil(limit / 2)}
     `);
 
-    return [...evidenceResults.rows, ...caseResults.rows]
+    return [...evidenceResults.rows, ...caseResults.rows];
       .map((row) => ({
         id: row.id,
         content: row.content,
@@ -159,8 +159,8 @@ async function performVectorSearch(
         table: row.table_type,
         similarity: Number(row.similarity),
         created_at: row.created_at,
-        embedding: row.embedding ? (typeof row.embedding === 'string' ? JSON.parse(row.embedding) : row.embedding) : null
-      }))
+        embedding: row.embedding ? (typeof row.embedding === 'string' ? JSON.parse(row.embedding) : row.embedding) : null,
+      })
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, limit);
   } catch (error) {
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     const startTime = Date.now();
-    const queryEmbedding = await generateGemmaEmbedding(query.trim());
+    const queryEmbedding = await generateGemmaEmbedding(query.trim();
     const rawResults = await performVectorSearch(queryEmbedding, limit, threshold);
 
     // Precision detection and GPU escalation
@@ -195,10 +195,10 @@ export const GET: RequestHandler = async ({ url }) => {
     let computationMetadata = {
       precision_used: 'fp32',
       gpu_accelerated: false,
-      escalation_reason: null
+      escalation_reason: null,
     };
 
-    // GPU-accelerated re-ranking for subtle differences or large batches
+    // GPU-accelerated re-ranking for subtle differences or large batches;
     if (precisionAnalysis.needsGPU || precisionAnalysis.needsFP64) {
       const candidatesWithEmbeddings = rawResults.filter(r => r.embedding);
 
@@ -206,7 +206,7 @@ export const GET: RequestHandler = async ({ url }) => {
         try {
           const gpuResults = await computeGPUSimilarity(queryEmbedding, candidatesWithEmbeddings);
 
-          // Merge GPU results with original results
+          // Merge GPU results with original results;
           finalResults = rawResults.map(result => {
             const gpuResult = gpuResults.find(gr => gr.id === result.id);
             return gpuResult || result;
@@ -215,7 +215,7 @@ export const GET: RequestHandler = async ({ url }) => {
           computationMetadata = {
             precision_used: precisionAnalysis.needsFP64 ? 'fp64' : 'fp32',
             gpu_accelerated: true,
-            escalation_reason: precisionAnalysis.needsFP64 ? 'subtle_differences' : 'batch_optimization'
+            escalation_reason: precisionAnalysis.needsFP64 ? 'subtle_differences' : 'batch_optimization',
           };
         } catch (error) {
           console.warn('GPU computation failed, falling back to CPU:', error);
@@ -223,7 +223,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
 
-    const rerankedResults = rerankLegalResults(finalResults, query.trim());
+    const rerankedResults = rerankLegalResults(finalResults, query.trim();
 
     EmbeddingSearchCache.set(cacheKey, { results: rerankedResults, timestamp: Date.now() });
 
@@ -241,7 +241,7 @@ export const GET: RequestHandler = async ({ url }) => {
         precision_analysis: {
           subtle_differences_detected: precisionAnalysis.needsFP64,
           gpu_batch_eligible: precisionAnalysis.needsGPU,
-          candidate_count: rawResults.length
+          candidate_count: rawResults.length,
         }
       }
     });

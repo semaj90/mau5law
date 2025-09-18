@@ -7,7 +7,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { rabbitmqServiceWorker, startRabbitMQWorker, stopRabbitMQWorker, QUEUES } from '$lib/workers/rabbitmq-service-worker.js';
 
-// GET: Get worker status and health information
+// GET: Get worker status and health information;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
@@ -29,19 +29,19 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             worker: stats,
             queues: Object.keys(QUEUES),
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
         });
 
-      case 'queues':
+      case 'queues':;
         return json({
           status: 'success',
           data: {
             availableQueues: Object.entries(QUEUES).map(([key, value]) => ({
               name: key,
               queueName: value,
-              description: getQueueDescription(value)
-            }))
+              description: getQueueDescription(value),
+            })
           }
         });
 
@@ -55,12 +55,12 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             worker: {
               ...workerStats,
-              health: healthStatus
+              health: healthStatus,
             },
             endpoints: {
               health: '/api/workers/rabbitmq?action=health',
               stats: '/api/workers/rabbitmq?action=stats',
-              queues: '/api/workers/rabbitmq?action=queues'
+              queues: '/api/workers/rabbitmq?action=queues',
             }
           }
         });
@@ -73,13 +73,13 @@ export const GET: RequestHandler = async ({ url }) => {
       status: 'error',
       error: {
         message: error.message || 'RabbitMQ Worker API error',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     }, { status: 500 });
   }
 };
 
-// POST: Control worker operations and publish messages
+// POST: Control worker operations and publish messages;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
           enableLogging: true,
           enableN64Logging: config.enableN64Style || false,
           maxRetries: config.maxRetries || 3,
-          processingTimeout: config.timeout || 30000
+          processingTimeout: config.timeout || 30000,
         });
 
         return json({
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: '🎮 RabbitMQ Service Worker started successfully',
           data: {
             workerStats: worker.getStats(),
-            config: config
+            config: config,
           }
         });
 
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
         
         return json({
           status: 'success',
-          message: 'RabbitMQ Service Worker stopped successfully'
+          message: 'RabbitMQ Service Worker stopped successfully',
         });
 
       case 'publish':
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request }) => {
           ...message,
           priority,
           publishedVia: 'worker_api',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
 
         return json({
@@ -149,16 +149,15 @@ export const POST: RequestHandler = async ({ request }) => {
           }, { status: 400 });
         }
 
-        const results = await Promise.all(
-          messages.map(async (msg: any) => {
+        const results = await Promise.all(messages.map(async (msg: any) => {
             const success = await rabbitmqServiceWorker.publishMessage(
-              msg.queueName,
+              msg.queueName,);
               {
                 ...msg.message,
                 publishedVia: 'bulk_api',
-                timestamp: Date.now()
+                timestamp: Date.now(),
               }
-            )));
+            ));
             return { queueName: msg.queueName, success, messageId: msg.message.id };
           })
         );
@@ -173,21 +172,21 @@ export const POST: RequestHandler = async ({ request }) => {
             summary: {
               total: messages.length,
               successful: successCount,
-              failed: messages.length - successCount
+              failed: messages.length - successCount,
             }
           }
         });
 
       case 'simulate_load':
         // Simulate various types of legal AI processing jobs
-        const loadTestJobs = [
+        const loadTestJobs = [;
           {
             queueName: QUEUES.DOCUMENT_PROCESSING,
             message: {
               documentId: `doc-${Date.now()}`,
               fileName: 'legal_contract.pdf',
               type: 'contract_analysis',
-              priority: 'medium'
+              priority: 'medium',
             }
           },
           {
@@ -196,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
               documentId: `doc-${Date.now()}`,
               content: 'Sample legal document content for embedding generation',
               type: 'embedding_generation',
-              priority: 'high'
+              priority: 'high',
             }
           },
           {
@@ -205,14 +204,13 @@ export const POST: RequestHandler = async ({ request }) => {
               evidenceId: `evidence-${Date.now()}`,
               type: 'document_analysis',
               caseId: `case-${Date.now()}`,
-              priority: 'high'
+              priority: 'high',
             }
           }
         ];
 
-        const loadResults = await Promise.all(
-          loadTestJobs.map(async (job) => {
-            const success = await rabbitmqServiceWorker.publishMessage(job.queueName, job.message)));
+        const loadResults = await Promise.all(loadTestJobs.map(async (job) => {
+            const success = await rabbitmqServiceWorker.publishMessage(job.queueName, job.message));
             return { ...job, success };
           })
         );
@@ -222,11 +220,11 @@ export const POST: RequestHandler = async ({ request }) => {
           message: 'Load simulation completed',
           data: {
             jobsSubmitted: loadResults.length,
-            results: loadResults
+            results: loadResults,
           }
         });
 
-      default:
+      default:;
         return json({
           status: 'error',
           error: { message: `Unknown action: ${action}` }
@@ -240,13 +238,13 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 'error',
       error: {
         message: error.message || 'RabbitMQ Worker operation failed',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     }, { status: 500 });
   }
 };
 
-// PUT: Update worker configuration
+// PUT: Update worker configuration;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -260,7 +258,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       message: 'Worker configuration updated',
       data: {
         appliedConfig: config,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     });
 
@@ -271,39 +269,39 @@ export const PUT: RequestHandler = async ({ request }) => {
       status: 'error',
       error: {
         message: error.message || 'Configuration update failed',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     }, { status: 500 });
   }
 };
 
-// DELETE: Reset worker state or clear queues
+// DELETE: Reset worker state or clear queues;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
 
     switch (action) {
       case 'reset_stats':
-        // Reset worker statistics
+        // Reset worker statistics;
         return json({
           status: 'success',
           message: 'Worker statistics reset',
           data: {
-            resetAt: new Date().toISOString()
+            resetAt: new Date().toISOString(),
           }
         });
 
       case 'clear_queues':
-        // This would clear queue contents in a real implementation
+        // This would clear queue contents in a real implementation;
         return json({
           status: 'success',
           message: 'Queue clearing initiated (simulation)',
           data: {
-            clearedAt: new Date().toISOString()
+            clearedAt: new Date().toISOString(),
           }
         });
 
-      default:
+      default:;
         return json({
           status: 'error',
           error: { message: 'Action required for DELETE operation' }
@@ -317,7 +315,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       status: 'error',
       error: {
         message: error.message || 'Delete operation failed',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     }, { status: 500 });
   }
@@ -325,7 +323,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
 /**
  * Get description for a queue name
- */
+ */;
 function getQueueDescription(queueName: string): string {
   const descriptions: Record<string, string> = {
     [QUEUES.DOCUMENT_PROCESSING]: 'Processes uploaded legal documents for analysis',

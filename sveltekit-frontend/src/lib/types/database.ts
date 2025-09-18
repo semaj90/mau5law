@@ -37,7 +37,7 @@ export type NewDbUserAiQuery = InferInsertModel<typeof userAiQueries>;
 export type DbAutoTag = InferSelectModel<typeof autoTags>;
 export type NewDbAutoTag = InferInsertModel<typeof autoTags>;
 
-// Define Profile and Session types manually since they may not be in the schema
+// Define Profile and Session types manually since they may not be in the schema;
 export interface Profile {
   id: string;
   userId: string;
@@ -51,7 +51,7 @@ export interface Profile {
   bio?: string;
   specializations: string[];
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
 
 export interface NewProfile
@@ -65,14 +65,14 @@ export interface Session {
   id: string;
   userId: string;
   expiresAt: Date;
-  createdAt: Date;
+  createdAt: Date;,
 }
 
 export interface NewSession extends Omit<Session, "createdAt"> {
   createdAt?: Date;
 }
 
-// Extended user types for better type safety
+// Extended user types for better type safety;
 export interface UserProfile {
   firstName?: string;
   lastName?: string;
@@ -81,10 +81,10 @@ export interface UserProfile {
   isActive: boolean;
   emailVerified?: Date | null;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
 
-// Type for the user object returned by Auth.js session
+// Type for the user object returned by Auth.js session;
 export interface SessionUser {
   id: string;
   name?: string | null;
@@ -97,7 +97,7 @@ export interface SessionUser {
 // Complete user session interface
 export interface UserSession {
   user: SessionUser | null;
-  expires: Date | null;
+  expires: Date | null;,
 }
 
 // Role-based type safety
@@ -129,7 +129,7 @@ export type EvidenceType =
 // Priority levels
 export type Priority = "low" | "medium" | "high" | "urgent";
 
-// Case with related data
+// Case with related data;
 export interface CaseWithRelations extends DatabaseCase {
   criminal?: Criminal;
   evidence?: DatabaseEvidence[];
@@ -137,7 +137,7 @@ export interface CaseWithRelations extends DatabaseCase {
   documents?: unknown[];
 }
 
-// User with profile
+// User with profile;
 export interface UserWithProfile {
   id: string;
   email: string;

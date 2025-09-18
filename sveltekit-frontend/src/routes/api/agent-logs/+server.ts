@@ -5,7 +5,7 @@ import crypto from "crypto";
 import { URL } from "url";
 
 
-// GET /api/agent-logs - Get recent agent logs
+// GET /api/agent-logs - Get recent agent logs;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const agentType = url.searchParams.get("agentType") || undefined;
@@ -19,18 +19,18 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       logs,
-      count: logs.length
+      count: logs.length,
     });
   } catch (error: any) {
     console.error("Failed to get agent logs:", error);
     return json(
-      { success: false, error: "Failed to get agent logs" },
+      { success: false, error: "Failed to get agent logs" },)
       { status: 500 }
     );
   }
 };
 
-// POST /api/agent-logs - Log a new agent call
+// POST /api/agent-logs - Log a new agent call;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const logData = await request.json();
@@ -45,12 +45,12 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       message: "Agent call logged successfully",
-      logId: agentLog.id
+      logId: agentLog.id,
     });
   } catch (error: any) {
     console.error("Failed to log agent call:", error);
     return json(
-      { success: false, error: "Failed to log agent call" },
+      { success: false, error: "Failed to log agent call" },)
       { status: 500 }
     );
   }

@@ -3,9 +3,9 @@
 /**
  * Redis Orchestrator - Phase 1 Implementation Script
  * Automatically applies Redis optimization to your most critical AI endpoints
- * 
+ *
  * Usage: node scripts/apply-redis-phase1.js
- * 
+ *
  * This script will:
  * 1. Backup original endpoint files
  * 2. Apply Redis middleware to critical endpoints
@@ -27,50 +27,50 @@ const PHASE1_ENDPOINTS = [
     path: 'src/routes/api/ai/chat/+server.ts',
     type: 'aiChat',
     priority: 'CRITICAL',
-    description: 'Main AI chat interface'
+    description: 'Main AI chat interface',
   },
   {
-    path: 'src/routes/api/ai/enhanced-chat/+server.ts', 
+    path: 'src/routes/api/ai/enhanced-chat/+server.ts',
     type: 'aiChat',
     priority: 'HIGH',
-    description: 'Enhanced chat with context'
+    description: 'Enhanced chat with context',
   },
   {
     path: 'src/routes/api/ai/analyze/+server.ts',
-    type: 'aiAnalysis', 
+    type: 'aiAnalysis',
     priority: 'CRITICAL',
-    description: 'Document analysis'
+    description: 'Document analysis',
   },
   {
     path: 'src/routes/api/ai/analyze-evidence/+server.ts',
     type: 'aiAnalysis',
-    priority: 'HIGH', 
-    description: 'Evidence analysis'
+    priority: 'HIGH',
+    description: 'Evidence analysis',
   },
   {
     path: 'src/routes/api/ai/legal-search/+server.ts',
     type: 'aiSearch',
     priority: 'CRITICAL',
-    description: 'Legal research search'
+    description: 'Legal research search',
   },
   {
     path: 'src/routes/api/ai/enhanced-legal-search/+server.ts',
     type: 'aiSearch',
     priority: 'HIGH',
-    description: 'Enhanced legal search'
+    description: 'Enhanced legal search',
   },
   {
     path: 'src/routes/api/ai/vector-search/+server.ts',
-    type: 'aiSearch', 
+    type: 'aiSearch',
     priority: 'HIGH',
-    description: 'Vector similarity search'
+    description: 'Vector similarity search',
   },
   {
     path: 'src/routes/api/ai/case-scoring/+server.ts',
     type: 'caseScoring',
     priority: 'HIGH',
-    description: 'AI case risk scoring'
-  }
+    description: 'AI case risk scoring',
+  },
 ];
 
 async function main() {
@@ -82,23 +82,23 @@ async function main() {
     // Step 1: Check prerequisites
     console.log('📋 Step 1: Checking prerequisites...');
     await checkPrerequisites();
-    
+
     // Step 2: Create backups
     console.log('💾 Step 2: Creating backups...');
     await createBackups();
-    
+
     // Step 3: Apply Redis optimization
     console.log('⚡ Step 3: Applying Redis optimization...');
     const results = await applyOptimizations();
-    
+
     // Step 4: Generate monitoring setup
     console.log('📊 Step 4: Setting up monitoring...');
     await setupMonitoring();
-    
+
     // Step 5: Generate implementation report
     console.log('📄 Step 5: Generating implementation report...');
     await generateReport(results);
-    
+
     console.log('');
     console.log('✅ PHASE 1 IMPLEMENTATION COMPLETE!');
     console.log('');
@@ -113,7 +113,6 @@ async function main() {
     console.log('- Analysis queries: Instant for cached docs');
     console.log('- Search results: Sub-100ms for common queries');
     console.log('- Memory usage: 60% reduction via Nintendo banking');
-
   } catch (error) {
     console.error('❌ Implementation failed:', error.message);
     process.exit(1);
@@ -123,11 +122,11 @@ async function main() {
 async function checkPrerequisites() {
   const required = [
     'src/lib/services/redis-orchestrator.ts',
-    'src/lib/middleware/redis-orchestrator-middleware.ts', 
+    'src/lib/middleware/redis-orchestrator-middleware.ts',
     'src/lib/stores/redis-orchestrator-store.ts',
-    'src/lib/hooks/useRedisOrchestrator.ts'
+    'src/lib/hooks/useRedisOrchestrator.ts',
   ];
-  
+
   for (const file of required) {
     const filePath = path.join(projectRoot, file);
     try {
@@ -142,10 +141,10 @@ async function checkPrerequisites() {
 async function createBackups() {
   const backupDir = path.join(projectRoot, 'backups', 'redis-phase1');
   await fs.mkdir(backupDir, { recursive: true });
-  
+
   for (const endpoint of PHASE1_ENDPOINTS) {
     const filePath = path.join(projectRoot, endpoint.path);
-    
+
     try {
       const content = await fs.readFile(filePath, 'utf8');
       const backupPath = path.join(backupDir, endpoint.path.replace(/\//g, '_'));
@@ -161,68 +160,67 @@ async function applyOptimizations() {
   const results = {
     optimized: [],
     skipped: [],
-    errors: []
+    errors: [],
   };
 
   for (const endpoint of PHASE1_ENDPOINTS) {
     const filePath = path.join(projectRoot, endpoint.path);
-    
+
     try {
       // Check if file exists
       await fs.access(filePath);
-      
+
       // Read current content
       let content = await fs.readFile(filePath, 'utf8');
-      
+
       // Check if already optimized
       if (content.includes('redisOptimized')) {
         console.log(`  🔄 Already optimized: ${endpoint.path}`);
         results.skipped.push(endpoint);
         continue;
       }
-      
+
       // Apply Redis optimization
       const optimizedContent = await optimizeEndpoint(content, endpoint);
-      
+
       // Write optimized version
       await fs.writeFile(filePath, optimizedContent);
       console.log(`  ⚡ Optimized: ${endpoint.path} (${endpoint.type})`);
-      
+
       results.optimized.push(endpoint);
-      
     } catch (error) {
       console.log(`  ❌ Error optimizing ${endpoint.path}: ${error.message}`);
       results.errors.push({ endpoint, error: error.message });
     }
   }
-  
+
   return results;
 }
 
 async function optimizeEndpoint(content, endpoint) {
   // Add Redis import if not present
   const redisImport = `import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';`;
-  
+
   if (!content.includes('redis-orchestrator-middleware')) {
     // Find the last import statement
     const lines = content.split('\n');
     let lastImportIndex = -1;
-    
+
     for (let i = 0; i < lines.length; i++) {
       if (lines[i].trim().startsWith('import ')) {
         lastImportIndex = i;
       }
     }
-    
+
     if (lastImportIndex >= 0) {
       lines.splice(lastImportIndex + 1, 0, redisImport);
       content = lines.join('\n');
     }
   }
-  
+
   // Find and wrap the export
   const exportRegex = /export\s+const\s+(GET|POST|PUT|DELETE|PATCH)\s*:\s*RequestHandler/g;
-  
+
   content = content.replace(exportRegex, (match, method) => {
     const wrapperType = endpoint.type;
     return match.replace(
@@ -230,7 +228,7 @@ async function optimizeEndpoint(content, endpoint) {
       `const original${method}Handler: RequestHandler`
     );
   });
-  
+
   // Add the optimized export
   const exportMatch = content.match(/const\s+original(GET|POST|PUT|DELETE|PATCH)Handler/);
   if (exportMatch) {
@@ -238,7 +236,7 @@ async function optimizeEndpoint(content, endpoint) {
     const optimizedExport = `\n// 🎮 Redis-Optimized Version\nexport const ${method} = redisOptimized.${endpoint.type}(original${method}Handler);`;
     content += optimizedExport;
   }
-  
+
   // Add documentation header
   const header = `/**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - PHASE 1 IMPLEMENTATION
@@ -257,7 +255,7 @@ async function optimizeEndpoint(content, endpoint) {
  */
 
 `;
-  
+
   return header + content;
 }
 
@@ -265,7 +263,7 @@ async function setupMonitoring() {
   // Create monitoring dashboard route
   const dashboardDir = path.join(projectRoot, 'src/routes/admin/redis');
   await fs.mkdir(dashboardDir, { recursive: true });
-  
+
   const dashboardPage = `<script lang="ts">
   import RedisOrchestratorDashboard from '$lib/components/redis/RedisOrchestratorDashboard.svelte';
 </script>
@@ -294,7 +292,7 @@ async function setupMonitoring() {
 
   await fs.writeFile(path.join(dashboardDir, '+page.svelte'), dashboardPage);
   console.log('  📊 Created monitoring dashboard at /admin/redis');
-  
+
   // Create layout for admin section
   const layoutContent = `<script lang="ts">
   import { useRedisInit } from '$lib/hooks/useRedisOrchestrator';
@@ -357,46 +355,46 @@ async function generateReport(results) {
       total_endpoints: PHASE1_ENDPOINTS.length,
       optimized: results.optimized.length,
       skipped: results.skipped.length,
-      errors: results.errors.length
+      errors: results.errors.length,
     },
-    optimized_endpoints: results.optimized.map(e => ({
+    optimized_endpoints: results.optimized.map((e) => ({
       path: e.path,
       type: e.type,
       priority: e.priority,
-      description: e.description
+      description: e.description,
     })),
-    skipped_endpoints: results.skipped.map(e => e.path),
+    skipped_endpoints: results.skipped.map((e) => e.path),
     errors: results.errors,
     next_steps: [
       'Start Redis server (redis-server)',
       'Start application (npm run dev)',
       'Visit /admin/redis to monitor performance',
       'Watch cache hit rates climb to 80%+',
-      'Proceed to Phase 2 after 24-48 hours'
+      'Proceed to Phase 2 after 24-48 hours',
     ],
     expected_performance: {
       'Chat responses': '2ms (cache hits) vs 2000ms+ (fresh)',
       'Analysis queries': 'Instant for cached documents',
-      'Search results': 'Sub-100ms for common queries',  
+      'Search results': 'Sub-100ms for common queries',
       'Memory usage': '60% reduction via Nintendo banking',
-      'Cache hit rate': '80%+ within 24 hours'
-    }
+      'Cache hit rate': '80%+ within 24 hours',
+    },
   };
-  
+
   const reportPath = path.join(projectRoot, 'redis-phase1-report.json');
   await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
-  
+
   console.log('  📄 Implementation report saved: redis-phase1-report.json');
   console.log('');
   console.log('🎯 OPTIMIZATION RESULTS:');
   console.log(`  ✅ Optimized: ${results.optimized.length} endpoints`);
   console.log(`  🔄 Already optimized: ${results.skipped.length} endpoints`);
   console.log(`  ❌ Errors: ${results.errors.length} endpoints`);
-  
+
   if (results.optimized.length > 0) {
     console.log('');
     console.log('🚀 OPTIMIZED ENDPOINTS:');
-    results.optimized.forEach(endpoint => {
+    results.optimized.forEach((endpoint) => {
       console.log(`  - ${endpoint.path} (${endpoint.type})`);
     });
   }

@@ -7,13 +7,13 @@ export const GET: RequestHandler = async () => {
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
       // Initial hello and snapshot hook (placeholder)
-      controller.enqueue(encoder.encode(`event: hello\n`));
-      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ ok: true, ts: Date.now() })}\n\n`));
+      controller.enqueue(encoder.encode(`event: hello\n`);
+      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ ok: true, ts: Date.now() })}\n\n`);
 
       const onEvent = (evt: any) => {
         try {
-          controller.enqueue(encoder.encode(`event: update\n`));
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify(evt)}\n\n`));
+          controller.enqueue(encoder.encode(`event: update\n`);
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(evt)}\n\n`);
         } catch (e) {
           // Ignore write errors; stream may be closed
         }
@@ -23,11 +23,11 @@ export const GET: RequestHandler = async () => {
 
       const keepalive = setInterval(() => {
         try {
-          controller.enqueue(encoder.encode(`: keepalive ${Date.now()}\n\n`));
+          controller.enqueue(encoder.encode(`: keepalive ${Date.now()}\n\n`);
         } catch {}
       }, 30000);
 
-      // Teardown
+      // Teardown;
       const abort = () => {
         clearInterval(keepalive);
         cacheEventBus.off('cache-event', onEvent);
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async () => {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-transform',
-      Connection: 'keep-alive'
+      Connection: 'keep-alive',
     }
   });
 };

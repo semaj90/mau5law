@@ -3,13 +3,13 @@
 /**
  * Redis Mass Optimizer - Complete AI Endpoint Transformation
  * Automatically applies Redis orchestrator to ALL 90+ AI endpoints
- * 
+ *
  * Nintendo-inspired performance optimization at scale
- * 
+ *
  * Usage: node scripts/redis-mass-optimizer.mjs [options]
  * Options:
  *   --dry-run    Preview changes without applying
- *   --phase=1|2|3  Apply specific phase optimizations  
+ *   --phase=1|2|3  Apply specific phase optimizations
  *   --force      Override safety checks
  */
 
@@ -25,7 +25,7 @@ const projectRoot = path.resolve(__dirname, '..');
 const args = process.argv.slice(2);
 const isDryRun = args.includes('--dry-run');
 const isForced = args.includes('--force');
-const phaseArg = args.find(arg => arg.startsWith('--phase='));
+const phaseArg = args.find((arg) => arg.startsWith('--phase='));
 const targetPhase = phaseArg ? parseInt(phaseArg.split('=')[1]) : null;
 
 console.log('🎮 REDIS MASS OPTIMIZER - Nintendo-Level AI Performance');
@@ -38,12 +38,12 @@ async function main() {
     console.log('🔍 Step 1: Discovering AI endpoints...');
     const endpoints = await discoverAIEndpoints();
     console.log(`   Found ${endpoints.length} AI endpoints`);
-    
+
     // Step 2: Categorize endpoints by optimization strategy
     console.log('📊 Step 2: Categorizing endpoints...');
     const categorized = categorizeEndpoints(endpoints);
     displayCategories(categorized);
-    
+
     // Step 3: Apply phase-specific optimizations
     if (targetPhase) {
       console.log(`⚡ Step 3: Applying Phase ${targetPhase} optimizations...`);
@@ -52,24 +52,23 @@ async function main() {
       console.log('⚡ Step 3: Applying ALL optimizations...');
       await applyAllOptimizations(categorized, isDryRun);
     }
-    
+
     // Step 4: Generate performance monitoring
     console.log('📊 Step 4: Setting up performance monitoring...');
     await setupAdvancedMonitoring(endpoints, isDryRun);
-    
+
     // Step 5: Create zero-downtime migration tools
     console.log('🔄 Step 5: Creating zero-downtime migration tools...');
     await createMigrationTools(endpoints, isDryRun);
-    
+
     // Step 6: Generate comprehensive report
     console.log('📄 Step 6: Generating optimization report...');
     const report = await generateOptimizationReport(categorized, endpoints);
-    
+
     console.log('');
     console.log('✅ MASS OPTIMIZATION COMPLETE!');
     console.log('');
     displayFinalResults(report);
-    
   } catch (error) {
     console.error('❌ Mass optimization failed:', error.message);
     if (error.stack && args.includes('--debug')) {
@@ -82,23 +81,23 @@ async function main() {
 async function discoverAIEndpoints() {
   const endpoints = [];
   const aiDir = path.join(projectRoot, 'src/routes/api/ai');
-  
+
   async function scanDirectory(dir, relativePath = '') {
     try {
       const entries = await fs.readdir(dir, { withFileTypes: true });
-      
+
       for (const entry of entries) {
         const fullPath = path.join(dir, entry.name);
         const relativeEntryPath = path.join(relativePath, entry.name);
-        
+
         if (entry.isDirectory()) {
           await scanDirectory(fullPath, relativeEntryPath);
         } else if (entry.name === '+server.ts') {
           const endpointPath = path.join('src/routes/api/ai', relativePath, entry.name);
-          
+
           // Read file to analyze content
           const content = await fs.readFile(fullPath, 'utf8');
-          
+
           endpoints.push({
             path: endpointPath,
             fullPath,
@@ -108,7 +107,8 @@ async function discoverAIEndpoints() {
             hasRequestHandler: content.includes('RequestHandler'),
             methods: extractHTTPMethods(content),
             complexity: analyzeComplexity(content),
-            alreadyOptimized: content.includes('redisOptimized') || content.includes('redis-orchestrator')
+            alreadyOptimized:
+              content.includes('redisOptimized') || content.includes('redis-orchestrator'),
           });
         }
       }
@@ -116,7 +116,7 @@ async function discoverAIEndpoints() {
       console.warn(`   ⚠️  Could not scan directory ${dir}: ${error.message}`);
     }
   }
-  
+
   await scanDirectory(aiDir);
   return endpoints.sort((a, b) => a.path.localeCompare(b.path));
 }
@@ -125,21 +125,22 @@ function extractHTTPMethods(content) {
   const methods = [];
   const methodPattern = /export\s+const\s+(GET|POST|PUT|DELETE|PATCH)\s*:/g;
   let match;
-  
+
   while ((match = methodPattern.exec(content)) !== null) {
     methods.push(match[1]);
   }
-  
+
   return methods;
 }
 
 function analyzeComplexity(content) {
   const lines = content.split('\n').length;
-  const hasLLMCalls = content.includes('ollama') || content.includes('openai') || content.includes('gemma');
+  const hasLLMCalls =
+    content.includes('ollama') || content.includes('openai') || content.includes('gemma');
   const hasVectorOps = content.includes('vector') || content.includes('embedding');
   const hasDBOps = content.includes('db.') || content.includes('database');
   const hasFileOps = content.includes('fs.') || content.includes('file');
-  
+
   if (lines > 200 || (hasLLMCalls && hasVectorOps && hasDBOps)) return 'high';
   if (lines > 100 || (hasLLMCalls && (hasVectorOps || hasDBOps))) return 'medium';
   return 'low';
@@ -150,119 +151,144 @@ function categorizeEndpoints(endpoints) {
     // Phase 1: Critical endpoints (already handled)
     phase1_critical: {
       strategy: 'aggressive',
-      memoryBank: 'CHR_ROM', 
+      memoryBank: 'CHR_ROM',
       priority: 200,
-      endpoints: []
+      endpoints: [],
     },
-    
+
     // Phase 2A: Chat & Communication
     chat_communication: {
       strategy: 'aggressive',
       memoryBank: 'CHR_ROM',
       priority: 180,
       redisType: 'aiChat',
-      endpoints: []
+      endpoints: [],
     },
-    
-    // Phase 2B: Search & Discovery  
+
+    // Phase 2B: Search & Discovery
     search_discovery: {
       strategy: 'aggressive',
       memoryBank: 'CHR_ROM',
       priority: 170,
       redisType: 'aiSearch',
-      endpoints: []
+      endpoints: [],
     },
-    
+
     // Phase 2C: Analysis & Processing
     analysis_processing: {
       strategy: 'conservative',
       memoryBank: 'PRG_ROM',
       priority: 150,
       redisType: 'aiAnalysis',
-      endpoints: []
+      endpoints: [],
     },
-    
+
     // Phase 2D: Document Management
     document_management: {
       strategy: 'minimal',
       memoryBank: 'SAVE_RAM',
       priority: 120,
       redisType: 'documentProcessing',
-      endpoints: []
+      endpoints: [],
     },
-    
+
     // Phase 2E: Generation & Creation
     generation_creation: {
       strategy: 'minimal',
       memoryBank: 'SAVE_RAM',
       priority: 110,
       redisType: 'documentProcessing',
-      endpoints: []
+      endpoints: [],
     },
-    
+
     // Phase 2F: Utilities & Health
     utilities_health: {
       strategy: 'bypass',
       memoryBank: 'SAVE_RAM',
       priority: 50,
       redisType: 'generic',
-      endpoints: []
+      endpoints: [],
     },
-    
+
     // Already optimized
     already_optimized: {
       strategy: 'skip',
-      endpoints: []
-    }
+      endpoints: [],
+    },
   };
-  
+
   for (const endpoint of endpoints) {
     if (endpoint.alreadyOptimized) {
       categories.already_optimized.endpoints.push(endpoint);
       continue;
     }
-    
+
     const name = endpoint.name.toLowerCase();
     const path = endpoint.path.toLowerCase();
-    
+
     // Categorization rules
     if (name.includes('chat') || name.includes('conversation') || path.includes('chat')) {
       categories.chat_communication.endpoints.push(endpoint);
-    } else if (name.includes('search') || name.includes('find') || name.includes('discover') || name.includes('query')) {
-      categories.search_discovery.endpoints.push(endpoint);  
-    } else if (name.includes('analyze') || name.includes('summary') || name.includes('process') || name.includes('review')) {
+    } else if (
+      name.includes('search') ||
+      name.includes('find') ||
+      name.includes('discover') ||
+      name.includes('query')
+    ) {
+      categories.search_discovery.endpoints.push(endpoint);
+    } else if (
+      name.includes('analyze') ||
+      name.includes('summary') ||
+      name.includes('process') ||
+      name.includes('review')
+    ) {
       categories.analysis_processing.endpoints.push(endpoint);
-    } else if (name.includes('document') || name.includes('upload') || name.includes('file') || name.includes('pdf')) {
+    } else if (
+      name.includes('document') ||
+      name.includes('upload') ||
+      name.includes('file') ||
+      name.includes('pdf')
+    ) {
       categories.document_management.endpoints.push(endpoint);
-    } else if (name.includes('generate') || name.includes('create') || name.includes('draft') || name.includes('build')) {
+    } else if (
+      name.includes('generate') ||
+      name.includes('create') ||
+      name.includes('draft') ||
+      name.includes('build')
+    ) {
       categories.generation_creation.endpoints.push(endpoint);
-    } else if (name.includes('health') || name.includes('status') || name.includes('connect') || name.includes('test')) {
+    } else if (
+      name.includes('health') ||
+      name.includes('status') ||
+      name.includes('connect') ||
+      name.includes('test')
+    ) {
       categories.utilities_health.endpoints.push(endpoint);
     } else {
       // Default to analysis for unknown endpoints
       categories.analysis_processing.endpoints.push(endpoint);
     }
   }
-  
+
   return categories;
 }
 
 function displayCategories(categories) {
   for (const [categoryName, category] of Object.entries(categories)) {
     if (category.endpoints.length === 0) continue;
-    
+
     console.log(`\n   📂 ${categoryName.toUpperCase().replace(/_/g, ' ')}`);
     console.log(`      Strategy: ${category.strategy || 'N/A'}`);
     console.log(`      Memory Bank: ${category.memoryBank || 'N/A'}`);
     console.log(`      Priority: ${category.priority || 'N/A'}`);
     console.log(`      Count: ${category.endpoints.length} endpoints`);
-    
+
     // Show first few endpoints as examples
     const examples = category.endpoints.slice(0, 3);
-    examples.forEach(endpoint => {
+    examples.forEach((endpoint) => {
       console.log(`        • ${endpoint.name} (${endpoint.complexity} complexity)`);
     });
-    
+
     if (category.endpoints.length > 3) {
       console.log(`        • ... and ${category.endpoints.length - 3} more`);
     }
@@ -273,15 +299,15 @@ async function applyPhaseOptimizations(categories, phase, isDryRun) {
   const phaseMap = {
     1: ['phase1_critical'],
     2: ['chat_communication', 'search_discovery', 'analysis_processing'],
-    3: ['document_management', 'generation_creation', 'utilities_health']
+    3: ['document_management', 'generation_creation', 'utilities_health'],
   };
-  
+
   const targetCategories = phaseMap[phase] || [];
-  
+
   for (const categoryName of targetCategories) {
     const category = categories[categoryName];
     if (!category || category.endpoints.length === 0) continue;
-    
+
     console.log(`\n   ⚡ Optimizing ${categoryName}...`);
     await optimizeCategoryEndpoints(category, isDryRun);
   }
@@ -290,17 +316,17 @@ async function applyPhaseOptimizations(categories, phase, isDryRun) {
 async function applyAllOptimizations(categories, isDryRun) {
   const orderedCategories = [
     'chat_communication',
-    'search_discovery', 
+    'search_discovery',
     'analysis_processing',
     'document_management',
     'generation_creation',
-    'utilities_health'
+    'utilities_health',
   ];
-  
+
   for (const categoryName of orderedCategories) {
     const category = categories[categoryName];
     if (!category || category.endpoints.length === 0) continue;
-    
+
     console.log(`\n   ⚡ Optimizing ${categoryName}...`);
     await optimizeCategoryEndpoints(category, isDryRun);
   }
@@ -308,7 +334,7 @@ async function applyAllOptimizations(categories, isDryRun) {
 
 async function optimizeCategoryEndpoints(category, isDryRun) {
   const results = { success: 0, skipped: 0, errors: 0 };
-  
+
   for (const endpoint of category.endpoints) {
     try {
       if (category.strategy === 'bypass') {
@@ -316,54 +342,51 @@ async function optimizeCategoryEndpoints(category, isDryRun) {
         results.skipped++;
         continue;
       }
-      
-      const optimizedContent = await optimizeEndpointContent(
-        endpoint.content,
-        endpoint,
-        category
-      );
-      
+
+      const optimizedContent = await optimizeEndpointContent(endpoint.content, endpoint, category);
+
       if (isDryRun) {
         console.log(`      👁️  Would optimize: ${endpoint.name}`);
       } else {
         // Create backup
         const backupPath = `${endpoint.fullPath}.backup-${Date.now()}`;
         await fs.copyFile(endpoint.fullPath, backupPath);
-        
+
         // Apply optimization
         await fs.writeFile(endpoint.fullPath, optimizedContent);
         console.log(`      ✅ Optimized: ${endpoint.name}`);
       }
-      
+
       results.success++;
-      
     } catch (error) {
       console.log(`      ❌ Error optimizing ${endpoint.name}: ${error.message}`);
       results.errors++;
     }
   }
-  
-  console.log(`      Results: ${results.success} success, ${results.skipped} skipped, ${results.errors} errors`);
+
+  console.log(
+    `      Results: ${results.success} success, ${results.skipped} skipped, ${results.errors} errors`
+  );
 }
 
 async function optimizeEndpointContent(content, endpoint, category) {
   // Add Redis import if not present
   const redisImport = `import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';`;
-  
+
   let optimizedContent = content;
-  
+
   if (!optimizedContent.includes('redis-orchestrator-middleware')) {
     // Find the last import statement
     const lines = optimizedContent.split('\n');
     let lastImportIndex = -1;
-    
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
       if (line.startsWith('import ') && !line.includes('type')) {
         lastImportIndex = i;
       }
     }
-    
+
     if (lastImportIndex >= 0) {
       lines.splice(lastImportIndex + 1, 0, redisImport);
       optimizedContent = lines.join('\n');
@@ -372,29 +395,31 @@ async function optimizeEndpointContent(content, endpoint, category) {
       optimizedContent = redisImport + '\n\n' + optimizedContent;
     }
   }
-  
+
   // Transform exports to use Redis optimization
   for (const method of endpoint.methods) {
     const originalPattern = new RegExp(
       `export\\s+const\\s+${method}\\s*:\\s*RequestHandler\\s*=`,
       'g'
     );
-    
+
     const replacement = `const original${method}Handler: RequestHandler =`;
     optimizedContent = optimizedContent.replace(originalPattern, replacement);
   }
-  
+
   // Add optimized exports
-  const optimizedExports = endpoint.methods.map(method => {
-    const redisType = category.redisType || 'generic';
-    
-    if (redisType === 'generic') {
-      return `export const ${method} = redisOptimized.generic('${endpoint.name}', original${method}Handler);`;
-    } else {
-      return `export const ${method} = redisOptimized.${redisType}(original${method}Handler);`;
-    }
-  }).join('\n');
-  
+  const optimizedExports = endpoint.methods
+    .map((method) => {
+      const redisType = category.redisType || 'generic';
+
+      if (redisType === 'generic') {
+        return `export const ${method} = redisOptimized.generic('${endpoint.name}', original${method}Handler);`;
+      } else {
+        return `export const ${method} = redisOptimized.${redisType}(original${method}Handler);`;
+      }
+    })
+    .join('\n');
+
   // Add documentation header
   const header = `/**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
@@ -415,13 +440,13 @@ async function optimizeEndpointContent(content, endpoint, category) {
  */
 
 `;
-  
+
   return header + optimizedContent + '\n\n' + optimizedExports;
 }
 
 async function setupAdvancedMonitoring(endpoints, isDryRun) {
   const monitoringConfig = {
-    endpoints: endpoints.map(e => ({
+    endpoints: endpoints.map((e) => ({
       name: e.name,
       path: e.path,
       complexity: e.complexity,
@@ -433,28 +458,28 @@ async function setupAdvancedMonitoring(endpoints, isDryRun) {
           cacheHitWarning: 70,
           cacheHitCritical: 50,
           responseTimeWarning: 500,
-          responseTimeCritical: 2000
-        }
-      }
+          responseTimeCritical: 2000,
+        },
+      },
     })),
     dashboards: {
       overview: '/admin/redis',
       detailed: '/admin/redis/detailed',
       performance: '/admin/redis/performance',
-      alerts: '/admin/redis/alerts'
+      alerts: '/admin/redis/alerts',
     },
     alerting: {
       email: process.env.ALERT_EMAIL,
       webhook: process.env.ALERT_WEBHOOK,
-      slack: process.env.SLACK_WEBHOOK
-    }
+      slack: process.env.SLACK_WEBHOOK,
+    },
   };
-  
+
   if (!isDryRun) {
     const configPath = path.join(projectRoot, 'redis-monitoring-config.json');
     await fs.writeFile(configPath, JSON.stringify(monitoringConfig, null, 2));
     console.log('   📊 Advanced monitoring configuration created');
-    
+
     // Create detailed monitoring dashboard
     await createDetailedDashboard(endpoints);
   } else {
@@ -465,9 +490,9 @@ async function setupAdvancedMonitoring(endpoints, isDryRun) {
 async function createDetailedDashboard(endpoints) {
   const dashboardPath = path.join(projectRoot, 'src/routes/admin/redis/detailed/+page.svelte');
   const dashboardDir = path.dirname(dashboardPath);
-  
+
   await fs.mkdir(dashboardDir, { recursive: true });
-  
+
   const dashboardContent = `<script lang="ts">
   import { onMount } from 'svelte';
   import { redisOrchestratorClient } from '$lib/stores/redis-orchestrator-store';
@@ -475,7 +500,11 @@ async function createDetailedDashboard(endpoints) {
   let endpointMetrics = $state([]);
   let isLoading = $state(true);
   
-  const endpoints = ${JSON.stringify(endpoints.map(e => ({ name: e.name, path: e.path, complexity: e.complexity })), null, 2)};
+  const endpoints = ${JSON.stringify(
+    endpoints.map((e) => ({ name: e.name, path: e.path, complexity: e.complexity })),
+    null,
+    2
+  )};
   
   onMount(async () => {
     await loadEndpointMetrics();
@@ -784,33 +813,33 @@ async function generateOptimizationReport(categories, endpoints) {
       total_endpoints: endpoints.length,
       already_optimized: categories.already_optimized.endpoints.length,
       pending_optimization: endpoints.length - categories.already_optimized.endpoints.length,
-      categories: Object.keys(categories).length - 1 // Exclude already_optimized
+      categories: Object.keys(categories).length - 1, // Exclude already_optimized
     },
     categories: {},
     performance_projections: {
       expected_cache_hit_rate: '75-85%',
       expected_response_time_improvement: '40-2500x faster',
       expected_cost_reduction: '75%',
-      expected_memory_savings: '60%'
+      expected_memory_savings: '60%',
     },
     deployment_plan: {
       phase_1: 'Critical endpoints (chat, search, analysis)',
       phase_2: 'Bulk endpoints (document, generation, utilities)',
       phase_3: 'Fine-tuning and optimization',
-      estimated_total_time: '2-3 weeks'
+      estimated_total_time: '2-3 weeks',
     },
     nintendo_optimizations: {
       chr_rom_cache: 'Instant UI pattern rendering',
       memory_banking: '4-tier Nintendo-style memory management',
       background_processing: 'Queue complex tasks for non-blocking UX',
-      agent_memory: 'Persistent conversation context'
-    }
+      agent_memory: 'Persistent conversation context',
+    },
   };
-  
+
   // Add category details
   for (const [categoryName, category] of Object.entries(categories)) {
     if (category.endpoints.length === 0) continue;
-    
+
     report.categories[categoryName] = {
       count: category.endpoints.length,
       strategy: category.strategy,
@@ -818,16 +847,16 @@ async function generateOptimizationReport(categories, endpoints) {
       priority: category.priority,
       redis_type: category.redisType,
       complexity_breakdown: {
-        high: category.endpoints.filter(e => e.complexity === 'high').length,
-        medium: category.endpoints.filter(e => e.complexity === 'medium').length,
-        low: category.endpoints.filter(e => e.complexity === 'low').length
-      }
+        high: category.endpoints.filter((e) => e.complexity === 'high').length,
+        medium: category.endpoints.filter((e) => e.complexity === 'medium').length,
+        low: category.endpoints.filter((e) => e.complexity === 'low').length,
+      },
     };
   }
-  
+
   const reportPath = path.join(projectRoot, 'redis-mass-optimization-report.json');
   await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
-  
+
   return report;
 }
 
@@ -837,14 +866,16 @@ function displayFinalResults(report) {
   console.log(`   ✅ Already Optimized: ${report.summary.already_optimized}`);
   console.log(`   ⚡ Pending Optimization: ${report.summary.pending_optimization}`);
   console.log(`   📂 Categories: ${report.summary.categories}`);
-  
+
   console.log('');
   console.log('🎮 NINTENDO-LEVEL PERFORMANCE GAINS:');
   console.log(`   💾 Cache Hit Rate: ${report.performance_projections.expected_cache_hit_rate}`);
-  console.log(`   ⚡ Response Time: ${report.performance_projections.expected_response_time_improvement}`);
+  console.log(
+    `   ⚡ Response Time: ${report.performance_projections.expected_response_time_improvement}`
+  );
   console.log(`   💰 Cost Reduction: ${report.performance_projections.expected_cost_reduction}`);
   console.log(`   🧠 Memory Savings: ${report.performance_projections.expected_memory_savings}`);
-  
+
   console.log('');
   console.log('🚀 DEPLOYMENT COMMANDS:');
   console.log('   Phase 1: node scripts/redis-mass-optimizer.mjs --phase=1');

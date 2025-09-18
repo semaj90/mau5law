@@ -5,16 +5,16 @@ import type { StateValue, AnyEventObject } from "xstate";
  */
 
 
-// Base machine context
+// Base machine context;
 export interface BaseMachineContext {
   userId?: string;
   sessionId: string;
   error?: string;
   retryCount: number;
-  timestamp: number;
+  timestamp: number;,
 }
 
-// AI Processing Context
+// AI Processing Context;
 export interface AIProcessingContext extends BaseMachineContext {
   task: AITask;
   result?: AITaskResult;
@@ -39,16 +39,16 @@ export interface AITaskResult {
   metrics?: {
     processingTime: number;
     memoryUsed: string;
-    throughput: number;
+    throughput: number;,
   };
 }
 
-// Document Processing Context
+// Document Processing Context;
 export interface DocumentContext extends BaseMachineContext {
   document: DocumentInfo;
   extractedFields?: ExtractedField[];
   ocrResult?: OCRResult;
-  processingStage: 'upload' | 'ocr' | 'extraction' | 'validation' | 'complete';
+  processingStage: 'upload' | 'ocr' | 'extraction' | 'validation' | 'complete';,
 }
 
 export interface DocumentInfo {
@@ -63,16 +63,16 @@ export interface ExtractedField {
   name: string;
   value: string;
   confidence: number;
-  type: 'text' | 'date' | 'number' | 'email' | 'phone';
+  type: 'text' | 'date' | 'number' | 'email' | 'phone';,
 }
 
 export interface OCRResult {
   text: string;
   confidence: number;
-  processingTime: number;
+  processingTime: number;,
 }
 
-// Go Microservice Context
+// Go Microservice Context;
 export interface GoMicroserviceContext extends BaseMachineContext {
   endpoint: string;
   request?: GoServiceRequest;
@@ -96,15 +96,15 @@ export interface GoServiceResponse {
   status: number;
   data: any;
   headers: Record<string, string>;
-  duration: number;
+  duration: number;,
 }
 
-// RAG Context
+// RAG Context;
 export interface RAGContext extends BaseMachineContext {
   query: RAGQuery;
   results?: RAGResult[];
   searchStage: 'analyzing' | 'searching' | 'ranking' | 'synthesizing' | 'complete';
-  enhancedMode: boolean;
+  enhancedMode: boolean;,
 }
 
 export interface RAGQuery {
@@ -129,7 +129,7 @@ export interface RAGResult {
   highlights?: string[];
 }
 
-// User Workflow Context
+// User Workflow Context;
 export interface UserWorkflowContext extends BaseMachineContext {
   workflow: WorkflowDefinition;
   currentStep: number;
@@ -160,7 +160,7 @@ export interface AISuggestion {
   reasoning?: string;
 }
 
-// Event Types
+// Event Types;
 export interface AIProcessingEvents {
   START_PROCESSING: { task: AITask };
   PROCESSING_PROGRESS: { progress: number };
@@ -264,7 +264,7 @@ export type UserWorkflowState =
   | 'cancelled'
   | 'error';
 
-// Service configuration
+// Service configuration;
 export interface ServiceConfig {
   retryCount: number;
   timeout: number;
@@ -272,7 +272,7 @@ export interface ServiceConfig {
   headers?: Record<string, string>;
 }
 
-// Machine options
+// Machine options;
 export interface MachineOptions {
   services?: Record<string, any>;
   guards?: Record<string, any>;

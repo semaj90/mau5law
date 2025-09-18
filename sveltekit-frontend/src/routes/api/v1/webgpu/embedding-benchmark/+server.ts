@@ -31,15 +31,15 @@ interface BenchmarkResult {
   compressionRatio: number;
   memoryUsage: {
     peak: number;
-    average: number;
+    average: number;,
   };
   qualityMetrics?: {
     avgSimilarity: number;
-    coherenceScore: number;
+    coherenceScore: number;,
   };
 }
 
-// Sample legal documents for testing
+// Sample legal documents for testing;
 const SAMPLE_LEGAL_DOCUMENTS = {
   contracts: [
     "This Employment Agreement is entered into between Company X and Employee Y, effective January 1, 2024. Employee shall perform duties as Software Engineer with annual compensation of $120,000. Agreement includes non-disclosure and non-compete clauses valid for 18 months post-termination.",
@@ -58,7 +58,7 @@ const SAMPLE_LEGAL_DOCUMENTS = {
   ]
 };
 
-// GET - System status and available benchmarks
+// GET - System status and available benchmarks;
 export const GET: RequestHandler = async () => {
   try {
     const cacheStats = await embeddingCache.getCacheStats();
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async () => {
           contracts: SAMPLE_LEGAL_DOCUMENTS.contracts.length,
           cases: SAMPLE_LEGAL_DOCUMENTS.cases.length,
           statutes: SAMPLE_LEGAL_DOCUMENTS.statutes.length,
-          total: Object.values(SAMPLE_LEGAL_DOCUMENTS).flat().length
+          total: Object.values(SAMPLE_LEGAL_DOCUMENTS).flat().length,
         }
       },
       availableBenchmarks: [
@@ -83,18 +83,18 @@ export const GET: RequestHandler = async () => {
         'stress - High-load concurrent processing test',
         'comparison - WebGPU vs standard cache comparison'
       ],
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   } catch (error) {
     return json({
       success: false,
       error: 'Failed to get benchmark system status',
-      details: error instanceof Error ? error.message: String(error)
+      details: error instanceof Error ? error.message: String(error),
     }, { status: 500 });
   }
 };
 
-// POST - Run embedding benchmarks
+// POST - Run embedding benchmarks;
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     const benchmarkRequest: EmbeddingBenchmarkRequest = await request.json();
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         result = await runComparisonBenchmark(config);
         break;
         
-      default:
+      default:;
         return json({
           success: false,
           error: 'Invalid benchmark mode',
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         systemConfig: {
           webgpuEnabled: config.useWebGPU !== false,
           batchSize: config.batchSize || 128,
-          practiceAreas: config.practiceAreas || ['general']
+          practiceAreas: config.practiceAreas || ['general'],
         }
       }
     });
@@ -149,14 +149,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return json({
       success: false,
       error: 'Benchmark execution failed',
-      details: error instanceof Error ? error.message: String(error)
+      details: error instanceof Error ? error.message: String(error),
     }, { status: 500 });
   }
 };
 
 /**
  * Single document embedding benchmark with detailed analysis
- */
+ */;
 async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult> {
   const documents = getAllSampleDocuments().slice(0, config.documentCount || 10);
   const startTime = Date.now();
@@ -169,11 +169,11 @@ async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult>
   for (const doc of documents) {
     const docStartTime = Date.now();
     
-    // Process with legal context
+    // Process with legal context;
     const legalQuery = {
       text: doc.text,
       documentType: doc.type as any,
-      practiceArea: config.practiceAreas?.[0] || 'general'
+      practiceArea: config.practiceAreas?.[0] || 'general',
     };
     
     const embeddingResult = await getLegalEmbedding(legalQuery);
@@ -183,13 +183,13 @@ async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult>
       text: doc.text.substring(0, 100) + '...',
       processingTime: docProcessTime,
       embeddingDimensions: embeddingResult.embedding.length,
-      wasCached: embeddingResult.metadata.cacheHit
+      wasCached: embeddingResult.metadata.cacheHit,
     });
     
     if (embeddingResult.metadata.cacheHit) cacheHits++;
   }
   
-  // Calculate quality metrics
+  // Calculate quality metrics;
   if (results.length > 1) {
     for (let i = 0; i < results.length - 1; i++) {
       const similarity = calculateEmbeddingSimilarity(
@@ -214,18 +214,18 @@ async function runSingleDocumentBenchmark(config: any): Promise<BenchmarkResult>
     compressionRatio: 4.2,
     memoryUsage: {
       peak: memoryPeak,
-      average: (memoryStart + memoryPeak) / 2
+      average: (memoryStart + memoryPeak) / 2,
     },
     qualityMetrics: {
       avgSimilarity: totalSimilarity / Math.max(1, results.length - 1),
-      coherenceScore: 0.85 // Simulated coherence score
+      coherenceScore: 0.85 // Simulated coherence score,
     }
   };
 }
 
 /**
  * Batch processing benchmark with parallel optimization
- */
+ */;
 async function runBatchProcessingBenchmark(config: any): Promise<BenchmarkResult> {
   const batchSize = config.batchSize || 32;
   const iterations = config.iterations || 5;
@@ -241,8 +241,8 @@ async function runBatchProcessingBenchmark(config: any): Promise<BenchmarkResult
     const batch = documents.slice(0, batchSize).map(doc => ({
       text: doc.text,
       documentType: doc.type as any,
-      practiceArea: config.practiceAreas?.[i % (config.practiceAreas?.length || 1)] || 'general'
-    }));
+      practiceArea: config.practiceAreas?.[i % (config.practiceAreas?.length || 1)] || 'general',
+    });
     
     // Use WebGPU-optimized batch processing
     const embeddings = await getBatchLegalEmbeddings(batch);
@@ -266,14 +266,14 @@ async function runBatchProcessingBenchmark(config: any): Promise<BenchmarkResult
     compressionRatio: 4.5,
     memoryUsage: {
       peak: memoryPeak,
-      average: (memoryStart + memoryPeak) / 2
+      average: (memoryStart + memoryPeak) / 2,
     }
   };
 }
 
 /**
  * Stress test benchmark with high concurrency
- */
+ */;
 async function runStressTestBenchmark(config: any): Promise<BenchmarkResult> {
   const concurrency = config.documentCount || 50;
   const duration = 30000; // 30 seconds
@@ -283,7 +283,7 @@ async function runStressTestBenchmark(config: any): Promise<BenchmarkResult> {
   let completedDocs = 0;
   let errors = 0;
   
-  // Create concurrent workers
+  // Create concurrent workers;
   const workers = Array.from({ length: concurrency }, async (_, workerId) => {
     while (Date.now() - startTime < duration) {
       try {
@@ -291,14 +291,14 @@ async function runStressTestBenchmark(config: any): Promise<BenchmarkResult> {
         const legalQuery = {
           text: doc.text,
           documentType: doc.type as any,
-          practiceArea: config.practiceAreas?.[workerId % (config.practiceAreas?.length || 1)] || 'general'
+          practiceArea: config.practiceAreas?.[workerId % (config.practiceAreas?.length || 1)] || 'general',
         };
         
         await getLegalEmbedding(legalQuery);
         completedDocs++;
         
         // Small random delay to prevent overwhelming
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 50));
+        await new Promise(resolve => setTimeout(resolve, Math.random() * 50);
         
       } catch (error) {
         errors++;
@@ -322,14 +322,14 @@ async function runStressTestBenchmark(config: any): Promise<BenchmarkResult> {
     compressionRatio: 4.0,
     memoryUsage: {
       peak: process.memoryUsage().heapUsed,
-      average: process.memoryUsage().heapUsed * 0.8
+      average: process.memoryUsage().heapUsed * 0.8,
     }
   };
 }
 
 /**
  * Comparison benchmark: WebGPU vs Standard caching
- */
+ */;
 async function runComparisonBenchmark(config: any): Promise<BenchmarkResult> {
   const documents = getAllSampleDocuments().slice(0, config.documentCount || 20);
   
@@ -339,7 +339,7 @@ async function runComparisonBenchmark(config: any): Promise<BenchmarkResult> {
     const legalQuery = {
       text: doc.text,
       documentType: doc.type as any,
-      practiceArea: 'comparison-webgpu'
+      practiceArea: 'comparison-webgpu',
     };
     await getLegalEmbedding(legalQuery);
   }
@@ -359,18 +359,18 @@ async function runComparisonBenchmark(config: any): Promise<BenchmarkResult> {
     compressionRatio: 4.3,
     memoryUsage: {
       peak: process.memoryUsage().heapUsed,
-      average: process.memoryUsage().heapUsed * 0.7
+      average: process.memoryUsage().heapUsed * 0.7,
     },
     qualityMetrics: {
       avgSimilarity: 0.82,
-      coherenceScore: 0.88
+      coherenceScore: 0.88,
     }
   };
 }
 
 /**
  * Get all sample documents with metadata
- */
+ */;
 function getAllSampleDocuments() {
   const allDocs = [];
   
@@ -385,14 +385,14 @@ function getAllSampleDocuments() {
 
 /**
  * Calculate similarity between embeddings (simplified)
- */
+ */;
 function calculateEmbeddingSimilarity(dim1: number, dim2: number): number {
   // Simplified similarity calculation for demo
   const diff = Math.abs(dim1 - dim2);
-  return Math.max(0, 1 - (diff / Math.max(dim1, dim2)));
+  return Math.max(0, 1 - (diff / Math.max(dim1, dim2));
 }
 
-// DELETE - Clear benchmark cache data
+// DELETE - Clear benchmark cache data;
 export const DELETE: RequestHandler = async () => {
   try {
     console.log('🗑️ Clearing legal embedding benchmark cache');
@@ -403,13 +403,13 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Legal embedding benchmark cache cleared',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   } catch (error) {
     return json({
       success: false,
       error: 'Failed to clear benchmark cache',
-      details: error instanceof Error ? error.message: String(error)
+      details: error instanceof Error ? error.message: String(error),
     }, { status: 500 });
   }
 };

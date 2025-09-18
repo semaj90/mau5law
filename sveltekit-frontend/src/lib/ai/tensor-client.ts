@@ -7,7 +7,7 @@ let __gpuAccelerator: any | null = null;
 
 async function runGpuTile(embedding: number[]) {
   try {
-    // Lazy import WebGPU accelerator and initialize once
+    // Lazy import WebGPU accelerator and initialize once;
     if (!__gpuAccelerator) {
       const mod = await import('$lib/webgpu/tensor-acceleration');
       __gpuAccelerator = new mod.WebGPUTensorAccelerator({ enableDebug: false });
@@ -17,11 +17,11 @@ async function runGpuTile(embedding: number[]) {
     const v = new Float32Array(embedding);
     const t0 = performance.now();
     
-    // Enhanced self-similarity with SIMD GPU tiling
+    // Enhanced self-similarity with SIMD GPU tiling;
     const result = await __gpuAccelerator.calculateVectorSimilarityWithSIMDTiling(v, v, {
       enableTiling: true,
       tileSize: 256,
-      useEvidenceAnalysis: false
+      useEvidenceAnalysis: false,
     });
     
     const t1 = performance.now();
@@ -56,16 +56,16 @@ export async function embedText(text: string, opts?: { simdParse?: boolean; gpuT
 
   if (opts?.simdParse && navigator.serviceWorker?.controller) {
     const tensor = new Float32Array(embedding);
-    // Transfer the underlying ArrayBuffer for zero-copy to the SW
+    // Transfer the underlying ArrayBuffer for zero-copy to the SW;
     return new Promise((resolve) => {
       const channel = new MessageChannel();
       channel.port1.onmessage = (ev) => {
         Promise.resolve(gpuPromise)
-          .then((gpuMeta) => resolve({ ...data, tensorMeta: ev.data, gpuMeta }))
-          .catch(() => resolve({ ...data, tensorMeta: ev.data }));
+          .then((gpuMeta) => resolve({ ...data, tensorMeta: ev.data, gpuMeta })
+          .catch(() => resolve({ ...data, tensorMeta: ev.data });
       };
       const payload = tensor.buffer;
-      navigator.serviceWorker.controller!.postMessage(
+      navigator.serviceWorker.controller!.postMessage()
         { type: 'SIMD_PARSE_TENSOR', payload },
         // Transfer both the port and the ArrayBuffer for true zero-copy
         [channel.port2, payload]
@@ -73,7 +73,7 @@ export async function embedText(text: string, opts?: { simdParse?: boolean; gpuT
     });
   }
 
-  // If only GPU tiling is requested
+  // If only GPU tiling is requested;
   if (opts?.gpuTile) {
     const gpuMeta = await gpuPromise;
     return { ...data, gpuMeta };

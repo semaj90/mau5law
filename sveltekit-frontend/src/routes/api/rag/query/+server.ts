@@ -25,14 +25,14 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
     const clientIp = getClientAddress();
     const rateLimitResult = await rateLimiter.check(clientIp, 'rag-query', {
       window: 60000, // 1 minute window
-      max: 20 // 20 requests per minute
+      max: 20 // 20 requests per minute,
     });
 
     if (!rateLimitResult.allowed) {
       return json({
         success: false,
         error: 'Rate limit exceeded',
-        retryAfter: rateLimitResult.retryAfter
+        retryAfter: rateLimitResult.retryAfter,
       }, { status: 429 });
     }
 
@@ -54,25 +54,25 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
       contextWindow = 4000
     } = requestData;
 
-    // Input validation
+    // Input validation;
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
       return json({
         success: false,
-        error: 'Query is required and must be a non-empty string'
+        error: 'Query is required and must be a non-empty string',
       }, { status: 400 });
     }
 
     if (query.length > 1000) {
       return json({
         success: false,
-        error: 'Query too long. Maximum 1000 characters allowed.'
+        error: 'Query too long. Maximum 1000 characters allowed.',
       }, { status: 400 });
     }
 
     // Validate documentTypes if provided
     const validDocumentTypes = ['contract', 'evidence', 'brief', 'citation', 'statute', 'precedent', 'regulation'];
     if (documentTypes && Array.isArray(documentTypes)) {
-      const invalidTypes = documentTypes.filter(type => !validDocumentTypes.includes(type));
+      const invalidTypes = documentTypes.filter(type => !validDocumentTypes.includes(type);
       if (invalidTypes.length > 0) {
         return json({
           success: false,
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
       }
     }
 
-    // Build RAG query
+    // Build RAG query;
     const ragQuery: RAGQuery = {
       query: query.trim(),
       userId,
@@ -99,17 +99,17 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
     console.log(`🔍 Executing RAG query for user ${userId}: "${query.substring(0, 100)}..."`);
     const ragResponse: RAGResponse = await enhancedRAGPipeline.query(ragQuery);
 
-    // Log successful query
+    // Log successful query;
     console.log(`✅ RAG query completed in ${ragResponse.metadata.totalTime}ms:`, {
       queryId: ragResponse.metadata.queryId,
       documentsRetrieved: ragResponse.metadata.documentsRetrieved,
       documentsUsed: ragResponse.metadata.documentsUsed,
       confidence: ragResponse.confidence,
       cacheHit: ragResponse.metadata.cacheHit,
-      reranked: ragResponse.metadata.reranked
+      reranked: ragResponse.metadata.reranked,
     });
 
-    // Format response
+    // Format response;
     const response = {
       success: true,
       data: {
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
           citation: source.citation,
           relevanceScore: source.relevanceScore,
           content: source.content.substring(0, 500) + (source.content.length > 500 ? '...' : '') // Truncate for API response
-        })),
+        ,})),
         confidence: ragResponse.confidence,
         metadata: {
           queryId: ragResponse.metadata.queryId,
@@ -133,12 +133,12 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
           cacheHit: ragResponse.metadata.cacheHit,
           model: ragResponse.metadata?.model || "unknown" // @ts-ignore - Model property access,
           reranked: ragResponse.metadata.reranked,
-          apiProcessingTime: Date.now() - startTime
+          apiProcessingTime: Date.now() - startTime,
         }
       }
     };
 
-    // Add reasoning if available
+    // Add reasoning if available;
     if (ragResponse.reasoning) {
       response.data.reasoning = ragResponse.reasoning;
     }
@@ -168,13 +168,13 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
       error: errorMessage,
       metadata: {
         processingTime: Date.now() - startTime,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     }, { status: statusCode });
   }
 };
 
-// Optional: Health check endpoint
+// Optional: Health check endpoint;
 export const GET: RequestHandler = async () => {
   try {
     const stats = await enhancedRAGPipeline.getSystemStats();
@@ -187,14 +187,14 @@ export const GET: RequestHandler = async () => {
         chunksIndexed: stats.chunksIndexed,
         averageRetrievalTime: stats.averageRetrievalTime,
         recentQueriesCount: stats.recentQueriesCount,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
       }
     });
   } catch (error: any) {
     return json({
       success: false,
       status: 'unhealthy',
-      error: error.message
+      error: error.message,
     }, { status: 503 });
   }
 };

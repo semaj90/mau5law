@@ -7,7 +7,7 @@ import Separator from './context-menu-separator.svelte.js';
 
 export { Root, Trigger, Content, Item, Separator };
 
-// Re-export as namespace for convenience
+// Re-export as namespace for convenience;
 export const ContextMenu = {
   Root,
   Trigger,

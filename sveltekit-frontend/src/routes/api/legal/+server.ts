@@ -30,7 +30,7 @@ interface LegalJobRequest {
     agents?: Array<any>;
 }
 
-// POST /api/legal - Submit legal AI job
+// POST /api/legal - Submit legal AI job;
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     // Authentication check
@@ -46,19 +46,19 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     const requestData: LegalJobRequest = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!requestData.case_id || !requestData.messages || requestData.messages.length === 0) {
       throw error(400, 'Missing required fields: case_id and messages');
     }
 
-    // Create legal job payload
+    // Create legal job payload;
     const jobPayload = {
       case_id: requestData.case_id,
       user_id: user?.id || 'anonymous',
       messages: requestData.messages.map(msg => ({
         ...msg,
         message_id: msg.message_id || generateMessageId(),
-        timestamp: Date.now()
+        timestamp: Date.now(),
       })),
       model_config: {
         model_type: requestData.model_config?.model_type || 'gemma3',
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         use_rl_optimization: requestData.model_config?.use_rl_optimization ?? true,
         enable_cache: requestData.model_config?.enable_cache ?? true,
         enable_kv_reuse: true,
-        compression_type: 'float16'
+        compression_type: 'float16',
       },
       legal_context: {
         case_id: requestData.case_id,
@@ -75,20 +75,20 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         priority: requestData.legal_context?.priority || 'medium',
         legal_entities: requestData.legal_context?.legal_entities || [],
         precedent_refs: [],
-        confidence_score: 0.8
+        confidence_score: 0.8,
       },
       workflow_config: requestData.workflow_config || null,
       store_embeddings: true,
-      cache_strategy: 'rl_optimized'
+      cache_strategy: 'rl_optimized',
     };
 
-    // Submit job to MCP server
+    // Submit job to MCP server;
     const mcpResponse = await fetch(`${MCP_ENDPOINT}/api/legal/job`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(jobPayload)
+      body: JSON.stringify(jobPayload),
     });
 
     if (!mcpResponse.ok) {
@@ -100,14 +100,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     // Store job metadata for tracking
     await redis.setex(
       `job_tracking:${mcpResult.job_id}`,
-      3600, // 1 hour TTL
+      3600, // 1 hour TTL;
       JSON.stringify({
         job_id: mcpResult.job_id,
         case_id: requestData.case_id,
         user_id: user?.id || 'anonymous',
         status: 'submitted',
         submitted_at: Date.now(),
-        estimated_completion: mcpResult.estimated_completion
+        estimated_completion: mcpResult.estimated_completion,
       })
     );
 
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   }
 };
 
-// GET /api/legal - Get job status or results
+// GET /api/legal - Get job status or results;
 export const GET: RequestHandler = async ({ url }) => {
   const jobId = url.searchParams.get('job_id');
   const caseId = url.searchParams.get('case_id');
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Check if result is available
     const result = await redis.getBuffer(`legal:result:${jobId}`);
     if (result) {
-      // Parse protobuf result (simplified - would use actual protobuf parser)
+      // Parse protobuf result (simplified - would use actual protobuf parser);
       return json({
         job_id: jobId,
         status: 'completed',
@@ -156,16 +156,16 @@ export const GET: RequestHandler = async ({ url }) => {
           // This would be parsed from protobuf
           response: 'Legal analysis completed',
           confidence: 0.9,
-          processing_time: Date.now() - jobData.submitted_at
+          processing_time: Date.now() - jobData.submitted_at,
         },
-        completed_at: Date.now()
+        completed_at: Date.now(),
       });
     } else {
       return json({
         job_id: jobId,
         status: 'processing',
         submitted_at: jobData.submitted_at,
-        estimated_completion: jobData.estimated_completion
+        estimated_completion: jobData.estimated_completion,
       });
     }
   } else if (caseId) {

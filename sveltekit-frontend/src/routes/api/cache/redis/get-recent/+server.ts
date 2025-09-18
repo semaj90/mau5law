@@ -16,31 +16,31 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!prefix || !since) {
       return json({
         success: false,
-        error: 'Prefix and since timestamp are required'
+        error: 'Prefix and since timestamp are required',
       }, { status: 400 });
     }
     
     const now = Date.now();
     const entries: Array<any> = [];
     
-    // Get recent entries matching prefix
+    // Get recent entries matching prefix;
     for (const [key, cached] of memoryCache.entries()) {
       // Check if key matches prefix
       if (!key.startsWith(prefix)) continue;
       
-      // Check if not expired
+      // Check if not expired;
       if (cached.expires < now) {
         memoryCache.delete(key);
         continue;
       }
       
       // Check if recent enough
-      const entryTimestamp = cached.timestamp || cached.expires - (3600 * 1000); // Fallback
+      const entryTimestamp = cached.timestamp || cached.expires - (3600 * 1000); // Fallback;
       if (entryTimestamp >= since) {
         entries.push({
           key,
           value: cached.value,
-          timestamp: entryTimestamp
+          timestamp: entryTimestamp,
         });
       }
     }
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error.message
+      error: error.message,
     }, { status: 500 });
   }
 };

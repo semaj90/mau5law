@@ -20,5 +20,5 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     metadata: { documentId }
   });
 
-  return new Response(JSON.stringify({ response: response.text }));
+  return new Response(JSON.stringify({ response: response.text });
 };

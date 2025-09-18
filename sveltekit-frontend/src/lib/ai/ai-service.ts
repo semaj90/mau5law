@@ -1,5 +1,6 @@
 import { aiAssistant, type AIMessage, type CaseAIContext } from '$lib/stores/ai-assistant';
 import { get } from 'svelte/store';
+}
 
 export interface SendToAIOptions {
   caseId: string;
@@ -19,14 +20,14 @@ export interface AIServiceResponse {
     type: 'annotate' | 'connect' | 'investigate' | 'search' | 'categorize';
     description: string;
     evidenceId?: string;
-    priority: 'low' | 'medium' | 'high';
+    priority: 'low' | 'medium' | 'high';,
   }>;
   confidence?: number;
   reasoning?: string;
   metadata?: {
     model: string;
     tokensUsed: number;
-    processingTime: number;
+    processingTime: number;,
   };
 }
 
@@ -46,7 +47,7 @@ class AIService {
       const currentState = get(aiAssistant);
       const caseContext = currentState.cases[caseId];
 
-      // Build enhanced context for the AI
+      // Build enhanced context for the AI;
       const enhancedPrompt = this.buildEnhancedPrompt({
         prompt,
         caseContext,
@@ -55,14 +56,14 @@ class AIService {
         includeHistory
       });
 
-      // Add user message to store immediately
+      // Add user message to store immediately;
       aiAssistant.addMessage(caseId, {
         role: 'user',
         content: prompt,
-        evidenceIds: evidenceIds.length > 0 ? evidenceIds : undefined
+        evidenceIds: evidenceIds.length > 0 ? evidenceIds : undefined,
       });
 
-      // Make API call to AI service
+      // Make API call to AI service;
       const response = await fetch(this.baseUrl, {
         method: 'POST',
         headers: {
@@ -86,7 +87,7 @@ class AIService {
 
       const result: AIServiceResponse = await response.json();
 
-      // Add AI response to store
+      // Add AI response to store;
       aiAssistant.addMessage(caseId, {
         role: 'assistant',
         content: result.text,
@@ -95,22 +96,22 @@ class AIService {
           confidence: result.confidence,
           source: result.metadata?.model || this.defaultModel,
           reasoning: result.reasoning,
-          suggestions: result.suggestedActions?.map(action => action.description)
+          suggestions: result.suggestedActions?.map(action => action.description),
         }
       });
 
-      // Process AI insights and suggestions
+      // Process AI insights and suggestions;
       if (result.suggestedActions && result.suggestedActions.length > 0) {
         await this.processAISuggestions(caseId, result.suggestedActions);
       }
 
-      // Auto-generate insights based on AI response
+      // Auto-generate insights based on AI response;
       if (result.confidence && result.confidence > 0.8) {
         aiAssistant.addInsight(caseId, {
           type: this.getInsightType(context),
           description: this.extractInsightFromResponse(result.text),
           confidence: result.confidence,
-          evidenceIds: evidenceIds
+          evidenceIds: evidenceIds,
         });
       }
 
@@ -119,7 +120,7 @@ class AIService {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message: 'Unknown AI service error';
 
-      // Add error message to store
+      // Add error message to store;
       aiAssistant.addMessage(caseId, {
         role: 'system',
         content: `Error: ${errorMessage}`
@@ -138,7 +139,7 @@ class AIService {
     caseContext?: CaseAIContext;
     evidenceIds: string[];
     context: string;
-    includeHistory: boolean;
+    includeHistory: boolean;,
   }): string {
     const { prompt, caseContext, evidenceIds, context, includeHistory } = options;
 
@@ -147,7 +148,7 @@ class AIService {
     // Add system context based on the interaction type
     enhancedPrompt += this.getSystemPrompt(context);
 
-    // Add case context if available
+    // Add case context if available;
     if (caseContext) {
       enhancedPrompt += `\n\nCase Context:\n`;
       enhancedPrompt += `- Case ID: ${caseContext.caseId}\n`;
@@ -155,7 +156,7 @@ class AIService {
         enhancedPrompt += `- Case Title: ${caseContext.title}\n`;
       }
 
-      // Add evidence context
+      // Add evidence context;
       if (evidenceIds.length > 0) {
         enhancedPrompt += `\nRelevant Evidence:\n`;
         evidenceIds.forEach(id => {
@@ -170,7 +171,7 @@ class AIService {
         });
       }
 
-      // Add recent conversation history if requested
+      // Add recent conversation history if requested;
       if (includeHistory && caseContext.messages.length > 0) {
         const recentMessages = caseContext.messages.slice(-5); // Last 5 messages
         enhancedPrompt += `\nRecent Conversation:\n`;
@@ -202,7 +203,7 @@ class AIService {
         return `${basePrompt} Focus on suggesting investigative directions and additional evidence to collect.`;
 
       default:
-        return basePrompt;
+        return basePrompt;,
     }
   }
 
@@ -210,7 +211,7 @@ class AIService {
     if (!suggestions) return;
 
     for (const suggestion of suggestions) {
-      // Auto-execute certain types of suggestions
+      // Auto-execute certain types of suggestions;
       switch (suggestion.type) {
         case 'categorize':
           // Auto-categorize evidence if confidence is high
@@ -234,7 +235,7 @@ class AIService {
       case 'analysis':
         return 'pattern';
       default:
-        return 'recommendation';
+        return 'recommendation';,
     }
   }
 
@@ -263,7 +264,7 @@ class AIService {
       prompt,
       evidenceIds: [evidenceId],
       context: 'analysis',
-      includeHistory: false
+      includeHistory: false,
     });
   }
 
@@ -275,7 +276,7 @@ class AIService {
       prompt,
       evidenceIds,
       context: 'connection',
-      includeHistory: true
+      includeHistory: true,
     });
   }
 
@@ -288,7 +289,7 @@ class AIService {
       caseId,
       prompt,
       context: 'investigation',
-      includeHistory: true
+      includeHistory: true,
     });
   }
 
@@ -300,12 +301,12 @@ class AIService {
       prompt,
       evidenceIds: [evidenceId],
       context: 'annotation',
-      includeHistory: false
+      includeHistory: false,
     });
   }
 
-  // Streaming support for real-time responses
-  async sendToAIStream(options: SendToAIOptions): Promise<ReadableStream<string>> {
+  // Streaming support for real-time responses;
+  async sendToAIStream(options: SendToAIOptions): Promise<ReadableStream<string> {
     // Implementation for streaming responses
     // This would connect to your streaming endpoint
     throw new Error('Streaming not yet implemented');
@@ -314,13 +315,13 @@ class AIService {
 
 export const aiService = new AIService();
 
-// Convenience functions for common operations
+// Convenience functions for common operations;
 export async function sendToAI(caseId: string, prompt: string, evidenceIds?: string[]): Promise<AIServiceResponse> {
   return aiService.sendToAI({
     caseId,
     prompt,
     evidenceIds,
-    context: 'general'
+    context: 'general',
   });
 }
 

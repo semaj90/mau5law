@@ -21,7 +21,7 @@ export class LegalStrategyEngine {
     const riskLevels = ['low','medium','high','critical'];
     const primary = {
       name: strategyType,
-      rationale: 'Derived from evidence thematic clustering and case context'
+      rationale: 'Derived from evidence thematic clustering and case context',
     };
 
     const alternativeApproaches = generateAlternatives ? [

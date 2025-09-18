@@ -1,5 +1,4 @@
 export class PhysicsAwareGPUOrchestrator {
-  ;
   private tasksProcessed = 0;
   async computeTask(task: any, gpuConfig: any) {
     this.tasksProcessed++;
@@ -22,7 +21,7 @@ export class PhysicsAwareGPUOrchestrator {
       submitted: true,
       workloadId: 'gpu_' + Date.now(),
       estimatedCompletionTime: 250,
-      queuePosition: 1
+      queuePosition: 1,
     };
   }
 
@@ -33,7 +32,7 @@ export class PhysicsAwareGPUOrchestrator {
       temperature: 68,
       powerDraw: 185,
       computeUnits: 2560,
-      clockSpeed: 1665
+      clockSpeed: 1665,
     };
   }
 
@@ -43,7 +42,7 @@ export class PhysicsAwareGPUOrchestrator {
       processed: true,
       particles: 10000,
       interactions: 5000,
-      frameTime: 16.7
+      frameTime: 16.7,
     };
   }
 

@@ -28,7 +28,7 @@ export * from './ingest/extractors.js';
 export * from './ingest/embed.js';
 export * from './ingest/worker-pool.js';
 
-// Utility types
+// Utility types;
 export interface ProcessingJob {
   id: string;
   userId: string;
@@ -54,6 +54,6 @@ export interface MultimodalEmbedding {
     extractedText?: string;
     frameCount?: number;
     audioLength?: number;
-    processingTime: number;
+    processingTime: number;,
   };
 }

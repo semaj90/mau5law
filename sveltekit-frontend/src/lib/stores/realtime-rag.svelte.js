@@ -60,8 +60,8 @@ const ragQueryMachine = createMachine({
 function createRealtimeRAGStore() {
   // State using runes
   const documents = $state([]);
-  const activeConnections = $state(new Set());
-  const processingJobs = $state(new Map());
+  const activeConnections = $state(new Set();
+  const processingJobs = $state(new Map();
   const ragHistory = $state([]);
 
   // WebSocket connection
@@ -204,7 +204,7 @@ function createRealtimeRAGStore() {
   async function uploadDocument(file, metadata = {}) {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("metadata", JSON.stringify(metadata));
+    formData.append("metadata", JSON.stringify(metadata);
 
     try {
       const response = await fetch("/api/documents/upload", {
@@ -242,7 +242,7 @@ function createRealtimeRAGStore() {
       const matchesSearch =
         !searchTerm ||
         doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doc.content.toLowerCase().includes(searchTerm.toLowerCase());
+        doc.content.toLowerCase().includes(searchTerm.toLowerCase();
 
       const matchesType =
         !filters.documentType || doc.document_type === filters.documentType;
@@ -274,7 +274,7 @@ function createRealtimeRAGStore() {
       return ragHistory;
     },
     get processingJobs() {
-      return Array.from(processingJobs.values());
+      return Array.from(processingJobs.values();
     },
     get connectionStatus() {
       return connectionStatus;

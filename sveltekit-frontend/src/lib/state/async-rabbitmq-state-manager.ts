@@ -14,6 +14,7 @@ import {
 } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js';
 import { autoAttachQueueManager } from '$lib/services/auto-attach-queue-manager.js';
 import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service.js';
+}
 
 export interface AsyncStateContext {
   jobStates: Map<string, JobState>;
@@ -38,7 +39,7 @@ export interface JobState {
   dependents: string[];
   timeline: JobTimelineEntry[];
   stateVersion: number;
-  lastUpdated: number;
+  lastUpdated: number;,
 }
 
 export type JobStatus =
@@ -51,7 +52,8 @@ export type JobStatus =
   | 'cancelled'
   | 'retrying'
   | 'zombie' // Stale state
-  | 'conflicted'; // State conflict detected
+  | 'conflicted'; // State conflict detected;
+}
 
 export interface JobMetadata {
   submittedAt: number;
@@ -72,7 +74,7 @@ export interface JobTimelineEntry {
   timestamp: number;
   event: JobTimelineEvent;
   data?: any;
-  source: 'client' | 'worker' | 'orchestrator' | 'queue';
+  source: 'client' | 'worker' | 'orchestrator' | 'queue';,
 }
 
 export type JobTimelineEvent =
@@ -89,6 +91,7 @@ export type JobTimelineEvent =
   | 'retry_scheduled'
   | 'state_conflict'
   | 'state_resolved';
+}
 
 export interface ResourceUsage {
   cpu: number;
@@ -96,13 +99,13 @@ export interface ResourceUsage {
   gpu?: number;
   network: number;
   storage: number;
-  peakUsage: ResourcePeak;
+  peakUsage: ResourcePeak;,
 }
 
 export interface ResourcePeak {
   cpu: number;
   memory: number;
-  timestamp: number;
+  timestamp: number;,
 }
 
 export interface QueueState {
@@ -113,7 +116,7 @@ export interface QueueState {
   throughput: ThroughputMetrics;
   health: QueueHealth;
   configuration: QueueConfiguration;
-  lastUpdated: number;
+  lastUpdated: number;,
 }
 
 export interface ThroughputMetrics {
@@ -121,14 +124,14 @@ export interface ThroughputMetrics {
   avgProcessingTime: number;
   peakThroughput: number;
   lowThroughput: number;
-  trend: 'increasing' | 'decreasing' | 'stable' | 'volatile';
+  trend: 'increasing' | 'decreasing' | 'stable' | 'volatile';,
 }
 
 export interface QueueHealth {
   status: 'healthy' | 'warning' | 'critical' | 'unknown';
   score: number; // 0-1
   issues: QueueIssue[];
-  lastHealthCheck: number;
+  lastHealthCheck: number;,
 }
 
 export interface QueueIssue {
@@ -141,7 +144,7 @@ export interface QueueIssue {
   severity: 'low' | 'medium' | 'high' | 'critical';
   description: string;
   suggestedAction: string;
-  autoResolvable: boolean;
+  autoResolvable: boolean;,
 }
 
 export interface QueueConfiguration {
@@ -162,7 +165,7 @@ export interface GlobalSystemState {
   performance: SystemPerformance;
   alerts: SystemAlert[];
   maintenanceMode: boolean;
-  lastSyncAt: number;
+  lastSyncAt: number;,
 }
 
 export interface SystemHealth {
@@ -177,7 +180,7 @@ export interface ComponentHealth {
   status: 'up' | 'down' | 'degraded';
   latency: number;
   errorRate: number;
-  lastCheck: number;
+  lastCheck: number;,
 }
 
 export interface IncidentInfo {
@@ -187,7 +190,7 @@ export interface IncidentInfo {
   startedAt: number;
   resolvedAt?: number;
   description: string;
-  affectedComponents: string[];
+  affectedComponents: string[];,
 }
 
 export interface SystemPerformance {
@@ -195,7 +198,7 @@ export interface SystemPerformance {
   avgResponseTime: number;
   errorRate: number;
   resourceUtilization: SystemResourceUtilization;
-  bottlenecks: Bottleneck[];
+  bottlenecks: Bottleneck[];,
 }
 
 export interface SystemResourceUtilization {
@@ -203,7 +206,7 @@ export interface SystemResourceUtilization {
   memory: number;
   gpu?: number;
   network: number;
-  storage: number;
+  storage: number;,
 }
 
 export interface Bottleneck {
@@ -211,7 +214,7 @@ export interface Bottleneck {
   type: 'cpu' | 'memory' | 'gpu' | 'network' | 'storage' | 'queue';
   severity: number; // 0-1
   impact: string;
-  suggestedFix: string;
+  suggestedFix: string;,
 }
 
 export interface SystemAlert {
@@ -222,7 +225,7 @@ export interface SystemAlert {
   component: string;
   timestamp: number;
   acknowledged: boolean;
-  autoResolved: boolean;
+  autoResolved: boolean;,
 }
 
 export interface SyncStatus {
@@ -232,7 +235,7 @@ export interface SyncStatus {
   conflictCount: number;
   retryCount: number;
   backoffDelay: number;
-  syncHealth: 'healthy' | 'degraded' | 'failed';
+  syncHealth: 'healthy' | 'degraded' | 'failed';,
 }
 
 export interface StateHistoryEntry {
@@ -243,7 +246,7 @@ export interface StateHistoryEntry {
   previousState: any;
   newState: any;
   source: string;
-  stateVersion: number;
+  stateVersion: number;,
 }
 
 export interface StateSubscription {
@@ -257,14 +260,14 @@ export interface StateSubscription {
 export interface StateFilter {
   field: string;
   operator: 'eq' | 'ne' | 'gt' | 'lt' | 'contains' | 'regex';
-  value: any;
+  value: any;,
 }
 
 export interface QualityOfService {
   deliveryGuarantee: 'at_most_once' | 'at_least_once' | 'exactly_once';
   ordering: 'none' | 'partition' | 'global';
   durability: boolean;
-  priority: number;
+  priority: number;,
 }
 
 export interface StateEvent {
@@ -274,13 +277,13 @@ export interface StateEvent {
   data: any;
   timestamp: number;
   source: string;
-  stateVersion: number;
+  stateVersion: number;,
 }
 
 export interface ConflictResolution {
   strategy: 'last_write_wins' | 'merge' | 'manual' | 'vector_clock';
   pendingConflicts: StateConflict[];
-  resolvedConflicts: ResolvedConflict[];
+  resolvedConflicts: ResolvedConflict[];,
 }
 
 export interface StateConflict {
@@ -290,7 +293,7 @@ export interface StateConflict {
   conflictingStates: ConflictingState[];
   detectedAt: number;
   severity: 'low' | 'medium' | 'high';
-  autoResolvable: boolean;
+  autoResolvable: boolean;,
 }
 
 export interface ConflictingState {
@@ -310,7 +313,7 @@ export interface ResolvedConflict {
   resolutionStrategy: string;
   resolvedAt: number;
   winningState: any;
-  conflictDuration: number;
+  conflictDuration: number;,
 }
 
 export interface DistributedLock {
@@ -320,7 +323,7 @@ export interface DistributedLock {
   acquiredAt: number;
   expiresAt: number;
   renewable: boolean;
-  lockType: 'read' | 'write' | 'exclusive';
+  lockType: 'read' | 'write' | 'exclusive';,
 }
 
 // Events for the state manager
@@ -339,7 +342,7 @@ export type AsyncStateEvent =
   | { type: 'CONNECTION_RESTORED' };
 
 // XState Machine for Async State Management
-const asyncStateMachine = createMachine(
+const asyncStateMachine = createMachine();
   {
     id: 'asyncRabbitMQStateManager',
     initial: 'initializing',
@@ -411,7 +414,7 @@ const asyncStateMachine = createMachine(
 
       connected: {
         entry: 'startStateSyncLoop',
-        invoke: [
+        invoke: [;
           {
             id: 'stateSyncMonitor',
             src: 'monitorStateSync',
@@ -510,7 +513,7 @@ const asyncStateMachine = createMachine(
           const updated = new Map(context.jobStates);
           const existing = updated.get(event.jobId);
 
-          const newState: JobState = existing
+          const newState: JobState = existing;
             ? {
                 ...existing,
                 ...event.state,
@@ -549,7 +552,7 @@ const asyncStateMachine = createMachine(
           const updated = new Map(context.queueStates);
           const existing = updated.get(event.queueName);
 
-          const newState: QueueState = existing
+          const newState: QueueState = existing;
             ? {
                 ...existing,
                 ...event.state,
@@ -600,7 +603,7 @@ const asyncStateMachine = createMachine(
 
       broadcastStateChange: (context, event) => {
         if (!event || !event.type) return;
-        // Broadcast state changes to subscribers
+        // Broadcast state changes to subscribers;
         for (const [id, subscription] of context.subscriptions) {
           const stateEvent: StateEvent = {
             type: event.type,
@@ -785,8 +788,8 @@ export class AsyncRabbitMQStateManager {
     this.stateService = interpret(asyncStateMachine);
 
     // Create reactive Svelte stores
-    const jobStatesStore = writable(new Map<string, JobState>());
-    const queueStatesStore = writable(new Map<string, QueueState>());
+    const jobStatesStore = writable(new Map<string, JobState>();
+    const queueStatesStore = writable(new Map<string, QueueState>();
     const globalStateStore = writable<GlobalSystemState>({
       totalJobs: 0,
       activeJobs: 0,
@@ -820,7 +823,7 @@ export class AsyncRabbitMQStateManager {
     this.globalState = { subscribe: globalStateStore.subscribe };
     this.syncStatus = { subscribe: syncStatusStore.subscribe };
 
-    // Update stores when state machine changes
+    // Update stores when state machine changes;
     this.stateService.onTransition((state: any) => {
       jobStatesStore.set(state.context.jobStates);
       queueStatesStore.set(state.context.queueStates);
@@ -843,7 +846,7 @@ export class AsyncRabbitMQStateManager {
   }
 
   private async integrateWithServices(): Promise<void> {
-    // Subscribe to orchestrator events
+    // Subscribe to orchestrator events;
     const orchestratorSubscription: StateSubscription = {
       id: 'orchestrator-integration',
       pattern: 'job:*',
@@ -852,7 +855,7 @@ export class AsyncRabbitMQStateManager {
 
     this.subscribe(orchestratorSubscription);
 
-    // Subscribe to auto-attach manager events
+    // Subscribe to auto-attach manager events;
     const autoAttachSubscription: StateSubscription = {
       id: 'auto-attach-integration',
       pattern: 'queue:*',
@@ -867,7 +870,7 @@ export class AsyncRabbitMQStateManager {
   private handleOrchestratorEvent(event: StateEvent): void {
     this.log(`📤 Handling orchestrator event: ${event.type}`, 'info');
 
-    // Forward orchestrator events to state machine
+    // Forward orchestrator events to state machine;
     if (event.jobId && event.type.includes('job')) {
       this.updateJobState(event.jobId, event.data);
     }
@@ -876,7 +879,7 @@ export class AsyncRabbitMQStateManager {
   private handleAutoAttachEvent(event: StateEvent): void {
     this.log(`🔗 Handling auto-attach event: ${event.type}`, 'info');
 
-    // Forward auto-attach events to state machine
+    // Forward auto-attach events to state machine;
     if (event.queueName && event.type.includes('queue')) {
       this.updateQueueState(event.queueName, event.data);
     }
@@ -951,7 +954,7 @@ export class AsyncRabbitMQStateManager {
     return state.context.stateHistory.slice(0, limit);
   }
 
-  // Create derived stores for specific use cases
+  // Create derived stores for specific use cases;
   createJobStatusStore(jobId: string): Readable<JobStatus | undefined> {
     return derived(this.jobStates, ($jobStates) => {
       return $jobStates.get(jobId)?.status;

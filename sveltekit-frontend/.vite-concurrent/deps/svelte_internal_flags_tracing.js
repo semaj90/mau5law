@@ -1,7 +1,5 @@
-import {
-  enable_tracing_mode_flag
-} from "./chunk-6SIJFJGE.js";
-import "./chunk-KWPVD4H7.js";
+import { enable_tracing_mode_flag } from './chunk-6SIJFJGE.js';
+import './chunk-KWPVD4H7.js';
 
 // node_modules/svelte/src/internal/flags/tracing.js
 enable_tracing_mode_flag();

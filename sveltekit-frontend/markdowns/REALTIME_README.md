@@ -1,6 +1,8 @@
 # Real-time Evidence Management System
 
-A robust real-time update system for the SvelteKit legal case management app using Redis pub/sub, WebSocket, and Server-Sent Events (SSE) with local memory, undo functionality, and SSR hydration safety.
+A robust real-time update system for the SvelteKit legal case management app using Redis pub/sub,
+WebSocket, and Server-Sent Events (SSE) with local memory, undo functionality, and SSR hydration
+safety.
 
 ## 🚀 Features
 
@@ -129,7 +131,7 @@ The WebSocket server (`websocket-server.js`) can be configured via environment v
 
 ```javascript
 const PORT = process.env.WEBSOCKET_PORT || 3030;
-const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
+const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
 ```
 
 ### Redis Channels
@@ -149,8 +151,8 @@ The system uses these Redis channels for pub/sub:
 Local database settings in `loki-evidence.ts`:
 
 ```typescript
-const db = new Loki("evidence_db.json", {
-  adapter: new LokiIndexedAdapter("evidence_db"),
+const db = new Loki('evidence_db.json', {
+  adapter: new LokiIndexedAdapter('evidence_db'),
   autoload: true,
   autosave: true,
   autosaveInterval: 4000, // 4 seconds
@@ -259,34 +261,29 @@ data: {"type": "heartbeat", "timestamp": "..."}
   let selectedTypes = ['document', 'image'];
 </script>
 
-<RealTimeEvidenceGrid
-  {caseId}
-  {searchQuery}
-  {selectedTypes}
-  showAdvancedFilters={true}
-/>
+<RealTimeEvidenceGrid {caseId} {searchQuery} {selectedTypes} showAdvancedFilters={true} />
 ```
 
 ### Evidence Store Integration
 
 ```typescript
-import { evidenceStore } from "$lib/stores/evidenceStore";
+import { evidenceStore } from '$lib/stores/evidenceStore';
 
 // Create evidence (optimistic update + real-time sync)
 await evidenceStore.createEvidence({
-  title: "New Evidence",
-  description: "Evidence description",
-  type: "document",
-  caseId: "case-001",
+  title: 'New Evidence',
+  description: 'Evidence description',
+  type: 'document',
+  caseId: 'case-001',
 });
 
 // Update evidence
-await evidenceStore.updateEvidence("evidence-id", {
-  title: "Updated Title",
+await evidenceStore.updateEvidence('evidence-id', {
+  title: 'Updated Title',
 });
 
 // Delete evidence
-await evidenceStore.deleteEvidence("evidence-id");
+await evidenceStore.deleteEvidence('evidence-id');
 
 // Undo/Redo
 evidenceStore.undo(); // Undo last operation
@@ -300,12 +297,12 @@ const canRedo = evidenceStore.canRedo();
 ### Local Storage with Loki.js
 
 ```typescript
-import { lokiEvidenceService } from "$lib/utils/loki-evidence";
+import { lokiEvidenceService } from '$lib/utils/loki-evidence';
 
 // Query local data
 const allEvidence = lokiEvidenceService.getAllEvidence();
-const caseEvidence = lokiEvidenceService.getEvidenceByCase("case-001");
-const searchResults = lokiEvidenceService.searchEvidence("keyword");
+const caseEvidence = lokiEvidenceService.getEvidenceByCase('case-001');
+const searchResults = lokiEvidenceService.searchEvidence('keyword');
 
 // Get analytics
 const stats = lokiEvidenceService.getEvidenceStats();
@@ -477,7 +474,8 @@ Monitor these metrics:
 
 ## 📄 License
 
-This real-time evidence management system is part of the larger legal case management application. See the main project license for details.
+This real-time evidence management system is part of the larger legal case management application.
+See the main project license for details.
 
 ---
 

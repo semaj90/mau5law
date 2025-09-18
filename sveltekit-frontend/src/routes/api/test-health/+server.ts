@@ -1,17 +1,17 @@
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
-// Simple health check endpoint without database dependencies
+// Simple health check endpoint without database dependencies;
 export const GET: RequestHandler = async () => {
   try {
-    // Test basic functionality without touching the database
+    // Test basic functionality without touching the database;
     return json({
       success: true,
       timestamp: new Date().toISOString(),
       status: 'healthy',
       services: {
         frontend: true,
-        api: true
+        api: true,
       }
     });
   } catch (error) {
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async () => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };

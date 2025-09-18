@@ -7,13 +7,14 @@
  */
 
 import { simdGPUTilingEngine } from '$lib/evidence/simd-gpu-tiling-engine.js';
+}
 
 export interface WebGPUTensorConfig {
 	deviceType: 'discrete' | 'integrated' | 'auto';
 	powerPreference: 'high-performance' | 'low-power';
 	enableDebug: boolean;
 	maxBufferSize: number;
-	shaderCacheEnabled: boolean;
+	shaderCacheEnabled: boolean;,
 }
 
 export interface TensorOperation {
@@ -72,7 +73,7 @@ export class WebGPUTensorAccelerator {
         throw new Error('WebGPU not supported in this browser');
       }
 
-      // Request GPU adapter
+      // Request GPU adapter;
       this.adapter = await navigator.gpu.requestAdapter({
         powerPreference: this.config.powerPreference,
         forceFallbackAdapter: false,
@@ -93,7 +94,7 @@ export class WebGPUTensorAccelerator {
       const requiredFeatures: GPUFeatureName[] = [];
       const availableFeatures = Array.from(this.adapter.features);
 
-      // Enable useful features if available
+      // Enable useful features if available;
       if (availableFeatures.includes('timestamp-query' as GPUFeatureName)) {
         requiredFeatures.push('timestamp-query' as GPUFeatureName);
       }
@@ -109,7 +110,7 @@ export class WebGPUTensorAccelerator {
 
       this.queue = this.device.queue;
 
-      // Set up error handling
+      // Set up error handling;
       this.device.addEventListener('uncapturederror', (event: any) => {
         this.metrics.errorCount++;
         this.metrics.lastError = event.error.message;
@@ -144,7 +145,7 @@ export class WebGPUTensorAccelerator {
 				@group(0) @binding(2) var<storage, read_write> result: array<f32>;
 				@group(0) @binding(3) var<uniform> params: vec4<f32>; // [size, 0, 0, 0]
 
-				@compute @workgroup_size(256)
+				@compute @workgroup_size(256);
 				fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 					let index = global_id.x;
 					let size = u32(params.x);
@@ -178,7 +179,7 @@ export class WebGPUTensorAccelerator {
 					let local_index = local_id.x;
 					let size = u32(params.x);
 
-					// Load data into shared memory
+					// Load data into shared memory;
 					if (index < size) {
 						temp[local_index] = dotProducts[index];
 					} else {
@@ -197,7 +198,7 @@ export class WebGPUTensorAccelerator {
 						stride = stride / 2u;
 					}
 
-					// Write result
+					// Write result;
 					if (local_index == 0u) {
 						let dot_sum = temp[0];
 						let norm_a = normA[0];
@@ -214,7 +215,7 @@ export class WebGPUTensorAccelerator {
 				@group(0) @binding(2) var<storage, read_write> output: array<f32>;
 				@group(0) @binding(3) var<uniform> params: vec4<f32>; // [input_size, embedding_dim, vocab_size, 0]
 
-				@compute @workgroup_size(256)
+				@compute @workgroup_size(256);
 				fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
 					let output_index = global_id.x;
 					let input_size = u32(params.x);
@@ -267,14 +268,14 @@ export class WebGPUTensorAccelerator {
 						let tileCol = tile * 16u + localCol;
 						let tileRow = tile * 16u + localRow;
 
-						// Load tile A
+						// Load tile A;
 						if (row < M && tileCol < K) {
 							tileA[localRow][localCol] = matrixA[row * K + tileCol];
 						} else {
 							tileA[localRow][localCol] = 0.0;
 						}
 
-						// Load tile B
+						// Load tile B;
 						if (tileRow < K && col < N) {
 							tileB[localRow][localCol] = matrixB[tileRow * N + col];
 						} else {
@@ -283,7 +284,7 @@ export class WebGPUTensorAccelerator {
 
 						workgroupBarrier();
 
-						// Compute partial sum
+						// Compute partial sum;
 						for (var k = 0u; k < 16u; k++) {
 							sum += tileA[localRow][k] * tileB[k][localCol];
 						}
@@ -291,7 +292,7 @@ export class WebGPUTensorAccelerator {
 						workgroupBarrier();
 					}
 
-					// Write result
+					// Write result;
 					if (row < M && col < N) {
 						result[row * N + col] = sum;
 					}
@@ -334,7 +335,7 @@ export class WebGPUTensorAccelerator {
       });
 
       // Upload parameters
-      this.queue!.writeBuffer(paramsBuffer, 0, new Float32Array([size, 0, 0, 0]));
+      this.queue!.writeBuffer(paramsBuffer, 0, new Float32Array([size, 0, 0, 0]);
 
       // Create bind group
       const shader = this.shaderCache.get('vectorSimilarity')!;
@@ -361,10 +362,10 @@ export class WebGPUTensorAccelerator {
       const computePass = commandEncoder.beginComputePass();
       computePass.setPipeline(computePipeline);
       computePass.setBindGroup(0, bindGroup);
-      computePass.dispatchWorkgroups(Math.ceil(size / 256));
+      computePass.dispatchWorkgroups(Math.ceil(size / 256);
       computePass.end();
 
-      // Copy result to staging buffer
+      // Copy result to staging buffer;
       const stagingBuffer = this.device.createBuffer({
         size: size * 4,
         usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
@@ -375,7 +376,7 @@ export class WebGPUTensorAccelerator {
 
       // Read result
       await stagingBuffer.mapAsync(GPUMapMode.READ);
-      const resultArray = new Float32Array(stagingBuffer.getMappedRange());
+      const resultArray = new Float32Array(stagingBuffer.getMappedRange();
 
       // Calculate cosine similarity
       let dotProduct = 0;
@@ -388,7 +389,7 @@ export class WebGPUTensorAccelerator {
         normB += vectorB[i] * vectorB[i];
       }
 
-      const cosineSimilarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+      const cosineSimilarity = dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
 
       // Cleanup
       stagingBuffer.unmap();
@@ -452,7 +453,7 @@ export class WebGPUTensorAccelerator {
             evidenceId,
             combinedData,
             Math.ceil(Math.sqrt(combinedData.length)), // Simulate width
-            Math.ceil(Math.sqrt(combinedData.length)), // Simulate height
+            Math.ceil(Math.sqrt(combinedData.length)), // Simulate height;
             {
               tileSize,
               evidenceType: useEvidenceAnalysis ? 'mixed' : 'text',
@@ -464,7 +465,7 @@ export class WebGPUTensorAccelerator {
 
           simdTime = performance.now() - simdStart;
 
-          // Extract tiling metadata for similarity enhancement
+          // Extract tiling metadata for similarity enhancement;
           tilingMeta = {
             tilesGenerated: tilingResults.chunks.length,
             avgConfidence:
@@ -552,7 +553,7 @@ export class WebGPUTensorAccelerator {
       .toLowerCase()
       .split(/\W+/)
       .filter((w: string) => w.length > 0);
-    const tokens = words.map((word) => this.getTokenId(word));
+    const tokens = words.map((word) => this.getTokenId(word);
     return new Uint32Array(tokens);
   }
 
@@ -611,7 +612,7 @@ export class WebGPUTensorAccelerator {
       entries: [
         { binding: 0, resource: { buffer: tokensBuffer } },
         { binding: 1, resource: { buffer: weightsBuffer } },
-        { binding: 2, resource: { buffer: outputBuffer } },
+        { binding: 2, resource: { buffer: outputBuffer } },>
         { binding: 3, resource: { buffer: paramsBuffer } },
       ],
     });
@@ -620,10 +621,10 @@ export class WebGPUTensorAccelerator {
     const computePass = commandEncoder.beginComputePass();
     computePass.setPipeline(computePipeline);
     computePass.setBindGroup(0, bindGroup);
-    computePass.dispatchWorkgroups(Math.ceil((tokens.length * embeddingDim) / 256));
+    computePass.dispatchWorkgroups(Math.ceil((tokens.length * embeddingDim) / 256);
     computePass.end();
 
-    // Copy and read result
+    // Copy and read result;
     const stagingBuffer = this.device.createBuffer({
       size: tokens.length * embeddingDim * 4,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
@@ -639,7 +640,7 @@ export class WebGPUTensorAccelerator {
     this.queue!.submit([commandEncoder.finish()]);
 
     await stagingBuffer.mapAsync(GPUMapMode.READ);
-    const result = new Float32Array(stagingBuffer.getMappedRange());
+    const result = new Float32Array(stagingBuffer.getMappedRange();
 
     // Average token embeddings
     const finalEmbedding = new Float32Array(embeddingDim);
@@ -709,7 +710,7 @@ export class WebGPUTensorAccelerator {
       this.device = null;
     }
 
-    this.bufferPool.forEach((buffer) => buffer.destroy());
+    this.bufferPool.forEach((buffer) => buffer.destroy();
     this.bufferPool = [];
     this.shaderCache.clear();
     this.isInitialized = false;
@@ -760,14 +761,14 @@ export async function acceleratedSimilarity(a: Float32Array, b: Float32Array): P
     }
 
     if (normA === 0 || normB === 0) return 0;
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
   }
 
   // Use WebGPU acceleration - simplified fallback for now
   // TODO: Implement proper WebGPU vector similarity computation
   const dotProduct = a.reduce((sum, val, i) => sum + val * (b[i] || 0), 0);
-  const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
-  const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+  const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0);
+  const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0);
 
   if (normA === 0 || normB === 0) return 0;
   return dotProduct / (normA * normB);

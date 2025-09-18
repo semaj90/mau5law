@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 
 import { writable } from "svelte/store";
+}
 
 export interface Citation {
   id: string;
@@ -14,17 +15,17 @@ export interface Citation {
   url?: string;
   pageNumber?: number;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
 
 export interface CitationStore {
   citations: Citation[];
   recentCitations: Citation[];
   searchQuery: string;
-  selectedCategories: string[];
+  selectedCategories: string[];,
 }
 
-// Create the store
+// Create the store;
 function createCitationStore() {
   const { subscribe, set, update } = writable<CitationStore>({
     citations: [],
@@ -53,12 +54,12 @@ function createCitationStore() {
         ...store,
         citations: [...store.citations, newCitation],
         recentCitations: [newCitation, ...store.recentCitations.slice(0, 9)], // Keep last 10
-      }));
+      });
 
       return newCitation;
     },
 
-    // Update an existing citation
+    // Update an existing citation;
     updateCitation: (id: string, updates: Partial<Citation>) => {
       update((store) => ({
         ...store,
@@ -67,10 +68,10 @@ function createCitationStore() {
             ? { ...citation, ...updates, updatedAt: new Date() }
             : citation,
         ),
-      }));
+      });
     },
 
-    // Delete a citation
+    // Delete a citation;
     deleteCitation: (id: string) => {
       update((store) => ({
         ...store,
@@ -78,22 +79,22 @@ function createCitationStore() {
         recentCitations: store.recentCitations.filter(
           (citation) => citation.id !== id,
         ),
-      }));
+      });
     },
 
-    // Search citations
+    // Search citations;
     searchCitations: (query: string) => {
       update((store) => ({
         ...store,
         searchQuery: query,
-      }));
+      });
     },
 
-    // Get filtered citations
+    // Get filtered citations;
     getFilteredCitations: (store: CitationStore) => {
       let filtered = store.citations;
 
-      // Filter by search query
+      // Filter by search query;
       if (store.searchQuery) {
         const query = store.searchQuery.toLowerCase();
         filtered = filtered.filter(
@@ -105,7 +106,7 @@ function createCitationStore() {
             citation.tags?.some((tag) => tag.toLowerCase().includes(query)),
         );
       }
-      // Filter by categories
+      // Filter by categories;
       if (store.selectedCategories.length > 0) {
         filtered = filtered.filter((citation) =>
           store.selectedCategories.includes(citation.type),
@@ -114,12 +115,12 @@ function createCitationStore() {
       return filtered;
     },
 
-    // Get recent citations
+    // Get recent citations;
     getRecentCitations: (store: CitationStore, limit = 5) => {
       return store.recentCitations.slice(0, limit);
     },
 
-    // Mark citation as recently used
+    // Mark citation as recently used;
     markAsRecentlyUsed: (id: string) => {
       update((store) => {
         const citation = store.citations.find((c) => c.id === id);
@@ -138,7 +139,7 @@ function createCitationStore() {
       });
     },
 
-    // Load citations from API
+    // Load citations from API;
     loadCitations: async () => {
       try {
         const response = await fetch("/api/citations");
@@ -148,14 +149,14 @@ function createCitationStore() {
             ...store,
             citations: data.citations || [],
             recentCitations: data.recentCitations || [],
-          }));
+          });
         }
       } catch (error: any) {
         console.error("Failed to load citations:", error);
       }
     },
 
-    // Save citation to API
+    // Save citation to API;
     saveCitation: async (citation: Citation) => {
       try {
         const response = await fetch("/api/citations", {
@@ -171,7 +172,7 @@ function createCitationStore() {
             citations: store.citations.map((c) =>
               c.id === citation.id ? savedCitation : c,
             ),
-          }));
+          });
           return savedCitation;
         }
       } catch (error: any) {
@@ -185,7 +186,7 @@ function createCitationStore() {
 export const citationStore = createCitationStore();
 ;
 // Sample citations for development
-const sampleCitations: Citation[] = [
+const sampleCitations: Citation[] = [;
   {
     id: "1",
     title: "Miranda v. Arizona",
@@ -228,13 +229,13 @@ const sampleCitations: Citation[] = [
 // Initialize with sample data in development
 if (
   typeof window !== "undefined" &&
-  !localStorage.getItem("citations-initialized")
+  !localStorage.getItem("citations-initialized");
 ) {
   citationStore.update((store) => ({
     ...store,
     citations: sampleCitations,
     recentCitations: sampleCitations.slice(0, 3),
-  }));
+  });
   localStorage.setItem("citations-initialized", "true");
 }
 

@@ -1,6 +1,6 @@
 // Canonical unified LegalDocument type
 // Consolidates many scattered interface variants across the codebase.
-// Future refactors: replace other duplicate declarations with imports from this file.
+// Future refactors: replace other duplicate declarations with imports from this file.;
 export interface LegalDocumentUnified {
   id: string;
   title: string;
@@ -31,7 +31,7 @@ export function isLegalDocument(value: any): value is LegalDocumentUnified {
 
 export function mergeLegalDocuments<T extends Partial<LegalDocumentUnified>(
   base: LegalDocumentUnified,
-  patch: T
+  patch: T;
 ): LegalDocumentUnified {
   return { ...base, ...patch };
 }

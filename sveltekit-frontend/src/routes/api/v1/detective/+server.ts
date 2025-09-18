@@ -10,7 +10,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { db, sql } from '$lib/server/db';
 import { z } from 'zod';
 
-// Detective analysis schema
+// Detective analysis schema;
 const DetectiveAnalysisSchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
   analysisType: z.enum(['pattern_detection', 'anomaly_detection', 'connection_analysis', 'timeline_gap', 'risk_assessment']),
@@ -18,13 +18,13 @@ const DetectiveAnalysisSchema = z.object({
   options: z.object({
     confidenceThreshold: z.number().min(0).max(1).default(0.7),
     includeHypotheses: z.boolean().default(true),
-    maxInsights: z.number().min(1).max(50).default(10)
+    maxInsights: z.number().min(1).max(50).default(10),
   }).default({})
 });
 
 /**
  * Detective Mode Service
- */
+ */;
 class DetectiveModeService {
   constructor(private userId: string) {}
 
@@ -58,44 +58,44 @@ class DetectiveModeService {
     // For now, return sample insights
     
     const sampleInsights = {
-      pattern_detection: [
+      pattern_detection: [;
         {
           title: "Recurring Location Pattern",
           description: "Multiple evidence pieces reference the same location",
           confidence: 0.85,
-          priority: "high"
+          priority: "high",
         }
       ],
-      anomaly_detection: [
+      anomaly_detection: [;
         {
           title: "Timeline Inconsistency",
           description: "Evidence timestamps don't align with witness statements",
           confidence: 0.78,
-          priority: "high"
+          priority: "high",
         }
       ],
-      connection_analysis: [
+      connection_analysis: [;
         {
           title: "Person of Interest Connection",
           description: "Multiple POIs share common associates",
           confidence: 0.92,
-          priority: "critical"
+          priority: "critical",
         }
       ],
-      timeline_gap: [
+      timeline_gap: [;
         {
           title: "Missing Evidence Window",
           description: "30-day gap in evidence collection",
           confidence: 0.88,
-          priority: "medium"
+          priority: "medium",
         }
       ],
-      risk_assessment: [
+      risk_assessment: [;
         {
           title: "High-Stakes Case Risk",
           description: "Case contains indicators requiring immediate attention",
           confidence: 0.94,
-          priority: "critical"
+          priority: "critical",
         }
       ]
     };
@@ -107,7 +107,7 @@ class DetectiveModeService {
 /**
  * GET /api/v1/detective
  * Get detective insights with filtering
- */
+ */;
 export const GET: RequestHandler = async ({ request, locals, url }) => {
   try {
     if (!locals.session || !locals.user) {
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
     const caseId = url.searchParams.get('caseId');
     
     // Return sample insights for now
-    const insights = [
+    const insights = [;
       {
         id: crypto.randomUUID(),
         caseId,
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
         description: 'Multiple evidence pieces show correlation patterns',
         confidence: 0.87,
         priority: 'high',
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       }
     ];
 
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
       data: insights,
       meta: {
         userId: locals.user.id,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     });
 
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
 /**
  * POST /api/v1/detective
  * Run detective analysis on a case
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.session || !locals.user) {
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       data: result,
       meta: {
         userId: locals.user.id,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     }, { status: 201 });
 

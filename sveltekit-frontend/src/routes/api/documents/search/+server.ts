@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: 'Database temporarily unavailable',
-        healthStatus: dbHealth
+        healthStatus: dbHealth,
       }, { status: 503 });
     }
 
@@ -87,9 +87,9 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
 
-    // Perform search based on type
+    // Perform search based on type;
     switch (searchType) {
-      case 'vector':
+      case 'vector':;
         if (queryEmbedding) {
           results = await vectorSearch(queryEmbedding, limit, threshold, filters);
           searchMethod = 'Vector Similarity';
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
         searchMethod = 'Hybrid (Vector + Keyword)';
         break;
 
-      case 'semantic':
+      case 'semantic':;
         if (queryEmbedding) {
           results = await semanticSearch(query, queryEmbedding, limit, threshold, filters);
           searchMethod = 'Semantic + Context';
@@ -136,11 +136,11 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
     };
 
-    // Cache search results with cognitive cache
+    // Cache search results with cognitive cache;
     await cognitiveCacheManager.set(cacheRequest, finalResult, {
       distributeAcrossCaches: true,
       cognitiveValue: results.length > 0 ? 0.8 : 0.6,
-      ttl: 300 // 5 minutes
+      ttl: 300 // 5 minutes,
     });
     console.log('[Search] Results cached with cognitive cache');
 
@@ -149,12 +149,11 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (err: any) {
     console.error('[Search] Error:', err);
 
-    return json(
-      {
+    return json({
         success: false,
         error: err.message || 'Search failed',
         details: err.stack,
-      },
+      },)
       { status: err.status || 500 }
     );
   }
@@ -165,7 +164,7 @@ async function vectorSearch(
   embedding: number[],
   limit: number,
   threshold: number,
-  filters: any
+  filters: any;
 ): Promise<any[]> {
   try {
     console.log('[Search] Performing pgvector similarity search');
@@ -176,25 +175,25 @@ async function vectorSearch(
     ];
 
     if (filters.documentType) {
-      conditions.push(eq(legal_documents.document_type, filters.documentType));
+      conditions.push(eq(legal_documents.document_type, filters.documentType);
     }
     if (filters.jurisdiction) {
-      conditions.push(eq(legal_documents.jurisdiction, filters.jurisdiction));
+      conditions.push(eq(legal_documents.jurisdiction, filters.jurisdiction);
     }
     if (filters.practiceArea) {
-      conditions.push(eq(legal_documents.practice_area, filters.practiceArea));
+      conditions.push(eq(legal_documents.practice_area, filters.practiceArea);
     }
     if (filters.dateFrom) {
-      conditions.push(gte(legal_documents.created_at, new Date(filters.dateFrom)));
+      conditions.push(gte(legal_documents.created_at, new Date(filters.dateFrom));
     }
     if (filters.dateTo) {
-      conditions.push(lte(legal_documents.created_at, new Date(filters.dateTo)));
+      conditions.push(lte(legal_documents.created_at, new Date(filters.dateTo));
     }
     if (filters.isConfidential !== undefined) {
-      conditions.push(eq(legal_documents.is_confidential, filters.isConfidential));
+      conditions.push(eq(legal_documents.is_confidential, filters.isConfidential);
     }
 
-    const results = await db
+    const results = await db;
       .select({
         id: legal_documents.id,
         title: legal_documents.title,
@@ -231,14 +230,14 @@ async function vectorSearch(
       legalAnalysis: row.analysisResults,
       isConfidential: row.isConfidential,
       searchType: 'vector',
-    }));
+    });
   } catch (err: any) {
     console.error('[Search] Vector search error:', err);
     return [];
   }
 }
 
-// Full-text keyword search
+// Full-text keyword search;
 async function keywordSearch(query: string, limit: number, filters: any): Promise<any[]> {
   try {
     console.log('[Search] Performing PostgreSQL full-text search');
@@ -249,19 +248,19 @@ async function keywordSearch(query: string, limit: number, filters: any): Promis
     ];
 
     if (filters.documentType) {
-      conditions.push(eq(legal_documents.document_type, filters.documentType));
+      conditions.push(eq(legal_documents.document_type, filters.documentType);
     }
     if (filters.jurisdiction) {
-      conditions.push(eq(legal_documents.jurisdiction, filters.jurisdiction));
+      conditions.push(eq(legal_documents.jurisdiction, filters.jurisdiction);
     }
     if (filters.practiceArea) {
-      conditions.push(eq(legal_documents.practice_area, filters.practiceArea));
+      conditions.push(eq(legal_documents.practice_area, filters.practiceArea);
     }
     if (filters.isConfidential !== undefined) {
-      conditions.push(eq(legal_documents.is_confidential, filters.isConfidential));
+      conditions.push(eq(legal_documents.is_confidential, filters.isConfidential);
     }
 
-    const results = await db
+    const results = await db;
       .select({
         id: legal_documents.id,
         title: legal_documents.title,
@@ -276,7 +275,7 @@ async function keywordSearch(query: string, limit: number, filters: any): Promis
         rank: sql<number>`ts_rank(to_tsvector('english', ${legal_documents.content}), plainto_tsquery('english', ${query}))`
       })
       .from(legal_documents)
-      .where(and(...conditions))
+      .where(and(...conditions)
       .orderBy(sql`rank DESC`)
       .limit(limit);
 
@@ -294,7 +293,7 @@ async function keywordSearch(query: string, limit: number, filters: any): Promis
       legalAnalysis: row.analysisResults,
       isConfidential: row.isConfidential,
       searchType: 'keyword',
-    }));
+    });
   } catch (err: any) {
     console.error('[Search] Keyword search error:', err);
     return [];
@@ -307,7 +306,7 @@ async function hybridSearch(
   embedding: number[] | null,
   limit: number,
   threshold: number,
-  filters: any
+  filters: any;
 ): Promise<any[]> {
   console.log('[Search] Performing hybrid search');
 
@@ -320,7 +319,7 @@ async function hybridSearch(
   // Combine and deduplicate results
   const combinedResults = new Map();
 
-  // Add vector results with higher weight
+  // Add vector results with higher weight;
   vectorResults.forEach((result) => {
     combinedResults.set((result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).id, {
       ...result,
@@ -329,7 +328,7 @@ async function hybridSearch(
     });
   });
 
-  // Add/update with keyword results
+  // Add/update with keyword results;
   keywordResults.forEach((result) => {
     if (combinedResults.has((result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).id)) {
       const existing = combinedResults.get((result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).id);
@@ -345,15 +344,15 @@ async function hybridSearch(
   });
 
   // Sort by combined score and limit
-  return Array.from(combinedResults.values())
+  return Array.from(combinedResults.values()
     .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
+    .slice(0, limit);
     .map((result) => ({
       ...result,
       similarity: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).score,
       searchType: 'hybrid',
       matchedBy: (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).sources,
-    }));
+    });
 }
 
 // Enhanced semantic search with context
@@ -362,7 +361,7 @@ async function semanticSearch(
   embedding: number[],
   limit: number,
   threshold: number,
-  filters: any
+  filters: any;
 ): Promise<any[]> {
   console.log('[Search] Performing semantic search with context');
 
@@ -370,7 +369,7 @@ async function semanticSearch(
   const vectorResults = await vectorSearch(embedding, limit * 3, threshold * 0.8, filters);
 
   // Enhance with semantic context analysis
-  return vectorResults
+  return vectorResults;
     .map((result) => {
       const contextScore = calculateContextScore(query, (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).content);
       const legalRelevance = calculateLegalRelevance(query, (result as { id?: any; similarity?: any; score?: any; sources?: any; content?: any; legalAnalysis?: any }).legalAnalysis);
@@ -387,12 +386,12 @@ async function semanticSearch(
     .slice(0, limit);
 }
 
-// Extract relevant excerpt from content based on query
+// Extract relevant excerpt from content based on query;
 function extractExcerpt(content: string, query: string): string {
   const words = query.toLowerCase().split(' ');
   const sentences = content.split(/[.!?]+/);
 
-  // Find sentence containing query terms
+  // Find sentence containing query terms;
   for (const sentence of sentences) {
     const lowerSentence = sentence.toLowerCase();
     if (words.some((word) => lowerSentence.includes(word))) {
@@ -404,7 +403,7 @@ function extractExcerpt(content: string, query: string): string {
   return content.substring(0, 200) + '...';
 }
 
-// Calculate context relevance score
+// Calculate context relevance score;
 function calculateContextScore(query: string, content: string): number {
   const queryWords = query.toLowerCase().split(' ');
   const contentWords = content.toLowerCase().split(' ');
@@ -419,14 +418,14 @@ function calculateContextScore(query: string, content: string): number {
   return matches / queryWords.length;
 }
 
-// Calculate legal relevance score
+// Calculate legal relevance score;
 function calculateLegalRelevance(query: string, legalAnalysis: any): number {
   if (!legalAnalysis) return 0;
 
   const queryLower = query.toLowerCase();
   let relevanceScore = 0;
 
-  // Check legal entities
+  // Check legal entities;
   if (legalAnalysis.entities) {
     for (const entity of legalAnalysis.entities) {
       if (queryLower.includes(entity.text.toLowerCase())) {
@@ -435,7 +434,7 @@ function calculateLegalRelevance(query: string, legalAnalysis: any): number {
     }
   }
 
-  // Check legal concepts
+  // Check legal concepts;
   if (legalAnalysis.concepts) {
     for (const concept of legalAnalysis.concepts) {
       if (queryLower.includes(concept.toLowerCase())) {
@@ -451,7 +450,7 @@ function calculateLegalRelevance(query: string, legalAnalysis: any): number {
 // Note: Document storage is handled by the dedicated /api/documents/upload endpoint
 // This search endpoint focuses on querying existing documents
 
-// Health check endpoint
+// Health check endpoint;
 export const GET: RequestHandler = async () => {
   try {
     // Get comprehensive database health status
@@ -469,7 +468,7 @@ export const GET: RequestHandler = async () => {
       const [embResult] = await db
         .select({ count: sql<number>`count(*)` })
         .from(legal_documents)
-        .where(legal_documents.content_embedding.isNotNull());
+        .where(legal_documents.content_embedding.isNotNull();
       embeddingCount = embResult?.count || 0;
     } catch (err: any) {
       console.warn('[Search] Failed to count documents:', err);
@@ -495,7 +494,7 @@ export const GET: RequestHandler = async () => {
         cognitiveCaching: cacheStatus,
         documentStorage: dbHealth.overall === 'healthy',
         pgvectorIntegration: dbHealth.postgres.connected,
-        qdrantIntegration: dbHealth.qdrant?.connected || false
+        qdrantIntegration: dbHealth.qdrant?.connected || false,
       },
       database: {
         postgres: dbHealth.postgres,
@@ -503,17 +502,17 @@ export const GET: RequestHandler = async () => {
         overall: dbHealth.overall,
         documents: documentCount,
         embeddings: embeddingCount,
-        embeddingCoverage: documentCount > 0 ? (embeddingCount / documentCount * 100).toFixed(1) + '%' : '0%'
+        embeddingCoverage: documentCount > 0 ? (embeddingCount / documentCount * 100).toFixed(1) + '%' : '0%',
       },
       cache: {
         cognitive: cacheStatus,
-        type: 'ML-driven cognitive cache'
+        type: 'ML-driven cognitive cache',
       },
       timestamp: new Date().toISOString(),
-      version: '3.0.0'
+      version: '3.0.0',
     });
   } catch (err: any) {
-    return json(
+    return json();
       {
         status: 'unhealthy',
         error: err.message,

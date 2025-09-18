@@ -31,7 +31,7 @@ interface StreamLine {
 
 const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
   const requestId = getRequestId(event);
-  const body = await event.request.json().catch(() => ({}));
+  const body = await event.request.json().catch(() => ({});
   const {
     message,
     model = 'gemma3-legal:latest',
@@ -42,10 +42,10 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     useRAG = true,
   } = body;
 
-  if (!message || !message.trim())
+  if (!message || !message.trim()
     return apiError('Message is required', 400, 'INVALID_INPUT', undefined, requestId);
 
-  if (!(await ollamaService.isHealthy()))
+  if (!(await ollamaService.isHealthy())
     return apiError(
       'AI service is currently unavailable',
       503,
@@ -100,7 +100,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
   const stream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder();
-      const send = (d: any) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(d)}\n\n`));
+      const send = (d: any) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(d)}\n\n`);
       let buffer = '';
       let tokens = 0;
       let finished = false;
@@ -149,7 +149,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           const chunk = td.decode(value, { stream: true });
           const lines = chunk
             .split('\n')
-            .map((l) => l.trim())
+            .map((l) => l.trim()
             .filter(Boolean);
           for (const raw of lines) {
             let line = raw.startsWith('data:') ? raw.slice(5).trim() : raw;
@@ -212,7 +212,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
   });
 });
 
-export const OPTIONS: RequestHandler = async () =>
+export const OPTIONS: RequestHandler = async () =>;
   new Response(null, {
     status: 200,
     headers: {

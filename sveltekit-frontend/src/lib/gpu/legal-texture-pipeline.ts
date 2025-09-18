@@ -4,6 +4,7 @@
  */
 
 import { N64TextureStreamingEngine, type LegalDocumentTexture, type TextureChunk } from './n64-texture-streaming';
+}
 
 export interface EvidencePhoto {
   id: string;
@@ -15,7 +16,7 @@ export interface EvidencePhoto {
     location?: string;
     photographer?: string;
     equipment?: string;
-    chainOfCustody: string[];
+    chainOfCustody: string[];,
   };
   analysis?: {
     bloodspatter?: boolean;
@@ -37,7 +38,7 @@ export interface DocumentScan {
     scanDate: Date;
     originalFormat: string;
     quality: 'low' | 'medium' | 'high';
-    classification: string;
+    classification: string;,
   };
 }
 
@@ -50,7 +51,7 @@ export interface CaseVisualization {
     createdDate: Date;
     lastModified: Date;
     author: string;
-    version: string;
+    version: string;,
   };
 }
 
@@ -59,27 +60,27 @@ export interface VisualizationElement {
   type: 'evidence' | 'person' | 'location' | 'event' | 'document';
   position: { x: number; y: number; z?: number };
   properties: Record<string, any>;
-  connections: string[];
+  connections: string[];,
 }
 
 export interface CourtroomDisplay {
   id: string;
   caseId: string;
   displayType: 'evidence' | 'timeline' | 'comparison' | 'analysis';
-  content: LegalDocumentTexture[];
+  content: LegalDocumentTexture[];,
   }); const settings = {
     contrast: number;
     brightness: number;
     zoom: number;
     annotations: boolean;
-    highlightMode: 'none' | 'evidence' | 'testimony' | 'critical';
+    highlightMode: 'none' | 'evidence' | 'testimony' | 'critical';,
   };
 }
 
 /**
  * Legal Document Texture Pipeline
  * Manages streaming for all legal document types
- */
+ */;
 export class LegalDocumentTexturePipeline {
   private engine: N64TextureStreamingEngine;
   private documentCache = new Map<string, LegalDocumentTexture>();
@@ -96,14 +97,14 @@ export class LegalDocumentTexturePipeline {
       enableCompression: true,
       adaptiveQuality: true,
       cacheSize: 512, // 512MB for legal documents
-      wasmAcceleration: true
+      wasmAcceleration: true,
     });
   }
 
   /**
    * Evidence Photo Processing Pipeline
    * Optimized for crime scene and forensic photography
-   */
+   */;
   async processEvidencePhoto(photo: EvidencePhoto): Promise<LegalDocumentTexture> {
     console.log(`Processing evidence photo: ${photo.filename}`);
 
@@ -125,7 +126,7 @@ export class LegalDocumentTexturePipeline {
   /**
    * Document Scan Processing Pipeline
    * Optimized for legal document clarity and OCR
-   */
+   */;
   async processDocumentScan(scan: DocumentScan, pageData: ImageData[]): Promise<LegalDocumentTexture[]> {
     console.log(`Processing document scan: ${scan.id} (${scan.pages} pages)`);
 
@@ -140,12 +141,12 @@ export class LegalDocumentTexturePipeline {
       // Apply document enhancement
       const enhancedTexture = await this.applyDocumentEnhancement(texture, scan);
 
-      // Update metadata
+      // Update metadata;
       enhancedTexture.metadata = {
         ...enhancedTexture.metadata,
         ...scan.metadata,
         pageNumber: pageIndex + 1,
-        totalPages: scan.pages
+        totalPages: scan.pages,
       };
 
       textures.push(enhancedTexture);
@@ -161,7 +162,7 @@ export class LegalDocumentTexturePipeline {
   /**
    * Case Visualization Processing Pipeline
    * Creates N64-style 3D evidence relationships
-   */
+   */;
   async processCaseVisualization(visualization: CaseVisualization): Promise<LegalDocumentTexture> {
     console.log(`Processing case visualization: ${visualization.type}`);
 
@@ -191,7 +192,7 @@ export class LegalDocumentTexturePipeline {
   /**
    * Courtroom Display Processing Pipeline
    * Optimized for courtroom projection and clarity
-   */
+   */;
   async processCourtroomDisplay(display: CourtroomDisplay): Promise<LegalDocumentTexture[]> {
     console.log(`Processing courtroom display: ${display.displayType}`);
 
@@ -207,12 +208,12 @@ export class LegalDocumentTexturePipeline {
 
   /**
    * Apply forensic enhancement filters to evidence photos
-   */
+   */;
   private async applyForensicEnhancement(texture: LegalDocumentTexture, photo: EvidencePhoto): Promise<LegalDocumentTexture> {
     const enhancedChunks = texture.chunks.map(chunk => ({
       ...chunk,
       data: this.enhanceForensicVisibility(chunk.data, photo.analysis)
-    }));
+    });
 
     return {
       ...texture,
@@ -220,19 +221,19 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         ...texture.metadata,
         enhancement: 'forensic',
-        analysisApplied: photo.analysis
+        analysisApplied: photo.analysis,
       }
     };
   }
 
   /**
    * Apply document enhancement for legal clarity
-   */
+   */;
   private async applyDocumentEnhancement(texture: LegalDocumentTexture, scan: DocumentScan): Promise<LegalDocumentTexture> {
     const enhancedChunks = texture.chunks.map(chunk => ({
       ...chunk,
       data: this.enhanceDocumentClarity(chunk.data, scan.metadata.quality)
-    }));
+    });
 
     return {
       ...texture,
@@ -240,14 +241,14 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         ...texture.metadata,
         enhancement: 'document_clarity',
-        originalQuality: scan.metadata.quality
+        originalQuality: scan.metadata.quality,
       }
     };
   }
 
   /**
    * Create N64-style 3D scene visualization
-   */
+   */;
   private async create3DSceneVisualization(visualization: CaseVisualization): Promise<LegalDocumentTexture> {
     const canvas = new OffscreenCanvas(1024, 1024);
     const ctx = canvas.getContext('2d');
@@ -257,7 +258,7 @@ export class LegalDocumentTexturePipeline {
     ctx.fillStyle = '#001122'; // Dark background
     ctx.fillRect(0, 0, 1024, 1024);
 
-    // Draw 3D elements with perspective
+    // Draw 3D elements with perspective;
     visualization.elements.forEach((element, index) => {
       this.draw3DElement(ctx, element, index);
     });
@@ -276,14 +277,14 @@ export class LegalDocumentTexturePipeline {
         caseId: visualization.caseId,
         evidenceType: '3d_scene',
         timestamp: new Date(),
-        visualization: visualization.metadata
+        visualization: visualization.metadata,
       }
     };
   }
 
   /**
    * Create timeline visualization
-   */
+   */;
   private async createTimelineVisualization(visualization: CaseVisualization): Promise<LegalDocumentTexture> {
     const canvas = new OffscreenCanvas(1600, 600);
     const ctx = canvas.getContext('2d');
@@ -296,7 +297,7 @@ export class LegalDocumentTexturePipeline {
     // Draw timeline elements
     const timelineElements = visualization.elements
       .filter(el => el.properties.timestamp)
-      .sort((a, b) => new Date(a.properties.timestamp).getTime() - new Date(b.properties.timestamp).getTime());
+      .sort((a, b) => new Date(a.properties.timestamp).getTime() - new Date(b.properties.timestamp).getTime();
 
     timelineElements.forEach((element, index) => {
       this.drawTimelineElement(ctx, element, index, timelineElements.length);
@@ -314,14 +315,14 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         caseId: visualization.caseId,
         evidenceType: 'timeline',
-        timestamp: new Date()
+        timestamp: new Date(),
       }
     };
   }
 
   /**
    * Create relationship map
-   */
+   */;
   private async createRelationshipMap(visualization: CaseVisualization): Promise<LegalDocumentTexture> {
     const canvas = new OffscreenCanvas(1024, 1024);
     const ctx = canvas.getContext('2d');
@@ -331,7 +332,7 @@ export class LegalDocumentTexturePipeline {
     ctx.fillStyle = '#001100';
     ctx.fillRect(0, 0, 1024, 1024);
 
-    // Draw connections first
+    // Draw connections first;
     visualization.elements.forEach(element => {
       element.connections.forEach(targetId => {
         const target = visualization.elements.find(el => el.id === targetId);
@@ -341,7 +342,7 @@ export class LegalDocumentTexturePipeline {
       });
     });
 
-    // Draw nodes
+    // Draw nodes;
     visualization.elements.forEach((element, index) => {
       this.drawNetworkNode(ctx, element, index);
     });
@@ -358,14 +359,14 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         caseId: visualization.caseId,
         evidenceType: 'relationship_map',
-        timestamp: new Date()
+        timestamp: new Date(),
       }
     };
   }
 
   /**
    * Create evidence flow visualization
-   */
+   */;
   private async createEvidenceFlow(visualization: CaseVisualization): Promise<LegalDocumentTexture> {
     const canvas = new OffscreenCanvas(1200, 800);
     const ctx = canvas.getContext('2d');
@@ -393,19 +394,19 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         caseId: visualization.caseId,
         evidenceType: 'evidence_flow',
-        timestamp: new Date()
+        timestamp: new Date(),
       }
     };
   }
 
   /**
    * Optimize texture for courtroom display
-   */
+   */;
   private async optimizeForCourtroom(texture: LegalDocumentTexture, settings: any): Promise<LegalDocumentTexture> {
     const optimizedChunks = texture.chunks.map(chunk => ({
       ...chunk,
       data: this.applyCourtroomOptimization(chunk.data, settings)
-    }));
+    });
 
     return {
       ...texture,
@@ -414,14 +415,14 @@ export class LegalDocumentTexturePipeline {
       metadata: {
         ...texture.metadata,
         courtroomSettings: settings,
-        optimized: true
+        optimized: true,
       }
     };
   }
 
   /**
    * Enhance forensic visibility in image data
-   */
+   */;
   private enhanceForensicVisibility(data: Uint8Array, analysis?: any): Uint8Array {
     const enhanced = new Uint8Array(data.length);
 
@@ -431,7 +432,7 @@ export class LegalDocumentTexturePipeline {
       let b = data[i + 2];
       const a = data[i + 3];
 
-      // Enhance based on analysis type
+      // Enhance based on analysis type;
       if (analysis?.bloodspatter) {
         // Enhance red channel for blood
         r = Math.min(255, r * 1.5);
@@ -455,7 +456,7 @@ export class LegalDocumentTexturePipeline {
 
   /**
    * Enhance document clarity
-   */
+   */;
   private enhanceDocumentClarity(data: Uint8Array, quality: string): Uint8Array {
     const enhanced = new Uint8Array(data.length);
     const contrastMultiplier = quality === 'low' ? 1.8 : quality === 'medium' ? 1.4 : 1.2;
@@ -468,7 +469,7 @@ export class LegalDocumentTexturePipeline {
 
       // Convert to grayscale and enhance contrast
       const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-      const enhanced_luminance = Math.min(255, Math.max(0, (luminance - 128) * contrastMultiplier + 128));
+      const enhanced_luminance = Math.min(255, Math.max(0, (luminance - 128) * contrastMultiplier + 128);
 
       enhanced[i] = enhanced_luminance;
       enhanced[i + 1] = enhanced_luminance;
@@ -481,7 +482,7 @@ export class LegalDocumentTexturePipeline {
 
   /**
    * Apply courtroom display optimization
-   */
+   */;
   private applyCourtroomOptimization(data: Uint8Array, settings: any): Uint8Array {
     const optimized = new Uint8Array(data.length);
 
@@ -492,11 +493,11 @@ export class LegalDocumentTexturePipeline {
       const a = data[i + 3];
 
       // Apply brightness and contrast
-      r = Math.min(255, Math.max(0, (r - 128) * settings.contrast + 128 + settings.brightness));
-      g = Math.min(255, Math.max(0, (g - 128) * settings.contrast + 128 + settings.brightness));
-      b = Math.min(255, Math.max(0, (b - 128) * settings.contrast + 128 + settings.brightness));
+      r = Math.min(255, Math.max(0, (r - 128) * settings.contrast + 128 + settings.brightness);
+      g = Math.min(255, Math.max(0, (g - 128) * settings.contrast + 128 + settings.brightness);
+      b = Math.min(255, Math.max(0, (b - 128) * settings.contrast + 128 + settings.brightness);
 
-      // Apply highlight mode
+      // Apply highlight mode;
       if (settings.highlightMode === 'critical') {
         // Add red tint for critical elements
         r = Math.min(255, r + 30);
@@ -516,7 +517,7 @@ export class LegalDocumentTexturePipeline {
 
   /**
    * Drawing helper methods for visualizations
-   */
+   */;
   private draw3DElement(ctx: CanvasRenderingContext2D, element: VisualizationElement, index: number): void {
     const x = element.position.x;
     const y = element.position.y;
@@ -543,7 +544,7 @@ export class LegalDocumentTexturePipeline {
     ctx.fillStyle = this.getElementColor(element.type);
     ctx.fillRect(x - 6, y - 6, 12, 12);
 
-    // Timeline line
+    // Timeline line;
     if (index < total - 1) {
       ctx.strokeStyle = '#666666';
       ctx.lineWidth = 2;
@@ -594,7 +595,7 @@ export class LegalDocumentTexturePipeline {
     ctx.fillStyle = this.getElementColor(element.type);
     ctx.fillRect(x - 20, y - 15, 40, 30);
 
-    // Flow arrow
+    // Flow arrow;
     if (index < total - 1) {
       ctx.fillStyle = '#888888';
       ctx.beginPath();
@@ -618,13 +619,13 @@ export class LegalDocumentTexturePipeline {
       case 'location': return '#4444ff';
       case 'event': return '#ffff44';
       case 'document': return '#ff44ff';
-      default: return '#888888';
+      default: return '#888888';,
     }
   }
 
   /**
    * Queue AI analysis for processed textures
-   */
+   */;
   private queueAIAnalysis(documentId: string, type: string, data: any): void {
     this.streamingQueue.push({
       id: `ai_analysis_${documentId}`,
@@ -652,7 +653,7 @@ export class LegalDocumentTexturePipeline {
 
   /**
    * Queue OCR processing
-   */
+   */;
   private queueOCRProcessing(documentId: string, imageData: ImageData, scan: DocumentScan): void {
     this.streamingQueue.push({
       id: `ocr_${documentId}`,
@@ -674,7 +675,7 @@ export class LegalDocumentTexturePipeline {
             body: JSON.stringify({
               documentId,
               image: base64,
-              documentType: scan.documentType
+              documentType: scan.documentType,
             })
           });
 
@@ -693,7 +694,7 @@ export class LegalDocumentTexturePipeline {
 
   /**
    * Process streaming queue with priority
-   */
+   */;
   private async processQueue(): Promise<void> {
     if (this.isProcessing || this.streamingQueue.length === 0) return;
 
@@ -718,7 +719,7 @@ export class LegalDocumentTexturePipeline {
 
   /**
    * Create texture chunks from ImageData
-   */
+   */;
   private async createTextureChunks(imageData: ImageData, type: string): Promise<TextureChunk[]> {
     // Use the engine's private method through a wrapper
     return (this.engine as any).createTextureChunksFromImageData(imageData, type);
@@ -726,7 +727,7 @@ export class LegalDocumentTexturePipeline {
 
   /**
    * Convert blob to base64
-   */
+   */;
   private blobToBase64(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -738,26 +739,26 @@ export class LegalDocumentTexturePipeline {
 
   /**
    * Get cached texture
-   */
+   */;
   getCachedTexture(documentId: string): LegalDocumentTexture | undefined {
     return this.documentCache.get(documentId);
   }
 
   /**
    * Get pipeline statistics
-   */
+   */;
   getStats() {
     return {
       ...this.engine.getPerformanceStats(),
       cachedDocuments: this.documentCache.size,
       queueLength: this.streamingQueue.length,
-      isProcessing: this.isProcessing
+      isProcessing: this.isProcessing,
     };
   }
 
   /**
    * Clear pipeline cache
-   */
+   */;
   clearCache(): void {
     this.documentCache.clear();
     this.streamingQueue.length = 0;
@@ -765,7 +766,7 @@ export class LegalDocumentTexturePipeline {
 
   /**
    * Dispose pipeline
-   */
+   */;
   dispose(): void {
     this.clearCache();
     this.engine.dispose();
@@ -775,7 +776,7 @@ export class LegalDocumentTexturePipeline {
 
 /**
  * Factory function for creating legal document texture pipeline
- */
+ */;
 export function createLegalTexturePipeline(canvas: HTMLCanvasElement) {
   return new LegalDocumentTexturePipeline(canvas);
 }

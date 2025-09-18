@@ -5,19 +5,19 @@
  * This script fixes all incorrect database import paths in API routes
  */
 
-import { readFileSync, writeFileSync } from "fs";
-import { glob } from "glob";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { readFileSync, writeFileSync } from 'fs';
+import { glob } from 'glob';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-console.log("🔧 Fixing Database Import Paths");
-console.log("=================================\n");
+console.log('🔧 Fixing Database Import Paths');
+console.log('=================================\n');
 
 // Find all TypeScript files in routes/api
-const pattern = join(__dirname, "src/routes/api/**/*.ts");
+const pattern = join(__dirname, 'src/routes/api/**/*.ts');
 const files = glob.sync(pattern);
 
 console.log(`Found ${files.length} API files to check...\n`);
@@ -26,7 +26,7 @@ let fixedCount = 0;
 
 for (const file of files) {
   try {
-    const content = readFileSync(file, "utf-8");
+    const content = readFileSync(file, 'utf-8');
     let modified = false;
     let newContent = content;
 
@@ -45,22 +45,22 @@ for (const file of files) {
       // Fix connection.js to index.js
       {
         from: /lib\/server\/database\/connection\.js/g,
-        to: "lib/server/db/index.js",
+        to: 'lib/server/db/index.js',
       },
       // Fix pg.js to index.js
       {
         from: /lib\/server\/db\/pg\.js/g,
-        to: "lib/server/db/index.js",
+        to: 'lib/server/db/index.js',
       },
       // Fix schema-postgres.js to schema.js
       {
         from: /lib\/server\/db\/schema-postgres\.js/g,
-        to: "lib/server/db/schema.js",
+        to: 'lib/server/db/schema.js',
       },
       // Fix schema-canvas.js to schema.js (if it doesn't exist)
       {
         from: /lib\/server\/db\/schema-canvas\.js/g,
-        to: "lib/server/db/schema.js",
+        to: 'lib/server/db/schema.js',
       },
     ];
 
@@ -73,7 +73,7 @@ for (const file of files) {
 
     if (modified) {
       writeFileSync(file, newContent);
-      console.log(`✅ Fixed: ${file.replace(__dirname, ".")}`);
+      console.log(`✅ Fixed: ${file.replace(__dirname, '.')}`);
       fixedCount++;
     }
   } catch (error) {
@@ -84,15 +84,15 @@ for (const file of files) {
 console.log(`\n🎉 Fixed ${fixedCount} files with incorrect database imports`);
 
 if (fixedCount > 0) {
-  console.log("\n📋 Changes made:");
-  console.log("  • lib/server/db.js → lib/server/db/index.js");
-  console.log("  • lib/server/database/connection.js → lib/server/db/index.js");
-  console.log("  • lib/server/db/pg.js → lib/server/db/index.js");
-  console.log("  • lib/server/db/schema-postgres.js → lib/server/db/schema.js");
-  console.log("  • lib/server/db/schema-canvas.js → lib/server/db/schema.js");
+  console.log('\n📋 Changes made:');
+  console.log('  • lib/server/db.js → lib/server/db/index.js');
+  console.log('  • lib/server/database/connection.js → lib/server/db/index.js');
+  console.log('  • lib/server/db/pg.js → lib/server/db/index.js');
+  console.log('  • lib/server/db/schema-postgres.js → lib/server/db/schema.js');
+  console.log('  • lib/server/db/schema-canvas.js → lib/server/db/schema.js');
 
-  console.log("\n✅ All database import paths are now fixed!");
-  console.log("   You can now run: npm run dev");
+  console.log('\n✅ All database import paths are now fixed!');
+  console.log('   You can now run: npm run dev');
 } else {
-  console.log("\n✅ All database import paths were already correct!");
+  console.log('\n✅ All database import paths were already correct!');
 }

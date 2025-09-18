@@ -1,6 +1,7 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from './$types';
 import { AIEvidenceAnalyzer, type EvidenceItem } from '$lib/services/ai-evidence-analyzer';
+}
 
 export interface AnalyzeRequest extends EvidenceItem {
   // Extends EvidenceItem with any additional fields if needed
@@ -18,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const evidence: AnalyzeRequest = await request.json();
 
-    // Validate evidence data
+    // Validate evidence data;
     if (!evidence.id || !evidence.title || !evidence.description) {
       throw error(400, 'Missing required evidence fields: id, title, description');
     }
@@ -44,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// GET endpoint to retrieve analysis by evidence ID
+// GET endpoint to retrieve analysis by evidence ID;
 export const GET: RequestHandler = async ({ url }) => {
   const evidenceId = url.searchParams.get('evidenceId');
 
@@ -54,11 +55,11 @@ export const GET: RequestHandler = async ({ url }) => {
 
   try {
     // TODO: Fetch analysis from database
-    // For now, return a sample response indicating the analysis should be requested via POST
+    // For now, return a sample response indicating the analysis should be requested via POST;
     return json({
       message: 'Analysis not found. Please submit evidence for analysis via POST request.',
       evidenceId,
-      status: 'not_found'
+      status: 'not_found',
     }, { status: 404 });
   } catch (err: any) {
     console.error('Failed to fetch analysis:', err);

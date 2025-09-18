@@ -13,7 +13,7 @@ import {
 } from '$lib/services/canonical-result-cache.js';
 import { enhancedRAGService } from '$lib/services/enhanced-rag-service.js';
 
-// GET /api/v1/cache/ranking?key=X&metadata=true&limit=10
+// GET /api/v1/cache/ranking?key=X&metadata=true&limit=10;
 export const GET: RequestHandler = async ({ url, request }) => {
   const startTime = performance.now();
 
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     const includeMetadata = url.searchParams.get('metadata') === 'true';
     const limit = parseInt(url.searchParams.get('limit') || '0') || undefined;
 
-    // Validate slot key
+    // Validate slot key;
     if (!slotKey || slotKey.length !== 1) {
       throw error(
         400,
@@ -61,11 +61,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
       results = results.slice(0, limit);
     }
 
-    // Prepare response
+    // Prepare response;
     const responseData = {
       ...rankingSet,
       results,
-      metadata: includeMetadata
+      metadata: includeMetadata;
         ? {
             slotKey,
             cacheHit: true,
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         : undefined,
     };
 
-    // Return binary response if requested
+    // Return binary response if requested;
     if (preferBinary) {
       const binaryData = await packRankingSetToBinary(responseData as RankingSet);
       // Normalize to ArrayBuffer to avoid SharedArrayBuffer typing issues, then wrap in a Blob
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       });
     }
 
-    // Return JSON response
+    // Return JSON response;
     return json(responseData, {
       status: 200,
       headers: {
@@ -129,14 +129,14 @@ export const GET: RequestHandler = async ({ url, request }) => {
   }
 };
 
-// POST /api/v1/cache/ranking - Store new ranking set
+// POST /api/v1/cache/ranking - Store new ranking set;
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
 
   try {
     const body = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!body.query || !Array.isArray(body.results)) {
       throw error(
         400,
@@ -147,7 +147,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
 
-    // Validate results format
+    // Validate results format;
     const results: CanonicalResult[] = body.results.map((result: any, index: number) => {
       if (!(result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).docId || typeof (result as { docId?: any; score?: any; flags?: any; summaryHash?: any; targetUrlId?: any; metadata?: any }).score !== 'number') {
         throw error(
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request }) => {
       };
     });
 
-    // Create ranking set
+    // Create ranking set;
     const rankingSet: RankingSet = {
       results,
       query: body.query,
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const latency = performance.now() - startTime;
 
     // Return slot key and metadata
-    return json(
+    return json();
       {
         success: true,
         slotKey,
@@ -222,7 +222,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// DELETE /api/v1/cache/ranking - Clear cache
+// DELETE /api/v1/cache/ranking - Clear cache;
 export const DELETE: RequestHandler = async ({ url }) => {
   const startTime = performance.now();
 
@@ -268,7 +268,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   }
 };
 
-// Utility function to pack ranking set to binary format
+// Utility function to pack ranking set to binary format;
 async function packRankingSetToBinary(rankingSet: RankingSet): Promise<Uint8Array> {
   // This would use the actual packing logic from canonical-result-cache
   // For now, return a mock binary representation

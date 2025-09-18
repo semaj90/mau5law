@@ -1,7 +1,7 @@
 import Loki from '$lib/compat/lokijs';
 import type Redis from 'ioredis';
 
-// Lightweight global Loki store for job lifecycle sync across workers via Redis pub/sub
+// Lightweight global Loki store for job lifecycle sync across workers via Redis pub/sub;
 export class GlobalLokiStore {
   private db: Loki;
   private jobs: Collection<any>;
@@ -23,7 +23,7 @@ export class GlobalLokiStore {
       const sub = (this.redis as any).duplicate ? (this.redis as any).duplicate() : undefined;
         if (sub && typeof (sub as any).connect === 'function') {
           (sub as any)
-            .connect()
+            .connect();
             .then(() => {
               try {
                 if (typeof (sub as any).subscribe === 'function') {
@@ -41,7 +41,7 @@ export class GlobalLokiStore {
             })
             .catch(() => {});
         } else if (sub && typeof (sub as any).subscribe === 'function') {
-          // Older ioredis versions auto-connect
+          // Older ioredis versions auto-connect;
           try {
             (sub as any).subscribe(this.pubChannel);
           } catch {}
@@ -62,7 +62,7 @@ export class GlobalLokiStore {
       if (this.redis && typeof (this.redis as any).publish === 'function') {
           const r = this.redis as any;
           if (r && typeof r.publish === 'function') {
-            r.publish(this.pubChannel, JSON.stringify(update));
+            r.publish(this.pubChannel, JSON.stringify(update);
           }
       }
     } catch (_) {}
@@ -95,7 +95,7 @@ export class GlobalLokiStore {
 
   async updateJob(jobId: string, patch: any) {
     const existing = (this.jobs as any).by('id', jobId);
-    const merged = { ...(existing || { id: jobId }), ...patch };
+    const merged = { ...(existing || { id: jobId ,}), ...patch };
     this.upsertLocal(merged);
     this.publish(merged);
   }

@@ -12,7 +12,7 @@ declare global {
     [k: string]: any;
   }
 
-  // Some environments reference performance.memory; make it optional
+  // Some environments reference performance.memory; make it optional;
   interface Performance {
     memory?: { usedJSHeapSize?: number } | undefined;
   }
@@ -22,14 +22,14 @@ declare global {
 }
 
 // Some internal modules are not typed precisely during triage — provide permissive
-// module declarations to avoid TS2305/TS2576 cascading errors.
+// module declarations to avoid TS2305/TS2576 cascading errors.;
 declare module '$lib/server/db/enhanced-operations' {
   export const CaseOperations: any;
   const _default: any;
   export default _default;
 }
 
-// PNG embed extractor used by tests — provide permissive instance/static members
+// PNG embed extractor used by tests — provide permissive instance/static members;
 declare class PNGEmbedExtractor {
   embedMetadata(...args: any[]): Promise<any>;
   extractMetadata(...args: any[]): Promise<any>;

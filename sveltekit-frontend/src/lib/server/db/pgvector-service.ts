@@ -8,7 +8,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { cosineDistance, desc, sql, eq } from 'drizzle-orm';
 import { contentEmbeddings, legalDocuments, embeddingCache } from './schema-postgres.js';
 
-// Production PostgreSQL Configuration
+// Production PostgreSQL Configuration;
 const connectionConfig = {
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '5433'), // Updated to use port 5433
@@ -20,7 +20,7 @@ const connectionConfig = {
   connectionTimeoutMillis: 10000,
 };
 
-// PostgreSQL Connection Pool with Error Handling
+// PostgreSQL Connection Pool with Error Handling;
 export class PgVectorService {
   private pool: Pool;
   private db: any;
@@ -47,7 +47,7 @@ export class PgVectorService {
   /**
    * Test PostgreSQL + pgvector connection
    * Best Practice: Always verify extensions and permissions
-   */
+   */;
   async testConnection(): Promise<any> {
     try {
       const client = await this.pool.connect();
@@ -114,7 +114,7 @@ export class PgVectorService {
     metadata: any = {}
   ): Promise<any> {
     try {
-      // Validate embedding dimensions (768 for nomic-embed-text, gemma models vary)
+      // Validate embedding dimensions (768 for nomic-embed-text, gemma models vary);
       if (embedding.length !== 768 && embedding.length !== 1536) {
         throw new Error(
           `Invalid embedding dimension: expected 768 or 1536, got ${embedding.length}`
@@ -130,7 +130,7 @@ export class PgVectorService {
         const embeddingStr = `[${embedding.join(',')}]`;
         const docResult = await client.query(
           `INSERT INTO legal_documents (title, content, document_type, keywords, embedding, created_at)
-           VALUES ($1, $2, $3, $4, $5::vector, NOW())
+           VALUES ($1, $2, $3, $4, $5::vector, NOW()
            RETURNING id`,
           [
             metadata.title || 'Untitled',
@@ -192,7 +192,7 @@ export class PgVectorService {
         includeContent = false,
       } = options;
 
-      // Choose distance operator based on metric
+      // Choose distance operator based on metric;
       const distanceOperator = {
         cosine: '<->',
         euclidean: '<=>',
@@ -261,7 +261,7 @@ export class PgVectorService {
    * Best Practice: Use prepared statements and batch processing
    */
   async batchInsertDocuments(
-    documents: Array<
+    documents: Array<;
   ): Promise<any> {
     try {
       const client = await this.pool.connect();
@@ -283,7 +283,7 @@ export class PgVectorService {
             // Insert document
             await client.query(
               `INSERT INTO legal_documents (document_id, title, content, document_type, metadata, created_at)
-               VALUES ($1, $2, $3, $4, $5, NOW())
+               VALUES ($1, $2, $3, $4, $5, NOW()
                ON CONFLICT (document_id) DO NOTHING`,
               [
                 doc.documentId,
@@ -297,7 +297,7 @@ export class PgVectorService {
             // Insert embedding
             await client.query(
               `INSERT INTO vector_embeddings (document_id, embedding, metadata, created_at)
-               VALUES ($1, $2::vector, $3, NOW())
+               VALUES ($1, $2::vector, $3, NOW()
                ON CONFLICT (document_id) DO UPDATE SET
                embedding = EXCLUDED.embedding,
                metadata = EXCLUDED.metadata,
@@ -335,9 +335,8 @@ export class PgVectorService {
   /**
    * Create IVFFLAT index for vector similarity search optimization
    * Best Practice: Index creation for production performance
-   */
-  async createVectorIndex(
-    options: {
+   */;
+  async createVectorIndex(options: {
       lists?: number;
       metric?: 'cosine' | 'euclidean' | 'inner_product';
       tableName?: string;
@@ -408,7 +407,7 @@ export class PgVectorService {
   /**
    * Get database statistics for monitoring
    * Best Practice: Monitor performance and usage metrics
-   */
+   */;
   async getDatabaseStats(): Promise<any> {
     try {
       const client = await this.pool.connect();
@@ -505,7 +504,7 @@ export class PgVectorService {
   /**
    * Close database connections gracefully
    * Best Practice: Cleanup resources
-   */
+   */;
   async close(): Promise<void> {
     try {
       await this.pool.end();

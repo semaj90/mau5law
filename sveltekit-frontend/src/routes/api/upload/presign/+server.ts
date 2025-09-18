@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import type { RequestHandler } from './$types.js';
 
 
-// Types for upload handling
+// Types for upload handling;
 export interface PresignRequest {
   filename: string;
   fileSize: number;
@@ -19,11 +19,11 @@ export interface PresignResponse {
     filename: string;
     caseId: string;
     uploadId: string;
-    expiresAt: Date;
+    expiresAt: Date;,
   };
 }
 
-// MinIO/S3 compatible presigned URL generation
+// MinIO/S3 compatible presigned URL generation;
 function generatePresignedUrl(bucket: string, key: string, expires: number = 3600): string {
   // In production, use AWS SDK or MinIO client
   // This is a simplified example for development
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const { filename, fileSize, caseId, contentType, chunkCount = 1 }: PresignRequest = 
       await request.json();
 
-    // Validate input
+    // Validate input;
     if (!filename || !caseId || fileSize <= 0) {
       return json({ error: 'Invalid upload parameters' }, { status: 400 });
     }
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       presignedUrls.push(presignedUrl);
     }
 
-    // Store upload metadata in database
+    // Store upload metadata in database;
     const metadata = {
       uploadId,
       filename,
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       chunkCount,
       status: 'pending',
       createdAt: new Date(),
-      expiresAt: new Date(Date.now() + 3600 * 1000) // 1 hour
+      expiresAt: new Date(Date.now() + 3600 * 1000) // 1 hour,
     };
 
     // TODO: Store in PostgreSQL using Drizzle
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         filename,
         caseId,
         uploadId,
-        expiresAt: metadata.expiresAt
+        expiresAt: metadata.expiresAt,
       }
     };
 
@@ -101,12 +101,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   }
 };
 
-// Complete multipart upload
+// Complete multipart upload;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const { uploadId, etags } = await request.json();
 
-    // TODO: Complete multipart upload with MinIO/S3
+    // TODO: Complete multipart upload with MinIO/S3;
     // const result = await s3.completeMultipartUpload({
     //   Bucket: 'legal-documents',
     //   Key: uploadId,
@@ -117,7 +117,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     // Update database status
     // await db.update(uploads)
     //   .set({ status: 'completed', completedAt: new Date() })
-    //   .where(eq(uploads.uploadId, uploadId));
+    //   .where(eq(uploads.uploadId, uploadId);
 
     // Trigger processing pipeline
     await triggerProcessingPipeline(uploadId);
@@ -132,11 +132,11 @@ export const PUT: RequestHandler = async ({ request }) => {
 
 async function triggerProcessingPipeline(uploadId: string): Promise<any> {
   try {
-    // Push job to message queue for processing
+    // Push job to message queue for processing;
     const jobData = {
       uploadId,
       timestamp: new Date().toISOString(),
-      priority: 'normal'
+      priority: 'normal',
     };
 
     // TODO: Send to Redis/BullMQ

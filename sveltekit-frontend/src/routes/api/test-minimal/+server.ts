@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ request }) => {
     const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
     console.log("Minimal adapter created successfully");
     
-    // Test the JOIN query generation
+    // Test the JOIN query generation;
     try {
       const result = await adapter.getSessionAndUser("test-session-id");
       console.log("Minimal adapter result:", result);
@@ -21,12 +21,12 @@ export const GET: RequestHandler = async ({ request }) => {
       console.error("Minimal adapter query:", error.query);
       console.error("Minimal adapter cause:", error.cause?.message);
       
-      // Return the exact error details
+      // Return the exact error details;
       return json({
         success: false,
         error: error.message,
         query: error.query,
-        cause: error.cause?.message
+        cause: error.cause?.message,
       }, { status: 500 });
     }
     

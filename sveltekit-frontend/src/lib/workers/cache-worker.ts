@@ -18,7 +18,7 @@ interface WorkerConfig {
   poolType: string;
   threadId: number;
   rtxOptimizations: boolean;
-  simdEnabled: boolean;
+  simdEnabled: boolean;,
 }
 
 class CacheWorker {
@@ -27,7 +27,7 @@ class CacheWorker {
 
   constructor() {
     this.detectSIMDSupport();
-    self.addEventListener('message', this.handleMessage.bind(this));
+    self.addEventListener('message', this.handleMessage.bind(this);
   }
 
   private detectSIMDSupport(): void {
@@ -39,7 +39,7 @@ class CacheWorker {
                          0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7b,
                          0x03, 0x02, 0x01, 0x00,
                          0x0a, 0x0a, 0x01, 0x08, 0x00, 0xfd, 0x0c, 0xfd, 0x0c, 0x1a, 0x0b
-                       ]));
+                       ]);
     } catch (error) {
       this.simdSupport = false;
     }
@@ -85,7 +85,7 @@ class CacheWorker {
         type: 'result',
         id,
         result,
-        success: true
+        success: true,
       });
 
     } catch (error) {
@@ -93,14 +93,14 @@ class CacheWorker {
         type: 'error',
         id,
         error: error instanceof Error ? error.message: String(error),
-        success: false
+        success: false,
       });
     }
   }
 
   /**
    * High-performance data compression using optimized algorithms
-   */
+   */;
   private async compressData(data: any): Promise<Uint8Array> {
     if (data instanceof Float32Array) {
       return this.compressFloatArray(data);
@@ -115,7 +115,7 @@ class CacheWorker {
 
   /**
    * SIMD-optimized Float32Array compression
-   */
+   */;
   private compressFloatArray(data: Float32Array): Uint8Array {
     if (this.simdSupport && data.length >= 128) {
       return this.compressFloatArraySIMD(data);
@@ -134,7 +134,7 @@ class CacheWorker {
 
   /**
    * SIMD-accelerated float compression (conceptual - would need WASM module)
-   */
+   */;
   private compressFloatArraySIMD(data: Float32Array): Uint8Array {
     // In a real implementation, this would call a WASM module with SIMD intrinsics
     // For now, use optimized scalar with chunked processing
@@ -142,11 +142,11 @@ class CacheWorker {
     const scale = this.calculateOptimalScale(data);
     const compressed = new Int16Array(data.length);
     
-    // Process in chunks to improve cache locality
+    // Process in chunks to improve cache locality;
     for (let i = 0; i < data.length; i += chunkSize) {
       const end = Math.min(i + chunkSize, data.length);
       
-      // Vectorized operations (simulated)
+      // Vectorized operations (simulated);
       for (let j = i; j < end; j++) {
         compressed[j] = Math.round(data[j] * scale);
       }
@@ -157,7 +157,7 @@ class CacheWorker {
 
   /**
    * Calculate optimal quantization scale for Float32Array
-   */
+   */;
   private calculateOptimalScale(data: Float32Array): number {
     let max = 0;
     for (let i = 0; i < data.length; i++) {
@@ -169,7 +169,7 @@ class CacheWorker {
 
   /**
    * String compression using optimized deflate-like algorithm
-   */
+   */;
   private compressString(str: string): Uint8Array {
     const encoder = new TextEncoder();
     const data = encoder.encode(str);
@@ -182,7 +182,7 @@ class CacheWorker {
       const byte = data[i];
       let count = 1;
       
-      // Count consecutive bytes
+      // Count consecutive bytes;
       while (i + count < data.length && data[i + count] === byte && count < 255) {
         count++;
       }
@@ -191,7 +191,7 @@ class CacheWorker {
         // Use RLE encoding
         compressed.push(255, byte, count);
       } else {
-        // Store raw bytes
+        // Store raw bytes;
         for (let j = 0; j < count; j++) {
           compressed.push(byte);
         }
@@ -205,9 +205,9 @@ class CacheWorker {
 
   /**
    * Decompress data based on type detection
-   */
+   */;
   private async decompressData(compressedData: Uint8Array): Promise<any> {
-    // Detect compression type from header or metadata
+    // Detect compression type from header or metadata;
     if (compressedData.length >= 4 && compressedData[0] === 255) {
       // RLE compressed string
       return this.decompressString(compressedData);
@@ -219,7 +219,7 @@ class CacheWorker {
 
   /**
    * Decompress Float32Array
-   */
+   */;
   private decompressFloatArray(compressed: Uint8Array): Float32Array {
     const int16Data = new Int16Array(compressed.buffer);
     const result = new Float32Array(int16Data.length);
@@ -234,7 +234,7 @@ class CacheWorker {
 
   /**
    * Decompress string using RLE
-   */
+   */;
   private decompressString(compressed: Uint8Array): string {
     const decompressed: number[] = [];
     let i = 0;
@@ -258,12 +258,12 @@ class CacheWorker {
     }
     
     const decoder = new TextDecoder();
-    return decoder.decode(new Uint8Array(decompressed));
+    return decoder.decode(new Uint8Array(decompressed);
   }
 
   /**
    * High-performance serialization
-   */
+   */;
   private async serializeData(data: any): Promise<Uint8Array> {
     if (data instanceof Float32Array || data instanceof ArrayBuffer) {
       // Binary data - no serialization needed
@@ -278,20 +278,20 @@ class CacheWorker {
 
   /**
    * JSON replacer for optimized serialization
-   */
+   */;
   private jsonReplacer(key: string, value: any): any {
-    // Handle special types that JSON can't serialize natively
+    // Handle special types that JSON can't serialize natively;
     if (value instanceof Float32Array) {
       return {
         __type: 'Float32Array',
-        __data: Array.from(value)
+        __data: Array.from(value),
       };
     }
     
     if (value instanceof ArrayBuffer) {
       return {
         __type: 'ArrayBuffer',
-        __data: Array.from(new Uint8Array(value))
+        __data: Array.from(new Uint8Array(value),
       };
     }
     
@@ -300,7 +300,7 @@ class CacheWorker {
 
   /**
    * High-performance deserialization
-   */
+   */;
   private async deserializeData(serialized: Uint8Array): Promise<any> {
     const decoder = new TextDecoder();
     const jsonString = decoder.decode(serialized);
@@ -309,7 +309,7 @@ class CacheWorker {
 
   /**
    * JSON reviver for optimized deserialization
-   */
+   */;
   private jsonReviver(key: string, value: any): any {
     if (value && typeof value === 'object' && value.__type) {
       switch (value.__type) {
@@ -318,7 +318,7 @@ class CacheWorker {
         case 'ArrayBuffer':
           return new Uint8Array(value.__data).buffer;
         default:
-          return value;
+          return value;,
       }
     }
     return value;
@@ -326,18 +326,17 @@ class CacheWorker {
 
   /**
    * Process batch operations efficiently
-   */
+   */;
   private async processBatch(operations: any[]): Promise<any[]> {
     const results: any[] = [];
     const batchSize = 16; // Process in chunks to avoid blocking
     
     for (let i = 0; i < operations.length; i += batchSize) {
       const batch = operations.slice(i, i + batchSize);
-      const batchResults = await Promise.all(
-        batch.map(async (op) => {
+      const batchResults = await Promise.all(batch.map(async (op) => {
           switch (op.type) {
             case 'compress':
-              return await this.compressData(op.data)));
+              return await this.compressData(op.data));
             case 'decompress':
               return await this.decompressData(op.data);
             case 'serialize':
@@ -352,9 +351,9 @@ class CacheWorker {
       
       results.push(...batchResults);
       
-      // Yield to event loop to prevent blocking
+      // Yield to event loop to prevent blocking;
       if (i + batchSize < operations.length) {
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise(resolve => setTimeout(resolve, 0);
       }
     }
     

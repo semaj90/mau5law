@@ -1,11 +1,12 @@
 // Type definitions for Enhanced Vector Search Service
-// Legal AI Platform - Vector Similarity Search Types
+// Legal AI Platform - Vector Similarity Search Types;
+}
 
 export interface EmbeddingVector {
   dimensions: number;
   values: number[];
   model: string;
-  createdAt: Date;
+  createdAt: Date;,
 }
 
 export interface VectorSearchOptions {
@@ -56,7 +57,7 @@ export interface VectorSearchResult {
   /** Description or summary */
   description: string;
   
-  /** Additional metadata about the result */
+  /** Additional metadata about the result */;
   metadata: {
     /** File type for evidence results */
     fileType?: string;
@@ -110,7 +111,7 @@ export interface VectorSearchHealthStatus {
   /** Overall health status */
   status: 'healthy' | 'degraded' | 'unhealthy';
   
-  /** Detailed health information */
+  /** Detailed health information */;
   details: {
     /** Whether pgvector extension is installed */
     hasVector?: boolean;
@@ -121,7 +122,7 @@ export interface VectorSearchHealthStatus {
     /** Information about vector indexes */
     indexes?: Array<any>;
     
-    /** Performance metrics */
+    /** Performance metrics */;
     performance?: {
       countQueryTime?: number;
       sampleQueryTime?: number;
@@ -142,31 +143,31 @@ export interface VectorSearchHealthStatus {
 }
 
 export interface VectorSearchStats {
-  /** Count of vectors by entity type */
+  /** Count of vectors by entity type */;
   vectorCounts: {
     evidence: number;
     cases: number;
     chunks?: number;
   };
   
-  /** PostgreSQL index usage statistics */
+  /** PostgreSQL index usage statistics */;
   indexStats: {
     [indexName: string]: {
       table: string;
       scans: number;
       tuplesRead: number;
-      tuplesFetched: number;
+      tuplesFetched: number;,
     };
   };
   
-  /** Vector dimensions by entity type */
+  /** Vector dimensions by entity type */;
   dimensions: {
     evidence: number;
     cases?: number;
     chunks?: number;
   };
   
-  /** Recent activity and status */
+  /** Recent activity and status */;
   recentActivity: {
     lastUpdated: string;
     healthStatus: string;
@@ -192,7 +193,7 @@ export interface VectorClusterResult {
   topics: string[];
   
   /** Number of documents in cluster */
-  size: number;
+  size: number;,
 }
 
 export interface VectorQueryExpansion {
@@ -209,7 +210,7 @@ export interface VectorQueryExpansion {
   relatedConcepts: string[];
   
   /** Confidence in expansion quality */
-  confidence: number;
+  confidence: number;,
 }
 
 export interface SimilaritySearchParams {
@@ -239,7 +240,7 @@ export interface VectorIndexInfo {
   /** Index type (ivfflat, hnsw, etc.) */
   indexType: string;
   
-  /** Index parameters */
+  /** Index parameters */;
   parameters: {
     lists?: number;
     probes?: number;
@@ -254,11 +255,11 @@ export interface VectorIndexInfo {
   /** Number of index scans */
   scans?: number;
   
-  /** Index effectiveness metrics */
+  /** Index effectiveness metrics */;
   effectiveness?: {
     tuplesRead: number;
     tuplesFetched: number;
-    hitRatio: number;
+    hitRatio: number;,
   };
 }
 
@@ -285,7 +286,7 @@ export interface VectorSearchPerformanceMetrics {
   resultsReturned: number;
   
   /** Whether index was used effectively */
-  indexUsed: boolean;
+  indexUsed: boolean;,
 }
 
 export interface VectorEmbeddingMetadata {
@@ -301,18 +302,18 @@ export interface VectorEmbeddingMetadata {
   /** Source text that was embedded */
   sourceText?: string;
   
-  /** Processing parameters used */
+  /** Processing parameters used */;
   parameters?: {
     chunkSize?: number;
     overlap?: number;
     normalization?: string;
   };
   
-  /** Quality metrics */
+  /** Quality metrics */;
   quality?: {
     confidence: number;
     completeness: number;
-    relevance: number;
+    relevance: number;,
   };
 }
 
@@ -322,12 +323,12 @@ export type DistanceFunction = 'l2' | 'cosine' | 'inner_product';
 export type EntityType = 'evidence' | 'case' | 'chunk';
 export type SearchStrategy = 'vector_only' | 'hybrid' | 'text_only';
 
-// Error types for better error handling
+// Error types for better error handling;
 export class VectorSearchError extends Error {
   constructor(
     message: string,
     public code: string,
-    public details?: any
+    public details?: any;
   ) {
     super(message);
     this.name = 'VectorSearchError';
@@ -346,11 +347,11 @@ export class VectorIndexError extends VectorSearchError {
   }
 }
 
-// Type guards for runtime validation
+// Type guards for runtime validation;
 export function isValidEmbedding(value: any): value is number[] {
   return Array.isArray(value) && 
          value.length > 0 && 
-         value.every(v => typeof v === 'number' && !isNaN(v));
+         value.every(v => typeof v === 'number' && !isNaN(v);
 }
 
 export function isValidVectorSearchResult(value: any): value is VectorSearchResult {

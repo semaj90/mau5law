@@ -8,7 +8,7 @@ import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
 import { z } from 'zod';
 
-// Query schema
+// Query schema;
 const InsightsQuerySchema = z.object({
   caseId: z.string().uuid(),
   insightType: z.enum(['summary', 'patterns', 'risks', 'recommendations', 'all']).default('all'),
@@ -18,10 +18,10 @@ const InsightsQuerySchema = z.object({
 /*
  * GET /api/v1/detective/insights
  * Get AI-generated insights for a case
- */
+ */;
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
 
     // Parse query parameters
-    const queryParams = Object.fromEntries(url.searchParams.entries());
+    const queryParams = Object.fromEntries(url.searchParams.entries();
     const { caseId, insightType, depth } = InsightsQuerySchema.parse(queryParams);
 
     // Create service instances
@@ -111,7 +111,7 @@ async function generateDetectiveInsights(
   evidence: any[],
   insightType: string,
   depth: string,
-  userId: string
+  userId: string;
 ): Promise<any> {
   const insights: any = {
     overallConfidence: 0,
@@ -125,31 +125,31 @@ async function generateDetectiveInsights(
   };
 
   try {
-    // Generate summary insights
+    // Generate summary insights;
     if (insightType === 'summary' || insightType === 'all') {
       insights.summary = await generateSummaryInsights(caseData, evidence);
       insights.overallConfidence = Math.max(insights.overallConfidence, 0.82);
     }
 
-    // Generate pattern insights
+    // Generate pattern insights;
     if (insightType === 'patterns' || insightType === 'all') {
       insights.patterns = await generatePatternInsights(evidence);
       insights.overallConfidence = Math.max(insights.overallConfidence, 0.75);
     }
 
-    // Generate risk assessment
+    // Generate risk assessment;
     if (insightType === 'risks' || insightType === 'all') {
       insights.risks = await generateRiskInsights(caseData, evidence);
       insights.overallConfidence = Math.max(insights.overallConfidence, 0.78);
     }
 
-    // Generate recommendations
+    // Generate recommendations;
     if (insightType === 'recommendations' || insightType === 'all') {
       insights.recommendations = await generateRecommendationInsights(caseData, evidence, depth);
       insights.overallConfidence = Math.max(insights.overallConfidence, 0.80);
     }
 
-    // Generate key findings if comprehensive analysis
+    // Generate key findings if comprehensive analysis;
     if (depth === 'comprehensive') {
       insights.keyFindings = await generateKeyFindings(caseData, evidence);
       insights.timeline = await generateTimelineInsights(evidence);
@@ -170,7 +170,7 @@ async function generateDetectiveInsights(
 
 /*
  * Generate summary insights
- */
+ */;
 async function generateSummaryInsights(caseData: any, evidence: any[]): Promise<any> {
   return {
     caseStrength: evidence.length > 5 ? 'strong' : evidence.length > 2 ? 'moderate' : 'weak',
@@ -184,9 +184,9 @@ async function generateSummaryInsights(caseData: any, evidence: any[]): Promise<
 
 /*
  * Generate pattern insights
- */
+ */;
 async function generatePatternInsights(evidence: any[]): Promise<any[]> {
-  return [
+  return [;
     {
       type: 'temporal',
       description: 'Evidence clustering suggests coordinated activity',
@@ -213,7 +213,7 @@ async function generatePatternInsights(evidence: any[]): Promise<any[]> {
 
 /*
  * Generate risk assessment insights
- */
+ */;
 async function generateRiskInsights(caseData: any, evidence: any[]): Promise<any> {
   return {
     caseRisk: {
@@ -253,9 +253,9 @@ async function generateRiskInsights(caseData: any, evidence: any[]): Promise<any
 
 /*
  * Generate recommendation insights
- */
+ */;
 async function generateRecommendationInsights(caseData: any, evidence: any[], depth: string): Promise<any[]> {
-  const recommendations = [
+  const recommendations = [;
     {
       priority: 'high',
       category: 'evidence',
@@ -283,15 +283,14 @@ async function generateRecommendationInsights(caseData: any, evidence: any[], de
   ];
 
   if (depth === 'comprehensive') {
-    recommendations.push(
-      {
+    recommendations.push({
         priority: 'low',
         category: 'preparation',
         action: 'Prepare expert witness testimony',
         reasoning: 'Technical evidence explanation',
         timeline: '3-4 weeks',
         confidence: 0.70,
-      },
+      },);
       {
         priority: 'high',
         category: 'documentation',
@@ -308,7 +307,7 @@ async function generateRecommendationInsights(caseData: any, evidence: any[], de
 
 /*
  * Generate key findings
- */
+ */;
 async function generateKeyFindings(caseData: any, evidence: any[]): Promise<string[]> {
   return [
     'Strong digital evidence trail established',
@@ -321,12 +320,12 @@ async function generateKeyFindings(caseData: any, evidence: any[]): Promise<stri
 
 /*
  * Generate timeline insights
- */
+ */;
 async function generateTimelineInsights(evidence: any[]): Promise<any> {
   return {
     totalEvents: evidence.length,
     timespan: '30 days', // Would calculate from actual timestamps
-    keyPeriods: [
+    keyPeriods: [;
       {
         start: '2024-01-01',
         end: '2024-01-07',
@@ -340,7 +339,7 @@ async function generateTimelineInsights(evidence: any[]): Promise<any> {
         evidenceCount: Math.floor(evidence.length * 0.6),
       },
     ],
-    gaps: [
+    gaps: [;
       {
         start: '2024-01-08',
         end: '2024-01-14',
@@ -353,7 +352,7 @@ async function generateTimelineInsights(evidence: any[]): Promise<any> {
 
 /*
  * Generate connection insights
- */
+ */;
 async function generateConnectionInsights(evidence: any[]): Promise<any> {
   return {
     totalConnections: Math.floor(evidence.length * 1.5), // Mock calculation

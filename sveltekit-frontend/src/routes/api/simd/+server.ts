@@ -13,7 +13,7 @@ const SIMDProcessSchema = z.object({
   iterations: z.number().min(1).max(10000).default(100).optional(),
 });
 
-// SIMD JSON Processing
+// SIMD JSON Processing;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -21,23 +21,23 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!parsed.success) {
       return json(
-        { error: 'Invalid request', details: parsed.error.errors },
+        { error: 'Invalid request', details: parsed.error.errors },)
         { status: 400 }
       );
     }
 
     const { data, operation, cache_key, iterations } = parsed.data;
 
-    // Check if Go SIMD service is available
+    // Check if Go SIMD service is available;
     try {
       await simdRedisClient.healthCheck();
     } catch (healthError) {
-      return json(
+      return json();
         { 
           error: 'SIMD service unavailable', 
           message: 'Go microservice not running on localhost:8080',
           fallback: 'Using standard JSON processing',
-          details: String(healthError)
+          details: String(healthError),
         },
         { status: 503 }
       );
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
           result,
           metadata: {
             service: 'go-simd-microservice',
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
         });
       }
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'cache': {
         if (!cache_key) {
           return json(
-            { error: 'cache_key required for cache operation' },
+            { error: 'cache_key required for cache operation' },)
             { status: 400 }
           );
         }
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: {
             service: 'go-simd-microservice',
             key: cache_key,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
         });
       }
@@ -87,14 +87,14 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: {
             service: 'go-simd-microservice',
             iterations: iterations || 100,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
         });
       }
 
       default:
         return json(
-          { error: 'Invalid operation' },
+          { error: 'Invalid operation' },)
           { status: 400 }
         );
     }
@@ -102,18 +102,18 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('SIMD API error:', error);
     
-    return json(
+    return json();
       { 
         error: 'SIMD processing failed',
         message: String(error),
-        fallback_available: true
+        fallback_available: true,
       },
       { status: 500 }
     );
   }
 };
 
-// Get SIMD service status
+// Get SIMD service status;
 export const GET: RequestHandler = async () => {
   try {
     const health = await simdRedisClient.healthCheck();
@@ -133,17 +133,17 @@ export const GET: RequestHandler = async () => {
         'Goroutine worker pools',
         'Automatic fallback handling'
       ],
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         service: 'simd-redis-microservice',
         status: 'unavailable',
         error: String(error),
-        message: 'Go microservice not running. Start with: cd go-microservice && go run simd-server.go'
+        message: 'Go microservice not running. Start with: cd go-microservice && go run simd-server.go',
       },
       { status: 503 }
     );

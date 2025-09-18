@@ -12,7 +12,7 @@ import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 const DATABASE_URL = import.meta.env.DATABASE_URL ||
   `postgresql://${import.meta.env.POSTGRES_USER || 'legal_admin'}:${import.meta.env.POSTGRES_PASSWORD || '123456'}@${import.meta.env.POSTGRES_HOST || 'localhost'}:${import.meta.env.POSTGRES_PORT || '5433'}/${import.meta.env.POSTGRES_DB || 'legal_ai_db'}`;
 
-// Create postgres client with enhanced configuration for vector operations
+// Create postgres client with enhanced configuration for vector operations;
 const client = postgres(DATABASE_URL, {
   // Connection pool settings
   max: 20,
@@ -22,9 +22,9 @@ const client = postgres(DATABASE_URL, {
   // PostgreSQL-specific optimizations
   prepare: false, // Disable prepared statements for better compatibility
   
-  // Enable vector extension support
+  // Enable vector extension support;
   types: {
-    // Custom type parser for vector data
+    // Custom type parser for vector data;
     vector: {
       to: 1184,
       from: [1184],
@@ -41,13 +41,13 @@ const client = postgres(DATABASE_URL, {
   ssl: import.meta.env.NODE_ENV === 'production' ? 'require' : false,
 });
 
-// Create Drizzle database instance with schema
+// Create Drizzle database instance with schema;
 export const db: PostgresJsDatabase<typeof schema> = drizzle(client, {
   schema,
-  logger: import.meta.env.NODE_ENV === 'development'
+  logger: import.meta.env.NODE_ENV === 'development',
 });
 
-// Enhanced connection testing function
+// Enhanced connection testing function;
 export async function testConnection(): Promise<boolean> {
   try {
     // Test basic connection
@@ -69,7 +69,7 @@ export async function testConnection(): Promise<boolean> {
       WHERE table_schema = 'public'
       ORDER BY table_name
     `;
-    console.log('✅ Available Tables:', tables.map(t => t.table_name));
+    console.log('✅ Available Tables:', tables.map(t => t.table_name);
     
     return true;
   } catch (error) {
@@ -78,7 +78,7 @@ export async function testConnection(): Promise<boolean> {
   }
 }
 
-// Enhanced health check with vector capabilities
+// Enhanced health check with vector capabilities;
 export async function getDatabaseHealth(): Promise<any> {
   try {
     // Basic connection test
@@ -110,7 +110,7 @@ export async function getDatabaseHealth(): Promise<any> {
       pgvectorEnabled,
       tablesCount,
       version,
-      uptime: uptime?.toString()
+      uptime: uptime?.toString(),
     };
     
   } catch (error) {
@@ -119,22 +119,22 @@ export async function getDatabaseHealth(): Promise<any> {
       connected: false,
       pgvectorEnabled: false,
       tablesCount: 0,
-      version: 'Unknown'
+      version: 'Unknown',
     };
   }
 }
 
-// Vector operations helper functions
+// Vector operations helper functions;
 export class VectorOperations {
   /**
    * Calculate cosine similarity between two vectors
-   */
+   */;
   static async cosineSimilarity(vector1: number[], vector2: number[]): Promise<number> {
     try {
       const result = await client`
         SELECT (${vector1})::vector <=> (${vector2})::vector as similarity
       `;
-      return 1 - parseFloat(result[0]?.similarity || '1'); // Convert distance to similarity
+      return 1 - parseFloat(result[0]?.similarity || '1'); // Convert distance to similarity;
     } catch (error) {
       console.error('Cosine similarity calculation failed:', error);
       return 0;
@@ -149,7 +149,7 @@ export class VectorOperations {
     vectorColumn: string,
     queryVector: number[],
     limit: number = 10,
-    threshold: number = 0.7
+    threshold: number = 0.7;
   ): Promise<any[]> {
     try {
       const result = await client`
@@ -168,7 +168,7 @@ export class VectorOperations {
   }
 }
 
-// Connection cleanup
+// Connection cleanup;
 export async function closeConnection(): Promise<void> {
   try {
     await client.end();

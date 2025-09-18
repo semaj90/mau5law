@@ -53,7 +53,7 @@
       <button
         class="nes-btn tab-btn {selectedTab === t.id ? 'is-primary active' : ''}"
         aria-pressed={selectedTab === t.id}
-        on:click={() => selectedTab = t.id}
+        onclick={() => selectedTab = t.id}
       >{t.label}</button>
     {/each}
   </nav>
@@ -89,14 +89,14 @@
   {#if selectedTab === 'dialog'}
     <section class="section-wrap">
       <h2 class="section">Dialog</h2>
-      <Button variant="primary" on:click={openDialog}>Open Dialog</Button>
+      <Button variant="primary" onclick={openDialog}>Open Dialog</Button>
       <div class="meta">Simple open/close controlled by boolean state.</div>
       {#if showDialog}
         <Dialog title="Sample Dialog" on:close={closeDialog}>
           <p>This dialog demonstrates the NES modal style and accessibility hooks.</p>
           <div class="dialog-actions">
-            <Button variant="error" on:click={closeDialog}>Cancel</Button>
-            <Button variant="success" on:click={closeDialog}>Confirm</Button>
+            <Button variant="error" onclick={closeDialog}>Cancel</Button>
+            <Button variant="success" onclick={closeDialog}>Confirm</Button>
           </div>
         </Dialog>
       {/if}

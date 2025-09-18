@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'submit_document': {
         const { documentId, chunks, metadata } = params;
 
-        // Validate input
+        // Validate input;
         if (!documentId || !chunks || !Array.isArray(chunks)) {
           return json({
             success: false,
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
         return json({
           success: true,
-          dashboard: dashboardData
+          dashboard: dashboardData,
         });
       }
 
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!concurrency) {
           return json({ 
             success: false, 
-            error: 'Concurrency is required' 
+            error: 'Concurrency is required' ,
           }, { status: 400 });
         }
 
@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
 
-      default:
+      default:;
         return json({
           success: false,
           error: `Unknown action: ${action}`
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Internal server error',
-      details: error instanceof Error ? error.message: String(error)
+      details: error instanceof Error ? error.message: String(error),
     }, { status: 500 });
   }
 };
@@ -191,7 +191,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const jobId = url.searchParams.get('jobId');
 
     if (action === 'get_job' && jobId) {
-      // Redirect to POST handler
+      // Redirect to POST handler;
       return new Response(null, {
         status: 307,
         headers: {
@@ -206,11 +206,11 @@ export const GET: RequestHandler = async ({ url }) => {
 
       return json({
         success: true,
-        dashboard: dashboardData
+        dashboard: dashboardData,
       });
     }
 
-    // Default: return API documentation
+    // Default: return API documentation;
     return json({
       success: true,
       api: {
@@ -233,7 +233,7 @@ export const GET: RequestHandler = async ({ url }) => {
             ]
           }
         },
-        workflow: ingestionService.getDashboardData().workflow
+        workflow: ingestionService.getDashboardData().workflow,
       }
     });
 
@@ -243,12 +243,12 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: 'Internal server error',
-      details: error instanceof Error ? error.message: String(error)
+      details: error instanceof Error ? error.message: String(error),
     }, { status: 500 });
   }
 };
 
-// WebSocket endpoint for real-time updates (if needed)
+// WebSocket endpoint for real-time updates (if needed);
 export const PATCH: RequestHandler = async ({ request }) => {
   try {
     const data = await request.json();
@@ -262,20 +262,20 @@ export const PATCH: RequestHandler = async ({ request }) => {
       return json({
         success: true,
         message: 'Heartbeat recorded',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
     return json({
       success: false,
-      error: 'Invalid heartbeat data'
+      error: 'Invalid heartbeat data',
     }, { status: 400 });
 
   } catch (error) {
     return json({
       success: false,
       error: 'Heartbeat failed',
-      details: error instanceof Error ? error.message: String(error)
+      details: error instanceof Error ? error.message: String(error),
     }, { status: 500 });
   }
 };

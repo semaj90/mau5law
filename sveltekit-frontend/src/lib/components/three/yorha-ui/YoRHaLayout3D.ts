@@ -5,6 +5,7 @@
 
 import * as THREE from 'three';
 import { YoRHa3DComponent } from './YoRHaUI3D.js';
+}
 
 export interface YoRHaLayoutOptions {
   type: 'flex' | 'grid' | 'absolute' | 'stack' | 'flow';
@@ -140,7 +141,7 @@ export class YoRHaLayout3D extends THREE.Group {
     const containerBounds = this.getContainerBounds();
     const availableMain = (isRow ? containerBounds.x: containerBounds.y) - 
                          padding.left - padding.right - 
-                         (gap * (this.children3D.length - 1));
+                         (gap * (this.children3D.length - 1);
     const availableCross = (isRow ? containerBounds.y: containerBounds.x) - 
                           padding.top - padding.bottom;
     
@@ -180,14 +181,14 @@ export class YoRHaLayout3D extends THREE.Group {
   private layoutGrid(): void {
     if (this.children3D.length === 0) return;
 
-    const columns = this.options.gridColumns || Math.ceil(Math.sqrt(this.children3D.length));
+    const columns = this.options.gridColumns || Math.ceil(Math.sqrt(this.children3D.length);
     const rows = this.options.gridRows || Math.ceil(this.children3D.length / columns);
     const gap = this.options.gap || 0.2;
     const padding = this.normalizePadding(this.options.padding);
     
     const containerBounds = this.getContainerBounds();
-    const availableWidth = containerBounds.x - padding.left - padding.right - (gap * (columns - 1));
-    const availableHeight = containerBounds.y - padding.top - padding.bottom - (gap * (rows - 1));
+    const availableWidth = containerBounds.x - padding.left - padding.right - (gap * (columns - 1);
+    const availableHeight = containerBounds.y - padding.top - padding.bottom - (gap * (rows - 1);
     
     const cellWidth = availableWidth / columns;
     const cellHeight = availableHeight / rows;
@@ -253,7 +254,7 @@ export class YoRHaLayout3D extends THREE.Group {
     this.children3D.forEach(({ component, layout }) => {
       const bounds = this.getComponentBounds(component);
       
-      // Check if component fits on current line
+      // Check if component fits on current line;
       if (currentX + bounds.x > availableWidth / 2) {
         // Move to next line
         currentX = -availableWidth / 2;
@@ -292,7 +293,7 @@ export class YoRHaLayout3D extends THREE.Group {
       bottom: padding?.bottom || 0,
       left: padding?.left || 0,
       front: padding?.front || 0,
-      back: padding?.back || 0
+      back: padding?.back || 0,
     };
   }
 
@@ -323,7 +324,7 @@ export class YoRHaLayout3D extends THREE.Group {
     childCrossSize: number, 
     availableCross: number, 
     alignSelf: string | undefined, 
-    padding: Required<YoRHaPadding3D>
+    padding: Required<YoRHaPadding3D>;
   ): number {
     const align = alignSelf || this.options.align || 'start';
     
@@ -334,7 +335,7 @@ export class YoRHaLayout3D extends THREE.Group {
         return availableCross / 2 - childCrossSize / 2 - padding.bottom;
       case 'start':
       default:
-        return -availableCross / 2 + childCrossSize / 2 + padding.top;
+        return -availableCross / 2 + childCrossSize / 2 + padding.top;,
     }
   }
 
@@ -347,7 +348,7 @@ export class YoRHaLayout3D extends THREE.Group {
     return zSpacing * (layout.order || 0);
   }
 
-  // Public API methods
+  // Public API methods;
   public setLayoutType(type: YoRHaLayoutOptions['type']): void {
     this.options.type = type;
     this.needsLayout = true;
@@ -405,7 +406,7 @@ export class YoRHaLayout3D extends THREE.Group {
   }
 }
 
-// Utility function to create common layout configurations
+// Utility function to create common layout configurations;
 export class YoRHaLayoutPresets {
   static createFlexRow(gap = 0.2): YoRHaLayout3D {
     return new YoRHaLayout3D({
@@ -460,7 +461,7 @@ export class YoRHaLayoutPresets {
       justify: 'center',
       align: 'center',
       padding: { top: 0.3, right: 0.3, bottom: 0.3, left: 0.3, front: 0, back: 0 },
-      gap: 0.3
+      gap: 0.3,
     });
   }
 
@@ -471,7 +472,7 @@ export class YoRHaLayoutPresets {
       justify: 'start',
       align: 'stretch',
       padding: { top: 0.4, right: 0.4, bottom: 0.4, left: 0.4, front: 0, back: 0 },
-      gap: 0.25
+      gap: 0.25,
     });
   }
 
@@ -482,7 +483,7 @@ export class YoRHaLayoutPresets {
       justify: 'space-between',
       align: 'center',
       padding: { top: 0.1, right: 0.2, bottom: 0.1, left: 0.2, front: 0, back: 0 },
-      gap: 0.15
+      gap: 0.15,
     });
   }
 }

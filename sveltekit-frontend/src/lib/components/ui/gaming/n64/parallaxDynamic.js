@@ -18,7 +18,7 @@ const DEFAULT_CONFIG = {
   smoothing: 0.1,
   enableGPUMonitoring: true,
   performanceMode: 'auto', // 'auto', 'high', 'medium', 'low'
-  reducedMotion: false
+  reducedMotion: false,
 };
 
 // Global state
@@ -86,7 +86,7 @@ export function createParallaxInstance(element, config = {}) {
     ...globalConfig,
     ...config,
     element,
-    id: instanceId
+    id: instanceId,
   };
 
   const instance = {
@@ -144,7 +144,7 @@ export function createParallaxLayers(container, layerConfigs) {
       const instance = createParallaxInstance(layerElement, {
         ...layerConfig,
         layerIndex: index,
-        layerDepth: layerConfig.depth || (index + 1) * 0.2
+        layerDepth: layerConfig.depth || (index + 1) * 0.2,
       });
       if (instance) {
         instances.push(instance);
@@ -169,7 +169,7 @@ function updateInstanceBounds(instance) {
     width: rect.width,
     height: rect.height,
     centerX: rect.left + rect.width / 2,
-    centerY: rect.top + rect.height / 2
+    centerY: rect.top + rect.height / 2,
   };
 }
 
@@ -202,7 +202,7 @@ function updateInstance(instance) {
   instance.targetOffset = {
     x: mouseInfluence.x + scrollInfluence.x,
     y: mouseInfluence.y + scrollInfluence.y,
-    z: mouseInfluence.z + scrollInfluence.z
+    z: mouseInfluence.z + scrollInfluence.z,
   };
 
   // Apply smoothing
@@ -245,7 +245,7 @@ function calculateMouseInfluence(instance) {
   return {
     x: influenceX * depthFactor,
     y: influenceY * depthFactor,
-    z: (Math.abs(influenceX) + Math.abs(influenceY)) * depthFactor * 0.1
+    z: (Math.abs(influenceX) + Math.abs(influenceY)) * depthFactor * 0.1,
   };
 }
 
@@ -266,7 +266,7 @@ function calculateScrollInfluence(instance) {
   // Scroll progress (0 to 1 as element passes through viewport)
   const scrollProgress = Math.max(0, Math.min(1,
     (scrollY - elementTop) / (elementBottom - elementTop + viewportSize.height)
-  ));
+  );
 
   // Convert to -1 to 1 range
   const scrollInfluence = (scrollProgress - 0.5) * 2;
@@ -277,7 +277,7 @@ function calculateScrollInfluence(instance) {
   return {
     x: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor * 0.3,
     y: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor,
-    z: Math.abs(scrollInfluence) * depthFactor * 2
+    z: Math.abs(scrollInfluence) * depthFactor * 2,
   };
 }
 
@@ -289,9 +289,9 @@ function applyTransform(instance) {
   const element = instance.element;
 
   // Update CSS custom properties for dynamic use
-  element.style.setProperty('--px', offset.x.toFixed(2));
-  element.style.setProperty('--py', offset.y.toFixed(2));
-  element.style.setProperty('--pz', offset.z.toFixed(2));
+  element.style.setProperty('--px', offset.x.toFixed(2);
+  element.style.setProperty('--py', offset.y.toFixed(2);
+  element.style.setProperty('--pz', offset.z.toFixed(2);
 
   // Apply direct transform for immediate effect
   const transform = `translate3d(${offset.x}px, ${offset.y}px, ${offset.z}px)`;
@@ -423,7 +423,7 @@ function trackPerformanceMetrics(instance) {
       activeInstances: activeInstances.size,
       currentOffset: { ...instance.currentOffset },
       isMouseActive: instance.element.classList.contains('ps1-parallax-mouse-active'),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     // Add to GPU summary store as a custom metric
@@ -432,7 +432,7 @@ function trackPerformanceMetrics(instance) {
       fps: 1000 / (performance.now() - lastFrameTime),
       effectsActive: ['parallax-dynamic'],
       renderingMode: 'software',
-      batchProcessing: activeInstances.size > 1
+      batchProcessing: activeInstances.size > 1,
     });
   } catch (error) {
     console.warn('ParallaxDynamic: Performance tracking failed:', error);
@@ -515,7 +515,7 @@ export function getPerformanceStats() {
     lastFrameTime,
     isAnimating,
     memoryUsage: activeInstances.size * 256, // Estimated bytes per instance
-    config: globalConfig
+    config: globalConfig,
   };
 }
 
@@ -591,7 +591,7 @@ if (typeof window !== 'undefined') {
     resume: resumeAll,
     setPerformanceMode,
     autoAdjust: autoAdjustPerformance,
-    getStats: getPerformanceStats
+    getStats: getPerformanceStats,
   };
 }
 

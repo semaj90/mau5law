@@ -1,20 +1,13 @@
 #!/usr/bin/env node
 
-import {
-  readFileSync,
-  writeFileSync,
-  existsSync,
-  readdirSync,
-  statSync,
-  mkdirSync,
-} from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-console.log("🔧 Fixing TypeScript errors comprehensively...");
+console.log('🔧 Fixing TypeScript errors comprehensively...');
 
 // Helper function to recursively find all files
 function findFiles(dir, extension) {
@@ -35,18 +28,18 @@ function findFiles(dir, extension) {
 
 // 1. Fix schema imports - ensure consistent schema usage
 function fixSchemaImports() {
-  console.log("📋 Fixing schema imports...");
+  console.log('📋 Fixing schema imports...');
 
   const files = [
-    ...findFiles("./src", ".ts"),
-    ...findFiles("./src", ".js"),
-    ...findFiles("./src", ".svelte"),
+    ...findFiles('./src', '.ts'),
+    ...findFiles('./src', '.js'),
+    ...findFiles('./src', '.svelte'),
   ];
 
   for (const file of files) {
     if (!existsSync(file)) continue;
 
-    let content = readFileSync(file, "utf-8");
+    let content = readFileSync(file, 'utf-8');
     let changed = false;
 
     // Fix schema imports to use consistent path
@@ -66,16 +59,14 @@ function fixSchemaImports() {
 
     // Ensure drizzle imports are correct
     if (
-      content.includes("drizzle-orm") &&
-      !content.includes("import { eq, and, or, like, desc, asc }")
+      content.includes('drizzle-orm') &&
+      !content.includes('import { eq, and, or, like, desc, asc }')
     ) {
-      const drizzleImportMatch = content.match(
-        /import\s*{[^}]*}\s*from\s*['"]drizzle-orm['"];?/,
-      );
+      const drizzleImportMatch = content.match(/import\s*{[^}]*}\s*from\s*['"]drizzle-orm['"];?/);
       if (drizzleImportMatch) {
         content = content.replace(
           drizzleImportMatch[0],
-          "import { eq, and, or, like, desc, asc, sql } from 'drizzle-orm';",
+          "import { eq, and, or, like, desc, asc, sql } from 'drizzle-orm';"
         );
         changed = true;
       }
@@ -90,17 +81,11 @@ function fixSchemaImports() {
 
 // 2. Fix UI component imports and exports
 function fixUIComponents() {
-  console.log("🎨 Fixing UI component imports and exports...");
+  console.log('🎨 Fixing UI component imports and exports...');
 
   // First, ensure all UI component files exist
-  const uiDir = "./src/lib/components/ui";
-  const componentDirs = [
-    "dropdown-menu",
-    "context-menu",
-    "dialog",
-    "grid",
-    "drawer",
-  ];
+  const uiDir = './src/lib/components/ui';
+  const componentDirs = ['dropdown-menu', 'context-menu', 'dialog', 'grid', 'drawer'];
 
   for (const dir of componentDirs) {
     const dirPath = join(uiDir, dir);
@@ -110,30 +95,30 @@ function fixUIComponents() {
   }
 
   // Fix grid component
-  const gridIndexPath = join(uiDir, "grid", "index.js");
+  const gridIndexPath = join(uiDir, 'grid', 'index.js');
   if (!existsSync(gridIndexPath)) {
     writeFileSync(
       gridIndexPath,
       `export { default as Grid } from './Grid.svelte';
 export { default as GridItem } from './GridItem.svelte';
-`,
+`
     );
   }
 
   // Fix drawer component
-  const drawerIndexPath = join(uiDir, "drawer", "index.js");
+  const drawerIndexPath = join(uiDir, 'drawer', 'index.js');
   if (!existsSync(drawerIndexPath)) {
     writeFileSync(
       drawerIndexPath,
       `export { default as Drawer } from './Drawer.svelte';
 export { default as DrawerContent } from './DrawerContent.svelte';
 export { default as DrawerTrigger } from './DrawerTrigger.svelte';
-`,
+`
     );
   }
 
   // Update main UI index to include all components
-  const mainIndexPath = join(uiDir, "index.ts");
+  const mainIndexPath = join(uiDir, 'index.ts');
   const indexContent = `// UI Components
 export { default as Button } from './Button.svelte';
 export { default as Card } from './Card.svelte';
@@ -160,26 +145,26 @@ export * as Drawer from './drawer/index.js';
 `;
 
   writeFileSync(mainIndexPath, indexContent);
-  console.log("✅ Updated UI component exports");
+  console.log('✅ Updated UI component exports');
 }
 
 // 3. Fix store imports and type issues
 function fixStoreIssues() {
-  console.log("🏪 Fixing store imports and types...");
+  console.log('🏪 Fixing store imports and types...');
 
-  const storeFiles = findFiles("./src/lib/stores", ".ts");
+  const storeFiles = findFiles('./src/lib/stores', '.ts');
 
   for (const file of storeFiles) {
     if (!existsSync(file)) continue;
 
-    let content = readFileSync(file, "utf-8");
+    let content = readFileSync(file, 'utf-8');
     let changed = false;
 
     // Fix store type imports
-    if (content.includes("Writable") && !content.includes("import type")) {
+    if (content.includes('Writable') && !content.includes('import type')) {
       content = content.replace(
         /import\s*{\s*writable[^}]*}\s*from\s*['"]svelte\/store['"];?/gi,
-        "import { writable, type Writable } from 'svelte/store';",
+        "import { writable, type Writable } from 'svelte/store';"
       );
       changed = true;
     }
@@ -189,10 +174,10 @@ function fixStoreIssues() {
     content = content.replace(/from ['"]\$app\//g, "from '$app/");
 
     // Fix schema imports in stores
-    if (content.includes("../server/db/") || content.includes("../database/")) {
+    if (content.includes('../server/db/') || content.includes('../database/')) {
       content = content.replace(
         /from ['"][^'"]*(?:database|server\/db)\/[^'"]*schema[^'"]*['"];?/g,
-        "from '../server/db/schema.js';",
+        "from '../server/db/schema.js';"
       );
       changed = true;
     }
@@ -206,38 +191,38 @@ function fixStoreIssues() {
 
 // 4. Fix API endpoint function signatures
 function fixAPIEndpoints() {
-  console.log("🔌 Fixing API endpoint function signatures...");
+  console.log('🔌 Fixing API endpoint function signatures...');
 
-  const apiFiles = findFiles("./src/routes", "+page.server.ts").concat(
-    findFiles("./src/routes", "+layout.server.ts"),
+  const apiFiles = findFiles('./src/routes', '+page.server.ts').concat(
+    findFiles('./src/routes', '+layout.server.ts')
   );
 
   for (const file of apiFiles) {
     if (!existsSync(file)) continue;
 
-    let content = readFileSync(file, "utf-8");
+    let content = readFileSync(file, 'utf-8');
     let changed = false;
 
     // Fix load function signatures
-    if (content.includes("export async function load(")) {
+    if (content.includes('export async function load(')) {
       content = content.replace(
         /export async function load\(\s*{[^}]*}\s*\)/g,
-        "export async function load({ params, url, locals, fetch })",
+        'export async function load({ params, url, locals, fetch })'
       );
       changed = true;
     }
 
     // Fix action function signatures
-    if (content.includes("export const actions")) {
+    if (content.includes('export const actions')) {
       content = content.replace(
         /async\s+\(\s*{[^}]*}\s*\)\s*=>/g,
-        "async ({ request, locals, params }) =>",
+        'async ({ request, locals, params }) =>'
       );
       changed = true;
     }
 
     // Ensure proper imports for RequestEvent
-    if (content.includes("RequestEvent") && !content.includes("import type")) {
+    if (content.includes('RequestEvent') && !content.includes('import type')) {
       content = `import type { RequestEvent } from '@sveltejs/kit';\n${content}`;
       changed = true;
     }
@@ -251,17 +236,14 @@ function fixAPIEndpoints() {
 
 // 5. Fix component library imports
 function fixComponentLibraryImports() {
-  console.log("📚 Fixing component library imports...");
+  console.log('📚 Fixing component library imports...');
 
-  const files = [
-    ...findFiles("./src", ".svelte"),
-    ...findFiles("./src", ".ts"),
-  ];
+  const files = [...findFiles('./src', '.svelte'), ...findFiles('./src', '.ts')];
 
   for (const file of files) {
     if (!existsSync(file)) continue;
 
-    let content = readFileSync(file, "utf-8");
+    let content = readFileSync(file, 'utf-8');
     let changed = false;
 
     // Fix bits-ui imports
@@ -282,27 +264,23 @@ function fixComponentLibraryImports() {
     if (content.includes("'melt-ui'")) {
       content = content.replace(
         /import\s*{[^}]*}\s*from\s*['"]melt-ui['"];?/g,
-        "import { createDropdownMenu, createDialog, createTooltip } from '@melt-ui/svelte';",
+        "import { createDropdownMenu, createDialog, createTooltip } from '@melt-ui/svelte';"
       );
       changed = true;
     }
 
     // Fix lucide-svelte imports
-    if (content.includes("lucide-svelte")) {
-      const iconMatches = content.match(
-        /import\s*{([^}]*)}\s*from\s*['"]lucide-svelte['"];?/g,
-      );
+    if (content.includes('lucide-svelte')) {
+      const iconMatches = content.match(/import\s*{([^}]*)}\s*from\s*['"]lucide-svelte['"];?/g);
       if (iconMatches) {
         for (const match of iconMatches) {
           const icons = match
             .match(/{([^}]*)}/)[1]
-            .split(",")
+            .split(',')
             .map((s) => s.trim());
           const newImport = icons
-            .map(
-              (icon) => `import ${icon} from 'lucide-svelte/${icon}.svelte';`,
-            )
-            .join("\n");
+            .map((icon) => `import ${icon} from 'lucide-svelte/${icon}.svelte';`)
+            .join('\n');
           content = content.replace(match, newImport);
           changed = true;
         }
@@ -318,42 +296,35 @@ function fixComponentLibraryImports() {
 
 // 6. Fix vector and embedding service issues
 function fixVectorServices() {
-  console.log("🔍 Fixing vector and embedding service issues...");
+  console.log('🔍 Fixing vector and embedding service issues...');
 
-  const vectorFiles = findFiles("./src/lib/server", ".ts").filter(
-    (f) =>
-      f.includes("vector") || f.includes("embedding") || f.includes("qdrant"),
+  const vectorFiles = findFiles('./src/lib/server', '.ts').filter(
+    (f) => f.includes('vector') || f.includes('embedding') || f.includes('qdrant')
   );
 
   for (const file of vectorFiles) {
     if (!existsSync(file)) continue;
 
-    let content = readFileSync(file, "utf-8");
+    let content = readFileSync(file, 'utf-8');
     let changed = false;
 
     // Add missing imports for vector services
-    if (
-      content.includes("QdrantClient") &&
-      !content.includes("import { QdrantClient }")
-    ) {
+    if (content.includes('QdrantClient') && !content.includes('import { QdrantClient }')) {
       content = `import { QdrantClient } from '@qdrant/js-client-rest';\n${content}`;
       changed = true;
     }
 
     // Fix embedding function types
-    if (
-      content.includes("generateEmbedding") &&
-      !content.includes("Promise<number[]>")
-    ) {
+    if (content.includes('generateEmbedding') && !content.includes('Promise<number[]>')) {
       content = content.replace(
         /generateEmbedding\([^)]*\):/g,
-        "generateEmbedding(text: string): Promise<number[]>",
+        'generateEmbedding(text: string): Promise<number[]>'
       );
       changed = true;
     }
 
     // Fix vector search types
-    if (content.includes("vectorSearch") && !content.includes("SearchResult")) {
+    if (content.includes('vectorSearch') && !content.includes('SearchResult')) {
       content = `export interface SearchResult {\n  id: string;\n  score: number;\n  payload?: any;\n}\n\n${content}`;
       changed = true;
     }
@@ -367,13 +338,13 @@ function fixVectorServices() {
 
 // 7. Create missing component files
 function createMissingComponents() {
-  console.log("🆕 Creating missing component files...");
+  console.log('🆕 Creating missing component files...');
 
   // Grid components
-  const gridDir = "./src/lib/components/ui/grid";
-  if (!existsSync(join(gridDir, "Grid.svelte"))) {
+  const gridDir = './src/lib/components/ui/grid';
+  if (!existsSync(join(gridDir, 'Grid.svelte'))) {
     writeFileSync(
-      join(gridDir, "Grid.svelte"),
+      join(gridDir, 'Grid.svelte'),
       `<script lang="ts">
   export let class: string = '';
   export let cols: number = 1;
@@ -386,13 +357,13 @@ function createMissingComponents() {
 >
   <slot />
 </div>
-`,
+`
     );
   }
 
-  if (!existsSync(join(gridDir, "GridItem.svelte"))) {
+  if (!existsSync(join(gridDir, 'GridItem.svelte'))) {
     writeFileSync(
-      join(gridDir, "GridItem.svelte"),
+      join(gridDir, 'GridItem.svelte'),
       `<script lang="ts">
   export let class: string = '';
   export let span: number = 1;
@@ -401,15 +372,15 @@ function createMissingComponents() {
 <div class="grid-item {class}" style="grid-column: span {span};">
   <slot />
 </div>
-`,
+`
     );
   }
 
   // Drawer components
-  const drawerDir = "./src/lib/components/ui/drawer";
-  if (!existsSync(join(drawerDir, "Drawer.svelte"))) {
+  const drawerDir = './src/lib/components/ui/drawer';
+  if (!existsSync(join(drawerDir, 'Drawer.svelte'))) {
     writeFileSync(
-      join(drawerDir, "Drawer.svelte"),
+      join(drawerDir, 'Drawer.svelte'),
       `<script lang="ts">
   export let open: boolean = false;
   export let class: string = '';
@@ -446,11 +417,11 @@ function createMissingComponents() {
     overflow: auto;
   }
 </style>
-`,
+`
     );
   }
 
-  console.log("✅ Created missing component files");
+  console.log('✅ Created missing component files');
 }
 
 // Main execution
@@ -464,10 +435,10 @@ async function main() {
     fixVectorServices();
     createMissingComponents();
 
-    console.log("\n🎉 TypeScript error fixes completed!");
+    console.log('\n🎉 TypeScript error fixes completed!');
     console.log('Run "npm run check" to verify the fixes.');
   } catch (error) {
-    console.error("❌ Error during fix:", error);
+    console.error('❌ Error during fix:', error);
     process.exit(1);
   }
 }

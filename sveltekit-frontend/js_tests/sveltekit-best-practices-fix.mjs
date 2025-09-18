@@ -5,15 +5,15 @@
  * Fixes common issues and enforces SvelteKit 2.x + Svelte 5 best practices
  */
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log("🚀 SvelteKit Best Practices Fix Script Starting...");
-console.log("=" * 60);
+console.log('🚀 SvelteKit Best Practices Fix Script Starting...');
+console.log('=' * 60);
 
 const fixes = {
   imports: [],
@@ -38,7 +38,7 @@ const SVELTE_CONFIG = {
  * Find all relevant files to fix
  */
 function findFilesToFix() {
-  const patterns = ["src/**/*.svelte", "src/**/*.ts", "src/**/*.js"];
+  const patterns = ['src/**/*.svelte', 'src/**/*.ts', 'src/**/*.js'];
 
   const files = [];
 
@@ -49,25 +49,17 @@ function findFilesToFix() {
       const fullPath = path.join(dir, item);
       const stat = fs.statSync(fullPath);
 
-      if (
-        stat.isDirectory() &&
-        !item.startsWith(".") &&
-        item !== "node_modules"
-      ) {
+      if (stat.isDirectory() && !item.startsWith('.') && item !== 'node_modules') {
         walkDir(fullPath);
       } else if (stat.isFile()) {
-        if (
-          item.endsWith(".svelte") ||
-          item.endsWith(".ts") ||
-          item.endsWith(".js")
-        ) {
+        if (item.endsWith('.svelte') || item.endsWith('.ts') || item.endsWith('.js')) {
           files.push(fullPath);
         }
       }
     }
   }
 
-  walkDir("src");
+  walkDir('src');
   return files;
 }
 
@@ -79,12 +71,11 @@ function fixImportsExports(content, filePath) {
   let changes = [];
 
   // Fix barrel imports - use specific imports instead of index
-  const barrelImportRegex =
-    /import\s+{([^}]+)}\s+from\s+['"](\$lib\/[^'"]*\/?)['"];?/g;
+  const barrelImportRegex = /import\s+{([^}]+)}\s+from\s+['"](\$lib\/[^'"]*\/?)['"];?/g;
   fixed = fixed.replace(barrelImportRegex, (match, imports, importPath) => {
-    if (importPath.endsWith("/") || importPath.includes("/index")) {
+    if (importPath.endsWith('/') || importPath.includes('/index')) {
       changes.push(`Fixed barrel import: ${importPath}`);
-      return match.replace(importPath, importPath.replace(/\/(index)?$/, ""));
+      return match.replace(importPath, importPath.replace(/\/(index)?$/, ''));
     }
     return match;
   });
@@ -95,43 +86,32 @@ function fixImportsExports(content, filePath) {
     fixed = fixed.replace(
       /import\s+([^'"]*)\s+from\s+['"]\.\.\/\.\.\/lib\/([^'"]+)['"];?/g,
       (match, imports, libPath) => {
-        changes.push("Fixed relative import to use $lib alias");
+        changes.push('Fixed relative import to use $lib alias');
         return `import ${imports} from '$lib/${libPath}';`;
-      },
+      }
     );
   }
 
   // Fix missing .js extensions for internal imports
-  const internalImportRegex =
-    /import\s+[^'"]*from\s+['"](\$lib\/[^'"]*?)['"];?/g;
+  const internalImportRegex = /import\s+[^'"]*from\s+['"](\$lib\/[^'"]*?)['"];?/g;
   fixed = fixed.replace(internalImportRegex, (match, importPath) => {
-    if (!importPath.includes(".") && !importPath.endsWith("/")) {
+    if (!importPath.includes('.') && !importPath.endsWith('/')) {
       // This might be a TypeScript file that needs .js extension
-      if (
-        fs.existsSync(
-          path.resolve("src/lib", importPath.replace("$lib/", "") + ".ts"),
-        )
-      ) {
-        changes.push("Added .js extension for TypeScript import");
-        return match.replace(importPath, importPath + ".js");
+      if (fs.existsSync(path.resolve('src/lib', importPath.replace('$lib/', '') + '.ts'))) {
+        changes.push('Added .js extension for TypeScript import');
+        return match.replace(importPath, importPath + '.js');
       }
     }
     return match;
   });
 
   // Fix default exports in TypeScript files
-  if (filePath.endsWith(".ts") && !filePath.includes(".d.ts")) {
-    if (
-      fixed.includes("export default") &&
-      !fixed.includes("export default class")
-    ) {
+  if (filePath.endsWith('.ts') && !filePath.includes('.d.ts')) {
+    if (fixed.includes('export default') && !fixed.includes('export default class')) {
       const defaultExportRegex = /export\s+default\s+([^;]+);?/g;
       fixed = fixed.replace(defaultExportRegex, (match, defaultValue) => {
-        if (
-          !defaultValue.includes("function") &&
-          !defaultValue.includes("class")
-        ) {
-          changes.push("Fixed default export format");
+        if (!defaultValue.includes('function') && !defaultValue.includes('class')) {
+          changes.push('Fixed default export format');
           return `const defaultExport = ${defaultValue};\nexport default defaultExport;`;
         }
         return match;
@@ -150,7 +130,7 @@ function fixImportsExports(content, filePath) {
  * Fix 2: Svelte 5 Best Practices
  */
 function fixSvelte5Patterns(content, filePath) {
-  if (!filePath.endsWith(".svelte")) return content;
+  if (!filePath.endsWith('.svelte')) return content;
 
   let fixed = content;
   let changes = [];
@@ -158,34 +138,31 @@ function fixSvelte5Patterns(content, filePath) {
   // Fix $: reactive statements to use $derived or $effect
   const reactiveRegex = /\$:\s*([^=\n]+)\s*=\s*([^;\n]+);?/g;
   fixed = fixed.replace(reactiveRegex, (match, variable, expression) => {
-    changes.push("Converted $: to $derived");
+    changes.push('Converted $: to $derived');
     return `let ${variable.trim()} = $derived(${expression.trim()});`;
   });
 
   // Fix $: statements with side effects to use $effect
   const sideEffectRegex = /\$:\s*{\s*([^}]+)\s*}/g;
   fixed = fixed.replace(sideEffectRegex, (match, effect) => {
-    changes.push("Converted $: side effect to $effect");
+    changes.push('Converted $: side effect to $effect');
     return `$effect(() => {\n\t${effect.trim()}\n});`;
   });
 
   // Fix prop declarations with TypeScript - ensure proper Svelte 5 syntax
   const propRegex = /export\s+let\s+(\w+):\s*([^=;]+)(\s*=\s*[^;]+)?;?/g;
-  fixed = fixed.replace(
-    propRegex,
-    (match, propName, propType, defaultValue) => {
-      changes.push("Updated prop declaration for Svelte 5");
-      const cleanType = propType.trim();
-      const cleanDefault = defaultValue ? defaultValue.trim() : "";
-      return `let { ${propName}${cleanDefault} }: { ${propName}: ${cleanType} } = $props();`;
-    },
-  );
+  fixed = fixed.replace(propRegex, (match, propName, propType, defaultValue) => {
+    changes.push('Updated prop declaration for Svelte 5');
+    const cleanType = propType.trim();
+    const cleanDefault = defaultValue ? defaultValue.trim() : '';
+    return `let { ${propName}${cleanDefault} }: { ${propName}: ${cleanType} } = $props();`;
+  });
 
   // Fix event dispatchers
   const dispatchRegex = /const\s+dispatch\s*=\s*createEventDispatcher\(\);?/g;
   if (dispatchRegex.test(fixed)) {
     fixed = fixed.replace(dispatchRegex, (match) => {
-      changes.push("Updated event dispatcher for Svelte 5");
+      changes.push('Updated event dispatcher for Svelte 5');
       return `const dispatch = createEventDispatcher<{\n\t// Define your events here\n}>();`;
     });
   }
@@ -193,15 +170,15 @@ function fixSvelte5Patterns(content, filePath) {
   // Fix store subscriptions
   const storeSubscribeRegex = /\$:\s*unsubscribe\s*=\s*(\w+)\.subscribe/g;
   fixed = fixed.replace(storeSubscribeRegex, (match, storeName) => {
-    changes.push("Updated store subscription pattern");
+    changes.push('Updated store subscription pattern');
     return `$effect(() => {\n\tconst unsubscribe = ${storeName}.subscribe`;
   });
 
   // Fix bind:value patterns for better type safety
   const bindValueRegex = /bind:value={([^}]+)}/g;
   fixed = fixed.replace(bindValueRegex, (match, variable) => {
-    if (!variable.includes("$")) {
-      changes.push("Enhanced bind:value type safety");
+    if (!variable.includes('$')) {
+      changes.push('Enhanced bind:value type safety');
       return `bind:value={${variable}}`;
     }
     return match;
@@ -218,8 +195,7 @@ function fixSvelte5Patterns(content, filePath) {
  * Fix 3: TypeScript Best Practices
  */
 function fixTypeScriptPatterns(content, filePath) {
-  if (!filePath.endsWith(".ts") && !filePath.endsWith(".svelte"))
-    return content;
+  if (!filePath.endsWith('.ts') && !filePath.endsWith('.svelte')) return content;
 
   let fixed = content;
   let changes = [];
@@ -227,7 +203,7 @@ function fixTypeScriptPatterns(content, filePath) {
   // Fix any types
   const anyTypeRegex = /:\s*any(\s|[,;\]\)}])/g;
   if (anyTypeRegex.test(fixed)) {
-    changes.push("Found any types - consider using specific types");
+    changes.push('Found any types - consider using specific types');
   }
 
   // Fix missing return types for functions
@@ -237,7 +213,7 @@ function fixTypeScriptPatterns(content, filePath) {
   // Add proper error handling
   const catchRegex = /catch\s*\(\s*(\w+)\s*\)\s*{/g;
   fixed = fixed.replace(catchRegex, (match, errorVar) => {
-    changes.push("Enhanced error handling");
+    changes.push('Enhanced error handling');
     return `catch (${errorVar}: unknown) {\n\t\tconst error = ${errorVar} instanceof Error ? ${errorVar} : new Error(String(${errorVar}));`;
   });
 
@@ -249,7 +225,7 @@ function fixTypeScriptPatterns(content, filePath) {
   const nullCheckRegex = /if\s*\(\s*(\w+)\s*\)/g;
   fixed = fixed.replace(nullCheckRegex, (match, variable) => {
     if (content.includes(`${variable}?`) || content.includes(`${variable} |`)) {
-      changes.push("Enhanced null safety");
+      changes.push('Enhanced null safety');
       return `if (${variable} != null)`;
     }
     return match;
@@ -270,44 +246,41 @@ function fixPerformancePatterns(content, filePath) {
   let changes = [];
 
   // Fix inefficient reactivity
-  if (filePath.endsWith(".svelte")) {
+  if (filePath.endsWith('.svelte')) {
     // Check for expensive operations in reactive statements
     const expensiveInReactive = /\$:\s*[^=]*\.(?:map|filter|reduce|sort|find)/g;
     if (expensiveInReactive.test(fixed)) {
-      changes.push(
-        "Found expensive operations in reactive statements - consider memoization",
-      );
+      changes.push('Found expensive operations in reactive statements - consider memoization');
     }
 
     // Fix missing key attributes in each blocks
     const eachBlockRegex = /{#each\s+(\w+)\s+as\s+(\w+)(?:\s*,\s*(\w+))?\s*}/g;
     fixed = fixed.replace(eachBlockRegex, (match, array, item, index) => {
-      if (!match.includes("(") && !content.includes(`(${item}.id`)) {
-        changes.push("Added key to each block for better performance");
-        return `{#each ${array} as ${item}${index ? `, ${index}` : ""} (${item}.id || ${index || "index"})}`;
+      if (!match.includes('(') && !content.includes(`(${item}.id`)) {
+        changes.push('Added key to each block for better performance');
+        return `{#each ${array} as ${item}${index ? `, ${index}` : ''} (${item}.id || ${index || 'index'})}`;
       }
       return match;
     });
 
     // Fix large component imports
-    const componentImportRegex =
-      /import\s+(\w+)\s+from\s+['"][^'"]*\.svelte['"];?/g;
+    const componentImportRegex = /import\s+(\w+)\s+from\s+['"][^'"]*\.svelte['"];?/g;
     const componentImports = content.match(componentImportRegex);
     if (componentImports && componentImports.length > 10) {
-      changes.push("Consider code splitting - many component imports detected");
+      changes.push('Consider code splitting - many component imports detected');
     }
   }
 
   // Fix inefficient database queries
-  if (content.includes("db.") || content.includes("database")) {
+  if (content.includes('db.') || content.includes('database')) {
     const selectAllRegex = /\.select\(\s*\*\s*\)/g;
     if (selectAllRegex.test(fixed)) {
-      changes.push("Avoid SELECT * - specify needed columns");
+      changes.push('Avoid SELECT * - specify needed columns');
     }
 
     const missingLimitRegex = /\.select\([^)]*\)(?!.*\.limit)/g;
-    if (missingLimitRegex.test(fixed) && !content.includes(".findFirst")) {
-      changes.push("Consider adding .limit() to prevent large result sets");
+    if (missingLimitRegex.test(fixed) && !content.includes('.findFirst')) {
+      changes.push('Consider adding .limit() to prevent large result sets');
     }
   }
 
@@ -322,7 +295,7 @@ function fixPerformancePatterns(content, filePath) {
  * Fix 5: Accessibility Best Practices
  */
 function fixAccessibilityPatterns(content, filePath) {
-  if (!filePath.endsWith(".svelte")) return content;
+  if (!filePath.endsWith('.svelte')) return content;
 
   let fixed = content;
   let changes = [];
@@ -330,30 +303,30 @@ function fixAccessibilityPatterns(content, filePath) {
   // Fix missing alt attributes
   const imgRegex = /<img[^>]*(?!alt=)[^>]*>/g;
   fixed = fixed.replace(imgRegex, (match) => {
-    changes.push("Added missing alt attribute");
-    return match.replace(">", ' alt="" >');
+    changes.push('Added missing alt attribute');
+    return match.replace('>', ' alt="" >');
   });
 
   // Fix missing labels for form inputs
   const inputRegex = /<input[^>]*(?!aria-label)(?!id=)[^>]*>/g;
-  if (inputRegex.test(content) && !content.includes("<label")) {
-    changes.push("Form inputs should have associated labels");
+  if (inputRegex.test(content) && !content.includes('<label')) {
+    changes.push('Form inputs should have associated labels');
   }
 
   // Fix missing ARIA attributes for interactive elements
   const clickableRegex = /<div[^>]*on:click[^>]*>/g;
   fixed = fixed.replace(clickableRegex, (match) => {
-    if (!match.includes("role=") && !match.includes("tabindex=")) {
-      changes.push("Added accessibility attributes to clickable div");
-      return match.replace(">", ' role="button" tabindex={0} >');
+    if (!match.includes('role=') && !match.includes('tabindex=')) {
+      changes.push('Added accessibility attributes to clickable div');
+      return match.replace('>', ' role="button" tabindex={0} >');
     }
     return match;
   });
 
   // Fix missing focus management
   const modalRegex = /<div[^>]*class="[^"]*modal[^"]*"[^>]*>/g;
-  if (modalRegex.test(content) && !content.includes("focus()")) {
-    changes.push("Consider implementing focus management for modals");
+  if (modalRegex.test(content) && !content.includes('focus()')) {
+    changes.push('Consider implementing focus management for modals');
   }
 
   if (changes.length > 0) {
@@ -373,30 +346,24 @@ function fixSecurityPatterns(content, filePath) {
   // Fix innerHTML usage
   const innerHTMLRegex = /\.innerHTML\s*=/g;
   if (innerHTMLRegex.test(fixed)) {
-    changes.push("Avoid innerHTML - use textContent or sanitization");
+    changes.push('Avoid innerHTML - use textContent or sanitization');
   }
 
   // Fix eval usage
   const evalRegex = /\beval\s*\(/g;
   if (evalRegex.test(fixed)) {
-    changes.push("Remove eval() usage - security risk");
+    changes.push('Remove eval() usage - security risk');
   }
 
   // Fix missing input validation
-  if (
-    content.includes("params.") &&
-    !content.includes("zod") &&
-    !content.includes("validate")
-  ) {
-    changes.push("Consider adding input validation with Zod or similar");
+  if (content.includes('params.') && !content.includes('zod') && !content.includes('validate')) {
+    changes.push('Consider adding input validation with Zod or similar');
   }
 
   // Fix hardcoded secrets
   const secretRegex = /(password|secret|key|token)\s*[:=]\s*['"][^'"]{8,}['"]/i;
   if (secretRegex.test(content)) {
-    changes.push(
-      "Potential hardcoded secret detected - use environment variables",
-    );
+    changes.push('Potential hardcoded secret detected - use environment variables');
   }
 
   if (changes.length > 0) {
@@ -411,7 +378,7 @@ function fixSecurityPatterns(content, filePath) {
  */
 function fixFile(filePath, targetArea = null) {
   try {
-    let content = fs.readFileSync(filePath, "utf-8");
+    let content = fs.readFileSync(filePath, 'utf-8');
     const originalContent = content;
 
     // Apply fixes based on target area
@@ -453,36 +420,36 @@ function generateConfigImprovements() {
 
   // Check tsconfig.json improvements
   try {
-    const tsconfig = JSON.parse(fs.readFileSync("tsconfig.json", "utf-8"));
+    const tsconfig = JSON.parse(fs.readFileSync('tsconfig.json', 'utf-8'));
 
     if (!tsconfig.compilerOptions?.strict) {
-      improvements.push("Enable strict mode in tsconfig.json");
+      improvements.push('Enable strict mode in tsconfig.json');
     }
 
     if (!tsconfig.compilerOptions?.noImplicitAny) {
-      improvements.push("Enable noImplicitAny in tsconfig.json");
+      improvements.push('Enable noImplicitAny in tsconfig.json');
     }
 
     if (!tsconfig.compilerOptions?.exactOptionalPropertyTypes) {
-      improvements.push("Consider enabling exactOptionalPropertyTypes");
+      improvements.push('Consider enabling exactOptionalPropertyTypes');
     }
   } catch (error) {
-    improvements.push("Could not read tsconfig.json");
+    improvements.push('Could not read tsconfig.json');
   }
 
   // Check svelte.config.js improvements
   try {
-    const svelteConfigContent = fs.readFileSync("svelte.config.js", "utf-8");
+    const svelteConfigContent = fs.readFileSync('svelte.config.js', 'utf-8');
 
-    if (!svelteConfigContent.includes("vitePreprocess")) {
-      improvements.push("Consider using vitePreprocess for better integration");
+    if (!svelteConfigContent.includes('vitePreprocess')) {
+      improvements.push('Consider using vitePreprocess for better integration');
     }
 
-    if (!svelteConfigContent.includes("adapter-auto")) {
-      improvements.push("Consider using adapter-auto for flexible deployment");
+    if (!svelteConfigContent.includes('adapter-auto')) {
+      improvements.push('Consider using adapter-auto for flexible deployment');
     }
   } catch (error) {
-    improvements.push("Could not read svelte.config.js");
+    improvements.push('Could not read svelte.config.js');
   }
 
   return improvements;
@@ -498,7 +465,7 @@ function generateConfigImprovements() {
  */
 export async function runAutoFix(options = {}) {
   const { files: targetFiles, dryRun = false, area = null } = options;
-  
+
   // Reset fixes state
   Object.assign(fixes, {
     imports: [],
@@ -513,7 +480,7 @@ export async function runAutoFix(options = {}) {
   });
 
   const files = targetFiles || findFilesToFix();
-  
+
   for (const file of files) {
     if (dryRun) {
       // Analyze without making changes
@@ -533,10 +500,7 @@ export async function runAutoFix(options = {}) {
     ...fixes.security,
   ];
 
-  fixes.totalIssues = allFixes.reduce(
-    (sum, fix) => sum + fix.changes.length,
-    0,
-  );
+  fixes.totalIssues = allFixes.reduce((sum, fix) => sum + fix.changes.length, 0);
 
   const configImprovements = generateConfigImprovements();
 
@@ -548,7 +512,7 @@ export async function runAutoFix(options = {}) {
       filesFixed: fixes.filesFixed,
       totalIssues: fixes.totalIssues,
       dryRun,
-      area: area || 'all'
+      area: area || 'all',
     },
     fixes: {
       imports: fixes.imports,
@@ -560,12 +524,12 @@ export async function runAutoFix(options = {}) {
     },
     configImprovements,
     recommendations: [
-      "Run npm run check to verify TypeScript compilation",
-      "Run npm run lint to check code style",
-      "Run npm run test to ensure functionality",
-      "Review performance recommendations",
-      "Test accessibility with screen readers"
-    ]
+      'Run npm run check to verify TypeScript compilation',
+      'Run npm run lint to check code style',
+      'Run npm run test to ensure functionality',
+      'Review performance recommendations',
+      'Test accessibility with screen readers',
+    ],
   };
 }
 
@@ -574,8 +538,8 @@ export async function runAutoFix(options = {}) {
  */
 function analyzeFile(filePath, targetArea = null) {
   try {
-    const content = fs.readFileSync(filePath, "utf-8");
-    
+    const content = fs.readFileSync(filePath, 'utf-8');
+
     // Apply analysis based on target area
     if (!targetArea || targetArea === 'imports') {
       analyzeImportsExports(content, filePath);
@@ -605,53 +569,53 @@ function analyzeFile(filePath, targetArea = null) {
  */
 function analyzeImportsExports(content, filePath) {
   let changes = [];
-  
+
   const barrelImportRegex = /import\s+{([^}]+)}\s+from\s+['"](\$lib\/[^'"]*\/?)['"];?/g;
   let match;
   while ((match = barrelImportRegex.exec(content)) !== null) {
     const [, imports, importPath] = match;
-    if (importPath.endsWith("/") || importPath.includes("/index")) {
+    if (importPath.endsWith('/') || importPath.includes('/index')) {
       changes.push(`Would fix barrel import: ${importPath}`);
     }
   }
-  
+
   const relativeImportRegex = /import\s+[^'"]*from\s+['"]\.\.\/\.\.\//g;
   if (relativeImportRegex.test(content)) {
-    changes.push("Would fix relative imports to use $lib alias");
+    changes.push('Would fix relative imports to use $lib alias');
   }
-  
+
   if (changes.length > 0) {
     fixes.imports.push({ file: filePath, changes });
   }
 }
 
 function analyzeSvelte5Patterns(content, filePath) {
-  if (!filePath.endsWith(".svelte")) return;
-  
+  if (!filePath.endsWith('.svelte')) return;
+
   let changes = [];
-  
+
   if (/\$:\s*([^=\n]+)\s*=\s*([^;\n]+);?/.test(content)) {
-    changes.push("Would convert $: to $derived");
+    changes.push('Would convert $: to $derived');
   }
-  
+
   if (/\$:\s*{\s*([^}]+)\s*}/.test(content)) {
-    changes.push("Would convert $: side effect to $effect");
+    changes.push('Would convert $: side effect to $effect');
   }
-  
+
   if (changes.length > 0) {
     fixes.svelte5.push({ file: filePath, changes });
   }
 }
 
 function analyzeTypeScriptPatterns(content, filePath) {
-  if (!filePath.endsWith(".ts") && !filePath.endsWith(".svelte")) return;
-  
+  if (!filePath.endsWith('.ts') && !filePath.endsWith('.svelte')) return;
+
   let changes = [];
-  
+
   if (/:\s*any(\s|[,;\]\)}])/.test(content)) {
-    changes.push("Found any types - would suggest specific types");
+    changes.push('Found any types - would suggest specific types');
   }
-  
+
   if (changes.length > 0) {
     fixes.typeScript.push({ file: filePath, changes });
   }
@@ -659,27 +623,27 @@ function analyzeTypeScriptPatterns(content, filePath) {
 
 function analyzePerformancePatterns(content, filePath) {
   let changes = [];
-  
-  if (filePath.endsWith(".svelte")) {
+
+  if (filePath.endsWith('.svelte')) {
     if (/\$:\s*[^=]*\.(?:map|filter|reduce|sort|find)/.test(content)) {
-      changes.push("Would optimize expensive operations in reactive statements");
+      changes.push('Would optimize expensive operations in reactive statements');
     }
   }
-  
+
   if (changes.length > 0) {
     fixes.performance.push({ file: filePath, changes });
   }
 }
 
 function analyzeAccessibilityPatterns(content, filePath) {
-  if (!filePath.endsWith(".svelte")) return;
-  
+  if (!filePath.endsWith('.svelte')) return;
+
   let changes = [];
-  
+
   if (/<img[^>]*(?!alt=)[^>]*>/.test(content)) {
-    changes.push("Would add missing alt attributes");
+    changes.push('Would add missing alt attributes');
   }
-  
+
   if (changes.length > 0) {
     fixes.accessibility.push({ file: filePath, changes });
   }
@@ -687,11 +651,11 @@ function analyzeAccessibilityPatterns(content, filePath) {
 
 function analyzeSecurityPatterns(content, filePath) {
   let changes = [];
-  
+
   if (/\.innerHTML\s*=/.test(content)) {
-    changes.push("Would fix innerHTML usage");
+    changes.push('Would fix innerHTML usage');
   }
-  
+
   if (changes.length > 0) {
     fixes.security.push({ file: filePath, changes });
   }
@@ -701,11 +665,11 @@ function analyzeSecurityPatterns(content, filePath) {
  * Main execution (CLI mode)
  */
 async function main() {
-  console.log("🔍 Finding files to fix...");
+  console.log('🔍 Finding files to fix...');
   const files = findFilesToFix();
   console.log(`📁 Found ${files.length} files to analyze`);
 
-  console.log("\n🔧 Applying fixes...");
+  console.log('\n🔧 Applying fixes...');
   for (const file of files) {
     fixFile(file);
   }
@@ -720,14 +684,11 @@ async function main() {
     ...fixes.security,
   ];
 
-  fixes.totalIssues = allFixes.reduce(
-    (sum, fix) => sum + fix.changes.length,
-    0,
-  );
+  fixes.totalIssues = allFixes.reduce((sum, fix) => sum + fix.changes.length, 0);
 
   // Generate report
-  console.log("\n📊 FIX SUMMARY");
-  console.log("=" * 50);
+  console.log('\n📊 FIX SUMMARY');
+  console.log('=' * 50);
   console.log(`📁 Files processed: ${files.length}`);
   console.log(`✅ Files fixed: ${fixes.filesFixed}`);
   console.log(`🔧 Total issues addressed: ${fixes.totalIssues}`);
@@ -740,7 +701,7 @@ async function main() {
 
   // Detailed reporting
   if (fixes.imports.length > 0) {
-    console.log("\n📦 IMPORT/EXPORT FIXES:");
+    console.log('\n📦 IMPORT/EXPORT FIXES:');
     fixes.imports.forEach((fix) => {
       console.log(`   📄 ${path.relative(process.cwd(), fix.file)}`);
       fix.changes.forEach((change) => console.log(`      • ${change}`));
@@ -748,7 +709,7 @@ async function main() {
   }
 
   if (fixes.svelte5.length > 0) {
-    console.log("\n⚡ SVELTE 5 FIXES:");
+    console.log('\n⚡ SVELTE 5 FIXES:');
     fixes.svelte5.forEach((fix) => {
       console.log(`   📄 ${path.relative(process.cwd(), fix.file)}`);
       fix.changes.forEach((change) => console.log(`      • ${change}`));
@@ -756,7 +717,7 @@ async function main() {
   }
 
   if (fixes.performance.length > 0) {
-    console.log("\n🚀 PERFORMANCE RECOMMENDATIONS:");
+    console.log('\n🚀 PERFORMANCE RECOMMENDATIONS:');
     fixes.performance.forEach((fix) => {
       console.log(`   📄 ${path.relative(process.cwd(), fix.file)}`);
       fix.changes.forEach((change) => console.log(`      • ${change}`));
@@ -764,7 +725,7 @@ async function main() {
   }
 
   if (fixes.accessibility.length > 0) {
-    console.log("\n♿ ACCESSIBILITY FIXES:");
+    console.log('\n♿ ACCESSIBILITY FIXES:');
     fixes.accessibility.forEach((fix) => {
       console.log(`   📄 ${path.relative(process.cwd(), fix.file)}`);
       fix.changes.forEach((change) => console.log(`      • ${change}`));
@@ -772,7 +733,7 @@ async function main() {
   }
 
   if (fixes.security.length > 0) {
-    console.log("\n🔒 SECURITY RECOMMENDATIONS:");
+    console.log('\n🔒 SECURITY RECOMMENDATIONS:');
     fixes.security.forEach((fix) => {
       console.log(`   📄 ${path.relative(process.cwd(), fix.file)}`);
       fix.changes.forEach((change) => console.log(`      • ${change}`));
@@ -782,19 +743,19 @@ async function main() {
   // Configuration improvements
   const configImprovements = generateConfigImprovements();
   if (configImprovements.length > 0) {
-    console.log("\n⚙️ CONFIGURATION IMPROVEMENTS:");
+    console.log('\n⚙️ CONFIGURATION IMPROVEMENTS:');
     configImprovements.forEach((improvement) => {
       console.log(`   • ${improvement}`);
     });
   }
 
   // Next steps
-  console.log("\n🎯 NEXT STEPS:");
-  console.log("   1. Run npm run check to verify TypeScript compilation");
-  console.log("   2. Run npm run lint to check code style");
-  console.log("   3. Run npm run test to ensure functionality");
-  console.log("   4. Review performance recommendations");
-  console.log("   5. Test accessibility with screen readers");
+  console.log('\n🎯 NEXT STEPS:');
+  console.log('   1. Run npm run check to verify TypeScript compilation');
+  console.log('   2. Run npm run lint to check code style');
+  console.log('   3. Run npm run test to ensure functionality');
+  console.log('   4. Review performance recommendations');
+  console.log('   5. Test accessibility with screen readers');
 
   // Create detailed log
   const logData = {
@@ -808,16 +769,16 @@ async function main() {
     configImprovements,
   };
 
-  fs.writeFileSync("sveltekit-fix-log.json", JSON.stringify(logData, null, 2));
-  console.log("\n📋 Detailed log saved: sveltekit-fix-log.json");
+  fs.writeFileSync('sveltekit-fix-log.json', JSON.stringify(logData, null, 2));
+  console.log('\n📋 Detailed log saved: sveltekit-fix-log.json');
 
   if (fixes.totalIssues > 0) {
     console.log(
-      `\n🎉 SUCCESS: Fixed ${fixes.totalIssues} issues across ${fixes.filesFixed} files!`,
+      `\n🎉 SUCCESS: Fixed ${fixes.totalIssues} issues across ${fixes.filesFixed} files!`
     );
   } else {
     console.log(
-      "\n✨ EXCELLENT: No critical issues found! Your code follows SvelteKit best practices.",
+      '\n✨ EXCELLENT: No critical issues found! Your code follows SvelteKit best practices.'
     );
   }
 }

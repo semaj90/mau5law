@@ -29,10 +29,10 @@ const QUIC_VECTOR_CONFIG = {
 
 /*
  * GET /api/v1/quic/vector - Vector proxy health and cache status
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    // Check vector proxy health
+    // Check vector proxy health;
     const healthResponse = await fetch(`${QUIC_VECTOR_CONFIG.baseUrl}/health`, {
       signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout),
     });
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (healthResponse.ok) {
       responseData = await healthResponse.json();
     } else {
-      // Try fallback HTTP/2
+      // Try fallback HTTP/2;
       const fallbackResponse = await fetch(`${QUIC_VECTOR_CONFIG.fallbackUrl}/health`, {
         signal: AbortSignal.timeout(QUIC_VECTOR_CONFIG.timeout),
       });
@@ -98,7 +98,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 /*
  * POST /api/v1/quic/vector - Vector search with QUIC acceleration
- */
+ */;
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const searchQuery: VectorSearchQuery = await request.json();
@@ -106,9 +106,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const useHttp3 = url.searchParams.get('http3') !== 'false';
     const backend = url.searchParams.get('backend') || 'auto'; // 'auto', 'qdrant', 'pgvector'
 
-    // Validate search query
+    // Validate search query;
     if (!searchQuery.query && !(searchQuery as any).embedding) {
-      error(400, ensureError({ message: 'Either query text or embedding vector is required' }));
+      error(400, ensureError({ message: 'Either query text or embedding vector is required' });
     }
 
     // Determine target URL
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       ? `${QUIC_VECTOR_CONFIG.baseUrl}/api/vector/search`
       : `${QUIC_VECTOR_CONFIG.fallbackUrl}/api/vector/search`;
 
-    // Prepare request payload
+    // Prepare request payload;
     const requestPayload = {
       ...searchQuery,
       meta: {
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     let protocol: string;
 
     try {
-      // Use Go Vector Service if backend is 'auto' or 'vector'
+      // Use Go Vector Service if backend is 'auto' or 'vector';
       if (backend === 'auto' || backend === 'vector' || backend === 'pgvector') {
         // If a direct Go vector client exists in future, call it here.
         // For now, skip to Enhanced RAG fallback below.
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       // Fallback to Enhanced RAG service
       // If Enhanced RAG client becomes available, call it; otherwise fallback to local service
       const ragSearchResponse = await vectorSearchService.search(
-        searchQuery.query || 'vector search',
+        searchQuery.query || 'vector search',);
         {
           // map VectorSearchQuery.limit -> service option maxResults
           maxResults: searchQuery.limit || 10,
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         });
       }
 
-      // Original QUIC proxy as final fallback
+      // Original QUIC proxy as final fallback;
       response = await fetch(targetUrl, {
         method: 'POST',
         headers: {
@@ -241,7 +241,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 /*
  * DELETE /api/v1/quic/vector - Clear vector cache
- */
+ */;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const cacheKey = url.searchParams.get('key');
@@ -288,38 +288,38 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
 /*
  * PUT /api/v1/quic/vector - Update vector proxy configuration
- */
+ */;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const config = await request.json();
 
-    // Validate configuration
+    // Validate configuration;
     if (config.cacheTTL && (config.cacheTTL < 10 || config.cacheTTL > 3600)) {
-      error(400, ensureError({ message: 'Cache TTL must be between 10 and 3600 seconds' }));
+      error(400, ensureError({ message: 'Cache TTL must be between 10 and 3600 seconds' });
     }
 
     if (config.maxCacheSize && (config.maxCacheSize < 10 || config.maxCacheSize > 10000)) {
-      error(400, ensureError({ message: 'Max cache size must be between 10 and 10000' }));
+      error(400, ensureError({ message: 'Max cache size must be between 10 and 10000' });
     }
 
-    // Update configuration (in a real implementation, this would be persisted)
+    // Update configuration (in a real implementation, this would be persisted);
     const updatedConfig = {
       ...QUIC_VECTOR_CONFIG,
       ...config,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
 
     return json({
       success: true,
       message: 'Vector proxy configuration updated',
-      config: updatedConfig
+      config: updatedConfig,
     });
 
   } catch (err: any) {
     console.error('Vector proxy configuration update failed:', err);
     error(500, ensureError({
       message: 'Configuration update failed',
-      error: err instanceof Error ? err.message: 'Unknown error'
-    }));
+      error: err instanceof Error ? err.message: 'Unknown error',
+    });
   }
 };

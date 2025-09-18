@@ -13,16 +13,16 @@ import type {
 
 const ENHANCED_API_BASE_URL = 'http://localhost:8094';
 
-/* POST /api/v1/typescript-optimizer - Auto-solve TypeScript errors */
+/* POST /api/v1/typescript-optimizer - Auto-solve TypeScript errors */;
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json() as AutoSolveRequest;
 
-		// Validate request
+		// Validate request;
 		if (!body.errors || !Array.isArray(body.errors)) {
 			return json({ 
 				success: false, 
-				error: 'Invalid request: errors array required' 
+				error: 'Invalid request: errors array required' ,
 			}, { status: 400 });
 		}
 
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		console.log(`🔧 TypeScript Optimizer: Processing ${body.errors.length} errors via ${endpoint}`);
 
-		// Forward request to Go service
+		// Forward request to Go service;
 		const response = await fetch(apiUrl, {
 			method: 'POST',
 			headers: {
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json() as AutoSolveResponse;
 
-		// Enhance response with metadata
+		// Enhance response with metadata;
 		const enhancedResult = {
 			...result,
 			metadata: {
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 };
 
-/* GET /api/v1/typescript-optimizer - Get optimizer status */
+/* GET /api/v1/typescript-optimizer - Get optimizer status */;
 export const GET: RequestHandler = async () => {
 	try {
 		// Check Go service health
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async () => {
 				auto_solve: '/api/v1/typescript-optimizer',
 				batch_fix: '/api/v1/typescript-optimizer/batch',
 				gpu_accelerated: '/api/v1/typescript-optimizer/gpu',
-				benchmark: '/api/v1/typescript-optimizer/benchmark'
+				benchmark: '/api/v1/typescript-optimizer/benchmark',
 			}
 		});
 
@@ -138,7 +138,7 @@ function determineEndpoint(request: AutoSolveRequest): string {
 	const errorCount = request.errors.length;
 	const strategy = request.strategy?.toLowerCase() || 'auto';
 
-	// Route to optimal endpoint based on request characteristics
+	// Route to optimal endpoint based on request characteristics;
 	if (strategy === 'gpu_first' || errorCount >= 20) {
 		return '/api/gpu/batch-process';
 	}

@@ -15,7 +15,7 @@ import type {
 // Global NATS service instance
 let natsService: EnhancedNATSMessagingService | null = null;
 
-// Initialize NATS service
+// Initialize NATS service;
 function getNATSService(): EnhancedNATSMessagingService {
 	if (!natsService) {
 		natsService = new EnhancedNATSMessagingService({
@@ -26,7 +26,7 @@ function getNATSService(): EnhancedNATSMessagingService {
 			max_reconnect_attempts: -1,
 		});
 		
-		// Auto-connect on first use
+		// Auto-connect on first use;
 		natsService.connect().catch(error => {
 			console.error('NATS auto-connect failed:', error);
 		});
@@ -34,7 +34,7 @@ function getNATSService(): EnhancedNATSMessagingService {
 	return natsService;
 }
 
-/* POST /api/v1/nats - Publish message or perform NATS operations */
+/* POST /api/v1/nats - Publish message or perform NATS operations */;
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json();
@@ -55,7 +55,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				return await handleCreateStream(nats, body);
 			case 'create_consumer':
 				return await handleCreateConsumer(nats, body);
-			default:
+			default:;
 				return json({ 
 					success: false, 
 					error: `Unsupported action: ${body.action}` 
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 };
 
-/* GET /api/v1/nats - Get NATS system status and metrics */
+/* GET /api/v1/nats - Get NATS system status and metrics */;
 export const GET: RequestHandler = async () => {
 	try {
 		const nats = getNATSService();
@@ -197,7 +197,7 @@ async function handleSubscribe(nats: EnhancedNATSMessagingService, body: any): P
 	}
 
 	// For HTTP API, we can't maintain persistent subscriptions
-	// This would typically be used with WebSocket connections
+	// This would typically be used with WebSocket connections;
 	return json({
 		success: false,
 		error: 'HTTP subscriptions not supported',

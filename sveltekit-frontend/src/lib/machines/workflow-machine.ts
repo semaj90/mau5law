@@ -6,7 +6,8 @@
 import { createMachine, assign, setup } from 'xstate';
 import type { EventObject, StateValue } from 'xstate';
 
-// ==================== DOCUMENT PROCESSING WORKFLOW ====================
+// ==================== DOCUMENT PROCESSING WORKFLOW ====================;
+}
 
 export interface DocumentContext {
   documentId: string;
@@ -20,7 +21,7 @@ export interface DocumentContext {
   ocrConfidence?: number;
   processingErrors?: string[];
   metadata?: Record<string, any>;
-  retryCount: number;
+  retryCount: number;,
 }
 
 export type DocumentEvent =
@@ -63,7 +64,7 @@ export const documentWorkflowMachine = setup({
       retryCount: ({ context }) => context.retryCount + 1
     }),
     resetRetries: assign({
-      retryCount: 0
+      retryCount: 0,
     })
   },
   guards: {
@@ -82,7 +83,7 @@ export const documentWorkflowMachine = setup({
     fileSize: 0,
     mimeType: '',
     uploadedBy: 0,
-    retryCount: 0
+    retryCount: 0,
   },
   states: {
     idle: {
@@ -103,11 +104,11 @@ export const documentWorkflowMachine = setup({
       on: {
         UPLOAD_COMPLETED: {
           target: 'extractingText',
-          actions: 'setDocumentInfo'
+          actions: 'setDocumentInfo',
         },
         UPLOAD_FAILED: {
           target: 'failed',
-          actions: 'addError'
+          actions: 'addError',
         }
       }
     },
@@ -115,9 +116,9 @@ export const documentWorkflowMachine = setup({
       on: {
         TEXT_EXTRACTION_COMPLETED: {
           target: 'generatingEmbeddings',
-          actions: 'setExtractedText'
+          actions: 'setExtractedText',
         },
-        TEXT_EXTRACTION_FAILED: [
+        TEXT_EXTRACTION_FAILED: [;
           {
             target: 'retrying',
             guard: 'canRetry',
@@ -125,7 +126,7 @@ export const documentWorkflowMachine = setup({
           },
           {
             target: 'failed',
-            actions: 'addError'
+            actions: 'addError',
           }
         ]
       }
@@ -134,9 +135,9 @@ export const documentWorkflowMachine = setup({
       on: {
         EMBEDDING_COMPLETED: {
           target: 'indexing',
-          actions: 'setEmbeddings'
+          actions: 'setEmbeddings',
         },
-        EMBEDDING_FAILED: [
+        EMBEDDING_FAILED: [;
           {
             target: 'retrying',
             guard: 'canRetry',
@@ -144,7 +145,7 @@ export const documentWorkflowMachine = setup({
           },
           {
             target: 'failed',
-            actions: 'addError'
+            actions: 'addError',
           }
         ]
       }
@@ -153,9 +154,9 @@ export const documentWorkflowMachine = setup({
       on: {
         INDEXING_COMPLETED: {
           target: 'completed',
-          actions: 'resetRetries'
+          actions: 'resetRetries',
         },
-        INDEXING_FAILED: [
+        INDEXING_FAILED: [;
           {
             target: 'retrying',
             guard: 'canRetry',
@@ -163,7 +164,7 @@ export const documentWorkflowMachine = setup({
           },
           {
             target: 'failed',
-            actions: 'addError'
+            actions: 'addError',
           }
         ]
       }
@@ -171,25 +172,26 @@ export const documentWorkflowMachine = setup({
     retrying: {
       on: {
         RETRY: 'extractingText',
-        ABORT: 'failed'
+        ABORT: 'failed',
       }
     },
     completed: {
-      type: 'final'
+      type: 'final',
     },
     failed: {
       on: {
         RETRY: {
           target: 'extractingText',
           guard: 'canRetry',
-          actions: 'incrementRetry'
+          actions: 'incrementRetry',
         }
       }
     }
   }
 });
 
-// ==================== CASE WORKFLOW ====================
+// ==================== CASE WORKFLOW ====================;
+}
 
 export interface CaseContext {
   caseId: string;
@@ -203,7 +205,7 @@ export interface CaseContext {
   dueDate?: Date;
   reviewers: number[];
   approvals: number;
-  requiredApprovals: number;
+  requiredApprovals: number;,
 }
 
 export type CaseEvent =
@@ -230,34 +232,34 @@ export const caseWorkflowMachine = setup({
       title: ({ event }) => (event as any).title,
       assignedTo: ({ event }) => (event as any).assignedTo,
       status: 'draft' as const,
-      lastActivity: () => new Date()
+      lastActivity: () => new Date(),
     }),
     addDocument: assign({
       documents: ({ context, event }) => [
         ...context.documents,
         (event as any).documentId
       ],
-      lastActivity: () => new Date()
+      lastActivity: () => new Date(),
     }),
     addEvidence: assign({
       evidence: ({ context, event }) => [
         ...context.evidence,
         (event as any).evidenceId
       ],
-      lastActivity: () => new Date()
+      lastActivity: () => new Date(),
     }),
     setReviewers: assign({
       reviewers: ({ event }) => (event as any).reviewers,
       requiredApprovals: ({ event }) => (event as any).reviewers?.length || 0,
       approvals: 0,
-      lastActivity: () => new Date()
+      lastActivity: () => new Date(),
     }),
     incrementApprovals: assign({
       approvals: ({ context }) => context.approvals + 1,
-      lastActivity: () => new Date()
+      lastActivity: () => new Date(),
     }),
     updateActivity: assign({
-      lastActivity: () => new Date()
+      lastActivity: () => new Date(),
     })
   },
   guards: {
@@ -279,57 +281,57 @@ export const caseWorkflowMachine = setup({
     lastActivity: new Date(),
     reviewers: [],
     approvals: 0,
-    requiredApprovals: 0
+    requiredApprovals: 0,
   },
   states: {
     idle: {
       on: {
         CREATE_CASE: {
           target: 'draft',
-          actions: 'createCase'
+          actions: 'createCase',
         }
       }
     },
     draft: {
       on: {
         ADD_DOCUMENT: {
-          actions: 'addDocument'
+          actions: 'addDocument',
         },
         ADD_EVIDENCE: {
-          actions: 'addEvidence'
+          actions: 'addEvidence',
         },
         ACTIVATE_CASE: {
           target: 'active',
           guard: 'hasDocuments',
-          actions: 'updateActivity'
+          actions: 'updateActivity',
         },
         SUBMIT_FOR_REVIEW: {
           target: 'under_review',
-          actions: 'setReviewers'
+          actions: 'setReviewers',
         }
       }
     },
     active: {
       on: {
         ADD_DOCUMENT: {
-          actions: 'addDocument'
+          actions: 'addDocument',
         },
         ADD_EVIDENCE: {
-          actions: 'addEvidence'
+          actions: 'addEvidence',
         },
         SUBMIT_FOR_REVIEW: {
           target: 'under_review',
-          actions: 'setReviewers'
+          actions: 'setReviewers',
         },
         CLOSE_CASE: {
           target: 'closed',
-          actions: 'updateActivity'
+          actions: 'updateActivity',
         }
       }
     },
     under_review: {
       on: {
-        APPROVE: [
+        APPROVE: [;
           {
             target: 'closed',
             guard: 'hasRequiredApprovals',
@@ -341,11 +343,11 @@ export const caseWorkflowMachine = setup({
         ],
         REJECT: {
           target: 'active',
-          actions: 'updateActivity'
+          actions: 'updateActivity',
         },
         REQUEST_CHANGES: {
           target: 'draft',
-          actions: 'updateActivity'
+          actions: 'updateActivity',
         }
       }
     },
@@ -353,11 +355,11 @@ export const caseWorkflowMachine = setup({
       on: {
         ARCHIVE_CASE: {
           target: 'archived',
-          actions: 'updateActivity'
+          actions: 'updateActivity',
         },
         REOPEN_CASE: {
           target: 'active',
-          actions: 'updateActivity'
+          actions: 'updateActivity',
         }
       }
     },
@@ -365,14 +367,15 @@ export const caseWorkflowMachine = setup({
       on: {
         REOPEN_CASE: {
           target: 'active',
-          actions: 'updateActivity'
+          actions: 'updateActivity',
         }
       }
     }
   }
 });
 
-// ==================== RAG QUERY WORKFLOW ====================
+// ==================== RAG QUERY WORKFLOW ====================;
+}
 
 export interface RAGContext {
   queryId: string;
@@ -387,7 +390,7 @@ export interface RAGContext {
   processingTime: number;
   tokens: {
     input: number;
-    output: number;
+    output: number;,
   };
 }
 
@@ -412,7 +415,7 @@ export const ragWorkflowMachine = setup({
       query: ({ event }) => (event as any).query,
       userId: ({ event }) => (event as any).userId,
       caseId: ({ event }) => (event as any).caseId,
-      processingTime: () => Date.now()
+      processingTime: () => Date.now(),
     }),
     setCachedResponse: assign({
       generatedResponse: ({ event }) => (event as any).response,
@@ -458,7 +461,7 @@ export const ragWorkflowMachine = setup({
       on: {
         START_QUERY: {
           target: 'checkingCache',
-          actions: 'initializeQuery'
+          actions: 'initializeQuery',
         }
       }
     },
@@ -466,49 +469,49 @@ export const ragWorkflowMachine = setup({
       on: {
         CACHE_HIT: {
           target: 'completed',
-          actions: 'setCachedResponse'
+          actions: 'setCachedResponse',
         },
         SEARCH_COMPLETED: {
           target: 'searching',
-          actions: 'setSearchResults'
+          actions: 'setSearchResults',
         }
       },
       after: {
-        100: 'searching' // Fallback if cache check takes too long
+        100: 'searching' // Fallback if cache check takes too long,
       }
     },
     searching: {
       on: {
         SEARCH_COMPLETED: {
           target: 'generating',
-          actions: 'setSearchResults'
+          actions: 'setSearchResults',
         },
-        SEARCH_FAILED: 'failed'
+        SEARCH_FAILED: 'failed',
       }
     },
     generating: {
       on: {
         GENERATION_COMPLETED: {
           target: 'caching',
-          actions: 'setGeneratedResponse'
+          actions: 'setGeneratedResponse',
         },
-        GENERATION_FAILED: 'failed'
+        GENERATION_FAILED: 'failed',
       }
     },
     caching: {
       on: {
-        CACHE_STORED: 'completed'
+        CACHE_STORED: 'completed',
       },
       after: {
-        1000: 'completed' // Complete even if caching fails
+        1000: 'completed' // Complete even if caching fails,
       }
     },
     completed: {
-      type: 'final'
+      type: 'final',
     },
     failed: {
       on: {
-        RETRY: 'searching'
+        RETRY: 'searching',
       }
     }
   }
@@ -567,7 +570,7 @@ export class WorkflowOrchestrator {
   }
 
   getAllWorkflows() {
-    return Array.from(this.activeWorkflows.entries());
+    return Array.from(this.activeWorkflows.entries();
   }
 }
 

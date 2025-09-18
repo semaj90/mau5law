@@ -20,7 +20,7 @@ import { embeddingService } from '$lib/server/embedding-service.js';
 import crypto from 'crypto';
 import { URL } from 'url';
 
-// Enhanced RAG Service Configuration
+// Enhanced RAG Service Configuration;
 const ENHANCED_RAG_CONFIG = {
   http: 'http://localhost:8094',
   grpc: 'localhost:50051',
@@ -34,7 +34,7 @@ const ENHANCED_RAG_CONFIG = {
   },
 };
 
-// Dimensional Cache Configuration
+// Dimensional Cache Configuration;
 const DIMENSIONAL_CACHE_CONFIG = {
   http: 'http://localhost:8097',
   endpoints: {
@@ -46,7 +46,7 @@ const DIMENSIONAL_CACHE_CONFIG = {
 
 /*
  * POST /api/v1/rag - Enhanced RAG Query Processing
- */
+ */;
 export const POST: RequestHandler = async ({ request, getClientAddress, url }) => {
   const startTime = Date.now();
   const requestId = crypto.randomUUID();
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
   try {
     const body = await readBodyFast<EnhancedRAGRequest>(request);
 
-    // Validate required fields
+    // Validate required fields;
     if (!body.query) {
       return error(
         400,
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       userAgent: request.headers.get('user-agent') || undefined,
       caseId: body.caseId,
     };
-    // Local L1 cache (Redis) coalescing; includes remote dimensional cache inside compute
+    // Local L1 cache (Redis) coalescing; includes remote dimensional cache inside compute;
     const keyBasis = JSON.stringify({
       q: body.query,
       u: body.userId || 'anonymous',
@@ -91,9 +91,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       cacheKey,
       ttl,
       async () => {
-        // Check dimensional cache first if enabled (remote)
+        // Check dimensional cache first if enabled (remote);
         if (body.useCache !== false) {
-          const cacheResult = await checkDimensionalCache(body.query, body.userId));
+          const cacheResult = await checkDimensionalCache(body.query, body.userId);
           if (cacheResult?.hit) {
             return {
               success: true,
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
 
         // Compute via Enhanced RAG service
         const computed = await performEnhancedRAG(body, context);
-        // Fire-and-forget store in remote cache if enabled
+        // Fire-and-forget store in remote cache if enabled;
         if (computed.success && body.useCache !== false) {
           storeDimensionalCache(body.query, computed, body.userId).catch(() => {});
         }
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
 
 /*
  * GET /api/v1/rag - RAG Service Health Check and Info
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action');
 
@@ -154,7 +154,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return await handleStats();
       case 'models':
         return await handleModels();
-      default:
+      default:;
         return json({
           service: 'Enhanced RAG API',
           version: '2.0.0',
@@ -186,11 +186,11 @@ export const GET: RequestHandler = async ({ url }) => {
  */
 async function performEnhancedRAG(
   request: EnhancedRAGRequest,
-  context: APIRequestContext
+  context: APIRequestContext;
 ): Promise<EnhancedRAGResponse> {
   const startTime = Date.now();
 
-  // Prepare RAG request payload
+  // Prepare RAG request payload;
   const ragPayload = {
     query: request.query,
     context: request.context || '',
@@ -210,7 +210,7 @@ async function performEnhancedRAG(
   let protocol = 'HTTP';
 
   try {
-    // QUIC attempt (< 5ms target)
+    // QUIC attempt (< 5ms target);
     if (ENHANCED_RAG_CONFIG.quic) {
       const quicUrl = `http://${ENHANCED_RAG_CONFIG.quic}${ENHANCED_RAG_CONFIG.endpoints.query}`;
       response = await fetch(quicUrl, {
@@ -229,7 +229,7 @@ async function performEnhancedRAG(
     }
   } catch (quicError) {
     try {
-      // HTTP fallback
+      // HTTP fallback;
       response = await fetch(`${ENHANCED_RAG_CONFIG.http}${ENHANCED_RAG_CONFIG.endpoints.query}`, {
         method: 'POST',
         headers: {
@@ -253,7 +253,7 @@ async function performEnhancedRAG(
   const ragData = await response.json();
   const processingTime = Date.now() - startTime;
 
-  // Process and format response
+  // Process and format response;
   return {
     success: true,
     results: ragData.results || [],
@@ -277,13 +277,13 @@ async function performEnhancedRAG(
 
 /*
  * Check dimensional cache for existing results
- */
+ */;
 async function checkDimensionalCache(query: string, userId?: string): Promise<any> {
   try {
     const cacheKey = `rag:${userId || 'anonymous'}:${Buffer.from(query).toString('base64')}`;
 
     const response = await fetch(
-      `${DIMENSIONAL_CACHE_CONFIG.http}${DIMENSIONAL_CACHE_CONFIG.endpoints.get}`,
+      `${DIMENSIONAL_CACHE_CONFIG.http}${DIMENSIONAL_CACHE_CONFIG.endpoints.get}`,);
       {
         method: 'POST',
         headers: {
@@ -311,7 +311,7 @@ async function checkDimensionalCache(query: string, userId?: string): Promise<an
 
 /*
  * Store results in dimensional cache
- */
+ */;
 async function storeDimensionalCache(query: string, results: any, userId?: string): Promise<void> {
   try {
     const cacheKey = `rag:${userId || 'anonymous'}:${Buffer.from(query).toString('base64')}`;
@@ -349,10 +349,10 @@ async function storeDimensionalCache(query: string, results: any, userId?: strin
 
 /*
  * Health check handler
- */
+ */;
 async function handleHealthCheck(): Promise<Response> {
   try {
-    // Check Enhanced RAG service
+    // Check Enhanced RAG service;
     const ragHealth = await fetch(`${ENHANCED_RAG_CONFIG.http}${ENHANCED_RAG_CONFIG.health}`, {
       signal: AbortSignal.timeout(5000),
     });
@@ -394,13 +394,13 @@ async function handleHealthCheck(): Promise<Response> {
       timestamp: new Date().toISOString(),
     });
   } catch (err: any) {
-    return json(
+    return json();
       {
         service: 'Enhanced RAG API',
         status: 'error',
         error: String(err),
         timestamp: new Date().toISOString(),
-      },
+      },>
       { status: 503 }
     );
   }
@@ -408,12 +408,12 @@ async function handleHealthCheck(): Promise<Response> {
 
 /*
  * Statistics handler
- */
+ */;
 async function handleStats(): Promise<Response> {
   try {
     // Get cache stats
     const cacheStatsResponse = await fetch(
-      `${DIMENSIONAL_CACHE_CONFIG.http}${DIMENSIONAL_CACHE_CONFIG.endpoints.stats}`,
+      `${DIMENSIONAL_CACHE_CONFIG.http}${DIMENSIONAL_CACHE_CONFIG.endpoints.stats}`,);
       {
         signal: AbortSignal.timeout(2000),
       }
@@ -439,13 +439,13 @@ async function handleStats(): Promise<Response> {
       timestamp: new Date().toISOString(),
     });
   } catch (err: any) {
-    return json(
+    return json();
       {
         service: 'Enhanced RAG API',
         statistics: null,
         error: String(err),
         timestamp: new Date().toISOString(),
-      },
+      },>
       { status: 503 }
     );
   }
@@ -453,7 +453,7 @@ async function handleStats(): Promise<Response> {
 
 /*
  * Models handler
- */
+ */;
 async function handleModels(): Promise<Response> {
   try {
     const models = await embeddingService.getAvailableModels();
@@ -465,14 +465,14 @@ async function handleModels(): Promise<Response> {
         default: 'gemma3-legal',
         embedding: 'nomic-embed-text',
         supported: [
-          { name: 'gemma3-legal', type: 'chat', size: '7.3GB' },
+          { name: 'gemma3-legal', type: 'chat', size: '7.3GB' },)
           { name: 'nomic-embed-text', type: 'embedding', dimensions: 384 },
         ],
       },
       timestamp: new Date().toISOString(),
     });
   } catch (err: any) {
-    return json(
+    return json();
       {
         service: 'Enhanced RAG API',
         models: null,

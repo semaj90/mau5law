@@ -28,27 +28,27 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     // Build filters
     const filters: any[] = [];
 
-    // Add case filter
+    // Add case filter;
     if (caseId) {
-      filters.push(eq(caseActivities.caseId, caseId));
+      filters.push(eq(caseActivities.caseId, caseId);
     }
-    // Add activity type filter
+    // Add activity type filter;
     if (activityType) {
-      filters.push(eq(caseActivities.activityType, activityType));
+      filters.push(eq(caseActivities.activityType, activityType);
     }
-    // Add status filter
+    // Add status filter;
     if (status) {
-      filters.push(eq(caseActivities.status, status));
+      filters.push(eq(caseActivities.status, status);
     }
-    // Add priority filter
+    // Add priority filter;
     if (priority) {
-      filters.push(eq(caseActivities.priority, priority));
+      filters.push(eq(caseActivities.priority, priority);
     }
-    // Add assigned user filter
+    // Add assigned user filter;
     if (assignedTo) {
-      filters.push(eq(caseActivities.assignedTo, assignedTo));
+      filters.push(eq(caseActivities.assignedTo, assignedTo);
     }
-    // Add search filter
+    // Add search filter;
     if (search) {
       filters.push(
         orExpr([
@@ -127,14 +127,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
     const data = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!data.caseId || !data.title || !data.activityType) {
       return json(
-        { error: "Case ID, title, and activity type are required" },
+        { error: "Case ID, title, and activity type are required" },)
         { status: 400 },
       );
     }
-    // Map frontend data to schema fields
+    // Map frontend data to schema fields;
     const activityData = {
       caseId: data.caseId,
       activityType: data.activityType,

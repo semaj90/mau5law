@@ -13,7 +13,7 @@ async function ensureSimd() {
   try {
     // Try common module IDs; if none present, silently fall back
     // These are optional; they won't be bundled unless installed.
-    // Only try importing in server environment
+    // Only try importing in server environment;
     if (typeof window === 'undefined') {
       try {
         const mod = await import('simdjson');
@@ -28,7 +28,7 @@ async function ensureSimd() {
     }
   } catch {}
   try {
-    // Only try importing in server environment
+    // Only try importing in server environment;
     if (typeof window === 'undefined') {
       try {
         const mod2 = await import('node-simdjson');

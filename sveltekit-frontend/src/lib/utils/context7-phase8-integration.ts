@@ -6,6 +6,7 @@
 
 // Type definitions for xstate and matrix UI
 export type StateValue = string | object;
+}
 
 export interface MatrixUINode {
   id: string;
@@ -17,7 +18,7 @@ export interface MatrixUINode {
   [key: string]: unknown;
 }
 
-// Type definitions
+// Type definitions;
 export interface LegalFormContext {
   evidenceFiles: File[];
   evidenceType?: string;
@@ -66,11 +67,11 @@ export interface RerankResult {
     type: string;
     priority: string;
     confidence: number;
-    component: string;
+    component: string;,
   };
   originalScore: number;
   rerankScore: number;
-  confidence: number;
+  confidence: number;,
 }
 
 export interface UserContext {
@@ -80,7 +81,7 @@ export interface UserContext {
   currentCase: string;
   recentActions: string[];
   userRole: string;
-  workflowState: string;
+  workflowState: string;,
 }
 
 export class Context7Phase8Integrator {
@@ -146,8 +147,7 @@ export class Context7Phase8Integrator {
 
     const analysis = await (response as { ok?: any; json?: any }).json();
 
-    return (
-      analysis.recommendations?.map((rec: any) => ({
+    return (analysis.recommendations?.map((rec: any) => ({
         type: "ui-optimization" as const,
         priority: rec.priority || "medium",
         title: rec.title,
@@ -188,8 +188,7 @@ export class Context7Phase8Integrator {
 
     const insights = await (response as { ok?: any; json?: any }).json();
 
-    return (
-      insights.results?.map((result: any) => ({
+    return (insights.results?.map((result: any) => ({
         type: "ai-enhancement" as const,
         priority: this.calculatePriorityFromScore((result as { score?: any; title?: any; content?: any }).score),
         title: `Legal AI Enhancement: ${(result as { score?: any; title?: any; content?: any }).title}`,
@@ -219,7 +218,7 @@ export class Context7Phase8Integrator {
     // Analyze current state for optimization opportunities
     if (
       query.currentState === "evidenceUpload" &&
-      query.xstateContext.evidenceFiles.length === 0
+      query.xstateContext.evidenceFiles.length === 0;
     ) {
       recommendations.push({
         type: "workflow-improvement",
@@ -254,7 +253,7 @@ export class Context7Phase8Integrator {
       });
     }
 
-    // Check for AI confidence optimization
+    // Check for AI confidence optimization;
     if (query.xstateContext.confidence < 70) {
       recommendations.push({
         type: "ai-enhancement",
@@ -309,7 +308,7 @@ export class Context7Phase8Integrator {
         implementation: {
           component: "MatrixLODSystem",
           code: `
-// Enhanced LOD with adaptive quality
+// Enhanced LOD with adaptive quality;
 const adaptiveLOD = {
   low: { vertexCount: 100, shaderComplexity: 'basic' },
   mid: { vertexCount: 500, shaderComplexity: 'standard' },
@@ -334,7 +333,7 @@ const adaptiveLOD = {
    * Merge recommendations from different sources
    */
   private mergeRecommendations(
-    ...sources: Partial<Phase8Recommendation>[][]
+    ...sources: Partial<Phase8Recommendation>[][];
   ): Phase8Recommendation[] {
     const merged: Phase8Recommendation[] = [];
     let idCounter = 1;
@@ -369,7 +368,7 @@ const adaptiveLOD = {
     recommendations: Phase8Recommendation[],
     query: Context7Phase8Query,
   ): Promise<Phase8Recommendation[]> {
-    // Convert to rerank format
+    // Convert to rerank format;
     const rerankInput: RerankResult[] = recommendations.map((rec) => ({
       id: rec.id,
       content: `${rec.title}: ${rec.description}`,
@@ -382,7 +381,7 @@ const adaptiveLOD = {
       originalScore: rec.aiConfidence / 100,
       rerankScore: 0,
       confidence: rec.aiConfidence,
-    }));
+    });
 
     const userContext: UserContext = {
       intent: "review",
@@ -398,14 +397,14 @@ const adaptiveLOD = {
       // Try to use advanced reranking if available, otherwise use fallback
       let reranked = rerankInput;
       
-      // Simple fallback reranking based on confidence scores
+      // Simple fallback reranking based on confidence scores;
       reranked = rerankInput.map(item => ({
         ...item,
         rerankScore: (item as { confidence?: any }).confidence / 100,
       })).sort((a, b) => b.rerankScore - a.rerankScore);
 
       // Apply rerank scores back to recommendations
-      return recommendations
+      return recommendations;
         .map((rec) => {
           const rerankedItem = reranked.find((r) => r.id === rec.id);
           return {
@@ -424,7 +423,7 @@ const adaptiveLOD = {
 
   /**
    * Helper functions
-   */
+   */;
   private buildRagQuery(query: Context7Phase8Query): string {
     let ragQuery = `${query.component} optimization`;
 
@@ -485,7 +484,7 @@ const adaptiveLOD = {
   private getFallbackRecommendations(
     query: Context7Phase8Query,
   ): Phase8Recommendation[] {
-    return [
+    return [>;
       {
         id: "fallback-1",
         type: "ui-optimization",
@@ -506,7 +505,7 @@ const adaptiveLOD = {
   }
 }
 
-// Convenience functions for common Context7 + Phase 8 queries
+// Convenience functions for common Context7 + Phase 8 queries;
 export const commonContext7Phase8Queries = {
   /**
    * Analyze Phase 8 component with legal AI context
@@ -525,7 +524,7 @@ export const commonContext7Phase8Queries = {
 
   /**
    * Get performance recommendations for Matrix UI
-   */
+   */;
   optimizeMatrixUI: (matrixNodes: MatrixUINode[]) => ({
     component: "MatrixUICompiler",
     context: "performance" as const,
@@ -549,7 +548,7 @@ export const commonContext7Phase8Queries = {
 
   /**
    * Get AI enhancement recommendations
-   */
+   */;
   enhanceAIFeatures: (component: string, requirements: string) => ({
     component,
     context: "legal-ai" as const,

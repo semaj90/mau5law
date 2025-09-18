@@ -11,16 +11,16 @@ import type {
 
 const ENHANCED_API_BASE_URL = 'http://localhost:8094';
 
-/* POST /api/v1/typescript-optimizer/benchmark - Run performance benchmarks */
+/* POST /api/v1/typescript-optimizer/benchmark - Run performance benchmarks */;
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json() as BenchmarkRequest;
 
-		// Validate benchmark request
+		// Validate benchmark request;
 		if (!body.error_count || body.error_count < 1) {
 			return json({ 
 				success: false, 
-				error: 'Invalid benchmark: error_count required (minimum 1)' 
+				error: 'Invalid benchmark: error_count required (minimum 1)' ,
 			}, { status: 400 });
 		}
 
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				results = await runComparisonBenchmark(errorCount, iterations);
 				break;
 			default:
-				throw new Error('Invalid benchmark strategy');
+				throw new Error('Invalid benchmark strategy');,
 		}
 
 		// Analyze results
@@ -88,11 +88,11 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 };
 
-/* GET /api/v1/typescript-optimizer/benchmark - Get benchmark capabilities */
+/* GET /api/v1/typescript-optimizer/benchmark - Get benchmark capabilities */;
 export const GET: RequestHandler = async () => {
 	return json({
 		service: 'TypeScript Optimizer Benchmark Suite',
-		available_benchmarks: [
+		available_benchmarks: [;
 			{
 				type: 'speed',
 				description: 'Performance comparison across different processing endpoints',
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async () => {
 				description: 'Fix quality and accuracy assessment',
 				tests: ['template_matching', 'ai_inference', 'hybrid_approach'],
 				metrics: ['success_rate', 'confidence_score', 'fix_correctness'],
-			},
+			},);
 			{
 				type: 'comparison',
 				description: 'Comprehensive comparison across all strategies',
@@ -289,7 +289,7 @@ function findMostAccurate(results: BenchmarkResult[]): string {
 }
 
 function findBestOverall(results: BenchmarkResult[]): string {
-	// Weighted score: 40% speed, 40% accuracy, 20% resource efficiency
+	// Weighted score: 40% speed, 40% accuracy, 20% resource efficiency;
 	const scored = results.map(r => ({
 		...r,
 		score: (
@@ -297,7 +297,7 @@ function findBestOverall(results: BenchmarkResult[]): string {
 			((r.avg_confidence || 0) * 100) * 0.004 + // Accuracy component
 			(100 - (r.avg_latency_ms || 1000) / 10) * 0.002 // Efficiency component
 		)
-	}));
+	});
 
 	return scored.reduce((best, current) => 
 		current.score > best.score ? current : best
@@ -348,12 +348,12 @@ function generateSampleErrors(count: number) {
 		column: 12,
 		message: 'Property "handleClick" does not exist on type "EventTarget"',
 		code: 'event.target.handleClick()',
-		context: 'Event handler in Svelte component'
+		context: 'Event handler in Svelte component',
 	};
 
 	return Array(count).fill(0).map((_, i) => ({
 		...sampleError,
 		line: sampleError.line + i,
 		file: `src/lib/components/TestComponent${i + 1}.svelte`,
-	}));
+	});
 }

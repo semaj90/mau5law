@@ -16,8 +16,8 @@ import { URL } from 'url';
 const redis = createRedisInstance();
 
 export const POST: RequestHandler = async ({ request }) => {
-  const body = await request.json().catch(() => ({}));
+  const body = await request.json().catch(() => ({});
   // placeholder: enqueue training job
-  await (redis as any).rpush('som:train:queue', JSON.stringify(body));
+  await (redis as any).rpush('som:train:queue', JSON.stringify(body);
   return json({ ok: true });
 };

@@ -16,7 +16,7 @@ async function generateQueryEmbedding(
   query: string,
   fetchFn: typeof fetch,
   model?: string,
-  origin?: string
+  origin?: string;
 ): Promise<number[] | null> {
   try {
     const endpoint = origin ? `${origin}/api/ai/embeddings` : '/api/ai/embeddings';
@@ -32,7 +32,7 @@ async function generateQueryEmbedding(
       throw new Error(`Embedding API failed: ${resp.status} - ${txt}`);
     }
 
-    const payload = await fastParse(await resp.text());
+    const payload = await fastParse(await resp.text();
     if (!payload?.embedding || !Array.isArray(payload.embedding)) {
       throw new Error('Invalid embedding format received');
     }
@@ -41,7 +41,7 @@ async function generateQueryEmbedding(
   } catch (err: any) {
     console.error('Failed to generate query embedding:', err);
     if (!model || model === 'embeddinggemma:latest') {
-      // Try a single fallback model once
+      // Try a single fallback model once;
       try {
         return await generateQueryEmbedding(query, fetchFn, 'nomic-embed-text', origin);
       } catch (e) {
@@ -65,7 +65,7 @@ async function vectorSearch(
   }
 ): Promise<any[]> {
   try {
-    let q = db
+    let q = db;
       .select({
         id: embeddings.id,
         documentId: embeddings.documentId,
@@ -82,7 +82,7 @@ async function vectorSearch(
           ),
       })
       .from(embeddings)
-      .innerJoin(documents, eq(embeddings.documentId, documents.id))
+      .innerJoin(documents, eq(embeddings.documentId, documents.id)
       .where(
         sql`1 - (${embeddings.embedding} <=> ${fastStringify(queryEmbedding)}::vector) > ${threshold}`
       );
@@ -105,7 +105,7 @@ async function vectorSearch(
       )
       .limit(limit);
 
-    return rows.map((r: any) => ({ ...r, searchType: 'semantic', score: r.similarity }));
+    return rows.map((r: any) => ({ ...r, searchType: 'semantic', score: r.similarity });
   } catch (err: any) {
     console.error('Vector search failed:', err);
     if (filters) {
@@ -132,7 +132,7 @@ async function textSearch(
   }
 ): Promise<any[]> {
   try {
-    let q = db
+    let q = db;
       .select({
         id: documents.id,
         filename: documents.filename,
@@ -175,11 +175,11 @@ async function textSearch(
       similarity: Math.min(r.rank * 2, 1.0),
       searchType: 'text',
       score: r.rank,
-    }));
+    });
   } catch (err: any) {
     console.error('Text search failed:', err);
     try {
-      const fallback = await db
+      const fallback = await db;
         .select({
           id: documents.id,
           filename: documents.filename,
@@ -191,10 +191,10 @@ async function textSearch(
         })
         .from(documents)
         .where(sql`${documents.content} ILIKE ${`%${query}%`}`)
-        .orderBy(desc(documents.createdAt))
+        .orderBy(desc(documents.createdAt)
         .limit(limit);
 
-      return fallback.map((r: any) => ({ ...r, similarity: 0.7, searchType: 'text', score: 0.7 }));
+      return fallback.map((r: any) => ({ ...r, similarity: 0.7, searchType: 'text', score: 0.7 });
     } catch (fallbackErr) {
       console.error('Fallback text search failed:', fallbackErr);
       return [];
@@ -240,7 +240,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
     }
 
     const uniqueResults = results
-      .filter((r, i, arr) => i === arr.findIndex((x) => x.id === r.id))
+      .filter((r, i, arr) => i === arr.findIndex((x) => x.id === r.id);
       .map((result) => {
         const baseScore = (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).similarity || (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).score || 0;
         const confidenceBoost = (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).confidence ? (result as { similarity?: any; score?: any; confidence?: any; id?: any; documentId?: any; filename?: any; content?: any; fullContent?: any; searchType?: any; metadata?: any; legalAnalysis?: any; createdAt?: any }).confidence * 0.2 : 0;
@@ -295,7 +295,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
     });
   } catch (error: any) {
     console.error('Enhanced RAG search error:', error);
-    return json(
+    return json();
       {
         error: 'Search failed',
         details: error instanceof Error ? error.message: 'Unknown error',
@@ -348,7 +348,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   } catch (err: any) {
     console.error('GET /api/rag/search error:', err);
-    return json(
+    return json()
       { error: 'Failed', details: err instanceof Error ? err.message: String(err) },
       { status: 500 }
     );

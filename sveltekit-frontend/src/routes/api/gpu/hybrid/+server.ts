@@ -11,21 +11,22 @@ import type { RequestHandler } from './$types.js';
 
 import { json } from '@sveltejs/kit';
 
-// Service endpoints
+// Service endpoints;
 const GPU_SERVICES = {
   immediate: 'http://localhost:8096',    // CUDA AI Service - fast responses
   advanced: 'http://localhost:8097',     // GPU Memory Manager - batch processing
   enhanced: 'http://localhost:8099',     // Enhanced CUDA - heavy compute
-  loadBalancer: 'http://localhost:8224'  // Load balancer
+  loadBalancer: 'http://localhost:8224'  // Load balancer,
 } as const;
 
-// Performance thresholds for intelligent routing
+// Performance thresholds for intelligent routing;
 const ROUTING_CONFIG = {
   small_workload: { max_items: 10, prefer: 'immediate' },
   medium_workload: { max_items: 100, prefer: 'advanced' },
   large_workload: { max_items: 1000, prefer: 'enhanced' },
   batch_processing: { min_items: 50, prefer: 'advanced' }
 } as const;
+}
 
 export interface GPURequest {
   operation: 'compute' | 'vector_similarity' | 'clustering' | 'tensor_parsing';
@@ -39,12 +40,12 @@ export interface ServiceHealthStatus {
   service: string;
   healthy: boolean;
   response_time: number;
-  load: number;
+  load: number;,
 }
 
 /*
  * Check health of all GPU services
- */
+ */;
 async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus> {
   const services = Object.entries(GPU_SERVICES);
   const healthChecks = services.map(async ([name, url]) => {
@@ -52,7 +53,7 @@ async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus>
       const start = performance.now();
       const response = await fetch(`${url}/health`, { 
         method: 'GET',
-        signal: AbortSignal.timeout(2000) // 2 second timeout
+        signal: AbortSignal.timeout(2000) // 2 second timeout,
       });
       const end = performance.now();
       
@@ -84,7 +85,7 @@ async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus>
           service: name,
           healthy: false,
           response_time: 999999,
-          load: 100
+          load: 100,
         }
       };
     }
@@ -99,7 +100,7 @@ async function checkServiceHealth(): Promise<Record<string, ServiceHealthStatus>
  */
 function selectOptimalService(
   request: GPURequest, 
-  healthStatus: Record<string, ServiceHealthStatus>
+  healthStatus: Record<string, ServiceHealthStatus>;
 ): string {
   // Filter healthy services
   const healthyServices = Object.entries(healthStatus)
@@ -110,15 +111,15 @@ function selectOptimalService(
     throw new Error('No healthy GPU services available');
   }
 
-  // Priority-based routing
+  // Priority-based routing;
   if (request.priority === 'urgent') {
     return GPU_SERVICES[healthyServices[0][0] as keyof typeof GPU_SERVICES];
   }
 
-  // Operation-specific routing
+  // Operation-specific routing;
   switch (request.operation) {
     case 'compute':
-      // Small computations -> immediate service
+      // Small computations -> immediate service;
       if (!request.batch_size || request.batch_size <= 10) {
         return GPU_SERVICES.immediate;
       }
@@ -139,13 +140,13 @@ function selectOptimalService(
       return dataSize > 10000 ? GPU_SERVICES.enhanced: GPU_SERVICES.advanced;
 
     default:
-      return GPU_SERVICES[healthyServices[0][0] as keyof typeof GPU_SERVICES];
+      return GPU_SERVICES[healthyServices[0][0] as keyof typeof GPU_SERVICES];,
   }
 }
 
 /*
  * GET /api/gpu/hybrid - Get hybrid GPU system status
- */
+ */;
 export const GET: RequestHandler = async () => {
   try {
     const healthStatus = await checkServiceHealth();
@@ -168,7 +169,7 @@ export const GET: RequestHandler = async () => {
           'intelligent_routing'
         ]
       },
-      routing_config: ROUTING_CONFIG
+      routing_config: ROUTING_CONFIG,
     };
 
     return json(systemStatus);
@@ -180,12 +181,12 @@ export const GET: RequestHandler = async () => {
 
 /*
  * POST /api/gpu/hybrid - Execute GPU operation with intelligent routing
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const gpuRequest: GPURequest = await request.json();
     
-    // Validate request
+    // Validate request;
     if (!gpuRequest.operation) {
       return json({ error: 'Missing operation field' }, { status: 400 });
     }
@@ -221,17 +222,17 @@ export const POST: RequestHandler = async ({ request }) => {
         endpoint = '/api/v2/gpu/tensor-parsing';
         break;
       default:
-        endpoint = '/health';
+        endpoint = '/health';,
     }
 
-    // Execute request
+    // Execute request;
     const response = await fetch(`${selectedService}${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(30000) // 30 second timeout
+      signal: AbortSignal.timeout(30000) // 30 second timeout,
     });
 
     const result = await response.json();
@@ -246,7 +247,7 @@ export const POST: RequestHandler = async ({ request }) => {
         execution_time_ms: executionTime,
         operation: gpuRequest.operation,
         priority: gpuRequest.priority,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     });
 
@@ -255,14 +256,14 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ 
       success: false, 
       error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
 
 /*
  * PUT /api/gpu/hybrid - Update routing configuration
- */
+ */;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const config = await request.json();
@@ -274,7 +275,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Routing configuration updated',
       config,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     
   } catch (error: any) {
@@ -285,7 +286,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 
 /*
  * DELETE /api/gpu/hybrid - Shutdown hybrid GPU system
- */
+ */;
 export const DELETE: RequestHandler = async () => {
   try {
     console.log('🛑 Initiating hybrid GPU system shutdown...');
@@ -296,7 +297,7 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Hybrid GPU system shutdown initiated',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     
   } catch (error: any) {

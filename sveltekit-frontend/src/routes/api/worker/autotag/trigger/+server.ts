@@ -16,14 +16,14 @@ import { eq } from 'drizzle-orm';
 import stream from 'stream';
 import { EventEmitter } from 'events';
 
-// Validation schema for worker trigger requests
+// Validation schema for worker trigger requests;
 const WorkerTriggerSchema = z.object({
   type: z.enum(['case_created', 'evidence_uploaded', 'document_processed', 'manual_trigger']),
   caseId: z.string().optional(),
   evidenceId: z.string().optional(),
   documentId: z.string().optional(),
   action: z.enum(['tag', 'process', 'mirror', 'analyze']).default('process'),
-  metadata: z
+  metadata: z;
     .object({
       priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
       caseType: z.string().optional(),
@@ -42,7 +42,7 @@ type WorkerTriggerData = z.infer<typeof WorkerTriggerSchema>;
 /*
  * POST /api/worker/autotag/trigger
  * Triggers PostgreSQL-first auto-tagging worker
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const body = await request.json();
@@ -50,12 +50,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Validate request data
     const triggerData = WorkerTriggerSchema.parse(body);
 
-    // Generate correlation ID if not provided
+    // Generate correlation ID if not provided;
     if (!triggerData.correlationId) {
       triggerData.correlationId = `trigger-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     }
 
-    // Add timestamp if not provided
+    // Add timestamp if not provided;
     if (!triggerData.metadata?.timestamp) {
       triggerData.metadata = {
         ...triggerData.metadata,
@@ -63,12 +63,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       };
     }
 
-    // Validate case exists if caseId provided
+    // Validate case exists if caseId provided;
     if (triggerData.caseId) {
       const caseExists = await db
         .select({ id: cases.id })
         .from(cases)
-        .where(eq(cases.id, triggerData.caseId))
+        .where(eq(cases.id, triggerData.caseId)
         .limit(1);
 
       if (caseExists.length === 0) {
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Ensure Redis connection (defensive cast to avoid ambient mismatches)
     await (redisService as any).initialize();
 
-    // Create Redis stream event
+    // Create Redis stream event;
     const eventData = {
       id: triggerData.correlationId,
       type: triggerData.type,
@@ -103,11 +103,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       correlationId: triggerData.correlationId,
     });
 
-    // Optional: Send to PostgreSQL notification as well
+    // Optional: Send to PostgreSQL notification as well;
     if (triggerData.type === 'case_created' && triggerData.caseId) {
       try {
         // Send PostgreSQL NOTIFY for real-time processing
-        await db.execute(`
+        await db.execute(`;
           NOTIFY case_created, '${JSON.stringify({
             case_id: triggerData.caseId,
             priority: triggerData.metadata?.priority || 'medium',
@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 /*
  * GET /api/worker/autotag/trigger
  * Get worker trigger status and recent events
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Ensure Redis connection
@@ -174,7 +174,7 @@ export const GET: RequestHandler = async ({ url }) => {
       .xRevRange(streamName, '+', '-', { COUNT: 10 })
       .catch(() => []);
 
-    // Parse events
+    // Parse events;
     const events = (recentEvents as any[]).map((event: any) => ({
       id: event.id,
       timestamp: new Date(parseInt(event.message.timestamp)).toISOString(),
@@ -185,12 +185,12 @@ export const GET: RequestHandler = async ({ url }) => {
       documentId: event.message.documentId || null,
       metadata: JSON.parse(event.message.metadata || '{}'),
       retry: event.message.retry === '1',
-    }));
+    });
 
     return json({
       success: true,
       data: {
-        streamInfo: streamInfo
+        streamInfo: streamInfo;
           ? {
               length: streamInfo.length,
               firstEntry: streamInfo['first-entry'],
@@ -210,14 +210,13 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('❌ Worker status check failed:', error);
 
-    return json(
-      {
+    return json({
         success: false,
         error: {
           message: 'Worker status check failed',
           code: 'WORKER_STATUS_ERROR',
         },
-      },
+      },)
       { status: 500 }
     );
   }
@@ -226,12 +225,12 @@ export const GET: RequestHandler = async ({ url }) => {
 /*
  * DELETE /api/worker/autotag/trigger
  * Clear worker event stream (admin operation)
- */
+ */;
 export const DELETE: RequestHandler = async ({ request, locals }) => {
   try {
-    // TODO: Add proper admin authentication check
+    // TODO: Add proper admin authentication check;
     // if (!locals.user || locals.user.role !== 'admin') {
-    //   return error(403, ensureError({ message: 'Admin access required' }));
+    //   return error(403, ensureError({ message: 'Admin access required' });
     // }
 
     // Ensure Redis connection

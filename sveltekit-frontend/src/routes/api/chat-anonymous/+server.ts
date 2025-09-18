@@ -12,10 +12,10 @@ interface OllamaResponse {
   model: string;
   created_at: string;
   response: string;
-  done: boolean;
+  done: boolean;,
 }
 
-// POST: Anonymous chat without database persistence
+// POST: Anonymous chat without database persistence;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: ChatRequest = await request.json();
@@ -46,7 +46,7 @@ User Question: ${lastUserMessage.content}
 Legal Analysis:`;
 
     try {
-      // Call Ollama service directly
+      // Call Ollama service directly;
       const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,7 +69,7 @@ Legal Analysis:`;
       const ollamaData: OllamaResponse = await ollamaResponse.json();
       const responseTime = Date.now() - startTime;
 
-      // Return formatted response
+      // Return formatted response;
       return json({
         success: true,
         response: ollamaData.response,
@@ -81,7 +81,7 @@ Legal Analysis:`;
         metadata: {
           timestamp: new Date().toISOString(),
           analysisType: 'legal-query',
-          wordCount: ollamaData.response.split(' ').length
+          wordCount: ollamaData.response.split(' ').length,
         }
       });
 
@@ -113,18 +113,17 @@ Currently running in demo mode. For detailed legal analysis, please ensure the O
         metadata: {
           timestamp: new Date().toISOString(),
           analysisType: 'demo-response',
-          mode: 'fallback'
+          mode: 'fallback',
         }
       });
     }
 
   } catch (error) {
     console.error('Anonymous chat error:', error);
-    return json(
-      { 
+    return json({ 
         error: 'Failed to process chat request', 
-        details: error instanceof Error ? error.message: 'Unknown error'
-      }, 
+        details: error instanceof Error ? error.message: 'Unknown error',
+      }, )
       { status: 500 }
     );
   }

@@ -4,29 +4,27 @@ import { json } from '@sveltejs/kit';
 /*
  * WebSocket endpoint for real-time security validation progress updates
  * This handles WebSocket upgrade requests for the registration form
- */
+ */;
 export const GET: RequestHandler = async ({ request }) => {
   // Check if this is a WebSocket upgrade request
   const upgrade = request.headers.get('upgrade');
   
   if (upgrade !== 'websocket') {
-    return json(
-      { 
+    return json({ 
         error: 'This endpoint requires WebSocket upgrade',
-        info: 'Use WebSocket connection to receive real-time progress updates'
-      }, 
+        info: 'Use WebSocket connection to receive real-time progress updates',
+      }, )
       { status: 400 }
     );
   }
 
   // In a real implementation, this would be handled by the SvelteKit adapter
-  // For now, we return an informational response
-  return json(
-    { 
+  // For now, we return an informational response;
+  return json({ 
       message: 'WebSocket endpoint ready',
       endpoint: '/api/security/validate/progress',
-      usage: 'Connect via WebSocket for real-time validation progress updates'
-    }, 
+      usage: 'Connect via WebSocket for real-time validation progress updates',
+    }, )
     { status: 200 }
   );
 };
@@ -34,7 +32,7 @@ export const GET: RequestHandler = async ({ request }) => {
 /*
  * WebSocket handler (would be implemented by the SvelteKit adapter)
  * This is a placeholder showing the expected behavior
- */
+ */;
 export interface ValidationProgressMessage {
   type: 'progress' | 'complete' | 'error';
   message: string;

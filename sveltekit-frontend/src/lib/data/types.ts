@@ -22,13 +22,13 @@ export type NewStatute = InferInsertModel<typeof statutes>;
 export type User = InferSelectModel<typeof users>;
 export type NewUser = InferInsertModel<typeof users>;
 
-// Extended User type with computed UI properties
+// Extended User type with computed UI properties;
 export interface ExtendedUser extends User {
   // UI computed properties for backward compatibility
   username?: string; // alias for email or name
 }
 
-// Helper function to convert User to ExtendedUser
+// Helper function to convert User to ExtendedUser;
 export function extendUser(user: User): ExtendedUser {
   return {
     ...user,
@@ -40,7 +40,7 @@ export function extendUser(user: User): ExtendedUser {
 export type Evidence = InferSelectModel<typeof evidence>;
 export type NewEvidence = InferInsertModel<typeof evidence>;
 
-// Extended Evidence type with computed UI properties
+// Extended Evidence type with computed UI properties;
 export interface ExtendedEvidence extends Evidence {
   // UI computed properties for backward compatibility
   status?: string; // computed from isAdmissible and other fields
@@ -48,13 +48,13 @@ export interface ExtendedEvidence extends Evidence {
   createdAt?: string | Date; // alias for collectedAt or uploadedAt
 }
 
-// Helper function to convert Evidence to ExtendedEvidence
+// Helper function to convert Evidence to ExtendedEvidence;
 export function extendEvidence(evidence: Evidence): ExtendedEvidence {
   return {
     ...evidence,
     status: evidence.isAdmissible ? "approved" : "pending",
     type: evidence.evidenceType,
-    createdAt: evidence.collectedAt || evidence.uploadedAt
+    createdAt: evidence.collectedAt || evidence.uploadedAt,
   };
 }
 
@@ -76,7 +76,7 @@ export interface CitationPoint {
   aiSummary?: string;
   relevanceScore?: number;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
 
 export interface NewCitationPoint {
@@ -95,7 +95,7 @@ export interface NewCitationPoint {
 export type CanvasState = InferSelectModel<typeof canvasStates>;
 export type NewCanvasState = InferInsertModel<typeof canvasStates>;
 
-// Type for the user object returned by Auth.js session
+// Type for the user object returned by Auth.js session;
 export type SessionUser = {
   id: string;
   name?: string | null;
@@ -104,7 +104,7 @@ export type SessionUser = {
   role?: string | null;
 };
 
-// Extended Case type with Case Books functionality
+// Extended Case type with Case Books functionality;
 export interface CaseWithBooks extends Case {
   reports?: Report[];
   books?: Book[];
@@ -131,16 +131,16 @@ export interface Book {
     jurisdiction: string;
     createdDate: string;
     lastModified: string;
-    completionStatus: "draft" | "review" | "final" | "archived";
+    completionStatus: "draft" | "review" | "final" | "archived";,
   };
   aiSummary?: string;
   aiTags: string[];
   createdBy: string;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
 
-// Report Editor types
+// Report Editor types;
 export interface ReportSection {
   id: string;
   title: string;
@@ -160,7 +160,7 @@ export interface ReportWithSections extends Report {
   canvasState?: CanvasState;
 }
 
-// AI Integration types
+// AI Integration types;
 export interface AIAnalysis {
   id: string;
   reportId: string;
@@ -175,7 +175,7 @@ export interface AIAnalysis {
     confidence: number;
     metadata: Record<string, any>;
   };
-  timestamp: Date;
+  timestamp: Date;,
 }
 
 export interface CitationSuggestion {
@@ -184,14 +184,14 @@ export interface CitationSuggestion {
   relevanceScore: number;
   source: CitationPoint;
   context: string;
-  reasoning: string;
+  reasoning: string;,
 }
 
-// Fabric.js Canvas types
+// Fabric.js Canvas types;
 export interface CanvasObject {
   id: string;
   type: "text" | "image" | "arrow" | "shape" | "highlight" | "evidence-marker";
-  properties: Record<string, any>; // Fabric.js object properties
+  properties: Record<string, any>; // Fabric.js object properties;
   metadata?: {
     evidenceId?: string;
     citationId?: string;
@@ -204,30 +204,30 @@ export interface CanvasStateData {
   background?: string;
   dimensions: {
     width: number;
-    height: number;
+    height: number;,
   };
   viewport: {
     zoom: number;
     panX: number;
-    panY: number;
+    panY: number;,
   };
   metadata: {
     title?: string;
     description?: string;
     tags: string[];
     evidenceIds: string[];
-    citationIds: string[];
+    citationIds: string[];,
   };
 }
 
-// Search and filtering types
+// Search and filtering types;
 export interface SearchFilters {
   query?: string;
   caseId?: string;
   reportType?: string;
   dateRange?: {
     start: Date;
-    end: Date;
+    end: Date;,
   };
   tags?: string[];
   jurisdiction?: string;
@@ -242,10 +242,10 @@ export interface SearchResult {
   excerpt: string;
   relevanceScore: number;
   metadata: Record<string, any>;
-  highlights: string[];
+  highlights: string[];,
 }
 
-// Export types
+// Export types;
 export interface ExportOptions {
   format: "pdf" | "docx" | "html" | "json";
   includeCanvases: boolean;
@@ -254,7 +254,7 @@ export interface ExportOptions {
   watermark?: string;
   headerFooter?: {
     header: string;
-    footer: string;
+    footer: string;,
   };
 }
 
@@ -265,11 +265,11 @@ export interface ExportResult {
   metadata: {
     fileSize: number;
     pageCount?: number;
-    generatedAt: Date;
+    generatedAt: Date;,
   };
 }
 
-// Legacy support for Loki.js (offline/local storage)
+// Legacy support for Loki.js (offline/local storage);
 export interface LegacyCitationPoint {
   id: string;
   text: string;
@@ -283,21 +283,21 @@ export interface LegacyCitationPoint {
   aiSummary?: string;
   relevanceScore?: number;
   createdAt: string; // ISO string for Loki.js compatibility
-  updatedAt: string; // ISO string for Loki.js compatibility
+  updatedAt: string; // ISO string for Loki.js compatibility,
 }
 
-// UI State types
+// UI State types;
 export interface EditorState {
   activeReportId?: string;
   activeCanvasId?: string;
   selectedCitations: string[];
   clipboardContent?: {
     type: "text" | "citation" | "canvas-object";
-    data: any;
+    data: any;,
   };
   autoSaveEnabled: boolean;
   lastSaved?: Date;
-  isDirty: boolean;
+  isDirty: boolean;,
 }
 
 export interface SidebarState {
@@ -307,24 +307,24 @@ export interface SidebarState {
     tags?: string[];
     searchQuery?: string;
   };
-  collapsed: boolean;
+  collapsed: boolean;,
 }
 
-// Real-time collaboration types (future feature)
+// Real-time collaboration types (future feature);
 export interface CollaborationState {
   activeUsers: {
     userId: string;
     userName: string;
     cursor?: {
       x: number;
-      y: number;
+      y: number;,
     };
     selection?: {
       reportId: string;
       sectionId: string;
       range: {
         start: number;
-        end: number;
+        end: number;,
       };
     };
   }[];
@@ -333,11 +333,11 @@ export interface CollaborationState {
     userId: string;
     type: "text" | "canvas" | "citation";
     timestamp: Date;
-    data: any;
+    data: any;,
   }[];
 }
 
-// AI-related types
+// AI-related types;
 export interface AIResponse {
   response: string;
   confidence?: number;
@@ -349,30 +349,30 @@ export interface AIResponse {
     model: string;
     confidence: number;
     executionTime: number;
-    fromCache: boolean;
+    fromCache: boolean;,
   };
 }
 
-// Gemma3 Configuration types
+// Gemma3 Configuration types;
 export interface Gemma3Config {
   temperature: number;
   maxTokens: number;
   topP: number;
   topK: number;
   repeatPenalty: number;
-  systemPrompt: string;
+  systemPrompt: string;,
 }
 
-// Local Model types
+// Local Model types;
 export interface LocalModel {
   name: string;
   path: string;
   format: string;
   size: string;
-  available: boolean;
+  available: boolean;,
 }
 
-// API Response types
+// API Response types;
 export interface ApiResponse {
   success: boolean;
   data?: unknown;
@@ -380,7 +380,7 @@ export interface ApiResponse {
   message?: string;
 }
 
-// Conversation History for AI interactions
+// Conversation History for AI interactions;
 export interface ConversationHistory {
   id: string;
   sessionId?: string;

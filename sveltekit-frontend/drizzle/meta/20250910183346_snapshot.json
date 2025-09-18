@@ -162,9 +162,7 @@
         "indexed_files_file_path_unique": {
           "name": "indexed_files_file_path_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "file_path"
-          ]
+          "columns": ["file_path"]
         }
       },
       "policies": {},
@@ -246,9 +244,7 @@
         "ai_engine_status_engine_name_unique": {
           "name": "ai_engine_status_engine_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "engine_name"
-          ]
+          "columns": ["engine_name"]
         }
       },
       "policies": {},
@@ -335,12 +331,8 @@
           "name": "gpu_inference_messages_session_id_gpu_inference_sessions_id_fk",
           "tableFrom": "gpu_inference_messages",
           "tableTo": "gpu_inference_sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -501,12 +493,8 @@
           "name": "gpu_performance_metrics_session_id_gpu_inference_sessions_id_fk",
           "tableFrom": "gpu_performance_metrics",
           "tableTo": "gpu_inference_sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -580,9 +568,7 @@
         "cases_uuid_unique": {
           "name": "cases_uuid_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "uuid"
-          ]
+          "columns": ["uuid"]
         }
       },
       "policies": {},
@@ -655,12 +641,8 @@
           "name": "document_chunks_document_id_documents_id_fk",
           "tableFrom": "document_chunks",
           "tableTo": "documents",
-          "columnsFrom": [
-            "document_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["document_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -670,9 +652,7 @@
         "document_chunks_uuid_unique": {
           "name": "document_chunks_uuid_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "uuid"
-          ]
+          "columns": ["uuid"]
         }
       },
       "policies": {},
@@ -777,12 +757,8 @@
           "name": "documents_case_id_cases_id_fk",
           "tableFrom": "documents",
           "tableTo": "cases",
-          "columnsFrom": [
-            "case_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["case_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -792,9 +768,7 @@
         "documents_uuid_unique": {
           "name": "documents_uuid_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "uuid"
-          ]
+          "columns": ["uuid"]
         }
       },
       "policies": {},
@@ -873,12 +847,8 @@
           "name": "extracted_entities_document_id_documents_id_fk",
           "tableFrom": "extracted_entities",
           "tableTo": "documents",
-          "columnsFrom": [
-            "document_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["document_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -886,12 +856,8 @@
           "name": "extracted_entities_chunk_id_document_chunks_id_fk",
           "tableFrom": "extracted_entities",
           "tableTo": "document_chunks",
-          "columnsFrom": [
-            "chunk_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["chunk_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -988,12 +954,8 @@
           "name": "processing_jobs_document_id_documents_id_fk",
           "tableFrom": "processing_jobs",
           "tableTo": "documents",
-          "columnsFrom": [
-            "document_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["document_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1003,9 +965,7 @@
         "processing_jobs_uuid_unique": {
           "name": "processing_jobs_uuid_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "uuid"
-          ]
+          "columns": ["uuid"]
         }
       },
       "policies": {},
@@ -1103,12 +1063,8 @@
           "name": "rag_queries_case_id_cases_id_fk",
           "tableFrom": "rag_queries",
           "tableTo": "cases",
-          "columnsFrom": [
-            "case_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["case_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1118,9 +1074,7 @@
         "rag_queries_uuid_unique": {
           "name": "rag_queries_uuid_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "uuid"
-          ]
+          "columns": ["uuid"]
         }
       },
       "policies": {},
@@ -1182,12 +1136,8 @@
           "name": "rag_query_results_query_id_rag_queries_id_fk",
           "tableFrom": "rag_query_results",
           "tableTo": "rag_queries",
-          "columnsFrom": [
-            "query_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["query_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1195,12 +1145,8 @@
           "name": "rag_query_results_chunk_id_document_chunks_id_fk",
           "tableFrom": "rag_query_results",
           "tableTo": "document_chunks",
-          "columnsFrom": [
-            "chunk_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["chunk_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1278,12 +1224,8 @@
           "name": "case_summary_vectors_case_id_cases_id_fk",
           "tableFrom": "case_summary_vectors",
           "tableTo": "cases",
-          "columnsFrom": [
-            "case_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["case_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1293,9 +1235,7 @@
         "case_summary_vectors_case_id_unique": {
           "name": "case_summary_vectors_case_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "case_id"
-          ]
+          "columns": ["case_id"]
         }
       },
       "policies": {},
@@ -1389,12 +1329,8 @@
           "name": "document_vectors_document_id_documents_id_fk",
           "tableFrom": "document_vectors",
           "tableTo": "documents",
-          "columnsFrom": [
-            "document_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["document_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1498,12 +1434,8 @@
           "name": "evidence_vectors_evidence_id_evidence_id_fk",
           "tableFrom": "evidence_vectors",
           "tableTo": "evidence",
-          "columnsFrom": [
-            "evidence_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["evidence_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1616,12 +1548,8 @@
           "name": "knowledge_edges_source_id_knowledge_nodes_id_fk",
           "tableFrom": "knowledge_edges",
           "tableTo": "knowledge_nodes",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -1629,12 +1557,8 @@
           "name": "knowledge_edges_target_id_knowledge_nodes_id_fk",
           "tableFrom": "knowledge_edges",
           "tableTo": "knowledge_nodes",
-          "columnsFrom": [
-            "target_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["target_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1829,12 +1753,8 @@
           "name": "query_vectors_user_id_users_id_fk",
           "tableFrom": "query_vectors",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1923,12 +1843,8 @@
           "name": "recommendation_cache_user_id_users_id_fk",
           "tableFrom": "recommendation_cache",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }

@@ -14,14 +14,14 @@ declare module 'drizzle-orm' {
   export default {} as any;
 }
 
-// Allow imports from $lib/* to resolve during typecheck without strict typings.
+// Allow imports from $lib/* to resolve during typecheck without strict typings.;
 declare module '$lib/*' {
   const _default: any;
   export default _default;
   export const __any__: any;
 }
 
-// Specific server/db shims for internal barrel modules that tsc flags as missing exports
+// Specific server/db shims for internal barrel modules that tsc flags as missing exports;
 declare module '$lib/server/database' {
   export const cases: any;
   export const evidence: any;
@@ -37,7 +37,7 @@ declare module '$lib/server/db/index' {
   export default {} as any;
 }
 
-// Provide named exports used from $lib/types in various modules
+// Provide named exports used from $lib/types in various modules;
 declare module '$lib/types' {
   export const LegalCase: any;
   export const Notification: any;
@@ -61,7 +61,7 @@ declare module '$lib/services/embedding-service' {
   export default createEmbedding;
 }
 
-// Provide a minimal Redis shape for methods that were flagged (setex, psubscribe, disconnect, on)
+// Provide a minimal Redis shape for methods that were flagged (setex, psubscribe, disconnect, on);
 declare module 'redis' {
   export class Redis {
     set(key: string, value: string, ...rest: any[]): Promise<any>;
@@ -85,7 +85,7 @@ declare module '@qdrant/js-client-rest';
 declare module 'tesseract.js';
 declare module 'pdf-parse';
 
-// Lokijs minimal typings to satisfy imports with named Collection
+// Lokijs minimal typings to satisfy imports with named Collection;
 declare module 'lokijs' {
   const Loki: any;
   export default Loki;
@@ -98,7 +98,7 @@ declare const autoGenService: any;
 declare function secureDataExport(...args: any[]): any;
 declare function logSecurityEvent(...args: any[]): any;
 
-// WebAssembly and WebLlama types
+// WebAssembly and WebLlama types;
 declare interface WebLlamaResponse {
   text: string;
   tokensGenerated: number;
@@ -106,12 +106,12 @@ declare interface WebLlamaResponse {
   confidence: number;
   fromCache: boolean;
   cacheHit?: boolean;
-  processingPath: 'cache' | 'fallback' | 'wasm' | 'worker';
+  processingPath: 'cache' | 'fallback' | 'wasm' | 'worker';,
 }
 
 declare interface WebAssemblyInstantiateResult {
   module: WebAssembly.Module;
-  instance: WebAssembly.Instance;
+  instance: WebAssembly.Instance;,
 }
 
 declare interface LlamaGenerationParams {
@@ -120,12 +120,12 @@ declare interface LlamaGenerationParams {
   temperature?: number;
 }
 
-// Namespace declarations for AI services
+// Namespace declarations for AI services;
 declare namespace QdrantClient {
   interface Client {
     search: any;
     upsert: any;
-    count: any;
+    count: any;,
   }
 }
 
@@ -133,7 +133,7 @@ declare namespace QdrantClientType {
   interface Client {
     search: any;
     upsert: any;
-    count: any;
+    count: any;,
   }
 }
 
@@ -141,13 +141,13 @@ declare namespace MultiLayerCache {
   interface CacheConfig {
     maxSize: number;
     ttl: number;
-    layers: number;
+    layers: number;,
   }
 
   interface CacheInstance {
     get: any;
     set: any;
-    clear: any;
+    clear: any;,
   }
 }
 
@@ -157,14 +157,14 @@ type PoolConfig = any;
 type Pool = any;
 type PoolClient = any;
 
-// TensorFlow and AI processing types
+// TensorFlow and AI processing types;
 declare interface ActivationIdentifier extends String {
   readonly __brand: 'ActivationIdentifier';
 }
 
 declare interface TensorSlice {
   data: Float32Array;
-  dimensions: number[];
+  dimensions: number[];,
 }
 
 declare interface SOMConfig {
@@ -174,7 +174,7 @@ declare interface SOMConfig {
   epochs: number;
   enableGPU: boolean;
   inputDimension: number;
-  decayRate: number;
+  decayRate: number;,
 }
 
 declare interface RerankResult {
@@ -187,7 +187,7 @@ declare interface RerankResult {
 declare interface UserContext {
   sessionId: string;
   preferences: any;
-  history: any[];
+  history: any[];,
 }
 
 // Processing path types for routing
@@ -199,14 +199,14 @@ interface RouteDecision {
   reasoning: string;
   expectedLatency: number;
   fallbackChain: any[];
-  confidence: number;
+  confidence: number;,
 }
 
-// Texture region types
+// Texture region types;
 interface TextureRegion {
   offset: number;
   size: number;
-  format: string;
+  format: string;,
 }
 
 // SvelteKit component interfaces

@@ -132,7 +132,7 @@ async function getAISuggestions(query: string): Promise<SearchSuggestion[]> {
                     │ - Legal research│
                     │ - Evidence links│
                     └─────────────────┘
-```
+```minio
 
 ### Key Go Services to Enhance
 

@@ -5,6 +5,7 @@ import { dev } from "$app/environment";
  * For Legal Case Management Application
  */
 
+}
 
 export interface LogEntry {
   timestamp: string;
@@ -36,7 +37,7 @@ class AppLogger {
 
   /**
    * Log application events with context
-   */
+   */;
   log(level: LogEntry["level"], message: string, metadata?: Partial<LogEntry>) {
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),
@@ -47,11 +48,11 @@ class AppLogger {
 
     this.logs.push(entry);
 
-    // Keep logs within limit
+    // Keep logs within limit;
     if (this.logs.length > this.maxLogs) {
       this.logs = this.logs.slice(-this.maxLogs / 2);
     }
-    // Console output in development
+    // Console output in development;
     if (dev) {
       console.log(
         `[${entry.level.toUpperCase()}] ${entry.timestamp}: ${message}`,
@@ -63,14 +64,14 @@ class AppLogger {
   }
   /**
    * Log performance metrics
-   */
+   */;
   logPerformance(metrics: PerformanceMetrics) {
     this.metrics.push(metrics);
 
     if (this.metrics.length > this.maxMetrics) {
       this.metrics = this.metrics.slice(-this.maxMetrics / 2);
     }
-    // Alert on slow requests
+    // Alert on slow requests;
     if (metrics.duration > 5000) {
       this.log("warn", `Slow request detected: ${metrics.endpoint}`, {
         duration: metrics.duration,
@@ -80,13 +81,13 @@ class AppLogger {
   }
   /**
    * Get recent logs for admin dashboard
-   */
+   */;
   getRecentLogs(limit = 100): LogEntry[] {
     return this.logs.slice(-limit).reverse();
   }
   /**
    * Get performance analytics
-   */
+   */;
   getPerformanceAnalytics() {
     const recent = this.metrics.slice(-1000);
 
@@ -100,8 +101,7 @@ class AppLogger {
     };
   }
   private getSlowEndpoints(metrics: PerformanceMetrics[]) {
-    const endpointTimes = metrics.reduce(
-      (acc, m) => {
+    const endpointTimes = metrics.reduce((acc, m) => {
         if (!acc[m.endpoint]) acc[m.endpoint] = [];
         acc[m.endpoint].push(m.duration);
         return acc;
@@ -109,18 +109,17 @@ class AppLogger {
       {} as Record<string, number[]>,
     );
 
-    return Object.entries(endpointTimes)
+    return Object.entries(endpointTimes);
       .map(([endpoint, times]) => ({
         endpoint,
         avgTime: times.reduce((a, b) => a + b, 0) / times.length,
         requests: times.length,
-      }))
+      })
       .sort((a, b) => b.avgTime - a.avgTime)
       .slice(0, 10);
   }
   private getPeakHours(metrics: PerformanceMetrics[]) {
-    const hourCounts = metrics.reduce(
-      (acc, m) => {
+    const hourCounts = metrics.reduce((acc, m) => {
         const hour = new Date(m.timestamp).getHours();
         acc[hour] = (acc[hour] || 0) + 1;
         return acc;
@@ -129,12 +128,12 @@ class AppLogger {
     );
 
     return Object.entries(hourCounts)
-      .map(([hour, count]) => ({ hour: parseInt(hour), requests: count }))
+      .map(([hour, count]) => ({ hour: parseInt(hour), requests: count })
       .sort((a, b) => b.requests - a.requests);
   }
   private async persistLog(entry: LogEntry) {
     // In production, implement database logging or external service
-    // For now, we'll store critical logs in the database
+    // For now, we'll store critical logs in the database;
     if (entry.level === "error" || entry.action) {
       try {
         // You could implement database storage here
@@ -146,7 +145,7 @@ class AppLogger {
   }
   /**
    * Middleware for request logging
-   */
+   */;
   middleware() {
     return async (request: Request, next: () => Promise<Response>) => {
       const start = Date.now();

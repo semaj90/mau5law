@@ -26,7 +26,7 @@ import type { RequestHandler } from './$types.js';
 
 import { copilotOrchestrator, generateMCPPrompt, commonMCPQueries, semanticSearch, mcpMemoryReadGraph } from "$lib/utils/mcp-helpers";
 
-// Define the types locally since they're not exported from mcp-helpers
+// Define the types locally since they're not exported from mcp-helpers;
 export interface MCPContextAnalysis {
   query?: string;
   context?: unknown;
@@ -58,7 +58,7 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 // Mock Redis for testing without Redis connection
 // import { Redis } from 'ioredis';
 
-// Mock Redis implementation
+// Mock Redis implementation;
 const redis = {
   async incr(key: string): Promise<number> {
     return 1; // Always allow for testing
@@ -76,6 +76,7 @@ const redis = {
     return 'PONG';
   }
 };
+}
 
 export interface AIFindRequest {
   query: string;
@@ -121,10 +122,10 @@ export interface AIFindResponse {
   autoSuggestions?: AutoMCPSuggestion[];
 }
 
-// Rate limiting configuration
+// Rate limiting configuration;
 const RATE_LIMIT = {
   requests: 50,
-  windowMs: 60 * 1000, // 1 minute
+  windowMs: 60 * 1000, // 1 minute;
   keyGenerator: (request: Request) => {
     // Use IP or user ID for rate limiting
     return request.headers.get('x-forwarded-for') || 
@@ -135,13 +136,13 @@ const RATE_LIMIT = {
 
 /*
  * Check rate limiting using Redis
- */
+ */;
 async function checkRateLimit(key: string): Promise<any> {
   try {
     const current = await redis.incr(`rate_limit:${key}`);
     
     if (current === 1) {
-      await redis.expire(`rate_limit:${key}`, Math.ceil(RATE_LIMIT.windowMs / 1000));
+      await redis.expire(`rate_limit:${key}`, Math.ceil(RATE_LIMIT.windowMs / 1000);
     }
     
     const remaining = Math.max(0, RATE_LIMIT.requests - current);
@@ -158,7 +159,7 @@ async function checkRateLimit(key: string): Promise<any> {
 
 /*
  * Generate cache key for search results
- */
+ */;
 function generateCacheKey(request: AIFindRequest): string {
   const keyData = {
     query: request.query.toLowerCase().trim(),
@@ -166,7 +167,7 @@ function generateCacheKey(request: AIFindRequest): string {
     useAI: request.useAI,
     mcpAnalysis: request.mcpAnalysis,
     semanticSearch: request.semanticSearch,
-    confidenceThreshold: request.confidenceThreshold
+    confidenceThreshold: request.confidenceThreshold,
   };
   
   return `ai_search:${Buffer.from(JSON.stringify(keyData)).toString('base64')}`;
@@ -180,10 +181,10 @@ async function performDatabaseSearch(
   query: string, 
   type: string, 
   maxResults: number,
-  confidenceThreshold: number
+  confidenceThreshold: number;
 ): Promise<any[]> {
   // Mock data for testing without database connection
-  const mockCases = [
+  const mockCases = [;
     {
       id: 'case-1',
       title: `Legal Case: ${query} Investigation`,
@@ -196,7 +197,7 @@ async function performDatabaseSearch(
       incidentDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
       location: 'Downtown District',
       dangerScore: 7,
-      jurisdiction: 'State Court'
+      jurisdiction: 'State Court',
     },
     {
       id: 'case-2',
@@ -210,11 +211,11 @@ async function performDatabaseSearch(
       incidentDate: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
       location: 'Business District',
       dangerScore: 3,
-      jurisdiction: 'Federal Court'
+      jurisdiction: 'Federal Court',
     }
   ];
 
-  const mockEvidence = [
+  const mockEvidence = [;
     {
       id: 'evidence-1',
       title: `Digital Evidence: ${query}`,
@@ -245,7 +246,7 @@ async function performDatabaseSearch(
     }
   ];
 
-  const mockDocuments = [
+  const mockDocuments = [;
     {
       id: 'doc-1',
       title: `Legal Brief: ${query}`,
@@ -275,23 +276,23 @@ async function performDatabaseSearch(
   try {
     let results: any[] = [];
 
-    // Filter results based on type
+    // Filter results based on type;
     if (type === 'all' || type === 'cases') {
       results = results.concat(mockCases.filter((item: any) => (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).title.toLowerCase().includes(query.toLowerCase()) ||
-        (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).description.toLowerCase().includes(query.toLowerCase())
-      ));
+        (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).description.toLowerCase().includes(query.toLowerCase()
+      );
     }
 
     if (type === 'all' || type === 'evidence') {
       results = results.concat(mockEvidence.filter((item: any) => (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).title.toLowerCase().includes(query.toLowerCase()) ||
-        (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).description.toLowerCase().includes(query.toLowerCase())
-      ));
+        (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).description.toLowerCase().includes(query.toLowerCase()
+      );
     }
 
     if (type === 'all' || type === 'documents') {
       results = results.concat(mockDocuments.filter((item: any) => (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).title.toLowerCase().includes(query.toLowerCase()) ||
-        (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).content.toLowerCase().includes(query.toLowerCase())
-      ));
+        (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).content.toLowerCase().includes(query.toLowerCase()
+      );
     }
 
     // Limit results
@@ -309,7 +310,7 @@ async function performDatabaseSearch(
 async function enhanceResultsWithAI(
   query: string, 
   results: any[], 
-  confidenceThreshold: number
+  confidenceThreshold: number;
 ): Promise<any> {
   try {
     const aiPrompt = `
@@ -318,9 +319,9 @@ You are an AI assistant for a legal case management system. Analyze these search
 Search Results:
 ${JSON.stringify(results.slice(0, 10), null, 2)}
 
-Please provide a JSON response with the following structure:
+Please provide a JSON response with the following structure:;
 {
-  "enhancedResults": [
+  "enhancedResults": [;
     {
       "id": "string",
       "confidence": number (0-1),
@@ -379,10 +380,10 @@ Focus on legal relevance, case importance, and factual accuracy. Prioritize resu
         confidence: Math.max(0.6, Math.random() * 0.4 + 0.6),
         relevanceScore: Math.max(0.7, Math.random() * 0.3 + 0.7),
         excerpt: (result as { id?: any; description?: any; content?: any; type?: any }).description?.substring(0, 200) + '...' || 
-                (result as { id?: any; description?: any; content?: any; type?: any }).content?.substring(0, 200) + '...' || '',
+                (result as { id?: any; description?: any; content?: any; type?: any ,}).content?.substring(0, 200) + '...' || '',
         highlights: [query],
         reasoning: `Matched search term "${query}" in ${(result as { id?: any; description?: any; content?: any; type?: any }).type}`
-      }));
+      });
 
       return {
         enhanced,
@@ -390,7 +391,7 @@ Focus on legal relevance, case importance, and factual accuracy. Prioritize resu
           queryIntent: 'general_search',
           suggestedFilters: [],
           relatedQueries: [],
-          confidence: 0.7
+          confidence: 0.7,
         }
       };
     }
@@ -398,22 +399,22 @@ Focus on legal relevance, case importance, and factual accuracy. Prioritize resu
   } catch (error: any) {
     console.warn('AI enhancement failed:', error);
     
-    // Return basic enhancement
+    // Return basic enhancement;
     const enhanced = results.map((result: any) => ({
       id: (result as { id?: any; description?: any; content?: any; type?: any }).id,
       confidence: 0.7,
       relevanceScore: 0.8,
       excerpt: (result as { id?: any; description?: any; content?: any; type?: any }).description?.substring(0, 200) + '...' || 
-              (result as { id?: any; description?: any; content?: any; type?: any }).content?.substring(0, 200) + '...' || '',
+              (result as { id?: any; description?: any; content?: any; type?: any ,}).content?.substring(0, 200) + '...' || '',
       highlights: [query],
-      reasoning: 'Basic relevance match'
-    }));
+      reasoning: 'Basic relevance match',
+    });
 
     return {
       enhanced,
       aiAnalysis: {
         queryIntent: 'basic_search',
-        confidence: 0.7
+        confidence: 0.7,
       }
     };
   }
@@ -421,11 +422,11 @@ Focus on legal relevance, case importance, and factual accuracy. Prioritize resu
 
 /*
  * Context7 MCP Analysis Integration
- */
+ */;
 async function performMCPAnalysis(query: string): Promise<MCPContextAnalysis | null> {
   try {
     const mcpResults = await copilotOrchestrator(
-      `Analyze legal search context and provide recommendations for query: "${query}"`,
+      `Analyze legal search context and provide recommendations for query: "${query}"`,);
       {
         useSemanticSearch: true,
         useMemory: true,
@@ -435,21 +436,21 @@ async function performMCPAnalysis(query: string): Promise<MCPContextAnalysis | n
         context: {
           searchQuery: query,
           domain: 'legal-ai',
-          userIntent: 'search_assistance'
+          userIntent: 'search_assistance',
         }
       }
     );
 
-    // Parse MCP results into structured format
+    // Parse MCP results into structured format;
     const analysis: MCPContextAnalysis = {
       stackAnalysis: mcpResults.codebase || {},
       bestPractices: Array.isArray(mcpResults.bestPractices) ? 
         mcpResults.bestPractices: [mcpResults.bestPractices].filter(Boolean),
       recommendations: [],
-      integrationSuggestions: mcpResults.agentResults || []
+      integrationSuggestions: mcpResults.agentResults || [],
     };
 
-    // Extract recommendations from synthesized output
+    // Extract recommendations from synthesized output;
     if (mcpResults.synthesized) {
       try {
         const synthesized = JSON.parse(mcpResults.synthesized);
@@ -470,26 +471,26 @@ async function performMCPAnalysis(query: string): Promise<MCPContextAnalysis | n
 
 /*
  * Generate auto-suggestions based on search context
- */
+ */;
 function generateAutoSuggestions(query: string, mcpContext: any): AutoMCPSuggestion[] {
-  const suggestions: AutoMCPSuggestion[] = [
+  const suggestions: AutoMCPSuggestion[] = [;
     {
       type: 'ai-integration',
       priority: 'high',
       suggestion: 'Enable semantic clustering for related cases',
       implementation: `Group cases similar to "${query}" using AI embeddings`,
-      mcpQuery: commonMCPQueries.aiChatIntegration()
+      mcpQuery: commonMCPQueries.aiChatIntegration(),
     },
     {
       type: 'performance',
       priority: 'medium',
       suggestion: 'Cache search results for faster retrieval',
       implementation: `Store results for "${query}" in Redis cache`,
-      mcpQuery: commonMCPQueries.performanceBestPractices()
+      mcpQuery: commonMCPQueries.performanceBestPractices(),
     }
   ];
 
-  // Add MCP-driven suggestions if available
+  // Add MCP-driven suggestions if available;
   if (mcpContext?.integrationSuggestions) {
     for (const mcpSuggestion of mcpContext.integrationSuggestions) {
       if (mcpSuggestion.result && typeof mcpSuggestion.result === 'string') {
@@ -498,7 +499,7 @@ function generateAutoSuggestions(query: string, mcpContext: any): AutoMCPSuggest
           priority: 'low',
           suggestion: 'AI-driven UI improvement',
           implementation: mcpSuggestion.result,
-          mcpQuery: commonMCPQueries.uiUxBestPractices()
+          mcpQuery: commonMCPQueries.uiUxBestPractices(),
         });
       }
     }
@@ -509,10 +510,10 @@ function generateAutoSuggestions(query: string, mcpContext: any): AutoMCPSuggest
 
 /*
  * Update memory graph with search interaction
- */
+ */;
 async function updateMemoryGraph(query: string, results: any[], metadata: any): Promise<any> {
   try {
-    // Create memory entry for this search
+    // Create memory entry for this search;
     const memoryEntry = {
       type: 'search_interaction',
       query,
@@ -520,7 +521,7 @@ async function updateMemoryGraph(query: string, results: any[], metadata: any): 
       resultsCount: results.length,
       aiConfidence: metadata.confidence,
       processingTime: metadata.processingTime,
-      successful: results.length > 0
+      successful: results.length > 0,
     };
 
     // This would integrate with the actual MCP memory service
@@ -534,7 +535,7 @@ async function updateMemoryGraph(query: string, results: any[], metadata: any): 
 
 /*
  * Main POST handler for AI Find
- */
+ */;
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   let fromCache = false;
@@ -554,7 +555,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       userId = 'anonymous'
     } = body;
 
-    // Validate input
+    // Validate input;
     if (!query?.trim()) {
       return json({
         success: false,
@@ -567,7 +568,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           aiAnalysis: false,
           mcpAnalysis: false,
           fromCache: false,
-          error: 'Invalid query'
+          error: 'Invalid query',
         }
       } as AIFindResponse, { status: 400 });
     }
@@ -588,7 +589,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           aiAnalysis: false,
           mcpAnalysis: false,
           fromCache: false,
-          error: 'Rate limit exceeded'
+          error: 'Rate limit exceeded',
         }
       } as AIFindResponse, { 
         status: 429,
@@ -641,7 +642,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       confidenceThreshold
     );
 
-    // Step 2: AI Enhancement (if enabled and results exist)
+    // Step 2: AI Enhancement (if enabled and results exist);
     if (useAI && dbResults.length > 0) {
       const enhancement = await enhanceResultsWithAI(
         query, 
@@ -651,7 +652,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       aiAnalysis = enhancement.aiAnalysis;
     }
 
-    // Step 3: MCP Context Analysis (if enabled)
+    // Step 3: MCP Context Analysis (if enabled);
     if (mcpAnalysis) {
       mcpContext = await performMCPAnalysis(query);
       autoSuggestions = generateAutoSuggestions(query, mcpContext);
@@ -667,7 +668,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       }
     }
 
-    // Step 5: Format and Merge Results
+    // Step 5: Format and Merge Results;
     results = dbResults.map((item, index) => {
       // Find AI enhancement for this result
       const aiEnhancement = aiAnalysis?.enhancedResults?.find(
@@ -684,7 +685,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         title: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).title || 'Untitled',
         excerpt: aiEnhancement.excerpt || 
                 (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).description?.substring(0, 200) + '...' || 
-                (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).content?.substring(0, 200) + '...' || 
+                (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any ,}).content?.substring(0, 200) + '...' || 
                 'No description available',
         type: (item as { title?: any; description?: any; content?: any; id?: any; type?: any; updatedAt?: any; priority?: any; status?: any; evidenceType?: any; documentType?: any; isAdmissible?: any; wordCount?: any; caseNumber?: any; location?: any; dangerScore?: any; jurisdiction?: any; collectedBy?: any; tags?: any; aiSummary?: any }).type,
         aiConfidence: finalConfidence,
@@ -711,11 +712,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       };
     });
 
-    // Step 6: Apply filtering and sorting
+    // Step 6: Apply filtering and sorting;
     if (useAI) {
       results = results
         .filter((r: any) => r.aiConfidence && r.aiConfidence >= confidenceThreshold)
-        .sort((a, b) => (b.aiConfidence || 0) - (a.aiConfidence || 0))
+        .sort((a, b) => (b.aiConfidence || 0) - (a.aiConfidence || 0)
         .slice(0, maxResults);
     }
 
@@ -729,7 +730,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       processingTime
     });
 
-    // Step 8: Prepare response
+    // Step 8: Prepare response;
     const response: AIFindResponse = {
       success: true,
       results,
@@ -741,14 +742,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         mcpAnalysis: !!mcpContext,
         fromCache,
         model: 'gemma3-legal:latest',
-        confidence: avgConfidence
+        confidence: avgConfidence,
       },
       suggestions: aiAnalysis?.relatedQueries || [],
       mcpContext,
       autoSuggestions
     };
 
-    // Step 9: Cache results (if enabled)
+    // Step 9: Cache results (if enabled);
     if (cacheResults && results.length > 0) {
       try {
         await redis.setex(
@@ -785,7 +786,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         aiAnalysis: false,
         mcpAnalysis: false,
         fromCache: false,
-        error: error instanceof Error ? error.message: 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error',
       }
     } as AIFindResponse, { status: 500 });
   }
@@ -793,7 +794,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
 /*
  * GET handler for search suggestions
- */
+ */;
 const originalGETHandler: RequestHandler = async ({ url, request }) => {
   const startTime = Date.now();
   
@@ -804,7 +805,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
       return json({ 
         success: true,
         suggestions: [],
-        query: query.trim()
+        query: query.trim(),
       });
     }
 
@@ -816,7 +817,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
       return json({
         success: false,
         suggestions: [],
-        error: 'Rate limit exceeded'
+        error: 'Rate limit exceeded',
       }, { status: 429 });
     }
 
@@ -845,10 +846,10 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
       ];
       
       suggestions = legalTerms
-        .filter((term: any) => term.toLowerCase().includes(query.toLowerCase()))
+        .filter((term: any) => term.toLowerCase().includes(query.toLowerCase())
         .slice(0, 8);
 
-      // Add AI-generated suggestions if available
+      // Add AI-generated suggestions if available;
       try {
         const aiSuggestions = await generateAISuggestions(query);
         suggestions = [...suggestions, ...aiSuggestions].slice(0, 8);
@@ -856,10 +857,10 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
         console.warn('Failed to generate AI suggestions:', error);
       }
 
-      // Cache suggestions for 10 minutes
+      // Cache suggestions for 10 minutes;
       if (suggestions.length > 0) {
         try {
-          await redis.setex(cacheKey, 600, JSON.stringify(suggestions));
+          await redis.setex(cacheKey, 600, JSON.stringify(suggestions);
         } catch (error: any) {
           console.warn('Failed to cache suggestions:', error);
         }
@@ -872,7 +873,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
       query,
       metadata: {
         processingTime: Date.now() - startTime,
-        fromCache: suggestions.length > 0
+        fromCache: suggestions.length > 0,
       }
     });
 
@@ -884,7 +885,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
       suggestions: [],
       error: 'Failed to generate suggestions',
       metadata: {
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       }
     }, { status: 500 });
   }
@@ -892,7 +893,7 @@ const originalGETHandler: RequestHandler = async ({ url, request }) => {
 
 /*
  * Generate AI-powered search suggestions
- */
+ */;
 async function generateAISuggestions(query: string): Promise<string[]> {
   try {
     const response = await fetch('http://localhost:11434/api/generate', {
@@ -904,7 +905,7 @@ async function generateAISuggestions(query: string): Promise<string[]> {
         stream: false,
         options: {
           temperature: 0.7,
-          max_tokens: 150
+          max_tokens: 150,
         }
       })
     });
@@ -917,7 +918,7 @@ async function generateAISuggestions(query: string): Promise<string[]> {
     const suggestions = (data as { confidence?: any; processingTime?: any; fromCache?: any; response?: any }).response
       .split('\n')
       .filter((line: string) => line.trim().length > 0)
-      .map((line: string) => line.trim().replace(/^\d+\.\s*/, ''))
+      .map((line: string) => line.trim().replace(/^\d+\.\s*/, '')
       .slice(0, 3);
 
     return suggestions;
@@ -930,7 +931,7 @@ async function generateAISuggestions(query: string): Promise<string[]> {
 
 /*
  * Health check endpoint for AI services
- */
+ */;
 export const OPTIONS: RequestHandler = async () => {
   try {
     // Check AI service availability
@@ -949,9 +950,9 @@ export const OPTIONS: RequestHandler = async () => {
       services: {
         ai: aiHealthy,
         database: dbHealthy,
-        redis: redisHealthy
+        redis: redisHealthy,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { 
       status: allHealthy ? 200 : 503,
       headers: {
@@ -963,7 +964,7 @@ export const OPTIONS: RequestHandler = async () => {
     return json({
       healthy: false,
       error: 'Health check failed',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 503 });
   }
 };
@@ -972,7 +973,7 @@ async function checkAIServiceHealth(): Promise<boolean> {
   try {
     const response = await fetch('http://localhost:11434/api/version', {
       method: 'GET',
-      signal: AbortSignal.timeout(5000)
+      signal: AbortSignal.timeout(5000),
     });
     return (response as { ok?: any; json?: any }).ok;
   } catch {

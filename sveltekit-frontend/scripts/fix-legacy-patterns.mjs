@@ -20,7 +20,10 @@ function processFile(filePath) {
       const dispatcherRegex = /const\s+dispatch\s*=\s*createEventDispatcher\(\);?/g;
       const originalDispatchers = content;
 
-      content = content.replace(dispatcherRegex, '// TODO: Replace createEventDispatcher with callback props in Svelte 5');
+      content = content.replace(
+        dispatcherRegex,
+        '// TODO: Replace createEventDispatcher with callback props in Svelte 5'
+      );
 
       if (content !== originalDispatchers) {
         changes++;
@@ -51,7 +54,10 @@ function processFile(filePath) {
       const tickRegex = /await\s+tick\(\);?/g;
       const originalTick = content;
 
-      content = content.replace(tickRegex, 'await tick(); // In Svelte 5, consider using flushSync() for immediate DOM updates');
+      content = content.replace(
+        tickRegex,
+        'await tick(); // In Svelte 5, consider using flushSync() for immediate DOM updates'
+      );
 
       if (content !== originalTick) {
         changes++;
@@ -124,7 +130,7 @@ function processFile(filePath) {
       const transitionUsage = content.match(/transition:(\w+)/g);
 
       if (transitionUsage && transitionUsage.length > 0) {
-        const transitions = [...new Set(transitionUsage.map(t => t.split(':')[1]))];
+        const transitions = [...new Set(transitionUsage.map((t) => t.split(':')[1]))];
 
         if (!content.includes('import {') || !content.includes('svelte/transition')) {
           content = content.replace(
@@ -236,7 +242,7 @@ function main() {
   const svelteFiles = walkDirectory(srcDir, '.svelte');
 
   // Filter files that might have legacy patterns
-  const legacyFiles = svelteFiles.filter(file => {
+  const legacyFiles = svelteFiles.filter((file) => {
     try {
       const content = readFileSync(file, 'utf8');
       return (
@@ -264,7 +270,8 @@ function main() {
 
   console.log('2️⃣ Updating legacy patterns...\n');
 
-  for (const file of legacyFiles.slice(0, 30)) { // Process first 30
+  for (const file of legacyFiles.slice(0, 30)) {
+    // Process first 30
     console.log(`Processing: ${file}`);
     processFile(file);
     console.log('');

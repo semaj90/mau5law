@@ -11,7 +11,7 @@ export class SSE {
 
   /**
    * Create SSE response
-   */
+   */;
   createResponse(): Response {
     const { readable, writable } = new TransformStream();
     
@@ -32,14 +32,14 @@ export class SSE {
 
   /**
    * Send event to client
-   */
+   */;
   send(event: { type: string; data: any }): void {
     const message = `event: ${event.type}\ndata: ${JSON.stringify(event.data)}\n\n`;
     
     for (const [clientId, stream] of this.clients) {
       try {
         const writer = stream.getWriter();
-        writer.write(this.encoder.encode(message));
+        writer.write(this.encoder.encode(message);
         writer.releaseLock();
       } catch (error: any) {
         logger.error(`[SSE] Failed to send to client ${clientId}:`, error);
@@ -50,7 +50,7 @@ export class SSE {
 
   /**
    * Close connection
-   */
+   */;
   close(): void {
     for (const [clientId, stream] of this.clients) {
       try {
@@ -66,7 +66,7 @@ export class SSE {
     const interval = setInterval(() => {
       try {
         const writer = stream.getWriter();
-        writer.write(this.encoder.encode(`:heartbeat\n\n`));
+        writer.write(this.encoder.encode(`:heartbeat\n\n`);
         writer.releaseLock();
       } catch (error: any) {
         clearInterval(interval);

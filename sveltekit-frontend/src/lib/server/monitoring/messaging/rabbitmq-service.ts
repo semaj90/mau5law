@@ -6,16 +6,16 @@
 import * as amqp from 'amqplib';
 import type { Connection, Channel, Message } from 'amqplib';
 
-// RabbitMQ configuration
+// RabbitMQ configuration;
 const RABBITMQ_CONFIG = {
   url: import.meta.env.RABBITMQ_URL || 'amqp://localhost:5672',
   username: import.meta.env.RABBITMQ_USERNAME || 'guest',
   password: import.meta.env.RABBITMQ_PASSWORD || 'guest',
   vhost: import.meta.env.RABBITMQ_VHOST || '/',
-  heartbeat: 60
+  heartbeat: 60,
 };
 
-// Queue configurations
+// Queue configurations;
 const QUEUES = {
   DOCUMENT_PROCESSING: 'document.processing',
   FILE_UPLOAD: 'file.upload',
@@ -24,8 +24,9 @@ const QUEUES = {
   EMAIL_NOTIFICATIONS: 'email.notifications',
   SEARCH_INDEXING: 'search.indexing',
   CASE_UPDATES: 'case.updates',
-  EVIDENCE_ANALYSIS: 'evidence.analysis'
+  EVIDENCE_ANALYSIS: 'evidence.analysis',
 } as const;
+}
 
 export interface MessageHandler {
   (message: any, originalMessage: Message): Promise<void>;
@@ -63,7 +64,7 @@ export class RabbitMQService {
   private async setupQueues(): Promise<void> {
     if (!this.channel) return;
 
-    // Queue options that match existing configurations to prevent conflicts
+    // Queue options that match existing configurations to prevent conflicts;
     const queueOptions = {
       durable: true,
       arguments: {
@@ -81,7 +82,7 @@ export class RabbitMQService {
     if (!this.channel) return false;
 
     try {
-      const messageBuffer = Buffer.from(JSON.stringify(message));
+      const messageBuffer = Buffer.from(JSON.stringify(message);
       return this.channel.sendToQueue(queue, messageBuffer, { persistent: true });
     } catch (error: any) {
       console.error('❌ Failed to publish message:', error);
@@ -95,7 +96,7 @@ export class RabbitMQService {
     await this.channel.consume(queue, async (msg) => {
       if (msg) {
         try {
-          const content = JSON.parse(msg.content.toString()));
+          const content = JSON.parse(msg.content.toString());
           await handler(content, msg);
           this.channel!.ack(msg);
         } catch (error: any) {

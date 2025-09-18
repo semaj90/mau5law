@@ -8,7 +8,7 @@ import * as THREE from 'three';
 import { YoRHa3DComponent, YORHA_COLORS } from './YoRHaUI3D.js';
 import type { YoRHaStyle } from './YoRHaUI3D.js';
 
-// Anti-aliasing configuration types
+// Anti-aliasing configuration types;
 export interface AntiAliasingConfig {
   type: 'none' | 'msaa' | 'fxaa' | 'smaa' | 'taa' | 'auto';
   samples?: number; // For MSAA: 2, 4, 8, 16
@@ -35,14 +35,14 @@ export interface ShaderEnhancements {
   customAASamples?: number;
 }
 
-// Enhanced YoRHa style with anti-aliasing
+// Enhanced YoRHa style with anti-aliasing;
 export interface YoRHaAAStyle extends YoRHaStyle {
   antiAliasing?: AntiAliasingConfig;
   shaderEnhancements?: ShaderEnhancements;
   renderQuality?: 'draft' | 'standard' | 'high' | 'ultra';
 }
 
-// MSAA Render Target Manager
+// MSAA Render Target Manager;
 class MSAARenderTarget {
   private renderTarget: THREE.WebGLRenderTarget;
   private scene: THREE.Scene;
@@ -53,14 +53,14 @@ class MSAARenderTarget {
     this.samples = samples;
     
     // Note: WebGLMultisampleRenderTarget has been removed in Three.js 0.169
-    // Using WebGLRenderTarget with samples parameter instead
+    // Using WebGLRenderTarget with samples parameter instead;
     this.renderTarget = new THREE.WebGLRenderTarget(width, height, {
       format: THREE.RGBAFormat,
       type: THREE.UnsignedByteType,
       samples: samples > 1 ? samples : 0,
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
-      generateMipmaps: false
+      generateMipmaps: false,
     });
 
     this.scene = new THREE.Scene();
@@ -76,7 +76,7 @@ class MSAARenderTarget {
   }
 }
 
-// FXAA Post-processing Shader
+// FXAA Post-processing Shader;
 const FXAAShader = {
   uniforms: {
     tDiffuse: { value: null },
@@ -134,14 +134,14 @@ const FXAAShader = {
       float lumaSE = FxaaLuma(rgbSE);
       float lumaM = FxaaLuma(rgbM);
 
-      float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));
-      float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));
+      float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE));
+      float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE));
 
       vec2 dir;
-      dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));
-      dir.y = ((lumaNW + lumaSW) - (lumaNE + lumaSE));
+      dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE);
+      dir.y = ((lumaNW + lumaSW) - (lumaNE + lumaSE);
 
-      float dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) * (0.25 * (1.0/8.0)), (1.0/128.0));
+      float dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) * (0.25 * (1.0/8.0)), (1.0/128.0);
       float rcpDirMin = 1.0/(min(abs(dir.x), abs(dir.y)) + dirReduce);
 
       dir = min(vec2(8.0, 8.0), max(vec2(-8.0, -8.0), dir * rcpDirMin)) * fxaaQualityRcpFrame;
@@ -169,7 +169,7 @@ const FXAAShader = {
   `
 };
 
-// Enhanced Temporal Anti-Aliasing (TAA) Shader
+// Enhanced Temporal Anti-Aliasing (TAA) Shader;
 export const TAAShader = {
   uniforms: {
     tDiffuse: { value: null },
@@ -262,8 +262,8 @@ export const TAAShader = {
       vec3 nearColor2 = texture2D(tDiffuse, vUv + vec2(0.0, texelSize.y)).rgb;
       vec3 nearColor3 = texture2D(tDiffuse, vUv + vec2(0.0, -texelSize.y)).rgb;
       
-      vec3 boxMin = min(current, min(nearColor0, min(nearColor1, min(nearColor2, nearColor3))));
-      vec3 boxMax = max(current, max(nearColor0, max(nearColor1, max(nearColor2, nearColor3))));
+      vec3 boxMin = min(current, min(nearColor0, min(nearColor1, min(nearColor2, nearColor3)));
+      vec3 boxMax = max(current, max(nearColor0, max(nearColor1, max(nearColor2, nearColor3)));
       
       // Expand bounding box slightly
       vec3 boxCenter = (boxMax + boxMin) * 0.5;
@@ -275,7 +275,7 @@ export const TAAShader = {
       
       // Adaptive feedback based on velocity
       float velocityLength = length(velocity * resolution);
-      float feedback = mix(feedbackMax, feedbackMin, clamp(velocityLength, 0.0, 1.0));
+      float feedback = mix(feedbackMax, feedbackMin, clamp(velocityLength, 0.0, 1.0);
       
       vec3 result = mix(current, previous, feedback);
       gl_FragColor = vec4(result, 1.0);
@@ -283,7 +283,7 @@ export const TAAShader = {
   `
 };
 
-// Advanced SMAA (Enhanced Subpixel Morphological Antialiasing) Shader
+// Advanced SMAA (Enhanced Subpixel Morphological Antialiasing) Shader;
 export const SMAAShader = {
   uniforms: {
     tDiffuse: { value: null },
@@ -330,7 +330,7 @@ export const SMAAShader = {
     varying vec4 vOffset[3];
 
     float luminance(vec3 color) {
-      return dot(color, vec3(0.2126, 0.7152, 0.0722));
+      return dot(color, vec3(0.2126, 0.7152, 0.0722);
     }
 
     vec2 calculateDiagWeights(vec2 texcoord, vec2 e, sampler2D areaTex) {
@@ -378,7 +378,7 @@ export const SMAAShader = {
         end = texture2D(tSearch, vec2(-e.x, 0.0)).rg;
         d.y = end.r;
         
-        d = abs(round(mad(vec4(d.x, -d.x, d.y, -d.y), resolution.xyxy, vUv.xyxy).zw));
+        d = abs(round(mad(vec4(d.x, -d.x, d.y, -d.y), resolution.xyxy, vUv.xyxy).zw);
         
         vec2 sqrt_d = sqrt(d);
         float e1 = texture2D(tDiffuse, vUv + vec2(0.0, 1.0 / resolution.y)).r;
@@ -402,7 +402,7 @@ export const SMAAShader = {
         end = texture2D(tSearch, vec2(-e.y, 0.5)).rg;
         d.y = end.r;
         
-        d = abs(round(mad(vec4(d.x, d.x, -d.y, d.y), resolution.xyxy, vUv.xyxy).xz));
+        d = abs(round(mad(vec4(d.x, d.x, -d.y, d.y), resolution.xyxy, vUv.xyxy).xz);
         
         vec2 sqrt_d = sqrt(d);
         float e1 = texture2D(tDiffuse, vUv + vec2(1.0 / resolution.x, 0.0)).g;
@@ -414,7 +414,7 @@ export const SMAAShader = {
   `
 };
 
-// Enhanced Anti-Aliasing Shader for geometry
+// Enhanced Anti-Aliasing Shader for geometry;
 const EnhancedAAShader = {
   uniforms: {
     baseColor: { value: new THREE.Color(YORHA_COLORS.primary.beige) },
@@ -456,13 +456,13 @@ const EnhancedAAShader = {
     varying vec2 vUv;
     varying vec3 vWorldPosition;
 
-    // High-quality smoothstep with anti-aliasing
+    // High-quality smoothstep with anti-aliasing;
     float aastep(float threshold, float value) {
       float afwidth = length(vec2(dFdx(value), dFdy(value))) * 0.70710678118654757 * aaStrength;
       return smoothstep(threshold - afwidth, threshold + afwidth, value);
     }
 
-    // Enhanced edge detection with gradient analysis
+    // Enhanced edge detection with gradient analysis;
     float detectEdge(vec2 uv) {
       float edge = 0.0;
       
@@ -485,7 +485,7 @@ const EnhancedAAShader = {
       return sqrt(gx * gx + gy * gy);
     }
 
-    // Multi-sample anti-aliasing for smooth edges
+    // Multi-sample anti-aliasing for smooth edges;
     vec3 multisampleAA(vec3 color, vec2 uv) {
       vec3 result = color;
       
@@ -494,7 +494,7 @@ const EnhancedAAShader = {
         vec3 samples = vec3(0.0);
         float sampleCount = 0.0;
         
-        // Rotated grid sampling pattern
+        // Rotated grid sampling pattern;
         for (int i = 0; i < 4; i++) {
           float angle = float(i) * 1.5707963267948966; // π/2
           vec2 offset = vec2(cos(angle), sin(angle)) * texelSize * 0.5;
@@ -511,7 +511,7 @@ const EnhancedAAShader = {
       return result;
     }
 
-    // YoRHa-specific procedural patterns with AA
+    // YoRHa-specific procedural patterns with AA;
     float yorhaPattern(vec2 uv) {
       // Hexagonal grid pattern
       vec2 hexUv = uv * 20.0;
@@ -539,7 +539,7 @@ const EnhancedAAShader = {
       color = mix(color, color * 1.2, pattern * 0.3);
       
       // Edge detection and anti-aliasing
-      float edgeFactor = 1.0 - abs(dot(normal, vec3(0.0, 0.0, 1.0)));
+      float edgeFactor = 1.0 - abs(dot(normal, vec3(0.0, 0.0, 1.0));
       edgeFactor = aastep(0.5, edgeFactor);
       
       // Apply edge coloring with smooth transitions
@@ -549,21 +549,21 @@ const EnhancedAAShader = {
       color = multisampleAA(color, uv);
       
       // Fresnel effect for additional depth
-      float fresnel = 1.0 - abs(dot(normal, vec3(0.0, 0.0, 1.0)));
+      float fresnel = 1.0 - abs(dot(normal, vec3(0.0, 0.0, 1.0));
       fresnel = pow(fresnel, 2.0);
       
       // Add subtle rim lighting
       color += fresnel * vec3(0.1, 0.1, 0.05);
       
       // Final output with gamma correction
-      color = pow(color, vec3(1.0 / 2.2));
+      color = pow(color, vec3(1.0 / 2.2);
       
       gl_FragColor = vec4(color, 1.0);
     }
   `
 };
 
-// TAA (Temporal Anti-Aliasing) Manager
+// TAA (Temporal Anti-Aliasing) Manager;
 class TAAManager {
   private history: THREE.WebGLRenderTarget[] = [];
   private currentIndex: number = 0;
@@ -571,14 +571,14 @@ class TAAManager {
   private frameCount: number = 0;
   
   constructor(width: number, height: number, samples: number = 8) {
-    // Initialize history buffers
+    // Initialize history buffers;
     for (let i = 0; i < 2; i++) {
       this.history.push(new THREE.WebGLRenderTarget(width, height, {
         format: THREE.RGBAFormat,
         type: THREE.FloatType,
         minFilter: THREE.LinearFilter,
-        magFilter: THREE.LinearFilter
-      }));
+        magFilter: THREE.LinearFilter,
+      });
     }
     
     // Initialize jitter pattern (Halton sequence)
@@ -589,7 +589,7 @@ class TAAManager {
     for (let i = 0; i < samples; i++) {
       const x = this.haltonSequence(i, 2) - 0.5;
       const y = this.haltonSequence(i, 3) - 0.5;
-      this.jitterPattern.push(new THREE.Vector2(x, y));
+      this.jitterPattern.push(new THREE.Vector2(x, y);
     }
   }
   
@@ -626,11 +626,11 @@ class TAAManager {
   }
   
   public dispose(): void {
-    this.history.forEach(rt => rt.dispose());
+    this.history.forEach(rt => rt.dispose();
   }
 }
 
-// Enhanced YoRHa 3D Component with Anti-Aliasing
+// Enhanced YoRHa 3D Component with Anti-Aliasing;
 export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
   protected aaConfig: AntiAliasingConfig;
   protected msaaManager: MSAARenderTarget | null = null;
@@ -702,7 +702,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
       uniforms: THREE.UniformsUtils.clone(FXAAShader.uniforms),
       vertexShader: FXAAShader.vertexShader,
       fragmentShader: FXAAShader.fragmentShader,
-      transparent: true
+      transparent: true,
     });
     
     // Configure FXAA quality based on settings
@@ -778,7 +778,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
       vertexShader: EnhancedAAShader.vertexShader,
       fragmentShader: EnhancedAAShader.fragmentShader,
       transparent: this.style.opacity !== undefined && this.style.opacity < 1,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
     });
     
     // Configure enhanced material
@@ -805,17 +805,17 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
   public update(deltaTime: number): void {
     super.update(deltaTime);
     
-    // Update TAA if active
+    // Update TAA if active;
     if (this.taaManager) {
       this.taaManager.update();
     }
     
-    // Update time uniform for shader animations
+    // Update time uniform for shader animations;
     if (this.enhancedMaterial) {
       this.enhancedMaterial.uniforms.time.value += deltaTime;
     }
     
-    // Adaptive quality adjustment
+    // Adaptive quality adjustment;
     if (this.aaConfig.adaptiveQuality) {
       this.updateAdaptiveQuality();
     }
@@ -871,11 +871,11 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     }
   }
   
-  // Public API for AA configuration
+  // Public API for AA configuration;
   public setAntiAliasingConfig(config: Partial<AntiAliasingConfig>): void {
     this.aaConfig = { ...this.aaConfig, ...config };
     
-    // Reinitialize if type changed
+    // Reinitialize if type changed;
     if (config.type && config.type !== this.aaConfig.type) {
       this.disposeAntiAliasing();
       this.initializeAntiAliasing();
@@ -923,20 +923,20 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
     super.dispose();
   }
   
-  // Debug and performance monitoring
+  // Debug and performance monitoring;
   public getAAPerformanceStats(): {
     type: string;
     quality: string;
     samples: number;
     estimatedFPS: number;
-    memoryUsage: number;
+    memoryUsage: number;,
   } {
     return {
       type: this.aaConfig.type,
       quality: this.aaConfig.quality || 'high',
       samples: this.aaConfig.samples || 0,
       estimatedFPS: this.estimateFPS(),
-      memoryUsage: this.estimateMemoryUsage()
+      memoryUsage: this.estimateMemoryUsage(),
     };
   }
   
@@ -961,7 +961,7 @@ export abstract class YoRHaAntiAliased3D extends YoRHa3DComponent {
   }
 }
 
-// Export utility functions for external use
+// Export utility functions for external use;
 export const AntiAliasingUtils = {
   detectOptimalAAType(): AntiAliasingConfig['type'] {
     const canvas = document.createElement('canvas');
@@ -972,7 +972,7 @@ export const AntiAliasingUtils = {
     const renderer = gl.getParameter(gl.RENDERER);
     const vendor = gl.getParameter(gl.VENDOR);
     
-    // Simple heuristics based on GPU vendor/type
+    // Simple heuristics based on GPU vendor/type;
     if (renderer.includes('NVIDIA') && renderer.includes('RTX')) {
       return 'taa';
     } else if (renderer.includes('AMD') || renderer.includes('Radeon')) {
@@ -993,7 +993,7 @@ export const AntiAliasingUtils = {
       subpixelQuality: 0.75,
       enabled: true,
       adaptiveQuality: true,
-      performanceTarget: targetFPS
+      performanceTarget: targetFPS,
     };
   },
   
@@ -1004,21 +1004,21 @@ export const AntiAliasingUtils = {
         quality: 'medium' as const,
         samples: 2,
         adaptiveQuality: true,
-        performanceTarget: 60
+        performanceTarget: 60,
       },
       balanced: {
         type: 'auto' as const,
         quality: 'high' as const,
         samples: 4,
         adaptiveQuality: true,
-        performanceTarget: 60
+        performanceTarget: 60,
       },
       quality: {
         type: 'taa' as const,
         quality: 'ultra' as const,
         samples: 8,
         adaptiveQuality: false,
-        performanceTarget: 30
+        performanceTarget: 30,
       }
     };
     

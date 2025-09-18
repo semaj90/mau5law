@@ -3,7 +3,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 
-// Simple validation schemas
+// Simple validation schemas;
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(1, 'Password is required')
@@ -20,7 +20,7 @@ const registerSchema = z.object({
   jurisdiction: z.string().min(2, 'Jurisdiction is required'),
   badgeNumber: z.string().optional(),
   agreeToTerms: z.string().transform(val => val === 'true'),
-  agreeToPrivacy: z.string().transform(val => val === 'true')
+  agreeToPrivacy: z.string().transform(val => val === 'true'),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -37,7 +37,7 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-  // Handle both login and register in unified flow
+  // Handle both login and register in unified flow;
   default: async ({ request, cookies }) => {
     const formData = await request.formData();
     const email = formData.get('email') as string;
@@ -49,7 +49,7 @@ export const actions: Actions = {
 
     try {
       if (isRegister) {
-        // Registration flow
+        // Registration flow;
         const registerData = {
           email,
           firstName,
@@ -61,7 +61,7 @@ export const actions: Actions = {
           jurisdiction: formData.get('jurisdiction') as string,
           badgeNumber: formData.get('badgeNumber') as string || '',
           agreeToTerms: formData.get('agreeToTerms') as string,
-          agreeToPrivacy: formData.get('agreeToPrivacy') as string
+          agreeToPrivacy: formData.get('agreeToPrivacy') as string,
         };
 
         // Validate registration data
@@ -69,7 +69,7 @@ export const actions: Actions = {
         if (!validation.success) {
           const errors = validation.error.errors;
           return fail(400, {
-            error: errors[0]?.message || 'Registration validation failed'
+            error: errors[0]?.message || 'Registration validation failed',
           });
         }
 
@@ -77,13 +77,13 @@ export const actions: Actions = {
         // In production, you would create user in database
         console.log('Demo Registration:', { email, role: registerData.role });
 
-        // Set demo session
+        // Set demo session;
         cookies.set('session', `demo-register-${Date.now()}`, {
           path: '/',
           maxAge: 60 * 60 * 24 * 7, // 1 week
           httpOnly: true,
           secure: false,
-          sameSite: 'lax'
+          sameSite: 'lax',
         });
 
         throw redirect(302, '/dashboard');
@@ -97,34 +97,34 @@ export const actions: Actions = {
         if (!validation.success) {
           const errors = validation.error.errors;
           return fail(400, {
-            error: errors[0]?.message || 'Login validation failed'
+            error: errors[0]?.message || 'Login validation failed',
           });
         }
 
         // For demo purposes - accept any valid email/password
         console.log('Demo Login:', { email });
 
-        // Set demo session
+        // Set demo session;
         cookies.set('session', `demo-login-${Date.now()}`, {
           path: '/',
           maxAge: 60 * 60 * 24 * 7, // 1 week
           httpOnly: true,
           secure: false,
-          sameSite: 'lax'
+          sameSite: 'lax',
         });
 
         throw redirect(302, '/dashboard');
       }
 
     } catch (error: any) {
-      // Don't catch redirects
+      // Don't catch redirects;
       if (error instanceof Response) {
         throw error;
       }
 
       console.error('Auth error:', error);
       return fail(500, {
-        error: 'An error occurred during authentication. Please try again.'
+        error: 'An error occurred during authentication. Please try again.',
       });
     }
   }

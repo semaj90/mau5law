@@ -16,7 +16,7 @@ import { aiSummaryMachine } from '$lib/machines/aiSummaryMachine';
 import { ollamaService } from '$lib/server/services/ollama-service'; // Assumed service providing generateResponse
 import { URL } from 'url';
 
-// Request payload for summary generation
+// Request payload for summary generation;
 export interface SummaryRequest {
   type: 'case' | 'evidence' | 'legal_document' | 'cross_analysis';
   targetId: string;
@@ -33,10 +33,10 @@ export interface AILLMOutput {
   model: string;
   confidence: number;
   tokens: number;
-  processingTime: number;
+  processingTime: number;,
 }
 
-// Basic shape for vector search results (loose to accommodate both services)
+// Basic shape for vector search results (loose to accommodate both services);
 export interface BasicVectorResult {
   id: string;
   content?: string;
@@ -52,7 +52,7 @@ export interface EnhancedRAGOutput {
   searchMetrics: {
     vectorSearchTime: number;
     documentsRetrieved: number;
-    averageRelevance: number;
+    averageRelevance: number;,
   };
 }
 
@@ -62,9 +62,9 @@ export interface UserActivityContext {
   interactionPatterns: {
     timeOfDay: string;
     commonActions: string[];
-    focusAreas: string[];
+    focusAreas: string[];,
   };
-  recommendations: string[];
+  recommendations: string[];,
 }
 
 export interface SynthesizedOutput {
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const summaryRequest: SummaryRequest = await request.json();
     const userId = locals.user.id;
 
-    // Initialize XState machine with request context
+    // Initialize XState machine with request context;
     summaryService.send({
       type: 'GENERATE_SUMMARY' as any,
     });
@@ -102,11 +102,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
   } catch (error: any) {
     console.error('Summaries API error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to generate summary',
         details: error.message,
-      },
+      },)
       { status: 500 }
     );
   }
@@ -124,7 +123,7 @@ async function handleBatchSummary(request: SummaryRequest, userId: string): Prom
   // Step 3: Get User Activity Context
   const userActivity = request.includeUserActivity ? await getUserActivityContext(userId) : null;
 
-  // Step 4: Synthesize all outputs using XState + Fuse.js
+  // Step 4: Synthesize all outputs using XState + Fuse.js;
   const synthesizedResult = await synthesizeOutputs({
     llmOutput,
     ragOutput,
@@ -147,16 +146,15 @@ async function handleBatchSummary(request: SummaryRequest, userId: string): Prom
 }
 
 async function handleStreamingSummary(request: SummaryRequest, userId: string): Promise<any> {
-  // Create SSE stream for real-time updates
+  // Create SSE stream for real-time updates;
   const stream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder();
 
       try {
         // Send initial status
-        controller.enqueue(
-          encoder.encode(
-            `data: ${JSON.stringify({
+        controller.enqueue(;
+          encoder.encode(`data: ${JSON.stringify({
               type: 'status',
               message: 'Starting AI summary generation...',
               progress: 0,
@@ -164,23 +162,21 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           )
         );
 
-        // Step 1: Local LLM (streaming)
+        // Step 1: Local LLM (streaming);
         const llmOutput = await getLocalLLMOutputStreaming(request, (chunk) => {
-          controller.enqueue(
-            encoder.encode(
-              `data: ${JSON.stringify({
+          controller.enqueue(;
+            encoder.encode(`data: ${JSON.stringify({
                 type: 'llm_chunk',
                 content: chunk,
                 progress: 33,
               })}\n\n`
             )
-          ));
+          );
         });
 
         // Step 2: Enhanced RAG
-        controller.enqueue(
-          encoder.encode(
-            `data: ${JSON.stringify({
+        controller.enqueue(;
+          encoder.encode(`data: ${JSON.stringify({
               type: 'status',
               message: 'Retrieving relevant documents...',
               progress: 50,
@@ -191,9 +187,8 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         const ragOutput = request.includeRAG ? await getEnhancedRAGOutput(request) : null;
 
         // Step 3: User Activity
-        controller.enqueue(
-          encoder.encode(
-            `data: ${JSON.stringify({
+        controller.enqueue(;
+          encoder.encode(`data: ${JSON.stringify({
               type: 'status',
               message: 'Analyzing user activity patterns...',
               progress: 75,
@@ -206,9 +201,8 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
           : null;
 
         // Step 4: Final synthesis
-        controller.enqueue(
-          encoder.encode(
-            `data: ${JSON.stringify({
+        controller.enqueue(;
+          encoder.encode(`data: ${JSON.stringify({
               type: 'status',
               message: 'Synthesizing final summary...',
               progress: 90,
@@ -224,9 +218,8 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
         });
 
         // Send final result
-        controller.enqueue(
-          encoder.encode(
-            `data: ${JSON.stringify({
+        controller.enqueue(;
+          encoder.encode(`data: ${JSON.stringify({
               type: 'complete',
               result: synthesizedResult,
               progress: 100,
@@ -236,9 +229,8 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
 
         controller.close();
       } catch (error: any) {
-        controller.enqueue(
-          encoder.encode(
-            `data: ${JSON.stringify({
+        controller.enqueue(;
+          encoder.encode(`data: ${JSON.stringify({
               type: 'error',
               error: error.message,
             })}\n\n`
@@ -260,7 +252,7 @@ async function handleStreamingSummary(request: SummaryRequest, userId: string): 
   });
 }
 
-// AI Mix Function 1: Local LLM Output
+// AI Mix Function 1: Local LLM Output;
 async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> {
   const startTime = Date.now();
 
@@ -275,7 +267,7 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
       const evidenceData = await db
         .select()
         .from(evidence)
-        .where(eq(evidence.id, request.targetId))
+        .where(eq(evidence.id, request.targetId)
         .limit(1);
       sourceContent = evidenceData[0]?.description || '';
       break;
@@ -283,13 +275,13 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
       const docData = await db
         .select()
         .from(legalDocuments)
-        .where(eq(legalDocuments.id, request.targetId))
+        .where(eq(legalDocuments.id, request.targetId)
         .limit(1);
       sourceContent = docData[0]?.content || '';
       break;
   }
 
-  // Prepare prompt based on depth
+  // Prepare prompt based on depth;
   const depthPrompts = {
     quick: 'Provide a concise 2-3 sentence summary of:',
     comprehensive: 'Provide a detailed analysis and comprehensive summary of:',
@@ -334,7 +326,7 @@ async function getLocalLLMOutput(request: SummaryRequest): Promise<AILLMOutput> 
   };
 }
 
-// AI Mix Function 2: Enhanced RAG Output with pgvector + Qdrant
+// AI Mix Function 2: Enhanced RAG Output with pgvector + Qdrant;
 async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRAGOutput> {
   const startTime = Date.now();
 
@@ -349,7 +341,7 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
       const evidenceData = await db
         .select()
         .from(evidence)
-        .where(eq(evidence.id, request.targetId))
+        .where(eq(evidence.id, request.targetId)
         .limit(1);
       searchQuery = `${evidenceData[0]?.title} ${evidenceData[0]?.description}`.substring(0, 200);
       break;
@@ -365,19 +357,19 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
   // Combine and deduplicate results
   const allResults = [...pgResults, ...qdrantResults];
   const uniqueResults = Array.from(
-    new Map(allResults.map((item) => [(item as { id?: any }).id, item])).values()
+    new Map(allResults.map((item) => [(item as { id?: any ,}).id, item])).values()
   );
 
   // Rank results by relevance
   const relevantDocs = uniqueResults
-    .sort((a, b) => (b.score || b.relevance || 0) - (a.score || a.relevance || 0))
-    .slice(0, 5)
+    .sort((a, b) => (b.score || b.relevance || 0) - (a.score || a.relevance || 0)
+    .slice(0, 5);
     .map((doc) => ({
       id: doc.id,
       content: doc.content || doc.payload?.content || '',
       relevance: doc.score || doc.relevance || 0,
       source: doc.source || 'vector_db',
-    }));
+    });
 
   // Generate context summary using the most relevant docs
   const contextContent = relevantDocs.map((doc) => doc.content).join('\n\n');
@@ -404,7 +396,7 @@ async function getEnhancedRAGOutput(request: SummaryRequest): Promise<EnhancedRA
   };
 }
 
-// AI Mix Function 3: User Activity Context with Loki.js
+// AI Mix Function 3: User Activity Context with Loki.js;
 async function getUserActivityContext(userId: string): Promise<UserActivityContext> {
   // TODO: In production, this would connect to actual Loki.js user activity store
   // For now, we'll simulate based on available data patterns
@@ -413,7 +405,7 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
   const recentCases = await db
     .select()
     .from(cases)
-    .where(eq(cases.createdBy, userId))
+    .where(eq(cases.createdBy, userId)
     .orderBy(cases.updatedAt)
     .limit(10);
 
@@ -421,7 +413,7 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
   const recentEvidence = await db
     .select()
     .from(evidence)
-    .where(eq(evidence.uploadedBy, userId))
+    .where(eq(evidence.uploadedBy, userId)
     .orderBy(evidence.uploadedAt)
     .limit(10);
 
@@ -436,7 +428,7 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
     ...recentEvidence.map((e: any) => e.description || ''),
   ]);
 
-  // Generate recommendations using Fuse.js fuzzy search
+  // Generate recommendations using Fuse.js fuzzy search;
   const fuse = new Fuse(recentQueries, {
     threshold: 0.6,
     keys: ['title', 'description'],
@@ -456,7 +448,7 @@ async function getUserActivityContext(userId: string): Promise<UserActivityConte
   };
 }
 
-// AI Mix Function 4: XState-powered Synthesis Engine
+// AI Mix Function 4: XState-powered Synthesis Engine;
 async function synthesizeOutputs({
   llmOutput,
   ragOutput,
@@ -466,14 +458,14 @@ async function synthesizeOutputs({
   llmOutput: AILLMOutput;
   ragOutput: EnhancedRAGOutput | null;
   userActivity: UserActivityContext | null;
-  request: SummaryRequest;
+  request: SummaryRequest;,
 }): Promise<SynthesizedOutput> {
-  // Update XState machine with collected data
+  // Update XState machine with collected data;
   summaryService.send({
     type: 'SYNTHESIZE_INSIGHTS' as any,
   });
 
-  // Weighted synthesis based on source reliability
+  // Weighted synthesis based on source reliability;
   const weights = {
     llm: 0.6,
     rag: ragOutput ? 0.3 : 0,
@@ -516,7 +508,7 @@ async function synthesizeOutputs({
     keyInsights,
     actionItems,
     confidence,
-    sources: [
+    sources: [;
       {
         type: 'llm',
         contribution: weights.llm,
@@ -527,7 +519,7 @@ async function synthesizeOutputs({
         },
       },
       ...(ragOutput
-        ? [
+        ? [;
             {
               type: 'rag' as const,
               contribution: weights.rag,
@@ -539,7 +531,7 @@ async function synthesizeOutputs({
           ]
         : []),
       ...(userActivity
-        ? [
+        ? [;
             {
               type: 'user_activity' as const,
               contribution: weights.userActivity,
@@ -562,14 +554,14 @@ async function synthesizeOutputs({
 function chunkText(text: string, chunkSize: number): string[] {
   const chunks = [];
   for (let i = 0; i < text.length; i += chunkSize) {
-    chunks.push(text.substring(i, i + chunkSize));
+    chunks.push(text.substring(i, i + chunkSize);
   }
   return chunks;
 }
 
 async function getLocalLLMOutputStreaming(
   request: SummaryRequest,
-  onChunk: (chunk: string) => void
+  onChunk: (chunk: string) => void;
 ): Promise<AILLMOutput> {
   // This would implement streaming response from Ollama
   // For now, return the same as batch mode
@@ -606,12 +598,12 @@ async function extractKeyInsights(contents: string[]): Promise<string[]> {
   return sentences
     .sort((a, b) => b.length - a.length)
     .slice(0, 5)
-    .map((s) => s.trim());
+    .map((s) => s.trim();
 }
 
 async function generateActionItems(
   llmContent: string,
-  ragOutput: EnhancedRAGOutput | null
+  ragOutput: EnhancedRAGOutput | null;
 ): Promise<string[]> {
   const actionItems = [];
 
@@ -631,7 +623,7 @@ async function generateActionItems(
 async function generateNextSteps(
   insights: string[],
   actionItems: string[],
-  type: string
+  type: string;
 ): Promise<string[]> {
   const nextSteps = [...actionItems];
 
@@ -664,12 +656,12 @@ function generateWarnings(confidence: number, docsRetrieved: number): string[] {
   return warnings;
 }
 
-// GET endpoint for summary status and health check
+// GET endpoint for summary status and health check;
 export const GET: RequestHandler = async ({ url }) => {
   const summaryId = url.searchParams.get('id');
 
   if (summaryId) {
-    // Return status of specific summary
+    // Return status of specific summary;
     return json({
       status: 'completed', // TODO: Implement actual status tracking
       summaryId,
@@ -677,7 +669,7 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   }
 
-  // Health check
+  // Health check;
   return json({
     service: 'AI Mix Summaries API',
     status: 'healthy',

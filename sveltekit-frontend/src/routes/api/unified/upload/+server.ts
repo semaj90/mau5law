@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     for (const file of files) {
       try {
-        const fileBuffer = Buffer.from(await file.arrayBuffer());
+        const fileBuffer = Buffer.from(await file.arrayBuffer();
         
         const upload = {
           file: fileBuffer,
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
           metadata: {
             ...metadata,
             originalSize: file.size,
-            uploadedAt: new Date().toISOString()
+            uploadedAt: new Date().toISOString(),
           }
         };
 
@@ -53,14 +53,14 @@ export const POST: RequestHandler = async ({ request }) => {
           embeddingId: (result as { id?: any; fileUrl?: any; embeddingId?: any; cached?: any }).embeddingId,
           cached: (result as { id?: any; fileUrl?: any; embeddingId?: any; cached?: any }).cached,
           size: file.size,
-          type: file.type
+          type: file.type,
         });
 
       } catch (fileError) {
         console.error(`Error processing file ${file.name}:`, fileError);
         results.push({
           fileName: file.name,
-          error: fileError instanceof Error ? fileError.message: 'Unknown error'
+          error: fileError instanceof Error ? fileError.message: 'Unknown error',
         });
       }
     }
@@ -69,16 +69,15 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       results,
       processed: results.filter(item => item.length),
-      failed: results.filter(item => item.length)
+      failed: results.filter(item => item.length),
     });
 
   } catch (error) {
     console.error('Unified upload error:', error);
-    return json(
-      { 
+    return json({ 
         error: 'Upload failed',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      }, 
+        details: error instanceof Error ? error.message: 'Unknown error',
+      }, )
       { status: 500 }
     );
   }

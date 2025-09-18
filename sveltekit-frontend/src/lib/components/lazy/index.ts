@@ -1,7 +1,7 @@
 // Lazy Loading Components - Barrel Export
 // Provides easy access to all lazy loading components and utilities
 
-// Core lazy loading utilities
+// Core lazy loading utilities;
 export {
   getLazyLoader,
   lazyLoad,

@@ -14,7 +14,6 @@ async function finalTest() {
     // Take screenshot of the main page
     await page.screenshot({ path: 'route-all-routes-final.png', fullPage: true });
     console.log('✅ All-routes final screenshot saved');
-
   } catch (error) {
     console.error('❌ Failed:', error.message);
   }

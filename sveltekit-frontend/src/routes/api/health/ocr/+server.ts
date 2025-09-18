@@ -10,11 +10,11 @@ interface OCRHealthDetails {
   performance?: {
     avgProcessingTime: number;
     documentsProcessed: number;
-    errorRate: number;
+    errorRate: number;,
   };
   version?: string;
   lastChecked: string;
-  responseTime: number;
+  responseTime: number;,
 }
 
 interface OCRHealthResponse {
@@ -23,7 +23,7 @@ interface OCRHealthResponse {
   ocr: OCRHealthDetails;
   metadata: {
     checkDuration: number;
-    environment: string;
+    environment: string;,
   };
 }
 
@@ -43,7 +43,7 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
         'Accept': 'application/json',
         'User-Agent': 'LegalAI-HealthCheck/1.0'
       },
-      signal: controller.signal
+      signal: controller.signal,
     });
     
     clearTimeout(timeoutId);
@@ -62,7 +62,7 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
         performance: data.performance || {
           avgProcessingTime: 0,
           documentsProcessed: 0,
-          errorRate: 0
+          errorRate: 0,
         },
         version: data.version,
         lastChecked: new Date().toISOString(),
@@ -112,7 +112,7 @@ function determineOverallStatus(ocrHealth: OCRHealthDetails): OCRHealthResponse[
       return 'degraded';
     case 'offline':
     default:
-      return 'unhealthy';
+      return 'unhealthy';,
   }
 }
 
@@ -133,7 +133,7 @@ export const GET: RequestHandler = async () => {
       ocr: ocrHealth,
       metadata: {
         checkDuration,
-        environment: process.env.NODE_ENV || 'development'
+        environment: process.env.NODE_ENV || 'development',
       }
     };
     
@@ -167,7 +167,7 @@ export const GET: RequestHandler = async () => {
       message: error instanceof Error ? error.message: 'Unknown error',
       metadata: {
         checkDuration,
-        environment: process.env.NODE_ENV || 'development'
+        environment: process.env.NODE_ENV || 'development',
       }
     }, {
       status: 503,
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// Support POST for triggering specific OCR health actions
+// Support POST for triggering specific OCR health actions;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, timeout } = await request.json();
@@ -199,7 +199,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const response = await fetch(`${ocrBaseUrl}/extract`, {
           method: 'POST',
           body: formData,
-          signal: AbortSignal.timeout(timeout || 15000)
+          signal: AbortSignal.timeout(timeout || 15000),
         });
         
         const responseTime = Date.now() - startTime;
@@ -213,7 +213,7 @@ export const POST: RequestHandler = async ({ request }) => {
             message: 'OCR processing test completed successfully',
             responseTime,
             testResult: result,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           });
         } else {
           return json({
@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request }) => {
             status: 'failed',
             message: `OCR test processing failed with status ${response.status}`,
             responseTime,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }, { status: response.status });
         }
         
@@ -232,7 +232,7 @@ export const POST: RequestHandler = async ({ request }) => {
           message: 'OCR processing test error',
           error: error.message,
           responseTime: Date.now() - startTime,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }, { status: 500 });
       }
     }
@@ -249,7 +249,7 @@ export const POST: RequestHandler = async ({ request }) => {
           extractionFormats: ['pdf', 'png', 'jpg', 'jpeg', 'txt'],
           maxFileSize: '50MB', // Typical OCR service limits
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
     
@@ -265,7 +265,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// Support HEAD for lightweight health pings
+// Support HEAD for lightweight health pings;
 export const HEAD: RequestHandler = async () => {
   try {
     const ocrHealth = await performOCRHealthCheck();

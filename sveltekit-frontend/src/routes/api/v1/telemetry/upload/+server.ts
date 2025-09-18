@@ -9,7 +9,7 @@ import type { TelemetryEvent } from '$lib/services/upload-telemetry-service';
 
 interface TelemetryBatch {
   sessionId: string;
-  events: TelemetryEvent[];
+  events: TelemetryEvent[];,
 }
 
 interface ProcessedTelemetryStats {
@@ -19,26 +19,26 @@ interface ProcessedTelemetryStats {
   timespan: {
     first: number;
     last: number;
-    durationMs: number;
+    durationMs: number;,
   };
   performance: {
     avgUploadTime: number;
     successRate: number;
-    retryRate: number;
+    retryRate: number;,
   };
 }
 
 /*
  * POST /api/v1/telemetry/upload
  * Accepts batched telemetry events for processing and storage
- */
+ */;
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     const batch: TelemetryBatch = await request.json();
 
     if (!batch.sessionId || !Array.isArray(batch.events)) {
       return json(
-        { error: 'Invalid payload: sessionId and events array required' },
+        { error: 'Invalid payload: sessionId and events array required' },)
         { status: 400 }
       );
     }
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     // Process telemetry events
     const stats = processTelemetryBatch(batch);
 
-    // Log events for development (in production, you'd store in database)
+    // Log events for development (in production, you'd store in database);
     console.log(`📊 Telemetry batch received from ${getClientAddress()}:`, {
       sessionId: batch.sessionId,
       eventCount: batch.events.length,
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     });
 
     // Store events (placeholder - implement with your preferred storage)
-    await storeTelemetryEvents(batch, getClientAddress());
+    await storeTelemetryEvents(batch, getClientAddress();
 
     return json({
       success: true,
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 /*
  * GET /api/v1/telemetry/upload
  * Returns telemetry status and recent session statistics
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   const sessionId = url.searchParams.get('sessionId');
 
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   }
 
-  // Return general telemetry service status
+  // Return general telemetry service status;
   return json({
     status: 'operational',
     endpoint: '/api/v1/telemetry/upload',
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 /*
  * Process a batch of telemetry events and extract performance statistics
- */
+ */;
 function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
   const events = batch.events;
 
@@ -119,9 +119,8 @@ function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
     };
   }
 
-  // Count event types
-  const eventTypes = events.reduce(
-    (acc, event) => {
+  // Count event types;
+  const eventTypes = events.reduce((acc, event) => {
       acc[event.eventType] = (acc[event.eventType] || 0) + 1;
       return acc;
     },
@@ -171,7 +170,7 @@ function processTelemetryBatch(batch: TelemetryBatch): ProcessedTelemetryStats {
 
 /*
  * Store telemetry events (implement with your preferred storage solution)
- */
+ */;
 async function storeTelemetryEvents(batch: TelemetryBatch, clientIp: string): Promise<void> {
   // TODO: Implement storage (PostgreSQL, ClickHouse, etc.)
   // For now, just log structured events
@@ -187,14 +186,14 @@ async function storeTelemetryEvents(batch: TelemetryBatch, clientIp: string): Pr
 
 /*
  * Retrieve session statistics (implement with your preferred storage)
- */
+ */;
 async function getSessionStats(sessionId: string): Promise<any> {
   // TODO: Implement session stats retrieval
-  // For now, return placeholder
+  // For now, return placeholder;
   return {
     sessionId,
     totalEvents: 0,
     lastSeen: Date.now(),
-    placeholder: true
+    placeholder: true,
   };
 }

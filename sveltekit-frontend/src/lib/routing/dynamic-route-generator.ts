@@ -7,6 +7,7 @@ import type { RouteDefinition } from '$lib/data/routes-config';
 import { allRoutes } from '$lib/data/routes-config';
 import { error } from '@sveltejs/kit';
 import path from "path";
+}
 
 export interface DynamicRouteConfig {
   pattern: string;
@@ -31,13 +32,13 @@ export interface GeneratedRoute {
     tags: string[];
     preload: boolean;
     ssr: boolean;
-    hydrate: boolean;
+    hydrate: boolean;,
   };
 }
 
 /**
  * Dynamic Route Generator Class
- */
+ */;
 export class DynamicRouteGenerator {
   private routes: Map<string, GeneratedRoute> = new Map();
   private patterns: Map<string, DynamicRouteConfig> = new Map();
@@ -49,9 +50,9 @@ export class DynamicRouteGenerator {
 
   /**
    * Initialize default route patterns for common use cases
-   */
+   */;
   private initializeDefaultPatterns(): void {
-    // Demo route pattern
+    // Demo route pattern;
     this.patterns.set('demo', {
       pattern: '/demo/:slug',
       template: 'demo',
@@ -59,10 +60,10 @@ export class DynamicRouteGenerator {
       layout: 'routes/demo/+layout.svelte',
       preload: true,
       ssr: true,
-      hydrate: true
+      hydrate: true,
     });
 
-    // AI route pattern
+    // AI route pattern;
     this.patterns.set('ai', {
       pattern: '/ai/:feature',
       template: 'ai-feature',
@@ -70,10 +71,10 @@ export class DynamicRouteGenerator {
       layout: 'routes/ai/+layout.svelte',
       preload: true,
       ssr: false,
-      hydrate: true
+      hydrate: true,
     });
 
-    // Legal route pattern
+    // Legal route pattern;
     this.patterns.set('legal', {
       pattern: '/legal/:type/:id?',
       template: 'legal-resource',
@@ -81,10 +82,10 @@ export class DynamicRouteGenerator {
       layout: 'routes/legal/+layout.svelte',
       preload: true,
       ssr: true,
-      hydrate: true
+      hydrate: true,
     });
 
-    // Admin route pattern
+    // Admin route pattern;
     this.patterns.set('admin', {
       pattern: '/admin/:section',
       template: 'admin-section',
@@ -92,10 +93,10 @@ export class DynamicRouteGenerator {
       layout: 'routes/admin/+layout.svelte',
       preload: false,
       ssr: true,
-      hydrate: true
+      hydrate: true,
     });
 
-    // Dev tools pattern
+    // Dev tools pattern;
     this.patterns.set('dev', {
       pattern: '/dev/:tool',
       template: 'dev-tool',
@@ -103,13 +104,13 @@ export class DynamicRouteGenerator {
       layout: 'routes/dev/+layout.svelte',
       preload: false,
       ssr: false,
-      hydrate: true
+      hydrate: true,
     });
   }
 
   /**
    * Generate routes from the existing routes configuration
-   */
+   */;
   private generateRoutesFromConfig(): void {
     for (const routeConfig of allRoutes) {
       const generatedRoute = this.createRouteFromConfig(routeConfig);
@@ -119,7 +120,7 @@ export class DynamicRouteGenerator {
 
   /**
    * Create a generated route from route configuration
-   */
+   */;
   private createRouteFromConfig(routeConfig: RouteDefinition): GeneratedRoute {
     const pattern = this.findMatchingPattern(routeConfig);
     const config = pattern ? this.patterns.get(pattern) : null;
@@ -136,14 +137,14 @@ export class DynamicRouteGenerator {
         tags: routeConfig.tags,
         preload: config?.preload ?? true,
         ssr: config?.ssr ?? true,
-        hydrate: config?.hydrate ?? true
+        hydrate: config?.hydrate ?? true,
       }
     };
   }
 
   /**
    * Find matching pattern for a route
-   */
+   */;
   private findMatchingPattern(routeConfig: RouteDefinition): string | null {
     const path = routeConfig.route;
     
@@ -158,7 +159,7 @@ export class DynamicRouteGenerator {
 
   /**
    * Infer component path from route configuration
-   */
+   */;
   private inferComponentPath(routeConfig: RouteDefinition): string {
     let path = routeConfig.route;
     
@@ -177,7 +178,7 @@ export class DynamicRouteGenerator {
 
   /**
    * Extract parameters from route path
-   */
+   */;
   private extractParams(route: string): Record<string, any> {
     const params: Record<string, any> = {};
     const matches = route.match(/\[([^\]]+)\]/g);
@@ -190,7 +191,7 @@ export class DynamicRouteGenerator {
         
         params[name] = {
           optional: isOptional,
-          type: 'string'
+          type: 'string',
         };
       });
     }
@@ -200,7 +201,7 @@ export class DynamicRouteGenerator {
 
   /**
    * Register a new route pattern
-   */
+   */;
   public registerPattern(name: string, config: DynamicRouteConfig): void {
     this.patterns.set(name, config);
   }
@@ -236,7 +237,7 @@ export class DynamicRouteGenerator {
         tags: ['dynamic'],
         preload: config.preload!,
         ssr: config.ssr!,
-        hydrate: config.hydrate!
+        hydrate: config.hydrate!,
       }
     };
 
@@ -246,56 +247,56 @@ export class DynamicRouteGenerator {
 
   /**
    * Infer component path from route path
-   */
+   */;
   private inferComponentFromPath(path: string): string {
     return `routes${path}/+page.svelte`;
   }
 
   /**
    * Get all generated routes
-   */
+   */;
   public getAllRoutes(): GeneratedRoute[] {
-    return Array.from(this.routes.values());
+    return Array.from(this.routes.values();
   }
 
   /**
    * Get route by ID
-   */
+   */;
   public getRoute(id: string): GeneratedRoute | undefined {
     return this.routes.get(id);
   }
 
   /**
    * Get routes by category
-   */
+   */;
   public getRoutesByCategory(category: string): GeneratedRoute[] {
     return this.getAllRoutes().filter(route => route.metadata.category === category);
   }
 
   /**
    * Get routes by status
-   */
+   */;
   public getRoutesByStatus(status: string): GeneratedRoute[] {
     return this.getAllRoutes().filter(route => route.metadata.status === status);
   }
 
   /**
    * Check if route exists
-   */
+   */;
   public hasRoute(id: string): boolean {
     return this.routes.has(id);
   }
 
   /**
    * Remove route
-   */
+   */;
   public removeRoute(id: string): boolean {
     return this.routes.delete(id);
   }
 
   /**
    * Get route manifest for SvelteKit
-   */
+   */;
   public getRouteManifest(): Record<string, any> {
     const manifest: Record<string, any> = {};
     
@@ -305,7 +306,7 @@ export class DynamicRouteGenerator {
         component: route.component,
         layout: route.layout,
         params: route.params,
-        metadata: route.metadata
+        metadata: route.metadata,
       };
     }
     
@@ -314,7 +315,7 @@ export class DynamicRouteGenerator {
 
   /**
    * Generate route loader for dynamic imports
-   */
+   */;
   public generateRouteLoader(route: GeneratedRoute): string {
     const componentPath = route.component.replace('routes/', '../routes/');
     const layoutPath = route.layout ? route.layout.replace('routes/', '../routes/') : null;
@@ -334,7 +335,7 @@ export class DynamicRouteGenerator {
 
   /**
    * Generate TypeScript definitions for routes
-   */
+   */;
   public generateRouteTypes(): string {
     let types = '// Auto-generated route types\n\n';
     
@@ -373,7 +374,7 @@ export const dynamicRouteGenerator = new DynamicRouteGenerator();
 export function generateDynamicRoute(
   id: string,
   path: string,
-  options?: Partial<DynamicRouteConfig>
+  options?: Partial<DynamicRouteConfig>;
 ): GeneratedRoute {
   return dynamicRouteGenerator.generateRoute(id, path, options);
 }
@@ -400,12 +401,12 @@ export function hasDynamicRoute(id: string): boolean {
 
 /**
  * Route middleware for handling dynamic routes
- */
+ */;
 export function createDynamicRouteHandler(route: GeneratedRoute) {
   return async (event: any) => {
     const { params } = event;
     
-    // Validate required parameters
+    // Validate required parameters;
     for (const [paramName, paramConfig] of Object.entries(route.params)) {
       const isOptional = (paramConfig as any).optional;
       if (!isOptional && !params[paramName]) {
@@ -413,11 +414,11 @@ export function createDynamicRouteHandler(route: GeneratedRoute) {
       }
     }
     
-    // Return route data
+    // Return route data;
     return {
       route: route,
       params: params,
-      metadata: route.metadata
+      metadata: route.metadata,
     };
   };
 }

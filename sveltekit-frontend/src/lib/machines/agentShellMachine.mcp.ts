@@ -6,7 +6,7 @@ import { mcpTools, type MCPToolResponse } from '../../mcp/index.js';
 import type { Evidence, User } from "$lib/types/index.js"; 
 import type { Case } from "$lib/types/case";
 
-// Enhanced context with MCP tool integration
+// Enhanced context with MCP tool integration;
 export interface AgentShellContext {
   input: string;
   response: string;
@@ -24,7 +24,7 @@ export interface AgentShellContext {
     enhancedRAG: boolean;
     uploadService: boolean;
     kratosServer: boolean;
-    mcpDatabase: boolean;
+    mcpDatabase: boolean;,
   };
   mcpResults?: {
     cases?: MCPToolResponse<Case[]>;
@@ -65,12 +65,12 @@ export const agentShellMachineMCP = createMachine({
       enhancedRAG: false,
       uploadService: false,
       kratosServer: false,
-      mcpDatabase: false
+      mcpDatabase: false,
     }
   },
   types: Record<string, any> as {
     context: AgentShellContext;
-    events: AgentShellEvent;
+    events: AgentShellEvent;,
   },
   states: {
     idle: {
@@ -101,7 +101,7 @@ export const agentShellMachineMCP = createMachine({
         CHECK_HEALTH: {
           target: "checkingHealth",
         },
-        // MCP operations
+        // MCP operations;
         MCP_LOAD_CASE: {
           target: "mcpLoadingCase",
           actions: assign({
@@ -244,7 +244,7 @@ export const agentShellMachineMCP = createMachine({
         },
       },
     },
-    // MCP states
+    // MCP states;
     mcpLoadingCase: {
       invoke: {
         src: "mcpLoadCase",
@@ -254,7 +254,7 @@ export const agentShellMachineMCP = createMachine({
           actions: assign({
             currentCase: (_, e) => (e && "data" in e ? (e as any).data : null),
             mcpResults: ({ context, event }) => ({
-              ...(context.mcpResults || {}),
+              ...(context.mcpResults || {,}),
               cases: event && "data" in event ? (event as any).data : null,
             }),
           }),
@@ -275,7 +275,7 @@ export const agentShellMachineMCP = createMachine({
           target: "idle",
           actions: assign({
             mcpResults: ({ context, event }) => ({
-              ...(context.mcpResults || {}),
+              ...(context.mcpResults || {,}),
               cases: event && "data" in event ? (event as any).data : null,
             }),
           }),
@@ -300,7 +300,7 @@ export const agentShellMachineMCP = createMachine({
           actions: assign({
             currentCase: (_, e) => (e && "data" in e ? (e as any).data : null),
             mcpResults: ({ context, event }) => ({
-              ...(context.mcpResults || {}),
+              ...(context.mcpResults || {,}),
               cases: event && "data" in event ? (event as any).data : null,
             }),
           }),
@@ -370,7 +370,7 @@ export const agentShellMachineMCP = createMachine({
           target: "idle",
           actions: assign({
             mcpResults: ({ context, event }) => ({
-              ...(context.mcpResults || {}),
+              ...(context.mcpResults || {,}),
               cases: event && "data" in event ? (event as any).data : null,
             }),
           }),
@@ -434,9 +434,9 @@ export const agentShellMachineMCP = createMachine({
   },
 });
 
-// Enhanced service implementations with MCP integration
+// Enhanced service implementations with MCP integration;
 export const agentShellServicesMCP = {
-  // Enhanced agent call with MCP context
+  // Enhanced agent call with MCP context;
   callAgentWithMCP: async ({ input, userId, caseId }: { input: string; userId?: string; caseId?: string }) => {
     try {
       // First, gather relevant context using MCP tools
@@ -475,26 +475,26 @@ export const agentShellServicesMCP = {
     }
   },
 
-  // Enhanced semantic search with MCP integration
+  // Enhanced semantic search with MCP integration;
   performSemanticSearchWithMCP: async ({ query, userId, caseId }: { query: string; userId: string; caseId?: string }) => {
     try {
       // Use MCP tools for vector similarity search
       const promises = [];
 
       if (caseId) {
-        // Search for similar evidence in current case
+        // Search for similar evidence in current case;
         promises.push(mcpTools.evidence.loadEvidence({
           caseId,
           query,
-          limit: 5
-        }));
+          limit: 5,
+        });
       } else {
-        // Search across all user cases
+        // Search across all user cases;
         promises.push(mcpTools.cases.loadCases({
           userId,
           query,
-          limit: 5
-        }));
+          limit: 5,
+        });
       }
 
       const [searchResults] = await Promise.all(promises);
@@ -505,7 +505,7 @@ export const agentShellServicesMCP = {
       return {
         ...ragResponse,
         mcpResults: searchResults,
-        enhancedContext: true
+        enhancedContext: true,
       };
     } catch (error: any) {
       console.error("Enhanced semantic search failed:", error);
@@ -513,26 +513,26 @@ export const agentShellServicesMCP = {
     }
   },
 
-  // Enhanced file upload with MCP integration
+  // Enhanced file upload with MCP integration;
   performFileUploadWithMCP: async ({ file, userId, caseId }: { file: File; userId: string; caseId?: string }) => {
     try {
       // Upload file using production service
       const uploadResponse = await services.uploadFile(file, { userId, caseId });
 
-      // If successful and we have a case ID, create evidence record
+      // If successful and we have a case ID, create evidence record;
       if (uploadResponse.success && caseId) {
         const evidenceResult = await mcpTools.evidence.createEvidence({
           caseId,
           title: file.name,
           description: `Uploaded file: ${file.name}`,
           evidenceType: 'document',
-          tags: ['uploaded']
+          tags: ['uploaded'],
         });
 
         return {
           ...uploadResponse,
           evidenceCreated: evidenceResult.success,
-          evidenceId: evidenceResult.data?.id
+          evidenceId: evidenceResult.data?.id,
         };
       }
 
@@ -543,7 +543,7 @@ export const agentShellServicesMCP = {
     }
   },
 
-  // Enhanced health check with MCP integration
+  // Enhanced health check with MCP integration;
   checkServiceHealthWithMCP: async () => {
     try {
       const healthChecks = await Promise.allSettled([
@@ -564,7 +564,7 @@ export const agentShellServicesMCP = {
     }
   },
 
-  // MCP service implementations
+  // MCP service implementations;
   mcpLoadCase: async ({ caseId }: { caseId: string }) => {
     const result = await mcpTools.cases.loadCases({ limit: 1, offset: 0 });
     return result;
@@ -606,7 +606,7 @@ export const agentShellServicesMCP = {
       embedding,
       caseId,
       limit: 10,
-      threshold: 0.7
+      threshold: 0.7,
     });
     return result;
   },
@@ -627,7 +627,7 @@ export const agentShellServicesMCP = {
     };
   },
 
-  // Legacy action implementations
+  // Legacy action implementations;
   acceptPatchAction: ({ context, event }: { context: AgentShellContext; event: any }) => {
     console.log("Accepting patch:", event.patchContent, "for job:", event.jobId);
   },

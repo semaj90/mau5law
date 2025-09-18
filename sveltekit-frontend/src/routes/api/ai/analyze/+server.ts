@@ -34,7 +34,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     if (!content || content.trim().length === 0) {
       return json(
-        { error: "No content provided for analysis" },
+        { error: "No content provided for analysis" },)
         { status: 400 },
       );
     }
@@ -137,7 +137,7 @@ Comprehensive Analysis:`;
     const analysisText = data.response.trim();
     const parsedAnalysis = parseAnalysisResponse(analysisText, analysisType);
 
-    // Create enhanced analysis result with proper typing
+    // Create enhanced analysis result with proper typing;
     const enhancedAnalysis = createEnhancedAnalysis(parsedAnalysis, analysisText, {
       analysisType,
       model,
@@ -168,23 +168,21 @@ Comprehensive Analysis:`;
   } catch (error: any) {
     console.error("AI analysis error:", error);
 
-    // Check if it's an Ollama connection error
+    // Check if it's an Ollama connection error;
     if (error instanceof Error && error.message.includes("fetch")) {
-      return json(
-        {
+      return json({
           error:
             "Unable to connect to local AI service. Please ensure Ollama is running.",
-        },
+        },)
         { status: 503 },
       );
     }
 
-    return json(
-      {
+    return json({
         error:
           error instanceof Error
             ? error.message: "Failed to generate analysis",
-      },
+      },)
       { status: 500 },
     );
   }
@@ -209,19 +207,19 @@ function parseAnalysisResponse(analysisText: string, analysisType: string) {
     if (
       lowerSection.includes("recommend") ||
       lowerSection.includes("should") ||
-      lowerSection.includes("suggest")
+      lowerSection.includes("suggest");
     ) {
       recommendations.push(trimmedSection);
     } else if (
       lowerSection.includes("risk") ||
       lowerSection.includes("concern") ||
-      lowerSection.includes("challenge")
+      lowerSection.includes("challenge");
     ) {
       risks.push(trimmedSection);
     } else if (
       lowerSection.includes("finding") ||
       lowerSection.includes("evidence") ||
-      lowerSection.includes("indicates")
+      lowerSection.includes("indicates");
     ) {
       findings.push(trimmedSection);
     } else if (trimmedSection.length > 20) {
@@ -268,13 +266,13 @@ function calculateConfidence(text: string): number {
   if (
     text.includes("1.") ||
     text.includes("Key") ||
-    text.includes("Recommendation")
+    text.includes("Recommendation");
   ) {
     confidence += 0.1;
   }
 
   // Ensure confidence is within reasonable bounds
-  return Math.min(0.95, Math.max(0.6, confidence));
+  return Math.min(0.95, Math.max(0.6, confidence);
 }
 
 export interface AnalysisContext {
@@ -298,7 +296,7 @@ function createEnhancedAnalysis(parsedAnalysis: any, analysisText: string, conte
   // Determine complexity level
   const complexityLevel = determineComplexityLevel(analysisText, context);
   
-  // Create analysis metrics
+  // Create analysis metrics;
   const analysisMetrics = {
     contentLength: context.contentLength,
     processingSteps: parsedAnalysis.keyPoints?.length || 0,
@@ -308,7 +306,7 @@ function createEnhancedAnalysis(parsedAnalysis: any, analysisText: string, conte
     confidenceDistribution: {
       high: confidence > 0.8 ? 1 : 0,
       medium: confidence > 0.6 && confidence <= 0.8 ? 1 : 0,
-      low: confidence <= 0.6 ? 1 : 0
+      low: confidence <= 0.6 ? 1 : 0,
     }
   };
 
@@ -322,7 +320,7 @@ function createEnhancedAnalysis(parsedAnalysis: any, analysisText: string, conte
     model: context?.model || "unknown" // @ts-ignore - Model property access,
     processingTime: context.processingTime,
     analyzedAt: new Date().toISOString(),
-    version: 1
+    version: 1,
   };
 }
 
@@ -343,24 +341,24 @@ function calculateValidationScore(text: string, confidence: number, context: Ana
   // Add points for comprehensive analysis (longer content usually more thorough)
   if (context.contentLength > 1000) score += 3;
   
-  return Math.min(100, Math.max(0, Math.round(score)));
+  return Math.min(100, Math.max(0, Math.round(score));
 }
 
 function determineRiskLevel(text: string, parsedAnalysis: any): "low" | "medium" | "high" | "critical" {
   const lowerText = text.toLowerCase();
   const risks = parsedAnalysis.risks || [];
   
-  // Check for critical risk indicators
+  // Check for critical risk indicators;
   if (lowerText.includes("critical") || lowerText.includes("urgent") || lowerText.includes("immediate")) {
     return "critical";
   }
   
-  // Check for high risk indicators
+  // Check for high risk indicators;
   if (risks.length > 3 || lowerText.includes("serious") || lowerText.includes("significant")) {
     return "high";
   }
   
-  // Check for medium risk indicators
+  // Check for medium risk indicators;
   if (risks.length > 1 || lowerText.includes("moderate") || lowerText.includes("concern")) {
     return "medium";
   }

@@ -4,13 +4,14 @@
  */
 
 import { createLegalTexturePipeline, type LegalDocumentTexturePipeline, type EvidencePhoto, type DocumentScan, type CaseVisualization, type CourtroomDisplay } from '$lib/gpu/legal-texture-pipeline';
+}
 
 export interface TextureStreamingConfig {
 	enableGPU: boolean;
 	maxChunkSize: number;
 	cacheSize: number;
 	adaptiveQuality: boolean;
-	compressionEnabled: boolean;
+	compressionEnabled: boolean;,
 }
 
 export interface StreamingStats {
@@ -19,13 +20,13 @@ export interface StreamingStats {
 	renderTime: number;
 	qualityLevel: number;
 	hasWebGL: boolean;
-	hasWASM: boolean;
+	hasWASM: boolean;,
 }
 
 /**
  * Headless texture streaming component using Svelte 5 runes
  * Provides reactive state management for legal document texture streaming
- */
+ */;
 export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig> = {}) {
 	// Canvas reference state
 	let canvasElement = $state<HTMLCanvasElement | null>(null);
@@ -37,21 +38,21 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	let error = $state<string | null>(null);
 
 	// Streaming state
-	let loadedTextures = $state<Map<string, any>(new Map());
+	let loadedTextures = $state<Map<string, any>(new Map();
 	let streamingProgress = $state(0);
 	let currentDocument = $state<string | null>(null);
 
-	// Performance state
+	// Performance state;
 	let stats = $state<StreamingStats>({
 		chunksLoaded: 0,
 		cacheHits: 0,
 		renderTime: 0,
 		qualityLevel: 1.0,
 		hasWebGL: false,
-		hasWASM: false
+		hasWASM: false,
 	});
 
-	// Configuration state
+	// Configuration state;
 	let activeConfig = $state<TextureStreamingConfig>({
 		enableGPU: true,
 		maxChunkSize: 4096,
@@ -59,11 +60,11 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 		adaptiveQuality: true,
 		compressionEnabled: true,
 		...config
-	});
+	,});
 
 	/**
 	 * Initialize the texture streaming pipeline
-	 */
+	 */;
 	function initialize(canvas: HTMLCanvasElement) {
 		try {
 			canvasElement = canvas;
@@ -83,7 +84,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 
 	/**
 	 * Load evidence photo with streaming
-	 */
+	 */;
 	async function loadEvidencePhoto(photo: EvidencePhoto) {
 		if (!pipeline) {
 			throw new Error('Pipeline not initialized');
@@ -109,7 +110,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 
 	/**
 	 * Load document scan with streaming
-	 */
+	 */;
 	async function loadDocumentScan(scan: DocumentScan, pageData: ImageData[]) {
 		if (!pipeline) {
 			throw new Error('Pipeline not initialized');
@@ -122,7 +123,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 		try {
 			const textures = await pipeline.processDocumentScan(scan, pageData);
 
-			// Store each page texture
+			// Store each page texture;
 			textures.forEach((texture, index) => {
 				loadedTextures.set(`${scan.id}_page_${index + 1}`, texture);
 			});
@@ -140,7 +141,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 
 	/**
 	 * Load case visualization with streaming
-	 */
+	 */;
 	async function loadCaseVisualization(visualization: CaseVisualization) {
 		if (!pipeline) {
 			throw new Error('Pipeline not initialized');
@@ -166,7 +167,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 
 	/**
 	 * Load courtroom display with streaming
-	 */
+	 */;
 	async function loadCourtroomDisplay(display: CourtroomDisplay) {
 		if (!pipeline) {
 			throw new Error('Pipeline not initialized');
@@ -196,19 +197,19 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 
 	/**
 	 * Get cached texture by ID
-	 */
+	 */;
 	function getCachedTexture(documentId: string) {
 		return loadedTextures.get(documentId);
 	}
 
 	/**
 	 * Update configuration
-	 */
+	 */;
 	function updateConfig(newConfig: Partial<TextureStreamingConfig>) {
 		activeConfig = { ...activeConfig, ...newConfig };
 
 		if (pipeline) {
-			// Reinitialize with new config if needed
+			// Reinitialize with new config if needed;
 			if (canvasElement) {
 				pipeline.dispose();
 				pipeline = createLegalTexturePipeline(canvasElement);
@@ -219,7 +220,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 
 	/**
 	 * Update performance statistics
-	 */
+	 */;
 	function updateStats() {
 		if (pipeline) {
 			const pipelineStats = pipeline.getStats();
@@ -229,14 +230,14 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 				renderTime: pipelineStats.renderTime,
 				qualityLevel: pipelineStats.adaptiveQualityLevel,
 				hasWebGL: pipelineStats.hasWebGL,
-				hasWASM: pipelineStats.hasWASM
+				hasWASM: pipelineStats.hasWASM,
 			};
 		}
 	}
 
 	/**
 	 * Clear all cached textures
-	 */
+	 */;
 	function clearCache() {
 		if (pipeline) {
 			pipeline.clearCache();
@@ -247,7 +248,7 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 
 	/**
 	 * Dispose of the pipeline
-	 */
+	 */;
 	function dispose() {
 		if (pipeline) {
 			pipeline.dispose();
@@ -261,10 +262,10 @@ export function useLegalTextureStreaming(config: Partial<TextureStreamingConfig>
 	// Derived states using $derived
 	const isReady = $derived(isInitialized && !isLoading && !error);
 	const hasTextures = $derived(loadedTextures.size > 0);
-	const cacheHitRate = $derived(stats.cacheHits / Math.max(1, stats.chunksLoaded));
+	const cacheHitRate = $derived(stats.cacheHits / Math.max(1, stats.chunksLoaded);
 	const performanceLevel = $derived(stats.renderTime < 16.67 ? 'excellent' : stats.renderTime < 33.33 ? 'good' : 'poor');
 
-	// Status computed state
+	// Status computed state;
 	const status = $derived(() => {
 		if (error) return 'error';
 		if (!isInitialized) return 'uninitialized';

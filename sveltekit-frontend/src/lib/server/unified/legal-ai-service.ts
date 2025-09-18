@@ -11,6 +11,7 @@ import { qdrant } from '../vector/qdrant.js';
 import { embedText } from '../ai/embedder.js';
 import { createId } from '@paralleldrive/cuid2';
 import { eq, sql } from 'drizzle-orm';
+}
 
 export interface DocumentUpload {
   file: Buffer;
@@ -41,7 +42,7 @@ export class UnifiedLegalAIService {
    * 5. Store metadata in PostgreSQL
    * 6. Cache frequently accessed data in Redis
    * 7. Update Neo4j relationships
-   */
+   */;
   async uploadDocument(upload: DocumentUpload): Promise<any> {
     const documentId = createId();
 
@@ -57,12 +58,12 @@ export class UnifiedLegalAIService {
 
       // Step 2: Store file in MinIO
       const minioResult =
-        upload.documentType === 'evidence'
+        upload.documentType === 'evidence';
           ? await minioStorage.uploadEvidence(upload.file, upload.fileName, {
               contentType: upload.contentType,
               caseId: upload.caseId,
               documentType: upload.documentType,
-            })
+            });
           : await minioStorage.uploadDocument(upload.file, upload.fileName, {
               contentType: upload.contentType,
               documentType: upload.documentType,
@@ -72,14 +73,14 @@ export class UnifiedLegalAIService {
       const embedding = await embedText(textContent);
 
       const vectorResult =
-        upload.documentType === 'evidence'
+        upload.documentType === 'evidence';
           ? await qdrant.upsertEvidence(documentId, embedding, {
               case_id: upload.caseId,
               file_name: upload.fileName,
               document_type: upload.documentType,
               minio_object: minioResult.objectName,
               ...upload.metadata,
-            })
+            });
           : await qdrant.upsertCase(documentId, embedding, {
               // Note: using upsertCase as fallback
               file_name: upload.fileName,
@@ -92,7 +93,7 @@ export class UnifiedLegalAIService {
       const dbRecord =
         upload.documentType === 'evidence'
           ? await db
-              .insert(evidence)
+              .insert(evidence);
               .values({
                 id: documentId,
                 case_id: upload.caseId!,
@@ -108,7 +109,7 @@ export class UnifiedLegalAIService {
               })
               .returning()
           : await db
-              .insert(documents)
+              .insert(documents);
               .values({
                 id: documentId,
                 title: upload.fileName,
@@ -127,7 +128,7 @@ export class UnifiedLegalAIService {
       // Step 5: Cache the document for fast access
       const cacheKey = `document:${documentId}`;
       await cache.set(
-        cacheKey,
+        cacheKey,);
         {
           id: documentId,
           fileName: upload.fileName,
@@ -139,7 +140,7 @@ export class UnifiedLegalAIService {
         24 * 60 * 60 * 1000
       ); // Cache for 24 hours
 
-      // Step 6: Update Neo4j relationships (if case provided)
+      // Step 6: Update Neo4j relationships (if case provided);
       if (upload.caseId) {
         await this.updateNeo4jRelationships(documentId, upload.caseId, upload.documentType);
       }
@@ -160,11 +161,11 @@ export class UnifiedLegalAIService {
    * Unified search across all storage systems
    * Uses Qdrant for vector similarity, PostgreSQL for metadata filtering,
    * Redis for caching, and Neo4j for recommendations
-   */
+   */;
   async searchDocuments(options: SearchOptions): Promise<any> {
     const cacheKey = `search:${JSON.stringify(options)}`;
 
-    // Check cache first
+    // Check cache first;
     if (options.cacheResults !== false) {
       const cachedResults = await cache.get(cacheKey);
       if (cachedResults && typeof cachedResults === 'object' && 'results' in cachedResults) {
@@ -173,7 +174,7 @@ export class UnifiedLegalAIService {
           results: any[];
           recommendations?: any[];
           cached: boolean;
-          sources: string[];
+          sources: string[];,
         };
       }
     }
@@ -182,19 +183,19 @@ export class UnifiedLegalAIService {
     const sources = [];
 
     try {
-      // Vector search in Qdrant
+      // Vector search in Qdrant;
       if (options.type === 'evidence' || options.type === 'all') {
         const evidenceResults = await qdrant.searchEvidence(options.query, {
           limit: options.limit || 10,
           scoreThreshold: options.threshold || 0.7, // Changed from threshold to scoreThreshold
         });
 
-        // Enrich with PostgreSQL metadata
+        // Enrich with PostgreSQL metadata;
         for (const result of evidenceResults) {
           const dbRecord = await db
             .select()
             .from(evidence)
-            .where(eq(evidence.id, (result as { id?: any }).id))
+            .where(eq(evidence.id, (result as { id?: any }).id)
             .limit(1);
           if (dbRecord.length > 0) {
             results.push({
@@ -215,12 +216,12 @@ export class UnifiedLegalAIService {
           scoreThreshold: options.threshold || 0.7, // Changed from threshold to scoreThreshold
         });
 
-        // Enrich with PostgreSQL metadata
+        // Enrich with PostgreSQL metadata;
         for (const result of documentResults) {
           const dbRecord = await db
             .select()
             .from(documents)
-            .where(eq(documents.id, (result as { id?: any }).id))
+            .where(eq(documents.id, (result as { id?: any }).id)
             .limit(1);
           if (dbRecord.length > 0) {
             results.push({
@@ -248,7 +249,7 @@ export class UnifiedLegalAIService {
         sources,
       };
 
-      // Cache results
+      // Cache results;
       if (options.cacheResults !== false) {
         await cache.set(cacheKey, searchResults, 5 * 60 * 1000); // Cache for 5 minutes
       }
@@ -262,7 +263,7 @@ export class UnifiedLegalAIService {
 
   /**
    * Get document with all associated data from all systems
-   */
+   */;
   async getDocument(id: string): Promise<any> {
     const cacheKey = `full_document:${id}`;
 
@@ -274,7 +275,7 @@ export class UnifiedLegalAIService {
         fileUrl: string;
         textContent: string;
         similarDocuments: any[];
-        recommendations: any[];
+        recommendations: any[];,
       };
     }
 
@@ -294,7 +295,7 @@ export class UnifiedLegalAIService {
         (await minioStorage.getPresignedUrl(
           evidenceRecord.length > 0 ? 'legal-evidence' : 'legal-documents',
           record.file_path
-        ));
+        );
 
       // Get similar documents from Qdrant
       const textForSimilarity = record.ocr_content || record.content || record.title;
@@ -330,7 +331,7 @@ export class UnifiedLegalAIService {
   private async updateNeo4jRelationships(
     documentId: string,
     caseId: string,
-    documentType: string
+    documentType: string;
   ): Promise<void> {
     try {
       // TODO: Implement Neo4j driver connection and relationship updates
@@ -343,7 +344,7 @@ export class UnifiedLegalAIService {
 
   /**
    * Get recommendations from Neo4j based on case relationships
-   */
+   */;
   private async getNeo4jRecommendations(caseId: string, query: string): Promise<any[]> {
     try {
       // TODO: Implement Neo4j recommendations based on case relationships
@@ -358,7 +359,7 @@ export class UnifiedLegalAIService {
 
   /**
    * Health check for all integrated systems
-   */
+   */;
   async healthCheck(): Promise<any> {
     const health = {
       postgresql: false,

@@ -1,10 +1,11 @@
 // Shared Legal AI metadata type used by tests and services
-// This is a flexible, backward-compatible shape that maps to the current PNGEmbedExtractor metadata
+// This is a flexible, backward-compatible shape that maps to the current PNGEmbedExtractor metadata;
+}
 
 export interface LegalAIMetadataEntity {
   name: string;
   type: string;
-  confidence: number;
+  confidence: number;,
 }
 
 export interface LegalAIClassifications {
@@ -43,7 +44,7 @@ export interface LegalAIMetadata {
   additionalData?: Record<string, any>;
 
   // Compatibility aliases for PNG extractor expectations
-  evidence_id?: string; // mapped from processingId or provided directly
+  evidence_id?: string; // mapped from processingId or provided directly;
   analysis_results?: {
     confidence: number;
     classifications: string[] | LegalAIClassifications[keyof LegalAIClassifications][];
@@ -51,7 +52,7 @@ export interface LegalAIMetadata {
       | Array<
       | LegalAIMetadataEntity[];
     risk_assessment: 'low' | 'medium' | 'high' | 'critical' | string;
-    summary: string;
+    summary: string;,
   };
 }
 

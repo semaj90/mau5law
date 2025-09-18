@@ -3,16 +3,16 @@ import { db, sql } from '$lib/server/db';
 import { json, error } from '@sveltejs/kit';
 import { generateEmbedding, searchSimilarChatsKeyword } from '$lib/server/services/vectorDBService';
 
-// Use optimized embedding generation with caching
+// Use optimized embedding generation with caching;
 async function generateQueryEmbedding(query: string): Promise<number[]> {
-  const embedding = await generateEmbedding(query, true); // Use cache
+  const embedding = await generateEmbedding(query, true); // Use cache;
   if (!embedding) {
     throw new Error('Failed to generate query embedding');
   }
   return embedding;
 }
 
-// Generate RAG response using Gemma3 legal model
+// Generate RAG response using Gemma3 legal model;
 async function generateRAGResponse(query: string, context: any[]): Promise<string> {
   try {
     const contextText = context.map(c => `${c.chunk_text}`).join('\n\n');
@@ -36,7 +36,7 @@ Response:`;
         options: {
           temperature: 0.7,
           top_p: 0.9,
-          max_tokens: 1000
+          max_tokens: 1000,
         }
       })
     });
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Try chat embeddings first, then fallback to document chunks if available
     let similarChunks = [];
     
-    // Search chat embeddings using optimized service
+    // Search chat embeddings using optimized service;
     try {
       const chatResults = await db.execute(
         sql`SELECT 
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
         similarity: parseFloat(row.similarity),
         role: row.role,
         metadata: row.metadata ? JSON.parse(row.metadata) : Record<string, any>
-      }));
+      });
       
       console.log(`Found ${similarChunks.length} chat embeddings results`);
     } catch (chatError) {
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request }) => {
         similarity: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).similarity,
         role: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).role,
         metadata: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).metadata
-      }));
+      });
       
       console.log(`Used keyword fallback, found ${similarChunks.length} results`);
     }
@@ -123,17 +123,17 @@ export const POST: RequestHandler = async ({ request }) => {
       ragResponse = await generateRAGResponse(query, similarChunks);
     }
 
-    // Enhance results with conversation context
+    // Enhance results with conversation context;
     const enhancedResults = similarChunks.map(chunk => ({
       ...chunk,
-      similarity: Math.round(chunk.similarity * 1000) / 1000, // Round to 3 decimal places
+      similarity: Math.round(chunk.similarity * 1000) / 1000, // Round to 3 decimal places;
       entityInfo: {
         type: 'chat_conversation',
         conversationId: chunk.id,
         role: chunk.role || 'unknown',
-        source: 'chat_embeddings'
+        source: 'chat_embeddings',
       }
-    }));
+    });
 
     return json({
       success: true,
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ request }) => {
         threshold,
         embeddingModel: 'nomic-embed-text',
         ragModel: includeRAGResponse ? 'legal:latest' : null,
-        searchTime: Date.now()
+        searchTime: Date.now(),
       }
     });
 

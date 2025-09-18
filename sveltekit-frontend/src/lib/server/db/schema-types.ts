@@ -37,7 +37,7 @@ export type LegalDocumentInsert = InferInsertModel<typeof legalDocuments>;
 export type Note = InferSelectModel<typeof notes>;
 export type NoteInsert = InferInsertModel<typeof notes>;
 
-// Relations types
+// Relations types;
 export type CaseWithRelations = Case & {
   evidence?: Evidence[];
   reports?: Report[];
@@ -59,7 +59,7 @@ export type ReportWithRelations = Report & {
   lastEditedBy?: User;
 };
 
-// Re-export schema tables
+// Re-export schema tables;
 export {
   cases,
   evidence,

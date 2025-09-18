@@ -40,7 +40,7 @@ interface EnhancedRAGRetrievalOptions {
 interface VectorSearchMatch {
   entry: LODCacheEntry;
   relevance_score: number;
-  vector_similarity: number;
+  vector_similarity: number;,
 }
 
 interface EnhancedRAGResultItem {
@@ -49,13 +49,13 @@ interface EnhancedRAGResultItem {
   lod_match: LODLevel;
   contextual_prompt: string;
   svg_visualization: string;
-  vector_similarity: number;
+  vector_similarity: number;,
 }
 
 interface EnhancedRAGResponse {
   results: EnhancedRAGResultItem[];
   enhanced_context: string;
-  predictive_next_queries: string[];
+  predictive_next_queries: string[];,
 }
 
 interface ProcessLLMOutputResult {
@@ -67,7 +67,7 @@ interface ProcessLLMOutputResult {
     svg_summaries: LODCacheEntry['svg_summaries'];
     vector_clusters: number[];
     topology_features: number[];
-    contextual_anchors: string[];
+    contextual_anchors: string[];,
   };
 }
 
@@ -77,7 +77,7 @@ interface LODCacheStats {
   total_original_size: number;
   average_compression_ratio: number;
   cache_hit_rate: number;
-  config: LODProcessingConfig;
+  config: LODProcessingConfig;,
 }
 
 // Define types that were missing from the export
@@ -92,34 +92,34 @@ interface LODCacheEntry {
   original_text: string;
   lod_level: LODLevel;
 
-  // 7-bit compressed representations at different detail levels
+  // 7-bit compressed representations at different detail levels;
   compressed_data: {
     glyph: Uint8Array;      // 7 bytes - single character/symbol level
     tile: Uint8Array;       // 7 bytes - word/phrase level (existing SIMD)
     block: Uint8Array;      // 35 bytes - paragraph level (5 tiles)
     section: Uint8Array;    // 175 bytes - section level (25 tiles)
-    document: Uint8Array;   // 875 bytes - full document level (125 tiles)
+    document: Uint8Array;   // 875 bytes - full document level (125 tiles),
   };
 
-  // SVG summarizations for each LOD level
+  // SVG summarizations for each LOD level;
   svg_summaries: {
     glyph: string;          // Single glyph SVG
     tile: string;           // Mini-icon SVG (16x16)
     block: string;          // Small diagram SVG (64x64)
     section: string;        // Medium visualization SVG (256x256)
-    document: string;       // Full document map SVG (512x512)
+    document: string;       // Full document map SVG (512x512),
   };
 
-  // Vector metadata for enhanced RAG
+  // Vector metadata for enhanced RAG;
   vector_metadata: {
     embeddings: Float32Array[];     // Semantic embeddings per LOD level
     topology_features: Float32Array; // Structural relationship vectors
     semantic_clusters: number[];    // Cluster IDs for related content
     retrieval_scores: number[];     // Predictive relevance scores
-    context_anchors: string[];      // Key terms for contextual prompting
+    context_anchors: string[];      // Key terms for contextual prompting,
   };
 
-  // Caching metadata
+  // Caching metadata;
   cache_metadata: {
     created_at: number;
     access_count: number;
@@ -131,7 +131,7 @@ interface LODCacheEntry {
       original_size: number;
       compressed_size: number;
       compression_ratio: number;
-      semantic_preservation: number;
+      semantic_preservation: number;,
     };
   };
 }
@@ -143,7 +143,7 @@ interface LODProcessingConfig {
   topology_awareness_level: 'basic' | 'advanced' | 'neural';
   predictive_analytics_enabled: boolean;
   max_cache_entries: number;
-  retention_policy: 'lru' | 'frequency' | 'predictive';
+  retention_policy: 'lru' | 'frequency' | 'predictive';,
 }
 
 class LODCacheEngine {
@@ -167,7 +167,7 @@ class LODCacheEngine {
     topology_awareness_level: 'advanced',
     predictive_analytics_enabled: true,
     max_cache_entries: 10000,
-    retention_policy: 'predictive'
+    retention_policy: 'predictive',
   };
 
   constructor(customConfig?: Partial<LODProcessingConfig>) {
@@ -189,9 +189,9 @@ class LODCacheEngine {
   /**
    * Initialize hybrid GPU context for vector processing acceleration
    * Uses environment configuration and advanced context provider
-   */
+   */;
   private async initializeHybridGPU(): Promise<void> {
-    // Check environment configuration
+    // Check environment configuration;
     if (!CLIENT_ENV.GPU_ACCELERATION) {
       console.log('🎮 GPU acceleration disabled via environment for LOD Cache Engine');
       this.useGPUAcceleration = false;
@@ -202,12 +202,12 @@ class LODCacheEngine {
     if (!this.useGPUAcceleration) return;
 
     try {
-      // Initialize GPU context provider with environment-based settings
+      // Initialize GPU context provider with environment-based settings;
       const success = await gpuContextProvider.initialize({
         preferredBackend: GPU_CONFIG.preferWebGPU ? 'webgpu' : 'webgl2',
         requireCompute: true, // LOD processing benefits from compute shaders
         memoryLimit: GPU_CONFIG.memoryLimit,
-        debug: CLIENT_ENV.GPU_DEBUG
+        debug: CLIENT_ENV.GPU_DEBUG,
       });
 
       if (!success) {
@@ -240,7 +240,7 @@ class LODCacheEngine {
 
   /**
    * Centralized shader resource retrieval with caching.
-   */
+   */;
   private async getOrLoadShaderResources(key: string, loader: () => Promise<ShaderResources | null>): Promise<ShaderResources | null> {
     const cached = this.shaderResources.get(key);
     if (cached) return cached;
@@ -251,9 +251,9 @@ class LODCacheEngine {
 
   /**
    * Load backend-specific shader resources for vector processing
-   */
+   */;
   private async loadVectorProcessingShaders(): Promise<void> {
-    const embeddingShaders = await this.getOrLoadShaderResources('embedding-generation', () =>
+    const embeddingShaders = await this.getOrLoadShaderResources('embedding-generation', () =>;
       gpuContextProvider.loadShaderResources('embedding-generation', {
         webgpu: { compute: this.createWebGPUEmbeddingShader() },
         webgl2: { vertex: this.createWebGL2ComputeVertexShader(), fragment: this.createWebGL2EmbeddingFragmentShader() },
@@ -265,7 +265,7 @@ class LODCacheEngine {
       console.log(`🔧 Loaded ${this.activeBackend} shaders for embedding generation`);
     }
 
-    const clusteringShaders = await this.getOrLoadShaderResources('vector-clustering', () =>
+    const clusteringShaders = await this.getOrLoadShaderResources('vector-clustering', () =>;
       gpuContextProvider.loadShaderResources('vector-clustering', {
         webgpu: { compute: this.createWebGPUClusteringShader() },
         webgl2: { vertex: this.createWebGL2ComputeVertexShader(), fragment: this.createWebGL2ClusteringFragmentShader() },
@@ -276,7 +276,7 @@ class LODCacheEngine {
       console.log(`🔧 Loaded ${this.activeBackend} shaders for vector clustering`);
     }
 
-    const similarityShaders = await this.getOrLoadShaderResources('similarity-computation', () =>
+    const similarityShaders = await this.getOrLoadShaderResources('similarity-computation', () =>;
       gpuContextProvider.loadShaderResources('similarity-computation', {
         webgpu: { compute: this.createWebGPUSimilarityShader() },
         webgl2: { vertex: this.createWebGL2ComputeVertexShader(), fragment: this.createWebGL2SimilarityFragmentShader() },
@@ -290,14 +290,14 @@ class LODCacheEngine {
 
   /**
    * Clear backend specific cached shader resources (used during backend demotion)
-   */
+   */;
   clearBackendSpecificCache(): void {
     this.shaderResources.clear();
   }
 
   /**
    * Reload vector processing shaders after backend change/demotion
-   */
+   */;
   async reloadVectorProcessingShaders(): Promise<void> {
     this.clearBackendSpecificCache();
     this.activeBackend = gpuContextProvider.getActiveBackend();
@@ -306,7 +306,7 @@ class LODCacheEngine {
 
   /**
    * Get hybrid GPU context for external integrations
-   */
+   */;
   getHybridGPU(): HybridGPUContext | null {
     return this.hybridGPU;
   }
@@ -325,7 +325,7 @@ class LODCacheEngine {
       meta: {
         length: text.length,
         backend: this.activeBackend,
-        cacheSize: this.cache.size
+        cacheSize: this.cache.size,
       }
     });
 
@@ -351,7 +351,7 @@ class LODCacheEngine {
     // Phase 3: Extract vector metadata and topology features
     const vectorMetadata = await this.extractVectorMetadata(text, context);
 
-    // Phase 4: Build complete LOD cache entry
+    // Phase 4: Build complete LOD cache entry;
     const cacheEntry: LODCacheEntry = {
       id: entryId,
       original_text: text,
@@ -373,7 +373,7 @@ class LODCacheEngine {
     // Store in cache with intelligent eviction
     await this.storeCacheEntry(cacheEntry);
 
-    // Background: Start predictive pre-caching for related content
+    // Background: Start predictive pre-caching for related content;
     if (this.config.enable_background_processing) {
       this.startBackgroundPreprocessing(cacheEntry, context);
     }
@@ -387,7 +387,7 @@ class LODCacheEngine {
         backend: this.activeBackend,
         cacheEntryId: cacheEntry.id,
         embeddings: vectorMetadata.embeddings.length,
-        dimensions: this.config.vector_dimensions
+        dimensions: this.config.vector_dimensions,
       }
     });
 
@@ -413,9 +413,8 @@ class LODCacheEngine {
       ? await this.applyTopologyFiltering(vectorMatches, query)
       : vectorMatches;
 
-    // Phase 3: Build enhanced contextual prompts using compressed glyphs
-    const enhancedResults = await Promise.all(
-      topologyFiltered.slice(0, options.max_results || 10).map(async (match) => {
+    // Phase 3: Build enhanced contextual prompts using compressed glyphs;
+    const enhancedResults = await Promise.all(topologyFiltered.slice(0, options.max_results || 10).map(async (match) => {
         const contextualPrompt = await this.buildContextualPrompt(match.entry, query);
         const svgVisualization = options.include_svg_context
           ? this.selectOptimalSVG(match.entry, options.lod_preference)
@@ -427,7 +426,7 @@ class LODCacheEngine {
           lod_match: this.determineBestLODForQuery(match.entry, query),
           contextual_prompt: contextualPrompt,
           svg_visualization: svgVisualization,
-          vector_similarity: match.vector_similarity
+          vector_similarity: match.vector_similarity,
         };
       })
     );
@@ -442,18 +441,18 @@ class LODCacheEngine {
     return {
       results: enhancedResults,
       enhanced_context: enhancedContext,
-      predictive_next_queries: predictiveQueries
+      predictive_next_queries: predictiveQueries,
     };
   }
 
   /**
    * Generate 7-bit compressed data at all LOD levels
-   */
+   */;
   private async generateMultiLevelCompression(text: string): Promise<LODCacheEntry['compressed_data']> {
-    // Leverage existing SIMD engine for tile-level compression
+    // Leverage existing SIMD engine for tile-level compression;
     const simdResult = await simdTextTilingEngine.processText(text, {
       type: 'general',
-      context: 'cache-engine'
+      context: 'cache-engine',
     });
 
     // Extract hierarchical text segments
@@ -464,7 +463,7 @@ class LODCacheEngine {
       tile: simdResult.compressedTiles[0]?.compressedData || new Uint8Array(7),
       block: await this.compressTileGroup(simdResult.compressedTiles.slice(0, 5)),
       section: await this.compressTileGroup(simdResult.compressedTiles.slice(0, 25)),
-      document: await this.compressFullDocument(simdResult)
+      document: await this.compressFullDocument(simdResult),
     };
   }
 
@@ -473,7 +472,7 @@ class LODCacheEngine {
    */
   private async generateSVGSummaries(
     text: string,
-    compressedData: LODCacheEntry['compressed_data']
+    compressedData: LODCacheEntry['compressed_data'];
   ): Promise<LODCacheEntry['svg_summaries']> {
     return {
       glyph: await this.svgProcessor.generateGlyphSVG(compressedData.glyph),
@@ -489,7 +488,7 @@ class LODCacheEngine {
    */
   private async extractVectorMetadata(
     text: string,
-    context: LODProcessingContext
+    context: LODProcessingContext;
   ): Promise<LODCacheEntry['vector_metadata']> {
     const embeddings = await this.vectorEncoder.generateMultiLevelEmbeddings(text);
     const topologyFeatures = await this.topologyAnalyzer.extractStructuralFeatures(text);
@@ -502,11 +501,11 @@ class LODCacheEngine {
       topology_features: topologyFeatures,
       semantic_clusters: semanticClusters,
       retrieval_scores: retrievalScores,
-      context_anchors: contextAnchors
+      context_anchors: contextAnchors,
     };
   }
 
-  // Helper methods for multi-level processing
+  // Helper methods for multi-level processing;
   private extractHierarchicalSegments(text: string) {
     const words = text.split(/\s+/);
     return {
@@ -514,7 +513,7 @@ class LODCacheEngine {
       tile: words.slice(0, 3).join(' '),
       block: words.slice(0, 15).join(' '),
       section: words.slice(0, 75).join(' '),
-      document: text
+      document: text,
     };
   }
 
@@ -527,7 +526,7 @@ class LODCacheEngine {
     glyph[3] = this.calculateFrequencyScore(char);
     glyph[4] = this.calculateContextualRelevance(char);
     glyph[5] = this.calculatePredictiveValue(char);
-    glyph[6] = this.calculateCompressionChecksum(glyph.slice(0, 6));
+    glyph[6] = this.calculateCompressionChecksum(glyph.slice(0, 6);
     return glyph;
   }
 
@@ -557,9 +556,9 @@ class LODCacheEngine {
     return compressed;
   }
 
-  // Utility methods for semantic analysis
+  // Utility methods for semantic analysis;
   private calculateSemanticWeight(char: string): number {
-    // Simple semantic weighting based on character properties
+    // Simple semantic weighting based on character properties;
     const weights: Record<string, number> = {
       ' ': 10, '.': 50, '!': 80, '?': 80, ',': 30, ';': 40, ':': 40
     };
@@ -567,7 +566,7 @@ class LODCacheEngine {
   }
 
   private calculateVisualComplexity(char: string): number {
-    // Estimate visual complexity for SVG rendering
+    // Estimate visual complexity for SVG rendering;
     const complexity: Record<string, number> = {
       'i': 10, 'l': 10, 'I': 10, '1': 10,
       'o': 30, 'O': 30, '0': 30,
@@ -578,7 +577,7 @@ class LODCacheEngine {
   }
 
   private calculateFrequencyScore(char: string): number {
-    // English letter frequency for compression optimization
+    // English letter frequency for compression optimization;
     const frequencies: Record<string, number> = {
       'e': 127, 't': 91, 'a': 82, 'o': 75, 'i': 70, 'n': 67, 's': 63, 'h': 61,
       'r': 60, 'd': 43, 'l': 40, 'c': 28, 'u': 28, 'm': 24, 'w': 24, 'f': 22
@@ -597,7 +596,7 @@ class LODCacheEngine {
   }
 
   private calculatePredictiveValue(char: string): number {
-    // Predictive value for next character/word suggestions
+    // Predictive value for next character/word suggestions;
     const predictiveWeights: Record<string, number> = {
       't': 80, 'h': 75, 'e': 70, 'r': 65, 's': 60, 'n': 55, 'a': 50, 'i': 45
     };
@@ -613,7 +612,7 @@ class LODCacheEngine {
   }
 
   private generateEntryId(text: string, context: any): string {
-    const hash = this.simpleHash(text + JSON.stringify(context));
+    const hash = this.simpleHash(text + JSON.stringify(context);
     return `lod-${hash}-${Date.now()}`;
   }
 
@@ -661,12 +660,12 @@ class LODCacheEngine {
       original_size: originalSize,
       compressed_size: compressedSize,
       compression_ratio: originalSize / compressedSize,
-      semantic_preservation: 0.9 // Would calculate actual semantic preservation
+      semantic_preservation: 0.9 // Would calculate actual semantic preservation,
     };
   }
 
   private async storeCacheEntry(entry: LODCacheEntry): Promise<void> {
-    // Intelligent cache eviction if at capacity
+    // Intelligent cache eviction if at capacity;
     if (this.cache.size >= this.config.max_cache_entries) {
       await this.evictLeastValueableEntry();
     }
@@ -701,12 +700,12 @@ class LODCacheEngine {
         svg_summaries: entry.svg_summaries,
         vector_clusters: entry.vector_metadata.semantic_clusters,
         topology_features: Array.from(entry.vector_metadata.topology_features),
-        contextual_anchors: entry.vector_metadata.context_anchors
+        contextual_anchors: entry.vector_metadata.context_anchors,
       }
     };
   }
 
-  // Background processing and worker initialization
+  // Background processing and worker initialization;
   private initializeBackgroundWorker(): void {
     if (typeof Worker !== 'undefined' && this.config.enable_background_processing) {
       try {
@@ -725,21 +724,21 @@ class LODCacheEngine {
         payload: {
           entry,
           context,
-          config: this.config
+          config: this.config,
         }
       });
     }
   }
 
-  // Placeholder methods for components that would be implemented
+  // Placeholder methods for components that would be implemented;
   private async performVectorSearch(query: string, _options: EnhancedRAGRetrievalOptions): Promise<VectorSearchMatch[]> {
     // Would implement actual vector similarity search
-    return Array.from(this.cache.values())
+    return Array.from(this.cache.values();
       .map(entry => ({
         entry,
         relevance_score: 0.8,
-        vector_similarity: 0.75
-      }))
+        vector_similarity: 0.75,
+      })
       .slice(0, 20);
   }
 
@@ -777,13 +776,13 @@ class LODCacheEngine {
     // Simple keyword extraction - would use more sophisticated NLP
     return text.toLowerCase()
       .split(/\s+/)
-      .filter(word => word.length > 3 && !['this', 'that', 'with', 'from', 'they'].includes(word))
+      .filter(word => word.length > 3 && !['this', 'that', 'with', 'from', 'they'].includes(word)
       .slice(0, 10);
   }
 
-  // Public API methods
+  // Public API methods;
   getCacheStats(): LODCacheStats {
-    const entries = Array.from(this.cache.values());
+    const entries = Array.from(this.cache.values();
     if (entries.length === 0) {
       return {
         total_entries: 0,
@@ -791,7 +790,7 @@ class LODCacheEngine {
         total_original_size: 0,
         average_compression_ratio: 0,
         cache_hit_rate: 0,
-        config: this.config
+        config: this.config,
       };
     }
     return {
@@ -800,7 +799,7 @@ class LODCacheEngine {
       total_original_size: entries.reduce((sum, e) => sum + e.cache_metadata.compression_stats.original_size, 0),
       average_compression_ratio: entries.reduce((sum, e) => sum + e.cache_metadata.compression_stats.compression_ratio, 0) / entries.length,
       cache_hit_rate: entries.reduce((sum, e) => sum + e.cache_metadata.access_count, 0) / entries.length,
-      config: this.config
+      config: this.config,
     };
   }
 
@@ -815,7 +814,7 @@ class LODCacheEngine {
   }
 }
 
-// Supporting classes for specialized processing
+// Supporting classes for specialized processing;
 class SVGSummarizationProcessor {
   constructor(private quality: 'fast' | 'balanced' | 'high') {}
 
@@ -960,7 +959,7 @@ class VectorMetadataEncoder {
       meta: { durationMs: duration, dimensions: this.dimensions, backend: (this.cacheEngine as any)?.activeBackend }
     });
 
-    // Emit memory usage snapshot if provider exposes it
+    // Emit memory usage snapshot if provider exposes it;
     try {
       const mem = (gpuContextProvider as any).getMemoryUsage?.();
       if (mem) {
@@ -973,12 +972,12 @@ class VectorMetadataEncoder {
 
   /**
    * GPU-accelerated embedding generation using compute shaders
-   */
+   */;
   private async generateEmbeddingsGPU(segments: string[]): Promise<Float32Array[]> {
     const hybridGPU = this.cacheEngine!.getHybridGPU()!;
 
     // Convert text segments to numeric arrays for GPU processing
-    const maxLength = Math.max(...segments.map(s => s.length));
+    const maxLength = Math.max(...segments.map(s => s.length);
     const textBuffer = new Float32Array(segments.length * maxLength);
     const lengthBuffer = new Float32Array(segments.length);
 
@@ -996,7 +995,7 @@ class VectorMetadataEncoder {
       @group(0) @binding(2) var<storage, read_write> embeddings: array<f32>;
       @group(0) @binding(3) var<uniform> config: vec4f; // dimensions, maxLength, segmentCount, padding
 
-      @compute @workgroup_size(64)
+      @compute @workgroup_size(64);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let embeddingIndex = global_id.x;
         let dimensions = i32(config.x);
@@ -1013,7 +1012,7 @@ class VectorMetadataEncoder {
 
         var value: f32 = 0.0;
 
-        // Generate embedding using character-based features
+        // Generate embedding using character-based features;
         for (var i = 0; i < segmentLength; i++) {
           let charValue = textData[segmentId * maxLength + i];
           let phase = f32(dimIndex + i) * 0.1;
@@ -1045,7 +1044,7 @@ class VectorMetadataEncoder {
     for (let i = 0; i < segments.length; i++) {
       const start = i * this.dimensions;
       const end = start + this.dimensions;
-      embeddings.push(embeddingsFlat.slice(start, end));
+      embeddings.push(embeddingsFlat.slice(start, end);
     }
 
     console.log(`🚀 Generated ${embeddings.length} embeddings using GPU acceleration`);
@@ -1054,7 +1053,7 @@ class VectorMetadataEncoder {
 
   /**
    * New pipeline-based embedding generation leveraging GPUVectorProcessor adaptive logic.
-   */
+   */;
   private async generateEmbeddingsViaPipeline(segments: string[]): Promise<Float32Array[]> {
     const backend = (this.cacheEngine as any)?.activeBackend || 'cpu';
     const adaptiveDim = (gpuVectorProcessor as any)?.getCurrentEmbeddingDimension?.() || this.dimensions;
@@ -1115,7 +1114,7 @@ class VectorMetadataEncoder {
       let freqAcc = 0;
       for (let j = 0; j < adaptiveDim; j += 8) {
         const v = out[sliceStart + j];
-        freqAcc += Math.abs(v) * (1 + Math.sin(j * 0.03125));
+        freqAcc += Math.abs(v) * (1 + Math.sin(j * 0.03125);
       }
       const freq = freqAcc * (8 / adaptiveDim);
 
@@ -1129,7 +1128,7 @@ class VectorMetadataEncoder {
         final[j] = norm * (1 + mod);
       }
 
-  // 5. Inject metadata at tail (last 4 slots): mean, std, freq, length ratio (energy omitted—available via stats telemetry)
+  // 5. Inject metadata at tail (last 4 slots): mean, std, freq, length ratio (energy omitted—available via stats telemetry);
       if (adaptiveDim >= 8) {
         final[adaptiveDim - 4] = mean;
         final[adaptiveDim - 3] = std;
@@ -1152,11 +1151,11 @@ class VectorMetadataEncoder {
 
   /**
    * CPU fallback embedding generation
-   */
+   */;
   private generateEmbeddingsCPU(segments: string[]): Float32Array[] {
     return segments.map(segment => {
       const embedding = new Float32Array(this.dimensions);
-      // Enhanced CPU-based synthetic embeddings
+      // Enhanced CPU-based synthetic embeddings;
       for (let i = 0; i < this.dimensions; i++) {
         const charValue = (segment.charCodeAt(i % segment.length) / 127) - 0.5;
         const phase = (i + segment.length) * 0.1;
@@ -1164,7 +1163,7 @@ class VectorMetadataEncoder {
       }
 
       // Normalize
-      const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+      const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
       if (norm > 0) {
         for (let i = 0; i < this.dimensions; i++) {
           embedding[i] /= norm;
@@ -1194,7 +1193,7 @@ class TopologyAwareAnalyzer {
     features[3] = text.match(/[0-9]/g)?.length || 0; // Numbers
     features[4] = text.match(/[(),]/g)?.length || 0; // Punctuation density
 
-    // Fill remaining features with derived metrics
+    // Fill remaining features with derived metrics;
     for (let i = 5; i < 64; i++) {
       features[i] = (features[i % 5] + Math.sin(i)) / (i + 1);
     }
@@ -1221,7 +1220,7 @@ class PredictiveAnalyticsEngine {
 } // <-- end of LODCacheEngine class
 
 // Backend-specific shader creation methods were previously appended after helper classes;
-// they belong to LODCacheEngine. We extend the prototype here to avoid large refactor.
+// they belong to LODCacheEngine. We extend the prototype here to avoid large refactor.;
 interface LODCacheEngine {
   createWebGPUEmbeddingShader(): string;
   createWebGPUClusteringShader(): string;
@@ -1243,7 +1242,7 @@ LODCacheEngine.prototype.createWebGPUEmbeddingShader = function(): string {
       @group(0) @binding(2) var<storage, read_write> embeddings: array<f32>;
       @group(0) @binding(3) var<uniform> config: vec4f; // dimensions, maxLength, segmentCount, lodLevel
 
-      @compute @workgroup_size(64)
+      @compute @workgroup_size(64);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let embeddingIndex = global_id.x;
         let dimensions = i32(config.x);
@@ -1261,7 +1260,7 @@ LODCacheEngine.prototype.createWebGPUEmbeddingShader = function(): string {
 
         var value: f32 = 0.0;
 
-        // Enhanced LOD-aware embedding generation
+        // Enhanced LOD-aware embedding generation;
         for (var i = 0; i < segmentLength; i++) {
           let charValue = textData[segmentId * maxLength + i];
           let phase = f32(dimIndex + i) * 0.1 * lodLevel; // LOD affects frequency
@@ -1286,7 +1285,7 @@ LODCacheEngine.prototype.createWebGPUClusteringShader = function(): string {
       @group(0) @binding(2) var<storage, read> centroids: array<f32>;
       @group(0) @binding(3) var<uniform> config: vec4f; // dimensions, embeddingCount, clusterCount, iterations
 
-      @compute @workgroup_size(64)
+      @compute @workgroup_size(64);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let embeddingId = global_id.x;
         let dimensions = i32(config.x);
@@ -1298,7 +1297,7 @@ LODCacheEngine.prototype.createWebGPUClusteringShader = function(): string {
         var bestCluster = 0;
         var bestDistance = 999999.0;
 
-        // Find closest centroid using LOD-aware distance metric
+        // Find closest centroid using LOD-aware distance metric;
         for (var clusterId = 0; clusterId < clusterCount; clusterId++) {
           var distance = 0.0;
 
@@ -1327,7 +1326,7 @@ LODCacheEngine.prototype.createWebGPUSimilarityShader = function(): string {
       @group(0) @binding(2) var<storage, read_write> similarities: array<f32>;
       @group(0) @binding(3) var<uniform> config: vec4f; // dimensions, documentCount, similarityType, threshold
 
-      @compute @workgroup_size(64)
+      @compute @workgroup_size(64);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let docId = global_id.x;
         let dimensions = i32(config.x);
@@ -1340,7 +1339,7 @@ LODCacheEngine.prototype.createWebGPUSimilarityShader = function(): string {
         var queryNorm = 0.0;
         var docNorm = 0.0;
 
-        // Compute similarity based on type
+        // Compute similarity based on type;
         for (var dim = 0; dim < dimensions; dim++) {
           let queryVal = queryEmbedding[dim];
           let docVal = documentEmbeddings[docId * u32(dimensions) + u32(dim)];
@@ -1357,7 +1356,7 @@ LODCacheEngine.prototype.createWebGPUSimilarityShader = function(): string {
             similarity = similarity / normProduct;
           }
         } else if (similarityType == 1) { // Euclidean distance (inverted)
-          similarity = 1.0 / (1.0 + sqrt(abs(queryNorm + docNorm - 2.0 * similarity));
+          similarity = 1.0 / (1.0 + sqrt(abs(queryNorm + docNorm - 2.0 * similarity);
         }
         // For dot product (type 2), use similarity as-is
 
@@ -1397,7 +1396,7 @@ LODCacheEngine.prototype.createWebGL2EmbeddingFragmentShader = function(): strin
 
         vec4 result = vec4(0.0);
 
-        // Simplified embedding generation for WebGL2
+        // Simplified embedding generation for WebGL2;
         for (float i = 0.0; i < maxLength && i < 64.0; i += 1.0) {
           vec2 texCoord = vec2(
             (segmentId * maxLength + i) / (dimensions * maxLength),
@@ -1441,7 +1440,7 @@ LODCacheEngine.prototype.createWebGL2ClusteringFragmentShader = function(): stri
         float bestCluster = 0.0;
         float bestDistance = 999999.0;
 
-        // Find closest centroid
+        // Find closest centroid;
         for (float clusterId = 0.0; clusterId < clusterCount && clusterId < 8.0; clusterId += 1.0) {
           float distance = 0.0;
 
@@ -1486,7 +1485,7 @@ LODCacheEngine.prototype.createWebGL2SimilarityFragmentShader = function(): stri
         float queryNorm = 0.0;
         float docNorm = 0.0;
 
-        // Compute similarity
+        // Compute similarity;
         for (float dim = 0.0; dim < dimensions && dim < 64.0; dim += 1.0) {
           vec2 queryCoord = vec2(dim / dimensions, 0.0);
           vec2 docCoord = vec2((docId * dimensions + dim) / (dimensions * u_config.y), 0.0);

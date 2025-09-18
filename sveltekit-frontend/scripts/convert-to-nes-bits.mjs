@@ -38,7 +38,7 @@ const classMapping = {
   'btn-link': 'nes-btn',
 
   // Card components (using UnoCSS shortcuts)
-  'card': 'nier-bits-card',
+  card: 'nier-bits-card',
   'card-header': 'yorha-panel-header',
   'card-title': 'nes-text is-primary',
   'card-description': 'nes-text',
@@ -46,7 +46,7 @@ const classMapping = {
   'card-footer': 'yorha-panel-content',
 
   // Layout classes
-  'flex': 'flex',
+  flex: 'flex',
   'flex-col': 'flex-col',
   'flex-row': 'flex-row',
   'items-center': 'items-center',
@@ -79,13 +79,13 @@ const classMapping = {
   'text-muted-foreground': 'nes-text is-disabled',
 
   // Borders
-  'border': 'border',
+  border: 'border',
   'border-2': 'border-2',
-  'rounded': 'rounded',
+  rounded: 'rounded',
   'rounded-md': 'rounded-md',
   'rounded-lg': 'rounded-lg',
   'shadow-sm': 'shadow-sm',
-  'shadow': 'shadow',
+  shadow: 'shadow',
   'shadow-lg': 'shadow-lg',
 
   // Spacing
@@ -116,7 +116,7 @@ const classMapping = {
   'min-h-screen': 'min-h-screen',
 
   // Grid
-  'grid': 'grid',
+  grid: 'grid',
   'grid-cols-1': 'grid-cols-1',
   'grid-cols-2': 'grid-cols-2',
   'grid-cols-3': 'grid-cols-3',
@@ -133,7 +133,7 @@ const classMapping = {
   // States
   'hover:bg-gray-100': 'hover:bg-gray-100',
   'focus:outline-none': 'focus:outline-none',
-  'disabled:opacity-50': 'disabled:opacity-50'
+  'disabled:opacity-50': 'disabled:opacity-50',
 };
 
 // Import statement replacements
@@ -141,27 +141,27 @@ const importReplacements = [
   // Remove shadcn imports
   {
     pattern: /import\s+.*?from\s+['"].*?shadcn.*?['"];?\n?/g,
-    replacement: ''
+    replacement: '',
   },
   // Replace Button imports
   {
     pattern: /import\s+{\s*Button\s*}\s+from\s+['"]\$lib\/components\/ui\/button['"];?/g,
-    replacement: "import Button from '$lib/components/ui/nes-button.svelte';"
+    replacement: "import Button from '$lib/components/ui/nes-button.svelte';",
   },
   {
     pattern: /import\s+Button\s+from\s+['"]\$lib\/components\/ui\/Button\.svelte['"];?/g,
-    replacement: "import Button from '$lib/components/ui/nes-button.svelte';"
+    replacement: "import Button from '$lib/components/ui/nes-button.svelte';",
   },
   // Replace Card imports
   {
     pattern: /import\s+{\s*Card[^}]*}\s+from\s+['"]\$lib\/components\/ui\/card['"];?/g,
-    replacement: "import NesCard from '$lib/components/ui/nes-card.svelte';"
+    replacement: "import NesCard from '$lib/components/ui/nes-card.svelte';",
   },
   // Add NES.css import if not present
   {
     pattern: /^(<script[^>]*>)/m,
-    replacement: "$1\n  import 'nes.css/css/nes.min.css';"
-  }
+    replacement: "$1\n  import 'nes.css/css/nes.min.css';",
+  },
 ];
 
 // Process a single file
@@ -185,7 +185,7 @@ async function processFile(filePath) {
       const classPattern = new RegExp(`class=["'][^"']*\\b${oldClass}\\b[^"']*["']`, 'g');
       const matches = content.match(classPattern);
       if (matches) {
-        matches.forEach(match => {
+        matches.forEach((match) => {
           const newMatch = match.replace(new RegExp(`\\b${oldClass}\\b`, 'g'), newClass);
           content = content.replace(match, newMatch);
           modified = true;
@@ -213,9 +213,15 @@ async function processFile(filePath) {
     content = content.replace(/<\/CardDescription>/g, '</p>');
 
     // Update Button components
-    content = content.replace(/<Button\s+variant=["']primary["']/g, '<button class="nes-btn is-primary"');
+    content = content.replace(
+      /<Button\s+variant=["']primary["']/g,
+      '<button class="nes-btn is-primary"'
+    );
     content = content.replace(/<Button\s+variant=["']secondary["']/g, '<button class="nes-btn"');
-    content = content.replace(/<Button\s+variant=["']destructive["']/g, '<button class="nes-btn is-error"');
+    content = content.replace(
+      /<Button\s+variant=["']destructive["']/g,
+      '<button class="nes-btn is-error"'
+    );
     content = content.replace(/<Button\b(?![^>]*class=)/g, '<button class="nes-btn"');
     content = content.replace(/<\/Button>/g, '</button>');
 
@@ -241,7 +247,7 @@ async function main() {
 
   const files = await glob('src/**/*.svelte', {
     cwd: cwd,
-    absolute: true
+    absolute: true,
   });
 
   console.log(`Found ${files.length} Svelte files to process\n`);

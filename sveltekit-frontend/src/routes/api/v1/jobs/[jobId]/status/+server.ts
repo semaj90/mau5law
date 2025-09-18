@@ -8,6 +8,7 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { getJobStatus, updateJobProgress, getJobProgress, publishJobUpdate } from '$lib/api/services/job-cache-service';
 import { redis } from '$lib/server/redis';
+}
 
 export interface JobStatus {
   id: string;
@@ -16,7 +17,7 @@ export interface JobStatus {
   progress: {
     stage: string;
     percentage: number;
-    message: string;
+    message: string;,
   };
   fileName: string;
   bucket: string;
@@ -41,17 +42,16 @@ export interface JobStatus {
   metadata?: Record<string, any>;
 }
 
-// GET /api/v1/jobs/[jobId]/status - Get job status and progress
+// GET /api/v1/jobs/[jobId]/status - Get job status and progress;
 export const GET: RequestHandler = async ({ params, url, getClientAddress }) => {
   try {
     const { jobId } = params;
 
     if (!jobId) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'jobId parameter is required',
-        },
+        },)
         { status: 400 }
       );
     }
@@ -62,11 +62,10 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
     const job = await getJobStatus(jobId);
 
     if (!job) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Job not found',
-        },
+        },)
         { status: 404 }
       );
     }
@@ -78,7 +77,7 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
       job.progress = progressData as any;
     }
 
-    // Get error details if job failed
+    // Get error details if job failed;
     if (job.status === 'failed') {
       const errorKey = `error:${jobId}`;
       const errorData = await redis.get(errorKey);
@@ -87,7 +86,7 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
       }
     }
 
-    // Get results if job completed
+    // Get results if job completed;
     if (job.status === 'completed') {
       const resultsKey = `results:${jobId}`;
       const resultsData = await redis.get(resultsKey);
@@ -100,7 +99,7 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
       }
     }
 
-    // Calculate duration if job has timing info
+    // Calculate duration if job has timing info;
     if (job.timing) {
       const createdAt = new Date(job.timing.createdAt).getTime();
       const completedAt = job.timing.completedAt
@@ -135,27 +134,25 @@ export const GET: RequestHandler = async ({ params, url, getClientAddress }) => 
     return json(response);
   } catch (error: any) {
     console.error(`❌ GET /api/v1/jobs/${params.jobId}/status error:`, error);
-    return json(
-      {
+    return json({
         success: false,
         error: error instanceof Error ? error.message: 'Failed to get job status',
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// POST /api/v1/jobs/[jobId]/status - Update job status (for workers)
+// POST /api/v1/jobs/[jobId]/status - Update job status (for workers);
 export const POST: RequestHandler = async ({ params, request, getClientAddress }) => {
   try {
     const { jobId } = params;
 
     if (!jobId) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'jobId parameter is required',
-        },
+        },)
         { status: 400 }
       );
     }
@@ -169,18 +166,17 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
     const existingData = await redis.get(jobKey);
 
     if (!existingData) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Job not found',
-        },
+        },)
         { status: 404 }
       );
     }
 
     const job = JSON.parse(existingData);
 
-    // Update job status and timing
+    // Update job status and timing;
     if (updateData.status) {
       job.status = updateData.status;
 
@@ -193,33 +189,33 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
       }
     }
 
-    // Update progress if provided
+    // Update progress if provided;
     if (updateData.progress) {
       const progressKey = `progress:${jobId}`;
-      await redis.setex(progressKey, 3600, JSON.stringify(updateData.progress));
+      await redis.setex(progressKey, 3600, JSON.stringify(updateData.progress);
     }
 
-    // Store error if provided
+    // Store error if provided;
     if (updateData.error) {
       const errorKey = `error:${jobId}`;
       await redis.setex(errorKey, 86400, updateData.error); // Keep errors for 24h
     }
 
-    // Store results if provided
+    // Store results if provided;
     if (updateData.results) {
       const resultsKey = `results:${jobId}`;
-      await redis.setex(resultsKey, 86400, JSON.stringify(updateData.results)); // Keep results for 24h
+      await redis.setex(resultsKey, 86400, JSON.stringify(updateData.results); // Keep results for 24h
     }
 
-    // Update metadata if provided
+    // Update metadata if provided;
     if (updateData.metadata) {
       job.metadata = { ...job.metadata, ...updateData.metadata };
     }
 
     // Save updated job
-    await redis.setex(jobKey, 86400, JSON.stringify(job));
+    await redis.setex(jobKey, 86400, JSON.stringify(job);
 
-    // Remove from queue if status changed to processing or completed
+    // Remove from queue if status changed to processing or completed;
     if (['processing', 'completed', 'failed'].includes(job.status)) {
       const queueData = await (redis as any).lrange('ingestion:queue', 0, -1);
       for (let i = 0; i < queueData.length; i++) {
@@ -248,7 +244,7 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
       })
     );
 
-    // If job completed successfully, trigger final processing
+    // If job completed successfully, trigger final processing;
     if (job.status === 'completed' && job.caseId && updateData.results) {
       await (redis as any).publish(
         'case:document_processed',
@@ -281,27 +277,25 @@ export const POST: RequestHandler = async ({ params, request, getClientAddress }
     return json(response);
   } catch (error: any) {
     console.error(`❌ POST /api/v1/jobs/${params.jobId}/status error:`, error);
-    return json(
-      {
+    return json({
         success: false,
         error: error instanceof Error ? error.message: 'Failed to update job status',
-      },
+      },)>
       { status: 500 }
     );
   }
 };
 
-// DELETE /api/v1/jobs/[jobId]/status - Cancel job
+// DELETE /api/v1/jobs/[jobId]/status - Cancel job;
 export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
   try {
     const { jobId } = params;
 
     if (!jobId) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'jobId parameter is required',
-        },
+        },)
         { status: 400 }
       );
     }
@@ -313,24 +307,22 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     const existingData = await redis.get(jobKey);
 
     if (!existingData) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Job not found',
-        },
+        },)
         { status: 404 }
       );
     }
 
     const job = JSON.parse(existingData);
 
-    // Can only cancel queued or processing jobs
+    // Can only cancel queued or processing jobs;
     if (!['queued', 'processing'].includes(job.status)) {
-      return json(
-        {
+      return json({
           success: false,
           error: `Cannot cancel job with status: ${job.status}`,
-        },
+        },)
         { status: 400 }
       );
     }
@@ -344,7 +336,7 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     await redis.setex(errorKey, 86400, 'Job cancelled by user');
 
     // Save updated job
-    await redis.setex(jobKey, 86400, JSON.stringify(job));
+    await redis.setex(jobKey, 86400, JSON.stringify(job);
 
     // Remove from processing queue
     const queueData = await (redis as any).lrange('ingestion:queue', 0, -1);
@@ -389,11 +381,10 @@ export const DELETE: RequestHandler = async ({ params, getClientAddress }) => {
     return json(response);
   } catch (error: any) {
     console.error(`❌ DELETE /api/v1/jobs/${params.jobId}/status error:`, error);
-    return json(
-      {
+    return json({
         success: false,
         error: error instanceof Error ? error.message: 'Failed to cancel job',
-      },
+      },)>
       { status: 500 }
     );
   }

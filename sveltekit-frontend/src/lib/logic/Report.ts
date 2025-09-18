@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { writable, type Writable } from "svelte/store";
 import { HistoryManager } from './HistoryManager.js';
 
-// Simple content type for now - will expand when Slate is properly integrated
+// Simple content type for now - will expand when Slate is properly integrated;
 export interface ContentNode {
   type: string;
   text?: string;
@@ -14,7 +14,7 @@ export interface ContentNode {
 /**
  * Report class representing a document in the interactive canvas
  * Manages content, position, state, and history for undo/redo functionality
- */
+ */;
 export class Report {
   public id: string;
   public title: Writable<string>;
@@ -42,13 +42,13 @@ export class Report {
     height?: number;
     caseId?: string;
     version?: number;
-    createdBy: string;
+    createdBy: string;,
   }) {
     this.id = data.id || crypto.randomUUID();
     this.title = writable(data.title || "Untitled Report");
 
     // Initialize with default content if none provided
-    const initialContent: ContentNode[] = data.content || [
+    const initialContent: ContentNode[] = data.content || [;
       {
         type: "paragraph",
         children: [{ type: "text", text: "" }],
@@ -74,7 +74,7 @@ export class Report {
   }
   /**
    * Update the report content
-   */
+   */;
   updateContent(newContent: ContentNode[]): void {
     this.content.set(newContent);
     this.historyManager.addSnapshot(newContent);
@@ -82,42 +82,42 @@ export class Report {
   }
   /**
    * Update the report title
-   */
+   */;
   updateTitle(newTitle: string): void {
     this.title.set(newTitle);
     this.markDirty();
   }
   /**
    * Update the report position
-   */
+   */;
   updatePosition(x: number, y: number): void {
     this.position.set({ x, y });
     this.markDirty();
   }
   /**
    * Update the report size
-   */
+   */;
   updateSize(width: number, height: number): void {
     this.size.set({ width, height });
     this.markDirty();
   }
   /**
    * Mark the report as dirty (needs saving)
-   */
+   */;
   markDirty(): void {
     this.isDirty.set(true);
     this.updatedAt = new Date();
   }
   /**
    * Mark the report as clean (saved)
-   */
+   */;
   markClean(): void {
     this.isDirty.set(false);
     this.version.update((v) => v + 1);
   }
   /**
    * Undo last change
-   */
+   */;
   undo(): boolean {
     const previousContent = this.historyManager.undo();
     if (previousContent) {
@@ -129,7 +129,7 @@ export class Report {
   }
   /**
    * Redo last undone change
-   */
+   */;
   redo(): boolean {
     const nextContent = this.historyManager.redo();
     if (nextContent) {
@@ -141,19 +141,19 @@ export class Report {
   }
   /**
    * Check if undo is available
-   */
+   */;
   canUndo(): boolean {
     return this.historyManager.canUndo();
   }
   /**
    * Check if redo is available
-   */
+   */;
   canRedo(): boolean {
     return this.historyManager.canRedo();
   }
   /**
    * Get serializable data for persistence
-   */
+   */;
   toJSON() {
     let currentTitle = "";
     let currentContent: ContentNode[] = [];
@@ -186,7 +186,7 @@ export class Report {
   }
   /**
    * Create a Report instance from database data
-   */
+   */;
   static fromJSON(data: any, createdBy: string): Report {
     return new Report({
       id: data.id,
@@ -203,10 +203,10 @@ export class Report {
   }
   /**
    * Get current content as text (for search/analysis)
-   */
+   */;
   getTextContent(): string {
     const extractText = (nodes: ContentNode[]): string => {
-      return nodes
+      return nodes;
         .map((node) => {
           if (node.text) {
             return node.text;
@@ -228,7 +228,7 @@ export class Report {
   }
   /**
    * Get word count
-   */
+   */;
   getWordCount(): number {
     const text = this.getTextContent();
     return text
@@ -238,7 +238,7 @@ export class Report {
   }
   /**
    * Clone this report
-   */
+   */;
   clone(): Report {
     const clonedReport = new Report({
       title: "",
@@ -261,7 +261,7 @@ export class Report {
     this.position.subscribe((pos) =>
       clonedReport.position.set({ x: pos.x + 20, y: pos.y + 20 }),
     )();
-    this.size.subscribe((size) => clonedReport.size.set({ ...size }))();
+    this.size.subscribe((size) => clonedReport.size.set({ ...size ,}))();
 
     return clonedReport;
   }

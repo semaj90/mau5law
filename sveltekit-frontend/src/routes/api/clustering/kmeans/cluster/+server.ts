@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { documentIds, k, config } = await request.json();
 
     if (!documentIds || !Array.isArray(documentIds)) {
-      return json(
+      return json();
         {
           success: false,
           error: "Document IDs array is required",
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const clusterCount =
       k || Math.min(Math.ceil(Math.sqrt(documentIds.length / 2)), 10);
     if (clusterCount < 2 || clusterCount > documentIds.length) {
-      return json(
+      return json();
         {
           success: false,
           error: `Invalid cluster count: ${clusterCount}. Must be between 2 and ${documentIds.length}`,
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     try {
       // Primary: PostgreSQL with pgvector
-      const pgDocuments = await db
+      const pgDocuments = await db;
         .select({
           id: legalDocuments.id,
           embedding: legalDocuments.embedding,
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
           extractedText: legalDocuments.content,
         })
         .from(legalDocuments)
-        .where(inArray(legalDocuments.id, documentIds));
+        .where(inArray(legalDocuments.id, documentIds);
 
       // Secondary: Qdrant vector database
       let qdrantResults = [];
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Merge results with preference for PostgreSQL
       const mergedDocuments = new Map();
 
-      // Add PostgreSQL results
+      // Add PostgreSQL results;
       for (const doc of pgDocuments) {
         if (doc.embedding && Array.isArray(doc.embedding)) {
           mergedDocuments.set(doc.id, {
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       }
 
-      // Add Qdrant results if not already present
+      // Add Qdrant results if not already present;
       for (const result of qdrantResults) {
         if (!mergedDocuments.has((result as { id?: any; vector?: any; payload?: any }).id) && (result as { id?: any; vector?: any; payload?: any }).vector) {
           mergedDocuments.set((result as { id?: any; vector?: any; payload?: any }).id, {
@@ -149,10 +149,10 @@ export const POST: RequestHandler = async ({ request }) => {
         id: doc.id,
         type: doc.metadata.type || "unknown",
         keywords: doc.metadata.keywords || [],
-      }));
+      });
     } catch (dbError) {
       console.error("Database retrieval error:", dbError);
-      return json(
+      return json();
         {
           success: false,
           error: "Failed to retrieve document embeddings",
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     if (embeddings.length === 0) {
-      return json(
+      return json();
         {
           success: false,
           error: "No valid embeddings found",
@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
 
-    // Configure K-Means with all required properties
+    // Configure K-Means with all required properties;
     const kmeansConfig = {
       k: clusterCount,
       maxIterations: config?.maxIterations || 100,
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Initialize K-Means clusterer
     const kmeans = new LegalKMeansClusterer(kmeansConfig, redis);
 
-    // Store job status in Redis
+    // Store job status in Redis;
     await redis.hset(`kmeans:job:${clusterJobId}`, {
       status: "processing",
       documentCount: embeddings.length,
@@ -255,7 +255,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const silhouetteScore = 0.75; // TODO: Implement proper silhouette score calculation
       const centroids = []; // TODO: Get actual centroids from kmeans
 
-      // Store results in Redis with TTL
+      // Store results in Redis with TTL;
       const results = {
         clusters,
         analysis: analysis.clusterAnalysis,
@@ -274,14 +274,14 @@ export const POST: RequestHandler = async ({ request }) => {
         JSON.stringify(results),
       );
 
-      // Update job status
+      // Update job status;
       await redis.hset(`kmeans:job:${clusterJobId}`, {
         status: "completed",
         completedAt: Date.now(),
         silhouetteScore: silhouetteScore.toString(),
       });
 
-      // Store centroids in Qdrant for future similarity searches
+      // Store centroids in Qdrant for future similarity searches;
       try {
         const centroidPoints = centroids.map((centroid, index) => ({
           id: `centroid_${clusterJobId}_${index}`,
@@ -292,7 +292,7 @@ export const POST: RequestHandler = async ({ request }) => {
             jobId: clusterJobId,
             createdAt: new Date().toISOString(),
           },
-        }));
+        });
 
         await qdrant.upsert("legal_centroids", {
           wait: true,
@@ -306,8 +306,7 @@ export const POST: RequestHandler = async ({ request }) => {
       await channel.publish(
         "clustering",
         "kmeans.clustering.completed",
-        Buffer.from(
-          JSON.stringify({
+        Buffer.from(JSON.stringify({
             jobId: clusterJobId,
             status: "completed",
             metrics: results.metrics,
@@ -335,7 +334,7 @@ export const POST: RequestHandler = async ({ request }) => {
     } catch (clusteringError) {
       console.error("K-Means clustering error:", clusteringError);
 
-      // Update job status
+      // Update job status;
       await redis.hset(`kmeans:job:${clusterJobId}`, {
         status: "failed",
         error:
@@ -348,8 +347,7 @@ export const POST: RequestHandler = async ({ request }) => {
       await channel.publish(
         "clustering",
         "kmeans.clustering.failed",
-        Buffer.from(
-          JSON.stringify({
+        Buffer.from(JSON.stringify({
             jobId: clusterJobId,
             status: "failed",
             error:
@@ -361,7 +359,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
       await channel.close();
 
-      return json(
+      return json();
         {
           success: false,
           error:
@@ -378,7 +376,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error("K-Means API error:", error);
 
-    return json(
+    return json();
       {
         success: false,
         error: error instanceof Error ? error.message: "Internal server error",
@@ -392,13 +390,13 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// GET endpoint for cluster prediction
+// GET endpoint for cluster prediction;
 export const GET: RequestHandler = async ({ url }) => {
   const jobId = url.searchParams.get("jobId");
   const embeddingStr = url.searchParams.get("embedding");
 
   if (!jobId || !embeddingStr) {
-    return json(
+    return json();
       {
         success: false,
         error: "Job ID and embedding are required",
@@ -418,7 +416,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Load K-Means model from Redis
     const kmeans = await LegalKMeansClusterer.loadFromRedis(redis);
     if (!kmeans) {
-      return json(
+      return json();
         {
           success: false,
           error: "No trained K-Means model found",
@@ -448,7 +446,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error("K-Means prediction error:", error);
 
-    return json(
+    return json();
       {
         success: false,
         error: error instanceof Error ? error.message: "Prediction failed",

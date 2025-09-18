@@ -63,7 +63,7 @@ export async function processWithEnhancedAI(query, context = [], options = {}) {
   const startTime = now();
 
   // Simulate FlashAttention2 processing
-  await new Promise((resolve) => setTimeout(resolve, 50));
+  await new Promise((resolve) => setTimeout(resolve, 50);
 
   const processingTime = now() - startTime;
 
@@ -104,7 +104,7 @@ export async function analyzeErrorsWithGPU(errorData, sampleErrors = []) {
   const startTime = now();
 
   // Simulate GPU error analysis
-  await new Promise((resolve) => setTimeout(resolve, 80));
+  await new Promise((resolve) => setTimeout(resolve, 80);
 
   const processingTime = now() - startTime;
 
@@ -120,12 +120,12 @@ export async function analyzeErrorsWithGPU(errorData, sampleErrors = []) {
     fixComplexity: Math.random() * 5 + 1,
     suggestedFix: `GPU-analyzed fix for: ${error.substring(0, 50)}...`,
     confidence: 0.85 + Math.random() * 0.1,
-  }));
+  });
 
   return {
     prioritizedErrors,
     fixProbability: 0.91,
-    relevantCodeSections: Array.from(
+    relevantCodeSections: Array.from()>
       { length: 15 },
       (_, i) => `Section ${i + 1}: Optimized with FlashAttention`
     ),

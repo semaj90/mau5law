@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { db, cases, helpers } from '$lib/server/db';
 import { URL } from "url";
 
-// Validation schema
+// Validation schema;
 const caseSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255, 'Title too long'),
   description: z.string().optional(),
@@ -15,7 +15,7 @@ const caseSchema = z.object({
   category: z.string().min(1, 'Category is required').max(100, 'Category too long'),
 });
 
-// Database health check
+// Database health check;
 async function checkDatabaseHealth() {
   try {
     const startTime = Date.now();
@@ -31,7 +31,7 @@ async function checkDatabaseHealth() {
       connected: true,
       responseTime,
       totalCases,
-      error: null
+      error: null,
     };
   } catch (error: any) {
     console.error('Database health check failed:', error);
@@ -39,12 +39,12 @@ async function checkDatabaseHealth() {
       connected: false,
       responseTime: null,
       totalCases: 0,
-      error: error.message || 'Database connection failed'
+      error: error.message || 'Database connection failed',
     };
   }
 }
 
-// Load page data with SSR
+// Load page data with SSR;
 export const load: PageServerLoad = async ({ url, locals }) => {
   try {
     console.log('🔄 Loading CRUD test page with SSR...');
@@ -54,7 +54,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 
   let casesData: any[] = [];
 
-    // Only fetch cases if database is healthy
+    // Only fetch cases if database is healthy;
     if (databaseHealth.connected) {
       try {
         casesData = await db
@@ -72,14 +72,14 @@ export const load: PageServerLoad = async ({ url, locals }) => {
       console.warn('⚠️ Database not healthy, using empty cases array');
     }
 
-    // System health info
+    // System health info;
     const health = {
       database: databaseHealth,
       server: {
         connected: true,
         timestamp: new Date().toISOString(),
         url: url.pathname,
-        userAgent: locals?.userAgent || 'unknown'
+        userAgent: locals?.userAgent || 'unknown',
       }
     };
 
@@ -89,14 +89,14 @@ export const load: PageServerLoad = async ({ url, locals }) => {
       meta: {
         title: 'CRUD Test - Legal AI Platform',
         description: 'Testing SSR, UI Components & Database Operations',
-        loadTime: new Date().toISOString()
+        loadTime: new Date().toISOString(),
       }
     };
 
   } catch (error: any) {
     console.error('❌ Error loading CRUD test page:', error);
 
-    // Return fallback data for graceful degradation
+    // Return fallback data for graceful degradation;
     return {
       cases: [],
       health: {
@@ -104,33 +104,33 @@ export const load: PageServerLoad = async ({ url, locals }) => {
           connected: false,
           error: error.message || 'Unknown error',
           responseTime: null,
-          totalCases: 0
+          totalCases: 0,
         },
         server: {
           connected: true,
           timestamp: new Date().toISOString(),
-          url: url.pathname
+          url: url.pathname,
         }
       },
       meta: {
         title: 'CRUD Test - Error State',
         description: 'Database connection failed',
-        loadTime: new Date().toISOString()
+        loadTime: new Date().toISOString(),
       }
     };
   }
 };
 
-// Form actions for CRUD operations
+// Form actions for CRUD operations;
 export const actions: Actions = {
-  // Create or Update Case
+  // Create or Update Case;
   createCase: async ({ request, locals }) => {
     try {
       const data = await request.formData();
       const action = data.get('_action');
       const id = data.get('id');
 
-      // Extract form data
+      // Extract form data;
       const formData = {
         title: data.get('title'),
         description: data.get('description'),
@@ -144,7 +144,7 @@ export const actions: Actions = {
       // Validate the form data
       const validation = caseSchema.safeParse(formData);
       if (!validation.success) {
-        console.error('❌ Validation failed:', validation.error.flatten());
+        console.error('❌ Validation failed:', validation.error.flatten();
         return fail(400, {
           error: 'Validation failed',
           issues: validation.error.flatten().fieldErrors,
@@ -170,10 +170,10 @@ export const actions: Actions = {
         console.log('🔄 Updating case:', id);
 
         const [updatedCase] = await db
-          .update(cases)
+          .update(cases);
           .set({
             ...validData,
-            updated_at: new Date()
+            updated_at: new Date(),
           })
           .where(helpers.eq(cases.id, id as string) as any)
           .returning();
@@ -189,7 +189,7 @@ export const actions: Actions = {
         return {
           success: true,
           message: 'Case updated successfully',
-          case: updatedCase
+          case: updatedCase,
         };
 
       } else {
@@ -197,7 +197,7 @@ export const actions: Actions = {
         console.log('➕ Creating new case');
 
         const [newCase] = await db
-          .insert(cases)
+          .insert(cases);
           .values({
             ...validData,
             // Add required fields for the schema
@@ -205,7 +205,7 @@ export const actions: Actions = {
             // Use assigned_attorney field from actual schema
             assigned_attorney: locals?.session?.user?.id || locals?.user?.id || null,
             created_at: new Date(),
-            updated_at: new Date()
+            updated_at: new Date(),
           })
           .returning();
 
@@ -213,7 +213,7 @@ export const actions: Actions = {
         return {
           success: true,
           message: 'Case created successfully',
-          case: newCase
+          case: newCase,
         };
       }
 
@@ -223,12 +223,12 @@ export const actions: Actions = {
       return fail(500, {
         error: 'Internal server error',
         message: error.message || 'Failed to process case',
-        formData: Object.fromEntries(await request.formData())
+        formData: Object.fromEntries(await request.formData(),
       });
     }
   },
 
-  // Delete Case
+  // Delete Case;
   deleteCase: async ({ url }) => {
     try {
       const caseId = url.searchParams.get('id');
@@ -244,7 +244,7 @@ export const actions: Actions = {
       if (!health.connected) {
         return fail(503, {
           error: 'Database not available',
-          message: health.error
+          message: health.error,
         });
       }
 
@@ -262,14 +262,14 @@ export const actions: Actions = {
       return {
         success: true,
         message: 'Case deleted successfully',
-        deletedId: deletedCase.id
+        deletedId: deletedCase.id,
       };
 
     } catch (error: any) {
       console.error('❌ Error deleting case:', error);
       return fail(500, {
         error: 'Internal server error',
-        message: error.message || 'Failed to delete case'
+        message: error.message || 'Failed to delete case',
       });
     }
   }

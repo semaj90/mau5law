@@ -4,6 +4,7 @@
 
 import { logger } from './logger.js';
 import { EventEmitter } from "events";
+}
 
 export interface MetricData {
   requestId: string;
@@ -11,14 +12,14 @@ export interface MetricData {
   confidence: number;
   sourceCount: number;
   strategies: string[];
-  qualityScore: number;
+  qualityScore: number;,
 }
 
 export interface AlertRule {
   name: string;
   condition: (metrics: any) => boolean;
   message: string;
-  severity: 'info' | 'warning' | 'critical';
+  severity: 'info' | 'warning' | 'critical';,
 }
 
 export interface PerformanceMetrics {
@@ -26,7 +27,7 @@ export interface PerformanceMetrics {
   p95: number;
   p99: number;
   mean: number;
-  stdDev: number;
+  stdDev: number;,
 }
 
 class MonitoringService extends EventEmitter {
@@ -80,7 +81,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Track incoming request
-   */
+   */;
   trackRequest(data: {
     requestId: string;
     userId: string;
@@ -102,7 +103,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Track stage completion within a request
-   */
+   */;
   trackStage(requestId: string, stage: string, duration: number, metadata?: unknown): void {
     const request = this.requestTracking.get(requestId);
     if (request) {
@@ -112,7 +113,7 @@ class MonitoringService extends EventEmitter {
         metadata,
       });
 
-      // Update timing arrays
+      // Update timing arrays;
       if (stage === 'query_analysis' && this.timings.queryAnalysis) {
         this.timings.queryAnalysis.push(duration);
       } else if (stage === 'retrieval' && this.timings.retrieval) {
@@ -129,7 +130,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Track metrics for completed request
-   */
+   */;
   trackMetrics(metrics: MetricData): void {
     this.counters.successfulRequests++;
     this.performanceHistory.push(metrics.processingTime);
@@ -141,7 +142,7 @@ class MonitoringService extends EventEmitter {
     this.storeMetric('source_count', metrics.sourceCount);
     this.storeMetric('quality_score', metrics.qualityScore);
 
-    // Track strategy usage
+    // Track strategy usage;
     for (const strategy of metrics.strategies) {
       this.incrementStrategyUsage(strategy);
     }
@@ -164,7 +165,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Track cache hit
-   */
+   */;
   trackCacheHit(requestId: string): void {
     this.counters.cacheHits++;
     this.emit('cache:hit', { requestId, timestamp: Date.now() });
@@ -172,7 +173,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Track cache miss
-   */
+   */;
   trackCacheMiss(requestId: string): void {
     this.counters.cacheMisses++;
     this.emit('cache:miss', { requestId, timestamp: Date.now() });
@@ -180,7 +181,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Track stream completion
-   */
+   */;
   trackStreamCompletion(data: { streamId: string; requestId: string; duration: number }): void {
     this.counters.streamRequests++;
     this.storeMetric('stream_duration', data.duration);
@@ -189,7 +190,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Track errors
-   */
+   */;
   trackError(data: { requestId: string; error: string; stack?: string; userId: string }): void {
     this.counters.failedRequests++;
 
@@ -199,7 +200,7 @@ class MonitoringService extends EventEmitter {
       context: data,
     });
 
-    // Keep only last 1000 errors
+    // Keep only last 1000 errors;
     if (this.errorLog.length > 1000) {
       this.errorLog.shift();
     }
@@ -217,7 +218,7 @@ class MonitoringService extends EventEmitter {
     // Check if error rate is too high
     const errorRate = this.counters.failedRequests / this.counters.totalRequests;
     if (errorRate > 0.1) {
-      // More than 10% error rate
+      // More than 10% error rate;
       this.emit('alert', {
         severity: 'critical',
         message: `High error rate: ${(errorRate * 100).toFixed(2)}%`,
@@ -230,7 +231,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Register health check
-   */
+   */;
   registerHealthCheck(name: string, check: () => Promise<boolean>): void {
     this.healthChecks.set(name, check);
     logger.info(`[Monitoring] Registered health check: ${name}`);
@@ -238,7 +239,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Get current statistics
-   */
+   */;
   getStats(): unknown {
     const cacheHitRate =
       this.counters.cacheHits / (this.counters.cacheHits + this.counters.cacheMisses) || 0;
@@ -274,7 +275,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Get detailed metrics for analysis
-   */
+   */;
   getDetailedMetrics(timeRange?: { start: Date; end: Date }): unknown {
     const metrics = {};
 
@@ -297,7 +298,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Export metrics for external monitoring systems
-   */
+   */;
   exportPrometheusMetrics(): string {
     const lines = [];
 
@@ -329,7 +330,7 @@ class MonitoringService extends EventEmitter {
   // === PRIVATE HELPER METHODS ===
 
   private setupDefaultAlerts(): void {
-    // High processing time alert
+    // High processing time alert;
     this.alerts.push({
       name: 'high_processing_time',
       condition: (metrics) => metrics.processingTime > 10000, // > 10 seconds
@@ -337,7 +338,7 @@ class MonitoringService extends EventEmitter {
       severity: 'warning',
     });
 
-    // Low confidence alert
+    // Low confidence alert;
     this.alerts.push({
       name: 'low_confidence',
       condition: (metrics) => metrics.confidence < 0.5,
@@ -345,7 +346,7 @@ class MonitoringService extends EventEmitter {
       severity: 'warning',
     });
 
-    // Low quality score alert
+    // Low quality score alert;
     this.alerts.push({
       name: 'low_quality',
       condition: (metrics) => metrics.qualityScore < 0.6,
@@ -353,7 +354,7 @@ class MonitoringService extends EventEmitter {
       severity: 'info',
     });
 
-    // No sources found alert
+    // No sources found alert;
     this.alerts.push({
       name: 'no_sources',
       condition: (metrics) => metrics.sourceCount === 0,
@@ -412,7 +413,7 @@ class MonitoringService extends EventEmitter {
     const values = this.metrics.get(name);
     values.push(value);
 
-    // Keep only last 1000 values
+    // Keep only last 1000 values;
     if (values.length > 1000) {
       values.shift();
     }
@@ -438,7 +439,7 @@ class MonitoringService extends EventEmitter {
     const p99 = sorted[Math.floor(len * 0.99)];
     const mean = values.reduce((a, b) => a + b, 0) / len;
 
-    const squaredDiffs = values.map((v) => Math.pow(v - mean, 2));
+    const squaredDiffs = values.map((v) => Math.pow(v - mean, 2);
     const variance = squaredDiffs.reduce((a, b) => a + b, 0) / len;
     const stdDev = Math.sqrt(variance);
 
@@ -470,7 +471,7 @@ class MonitoringService extends EventEmitter {
       timestamp: new Date(),
     });
 
-    // Log summary
+    // Log summary;
     logger.info('[Monitoring] Metrics summary:', {
       requests: this.counters.totalRequests,
       successRate: (stats as any).rates?.successRate,
@@ -497,7 +498,7 @@ class MonitoringService extends EventEmitter {
       }
     }
 
-    // Trim performance history
+    // Trim performance history;
     if (this.performanceHistory.length > maxLength) {
       this.performanceHistory = this.performanceHistory.slice(-maxLength);
     }
@@ -511,7 +512,7 @@ class MonitoringService extends EventEmitter {
   async recordMetric(
     metric: string,
     value: number,
-    labels?: Record<string, string>
+    labels?: Record<string, string>;
   ): Promise<void> {
     const data = {
       // id: `metric_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // Remove if not in MetricData interface
@@ -527,7 +528,7 @@ class MonitoringService extends EventEmitter {
       },
     };
 
-    // Ensure metrics is typed as array, not Map
+    // Ensure metrics is typed as array, not Map;
     if (Array.isArray(this.metrics)) {
       this.metrics.push(data);
     } else {
@@ -543,7 +544,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Get all metrics
-   */
+   */;
   async getMetrics(): Promise<MetricData[]> {
     const allMetrics: MetricData[] = [];
     for (const [key, values] of this.metrics) {
@@ -556,7 +557,7 @@ class MonitoringService extends EventEmitter {
               confidence: 0.8,
               sourceCount: 1,
               strategies: ['default'],
-              qualityScore: 0.7
+              qualityScore: 0.7,
             } as MetricData);
           }
         });
@@ -567,9 +568,9 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Get aggregated metrics by name
-   */
+   */;
   async getMetricStats(metricName: string): Promise<any> {
-    const metricData = Array.from((this.metrics as any).values())
+    const metricData = Array.from((this.metrics as any).values()
       .flat()
       .filter((m: any) => m.data?.metric === metricName)
       .map((m: any) => m.data?.value || 0);
@@ -589,7 +590,7 @@ class MonitoringService extends EventEmitter {
 
   /**
    * Shutdown monitoring service
-   */
+   */;
   async shutdown(): Promise<void> {
     // Export final metrics
     const finalStats = this.getStats();

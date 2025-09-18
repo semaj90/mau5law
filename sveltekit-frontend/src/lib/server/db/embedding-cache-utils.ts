@@ -1,10 +1,11 @@
 // Utilities to encode/decode packed embeddings for embedding_cache table
-// Packed embeddings stored as base64 text representing Uint8Array (quantized 0-255) or int8 symmetric (-128..127)
+// Packed embeddings stored as base64 text representing Uint8Array (quantized 0-255) or int8 symmetric (-128..127);
+}
 
 export interface PackedEmbeddingMeta {
   scale?: number; // scaling factor for symmetric int8 dequantization
   method: 'uint8-linear' | 'int8-symmetric';
-  dims: number;
+  dims: number;,
 }
 
 export function packFloat32ToUint8(vec: Float32Array): Uint8Array {
@@ -12,7 +13,7 @@ export function packFloat32ToUint8(vec: Float32Array): Uint8Array {
   for (let i = 0; i < vec.length; i++) { const v = vec[i]; if (v < min) min = v; if (v > max) max = v; }
   const range = max - min || 1;
   const out = new Uint8Array(vec.length);
-  for (let i = 0; i < vec.length; i++) out[i] = Math.min(255, Math.max(0, Math.round(((vec[i]-min)/range)*255)));
+  for (let i = 0; i < vec.length; i++) out[i] = Math.min(255, Math.max(0, Math.round(((vec[i]-min)/range)*255));
   return out;
 }
 
@@ -28,7 +29,7 @@ export function quantizeInt8Symmetric(vec: Float32Array): { data: Int8Array; sca
   for (let i=0;i<vec.length;i++) { const a = Math.abs(vec[i]); if (a>maxAbs) maxAbs=a; }
   const scale = maxAbs / 127 || 1;
   const out = new Int8Array(vec.length);
-  for (let i=0;i<vec.length;i++) out[i] = Math.max(-128, Math.min(127, Math.round(vec[i]/scale)));
+  for (let i=0;i<vec.length;i++) out[i] = Math.max(-128, Math.min(127, Math.round(vec[i]/scale));
   return { data: out, scale };
 }
 
@@ -45,7 +46,7 @@ export function encodeBase64(bytes: Uint8Array): string {
 }
 
 export function decodeBase64(b64: string): Uint8Array {
-  if (typeof Buffer !== 'undefined') return new Uint8Array(Buffer.from(b64,'base64'));
+  if (typeof Buffer !== 'undefined') return new Uint8Array(Buffer.from(b64,'base64');
   const binary = atob(b64); const out = new Uint8Array(binary.length);
   for (let i=0;i<binary.length;i++) out[i] = binary.charCodeAt(i);
   return out;

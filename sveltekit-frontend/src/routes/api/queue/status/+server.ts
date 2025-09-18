@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js';
 
 /*
  * Get overall queue statistics
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
 	try {
 		const jobId = url.searchParams.get('job_id');
@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			return json({
 				success: true,
 				job: jobStatus,
-				timestamp: new Date().toISOString()
+				timestamp: new Date().toISOString(),
 			});
 		}
 		
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			success: true,
 			queue_stats: stats,
 			healthy: stats.active >= 0, // Basic health check
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		});
 		
 	} catch (error: any) {
@@ -36,14 +36,14 @@ export const GET: RequestHandler = async ({ url }) => {
 		return json({ 
 			success: false,
 			error: 'Failed to get queue status',
-			details: error instanceof Error ? error.message: 'Unknown error'
+			details: error instanceof Error ? error.message: 'Unknown error',
 		}, { status: 500 });
 	}
 };
 
 /*
  * Cancel a job or clear completed jobs
- */
+ */;
 export const DELETE: RequestHandler = async ({ url }) => {
 	try {
 		const jobId = url.searchParams.get('job_id');
@@ -57,7 +57,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 				return json({
 					success: true,
 					message: `Job ${jobId} cancelled`,
-					timestamp: new Date().toISOString()
+					timestamp: new Date().toISOString(),
 				});
 			} else {
 				return json({
@@ -75,13 +75,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
 				success: true,
 				message: `Cleared ${clearedCount} completed jobs`,
 				cleared_count: clearedCount,
-				timestamp: new Date().toISOString()
+				timestamp: new Date().toISOString(),
 			});
 		}
 		
 		return json({
 			success: false,
-			error: 'No valid action specified. Use job_id to cancel job or action=clear_completed'
+			error: 'No valid action specified. Use job_id to cancel job or action=clear_completed',
 		}, { status: 400 });
 		
 	} catch (error: any) {
@@ -89,7 +89,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 		return json({ 
 			success: false,
 			error: 'Delete operation failed',
-			details: error instanceof Error ? error.message: 'Unknown error'
+			details: error instanceof Error ? error.message: 'Unknown error',
 		}, { status: 500 });
 	}
 };

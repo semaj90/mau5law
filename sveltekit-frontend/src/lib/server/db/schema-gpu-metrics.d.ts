@@ -1,4 +1,4 @@
-// Frontend-facing shim for GPU metrics schema
+// Frontend-facing shim for GPU metrics schema;
 export interface GPUMetricEnhanced {
   timestamp?: number;
   fps?: number;

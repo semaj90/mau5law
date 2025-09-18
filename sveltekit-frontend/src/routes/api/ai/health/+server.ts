@@ -3,12 +3,12 @@ import { logger } from "$lib/server/logger";
 import type { RequestHandler } from './$types.js';
 import { apiSuccess, apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response';
 
-// Mock Ollama service for now - replace with actual service when available
+// Mock Ollama service for now - replace with actual service when available;
 const ollamaService = {
   async isHealthy(): Promise<boolean> {
     try {
       const response = await fetch('http://localhost:11434/api/version', { 
-        signal: AbortSignal.timeout(5000) 
+        signal: AbortSignal.timeout(5000) ,
       });
       return response.ok;
     } catch {

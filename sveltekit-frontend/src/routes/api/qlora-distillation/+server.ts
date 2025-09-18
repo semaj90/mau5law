@@ -7,7 +7,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
-// Mock imports for now - replace with actual implementations
+// Mock imports for now - replace with actual implementations;
 const qloraIntegrationAnalyzer = {
   async analyzeFeedbackForDistillation(data: any) {
     return {
@@ -31,7 +31,7 @@ const qloraIntegrationAnalyzer = {
         validation_accuracy: 0.89,
         actual_speed_improvement: 2.2,
         actual_quality_retention: 0.91,
-        actual_size_reduction: 0.3
+        actual_size_reduction: 0.3,
       }
     };
   }
@@ -52,7 +52,7 @@ const autoencoderContextSwitcher = {
   }
 };
 
-// Distillation request structure
+// Distillation request structure;
 interface DistillationRequest {
   userId: string;
   domain: string;
@@ -67,19 +67,19 @@ interface DistillationRequest {
   feedbackData?: Array<any>;
 }
 
-// Distillation status response
+// Distillation status response;
 interface DistillationStatus {
   jobId: string;
   status: 'queued' | 'preparing' | 'training' | 'validating' | 'deploying' | 'completed' | 'failed';
   progress: number; // 0-100
   currentPhase: string;
-  estimatedTimeRemaining: number; // milliseconds
+  estimatedTimeRemaining: number; // milliseconds;
   metrics?: {
     trainingExamples: number;
     validationAccuracy: number;
     modelSize: number; // MB
     speedImprovement: number;
-    qualityRetention: number;
+    qualityRetention: number;,
   };
   modelPath?: string;
   deploymentReady?: boolean;
@@ -92,7 +92,7 @@ const activeDistillations = new Map<string, DistillationStatus>();
 /**
  * POST /api/qlora-distillation
  * Trigger QLoRA model distillation with feedback analysis
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const distillationRequest: DistillationRequest = await request.json();
@@ -102,13 +102,13 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate unique job ID
     const jobId = `distillation_${distillationRequest.domain}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-    // Initialize distillation status
+    // Initialize distillation status;
     const initialStatus: DistillationStatus = {
       jobId,
       status: 'queued',
       progress: 0,
       currentPhase: 'Initializing distillation job',
-      estimatedTimeRemaining: 3600000, // 1 hour default
+      estimatedTimeRemaining: 3600000, // 1 hour default;
       metrics: {
         trainingExamples: 0,
         validationAccuracy: 0,
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     activeDistillations.set(jobId, initialStatus);
 
-    // Start distillation process asynchronously
+    // Start distillation process asynchronously;
     processDistillationJob(jobId, distillationRequest).catch((error) => {
       console.error(`❌ Distillation job ${jobId} failed:`, error);
       const status = activeDistillations.get(jobId);
@@ -141,12 +141,11 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error) {
     console.error('❌ QLoRA Distillation API error:', error);
-    return json(
-      {
+    return json({
         success: false,
         error: 'Failed to start distillation job',
         details: error instanceof Error ? error.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }
@@ -155,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /**
  * GET /api/qlora-distillation/{jobId}
  * Get distillation job status and progress
- */
+ */;
 export const GET: RequestHandler = async ({ params }) => {
   try {
     const jobId = params.jobId;
@@ -180,7 +179,7 @@ export const GET: RequestHandler = async ({ params }) => {
 /**
  * DELETE /api/qlora-distillation/{jobId}
  * Cancel running distillation job
- */
+ */;
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
     const jobId = params.jobId;
@@ -224,17 +223,17 @@ export const DELETE: RequestHandler = async ({ params }) => {
 
 /**
  * Process distillation job through all phases
- */
+ */;
 async function processDistillationJob(jobId: string, request: DistillationRequest): Promise<void> {
   const updateStatus = (updates: Partial<DistillationStatus>) => {
     const current = activeDistillations.get(jobId);
     if (current) {
-      activeDistillations.set(jobId, { ...current, ...updates });
+      activeDistillations.set(jobId, { ...current, ...updates ,});
     }
   };
 
   try {
-    // Phase 1: Data Preparation and Analysis
+    // Phase 1: Data Preparation and Analysis;
     updateStatus({
       status: 'preparing',
       progress: 10,
@@ -246,7 +245,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
 
     // Use integration analyzer to comprehensively analyze feedback
     const feedbackAnalysis = await qloraIntegrationAnalyzer.analyzeFeedbackForDistillation(
-      request.feedbackData || (await getMockFeedbackData(request.domain))
+      request.feedbackData || (await getMockFeedbackData(request.domain)
     );
 
     updateStatus({
@@ -263,7 +262,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
       },
     });
 
-    // Phase 2: Model Training with Context Switching Optimization
+    // Phase 2: Model Training with Context Switching Optimization;
     updateStatus({
       status: 'training',
       progress: 40,
@@ -299,7 +298,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
     // Optimize with context switcher
     await autoencoderContextSwitcher.switchContext(
       request.userId,
-      `Optimizing distilled model for domain: ${request.domain}`,
+      `Optimizing distilled model for domain: ${request.domain}`,);
       {
         modelPath: distillationResult.modelPath,
         performance_target: request.parameters?.optimizeFor || 'balanced',
@@ -307,7 +306,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
       }
     );
 
-    // Phase 3: Model Validation and Integration
+    // Phase 3: Model Validation and Integration;
     updateStatus({
       status: 'validating',
       progress: 85,
@@ -317,7 +316,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
 
     console.log(`✅ Phase 3: Validating distilled model for ${jobId}...`);
 
-    // Load model into WASM loader for validation
+    // Load model into WASM loader for validation;
     const validationModelKey = await qloraWasmLoader.loadDistilledModel({
       baseModel: {
         name: feedbackAnalysis.distillationPlan.studentModel,
@@ -348,7 +347,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
       throw new Error(`Validation failed: ${validationResults.reason}`);
     }
 
-    // Phase 4: Deployment Preparation
+    // Phase 4: Deployment Preparation;
     updateStatus({
       status: 'deploying',
       progress: 95,
@@ -365,7 +364,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
       request.domain
     );
 
-    // Final completion
+    // Final completion;
     updateStatus({
       status: 'completed',
       progress: 100,
@@ -407,7 +406,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
 async function runValidationTests(
   modelKey: string,
   domain: string,
-  qualityThreshold: number
+  qualityThreshold: number;
 ): Promise<any> {
   console.log(`🧪 Running validation tests for domain: ${domain}`);
 
@@ -457,7 +456,7 @@ async function runValidationTests(
 async function prepareModelDeployment(
   modelPath: string,
   plan: any,
-  domain: string
+  domain: string;
 ): Promise<string> {
   // Copy model to deployment directory
   const deploymentPath = `~/.ollama/models/distilled-qlora/deployed/${domain}/${plan.studentModel}`;
@@ -476,10 +475,10 @@ async function prepareModelDeployment(
 
 /**
  * Get mock feedback data for testing
- */
+ */;
 async function getMockFeedbackData(domain: string): Promise<any[]> {
   const mockData = {
-    contract: [
+    contract: [;
       {
         userId: 'user1',
         query: 'What are the key risks in this employment contract?',
@@ -498,7 +497,7 @@ async function getMockFeedbackData(domain: string): Promise<any[]> {
         corrections: ['Should mention specific state laws', 'Need case citations'],
       },
     ],
-    litigation: [
+    litigation: [;
       {
         userId: 'user3',
         query: 'What precedents support our motion to dismiss?',
@@ -515,10 +514,10 @@ async function getMockFeedbackData(domain: string): Promise<any[]> {
 
 /**
  * Get validation prompts for domain testing
- */
+ */;
 function getValidationPrompts(domain: string): Array<any> {
   const prompts = {
-    contract: [
+    contract: [;
       {
         name: 'Contract Risk Analysis',
         input: 'Analyze the potential risks in a software licensing agreement.',
@@ -530,7 +529,7 @@ function getValidationPrompts(domain: string): Array<any> {
         expectedKeywords: ['enforceability', 'jurisdiction', 'reasonable', 'duration'],
       },
     ],
-    litigation: [
+    litigation: [;
       {
         name: 'Case Strategy',
         input: 'What discovery motions should we file in this contract dispute?',
@@ -544,7 +543,7 @@ function getValidationPrompts(domain: string): Array<any> {
 
 /**
  * Calculate response quality score
- */
+ */;
 function calculateResponseQuality(response: string, expectedKeywords: string[]): number {
   const lowerResponse = (response as { toLowerCase?: any; length?: any }).toLowerCase();
   let keywordMatches = 0;
@@ -563,7 +562,7 @@ function calculateResponseQuality(response: string, expectedKeywords: string[]):
 
 /**
  * Calculate model size from path (mock implementation)
- */
+ */;
 function calculateModelSize(modelPath: string): number {
   // Mock calculation - in production would check actual file size
   return Math.floor(Math.random() * 200) + 100; // 100-300 MB
@@ -571,11 +570,11 @@ function calculateModelSize(modelPath: string): number {
 
 /**
  * Simulate file operations with delay
- */
+ */;
 async function simulateFileOperations(operations: string[], delayMs: number): Promise<void> {
   for (const op of operations) {
     console.log(`📁 Performing ${op}...`);
-    await new Promise((resolve) => setTimeout(resolve, delayMs / operations.length));
+    await new Promise((resolve) => setTimeout(resolve, delayMs / operations.length);
   }
 }
 
@@ -585,7 +584,7 @@ async function simulateFileOperations(operations: string[], delayMs: number): Pr
 async function notifyDistillationCompletion(
   userId: string,
   jobId: string,
-  modelPath: string
+  modelPath: string;
 ): Promise<void> {
   console.log(`📧 Notifying user ${userId} of completed distillation: ${jobId}`);
   // Would implement actual notification system
@@ -593,7 +592,7 @@ async function notifyDistillationCompletion(
 
 /**
  * Clean up failed distillation artifacts
- */
+ */;
 async function cleanupFailedDistillation(jobId: string): Promise<void> {
   console.log(`🗑️ Cleaning up failed distillation: ${jobId}`);
   // Would clean up temporary files and model artifacts

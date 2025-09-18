@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ params }) => {
 
     const responseTime = Date.now() - startTime;
 
-    // Avoid duplicate keys with spread: place spread first, then override/add engine/responseTime
+    // Avoid duplicate keys with spread: place spread first, then override/add engine/responseTime;
     return json({
       ...healthData,
       engine,
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ params }) => {
       engine,
       healthy: false,
       responseTime: Date.now() - startTime,
-      error: (error as Error)?.message ?? String(error)
+      error: (error as Error)?.message ?? String(error),
     }, { status: 503 });
   }
 };
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ params }) => {
 async function checkWebGPUHealth() {
   try {
     // Check if WebGPU is available in the context
-    // This is a server-side check, so we'll simulate the response
+    // This is a server-side check, so we'll simulate the response;
     return {
       healthy: true,
       capabilities: ['compute-shaders', 'texture-streaming', 'nes-orchestrator'],
@@ -65,7 +65,7 @@ async function checkWebGPUHealth() {
   } catch (error: unknown) {
     return {
       healthy: false,
-      error: (error as Error)?.message ?? String(error)
+      error: (error as Error)?.message ?? String(error),
     };
   }
 }
@@ -74,7 +74,7 @@ async function checkOllamaHealth() {
   try {
     const response = await fetch('http://localhost:11434/api/version', {
       method: 'GET',
-      signal: AbortSignal.timeout(5000) // 5 second timeout
+      signal: AbortSignal.timeout(5000) // 5 second timeout,
     });
 
     if (!response.ok) {
@@ -103,17 +103,17 @@ async function checkOllamaHealth() {
     return {
       healthy: false,
       error: (error as Error)?.message ?? String(error),
-      suggestion: 'Make sure Ollama is running: ollama serve'
+      suggestion: 'Make sure Ollama is running: ollama serve',
     };
   }
 }
 
 async function checkVLLMHealth() {
   try {
-    // Check Ollama Integration Service (which includes vLLM functionality)
+    // Check Ollama Integration Service (which includes vLLM functionality);
     const response = await fetch('http://localhost:8096/health', {
       method: 'GET',
-      signal: AbortSignal.timeout(5000)
+      signal: AbortSignal.timeout(5000),
     });
 
     if (!response.ok) {
@@ -135,26 +135,26 @@ async function checkVLLMHealth() {
         similarityThreshold: '85%',
         tensorCores: true,
         batchProcessing: true,
-        gpuLayers: 35
+        gpuLayers: 35,
       },
-      integration: healthData
+      integration: healthData,
     };
 
   } catch (error: unknown) {
     return {
       healthy: false,
       error: (error as Error)?.message ?? String(error),
-      suggestion: 'Start Ollama Integration Service: python gpu-inference-worker/ollama_integration_service.py'
+      suggestion: 'Start Ollama Integration Service: python gpu-inference-worker/ollama_integration_service.py',
     };
   }
 }
 
 async function checkFastEmbedHealth() {
   try {
-    // Check FastEmbed Proxy Client
+    // Check FastEmbed Proxy Client;
     const proxyResponse = await fetch('http://localhost:8097/health', {
       method: 'GET',
-      signal: AbortSignal.timeout(5000)
+      signal: AbortSignal.timeout(5000),
     });
 
     let proxyHealthy = false;
@@ -171,7 +171,7 @@ async function checkFastEmbedHealth() {
 
     try {
       const directResponse = await fetch('http://localhost:8000/health', {
-        signal: AbortSignal.timeout(3000)
+        signal: AbortSignal.timeout(3000),
       });
 
       if (directResponse.ok) {
@@ -187,12 +187,12 @@ async function checkFastEmbedHealth() {
       proxy: {
         healthy: proxyHealthy,
         url: 'http://localhost:8097',
-        data: proxyData
+        data: proxyData,
       },
       direct: {
         healthy: directHealthy,
         url: 'http://localhost:8000',
-        data: directData
+        data: directData,
       },
       capabilities: [
         'gpu-embeddings',
@@ -210,7 +210,7 @@ async function checkFastEmbedHealth() {
     return {
       healthy: false,
       error: (error as Error)?.message ?? String(error),
-      suggestion: 'Start FastEmbed services: python gpu-inference-worker/fastembed_service.py && python gpu-inference-worker/fastembed_proxy_client.py'
+      suggestion: 'Start FastEmbed services: python gpu-inference-worker/fastembed_service.py && python gpu-inference-worker/fastembed_proxy_client.py',
     };
   }
 }

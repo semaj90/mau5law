@@ -5,6 +5,7 @@
  */
 
 import type { TypingContext, TypingState } from '$lib/machines/userTypingStateMachine.js';
+}
 
 export interface DetectiveWebSocketMessage {
   type: 'user_typing' | 'connection_map_update' | 'evidence_analysis' | 'contextual_prompt' | 'collaborative_action';
@@ -12,7 +13,7 @@ export interface DetectiveWebSocketMessage {
   userId?: string;
   sessionId?: string;
   timestamp: string;
-  data: any;
+  data: any;,
 }
 
 export interface CollaborativeUser {
@@ -52,7 +53,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Connect to WebSocket server
-   */
+   */;
   connect(): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
       console.log('[DetectiveWS] Already connected');
@@ -72,7 +73,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Setup WebSocket event listeners
-   */
+   */;
   private setupEventListeners(): void {
     if (!this.ws) return;
     
@@ -83,7 +84,7 @@ export class DetectiveWebSocketManager {
       this.startHeartbeat();
       this.notifyConnectionStatus(true);
       
-      // Send initial join message
+      // Send initial join message;
       this.send({
         type: 'collaborative_action',
         caseId: this.caseId,
@@ -121,7 +122,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Handle incoming WebSocket messages
-   */
+   */;
   private handleMessage(message: DetectiveWebSocketMessage): void {
     console.log('[DetectiveWS] Received message:', message.type, message.data);
     
@@ -149,40 +150,40 @@ export class DetectiveWebSocketManager {
     
     // Notify registered handlers
     const handlers = this.onMessageHandlers.get(message.type) || [];
-    handlers.forEach(handler => handler(message.data));
+    handlers.forEach(handler => handler(message.data);
   }
   
   /**
    * Handle collaborative actions (join/leave/focus changes)
-   */
+   */;
   private handleCollaborativeAction(message: DetectiveWebSocketMessage): void {
     const { action, userInfo, focus } = message.data;
     
     if (message.userId === this.userId) return; // Ignore own messages
     
     switch (action) {
-      case 'join':
+      case 'join':;
         if (userInfo && message.userId) {
           const user: CollaborativeUser = {
             id: message.userId,
             name: userInfo.name || 'Anonymous',
             typing: false,
             lastActivity: message.timestamp,
-            currentFocus: undefined
+            currentFocus: undefined,
           };
           this.collaborativeUsers.set(message.userId, user);
-          this.onUserJoinedHandlers.forEach(handler => handler(user));
+          this.onUserJoinedHandlers.forEach(handler => handler(user);
         }
         break;
         
-      case 'leave':
+      case 'leave':;
         if (message.userId) {
           this.collaborativeUsers.delete(message.userId);
-          this.onUserLeftHandlers.forEach(handler => handler(message.userId));
+          this.onUserLeftHandlers.forEach(handler => handler(message.userId);
         }
         break;
         
-      case 'focus_change':
+      case 'focus_change':;
         if (message.userId && this.collaborativeUsers.has(message.userId)) {
           const user = this.collaborativeUsers.get(message.userId)!;
           user.currentFocus = focus;
@@ -195,7 +196,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Handle real-time typing updates from other users
-   */
+   */;
   private handleUserTyping(message: DetectiveWebSocketMessage): void {
     if (message.userId === this.userId) return;
     
@@ -212,7 +213,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Handle connection map updates
-   */
+   */;
   private handleConnectionMapUpdate(message: DetectiveWebSocketMessage): void {
     // Real-time connection map updates for collaborative visualization
     console.log('[DetectiveWS] Connection map updated by:', message.userId);
@@ -220,7 +221,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Handle evidence analysis updates
-   */
+   */;
   private handleEvidenceAnalysis(message: DetectiveWebSocketMessage): void {
     // Real-time evidence analysis results
     console.log('[DetectiveWS] Evidence analysis by:', message.userId, message.data);
@@ -228,7 +229,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Handle contextual prompts from other users
-   */
+   */;
   private handleContextualPrompt(message: DetectiveWebSocketMessage): void {
     // Collaborative contextual prompts
     console.log('[DetectiveWS] Contextual prompt from:', message.userId, message.data);
@@ -236,7 +237,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Send typing state updates
-   */
+   */;
   sendTypingUpdate(state: TypingState, context: TypingContext): void {
     this.send({
       type: 'user_typing',
@@ -247,14 +248,14 @@ export class DetectiveWebSocketManager {
       data: {
         isTyping: ['typing', 'contextual_processing'].includes(state),
         typingState: state,
-        typingContext: context
+        typingContext: context,
       }
     });
   }
   
   /**
    * Send connection map updates
-   */
+   */;
   sendConnectionMapUpdate(connectionMap: any, metadata: any): void {
     this.send({
       type: 'connection_map_update',
@@ -268,7 +269,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Send evidence analysis results
-   */
+   */;
   sendEvidenceAnalysis(evidenceId: string, analysis: any): void {
     this.send({
       type: 'evidence_analysis',
@@ -282,7 +283,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Send contextual prompts
-   */
+   */;
   sendContextualPrompt(prompts: string[], context: TypingContext): void {
     this.send({
       type: 'contextual_prompt',
@@ -296,7 +297,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Send focus change notification
-   */
+   */;
   sendFocusChange(focus: 'evidence' | 'connections' | 'analysis'): void {
     this.send({
       type: 'collaborative_action',
@@ -310,10 +311,10 @@ export class DetectiveWebSocketManager {
   
   /**
    * Send WebSocket message
-   */
+   */;
   private send(message: DetectiveWebSocketMessage): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(message));
+      this.ws.send(JSON.stringify(message);
     } else {
       console.warn('[DetectiveWS] Cannot send message - not connected');
     }
@@ -321,18 +322,18 @@ export class DetectiveWebSocketManager {
   
   /**
    * Start heartbeat to keep connection alive
-   */
+   */;
   private startHeartbeat(): void {
     this.heartbeatInterval = window.setInterval(() => {
       if (this.ws?.readyState === WebSocket.OPEN) {
-        this.ws.send(JSON.stringify({ type: 'ping' }));
+        this.ws.send(JSON.stringify({ type: 'ping' });
       }
     }, 30000); // 30 seconds
   }
   
   /**
    * Stop heartbeat
-   */
+   */;
   private stopHeartbeat(): void {
     if (this.heartbeatInterval) {
       clearInterval(this.heartbeatInterval);
@@ -342,7 +343,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Schedule reconnection attempt
-   */
+   */;
   private scheduleReconnect(): void {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
       console.error('[DetectiveWS] Max reconnection attempts reached');
@@ -361,14 +362,14 @@ export class DetectiveWebSocketManager {
   
   /**
    * Notify connection status handlers
-   */
+   */;
   private notifyConnectionStatus(connected: boolean): void {
-    this.onConnectionStatusHandlers.forEach(handler => handler(connected));
+    this.onConnectionStatusHandlers.forEach(handler => handler(connected);
   }
   
   /**
    * Event handler registration methods
-   */
+   */;
   onMessage(type: string, handler: (data: any) => void): void {
     if (!this.onMessageHandlers.has(type)) {
       this.onMessageHandlers.set(type, []);
@@ -390,10 +391,10 @@ export class DetectiveWebSocketManager {
   
   /**
    * Disconnect WebSocket
-   */
+   */;
   disconnect(): void {
     if (this.ws) {
-      // Send leave message
+      // Send leave message;
       this.send({
         type: 'collaborative_action',
         caseId: this.caseId,
@@ -411,7 +412,7 @@ export class DetectiveWebSocketManager {
   
   /**
    * Get current collaboration statistics
-   */
+   */;
   getCollaborationStats() {
     return {
       connectedUsers: this.collaborativeUsers.size,
@@ -420,7 +421,7 @@ export class DetectiveWebSocketManager {
       focusDistribution: {
         evidence: Array.from(this.collaborativeUsers.values()).filter(item => item.length),
         connections: Array.from(this.collaborativeUsers.values()).filter(item => item.length),
-        analysis: Array.from(this.collaborativeUsers.values()).filter(item => item.length)
+        analysis: Array.from(this.collaborativeUsers.values()).filter(item => item.length),
       }
     };
   }

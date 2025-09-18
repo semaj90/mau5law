@@ -7,7 +7,7 @@ import type { RequestEvent } from "@sveltejs/kit";
  * Rate Limiting, JWT Refresh, and Security Headers
  */
 
-// Simple logging functions
+// Simple logging functions;
 function logWarn(message: string, data?: any): void {
   console.warn(message, data);
 }
@@ -19,7 +19,7 @@ function logError(message: string, data?: any): void {
 export interface RateLimitEntry {
   count: number;
   resetTime: number;
-  blocked: boolean;
+  blocked: boolean;,
 }
 
 export interface SecurityConfig {
@@ -31,7 +31,7 @@ export interface SecurityConfig {
   };
   jwt: {
     accessTokenExpiry: string;
-    refreshTokenExpiry: string;
+    refreshTokenExpiry: string;,
   };
 }
 
@@ -54,7 +54,7 @@ class SecurityManager {
 
   /**
    * Apply rate limiting
-   */
+   */;
   checkRateLimit(clientIP: string, route: string): boolean {
     const now = Date.now();
     const key = `${clientIP}:${route}`;
@@ -72,7 +72,7 @@ class SecurityManager {
       return true;
     }
 
-    // Reset window if expired
+    // Reset window if expired;
     if (now > entry.resetTime) {
       entry.count = 1;
       entry.resetTime = now + limit.windowMs;
@@ -80,7 +80,7 @@ class SecurityManager {
       return true;
     }
 
-    // Check if within limits
+    // Check if within limits;
     if (entry.count >= limit.requests) {
       entry.blocked = true;
       logWarn("Rate limit exceeded", { clientIP, route, count: entry.count });
@@ -100,7 +100,7 @@ class SecurityManager {
 
   /**
    * Get client IP from request
-   */
+   */;
   getClientIP(event: RequestEvent): string {
     const xForwardedFor = event.request.headers.get("x-forwarded-for");
     const xRealIP = event.request.headers.get("x-real-ip");
@@ -119,11 +119,11 @@ class SecurityManager {
 
   /**
    * Apply security headers
-   */
+   */;
   applySecurityHeaders(response: Response): Response {
     const headers = new Headers(response.headers);
 
-    // HSTS
+    // HSTS;
     if (!dev) {
       headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
     }
@@ -149,7 +149,7 @@ class SecurityManager {
 
   /**
    * Validate request origin
-   */
+   */;
   isValidOrigin(request: Request): boolean {
     const origin = request.headers.get("origin");
     const referer = request.headers.get("referer");
@@ -184,17 +184,17 @@ export const securityManager = new SecurityManager();
 ;
 /**
  * Security middleware hook
- */
+ */;
 export async function securityMiddleware(event: RequestEvent): Promise<any> {
   const clientIP = securityManager.getClientIP(event);
   const route = event.route.id || "";
 
-  // Check rate limiting
+  // Check rate limiting;
   if (!securityManager.checkRateLimit(clientIP, route)) {
     return new Response("Rate limit exceeded", { status: 429 });
   }
 
-  // Validate origin for state-changing requests
+  // Validate origin for state-changing requests;
   if (["POST", "PUT", "DELETE", "PATCH"].includes(event.request.method)) {
     if (!securityManager.isValidOrigin(event.request)) {
       logWarn("Invalid origin detected", { clientIP, origin: event.request.headers.get("origin") });

@@ -9,7 +9,7 @@ import { nesGPUIntegration, type LegalDocument } from '$lib/gpu/nes-gpu-integrat
 import { nesMemory, type MemoryBank } from '$lib/memory/nes-memory-architecture.js';
 import { semanticAnalysisPipeline, type SemanticAnalysisResult } from '$lib/ai/semantic-analysis-pipeline.js';
 
-// Graph traversal types
+// Graph traversal types;
 export interface GraphNode {
   id: string;
   type: 'case' | 'precedent' | 'statute' | 'person' | 'organization' | 'concept';
@@ -35,7 +35,7 @@ export interface GraphEdge {
   metadata: {
     confidence: number;
     strength: number;
-    bidirectional: boolean;
+    bidirectional: boolean;,
   };
 }
 
@@ -64,13 +64,13 @@ export interface GraphTraversalResult {
     nodesVisited: number;
     edgesTraversed: number;
     cacheHits: number;
-    wasmAccelerated: boolean;
+    wasmAccelerated: boolean;,
   };
   visualizationData: {
     positions: Float32Array;
     colors: Float32Array;
     connections: Uint32Array;
-    metadata: any;
+    metadata: any;,
   };
 }
 
@@ -89,13 +89,13 @@ export class SoraGraphTraversal {
   private edgeCache = new Map<string, GraphEdge>();
   private isInitialized = false;
 
-  // Performance metrics
+  // Performance metrics;
   private metrics = {
     totalTraversals: 0,
     cacheHits: 0,
     averageTraversalTime: 0,
     wasmAccelerationUsed: 0,
-    memoryBankAccess: 0
+    memoryBankAccess: 0,
   };
 
   constructor(private config: {
@@ -118,17 +118,17 @@ export class SoraGraphTraversal {
     try {
       console.log('🌟 Initializing Sora Graph Traversal Engine...');
 
-      // Initialize Neo4j connection (mock for now)
+      // Initialize Neo4j connection (mock for now);
       if (this.config.neo4j) {
         await this.initializeNeo4j();
       }
 
-      // Initialize WASM acceleration module
+      // Initialize WASM acceleration module;
       if (this.config.enableWasm) {
         await this.initializeWasm();
       }
 
-      // Integrate with NES memory architecture
+      // Integrate with NES memory architecture;
       if (this.config.memoryIntegration) {
         await this.initializeMemoryIntegration();
       }
@@ -144,7 +144,7 @@ export class SoraGraphTraversal {
 
   /**
    * Advanced graph traversal with multiple strategies
-   */
+   */;
   async traverseGraph(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -154,7 +154,7 @@ export class SoraGraphTraversal {
     const cacheKey = this.generateCacheKey(query);
 
     try {
-      // Check cache first
+      // Check cache first;
       if (query.cacheResults !== false && this.graphCache.has(cacheKey)) {
         this.metrics.cacheHits++;
         console.log(`⚡ Sora cache hit for query: ${cacheKey}`);
@@ -183,7 +183,7 @@ export class SoraGraphTraversal {
           throw new Error(`Unknown traversal strategy: ${query.traversalStrategy}`);
       }
 
-      // Enhance result with NES memory data
+      // Enhance result with NES memory data;
       if (this.config.memoryIntegration) {
         result = await this.enhanceWithMemoryData(result);
       }
@@ -200,7 +200,7 @@ export class SoraGraphTraversal {
         (this.metrics.averageTraversalTime * (this.metrics.totalTraversals - 1) + traversalTime) /
         this.metrics.totalTraversals;
 
-      // Cache result
+      // Cache result;
       if (query.cacheResults !== false) {
         this.graphCache.set(cacheKey, result);
       }
@@ -216,7 +216,7 @@ export class SoraGraphTraversal {
 
   /**
    * Semantic similarity traversal using AI pipeline
-   */
+   */;
   private async semanticSimilarityTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
@@ -230,7 +230,7 @@ export class SoraGraphTraversal {
       // Get semantic embeddings for start nodes
       const startEmbeddings = await this.getSemanticEmbeddings(query.startNodes);
 
-      // Use WASM acceleration if available
+      // Use WASM acceleration if available;
       if (this.config.enableWasm && this.wasmModule && query.useWasmAcceleration !== false) {
         const wasmResult = await this.wasmSemanticTraversal(query, startEmbeddings);
         wasmAccelerated = true;
@@ -238,17 +238,17 @@ export class SoraGraphTraversal {
         edgesTraversed = wasmResult.edgesTraversed;
 
         // Convert WASM results to our format
-        wasmResult.nodes.forEach((node: any) => nodes.set(node.id, this.convertWasmNode(node)));
-        wasmResult.edges.forEach((edge: any) => edges.set(edge.id, this.convertWasmEdge(edge)));
-        wasmResult.paths.forEach((path: any) => paths.push(this.convertWasmPath(path)));
+        wasmResult.nodes.forEach((node: any) => nodes.set(node.id, this.convertWasmNode(node));
+        wasmResult.edges.forEach((edge: any) => edges.set(edge.id, this.convertWasmEdge(edge));
+        wasmResult.paths.forEach((path: any) => paths.push(this.convertWasmPath(path));
 
       } else {
         // Fallback to JavaScript implementation
         const jsResult = await this.jsSemanticTraversal(query, startEmbeddings);
         nodesVisited = jsResult.nodesVisited;
         edgesTraversed = jsResult.edgesTraversed;
-        jsResult.nodes.forEach((node, id) => nodes.set(id, node));
-        jsResult.edges.forEach((edge, id) => edges.set(id, edge));
+        jsResult.nodes.forEach((node, id) => nodes.set(id, node);
+        jsResult.edges.forEach((edge, id) => edges.set(id, edge);
         paths.push(...jsResult.paths);
       }
 
@@ -279,7 +279,7 @@ export class SoraGraphTraversal {
 
   /**
    * WASM-accelerated semantic traversal
-   */
+   */;
   private async wasmSemanticTraversal(query: GraphTraversalQuery, embeddings: Map<string, Float32Array>): Promise<any> {
     if (!this.wasmModule) {
       throw new Error('WASM module not initialized');
@@ -303,7 +303,7 @@ export class SoraGraphTraversal {
 
   /**
    * JavaScript fallback for semantic traversal
-   */
+   */;
   private async jsSemanticTraversal(query: GraphTraversalQuery, embeddings: Map<string, Float32Array>): Promise<any> {
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
@@ -312,7 +312,7 @@ export class SoraGraphTraversal {
     let nodesVisited = 0;
     let edgesTraversed = 0;
 
-    // Simulate graph traversal with semantic similarity
+    // Simulate graph traversal with semantic similarity;
     for (const startNodeId of query.startNodes) {
       const embedding = embeddings.get(startNodeId);
       if (!embedding) continue;
@@ -324,11 +324,11 @@ export class SoraGraphTraversal {
         nodes.set(similarNode.id, similarNode);
         nodesVisited++;
 
-        // Create path
+        // Create path;
         paths.push({
           nodes: [startNodeId, similarNode.id],
           totalWeight: similarNode.metadata.importance,
-          confidence: similarNode.metadata.confidence
+          confidence: similarNode.metadata.confidence,
         });
 
         // Find edges between nodes
@@ -345,7 +345,7 @@ export class SoraGraphTraversal {
 
   /**
    * Breadth-first traversal implementation
-   */
+   */;
   private async breadthFirstTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
@@ -357,7 +357,7 @@ export class SoraGraphTraversal {
     let nodesVisited = 0;
     let edgesTraversed = 0;
 
-    // Initialize queue with start nodes
+    // Initialize queue with start nodes;
     query.startNodes.forEach(nodeId => {
       queue.push({ nodeId, depth: 0, path: [nodeId], weight: 0 });
     });
@@ -381,12 +381,12 @@ export class SoraGraphTraversal {
           paths.push({
             nodes: [...current.path],
             totalWeight: current.weight,
-            confidence: node.metadata.confidence
+            confidence: node.metadata.confidence,
           });
         }
       }
 
-      // Get neighbors
+      // Get neighbors;
       if (current.depth < query.maxDepth) {
         const neighbors = await this.getNodeNeighbors(current.nodeId, query.relationshipTypes);
 
@@ -399,7 +399,7 @@ export class SoraGraphTraversal {
               nodeId: neighborNode.id,
               depth: current.depth + 1,
               path: [...current.path, neighborNode.id],
-              weight: current.weight + edge.weight
+              weight: current.weight + edge.weight,
             });
           }
         }
@@ -415,7 +415,7 @@ export class SoraGraphTraversal {
         nodesVisited,
         edgesTraversed,
         cacheHits: this.metrics.cacheHits,
-        wasmAccelerated: false
+        wasmAccelerated: false,
       },
       visualizationData: {
         positions: new Float32Array(0),
@@ -428,7 +428,7 @@ export class SoraGraphTraversal {
 
   /**
    * Depth-first traversal implementation
-   */
+   */;
   private async depthFirstTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
     const nodes = new Map<string, GraphNode>();
     const edges = new Map<string, GraphEdge>();
@@ -440,7 +440,7 @@ export class SoraGraphTraversal {
     let nodesVisited = 0;
     let edgesTraversed = 0;
 
-    // Initialize stack with start nodes
+    // Initialize stack with start nodes;
     query.startNodes.forEach(nodeId => {
       stack.push({ nodeId, depth: 0, path: [nodeId], weight: 0 });
     });
@@ -464,12 +464,12 @@ export class SoraGraphTraversal {
           paths.push({
             nodes: [...current.path],
             totalWeight: current.weight,
-            confidence: node.metadata.confidence
+            confidence: node.metadata.confidence,
           });
         }
       }
 
-      // Get neighbors (reverse order for DFS)
+      // Get neighbors (reverse order for DFS);
       if (current.depth < query.maxDepth) {
         const neighbors = await this.getNodeNeighbors(current.nodeId, query.relationshipTypes);
 
@@ -484,7 +484,7 @@ export class SoraGraphTraversal {
               nodeId: neighborNode.id,
               depth: current.depth + 1,
               path: [...current.path, neighborNode.id],
-              weight: current.weight + edge.weight
+              weight: current.weight + edge.weight,
             });
           }
         }
@@ -500,7 +500,7 @@ export class SoraGraphTraversal {
         nodesVisited,
         edgesTraversed,
         cacheHits: this.metrics.cacheHits,
-        wasmAccelerated: false
+        wasmAccelerated: false,
       },
       visualizationData: {
         positions: new Float32Array(0),
@@ -513,7 +513,7 @@ export class SoraGraphTraversal {
 
   /**
    * Weighted traversal using edge weights and node importance
-   */
+   */;
   private async weightedTraversal(query: GraphTraversalQuery): Promise<GraphTraversalResult> {
     // Use Dijkstra's algorithm for weighted shortest paths
     const nodes = new Map<string, GraphNode>();
@@ -527,7 +527,7 @@ export class SoraGraphTraversal {
     let nodesVisited = 0;
     let edgesTraversed = 0;
 
-    // Initialize distances
+    // Initialize distances;
     query.startNodes.forEach(nodeId => {
       distances.set(nodeId, 0);
       previous.set(nodeId, null);
@@ -563,7 +563,7 @@ export class SoraGraphTraversal {
           paths.push({
             nodes: path,
             totalWeight: minDistance,
-            confidence: node.metadata.confidence
+            confidence: node.metadata.confidence,
           });
         }
       }
@@ -597,7 +597,7 @@ export class SoraGraphTraversal {
         nodesVisited,
         edgesTraversed,
         cacheHits: this.metrics.cacheHits,
-        wasmAccelerated: false
+        wasmAccelerated: false,
       },
       visualizationData: {
         positions: new Float32Array(0),
@@ -610,7 +610,7 @@ export class SoraGraphTraversal {
 
   /**
    * Generate visualization data for Moogle
-   */
+   */;
   private async generateVisualizationData(result: GraphTraversalResult): Promise<any> {
     const nodeCount = (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).nodes.size;
     const edgeCount = (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).edges.size;
@@ -625,7 +625,7 @@ export class SoraGraphTraversal {
     let nodeIndex = 0;
     const nodeIndexMap = new Map<string, number>();
 
-    // Process nodes
+    // Process nodes;
     for (const [nodeId, node] of (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).nodes) {
       nodeIndexMap.set(nodeId, nodeIndex);
 
@@ -671,7 +671,7 @@ export class SoraGraphTraversal {
     };
   }
 
-  // Helper methods (mock implementations for now)
+  // Helper methods (mock implementations for now);
   private async initializeNeo4j(): Promise<void> {
     // Mock Neo4j initialization
     console.log('🔗 Neo4j connection initialized (mock)');
@@ -679,14 +679,14 @@ export class SoraGraphTraversal {
 
   private async initializeWasm(): Promise<void> {
     try {
-      // Mock WASM module loading
+      // Mock WASM module loading;
       this.wasmModule = {
         semanticTraversal: async (inputData: any) => ({
           nodes: [],
           edges: [],
           paths: [],
           nodesVisited: 0,
-          edgesTraversed: 0
+          edgesTraversed: 0,
         })
       };
       console.log('🚀 WASM module initialized (mock)');
@@ -734,7 +734,7 @@ export class SoraGraphTraversal {
           importance: Math.random(),
           confidence: Math.random() * 0.3 + 0.7,
           lastAccessed: Date.now(),
-          vectorEmbedding: embedding
+          vectorEmbedding: embedding,
         }
       });
     }
@@ -743,7 +743,7 @@ export class SoraGraphTraversal {
   }
 
   private async findEdgesBetween(sourceId: string, targetId: string): Promise<GraphEdge[]> {
-    // Mock edge finding
+    // Mock edge finding;
     return [{
       id: `edge_${sourceId}_${targetId}`,
       source: sourceId,
@@ -754,18 +754,18 @@ export class SoraGraphTraversal {
       metadata: {
         confidence: Math.random() * 0.3 + 0.7,
         strength: Math.random(),
-        bidirectional: true
+        bidirectional: true,
       }
     }];
   }
 
   private async getNodeById(nodeId: string): Promise<GraphNode | null> {
-    // Check cache first
+    // Check cache first;
     if (this.nodeCache.has(nodeId)) {
       return this.nodeCache.get(nodeId)!;
     }
 
-    // Mock node retrieval
+    // Mock node retrieval;
     const node: GraphNode = {
       id: nodeId,
       type: 'case',
@@ -774,12 +774,12 @@ export class SoraGraphTraversal {
       position: {
         x: Math.random() * 100,
         y: Math.random() * 100,
-        z: Math.random() * 100
+        z: Math.random() * 100,
       },
       metadata: {
         importance: Math.random(),
         confidence: Math.random() * 0.3 + 0.7,
-        lastAccessed: Date.now()
+        lastAccessed: Date.now(),
       }
     };
 
@@ -806,7 +806,7 @@ export class SoraGraphTraversal {
           metadata: {
             confidence: Math.random() * 0.3 + 0.7,
             strength: Math.random(),
-            bidirectional: true
+            bidirectional: true,
           }
         };
 
@@ -893,7 +893,7 @@ export class SoraGraphTraversal {
   }
 
   private async enhanceWithMemoryData(result: GraphTraversalResult): Promise<GraphTraversalResult> {
-    // Enhance nodes with NES memory bank information
+    // Enhance nodes with NES memory bank information;
     for (const [nodeId, node] of (result as { visualizationData?: any; statistics?: any; nodes?: any; edges?: any }).nodes) {
       const memoryDoc = nesMemory.getDocument(nodeId);
       if (memoryDoc) {
@@ -911,7 +911,7 @@ export class SoraGraphTraversal {
       1: 'CHR_ROM',
       2: 'PRG_ROM',
       3: 'SAVE_RAM',
-      4: 'EXPANSION_ROM'
+      4: 'EXPANSION_ROM',
     };
 
     return bankNames[bankId as keyof typeof bankNames] || 'UNKNOWN';
@@ -922,8 +922,8 @@ export class SoraGraphTraversal {
       query: JSON.stringify(query),
       embeddings: Array.from(embeddings.entries()).map(([id, emb]) => ({
         id,
-        embedding: Array.from(emb)
-      }))
+        embedding: Array.from(emb),
+      })
     };
   }
 
@@ -941,14 +941,14 @@ export class SoraGraphTraversal {
 
   /**
    * Get performance metrics
-   */
+   */;
   getMetrics() {
     return { ...this.metrics };
   }
 
   /**
    * Clear caches
-   */
+   */;
   clearCaches(): void {
     this.graphCache.clear();
     this.nodeCache.clear();
@@ -958,7 +958,7 @@ export class SoraGraphTraversal {
 
   /**
    * Cleanup resources
-   */
+   */;
   async dispose(): Promise<void> {
     this.clearCaches();
 

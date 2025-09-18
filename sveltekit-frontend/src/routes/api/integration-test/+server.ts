@@ -14,13 +14,13 @@ export const GET: RequestHandler = async ({ url }) => {
   const results: Record<string, any> = {};
 
   try {
-    // 1. Test Database Connection
+    // 1. Test Database Connection;
     if (testType === 'all' || testType === 'connection') {
       results.connection = await testConnection();
       results.health = await healthCheck();
     }
 
-    // 2. Test pgvector Extension
+    // 2. Test pgvector Extension;
     if (testType === 'all' || testType === 'vector') {
       try {
         const vectorTest = await db.execute(sql`
@@ -33,17 +33,17 @@ export const GET: RequestHandler = async ({ url }) => {
         
         results.vector = {
           installed: vectorTest.length > 0,
-          details: vectorTest[0] || null
+          details: vectorTest[0] || null,
         };
       } catch (error: any) {
         results.vector = {
           installed: false,
-          error: error.message
+          error: error.message,
         };
       }
     }
 
-    // 3. Test Table Creation and Schema
+    // 3. Test Table Creation and Schema;
     if (testType === 'all' || testType === 'schema') {
       try {
         const tables = await db.execute(sql`
@@ -60,45 +60,45 @@ export const GET: RequestHandler = async ({ url }) => {
         };
       } catch (error: any) {
         results.schema = {
-          error: error.message
+          error: error.message,
         };
       }
     }
 
-    // 4. Test CRUD Operations
+    // 4. Test CRUD Operations;
     if (testType === 'all' || testType === 'crud') {
       const testUser = {
         email: 'test-integration@legal.ai',
         hashed_password: await bcrypt.hash('test123', 10),
         first_name: 'Integration',
         last_name: 'Test',
-        role: 'attorney'
+        role: 'attorney',
       };
 
       try {
         // CREATE - Insert test user
         const newUser = await db.insert(users)
           .values(testUser)
-          .returning()
+          .returning();
           .catch(async (error) => {
             if (error.code === '23505') { // Unique constraint violation
               // User already exists, get it
               return await db.select()
                 .from(users)
-                .where(eq(users.email, testUser.email))
-                .limit(1));
+                .where(eq(users.email, testUser.email)
+                .limit(1);
             }
             throw error;
           });
 
         const userId = Array.isArray(newUser) ? newUser[0]?.id: newUser.id;
 
-        // CREATE - Insert test case
+        // CREATE - Insert test case;
         const testCase = {
           title: 'Integration Test Case',
           description: 'Test case for database integration',
           assigned_attorney: userId,
-          status: 'open'
+          status: 'open',
         };
 
         const newCase = await db.insert(cases)
@@ -107,37 +107,37 @@ export const GET: RequestHandler = async ({ url }) => {
 
         const caseId = newCase[0]?.id;
 
-        // CREATE - Insert test evidence
+        // CREATE - Insert test evidence;
         const testEvidence = {
           case_id: caseId,
           title: 'Integration Test Evidence',
           description: 'Test evidence for database integration',
-          evidence_type: 'document'
+          evidence_type: 'document',
         };
 
         const newEvidence = await db.insert(evidence)
           .values(testEvidence)
           .returning();
 
-        // READ - Query with joins
+        // READ - Query with joins;
         const caseWithDetails = await db.select({
           case: cases,
           attorney: users,
-          evidence: evidence
+          evidence: evidence,
         })
           .from(cases)
-          .leftJoin(users, eq(cases.assigned_attorney, users.id))
-          .leftJoin(evidence, eq(evidence.case_id, cases.id))
-          .where(eq(cases.id, caseId))
+          .leftJoin(users, eq(cases.assigned_attorney, users.id)
+          .leftJoin(evidence, eq(evidence.case_id, cases.id)
+          .where(eq(cases.id, caseId)
           .limit(1);
 
         // UPDATE - Modify case
-        const updatedCase = await db.update(cases)
+        const updatedCase = await db.update(cases);
           .set({ 
             description: 'Updated test case description',
-            status: 'in_progress'
+            status: 'in_progress',
           })
-          .where(eq(cases.id, caseId))
+          .where(eq(cases.id, caseId)
           .returning();
 
         results.crud = {
@@ -146,32 +146,32 @@ export const GET: RequestHandler = async ({ url }) => {
             create: {
               user: newUser[0] || newUser,
               case: newCase[0],
-              evidence: newEvidence[0]
+              evidence: newEvidence[0],
             },
             read: {
-              caseWithDetails: caseWithDetails[0]
+              caseWithDetails: caseWithDetails[0],
             },
             update: {
-              updatedCase: updatedCase[0]
+              updatedCase: updatedCase[0],
             }
           }
         };
 
         // Cleanup - DELETE test data
-        await db.delete(evidence).where(eq(evidence.case_id, caseId));
-        await db.delete(cases).where(eq(cases.id, caseId));
-        await db.delete(users).where(eq(users.id, userId));
+        await db.delete(evidence).where(eq(evidence.case_id, caseId);
+        await db.delete(cases).where(eq(cases.id, caseId);
+        await db.delete(users).where(eq(users.id, userId);
 
       } catch (error: any) {
         results.crud = {
           success: false,
           error: error.message,
-          stack: error.stack
+          stack: error.stack,
         };
       }
     }
 
-    // 5. Test Vector Operations
+    // 5. Test Vector Operations;
     if (testType === 'all' || testType === 'vector-ops') {
       try {
         // Create a test embedding vector (384 dimensions)
@@ -182,7 +182,7 @@ export const GET: RequestHandler = async ({ url }) => {
           document_type: 'test',
           chunk_index: '0',
           content: 'This is a test document chunk for vector operations',
-          embedding: JSON.stringify(testEmbedding)
+          embedding: JSON.stringify(testEmbedding),
         };
 
         // Insert test chunk with embedding
@@ -190,7 +190,7 @@ export const GET: RequestHandler = async ({ url }) => {
           .values(testChunk)
           .returning();
 
-        // Test vector similarity search
+        // Test vector similarity search;
         const similarChunks = await db.select({
           id: documentChunks.id,
           content: documentChunks.content,
@@ -202,13 +202,13 @@ export const GET: RequestHandler = async ({ url }) => {
           .limit(5);
 
         // Cleanup
-        await db.delete(documentChunks).where(eq(documentChunks.id, newChunk[0].id));
+        await db.delete(documentChunks).where(eq(documentChunks.id, newChunk[0].id);
 
         results.vectorOps = {
           success: true,
           operations: {
             create: newChunk[0],
-            search: similarChunks
+            search: similarChunks,
           }
         };
 
@@ -216,16 +216,16 @@ export const GET: RequestHandler = async ({ url }) => {
         results.vectorOps = {
           success: false,
           error: error.message,
-          stack: error.stack
+          stack: error.stack,
         };
       }
     }
 
-    // 6. Test MCP Tools Integration (temporarily disabled)
+    // 6. Test MCP Tools Integration (temporarily disabled);
     if (testType === 'mcp') {
       results.mcp = {
         success: false,
-        error: 'MCP tools temporarily disabled due to dependency issues - use direct database operations instead'
+        error: 'MCP tools temporarily disabled due to dependency issues - use direct database operations instead',
       };
     }
 
@@ -241,7 +241,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: false,
       error: error.message,
       stack: error.stack,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -252,28 +252,28 @@ export const POST: RequestHandler = async ({ request }) => {
 
     switch (action) {
       case 'create-test-data':
-        // Create comprehensive test data set
+        // Create comprehensive test data set;
         const testUser = await db.insert(users).values({
           email: `test-${Date.now()}@legal.ai`,
           hashed_password: await bcrypt.hash('test123', 10),
           first_name: 'Test',
           last_name: 'User',
           role: 'attorney',
-          department: 'Integration Testing'
+          department: 'Integration Testing',
         }).returning();
 
         const testCase = await db.insert(cases).values({
           title: `Test Case ${Date.now()}`,
           description: 'Comprehensive integration test case',
           assigned_attorney: testUser[0].id,
-          status: 'open'
+          status: 'open',
         }).returning();
 
         return json({
           success: true,
           data: {
             user: testUser[0],
-            case: testCase[0]
+            case: testCase[0],
           }
         });
 
@@ -293,7 +293,7 @@ export const POST: RequestHandler = async ({ request }) => {
           cleanup: {
             evidence: deletedEvidence,
             cases: deletedCases,
-            users: deletedUsers
+            users: deletedUsers,
           }
         });
 
@@ -305,7 +305,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      stack: error.stack
+      stack: error.stack,
     }, { status: 500 });
   }
 };

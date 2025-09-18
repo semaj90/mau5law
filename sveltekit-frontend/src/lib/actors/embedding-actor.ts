@@ -7,6 +7,7 @@
 import { fromPromise, createActor } from 'xstate';
 import type { EmbeddingResponse } from "$lib/types/api";
 import { ollamaService } from "$lib/services/ollamaService";
+}
 
 export interface EmbeddingInput {
   text: string;
@@ -29,7 +30,7 @@ export interface EmbeddingOutput {
     evidenceId?: string;
     documentType?: string;
     priority?: string;
-    timestamp: Date;
+    timestamp: Date;,
   };
 }
 
@@ -41,17 +42,16 @@ export interface EmbeddingError {
 
 /**
  * XState v5 actor for generating embeddings with legal context
- */
-export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(
-  async ({ input }): Promise<EmbeddingOutput> => {
+ */;
+export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(async ({ input }): Promise<EmbeddingOutput> => {
     const startTime = Date.now();
 
     try {
-      // Validate input
+      // Validate input;
       if (!input.text || input.text.trim().length === 0) {
         throw {
           message: 'Text input cannot be empty',
-          code: 'INVALID_INPUT'
+          code: 'INVALID_INPUT',
         } as EmbeddingError;
       }
 
@@ -66,7 +66,7 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(
       if (!embedding || embedding.length === 0) {
         throw {
           message: 'Failed to generate embedding - empty result',
-          code: 'MODEL_ERROR'
+          code: 'MODEL_ERROR',
         } as EmbeddingError;
       }
 
@@ -75,7 +75,7 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(
       return {
         embedding,
         dimension: embedding.length,
-        model: 'nomic-embed-text', // Default embedding model
+        model: 'nomic-embed-text', // Default embedding model;
         metadata: {
           textLength: input.text.length,
           processingTime,
@@ -83,11 +83,11 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(
           evidenceId: input.context?.evidenceId,
           documentType: input.context?.documentType,
           priority: input.context?.priority,
-          timestamp: new Date()
+          timestamp: new Date(),
         }
       };
     } catch (error: any) {
-      // Map different error types to structured errors
+      // Map different error types to structured errors;
       if (error.code) {
         throw error; // Already a structured error
       }
@@ -96,7 +96,7 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(
         throw {
           message: 'Ollama service unavailable',
           code: 'OLLAMA_UNAVAILABLE',
-          details: error
+          details: error,
         } as EmbeddingError;
       }
 
@@ -104,14 +104,14 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(
         throw {
           message: 'Embedding generation timed out',
           code: 'TIMEOUT',
-          details: error
+          details: error,
         } as EmbeddingError;
       }
 
       throw {
         message: `Embedding generation failed: ${error.message || 'Unknown error'}`,
         code: 'MODEL_ERROR',
-        details: error
+        details: error,
       } as EmbeddingError;
     }
   }
@@ -119,9 +119,8 @@ export const embeddingActor = fromPromise<EmbeddingOutput, EmbeddingInput>(
 
 /**
  * Batch embedding actor for multiple texts
- */
-export const batchEmbeddingActor = fromPromise<EmbeddingOutput[], EmbeddingInput[]>(
-  async ({ input }): Promise<EmbeddingOutput[]> => {
+ */;
+export const batchEmbeddingActor = fromPromise<EmbeddingOutput[], EmbeddingInput[]>(async ({ input }): Promise<EmbeddingOutput[]> => {
     try {
       // Process embeddings in parallel with concurrency limit
       const batchSize = 5; // Prevent overwhelming Ollama
@@ -146,7 +145,7 @@ export const batchEmbeddingActor = fromPromise<EmbeddingOutput[], EmbeddingInput
       throw {
         message: `Batch embedding failed: ${error.message || 'Unknown error'}`,
         code: 'MODEL_ERROR',
-        details: error
+        details: error,
       } as EmbeddingError;
     }
   }
@@ -154,7 +153,7 @@ export const batchEmbeddingActor = fromPromise<EmbeddingOutput[], EmbeddingInput
 
 /**
  * Helper function to create and run embedding actor
- */
+ */;
 export async function generateEmbedding(input: EmbeddingInput): Promise<EmbeddingOutput> {
   const actor = createActor(embeddingActor, { input });
   actor.start();
@@ -164,7 +163,7 @@ export async function generateEmbedding(input: EmbeddingInput): Promise<Embeddin
 
 /**
  * Helper function for batch embeddings
- */
+ */;
 export async function generateBatchEmbeddings(inputs: EmbeddingInput[]): Promise<EmbeddingOutput[]> {
   const actor = createActor(batchEmbeddingActor, { input: inputs });
   actor.start();
@@ -179,7 +178,7 @@ export async function generateLegalDocumentEmbedding(
   text: string,
   caseId: string,
   documentType: 'contract' | 'evidence' | 'legal_brief' | 'correspondence',
-  evidenceId?: string
+  evidenceId?: string;
 ): Promise<EmbeddingOutput> {
   return generateEmbedding({
     text,
@@ -187,7 +186,7 @@ export async function generateLegalDocumentEmbedding(
       caseId,
       evidenceId,
       documentType,
-      priority: 'high' // Legal documents are high priority
+      priority: 'high' // Legal documents are high priority,
     }
   });
 }

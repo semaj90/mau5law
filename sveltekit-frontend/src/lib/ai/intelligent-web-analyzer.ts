@@ -10,6 +10,7 @@ import { extractTextFromImage, type ImageSource, type OCRResult } from '$lib/ocr
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager.js';
 import { getCachedEmbedding, cacheEmbedding } from '$lib/server/cache/redis.js';
 import { browser } from '$app/environment';
+}
 
 export interface WebElement {
   id: string;
@@ -33,7 +34,7 @@ export interface PageChunk {
   position: { start: number; end: number };
   embeddings?: Float32Array;
   semantic_meaning?: string;
-  confidence: number;
+  confidence: number;,
 }
 
 export interface UserAnalytics {
@@ -47,12 +48,12 @@ export interface UserAnalytics {
   interactionPatterns: {
     clickHeatmap: Array<any>;
     scrollBehavior: { depth: number; speed: number };
-    focusAreas: string[]; // element selectors
+    focusAreas: string[]; // element selectors,
   };
   caseContext: {
     activeCases: string[];
     currentTask: string;
-    relevantDocuments: string[];
+    relevantDocuments: string[];,
   };
 }
 
@@ -63,7 +64,7 @@ export interface QLoRATrainingData {
     page_url: string;
     session_data: UserAnalytics;
     distilled_size: number;
-    training_ready: boolean;
+    training_ready: boolean;,
   };
 }
 
@@ -102,7 +103,7 @@ export class IntelligentWebAnalyzer {
 
   /**
    * Initialize the intelligent web analyzer
-   */
+   */;
   async initialize(): Promise<void> {
     if (!browser) return;
 
@@ -127,13 +128,13 @@ export class IntelligentWebAnalyzer {
 
   /**
    * Initialize Service Worker for background tensor processing
-   */
+   */;
   private async initializeWorker(): Promise<void> {
     if (!('serviceWorker' in navigator)) return;
 
     try {
       const registration = await navigator.serviceWorker.register(
-        '/intelligent-web-worker.js',
+        '/intelligent-web-worker.js',)
         { scope: '/' }
       );
       
@@ -146,7 +147,7 @@ export class IntelligentWebAnalyzer {
 
   /**
    * Set up DOM mutation observer for real-time page changes
-   */
+   */;
   private setupDOMObserver(): void {
     this.mutationObserver = new MutationObserver((mutations) => {
       let hasSignificantChanges = false;
@@ -169,18 +170,18 @@ export class IntelligentWebAnalyzer {
       childList: true,
       subtree: true,
       characterData: true,
-      attributes: false // Skip attribute changes for performance
+      attributes: false // Skip attribute changes for performance,
     });
   }
 
   /**
    * Set up user interaction tracking for context-aware AI
-   */
+   */;
   private setupUserTracking(): void {
     let typingBuffer: string[] = [];
     let lastKeyTime = 0;
     
-    // Typing pattern analysis
+    // Typing pattern analysis;
     document.addEventListener('keydown', (e) => {
       const currentTime = performance.now();
       if (lastKeyTime > 0) {
@@ -194,18 +195,18 @@ export class IntelligentWebAnalyzer {
       if (e.key.length === 1) {
         typingBuffer.push(e.key);
         if (typingBuffer.length > 50) {
-          this.analyzeTypingPatterns(typingBuffer.join(''));
+          this.analyzeTypingPatterns(typingBuffer.join('');
           typingBuffer = [];
         }
       }
     });
 
-    // Click heatmap tracking
+    // Click heatmap tracking;
     document.addEventListener('click', (e) => {
       this.userAnalytics.interactionPatterns.clickHeatmap.push({
         x: e.clientX,
         y: e.clientY,
-        count: 1
+        count: 1,
       });
       
       // Update element interaction count
@@ -218,7 +219,7 @@ export class IntelligentWebAnalyzer {
       }
     });
 
-    // Focus area tracking
+    // Focus area tracking;
     document.addEventListener('focusin', (e) => {
       const selector = this.getElementSelector(e.target as Element);
       if (!this.userAnalytics.interactionPatterns.focusAreas.includes(selector)) {
@@ -236,7 +237,7 @@ export class IntelligentWebAnalyzer {
         const scrollSpeed = Math.abs(window.scrollY) / (currentTime - lastScrollTime);
         this.userAnalytics.interactionPatterns.scrollBehavior = {
           depth: Math.max(this.userAnalytics.interactionPatterns.scrollBehavior.depth, scrollDepth),
-          speed: scrollSpeed
+          speed: scrollSpeed,
         };
       }
       lastScrollTime = currentTime;
@@ -245,7 +246,7 @@ export class IntelligentWebAnalyzer {
 
   /**
    * Analyze current page content with chunking and streaming
-   */
+   */;
   async analyzeCurrentPage(): Promise<QLoRATrainingData> {
     console.log('🔍 Starting intelligent page analysis...');
     
@@ -253,7 +254,7 @@ export class IntelligentWebAnalyzer {
     const elements = await this.extractPageElements();
     
     // 2. Process images with OCR
-    await this.processImages(elements.filter(e => e.metadata.elementType === 'image'));
+    await this.processImages(elements.filter(e => e.metadata.elementType === 'image');
     
     // 3. Create semantic chunks (2-5k characters each)
     const chunks = this.createSemanticChunks(elements);
@@ -273,7 +274,7 @@ export class IntelligentWebAnalyzer {
 
   /**
    * Extract all meaningful elements from the page
-   */
+   */;
   private async extractPageElements(): Promise<WebElement[]> {
     const elements: WebElement[] = [];
     
@@ -306,7 +307,7 @@ export class IntelligentWebAnalyzer {
         metadata: {
           importance: this.calculateImportance(el, textContent),
           elementType: this.getElementType(el),
-          interactionCount: 0
+          interactionCount: 0,
         }
       };
 
@@ -319,7 +320,7 @@ export class IntelligentWebAnalyzer {
 
   /**
    * Process images with OCR for text extraction
-   */
+   */;
   private async processImages(imageElements: WebElement[]): Promise<void> {
     const imagePromises = imageElements.map(async (element) => {
       try {
@@ -353,7 +354,7 @@ export class IntelligentWebAnalyzer {
 
   /**
    * Create semantic chunks from page elements
-   */
+   */;
   private createSemanticChunks(elements: WebElement[]): PageChunk[] {
     const chunks: PageChunk[] = [];
     const CHUNK_SIZE = 3000; // ~3k characters per chunk for optimal embedding
@@ -366,13 +367,13 @@ export class IntelligentWebAnalyzer {
       const content = `${element.tagName}: ${element.textContent}\n`;
       
       if (currentChunk.length + content.length > CHUNK_SIZE && currentChunk.length > 0) {
-        // Create chunk
+        // Create chunk;
         chunks.push({
           id: `chunk_${chunks.length}`,
           content: currentChunk.trim(),
           elements: [...currentElements],
           position: { start: chunkStart, end: chunkStart + currentChunk.length },
-          confidence: this.calculateChunkConfidence(currentElements)
+          confidence: this.calculateChunkConfidence(currentElements),
         });
         
         // Reset for next chunk
@@ -385,14 +386,14 @@ export class IntelligentWebAnalyzer {
       }
     });
 
-    // Add final chunk
+    // Add final chunk;
     if (currentChunk.length > 0) {
       chunks.push({
         id: `chunk_${chunks.length}`,
         content: currentChunk.trim(),
         elements: currentElements,
         position: { start: chunkStart, end: chunkStart + currentChunk.length },
-        confidence: this.calculateChunkConfidence(currentElements)
+        confidence: this.calculateChunkConfidence(currentElements),
       });
     }
 
@@ -401,7 +402,7 @@ export class IntelligentWebAnalyzer {
 
   /**
    * Stream chunks for processing with minimal CPU/GPU usage
-   */
+   */;
   private async streamChunksForProcessing(chunks: PageChunk[]): Promise<PageChunk[]> {
     const BATCH_SIZE = 3; // Process 3 chunks at a time to avoid overwhelming
     const processedChunks: PageChunk[] = [];
@@ -417,14 +418,14 @@ export class IntelligentWebAnalyzer {
           if (cachedEmbedding) {
             chunk.embeddings = new Float32Array(cachedEmbedding);
           } else {
-            // Generate new embedding via API
+            // Generate new embedding via API;
             const response = await fetch('/api/embeddings', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 text: chunk.content,
                 model: 'nomic-text',
-                source: 'web-analysis'
+                source: 'web-analysis',
               })
             });
 
@@ -455,7 +456,7 @@ export class IntelligentWebAnalyzer {
       });
 
       // Small delay between batches to prevent CPU/GPU spikes
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
     }
 
     return processedChunks;
@@ -463,15 +464,15 @@ export class IntelligentWebAnalyzer {
 
   /**
    * Prepare QLoRA training data with user context
-   */
+   */;
   private prepareQLoRATrainingData(chunks: PageChunk[]): QLoRATrainingData {
     const trainingChunks = chunks.map(chunk => ({
       input_text: chunk.content,
       embeddings: chunk.embeddings ? Array.from(chunk.embeddings) : [],
       context: this.userAnalytics,
       importance_weight: this.calculateImportanceWeight(chunk),
-      created_at: Date.now()
-    }));
+      created_at: Date.now(),
+    });
 
     return {
       user_id: this.userAnalytics.userId,
@@ -480,14 +481,14 @@ export class IntelligentWebAnalyzer {
         page_url: window.location.href,
         session_data: this.userAnalytics,
         distilled_size: trainingChunks.length,
-        training_ready: true
+        training_ready: true,
       }
     };
   }
 
   /**
    * Cache analysis results for future use
-   */
+   */;
   private async cacheAnalysisResults(qloraData: QLoRATrainingData): Promise<void> {
     try {
       // Store in cache with 1 hour TTL
@@ -510,7 +511,7 @@ export class IntelligentWebAnalyzer {
             batch_size: qloraData.chunks.length,
             source: 'web_analysis',
             user_id: this.userAnalytics.userId,
-            session_id: this.userAnalytics.sessionId
+            session_id: this.userAnalytics.sessionId,
           }
         })
       });
@@ -601,7 +602,7 @@ export class IntelligentWebAnalyzer {
     const interactionWeight = chunk.elements.reduce((sum, el) => sum + el.metadata.interactionCount, 0) / chunk.elements.length;
     const confidenceWeight = chunk.confidence;
     
-    return Math.min(1.0, (interactionWeight * 0.4 + confidenceWeight * 0.6));
+    return Math.min(1.0, (interactionWeight * 0.4 + confidenceWeight * 0.6);
   }
 
   private extractSemanticMeaning(chunk: PageChunk): string {
@@ -619,9 +620,9 @@ export class IntelligentWebAnalyzer {
 
   private analyzeTypingPatterns(text: string): void {
     const words = text.toLowerCase().split(/\s+/).filter(w => w.length > 2);
-    const newWords = words.filter(w => !this.userAnalytics.typingPatterns.commonWords.includes(w));
+    const newWords = words.filter(w => !this.userAnalytics.typingPatterns.commonWords.includes(w);
     
-    this.userAnalytics.typingPatterns.commonWords.push(...newWords.slice(0, 10));
+    this.userAnalytics.typingPatterns.commonWords.push(...newWords.slice(0, 10);
     
     // Detect specialization based on vocabulary
     const legalTerms = ['contract', 'clause', 'plaintiff', 'defendant', 'court', 'legal'];
@@ -639,7 +640,7 @@ export class IntelligentWebAnalyzer {
 
   /**
    * Update user context for better AI personalization
-   */
+   */;
   updateUserContext(context: Partial<UserAnalytics>): void {
     this.userAnalytics = {
       ...this.userAnalytics,
@@ -649,24 +650,24 @@ export class IntelligentWebAnalyzer {
 
   /**
    * Get current analysis state for debugging
-   */
+   */;
   getAnalysisState(): {
     elementsCount: number;
     chunksInQueue: number;
     userAnalytics: UserAnalytics;
-    isProcessing: boolean;
+    isProcessing: boolean;,
   } {
     return {
       elementsCount: this.pageElements.size,
       chunksInQueue: this.processingQueue.length,
       userAnalytics: this.userAnalytics,
-      isProcessing: this.isProcessing
+      isProcessing: this.isProcessing,
     };
   }
 
   /**
    * Clean up resources
-   */
+   */;
   dispose(): void {
     this.mutationObserver?.disconnect();
     this.worker?.terminate();

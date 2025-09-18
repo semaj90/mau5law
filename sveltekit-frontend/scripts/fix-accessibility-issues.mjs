@@ -50,7 +50,8 @@ function processFile(filePath) {
     }
 
     // 2. Add labels for inputs without them
-    const inputRegex = /<input(?![^>]*aria-label)(?![^>]*id=["'][^"']*["'][^>]*>[\s\S]*?<label[^>]*for=["'][^"']*["'])([^>]*type=["'](?:text|email|password|number|search|tel|url)["'][^>]*)>/g;
+    const inputRegex =
+      /<input(?![^>]*aria-label)(?![^>]*id=["'][^"']*["'][^>]*>[\s\S]*?<label[^>]*for=["'][^"']*["'])([^>]*type=["'](?:text|email|password|number|search|tel|url)["'][^>]*)>/g;
     const originalInputs = content;
 
     content = content.replace(inputRegex, (match, attributes) => {
@@ -62,7 +63,9 @@ function processFile(filePath) {
       } else if (attributes.includes('name=')) {
         const nameMatch = attributes.match(/name=["']([^"']+)["']/);
         if (nameMatch) {
-          const label = nameMatch[1].replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+          const label = nameMatch[1]
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, (str) => str.toUpperCase());
           return `<input aria-label="${label}"${attributes}>`;
         }
       }
@@ -116,7 +119,8 @@ function processFile(filePath) {
     }
 
     // 6. Add ARIA expanded for collapsible elements
-    const collapsibleRegex = /<button(?![^>]*aria-expanded)([^>]*(?:toggle|expand|collapse)[^>]*)>/g;
+    const collapsibleRegex =
+      /<button(?![^>]*aria-expanded)([^>]*(?:toggle|expand|collapse)[^>]*)>/g;
     const originalCollapsible = content;
 
     content = content.replace(collapsibleRegex, '<button aria-expanded="false"$1>');
@@ -129,9 +133,12 @@ function processFile(filePath) {
     }
 
     // 7. Add semantic landmarks
-    if (content.includes('<div') && !content.includes('<main') && !content.includes('<section') &&
-        (content.includes('dashboard') || content.includes('content') || content.includes('main'))) {
-
+    if (
+      content.includes('<div') &&
+      !content.includes('<main') &&
+      !content.includes('<section') &&
+      (content.includes('dashboard') || content.includes('content') || content.includes('main'))
+    ) {
       const mainContentRegex = /<div class="[^"]*(?:dashboard|content|main)[^"]*"([^>]*)>/;
       const mainMatch = content.match(mainContentRegex);
 
@@ -150,8 +157,10 @@ function processFile(filePath) {
       const navMatch = content.match(navRegex);
 
       if (navMatch) {
-        content = content.replace(navMatch[1],
-          `<a href="#main-content" class="skip-link">Skip to main content</a>\n  ${navMatch[1]}`);
+        content = content.replace(
+          navMatch[1],
+          `<a href="#main-content" class="skip-link">Skip to main content</a>\n  ${navMatch[1]}`
+        );
         changes++;
         modified = true;
         console.log(`    ✅ Added skip link`);
@@ -159,7 +168,8 @@ function processFile(filePath) {
     }
 
     // 9. Add screen reader text for icon-only buttons
-    const iconButtonRegex = /<button[^>]*>[\s]*(?:<i|<svg|<span[^>]*icon)[^<]*<\/[^>]*>[\s]*<\/button>/g;
+    const iconButtonRegex =
+      /<button[^>]*>[\s]*(?:<i|<svg|<span[^>]*icon)[^<]*<\/[^>]*>[\s]*<\/button>/g;
     const originalIconButtons = content;
 
     content = content.replace(iconButtonRegex, (match) => {
@@ -177,7 +187,11 @@ function processFile(filePath) {
     }
 
     // 10. Add ARIA live regions for dynamic content
-    if (content.includes('error') && content.includes('message') && !content.includes('aria-live')) {
+    if (
+      content.includes('error') &&
+      content.includes('message') &&
+      !content.includes('aria-live')
+    ) {
       const errorRegex = /<div[^>]*error[^>]*>/g;
       const originalErrors = content;
 
@@ -198,7 +212,9 @@ function processFile(filePath) {
       writeFileSync(filePath, content, 'utf8');
       filesFixed++;
       totalChanges += changes;
-      console.log(`  📝 Enhanced accessibility in ${filePath.split(/[/\\]/).pop()} (${changes} fixes)`);
+      console.log(
+        `  📝 Enhanced accessibility in ${filePath.split(/[/\\]/).pop()} (${changes} fixes)`
+      );
     }
 
     return modified;
@@ -333,7 +349,7 @@ function main() {
   const svelteFiles = walkDirectory(srcDir, '.svelte');
 
   // Filter files that need accessibility fixes
-  const accessibilityFiles = svelteFiles.filter(file => {
+  const accessibilityFiles = svelteFiles.filter((file) => {
     try {
       const content = readFileSync(file, 'utf8');
       return (

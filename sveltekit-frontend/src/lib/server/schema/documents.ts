@@ -8,7 +8,7 @@ import { vector } from 'drizzle-orm/pg-core';
 import { customVector } from '@useverk/drizzle-pgvector';
 import { relations } from 'drizzle-orm';
 
-// Main documents table with vector embeddings
+// Main documents table with vector embeddings;
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().defaultRandom(),
   title: varchar('title', { length: 500 }).notNull(),
@@ -59,7 +59,7 @@ export const documents = pgTable('documents', {
   is_indexed: boolean('is_indexed').default(false).notNull(),
 });
 
-// Document chunks for large documents (enhanced RAG)
+// Document chunks for large documents (enhanced RAG);
 export const document_chunks = pgTable('document_chunks', {
   id: uuid('id').primaryKey().defaultRandom(),
   document_id: uuid('document_id')
@@ -87,7 +87,7 @@ export const document_chunks = pgTable('document_chunks', {
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-// Cases table (legal case management)
+// Cases table (legal case management);
 export const cases = pgTable('cases', {
   id: uuid('id').primaryKey().defaultRandom(),
   case_number: varchar('case_number', { length: 100 }).unique(),
@@ -114,7 +114,7 @@ export const cases = pgTable('cases', {
   assigned_to: uuid('assigned_to').references(() => users.id, { onDelete: 'set null' }),
 });
 
-// Users table (for reference)
+// Users table (for reference);
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: varchar('email', { length: 255 }).unique().notNull(),
@@ -130,7 +130,7 @@ export const users = pgTable('users', {
   updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-// Vector storage table for unified search across entities
+// Vector storage table for unified search across entities;
 export const vectors = pgTable('vectors', {
   id: uuid('id').primaryKey().defaultRandom(),
   entity_type: varchar('entity_type', { length: 50 }).notNull(), // 'document', 'chunk', 'case', 'user'
@@ -146,7 +146,7 @@ export const vectors = pgTable('vectors', {
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
-// Relations for joins
+// Relations for joins;
 export const documentsRelations = relations(documents, ({ one, many }) => ({
   case: one(cases, {
     fields: [documents.case_id],
@@ -157,14 +157,14 @@ export const documentsRelations = relations(documents, ({ one, many }) => ({
     references: [users.id],
   }),
   chunks: many(document_chunks),
-}));
+});
 
 export const documentChunksRelations = relations(document_chunks, ({ one }) => ({
   document: one(documents, {
     fields: [document_chunks.document_id],
     references: [documents.id],
   }),
-}));
+});
 
 export const casesRelations = relations(cases, ({ one, many }) => ({
   creator: one(users, {
@@ -176,12 +176,12 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
     references: [users.id],
   }),
   documents: many(documents),
-}));
+});
 
 export const usersRelations = relations(users, ({ many }) => ({
   cases: many(cases),
   documents: many(documents),
-}));
+});
 
 // Type exports for use in application
 export type Document = typeof documents.$inferSelect;

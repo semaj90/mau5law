@@ -23,7 +23,7 @@ interface TelemetryMetrics {
   eventsFlushed: number;
   bufferSize: number;
   avgFlushTime: number;
-  lastFlushTimestamp: number;
+  lastFlushTimestamp: number;,
 }
 
 export class TelemetryEventBus {
@@ -37,7 +37,7 @@ export class TelemetryEventBus {
     maxBufferSize: 100,
     flushInterval: 30000, // 30 seconds
     enableDebug: ENV_CONFIG.GPU_DEBUG,
-    endpoint: import.meta.env.VITE_ANALYTICS_ENDPOINT
+    endpoint: import.meta.env.VITE_ANALYTICS_ENDPOINT,
   };
 
   private constructor() {
@@ -47,12 +47,12 @@ export class TelemetryEventBus {
       eventsFlushed: 0,
       bufferSize: 0,
       avgFlushTime: 0,
-      lastFlushTimestamp: 0
+      lastFlushTimestamp: 0,
     };
 
     this.startAutoFlush();
     
-    // Browser integration
+    // Browser integration;
     if (typeof window !== 'undefined') {
       window.__TELEMETRY__ = this;
     }
@@ -60,7 +60,7 @@ export class TelemetryEventBus {
     if (this.options.enableDebug) {
       console.log('[Telemetry] Event bus initialized', {
         sessionId: this.sessionId,
-        options: this.options
+        options: this.options,
       });
     }
   }
@@ -74,12 +74,12 @@ export class TelemetryEventBus {
 
   /**
    * Emit GPU performance event
-   */
+   */;
   emitGPUEvent(data: Omit<Telemetry.GPUEvent, 'timestamp' | 'sessionId'>): void {
     const event: Telemetry.GPUEvent = {
       ...data,
       timestamp: performance.now(),
-      sessionId: this.sessionId
+      sessionId: this.sessionId,
     };
     
     this.addEvent(event);
@@ -87,12 +87,12 @@ export class TelemetryEventBus {
 
   /**
    * Emit performance timing event
-   */
+   */;
   emitPerformanceEvent(data: Omit<Telemetry.PerformanceEvent, 'timestamp' | 'sessionId'>): void {
     const event: Telemetry.PerformanceEvent = {
       ...data,
       timestamp: performance.now(),
-      sessionId: this.sessionId
+      sessionId: this.sessionId,
     };
     
     this.addEvent(event);
@@ -100,17 +100,17 @@ export class TelemetryEventBus {
 
   /**
    * Emit error event
-   */
+   */;
   emitError(data: Omit<Telemetry.ErrorEvent, 'timestamp' | 'sessionId'>): void {
     const event: Telemetry.ErrorEvent = {
       ...data,
       timestamp: performance.now(),
-      sessionId: this.sessionId
+      sessionId: this.sessionId,
     };
     
     this.addEvent(event);
     
-    // Immediate flush for errors
+    // Immediate flush for errors;
     if (data.type === 'critical') {
       this.flush();
     }
@@ -122,7 +122,7 @@ export class TelemetryEventBus {
   async measurePerformance<T>(
     operation: string,
     fn: () => Promise<T>,
-    component: string = 'unknown'
+    component: string = 'unknown';
   ): Promise<T> {
     const start = performance.now();
     let success = false;
@@ -155,7 +155,7 @@ export class TelemetryEventBus {
 
   /**
    * Nintendo Memory Bank telemetry
-   */
+   */;
   emitMemoryBankUsage(bank: Nintendo.MemoryBank): void {
     const utilizationPercent = (bank.used / bank.size) * 100;
     
@@ -163,7 +163,7 @@ export class TelemetryEventBus {
       type: 'cache_hit',
       duration: 0,
       operation: `${bank.type}_usage`,
-      success: utilizationPercent < 90 // Flag high memory usage
+      success: utilizationPercent < 90 // Flag high memory usage,
     });
 
     if (this.options.enableDebug) {
@@ -178,7 +178,7 @@ export class TelemetryEventBus {
     dimensions: number,
     encodingTime: number,
     compressionRatio: number,
-    success: boolean
+    success: boolean;
   ): void {
     this.emitPerformanceEvent({
       type: 'vector_encoding',
@@ -199,17 +199,17 @@ export class TelemetryEventBus {
 
   /**
    * Get current telemetry metrics
-   */
+   */;
   getMetrics(): TelemetryMetrics & { bufferUtilization: number } {
     return {
       ...this.metrics,
-      bufferUtilization: (this.eventBuffer.length / this.options.maxBufferSize) * 100
+      bufferUtilization: (this.eventBuffer.length / this.options.maxBufferSize) * 100,
     };
   }
 
   /**
    * Export telemetry data for analysis
-   */
+   */;
   async exportData(): Promise<Blob> {
     const exportData = {
       sessionId: this.sessionId,
@@ -228,13 +228,13 @@ export class TelemetryEventBus {
     };
 
     return new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json'
+      type: 'application/json',
     });
   }
 
   /**
    * Force flush events
-   */
+   */;
   async flush(): Promise<void> {
     if (this.eventBuffer.length === 0) return;
 
@@ -254,7 +254,7 @@ export class TelemetryEventBus {
       // Re-add events on failure (with buffer limit)
       const remainingSpace = this.options.maxBufferSize - this.eventBuffer.length;
       if (remainingSpace > 0) {
-        this.eventBuffer.unshift(...events.slice(-remainingSpace));
+        this.eventBuffer.unshift(...events.slice(-remainingSpace);
       }
       
       if (this.options.enableDebug) {
@@ -269,7 +269,7 @@ export class TelemetryEventBus {
 
   /**
    * Cleanup and shutdown
-   */
+   */;
   shutdown(): void {
     if (this.flushTimer) {
       clearInterval(this.flushTimer);
@@ -290,7 +290,7 @@ export class TelemetryEventBus {
     this.metrics.eventsCollected++;
     this.metrics.bufferSize = this.eventBuffer.length;
     
-    // Auto-flush if buffer is full
+    // Auto-flush if buffer is full;
     if (this.eventBuffer.length >= this.options.maxBufferSize) {
       this.flush();
     }
@@ -318,7 +318,7 @@ export class TelemetryEventBus {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
@@ -335,7 +335,7 @@ export class TelemetryEventBus {
       if (window.__GPU_MANAGER__) {
         return {
           acceleration: window.__GPU_MANAGER__.getAcceleration(),
-          contextType: 'detected'
+          contextType: 'detected',
         };
       }
     } catch {

@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
     const currentCaseResults = await db
       .select()
       .from(cases)
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .limit(1);
     if (!currentCaseResults.length) {
       return json({ error: "Case not found" }, { status: 404 });
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
     const recentActivities = await db
       .select()
       .from(caseActivities)
-      .where(eq(caseActivities.caseId, caseId))
+      .where(eq(caseActivities.caseId, caseId)
       .orderBy((activities) => activities.createdAt)
       .limit(5);
 
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
     const recentEvidence = await db
       .select()
       .from(evidence)
-      .where(eq(evidence.caseId, caseId))
+      .where(eq(evidence.caseId, caseId)
       .orderBy((evidenceTable) => evidenceTable.uploadedAt)
       .limit(10);
 
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
 
     // Retrieve from two Qdrant collections in parallel
     const [qdrantFragmentResults, qdrantEvidenceResults] =
-      await Promise.allSettled([
+      await Promise.allSettled([;
         qdrantClient.search("prosecutor_text_fragments", {
           vector: queryEmbedding,
           limit: 3,
@@ -142,9 +142,8 @@ ws ::= ([ \t\n]*)
     // --- MULTI-LLM INFERENCE ---
     const promises: Promise<any>[] = [];
 
-    // 1. Local LLM (The Firm's AI)
-    promises.push(
-      fetch(`${NLP_SERVICE_URL}/generate-with-local-llm`, {
+    // 1. Local LLM (The Firm's AI);
+    promises.push(fetch(`${NLP_SERVICE_URL}/generate-with-local-llm`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -155,14 +154,13 @@ ws ::= ([ \t\n]*)
           grammar: jsonGrammar, // Pass the grammar to constrain the output
         }),
       }).then((res) =>
-        res.json().then((data) => ({ source: "firm_ai", data, ok: res.ok }))
+        res.json().then((data) => ({ source: "firm_ai", data, ok: res.ok })
       )
     );
 
-    // 2. OpenAI (if enabled and key exists)
+    // 2. OpenAI (if enabled and key exists);
     if (enableMultiLLM && OPENAI_API_KEY) {
-      promises.push(
-        fetch("https://api.openai.com/v1/chat/completions", {
+      promises.push(fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -174,7 +172,7 @@ ws ::= ([ \t\n]*)
             max_tokens: 512,
           }),
         }).then((res) =>
-          res.json().then((data) => ({ source: "openai", data, ok: res.ok }))
+          res.json().then((data) => ({ source: "openai", data, ok: res.ok })
         )
       );
     }

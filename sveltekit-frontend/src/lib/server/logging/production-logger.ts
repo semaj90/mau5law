@@ -5,6 +5,7 @@
 
 import { writeFile, appendFile, mkdir, readFile } from 'fs/promises';
 import * as path from "path";
+}
 
 export interface LogEntry {
   id: string;
@@ -55,7 +56,7 @@ export class ProductionLogger {
       userId: entry.userId,
       caseId: entry.caseId,
       documentId: entry.documentId,
-      performanceMetrics: entry.performanceMetrics
+      performanceMetrics: entry.performanceMetrics,
     };
 
     // Console output with colors
@@ -64,7 +65,7 @@ export class ProductionLogger {
       info: '\x1b[36m', // Cyan
       warn: '\x1b[33m', // Yellow  
       error: '\x1b[31m', // Red
-      debug: '\x1b[90m'  // Gray
+      debug: '\x1b[90m'  // Gray,
     };
     
     const color = levelColors[logEntry.level];
@@ -73,7 +74,7 @@ export class ProductionLogger {
     console.log(`${color}[${logEntry.level.toUpperCase()}]${reset} ${timestamp} [${logEntry.service}] ${logEntry.message}`);
     
     if (logEntry.data) {
-      console.log(`${color}   Data:${reset}`, JSON.stringify(logEntry.data, null, 2));
+      console.log(`${color}   Data:${reset}`, JSON.stringify(logEntry.data, null, 2);
     }
     
     if (logEntry.error) {
@@ -84,7 +85,7 @@ export class ProductionLogger {
     // Write to file
     await this.writeToFile(logEntry);
 
-    // Store critical errors in database
+    // Store critical errors in database;
     if (logEntry.level === 'error') {
       await this.storeErrorInDatabase(logEntry);
     }
@@ -100,7 +101,7 @@ export class ProductionLogger {
         error: entry.error ? {
           message: entry.error.message,
           stack: entry.error.stack,
-          name: entry.error.name
+          name: entry.error.name,
         } : undefined
       }) + '\n';
       
@@ -113,7 +114,7 @@ export class ProductionLogger {
 
   private async storeErrorInDatabase(entry: LogEntry): Promise<void> {
     try {
-      // Check if we have an errors table (if not, we'll log to a general table)
+      // Check if we have an errors table (if not, we'll log to a general table);
       const errorData = {
         id: entry.id,
         timestamp: entry.timestamp,
@@ -122,12 +123,12 @@ export class ProductionLogger {
         errorDetails: entry.error ? {
           message: entry.error.message,
           stack: entry.error.stack,
-          name: entry.error.name
+          name: entry.error.name,
         } : null,
         data: entry.data ? JSON.stringify(entry.data) : null,
         userId: entry.userId,
         caseId: entry.caseId,
-        documentId: entry.documentId
+        documentId: entry.documentId,
       };
       
       // Since we may not have an errors table, we'll store in a JSON log for now
@@ -148,7 +149,7 @@ export class ProductionLogger {
     return `log_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  // Service-specific logging methods
+  // Service-specific logging methods;
   async logDatabaseOperation(operation: string, data?: unknown, error?: Error, performanceMetrics?: unknown): Promise<void> {
     await this.log({
       level: error ? 'error' : 'info',
@@ -158,7 +159,7 @@ export class ProductionLogger {
       error,
       performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {
         duration: 0,
-        memoryUsage: process.memoryUsage().heapUsed
+        memoryUsage: process.memoryUsage().heapUsed,
       }
     });
   }
@@ -172,7 +173,7 @@ export class ProductionLogger {
       error,
       performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {
         duration: 0,
-        memoryUsage: process.memoryUsage().heapUsed
+        memoryUsage: process.memoryUsage().heapUsed,
       }
     });
   }
@@ -195,12 +196,12 @@ export class ProductionLogger {
       data: {
         prompt: typeof prompt === 'string' ? prompt.substring(0, 100) + '...' : 'No prompt',
         responseLength: typeof response === 'string' ? response.length: Array.isArray(response) ? response.length : 0,
-        tokenUsage: (performanceMetrics as any)?.tokens || 0
+        tokenUsage: (performanceMetrics as any)?.tokens || 0,
       },
       error,
       performanceMetrics: performanceMetrics as LogEntry['performanceMetrics'] || {
         duration: 0,
-        memoryUsage: process.memoryUsage().heapUsed
+        memoryUsage: process.memoryUsage().heapUsed,
       }
     });
   }
@@ -213,7 +214,7 @@ export class ProductionLogger {
       data: { fileSize, caseId, result },
       error,
       caseId,
-      documentId: (result as any)?.documentId
+      documentId: (result as any)?.documentId,
     });
   }
 
@@ -227,14 +228,14 @@ export class ProductionLogger {
     });
   }
 
-  // Get recent logs
+  // Get recent logs;
   async getRecentLogs(service?: string, level?: string, limit = 100): Promise<LogEntry[]> {
     try {
       const today = new Date().toISOString().split('T')[0];
       const logFile = path.join(this.logDir, `${today}.log`);
       
       const logContent = await readFile(logFile, 'utf-8').catch(() => '');
-      const lines = logContent.split('\n').filter(line => line.trim());
+      const lines = logContent.split('\n').filter(line => line.trim();
       
       let logs = lines.map(line => {
         try {
@@ -244,7 +245,7 @@ export class ProductionLogger {
         }
       }).filter(Boolean) as LogEntry[];
 
-      // Filter by service and level
+      // Filter by service and level;
       if (service) {
         logs = logs.filter(log => log.service === service);
       }
@@ -261,7 +262,7 @@ export class ProductionLogger {
     }
   }
 
-  // Get error summary
+  // Get error summary;
   async getErrorSummary(hours = 24): Promise<any> {
     try {
       const recentLogs = await this.getRecentLogs();
@@ -293,7 +294,7 @@ export class ProductionLogger {
 // Export singleton instance
 export const logger = new ProductionLogger();
 ;
-// Export service-specific loggers
+// Export service-specific loggers;
 export const dbLogger = {
   info: (operation: string, data?: unknown, metrics?: unknown) => logger.logDatabaseOperation(operation, data, undefined, metrics),
   error: (operation: string, error: Error, data?: unknown) => logger.logDatabaseOperation(operation, data, error)

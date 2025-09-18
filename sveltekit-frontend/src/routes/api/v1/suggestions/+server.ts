@@ -10,14 +10,14 @@ type DidYouMeanQuery = any;
 const didYouMeanService: any = (didYouMeanModule as any)?.didYouMeanService ?? didYouMeanModule;
 import { z } from 'zod';
 
-// Validation schema for suggestion requests
+// Validation schema for suggestion requests;
 const suggestionRequestSchema = z.object({
   query: z.string().min(1, 'Query cannot be empty').max(500, 'Query too long'),
   userIntent: z
     .enum(['search', 'legal_research', 'case_lookup', 'document_analysis'])
     .optional()
     .default('search'),
-  context: z
+  context: z;
     .object({
       caseId: z.string().optional(),
       jurisdiction: z.string().optional(),
@@ -25,7 +25,7 @@ const suggestionRequestSchema = z.object({
       documentType: z.string().optional(),
     })
     .optional(),
-  options: z
+  options: z;
     .object({
       maxSuggestions: z.number().min(1).max(20).optional().default(5),
       similarityThreshold: z.number().min(0).max(1).optional().default(0.3),
@@ -36,7 +36,7 @@ const suggestionRequestSchema = z.object({
     .optional(),
 });
 
-// GET /api/v1/suggestions?q=contract+law&intent=legal_research&maxSuggestions=10
+// GET /api/v1/suggestions?q=contract+law&intent=legal_research&maxSuggestions=10;
 export const GET: RequestHandler = async ({ url, request }) => {
   const startTime = performance.now();
 
@@ -52,17 +52,17 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
     if (!query) {
       return json(
-        { message: 'Query parameter is required', code: 'MISSING_QUERY' },
+        { message: 'Query parameter is required', code: 'MISSING_QUERY' },)
         { status: 400 }
       );
     }
 
-    // Build suggestion query
+    // Build suggestion query;
     const suggestionQuery: DidYouMeanQuery = {
       originalQuery: query,
       userIntent: intent as any,
       context:
-        caseId || practiceArea
+        caseId || practiceArea;
           ? {
               caseId: caseId || undefined,
               practiceArea: practiceArea || undefined,
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     const result = await didYouMeanService.generateSuggestions(suggestionQuery);
     const processingTime = performance.now() - startTime;
 
-    // Add request metadata
+    // Add request metadata;
     const response = {
       ...result,
       metadata: {
@@ -109,18 +109,17 @@ export const GET: RequestHandler = async ({ url, request }) => {
     }
 
     console.error('Suggestion generation failed:', err);
-    return json(
-      {
+    return json({
         message: 'Failed to generate suggestions',
         code: 'SUGGESTION_ERROR',
         processingTimeMs: processingTime,
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// POST /api/v1/suggestions - Advanced suggestions with full context
+// POST /api/v1/suggestions - Advanced suggestions with full context;
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
 
@@ -130,19 +129,19 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate request body
     const validatedData = suggestionRequestSchema.parse(body);
 
-    // Build suggestion query
+    // Build suggestion query;
     const suggestionQuery: DidYouMeanQuery = {
       originalQuery: validatedData.query,
       userIntent: validatedData.userIntent,
       context: validatedData.context,
-      options: validatedData.options
+      options: validatedData.options,
     };
 
     // Generate suggestions with full context
     const result = await didYouMeanService.generateSuggestions(suggestionQuery);
     const processingTime = performance.now() - startTime;
 
-    // Enhanced response with detailed metrics
+    // Enhanced response with detailed metrics;
     const response = {
       ...result,
       metadata: {
@@ -177,13 +176,12 @@ export const POST: RequestHandler = async ({ request }) => {
     const processingTime = performance.now() - startTime;
 
     if (err.name === 'ZodError') {
-      return json(
-        {
+      return json({
           message: 'Invalid request format',
           code: 'VALIDATION_ERROR',
           errors: err.errors,
           processingTimeMs: processingTime,
-        },
+        },)
         { status: 400 }
       );
     }
@@ -193,18 +191,17 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 
   console.error('Advanced suggestion generation failed:', err);
-  return json(
-    {
+  return json({
       message: 'Failed to generate suggestions',
       code: 'SUGGESTION_ERROR',
       processingTimeMs: processingTime,
-    },
+    },)
     { status: 500 }
   );
   }
 };
 
-// DELETE /api/v1/suggestions - Clear suggestion cache
+// DELETE /api/v1/suggestions - Clear suggestion cache;
 export const DELETE: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
 
@@ -216,19 +213,18 @@ export const DELETE: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Suggestion cache cleared',
       processingTimeMs: processingTime,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (err: any) {
     const processingTime = performance.now() - startTime;
 
     console.error('Cache clear failed:', err);
-    return json(
-      {
+    return json({
         message: 'Failed to clear cache',
         code: 'CACHE_CLEAR_ERROR',
         processingTimeMs: processingTime,
-      },
+      },)
       { status: 500 }
     );
   }

@@ -7,7 +7,7 @@ import { fail } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
   // Initialize the form with default values for testing
-  const form = await superValidate(zod(fileUploadSchema));
+  const form = await superValidate(zod(fileUploadSchema);
 
   // Set some test defaults
   form.data.caseId = 'TEST-CASE-' + Date.now();
@@ -26,12 +26,12 @@ export const actions: Actions = {
     const formData = await request.formData();
 
     // Validate the form data
-    const form = await superValidate(formData, zod(fileUploadSchema));
+    const form = await superValidate(formData, zod(fileUploadSchema);
 
     if (!form.valid) {
       return fail(400, {
         form,
-        message: 'Validation failed'
+        message: 'Validation failed',
       });
     }
 
@@ -42,7 +42,7 @@ export const actions: Actions = {
       if (!file) {
         return fail(400, {
           form,
-          message: 'No file provided'
+          message: 'No file provided',
         });
       }
 
@@ -51,10 +51,10 @@ export const actions: Actions = {
         size: file.size,
         type: file.type,
         caseId: form.data.caseId,
-        hasEnhancedAnalysis: !!enhancedAnalysis
+        hasEnhancedAnalysis: !!enhancedAnalysis,
       });
 
-      // Simulate successful upload processing
+      // Simulate successful upload processing;
       const uploadResult = {
         success: true,
         documentId: 'DOC-' + Date.now(),
@@ -80,7 +80,7 @@ export const actions: Actions = {
             enableAiAnalysis: form.data.enableAiAnalysis,
             enableOcr: form.data.enableOcr,
             enableEmbeddings: form.data.enableEmbeddings,
-            isAdmissible: form.data.isAdmissible
+            isAdmissible: form.data.isAdmissible,
           }
         }
       };

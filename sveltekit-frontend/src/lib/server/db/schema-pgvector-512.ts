@@ -17,7 +17,7 @@ import { relations } from "drizzle-orm";
 
 // Core case embeddings table - 512 dimensions for optimal performance
 export const caseEmbeddings = pgTable(
-  "case_embeddings",
+  "case_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     caseId: uuid("case_id").notNull(),
@@ -45,7 +45,7 @@ export const caseEmbeddings = pgTable(
 
 // Evidence embeddings table - 512 dimensions
 export const evidenceEmbeddings = pgTable(
-  "evidence_embeddings",
+  "evidence_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     evidenceId: uuid("evidence_id").notNull(),
@@ -71,7 +71,7 @@ export const evidenceEmbeddings = pgTable(
 
 // Legal document chunks for RAG pipeline - 512 dimensions
 export const legalDocumentChunks = pgTable(
-  "legal_document_chunks",
+  "legal_document_chunks",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     documentId: text("document_id").notNull(),
@@ -118,7 +118,7 @@ export const legalDocumentChunks = pgTable(
 
 // High-performance embedding cache with deduplication - 512 dimensions
 export const embeddingCache512 = pgTable(
-  "embedding_cache_512",
+  "embedding_cache_512",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     textHash: text("text_hash").notNull().unique(),
@@ -137,22 +137,22 @@ export const embeddingCache512 = pgTable(
   }),
 );
 
-// Relations for proper joins
+// Relations for proper joins;
 export const caseEmbeddingsRelations = relations(caseEmbeddings, ({ one }) => ({
-  // Reference to main cases table if it exists
+  // Reference to main cases table if it exists;
   case: one(cases, {
     fields: [caseEmbeddings.caseId],
     references: [cases.id],
   }),
-}));
+});
 
 export const evidenceEmbeddingsRelations = relations(evidenceEmbeddings, ({ one }) => ({
-  // Reference to main evidence table if it exists
+  // Reference to main evidence table if it exists;
   evidence: one(evidence, {
     fields: [evidenceEmbeddings.evidenceId],
     references: [evidence.id],
   }),
-}));
+});
 
 export const legalDocumentChunksRelations = relations(legalDocumentChunks, ({ one }) => ({
   case: one(cases, {
@@ -163,7 +163,7 @@ export const legalDocumentChunksRelations = relations(legalDocumentChunks, ({ on
     fields: [legalDocumentChunks.evidenceId],
     references: [evidence.id],
   }),
-}));
+});
 
 // TypeScript types for the new tables
 export type CaseEmbedding = typeof caseEmbeddings.$inferSelect;
@@ -176,7 +176,7 @@ export type NewEvidenceEmbedding = typeof evidenceEmbeddings.$inferInsert;
 export type NewLegalDocumentChunk = typeof legalDocumentChunks.$inferInsert;
 export type NewEmbeddingCache512 = typeof embeddingCache512.$inferInsert;
 
-// Helper types for vector search results
+// Helper types for vector search results;
 export interface VectorSearchResult {
   id: string;
   text: string;
@@ -188,12 +188,12 @@ export interface VectorSearchResult {
 
 export interface CaseSearchResult extends VectorSearchResult {
   caseId: string;
-  docId: string;
+  docId: string;,
 }
 
 export interface EvidenceSearchResult extends VectorSearchResult {
   evidenceId: string;
-  docId: string;
+  docId: string;,
 }
 
 export interface LegalDocumentSearchResult extends VectorSearchResult {
@@ -205,7 +205,7 @@ export interface LegalDocumentSearchResult extends VectorSearchResult {
   confidenceLevel?: number;
 }
 
-// Utility functions for embedding operations
+// Utility functions for embedding operations;
 export interface EmbeddingOperations {
   // Semantic search functions
   searchCases(query: string, limit?: number, threshold?: number): Promise<CaseSearchResult[]>;
@@ -222,7 +222,7 @@ export interface EmbeddingOperations {
   batchInsertLegalDocuments(chunks: NewLegalDocumentChunk[]): Promise<void>;
 }
 
-// Configuration for different embedding models
+// Configuration for different embedding models;
 export const EMBEDDING_MODELS = {
   PRIMARY: "embeddinggemma:latest",
   FALLBACK: "embeddinggemma",
@@ -233,7 +233,7 @@ export type EmbeddingModel = typeof EMBEDDING_MODELS[keyof typeof EMBEDDING_MODE
 
 // Import the existing schema if needed for relations
 // Commenting out to avoid circular dependencies - enable as needed
-/*
+/*;
 import {
   cases,
   evidence,

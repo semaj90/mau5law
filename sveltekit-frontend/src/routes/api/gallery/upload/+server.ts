@@ -32,6 +32,7 @@ const ALLOWED_TYPES = [
   // Archives
   'application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed'
 ];
+}
 
 export interface UploadResponse {
   success: boolean;
@@ -59,7 +60,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const isPublic = formData.get('isPublic') === 'true';
     const tags = formData.get('tags') as string || '';
 
-    // Validate file
+    // Validate file;
     if (!file || file.size === 0) {
       throw error(400, 'No file provided');
     }
@@ -72,12 +73,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       throw error(400, `File type not allowed: ${file.type}`);
     }
 
-    // Validate case ID if provided
+    // Validate case ID if provided;
     if (caseId) {
       const caseExists = await db
         .select({ id: cases.id })
         .from(cases)
-        .where(eq(cases.id, caseId))
+        .where(eq(cases.id, caseId)
         .limit(1)
         .execute();
 
@@ -108,17 +109,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const buffer = Buffer.from(arrayBuffer);
     await writeFile(filePath, buffer);
 
-    // Generate metadata
+    // Generate metadata;
     const metadata = {
       originalName: file.name,
       uploadedAt: new Date().toISOString(),
       category,
       fileExtension,
       dimensions: await getImageDimensions(buffer, file.type),
-      checksum: generateChecksum(buffer)
+      checksum: generateChecksum(buffer),
     };
 
-    // Save to database as evidence
+    // Save to database as evidence;
     const evidenceData = {
       id: fileId,
       title: title || file.name,
@@ -136,7 +137,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       processedAt: null,
       ocrText: null,
       contentText: null,
-      embedding: null
+      embedding: null,
     };
 
     await db.insert(evidence).values(evidenceData).execute();
@@ -147,7 +148,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       thumbnailUrl = await generateThumbnail(filePath, fileId, category, yearMonth);
     }
 
-    // Trigger background processing
+    // Trigger background processing;
     await triggerBackgroundProcessing(fileId, {
       type: 'file_upload',
       category,
@@ -155,7 +156,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       caseId,
       needsOCR: needsOCR(file.type),
       needsEmbedding: true,
-      needsThumbnail: !thumbnailUrl
+      needsThumbnail: !thumbnailUrl,
     });
 
     const response: UploadResponse = {
@@ -193,7 +194,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<any> {
   try {
-    // Simple image dimension detection for common formats
+    // Simple image dimension detection for common formats;
     if (mimeType === 'image/jpeg') {
       return getJPEGDimensions(buffer);
     }
@@ -209,14 +210,14 @@ async function getImageDimensions(buffer: Buffer, mimeType: string): Promise<any
 
 function getJPEGDimensions(buffer: Buffer): { width: number; height: number } | null {
   try {
-    let i = 2; // Skip SOI marker
+    let i = 2; // Skip SOI marker;
     while (i < buffer.length) {
       if (buffer[i] === 0xFF) {
         const marker = buffer[i + 1];
-        if (marker >= 0xC0 && marker <= 0xC3) { // SOF markers
+        if (marker >= 0xC0 && marker <= 0xC3) { // SOF markers;
           return {
             height: buffer.readUInt16BE(i + 5),
-            width: buffer.readUInt16BE(i + 7)
+            width: buffer.readUInt16BE(i + 7),
           };
         }
         i += 2 + buffer.readUInt16BE(i + 2);
@@ -237,7 +238,7 @@ function getPNGDimensions(buffer: Buffer): { width: number; height: number } | n
 
     return {
       width: buffer.readUInt32BE(16),
-      height: buffer.readUInt32BE(20)
+      height: buffer.readUInt32BE(20),
     };
   } catch (error) {
     return null;
@@ -273,20 +274,20 @@ async function triggerBackgroundProcessing(fileId: string, options: {
   caseId?: string | null;
   needsOCR: boolean;
   needsEmbedding: boolean;
-  needsThumbnail: boolean;
+  needsThumbnail: boolean;,
 }) {
   try {
     // TODO: Integrate with Redis or NATS for background job processing
     // For now, we'll just log the processing request
     console.log(`Background processing triggered for file ${fileId}:`, options);
 
-    // Could send to Redis queue like this:
+    // Could send to Redis queue like this:;
     // await redis.xAdd('file_processing:requests', '*', {
     //   fileId,
     //   type: options.type,
     //   timestamp: Date.now().toString(),
     //   ...options
-    // });
+    // ,});
 
   } catch (error) {
     console.error('Failed to trigger background processing:', error);
@@ -294,7 +295,7 @@ async function triggerBackgroundProcessing(fileId: string, options: {
   }
 }
 
-// GET endpoint for upload status and history
+// GET endpoint for upload status and history;
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     const fileId = url.searchParams.get('fileId');
@@ -306,7 +307,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       const fileData = await db
         .select()
         .from(evidence)
-        .where(eq(evidence.id, fileId))
+        .where(eq(evidence.id, fileId)
         .limit(1)
         .execute();
 
@@ -320,13 +321,13 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           uploaded: true,
           ocrComplete: !!fileData[0].ocrText,
           embeddingComplete: !!fileData[0].embedding,
-          processed: !!fileData[0].processedAt
+          processed: !!fileData[0].processedAt,
         }
       });
     }
 
     // Get recent uploads
-    const query = db
+    const query = db;
       .select({
         id: evidence.id,
         title: evidence.title,
@@ -335,7 +336,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         fileSize: evidence.fileSize,
         uploadedAt: evidence.uploadedAt,
         processedAt: evidence.processedAt,
-        caseId: evidence.caseId
+        caseId: evidence.caseId,
       })
       .from(evidence)
       .orderBy(evidence.uploadedAt)
@@ -349,7 +350,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     return json({
       uploads: recentUploads,
-      total: recentUploads.length
+      total: recentUploads.length,
     });
 
   } catch (err) {

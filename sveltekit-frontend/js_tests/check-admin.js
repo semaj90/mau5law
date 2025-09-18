@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import { db } from "./src/lib/server/db/index.js";
-import { users } from "./src/lib/server/db/schema-postgres.js";
+import { db } from './src/lib/server/db/index.js';
+import { users } from './src/lib/server/db/schema-postgres.js';
 
 async function checkAdminUsers() {
   try {
-    console.log("🔍 Checking admin users in database...");
+    console.log('🔍 Checking admin users in database...');
 
     const allUsers = await db.select().from(users);
 
@@ -18,11 +18,11 @@ async function checkAdminUsers() {
       console.log(`   Created: ${user.createdAt}`);
     });
 
-    const adminUsers = allUsers.filter((user) => user.role === "admin");
+    const adminUsers = allUsers.filter((user) => user.role === 'admin');
     console.log(`\n👑 Admin users: ${adminUsers.length}`);
 
     if (adminUsers.length > 0) {
-      console.log("\n🔑 Admin credentials for testing:");
+      console.log('\n🔑 Admin credentials for testing:');
       adminUsers.forEach((admin) => {
         console.log(`   Email: ${admin.email}`);
         console.log(`   Name: ${admin.name}`);
@@ -30,11 +30,11 @@ async function checkAdminUsers() {
       });
     }
 
-    console.log("\n💡 For login testing, try these demo credentials:");
-    console.log("   admin@example.com / admin123");
-    console.log("   user@example.com / user123");
+    console.log('\n💡 For login testing, try these demo credentials:');
+    console.log('   admin@example.com / admin123');
+    console.log('   user@example.com / user123');
   } catch (error) {
-    console.error("❌ Error checking admin users:", error);
+    console.error('❌ Error checking admin users:', error);
   } finally {
     process.exit(0);
   }

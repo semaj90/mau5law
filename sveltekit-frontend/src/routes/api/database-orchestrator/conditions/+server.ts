@@ -5,12 +5,11 @@ import type { RequestHandler } from './$types.js';
 
 databaseOrchestrator // alias
 
-// GET /api/database-orchestrator/conditions - List all conditions
+// GET /api/database-orchestrator/conditions - List all conditions;
 export const GET: RequestHandler = async () => {
   try {
     const status = databaseOrchestrator.getStatus();
-    const conditions = Array.from(databaseOrchestrator.conditions || new Map()).map(
-      ([id, condition]) => ({
+    const conditions = Array.from(databaseOrchestrator.conditions || new Map()).map(([id, condition]) => ({
         id,
         ...condition,
       })
@@ -25,7 +24,7 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error.message,
@@ -36,18 +35,17 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// POST /api/database-orchestrator/conditions - Add new condition
+// POST /api/database-orchestrator/conditions - Add new condition;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const conditionData = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!conditionData.id || !conditionData.type || !conditionData.action) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Missing required fields: id, type, action',
-        },
+        },)
         { status: 400 }
       );
     }
@@ -70,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error.message,
@@ -81,17 +79,16 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// DELETE /api/database-orchestrator/conditions/:id - Remove condition
+// DELETE /api/database-orchestrator/conditions/:id - Remove condition;
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
     const { id } = params;
 
     if (!id) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Condition ID is required',
-        },
+        },)
         { status: 400 }
       );
     }
@@ -105,7 +102,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error.message,

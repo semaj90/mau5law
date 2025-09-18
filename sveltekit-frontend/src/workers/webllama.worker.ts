@@ -14,7 +14,7 @@ self.onmessage = async (e: MessageEvent) => {
     switch (type) {
       case 'init': {
         try {
-          const res = await fetch(String((data as Record<string, unknown>).wasmUrl || ''));
+          const res = await fetch(String((data as Record<string, unknown>).wasmUrl || '');
           const bytes = await res.arrayBuffer();
           wasmModule = await WebAssembly.instantiate(bytes, {});
           (self as unknown as Worker).postMessage({ type: 'init_complete', success: true });
@@ -26,7 +26,7 @@ self.onmessage = async (e: MessageEvent) => {
       }
       case 'load_model': {
         try {
-          const res = await fetch(String((data as Record<string, unknown>).modelUrl || ''));
+          const res = await fetch(String((data as Record<string, unknown>).modelUrl || '');
           modelData = await res.arrayBuffer();
           (self as unknown as Worker).postMessage({ type: 'model_loaded', success: true });
         } catch (err) {
@@ -60,10 +60,10 @@ self.onmessage = async (e: MessageEvent) => {
 
 async function performInference(prompt: string) {
   // Simulated processing delay
-  await new Promise((r) => setTimeout(r, 5));
+  await new Promise((r) => setTimeout(r, 5);
   return {
     text: `Generated response for: ${prompt.slice(0, 60)}...`,
     tokensGenerated: Math.max(10, Math.floor(prompt.length / 6)),
-    processingTime: 10
+    processingTime: 10,
   };
 }

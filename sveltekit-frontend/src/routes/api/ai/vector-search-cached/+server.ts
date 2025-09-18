@@ -34,7 +34,7 @@ import {
   getVectorCacheStats 
 } from '$lib/server/vector-cache';
 
-// POST: Cached vector similarity search
+// POST: Cached vector similarity search;
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
   
@@ -50,18 +50,18 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     if (!query && !queryEmbedding) {
       return json({
         success: false,
-        error: 'Either query string or queryEmbedding array is required'
+        error: 'Either query string or queryEmbedding array is required',
       }, { status: 400 });
     }
 
     let embedding: number[];
     let embeddingFromCache = false;
 
-    // Handle embedding generation/retrieval
+    // Handle embedding generation/retrieval;
     if (queryEmbedding && Array.isArray(queryEmbedding)) {
       embedding = queryEmbedding;
     } else if (query) {
-      // Check embedding cache first
+      // Check embedding cache first;
       if (useCache) {
         const cachedEmbedding = await getEmbeddingCache(query, 'nomic-embed-text');
         if (cachedEmbedding.entry) {
@@ -71,14 +71,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         }
       }
       
-      // Generate embedding if not cached
+      // Generate embedding if not cached;
       if (!embedding!) {
         const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: 'nomic-embed-text',
-            prompt: query
+            prompt: query,
           })
         });
 
@@ -89,7 +89,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         const embeddingData = await embeddingResponse.json();
         embedding = embeddingData.embedding;
 
-        // Cache the embedding
+        // Cache the embedding;
         if (useCache) {
           await setEmbeddingCache(query, embedding, 'nomic-embed-text');
         }
@@ -112,7 +112,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           metadata: {
             ...cachedSearch.entry.metadata,
             fromCache: true,
-            cacheSource: cachedSearch.source
+            cacheSource: cachedSearch.source,
           }
         };
         searchFromCache = true;
@@ -121,17 +121,17 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       }
     }
 
-    // Perform vector search if not cached
+    // Perform vector search if not cached;
     if (!searchFromCache) {
       searchResults = await pgVectorService.vectorSimilaritySearch(embedding, {
         limit: options.limit || 10,
         threshold: options.threshold || 1,
         documentType: options.documentType,
         includeContent: options.includeContent || false,
-        metric: options.metric || 'cosine'
+        metric: options.metric || 'cosine',
       });
 
-      // Cache the search results
+      // Cache the search results;
       if (useCache && searchResults.success && query) {
         await setVectorCache(
           query, 
@@ -144,7 +144,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     const totalTime = performance.now() - startTime;
 
-    // Enhanced response with caching metadata
+    // Enhanced response with caching metadata;
     return json({
       success: searchResults.success,
       results: searchResults.results,
@@ -157,11 +157,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           enabled: useCache,
           embeddingFromCache,
           searchFromCache,
-          cacheSource: searchFromCache ? cacheSource : null
+          cacheSource: searchFromCache ? cacheSource : null,
         }
       },
       error: searchResults.error,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error: any) {
@@ -171,12 +171,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       success: false,
       error: error.message,
       responseTime: `${totalTime.toFixed(2)}ms`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
 
-// GET: Cache statistics and health check
+// GET: Cache statistics and health check;
 const originalGETHandler: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'stats';
 
@@ -186,11 +186,11 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         cacheStats: stats,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
     case 'health':
-      // Test embedding generation and vector search
+      // Test embedding generation and vector search;
       try {
         const testQuery = "contract employment terms";
         const testStart = performance.now();
@@ -211,7 +211,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
             redis: getVectorCacheStats().config.redisEnabled,
             responseTime: `${testTime.toFixed(2)}ms`
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
         
       } catch (error: any) {
@@ -219,26 +219,26 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           success: false,
           health: {
             pgvector: false,
-            error: error.message
+            error: error.message,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }, { status: 500 });
       }
 
-    default:
+    default:;
       return json({
         error: 'Invalid action',
         availableActions: ['stats', 'health'],
         endpoints: {
           search: 'POST /api/ai/vector-search-cached',
           stats: 'GET /api/ai/vector-search-cached?action=stats',
-          health: 'GET /api/ai/vector-search-cached?action=health'
+          health: 'GET /api/ai/vector-search-cached?action=health',
         }
       }, { status: 400 });
   }
 };
 
-// DELETE: Clear vector cache
+// DELETE: Clear vector cache;
 const originalDELETEHandler: RequestHandler = async () => {
   try {
     const { clearVectorCache } = await import('$lib/server/vector-cache');
@@ -247,14 +247,14 @@ const originalDELETEHandler: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Vector cache cleared',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     
   } catch (error: any) {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };

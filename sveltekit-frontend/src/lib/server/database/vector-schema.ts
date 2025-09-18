@@ -13,7 +13,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 // Custom pgvector column type for Drizzle
-const vector = (name: string, dimensions: number) =>
+const vector = (name: string, dimensions: number) =>;
   customType({
     dataType() {
       return `vector(${dimensions})`;
@@ -28,7 +28,7 @@ const vector = (name: string, dimensions: number) =>
 
 // User embeddings table
 export const userEmbeddings = pgTable(
-  "user_embeddings",
+  "user_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id").notNull(),
@@ -51,7 +51,7 @@ export const userEmbeddings = pgTable(
 
 // Case embeddings table
 export const caseEmbeddings = pgTable(
-  "case_embeddings",
+  "case_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     caseId: uuid("case_id").notNull(),
@@ -72,7 +72,7 @@ export const caseEmbeddings = pgTable(
 
 // Evidence embeddings table
 export const evidenceEmbeddings = pgTable(
-  "evidence_embeddings",
+  "evidence_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     evidenceId: uuid("evidence_id").notNull(),
@@ -95,7 +95,7 @@ export const evidenceEmbeddings = pgTable(
 
 // Document embeddings table
 export const documentEmbeddings = pgTable(
-  "document_embeddings",
+  "document_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     documentId: uuid("document_id").notNull(),
@@ -118,7 +118,7 @@ export const documentEmbeddings = pgTable(
 
 // Search embeddings table
 export const searchEmbeddings = pgTable(
-  "search_embeddings",
+  "search_embeddings",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id").notNull(),
@@ -128,6 +128,6 @@ export const searchEmbeddings = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow()
   },
   (table) => ({
-    userIdIdx: index("search_embeddings_user_id_idx").on(table.userId)
+    userIdIdx: index("search_embeddings_user_id_idx").on(table.userId),
   }),
 );

@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Basic text search in evidence
-    const searchResults = await db
+    const searchResults = await db;
       .select({
         id: evidence.id,
         filename: evidence.fileName,
@@ -43,14 +43,14 @@ export const POST: RequestHandler = async ({ request }) => {
       prosecutionScore: typeof row.prosecutionScore === 'object' 
         ? (row.prosecutionScore as any)?.prosecutionScore || 0 
         : 0,
-    }));
+    });
 
     return json({ matches, query, useSemanticSearch, includeContext7 }, { status: 200 });
   } catch (error: any) {
     console.error('Evidence search error:', error);
     return json({ 
       error: 'Search failed', 
-      matches: [] 
+      matches: [] ,
     }, { status: 500 });
   }
 };

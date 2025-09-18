@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import fs from "fs";
 
 const schemaAny = schema as any;
+}
 
 export interface DocumentProcessingJob {
   documentId: string | number;
@@ -18,7 +19,7 @@ export interface DocumentProcessingJob {
   fileSize: number;
   processingType: 'ocr' | 'embedding' | 'summarization' | 'full_analysis';
   priority: number;
-  timestamp: string;
+  timestamp: string;,
 }
 
 export interface ProcessingContext {
@@ -37,14 +38,14 @@ export interface DocumentChunk {
     chunkIndex: number;
     startPosition: number;
     endPosition: number;
-    wordCount: number;
+    wordCount: number;,
   };
 }
 
 export interface EmbeddingResult {
   chunkId: string;
   embedding: number[];
-  model: string;
+  model: string;,
 }
 
 class DocumentProcessingWorker {
@@ -109,7 +110,7 @@ class DocumentProcessingWorker {
       try {
         const queuedRecords = await db.select()
           .from(schemaAny.document_processing)
-          .where(eq(schemaAny.document_processing.status, 'queued'))
+          .where(eq(schemaAny.document_processing.status, 'queued')
           .limit(5);
 
         for (const record of queuedRecords) {
@@ -130,7 +131,7 @@ class DocumentProcessingWorker {
     // Fetch document details
     const docs = await db.select()
       .from(schemaAny.documents)
-      .where(eq(schemaAny.documents.id, processingRecord.document_id))
+      .where(eq(schemaAny.documents.id, processingRecord.document_id)
       .limit(1);
 
     const document = docs && docs.length > 0 ? docs[0] : null;
@@ -142,7 +143,7 @@ class DocumentProcessingWorker {
       return;
     }
 
-    // Create job object
+    // Create job object;
     const job: DocumentProcessingJob = {
       documentId: document.id,
       s3Key: document.s3_key || '',
@@ -154,7 +155,7 @@ class DocumentProcessingWorker {
       userId: document.user_id,
       processingType: 'full_analysis',
       priority: 5,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     await this.processJob(job);
@@ -204,7 +205,7 @@ class DocumentProcessingWorker {
 
       this.failedCount++;
     } finally {
-      // Cleanup temp files
+      // Cleanup temp files;
       if (context.tempFilePath) {
         try {
           await this.cleanupTempFile(context.tempFilePath);
@@ -237,7 +238,7 @@ class DocumentProcessingWorker {
 
     const { job } = context;
 
-    // Different extraction methods based on file type
+    // Different extraction methods based on file type;
     switch (job.mimeType) {
       case 'application/pdf':
         context.extractedText = await this.extractPDFText(context.tempFilePath!);
@@ -300,7 +301,7 @@ class DocumentProcessingWorker {
           chunkIndex: chunks.length,
           startPosition: i,
           endPosition: Math.min(i + chunkSize, extractedText.length),
-          wordCount: chunkContent.split(/\s+/).filter(item => item.length)
+          wordCount: chunkContent.split(/\s+/).filter(item => item.length),
         }
       });
     }
@@ -326,7 +327,7 @@ class DocumentProcessingWorker {
           },
           body: JSON.stringify({
             model: 'nomic-embed-text',
-            prompt: chunk.content
+            prompt: chunk.content,
           })
         });
 
@@ -340,7 +341,7 @@ class DocumentProcessingWorker {
         embeddings.push({
           chunkId: chunk.id,
           embedding: embeddingResult.embedding,
-          model: 'nomic-embed-text'
+          model: 'nomic-embed-text',
         });
       } catch (err) {
         console.warn(`Embedding API error for chunk ${chunk.id}:`, err);
@@ -370,7 +371,7 @@ class DocumentProcessingWorker {
         embedding: embedding ? embedding.embedding: null,
         embedding_model: embedding ? embedding?.model || "unknown" // @ts-ignore - Model property access : null,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       };
 
       try {
@@ -402,7 +403,7 @@ class DocumentProcessingWorker {
           options: {
             temperature: 0.3,
             top_p: 0.9,
-            max_tokens: 1000
+            max_tokens: 1000,
           }
         })
       });
@@ -422,7 +423,7 @@ class DocumentProcessingWorker {
         model_used: 'gemma3-legal',
         confidence_score: 0.85, // Mock confidence
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       });
     } catch (err) {
       console.warn('Summary generation failed:', err);
@@ -434,21 +435,21 @@ class DocumentProcessingWorker {
 
   private async updateProcessingStatus(documentId: string | number, status: string, message?: string): Promise<void> {
     try {
-      await db.update(schemaAny.document_processing)
+      await db.update(schemaAny.document_processing);
         .set({
           status,
           status_message: message,
-          updated_at: new Date()
+          updated_at: new Date(),
         })
-        .where(eq(schemaAny.document_processing.document_id, documentId));
+        .where(eq(schemaAny.document_processing.document_id, documentId);
 
       // Also update main document status
-      await db.update(schemaAny.documents)
+      await db.update(schemaAny.documents);
         .set({
           status: status === 'completed' ? 'processed' : status,
-          updated_at: new Date()
+          updated_at: new Date(),
         })
-        .where(eq(schemaAny.documents.id, documentId));
+        .where(eq(schemaAny.documents.id, documentId);
     } catch (err) {
       console.warn('Failed to update processing status:', err);
     }

@@ -6,7 +6,7 @@ import { db } from '$lib/db/connection';
 import { aiResponses, grpoFeedback, recommendationScores } from '$lib/db/enhanced-ai-schema';
 import { eq, desc, and, gte, sql } from 'drizzle-orm';
 
-// Enhanced analysis with GRPO context
+// Enhanced analysis with GRPO context;
 export interface GRPOAnalysis extends ThinkingAnalysis {
   grpoId?: string;
   structuredReasoning: {
@@ -15,14 +15,14 @@ export interface GRPOAnalysis extends ThinkingAnalysis {
     conclusions: string[];
     legalPrinciples: string[];
     counterArguments: string[];
-    confidenceFactors: string[];
+    confidenceFactors: string[];,
   };
   temporalScore: number;
   recommendationContext: RecommendationContext[];
   feedbackLoop: {
     previousRatings: number[];
     userPreferences: string[];
-    improvementSuggestions: string[];
+    improvementSuggestions: string[];,
   };
 }
 
@@ -32,17 +32,17 @@ export interface RecommendationContext {
   contextRelevance: number;
   temporalFactor: number;
   finalScore: number;
-  snippet: string;
+  snippet: string;,
 }
 
-// GRPO enhancement configuration
+// GRPO enhancement configuration;
 export interface GRPOConfig {
   enableStructuredReasoning: boolean;
   enableFeedbackLoop: boolean;
   enableRecommendations: boolean;
   maxRecommendations: number;
   temporalDecayDays: number;
-  semanticSimilarityThreshold: number;
+  semanticSimilarityThreshold: number;,
 }
 
 export class EnhancedGRPOProcessor extends ThinkingProcessor {
@@ -64,7 +64,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
   ): Promise<GRPOAnalysis> {
     const config = { ...this.DEFAULT_CONFIG, ...options.config };
 
-    // Get base thinking analysis
+    // Get base thinking analysis;
     const baseAnalysis = await super.analyzeDocument(text, {
       ...options,
       useThinkingStyle: true, // Force thinking style for GRPO
@@ -95,7 +95,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
       ? await this.getFeedbackLoopData(text)
       : { previousRatings: [], userPreferences: [], improvementSuggestions: [] };
 
-    // Save enhanced analysis to database
+    // Save enhanced analysis to database;
     const grpoId = await this.saveGRPOAnalysis({
       query: text,
       response:
@@ -124,7 +124,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
    * Extract structured reasoning components from thinking content
    */
   private static async extractStructuredReasoning(
-    thinkingContent: string
+    thinkingContent: string;
   ): Promise<GRPOAnalysis['structuredReasoning']> {
     if (!thinkingContent) {
       return this.getEmptyStructuredReasoning();
@@ -136,7 +136,7 @@ export class EnhancedGRPOProcessor extends ThinkingProcessor {
 
 ${thinkingContent}
 
-Extract and format as JSON:
+Extract and format as JSON:;
 {
   "premises": ["premise 1", "premise 2"],
   "inferences": ["inference 1", "inference 2"],
@@ -167,7 +167,7 @@ Extract and format as JSON:
           parsed &&
           typeof parsed === 'object' &&
           Array.isArray(parsed.premises) &&
-          Array.isArray(parsed.inferences)
+          Array.isArray(parsed.inferences);
         ) {
           return parsed;
         }
@@ -182,7 +182,7 @@ Extract and format as JSON:
 
   /**
    * Generate embedding using nomic-embed-text
-   */
+   */;
   private static async generateEmbedding(text: string): Promise<number[]> {
     try {
       const response = await fetch('http://localhost:11434/api/embeddings', {
@@ -210,7 +210,7 @@ Extract and format as JSON:
    */
   private static async getRecommendationContext(
     queryEmbedding: number[],
-    config: GRPOConfig
+    config: GRPOConfig;
   ): Promise<RecommendationContext[]> {
     try {
       // Query database for similar responses using pgvector
@@ -257,7 +257,7 @@ Extract and format as JSON:
 
   /**
    * Calculate temporal decay score
-   */
+   */;
   private static calculateTemporalScore(createdAt: Date, halfLifeDays: number): number {
     const now = new Date();
     const ageDays = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24);
@@ -265,12 +265,12 @@ Extract and format as JSON:
     // Exponential decay: score = e^(-ln(2) * age / halfLife)
     const decayFactor = Math.exp((-Math.LN2 * ageDays) / halfLifeDays);
 
-    return Math.max(0.1, Math.min(1.0, decayFactor)); // Clamp between 0.1 and 1.0
+    return Math.max(0.1, Math.min(1.0, decayFactor); // Clamp between 0.1 and 1.0
   }
 
   /**
    * Get feedback loop data for learning
-   */
+   */;
   private static async getFeedbackLoopData(query: string): Promise<GRPOAnalysis['feedbackLoop']> {
     try {
       // Get previous feedback for similar queries
@@ -320,7 +320,7 @@ Extract and format as JSON:
 
   /**
    * Save GRPO analysis to database
-   */
+   */;
   private static async saveGRPOAnalysis(data: {
     query: string;
     response: string;
@@ -330,11 +330,11 @@ Extract and format as JSON:
     responseEmbedding: number[];
     confidence: number;
     processingTime: number;
-    options: AnalysisOptions;
+    options: AnalysisOptions;,
   }): Promise<string> {
     try {
       const [result] = await db
-        .insert(aiResponses)
+        .insert(aiResponses);
         .values({
           query: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).query,
           response: (data as { processing_time?: any; response?: any; embedding?: any; query?: any; thinkingContent?: any; structuredReasoning?: any; queryEmbedding?: any; responseEmbedding?: any; confidence?: any; processingTime?: any; options?: any }).response,
@@ -407,7 +407,7 @@ Extract and format as JSON:
     }
   }
 
-  // Helper methods
+  // Helper methods;
   private static getEmptyStructuredReasoning(): GRPOAnalysis['structuredReasoning'] {
     return {
       premises: [],
@@ -420,9 +420,9 @@ Extract and format as JSON:
   }
 
   private static fallbackStructureExtraction(
-    thinkingContent: string
+    thinkingContent: string;
   ): GRPOAnalysis['structuredReasoning'] {
-    const lines = thinkingContent.split('\n').filter((line) => line.trim());
+    const lines = thinkingContent.split('\n').filter((line) => line.trim();
 
     return {
       premises: lines.filter(
@@ -465,7 +465,7 @@ Extract and format as JSON:
 
 /**
  * Utility functions for GRPO processing
- */
+ */;
 export const GRPOUtils = {
   /**
    * Get personalized recommendations for a user
@@ -473,7 +473,7 @@ export const GRPOUtils = {
   async getPersonalizedRecommendations(
     userId: string,
     query: string,
-    limit: number = 5
+    limit: number = 5;
   ): Promise<RecommendationContext[]> {
     const queryEmbedding = await EnhancedGRPOProcessor['generateEmbedding'](query);
 
@@ -519,15 +519,15 @@ export const GRPOUtils = {
       ),
       finalScore: (row.user_preference_score as number) || 0.6,
       snippet: (row.response as string).slice(0, 200) + '...',
-    }));
+    });
   },
 
   /**
    * Get trending legal topics based on recent queries
    */
   async getTrendingTopics(
-    days: number = 7
-  ): Promise<Array<any>> {
+    days: number = 7;
+  ): Promise<Array<any> {
     const result = await db.execute(sql`
       SELECT
         legal_domain as topic,
@@ -545,6 +545,6 @@ export const GRPOUtils = {
       topic: row.topic as string,
       count: parseInt(row.count as string),
       avgRating: parseFloat(row.avg_rating as string),
-    }));
+    });
   },
 };

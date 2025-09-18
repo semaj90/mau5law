@@ -1,5 +1,5 @@
 // @ts-nocheck
-// Additional schema for interactive canvas with reports and POIs
+// Additional schema for interactive canvas with reports and POIs;
 import {
   pgTable,
   text,
@@ -16,7 +16,7 @@ import {
 import { relations } from "drizzle-orm";
 import { users, cases } from './schema-postgres.js';
 
-// === REPORTS & DOCUMENTS ===
+// === REPORTS & DOCUMENTS ===;
 export const reports = pgTable("reports", {
   id: uuid("id").primaryKey().defaultRandom(),
   caseId: uuid("case_id")
@@ -49,7 +49,7 @@ export const reports = pgTable("reports", {
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// === PERSONS OF INTEREST (POIs) ===
+// === PERSONS OF INTEREST (POIs) ===;
 export const personsOfInterest = pgTable("persons_of_interest", {
   id: uuid("id").primaryKey().defaultRandom(),
   caseId: uuid("case_id")
@@ -62,7 +62,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
   profileImageUrl: text("profile_image_url"),
 
   // The structured "Who, What, Why, How" profile data
-  profileData: jsonb("profile_data")
+  profileData: jsonb("profile_data");
     .default({
       who: "",
       what: "",
@@ -89,7 +89,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// === CANVAS CONNECTIONS (for linking evidence, reports, POIs) ===
+// === CANVAS CONNECTIONS (for linking evidence, reports, POIs) ===;
 export const canvasConnections = pgTable("canvas_connections", {
   id: uuid("id").primaryKey().defaultRandom(),
   caseId: uuid("case_id")
@@ -113,7 +113,7 @@ export const canvasConnections = pgTable("canvas_connections", {
     .notNull(), // 'confirmed', 'likely', 'inferred'
 
   // Visual properties for the connection line
-  lineStyle: jsonb("line_style")
+  lineStyle: jsonb("line_style");
     .default({
       color: "#007bff",
       thickness: 2,
@@ -129,7 +129,7 @@ export const canvasConnections = pgTable("canvas_connections", {
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// === CANVAS LAYOUTS (for saving different views of the same case) ===
+// === CANVAS LAYOUTS (for saving different views of the same case) ===;
 export const canvasLayouts = pgTable("canvas_layouts", {
   id: uuid("id").primaryKey().defaultRandom(),
   caseId: uuid("case_id")
@@ -141,7 +141,7 @@ export const canvasLayouts = pgTable("canvas_layouts", {
   isDefault: boolean("is_default").default(false).notNull(),
 
   // Canvas view state
-  viewport: jsonb("viewport")
+  viewport: jsonb("viewport");
     .default({
       x: 0,
       y: 0,
@@ -160,7 +160,7 @@ export const canvasLayouts = pgTable("canvas_layouts", {
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// === CANVAS ANNOTATIONS (for drawing/highlighting on the canvas itself) ===
+// === CANVAS ANNOTATIONS (for drawing/highlighting on the canvas itself) ===;
 export const canvasAnnotations = pgTable("canvas_annotations", {
   id: uuid("id").primaryKey().defaultRandom(),
   caseId: uuid("case_id")
@@ -187,7 +187,7 @@ export const canvasAnnotations = pgTable("canvas_annotations", {
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// === AI SUMMARIES (for tracking AI-generated content) ===
+// === AI SUMMARIES (for tracking AI-generated content) ===;
 export const aiSummaries = pgTable("ai_summaries", {
   id: uuid("id").primaryKey().defaultRandom(),
 
@@ -225,7 +225,7 @@ export const reportsRelations = relations(reports, ({ one }) => ({
     fields: [reports.createdBy],
     references: [users.id],
   }),
-}));
+});
 
 export const personsOfInterestRelations = relations(
   personsOfInterest,
@@ -264,7 +264,7 @@ export const canvasLayoutsRelations = relations(canvasLayouts, ({ one }) => ({
     fields: [canvasLayouts.createdBy],
     references: [users.id],
   }),
-}));
+});
 
 export const canvasAnnotationsRelations = relations(
   canvasAnnotations,
@@ -285,4 +285,4 @@ export const aiSummariesRelations = relations(aiSummaries, ({ one }) => ({
     fields: [aiSummaries.requestedBy],
     references: [users.id],
   }),
-}));
+});

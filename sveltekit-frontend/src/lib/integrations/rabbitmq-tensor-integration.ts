@@ -8,17 +8,17 @@ import { rabbitmqServiceWorker } from '$lib/workers/rabbitmq-service-worker.js';
 import { initializeWASMBridge, registerWASMAcceleratedHandlers, getBridgeStatus } from '$lib/adapters/wasm-rabbitmq-bridge.js';
 import type { JobType } from '$lib/orchestration/optimized-rabbitmq-orchestrator.js';
 
-// Port configuration for WebAssembly services
+// Port configuration for WebAssembly services;
 export const WASM_SERVICE_PORTS = {
   TENSOR_WORKER: 5173,      // SvelteKit dev server port
   RABBITMQ_API: 5177,       // RabbitMQ API port  
   RABBITMQ_BROKER: 5672,    // RabbitMQ message broker
   RABBITMQ_MGMT: 15672,     // RabbitMQ management UI
   WASM_CACHE: 6379,         // Redis cache for WASM results
-  VECTOR_DB: 6333           // Qdrant vector database
+  VECTOR_DB: 6333           // Qdrant vector database,
 } as const;
 
-// Queue routing for WASM-accelerated jobs
+// Queue routing for WASM-accelerated jobs;
 export const WASM_QUEUE_ROUTING = {
   // Vector operations queues
   'wasm_vector_operations': 'legal.wasm.vectors',
@@ -46,7 +46,7 @@ interface TensorProcessingJob {
   metadata: {
     priority: number;
     timestamp: number;
-    source: 'rabbitmq' | 'direct_api' | 'service_worker';
+    source: 'rabbitmq' | 'direct_api' | 'service_worker';,
   };
 }
 
@@ -60,7 +60,7 @@ interface TensorWorkerMessage {
 
 /**
  * Main integration class for RabbitMQ-Tensor processing
- */
+ */;
 export class RabbitMQTensorIntegration {
   private static instance: RabbitMQTensorIntegration;
   private tensorWorker: Worker | null = null;
@@ -78,7 +78,7 @@ export class RabbitMQTensorIntegration {
   
   /**
    * Initialize the complete integration system
-   */
+   */;
   async initialize(): Promise<boolean> {
     try {
       console.log('🔗 Initializing RabbitMQ-Tensor Integration...');
@@ -113,16 +113,16 @@ export class RabbitMQTensorIntegration {
   
   /**
    * Initialize the tensor SIMD worker
-   */
+   */;
   private async initializeTensorWorker(): Promise<void> {
     if (typeof Worker !== 'undefined') {
-      // Initialize the tensor SIMD worker (service worker)
+      // Initialize the tensor SIMD worker (service worker);
       if ('serviceWorker' in navigator) {
         try {
           const registration = await navigator.serviceWorker.register('/tensor-simd-worker.js');
           console.log('🚀 Tensor SIMD Service Worker registered');
           
-          // Setup message channel for communication
+          // Setup message channel for communication;
           if (registration.active) {
             this.tensorWorker = registration.active as any; // Type workaround for service worker
           }
@@ -135,30 +135,30 @@ export class RabbitMQTensorIntegration {
   
   /**
    * Setup specialized queue handlers for tensor operations
-   */
+   */;
   private setupTensorQueueHandlers(): void {
     console.log('🔧 Setting up tensor queue handlers...');
     
-    // WASM Vector Operations Handler
+    // WASM Vector Operations Handler;
     rabbitmqServiceWorker.registerHandler(WASM_QUEUE_ROUTING.wasm_vector_operations, async (message) => {
       const job: TensorProcessingJob = {
         id: message.jobId || `wasm-${Date.now()}`,
         type: 'wasm_vector_operations',
         data: {
           vectors: message.vectors,
-          operation: message.operation || 'normalize'
+          operation: message.operation || 'normalize',
         },
         metadata: {
           priority: message.priority || 2,
           timestamp: Date.now(),
-          source: 'rabbitmq'
+          source: 'rabbitmq',
         }
       };
       
       await this.processTensorJob(job);
     });
     
-    // WASM Similarity Compute Handler
+    // WASM Similarity Compute Handler;
     rabbitmqServiceWorker.registerHandler(WASM_QUEUE_ROUTING.wasm_similarity_compute, async (message) => {
       const job: TensorProcessingJob = {
         id: message.jobId || `sim-${Date.now()}`,
@@ -167,18 +167,18 @@ export class RabbitMQTensorIntegration {
           query: message.queryVector,
           vectors: message.candidateVectors,
           operation: 'similarity',
-          algorithm: message.algorithm || 'cosine'
+          algorithm: message.algorithm || 'cosine',
         },
         metadata: {
           priority: message.priority || 1,
           timestamp: Date.now(),
-          source: 'rabbitmq'
+          source: 'rabbitmq',
         }
       };
       
       const result = await this.processTensorJob(job);
       
-      // Publish results to results queue
+      // Publish results to results queue;
       if (result) {
         await rabbitmqServiceWorker.publishMessage(WASM_QUEUE_ROUTING.similarity_results, {
           jobId: job.id,
@@ -189,31 +189,31 @@ export class RabbitMQTensorIntegration {
       }
     });
     
-    // Batch Normalization Handler
+    // Batch Normalization Handler;
     rabbitmqServiceWorker.registerHandler(WASM_QUEUE_ROUTING.wasm_batch_normalize, async (message) => {
       const job: TensorProcessingJob = {
         id: message.jobId || `batch-${Date.now()}`,
         type: 'wasm_batch_normalize',
         data: {
           vectors: message.vectors,
-          operation: 'batch_process'
+          operation: 'batch_process',
         },
         metadata: {
           priority: message.priority || 2,
           timestamp: Date.now(),
-          source: 'rabbitmq'
+          source: 'rabbitmq',
         }
       };
       
       const result = await this.processTensorJob(job);
       
-      // Forward to storage queue
+      // Forward to storage queue;
       if (result && (result as { similarities?: any; processingTime?: any; acceleration?: any; vectors?: any }).vectors) {
         await rabbitmqServiceWorker.publishMessage(WASM_QUEUE_ROUTING.wasm_to_storage, {
           jobId: job.id,
           normalizedVectors: (result as { similarities?: any; processingTime?: any; acceleration?: any; vectors?: any }).vectors,
           wasmProcessed: true,
-          ready_for_storage: true
+          ready_for_storage: true,
         });
       }
     });
@@ -221,14 +221,14 @@ export class RabbitMQTensorIntegration {
   
   /**
    * Process a tensor job using the appropriate acceleration method
-   */
+   */;
   private async processTensorJob(job: TensorProcessingJob): Promise<any> {
     this.processingJobs.set(job.id, job);
     
     try {
       console.log(`🔄 Processing tensor job: ${job.type} (${job.id})`);
       
-      // Use tensor service worker for processing
+      // Use tensor service worker for processing;
       if (this.tensorWorker) {
         return await this.processWithTensorWorker(job);
       } else {
@@ -245,14 +245,14 @@ export class RabbitMQTensorIntegration {
   
   /**
    * Process job using tensor service worker
-   */
+   */;
   private async processWithTensorWorker(job: TensorProcessingJob): Promise<any> {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        reject(new Error('Tensor worker processing timeout'));
+        reject(new Error('Tensor worker processing timeout');
       }, 30000);
       
-      // Setup message listener
+      // Setup message listener;
       const messageHandler = (event: MessageEvent<TensorWorkerMessage>) => {
         if (event.data.id === job.id) {
           clearTimeout(timeout);
@@ -260,12 +260,12 @@ export class RabbitMQTensorIntegration {
           if (event.data.type === 'TENSOR_PROCESSED') {
             resolve(event.data.result);
           } else if (event.data.type === 'TENSOR_ERROR') {
-            reject(new Error(event.data.error || 'Tensor processing error'));
+            reject(new Error(event.data.error || 'Tensor processing error');
           }
         }
       };
       
-      // Send job to tensor worker
+      // Send job to tensor worker;
       if (navigator.serviceWorker && navigator.serviceWorker.controller) {
         navigator.serviceWorker.addEventListener('message', messageHandler);
         
@@ -276,19 +276,19 @@ export class RabbitMQTensorIntegration {
             operation: job.data.operation,
             vectors: job.data.vectors,
             query: job.data.query,
-            algorithm: job.data.algorithm
+            algorithm: job.data.algorithm,
           }
         });
       } else {
         clearTimeout(timeout);
-        reject(new Error('Service worker not available'));
+        reject(new Error('Service worker not available');
       }
     });
   }
   
   /**
    * Process job using direct WASM operations (fallback)
-   */
+   */;
   private async processWithDirectWASM(job: TensorProcessingJob): Promise<any> {
     console.log(`🔧 Using direct WASM processing for ${job.id}`);
     
@@ -296,7 +296,7 @@ export class RabbitMQTensorIntegration {
     const { computeVectorSimilarityWASM } = await import('$lib/adapters/wasm-rabbitmq-bridge.js');
     
     switch (job.data.operation) {
-      case 'similarity':
+      case 'similarity':;
         if (job.data.query && job.data.vectors) {
           const similarities = await computeVectorSimilarityWASM(
             job.data.query,
@@ -320,16 +320,16 @@ export class RabbitMQTensorIntegration {
   
   /**
    * Setup communication between workers
-   */
+   */;
   private setupWorkerCommunication(): void {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('message', (event) => {
         const message: TensorWorkerMessage = event.data;
         
-        // Handle tensor processing results
+        // Handle tensor processing results;
         if (message.type === 'TENSOR_PROCESSED') {
           console.log(`✅ Tensor processing completed: ${message.id}`);
-          // Results are handled by processWithTensorWorker Promise resolution
+          // Results are handled by processWithTensorWorker Promise resolution;
         } else if (message.type === 'TENSOR_ERROR') {
           console.error(`❌ Tensor processing error: ${message.id}`, message.error);
         }
@@ -343,7 +343,7 @@ export class RabbitMQTensorIntegration {
   async submitTensorJob(
     type: JobType,
     data: TensorProcessingJob['data'],
-    priority: number = 2
+    priority: number = 2;
   ): Promise<string> {
     const job: TensorProcessingJob = {
       id: `api-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -352,11 +352,11 @@ export class RabbitMQTensorIntegration {
       metadata: {
         priority,
         timestamp: Date.now(),
-        source: 'direct_api'
+        source: 'direct_api',
       }
     };
     
-    // Process job immediately
+    // Process job immediately;
     try {
       await this.processTensorJob(job);
       return job.id;
@@ -368,7 +368,7 @@ export class RabbitMQTensorIntegration {
   
   /**
    * Get integration status and health
-   */
+   */;
   getStatus() {
     const bridgeStatus = getBridgeStatus();
     
@@ -379,17 +379,17 @@ export class RabbitMQTensorIntegration {
       activeJobs: this.processingJobs.size,
       ports: WASM_SERVICE_PORTS,
       queues: WASM_QUEUE_ROUTING,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
   
   /**
    * Cleanup and shutdown
-   */
+   */;
   async shutdown(): Promise<void> {
     console.log('🛑 Shutting down RabbitMQ-Tensor Integration...');
     
-    // Wait for active jobs to complete
+    // Wait for active jobs to complete;
     if (this.processingJobs.size > 0) {
       console.log(`⏳ Waiting for ${this.processingJobs.size} active jobs to complete...`);
       // In production, implement proper job cancellation
@@ -405,7 +405,7 @@ export class RabbitMQTensorIntegration {
 // Export singleton instance
 export const rabbitMQTensorIntegration = RabbitMQTensorIntegration.getInstance();
 
-// Convenience functions for API endpoints
+// Convenience functions for API endpoints;
 export async function initializeIntegration(): Promise<boolean> {
   return await rabbitMQTensorIntegration.initialize();
 }
@@ -413,7 +413,7 @@ export async function initializeIntegration(): Promise<boolean> {
 export async function submitDirectTensorJob(
   type: JobType,
   data: TensorProcessingJob['data'],
-  priority?: number
+  priority?: number;
 ): Promise<string> {
   return await rabbitMQTensorIntegration.submitTensorJob(type, data, priority);
 }

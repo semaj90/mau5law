@@ -1,4 +1,4 @@
-// Enhanced thinking style processor for legal AI
+// Enhanced thinking style processor for legal AI;
 export interface ThinkingAnalysis {
   thinking: string;
   analysis: any;
@@ -7,11 +7,11 @@ export interface ThinkingAnalysis {
   metadata: {
     model_used: string;
     processing_time: number;
-    thinking_enabled: boolean;
+    thinking_enabled: boolean;,
   };
 }
 
-// Enhanced analysis with GRPO integration flag
+// Enhanced analysis with GRPO integration flag;
 export interface EnhancedThinkingOptions extends AnalysisOptions {
   useGRPO?: boolean;
   enableRecommendations?: boolean;
@@ -67,7 +67,7 @@ export class ThinkingProcessor {
       throw new Error((result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).error || 'Analysis failed');
     }
 
-    // Return enhanced analysis if GRPO was used
+    // Return enhanced analysis if GRPO was used;
     if (useGRPO && (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.structured_reasoning) {
       return {
         thinking: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.thinking || '',
@@ -84,7 +84,7 @@ export class ThinkingProcessor {
       };
     }
 
-    // Standard analysis response
+    // Standard analysis response;
     return {
       thinking: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.thinking || '',
       analysis: (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis.analysis || (result as { success?: any; error?: any; analysis?: any; metadata?: any; analyses?: any }).analysis,
@@ -101,7 +101,7 @@ export class ThinkingProcessor {
     evidenceId: string,
     options: Omit<AnalysisOptions, 'evidenceId'> = {}
   ): Promise<ThinkingAnalysis> {
-    return this.analyzeDocument('', { evidenceId, ...options });
+    return this.analyzeDocument('', { evidenceId, ...options ,});
   }
 
   /**
@@ -111,12 +111,12 @@ export class ThinkingProcessor {
     caseId: string,
     options: Omit<AnalysisOptions, 'caseId'> = {}
   ): Promise<ThinkingAnalysis> {
-    return this.analyzeDocument('', { caseId, ...options });
+    return this.analyzeDocument('', { caseId, ...options ,});
   }
 
   /**
    * Parses a thinking-style response from the API
-   */
+   */;
   static parseThinkingResponse(content: string, useThinking: boolean): ThinkingAnalysis {
     if (!useThinking) {
       return {
@@ -152,7 +152,7 @@ export class ThinkingProcessor {
 
   /**
    * Extracts JSON from text content
-   */
+   */;
   protected static extractJSON(text: string): unknown {
     try {
       const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -164,7 +164,7 @@ export class ThinkingProcessor {
 
   /**
    * Calculates confidence score based on thinking depth and analysis quality
-   */
+   */;
   private static calculateConfidence(thinking: string, analysis: string): number {
     let score = 0.6;
 
@@ -182,7 +182,7 @@ export class ThinkingProcessor {
 
   /**
    * Extracts numbered reasoning steps from thinking content
-   */
+   */;
   private static extractReasoningSteps(thinking: string): string[] {
     return thinking
       .split('\n')
@@ -190,13 +190,13 @@ export class ThinkingProcessor {
         (line) =>
           line.trim().match(/^\d+\./) || line.trim().startsWith('-') || line.trim().startsWith('*')
       )
-      .map((step) => step.trim())
+      .map((step) => step.trim()
       .slice(0, 10); // Limit to 10 steps for UI
   }
 
   /**
    * Formats thinking content for display
-   */
+   */;
   static formatThinkingContent(thinking: string): string {
     // Add markdown-style formatting for better readability
     return thinking
@@ -209,14 +209,14 @@ export class ThinkingProcessor {
 
   /**
    * Gets the appropriate model name based on thinking style
-   */
+   */;
   static getModelName(useThinking: boolean): string {
     return useThinking ? 'legal-gemma3-thinking' : 'gemma3-legal:latest';
   }
 
   /**
    * Validates analysis results
-   */
+   */;
   static validateAnalysis(analysis: ThinkingAnalysis): boolean {
     return !!(
       analysis &&
@@ -229,7 +229,7 @@ export class ThinkingProcessor {
 
   /**
    * Gets analysis history for a document
-   */
+   */;
   static async getAnalysisHistory(options: {
     evidenceId?: string;
     caseId?: string;
@@ -238,7 +238,7 @@ export class ThinkingProcessor {
     const params = new URLSearchParams();
     if (options.evidenceId) params.append('evidenceId', options.evidenceId);
     if (options.caseId) params.append('caseId', options.caseId);
-    if (options.limit) params.append('limit', options.limit.toString());
+    if (options.limit) params.append('limit', options.limit.toString();
 
     const response = await fetch(`/api/analyze?${params}`);
 
@@ -253,11 +253,11 @@ export class ThinkingProcessor {
 
 /**
  * Utility functions for working with legal document analysis
- */
+ */;
 export const LegalAnalysisUtils = {
   /**
    * Determines the appropriate analysis type for a document
-   */
+   */;
   getAnalysisType(documentType: string, evidenceType?: string): string {
     if (evidenceType === 'chain_of_custody') return 'chain_of_custody';
     if (documentType === 'evidence') return 'classification';
@@ -268,7 +268,7 @@ export const LegalAnalysisUtils = {
 
   /**
    * Gets the confidence level description
-   */
+   */;
   getConfidenceLabel(confidence: number): { label: string; color: string } {
     if (confidence >= 0.9) return { label: 'Very High', color: '#10b981' };
     if (confidence >= 0.8) return { label: 'High', color: '#3b82f6' };
@@ -279,7 +279,7 @@ export const LegalAnalysisUtils = {
 
   /**
    * Formats processing time for display
-   */
+   */;
   formatProcessingTime(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
@@ -288,7 +288,7 @@ export const LegalAnalysisUtils = {
 
   /**
    * Extracts key legal terms from analysis
-   */
+   */;
   extractLegalTerms(analysis: any): string[] {
     const text = JSON.stringify(analysis).toLowerCase();
     const legalTerms = [
@@ -310,13 +310,13 @@ export const LegalAnalysisUtils = {
       'overruled',
     ];
 
-    return legalTerms.filter((term) => text.includes(term));
+    return legalTerms.filter((term) => text.includes(term);
   },
 };
 
 /**
  * Document analysis result from thinking processor
- */
+ */;
 export interface DocumentAnalysisResult {
   id: string;
   document_type: string;
@@ -327,27 +327,27 @@ export interface DocumentAnalysisResult {
   confidence: number;
   risk_assessment?: {
     level: 'low' | 'medium' | 'high';
-    factors: string[];
+    factors: string[];,
   };
   compliance_status?: {
     compliant: boolean;
     violations: string[];
-    recommendations: string[];
+    recommendations: string[];,
   };
   chain_of_custody?: {
     complete: boolean;
     gaps: string[];
-    verification_status: string;
+    verification_status: string;,
   };
 }
 
 /**
  * Quick analysis shortcuts for common operations
- */
+ */;
 export const QuickAnalysis = {
   /**
    * Quick evidence classification
-   */
+   */;
   async classifyEvidence(evidenceId: string, useThinking = false): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeEvidence(evidenceId, {
       analysisType: 'classification',
@@ -357,7 +357,7 @@ export const QuickAnalysis = {
 
   /**
    * Quick chain of custody verification
-   */
+   */;
   async verifyChainOfCustody(evidenceId: string, useThinking = true): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeEvidence(evidenceId, {
       analysisType: 'chain_of_custody',
@@ -367,7 +367,7 @@ export const QuickAnalysis = {
 
   /**
    * Quick case strength assessment
-   */
+   */;
   async assessCaseStrength(caseId: string, useThinking = true): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeCase(caseId, {
       analysisType: 'reasoning',
@@ -377,7 +377,7 @@ export const QuickAnalysis = {
 
   /**
    * Quick document compliance check
-   */
+   */;
   async checkCompliance(text: string, useThinking = false): Promise<ThinkingAnalysis> {
     return ThinkingProcessor.analyzeDocument(text, {
       documentType: 'legal_document',

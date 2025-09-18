@@ -27,17 +27,16 @@ const { chromium } = require('playwright');
     // Take screenshots
     await page.screenshot({
       path: 'working-demo-routes-full.png',
-      fullPage: true
+      fullPage: true,
     });
 
     await page.screenshot({
-      path: 'working-demo-routes-viewport.png'
+      path: 'working-demo-routes-viewport.png',
     });
 
     console.log('✅ Working screenshots saved:');
     console.log('  - working-demo-routes-full.png');
     console.log('  - working-demo-routes-viewport.png');
-
   } catch (error) {
     console.error('❌ Error:', error.message);
     await page.screenshot({ path: 'working-demo-routes-error.png' });

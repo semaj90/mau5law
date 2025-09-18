@@ -8,7 +8,7 @@ export function safeWriteBuffer(
   queue: GPUQueue,
   buffer: GPUBuffer,
   offset: number,
-  data: ArrayBufferView | ArrayBuffer
+  data: ArrayBufferView | ArrayBuffer;
 ): void {
   if (data instanceof ArrayBuffer) {
     queue.writeBuffer(buffer, offset, data);
@@ -18,7 +18,7 @@ export function safeWriteBuffer(
   }
 }
 
-// Helper to get GPU adapter info safely
+// Helper to get GPU adapter info safely;
 export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: string } {
   // GPUAdapter doesn't have a direct 'name' property in the spec
   // Use info property if available, or fallback
@@ -26,13 +26,13 @@ export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: st
   if (info) {
     return {
       name: info.device || info.description || 'Unknown GPU',
-      vendor: info.vendor
+      vendor: info.vendor,
     };
   }
 
   return {
     name: 'Unknown GPU Device',
-    vendor: 'Unknown'
+    vendor: 'Unknown',
   };
 }
 
@@ -40,7 +40,7 @@ export function getAdapterInfo(adapter: GPUAdapter): { name: string; vendor?: st
 export function createFloat32Array(
   source: ArrayBufferLike | ArrayBufferView,
   offset = 0,
-  length?: number
+  length?: number;
 ): Float32Array {
   // Normalize to underlying ArrayBuffer and compute absolute byte offset & available bytes
   let buffer: ArrayBuffer;
@@ -68,7 +68,7 @@ export function createFloat32Array(
 
   if (elementCount === 0) return new Float32Array(0);
 
-  // If start offset is not 4-byte aligned, create an aligned copy
+  // If start offset is not 4-byte aligned, create an aligned copy;
   if (startByteOffset % 4 !== 0) {
     const bytesNeeded = elementCount * 4;
     const tmp = new ArrayBuffer(bytesNeeded);
@@ -81,7 +81,7 @@ export function createFloat32Array(
   return new Float32Array(buffer, startByteOffset, elementCount);
 }
 
-// WebGPU feature detection
+// WebGPU feature detection;
 export async function checkWebGPUSupport(): Promise<any> {
   if (!navigator.gpu) {
     return { supported: false, features: [] };

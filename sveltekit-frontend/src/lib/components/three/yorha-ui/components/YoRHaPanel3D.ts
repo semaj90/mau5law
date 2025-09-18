@@ -5,6 +5,7 @@
 
 import * as THREE from 'three';
 import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from '../YoRHaUI3D.js';
+}
 
 export interface YoRHaPanel3DOptions extends YoRHaStyle {
   title?: string;
@@ -47,7 +48,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
         offsetY: -0.1,
         ...options.shadow
       },
-      // Interactive states
+      // Interactive states;
       hover: {
         shadow: {
           enabled: options.hover?.shadow?.enabled !== undefined ? options.hover.shadow.enabled: true,
@@ -65,17 +66,17 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     this.contentContainer = new THREE.Group();
     this.add(this.contentContainer);
     
-    // Create header if title is provided
+    // Create header if title is provided;
     if (options.title) {
       this.createHeader();
     }
     
-    // Create scroll container if scrollable
+    // Create scroll container if scrollable;
     if (options.scrollable) {
       this.createScrollContainer();
     }
     
-    // Add resize handles if resizable
+    // Add resize handles if resizable;
     if (options.resizable) {
       this.createResizeHandles();
     }
@@ -114,7 +115,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       bevelEnabled: true,
       bevelSegments: 2,
       bevelSize: radius * 0.05,
-      bevelThickness: depth * 0.1
+      bevelThickness: depth * 0.1,
     };
 
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
@@ -131,7 +132,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const headerMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.primary.grey,
       transparent: true,
-      opacity: 0.9
+      opacity: 0.9,
     });
     
     this.headerMesh = new THREE.Mesh(headerGeometry, headerMaterial);
@@ -142,14 +143,14 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const titleGeometry = new THREE.PlaneGeometry(width - 0.6, 0.2);
     const titleMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.primary.white,
-      transparent: true
+      transparent: true,
     });
     
     this.titleMesh = new THREE.Mesh(titleGeometry, titleMaterial);
     this.titleMesh.position.set(-0.2, (this.style.height || 3) / 2 - headerHeight / 2 - 0.05, (this.style.depth || 0.1) / 2 + 0.002);
     this.add(this.titleMesh);
     
-    // Create close button if enabled
+    // Create close button if enabled;
     if (this.options.showCloseButton) {
       this.createCloseButton();
     }
@@ -164,7 +165,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const buttonGeometry = new THREE.PlaneGeometry(buttonSize, buttonSize);
     const buttonMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.status.error,
-      transparent: true
+      transparent: true,
     });
     
     this.closeButtonMesh = new THREE.Mesh(buttonGeometry, buttonMaterial);
@@ -174,7 +175,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       (this.style.depth || 0.1) / 2 + 0.002
     );
     
-    // Add hover effects
+    // Add hover effects;
     this.closeButtonMesh.userData = {
       interactive: true,
       onClick: () => this.onCloseClick(),
@@ -204,7 +205,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     );
     const scrollMaterial = new THREE.MeshBasicMaterial({
       transparent: true,
-      opacity: 0
+      opacity: 0,
     });
     
     const scrollPlane = new THREE.Mesh(scrollGeometry, scrollMaterial);
@@ -223,7 +224,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const scrollBarMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.primary.grey,
       transparent: true,
-      opacity: 0.5
+      opacity: 0.5,
     });
     
     const scrollBar = new THREE.Mesh(scrollBarGeometry, scrollBarMaterial);
@@ -243,7 +244,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     const handleMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.accent.gold,
       transparent: true,
-      opacity: 0.7
+      opacity: 0.7,
     });
     
     // Bottom-right corner handle
@@ -267,18 +268,18 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
       default: {
         backgroundColor: YORHA_COLORS.primary.beige,
         borderColor: YORHA_COLORS.primary.black,
-        borderWidth: 0.02
+        borderWidth: 0.02,
       },
       outlined: {
         backgroundColor: 0x000000,
         opacity: 0.1,
         borderColor: YORHA_COLORS.primary.beige,
-        borderWidth: 0.04
+        borderWidth: 0.04,
       },
       filled: {
         backgroundColor: YORHA_COLORS.primary.grey,
         borderColor: YORHA_COLORS.primary.black,
-        borderWidth: 0.01
+        borderWidth: 0.01,
       },
       glass: {
         backgroundColor: YORHA_COLORS.primary.white,
@@ -288,7 +289,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
         glow: {
           enabled: true,
           color: YORHA_COLORS.accent.amber,
-          intensity: 0.2
+          intensity: 0.2,
         }
       },
       terminal: {
@@ -299,7 +300,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
         animation: {
           type: 'scan' as const,
           speed: 2,
-          intensity: 0.3
+          intensity: 0.3,
         }
       }
     };
@@ -307,7 +308,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     return variantStyles[variant as keyof typeof variantStyles] || variantStyles.default;
   }
 
-  // Public methods
+  // Public methods;
   public setTitle(title: string): void {
     this.options.title = title;
     
@@ -339,7 +340,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     this.scrollOffset += delta;
     // Clamp scroll offset to reasonable bounds
     const maxScroll = 2; // Maximum scroll distance
-    this.scrollOffset = Math.max(-maxScroll, Math.min(maxScroll, this.scrollOffset));
+    this.scrollOffset = Math.max(-maxScroll, Math.min(maxScroll, this.scrollOffset);
     
     this.scrollContainer.position.y = this.scrollOffset;
   }
@@ -350,7 +351,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     this.isMinimized = true;
     const headerHeight = this.options.headerHeight || 0.4;
     
-    // Animate to minimized state
+    // Animate to minimized state;
     this.addCustomAnimation('minimize', (deltaTime) => {
       const targetHeight = headerHeight;
       const currentHeight = this.style.height || 3;
@@ -370,7 +371,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     this.isMinimized = false;
     const originalHeight = this.options.height || 3;
     
-    // Animate to restored state
+    // Animate to restored state;
     this.addCustomAnimation('restore', (deltaTime) => {
       const currentHeight = this.style.height || 0.4;
       
@@ -384,7 +385,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
   }
 
   private onCloseClick(): void {
-    // Add close animation
+    // Add close animation;
     this.addCustomAnimation('closeAnimation', (deltaTime) => {
       const material = Array.isArray(this.mesh.material) ? this.mesh.material[0] : this.mesh.material;
       const currentOpacity = (material as any).opacity || 1;
@@ -415,7 +416,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     if (this.titleMesh) {
       this.titleMesh.geometry.dispose();
       if (Array.isArray(this.titleMesh.material)) {
-        this.titleMesh.material.forEach(mat => mat.dispose());
+        this.titleMesh.material.forEach(mat => mat.dispose();
       } else {
         this.titleMesh.material.dispose();
       }
@@ -424,7 +425,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     if (this.headerMesh) {
       this.headerMesh.geometry.dispose();
       if (Array.isArray(this.headerMesh.material)) {
-        this.headerMesh.material.forEach(mat => mat.dispose());
+        this.headerMesh.material.forEach(mat => mat.dispose();
       } else {
         this.headerMesh.material.dispose();
       }
@@ -433,7 +434,7 @@ export class YoRHaPanel3D extends YoRHa3DComponent {
     if (this.closeButtonMesh) {
       this.closeButtonMesh.geometry.dispose();
       if (Array.isArray(this.closeButtonMesh.material)) {
-        this.closeButtonMesh.material.forEach(mat => mat.dispose());
+        this.closeButtonMesh.material.forEach(mat => mat.dispose();
       } else {
         this.closeButtonMesh.material.dispose();
       }

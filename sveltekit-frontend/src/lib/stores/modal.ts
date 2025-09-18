@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 
+}
 
 export interface ModalConfig {
   id: string;
@@ -15,7 +16,7 @@ export interface ModalConfig {
 
 export interface ModalState {
   modals: ModalConfig[];
-  activeModal: string | null;
+  activeModal: string | null;,
 }
 
 const initialState: ModalState = {
@@ -29,7 +30,7 @@ function createModalStore() {
   const store = {
     subscribe,
 
-    // Open a modal
+    // Open a modal;
     open: (config: Omit<ModalConfig, "id"> & { id?: string }) => {
       const id =
         config.id ||
@@ -45,12 +46,12 @@ function createModalStore() {
       update((state) => ({
         modals: [...state.modals, modalConfig],
         activeModal: id,
-      }));
+      });
 
       return id;
     },
 
-    // Close a modal
+    // Close a modal;
     close: (id?: string) => {
       update((state) => {
         const modalToClose = id || state.activeModal;
@@ -74,10 +75,10 @@ function createModalStore() {
       });
     },
 
-    // Close all modals
+    // Close all modals;
     closeAll: () => {
       update((state) => {
-        // Call onClose for all modals
+        // Call onClose for all modals;
         state.modals.forEach((modal) => {
           if (modal.onClose) {
             modal.onClose();
@@ -88,7 +89,7 @@ function createModalStore() {
       });
     },
 
-    // Update modal props
+    // Update modal props;
     updateProps: (id: string, props: Record<string, any>) => {
       update((state) => ({
         ...state,
@@ -97,10 +98,10 @@ function createModalStore() {
             ? { ...modal, props: { ...modal.props, ...props } }
             : modal,
         ),
-      }));
+      });
     },
 
-    // Convenience methods for common modal types
+    // Convenience methods for common modal types;
     confirm: (options: {
       title: string;
       message: string;
@@ -111,7 +112,7 @@ function createModalStore() {
     }) => {
       return store.open({
         title: options.title,
-        component: "ConfirmModal", // This would be a built-in component
+        component: "ConfirmModal", // This would be a built-in component;
         props: {
           message: options.message,
           confirmText: options.confirmText || "Confirm",
@@ -131,7 +132,7 @@ function createModalStore() {
     }) => {
       return store.open({
         title: options.title,
-        component: "AlertModal", // This would be a built-in component
+        component: "AlertModal", // This would be a built-in component;
         props: {
           message: options.message,
           buttonText: options.buttonText || "OK",
@@ -153,7 +154,7 @@ function createModalStore() {
     }) => {
       return store.open({
         title: options.title,
-        component: "PromptModal", // This would be a built-in component
+        component: "PromptModal", // This would be a built-in component;
         props: {
           message: options.message,
           placeholder: options.placeholder,

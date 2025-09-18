@@ -31,11 +31,16 @@ const { chromium } = require('playwright');
     const categories = await page.evaluate(() => {
       const cards = document.querySelectorAll('.demo-route-card');
       const categoryCount = {};
-      cards.forEach(card => {
+      cards.forEach((card) => {
         const categoryElements = card.querySelectorAll('[class*="uppercase"]');
-        categoryElements.forEach(el => {
+        categoryElements.forEach((el) => {
           const category = el.textContent?.trim();
-          if (category && category.length > 0 && category !== 'LIVE DEMO' && category !== 'ACTIVE') {
+          if (
+            category &&
+            category.length > 0 &&
+            category !== 'LIVE DEMO' &&
+            category !== 'ACTIVE'
+          ) {
             categoryCount[category] = (categoryCount[category] || 0) + 1;
           }
         });
@@ -47,7 +52,7 @@ const { chromium } = require('playwright');
     // Get sample route titles
     const sampleTitles = await page.evaluate(() => {
       const cards = Array.from(document.querySelectorAll('.demo-route-card'));
-      return cards.slice(0, 10).map(card => {
+      return cards.slice(0, 10).map((card) => {
         const titleElement = card.querySelector('h4');
         const categoryElements = card.querySelectorAll('[class*="uppercase"]');
         let category = 'Unknown';
@@ -60,7 +65,7 @@ const { chromium } = require('playwright');
         }
         return {
           title: titleElement ? titleElement.textContent.trim() : 'No title',
-          category
+          category,
         };
       });
     });
@@ -69,8 +74,12 @@ const { chromium } = require('playwright');
     // Check if any demo sections exist
     const demoSections = await page.evaluate(() => {
       const sections = [];
-      const interactiveSection = document.querySelector('section[aria-label*="Interactive demo routes"]');
-      const showcaseSection = document.querySelector('section[aria-label*="Demo routes and testing"]');
+      const interactiveSection = document.querySelector(
+        'section[aria-label*="Interactive demo routes"]'
+      );
+      const showcaseSection = document.querySelector(
+        'section[aria-label*="Demo routes and testing"]'
+      );
       if (interactiveSection) sections.push('Interactive Demo Routes Grid');
       if (showcaseSection) sections.push('Demo Routes Showcase');
       return sections;
@@ -81,13 +90,13 @@ const { chromium } = require('playwright');
     console.log('📸 Taking full page screenshot...');
     await page.screenshot({
       path: 'playwright-homepage-full.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Take screenshot of viewport
     console.log('🖼️ Taking viewport screenshot...');
     await page.screenshot({
-      path: 'playwright-homepage-viewport.png'
+      path: 'playwright-homepage-viewport.png',
     });
 
     // Try to scroll down to find demo routes if they exist
@@ -98,7 +107,7 @@ const { chromium } = require('playwright');
     await page.waitForTimeout(1000);
 
     await page.screenshot({
-      path: 'playwright-homepage-scrolled.png'
+      path: 'playwright-homepage-scrolled.png',
     });
 
     // Look for specific demo routes elements
@@ -150,7 +159,6 @@ const { chromium } = require('playwright');
       return structure;
     });
     console.log('🏗️ Page structure:', pageStructure);
-
   } catch (error) {
     console.error('❌ Error:', error.message);
 

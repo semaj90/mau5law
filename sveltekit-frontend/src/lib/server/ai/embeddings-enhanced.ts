@@ -4,6 +4,7 @@
 // Use process.env for server-side environment variables
 
 import { cacheEmbedding, getCachedEmbedding } from "$lib/server/cache/redis";
+}
 
 export interface EnhancedEmbeddingOptions {
   provider?: "auto" | "embeddinggemma" | "nomic-embed" | "tauri-legal-bert" | "tauri-bert";
@@ -27,7 +28,7 @@ export interface EmbeddingResult {
 
 /**
  * Generate embeddings using Ollama Gemma embeddings model (primary) with nomic-embed-text fallback
- */
+ */;
 async function generateNomicEmbedding(text: string): Promise<number[]> {
   const ollamaEndpoint = import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434';
 
@@ -41,7 +42,7 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: model,
-          prompt: text
+          prompt: text,
         })
       });
 
@@ -67,9 +68,9 @@ async function generateNomicEmbedding(text: string): Promise<number[]> {
 
 /**
  * Extract structured data from legal documents using langextract patterns
- */
+ */;
 async function extractDocumentStructure(text: string): Promise<any> {
-  // Simple extraction patterns for legal documents
+  // Simple extraction patterns for legal documents;
   const patterns = {
     parties: /(?:party|plaintiff|defendant|client):\s*([^.\n]+)/gi,
     dates: /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/g,
@@ -85,11 +86,11 @@ async function extractDocumentStructure(text: string): Promise<any> {
     caseNumbers: [],
     sections: [],
     documentType: detectDocumentType(text),
-    keyPhrases: extractKeyPhrases(text)
+    keyPhrases: extractKeyPhrases(text),
   };
 
   for (const [key, pattern] of Object.entries(patterns)) {
-    const matches = Array.from(text.matchAll(pattern as RegExp));
+    const matches = Array.from(text.matchAll(pattern as RegExp);
     (extracted as any)[key] = matches.map(match => match[1] || match[0]).slice(0, 10);
   }
 
@@ -126,7 +127,7 @@ function extractKeyPhrases(text: string): string[] {
     'arbitration', 'jurisdiction', 'governing law', 'attorney fees'
   ];
   
-  const foundTerms = legalTerms.filter(item => item.includes)(term.toLowerCase())
+  const foundTerms = legalTerms.filter(item => item.includes)(term.toLowerCase()
   );
   
   return foundTerms.slice(0, 5);
@@ -158,7 +159,7 @@ export async function generateEnhancedEmbedding(
     t.length > maxTokens ? t.substring(0, maxTokens) : t,
   );
 
-  // Check cache for single inputs
+  // Check cache for single inputs;
   if (cache && !isArray) {
     const cacheKey = `nomic-${legalDomain}-${useExtraction}`;
     const cachedEmbedding = await getCachedEmbedding(
@@ -186,7 +187,7 @@ export async function generateEnhancedEmbedding(
       const embedding = await generateNomicEmbedding(processedText);
       results.push(embedding);
       
-      // Cache single results
+      // Cache single results;
       if (cache && !isArray) {
         const cacheKey = `nomic-${legalDomain}-${useExtraction}`;
         await cacheEmbedding(input, embedding, cacheKey);
@@ -226,15 +227,15 @@ export async function generateBatchEmbeddingsEnhanced(
       }
     } catch (error: any) {
       console.error(`Batch ${i}-${i + batchSize} failed:`, error);
-      // Add empty embeddings for failed items
+      // Add empty embeddings for failed items;
       for (let j = 0; j < batch.length; j++) {
-        results.push(new Array(384).fill(0)); // nomic-embed-text uses 384 dimensions
+        results.push(new Array(384).fill(0); // nomic-embed-text uses 384 dimensions
       }
     }
     
-    // Small delay between batches to avoid rate limits
+    // Small delay between batches to avoid rate limits;
     if (i + batchSize < texts.length) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100);
     }
   }
   
@@ -255,7 +256,7 @@ export async function generateLegalEmbedding(
   // Extract document structure
   const extracted = await extractDocumentStructure(documentText);
   
-  // Generate embedding with extracted context
+  // Generate embedding with extracted context;
   const embedding = (await generateEnhancedEmbedding(documentText, {
     provider: "nomic-embed",
     legalDomain: true,
@@ -296,7 +297,7 @@ export async function calculateLegalSimilarity(
 
 /**
  * Cosine similarity calculation
- */
+ */;
 function cosineSimilarity(vecA: number[], vecB: number[]): number {
   if (vecA.length !== vecB.length) {
     throw new Error("Vectors must have same length for similarity calculation");
@@ -312,7 +313,7 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
     normB += vecB[i] * vecB[i];
   }
   
-  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
 }
 
 /**
@@ -355,7 +356,7 @@ export async function processDocumentWithChunking(
   const extracted = await extractDocumentStructure(document);
   const chunks: { text: string; embedding: number[]; metadata: any }[] = [];
   
-  // Split document into overlapping chunks
+  // Split document into overlapping chunks;
   for (let i = 0; i < document.length; i += chunkSize - chunkOverlap) {
     const chunk = document.slice(i, i + chunkSize);
     if (chunk.trim().length < 50) continue; // Skip very small chunks

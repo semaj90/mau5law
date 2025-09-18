@@ -24,7 +24,7 @@ export async function testWasmModule(): Promise<boolean> {
     const similarity = await vectorWasm.computeCosineSimilarity(vectorA, vectorB);
     console.log(`[WASM Test] Cosine similarity: ${similarity}`);
     
-    // Should be 1.0 since vectorB = 2 * vectorA
+    // Should be 1.0 since vectorB = 2 * vectorA;
     if (Math.abs(similarity - 1.0) > 0.001) {
       throw new Error(`Expected similarity ~1.0, got ${similarity}`);
     }
@@ -39,7 +39,7 @@ export async function testWasmModule(): Promise<boolean> {
     }
 
     // Check that embedding is normalized (magnitude should be ~1)
-    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
     console.log(`[WASM Test] Embedding magnitude: ${magnitude}`);
     
     if (Math.abs(magnitude - 1.0) > 0.001) {
@@ -57,7 +57,7 @@ export async function testWasmModule(): Promise<boolean> {
     const similarities = await vectorWasm.computeBatchSimilarities(query, vectors, 'cosine');
     console.log(`[WASM Test] Batch similarities: [${similarities.join(', ')}]`);
 
-    // Check expected values
+    // Check expected values;
     if (Math.abs(similarities[0] - 1.0) > 0.001) {
       throw new Error(`Expected first similarity ~1.0, got ${similarities[0]}`);
     }
@@ -68,7 +68,7 @@ export async function testWasmModule(): Promise<boolean> {
     // Test 4: Vector normalization
     const unnormalized = new Float32Array([3.0, 4.0, 0.0]); // Magnitude = 5
     const normalized = await vectorWasm.normalizeVector(unnormalized);
-    const normalizedMagnitude = Math.sqrt(normalized.reduce((sum, val) => sum + val * val, 0));
+    const normalizedMagnitude = Math.sqrt(normalized.reduce((sum, val) => sum + val * val, 0);
     
     console.log(`[WASM Test] Normalized vector magnitude: ${normalizedMagnitude}`);
     if (Math.abs(normalizedMagnitude - 1.0) > 0.001) {
@@ -90,7 +90,7 @@ export async function testWasmModule(): Promise<boolean> {
   }
 }
 
-// Run test if called directly
+// Run test if called directly;
 if (typeof window !== 'undefined' && window.location?.href.includes('wasm-test')) {
   testWasmModule().then(success => {
     if (success) {

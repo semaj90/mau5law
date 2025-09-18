@@ -10,10 +10,9 @@ export const POST: RequestHandler = async ({ request }) => {
     const { prompt, options = {} } = await request.json();
 
     if (!prompt) {
-      return json(
-        {
+      return json({
           error: "Prompt is required",
-        },
+        },)
         { status: 400 },
       );
     }
@@ -57,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error("Gemma3 test failed:", error);
 
-    return json(
+    return json();
       {
         success: false,
         error: "Gemma3 inference failed",

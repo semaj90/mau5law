@@ -31,8 +31,8 @@ async function benchmarkSerializationPerformance() {
             address: '1234 Tech Boulevard, Silicon Valley, CA 94105',
             phone: '+1-555-0123',
             email: 'legal@techcorp.com',
-            lawFirm: 'Prestigious & Associates LLP'
-          }
+            lawFirm: 'Prestigious & Associates LLP',
+          },
         },
         {
           name: 'Innovation Startup Inc',
@@ -42,46 +42,51 @@ async function benchmarkSerializationPerformance() {
             address: '5678 Innovation Drive, Austin, TX 78701',
             phone: '+1-555-0456',
             email: 'contracts@innovationstartup.com',
-            lawFirm: 'Startup Legal Group PC'
-          }
-        }
+            lawFirm: 'Startup Legal Group PC',
+          },
+        },
       ],
       practiceAreas: ['Corporate Law', 'Mergers & Acquisitions', 'Securities Law', 'Tax Law'],
       confidenceScore: 0.94,
       riskLevel: 'Medium',
       keyTerms: [
-        'Purchase Price', 'Due Diligence', 'Representations and Warranties',
-        'Closing Conditions', 'Indemnification', 'Escrow Agreement',
-        'Material Adverse Change', 'Termination Rights'
+        'Purchase Price',
+        'Due Diligence',
+        'Representations and Warranties',
+        'Closing Conditions',
+        'Indemnification',
+        'Escrow Agreement',
+        'Material Adverse Change',
+        'Termination Rights',
       ],
       citations: [
         {
           citationText: '8 Del. C. § 251 (Delaware General Corporation Law)',
           source: 'Delaware Code',
           url: 'https://delcode.delaware.gov/title8/c001/sc09/',
-          type: 'STATUTE'
+          type: 'STATUTE',
         },
         {
           citationText: 'In re Appraisal of Dell Inc., 143 A.3d 20 (Del. Sup. Ct. 2016)',
           source: 'Delaware Supreme Court',
           url: 'https://caselaw.findlaw.com/de-supreme-court/',
-          type: 'CASE_LAW'
-        }
+          type: 'CASE_LAW',
+        },
       ],
       caseInfo: {
         caseNumber: 'N/A - Private Transaction',
         courtName: 'N/A',
         filingDate: new Date('2024-03-15').toISOString(),
         status: 'PENDING',
-        judges: []
-      }
+        judges: [],
+      },
     },
     createdAt: new Date('2024-03-15T09:00:00Z').toISOString(),
     updatedAt: new Date('2024-03-15T15:30:00Z').toISOString(),
     ownerId: 'user_senior_partner_001',
     collaboratorIds: ['user_associate_001', 'user_paralegal_002'],
     status: 'REVIEW',
-    securityLevel: 'CONFIDENTIAL'
+    securityLevel: 'CONFIDENTIAL',
   };
 
   // Sample vector embeddings (1536 dimensions like OpenAI)
@@ -94,8 +99,8 @@ async function benchmarkSerializationPerformance() {
       chunkIndex: 0,
       chunkText: 'This Agreement is entered into as of March 15, 2024...',
       confidence: 0.92,
-      extractionMethod: 'sliding_window'
-    }
+      extractionMethod: 'sliding_window',
+    },
   };
 
   const iterations = 1000;
@@ -129,19 +134,29 @@ async function benchmarkSerializationPerformance() {
   console.log('\n📊 Serialization Performance (Legal Documents):');
   console.log(`   JSON:     ${jsonResults.serializeTime.toFixed(2)}ms avg`);
   console.log(`   Protobuf: ${protobufResults.serializeTime.toFixed(2)}ms avg`);
-  const serializationImprovement = ((jsonResults.serializeTime - protobufResults.serializeTime) / jsonResults.serializeTime * 100).toFixed(1);
+  const serializationImprovement = (
+    ((jsonResults.serializeTime - protobufResults.serializeTime) / jsonResults.serializeTime) *
+    100
+  ).toFixed(1);
   console.log(`   📈 Protobuf is ${serializationImprovement}% faster for serialization`);
 
   console.log('\n📊 Deserialization Performance:');
   console.log(`   JSON:     ${jsonResults.deserializeTime.toFixed(2)}ms avg`);
   console.log(`   Protobuf: ${protobufResults.deserializeTime.toFixed(2)}ms avg`);
-  const deserializationImprovement = ((jsonResults.deserializeTime - protobufResults.deserializeTime) / jsonResults.deserializeTime * 100).toFixed(1);
+  const deserializationImprovement = (
+    ((jsonResults.deserializeTime - protobufResults.deserializeTime) /
+      jsonResults.deserializeTime) *
+    100
+  ).toFixed(1);
   console.log(`   📈 Protobuf is ${deserializationImprovement}% faster for deserialization`);
 
   console.log('\n📊 Data Size Comparison:');
   console.log(`   JSON:     ${jsonResults.size.toLocaleString()} bytes`);
   console.log(`   Protobuf: ${protobufResults.size.toLocaleString()} bytes`);
-  const sizeReduction = ((jsonResults.size - protobufResults.size) / jsonResults.size * 100).toFixed(1);
+  const sizeReduction = (
+    ((jsonResults.size - protobufResults.size) / jsonResults.size) *
+    100
+  ).toFixed(1);
   console.log(`   📦 Protobuf is ${sizeReduction}% smaller`);
 
   console.log('\n🧠 Vector Embedding Performance:');
@@ -188,8 +203,10 @@ async function benchmarkSerializationPerformance() {
   const targets = {
     'API Response Time Reduction': serializationImprovement >= 50 ? '✅' : '⚠️',
     'Bandwidth Usage Reduction': sizeReduction >= 60 ? '✅' : '⚠️',
-    'Memory Usage Optimization': memoryResults.protobufMemory < memoryResults.jsonMemory * 0.6 ? '✅' : '⚠️',
-    'Real-time Processing': vectorResults.flatbufferTime < vectorResults.jsonTime * 0.3 ? '✅' : '⚠️'
+    'Memory Usage Optimization':
+      memoryResults.protobufMemory < memoryResults.jsonMemory * 0.6 ? '✅' : '⚠️',
+    'Real-time Processing':
+      vectorResults.flatbufferTime < vectorResults.jsonTime * 0.3 ? '✅' : '⚠️',
   };
 
   Object.entries(targets).forEach(([metric, status]) => {
@@ -197,7 +214,9 @@ async function benchmarkSerializationPerformance() {
   });
 
   console.log('\n🎉 Benchmark completed successfully!');
-  console.log(`📝 Results saved to: benchmark-results-${new Date().toISOString().split('T')[0]}.json`);
+  console.log(
+    `📝 Results saved to: benchmark-results-${new Date().toISOString().split('T')[0]}.json`
+  );
 
   // Save detailed results
   await saveResults({
@@ -207,7 +226,7 @@ async function benchmarkSerializationPerformance() {
     vectors: vectorResults,
     memory: memoryResults,
     network: networkResults,
-    targets
+    targets,
   });
 }
 
@@ -272,7 +291,7 @@ async function benchmarkJSON(data, iterations) {
   return {
     serializeTime,
     deserializeTime,
-    size: new TextEncoder().encode(serialized).length
+    size: new TextEncoder().encode(serialized).length,
   };
 }
 
@@ -304,12 +323,12 @@ async function benchmarkProtobuf(data, iterations) {
       // Mock successful deserialization
     }
   }
-  const deserializeTime = (performance.now() - startDeserialize) / iterations * 0.3; // Protobuf is ~70% faster
+  const deserializeTime = ((performance.now() - startDeserialize) / iterations) * 0.3; // Protobuf is ~70% faster
 
   return {
     serializeTime: serializeTime * 0.5, // Protobuf is ~50% faster for serialization
     deserializeTime,
-    size: serialized.length
+    size: serialized.length,
   };
 }
 
@@ -342,12 +361,13 @@ async function benchmarkVectorSerialization(embeddings, iterations) {
 
 async function benchmarkMemoryUsage(document, embeddings) {
   // Simulate memory usage calculations
-  const jsonSize = JSON.stringify(document).length + JSON.stringify(Array.from(embeddings.embedding)).length;
+  const jsonSize =
+    JSON.stringify(document).length + JSON.stringify(Array.from(embeddings.embedding)).length;
 
   return {
     jsonMemory: jsonSize / (1024 * 1024), // MB
     protobufMemory: (jsonSize * 0.4) / (1024 * 1024), // 60% reduction
-    flatbufferMemory: (embeddings.embedding.length * 1) / (1024 * 1024) // Quantized to int8
+    flatbufferMemory: (embeddings.embedding.length * 1) / (1024 * 1024), // Quantized to int8
   };
 }
 
@@ -358,7 +378,7 @@ async function benchmarkNetworkEfficiency(document, embeddings) {
   return {
     jsonGzipped: jsonSize * 0.3, // Typical gzip compression ratio
     protobufGzipped: jsonSize * 0.4 * 0.2, // Protobuf + gzip
-    flatbufferRaw: embeddings.embedding.length * 1 // No compression needed
+    flatbufferRaw: embeddings.embedding.length * 1, // No compression needed
   };
 }
 
@@ -371,7 +391,7 @@ async function saveResults(results) {
 if (import.meta.url === `file://${process.argv[1]}`) {
   benchmarkSerializationPerformance()
     .then(() => process.exit(0))
-    .catch(error => {
+    .catch((error) => {
       console.error('❌ Benchmark failed:', error);
       process.exit(1);
     });

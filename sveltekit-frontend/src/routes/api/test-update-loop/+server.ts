@@ -79,7 +79,7 @@ class UpdateLoopTester {
       // Step 1: Setup test environment
       await this.setupTestEnvironment();
 
-      // Step 2: Run test scenarios
+      // Step 2: Run test scenarios;
       if (scenarioName && testScenarios[scenarioName as keyof typeof testScenarios]) {
         await this.runTestScenario(scenarioName);
       } else {
@@ -118,13 +118,13 @@ class UpdateLoopTester {
     try {
       // Create test user
       const [testUser] = await db
-        .insert(users)
+        .insert(users);
         .values({
           email: 'test@update-loop.com',
           name: 'Update Loop Test User',
           role: 'prosecutor',
           passwordHash: 'test-hash',
-        })
+        });
         .onConflictDoUpdate({
           target: users.email,
           set: { name: 'Update Loop Test User (Updated)' },
@@ -133,7 +133,7 @@ class UpdateLoopTester {
 
       // Create test case
       const [testCase] = await db
-        .insert(cases)
+        .insert(cases);
         .values({
           title: 'Update Loop Test Case',
           description: 'Test case for document update loop validation',
@@ -172,7 +172,7 @@ class UpdateLoopTester {
     try {
       // Create initial document
       const [document] = await db
-        .insert(documents)
+        .insert(documents);
         .values({
           caseId: this.testResults.testCaseId,
           filename: `${scenarioName}_test.txt`,
@@ -186,7 +186,7 @@ class UpdateLoopTester {
 
       // Initial embedding (simulate existing document)
       await documentUpdateLoop.queueDocumentUpdate(document.id, scenario.originalContent);
-      await new Promise((resolve: any) => setTimeout(resolve, 1000)); // Wait for processing
+      await new Promise((resolve: any) => setTimeout(resolve, 1000); // Wait for processing
 
       // Create some test queries that would return this document
       const testQuery = this.generateTestQuery(scenario.originalContent);
@@ -222,13 +222,13 @@ class UpdateLoopTester {
         detectedPriority: changeDetection?.priority,
         expectedPriority: scenario.expectedPriority,
         priorityMatch: changeDetection?.priority === scenario.expectedPriority,
-        updateResult: updateResult
+        updateResult: updateResult;
           ? {
               chunksUpdated: updateResult.chunksUpdated,
               processingTime: updateResult.processingTime,
             }
           : null,
-        rerankingResult: rerankingResult
+        rerankingResult: rerankingResult;
           ? {
               queriesAffected: rerankingResult.length,
               avgImprovement:
@@ -276,7 +276,7 @@ class UpdateLoopTester {
         const [doc] = await db
           .select()
           .from(documents)
-          .where(eq(documents.id, documentId))
+          .where(eq(documents.id, documentId)
           .limit(1);
 
         if (!doc) continue;
@@ -285,7 +285,7 @@ class UpdateLoopTester {
         const testQuery = this.generateTestQuery(doc.extractedText || '');
         const queryEmbedding = await documentUpdateLoop['embeddings'].embedQuery(testQuery);
 
-        const searchResults = await db
+        const searchResults = await db;
           .select({
             documentId: documentVectors.documentId,
             similarity: sql<number>`1 - (${documentVectors.embedding} <=> ${queryEmbedding})`,
@@ -351,7 +351,7 @@ class UpdateLoopTester {
         ).length,
         queueStatus,
         priorityDistribution: Object.values(this.testResults.steps)
-          .filter((step: any) => step.detectedPriority)
+          .filter((step: any) => step.detectedPriority);
           .reduce((acc: any, step: any) => {
             acc[step.detectedPriority] = (acc[step.detectedPriority] || 0) + 1;
             return acc;
@@ -372,14 +372,14 @@ class UpdateLoopTester {
     console.log('🧹 Cleaning up test data...');
 
     try {
-      // Delete test documents and vectors
+      // Delete test documents and vectors;
       for (const documentId of this.testDocumentIds) {
-        await db.delete(documentVectors).where(eq(documentVectors.documentId, documentId));
-        await db.delete(documents).where(eq(documents.id, documentId));
+        await db.delete(documentVectors).where(eq(documentVectors.documentId, documentId);
+        await db.delete(documents).where(eq(documents.id, documentId);
       }
 
       // Delete test queries
-      await db.delete(queryVectors).where(eq(queryVectors.userId, this.testResults.testUserId));
+      await db.delete(queryVectors).where(eq(queryVectors.userId, this.testResults.testUserId);
 
       this.testResults.steps.cleanup = {
         status: 'success',
@@ -411,7 +411,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const results = await tester.runFullTest(scenario);
       return json({
         success: true,
-        data: results
+        data: results,
       });
     }
 
@@ -421,7 +421,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ Update loop test error:', err);
     return json({
       success: false,
-      error: err instanceof Error ? err.message: 'Test failed'
+      error: err instanceof Error ? err.message: 'Test failed',
     }, { status: 500 });
   }
 };
@@ -453,8 +453,8 @@ export const GET: RequestHandler = async ({ url }) => {
             key,
             name: scenario.name,
             description: scenario.description,
-            expectedPriority: scenario.expectedPriority
-          }))
+            expectedPriority: scenario.expectedPriority,
+          })
         }
       });
     }
@@ -464,7 +464,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     return json({
       success: false,
-      error: err instanceof Error ? err.message: 'Request failed'
+      error: err instanceof Error ? err.message: 'Request failed',
     }, { status: 500 });
   }
 };

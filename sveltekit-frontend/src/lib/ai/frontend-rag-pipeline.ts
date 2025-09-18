@@ -6,7 +6,7 @@ import { pipeline, env } from "@xenova/transformers";
 import type { Pipeline } from "@xenova/transformers";
 import { browser } from "$app/environment";
 
-// Configure for frontend use
+// Configure for frontend use;
 if (browser) {
   env.allowRemoteModels = false;
   env.allowLocalModels = true;
@@ -21,7 +21,7 @@ export interface SemanticChunk {
     timestamp: number;
     source: string;
     relevance: number;
-    semanticGroup: string;
+    semanticGroup: string;,
   };
 }
 
@@ -31,7 +31,7 @@ export interface SIMDTensor {
   simdOps: {
     dotProduct: (a: Float32Array, b: Float32Array) => number;
     cosineDistance: (a: Float32Array, b: Float32Array) => number;
-    normalize: (vec: Float32Array) => Float32Array;
+    normalize: (vec: Float32Array) => Float32Array;,
   };
 }
 
@@ -61,12 +61,12 @@ class FrontendRAGPipeline {
         if (!this.semanticCollection) {
           this.semanticCollection = this.lokiDb.addCollection('semantic_chunks', {
             indices: ['semanticGroup', 'relevance', 'timestamp'],
-            unique: ['id']
+            unique: ['id'],
           });
         }
       },
       autosave: true,
-      autosaveInterval: 2000
+      autosaveInterval: 2000,
     });
   }
 
@@ -75,14 +75,14 @@ class FrontendRAGPipeline {
       // Initialize lightweight embedding pipeline
       this.embeddingPipeline = await pipeline(
         'feature-extraction',
-        'Xenova/all-MiniLM-L6-v2',
+        'Xenova/all-MiniLM-L6-v2',)
         { device: 'cpu', dtype: 'fp32' }
       );
 
       // Initialize text generation pipeline (lightweight)
       this.generationPipeline = await pipeline(
         'text-generation',
-        'Xenova/gpt2',
+        'Xenova/gpt2',)
         { device: 'cpu', dtype: 'fp16' }
       );
 
@@ -92,7 +92,7 @@ class FrontendRAGPipeline {
     }
   }
 
-  // SIMD-optimized embedding generation
+  // SIMD-optimized embedding generation;
   async generateEmbedding(text: string): Promise<SIMDTensor> {
     if (!this.embeddingPipeline) {
       throw new Error('Embedding pipeline not initialized');
@@ -106,7 +106,7 @@ class FrontendRAGPipeline {
       return {
         data: this.simdProcessor.optimize(embedding),
         shape: (result as { data?: any; dims?: any }).dims,
-        simdOps: this.simdProcessor.getOperations()
+        simdOps: this.simdProcessor.getOperations(),
       };
     } catch (error: any) {
       console.error('Frontend embedding generation failed:', error);
@@ -118,17 +118,17 @@ class FrontendRAGPipeline {
   async semanticSearch(
     query: string, 
     context: 'legal' | 'technical' | 'general' = 'legal',
-    limit: number = 10
+    limit: number = 10;
   ): Promise<SemanticChunk[]> {
     const queryEmbedding = await this.generateEmbedding(query);
     const contextWeights = this.contextSwitcher.getWeights(context);
 
-    // Enhanced Loki.js query with semantic ranking
+    // Enhanced Loki.js query with semantic ranking;
     const candidates = this.semanticCollection.find({
       semanticGroup: { $in: contextWeights.groups }
     });
 
-    // SIMD-accelerated similarity computation
+    // SIMD-accelerated similarity computation;
     const scoredResults = candidates.map((chunk: any) => {
       const similarity = queryEmbedding.simdOps.cosineDistance(
         queryEmbedding.data,
@@ -146,29 +146,29 @@ class FrontendRAGPipeline {
       .slice(0, limit);
   }
 
-  // Get system statistics
+  // Get system statistics;
   getStats(): {
     documentsIndexed: number;
     memoryUsage: number;
     pipelineStatus: {
       embedding: boolean;
-      generation: boolean;
+      generation: boolean;,
     };
-    simdOptimizations: boolean;
+    simdOptimizations: boolean;,
   } {
     return {
       documentsIndexed: this.semanticCollection?.count() || 0,
       memoryUsage: browser ? (performance as any).memory?.usedJSHeapSize || 0 : 0,
       pipelineStatus: {
         embedding: !!this.embeddingPipeline,
-        generation: !!this.generationPipeline
+        generation: !!this.generationPipeline,
       },
-      simdOptimizations: this.simdProcessor.isOptimized()
+      simdOptimizations: this.simdProcessor.isOptimized(),
     };
   }
 }
 
-// Context switching for different domains
+// Context switching for different domains;
 class ContextSwitcher {
   private contexts = {
     legal: {
@@ -190,7 +190,7 @@ class ContextSwitcher {
   }
 }
 
-// SIMD processor for optimized tensor operations
+// SIMD processor for optimized tensor operations;
 class SIMDProcessor {
   private useSimd: boolean;
 
@@ -220,7 +220,7 @@ class SIMDProcessor {
     return {
       dotProduct: this.dotProduct.bind(this),
       cosineDistance: this.cosineDistance.bind(this),
-      normalize: this.normalize.bind(this)
+      normalize: this.normalize.bind(this),
     };
   }
 
@@ -237,15 +237,15 @@ class SIMDProcessor {
 
   private cosineDistance(a: Float32Array, b: Float32Array): number {
     const dotProd = this.dotProduct(a, b);
-    const normA = Math.sqrt(this.dotProduct(a, a));
-    const normB = Math.sqrt(this.dotProduct(b, b));
+    const normA = Math.sqrt(this.dotProduct(a, a);
+    const normB = Math.sqrt(this.dotProduct(b, b);
     
     if (normA === 0 || normB === 0) return 0;
     return dotProd / (normA * normB);
   }
 
   private normalize(vec: Float32Array): Float32Array {
-    const norm = Math.sqrt(this.dotProduct(vec, vec));
+    const norm = Math.sqrt(this.dotProduct(vec, vec);
     if (norm === 0) return vec;
     
     const normalized = new Float32Array(vec.length);
@@ -261,7 +261,7 @@ class SIMDProcessor {
   }
 }
 
-// G0llama microservice integration
+// G0llama microservice integration;
 class G0llamaService {
   private baseUrl: string;
   private isAvailable: boolean = false;
@@ -275,7 +275,7 @@ class G0llamaService {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(2000)
+        signal: AbortSignal.timeout(2000),
       });
       this.isAvailable = (response as { ok?: any; json?: any }).ok;
     } catch {
@@ -302,9 +302,9 @@ class G0llamaService {
         body: JSON.stringify({
           prompt: `Context: ${context}\n\nQuery: ${query}\n\nResponse:`,
           max_tokens: options.maxTokens || 150,
-          temperature: options.temperature || 0.7
+          temperature: options.temperature || 0.7,
         }),
-        signal: AbortSignal.timeout(10000)
+        signal: AbortSignal.timeout(10000),
       });
 
       const data = await (response as { ok?: any; json?: any }).json();

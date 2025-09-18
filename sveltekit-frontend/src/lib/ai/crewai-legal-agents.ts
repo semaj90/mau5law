@@ -10,7 +10,8 @@ import { eq } from "drizzle-orm";
 
 // ============================================================================
 // AGENT DEFINITIONS & TYPES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface LegalAgent {
   id: string;
@@ -20,7 +21,7 @@ export interface LegalAgent {
   model: 'claude' | 'gemma3:legal-latest' | 'gpt-4';
   systemPrompt: string;
   maxTokens: number;
-  temperature: number;
+  temperature: number;,
 }
 
 export interface DocumentReviewTask {
@@ -54,7 +55,7 @@ export interface AgentResponse {
 // LEGAL DOCUMENT REVIEW AGENTS
 // ============================================================================
 
-export const legalAgents: LegalAgent[] = [
+export const legalAgents: LegalAgent[] = [;
   {
     id: 'contract-analyst',
     name: 'Contract Analysis Specialist',
@@ -69,7 +70,7 @@ export const legalAgents: LegalAgent[] = [
 
     Provide structured analysis with confidence scores.`,
     maxTokens: 2000,
-    temperature: 0.1
+    temperature: 0.1,
   },
   {
     id: 'compliance-auditor',
@@ -85,7 +86,7 @@ export const legalAgents: LegalAgent[] = [
 
     Flag all potential compliance issues with severity ratings.`,
     maxTokens: 1800,
-    temperature: 0.05
+    temperature: 0.05,
   },
   {
     id: 'risk-assessor',
@@ -101,7 +102,7 @@ export const legalAgents: LegalAgent[] = [
 
     Quantify risks where possible with probability assessments.`,
     maxTokens: 1500,
-    temperature: 0.2
+    temperature: 0.2,
   }
 ];
 
@@ -155,7 +156,7 @@ export class CrewAILegalReviewSystem {
 
       // Store results and trigger document update loop
       await this.storeResults(task, responses);
-      documentUpdateLoop.queueDocumentUpdate(task.documentId, JSON.stringify(responses));
+      documentUpdateLoop.queueDocumentUpdate(task.documentId, JSON.stringify(responses);
 
       return responses;
     } finally {
@@ -190,7 +191,7 @@ Document Review Task:
 Document Content:
 ${task.documentContent}
 
-Please provide your analysis in the following JSON format:
+Please provide your analysis in the following JSON format:;
 {
   "summary": "Brief overview of the document",
   "findings": ["Key finding 1", "Key finding 2", ...],
@@ -201,7 +202,7 @@ Please provide your analysis in the following JSON format:
         `)
       ];
 
-      const response = await ollama.invoke(messages.map(m => m.content).join('\n'));
+      const response = await ollama.invoke(messages.map(m => m.content).join('\n');
       const responseText = (response as { content?: any }).content.toString();
 
       // Parse structured response
@@ -215,7 +216,7 @@ Please provide your analysis in the following JSON format:
         recommendations: analysis.recommendations,
         riskLevel: analysis.riskLevel,
         confidence: analysis.confidence,
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       };
 
     } catch (error: any) {
@@ -230,7 +231,7 @@ Please provide your analysis in the following JSON format:
         riskLevel: 'high',
         confidence: 0,
         processingTime: Date.now() - startTime,
-        errors: [error instanceof Error ? error.message: String(error)]
+        errors: [error instanceof Error ? error.message: String(error)],
       };
     }
   }
@@ -246,13 +247,13 @@ Please provide your analysis in the following JSON format:
       console.warn('Failed to parse structured response, using fallback parsing');
     }
 
-    // Fallback parsing for unstructured responses
+    // Fallback parsing for unstructured responses;
     return {
       summary: responseText.substring(0, 200) + '...',
       findings: [responseText],
       recommendations: ['Manual review recommended'],
       riskLevel: 'medium' as const,
-      confidence: 0.5
+      confidence: 0.5,
     };
   }
 
@@ -267,12 +268,12 @@ Please provide your analysis in the following JSON format:
         response: JSON.stringify(responses),
         model: 'gemma3:legal-latest',
         tokensUsed: Math.floor((task.documentContent.length + responses.reduce((acc, r) => acc + r.reviewSummary.length, 0)) / 4),
-        cost: 0, // TODO: Calculate based on token usage
+        cost: 0, // TODO: Calculate based on token usage;
         metadata: {
           taskType: 'legal-document-review',
           reviewType: task.reviewType,
           priority: task.priority,
-          agentCount: responses.length
+          agentCount: responses.length,
         }
       });
 
@@ -282,7 +283,7 @@ Please provide your analysis in the following JSON format:
   }
 
   getActiveJobs(): DocumentReviewTask[] {
-    return Array.from(this.activeJobs.values());
+    return Array.from(this.activeJobs.values();
   }
 
   getAgentInfo(agentId: string): LegalAgent | undefined {
@@ -290,7 +291,7 @@ Please provide your analysis in the following JSON format:
   }
 
   getAllAgents(): LegalAgent[] {
-    return Array.from(this.agents.values());
+    return Array.from(this.agents.values();
   }
 }
 

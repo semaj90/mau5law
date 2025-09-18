@@ -7,7 +7,7 @@
 import { writable, get, derived } from "svelte/store";
 import { selectedCase } from './case-store.js';
 
-// Core Evidence Interface
+// Core Evidence Interface;
 export interface Evidence {
   id: string;
   caseId: string;
@@ -101,7 +101,7 @@ export interface EvidenceNote {
   author: string;
   timestamp: string;
   type: 'observation' | 'analysis' | 'legal_note' | 'technical_note';
-  confidential: boolean;
+  confidential: boolean;,
 }
 
 export interface EvidenceFilter {
@@ -125,10 +125,10 @@ export interface EvidenceStats {
   unprocessed_count: number;
   encrypted_count: number;
   total_file_size: number;
-  average_relevance_score: number;
+  average_relevance_score: number;,
 }
 
-// Store State Interface
+// Store State Interface;
 export interface EvidenceStoreState {
   evidence: Evidence[];
   filtered_evidence: Evidence[];
@@ -139,7 +139,7 @@ export interface EvidenceStoreState {
   processing_queue: string[]; // Evidence IDs being processed
   stats: EvidenceStats | null;
   chain_of_custody_log: ChainOfCustodyEntry[];
-  security_alerts: SecurityAlert[];
+  security_alerts: SecurityAlert[];,
 }
 
 export interface SecurityAlert {
@@ -149,10 +149,10 @@ export interface SecurityAlert {
   message: string;
   timestamp: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  resolved: boolean;
+  resolved: boolean;,
 }
 
-// Evidence Store Implementation
+// Evidence Store Implementation;
 const createEvidenceStore = () => {
   const { subscribe, set, update } = writable<EvidenceStoreState>({
     evidence: [],
@@ -164,7 +164,7 @@ const createEvidenceStore = () => {
     processing_queue: [],
     stats: null,
     chain_of_custody_log: [],
-    security_alerts: []
+    security_alerts: [],
   });
 
   const fetchEvidence = async (caseId: string | null): Promise<any> => {
@@ -179,12 +179,12 @@ const createEvidenceStore = () => {
         processing_queue: [],
         stats: null,
         chain_of_custody_log: [],
-        security_alerts: []
+        security_alerts: [],
       });
       return;
     }
 
-    update((state) => ({ ...state, isLoading: true, error: null }));
+    update((state) => ({ ...state, isLoading: true, error: null });
 
     try {
       const response = await fetch(`/api/evidence/list?caseId=${caseId}`, {
@@ -212,8 +212,8 @@ const createEvidenceStore = () => {
         filtered_evidence: evidenceList,
         stats,
         isLoading: false,
-        error: null
-      }));
+        error: null,
+      });
 
       // Log access for audit trail
       await logEvidenceAccess(caseId, 'case_evidence_accessed');
@@ -225,12 +225,12 @@ const createEvidenceStore = () => {
         evidence: [],
         filtered_evidence: [],
         isLoading: false,
-        error: error.message
-      }));
+        error: error.message,
+      });
     }
   };
 
-  // Automatically fetch evidence when selected case changes
+  // Automatically fetch evidence when selected case changes;
   selectedCase.subscribe((caseId) => {
     fetchEvidence(caseId);
   });
@@ -241,20 +241,20 @@ const createEvidenceStore = () => {
 
     // Add new evidence with comprehensive metadata
     addEvidence: async (
-      newEvidenceData: Omit<Evidence, "id" | "x" | "y" | "caseId" | "created_at" | "updated_at" | "chain_of_custody" | "access_log">
+      newEvidenceData: Omit<Evidence, "id" | "x" | "y" | "caseId" | "created_at" | "updated_at" | "chain_of_custody" | "access_log">;
     ) => {
-      update((state) => ({ ...state, isLoading: true }));
+      update((state) => ({ ...state, isLoading: true });
       const currentCaseId = get(selectedCase);
 
       if (!currentCaseId) {
         const err = "No case selected to add evidence to.";
-        update((state) => ({ ...state, isLoading: false, error: err }));
+        update((state) => ({ ...state, isLoading: false, error: err });
         console.error(err);
         return;
       }
 
       try {
-        // Create initial chain of custody entry
+        // Create initial chain of custody entry;
         const initialChainEntry: Omit<ChainOfCustodyEntry, 'id'> = {
           timestamp: new Date().toISOString(),
           action: 'collected',
@@ -272,7 +272,7 @@ const createEvidenceStore = () => {
           x: Math.random() * 500, // Default canvas position
           y: Math.random() * 500,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         };
 
         const response = await fetch("/api/evidence", {
@@ -296,7 +296,7 @@ const createEvidenceStore = () => {
           evidence: [...state.evidence, createdEvidence],
           filtered_evidence: applyFilter([...state.evidence, createdEvidence], state.current_filter),
           isLoading: false,
-        }));
+        });
 
         // Log evidence addition
         await logEvidenceAccess(createdEvidence.id, 'evidence_added');
@@ -308,7 +308,7 @@ const createEvidenceStore = () => {
           ...state,
           isLoading: false,
           error: error.message,
-        }));
+        });
         console.error("Error adding evidence:", error);
         throw error;
       }
@@ -327,7 +327,7 @@ const createEvidenceStore = () => {
     ) => {
       let originalEvidence: Evidence | undefined;
 
-      // Optimistic update
+      // Optimistic update;
       update((state) => {
         originalEvidence = state.evidence.find((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId);
         const updatedEvidence = state.evidence.map((item) => {
@@ -335,10 +335,10 @@ const createEvidenceStore = () => {
             const updated = {
               ...item,
               ...updates,
-              updated_at: new Date().toISOString()
+              updated_at: new Date().toISOString(),
             };
 
-            // Add chain of custody entry if provided
+            // Add chain of custody entry if provided;
             if (chainOfCustodyAction) {
               const chainEntry: ChainOfCustodyEntry = {
                 id: `chain_${Date.now()}`,
@@ -386,7 +386,7 @@ const createEvidenceStore = () => {
       } catch (error: any) {
         console.error("Error updating evidence:", error);
 
-        // Revert optimistic update on failure
+        // Revert optimistic update on failure;
         if (originalEvidence) {
           const original = originalEvidence;
           update((state) => ({
@@ -399,17 +399,17 @@ const createEvidenceStore = () => {
               state.current_filter
             ),
             error: error.message,
-          }));
+          });
         }
         throw error;
       }
     },
 
-    // Delete evidence with audit trail
+    // Delete evidence with audit trail;
     deleteEvidence: async (evidenceId: string, reason?: string) => {
       let originalList: Evidence[] = [];
 
-      // Optimistic update
+      // Optimistic update;
       update((state) => {
         originalList = state.evidence;
         const newList = state.evidence.filter((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id !== evidenceId);
@@ -441,23 +441,23 @@ const createEvidenceStore = () => {
       } catch (error: any) {
         console.error("Error deleting evidence:", error);
 
-        // Revert optimistic update on failure
+        // Revert optimistic update on failure;
         update((state) => ({
           ...state,
           evidence: originalList,
           filtered_evidence: applyFilter(originalList, state.current_filter),
           error: error.message,
-        }));
+        });
         throw error;
       }
     },
 
-    // Process evidence (OCR, analysis, etc.)
+    // Process evidence (OCR, analysis, etc.);
     processEvidence: async (evidenceId: string, processingType: 'ocr' | 'analysis' | 'forensic') => {
       update((state) => ({
         ...state,
         processing_queue: [...state.processing_queue, evidenceId]
-      }));
+      });
 
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/process`, {
@@ -485,8 +485,8 @@ const createEvidenceStore = () => {
             state.evidence.map((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? processedEvidence : item),
             state.current_filter
           ),
-          processing_queue: state.processing_queue.filter(id => id !== evidenceId)
-        }));
+          processing_queue: state.processing_queue.filter(id => id !== evidenceId),
+        });
 
         // Log evidence processing
         await logEvidenceAccess(evidenceId, 'evidence_processed', { type: processingType });
@@ -497,25 +497,25 @@ const createEvidenceStore = () => {
         update((state) => ({
           ...state,
           processing_queue: state.processing_queue.filter(id => id !== evidenceId),
-          error: error.message
-        }));
+          error: error.message,
+        });
         throw error;
       }
     },
 
-    // Filter evidence
+    // Filter evidence;
     filterEvidence: (filter: EvidenceFilter | null) => {
       update((state) => {
         const filtered = applyFilter(state.evidence, filter);
         return {
           ...state,
           current_filter: filter,
-          filtered_evidence: filtered
+          filtered_evidence: filtered,
         };
       });
     },
 
-    // Search evidence
+    // Search evidence;
     searchEvidence: async (query: string, options?: {
       include_content?: boolean;
       include_notes?: boolean;
@@ -541,7 +541,7 @@ const createEvidenceStore = () => {
           ].join(' ');
 
           return (case_sensitive ? searchIn : searchIn.toLowerCase()).includes(searchTerm);
-        });
+        ,});
 
         return {
           ...state,
@@ -551,7 +551,7 @@ const createEvidenceStore = () => {
       });
     },
 
-    // Select evidence for detailed view
+    // Select evidence for detailed view;
     selectEvidence: (evidenceId: string | null) => {
       update((state) => {
         const selected = evidenceId ? state.evidence.find(e => e.id === evidenceId) || null : null;
@@ -563,12 +563,12 @@ const createEvidenceStore = () => {
 
         return {
           ...state,
-          selected_evidence: selected
+          selected_evidence: selected,
         };
       });
     },
 
-    // Chain of custody operations
+    // Chain of custody operations;
     addChainOfCustodyEntry: async (evidenceId: string, entry: Omit<ChainOfCustodyEntry, 'id' | 'timestamp'>) => {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/chain-of-custody`, {
@@ -596,17 +596,17 @@ const createEvidenceStore = () => {
             state.evidence.map((item) => (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id === evidenceId ? updatedEvidence : item),
             state.current_filter
           )
-        }));
+        });
 
         return updatedEvidence;
 
       } catch (error: any) {
-        update((state) => ({ ...state, error: error.message }));
+        update((state) => ({ ...state, error: error.message });
         throw error;
       }
     },
 
-    // Generate evidence report
+    // Generate evidence report;
     generateEvidenceReport: async (evidenceIds: string[], reportType: 'chain_of_custody' | 'analysis' | 'summary') => {
       try {
         const response = await fetch('/api/evidence/report', {
@@ -626,12 +626,12 @@ const createEvidenceStore = () => {
         return await (response as { ok?: any; json?: any; blob?: any }).blob(); // PDF or other report format
 
       } catch (error: any) {
-        update((state) => ({ ...state, error: error.message }));
+        update((state) => ({ ...state, error: error.message });
         throw error;
       }
     },
 
-    // Security and compliance
+    // Security and compliance;
     validateIntegrity: async (evidenceId: string) => {
       try {
         const response = await fetch(`/api/evidence/${evidenceId}/validate`, {
@@ -658,31 +658,31 @@ const createEvidenceStore = () => {
                 message: validation.message || 'Evidence integrity check failed',
                 timestamp: new Date().toISOString(),
                 severity: 'high',
-                resolved: false
+                resolved: false,
               }
             ]
-          }));
+          });
         }
 
         return validation;
 
       } catch (error: any) {
-        update((state) => ({ ...state, error: error.message }));
+        update((state) => ({ ...state, error: error.message });
         throw error;
       }
     },
 
-    // Utility methods
+    // Utility methods;
     clearError: () => {
-      update((state) => ({ ...state, error: null }));
+      update((state) => ({ ...state, error: null });
     },
 
     clearFilter: () => {
       update((state) => ({
         ...state,
         current_filter: null,
-        filtered_evidence: state.evidence
-      }));
+        filtered_evidence: state.evidence,
+      });
     },
 
     refreshStats: async () => {
@@ -696,14 +696,14 @@ const createEvidenceStore = () => {
 
         if ((response as { ok?: any; json?: any; blob?: any }).ok) {
           const stats = await (response as { ok?: any; json?: any; blob?: any }).json();
-          update((state) => ({ ...state, stats }));
+          update((state) => ({ ...state, stats });
         }
       } catch (error: any) {
         console.error("Failed to refresh stats:", error);
       }
     },
 
-    // Export evidence for legal discovery
+    // Export evidence for legal discovery;
     exportEvidence: async (evidenceIds: string[], format: 'json' | 'pdf' | 'zip') => {
       try {
         const response = await fetch('/api/evidence/export', {
@@ -723,35 +723,35 @@ const createEvidenceStore = () => {
         return await (response as { ok?: any; json?: any; blob?: any }).blob();
 
       } catch (error: any) {
-        update((state) => ({ ...state, error: error.message }));
+        update((state) => ({ ...state, error: error.message });
         throw error;
       }
     }
   };
 };
 
-// Helper functions
+// Helper functions;
 function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evidence[] {
   if (!filter) return evidence;
 
   return evidence.filter((item) => {
-    // Type filter
+    // Type filter;
     if (filter.type && filter.type.length > 0 && !filter.type.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).type)) {
       return false;
     }
 
     // Confidentiality filter
-    if (filter.confidentiality_level && filter.confidentiality_level.length > 0 &&
+    if (filter.confidentiality_level && filter.confidentiality_level.length > 0 &&;
         !filter.confidentiality_level.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).confidentiality_level)) {
       return false;
     }
 
-    // Priority filter
+    // Priority filter;
     if (filter.priority && filter.priority.length > 0 && !filter.priority.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).priority)) {
       return false;
     }
 
-    // Date range filter
+    // Date range filter;
     if (filter.date_range) {
       const itemDate = new Date((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).collected_date);
       const startDate = new Date(filter.date_range.start);
@@ -762,12 +762,12 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
     }
 
     // Collected by filter
-    if (filter.collected_by && filter.collected_by.length > 0 &&
+    if (filter.collected_by && filter.collected_by.length > 0 &&;
         !filter.collected_by.includes((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).collected_by)) {
       return false;
     }
 
-    // Tags filter
+    // Tags filter;
     if (filter.tags && filter.tags.length > 0) {
       const itemTags = (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).tags || [];
       if (!filter.tags.some(tag => itemTags.includes(tag))) {
@@ -775,7 +775,7 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
       }
     }
 
-    // Text search filter
+    // Text search filter;
     if (filter.search_text) {
       const searchText = filter.search_text.toLowerCase();
       const searchableText = [
@@ -792,7 +792,7 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
       }
     }
 
-    // Processing status filters
+    // Processing status filters;
     if (filter.processed_only && !(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).processed) {
       return false;
     }
@@ -806,7 +806,7 @@ function applyFilter(evidence: Evidence[], filter: EvidenceFilter | null): Evide
 }
 
 async function validateEvidenceIntegrity(evidence: Evidence[]): Promise<void> {
-  // Validate file hashes and integrity
+  // Validate file hashes and integrity;
   for (const item of evidence) {
     if ((item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).hash && (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).originalHash && (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).hash !== (item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).originalHash) {
       console.warn(`Evidence integrity check failed for ${(item as { id?: any; type?: any; confidentiality_level?: any; priority?: any; collected_date?: any; collected_by?: any; tags?: any; title?: any; evidence_tag?: any; ocr_text?: any; notes?: any; processed?: any; hash?: any; originalHash?: any; encrypted?: any; file_size?: any; relevance_score?: any }).id}: hash mismatch`);
@@ -845,11 +845,11 @@ export const evidenceError = derived(evidenceStore, ($s) => $s.error);
 export const evidenceStats = derived(evidenceStore, ($s) => $s.stats);
 export const pendingEvidenceIds = derived(evidenceStore, ($s) => $s.processing_queue);
 export const allSecurityAlerts = derived(evidenceStore, ($s) => $s.security_alerts);
-export const securityAlerts = derived(evidenceStore, ($s) => $s.security_alerts.filter(a => !a.resolved));
+export const securityAlerts = derived(evidenceStore, ($s) => $s.security_alerts.filter(a => !a.resolved);
 
-// Helper utilities (exported as standalone functions)
+// Helper utilities (exported as standalone functions);
 export function getUnprocessedEvidence(evidence: Evidence[]): Evidence[] {
-  return evidence.filter(item => item.processed));
+  return evidence.filter(item => item.processed);
 }
 
 export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
@@ -862,7 +862,7 @@ export function calculateEvidenceStats(evidence: Evidence[]): EvidenceStats {
     unprocessed_count: 0,
     encrypted_count: 0,
     total_file_size: 0,
-    average_relevance_score: 0
+    average_relevance_score: 0,
   };
 
   let totalRelevanceScore = 0;

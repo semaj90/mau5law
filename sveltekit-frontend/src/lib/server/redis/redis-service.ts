@@ -1,7 +1,8 @@
 // Use our compatibility shim that wraps ioredis under a node-redis-like surface
 import createClient from '$lib/shims/redis-shim';
 
-// Redis pub/sub service for real-time updates
+// Redis pub/sub service for real-time updates;
+}
 
 export interface RedisConfig {
   url: string;
@@ -34,9 +35,9 @@ class RedisService {
       this.subscriber = createClient(config);
 
       // Setup error handlers
-      this.client.on('error', this.handleError.bind(this));
-      this.publisher.on('error', this.handleError.bind(this));
-      this.subscriber.on('error', this.handleError.bind(this));
+      this.client.on('error', this.handleError.bind(this);
+      this.publisher.on('error', this.handleError.bind(this);
+      this.subscriber.on('error', this.handleError.bind(this);
 
       // Connect all clients
       await Promise.all([
@@ -56,7 +57,7 @@ class RedisService {
     console.error('Redis error:', error);
     this.isConnected = false;
   }
-  // Evidence Updates
+  // Evidence Updates;
   public async publishEvidenceCreated(evidenceId: string, evidenceData: any, userId?: string) {
     await this.publish('evidence_update', {
       type: 'EVIDENCE_CREATED',
@@ -83,7 +84,7 @@ class RedisService {
       timestamp: new Date().toISOString(),
     });
   }
-  // Case Updates
+  // Case Updates;
   public async publishCaseUpdated(caseId: string, changes: any, userId?: string) {
     await this.publish('case_update', {
       type: 'CASE_UPDATED',
@@ -97,7 +98,7 @@ class RedisService {
     caseId: string,
     oldStatus: string,
     newStatus: string,
-    userId?: string
+    userId?: string;
   ) {
     await this.publish('case_update', {
       type: 'CASE_STATUS_CHANGED',
@@ -113,7 +114,7 @@ class RedisService {
     caseId: string,
     nodeId: string,
     position: { x: number; y: number },
-    userId?: string
+    userId?: string;
   ) {
     await this.publish('canvas_update', {
       type: 'CANVAS_NODE_MOVED',
@@ -142,7 +143,7 @@ class RedisService {
       timestamp: new Date().toISOString(),
     });
   }
-  // POI Updates
+  // POI Updates;
   public async publishPOIUpdated(poiId: string, changes: any, userId?: string) {
     await this.publish('poi_update', {
       type: 'POI_UPDATED',
@@ -152,7 +153,7 @@ class RedisService {
       timestamp: new Date().toISOString(),
     });
   }
-  // Report Updates
+  // Report Updates;
   public async publishReportUpdated(reportId: string, changes: any, userId?: string) {
     await this.publish('report_update', {
       type: 'REPORT_UPDATED',
@@ -162,7 +163,7 @@ class RedisService {
       timestamp: new Date().toISOString(),
     });
   }
-  // User Activity
+  // User Activity;
   public async publishUserActivity(userId: string, activity: string, metadata?: unknown) {
     await this.publish('user_activity', {
       type: 'USER_ACTIVITY',
@@ -172,7 +173,7 @@ class RedisService {
       timestamp: new Date().toISOString(),
     });
   }
-  // Generic publish method
+  // Generic publish method;
   private async publish(channel: string, data: any) {
     if (!this.isConnected) {
       console.warn('Redis not connected, skipping publish');
@@ -185,7 +186,7 @@ class RedisService {
       console.error(`Failed to publish to ${channel}:`, error);
     }
   }
-  // Cache operations
+  // Cache operations;
   public async setCache(key: string, value: any, ttlSeconds: number = 300) {
     if (!this.isConnected) return;
 
@@ -216,7 +217,7 @@ class RedisService {
       console.error('Cache delete error:', error);
     }
   }
-  // Bulk operations
+  // Bulk operations;
   public async publishBulkEvidenceUpdate(evidenceIds: string[], action: string, userId?: string) {
     await this.publish('evidence_update', {
       type: 'EVIDENCE_BULK_UPDATE',
@@ -226,7 +227,7 @@ class RedisService {
       timestamp: new Date().toISOString(),
     });
   }
-  // Analytics and metrics
+  // Analytics and metrics;
   public async trackEvent(event: string, data: any, userId?: string) {
     await this.publish('analytics', {
       event,
@@ -239,12 +240,12 @@ class RedisService {
     return this.isConnected;
   }
 
-  // Align with broader platform expectation of redisService.isHealthy()
+  // Align with broader platform expectation of redisService.isHealthy();
   public isHealthy(): boolean {
     return this.isConnected;
   }
 
-  // Provide lightweight stats similar to primary redis-service singleton
+  // Provide lightweight stats similar to primary redis-service singleton;
   public getStats() {
     return {
       connected: this.isConnected,

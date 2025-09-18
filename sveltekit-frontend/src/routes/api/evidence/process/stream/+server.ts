@@ -7,9 +7,9 @@ import {
 
 // Active processing sessions (no longer store controllers; GET opens SSE connections on demand)
 const activeSessions = new Map<string, { actor: any; startTime: number }>();
-// POST starts or updates a processing session (no SSE here)
+// POST starts or updates a processing session (no SSE here);
 export const POST: RequestHandler = async ({ request }) => {
-  const body = await request.json().catch(() => ({}));
+  const body = await request.json().catch(() => ({});
   let { evidenceId, file, neuralSpriteConfig } = body;
   if (!evidenceId) evidenceId = `evidence_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
     activeSessions.set(evidenceId, session);
   }
 
-  // If file provided, send event (can support multiple POSTs)
+  // If file provided, send event (can support multiple POSTs);
   if (file) {
     try {
       const mockFile = new File([new Uint8Array(1024)], file.name || 'document.pdf', {
@@ -48,8 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
     session.actor.send({ type: 'CONFIGURE_NEURAL_SPRITE', config: neuralSpriteConfig });
   }
 
-  return new Response(
-    JSON.stringify({
+  return new Response(JSON.stringify({
       evidenceId,
       status: 'started',
       streamingEndpoint: `/api/evidence/process/stream?evidenceId=${encodeURIComponent(evidenceId)}`,
@@ -58,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
   );
 };
 
-// Control endpoint for sending events to active sessions
+// Control endpoint for sending events to active sessions;
 export const PUT: RequestHandler = async ({ request }) => {
   const body = await request.json();
   const { evidenceId, event } = body;
@@ -75,8 +74,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     // Send event to xState machine
     session.actor.send(event);
 
-    return new Response(
-      JSON.stringify({
+    return new Response(JSON.stringify({
         success: true,
         message: `Event ${event.type} sent to session ${evidenceId}`,
       }),
@@ -85,8 +83,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       }
     );
   } catch (error) {
-    return new Response(
-      JSON.stringify({
+    return new Response(JSON.stringify({
         error: `Failed to send event: ${error.message}`,
       }),
       {
@@ -97,7 +94,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   }
 };
 
-// GET opens SSE stream for a given evidenceId
+// GET opens SSE stream for a given evidenceId;
 export const GET: RequestHandler = async ({ url }) => {
   const evidenceId = url.searchParams.get('evidenceId');
   if (!evidenceId) {
@@ -118,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const stream = new ReadableStream({
     start(controller) {
       const send = (obj: unknown) =>
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`);
 
       // initial event
       send({ type: 'connection_established', evidenceId, timestamp: Date.now() });
@@ -164,7 +161,7 @@ export const GET: RequestHandler = async ({ url }) => {
   });
 };
 
-// Delete/cancel session
+// Delete/cancel session;
 export const DELETE: RequestHandler = async ({ url }) => {
   const evidenceId = url.searchParams.get('evidenceId');
 
@@ -181,8 +178,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     session.actor.stop();
     activeSessions.delete(evidenceId);
 
-    return new Response(
-      JSON.stringify({
+    return new Response(JSON.stringify({
         success: true,
         message: `Session ${evidenceId} cancelled and removed`,
       }),
@@ -191,8 +187,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       }
     );
   } else {
-    return new Response(
-      JSON.stringify({
+    return new Response(JSON.stringify({
         error: 'Session not found',
       }),
       {
@@ -203,7 +198,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   }
 };
 
-// Helper functions
+// Helper functions;
 function getAvailableTransitions(state: any): string[] {
   return Object.keys(state.nextEvents || {});
 }
@@ -216,14 +211,14 @@ function getOverallProgress(context: EvidenceProcessingContext): number {
     const stepUpdate = context.streamingUpdates.find((update) => update.step === step);
     if (stepUpdate) {
       if (stepUpdate.status === 'completed') {
-        totalProgress += 20; // Each step is 20% of total
+        totalProgress += 20; // Each step is 20% of total;
       } else if (stepUpdate.status === 'in_progress') {
         totalProgress += (stepUpdate.progress / 100) * 20;
       }
     }
   }
 
-  return Math.min(100, Math.round(totalProgress));
+  return Math.min(100, Math.round(totalProgress);
 }
 
 function getCurrentStepInfo(context: EvidenceProcessingContext) {

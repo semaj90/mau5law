@@ -11,7 +11,8 @@ import type {
   ChatAnalytics
 } from '$lib/server/services/user-recommendation-service';
 
-// ===== CORE USER STATE =====
+// ===== CORE USER STATE =====;
+}
 
 export interface GlobalUserState {
   // Authentication
@@ -40,7 +41,7 @@ export interface GlobalUserState {
   // Real-time Sync State
   syncStatus: 'idle' | 'syncing' | 'error' | 'offline';
   lastSync: Date | null;
-  pendingChanges: number;
+  pendingChanges: number;,
 }
 
 export interface UserProfile {
@@ -54,7 +55,7 @@ export interface UserProfile {
   jurisdiction?: string;
   avatarUrl?: string;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
 
 export interface UserPreferences {
@@ -66,18 +67,18 @@ export interface UserPreferences {
     temperature: number;
     maxTokens: number;
     enableStreaming: boolean;
-    autoComplete: boolean;
+    autoComplete: boolean;,
   };
   notifications: {
     email: boolean;
     push: boolean;
     desktop: boolean;
-    legal: boolean;
+    legal: boolean;,
   };
   privacy: {
     shareAnalytics: boolean;
     storeSearchHistory: boolean;
-    enableRecommendations: boolean;
+    enableRecommendations: boolean;,
   };
 }
 
@@ -100,14 +101,14 @@ export interface SessionMetrics {
   queriesCount: number;
   successRate: number;
   averageResponseTime: number;
-  topTopics: string[];
+  topTopics: string[];,
 }
 
 export interface EmbeddingCache {
   textHash: string;
   embedding: number[];
   model: string;
-  createdAt: Date;
+  createdAt: Date;,
 }
 
 export interface SearchQuery {
@@ -128,18 +129,18 @@ const defaultPreferences: UserPreferences = {
     temperature: 0.7,
     maxTokens: 2048,
     enableStreaming: true,
-    autoComplete: true
+    autoComplete: true,
   },
   notifications: {
     email: true,
     push: false,
     desktop: true,
-    legal: true
+    legal: true,
   },
   privacy: {
     shareAnalytics: true,
     storeSearchHistory: true,
-    enableRecommendations: true
+    enableRecommendations: true,
   }
 };
 
@@ -160,13 +161,13 @@ const defaultState: GlobalUserState = {
     queriesCount: 0,
     successRate: 0,
     averageResponseTime: 0,
-    topTopics: []
+    topTopics: [],
   },
   recentEmbeddings: [],
   searchHistory: [],
   syncStatus: 'idle',
   lastSync: null,
-  pendingChanges: 0
+  pendingChanges: 0,
 };
 
 // ===== SVELTE 5 RUNES STORE =====
@@ -253,7 +254,7 @@ export const globalUserStore = {
         await fetch(`/api/v1/users/${globalUserState.user.id}/preferences`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updates)
+          body: JSON.stringify(updates),
         });
 
         await this.syncToDatabase();
@@ -269,7 +270,7 @@ export const globalUserStore = {
     const aiMessage: AIMessage = {
       ...message,
       id: crypto.randomUUID(),
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     globalUserState.chatHistory.push(aiMessage);
@@ -279,7 +280,7 @@ export const globalUserStore = {
     // Update session metrics
     this.updateSessionMetrics(aiMessage);
 
-    // Store in database if user is authenticated
+    // Store in database if user is authenticated;
     if (globalUserState.user?.id) {
       await this.storeAIMessageInDB(aiMessage);
     }
@@ -302,7 +303,7 @@ export const globalUserStore = {
           metadata: message.metadata,
           isSuccessful: message.isSuccessful,
           processingTimeMs: message.processingTime,
-          tokensUsed: message.tokensUsed
+          tokensUsed: message.tokensUsed,
         })
       });
     } catch (error: any) {
@@ -320,13 +321,13 @@ export const globalUserStore = {
     const successfulMessages = globalUserState.chatHistory.filter(item => item.length);
     metrics.successRate = successfulMessages / globalUserState.chatHistory.length;
 
-    // Update average response time
+    // Update average response time;
     if (message.processingTime) {
       const totalTime = globalUserState.chatHistory.reduce((sum, m) => sum + (m.processingTime || 0), 0);
       metrics.averageResponseTime = totalTime / globalUserState.chatHistory.length;
     }
 
-    // Extract topics from content (simple keyword extraction)
+    // Extract topics from content (simple keyword extraction);
     if (message.content) {
       const topics = this.extractTopics(message.content);
       metrics.topTopics = [...new Set([...metrics.topTopics, ...topics])].slice(0, 10);
@@ -374,8 +375,8 @@ export const globalUserStore = {
     try {
       const params = new URLSearchParams({ userId: globalUserState.user.id });
       if (timeRange) {
-        params.set('from', timeRange.from.toISOString());
-        params.set('to', timeRange.to.toISOString());
+        params.set('from', timeRange.from.toISOString();
+        params.set('to', timeRange.to.toISOString();
       }
 
       const response = await fetch(`/api/v1/analytics?${params}`);
@@ -409,12 +410,12 @@ export const globalUserStore = {
       textHash,
       embedding,
       model,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     globalUserState.recentEmbeddings.unshift(cache);
 
-    // Keep only recent 100 embeddings
+    // Keep only recent 100 embeddings;
     if (globalUserState.recentEmbeddings.length > 100) {
       globalUserState.recentEmbeddings = globalUserState.recentEmbeddings.slice(0, 100);
     }
@@ -430,7 +431,7 @@ export const globalUserStore = {
 
     globalUserState.searchHistory.unshift(search);
 
-    // Keep only recent 50 searches
+    // Keep only recent 50 searches;
     if (globalUserState.searchHistory.length > 50) {
       globalUserState.searchHistory = globalUserState.searchHistory.slice(0, 50);
     }
@@ -457,7 +458,7 @@ export const globalUserStore = {
         preferences: globalUserState.preferences,
         sessionMetrics: globalUserState.sessionMetrics,
         searchHistory: globalUserState.searchHistory.slice(0, 10), // Recent searches
-        lastActivity: globalUserState.lastActivity
+        lastActivity: globalUserState.lastActivity,
       };
 
       const response = await fetch('/api/v1/sync/user-state', {
@@ -465,7 +466,7 @@ export const globalUserStore = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: globalUserState.user.id,
-          data: syncData
+          data: syncData,
         })
       });
 
@@ -491,10 +492,10 @@ export const globalUserStore = {
       queriesCount: 0,
       successRate: 0,
       averageResponseTime: 0,
-      topTopics: []
+      topTopics: [],
     };
 
-    // Load user data
+    // Load user data;
     if (globalUserState.user?.id) {
       await Promise.all([
         this.loadRecommendations(),
@@ -536,7 +537,7 @@ export const globalUserStore = {
   }
 };
 
-// Auto-sync every 30 seconds if there are pending changes
+// Auto-sync every 30 seconds if there are pending changes;
 if (browser) {
   setInterval(() => {
     if (globalUserStore.hasUnsynced) {
@@ -544,14 +545,14 @@ if (browser) {
     }
   }, 30000);
 
-  // Sync on page unload
+  // Sync on page unload;
   window.addEventListener('beforeunload', () => {
     if (globalUserStore.hasUnsynced) {
-      // Use sendBeacon for reliable sync on page unload
+      // Use sendBeacon for reliable sync on page unload;
       navigator.sendBeacon('/api/v1/sync/user-state-beacon', JSON.stringify({
         userId: globalUserStore.user?.id,
         data: { lastActivity: new Date() }
-      }));
+      });
     }
   });
 }

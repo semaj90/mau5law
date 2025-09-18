@@ -26,7 +26,7 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 /*
  * Server-Sent Events endpoint for streaming AI suggestions
- */
+ */;
 export async function POST({ request }: RequestEvent): Promise<any> {
   try {
     const data = await request.json();
@@ -42,7 +42,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       return new Response('Content is required', { status: 400 });
     }
 
-    // Set up Server-Sent Events headers
+    // Set up Server-Sent Events headers;
     const headers = {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
@@ -55,12 +55,12 @@ export async function POST({ request }: RequestEvent): Promise<any> {
       async start(controller) {
         const encoder = new TextEncoder();
         
-        // Send initial connection message
+        // Send initial connection message;
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({
           type: 'connection',
           message: 'Streaming AI suggestions started',
-          timestamp: new Date().toISOString()
-        })}\\n\\n`));
+          timestamp: new Date().toISOString(),
+        })}\\n\\n`);
 
         let suggestionCount = 0;
         const maxTotal = maxSuggestions;
@@ -69,15 +69,14 @@ export async function POST({ request }: RequestEvent): Promise<any> {
           // Stream from multiple services in parallel
           const streamPromises: Promise<void>[] = [];
 
-          // Ollama streaming
+          // Ollama streaming;
           if (useOllamaStreaming && suggestionCount < maxTotal) {
-            streamPromises.push(
-              (async () => {
+            streamPromises.push((async () => {
                 try {
                   for await (const suggestion of ollamaSuggestionsService.generateStreamingSuggestions({
                     content,
                     reportType,
-                    maxSuggestions: Math.max(1, Math.floor(maxTotal / 2))
+                    maxSuggestions: Math.max(1, Math.floor(maxTotal / 2);
                   })) {
                     if (suggestionCount >= maxTotal) break;
                     
@@ -93,37 +92,36 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                         reasoning: suggestion.reasoning,
                         metadata: {
                           ...suggestion.metadata,
-                          streamOrder: suggestionCount
+                          streamOrder: suggestionCount,
                         }
                       },
                       progress: {
                         current: suggestionCount,
-                        total: maxTotal
+                        total: maxTotal,
                       }
-                    })}\\n\\n`));
+                    })}\\n\\n`);
                   }
                 } catch (error: any) {
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify({
                     type: 'error',
                     source: 'ollama',
                     message: 'Ollama streaming failed',
-                    error: error instanceof Error ? error.message: 'Unknown error'
-                  })}\\n\\n`));
+                    error: error instanceof Error ? error.message: 'Unknown error',
+                  })}\\n\\n`);
                 }
               })()
             );
           }
 
-          // Enhanced RAG streaming
+          // Enhanced RAG streaming;
           if (useRAGStreaming && suggestionCount < maxTotal) {
-            streamPromises.push(
-              (async () => {
+            streamPromises.push((async () => {
                 try {
                   for await (const suggestion of enhancedRAGSuggestionsService.streamRAGSuggestions({
                     content,
                     reportType,
                     maxSuggestions: Math.max(1, Math.floor(maxTotal / 2)),
-                    confidenceThreshold: 0.6
+                    confidenceThreshold: 0.6,
                   })) {
                     if (suggestionCount >= maxTotal) break;
                     
@@ -139,22 +137,22 @@ export async function POST({ request }: RequestEvent): Promise<any> {
                         reasoning: suggestion.reasoning,
                         metadata: {
                           ...suggestion.metadata,
-                          streamOrder: suggestionCount
+                          streamOrder: suggestionCount,
                         }
                       },
                       progress: {
                         current: suggestionCount,
-                        total: maxTotal
+                        total: maxTotal,
                       }
-                    })}\\n\\n`));
+                    })}\\n\\n`);
                   }
                 } catch (error: any) {
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify({
                     type: 'error',
                     source: 'enhanced-rag',
                     message: 'Enhanced RAG streaming failed',
-                    error: error instanceof Error ? error.message: 'Unknown error'
-                  })}\\n\\n`));
+                    error: error instanceof Error ? error.message: 'Unknown error',
+                  })}\\n\\n`);
                 }
               })()
             );
@@ -163,22 +161,22 @@ export async function POST({ request }: RequestEvent): Promise<any> {
           // Wait for all streaming services to complete
           await Promise.allSettled(streamPromises);
 
-          // Send completion message
+          // Send completion message;
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({
             type: 'complete',
             message: 'All AI suggestion streams completed',
             totalSuggestions: suggestionCount,
-            timestamp: new Date().toISOString()
-          })}\\n\\n`));
+            timestamp: new Date().toISOString(),
+          })}\\n\\n`);
 
         } catch (error: any) {
-          // Send error message
+          // Send error message;
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({
             type: 'error',
             message: 'Streaming failed',
             error: error instanceof Error ? error.message: 'Unknown error',
-            timestamp: new Date().toISOString()
-          })}\\n\\n`));
+            timestamp: new Date().toISOString(),
+          })}\\n\\n`);
         } finally {
           // Close the stream
           controller.close();
@@ -190,10 +188,9 @@ export async function POST({ request }: RequestEvent): Promise<any> {
 
   } catch (error: any) {
     console.error('Streaming endpoint error:', error);
-    return new Response(
-      JSON.stringify({ 
+    return new Response(JSON.stringify({ 
         error: 'Failed to start streaming', 
-        details: error instanceof Error ? error.message: 'Unknown error' 
+        details: error instanceof Error ? error.message: 'Unknown error' ,
       }), 
       { 
         status: 500, 
@@ -205,7 +202,7 @@ export async function POST({ request }: RequestEvent): Promise<any> {
 
 /*
  * Handle GET requests for stream testing
- */
+ */;
 export async function GET({ url }: RequestEvent): Promise<any> {
   const content = url.searchParams.get('content');
   const reportType = url.searchParams.get('report_type') || 'prosecution_memo';
@@ -214,7 +211,7 @@ export async function GET({ url }: RequestEvent): Promise<any> {
     return new Response('Content parameter is required', { status: 400 });
   }
 
-  // Convert GET to POST format and reuse the streaming logic
+  // Convert GET to POST format and reuse the streaming logic;
   const mockRequest = new Request('', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -223,7 +220,7 @@ export async function GET({ url }: RequestEvent): Promise<any> {
       reportType,
       useOllamaStreaming: url.searchParams.get('ollama') !== 'false',
       useRAGStreaming: url.searchParams.get('rag') !== 'false',
-      maxSuggestions: parseInt(url.searchParams.get('max') || '5')
+      maxSuggestions: parseInt(url.searchParams.get('max') || '5'),
     })
   });
 

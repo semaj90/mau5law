@@ -1,5 +1,5 @@
 // Enhanced Embedding Pipeline Schema for Production Legal AI
-// Comprehensive schema supporting: document ingestion, chunking, embeddings, search, Neo4j sync
+// Comprehensive schema supporting: document ingestion, chunking, embeddings, search, Neo4j sync;
 import {
   pgTable,
   index,
@@ -18,7 +18,7 @@ import { relations } from "drizzle-orm";
 
 // Documents table - source documents from MinIO
 export const documents = pgTable(
-  'documents',
+  'documents',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
     title: varchar('title', { length: 512 }),
@@ -45,7 +45,7 @@ export const documents = pgTable(
 
 // Document chunks for embedding - supports overlap and hierarchical chunking
 export const documentChunks = pgTable(
-  'document_chunks',
+  'document_chunks',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
     documentId: uuid('document_id')
@@ -77,7 +77,7 @@ export const documentChunks = pgTable(
 
 // Search queries and embeddings cache
 export const searchQueries = pgTable(
-  'search_queries',
+  'search_queries',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
     userId: uuid('user_id').notNull(),
@@ -87,7 +87,7 @@ export const searchQueries = pgTable(
     searchType: varchar('search_type', { length: 50 }).notNull().default('semantic'), // semantic, keyword, hybrid, rag
     filters: jsonb('filters').default({}),
     resultsCount: integer('results_count').default(0),
-    searchTime: real('search_time'), // Search duration in ms
+    searchTime: real('search_time'), // Search duration in ms;
     results: jsonb('results').default({
       chunks: [],
       documents: [],
@@ -106,7 +106,7 @@ export const searchQueries = pgTable(
 
 // Embedding models configuration
 export const embeddingModels = pgTable(
-  'embedding_models',
+  'embedding_models',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
     name: varchar('name', { length: 100 }).notNull().unique(),
@@ -131,7 +131,7 @@ export const embeddingModels = pgTable(
 
 // Job queue for async processing
 export const processingJobs = pgTable(
-  'processing_jobs',
+  'processing_jobs',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
     jobType: varchar('job_type', { length: 50 }).notNull(), // ingest, chunk, embed, index, neo4j_sync
@@ -159,7 +159,7 @@ export const processingJobs = pgTable(
 
 // Entity extraction and Neo4j sync
 export const entityNodes = pgTable(
-  'entity_nodes',
+  'entity_nodes',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
     neo4jId: varchar('neo4j_id', { length: 50 }), // Neo4j node ID for sync
@@ -184,11 +184,11 @@ export const entityNodes = pgTable(
   })
 );
 
-// Relations
+// Relations;
 export const documentsRelations = relations(documents, ({ many }) => ({
   chunks: many(documentChunks),
   jobs: many(processingJobs),
-}));
+});
 
 export const documentChunksRelations = relations(documentChunks, ({ one, many }) => ({
   document: one(documents, {
@@ -200,7 +200,7 @@ export const documentChunksRelations = relations(documentChunks, ({ one, many })
     references: [documentChunks.id],
   }),
   children: many(documentChunks),
-}));
+});
 
 export const processingJobsRelations = relations(processingJobs, ({ one }) => ({
   document: one(documents, {
@@ -211,7 +211,7 @@ export const processingJobsRelations = relations(processingJobs, ({ one }) => ({
     fields: [processingJobs.chunkId],
     references: [documentChunks.id],
   }),
-}));
+});
 
 // Export types
 export type Document = typeof documents.$inferSelect;
@@ -246,7 +246,7 @@ ON entity_nodes USING hnsw (embedding vector_cosine_ops)
 WITH (m = 16, ef_construction = 64);
 `;
 
-// Utility functions for vector operations
+// Utility functions for vector operations;
 export const vectorOperations = {
   // Convert number array to pgvector format
   toVector: (arr: number[]): string => `[${arr.join(',')}]`,
@@ -258,17 +258,17 @@ export const vectorOperations = {
       .split(',')
       .map((n) => parseFloat(n.trim())),
 
-  // Calculate cosine similarity
+  // Calculate cosine similarity;
   cosineSimilarity: (a: number[], b: number[]): number => {
     const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
-    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
-    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0);
+    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0);
     return dotProduct / (magnitudeA * magnitudeB);
   },
 
-  // Normalize vector
+  // Normalize vector;
   normalize: (vec: number[]): number[] => {
-    const magnitude = Math.sqrt(vec.reduce((sum, val) => sum + val * val, 0));
+    const magnitude = Math.sqrt(vec.reduce((sum, val) => sum + val * val, 0);
     return magnitude > 0 ? vec.map((val) => val / magnitude) : vec;
   },
 };

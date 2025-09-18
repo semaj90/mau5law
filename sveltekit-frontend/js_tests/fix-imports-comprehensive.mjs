@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
-import { readdir, readFile, writeFile, stat } from "fs/promises";
-import { join, relative, dirname } from "path";
+import { readdir, readFile, writeFile, stat } from 'fs/promises';
+import { join, relative, dirname } from 'path';
 
-const SRC_DIR = "src";
-const excludeDirs = [".svelte-kit", "node_modules", ".git"];
-const includeExtensions = [".ts", ".js", ".svelte"];
+const SRC_DIR = 'src';
+const excludeDirs = ['.svelte-kit', 'node_modules', '.git'];
+const includeExtensions = ['.ts', '.js', '.svelte'];
 
 function calculateLibPath(fromFile) {
   const relativePath = relative(dirname(fromFile), SRC_DIR);
-  return relativePath || ".";
+  return relativePath || '.';
 }
 
 function convertLibImport(importStatement, fromFile) {
@@ -21,7 +21,7 @@ function convertLibImport(importStatement, fromFile) {
 
 async function processFile(filePath) {
   try {
-    const content = await readFile(filePath, "utf-8");
+    const content = await readFile(filePath, 'utf-8');
     let modified = false;
     let newContent = content;
 
@@ -30,34 +30,31 @@ async function processFile(filePath) {
       // Standard imports: import ... from '$lib/...'
       {
         regex: /import\s+([^;]*?)\s+from\s+['"`](\$lib[^'"`]*?)['"`];?/g,
-        type: "static",
+        type: 'static',
       },
       // Dynamic imports: import('$lib/...')
       {
         regex: /import\s*\(\s*['"`](\$lib[^'"`]*?)['"`]\s*\)/g,
-        type: "dynamic",
+        type: 'dynamic',
       },
       // await import('$lib/...')
       {
         regex: /await\s+import\s*\(\s*['"`](\$lib[^'"`]*?)['"`]\s*\)/g,
-        type: "await",
+        type: 'await',
       },
     ];
 
     patterns.forEach((pattern) => {
       let match;
       while ((match = pattern.regex.exec(content)) !== null) {
-        if (pattern.type === "static") {
+        if (pattern.type === 'static') {
           const fullMatch = match[0];
           const importClause = match[1];
           const importPath = match[2];
 
-          if (importPath.startsWith("$lib")) {
+          if (importPath.startsWith('$lib')) {
             const relativePath = calculateLibPath(filePath);
-            const newImportPath = importPath.replace(
-              "$lib",
-              `${relativePath}/lib`,
-            );
+            const newImportPath = importPath.replace('$lib', `${relativePath}/lib`);
             const newImport = fullMatch.replace(importPath, newImportPath);
             newContent = newContent.replace(fullMatch, newImport);
             modified = true;
@@ -66,12 +63,9 @@ async function processFile(filePath) {
           const fullMatch = match[0];
           const importPath = match[1];
 
-          if (importPath.startsWith("$lib")) {
+          if (importPath.startsWith('$lib')) {
             const relativePath = calculateLibPath(filePath);
-            const newImportPath = importPath.replace(
-              "$lib",
-              `${relativePath}/lib`,
-            );
+            const newImportPath = importPath.replace('$lib', `${relativePath}/lib`);
             const newImport = fullMatch.replace(importPath, newImportPath);
             newContent = newContent.replace(fullMatch, newImport);
             modified = true;
@@ -82,7 +76,7 @@ async function processFile(filePath) {
     });
 
     if (modified) {
-      await writeFile(filePath, newContent, "utf-8");
+      await writeFile(filePath, newContent, 'utf-8');
       console.log(`✅ Fixed: ${filePath}`);
       return true;
     }
@@ -106,7 +100,7 @@ async function processDirectory(dirPath) {
         totalFixed += await processDirectory(fullPath);
       }
     } else if (stats.isFile()) {
-      const ext = entry.substring(entry.lastIndexOf("."));
+      const ext = entry.substring(entry.lastIndexOf('.'));
       if (includeExtensions.includes(ext)) {
         const fixed = await processFile(fullPath);
         if (fixed) totalFixed++;
@@ -118,13 +112,13 @@ async function processDirectory(dirPath) {
 }
 
 async function main() {
-  console.log("🔧 Starting comprehensive $lib import fix...");
+  console.log('🔧 Starting comprehensive $lib import fix...');
 
   try {
     const totalFixed = await processDirectory(SRC_DIR);
     console.log(`\n✨ Fixed ${totalFixed} files with $lib imports`);
   } catch (error) {
-    console.error("❌ Error:", error.message);
+    console.error('❌ Error:', error.message);
     process.exit(1);
   }
 }

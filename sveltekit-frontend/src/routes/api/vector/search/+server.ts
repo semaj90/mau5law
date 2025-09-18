@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       options = {},
     }: {
       query: string;
-      options: Partial<VectorSearchOptions>;
+      options: Partial<VectorSearchOptions>;,
     } = body;
 
     if (!query || typeof query !== "string") {
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       `🔍 Vector intelligence search: "${query.substring(0, 100)}..."`,
     );
 
-    // Configure search options with intelligent defaults
+    // Configure search options with intelligent defaults;
     const searchOptions: VectorSearchOptions = {
       query,
       threshold: options.threshold || 0.7,
@@ -110,15 +110,15 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 
   try {
-    // Build search options from query parameters
+    // Build search options from query parameters;
     const searchOptions: VectorSearchOptions = {
       query,
       threshold,
       limit,
       includeMetadata: true,
       contextFilter: {
-        ...(caseId && { caseId }),
-        ...(evidenceType && { evidenceType }),
+        ...(caseId && { caseId ,}),
+        ...(evidenceType && { evidenceType ,}),
       },
     };
 

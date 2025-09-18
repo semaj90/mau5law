@@ -2,16 +2,16 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { legal } from '../../../../proto/legal_api_pb.js';
 
-// Protobuf authentication endpoint
+// Protobuf authentication endpoint;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const contentType = request.headers.get('content-type');
 
-    // Handle both protobuf and JSON for gradual migration
+    // Handle both protobuf and JSON for gradual migration;
     if (contentType?.includes('application/x-protobuf')) {
       // Protobuf handling
       const buffer = await request.arrayBuffer();
-      const authRequest = legal.api.AuthRequest.decode(new Uint8Array(buffer));
+      const authRequest = legal.api.AuthRequest.decode(new Uint8Array(buffer);
 
       // Mock authentication logic
       const isValid = authRequest.email && authRequest.password;
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
 
-      // Success response
+      // Success response;
       const user = legal.api.User.create({
         id: 'user_123',
         email: authRequest.email,
@@ -83,10 +83,10 @@ export const POST: RequestHandler = async ({ request }) => {
             theme: 'nier',
             language: 'en',
             notifications_enabled: true,
-            analytics_opt_in: false
+            analytics_opt_in: false,
           }
         },
-        expires_at: Date.now() + (24 * 60 * 60 * 1000)
+        expires_at: Date.now() + (24 * 60 * 60 * 1000),
       });
     }
   } catch (err) {
@@ -95,13 +95,13 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// Health check for protobuf support
+// Health check for protobuf support;
 export const GET: RequestHandler = async () => {
   return json({
     status: 'operational',
     protobuf_support: true,
     fallback_json: true,
     version: '1.0.0',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };

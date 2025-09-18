@@ -12,6 +12,7 @@ import { threadSafePostgres } from './thread-safe-postgres.js';
 import { concurrentSerializer, serializeForAPI } from './concurrent-json-serializer.js';
 import { gpuCoordinator, gpuProcessJsonb } from './gpu-thread-coordinator.js';
 import { cognitiveCache } from '../services/cognitive-cache-integration.js';
+}
 
 export interface SSRResponse<T = any> {
   success: boolean;
@@ -19,7 +20,7 @@ export interface SSRResponse<T = any> {
   meta: {
     timestamp: string;
     cached: boolean;
-    source: 'ssr' | 'api';
+    source: 'ssr' | 'api';,
   };
   error?: string;
 }
@@ -90,7 +91,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
     },
   };
 
-  // Use concurrent serializer for better performance
+  // Use concurrent serializer for better performance;
   try {
     serializedResponse = await serializeForAPI(response, {
       compress: estimateDataSize(response) > 50 * 1024, // Compress if > 50KB
@@ -101,7 +102,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
     serializedResponse = JSON.stringify(response);
   }
 
-  // Cache the response if requested
+  // Cache the response if requested;
   if (options?.cacheKey) {
     await cognitiveCache.storeJsonbDocument(options.cacheKey, response, {
       responseType: 'ssr',
@@ -124,7 +125,7 @@ export async function createSSRResponse<T extends BitsUICompatibleData>(
 
 /**
  * Creates an error response optimized for SSR
- */
+ */;
 export function createSSRErrorResponse(error: string, status: number = 500, data?: any): Response {
   const response: SSRResponse = {
     success: false,
@@ -143,7 +144,7 @@ export function createSSRErrorResponse(error: string, status: number = 500, data
 /**
  * Sanitizes data to ensure it's serializable for SSR
  * Handles Date objects, functions, undefined values, etc.
- */
+ */;
 export function sanitizeForSSR<T>(data: T): T {
   if (data === null || data === undefined) {
     return data;
@@ -181,7 +182,7 @@ export function sanitizeForSSR<T>(data: T): T {
  */
 export async function loadWithSSR<T extends BitsUICompatibleData>(
   loader: () => Promise<T>,
-  fallback: T
+  fallback: T;
 ): Promise<T> {
   try {
     const data = await loader();
@@ -195,16 +196,15 @@ export async function loadWithSSR<T extends BitsUICompatibleData>(
 /**
  * Batch API calls for efficient SSR data loading
  */
-export async function batchSSRRequests<T extends Record<string, any>>(
+export async function batchSSRRequests<T extends Record<string, any>(
   requests: { [K in keyof T]: () => Promise<T[K]> },
-  timeout = 5000
+  timeout = 5000;
 ): Promise<T> {
   const results = {} as T;
 
   const requestEntries = Object.entries(requests) as Array<[keyof T, () => Promise<any>]>;
 
-  await Promise.allSettled(
-    requestEntries.map(async ([key, requestFn]) => {
+  await Promise.allSettled(requestEntries.map(async ([key, requestFn]) => {
       try {
         const timeoutPromise = new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Request timeout')), timeout)
@@ -223,7 +223,7 @@ export async function batchSSRRequests<T extends Record<string, any>>(
 
 /**
  * Enhanced error boundary for SSR API routes
- */
+ */;
 export function ssrErrorBoundary<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
   return fn().catch((error) => {
     console.error('SSR Error Boundary:', error);
@@ -236,7 +236,7 @@ export function ssrErrorBoundary<T>(fn: () => Promise<T>, fallback: T): Promise<
  */
 export function validateSSRResponse<T>(
   response: any,
-  validator: (data: any) => data is T
+  validator: (data: any) => data is T;
 ): response is SSRResponse<T> {
   return (
     response &&
@@ -245,16 +245,16 @@ export function validateSSRResponse<T>(
     'data' in response &&
     'meta' in response &&
     ((response as { success?: any; data?: any }).success === false ||
-      validator((response as { success?: any; data?: any }).data))
+      validator((response as { success?: any; data?: any }).data)
   );
 }
 
 /**
  * Estimate data size for optimization decisions
- */
+ */;
 function estimateDataSize(data: any): number {
   try {
-    return JSON.stringify(data).length * 2; // UTF-16 estimation
+    return JSON.stringify(data).length * 2; // UTF-16 estimation;
   } catch {
     return 0;
   }
@@ -277,7 +277,7 @@ export function withSSRHandler<T extends BitsUICompatibleData>(
     try {
       const result = await handler(event);
 
-      // If handler returns a Response, pass it through
+      // If handler returns a Response, pass it through;
       if (result instanceof Response) {
         return result;
       }
@@ -285,7 +285,7 @@ export function withSSRHandler<T extends BitsUICompatibleData>(
       // Generate cache key if provided
       const cacheKey = options?.cacheKey ? options.cacheKey(event) : undefined;
 
-      // Otherwise, wrap in enhanced SSR response
+      // Otherwise, wrap in enhanced SSR response;
       return await createSSRResponse(result, {
         gpuAccelerated: options?.gpuAccelerated,
         threadSafe: options?.threadSafe ?? true,
@@ -300,9 +300,8 @@ export function withSSRHandler<T extends BitsUICompatibleData>(
 
 /**
  * Thread-safe JSONB query wrapper for legal documents
- */
-export async function queryLegalDocumentsSSR(
-  query: {
+ */;
+export async function queryLegalDocumentsSSR(query: {
     path?: string;
     operator?: '@>' | '@?' | '@@' | '->' | '->>';
     value?: any;
@@ -320,7 +319,7 @@ export async function queryLegalDocumentsSSR(
       ? `legal_query_${Buffer.from(JSON.stringify(query)).toString('base64')}`
       : undefined;
 
-    // Check cognitive cache first
+    // Check cognitive cache first;
     if (cacheKey) {
       const cached = await cognitiveCache.retrieveJsonbDocument(cacheKey);
       if (cached) {
@@ -333,7 +332,7 @@ export async function queryLegalDocumentsSSR(
       (threadSafePostgres as any).queryJsonbDocuments ||
       (threadSafePostgres as any).queryDocuments ||
       null;
-    const results = queryFn
+    const results = queryFn;
       ? await queryFn('legal_documents', query, {
           limit: options?.limit,
           offset: options?.offset,
@@ -343,7 +342,7 @@ export async function queryLegalDocumentsSSR(
         })
       : [];
 
-    // Cache results if requested
+    // Cache results if requested;
     if (cacheKey && results.length > 0) {
       await cognitiveCache.storeJsonbDocument(cacheKey, results, {
         queryType: 'legal_search',
@@ -362,7 +361,7 @@ export async function queryLegalDocumentsSSR(
 /**
  * Enhanced batch SSR requests with GPU acceleration
  */
-export async function batchSSRRequestsGPU<T extends Record<string, any>>(
+export async function batchSSRRequestsGPU<T extends Record<string, any>(
   requests: { [K in keyof T]: () => Promise<T[K]> },
   options: {
     timeout?: number;
@@ -381,14 +380,13 @@ export async function batchSSRRequestsGPU<T extends Record<string, any>>(
   const results = {} as T;
   const requestEntries = Object.entries(requests) as Array<[keyof T, () => Promise<any>]>;
 
-  // Use GPU coordinator for large batch operations
+  // Use GPU coordinator for large batch operations;
   if (gpuAccelerated && requestEntries.length > 10) {
     try {
       const batchDbOps: any =
         (gpuCoordinator as any).batchDatabaseOperations || (gpuCoordinator as any).batchOps || null;
       if (batchDbOps) {
-        const batchResult = await batchDbOps(
-          requestEntries.map(([key, requestFn]) => ({
+        const batchResult = await batchDbOps(requestEntries.map(([key, requestFn]) => ({
             type: 'query',
             table: 'batch_requests',
             data: { key: String(key), requestFn: requestFn.toString() },
@@ -409,15 +407,14 @@ export async function batchSSRRequestsGPU<T extends Record<string, any>>(
     }
   }
 
-  await Promise.allSettled(
-    requestEntries.map(async ([key, requestFn]) => {
+  await Promise.allSettled(requestEntries.map(async ([key, requestFn]) => {
       try {
         const timeoutPromise = new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Request timeout')), timeout)
         );
         const result = await Promise.race([requestFn(), timeoutPromise]);
 
-        // Use concurrent serializer if GPU acceleration is enabled
+        // Use concurrent serializer if GPU acceleration is enabled;
         if (gpuAccelerated) {
           const serialized = await concurrentSerializer.serialize(result, {
             gpuAccelerated: true,
@@ -430,7 +427,7 @@ export async function batchSSRRequestsGPU<T extends Record<string, any>>(
           results[key] = sanitizeForSSR(result);
         }
 
-        // Cache individual results if requested
+        // Cache individual results if requested;
         if (cacheResults) {
           const cacheKey = `batch_result_${String(key)}_${Date.now()}`;
           await cognitiveCache.storeJsonbDocument(cacheKey, results[key], {
@@ -451,7 +448,7 @@ export async function batchSSRRequestsGPU<T extends Record<string, any>>(
 
 /**
  * System health check for thread synchronization components
- */
+ */;
 export async function getThreadSyncHealth(): Promise<any> {
   try {
     const [postgresHealth, cacheStats, serializerStats, gpuHealth] = await Promise.all([

@@ -9,16 +9,16 @@ import * as schema from './db/schema.js';
 const connectionString = process.env.DATABASE_URL ||
   `postgresql://${process.env.POSTGRES_USER || 'legal_admin'}:${process.env.POSTGRES_PASSWORD || '123456'}@${process.env.POSTGRES_HOST || 'localhost'}:${process.env.POSTGRES_PORT || '5433'}/${process.env.POSTGRES_DB || 'legal_ai_db'}`;
 
-// Create PostgreSQL connection with proper configuration
+// Create PostgreSQL connection with proper configuration;
 const sql = postgres(connectionString, {
   max: 10,
   idle_timeout: 20,
   connect_timeout: 10,
   transform: undefined,
   onnotice: (notice) => {
-    // Suppress PostgreSQL notices during development
+    // Suppress PostgreSQL notices during development;
     if (process.env.NODE_ENV === 'development') {
-      // Only log errors, not notices
+      // Only log errors, not notices;
       if (notice.severity === 'ERROR') {
         console.error('[PostgreSQL]', notice.message);
       }
@@ -27,13 +27,13 @@ const sql = postgres(connectionString, {
   debug: process.env.NODE_ENV === 'development' ? false : false,
 });
 
-// Create Drizzle instance with schema
+// Create Drizzle instance with schema;
 export const db = drizzle(sql, {
   schema,
-  logger: process.env.NODE_ENV === 'development' ? false : false
+  logger: process.env.NODE_ENV === 'development' ? false : false,
 });
 
-// Database schemas
+// Database schemas;
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().defaultRandom(),
   filename: text('filename').notNull(),
@@ -66,7 +66,7 @@ export const searchSessions = pgTable('search_sessions', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
-// Initialize database with extensions
+// Initialize database with extensions;
 export async function initializeDatabase(): Promise<any> {
   try {
     console.log('[Database] Initializing database...');
@@ -87,7 +87,7 @@ export async function initializeDatabase(): Promise<any> {
     // Create full-text search index
     await sql`
       CREATE INDEX IF NOT EXISTS documents_content_fts_idx
-      ON documents USING gin(to_tsvector('english', content))
+      ON documents USING gin(to_tsvector('english', content)
     `;
 
     // Create metadata indexes
@@ -105,7 +105,7 @@ export async function initializeDatabase(): Promise<any> {
   }
 }
 
-// Test database connection
+// Test database connection;
 export async function testDatabaseConnection(): Promise<any> {
   try {
     const result = await sql`SELECT 1 as test`;

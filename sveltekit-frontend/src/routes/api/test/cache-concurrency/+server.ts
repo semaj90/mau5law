@@ -11,7 +11,7 @@ export const GET: RequestHandler = async () => {
   try {
     console.log('🧪 Starting thread-safe cache concurrency test...');
     
-    // Test 1: Concurrent document storage (race condition test)
+    // Test 1: Concurrent document storage (race condition test);
     const testDocuments = Array.from({ length: 10 }, (_, i) => ({
       id: `test_doc_${i}`,
       content: {
@@ -23,16 +23,16 @@ export const GET: RequestHandler = async () => {
           tags: [`tag_${i}`, `category_${i % 3}`],
           timestamps: {
             created: Date.now(),
-            modified: Date.now() + i * 1000
+            modified: Date.now() + i * 1000,
           },
-          // Large object to trigger GPU acceleration
+          // Large object to trigger GPU acceleration;
           complexData: Array.from({ length: 100 }, (_, j) => ({
             field: `value_${i}_${j}`,
             nested: { deep: { data: `nested_${i}_${j}` } }
-          }))
+          })
         }
       }
-    }));
+    });
 
     // Concurrent storage operations
     console.log('⚡ Testing concurrent document storage...');
@@ -75,35 +75,35 @@ export const GET: RequestHandler = async () => {
         concurrent_storage: {
           attempted: testDocuments.length,
           successful: successfulStores,
-          success_rate: (successfulStores / testDocuments.length) * 100
+          success_rate: (successfulStores / testDocuments.length) * 100,
         },
         concurrent_retrieval: {
           attempted: testDocuments.length,
           successful: successfulRetrieves,
-          success_rate: (successfulRetrieves / testDocuments.length) * 100
+          success_rate: (successfulRetrieves / testDocuments.length) * 100,
         },
         jsonb_queries: {
           total_queries: queryPromises.length,
           results: queryResults.map((result, i) => ({
             query_index: i,
-            results_count: result?.length || 0
-          }))
+            results_count: result?.length || 0,
+          })
         },
         gpu_acceleration: {
           enabled: cacheStats.threadSafe,
           documents_processed: gpuProcessedCount,
-          total_documents: cacheStats.totalEntries
+          total_documents: cacheStats.totalEntries,
         }
       },
       cache_statistics: cacheStats,
       thread_safety: {
         mutex_protected: true,
         concurrent_access: 'tested',
-        race_conditions: 'prevented'
+        race_conditions: 'prevented',
       },
       performance: {
         total_operations: (testDocuments.length * 2) + queryPromises.length,
-        operations_per_second: Math.round(((testDocuments.length * 2) + queryPromises.length) / 2)
+        operations_per_second: Math.round(((testDocuments.length * 2) + queryPromises.length) / 2),
       }
     };
 
@@ -118,7 +118,7 @@ export const GET: RequestHandler = async () => {
     return json({
       error: 'Cache concurrency test failed',
       message: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -140,15 +140,15 @@ export const POST: RequestHandler = async ({ request }) => {
         data: `Stress test document ${i}`,
         complexity: Array.from({ length: 50 }, (_, j) => ({ 
           field: `stress_${i}_${j}`, 
-          value: Math.random() 
-        }))
+          value: Math.random() ,
+        })
       };
       
-      operations.push(cognitiveCache.storeJsonbDocument(docId, document));
-      operations.push(cognitiveCache.retrieveJsonbDocument(docId));
+      operations.push(cognitiveCache.storeJsonbDocument(docId, document);
+      operations.push(cognitiveCache.retrieveJsonbDocument(docId);
       
       if (i % 3 === 0) {
-        operations.push(cognitiveCache.queryJsonb('test_id', i.toString()));
+        operations.push(cognitiveCache.queryJsonb('test_id', i.toString());
       }
     }
     
@@ -167,17 +167,17 @@ export const POST: RequestHandler = async ({ request }) => {
         failed_operations: failed,
         success_rate: (successful / operations.length) * 100,
         execution_time_ms: endTime - startTime,
-        operations_per_second: Math.round(operations.length / ((endTime - startTime) / 1000))
+        operations_per_second: Math.round(operations.length / ((endTime - startTime) / 1000),
       },
       thread_safety_verified: failed === 0,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     
   } catch (error) {
     console.error('❌ Stress test failed:', error);
     return json({
       error: 'Stress test failed',
-      message: error instanceof Error ? error.message: 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };

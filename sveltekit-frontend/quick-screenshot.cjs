@@ -22,13 +22,12 @@ const { chromium } = require('playwright');
         // Take screenshot regardless of content
         await page.screenshot({
           path: `demo-routes-port-${port}.png`,
-          fullPage: true
+          fullPage: true,
         });
 
         console.log(`✅ Screenshot saved: demo-routes-port-${port}.png`);
         successful = true;
         break;
-
       } catch (e) {
         console.log(`❌ Port ${port} failed: ${e.message}`);
         continue;
@@ -39,7 +38,6 @@ const { chromium } = require('playwright');
       console.log('⚠️ No ports responded, taking blank screenshot...');
       await page.screenshot({ path: 'demo-routes-no-server.png' });
     }
-
   } catch (error) {
     console.error('❌ Error:', error.message);
     await page.screenshot({ path: 'demo-routes-final-error.png' });

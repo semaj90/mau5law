@@ -10,13 +10,13 @@ const pgPool = new Pool({
   port: 5432,
   database: 'legal_ai_db',
   user: 'legal_admin',
-  password: '123456'
+  password: '123456',
 });
 
 // Redis configuration
 const redisClient = createClient({
   url: 'redis://localhost:6379',
-  password: 'redis'
+  password: 'redis',
 });
 
 // Ollama configuration
@@ -35,7 +35,9 @@ async function testInfrastructure() {
     console.log(`   Version: ${pgResult.rows[0].version.split(',')[0]}`);
 
     // Check pgvector extension
-    const vectorResult = await pgPool.query("SELECT extversion FROM pg_extension WHERE extname = 'vector'");
+    const vectorResult = await pgPool.query(
+      "SELECT extversion FROM pg_extension WHERE extname = 'vector'"
+    );
     if (vectorResult.rows.length > 0) {
       console.log(`   pgvector: v${vectorResult.rows[0].extversion}`);
     }
@@ -60,7 +62,7 @@ async function testInfrastructure() {
     const data = await response.json();
     console.log('✅ Ollama: Connected');
     if (data.models && data.models.length > 0) {
-      console.log(`   Models: ${data.models.map(m => m.name).join(', ')}`);
+      console.log(`   Models: ${data.models.map((m) => m.name).join(', ')}`);
     }
   } catch (error) {
     console.error('❌ Ollama: Failed to connect', error.message);
@@ -75,23 +77,27 @@ async function createSampleEvidence() {
 
   try {
     // Create a case first
-    const caseResult = await pgPool.query(`
+    const caseResult = await pgPool.query(
+      `
       INSERT INTO cases (title, description, status, metadata)
       VALUES ($1, $2, $3, $4)
       ON CONFLICT DO NOTHING
       RETURNING id
-    `, [
-      'Recursive Evidence Test Case',
-      'Testing recursive evidence chain processing',
-      'active',
-      JSON.stringify({ test: true, created: new Date().toISOString() })
-    ]);
+    `,
+      [
+        'Recursive Evidence Test Case',
+        'Testing recursive evidence chain processing',
+        'active',
+        JSON.stringify({ test: true, created: new Date().toISOString() }),
+      ]
+    );
 
     const caseId = caseResult.rows[0]?.id || 'existing-case-id';
     console.log(`📁 Case ID: ${caseId}`);
 
     // Create parent evidence
-    const parentEvidence = await pgPool.query(`
+    const parentEvidence = await pgPool.query(
+      `
       INSERT INTO evidence (
         case_id,
         title,
@@ -105,36 +111,39 @@ async function createSampleEvidence() {
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING id
-    `, [
-      caseId,
-      'Parent Document - Contract Agreement',
-      'Main contract with multiple referenced exhibits',
-      'document',
-      JSON.stringify({
-        file_type: 'pdf',
-        pages: 50,
-        has_exhibits: true
-      }),
-      JSON.stringify([
-        {
-          officer_id: 'officer-001',
-          officer_name: 'Detective Smith',
-          timestamp: new Date().toISOString(),
-          action: 'collected',
-          location: 'Corporate Office'
-        }
-      ]),
-      new Date(),
-      'Detective Smith',
-      'Corporate Office'
-    ]);
+    `,
+      [
+        caseId,
+        'Parent Document - Contract Agreement',
+        'Main contract with multiple referenced exhibits',
+        'document',
+        JSON.stringify({
+          file_type: 'pdf',
+          pages: 50,
+          has_exhibits: true,
+        }),
+        JSON.stringify([
+          {
+            officer_id: 'officer-001',
+            officer_name: 'Detective Smith',
+            timestamp: new Date().toISOString(),
+            action: 'collected',
+            location: 'Corporate Office',
+          },
+        ]),
+        new Date(),
+        'Detective Smith',
+        'Corporate Office',
+      ]
+    );
 
     console.log(`📄 Parent Evidence: ${parentEvidence.rows[0].id}`);
 
     // Create child evidence items
     const childIds = [];
     for (let i = 1; i <= 3; i++) {
-      const childEvidence = await pgPool.query(`
+      const childEvidence = await pgPool.query(
+        `
         INSERT INTO evidence (
           case_id,
           title,
@@ -148,36 +157,39 @@ async function createSampleEvidence() {
         )
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
         RETURNING id
-      `, [
-        caseId,
-        `Exhibit ${String.fromCharCode(64 + i)} - Supporting Document`,
-        `Referenced exhibit from main contract`,
-        'document',
-        JSON.stringify({
-          file_type: 'pdf',
-          parent_id: parentEvidence.rows[0].id,
-          exhibit_letter: String.fromCharCode(64 + i)
-        }),
-        JSON.stringify([
-          {
-            officer_id: 'officer-001',
-            officer_name: 'Detective Smith',
-            timestamp: new Date().toISOString(),
-            action: 'collected',
-            location: 'Corporate Office'
-          }
-        ]),
-        new Date(),
-        'Detective Smith',
-        'Corporate Office'
-      ]);
+      `,
+        [
+          caseId,
+          `Exhibit ${String.fromCharCode(64 + i)} - Supporting Document`,
+          `Referenced exhibit from main contract`,
+          'document',
+          JSON.stringify({
+            file_type: 'pdf',
+            parent_id: parentEvidence.rows[0].id,
+            exhibit_letter: String.fromCharCode(64 + i),
+          }),
+          JSON.stringify([
+            {
+              officer_id: 'officer-001',
+              officer_name: 'Detective Smith',
+              timestamp: new Date().toISOString(),
+              action: 'collected',
+              location: 'Corporate Office',
+            },
+          ]),
+          new Date(),
+          'Detective Smith',
+          'Corporate Office',
+        ]
+      );
       childIds.push(childEvidence.rows[0].id);
       console.log(`   📎 Child Evidence ${i}: ${childEvidence.rows[0].id}`);
     }
 
     // Create evidence connections
     for (const childId of childIds) {
-      await pgPool.query(`
+      await pgPool.query(
+        `
         INSERT INTO evidence_connections (
           source_evidence_id,
           target_evidence_id,
@@ -187,20 +199,22 @@ async function createSampleEvidence() {
         )
         VALUES ($1, $2, $3, $4, $5)
         ON CONFLICT DO NOTHING
-      `, [
-        parentEvidence.rows[0].id,
-        childId,
-        'documentary',
-        0.95,
-        JSON.stringify({ relationship: 'exhibit_reference' })
-      ]);
+      `,
+        [
+          parentEvidence.rows[0].id,
+          childId,
+          'documentary',
+          0.95,
+          JSON.stringify({ relationship: 'exhibit_reference' }),
+        ]
+      );
     }
 
     console.log('✅ Evidence chain created successfully\n');
     return {
       caseId,
       parentId: parentEvidence.rows[0].id,
-      childIds
+      childIds,
     };
   } catch (error) {
     console.error('❌ Failed to create evidence:', error.message);
@@ -229,10 +243,7 @@ async function testRecursiveProcessing(evidenceData) {
     nodesProcessed++;
 
     // Get evidence data
-    const result = await pgPool.query(
-      'SELECT * FROM evidence WHERE id = $1',
-      [evidenceId]
-    );
+    const result = await pgPool.query('SELECT * FROM evidence WHERE id = $1', [evidenceId]);
 
     if (result.rows.length === 0) return;
 
@@ -240,11 +251,14 @@ async function testRecursiveProcessing(evidenceData) {
     console.log(`${'  '.repeat(depth)}🪆 Processing: ${evidence.title} (Depth: ${depth})`);
 
     // Find connected evidence
-    const connections = await pgPool.query(`
+    const connections = await pgPool.query(
+      `
       SELECT target_evidence_id as evidence_id
       FROM evidence_connections
       WHERE source_evidence_id = $1
-    `, [evidenceId]);
+    `,
+      [evidenceId]
+    );
 
     // Process children recursively
     for (const connection of connections.rows) {
@@ -333,7 +347,6 @@ async function main() {
 
     console.log('\n✅ All tests completed successfully!');
     console.log('🎯 Recursive evidence chain processing is ready for production use.');
-
   } catch (error) {
     console.error('❌ Test failed:', error);
   } finally {

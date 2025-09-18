@@ -31,7 +31,7 @@ export async function fetchSSRData<T>(
       'Content-Type': 'application/json',
       'Accept': 'application/json'
     },
-    body: body ? JSON.stringify(body) : undefined
+    body: body ? JSON.stringify(body) : undefined,
   });
 
   if (!response.ok) {
@@ -62,7 +62,7 @@ export function createSSRStore<T>(
 
     try {
       const response = await fetchSSRData<T>(endpoint, {
-        params: options?.params
+        params: options?.params,
       });
 
       if (response.success) {
@@ -84,7 +84,7 @@ export function createSSRStore<T>(
     refreshInterval = setInterval(load, options.autoRefresh);
   }
 
-  // Initial load if no initial data
+  // Initial load if no initial data;
   if (!initialData) {
     load();
   }
@@ -120,7 +120,7 @@ export async function submitForm<T>(
   try {
     const response = await fetchSSRData<T>(endpoint, {
       method,
-      body: formData
+      body: formData,
     });
 
     if (response.success && onSuccess) {
@@ -143,7 +143,7 @@ export async function submitForm<T>(
  * Batch data loader for complex Bits UI components
  */
 export async function loadBatchData<T extends Record<string, any>(
-  endpoints: Record<keyof T, string>
+  endpoints: Record<keyof T, string>;
 ): Promise<Record<keyof T, any> {
   const promises = Object.entries(endpoints).map(async ([key, endpoint]) => {
     try {
@@ -163,7 +163,7 @@ export async function loadBatchData<T extends Record<string, any>(
  */
 export function validateSSRData<T>(
   data: any,
-  validator: (data: any) => data is T
+  validator: (data: any) => data is T;
 ): T | null {
   return validator(data) ? data : null;
 }
@@ -173,7 +173,7 @@ export function validateSSRData<T>(
  */
 export function createDebouncedSearch<T>(
   searchFn: (query: string) => Promise<T[]>,
-  delay: number = 300
+  delay: number = 300;
 ) {
   let searchTimeout: ReturnType<typeof setTimeout> | undefined;
   let currentQuery = $state('');
@@ -221,7 +221,7 @@ export function createDebouncedSearch<T>(
 export function withSSRErrorBoundary<T>(
   fn: () => Promise<T>,
   fallback: T,
-  onError?: (error: Error) => void
+  onError?: (error: Error) => void;
 ): Promise<T> {
   return fn().catch((error) => {
     console.error('SSR Error Boundary:', error);
@@ -234,7 +234,7 @@ export function withSSRErrorBoundary<T>(
 
 /**
  * Optimistic updates for Bits UI forms
- */
+ */;
 export function createOptimisticStore<T>(initialData: T) {
   let data = $state<T>(initialData);
   let pending = $state(false);
@@ -242,7 +242,7 @@ export function createOptimisticStore<T>(initialData: T) {
 
   const update = async (
     optimisticData: T,
-    updateFn: () => Promise<T>
+    updateFn: () => Promise<T>;
   ) => {
     const previousData = data;
     data = optimisticData;

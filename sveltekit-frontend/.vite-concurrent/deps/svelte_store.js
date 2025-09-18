@@ -1,11 +1,5 @@
-import {
-  derived,
-  get,
-  readable,
-  readonly,
-  writable
-} from "./chunk-5OCJKXG4.js";
-import "./chunk-VOC4A3DY.js";
+import { derived, get, readable, readonly, writable } from './chunk-5OCJKXG4.js';
+import './chunk-VOC4A3DY.js';
 import {
   active_effect,
   active_reaction,
@@ -14,13 +8,13 @@ import {
   effect_tracking,
   render_effect,
   set_active_effect,
-  set_active_reaction
-} from "./chunk-YZBAU52E.js";
-import "./chunk-24FUCJ6P.js";
-import "./chunk-6SIJFJGE.js";
-import "./chunk-UWMOYZ25.js";
-import "./chunk-KDVGFZWC.js";
-import "./chunk-KWPVD4H7.js";
+  set_active_reaction,
+} from './chunk-YZBAU52E.js';
+import './chunk-24FUCJ6P.js';
+import './chunk-6SIJFJGE.js';
+import './chunk-UWMOYZ25.js';
+import './chunk-KDVGFZWC.js';
+import './chunk-KWPVD4H7.js';
 
 // node_modules/svelte/src/store/index-client.js
 function toStore(get2, set) {
@@ -52,18 +46,17 @@ function toStore(get2, set) {
     return {
       set,
       update: (fn) => set(fn(get2())),
-      subscribe: store.subscribe
+      subscribe: store.subscribe,
     };
   }
   return {
-    subscribe: store.subscribe
+    subscribe: store.subscribe,
   };
 }
 function fromStore(store) {
-  let value = (
+  let value =
     /** @type {V} */
-    void 0
-  );
+    void 0;
   const subscribe = createSubscriber((update) => {
     let ran = false;
     const unsubscribe = store.subscribe((v) => {
@@ -80,29 +73,21 @@ function fromStore(store) {
     }
     return get(store);
   }
-  if ("set" in store) {
+  if ('set' in store) {
     return {
       get current() {
         return current();
       },
       set current(v) {
         store.set(v);
-      }
+      },
     };
   }
   return {
     get current() {
       return current();
-    }
+    },
   };
 }
-export {
-  derived,
-  fromStore,
-  get,
-  readable,
-  readonly,
-  toStore,
-  writable
-};
+export { derived, fromStore, get, readable, readonly, toStore, writable };
 //# sourceMappingURL=svelte_store.js.map

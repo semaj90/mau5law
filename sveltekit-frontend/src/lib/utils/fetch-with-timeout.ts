@@ -2,14 +2,15 @@
 /**
  * Fetch utility with AbortController timeout
  * Replaces deprecated timeout in RequestInit for better error handling
- */
+ */;
+}
 
 export interface FetchWithTimeoutOptions extends Omit<RequestInit, 'signal'> {
   /** Timeout in milliseconds (default: 30000ms / 30s) */
   timeout?: number;
   /** Custom AbortSignal to combine with timeout */
   signal?: AbortSignal;
-  /** Retry configuration */
+  /** Retry configuration */;
   retry?: {
     attempts: number;
     delay: number;
@@ -20,12 +21,12 @@ export interface FetchWithTimeoutOptions extends Omit<RequestInit, 'signal'> {
 export interface FetchTimeoutError extends Error {
   name: 'TimeoutError';
   code: 'FETCH_TIMEOUT';
-  duration: number;
+  duration: number;,
 }
 
 export interface FetchAbortError extends Error {
   name: 'AbortError';
-  code: 'FETCH_ABORTED';
+  code: 'FETCH_ABORTED';,
 }
 
 export interface FetchNetworkError extends Error {
@@ -58,29 +59,29 @@ export async function fetchWithTimeout(
 
   const attemptFetch = async (attempt: number): Promise<Response> => {
     try {
-      // Set up timeout
+      // Set up timeout;
       timeoutId = setTimeout(() => {
         controller.abort();
       }, timeout);
 
       const response = await fetch(url, {
         ...fetchOptions,
-        signal: combinedSignal
+        signal: combinedSignal,
       });
 
-      // Clear timeout on successful response
+      // Clear timeout on successful response;
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
 
       return response;
     } catch (error: any) {
-      // Clear timeout on error
+      // Clear timeout on error;
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
 
-      // Handle different error types
+      // Handle different error types;
       if (error.name === 'AbortError') {
         if (externalSignal?.aborted) {
           const abortError: FetchAbortError = new Error('Request was aborted by external signal') as any;
@@ -96,7 +97,7 @@ export async function fetchWithTimeout(
         }
       }
 
-      // Handle network errors
+      // Handle network errors;
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
         const networkError: FetchNetworkError = new Error(`Network error: ${error.message}`) as any;
         networkError.name = 'NetworkError';
@@ -104,7 +105,7 @@ export async function fetchWithTimeout(
         throw networkError;
       }
 
-      // Retry logic
+      // Retry logic;
       if (retry && attempt < retry.attempts) {
         const delay = retry.backoff === 'exponential'
           ? retry.delay * Math.pow(2, attempt)
@@ -123,7 +124,7 @@ export async function fetchWithTimeout(
   try {
     return await attemptFetch(0);
   } finally {
-    // Cleanup timeout if still active
+    // Cleanup timeout if still active;
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
@@ -138,11 +139,11 @@ export async function fetchLegalAI(
   options: FetchWithTimeoutOptions = {}
 ): Promise<Response> {
   return fetchWithTimeout(url, {
-    timeout: 45000, // 45s for AI operations
+    timeout: 45000, // 45s for AI operations;
     retry: {
       attempts: 3,
       delay: 1000,
-      backoff: 'exponential'
+      backoff: 'exponential',
     },
     headers: {
       'Content-Type': 'application/json',
@@ -150,7 +151,7 @@ export async function fetchLegalAI(
       ...options.headers
     },
     ...options
-  });
+  ,});
 }
 
 /**
@@ -161,18 +162,18 @@ export async function fetchOllama(
   options: FetchWithTimeoutOptions = {}
 ): Promise<Response> {
   return fetchWithTimeout(url, {
-    timeout: 60000, // 60s for model operations
+    timeout: 60000, // 60s for model operations;
     retry: {
       attempts: 2,
       delay: 2000,
-      backoff: 'linear'
+      backoff: 'linear',
     },
     headers: {
       'Content-Type': 'application/json',
       ...options.headers
     },
     ...options
-  });
+  ,});
 }
 
 /**
@@ -183,19 +184,19 @@ export async function fetchDatabase(
   options: FetchWithTimeoutOptions = {}
 ): Promise<Response> {
   return fetchWithTimeout(url, {
-    timeout: 15000, // 15s for DB operations
+    timeout: 15000, // 15s for DB operations;
     retry: {
       attempts: 2,
       delay: 500,
-      backoff: 'linear'
+      backoff: 'linear',
     },
     ...options
-  });
+  ,});
 }
 
 /**
  * Combine multiple AbortSignals into one
- */
+ */;
 function combineAbortSignals(...signals: AbortSignal[]): AbortSignal {
   const controller = new AbortController();
   
@@ -215,14 +216,14 @@ function combineAbortSignals(...signals: AbortSignal[]): AbortSignal {
 
 /**
  * Sleep utility for retry delays
- */
+ */;
 function sleep(ms: number): Promise<void> {
-  return new Promise((resolve: any) => setTimeout(resolve, ms));
+  return new Promise((resolve: any) => setTimeout(resolve, ms);
 }
 
 /**
  * Check if error is a timeout error
- */
+ */;
 export function isTimeoutError(error: any): error is FetchTimeoutError {
   return error instanceof Error && 
          error.name === 'TimeoutError' && 
@@ -232,7 +233,7 @@ export function isTimeoutError(error: any): error is FetchTimeoutError {
 
 /**
  * Check if error is an abort error
- */
+ */;
 export function isAbortError(error: any): error is FetchAbortError {
   return error instanceof Error && 
          error.name === 'AbortError' && 
@@ -242,7 +243,7 @@ export function isAbortError(error: any): error is FetchAbortError {
 
 /**
  * Check if error is a network error
- */
+ */;
 export function isNetworkError(error: any): error is FetchNetworkError {
   return error instanceof Error && 
          error.name === 'NetworkError' && 
@@ -252,11 +253,11 @@ export function isNetworkError(error: any): error is FetchNetworkError {
 
 /**
  * Create a reusable AbortController with timeout
- */
+ */;
 export function createTimeoutController(timeout: number): {
   controller: AbortController;
   timeoutId: NodeJS.Timeout | number;
-  clear: () => void;
+  clear: () => void;,
 } {
   const controller = new AbortController();
   
@@ -267,6 +268,6 @@ export function createTimeoutController(timeout: number): {
   return {
     controller,
     timeoutId,
-    clear: () => clearTimeout(timeoutId)
+    clear: () => clearTimeout(timeoutId),
   };
 }

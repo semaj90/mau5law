@@ -8,6 +8,7 @@ export type SearchCategory =
   | 'api'
   | 'demo'
   | 'all';
+}
 
 export interface SearchResult {
   id: string;
@@ -18,13 +19,13 @@ export interface SearchResult {
   score: number;
   matches: SearchMatch[];
   metadata?: Record<string, any>;
-  tags: string[];
+  tags: string[];,
 }
 
 export interface SearchMatch {
   indices: [number, number][];
   key: string;
-  value: string;
+  value: string;,
 }
 
 export interface SearchOptions {
@@ -43,7 +44,7 @@ export interface SearchFilter {
   port?: number;
   dateRange?: {
     start: Date;
-    end: Date;
+    end: Date;,
   };
 }
 
@@ -55,5 +56,5 @@ export interface SearchState {
   filters: SearchFilter;
   selectedCategory: SearchCategory;
   totalResults: number;
-  searchTime: number;
+  searchTime: number;,
 }

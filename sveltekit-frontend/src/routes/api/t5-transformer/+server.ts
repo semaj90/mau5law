@@ -38,7 +38,7 @@ interface T5TransformResponse {
     processingTime: number;
     tokensGenerated: number;
     beamSearch: boolean;
-    parameters: any;
+    parameters: any;,
   };
   structured?: {
     summary?: string;
@@ -54,8 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { input, task, parameters = {}, context, domain = 'legal', outputFormat = 'text' } = body;
 
     if (!input || !task) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Input text and task type are required',
           supportedTasks: [
@@ -66,14 +65,14 @@ export const POST: RequestHandler = async ({ request }) => {
             'analyze',
             'extract',
           ],
-        },
+        },)
         { status: 400 }
       );
     }
 
     const startTime = performance.now();
 
-    // Route request to T5 transformer Go service
+    // Route request to T5 transformer Go service;
     try {
       const result = await productionServiceClient.execute('t5-transformer.process', {
         input,
@@ -101,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
       let confidence = 0.85;
 
       switch (task) {
-        case 'summarize':
+        case 'summarize':;
           structuredOutput = {
             summary: (result as { output?: any; modelVersion?: any; tokensGenerated?: any }).output,
             keyPoints: extractKeyPoints(
@@ -117,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
           confidence = 0.9;
           break;
 
-        case 'analyze':
+        case 'analyze':;
           structuredOutput = {
             analysis: (result as { output?: any; modelVersion?: any; tokensGenerated?: any })
               .output,
@@ -136,7 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
           confidence = 0.88;
           break;
 
-        case 'extract':
+        case 'extract':;
           structuredOutput = {
             extracted: (result as { output?: any; modelVersion?: any; tokensGenerated?: any })
               .output,
@@ -155,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
           confidence = structuredOutput.confidence || 0.82;
           break;
 
-        case 'generate':
+        case 'generate':;
           structuredOutput = {
             generated: (result as { output?: any; modelVersion?: any; tokensGenerated?: any })
               .output,
@@ -171,7 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
           confidence = 0.85;
           break;
 
-        default:
+        default:;
           structuredOutput = {
             transformed: (result as { output?: any; modelVersion?: any; tokensGenerated?: any })
               .output,
@@ -226,7 +225,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     console.error('T5 Transformer API error:', error);
-    return json(
+    return json();
       {
         success: false,
         error: error instanceof Error ? error.message: String(error),
@@ -245,8 +244,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // Return task-specific information
       const taskInfo = getTaskInformation(task);
       if (!taskInfo) {
-        return json(
-          {
+        return json({
             success: false,
             error: `Unknown task: ${task}`,
             supportedTasks: [
@@ -257,7 +255,7 @@ export const GET: RequestHandler = async ({ url }) => {
               'analyze',
               'extract',
             ],
-          },
+          },)
           { status: 400 }
         );
       }
@@ -269,7 +267,7 @@ export const GET: RequestHandler = async ({ url }) => {
       });
     }
 
-    // Service overview
+    // Service overview;
     return json({
       service: 't5-transformer',
       status: 'operational',
@@ -280,7 +278,7 @@ export const GET: RequestHandler = async ({ url }) => {
         specialization: 'Legal document processing',
       },
       capabilities: {
-        tasks: [
+        tasks: [;
           {
             name: 'summarize',
             description: 'Generate concise summaries of legal documents',
@@ -310,7 +308,7 @@ export const GET: RequestHandler = async ({ url }) => {
             description: 'Rephrase legal text for clarity',
             inputRange: '10-2000 tokens',
             outputRange: '10-2500 tokens',
-          },
+          },);
           {
             name: 'translate',
             description: 'Translate legal documents (if supported)',
@@ -335,7 +333,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: Date.now(),
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error instanceof Error ? error.message: String(error),
@@ -346,11 +344,11 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-// Helper functions
+// Helper functions;
 function extractKeyPoints(text: string): string[] {
   // Simple extraction - in production, this would use advanced NLP
   const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 20);
-  return sentences.slice(0, 5).map((s) => s.trim());
+  return sentences.slice(0, 5).map((s) => s.trim();
 }
 
 function extractLegalEntities(text: string): Array<any> {
@@ -446,7 +444,7 @@ function generateRecommendations(output: string, domain: string): string[] {
 }
 
 function parseStructuredData(text: string, domain: string): any {
-  // Mock structured data parsing
+  // Mock structured data parsing;
   return {
     type: domain,
     confidence: 0.8,
@@ -464,21 +462,21 @@ function calculateExtractionConfidence(input: string, output: string): number {
   const outputLength = output.length;
   const ratio = outputLength / inputLength;
 
-  return Math.min(0.95, 0.7 + (ratio > 0.1 ? 0.2 : 0) + (ratio < 0.8 ? 0.1 : 0));
+  return Math.min(0.95, 0.7 + (ratio > 0.1 ? 0.2 : 0) + (ratio < 0.8 ? 0.1 : 0);
 }
 
 function assessCoherence(text: string): number {
   // Mock coherence assessment
-  const sentences = text.split(/[.!?]+/).filter((s) => s.trim());
+  const sentences = text.split(/[.!?]+/).filter((s) => s.trim();
   const avgLength = sentences.reduce((sum, s) => sum + s.length, 0) / sentences.length;
-  return Math.min(0.95, 0.6 + (avgLength > 50 ? 0.2 : 0) + (sentences.length > 3 ? 0.15 : 0));
+  return Math.min(0.95, 0.6 + (avgLength > 50 ? 0.2 : 0) + (sentences.length > 3 ? 0.15 : 0);
 }
 
 function assessRelevance(input: string, output: string): number {
   // Mock relevance assessment
-  const inputWords = new Set(input.toLowerCase().split(/\W+/));
-  const outputWords = new Set(output.toLowerCase().split(/\W+/));
-  const commonWords = [...inputWords].filter((w) => outputWords.has(w));
+  const inputWords = new Set(input.toLowerCase().split(/\W+/);
+  const outputWords = new Set(output.toLowerCase().split(/\W+/);
+  const commonWords = [...inputWords].filter((w) => outputWords.has(w);
   return Math.min(0.95, commonWords.length / Math.max(inputWords.size, 10) + 0.3);
 }
 
@@ -520,7 +518,7 @@ function getTaskInformation(task: string): any {
 async function generateMockT5Response(
   input: string,
   task: string,
-  domain: string
+  domain: string;
 ): Promise<Partial<T5TransformResponse> {
   // Fallback mock responses for development
   const processingTime = 1500 + Math.random() * 1000;

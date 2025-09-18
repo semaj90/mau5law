@@ -10,12 +10,12 @@ import { gpuShaderCacheOrchestrator } from '$lib/services/gpu-shader-cache-orche
 import { dev } from '$app/environment';
 
 // Test configuration
-const TEST_SHADERS = [
+const TEST_SHADERS = [;
   {
     key: 'test-legal-vertex-001',
     sourceCode: `
 // Legal document vertex shader for timeline visualization
-@vertex
+@vertex;
 fn vs_main(@location(0) position: vec4<f32>) -> @builtin(position) vec4<f32> {
     return position;
 }`,
@@ -31,7 +31,7 @@ fn vs_main(@location(0) position: vec4<f32>) -> @builtin(position) vec4<f32> {
     key: 'test-evidence-fragment-001',
     sourceCode: `
 // Evidence highlighting fragment shader
-@fragment
+@fragment;
 fn fs_main() -> @location(0) vec4<f32> {
     return vec4<f32>(1.0, 0.8, 0.0, 1.0); // Evidence highlight color
 }`,
@@ -47,7 +47,7 @@ fn fs_main() -> @location(0) vec4<f32> {
     key: 'test-precedent-compute-001',
     sourceCode: `
 // Precedent similarity compute shader
-@compute @workgroup_size(64)
+@compute @workgroup_size(64);
 fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     // Compute precedent similarity scores
     let index = global_id.x;
@@ -135,12 +135,11 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error('❌ Shader cache test endpoint error:', error);
-    return json(
-      {
+    return json({
         success: false,
         error: 'Test execution failed',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }
@@ -244,7 +243,7 @@ async function testHotPath(testResults: any): Promise<any> {
         });
         testResults.metrics.passedTests++;
       } else {
-        // Not in cache, which is expected if cold path wasn't run first
+        // Not in cache, which is expected if cold path wasn't run first;
         testResults.results.hotPath.tests.push({
           shader: shader.key,
           success: true,
@@ -311,7 +310,7 @@ async function testMultiDimensionalSearch(testResults: any): Promise<any> {
     tests: [],
   };
 
-  const searchQueries = [
+  const searchQueries = [;
     {
       name: 'semantic_search',
       query: { semanticQuery: 'legal document timeline visualization' },
@@ -460,7 +459,7 @@ async function testDatabaseIntegration(testResults: any): Promise<any> {
   }
 }
 
-// Helper functions
+// Helper functions;
 function createMockWorkflowContext(step: string, docContext: any) {
   return {
     userId: 'test-user-' + Math.random().toString(36).substr(2, 9),
@@ -471,15 +470,15 @@ function createMockWorkflowContext(step: string, docContext: any) {
       documentType: docContext.documentType || 'contract',
       caseId: 'test-case-001',
       documentSize: 1024000,
-      complexity: docContext.complexity || 'medium'
+      complexity: docContext.complexity || 'medium',
     },
-    timestamp: new Date()
+    timestamp: new Date(),
   };
 }
 
 async function simulateColdPath(shader: any, context: any): Promise<any> {
   // Simulate the cold path process without actual network fetch
-  // This would normally be handled by the actual cold path logic
+  // This would normally be handled by the actual cold path logic;
   return {
     key: shader.key,
     sourceCode: shader.sourceCode,
@@ -491,11 +490,11 @@ async function simulateColdPath(shader: any, context: any): Promise<any> {
       performanceMetrics: {
         compileTimeMs: 50 + Math.random() * 100,
         binarySize: 2048 + Math.random() * 1024,
-        memoryUsage: 512 + Math.random() * 256
+        memoryUsage: 512 + Math.random() * 256,
       },
       lastAccessed: new Date(),
-      usageCount: 1
+      usageCount: 1,
     },
-    dependencies: []
+    dependencies: [],
   };
 }

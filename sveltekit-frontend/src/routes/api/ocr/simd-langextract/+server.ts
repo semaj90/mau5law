@@ -30,32 +30,32 @@ interface SIMDLangExtractResponse {
   tags: string[];
   type: string;
   
-  // Enhanced SIMD fields
+  // Enhanced SIMD fields;
   simd_results: {
     compressed_tiles: Array<any>;
     gpu_buffer_data: number[];
-    vertex_buffer_cache: string; // Base64 encoded ArrayBuffer
+    vertex_buffer_cache: string; // Base64 encoded ArrayBuffer;
     ui_components: {
       instant_render: boolean;
       component_data: string; // Base64 encoded
       rendering_instructions: string;
-      css_optimized: string;
+      css_optimized: string;,
     };
     processing_stats: {
       compression_time: number;
       total_compression_ratio: number;
       gpu_utilization: number;
       cache_hits: number;
-      semantic_preservation_score: number;
+      semantic_preservation_score: number;,
     };
   };
   
   // Cache optimization
   vertex_buffer_key?: string;
-  redis_keys: string[];
+  redis_keys: string[];,
 }
 
-// POST - Enhanced text processing with SIMD tiling
+// POST - Enhanced text processing with SIMD tiling;
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const requestData: SIMDLangExtractRequest = await request.json();
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         ...cachedResult,
         cached: true,
         vertex_buffer_key: vertexKey,
-        redis_keys: redisKeys
+        redis_keys: redisKeys,
       });
     }
 
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     // Phase 1: Get traditional embedding for backward compatibility
     const standardEmbedding = await getStandardEmbedding(text, model, fetch);
     
-    // Phase 2: Apply SIMD text tiling with 7-bit compression
+    // Phase 2: Apply SIMD text tiling with 7-bit compression;
     const simdConfig: Partial<TextTileConfig> = {
       compressionRatio: compression_target,
       tileSize: 16,
@@ -113,10 +113,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const simdResult = await simdTextTilingEngine.processText(text, {
       type: type as any,
       context: `${model} embedding`,
-      uiTarget: ui_target
+      uiTarget: ui_target,
     });
     
-    // Phase 3: Create enhanced response with SIMD data
+    // Phase 3: Create enhanced response with SIMD data;
     const response: SIMDLangExtractResponse = {
       // Standard fields for backward compatibility
       tensor: standardEmbedding,
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       tags,
       type,
       
-      // Enhanced SIMD fields
+      // Enhanced SIMD fields;
       simd_results: {
         compressed_tiles: simdResult.compressedTiles.map(tile => ({
           id: tile.id,
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             token_count: tile.tileMetadata.tokenCount,
             semantic_density: tile.tileMetadata.semanticDensity,
             pattern_id: tile.tileMetadata.patternId,
-            categories: tile.tileMetadata.categories
+            categories: tile.tileMetadata.categories,
           }
         })),
         gpu_buffer_data: Array.from(simdResult.gpuBufferData),
@@ -146,13 +146,13 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           instant_render: simdResult.uiComponents.instantRender,
           component_data: btoa(String.fromCharCode(...new Uint8Array(simdResult.uiComponents.componentData))),
           rendering_instructions: simdResult.uiComponents.renderingInstructions,
-          css_optimized: simdResult.uiComponents.cssOptimized
+          css_optimized: simdResult.uiComponents.cssOptimized,
         },
-        processing_stats: simdResult.processingStats
+        processing_stats: simdResult.processingStats,
       },
       
       vertex_buffer_key: vertexKey,
-      redis_keys: redisKeys
+      redis_keys: redisKeys,
     };
 
     // Phase 4: Cache results with optimized expiration
@@ -168,10 +168,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       // Cache standard embedding for compatibility
       await cacheEmbedding(text, standardEmbedding, model);
       
-      // Cache search results for discovery
+      // Cache search results for discovery;
       await cacheSearchResults(text, 'simd-tensor', [{ 
         id: textKey, 
-        score: (response as { simd_results?: any }).simd_results.processing_stats.semantic_preservation_score 
+        score: (response as { simd_results?: any }).simd_results.processing_stats.semantic_preservation_score;
       }], { 
         model, 
         tags, 
@@ -190,12 +190,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     console.error('SIMD LangExtract error:', error);
     return json({ 
       error: 'SIMD LangExtract processing failed', 
-      details: error.message 
+      details: error.message ,
     }, { status: 500 });
   }
 };
 
-// GET - System status and capabilities
+// GET - System status and capabilities;
 export const GET: RequestHandler = async () => {
   try {
     const stats = simdTextTilingEngine.getStats();
@@ -215,25 +215,25 @@ export const GET: RequestHandler = async () => {
         tile_cache_size: stats.cacheSize,
         semantic_patterns: stats.semanticPatterns,
         gpu_buffer_pool: stats.gpuBufferPoolSize,
-        default_config: stats.config
+        default_config: stats.config,
       },
       endpoints: {
         process: 'POST - Process text with SIMD tiling and vertex caching',
         benchmark: 'POST with benchmark: true - Performance testing',
-        batch: 'POST with texts: [] - Batch processing'
+        batch: 'POST with texts: [] - Batch processing',
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
     
   } catch (error) {
     return json({
       success: false,
-      error: 'Failed to get SIMD LangExtract status'
+      error: 'Failed to get SIMD LangExtract status',
     }, { status: 500 });
   }
 };
 
-// PUT - Update SIMD configuration
+// PUT - Update SIMD configuration;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const config: Partial<TextTileConfig> = await request.json();
@@ -245,13 +245,13 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       message: 'SIMD configuration updated',
       config,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
     
   } catch (error) {
     return json({
       success: false,
-      error: 'Failed to update SIMD configuration'
+      error: 'Failed to update SIMD configuration',
     }, { status: 500 });
   }
 };
@@ -260,7 +260,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 async function getStandardEmbedding(
   text: string, 
   model: string, 
-  fetch: typeof globalThis.fetch
+  fetch: typeof globalThis.fetch;
 ): Promise<number[]> {
   try {
     // Try FastAPI first
@@ -279,7 +279,7 @@ async function getStandardEmbedding(
       }
     }
     
-    // Fallback to Go tensor bridge
+    // Fallback to Go tensor bridge;
     const goResp = await fetch('/api/tensor', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -311,7 +311,7 @@ async function getStandardEmbedding(
 // Batch processing endpoint
 export async function handleBatchProcessing(
   texts: Array<any>,
-  config: Partial<TextTileConfig>
+  config: Partial<TextTileConfig>;
 ): Promise<any[]> {
   console.log(`🚀 SIMD batch processing: ${texts.length} texts`);
   
@@ -325,13 +325,13 @@ export async function handleBatchProcessing(
     gpu_utilization: (result as { originalText?: any; compressedTiles?: any; processingStats?: any; uiComponents?: any }).processingStats.gpuUtilization,
     semantic_preservation: (result as { originalText?: any; compressedTiles?: any; processingStats?: any; uiComponents?: any }).processingStats.semanticPreservationScore,
     instant_render: (result as { originalText?: any; compressedTiles?: any; processingStats?: any; uiComponents?: any }).uiComponents.instantRender
-  }));
+  });
 }
 
 // Benchmark testing
 export async function handleBenchmarkTesting(
   iterations: number = 100,
-  compressionTargets: number[] = [10, 25, 50, 109, 200]
+  compressionTargets: number[] = [10, 25, 50, 109, 200];
 ): Promise<any> {
   console.log(`🧪 SIMD benchmark testing: ${iterations} iterations across ${compressionTargets.length} compression levels`);
   
@@ -347,14 +347,14 @@ export async function handleBenchmarkTesting(
     benchmark_config: {
       iterations,
       compression_targets: compressionTargets,
-      sample_texts: sampleTexts.length
+      sample_texts: sampleTexts.length,
     },
     compression_results: Record<string, any>,
     performance_stats: {
       total_processing_time: 0,
       avg_compression_ratio: 0,
       best_compression_ratio: 0,
-      avg_gpu_utilization: 0
+      avg_gpu_utilization: 0,
     }
   };
   

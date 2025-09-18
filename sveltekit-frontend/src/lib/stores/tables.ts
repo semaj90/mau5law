@@ -1,4 +1,5 @@
 import { writable, derived, type Writable } from 'svelte/store';
+}
 
 export interface TableState {
   id: string;
@@ -10,7 +11,7 @@ export interface TableState {
   searchQuery: string;
   columnFilters: Map<string, string>;
   columnWidths: Map<string, number>;
-  expandedRows: Set<string | number>;
+  expandedRows: Set<string | number>;,
 }
 
 export interface TableNotification {
@@ -60,7 +61,7 @@ class TableManager {
     this.tables.delete(id);
   }
 
-  // Table actions
+  // Table actions;
   updateSort(tableId: string, column: string, direction?: 'asc' | 'desc') {
     const table = this.getTable(tableId);
     if (!table) return;
@@ -71,7 +72,7 @@ class TableManager {
         ...state,
         sortColumn: column,
         sortDirection: newDirection,
-        currentPage: 1 // Reset to first page when sorting
+        currentPage: 1 // Reset to first page when sorting,
       };
     });
   }
@@ -94,7 +95,7 @@ class TableManager {
 
       return {
         ...state,
-        selectedRows: newSelection
+        selectedRows: newSelection,
       };
     });
   }
@@ -113,7 +114,7 @@ class TableManager {
 
       return {
         ...state,
-        selectedRows: newSelection
+        selectedRows: newSelection,
       };
     });
   }
@@ -125,8 +126,8 @@ class TableManager {
     table.update(state => ({
       ...state,
       searchQuery: query,
-      currentPage: 1 // Reset to first page when searching
-    }));
+      currentPage: 1 // Reset to first page when searching,
+    });
   }
 
   updateFilter(tableId: string, column: string, filter: string) {
@@ -144,7 +145,7 @@ class TableManager {
       return {
         ...state,
         columnFilters: newFilters,
-        currentPage: 1 // Reset to first page when filtering
+        currentPage: 1 // Reset to first page when filtering,
       };
     });
   }
@@ -156,8 +157,8 @@ class TableManager {
     table.update(state => ({
       ...state,
       currentPage: page,
-      pageSize: pageSize || state.pageSize
-    }));
+      pageSize: pageSize || state.pageSize,
+    });
   }
 
   updateColumnWidth(tableId: string, column: string, width: number) {
@@ -169,7 +170,7 @@ class TableManager {
       newWidths.set(column, width);
       return {
         ...state,
-        columnWidths: newWidths
+        columnWidths: newWidths,
       };
     });
   }
@@ -188,23 +189,23 @@ class TableManager {
 
       return {
         ...state,
-        expandedRows: newExpanded
+        expandedRows: newExpanded,
       };
     });
   }
 
-  // Notifications for table operations
+  // Notifications for table operations;
   addNotification(notification: Omit<TableNotification, 'id' | 'timestamp'>) {
     const id = `table_notification_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     const fullNotification: TableNotification = {
       ...notification,
       id,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     this.notifications.update(notifications => [...notifications, fullNotification]);
 
-    // Auto-remove non-persistent notifications
+    // Auto-remove non-persistent notifications;
     if (!(notification as { persistent?: any; duration?: any }).persistent) {
       const duration = (notification as { persistent?: any; duration?: any }).duration || 5000;
       setTimeout(() => {
@@ -229,13 +230,13 @@ class TableManager {
     return this.notifications;
   }
 
-  // Legal AI specific table methods
+  // Legal AI specific table methods;
   caseTableUpdate(message: string, caseId?: string): string {
     return this.addNotification({
       type: 'info',
       title: caseId ? `Case ${caseId}` : 'Case Update',
       message,
-      duration: 7000
+      duration: 7000,
     });
   }
 
@@ -244,7 +245,7 @@ class TableManager {
       type: 'success',
       title: evidenceId ? `Evidence ${evidenceId}` : 'Evidence Update',
       message,
-      duration: 6000
+      duration: 6000,
     });
   }
 
@@ -253,7 +254,7 @@ class TableManager {
       type: 'error',
       title,
       message,
-      duration: 10000
+      duration: 10000,
     });
   }
 
@@ -262,7 +263,7 @@ class TableManager {
       type: 'success',
       title: 'Bulk Operation',
       message: `${operation} completed for ${count} items`,
-      duration: 5000
+      duration: 5000,
     });
   }
 
@@ -271,7 +272,7 @@ class TableManager {
       type: 'success',
       title: 'Export Complete',
       message: `Exported ${rowCount} rows to ${filename}`,
-      duration: 8000
+      duration: 8000,
     });
   }
 }
@@ -279,7 +280,7 @@ class TableManager {
 // Global table manager instance
 export const tableManager = new TableManager();
 ;
-// Commonly used derived stores
+// Commonly used derived stores;
 export function createTableStats(tableId: string) {
   const table = tableManager.getTable(tableId);
   if (!table) return null;
@@ -292,43 +293,43 @@ export function createTableStats(tableId: string) {
     hasSearch: $table.searchQuery.length > 0,
     hasFilters: $table.columnFilters.size > 0,
     totalFilters: $table.columnFilters.size,
-    expandedCount: $table.expandedRows.size
-  }));
+    expandedCount: $table.expandedRows.size,
+  });
 }
 
 // Export types and utilities
 // TableState and TableNotification are already exported as interfaces above
 
-// Legal AI specific table configurations
+// Legal AI specific table configurations;
 export const legalAITableConfigs = {
   cases: {
     pageSize: 25,
     sortColumn: 'created_at',
-    sortDirection: 'desc' as const
+    sortDirection: 'desc' as const,
   },
   evidence: {
     pageSize: 50,
     sortColumn: 'date_collected',
-    sortDirection: 'desc' as const
+    sortDirection: 'desc' as const,
   },
   documents: {
     pageSize: 20,
     sortColumn: 'upload_date',
-    sortDirection: 'desc' as const
+    sortDirection: 'desc' as const,
   },
   users: {
     pageSize: 30,
     sortColumn: 'last_login',
-    sortDirection: 'desc' as const
+    sortDirection: 'desc' as const,
   },
   auditLog: {
     pageSize: 100,
     sortColumn: 'timestamp',
-    sortDirection: 'desc' as const
+    sortDirection: 'desc' as const,
   }
 };
 
-// Utility functions
+// Utility functions;
 export function formatTableData(data: any[], columns: string[]): unknown[] {
   return (data as { map?: any; length?: any }).map(row => {
     const formatted: any = { id: row.id };
@@ -361,7 +362,7 @@ function convertToCSV(data: any[]): string {
   const headers = Object.keys(data[0]);
   const csvHeaders = headers.join(',');
   
-  const csvRows = (data as { map?: any; length?: any }).map(row => 
+  const csvRows = (data as { map?: any; length?: any }).map(row =>;
     headers.map(header => {
       const value = row[header];
       const stringValue = typeof value === 'string' ? value : String(value || '');

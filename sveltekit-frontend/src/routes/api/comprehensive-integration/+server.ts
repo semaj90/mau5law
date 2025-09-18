@@ -6,18 +6,18 @@ interface SystemHealthResponse {
     healthy_services: number;
     total_services: number;
     uptime_hours: number;
-    last_updated: string;
+    last_updated: string;,
   };
   services: Array<any>;
   performance: {
     cpu_usage: number;
     memory_usage: number;
-    disk_usage: number;
+    disk_usage: number;,
   };
   cluster_info?: {
     active_workers: number;
     total_capacity: number;
-    load_average: number;
+    load_average: number;,
   };
 }
 
@@ -49,13 +49,13 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
     { name: 'NATS Messaging', port: 4222 }
   ];
 
-  // Simulate health checks
+  // Simulate health checks;
   const serviceResults = services.map(service => {
-    const isHealthy = Math.random() > 0.1; // 90% chance of being healthy
+    const isHealthy = Math.random() > 0.1; // 90% chance of being healthy;
     return {
       ...service,
       status: isHealthy ? 'healthy' : 'degraded' as const,
-      response_time: Math.floor(Math.random() * 500) + 10
+      response_time: Math.floor(Math.random() * 500) + 10,
     };
   });
 
@@ -66,18 +66,18 @@ async function getSystemHealth(): Promise<SystemHealthResponse> {
       healthy_services: healthyCount,
       total_services: services.length,
       uptime_hours: Math.floor(process.uptime() / 3600),
-      last_updated: new Date().toISOString()
+      last_updated: new Date().toISOString(),
     },
     services: serviceResults,
     performance: {
       cpu_usage: Math.random() * 80 + 10,
       memory_usage: Math.random() * 70 + 20,
-      disk_usage: Math.random() * 60 + 15
+      disk_usage: Math.random() * 60 + 15,
     },
     cluster_info: {
       active_workers: 8,
       total_capacity: 16,
-      load_average: Math.random() * 2 + 0.5
+      load_average: Math.random() * 2 + 0.5,
     }
   };
 }
@@ -91,7 +91,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
     switch (operation) {
       case 'system_optimization':
         // Simulate system optimization
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1000);
         result = {
           optimization_applied: [
             'Memory cache cleared',
@@ -100,59 +100,59 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
             'Service health checks updated'
           ],
           performance_improvement: '15%',
-          memory_freed: '2.3 GB'
+          memory_freed: '2.3 GB',
         };
         break;
 
       case 'context7_integration':
         // Simulate Context7 integration check
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise(resolve => setTimeout(resolve, 800);
         result = {
           context7_status: 'active',
           library_docs_cached: 247,
           integration_tests_passed: 98,
           api_calls_last_hour: 156,
-          cache_hit_ratio: '89%'
+          cache_hit_ratio: '89%',
         };
         break;
 
       case 'real_time_analysis':
         // Simulate real-time analysis
-        await new Promise(resolve => setTimeout(resolve, 1200));
+        await new Promise(resolve => setTimeout(resolve, 1200);
         result = {
           documents_analyzed: 1247,
           active_cases: 23,
           ai_processing_queue: 4,
           average_response_time: '1.2s',
-          accuracy_score: '94.7%'
+          accuracy_score: '94.7%',
         };
         break;
 
       case 'legal_research':
         // Simulate legal research operation
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 1500);
         result = {
           research_databases_online: 5,
           recent_queries: 89,
           cached_precedents: 15670,
           citation_network_nodes: 45000,
-          similarity_matches_found: 234
+          similarity_matches_found: 234,
         };
         break;
 
       case 'vector_search_test':
         // Simulate vector search test
-        await new Promise(resolve => setTimeout(resolve, 600));
+        await new Promise(resolve => setTimeout(resolve, 600);
         result = {
           vector_dimensions: 384,
           indexed_documents: 12450,
           search_latency: '23ms',
           similarity_threshold: 0.85,
-          results_returned: 50
+          results_returned: 50,
         };
         break;
 
-      default:
+      default:;
         result = {
           message: `Operation '${operation}' completed successfully`,
           data: data || {}
@@ -166,7 +166,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
       operation,
       result,
       timestamp: new Date().toISOString(),
-      processing_time: processingTime
+      processing_time: processingTime,
     };
 
   } catch (error) {
@@ -180,7 +180,7 @@ async function performOperation(operation: string, data?: any): Promise<APIOpera
         message: `Operation ${operation} failed`
       },
       timestamp: new Date().toISOString(),
-      processing_time: Date.now() - startTime
+      processing_time: Date.now() - startTime,
     };
   }
 }
@@ -209,11 +209,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (error) {
     console.error('API operation failed:', error);
-    return json(
+    return json();
       { 
         success: false,
         error: 'Failed to process operation',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }, 
       { status: 500 }
     );

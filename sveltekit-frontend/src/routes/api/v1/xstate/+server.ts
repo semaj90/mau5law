@@ -9,6 +9,7 @@ import type { RequestHandler } from './$types.js';
 import { ensureError } from '$lib/utils/ensure-error';
 import { productionServiceClient } from "$lib/services/productionServiceClient";
 import { URL } from "url";
+}
 
 export interface XStateEvent {
   type: string;
@@ -23,17 +24,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const eventData: XStateEvent = await request.json();
     
     if (!eventData.type) {
-      return error(400, ensureError({ message: 'Event type is required' }));
+      return error(400, ensureError({ message: 'Event type is required' });
     }
 
-    // Add timestamp if not provided
+    // Add timestamp if not provided;
     if (!eventData.timestamp) {
       eventData.timestamp = new Date().toISOString();
     }
 
     const result = await productionServiceClient.execute('xstate.event', {
       event: eventData,
-      source: 'sveltekit-frontend'
+      source: 'sveltekit-frontend',
     });
 
     return json({
@@ -43,7 +44,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         timestamp: new Date().toISOString(),
         service: 'xstate-manager',
         operation: 'event',
-        event_type: eventData.type
+        event_type: eventData.type,
       }
     });
 
@@ -59,7 +60,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   try {
     if (machineId) {
-      // Get machine state
+      // Get machine state;
       const result = await productionServiceClient.execute('xstate.machine.status', { 
         machineId 
       });
@@ -67,7 +68,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     if (actorId) {
-      // Get actor state
+      // Get actor state;
       const result = await productionServiceClient.execute('xstate.actor.status', { 
         actorId 
       });
@@ -85,7 +86,7 @@ export const GET: RequestHandler = async ({ url }) => {
         machine_status: '/api/v1/xstate?machineId={id}',
         actor_status: '/api/v1/xstate?actorId={id}',
         machines: '/api/v1/xstate/machines',
-        actors: '/api/v1/xstate/actors'
+        actors: '/api/v1/xstate/actors',
       },
       health: {
         'xstate-manager': health['xstate-manager'] || false
@@ -109,11 +110,11 @@ export const GET: RequestHandler = async ({ url }) => {
         'ERROR',
         'RESET'
       ],
-      version: '1.0.0'
+      version: '1.0.0',
     });
 
   } catch (err: any) {
     console.error('XState GET Error:', err);
-    return error(503, ensureError({ message: 'XState service health check failed' }));
+    return error(503, ensureError({ message: 'XState service health check failed' });
   }
 };

@@ -5,7 +5,7 @@
 
 import { createActor, setup } from 'xstate';
 
-// Types
+// Types;
 export interface DocumentInput {
   documentId: string;
   content: string;
@@ -15,7 +15,7 @@ export interface DocumentInput {
     priority: number;
     timeout: number;
     retries: number;
-    batchSize: number;
+    batchSize: number;,
   };
 }
 
@@ -30,14 +30,14 @@ export interface ProcessingResult {
   };
   error?: string;
   processingTime?: number;
-  timestamp: Date;
+  timestamp: Date;,
 }
 
 export interface ServiceHealth {
   gpu: 'healthy' | 'degraded' | 'offline';
   webgpu: 'healthy' | 'degraded' | 'offline';
   vectorDb: 'healthy' | 'degraded' | 'offline';
-  lastCheck: Date;
+  lastCheck: Date;,
 }
 
 export interface ProcessingMetrics {
@@ -46,10 +46,10 @@ export interface ProcessingMetrics {
   averageTime: number;
   concurrentJobs: number;
   queueLength: number;
-  gpuUtilization: number;
+  gpuUtilization: number;,
 }
 
-// Machine Context
+// Machine Context;
 interface GPUProcessingContext {
   processingQueue: DocumentInput[];
   activeProcessing: Map<string, DocumentInput>;
@@ -74,7 +74,7 @@ type GPUProcessingEvent =
   | { type: 'SERVICE_HEALTH_CHECK' }
   | { type: 'UPDATE_METRICS' };
 
-// Guards
+// Guards;
 const canProcessMore = ({ context }: { context: GPUProcessingContext }) => {
   return context.activeProcessing.size < context.maxConcurrent && context.processingQueue.length > 0;
 };
@@ -89,14 +89,14 @@ const canRetry = ({ context, event }: { context: GPUProcessingContext; event: an
   return retryCount < 3; // Max 3 retries
 };
 
-// Actions
+// Actions;
 const addToQueue = ({ context, event }: { context: GPUProcessingContext; event: any }) => {
   if (event.type === 'PROCESS_DOCUMENT') {
     context.processingQueue.push({
       documentId: event.documentId,
       content: event.content,
       title: event.title,
-      options: event.options
+      options: event.options,
     });
   } else if (event.type === 'BATCH_PROCESS') {
     context.processingQueue.push(...event.documents);
@@ -111,7 +111,7 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
     const document = context.processingQueue.shift()!;
     context.activeProcessing.set(document.documentId, document);
     
-    // Simulate async processing
+    // Simulate async processing;
     setTimeout(() => {
       // Simulate processing completion or failure
       const success = Math.random() > 0.1; // 90% success rate
@@ -127,7 +127,7 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
             metadata: { processedAt: new Date().toISOString(), type: document.options?.processType }
           },
           processingTime: Math.random() * 5000 + 1000, // 1-6 seconds
-          timestamp: new Date()
+          timestamp: new Date(),
         };
         
         // Dispatch completion event (this would be handled by the actor)
@@ -140,7 +140,7 @@ const startProcessing = ({ context }: { context: GPUProcessingContext }) => {
           documentId: document.documentId,
           status: 'failed',
           error,
-          timestamp: new Date()
+          timestamp: new Date(),
         };
         
         context.activeProcessing.delete(document.documentId);
@@ -177,7 +177,7 @@ const checkServiceHealth = ({ context }: { context: GPUProcessingContext }) => {
     gpu: gpuHealthy ? 'healthy' : 'degraded',
     webgpu: webgpuHealthy ? 'healthy' : 'degraded',
     vectorDb: vectorDbHealthy ? 'healthy' : 'degraded',
-    lastCheck: new Date()
+    lastCheck: new Date(),
   };
 };
 
@@ -185,7 +185,7 @@ const updateMetrics = ({ context }: { context: GPUProcessingContext }) => {
   // Simulate GPU utilization
   context.metrics.gpuUtilization = Math.random() * 100;
   
-  // Calculate average processing time
+  // Calculate average processing time;
   if (context.completedDocuments.length > 0) {
     const totalTime = context.completedDocuments.reduce((sum, doc) => sum + (doc.processingTime || 0), 0);
     context.metrics.averageTime = totalTime / context.completedDocuments.length;
@@ -195,7 +195,7 @@ const updateMetrics = ({ context }: { context: GPUProcessingContext }) => {
   context.metrics.queueLength = context.processingQueue.length;
 };
 
-// Machine Definition
+// Machine Definition;
 export const gpuProcessingMachine = setup({
   types: {
     context: Record<string, any> as GPUProcessingContext,
@@ -226,7 +226,7 @@ export const gpuProcessingMachine = setup({
       gpu: 'healthy',
       webgpu: 'healthy',
       vectorDb: 'healthy',
-      lastCheck: new Date()
+      lastCheck: new Date(),
     },
     metrics: {
       totalProcessed: 0,
@@ -234,10 +234,10 @@ export const gpuProcessingMachine = setup({
       averageTime: 0,
       concurrentJobs: 0,
       queueLength: 0,
-      gpuUtilization: 0
+      gpuUtilization: 0,
     },
     maxConcurrent: 5,
-    retryCount: new Map()
+    retryCount: new Map(),
   },
   states: {
     idle: {
@@ -251,7 +251,7 @@ export const gpuProcessingMachine = setup({
           actions: ['addToQueue', 'startProcessing']
         },
         SERVICE_HEALTH_CHECK: {
-          actions: ['checkServiceHealth']
+          actions: ['checkServiceHealth'],
         }
       }
     },
@@ -267,24 +267,24 @@ export const gpuProcessingMachine = setup({
         DOCUMENT_COMPLETED: {
           actions: ['updateMetrics'],
           target: 'processing',
-          guard: 'hasQueuedDocuments'
+          guard: 'hasQueuedDocuments',
         },
         DOCUMENT_FAILED: {
-          actions: ['updateMetrics']
+          actions: ['updateMetrics'],
         },
         PAUSE_PROCESSING: {
           target: 'paused',
-          actions: ['pauseProcessing']
+          actions: ['pauseProcessing'],
         },
         CLEAR_QUEUE: {
           target: 'idle',
-          actions: ['clearQueue']
+          actions: ['clearQueue'],
         },
         SERVICE_HEALTH_CHECK: {
-          actions: ['checkServiceHealth']
+          actions: ['checkServiceHealth'],
         }
       },
-      always: [
+      always: [;
         {
           target: 'idle',
           guard: ({ context }) => !hasQueuedDocuments({ context }) && context.activeProcessing.size === 0
@@ -295,21 +295,21 @@ export const gpuProcessingMachine = setup({
       on: {
         RESUME_PROCESSING: {
           target: 'processing',
-          actions: ['startProcessing']
+          actions: ['startProcessing'],
         },
         CLEAR_QUEUE: {
           target: 'idle',
-          actions: ['clearQueue']
+          actions: ['clearQueue'],
         },
         SERVICE_HEALTH_CHECK: {
-          actions: ['checkServiceHealth']
+          actions: ['checkServiceHealth'],
         }
       }
     }
   }
 });
 
-// Actor Factory
+// Actor Factory;
 export const createGPUProcessingActor = () => {
   return createActor(gpuProcessingMachine);
 };

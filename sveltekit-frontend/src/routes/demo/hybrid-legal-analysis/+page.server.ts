@@ -34,7 +34,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         embedding: 'nomic-embed-text',
         llm: 'gemma2:27b',
         ner: 'legal-bert-ner',
-        classification: 'legal-document-classifier'
+        classification: 'legal-document-classifier',
       }
     };
   } catch (err) {
@@ -57,10 +57,10 @@ export const actions: Actions = {
     try {
       const startTime = Date.now();
       
-      // Perform multi-modal analysis
+      // Perform multi-modal analysis;
       const analysisResults = await performHybridAnalysis(documentId, analysisTypes, {
         includeVisualization,
-        userId: locals.user?.id
+        userId: locals.user?.id,
       });
 
       const processingTime = Date.now() - startTime;
@@ -69,7 +69,7 @@ export const actions: Actions = {
         success: true,
         results: analysisResults,
         processingTime,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (err) {
       console.error('Hybrid analysis failed:', err);
@@ -92,7 +92,7 @@ export const actions: Actions = {
       return json({
         success: true,
         comparison: comparisonResults,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (err) {
       console.error('Document comparison failed:', err);
@@ -116,7 +116,7 @@ export const actions: Actions = {
         success: true,
         batchResults,
         processedCount: documentIds.length,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (err) {
       console.error('Batch analysis failed:', err);
@@ -126,7 +126,7 @@ export const actions: Actions = {
 };
 
 async function getSampleLegalDocuments() {
-  return [
+  return [;
     {
       id: "contract-001",
       title: "Software Development Agreement - TechCorp",
@@ -138,10 +138,10 @@ async function getSampleLegalDocuments() {
         parties: ["TechCorp Inc.", "DevPartner LLC"],
         value: "$2.5M",
         duration: "18 months",
-        riskLevel: "medium"
+        riskLevel: "medium",
       },
       vectorEmbedding: null, // Would contain actual embedding in production
-      lastAnalyzed: new Date(Date.now() - 86400000).toISOString()
+      lastAnalyzed: new Date(Date.now() - 86400000).toISOString(),
     },
     {
       id: "evidence-002", 
@@ -157,7 +157,7 @@ async function getSampleLegalDocuments() {
         entities: ["PostgreSQL", "pgvector", "AI module"]
       },
       vectorEmbedding: null,
-      lastAnalyzed: new Date(Date.now() - 3600000).toISOString()
+      lastAnalyzed: new Date(Date.now() - 3600000).toISOString(),
     },
     {
       id: "case-003",
@@ -171,10 +171,10 @@ async function getSampleLegalDocuments() {
         defendant: "TechCorp",
         patent: "US10,123,456",
         status: "active",
-        filingDate: "2024-01-15"
+        filingDate: "2024-01-15",
       },
       vectorEmbedding: null,
-      lastAnalyzed: new Date(Date.now() - 7200000).toISOString()
+      lastAnalyzed: new Date(Date.now() - 7200000).toISOString(),
     },
     {
       id: "brief-004",
@@ -187,10 +187,10 @@ async function getSampleLegalDocuments() {
         motionType: "Summary Judgment",
         docketNumber: "CV-2024-001234",
         courtLevel: "district",
-        filingParty: "plaintiff"
+        filingParty: "plaintiff",
       },
       vectorEmbedding: null,
-      lastAnalyzed: new Date(Date.now() - 1800000).toISOString()
+      lastAnalyzed: new Date(Date.now() - 1800000).toISOString(),
     }
   ];
 }
@@ -201,37 +201,37 @@ async function getAnalysisCapabilities() {
       name: "Semantic Analysis",
       description: "Vector-based similarity and meaning analysis",
       accuracy: 0.92,
-      avgTime: 850
+      avgTime: 850,
     },
     entity: {
       name: "Entity Extraction",
       description: "Legal entities, dates, parties, and key terms",
       accuracy: 0.89,
-      avgTime: 650
+      avgTime: 650,
     },
     sentiment: {
       name: "Sentiment Analysis",
       description: "Tone and emotional context analysis",
       accuracy: 0.85,
-      avgTime: 400
+      avgTime: 400,
     },
     risk: {
       name: "Risk Assessment",
       description: "Legal risk scoring and compliance analysis",
       accuracy: 0.88,
-      avgTime: 1200
+      avgTime: 1200,
     },
     precedent: {
       name: "Precedent Matching",
       description: "Similar case and ruling identification",
       accuracy: 0.91,
-      avgTime: 1500
+      avgTime: 1500,
     }
   };
 }
 
 async function getRecentHybridAnalyses() {
-  return [
+  return [;
     {
       id: "analysis_001",
       documentId: "contract-001",
@@ -240,10 +240,10 @@ async function getRecentHybridAnalyses() {
         overallScore: 0.87,
         riskLevel: "medium",
         entities: 12,
-        similarDocuments: 8
+        similarDocuments: 8,
       },
       processingTime: 1234,
-      timestamp: new Date(Date.now() - 1800000).toISOString()
+      timestamp: new Date(Date.now() - 1800000).toISOString(),
     },
     {
       id: "analysis_002", 
@@ -256,24 +256,24 @@ async function getRecentHybridAnalyses() {
         keyPhrases: ["project delays", "vector embedding", "deadline extension"]
       },
       processingTime: 892,
-      timestamp: new Date(Date.now() - 3600000).toISOString()
+      timestamp: new Date(Date.now() - 3600000).toISOString(),
     }
   ];
 }
 
 async function performHybridAnalysis(documentId: string, analysisTypes: string[], options: any) {
-  // Mock implementation - replace with actual analysis service calls
+  // Mock implementation - replace with actual analysis service calls;
   const analysisResults = {
     documentId,
     analysisTypes,
     results: Record<string, any>,
     confidence: 0.85 + Math.random() * 0.1,
-    processingSteps: []
+    processingSteps: [],
   };
 
   for (const analysisType of analysisTypes) {
     switch (analysisType) {
-      case 'semantic_similarity':
+      case 'semantic_similarity':;
         analysisResults.results[analysisType] = {
           similarDocuments: [
             { id: "doc_123", similarity: 0.92, title: "Similar Contract Terms" },
@@ -283,18 +283,18 @@ async function performHybridAnalysis(documentId: string, analysisTypes: string[]
         };
         break;
         
-      case 'entity_extraction':
+      case 'entity_extraction':;
         analysisResults.results[analysisType] = {
           entities: [
             { text: "TechCorp Inc.", type: "ORGANIZATION", confidence: 0.95 },
             { text: "$2.5M", type: "MONEY", confidence: 0.98 },
             { text: "18 months", type: "DURATION", confidence: 0.92 }
           ],
-          entityCount: 3
+          entityCount: 3,
         };
         break;
         
-      case 'risk_assessment':
+      case 'risk_assessment':;
         analysisResults.results[analysisType] = {
           riskScore: 0.65,
           riskLevel: "medium",
@@ -310,17 +310,17 @@ async function performHybridAnalysis(documentId: string, analysisTypes: string[]
         };
         break;
         
-      default:
+      default:;
         analysisResults.results[analysisType] = {
           status: "completed",
-          confidence: 0.80 + Math.random() * 0.15
+          confidence: 0.80 + Math.random() * 0.15,
         };
     }
     
     analysisResults.processingSteps.push({
       step: analysisType,
       status: "completed",
-      duration: Math.floor(Math.random() * 1000) + 200
+      duration: Math.floor(Math.random() * 1000) + 200,
     });
   }
 
@@ -350,8 +350,8 @@ async function performBatchAnalysis(documentIds: string[], template: string) {
     documentId: id,
     status: "completed",
     confidence: 0.80 + Math.random() * 0.15,
-    processingTime: Math.floor(Math.random() * 1000) + 500
-  }));
+    processingTime: Math.floor(Math.random() * 1000) + 500,
+  });
 }
 
 function getDefaultData() {
@@ -363,7 +363,7 @@ function getDefaultData() {
     analysisTypes: ['semantic_similarity'],
     aiModels: {
       embedding: 'nomic-embed-text',
-      llm: 'gemma2:27b'
+      llm: 'gemma2:27b',
     }
   };
 }

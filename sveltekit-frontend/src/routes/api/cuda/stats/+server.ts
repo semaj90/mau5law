@@ -10,7 +10,7 @@ export const GET: RequestHandler = async () => {
 		if (!response.ok) {
 			return json({ 
 				error: 'CUDA stats unavailable',
-				status: response.status 
+				status: response.status ,
 			}, { status: response.status });
 		}
 
@@ -19,14 +19,14 @@ export const GET: RequestHandler = async () => {
 		return json({
 			cuda_stats: stats,
 			timestamp: Date.now(),
-			source: 'cuda-ai-service'
+			source: 'cuda-ai-service',
 		});
 		
 	} catch (error) {
 		return json({
 			error: 'Failed to retrieve CUDA stats',
 			details: error instanceof Error ? error.message: String(error),
-			timestamp: Date.now()
+			timestamp: Date.now(),
 		}, { status: 500 });
 	}
 };

@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types.js';
 
-// Lazy require (keeps optional deps from breaking build)
+// Lazy require (keeps optional deps from breaking build);
 const nodeCrypto = () => {
   try { return require("crypto"); } catch { return null; }
 };
@@ -18,7 +18,7 @@ function isNodeBuffer(x: any): x is Buffer {
 }
 
 async function toArrayBuffer(
-  buf: Buffer | Uint8Array | ArrayBuffer | SharedArrayBuffer
+  buf: Buffer | Uint8Array | ArrayBuffer | SharedArrayBuffer;
 ): Promise<ArrayBuffer> {
   if (buf instanceof ArrayBuffer) return buf;
   if (typeof SharedArrayBuffer !== 'undefined' && buf instanceof SharedArrayBuffer) {
@@ -69,8 +69,8 @@ const candidateBaseUrls = (() => {
     "http://localhost:3001",
     "http://127.0.0.1:3001"
   ];
-  return Array.from(new Set([...fromEnv, ...defaults]));
-})();
+  return Array.from(new Set([...fromEnv, ...defaults]);
+,})();
 
 const candidateTtsPaths = [
   "/api/tts",
@@ -81,7 +81,7 @@ const candidateTtsPaths = [
   "/api/v1/tts"
 ];
 
-// Attempt remote microservice first
+// Attempt remote microservice first;
 async function tryRemoteTTS(text: string, voice: string, format: string): Promise<ArrayBuffer | null> {
   for (const base of candidateBaseUrls) {
     for (const path of candidateTtsPaths) {
@@ -98,7 +98,7 @@ async function tryRemoteTTS(text: string, voice: string, format: string): Promis
           const j = await r.json();
           const b64 = j.audio || j.data || j.audioContent;
           if (b64) {
-            return toArrayBuffer(Buffer.from(b64, "base64"));
+            return toArrayBuffer(Buffer.from(b64, "base64");
           }
         } else if (ct.startsWith("audio/") || ct === "application/octet-stream") {
           return await r.arrayBuffer();
@@ -111,18 +111,18 @@ async function tryRemoteTTS(text: string, voice: string, format: string): Promis
   return null;
 }
 
-// Check if a binary exists (cross-platform best-effort)
+// Check if a binary exists (cross-platform best-effort);
 async function binaryExists(bin: string): Promise<boolean> {
   const { spawn } = await import("node:child_process");
   return await new Promise((resolve) => {
     const cmd = process.platform === "win32" ? "where" : "which");
     const p = spawn(cmd, [bin]);
-    p.on("error", () => resolve(false));
-    p.on("close", (code) => resolve(code === 0));
+    p.on("error", () => resolve(false);
+    p.on("close", (code) => resolve(code === 0);
   });
 }
 
-// Fallback: piper (local fast TTS) if installed
+// Fallback: piper (local fast TTS) if installed;
 async function tryPiper(text: string, voice: string, format: string): Promise<ArrayBuffer | null> {
   if (!(await binaryExists("piper"))) return null;
   // Requires voice model + config in working dir or specified via env
@@ -137,7 +137,7 @@ async function tryPiper(text: string, voice: string, format: string): Promise<Ar
   return await new Promise<ArrayBuffer | null>((resolve) => {
     const proc = spawn("piper", ["--model", model, "--config", config, "--output_file", outFile], {
       stdio: ["pipe", "ignore", "ignore"]
-    }));
+    });
     proc.stdin.write(text);
     proc.stdin.end();
     proc.on("close", async (code) => {
@@ -146,9 +146,9 @@ async function tryPiper(text: string, voice: string, format: string): Promise<Ar
         const data = await fs.readFile(outFile);
         if (format === "mp3") {
           // (Optional) encode WAV to MP3 if you have a local encoder; skipping actual transcode here.
-          resolve(await toArrayBuffer(data)); // still wav
+          resolve(await toArrayBuffer(data); // still wav;
         } else {
-          resolve(await toArrayBuffer(data));
+          resolve(await toArrayBuffer(data);
         }
       } catch {
         resolve(null);
@@ -159,7 +159,7 @@ async function tryPiper(text: string, voice: string, format: string): Promise<Ar
   });
 }
 
-// Fallback: edge-tts CLI (if installed)
+// Fallback: edge-tts CLI (if installed);
 async function tryEdgeTTS(text: string, voice: string, format: string): Promise<ArrayBuffer | null> {
   if (!(await binaryExists("edge-tts"))) return null;
   const tmp = await import("node:os");
@@ -169,12 +169,12 @@ async function tryEdgeTTS(text: string, voice: string, format: string): Promise<
   const { spawn } = await import("node:child_process");
   const args = ["--voice", voice, "--text", text, "--write-media", outFile];
   return await new Promise<ArrayBuffer | null>((resolve) => {
-    const proc = spawn("edge-tts", args, { stdio: "ignore" }));
+    const proc = spawn("edge-tts", args, { stdio: "ignore" });
     proc.on("close", async (code) => {
       if (code !== 0) return resolve(null);
       try {
         const data = await fs.readFile(outFile);
-        resolve(await toArrayBuffer(data));
+        resolve(await toArrayBuffer(data);
       } catch {
         resolve(null);
       } finally {
@@ -199,7 +199,7 @@ async function synthesizeSpeech(text: string, voice = "en-US-JennyNeural", forma
   return toArrayBuffer(fallback);
 }
 
-// (Optional) basic STT via remote service
+// (Optional) basic STT via remote service;
 async function transcribeAudio(file: File): Promise<string> {
   const sttUrl = getEnv("LOCAL_STT_URL", "STT_SERVICE_URL");
   if (sttUrl) {
@@ -239,7 +239,7 @@ export const POST: RequestHandler = async ({ request }) => {
           format,
           audio: base64,
           encoding: "base64",
-          source: "auto (remote|local|fallback)"
+          source: "auto (remote|local|fallback)",
         });
       }
       return new Response(audioBuffer, {

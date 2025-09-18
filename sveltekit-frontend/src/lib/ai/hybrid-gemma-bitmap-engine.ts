@@ -15,58 +15,58 @@ import type IORedis from 'ioredis';
 import { createRedisInstance } from '$lib/server/redis.js';
 import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js';
 
-// Enhanced prediction result combining semantic + behavioral intelligence
+// Enhanced prediction result combining semantic + behavioral intelligence;
 export interface HybridPredictionResult {
-  // Semantic Analysis (Gemma)
+  // Semantic Analysis (Gemma);
   semanticSimilarity: Array<{
     contentId: string;
     content: string;
     similarity: number;
     legalDomain: string;
-    embeddingVector: number[];
+    embeddingVector: number[];,
   }>;
 
-  // Behavioral Prediction (HMM-SOM)
+  // Behavioral Prediction (HMM-SOM);
   behavioralPrediction: {
     nextStates: Array<{
       stateId: string;
       action: string;
       probability: number;
       timeEstimate: number;
-      confidence: number;
+      confidence: number;,
     }>;
     recommendedAssets: Array<{
       type: string;
       priority: number;
       cacheKey: string;
-      preloadStrategy: 'immediate' | 'background' | 'ondemand';
+      preloadStrategy: 'immediate' | 'background' | 'ondemand';,
     }>;
   };
 
-  // Fusion Intelligence
+  // Fusion Intelligence;
   fusedInsights: {
     primaryRecommendation: string;
     confidenceScore: number;          // Combined confidence (0-100)
     cognitiveReasoning: string[];     // Human-readable reasoning
     predictiveAccuracy: number;       // Historical accuracy for this pattern
-    adaptiveStrategy: 'aggressive' | 'conservative' | 'balanced';
+    adaptiveStrategy: 'aggressive' | 'conservative' | 'balanced';,
   };
 
-  // Performance Metrics
+  // Performance Metrics;
   performance: {
     semanticQueryTime: number;        // Gemma embedding search time
     behavioralPredictionTime: number; // HMM-SOM prediction time
     fusionProcessingTime: number;     // Fusion algorithm time
     totalResponseTime: number;        // End-to-end time
-    cacheHitRate: number;            // Percentage of cache hits
+    cacheHitRate: number;            // Percentage of cache hits,
   };
 
-  // Visual Cache Patterns (CHR-ROM style)
+  // Visual Cache Patterns (CHR-ROM style);
   chrRomPatterns: Array<{
     cacheKey: string;
     svgPattern: string;
     qualityTier: '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64';
-    renderPriority: number;
+    renderPriority: number;,
   }>;
 }
 
@@ -78,7 +78,7 @@ export interface LegalContext {
   documentContext?: {
     type: 'contract' | 'case_law' | 'statute' | 'brief' | 'evidence';
     domain: string;
-    complexity: number;
+    complexity: number;,
   };
   workflowStage: 'intake' | 'analysis' | 'research' | 'drafting' | 'review';
   systemMetrics: {
@@ -94,7 +94,7 @@ export class HybridGemmaBitmapEngine {
   private bitmapPredictor: BitmapHMMSOMPredictor;
   private isInitialized = false;
 
-  // Performance tracking
+  // Performance tracking;
   private performanceMetrics = {
     totalPredictions: 0,
     avgSemanticTime: 0,
@@ -111,7 +111,7 @@ export class HybridGemmaBitmapEngine {
 
   /**
    * Initialize the hybrid engine
-   */
+   */;
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
@@ -132,7 +132,7 @@ export class HybridGemmaBitmapEngine {
    */
   async predictWithContext(
     query: string,
-    context: LegalContext
+    context: LegalContext;
   ): Promise<HybridPredictionResult> {
     const startTime = Date.now();
 
@@ -163,7 +163,7 @@ export class HybridGemmaBitmapEngine {
       context.systemMetrics
     );
 
-    // Update performance metrics
+    // Update performance metrics;
     this.updatePerformanceMetrics({
       semanticTime: semanticResults.queryTime,
       behavioralTime: behavioralResults.predictionTime,
@@ -175,7 +175,7 @@ export class HybridGemmaBitmapEngine {
       semanticSimilarity: semanticResults.matches,
       behavioralPrediction: {
         nextStates: behavioralResults.nextStates,
-        recommendedAssets: behavioralResults.recommendedAssets
+        recommendedAssets: behavioralResults.recommendedAssets,
       },
       fusedInsights,
       performance: {
@@ -183,7 +183,7 @@ export class HybridGemmaBitmapEngine {
         behavioralPredictionTime: behavioralResults.predictionTime,
         fusionProcessingTime: fusionTime,
         totalResponseTime: totalTime,
-        cacheHitRate: await this.calculateCacheHitRate()
+        cacheHitRate: await this.calculateCacheHitRate(),
       },
       chrRomPatterns
     };
@@ -199,7 +199,7 @@ export class HybridGemmaBitmapEngine {
    */
   private async performSemanticSearch(
     query: string,
-    context: LegalContext
+    context: LegalContext;
   ): Promise<{ matches: any[]; queryTime: number }> {
     const startTime = Date.now();
 
@@ -210,7 +210,7 @@ export class HybridGemmaBitmapEngine {
     if (cached) {
       return {
         matches: JSON.parse(cached),
-        queryTime: Date.now() - startTime
+        queryTime: Date.now() - startTime,
       };
     }
 
@@ -245,15 +245,15 @@ export class HybridGemmaBitmapEngine {
         content: row.content_text,
         similarity: row.similarity,
         legalDomain: row.legal_domain,
-        embeddingVector: row.gemma_embedding
-      }));
+        embeddingVector: row.gemma_embedding,
+      });
 
       // Cache for 5 minutes
-      await this.redis.setex(cacheKey, 300, JSON.stringify(matches));
+      await this.redis.setex(cacheKey, 300, JSON.stringify(matches);
 
       return {
         matches,
-        queryTime: Date.now() - startTime
+        queryTime: Date.now() - startTime,
       };
     } finally {
       client.release();
@@ -264,7 +264,7 @@ export class HybridGemmaBitmapEngine {
    * Behavioral prediction using Bitmap HMM-SOM
    */
   private async performBehavioralPrediction(
-    context: LegalContext
+    context: LegalContext;
   ): Promise<{ nextStates: any[]; recommendedAssets: any[]; predictionTime: number }> {
     const startTime = Date.now();
 
@@ -275,20 +275,20 @@ export class HybridGemmaBitmapEngine {
       action: state.state.userAction,
       probability: state.probability,
       timeEstimate: state.timeEstimate,
-      confidence: state.state.confidence
-    }));
+      confidence: state.state.confidence,
+    });
 
     const recommendedAssets = prediction.recommendedAssets.map((asset: any) => ({
       type: asset.type,
       priority: asset.priority,
       cacheKey: asset.cacheKey,
       preloadStrategy: this.determinePreloadStrategy(asset.priority, context)
-    }));
+    });
 
     return {
       nextStates,
       recommendedAssets,
-      predictionTime: Date.now() - startTime
+      predictionTime: Date.now() - startTime,
     };
   }
 
@@ -298,7 +298,7 @@ export class HybridGemmaBitmapEngine {
   private async fusionIntelligence(
     semanticResults: any,
     behavioralResults: any,
-    context: LegalContext
+    context: LegalContext;
   ): Promise<any> {
     const semanticConfidence = semanticResults.matches[0]?.similarity || 0;
     const behavioralConfidence = this.bitmapPredictor.getPredictionAccuracy() / 100;
@@ -342,7 +342,7 @@ export class HybridGemmaBitmapEngine {
 
   /**
    * Generate Gemma embedding via Ollama
-   */
+   */;
   private async generateGemmaEmbedding(text: string): Promise<number[]> {
     const cacheKey = `gemma:embedding:${this.hashQuery(text)}`;
     const cached = await this.redis.get(cacheKey);
@@ -368,7 +368,7 @@ export class HybridGemmaBitmapEngine {
             const embedding = result.embedding;
 
             // Cache for 1 hour
-            await this.redis.setex(cacheKey, 3600, JSON.stringify(embedding));
+            await this.redis.setex(cacheKey, 3600, JSON.stringify(embedding);
             return embedding;
           }
         } catch (error) {
@@ -410,7 +410,7 @@ export class HybridGemmaBitmapEngine {
   private generateSVGPattern(
     assetType: string,
     priority: number,
-    qualityTier: string
+    qualityTier: string;
   ): string {
     const size = qualityTier === '64-BIT_N64' ? 32 : qualityTier === '16-BIT_SNES' ? 16 : 8;
     const colors = {
@@ -439,25 +439,25 @@ export class HybridGemmaBitmapEngine {
   }
 
   private calculateSemanticWeight(context: LegalContext): number {
-    // Higher weight for research and analysis phases
+    // Higher weight for research and analysis phases;
     const stageWeights = {
       intake: 0.3,
       analysis: 0.7,
       research: 0.8,
       drafting: 0.5,
-      review: 0.6
+      review: 0.6,
     };
     return stageWeights[context.workflowStage] || 0.5;
   }
 
   private calculateBehavioralWeight(context: LegalContext): number {
-    // Higher weight for interactive phases
+    // Higher weight for interactive phases;
     const stageWeights = {
       intake: 0.7,
       analysis: 0.3,
       research: 0.2,
       drafting: 0.5,
-      review: 0.4
+      review: 0.4,
     };
     return stageWeights[context.workflowStage] || 0.5;
   }
@@ -465,7 +465,7 @@ export class HybridGemmaBitmapEngine {
   private generateCognitiveReasoning(
     semantic: any,
     behavioral: any,
-    context: LegalContext
+    context: LegalContext;
   ): string[] {
     const reasoning = [];
 
@@ -504,7 +504,7 @@ export class HybridGemmaBitmapEngine {
   private synthesizePrimaryRecommendation(
     semantic: any,
     behavioral: any,
-    context: LegalContext
+    context: LegalContext;
   ): string {
     const semanticAction = semantic.matches[0]?.legalDomain || 'document analysis';
     const behavioralAction = behavioral.nextStates[0]?.action || 'continue workflow';
@@ -514,7 +514,7 @@ export class HybridGemmaBitmapEngine {
 
   private determinePreloadStrategy(
     priority: number,
-    context: LegalContext
+    context: LegalContext;
   ): 'immediate' | 'background' | 'ondemand' {
     if (priority > 80 && context.systemMetrics.fps > 55) {
       return 'immediate';
@@ -550,17 +550,17 @@ export class HybridGemmaBitmapEngine {
   private async cacheHybridResult(
     query: string,
     context: LegalContext,
-    result: HybridPredictionResult
+    result: HybridPredictionResult;
   ): Promise<void> {
     const cacheKey = `hybrid:${this.hashQuery(query)}:${context.sessionId}`;
-    await this.redis.setex(cacheKey, 180, JSON.stringify(result)); // 3 minutes TTL
+    await this.redis.setex(cacheKey, 180, JSON.stringify(result); // 3 minutes TTL
   }
 
   private updatePerformanceMetrics(metrics: {
     semanticTime: number;
     behavioralTime: number;
     fusionTime: number;
-    totalTime: number;
+    totalTime: number;,
   }): void {
     this.performanceMetrics.totalPredictions++;
 
@@ -583,7 +583,7 @@ export class HybridGemmaBitmapEngine {
 
   /**
    * Public API: Get system metrics and capabilities
-   */
+   */;
   getSystemCapabilities(): any {
     return {
       architecture: 'Hybrid Gemma + Bitmap HMM-SOM',
@@ -592,7 +592,7 @@ export class HybridGemmaBitmapEngine {
         behavioralPrediction: 'Bitmap HMM-SOM with 90%+ confidence',
         fusionIntelligence: 'Cognitive reasoning combining both approaches',
         adaptiveQuality: 'CHR-ROM patterns with dynamic quality scaling',
-        predictiveCache: 'Asset preloading before user requests'
+        predictiveCache: 'Asset preloading before user requests',
       },
       performance: this.performanceMetrics,
       revolutionaryAdvantages: [
@@ -611,14 +611,14 @@ export class HybridGemmaBitmapEngine {
   async trainWithFeedback(
     actualOutcome: string,
     prediction: HybridPredictionResult,
-    context: LegalContext
+    context: LegalContext;
   ): Promise<void> {
-    // Update behavioral model
+    // Update behavioral model;
     await this.bitmapPredictor.reinforcementLearning(actualOutcome, {
       nextStates: prediction.behavioralPrediction.nextStates,
       recommendedAssets: prediction.behavioralPrediction.recommendedAssets,
       confidence: prediction.fusedInsights.confidenceScore,
-      reasoning: prediction.fusedInsights.cognitiveReasoning
+      reasoning: prediction.fusedInsights.cognitiveReasoning,
     });
 
     // Update overall accuracy
@@ -642,6 +642,6 @@ export class HybridGemmaBitmapEngine {
     const words = actual.split(' ');
     const matches = words.filter(word => predicted.includes(word)).length;
 
-    return Math.min(1.0, matches / Math.max(1, words.length));
+    return Math.min(1.0, matches / Math.max(1, words.length);
   }
 }

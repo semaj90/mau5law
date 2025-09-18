@@ -7,7 +7,7 @@ import type { Action } from 'svelte/action';
  */
 
 // Define the parameters our action will accept.
-// This allows us to specify a role and the handler function.
+// This allows us to specify a role and the handler function.;
 interface AccessibleClickParams {
   role?: string;
   handler: (e: Event) => void;
@@ -26,7 +26,7 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
   // 2. Make the element focusable with the Tab key.
   node.tabIndex = 0;
 
-  // 3. Set optional ARIA attributes
+  // 3. Set optional ARIA attributes;
   if (label) {
     node.setAttribute('aria-label', label);
   }
@@ -35,9 +35,9 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
     node.setAttribute('aria-describedby', description);
   }
 
-  // This function will be our keyboard event listener.
+  // This function will be our keyboard event listener.;
   const onKeyDown = (event: KeyboardEvent) => {
-    // Buttons should be activatable with Enter or Space.
+    // Buttons should be activatable with Enter or Space.;
     if (event.key === 'Enter' || event.key === ' ') {
       // Prevent the default action (e.g., scrolling the page on Space press).
       event.preventDefault();
@@ -49,12 +49,12 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
   node.addEventListener('keydown', onKeyDown);
 
   // The 'destroy' function is called when the element is removed from the DOM.
-  // It's crucial for cleaning up event listeners to prevent memory leaks.
+  // It's crucial for cleaning up event listeners to prevent memory leaks.;
   return {
     destroy() {
       node.removeEventListener('keydown', onKeyDown);
     },
-    // The 'update' function is called if the parameters change.
+    // The 'update' function is called if the parameters change.;
     update(newParams) {
       // Re-evaluate with new parameters
       if (!newParams) return;
@@ -80,14 +80,14 @@ export const accessibleClick: Action<HTMLElement, AccessibleClickParams> = (node
 
 /**
  * Specialized variant for button-like interactions
- */
+ */;
 export function accessibleButton(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {
-  return accessibleClick(element, { role: 'button', ...params });
+  return accessibleClick(element, { role: 'button', ...params ,});
 }
 
 /**
  * Specialized variant for menu items
- */
+ */;
 export function accessibleMenuItem(element: HTMLElement, params: { handler: (e: Event) => void; label?: string }) {
-  return accessibleClick(element, { role: 'menuitem', ...params });
+  return accessibleClick(element, { role: 'menuitem', ...params ,});
 }

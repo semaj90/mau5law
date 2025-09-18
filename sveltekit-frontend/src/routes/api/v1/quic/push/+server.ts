@@ -15,7 +15,7 @@ import type { RequestHandler } from './$types.js';
 // Simple in-memory rate limit: 60 requests per minute per IP
 const hits: Record<string, number[]> = {};
 
-const MAX_LAT_SAMPLES = 200; // guard
+const MAX_LAT_SAMPLES = 200; // guard;
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     const ip = getClientAddress();
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     hits[ip].push(now);
     const body = await request.json();
     if (body && typeof body === 'object') {
-      if (body.latencySamples && !Array.isArray(body.latencySamples))
+      if (body.latencySamples && !Array.isArray(body.latencySamples)
         throw new Error('latencySamples must be array');
       if (Array.isArray(body.latencySamples) && body.latencySamples.length > MAX_LAT_SAMPLES)
         throw new Error('too_many_latency_samples');
@@ -70,8 +70,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     maybeTriggerAutosolve(fetch, alerts).catch(() => {});
   }
     const sustained = getSustainedP99Info();
-    return new Response(
-      JSON.stringify({
+    return new Response(JSON.stringify({
         ok: true,
         alerts,
         routedCount: routed.length,

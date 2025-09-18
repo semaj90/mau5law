@@ -1,7 +1,7 @@
 // TypeScript declarations for missing types across the codebase
 // This file resolves many TS2304 "Cannot find name" errors
 
-// Engine/Graphics types
+// Engine/Graphics types;
 declare class ShaderCache {
   static get(key: string): any;
   static set(key: string, value: any): void;
@@ -12,13 +12,13 @@ declare class MatrixTransformLib {
   static multiply(a: any, b: any): any;
 }
 
-// Docker/Optimization types
+// Docker/Optimization types;
 declare class DockerResourceOptimizer {
   static optimizeMemory(): Promise<any>;
   static getCurrentUsage(): Promise<any>;
 }
 
-// RAG/Search types
+// RAG/Search types;
 declare interface RAGSearchResult {
   id: string;
   content: string;
@@ -39,15 +39,15 @@ declare interface RAGDocument {
   metadata?: Record<string, any>;
 }
 
-// Store types
+// Store types;
 declare const enhancedRAGStore: {
   search: (query: string) => Promise<RAGSearchResult[]>;
-  add: (doc: RAGDocument) => Promise<void>;
+  add: (doc: RAGDocument) => Promise<void>;,
 };
 
 declare const documentVectors: any;
 
-// Routing types
+// Routing types;
 declare interface DynamicRouteConfig {
   path: string;
   component: any;
@@ -56,12 +56,12 @@ declare interface DynamicRouteConfig {
 
 declare interface GeneratedRoute {
   path: string;
-  handler: any;
+  handler: any;,
 }
 
 declare function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute;
 
-// Document processing types
+// Document processing types;
 declare interface DocumentProcessingOptions {
   type: 'pdf' | 'docx' | 'txt';
   extractImages?: boolean;
@@ -71,7 +71,7 @@ declare interface DocumentProcessingOptions {
 // Context7/MCP types
 declare function createContext7MCPIntegration(): any;
 
-// Database and ORM globals (fixes TS2304 errors)
+// Database and ORM globals (fixes TS2304 errors);
 declare global {
   const db: any;
   const sql: any;
@@ -98,7 +98,7 @@ declare global {
   const prisma: any;
 }
 
-// Langchain missing exports
+// Langchain missing exports;
 declare module '@langchain/community/vectorstores/pgvector' {
   export class PGVectorStore {
     static initialize(config: any): Promise<PGVectorStore>;
@@ -122,7 +122,7 @@ declare module '@langchain/community/vectorstores/neo4j_vector' {
   }
 }
 
-// XState v5 compatibility stubs
+// XState v5 compatibility stubs;
 declare module 'xstate' {
   export interface StateId {
   [key: string]: any;
@@ -151,7 +151,7 @@ declare module 'xstate' {
   export function createActor<T>(machine: any): Actor<T>;
 }
 
-// Redis stub
+// Redis stub;
 declare module 'ioredis' {
   export default class Redis {
     constructor(config?: any);
@@ -180,7 +180,7 @@ export function generateEmbedding(text: string, options?: any): Promise<number[]
 export function withRetry<T>(fn: () => Promise<T>, retries?: number): Promise<T>;
 export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T>;
 ;
-// Production type definitions
+// Production type definitions;
 export interface GenericLegalAnalysisResult {
   score: number;
   confidence: number;
@@ -196,7 +196,7 @@ export interface LegalEmbeddingResult {
   embedding: number[];
   model: string;
   dimensions: number;
-  processingTime: number;
+  processingTime: number;,
 }
 
 export interface MetricData {

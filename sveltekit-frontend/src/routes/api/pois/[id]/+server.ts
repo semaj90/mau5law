@@ -10,7 +10,7 @@ export const GET: RequestHandler = async ({ params }) => {
     const [poi] = await db
       .select()
       .from(personsOfInterest)
-      .where(eq(personsOfInterest.id, params.id));
+      .where(eq(personsOfInterest.id, params.id);
 
     if (!poi) {
       return json({ error: "Person of interest not found" }, { status: 404 });
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ params }) => {
   } catch (error: any) {
     console.error("Error fetching POI:", error);
     return json(
-      { error: "Failed to fetch person of interest" },
+      { error: "Failed to fetch person of interest" },)
       { status: 500 }
     );
   }
@@ -31,7 +31,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
 
     // Remove posX/posY, use position object if needed
     const [poi] = await db
-      .update(personsOfInterest)
+      .update(personsOfInterest);
       .set({
         name: data.name,
         aliases: data.aliases,
@@ -43,7 +43,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
         tags: data.tags,
         updatedAt: new Date(),
       })
-      .where(eq(personsOfInterest.id, params.id))
+      .where(eq(personsOfInterest.id, params.id)
       .returning();
 
     if (!poi) {
@@ -53,7 +53,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
   } catch (error: any) {
     console.error("Error updating POI:", error);
     return json(
-      { error: "Failed to update person of interest" },
+      { error: "Failed to update person of interest" },)
       { status: 500 }
     );
   }
@@ -63,7 +63,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
   try {
     const [poi] = await db
       .delete(personsOfInterest)
-      .where(eq(personsOfInterest.id, params.id))
+      .where(eq(personsOfInterest.id, params.id)
       .returning();
 
     if (!poi) {
@@ -73,7 +73,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
   } catch (error: any) {
     console.error("Error deleting POI:", error);
     return json(
-      { error: "Failed to delete person of interest" },
+      { error: "Failed to delete person of interest" },)
       { status: 500 }
     );
   }

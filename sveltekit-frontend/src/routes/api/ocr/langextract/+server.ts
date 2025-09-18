@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { cache, cacheEmbedding, cacheSearchResults } from '$lib/server/cache/redis';
 
-// Accept text and return embedding tensor with caching and indexing hooks
+// Accept text and return embedding tensor with caching and indexing hooks;
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const { text, model = 'nomic-embed-text', tags = [], type = 'ocr' } = await request.json();
@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
     const fastApiUrl = process.env.FASTAPI_URL || process.env.PUBLIC_FASTAPI_URL;
 
-    // Helper to finalize and cache response
+    // Helper to finalize and cache response;
     const finalize = async (embedding: number[], wasCached = false) => {
       await cache.set(key, embedding, 24 * 60 * 60 * 1000);
       await cacheEmbedding(text, embedding, model);
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       return json({ tensor: embedding, embedding, cached: wasCached, model, tags, type });
     };
 
-    // Primary: FastAPI embed service
+    // Primary: FastAPI embed service;
     if (fastApiUrl) {
       try {
         const resp = await fetch(`${fastApiUrl.replace(/\/$/, '')}/embed`, {
@@ -37,13 +37,13 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           const data = (await resp.json()) as { embedding: number[] };
           return await finalize(data.embedding, false);
         }
-        // fall through to Go fallback when FastAPI responds non-OK
+        // fall through to Go fallback when FastAPI responds non-OK;
       } catch {
         // fall through to Go fallback on error
       }
     }
 
-    // Fallback: Go tensor bridge (mock-capable) to get an embedding when FastAPI isn't configured/available
+    // Fallback: Go tensor bridge (mock-capable) to get an embedding when FastAPI isn't configured/available;
     try {
       const goReq = {
         operation: 'vectorize',
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     }
 
     // If we reached here, no backend produced an embedding
-    return json(
+    return json();
       {
         error: 'Embedding backend unavailable (FASTAPI_URL not configured and Go fallback failed)',
       },

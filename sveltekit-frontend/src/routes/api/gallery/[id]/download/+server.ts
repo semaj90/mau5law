@@ -20,7 +20,7 @@ interface DownloadLog {
   ip: string;
   timestamp: Date;
   fileSize: number;
-  downloadType: 'view' | 'download';
+  downloadType: 'view' | 'download';,
 }
 
 export const GET: RequestHandler = async ({ params, request, locals, url }) => {
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
     }
 
     // Get item details from database
-    const itemQuery = await db
+    const itemQuery = await db;
       .select({
         id: evidence.id,
         title: evidence.title,
@@ -45,11 +45,11 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
         filePath: evidence.filePath,
         isPublic: evidence.isPublic,
         caseId: evidence.caseId,
-        caseTitle: cases.title
+        caseTitle: cases.title,
       })
       .from(evidence)
-      .leftJoin(cases, eq(evidence.caseId, cases.id))
-      .where(eq(evidence.id, itemId))
+      .leftJoin(cases, eq(evidence.caseId, cases.id)
+      .where(eq(evidence.id, itemId)
       .limit(1)
       .execute();
 
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
 
     // Check access permissions
     // TODO: Implement proper user authentication and authorization
-    // For now, only check if file is public or user has access to the case
+    // For now, only check if file is public or user has access to the case;
     if (!(item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).isPublic) {
       // TODO: Check user permissions for the case
       // const userHasAccess = await checkUserCaseAccess(locals.user?.id, (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).caseId);
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
     const stats = await stat(fullPath);
     const fileBuffer = await readFile(fullPath);
 
-    // Log download
+    // Log download;
     await logDownload({
       itemId: (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).id,
       userId: locals.user?.id,
@@ -94,14 +94,14 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
       ip: getClientIP(request),
       timestamp: new Date(),
       fileSize: stats.size,
-      downloadType: downloadType as 'view' | 'download'
+      downloadType: downloadType as 'view' | 'download',
     });
 
     // Determine content disposition
     const disposition = inline || downloadType === 'view' ? 'inline' : 'attachment';
     const filename = (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).originalFileName || (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileName || 'download';
 
-    // Set appropriate headers
+    // Set appropriate headers;
     const headers = new Headers({
       'Content-Type': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || 'application/octet-stream',
       'Content-Length': stats.size.toString(),
@@ -117,7 +117,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
     headers.set('X-Content-Type-Options', 'nosniff');
     headers.set('X-Frame-Options', 'DENY');
 
-    // For images, add additional headers
+    // For images, add additional headers;
     if ((item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType?.startsWith('image/')) {
       headers.set('Accept-Ranges', 'bytes');
     }
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ params, request, locals, url }) => {
     if (err instanceof Error && (
       err.message.includes('400') || 
       err.message.includes('403') || 
-      err.message.includes('404')
+      err.message.includes('404');
     )) {
       const statusCode = parseInt(err.message.split(' ')[0]) || 500;
       throw error(statusCode, err.message);
@@ -182,7 +182,7 @@ function handleRangeRequest(buffer: Buffer, rangeHeader: string, contentType: st
 
   } catch (error) {
     console.error('Range request error:', error);
-    // Fallback to full file
+    // Fallback to full file;
     return new Response(buffer, {
       status: 200,
       headers: {
@@ -199,7 +199,7 @@ function parseRangeHeader(range: string, fileSize: number): Array< | null {
       return null;
     }
 
-    const ranges = range.slice(6).split(',').map(r => r.trim());
+    const ranges = range.slice(6).split(',').map(r => r.trim();
     const parsedRanges: Array<any> = [];
 
     for (const rangeStr of ranges) {
@@ -211,7 +211,7 @@ function parseRangeHeader(range: string, fileSize: number): Array< | null {
       if (startStr === '') {
         // Suffix-byte-range-spec: -500
         end = fileSize - 1;
-        start = Math.max(0, fileSize - parseInt(endStr));
+        start = Math.max(0, fileSize - parseInt(endStr);
       } else if (endStr === '') {
         // Byte-range-spec: 500-
         start = parseInt(startStr);
@@ -222,7 +222,7 @@ function parseRangeHeader(range: string, fileSize: number): Array< | null {
         end = parseInt(endStr);
       }
 
-      // Validate range
+      // Validate range;
       if (start >= 0 && end < fileSize && start <= end) {
         parsedRanges.push({ start, end });
       }
@@ -237,17 +237,17 @@ function parseRangeHeader(range: string, fileSize: number): Array< | null {
 async function logDownload(log: DownloadLog) {
   try {
     // TODO: Store download logs in database
-    // For now, just console.log
+    // For now, just console.log;
     console.log('Download logged:', {
       itemId: log.itemId,
       userId: log.userId || 'anonymous',
       timestamp: log.timestamp.toISOString(),
       fileSize: log.fileSize,
       downloadType: log.downloadType,
-      ip: log.ip
+      ip: log.ip,
     });
 
-    // Could store in a downloads table:
+    // Could store in a downloads table:;
     // await db.insert(downloads).values({
     //   itemId: log.itemId,
     //   userId: log.userId,
@@ -280,7 +280,7 @@ function getClientIP(request: Request): string {
   return request.headers.get('x-forwarded-host') || 'unknown';
 }
 
-// HEAD request for file metadata without downloading
+// HEAD request for file metadata without downloading;
 export const HEAD: RequestHandler = async ({ params, locals }) => {
   try {
     const itemId = params.id;
@@ -289,7 +289,7 @@ export const HEAD: RequestHandler = async ({ params, locals }) => {
       throw error(400, 'Item ID is required');
     }
 
-    const itemQuery = await db
+    const itemQuery = await db;
       .select({
         id: evidence.id,
         fileName: evidence.fileName,
@@ -298,10 +298,10 @@ export const HEAD: RequestHandler = async ({ params, locals }) => {
         fileSize: evidence.fileSize,
         filePath: evidence.filePath,
         isPublic: evidence.isPublic,
-        uploadedAt: evidence.uploadedAt
+        uploadedAt: evidence.uploadedAt,
       })
       .from(evidence)
-      .where(eq(evidence.id, itemId))
+      .where(eq(evidence.id, itemId)
       .limit(1)
       .execute();
 
@@ -311,7 +311,7 @@ export const HEAD: RequestHandler = async ({ params, locals }) => {
 
     const item = itemQuery[0];
 
-    // Check if file exists on disk
+    // Check if file exists on disk;
     if ((item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath) {
       const fullPath = path.join(process.cwd(), 'static', (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath);
       if (!existsSync(fullPath)) {

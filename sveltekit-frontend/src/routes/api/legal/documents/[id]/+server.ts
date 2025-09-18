@@ -18,14 +18,14 @@ try {
 }
 const { legalDocuments } = schema;
 
-// GET - Get specific legal document
+// GET - Get specific legal document;
 export const GET: RequestHandler = async ({ params }) => {
   try {
     const documentId = params.id;
     if (!documentId) {
       return json({ error: "Document ID is required" }, { status: 400 });
     }
-    // Handle case where schema is not available
+    // Handle case where schema is not available;
     if (!legalDocuments) {
       console.warn("Legal documents table not available, returning mock data");
       return json({
@@ -43,12 +43,12 @@ export const GET: RequestHandler = async ({ params }) => {
     const [document] = await db
       .select()
       .from(legalDocuments)
-      .where(eq(legalDocuments.id, documentId));
+      .where(eq(legalDocuments.id, documentId);
 
     if (!document) {
       return json({ error: "Document not found" }, { status: 404 });
     }
-    // Calculate word count
+    // Calculate word count;
     const documentWithWordCount = {
       ...document,
       wordCount: document.content ? document.content.split(/\s+/).length: 0,
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ params }) => {
   }
 };
 
-// PUT - Update specific legal document
+// PUT - Update specific legal document;
 export const PUT: RequestHandler = async ({ request, params }) => {
   try {
     const documentId = params.id;
@@ -70,7 +70,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
     }
     const data = await request.json();
 
-    // Handle case where schema is not available
+    // Handle case where schema is not available;
     if (!legalDocuments) {
       console.warn(
         "Legal documents table not available, returning mock response",
@@ -82,7 +82,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
         wordCount: data.content ? data.content.split(/\s+/).length: 0,
       });
     }
-    // Calculate word count if content is provided
+    // Calculate word count if content is provided;
     const updateData: any = {
       ...data,
       updatedAt: new Date(),
@@ -95,7 +95,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
     const [updatedDocument] = await db
       .update(legalDocuments)
       .set(updateData)
-      .where(eq(legalDocuments.id, documentId))
+      .where(eq(legalDocuments.id, documentId)
       .returning();
 
     if (!updatedDocument) {
@@ -108,14 +108,14 @@ export const PUT: RequestHandler = async ({ request, params }) => {
   }
 };
 
-// DELETE - Delete specific legal document
+// DELETE - Delete specific legal document;
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
     const documentId = params.id;
     if (!documentId) {
       return json({ error: "Document ID is required" }, { status: 400 });
     }
-    // Handle case where schema is not available
+    // Handle case where schema is not available;
     if (!legalDocuments) {
       console.warn(
         "Legal documents table not available, returning mock response",
@@ -125,7 +125,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
     // Delete document
     const deleteResult = await db
       .delete(legalDocuments)
-      .where(eq(legalDocuments.id, documentId))
+      .where(eq(legalDocuments.id, documentId)
       .returning();
     
     const deletedDocument = Array.isArray(deleteResult) ? deleteResult[0] : deleteResult;

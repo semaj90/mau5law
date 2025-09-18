@@ -1,17 +1,17 @@
-import { execSync } from "child_process";
-import fs from "fs";
+import { execSync } from 'child_process';
+import fs from 'fs';
 
-console.log("🔄 Running project checks and generating TODO.md...");
+console.log('🔄 Running project checks and generating TODO.md...');
 
 try {
   // Run npm run check and capture output
-  const output = execSync("npm run check", {
-    encoding: "utf8",
+  const output = execSync('npm run check', {
+    encoding: 'utf8',
     cwd: process.cwd(),
-    stdio: "pipe",
+    stdio: 'pipe',
   });
 
-  console.log("✅ Checks complete. No errors found!");
+  console.log('✅ Checks complete. No errors found!');
 
   // Generate TODO.md
   const todoContent = `# ✅ Project Issues Todo List
@@ -51,14 +51,14 @@ Visit \`/modern-demo\` to see all components in action!
 5. Implement pgvector for semantic search
 `;
 
-  fs.writeFileSync("TODO.md", todoContent);
-  console.log("🎉 Success! Generated TODO.md - No issues found!");
+  fs.writeFileSync('TODO.md', todoContent);
+  console.log('🎉 Success! Generated TODO.md - No issues found!');
 } catch (error) {
-  console.log("⚠️ Found issues. Parsing output...");
+  console.log('⚠️ Found issues. Parsing output...');
 
   // Parse the error output
   const errorOutput = error.stdout || error.stderr || error.message;
-  const lines = errorOutput.split("\n");
+  const lines = errorOutput.split('\n');
 
   let todoContent = `# ✅ Project Issues Todo List
 
@@ -71,7 +71,7 @@ This file contains all TypeScript, Svelte, and other issues found by running \`n
 
 `;
 
-  let currentFile = "";
+  let currentFile = '';
   let issueCount = 0;
 
   for (const line of lines) {
@@ -87,16 +87,16 @@ This file contains all TypeScript, Svelte, and other issues found by running \`n
 
     // Look for errors/warnings
     if (
-      line.includes("Error:") ||
-      line.includes("Warning:") ||
-      line.includes("×") ||
-      line.includes("✖")
+      line.includes('Error:') ||
+      line.includes('Warning:') ||
+      line.includes('×') ||
+      line.includes('✖')
     ) {
       issueCount++;
       const cleanLine = line
-        .replace(/^[✖×]\s*/, "")
-        .replace(/^\s*Error:\s*/, "")
-        .replace(/^\s*Warning:\s*/, "")
+        .replace(/^[✖×]\s*/, '')
+        .replace(/^\s*Error:\s*/, '')
+        .replace(/^\s*Warning:\s*/, '')
         .trim();
       if (cleanLine) {
         todoContent += `- **Issue #${issueCount}:** ${cleanLine}\n`;
@@ -105,17 +105,17 @@ This file contains all TypeScript, Svelte, and other issues found by running \`n
   }
 
   if (issueCount === 0) {
-    todoContent += "\n✅ **No specific issues found in output parsing.**\n";
+    todoContent += '\n✅ **No specific issues found in output parsing.**\n';
   } else {
     todoContent += `\n📊 **Total Issues Found:** ${issueCount}\n`;
   }
 
   todoContent += `\n## Raw Output\n\`\`\`\n${errorOutput}\n\`\`\`\n`;
 
-  fs.writeFileSync("TODO.md", todoContent);
+  fs.writeFileSync('TODO.md', todoContent);
   console.log(`🎉 Generated TODO.md with ${issueCount} issues found.`);
 }
 
 // Display the generated file
-console.log("\n📄 Generated TODO.md:");
-console.log(fs.readFileSync("TODO.md", "utf8"));
+console.log('\n📄 Generated TODO.md:');
+console.log(fs.readFileSync('TODO.md', 'utf8'));

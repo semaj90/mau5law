@@ -7,7 +7,7 @@ export const isTauri = typeof window !== "undefined" && "__TAURI__" in window;
 let tauriInvoke: any = null;
 let tauriListen: any = null;
 
-// Lazy load Tauri APIs only when needed and in browser
+// Lazy load Tauri APIs only when needed and in browser;
 async function loadTauriAPI(): Promise<any> {
   if (typeof window === "undefined" || !isTauri || tauriInvoke) return;
 
@@ -20,9 +20,9 @@ async function loadTauriAPI(): Promise<any> {
     console.warn("Failed to load Tauri APIs:", error);
   }
 }
-// Database operations via Tauri commands
+// Database operations via Tauri commands;
 export class TauriAPI {
-  // Cases
+  // Cases;
   static async getCases() {
     if (!isTauri) {
       // Fallback to web API
@@ -34,7 +34,7 @@ export class TauriAPI {
   }
   static async createCase(caseData: any) {
     if (!isTauri) {
-      // Fallback to web API
+      // Fallback to web API;
       const response = await fetch("/api/cases", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -48,7 +48,7 @@ export class TauriAPI {
       description: caseData.description,
     });
   }
-  // Reports
+  // Reports;
   static async getReports() {
     if (!isTauri) {
       // Fallback to web API
@@ -60,7 +60,7 @@ export class TauriAPI {
   }
   static async createReport(reportData: any) {
     if (!isTauri) {
-      // Fallback to web API
+      // Fallback to web API;
       const response = await fetch("/api/reports", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -75,7 +75,7 @@ export class TauriAPI {
       summary: reportData.summary,
     });
   }
-  // LLM operations
+  // LLM operations;
   static async listLLMModels() {
     if (!isTauri) {
       // Return empty array or call web API if available
@@ -99,7 +99,7 @@ export class TauriAPI {
     await loadTauriAPI();
     return tauriInvoke?.("upload_llm_model", { filePath });
   }
-  // Authentication - always use web API since it handles sessions
+  // Authentication - always use web API since it handles sessions;
   static async login(email: string, password: string) {
     const response = await fetch("/api/auth/login", {
       method: "POST",
@@ -126,7 +126,7 @@ export class TauriAPI {
     const response = await fetch("/api/user/profile");
     return response.json();
   }
-  // File operations
+  // File operations;
   static async uploadAvatar(file: File) {
     const formData = new FormData();
     formData.append("avatar", file);
@@ -138,7 +138,7 @@ export class TauriAPI {
     return response.json();
   }
 }
-// Event listeners for Tauri events
+// Event listeners for Tauri events;
 export async function setupTauriEventListeners(): Promise<any> {
   if (!isTauri) return;
 
@@ -153,7 +153,7 @@ export async function setupTauriEventListeners(): Promise<any> {
     console.log("Window resized:", event.payload);
   });
 }
-// Initialize Tauri integration
+// Initialize Tauri integration;
 export async function initializeTauri(): Promise<any> {
   if (isTauri) {
     console.log("Running in Tauri desktop app");

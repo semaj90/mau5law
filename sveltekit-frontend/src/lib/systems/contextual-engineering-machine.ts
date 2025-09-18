@@ -7,6 +7,7 @@
 import { chatVectorStorage, storeChatWithVector, getPredictiveAssistance, searchUserChatHistory } from '../services/chat-vector-storage.js';
 import type { ChatMessage, IntentPrediction, SemanticSearchResult } from '../services/chat-vector-storage.js';
 import { base64FP32Quantizer } from '../text/base64-fp32-quantizer.js';
+}
 
 export interface ContextualTestResult {
   testName: string;
@@ -29,7 +30,7 @@ export interface ContextualEngineMetrics {
   adaptabilityScore: number;
   coherenceIndex: number;
   predictionAccuracy: number;
-  contextualRelevance: number;
+  contextualRelevance: number;,
 }
 
 export interface ConversationContext {
@@ -43,7 +44,7 @@ export interface ConversationContext {
     commonDaysOfWeek: number[];
     seasonalTrends: string[];
     timeBasedIntents: Map<string, number[]>; // Intent -> time slots when most active
-    workflowPatterns: string[]; // Common task sequences
+    workflowPatterns: string[]; // Common task sequences,
   };
   contextualMemory: {
     topicsDiscussed: string[];
@@ -51,12 +52,12 @@ export interface ConversationContext {
     decisionsTracked: string[];
     followUpItems: string[];
     keyEntities: Array<any>;
-    conceptGraph: Map<string, string[]>; // Concept -> related concepts
+    conceptGraph: Map<string, string[]>; // Concept -> related concepts;
     emotionalState: {
       sentiment: number; // -1 to 1
       stress_level: number; // 0 to 1
       confidence: number; // 0 to 1
-      engagement: number; // 0 to 1
+      engagement: number; // 0 to 1,
     };
   };
   learningProfile: {
@@ -64,7 +65,7 @@ export interface ConversationContext {
     preferred_explanation_style: 'detailed' | 'concise' | 'examples';
     common_mistakes: string[];
     learning_velocity: number;
-    knowledge_gaps: string[];
+    knowledge_gaps: string[];,
   };
 }
 
@@ -82,7 +83,7 @@ export class ContextualEngineeringMachine {
     adaptabilityScore: 0,
     coherenceIndex: 0,
     predictionAccuracy: 0,
-    contextualRelevance: 0
+    contextualRelevance: 0,
   };
   
   private conversationContexts = new Map<string, ConversationContext>();
@@ -91,7 +92,7 @@ export class ContextualEngineeringMachine {
   private adaptationRate = 0.1; // How quickly system adapts to new patterns
   
   // Test data for validation
-  private readonly TEST_CONVERSATIONS = [
+  private readonly TEST_CONVERSATIONS = [;
     {
       userId: "test_user_001",
       sessionId: "session_morning_001",
@@ -147,7 +148,7 @@ export class ContextualEngineeringMachine {
 
   /**
    * Run comprehensive tests of the chat vector storage system
-   */
+   */;
   async runFullSystemTest(): Promise<ContextualTestResult[]> {
     console.log('🚀 Starting comprehensive contextual engineering tests...');
     const startTime = performance.now();
@@ -230,7 +231,7 @@ export class ContextualEngineeringMachine {
         console.log(`📄 Stored message ${i + 1}: ${messageId}`);
       }
       
-      // Verify storage worked
+      // Verify storage worked;
       if (messageIds.length === 5 && messageIds.every(id => id.length > 0)) {
         console.log('✅ Basic chat storage test passed');
         this.testResults.push({
@@ -267,26 +268,26 @@ export class ContextualEngineeringMachine {
     try {
       console.log('🎯 Testing intent prediction accuracy...');
       
-      const testCases = [
+      const testCases = [;
         {
           input: "I need help reviewing a contract",
           expectedIntent: "contract_review",
-          minConfidence: 0.7
+          minConfidence: 0.7,
         },
         {
           input: "Can you find me similar case law?",
           expectedIntent: "legal_research", 
-          minConfidence: 0.6
+          minConfidence: 0.6,
         },
         {
           input: "Help me draft an NDA",
           expectedIntent: "document_drafting",
-          minConfidence: 0.7
+          minConfidence: 0.7,
         },
         {
           input: "Is our company compliant with new regulations?",
           expectedIntent: "compliance_check",
-          minConfidence: 0.6
+          minConfidence: 0.6,
         }
       ];
       
@@ -304,7 +305,7 @@ export class ContextualEngineeringMachine {
         console.log(`🎯 Predicted: ${prediction.predictedIntent} (${(prediction.confidence * 100).toFixed(1)}%)`);
         console.log(`📝 Expected: ${testCase.expectedIntent}`);
         
-        if (prediction.predictedIntent === testCase.expectedIntent && 
+        if (prediction.predictedIntent === testCase.expectedIntent &&;
             prediction.confidence >= testCase.minConfidence) {
           successfulPredictions++;
           console.log('✅ Intent prediction correct');
@@ -331,9 +332,9 @@ export class ContextualEngineeringMachine {
           accuracy,
           successfulPredictions,
           totalTests: testCases.length,
-          averageConfidence: this.metrics.averageConfidence
+          averageConfidence: this.metrics.averageConfidence,
         },
-        errors: errors.length > 0 ? errors : undefined
+        errors: errors.length > 0 ? errors : undefined,
       });
       
     } catch (error) {
@@ -358,9 +359,9 @@ export class ContextualEngineeringMachine {
     try {
       console.log('⏰ Testing temporal pattern detection...');
       
-      // Simulate conversations at different times
+      // Simulate conversations at different times;
       for (const conversation of this.TEST_CONVERSATIONS) {
-        // Store each message with timestamp
+        // Store each message with timestamp;
         for (let i = 0; i < conversation.messages.length; i++) {
           const messageTime = new Date(conversation.timestamp.getTime() + i * 60000); // 1 minute apart
           
@@ -389,7 +390,7 @@ export class ContextualEngineeringMachine {
         console.log(`   Seasonal trends: ${prediction.temporalInsights.seasonalTrends.length} trends`);
         console.log(`   User patterns: ${prediction.temporalInsights.userPatterns.length} patterns`);
         
-        if (prediction.temporalInsights.commonAtThisTime.length > 0 ||
+        if (prediction.temporalInsights.commonAtThisTime.length > 0 ||;
             prediction.temporalInsights.userPatterns.length > 0) {
           patternsDetected++;
         }
@@ -407,9 +408,9 @@ export class ContextualEngineeringMachine {
         details: {
           patternsDetected,
           totalConversations: this.TEST_CONVERSATIONS.length,
-          detectionRate: patternsDetected / this.TEST_CONVERSATIONS.length
+          detectionRate: patternsDetected / this.TEST_CONVERSATIONS.length,
         },
-        errors: errors.length > 0 ? errors : undefined
+        errors: errors.length > 0 ? errors : undefined,
       });
       
     } catch (error) {
@@ -472,9 +473,9 @@ export class ContextualEngineeringMachine {
         details: {
           suggestionsGenerated,
           totalInputs: testInputs.length,
-          suggestionRate: suggestionsGenerated / testInputs.length
+          suggestionRate: suggestionsGenerated / testInputs.length,
         },
-        errors: errors.length > 0 ? errors : undefined
+        errors: errors.length > 0 ? errors : undefined,
       });
       
     } catch (error) {
@@ -531,7 +532,7 @@ export class ContextualEngineeringMachine {
           contextMaintained++;
         }
         
-        // Store conversation context
+        // Store conversation context;
         this.updateConversationContext(userId, sessionId, {
           id: `msg_${i}`,
           userId,
@@ -541,7 +542,7 @@ export class ContextualEngineeringMachine {
           messageType: 'user',
           metadata: {
             intent: prediction.predictedIntent,
-            confidence: prediction.confidence
+            confidence: prediction.confidence,
           }
         });
       }
@@ -558,9 +559,9 @@ export class ContextualEngineeringMachine {
         details: {
           contextMaintained,
           totalMessages: conversationFlow.length,
-          contextRate: this.metrics.contextMaintenance
+          contextRate: this.metrics.contextMaintenance,
         },
-        errors: errors.length > 0 ? errors : undefined
+        errors: errors.length > 0 ? errors : undefined,
       });
       
     } catch (error) {
@@ -635,9 +636,9 @@ export class ContextualEngineeringMachine {
         details: {
           successfulSearches,
           totalQueries: searchQueries.length,
-          searchSuccessRate: successfulSearches / searchQueries.length
+          searchSuccessRate: successfulSearches / searchQueries.length,
         },
-        errors: errors.length > 0 ? errors : undefined
+        errors: errors.length > 0 ? errors : undefined,
       });
       
     } catch (error) {
@@ -697,7 +698,7 @@ export class ContextualEngineeringMachine {
         executionTime: performance.now() - startTime,
         details: {
           optimizationScore: this.metrics.queryOptimization,
-          totalQueries: partialQueries.length
+          totalQueries: partialQueries.length,
         }
       });
       
@@ -727,7 +728,7 @@ export class ContextualEngineeringMachine {
       await storeChatWithVector(userId, "I'm working on an NDA for our startup", "session_1");
       
       // Simulate 1 hour gap
-      await new Promise(resolve => setTimeout(resolve, 100)); // Simulate time passage
+      await new Promise(resolve => setTimeout(resolve, 100); // Simulate time passage
       
       await storeChatWithVector(userId, "The other party wants to modify the confidentiality terms", "session_2");
       
@@ -750,7 +751,7 @@ export class ContextualEngineeringMachine {
         details: {
           contextMaintained: success,
           similarQueries: prediction.contextualRecommendations.similarPastQueries.length,
-          intent: prediction.predictedIntent
+          intent: prediction.predictedIntent,
         }
       });
       
@@ -780,13 +781,13 @@ export class ContextualEngineeringMachine {
         temporalPatterns: {
           preferredTimeSlots: [],
           commonDaysOfWeek: [],
-          seasonalTrends: []
+          seasonalTrends: [],
         },
         contextualMemory: {
           topicsDiscussed: [],
           documentsReferenced: [],
           decisionsTracked: [],
-          followUpItems: []
+          followUpItems: [],
         }
       });
     }
@@ -811,7 +812,7 @@ export class ContextualEngineeringMachine {
   
   /**
    * Advanced contextual memory analysis
-   */
+   */;
   private async testContextualMemoryAnalysis(): Promise<void> {
     const testName = "Contextual Memory Analysis";
     const startTime = performance.now();
@@ -877,9 +878,9 @@ export class ContextualEngineeringMachine {
           entitiesExtracted: entities.length,
           conceptRelationships: conceptGraph.size,
           memoryScore,
-          recallConfidence: prediction.confidence
+          recallConfidence: prediction.confidence,
         },
-        errors: errors.length > 0 ? errors : undefined
+        errors: errors.length > 0 ? errors : undefined,
       });
       
     } catch (error) {
@@ -898,7 +899,7 @@ export class ContextualEngineeringMachine {
   
   /**
    * Learning adaptation and evolution testing
-   */
+   */;
   private async testLearningAdaptation(): Promise<void> {
     const testName = "Learning Adaptation";
     const startTime = performance.now();
@@ -911,7 +912,7 @@ export class ContextualEngineeringMachine {
       let learningScore = 0;
       
       // Simulate learning progression
-      const learningStages = [
+      const learningStages = [;
         {
           stage: "novice",
           queries: [
@@ -947,7 +948,7 @@ export class ContextualEngineeringMachine {
           
           const prediction = await getPredictiveAssistance(userId, query, sessionId);
           
-          // Update learning profile based on query complexity
+          // Update learning profile based on query complexity;
           this.updateLearningProfile(context, {
             id: `msg_${Date.now()}`,
             userId,
@@ -958,7 +959,7 @@ export class ContextualEngineeringMachine {
             metadata: {
               intent: prediction.predictedIntent,
               confidence: prediction.confidence,
-              complexity: stage.stage
+              complexity: stage.stage,
             }
           });
         }
@@ -967,7 +968,7 @@ export class ContextualEngineeringMachine {
         console.log(`🎯 Expertise level: ${context.learningProfile.expertise_level}`);
         console.log(`⚡ Learning velocity: ${context.learningProfile.learning_velocity.toFixed(2)}`);
         
-        // Score learning adaptation
+        // Score learning adaptation;
         if (context.learningProfile.expertise_level === stage.stage) {
           learningScore += 0.33;
         }
@@ -986,9 +987,9 @@ export class ContextualEngineeringMachine {
         details: {
           learningScore,
           adaptabilityScore: this.metrics.adaptabilityScore,
-          stagesPassed: learningScore / 0.33
+          stagesPassed: learningScore / 0.33,
         },
-        errors: errors.length > 0 ? errors : undefined
+        errors: errors.length > 0 ? errors : undefined,
       });
       
     } catch (error) {
@@ -1007,7 +1008,7 @@ export class ContextualEngineeringMachine {
   
   /**
    * Entity relationship mapping testing
-   */
+   */;
   private async testEntityRelationshipMapping(): Promise<void> {
     const testName = "Entity Relationship Mapping";
     const startTime = performance.now();
@@ -1072,9 +1073,9 @@ export class ContextualEngineeringMachine {
           entitiesIdentified: entities.length,
           conceptsMapped: conceptGraph.size,
           mappingScore,
-          relationshipConfidence: prediction.confidence
+          relationshipConfidence: prediction.confidence,
         },
-        errors: errors.length > 0 ? errors : undefined
+        errors: errors.length > 0 ? errors : undefined,
       });
       
     } catch (error) {
@@ -1093,7 +1094,7 @@ export class ContextualEngineeringMachine {
   
   /**
    * Emotional intelligence and sentiment tracking
-   */
+   */;
   private async testEmotionalIntelligence(): Promise<void> {
     const testName = "Emotional Intelligence";
     const startTime = performance.now();
@@ -1151,9 +1152,9 @@ export class ContextualEngineeringMachine {
         details: {
           emotionalAccuracy,
           messagesAnalyzed: emotionalJourney.length,
-          finalEmotionalState: context.contextualMemory.emotionalState
+          finalEmotionalState: context.contextualMemory.emotionalState,
         },
-        errors: errors.length > 0 ? errors : undefined
+        errors: errors.length > 0 ? errors : undefined,
       });
       
     } catch (error) {
@@ -1172,7 +1173,7 @@ export class ContextualEngineeringMachine {
   
   /**
    * Helper method to get or create conversation context
-   */
+   */;
   private getOrCreateContext(userId: string, sessionId: string): ConversationContext {
     const contextKey = `${userId}_${sessionId}`;
     
@@ -1188,7 +1189,7 @@ export class ContextualEngineeringMachine {
           commonDaysOfWeek: [],
           seasonalTrends: [],
           timeBasedIntents: new Map(),
-          workflowPatterns: []
+          workflowPatterns: [],
         },
         contextualMemory: {
           topicsDiscussed: [],
@@ -1201,7 +1202,7 @@ export class ContextualEngineeringMachine {
             sentiment: 0,
             stress_level: 0,
             confidence: 0.5,
-            engagement: 0.5
+            engagement: 0.5,
           }
         },
         learningProfile: {
@@ -1209,7 +1210,7 @@ export class ContextualEngineeringMachine {
           preferred_explanation_style: 'detailed',
           common_mistakes: [],
           learning_velocity: 0.1,
-          knowledge_gaps: []
+          knowledge_gaps: [],
         }
       });
     }
@@ -1219,7 +1220,7 @@ export class ContextualEngineeringMachine {
   
   /**
    * Extract and store entities from message
-   */
+   */;
   private extractAndStoreEntities(context: ConversationContext, message: string): void {
     // Simple entity extraction (in production, use NLP libraries)
     const organizationPatterns = /\b([A-Z][a-z]+ (?:Inc|Corp|LLC|Ltd|Company|Corporation))\b/g;
@@ -1232,7 +1233,7 @@ export class ContextualEngineeringMachine {
       this.addOrUpdateEntity(context, match[1], 'organization', message);
     }
     
-    // Extract legal concepts
+    // Extract legal concepts;
     while ((match = legalConceptPatterns.exec(message)) !== null) {
       this.addOrUpdateEntity(context, match[1].toLowerCase(), 'legal_concept', message);
     }
@@ -1240,7 +1241,7 @@ export class ContextualEngineeringMachine {
   
   /**
    * Add or update entity in context
-   */
+   */;
   private addOrUpdateEntity(context: ConversationContext, entityText: string, type: ConversationContext['contextualMemory']['keyEntities'][0]['type'], messageContext: string): void {
     const existing = context.contextualMemory.keyEntities.find(e => e.entity === entityText);
     
@@ -1256,14 +1257,14 @@ export class ContextualEngineeringMachine {
         type,
         frequency: 1,
         lastMentioned: new Date(),
-        context: [messageContext]
+        context: [messageContext],
       });
     }
   }
   
   /**
    * Update concept graph with relationships
-   */
+   */;
   private updateConceptGraph(context: ConversationContext, message: string): void {
     const concepts = context.contextualMemory.keyEntities
       .filter(e => e.type === 'legal_concept')
@@ -1273,13 +1274,13 @@ export class ContextualEngineeringMachine {
     const mentionedConcepts = concepts.filter(item => item.includes)(concept)
     );
     
-    // Create relationships between co-mentioned concepts
+    // Create relationships between co-mentioned concepts;
     for (let i = 0; i < mentionedConcepts.length; i++) {
       for (let j = i + 1; j < mentionedConcepts.length; j++) {
         const concept1 = mentionedConcepts[i];
         const concept2 = mentionedConcepts[j];
         
-        // Add bidirectional relationship
+        // Add bidirectional relationship;
         if (!context.contextualMemory.conceptGraph.has(concept1)) {
           context.contextualMemory.conceptGraph.set(concept1, []);
         }
@@ -1298,22 +1299,22 @@ export class ContextualEngineeringMachine {
   
   /**
    * Update temporal patterns
-   */
+   */;
   private updateTemporalPatterns(context: ConversationContext, message: ChatMessage): void {
     const hour = message.timestamp.getHours();
     const dayOfWeek = message.timestamp.getDay();
     
-    // Update preferred time slots
+    // Update preferred time slots;
     if (!context.temporalPatterns.preferredTimeSlots.includes(hour)) {
       context.temporalPatterns.preferredTimeSlots.push(hour);
     }
     
-    // Update common days of week
+    // Update common days of week;
     if (!context.temporalPatterns.commonDaysOfWeek.includes(dayOfWeek)) {
       context.temporalPatterns.commonDaysOfWeek.push(dayOfWeek);
     }
     
-    // Update time-based intents
+    // Update time-based intents;
     if (message.metadata?.intent) {
       if (!context.temporalPatterns.timeBasedIntents.has(message.metadata.intent)) {
         context.temporalPatterns.timeBasedIntents.set(message.metadata.intent, []);
@@ -1324,7 +1325,7 @@ export class ContextualEngineeringMachine {
   
   /**
    * Update learning profile based on user interactions
-   */
+   */;
   private updateLearningProfile(context: ConversationContext, message: ChatMessage): void {
     const complexity = this.assessQueryComplexity(message.content);
     const confidence = message.metadata?.confidence || 0.5;
@@ -1332,7 +1333,7 @@ export class ContextualEngineeringMachine {
     // Update expertise level based on query complexity trends
     const recentComplexity = context.conversationFlow
       .slice(-5)
-      .map(msg => this.assessQueryComplexity(msg.content))
+      .map(msg => this.assessQueryComplexity(msg.content)
       .reduce((sum, c) => sum + c, 0) / Math.min(5, context.conversationFlow.length);
     
     if (recentComplexity > 0.8) {
@@ -1351,7 +1352,7 @@ export class ContextualEngineeringMachine {
   
   /**
    * Assess query complexity
-   */
+   */;
   private assessQueryComplexity(content: string): number {
     const complexTerms = ['enforceability', 'arbitration', 'indemnification', 'jurisdiction', 'precedent', 'statute', 'jurisprudence'];
     const legalCitations = /\b\d+\s+[A-Z][a-z]+\s+\d+\b/.test(content);
@@ -1368,7 +1369,7 @@ export class ContextualEngineeringMachine {
   
   /**
    * Analyze sentiment from text
-   */
+   */;
   private analyzeSentiment(text: string): number {
     const positiveWords = ['happy', 'great', 'excellent', 'perfect', 'confident', 'satisfied', 'thanks', 'helpful'];
     const negativeWords = ['stressed', 'difficult', 'unreasonable', 'worried', 'frustrated', 'concerned', 'problem', 'issue'];
@@ -1381,12 +1382,12 @@ export class ContextualEngineeringMachine {
       if (negativeWords.includes(word)) sentiment -= 0.2;
     });
     
-    return Math.max(-1, Math.min(1, sentiment));
+    return Math.max(-1, Math.min(1, sentiment);
   }
   
   /**
    * Analyze stress level from text
-   */
+   */;
   private analyzeStressLevel(text: string): number {
     const stressIndicators = ['deadline', 'urgent', 'stressed', 'pressure', 'difficult', 'worried', 'anxious', 'frustrated'];
     const calmIndicators = ['confident', 'perfect', 'solution', 'understand', 'clear', 'helpful', 'thanks'];
@@ -1399,7 +1400,7 @@ export class ContextualEngineeringMachine {
       if (calmIndicators.includes(word)) stress -= 0.1;
     });
     
-    return Math.max(0, Math.min(1, stress));
+    return Math.max(0, Math.min(1, stress);
   }
 
   private generateTestSummary(): void {
@@ -1432,7 +1433,7 @@ export class ContextualEngineeringMachine {
       const status = (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).success ? '✅' : '❌';
       console.log(`${status} ${(result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).testName}: ${(result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).executionTime.toFixed(2)}ms`);
       if ((result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).errors && (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).errors.length > 0) {
-        (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).errors.forEach(error => console.log(`   ⚠️ ${error}`));
+        (result as { message?: any; similarity?: any; success?: any; executionTime?: any; testName?: any; errors?: any }).errors.forEach(error => console.log(`   ⚠️ ${error}`);
       }
     });
     
@@ -1464,21 +1465,21 @@ export class ContextualEngineeringMachine {
 
   /**
    * Get current system metrics
-   */
+   */;
   getMetrics(): ContextualEngineMetrics {
     return { ...this.metrics };
   }
 
   /**
    * Get test results
-   */
+   */;
   getTestResults(): ContextualTestResult[] {
     return [...this.testResults];
   }
 
   /**
    * Get conversation contexts
-   */
+   */;
   getConversationContexts(): Map<string, ConversationContext> {
     return new Map(this.conversationContexts);
   }
@@ -1491,7 +1492,7 @@ export const contextualEngineeringMachine = new ContextualEngineeringMachine();
 
 /**
  * Convenience function to run system validation
- */
+ */;
 export async function validateContextualSystem(): Promise<any> {
   const results = await contextualEngineeringMachine.runFullSystemTest();
   const metrics = contextualEngineeringMachine.getMetrics();

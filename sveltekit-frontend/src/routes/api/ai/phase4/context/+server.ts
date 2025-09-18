@@ -48,11 +48,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (error) {
     console.error('Context-aware AI error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to generate contextual AI response',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },
+        details: error instanceof Error ? error.message: 'Unknown error',
+      },)
       { status: 500 }
     );
   }
@@ -80,14 +79,14 @@ export const GET: RequestHandler = async ({ url }) => {
         documentCount: memory.documentMap.length,
         relationshipCount: memory.relationshipGraph.length,
         conversationCount: memory.aiMemory.conversationHistory.length,
-        gameMemory: memory.gameMemory
+        gameMemory: memory.gameMemory,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error) {
     return json(
-      { error: 'Failed to load case memory' },
+      { error: 'Failed to load case memory' },)
       { status: 500 }
     );
   }

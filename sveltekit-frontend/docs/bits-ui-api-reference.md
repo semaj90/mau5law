@@ -3,6 +3,7 @@
 ## 🎯 Quick Reference Guide
 
 ### Import Statement
+
 ```javascript
 import {
   ButtonBits,
@@ -12,7 +13,7 @@ import {
   DropdownBits,
   SelectBits,
   TabsBits,
-  TooltipBits
+  TooltipBits,
 } from '$lib/components/ui/bits-ui';
 ```
 
@@ -24,7 +25,15 @@ import {
 
 ```typescript
 interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'destructive' | 'success' | 'warning' | 'info';
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'ghost'
+    | 'outline'
+    | 'destructive'
+    | 'success'
+    | 'warning'
+    | 'info';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   loading?: boolean;
   disabled?: boolean;
@@ -37,6 +46,7 @@ interface ButtonProps {
 ```
 
 **Examples:**
+
 ```svelte
 <ButtonBits variant="primary">Submit</ButtonBits>
 <ButtonBits variant="ghost" size="sm">Cancel</ButtonBits>
@@ -68,6 +78,7 @@ interface InputProps {
 ```
 
 **Examples:**
+
 ```svelte
 <InputBits
   label="Email Address"
@@ -108,11 +119,12 @@ interface SelectProps {
 ```
 
 **Examples:**
+
 ```svelte
 <script>
   const practiceAreas = [
     { value: 'corporate', label: '🏢 Corporate Law' },
-    { value: 'litigation', label: '⚖️ Litigation' }
+    { value: 'litigation', label: '⚖️ Litigation' },
   ];
 
   let selectedArea = $state('');
@@ -150,21 +162,18 @@ interface TabsProps {
 ```
 
 **Examples:**
+
 ```svelte
 <script>
   const tabItems = [
     { value: 'basic', label: '📋 Basic' },
-    { value: 'advanced', label: '🔧 Advanced' }
+    { value: 'advanced', label: '🔧 Advanced' },
   ];
 
   let activeTab = $state('basic');
 </script>
 
-<TabsBits
-  tabs={tabItems}
-  bind:value={activeTab}
-  variant="pills"
->
+<TabsBits tabs={tabItems} bind:value={activeTab} variant="pills">
   {#if activeTab === 'basic'}
     <div>Basic content</div>
   {:else}
@@ -190,6 +199,7 @@ interface TooltipProps {
 ```
 
 **Examples:**
+
 ```svelte
 <TooltipBits content="This saves your progress" side="top">
   <ButtonBits>Save</ButtonBits>
@@ -210,6 +220,7 @@ interface CardProps {
 ```
 
 **Examples:**
+
 ```svelte
 <CardBits variant="elevated" padding="lg">
   <h3>Card Title</h3>
@@ -233,22 +244,19 @@ interface DialogProps {
 ```
 
 **Examples:**
+
 ```svelte
 <script>
   let dialogOpen = $state(false);
 </script>
 
-<ButtonBits onclick={() => dialogOpen = true}>
-  Open Dialog
-</ButtonBits>
+<ButtonBits onclick={() => (dialogOpen = true)}>Open Dialog</ButtonBits>
 
 <DialogBits bind:open={dialogOpen} size="md">
   <div class="p-6">
     <h2>Dialog Title</h2>
     <p>Dialog content...</p>
-    <ButtonBits onclick={() => dialogOpen = false}>
-      Close
-    </ButtonBits>
+    <ButtonBits onclick={() => (dialogOpen = false)}>Close</ButtonBits>
   </div>
 </DialogBits>
 ```
@@ -258,9 +266,18 @@ interface DialogProps {
 ## 🎨 Type Definitions
 
 ### Component Variants
+
 ```typescript
 // Button variants
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline' | 'destructive' | 'success' | 'warning' | 'info';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'ghost'
+  | 'outline'
+  | 'destructive'
+  | 'success'
+  | 'warning'
+  | 'info';
 
 // Input variants
 export type InputVariant = 'default' | 'filled' | 'outlined';
@@ -276,6 +293,7 @@ export type CardVariant = 'default' | 'elevated' | 'outlined' | 'filled';
 ```
 
 ### Component Sizes
+
 ```typescript
 // Button sizes
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -301,6 +319,7 @@ export type DialogSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 ## 🔧 Utility Functions
 
 ### CSS Class Helper
+
 ```typescript
 // Available in all components
 import { cn } from '$lib/utils';
@@ -315,6 +334,7 @@ const className = cn(
 ```
 
 ### Accessibility Helpers
+
 ```typescript
 // Generate unique IDs for form elements
 const fieldId = `field-${Math.random().toString(36).substr(2, 9)}`;
@@ -323,7 +343,7 @@ const fieldId = `field-${Math.random().toString(36).substr(2, 9)}`;
 const ariaProps = {
   'aria-describedby': description ? `${fieldId}-description` : undefined,
   'aria-invalid': error,
-  'aria-required': required
+  'aria-required': required,
 };
 ```
 
@@ -332,26 +352,50 @@ const ariaProps = {
 ## 🎮 Gaming CSS Classes
 
 ### N64-Enhanced Classes
+
 ```css
 /* Available for custom styling */
-.nes-btn-enhanced { /* Gaming-enhanced buttons */ }
-.nes-input-enhanced { /* Gaming-enhanced inputs */ }
-.nes-select-enhanced { /* Gaming-enhanced selects */ }
-.nes-tabs-enhanced { /* Gaming-enhanced tabs */ }
+.nes-btn-enhanced {
+  /* Gaming-enhanced buttons */
+}
+.nes-input-enhanced {
+  /* Gaming-enhanced inputs */
+}
+.nes-select-enhanced {
+  /* Gaming-enhanced selects */
+}
+.nes-tabs-enhanced {
+  /* Gaming-enhanced tabs */
+}
 
 /* Color variants */
-.n64-primary { background: var(--n64-primary); }
-.n64-secondary { background: var(--n64-secondary); }
-.n64-success { background: var(--n64-success); }
-.n64-warning { background: var(--n64-warning); }
-.n64-error { background: var(--n64-error); }
+.n64-primary {
+  background: var(--n64-primary);
+}
+.n64-secondary {
+  background: var(--n64-secondary);
+}
+.n64-success {
+  background: var(--n64-success);
+}
+.n64-warning {
+  background: var(--n64-warning);
+}
+.n64-error {
+  background: var(--n64-error);
+}
 ```
 
 ### Animation Classes
+
 ```css
 /* Gaming animations */
-@keyframes n64-glow { /* Glowing effect */ }
-@keyframes n64-pulse { /* Pulsing effect */ }
+@keyframes n64-glow {
+  /* Glowing effect */
+}
+@keyframes n64-pulse {
+  /* Pulsing effect */
+}
 
 .game-element {
   animation: n64-glow 3s infinite;
@@ -368,10 +412,18 @@ const ariaProps = {
 
 ```css
 /* Mobile First Approach */
-@media (max-width: 640px) { /* Mobile */ }
-@media (min-width: 641px) and (max-width: 768px) { /* Tablet */ }
-@media (min-width: 769px) and (max-width: 1024px) { /* Small Desktop */ }
-@media (min-width: 1025px) { /* Large Desktop */ }
+@media (max-width: 640px) {
+  /* Mobile */
+}
+@media (min-width: 641px) and (max-width: 768px) {
+  /* Tablet */
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Small Desktop */
+}
+@media (min-width: 1025px) {
+  /* Large Desktop */
+}
 ```
 
 ---
@@ -379,6 +431,7 @@ const ariaProps = {
 ## ♿ Accessibility Properties
 
 ### Standard ARIA Support
+
 All components include proper ARIA attributes:
 
 ```svelte
@@ -399,6 +452,7 @@ All components include proper ARIA attributes:
 ```
 
 ### Keyboard Navigation
+
 - **Tab**: Navigate between focusable elements
 - **Enter/Space**: Activate buttons and toggles
 - **Escape**: Close modals and dropdowns
@@ -409,16 +463,19 @@ All components include proper ARIA attributes:
 ## 🚀 Performance Optimizations
 
 ### Bundle Size
+
 - Tree-shakable components
 - Minimal runtime overhead
 - Optimized CSS-in-JS
 
 ### Runtime Performance
+
 - Virtual scrolling for large lists
 - Debounced form validation
 - Efficient state updates with Svelte 5 runes
 
 ### Best Practices
+
 ```javascript
 // ✅ Efficient state management
 let formData = $state({ /* initial state */ });
@@ -440,6 +497,7 @@ let isValid = $derived(() => validateForm(formData));
 ## 🔍 Error Handling
 
 ### Common Validation Patterns
+
 ```javascript
 // Form validation
 function validateField(value, rules) {
@@ -461,21 +519,22 @@ function validateField(value, rules) {
 }
 
 // Usage
-let emailErrors = $derived(() => validateField(email, {
-  required: true,
-  pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-}));
+let emailErrors = $derived(() =>
+  validateField(email, {
+    required: true,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  })
+);
 ```
 
 ### Error Display
+
 ```svelte
-<InputBits
-  bind:value={email}
-  error={emailErrors.length > 0}
-  errorMessage={emailErrors[0]}
-/>
+<InputBits bind:value={email} error={emailErrors.length > 0} errorMessage={emailErrors[0]} />
 ```
 
 ---
 
-This API reference provides comprehensive documentation for all components in the bits-ui integration, including TypeScript definitions, usage examples, and best practices for building professional gaming-enhanced legal AI applications.
+This API reference provides comprehensive documentation for all components in the bits-ui
+integration, including TypeScript definitions, usage examples, and best practices for building
+professional gaming-enhanced legal AI applications.

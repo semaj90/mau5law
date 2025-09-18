@@ -1,4 +1,4 @@
-// Lucia authentication types
+// Lucia authentication types;
 declare module 'lucia' {
   export interface CookieAttributes {
     httpOnly?: boolean;
@@ -28,7 +28,7 @@ declare module 'lucia' {
   }
 }
 
-// SvelteKit cookie types compatibility
+// SvelteKit cookie types compatibility;
 declare module '@sveltejs/kit' {
   export interface CookieSerializeOptions {
     path?: string;

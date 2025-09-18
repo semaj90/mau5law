@@ -13,7 +13,7 @@ interface GpuDevice {
   powerUsage: number; // in watts
   computeUnits: number;
   clockSpeed: number; // in MHz
-  lastUpdate: number;
+  lastUpdate: number;,
 }
 
 interface GpuTask {
@@ -42,7 +42,7 @@ class PhysicsAwareGpuOrchestrator {
 
   /**
    * Initializes the orchestrator, detecting available GPU devices.
-   */
+   */;
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     console.log("Initializing Physics-Aware GPU Orchestrator (server-only)...");
@@ -58,10 +58,10 @@ class PhysicsAwareGpuOrchestrator {
 
   private async detectHardwareGpus(): Promise<void> {
     // Simulate hardware detection delay
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 200);
     
     // Mock detection of RTX 3060 Ti as per user's actual hardware
-    this.availableDevices = [
+    this.availableDevices = [;
       {
         id: 0,
         name: 'NVIDIA GeForce RTX 3060 Ti',
@@ -72,7 +72,7 @@ class PhysicsAwareGpuOrchestrator {
         powerUsage: 200,
         computeUnits: 4864, // CUDA cores for RTX 3060 Ti
         clockSpeed: 1665, // Base clock in MHz for RTX 3060 Ti
-        lastUpdate: Date.now()
+        lastUpdate: Date.now(),
       }
     ];
 
@@ -83,7 +83,7 @@ class PhysicsAwareGpuOrchestrator {
   }
 
   private startPerformanceMonitoring(): void {
-    // Update GPU metrics every 5 seconds
+    // Update GPU metrics every 5 seconds;
     setInterval(() => {
       this.updateDeviceMetrics();
       this.processTaskQueue();
@@ -95,10 +95,10 @@ class PhysicsAwareGpuOrchestrator {
     this.availableDevices.forEach(device => {
       // Simulate realistic GPU metric fluctuations
       const baseLoad = 0.1 + (this.runningTasks.size * 0.2);
-      device.load = Math.min(0.95, baseLoad + (Math.random() * 0.1 - 0.05));
+      device.load = Math.min(0.95, baseLoad + (Math.random() * 0.1 - 0.05);
       device.temperature = 45 + (device.load * 30) + (Math.random() * 5 - 2.5);
       device.powerUsage = 120 + (device.load * 80) + (Math.random() * 10 - 5);
-      device.memoryUsage = Math.max(1.0, device.memoryUsage + (Math.random() * 0.2 - 0.1));
+      device.memoryUsage = Math.max(1.0, device.memoryUsage + (Math.random() * 0.2 - 0.1);
       device.lastUpdate = Date.now();
     });
 
@@ -120,7 +120,7 @@ class PhysicsAwareGpuOrchestrator {
   }
 
   private cleanupCompletedTasks(): void {
-    // Keep only recent completed tasks (last 100)
+    // Keep only recent completed tasks (last 100);
     if (this.completedTasks.length > 100) {
       this.completedTasks = this.completedTasks.slice(-100);
     }
@@ -128,16 +128,16 @@ class PhysicsAwareGpuOrchestrator {
 
   /**
    * Schedules a task on the optimal GPU based on physics-aware algorithms.
-   */
+   */;
   scheduleTask(taskRequest: Omit<GpuTask, 'id' | 'status' | 'deviceId'>): { 
     taskId: string; 
     deviceId?: number; 
-    estimatedStartTime: number;
+    estimatedStartTime: number;,
   } | { error: string } {
     const task: GpuTask = {
       ...taskRequest,
       id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      status: 'queued'
+      status: 'queued',
     };
 
     // Immediate scheduling attempt
@@ -149,7 +149,7 @@ class PhysicsAwareGpuOrchestrator {
       return {
         taskId: task.id,
         deviceId: optimalDevice.id,
-        estimatedStartTime: Date.now()
+        estimatedStartTime: Date.now(),
       };
     } else {
       // Queue for later execution
@@ -158,13 +158,13 @@ class PhysicsAwareGpuOrchestrator {
       
       return {
         taskId: task.id,
-        estimatedStartTime: Date.now() + estimatedWaitTime
+        estimatedStartTime: Date.now() + estimatedWaitTime,
       };
     }
   }
 
   private findOptimalDevice(task: GpuTask): GpuDevice | null {
-    // Physics-aware device selection algorithm
+    // Physics-aware device selection algorithm;
     const candidateDevices = this.availableDevices.filter(device => {
       const availableMemory = device.memoryTotal - device.memoryUsage;
       const loadOk = device.load < 0.85; // Don't overload GPU
@@ -175,7 +175,7 @@ class PhysicsAwareGpuOrchestrator {
 
     if (candidateDevices.length === 0) return null;
 
-    // Score devices based on multiple factors
+    // Score devices based on multiple factors;
     const deviceScores = candidateDevices.map(device => {
       const memoryScore = (device.memoryTotal - device.memoryUsage - task.requiredMemory) / device.memoryTotal;
       const loadScore = 1 - device.load;
@@ -185,7 +185,7 @@ class PhysicsAwareGpuOrchestrator {
       // Task-specific scoring
       let taskTypeScore = 1.0;
       if (task.type === 'physics_simulation' && device.computeUnits > 4000) {
-        taskTypeScore = 1.2; // Prefer high-core-count GPUs for physics
+        taskTypeScore = 1.2; // Prefer high-core-count GPUs for physics;
       } else if (task.type === 'inference' && device.memoryTotal >= 8) {
         taskTypeScore = 1.1; // Prefer high-memory GPUs for inference
       }
@@ -208,10 +208,10 @@ class PhysicsAwareGpuOrchestrator {
 
   private canExecuteImmediately(task: GpuTask, device: GpuDevice): boolean {
     // Check if device can handle the task immediately
-    const runningTasksOnDevice = Array.from(this.runningTasks.values())
+    const runningTasksOnDevice = Array.from(this.runningTasks.values()
       .filter(t => t.deviceId === device.id);
     
-    // For high-priority tasks, allow some overlap
+    // For high-priority tasks, allow some overlap;
     if (task.priority === 'critical') {
       return runningTasksOnDevice.length < 2;
     } else if (task.priority === 'high') {
@@ -233,7 +233,7 @@ class PhysicsAwareGpuOrchestrator {
     
     console.log(`Executing task ${task.id} on GPU ${device.id} (${task.type})`);
     
-    // Simulate task execution
+    // Simulate task execution;
     setTimeout(() => {
       this.completeTask(task.id);
     }, task.estimatedDuration);
@@ -268,14 +268,14 @@ class PhysicsAwareGpuOrchestrator {
 
   /**
    * Get current GPU utilization across all devices
-   */
+   */;
   getGPUUtilization(): number {
     return Math.round(this.totalGpuUtilization * 100) / 100;
   }
 
   /**
    * Get detailed GPU statistics
-   */
+   */;
   getGPUStats(): {
     devices: GpuDevice[];
     queuedTasks: number;
@@ -283,7 +283,7 @@ class PhysicsAwareGpuOrchestrator {
     completedTasks: number;
     totalUtilization: number;
     averageTemperature: number;
-    totalPowerUsage: number;
+    totalPowerUsage: number;,
   } {
     const averageTemperature = this.availableDevices.reduce((sum, device) => 
       sum + device.temperature, 0) / this.availableDevices.length;
@@ -298,13 +298,13 @@ class PhysicsAwareGpuOrchestrator {
       completedTasks: this.completedTasks.length,
       totalUtilization: this.totalGpuUtilization,
       averageTemperature: Math.round(averageTemperature * 10) / 10,
-      totalPowerUsage: Math.round(totalPowerUsage)
+      totalPowerUsage: Math.round(totalPowerUsage),
     };
   }
 
   /**
    * Get task information
-   */
+   */;
   getTaskInfo(taskId: string): GpuTask | null {
     // Check running tasks first
     const runningTask = this.runningTasks.get(taskId);
@@ -321,7 +321,7 @@ class PhysicsAwareGpuOrchestrator {
 
   /**
    * Cancel a queued task
-   */
+   */;
   cancelTask(taskId: string): boolean {
     const taskIndex = this.taskQueue.findIndex(t => t.id === taskId && t.status === 'queued');
     if (taskIndex >= 0) {
@@ -333,7 +333,7 @@ class PhysicsAwareGpuOrchestrator {
 
   /**
    * Health check for GPU orchestrator
-   */
+   */;
   async healthCheck(): Promise<any> {
     const availableDevices = this.availableDevices.filter(item => item.length);
     
@@ -345,7 +345,7 @@ class PhysicsAwareGpuOrchestrator {
     
     const issues: string[] = [];
     
-    // Check for overheating
+    // Check for overheating;
     this.availableDevices.forEach((device, index) => {
       if (device.temperature > 80) {
         issues.push(`GPU ${index}: High temperature (${device.temperature}°C)`);

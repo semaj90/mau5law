@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document outlines the transition from JSON to binary serialization formats (Protocol Buffers and FlatBuffers) for the legal AI platform, optimizing performance for high-throughput legal document processing and real-time AI inference.
+This document outlines the transition from JSON to binary serialization formats (Protocol Buffers
+and FlatBuffers) for the legal AI platform, optimizing performance for high-throughput legal
+document processing and real-time AI inference.
 
 ## Current State Analysis
 
@@ -18,6 +20,7 @@ This document outlines the transition from JSON to binary serialization formats 
 ### 1. Protocol Buffers (.proto) - For Structured Data
 
 **Use Cases:**
+
 - API request/response messages
 - Configuration data
 - User authentication tokens
@@ -158,6 +161,7 @@ message Attachment {
 ### 2. FlatBuffers (.fbs) - For High-Performance Data
 
 **Use Cases:**
+
 - Large legal document content
 - Vector embeddings (1536+ dimensions)
 - Real-time streaming data
@@ -251,16 +255,19 @@ root_type DocumentContent;
 ## Implementation Strategy
 
 ### Phase 1: Core API Migration
+
 1. **Convert authentication endpoints** to protobuf
 2. **Convert document CRUD** operations to protobuf
 3. **Keep JSON fallback** for compatibility
 
 ### Phase 2: Performance-Critical Paths
+
 1. **Vector embeddings** to FlatBuffers
 2. **Search results** to FlatBuffers
 3. **Chat streaming** to FlatBuffers
 
 ### Phase 3: Full Migration
+
 1. **All API endpoints** using protobuf
 2. **Large document storage** using FlatBuffers
 3. **Remove JSON fallbacks**
@@ -268,6 +275,7 @@ root_type DocumentContent;
 ## Integration Points
 
 ### Frontend (SvelteKit)
+
 ```typescript
 // Generated TypeScript from protobuf
 import { AuthRequest, AuthResponse } from './proto/legal_api_pb';
@@ -281,18 +289,22 @@ authReq.setPassword(password);
 const response = await fetch('/api/auth/login', {
   method: 'POST',
   headers: { 'Content-Type': 'application/x-protobuf' },
-  body: authReq.serializeBinary()
+  body: authReq.serializeBinary(),
 });
 
 // FlatBuffer usage for large data
 const builder = new flatbuffers.Builder(1024);
 const contentOffset = builder.createString(documentText);
 const docContent = DocumentContent.createDocumentContent(
-  builder, idOffset, titleOffset, contentOffset
+  builder,
+  idOffset,
+  titleOffset,
+  contentOffset
 );
 ```
 
 ### Backend (Go/Node.js)
+
 ```go
 // Go protobuf integration
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
@@ -317,6 +329,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 ## Performance Benefits
 
 ### Expected Improvements:
+
 - **Payload size reduction**: 60-80% smaller than JSON
 - **Serialization speed**: 5-10x faster than JSON.parse/stringify
 - **Memory usage**: 40-60% reduction for large documents
@@ -324,6 +337,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 - **Parse time**: 3-5x faster for complex structures
 
 ### Benchmarks Target:
+
 - **Document upload**: JSON: 2.3s → Protobuf: 0.8s (65% improvement)
 - **Search results**: JSON: 450ms → FlatBuffer: 120ms (73% improvement)
 - **Chat streaming**: JSON: 50ms/message → FlatBuffer: 15ms/message (70% improvement)
@@ -331,6 +345,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 ## Fallback Strategy
 
 ### Graceful Degradation:
+
 1. **Content negotiation**: Check `Accept` header for format preference
 2. **Automatic conversion**: Convert between formats at API boundary
 3. **Error handling**: Fall back to JSON on protobuf parsing errors
@@ -349,12 +364,14 @@ app.use('/api', (req, res, next) => {
 ## Schema Evolution
 
 ### Version Management:
+
 - **Semantic versioning** for schema files
 - **Field deprecation** rather than removal
 - **Backward compatibility** for at least 2 major versions
 - **Migration scripts** for breaking changes
 
 ### Example Schema Evolution:
+
 ```protobuf
 message LegalDocument {
   string id = 1;
@@ -373,12 +390,14 @@ message LegalDocument {
 ## Development Tools
 
 ### Required Tools:
+
 - **protoc**: Protocol buffer compiler
 - **flatc**: FlatBuffer compiler
 - **protobuf-js**: JavaScript protobuf runtime
 - **flatbuffers**: JavaScript flatbuffers runtime
 
 ### Build Integration:
+
 ```json
 {
   "scripts": {
@@ -392,12 +411,14 @@ message LegalDocument {
 ## Testing Strategy
 
 ### Test Coverage:
+
 1. **Unit tests**: Schema validation and serialization
 2. **Integration tests**: End-to-end API workflows
 3. **Performance tests**: Benchmark against JSON baseline
 4. **Compatibility tests**: Cross-language serialization
 
 ### Example Test:
+
 ```typescript
 describe('Legal Document Protobuf', () => {
   it('should serialize and deserialize correctly', () => {
@@ -418,12 +439,14 @@ describe('Legal Document Protobuf', () => {
 ## Security Considerations
 
 ### Data Protection:
+
 - **Encryption at rest**: FlatBuffer data encrypted in database
 - **Encryption in transit**: TLS for all protobuf communication
 - **Access control**: Field-level permissions in schemas
 - **Data validation**: Strict schema enforcement
 
 ### Schema Security:
+
 ```protobuf
 message SecureLegalDocument {
   string id = 1;
@@ -438,22 +461,26 @@ message SecureLegalDocument {
 ## Migration Timeline
 
 ### Week 1-2: Setup and Infrastructure
+
 - Install protobuf/flatbuffer tools
 - Create initial schemas
 - Set up build pipeline
 - Create test endpoints
 
 ### Week 3-4: Core API Migration
+
 - Auth endpoints → protobuf
 - Document CRUD → protobuf
 - User management → protobuf
 
 ### Week 5-6: Performance Features
+
 - Vector embeddings → FlatBuffers
 - Search results → FlatBuffers
 - Chat streaming → FlatBuffers
 
 ### Week 7-8: Full Migration and Optimization
+
 - Remaining endpoints → protobuf
 - Performance testing and optimization
 - Remove JSON fallbacks
@@ -462,15 +489,18 @@ message SecureLegalDocument {
 ## Success Metrics
 
 ### Performance KPIs:
+
 - API response time reduction: >50%
 - Bandwidth usage reduction: >60%
 - Memory usage reduction: >40%
 - Client app startup time: >30% faster
 
 ### Quality KPIs:
+
 - Zero data corruption incidents
 - 99.9% backward compatibility
 - <1% fallback to JSON usage
 - Developer satisfaction: >8/10
 
-This migration will significantly improve the performance and scalability of the legal AI platform while maintaining backward compatibility and providing a smooth transition path.
+This migration will significantly improve the performance and scalability of the legal AI platform
+while maintaining backward compatibility and providing a smooth transition path.

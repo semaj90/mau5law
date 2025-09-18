@@ -5,7 +5,7 @@ import { mcpContext72GetLibraryDocs } from "$lib/mcp-context72-get-library-docs"
 import type { RequestHandler } from './$types.js';
 
 
-// Enhanced RAG endpoint with reranker, Neo4j, memory, and docs
+// Enhanced RAG endpoint with reranker, Neo4j, memory, and docs;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const {
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const memory = await accessMemoryMCP(query, userContext);
     const docs = await mcpContext72GetLibraryDocs("svelte", "runes");
     // Final scoring pass
-    const highScoreRecommendations = reranked
+    const highScoreRecommendations = reranked;
       .map((result) => {
         let score = (result as { rerankScore?: any; id?: any; intent?: any }).rerankScore;
         if (memory.some((m) => m.relatedId === (result as { rerankScore?: any; id?: any; intent?: any }).id)) score += 1;
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     return json(
-      { error: error.message || "Failed to run enhanced RAG" },
+      { error: error.message || "Failed to run enhanced RAG" },)
       { status: 500 }
     );
   }

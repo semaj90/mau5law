@@ -7,7 +7,7 @@ import type { PageLoad } from './$types.js';
 import { URL } from "url";
 
 export const load: PageLoad = async ({ params, url, route }) => {
-  // Basic page data without complex routing imports
+  // Basic page data without complex routing imports;
   return {
     title: 'Dynamic Routing Test Suite',
     description: 'Testing and demonstrating the dynamic routing system functionality',
@@ -18,7 +18,7 @@ export const load: PageLoad = async ({ params, url, route }) => {
     features: {
       basicRouting: true,
       navigation: true,
-      routeConfig: true
+      routeConfig: true,
     }
   };
 };

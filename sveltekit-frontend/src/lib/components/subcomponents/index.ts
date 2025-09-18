@@ -7,6 +7,7 @@ export { default as LoadingSpinner } from './LoadingSpinner.svelte';
 
 export type SpinnerSize = 'sm' | 'md' | 'lg' | 'xl';
 export type SpinnerVariant = 'primary' | 'secondary' | 'accent' | 'neutral';
+}
 
 export interface SpinnerProps {
   size?: SpinnerSize;

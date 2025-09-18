@@ -29,10 +29,13 @@ const config = {
     models: 'models',
     engines: 'engines',
     scripts: ['legal-ai-tensorrt-service.py', 'tensorrt-llm-legal-production.py'],
-    dockerConfigs: ['docker-compose-pgvector-gpu.yml', 'docker-compose-tensorrt-llm-production.yml'],
+    dockerConfigs: [
+      'docker-compose-pgvector-gpu.yml',
+      'docker-compose-tensorrt-llm-production.yml',
+    ],
     sveltkitFrontend: 'sveltekit-frontend',
-    configs: 'configs'
-  }
+    configs: 'configs',
+  },
 };
 
 async function checkWSL2Ubuntu() {
@@ -69,7 +72,7 @@ async function createUbuntuDirectories() {
     `${config.ubuntuDeployPath}/docker`,
     `${config.ubuntuDeployPath}/configs`,
     `${config.ubuntuDeployPath}/sveltekit-frontend`,
-    `${config.ubuntuDeployPath}/logs`
+    `${config.ubuntuDeployPath}/logs`,
   ];
 
   for (const dir of directories) {
@@ -91,26 +94,26 @@ async function copyViaWSL2SharedFilesystem() {
       name: 'TensorRT-LLM Environment',
       source: `${config.wsl2SharedPath}/TensorRT-LLM/tensorrt_env`,
       dest: `${config.ubuntuDeployPath}/tensorrt_env`,
-      size: '~8GB'
+      size: '~8GB',
     },
     {
       name: 'Gemma3-Legal Models',
       source: `${config.wsl2SharedPath}/models`,
       dest: `${config.ubuntuDeployPath}/models`,
-      size: '~7GB'
+      size: '~7GB',
     },
     {
       name: 'TensorRT Engines',
       source: `${config.wsl2SharedPath}/engines`,
       dest: `${config.ubuntuDeployPath}/engines`,
-      size: '~2GB'
+      size: '~2GB',
     },
     {
       name: 'SvelteKit Frontend',
       source: `${config.wsl2SharedPath}/sveltekit-frontend`,
       dest: `${config.ubuntuDeployPath}/sveltekit-frontend`,
-      size: '~500MB'
-    }
+      size: '~500MB',
+    },
   ];
 
   for (const op of copyOperations) {
@@ -121,11 +124,15 @@ async function copyViaWSL2SharedFilesystem() {
       await execAsync(`wsl -d Ubuntu test -d ${op.source}`);
 
       // Copy using WSL2 shared filesystem (much faster than scp)
-      await execAsync(`wsl -d Ubuntu cp -r ${op.source}/* ${op.dest}/ 2>/dev/null || echo "Partial copy completed"`);
+      await execAsync(
+        `wsl -d Ubuntu cp -r ${op.source}/* ${op.dest}/ 2>/dev/null || echo "Partial copy completed"`
+      );
 
       console.log(`✅ ${op.name} copied to Ubuntu`);
     } catch (error) {
-      console.log(`⚠️ ${op.name} source not found or partial copy: ${error.message.split('\n')[0]}`);
+      console.log(
+        `⚠️ ${op.name} source not found or partial copy: ${error.message.split('\n')[0]}`
+      );
     }
   }
 }
@@ -138,13 +145,17 @@ async function copyServiceScripts() {
     'tensorrt-llm-legal-production.py',
     'build-production-tensorrt-llm.py',
     'deploy-to-ubuntu-server.sh',
-    'test-tensorrt-inference.sh'
+    'test-tensorrt-inference.sh',
   ];
 
   for (const script of scripts) {
     try {
-      await execAsync(`wsl -d Ubuntu cp ${config.wsl2SharedPath}/${script} ${config.ubuntuDeployPath}/scripts/ 2>/dev/null || echo "Script not found: ${script}"`);
-      await execAsync(`wsl -d Ubuntu chmod +x ${config.ubuntuDeployPath}/scripts/${script} 2>/dev/null || true`);
+      await execAsync(
+        `wsl -d Ubuntu cp ${config.wsl2SharedPath}/${script} ${config.ubuntuDeployPath}/scripts/ 2>/dev/null || echo "Script not found: ${script}"`
+      );
+      await execAsync(
+        `wsl -d Ubuntu chmod +x ${config.ubuntuDeployPath}/scripts/${script} 2>/dev/null || true`
+      );
       console.log(`✅ Copied script: ${script}`);
     } catch (error) {
       console.log(`⚠️ Script not found: ${script}`);
@@ -160,16 +171,19 @@ async function copyDockerConfigurations() {
     'docker-compose-tensorrt-llm-production.yml',
     'docker-compose-tensorrt-integration.yml',
     'legal-ai-tensorrt.dockerfile',
-    'Dockerfile.dev'
+    'Dockerfile.dev',
   ];
 
   for (const file of dockerFiles) {
     try {
-      const sourcePath = file.includes('tensorrt-integration') || file === 'Dockerfile.dev'
-        ? `${config.wsl2SharedPath}/sveltekit-frontend/${file}`
-        : `${config.wsl2SharedPath}/${file}`;
+      const sourcePath =
+        file.includes('tensorrt-integration') || file === 'Dockerfile.dev'
+          ? `${config.wsl2SharedPath}/sveltekit-frontend/${file}`
+          : `${config.wsl2SharedPath}/${file}`;
 
-      await execAsync(`wsl -d Ubuntu cp ${sourcePath} ${config.ubuntuDeployPath}/docker/ 2>/dev/null || echo "Docker file not found: ${file}"`);
+      await execAsync(
+        `wsl -d Ubuntu cp ${sourcePath} ${config.ubuntuDeployPath}/docker/ 2>/dev/null || echo "Docker file not found: ${file}"`
+      );
       console.log(`✅ Copied Docker config: ${file}`);
     } catch (error) {
       console.log(`⚠️ Docker file not found: ${file}`);
@@ -214,11 +228,15 @@ async function startServicesInUbuntu() {
   try {
     // Start Docker daemon if not running
     console.log('🐳 Starting Docker daemon...');
-    await execAsync('wsl -d Ubuntu sudo service docker start 2>/dev/null || echo "Docker already running"');
+    await execAsync(
+      'wsl -d Ubuntu sudo service docker start 2>/dev/null || echo "Docker already running"'
+    );
 
     // Start infrastructure services
     console.log('📊 Starting infrastructure services...');
-    await execAsync(`wsl -d Ubuntu cd ${config.ubuntuDeployPath}/docker && docker-compose -f docker-compose-pgvector-gpu.yml up -d`);
+    await execAsync(
+      `wsl -d Ubuntu cd ${config.ubuntuDeployPath}/docker && docker-compose -f docker-compose-pgvector-gpu.yml up -d`
+    );
 
     // Activate TensorRT environment and start service
     console.log('🧠 Starting TensorRT-LLM service...');
@@ -227,11 +245,10 @@ async function startServicesInUbuntu() {
     // Start TensorRT service in background
     spawn('wsl', ['-d', 'Ubuntu', 'bash', '-c', tensorrtCommand], {
       detached: true,
-      stdio: 'ignore'
+      stdio: 'ignore',
     });
 
     console.log('✅ Services starting in Ubuntu WSL2');
-
   } catch (error) {
     console.log('⚠️ Some services may need manual start:', error.message.split('\n')[0]);
   }
@@ -242,21 +259,21 @@ async function testUbuntuDeployment() {
 
   // Wait for services to start
   console.log('⏳ Waiting for services to initialize...');
-  await new Promise(resolve => setTimeout(resolve, 10000));
+  await new Promise((resolve) => setTimeout(resolve, 10000));
 
   const tests = [
     {
       name: 'PostgreSQL connection',
-      command: `wsl -d Ubuntu PGPASSWORD=123456 psql -h localhost -p 5432 -U legal_admin -d legal_ai_db -c "SELECT version();" 2>/dev/null || echo "PostgreSQL not ready"`
+      command: `wsl -d Ubuntu PGPASSWORD=123456 psql -h localhost -p 5432 -U legal_admin -d legal_ai_db -c "SELECT version();" 2>/dev/null || echo "PostgreSQL not ready"`,
     },
     {
       name: 'Redis connection',
-      command: `wsl -d Ubuntu redis-cli -h localhost -p 6379 -a redis ping 2>/dev/null || echo "Redis not ready"`
+      command: `wsl -d Ubuntu redis-cli -h localhost -p 6379 -a redis ping 2>/dev/null || echo "Redis not ready"`,
     },
     {
       name: 'TensorRT-LLM health',
-      command: `wsl -d Ubuntu curl -f http://localhost:8108/health 2>/dev/null || echo "TensorRT not ready"`
-    }
+      command: `wsl -d Ubuntu curl -f http://localhost:8108/health 2>/dev/null || echo "TensorRT not ready"`,
+    },
   ];
 
   for (const test of tests) {
@@ -322,7 +339,6 @@ async function main() {
 
     // Display summary
     await displayDeploymentSummary();
-
   } catch (error) {
     console.error('❌ Deployment failed:', error.message);
     process.exit(1);

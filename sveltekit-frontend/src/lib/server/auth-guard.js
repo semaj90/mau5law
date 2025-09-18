@@ -46,7 +46,7 @@ export async function requireAuthentication(event) {
     const user = /** @type {AuthenticatedUser} */ ({
       id: session.user.id,
       email: session.user.email || session.user.username || 'unknown',
-      isAdmin: !!session.user.isAdmin
+      isAdmin: !!session.user.isAdmin,
     });
     return user;
   } catch (e) {

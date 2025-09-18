@@ -7,15 +7,15 @@ import '@testing-library/jest-dom';
 import stream from "stream";
 import { URL } from "url";
 
-// Mock SvelteKit environment
+// Mock SvelteKit environment;
 vi.mock('$app/environment', () => ({
   dev: true,
   building: false,
   version: '1.0.0-test',
-  browser: true
-}));
+  browser: true,
+});
 
-// Mock SvelteKit navigation
+// Mock SvelteKit navigation;
 vi.mock('$app/navigation', () => ({
   goto: vi.fn(),
   invalidate: vi.fn(),
@@ -25,13 +25,13 @@ vi.mock('$app/navigation', () => ({
   beforeNavigate: vi.fn(),
   afterNavigate: vi.fn(),
   pushState: vi.fn(),
-  replaceState: vi.fn()
-}));
+  replaceState: vi.fn(),
+});
 
 // Mock global fetch
 global.fetch = vi.fn();
 
-// Mock WebSocket
+// Mock WebSocket;
 global.WebSocket = vi.fn().mockImplementation(() => ({
   send: vi.fn(),
   close: vi.fn(),
@@ -41,30 +41,30 @@ global.WebSocket = vi.fn().mockImplementation(() => ({
   CONNECTING: 0,
   OPEN: 1,
   CLOSING: 2,
-  CLOSED: 3
-}));
+  CLOSED: 3,
+});
 
-// Mock localStorage
+// Mock localStorage;
 const mockStorage = {
   getItem: vi.fn(),
   setItem: vi.fn(),
   removeItem: vi.fn(),
   clear: vi.fn(),
   length: 0,
-  key: vi.fn()
+  key: vi.fn(),
 };
 
 Object.defineProperty(window, 'localStorage', {
   value: mockStorage,
-  writable: true
+  writable: true,
 });
 
 Object.defineProperty(window, 'sessionStorage', {
   value: mockStorage,
-  writable: true
+  writable: true,
 });
 
-// Mock crypto for session token generation
+// Mock crypto for session token generation;
 Object.defineProperty(window, 'crypto', {
   value: {
     randomUUID: () => `test-uuid-${Math.random().toString(36).substr(2, 9)}`,
@@ -77,7 +77,7 @@ Object.defineProperty(window, 'crypto', {
   }
 });
 
-// Mock performance API
+// Mock performance API;
 Object.defineProperty(window, 'performance', {
   value: {
     now: vi.fn(() => Date.now()),
@@ -86,25 +86,25 @@ Object.defineProperty(window, 'performance', {
     getEntriesByType: vi.fn(() => []),
     getEntriesByName: vi.fn(() => []),
     clearMarks: vi.fn(),
-    clearMeasures: vi.fn()
+    clearMeasures: vi.fn(),
   }
 });
 
-// Mock IntersectionObserver
+// Mock IntersectionObserver;
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
-  disconnect: vi.fn()
-}));
+  disconnect: vi.fn(),
+});
 
-// Mock ResizeObserver
+// Mock ResizeObserver;
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
-  disconnect: vi.fn()
-}));
+  disconnect: vi.fn(),
+});
 
-// Enhanced database mocking
+// Enhanced database mocking;
 const createMockDb = () => ({
   select: vi.fn().mockReturnThis(),
   from: vi.fn().mockReturnThis(),
@@ -119,7 +119,7 @@ const createMockDb = () => ({
   execute: vi.fn().mockResolvedValue({ rows: [] })
 });
 
-// Mock database operations
+// Mock database operations;
 vi.mock('$lib/server/db/index.ts', () => ({
   db: createMockDb(),
   sql: vi.fn(),
@@ -138,46 +138,46 @@ vi.mock('$lib/server/db/index.ts', () => ({
   healthCheck: vi.fn().mockResolvedValue({
     status: 'healthy',
     database: 'connected',
-    tablesAccessible: true
+    tablesAccessible: true,
   }),
   fullSchema: Record<string, any>,
-  isPostgreSQL: true
-}));
+  isPostgreSQL: true,
+});
 
-// Mock enhanced database operations
+// Mock enhanced database operations;
 vi.mock('$lib/server/db/enhanced-operations', () => ({
   checkDatabaseHealth: vi.fn().mockResolvedValue({
     status: 'healthy',
     responseTime: 50,
-    tablesAccessible: true
+    tablesAccessible: true,
   }),
   CaseOperations: {
     create: vi.fn().mockResolvedValue({
       id: 'test-case-id',
       title: 'Test Case',
       status: 'active',
-      caseNumber: 'CASE-001'
+      caseNumber: 'CASE-001',
     }),
     search: vi.fn().mockResolvedValue({
       cases: [],
-      total: 0
+      total: 0,
     }),
     update: vi.fn().mockResolvedValue({
       id: 'test-case-id',
-      title: 'Updated Test Case'
+      title: 'Updated Test Case',
     })
   },
   EvidenceOperations: {
     create: vi.fn(),
-    search: vi.fn()
+    search: vi.fn(),
   },
   UserOperations: {
     findById: vi.fn(),
-    create: vi.fn()
+    create: vi.fn(),
   }
-}));
+});
 
-// Mock Drizzle ORM imports
+// Mock Drizzle ORM imports;
 vi.mock('drizzle-orm', () => ({
   sql: vi.fn(),
   eq: vi.fn(),
@@ -190,10 +190,10 @@ vi.mock('drizzle-orm', () => ({
   ilike: vi.fn(),
   isNull: vi.fn(),
   isNotNull: vi.fn(),
-  ne: vi.fn()
-}));
+  ne: vi.fn(),
+});
 
-// Mock Redis service
+// Mock Redis service;
 vi.mock('$lib/server/redis/redis-service.ts', () => ({
   redisService: {
     ping: vi.fn().mockResolvedValue('PONG'),
@@ -202,23 +202,23 @@ vi.mock('$lib/server/redis/redis-service.ts', () => ({
     del: vi.fn().mockResolvedValue(1),
     exists: vi.fn().mockResolvedValue(1),
     expire: vi.fn().mockResolvedValue(1),
-    disconnect: vi.fn()
+    disconnect: vi.fn(),
   }
-}));
+});
 
-// Mock Ollama service  
+// Mock Ollama service;
 vi.mock('$lib/server/services/OllamaService.js', () => ({
   ollamaService: {
     generate: vi.fn().mockResolvedValue('Test AI response'),
     isHealthy: vi.fn().mockResolvedValue(true),
     listModels: vi.fn().mockResolvedValue([
-      { name: 'gemma3-legal:latest', size: '7.3GB' },
+      { name: 'gemma3-legal:latest', size: '7.3GB' },)
       { name: 'nomic-embed-text:latest', size: '274MB' }
     ])
   }
-}));
+});
 
-// Mock API response helpers
+// Mock API response helpers;
 vi.mock('$lib/server/api/response', () => ({
   withApiHandler: vi.fn((handler, event) => handler(event)),
   parseRequestBody: vi.fn().mockImplementation((request, schema) => ({ title: 'Test', priority: 'medium' })),
@@ -229,46 +229,46 @@ vi.mock('$lib/server/api/response', () => ({
     BadRequest: vi.fn((message) => new Error(message)),
     Unauthorized: vi.fn((message) => new Error(message)),
     NotFound: vi.fn((type) => new Error(`${type} not found`)),
-    ValidationFailed: vi.fn((field, message) => new Error(`Validation failed: ${message}`))
+    ValidationFailed: vi.fn((field, message) => new Error(`Validation failed: ${message}`)
   }
-}));
+});
 
-// Mock embedding repository
+// Mock embedding repository;
 vi.mock('$lib/server/embedding/embedding-repository.js', () => ({
   getEmbeddingRepository: vi.fn(() => ({
     enqueueIngestion: vi.fn().mockResolvedValue({ jobId: 'test-job-id', status: 'queued' }),
     getJobStatus: vi.fn().mockResolvedValue({ jobId: 'test-job-id', status: 'completed' }),
     processNextJob: vi.fn().mockResolvedValue(null),
-    querySimilar: vi.fn().mockResolvedValue([
+    querySimilar: vi.fn().mockResolvedValue([)
       { id: '1', content: 'Test result', score: 0.95, documentId: 'doc-1' }
     ])
-  }))
-}));
+  })
+});
 
-// Mock production logger
+// Mock production logger;
 vi.mock('$lib/server/production-logger.js', () => ({
   logger: {
     info: vi.fn(),
     error: vi.fn(),
     warn: vi.fn(),
-    debug: vi.fn()
+    debug: vi.fn(),
   }
-}));
+});
 
-// Mock SSR cache
+// Mock SSR cache;
 vi.mock('$lib/server/ssr/enhanced-load', () => ({
   SSRCache: {
     get: vi.fn(),
     set: vi.fn(),
-    clear: vi.fn()
+    clear: vi.fn(),
   }
-}));
+});
 
 // Mock URL.createObjectURL
 global.URL.createObjectURL = vi.fn(() => 'mocked-object-url');
 global.URL.revokeObjectURL = vi.fn();
 
-// Mock File API with enhanced methods
+// Mock File API with enhanced methods;
 global.File = class MockFile {
   name: string;
   size: number;
@@ -323,7 +323,7 @@ global.File = class MockFile {
     return new ReadableStream({
       start(controller) {
         this.arrayBuffer().then(buffer => {
-          controller.enqueue(new Uint8Array(buffer));
+          controller.enqueue(new Uint8Array(buffer);
           controller.close();
         });
       }
@@ -345,7 +345,7 @@ global.FileReader = class MockFileReader extends EventTarget {
     setTimeout(() => {
       this.result = 'mocked file content';
       this.readyState = 2;
-      this.dispatchEvent(new Event('loadend'));
+      this.dispatchEvent(new Event('loadend');
     }, 0);
   }
 
@@ -353,7 +353,7 @@ global.FileReader = class MockFileReader extends EventTarget {
     setTimeout(() => {
       this.result = `data:${file.type};base64,mockedcontent`;
       this.readyState = 2;
-      this.dispatchEvent(new Event('loadend'));
+      this.dispatchEvent(new Event('loadend');
     }, 0);
   }
 
@@ -361,12 +361,12 @@ global.FileReader = class MockFileReader extends EventTarget {
     setTimeout(() => {
       this.result = new ArrayBuffer(file.size);
       this.readyState = 2;
-      this.dispatchEvent(new Event('loadend'));
+      this.dispatchEvent(new Event('loadend');
     }, 0);
   }
 } as any;
 
-// Mock FormData API for file uploads
+// Mock FormData API for file uploads;
 global.FormData = class MockFormData {
   private _data: Map<string, any> = new Map();
 
@@ -435,7 +435,7 @@ global.FormData = class MockFormData {
   }
 } as any;
 
-// Mock Blob API
+// Mock Blob API;
 global.Blob = class MockBlob {
   size: number;
   type: string;
@@ -481,7 +481,7 @@ global.Blob = class MockBlob {
     return new ReadableStream({
       start: (controller) => {
         this.arrayBuffer().then(buffer => {
-          controller.enqueue(new Uint8Array(buffer));
+          controller.enqueue(new Uint8Array(buffer);
           controller.close();
         });
       }
@@ -493,14 +493,14 @@ global.Blob = class MockBlob {
   }
 } as any;
 
-// Setup default fetch responses
+// Setup default fetch responses;
 beforeEach(() => {
   // Reset all mocks
   vi.clearAllMocks();
   
-  // Default fetch implementation
+  // Default fetch implementation;
   (global.fetch as any).mockImplementation((url: string, options?: RequestInit) => {
-    // Health check endpoint
+    // Health check endpoint;
     if (url.includes('/api/health')) {
       return Promise.resolve({
         ok: true,
@@ -512,26 +512,26 @@ beforeEach(() => {
             redis: { status: 'ok' },
             ollama: { status: 'ok' }
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         })
       });
     }
 
-    // Debug logs endpoint
+    // Debug logs endpoint;
     if (url.includes('/api/debug/logs')) {
       return Promise.resolve({
         ok: true,
         status: 200,
         json: () => Promise.resolve({
-          logs: [
+          logs: [)
             { level: 'info', message: 'Test log entry', timestamp: new Date().toISOString() }
           ],
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         })
       });
     }
 
-    // AI chat endpoint
+    // AI chat endpoint;
     if (url.includes('/api/ai/chat')) {
       return Promise.resolve({
         ok: true,
@@ -539,10 +539,10 @@ beforeEach(() => {
         headers: new Headers({ 'Content-Type': 'text/stream' }),
         body: {
           getReader: () => ({
-            read: vi.fn()
+            read: vi.fn();
               .mockResolvedValueOnce({
                 value: new TextEncoder().encode('{"response":"Test response"}'),
-                done: false
+                done: false,
               })
               .mockResolvedValueOnce({ done: true })
           })
@@ -550,21 +550,21 @@ beforeEach(() => {
       });
     }
 
-    // Vector search endpoint
+    // Vector search endpoint;
     if (url.includes('/api/ai/vector-search')) {
       return Promise.resolve({
         ok: true,
         status: 200,
         json: () => Promise.resolve({
-          results: [
+          results: [)
             { id: '1', title: 'Test Result', similarity: 0.95 }
           ],
-          query: 'test query'
+          query: 'test query',
         })
       });
     }
 
-    // Upload endpoint
+    // Upload endpoint;
     if (url.includes('/api/upload')) {
       return Promise.resolve({
         ok: true,
@@ -577,7 +577,7 @@ beforeEach(() => {
       });
     }
 
-    // Cases endpoint
+    // Cases endpoint;
     if (url.includes('/api/cases')) {
       if (options?.method === 'POST') {
         return Promise.resolve({
@@ -586,7 +586,7 @@ beforeEach(() => {
           json: () => Promise.resolve({
             id: 'new-case-id',
             title: 'New Case',
-            status: 'active'
+            status: 'active',
           })
         });
       }
@@ -596,22 +596,22 @@ beforeEach(() => {
         json: () => Promise.resolve({
           id: 'test-case',
           title: 'Test Case',
-          status: 'active'
+          status: 'active',
         })
       });
     }
 
-    // Default response
+    // Default response;
     return Promise.resolve({
       ok: true,
       status: 200,
       json: () => Promise.resolve({}),
-      text: () => Promise.resolve('')
+      text: () => Promise.resolve(''),
     });
   });
 });
 
-// Global cleanup
+// Global cleanup;
 afterAll(() => {
   vi.clearAllMocks();
   vi.clearAllTimers();

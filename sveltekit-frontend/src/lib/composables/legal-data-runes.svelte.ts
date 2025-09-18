@@ -44,7 +44,7 @@ export interface PersonOfInterest {
   metadata: Record<string, any>;
 }
 
-// Legal case composable
+// Legal case composable;
 export function useLegalCase(initialCaseId?: string) {
   let currentCase = $state<LegalCase | null>(null);
   let cases = $state<LegalCase[]>([]);
@@ -56,11 +56,11 @@ export function useLegalCase(initialCaseId?: string) {
   let hasCurrentCase = $derived(currentCase !== null);
   let currentCaseStatus = $derived(currentCase?.status || null);
   let currentCasePriority = $derived(currentCase?.priority || null);
-  let activeCases = $derived(cases.filter(c => c.status === 'active'));
-  let urgentCases = $derived(cases.filter(c => c.priority === 'urgent'));
+  let activeCases = $derived(cases.filter(c => c.status === 'active');
+  let urgentCases = $derived(cases.filter(c => c.priority === 'urgent');
   let casesCount = $derived(cases.length);
   
-  // Case status summary
+  // Case status summary;
   let statusSummary = $derived(() => {
     const summary: Record<string, number> = {};
     cases.forEach(c => {
@@ -69,7 +69,7 @@ export function useLegalCase(initialCaseId?: string) {
     return summary;
   });
   
-  // Priority distribution
+  // Priority distribution;
   let priorityDistribution = $derived(() => {
     const distribution: Record<string, number> = {};
     cases.forEach(c => {
@@ -78,14 +78,14 @@ export function useLegalCase(initialCaseId?: string) {
     return distribution;
   });
 
-  // Effect to load initial case
+  // Effect to load initial case;
   $effect(() => {
     if (initialCaseId && !currentCase) {
       loadCase(initialCaseId);
     }
   });
 
-  // Methods
+  // Methods;
   async function loadCase(caseId: string): Promise<void> {
     isLoading = true;
     error = null;
@@ -131,7 +131,7 @@ export function useLegalCase(initialCaseId?: string) {
       const response = await fetch(`/api/cases/${currentCase.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
+        body: JSON.stringify(updates),
       });
       
       if (!response.ok) throw new Error(`Failed to update case: ${response.statusText}`);
@@ -182,20 +182,20 @@ export function useLegalCase(initialCaseId?: string) {
   };
 }
 
-// Evidence composable
+// Evidence composable;
 export function useEvidence(caseId?: string) {
   let evidence = $state<Evidence[]>([]);
   let currentEvidence = $state<Evidence | null>(null);
   let isLoading = $state(false);
   let error = $state<string | null>(null);
-  let uploadProgress = $state<Map<string, number>(new Map());
+  let uploadProgress = $state<Map<string, number>(new Map();
 
   // Derived values
   let evidenceCount = $derived(evidence.length);
   let hasCurrentEvidence = $derived(currentEvidence !== null);
   let isUploading = $derived(uploadProgress.size > 0);
   
-  // Evidence by type
+  // Evidence by type;
   let evidenceByType = $derived(() => {
     const byType: Record<string, Evidence[]> = {};
     evidence.forEach(e => {
@@ -205,13 +205,13 @@ export function useEvidence(caseId?: string) {
     return byType;
   });
   
-  // Recent evidence (last 7 days)
+  // Recent evidence (last 7 days);
   let recentEvidence = $derived(() => {
     const weekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-    return evidence.filter(item => item.getTime)() > weekAgo);
+    return evidence.filter(item => item.getTime() > weekAgo);
   });
 
-  // Effect to load evidence when caseId changes
+  // Effect to load evidence when caseId changes;
   $effect(() => {
     if (caseId) {
       loadEvidenceForCase(caseId);
@@ -244,11 +244,11 @@ export function useEvidence(caseId?: string) {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('caseId', caseId);
-      formData.append('metadata', JSON.stringify(metadata));
+      formData.append('metadata', JSON.stringify(metadata);
 
       const response = await fetch('/api/evidence/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       if (!response.ok) throw new Error(`Upload failed: ${response.statusText}`);
@@ -270,7 +270,7 @@ export function useEvidence(caseId?: string) {
   async function deleteEvidence(evidenceId: string): Promise<boolean> {
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       if (!response.ok) throw new Error(`Failed to delete evidence: ${response.statusText}`);
@@ -319,7 +319,7 @@ export function useEvidence(caseId?: string) {
   };
 }
 
-// Person of Interest composable
+// Person of Interest composable;
 export function usePersonsOfInterest() {
   let persons = $state<PersonOfInterest[]>([]);
   let currentPerson = $state<PersonOfInterest | null>(null);
@@ -331,7 +331,7 @@ export function usePersonsOfInterest() {
   let personsCount = $derived(persons.length);
   let hasCurrentPerson = $derived(currentPerson !== null);
   
-  // Filtered persons based on search
+  // Filtered persons based on search;
   let filteredPersons = $derived(() => {
     if (!searchQuery.trim()) return persons;
     
@@ -342,7 +342,7 @@ export function usePersonsOfInterest() {
     );
   });
   
-  // Persons by type
+  // Persons by type;
   let personsByType = $derived(() => {
     const byType: Record<string, PersonOfInterest[]> = {};
     persons.forEach(p => {
@@ -353,7 +353,7 @@ export function usePersonsOfInterest() {
   });
   
   // Active persons
-  let activePersons = $derived(persons.filter(p => p.status === 'active'));
+  let activePersons = $derived(persons.filter(p => p.status === 'active');
 
   async function loadPersons(): Promise<void> {
     isLoading = true;
@@ -379,7 +379,7 @@ export function usePersonsOfInterest() {
       const response = await fetch('/api/persons-of-interest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(personData)
+        body: JSON.stringify(personData),
       });
       
       if (!response.ok) throw new Error(`Failed to create person: ${response.statusText}`);
@@ -404,7 +404,7 @@ export function usePersonsOfInterest() {
       const response = await fetch(`/api/persons-of-interest/${personId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
+        body: JSON.stringify(updates),
       });
       
       if (!response.ok) throw new Error(`Failed to update person: ${response.statusText}`);
@@ -466,7 +466,7 @@ export function usePersonsOfInterest() {
   };
 }
 
-// Unified legal data composable
+// Unified legal data composable;
 export function useLegalData(caseId?: string) {
   const caseComposable = useLegalCase(caseId);
   const evidenceComposable = useEvidence(caseId);
@@ -486,7 +486,7 @@ export function useLegalData(caseId?: string) {
     !!personComposable.error()
   );
 
-  // Initialize all data
+  // Initialize all data;
   async function initializeAll(): Promise<void> {
     await Promise.all([
       caseComposable.loadCases(),

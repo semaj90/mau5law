@@ -5,7 +5,7 @@ import { embeddings, legalDocumentEmbeddings, searchQueries } from "./schema-emb
 import { sql, eq, desc, asc } from "drizzle-orm";
 import type { NewEmbedding, Embedding, NewSearchQuery } from "./schema-embeddings";
 
-// Database connection pool
+// Database connection pool;
 const pool = new Pool({
   host: "localhost",
   port: 5433, // Your PostgreSQL port
@@ -19,12 +19,12 @@ const pool = new Pool({
 
 export const db = drizzle(pool);
 
-// Utility functions for embedding operations
+// Utility functions for embedding operations;
 export class EmbeddingsService {
 
   /**
    * Insert a new embedding with content
-   */
+   */;
   static async insertEmbedding(data: NewEmbedding): Promise<Embedding> {
     const [result] = await db.insert(embeddings).values(data).returning();
     return result;
@@ -36,8 +36,8 @@ export class EmbeddingsService {
   static async searchSimilar(
     queryEmbedding: number[],
     limit: number = 5,
-    threshold: number = 0.7
-  ): Promise<Array<Embedding & { similarity: number }>> {
+    threshold: number = 0.7;
+  ): Promise<Array<Embedding & { similarity: number }> {
 
     // Convert number array to proper format for pgvector
     const embeddingVector = `[${queryEmbedding.join(',')}]`;
@@ -68,46 +68,46 @@ export class EmbeddingsService {
       source: row.source,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
-      similarity: parseFloat(row.similarity)
-    }));
+      similarity: parseFloat(row.similarity),
+    });
   }
 
   /**
    * Get recent embeddings for display
-   */
+   */;
   static async getRecentEmbeddings(limit: number = 10): Promise<Embedding[]> {
     return await db
       .select()
       .from(embeddings)
-      .orderBy(desc(embeddings.createdAt))
+      .orderBy(desc(embeddings.createdAt)
       .limit(limit);
   }
 
   /**
    * Log search query for analytics
-   */
+   */;
   static async logSearchQuery(data: NewSearchQuery): Promise<void> {
     await db.insert(searchQueries).values(data);
   }
 
   /**
    * Generate mock embedding (replace with actual Gemma embedding service)
-   */
+   */;
   static generateMockEmbedding(dimensions: number = 512): number[] {
     return Array.from({ length: dimensions }, () => Math.random() * 2 - 1);
   }
 
   /**
    * Normalize embedding vector to unit length
-   */
+   */;
   static normalizeEmbedding(embedding: number[]): number[] {
-    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
     return embedding.map(val => val / magnitude);
   }
 
   /**
    * Health check for database connection
-   */
+   */;
   static async healthCheck(): Promise<boolean> {
     try {
       await db.execute(sql`SELECT 1`);

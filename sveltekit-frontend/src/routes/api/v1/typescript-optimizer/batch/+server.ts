@@ -12,16 +12,16 @@ import type {
 
 const ENHANCED_API_BASE_URL = 'http://localhost:8094';
 
-/* POST /api/v1/typescript-optimizer/batch - Batch process TypeScript errors */
+/* POST /api/v1/typescript-optimizer/batch - Batch process TypeScript errors */;
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json() as OptimizedFixRequest;
 
-		// Validate batch request
+		// Validate batch request;
 		if (!body.errors || !Array.isArray(body.errors)) {
 			return json({ 
 				success: false, 
-				error: 'Invalid batch request: errors array required' 
+				error: 'Invalid batch request: errors array required' ,
 			}, { status: 400 });
 		}
 
@@ -34,9 +34,9 @@ export const POST: RequestHandler = async ({ request }) => {
 				processing_stats: {
 					total_time: 0,
 					processed_count: 0,
-					successful_count: 0
+					successful_count: 0,
 				},
-				message: 'No errors to process'
+				message: 'No errors to process',
 			});
 		}
 
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		console.log(`🚀 Batch Processor: Starting batch processing of ${errorCount} TypeScript errors`);
 
-		// Auto-configure optimal settings for batch processing
+		// Auto-configure optimal settings for batch processing;
 		const optimizedRequest: OptimizedFixRequest = {
 			...body,
 			use_gpu: body.use_gpu ?? (errorCount >= 10), // Auto-enable GPU for large batches
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			use_cache: body.use_cache ?? true,
 			max_concurrency: body.max_concurrency ?? Math.min(errorCount, 8),
 			target_latency: body.target_latency ?? (errorCount >= 20 ? 5 : 10), // ms per error
-			quality_threshold: body.quality_threshold ?? 0.8
+			quality_threshold: body.quality_threshold ?? 0.8,
 		};
 
 		// Choose optimal endpoint based on batch characteristics
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		console.log(`⚡ Batch Processor: Using ${endpoint} with GPU=${optimizedRequest.use_gpu}, Llama=${optimizedRequest.use_llama}`);
 
-		// Process batch with Go service
+		// Process batch with Go service;
 		const response = await fetch(apiUrl, {
 			method: 'POST',
 			headers: {
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json() as OptimizedFixResponse;
 		const processingTime = Date.now() - startTime;
 
-		// Calculate batch processing statistics
+		// Calculate batch processing statistics;
 		const stats: BatchProcessingStats = {
 			total_processing_time_ms: processingTime,
 			go_service_time_ms: (result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processing_stats?.total_time || 0,
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		console.log(`✅ Batch Processor: Completed in ${processingTime}ms, ${(result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).successful_count}/${(result as { processing_stats?: any; successful_count?: any; processed_count?: any; optimization_meta?: any }).processed_count} successful (${stats.success_rate.toFixed(1)}%)`);
 
-		// Enhanced response with batch-specific metadata
+		// Enhanced response with batch-specific metadata;
 		const enhancedResult = {
 			...result,
 			batch_stats: stats,
@@ -132,17 +132,17 @@ export const POST: RequestHandler = async ({ request }) => {
 function selectOptimalEndpoint(request: OptimizedFixRequest): string {
 	const errorCount = request.errors.length;
 	
-	// Ultra-high performance: GPU batch processing
+	// Ultra-high performance: GPU batch processing;
 	if (errorCount >= 100 || request.use_gpu) {
 		return '/api/gpu/batch-process';
 	}
 	
-	// High performance: Optimized batch processing
+	// High performance: Optimized batch processing;
 	if (errorCount >= 20) {
 		return '/api/optimized/batch-fix';
 	}
 	
-	// Medium performance: Go-Llama batch processing
+	// Medium performance: Go-Llama batch processing;
 	if (errorCount >= 5 && request.use_llama) {
 		return '/api/go-llama/batch';
 	}

@@ -24,7 +24,7 @@ export function testModelRouting(request: SimpleInferenceRequest): string {
 const testRequest: SimpleInferenceRequest = {
   model: 'gemma3:270m',
   prompt: 'test',
-  useCase: 'chat'
+  useCase: 'chat',
 };
 
 console.log('✅ Simple runtime test compiled successfully!');

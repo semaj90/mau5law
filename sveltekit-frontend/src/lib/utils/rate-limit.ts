@@ -1,5 +1,5 @@
 
-// Rate limiting utility stub
+// Rate limiting utility stub;
 export interface RateLimitOptions {
   maxRequests: number;
   windowMs: number;
@@ -21,7 +21,7 @@ export class RateLimiter {
     // Filter out old requests
     const recentRequests = keyRequests.filter((time: any) => time > windowStart);
     
-    // Check if under limit
+    // Check if under limit;
     if (recentRequests.length >= this.options.maxRequests) {
       return false;
     }

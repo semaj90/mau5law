@@ -4,10 +4,10 @@
  * Runs all tests: Server, Database, Frontend, and Integration
  */
 
-import { spawn } from "child_process";
-import { promises as fs } from "fs";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { spawn } from 'child_process';
+import { promises as fs } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,42 +25,42 @@ class TestRunner {
   }
 
   async startDevServer() {
-    console.log("🚀 Starting SvelteKit Development Server...");
+    console.log('🚀 Starting SvelteKit Development Server...');
 
     return new Promise((resolve, reject) => {
-      this.devServer = spawn("npm", ["run", "dev"], {
+      this.devServer = spawn('npm', ['run', 'dev'], {
         cwd: __dirname,
-        stdio: "pipe",
+        stdio: 'pipe',
         shell: true,
       });
 
       let serverReady = false;
       const timeout = setTimeout(() => {
         if (!serverReady) {
-          reject(new Error("Server startup timeout"));
+          reject(new Error('Server startup timeout'));
         }
       }, 30000);
 
-      this.devServer.stdout.on("data", (data) => {
+      this.devServer.stdout.on('data', (data) => {
         const output = data.toString();
-        console.log("📟 Server:", output.trim());
+        console.log('📟 Server:', output.trim());
 
-        if (output.includes("Local:") || output.includes("localhost:5173")) {
+        if (output.includes('Local:') || output.includes('localhost:5173')) {
           serverReady = true;
           clearTimeout(timeout);
           this.results.serverStarted = true;
-          console.log("✅ SvelteKit server is running on localhost:5173");
+          console.log('✅ SvelteKit server is running on localhost:5173');
 
           // Wait a bit more for full initialization
           setTimeout(resolve, 3000);
         }
       });
 
-      this.devServer.stderr.on("data", (data) => {
-        console.log("⚠️ Server Error:", data.toString().trim());
+      this.devServer.stderr.on('data', (data) => {
+        console.log('⚠️ Server Error:', data.toString().trim());
       });
 
-      this.devServer.on("error", (error) => {
+      this.devServer.on('error', (error) => {
         clearTimeout(timeout);
         reject(error);
       });
@@ -68,46 +68,42 @@ class TestRunner {
   }
 
   async runServerSideTests() {
-    console.log("\n🖥️ Running Server-side Tests...");
+    console.log('\n🖥️ Running Server-side Tests...');
 
     try {
-      const { ServerSideTest } = await import("./server-side-test.js");
+      const { ServerSideTest } = await import('./server-side-test.js');
       const serverTest = new ServerSideTest();
       this.results.serverSideTests = await serverTest.run();
-      console.log("✅ Server-side tests completed");
+      console.log('✅ Server-side tests completed');
     } catch (error) {
-      console.log("❌ Server-side tests failed:", error.message);
+      console.log('❌ Server-side tests failed:', error.message);
       this.results.serverSideTests = { error: error.message };
     }
   }
 
   async runPlaywrightTests() {
-    console.log("\n🎭 Running Playwright E2E Tests...");
+    console.log('\n🎭 Running Playwright E2E Tests...');
 
     return new Promise((resolve) => {
-      const playwrightTest = spawn(
-        "npx",
-        ["playwright", "test", "--reporter=line"],
-        {
-          cwd: __dirname,
-          stdio: "pipe",
-          shell: true,
-        },
-      );
+      const playwrightTest = spawn('npx', ['playwright', 'test', '--reporter=line'], {
+        cwd: __dirname,
+        stdio: 'pipe',
+        shell: true,
+      });
 
-      let output = "";
+      let output = '';
 
-      playwrightTest.stdout.on("data", (data) => {
+      playwrightTest.stdout.on('data', (data) => {
         const text = data.toString();
-        console.log("🎭", text.trim());
+        console.log('🎭', text.trim());
         output += text;
       });
 
-      playwrightTest.stderr.on("data", (data) => {
-        console.log("⚠️ Playwright:", data.toString().trim());
+      playwrightTest.stderr.on('data', (data) => {
+        console.log('⚠️ Playwright:', data.toString().trim());
       });
 
-      playwrightTest.on("close", (code) => {
+      playwrightTest.on('close', (code) => {
         this.results.integrationTests = {
           exitCode: code,
           passed: code === 0,
@@ -115,9 +111,9 @@ class TestRunner {
         };
 
         if (code === 0) {
-          console.log("✅ Playwright tests passed");
+          console.log('✅ Playwright tests passed');
         } else {
-          console.log("❌ Playwright tests failed");
+          console.log('❌ Playwright tests failed');
         }
 
         resolve();
@@ -126,43 +122,39 @@ class TestRunner {
       // Timeout for Playwright tests
       setTimeout(() => {
         playwrightTest.kill();
-        console.log("⏰ Playwright tests timed out");
+        console.log('⏰ Playwright tests timed out');
         resolve();
       }, 120000); // 2 minutes timeout
     });
   }
 
   async runComprehensiveTests() {
-    console.log("\n🔬 Running Comprehensive Frontend Tests...");
+    console.log('\n🔬 Running Comprehensive Frontend Tests...');
 
     try {
       // Note: The comprehensive test requires a running server
       // For now, we'll simulate this or run it separately
-      console.log(
-        "ℹ️ Comprehensive tests available in comprehensive-system-test.js",
-      );
-      console.log("   Run separately with: node comprehensive-system-test.js");
+      console.log('ℹ️ Comprehensive tests available in comprehensive-system-test.js');
+      console.log('   Run separately with: node comprehensive-system-test.js');
     } catch (error) {
-      console.log("❌ Comprehensive tests failed:", error.message);
+      console.log('❌ Comprehensive tests failed:', error.message);
     }
   }
 
   async checkDependencies() {
-    console.log("📦 Checking Dependencies...");
+    console.log('📦 Checking Dependencies...');
 
     try {
       // Check package.json for required dependencies
-      const packageJson = JSON.parse(
-        await fs.readFile(join(__dirname, "package.json"), "utf8"),
-      );
+      const packageJson = JSON.parse(await fs.readFile(join(__dirname, 'package.json'), 'utf8'));
 
       const requiredDeps = [
-        "@sveltejs/kit",
-        "drizzle-orm",
-        "postgres",
-        "@playwright/test",
-        "lokijs",
-        "fuse.js",
+        '@sveltejs/kit',
+        'drizzle-orm',
+        'postgres',
+        '@playwright/test',
+        'lokijs',
+        'fuse.js',
       ];
 
       const installedDeps = {
@@ -173,21 +165,21 @@ class TestRunner {
       const missingDeps = requiredDeps.filter((dep) => !installedDeps[dep]);
 
       if (missingDeps.length === 0) {
-        console.log("✅ All required dependencies are installed");
+        console.log('✅ All required dependencies are installed');
       } else {
-        console.log("⚠️ Missing dependencies:", missingDeps.join(", "));
+        console.log('⚠️ Missing dependencies:', missingDeps.join(', '));
       }
     } catch (error) {
-      console.log("❌ Dependency check failed:", error.message);
+      console.log('❌ Dependency check failed:', error.message);
     }
   }
 
   async generateFinalReport() {
-    console.log("\n📊 Generating Final Test Report...");
+    console.log('\n📊 Generating Final Test Report...');
 
     const report = {
       timestamp: new Date().toISOString(),
-      title: "Legal Case Management System - Comprehensive Test Report",
+      title: 'Legal Case Management System - Comprehensive Test Report',
       summary: {
         serverStarted: this.results.serverStarted,
         totalTests: 0,
@@ -213,64 +205,53 @@ class TestRunner {
 
     // Add recommendations
     if (!this.results.serverStarted) {
-      report.recommendations.push("Fix server startup issues");
+      report.recommendations.push('Fix server startup issues');
     }
 
     if (this.results.serverSideTests?.results?.database === false) {
-      report.recommendations.push("Configure PostgreSQL database connection");
+      report.recommendations.push('Configure PostgreSQL database connection');
     }
 
     if (this.results.integrationTests?.passed === false) {
-      report.recommendations.push("Fix frontend integration issues");
+      report.recommendations.push('Fix frontend integration issues');
     }
 
     // Save report
-    await fs.writeFile(
-      join(__dirname, "final-test-report.json"),
-      JSON.stringify(report, null, 2),
-    );
+    await fs.writeFile(join(__dirname, 'final-test-report.json'), JSON.stringify(report, null, 2));
 
     // Display summary
-    console.log("\n🎯 FINAL TEST SUMMARY:");
-    console.log("=".repeat(50));
+    console.log('\n🎯 FINAL TEST SUMMARY:');
+    console.log('='.repeat(50));
+    console.log(`🚀 Server Started: ${this.results.serverStarted ? '✅' : '❌'}`);
+    console.log(`💾 Database: ${this.results.serverSideTests?.results?.database ? '✅' : '❌'}`);
     console.log(
-      `🚀 Server Started: ${this.results.serverStarted ? "✅" : "❌"}`,
+      `🔐 Authentication: ${this.results.serverSideTests?.results?.authAPI ? '✅' : '❌'}`
     );
-    console.log(
-      `💾 Database: ${this.results.serverSideTests?.results?.database ? "✅" : "❌"}`,
-    );
-    console.log(
-      `🔐 Authentication: ${this.results.serverSideTests?.results?.authAPI ? "✅" : "❌"}`,
-    );
-    console.log(
-      `📁 Cases API: ${this.results.serverSideTests?.results?.caseAPI ? "✅" : "❌"}`,
-    );
-    console.log(
-      `🎭 E2E Tests: ${this.results.integrationTests?.passed ? "✅" : "❌"}`,
-    );
+    console.log(`📁 Cases API: ${this.results.serverSideTests?.results?.caseAPI ? '✅' : '❌'}`);
+    console.log(`🎭 E2E Tests: ${this.results.integrationTests?.passed ? '✅' : '❌'}`);
 
     if (report.recommendations.length > 0) {
-      console.log("\n💡 RECOMMENDATIONS:");
+      console.log('\n💡 RECOMMENDATIONS:');
       report.recommendations.forEach((rec, i) => {
         console.log(`${i + 1}. ${rec}`);
       });
     }
 
-    console.log("\n📁 Full report saved to: final-test-report.json");
+    console.log('\n📁 Full report saved to: final-test-report.json');
 
     return report;
   }
 
   async cleanup() {
     if (this.devServer) {
-      console.log("🧹 Cleaning up server...");
+      console.log('🧹 Cleaning up server...');
       this.devServer.kill();
     }
   }
 
   async run() {
     try {
-      console.log("🏁 Starting Comprehensive Test Suite...\n");
+      console.log('🏁 Starting Comprehensive Test Suite...\n');
 
       // Check dependencies first
       await this.checkDependencies();
@@ -293,11 +274,11 @@ class TestRunner {
       // Generate final report
       const report = await this.generateFinalReport();
 
-      console.log("\n🎉 All tests completed!");
+      console.log('\n🎉 All tests completed!');
 
       return report;
     } catch (error) {
-      console.error("💥 Test suite failed:", error);
+      console.error('💥 Test suite failed:', error);
       throw error;
     } finally {
       await this.cleanup();
@@ -310,21 +291,18 @@ const runner = new TestRunner();
 runner
   .run()
   .then((report) => {
-    const success =
-      report.summary.failedTests === 0 && report.summary.passedTests > 0;
-    console.log(
-      `\n${success ? "🎉 SUCCESS" : "⚠️ ISSUES FOUND"}: Test suite completed!`,
-    );
+    const success = report.summary.failedTests === 0 && report.summary.passedTests > 0;
+    console.log(`\n${success ? '🎉 SUCCESS' : '⚠️ ISSUES FOUND'}: Test suite completed!`);
     process.exit(success ? 0 : 1);
   })
   .catch((error) => {
-    console.error("💥 Test runner crashed:", error);
+    console.error('💥 Test runner crashed:', error);
     process.exit(1);
   });
 
 // Handle Ctrl+C gracefully
-process.on("SIGINT", async () => {
-  console.log("\n🛑 Test suite interrupted by user");
+process.on('SIGINT', async () => {
+  console.log('\n🛑 Test suite interrupted by user');
   await runner.cleanup();
   process.exit(1);
 });

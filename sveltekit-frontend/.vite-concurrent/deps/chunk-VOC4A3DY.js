@@ -54,24 +54,16 @@ import {
   set_hydrate_node,
   set_hydrating,
   set_signal_status,
-  user_pre_effect
-} from "./chunk-YZBAU52E.js";
+  user_pre_effect,
+} from './chunk-YZBAU52E.js';
 import {
   hydration_mismatch,
   legacy_recursive_reactive_block,
-  lifecycle_double_unmount
-} from "./chunk-24FUCJ6P.js";
-import {
-  async_mode_flag
-} from "./chunk-6SIJFJGE.js";
-import {
-  true_default
-} from "./chunk-UWMOYZ25.js";
-import {
-  __privateAdd,
-  __privateGet,
-  __privateSet
-} from "./chunk-KWPVD4H7.js";
+  lifecycle_double_unmount,
+} from './chunk-24FUCJ6P.js';
+import { async_mode_flag } from './chunk-6SIJFJGE.js';
+import { true_default } from './chunk-UWMOYZ25.js';
+import { __privateAdd, __privateGet, __privateSet } from './chunk-KWPVD4H7.js';
 
 // node_modules/svelte/src/internal/client/dom/blocks/svelte-head.js
 var head_anchor;
@@ -85,13 +77,15 @@ function head(render_fn) {
   if (hydrating) {
     previous_hydrate_node = hydrate_node;
     if (head_anchor === void 0) {
-      head_anchor = /** @type {TemplateNode} */
-      get_first_child(document.head);
+      head_anchor = /** @type {TemplateNode} */ get_first_child(document.head);
     }
-    while (head_anchor !== null && (head_anchor.nodeType !== COMMENT_NODE || /** @type {Comment} */
-    head_anchor.data !== HYDRATION_START)) {
-      head_anchor = /** @type {TemplateNode} */
-      get_next_sibling(head_anchor);
+    while (
+      head_anchor !== null &&
+      (head_anchor.nodeType !== COMMENT_NODE ||
+        /** @type {Comment} */
+        head_anchor.data !== HYDRATION_START)
+    ) {
+      head_anchor = /** @type {TemplateNode} */ get_next_sibling(head_anchor);
     }
     if (head_anchor === null) {
       set_hydrating(false);
@@ -121,17 +115,16 @@ function head(render_fn) {
 
 // node_modules/svelte/src/internal/client/dom/reconciler.js
 function create_fragment_from_html(html) {
-  var elem = document.createElement("template");
-  elem.innerHTML = html.replaceAll("<!>", "<!---->");
+  var elem = document.createElement('template');
+  elem.innerHTML = html.replaceAll('<!>', '<!---->');
   return elem.content;
 }
 
 // node_modules/svelte/src/internal/client/dom/template.js
 function assign_nodes(start, end) {
-  var effect = (
+  var effect =
     /** @type {Effect} */
-    active_effect
-  );
+    active_effect;
   if (effect.nodes_start === null) {
     effect.nodes_start = start;
     effect.nodes_end = end;
@@ -141,30 +134,26 @@ function from_html(content, flags) {
   var is_fragment = (flags & TEMPLATE_FRAGMENT) !== 0;
   var use_import_node = (flags & TEMPLATE_USE_IMPORT_NODE) !== 0;
   var node;
-  var has_start = !content.startsWith("<!>");
+  var has_start = !content.startsWith('<!>');
   return () => {
     if (hydrating) {
       assign_nodes(hydrate_node, null);
       return hydrate_node;
     }
     if (node === void 0) {
-      node = create_fragment_from_html(has_start ? content : "<!>" + content);
-      if (!is_fragment) node = /** @type {Node} */
-      get_first_child(node);
+      node = create_fragment_from_html(has_start ? content : '<!>' + content);
+      if (!is_fragment) node = /** @type {Node} */ get_first_child(node);
     }
-    var clone = (
+    var clone =
       /** @type {TemplateNode} */
-      use_import_node || is_firefox ? document.importNode(node, true) : node.cloneNode(true)
-    );
+      use_import_node || is_firefox ? document.importNode(node, true) : node.cloneNode(true);
     if (is_fragment) {
-      var start = (
+      var start =
         /** @type {TemplateNode} */
-        get_first_child(clone)
-      );
-      var end = (
+        get_first_child(clone);
+      var end =
         /** @type {TemplateNode} */
-        clone.lastChild
-      );
+        clone.lastChild;
       assign_nodes(start, end);
     } else {
       assign_nodes(clone, clone);
@@ -172,10 +161,10 @@ function from_html(content, flags) {
     return clone;
   };
 }
-function from_namespace(content, flags, ns = "svg") {
-  var has_start = !content.startsWith("<!>");
+function from_namespace(content, flags, ns = 'svg') {
+  var has_start = !content.startsWith('<!>');
   var is_fragment = (flags & TEMPLATE_FRAGMENT) !== 0;
-  var wrapped = `<${ns}>${has_start ? content : "<!>" + content}</${ns}>`;
+  var wrapped = `<${ns}>${has_start ? content : '<!>' + content}</${ns}>`;
   var node;
   return () => {
     if (hydrating) {
@@ -183,14 +172,12 @@ function from_namespace(content, flags, ns = "svg") {
       return hydrate_node;
     }
     if (!node) {
-      var fragment = (
+      var fragment =
         /** @type {DocumentFragment} */
-        create_fragment_from_html(wrapped)
-      );
-      var root = (
+        create_fragment_from_html(wrapped);
+      var root =
         /** @type {Element} */
-        get_first_child(fragment)
-      );
+        get_first_child(fragment);
       if (is_fragment) {
         node = document.createDocumentFragment();
         while (get_first_child(root)) {
@@ -200,23 +187,19 @@ function from_namespace(content, flags, ns = "svg") {
           );
         }
       } else {
-        node = /** @type {Element} */
-        get_first_child(root);
+        node = /** @type {Element} */ get_first_child(root);
       }
     }
-    var clone = (
+    var clone =
       /** @type {TemplateNode} */
-      node.cloneNode(true)
-    );
+      node.cloneNode(true);
     if (is_fragment) {
-      var start = (
+      var start =
         /** @type {TemplateNode} */
-        get_first_child(clone)
-      );
-      var end = (
+        get_first_child(clone);
+      var end =
         /** @type {TemplateNode} */
-        clone.lastChild
-      );
+        clone.lastChild;
       assign_nodes(start, end);
     } else {
       assign_nodes(clone, clone);
@@ -225,35 +208,36 @@ function from_namespace(content, flags, ns = "svg") {
   };
 }
 function from_svg(content, flags) {
-  return from_namespace(content, flags, "svg");
+  return from_namespace(content, flags, 'svg');
 }
 function from_mathml(content, flags) {
-  return from_namespace(content, flags, "math");
+  return from_namespace(content, flags, 'math');
 }
 function fragment_from_tree(structure, ns) {
   var fragment = create_fragment();
   for (var item of structure) {
-    if (typeof item === "string") {
+    if (typeof item === 'string') {
       fragment.append(create_text(item));
       continue;
     }
-    if (item === void 0 || item[0][0] === "/") {
-      fragment.append(create_comment(item ? item[0].slice(3) : ""));
+    if (item === void 0 || item[0][0] === '/') {
+      fragment.append(create_comment(item ? item[0].slice(3) : ''));
       continue;
     }
     const [name, attributes, ...children] = item;
-    const namespace = name === "svg" ? NAMESPACE_SVG : name === "math" ? NAMESPACE_MATHML : ns;
+    const namespace = name === 'svg' ? NAMESPACE_SVG : name === 'math' ? NAMESPACE_MATHML : ns;
     var element = create_element(name, namespace, attributes == null ? void 0 : attributes.is);
     for (var key in attributes) {
       set_attribute(element, key, attributes[key]);
     }
     if (children.length > 0) {
-      var target = element.tagName === "TEMPLATE" ? (
-        /** @type {HTMLTemplateElement} */
-        element.content
-      ) : element;
+      var target =
+        element.tagName === 'TEMPLATE'
+          ? /** @type {HTMLTemplateElement} */
+            element.content
+          : element;
       target.append(
-        fragment_from_tree(children, element.tagName === "foreignObject" ? void 0 : namespace)
+        fragment_from_tree(children, element.tagName === 'foreignObject' ? void 0 : namespace)
       );
     }
     fragment.append(element);
@@ -270,24 +254,25 @@ function from_tree(structure, flags) {
       return hydrate_node;
     }
     if (node === void 0) {
-      const ns = (flags & TEMPLATE_USE_SVG) !== 0 ? NAMESPACE_SVG : (flags & TEMPLATE_USE_MATHML) !== 0 ? NAMESPACE_MATHML : void 0;
+      const ns =
+        (flags & TEMPLATE_USE_SVG) !== 0
+          ? NAMESPACE_SVG
+          : (flags & TEMPLATE_USE_MATHML) !== 0
+            ? NAMESPACE_MATHML
+            : void 0;
       node = fragment_from_tree(structure, ns);
-      if (!is_fragment) node = /** @type {Node} */
-      get_first_child(node);
+      if (!is_fragment) node = /** @type {Node} */ get_first_child(node);
     }
-    var clone = (
+    var clone =
       /** @type {TemplateNode} */
-      use_import_node || is_firefox ? document.importNode(node, true) : node.cloneNode(true)
-    );
+      use_import_node || is_firefox ? document.importNode(node, true) : node.cloneNode(true);
     if (is_fragment) {
-      var start = (
+      var start =
         /** @type {TemplateNode} */
-        get_first_child(clone)
-      );
-      var end = (
+        get_first_child(clone);
+      var end =
         /** @type {TemplateNode} */
-        clone.lastChild
-      );
+        clone.lastChild;
       assign_nodes(start, end);
     } else {
       assign_nodes(clone, clone);
@@ -301,19 +286,19 @@ function with_script(fn) {
 function run_scripts(node) {
   if (hydrating) return node;
   const is_fragment = node.nodeType === DOCUMENT_FRAGMENT_NODE;
-  const scripts = (
+  const scripts =
     /** @type {HTMLElement} */
-    node.tagName === "SCRIPT" ? [
-      /** @type {HTMLScriptElement} */
-      node
-    ] : node.querySelectorAll("script")
-  );
-  const effect = (
+    node.tagName === 'SCRIPT'
+      ? [
+          /** @type {HTMLScriptElement} */
+          node,
+        ]
+      : node.querySelectorAll('script');
+  const effect =
     /** @type {Effect} */
-    active_effect
-  );
+    active_effect;
   for (const script of scripts) {
-    const clone = document.createElement("script");
+    const clone = document.createElement('script');
     for (var attribute of script.attributes) {
       clone.setAttribute(attribute.name, attribute.value);
     }
@@ -328,15 +313,15 @@ function run_scripts(node) {
   }
   return node;
 }
-function text(value = "") {
+function text(value = '') {
   if (!hydrating) {
-    var t = create_text(value + "");
+    var t = create_text(value + '');
     assign_nodes(t, t);
     return t;
   }
   var node = hydrate_node;
   if (node.nodeType !== TEXT_NODE) {
-    node.before(node = create_text());
+    node.before((node = create_text()));
     set_hydrate_node(node);
   }
   assign_nodes(node, node);
@@ -348,7 +333,7 @@ function comment() {
     return hydrate_node;
   }
   var frag = document.createDocumentFragment();
-  var start = document.createComment("");
+  var start = document.createComment('');
   var anchor = create_text();
   frag.append(start, anchor);
   assign_nodes(start, anchor);
@@ -370,7 +355,12 @@ function append(anchor, dom) {
 }
 function props_id() {
   var _a, _b;
-  if (hydrating && hydrate_node && hydrate_node.nodeType === COMMENT_NODE && ((_a = hydrate_node.textContent) == null ? void 0 : _a.startsWith(`#`))) {
+  if (
+    hydrating &&
+    hydrate_node &&
+    hydrate_node.nodeType === COMMENT_NODE &&
+    ((_a = hydrate_node.textContent) == null ? void 0 : _a.startsWith(`#`))
+  ) {
     const id = hydrate_node.textContent.substring(1);
     hydrate_next();
     return id;
@@ -382,109 +372,109 @@ function props_id() {
 // node_modules/svelte/src/utils.js
 var regex_return_characters = /\r/g;
 function hash(str) {
-  str = str.replace(regex_return_characters, "");
+  str = str.replace(regex_return_characters, '');
   let hash2 = 5381;
   let i = str.length;
-  while (i--) hash2 = (hash2 << 5) - hash2 ^ str.charCodeAt(i);
+  while (i--) hash2 = ((hash2 << 5) - hash2) ^ str.charCodeAt(i);
   return (hash2 >>> 0).toString(36);
 }
 var VOID_ELEMENT_NAMES = [
-  "area",
-  "base",
-  "br",
-  "col",
-  "command",
-  "embed",
-  "hr",
-  "img",
-  "input",
-  "keygen",
-  "link",
-  "meta",
-  "param",
-  "source",
-  "track",
-  "wbr"
+  'area',
+  'base',
+  'br',
+  'col',
+  'command',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'keygen',
+  'link',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr',
 ];
 function is_void(name) {
-  return VOID_ELEMENT_NAMES.includes(name) || name.toLowerCase() === "!doctype";
+  return VOID_ELEMENT_NAMES.includes(name) || name.toLowerCase() === '!doctype';
 }
 function is_capture_event(name) {
-  return name.endsWith("capture") && name !== "gotpointercapture" && name !== "lostpointercapture";
+  return name.endsWith('capture') && name !== 'gotpointercapture' && name !== 'lostpointercapture';
 }
 var DELEGATED_EVENTS = [
-  "beforeinput",
-  "click",
-  "change",
-  "dblclick",
-  "contextmenu",
-  "focusin",
-  "focusout",
-  "input",
-  "keydown",
-  "keyup",
-  "mousedown",
-  "mousemove",
-  "mouseout",
-  "mouseover",
-  "mouseup",
-  "pointerdown",
-  "pointermove",
-  "pointerout",
-  "pointerover",
-  "pointerup",
-  "touchend",
-  "touchmove",
-  "touchstart"
+  'beforeinput',
+  'click',
+  'change',
+  'dblclick',
+  'contextmenu',
+  'focusin',
+  'focusout',
+  'input',
+  'keydown',
+  'keyup',
+  'mousedown',
+  'mousemove',
+  'mouseout',
+  'mouseover',
+  'mouseup',
+  'pointerdown',
+  'pointermove',
+  'pointerout',
+  'pointerover',
+  'pointerup',
+  'touchend',
+  'touchmove',
+  'touchstart',
 ];
 function is_delegated(event_name) {
   return DELEGATED_EVENTS.includes(event_name);
 }
 var DOM_BOOLEAN_ATTRIBUTES = [
-  "allowfullscreen",
-  "async",
-  "autofocus",
-  "autoplay",
-  "checked",
-  "controls",
-  "default",
-  "disabled",
-  "formnovalidate",
-  "hidden",
-  "indeterminate",
-  "inert",
-  "ismap",
-  "loop",
-  "multiple",
-  "muted",
-  "nomodule",
-  "novalidate",
-  "open",
-  "playsinline",
-  "readonly",
-  "required",
-  "reversed",
-  "seamless",
-  "selected",
-  "webkitdirectory",
-  "defer",
-  "disablepictureinpicture",
-  "disableremoteplayback"
+  'allowfullscreen',
+  'async',
+  'autofocus',
+  'autoplay',
+  'checked',
+  'controls',
+  'default',
+  'disabled',
+  'formnovalidate',
+  'hidden',
+  'indeterminate',
+  'inert',
+  'ismap',
+  'loop',
+  'multiple',
+  'muted',
+  'nomodule',
+  'novalidate',
+  'open',
+  'playsinline',
+  'readonly',
+  'required',
+  'reversed',
+  'seamless',
+  'selected',
+  'webkitdirectory',
+  'defer',
+  'disablepictureinpicture',
+  'disableremoteplayback',
 ];
 var ATTRIBUTE_ALIASES = {
   // no `class: 'className'` because we handle that separately
-  formnovalidate: "formNoValidate",
-  ismap: "isMap",
-  nomodule: "noModule",
-  playsinline: "playsInline",
-  readonly: "readOnly",
-  defaultvalue: "defaultValue",
-  defaultchecked: "defaultChecked",
-  srcobject: "srcObject",
-  novalidate: "noValidate",
-  allowfullscreen: "allowFullscreen",
-  disablepictureinpicture: "disablePictureInPicture",
-  disableremoteplayback: "disableRemotePlayback"
+  formnovalidate: 'formNoValidate',
+  ismap: 'isMap',
+  nomodule: 'noModule',
+  playsinline: 'playsInline',
+  readonly: 'readOnly',
+  defaultvalue: 'defaultValue',
+  defaultchecked: 'defaultChecked',
+  srcobject: 'srcObject',
+  novalidate: 'noValidate',
+  allowfullscreen: 'allowFullscreen',
+  disablepictureinpicture: 'disablePictureInPicture',
+  disableremoteplayback: 'disableRemotePlayback',
 };
 function normalize_attribute(name) {
   name = name.toLowerCase();
@@ -492,57 +482,49 @@ function normalize_attribute(name) {
 }
 var DOM_PROPERTIES = [
   ...DOM_BOOLEAN_ATTRIBUTES,
-  "formNoValidate",
-  "isMap",
-  "noModule",
-  "playsInline",
-  "readOnly",
-  "value",
-  "volume",
-  "defaultValue",
-  "defaultChecked",
-  "srcObject",
-  "noValidate",
-  "allowFullscreen",
-  "disablePictureInPicture",
-  "disableRemotePlayback"
+  'formNoValidate',
+  'isMap',
+  'noModule',
+  'playsInline',
+  'readOnly',
+  'value',
+  'volume',
+  'defaultValue',
+  'defaultChecked',
+  'srcObject',
+  'noValidate',
+  'allowFullscreen',
+  'disablePictureInPicture',
+  'disableRemotePlayback',
 ];
-var PASSIVE_EVENTS = ["touchstart", "touchmove"];
+var PASSIVE_EVENTS = ['touchstart', 'touchmove'];
 function is_passive_event(name) {
   return PASSIVE_EVENTS.includes(name);
 }
-var STATE_CREATION_RUNES = (
+var STATE_CREATION_RUNES =
   /** @type {const} */
-  [
-    "$state",
-    "$state.raw",
-    "$derived",
-    "$derived.by"
-  ]
-);
-var RUNES = (
+  ['$state', '$state.raw', '$derived', '$derived.by'];
+var RUNES =
   /** @type {const} */
   [
     ...STATE_CREATION_RUNES,
-    "$state.snapshot",
-    "$props",
-    "$props.id",
-    "$bindable",
-    "$effect",
-    "$effect.pre",
-    "$effect.tracking",
-    "$effect.root",
-    "$effect.pending",
-    "$inspect",
-    "$inspect().with",
-    "$inspect.trace",
-    "$host"
-  ]
-);
-var RAW_TEXT_ELEMENTS = (
+    '$state.snapshot',
+    '$props',
+    '$props.id',
+    '$bindable',
+    '$effect',
+    '$effect.pre',
+    '$effect.tracking',
+    '$effect.root',
+    '$effect.pending',
+    '$inspect',
+    '$inspect().with',
+    '$inspect.trace',
+    '$host',
+  ];
+var RAW_TEXT_ELEMENTS =
   /** @type {const} */
-  ["textarea", "script", "style", "title"]
-);
+  ['textarea', 'script', 'style', 'title'];
 function is_raw_text_element(name) {
   return RAW_TEXT_ELEMENTS.includes(
     /** @type {RAW_TEXT_ELEMENTS[number]} */
@@ -552,7 +534,7 @@ function is_raw_text_element(name) {
 function sanitize_location(location) {
   return (
     /** @type {T} */
-    location == null ? void 0 : location.replace(/\//g, "/​")
+    location == null ? void 0 : location.replace(/\//g, '/​')
   );
 }
 
@@ -562,10 +544,10 @@ function set_should_intro(value) {
   should_intro = value;
 }
 function set_text(text2, value) {
-  var str = value == null ? "" : typeof value === "object" ? value + "" : value;
+  var str = value == null ? '' : typeof value === 'object' ? value + '' : value;
   if (str !== (text2.__t ?? (text2.__t = text2.nodeValue))) {
     text2.__t = str;
-    text2.nodeValue = str + "";
+    text2.nodeValue = str + '';
   }
 }
 function mount(component, options) {
@@ -578,14 +560,14 @@ function hydrate(component, options) {
   const was_hydrating = hydrating;
   const previous_hydrate_node = hydrate_node;
   try {
-    var anchor = (
+    var anchor =
       /** @type {TemplateNode} */
-      get_first_child(target)
-    );
-    while (anchor && (anchor.nodeType !== COMMENT_NODE || /** @type {Comment} */
-    anchor.data !== HYDRATION_START)) {
-      anchor = /** @type {TemplateNode} */
-      get_next_sibling(anchor);
+      get_first_child(target);
+    while (
+      anchor &&
+      (anchor.nodeType !== COMMENT_NODE || /** @type {Comment} */ anchor.data !== HYDRATION_START)
+    ) {
+      anchor = /** @type {TemplateNode} */ get_next_sibling(anchor);
     }
     if (!anchor) {
       throw HYDRATION_ERROR;
@@ -597,8 +579,12 @@ function hydrate(component, options) {
     );
     hydrate_next();
     const instance = _mount(component, { ...options, anchor });
-    if (hydrate_node === null || hydrate_node.nodeType !== COMMENT_NODE || /** @type {Comment} */
-    hydrate_node.data !== HYDRATION_END) {
+    if (
+      hydrate_node === null ||
+      hydrate_node.nodeType !== COMMENT_NODE ||
+      /** @type {Comment} */
+      hydrate_node.data !== HYDRATION_END
+    ) {
       hydration_mismatch();
       throw HYDRATION_ERROR;
     }
@@ -652,10 +638,9 @@ function _mount(Component, { target, anchor, props = {}, events, context, intro 
     branch(() => {
       if (context) {
         push({});
-        var ctx = (
+        var ctx =
           /** @type {ComponentContext} */
-          component_context
-        );
+          component_context;
         ctx.c = context;
       }
       if (events) {
@@ -682,10 +667,9 @@ function _mount(Component, { target, anchor, props = {}, events, context, intro 
       var _a;
       for (var event_name of registered_events) {
         target.removeEventListener(event_name, handle_event_propagation);
-        var n = (
+        var n =
           /** @type {number} */
-          document_listeners.get(event_name)
-        );
+          document_listeners.get(event_name);
         if (--n === 0) {
           document.removeEventListener(event_name, handle_event_propagation);
           document_listeners.delete(event_name);
@@ -717,61 +701,56 @@ function unmount(component, options) {
 
 // node_modules/svelte/src/internal/client/dom/legacy/event-modifiers.js
 function trusted(fn) {
-  return function(...args) {
-    var event = (
+  return function (...args) {
+    var event =
       /** @type {Event} */
-      args[0]
-    );
+      args[0];
     if (event.isTrusted) {
       fn == null ? void 0 : fn.apply(this, args);
     }
   };
 }
 function self(fn) {
-  return function(...args) {
-    var event = (
+  return function (...args) {
+    var event =
       /** @type {Event} */
-      args[0]
-    );
+      args[0];
     if (event.target === this) {
       fn == null ? void 0 : fn.apply(this, args);
     }
   };
 }
 function stopPropagation(fn) {
-  return function(...args) {
-    var event = (
+  return function (...args) {
+    var event =
       /** @type {Event} */
-      args[0]
-    );
+      args[0];
     event.stopPropagation();
     return fn == null ? void 0 : fn.apply(this, args);
   };
 }
 function once(fn) {
   var ran = false;
-  return function(...args) {
+  return function (...args) {
     if (ran) return;
     ran = true;
     return fn == null ? void 0 : fn.apply(this, args);
   };
 }
 function stopImmediatePropagation(fn) {
-  return function(...args) {
-    var event = (
+  return function (...args) {
+    var event =
       /** @type {Event} */
-      args[0]
-    );
+      args[0];
     event.stopImmediatePropagation();
     return fn == null ? void 0 : fn.apply(this, args);
   };
 }
 function preventDefault(fn) {
-  return function(...args) {
-    var event = (
+  return function (...args) {
+    var event =
       /** @type {Event} */
-      args[0]
-    );
+      args[0];
     event.preventDefault();
     return fn == null ? void 0 : fn.apply(this, args);
   };
@@ -779,14 +758,14 @@ function preventDefault(fn) {
 function passive(node, [event, handler]) {
   user_pre_effect(() => {
     return on(node, event, handler() ?? noop, {
-      passive: true
+      passive: true,
     });
   });
 }
 function nonpassive(node, [event, handler]) {
   user_pre_effect(() => {
     return on(node, event, handler() ?? noop, {
-      passive: false
+      passive: false,
     });
   });
 }
@@ -801,7 +780,7 @@ function asClassComponent(component) {
     constructor(options) {
       super({
         component,
-        ...options
+        ...options,
       });
     }
   };
@@ -826,7 +805,7 @@ var Svelte4Component = class {
       return s;
     };
     const props = new Proxy(
-      { ...options.props || {}, $$events: {} },
+      { ...(options.props || {}), $$events: {} },
       {
         get(target, prop) {
           return get(sources.get(prop) ?? add_source(prop, Reflect.get(target, prop)));
@@ -839,23 +818,31 @@ var Svelte4Component = class {
         set(target, prop, value) {
           set(sources.get(prop) ?? add_source(prop, value), value);
           return Reflect.set(target, prop, value);
-        }
+        },
       }
     );
-    __privateSet(this, _instance, (options.hydrate ? hydrate : mount)(options.component, {
-      target: options.target,
-      anchor: options.anchor,
-      props,
-      context: options.context,
-      intro: options.intro ?? false,
-      recover: options.recover
-    }));
-    if (!async_mode_flag && (!((_a = options == null ? void 0 : options.props) == null ? void 0 : _a.$$host) || options.sync === false)) {
+    __privateSet(
+      this,
+      _instance,
+      (options.hydrate ? hydrate : mount)(options.component, {
+        target: options.target,
+        anchor: options.anchor,
+        props,
+        context: options.context,
+        intro: options.intro ?? false,
+        recover: options.recover,
+      })
+    );
+    if (
+      !async_mode_flag &&
+      (!((_a = options == null ? void 0 : options.props) == null ? void 0 : _a.$$host) ||
+        options.sync === false)
+    ) {
       flushSync();
     }
     __privateSet(this, _events, props.$$events);
     for (const key of Object.keys(__privateGet(this, _instance))) {
-      if (key === "$set" || key === "$destroy" || key === "$on") continue;
+      if (key === '$set' || key === '$destroy' || key === '$on') continue;
       define_property(this, key, {
         get() {
           return __privateGet(this, _instance)[key];
@@ -864,13 +851,14 @@ var Svelte4Component = class {
         set(value) {
           __privateGet(this, _instance)[key] = value;
         },
-        enumerable: true
+        enumerable: true,
       });
     }
-    __privateGet(this, _instance).$set = /** @param {Record<string, any>} next */
-    (next) => {
-      Object.assign(props, next);
-    };
+    __privateGet(this, _instance).$set =
+      /** @param {Record<string, any>} next */
+      (next) => {
+        Object.assign(props, next);
+      };
     __privateGet(this, _instance).$destroy = () => {
       unmount(__privateGet(this, _instance));
     };
@@ -905,14 +893,14 @@ function run(fn) {
   user_pre_effect(() => {
     var _a;
     fn();
-    var effect = (
+    var effect =
       /** @type {import('#client').Effect} */
-      active_effect
-    );
+      active_effect;
     if ((effect.f & DIRTY) !== 0) {
       let filename = "a file (we can't know which one)";
       if (true_default) {
-        filename = ((_a = dev_current_component_function) == null ? void 0 : _a[FILENAME]) ?? filename;
+        filename =
+          ((_a = dev_current_component_function) == null ? void 0 : _a[FILENAME]) ?? filename;
       }
       legacy_recursive_reactive_block(filename);
       set_signal_status(effect, MAYBE_DIRTY);
@@ -920,7 +908,7 @@ function run(fn) {
   });
 }
 function handlers(...handlers2) {
-  return function(event) {
+  return function (event) {
     const { stopImmediatePropagation: stopImmediatePropagation2 } = event;
     let stopped = false;
     event.stopImmediatePropagation = () => {
@@ -948,17 +936,16 @@ function handlers(...handlers2) {
 function createBubbler() {
   const active_component_context = component_context;
   if (active_component_context === null) {
-    lifecycle_outside_component("createBubbler");
+    lifecycle_outside_component('createBubbler');
   }
   return (type) => (event) => {
     var _a;
-    const events = (
+    const events =
       /** @type {Record<string, Function | Function[]>} */
-      (_a = active_component_context.s.$$events) == null ? void 0 : _a[
-        /** @type {any} */
-        type
-      ]
-    );
+      (_a = active_component_context.s.$$events) == null
+        ? void 0
+        : /** @type {any} */
+          _a[type];
     if (events) {
       const callbacks = is_array(events) ? events.slice() : [events];
       for (const fn of callbacks) {
@@ -1008,6 +995,6 @@ export {
   asClassComponent,
   run,
   handlers,
-  createBubbler
+  createBubbler,
 };
 //# sourceMappingURL=chunk-VOC4A3DY.js.map

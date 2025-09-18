@@ -4,7 +4,7 @@
  * Optimizes performance for Chrome on Windows with hardware acceleration
  */
 
-// Check if browser supports GPU acceleration
+// Check if browser supports GPU acceleration;
 export function supportsGPUAcceleration(): boolean {
   if (typeof window === 'undefined') return false;
   
@@ -14,7 +14,7 @@ export function supportsGPUAcceleration(): boolean {
   return !!gl;
 }
 
-// Check if running on Chrome Windows
+// Check if running on Chrome Windows;
 export function isChromeWindows(): boolean {
   if (typeof window === 'undefined') return false;
   
@@ -25,19 +25,19 @@ export function isChromeWindows(): boolean {
   return isChrome && isWindows;
 }
 
-// Apply GPU acceleration classes to element
+// Apply GPU acceleration classes to element;
 export function enableGPUAcceleration(element: HTMLElement): void {
   if (!element || !supportsGPUAcceleration()) return;
   
   element.classList.add('gpu-accelerated');
   
-  // Apply Chrome-specific optimizations
+  // Apply Chrome-specific optimizations;
   if (isChromeWindows()) {
     element.classList.add('chrome-optimized');
   }
 }
 
-// Optimize element for smooth animations
+// Optimize element for smooth animations;
 export function optimizeForAnimations(element: HTMLElement): void {
   if (!element) return;
   
@@ -45,7 +45,7 @@ export function optimizeForAnimations(element: HTMLElement): void {
   element.style.willChange = 'transform, opacity';
 }
 
-// Performance monitoring for Chrome Windows
+// Performance monitoring for Chrome Windows;
 export class BrowserPerformanceMonitor {
   private performanceObserver?: PerformanceObserver;
   private metrics: Map<string, number> = new Map();
@@ -59,12 +59,12 @@ export class BrowserPerformanceMonitor {
 
     this.performanceObserver = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        // Track paint metrics for Chrome Windows
+        // Track paint metrics for Chrome Windows;
         if (entry.entryType === 'paint') {
           this.metrics.set(entry.name, entry.startTime);
         }
         
-        // Track layout shifts (important for 3D acceleration)
+        // Track layout shifts (important for 3D acceleration);
         if (entry.entryType === 'layout-shift') {
           const value = (entry as any).value;
           if (value) {
@@ -76,7 +76,7 @@ export class BrowserPerformanceMonitor {
       }
     });
 
-    // Observe paint and layout metrics
+    // Observe paint and layout metrics;
     try {
       this.performanceObserver.observe({ 
         entryTypes: ['paint', 'layout-shift'] 
@@ -90,7 +90,7 @@ export class BrowserPerformanceMonitor {
     return Object.fromEntries(this.metrics);
   }
 
-  // Check if hardware acceleration is working effectively
+  // Check if hardware acceleration is working effectively;
   isHardwareAccelerated(): boolean {
     const firstPaint = this.metrics.get('first-paint');
     const firstContentfulPaint = this.metrics.get('first-contentful-paint');
@@ -107,7 +107,7 @@ export class BrowserPerformanceMonitor {
   }
 }
 
-// Browser error handling and reporting
+// Browser error handling and reporting;
 export class BrowserErrorHandler {
   private errors: Array<any> = [];
 
@@ -118,25 +118,25 @@ export class BrowserErrorHandler {
   private initializeErrorHandling(): void {
     if (typeof window === 'undefined') return;
 
-    // Global error handler
+    // Global error handler;
     window.addEventListener('error', (event: any) => {
       this.logError({
         message: event.message,
         source: event.filename || 'unknown',
         line: event.lineno || 0,
         column: event.colno || 0,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     });
 
-    // Promise rejection handler
+    // Promise rejection handler;
     window.addEventListener('unhandledrejection', (event: any) => {
       this.logError({
         message: `Unhandled Promise Rejection: ${event.reason}`,
         source: 'promise',
         line: 0,
         column: 0,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     });
   }
@@ -144,12 +144,12 @@ export class BrowserErrorHandler {
   private logError(error: typeof this.errors[0]): void {
     this.errors.push(error);
     
-    // Keep only last 10 errors
+    // Keep only last 10 errors;
     if (this.errors.length > 10) {
       this.errors.shift();
     }
 
-    // Log to console in development
+    // Log to console in development;
     if (import.meta.env.DEV) {
       console.error('Browser Error:', error);
     }
@@ -163,13 +163,13 @@ export class BrowserErrorHandler {
     this.errors = [];
   }
 
-  // Report Chrome Windows specific issues
+  // Report Chrome Windows specific issues;
   getCompatibilityReport(): {
     browser: string;
     gpuSupport: boolean;
     hardwareAcceleration: boolean;
     errors: number;
-    recommendations: string[];
+    recommendations: string[];,
   } {
     const recommendations: string[] = [];
     
@@ -199,7 +199,7 @@ export class BrowserErrorHandler {
 export const performanceMonitor = new BrowserPerformanceMonitor();
 export const errorHandler = new BrowserErrorHandler();
 ;
-// Utility functions for components
+// Utility functions for components;
 export function optimizeComponent(element: HTMLElement): void {
   enableGPUAcceleration(element);
   
@@ -210,20 +210,20 @@ export function optimizeComponent(element: HTMLElement): void {
   }
 }
 
-// Detect and handle Chrome Windows specific features
+// Detect and handle Chrome Windows specific features;
 export function initializeChromeWindowsOptimizations(): void {
   if (typeof window === 'undefined') return;
 
   // Enable smooth scrolling globally
   document.documentElement.style.scrollBehavior = 'smooth';
   
-  // Apply Chrome-specific font rendering
+  // Apply Chrome-specific font rendering;
   if (isChromeWindows()) {
     document.body.style.fontFeatureSettings = '"liga"';
     document.body.style.fontKerning = 'auto';
   }
 
-  // Log performance and compatibility info
+  // Log performance and compatibility info;
   setTimeout(() => {
     const report = errorHandler.getCompatibilityReport();
     console.log('🎯 Chrome Windows Optimization Report:', report);
@@ -234,7 +234,7 @@ export function initializeChromeWindowsOptimizations(): void {
   }, 1000);
 }
 
-// Initialize on import
+// Initialize on import;
 if (typeof window !== 'undefined') {
   initializeChromeWindowsOptimizations();
 }

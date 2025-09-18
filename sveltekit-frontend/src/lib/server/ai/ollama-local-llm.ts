@@ -4,12 +4,13 @@
 
 import { logger } from './logger.js';
 import { streamingService } from './streaming-service.js';
+}
 
 export interface OllamaModel {
   name: string;
   size: string;
   digest: string;
-  modified: string;
+  modified: string;,
 }
 
 export interface OllamaGenerateOptions {
@@ -83,7 +84,7 @@ class OllamaLocalLLM {
 
   /**
    * Check if Ollama service is available
-   */
+   */;
   async checkAvailability(): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`);
@@ -95,7 +96,7 @@ class OllamaLocalLLM {
 
   /**
    * Load list of available models
-   */
+   */;
   async loadAvailableModels(): Promise<void> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`);
@@ -117,7 +118,7 @@ class OllamaLocalLLM {
 
   /**
    * Ensure legal-specific models are available
-   */
+   */;
   async ensureLegalModels(): Promise<void> {
     const legalModels = [
       'gemma3-legal:latest',
@@ -141,7 +142,7 @@ class OllamaLocalLLM {
 
   /**
    * Create a legal-tuned model variant
-   */
+   */;
   async createLegalModel(baseModel: string, targetName: string): Promise<void> {
     try {
       const modelfile = `
@@ -173,7 +174,7 @@ TEMPLATE """{{ if .System }}<|system|>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: targetName,
-          modelfile: modelfile
+          modelfile: modelfile,
         })
       });
 
@@ -188,7 +189,7 @@ TEMPLATE """{{ if .System }}<|system|>
 
   /**
    * Generate completion using local LLM
-   */
+   */;
   async generate(options: OllamaGenerateOptions): Promise<OllamaResponse | null> {
     try {
       // Use legal model if available
@@ -202,7 +203,7 @@ TEMPLATE """{{ if .System }}<|system|>
         body: JSON.stringify({
           ...options,
           model,
-          stream: false
+          stream: false,
         })
       });
 
@@ -212,10 +213,10 @@ TEMPLATE """{{ if .System }}<|system|>
 
       const result = await (response as { ok?: any; json?: any; statusText?: any; body?: any }).json();
       
-      // Update model cache
+      // Update model cache;
       this.modelCache.set(model, {
         loaded: true,
-        lastUsed: Date.now()
+        lastUsed: Date.now(),
       });
       
       return result;
@@ -232,7 +233,7 @@ TEMPLATE """{{ if .System }}<|system|>
   async generateStream(
     options: OllamaGenerateOptions,
     onToken: (token: string) => void,
-    onComplete: (response: string) => void
+    onComplete: (response: string) => void;
   ): Promise<void> {
     try {
       const model = this.selectBestModel(options?.model || "unknown" // @ts-ignore - Model property access);
@@ -245,7 +246,7 @@ TEMPLATE """{{ if .System }}<|system|>
         body: JSON.stringify({
           ...options,
           model,
-          stream: true
+          stream: true,
         })
       });
 
@@ -262,7 +263,7 @@ TEMPLATE """{{ if .System }}<|system|>
         if (done) break;
 
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\n').filter(line => line.trim());
+        const lines = chunk.split('\n').filter(line => line.trim();
 
         for (const line of lines) {
           try {
@@ -287,7 +288,7 @@ TEMPLATE """{{ if .System }}<|system|>
 
   /**
    * Generate embeddings using local model
-   */
+   */;
   async generateEmbeddings(text: string, model?: string): Promise<number[] | null> {
     try {
       const embeddingModel = model || 'nomic-embed-text';
@@ -297,7 +298,7 @@ TEMPLATE """{{ if .System }}<|system|>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: embeddingModel,
-          prompt: text
+          prompt: text,
         })
       });
 
@@ -316,7 +317,7 @@ TEMPLATE """{{ if .System }}<|system|>
 
   /**
    * Chat completion with conversation history
-   */
+   */;
   async chat(messages: Array<any>, model?: string): Promise<string | null> {
     try {
       const selectedModel = this.selectBestModel(model);
@@ -327,7 +328,7 @@ TEMPLATE """{{ if .System }}<|system|>
         body: JSON.stringify({
           model: selectedModel,
           messages,
-          stream: false
+          stream: false,
         })
       });
 
@@ -350,7 +351,7 @@ TEMPLATE """{{ if .System }}<|system|>
   async processLegalDocument(
     document: string,
     task: 'summarize' | 'extract' | 'analyze' | 'classify',
-    options?: unknown
+    options?: unknown;
   ): Promise<any> {
     try {
       let prompt = '';
@@ -403,12 +404,12 @@ Document:\n${document}`;
         options: {
           temperature: 0.3,
           top_p: 0.9,
-          num_predict: 2000
+          num_predict: 2000,
         }
       });
       
       if (result) {
-        // Parse structured output if needed
+        // Parse structured output if needed;
         if ((options as any)?.format === 'json') {
           try {
             return JSON.parse((result as { embedding?: any; message?: any; response?: any }).response);
@@ -429,9 +430,9 @@ Document:\n${document}`;
 
   /**
    * Select best available model for the task
-   */
+   */;
   private selectBestModel(requestedModel?: string): string {
-    // If specific model requested and available, use it
+    // If specific model requested and available, use it;
     if (requestedModel && this.availableModels.has(requestedModel)) {
       return requestedModel;
     }
@@ -463,7 +464,7 @@ Document:\n${document}`;
       }
     }
     
-    // Use first available model
+    // Use first available model;
     if (this.availableModels.size > 0) {
       return Array.from(this.availableModels.keys())[0];
     }
@@ -474,7 +475,7 @@ Document:\n${document}`;
 
   /**
    * Unload model from memory
-   */
+   */;
   async unloadModel(model: string): Promise<void> {
     try {
       await fetch(`${this.baseUrl}/api/generate`, {
@@ -483,7 +484,7 @@ Document:\n${document}`;
         body: JSON.stringify({
           model,
           prompt: '',
-          keep_alive: 0
+          keep_alive: 0,
         })
       });
       
@@ -496,7 +497,7 @@ Document:\n${document}`;
 
   /**
    * Get model information
-   */
+   */;
   async getModelInfo(model: string): Promise<any> {
     try {
       const response = await fetch(`${this.baseUrl}/api/show`, {
@@ -518,7 +519,7 @@ Document:\n${document}`;
 
   /**
    * Pull a model from Ollama library
-   */
+   */;
   async pullModel(model: string): Promise<boolean> {
     try {
       logger.info(`[OllamaLLM] Pulling model ${model}...`);
@@ -542,7 +543,7 @@ Document:\n${document}`;
         if (done) break;
 
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\n').filter(line => line.trim());
+        const lines = chunk.split('\n').filter(line => line.trim();
 
         for (const line of lines) {
           try {
@@ -567,7 +568,7 @@ Document:\n${document}`;
 
   /**
    * Health check for Ollama service
-   */
+   */;
   async healthCheck(): Promise<any> {
     const available = await this.checkAvailability();
     

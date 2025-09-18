@@ -17,7 +17,7 @@ class EndToEndTester {
       total: 0,
       passed: 0,
       failed: 0,
-      tests: []
+      tests: [],
     };
   }
 
@@ -36,7 +36,7 @@ class EndToEndTester {
   async test(name, testFn) {
     console.log(`🧪 Testing: ${name}`);
     this.results.total++;
-    
+
     try {
       await testFn();
       console.log(`✅ PASSED: ${name}\n`);
@@ -54,7 +54,9 @@ class EndToEndTester {
   async testInfrastructure() {
     console.log('================================================================================');
     console.log('📊 INFRASTRUCTURE HEALTH TESTS');
-    console.log('================================================================================\n');
+    console.log(
+      '================================================================================\n'
+    );
 
     await this.test('PostgreSQL Connection', async () => {
       const response = await fetch('http://localhost:5173/api/health/database');
@@ -74,7 +76,7 @@ class EndToEndTester {
       const response = await fetch('http://localhost:7474/db/system/tx/commit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ statements: [] })
+        body: JSON.stringify({ statements: [] }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
     });
@@ -84,7 +86,9 @@ class EndToEndTester {
   async testAIServices() {
     console.log('================================================================================');
     console.log('🧠 AI SERVICES TESTS');
-    console.log('================================================================================\n');
+    console.log(
+      '================================================================================\n'
+    );
 
     await this.test('Ollama Primary Health', async () => {
       const response = await fetch('http://localhost:11434/api/version');
@@ -97,7 +101,8 @@ class EndToEndTester {
       const response = await fetch('http://localhost:8094/health');
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      if (data.service !== 'gpu-orchestrator') throw new Error('RAG service not responding correctly');
+      if (data.service !== 'gpu-orchestrator')
+        throw new Error('RAG service not responding correctly');
     });
 
     await this.test('Upload Service', async () => {
@@ -111,7 +116,7 @@ class EndToEndTester {
       const response = await fetch('http://localhost:8094/api/test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: 'test legal query', context: 'legal document analysis' })
+        body: JSON.stringify({ query: 'test legal query', context: 'legal document analysis' }),
       });
       // Note: This might return 404 if endpoint doesn't exist, but service should be running
       if (!response) throw new Error('No response from vector search service');
@@ -122,7 +127,9 @@ class EndToEndTester {
   async testFrontendIntegration() {
     console.log('================================================================================');
     console.log('🎨 FRONTEND INTEGRATION TESTS');
-    console.log('================================================================================\n');
+    console.log(
+      '================================================================================\n'
+    );
 
     await this.test('SvelteKit Frontend Loading', async () => {
       await this.page.goto('http://localhost:5173', { waitUntil: 'networkidle' });
@@ -132,15 +139,17 @@ class EndToEndTester {
 
     await this.test('Svelte 5 Runes Reactivity', async () => {
       await this.page.goto('http://localhost:5173');
-      
+
       // Test for Svelte 5 runes in action
       const runesTest = await this.page.evaluate(() => {
         // Check if page has modern Svelte 5 patterns
-        return window.document.body.innerHTML.includes('$state') || 
-               window.document.body.innerHTML.includes('runes') ||
-               window.location.pathname === '/';
+        return (
+          window.document.body.innerHTML.includes('$state') ||
+          window.document.body.innerHTML.includes('runes') ||
+          window.location.pathname === '/'
+        );
       });
-      
+
       if (!runesTest) {
         console.log('   ℹ️ Svelte 5 runes test skipped (may require specific components)');
       }
@@ -148,14 +157,16 @@ class EndToEndTester {
 
     await this.test('XState Integration', async () => {
       await this.page.goto('http://localhost:5173');
-      
+
       // Look for XState machine indicators
       const xstateTest = await this.page.evaluate(() => {
-        return window.document.querySelector('[data-machine]') !== null ||
-               window.document.querySelector('.xstate') !== null ||
-               true; // Pass if no specific XState selectors found
+        return (
+          window.document.querySelector('[data-machine]') !== null ||
+          window.document.querySelector('.xstate') !== null ||
+          true
+        ); // Pass if no specific XState selectors found
       });
-      
+
       if (!xstateTest) throw new Error('XState integration not detected');
     });
 
@@ -173,22 +184,26 @@ class EndToEndTester {
   async testCompleteWorkflows() {
     console.log('================================================================================');
     console.log('🔄 COMPLETE WORKFLOW TESTS');
-    console.log('================================================================================\n');
+    console.log(
+      '================================================================================\n'
+    );
 
     await this.test('Document Upload Workflow', async () => {
       await this.page.goto('http://localhost:5173');
-      
+
       // Look for upload functionality
       const uploadExists = await this.page.evaluate(() => {
-        return window.document.querySelector('input[type="file"]') !== null ||
-               window.document.querySelector('.upload') !== null ||
-               window.document.querySelector('[data-upload]') !== null;
+        return (
+          window.document.querySelector('input[type="file"]') !== null ||
+          window.document.querySelector('.upload') !== null ||
+          window.document.querySelector('[data-upload]') !== null
+        );
       });
-      
+
       if (!uploadExists) {
         console.log('   ℹ️ Upload interface not found on main page (may be on dedicated route)');
       }
-      
+
       // Test upload service directly
       const uploadResponse = await fetch('http://localhost:8093/');
       if (!uploadResponse.ok) throw new Error('Upload service not responding');
@@ -196,18 +211,20 @@ class EndToEndTester {
 
     await this.test('Search & RAG Workflow', async () => {
       await this.page.goto('http://localhost:5173');
-      
+
       // Look for search functionality
       const searchExists = await this.page.evaluate(() => {
-        return window.document.querySelector('input[type="search"]') !== null ||
-               window.document.querySelector('.search') !== null ||
-               window.document.querySelector('[placeholder*="search"]') !== null;
+        return (
+          window.document.querySelector('input[type="search"]') !== null ||
+          window.document.querySelector('.search') !== null ||
+          window.document.querySelector('[placeholder*="search"]') !== null
+        );
       });
-      
+
       if (!searchExists) {
         console.log('   ℹ️ Search interface not found on main page (may be on dedicated route)');
       }
-      
+
       // Test RAG service directly
       const ragResponse = await fetch('http://localhost:8094/health');
       if (!ragResponse.ok) throw new Error('RAG service not responding for search workflow');
@@ -216,16 +233,18 @@ class EndToEndTester {
     await this.test('Real-time Data Flow', async () => {
       // Test WebSocket or similar real-time connections
       await this.page.goto('http://localhost:5173');
-      
+
       // Wait for any real-time connections to establish
       await this.page.waitForTimeout(2000);
-      
+
       const connectionTest = await this.page.evaluate(() => {
         // Check for WebSocket connections or real-time features
-        return window.WebSocket !== undefined && 
-               (window.location.protocol === 'http:' || window.location.protocol === 'https:');
+        return (
+          window.WebSocket !== undefined &&
+          (window.location.protocol === 'http:' || window.location.protocol === 'https:')
+        );
       });
-      
+
       if (!connectionTest) throw new Error('Real-time connection capabilities not available');
     });
   }
@@ -234,13 +253,15 @@ class EndToEndTester {
   async testPerformance() {
     console.log('================================================================================');
     console.log('⚡ PERFORMANCE TESTS');
-    console.log('================================================================================\n');
+    console.log(
+      '================================================================================\n'
+    );
 
     await this.test('Frontend Load Time', async () => {
       const startTime = Date.now();
       await this.page.goto('http://localhost:5173', { waitUntil: 'networkidle' });
       const loadTime = Date.now() - startTime;
-      
+
       console.log(`   📊 Load time: ${loadTime}ms`);
       if (loadTime > 5000) throw new Error(`Load time too slow: ${loadTime}ms`);
     });
@@ -248,14 +269,14 @@ class EndToEndTester {
     await this.test('API Response Times', async () => {
       const tests = [
         { name: 'RAG Service', url: 'http://localhost:8094/health' },
-        { name: 'Upload Service', url: 'http://localhost:8093/health' }
+        { name: 'Upload Service', url: 'http://localhost:8093/health' },
       ];
-      
+
       for (const test of tests) {
         const startTime = Date.now();
         const response = await fetch(test.url);
         const responseTime = Date.now() - startTime;
-        
+
         console.log(`   📊 ${test.name}: ${responseTime}ms`);
         if (responseTime > 2000) {
           throw new Error(`${test.name} response too slow: ${responseTime}ms`);
@@ -268,15 +289,17 @@ class EndToEndTester {
   generateReport() {
     console.log('================================================================================');
     console.log('📊 END-TO-END TEST REPORT');
-    console.log('================================================================================\n');
-    
-    const passRate = (this.results.passed / this.results.total * 100).toFixed(1);
-    
+    console.log(
+      '================================================================================\n'
+    );
+
+    const passRate = ((this.results.passed / this.results.total) * 100).toFixed(1);
+
     console.log(`Total Tests: ${this.results.total}`);
     console.log(`Passed: ${this.results.passed} ✅`);
     console.log(`Failed: ${this.results.failed} ❌`);
     console.log(`Pass Rate: ${passRate}%\n`);
-    
+
     if (this.results.failed > 0) {
       console.log('❌ FAILED TESTS:');
       for (const test of this.results.tests) {
@@ -286,7 +309,7 @@ class EndToEndTester {
       }
       console.log();
     }
-    
+
     if (passRate >= 90) {
       console.log('🟢 SYSTEM STATUS: EXCELLENT - READY FOR PRODUCTION');
     } else if (passRate >= 75) {
@@ -296,13 +319,15 @@ class EndToEndTester {
     } else {
       console.log('🔴 SYSTEM STATUS: CRITICAL - MAJOR FAILURES');
     }
-    
-    console.log('\n================================================================================');
+
+    console.log(
+      '\n================================================================================'
+    );
     console.log('🎯 PRODUCTION READINESS ASSESSMENT');
     console.log('================================================================================');
-    
+
     const recommendations = [];
-    
+
     if (this.results.failed === 0) {
       console.log('✅ All tests passed - System is production ready');
     } else {
@@ -311,20 +336,20 @@ class EndToEndTester {
       recommendations.push('Verify all service configurations');
       recommendations.push('Check network connectivity and firewall settings');
     }
-    
+
     if (recommendations.length > 0) {
       console.log('\n🔧 RECOMMENDATIONS:');
       for (const rec of recommendations) {
         console.log(`   • ${rec}`);
       }
     }
-    
+
     console.log('\n🌐 ACCESS URLS:');
     console.log('   • Frontend: http://localhost:5173');
     console.log('   • RAG Service: http://localhost:8094/health');
     console.log('   • Upload Service: http://localhost:8093/health');
     console.log('   • Ollama API: http://localhost:11434/api/version');
-    
+
     return passRate >= 75;
   }
 
@@ -332,20 +357,20 @@ class EndToEndTester {
   async run() {
     try {
       await this.init();
-      
+
       await this.testInfrastructure();
       await this.testAIServices();
       await this.testFrontendIntegration();
       await this.testCompleteWorkflows();
       await this.testPerformance();
-      
+
       const isReady = this.generateReport();
-      
+
       if (isReady) {
         console.log('\n🚀 Opening production system...');
         // Don't open browser automatically in test
       }
-      
+
       return isReady;
     } catch (error) {
       console.error('❌ Test execution failed:', error.message);
@@ -358,9 +383,12 @@ class EndToEndTester {
 
 // Execute tests
 const tester = new EndToEndTester();
-tester.run().then(success => {
-  process.exit(success ? 0 : 1);
-}).catch(error => {
-  console.error('Fatal error:', error);
-  process.exit(1);
-});
+tester
+  .run()
+  .then((success) => {
+    process.exit(success ? 0 : 1);
+  })
+  .catch((error) => {
+    console.error('Fatal error:', error);
+    process.exit(1);
+  });

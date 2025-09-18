@@ -8,7 +8,7 @@ interface PipelineTestResult {
   message: string;
   data?: any;
   responseTime?: number;
-  timestamp: string;
+  timestamp: string;,
 }
 
 interface DocumentPipelineTestResponse {
@@ -19,10 +19,10 @@ interface DocumentPipelineTestResponse {
     totalSteps: number;
     successfulSteps: number;
     failedSteps: number;
-    skippedSteps: number;
+    skippedSteps: number;,
   };
   steps: PipelineTestResult[];
-  overallMessage: string;
+  overallMessage: string;,
 }
 
 async function testStep(stepName: string, testFn: () => Promise<any>): Promise<PipelineTestResult> {
@@ -65,27 +65,24 @@ export const GET: RequestHandler = async () => {
   const apiClient = new LegalAIApiClient();
   const testResults: PipelineTestResult[] = [];
 
-  // Step 1: Test API Client Health
-  testResults.push(
-    await testStep('API Client Health Check', async () => {
-      return await apiClient.healthCheck());
+  // Step 1: Test API Client Health;
+  testResults.push(await testStep('API Client Health Check', async () => {
+      return await apiClient.healthCheck();
     })
   );
 
-  // Step 2: Test OCR Service Health
-  testResults.push(
-    await testStep('OCR Service Health Check', async () => {
-      return await apiClient.getOCRStatus());
+  // Step 2: Test OCR Service Health;
+  testResults.push(await testStep('OCR Service Health Check', async () => {
+      return await apiClient.getOCRStatus();
     })
   );
 
-  // Step 3: Test Database Connection (via API)
-  testResults.push(
-    await testStep('Database Health Check', async () => {
+  // Step 3: Test Database Connection (via API);
+  testResults.push(await testStep('Database Health Check', async () => {
       const response = await fetch('/api/database/health', {
         method: 'GET',
         headers: { Accept: 'application/json' },
-      }));
+      });
       if (!response.ok) {
         throw new Error(`Database health check returned ${response.status}`);
       }
@@ -94,20 +91,19 @@ export const GET: RequestHandler = async () => {
     })
   );
 
-  // Step 4: Test Aggregated Health Endpoint
-  testResults.push(
-    await testStep('Aggregated Health Check', async () => {
+  // Step 4: Test Aggregated Health Endpoint;
+  testResults.push(await testStep('Aggregated Health Check', async () => {
       const response = await fetch('/api/health/all', {
         method: 'GET',
         headers: { Accept: 'application/json' },
-      }));
+      });
       if (!response.ok) {
         throw new Error(`Aggregated health check returned ${response.status}`);
       }
 
       const healthData = await response.json();
 
-      // Verify OCR service is included in health check
+      // Verify OCR service is included in health check;
       if (!healthData.services?.ocr) {
         throw new Error('OCR service not found in aggregated health check');
       }
@@ -116,13 +112,12 @@ export const GET: RequestHandler = async () => {
     })
   );
 
-  // Step 5: Test OCR-Specific Health Endpoint
-  testResults.push(
-    await testStep('OCR-Specific Health Check', async () => {
+  // Step 5: Test OCR-Specific Health Endpoint;
+  testResults.push(await testStep('OCR-Specific Health Check', async () => {
       const response = await fetch('/api/health/ocr', {
         method: 'GET',
         headers: { Accept: 'application/json' },
-      }));
+      });
       // OCR service might not be running, so we check for appropriate response
       const ocrHealthData = await response.json();
 
@@ -141,12 +136,11 @@ export const GET: RequestHandler = async () => {
   // Step 6: Test Document Processing Simulation (if OCR is available)
   const ocrHealthResult = testResults.find((r) => r.step === 'OCR Service Health Check');
   if (ocrHealthResult?.status === 'success') {
-    testResults.push(
-      await testStep('Document Processing Simulation', async () => {
-        // Create a test document blob
+    testResults.push(await testStep('Document Processing Simulation', async () => {
+        // Create a test document blob;
         const testDocument = new Blob(['This is a test legal document for OCR processing.'], {
           type: 'text/plain',
-        }));
+        });
         const testFile = new File([testDocument], 'test-document.txt', { type: 'text/plain' });
 
         // Test OCR processing
@@ -166,14 +160,13 @@ export const GET: RequestHandler = async () => {
     // Step 7: Test Evidence Creation with OCR (if OCR worked)
     const ocrTestResult = testResults.find((r) => r.step === 'Document Processing Simulation');
     if (ocrTestResult?.status === 'success') {
-      testResults.push(
-        await testStep('Evidence Creation with OCR', async () => {
+      testResults.push(await testStep('Evidence Creation with OCR', async () => {
           const testDocument = new Blob(
-            ['This is a test evidence document for the legal AI system.'],
+            ['This is a test evidence document for the legal AI system.'],);
             {
               type: 'text/plain',
             }
-          ));
+          );
           const testFile = new File([testDocument], 'test-evidence.txt', { type: 'text/plain' });
 
           // This would create evidence with OCR processing
@@ -208,15 +201,14 @@ export const GET: RequestHandler = async () => {
     });
   }
 
-  // Step 8: Test Database Schema Compatibility
-  testResults.push(
-    await testStep('Database Schema Compatibility', async () => {
-      // Test that evidence table has OCR fields
+  // Step 8: Test Database Schema Compatibility;
+  testResults.push(await testStep('Database Schema Compatibility', async () => {
+      // Test that evidence table has OCR fields;
       const response = await fetch('/api/database/health', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'initialize' }),
-      }));
+      });
       const dbResult = await response.json();
 
       return {
@@ -283,7 +275,7 @@ export const GET: RequestHandler = async () => {
   });
 };
 
-// Support POST for running specific test scenarios
+// Support POST for running specific test scenarios;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { scenario, mockMode } = await request.json();
@@ -293,15 +285,13 @@ export const POST: RequestHandler = async ({ request }) => {
       const testResults: PipelineTestResult[] = [];
       const apiClient = new LegalAIApiClient();
 
-      testResults.push(
-        await testStep('OCR Health Check', async () => {
-          return await apiClient.getOCRStatus());
+      testResults.push(await testStep('OCR Health Check', async () => {
+          return await apiClient.getOCRStatus();
         })
       );
 
-      testResults.push(
-        await testStep('OCR Processing Test', async () => {
-          const testDoc = new File(['Test OCR content'], 'test.txt', { type: 'text/plain' }));
+      testResults.push(await testStep('OCR Processing Test', async () => {
+          const testDoc = new File(['Test OCR content'], 'test.txt', { type: 'text/plain' });
           return await apiClient.processDocumentOCR(testDoc);
         })
       );
@@ -317,16 +307,14 @@ export const POST: RequestHandler = async ({ request }) => {
       // Test only health endpoints
       const testResults: PipelineTestResult[] = [];
 
-      testResults.push(
-        await testStep('Aggregated Health', async () => {
-          const response = await fetch('/api/health/all'));
+      testResults.push(await testStep('Aggregated Health', async () => {
+          const response = await fetch('/api/health/all');
           return await response.json();
         })
       );
 
-      testResults.push(
-        await testStep('OCR Health', async () => {
-          const response = await fetch('/api/health/ocr'));
+      testResults.push(await testStep('OCR Health', async () => {
+          const response = await fetch('/api/health/ocr');
           return await response.json();
         })
       );
@@ -347,7 +335,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const testResults: PipelineTestResult[] = [];
 
     // This would be the same logic as in GET, truncated for brevity
-    // For now, return a simple success response
+    // For now, return a simple success response;
     return json({
       scenario: 'full-test',
       testId,
@@ -355,12 +343,11 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
-      {
+    return json({
         error: 'Test execution failed',
         message: error.message,
         availableScenarios: ['ocr-only', 'health-only'],
-      },
+      },)
       { status: 500 }
     );
   }

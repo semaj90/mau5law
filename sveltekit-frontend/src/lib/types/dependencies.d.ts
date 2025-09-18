@@ -1,7 +1,7 @@
 import stream from "stream";
 // Missing dependency types for TypeScript compatibility
 
-// Svelte store types
+// Svelte store types;
 declare module 'svelte/store' {
   export interface Readable<T> {
     subscribe(fn: (value: T) => void): () => void;
@@ -13,7 +13,7 @@ declare module 'svelte/store' {
   }
 }
 
-// QDrant client types
+// QDrant client types;
 declare module '@qdrant/js-client-rest' {
   export class QdrantClient {
     constructor(options: { url: string; apiKey?: string });
@@ -34,13 +34,13 @@ declare module '@langchain/community/vectorstores/qdrant' {
   }
 }
 
-// Global QDrant instances for runtime
+// Global QDrant instances for runtime;
 declare global {
   const QdrantClient: typeof import('@qdrant/js-client-rest').QdrantClient;
   const QdrantVectorStore: typeof import('@langchain/community/vectorstores/qdrant').QdrantVectorStore;
 }
 
-// LangChain types
+// LangChain types;
 declare module 'langchain/schema/output_parser' {
   export class StringOutputParser {
     parse(text: string): string;
@@ -70,7 +70,7 @@ declare module '@langchain/core/documents' {
   }
 }
 
-// Ollama LangChain types
+// Ollama LangChain types;
 declare module '@langchain/ollama' {
   export interface ChatOllamaInput {
     model: string;
@@ -108,7 +108,7 @@ declare module '@langchain/ollama' {
   }
 }
 
-// Additional QDrant and vector store types
+// Additional QDrant and vector store types;
 declare module '@langchain/community/vectorstores/pgvector' {
   export class PGVectorStore {
     static fromExistingTable(embeddings: any, config: any): Promise<PGVectorStore>;
@@ -119,7 +119,7 @@ declare module '@langchain/community/vectorstores/pgvector' {
   }
 }
 
-// Node.js stream types for non-Node environments
+// Node.js stream types for non-Node environments;
 declare global {
   interface Readable<T = any> {
     subscribe?(fn: (value: T) => void): () => void;
@@ -140,14 +140,14 @@ declare module 'stream' {
 // Vitest types are provided by 'vitest/globals' in tsconfig types.
 // Do not override here to avoid missing methods like clearAllMocks.
 
-// PGVector types
+// PGVector types;
 declare module '@langchain/community/vectorstores/pgvector' {
   export class PGVectorStore {
     // Add methods as needed
   }
 }
 
-// Transformers.js types
+// Transformers.js types;
 declare module '@xenova/transformers' {
   export interface Pipeline {
     processor?: any;
@@ -168,7 +168,7 @@ declare module '@xenova/transformers' {
     backends: {
       onnx: {
         wasm: {
-          numThreads: number;
+          numThreads: number;,
         };
       };
     };
@@ -179,6 +179,7 @@ declare module '@xenova/transformers' {
     model?: string,
     options?: PretrainedOptions
   ): Promise<Pipeline>;
+}
 
   export interface FeatureExtractionPipeline extends Pipeline {}
   export interface TextGenerationPipeline extends Pipeline {}
@@ -191,7 +192,7 @@ declare module 'lokijs' {
     meta: {
       revision: number;
       created: number;
-      version: number;
+      version: number;,
     };
   }
 
@@ -210,7 +211,7 @@ declare module 'lokijs' {
     chain(): LokiCollectionChain<T>;
     simplesort(prop: keyof (T & LokiObj), desc?: boolean): LokiCollection<T>;
     compoundsort(sorts: Array<[keyof (T & LokiObj), boolean?]>): LokiCollection<T>;
-    data: (T & LokiObj)[];
+    data: (T & LokiObj)[];,
   }
 
   export interface LokiCollectionChain<T = any> {
@@ -240,7 +241,7 @@ declare module 'lokijs' {
     getName(): string;
     close(callback?: () => void): void;
     filename: string;
-    options: any;
+    options: any;,
   }
 
   export interface LokiMemoryAdapter {
@@ -271,7 +272,7 @@ declare module 'lokijs' {
       throttledSaves?: boolean;
     });
 
-    // Database methods
+    // Database methods;
     addCollection<T = any>(name: string, options?: {
       unique?: string[];
       indices?: string[];
@@ -302,7 +303,7 @@ declare module 'lokijs' {
   export default loki;
 }
 
-// Performance types for test environments
+// Performance types for test environments;
 declare global {
   namespace NodeJS {
     interface Global {
@@ -317,7 +318,7 @@ declare global {
     gc?: () => void;
   }
 
-  // Mock classes for complex modules
+  // Mock classes for complex modules;
   class ShaderCache {
     constructor(context: any, options?: any);
     precompileForSprite?(sprite: any): void;
@@ -336,9 +337,9 @@ declare global {
   }
 }
 
-// bits-ui module types
+// bits-ui module types;
 declare module 'bits-ui' {
-  // Dialog exports
+  // Dialog exports;
   export namespace Dialog {
     export const Root: any;
     export const Portal: any;
@@ -351,7 +352,7 @@ declare module 'bits-ui' {
     export const Trigger: any;
   }
 
-  // Select exports
+  // Select exports;
   export namespace Select {
     // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: export const Root: any;
     // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: export const Trigger: any;
@@ -366,7 +367,7 @@ declare module 'bits-ui' {
     export const Separator: any;
   }
 
-  // Combobox exports
+  // Combobox exports;
   export namespace Combobox {
     // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: export const Root: any;
     // Duplicate removed: // Duplicate removed: export const Input: any;
@@ -378,7 +379,7 @@ declare module 'bits-ui' {
     export const HiddenInput: any;
   }
 
-  // DatePicker exports
+  // DatePicker exports;
   export namespace DatePicker {
     // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: export const Root: any;
     // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: export const Trigger: any;
@@ -398,7 +399,7 @@ declare module 'bits-ui' {
     export const TimeSegment: any;
   }
 
-  // Toast exports
+  // Toast exports;
   export namespace Toast {
     export const Provider: any;
     // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: // Duplicate removed: export const Root: any;
@@ -410,14 +411,14 @@ declare module 'bits-ui' {
     export const Viewport: any;
   }
 
-  // Common types
+  // Common types;
   export interface CommonProps {
     class?: string;
     children?: any;
   }
 }
 
-// Fabric.js namespace exports
+// Fabric.js namespace exports;
 declare module 'fabric' {
   export namespace fabric {
     export class Canvas {
@@ -454,7 +455,7 @@ declare module 'fabric' {
   }
 }
 
-// Export conflicts resolution
+// Export conflicts resolution;
 declare module '$lib/mcp-context72-get-library-docs' {
   export function resolveLibraryId(name: string): Promise<string>;
   export function getLibraryDocs(id: string, options?: any): Promise<any>;
@@ -472,7 +473,7 @@ declare module '$lib/utils/cn' {
   export function priorityClass(priority: 'low' | 'medium' | 'high' | 'critical'): string;
 }
 
-// Path utility types
+// Path utility types;
 declare module 'path' {
   export function join(...paths: string[]): string;
   export function resolve(...paths: string[]): string;
@@ -480,7 +481,7 @@ declare module 'path' {
   export function basename(path: string, ext?: string): string;
 }
 
-// Form schemas module
+// Form schemas module;
 declare module '$lib/schemas/forms' {
   export const DocumentUploadSchema: any;
   export const CaseCreationSchema: any;
@@ -488,7 +489,7 @@ declare module '$lib/schemas/forms' {
   export const AIAnalysisSchema: any;
 }
 
-// Database schema types
+// Database schema types;
 declare module '$lib/database/enhanced-schema' {
   export const vector: (name: string, options: { dimensions: number }) => any;
 }

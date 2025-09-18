@@ -12,7 +12,7 @@ export const GET: RequestHandler = async () => {
   try {
     const ollamaBaseUrl = import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434';
     
-    // Check if Ollama is responding
+    // Check if Ollama is responding;
     const response = await fetch(`${ollamaBaseUrl}/api/tags`, {
       method: 'GET',
       headers: {
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async () => {
         status: 'connected',
         baseUrl: ollamaBaseUrl,
         models: data.models || [],
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } else {
       return json({
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async () => {
         status: 'unavailable',
         error: `HTTP ${response.status}: ${response.statusText}`,
         baseUrl: ollamaBaseUrl,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }, { status: 503 });
     }
   } catch (error: any) {
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async () => {
       status: 'error',
       error: error.message || 'Connection failed',
       baseUrl: import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 503 });
   }
 };

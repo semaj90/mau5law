@@ -19,7 +19,7 @@ export const actions: Actions = {
     const jurisdiction = (data as { get?: any }).get('jurisdiction') as string;
     const badgeNumber = (data as { get?: any }).get('badgeNumber') as string;
 
-    // Basic validation
+    // Basic validation;
     if (!email || !firstName || !lastName || !password || !department || !jurisdiction) {
       return fail(400, { error: 'All required fields must be filled' });
     }
@@ -40,7 +40,7 @@ export const actions: Actions = {
         password: password,
         firstName: firstName,
         lastName: lastName,
-        role: role || 'user'
+        role: role || 'user',
       }, { request, cookies, getClientAddress } as any);
 
       if (!(result as { success?: any; error?: any; user?: any }).success) {
@@ -54,22 +54,22 @@ export const actions: Actions = {
         email: email.toLowerCase(),
         password: password,
         ipAddress: clientIP,
-        userAgent: userAgent
+        userAgent: userAgent,
       });
 
       if (loginResult.success && loginResult.session) {
-        // Set session cookie
+        // Set session cookie;
         cookies.set('session_id', loginResult.session.id, {
           path: '/',
           httpOnly: true,
           secure: import.meta.env.NODE_ENV === 'production',
           sameSite: 'strict',
-          maxAge: 60 * 60 * 24 // 1 day
+          maxAge: 60 * 60 * 24 // 1 day,
         });
 
         console.log('User registered and logged in successfully:', {
           userId: (result as { success?: any; error?: any; user?: any }).user?.id,
-          email: email
+          email: email,
         });
       }
 

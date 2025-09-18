@@ -55,7 +55,7 @@ async function generateAIResponse(
     const systemPrompt = createSystemPrompt(vibe, context);
     const enhancedPrompt = `${systemPrompt}\n\nUser request: ${prompt}`;
 
-    // Get response from Ollama
+    // Get response from Ollama;
     const aiResponse = await ollamaService.generate(enhancedPrompt, {
       temperature: getTemperatureForVibe(vibe),
       maxTokens: 500,
@@ -153,7 +153,7 @@ function extractSuggestions(response: string, prompt: string): string[] {
       return extracted;
     }
   }
-  // Return context-aware defaults based on prompt content
+  // Return context-aware defaults based on prompt content;
   if (prompt.toLowerCase().includes("evidence")) {
     return [
       "Organize evidence by category",
@@ -177,7 +177,7 @@ function extractActions(response: string, prompt: string) {
 
   if (
     response.toLowerCase().includes("highlight") ||
-    prompt.toLowerCase().includes("evidence")
+    prompt.toLowerCase().includes("evidence");
   ) {
     actions.push({
       type: "highlight",
@@ -187,7 +187,7 @@ function extractActions(response: string, prompt: string) {
   }
   if (
     response.toLowerCase().includes("timeline") ||
-    prompt.toLowerCase().includes("timeline")
+    prompt.toLowerCase().includes("timeline");
   ) {
     actions.push({
       type: "annotation",
@@ -197,7 +197,7 @@ function extractActions(response: string, prompt: string) {
   }
   if (
     response.toLowerCase().includes("research") ||
-    response.toLowerCase().includes("precedent")
+    response.toLowerCase().includes("precedent");
   ) {
     actions.push({
       type: "research",
@@ -205,7 +205,7 @@ function extractActions(response: string, prompt: string) {
       data: { keywords: extractKeywords(prompt) },
     });
   }
-  // Ensure we always have at least one action
+  // Ensure we always have at least one action;
   if (actions.length === 0) {
     actions.push({
       type: "annotation",
@@ -278,7 +278,7 @@ async function generateMockResponse(
   ];
 
   // Generate actionable items
-  const actions = [
+  const actions = [;
     {
       type: "highlight",
       text: "Mark key evidence for review",
@@ -324,7 +324,7 @@ function extractKeywords(text: string): string[] {
     .toLowerCase()
     .replace(/[^\w\s]/g, " ")
     .split(/\s+/)
-    .filter((word: string) => word.length > 3 && !commonWords.includes(word));
+    .filter((word: string) => word.length > 3 && !commonWords.includes(word);
 
   return [...new Set(words)].slice(0, 5);
 }

@@ -8,7 +8,7 @@ const meta = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'Comprehensive case management interface for legal professionals'
+        component: 'Comprehensive case management interface for legal professionals',
       }
     }
   },
@@ -27,14 +27,14 @@ const meta = {
     },
     enableAI: {
       control: { type: 'boolean' },
-      description: 'Enable AI-powered case analysis'
+      description: 'Enable AI-powered case analysis',
     },
     showStats: {
       control: { type: 'boolean' },
-      description: 'Display case statistics dashboard'
+      description: 'Display case statistics dashboard',
     }
   },
-  tags: ['autodocs']
+  tags: ['autodocs'],
 } satisfies Meta<LegalCaseManager>;
 
 export default meta;
@@ -46,7 +46,7 @@ export const Default: Story = {
     filterMode: 'all',
     sortBy: 'date',
     enableAI: true,
-    showStats: true
+    showStats: true,
   }
 };
 
@@ -56,12 +56,12 @@ export const GridView: Story = {
     filterMode: 'active',
     sortBy: 'priority',
     enableAI: true,
-    showStats: false
+    showStats: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Grid view layout optimized for visual case management'
+        story: 'Grid view layout optimized for visual case management',
       }
     }
   }
@@ -73,12 +73,12 @@ export const Timeline: Story = {
     filterMode: 'all',
     sortBy: 'date',
     enableAI: false,
-    showStats: true
+    showStats: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Timeline view showing chronological case progression'
+        story: 'Timeline view showing chronological case progression',
       }
     }
   }
@@ -90,12 +90,12 @@ export const KanbanBoard: Story = {
     filterMode: 'active',
     sortBy: 'status',
     enableAI: true,
-    showStats: false
+    showStats: false,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Kanban board for workflow-based case management'
+        story: 'Kanban board for workflow-based case management',
       }
     }
   }
@@ -107,12 +107,12 @@ export const AssignedCases: Story = {
     filterMode: 'assigned',
     sortBy: 'priority',
     enableAI: true,
-    showStats: true
+    showStats: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Focus view showing only cases assigned to current user'
+        story: 'Focus view showing only cases assigned to current user',
       }
     }
   }
@@ -124,12 +124,12 @@ export const ClosedCases: Story = {
     filterMode: 'closed',
     sortBy: 'date',
     enableAI: false,
-    showStats: true
+    showStats: true,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Archive view for completed and closed cases'
+        story: 'Archive view for completed and closed cases',
       }
     }
   }

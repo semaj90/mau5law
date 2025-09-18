@@ -11,7 +11,7 @@ interface ScaleDemoConfig {
   simulateDocumentCount: number;
   showPerformanceComparison: boolean;
   enableFAISSTraining: boolean;
-  testScalability: boolean;
+  testScalability: boolean;,
 }
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -21,20 +21,20 @@ export const GET: RequestHandler = async ({ url }) => {
   try {
     switch (action) {
       case 'scaling-analysis':
-        return json(await performScalingAnalysis(documentCount));
+        return json(await performScalingAnalysis(documentCount);
 
       case 'performance-comparison':
-        return json(await comparePerformanceAtScale(documentCount));
+        return json(await comparePerformanceAtScale(documentCount);
 
       case 'faiss-training-demo':
-        return json(await demonstrateFAISSTraining(documentCount));
+        return json(await demonstrateFAISSTraining(documentCount);
 
       case 'enterprise-readiness':
-        return json(await assessEnterpriseReadiness(documentCount));
+        return json(await assessEnterpriseReadiness(documentCount);
 
       case 'overview':
       default:
-        return json(await getScalingOverview());
+        return json(await getScalingOverview();,
     }
   } catch (error) {
     console.error('FAISS scaling demo error:', error);
@@ -51,7 +51,7 @@ async function getScalingOverview() {
       current_system: "PostgreSQL pgvector + FAISS GPU Hybrid",
       optimization_for: "100K+ legal documents",
       performance_target: "1-5ms search latency",
-      memory_efficiency: "95% GPU utilization"
+      memory_efficiency: "95% GPU utilization",
     },
 
     scaling_thresholds: {
@@ -78,7 +78,7 @@ async function getScalingOverview() {
         search_time: "~1-5ms",
         memory: "~10-50GB",
         use_case: "🏆 Enterprise legal platforms, BigLaw",
-        performance_multiplier: "50-100x faster than pgvector"
+        performance_multiplier: "50-100x faster than pgvector",
       },
       "1M+ documents": {
         system: "FAISS GPU clusters",
@@ -123,7 +123,7 @@ async function performScalingAnalysis(targetCount: number) {
       primary_system: recommendation.primarySystem,
       index_type: recommendation.indexType,
       configuration: recommendation.configuration,
-      reasoning: recommendation.reasoning
+      reasoning: recommendation.reasoning,
     },
 
     performance_projection: {
@@ -131,26 +131,26 @@ async function performScalingAnalysis(targetCount: number) {
       throughput: performance.throughput,
       memory_usage: performance.memoryUsage,
       gpu_utilization: performance.gpuUtilization,
-      index_build_time: performance.indexBuildTime
+      index_build_time: performance.indexBuildTime,
     },
 
     resource_requirements: {
       gpu_memory: resources.gpuMemory,
       cpu_memory: resources.cpuMemory,
       storage: resources.storage,
-      compute_time: resources.computeTime
+      compute_time: resources.computeTime,
     },
 
     scaling_benefits: {
       speed_improvement: `${performance.speedupVsPgVector}x faster than pure pgvector`,
       memory_efficiency: `${((1 - performance.memoryRatio) * 100).toFixed(1)}% memory savings`,
       cost_efficiency: performance.costEfficiency,
-      enterprise_ready: targetCount >= 100000
+      enterprise_ready: targetCount >= 100000,
     },
 
     implementation_timeline: generateImplementationTimeline(targetCount),
 
-    processing_time_ms: performance.now() - startTime
+    processing_time_ms: performance.now() - startTime,
   };
 }
 
@@ -172,7 +172,7 @@ async function comparePerformanceAtScale(documentCount: number) {
       memory_usage_gb: perf.memory,
       accuracy_percent: perf.accuracy,
       relative_performance: perf.relativeSpeed,
-      recommended_for: perf.recommendedFor
+      recommended_for: perf.recommendedFor,
     };
   });
 
@@ -205,12 +205,12 @@ async function comparePerformanceAtScale(documentCount: number) {
       speed_multiplier: Math.round(50 + (documentCount - 100000) / 10000),
       memory_savings_percent: 75,
       gpu_utilization_percent: 95,
-      sweet_spot: "🎯 You're in the FAISS sweet spot (100K+)!"
+      sweet_spot: "🎯 You're in the FAISS sweet spot (100K+)!",
     } : {
       enabled: false,
       threshold: 100000,
       current_count: documentCount,
-      recommendation: "Scale to 100K+ documents to unlock FAISS GPU benefits"
+      recommendation: "Scale to 100K+ documents to unlock FAISS GPU benefits",
     }
   };
 }
@@ -223,7 +223,7 @@ async function demonstrateFAISSTraining(documentCount: number) {
       title: "FAISS Training Demo",
       status: "not_recommended",
       message: `FAISS training recommended for 100K+ documents. Current: ${documentCount.toLocaleString()}`,
-      recommendation: "Use pgvector for smaller datasets"
+      recommendation: "Use pgvector for smaller datasets",
     };
   }
 
@@ -238,7 +238,7 @@ async function demonstrateFAISSTraining(documentCount: number) {
       index_type: trainingConfig.indexType,
       parameters: trainingConfig.parameters,
       expected_memory: trainingConfig.expectedMemory,
-      training_time_estimate: trainingConfig.trainingTime
+      training_time_estimate: trainingConfig.trainingTime,
     },
 
     training_process: trainingSteps,
@@ -256,17 +256,17 @@ async function demonstrateFAISSTraining(documentCount: number) {
       tensor_cores_utilized: true,
       memory_bandwidth_optimized: true,
       cuda_streams: 4,
-      batch_processing: true
+      batch_processing: true,
     },
 
     production_readiness: {
       enterprise_scale: documentCount >= 100000,
       performance_tier: documentCount >= 1000000 ? "Ultra-Scale" : "Enterprise",
       deployment_complexity: documentCount >= 1000000 ? "Advanced" : "Standard",
-      monitoring_required: true
+      monitoring_required: true,
     },
 
-    processing_time_ms: performance.now() - startTime
+    processing_time_ms: performance.now() - startTime,
   };
 }
 
@@ -280,7 +280,7 @@ async function assessEnterpriseReadiness(documentCount: number) {
     readiness_score: {
       overall: readinessScore.overall,
       breakdown: readinessScore.breakdown,
-      grade: readinessScore.grade
+      grade: readinessScore.grade,
     },
 
     capability_matrix: {
@@ -288,21 +288,21 @@ async function assessEnterpriseReadiness(documentCount: number) {
         status: documentCount >= 100000 ? "✅ Enterprise Ready" : "⚠️ Scaling Needed",
         current: simulateSearchPerformance(documentCount),
         target: "< 5ms search latency",
-        meets_target: documentCount >= 100000
+        meets_target: documentCount >= 100000,
       },
 
       scalability: {
         status: documentCount >= 100000 ? "✅ Horizontally Scalable" : "📈 Growth Potential",
         current_capacity: documentCount,
         scaling_headroom: `${Math.max(0, 10000000 - documentCount).toLocaleString()} documents`,
-        architecture: documentCount >= 100000 ? "FAISS GPU Optimized" : "pgvector Foundation"
+        architecture: documentCount >= 100000 ? "FAISS GPU Optimized" : "pgvector Foundation",
       },
 
       reliability: {
         status: "✅ Production Grade",
         features: ["Automatic failover", "Health monitoring", "Error recovery"],
         uptime_target: "99.9%",
-        backup_strategy: "Multi-tier redundancy"
+        backup_strategy: "Multi-tier redundancy",
       },
 
       compliance: {
@@ -317,12 +317,12 @@ async function assessEnterpriseReadiness(documentCount: number) {
     cost_analysis: {
       infrastructure_cost: calculateInfrastructureCost(documentCount),
       performance_benefit: `${Math.min(100, documentCount / 1000)}x ROI on search performance`,
-      tco_optimization: documentCount >= 100000 ? "FAISS provides optimal TCO" : "pgvector cost-effective for current scale"
+      tco_optimization: documentCount >= 100000 ? "FAISS provides optimal TCO" : "pgvector cost-effective for current scale",
     }
   };
 }
 
-// Helper functions for realistic simulation
+// Helper functions for realistic simulation;
 function getArchitectureRecommendation(documentCount: number) {
   if (documentCount < 10000) {
     return {
@@ -348,7 +348,7 @@ function getArchitectureRecommendation(documentCount: number) {
     configuration: {
       nlist: Math.min(4096, documentCount / 25),
       nprobe: 64,
-      pq_nbytes: 64
+      pq_nbytes: 64,
     },
     reasoning: `Enterprise scale (${documentCount.toLocaleString()}), FAISS GPU provides maximum performance with 50-100x speedup`
   };
@@ -367,7 +367,7 @@ function simulatePerformanceAtScale(documentCount: number) {
     indexBuildTime: Math.max(5, documentCount / 10000), // minutes
     speedupVsPgVector: Math.min(100, 10 + documentCount / 10000),
     memoryRatio: 0.25, // PQ compression
-    costEfficiency: documentCount >= 100000 ? "Excellent" : "Good"
+    costEfficiency: documentCount >= 100000 ? "Excellent" : "Good",
   };
 }
 
@@ -379,7 +379,7 @@ function simulateScenarioPerformance(scenario: string, documentCount: number) {
       memory: documentCount * 768 * 4 / (1024 * 1024 * 1024),
       accuracy: 99,
       relativeSpeed: 1,
-      recommendedFor: "< 10K documents"
+      recommendedFor: "< 10K documents",
     },
     hybrid_cached: {
       latency: Math.max(5, documentCount / 2000),
@@ -387,7 +387,7 @@ function simulateScenarioPerformance(scenario: string, documentCount: number) {
       memory: documentCount * 768 * 4 / (1024 * 1024 * 1024) * 0.8,
       accuracy: 98,
       relativeSpeed: 2,
-      recommendedFor: "10K - 50K documents"
+      recommendedFor: "10K - 50K documents",
     },
     faiss_hybrid: {
       latency: Math.max(3, 5 + Math.log10(documentCount / 10000)),
@@ -395,7 +395,7 @@ function simulateScenarioPerformance(scenario: string, documentCount: number) {
       memory: documentCount * 768 * 4 / (1024 * 1024 * 1024) * 0.5,
       accuracy: 97,
       relativeSpeed: Math.min(20, 5 + documentCount / 10000),
-      recommendedFor: "50K - 100K documents"
+      recommendedFor: "50K - 100K documents",
     },
     faiss_primary: {
       latency: Math.max(1, 2 + Math.log10(documentCount / 100000)),
@@ -403,7 +403,7 @@ function simulateScenarioPerformance(scenario: string, documentCount: number) {
       memory: documentCount * 768 * 4 / (1024 * 1024 * 1024) * 0.25,
       accuracy: 96.5,
       relativeSpeed: Math.min(100, 10 + documentCount / 5000),
-      recommendedFor: "🚀 100K+ documents (Enterprise)"
+      recommendedFor: "🚀 100K+ documents (Enterprise)",
     }
   };
 
@@ -439,14 +439,14 @@ function generateImplementationTimeline(documentCount: number) {
   ];
 }
 
-// Additional helper functions...
+// Additional helper functions...;
 function generateFAISSTrainingConfig(documentCount: number) {
   return {
     indexType: 'IVF4096,PQ64',
     parameters: {
       nlist: Math.min(4096, Math.floor(documentCount / 25)),
       nprobe: 64,
-      pq_nbytes: 64
+      pq_nbytes: 64,
     },
     expectedMemory: `${Math.round(documentCount * 768 * 0.25 / (1024 * 1024))}MB`,
     trainingTime: `${Math.max(5, Math.round(documentCount / 10000))} minutes`
@@ -459,7 +459,7 @@ function simulateFAISSTraining(documentCount: number) {
     { step: 2, description: "Load training vectors", status: "✅ Complete", time: "30s" },
     { step: 3, description: "K-means clustering", status: "✅ Complete", time: "2m" },
     { step: 4, description: "Product quantization", status: "✅ Complete", time: "1m" },
-    { step: 5, description: "Index optimization", status: "✅ Complete", time: "30s" },
+    { step: 5, description: "Index optimization", status: "✅ Complete", time: "30s" },>
     { step: 6, description: "Validation", status: "✅ Complete", time: "15s" }
   ];
 }
@@ -470,7 +470,7 @@ function calculateEnterpriseReadiness(documentCount: number) {
     performance: documentCount >= 100000 ? 100 : 60,
     reliability: 95,
     security: 90,
-    compliance: 85
+    compliance: 85,
   };
 
   const overall = Object.values(scores).reduce((a, b) => a + b, 0) / Object.keys(scores).length;
@@ -478,7 +478,7 @@ function calculateEnterpriseReadiness(documentCount: number) {
   return {
     overall: Math.round(overall),
     breakdown: scores,
-    grade: overall >= 90 ? 'A' : overall >= 80 ? 'B' : overall >= 70 ? 'C' : 'D'
+    grade: overall >= 90 ? 'A' : overall >= 80 ? 'B' : overall >= 70 ? 'C' : 'D',
   };
 }
 

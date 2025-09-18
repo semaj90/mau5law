@@ -2,11 +2,12 @@
 /**
  * Gemma3 API Client for SvelteKit
  * Provides integration with Ollama and llama.cpp servers
- */
+ */;
+}
 
 export interface ChatMessage {
   role: "system" | "user" | "assistant";
-  content: string;
+  content: string;,
 }
 
 export interface ChatCompletionRequest {
@@ -27,7 +28,7 @@ export interface ChatCompletionResponse {
   usage?: {
     prompt_tokens: number;
     completion_tokens: number;
-    total_tokens: number;
+    total_tokens: number;,
   };
 }
 
@@ -49,7 +50,7 @@ export interface CompletionResponse {
   usage?: {
     prompt_tokens: number;
     completion_tokens: number;
-    total_tokens: number;
+    total_tokens: number;,
   };
 }
 
@@ -70,7 +71,7 @@ export class Gemma3Client {
 
   /**
    * Check if the server is healthy and available
-   */
+   */;
   async healthCheck(): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
@@ -86,7 +87,7 @@ export class Gemma3Client {
 
   /**
    * Get server information
-   */
+   */;
   async getServerInfo(): Promise<any> {
     const response = await fetch(`${this.baseUrl}/health`, {
       method: "GET",
@@ -102,7 +103,7 @@ export class Gemma3Client {
 
   /**
    * List available models
-   */
+   */;
   async listModels(): Promise<any> {
     const response = await fetch(`${this.baseUrl}/v1/models`, {
       method: "GET",
@@ -186,9 +187,9 @@ export class Gemma3Client {
 
   /**
    * Helper: Ask a legal question with proper context
-   */
+   */;
   async askLegalQuestion(question: string, context?: string): Promise<string> {
-    const messages: ChatMessage[] = [
+    const messages: ChatMessage[] = [;
       {
         role: "system",
         content: `You are a specialized Legal AI Assistant with expertise in contract analysis, legal document review, case law research, and legal compliance. You provide accurate, professional legal information and analysis. Always maintain professional accuracy and cite relevant legal principles when applicable.${context ? `\n\nAdditional context: ${context}` : ""}`,
@@ -215,7 +216,7 @@ export class Gemma3Client {
     documentText: string,
     analysisType: string = "general",
   ): Promise<string> {
-    const messages: ChatMessage[] = [
+    const messages: ChatMessage[] = [;
       {
         role: "system",
         content: `You are a specialized Legal AI Assistant for document analysis. Analyze the provided legal document and provide insights on key terms, potential issues, recommendations, and legal compliance. Focus on ${analysisType} analysis.`,
@@ -242,7 +243,7 @@ export class Gemma3Client {
     contractText: string,
     reviewFocus?: string,
   ): Promise<string> {
-    const messages: ChatMessage[] = [
+    const messages: ChatMessage[] = [;
       {
         role: "system",
         content: `You are a specialized Legal AI Assistant for contract review. Analyze the contract for key terms, potential risks, missing clauses, compliance issues, and provide recommendations for improvement.${reviewFocus ? ` Focus particularly on: ${reviewFocus}` : ""}`,
@@ -269,7 +270,7 @@ export class Gemma3Client {
     documentType: string,
     requirements: string,
   ): Promise<string> {
-    const messages: ChatMessage[] = [
+    const messages: ChatMessage[] = [;
       {
         role: "system",
         content: `You are a specialized Legal AI Assistant for document generation. Create professional legal document templates with proper structure, standard clauses, and placeholders for customization.`,
@@ -296,7 +297,7 @@ export class Gemma3Client {
     content: string,
     type: string = "general",
   ): Promise<string> {
-    const messages: ChatMessage[] = [
+    const messages: ChatMessage[] = [;
       {
         role: "system",
         content: `You are a specialized Legal AI Assistant for content summarization. Provide concise, accurate summaries that capture the key points, legal implications, and important details. Focus on ${type} summarization.`,
@@ -320,7 +321,7 @@ export class Gemma3Client {
 // Default client instance
 export const gemma3Client = new Gemma3Client();
 ;
-// Server detection utility
+// Server detection utility;
 export async function detectAvailableServer(): Promise<any> {
   const servers = [
     { url: "http://localhost:11434", name: "Ollama Server" },
@@ -346,10 +347,10 @@ export async function detectAvailableServer(): Promise<any> {
   return null;
 }
 
-// Utility functions for SvelteKit stores
+// Utility functions for SvelteKit stores;
 export function createGemma3Store() {
   if (typeof window === "undefined") {
-    // Server-side, return a mock
+    // Server-side, return a mock;
     return {
       subscribe: () => () => {},
       checkHealth: async () => false,

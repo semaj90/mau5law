@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const evidenceRecords = await db
       .select()
       .from(evidence)
-      .where(eq(evidence.id, evidenceId))
+      .where(eq(evidence.id, evidenceId)
       .limit(1);
 
     if (evidenceRecords.length === 0) {
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     } catch (e: any) {
       console.warn("Failed to parse AI analysis JSON");
     }
-    // Create validation record
+    // Create validation record;
     const validation = {
       evidenceId,
       eventId: eventId || null,
@@ -48,13 +48,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       timestamp: new Date().toISOString(),
     };
 
-    // Update AI analysis with validation feedback
+    // Update AI analysis with validation feedback;
     if (!aiAnalysis.validations) {
       aiAnalysis.validations = [];
     }
     aiAnalysis.validations.push(validation);
 
-    // If there are corrections, apply them to the analysis
+    // If there are corrections, apply them to the analysis;
     if (corrections && typeof corrections === "object") {
       if (corrections.summary) {
         aiAnalysis.summary = corrections.summary;
@@ -74,28 +74,28 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     aiAnalysis.validationScore =
       totalValidations > 0 ? validValidations / totalValidations : 0;
 
-    // Update the evidence record
+    // Update the evidence record;
     const updateData: any = {
       aiAnalysis: JSON.stringify(aiAnalysis),
       updatedAt: new Date().toISOString(),
     };
 
-    // Update summary if corrected
+    // Update summary if corrected;
     if (corrections?.summary) {
       updateData.aiSummary = corrections.summary;
     }
-    // Update tags if corrected
+    // Update tags if corrected;
     if (corrections?.tags) {
       updateData.aiTags = JSON.stringify(corrections.tags);
     }
-    // Update evidence type if corrected
+    // Update evidence type if corrected;
     if (corrections?.evidenceType) {
       updateData.evidenceType = corrections.evidenceType;
     }
     await db
       .update(evidence)
       .set(updateData)
-      .where(eq(evidence.id, evidenceId));
+      .where(eq(evidence.id, evidenceId);
 
     // Store validation in separate table (if you want to track all validations)
     // This would require creating a separate validations table
@@ -114,12 +114,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   } catch (error: any) {
     console.error("Validation error:", error);
 
-    return json(
-      {
+    return json({
         success: false,
         error: "Failed to record validation",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }
@@ -140,7 +139,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const evidenceRecords = await db
       .select()
       .from(evidence)
-      .where(eq(evidence.id, evidenceId))
+      .where(eq(evidence.id, evidenceId)
       .limit(1);
 
     if (evidenceRecords.length === 0) {
@@ -167,12 +166,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   } catch (error: any) {
     console.error("Get validations error:", error);
 
-    return json(
-      {
+    return json({
         success: false,
         error: "Failed to retrieve validations",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }

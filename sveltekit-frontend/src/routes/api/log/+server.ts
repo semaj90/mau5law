@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
 
-// Simple stub for logQueue
+// Simple stub for logQueue;
 const logQueue = {
   add: async (data: any) => {
     console.log('Queue operation (stub):', data);

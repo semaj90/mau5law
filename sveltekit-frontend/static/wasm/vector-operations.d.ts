@@ -47,7 +47,14 @@ export declare function normalize(vectorPtr: number, length: number): void;
  * @param vectorCount `i32`
  * @param algorithm `i32`
  */
-export declare function computeBatchSimilarity(queryPtr: number, vectorsPtr: number, resultsPtr: number, vectorDim: number, vectorCount: number, algorithm: number): void;
+export declare function computeBatchSimilarity(
+  queryPtr: number,
+  vectorsPtr: number,
+  resultsPtr: number,
+  vectorDim: number,
+  vectorCount: number,
+  algorithm: number
+): void;
 /**
  * src/wasm/vector-operations-basic/hashEmbedding
  * @param textPtr `usize`
@@ -55,4 +62,9 @@ export declare function computeBatchSimilarity(queryPtr: number, vectorsPtr: num
  * @param embeddingPtr `usize`
  * @param embeddingDim `i32`
  */
-export declare function hashEmbedding(textPtr: number, textLen: number, embeddingPtr: number, embeddingDim: number): void;
+export declare function hashEmbedding(
+  textPtr: number,
+  textLen: number,
+  embeddingPtr: number,
+  embeddingDim: number
+): void;

@@ -4,25 +4,25 @@
 # Security Headers & Configuration
 security_config:
   authentication:
-    jwt_expiry: "1h"
-    refresh_token_expiry: "7d"
+    jwt_expiry: '1h'
+    refresh_token_expiry: '7d'
     password_min_length: 12
     max_login_attempts: 5
-    lockout_duration: "15m"
+    lockout_duration: '15m'
 
   encryption:
-    algorithm: "aes-256-gcm"
-    key_rotation_interval: "30d"
+    algorithm: 'aes-256-gcm'
+    key_rotation_interval: '30d'
 
   headers:
     csp: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
-    hsts: "max-age=31536000; includeSubDomains"
-    referrer_policy: "strict-origin-when-cross-origin"
+    hsts: 'max-age=31536000; includeSubDomains'
+    referrer_policy: 'strict-origin-when-cross-origin'
 
   rate_limiting:
-    api: "100/15m"
-    auth: "5/15m"
-    upload: "10/1h"
+    api: '100/15m'
+    auth: '5/15m'
+    upload: '10/1h'
 
 # Monitoring Configuration
 monitoring:
@@ -44,14 +44,14 @@ monitoring:
     database_connection_threshold: 90%
 
   dashboards:
-    - name: "Application Overview"
+    - name: 'Application Overview'
       panels:
         - requests_per_second
         - response_times
         - error_rates
         - active_users
 
-    - name: "Legal AI Metrics"
+    - name: 'Legal AI Metrics'
       panels:
         - case_operations
         - evidence_processing
@@ -60,9 +60,9 @@ monitoring:
 
 # Logging Configuration
 logging:
-  level: "info"
-  format: "json"
-  retention: "30d"
+  level: 'info'
+  format: 'json'
+  retention: '30d'
 
   structured_fields:
     - user_id
@@ -77,9 +77,9 @@ logging:
 # Security Middleware Configuration
 security_middleware:
   cors:
-    origin: ["https://yourdomain.com", "https://app.yourdomain.com"]
-    methods: ["GET", "POST", "PUT", "DELETE"]
-    allowed_headers: ["Content-Type", "Authorization"]
+    origin: ['https://yourdomain.com', 'https://app.yourdomain.com']
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+    allowed_headers: ['Content-Type', 'Authorization']
     credentials: true
 
   helmet:
@@ -106,36 +106,36 @@ security_middleware:
 
 # Database Security
 database_security:
-  ssl_mode: "require"
+  ssl_mode: 'require'
   connection_encryption: true
   query_logging: true
   sensitive_data_masking: true
   backup_encryption: true
 
   access_control:
-    read_only_user: "legal_ai_read"
-    app_user: "legal_ai_app"
-    admin_user: "legal_ai_admin"
+    read_only_user: 'legal_ai_read'
+    app_user: 'legal_ai_app'
+    admin_user: 'legal_ai_admin'
 
   audit_log:
     enabled: true
     log_connections: true
     log_disconnections: true
-    log_statement: "all"
+    log_statement: 'all'
     log_duration: true
 
 # API Security
 api_security:
   authentication:
     required: true
-    methods: ["jwt", "api_key"]
+    methods: ['jwt', 'api_key']
 
   authorization:
     rbac_enabled: true
     resource_based: true
 
   input_validation:
-    max_request_size: "10MB"
+    max_request_size: '10MB'
     sanitize_inputs: true
     validate_schemas: true
 
@@ -146,8 +146,8 @@ api_security:
 
 # File Upload Security
 file_upload_security:
-  max_file_size: "100MB"
-  allowed_types: [".pdf", ".docx", ".txt", ".jpg", ".png"]
+  max_file_size: '100MB'
+  allowed_types: ['.pdf', '.docx', '.txt', '.jpg', '.png']
   virus_scanning: true
   content_type_validation: true
   file_name_sanitization: true
@@ -156,7 +156,7 @@ file_upload_security:
   storage:
     encryption_at_rest: true
     access_logging: true
-    retention_policy: "7 years"
+    retention_policy: '7 years'
 
 # Environment Variables Security
 env_security:
@@ -173,15 +173,15 @@ env_security:
     database_ssl_required: true
 
   rotation_schedule:
-    jwt_secret: "monthly"
-    encryption_key: "quarterly"
-    api_keys: "monthly"
+    jwt_secret: 'monthly'
+    encryption_key: 'quarterly'
+    api_keys: 'monthly'
 
 # Compliance & Audit
 compliance:
   gdpr:
     enabled: true
-    data_retention: "7 years"
+    data_retention: '7 years'
     right_to_erasure: true
     data_portability: true
     consent_management: true
@@ -197,4 +197,4 @@ compliance:
     data_access: true
     configuration_changes: true
     security_events: true
-    retention_period: "10 years"
+    retention_period: '10 years'

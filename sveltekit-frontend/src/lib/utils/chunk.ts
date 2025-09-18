@@ -11,24 +11,24 @@ export function chunkTextByBytes(text: string, maxBytes = 2048): string[] {
       current.push(w);
       size = bytes;
     } else {
-      if (current.length) chunks.push(current.join(' '));
+      if (current.length) chunks.push(current.join(' ');
       current = [w];
       size = encoder.encode(w).length;
       if (size > maxBytes) {
         // Hard split long tokens
-        chunks.push(w.slice(0, Math.max(1, Math.floor(maxBytes / 2))));
+        chunks.push(w.slice(0, Math.max(1, Math.floor(maxBytes / 2)));
         current = [];
         size = 0;
       }
     }
   }
-  if (current.length) chunks.push(current.join(' '));
+  if (current.length) chunks.push(current.join(' ');
   return chunks;
 }
 
 export function chunkArray<T>(arr: T[], size: number): T[][] {
   const out: T[][] = [];
-  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size);
   return out;
 }
 

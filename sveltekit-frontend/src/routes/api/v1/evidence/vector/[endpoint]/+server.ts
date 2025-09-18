@@ -12,33 +12,33 @@ const CUDA_SERVICE_URL = 'http://localhost:8096';
 const EMBEDDING_MODEL = 'nomic-embed-text:latest';
 const SIMILARITY_THRESHOLD = 0.65;
 
-// Advanced schemas
+// Advanced schemas;
 const VectorSearchSchema = z.object({
   query: z.string().min(1),
   searchType: z.enum(['semantic', 'legal', 'factual', 'temporal']).default('semantic'),
   evidenceTypes: z.array(z.string()).optional(),
   timeRange: z.object({
     start: z.string().optional(),
-    end: z.string().optional()
+    end: z.string().optional(),
   }).optional(),
   weights: z.object({
     semantic: z.number().min(0).max(1).default(0.4),
     legal: z.number().min(0).max(1).default(0.3),
     temporal: z.number().min(0).max(1).default(0.2),
-    contextual: z.number().min(0).max(1).default(0.1)
+    contextual: z.number().min(0).max(1).default(0.1),
   }).optional(),
   minSimilarity: z.number().min(0).max(1).default(0.65),
-  maxResults: z.number().min(1).max(50).default(10)
+  maxResults: z.number().min(1).max(50).default(10),
 });
 
 const ClusterAnalysisSchema = z.object({
   evidenceIds: z.array(z.string().uuid()),
   clusterMethod: z.enum(['kmeans', 'hierarchical', 'dbscan']).default('kmeans'),
   numClusters: z.number().min(2).max(20).optional(),
-  includeOutliers: z.boolean().default(false)
+  includeOutliers: z.boolean().default(false),
 });
 
-// Types
+// Types;
 interface VectorEmbedding {
   id: string;
   vector: number[];
@@ -47,7 +47,7 @@ interface VectorEmbedding {
     timestamp: string;
     legalContext: string[];
     entityMentions: string[];
-    topicTags: string[];
+    topicTags: string[];,
   };
 }
 
@@ -59,11 +59,11 @@ interface SimilarityResult {
     semantic: number;
     legal: number;
     temporal: number;
-    contextual: number;
+    contextual: number;,
   };
   matchingConcepts: string[];
   relevantEntities: string[];
-  confidenceScore: number;
+  confidenceScore: number;,
 }
 
 interface EvidenceCluster {
@@ -72,10 +72,10 @@ interface EvidenceCluster {
   members: string[];
   commonThemes: string[];
   clusterStrength: number;
-  legalRelevance: string;
+  legalRelevance: string;,
 }
 
-// Advanced similarity calculation with multiple dimensions
+// Advanced similarity calculation with multiple dimensions;
 class AdvancedSimilarityEngine {
 
   // Multi-dimensional similarity calculation
@@ -121,12 +121,12 @@ class AdvancedSimilarityEngine {
         semantic: semanticSim,
         legal: legalSim,
         temporal: temporalSim,
-        contextual: contextualSim
+        contextual: contextualSim,
       }
     };
   }
 
-  // Standard cosine similarity
+  // Standard cosine similarity;
   static cosineSimilarity(a: number[], b: number[]): number {
     if (a.length !== b.length) return 0;
 
@@ -146,18 +146,18 @@ class AdvancedSimilarityEngine {
     return (normA === 0 || normB === 0) ? 0 : dotProduct / (normA * normB);
   }
 
-  // Jaccard similarity for sets
+  // Jaccard similarity for sets;
   static jaccardSimilarity(set1: string[], set2: string[]): number {
-    const s1 = new Set(set1.map(s => s.toLowerCase()));
-    const s2 = new Set(set2.map(s => s.toLowerCase()));
+    const s1 = new Set(set1.map(s => s.toLowerCase());
+    const s2 = new Set(set2.map(s => s.toLowerCase());
 
-    const intersection = new Set([...s1].filter(x => s2.has(x)));
+    const intersection = new Set([...s1].filter(x => s2.has(x));
     const union = new Set([...s1, ...s2]);
 
     return union.size === 0 ? 0 : intersection.size / union.size;
   }
 
-  // Time-based similarity with exponential decay
+  // Time-based similarity with exponential decay;
   static temporalSimilarity(time1: string, time2: string): number {
     const date1 = new Date(time1).getTime();
     const date2 = new Date(time2).getTime();
@@ -168,7 +168,7 @@ class AdvancedSimilarityEngine {
     return Math.exp(-daysDiff / decayFactor);
   }
 
-  // Entity-based similarity
+  // Entity-based similarity;
   static entitySimilarity(entities1: string[], entities2: string[]): number {
     return this.jaccardSimilarity(entities1, entities2);
   }
@@ -177,7 +177,7 @@ class AdvancedSimilarityEngine {
   static performClustering(
     embeddings: VectorEmbedding[],
     numClusters: number,
-    method: 'kmeans' | 'hierarchical' | 'dbscan'
+    method: 'kmeans' | 'hierarchical' | 'dbscan';
   ): EvidenceCluster[] {
     // Simplified K-means implementation
     const clusters: EvidenceCluster[] = [];
@@ -190,7 +190,7 @@ class AdvancedSimilarityEngine {
     const centroids = this.initializeCentroids(embeddings, numClusters);
     const assignments: number[] = new Array(embeddings.length);
 
-    // K-means iterations
+    // K-means iterations;
     for (let iter = 0; iter < 50; iter++) {
       // Assign each point to nearest centroid
       let changed = false;
@@ -214,16 +214,16 @@ class AdvancedSimilarityEngine {
 
       if (!changed) break;
 
-      // Update centroids
+      // Update centroids;
       for (let j = 0; j < centroids.length; j++) {
         const clusterPoints = embeddings.filter((_, i) => assignments[i] === j);
         if (clusterPoints.length > 0) {
-          centroids[j] = this.calculateCentroid(clusterPoints.map(p => p.vector));
+          centroids[j] = this.calculateCentroid(clusterPoints.map(p => p.vector);
         }
       }
     }
 
-    // Build cluster results
+    // Build cluster results;
     for (let i = 0; i < numClusters; i++) {
       const members = embeddings
         .filter((_, idx) => assignments[idx] === i)
@@ -240,7 +240,7 @@ class AdvancedSimilarityEngine {
           members,
           commonThemes,
           clusterStrength: members.length / embeddings.length,
-          legalRelevance: this.assessLegalRelevance(commonThemes)
+          legalRelevance: this.assessLegalRelevance(commonThemes),
         });
       }
     }
@@ -248,7 +248,7 @@ class AdvancedSimilarityEngine {
     return clusters;
   }
 
-  // Helper methods
+  // Helper methods;
   static initializeCentroids(embeddings: VectorEmbedding[], k: number): number[][] {
     const centroids: number[][] = [];
     const dim = embeddings[0]?.vector.length || 0;
@@ -288,7 +288,7 @@ class AdvancedSimilarityEngine {
       themeCount.set(theme, (themeCount.get(theme) || 0) + 1);
     }
 
-    return Array.from(themeCount.entries())
+    return Array.from(themeCount.entries()
       .filter(([_, count]) => count >= 2)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
@@ -297,7 +297,7 @@ class AdvancedSimilarityEngine {
 
   static assessLegalRelevance(themes: string[]): string {
     const legalKeywords = ['contract', 'violation', 'statute', 'regulation', 'compliance', 'liability'];
-    const relevantThemes = themes.filter(item => item.includes(keyword))
+    const relevantThemes = themes.filter(item => item.includes(keyword)
     );
 
     if (relevantThemes.length >= 3) return 'High';
@@ -309,7 +309,7 @@ class AdvancedSimilarityEngine {
 // Mock vector database (replace with pgvector in production)
 const mockVectorDB = new Map<string, VectorEmbedding>();
 
-// Initialize with sample data
+// Initialize with sample data;
 mockVectorDB.set('evidence-001', {
   id: 'evidence-001',
   vector: Array.from({length: 384}, () => Math.random() - 0.5),
@@ -337,13 +337,13 @@ mockVectorDB.set('evidence-002', {
 /*
  * POST /api/v1/evidence/vector/search
  * Advanced vector similarity search with multi-dimensional scoring
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals, url }) => {
   const endpoint = url.pathname.split('/').pop();
 
   if (endpoint === 'search') {
     try {
-      // Authentication check
+      // Authentication check;
       if (!locals.session || !locals.user) {
         return json({ message: 'Authentication required' }, { status: 401 });
       }
@@ -366,7 +366,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       const results: SimilarityResult[] = [];
 
       for (const [evidenceId, embedding] of mockVectorDB) {
-        // Apply filters
+        // Apply filters;
         if (evidenceTypes && !evidenceTypes.includes(embedding.metadata.type)) {
           continue;
         }
@@ -377,13 +377,13 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           if (timeRange.end && evidenceTime > new Date(timeRange.end)) continue;
         }
 
-        // Calculate advanced similarity
+        // Calculate advanced similarity;
         const queryMetadata = {
           type: 'query',
           timestamp: new Date().toISOString(),
           legalContext: extractLegalTerms(query),
           entityMentions: extractEntities(query),
-          topicTags: extractTopics(query)
+          topicTags: extractTopics(query),
         };
 
         const similarity = AdvancedSimilarityEngine.calculateAdvancedSimilarity(
@@ -421,7 +421,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           searchMetrics: {
             avgSimilarity: results.reduce((sum, r) => sum + r.similarity, 0) / results.length || 0,
             highConfidenceCount: results.filter(item => item.length),
-            processingTimeMs: Date.now() % 1000 // Mock processing time
+            processingTimeMs: Date.now() % 1000 // Mock processing time,
           }
         }
       });
@@ -432,13 +432,13 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       if (error instanceof z.ZodError) {
         return json({
           message: 'Invalid search parameters',
-          details: error.errors
+          details: error.errors,
         }, { status: 400 });
       }
 
       return json({
         message: 'Vector search failed',
-        details: error.message
+        details: error.message,
       }, { status: 500 });
     }
   }
@@ -446,7 +446,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
   /*
    * POST /api/v1/evidence/vector/cluster
    * Evidence clustering analysis
-   */
+   */;
   if (endpoint === 'cluster') {
     try {
       if (!locals.session || !locals.user) {
@@ -458,12 +458,12 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
 
       // Get embeddings for specified evidence
       const embeddings = evidenceIds
-        .map(id => mockVectorDB.get(id))
+        .map(id => mockVectorDB.get(id)
         .filter(Boolean) as VectorEmbedding[];
 
       if (embeddings.length < 2) {
         return json({
-          message: 'At least 2 evidence items required for clustering'
+          message: 'At least 2 evidence items required for clustering',
         }, { status: 400 });
       }
 
@@ -474,7 +474,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         clusterMethod
       );
 
-      // Calculate cluster statistics
+      // Calculate cluster statistics;
       const clusterStats = {
         totalClusters: clusters.length,
         avgClusterSize: clusters.reduce((sum, c) => sum + c.members.length, 0) / clusters.length,
@@ -483,7 +483,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
         legalRelevanceDistribution: {
           high: clusters.filter(item => item.length),
           medium: clusters.filter(item => item.length),
-          low: clusters.filter(item => item.length)
+          low: clusters.filter(item => item.length),
         }
       };
 
@@ -493,7 +493,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           clusters,
           statistics: clusterStats,
           method: clusterMethod,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }
       });
 
@@ -503,13 +503,13 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       if (error instanceof z.ZodError) {
         return json({
           message: 'Invalid clustering parameters',
-          details: error.errors
+          details: error.errors,
         }, { status: 400 });
       }
 
       return json({
         message: 'Clustering analysis failed',
-        details: error.message
+        details: error.message,
       }, { status: 500 });
     }
   }
@@ -517,7 +517,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
   return json({ message: 'Endpoint not found' }, { status: 404 });
 };
 
-// Helper functions
+// Helper functions;
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
@@ -525,7 +525,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: EMBEDDING_MODEL,
-        prompt: text
+        prompt: text,
       })
     });
 
@@ -548,7 +548,7 @@ function extractLegalTerms(text: string): string[] {
     'jurisdiction', 'plaintiff', 'defendant', 'motion', 'injunction', 'settlement'
   ];
 
-  return legalTerms.filter(item => item.includes(term.toLowerCase())
+  return legalTerms.filter(item => item.includes(term.toLowerCase()
   );
 }
 
@@ -564,7 +564,7 @@ function extractEntities(text: string): string[] {
   // Extract potential person names (Title Case words)
   const nameRegex = /\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/g;
   const names = text.match(nameRegex) || [];
-  entities.push(...names.slice(0, 5)); // Limit to avoid noise
+  entities.push(...names.slice(0, 5); // Limit to avoid noise
 
   return entities;
 }
@@ -576,22 +576,22 @@ function extractTopics(text: string): string[] {
     'corporate liability', 'intellectual property', 'data breach', 'privacy violation'
   ];
 
-  return topicKeywords.filter(item => item.includes(topic.toLowerCase())
+  return topicKeywords.filter(item => item.includes(topic.toLowerCase()
   );
 }
 
 function findMatchingConcepts(concepts1: string[], concepts2: string[]): string[] {
-  const set1 = new Set(concepts1.map(c => c.toLowerCase()));
-  const set2 = new Set(concepts2.map(c => c.toLowerCase()));
+  const set1 = new Set(concepts1.map(c => c.toLowerCase());
+  const set2 = new Set(concepts2.map(c => c.toLowerCase());
 
-  return concepts1.filter(c => set2.has(c.toLowerCase()));
+  return concepts1.filter(c => set2.has(c.toLowerCase());
 }
 
 function findMatchingEntities(entities1: string[], entities2: string[]): string[] {
-  const set1 = new Set(entities1.map(e => e.toLowerCase()));
-  const set2 = new Set(entities2.map(e => e.toLowerCase()));
+  const set1 = new Set(entities1.map(e => e.toLowerCase());
+  const set2 = new Set(entities2.map(e => e.toLowerCase());
 
-  return entities1.filter(e => set2.has(e.toLowerCase()));
+  return entities1.filter(e => set2.has(e.toLowerCase());
 }
 
 function calculateConfidenceScore(similarity: number, legalContextSize: number): number {

@@ -1,4 +1,5 @@
 # Lazy Loading Strategy for Legal AI Platform
+
 ## Optimizing 30 Essential Routes
 
 ---
@@ -6,7 +7,9 @@
 ## 🎯 **Loading Priority Classification**
 
 ### ⚡ **Immediate Load (Critical - 8 routes)**
+
 These routes need instant availability:
+
 - ✅ `/` - Homepage/Landing
 - ✅ `/auth/login` - User login
 - ✅ `/dashboard` - Main dashboard
@@ -23,6 +26,7 @@ These routes need instant availability:
 ### 🔄 **Lazy Load on Demand (Heavy Components - 15 routes)**
 
 #### **Evidence & Canvas Routes** (Heavy Fabric.js, WebGPU)
+
 ```typescript
 // /cases/[id]/canvas - Canvas with Fabric.js
 <script lang="ts">
@@ -51,6 +55,7 @@ These routes need instant availability:
 ```
 
 #### **AI-Heavy Routes** (LLM, RAG, GPU Processing)
+
 ```typescript
 // /ai/rag - RAG interface with heavy AI components
 <script lang="ts">
@@ -81,6 +86,7 @@ These routes need instant availability:
 ```
 
 **Heavy Routes to Lazy Load**:
+
 - `/cases/[id]/canvas` - Evidence canvas (Fabric.js)
 - `/cases/[caseId]/rag` - Case RAG interface (LLM)
 - `/ai/rag` - RAG interface (Vector search, embeddings)
@@ -97,6 +103,7 @@ These routes need instant availability:
 ### 🔹 **Progressive Load (Medium Priority - 7 routes)**
 
 #### **Administrative & Secondary Features**
+
 ```typescript
 // /reports - Reports generation
 <script lang="ts">
@@ -116,6 +123,7 @@ These routes need instant availability:
 ```
 
 **Progressive Load Routes**:
+
 - `/reports` - Reports generation (Charts, PDF generation)
 - `/legal/documents` - Legal documents (Document processing)
 - `/citations` - Citations management (Reference processing)
@@ -129,6 +137,7 @@ These routes need instant availability:
 ## 📦 **Component-Level Lazy Loading Examples**
 
 ### **Evidence Canvas Component**
+
 ```typescript
 <!-- /cases/[id]/canvas/+page.svelte -->
 <script lang="ts">
@@ -185,6 +194,7 @@ These routes need instant availability:
 ```
 
 ### **AI RAG Interface Component**
+
 ```typescript
 <!-- /ai/rag/+page.svelte -->
 <script lang="ts">
@@ -233,6 +243,7 @@ These routes need instant availability:
 ## ⚙️ **SvelteKit Route-Level Configuration**
 
 ### **Vite Configuration for Code Splitting**
+
 ```typescript
 // vite.config.js
 export default defineConfig({
@@ -244,31 +255,31 @@ export default defineConfig({
           'ai-core': [
             'src/lib/components/ai/RAGAssistantChat.svelte',
             'src/lib/components/ai/VectorSearch.svelte',
-            'src/lib/services/ollama-service.ts'
+            'src/lib/services/ollama-service.ts',
           ],
 
           // Canvas and visualization
           'canvas-fabric': [
             'src/lib/components/canvas/FabricCanvas.svelte',
             'src/lib/components/canvas/EvidenceNode.svelte',
-            'fabric'
+            'fabric',
           ],
 
           // GPU and WebGPU processing
           'gpu-processing': [
             'src/lib/services/gpu-acceleration-service.ts',
-            'src/lib/services/webgpu-service.ts'
+            'src/lib/services/webgpu-service.ts',
           ],
 
           // Legal document processing
           'legal-processing': [
             'src/lib/services/document-processor.ts',
-            'src/lib/services/evidence-analyzer.ts'
-          ]
-        }
-      }
-    }
-  }
+            'src/lib/services/evidence-analyzer.ts',
+          ],
+        },
+      },
+    },
+  },
 });
 ```
 
@@ -277,6 +288,7 @@ export default defineConfig({
 ## 📊 **Performance Benefits**
 
 ### **Before Lazy Loading**
+
 ```
 Initial Bundle Size: 2.8MB
 Time to Interactive: 4.2s
@@ -284,6 +296,7 @@ Routes loaded simultaneously: 267 routes
 ```
 
 ### **After Lazy Loading**
+
 ```
 Initial Bundle Size: 800KB (-71%)
 Time to Interactive: 1.3s (-69%)
@@ -296,16 +309,19 @@ Heavy components: Loaded on demand
 ## 🎯 **Implementation Priority**
 
 ### **Phase 1: Critical Routes** (Week 1)
+
 1. Implement lazy loading for canvas routes (`/cases/[id]/canvas`)
 2. Add progressive loading for AI routes (`/ai/rag`, `/ai/summarize`)
 3. Configure Vite code splitting for heavy components
 
 ### **Phase 2: Secondary Routes** (Week 2)
+
 1. Optimize evidence processing routes
 2. Add lazy loading for detective board
 3. Progressive load for reports and citations
 
 ### **Phase 3: Polish** (Week 3)
+
 1. Add loading skeletons and animations
 2. Preload on hover/focus for instant feel
 3. Monitor bundle sizes and performance metrics
@@ -315,6 +331,7 @@ Heavy components: Loaded on demand
 ## 💡 **Smart Loading Patterns**
 
 ### **Preload on Hover**
+
 ```typescript
 <a
   href="/cases/{caseId}/canvas"
@@ -325,6 +342,7 @@ Heavy components: Loaded on demand
 ```
 
 ### **Intersection Observer Loading**
+
 ```typescript
 // Load component when it enters viewport
 let componentRef;
@@ -343,4 +361,5 @@ onMount(() => {
 });
 ```
 
-This strategy will dramatically improve your initial load time while maintaining full functionality for all 30 essential routes.
+This strategy will dramatically improve your initial load time while maintaining full functionality
+for all 30 essential routes.

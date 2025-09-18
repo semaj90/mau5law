@@ -18,10 +18,10 @@ import type {
 // Map of sessionId -> messages
 export type SessionMap = Map<string, ChatMessage[]>;
 
-// Core state - using a store object pattern for Svelte 5 runes
+// Core state - using a store object pattern for Svelte 5 runes;
 const chatStore = (() => {
   let sessions = $state<ChatSession[]>([]);
-  let sessionMessages = $state<SessionMap>(new Map());
+  let sessionMessages = $state<SessionMap>(new Map();
   let currentSessionId = $state<string | null>(null);
   let connectionStatus = $state<ConnectionStatus>("disconnected");
   let isTyping = $state(false);
@@ -46,7 +46,7 @@ const chatStore = (() => {
   };
 })();
 
-// Export individual properties for backward compatibility
+// Export individual properties for backward compatibility;
 export const sessions = {
   get value() { return chatStore.sessions; },
   set value(val) { chatStore.sessions = val; }
@@ -85,7 +85,7 @@ export const currentMessages = $derived(
   chatStore.currentSessionId ? (chatStore.sessionMessages.get(chatStore.currentSessionId) ?? []) : []
 );
 
-// Session helpers
+// Session helpers;
 export function createSession(input: {
   id: string;
   title?: string;
@@ -127,7 +127,7 @@ export function addMessage(msg: ChatMessage) {
   }
 }
 
-// Presence tracking
+// Presence tracking;
 export function setUserActivity(activity: UserActivity) {
   const i = chatStore.userActivity.findIndex(
     (a) => a.userId === activity.userId && a.sessionId === activity.sessionId
@@ -141,12 +141,12 @@ export function clearStaleActivity(staleMs = 60_000) {
   chatStore.userActivity = chatStore.userActivity.filter((a) => a.lastSeen >= cutoff);
 }
 
-// Time-aware context window selection (recency + role weighting)
+// Time-aware context window selection (recency + role weighting);
 export function getContextWindow(opts: {
   sessionId: string;
   maxTokens?: number; // soft budget
   maxMessages?: number;
-  halfLifeMinutes?: number; // recency decay half-life
+  halfLifeMinutes?: number; // recency decay half-life;
 }) {
   const {
     sessionId,
@@ -167,7 +167,7 @@ export function getContextWindow(opts: {
     msg: m,
     score: decay(m.timestamp) * roleWeight(m.role),
     estTokens: Math.ceil(m.content.length / 4),
-  }));
+  });
 
   // Sort by weighted recency, then take until budgets hit
   scored.sort((a, b) => b.score - a.score);
@@ -190,7 +190,7 @@ let heartbeat: number | null = null;
 let es: EventSource | null = null;
 
 export function connectRealtimeWS(
-  url = typeof location !== "undefined"
+  url = typeof location !== "undefined";
     ? (() => {
         try {
           const env = (import.meta as any)?.env ?? {};
@@ -200,7 +200,7 @@ export function connectRealtimeWS(
           return `${location.origin.replace(/^http/, "ws")}/api/ws`;
         }
       })()
-    : ""
+    : "";
 ) {
   if (!url) return;
   try {
@@ -242,7 +242,7 @@ export function connectRealtimeWS(
 }
 
 export function connectRealtimeSSE(
-  url = typeof location !== "undefined" ? `${location.origin}/api/realtime` : ""
+  url = typeof location !== "undefined" ? `${location.origin}/api/realtime` : "";
 ) {
   if (!url) return;
   try {
@@ -268,8 +268,8 @@ export function connectRealtimeSSE(
 }
 
 export function sendRealtime(payload: any) {
-  if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(payload));
-  // For SSE, send via fetch POST to /api/realtime
+  if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(payload);
+  // For SSE, send via fetch POST to /api/realtime;
   if (!ws && typeof fetch !== "undefined") {
     fetch("/api/realtime", {
       method: "POST",

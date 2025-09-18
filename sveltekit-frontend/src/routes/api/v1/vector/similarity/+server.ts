@@ -21,7 +21,7 @@ interface CUDAResponse {
   result: number | number[];
   gpuTime: number;
   parallelWorkers: number;
-  memoryUsed: number;
+  memoryUsed: number;,
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body: VectorSimilarityRequest = await request.json();
     const { operation, vectorA, vectorB, vectors, algorithm = 0, useCUDA = true, parallel = true } = body;
 
-    // Enhanced validation with performance profiling
+    // Enhanced validation with performance profiling;
     if (!vectorA || vectorA.length === 0) {
       throw error(400, 'vectorA is required and cannot be empty');
     }
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // CHR-ROM optimization: Convert to Float32Array with memory alignment
     const normalizedVectorA = new Float32Array(vectorA);
     const normalizedVectorB = vectorB ? new Float32Array(vectorB) : undefined;
-    const normalizedVectors = vectors?.map(v => new Float32Array(v));
+    const normalizedVectors = vectors?.map(v => new Float32Array(v);
 
     // Smart routing decision with enhanced heuristics
     const dataSize = normalizedVectorA.length + (normalizedVectorB?.length || 0) +
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let memoryUsed = 0;
 
     if (useCUDA && parallel) {
-      // Route to CUDA service for GPU acceleration
+      // Route to CUDA service for GPU acceleration;
       const cudaResult = await processCUDAVectorOperation({
         operation,
         vectorA: normalizedVectorA,
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
       parallelWorkers = cudaResult.parallelWorkers;
       memoryUsed = cudaResult.memoryUsed;
     } else {
-      // Fallback to CPU processing
+      // Fallback to CPU processing;
       result = await processCPUVectorOperation({
         operation,
         vectorA: normalizedVectorA,
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
         totalProcessingTime,
         complexityScore,
         requestId,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       clientOptimizations: {
         ...clientHints,
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
           chrRomRegion: shouldUseCUDA,
           vectorAlignment: true,
           cacheOptimized: true,
-          simdFriendly: !shouldUseCUDA
+          simdFriendly: !shouldUseCUDA,
         }
       }
     });
@@ -139,13 +139,13 @@ async function processCUDAVectorOperation(params: {
   vectorB?: Float32Array;
   vectors?: Float32Array[];
   algorithm: number;
-  requestId: string;
+  requestId: string;,
 }): Promise<CUDAResponse> {
   const { operation, vectorA, vectorB, vectors, algorithm, requestId } = params;
 
   const cudaUrl = getCudaServiceUrl('submit');
 
-  // CHR-ROM optimized payload with tensor core targeting
+  // CHR-ROM optimized payload with tensor core targeting;
   const payload = {
     type: 'vector_operation',
     operation,
@@ -156,7 +156,7 @@ async function processCUDAVectorOperation(params: {
       vectors: vectors?.map(v => Array.from(v)),
       algorithm,
       dimensions: vectorA.length,
-      vectorCount: vectors?.length || (vectorB ? 2 : 1)
+      vectorCount: vectors?.length || (vectorB ? 2 : 1),
     },
     gpu_config: {
       use_tensor_cores: true,
@@ -167,13 +167,13 @@ async function processCUDAVectorOperation(params: {
       tensor_cores: PGVECTOR_CONFIG.cuda.gpu.tensorCores,
       memory_bandwidth_optimization: true,
       simd_instructions: 'AVX512_FP32', // Enhanced SIMD targeting
-      precision: 'mixed_fp16_fp32' // Tensor core optimized precision
+      precision: 'mixed_fp16_fp32' // Tensor core optimized precision,
     },
     performance_hints: {
       expected_throughput: vectors?.length || 1,
       memory_pattern: 'sequential_access',
       cache_locality: 'high',
-      branch_prediction: 'favorable'
+      branch_prediction: 'favorable',
     }
   };
 
@@ -195,7 +195,7 @@ async function processCUDAVectorOperation(params: {
     result: cudaResult.result || cudaResult.similarity || cudaResult.distances,
     gpuTime: cudaResult.gpu_time || 0,
     parallelWorkers: cudaResult.parallel_workers || 1,
-    memoryUsed: cudaResult.memory_used || 0
+    memoryUsed: cudaResult.memory_used || 0,
   };
 }
 
@@ -204,7 +204,7 @@ async function processCPUVectorOperation(params: {
   vectorA: Float32Array;
   vectorB?: Float32Array;
   vectors?: Float32Array[];
-  algorithm: number;
+  algorithm: number;,
 }): Promise<number | number[]> {
   const { operation, vectorA, vectorB, vectors, algorithm } = params;
 
@@ -230,10 +230,10 @@ async function processCPUVectorOperation(params: {
       return vectors.map(vector => {
         switch (algorithm) {
           case 0: return cosineSimilarity(vectorA, vector);
-          case 1: return 1.0 / (1.0 + euclideanDistance(vectorA, vector));
+          case 1: return 1.0 / (1.0 + euclideanDistance(vectorA, vector);
           case 2: return dotProduct(vectorA, vector);
-          case 3: return 1.0 / (1.0 + manhattanDistance(vectorA, vector));
-          default: return 0;
+          case 3: return 1.0 / (1.0 + manhattanDistance(vectorA, vector);
+          default: return 0;,
         }
       });
 
@@ -242,7 +242,7 @@ async function processCPUVectorOperation(params: {
   }
 }
 
-// CPU fallback implementations
+// CPU fallback implementations;
 function cosineSimilarity(a: Float32Array, b: Float32Array): number {
   if (a.length !== b.length) throw new Error('Vector dimensions must match');
 
@@ -258,7 +258,7 @@ function cosineSimilarity(a: Float32Array, b: Float32Array): number {
 
   if (normA < 1e-12 || normB < 1e-12) return 0;
 
-  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
 }
 
 function euclideanDistance(a: Float32Array, b: Float32Array): number {
@@ -295,11 +295,11 @@ function manhattanDistance(a: Float32Array, b: Float32Array): number {
   return sum;
 }
 
-// Enhanced complexity scoring for WebGPU/CUDA routing decisions
+// Enhanced complexity scoring for WebGPU/CUDA routing decisions;
 function calculateComplexityScore(operation: string, dataSize: number, vectorCount: number): number {
   let baseScore = Math.log2(dataSize + 1) * 10;
 
-  // Operation complexity multipliers
+  // Operation complexity multipliers;
   const operationMultipliers = {
     'cosine': 1.5,     // Requires normalization
     'euclidean': 1.2,  // Square root operation
@@ -319,10 +319,10 @@ function calculateComplexityScore(operation: string, dataSize: number, vectorCou
 
   const finalScore = baseScore * multiplier * batchMultiplier;
 
-  return Math.min(100, Math.max(0, finalScore));
+  return Math.min(100, Math.max(0, finalScore);
 }
 
-// WebGPU/WebGL2 client-side processing hints
+// WebGPU/WebGL2 client-side processing hints;
 function generateClientOptimizationHints(operation: string, dataSize: number) {
   return {
     prefer_webgpu: dataSize < 10000 && operation !== 'batch',
@@ -331,6 +331,6 @@ function generateClientOptimizationHints(operation: string, dataSize: number) {
     intel_gpu_optimized: true,
     memory_pattern: 'coalesced_access',
     shader_precision: dataSize > 1000 ? 'highp' : 'mediump',
-    workgroup_size: Math.min(256, Math.max(64, Math.floor(dataSize / 32)))
+    workgroup_size: Math.min(256, Math.max(64, Math.floor(dataSize / 32))
   };
 }

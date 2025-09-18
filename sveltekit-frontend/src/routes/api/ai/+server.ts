@@ -46,7 +46,7 @@ class LegalAIService {
       // Combine system prompt with user prompt
       const fullPrompt = `${systemPrompt}\n\n${request.prompt}`;
 
-      // Call Ollama API
+      // Call Ollama API;
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
         headers: {
@@ -159,7 +159,7 @@ Provide comprehensive legal guidance as appropriate for the query.`
     evidenceConnections: string[];
     suggestedActions: AIServiceResponse['suggestedActions'];
     confidence: number;
-    reasoning: string;
+    reasoning: string;,
   } {
     const lines = response.split('\n').map(line => line.trim()).filter(Boolean);
 
@@ -190,7 +190,7 @@ Provide comprehensive legal guidance as appropriate for the query.`
           suggestedActions.push({
             type,
             description: this.cleanActionDescription(description),
-            priority: this.determinePriority(description)
+            priority: this.determinePriority(description),
           });
         }
       }
@@ -237,17 +237,17 @@ Provide comprehensive legal guidance as appropriate for the query.`
   private calculateConfidence(response: string, context?: string): number {
     let confidence = 0.5; // Base confidence
 
-    // Increase confidence for structured responses
+    // Increase confidence for structured responses;
     if (response.includes('•') || response.includes('-') || response.includes('1.')) {
       confidence += 0.1;
     }
 
     // Increase confidence for legal terminology
     const legalTerms = ['evidence', 'legal', 'court', 'case', 'precedent', 'statute', 'regulation'];
-    const foundTerms = legalTerms.filter(item => item.includes(term));
+    const foundTerms = legalTerms.filter(item => item.includes(term);
     confidence += (foundTerms.length / legalTerms.length) * 0.2;
 
-    // Increase confidence for specific context-appropriate content
+    // Increase confidence for specific context-appropriate content;
     const contextKeywords = {
       analysis: ['analyze', 'assessment', 'evaluation', 'finding'],
       connection: ['relationship', 'connect', 'link', 'correlation'],
@@ -257,17 +257,17 @@ Provide comprehensive legal guidance as appropriate for the query.`
 
     if (context && contextKeywords[context as keyof typeof contextKeywords]) {
       const keywords = contextKeywords[context as keyof typeof contextKeywords];
-      const foundKeywords = keywords.filter(item => item.includes(keyword));
+      const foundKeywords = keywords.filter(item => item.includes(keyword);
       confidence += (foundKeywords.length / keywords.length) * 0.2;
     }
 
-    // Decrease confidence for very short responses
+    // Decrease confidence for very short responses;
     if (response.length < 100) {
       confidence -= 0.1;
     }
 
     // Ensure confidence is between 0 and 1
-    return Math.max(0, Math.min(1, confidence));
+    return Math.max(0, Math.min(1, confidence);
   }
 
   private extractReasoning(response: string): string {
@@ -291,7 +291,7 @@ Provide comprehensive legal guidance as appropriate for the query.`
     const sentences = response.split(/[.!?]+/).map(s => s.trim()).filter(Boolean);
     const explanatorySentence = sentences.find(sentence =>
       sentence.length > 20 &&
-      (sentence.includes('indicate') || sentence.includes('suggest') || sentence.includes('show'))
+      (sentence.includes('indicate') || sentence.includes('suggest') || sentence.includes('show')
     );
 
     return explanatorySentence || 'Analysis based on legal best practices and evidence evaluation.';
@@ -304,10 +304,10 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: AIRequest = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!body.caseId || !body.prompt) {
       return json(
-        { error: 'Missing required fields: caseId and prompt' },
+        { error: 'Missing required fields: caseId and prompt' },)
         { status: 400 }
       );
     }
@@ -320,17 +320,16 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('AI API Error:', error);
 
-    return json(
-      {
+    return json({
         error: 'Internal server error',
-        message: error instanceof Error ? error.message: 'Unknown error occurred'
-      },
+        message: error instanceof Error ? error.message: 'Unknown error occurred',
+      },)
       { status: 500 }
     );
   }
 };
 
-// GET endpoint for health check and model status
+// GET endpoint for health check and model status;
 export const GET: RequestHandler = async () => {
   try {
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
@@ -347,15 +346,15 @@ export const GET: RequestHandler = async () => {
     return json({
       status: 'healthy',
       models: models.models || [],
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error) {
-    return json(
+    return json();
       {
         status: 'unhealthy',
         error: error instanceof Error ? error.message: 'Service check failed',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 503 }
     );

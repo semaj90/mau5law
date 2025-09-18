@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let totalConfidence = 0;
     let totalCharacters = 0;
 
-    // Process each page
+    // Process each page;
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
       const page = await pdf.getPage(pageNum);
       
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request }) => {
           page: pageNum,
           text: pageText,
           confidence: 95, // High confidence for extractable text
-          method: 'text_extraction'
+          method: 'text_extraction',
         });
         
         totalCharacters += pageText.length;
@@ -62,10 +62,10 @@ export const POST: RequestHandler = async ({ request }) => {
         await page.render({
           canvas: canvas as any,
           canvasContext: context,
-          viewport: viewport
+          viewport: viewport,
         }).promise;
         
-        // Initialize Tesseract worker
+        // Initialize Tesseract worker;
         const worker = await createWorker('eng', 1, {
           workerPath: '/tesseract-worker.js',
           corePath: '/tesseract-core.js',
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
           page: pageNum,
           text: (data as { text?: any; confidence?: any }).text,
           confidence: (data as { text?: any; confidence?: any }).confidence,
-          method: 'ocr'
+          method: 'ocr',
         });
         
         totalCharacters += (data as { text?: any; confidence?: any }).text.length;
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
       extractedAt: new Date().toISOString(),
       processingStats: {
         ocrPages: ocrResults.filter(item => item.length),
-        extractedPages: ocrResults.filter(item => item.length)
+        extractedPages: ocrResults.filter(item => item.length),
       }
     };
 
@@ -139,7 +139,7 @@ function extractLegalConcepts(text: string): string[] {
   patterns.forEach(pattern => {
     const matches = text.match(pattern);
     if (matches) {
-      matches.forEach(match => concepts.add(match.toLowerCase()));
+      matches.forEach(match => concepts.add(match.toLowerCase());
     }
   });
 
@@ -166,7 +166,7 @@ function extractCitations(text: string): string[] {
   patterns.forEach(pattern => {
     const matches = text.match(pattern);
     if (matches) {
-      matches.forEach(match => citations.add(match.trim()));
+      matches.forEach(match => citations.add(match.trim());
     }
   });
 

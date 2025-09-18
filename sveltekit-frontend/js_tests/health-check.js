@@ -1,11 +1,11 @@
 // Quick test to check if the app is working
-console.log("=== Deeds App Quick Health Check ===");
+console.log('=== Deeds App Quick Health Check ===');
 
 const testUrls = [
-  "http://localhost:5173/",
-  "http://localhost:5173/login",
-  "http://localhost:5173/register",
-  "http://localhost:5173/dashboard",
+  'http://localhost:5173/',
+  'http://localhost:5173/login',
+  'http://localhost:5173/register',
+  'http://localhost:5173/dashboard',
 ];
 
 async function checkHealth() {
@@ -23,6 +23,6 @@ async function checkHealth() {
 // Run the health check
 checkHealth()
   .then(() => {
-    console.log("=== Health Check Complete ===");
+    console.log('=== Health Check Complete ===');
   })
   .catch(console.error);

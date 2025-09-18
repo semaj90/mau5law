@@ -2,7 +2,8 @@
 /**
  * TypeScript wrapper for SIMD-accelerated JSON parser
  * Integrates with legal AI platform for 3x faster document processing
- */
+ */;
+}
 
 export interface LegalDocumentJSON {
   caseId: string;
@@ -24,7 +25,7 @@ export interface SIMDParsingMetrics {
   validationTime: number;
   compressionTime: number;
   compressionRatio: number;
-  throughput: number; // documents per second
+  throughput: number; // documents per second,
 }
 
 export class SIMDJSONAccelerator {
@@ -46,18 +47,18 @@ export class SIMDJSONAccelerator {
     validationTime: 0,
     compressionTime: 0,
     compressionRatio: 0,
-    throughput: 0
+    throughput: 0,
   };
 
   async initialize(): Promise<void> {
     try {
-      // Create memory instance (1MB initial, 16MB max)
+      // Create memory instance (1MB initial, 16MB max);
       this.memory = new WebAssembly.Memory({ 
         initial: 16, // 16 * 64KB = 1MB
-        maximum: 256 // 256 * 64KB = 16MB
+        maximum: 256 // 256 * 64KB = 16MB,
       });
 
-      // Set up imports for WebAssembly module
+      // Set up imports for WebAssembly module;
       const imports = {
         js: {
           memory: this.memory,
@@ -102,7 +103,7 @@ export class SIMDJSONAccelerator {
 
   /**
    * Parse JSON using SIMD acceleration
-   */
+   */;
   async parseDocumentJSON(jsonString: string): Promise<LegalDocumentJSON> {
     const startTime = performance.now();
     
@@ -134,7 +135,7 @@ export class SIMDJSONAccelerator {
 
   /**
    * Batch parse multiple documents with SIMD acceleration
-   */
+   */;
   async batchParseDocuments(jsonStrings: string[]): Promise<LegalDocumentJSON[]> {
     const startTime = performance.now();
     const results: LegalDocumentJSON[] = [];
@@ -160,7 +161,7 @@ export class SIMDJSONAccelerator {
 
   /**
    * Validate legal document structure using SIMD
-   */
+   */;
   async validateDocument(jsonString: string): Promise<boolean> {
     const startTime = performance.now();
     
@@ -189,7 +190,7 @@ export class SIMDJSONAccelerator {
 
   /**
    * Compress embeddings using SIMD operations
-   */
+   */;
   async compressDocumentEmbeddings(embeddings: number[]): Promise<any> {
     const startTime = performance.now();
     
@@ -197,7 +198,7 @@ export class SIMDJSONAccelerator {
       console.warn('⚠️ SIMD compression not available');
       return {
         compressed: new Uint8Array(embeddings),
-        compressionRatio: 1.0
+        compressionRatio: 1.0,
       };
     }
 
@@ -226,14 +227,14 @@ export class SIMDJSONAccelerator {
       console.error('❌ SIMD compression failed:', error);
       return {
         compressed: new Uint8Array(embeddings),
-        compressionRatio: 1.0
+        compressionRatio: 1.0,
       };
     }
   }
 
   /**
    * Extract metadata using SIMD pattern matching
-   */
+   */;
   async extractDocumentMetadata(jsonString: string): Promise<LegalDocumentJSON['metadata']> {
     if (!this.extractMetadata || !this.memory) {
       return this.extractMetadataJS(jsonString);
@@ -259,21 +260,21 @@ export class SIMDJSONAccelerator {
 
   /**
    * Get performance metrics
-   */
+   */;
   getMetrics(): SIMDParsingMetrics {
     return { ...this.metrics };
   }
 
   /**
    * Reset metrics
-   */
+   */;
   resetMetrics(): void {
     this.metrics = {
       parseTime: 0,
       validationTime: 0,
       compressionTime: 0,
       compressionRatio: 0,
-      throughput: 0
+      throughput: 0,
     };
   }
 
@@ -291,7 +292,7 @@ export class SIMDJSONAccelerator {
 
   private readParsedJSON(offset: number): LegalDocumentJSON {
     // Simplified implementation - would read structured data from memory
-    // For now, return a mock structure
+    // For now, return a mock structure;
     return {
       caseId: 'case_001',
       documentType: 'contract',
@@ -303,20 +304,20 @@ export class SIMDJSONAccelerator {
         practiceArea: ['corporate'],
         jurisdiction: 'federal',
         dateCreated: '2024-01-01',
-        parties: []
+        parties: [],
       }
     };
   }
 
   private readMetadataFromMemory(offset: number): LegalDocumentJSON['metadata'] {
-    // Simplified implementation
+    // Simplified implementation;
     return {
       riskLevel: 'medium',
       confidence: 0.85,
       practiceArea: ['corporate'],
       jurisdiction: 'federal',
       dateCreated: '2024-01-01',
-      parties: []
+      parties: [],
     };
   }
 
@@ -340,14 +341,14 @@ export class SIMDJSONAccelerator {
         practiceArea: [],
         jurisdiction: '',
         dateCreated: '',
-        parties: []
+        parties: [],
       };
     }
   }
 
   /**
    * Dispose resources
-   */
+   */;
   dispose(): void {
     this.wasmModule = null;
     this.wasmInstance = null;
@@ -368,7 +369,7 @@ export const simdJSONAccelerator = new SIMDJSONAccelerator();
 
 /**
  * Initialize SIMD JSON accelerator on module load
- */
+ */;
 if (typeof window !== 'undefined') {
   simdJSONAccelerator.initialize().catch(error => {
     console.warn('⚠️ Failed to initialize SIMD JSON accelerator, falling back to JavaScript:', error);

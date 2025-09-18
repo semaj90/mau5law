@@ -4,6 +4,7 @@
 import amqp from 'amqplib';
 import { logger } from '../ai/logger.js';
 import { EventEmitter } from 'events';
+}
 
 export interface LegalDocumentMessage {
   id: string;
@@ -14,7 +15,7 @@ export interface LegalDocumentMessage {
   metadata: Record<string, any>;
   priority: 'low' | 'normal' | 'high' | 'urgent';
   retryCount: number;
-  timestamp: number;
+  timestamp: number;,
 }
 
 export interface ProcessingResult {
@@ -22,7 +23,7 @@ export interface ProcessingResult {
   documentId: string;
   result?: any;
   error?: string;
-  processingTime: number;
+  processingTime: number;,
 }
 
 export type MessageHandler = (message: any, originalMessage?: any) => Promise<any> | any;
@@ -35,7 +36,7 @@ class RabbitMQService extends EventEmitter {
   private maxReconnectAttempts = 5;
   private isConnected = false;
 
-  // Queue configurations for legal document processing
+  // Queue configurations for legal document processing;
   private queues = {
     documentIngestion: 'legal.document.ingestion',
     documentAnalysis: 'legal.document.analysis',
@@ -136,12 +137,12 @@ class RabbitMQService extends EventEmitter {
 
     try {
       const routingKey = this.getRoutingKey(document);
-      const messageBuffer = Buffer.from(JSON.stringify(document));
+      const messageBuffer = Buffer.from(JSON.stringify(document);
 
       const published = await this.channel.publish(
         this.exchanges.legal,
         routingKey,
-        messageBuffer,
+        messageBuffer,)
         { persistent: true, timestamp: Date.now() }
       );
 
@@ -168,7 +169,7 @@ class RabbitMQService extends EventEmitter {
       case 'citation':
         return 'citation.extract';
       default:
-        return 'document.analyze';
+        return 'document.analyze';,
     }
   }
 
@@ -205,7 +206,7 @@ class RabbitMQService extends EventEmitter {
 
   /**
    * Health check method for compatibility
-   */
+   */;
   async healthCheck(): Promise<any> {
     try {
       if (!this.isConnected) {

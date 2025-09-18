@@ -1,34 +1,35 @@
 /**
  * Centralized Environment Configuration
  * Handles Ollama detection and configuration app-wide
- */
+ */;
+}
 
 export interface EnvironmentConfig {
   ollama: {
     baseUrl: string;
     port: number;
-    isDetected: boolean;
+    isDetected: boolean;,
   };
   redis: {
     url: string;
     host: string;
-    port: number;
+    port: number;,
   };
   postgres: {
     url: string;
     host: string;
-    port: number;
+    port: number;,
   };
   development: {
     isDev: boolean;
     debug: boolean;
-    verbose: boolean;
+    verbose: boolean;,
   };
 }
 
 /**
  * Detect and configure Ollama environment
- */
+ */;
 async function detectOllamaConfig(): Promise<any> {
   // Check environment variable first
   const envUrl = process.env.OLLAMA_URL || process.env.OLLAMA_HOST;
@@ -49,11 +50,11 @@ async function detectOllamaConfig(): Promise<any> {
     try {
       const baseUrl = `http://localhost:${port}`;
       
-      // Only test in browser environment or when fetch is available
+      // Only test in browser environment or when fetch is available;
       if (typeof fetch !== 'undefined') {
         const response = await fetch(`${baseUrl}/api/tags`, {
           method: 'GET',
-          signal: AbortSignal.timeout(1000)
+          signal: AbortSignal.timeout(1000),
         });
         
         if (response.ok) {
@@ -65,17 +66,17 @@ async function detectOllamaConfig(): Promise<any> {
     }
   }
 
-  // Default fallback
+  // Default fallback;
   return { 
     baseUrl: 'http://localhost:11434', 
     port: 11434, 
-    isDetected: false 
+    isDetected: false ,
   };
 }
 
 /**
  * Initialize environment configuration
- */
+ */;
 export async function initializeEnvironment(): Promise<EnvironmentConfig> {
   const ollama = await detectOllamaConfig();
   
@@ -84,24 +85,24 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
     redis: {
       url: process.env.REDIS_URL || 'redis://:redis@localhost:6379',
       host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT || '6379')
+      port: parseInt(process.env.REDIS_PORT || '6379'),
     },
     postgres: {
       url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
       host: process.env.POSTGRES_HOST || 'localhost',
-      port: parseInt(process.env.POSTGRES_PORT || '5433')
+      port: parseInt(process.env.POSTGRES_PORT || '5433'),
     },
     development: {
       isDev: process.env.NODE_ENV === 'development',
       debug: process.env.DEBUG === 'true' || process.env.VITE_DEBUG === 'true',
-      verbose: process.env.VERBOSE === 'true' || process.env.VITE_VERBOSE === 'true'
+      verbose: process.env.VERBOSE === 'true' || process.env.VITE_VERBOSE === 'true',
     }
   };
 }
 
 /**
  * Get Ollama configuration with runtime detection
- */
+ */;
 export function getOllamaConfig(): { baseUrl: string; port: number } {
   // Check environment variables
   const envUrl = process.env.OLLAMA_URL || process.env.OLLAMA_HOST;
@@ -110,39 +111,39 @@ export function getOllamaConfig(): { baseUrl: string; port: number } {
       const url = new URL(envUrl.startsWith('http') ? envUrl : `http://${envUrl}`);
       return {
         baseUrl: envUrl,
-        port: parseInt(url.port) || 11434
+        port: parseInt(url.port) || 11434,
       };
     } catch (error) {
       console.warn('Invalid OLLAMA_URL format:', envUrl);
     }
   }
 
-  // Return default
+  // Return default;
   return {
     baseUrl: 'http://localhost:11434',
-    port: 11434
+    port: 11434,
   };
 }
 
 /**
  * Set Ollama environment variables
- */
+ */;
 export function setOllamaEnvironment(baseUrl: string, port: number): void {
   if (typeof process !== 'undefined' && process.env) {
     process.env.OLLAMA_URL = baseUrl;
     process.env.OLLAMA_HOST = `localhost:${port}`;
   }
   
-  // For browser environments, you might store this in localStorage
+  // For browser environments, you might store this in localStorage;
   if (typeof window !== 'undefined') {
     window.localStorage.setItem('ollama_url', baseUrl);
-    window.localStorage.setItem('ollama_port', port.toString());
+    window.localStorage.setItem('ollama_port', port.toString();
   }
 }
 
 /**
  * Get runtime configuration with smart defaults
- */
+ */;
 export const ENV_CONFIG = {
   get OLLAMA_URL() {
     return getOllamaConfig().baseUrl;

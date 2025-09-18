@@ -16,7 +16,6 @@
         "parser": "svelte",
         "svelteStrictMode": false,
         "svelteAllowShorthand": true,
-        "svelteBracketNewLine": false,
         "svelteIndentScriptAndStyle": true
       }
     },

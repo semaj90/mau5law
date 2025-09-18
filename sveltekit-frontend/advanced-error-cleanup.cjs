@@ -10,13 +10,13 @@ const advancedFixes = [
     files: ['src/lib/services/documentUpdateLoop.ts'],
     search: /from "\$lib\/server\/db\/schema"/g,
     replace: 'from "$lib/server/db/schema-unified"',
-    description: 'Fix schema import path'
+    description: 'Fix schema import path',
   },
   {
     files: ['src/lib/services/documentUpdateLoop.ts'],
     search: /documentVectors,\s*queryVectors/g,
     replace: 'documentMetadata',
-    description: 'Replace unavailable imports with available ones'
+    description: 'Replace unavailable imports with available ones',
   },
 
   // Fix ChatOllama property access issues
@@ -24,13 +24,13 @@ const advancedFixes = [
     files: ['src/lib/services/ollama-cuda-service.ts'],
     search: /this\.chatModel\.model/g,
     replace: '(this.chatModel as any).model',
-    description: 'Fix ChatOllama model property access'
+    description: 'Fix ChatOllama model property access',
   },
   {
     files: ['src/lib/services/ollama-cuda-service.ts'],
     search: /Property 'model' does not exist on type 'ChatOllama'/g,
     replace: '',
-    description: 'Remove ChatOllama property errors'
+    description: 'Remove ChatOllama property errors',
   },
 
   // Fix namespace usage issues
@@ -38,25 +38,25 @@ const advancedFixes = [
     files: ['src/lib/services/ollama-integration-layer.ts'],
     search: /ChatRequest/g,
     replace: 'any',
-    description: 'Replace namespace usage with any'
+    description: 'Replace namespace usage with any',
   },
   {
     files: ['src/lib/services/ollama-integration-layer.ts'],
     search: /ChatResponse/g,
     replace: 'any',
-    description: 'Replace namespace usage with any'
+    description: 'Replace namespace usage with any',
   },
   {
     files: ['src/lib/stores/aiAssistant.svelte.ts'],
     search: /HybridRAGResult/g,
     replace: 'any',
-    description: 'Replace namespace usage with any'
+    description: 'Replace namespace usage with any',
   },
   {
     files: ['src/lib/services/predictive-asset-engine.ts'],
     search: /Asset3DSearchResult/g,
     replace: 'any',
-    description: 'Replace namespace usage with any'
+    description: 'Replace namespace usage with any',
   },
 
   // Fix Fuse.js types
@@ -64,13 +64,13 @@ const advancedFixes = [
     files: ['src/lib/services/search-service.ts'],
     search: /Fuse\.FuseOptions/g,
     replace: 'any',
-    description: 'Fix Fuse.js type imports'
+    description: 'Fix Fuse.js type imports',
   },
   {
     files: ['src/lib/services/search-service.ts'],
     search: /Property 'indices' does not exist on type 'unknown'/g,
     replace: '',
-    description: 'Fix Fuse search result properties'
+    description: 'Fix Fuse search result properties',
   },
 
   // Fix RabbitMQ service issues
@@ -78,13 +78,13 @@ const advancedFixes = [
     files: ['src/lib/workers/rabbitmq-service-worker.ts'],
     search: /QUEUES/g,
     replace: '{}',
-    description: 'Replace missing QUEUES export'
+    description: 'Replace missing QUEUES export',
   },
   {
     files: ['src/lib/workers/rabbitmq-service-worker.ts'],
     search: /\.connect\(/g,
     replace: '.connected ? Promise.resolve() : Promise.reject(new Error("Not connected")) //',
-    description: 'Fix RabbitMQ connection method'
+    description: 'Fix RabbitMQ connection method',
   },
 
   // Fix NATS messaging issues
@@ -92,7 +92,7 @@ const advancedFixes = [
     files: ['src/lib/services/nats-messaging-service.ts'],
     search: /unknown.*NATSSubscription/g,
     replace: 'any as NATSSubscription',
-    description: 'Fix NATS subscription types'
+    description: 'Fix NATS subscription types',
   },
 
   // Fix WebGPU buffer issues
@@ -100,13 +100,13 @@ const advancedFixes = [
     files: ['src/lib/webgpu/webgpu-ai-engine.ts', 'src/lib/webgpu/tensor-acceleration.ts'],
     search: /Property 'byteLength' does not exist on type 'BufferLike'/g,
     replace: '',
-    description: 'Fix BufferLike property access'
+    description: 'Fix BufferLike property access',
   },
   {
     files: ['src/lib/webgpu/tensor-acceleration.ts'],
     search: /ArrayBufferView<ArrayBufferLike>/g,
     replace: 'ArrayBuffer',
-    description: 'Fix WebGPU buffer types'
+    description: 'Fix WebGPU buffer types',
   },
 
   // Fix Redis/IORedis confusion
@@ -114,13 +114,13 @@ const advancedFixes = [
     files: ['src/lib/services/som-clustering.ts'],
     search: /Redis/g,
     replace: 'IORedis',
-    description: 'Fix Redis type imports'
+    description: 'Fix Redis type imports',
   },
   {
     files: ['src/lib/services/som-clustering.ts'],
     search: /\.hset/g,
     replace: '.hset',
-    description: 'Keep hset method as is'
+    description: 'Keep hset method as is',
   },
 
   // Fix cache service argument issues
@@ -128,13 +128,13 @@ const advancedFixes = [
     files: ['src/lib/services/caching-service.ts'],
     search: /Expected 1 arguments, but got 0/g,
     replace: '',
-    description: 'Fix cache service argument count'
+    description: 'Fix cache service argument count',
   },
   {
     files: ['src/lib/services/caching-service.ts'],
     search: /Expected 1 arguments, but got 2/g,
     replace: '',
-    description: 'Fix cache service argument count'
+    description: 'Fix cache service argument count',
   },
 
   // Fix typos
@@ -142,7 +142,7 @@ const advancedFixes = [
     files: ['src/lib/services/qlora-reinforcement-learning-trainer.ts'],
     search: /isTraaining/g,
     replace: 'isTraining',
-    description: 'Fix typo in property name'
+    description: 'Fix typo in property name',
   },
 
   // Fix missing exports
@@ -150,13 +150,13 @@ const advancedFixes = [
     files: ['src/lib/webgpu/webasm-ranking-cache.ts'],
     search: /GPUSearchMetrics/g,
     replace: 'any',
-    description: 'Replace missing export with any'
+    description: 'Replace missing export with any',
   },
   {
     files: ['src/lib/utils/webgpu-array-utils.ts'],
     search: /adaptiveQuantization/g,
     replace: '// adaptiveQuantization',
-    description: 'Comment out missing export'
+    description: 'Comment out missing export',
   },
 
   // Fix property access on unknown types
@@ -164,7 +164,7 @@ const advancedFixes = [
     files: ['src/lib/services/multiLayerCache.ts'],
     search: /Property '(insert|findOne|find|remove|clear)' does not exist on type 'unknown'/g,
     replace: '',
-    description: 'Fix LokiDB property access'
+    description: 'Fix LokiDB property access',
   },
 
   // Fix incomplete type annotations
@@ -172,8 +172,8 @@ const advancedFixes = [
     files: ['src/lib/webgpu/shader-cache-manager.ts'],
     search: /Type '.*' is missing the following properties/g,
     replace: '',
-    description: 'Fix incomplete type annotations'
-  }
+    description: 'Fix incomplete type annotations',
+  },
 ];
 
 async function applyAdvancedFixes() {
@@ -233,7 +233,7 @@ async function addTypeIgnores() {
     'src/lib/wasm/vector-wasm-wrapper.ts',
     'src/lib/services/multiLayerCache.ts',
     'src/lib/services/qlora-reinforcement-learning-trainer.ts',
-    'src/lib/services/predictive-asset-engine.ts'
+    'src/lib/services/predictive-asset-engine.ts',
   ];
 
   for (const file of complexFiles) {

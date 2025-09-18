@@ -192,19 +192,19 @@ export async function runPhase2Demo() {
   try {
     // Demo 1: Enhanced Button Integration
     demoEnhancedButton();
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000);
 
     // Demo 2: AI Command Processing
     await demoEvidenceUpload();
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000);
 
     // Demo 3: XState Machine
     demoXStateMachine();
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000);
 
     // Demo 4: Legacy Yorha Support
     demoYorhaIntegration();
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000);
 
     // Demo 5: Evidence System
     demoEvidenceSystem();

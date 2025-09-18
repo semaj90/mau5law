@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   const action = url.searchParams.get('action') || 'health';
   const clientIP = getClientAddress();
 
-  // Rate limiting for validation API
+  // Rate limiting for validation API;
   const rateLimitResult = await redisRateLimit({
     key: `validation_api:${clientIP}`,
     limit: 30, // 30 requests per minute
@@ -33,12 +33,11 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   });
 
   if (!rateLimitResult.allowed) {
-    return json(
-      {
+    return json({
         success: false,
         error: 'Rate limit exceeded',
         retryAfter: rateLimitResult.retryAfter,
-      },
+      },);
       {
         status: 429,
         headers: {
@@ -73,12 +72,11 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
 
       case 'validate': {
         if (validationInProgress) {
-          return json(
-            {
+          return json({
               success: false,
               error: 'Validation already in progress',
               data: { estimatedCompletion: 'Please check back in 30 seconds' },
-            },
+            },)
             { status: 409 }
           );
         }
@@ -94,7 +92,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           lastValidationReport = report;
 
           productionLogger.info(
-            '🔍 System validation completed via API',
+            '🔍 System validation completed via API',);
             {
               duration: Date.now() - startTime,
               component: 'system-validation',
@@ -122,12 +120,11 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
 
       case 'report': {
         if (!lastValidationReport) {
-          return json(
-            {
+          return json({
               success: false,
               error: 'No validation report available. Run validation first.',
               suggestion: 'Use ?action=validate to generate a report',
-            },
+            },)
             { status: 404 }
           );
         }
@@ -178,7 +175,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           },
           validation: {
             inProgress: validationInProgress,
-            lastReport: lastValidationReport
+            lastReport: lastValidationReport;
               ? {
                   timestamp: lastValidationReport.overall.timestamp,
                   status: lastValidationReport.overall.status,
@@ -192,7 +189,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
                 }
               : null,
           },
-          performance: lastValidationReport
+          performance: lastValidationReport;
             ? {
                 averageLatency: lastValidationReport.performance.averageLatency,
                 totalMemoryUsage: lastValidationReport.performance.totalMemoryUsage,
@@ -211,13 +208,12 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         });
       }
 
-      default:
-        return json(
-          {
+      default:;
+        return json({
             success: false,
             error: 'Invalid action',
             availableActions: ['health', 'validate', 'report', 'status', 'metrics'],
-          },
+          },)
           { status: 400 }
         );
     }
@@ -234,7 +230,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       }
     );
 
-    return json(
+    return json();
       {
         success: false,
         error: 'Internal server error',
@@ -249,7 +245,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   const clientIP = getClientAddress();
 
-  // Stricter rate limiting for POST requests
+  // Stricter rate limiting for POST requests;
   const rateLimitResult = await redisRateLimit({
     key: `validation_api_post:${clientIP}`,
     limit: 10, // 10 requests per minute for mutations
@@ -257,12 +253,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   });
 
   if (!rateLimitResult.allowed) {
-    return json(
-      {
+    return json({
         success: false,
         error: 'Rate limit exceeded',
         retryAfter: rateLimitResult.retryAfter,
-      },
+      },)
       { status: 429 }
     );
   }
@@ -278,12 +273,11 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     switch (action) {
       case 'force_validate': {
         if (validationInProgress) {
-          return json(
-            {
+          return json({
               success: false,
               error: 'Validation already in progress',
               suggestion: 'Wait for current validation to complete',
-            },
+            },)
             { status: 409 }
           );
         }
@@ -295,7 +289,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           const config = getConfig();
           const validator = await createValidator(config);
 
-          // Apply any custom options
+          // Apply any custom options;
           if (options?.services) {
             // Future: Allow selective service validation
           }
@@ -304,7 +298,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           lastValidationReport = report;
 
           productionLogger.info(
-            '🚀 Forced system validation completed',
+            '🚀 Forced system validation completed',);
             {
               duration: Date.now() - startTime,
               component: 'system-validation',
@@ -349,7 +343,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         const config = getConfig();
         const validator = await createValidator(config);
 
-        // Run specific benchmark tests
+        // Run specific benchmark tests;
         const benchmarkResults = {
           timestamp: new Date().toISOString(),
           platform: process.platform,
@@ -372,13 +366,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         });
       }
 
-      default:
-        return json(
-          {
+      default:;
+        return json({
             success: false,
             error: 'Invalid action',
             availableActions: ['force_validate', 'clear_cache', 'benchmark'],
-          },
+          },)
           { status: 400 }
         );
     }
@@ -394,7 +387,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       }
     );
 
-    return json(
+    return json();
       {
         success: false,
         error: 'Internal server error',
@@ -416,13 +409,13 @@ async function runMemoryBenchmark(): Promise<any> {
   const before = process.memoryUsage();
 
   // Simulate memory allocation
-  const testData = new Array(100000).fill(0).map((_, i) => ({ id: i, value: Math.random() }));
+  const testData = new Array(100000).fill(0).map((_, i) => ({ id: i, value: Math.random() });
 
   const after = process.memoryUsage();
   const allocatedMB = (after.heapUsed - before.heapUsed) / 1024 / 1024;
 
   return {
-    score: Math.max(0, 100 - Math.floor(allocatedMB)), // Lower allocation = better score
+    score: Math.max(0, 100 - Math.floor(allocatedMB)), // Lower allocation = better score;
     details: {
       allocatedMB: Math.round(allocatedMB * 100) / 100,
       heapBefore: Math.round((before.heapUsed / 1024 / 1024) * 100) / 100,
@@ -435,7 +428,7 @@ async function runDiskIOBenchmark(): Promise<any> {
   const startTime = Date.now();
 
   // Simulate disk I/O operations
-  await new Promise((resolve) => setTimeout(resolve, Math.random() * 50 + 10));
+  await new Promise((resolve) => setTimeout(resolve, Math.random() * 50 + 10);
 
   const duration = Date.now() - startTime;
   const score = Math.max(0, 100 - duration); // Lower duration = better score
@@ -453,7 +446,7 @@ async function runNetworkBenchmark(): Promise<any> {
   const startTime = Date.now();
 
   // Simulate network latency
-  await new Promise((resolve) => setTimeout(resolve, Math.random() * 30 + 5));
+  await new Promise((resolve) => setTimeout(resolve, Math.random() * 30 + 5);
 
   const latency = Date.now() - startTime;
   const score = Math.max(0, 100 - latency * 2); // Lower latency = better score

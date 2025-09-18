@@ -1,6 +1,7 @@
 
 // Comprehensive Database Synchronization Utility
-// Ensures all CRUD operations maintain perfect sync with PostgreSQL database
+// Ensures all CRUD operations maintain perfect sync with PostgreSQL database;
+}
 
 export interface SyncOptions {
   retryAttempts?: number;
@@ -114,7 +115,7 @@ export class DatabaseSyncManager {
       }
       const result = await response.json();
 
-      // Validate response if enabled
+      // Validate response if enabled;
       if (options.validateResponse) {
         this.validateResponseData(entity, result, "create");
       }
@@ -150,7 +151,7 @@ export class DatabaseSyncManager {
       const searchParams = new URLSearchParams();
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          searchParams.append(key, String(value));
+          searchParams.append(key, String(value);
         }
       });
 
@@ -164,7 +165,7 @@ export class DatabaseSyncManager {
       }
       const result = await response.json();
 
-      // Validate response if enabled
+      // Validate response if enabled;
       if (options.validateResponse) {
         this.validateResponseData(entity, result, "read");
       }
@@ -192,7 +193,7 @@ export class DatabaseSyncManager {
     try {
       this.pendingOperations.add(operationId);
 
-      // Optimistic update if enabled
+      // Optimistic update if enabled;
       if (options.enableOptimisticUpdates) {
         this.updateLocalCache(entity, "update", { id, ...data }, id);
       }
@@ -203,7 +204,7 @@ export class DatabaseSyncManager {
       const response = await this.makeRequest(url, "PUT", data, options);
 
       if (!response.ok) {
-        // Revert optimistic update if failed
+        // Revert optimistic update if failed;
         if (options.enableOptimisticUpdates) {
           this.revertOptimisticUpdate(entity, id);
         }
@@ -211,7 +212,7 @@ export class DatabaseSyncManager {
       }
       const result = await response.json();
 
-      // Validate response if enabled
+      // Validate response if enabled;
       if (options.validateResponse) {
         this.validateResponseData(entity, result, "update");
       }
@@ -241,7 +242,7 @@ export class DatabaseSyncManager {
 
       let url = this.endpoints[entity].patch || this.endpoints[entity].update;
 
-      // Handle different patch URL patterns
+      // Handle different patch URL patterns;
       if (entity === "evidence" || entity === "canvasStates") {
         url += `?id=${id}`;
       } else {
@@ -279,7 +280,7 @@ export class DatabaseSyncManager {
 
       let url = this.endpoints[entity].delete;
 
-      // Handle different delete URL patterns
+      // Handle different delete URL patterns;
       if (entity === "evidence" || entity === "canvasStates") {
         url += `?id=${id}`;
       } else {
@@ -337,7 +338,7 @@ export class DatabaseSyncManager {
     }
     return results;
   }
-  // Validation methods
+  // Validation methods;
   private validateCreateData(entity: string, data: any): void {
     const requiredFields = this.getRequiredFields(entity, "create");
 
@@ -350,7 +351,7 @@ export class DatabaseSyncManager {
     }
   }
   private validateUpdateData(entity: string, data: any): void {
-    // Ensure we have some data to update
+    // Ensure we have some data to update;
     if (!data || Object.keys(data).length === 0) {
       throw new Error(`No data provided for ${entity} update`);
     }
@@ -363,7 +364,7 @@ export class DatabaseSyncManager {
     if (!data) {
       throw new Error(`No data returned from ${entity} ${operation} operation`);
     }
-    // Validate that essential fields are present
+    // Validate that essential fields are present;
     if (operation !== "delete" && !data.id) {
       throw new Error(`No ID returned from ${entity} ${operation} operation`);
     }
@@ -461,18 +462,18 @@ export class DatabaseSyncManager {
           cache[data.id] = data;
           break;
         case "update":
-        case "patch":
+        case "patch":;
           if (id && cache[id]) {
             cache[id] = { ...cache[id], ...data };
           }
           break;
-        case "delete":
+        case "delete":;
           if (id && cache[id]) {
             delete cache[id];
           }
           break;
       }
-      localStorage.setItem(cacheKey, JSON.stringify(cache));
+      localStorage.setItem(cacheKey, JSON.stringify(cache);
     }
   }
   private revertOptimisticUpdate(entity: string, id: string): void {
@@ -480,9 +481,9 @@ export class DatabaseSyncManager {
     console.warn(`Reverting optimistic update for ${entity} ${id}`);
   }
   private delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms);
   }
-  // Status methods
+  // Status methods;
   isPending(entity?: string): boolean {
     if (entity) {
       return Array.from(this.pendingOperations).some((op) =>
@@ -494,7 +495,7 @@ export class DatabaseSyncManager {
   getPendingOperations(): string[] {
     return Array.from(this.pendingOperations);
   }
-  // Cleanup method
+  // Cleanup method;
   cleanup(): void {
     this.syncQueue.clear();
     this.pendingOperations.clear();
@@ -503,7 +504,7 @@ export class DatabaseSyncManager {
 // Convenience wrapper functions
 export const dbSync = DatabaseSyncManager.getInstance();
 ;
-// Entity-specific helper functions
+// Entity-specific helper functions;
 export const CasesAPI = {
   list: (params?: unknown, options?: SyncOptions) =>
     dbSync.read("cases", undefined, params, options),

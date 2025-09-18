@@ -33,11 +33,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (error) {
     console.error('Prediction API error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to generate case prediction',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },
+        details: error instanceof Error ? error.message: 'Unknown error',
+      },)
       { status: 500 }
     );
   }

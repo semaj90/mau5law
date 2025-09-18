@@ -9,20 +9,20 @@ import { citationsManager, type AuthUser } from './citations-manager.js';
 export class AuthDemo {
   private static instance: AuthDemo;
 
-  private demoUsers: AuthUser[] = [
+  private demoUsers: AuthUser[] = [;
     {
       id: 'user-1',
       email: 'attorney@lawfirm.com',
       name: 'Sarah Attorney',
       role: 'attorney',
-      isAuthenticated: true
+      isAuthenticated: true,
     },
     {
       id: 'user-2',
       email: 'paralegal@lawfirm.com',
       name: 'Mike Paralegal',
       role: 'paralegal',
-      isAuthenticated: true
+      isAuthenticated: true,
     }
   ];
 
@@ -40,7 +40,7 @@ export class AuthDemo {
     return AuthDemo.instance;
   }
 
-  // Demo sign in - replace with real auth
+  // Demo sign in - replace with real auth;
   async signIn(email: string, password?: string): Promise<boolean> {
     // In demo, just find user by email
     const user = this.demoUsers.find(u => u.email === email);
@@ -55,24 +55,24 @@ export class AuthDemo {
     return false;
   }
 
-  // Demo sign out
+  // Demo sign out;
   async signOut(): Promise<void> {
     this.currentUser = null;
     citationsManager.setUser(null);
     this.clearDemoUser();
   }
 
-  // Get current user
+  // Get current user;
   getCurrentUser(): AuthUser | null {
     return this.currentUser;
   }
 
-  // Check if authenticated
+  // Check if authenticated;
   isAuthenticated(): boolean {
     return this.currentUser?.isAuthenticated ?? false;
   }
 
-  // Demo user creation - replace with real registration
+  // Demo user creation - replace with real registration;
   async createUser(userData: {
     email: string;
     name: string;
@@ -84,16 +84,16 @@ export class AuthDemo {
       email: userData.email,
       name: userData.name,
       role: userData.role,
-      isAuthenticated: true
+      isAuthenticated: true,
     };
 
     this.demoUsers.push(newUser);
     return newUser;
   }
 
-  // Get available demo users (for testing)
+  // Get available demo users (for testing);
   getDemoUsers(): Pick<AuthUser, 'email' | 'name' | 'role'>[] {
-    return this.demoUsers.map(({ email, name, role }) => ({ email, name, role }));
+    return this.demoUsers.map(({ email, name, role }) => ({ email, name, role });
   }
 
   private loadDemoUser(): void {
@@ -113,7 +113,7 @@ export class AuthDemo {
 
   private saveDemoUser(user: AuthUser): void {
     try {
-      localStorage.setItem('legal-ai-demo-user', JSON.stringify(user));
+      localStorage.setItem('legal-ai-demo-user', JSON.stringify(user);
     } catch (error) {
       console.warn('Failed to save demo user:', error);
     }
@@ -131,7 +131,7 @@ export class AuthDemo {
 // Export singleton instance
 export const authDemo = AuthDemo.getInstance();
 
-// Utility functions
+// Utility functions;
 export const useAuthDemo = () => {
   return {
     signIn: authDemo.signIn.bind(authDemo),
@@ -139,6 +139,6 @@ export const useAuthDemo = () => {
     createUser: authDemo.createUser.bind(authDemo),
     getCurrentUser: authDemo.getCurrentUser.bind(authDemo),
     isAuthenticated: authDemo.isAuthenticated.bind(authDemo),
-    getDemoUsers: authDemo.getDemoUsers.bind(authDemo)
+    getDemoUsers: authDemo.getDemoUsers.bind(authDemo),
   };
 };

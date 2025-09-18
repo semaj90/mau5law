@@ -18,7 +18,7 @@ interface FullTextSearchQuery {
     caseId?: string;
     dateRange?: {
       start: string;
-      end: string;
+      end: string;,
     };
   };
   searchMode?: 'simple' | 'advanced' | 'fuzzy';
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
         searchMode,
         sources: {
           postgresql: postgresResults.status === 'fulfilled' ? postgresResults.value.length: 0,
-          loki: lokiResults.status === 'fulfilled' ? lokiResults.value.length : 0
+          loki: lokiResults.status === 'fulfilled' ? lokiResults.value.length : 0,
         }
       }
     });
@@ -109,7 +109,7 @@ async function searchPostgreSQL(
   query: string,
   limit: number,
   filters?: FullTextSearchQuery['filters'],
-  searchMode: string = 'simple'
+  searchMode: string = 'simple';
 ): Promise<FullTextResult[]> {
   console.log('🐘 Searching PostgreSQL with Drizzle ORM...');
 
@@ -143,7 +143,7 @@ async function searchPostgreSQL(
     switch (searchMode) {
       case 'advanced':
         // Use PostgreSQL's full-text search with ranking
-        searchResults = await db
+        searchResults = await db;
           .select({
             id: legalDocuments.id,
             title: legalDocuments.title,
@@ -171,7 +171,7 @@ async function searchPostgreSQL(
 
       case 'fuzzy':
         // Use similarity search with trigrams
-        searchResults = await db
+        searchResults = await db;
           .select({
             id: legalDocuments.id,
             title: legalDocuments.title,
@@ -201,7 +201,7 @@ async function searchPostgreSQL(
 
       default: // 'simple'
         // Simple ILIKE search
-        searchResults = await db
+        searchResults = await db;
           .select({
             id: legalDocuments.id,
             title: legalDocuments.title,
@@ -263,7 +263,7 @@ async function searchPostgreSQL(
     console.error('PostgreSQL search failed:', error);
     
     // Fallback mock data for development
-    return [
+    return [;
       {
         id: 'pg_ft_001',
         title: 'Legal Contract Analysis - Full Text Match',
@@ -277,7 +277,7 @@ async function searchPostgreSQL(
           uploadDate: new Date().toISOString(),
           source: 'postgresql',
           matchType: searchMode,
-          highlights: [query]
+          highlights: [query],
         }
       }
     ];
@@ -290,14 +290,14 @@ async function searchPostgreSQL(
 async function searchLokiLogs(
   query: string,
   limit: number,
-  filters?: FullTextSearchQuery['filters']
+  filters?: FullTextSearchQuery['filters'];
 ): Promise<FullTextResult[]> {
   console.log('📊 Searching Loki.js logs...');
 
   try {
     // In production, this would query actual Loki.js instance
     // For now, return mock log search results
-    const mockLogResults = [
+    const mockLogResults = [;
       {
         timestamp: new Date().toISOString(),
         level: 'info',
@@ -305,12 +305,12 @@ async function searchLokiLogs(
         labels: {
           job: 'legal-platform',
           service: 'document-processor',
-          case_id: filters?.caseId || 'case_log_001'
+          case_id: filters?.caseId || 'case_log_001',
         },
         metadata: {
           processing_time: '2.3s',
           document_count: 1,
-          query_matched: true
+          query_matched: true,
         }
       },
       {
@@ -320,12 +320,12 @@ async function searchLokiLogs(
         labels: {
           job: 'legal-platform',
           service: 'search-engine',
-          case_id: filters?.caseId || 'case_log_002'
+          case_id: filters?.caseId || 'case_log_002',
         },
         metadata: {
           search_time: '5.7s',
           result_count: 0,
-          performance_warning: true
+          performance_warning: true,
         }
       }
     ];
@@ -348,7 +348,7 @@ async function searchLokiLogs(
         service: entry.labels.service,
         ...entry.metadata
       }
-    }));
+    });
 
   } catch (error) {
     console.error('Loki.js search failed:', error);
@@ -356,11 +356,11 @@ async function searchLokiLogs(
   }
 }
 
-// Utility functions
+// Utility functions;
 function generateExcerpt(content: string, query: string, maxLength: number): string {
   if (!content) return '';
   
-  const queryIndex = content.toLowerCase().indexOf(query.toLowerCase());
+  const queryIndex = content.toLowerCase().indexOf(query.toLowerCase();
   if (queryIndex === -1) {
     return content.substring(0, maxLength) + (content.length > maxLength ? '...' : '');
   }
@@ -389,7 +389,7 @@ function extractHighlights(content: string, query: string): string[] {
     }
   });
   
-  return Array.from(new Set(highlights));
+  return Array.from(new Set(highlights);
 }
 
 function extractLogHighlights(message: string, query: string): string[] {

@@ -9,7 +9,7 @@ import { db, sql } from '$lib/server/db';
 import { personsOfInterest } from '$lib/server/db/schema-postgres';
 import { z } from 'zod';
 
-// Query parameters schema for GET requests
+// Query parameters schema for GET requests;
 const PersonsOfInterestQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(20),
@@ -18,7 +18,7 @@ const PersonsOfInterestQuerySchema = z.object({
   search: z.string().optional(),
 });
 
-// Local create schema and service (minimal to unblock compilation)
+// Local create schema and service (minimal to unblock compilation);
 const CreatePersonOfInterestSchema = z.object({
   name: z.string().min(1),
   caseId: z.string().uuid().optional(),
@@ -44,12 +44,12 @@ class PersonsOfInterestCRUDService {
     )) as unknown as Array<any>;
     const rows = await db.select().from(personsOfInterest).limit(limit).offset(offset);
     const total = totalRow?.count ?? rows.length;
-    const totalPages = Math.max(1, Math.ceil(total / limit));
+    const totalPages = Math.max(1, Math.ceil(total / limit);
     return { data: rows, page, limit, total, totalPages };
   }
 
   async listByRiskLevel(
-    riskLevel: 'low' | 'medium' | 'high' | 'critical',
+    riskLevel: 'low' | 'medium' | 'high' | 'critical',)
     { page, limit }: { page: number; limit: number }
   ) {
     const offset = (page - 1) * limit;
@@ -63,14 +63,14 @@ class PersonsOfInterestCRUDService {
       .limit(limit)
       .offset(offset);
     const total = totalRow?.count ?? rows.length;
-    const totalPages = Math.max(1, Math.ceil(total / limit));
+    const totalPages = Math.max(1, Math.ceil(total / limit);
     return { data: rows, page, limit, total, totalPages };
   }
 
   async create(data: CreatePersonOfInterestData) {
     const caseId = (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).caseId || (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).caseIds?.[0] || null;
     const [row] = await db
-      .insert(personsOfInterest)
+      .insert(personsOfInterest);
       .values({
         name: (data as { caseId?: any; caseIds?: any; name?: any; aliases?: any; relationship?: any; threatLevel?: any; status?: any; profileData?: any; tags?: any; position?: any }).name,
         caseId: caseId as any,
@@ -101,38 +101,37 @@ class PersonsOfInterestCRUDService {
 /*
  * GET /api/v1/persons-of-interest
  * List user's persons of interest with pagination and filtering
- */
+ */;
 export const GET: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
-      return json(
-        {
+      return json({
           success: false,
           message: 'Authentication required',
           code: 'AUTH_REQUIRED',
-        },
+        },)
         { status: 401 }
       );
     }
 
     // Parse query parameters
     const url = new URL(request.url);
-    const queryParams = Object.fromEntries(url.searchParams.entries());
+    const queryParams = Object.fromEntries(url.searchParams.entries();
     const validatedQuery = PersonsOfInterestQuerySchema.parse(queryParams);
 
     // Create service instance
     const personsService = new PersonsOfInterestCRUDService(locals.user.id);
 
     // Get persons of interest with pagination - filter by risk level if specified
-    const result = validatedQuery.riskLevel
+    const result = validatedQuery.riskLevel;
       ? await personsService.listByRiskLevel(validatedQuery.riskLevel, {
           page: validatedQuery.page,
-          limit: validatedQuery.limit
-        })
+          limit: validatedQuery.limit,
+        });
       : await personsService.list({
           page: validatedQuery.page,
-          limit: validatedQuery.limit
+          limit: validatedQuery.limit,
         });
 
     return json({
@@ -149,7 +148,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       meta: {
         userId: locals.user.id,
         riskLevel: validatedQuery.riskLevel || null,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     });
 
@@ -157,18 +156,17 @@ export const GET: RequestHandler = async ({ request, locals }) => {
     console.error('Error fetching persons of interest:', err);
 
     if (err instanceof z.ZodError) {
-      return json(
-        {
+      return json({
           success: false,
           message: 'Invalid query parameters',
           code: 'INVALID_QUERY',
           details: err.errors,
-        },
+        },)
         { status: 400 }
       );
     }
 
-    return json(
+    return json();
       {
         success: false,
         message: 'Failed to fetch persons of interest',
@@ -183,17 +181,16 @@ export const GET: RequestHandler = async ({ request, locals }) => {
 /*
  * POST /api/v1/persons-of-interest
  * Create new person of interest
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
-      return json(
-        {
+      return json({
           success: false,
           message: 'Authentication required',
           code: 'AUTH_REQUIRED',
-        },
+        },)
         { status: 401 }
       );
     }
@@ -218,7 +215,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         personId,
         userId: locals.user.id,
         caseIds: validatedData.caseIds,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     }, { status: 201 });
 
@@ -226,32 +223,30 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     console.error('Error creating person of interest:', err);
 
     if (err instanceof z.ZodError) {
-      return json(
-        {
+      return json({
           success: false,
           message: 'Invalid person data',
           code: 'INVALID_DATA',
           details: err.errors,
-        },
+        },)
         { status: 400 }
       );
     }
 
     if (
       typeof err?.message === 'string' &&
-      (err.message.includes('not found') || err.message.includes('access denied'))
+      (err.message.includes('not found') || err.message.includes('access denied');
     ) {
-      return json(
-        {
+      return json({
           success: false,
           message: err.message,
           code: 'ACCESS_DENIED',
-        },
+        },)
         { status: 403 }
       );
     }
 
-    return json(
+    return json();
       {
         success: false,
         message: 'Failed to create person of interest',

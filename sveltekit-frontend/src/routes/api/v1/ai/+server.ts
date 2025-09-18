@@ -9,6 +9,7 @@ import type { RequestHandler } from './$types.js';
 import { ensureError } from '$lib/utils/ensure-error';
 import { productionServiceClient } from "$lib/services/productionServiceClient";
 import { URL } from "url";
+}
 
 export interface AIRequest {
   type: 'summary' | 'legal' | 'live' | 'analysis';
@@ -28,47 +29,47 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const data: AIRequest = await request.json();
     
     if (!data.userId) {
-      return error(400, ensureError({ message: 'User ID is required' }));
+      return error(400, ensureError({ message: 'User ID is required' });
     }
 
     let operation: string;
     let serviceData: any;
 
     switch (data.type) {
-      case 'summary':
+      case 'summary':;
         if (!data.content) {
-          return error(400, ensureError({ message: 'Content is required for summary' }));
+          return error(400, ensureError({ message: 'Content is required for summary' });
         }
         operation = 'ai.summary';
         serviceData = {
           content: data.content,
           userId: data.userId,
-          options: data.options
+          options: data.options,
         };
         break;
 
-      case 'legal':
+      case 'legal':;
         if (!data.document) {
-          return error(400, ensureError({ message: 'Document is required for legal analysis' }));
+          return error(400, ensureError({ message: 'Document is required for legal analysis' });
         }
         operation = 'legal.process';
         serviceData = {
           document: data.document,
           userId: data.userId,
-          options: data.options
+          options: data.options,
         };
         break;
 
-      case 'live':
+      case 'live':;
         if (!data.sessionId) {
-          return error(400, ensureError({ message: 'Session ID is required for live AI' }));
+          return error(400, ensureError({ message: 'Session ID is required for live AI' });
         }
         operation = 'ai.live';
         serviceData = {
           sessionId: data.sessionId,
           userId: data.userId,
           content: data.content,
-          streaming: data.options?.streaming || false
+          streaming: data.options?.streaming || false,
         };
         break;
 
@@ -78,16 +79,16 @@ export const POST: RequestHandler = async ({ request, url }) => {
           content: data.content || data.document,
           userId: data.userId,
           type: 'general_analysis',
-          options: data.options
+          options: data.options,
         };
         break;
 
       default:
-        return error(400, ensureError({ message: 'Invalid AI operation type' }));
+        return error(400, ensureError({ message: 'Invalid AI operation type' });
     }
 
     const result = await productionServiceClient.execute(operation, serviceData, {
-      timeout: data.options?.streaming ? 60000 : 30000
+      timeout: data.options?.streaming ? 60000 : 30000,
     });
 
     return json({
@@ -97,7 +98,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         timestamp: new Date().toISOString(),
         service: getServiceName(data.type),
         operation: data.type,
-        userId: data.userId
+        userId: data.userId,
       }
     });
 
@@ -111,16 +112,16 @@ export const GET: RequestHandler = async ({ url }) => {
   const sessionId = url.searchParams.get('sessionId');
   
   if (sessionId) {
-    // Get session status for live AI
+    // Get session status for live AI;
     try {
       const result = await productionServiceClient.execute('ai.session.status', { sessionId });
       return json({ success: true, data: result });
     } catch (err: any) {
-      return error(404, ensureError({ message: 'Session not found' }));
+      return error(404, ensureError({ message: 'Session not found' });
     }
   }
 
-  // Service health check and capabilities
+  // Service health check and capabilities;
   try {
     const health = await productionServiceClient.checkAllServicesHealth();
     
@@ -131,7 +132,7 @@ export const GET: RequestHandler = async ({ url }) => {
         summary: '/api/v1/ai (type: summary)',
         legal: '/api/v1/ai (type: legal)',
         live: '/api/v1/ai (type: live)',
-        analysis: '/api/v1/ai (type: analysis)'
+        analysis: '/api/v1/ai (type: analysis)',
       },
       health: {
         'ai-enhanced': health['ai-summary'] || false,
@@ -150,10 +151,10 @@ export const GET: RequestHandler = async ({ url }) => {
         'nomic-embed-text',
         'deeds-web'
       ],
-      version: '1.0.0'
+      version: '1.0.0',
     });
   } catch (err: any) {
-    return error(503, ensureError({ message: 'AI service health check failed' }));
+    return error(503, ensureError({ message: 'AI service health check failed' });
   }
 };
 
@@ -163,6 +164,6 @@ function getServiceName(type: string): string {
     case 'legal': return 'enhanced-legal-ai';
     case 'live': return 'live-agent-enhanced';
     case 'analysis': return 'ai-enhanced';
-    default: return 'unknown';
+    default: return 'unknown';,
   }
 }

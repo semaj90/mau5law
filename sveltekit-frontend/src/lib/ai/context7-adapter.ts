@@ -31,7 +31,7 @@ export async function performContext7Search(options: { query: string; maxResults
 }
 
 // Minimal agent orchestrator wrapper. The real implementation exposes methods like
-// triggerAgent, logAuditEntry, getAuditLog. The mock will be a small in-memory shim.
+// triggerAgent, logAuditEntry, getAuditLog. The mock will be a small in-memory shim.;
 export const context7AgentOrchestrator = {
   async triggerAgent(trigger: any) {
     const impl = await ensureContext7Ready();
@@ -42,7 +42,7 @@ export const context7AgentOrchestrator = {
     return (impl as any).triggerAgent(trigger);
   },
   logAuditEntry(entry: any) {
-    // best-effort: call real implementation or noop
+    // best-effort: call real implementation or noop;
     (async () => {
       const impl = await ensureContext7Ready();
       if (impl && typeof (impl as any).logAuditEntry === 'function') {
@@ -56,7 +56,7 @@ export const context7AgentOrchestrator = {
   }
 };
 
-// Semantic auditor wrapper
+// Semantic auditor wrapper;
 export const context7SemanticAuditor = {
   async performSemanticAudit(component: string) {
     const impl = await ensureContext7Ready();

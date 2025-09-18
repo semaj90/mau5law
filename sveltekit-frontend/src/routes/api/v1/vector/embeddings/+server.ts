@@ -36,7 +36,7 @@ interface EmbeddingResponse {
     cudaTime?: number;
     chunksProcessed: number;
     tokensProcessed: number;
-    parallelWorkers: number;
+    parallelWorkers: number;,
   };
 }
 
@@ -83,14 +83,14 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
   let chunks: string[] = [];
   let metadata: any = {};
 
-  // Handle MinIO document processing
+  // Handle MinIO document processing;
   if (minioUrl) {
     const documentResult = await MinIOService.getTextContent(minioUrl);
     const chunkedResult = await chunkText(documentResult.content, {
       chunkSize,
       chunkOverlap,
       preserveParagraphs: true,
-      extractMetadata: true
+      extractMetadata: true,
     });
 
     processedTexts = chunkedResult.chunks;
@@ -98,7 +98,7 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
     metadata = {
       ...documentResult.metadata,
       ...chunkedResult.metadata,
-      originalUrl: minioUrl
+      originalUrl: minioUrl,
     };
   } else {
     // Chunk provided texts if they're large
@@ -131,7 +131,7 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
   );
 
   if (shouldUseCUDA) {
-    // Route to CUDA service for GPU-accelerated embedding
+    // Route to CUDA service for GPU-accelerated embedding;
     const cudaResult = await processCUDAEmbeddings({
       texts: processedTexts,
       model,
@@ -144,7 +144,7 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
     cudaTime = cudaResult.gpuTime;
     parallelWorkers = cudaResult.parallelWorkers;
   } else {
-    // Fallback to CPU/Ollama processing
+    // Fallback to CPU/Ollama processing;
     embeddings = await processOllamaEmbeddings({
       texts: processedTexts,
       model,
@@ -184,13 +184,13 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
         textAlignment: true,
         tokenCacheOptimized: true,
         embeddingQuantization: embeddings.length > 100,
-        batchCoalescing: processedTexts.length > 1
+        batchCoalescing: processedTexts.length > 1,
       },
       gemmaSpecific: {
         modelOptimizations: shouldUseCUDA,
         legalVocabularyCache: true,
         contextWindowOptimization: true,
-        attentionPatternCaching: processedTexts.some(t => t.length > 512)
+        attentionPatternCaching: processedTexts.some(t => t.length > 512),
       }
     }
   });
@@ -221,7 +221,7 @@ async function handleChunking(request: Request, requestId: string, apiStartTime:
   return json({
     success: true,
     ...result
-  });
+  ,});
 }
 
 async function processCUDAEmbeddings(params: {
@@ -229,13 +229,13 @@ async function processCUDAEmbeddings(params: {
   model: string;
   normalize: boolean;
   batchSize: number;
-  requestId: string;
+  requestId: string;,
 }): Promise<{ embeddings: number[][]; gpuTime: number; parallelWorkers: number }> {
   const { texts, model, normalize, batchSize, requestId } = params;
 
   const cudaUrl = getCudaServiceUrl('submit');
 
-  // CHR-ROM optimized embedding payload
+  // CHR-ROM optimized embedding payload;
   const payload = {
     type: 'embedding_batch',
     request_id: requestId,
@@ -248,7 +248,7 @@ async function processCUDAEmbeddings(params: {
       memory_optimization: 'CHR_ROM_aligned',
       parallel_workers: PGVECTOR_CONFIG.performance.maxParallelWorkers,
       gemma_optimizations: true,
-      legal_text_specialized: true
+      legal_text_specialized: true,
     },
     gpu_config: {
       model: PGVECTOR_CONFIG.cuda.gpu.model,
@@ -257,14 +257,14 @@ async function processCUDAEmbeddings(params: {
       memory_gb: PGVECTOR_CONFIG.cuda.gpu.memoryGB,
       compute_capability: PGVECTOR_CONFIG.cuda.gpu.computeCapability,
       memory_bandwidth_optimization: true,
-      mixed_precision: 'fp16_fp32_adaptive'
+      mixed_precision: 'fp16_fp32_adaptive',
     },
     performance_hints: {
       text_type: 'legal_documents',
       expected_token_density: 'high',
       semantic_complexity: 'legal_terminology',
       batch_coherence: 'document_sections',
-      cache_strategy: 'embedding_reuse'
+      cache_strategy: 'embedding_reuse',
     }
   };
 
@@ -285,7 +285,7 @@ async function processCUDAEmbeddings(params: {
   return {
     embeddings: result.embeddings || [],
     gpuTime: result.gpu_time || 0,
-    parallelWorkers: result.parallel_workers || 1
+    parallelWorkers: result.parallel_workers || 1,
   };
 }
 
@@ -293,14 +293,14 @@ async function processOllamaEmbeddings(params: {
   texts: string[];
   model: string;
   normalize: boolean;
-  batchSize: number;
+  batchSize: number;,
 }): Promise<number[][]> {
   const { texts, model, batchSize } = params;
   const ollamaUrl = PGVECTOR_CONFIG.ollama.url;
 
   const embeddings: number[][] = [];
 
-  // Process in batches to avoid memory issues
+  // Process in batches to avoid memory issues;
   for (let i = 0; i < texts.length; i += batchSize) {
     const batch = texts.slice(i, i + batchSize);
 
@@ -351,7 +351,7 @@ async function chunkText(text: string, options: {
 
     for (const paragraph of paragraphs) {
       if (paragraph.length <= chunkSize) {
-        chunks.push(paragraph.trim());
+        chunks.push(paragraph.trim();
       } else {
         // Chunk large paragraphs
         const subChunks = chunkBySize(paragraph, chunkSize, chunkOverlap);
@@ -400,7 +400,7 @@ function estimateTokens(text: string): number {
   return Math.ceil(text.length / 4);
 }
 
-// Enhanced text complexity analysis for legal documents
+// Enhanced text complexity analysis for legal documents;
 function calculateTextComplexity(texts: string[]): number {
   let totalComplexity = 0;
 
@@ -440,7 +440,7 @@ function calculateTextComplexity(texts: string[]): number {
   return Math.min(100, totalComplexity / texts.length);
 }
 
-// WebGPU/WebGL2 client optimization hints for embeddings
+// WebGPU/WebGL2 client optimization hints for embeddings;
 function generateEmbeddingClientHints(texts: string[], complexity: number) {
   const totalTextLength = texts.reduce((acc, text) => acc + text.length, 0);
   const avgTextLength = totalTextLength / texts.length;
@@ -455,9 +455,9 @@ function generateEmbeddingClientHints(texts: string[], complexity: number) {
     tokenizer_hints: {
       expected_tokens: texts.reduce((acc, text) => acc + estimateTokens(text), 0),
       vocabulary_size: 'legal_specialized',
-      subword_optimization: true
+      subword_optimization: true,
     },
     shader_workgroup_size: Math.min(256, Math.max(32, Math.floor(avgTextLength / 10))),
-    precision_requirements: complexity > 75 ? 'high' : 'medium'
+    precision_requirements: complexity > 75 ? 'high' : 'medium',
   };
 }

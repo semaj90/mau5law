@@ -42,8 +42,8 @@ class MCPMultiCoreServer {
         mcp: {
           multicore: { enabled: true, workers: this.workerCount },
           gpu: { acceleration: true, device: 'RTX_3060_TI' },
-          context7: { multicore: true }
-        }
+          context7: { multicore: true },
+        },
       };
     }
   }
@@ -56,8 +56,8 @@ class MCPMultiCoreServer {
         workerData: {
           workerId: i,
           config: this.config,
-          isWorker: true
-        }
+          isWorker: true,
+        },
       });
 
       worker.on('message', (message) => {
@@ -87,30 +87,36 @@ class MCPMultiCoreServer {
       switch (req.url) {
         case '/mcp/health':
           res.writeHead(200);
-          res.end(JSON.stringify({
-            status: 'healthy',
-            workers: this.workers.length,
-            uptime: process.uptime()
-          }));
+          res.end(
+            JSON.stringify({
+              status: 'healthy',
+              workers: this.workers.length,
+              uptime: process.uptime(),
+            })
+          );
           break;
 
         case '/mcp/metrics':
           res.writeHead(200);
-          res.end(JSON.stringify({
-            workers: this.workers.length,
-            memory: process.memoryUsage(),
-            cpu: process.cpuUsage(),
-            gpu: process.env.RTX_3060_OPTIMIZATION || false
-          }));
+          res.end(
+            JSON.stringify({
+              workers: this.workers.length,
+              memory: process.memoryUsage(),
+              cpu: process.cpuUsage(),
+              gpu: process.env.RTX_3060_OPTIMIZATION || false,
+            })
+          );
           break;
 
         case '/mcp/workers':
           res.writeHead(200);
-          res.end(JSON.stringify({
-            total: this.workers.length,
-            active: this.workers.filter(w => !w.isDead).length,
-            config: this.config.mcp.multicore
-          }));
+          res.end(
+            JSON.stringify({
+              total: this.workers.length,
+              active: this.workers.filter((w) => !w.isDead).length,
+              config: this.config.mcp.multicore,
+            })
+          );
           break;
 
         default:
@@ -135,7 +141,10 @@ class MCPMultiCoreServer {
     // Display system info
     this.log(`=� CPU Cores: ${cpus().length}`, 'white');
     this.log(`� Workers: ${this.workerCount}`, 'yellow');
-    this.log(`<� GPU: ${process.env.RTX_3060_OPTIMIZATION ? 'RTX 3060 Ti Enabled' : 'Disabled'}`, 'magenta');
+    this.log(
+      `<� GPU: ${process.env.RTX_3060_OPTIMIZATION ? 'RTX 3060 Ti Enabled' : 'Disabled'}`,
+      'magenta'
+    );
     this.log(`=� Context7: ${process.env.CONTEXT7_MULTICORE ? 'Enabled' : 'Disabled'}`, 'green');
 
     await this.loadConfig();
@@ -174,7 +183,8 @@ if (!isMainThread && workerData?.isWorker) {
 
   // Simulate MCP processing work
   setInterval(() => {
-    if (Math.random() < 0.1) { // 10% chance to report activity
+    if (Math.random() < 0.1) {
+      // 10% chance to report activity
       parentPort.postMessage(`Processing MCP request (GPU: ${config.mcp.gpu.acceleration})`);
     }
   }, 5000);
@@ -185,7 +195,7 @@ if (!isMainThread && workerData?.isWorker) {
 // Main thread - start the server
 if (isMainThread && !workerData?.isWorker) {
   const server = new MCPMultiCoreServer();
-  server.start().catch(error => {
+  server.start().catch((error) => {
     console.error('L Failed to start MCP server:', error);
     process.exit(1);
   });

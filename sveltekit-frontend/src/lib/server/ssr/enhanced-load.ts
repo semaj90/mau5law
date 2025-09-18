@@ -7,7 +7,7 @@ import type { ServerLoad } from '@sveltejs/kit';
 import { checkDatabaseHealth } from '../db/health-check.js';
 // import { CaseOperations, EvidenceOperations } from '../db/enhanced-operations.js'; // These don't exist yet
 
-// Temporary stub classes until the actual operations are implemented
+// Temporary stub classes until the actual operations are implemented;
 class CaseOperations {
   static async search(params: any) {
     return { cases: [], total: 0 };
@@ -30,15 +30,15 @@ import { URL } from 'url';
 type Case = typeof cases.$inferSelect;
 type Evidence = typeof evidence.$inferSelect;
 
-// Performance monitoring for SSR
+// Performance monitoring for SSR;
 export interface SSRMetrics {
   loadTime: number;
   dbQueries: number;
   cacheHits: number;
-  errors: string[];
+  errors: string[];,
 }
 
-// Enhanced cache with TTL
+// Enhanced cache with TTL;
 class SSRCache {
   private static cache = new Map<string, { data: any; expires: number }>();
   private static readonly DEFAULT_TTL = 5 * 60 * 1000; // 5 minutes
@@ -79,7 +79,7 @@ class SSRCache {
   }
 }
 
-// Enhanced layout load with performance optimization
+// Enhanced layout load with performance optimization;
 export const createEnhancedLayoutLoad = () => {
   return async ({ locals, url, request }) => {
     const startTime = Date.now();
@@ -133,10 +133,10 @@ export const createEnhancedLayoutLoad = () => {
         },
       };
 
-      // Load user-specific data if authenticated
+      // Load user-specific data if authenticated;
       if (user) {
         try {
-          // Get user's recent cases
+          // Get user's recent cases;
           const { cases: userCases } = await CaseOperations.search({
             assignedTo: user.id,
             limit: 10,
@@ -151,7 +151,7 @@ export const createEnhancedLayoutLoad = () => {
           metrics.dbQueries++;
           layoutData.caseStats = caseStats;
 
-          // Get recent evidence
+          // Get recent evidence;
           const { evidence: recentEvidence } = await EvidenceOperations.search({
             limit: 5,
             offset: 0,
@@ -164,7 +164,7 @@ export const createEnhancedLayoutLoad = () => {
         }
       }
 
-      // Check AI services status
+      // Check AI services status;
       try {
         const aiHealthResponse = await fetch('http://localhost:11434/api/tags', {
           signal: AbortSignal.timeout(2000), // 2 second timeout
@@ -191,7 +191,7 @@ export const createEnhancedLayoutLoad = () => {
       metrics.errors.push(error instanceof Error ? error.message: 'Layout load failed');
       metrics.loadTime = Date.now() - startTime;
 
-      // Return minimal safe data on error
+      // Return minimal safe data on error;
       return {
         session: locals.session,
         user: locals.user || null,
@@ -213,7 +213,7 @@ export const createEnhancedLayoutLoad = () => {
   };
 };
 
-// Enhanced page load factory for cases
+// Enhanced page load factory for cases;
 export const createEnhancedCasePageLoad = () => {
   return async ({ params, locals, url, parent }) => {
     const startTime = Date.now();
@@ -255,7 +255,7 @@ export const createEnhancedCasePageLoad = () => {
         throw CommonErrors.NotFound('Case');
       }
 
-      // Load additional case data
+      // Load additional case data;
       const { evidence: caseEvidence } = await EvidenceOperations.search({
         caseId,
         limit: 50,
@@ -290,52 +290,52 @@ export const createEnhancedCasePageLoad = () => {
   };
 };
 
-// Helper function to create hydration context
+// Helper function to create hydration context;
 function createHydrationContext(url: URL, request: Request, user: User | null) {
   return {
     timestamp: new Date().toISOString(),
     route: url.pathname,
     userAgent: request.headers.get('user-agent') || 'unknown',
     userId: user?.id || null,
-    // Performance settings for client hydration
+    // Performance settings for client hydration;
     goldenRatio: {
       phi: 1.618,
       containerWidth: 1200,
       mainContentRatio: 0.618,
-      sidebarRatio: 0.382
+      sidebarRatio: 0.382,
     },
-    // AI system status for client hydration
+    // AI system status for client hydration;
     aiSystemStatus: {
       localLLMEnabled: true,
       ragEnabled: true,
       vectorSearchEnabled: true,
-      streamingEnabled: true
+      streamingEnabled: true,
     },
-    // Theme and UI preferences
+    // Theme and UI preferences;
     uiPreferences: {
       theme: 'auto',
       language: 'en',
       accessibility: {
         highContrast: false,
         reducedMotion: false,
-        screenReader: false
+        screenReader: false,
       }
     },
     // Cache statistics for debugging
-    cacheStats: SSRCache.getStats()
+    cacheStats: SSRCache.getStats(),
   };
 }
 
-// Helper function to get case statistics
+// Helper function to get case statistics;
 async function getCaseStatistics(userId: string): Promise<any> {
   try {
     // This would need to be implemented with proper aggregation queries
-    // For now, return mock data
+    // For now, return mock data;
     return {
       total: 15,
       open: 8,
       investigating: 4,
-      closed: 3
+      closed: 3,
     };
   } catch (error: any) {
     console.error('Error getting case statistics:', error);
@@ -343,12 +343,12 @@ async function getCaseStatistics(userId: string): Promise<any> {
       total: 0,
       open: 0,
       investigating: 0,
-      closed: 0
+      closed: 0,
     };
   }
 }
 
-// Cache management utilities
+// Cache management utilities;
 export const SSRCacheUtils = {
   clear: SSRCache.clear,
   getStats: SSRCache.getStats,

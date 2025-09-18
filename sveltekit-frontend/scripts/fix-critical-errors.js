@@ -12,50 +12,50 @@ const criticalFixes = [
   {
     pattern: /let\s*{\s*([^}]*open\s*=\s*\$bindable\([^)]*\)[^}]*)\s*}/g,
     replacement: 'let { $1 }',
-    files: ['**/*.svelte']
+    files: ['**/*.svelte'],
   },
 
   // Fix CSS identifier issues in style blocks
   {
     pattern: /(\.[a-zA-Z][a-zA-Z0-9_-]*)\s*:\s*([^;{}]+)([^;]*);/g,
     replacement: '$1: $2$3;',
-    files: ['**/*.svelte']
+    files: ['**/*.svelte'],
   },
 
   // Fix incomplete object assignments
   {
     pattern: /=\s*;\s*$/gm,
     replacement: '= {};',
-    files: ['**/*.svelte', '**/*.ts', '**/*.js']
+    files: ['**/*.svelte', '**/*.ts', '**/*.js'],
   },
 
   // Fix broken console.error calls
   {
     pattern: /console\.error\.([a-zA-Z]+)\)/g,
     replacement: 'console.error($1)',
-    files: ['**/*.svelte', '**/*.ts', '**/*.js']
+    files: ['**/*.svelte', '**/*.ts', '**/*.js'],
   },
 
   // Fix incomplete function calls
   {
     pattern: /\.([a-zA-Z]+)\(\s*\)\s*\(/g,
     replacement: '.$1(() => {',
-    files: ['**/*.svelte', '**/*.ts', '**/*.js']
+    files: ['**/*.svelte', '**/*.ts', '**/*.js'],
   },
 
   // Fix filter/map chain syntax
   {
     pattern: /\.filter\.([a-zA-Z]+)/g,
     replacement: '.filter(item => item.$1)',
-    files: ['**/*.svelte', '**/*.ts', '**/*.js']
+    files: ['**/*.svelte', '**/*.ts', '**/*.js'],
   },
 
   // Fix JSON.stringify calls
   {
     pattern: /JSON\.stringify\.([a-zA-Z]+)\)/g,
     replacement: 'JSON.stringify($1)',
-    files: ['**/*.svelte', '**/*.ts', '**/*.js']
-  }
+    files: ['**/*.svelte', '**/*.ts', '**/*.js'],
+  },
 ];
 
 function processFile(filePath) {
@@ -107,7 +107,7 @@ function findFiles(dir, extensions = ['.svelte', '.ts', '.js']) {
 
         if (stat.isDirectory() && !item.includes('node_modules') && !item.includes('.git')) {
           scanDir(fullPath);
-        } else if (extensions.some(ext => item.endsWith(ext))) {
+        } else if (extensions.some((ext) => item.endsWith(ext))) {
           files.push(fullPath);
         }
       }

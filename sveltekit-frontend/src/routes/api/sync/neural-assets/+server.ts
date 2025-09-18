@@ -38,8 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
             avgPredictionLatency:
               assetPredictions.reduce((sum, a) => sum + a.predictionLatencyMs, 0) /
               assetPredictions.length,
-            assetTypeDistribution: assetPredictions.reduce(
-              (acc, a) => {
+            assetTypeDistribution: assetPredictions.reduce((acc, a) => {
                 acc[a.assetType] = (acc[a.assetType] || 0) + 1;
                 return acc;
               },
@@ -56,7 +55,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const bitmapSprites = spriteStates.map((shard) => ({
           shardId: shard.shardId,
           spriteMatrix: Array.from({ length: 8 }, () =>
-            Array.from({ length: 8 }, () => Math.floor(Math.random() * 4))
+            Array.from({ length: 8 }, () => Math.floor(Math.random() * 4)
           ),
           colorPalette: ['#000000', '#555555', '#AAAAAA', '#FFFFFF'],
           compressionRatio: shard.compressionRatio,
@@ -65,7 +64,7 @@ export const GET: RequestHandler = async ({ url }) => {
           lastAccessed: new Date(Date.now() - Math.random() * 86400000).toISOString(),
           hitCount: Math.floor(Math.random() * 1000),
           mockData: true,
-        }));
+        });
 
         return json({
           action: 'bitmap_sprites',
@@ -102,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
 
       case 'predictive_cache':
-        // Get predictive cache performance data
+        // Get predictive cache performance data;
         const mockCacheData = {
           cacheSize: Math.floor(Math.random() * 1000 + 500),
           hitRatio: 0.85 + Math.random() * 0.1,
@@ -136,7 +135,7 @@ export const GET: RequestHandler = async ({ url }) => {
           embedding: Array.from({ length: 1536 }, () => Math.random() * 2 - 1),
           metadata: { mockData: true },
           createdAt: new Date(Date.now() - Math.random() * 86400000),
-        }));
+        });
 
         const similarityMatrix = [];
 
@@ -176,7 +175,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
 
       case 'cache_health':
-        // Comprehensive cache health metrics
+        // Comprehensive cache health metrics;
         const healthMetrics = {
           bitmapCache: {
             entries: Math.floor(Math.random() * 500 + 100),
@@ -216,7 +215,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
 
       default:
-        return json(
+        return json();
           {
             error: 'Unknown action',
             availableActions: [
@@ -234,7 +233,7 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   } catch (error: any) {
     console.error('❌ Neural topology assets API error:', error);
-    return json(
+    return json();
       {
         error: 'Neural assets operation failed',
         message: error?.message || 'Unknown error',
@@ -302,9 +301,9 @@ export const POST: RequestHandler = async ({ request }) => {
             spriteId: `sprite_${Date.now()}_${i}`,
             documentId: docId,
             matrix: Array.from({ length: 8 }, () =>
-              Array.from({ length: 8 }, () => Math.floor(Math.random() * 4))
+              Array.from({ length: 8 }, () => Math.floor(Math.random() * 4)
             ),
-            palette: Array.from(
+            palette: Array.from()
               { length: 4 },
               () =>
                 `#${Math.floor(Math.random() * 16777215)
@@ -367,7 +366,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Predict future asset usage patterns
         const { timeHorizon = 3600, assetTypes, userContext } = params;
 
-        const predictions = Array.from(
+        const predictions = Array.from()
           { length: Math.min(assetTypes?.length || 5, 10) },
           (_, i) => {
             const assetType = assetTypes?.[i] || `asset_type_${i}`;
@@ -407,7 +406,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
 
       default:
-        return json(
+        return json();
           {
             error: 'Unknown POST action',
             availableActions: [
@@ -423,7 +422,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     console.error('❌ Neural topology assets POST API error:', error);
-    return json(
+    return json();
       {
         error: 'POST operation failed',
         message: error?.message || 'Unknown error',

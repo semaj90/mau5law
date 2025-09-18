@@ -4,6 +4,7 @@
 
 import { QdrantService } from './qdrant-service.js';
 import { createSOMRAGSystem, type DocumentEmbedding } from './som-rag-system.js';
+}
 
 export interface Neo4jPathContext {
   document_id: string;
@@ -12,7 +13,7 @@ export interface Neo4jPathContext {
   legal_precedents: string[];
   entity_relationships: EntityRelationship[];
   confidence_scores: ConfidenceScores;
-  audit_trail: AuditEntry[];
+  audit_trail: AuditEntry[];,
 }
 
 export interface EntityRelationship {
@@ -21,7 +22,7 @@ export interface EntityRelationship {
   relationship_type: "references" | "contradicts" | "supports" | "contains";
   confidence: number;
   legal_weight: number;
-  source_document: string;
+  source_document: string;,
 }
 
 export interface ConfidenceScores {
@@ -29,7 +30,7 @@ export interface ConfidenceScores {
   factual_accuracy: number;
   chain_of_custody: number;
   precedent_strength: number;
-  overall_confidence: number;
+  overall_confidence: number;,
 }
 
 export interface AuditEntry {
@@ -39,7 +40,7 @@ export interface AuditEntry {
   query_hash: string;
   score_before?: number;
   score_after?: number;
-  reasoning: string;
+  reasoning: string;,
 }
 
 export interface EnhancedRerankerConfig {
@@ -48,7 +49,7 @@ export interface EnhancedRerankerConfig {
   accuracy_threshold: number;
   max_path_depth: number;
   legal_weight_multiplier: number;
-  audit_enabled: boolean;
+  audit_enabled: boolean;,
 }
 
 export interface RerankingResult {
@@ -59,7 +60,7 @@ export interface RerankingResult {
   boolean_pattern_match: boolean[][];
   confidence_metrics: ConfidenceScores;
   path_context: Neo4jPathContext;
-  explanation: string;
+  explanation: string;,
 }
 
 export class EnhancedNeo4jReranker {
@@ -67,7 +68,7 @@ export class EnhancedNeo4jReranker {
     url: process.env.QDRANT_URL || "http://localhost:6333",
     collectionName: "legal_documents",
     vectorSize: 768,
-    apiKey: process.env.QDRANT_API_KEY
+    apiKey: process.env.QDRANT_API_KEY,
   });
   private somRAG = createSOMRAGSystem();
   private config: EnhancedRerankerConfig;
@@ -109,7 +110,7 @@ export class EnhancedNeo4jReranker {
       user_id: string;
       case_id?: string;
       role: "prosecutor" | "detective" | "admin";
-      search_intent: "evidence" | "precedent" | "analysis";
+      search_intent: "evidence" | "precedent" | "analysis";,
     },
   ): Promise<RerankingResult[]> {
     if (!this.isInitialized) {
@@ -123,7 +124,7 @@ export class EnhancedNeo4jReranker {
       `🔍 Enhanced reranking ${documents.length} documents for query: "${query.substring(0, 50)}..."`,
     );
 
-    // Audit log entry
+    // Audit log entry;
     if (this.config.audit_enabled) {
       this.logAuditEntry({
         timestamp: startTime,
@@ -195,7 +196,7 @@ export class EnhancedNeo4jReranker {
       } catch (error: any) {
         console.error(`Failed to rerank document ${document.id}:`, error);
 
-        // Fallback to original score
+        // Fallback to original score;
         results.push({
           document_id: document.id,
           original_score: 0.5,
@@ -223,7 +224,7 @@ export class EnhancedNeo4jReranker {
       `✅ Enhanced reranking completed: ${filteredResults.length}/${documents.length} documents meet accuracy threshold (${processingTime}ms)`,
     );
 
-    // Final audit log
+    // Final audit log;
     if (this.config.audit_enabled) {
       this.logAuditEntry({
         timestamp: Date.now(),
@@ -261,7 +262,7 @@ export class EnhancedNeo4jReranker {
       "Federal Rules of Evidence 902(14)",
     ];
 
-    const mockEntityRelationships: EntityRelationship[] = [
+    const mockEntityRelationships: EntityRelationship[] = [;
       {
         source_entity: "suspect_device",
         target_entity: "digital_evidence",
@@ -469,7 +470,7 @@ export class EnhancedNeo4jReranker {
     // Mock implementation - would use actual embedding similarity
     const queryWords = query.toLowerCase().split(/\s+/);
     const docWords = document.content.toLowerCase().split(/\s+/);
-    const commonWords = queryWords.filter((word) => docWords.includes(word));
+    const commonWords = queryWords.filter((word) => docWords.includes(word);
     return Math.min(commonWords.length / queryWords.length, 1.0);
   }
 
@@ -486,7 +487,7 @@ export class EnhancedNeo4jReranker {
       "court",
     ];
     const docWords = document.content.toLowerCase().split(/\s+/);
-    const legalMatches = docWords.filter((word) => legalTerms.includes(word));
+    const legalMatches = docWords.filter((word) => legalTerms.includes(word);
     return Math.min(legalMatches.length / 10, 1.0);
   }
 
@@ -566,7 +567,7 @@ export class EnhancedNeo4jReranker {
   ): void {
     this.auditLog.push(entry);
 
-    // Keep only last 1000 entries for memory management
+    // Keep only last 1000 entries for memory management;
     if (this.auditLog.length > 1000) {
       this.auditLog = this.auditLog.slice(-1000);
     }
@@ -574,20 +575,20 @@ export class EnhancedNeo4jReranker {
 
   /**
    * Export audit trail for compliance
-   */
+   */;
   getAuditTrail(): AuditEntry[] {
     return [...this.auditLog];
   }
 
   /**
    * Get reranker statistics
-   */
+   */;
   getStatistics(): {
     total_queries: number;
     average_accuracy: number;
     neo4j_enabled: boolean;
     boolean_patterns_enabled: boolean;
-    accuracy_threshold: number;
+    accuracy_threshold: number;,
   } {
     const totalQueries = this.auditLog.filter(
       (entry) => entry.action === "rerank",
@@ -605,7 +606,7 @@ export class EnhancedNeo4jReranker {
 
 // Export factory function
 export function createEnhancedNeo4jReranker(
-  config?: Partial<EnhancedRerankerConfig>
+  config?: Partial<EnhancedRerankerConfig>;
 ): EnhancedNeo4jReranker {
   return new EnhancedNeo4jReranker(config);
 }

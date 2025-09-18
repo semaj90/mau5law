@@ -12,7 +12,7 @@ import { dev } from '$app/environment';
 
 // === Cognitive Cache API Handlers ===
 
-// POST /api/v1/cognitive-cache (Store data with cognitive analysis)
+// POST /api/v1/cognitive-cache (Store data with cognitive analysis);
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ error: 'Missing required fields: key, data' }, { status: 400 });
     }
 
-    // Enhance context with request metadata
+    // Enhance context with request metadata;
     const enhancedContext = {
       ...context,
       requestTime: Date.now(),
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const success = await cognitiveIntegration.cognitiveCacheManager.set(
       { key, type, context: enhancedContext, options },
-      data,
+      data,);
       {
         distributeAcrossCaches: options.distribute !== false,
         cognitiveValue: options.cognitiveValue,
@@ -54,28 +54,26 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: Date.now(),
       });
     } else {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Failed to cache data',
           key,
-        },
+        },)
         { status: 500 }
       );
     }
   } catch (error: any) {
     console.error('Cognitive cache store error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to store in cognitive cache',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// GET /api/v1/cognitive-cache/[key] (Retrieve with cognitive optimization)
+// GET /api/v1/cognitive-cache/[key] (Retrieve with cognitive optimization);
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Extract the key from the last segment of the path
@@ -129,8 +127,7 @@ export const GET: RequestHandler = async ({ url }) => {
         timestamp: Date.now(),
       });
     } else {
-      return json(
-        {
+      return json({
           success: false,
           key,
           found: false,
@@ -139,23 +136,22 @@ export const GET: RequestHandler = async ({ url }) => {
             'Try adjusting semantic tags or context',
             'Consider enabling predictive loading',
           ],
-        },
+        },)
         { status: 404 }
       );
     }
   } catch (error: any) {
     console.error('Cognitive cache retrieve error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to retrieve from cognitive cache',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// PUT /api/v1/cognitive-cache/analyze (Cognitive analysis and optimization)
+// PUT /api/v1/cognitive-cache/analyze (Cognitive analysis and optimization);
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -167,10 +163,10 @@ export const PUT: RequestHandler = async ({ request }) => {
           return json({ error: 'Key required for analysis' }, { status: 400 });
         }
 
-        // Perform cognitive analysis of cache entry
+        // Perform cognitive analysis of cache entry;
         const analysis = {
           key,
-          cognitiveScore: Math.random() * 0.3 + 0.7, // Mock analysis
+          cognitiveScore: Math.random() * 0.3 + 0.7, // Mock analysis;
           accessPatterns: {
             frequency: Math.random(),
             recentAccess: Date.now() - Math.random() * 86400000,
@@ -201,7 +197,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       }
 
       case 'optimize': {
-        // Trigger cognitive optimization
+        // Trigger cognitive optimization;
         const optimizationResult = {
           optimizedEntries: Math.floor(Math.random() * 100) + 50,
           performanceImprovement: Math.random() * 0.3 + 0.1,
@@ -222,7 +218,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           return json({ error: 'Workflow step required for prediction' }, { status: 400 });
         }
 
-        // Generate workflow predictions
+        // Generate workflow predictions;
         const predictions = {
           nextSteps: ['evidence-view', 'timeline-analysis', 'report-generation'],
           preloadRecommendations: [
@@ -246,24 +242,23 @@ export const PUT: RequestHandler = async ({ request }) => {
     }
   } catch (error: any) {
     console.error('Cognitive cache analysis error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to perform cognitive analysis',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// DELETE /api/v1/cognitive-cache/[key] (Intelligent cache invalidation)
+// DELETE /api/v1/cognitive-cache/[key] (Intelligent cache invalidation);
 export const DELETE: RequestHandler = async ({ url, request }) => {
   try {
     const parts = url.pathname.split('/');
     const key = parts[parts.length - 1];
 
     if (key === 'all') {
-      // Clear all caches with cognitive analysis
+      // Clear all caches with cognitive analysis;
       const clearResult = {
         clearedEntries: Math.floor(Math.random() * 1000) + 500,
         memoryReclaimed: Math.floor(Math.random() * 100) + 50,
@@ -283,7 +278,7 @@ export const DELETE: RequestHandler = async ({ url, request }) => {
       return json({ error: 'Cache key required' }, { status: 400 });
     }
 
-    // Intelligent invalidation with dependency analysis
+    // Intelligent invalidation with dependency analysis;
     const invalidationResult = {
       key,
       invalidated: true,
@@ -300,17 +295,16 @@ export const DELETE: RequestHandler = async ({ url, request }) => {
     });
   } catch (error: any) {
     console.error('Cognitive cache invalidation error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to invalidate cache entry',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// OPTIONS /api/v1/cognitive-cache/metrics (Performance and learning metrics)
+// OPTIONS /api/v1/cognitive-cache/metrics (Performance and learning metrics);
 export const OPTIONS: RequestHandler = async ({ url }) => {
   try {
     const includeDetailed = url.searchParams.get('detailed') === 'true';
@@ -380,11 +374,10 @@ export const OPTIONS: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     console.error('Cognitive cache metrics error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to get cognitive cache metrics',
         details: dev ? error.message: undefined,
-      },
+      },)
       { status: 500 }
     );
   }

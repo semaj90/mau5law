@@ -3,7 +3,7 @@
  * Single entry point for all database operations across the legal AI platform
  */
 
-// Import centralized connection management
+// Import centralized connection management;
 import {
   getAppPool,
   getAdminPool,
@@ -16,7 +16,7 @@ import {
   getDatabaseHealth
 } from './connection-manager.js';
 
-// Import database configuration
+// Import database configuration;
 import {
   getDatabaseConfig,
   getDatabaseUrls,
@@ -31,7 +31,7 @@ import {
 import * as schema from './schema-postgres.js';
 import type { DatabaseConfig, DatabaseUrls } from '$lib/config/database.js';
 
-// Re-export everything for backwards compatibility
+// Re-export everything for backwards compatibility;
 export {
   getAppPool,
   getAdminPool,
@@ -66,7 +66,7 @@ export const pool = getAppPool();
 // Legacy compatibility
 export const isPostgreSQL = true;
 
-// Table exports for backwards compatibility
+// Table exports for backwards compatibility;
 export const {
   users,
   sessions,
@@ -77,7 +77,7 @@ export const {
   statutes
 } = schema;
 
-// Type-safe table lookup
+// Type-safe table lookup;
 export function getTableByName(tableName: string) {
   const tableMap = {
     users,
@@ -92,7 +92,7 @@ export function getTableByName(tableName: string) {
   return tableMap[tableName as keyof typeof tableMap];
 }
 
-// Enhanced health check using centralized connection manager
+// Enhanced health check using centralized connection manager;
 export async function healthCheck() {
   try {
     const health = await getDatabaseHealth();
@@ -106,7 +106,7 @@ export async function healthCheck() {
       };
     }
 
-    // Test specific tables if connection is healthy
+    // Test specific tables if connection is healthy;
     if (connection.success) {
       try {
         const tableTests = await Promise.allSettled([
@@ -123,7 +123,7 @@ export async function healthCheck() {
             error: `${failedTests.length} table(s) inaccessible`,
             timestamp: new Date(),
             tables: connection.tables || [],
-            extensions: connection.extensions || []
+            extensions: connection.extensions || [],
           };
         }
       } catch (tableError) {
@@ -138,18 +138,18 @@ export async function healthCheck() {
       version: connection.version,
       tables: connection.tables?.length || 0,
       extensions: connection.extensions || [],
-      poolStats: health.pools
+      poolStats: health.pools,
     };
   } catch (error: any) {
     return {
       status: "unhealthy" as const,
       error: error.message,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 }
 
-// System health with comprehensive checks
+// System health with comprehensive checks;
 export async function getSystemHealth() {
   const dbHealth = await getDatabaseHealth();
   const connectionTest = await testDatabaseConnection();
@@ -161,15 +161,15 @@ export async function getSystemHealth() {
       status: dbHealth.status,
       config: dbHealth.config,
       connection: connectionTest,
-      pools: dbHealth.pools
+      pools: dbHealth.pools,
     },
     application: appHealth,
     timestamp: new Date().toISOString(),
-    version: '2.0.0-unified'
+    version: '2.0.0-unified',
   };
 }
 
-// Vector store with centralized connection (updated for embeddinggemma)
+// Vector store with centralized connection (updated for embeddinggemma);
 export function getVectorStore() {
   try {
     // Import LangChain components
@@ -197,7 +197,7 @@ export function getVectorStore() {
   }
 }
 
-// Database migration utilities
+// Database migration utilities;
 export async function runMigration(migrationName: string, migrationSql: string) {
   return executeQuery(async (client) => {
     const start = Date.now();

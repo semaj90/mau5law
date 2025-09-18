@@ -19,7 +19,7 @@ export const GET: RequestHandler = async () => {
   const headers = new Headers({
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
-    Connection: 'keep-alive'
+    Connection: 'keep-alive',
   });
 
   const response = new Response(stream as any, { headers });

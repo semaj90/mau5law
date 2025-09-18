@@ -21,7 +21,7 @@ class TelemetryBus {
    * @constructor
    */
   constructor() {
-    /** @type {Map<string, Set<TelemetrySubscriber>>} */
+    /** @type {Map<string, Set<TelemetrySubscriber>} */
     this.subscribers = new Map();
     /** @type {Set<TelemetrySubscriber>} */
     this.globalSubscribers = new Set();
@@ -35,7 +35,7 @@ class TelemetryBus {
    */
   subscribe(eventType, callback) {
     if (!this.subscribers.has(eventType)) {
-      this.subscribers.set(eventType, new Set());
+      this.subscribers.set(eventType, new Set();
     }
     this.subscribers.get(eventType).add(callback);
 
@@ -115,7 +115,7 @@ class TelemetryBus {
     return {
       typeSubscribers: Array.from(this.subscribers.values()).reduce((sum, set) => sum + set.size, 0),
       globalSubscribers: this.globalSubscribers.size,
-      eventTypes: Array.from(this.subscribers.keys())
+      eventTypes: Array.from(this.subscribers.keys(),
     };
   }
 }

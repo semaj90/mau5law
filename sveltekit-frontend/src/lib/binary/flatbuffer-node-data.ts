@@ -12,7 +12,7 @@
 
 import { nesGPUBridge, type GPUNodeDataFB } from '../gpu/nes-gpu-memory-bridge.js';
 
-// Binary field offsets and sizes (bytes)
+// Binary field offsets and sizes (bytes);
 const FLATBUFFER_SCHEMA = {
   HEADER: {
     MAGIC: 0,           // 4 bytes - "FBND" magic number
@@ -20,7 +20,7 @@ const FLATBUFFER_SCHEMA = {
     NODE_COUNT: 6,      // 4 bytes - number of nodes
     TIMESTAMP: 10,      // 8 bytes - creation timestamp
     CHECKSUM: 18,       // 4 bytes - data integrity checksum
-    RESERVED: 22        // 10 bytes - future expansion
+    RESERVED: 22        // 10 bytes - future expansion,
   },
   NODE: {
     ID: 0,              // 4 bytes - node ID (uint32)
@@ -39,9 +39,10 @@ const FLATBUFFER_SCHEMA = {
     METADATA_SIZE: 36,  // 4 bytes - metadata blob size
     EMBEDDING_OFFSET: 40, // 4 bytes - offset to embedding data
     METADATA_OFFSET: 44,  // 4 bytes - offset to metadata blob
-    TOTAL_SIZE: 48      // Total node header size
+    TOTAL_SIZE: 48      // Total node header size,
   }
 } as const;
+}
 
 export interface FlatBufferNode {
   readonly id: number;
@@ -68,14 +69,14 @@ export class FlatBufferNodeSerializer {
   private static readonly MAGIC_NUMBER = 0x444E4246; // "FBND" in little-endian
   private static readonly CURRENT_VERSION = 1;
   
-  // Performance tracking
+  // Performance tracking;
   private static metrics = {
     serializeTime: 0,
     deserializeTime: 0,
     compressionRatio: 0,
     totalNodes: 0,
     cacheHits: 0,
-    cacheMisses: 0
+    cacheMisses: 0,
   };
 
   // Binary data cache with LRU eviction
@@ -122,14 +123,14 @@ export class FlatBufferNodeSerializer {
       
       offset += 32; // Skip header
 
-      // Write node data
+      // Write node data;
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         const nodeStartOffset = offset;
 
         // Write node header
         view.setUint32(offset + FLATBUFFER_SCHEMA.NODE.ID, node.id, true);
-        view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.TYPE, this.encodeDocumentType(node.type));
+        view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.TYPE, this.encodeDocumentType(node.type);
         view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.PRIORITY, node.priority);
         view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.BANK_ID, node.bankId || 0);
         
@@ -140,7 +141,7 @@ export class FlatBufferNodeSerializer {
         view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.FLAGS, flags);
 
         view.setFloat32(offset + FLATBUFFER_SCHEMA.NODE.CONFIDENCE, node.confidence, true);
-        view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.RISK_CODE, this.encodeRiskLevel(node.riskLevel));
+        view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.RISK_CODE, this.encodeRiskLevel(node.riskLevel);
 
         // Write position
         view.setFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_X, node.position.x, true);
@@ -175,7 +176,7 @@ export class FlatBufferNodeSerializer {
           offset += metadataSize;
         }
 
-        // Align to 8-byte boundary
+        // Align to 8-byte boundary;
         while (offset % 8 !== 0) {
           uint8View[offset] = 0;
           offset++;
@@ -183,7 +184,7 @@ export class FlatBufferNodeSerializer {
       }
 
       // Calculate and write checksum
-      const checksum = this.calculateChecksum(uint8View.slice(32)); // Skip header for checksum
+      const checksum = this.calculateChecksum(uint8View.slice(32); // Skip header for checksum
       view.setUint32(FLATBUFFER_SCHEMA.HEADER.CHECKSUM, checksum, true);
 
       const serializeTime = performance.now() - startTime;
@@ -207,7 +208,7 @@ export class FlatBufferNodeSerializer {
   /**
    * Deserialize binary FlatBuffer back to node objects
    * Optimized for zero-copy access where possible
-   */
+   */;
   static async deserializeNodes(buffer: ArrayBuffer): Promise<BinaryGraphData> {
     const startTime = performance.now();
 
@@ -227,11 +228,11 @@ export class FlatBufferNodeSerializer {
       }
 
       const nodeCount = view.getUint32(FLATBUFFER_SCHEMA.HEADER.NODE_COUNT, true);
-      const timestamp = Number(view.getBigUint64(FLATBUFFER_SCHEMA.HEADER.TIMESTAMP, true));
+      const timestamp = Number(view.getBigUint64(FLATBUFFER_SCHEMA.HEADER.TIMESTAMP, true);
       const checksum = view.getUint32(FLATBUFFER_SCHEMA.HEADER.CHECKSUM, true);
 
       // Validate checksum
-      const calculatedChecksum = this.calculateChecksum(uint8View.slice(32));
+      const calculatedChecksum = this.calculateChecksum(uint8View.slice(32);
       if (checksum !== calculatedChecksum) {
         throw new Error(`FlatBuffer checksum mismatch: expected ${checksum}, got ${calculatedChecksum}`);
       }
@@ -239,7 +240,7 @@ export class FlatBufferNodeSerializer {
       const nodes: FlatBufferNode[] = [];
       let offset = 32; // Skip header
 
-      // Deserialize nodes
+      // Deserialize nodes;
       for (let i = 0; i < nodeCount; i++) {
         const nodeStartOffset = offset;
 
@@ -252,7 +253,7 @@ export class FlatBufferNodeSerializer {
         const confidence = view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.CONFIDENCE, true);
         const riskCode = view.getUint8(offset + FLATBUFFER_SCHEMA.NODE.RISK_CODE);
 
-        // Read position
+        // Read position;
         const position = {
           x: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_X, true),
           y: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Y, true),
@@ -307,7 +308,7 @@ export class FlatBufferNodeSerializer {
         timestamp,
         checksum,
         nodes,
-        totalSize: buffer.byteLength
+        totalSize: buffer.byteLength,
       };
 
     } catch (error: any) {
@@ -319,7 +320,7 @@ export class FlatBufferNodeSerializer {
   /**
    * Create GPU-optimized node data for WebGPU texture upload
    * Converts FlatBuffer nodes to texture-ready format
-   */
+   */;
   static createGPUNodeData(binaryData: BinaryGraphData): GPUNodeDataFB {
     const nodeCount = binaryData.nodes.length;
     
@@ -341,14 +342,14 @@ export class FlatBufferNodeSerializer {
       priorities[i] = node.priority;
       bankIds[i] = node.bankId;
 
-      // Copy embedding data (pad if necessary)
+      // Copy embedding data (pad if necessary);
       if (node.embedding) {
         const embeddingStart = i * 384;
         const copyLength = Math.min(384, node.embedding.length);
         embeddings.set(node.embedding.slice(0, copyLength), embeddingStart);
       }
 
-      // Copy metadata (truncate if necessary)
+      // Copy metadata (truncate if necessary);
       if (node.metadata) {
         const metadataStart = i * 64;
         const metadataBytes = new Uint8Array(node.metadata);
@@ -363,33 +364,33 @@ export class FlatBufferNodeSerializer {
       embedding: embeddings,
       metadata,
       priority: priorities,
-      bankId: bankIds
+      bankId: bankIds,
     };
   }
 
-  // Cache management
+  // Cache management;
   private static generateCacheKey(nodes: any[]): string {
     const ids = nodes.map(n => n.id).sort();
     return `nodes_${ids.length}_${ids[0] || 0}_${ids[ids.length - 1] || 0}`;
   }
 
   private static addToCache(key: string, buffer: ArrayBuffer): void {
-    // LRU eviction
+    // LRU eviction;
     if (this.binaryCache.size >= this.MAX_CACHE_SIZE) {
-      const oldestKey = Array.from(this.cacheAccessTime.entries())
+      const oldestKey = Array.from(this.cacheAccessTime.entries()
         .sort((a, b) => a[1] - b[1])[0][0];
       this.binaryCache.delete(oldestKey);
       this.cacheAccessTime.delete(oldestKey);
     }
 
     this.binaryCache.set(key, buffer);
-    this.cacheAccessTime.set(key, Date.now());
+    this.cacheAccessTime.set(key, Date.now();
   }
 
   static getFromCache(key: string): ArrayBuffer | null {
     const buffer = this.binaryCache.get(key);
     if (buffer) {
-      this.cacheAccessTime.set(key, Date.now());
+      this.cacheAccessTime.set(key, Date.now();
       this.metrics.cacheHits++;
       return buffer;
     }
@@ -397,7 +398,7 @@ export class FlatBufferNodeSerializer {
     return null;
   }
 
-  // Utility methods
+  // Utility methods;
   private static encodeDocumentType(type: string): number {
     const types = { contract: 1, evidence: 2, brief: 3, citation: 4, precedent: 5 };
     return (types as any)[type] || 0;
@@ -418,7 +419,7 @@ export class FlatBufferNodeSerializer {
 
   /**
    * Get performance metrics and cache statistics
-   */
+   */;
   static getMetrics() {
     const cacheHitRate = this.metrics.cacheHits / (this.metrics.cacheHits + this.metrics.cacheMisses);
     return {
@@ -426,13 +427,13 @@ export class FlatBufferNodeSerializer {
       cacheSize: this.binaryCache.size,
       cacheHitRate: isNaN(cacheHitRate) ? 0 : cacheHitRate,
       avgSerializeTime: this.metrics.totalNodes > 0 ? this.metrics.serializeTime / this.metrics.totalNodes: 0,
-      avgDeserializeTime: this.metrics.totalNodes > 0 ? this.metrics.deserializeTime / this.metrics.totalNodes : 0
+      avgDeserializeTime: this.metrics.totalNodes > 0 ? this.metrics.deserializeTime / this.metrics.totalNodes : 0,
     };
   }
 
   /**
    * Clear cache and reset metrics
-   */
+   */;
   static reset(): void {
     this.binaryCache.clear();
     this.cacheAccessTime.clear();
@@ -442,7 +443,7 @@ export class FlatBufferNodeSerializer {
       compressionRatio: 0,
       totalNodes: 0,
       cacheHits: 0,
-      cacheMisses: 0
+      cacheMisses: 0,
     };
   }
 }

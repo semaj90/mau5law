@@ -17,7 +17,7 @@ const RETRIES = Number(import.meta.env.GPU_FETCH_RETRIES) || 2;
 const RETRY_DELAY_MS = Number(import.meta.env.GPU_FETCH_RETRY_DELAY_MS) || 300;
 const CACHE_TTL_MS = Number(import.meta.env.GPU_CONFIG_CACHE_TTL_MS) || 5_000;
 
-// Minimal shape for expected config. Extend if backend returns more.
+// Minimal shape for expected config. Extend if backend returns more.;
 type GPUConfig = {
   model?: string;
   gpu: { enabled: boolean; device?: string | number } | { enabled: boolean };
@@ -27,7 +27,7 @@ type GPUConfig = {
 type FetchResult = {
   ok: true;
   source: 'go';
-  config: GPUConfig;
+  config: GPUConfig;,
 } | {
   ok: false;
   source: 'shim' | 'cache';
@@ -49,7 +49,7 @@ function isValidGpuConfig(payload: any): payload is GPUConfig {
 }
 
 async function delay(ms: number) {
-  return new Promise((res) => setTimeout(res, ms));
+  return new Promise((res) => setTimeout(res, ms);
 }
 
 async function fetchOnce(path: string, timeoutMs: number): Promise<any> {
@@ -89,19 +89,19 @@ const DEFAULT_SHIM: GPUConfig = { model: 'gemma3-legal:latest', gpu: { enabled: 
 
 export const GET: RequestHandler = async () => {
   try {
-    const healthy = await Promise.resolve(ollamaService.isHealthy());
+    const healthy = await Promise.resolve(ollamaService.isHealthy();
     if (!healthy) {
       // If Ollama isn't healthy return 503 and best-effort (cached or shim) config
       const fallback = cached?.payload ?? { ok: false, source: 'shim', config: DEFAULT_SHIM, reason: 'ollama_unhealthy' };
       return json({ ...fallback }, { status: 503 });
     }
 
-    // Return cached if fresh
+    // Return cached if fresh;
     if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
       return json(cached.payload, { status: 200 });
     }
 
-    // Try upstream GO service
+    // Try upstream GO service;
     try {
       const cfg = await fetchWithRetries('/api/gpu-status', RETRIES, TIMEOUT_MS, RETRY_DELAY_MS);
       const payload: FetchResult = { ok: true, source: 'go', config: cfg };
@@ -109,7 +109,7 @@ export const GET: RequestHandler = async () => {
       return json(payload, { status: 200 });
     } catch (err: any) {
       console.warn('gpu-config: upstream fetch failed:', err?.message ?? err);
-      // On failure use cache if available; otherwise return shim but indicate fallback
+      // On failure use cache if available; otherwise return shim but indicate fallback;
       if (cached) {
         const payload: FetchResult = { ok: false, source: 'cache', config: cached.payload.config, reason: 'upstream_unreachable' };
         // refresh timestamp to avoid tight loops

@@ -9,7 +9,7 @@ export const GET: RequestHandler = async () => {
     
     if (!isHealthy) {
       return json(
-        { error: 'Database connection failed', healthy: false },
+        { error: 'Database connection failed', healthy: false },)
         { status: 503 }
       );
     }
@@ -22,18 +22,17 @@ export const GET: RequestHandler = async () => {
       database: result[0]?.current_database || 'unknown',
       version: result[0]?.version || 'unknown',
       timestamp: result[0]?.current_timestamp || new Date().toISOString(),
-      message: 'PostgreSQL connection successful'
+      message: 'PostgreSQL connection successful',
     });
     
   } catch (error) {
     console.error('Database health check error:', error);
     
-    return json(
-      { 
+    return json({ 
         error: 'Database health check failed', 
         healthy: false,
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },
+        details: error instanceof Error ? error.message: 'Unknown error',
+      },)
       { status: 503 }
     );
   }

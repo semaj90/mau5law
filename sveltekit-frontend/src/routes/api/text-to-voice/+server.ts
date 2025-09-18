@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types.js';
 
 
 // Placeholder for text-to-voice (TTS) integration
-// TODO: Integrate with Google Cloud Text-to-Speech, Azure Speech, or browser Web Speech API
+// TODO: Integrate with Google Cloud Text-to-Speech, Azure Speech, or browser Web Speech API;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { text } = await request.json();
@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ audioUrl });
   } catch (error: any) {
     return json(
-      { error: error.message || "Failed to synthesize speech" },
+      { error: error.message || "Failed to synthesize speech" },)
       { status: 500 }
     );
   }

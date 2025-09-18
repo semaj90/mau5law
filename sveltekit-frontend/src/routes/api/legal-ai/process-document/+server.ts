@@ -5,13 +5,13 @@ import { queueDocumentProcessing, getJobStatus, getQueueStats, type DocumentProc
 import type { RequestHandler } from './$types.js';
 
 
-// Types for Go server integration (kept for compatibility)
+// Types for Go server integration (kept for compatibility);
 export interface DocumentProcessRequest {
 	document_id: string;
 	content: string;
 	document_type: string;
 	case_id?: string;
-	options: ProcessingOptions;
+	options: ProcessingOptions;,
 }
 
 export interface ProcessingOptions {
@@ -20,7 +20,7 @@ export interface ProcessingOptions {
 	assess_risk: boolean;
 	generate_embedding: boolean;
 	store_in_database: boolean;
-	use_gemma3_legal: boolean;
+	use_gemma3_legal: boolean;,
 }
 
 export interface DocumentProcessResponse {
@@ -40,7 +40,7 @@ export interface LegalEntity {
 	value: string;
 	confidence: number;
 	start_pos: number;
-	end_pos: number;
+	end_pos: number;,
 }
 
 export interface RiskAssessment {
@@ -48,7 +48,7 @@ export interface RiskAssessment {
 	risk_score: number;
 	risk_factors: string[];
 	recommendations: string[];
-	confidence: number;
+	confidence: number;,
 }
 
 // Configuration
@@ -58,7 +58,7 @@ const USE_QUEUE = import.meta.env.USE_QUEUE !== 'false'; // Enable by default
 /*
  * Process document through BullMQ worker system
  * Integrates with Go Legal AI Server via queue workers
- */
+ */;
 export const POST: RequestHandler = async ({ request, url }) => {
 	try {
 		const body = await request.json();
@@ -73,19 +73,19 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				console.error('❌ Error checking job status:', error);
 				return json({ 
 					error: 'Failed to check job status',
-					details: error instanceof Error ? error.message: 'Unknown error'
+					details: error instanceof Error ? error.message: 'Unknown error',
 				}, { status: 500 });
 			}
 		}
 		
-		// Validate required fields for new job
+		// Validate required fields for new job;
 		if (!body.content) {
 			return json({ error: 'Content is required' }, { status: 400 });
 		}
 
 		const documentId = body.document_id || `doc_${Date.now()}`;
 		
-		// Prepare job data
+		// Prepare job data;
 		const jobData: DocumentProcessingJobData = {
 			documentId: documentId,
 			content: body.content,
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				assessRisk: body.assess_risk ?? true,
 				generateEmbedding: body.generate_embedding ?? true,
 				storeInDatabase: body.store_in_database ?? true,
-				useGemma3Legal: body.use_gemma3_legal ?? true
+				useGemma3Legal: body.use_gemma3_legal ?? true,
 			}
 		};
 
@@ -126,7 +126,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 					queue_stats: queueStats,
 					status_url: `/api/legal-ai/process-document?job_id=${queueJobId}`,
 					message: 'Document queued for processing',
-					timestamp: new Date().toISOString()
+					timestamp: new Date().toISOString(),
 				});
 				
 			} catch (queueError) {
@@ -155,10 +155,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
 						assess_risk: jobData.options.assessRisk,
 						generate_embedding: jobData.options.generateEmbedding,
 						store_in_database: jobData.options.storeInDatabase,
-						use_gemma3_legal: jobData.options.useGemma3Legal
+						use_gemma3_legal: jobData.options.useGemma3Legal,
 					}
 				}),
-				signal: AbortSignal.timeout(120000) // 2 minute timeout
+				signal: AbortSignal.timeout(120000) // 2 minute timeout,
 			});
 
 			if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
@@ -167,7 +167,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				
 				return json({ 
 					error: `Go server error: ${(response as { ok?: any; text?: any; status?: any; json?: any }).status}`,
-					details: errorText 
+					details: errorText ,
 				}, { status: (response as { ok?: any; text?: any; status?: any; json?: any }).status });
 			}
 
@@ -181,14 +181,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
 				queued: false,
 				data: result,
 				processed_by: 'go-legal-ai-server-direct',
-				timestamp: new Date().toISOString()
+				timestamp: new Date().toISOString(),
 			});
 
 		} catch (fetchError) {
 			console.error('❌ Direct processing error:', fetchError);
 			return json({ 
 				error: 'Processing failed',
-				details: fetchError instanceof Error ? fetchError.message: 'Unknown error'
+				details: fetchError instanceof Error ? fetchError.message: 'Unknown error',
 			}, { status: 503 });
 		}
 
@@ -196,14 +196,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
 		console.error('❌ API endpoint error:', error);
 		return json({ 
 			error: 'Internal server error',
-			details: error instanceof Error ? error.message: 'Unknown error'
+			details: error instanceof Error ? error.message: 'Unknown error',
 		}, { status: 500 });
 	}
 };
 
 /*
  * Get Go server health status
- */
+ */;
 export const GET: RequestHandler = async () => {
 	try {
 		const response = await fetch(`${GO_SERVER_URL}/health`, {
@@ -227,7 +227,7 @@ export const GET: RequestHandler = async () => {
 			go_server_status: healthData,
 			sveltekit_status: 'healthy',
 			integration_status: 'connected',
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		});
 
 	} catch (error: any) {
@@ -235,7 +235,7 @@ export const GET: RequestHandler = async () => {
 		return json({ 
 			error: 'Go server unreachable',
 			details: error instanceof Error ? error.message: 'Unknown error',
-			go_server_url: GO_SERVER_URL
+			go_server_url: GO_SERVER_URL,
 		}, { status: 503 });
 	}
 };

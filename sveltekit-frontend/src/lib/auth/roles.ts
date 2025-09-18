@@ -39,6 +39,7 @@ export type Permission =
   | 'configure_system'
   | 'view_audit_logs'
   | 'manage_integrations';
+}
 
 export interface RoleDefinition {
   name: UserRole;
@@ -50,7 +51,7 @@ export interface RoleDefinition {
   maxCasesAssigned?: number;
 }
 
-// Role definitions with complete permission sets
+// Role definitions with complete permission sets;
 export const ROLES: Record<UserRole, RoleDefinition> = {
   admin: {
     name: 'admin',
@@ -162,7 +163,7 @@ export const ROLES: Record<UserRole, RoleDefinition> = {
   }
 };
 
-// Permission categories for UI organization
+// Permission categories for UI organization;
 export const PERMISSION_CATEGORIES = {
   case_management: {
     name: 'Case Management',
@@ -194,15 +195,15 @@ export const PERMISSION_CATEGORIES = {
   },
   data_export: {
     name: 'Data Export',
-    permissions: ['export_data'] as Permission[]
+    permissions: ['export_data'] as Permission[],
   }
 };
 
-// Access control utility functions
+// Access control utility functions;
 export class AccessControl {
   /**
    * Check if a user has a specific permission
-   */
+   */;
   static hasPermission(userRole: UserRole, permission: Permission): boolean {
     const role = ROLES[userRole];
     return role ? role.permissions.includes(permission) : false;
@@ -210,21 +211,21 @@ export class AccessControl {
 
   /**
    * Check if a user has any of the specified permissions
-   */
+   */;
   static hasAnyPermission(userRole: UserRole, permissions: Permission[]): boolean {
-    return permissions.some(permission => this.hasPermission(userRole, permission));
+    return permissions.some(permission => this.hasPermission(userRole, permission);
   }
 
   /**
    * Check if a user has all of the specified permissions
-   */
+   */;
   static hasAllPermissions(userRole: UserRole, permissions: Permission[]): boolean {
-    return permissions.every(permission => this.hasPermission(userRole, permission));
+    return permissions.every(permission => this.hasPermission(userRole, permission);
   }
 
   /**
    * Get all permissions for a role
-   */
+   */;
   static getRolePermissions(userRole: UserRole): Permission[] {
     const role = ROLES[userRole];
     return role ? [...role.permissions] : [];
@@ -232,7 +233,7 @@ export class AccessControl {
 
   /**
    * Check if one role has higher authority than another
-   */
+   */;
   static hasHigherAuthority(userRole: UserRole, targetRole: UserRole): boolean {
     const userHierarchy = ROLES[userRole]?.hierarchyLevel || 0;
     const targetHierarchy = ROLES[targetRole]?.hierarchyLevel || 0;
@@ -241,7 +242,7 @@ export class AccessControl {
 
   /**
    * Check if a user can delegate tasks (assign work to others)
-   */
+   */;
   static canDelegate(userRole: UserRole): boolean {
     const role = ROLES[userRole];
     return role ? role.canDelegate: false;
@@ -249,7 +250,7 @@ export class AccessControl {
 
   /**
    * Get the maximum number of cases a user can be assigned
-   */
+   */;
   static getMaxCaseAssignment(userRole: UserRole): number | null {
     const role = ROLES[userRole];
     return role ? role.maxCasesAssigned || null : null;
@@ -263,24 +264,24 @@ export class AccessControl {
     permission: Permission,
     resourceOwnerId?: string,
     userId?: string,
-    isPublic?: boolean
+    isPublic?: boolean;
   ): boolean {
-    // Check if user has the required permission
+    // Check if user has the required permission;
     if (!this.hasPermission(userRole, permission)) {
       return false;
     }
 
-    // If resource is public and user has permission, allow access
+    // If resource is public and user has permission, allow access;
     if (isPublic) {
       return true;
     }
 
-    // If no ownership info provided, rely on permission check
+    // If no ownership info provided, rely on permission check;
     if (!resourceOwnerId || !userId) {
       return true;
     }
 
-    // Allow access if user owns the resource
+    // Allow access if user owns the resource;
     if (resourceOwnerId === userId) {
       return true;
     }
@@ -297,7 +298,7 @@ export class AccessControl {
 
   /**
    * Get user-friendly permission description
-   */
+   */;
   static getPermissionDescription(permission: Permission): string {
     const descriptions: Record<Permission, string> = {
       create_case: 'Create new legal cases',
@@ -327,7 +328,7 @@ export class AccessControl {
       access_admin_panel: 'Access the administration panel',
       configure_system: 'Configure system settings and parameters',
       view_audit_logs: 'View system audit logs and activity',
-      manage_integrations: 'Manage external system integrations'
+      manage_integrations: 'Manage external system integrations',
     };
 
     return descriptions[permission] || permission.replace(/_/g, ' ').toLowerCase();
@@ -335,7 +336,7 @@ export class AccessControl {
 
   /**
    * Get roles that have a specific permission
-   */
+   */;
   static getRolesWithPermission(permission: Permission): UserRole[] {
     return (Object.keys(ROLES) as UserRole[]).filter(role =>
       this.hasPermission(role, permission)
@@ -344,9 +345,9 @@ export class AccessControl {
 
   /**
    * Check if role can be assigned by current user
-   */
+   */;
   static canAssignRole(currentUserRole: UserRole, targetRole: UserRole): boolean {
-    // Only admin can assign admin role
+    // Only admin can assign admin role;
     if (targetRole === 'admin') {
       return currentUserRole === 'admin';
     }
@@ -357,7 +358,7 @@ export class AccessControl {
   }
 }
 
-// Default permissions for quick checks
+// Default permissions for quick checks;
 export const DEFAULT_PERMISSIONS = {
   PUBLIC: ['view_case', 'view_evidence', 'view_report'] as Permission[],
   AUTHENTICATED: ['view_case', 'view_evidence', 'view_report', 'ai_analysis'] as Permission[],

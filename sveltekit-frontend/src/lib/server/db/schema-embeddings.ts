@@ -2,7 +2,7 @@
 import { pgTable, uuid, text, timestamp, vector, integer, jsonb } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
-// Embeddings table for the enhanced-bits demo
+// Embeddings table for the enhanced-bits demo;
 export const embeddings = pgTable("embeddings", {
   id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
   content: text("content").notNull(),
@@ -13,7 +13,7 @@ export const embeddings = pgTable("embeddings", {
   updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
 });
 
-// Legal document embeddings (more specific for legal AI)
+// Legal document embeddings (more specific for legal AI);
 export const legalDocumentEmbeddings = pgTable("legal_document_embeddings", {
   id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
   documentId: uuid("document_id"), // Foreign key to legal_documents table
@@ -29,7 +29,7 @@ export const legalDocumentEmbeddings = pgTable("legal_document_embeddings", {
   updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
 });
 
-// Search queries and results for learning
+// Search queries and results for learning;
 export const searchQueries = pgTable("search_queries", {
   id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
   query: text("query").notNull(),

@@ -3,7 +3,7 @@
  * Reusable state management for common UI patterns
  */
 
-// Modal/Dialog state management
+// Modal/Dialog state management;
 export function useModal(initialOpen = false) {
   let isOpen = $state(initialOpen);
   let data = $state<any>(null);
@@ -48,14 +48,14 @@ export function useModal(initialOpen = false) {
   };
 }
 
-// Toast/Notification state management
+// Toast/Notification state management;
 interface Toast {
   id: string;
   type: 'success' | 'error' | 'warning' | 'info';
   title: string;
   message?: string;
   duration?: number;
-  createdAt: number;
+  createdAt: number;,
 }
 
 export function useToast() {
@@ -65,7 +65,7 @@ export function useToast() {
     const now = Date.now();
     const duration = t.duration || 5000;
     return now - t.createdAt < duration;
-  }));
+  });
 
   function addToast(type: Toast['type'], title: string, message?: string, duration?: number): string {
     const id = `toast_${Date.now()}_${Math.random().toString(36).substring(2)}`;
@@ -75,12 +75,12 @@ export function useToast() {
       title,
       message,
       duration: duration || 5000,
-      createdAt: Date.now()
+      createdAt: Date.now(),
     };
 
     toasts = [...toasts, toast];
 
-    // Auto-remove toast after duration
+    // Auto-remove toast after duration;
     setTimeout(() => {
       removeToast(id);
     }, toast.duration);
@@ -122,9 +122,9 @@ export function useToast() {
   };
 }
 
-// Form state management
+// Form state management;
 export function useForm<T extends Record<string, any>(initialValues: T) {
-  let values = $state<T>({ ...initialValues });
+  let values = $state<T>({ ...initialValues ,});
   let errors = $state<Partial<Record<keyof T, string>({});
   let touched = $state<Partial<Record<keyof T, boolean>({});
   let isSubmitting = $state(false);
@@ -137,7 +137,7 @@ export function useForm<T extends Record<string, any>(initialValues: T) {
     values[field] = value;
     touched[field] = true;
     
-    // Clear error when user starts typing
+    // Clear error when user starts typing;
     if (errors[field]) {
       const newErrors = { ...errors };
       delete newErrors[field];
@@ -196,7 +196,7 @@ export function useForm<T extends Record<string, any>(initialValues: T) {
       const result = await submitFn(values);
       return result;
     } catch (error: any) {
-      // Handle submission errors
+      // Handle submission errors;
       if (error.fieldErrors) {
         errors = { ...errors, ...error.fieldErrors };
       }
@@ -224,7 +224,7 @@ export function useForm<T extends Record<string, any>(initialValues: T) {
   };
 }
 
-// Loading state management
+// Loading state management;
 export function useAsync<T>(asyncFn: () => Promise<T>) {
   let data = $state<T | null>(null);
   let error = $state<Error | null>(null);
@@ -276,13 +276,13 @@ export function useAsync<T>(asyncFn: () => Promise<T>) {
   };
 }
 
-// Sidebar/Navigation state management
+// Sidebar/Navigation state management;
 export function useSidebar(initialOpen = true) {
   let isOpen = $state(initialOpen);
   let activeSection = $state<string | null>(null);
-  let pinnedSections = $state<Set<string>(new Set());
+  let pinnedSections = $state<Set<string>(new Set();
 
-  let isPinned = $derived((section: string) => pinnedSections.has(section));
+  let isPinned = $derived((section: string) => pinnedSections.has(section);
 
   function toggle(): void {
     isOpen = !isOpen;
@@ -327,7 +327,7 @@ export function useSidebar(initialOpen = true) {
 export function useSearch<T>(
   items: T[],
   searchFields: (keyof T)[],
-  initialQuery = ''
+  initialQuery = '';
 ) {
   let query = $state(initialQuery);
   let isSearching = $state(false);
@@ -336,7 +336,7 @@ export function useSearch<T>(
     if (!query.trim()) return items;
 
     const searchTerm = query.toLowerCase();
-    return items.filter(item =>
+    return items.filter(item =>;
       searchFields.some(field => {
         const value = item[field];
         if (typeof value === 'string') {
@@ -364,7 +364,7 @@ export function useSearch<T>(
   }
 
   async function performAsyncSearch<R>(
-    asyncSearchFn: (query: string) => Promise<R[]>
+    asyncSearchFn: (query: string) => Promise<R[]>;
   ): Promise<R[]> {
     if (!query.trim()) return [];
 
@@ -389,7 +389,7 @@ export function useSearch<T>(
   };
 }
 
-// Theme/Appearance state management
+// Theme/Appearance state management;
 export function useTheme() {
   let theme = $state<'light' | 'dark' | 'auto'>('auto');
   let systemTheme = $state<'light' | 'dark'>('light');
@@ -399,7 +399,7 @@ export function useTheme() {
     return theme;
   });
 
-  // Effect to detect system theme
+  // Effect to detect system theme;
   $effect(() => {
     if (typeof window !== 'undefined') {
       const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -417,13 +417,13 @@ export function useTheme() {
   function setTheme(newTheme: 'light' | 'dark' | 'auto'): void {
     theme = newTheme;
     
-    // Store in localStorage
+    // Store in localStorage;
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('theme', newTheme);
     }
   }
 
-  // Load theme from localStorage on init
+  // Load theme from localStorage on init;
   $effect(() => {
     if (typeof localStorage !== 'undefined') {
       const stored = localStorage.getItem('theme');

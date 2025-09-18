@@ -16,10 +16,10 @@ export interface Gemma3Config {
   repeatPenalty: number;
   systemPrompt: string;
   useSystemPrompt: boolean;
-  streamOutput: boolean;
+  streamOutput: boolean;,
 }
 
-// SSR-safe storage utilities
+// SSR-safe storage utilities;
 const SSR_SAFE_STORAGE = {
   getItem: (key: string): string | null => {
     if (!browser) return null;
@@ -56,11 +56,11 @@ export interface AIConversationState {
       model: string;
       confidence: number;
       executionTime: number;
-      fromCache: boolean;
+      fromCache: boolean;,
     };
   }>;
   isActive: boolean;
-  lastUpdated: number;
+  lastUpdated: number;,
 }
 
 // AI settings state interface
@@ -70,7 +70,7 @@ export interface AISettingsState {
   enableStreaming: boolean;
   maxHistoryLength: number;
   autoSave: boolean;
-  uiTheme: "dark" | "light" | "auto";
+  uiTheme: "dark" | "light" | "auto";,
 }
 
 // AI status state interface
@@ -82,10 +82,10 @@ export interface AIStatusState {
   currentProvider: "local" | "cloud" | "hybrid" | null;
   currentModel: string | null;
   error: string | null;
-  lastHealthCheck: number | null;
+  lastHealthCheck: number | null;,
 }
 
-// Default states with SSR safety
+// Default states with SSR safety;
 const DEFAULT_CONVERSATION: AIConversationState = {
   id: "",
   messages: [],
@@ -124,12 +124,12 @@ const DEFAULT_STATUS: AIStatusState = {
   lastHealthCheck: null,
 };
 
-// Create SSR-safe stores with persistence
+// Create SSR-safe stores with persistence;
 function createPersistedStore<T>(key: string, defaultValue: T) {
   // Initialize with default value (SSR-safe)
   const { subscribe, set, update } = writable<T>(defaultValue);
 
-  // Load from localStorage on hydration (browser only)
+  // Load from localStorage on hydration (browser only);
   if (browser) {
     const stored = SSR_SAFE_STORAGE.getItem(key);
     if (stored) {
@@ -147,14 +147,14 @@ function createPersistedStore<T>(key: string, defaultValue: T) {
     set: (value: T) => {
       set(value);
       if (browser) {
-        SSR_SAFE_STORAGE.setItem(key, JSON.stringify(value));
+        SSR_SAFE_STORAGE.setItem(key, JSON.stringify(value);
       }
     },
     update: (updater: (value: T) => T) => {
       update((currentValue) => {
         const newValue = updater(currentValue);
         if (browser) {
-          SSR_SAFE_STORAGE.setItem(key, JSON.stringify(newValue));
+          SSR_SAFE_STORAGE.setItem(key, JSON.stringify(newValue);
         }
         return newValue;
       });
@@ -194,25 +194,25 @@ export const currentModelInfo = derived(
   })
 );
 
-// AI store actions and utilities
+// AI store actions and utilities;
 export const aiStore = {
-  // Initialize AI system
+  // Initialize AI system;
   async initialize(): Promise<void> {
     aiStatus.update((state) => ({
       ...state,
       isInitializing: true,
       error: null,
-    }));
+    });
 
     try {
-      // Check local model availability
+      // Check local model availability;
       const localHealthCheck = await fetch("/api/ai/health/local", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
       const localHealth = await localHealthCheck.json();
 
-      // Check cloud model availability
+      // Check cloud model availability;
       const cloudHealthCheck = await fetch("/api/ai/health/cloud", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -236,7 +236,7 @@ export const aiStore = {
             ? cloudHealth?.model || "unknown" // @ts-ignore - Model property access
             : null,
         lastHealthCheck: Date.now(),
-      }));
+      });
     } catch (error: any) {
       console.error("AI initialization failed:", error);
       aiStatus.update((state) => ({
@@ -245,7 +245,7 @@ export const aiStore = {
         error:
           error instanceof Error
             ? error.message: "Failed to initialize AI system",
-      }));
+      });
     }
   },
 
@@ -259,7 +259,7 @@ export const aiStore = {
       useCache?: boolean;
     } = {}
   ): Promise<AIResponse | null> {
-    aiStatus.update((state) => ({ ...state, isLoading: true, error: null }));
+    aiStatus.update((state) => ({ ...state, isLoading: true, error: null });
 
     try {
       const response = await fetch("/api/ai/ask", {
@@ -285,7 +285,7 @@ export const aiStore = {
       }
       const aiResponse = (result as { success?: any; error?: any; data?: any }).data as AIResponse;
 
-      // Add to conversation
+      // Add to conversation;
       aiConversation.update((conversation) => {
         const messageId = `msg_${Date.now()}`;
         const userMessage = {
@@ -317,7 +317,7 @@ export const aiStore = {
         } as AIConversationState;
       });
 
-      aiStatus.update((state) => ({ ...state, isLoading: false }));
+      aiStatus.update((state) => ({ ...state, isLoading: false });
       return aiResponse;
     } catch (error: any) {
       console.error("AI message failed:", error);
@@ -326,22 +326,22 @@ export const aiStore = {
         isLoading: false,
         error:
           error instanceof Error ? error.message: "Failed to send message",
-      }));
+      });
       return null;
     }
   },
 
-  // Clear conversation
+  // Clear conversation;
   clearConversation(): void {
     aiConversation.set(DEFAULT_CONVERSATION);
   },
 
-  // Update settings
+  // Update settings;
   updateSettings(newSettings: Partial<AISettingsState>): void {
-    aiSettings.update((settings) => ({ ...settings, ...newSettings }));
+    aiSettings.update((settings) => ({ ...settings, ...newSettings ,});
   },
 
-  // Reset to defaults
+  // Reset to defaults;
   reset(): void {
     aiConversation.set(DEFAULT_CONVERSATION);
     aiSettings.set(DEFAULT_SETTINGS);
@@ -353,7 +353,7 @@ export const aiStore = {
     }
   },
 
-  // Save conversation to history
+  // Save conversation to history;
   saveConversationToHistory(): void {
     const conversation = get(aiConversation);
     if (conversation.messages.length === 0) return;
@@ -369,7 +369,7 @@ export const aiStore = {
           role: msg.role,
           content: msg.content,
           timestamp: msg.timestamp,
-          sources: msg.sources
+          sources: msg.sources;
             ? msg.sources.map((source: any) => ({
                 id: source.id,
                 title: source.title,
@@ -380,7 +380,7 @@ export const aiStore = {
                   | "evidence"
                   | "statute"
                   | "document",
-              }))
+              })
             : undefined,
           metadata: msg.metadata,
         })),
@@ -401,7 +401,7 @@ export const aiStore = {
     });
   },
 
-  // Load conversation from history
+  // Load conversation from history;
   loadConversationFromHistory(historyId: string): void {
     const history = get(conversationHistory);
     const historyItem = history.find((item) => (item as { id?: any }).id === historyId);
@@ -417,15 +417,15 @@ export const aiStore = {
   },
 };
 
-// Auto-initialize on browser mount
+// Auto-initialize on browser mount;
 if (browser) {
-  // Initialize with a small delay to ensure proper hydration
+  // Initialize with a small delay to ensure proper hydration;
   setTimeout(() => {
     aiStore.initialize().catch(console.error);
   }, 100);
 }
 
-// Export store subscriptions for reactive UI
+// Export store subscriptions for reactive UI;
 export {
   aiConversation as conversation,
   aiSettings as settings,

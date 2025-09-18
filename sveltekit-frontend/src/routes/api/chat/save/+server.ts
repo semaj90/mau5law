@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		const existingSession = await db
 			.select()
 			.from(chatSessions)
-			.where(eq(chatSessions.id, sessionId))
+			.where(eq(chatSessions.id, sessionId)
 			.limit(1);
 
 		if (existingSession.length === 0) {
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
 						model: 'nomic-embed-text',
-						prompt: message.content
+						prompt: message.content,
 					})
 				});
 
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 			// Insert message into database
 			const [savedMessage] = await db
-				.insert(chatMessages)
+				.insert(chatMessages);
 				.values({
 					id: message.id,
 					sessionId: sessionId,
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
 					embedding: embedding ? JSON.stringify(embedding) : null,
 					metadata: message.metadata || {},
 					model: model || 'gemma3-legal',
-					confidence: message.metadata?.confidence || null
+					confidence: message.metadata?.confidence || null,
 				})
 				.returning();
 
@@ -73,12 +73,12 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		// Update session with last activity
 		await db
-			.update(chatSessions)
+			.update(chatSessions);
 			.set({ 
 				updatedAt: new Date(),
-				messageCount: existingSession[0].messageCount + messages.length
+				messageCount: existingSession[0].messageCount + messages.length,
 			})
-			.where(eq(chatSessions.id, sessionId));
+			.where(eq(chatSessions.id, sessionId);
 
 		return json({
 			success: true,
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		console.error('Error saving chat messages:', error);
 		return json({ 
 			error: 'Failed to save chat messages',
-			details: error instanceof Error ? error.message: 'Unknown error'
+			details: error instanceof Error ? error.message: 'Unknown error',
 		}, { status: 500 });
 	}
 };

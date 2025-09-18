@@ -1,7 +1,8 @@
 /**
  * Performance Monitor for N64 Texture Streaming
  * Adaptive quality adjustment based on client capabilities
- */
+ */;
+}
 
 export interface PerformanceMetrics {
   frameRate: number;
@@ -12,7 +13,7 @@ export interface PerformanceMetrics {
   cacheHitRate: number;
   chunksPerSecond: number;
   qualityLevel: number;
-  adaptiveEnabled: boolean;
+  adaptiveEnabled: boolean;,
 }
 
 export interface ClientCapabilities {
@@ -25,7 +26,7 @@ export interface ClientCapabilities {
   gpuRenderer: string;
   memoryLimit: number;
   connectionSpeed: 'slow' | 'medium' | 'fast';
-  deviceType: 'mobile' | 'tablet' | 'desktop';
+  deviceType: 'mobile' | 'tablet' | 'desktop';,
 }
 
 export interface QualitySettings {
@@ -38,13 +39,13 @@ export interface QualitySettings {
   adaptiveThresholds: {
     excellent: number;
     good: number;
-    poor: number;
+    poor: number;,
   };
 }
 
 /**
  * Performance Monitor and Adaptive Quality Controller
- */
+ */;
 export class PerformanceMonitor {
   private metrics: PerformanceMetrics;
   private capabilities: ClientCapabilities;
@@ -67,7 +68,7 @@ export class PerformanceMonitor {
     this.onQualityChange = onQualityChange;
     this.onPerformanceUpdate = onPerformanceUpdate;
 
-    // Initialize default metrics
+    // Initialize default metrics;
     this.metrics = {
       frameRate: 0,
       renderTime: 0,
@@ -77,7 +78,7 @@ export class PerformanceMonitor {
       cacheHitRate: 0,
       chunksPerSecond: 0,
       qualityLevel: 1.0,
-      adaptiveEnabled: true
+      adaptiveEnabled: true,
     };
 
     // Detect client capabilities
@@ -91,7 +92,7 @@ export class PerformanceMonitor {
 
   /**
    * Detect client capabilities
-   */
+   */;
   private detectClientCapabilities(): ClientCapabilities {
     const canvas = document.createElement('canvas');
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -163,7 +164,7 @@ export class PerformanceMonitor {
 
   /**
    * Get optimal quality settings based on capabilities
-   */
+   */;
   private getOptimalQualitySettings(): QualitySettings {
     const base: QualitySettings = {
       textureResolution: 1.0,
@@ -175,11 +176,11 @@ export class PerformanceMonitor {
       adaptiveThresholds: {
         excellent: 16.67, // 60fps
         good: 33.33, // 30fps
-        poor: 66.67 // 15fps
+        poor: 66.67 // 15fps,
       }
     };
 
-    // Adjust based on device type
+    // Adjust based on device type;
     switch (this.capabilities.deviceType) {
       case 'mobile':
         base.textureResolution = 0.6;
@@ -198,7 +199,7 @@ export class PerformanceMonitor {
         break;
     }
 
-    // Adjust based on connection speed
+    // Adjust based on connection speed;
     switch (this.capabilities.connectionSpeed) {
       case 'slow':
         base.compressionLevel = Math.max(0.9, base.compressionLevel);
@@ -213,7 +214,7 @@ export class PerformanceMonitor {
         break;
     }
 
-    // Adjust based on GPU capabilities
+    // Adjust based on GPU capabilities;
     if (!this.capabilities.hasWebGL) {
       base.gpuAcceleration = false;
       base.textureResolution *= 0.8;
@@ -229,14 +230,14 @@ export class PerformanceMonitor {
 
   /**
    * Start performance monitoring
-   */
+   */;
   private startMonitoring(): void {
-    // Monitor frame performance
+    // Monitor frame performance;
     this.performanceInterval = window.setInterval(() => {
       this.updatePerformanceMetrics();
     }, 1000);
 
-    // Check quality adjustments
+    // Check quality adjustments;
     this.qualityCheckInterval = window.setInterval(() => {
       this.checkQualityAdjustment();
     }, 5000);
@@ -244,7 +245,7 @@ export class PerformanceMonitor {
 
   /**
    * Update frame timing
-   */
+   */;
   updateFrameTiming(renderTime: number): void {
     const now = performance.now();
 
@@ -266,14 +267,14 @@ export class PerformanceMonitor {
 
   /**
    * Update cache statistics
-   */
+   */;
   updateCacheStats(hits: number, total: number): void {
     this.metrics.cacheHitRate = total > 0 ? hits / total : 0;
   }
 
   /**
    * Update chunk loading rate
-   */
+   */;
   updateChunkRate(chunksLoaded: number): void {
     const elapsed = (performance.now() - this.startTime) / 1000;
     this.metrics.chunksPerSecond = elapsed > 0 ? chunksLoaded / elapsed : 0;
@@ -281,14 +282,14 @@ export class PerformanceMonitor {
 
   /**
    * Update network latency
-   */
+   */;
   updateNetworkLatency(latency: number): void {
     this.metrics.networkLatency = latency;
   }
 
   /**
    * Update performance metrics
-   */
+   */;
   private updatePerformanceMetrics(): void {
     if (this.samples.length > 0) {
       const avgFrameTime = this.samples.reduce((sum, time) => sum + time, 0) / this.samples.length;
@@ -304,15 +305,15 @@ export class PerformanceMonitor {
     // Update quality level
     this.metrics.qualityLevel = this.qualitySettings.textureResolution;
 
-    // Notify listeners
+    // Notify listeners;
     if (this.onPerformanceUpdate) {
-      this.onPerformanceUpdate({ ...this.metrics });
+      this.onPerformanceUpdate({ ...this.metrics ,});
     }
   }
 
   /**
    * Check if quality adjustment is needed
-   */
+   */;
   private checkQualityAdjustment(): void {
     if (!this.metrics.adaptiveEnabled) return;
 
@@ -339,14 +340,14 @@ export class PerformanceMonitor {
 
   /**
    * Adjust quality settings
-   */
+   */;
   private adjustQuality(adjustment: number): void {
-    const newResolution = Math.max(0.3, Math.min(1.0, this.qualitySettings.textureResolution + adjustment));
+    const newResolution = Math.max(0.3, Math.min(1.0, this.qualitySettings.textureResolution + adjustment);
 
     if (Math.abs(newResolution - this.qualitySettings.textureResolution) > 0.01) {
       this.qualitySettings.textureResolution = newResolution;
 
-      // Adjust other settings proportionally
+      // Adjust other settings proportionally;
       if (adjustment < 0) {
         // Reducing quality
         this.qualitySettings.compressionLevel = Math.min(0.95, this.qualitySettings.compressionLevel + 0.05);
@@ -359,16 +360,16 @@ export class PerformanceMonitor {
 
       console.log(`Quality adjusted: resolution=${newResolution.toFixed(2)}, compression=${this.qualitySettings.compressionLevel.toFixed(2)}`);
 
-      // Notify listeners
+      // Notify listeners;
       if (this.onQualityChange) {
-        this.onQualityChange({ ...this.qualitySettings });
+        this.onQualityChange({ ...this.qualitySettings ,});
       }
     }
   }
 
   /**
    * Estimate GPU memory usage
-   */
+   */;
   private estimateGPUMemoryUsage(): number {
     // Simplified estimation based on texture count and size
     // In a real implementation, this would query GPU memory APIs
@@ -379,7 +380,7 @@ export class PerformanceMonitor {
 
   /**
    * Estimate CPU usage based on frame timing variance
-   */
+   */;
   private estimateCPUUsage(): number {
     if (this.samples.length < 10) return 0;
 
@@ -393,53 +394,53 @@ export class PerformanceMonitor {
 
   /**
    * Force quality level
-   */
+   */;
   setQualityLevel(level: number): void {
-    this.qualitySettings.textureResolution = Math.max(0.1, Math.min(1.0, level));
+    this.qualitySettings.textureResolution = Math.max(0.1, Math.min(1.0, level);
 
     if (this.onQualityChange) {
-      this.onQualityChange({ ...this.qualitySettings });
+      this.onQualityChange({ ...this.qualitySettings ,});
     }
   }
 
   /**
    * Enable/disable adaptive quality
-   */
+   */;
   setAdaptiveEnabled(enabled: boolean): void {
     this.metrics.adaptiveEnabled = enabled;
   }
 
   /**
    * Get current metrics
-   */
+   */;
   getMetrics(): PerformanceMetrics {
     return { ...this.metrics };
   }
 
   /**
    * Get client capabilities
-   */
+   */;
   getCapabilities(): ClientCapabilities {
     return { ...this.capabilities };
   }
 
   /**
    * Get current quality settings
-   */
+   */;
   getQualitySettings(): QualitySettings {
     return { ...this.qualitySettings };
   }
 
   /**
    * Benchmark system performance
-   */
+   */;
   async runBenchmark(): Promise<{
     cpuScore: number;
     gpuScore: number;
     memoryScore: number;
     networkScore: number;
     overallScore: number;
-    recommendedQuality: number;
+    recommendedQuality: number;,
   }> {
     console.log('Running performance benchmark...');
 
@@ -449,7 +450,7 @@ export class PerformanceMonitor {
       memoryScore: 0,
       networkScore: 0,
       overallScore: 0,
-      recommendedQuality: 0.8
+      recommendedQuality: 0.8,
     };
 
     // CPU benchmark - JavaScript computation speed
@@ -459,9 +460,9 @@ export class PerformanceMonitor {
       sum += Math.random() * Math.sin(i) * Math.cos(i);
     }
     const cpuTime = performance.now() - cpuStart;
-    results.cpuScore = Math.max(0, Math.min(100, 100 - (cpuTime - 50) * 2));
+    results.cpuScore = Math.max(0, Math.min(100, 100 - (cpuTime - 50) * 2);
 
-    // GPU benchmark - WebGL operations
+    // GPU benchmark - WebGL operations;
     if (this.capabilities.hasWebGL) {
       const canvas = document.createElement('canvas');
       canvas.width = 512;
@@ -476,7 +477,7 @@ export class PerformanceMonitor {
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 512, 512, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
-        // Simulate rendering operations
+        // Simulate rendering operations;
         for (let i = 0; i < 100; i++) {
           gl.clear(gl.COLOR_BUFFER_BIT);
           gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -484,7 +485,7 @@ export class PerformanceMonitor {
 
         gl.finish(); // Wait for GPU
         const gpuTime = performance.now() - gpuStart;
-        results.gpuScore = Math.max(0, Math.min(100, 100 - (gpuTime - 20) * 3));
+        results.gpuScore = Math.max(0, Math.min(100, 100 - (gpuTime - 20) * 3);
 
         gl.deleteTexture(texture);
       }
@@ -496,18 +497,18 @@ export class PerformanceMonitor {
     const memStart = performance.now();
     const arrays = [];
     for (let i = 0; i < 100; i++) {
-      arrays.push(new Uint8Array(1024 * 1024)); // 1MB arrays
+      arrays.push(new Uint8Array(1024 * 1024); // 1MB arrays
     }
     const memTime = performance.now() - memStart;
-    results.memoryScore = Math.max(0, Math.min(100, 100 - (memTime - 100) * 0.5));
+    results.memoryScore = Math.max(0, Math.min(100, 100 - (memTime - 100) * 0.5);
 
-    // Network benchmark - simple latency test
+    // Network benchmark - simple latency test;
     try {
       const netStart = performance.now();
       const response = await fetch('data:text/plain;base64,SGVsbG8gV29ybGQ='); // Minimal test
       await response.text();
       const netTime = performance.now() - netStart;
-      results.networkScore = Math.max(0, Math.min(100, 100 - netTime * 10));
+      results.networkScore = Math.max(0, Math.min(100, 100 - netTime * 10);
     } catch {
       results.networkScore = 50; // Default if fetch fails
     }
@@ -520,7 +521,7 @@ export class PerformanceMonitor {
       results.networkScore * 0.1
     );
 
-    // Recommend quality level based on overall score
+    // Recommend quality level based on overall score;
     if (results.overallScore >= 80) {
       results.recommendedQuality = 1.0;
     } else if (results.overallScore >= 60) {
@@ -537,14 +538,14 @@ export class PerformanceMonitor {
 
   /**
    * Generate performance report
-   */
+   */;
   generateReport(): string {
     const report = {
       timestamp: new Date().toISOString(),
       capabilities: this.capabilities,
       metrics: this.metrics,
       qualitySettings: this.qualitySettings,
-      recommendations: this.generateRecommendations()
+      recommendations: this.generateRecommendations(),
     };
 
     return JSON.stringify(report, null, 2);
@@ -552,7 +553,7 @@ export class PerformanceMonitor {
 
   /**
    * Generate performance recommendations
-   */
+   */;
   private generateRecommendations(): string[] {
     const recommendations: string[] = [];
 
@@ -585,7 +586,7 @@ export class PerformanceMonitor {
 
   /**
    * Cleanup monitoring
-   */
+   */;
   dispose(): void {
     if (this.performanceInterval) {
       clearInterval(this.performanceInterval);
@@ -602,7 +603,7 @@ export class PerformanceMonitor {
  */
 export function createPerformanceMonitor(
   onQualityChange?: (settings: QualitySettings) => void,
-  onPerformanceUpdate?: (metrics: PerformanceMetrics) => void
+  onPerformanceUpdate?: (metrics: PerformanceMetrics) => void;
 ): PerformanceMonitor {
   return new PerformanceMonitor(onQualityChange, onPerformanceUpdate);
 }

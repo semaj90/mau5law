@@ -10,7 +10,8 @@ import type { RequestHandler } from './$types.js';
  */
 
 const SERVICE_URL = INGEST_SERVICE_URL || 'http://localhost:8227';
-const TIMEOUT = 30000; // 30 seconds for document processing
+const TIMEOUT = 30000; // 30 seconds for document processing;
+}
 
 export interface DocumentIngestRequest {
   title: string;
@@ -20,7 +21,7 @@ export interface DocumentIngestRequest {
 }
 
 export interface BatchIngestRequest {
-  documents: DocumentIngestRequest[];
+  documents: DocumentIngestRequest[];,
 }
 
 export interface IngestResponse {
@@ -29,27 +30,27 @@ export interface IngestResponse {
   document_id: string;
   embedding_id: string;
   process_time_ms: number;
-  timestamp: string;
+  timestamp: string;,
 }
 
-// Single document ingestion
+// Single document ingestion;
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const requestData = await readBodyFast(request);
 
-    // Validate request structure
+    // Validate request structure;
     if (!requestData.title || !requestData.content) {
       return json(
-        { error: 'Missing required fields: title and content are required' },
+        { error: 'Missing required fields: title and content are required' },)
         { status: 400 }
       );
     }
 
-    // Transform to Go service format
+    // Transform to Go service format;
     const ingestRequest: DocumentIngestRequest = {
       title: requestData.title,
       content: requestData.content,
-      case_id: requestData.case_id || requestData.caseId, // Support both formats
+      case_id: requestData.case_id || requestData.caseId, // Support both formats;
       metadata: {
         ...requestData.metadata,
         // Add SvelteKit-specific metadata
@@ -66,7 +67,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
 
     try {
-      // Call Go ingest service using SvelteKit's enhanced fetch
+      // Call Go ingest service using SvelteKit's enhanced fetch;
       const response = await fetch(`${SERVICE_URL}/api/ingest`, {
         method: 'POST',
         headers: {
@@ -80,19 +81,18 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
       if (!response.ok) {
         const errorText = await response.text();
-        return json(
-          {
+        return json({
             error: `Ingest service error: ${response.status} - ${errorText}`,
             service: 'ingest-service',
             port: '8227',
-          },
+          },)
           { status: response.status }
         );
       }
 
       const result: IngestResponse = await response.json();
 
-      // Enhanced response with SvelteKit metadata
+      // Enhanced response with SvelteKit metadata;
       return json({
         ...result,
         service_info: {
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
       if ((fetchError as any)?.name === 'AbortError') {
         return json(
-          { error: 'Request timeout - document processing took too long' },
+          { error: 'Request timeout - document processing took too long' },)
           { status: 504 }
         );
       }
@@ -120,18 +120,17 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
   } catch (error: any) {
     console.error('Ingest API error:', error);
 
-    return json(
-      {
+    return json({
         error: 'Internal server error',
         message: error instanceof Error ? error.message: 'Unknown error',
         service: 'sveltekit-ingest-proxy',
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// Health check endpoint
+// Health check endpoint;
 export const GET: RequestHandler = async ({ fetch }) => {
   try {
     const response = await fetch(`${SERVICE_URL}/api/health`, {
@@ -140,13 +139,12 @@ export const GET: RequestHandler = async ({ fetch }) => {
     });
 
     if (!response.ok) {
-      return json(
-        {
+      return json({
           status: 'unhealthy',
           service: 'ingest-service',
           port: '8227',
           error: `Service unreachable: ${response.status}`,
-        },
+        },)
         { status: 503 }
       );
     }
@@ -164,12 +162,11 @@ export const GET: RequestHandler = async ({ fetch }) => {
       architecture: 'go-microservice',
     });
   } catch (error: any) {
-    return json(
-      {
+    return json({
         status: 'error',
         service: 'ingest-service',
         error: error instanceof Error ? error.message: 'Connection failed',
-      },
+      },)
       { status: 503 }
     );
   }

@@ -2,6 +2,7 @@ import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
 import type { User } from '$lib/database/schema';
 import { EventEmitter } from "events";
+}
 
 export interface AuthState {
   user: User | null;
@@ -12,7 +13,7 @@ export interface AuthState {
   securitySettings: {
     sessionTimeoutMinutes: number;
     requireReauth: boolean;
-    enable2FA: boolean;
+    enable2FA: boolean;,
   };
 }
 
@@ -27,11 +28,11 @@ export interface RegisterData {
   password: string;
   firstName: string;
   lastName: string;
-  acceptTerms: boolean;
+  acceptTerms: boolean;,
 }
 
 class EnhancedAuthStore {
-  // Svelte 5 reactive state
+  // Svelte 5 reactive state;
   private _state = browser ? $state<AuthState>({
     user: null,
     isAuthenticated: false,
@@ -41,7 +42,7 @@ class EnhancedAuthStore {
     securitySettings: {
       sessionTimeoutMinutes: 30,
       requireReauth: false,
-      enable2FA: false
+      enable2FA: false,
     }
   }) : {
     user: null,
@@ -52,7 +53,7 @@ class EnhancedAuthStore {
     securitySettings: {
       sessionTimeoutMinutes: 30,
       requireReauth: false,
-      enable2FA: false
+      enable2FA: false,
     }
   };
 
@@ -68,7 +69,7 @@ class EnhancedAuthStore {
     }
   }
 
-  // Public getters (reactive)
+  // Public getters (reactive);
   get state() {
     return this._state;
   }
@@ -89,7 +90,7 @@ class EnhancedAuthStore {
     return this._state.isLoading;
   }
 
-  // Derived state
+  // Derived state;
   get userRole() {
     return this._state.user?.role || 'guest';
   }
@@ -121,10 +122,10 @@ class EnhancedAuthStore {
     const timeout = this._state.securitySettings.sessionTimeoutMinutes * 60 * 1000;
     const remaining = timeout - elapsed;
 
-    return Math.max(0, Math.floor(remaining / 1000));
+    return Math.max(0, Math.floor(remaining / 1000);
   }
 
-  // Authentication methods
+  // Authentication methods;
   async login(credentials: LoginCredentials): Promise<any> {
     this._state.isLoading = true;
     this._error = null;
@@ -138,7 +139,7 @@ class EnhancedAuthStore {
         body: JSON.stringify({
           ...credentials,
           ipAddress: await this.getClientIP(),
-          userAgent: navigator.userAgent
+          userAgent: navigator.userAgent,
         })
       });
 
@@ -150,7 +151,7 @@ class EnhancedAuthStore {
         this._state.isAuthenticated = true;
         this._state.lastActivity = new Date();
         
-        // Store session info
+        // Store session info;
         if (credentials.rememberMe) {
           localStorage.setItem('auth:rememberMe', 'true');
         }
@@ -183,7 +184,7 @@ class EnhancedAuthStore {
         body: JSON.stringify({
           ...data,
           ipAddress: await this.getClientIP(),
-          userAgent: navigator.userAgent
+          userAgent: navigator.userAgent,
         })
       });
 
@@ -226,7 +227,7 @@ class EnhancedAuthStore {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            sessionId: this._state.session.id
+            sessionId: this._state.session.id,
           })
         });
       }
@@ -315,7 +316,7 @@ class EnhancedAuthStore {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updates)
+        body: JSON.stringify(updates),
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -352,12 +353,12 @@ class EnhancedAuthStore {
     }
   }
 
-  // Security and session management
+  // Security and session management;
   async refreshSession(): Promise<boolean> {
     try {
       const response = await fetch('/api/auth/refresh', {
         method: 'POST',
-        credentials: 'include'
+        credentials: 'include',
       });
 
       if ((response as { json?: any; ok?: any }).ok) {
@@ -384,7 +385,7 @@ class EnhancedAuthStore {
   trackActivity(): void {
     this._state.lastActivity = new Date();
     
-    // Reset activity timeout
+    // Reset activity timeout;
     if (this._activityTimeout) {
       clearTimeout(this._activityTimeout);
     }
@@ -413,7 +414,7 @@ class EnhancedAuthStore {
     this._error = null;
   }
 
-  // Permission helpers
+  // Permission helpers;
   hasPermission(permission: string): boolean {
     if (!this._state.user) return false;
     
@@ -433,7 +434,7 @@ class EnhancedAuthStore {
     return this.hasPermission('case:read');
   }
 
-  // Private methods
+  // Private methods;
   private async initializeAuth(): Promise<void> {
     try {
       this._state.isLoading = true;
@@ -497,7 +498,7 @@ class EnhancedAuthStore {
     // Clear stored data
     localStorage.removeItem('auth:rememberMe');
     
-    // Clear timeouts
+    // Clear timeouts;
     if (this._activityTimeout) {
       clearTimeout(this._activityTimeout);
       this._activityTimeout = null;

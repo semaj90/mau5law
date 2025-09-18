@@ -30,9 +30,9 @@ body {
 /* ===== CSS CUSTOM PROPERTIES (THEMES) ===== */
 :root {
   /* ===== TYPOGRAPHY ===== */
-  --font-heading: "Segoe UI", system-ui, -apple-system, sans-serif;
-  --font-body: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --font-mono: "Fira Code", "Cascadia Code", "Consolas", monospace;
+  --font-heading: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
 
   /* ===== SPACING ===== */
   --space-xs: 0.25rem;
@@ -61,7 +61,7 @@ body {
 
 /* ===== LIGHT THEME (DEFAULT) ===== */
 :root,
-[data-theme="light"] {
+[data-theme='light'] {
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
   --bg-tertiary: #f1f5f9;
@@ -93,7 +93,7 @@ body {
 }
 
 /* ===== DARK THEME ===== */
-[data-theme="dark"] {
+[data-theme='dark'] {
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
   --bg-tertiary: #334155;
@@ -129,7 +129,7 @@ body {
 }
 
 /* ===== NORMAL THEME (NEUTRAL) ===== */
-[data-theme="normal"] {
+[data-theme='normal'] {
   --bg-primary: #fafafa;
   --bg-secondary: #f4f4f5;
   --bg-tertiary: #e4e4e7;
@@ -900,18 +900,13 @@ textarea.form-control {
 }
 
 .loading::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   animation: loading 1.5s infinite;
 }
 
@@ -925,13 +920,8 @@ textarea.form-control {
 }
 
 /* ===== DARK MODE SPECIFIC ADJUSTMENTS ===== */
-[data-theme="dark"] .loading::after {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
+[data-theme='dark'] .loading::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
 }
 
 /* ===== PRINT STYLES ===== */

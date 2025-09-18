@@ -2,7 +2,7 @@ import { getUserById } from './db/queries.js';
 
 // import { type RequestEvent } from "@sveltejs/kit";
 
-// Temporary stub for RequestEvent
+// Temporary stub for RequestEvent;
 interface RequestEvent {
   cookies: {
     set(name: string, value: string, options?: any): void;
@@ -13,11 +13,12 @@ import { signJWT, verifyJWT, type JWTPayload } from './authUtils.js';
 
 // In-memory session store (for development)
 const sessions = new Map<string, Session>();
+}
 
 export interface Session {
   id: string;
   userId: string;
-  expiresAt: Date;
+  expiresAt: Date;,
 }
 
 export interface User {

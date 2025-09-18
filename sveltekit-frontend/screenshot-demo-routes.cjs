@@ -31,11 +31,16 @@ const { chromium } = require('playwright');
     const categories = await page.evaluate(() => {
       const cards = document.querySelectorAll('.demo-route-card');
       const categoryCount = {};
-      cards.forEach(card => {
+      cards.forEach((card) => {
         const categoryElements = card.querySelectorAll('[class*="uppercase"]');
-        categoryElements.forEach(el => {
+        categoryElements.forEach((el) => {
           const category = el.textContent?.trim();
-          if (category && category.length > 0 && category !== 'LIVE DEMO' && category !== 'ACTIVE') {
+          if (
+            category &&
+            category.length > 0 &&
+            category !== 'LIVE DEMO' &&
+            category !== 'ACTIVE'
+          ) {
             categoryCount[category] = (categoryCount[category] || 0) + 1;
           }
         });
@@ -48,13 +53,13 @@ const { chromium } = require('playwright');
     console.log('📸 Taking full page screenshot...');
     await page.screenshot({
       path: 'demo-routes-full-page.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Take viewport screenshot
     console.log('🖼️ Taking viewport screenshot...');
     await page.screenshot({
-      path: 'demo-routes-viewport.png'
+      path: 'demo-routes-viewport.png',
     });
 
     // Scroll to demo routes section if not visible
@@ -70,7 +75,7 @@ const { chromium } = require('playwright');
     await page.waitForTimeout(2000);
 
     await page.screenshot({
-      path: 'demo-routes-focused.png'
+      path: 'demo-routes-focused.png',
     });
 
     // Test hover effect on first card
@@ -89,7 +94,6 @@ const { chromium } = require('playwright');
     if (firstDemoCard) {
       console.log('  - demo-routes-hover.png (hover effect)');
     }
-
   } catch (error) {
     console.error('❌ Error:', error.message);
 

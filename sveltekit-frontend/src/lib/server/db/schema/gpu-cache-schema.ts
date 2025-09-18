@@ -20,7 +20,7 @@ import {
 
 // === Shader Cache Tables ===
 
-// Main shader cache entries
+// Main shader cache entries;
 export const shaderCacheEntries = pgTable("shader_cache_entries", {
   id: uuid("id").primaryKey().defaultRandom(),
   cacheKey: varchar("cache_key", { length: 255 }).notNull().unique(),
@@ -69,7 +69,7 @@ export const shaderCacheEntries = pgTable("shader_cache_entries", {
   // Audit fields
   createdBy: uuid("created_by"), // references users.id
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull()
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
   // Indexes for performance
   cacheKeyIdx: index("shader_cache_key_idx").on(table.cacheKey),
@@ -80,14 +80,14 @@ export const shaderCacheEntries = pgTable("shader_cache_entries", {
   reinforcementScoreIdx: index("reinforcement_score_idx").on(table.reinforcementScore),
   lastAccessedIdx: index("last_accessed_idx").on(table.lastAccessedAt),
   
-  // pgvector index for semantic similarity
+  // pgvector index for semantic similarity;
   embeddingIdx: index("shader_embedding_hnsw_idx").using("hnsw", table.embedding).with({ 
     m: 16, 
-    ef_construction: 64 
+    ef_construction: 64 ,
   })
-}));
+});
 
-// User shader access patterns for reinforcement learning
+// User shader access patterns for reinforcement learning;
 export const shaderUserPatterns = pgTable("shader_user_patterns", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").notNull(), // references users.id
@@ -117,7 +117,7 @@ export const shaderUserPatterns = pgTable("shader_user_patterns", {
   prediction: jsonb("prediction").default("{}"), // ML model prediction data
   actualOutcome: jsonb("actual_outcome").default("{}"), // actual user behavior for training
   
-  metadata: jsonb("metadata").default("{}")
+  metadata: jsonb("metadata").default("{}");
 }, (table) => ({
   // Indexes for ML queries
   userIdIdx: index("user_patterns_user_id_idx").on(table.userId),
@@ -129,9 +129,9 @@ export const shaderUserPatterns = pgTable("shader_user_patterns", {
   
   // Composite index for workflow prediction
   workflowPredictionIdx: index("workflow_prediction_idx").on(table.userId, table.workflowStep, table.accessTimestamp)
-}));
+});
 
-// Shader dependency graph for optimization
+// Shader dependency graph for optimization;
 export const shaderDependencies = pgTable("shader_dependencies", {
   id: uuid("id").primaryKey().defaultRandom(),
   parentShaderCacheId: uuid("parent_shader_cache_id").references(() => shaderCacheEntries.id).notNull(),
@@ -145,17 +145,17 @@ export const shaderDependencies = pgTable("shader_dependencies", {
   parallelizable: boolean("parallelizable").default(true),
   
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  metadata: jsonb("metadata").default("{}")
+  metadata: jsonb("metadata").default("{}");
 }, (table) => ({
   // Unique constraint and indexes
   uniqueDependency: primaryKey({ columns: [table.parentShaderCacheId, table.dependentShaderCacheId] }),
   parentIdx: index("parent_shader_idx").on(table.parentShaderCacheId),
   dependentIdx: index("dependent_shader_idx").on(table.dependentShaderCacheId),
   dependencyTypeIdx: index("dependency_type_idx").on(table.dependencyType),
-  priorityIdx: index("load_order_priority_idx").on(table.loadOrderPriority)
-}));
+  priorityIdx: index("load_order_priority_idx").on(table.loadOrderPriority),
+});
 
-// Predictive preload cache for reinforcement learning
+// Predictive preload cache for reinforcement learning;
 export const shaderPreloadQueue = pgTable("shader_preload_queue", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").notNull(), // references users.id
@@ -185,7 +185,7 @@ export const shaderPreloadQueue = pgTable("shader_preload_queue", {
   usedAtTimestamp: timestamp("used_at_timestamp"),
   actualDelay: integer("actual_delay"), // ms between preload and actual use
   
-  metadata: jsonb("metadata").default("{}")
+  metadata: jsonb("metadata").default("{}");
 }, (table) => ({
   userIdIdx: index("preload_user_id_idx").on(table.userId),
   shaderCacheIdIdx: index("preload_shader_id_idx").on(table.shaderCacheId),
@@ -197,9 +197,9 @@ export const shaderPreloadQueue = pgTable("shader_preload_queue", {
   // Composite indexes for queue processing
   queueProcessingIdx: index("queue_processing_idx").on(table.status, table.scheduledFor, table.preloadPriority),
   accuracyTrackingIdx: index("accuracy_tracking_idx").on(table.wasUsed, table.predictionModel)
-}));
+});
 
-// Shader performance metrics for monitoring
+// Shader performance metrics for monitoring;
 export const shaderPerformanceMetrics = pgTable("shader_performance_metrics", {
   id: uuid("id").primaryKey().defaultRandom(),
   shaderCacheId: uuid("shader_cache_id").references(() => shaderCacheEntries.id).notNull(),
@@ -225,7 +225,7 @@ export const shaderPerformanceMetrics = pgTable("shader_performance_metrics", {
   renderContext: jsonb("render_context").default("{}"), // resolution, complexity settings
   
   recordedAt: timestamp("recorded_at").defaultNow().notNull(),
-  metadata: jsonb("metadata").default("{}")
+  metadata: jsonb("metadata").default("{}");
 }, (table) => ({
   shaderCacheIdIdx: index("perf_shader_id_idx").on(table.shaderCacheId),
   userIdIdx: index("perf_user_id_idx").on(table.userId),
@@ -235,7 +235,7 @@ export const shaderPerformanceMetrics = pgTable("shader_performance_metrics", {
   
   // Time series analysis
   timeSeriesIdx: index("perf_time_series_idx").on(table.shaderCacheId, table.recordedAt)
-}));
+});
 
 // === Relations ===
 
@@ -244,42 +244,42 @@ export const shaderCacheEntriesRelations = relations(shaderCacheEntries, ({ many
   dependencies: many(shaderDependencies, { relationName: "parent_dependencies" }),
   dependents: many(shaderDependencies, { relationName: "dependent_shaders" }),
   preloadQueue: many(shaderPreloadQueue),
-  performanceMetrics: many(shaderPerformanceMetrics)
-}));
+  performanceMetrics: many(shaderPerformanceMetrics),
+});
 
 export const shaderUserPatternsRelations = relations(shaderUserPatterns, ({ one }) => ({
   shaderCache: one(shaderCacheEntries, {
     fields: [shaderUserPatterns.shaderCacheId],
-    references: [shaderCacheEntries.id]
+    references: [shaderCacheEntries.id],
   })
-}));
+});
 
 export const shaderDependenciesRelations = relations(shaderDependencies, ({ one }) => ({
   parentShader: one(shaderCacheEntries, {
     fields: [shaderDependencies.parentShaderCacheId],
     references: [shaderCacheEntries.id],
-    relationName: "parent_dependencies"
+    relationName: "parent_dependencies",
   }),
   dependentShader: one(shaderCacheEntries, {
     fields: [shaderDependencies.dependentShaderCacheId],
     references: [shaderCacheEntries.id],
-    relationName: "dependent_shaders"
+    relationName: "dependent_shaders",
   })
-}));
+});
 
 export const shaderPreloadQueueRelations = relations(shaderPreloadQueue, ({ one }) => ({
   shaderCache: one(shaderCacheEntries, {
     fields: [shaderPreloadQueue.shaderCacheId],
-    references: [shaderCacheEntries.id]
+    references: [shaderCacheEntries.id],
   })
-}));
+});
 
 export const shaderPerformanceMetricsRelations = relations(shaderPerformanceMetrics, ({ one }) => ({
   shaderCache: one(shaderCacheEntries, {
     fields: [shaderPerformanceMetrics.shaderCacheId],
-    references: [shaderCacheEntries.id]
+    references: [shaderCacheEntries.id],
   })
-}));
+});
 
 // === TypeScript Types ===
 
@@ -294,13 +294,14 @@ export type NewShaderPreloadQueue = typeof shaderPreloadQueue.$inferInsert;
 export type ShaderPerformanceMetric = typeof shaderPerformanceMetrics.$inferSelect;
 export type NewShaderPerformanceMetric = typeof shaderPerformanceMetrics.$inferInsert;
 
-// === Helper Types for API ===
+// === Helper Types for API ===;
+}
 
 export interface ShaderCacheConfig {
   maxCacheSize: number;
   preloadThreshold: number;
   reinforcementLearningEnabled: boolean;
-  predictivePreloadEnabled: boolean;
+  predictivePreloadEnabled: boolean;,
 }
 
 export interface ShaderPredictionContext {
@@ -316,7 +317,7 @@ export interface ReinforcementReward {
   reward: number;
   context: string;
   performanceBonus: number;
-  userSatisfactionScore: number;
+  userSatisfactionScore: number;,
 }
 
 export interface PredictionResult {
@@ -324,5 +325,5 @@ export interface PredictionResult {
   confidence: number;
   model: string;
   features: Record<string, any>;
-  priority: number;
+  priority: number;,
 }

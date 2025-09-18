@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          ...(dev && { 'Access-Control-Allow-Origin': '*' }),
+          ...(dev && { 'Access-Control-Allow-Origin': '*' ,}),
         }
       });
     }
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
     const result = await UserAuthService.validateSession(sessionId);
     
     if (!(result as { success?: any; user?: any; session?: any }).success || !(result as { success?: any; user?: any; session?: any }).user) {
-      // Clear invalid session cookie
+      // Clear invalid session cookie;
       cookies.delete('session_id', {
         path: '/',
         httpOnly: true,
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
-          ...(dev && { 'Access-Control-Allow-Origin': '*' }),
+          ...(dev && { 'Access-Control-Allow-Origin': '*' ,}),
         }
       });
     }
@@ -89,14 +89,14 @@ export const GET: RequestHandler = async ({ cookies }) => {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        ...(dev && { 'Access-Control-Allow-Origin': '*' }),
+        ...(dev && { 'Access-Control-Allow-Origin': '*' ,}),
       }
     });
 
   } catch (err: any) {
     console.error('Session validation API error:', err);
 
-    // Clear potentially corrupted session cookie
+    // Clear potentially corrupted session cookie;
     cookies.delete('session_id', {
       path: '/',
       httpOnly: true,
@@ -117,13 +117,13 @@ export const GET: RequestHandler = async ({ cookies }) => {
         version: '1.0.0',
       }
     }, { 
-      status: 200, // Return 200 but with authenticated: false
+      status: 200, // Return 200 but with authenticated: false,
       headers: { 'Content-Type': 'application/json' }
     });
   }
 };
 
-// OPTIONS handler for CORS preflight requests
+// OPTIONS handler for CORS preflight requests;
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,

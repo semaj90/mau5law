@@ -1,5 +1,5 @@
 // Phase 1 – CommonProps central definition
-// Extend incrementally; keep minimal initially to reduce noise without over-constraining.
+// Extend incrementally; keep minimal initially to reduce noise without over-constraining.;
 export interface CommonProps {
   id?: string;
   class?: string;              // Svelte 5 canonical 'class'
@@ -17,4 +17,3 @@ export interface CommonProps {
 
 // Utility to merge class + className while preserving optional chaining.
 export function mergeClass(base?: string, extra?: string): string | undefined;
-;

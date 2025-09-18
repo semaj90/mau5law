@@ -10,7 +10,7 @@ import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
 import { z } from 'zod';
 
-// Evidence connection schema
+// Evidence connection schema;
 const EvidenceConnectionSchema = z.object({
   evidenceId1: z.string().uuid(),
   evidenceId2: z.string().uuid(),
@@ -20,7 +20,7 @@ const EvidenceConnectionSchema = z.object({
   metadata: z.record(z.any()).optional(),
 });
 
-// Query schema for GET requests
+// Query schema for GET requests;
 const ConnectionsQuerySchema = z.object({
   evidenceId: z.string().uuid().optional(),
   caseId: z.string().uuid().optional(),
@@ -31,10 +31,10 @@ const ConnectionsQuerySchema = z.object({
 /*
  * POST /api/v1/evidence/connections
  * Create a new evidence connection
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       );
     }
 
-    // Prevent self-connections
+    // Prevent self-connections;
     if (connectionData.evidenceId1 === connectionData.evidenceId2) {
       return error(
         400,
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       );
     }
 
-    // Create connection record (this would need to be implemented in the service)
+    // Create connection record (this would need to be implemented in the service);
     const connection = {
       id: crypto.randomUUID(),
       evidenceId1: connectionData.evidenceId1,
@@ -138,10 +138,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 /*
  * GET /api/v1/evidence/connections
  * Get evidence connections with filtering
- */
+ */;
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -150,12 +150,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
 
     // Parse query parameters
-    const queryParams = Object.fromEntries(url.searchParams.entries());
+    const queryParams = Object.fromEntries(url.searchParams.entries();
     const { evidenceId, caseId, connectionType, minStrength } = ConnectionsQuerySchema.parse(queryParams);
 
     // This would need to be implemented in the service to fetch connections
     // For now, return a mock structure to show the expected format
-    const mockConnections = [
+    const mockConnections = [;
       {
         id: '12345',
         evidenceId1: 'evidence-1',

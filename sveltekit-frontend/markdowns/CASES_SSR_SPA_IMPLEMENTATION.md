@@ -1,6 +1,7 @@
 # Cases SSR/SPA Implementation
 
-This implementation provides a robust, modern approach to handling case management in a SvelteKit application using SSR/SPA hybrid architecture with URL-driven modal state management.
+This implementation provides a robust, modern approach to handling case management in a SvelteKit
+application using SSR/SPA hybrid architecture with URL-driven modal state management.
 
 ## 🏗️ Architecture Overview
 
@@ -88,13 +89,13 @@ src/lib/components/ui/
 
 ```typescript
 // Modal visibility is reactive to URL
-$: isModalOpen = $page.url.searchParams.has("view");
-$: activeCaseId = $page.url.searchParams.get("view");
+$: isModalOpen = $page.url.searchParams.has('view');
+$: activeCaseId = $page.url.searchParams.get('view');
 
 // Close modal by removing URL param
 function closeModal() {
   const url = new URL($page.url);
-  url.searchParams.delete("view");
+  url.searchParams.delete('view');
   goto(url.toString(), { keepFocus: true, noScroll: true });
 }
 ```
@@ -113,7 +114,7 @@ export const actions = {
 // Client-side enhancement
 const handleFilterSubmit = () => {
   return async ({ result, update }) => {
-    if (result.type === "success") {
+    if (result.type === 'success') {
       // Update store without full page reload
       casesStore.update((store) => ({
         ...store,
@@ -131,8 +132,8 @@ const handleFilterSubmit = () => {
 addEvidence: async ({ request, locals }) => {
   const formData = await request.formData();
   const newEvidence = await db.insert(evidence).values({
-    caseId: formData.get("caseId"),
-    title: formData.get("title"),
+    caseId: formData.get('caseId'),
+    title: formData.get('title'),
     // ...
   });
   return { success: true, evidence: newEvidence[0] };
@@ -166,15 +167,15 @@ addEvidence: async ({ request, locals }) => {
 ### Opening a Case
 
 ```svelte
-<!-- Navigate to case view -->
-<a href="/cases?view={caseId}">View Case</a>
-
 <!-- Or programmatically -->
 <script>
   function openCase(caseId) {
     goto(`/cases?view=${caseId}`, { keepFocus: true });
   }
 </script>
+
+<!-- Navigate to case view -->
+<a href="/cases?view={caseId}">View Case</a>
 ```
 
 ### Filtering Cases
@@ -279,6 +280,5 @@ This will verify:
 - Offline capabilities with service workers
 - Mobile app support
 
-
-
-This implementation provides a solid foundation for a modern legal case management system with excellent user experience and developer experience.
+This implementation provides a solid foundation for a modern legal case management system with
+excellent user experience and developer experience.

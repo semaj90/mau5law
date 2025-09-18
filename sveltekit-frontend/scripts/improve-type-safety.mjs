@@ -112,7 +112,8 @@ function processFile(filePath) {
 
     // 4. Add interface definitions for common data structures
     if (content.includes('evidence') && !content.includes('interface Evidence')) {
-      const needsEvidenceInterface = content.includes('evidence.') || content.includes('evidenceData');
+      const needsEvidenceInterface =
+        content.includes('evidence.') || content.includes('evidenceData');
 
       if (needsEvidenceInterface) {
         const interfaceDefinition = `
@@ -155,10 +156,7 @@ interface UserData {
 }
 `;
 
-        content = content.replace(
-          /<script[^>]*>/,
-          `<script lang="ts">${interfaceDefinition}`
-        );
+        content = content.replace(/<script[^>]*>/, `<script lang="ts">${interfaceDefinition}`);
 
         changes++;
         modified = true;
@@ -247,9 +245,15 @@ interface UserData {
       content = content.replace(canvasRegex, (match, varName) => {
         if (varName.toLowerCase().includes('canvas')) {
           return `${varName}: HTMLCanvasElement`;
-        } else if (varName.toLowerCase().includes('context') || varName.toLowerCase().includes('ctx')) {
+        } else if (
+          varName.toLowerCase().includes('context') ||
+          varName.toLowerCase().includes('ctx')
+        ) {
           return `${varName}: CanvasRenderingContext2D | WebGLRenderingContext`;
-        } else if (varName.toLowerCase().includes('webgl') || varName.toLowerCase().includes('gl')) {
+        } else if (
+          varName.toLowerCase().includes('webgl') ||
+          varName.toLowerCase().includes('gl')
+        ) {
           return `${varName}: WebGLRenderingContext`;
         } else {
           return match;
@@ -268,7 +272,9 @@ interface UserData {
       writeFileSync(filePath, content, 'utf8');
       filesFixed++;
       totalChanges += changes;
-      console.log(`  📝 Improved type safety in ${filePath.split(/[/\\]/).pop()} (${changes} improvements)`);
+      console.log(
+        `  📝 Improved type safety in ${filePath.split(/[/\\]/).pop()} (${changes} improvements)`
+      );
     }
 
     return modified;
@@ -457,7 +463,7 @@ function main() {
   const svelteFiles = walkDirectory(srcDir, '.svelte');
 
   // Filter files that have unknown types
-  const typeSafetyFiles = svelteFiles.filter(file => {
+  const typeSafetyFiles = svelteFiles.filter((file) => {
     try {
       const content = readFileSync(file, 'utf8');
       return (

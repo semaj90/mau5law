@@ -7,7 +7,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import type { ClientMetricsPayload, TimingMetrics, PerformanceMetrics } from '$lib/types/metrics';
 
-// In-memory metrics store for development (replace with database/Redis in production)
+// In-memory metrics store for development (replace with database/Redis in production);
 const metricsStore = {
   clientMetrics: [] as ClientMetricsPayload[],
   timingMetrics: [] as TimingMetrics[],
@@ -19,9 +19,9 @@ const metricsStore = {
       lcp: 0,
       fid: 0,
       cls: 0,
-      fcp: 0
+      fcp: 0,
     },
-    lastUpdated: Date.now()
+    lastUpdated: Date.now(),
   }
 };
 
@@ -44,14 +44,14 @@ function updateAggregatedStats() {
       cls: calculateWebVitalAverage(allMetrics, 'cls'),
       fcp: calculateWebVitalAverage(allMetrics, 'fcp')
     },
-    lastUpdated: Date.now()
+    lastUpdated: Date.now(),
   };
 }
 
 function calculateWebVitalAverage(metrics: any[], vital: string): number {
   const validValues = metrics
     .map(m => m.webVitals?.[vital])
-    .filter(v => typeof v === 'number' && !isNaN(v));
+    .filter(v => typeof v === 'number' && !isNaN(v);
   
   if (validValues.length === 0) return 0;
   return validValues.reduce((sum, v) => sum + v, 0) / validValues.length;
@@ -62,7 +62,7 @@ function logMetricsForDevelopment(payload: ClientMetricsPayload, requestId: stri
     timestamp: new Date(payload.timestamp).toISOString(),
     metricsCount: payload.metrics.length,
     userAgent: payload.userAgent.slice(0, 50) + '...',
-    url: payload.url
+    url: payload.url,
   });
 
   payload.metrics.forEach((metric, index) => {
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
   try {
     const payload: ClientMetricsPayload = await request.json();
     
-    // Validate payload
+    // Validate payload;
     if (!payload.metrics || !Array.isArray(payload.metrics)) {
       return json({ 
         error: 'Invalid payload: metrics array required',
@@ -97,13 +97,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
       }, { status: 400 });
     }
 
-    // Store metrics (in production, save to PostgreSQL/Redis)
+    // Store metrics (in production, save to PostgreSQL/Redis);
     metricsStore.clientMetrics.push({
       ...payload,
-      timestamp: Date.now() // Use server timestamp for consistency
+      timestamp: Date.now() // Use server timestamp for consistency,
     });
 
-    // Keep only last 1000 entries to prevent memory issues
+    // Keep only last 1000 entries to prevent memory issues;
     if (metricsStore.clientMetrics.length > 1000) {
       metricsStore.clientMetrics = metricsStore.clientMetrics.slice(-1000);
     }
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
     // Update aggregated statistics
     updateAggregatedStats();
 
-    // Log for development visibility
+    // Log for development visibility;
     if (process.env.NODE_ENV !== 'production') {
       logMetricsForDevelopment(payload, requestId);
     }
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
       requestId,
       processed: payload.metrics.length,
       processingTime: Math.round(processingTime * 100) / 100,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }, {
       headers: {
         'X-Request-ID': requestId,
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, locals }
     return json({
       error: 'Failed to process client metrics',
       requestId,
-      processingTime: Math.round(processingTime * 100) / 100
+      processingTime: Math.round(processingTime * 100) / 100,
     }, { 
       status: 500,
       headers: {
@@ -156,7 +156,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
   try {
     switch (action) {
-      case 'stats':
+      case 'stats':;
         return json({
           aggregatedStats: metricsStore.aggregatedStats,
           totalStoredMetrics: metricsStore.clientMetrics.length,
@@ -167,13 +167,13 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       case 'recent':
         const limit = parseInt(url.searchParams.get('limit') || '10');
         const recentMetrics = metricsStore.clientMetrics
-          .slice(-limit)
+          .slice(-limit);
           .map(payload => ({
             timestamp: payload.timestamp,
             metricsCount: payload.metrics.length,
             averageLoadTime: payload.metrics.reduce((sum, m) => sum + m.loadTime, 0) / payload.metrics.length,
-            routes: payload.metrics.map(m => m.routeId || m.pathname)
-          }));
+            routes: payload.metrics.map(m => m.routeId || m.pathname),
+          });
 
         return json({
           recentMetrics,
@@ -190,32 +190,32 @@ export const GET: RequestHandler = async ({ url, locals }) => {
             averageRenderTime: metricsStore.aggregatedStats.averageRenderTime < 1000,
             lcpUnder2_5s: (metricsStore.aggregatedStats.webVitalsAverages.lcp || 0) < 2500,
             fidUnder100ms: (metricsStore.aggregatedStats.webVitalsAverages.fid || 0) < 100,
-            clsUnder0_1: (metricsStore.aggregatedStats.webVitalsAverages.cls || 0) < 0.1
+            clsUnder0_1: (metricsStore.aggregatedStats.webVitalsAverages.cls || 0) < 0.1,
           },
           aggregatedStats: metricsStore.aggregatedStats,
           requestId
         });
 
-      case 'performance':
+      case 'performance':;
         const performanceMetrics: PerformanceMetrics = {
           overall: {
             status: calculateHealthScore() > 80 ? 'excellent' : 
                    calculateHealthScore() > 60 ? 'good' : 
                    calculateHealthScore() > 40 ? 'fair' : 'poor',
             score: calculateHealthScore(),
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           },
           frontend: {
             averageLoadTime: metricsStore.aggregatedStats.averageLoadTime,
             averageRenderTime: metricsStore.aggregatedStats.averageRenderTime,
             totalRequests: metricsStore.aggregatedStats.totalRequests,
-            webVitalsAverages: metricsStore.aggregatedStats.webVitalsAverages
+            webVitalsAverages: metricsStore.aggregatedStats.webVitalsAverages,
           },
           backend: {
             averageResponseTime: 0, // Would be populated from server metrics
             requestsPerSecond: 0,   // Would be calculated from time windows
             errorRate: 0,           // Would be tracked from error logs
-            uptime: process.uptime() * 1000 // Convert to ms
+            uptime: process.uptime() * 1000 // Convert to ms,
           },
           cognitive: {
             routingEfficiency: 85,    // Would come from cognitive modules
@@ -223,7 +223,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
             gpuUtilization: 45,      // Would come from GPU monitoring
             consciousnessLevel: 12,   // Emergent behavior metric
             quantumCoherence: 50,     // Quantum state coherence
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
         };
 
@@ -233,7 +233,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         });
 
       case 'clear':
-        // Clear metrics (development only)
+        // Clear metrics (development only);
         if (process.env.NODE_ENV !== 'production') {
           const clearedCount = metricsStore.clientMetrics.length;
           metricsStore.clientMetrics = [];
@@ -301,10 +301,10 @@ function calculateHealthScore(): number {
   if (fcp > 3000) score -= 10;
   else if (fcp > 1800) score -= 5;
   
-  return Math.max(0, Math.min(100, score));
+  return Math.max(0, Math.min(100, score);
 }
 
-// Cleanup old metrics periodically (only in server environment)
+// Cleanup old metrics periodically (only in server environment);
 if (typeof setInterval !== 'undefined' && typeof process !== 'undefined') {
   const cleanupInterval = setInterval(() => {
     if (metricsStore.clientMetrics.length > 500) {
@@ -315,7 +315,7 @@ if (typeof setInterval !== 'undefined' && typeof process !== 'undefined') {
     }
   }, 5 * 60 * 1000); // Every 5 minutes
 
-  // Cleanup on process exit
+  // Cleanup on process exit;
   process.on('exit', () => {
     clearInterval(cleanupInterval);
   });

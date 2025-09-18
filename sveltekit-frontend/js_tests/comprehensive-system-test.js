@@ -4,11 +4,11 @@
  * Tests: Login, Register, Profile Update, Case Creation, PostgreSQL, Drizzle, Qdrant, Loki.js, Fuse.js
  */
 
-import { spawn } from "child_process";
-import { chromium } from "playwright";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-import { promises as fs } from "fs";
+import { spawn } from 'child_process';
+import { chromium } from 'playwright';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { promises as fs } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,7 +18,7 @@ class ComprehensiveSystemTest {
     this.browser = null;
     this.page = null;
     this.context = null;
-    this.baseUrl = "http://localhost:5173";
+    this.baseUrl = 'http://localhost:5173';
     this.testResults = {
       login: false,
       register: false,
@@ -36,7 +36,7 @@ class ComprehensiveSystemTest {
   }
 
   async init() {
-    console.log("🚀 Starting Comprehensive System Test...\n");
+    console.log('🚀 Starting Comprehensive System Test...\n');
 
     // Launch browser
     this.browser = await chromium.launch({
@@ -51,48 +51,48 @@ class ComprehensiveSystemTest {
     this.page = await this.context.newPage();
 
     // Enable console logging
-    this.page.on("console", (msg) => {
-      if (msg.type() === "error") {
-        console.log("❌ Browser Error:", msg.text());
+    this.page.on('console', (msg) => {
+      if (msg.type() === 'error') {
+        console.log('❌ Browser Error:', msg.text());
       }
     });
   }
 
   async testDatabaseConnection() {
-    console.log("🐘 Testing PostgreSQL + Drizzle Connection...");
+    console.log('🐘 Testing PostgreSQL + Drizzle Connection...');
 
     try {
       // Check if database is accessible
       await this.page.goto(`${this.baseUrl}/api/health`);
-      const response = await this.page.textContent("body");
+      const response = await this.page.textContent('body');
 
-      if (response && response.includes("healthy")) {
+      if (response && response.includes('healthy')) {
         this.testResults.postgres = true;
         this.testResults.drizzle = true;
-        console.log("✅ PostgreSQL + Drizzle: Connected");
+        console.log('✅ PostgreSQL + Drizzle: Connected');
       } else {
-        console.log("❌ Database connection failed");
+        console.log('❌ Database connection failed');
       }
     } catch (error) {
-      console.log("❌ Database test failed:", error.message);
+      console.log('❌ Database test failed:', error.message);
     }
   }
 
   async testRegistration() {
-    console.log("📝 Testing User Registration...");
+    console.log('📝 Testing User Registration...');
 
     try {
       await this.page.goto(`${this.baseUrl}/register`);
-      await this.page.waitForSelector("form", { timeout: 10000 });
+      await this.page.waitForSelector('form', { timeout: 10000 });
 
       // Fill registration form
       const timestamp = Date.now();
       const testEmail = `test.user.${timestamp}@example.com`;
-      const testPassword = "TestPassword123!";
+      const testPassword = 'TestPassword123!';
 
       await this.page.fill('input[type="email"]', testEmail);
-      await this.page.fill('input[name="firstName"]', "Test");
-      await this.page.fill('input[name="lastName"]', "User");
+      await this.page.fill('input[name="firstName"]', 'Test');
+      await this.page.fill('input[name="lastName"]', 'User');
       await this.page.fill('input[type="password"]', testPassword);
 
       // Submit registration
@@ -103,41 +103,38 @@ class ComprehensiveSystemTest {
 
       // Check if registration was successful
       const currentUrl = this.page.url();
-      if (currentUrl.includes("/dashboard") || currentUrl.includes("/login")) {
+      if (currentUrl.includes('/dashboard') || currentUrl.includes('/login')) {
         this.testResults.register = true;
-        console.log("✅ Registration: Success");
+        console.log('✅ Registration: Success');
 
         // Store credentials for login test
         this.testCredentials = { email: testEmail, password: testPassword };
       } else {
-        console.log("❌ Registration failed - unexpected redirect");
+        console.log('❌ Registration failed - unexpected redirect');
       }
     } catch (error) {
-      console.log("❌ Registration test failed:", error.message);
+      console.log('❌ Registration test failed:', error.message);
     }
   }
 
   async testLogin() {
-    console.log("🔐 Testing User Login...");
+    console.log('🔐 Testing User Login...');
 
     try {
       await this.page.goto(`${this.baseUrl}/login`);
-      await this.page.waitForSelector("form", { timeout: 10000 });
+      await this.page.waitForSelector('form', { timeout: 10000 });
 
       if (!this.testCredentials) {
         // Use default test credentials
         this.testCredentials = {
-          email: "admin@prosecutor.com",
-          password: "admin123",
+          email: 'admin@prosecutor.com',
+          password: 'admin123',
         };
       }
 
       // Fill login form
       await this.page.fill('input[type="email"]', this.testCredentials.email);
-      await this.page.fill(
-        'input[type="password"]',
-        this.testCredentials.password,
-      );
+      await this.page.fill('input[type="password"]', this.testCredentials.password);
 
       // Submit login
       await this.page.click('button[type="submit"]');
@@ -147,28 +144,28 @@ class ComprehensiveSystemTest {
 
       // Check if login was successful
       const currentUrl = this.page.url();
-      if (currentUrl.includes("/dashboard")) {
+      if (currentUrl.includes('/dashboard')) {
         this.testResults.login = true;
-        console.log("✅ Login: Success");
+        console.log('✅ Login: Success');
       } else {
-        console.log("❌ Login failed - no dashboard redirect");
+        console.log('❌ Login failed - no dashboard redirect');
       }
     } catch (error) {
-      console.log("❌ Login test failed:", error.message);
+      console.log('❌ Login test failed:', error.message);
     }
   }
 
   async testProfileUpdate() {
-    console.log("👤 Testing Profile Update...");
+    console.log('👤 Testing Profile Update...');
 
     try {
       await this.page.goto(`${this.baseUrl}/profile`);
-      await this.page.waitForSelector("form", { timeout: 10000 });
+      await this.page.waitForSelector('form', { timeout: 10000 });
 
       // Update profile information
-      await this.page.fill('input[name="firstName"]', "Updated");
-      await this.page.fill('input[name="lastName"]', "Profile");
-      await this.page.fill('input[name="title"]', "Senior Prosecutor");
+      await this.page.fill('input[name="firstName"]', 'Updated');
+      await this.page.fill('input[name="lastName"]', 'Profile');
+      await this.page.fill('input[name="title"]', 'Senior Prosecutor');
 
       // Submit profile update
       await this.page.click('button[type="submit"]');
@@ -178,19 +175,19 @@ class ComprehensiveSystemTest {
 
       // Check if update was successful
       const firstName = await this.page.inputValue('input[name="firstName"]');
-      if (firstName === "Updated") {
+      if (firstName === 'Updated') {
         this.testResults.profileUpdate = true;
-        console.log("✅ Profile Update: Success");
+        console.log('✅ Profile Update: Success');
       } else {
-        console.log("❌ Profile update failed");
+        console.log('❌ Profile update failed');
       }
     } catch (error) {
-      console.log("❌ Profile update test failed:", error.message);
+      console.log('❌ Profile update test failed:', error.message);
     }
   }
 
   async testCaseCreation() {
-    console.log("📁 Testing Case Creation...");
+    console.log('📁 Testing Case Creation...');
 
     try {
       await this.page.goto(`${this.baseUrl}/dashboard`);
@@ -198,9 +195,7 @@ class ComprehensiveSystemTest {
 
       // Look for case creation button/link
       const createCaseButton = await this.page
-        .locator(
-          'a[href*="case"], button:has-text("Create"), a:has-text("New Case")',
-        )
+        .locator('a[href*="case"], button:has-text("Create"), a:has-text("New Case")')
         .first();
 
       if ((await createCaseButton.count()) > 0) {
@@ -210,11 +205,11 @@ class ComprehensiveSystemTest {
         // Fill case creation form
         await this.page.fill(
           'input[name="title"], input[placeholder*="title"]',
-          "Test Case - Comprehensive System Test",
+          'Test Case - Comprehensive System Test'
         );
         await this.page.fill(
           'textarea[name="description"], textarea[placeholder*="description"]',
-          "This is a test case created during comprehensive system testing.",
+          'This is a test case created during comprehensive system testing.'
         );
 
         // Try to find and fill case type/priority
@@ -227,7 +222,7 @@ class ComprehensiveSystemTest {
 
         // Submit case creation
         await this.page.click(
-          'button[type="submit"], button:has-text("Create"), button:has-text("Save")',
+          'button[type="submit"], button:has-text("Create"), button:has-text("Save")'
         );
 
         // Wait for redirect or success
@@ -235,36 +230,33 @@ class ComprehensiveSystemTest {
 
         // Check if case was created
         const currentUrl = this.page.url();
-        if (
-          currentUrl.includes("/case/") ||
-          currentUrl.includes("/dashboard")
-        ) {
+        if (currentUrl.includes('/case/') || currentUrl.includes('/dashboard')) {
           this.testResults.caseCreation = true;
-          console.log("✅ Case Creation: Success");
+          console.log('✅ Case Creation: Success');
         } else {
-          console.log("❌ Case creation failed - unexpected redirect");
+          console.log('❌ Case creation failed - unexpected redirect');
         }
       } else {
-        console.log("❌ Case creation button not found");
+        console.log('❌ Case creation button not found');
       }
     } catch (error) {
-      console.log("❌ Case creation test failed:", error.message);
+      console.log('❌ Case creation test failed:', error.message);
     }
   }
 
   async testQdrantIntegration() {
-    console.log("🔍 Testing Qdrant Auto-tagging...");
+    console.log('🔍 Testing Qdrant Auto-tagging...');
 
     try {
       // Test if Qdrant endpoints are accessible
       await this.page.goto(`${this.baseUrl}/api/embeddings/suggest`, {
-        waitUntil: "networkidle",
+        waitUntil: 'networkidle',
       });
 
       // Check network requests for Qdrant integration
       const requests = [];
-      this.page.on("request", (req) => {
-        if (req.url().includes("embeddings") || req.url().includes("qdrant")) {
+      this.page.on('request', (req) => {
+        if (req.url().includes('embeddings') || req.url().includes('qdrant')) {
           requests.push(req.url());
         }
       });
@@ -275,79 +267,75 @@ class ComprehensiveSystemTest {
 
       if (requests.length > 0) {
         this.testResults.qdrant = true;
-        console.log("✅ Qdrant Integration: Active");
+        console.log('✅ Qdrant Integration: Active');
       } else {
-        console.log("⚠️ Qdrant: No embedding requests detected");
+        console.log('⚠️ Qdrant: No embedding requests detected');
       }
     } catch (error) {
-      console.log("❌ Qdrant test failed:", error.message);
+      console.log('❌ Qdrant test failed:', error.message);
     }
   }
 
   async testLokiJS() {
-    console.log("💾 Testing Loki.js Local Storage...");
+    console.log('💾 Testing Loki.js Local Storage...');
 
     try {
       // Check if Loki.js is initialized in browser
       const lokiTest = await this.page.evaluate(() => {
         return (
-          typeof window.loki !== "undefined" ||
-          localStorage.getItem("loki") !== null ||
-          Object.keys(localStorage).some((key) => key.includes("loki"))
+          typeof window.loki !== 'undefined' ||
+          localStorage.getItem('loki') !== null ||
+          Object.keys(localStorage).some((key) => key.includes('loki'))
         );
       });
 
       if (lokiTest) {
         this.testResults.loki = true;
-        console.log("✅ Loki.js: Active");
+        console.log('✅ Loki.js: Active');
       } else {
-        console.log("⚠️ Loki.js: Not detected in localStorage");
+        console.log('⚠️ Loki.js: Not detected in localStorage');
       }
     } catch (error) {
-      console.log("❌ Loki.js test failed:", error.message);
+      console.log('❌ Loki.js test failed:', error.message);
     }
   }
 
   async testFuseJS() {
-    console.log("🔎 Testing Fuse.js Search...");
+    console.log('🔎 Testing Fuse.js Search...');
 
     try {
       await this.page.goto(`${this.baseUrl}/dashboard`);
 
       // Look for search functionality
       const searchInput = await this.page
-        .locator(
-          'input[type="search"], input[placeholder*="search"], input[name="search"]',
-        )
+        .locator('input[type="search"], input[placeholder*="search"], input[name="search"]')
         .first();
 
       if ((await searchInput.count()) > 0) {
-        await searchInput.fill("test");
+        await searchInput.fill('test');
         await this.page.waitForTimeout(1000);
 
         // Check if search results appear
         const searchResults = await this.page
-          .locator(".search-results, .results, [data-search-results]")
+          .locator('.search-results, .results, [data-search-results]')
           .count();
 
         if (searchResults > 0) {
           this.testResults.fuse = true;
-          console.log("✅ Fuse.js Search: Active");
+          console.log('✅ Fuse.js Search: Active');
         } else {
-          console.log(
-            "⚠️ Fuse.js: Search input found but no results container",
-          );
+          console.log('⚠️ Fuse.js: Search input found but no results container');
         }
       } else {
-        console.log("⚠️ Fuse.js: No search input found");
+        console.log('⚠️ Fuse.js: No search input found');
       }
     } catch (error) {
-      console.log("❌ Fuse.js test failed:", error.message);
+      console.log('❌ Fuse.js test failed:', error.message);
     }
   }
 
   async testCSSFrameworks() {
-    console.log("🎨 Testing CSS Frameworks...");
+    console.log('🎨 Testing CSS Frameworks...');
 
     try {
       await this.page.goto(`${this.baseUrl}/dashboard`);
@@ -356,70 +344,63 @@ class ComprehensiveSystemTest {
       const hasCSS = await this.page.evaluate(() => {
         const body = document.body;
         const hasUnoCSS =
-          body.classList.toString().includes("uno-") ||
+          body.classList.toString().includes('uno-') ||
           document.querySelector('[class*="uno-"]') !== null;
         const hasTailwind =
-          body.classList.toString().includes("tw-") ||
-          document.querySelector(
-            '[class*="text-"], [class*="bg-"], [class*="p-"]',
-          ) !== null;
+          body.classList.toString().includes('tw-') ||
+          document.querySelector('[class*="text-"], [class*="bg-"], [class*="p-"]') !== null;
         const hasPico =
-          document.querySelector("[data-theme], .pico") !== null ||
-          getComputedStyle(body).getPropertyValue("--pico-font-family") !== "";
+          document.querySelector('[data-theme], .pico') !== null ||
+          getComputedStyle(body).getPropertyValue('--pico-font-family') !== '';
 
         return { hasUnoCSS, hasTailwind, hasPico };
       });
 
       if (hasCSS.hasUnoCSS || hasCSS.hasTailwind || hasCSS.hasPico) {
         this.testResults.css = true;
-        console.log(
-          "✅ CSS Frameworks: Active (UnoCSS/Tailwind/Pico detected)",
-        );
+        console.log('✅ CSS Frameworks: Active (UnoCSS/Tailwind/Pico detected)');
       } else {
-        console.log("⚠️ CSS Frameworks: Not clearly detected");
+        console.log('⚠️ CSS Frameworks: Not clearly detected');
       }
     } catch (error) {
-      console.log("❌ CSS frameworks test failed:", error.message);
+      console.log('❌ CSS frameworks test failed:', error.message);
     }
   }
 
   async testUILibraries() {
-    console.log("🧩 Testing Melt-UI and Bits-UI...");
+    console.log('🧩 Testing Melt-UI and Bits-UI...');
 
     try {
       // Check for Melt-UI and Bits-UI components
       const hasUILibs = await this.page.evaluate(() => {
-        const hasMelt =
-          document.querySelector("[data-melt-id], [data-melt]") !== null;
+        const hasMelt = document.querySelector('[data-melt-id], [data-melt]') !== null;
         const hasBits =
-          document.querySelector("[data-bits], .bits-") !== null ||
-          Object.keys(window).some(
-            (key) => key.includes("bits") || key.includes("melt"),
-          );
+          document.querySelector('[data-bits], .bits-') !== null ||
+          Object.keys(window).some((key) => key.includes('bits') || key.includes('melt'));
 
         return { hasMelt, hasBits };
       });
 
       if (hasUILibs.hasMelt) {
         this.testResults.meltUI = true;
-        console.log("✅ Melt-UI: Active");
+        console.log('✅ Melt-UI: Active');
       } else {
-        console.log("⚠️ Melt-UI: Not detected");
+        console.log('⚠️ Melt-UI: Not detected');
       }
 
       if (hasUILibs.hasBits) {
         this.testResults.bitsUI = true;
-        console.log("✅ Bits-UI: Active");
+        console.log('✅ Bits-UI: Active');
       } else {
-        console.log("⚠️ Bits-UI: Not detected");
+        console.log('⚠️ Bits-UI: Not detected');
       }
     } catch (error) {
-      console.log("❌ UI libraries test failed:", error.message);
+      console.log('❌ UI libraries test failed:', error.message);
     }
   }
 
   async generateReport() {
-    console.log("\n📊 Generating Comprehensive Test Report...");
+    console.log('\n📊 Generating Comprehensive Test Report...');
 
     const report = {
       timestamp: new Date().toISOString(),
@@ -427,8 +408,7 @@ class ComprehensiveSystemTest {
       summary: {
         total: Object.keys(this.testResults).length,
         passed: Object.values(this.testResults).filter(Boolean).length,
-        failed: Object.values(this.testResults).filter((result) => !result)
-          .length,
+        failed: Object.values(this.testResults).filter((result) => !result).length,
       },
       details: {
         coreFeatures: {
@@ -451,24 +431,24 @@ class ComprehensiveSystemTest {
 
     // Save report
     await fs.writeFile(
-      join(__dirname, "comprehensive-test-report.json"),
-      JSON.stringify(report, null, 2),
+      join(__dirname, 'comprehensive-test-report.json'),
+      JSON.stringify(report, null, 2)
     );
 
     // Display summary
-    console.log("\n🎯 TEST SUMMARY:");
+    console.log('\n🎯 TEST SUMMARY:');
     console.log(`✅ Passed: ${report.summary.passed}/${report.summary.total}`);
     console.log(`❌ Failed: ${report.summary.failed}/${report.summary.total}`);
     console.log(
-      `📈 Success Rate: ${Math.round((report.summary.passed / report.summary.total) * 100)}%`,
+      `📈 Success Rate: ${Math.round((report.summary.passed / report.summary.total) * 100)}%`
     );
 
-    console.log("\n📋 DETAILED RESULTS:");
+    console.log('\n📋 DETAILED RESULTS:');
     Object.entries(this.testResults).forEach(([test, result]) => {
-      console.log(`${result ? "✅" : "❌"} ${test}`);
+      console.log(`${result ? '✅' : '❌'} ${test}`);
     });
 
-    console.log("\n📁 Full report saved to: comprehensive-test-report.json");
+    console.log('\n📁 Full report saved to: comprehensive-test-report.json');
 
     return report;
   }
@@ -500,7 +480,7 @@ class ComprehensiveSystemTest {
 
       return report;
     } catch (error) {
-      console.error("❌ Test suite failed:", error);
+      console.error('❌ Test suite failed:', error);
       throw error;
     } finally {
       await this.cleanup();
@@ -513,10 +493,10 @@ const testSuite = new ComprehensiveSystemTest();
 testSuite
   .run()
   .then((report) => {
-    console.log("\n🎉 Comprehensive test suite completed!");
+    console.log('\n🎉 Comprehensive test suite completed!');
     process.exit(report.summary.failed === 0 ? 0 : 1);
   })
   .catch((error) => {
-    console.error("💥 Test suite crashed:", error);
+    console.error('💥 Test suite crashed:', error);
     process.exit(1);
   });

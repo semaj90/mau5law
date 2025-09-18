@@ -16,16 +16,16 @@ import type { PageServerLoad, Actions } from './$types.js';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Initialize the form with default values
-  const form = await superValidate(zod(evidenceUploadSchema));
+  const form = await superValidate(zod(evidenceUploadSchema);
 
-  // Get available cases for the current user
+  // Get available cases for the current user;
   try {
-    const userCases = await db
+    const userCases = await db;
       .select({
         id: cases.id,
         title: cases.title,
         case_number: cases.case_number,
-        status: cases.status
+        status: cases.status,
       })
       .from(cases)
   .where(helpers.eq(cases.status, 'active') as any)
@@ -33,13 +33,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 
     return {
       form,
-      cases: userCases
+      cases: userCases,
     };
   } catch (error: any) {
     console.error('Failed to load cases:', error);
     return {
       form,
-      cases: []
+      cases: [],
     };
   }
 };
@@ -47,7 +47,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   upload: async ({ request, locals }) => {
     const formData = await request.formData();
-    const form = await superValidate(formData, zod(evidenceUploadSchema));
+    const form = await superValidate(formData, zod(evidenceUploadSchema);
 
     if (!form.valid) {
       console.error('Form validation failed:', form.errors);
@@ -65,7 +65,7 @@ export const actions: Actions = {
       });
     }
 
-    // Validate file size
+    // Validate file size;
     if (!validateFileSize(file)) {
       return fail(400, {
         form: {
@@ -81,7 +81,7 @@ export const actions: Actions = {
       evidenceType = getFileTypeFromMime(file.type);
     }
 
-    // Validate file type matches evidence type
+    // Validate file type matches evidence type;
     if (!validateFileType(file, evidenceType)) {
       return fail(400, {
         form: {
@@ -92,7 +92,7 @@ export const actions: Actions = {
     }
 
     try {
-      // Verify the case exists (if case_id is provided)
+      // Verify the case exists (if case_id is provided);
     if (form.data.case_id) {
         const caseRecord = await db
           .select()
@@ -124,7 +124,7 @@ export const actions: Actions = {
 
       // Save file to disk
       const filePath = path.join(uploadDir, `${timestamp}-${randomSuffix}${fileExtension}`);
-      const fileBuffer = Buffer.from(await file.arrayBuffer());
+      const fileBuffer = Buffer.from(await file.arrayBuffer();
       await writeFile(filePath, fileBuffer);
 
       // Generate file hash for integrity
@@ -143,7 +143,7 @@ export const actions: Actions = {
 
           const ocrResponse = await fetch('/api/ocr/extract', {
             method: 'POST',
-            body: ocrFormData
+            body: ocrFormData,
           });
 
           if (ocrResponse.ok) {
@@ -153,7 +153,7 @@ export const actions: Actions = {
               pages: ocrResult.pages,
               averageConfidence: ocrResult.averageConfidence,
               legalConceptsFound: ocrResult.legalConcepts?.length || 0,
-              citationsFound: ocrResult.citations?.length || 0
+              citationsFound: ocrResult.citations?.length || 0,
             });
           } else {
             console.warn('OCR processing failed:', ocrResponse.statusText);
@@ -163,7 +163,7 @@ export const actions: Actions = {
         }
       }
 
-      // Generate rich metadata based on file type
+      // Generate rich metadata based on file type;
       let metadata: any = {
         kind: evidenceType,
         uploadedAt: new Date().toISOString(),
@@ -172,12 +172,12 @@ export const actions: Actions = {
           enableAiAnalysis: form.data.enableAiAnalysis,
           enableOcr: form.data.enableOcr,
           enableEmbeddings: form.data.enableEmbeddings,
-          enableSummarization: form.data.enableSummarization
+          enableSummarization: form.data.enableSummarization,
         }
       };
 
       switch (evidenceType) {
-        case 'PDF':
+        case 'PDF':;
           metadata = {
             ...metadata,
             kind: 'PDF',
@@ -187,11 +187,11 @@ export const actions: Actions = {
             extractedText: ocrResult?.text,
             legalConcepts: ocrResult?.legalConcepts || [],
             citations: ocrResult?.citations || [],
-            ocrConfidence: ocrResult?.averageConfidence
+            ocrConfidence: ocrResult?.averageConfidence,
           };
           break;
 
-        case 'IMAGE':
+        case 'IMAGE':;
           metadata = {
             ...metadata,
             kind: 'IMAGE',
@@ -199,11 +199,11 @@ export const actions: Actions = {
             format: file.type.split('/')[1] || 'unknown',
             hasAlphaChannel: file.type === 'image/png',
             extractedText: ocrResult?.text,
-            ocrConfidence: ocrResult?.averageConfidence
+            ocrConfidence: ocrResult?.averageConfidence,
           };
           break;
 
-        case 'VIDEO':
+        case 'VIDEO':;
           metadata = {
             kind: 'VIDEO',
             durationSeconds: 0, // Would be extracted with ffprobe
@@ -211,11 +211,11 @@ export const actions: Actions = {
             codec: 'unknown',
             frameRate: 0,
             fileSize: file.size,
-            uploadedAt: new Date().toISOString()
+            uploadedAt: new Date().toISOString(),
           };
           break;
 
-        case 'AUDIO':
+        case 'AUDIO':;
           metadata = {
             kind: 'AUDIO',
             durationSeconds: 0, // Would be extracted with ffprobe
@@ -223,7 +223,7 @@ export const actions: Actions = {
             sampleRate: 44100,
             channels: 2,
             fileSize: file.size,
-            uploadedAt: new Date().toISOString()
+            uploadedAt: new Date().toISOString(),
           };
           break;
 
@@ -236,21 +236,21 @@ export const actions: Actions = {
             characterCount: textContent.length,
             language: 'unknown', // Could detect with a language detection library
             fileSize: file.size,
-            uploadedAt: new Date().toISOString()
+            uploadedAt: new Date().toISOString(),
           };
           break;
 
-        default:
+        default:;
           metadata = {
             kind: 'UNKNOWN',
             fileSize: file.size,
-            uploadedAt: new Date().toISOString()
+            uploadedAt: new Date().toISOString(),
           };
       }
 
       // Insert evidence record into database with unified schema
       const evidenceRecord = await db
-        .insert(evidence)
+        .insert(evidence);
         .values({
           case_id: form.data.case_id || null,
           uploader_id: locals.user?.id || 'anonymous', // Assuming user session is available
@@ -276,7 +276,7 @@ export const actions: Actions = {
               confidence: ocrResult.averageConfidence,
               legalConcepts: ocrResult.legalConcepts,
               citations: ocrResult.citations,
-              pageCount: ocrResult.pages
+              pageCount: ocrResult.pages,
             } : null
           }
         })
@@ -288,9 +288,9 @@ export const actions: Actions = {
         type: evidenceRecord[0].evidence_type,
         size: file.size,
         hash: fileHash.substring(0, 8) + '...'
-      });
+      ,});
 
-      // Trigger Go Upload Service for additional processing
+      // Trigger Go Upload Service for additional processing;
       try {
         console.log('📤 Sending file to Go upload service for processing...');
 
@@ -303,21 +303,21 @@ export const actions: Actions = {
 
         const goServiceResponse = await fetch('http://localhost:5173/api/upload/go-service', {
           method: 'POST',
-          body: uploadFormData
+          body: uploadFormData,
         });
 
         if (goServiceResponse.ok) {
           const goResult = await goServiceResponse.json();
           console.log('✅ Go service processing completed:', goResult);
 
-          // Update metadata with Go service results if available
+          // Update metadata with Go service results if available;
           if (goResult.embeddings || goResult.analysis) {
             metadata = {
               ...metadata,
               goServiceProcessing: {
                 embeddings: goResult.embeddings,
                 analysis: goResult.analysis,
-                processedAt: new Date().toISOString()
+                processedAt: new Date().toISOString(),
               }
             };
           }

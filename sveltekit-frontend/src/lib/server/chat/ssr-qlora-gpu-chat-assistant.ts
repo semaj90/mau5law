@@ -14,6 +14,7 @@ import { NESMemoryArchitecture } from '../../memory/nes-memory-architecture.js';
 import { WebGPUSOMCache } from '../../webgpu/som-webgpu-cache.js';
 import { lokiRedisCache } from '$lib/cache/loki-redis-integration';
 import type { RequestEvent } from '@sveltejs/kit';
+}
 
 export interface UserDictionary {
   userId: string;
@@ -22,12 +23,12 @@ export interface UserDictionary {
     frequency: number;
     confidence: number;
     lastUsed: Date;
-    contextEmbedding: Float32Array;
+    contextEmbedding: Float32Array;,
   }>;
   preferredStyle: 'formal' | 'casual' | 'technical' | 'adaptive';
   domainExpertise: string[]; // ['contract-law', 'criminal-defense', etc.]
   qloraCheckpoint: string;   // Path to user's fine-tuned model
-  interactionHistory: ChatInteraction[];
+  interactionHistory: ChatInteraction[];,
 }
 
 export interface ChatInteraction {
@@ -39,7 +40,7 @@ export interface ChatInteraction {
   extractedEntities: string[];
   glyphGenerated: boolean;
   processingTime: number;
-  gpuCacheHit: boolean;
+  gpuCacheHit: boolean;,
 }
 
 export interface SSRChatContext {
@@ -48,18 +49,18 @@ export interface SSRChatContext {
   userDictionary: UserDictionary;
   nesMemoryState: any;       // Pre-loaded NES memory state
   gpuCacheState: any;        // Pre-warmed GPU cache
-  preloadedResponses: Map<string, string>; // Common patterns
+  preloadedResponses: Map<string, string>; // Common patterns;
   currentCase?: {
     caseId: string;
     documents: string[];
-    activeContext: Float32Array;
+    activeContext: Float32Array;,
   };
 }
 
 /**
  * Server-Side Rendering Chat Assistant
  * Provides instant responses through pre-computed GPU cache and NES memory
- */
+ */;
 export class SSRQLorAGPUChatAssistant {
   private nesMemory: NESMemoryArchitecture;
   private gpuCache: WebGPUSOMCache;
@@ -81,7 +82,7 @@ export class SSRQLorAGPUChatAssistant {
 
   /**
    * Pre-load common legal patterns into NES memory for instant SSR
-   */
+   */;
   private async initializeCommonPatterns(): Promise<void> {
     const commonPatterns = [
       { pattern: 'contract review', response: 'I can help analyze contract terms, identify risks, and suggest modifications.' },
@@ -91,12 +92,11 @@ export class SSRQLorAGPUChatAssistant {
     ];
 
     for (const [index, item] of commonPatterns.entries()) {
-      const patternBuffer = new TextEncoder().encode(JSON.stringify(item));
+      const patternBuffer = new TextEncoder().encode(JSON.stringify(item);
       const embeddedPattern = await this.generateEmbedding((item as { pattern?: any }).pattern);
 
-      // Store in NES CHR-ROM for instant pattern matching
-      await this.nesMemory.allocateDocument(
-        {
+      // Store in NES CHR-ROM for instant pattern matching;
+      await this.nesMemory.allocateDocument({
           id: `pattern_${index}`,
           type: 'precedent' as const,
           priority: 255, // Maximum priority
@@ -108,7 +108,7 @@ export class SSRQLorAGPUChatAssistant {
             vectorEmbedding: embeddedPattern,
           },
         },
-        patternBuffer.buffer,
+        patternBuffer.buffer,)
         { preferredBank: 'CHR_ROM', compress: true }
       );
     }
@@ -120,7 +120,7 @@ export class SSRQLorAGPUChatAssistant {
   async renderSSRChatContext(
     userId: string,
     sessionId: string,
-    initialMessage?: string
+    initialMessage?: string;
   ): Promise<any> {
     console.log(`📱 Rendering SSR chat context for user ${userId}`);
 
@@ -130,7 +130,7 @@ export class SSRQLorAGPUChatAssistant {
     // Pre-warm GPU cache with user's patterns
     await this.prewarmGPUCache(userDictionary);
 
-    // Generate SSR context
+    // Generate SSR context;
     const ssrContext: SSRChatContext = {
       userId,
       sessionId,
@@ -138,7 +138,7 @@ export class SSRQLorAGPUChatAssistant {
       nesMemoryState: this.nesMemory.getMemoryStats(),
       gpuCacheState: this.gpuCache.getStats(),
       preloadedResponses: await this.generatePreloadedResponses(userDictionary),
-      currentCase: await this.getCurrentCaseContext(userId)
+      currentCase: await this.getCurrentCaseContext(userId),
     };
 
     // Cache context for real-time updates
@@ -147,12 +147,12 @@ export class SSRQLorAGPUChatAssistant {
     // Generate pre-rendered HTML
     const prerenderedHTML = await this.generateChatHTML(ssrContext, initialMessage);
 
-    // Prepare preloaded data for client hydration
+    // Prepare preloaded data for client hydration;
     const preloadedData = {
       userTerms: Array.from(userDictionary.legalTerms.entries()).slice(0, 50), // Most frequent
       commonPatterns: Array.from(ssrContext.preloadedResponses.entries()),
       gpuCacheReady: true,
-      nesMemoryReady: true
+      nesMemoryReady: true,
     };
 
     return { ssrContext, prerenderedHTML, preloadedData };
@@ -164,7 +164,7 @@ export class SSRQLorAGPUChatAssistant {
   async streamChatResponse(
     sessionId: string,
     userMessage: string,
-    requestEvent: RequestEvent
+    requestEvent: RequestEvent;
   ): Promise<ReadableStream<Uint8Array> {
     const ssrContext = this.ssrContextCache.get(sessionId);
     if (!ssrContext) {
@@ -180,8 +180,8 @@ export class SSRQLorAGPUChatAssistant {
             controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
               type: 'instant',
               content: instantResponse,
-              source: 'nes_memory'
-            })}\n\n`));
+              source: 'nes_memory',
+            })}\n\n`);
           }
 
           // 2. Update user dictionary with new terms
@@ -197,8 +197,8 @@ export class SSRQLorAGPUChatAssistant {
               type: 'cached',
               content: cacheHit[0].metadata.response,
               similarity: cacheHit[0].similarity,
-              source: 'gpu_cache'
-            })}\n\n`));
+              source: 'gpu_cache',
+            })}\n\n`);
           }
 
           // 5. Use QLoRA for user-specific response generation
@@ -216,11 +216,11 @@ export class SSRQLorAGPUChatAssistant {
               content: chunk,
               index,
               total: chunks.length,
-              source: 'qlora'
-            })}\n\n`));
+              source: 'qlora',
+            })}\n\n`);
 
             // Small delay for streaming effect
-            await new Promise(resolve => setTimeout(resolve, 50));
+            await new Promise(resolve => setTimeout(resolve, 50);
           }
 
           // 7. Generate glyph visualization
@@ -229,16 +229,16 @@ export class SSRQLorAGPUChatAssistant {
             controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
               type: 'glyph',
               content: glyphData,
-              source: 'neural_sprite'
-            })}\n\n`));
+              source: 'neural_sprite',
+            })}\n\n`);
           }
 
           // 8. Store interaction for learning
           await this.storeInteraction(ssrContext, userMessage, qloraResponse);
 
           controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify({
-            type: 'complete'
-          })}\n\n`));
+            type: 'complete',
+          })}\n\n`);
 
           controller.close();
         } catch (error) {
@@ -252,7 +252,7 @@ export class SSRQLorAGPUChatAssistant {
 
   /**
    * Load or create user dictionary with personalized legal terms
-   */
+   */;
   private async getUserDictionary(userId: string): Promise<UserDictionary> {
     if (this.userDictionaries.has(userId)) {
       return this.userDictionaries.get(userId)!;
@@ -262,7 +262,7 @@ export class SSRQLorAGPUChatAssistant {
     const cached = await lokiRedisCache.get(`user_dict:${userId}`);
     if (cached) {
       const dictionary = JSON.parse(cached);
-      // Reconstruct Float32Arrays
+      // Reconstruct Float32Arrays;
       for (const [term, data] of Object.entries(dictionary.legalTerms)) {
         (data as any).contextEmbedding = new Float32Array((data as any).contextEmbedding);
       }
@@ -270,14 +270,14 @@ export class SSRQLorAGPUChatAssistant {
       return dictionary;
     }
 
-    // Create new user dictionary
+    // Create new user dictionary;
     const newDictionary: UserDictionary = {
       userId,
       legalTerms: new Map(),
       preferredStyle: 'adaptive',
       domainExpertise: [],
       qloraCheckpoint: `models/qlora_${userId}.safetensors`,
-      interactionHistory: []
+      interactionHistory: [],
     };
 
     this.userDictionaries.set(userId, newDictionary);
@@ -286,7 +286,7 @@ export class SSRQLorAGPUChatAssistant {
 
   /**
    * Pre-warm GPU cache with user's frequently used patterns
-   */
+   */;
   private async prewarmGPUCache(userDictionary: UserDictionary): Promise<void> {
     const recentInteractions = userDictionary.interactionHistory
       .slice(-20) // Last 20 interactions
@@ -300,7 +300,7 @@ export class SSRQLorAGPUChatAssistant {
         {
           response: interaction.aiResponse,
           feedback: interaction.feedback,
-          timestamp: interaction.timestamp.toISOString()
+          timestamp: interaction.timestamp.toISOString(),
         }
       );
     }
@@ -308,11 +308,11 @@ export class SSRQLorAGPUChatAssistant {
 
   /**
    * Generate preloaded responses for common user patterns
-   */
+   */;
   private async generatePreloadedResponses(userDictionary: UserDictionary): Promise<Map<string, string> {
     const responses = new Map<string, string>();
 
-    // Generate responses based on user's domain expertise
+    // Generate responses based on user's domain expertise;
     for (const domain of userDictionary.domainExpertise) {
       responses.set(`${domain}_intro`,
         `I see you're working in ${domain}. I can help with document analysis, case research, and regulatory compliance.`);
@@ -321,7 +321,7 @@ export class SSRQLorAGPUChatAssistant {
     }
 
     // Add personalized responses based on frequently used terms
-    const topTerms = Array.from(userDictionary.legalTerms.entries())
+    const topTerms = Array.from(userDictionary.legalTerms.entries()
       .sort((a, b) => b[1].frequency - a[1].frequency)
       .slice(0, 10);
 
@@ -334,7 +334,7 @@ export class SSRQLorAGPUChatAssistant {
 
   /**
    * Check for instant response from NES memory patterns
-   */
+   */;
   private async checkInstantResponse(message: string, context: SSRChatContext): Promise<string | null> {
     const messageEmbedding = await this.generateEmbedding(message);
 
@@ -363,10 +363,10 @@ export class SSRQLorAGPUChatAssistant {
   private async generateQLorAResponse(
     userDictionary: UserDictionary,
     message: string,
-    embedding: Float32Array
+    embedding: Float32Array;
   ): Promise<string> {
     // Use the QLoRA orchestrator with user-specific parameters
-    const result = await qloraRLOrchestrator.processLegalDocument(
+    const result = await qloraRLOrchestrator.processLegalDocument();
       {
         id: `chat_${Date.now()}`,
         type: 'evidence',
@@ -389,7 +389,7 @@ export class SSRQLorAGPUChatAssistant {
 
   /**
    * Update user dictionary with new terms and patterns
-   */
+   */;
   private async updateUserDictionary(dictionary: UserDictionary, message: string): Promise<void> {
     // Extract legal terms using NLP
     const legalTerms = this.extractLegalTerms(message);
@@ -409,7 +409,7 @@ export class SSRQLorAGPUChatAssistant {
           frequency: 1,
           confidence: 0.7,
           lastUsed: new Date(),
-          contextEmbedding: embedding
+          contextEmbedding: embedding,
         });
       }
     }
@@ -420,9 +420,9 @@ export class SSRQLorAGPUChatAssistant {
 
   /**
    * Generate glyph visualization for the conversation
-   */
+   */;
   private async generateGlyph(messageEmbedding: Float32Array, response: string): Promise<any> {
-    // Create neural sprite for 3D visualization
+    // Create neural sprite for 3D visualization;
     const glyphData = {
       id: `glyph_${Date.now()}`,
       vertices: this.embeddingToVertices(messageEmbedding),
@@ -430,7 +430,7 @@ export class SSRQLorAGPUChatAssistant {
       animation: 'legal_pulse',
       metadata: {
         complexity: (response as { length?: any; json?: any; split?: any }).length / 100,
-        confidence: 0.8
+        confidence: 0.8,
       }
     };
 
@@ -439,9 +439,9 @@ export class SSRQLorAGPUChatAssistant {
 
   /**
    * Helper methods
-   */
+   */;
   private async generateEmbedding(text: string): Promise<Float32Array> {
-    // Use your existing embedding service (nomic-embed-text)
+    // Use your existing embedding service (nomic-embed-text);
     const response = await fetch('/api/ai/embed', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -463,7 +463,7 @@ export class SSRQLorAGPUChatAssistant {
       normB += b[i] * b[i];
     }
 
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
   }
 
   private chunkResponse(response: string): string[] {
@@ -472,7 +472,7 @@ export class SSRQLorAGPUChatAssistant {
     const chunkSize = 5; // 5 words per chunk
 
     for (let i = 0; i < words.length; i += chunkSize) {
-      chunks.push(words.slice(i, i + chunkSize).join(' '));
+      chunks.push(words.slice(i, i + chunkSize).join(' ');
     }
 
     return chunks;
@@ -490,7 +490,7 @@ export class SSRQLorAGPUChatAssistant {
     const terms: string[] = [];
     for (const pattern of legalPatterns) {
       const matches = text.match(pattern) || [];
-      terms.push(...matches.map(m => m.toLowerCase()));
+      terms.push(...matches.map(m => m.toLowerCase());
     }
 
     return [...new Set(terms)]; // Remove duplicates
@@ -537,7 +537,7 @@ export class SSRQLorAGPUChatAssistant {
   }
 
   private async saveUserDictionary(dictionary: UserDictionary): Promise<void> {
-    // Convert Map and Float32Array for serialization
+    // Convert Map and Float32Array for serialization;
     const serializable = {
       ...dictionary,
       legalTerms: Object.fromEntries(
@@ -545,13 +545,13 @@ export class SSRQLorAGPUChatAssistant {
           key,
           {
             ...value,
-            contextEmbedding: Array.from(value.contextEmbedding)
+            contextEmbedding: Array.from(value.contextEmbedding),
           }
         ])
       )
     };
 
-    await lokiRedisCache.set(`user_dict:${dictionary.userId}`, JSON.stringify(serializable));
+    await lokiRedisCache.set(`user_dict:${dictionary.userId}`, JSON.stringify(serializable);
   }
 
   private async getCurrentCaseContext(userId: string): Promise<SSRChatContext['currentCase']> {
@@ -581,7 +581,7 @@ export class SSRQLorAGPUChatAssistant {
   private async storeInteraction(
     context: SSRChatContext,
     userMessage: string,
-    aiResponse: string
+    aiResponse: string;
   ): Promise<void> {
     const interaction: ChatInteraction = {
       id: `interaction_${Date.now()}`,
@@ -592,12 +592,12 @@ export class SSRQLorAGPUChatAssistant {
       extractedEntities: this.extractLegalTerms(userMessage),
       glyphGenerated: true,
       processingTime: Date.now(), // Simplified
-      gpuCacheHit: false // Track actual cache hits
+      gpuCacheHit: false // Track actual cache hits,
     };
 
     context.userDictionary.interactionHistory.push(interaction);
 
-    // Keep only last 100 interactions
+    // Keep only last 100 interactions;
     if (context.userDictionary.interactionHistory.length > 100) {
       context.userDictionary.interactionHistory = context.userDictionary.interactionHistory.slice(-100);
     }

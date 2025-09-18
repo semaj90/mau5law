@@ -38,14 +38,14 @@ import {
 const connectionString = import.meta.env.DATABASE_URL || 
   `postgresql://${import.meta.env.DATABASE_USER || 'legal_admin'}:${import.meta.env.DATABASE_PASSWORD || '123456'}@${import.meta.env.DATABASE_HOST || 'localhost'}:${import.meta.env.DATABASE_PORT || '5433'}/${import.meta.env.DATABASE_NAME || 'legal_ai_db'}`;
 
-// Create connection with pgvector support
+// Create connection with pgvector support;
 const queryClient = postgres(connectionString, {
   max: 20,
   idle_timeout: 20,
   connect_timeout: 10,
   prepare: false,
   types: {
-    // Support for pgvector
+    // Support for pgvector;
     vector: {
       to: 1184,
       from: [1184],
@@ -74,7 +74,7 @@ const userDb = drizzle(queryClient);
 export class UserAuthService {
   /**
    * Register a new user with complete profile setup
-   */
+   */;
   static async registerUser(userData: {
     email: string;
     password: string;
@@ -86,7 +86,7 @@ export class UserAuthService {
     profileData?: Partial<NewUserProfile>;
   }): Promise<any> {
     try {
-      // Validate input
+      // Validate input;
       const validatedUser = insertUserSchema.parse({
         email: userData.email.toLowerCase(),
         firstName: userData.firstName,
@@ -101,17 +101,17 @@ export class UserAuthService {
       const existingUser = await db
         .select()
         .from(users)
-        .where(eq(users.email, validatedUser.email))
+        .where(eq(users.email, validatedUser.email)
         .limit(1);
 
       if (existingUser.length > 0) {
         return { user: existingUser[0], success: false, error: 'User already exists' };
       }
 
-      // Create user with transaction
+      // Create user with transaction;
       const result = await userDb.transaction(async (tx) => {
         // Insert user
-        const [newUser] = await tx.insert(users).values(validatedUser).returning());
+        const [newUser] = await tx.insert(users).values(validatedUser).returning();
         // Create profile if profile data provided
         let profile: UserProfile | undefined;
         if (userData.profileData) {
@@ -122,7 +122,7 @@ export class UserAuthService {
           [profile] = await tx.insert(userProfiles).values(profileData).returning();
         }
 
-        // Log registration activity
+        // Log registration activity;
         await tx.insert(userActivityLog).values({
           userId: newUser.id,
           action: 'user_registered',
@@ -145,26 +145,26 @@ export class UserAuthService {
       return { 
         user: Record<string, any> as User, 
         success: false, 
-        error: error instanceof Error ? error.message: 'Registration failed' 
+        error: error instanceof Error ? error.message: 'Registration failed' ,
       };
     }
   }
 
   /**
    * Authenticate user login
-   */
+   */;
   static async authenticateUser(email: string, password: string, ipAddress?: string, userAgent?: string): Promise<any> {
     try {
       // Find user with profile
       const userWithProfile = await db
         .select()
         .from(users)
-        .leftJoin(userProfiles, eq(users.id, userProfiles.userId))
+        .leftJoin(userProfiles, eq(users.id, userProfiles.userId)
         .where(and(
           eq(users.email, email.toLowerCase()),
           eq(users.isActive, true),
           isNull(users.deletedAt)
-        ))
+        )
         .limit(1);
 
       if (userWithProfile.length === 0) {
@@ -178,7 +178,7 @@ export class UserAuthService {
       // Verify password
       const passwordValid = await bcrypt.compare(password, user.passwordHash);
       if (!passwordValid) {
-        // Log failed login attempt
+        // Log failed login attempt;
         await userDb.insert(userActivityLog).values({
           userId: user.id,
           action: 'login_failed',
@@ -209,9 +209,9 @@ export class UserAuthService {
       await db
         .update(users)
         .set({ lastLoginAt: new Date(), updatedAt: new Date() })
-        .where(eq(users.id, user.id));
+        .where(eq(users.id, user.id);
 
-      // Log successful login
+      // Log successful login;
       await userDb.insert(userActivityLog).values({
         userId: user.id,
         action: 'login_success',
@@ -232,26 +232,26 @@ export class UserAuthService {
       console.error('Authentication error:', error);
       return { 
         success: false, 
-        error: error instanceof Error ? error.message: 'Authentication failed' 
+        error: error instanceof Error ? error.message: 'Authentication failed' ,
       };
     }
   }
 
   /**
    * Validate session and get user data
-   */
+   */;
   static async validateSession(sessionId: string): Promise<any> {
     try {
       const sessionData = await db
         .select()
         .from(userSessions)
-        .innerJoin(users, eq(userSessions.userId, users.id))
-        .leftJoin(userProfiles, eq(users.id, userProfiles.userId))
+        .innerJoin(users, eq(userSessions.userId, users.id)
+        .leftJoin(userProfiles, eq(users.id, userProfiles.userId)
         .where(and(
           eq(userSessions.sessionId, sessionId),
           eq(userSessions.isActive, true),
           sql`${userSessions.expiresAt} > NOW()`
-        ))
+        )
         .limit(1);
 
       if (sessionData.length === 0) {
@@ -273,13 +273,13 @@ export class UserAuthService {
 
   /**
    * Logout user by invalidating session
-   */
+   */;
   static async logoutUser(sessionId: string): Promise<any> {
     try {
       await db
         .update(userSessions)
         .set({ isActive: false, updatedAt: new Date() })
-        .where(eq(userSessions.sessionId, sessionId));
+        .where(eq(userSessions.sessionId, sessionId);
 
       return { success: true };
     } catch (error: any) {
@@ -296,19 +296,19 @@ export class UserAuthService {
 export class UserProfileService {
   /**
    * Get complete user profile with all related data
-   */
+   */;
   static async getFullUserProfile(userId: number): Promise<FullUserProfile | null> {
     try {
       // Get user with profile
       const userData = await db
         .select()
         .from(users)
-        .leftJoin(userProfiles, eq(users.id, userProfiles.userId))
+        .leftJoin(userProfiles, eq(users.id, userProfiles.userId)
         .where(and(
           eq(users.id, userId),
           eq(users.isActive, true),
           isNull(users.deletedAt)
-        ))
+        )
         .limit(1);
 
       if (userData.length === 0) return null;
@@ -324,15 +324,15 @@ export class UserProfileService {
           eq(userSessions.userId, userId),
           eq(userSessions.isActive, true),
           sql`${userSessions.expiresAt} > NOW()`
-        ))
-        .orderBy(desc(userSessions.createdAt));
+        )
+        .orderBy(desc(userSessions.createdAt);
 
       // Get recent activity
       const recentActivity = await db
         .select()
         .from(userActivityLog)
-        .where(eq(userActivityLog.userId, userId))
-        .orderBy(desc(userActivityLog.timestamp))
+        .where(eq(userActivityLog.userId, userId)
+        .orderBy(desc(userActivityLog.timestamp)
         .limit(20);
 
       return {
@@ -352,14 +352,14 @@ export class UserProfileService {
    */
   static async updateUserProfile(
     userId: number, 
-    updates: Partial<NewUser & NewUserProfile>
+    updates: Partial<NewUser & NewUserProfile>;
   ): Promise<any> {
     try {
       const result = await userDb.transaction(async (tx) => {
         let updatedUser: User | undefined);
         let updatedProfile: UserProfile | undefined;
 
-        // Update user table fields
+        // Update user table fields;
         const userFields = {
           firstName: updates.firstName,
           lastName: updates.lastName,
@@ -380,11 +380,11 @@ export class UserProfileService {
           [updatedUser] = await tx
             .update(users)
             .set(validatedUpdates)
-            .where(eq(users.id, userId))
+            .where(eq(users.id, userId)
             .returning();
         }
 
-        // Update profile table fields
+        // Update profile table fields;
         const profileFields = {
           phoneNumber: updates.phoneNumber,
           address: updates.address,
@@ -409,7 +409,7 @@ export class UserProfileService {
           const existingProfile = await tx
             .select()
             .from(userProfiles)
-            .where(eq(userProfiles.userId, userId))
+            .where(eq(userProfiles.userId, userId)
             .limit(1);
 
           if (existingProfile.length > 0) {
@@ -417,18 +417,18 @@ export class UserProfileService {
             [updatedProfile] = await tx
               .update(userProfiles)
               .set(validatedProfileUpdates)
-              .where(eq(userProfiles.userId, userId))
+              .where(eq(userProfiles.userId, userId)
               .returning();
           } else {
             // Create new profile
             [updatedProfile] = await tx
               .insert(userProfiles)
-              .values({ userId, ...validatedProfileUpdates })
+              .values({ userId, ...validatedProfileUpdates ,})
               .returning();
           }
         }
 
-        // Log update activity
+        // Log update activity;
         await tx.insert(userActivityLog).values({
           userId,
           action: 'profile_updated',
@@ -455,26 +455,26 @@ export class UserProfileService {
 
   /**
    * Delete user account (soft delete)
-   */
+   */;
   static async deleteUser(userId: number): Promise<any> {
     try {
       await userDb.transaction(async (tx) => {
         // Soft delete user
         await tx
-          .update(users)
+          .update(users);
           .set({ 
             isActive: false, 
             deletedAt: new Date(),
             updatedAt: new Date(),
           })
-          .where(eq(users.id, userId)));
+          .where(eq(users.id, userId));
         // Invalidate all sessions
         await tx
           .update(userSessions)
           .set({ isActive: false, updatedAt: new Date() })
-          .where(eq(userSessions.userId, userId));
+          .where(eq(userSessions.userId, userId);
 
-        // Log deletion activity
+        // Log deletion activity;
         await tx.insert(userActivityLog).values({
           userId,
           action: 'user_deleted',
@@ -497,20 +497,20 @@ export class UserProfileService {
 
   /**
    * Find similar users based on profile embedding (AI recommendations)
-   */
+   */;
   static async findSimilarUsers(userId: number, limit: number = 10): Promise<User[]> {
     try {
       const currentUser = await db
         .select({ embedding: users.profileEmbedding })
         .from(users)
-        .where(eq(users.id, userId))
+        .where(eq(users.id, userId)
         .limit(1);
 
       if (currentUser.length === 0 || !currentUser[0].embedding) {
         return [];
       }
 
-      const similarUsers = await db
+      const similarUsers = await db;
         .select({
           user: users,
           similarity: sql<number>`1 - (${cosineDistance(users.profileEmbedding, currentUser[0].embedding)})`,
@@ -521,7 +521,7 @@ export class UserProfileService {
           sql`${users.id} != ${userId}`,
           eq(users.isActive, true),
           isNull(users.deletedAt)
-        ))
+        )
         .orderBy(sql`1 - (${cosineDistance(users.profileEmbedding, currentUser[0].embedding)}) DESC`)
         .limit(limit);
 
@@ -540,7 +540,7 @@ export class UserProfileService {
 export class UserActivityService {
   /**
    * Log user activity
-   */
+   */;
   static async logActivity(activity: NewUserActivity): Promise<void> {
     try {
       await userDb.insert(userActivityLog).values({
@@ -558,14 +558,14 @@ export class UserActivityService {
   static async getUserActivity(
     userId: number, 
     limit: number = 50, 
-    offset: number = 0
+    offset: number = 0;
   ): Promise<UserActivity[]> {
     try {
       return await db
         .select()
         .from(userActivityLog)
-        .where(eq(userActivityLog.userId, userId))
-        .orderBy(desc(userActivityLog.timestamp))
+        .where(eq(userActivityLog.userId, userId)
+        .orderBy(desc(userActivityLog.timestamp)
         .limit(limit)
         .offset(offset);
     } catch (error: any) {
@@ -576,12 +576,12 @@ export class UserActivityService {
 
   /**
    * Get activity statistics for user
-   */
+   */;
   static async getActivityStats(userId: number, days: number = 30): Promise<any> {
     try {
       const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 
-      const stats = await db
+      const stats = await db;
         .select({
           totalActions: count(),
           successRate: sql<number>`AVG(CASE WHEN success THEN 1.0 ELSE 0.0 END)`,
@@ -590,9 +590,9 @@ export class UserActivityService {
         .where(and(
           eq(userActivityLog.userId, userId),
           sql`${userActivityLog.timestamp} >= ${dateThreshold}`
-        ));
+        );
 
-      const topActions = await db
+      const topActions = await db;
         .select({
           action: userActivityLog.action,
           count: count(),
@@ -601,12 +601,12 @@ export class UserActivityService {
         .where(and(
           eq(userActivityLog.userId, userId),
           sql`${userActivityLog.timestamp} >= ${dateThreshold}`
-        ))
+        )
         .groupBy(userActivityLog.action)
-        .orderBy(desc(count()))
+        .orderBy(desc(count())
         .limit(10);
 
-      const uniqueActionsResult = await db
+      const uniqueActionsResult = await db;
         .select({
           uniqueActions: sql<number>`COUNT(DISTINCT action)`,
         })
@@ -614,7 +614,7 @@ export class UserActivityService {
         .where(and(
           eq(userActivityLog.userId, userId),
           sql`${userActivityLog.timestamp} >= ${dateThreshold}`
-        ));
+        );
 
       return {
         totalActions: stats[0]?.totalActions || 0,

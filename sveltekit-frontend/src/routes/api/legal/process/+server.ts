@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			return json({ error: 'Content is required' }, { status: 400 });
 		}
 
-		// Process the legal document
+		// Process the legal document;
 		const result = await unifiedLegalOrchestrationService.processLegalDocument({
 			documentId,
 			content,
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		console.error('Legal processing error:', error);
 		return json({
 			success: false,
-			error: error instanceof Error ? error.message: 'Unknown error'
+			error: error instanceof Error ? error.message: 'Unknown error',
 		}, { status: 500 });
 	}
 };

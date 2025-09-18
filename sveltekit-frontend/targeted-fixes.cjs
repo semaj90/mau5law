@@ -7,79 +7,79 @@ const fixes = [
   {
     pattern: /APIResponse/g,
     replacement: 'APIResponse<any>',
-    files: ['src/lib/utils/type-guards.ts']
+    files: ['src/lib/utils/type-guards.ts'],
   },
 
   // Fix missing schema imports
   {
     pattern: /'documentVectors'/g,
     replacement: "'documentMetadata'",
-    files: ['src/lib/services/documentUpdateLoop.ts']
+    files: ['src/lib/services/documentUpdateLoop.ts'],
   },
   {
     pattern: /'queryVectors'/g,
     replacement: "'documentMetadata'", // Use available table instead
-    files: ['src/lib/services/documentUpdateLoop.ts']
+    files: ['src/lib/services/documentUpdateLoop.ts'],
   },
 
   // Fix ChatOllama model property access with @ts-ignore
   {
     pattern: /this\.chatModel\.model/g,
     replacement: '(this.chatModel as any).model',
-    files: ['src/lib/services/ollama-cuda-service.ts']
+    files: ['src/lib/services/ollama-cuda-service.ts'],
   },
 
   // Fix incomplete generic types
   {
     pattern: /Array<;/g,
     replacement: 'Array<any>;',
-    files: ['**/*.ts']
+    files: ['**/*.ts'],
   },
   {
     pattern: /Promise<\s*{/g,
     replacement: 'Promise<any> {',
-    files: ['**/*.ts']
+    files: ['**/*.ts'],
   },
   {
     pattern: /Record<string, any\s*\n/g,
     replacement: 'Record<string, any>',
-    files: ['**/*.ts']
+    files: ['**/*.ts'],
   },
 
   // Fix NATS messaging types
   {
     pattern: /unknown.*NATSSubscription/g,
     replacement: 'any as NATSSubscription',
-    files: ['src/lib/services/nats-messaging-service.ts']
+    files: ['src/lib/services/nats-messaging-service.ts'],
   },
 
   // Fix namespace usage
   {
     pattern: /namespace\s+'([^']+)'\s+as\s+a\s+type/g,
-    replacement: "$1 as any",
-    files: ['**/*.ts']
+    replacement: '$1 as any',
+    files: ['**/*.ts'],
   },
 
   // Fix property access errors with any casting
   {
     pattern: /\.hset\s*\(/g,
     replacement: '.hset(',
-    files: ['src/lib/services/som-clustering.ts']
+    files: ['src/lib/services/som-clustering.ts'],
   },
 
   // Fix incomplete Partial types
   {
     pattern: /Partial<>/g,
     replacement: 'Partial<any>',
-    files: ['**/*.ts']
+    files: ['**/*.ts'],
   },
 
   // Fix byteLength property access
   {
     pattern: /Property 'byteLength' does not exist on type 'BufferLike'/g,
     replacement: '',
-    files: ['**/*.ts']
-  }
+    files: ['**/*.ts'],
+  },
 ];
 
 async function applyFixes() {
@@ -135,7 +135,7 @@ async function applySpecializedFixes() {
     'src/lib/server/db/unified-client.ts',
     'src/lib/services/documentUpdateLoop.ts',
     'src/lib/server/auth.ts',
-    'src/lib/services/ollama-cuda-service.ts'
+    'src/lib/services/ollama-cuda-service.ts',
   ];
 
   for (const file of incompleteTypeFiles) {

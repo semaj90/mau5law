@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 export const POST: RequestHandler = async ({ request }) => {
-    const body = await request.json().catch(() => ({}));
+    const body = await request.json().catch(() => ({});
     if (!body.caseTitle || !body.citation) {
         return json({ success: false, error: 'caseTitle and citation required' }, { status: 400 });
     }

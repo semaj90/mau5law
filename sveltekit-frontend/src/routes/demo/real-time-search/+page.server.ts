@@ -7,7 +7,7 @@ export const load: PageServerLoad = async ({ url, depends }) => {
 	const searchType = url.searchParams.get('type') || 'legal_documents';
 	const limit = parseInt(url.searchParams.get('limit') || '20');
 	
-	// In a real implementation, these would come from actual search services and databases
+	// In a real implementation, these would come from actual search services and databases;
 	const searchStats = {
 		total_indexed: 2847392,
 		last_updated: '2024-01-20T15:30:00Z',
@@ -15,13 +15,13 @@ export const load: PageServerLoad = async ({ url, depends }) => {
 			avg_response_time: 45, // milliseconds
 			queries_per_second: 1247,
 			cache_hit_rate: 0.82,
-			index_freshness: 0.98
+			index_freshness: 0.98,
 		},
 		active_connections: 156,
-		real_time_updates: true
+		real_time_updates: true,
 	};
 
-	const searchCategories = [
+	const searchCategories = [;
 		{ 
 			id: 'legal_documents', 
 			name: 'Legal Documents', 
@@ -60,7 +60,7 @@ export const load: PageServerLoad = async ({ url, depends }) => {
 	];
 
 	// Mock search results - in real implementation, this would query vector database
-	const searchResults = query ? [
+	const searchResults = query ? [;
 		{
 			id: 'doc_001',
 			title: 'Master Service Agreement - TechCorp vs. DataSystems',
@@ -72,7 +72,7 @@ export const load: PageServerLoad = async ({ url, depends }) => {
 			page_count: 47,
 			highlights: ['software development services', 'liability limitations', 'termination clauses'],
 			case_references: ['2023-CV-1234', '2022-CV-5678'],
-			confidence: 0.91
+			confidence: 0.91,
 		},
 		{
 			id: 'case_002',
@@ -85,7 +85,7 @@ export const load: PageServerLoad = async ({ url, depends }) => {
 			year: 2023,
 			highlights: ['contract interpretation', 'ambiguous terms', 'drafter liability'],
 			citations: 147,
-			confidence: 0.88
+			confidence: 0.88,
 		},
 		{
 			id: 'statute_003',
@@ -98,7 +98,7 @@ export const load: PageServerLoad = async ({ url, depends }) => {
 			section: '1549',
 			highlights: ['contract formation', 'agreement requirements', 'legal obligations'],
 			amendments: ['2023 Amendment', '2021 Amendment'],
-			confidence: 0.85
+			confidence: 0.85,
 		}
 	] : [];
 

@@ -88,7 +88,7 @@ export class ProductionController {
     // Log to MCP memory
     if (this.mcpReady) {
       console.log("// #memory #create_entities production_assessment");
-      console.log(JSON.stringify(assessment, null, 2));
+      console.log(JSON.stringify(assessment, null, 2);
     }
 
     return assessment;

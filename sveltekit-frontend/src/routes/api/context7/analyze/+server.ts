@@ -11,11 +11,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!evidenceId || !content) {
       return json({ 
-        error: 'Missing required fields: evidenceId and content' 
+        error: 'Missing required fields: evidenceId and content' ,
       }, { status: 400 });
     }
 
-    // Mock Context7 analysis for now
+    // Mock Context7 analysis for now;
     const context7Analysis = {
       id: evidenceId,
       type: type || 'legal_evidence',
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
         ],
         prosecutionRelevance: {
           score: Math.random() * 0.4 + 0.6, // Random score between 0.6-1.0
-          reasoning: 'High relevance due to contract violations and potential fraud indicators'
+          reasoning: 'High relevance due to contract violations and potential fraud indicators',
         },
         semanticMappings: [
           { concept: 'breach of contract', confidence: 0.9 },
@@ -52,18 +52,18 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       confidence: 0.87,
       processingTime: Math.floor(Math.random() * 3000) + 500, // 500-3500ms
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
-    // Update evidence record with Context7 analysis
+    // Update evidence record with Context7 analysis;
     if (evidenceId) {
       try {
         await db
-          .update(evidence)
+          .update(evidence);
           .set({
-            aiAnalysis: context7Analysis as any
+            aiAnalysis: context7Analysis as any,
           })
-          .where(eq(evidence.id, evidenceId));
+          .where(eq(evidence.id, evidenceId);
       } catch (updateError) {
         console.warn('Failed to update evidence with Context7 analysis:', updateError);
       }
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Context7 analysis error:', error);
     return json({ 
       error: 'Analysis failed',
-      status: 'error' 
+      status: 'error' ,
     }, { status: 500 });
   }
 };

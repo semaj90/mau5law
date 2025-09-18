@@ -8,7 +8,7 @@ import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 // Import QUIC recommendation engine (will be available after build)
 let QuicEngine: any = null;
 
-// Lazy load the QUIC engine to handle build-time imports
+// Lazy load the QUIC engine to handle build-time imports;
 async function getQuicEngine() {
   if (!QuicEngine) {
     try {
@@ -16,7 +16,7 @@ async function getQuicEngine() {
       QuicEngine = new module.QuicNeo4jRecommendationEngine();
     } catch (err) {
       console.error('Failed to load QUIC engine:', err);
-      throw error(503, makeHttpErrorPayload({ message: 'QUIC recommendation engine unavailable' }));
+      throw error(503, makeHttpErrorPayload({ message: 'QUIC recommendation engine unavailable' });
     }
   }
   return QuicEngine;
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     const engine = await getQuicEngine();
 
-    // Run benchmark if requested
+    // Run benchmark if requested;
     if (benchmark) {
       const benchmarkResults = await engine.benchmarkPerformance(query);
       return json({
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     const totalTime = performance.now() - startTime;
 
-    // Add performance headers
+    // Add performance headers;
     const response = json({
       success: true,
       query,
@@ -106,13 +106,13 @@ export const GET: RequestHandler = async ({ url }) => {
       throw err; // Re-throw SvelteKit errors
     }
 
-    return json(
+    return json();
       {
         success: false,
         error: err instanceof Error ? err.message: 'QUIC recommendation failed',
         fallback: 'Consider using /api/search for HTTP fallback',
         timestamp: new Date().toISOString(),
-      },
+      },>
       { status: 500 }
     );
   }
@@ -134,16 +134,16 @@ export const POST: RequestHandler = async ({ request }) => {
     } = body;
 
     if (!query && !batchQueries) {
-      throw error(400, makeHttpErrorPayload({ message: 'Query or batchQueries required' }));
+      throw error(400, makeHttpErrorPayload({ message: 'Query or batchQueries required' });
     }
 
     const engine = await getQuicEngine();
     const startTime = performance.now();
 
-    // Handle batch processing for multiple queries
+    // Handle batch processing for multiple queries;
     if (batchQueries && Array.isArray(batchQueries)) {
       const batchResults = await Promise.allSettled(
-        batchQueries.map((batchQuery: any) =>
+        batchQueries.map((batchQuery: any) =>;
           engine.getRecommendations({
             query: batchQuery.query || batchQuery,
             caseId: batchQuery.caseId,
@@ -176,7 +176,7 @@ export const POST: RequestHandler = async ({ request }) => {
       });
     }
 
-    // Single query processing
+    // Single query processing;
     const recommendations = await engine.getRecommendations({
       query,
       caseId,
@@ -208,19 +208,19 @@ export const POST: RequestHandler = async ({ request }) => {
       throw err;
     }
 
-    return json(
+    return json();
       {
         success: false,
         error: err instanceof Error ? err.message: 'QUIC recommendation failed',
         timestamp: new Date().toISOString(),
-      },
+      },>
       { status: 500 }
     );
   }
 };
 
 export const OPTIONS: RequestHandler = async () => {
-	// CORS preflight for QUIC connections
+	// CORS preflight for QUIC connections;
 	return new Response(null, {
 		status: 200,
 		headers: {

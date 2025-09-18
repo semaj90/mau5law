@@ -25,7 +25,7 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('message', async (event) => {
   const { type, data, requestId } = event.data;
-  
+
   switch (type) {
     case 'CHAT_REQUEST':
       await handleChatRequest(event, data, requestId);
@@ -38,7 +38,7 @@ self.addEventListener('message', async (event) => {
         type: 'QUEUE_STATUS',
         activeCount: activeRequests.size,
         queuedCount: requestQueue.length,
-        cacheSize: embeddingCache.size
+        cacheSize: embeddingCache.size,
       });
       break;
     default:
@@ -53,27 +53,27 @@ async function handleChatRequest(event, requestData, requestId) {
     event.ports[0].postMessage({
       type: 'QUEUED',
       requestId,
-      position: requestQueue.length
+      position: requestQueue.length,
     });
     return;
   }
-  
+
   await processChatRequest(event, requestData, requestId);
 }
 
 async function processChatRequest(event, requestData, requestId) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
-  
+
   activeRequests.set(requestId, { controller, timeoutId });
-  
+
   try {
     event.ports[0].postMessage({
       type: 'STARTED',
       requestId,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-    
+
     // Check cache first for similar requests
     const cacheKey = generateCacheKey(requestData);
     if (embeddingCache.has(cacheKey)) {
@@ -82,45 +82,44 @@ async function processChatRequest(event, requestData, requestId) {
         type: 'CACHED_RESPONSE',
         requestId,
         data: cachedResponse,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
       return;
     }
-    
+
     // Make the actual API request
     const response = await fetch(CHAT_API_V2, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(requestData),
-      signal: controller.signal
+      signal: controller.signal,
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    
+
     // Handle streaming responses
     if (requestData.stream && response.body) {
       await handleStreamingResponse(event, response, requestId);
     } else {
       // Handle regular JSON responses
       const data = await response.json();
-      
+
       // Cache successful responses
       if (data.success) {
         cacheResponse(cacheKey, data);
       }
-      
+
       event.ports[0].postMessage({
         type: 'RESPONSE',
         requestId,
         data,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
-    
   } catch (error) {
     console.error('Chat request error:', error);
     event.ports[0].postMessage({
@@ -129,9 +128,9 @@ async function processChatRequest(event, requestData, requestId) {
       error: {
         message: error.message,
         name: error.name,
-        stack: error.stack
+        stack: error.stack,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } finally {
     // Clean up
@@ -140,7 +139,7 @@ async function processChatRequest(event, requestData, requestId) {
       clearTimeout(request.timeoutId);
       activeRequests.delete(requestId);
     }
-    
+
     // Process next queued request
     if (requestQueue.length > 0) {
       const nextRequest = requestQueue.shift();
@@ -154,23 +153,23 @@ async function processChatRequest(event, requestData, requestId) {
 async function handleStreamingResponse(event, response, requestId) {
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
-  
+
   try {
     while (true) {
       const { done, value } = await reader.read();
-      
+
       if (done) {
         event.ports[0].postMessage({
           type: 'STREAM_END',
           requestId,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
         break;
       }
-      
+
       const chunk = decoder.decode(value, { stream: true });
       const lines = chunk.split('\n');
-      
+
       for (const line of lines) {
         if (line.startsWith('data: ')) {
           const data = line.slice(6);
@@ -178,7 +177,7 @@ async function handleStreamingResponse(event, response, requestId) {
             event.ports[0].postMessage({
               type: 'STREAM_COMPLETE',
               requestId,
-              timestamp: new Date().toISOString()
+              timestamp: new Date().toISOString(),
             });
           } else {
             try {
@@ -187,7 +186,7 @@ async function handleStreamingResponse(event, response, requestId) {
                 type: 'STREAM_DATA',
                 requestId,
                 data: parsedData,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
               });
             } catch (parseError) {
               console.warn('Failed to parse stream data:', data);
@@ -208,9 +207,9 @@ async function abortRequest(requestId) {
     clearTimeout(request.timeoutId);
     activeRequests.delete(requestId);
   }
-  
+
   // Remove from queue if present
-  const queueIndex = requestQueue.findIndex(req => req.requestId === requestId);
+  const queueIndex = requestQueue.findIndex((req) => req.requestId === requestId);
   if (queueIndex !== -1) {
     requestQueue.splice(queueIndex, 1);
   }
@@ -228,11 +227,11 @@ function cacheResponse(key, response) {
     const firstKey = embeddingCache.keys().next().value;
     embeddingCache.delete(firstKey);
   }
-  
+
   embeddingCache.set(key, {
     ...response,
     cached: true,
-    cachedAt: new Date().toISOString()
+    cachedAt: new Date().toISOString(),
   });
 }
 

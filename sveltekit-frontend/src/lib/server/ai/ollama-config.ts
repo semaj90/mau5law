@@ -8,7 +8,7 @@ import type { OllamaConfig, ModelConfig } from './types.js';
  */
 
 
-// Model configurations aligned with the blueprint architecture
+// Model configurations aligned with the blueprint architecture;
 export const MODELS: Record<string, ModelConfig> = {
   'gemma3-legal:latest': {
     name: 'gemma3-legal:latest',
@@ -49,7 +49,7 @@ export const MODELS: Record<string, ModelConfig> = {
   },
 };
 
-// Fallback chain configuration - llama3.2 removed
+// Fallback chain configuration - llama3.2 removed;
 export const FALLBACK_CHAIN = {
   'legal-analysis': [
     'gemma3-legal:latest', // Only gemma3-legal
@@ -76,7 +76,7 @@ export const OLLAMA_CONFIG: OllamaConfig = {
   maxRetries: 3,
   streamEnabled: true,
 
-  // GPU acceleration settings
+  // GPU acceleration settings;
   gpu: {
     enabled: true,
     layers: 35, // Number of layers to offload to GPU
@@ -84,7 +84,7 @@ export const OLLAMA_CONFIG: OllamaConfig = {
     tensorSplit: null,
   },
 
-  // Performance optimization
+  // Performance optimization;
   performance: {
     batchSize: 32,
     parallelRequests: 4,
@@ -92,7 +92,7 @@ export const OLLAMA_CONFIG: OllamaConfig = {
     cacheTTL: 3600, // 1 hour cache
   },
 
-  // Advanced features from blueprint
+  // Advanced features from blueprint;
   features: {
     som: true, // Self-Organizing Map for topic modeling
     proactiveCaching: true,
@@ -105,14 +105,14 @@ export const OLLAMA_CONFIG: OllamaConfig = {
 
 /**
  * Get model configuration with fallback support
- */
+ */;
 export function getModelConfig(modelName: string = OLLAMA_CONFIG.defaultModel): ModelConfig {
   return MODELS[modelName] || MODELS[OLLAMA_CONFIG.fallbackModels?.legal || 'legal-bert'];
 }
 
 /**
  * Check if model supports a specific capability
- */
+ */;
 export function modelSupportsCapability(modelName: string, capability: string): boolean {
   const config = getModelConfig(modelName);
   return config.capabilities.includes(capability);
@@ -120,7 +120,7 @@ export function modelSupportsCapability(modelName: string, capability: string): 
 
 /**
  * Get optimal model for a specific task with fallback chain
- */
+ */;
 export function getOptimalModel(task: 'embedding' | 'generation' | 'legal-analysis'): string[] {
   const taskMap = {
     'embedding': FALLBACK_CHAIN['embeddings'],
@@ -138,10 +138,10 @@ export function getOptimalModel(task: 'embedding' | 'generation' | 'legal-analys
  */
 export function selectBestAvailableModel(
   preferredModels: string[],
-  availableModels: string[]
+  availableModels: string[];
 ): string | null {
   for (const model of preferredModels) {
-    // Check exact match
+    // Check exact match;
     if (availableModels.includes(model)) {
       return model;
     }
@@ -162,7 +162,7 @@ export function selectBestAvailableModel(
 
 /**
  * Determine if a task should use legal-specific model
- */
+ */;
 export function isLegalTask(prompt: string): boolean {
   const legalKeywords = [
     'contract', 'agreement', 'legal', 'law', 'court', 'case',
@@ -176,7 +176,7 @@ export function isLegalTask(prompt: string): boolean {
   ];
 
   const lowerPrompt = prompt.toLowerCase();
-  return legalKeywords.some(keyword => lowerPrompt.includes(keyword));
+  return legalKeywords.some(keyword => lowerPrompt.includes(keyword);
 }
 
 export default OLLAMA_CONFIG;

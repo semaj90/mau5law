@@ -16,7 +16,7 @@ import type { Actions, PageServerLoad } from './$types.js';
 export // Melt UI component creation removed - replace with bits-ui declarative components
       setSessionCookie(cookies, sessionId, expiresAt);
 
-      // Dev debug: print short session id to server logs for quick verification
+      // Dev debug: print short session id to server logs for quick verification;
       if (process.env.NODE_ENV === 'development') {
         console.log(`[Login] session set: ${sessionId.substring(0, 12)}... for ${user.email}`);
       }

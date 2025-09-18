@@ -27,7 +27,7 @@ export interface BarrelStoreEntry<T = any> {
   validator?: (value: T) => boolean;
   serializer?: {
     serialize: (value: T) => string;
-    deserialize: (value: string) => T;
+    deserialize: (value: string) => T;,
   };
 }
 
@@ -45,7 +45,7 @@ export interface StoreConfig<T> {
 /**
  * Main Barrel Store Manager
  * Implements the barrel pattern for centralized store management
- */
+ */;
 export class BarrelStoreManager {
   private stores = new Map<string, BarrelStoreEntry>();
   private computedStores = new Map<string, Readable<any>();
@@ -57,7 +57,7 @@ export class BarrelStoreManager {
 
   /**
    * Create a new store with metadata and caching
-   */
+   */;
   createStore<T>(config: StoreConfig<T>): Writable<T> {
     const {
       id,
@@ -69,7 +69,7 @@ export class BarrelStoreManager {
       dependencies = [],
     } = config;
 
-    // Check if store already exists
+    // Check if store already exists;
     if (this.stores.has(id)) {
       console.warn(`Store ${id} already exists, returning existing store`);
       return this.stores.get(id)!.store as Writable<T>;
@@ -78,17 +78,17 @@ export class BarrelStoreManager {
     // Create the store
     const store = writable<T>(initialValue);
 
-    // Set up persistence if enabled
+    // Set up persistence if enabled;
     if (persistent) {
       this.setupPersistence(store, id);
     }
 
-    // Set up caching if enabled
+    // Set up caching if enabled;
     if (cacheable) {
       this.setupCaching(store, id, ttl);
     }
 
-    // Create metadata
+    // Create metadata;
     const metadata: StoreMetadata = {
       id,
       version: "1.0.0",
@@ -98,7 +98,7 @@ export class BarrelStoreManager {
       ttl: cacheable ? ttl : undefined,
     };
 
-    // Store entry
+    // Store entry;
     const entry: BarrelStoreEntry<T> = {
       store,
       metadata,
@@ -111,7 +111,7 @@ export class BarrelStoreManager {
 
     this.stores.set(id, entry);
 
-    // Set up validation
+    // Set up validation;
     if (validator) {
       store.subscribe((value) => {
         if (!validator(value)) {
@@ -136,7 +136,7 @@ export class BarrelStoreManager {
       return this.computedStores.get(id)!;
     }
 
-    // Get dependency stores
+    // Get dependency stores;
     const depStores = dependencies.map((depId) => {
       const entry = this.stores.get(depId);
       if (!entry) {
@@ -147,14 +147,14 @@ export class BarrelStoreManager {
       return entry.store;
     });
 
-    // Create derived store
+    // Create derived store;
     const computedStore = derived(depStores, (values) => {
       return computeFn(values);
     });
 
     this.computedStores.set(id, computedStore);
 
-    // Set up caching for computed stores if requested
+    // Set up caching for computed stores if requested;
     if (options?.cacheable) {
       this.setupCaching(computedStore, id, options.ttl);
     }
@@ -164,7 +164,7 @@ export class BarrelStoreManager {
 
   /**
    * Get store by ID with type safety
-   */
+   */;
   getStore<T>(id: string): Writable<T> | null {
     const entry = this.stores.get(id);
     return entry ? (entry.store as Writable<T>) : null;
@@ -172,14 +172,14 @@ export class BarrelStoreManager {
 
   /**
    * Get computed store by ID
-   */
+   */;
   getComputed<T>(id: string): Readable<T> | null {
     return (this.computedStores.get(id) as Readable<T>) || null;
   }
 
   /**
    * Get all stores (useful for debugging and introspection)
-   */
+   */;
   getAllStores(): Record<string, any> {
     const allStores: Record<string, any> = {};
 
@@ -196,7 +196,7 @@ export class BarrelStoreManager {
 
   /**
    * Export store values for persistence or debugging
-   */
+   */;
   async exportStores(): Promise<Record<string, any> {
     const exports: Record<string, any> = {};
 
@@ -213,7 +213,7 @@ export class BarrelStoreManager {
 
   /**
    * Import store values from exported data
-   */
+   */;
   async importStores(data: Record<string, any>): Promise<void> {
     for (const [id, storeData] of Object.entries(data)) {
       const entry = this.stores.get(id);
@@ -225,7 +225,7 @@ export class BarrelStoreManager {
 
   /**
    * Clear all stores
-   */
+   */;
   clearAllStores(): void {
     for (const [id, entry] of this.stores) {
       if ("set" in entry.store) {
@@ -249,7 +249,7 @@ export class BarrelStoreManager {
 
     const unsubscribe = entry.store.subscribe(callback);
 
-    // Track subscription for cleanup
+    // Track subscription for cleanup;
     if (!this.subscriptions.has(storeId)) {
       this.subscriptions.set(storeId, []);
     }
@@ -260,7 +260,7 @@ export class BarrelStoreManager {
 
   /**
    * Get store metadata
-   */
+   */;
   getStoreMetadata(id: string): StoreMetadata | null {
     const entry = this.stores.get(id);
     return entry ? entry.metadata: null;
@@ -268,7 +268,7 @@ export class BarrelStoreManager {
 
   /**
    * Update store metadata
-   */
+   */;
   updateStoreMetadata(id: string, updates: Partial<StoreMetadata>): void {
     const entry = this.stores.get(id);
     if (entry) {
@@ -282,11 +282,11 @@ export class BarrelStoreManager {
 
   /**
    * Cleanup all subscriptions and resources
-   */
+   */;
   dispose(): void {
-    // Unsubscribe all subscriptions
+    // Unsubscribe all subscriptions;
     for (const unsubscribes of this.subscriptions.values()) {
-      unsubscribes.forEach((unsub) => unsub());
+      unsubscribes.forEach((unsub) => unsub();
     }
 
     this.stores.clear();
@@ -321,7 +321,7 @@ export class BarrelStoreManager {
   private setupCaching<T>(
     store: Writable<T> | Readable<T>,
     id: string,
-    ttl?: number
+    ttl?: number;
   ): void {
     store.subscribe(async (value) => {
       try {
@@ -333,7 +333,7 @@ export class BarrelStoreManager {
   }
 
   private async getCurrentValue<T>(
-    store: Writable<T> | Readable<T>
+    store: Writable<T> | Readable<T>;
   ): Promise<T> {
     return new Promise((resolve) => {
       const unsubscribe = store.subscribe((value) => {
@@ -347,9 +347,9 @@ export class BarrelStoreManager {
 // Global barrel store manager
 export const barrelStore = new BarrelStoreManager();
 ;
-// Legal AI specific stores
+// Legal AI specific stores;
 export const legalAIStores = {
-  // Case management
+  // Case management;
   currentCase: barrelStore.createStore({
     id: "legal-ai-current-case",
     initialValue: null,
@@ -357,7 +357,7 @@ export const legalAIStores = {
     cacheable: true,
   }),
 
-  // Document processing
+  // Document processing;
   documentQueue: barrelStore.createStore({
     id: "legal-ai-document-queue",
     initialValue: [],
@@ -365,7 +365,7 @@ export const legalAIStores = {
     cacheable: true,
   }),
 
-  // AI analysis results
+  // AI analysis results;
   analysisResults: barrelStore.createStore({
     id: "legal-ai-analysis-results",
     initialValue: Record<string, any>,
@@ -374,7 +374,7 @@ export const legalAIStores = {
     ttl: 1000 * 60 * 60, // 1 hour
   }),
 
-  // User preferences
+  // User preferences;
   userPreferences: barrelStore.createStore({
     id: "legal-ai-user-preferences",
     initialValue: {
@@ -393,7 +393,7 @@ export const legalAIStores = {
     },
   }),
 
-  // Application state
+  // Application state;
   appState: barrelStore.createStore({
     id: "legal-ai-app-state",
     initialValue: {
@@ -405,7 +405,7 @@ export const legalAIStores = {
     cacheable: true,
   }),
 
-  // OCR processing state
+  // OCR processing state;
   ocrState: barrelStore.createStore({
     id: "legal-ai-ocr-state",
     initialValue: {
@@ -418,7 +418,7 @@ export const legalAIStores = {
   }),
 };
 
-// Computed stores for complex derived state
+// Computed stores for complex derived state;
 export const legalAIComputed = {
   // Case completion percentage
   caseProgress: barrelStore.createComputed(
@@ -460,11 +460,11 @@ export const legalAIComputed = {
   ),
 };
 
-// Utility functions for store management
+// Utility functions for store management;
 export const storeUtils = {
   /**
    * Reset all legal AI stores to initial state
-   */
+   */;
   resetAll(): void {
     Object.values(legalAIStores).forEach((store) => {
       if ("set" in store) {
@@ -475,7 +475,7 @@ export const storeUtils = {
 
   /**
    * Export all store values for backup
-   */
+   */;
   async backup(): Promise<string> {
     const data = await barrelStore.exportStores();
     return JSON.stringify(data, null, 2);
@@ -483,7 +483,7 @@ export const storeUtils = {
 
   /**
    * Import store values from backup
-   */
+   */;
   async restore(backupData: string): Promise<void> {
     try {
       const data = JSON.parse(backupData);
@@ -496,7 +496,7 @@ export const storeUtils = {
 
   /**
    * Get all store values for debugging
-   */
+   */;
   async debug(): Promise<Record<string, any> {
     return await barrelStore.exportStores();
   },

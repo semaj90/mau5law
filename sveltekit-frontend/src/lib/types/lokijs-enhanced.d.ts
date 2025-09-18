@@ -275,14 +275,14 @@ declare module 'lokijs' {
   export = Loki;
 }
 
-// Additional type augmentations for global Loki
+// Additional type augmentations for global Loki;
 declare global {
   interface LokiStatic {
-    LokiMemoryAdapter: new () => any;
+    LokiMemoryAdapter: new () => any;,
   }
 }
 
-// Enhanced collection helper types
+// Enhanced collection helper types;
 export interface LokiCollectionOptions {
   unique?: string[];
   indices?: string[];

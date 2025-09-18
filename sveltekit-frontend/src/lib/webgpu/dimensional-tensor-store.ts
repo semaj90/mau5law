@@ -14,13 +14,14 @@ import type { GraphNode, GraphEdge } from './legal-document-graph.js';
 
 // ============================================================================
 // DIMENSIONAL TENSOR TYPES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface TensorDimensions {
   documents: number;    // Axis 1: Document count
   chunks: number;       // Axis 2: Chunks per document
   representations: number; // Axis 3: AI analysis types
-  maxLOD: number;      // Maximum LOD levels
+  maxLOD: number;      // Maximum LOD levels,
 }
 
 export interface TensorSlice {
@@ -28,7 +29,7 @@ export interface TensorSlice {
   index: number;
   lodLevel: number;
   data: Float32Array;
-  metadata: TensorSliceMetadata;
+  metadata: TensorSliceMetadata;,
 }
 
 export interface TensorSliceMetadata {
@@ -37,7 +38,7 @@ export interface TensorSliceMetadata {
   size: number;
   compressed: boolean;
   accessCount: number;
-  lastAccessed: number;
+  lastAccessed: number;,
 }
 
 export interface LODLevel {
@@ -45,7 +46,7 @@ export interface LODLevel {
   scale: number;        // 1.0 = full res, 0.5 = half res, etc.
   targetSize: number;   // Target texture size
   compressionRatio: number;
-  useGPUCompression: boolean;
+  useGPUCompression: boolean;,
 }
 
 export interface TensorMemoryLayout {
@@ -53,7 +54,7 @@ export interface TensorMemoryLayout {
   stride: [number, number, number]; // Strides for each axis
   alignment: number;
   totalSize: number;
-  fragmentCount: number;
+  fragmentCount: number;,
 }
 
 export interface StreamingConfig {
@@ -62,7 +63,7 @@ export interface StreamingConfig {
   lodBias: number;       // LOD bias for quality vs performance
   streamingDistance: number; // Distance threshold for streaming
   preloadRadius: number; // Preload data within radius
-  evictionStrategy: 'lru' | 'importance' | 'distance' | 'hybrid';
+  evictionStrategy: 'lru' | 'importance' | 'distance' | 'hybrid';,
 }
 
 // ============================================================================
@@ -116,7 +117,7 @@ export class DimensionalTensorStore {
 
   /**
    * Initialize the memory layout for the tensor store
-   */
+   */;
   private initializeMemoryLayout(): void {
     const { documents, chunks, representations } = this.dimensions;
     
@@ -137,7 +138,7 @@ export class DimensionalTensorStore {
       stride: [strideX, strideY, strideZ],
       alignment,
       totalSize,
-      fragmentCount: Math.ceil(totalElements / 1024) // 1024 elements per fragment
+      fragmentCount: Math.ceil(totalElements / 1024) // 1024 elements per fragment,
     };
 
     console.log('[Tensor Store] Memory layout initialized:', this.memoryLayout);
@@ -145,13 +146,13 @@ export class DimensionalTensorStore {
 
   /**
    * Generate LOD levels for texture streaming
-   */
+   */;
   private generateLODLevels(): LODLevel[] {
     const levels: LODLevel[] = [];
     
     for (let level = 0; level < this.dimensions.maxLOD; level++) {
       const scale = Math.pow(0.5, level);
-      const targetSize = Math.max(64, Math.floor(1024 * scale));
+      const targetSize = Math.max(64, Math.floor(1024 * scale);
       const compressionRatio = Math.pow(0.25, level);
       
       levels.push({
@@ -159,7 +160,7 @@ export class DimensionalTensorStore {
         scale,
         targetSize,
         compressionRatio,
-        useGPUCompression: level > 1 // Use GPU compression for higher LOD levels
+        useGPUCompression: level > 1 // Use GPU compression for higher LOD levels,
       });
     }
     
@@ -172,7 +173,7 @@ export class DimensionalTensorStore {
   async createTensorTexture(
     axis: 1 | 2 | 3,
     lodLevel: number,
-    format: GPUTextureFormat = 'rgba32float'
+    format: GPUTextureFormat = 'rgba32float';
   ): Promise<string> {
     const textureKey = `tensor_axis${axis}_lod${lodLevel}`;
     
@@ -203,34 +204,34 @@ export class DimensionalTensorStore {
 
   /**
    * Calculate texture dimensions for a given axis and scale
-   */
+   */;
   private calculateTextureSize(axis: 1 | 2 | 3, scale: number): {
     width: number;
     height: number;
-    depth: number;
+    depth: number;,
   } {
     const { documents, chunks, representations } = this.dimensions;
     
     switch (axis) {
-      case 1: // Documents axis
+      case 1: // Documents axis;
         return {
           width: Math.ceil(Math.sqrt(documents) * scale),
           height: Math.ceil(Math.sqrt(documents) * scale),
-          depth: 1
+          depth: 1,
         };
       
-      case 2: // Chunks axis
+      case 2: // Chunks axis;
         return {
           width: Math.ceil(chunks * scale),
           height: Math.ceil(documents * scale),
-          depth: 1
+          depth: 1,
         };
       
-      case 3: // Representations axis
+      case 3: // Representations axis;
         return {
           width: Math.ceil(representations * scale),
           height: Math.ceil(documents * scale),
-          depth: Math.ceil(chunks * scale)
+          depth: Math.ceil(chunks * scale),
         };
       
       default:
@@ -245,11 +246,11 @@ export class DimensionalTensorStore {
     axis: 1 | 2 | 3,
     data: Float32Array,
     position: [number, number, number],
-    importance: number = 1.0
+    importance: number = 1.0;
   ): Promise<void> {
     const streamKey = `stream_${axis}_${position.join('_')}`;
     
-    // Check if already streaming
+    // Check if already streaming;
     if (this.streamingQueue.has(streamKey)) {
       return this.streamingQueue.get(streamKey)!;
     }
@@ -271,13 +272,13 @@ export class DimensionalTensorStore {
     axis: 1 | 2 | 3,
     data: Float32Array,
     position: [number, number, number],
-    importance: number
+    importance: number;
   ): Promise<void> {
     // Determine appropriate LOD level based on importance and distance
     const lodLevel = this.lodManager.calculateLODLevel(position, importance);
     const textureKey = await this.createTensorTexture(axis, lodLevel);
     
-    // Check memory constraints
+    // Check memory constraints;
     if (this.allocatedMemory > this.streamingConfig.maxGPUMemory) {
       await this.performEviction();
     }
@@ -293,7 +294,7 @@ export class DimensionalTensorStore {
     await this.uploadTextureData(texture, processedData, position);
     
     // Update access history
-    this.accessHistory.set(textureKey, Date.now());
+    this.accessHistory.set(textureKey, Date.now();
     
     console.log(`[Tensor Store] Streamed data to ${textureKey} at LOD ${lodLevel}`);
   }
@@ -304,14 +305,13 @@ export class DimensionalTensorStore {
   private async uploadTextureData(
     texture: GPUTexture,
     data: Float32Array,
-    position: [number, number, number]
+    position: [number, number, number];
   ): Promise<void> {
     const bytesPerPixel = 16; // 4 floats * 4 bytes for rgba32float
     const width = texture.width;
     const height = texture.height;
     
-    this.device.queue.writeTexture(
-      {
+    this.device.queue.writeTexture({
         texture,
         origin: position,
       },
@@ -319,7 +319,7 @@ export class DimensionalTensorStore {
       {
         bytesPerRow: width * bytesPerPixel,
         rowsPerImage: height,
-      },
+      },);
       {
         width: Math.min(width - position[0], Math.ceil(Math.sqrt(data.length / 4))),
         height: Math.min(height - position[1], Math.ceil(Math.sqrt(data.length / 4))),
@@ -330,15 +330,15 @@ export class DimensionalTensorStore {
 
   /**
    * Perform memory eviction when GPU memory is full
-   */
+   */;
   private async performEviction(): Promise<void> {
-    const evictionCandidates = Array.from(this.tensorTextures.entries())
+    const evictionCandidates = Array.from(this.tensorTextures.entries();
       .map(([key, texture]) => ({
         key,
         texture,
         lastAccessed: this.accessHistory.get(key) || 0,
-        memorySize: this.estimateTextureMemory(texture)
-      }))
+        memorySize: this.estimateTextureMemory(texture),
+      });
       .sort((a, b) => {
         switch (this.streamingConfig.evictionStrategy) {
           case 'lru':
@@ -367,7 +367,7 @@ export class DimensionalTensorStore {
         break;
       }
       
-      // Save to CPU cache if important
+      // Save to CPU cache if important;
       if (this.shouldCacheToCPU(candidate.key)) {
         await this.saveToCPUCache(candidate.key, candidate.texture);
       }
@@ -385,7 +385,7 @@ export class DimensionalTensorStore {
 
   /**
    * Determine if texture should be cached to CPU
-   */
+   */;
   private shouldCacheToCPU(textureKey: string): boolean {
     const lastAccessed = this.accessHistory.get(textureKey) || 0;
     const timeSinceAccess = Date.now() - lastAccessed;
@@ -396,7 +396,7 @@ export class DimensionalTensorStore {
 
   /**
    * Save texture data to CPU cache
-   */
+   */;
   private async saveToCPUCache(textureKey: string, texture: GPUTexture): Promise<void> {
     // This would require reading back from GPU, which is expensive
     // In practice, you'd want to keep CPU copies of important data
@@ -405,7 +405,7 @@ export class DimensionalTensorStore {
 
   /**
    * Estimate memory usage of a texture
-   */
+   */;
   private estimateTextureMemory(texture: GPUTexture): number {
     const formatSizes: Record<string, number> = {
       'rgba32float': 16,
@@ -427,7 +427,7 @@ export class DimensionalTensorStore {
   createTensorBindGroup(
     layout: GPUBindGroupLayout,
     axis: 1 | 2 | 3,
-    lodLevel: number
+    lodLevel: number;
   ): GPUBindGroup | null {
     const textureKey = `tensor_axis${axis}_lod${lodLevel}`;
     const cacheKey = `bindgroup_${textureKey}`;
@@ -443,10 +443,10 @@ export class DimensionalTensorStore {
     
     const bindGroup = this.device.createBindGroup({
       layout,
-      entries: [
+      entries: [);
         {
           binding: 0,
-          resource: texture.createView()
+          resource: texture.createView(),
         }
       ]
     });
@@ -457,19 +457,19 @@ export class DimensionalTensorStore {
 
   /**
    * Get tensor statistics
-   */
+   */;
   getStatistics(): {
     allocatedMemory: number;
     textureCount: number;
     cacheHitRatio: number;
     averageLOD: number;
-    streamingQueueSize: number;
+    streamingQueueSize: number;,
   } {
     const totalAccesses = Array.from(this.accessHistory.values()).length;
     const cacheHits = this.cpuCache.size;
     
-    const lodSum = Array.from(this.tensorTextures.keys())
-      .map(key => parseInt(key.split('_lod')[1]))
+    const lodSum = Array.from(this.tensorTextures.keys()
+      .map(key => parseInt(key.split('_lod')[1])
       .reduce((sum, lod) => sum + lod, 0);
     
     return {
@@ -477,20 +477,20 @@ export class DimensionalTensorStore {
       textureCount: this.tensorTextures.size,
       cacheHitRatio: totalAccesses > 0 ? cacheHits / totalAccesses : 0,
       averageLOD: this.tensorTextures.size > 0 ? lodSum / this.tensorTextures.size: 0,
-      streamingQueueSize: this.streamingQueue.size
+      streamingQueueSize: this.streamingQueue.size,
     };
   }
 
   /**
    * Cleanup all resources
-   */
+   */;
   dispose(): void {
-    // Destroy all textures
+    // Destroy all textures;
     for (const texture of this.tensorTextures.values()) {
       texture.destroy();
     }
     
-    // Destroy all buffers
+    // Destroy all buffers;
     for (const buffer of this.bufferPool.values()) {
       buffer.destroy();
     }
@@ -524,7 +524,7 @@ class LODManager {
 
   /**
    * Calculate appropriate LOD level based on distance and importance
-   */
+   */;
   calculateLODLevel(position: [number, number, number], importance: number): number {
     const distance = Math.sqrt(
       position[0] * position[0] + 
@@ -536,18 +536,18 @@ class LODManager {
     let lodLevel = Math.floor(distance / this.config.streamingDistance);
     
     // Adjust for importance
-    lodLevel = Math.max(0, lodLevel - Math.floor(importance * 2));
+    lodLevel = Math.max(0, lodLevel - Math.floor(importance * 2);
     
     // Apply LOD bias
     lodLevel += this.config.lodBias;
     
     // Clamp to available levels
-    return Math.max(0, Math.min(lodLevel, this.lodLevels.length - 1));
+    return Math.max(0, Math.min(lodLevel, this.lodLevels.length - 1);
   }
 
   /**
    * Determine if position should be preloaded
-   */
+   */;
   shouldPreload(position: [number, number, number]): boolean {
     const distance = Math.sqrt(
       position[0] * position[0] + 
@@ -578,7 +578,7 @@ class CompressionPipeline {
       @group(0) @binding(1) var<storage, read_write> outputData: array<f32>;
       @group(0) @binding(2) var<uniform> params: vec4<f32>; // compression params
 
-      @compute @workgroup_size(64)
+      @compute @workgroup_size(64);
       fn compress(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         if (index >= arrayLength(&inputData)) {
@@ -593,21 +593,21 @@ class CompressionPipeline {
     `;
 
     const shaderModule = this.device.createShaderModule({
-      code: compressShaderCode
+      code: compressShaderCode,
     });
 
     this.compressShader = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: shaderModule,
-        entryPoint: 'compress'
+        entryPoint: 'compress',
       }
     });
   }
 
   /**
    * Compress data using GPU compute shader
-   */
+   */;
   async compress(data: Float32Array, lodLevel: number): Promise<Float32Array> {
     if (!this.compressShader) {
       return data; // Fallback to uncompressed
@@ -615,25 +615,25 @@ class CompressionPipeline {
 
     const compressionLevel = Math.pow(2, lodLevel + 4); // Quantization levels
     
-    // Create buffers
+    // Create buffers;
     const inputBuffer = this.device.createBuffer({
       size: data.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
 
     const outputBuffer = this.device.createBuffer({
       size: data.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
     });
 
     const paramsBuffer = this.device.createBuffer({
       size: 16,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
     // Upload data
     this.device.queue.writeBuffer(inputBuffer, 0, data);
-    this.device.queue.writeBuffer(paramsBuffer, 0, new Float32Array([compressionLevel, 0, 0, 0]));
+    this.device.queue.writeBuffer(paramsBuffer, 0, new Float32Array([compressionLevel, 0, 0, 0]);
 
     // Run compression
     const commandEncoder = this.device.createCommandEncoder();
@@ -641,15 +641,15 @@ class CompressionPipeline {
     
     computePass.setPipeline(this.compressShader);
     // Would need proper bind group setup here
-    computePass.dispatchWorkgroups(Math.ceil(data.length / 64));
+    computePass.dispatchWorkgroups(Math.ceil(data.length / 64);
     computePass.end();
 
     this.device.queue.submit([commandEncoder.finish()]);
 
-    // Read back result (this is expensive - in practice you'd keep on GPU)
+    // Read back result (this is expensive - in practice you'd keep on GPU);
     const readBuffer = this.device.createBuffer({
       size: data.byteLength,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
     });
 
     const copyEncoder = this.device.createCommandEncoder();
@@ -657,7 +657,7 @@ class CompressionPipeline {
     this.device.queue.submit([copyEncoder.finish()]);
 
     await readBuffer.mapAsync(GPUMapMode.READ);
-    const result = new Float32Array(readBuffer.getMappedRange().slice(0));
+    const result = new Float32Array(readBuffer.getMappedRange().slice(0);
     readBuffer.unmap();
 
     // Cleanup

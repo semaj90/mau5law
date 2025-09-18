@@ -7,6 +7,7 @@
 import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
 import { glyphShaderCacheBridge } from '$lib/cache/glyph-shader-cache-bridge.js';
 import { browser } from '$app/environment';
+}
 
 export interface UserIntent {
   queryText: string;
@@ -16,7 +17,7 @@ export interface UserIntent {
   complexity: number; // 0-1 scale
   domainSpecificity: number; // 0-1 scale (legal specific)
   contextualSimilarity: number; // to previous queries
-  userBehaviorPattern: 'explorer' | 'focused' | 'repetitive' | 'learning';
+  userBehaviorPattern: 'explorer' | 'focused' | 'repetitive' | 'learning';,
 }
 
 export interface ModelPerformanceProfile {
@@ -29,7 +30,7 @@ export interface ModelPerformanceProfile {
   specialtyDomains: string[];
   lastUsed: number;
   usageFrequency: number;
-  switchCost: number; // Cost in ms to switch to this model
+  switchCost: number; // Cost in ms to switch to this model,
 }
 
 export interface CUDAMemoryBlock {
@@ -52,7 +53,7 @@ export interface SOMNeuron {
   lastActivation: number;
   activationCount: number;
   associatedModel: string;
-  userPatternSignature: string;
+  userPatternSignature: string;,
 }
 
 class CUDACacheMemoryOptimizer {
@@ -68,7 +69,7 @@ class CUDACacheMemoryOptimizer {
   private globalLearningRate = 0.1;
   private neighborhoodRadius = 3.0;
   
-  // Auto-encoder for feature compression and pattern recognition
+  // Auto-encoder for feature compression and pattern recognition;
   private autoEncoderWeights: {
     encoder: { w1: Float32Array; b1: Float32Array; w2: Float32Array; b2: Float32Array };
     decoder: { w3: Float32Array; b3: Float32Array; w4: Float32Array; b4: Float32Array };
@@ -96,7 +97,7 @@ class CUDACacheMemoryOptimizer {
 
   /**
    * Main entry point: Optimize model selection based on user intent
-   */
+   */;
   async optimizeModelSelection(query: string, userContext: any = {}): Promise<any> {
     const startTime = performance.now();
 
@@ -116,7 +117,7 @@ class CUDACacheMemoryOptimizer {
       // Step 5: Estimate switch time and prepare cache
       const switchTime = await this.estimateModelSwitchTime(optimalModel.modelId);
       
-      // Step 6: Update user learning model
+      // Step 6: Update user learning model;
       if (this.userLearningEnabled) {
         await this.updateUserLearning(userIntent, optimalModel.modelId);
       }
@@ -138,7 +139,7 @@ class CUDACacheMemoryOptimizer {
     } catch (error) {
       console.error('❌ CUDA cache optimizer failed:', error);
       
-      // Fallback to simple heuristics
+      // Fallback to simple heuristics;
       return {
         recommendedModel: 'gemma270m', // Safe fallback
         confidence: 0.5,
@@ -152,16 +153,16 @@ class CUDACacheMemoryOptimizer {
           complexity: 0.5,
           domainSpecificity: 0.5,
           contextualSimilarity: 0.0,
-          userBehaviorPattern: 'explorer'
+          userBehaviorPattern: 'explorer',
         },
-        didYouMeanSuggestions: []
+        didYouMeanSuggestions: [],
       };
     }
   }
 
   /**
    * Analyze user intent using auto-encoder and SOM
-   */
+   */;
   private async analyzeUserIntent(query: string, userContext: any): Promise<UserIntent> {
     // Step 1: Extract features from query and context
     const features = this.extractUserIntentFeatures(query, userContext);
@@ -209,7 +210,7 @@ class CUDACacheMemoryOptimizer {
 
   /**
    * Generate "did you mean" suggestions using learned patterns
-   */
+   */;
   private async generateDidYouMeanSuggestions(query: string, userIntent: UserIntent): Promise<string[]> {
     const suggestions: string[] = [];
     
@@ -220,7 +221,7 @@ class CUDACacheMemoryOptimizer {
           intent.intentCategory === userIntent.intentCategory &&
           this.calculateQuerySimilarity(intent.queryText, query) > 0.6
         )
-        .sort((a, b) => this.calculateQuerySimilarity(b.queryText, query) - this.calculateQuerySimilarity(a.queryText, query))
+        .sort((a, b) => this.calculateQuerySimilarity(b.queryText, query) - this.calculateQuerySimilarity(a.queryText, query)
         .slice(0, 3)
         .map(intent => intent.queryText);
 
@@ -243,7 +244,7 @@ class CUDACacheMemoryOptimizer {
 
   /**
    * Find optimal model using SOM-learned patterns
-   */
+   */;
   private async findOptimalModel(userIntent: UserIntent): Promise<any> {
     let bestModel = 'gemma270m';
     let bestScore = 0;
@@ -251,7 +252,7 @@ class CUDACacheMemoryOptimizer {
 
     try {
       // Get current model performance profiles
-      const models = Array.from(this.modelProfiles.values());
+      const models = Array.from(this.modelProfiles.values();
       
       for (const model of models) {
         let score = 0;
@@ -261,7 +262,7 @@ class CUDACacheMemoryOptimizer {
         score += model.userSatisfactionScore * 0.3;
         score += (1 / (model.avgResponseTime + 1)) * 0.2; // Inverse of response time
         
-        // Intent-specific scoring
+        // Intent-specific scoring;
         switch (userIntent.intentCategory) {
           case 'legal_analysis':
             if (model.specialtyDomains.includes('legal')) score += 0.4;
@@ -279,12 +280,12 @@ class CUDACacheMemoryOptimizer {
             break;
         }
         
-        // Urgency adjustments
+        // Urgency adjustments;
         if (userIntent.urgency === 'critical' && model.avgResponseTime < 100) {
           score += 0.3;
         }
         
-        // Complexity adjustments
+        // Complexity adjustments;
         if (userIntent.complexity > 0.7 && model.accuracyScore > 0.85) {
           score += 0.2;
         }
@@ -317,7 +318,7 @@ class CUDACacheMemoryOptimizer {
 
   /**
    * Optimize GPU memory for efficient model switching
-   */
+   */;
   private async optimizeGPUMemory(targetModelId: string): Promise<string[]> {
     const optimizations: string[] = [];
     
@@ -354,11 +355,11 @@ class CUDACacheMemoryOptimizer {
 
   /**
    * Initialize Self-Organizing Map for user pattern learning
-   */
+   */;
   private initializeSOM(): void {
     console.log('🧠 Initializing Self-Organizing Map...');
     
-    this.somNeurons = Array(this.somHeight).fill(null).map((_, y) => 
+    this.somNeurons = Array(this.somHeight).fill(null).map((_, y) =>;
       Array(this.somWidth).fill(null).map((_, x) => ({
         id: `som_${x}_${y}`,
         position: [x, y] as [number, number],
@@ -367,8 +368,8 @@ class CUDACacheMemoryOptimizer {
         lastActivation: 0,
         activationCount: 0,
         associatedModel: 'gemma270m', // Default
-        userPatternSignature: ''
-      }))
+        userPatternSignature: '',
+      })
     );
     
     console.log(`✅ SOM initialized: ${this.somWidth}x${this.somHeight} = ${this.somWidth * this.somHeight} neurons`);
@@ -376,7 +377,7 @@ class CUDACacheMemoryOptimizer {
 
   /**
    * Initialize auto-encoder for feature compression
-   */
+   */;
   private initializeAutoEncoder(): void {
     console.log('🔧 Initializing Auto-Encoder...');
     
@@ -390,13 +391,13 @@ class CUDACacheMemoryOptimizer {
         w1: initWeight(this.inputFeatureSize * this.hiddenSize),
         b1: new Float32Array(this.hiddenSize).fill(0.01),
         w2: initWeight(this.hiddenSize * this.latentSize),
-        b2: new Float32Array(this.latentSize).fill(0.01)
+        b2: new Float32Array(this.latentSize).fill(0.01),
       },
       decoder: {
         w3: initWeight(this.latentSize * this.hiddenSize),
         b3: new Float32Array(this.hiddenSize).fill(0.01),
         w4: initWeight(this.hiddenSize * this.inputFeatureSize),
-        b4: new Float32Array(this.inputFeatureSize).fill(0.01)
+        b4: new Float32Array(this.inputFeatureSize).fill(0.01),
       }
     };
     
@@ -405,7 +406,7 @@ class CUDACacheMemoryOptimizer {
 
   /**
    * Extract features from user query and context
-   */
+   */;
   private extractUserIntentFeatures(query: string, userContext: any): Float32Array {
     const features = new Float32Array(this.inputFeatureSize);
     
@@ -433,20 +434,20 @@ class CUDACacheMemoryOptimizer {
     const hour = new Date().getHours();
     features[4] = hour / 24; // Normalized hour
     
-    // Recent query similarity (contextual)
+    // Recent query similarity (contextual);
     if (this.userIntentHistory.length > 0) {
       const recentQuery = this.userIntentHistory[this.userIntentHistory.length - 1];
       features[5] = this.calculateQuerySimilarity(query, recentQuery.queryText);
     }
     
-    // Word embeddings (simplified - would use actual embeddings in production)
+    // Word embeddings (simplified - would use actual embeddings in production);
     words.slice(0, 50).forEach((word, i) => {
       if (i < 50) {
         features[10 + i] = this.simpleWordHash(word) / 1000000; // Normalized hash
       }
     });
     
-    // User context features
+    // User context features;
     if (userContext.sessionId) {
       features[60] = this.hashString(userContext.sessionId) / 1000000;
     }
@@ -455,7 +456,7 @@ class CUDACacheMemoryOptimizer {
       features[61] = this.hashString(userContext.userId) / 1000000;
     }
     
-    // Fill remaining features with query statistics
+    // Fill remaining features with query statistics;
     for (let i = 70; i < this.inputFeatureSize; i++) {
       features[i] = (Math.sin(i * query.length) + 1) / 2; // Deterministic but distributed
     }
@@ -465,7 +466,7 @@ class CUDACacheMemoryOptimizer {
 
   /**
    * Encode features using auto-encoder
-   */
+   */;
   private encodeFeatures(features: Float32Array): Float32Array {
     if (!this.autoEncoderWeights) {
       throw new Error('Auto-encoder not initialized');
@@ -498,7 +499,7 @@ class CUDACacheMemoryOptimizer {
 
   /**
    * Find best matching neuron in SOM
-   */
+   */;
   private findBestMatchingNeuron(features: Float32Array): SOMNeuron {
     let bestNeuron = this.somNeurons[0][0];
     let bestDistance = Infinity;
@@ -524,7 +525,7 @@ class CUDACacheMemoryOptimizer {
 
   /**
    * Helper functions for calculations
-   */
+   */;
   private euclideanDistance(a: Float32Array, b: Float32Array): number {
     let sum = 0;
     for (let i = 0; i < a.length && i < b.length; i++) {
@@ -534,9 +535,9 @@ class CUDACacheMemoryOptimizer {
   }
 
   private calculateQuerySimilarity(query1: string, query2: string): number {
-    const words1 = new Set(query1.toLowerCase().split(/\s+/));
-    const words2 = new Set(query2.toLowerCase().split(/\s+/));
-    const intersection = new Set([...words1].filter(x => words2.has(x)));
+    const words1 = new Set(query1.toLowerCase().split(/\s+/);
+    const words2 = new Set(query2.toLowerCase().split(/\s+/);
+    const intersection = new Set([...words1].filter(x => words2.has(x));
     const union = new Set([...words1, ...words2]);
     return intersection.size / union.size;
   }
@@ -559,10 +560,10 @@ class CUDACacheMemoryOptimizer {
     return Math.abs(hash);
   }
 
-  // Placeholder implementations for complex functions
+  // Placeholder implementations for complex functions;
   private classifyIntent(query: string, neuron: SOMNeuron): UserIntent['intentCategory'] {
     const legalWords = ['law', 'legal', 'contract', 'court', 'case'];
-    const hasLegalTerms = legalWords.some(word => query.toLowerCase().includes(word));
+    const hasLegalTerms = legalWords.some(word => query.toLowerCase().includes(word);
     
     if (hasLegalTerms) return 'legal_analysis';
     if (query.includes('?')) return 'research';
@@ -604,7 +605,7 @@ class CUDACacheMemoryOptimizer {
     return 'learning';
   }
 
-  // More placeholder implementations
+  // More placeholder implementations;
   private async generateSpellingCorrections(query: string): Promise<string[]> {
     // Would implement actual spell checking
     return [];
@@ -661,9 +662,9 @@ class CUDACacheMemoryOptimizer {
 
   /**
    * Initialize model profiles (would load from storage in production)
-   */
+   */;
   async initializeModelProfiles(): Promise<void> {
-    const profiles: ModelPerformanceProfile[] = [
+    const profiles: ModelPerformanceProfile[] = [;
       {
         modelId: 'gemma270m',
         architecture: 'llama',
@@ -674,7 +675,7 @@ class CUDACacheMemoryOptimizer {
         specialtyDomains: ['chat', 'general'],
         lastUsed: Date.now(),
         usageFrequency: 50,
-        switchCost: 80
+        switchCost: 80,
       },
       {
         modelId: 'legal-bert',
@@ -686,7 +687,7 @@ class CUDACacheMemoryOptimizer {
         specialtyDomains: ['legal', 'context'],
         lastUsed: Date.now() - 300000,
         usageFrequency: 25,
-        switchCost: 30
+        switchCost: 30,
       },
       {
         modelId: 'llama-rl',
@@ -698,7 +699,7 @@ class CUDACacheMemoryOptimizer {
         specialtyDomains: ['legal', 'research', 'analysis'],
         lastUsed: Date.now() - 600000,
         usageFrequency: 15,
-        switchCost: 200
+        switchCost: 200,
       }
     ];
 
@@ -711,7 +712,7 @@ class CUDACacheMemoryOptimizer {
 
   /**
    * Get optimizer status and statistics
-   */
+   */;
   async getOptimizerStats(): Promise<any> {
     const totalActivations = this.somNeurons
       .flat()
@@ -722,7 +723,7 @@ class CUDACacheMemoryOptimizer {
       modelProfiles: this.modelProfiles.size,
       userIntentHistory: this.userIntentHistory.length,
       somNeuronActivations: totalActivations,
-      cacheHitRate: 0.85 // Would calculate actual hit rate
+      cacheHitRate: 0.85 // Would calculate actual hit rate,
     };
   }
 }

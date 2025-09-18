@@ -9,7 +9,7 @@ import { advisoryLocks, type LockType, type LockMode } from './advisory-locks.js
 import { randomUUID } from 'crypto';
 import { z } from 'zod';
 
-// Zod schemas for type safety with Superforms
+// Zod schemas for type safety with Superforms;
 export const QueueJobSchema = z.object({
   id: z.string().uuid(),
   type: z.enum([
@@ -45,7 +45,7 @@ export const QueueStatsSchema = z.object({
   failed: z.number(),
   totalThroughput: z.number(),
   avgProcessingTime: z.number(),
-  lastUpdated: z.date()
+  lastUpdated: z.date(),
 });
 
 export type QueueStats = z.infer<typeof QueueStatsSchema>;
@@ -66,16 +66,16 @@ export class QueueManager {
 
   constructor() {
     // Register default processors
-    this.registerProcessor('evidence_analysis', this.processEvidenceAnalysis.bind(this));
-    this.registerProcessor('document_processing', this.processDocumentProcessing.bind(this));
-    this.registerProcessor('case_synthesis', this.processCaseSynthesis.bind(this));
-    this.registerProcessor('chain_of_custody_update', this.processChainOfCustodyUpdate.bind(this));
-    this.registerProcessor('vector_index_rebuild', this.processVectorIndexRebuild.bind(this));
+    this.registerProcessor('evidence_analysis', this.processEvidenceAnalysis.bind(this);
+    this.registerProcessor('document_processing', this.processDocumentProcessing.bind(this);
+    this.registerProcessor('case_synthesis', this.processCaseSynthesis.bind(this);
+    this.registerProcessor('chain_of_custody_update', this.processChainOfCustodyUpdate.bind(this);
+    this.registerProcessor('vector_index_rebuild', this.processVectorIndexRebuild.bind(this);
   }
 
   /**
    * Register a job processor
-   */
+   */;
   registerProcessor(type: QueueJob['type'], processor: JobProcessor): void {
     this.processors.set(type, processor);
     console.log(`📝 Registered processor for ${type}`);
@@ -83,16 +83,16 @@ export class QueueManager {
 
   /**
    * Add a job to the queue with Zod validation
-   */
+   */;
   async enqueue(jobData: Partial<QueueJob>): Promise<string> {
     try {
-      // Validate with Zod schema
+      // Validate with Zod schema;
       const job = QueueJobSchema.parse({
         id: randomUUID(),
         ...jobData
-      });
+      ,});
 
-      // Check dependencies
+      // Check dependencies;
       if (job.dependencies.length > 0) {
         const unmetDependencies = job.dependencies.filter(depId => 
           !this.completedJobs.has(depId) && !this.processingJobs.has(depId)
@@ -116,7 +116,7 @@ export class QueueManager {
 
   /**
    * Start the queue processor
-   */
+   */;
   start(): void {
     if (this.isRunning) return;
 
@@ -130,7 +130,7 @@ export class QueueManager {
 
   /**
    * Stop the queue processor
-   */
+   */;
   stop(): void {
     if (!this.isRunning) return;
 
@@ -145,16 +145,16 @@ export class QueueManager {
 
   /**
    * Process the queue
-   */
+   */;
   private async processQueue(): Promise<void> {
     if (this.processingJobs.size >= this.maxConcurrentJobs) {
       return;
     }
 
     // Get jobs ready for processing (sorted by priority)
-    const readyJobs = Array.from(this.pendingJobs.values())
-      .filter(job => this.areJobDependenciesMet(job))
-      .filter(job => !job.scheduledFor || job.scheduledFor <= new Date())
+    const readyJobs = Array.from(this.pendingJobs.values()
+      .filter(job => this.areJobDependenciesMet(job)
+      .filter(job => !job.scheduledFor || job.scheduledFor <= new Date()
       .sort((a, b) => b.priority - a.priority);
 
     const availableSlots = this.maxConcurrentJobs - this.processingJobs.size;
@@ -164,7 +164,7 @@ export class QueueManager {
       this.pendingJobs.delete(job.id);
       this.processingJobs.set(job.id, job);
       
-      // Process job without blocking
+      // Process job without blocking;
       this.processJob(job).catch(error => {
         console.error(`❌ Unhandled error processing job ${job.id}:`, error);
       });
@@ -173,14 +173,14 @@ export class QueueManager {
 
   /**
    * Check if job dependencies are met
-   */
+   */;
   private areJobDependenciesMet(job: QueueJob): boolean {
-    return job.dependencies.every(depId => this.completedJobs.has(depId));
+    return job.dependencies.every(depId => this.completedJobs.has(depId);
   }
 
   /**
    * Process a single job
-   */
+   */;
   private async processJob(job: QueueJob): Promise<void> {
     const startTime = Date.now();
     console.log(`⚙️ Processing ${job.type} job ${job.id}`);
@@ -196,7 +196,7 @@ export class QueueManager {
         job.entityType as LockType,
         job.entityId,
         async () => {
-          return await processor(job));
+          return await processor(job);
         },
         'exclusive',
         {
@@ -212,7 +212,7 @@ export class QueueManager {
       this.completedJobs.set(job.id, {
         job,
         result,
-        completedAt: new Date()
+        completedAt: new Date(),
       });
 
       const duration = Date.now() - startTime;
@@ -223,10 +223,10 @@ export class QueueManager {
       
       this.processingJobs.delete(job.id);
 
-      // Retry logic
+      // Retry logic;
       if (job.retryCount < job.maxRetries) {
         job.retryCount++;
-        job.scheduledFor = new Date(Date.now() + (job.retryCount * 5000)); // Exponential backoff
+        job.scheduledFor = new Date(Date.now() + (job.retryCount * 5000); // Exponential backoff
         this.pendingJobs.set(job.id, job);
         
         console.log(`🔄 Retrying ${job.type} job ${job.id} (attempt ${job.retryCount + 1}/${job.maxRetries + 1})`);
@@ -234,7 +234,7 @@ export class QueueManager {
         this.failedJobs.set(job.id, {
           job,
           error: error instanceof Error ? error : new Error(String(error)),
-          failedAt: new Date()
+          failedAt: new Date(),
         });
         
         console.log(`💥 Permanently failed ${job.type} job ${job.id} after ${job.maxRetries} retries`);
@@ -244,105 +244,105 @@ export class QueueManager {
 
   /**
    * Evidence Analysis Processor (with AI integration)
-   */
+   */;
   private async processEvidenceAnalysis(job: QueueJob): Promise<any> {
     const { evidenceId, analysisType = 'comprehensive' } = job.payload;
     
     console.log(`🔍 Analyzing evidence ${evidenceId} (type: ${analysisType})`);
     
     // Simulate AI analysis (replace with actual Ollama/LLM calls)
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 2000);
     
     return {
       evidenceId,
       analysisType,
       findings: ['Pattern identified', 'Metadata extracted', 'Classification complete'],
       confidence: 0.87,
-      processedAt: new Date()
+      processedAt: new Date(),
     };
   }
 
   /**
    * Document Processing Processor (with OCR and text extraction)
-   */
+   */;
   private async processDocumentProcessing(job: QueueJob): Promise<any> {
     const { documentId, operations = ['ocr', 'extract', 'classify'] } = job.payload;
     
     console.log(`📄 Processing document ${documentId} (operations: ${operations.join(', ')})`);
     
     // Simulate document processing pipeline
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 3000);
     
     return {
       documentId,
       operations,
       extractedText: 'Sample extracted text...',
       classification: 'legal_contract',
-      processedAt: new Date()
+      processedAt: new Date(),
     };
   }
 
   /**
    * Case Synthesis Processor (with LLM integration)
-   */
+   */;
   private async processCaseSynthesis(job: QueueJob): Promise<any> {
     const { caseId, evidenceIds = [] } = job.payload;
     
     console.log(`⚖️ Synthesizing case ${caseId} with ${evidenceIds.length} evidence items`);
     
     // Simulate case synthesis with LLM
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await new Promise(resolve => setTimeout(resolve, 5000);
     
     return {
       caseId,
       evidenceCount: evidenceIds.length,
       synthesis: 'Generated case synthesis...',
       recommendations: ['Review additional evidence', 'Consider expert testimony'],
-      processedAt: new Date()
+      processedAt: new Date(),
     };
   }
 
   /**
    * Chain of Custody Update Processor (critical legal operation)
-   */
+   */;
   private async processChainOfCustodyUpdate(job: QueueJob): Promise<any> {
     const { evidenceId, custodyEvent } = job.payload;
     
     console.log(`🔗 Updating chain of custody for evidence ${evidenceId}`);
     
     // Critical operation - simulate custody update
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 1000);
     
     return {
       evidenceId,
       custodyEvent,
       integrityVerified: true,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
   }
 
   /**
    * Vector Index Rebuild Processor (high-performance operation)
-   */
+   */;
   private async processVectorIndexRebuild(job: QueueJob): Promise<any> {
     const { indexName, vectorCount = 0 } = job.payload;
     
     console.log(`🔍 Rebuilding vector index ${indexName} (${vectorCount} vectors)`);
     
     // Simulate vector index rebuild
-    await new Promise(resolve => setTimeout(resolve, 10000));
+    await new Promise(resolve => setTimeout(resolve, 10000);
     
     return {
       indexName,
       vectorCount,
       rebuildTime: Date.now(),
-      performance: 'optimized'
+      performance: 'optimized',
     };
   }
 
   /**
    * Get queue statistics (Zod validated)
-   */
+   */;
   getStats(): QueueStats {
     const stats = {
       pending: this.pendingJobs.size,
@@ -351,7 +351,7 @@ export class QueueManager {
       failed: this.failedJobs.size,
       totalThroughput: this.completedJobs.size + this.failedJobs.size,
       avgProcessingTime: this.calculateAverageProcessingTime(),
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     };
 
     return QueueStatsSchema.parse(stats);
@@ -359,13 +359,13 @@ export class QueueManager {
 
   /**
    * Calculate average processing time
-   */
+   */;
   private calculateAverageProcessingTime(): number {
-    const completedJobs = Array.from(this.completedJobs.values());
+    const completedJobs = Array.from(this.completedJobs.values();
     if (completedJobs.length === 0) return 0;
 
     const totalTime = completedJobs.reduce((sum, { job, completedAt }) => {
-      return sum + (completedAt.getTime() - job.createdAt.getTime());
+      return sum + (completedAt.getTime() - job.createdAt.getTime();
     }, 0);
 
     return totalTime / completedJobs.length;
@@ -373,7 +373,7 @@ export class QueueManager {
 
   /**
    * Get job status
-   */
+   */;
   getJobStatus(jobId: string): 'pending' | 'processing' | 'completed' | 'failed' | 'not_found' {
     if (this.pendingJobs.has(jobId)) return 'pending';
     if (this.processingJobs.has(jobId)) return 'processing';
@@ -384,7 +384,7 @@ export class QueueManager {
 
   /**
    * Get job result
-   */
+   */;
   getJobResult(jobId: string): any {
     const completed = this.completedJobs.get(jobId);
     if (completed) return completed.result;
@@ -397,12 +397,12 @@ export class QueueManager {
 
   /**
    * Health check and cleanup
-   */
+   */;
   async healthCheck(): Promise<any> {
     const stats = this.getStats();
     const issues: string[] = [];
 
-    // Check for too many failed jobs
+    // Check for too many failed jobs;
     if (stats.failed > stats.completed * 0.1) {
       issues.push('High failure rate detected');
     }

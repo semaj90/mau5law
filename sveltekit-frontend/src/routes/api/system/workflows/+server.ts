@@ -6,6 +6,7 @@ import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
+}
 
 export interface WorkflowTest {
   name: string;
@@ -24,23 +25,23 @@ export interface WorkflowValidationResponse {
     totalTests: number;
     passed: number;
     failed: number;
-    skipped: number;
+    skipped: number;,
   };
   workflows: {
     userManagement: WorkflowTest[];
     documentProcessing: WorkflowTest[];
     aiFeatures: WorkflowTest[];
     vectorSearch: WorkflowTest[];
-    integration: WorkflowTest[];
+    integration: WorkflowTest[];,
   };
-  processingTime: number;
+  processingTime: number;,
 }
 
 // Helper to run a test with timing
 async function runTest(
   name: string,
   description: string,
-  testFn: () => Promise<any>
+  testFn: () => Promise<any>;
 ): Promise<WorkflowTest> {
   const startTime = Date.now();
 
@@ -64,7 +65,7 @@ async function runTest(
   }
 }
 
-// Helper to skip a test
+// Helper to skip a test;
 function skipTest(name: string, description: string, reason: string): WorkflowTest {
   return {
     name,
@@ -87,8 +88,8 @@ export const GET: RequestHandler = async ({ url }) => {
         'User Registration API',
         'Test user registration endpoint functionality',
         async () => {
-          if (!db) throw new Error('Database not available')));
-          // Test user registration schema and validation
+          if (!db) throw new Error('Database not available'));
+          // Test user registration schema and validation;
           const testUser = {
             email: `test-${Date.now()}@example.com`,
             name: 'Test User',
@@ -98,7 +99,7 @@ export const GET: RequestHandler = async ({ url }) => {
             isActive: true,
           };
 
-          // Simulate user registration validation
+          // Simulate user registration validation;
           if (!testUser.email || !testUser.name) {
             throw new Error('Required fields missing');
           }
@@ -135,7 +136,7 @@ export const GET: RequestHandler = async ({ url }) => {
       runTest('User Profile Management', 'Test user profile CRUD operations', async () => {
         if (!db) throw new Error('Database not available');
 
-        // Test database schema for user profiles
+        // Test database schema for user profiles;
         return {
           message: 'User profile schema validated',
           fields: ['id', 'email', 'name', 'firstName', 'lastName', 'avatarUrl', 'role', 'isActive'],
@@ -146,7 +147,7 @@ export const GET: RequestHandler = async ({ url }) => {
     ]);
 
     // Document Processing Workflow Tests
-    const documentProcessingTests: WorkflowTest[] = await Promise.all([
+    const documentProcessingTests: WorkflowTest[] = await Promise.all([;
       runTest('File Upload Integration', 'Test document upload and storage workflow', async () => {
         // Test upload service integration
         const uploadEndpoints = [
@@ -154,7 +155,7 @@ export const GET: RequestHandler = async ({ url }) => {
           '/api/upload/chunk',
           '/api/upload/finalize',
           '/api/evidence/upload',
-        ]));
+        ]);
         return {
           message: 'Document upload system configured',
           endpoints: uploadEndpoints,
@@ -197,14 +198,14 @@ export const GET: RequestHandler = async ({ url }) => {
     ]);
 
     // AI Features Workflow Tests
-    const aiFeatureTests: WorkflowTest[] = await Promise.all([
+    const aiFeatureTests: WorkflowTest[] = await Promise.all([;
       runTest('AI Chat Integration', 'Test AI-powered legal chat functionality', async () => {
         const aiEndpoints = [
           '/api/ai/chat',
           '/api/ai/analyze',
           '/api/ai/summarize',
           '/api/enhanced-rag',
-        ]));
+        ]);
         return {
           message: 'AI chat system operational',
           endpoints: aiEndpoints,
@@ -273,7 +274,7 @@ export const GET: RequestHandler = async ({ url }) => {
             dimensions: 384, // nomic-embed-text
             operations: ['embed', 'search', 'similarity', 'clustering'],
             performance: '< 50ms search times',
-          }));
+          });
         }
       ),
 
@@ -327,7 +328,7 @@ export const GET: RequestHandler = async ({ url }) => {
                 'User performs semantic search',
                 'User interacts with AI chat',
                 'System provides legal insights',
-              ]));
+              ]);
               return {
                 message: 'Complete workflow integration validated',
                 steps: workflow,
@@ -409,7 +410,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const msg = error instanceof Error ? error.message: 'Unknown workflow validation error';
     productionLogger.error(`Workflow validation failed: ${msg}`);
 
-    return json(
+    return json();
       {
         timestamp: new Date().toISOString(),
         overall: {
@@ -423,13 +424,13 @@ export const GET: RequestHandler = async ({ url }) => {
         error: 'Workflow validation failed',
         details: error instanceof Error ? error.message: 'Unknown error',
         processingTime: Date.now() - startTime,
-      },
+      },>
       { status: 500 }
     );
   }
 };
 
-// POST endpoint for running specific workflow tests
+// POST endpoint for running specific workflow tests;
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
 
@@ -437,8 +438,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { workflow, action } = await request.json();
 
     if (!workflow) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Workflow parameter required',
           availableWorkflows: [
@@ -448,7 +448,7 @@ export const POST: RequestHandler = async ({ request }) => {
             'vectorSearch',
             'integration',
           ],
-        },
+        },)
         { status: 400 }
       );
     }
@@ -478,18 +478,17 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
 
-      default:
-        return json(
-          {
+      default:;
+        return json({
             success: false,
             error: 'Invalid action',
             availableActions: ['test_user_flow', 'test_document_processing'],
-          },
+          },)
           { status: 400 }
         );
     }
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: 'Workflow test failed',
@@ -501,7 +500,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// Simulate complete user workflow
+// Simulate complete user workflow;
 async function simulateUserWorkflow(): Promise<any> {
   const steps = [
     { step: 'User Registration', status: 'completed', duration: 150 },
@@ -521,7 +520,7 @@ async function simulateUserWorkflow(): Promise<any> {
   };
 }
 
-// Test document processing pipeline
+// Test document processing pipeline;
 async function testDocumentProcessingPipeline(): Promise<any> {
   const stages = [
     { stage: 'File Upload', status: 'passed', latency: 250 },

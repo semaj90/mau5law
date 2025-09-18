@@ -3,7 +3,7 @@ import type {} from '@sveltejs/kit';
 
 declare module '@sveltejs/kit' {
   interface RequestEvent {
-    locals: App.Locals;
+    locals: App.Locals;,
   }
 }
 

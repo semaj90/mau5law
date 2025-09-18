@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const txt = await resp.text();
       return new Response(JSON.stringify({ ok: false, error: txt }), { status: 502 });
     }
-    const body = await resp.json().catch(() => ({}));
+    const body = await resp.json().catch(() => ({});
     return new Response(JSON.stringify({ ok: true, result: body }), { status: 200 });
   } catch (err: any) {
     return new Response(JSON.stringify({ ok: false, error: String(err) }), { status: 500 });

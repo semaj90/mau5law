@@ -8,6 +8,7 @@ import type { Load, ServerLoad, ServerLoadEvent } from '@sveltejs/kit';
 import type { RouteDefinition } from '$lib/data/routes-config';
 import type { GeneratedRoute } from './dynamic-route-generator.js';
 import { URL } from "url";
+}
 
 export interface RouteGuardContext {
   event: ServerLoadEvent;
@@ -22,7 +23,7 @@ export interface GuardResult {
   redirect?: string;
   error?: {
     status: number;
-    message: string;
+    message: string;,
   };
   data?: Record<string, any>;
 }
@@ -31,7 +32,7 @@ export type RouteGuard = (context: RouteGuardContext) => Promise<GuardResult> | 
 
 /**
  * Built-in route guards
- */
+ */;
 export class RouteGuards {
   private guards: Map<string, RouteGuard> = new Map();
 
@@ -41,7 +42,7 @@ export class RouteGuards {
 
   /**
    * Register built-in guards
-   */
+   */;
   private registerBuiltInGuards(): void {
     this.register('auth', this.authGuard);
     this.register('admin', this.adminGuard);
@@ -53,14 +54,14 @@ export class RouteGuards {
 
   /**
    * Register a custom guard
-   */
+   */;
   public register(name: string, guard: RouteGuard): void {
     this.guards.set(name, guard);
   }
 
   /**
    * Get a guard by name
-   */
+   */;
   public get(name: string): RouteGuard | undefined {
     return this.guards.get(name);
   }
@@ -70,7 +71,7 @@ export class RouteGuards {
    */
   public async executeGuards(
     guardNames: string[],
-    context: RouteGuardContext
+    context: RouteGuardContext;
   ): Promise<GuardResult> {
     for (const guardName of guardNames) {
       const guard = this.guards.get(guardName);
@@ -84,7 +85,7 @@ export class RouteGuards {
         return result;
       }
 
-      // Merge guard data into context
+      // Merge guard data into context;
       if ((result as { allowed?: any; data?: any }).data) {
         context = { ...context, ...result.data };
       }
@@ -95,7 +96,7 @@ export class RouteGuards {
 
   /**
    * Authentication guard
-   */
+   */;
   private authGuard: RouteGuard = async (context) => {
     const { event } = context;
     const user = (event.locals as any).user;
@@ -103,7 +104,7 @@ export class RouteGuards {
     if (!user) {
       return {
         allowed: false,
-        redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname)
+        redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname),
       };
     }
 
@@ -115,7 +116,7 @@ export class RouteGuards {
 
   /**
    * Admin role guard
-   */
+   */;
   private adminGuard: RouteGuard = async (context) => {
     const { event } = context;
     const user = (event.locals as any).user;
@@ -123,7 +124,7 @@ export class RouteGuards {
     if (!user) {
       return {
         allowed: false,
-        redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname)
+        redirect: '/auth/login?redirectTo=' + encodeURIComponent(event.url.pathname),
       };
     }
 
@@ -132,7 +133,7 @@ export class RouteGuards {
         allowed: false,
         error: {
           status: 403,
-          message: 'Admin access required'
+          message: 'Admin access required',
         }
       };
     }
@@ -142,7 +143,7 @@ export class RouteGuards {
 
   /**
    * Development environment guard
-   */
+   */;
   private devGuard: RouteGuard = async (context) => {
     const isDevelopment = import.meta.env.NODE_ENV === 'development';
     const isDevUser = (context.event.locals as any).user?.role === 'developer';
@@ -152,7 +153,7 @@ export class RouteGuards {
         allowed: false,
         error: {
           status: 404,
-          message: 'Page not found'
+          message: 'Page not found',
         }
       };
     }
@@ -162,7 +163,7 @@ export class RouteGuards {
 
   /**
    * Feature flag guard
-   */
+   */;
   private featureGuard: RouteGuard = async (context) => {
     const { route, params } = context;
     const featureName = params.feature || (route as any).metadata?.feature;
@@ -180,7 +181,7 @@ export class RouteGuards {
         allowed: false,
         error: {
           status: 404,
-          message: 'Feature not available'
+          message: 'Feature not available',
         }
       };
     }
@@ -190,7 +191,7 @@ export class RouteGuards {
 
   /**
    * Rate limiting guard
-   */
+   */;
   private rateLimitGuard: RouteGuard = async (context) => {
     const { event } = context;
     const clientIP = event.getClientAddress();
@@ -206,7 +207,7 @@ export class RouteGuards {
         allowed: false,
         error: {
           status: 429,
-          message: 'Too many requests'
+          message: 'Too many requests',
         }
       };
     }
@@ -217,7 +218,7 @@ export class RouteGuards {
 
   /**
    * Maintenance mode guard
-   */
+   */;
   private maintenanceGuard: RouteGuard = async (context) => {
     const isMaintenanceMode = import.meta.env.MAINTENANCE_MODE === 'true';
     const isMaintenancePage = context.route.id === 'maintenance';
@@ -226,7 +227,7 @@ export class RouteGuards {
     if (isMaintenanceMode && !isMaintenancePage && !isAdmin) {
       return {
         allowed: false,
-        redirect: '/maintenance'
+        redirect: '/maintenance',
       };
     }
 
@@ -235,7 +236,7 @@ export class RouteGuards {
 
   /**
    * Get rate limit count (simplified implementation)
-   */
+   */;
   private async getRateLimitCount(key: string): Promise<number> {
     // In a real application, use Redis or another persistent store
     const stored = globalThis.rateLimitStore?.get(key);
@@ -247,7 +248,7 @@ export class RouteGuards {
 
   /**
    * Increment rate limit (simplified implementation)
-   */
+   */;
   private async incrementRateLimit(key: string, windowMs: number): Promise<void> {
     // In a real application, use Redis or another persistent store
     globalThis.rateLimitStore = globalThis.rateLimitStore || new Map();
@@ -270,7 +271,7 @@ export const routeGuards = new RouteGuards();
  */
 export function createGuardedLoader(
   guards: string[],
-  loader?: ServerLoad
+  loader?: ServerLoad;
 ): ServerLoad {
   return async (event: any) => {
     const route = event.route;
@@ -281,7 +282,7 @@ export function createGuardedLoader(
       route: route as any,
       params,
       user: (event.locals as any).user,
-      session: (event.locals as any).session
+      session: (event.locals as any).session,
     };
 
     // Execute guards
@@ -296,24 +297,24 @@ export function createGuardedLoader(
       }
     }
 
-    // Execute the original loader if provided
+    // Execute the original loader if provided;
     if (loader) {
       const loaderResult = await loader(event);
       return {
         ...loaderResult,
-        guardData: guardResult.data
+        guardData: guardResult.data,
       };
     }
 
     return {
-      guardData: guardResult.data
+      guardData: guardResult.data,
     };
   };
 }
 
 /**
  * Route guard decorator for automatic protection
- */
+ */;
 export function withGuards(guards: string[]) {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalLoader = descriptor.value;
@@ -326,12 +327,12 @@ export function withGuards(guards: string[]) {
 
 /**
  * Middleware for SvelteKit hooks to apply global guards
- */
+ */;
 export function createRouteGuardMiddleware(globalGuards: string[] = []) {
   return async function (event: any, resolve: Function) {
     // Skip guard execution for API routes and static assets
     if (event.url.pathname.startsWith('/api/') || 
-        event.url.pathname.startsWith('/_app/') ||
+        event.url.pathname.startsWith('/_app/') ||;
         event.url.pathname.includes('.')) {
       return resolve(event);
     }
@@ -344,10 +345,10 @@ export function createRouteGuardMiddleware(globalGuards: string[] = []) {
       route: route as any,
       params,
       user: (event.locals as any).user,
-      session: (event.locals as any).session
+      session: (event.locals as any).session,
     };
 
-    // Execute global guards
+    // Execute global guards;
     if (globalGuards.length > 0) {
       const guardResult = await routeGuards.executeGuards(globalGuards, context);
 
@@ -360,7 +361,7 @@ export function createRouteGuardMiddleware(globalGuards: string[] = []) {
         }
       }
 
-      // Add guard data to event locals
+      // Add guard data to event locals;
       if (guardResult.data) {
         event.locals = { ...event.locals, ...guardResult.data };
       }
@@ -372,7 +373,7 @@ export function createRouteGuardMiddleware(globalGuards: string[] = []) {
 
 /**
  * Route-specific guard configuration
- */
+ */;
 export interface RouteGuardConfig {
   guards: string[];
   skipGlobalGuards?: boolean;
@@ -384,9 +385,9 @@ export interface RouteGuardConfig {
  */
 export function configureRouteGuards(
   routeId: string,
-  config: RouteGuardConfig
+  config: RouteGuardConfig;
 ): void {
-  // Register custom guards if provided
+  // Register custom guards if provided;
   if (config.customGuards) {
     for (const [name, guard] of Object.entries(config.customGuards)) {
       routeGuards.register(name, guard);
@@ -400,7 +401,7 @@ export function configureRouteGuards(
 
 /**
  * Get guard configuration for a route
- */
+ */;
 export function getRouteGuardConfig(routeId: string): RouteGuardConfig | null {
   return globalThis.routeGuardConfigs?.get(routeId) || null;
 }
@@ -428,7 +429,7 @@ export async function checkRoutePermission(
     route: { id: routeId } as any,
     params,
     user,
-    session: user?.sessionId
+    session: user?.sessionId,
   };
 
   const result = await routeGuards.executeGuards(config.guards, context);
@@ -445,9 +446,8 @@ export async function checkMultipleRoutePermissions(
 ): Promise<Record<string, boolean> {
   const results: Record<string, boolean> = {};
   
-  await Promise.all(
-    routeIds.map(async (routeId) => {
-      results[routeId] = await checkRoutePermission(routeId, user, params)));
+  await Promise.all(routeIds.map(async (routeId) => {
+      results[routeId] = await checkRoutePermission(routeId, user, params));
     })
   );
   

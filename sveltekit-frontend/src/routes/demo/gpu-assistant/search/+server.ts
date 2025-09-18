@@ -9,7 +9,7 @@ const sql = postgres(connectionString, {
   database: 'legal_ai_db',
   username: 'legal_admin',
   password: '123456',
-  max: 5 
+  max: 5 ,
 });
 
 async function generateGemmaEmbedding(text: string): Promise<number[] | null> {
@@ -19,7 +19,7 @@ async function generateGemmaEmbedding(text: string): Promise<number[] | null> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
         model: 'nomic-embed-text',
-        prompt: text 
+        prompt: text ,
       })
     });
     if (!res.ok) throw new Error(`Embedding error ${res.status}`);
@@ -31,7 +31,7 @@ async function generateGemmaEmbedding(text: string): Promise<number[] | null> {
   }
 }
 
-// Semantic search for similar messages
+// Semantic search for similar messages;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { query, sessionId, limit = 10, similarityThreshold = 0.3 } = await request.json();
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     if (!queryEmbedding || queryEmbedding.length === 0) {
       return json({ 
-        error: 'Could not generate embedding for query' 
+        error: 'Could not generate embedding for query' ,
       }, { status: 500 });
     }
 
@@ -84,19 +84,19 @@ export const POST: RequestHandler = async ({ request }) => {
       query,
       results: searchResults,
       count: searchResults.length,
-      queryEmbedding: queryEmbedding.length // Don't return full embedding for security
+      queryEmbedding: queryEmbedding.length // Don't return full embedding for security,
     });
 
   } catch (error) {
     console.error('Semantic search failed:', error);
     return json(
-      { error: 'Search failed' },
+      { error: 'Search failed' },)
       { status: 500 }
     );
   }
 };
 
-// Get similar messages to a specific message
+// Get similar messages to a specific message;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const messageId = url.searchParams.get('messageId');
@@ -133,16 +133,16 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       referenceMessage: {
         id: messageId,
-        content: referenceMessage[0].content
+        content: referenceMessage[0].content,
       },
       similarMessages,
-      count: similarMessages.length
+      count: similarMessages.length,
     });
 
   } catch (error) {
     console.error('Similar messages search failed:', error);
     return json(
-      { error: 'Search failed' },
+      { error: 'Search failed' },)
       { status: 500 }
     );
   }

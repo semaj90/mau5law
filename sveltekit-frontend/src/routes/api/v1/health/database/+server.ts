@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
           metadata: {
             processingTime: Date.now() - startTime,
             timestamp: new Date().toISOString(),
-            endpoint: '/api/v1/health/database'
+            endpoint: '/api/v1/health/database',
           }
         });
         
@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: metrics,
           metadata: {
             processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
         });
         
@@ -47,10 +47,10 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: {
             schemaValid: isValid.valid,
-            missingTables: isValid.missingTables
+            missingTables: isValid.missingTables,
           },
           metadata: {
-            processingTime: Date.now() - startTime
+            processingTime: Date.now() - startTime,
           }
         });
         
@@ -60,17 +60,17 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           data: {
             vectorOperationsWorking: vectorTest,
-            pgvectorEnabled: await dbHealthChecker.isPgVectorEnabled()
+            pgvectorEnabled: await dbHealthChecker.isPgVectorEnabled(),
           },
           metadata: {
-            processingTime: Date.now() - startTime
+            processingTime: Date.now() - startTime,
           }
         });
         
-      default:
+      default:;
         return error(400, ensureError({ 
           message: `Invalid action: ${action}. Available: health, metrics, validate, vector` 
-        }));
+        });
     }
     
   } catch (err: any) {
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ url }) => {
       error: err instanceof Error ? err.message: 'Database health check failed',
       metadata: {
         processingTime: Date.now() - startTime,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     }, { status: 500 });
   }
@@ -100,25 +100,25 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           message: 'Health check cache cleared',
           metadata: {
-            processingTime: Date.now() - startTime
+            processingTime: Date.now() - startTime,
           }
         });
         
       case 'force_check':
-        const health = await dbHealthChecker.checkHealth(false); // Force fresh check
+        const health = await dbHealthChecker.checkHealth(false); // Force fresh check;
         return json({
           success: true,
           data: health,
           metadata: {
             processingTime: Date.now() - startTime,
-            cached: false
+            cached: false,
           }
         });
         
-      default:
+      default:;
         return error(400, ensureError({ 
           message: `Invalid action: ${action}. Available: clear_cache, force_check` 
-        }));
+        });
     }
     
   } catch (err: any) {
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: false,
       error: err instanceof Error ? err.message: 'Database health check failed',
       metadata: {
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       }
     }, { status: 500 });
   }

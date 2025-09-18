@@ -5,6 +5,7 @@ import { writable, derived, get } from 'svelte/store';
 import { browser } from '$app/environment';
 import type { User } from '../server/db/schema-postgres.js';
 import { AccessControl, type UserRole, type Permission } from './roles.js';
+}
 
 export interface AuthUser extends Partial<User> {
   id: string;
@@ -21,7 +22,7 @@ export interface AuthUser extends Partial<User> {
 export interface AuthSession {
   id: string;
   userId: string;
-  expiresAt: Date;
+  expiresAt: Date;,
 }
 
 export interface AuthState {
@@ -34,7 +35,7 @@ export interface AuthState {
   csrfToken?: string;
 }
 
-// Initial auth state
+// Initial auth state;
 const initialState: AuthState = {
   user: null,
   session: null,
@@ -65,11 +66,11 @@ export class AuthStore {
 
   /**
    * Initialize the auth store and start session management
-   */
+   */;
   static async initialize(): Promise<void> {
     if (!browser) return;
 
-    authState.update(state => ({ ...state, isLoading: true }));
+    authState.update(state => ({ ...state, isLoading: true });
 
     try {
       // Check if there's an existing session
@@ -85,15 +86,15 @@ export class AuthStore {
       console.error('Auth initialization failed:', error);
       this.clearAuth();
     } finally {
-      authState.update(state => ({ ...state, isLoading: false }));
+      authState.update(state => ({ ...state, isLoading: false });
     }
   }
 
   /**
    * Login with email and password
-   */
+   */;
   static async login(email: string, password: string, rememberMe = false): Promise<any> {
-    authState.update(state => ({ ...state, isLoading: true }));
+    authState.update(state => ({ ...state, isLoading: true });
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -102,7 +103,7 @@ export class AuthStore {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password, rememberMe }),
-        credentials: 'include'
+        credentials: 'include',
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -126,13 +127,13 @@ export class AuthStore {
       console.error('Login error:', error);
       return { success: false, error: 'Network error during login' };
     } finally {
-      authState.update(state => ({ ...state, isLoading: false }));
+      authState.update(state => ({ ...state, isLoading: false });
     }
   }
 
   /**
    * Register a new user account
-   */
+   */;
   static async register(userData: {
     email: string;
     password: string;
@@ -140,7 +141,7 @@ export class AuthStore {
     lastName?: string;
     role?: UserRole;
   }): Promise<any> {
-    authState.update(state => ({ ...state, isLoading: true }));
+    authState.update(state => ({ ...state, isLoading: true });
 
     try {
       const response = await fetch('/api/auth/register', {
@@ -149,13 +150,13 @@ export class AuthStore {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(userData),
-        credentials: 'include'
+        credentials: 'include',
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
 
       if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).success) {
-        // If auto-login after registration
+        // If auto-login after registration;
         if ((result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session) {
           await this.updateAuthState((result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user, (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session);
         }
@@ -174,20 +175,20 @@ export class AuthStore {
       console.error('Registration error:', error);
       return { success: false, error: 'Network error during registration' };
     } finally {
-      authState.update(state => ({ ...state, isLoading: false }));
+      authState.update(state => ({ ...state, isLoading: false });
     }
   }
 
   /**
    * Logout and clear session
-   */
+   */;
   static async logout(): Promise<void> {
-    authState.update(state => ({ ...state, isLoading: true }));
+    authState.update(state => ({ ...state, isLoading: true });
 
     try {
       await fetch('/api/auth/logout', {
         method: 'POST',
-        credentials: 'include'
+        credentials: 'include',
       });
     } catch (error: any) {
       console.error('Logout error:', error);
@@ -195,7 +196,7 @@ export class AuthStore {
       this.clearAuth();
       this.stopSessionMonitoring();
       
-      // Redirect to login page
+      // Redirect to login page;
       if (browser) {
         window.location.href = '/login';
       }
@@ -204,13 +205,13 @@ export class AuthStore {
 
   /**
    * Check current session validity
-   */
+   */;
   static async checkSession(): Promise<boolean> {
     if (!browser) return false;
 
     try {
       const response = await fetch('/api/auth/session', {
-        credentials: 'include'
+        credentials: 'include',
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -231,7 +232,7 @@ export class AuthStore {
 
   /**
    * Update user profile
-   */
+   */;
   static async updateProfile(updates: Partial<AuthUser>): Promise<any> {
     const currentState = get(authState);
     if (!currentState.isAuthenticated || !currentState.user) {
@@ -245,17 +246,17 @@ export class AuthStore {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(updates),
-        credentials: 'include'
+        credentials: 'include',
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
 
       if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).success) {
-        // Update local user data
+        // Update local user data;
         authState.update(state => ({
           ...state,
           user: state.user ? { ...state.user, ...result.user } : null
-        }));
+        });
         
         return { success: true };
       } else {
@@ -269,7 +270,7 @@ export class AuthStore {
 
   /**
    * Change user password
-   */
+   */;
   static async changePassword(currentPassword: string, newPassword: string): Promise<any> {
     try {
       const response = await fetch('/api/auth/change-password', {
@@ -278,7 +279,7 @@ export class AuthStore {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ currentPassword, newPassword }),
-        credentials: 'include'
+        credentials: 'include',
       });
 
       const result = await (response as { json?: any; ok?: any }).json();
@@ -294,7 +295,7 @@ export class AuthStore {
 
   /**
    * Check if user has specific permission
-   */
+   */;
   static hasPermission(permission: Permission): boolean {
     const state = get(authState);
     return state.permissions.includes(permission);
@@ -302,18 +303,18 @@ export class AuthStore {
 
   /**
    * Check if user has any of the specified permissions
-   */
+   */;
   static hasAnyPermission(permissions: Permission[]): boolean {
     const state = get(authState);
-    return permissions.some(permission => state.permissions.includes(permission));
+    return permissions.some(permission => state.permissions.includes(permission);
   }
 
   /**
    * Check if user has all of the specified permissions
-   */
+   */;
   static hasAllPermissions(permissions: Permission[]): boolean {
     const state = get(authState);
-    return permissions.every(permission => state.permissions.includes(permission));
+    return permissions.every(permission => state.permissions.includes(permission);
   }
 
   /**
@@ -322,7 +323,7 @@ export class AuthStore {
   static canAccessResource(
     permission: Permission,
     resourceOwnerId?: string,
-    isPublic = false
+    isPublic = false;
   ): boolean {
     const state = get(authState);
     if (!state.user) return false;
@@ -338,7 +339,7 @@ export class AuthStore {
 
   /**
    * Get user's role hierarchy level
-   */
+   */;
   static getRoleHierarchy(): number {
     const state = get(authState);
     if (!state.user) return 0;
@@ -349,7 +350,7 @@ export class AuthStore {
 
   /**
    * Private: Update auth state with user and session data
-   */
+   */;
   private static async updateAuthState(user: AuthUser, session: AuthSession): Promise<void> {
     // Get user permissions based on role
     const permissions = AccessControl.getRolePermissions(user.role);
@@ -361,23 +362,23 @@ export class AuthStore {
       isAuthenticated: true,
       permissions,
       lastActivity: new Date(),
-      isLoading: false
-    }));
+      isLoading: false,
+    });
   }
 
   /**
    * Private: Clear authentication state
-   */
+   */;
   private static clearAuth(): void {
     authState.set({
       ...initialState,
-      isLoading: false
+      isLoading: false,
     });
   }
 
   /**
    * Private: Start session monitoring
-   */
+   */;
   private static startSessionMonitoring(): void {
     if (this.sessionCheckInterval) {
       clearInterval(this.sessionCheckInterval);
@@ -391,12 +392,12 @@ export class AuthStore {
         const expiresAt = new Date(state.session.expiresAt);
         const timeUntilExpiry = expiresAt.getTime() - now.getTime();
 
-        // Warn user if session expires soon
+        // Warn user if session expires soon;
         if (timeUntilExpiry <= SESSION_WARNING_TIME && timeUntilExpiry > 0) {
           this.showSessionWarning(timeUntilExpiry);
         }
 
-        // Check session validity
+        // Check session validity;
         if (timeUntilExpiry <= 0) {
           await this.checkSession();
         }
@@ -406,7 +407,7 @@ export class AuthStore {
 
   /**
    * Private: Stop session monitoring
-   */
+   */;
   private static stopSessionMonitoring(): void {
     if (this.sessionCheckInterval) {
       clearInterval(this.sessionCheckInterval);
@@ -421,17 +422,17 @@ export class AuthStore {
 
   /**
    * Private: Setup activity tracking
-   */
+   */;
   private static setupActivityTracking(): void {
     if (!browser) return;
 
-    // Track user activity
+    // Track user activity;
     const trackActivity = () => {
       this.trackActivity('interaction');
       this.resetActivityTimeout();
     };
 
-    // Add event listeners for user activity
+    // Add event listeners for user activity;
     ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(event => {
       document.addEventListener(event, trackActivity, { passive: true });
     });
@@ -441,27 +442,27 @@ export class AuthStore {
 
   /**
    * Private: Track user activity
-   */
+   */;
   private static trackActivity(type: string): void {
     authState.update(state => ({
       ...state,
-      lastActivity: new Date()
-    }));
+      lastActivity: new Date(),
+    });
 
-    // Send activity ping to server occasionally
+    // Send activity ping to server occasionally;
     if (type === 'login' || Math.random() < 0.1) {
       fetch('/api/auth/activity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type, timestamp: new Date() }),
-        credentials: 'include'
+        credentials: 'include',
       }).catch(() => {}); // Silently fail
     }
   }
 
   /**
    * Private: Reset activity timeout
-   */
+   */;
   private static resetActivityTimeout(): void {
     if (this.activityTimeout) {
       clearTimeout(this.activityTimeout);
@@ -475,14 +476,14 @@ export class AuthStore {
 
   /**
    * Private: Show session expiration warning
-   */
+   */;
   private static showSessionWarning(timeRemaining: number): void {
     const minutes = Math.ceil(timeRemaining / 60000);
     
     // You can replace this with a proper notification system
     if (browser && window.confirm(
       `Your session will expire in ${minutes} minute${minutes !== 1 ? 's' : ''}. ` +
-      'Would you like to extend your session?'
+      'Would you like to extend your session?';
     )) {
       // Refresh session by making a request
       this.checkSession();

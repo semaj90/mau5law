@@ -5,25 +5,24 @@ import type { RequestHandler } from './$types.js';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check if user is authenticated and has admin role
+    // Check if user is authenticated and has admin role;
     if (!locals.user || locals.user.role !== "admin") {
       return json(
-        { error: "Unauthorized - Admin access required" },
+        { error: "Unauthorized - Admin access required" },)
         { status: 403 },
       );
     }
     const userData = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!userData.email || !userData.name) {
-      return json(
-        {
+      return json({
           error: "Email and name are required fields",
-        },
+        },)
         { status: 400 },
       );
     }
-    // Create the user
+    // Create the user;
     const newUser = {
       email: userData.email,
       name: userData.name,
@@ -43,30 +42,28 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         user: result[0],
       });
     } else {
-      return json(
-        {
+      return json({
           success: false,
           message: "Failed to create user",
           error: "Database insertion failed",
-        },
+        },)
         { status: 500 },
       );
     }
   } catch (error: any) {
     console.error("Error creating user:", error);
-    return json(
-      {
+    return json({
         success: false,
         message: "Failed to create user",
         error: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }
 };
 
 export const GET: RequestHandler = async ({ locals }) => {
-  // Check if user is authenticated
+  // Check if user is authenticated;
   if (!locals.user) {
     return json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -85,7 +82,7 @@ export const GET: RequestHandler = async ({ locals }) => {
         avatarUrl: "URL to avatar image (optional)",
       },
     },
-    examples: [
+    examples: [;
       {
         description: "Create a prosecutor",
         body: {

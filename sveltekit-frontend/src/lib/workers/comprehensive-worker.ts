@@ -18,12 +18,12 @@ interface ChunkJob {
   documentId: string;
   chunkIndex: number;
   chunkText: string;
-  text?: string; // Redis compatibility
+  text?: string; // Redis compatibility;
   metadata: {
     totalChunks: number;
     priority: string;
     userId?: string;
-    timestamp: string;
+    timestamp: string;,
   };
 }
 
@@ -38,15 +38,15 @@ async function processChunkJob(job: ChunkJob) {
   }
 
   try {
-    // Generate embedding
+    // Generate embedding;
     const result = await getEmbeddingViaGate(fetch, text, { 
-      model: job.metadata.priority === 'high' ? 'nomic-embed-text' : undefined 
+      model: job.metadata.priority === 'high' ? 'nomic-embed-text' : undefined ,
     });
     const embedding = (result as { embedding?: any; backend?: any }).embedding;
     
     console.log(`📍 Embedding created via ${(result as { embedding?: any; backend?: any }).backend} using model ${result?.model || "unknown" // @ts-ignore - Model property access}`);
 
-    // Store in database
+    // Store in database;
     await db.insert(document_chunks).values({
       chunk_text: text,
       chunk_index: job.chunkIndex,
@@ -58,7 +58,7 @@ async function processChunkJob(job: ChunkJob) {
         priority: job.metadata.priority,
         workerId,
         processingTime: Date.now() - startTime,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       } as any,
     } as any);
 
@@ -70,7 +70,7 @@ async function processChunkJob(job: ChunkJob) {
     return {
       success: true,
       processingTime: Date.now() - startTime,
-      chunkIndex: job.chunkIndex
+      chunkIndex: job.chunkIndex,
     };
 
   } catch (error) {
@@ -88,7 +88,7 @@ async function reportProgress(jobId: string, chunkIndex: number, totalChunks: nu
     // Calculate progress
     const progress = Math.round(((chunkIndex + 1) / totalChunks) * 100);
     
-    // Cache progress update
+    // Cache progress update;
     await cache.set(`job:${jobId}:progress`, {
       chunkIndex,
       totalChunks,
@@ -97,7 +97,7 @@ async function reportProgress(jobId: string, chunkIndex: number, totalChunks: nu
       workerId
     }, 300); // 5 minute TTL
 
-    // Send progress to workflow if this is the last chunk
+    // Send progress to workflow if this is the last chunk;
     if (chunkIndex === totalChunks - 1) {
       console.log(`🎉 Completed all chunks for job ${jobId}`);
     }
@@ -127,27 +127,27 @@ async function runRabbitConsumer() {
     await ingestionService.initialize();
     console.log('✅ Ingestion service initialized');
 
-    // Register this worker
+    // Register this worker;
     await cache.set(`worker:${workerId}`, {
       id: workerId,
       startedAt: new Date().toISOString(),
       status: 'active',
       queues: ['evidence.embedding.queue', 'evidence.embedding.priority'],
-      pid: process.pid
+      pid: process.pid,
     }, 300); // 5 minute TTL, renewed by heartbeat
 
-    // Start heartbeat
+    // Start heartbeat;
     const heartbeatInterval = setInterval(async () => {
       if (!shuttingDown) {
         try {
-          await cache.setex(`worker:${workerId}:heartbeat`, 30, new Date().toISOString());
+          await cache.setex(`worker:${workerId}:heartbeat`, 30, new Date().toISOString();
         } catch (e) {
           console.warn('❌ Heartbeat failed:', e);
         }
       }
     }, 15000); // Every 15 seconds
 
-    // Consume from priority queue
+    // Consume from priority queue;
     const priorityConsumer = consumeFromQueue('evidence.embedding.priority', async (payload, ack, nack) => {
       try {
         await processChunkJob(payload as ChunkJob);
@@ -158,7 +158,7 @@ async function runRabbitConsumer() {
       }
     });
 
-    // Consume from regular queue
+    // Consume from regular queue;
     const regularConsumer = consumeFromQueue('evidence.embedding.queue', async (payload, ack, nack) => {
       try {
         await processChunkJob(payload as ChunkJob);
@@ -172,7 +172,7 @@ async function runRabbitConsumer() {
     // Wait for both consumers to start
     await Promise.all([priorityConsumer, regularConsumer]);
 
-    // Cleanup on shutdown
+    // Cleanup on shutdown;
     process.on('SIGINT', () => {
       clearInterval(heartbeatInterval);
     });
@@ -196,13 +196,13 @@ async function runRedisLoop() {
     await ingestionService.initialize();
     console.log('✅ Ingestion service initialized');
 
-    // Register this worker
+    // Register this worker;
     await cache.set(`worker:${workerId}`, {
       id: workerId,
       startedAt: new Date().toISOString(),
       status: 'active',
       queues: ['embedding:jobs'],
-      pid: process.pid
+      pid: process.pid,
     }, 300);
 
     console.log('🚀 Redis BLPOP loop started on embedding:jobs');
@@ -210,7 +210,7 @@ async function runRedisLoop() {
     const heartbeatInterval = setInterval(async () => {
       if (!shuttingDown) {
         try {
-          await cache.setex(`worker:${workerId}:heartbeat`, 30, new Date().toISOString());
+          await cache.setex(`worker:${workerId}:heartbeat`, 30, new Date().toISOString();
         } catch (e) {
           console.warn('❌ Heartbeat failed:', e);
         }
@@ -232,7 +232,7 @@ async function runRedisLoop() {
         }
       } catch (e: any) {
         console.error('❌ Worker error (redis loop):', e?.message || e);
-        await new Promise((r) => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 500);
       }
     }
 
@@ -257,7 +257,7 @@ async function runComprehensiveWorker() {
   }
 }
 
-// Graceful shutdown
+// Graceful shutdown;
 async function shutdown() {
   console.log('🛑 Comprehensive worker shutting down...');
   shuttingDown = true;
@@ -281,7 +281,7 @@ async function shutdown() {
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
 
-// Handle unhandled rejections
+// Handle unhandled rejections;
 process.on('unhandledRejection', (reason, promise) => {
   console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
   shutdown();

@@ -116,14 +116,14 @@ export class YoRHaUIExample {
 
   private setupEventListeners(container: HTMLElement): void {
     // Mouse events
-    container.addEventListener('mousemove', this.onMouseMove.bind(this));
-    container.addEventListener('click', this.onClick.bind(this));
+    container.addEventListener('mousemove', this.onMouseMove.bind(this);
+    container.addEventListener('click', this.onClick.bind(this);
     
     // Keyboard events (for input components)
-    window.addEventListener('keydown', this.onKeyDown.bind(this));
+    window.addEventListener('keydown', this.onKeyDown.bind(this);
     
     // Resize handling
-    window.addEventListener('resize', this.onWindowResize.bind(this));
+    window.addEventListener('resize', this.onWindowResize.bind(this);
   }
 
   private createMainInterface(): void {
@@ -148,7 +148,7 @@ export class YoRHaUIExample {
   }
 
   private createHeader(): void {
-    // Header panel
+    // Header panel;
     const headerPanel = new YoRHaPanel3D({
       title: 'YoRHa Interface System',
       variant: 'terminal',
@@ -158,7 +158,7 @@ export class YoRHaUIExample {
       glow: {
         enabled: true,
         color: YORHA_COLORS.accent.gold,
-        intensity: 0.3
+        intensity: 0.3,
       }
     });
 
@@ -166,19 +166,19 @@ export class YoRHaUIExample {
     const headerLayout = YoRHaLayoutPresets.createToolbar();
     headerPanel.addContent(headerLayout);
 
-    // System status indicators
+    // System status indicators;
     const statusButton = new YoRHaButton3D({
       text: 'System Status: OPERATIONAL',
       variant: 'ghost',
       size: 'small',
-      textColor: YORHA_COLORS.status.success
+      textColor: YORHA_COLORS.status.success,
     });
 
     const settingsButton = new YoRHaButton3D({
       text: 'Settings',
       variant: 'secondary',
       size: 'small',
-      icon: 'gear'
+      icon: 'gear',
     });
 
     headerLayout.addChild(statusButton);
@@ -188,21 +188,21 @@ export class YoRHaUIExample {
   }
 
   private createMainContent(): void {
-    // Main content panel
+    // Main content panel;
     const contentPanel = new YoRHaPanel3D({
       title: 'Data Input Terminal',
       variant: 'default',
       width: 8,
       height: 4.5,
       scrollable: true,
-      resizable: true
+      resizable: true,
     });
 
     // Form layout
     const formLayout = YoRHaLayoutPresets.createForm();
     contentPanel.addContent(formLayout);
 
-    // Create form inputs
+    // Create form inputs;
     const nameInput = new YoRHaInput3D({
       placeholder: 'Enter identification code...',
       variant: 'outlined',
@@ -210,7 +210,7 @@ export class YoRHaUIExample {
       icon: 'user',
       iconPosition: 'left',
       clearable: true,
-      width: 6
+      width: 6,
     });
 
     const passwordInput = new YoRHaInput3D({
@@ -220,7 +220,7 @@ export class YoRHaUIExample {
       size: 'medium',
       icon: 'lock',
       iconPosition: 'left',
-      width: 6
+      width: 6,
     });
 
     const emailInput = new YoRHaInput3D({
@@ -231,7 +231,7 @@ export class YoRHaUIExample {
       icon: 'email',
       iconPosition: 'left',
       clearable: true,
-      width: 6
+      width: 6,
     });
 
     const messageInput = new YoRHaInput3D({
@@ -240,7 +240,7 @@ export class YoRHaUIExample {
       multiline: true,
       rows: 3,
       maxLength: 500,
-      width: 6
+      width: 6,
     });
 
     // Add inputs to form
@@ -249,7 +249,7 @@ export class YoRHaUIExample {
     formLayout.addChild(emailInput, { alignSelf: 'stretch' });
     formLayout.addChild(messageInput, { alignSelf: 'stretch' });
 
-    // Add event listeners
+    // Add event listeners;
     nameInput.addEventListener('input', (event: any) => {
       console.log('Name input:', event.data?.value);
     });
@@ -261,29 +261,29 @@ export class YoRHaUIExample {
     // Footer layout for action buttons
     const footerLayout = YoRHaLayoutPresets.createFlexRow(0.3);
 
-    // Action buttons
+    // Action buttons;
     const submitButton = new YoRHaButton3D({
       text: 'Execute Command',
       variant: 'primary',
       size: 'large',
       icon: 'play',
-      iconPosition: 'left'
+      iconPosition: 'left',
     });
 
     const cancelButton = new YoRHaButton3D({
       text: 'Abort',
       variant: 'danger',
-      size: 'large'
+      size: 'large',
     });
 
     const helpButton = new YoRHaButton3D({
       text: 'System Manual',
       variant: 'secondary',
       size: 'medium',
-      icon: 'help'
+      icon: 'help',
     });
 
-    // Add event listeners
+    // Add event listeners;
     submitButton.addEventListener('click', () => {
       this.showSubmissionModal();
     });
@@ -304,7 +304,7 @@ export class YoRHaUIExample {
   }
 
   private createFloatingActions(): void {
-    // Floating notification button
+    // Floating notification button;
     const notificationButton = new YoRHaButton3D({
       text: '3',
       variant: 'accent',
@@ -313,14 +313,14 @@ export class YoRHaUIExample {
       glow: {
         enabled: true,
         color: YORHA_COLORS.accent.gold,
-        intensity: 0.5
+        intensity: 0.5,
       }
     });
 
     notificationButton.position.set(6, 3, 1);
     this.scene.add(notificationButton);
 
-    // Add pulsing animation
+    // Add pulsing animation;
     notificationButton.addCustomAnimation('pulse', (deltaTime) => {
       const time = Date.now() * 0.003;
       const scale = 1 + Math.sin(time) * 0.1;
@@ -335,7 +335,7 @@ export class YoRHaUIExample {
       size: 'medium',
       closable: true,
       showHeader: true,
-      showFooter: true
+      showFooter: true,
     });
 
     // Add content to modal
@@ -344,19 +344,19 @@ export class YoRHaUIExample {
     const messagePanel = new YoRHaPanel3D({
       variant: 'glass',
       width: 4,
-      height: 1.5
+      height: 1.5,
     });
 
     const confirmButton = new YoRHaButton3D({
       text: 'Confirm Execution',
       variant: 'primary',
-      size: 'medium'
+      size: 'medium',
     });
 
     const cancelButton = new YoRHaButton3D({
       text: 'Cancel',
       variant: 'secondary',
-      size: 'medium'
+      size: 'medium',
     });
 
     confirmButton.addEventListener('click', () => {
@@ -390,7 +390,7 @@ export class YoRHaUIExample {
       title: 'Abort Operation',
       variant: 'alert',
       size: 'small',
-      closable: true
+      closable: true,
     });
 
     const modalLayout = YoRHaLayoutPresets.createDialog();
@@ -398,7 +398,7 @@ export class YoRHaUIExample {
     const confirmButton = new YoRHaButton3D({
       text: 'Abort',
       variant: 'danger',
-      size: 'medium'
+      size: 'medium',
     });
 
     confirmButton.addEventListener('click', () => {
@@ -424,7 +424,7 @@ export class YoRHaUIExample {
       title: 'System Documentation',
       variant: 'terminal',
       size: 'large',
-      closable: true
+      closable: true,
     });
 
     const modalLayout = YoRHaLayoutPresets.createForm();
@@ -432,7 +432,7 @@ export class YoRHaUIExample {
     const helpPanel = new YoRHaPanel3D({
       variant: 'terminal',
       width: 6,
-      height: 4
+      height: 4,
     });
 
     modalLayout.addChild(helpPanel);
@@ -454,10 +454,10 @@ export class YoRHaUIExample {
       title: 'Command Executed Successfully',
       variant: 'default',
       size: 'medium',
-      closable: true
+      closable: true,
     });
 
-    // Auto-close after 3 seconds
+    // Auto-close after 3 seconds;
     setTimeout(() => {
       this.modal?.close();
     }, 3000);
@@ -485,7 +485,7 @@ export class YoRHaUIExample {
     const intersects = this.raycaster.intersectObjects(this.scene.children, true);
     
     if (this.hoveredObject) {
-      // Trigger leave event on previously hovered object
+      // Trigger leave event on previously hovered object;
       if (this.hoveredObject.userData.onLeave) {
         this.hoveredObject.userData.onLeave();
       }
@@ -537,16 +537,16 @@ export class YoRHaUIExample {
   }
 
   private animate(): void {
-    this.animationId = requestAnimationFrame(this.animate.bind(this));
+    this.animationId = requestAnimationFrame(this.animate.bind(this);
 
     // Update layouts
     this.mainLayout.updateLayout();
 
-    // Update all components with custom animations
+    // Update all components with custom animations;
     this.scene.traverse((object) => {
       if (object instanceof YoRHaButton3D || 
           object instanceof YoRHaPanel3D || 
-          object instanceof YoRHaInput3D || 
+          object instanceof YoRHaInput3D ||;
           object instanceof YoRHaModal3D) {
         // Components handle their own animations internally
       }
@@ -560,11 +560,11 @@ export class YoRHaUIExample {
       cancelAnimationFrame(this.animationId);
     }
 
-    // Dispose of all components
+    // Dispose of all components;
     this.scene.traverse((object) => {
       if (object instanceof YoRHaButton3D || 
           object instanceof YoRHaPanel3D || 
-          object instanceof YoRHaInput3D || 
+          object instanceof YoRHaInput3D ||;
           object instanceof YoRHaModal3D) {
         object.dispose();
       }
@@ -577,7 +577,7 @@ export class YoRHaUIExample {
   }
 }
 
-// Usage example
+// Usage example;
 export function createYoRHaUIDemo(container: HTMLElement): YoRHaUIExample {
   return new YoRHaUIExample(container);
 }

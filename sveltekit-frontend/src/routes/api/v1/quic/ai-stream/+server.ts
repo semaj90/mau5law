@@ -22,6 +22,7 @@ const QUIC_AI_STREAM_CONFIG = {
   maxTokens: 4096,
   defaultModel: 'gemma3-legal',
 };
+}
 
 export interface AIStreamRequest {
   prompt: string;
@@ -45,12 +46,12 @@ export interface AIStreamResponse {
 
 /*
  * GET /api/v1/quic/ai-stream - AI stream service health and session status
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');
 
-    // Check AI stream service health
+    // Check AI stream service health;
     const healthResponse = await fetch(`${QUIC_AI_STREAM_CONFIG.baseUrl}/health`, {
       signal: AbortSignal.timeout(QUIC_AI_STREAM_CONFIG.timeout),
     });
@@ -61,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (healthResponse.ok) {
       responseData = await healthResponse.json();
     } else {
-      // Try fallback HTTP/2
+      // Try fallback HTTP/2;
       const fallbackResponse = await fetch(`${QUIC_AI_STREAM_CONFIG.fallbackUrl}/health`, {
         signal: AbortSignal.timeout(QUIC_AI_STREAM_CONFIG.timeout),
       });
@@ -135,24 +136,24 @@ export const GET: RequestHandler = async ({ url }) => {
 
 /*
  * POST /api/v1/quic/ai-stream - Start AI inference with streaming support
- */
+ */;
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const aiRequest: AIStreamRequest = await request.json();
     const useHttp3 = url.searchParams.get('http3') !== 'false';
     const enableStreaming = aiRequest.stream !== false;
 
-    // Validate AI request
+    // Validate AI request;
     if (!aiRequest.prompt || aiRequest.prompt.trim().length === 0) {
-      error(400, ensureError({ message: 'Prompt is required and cannot be empty' }));
+      error(400, ensureError({ message: 'Prompt is required and cannot be empty' });
     }
 
     if (aiRequest.maxTokens && (aiRequest.maxTokens < 1 || aiRequest.maxTokens > 8192)) {
-      error(400, ensureError({ message: 'Max tokens must be between 1 and 8192' }));
+      error(400, ensureError({ message: 'Max tokens must be between 1 and 8192' });
     }
 
     if (aiRequest.temperature && (aiRequest.temperature < 0 || aiRequest.temperature > 2)) {
-      error(400, ensureError({ message: 'Temperature must be between 0 and 2' }));
+      error(400, ensureError({ message: 'Temperature must be between 0 and 2' });
     }
 
     // Generate session ID if not provided
@@ -163,7 +164,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       ? `${QUIC_AI_STREAM_CONFIG.baseUrl}/api/ai/stream`
       : `${QUIC_AI_STREAM_CONFIG.fallbackUrl}/api/ai/stream`;
 
-    // Prepare request payload
+    // Prepare request payload;
     const requestPayload = {
       prompt: aiRequest.prompt,
       model: aiRequest?.model || QUIC_AI_STREAM_CONFIG.defaultModel,
@@ -251,14 +252,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 /*
  * DELETE /api/v1/quic/ai-stream - Terminate AI session
- */
+ */;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');
     const useHttp3 = url.searchParams.get('http3') !== 'false';
 
     if (!sessionId) {
-      error(400, ensureError({ message: 'Session ID is required' }));
+      error(400, ensureError({ message: 'Session ID is required' });
     }
 
     const targetUrl = useHttp3
@@ -300,21 +301,21 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
 /*
  * PUT /api/v1/quic/ai-stream - Update AI streaming configuration
- */
+ */;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const config = await request.json();
 
-    // Validate configuration
+    // Validate configuration;
     if (config.maxTokens && (config.maxTokens < 1 || config.maxTokens > 8192)) {
-      error(400, ensureError({ message: 'Max tokens must be between 1 and 8192' }));
+      error(400, ensureError({ message: 'Max tokens must be between 1 and 8192' });
     }
 
     if (config.timeout && (config.timeout < 5000 || config.timeout > 300000)) {
-      error(400, ensureError({ message: 'Timeout must be between 5000 and 300000ms' }));
+      error(400, ensureError({ message: 'Timeout must be between 5000 and 300000ms' });
     }
 
-    // Update configuration (in a real implementation, this would be persisted)
+    // Update configuration (in a real implementation, this would be persisted);
     const updatedConfig = {
       ...QUIC_AI_STREAM_CONFIG,
       ...config,

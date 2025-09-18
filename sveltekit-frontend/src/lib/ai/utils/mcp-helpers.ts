@@ -1,6 +1,7 @@
 /**
  * MCP Helper Functions
- */
+ */;
+}
 
 export interface MCPRequest {
   method: string;
@@ -17,6 +18,7 @@ export interface MCPToolRequest {
 }
 
 export type MCPGenericRequest = MCPRequest | MCPToolRequest;
+}
 
 export interface OrchestrationOptions {
   maxRetries?: number;
@@ -31,7 +33,7 @@ export interface OrchestrationOptions {
 
 export async function copilotOrchestrator(
   request: MCPGenericRequest | string,
-  options?: OrchestrationOptions
+  options?: OrchestrationOptions;
 ): Promise<any> {
   const req: MCPRequest =
     typeof request === 'string'

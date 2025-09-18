@@ -13,6 +13,7 @@ import { yorhaMipmapShaders } from './YoRHaMipmapShaders.js';
 import { lodCacheEngine } from '$lib/ai/lod-cache-engine.js';
 import type { LODLevel, LODCacheEntry } from '$lib/ai/lod-cache-engine.js';
 import { ollamaService } from '$lib/server/ai/ollama-service.js';
+}
 
 export interface HeadlessProcessingConfig {
   // Processing modes
@@ -43,12 +44,12 @@ export interface HeadlessProcessingResult {
   processingTime: number;
   outputFiles?: string[];
   
-  // Mipmap results
+  // Mipmap results;
   mipmapChain?: {
     levels: number;
     totalMemoryUsed: number;
     generationTime: number;
-    rtxOptimized: boolean;
+    rtxOptimized: boolean;,
   };
   
   // LOD cache results
@@ -56,21 +57,21 @@ export interface HeadlessProcessingResult {
   vectorSimilarity?: number;
   svgVisualizations?: Record<LODLevel, string>;
   
-  // Legal analysis results
+  // Legal analysis results;
   legalAnalysis?: {
     confidence: number;
     entities: Array<any>;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    summary: string;
+    summary: string;,
   };
   
-  // Performance metrics
+  // Performance metrics;
   metrics: {
     webgpuInitTime: number;
     processingTime: number;
     memoryUsage: number;
     compressionRatio: number;
-    cacheHitRate: number;
+    cacheHitRate: number;,
   };
 }
 
@@ -78,12 +79,12 @@ export interface OffscreenRenderTarget {
   texture: GPUTexture;
   width: number;
   height: number;
-  format: GPUTextureFormat;
+  format: GPUTextureFormat;,
 }
 
 /**
  * Factory for creating headless legal AI processing pipelines
- */
+ */;
 export class HeadlessLegalProcessorFactory {
   private static instance: HeadlessLegalProcessorFactory;
   private device: GPUDevice | null = null;
@@ -101,7 +102,7 @@ export class HeadlessLegalProcessorFactory {
 
   /**
    * Initialize headless WebGPU environment without any surface dependencies
-   */
+   */;
   async initializeHeadless(): Promise<boolean> {
     if (this.isInitialized) return true;
 
@@ -109,7 +110,7 @@ export class HeadlessLegalProcessorFactory {
     const startTime = performance.now();
 
     try {
-      // Initialize headless WebGPU device
+      // Initialize headless WebGPU device;
       if (!navigator.gpu) {
         console.warn('WebGPU not available - falling back to CPU processing');
         return false;
@@ -117,7 +118,7 @@ export class HeadlessLegalProcessorFactory {
 
       const adapter = await navigator.gpu.requestAdapter({
         powerPreference: 'high-performance',
-        forceFallbackAdapter: false
+        forceFallbackAdapter: false,
       });
 
       if (!adapter) {
@@ -125,7 +126,7 @@ export class HeadlessLegalProcessorFactory {
         return false;
       }
 
-      // Request device with features needed for legal document processing
+      // Request device with features needed for legal document processing;
       this.device = await adapter.requestDevice({
         requiredFeatures: [
           'timestamp-query',
@@ -159,7 +160,7 @@ export class HeadlessLegalProcessorFactory {
 
   /**
    * Initialize all subsystems for headless operation
-   */
+   */;
   private async initializeSubsystems(): Promise<void> {
     if (!this.device) throw new Error('Device not available');
 
@@ -178,17 +179,17 @@ export class HeadlessLegalProcessorFactory {
 
   /**
    * Test headless WebGPU capabilities
-   */
+   */;
   private async testHeadlessCapabilities(): Promise<void> {
     if (!this.device) return;
 
     console.log('🔬 Testing headless WebGPU capabilities...');
 
-    // Create minimal render target for testing
+    // Create minimal render target for testing;
     const testTexture = this.device.createTexture({
       size: { width: 256, height: 256 },
       format: 'rgba8unorm',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC
+      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
     });
 
     console.log('✅ Headless texture creation successful');
@@ -233,7 +234,7 @@ export class HeadlessLegalProcessorFactory {
       processingTime: 0,
       memoryUsage: 0,
       compressionRatio: 0,
-      cacheHitRate: 0
+      cacheHitRate: 0,
     };
 
     try {
@@ -268,7 +269,7 @@ export class HeadlessLegalProcessorFactory {
           levels: mipmapResult.mipmapLevels.length,
           totalMemoryUsed: mipmapResult.totalMemoryUsed,
           generationTime: mipmapResult.totalGenerationTime,
-          rtxOptimized: mipmapResult.optimization.rtxAcceleration
+          rtxOptimized: mipmapResult.optimization.rtxAcceleration,
         } : undefined,
         lodEntry: lodResult.lodEntry,
         svgVisualizations: lodResult.lodEntry.svg_summaries,
@@ -294,7 +295,7 @@ export class HeadlessLegalProcessorFactory {
    */
   private async processWithLODCache(
     text: string, 
-    config: HeadlessProcessingConfig
+    config: HeadlessProcessingConfig;
   ): Promise<any> {
     const context = {
       session_id: `headless-${Date.now()}`,
@@ -302,7 +303,7 @@ export class HeadlessLegalProcessorFactory {
       processing_mode: config.mode,
       user_preferences: {
         analysis_level: config.documentAnalysisLevel,
-        generate_svg: config.generateSVGSummaries
+        generate_svg: config.generateSVGSummaries,
       }
     };
 
@@ -320,7 +321,7 @@ export class HeadlessLegalProcessorFactory {
    */
   private async generateMipmapVisualizations(
     lodEntry: LODCacheEntry,
-    config: HeadlessProcessingConfig
+    config: HeadlessProcessingConfig;
   ): Promise<any> {
     if (!this.device || !config.enableMipmapGeneration) return null;
 
@@ -337,14 +338,14 @@ export class HeadlessLegalProcessorFactory {
 
     // Generate mipmap chain using YoRHa shaders
     const mipmapResult = await yorhaMipmapShaders.generateMipmapChain(
-      renderTarget.texture,
+      renderTarget.texture,);
       {
         maxMipLevels: 8,
         filterMode: 'linear',
         enableOptimizations: true,
         rtxOptimized: true,
         enableStreaming: config.enableStreamingOptimization,
-        maxTextureSize: config.maxTextureSize
+        maxTextureSize: config.maxTextureSize,
       }
     );
 
@@ -356,7 +357,7 @@ export class HeadlessLegalProcessorFactory {
 
   /**
    * Create offscreen render target for headless processing
-   */
+   */;
   private createOffscreenRenderTarget(width: number, height: number): OffscreenRenderTarget {
     if (!this.device) throw new Error('Device not available');
 
@@ -372,7 +373,7 @@ export class HeadlessLegalProcessorFactory {
       texture,
       width,
       height,
-      format: 'rgba8unorm'
+      format: 'rgba8unorm',
     };
   }
 
@@ -381,7 +382,7 @@ export class HeadlessLegalProcessorFactory {
    */
   private async renderDocumentToTexture(
     lodEntry: LODCacheEntry, 
-    renderTarget: OffscreenRenderTarget
+    renderTarget: OffscreenRenderTarget;
   ): Promise<void> {
     if (!this.device) return;
 
@@ -390,13 +391,13 @@ export class HeadlessLegalProcessorFactory {
     // Create command encoder for headless rendering
     const commandEncoder = this.device.createCommandEncoder();
     
-    // Begin render pass with offscreen target
+    // Begin render pass with offscreen target;
     const renderPass = commandEncoder.beginRenderPass({
       colorAttachments: [{
         view: renderTarget.texture.createView(),
         clearValue: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 }, // White background
         loadOp: 'clear',
-        storeOp: 'store'
+        storeOp: 'store',
       }]
     });
 
@@ -413,7 +414,7 @@ export class HeadlessLegalProcessorFactory {
    */
   private async performLegalAnalysis(
     text: string,
-    lodEntry: LODCacheEntry
+    lodEntry: LODCacheEntry;
   ): Promise<any> {
     console.log('⚖️ Performing legal AI analysis...');
 
@@ -421,10 +422,10 @@ export class HeadlessLegalProcessorFactory {
       // Use compressed representations for efficient analysis
       const analysisPrompt = this.buildLegalAnalysisPrompt(text, lodEntry);
       
-      // Call Ollama service for legal analysis
+      // Call Ollama service for legal analysis;
       const response = await (ollamaService as any).generateCompletion(analysisPrompt, {
         model: 'llama3.1:8b', // Or whatever legal model is available
-        stream: false
+        stream: false,
       });
 
       // Parse response for structured legal analysis
@@ -438,7 +439,7 @@ export class HeadlessLegalProcessorFactory {
 
   /**
    * Build legal analysis prompt using LOD data
-   */
+   */;
   private buildLegalAnalysisPrompt(text: string, lodEntry: LODCacheEntry): string {
     const contextAnchors = lodEntry.vector_metadata.context_anchors.join(', ');
     
@@ -462,9 +463,9 @@ Format your response as structured JSON.`;
 
   /**
    * Parse legal analysis response into structured format
-   */
+   */;
   private parseLegalAnalysisResponse(response: any): any {
-    // Would implement proper parsing of Ollama response
+    // Would implement proper parsing of Ollama response;
     return {
       confidence: 0.85,
       entities: [
@@ -477,7 +478,7 @@ Format your response as structured JSON.`;
 
   /**
    * Generate fallback analysis if Ollama fails
-   */
+   */;
   private generateFallbackAnalysis(text: string): any {
     return {
       confidence: 0.6,
@@ -493,7 +494,7 @@ Format your response as structured JSON.`;
   private async saveOutputFiles(
     lodResult: any,
     mipmapResult: any,
-    config: HeadlessProcessingConfig
+    config: HeadlessProcessingConfig;
   ): Promise<string[]> {
     const outputFiles: string[] = [];
     const baseDir = config.fileOutputPath || './headless-output';
@@ -516,13 +517,13 @@ Format your response as structured JSON.`;
     const results: HeadlessProcessingResult[] = [];
     const concurrentLimit = config.concurrentProcessingLimit || 4;
 
-    // Process in batches to avoid overwhelming the GPU
+    // Process in batches to avoid overwhelming the GPU;
     for (let i = 0; i < documents.length; i += concurrentLimit) {
       const batch = documents.slice(i, i + concurrentLimit);
-      const batchPromises = batch.map(doc => 
+      const batchPromises = batch.map(doc =>;
         this.processLegalDocument(doc.text, {
           ...config,
-          saveToFile: false // Disable individual file saving for batch
+          saveToFile: false // Disable individual file saving for batch,
         })
       );
 
@@ -537,19 +538,19 @@ Format your response as structured JSON.`;
 
   /**
    * Get processing statistics
-   */
+   */;
   getStats() {
     return {
       isInitialized: this.isInitialized,
       hasDevice: !!this.device,
       queueLength: this.processingQueue.length,
-      lodCacheStats: lodCacheEngine.getCacheStats()
+      lodCacheStats: lodCacheEngine.getCacheStats(),
     };
   }
 
   /**
    * Cleanup resources
-   */
+   */;
   dispose() {
     if (this.device) {
       // Cleanup WebGPU resources
@@ -567,7 +568,7 @@ Format your response as structured JSON.`;
 // Export factory singleton
 export const headlessLegalProcessorFactory = HeadlessLegalProcessorFactory.getInstance();
 
-// Export default configuration
+// Export default configuration;
 export const DEFAULT_HEADLESS_CONFIG: HeadlessProcessingConfig = {
   mode: 'headless',
   enableOffscreenRendering: true,
@@ -581,5 +582,5 @@ export const DEFAULT_HEADLESS_CONFIG: HeadlessProcessingConfig = {
   generateSVGSummaries: true,
   enablePredictiveAnalytics: true,
   outputFormats: ['svg', 'json', 'lod'],
-  saveToFile: false
+  saveToFile: false,
 };

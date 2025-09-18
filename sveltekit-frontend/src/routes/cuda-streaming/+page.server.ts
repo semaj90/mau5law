@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         maxConcurrentStreams: 8,
         maxBatchSize: 1000,
         avgLatency: 45, // milliseconds
-        throughput: 850 // documents per second
+        throughput: 850 // documents per second,
       }
     };
   } catch (err) {
@@ -51,19 +51,19 @@ export const actions: Actions = {
     try {
       const sessionId = `stream_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
-      // Initialize CUDA streaming session
+      // Initialize CUDA streaming session;
       const streamingResult = await initializeCudaStream(sessionId, {
         operationType,
         inputData,
         batchSize,
-        userId: locals.user?.id
+        userId: locals.user?.id,
       });
 
       return json({
         success: true,
         sessionId,
         stream: streamingResult,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (err) {
       console.error('Failed to start CUDA stream:', err);
@@ -109,7 +109,7 @@ export const actions: Actions = {
       const processingResult = await processCudaDocument(documentData, {
         processingType,
         useGpu,
-        userId: locals.user?.id
+        userId: locals.user?.id,
       });
 
       const processingTime = Date.now() - startTime;
@@ -119,7 +119,7 @@ export const actions: Actions = {
         result: processingResult,
         processingTime,
         gpuAccelerated: useGpu,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (err) {
       console.error('CUDA document processing failed:', err);
@@ -129,7 +129,7 @@ export const actions: Actions = {
 };
 
 async function getGPUSystemInfo() {
-  // Mock GPU info - replace with actual CUDA/GPU detection
+  // Mock GPU info - replace with actual CUDA/GPU detection;
   return {
     gpuAvailable: true,
     gpuName: "NVIDIA GeForce RTX 4090",
@@ -142,7 +142,7 @@ async function getGPUSystemInfo() {
     clockRate: 2520, // MHz
     memoryClockRate: 10501, // MHz
     temperatureCurrent: 45, // Celsius
-    powerDraw: 320, // Watts
+    powerDraw: 320, // Watts;
     utilization: {
       gpu: 15, // percentage
       memory: 8, // percentage
@@ -160,12 +160,12 @@ async function getStreamingStats() {
     errorRate: 0.02, // percentage
     uptime: 23847, // seconds
     queueSize: 12,
-    memoryUsage: 8.4 // GB
+    memoryUsage: 8.4 // GB,
   };
 }
 
 async function getRecentProcessingResults() {
-  return [
+  return [;
     {
       sessionId: "stream_1234567890",
       operation: "document_vectorization",
@@ -174,7 +174,7 @@ async function getRecentProcessingResults() {
       gpuAccelerated: true,
       throughput: 667, // docs/sec
       timestamp: new Date(Date.now() - 300000).toISOString(), // 5 min ago
-      status: "completed"
+      status: "completed",
     },
     {
       sessionId: "stream_1234567891", 
@@ -184,7 +184,7 @@ async function getRecentProcessingResults() {
       gpuAccelerated: true,
       throughput: 471,
       timestamp: new Date(Date.now() - 900000).toISOString(), // 15 min ago
-      status: "completed"
+      status: "completed",
     },
     {
       sessionId: "stream_1234567892",
@@ -194,19 +194,19 @@ async function getRecentProcessingResults() {
       gpuAccelerated: false, // Fallback to CPU
       throughput: 225,
       timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
-      status: "completed"
+      status: "completed",
     }
   ];
 }
 
 async function initializeCudaStream(sessionId: string, options: any) {
-  // Mock streaming initialization - replace with actual CUDA implementation
+  // Mock streaming initialization - replace with actual CUDA implementation;
   return {
     sessionId,
     status: 'initialized',
     processingQueue: [],
     estimatedThroughput: 750,
-    queuePosition: 1
+    queuePosition: 1,
   };
 }
 
@@ -220,7 +220,7 @@ async function processCudaDocument(documentData: string, options: any) {
   // Mock CUDA document processing - replace with actual implementation
   const simulatedProcessingTime = Math.random() * 1000 + 200;
   
-  await new Promise(resolve => setTimeout(resolve, simulatedProcessingTime));
+  await new Promise(resolve => setTimeout(resolve, simulatedProcessingTime);
   
   return {
     vectors: new Array(768).fill(0).map(() => Math.random()),
@@ -234,7 +234,7 @@ async function processCudaDocument(documentData: string, options: any) {
     performance_metrics: {
       gpu_utilization: options.useGpu ? Math.random() * 80 + 10 : 0,
       memory_used: Math.random() * 2 + 0.5, // GB
-      tokens_per_second: options.useGpu ? Math.random() * 2000 + 1000 : Math.random() * 500 + 200
+      tokens_per_second: options.useGpu ? Math.random() * 2000 + 1000 : Math.random() * 500 + 200,
     }
   };
 }
@@ -246,13 +246,13 @@ function getDefaultGPUData() {
       gpuName: "No GPU Detected",
       cudaVersion: "N/A",
       totalMemory: "0GB",
-      availableMemory: "0GB"
+      availableMemory: "0GB",
     },
     sessionStats: {
       activeSessions: 0,
       totalSessionsToday: 0,
       avgProcessingTime: 0,
-      throughputCurrent: 0
+      throughputCurrent: 0,
     },
     recentProcessing: [],
     supportedOperations: [],
@@ -260,7 +260,7 @@ function getDefaultGPUData() {
       maxConcurrentStreams: 0,
       maxBatchSize: 0,
       avgLatency: 0,
-      throughput: 0
+      throughput: 0,
     }
   };
 }

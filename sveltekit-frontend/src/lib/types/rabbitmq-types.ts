@@ -32,6 +32,7 @@ export type JobStatus =
   | 'failed'
   | 'cancelled'
   | 'retrying';
+}
 
 export interface JobDefinition {
   id: string;
@@ -55,7 +56,7 @@ export interface ProcessingMetrics {
   throughput: number;
   errorRate: number;
   queueDepth: number;
-  activeWorkers: number;
+  activeWorkers: number;,
 }
 
 export interface QueueConfig {

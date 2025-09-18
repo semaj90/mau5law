@@ -3,10 +3,7 @@ import { defineConfig } from 'vite';
 import UnoCSS from 'unocss/vite';
 
 export default defineConfig({
-  plugins: [
-    UnoCSS(),
-    sveltekit()
-  ],
+  plugins: [UnoCSS(), sveltekit()],
   server: {
     port: 5173,
     strictPort: true,
@@ -16,18 +13,18 @@ export default defineConfig({
       '/grpc': {
         target: 'http://localhost:50051',
         changeOrigin: true,
-        secure: false
+        secure: false,
       },
       '/api/cuda': {
         target: 'http://localhost:8097',
         changeOrigin: true,
-        secure: false
-      }
-    }
+        secure: false,
+      },
+    },
   },
   preview: {
     port: 4173,
-    host: '0.0.0.0'
+    host: '0.0.0.0',
   },
   build: {
     target: 'ES2022',
@@ -38,18 +35,18 @@ export default defineConfig({
         manualChunks: {
           'webgpu-ai': ['$lib/webgpu/webgpu-ai-engine'],
           'cognitive-router': ['$lib/ai/cognitive-smart-router'],
-          'gpu-inference': ['$lib/services/cuda-vector-integration']
-        }
-      }
-    }
+          'gpu-inference': ['$lib/services/cuda-vector-integration'],
+        },
+      },
+    },
   },
   optimizeDeps: {
     exclude: ['@webgpu/types'],
-    include: ['@grpc/grpc-js', '@grpc/proto-loader']
+    include: ['@grpc/grpc-js', '@grpc/proto-loader'],
   },
   define: {
     'process.env.NODE_ENV': '"development"',
-    'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5432/legal_ai_db"'
+    'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5432/legal_ai_db"',
   },
-  clearScreen: false
+  clearScreen: false,
 });

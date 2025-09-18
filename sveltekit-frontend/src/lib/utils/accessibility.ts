@@ -4,7 +4,7 @@
  * Ensures proper focus management, keyboard navigation, and screen reader support
  */
 
-// Focus management
+// Focus management;
 export class FocusManager {
   private static focusStack: HTMLElement[] = [];
   private static originalActiveElement: HTMLElement | null = null;
@@ -18,7 +18,7 @@ export class FocusManager {
     this.originalActiveElement = document.activeElement as HTMLElement;
     this.focusStack.push(container);
 
-    // Focus the first element
+    // Focus the first element;
     if (firstElement) {
       firstElement.focus();
     }
@@ -26,13 +26,13 @@ export class FocusManager {
       if (e.key !== "Tab") return;
 
       if (e.shiftKey) {
-        // Shift + Tab (backwards)
+        // Shift + Tab (backwards);
         if (document.activeElement === firstElement) {
           e.preventDefault();
           lastElement?.focus();
         }
       } else {
-        // Tab (forwards)
+        // Tab (forwards);
         if (document.activeElement === lastElement) {
           e.preventDefault();
           firstElement?.focus();
@@ -42,7 +42,7 @@ export class FocusManager {
 
     container.addEventListener("keydown", handleTabKey);
 
-    // Return cleanup function
+    // Return cleanup function;
     return () => {
       container.removeEventListener("keydown", handleTabKey);
       this.focusStack.pop();
@@ -70,8 +70,7 @@ export class FocusManager {
       '[contenteditable="true"]',
     ].join(", ");
 
-    return Array.from(container.querySelectorAll(focusableSelectors)).filter(
-      (el) => {
+    return Array.from(container.querySelectorAll(focusableSelectors)).filter((el) => {
         const element = el as HTMLElement;
         return (
           element.offsetWidth > 0 &&
@@ -94,7 +93,7 @@ export class FocusManager {
   }
   static announceToScreenReader(
     message: string,
-    priority: "polite" | "assertive" = "polite"
+    priority: "polite" | "assertive" = "polite";
   ) {
     const announcement = document.createElement("div");
     announcement.setAttribute("aria-live", priority);
@@ -108,7 +107,7 @@ export class FocusManager {
     document.body.appendChild(announcement);
     announcement.textContent = message;
 
-    // Remove after announcement
+    // Remove after announcement;
     setTimeout(() => {
       document.body.removeChild(announcement);
     }, 1000);
@@ -118,7 +117,7 @@ export class FocusManager {
   static announceLoadingState(
     isLoading: boolean,
     loadingText: string = "Loading, please wait...",
-    completedText: string = "Loading complete"
+    completedText: string = "Loading complete";
   ) {
     if (isLoading) {
       this.announceToScreenReader(loadingText, "polite");
@@ -141,7 +140,7 @@ export class FocusManager {
 
   static announceProcessingState(
     stage: 'analyzing' | 'processing' | 'generating' | 'complete' | 'error',
-    context?: string
+    context?: string;
   ) {
     const messages = {
       analyzing: `Analyzing${context ? ` ${context}` : ''}, please wait...`,
@@ -155,34 +154,34 @@ export class FocusManager {
     this.announceToScreenReader(messages[stage], priority);
   }
 }
-// Keyboard navigation utilities
+// Keyboard navigation utilities;
 export class KeyboardNavigation {
   static handleArrowKeys(
     elements: HTMLElement[],
     currentIndex: number,
     key: string,
-    orientation: "horizontal" | "vertical" = "horizontal"
+    orientation: "horizontal" | "vertical" = "horizontal";
   ): number {
     let newIndex = currentIndex;
 
     switch (key) {
-      case "ArrowRight":
+      case "ArrowRight":;
         if (orientation === "horizontal") {
           newIndex = (currentIndex + 1) % elements.length;
         }
         break;
-      case "ArrowLeft":
+      case "ArrowLeft":;
         if (orientation === "horizontal") {
           newIndex =
             currentIndex === 0 ? elements.length - 1 : currentIndex - 1;
         }
         break;
-      case "ArrowDown":
+      case "ArrowDown":;
         if (orientation === "vertical") {
           newIndex = (currentIndex + 1) % elements.length;
         }
         break;
-      case "ArrowUp":
+      case "ArrowUp":;
         if (orientation === "vertical") {
           newIndex =
             currentIndex === 0 ? elements.length - 1 : currentIndex - 1;
@@ -206,7 +205,7 @@ export class KeyboardNavigation {
     ) as HTMLElement[];
     let currentIndex = 0;
 
-    // Set initial tabindex
+    // Set initial tabindex;
     elements.forEach((el, index) => {
       el.setAttribute("tabindex", index === 0 ? "0" : "-1");
     });
@@ -239,7 +238,7 @@ export class KeyboardNavigation {
     };
   }
 }
-// Color contrast utilities
+// Color contrast utilities;
 export class ColorContrast {
   static getContrastRatio(color1: string, color2: string): number {
     const lum1 = this.getLuminance(color1);
@@ -261,7 +260,7 @@ export class ColorContrast {
   }
   static hexToRgb(hex: string): { r: number; g: number; b: number } | null {
     const result = /^#?([a-f\d]{2}) => [a-f\d]{2}) => [a-f\d]{2})$/i.exec(hex);
-    return result
+    return result;
       ? {
           r: parseInt(result[1], 16),
           g: parseInt(result[2], 16),
@@ -272,7 +271,7 @@ export class ColorContrast {
   static meetsWCAG(
     color1: string,
     color2: string,
-    level: "AA" | "AAA" = "AA"
+    level: "AA" | "AAA" = "AA";
   ): boolean {
     const ratio = this.getContrastRatio(color1, color2);
     return level === "AA" ? ratio >= 4.5 : ratio >= 7;
@@ -280,7 +279,7 @@ export class ColorContrast {
   static suggestAccessibleColor(
     baseColor: string,
     backgroundColor: string,
-    level: "AA" | "AAA" = "AA"
+    level: "AA" | "AAA" = "AA";
   ): string {
     if (this.meetsWCAG(baseColor, backgroundColor, level)) {
       return baseColor;
@@ -288,23 +287,23 @@ export class ColorContrast {
     const rgb = this.hexToRgb(baseColor);
     if (!rgb) return baseColor;
 
-    // Try darkening first
+    // Try darkening first;
     for (let i = 0.1; i <= 1; i += 0.1) {
       const darkerColor = this.rgbToHex(
         Math.round(rgb.r * (1 - i)),
         Math.round(rgb.g * (1 - i)),
-        Math.round(rgb.b * (1 - i))
+        Math.round(rgb.b * (1 - i)
       );
       if (this.meetsWCAG(darkerColor, backgroundColor, level)) {
         return darkerColor;
       }
     }
-    // Try lightening
+    // Try lightening;
     for (let i = 0.1; i <= 1; i += 0.1) {
       const lighterColor = this.rgbToHex(
         Math.min(255, Math.round(rgb.r + (255 - rgb.r) * i)),
         Math.min(255, Math.round(rgb.g + (255 - rgb.g) * i)),
-        Math.min(255, Math.round(rgb.b + (255 - rgb.b) * i))
+        Math.min(255, Math.round(rgb.b + (255 - rgb.b) * i)
       );
       if (this.meetsWCAG(lighterColor, backgroundColor, level)) {
         return lighterColor;
@@ -316,7 +315,7 @@ export class ColorContrast {
     return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
   }
 }
-// ARIA utilities
+// ARIA utilities;
 export class AriaUtils {
   static generateId(prefix = "aria"): string {
     return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
@@ -324,7 +323,7 @@ export class AriaUtils {
   static linkElements(
     trigger: HTMLElement,
     target: HTMLElement,
-    relationship: string
+    relationship: string;
   ) {
     const id = target.id || this.generateId();
     target.id = id;
@@ -368,7 +367,7 @@ export class AriaUtils {
     }, 1000);
   }
 }
-// Reduced motion utilities
+// Reduced motion utilities;
 export class MotionUtils {
   static prefersReducedMotion(): boolean {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -376,7 +375,7 @@ export class MotionUtils {
   static createResponsiveAnimation(
     element: HTMLElement,
     animation: Keyframe[] | PropertyIndexedKeyframes,
-    options: KeyframeAnimationOptions
+    options: KeyframeAnimationOptions;
   ): Animation | null {
     if (this.prefersReducedMotion()) {
       // Apply only the final state without animation
@@ -389,7 +388,7 @@ export class MotionUtils {
     return element.animate(animation, options);
   }
   static createReducedMotionCSS(): string {
-    return `
+    return `;
       @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after {
           animation-duration: 0.01ms !important;
@@ -400,7 +399,7 @@ export class MotionUtils {
     `;
   }
 }
-// Error handling and validation
+// Error handling and validation;
 export class AccessibilityValidator {
   static validateForm(form: HTMLFormElement): string[] {
     const errors: string[] = [];
@@ -446,7 +445,7 @@ export class AccessibilityValidator {
     );
   }
   static validateHeadingStructure(
-    container: HTMLElement = document.body
+    container: HTMLElement = document.body;
   ): string[] {
     const errors: string[] = [];
     const headings = Array.from(
@@ -455,7 +454,7 @@ export class AccessibilityValidator {
 
     let previousLevel = 0;
     headings.forEach((heading, index) => {
-      const level = parseInt(heading.tagName.charAt(1));
+      const level = parseInt(heading.tagName.charAt(1);
 
       if (index === 0 && level !== 1) {
         errors.push("Page should start with an h1 heading");
@@ -470,7 +469,7 @@ export class AccessibilityValidator {
     return errors;
   }
   static validateColorContrast(
-    container: HTMLElement = document.body
+    container: HTMLElement = document.body;
   ): string[] {
     const errors: string[] = [];
     const elements = container.querySelectorAll("*");
@@ -484,7 +483,7 @@ export class AccessibilityValidator {
         color &&
         backgroundColor &&
         color !== "rgba(0, 0, 0, 0)" &&
-        backgroundColor !== "rgba(0, 0, 0, 0)"
+        backgroundColor !== "rgba(0, 0, 0, 0)";
       ) {
         if (!ColorContrast.meetsWCAG(color, backgroundColor)) {
           errors.push(
@@ -497,7 +496,7 @@ export class AccessibilityValidator {
     return errors;
   }
 }
-// Auto-apply reduced motion styles
+// Auto-apply reduced motion styles;
 if (typeof document !== "undefined") {
   const style = document.createElement("style");
   style.textContent = MotionUtils.createReducedMotionCSS();

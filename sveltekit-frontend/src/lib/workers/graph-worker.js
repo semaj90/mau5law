@@ -10,7 +10,7 @@ class GraphWorker {
             queries: 0,
             cacheHits: 0,
             cacheMisses: 0,
-            latencies: []
+            latencies: [],
         };
         
         this.init();
@@ -106,7 +106,7 @@ class GraphWorker {
                     ],
                     count: 1,
                     latency_ms: baseLatency,
-                    source: 'wasm'
+                    source: 'wasm',
                 };
             case 'precedents':
                 return {
@@ -115,13 +115,13 @@ class GraphWorker {
                     ],
                     total: 1,
                     latency_ms: baseLatency,
-                    source: 'wasm'
+                    source: 'wasm',
                 };
             case 'cypher':
                 return {
                     results: [{ n: { id: 'wasm_result', type: 'query_result', source: 'wasm' } }],
                     stats: { execution_time_ms: baseLatency },
-                    source: 'wasm'
+                    source: 'wasm',
                 };
             default:
                 return { error: 'Unknown query type' };
@@ -159,7 +159,7 @@ class GraphWorker {
                 timestamp: Date.now(),
                 data: data,
                 type: 'full_graph',
-                size: JSON.stringify(data).length
+                size: JSON.stringify(data).length,
             };
             
             const transaction = this.indexedDB.transaction(['graph_snapshots'], 'readwrite');
@@ -206,7 +206,7 @@ class GraphWorker {
                 query_hash: queryHash,
                 data: data,
                 timestamp: Date.now(),
-                ttl: Date.now() + ttlMs
+                ttl: Date.now() + ttlMs,
             };
             
             const transaction = this.indexedDB.transaction(['query_cache'], 'readwrite');
@@ -247,7 +247,7 @@ class GraphWorker {
                     source: 'indexeddb_cache',
                     cache_hit: true,
                     latency_ms: latency,
-                    query_hash: queryHash
+                    query_hash: queryHash,
                 });
                 
                 // Continue with background refresh if stale
@@ -266,7 +266,7 @@ class GraphWorker {
                         wasmResult = this.wasmModule.queryPrecedents();
                         break;
                     default:
-                        wasmResult = this.wasmModule.executeCypher(query);
+                        wasmResult = this.wasmModule.executeCypher(query);,
                 }
                 
                 const wasmLatency = performance.now() - startTime;
@@ -280,7 +280,7 @@ class GraphWorker {
                     cache_hit: false,
                     latency_ms: wasmLatency,
                     query_hash: queryHash,
-                    is_provisional: true // Mark as provisional
+                    is_provisional: true // Mark as provisional,
                 });
                 
                 // Cache WASM result for instant replay
@@ -295,7 +295,7 @@ class GraphWorker {
                 type: 'query_error',
                 error: error.message,
                 query: query,
-                query_hash: queryHash
+                query_hash: queryHash,
             });
         }
     }
@@ -328,7 +328,7 @@ class GraphWorker {
                     cache_hit: false,
                     latency_ms: totalLatency,
                     query_hash: queryHash,
-                    is_authoritative: true
+                    is_authoritative: true,
                 });
             }
         } catch (error) {
@@ -342,7 +342,7 @@ class GraphWorker {
                     source: 'snapshot_fallback',
                     cache_hit: true,
                     query_hash: queryHash,
-                    is_fallback: true
+                    is_fallback: true,
                 });
             }
         }
@@ -356,7 +356,7 @@ class GraphWorker {
                 body: JSON.stringify({
                     statements: [{
                         statement: query,
-                        parameters: params
+                        parameters: params,
                     }]
                 })
             });
@@ -393,12 +393,12 @@ class GraphWorker {
         // Use requestIdleCallback for background refresh
         if (typeof requestIdleCallback !== 'undefined') {
             requestIdleCallback(() => {
-                this.fetchAuthoritativeResult(query, params, queryHash, performance.now());
+                this.fetchAuthoritativeResult(query, params, queryHash, performance.now();
             }, { timeout: 5000 });
         } else {
             // Fallback to setTimeout
             setTimeout(() => {
-                this.fetchAuthoritativeResult(query, params, queryHash, performance.now());
+                this.fetchAuthoritativeResult(query, params, queryHash, performance.now();
             }, 100);
         }
     }
@@ -415,7 +415,7 @@ class GraphWorker {
             avg_latency_ms: latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length: 0,
             p95_latency_ms: latencies.length > 0 ? this.calculatePercentile(latencies, 95) : 0,
             p99_latency_ms: latencies.length > 0 ? this.calculatePercentile(latencies, 99) : 0,
-            last_query_time: Date.now()
+            last_query_time: Date.now(),
         };
     }
 
@@ -451,7 +451,7 @@ if (typeof self !== 'undefined') {
             case 'telemetry':
                 self.postMessage({
                     type: 'telemetry_result',
-                    data: graphWorker.getTelemetry()
+                    data: graphWorker.getTelemetry(),
                 });
                 break;
                 

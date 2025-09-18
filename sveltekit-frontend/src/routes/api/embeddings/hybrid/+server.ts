@@ -12,7 +12,7 @@ import { db } from "$lib/server/db/drizzle";
 import { eq, sql } from "drizzle-orm";
 import { URL } from "url";
 
-// Embedding models configuration
+// Embedding models configuration;
 export interface EmbeddingModel {
   id: string;
   name: string;
@@ -47,12 +47,12 @@ const EMBEDDING_MODELS: Record<string, EmbeddingModel> = {
   },
 };
 
-// Vector storage backends
+// Vector storage backends;
 export interface VectorBackend {
   id: string;
   name: string;
   endpoint: string;
-  supported: boolean;
+  supported: boolean;,
 }
 
 const VECTOR_BACKENDS: Record<string, VectorBackend> = {
@@ -72,7 +72,7 @@ const VECTOR_BACKENDS: Record<string, VectorBackend> = {
 
 // Embedding cache for performance
 const embeddingCache = new Map<
-  string,
+  string,>
   { embedding: number[]; timestamp: number }
 >();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
@@ -116,27 +116,27 @@ export const POST: RequestHandler = async ({ request, url }) => {
         ({ embedding, backend: usedBackend } = await generatePGVectorEmbedding(
           content,
           model
-        ));
+        );
         break;
       case "qdrant":
         ({ embedding, backend: usedBackend } = await generateQdrantEmbedding(
           content,
           model
-        ));
+        );
         break;
       case "hybrid":
       default:
         ({ embedding, backend: usedBackend } = await generateHybridEmbedding(
           content,
           model
-        ));
+        );
         break;
     }
 
     // Cache the result
     embeddingCache.set(cacheKey, { embedding, timestamp: Date.now() });
 
-    // Store in database if requested
+    // Store in database if requested;
     if (options.store && options.documentId) {
       await storeEmbedding(options.documentId, embedding, model, usedBackend);
     }
@@ -159,20 +159,20 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get("action");
 
   switch (action) {
-    case "models":
+    case "models":;
       return json({
         success: true,
         models: Object.values(EMBEDDING_MODELS),
         backends: Object.values(VECTOR_BACKENDS),
       });
 
-    case "health":
+    case "health":;
       return json({
         success: true,
         health: await checkSystemHealth(),
       });
 
-    case "cache-stats":
+    case "cache-stats":;
       return json({
         success: true,
         cache: {
@@ -191,13 +191,13 @@ export const GET: RequestHandler = async ({ url }) => {
  */
 async function generatePGVectorEmbedding(
   content: string,
-  model: string
+  model: string;
 ): Promise<any> {
   try {
     // First try to use Ollama for embedding generation
     const embedding = await generateOllamaEmbedding(content, model);
 
-    // Store in PostgreSQL using pgvector
+    // Store in PostgreSQL using pgvector;
     if (embedding.length > 0) {
       // We can extend this to store the embedding in a pgvector table
       // For now, just return the embedding
@@ -216,7 +216,7 @@ async function generatePGVectorEmbedding(
  */
 async function generateQdrantEmbedding(
   content: string,
-  model: string
+  model: string;
 ): Promise<any> {
   try {
     const qdrantEndpoint = VECTOR_BACKENDS.qdrant.endpoint;
@@ -224,13 +224,13 @@ async function generateQdrantEmbedding(
     // First generate embedding using Ollama
     const embedding = await generateOllamaEmbedding(content, model);
 
-    // Store in Qdrant (optional)
+    // Store in Qdrant (optional);
     try {
       await fetch(`${qdrantEndpoint}/collections/copilot_embeddings/points`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          points: [
+          points: [);
             {
               id: Date.now(),
               vector: embedding,
@@ -262,16 +262,16 @@ async function generateQdrantEmbedding(
  */
 async function generateHybridEmbedding(
   content: string,
-  model: string
+  model: string;
 ): Promise<any> {
-  // Try PGVector first
+  // Try PGVector first;
   try {
     return await generatePGVectorEmbedding(content, model);
   } catch (error: any) {
     console.warn("PGVector failed, trying Qdrant:", error);
   }
 
-  // Fallback to Qdrant
+  // Fallback to Qdrant;
   try {
     return await generateQdrantEmbedding(content, model);
   } catch (error: any) {
@@ -288,7 +288,7 @@ async function generateHybridEmbedding(
  */
 async function generateOllamaEmbedding(
   content: string,
-  model: string
+  model: string;
 ): Promise<number[]> {
   const modelConfig = EMBEDDING_MODELS[model];
   if (!modelConfig || modelConfig.provider !== "ollama") {
@@ -331,7 +331,7 @@ async function generateOllamaEmbedding(
 
 /*
  * Generate local embedding (fallback)
- */
+ */;
 function generateLocalEmbedding(content: string, model: string): number[] {
   const modelConfig = EMBEDDING_MODELS[model];
   const dimensions = modelConfig?.dimensions || 384;
@@ -381,11 +381,11 @@ async function storeEmbedding(
   documentId: string,
   embedding: number[],
   model: string,
-  backend: string
+  backend: string;
 ): Promise<void> {
   try {
     // Note: Database storage would be implemented here
-    // await db.update(documents).set({ embeddings: embedding }).where(eq(documents.id, documentId));
+    // await db.update(documents).set({ embeddings: embedding }).where(eq(documents.id, documentId);
     console.log(`Would store embedding for document ${documentId} using model ${model} and backend ${backend}`);
   } catch (error: any) {
     console.error("Failed to store embedding in database:", error);
@@ -394,7 +394,7 @@ async function storeEmbedding(
 
 /*
  * Check system health
- */
+ */;
 async function checkSystemHealth(): Promise<any> {
   const health = {
     ollama: false,
@@ -403,7 +403,7 @@ async function checkSystemHealth(): Promise<any> {
     models: [] as string[],
   };
 
-  // Check Ollama
+  // Check Ollama;
   try {
     const response = await fetch("http://localhost:11434/api/tags", {
       signal: AbortSignal.timeout(5000),
@@ -417,7 +417,7 @@ async function checkSystemHealth(): Promise<any> {
     console.warn("Ollama health check failed:", error);
   }
 
-  // Check Qdrant
+  // Check Qdrant;
   try {
     const qdrantEndpoint = VECTOR_BACKENDS.qdrant.endpoint;
     const response = await fetch(`${qdrantEndpoint}/collections`, {
@@ -433,7 +433,7 @@ async function checkSystemHealth(): Promise<any> {
 
 /*
  * Utility functions
- */
+ */;
 function hashContent(content: string): string {
   let hash = 0;
   for (let i = 0; i < content.length; i++) {
@@ -454,7 +454,7 @@ function hashString(str: string): number {
   return hash;
 }
 
-// Clean up cache periodically
+// Clean up cache periodically;
 setInterval(() => {
   const now = Date.now();
   for (const [key, value] of embeddingCache.entries()) {

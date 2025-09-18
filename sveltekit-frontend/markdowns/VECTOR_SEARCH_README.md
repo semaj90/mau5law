@@ -1,6 +1,7 @@
 # Legal Case Management System - Production Ready
 
-A comprehensive legal case management system with advanced vector search capabilities using PostgreSQL, pgvector, Qdrant, and SvelteKit.
+A comprehensive legal case management system with advanced vector search capabilities using
+PostgreSQL, pgvector, Qdrant, and SvelteKit.
 
 ## 🚀 Features
 
@@ -321,7 +322,7 @@ optimizers:
     title: string;
     description: string;
     searchScore?: number;
-    matchType: "text" | "semantic" | "hybrid";
+    matchType: 'text' | 'semantic' | 'hybrid';
     // ... other fields
   }>;
   searchType: string;
@@ -335,4 +336,5 @@ optimizers:
 
 ---
 
-🎉 **You're all set!** Your legal case management system now has production-ready vector search capabilities with automatic environment switching and performance optimizations.
+🎉 **You're all set!** Your legal case management system now has production-ready vector search
+capabilities with automatic environment switching and performance optimizations.

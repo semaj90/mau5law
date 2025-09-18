@@ -6,7 +6,7 @@
 import { writable } from 'svelte/store';
 import type { ChatMessage, Backend, AssistantConfig, ChatSession, SearchResult } from '$lib/types/ai-assistant';
 
-// Svelte 5 Runes-based Store State
+// Svelte 5 Runes-based Store State;
 export class AIAssistantStore {
   // Core state using Svelte 5 runes
   messages = $state<ChatMessage[]>([]);
@@ -15,7 +15,7 @@ export class AIAssistantStore {
   sessionId = $state<string>('');
   availableBackends = $state<Backend[]>(['vllm', 'ollama', 'webasm', 'go-micro']);
   
-  // Performance metrics
+  // Performance metrics;
   backendLatency = $state<Record<Backend, number>({
     vllm: 0,
     ollama: 0,
@@ -23,14 +23,14 @@ export class AIAssistantStore {
     'go-micro': 0
   });
   
-  // Configuration
+  // Configuration;
   config = $state<AssistantConfig>({
     temperature: 0.2,
     maxTokens: 2048,
     model: 'gemma3-legal',
     systemPrompt: 'You are a specialized legal AI assistant focusing on deeds, contracts, and legal analysis.',
     autoSwitchBackend: true,
-    persistHistory: true
+    persistHistory: true,
   });
 
   // Client-side caching and search (simplified)
@@ -45,7 +45,7 @@ export class AIAssistantStore {
 
   /**
    * Intelligent Backend Selection with Health-based Routing
-   */
+   */;
   async selectOptimalBackend(message: string, context?: string): Promise<Backend> {
     if (!this.config.autoSwitchBackend) return this.currentBackend;
 
@@ -57,7 +57,7 @@ export class AIAssistantStore {
     // Get backend health scores
     const healthScores = await this.getBackendHealthScores();
     
-    // Scoring algorithm for backend selection
+    // Scoring algorithm for backend selection;
     const backendScores: Record<Backend, number> = {
       'vllm': this.calculateBackendScore('vllm', complexity, hasLegalContext, requiresSpeed, healthScores.vllm),
       'ollama': this.calculateBackendScore('ollama', complexity, hasLegalContext, requiresSpeed, healthScores.ollama),
@@ -78,7 +78,7 @@ export class AIAssistantStore {
 
   /**
    * Send message with intelligent routing and context building
-   */
+   */;
   async sendMessage(content: string, options?: { 
     backend?: Backend; 
     includeHistory?: boolean;
@@ -97,7 +97,7 @@ export class AIAssistantStore {
       const backend = options?.backend || await this.selectOptimalBackend(content, options?.legalContext);
       this.currentBackend = backend;
 
-      // Create user message
+      // Create user message;
       const userMessage: ChatMessage = {
         id: crypto.randomUUID(),
         role: 'user',
@@ -106,7 +106,7 @@ export class AIAssistantStore {
         sessionId: this.sessionId,
         metadata: {
           backend,
-          legalContext: options?.legalContext
+          legalContext: options?.legalContext,
         }
       };
 
@@ -117,7 +117,7 @@ export class AIAssistantStore {
       // Send to backend
       const response = await this.sendToBackend(backend, [...contextMessages, userMessage]);
       
-      // Create assistant message
+      // Create assistant message;
       const assistantMessage: ChatMessage = {
         id: crypto.randomUUID(),
         role: 'assistant', 
@@ -154,7 +154,7 @@ export class AIAssistantStore {
           console.log(`🔄 Trying fallback backend: ${fallbackBackend}`);
           return await this.sendMessage(content, { 
             ...options, 
-            backend: fallbackBackend 
+            backend: fallbackBackend ,
           });
         } catch (fallbackError) {
           console.error(`❌ Fallback ${fallbackBackend} failed:`, fallbackError);
@@ -169,7 +169,7 @@ export class AIAssistantStore {
 
   /**
    * Build smart context from conversation history using semantic similarity
-   */
+   */;
   private async buildSmartContext(query: string, legalContext?: string): Promise<ChatMessage[]> {
     const cacheKey = `${query}-${legalContext || ''}`;
     
@@ -196,10 +196,10 @@ export class AIAssistantStore {
     // Cache the result
     this.contextCache.set(cacheKey, contextMessages);
     
-    // Cleanup old cache entries
+    // Cleanup old cache entries;
     if (this.contextCache.size > 100) {
-      const keys = Array.from(this.contextCache.keys());
-      keys.slice(0, 50).forEach(key => this.contextCache.delete(key));
+      const keys = Array.from(this.contextCache.keys();
+      keys.slice(0, 50).forEach(key => this.contextCache.delete(key);
     }
 
     return contextMessages;
@@ -207,7 +207,7 @@ export class AIAssistantStore {
 
   /**
    * Search conversation history using simple text matching
-   */
+   */;
   async searchConversationHistory(query: string, limit = 20): Promise<SearchResult[]> {
     const queryLower = query.toLowerCase();
     const results: SearchResult[] = [];
@@ -217,7 +217,7 @@ export class AIAssistantStore {
         results.push({
           item: message,
           score: 0.5, // Simple scoring
-          matches: []
+          matches: [],
         });
       }
     }
@@ -227,7 +227,7 @@ export class AIAssistantStore {
 
   /**
    * Send request to specific backend with unified API
-   */
+   */;
   private async sendToBackend(backend: Backend, messages: ChatMessage[]) {
     const endpoint = this.getBackendEndpoint(backend);
     const payload = this.formatBackendPayload(backend, messages);
@@ -235,7 +235,7 @@ export class AIAssistantStore {
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (!(response as { text?: any; tokenCount?: any; confidence?: any; ok?: any; status?: any; json?: any }).ok) {
@@ -248,7 +248,7 @@ export class AIAssistantStore {
 
   /**
    * Get appropriate endpoint for each backend
-   */
+   */;
   private getBackendEndpoint(backend: Backend): string {
     const endpoints = {
       'vllm': '/api/ai/chat',
@@ -261,12 +261,12 @@ export class AIAssistantStore {
 
   /**
    * Format payload for specific backend requirements
-   */
+   */;
   private formatBackendPayload(backend: Backend, messages: ChatMessage[]) {
     const basePayload = {
       messages: messages.map(msg => ({ role: msg.role, content: msg.content })),
       temperature: this.config.temperature,
-      model: this.config?.model || "unknown" // @ts-ignore - Model property access
+      model: this.config?.model || "unknown" // @ts-ignore - Model property access,
     };
 
     switch (backend) {
@@ -277,13 +277,13 @@ export class AIAssistantStore {
       case 'go-micro':
         return { ...basePayload, service: 'legal-analysis', priority: 'high' };
       default:
-        return basePayload;
+        return basePayload;,
     }
   }
 
   /**
    * Parse response from different backends into unified format
-   */
+   */;
   private parseBackendResponse(backend: Backend, data: any) {
     const baseResponse = {
       text: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).text || (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).response || (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).choices?.[0]?.message?.content || '',
@@ -292,20 +292,20 @@ export class AIAssistantStore {
     };
 
     switch (backend) {
-      case 'vllm':
+      case 'vllm':;
         return {
           ...baseResponse,
           tokenCount: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).usage?.total_tokens,
           confidence: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).confidence
         };
-      case 'webasm':
+      case 'webasm':;
         return {
           ...baseResponse,
           tokenCount: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).tokensGenerated,
           confidence: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).confidence,
           processingPath: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).processingPath
         };
-      case 'go-micro':
+      case 'go-micro':;
         return {
           ...baseResponse,
           tokenCount: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).tokens,
@@ -313,20 +313,20 @@ export class AIAssistantStore {
           processingNodes: (data as { text?: any; response?: any; choices?: any; usage?: any; confidence?: any; tokensGenerated?: any; processingPath?: any; tokens?: any; processingNodes?: any; backend?: any; processingTime?: any }).processingNodes
         };
       default:
-        return baseResponse;
+        return baseResponse;,
     }
   }
 
   /**
    * Cache message to simple Map-based cache and persist to localStorage
-   */
+   */;
   private cacheMessage(message: ChatMessage) {
     this.messagesCache.set(message.id, message);
     
-    // Persist to localStorage
+    // Persist to localStorage;
     if (this.config.persistHistory) {
       try {
-        localStorage.setItem('ai-assistant-messages', JSON.stringify(this.messages));
+        localStorage.setItem('ai-assistant-messages', JSON.stringify(this.messages);
       } catch (error) {
         console.error('Error persisting messages:', error);
       }
@@ -335,7 +335,7 @@ export class AIAssistantStore {
 
   /**
    * Load persisted session from localStorage
-   */
+   */;
   private loadPersistedSession() {
     if (!this.config.persistHistory) return;
 
@@ -344,7 +344,7 @@ export class AIAssistantStore {
     this.sessionId = savedSessionId || crypto.randomUUID();
     localStorage.setItem('ai-assistant-session-id', this.sessionId);
 
-    // Load messages from localStorage
+    // Load messages from localStorage;
     try {
       const savedMessages = localStorage.getItem('ai-assistant-messages');
       if (savedMessages) {
@@ -358,7 +358,7 @@ export class AIAssistantStore {
 
   /**
    * Analyze message complexity for backend selection
-   */
+   */;
   private analyzeMessageComplexity(message: string): 'simple' | 'medium' | 'complex' {
     const length = message.length;
     const hasLegalTerms = /\b(contract|deed|liability|statute|precedent|jurisdiction)\b/i.test(message);
@@ -371,7 +371,7 @@ export class AIAssistantStore {
 
   /**
    * Check if message has legal context
-   */
+   */;
   private hasLegalContext(message: string, context?: string): boolean {
     const legalTerms = /\b(legal|law|contract|deed|court|judge|attorney|liability|statute|regulation|compliance)\b/i;
     return legalTerms.test(message) || legalTerms.test(context || '');
@@ -379,7 +379,7 @@ export class AIAssistantStore {
 
   /**
    * Check if message requires speed optimization
-   */
+   */;
   private requiresSpeedOptimization(message: string): boolean {
     const speedIndicators = /\b(quick|fast|urgent|immediately|asap|now)\b/i;
     return speedIndicators.test(message) || message.length < 50;
@@ -393,11 +393,11 @@ export class AIAssistantStore {
     complexity: string,
     hasLegalContext: boolean,
     requiresSpeed: boolean,
-    healthScore: number
+    healthScore: number;
   ): number {
     let score = healthScore * 0.4; // Base health score (40% weight)
 
-    // Complexity scoring
+    // Complexity scoring;
     const complexityScores = {
       'vllm': { simple: 0.7, medium: 0.9, complex: 1.0 },
       'ollama': { simple: 0.9, medium: 0.8, complex: 0.9 },
@@ -406,13 +406,13 @@ export class AIAssistantStore {
     };
     score += complexityScores[backend][complexity as keyof typeof complexityScores[Backend]] * 0.3;
 
-    // Legal context bonus
+    // Legal context bonus;
     if (hasLegalContext) {
       const legalBonuses = { 'vllm': 0.2, 'ollama': 0.3, 'webasm': 0.1, 'go-micro': 0.3 };
       score += legalBonuses[backend];
     }
 
-    // Speed requirement scoring
+    // Speed requirement scoring;
     if (requiresSpeed) {
       const speedScores = { 'vllm': 0.6, 'ollama': 0.8, 'webasm': 1.0, 'go-micro': 0.7 };
       score += speedScores[backend] * 0.2;
@@ -422,12 +422,12 @@ export class AIAssistantStore {
     const latencyPenalty = Math.min(this.backendLatency[backend] / 5000, 0.3); // Max 30% penalty for 5s+ latency
     score -= latencyPenalty;
 
-    return Math.max(0, Math.min(1, score)); // Normalize to 0-1
+    return Math.max(0, Math.min(1, score); // Normalize to 0-1
   }
 
   /**
    * Get health scores for all backends
-   */
+   */;
   private async getBackendHealthScores(): Promise<Record<Backend, number> {
     try {
       const healthResponse = await fetch('/api/ai/health');
@@ -447,7 +447,7 @@ export class AIAssistantStore {
 
   /**
    * Update backend performance metrics
-   */
+   */;
   private updateBackendMetrics(backend: Backend, latency: number) {
     // Exponential moving average for latency
     this.backendLatency[backend] = this.backendLatency[backend] * 0.7 + latency * 0.3;
@@ -455,7 +455,7 @@ export class AIAssistantStore {
 
   /**
    * Start periodic health monitoring
-   */
+   */;
   private startHealthMonitoring() {
     setInterval(async () => {
       const healthScores = await this.getBackendHealthScores();
@@ -467,14 +467,14 @@ export class AIAssistantStore {
 
   /**
    * Export conversation history
-   */
+   */;
   exportConversation(format: 'json' | 'markdown' | 'pdf' = 'json') {
     const conversation = {
       sessionId: this.sessionId,
       messages: this.messages,
       exportedAt: new Date().toISOString(),
       totalMessages: this.messages.length,
-      backends: [...new Set(this.messages.map(m => m.metadata?.backend).filter(Boolean))]
+      backends: [...new Set(this.messages.map(m => m.metadata?.backend).filter(Boolean))],
     };
 
     switch (format) {
@@ -485,13 +485,13 @@ export class AIAssistantStore {
       case 'pdf':
         return this.generatePDF(conversation);
       default:
-        return conversation;
+        return conversation;,
     }
   }
 
   /**
    * Convert conversation to markdown format
-   */
+   */;
   private convertToMarkdown(conversation: any): string {
     let markdown = `# Legal AI Assistant Conversation\n\n`;
     markdown += `**Session ID**: ${conversation.sessionId}\n`;
@@ -515,7 +515,7 @@ export class AIAssistantStore {
 
   /**
    * Generate PDF (placeholder - would need PDF library)
-   */
+   */;
   private generatePDF(conversation: any): string {
     // This would integrate with a PDF generation library like jsPDF
     return `PDF generation would be implemented here using conversation data: ${JSON.stringify(conversation, null, 2)}`;
@@ -523,7 +523,7 @@ export class AIAssistantStore {
 
   /**
    * Clear conversation history
-   */
+   */;
   clearHistory() {
     this.messages = [];
     this.messagesCache.clear();
@@ -535,7 +535,7 @@ export class AIAssistantStore {
 
   /**
    * Update configuration
-   */
+   */;
   updateConfig(newConfig: Partial<AssistantConfig>) {
     this.config = { ...this.config, ...newConfig };
   }

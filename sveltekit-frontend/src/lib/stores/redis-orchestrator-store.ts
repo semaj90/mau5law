@@ -6,23 +6,24 @@
 
 import { writable, derived, get } from 'svelte/store';
 import { browser } from '$app/environment';
+}
 
 export interface RedisStats {
   llm_cache: {
     total_keys: number;
     memory_usage: string;
-    hit_rate_estimate: number;
+    hit_rate_estimate: number;,
   };
   agent_memory: {
-    active_sessions: number;
+    active_sessions: number;,
   };
   task_queue: {
     queued_tasks: number;
     processing_tasks: number;
-    completed_tasks_count: number;
+    completed_tasks_count: number;,
   };
   redis_memory: string;
-  last_updated: string;
+  last_updated: string;,
 }
 
 export interface RedisOptimizationResult {
@@ -36,7 +37,7 @@ export interface RedisOptimizationResult {
     cache_strategy: string;
     memory_bank: string;
     session_id: string;
-    timestamp: string;
+    timestamp: string;,
   };
 }
 
@@ -53,7 +54,7 @@ export interface QueuedTask {
 // Core stores
 export const redisStats = writable<RedisStats | null>(null);
 export const isRedisHealthy = writable<boolean>(true);
-export const queuedTasks = writable<Map<string, QueuedTask>(new Map());
+export const queuedTasks = writable<Map<string, QueuedTask>(new Map();
 export const cacheHitRate = writable<number>(0);
 export const processingTimes = writable<Array<any>([]);
 
@@ -91,7 +92,7 @@ export const memoryPressure = derived(
 
 /**
  * Redis Orchestrator Client API
- */
+ */;
 export class RedisOrchestratorClient {
   private static instance: RedisOrchestratorClient;
   private pollInterval: number | null = null;
@@ -106,14 +107,14 @@ export class RedisOrchestratorClient {
 
   /**
    * Initialize Redis orchestrator client with real-time updates
-   */
+   */;
   async initialize(pollIntervalMs = 5000) {
     if (!browser) return;
 
     // Initial stats fetch
     await this.updateStats();
 
-    // Start polling for real-time updates
+    // Start polling for real-time updates;
     if (this.pollInterval) {
       clearInterval(this.pollInterval);
     }
@@ -152,7 +153,7 @@ export class RedisOrchestratorClient {
             endpoint: context.endpoint || 'client-query',
             ...context
           },
-          useOrchestrator: context.useOrchestrator !== false
+          useOrchestrator: context.useOrchestrator !== false,
         })
       });
 
@@ -168,7 +169,7 @@ export class RedisOrchestratorClient {
         performance.now() - startTime
       );
 
-      // If task was queued, track it
+      // If task was queued, track it;
       if ((result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).task_id) {
         this.trackQueuedTask({
           taskId: (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).task_id,
@@ -176,7 +177,7 @@ export class RedisOrchestratorClient {
           query,
           status: 'queued',
           estimatedTime: '30-45 seconds',
-          submittedAt: new Date().toISOString()
+          submittedAt: new Date().toISOString(),
         });
       }
 
@@ -190,7 +191,7 @@ export class RedisOrchestratorClient {
 
   /**
    * Check task status and retrieve result
-   */
+   */;
   async getTaskResult(taskId: string): Promise<any | null> {
     try {
       const response = await fetch(`${this.baseUrl}/tasks?taskId=${taskId}`);
@@ -201,7 +202,7 @@ export class RedisOrchestratorClient {
 
       const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
       
-      // Update task status
+      // Update task status;
       if ((result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).found) {
         queuedTasks.update(tasks => {
           const task = tasks.get(taskId);
@@ -229,7 +230,7 @@ export class RedisOrchestratorClient {
     taskType: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment',
     query: string,
     metadata: any = {},
-    priority = 100
+    priority = 100;
   ): Promise<string> {
     try {
       const response = await fetch(`${this.baseUrl}/tasks`, {
@@ -251,14 +252,14 @@ export class RedisOrchestratorClient {
 
       const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
       
-      // Track the task
+      // Track the task;
       this.trackQueuedTask({
         taskId: (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).taskId,
         taskType,
         query,
         status: 'queued',
         estimatedTime: (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).estimated_processing_time,
-        submittedAt: new Date().toISOString()
+        submittedAt: new Date().toISOString(),
       });
 
       return (result as { task_id?: any; found?: any; result?: any; taskId?: any; estimated_processing_time?: any }).taskId;
@@ -271,7 +272,7 @@ export class RedisOrchestratorClient {
 
   /**
    * Get comprehensive Redis system health
-   */
+   */;
   async getSystemHealth() {
     try {
       const response = await fetch(`${this.baseUrl}?details=true`);
@@ -295,7 +296,7 @@ export class RedisOrchestratorClient {
 
   /**
    * Clear Redis cache
-   */
+   */;
   async clearCache(confirm = false): Promise<boolean> {
     if (!confirm) {
       throw new Error('Cache clear requires explicit confirmation');
@@ -303,7 +304,7 @@ export class RedisOrchestratorClient {
 
     try {
       const response = await fetch(`${this.baseUrl}/cache?confirm=true`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       return (response as { ok?: any; statusText?: any; json?: any }).ok;
@@ -316,7 +317,7 @@ export class RedisOrchestratorClient {
 
   /**
    * Update Redis statistics
-   */
+   */;
   private async updateStats() {
     try {
       const response = await fetch(this.baseUrl);
@@ -330,7 +331,7 @@ export class RedisOrchestratorClient {
       
       const stats: RedisStats = {
         ...data.redis_stats,
-        last_updated: new Date().toISOString()
+        last_updated: new Date().toISOString(),
       };
 
       redisStats.set(stats);
@@ -345,13 +346,13 @@ export class RedisOrchestratorClient {
 
   /**
    * Record processing time for metrics
-   */
+   */;
   private recordProcessingTime(endpoint: string, time: number) {
     processingTimes.update(times => {
       const newEntry = {
         endpoint,
         time: Math.round(time),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
       
       const updated = [...times, newEntry].slice(-50); // Keep last 50 entries
@@ -361,7 +362,7 @@ export class RedisOrchestratorClient {
 
   /**
    * Track queued task
-   */
+   */;
   private trackQueuedTask(task: QueuedTask) {
     queuedTasks.update(tasks => {
       tasks.set(task.taskId, task);
@@ -374,7 +375,7 @@ export class RedisOrchestratorClient {
 
   /**
    * Poll task completion
-   */
+   */;
   private async pollTaskCompletion(taskId: string) {
     const maxAttempts = 20; // 10 minutes with 30s intervals
     let attempts = 0;
@@ -405,7 +406,7 @@ export class RedisOrchestratorClient {
 
   /**
    * Generate session ID
-   */
+   */;
   private generateSessionId(context: any): string {
     if (context.userId) {
       return `client_user_${context.userId}`;
@@ -418,7 +419,7 @@ export class RedisOrchestratorClient {
 
   /**
    * Generate simple browser fingerprint
-   */
+   */;
   private generateBrowserFingerprint(): string {
     if (!browser) return 'ssr';
     
@@ -434,7 +435,7 @@ export class RedisOrchestratorClient {
 
   /**
    * Cleanup resources
-   */
+   */;
   destroy() {
     if (this.pollInterval) {
       clearInterval(this.pollInterval);

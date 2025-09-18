@@ -6,49 +6,29 @@
 declare module 'drizzle-orm/pg-core' {
   // Enhanced table function with proper generics
   export function pgTable<T extends string>(name: T, columns: any, extraConfig?: any): any;
-;
 
   // Enhanced column types with proper generics
   export function serial<T extends string>(name?: T): any;
-;
   export function text<T extends string>(name?: T, config?: any): any;
-;
   export function varchar<T extends string>(name?: T, config?: { length?: number }): any;
-;
   export function integer<T extends string>(name?: T): any;
-;
   export function boolean<T extends string>(name?: T): any;
-;
   export function timestamp<T extends string>(name?: T, config?: any): any;
-;
   export function json<T extends string>(name?: T): any;
-;
   export function jsonb<T extends string>(name?: T): any;
-;
   export function uuid<T extends string>(name?: T): any;
-;
   export function real<T extends string>(name?: T): any;
-;
   export function doublePrecision<T extends string>(name?: T): any;
-;
   export function bigint<T extends string>(name?: T, config?: any): any;
-;
   export function numeric<T extends string>(name?: T, config?: any): any;
-;
   export function decimal<T extends string>(name?: T, config?: any): any;
-;
   export function char<T extends string>(name?: T, config?: any): any;
-;
   export function date<T extends string>(name?: T): any;
-;
   export function time<T extends string>(name?: T, config?: any): any;
-;
   export function interval<T extends string>(name?: T, config?: any): any;
-;
 
   // pgvector specific types
   export function vector<T extends string>(name?: T, config?: { dimensions?: number }): any;
-;
 
   // Constraint functions
   export function primaryKey<T extends any[]>(...columns: T): any;
@@ -58,21 +38,17 @@ declare module 'drizzle-orm/pg-core' {
   export function unique<T extends any[]>(...columns: T): any;
 ;
   export function index<T extends string>(name: T, config?: any): any;
-;
   export function uniqueIndex<T extends string>(name: T, config?: any): any;
-;
 
   // Relations
   export function relations<T extends any>(table: T, relations: any): any;
 ;
   export function one<T extends any>(table: T, config?: any): any;
-;
   export function many<T extends any>(table: T, config?: any): any;
-;
 }
 
 declare module 'drizzle-orm' {
-  // Enhanced SQL operations with proper generics
+  // Enhanced SQL operations with proper generics;
   export const sql: {
     <T = any>(strings: TemplateStringsArray, ...values: any[]): T;
     raw<T = any>(query: string): T;
@@ -123,7 +99,6 @@ declare module 'drizzle-orm' {
 
   // Aggregate functions
   export function count<T>(column?: T): any;
-;
   export function sum<T>(column: T): any;
 ;
   export function avg<T>(column: T): any;
@@ -137,7 +112,6 @@ declare module 'drizzle-orm' {
   export function concat<T extends any[]>(...columns: T): any;
 ;
   export function substring<T>(column: T, start: number, length?: number): any;
-;
   export function length<T>(column: T): any;
 ;
   export function lower<T>(column: T): any;
@@ -159,11 +133,9 @@ declare module 'drizzle-orm' {
 
   // Case expressions
   export function caseWhen<T>(value?: T): any;
-;
 
   // Window functions
   export function over<T>(fn: T, window?: any): any;
-;
 
   // Array functions (PostgreSQL specific)
   export function arrayContains<T, U>(column: T, value: U): any;
@@ -205,7 +177,8 @@ declare module 'drizzle-orm/node-postgres' {
 }
 
 // Enhanced type for better IntelliSense
-export type DrizzleTable<T extends Record<string, any> = Record<string, any>> = T;
+export type DrizzleTable<T extends Record<string, any> = Record<string, any> = T;
+}
 
 export interface DrizzleColumn<T = any> {
   dataType: string;
@@ -225,7 +198,7 @@ export interface DrizzleQuery<T = any> {
 export interface DrizzleInsert<T = any> {
   values(values: T | T[]): DrizzleQuery<T>;
   returning(): DrizzleQuery<T>;
-  returning<U extends keyof T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
+  returning<U extends keyof T>(columns: U[]): DrizzleQuery<Pick<T, U>;
   onConflictDoNothing(): DrizzleInsert<T>;
   onConflictDoUpdate(config: any): DrizzleInsert<T>;
 }
@@ -234,13 +207,13 @@ export interface DrizzleUpdate<T = any> {
   set(values: Partial<T>): DrizzleQuery<T>;
   where(condition: any): DrizzleUpdate<T>;
   returning(): DrizzleQuery<T>;
-  returning<U extends keyof T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
+  returning<U extends keyof T>(columns: U[]): DrizzleQuery<Pick<T, U>;
 }
 
 export interface DrizzleDelete<T = any> {
   where(condition: any): DrizzleQuery<T>;
   returning(): DrizzleQuery<T>;
-  returning<U extends keyof T>(columns: U[]): DrizzleQuery<Pick<T, U>>;
+  returning<U extends keyof T>(columns: U[]): DrizzleQuery<Pick<T, U>;
 }
 
 export interface DrizzleSelect<T = any> {
@@ -274,7 +247,7 @@ export interface DrizzleDatabase<T = any> {
   transaction<U>(callback: (tx: DrizzleDatabase<T>) => Promise<U>): Promise<U>;
 }
 
-// Export enhanced types
+// Export enhanced types;
 export type {
   DrizzleTable,
   DrizzleColumn,

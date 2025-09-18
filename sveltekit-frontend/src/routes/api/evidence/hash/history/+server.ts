@@ -20,11 +20,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   if (!evidenceId || !verifiedHash) {
     return json(
-      { error: "evidenceId and verifiedHash required" },
+      { error: "evidenceId and verifiedHash required" },)
       { status: 400 },
     );
   }
-  // Validate hash format
+  // Validate hash format;
   if (!/^[a-f0-9]{64}$/i.test(verifiedHash)) {
     return json({ error: "Invalid hash format" }, { status: 400 });
   }
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const evidenceItem = await db
       .select()
       .from(evidence)
-      .where(eq(evidence.id, evidenceId))
+      .where(eq(evidence.id, evidenceId)
       .limit(1);
 
     if (evidenceItem.length === 0) {
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     // Insert verification record using Drizzle
     const verificationResult = await db
-      .insert(hashVerifications)
+      .insert(hashVerifications);
       .values({
         evidenceId,
         verifiedHash: verifiedHash.toLowerCase(),
@@ -72,11 +72,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     });
   } catch (error: any) {
     console.error("Error recording hash verification:", error);
-    return json(
-      {
+    return json({
         error: "Failed to record verification",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }
@@ -92,7 +91,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const offset = parseInt(url.searchParams.get("offset") || "0");
     const evidenceId = url.searchParams.get("evidenceId");
 
-    let query = db
+    let query = db;
       .select({
         id: hashVerifications.id,
         evidenceId: hashVerifications.evidenceId,
@@ -107,9 +106,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         evidenceFileName: evidence.fileName,
       })
       .from(hashVerifications)
-      .leftJoin(users, eq(hashVerifications.verifiedBy, users.id))
-      .leftJoin(evidence, eq(hashVerifications.evidenceId, evidence.id))
-      .orderBy(desc(hashVerifications.verifiedAt))
+      .leftJoin(users, eq(hashVerifications.verifiedBy, users.id)
+      .leftJoin(evidence, eq(hashVerifications.evidenceId, evidence.id)
+      .orderBy(desc(hashVerifications.verifiedAt)
       .limit(limit)
       .offset(offset);
 
@@ -122,7 +121,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   } catch (error: any) {
     console.error("Error fetching hash verification history:", error);
     return json(
-      { error: "Failed to fetch verification history" },
+      { error: "Failed to fetch verification history" },)
       { status: 500 },
     );
   }

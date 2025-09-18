@@ -3,7 +3,7 @@ import { getPlanner } from '$lib/services/neo4j-planner-singleton';
 
 // POST /api/graph/plan
 // Body: { startNodeId: string, goal?: { targetType?: string; jurisdiction?: string; practiceArea?: string; minImportance?: number; maxDepth?: number }, iterations?: number }
-// Returns planning result with best path & metrics.
+// Returns planning result with best path & metrics.;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ms: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).computationTime,
       legalAnalysis: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).legalAnalysis,
       visualizations: (result as { bestPath?: any; pathValue?: any; exploredNodes?: any; computationTime?: any; legalAnalysis?: any; visualizations?: any }).visualizations,
-      metrics: planner.getMetrics()
+      metrics: planner.getMetrics(),
     }), { headers: { 'Content-Type': 'application/json' } });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e?.message || 'planning failed' }), { status: 500 });

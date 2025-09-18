@@ -8,26 +8,27 @@ import { bullmqService } from '../services/bullmqService.js';
 import { langChainService } from '../ai/langchain-ollama-service.js';
 import { ollamaService } from '../services/ollama-service.js';
 import { multiLayerCache } from '../services/multiLayerCache.js';
+}
 
 export interface DocumentProcessingJob {
   documentId: string;
   content: string;
   options: any;
-  metadata: any;
+  metadata: any;,
 }
 
 export interface EmbeddingGenerationJob {
   documentId: string;
-  chunks: any[];
+  chunks: any[];,
 }
 
 export interface AIAnalysisJob {
   documentId: string;
   content: string;
-  type: string;
+  type: string;,
 }
 
-// Types for the state machine
+// Types for the state machine;
 export interface EvidenceProcessingContext {
   evidenceId: string;
   caseId: string;
@@ -69,7 +70,7 @@ export interface EvidenceProcessingContext {
   processingTimes: Record<string, number>;
 }
 
-export type EvidenceProcessingEvent =
+export type EvidenceProcessingEvent =;
   | {
       type: "START_PROCESSING";
       evidenceId: string;
@@ -90,14 +91,13 @@ export type EvidenceProcessingEvent =
   | { type: "ANALYSIS_COMPLETE" }
   | { type: "ANALYSIS_FAILED"; error: string };
 
-// Service implementations
-const documentProcessingService = fromPromise(
-  async ({ input }: { input: EvidenceProcessingContext }) => {
+// Service implementations;
+const documentProcessingService = fromPromise(async ({ input }: { input: EvidenceProcessingContext }) => {
     console.log(
       `Starting document processing for evidence: ${input.evidenceId}`
     );
 
-    // Submit to BullMQ for processing
+    // Submit to BullMQ for processing;
     const job = await bullmqService.addDocumentProcessingJob({
       documentId: input.evidenceId,
       content: input.content,
@@ -139,12 +139,12 @@ const documentProcessingService = fromPromise(
         };
       }
 
-      // Update progress if available
+      // Update progress if available;
       if (jobStatus?.progress) {
         // This would be handled by the state machine's progress update
       }
 
-      await new Promise((resolve: any) => setTimeout(resolve, interval));
+      await new Promise((resolve: any) => setTimeout(resolve, interval);
       waited += interval;
     }
 
@@ -152,11 +152,10 @@ const documentProcessingService = fromPromise(
   }
 );
 
-const embeddingGenerationService = fromPromise(
-  async ({ input }: { input: EvidenceProcessingContext }) => {
+const embeddingGenerationService = fromPromise(async ({ input }: { input: EvidenceProcessingContext }) => {
     console.log(`Generating embeddings for evidence: ${input.evidenceId}`);
 
-    // Use Ollama service to generate embeddings with chunking
+    // Use Ollama service to generate embeddings with chunking;
     const result = await ollamaService.embedDocument(input.content, {
       documentType: "evidence",
       caseId: input.caseId,
@@ -164,7 +163,7 @@ const embeddingGenerationService = fromPromise(
       ...input.metadata,
     });
 
-    // Cache the embeddings
+    // Cache the embeddings;
     await multiLayerCache.set(`embeddings:${input.evidenceId}`, result, {
       type: "embedding",
       userId: input.userId,
@@ -176,8 +175,7 @@ const embeddingGenerationService = fromPromise(
   }
 );
 
-const aiAnalysisService = fromPromise(
-  async ({ input }: { input: EvidenceProcessingContext }) => {
+const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceProcessingContext }) => {
     console.log(`Performing AI analysis for evidence: ${input.evidenceId}`);
 
     // Parallel analysis using different techniques
@@ -193,7 +191,7 @@ const aiAnalysisService = fromPromise(
     try {
       const langchainResult = await langChainService.summarizeDocument(
         input.evidenceId,
-        input.content,
+        input.content,);
         {
           extractEntities: true,
           riskAssessment: true,
@@ -219,7 +217,7 @@ const aiAnalysisService = fromPromise(
       recommendations,
     };
 
-    // Cache the analysis
+    // Cache the analysis;
     await multiLayerCache.set(`analysis:${input.evidenceId}`, analysis, {
       type: "document",
       userId: input.userId,
@@ -231,8 +229,7 @@ const aiAnalysisService = fromPromise(
   }
 );
 
-const cacheResultsService = fromPromise(
-  async ({ input }: { input: EvidenceProcessingContext }) => {
+const cacheResultsService = fromPromise(async ({ input }: { input: EvidenceProcessingContext }) => {
     console.log(`Caching final results for evidence: ${input.evidenceId}`);
 
     const finalResult = {
@@ -251,7 +248,7 @@ const cacheResultsService = fromPromise(
     await Promise.all([
       multiLayerCache.set(
         `evidence:complete:${input.evidenceId}`,
-        finalResult,
+        finalResult,);
         {
           type: "document",
           userId: input.userId,
@@ -261,7 +258,7 @@ const cacheResultsService = fromPromise(
       ),
       multiLayerCache.set(
         `case:evidence:${input.caseId}:${input.evidenceId}`,
-        finalResult,
+        finalResult,);
         {
           type: "document",
           userId: input.userId,
@@ -271,7 +268,7 @@ const cacheResultsService = fromPromise(
       ),
     ]);
 
-    // Invalidate related cache entries
+    // Invalidate related cache entries;
     await bullmqService.addCacheInvalidationJob({
       pattern: `case:${input.caseId}`,
       userId: input.userId,
@@ -283,7 +280,7 @@ const cacheResultsService = fromPromise(
 );
 
 // Main state machine
-export const evidenceProcessingMachine = createMachine(
+export const evidenceProcessingMachine = createMachine();
   {
     id: "evidenceProcessing",
     types: {
@@ -484,7 +481,7 @@ export const evidenceProcessingMachine = createMachine(
 
       error: {
         on: {
-          RETRY: [
+          RETRY: [;
             {
               target: "documentProcessing",
               guard: ({ context }) => context.retryCount < context.maxRetries,
@@ -522,12 +519,12 @@ export const evidenceProcessingMachine = createMachine(
     },
   },
   {
-    // Guards
+    // Guards;
     guards: {
       canRetry: ({ context }) => context.retryCount < context.maxRetries,
     },
 
-    // Actions
+    // Actions;
     actions: {
       updateProgress: assign({
         progress: ({ event }) => (event as any).progress,
@@ -539,9 +536,9 @@ export const evidenceProcessingMachine = createMachine(
 
 // Helper factory – optional context override placeholder (currently unused)
 export const createEvidenceProcessingActor = (
-  context?: Partial<EvidenceProcessingContext>
+  context?: Partial<EvidenceProcessingContext>;
 ) => {
-  // NOTE: context overrides can be applied by extending the machine before actor creation if needed
+  // NOTE: context overrides can be applied by extending the machine before actor creation if needed;
   return evidenceProcessingMachine.provide({
     actions: {
       // Custom actions can be injected here
@@ -558,7 +555,7 @@ export type EvidenceProcessingState = Parameters<
   typeof evidenceProcessingMachine.transition
 >[0];
 
-// Export convenience functions
+// Export convenience functions;
 export const isProcessing = (state: EvidenceProcessingState): boolean => {
   return [
     "documentProcessing",
@@ -584,7 +581,7 @@ export const canRetry = (state: EvidenceProcessingState): boolean => {
 };
 
 export const getProgressPercentage = (
-  state: EvidenceProcessingState
+  state: EvidenceProcessingState;
 ): number => {
   return state.context.progress;
 };
@@ -594,13 +591,13 @@ export const getCurrentStage = (state: EvidenceProcessingState): string => {
 };
 
 export const getProcessingTimes = (
-  state: EvidenceProcessingState
+  state: EvidenceProcessingState;
 ): Record<string, number> => {
   return state.context.processingTimes;
 };
 
 export const getError = (
-  state: EvidenceProcessingState
+  state: EvidenceProcessingState;
 ): string | undefined => {
   return state.context.error;
 };

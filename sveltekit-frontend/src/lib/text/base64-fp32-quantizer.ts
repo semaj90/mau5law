@@ -5,6 +5,7 @@
  */
 
 import { enhancedCachingRevolutionaryBridge } from '../services/enhanced-caching-revolutionary-bridge.js';
+}
 
 export interface QuantizationOptions {
   quantizationBits: 4 | 8 | 16 | 32; // Quantization precision
@@ -12,7 +13,7 @@ export interface QuantizationOptions {
   targetLength: number; // Target sequence length for model input
   cudaThreads: number; // Number of CUDA threads to simulate
   cacheStrategy: 'aggressive' | 'moderate' | 'minimal';
-  outputFormat: 'fp32' | 'fp16' | 'int8' | 'int16';
+  outputFormat: 'fp32' | 'fp16' | 'int8' | 'int16';,
 }
 
 export interface QuantizationResult {
@@ -30,7 +31,7 @@ export interface QuantizationResult {
     minValue: number;
     maxValue: number;
     meanValue: number;
-    entropy: number;
+    entropy: number;,
   };
 }
 
@@ -44,7 +45,7 @@ export interface GemmaOutputQuantization {
   legalClassification: {
     documentType: 'contract' | 'evidence' | 'brief' | 'citation';
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    confidence: number;
+    confidence: number;,
   };
 }
 
@@ -83,7 +84,7 @@ export class Base64FP32Quantizer {
         gridSize: Math.ceil(maxThreads / this.CUDA_BLOCK_SIZE),
         blockSize: this.CUDA_BLOCK_SIZE,
         sharedMemory: new ArrayBuffer(48 * 1024), // 48KB shared memory per block
-        registers: new Map()
+        registers: new Map(),
       };
       
       this.cudaThreadPool.push(context);
@@ -102,7 +103,7 @@ export class Base64FP32Quantizer {
    */
   async quantizeGemmaOutput(
     base64Output: string,
-    options?: Partial<QuantizationOptions>
+    options?: Partial<QuantizationOptions>;
   ): Promise<QuantizationResult> {
     const startTime = performance.now();
     
@@ -126,7 +127,7 @@ export class Base64FP32Quantizer {
         return {
           ...cached,
           cacheHit: true,
-          processingTime: performance.now() - startTime
+          processingTime: performance.now() - startTime,
         };
       }
 
@@ -194,7 +195,7 @@ export class Base64FP32Quantizer {
 
   private async parallelQuantization(
     rawBytes: Uint8Array,
-    config: QuantizationOptions
+    config: QuantizationOptions;
   ): Promise<Float32Array> {
     const threadsPerBlock = Math.min(config.cudaThreads, this.CUDA_BLOCK_SIZE);
     const numBlocks = Math.ceil(rawBytes.length / threadsPerBlock);
@@ -229,7 +230,7 @@ export class Base64FP32Quantizer {
     data: Uint8Array,
     blockId: number,
     threadsPerBlock: number,
-    config: QuantizationOptions
+    config: QuantizationOptions;
   ): Promise<Float32Array> {
     // Simulate CUDA kernel execution
     const startIdx = blockId * threadsPerBlock;
@@ -243,7 +244,7 @@ export class Base64FP32Quantizer {
     const blockData = (data as { length?: any; slice?: any }).slice(startIdx, endIdx);
     const quantized = new Float32Array(blockSize);
     
-    // Parallel quantization within block
+    // Parallel quantization within block;
     for (let threadId = 0; threadId < blockSize; threadId++) {
       const value = blockData[threadId];
       quantized[threadId] = this.quantizeValue(value, config);
@@ -274,7 +275,7 @@ export class Base64FP32Quantizer {
       default:
         // Sigmoid with legal domain bias
         const biased = normalized + this.LEGAL_TOKEN_BIAS;
-        scaled = 1 / (1 + Math.exp(-6 * (biased - 0.5)));
+        scaled = 1 / (1 + Math.exp(-6 * (biased - 0.5));
         break;
     }
     
@@ -288,7 +289,7 @@ export class Base64FP32Quantizer {
   private applyGemmaOptimizations(data: Float32Array, config: QuantizationOptions): Float32Array {
     const optimized = new Float32Array(data);
     
-    // Apply Gemma3-specific transformations
+    // Apply Gemma3-specific transformations;
     for (let i = 0; i < optimized.length; i++) {
       // Layer normalization simulation
       optimized[i] = this.layerNorm(optimized[i], i, optimized.length);
@@ -415,7 +416,7 @@ export class Base64FP32Quantizer {
       bits: config.quantizationBits,
       scaling: config.scalingMethod,
       length: config.targetLength,
-      format: config.outputFormat
+      format: config.outputFormat,
     };
     
     return btoa(JSON.stringify(keyData)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 32);
@@ -432,13 +433,13 @@ export class Base64FP32Quantizer {
   }
 
   private async checkQuantizationCache(cacheKey: string): Promise<QuantizationResult | null> {
-    // Check local cache first
+    // Check local cache first;
     if (this.quantizationCache.has(cacheKey)) {
       console.log('🎯 Local quantization cache hit');
       return this.quantizationCache.get(cacheKey)!;
     }
     
-    // Check Revolutionary AI cache
+    // Check Revolutionary AI cache;
     try {
       const cached = await enhancedCachingRevolutionaryBridge.getCachedQueryResultsUnified(cacheKey);
       if (cached.cacheHitRate > 0 && cached.queryResults) {
@@ -453,7 +454,7 @@ export class Base64FP32Quantizer {
   }
 
   private async cacheQuantizationResult(cacheKey: string, result: QuantizationResult): Promise<void> {
-    // Store in local cache
+    // Store in local cache;
     if (this.quantizationCache.size >= this.MAX_CACHE_SIZE) {
       // Remove oldest entry
       const firstKey = this.quantizationCache.keys().next().value;
@@ -462,7 +463,7 @@ export class Base64FP32Quantizer {
     
     this.quantizationCache.set(cacheKey, result);
     
-    // Store in Revolutionary AI cache
+    // Store in Revolutionary AI cache;
     try {
       await enhancedCachingRevolutionaryBridge.processUnifiedQuery({
         query: cacheKey,
@@ -479,7 +480,7 @@ export class Base64FP32Quantizer {
    */
   async processGemmaLegalOutput(
     modelOutput: string,
-    options?: Partial<QuantizationOptions>
+    options?: Partial<QuantizationOptions>;
   ): Promise<GemmaOutputQuantization> {
     const startTime = performance.now();
     
@@ -565,7 +566,7 @@ export class Base64FP32Quantizer {
     const seqLength = tokens.length;
     const attentionWeights = new Float32Array(seqLength * seqLength);
     
-    // Simulate attention pattern
+    // Simulate attention pattern;
     for (let i = 0; i < seqLength; i++) {
       for (let j = 0; j < seqLength; j++) {
         const distance = Math.abs(i - j);
@@ -580,7 +581,7 @@ export class Base64FP32Quantizer {
   private calculateLogits(tokens: Float32Array): Float32Array {
     const logits = new Float32Array(this.GEMMA_VOCAB_SIZE);
     
-    // Simplified logits calculation
+    // Simplified logits calculation;
     for (let i = 0; i < Math.min(tokens.length, logits.length); i++) {
       logits[i] = tokens[i] * 10 + (Math.random() - 0.5) * 2;
     }
@@ -605,15 +606,15 @@ export class Base64FP32Quantizer {
   private applySoftmax(logits: Float32Array): Float32Array {
     const maxLogit = Math.max(...logits);
     const shifted = logits.map(x => x - maxLogit);
-    const exps = shifted.map(x => Math.exp(x));
+    const exps = shifted.map(x => Math.exp(x);
     const sumExps = exps.reduce((sum, x) => sum + x, 0);
     
-    return new Float32Array(exps.map(x => x / sumExps));
+    return new Float32Array(exps.map(x => x / sumExps);
   }
 
   /**
    * Get quantization performance metrics
-   */
+   */;
   getMetrics() {
     return {
       cacheSize: this.quantizationCache.size,
@@ -621,13 +622,13 @@ export class Base64FP32Quantizer {
       maxCacheSize: this.MAX_CACHE_SIZE,
       blockSize: this.CUDA_BLOCK_SIZE,
       gemmaVocabSize: this.GEMMA_VOCAB_SIZE,
-      gemmaHiddenSize: this.GEMMA_HIDDEN_SIZE
+      gemmaHiddenSize: this.GEMMA_HIDDEN_SIZE,
     };
   }
 
   /**
    * Clear quantization cache
-   */
+   */;
   clearCache(): void {
     this.quantizationCache.clear();
     console.log('🧹 Cleared quantization cache');
@@ -645,20 +646,20 @@ export const base64FP32Quantizer = new Base64FP32Quantizer();
 
 export async function quantizeGemmaLegalOutput(
   base64Output: string,
-  options?: Partial<QuantizationOptions>
+  options?: Partial<QuantizationOptions>;
 ): Promise<QuantizationResult> {
   return await base64FP32Quantizer.quantizeGemmaOutput(base64Output, options);
 }
 
 export async function processGemmaResponse(
   modelResponse: string,
-  cudaThreads: number = 256
+  cudaThreads: number = 256;
 ): Promise<GemmaOutputQuantization> {
   return await base64FP32Quantizer.processGemmaLegalOutput(modelResponse, {
     cudaThreads,
     quantizationBits: 8,
     scalingMethod: 'sigmoid',
     targetLength: 2048,
-    cacheStrategy: 'aggressive'
+    cacheStrategy: 'aggressive',
   });
 }

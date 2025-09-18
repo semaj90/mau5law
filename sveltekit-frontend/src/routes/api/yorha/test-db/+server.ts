@@ -12,13 +12,13 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action = "test-connection" } = await request.json();
 
-  // Loosely type results to avoid noisy structural typing errors
+  // Loosely type results to avoid noisy structural typing errors;
   const results: any = {
       timestamp: new Date(),
       action,
       results: Record<string, any>,
       success: true,
-      service: "yorha-db-test"
+      service: "yorha-db-test",
     };
 
     switch (action) {
@@ -27,31 +27,31 @@ export const POST: RequestHandler = async ({ request }) => {
         const connectionTest = await db.execute(sql`SELECT version(), current_database(), current_user`);
         results.results.connection = {
           database: connectionTest[0],
-          status: "connected"
+          status: "connected",
         };
         break;
 
       case "test-pgvector":
-        // Test pgvector extension
+        // Test pgvector extension;
         try {
           const vectorTest = await db.execute(sql`SELECT extname FROM pg_extension WHERE extname = 'vector'`);
           const vectorVersion = await db.execute(sql`SELECT extversion FROM pg_extension WHERE extname = 'vector'`);
           results.results.pgvector = {
             installed: vectorTest.length > 0,
             version: vectorVersion[0]?.extversion || null,
-            status: vectorTest.length > 0 ? "available" : "not_installed"
+            status: vectorTest.length > 0 ? "available" : "not_installed",
           };
         } catch (error: any) {
           results.results.pgvector = {
             installed: false,
             error: error.message,
-            status: "error"
+            status: "error",
           };
         }
         break;
 
       case "test-json":
-        // Test JSONB functionality
+        // Test JSONB functionality;
         const testDoc = {
           title: "YoRHa Test Document",
           content: "This is a test document for YoRHa system integration",
@@ -62,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
             testRun: true,
             timestamp: new Date(),
             version: "4.0.0",
-            system: "yorha-legal-ai"
+            system: "yorha-legal-ai",
           }
         };
 
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
           full_text: testDoc.content,
           summary: "Test document for YoRHa system validation",
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
         }).returning();
 
         // Test JSON query
@@ -95,15 +95,15 @@ export const POST: RequestHandler = async ({ request }) => {
         results.results.json = {
           inserted: insertResult[0],
           jsonQuery: jsonTest[0],
-          status: "success"
+          status: "success",
         };
         break;
 
       case "test-vector":
-        // Test vector operations (if available)
+        // Test vector operations (if available);
         try {
           // Create a test vector
-          const testVector = Array.from({ length: 768 }, () => Math.random());
+          const testVector = Array.from({ length: 768 }, () => Math.random();
 
           const vectorInsert = await db.insert(legalDocuments).values({
             title: "Vector Test Document",
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request }) => {
             keywords: ["vector", "embedding", "test"],
             full_text: "Vector embedding test content",
             created_at: new Date(),
-            updated_at: new Date()
+            updated_at: new Date(),
           }).returning();
 
           // Test vector similarity (cosine similarity)
@@ -132,12 +132,12 @@ export const POST: RequestHandler = async ({ request }) => {
             inserted: vectorInsert[0],
             similarities: similarityTest,
             vectorLength: testVector.length,
-            status: "success"
+            status: "success",
           };
         } catch (error: any) {
           results.results.vector = {
             error: error.message,
-            status: "error"
+            status: "error",
           };
         }
         break;
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const conn = await db.execute(sql`SELECT 'connection_ok' as status`);
         fullStackResults.connection = conn[0];
 
-        // 2. JSON operations
+        // 2. JSON operations;
         const jsonDoc = await db.insert(legalDocuments).values({
           title: "Full Stack Test Document",
           content: "Comprehensive test of YoRHa legal AI system",
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ request }) => {
           court: "test-court",
           citation: "TEST-001-2024",
           created_at: new Date(),
-          updated_at: new Date()
+          updated_at: new Date(),
         }).returning();
 
         // 3. Complex JSON query
@@ -192,7 +192,7 @@ export const POST: RequestHandler = async ({ request }) => {
         fullStackResults.json = {
           document: jsonDoc[0],
           analytics: complexQuery[0],
-          search: searchTest
+          search: searchTest,
         };
 
         // 5. Performance test
@@ -202,7 +202,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
         fullStackResults.performance = {
           queryTime: perfEnd - perfStart,
-          status: perfEnd - perfStart < 100 ? "excellent" : "acceptable"
+          status: perfEnd - perfStart < 100 ? "excellent" : "acceptable",
         };
 
         results.results.fullStack = fullStackResults;
@@ -234,13 +234,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (error: any) {
     console.error("YoRHa DB test error:", error);
-    return json(
+    return json();
       {
         success: false,
         error: error.message || "Database test failed",
         timestamp: new Date(),
-        service: "yorha-db-test"
-      },
+        service: "yorha-db-test",
+      },>
       { status: 500 }
     );
   }
@@ -277,16 +277,15 @@ export const GET: RequestHandler = async () => {
         "test-full-stack",
         "cleanup"
       ],
-      service: "yorha-db-test"
+      service: "yorha-db-test",
     });
 
   } catch (error: any) {
-    return json(
-      {
+    return json({
         success: false,
         error: error.message || "Health check failed",
-        service: "yorha-db-test"
-      },
+        service: "yorha-db-test",
+      },)
       { status: 500 }
     );
   }

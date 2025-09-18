@@ -158,7 +158,8 @@ npm run tauri:build
 
 ## ✅ Final Status: PRODUCTION READY
 
-The Legal Case Management System is now fully functional for both browser and desktop deployment with:
+The Legal Case Management System is now fully functional for both browser and desktop deployment
+with:
 
 - Complete user authentication and session management
 - Full CRUD operations for cases, reports, and citations

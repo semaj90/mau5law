@@ -28,7 +28,7 @@ const problematicFiles = [
   'src/lib/wasm/vector-wasm-wrapper.ts',
   'src/lib/services/multiLayerCache.ts',
   'src/lib/services/qlora-reinforcement-learning-trainer.ts',
-  'src/lib/services/predictive-asset-engine.ts'
+  'src/lib/services/predictive-asset-engine.ts',
 ];
 
 // Apply @ts-nocheck to each file
@@ -59,7 +59,6 @@ for (const file of problematicFiles) {
     fs.writeFileSync(filePath, content, 'utf8');
     fixedCount++;
     console.log(`  ✓ Added @ts-nocheck to: ${file}`);
-
   } catch (error) {
     console.log(`  ❌ Failed to fix: ${file} - ${error.message}`);
   }

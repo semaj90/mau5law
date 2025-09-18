@@ -1,4 +1,5 @@
-// MCP (Model Context Protocol) Tools Integration
+// MCP (Model Context Protocol) Tools Integration;
+}
 
 export interface MCPToolResponse<T = any> {
   success: boolean;
@@ -12,14 +13,14 @@ export interface MCPToolResponse<T = any> {
 }
 
 export interface MCPTools {
-  // Nested structure expected by agentShellMachine
+  // Nested structure expected by agentShellMachine;
   cases: {
     loadCases: (params: { userId?: string; limit?: number; offset?: number; query?: string }) => Promise<MCPToolResponse>;
     createCase: (caseData: any) => Promise<MCPToolResponse>;
     updateCase: (caseId: string, updates: any) => Promise<MCPToolResponse>;
     deleteCase: (caseId: string) => Promise<MCPToolResponse>;
     findSimilarCases: (embedding: number[], limit: number) => Promise<MCPToolResponse>;
-    getCaseAnalytics: (userId: string) => Promise<MCPToolResponse>;
+    getCaseAnalytics: (userId: string) => Promise<MCPToolResponse>;,
   };
   
   evidence: {
@@ -28,13 +29,13 @@ export interface MCPTools {
     updateEvidence: (evidenceId: string, updates: any) => Promise<MCPToolResponse>;
     deleteEvidence: (evidenceId: string) => Promise<MCPToolResponse>;
     findSimilarEvidence: (params: { embedding: number[]; caseId: string; limit: number; threshold?: number }) => Promise<MCPToolResponse>;
-    getEvidenceAnalytics: (caseId: string) => Promise<MCPToolResponse>;
+    getEvidenceAnalytics: (caseId: string) => Promise<MCPToolResponse>;,
   };
   
   users: {
     getUserById: (userId: string) => Promise<MCPToolResponse>;
     updateUser: (userId: string, updates: any) => Promise<MCPToolResponse>;
-    getUserAnalytics: () => Promise<MCPToolResponse>;
+    getUserAnalytics: () => Promise<MCPToolResponse>;,
   };
   
   // Direct methods for other functionality
@@ -46,12 +47,12 @@ export interface MCPTools {
   semanticSearch: (query: string, filters?: any) => Promise<MCPToolResponse>;
 }
 
-// Mock implementation for development
+// Mock implementation for development;
 export const mcpTools: MCPTools = {
   cases: {
     loadCases: async (params: { userId?: string; limit?: number; offset?: number; query?: string }) => ({ 
       success: true, 
-      data: [] 
+      data: [] ,
     }),
     createCase: async (caseData: any) => ({ success: true, data: { id: 'new-case-123', ...caseData } }),
     updateCase: async (caseId: string, updates: any) => ({ success: true, data: { id: caseId, ...updates } }),
@@ -63,14 +64,14 @@ export const mcpTools: MCPTools = {
   evidence: {
     loadEvidence: async (params: { caseId?: string; limit?: number; query?: string }) => ({ 
       success: true, 
-      data: [] 
+      data: [] ,
     }),
     createEvidence: async (evidenceData: any) => ({ success: true, data: { id: 'new-evidence-123', ...evidenceData } }),
     updateEvidence: async (evidenceId: string, updates: any) => ({ success: true, data: { id: evidenceId, ...updates } }),
     deleteEvidence: async (evidenceId: string) => ({ success: true, data: { deleted: evidenceId } }),
     findSimilarEvidence: async (params: { embedding: number[]; caseId: string; limit: number; threshold?: number }) => ({ 
       success: true, 
-      data: [] 
+      data: [] ,
     }),
     getEvidenceAnalytics: async (caseId: string) => ({ success: true, data: { totalEvidence: 0, processedEvidence: 0 } })
   },

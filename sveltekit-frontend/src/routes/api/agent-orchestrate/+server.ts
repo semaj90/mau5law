@@ -40,11 +40,12 @@ export interface AgentOrchestrationContext {
 // import { autoGenAgent } from '../../../../../agents/autogen-agent.js';
 
 // import { enhancedRAGService } from '../../../../../rag/enhanced-rag-service.js';
+}
 
 export interface AgentOrchestrationRequest {
   prompt: string;
   context?: AgentOrchestrationContext;
-  agents?: string[]; // ['claude', 'autogen', 'crewai', 'rag']
+  agents?: string[]; // ['claude', 'autogen', 'crewai', 'rag'];
   options?: {
     includeContext7?: boolean;
     autoFix?: boolean;
@@ -63,14 +64,14 @@ export interface AgentOrchestrationResponse {
     bestResult: string;
     consensusScore: number;
     recommendations: string[];
-    nextSteps: string[];
+    nextSteps: string[];,
   };
   orchestrationMetadata: {
     totalProcessingTime: number;
     agentsUsed: number;
     context7Enhanced: boolean;
     autoFixApplied: boolean;
-    timestamp: string;
+    timestamp: string;,
   };
 }
 
@@ -87,9 +88,9 @@ export const POST: RequestHandler = async ({ request }) => {
       options = {},
     } = requestData;
 
-    // Validate request
+    // Validate request;
     if (!prompt || prompt.trim().length === 0) {
-      return json(
+      return json();
         {
           success: false,
           error: 'Prompt is required',
@@ -116,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let context7Enhanced = false;
     let autoFixApplied = false;
 
-    // Apply Context7 analysis and auto-fix if requested
+    // Apply Context7 analysis and auto-fix if requested;
     if (options.includeContext7) {
       const analysis = await context7Service.analyzeComponent('agent-orchestrator', 'legal-ai');
       context.context7Analysis = analysis;
@@ -136,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const agentPromises: Promise<any>[] = [];
 
     if (agents.includes('claude')) {
-      const claudePromise = claudeAgent
+      const claudePromise = claudeAgent;
         .execute({
           prompt,
           context,
@@ -145,25 +146,25 @@ export const POST: RequestHandler = async ({ request }) => {
             autoFix: options.autoFix,
             area: options.autoFixArea,
           },
-        })
+        });
         .then((result: any) => ({
           agent: 'claude',
           ...result,
           error: undefined,
-        }))
+        });
         .catch((error: any) => ({
           agent: 'claude',
           output: '',
           score: 0,
           metadata: { error: true },
           error: error.message,
-        }));
+        });
 
       agentPromises.push(claudePromise);
     }
 
     if (agents.includes('autogen')) {
-      const autogenPromise = autoGenAgent
+      const autogenPromise = autoGenAgent;
         .execute({
           prompt,
           context,
@@ -174,25 +175,25 @@ export const POST: RequestHandler = async ({ request }) => {
             includeContext7: options.includeContext7,
             autoFix: options.autoFix,
           },
-        })
+        });
         .then((result: any) => ({
           agent: 'autogen',
           ...result,
           error: undefined,
-        }))
+        });
         .catch((error: any) => ({
           agent: 'autogen',
           output: '',
           score: 0,
           metadata: { error: true },
           error: error.message,
-        }));
+        });
 
       agentPromises.push(autogenPromise);
     }
 
     if (agents.includes('crewai')) {
-      const crewaiPromise = crewAIAgent
+      const crewaiPromise = crewAIAgent;
         .execute({
           prompt,
           context,
@@ -201,25 +202,25 @@ export const POST: RequestHandler = async ({ request }) => {
             includeContext7: options.includeContext7,
             autoFix: options.autoFix,
           },
-        })
+        });
         .then((result: any) => ({
           agent: 'crewai',
           ...result,
           error: undefined,
-        }))
+        });
         .catch((error: any) => ({
           agent: 'crewai',
           output: '',
           score: 0,
           metadata: { error: true },
           error: error.message,
-        }));
+        });
 
       agentPromises.push(crewaiPromise);
     }
 
     if (agents.includes('rag')) {
-      const ragPromise = enhancedRAGService
+      const ragPromise = enhancedRAGService;
         .query({
           query: prompt,
           context,
@@ -230,12 +231,12 @@ export const POST: RequestHandler = async ({ request }) => {
             maxResults: 5,
             confidenceThreshold: 0.7,
           },
-        })
+        });
         .then((result: any) => ({
           agent: 'rag',
           ...result,
           error: undefined,
-        }))
+        });
         .catch((error: any) => ({
           agent: 'rag',
           output: '',
@@ -243,12 +244,12 @@ export const POST: RequestHandler = async ({ request }) => {
           sources: [],
           metadata: { error: true },
           error: error.message,
-        }));
+        });
 
       agentPromises.push(ragPromise);
     }
 
-    // Execute agents (parallel or sequential based on options)
+    // Execute agents (parallel or sequential based on options);
     if (options.parallel !== false) {
       // Execute in parallel with timeout
       const timeout = options.timeout || 30000;
@@ -265,7 +266,7 @@ export const POST: RequestHandler = async ({ request }) => {
         agentResults.forEach((result, index) => {
           if (
             (result as { status?: any; value?: any; reason?: any; score?: any }).status ===
-            'fulfilled'
+            'fulfilled';
           ) {
             results.push(
               (result as { status?: any; value?: any; reason?: any; score?: any }).value
@@ -294,7 +295,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
     } else {
-      // Execute sequentially
+      // Execute sequentially;
       for (const agentPromise of agentPromises) {
         try {
           const result = await agentPromise;
@@ -333,7 +334,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Agent orchestration failed:', error);
 
-    return json(
+    return json();
       {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown orchestration error',
@@ -409,13 +410,13 @@ function synthesizeResults(results: any[], originalPrompt: string) {
   };
 }
 
-// Health check endpoints
+// Health check endpoints;
 export const GET: RequestHandler = async () => {
   return json({
     status: 'healthy',
     timestamp: new Date().toISOString(),
     availableAgents: ['claude', 'autogen', 'crewai', 'rag'],
     context7Enabled: true,
-    autoFixEnabled: true
+    autoFixEnabled: true,
   });
 };

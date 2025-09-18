@@ -29,7 +29,7 @@ import type { LLMBridgeRequest } from '$lib/server/ai/llm-orchestrator-bridge.js
 import { logger } from '$lib/server/ai/logger.js';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-// Health check endpoint
+// Health check endpoint;
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
     const status = await llmOrchestratorBridge.getStatus();
@@ -73,7 +73,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     });
   } catch (error) {
     logger.error('[Unified Orchestrator] Health check failed:', error);
-    return json(
+    return json();
       {
         service: 'unified-ai-orchestrator',
         status: 'error',
@@ -85,7 +85,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
   }
 };
 
-// Main orchestrator endpoint
+// Main orchestrator endpoint;
 const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
   const startTime = performance.now();
   let requestData: any;
@@ -93,9 +93,9 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
   try {
     requestData = await request.json();
     
-    // Validate required fields
+    // Validate required fields;
     if (!requestData.content && !requestData.messages && !requestData.prompt) {
-      return json(
+      return json();
         {
           success: false,
           error: 'Missing required field: content, messages, or prompt',
@@ -110,7 +110,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
                    requestData.prompt || 
                    (requestData.messages ? extractContentFromMessages(requestData.messages) : '');
 
-    // Create bridge request
+    // Create bridge request;
     const bridgeRequest: LLMBridgeRequest = {
       id: generateRequestId(),
       type: determineRequestType(requestData),
@@ -175,12 +175,12 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch, url }) => {
   }
 };
 
-// Streaming endpoint for real-time responses
+// Streaming endpoint for real-time responses;
 const originalPATCHHandler: RequestHandler = async ({ request }) => {
   try {
     const requestData = await request.json();
     
-    // Enable streaming in bridge request
+    // Enable streaming in bridge request;
     const bridgeRequest: LLMBridgeRequest = {
       id: generateRequestId(),
       type: 'chat',
@@ -196,7 +196,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
       },
     };
 
-    // Create a readable stream for SSE
+    // Create a readable stream for SSE;
     const stream = new ReadableStream({
       async start(controller) {
         try {
@@ -206,11 +206,11 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
           
           // Send as SSE event
           const data = `data: ${JSON.stringify(result)}\n\n`;
-          controller.enqueue(new TextEncoder().encode(data));
+          controller.enqueue(new TextEncoder().encode(data);
           controller.close();
         } catch (error) {
           const errorData = `data: ${JSON.stringify({ error: error instanceof Error ? error.message: 'Unknown error' })}\n\n`;
-          controller.enqueue(new TextEncoder().encode(errorData));
+          controller.enqueue(new TextEncoder().encode(errorData);
           controller.close();
         }
       },
@@ -225,7 +225,7 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
     });
   } catch (error) {
     return json(
-      { error: error instanceof Error ? error.message: 'Streaming failed' },
+      { error: error instanceof Error ? error.message: 'Streaming failed' },)
       { status: 500 }
     );
   }
@@ -244,12 +244,12 @@ function extractContentFromMessages(messages: any[]): string {
 }
 
 function determineRequestType(requestData: any): LLMBridgeRequest['type'] {
-  // Explicit type specified
+  // Explicit type specified;
   if (requestData.type) {
     return requestData.type;
   }
 
-  // Detect from endpoint or context
+  // Detect from endpoint or context;
   if (requestData.workflow || requestData.workflowType) {
     return 'workflow';
   }
@@ -268,7 +268,7 @@ function determineRequestType(requestData: any): LLMBridgeRequest['type'] {
   
   if (requestData.legalAnalysis || requestData.legalDomain || 
       (requestData.content && (requestData.content.includes('legal') || 
-                              requestData.content.includes('contract') ||
+                              requestData.content.includes('contract') ||;
                               requestData.content.includes('statute')))) {
     return 'legal_analysis';
   }
@@ -294,11 +294,11 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
 
   // Add additional fields based on original request format
   
-  // OpenAI-compatible format
+  // OpenAI-compatible format;
   if (originalRequest.messages) {
     return {
       ...baseResponse,
-      choices: [
+      choices: [;
         {
           message: {
             role: 'assistant',
@@ -316,7 +316,7 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
     };
   }
 
-  // Legal analysis format
+  // Legal analysis format;
   if (originalRequest.type === 'legal_analysis' || originalRequest.legalAnalysis) {
     return {
       ...baseResponse,
@@ -329,7 +329,7 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
     };
   }
 
-  // Document processing format
+  // Document processing format;
   if (originalRequest.type === 'document_processing' || originalRequest.document) {
     return {
       ...baseResponse,
@@ -342,7 +342,7 @@ function formatResponse(result: any, originalRequest: any, startTime: number) {
     };
   }
 
-  // Search format
+  // Search format;
   if (originalRequest.type === 'search' || originalRequest.query) {
     return {
       ...baseResponse,
@@ -367,7 +367,7 @@ function generateSessionId(): string {
   return `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 }
 
-// OPTIONS handler for CORS
+// OPTIONS handler for CORS;
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,

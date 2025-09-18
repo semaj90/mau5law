@@ -11,7 +11,7 @@ import {
 
 // Authentication tables for Lucia + legal AI platform
 export const authUsers = pgTable(
-  "auth_users",
+  "auth_users",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     email: text("email").notNull().unique(),
@@ -38,30 +38,30 @@ export const authUsers = pgTable(
     loginAttempts: jsonb("login_attempts").default([]),
     
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull()
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => ({
     emailIdx: index("auth_users_email_idx").on(table.email),
     roleIdx: index("auth_users_role_idx").on(table.role),
     departmentIdx: index("auth_users_department_idx").on(table.department),
-    isActiveIdx: index("auth_users_active_idx").on(table.isActive)
+    isActiveIdx: index("auth_users_active_idx").on(table.isActive),
   })
 );
 
 export const authKeys = pgTable(
-  "auth_keys",
+  "auth_keys",);
   {
     id: text("id").primaryKey(),
     userId: uuid("user_id").references(() => authUsers.id, { onDelete: "cascade" }),
-    hashedPassword: text("hashed_password")
+    hashedPassword: text("hashed_password"),
   },
   (table) => ({
-    userIdIdx: index("auth_keys_user_id_idx").on(table.userId)
+    userIdIdx: index("auth_keys_user_id_idx").on(table.userId),
   })
 );
 
 export const authSessions = pgTable(
-  "auth_sessions",
+  "auth_sessions",);
   {
     id: text("id").primaryKey(),
     userId: uuid("user_id").references(() => authUsers.id, { onDelete: "cascade" }),
@@ -74,32 +74,32 @@ export const authSessions = pgTable(
     deviceInfo: jsonb("device_info").default({}),
     sessionData: jsonb("session_data").default({}),
     
-    createdAt: timestamp("created_at").defaultNow().notNull()
+    createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => ({
     userIdIdx: index("auth_sessions_user_id_idx").on(table.userId),
-    activeExpiresIdx: index("auth_sessions_active_expires_idx").on(table.activeExpires)
+    activeExpiresIdx: index("auth_sessions_active_expires_idx").on(table.activeExpires),
   })
 );
 
 export const authPasswordResets = pgTable(
-  "auth_password_resets",
+  "auth_password_resets",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id").references(() => authUsers.id, { onDelete: "cascade" }),
     token: text("token").notNull().unique(),
     expiresAt: timestamp("expires_at").notNull(),
     used: boolean("used").default(false),
-    createdAt: timestamp("created_at").defaultNow().notNull()
+    createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => ({
     userIdIdx: index("auth_password_resets_user_id_idx").on(table.userId),
-    tokenIdx: index("auth_password_resets_token_idx").on(table.token)
+    tokenIdx: index("auth_password_resets_token_idx").on(table.token),
   })
 );
 
 export const authAuditLog = pgTable(
-  "auth_audit_log",
+  "auth_audit_log",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id").references(() => authUsers.id),
@@ -108,36 +108,36 @@ export const authAuditLog = pgTable(
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
     success: boolean("success").notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull()
+    createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => ({
     userIdIdx: index("auth_audit_log_user_id_idx").on(table.userId),
     actionIdx: index("auth_audit_log_action_idx").on(table.action),
-    createdAtIdx: index("auth_audit_log_created_at_idx").on(table.createdAt)
+    createdAtIdx: index("auth_audit_log_created_at_idx").on(table.createdAt),
   })
 );
 
-// Relations
+// Relations;
 export const authUsersRelations = relations(authUsers, ({ many }) => ({
   keys: many(authKeys),
   sessions: many(authSessions),
   passwordResets: many(authPasswordResets),
-  auditLogs: many(authAuditLog)
-}));
+  auditLogs: many(authAuditLog),
+});
 
 export const authKeysRelations = relations(authKeys, ({ one }) => ({
   user: one(authUsers, {
     fields: [authKeys.userId],
-    references: [authUsers.id]
+    references: [authUsers.id],
   })
-}));
+});
 
 export const authSessionsRelations = relations(authSessions, ({ one }) => ({
   user: one(authUsers, {
     fields: [authSessions.userId],
-    references: [authUsers.id]
+    references: [authUsers.id],
   })
-}));
+});
 
 // TypeScript types
 export type AuthUser = typeof authUsers.$inferSelect;

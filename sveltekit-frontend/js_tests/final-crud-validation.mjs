@@ -15,26 +15,26 @@
  * - Data integrity checks
  */
 
-import { readFileSync, existsSync } from "fs";
-import { performance } from "perf_hooks";
+import { readFileSync, existsSync } from 'fs';
+import { performance } from 'perf_hooks';
 
 // Color coding for output
 const colors = {
-  green: "\x1b[32m",
-  red: "\x1b[31m",
-  yellow: "\x1b[33m",
-  blue: "\x1b[34m",
-  magenta: "\x1b[35m",
-  cyan: "\x1b[36m",
-  white: "\x1b[37m",
-  reset: "\x1b[0m",
-  bold: "\x1b[1m",
-  dim: "\x1b[2m",
+  green: '\x1b[32m',
+  red: '\x1b[31m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  magenta: '\x1b[35m',
+  cyan: '\x1b[36m',
+  white: '\x1b[37m',
+  reset: '\x1b[0m',
+  bold: '\x1b[1m',
+  dim: '\x1b[2m',
 };
 
 class ComprehensiveCRUDValidator {
   constructor() {
-    this.baseUrl = "http://localhost:5173";
+    this.baseUrl = 'http://localhost:5173';
     this.results = {
       endpoints: [],
       performance: [],
@@ -97,15 +97,15 @@ class ComprehensiveCRUDValidator {
   }
 
   async validateEnvironment() {
-    this.printPhase("🔍 Environment Validation");
+    this.printPhase('🔍 Environment Validation');
 
     // Check required files
     const requiredFiles = [
-      "package.json",
-      "src/lib/server/db/schema-postgres.ts",
-      "src/routes/api/cases/+server.ts",
-      "src/routes/api/evidence/+server.ts",
-      "src/routes/api/reports/+server.ts",
+      'package.json',
+      'src/lib/server/db/schema-postgres.ts',
+      'src/routes/api/cases/+server.ts',
+      'src/routes/api/evidence/+server.ts',
+      'src/routes/api/reports/+server.ts',
     ];
 
     for (const file of requiredFiles) {
@@ -120,36 +120,32 @@ class ComprehensiveCRUDValidator {
     // Check server availability
     try {
       const response = await fetch(this.baseUrl);
-      this.printSuccess("SvelteKit server is running");
+      this.printSuccess('SvelteKit server is running');
     } catch (error) {
-      this.printError("SvelteKit server not accessible");
-      throw new Error("Server not running on localhost:5173");
+      this.printError('SvelteKit server not accessible');
+      throw new Error('Server not running on localhost:5173');
     }
 
-    this.printInfo("Environment validation complete ✅\n");
+    this.printInfo('Environment validation complete ✅\n');
   }
 
   async testAuthentication() {
-    this.printPhase("🔐 Authentication Testing");
+    this.printPhase('🔐 Authentication Testing');
 
     // Test user registration
     const registerData = {
       email: `test-final-${Date.now()}@example.com`,
-      password: "TestPassword123!",
-      name: "Final Test User",
-      role: "prosecutor",
+      password: 'TestPassword123!',
+      name: 'Final Test User',
+      role: 'prosecutor',
     };
 
     try {
-      const registerResponse = await this.makeRequest(
-        "/api/auth/register",
-        "POST",
-        registerData,
-      );
+      const registerResponse = await this.makeRequest('/api/auth/register', 'POST', registerData);
       if (registerResponse.ok) {
-        this.printSuccess("User registration: PASSED");
+        this.printSuccess('User registration: PASSED');
       } else {
-        this.printWarning("User registration: FAILED");
+        this.printWarning('User registration: FAILED');
       }
 
       // Test login
@@ -158,42 +154,35 @@ class ComprehensiveCRUDValidator {
         password: registerData.password,
       };
 
-      const loginResponse = await this.makeRequest(
-        "/api/auth/login",
-        "POST",
-        loginData,
-      );
+      const loginResponse = await this.makeRequest('/api/auth/login', 'POST', loginData);
       if (loginResponse.ok) {
-        this.authToken = loginResponse.headers.get("set-cookie");
-        this.printSuccess("User login: PASSED");
+        this.authToken = loginResponse.headers.get('set-cookie');
+        this.printSuccess('User login: PASSED');
       } else {
-        this.printWarning("User login: FAILED");
+        this.printWarning('User login: FAILED');
       }
     } catch (error) {
       this.printError(`Authentication error: ${error.message}`);
     }
 
-    this.printInfo("Authentication testing complete ✅\n");
+    this.printInfo('Authentication testing complete ✅\n');
   }
 
   async validateDatabaseSchema() {
-    this.printPhase("🗄️ Database Schema Validation");
+    this.printPhase('🗄️ Database Schema Validation');
 
     try {
-      const schemaContent = readFileSync(
-        "src/lib/server/db/schema-postgres.ts",
-        "utf8",
-      );
+      const schemaContent = readFileSync('src/lib/server/db/schema-postgres.ts', 'utf8');
 
       const expectedTables = [
-        "users",
-        "sessions",
-        "cases",
-        "criminals",
-        "evidence",
-        "caseActivities",
-        "reports",
-        "canvasStates",
+        'users',
+        'sessions',
+        'cases',
+        'criminals',
+        'evidence',
+        'caseActivities',
+        'reports',
+        'canvasStates',
       ];
 
       let validTables = 0;
@@ -206,9 +195,7 @@ class ComprehensiveCRUDValidator {
         }
       }
 
-      const schemaScore = Math.round(
-        (validTables / expectedTables.length) * 100,
-      );
+      const schemaScore = Math.round((validTables / expectedTables.length) * 100);
       this.results.schema.push({
         totalTables: expectedTables.length,
         validTables,
@@ -222,23 +209,23 @@ class ComprehensiveCRUDValidator {
   }
 
   async testAllCRUDOperations() {
-    this.printPhase("🔄 CRUD Operations Testing");
+    this.printPhase('🔄 CRUD Operations Testing');
 
     const entities = [
-      "cases",
-      "evidence",
-      "reports",
-      "criminals",
-      "activities",
-      "users",
-      "canvasStates",
+      'cases',
+      'evidence',
+      'reports',
+      'criminals',
+      'activities',
+      'users',
+      'canvasStates',
     ];
 
     for (const entity of entities) {
       await this.testEntityCRUD(entity);
     }
 
-    this.printInfo("CRUD operations testing complete ✅\n");
+    this.printInfo('CRUD operations testing complete ✅\n');
   }
 
   async testEntityCRUD(entity) {
@@ -252,8 +239,8 @@ class ComprehensiveCRUDValidator {
       const createStart = performance.now();
       const createResponse = await this.makeAuthenticatedRequest(
         this.getEntityEndpoint(entity),
-        "POST",
-        testData,
+        'POST',
+        testData
       );
       const createTime = performance.now() - createStart;
 
@@ -263,7 +250,7 @@ class ComprehensiveCRUDValidator {
         this.printSuccess(`  CREATE: PASSED (${createTime.toFixed(2)}ms)`);
         this.results.performance.push({
           entity,
-          operation: "CREATE",
+          operation: 'CREATE',
           time: createTime,
           success: true,
         });
@@ -276,7 +263,7 @@ class ComprehensiveCRUDValidator {
       const readStart = performance.now();
       const readResponse = await this.makeAuthenticatedRequest(
         `${this.getEntityEndpoint(entity)}/${createdId}`,
-        "GET",
+        'GET'
       );
       const readTime = performance.now() - readStart;
 
@@ -284,7 +271,7 @@ class ComprehensiveCRUDValidator {
         this.printSuccess(`  READ: PASSED (${readTime.toFixed(2)}ms)`);
         this.results.performance.push({
           entity,
-          operation: "READ",
+          operation: 'READ',
           time: readTime,
           success: true,
         });
@@ -297,8 +284,8 @@ class ComprehensiveCRUDValidator {
       const updateStart = performance.now();
       const updateResponse = await this.makeAuthenticatedRequest(
         `${this.getEntityEndpoint(entity)}/${createdId}`,
-        "PUT",
-        updateData,
+        'PUT',
+        updateData
       );
       const updateTime = performance.now() - updateStart;
 
@@ -306,7 +293,7 @@ class ComprehensiveCRUDValidator {
         this.printSuccess(`  UPDATE: PASSED (${updateTime.toFixed(2)}ms)`);
         this.results.performance.push({
           entity,
-          operation: "UPDATE",
+          operation: 'UPDATE',
           time: updateTime,
           success: true,
         });
@@ -318,22 +305,18 @@ class ComprehensiveCRUDValidator {
       const patchData = this.generatePatchData(entity);
       const patchStart = performance.now();
       let patchUrl =
-        entity === "evidence" || entity === "canvasStates"
+        entity === 'evidence' || entity === 'canvasStates'
           ? `${this.getEntityEndpoint(entity)}?id=${createdId}`
           : `${this.getEntityEndpoint(entity)}/${createdId}`;
 
-      const patchResponse = await this.makeAuthenticatedRequest(
-        patchUrl,
-        "PATCH",
-        patchData,
-      );
+      const patchResponse = await this.makeAuthenticatedRequest(patchUrl, 'PATCH', patchData);
       const patchTime = performance.now() - patchStart;
 
       if (patchResponse.ok) {
         this.printSuccess(`  PATCH: PASSED (${patchTime.toFixed(2)}ms)`);
         this.results.performance.push({
           entity,
-          operation: "PATCH",
+          operation: 'PATCH',
           time: patchTime,
           success: true,
         });
@@ -345,7 +328,7 @@ class ComprehensiveCRUDValidator {
       const listStart = performance.now();
       const listResponse = await this.makeAuthenticatedRequest(
         `${this.getEntityEndpoint(entity)}?limit=10`,
-        "GET",
+        'GET'
       );
       const listTime = performance.now() - listStart;
 
@@ -353,7 +336,7 @@ class ComprehensiveCRUDValidator {
         this.printSuccess(`  LIST: PASSED (${listTime.toFixed(2)}ms)`);
         this.results.performance.push({
           entity,
-          operation: "LIST",
+          operation: 'LIST',
           time: listTime,
           success: true,
         });
@@ -364,21 +347,18 @@ class ComprehensiveCRUDValidator {
       // DELETE
       const deleteStart = performance.now();
       let deleteUrl =
-        entity === "evidence" || entity === "canvasStates"
+        entity === 'evidence' || entity === 'canvasStates'
           ? `${this.getEntityEndpoint(entity)}?id=${createdId}`
           : `${this.getEntityEndpoint(entity)}/${createdId}`;
 
-      const deleteResponse = await this.makeAuthenticatedRequest(
-        deleteUrl,
-        "DELETE",
-      );
+      const deleteResponse = await this.makeAuthenticatedRequest(deleteUrl, 'DELETE');
       const deleteTime = performance.now() - deleteStart;
 
       if (deleteResponse.ok) {
         this.printSuccess(`  DELETE: PASSED (${deleteTime.toFixed(2)}ms)`);
         this.results.performance.push({
           entity,
-          operation: "DELETE",
+          operation: 'DELETE',
           time: deleteTime,
           success: true,
         });
@@ -391,7 +371,7 @@ class ComprehensiveCRUDValidator {
   }
 
   async runPerformanceTests() {
-    this.printPhase("⚡ Performance Testing");
+    this.printPhase('⚡ Performance Testing');
 
     // Calculate average response times
     const performanceByEntity = {};
@@ -408,7 +388,7 @@ class ComprehensiveCRUDValidator {
       const minTime = Math.min(...times);
 
       this.printInfo(
-        `${entity.padEnd(12)} | Avg: ${avgTime.toFixed(2)}ms | Min: ${minTime.toFixed(2)}ms | Max: ${maxTime.toFixed(2)}ms`,
+        `${entity.padEnd(12)} | Avg: ${avgTime.toFixed(2)}ms | Min: ${minTime.toFixed(2)}ms | Max: ${maxTime.toFixed(2)}ms`
       );
 
       if (avgTime < 1000) {
@@ -420,19 +400,19 @@ class ComprehensiveCRUDValidator {
       }
     }
 
-    this.printInfo("Performance testing complete ✅\n");
+    this.printInfo('Performance testing complete ✅\n');
   }
 
   async runSecurityTests() {
-    this.printPhase("🛡️ Security Testing");
+    this.printPhase('🛡️ Security Testing');
 
     // Test authentication requirement
     try {
       const unauthedResponse = await fetch(`${this.baseUrl}/api/cases`);
       if (unauthedResponse.status === 401) {
-        this.printSuccess("Authentication requirement: ENFORCED");
+        this.printSuccess('Authentication requirement: ENFORCED');
       } else {
-        this.printError("Authentication requirement: NOT ENFORCED");
+        this.printError('Authentication requirement: NOT ENFORCED');
       }
     } catch (error) {
       this.printError(`Security test failed: ${error.message}`);
@@ -442,174 +422,135 @@ class ComprehensiveCRUDValidator {
     try {
       const maliciousData = {
         title: "'; DROP TABLE cases; --",
-        caseNumber: "INJECT-001",
+        caseNumber: 'INJECT-001',
       };
 
       const injectResponse = await this.makeAuthenticatedRequest(
-        "/api/cases",
-        "POST",
-        maliciousData,
+        '/api/cases',
+        'POST',
+        maliciousData
       );
 
       if (injectResponse.status === 400 || injectResponse.status === 422) {
-        this.printSuccess("SQL injection protection: ACTIVE");
+        this.printSuccess('SQL injection protection: ACTIVE');
       } else {
-        this.printWarning("SQL injection protection: REVIEW NEEDED");
+        this.printWarning('SQL injection protection: REVIEW NEEDED');
       }
     } catch (error) {
-      this.printSuccess("SQL injection protection: HANDLED BY ERROR BOUNDARY");
+      this.printSuccess('SQL injection protection: HANDLED BY ERROR BOUNDARY');
     }
 
-    this.printInfo("Security testing complete ✅\n");
+    this.printInfo('Security testing complete ✅\n');
   }
 
   async validateDataIntegrity() {
-    this.printPhase("🔍 Data Integrity Validation");
+    this.printPhase('🔍 Data Integrity Validation');
 
     // Test data consistency across related entities
     try {
       // Create a case
       const caseData = {
-        title: "Integrity Test Case",
+        title: 'Integrity Test Case',
         caseNumber: `INT-${Date.now()}`,
-        description: "Testing data integrity",
+        description: 'Testing data integrity',
       };
 
-      const caseResponse = await this.makeAuthenticatedRequest(
-        "/api/cases",
-        "POST",
-        caseData,
-      );
+      const caseResponse = await this.makeAuthenticatedRequest('/api/cases', 'POST', caseData);
       if (caseResponse.ok) {
         const createdCase = await caseResponse.json();
 
         // Create evidence linked to the case
         const evidenceData = {
-          title: "Integrity Test Evidence",
-          evidenceType: "document",
+          title: 'Integrity Test Evidence',
+          evidenceType: 'document',
           caseId: createdCase.id,
         };
 
         const evidenceResponse = await this.makeAuthenticatedRequest(
-          "/api/evidence",
-          "POST",
-          evidenceData,
+          '/api/evidence',
+          'POST',
+          evidenceData
         );
         if (evidenceResponse.ok) {
-          this.printSuccess("Cross-entity relationships: WORKING");
+          this.printSuccess('Cross-entity relationships: WORKING');
 
           // Cleanup
           await this.makeAuthenticatedRequest(
             `/api/evidence?id=${(await evidenceResponse.json()).id}`,
-            "DELETE",
+            'DELETE'
           );
-          await this.makeAuthenticatedRequest(
-            `/api/cases/${createdCase.id}`,
-            "DELETE",
-          );
+          await this.makeAuthenticatedRequest(`/api/cases/${createdCase.id}`, 'DELETE');
         } else {
-          this.printError("Cross-entity relationships: FAILED");
+          this.printError('Cross-entity relationships: FAILED');
         }
       }
     } catch (error) {
       this.printError(`Data integrity test failed: ${error.message}`);
     }
 
-    this.printInfo("Data integrity validation complete ✅\n");
+    this.printInfo('Data integrity validation complete ✅\n');
   }
 
   async testRealtimeSync() {
-    this.printPhase("🔄 Real-time Sync Testing");
+    this.printPhase('🔄 Real-time Sync Testing');
 
     // Test that created data is immediately accessible
     try {
       const testData = {
-        title: "Realtime Test Case",
+        title: 'Realtime Test Case',
         caseNumber: `RT-${Date.now()}`,
       };
 
-      const createResponse = await this.makeAuthenticatedRequest(
-        "/api/cases",
-        "POST",
-        testData,
-      );
+      const createResponse = await this.makeAuthenticatedRequest('/api/cases', 'POST', testData);
       if (createResponse.ok) {
         const created = await createResponse.json();
 
         // Immediately try to read it back
-        const readResponse = await this.makeAuthenticatedRequest(
-          `/api/cases/${created.id}`,
-          "GET",
-        );
+        const readResponse = await this.makeAuthenticatedRequest(`/api/cases/${created.id}`, 'GET');
         if (readResponse.ok) {
-          this.printSuccess("Real-time sync: WORKING");
+          this.printSuccess('Real-time sync: WORKING');
 
           // Cleanup
-          await this.makeAuthenticatedRequest(
-            `/api/cases/${created.id}`,
-            "DELETE",
-          );
+          await this.makeAuthenticatedRequest(`/api/cases/${created.id}`, 'DELETE');
         } else {
-          this.printError(
-            "Real-time sync: FAILED - Data not immediately available",
-          );
+          this.printError('Real-time sync: FAILED - Data not immediately available');
         }
       }
     } catch (error) {
       this.printError(`Real-time sync test failed: ${error.message}`);
     }
 
-    this.printInfo("Real-time sync testing complete ✅\n");
+    this.printInfo('Real-time sync testing complete ✅\n');
   }
 
   generateComprehensiveReport() {
     const endTime = performance.now();
     const totalTime = endTime - this.startTime;
 
-    this.printPhase("📊 COMPREHENSIVE VALIDATION REPORT");
+    this.printPhase('📊 COMPREHENSIVE VALIDATION REPORT');
 
     // Calculate overall statistics
     const totalOperations = this.results.performance.length;
-    const successfulOperations = this.results.performance.filter(
-      (op) => op.success,
-    ).length;
-    const successRate = Math.round(
-      (successfulOperations / totalOperations) * 100,
-    );
+    const successfulOperations = this.results.performance.filter((op) => op.success).length;
+    const successRate = Math.round((successfulOperations / totalOperations) * 100);
 
     const avgResponseTime =
-      this.results.performance.reduce((sum, op) => sum + op.time, 0) /
-      totalOperations;
+      this.results.performance.reduce((sum, op) => sum + op.time, 0) / totalOperations;
 
     console.log(
       colors.bold +
-        "\n╔══════════════════════════════════════════════════════════════════════════════╗",
+        '\n╔══════════════════════════════════════════════════════════════════════════════╗'
     );
+    console.log('║                              📊 FINAL RESULTS                              ║');
+    console.log('╠══════════════════════════════════════════════════════════════════════════════╣');
+    console.log(`║ Total Operations Tested: ${totalOperations.toString().padEnd(52)} ║`);
+    console.log(`║ Successful Operations:   ${successfulOperations.toString().padEnd(52)} ║`);
+    console.log(`║ Success Rate:            ${successRate}%`.padEnd(74) + ' ║');
+    console.log(`║ Average Response Time:   ${avgResponseTime.toFixed(2)}ms`.padEnd(74) + ' ║');
+    console.log(`║ Total Test Duration:     ${(totalTime / 1000).toFixed(2)}s`.padEnd(74) + ' ║');
     console.log(
-      "║                              📊 FINAL RESULTS                              ║",
-    );
-    console.log(
-      "╠══════════════════════════════════════════════════════════════════════════════╣",
-    );
-    console.log(
-      `║ Total Operations Tested: ${totalOperations.toString().padEnd(52)} ║`,
-    );
-    console.log(
-      `║ Successful Operations:   ${successfulOperations.toString().padEnd(52)} ║`,
-    );
-    console.log(`║ Success Rate:            ${successRate}%`.padEnd(74) + " ║");
-    console.log(
-      `║ Average Response Time:   ${avgResponseTime.toFixed(2)}ms`.padEnd(74) +
-        " ║",
-    );
-    console.log(
-      `║ Total Test Duration:     ${(totalTime / 1000).toFixed(2)}s`.padEnd(
-        74,
-      ) + " ║",
-    );
-    console.log(
-      "╚══════════════════════════════════════════════════════════════════════════════╝" +
-        colors.reset,
+      '╚══════════════════════════════════════════════════════════════════════════════╝' +
+        colors.reset
     );
 
     // Status assessment
@@ -617,51 +558,43 @@ class ComprehensiveCRUDValidator {
       console.log(
         colors.green +
           colors.bold +
-          "\n🎉 EXCELLENT: All systems are operating at peak performance!",
+          '\n🎉 EXCELLENT: All systems are operating at peak performance!'
       );
-      console.log(
-        "✅ CRUD operations are fully synchronized with the database",
-      );
-      console.log("✅ All API endpoints are working correctly");
-      console.log("✅ Data integrity is maintained across all operations");
-      console.log("✅ Security measures are properly implemented");
-      console.log("✅ Performance is within acceptable limits");
+      console.log('✅ CRUD operations are fully synchronized with the database');
+      console.log('✅ All API endpoints are working correctly');
+      console.log('✅ Data integrity is maintained across all operations');
+      console.log('✅ Security measures are properly implemented');
+      console.log('✅ Performance is within acceptable limits');
     } else if (successRate >= 80) {
       console.log(
-        colors.yellow +
-          colors.bold +
-          "\n⚠️ GOOD: Most systems are working with minor issues",
+        colors.yellow + colors.bold + '\n⚠️ GOOD: Most systems are working with minor issues'
       );
-      console.log("✅ Core functionality is operational");
-      console.log("⚠️ Some optimizations may be needed");
+      console.log('✅ Core functionality is operational');
+      console.log('⚠️ Some optimizations may be needed');
     } else {
-      console.log(
-        colors.red +
-          colors.bold +
-          "\n❌ NEEDS ATTENTION: Several issues detected",
-      );
-      console.log("❌ Multiple systems require fixes");
-      console.log("⚠️ Review the detailed logs above");
+      console.log(colors.red + colors.bold + '\n❌ NEEDS ATTENTION: Several issues detected');
+      console.log('❌ Multiple systems require fixes');
+      console.log('⚠️ Review the detailed logs above');
     }
 
     console.log(
       colors.reset +
-        "\n🔗 Access your CRUD Dashboard at: " +
+        '\n🔗 Access your CRUD Dashboard at: ' +
         colors.cyan +
         `${this.baseUrl}/crud-dashboard` +
-        colors.reset,
+        colors.reset
     );
     console.log(
-      "\n📚 For detailed API documentation, visit: " +
+      '\n📚 For detailed API documentation, visit: ' +
         colors.blue +
         `${this.baseUrl}/api-docs` +
-        colors.reset,
+        colors.reset
     );
 
-    console.log(colors.dim + "\n" + "=".repeat(80));
-    console.log("Validation completed at: " + new Date().toISOString());
-    console.log("Report generated by: Comprehensive CRUD Validator v2.0");
-    console.log("=".repeat(80) + colors.reset);
+    console.log(colors.dim + '\n' + '='.repeat(80));
+    console.log('Validation completed at: ' + new Date().toISOString());
+    console.log('Report generated by: Comprehensive CRUD Validator v2.0');
+    console.log('='.repeat(80) + colors.reset);
   }
 
   // Helper methods
@@ -670,42 +603,42 @@ class ComprehensiveCRUDValidator {
       cases: {
         title: `Test Case ${Date.now()}`,
         caseNumber: `TEST-${Date.now()}`,
-        description: "Test case for CRUD validation",
-        priority: "medium",
-        status: "open",
+        description: 'Test case for CRUD validation',
+        priority: 'medium',
+        status: 'open',
       },
       evidence: {
         title: `Test Evidence ${Date.now()}`,
-        evidenceType: "document",
-        description: "Test evidence for CRUD validation",
+        evidenceType: 'document',
+        description: 'Test evidence for CRUD validation',
       },
       reports: {
         title: `Test Report ${Date.now()}`,
-        content: "<p>Test report content</p>",
-        reportType: "case_summary",
-        status: "draft",
+        content: '<p>Test report content</p>',
+        reportType: 'case_summary',
+        status: 'draft',
       },
       criminals: {
-        firstName: "Test",
+        firstName: 'Test',
         lastName: `Criminal${Date.now()}`,
-        status: "active",
-        threatLevel: "low",
+        status: 'active',
+        threatLevel: 'low',
       },
       activities: {
         title: `Test Activity ${Date.now()}`,
-        activityType: "investigation",
-        status: "pending",
-        priority: "medium",
+        activityType: 'investigation',
+        status: 'pending',
+        priority: 'medium',
       },
       users: {
         email: `testuser${Date.now()}@example.com`,
-        password: "TestPassword123!",
-        name: "Test User",
-        role: "prosecutor",
+        password: 'TestPassword123!',
+        name: 'Test User',
+        role: 'prosecutor',
       },
       canvasStates: {
         name: `Test Canvas ${Date.now()}`,
-        canvasData: { objects: [], background: "#ffffff" },
+        canvasData: { objects: [], background: '#ffffff' },
         version: 1,
       },
     };
@@ -715,13 +648,13 @@ class ComprehensiveCRUDValidator {
 
   generateUpdateData(entity) {
     const updateData = {
-      cases: { title: "Updated Test Case", priority: "high" },
-      evidence: { title: "Updated Test Evidence", summary: "Updated summary" },
-      reports: { title: "Updated Test Report", status: "published" },
-      criminals: { threatLevel: "medium", notes: "Updated notes" },
-      activities: { priority: "high", status: "in-progress" },
-      users: { name: "Updated Test User" },
-      canvasStates: { name: "Updated Test Canvas", version: 2 },
+      cases: { title: 'Updated Test Case', priority: 'high' },
+      evidence: { title: 'Updated Test Evidence', summary: 'Updated summary' },
+      reports: { title: 'Updated Test Report', status: 'published' },
+      criminals: { threatLevel: 'medium', notes: 'Updated notes' },
+      activities: { priority: 'high', status: 'in-progress' },
+      users: { name: 'Updated Test User' },
+      canvasStates: { name: 'Updated Test Canvas', version: 2 },
     };
 
     return updateData[entity] || {};
@@ -729,13 +662,13 @@ class ComprehensiveCRUDValidator {
 
   generatePatchData(entity) {
     const patchData = {
-      cases: { operation: "updatePriority", priority: "urgent" },
-      evidence: { summary: "Patched summary" },
-      reports: { operation: "publish", isPublic: true },
-      criminals: { operation: "updateThreatLevel", threatLevel: "high" },
-      activities: { operation: "complete" },
-      users: { operation: "updateProfile", name: "Patched User" },
-      canvasStates: { operation: "incrementVersion" },
+      cases: { operation: 'updatePriority', priority: 'urgent' },
+      evidence: { summary: 'Patched summary' },
+      reports: { operation: 'publish', isPublic: true },
+      criminals: { operation: 'updateThreatLevel', threatLevel: 'high' },
+      activities: { operation: 'complete' },
+      users: { operation: 'updateProfile', name: 'Patched User' },
+      canvasStates: { operation: 'incrementVersion' },
     };
 
     return patchData[entity] || {};
@@ -743,13 +676,13 @@ class ComprehensiveCRUDValidator {
 
   getEntityEndpoint(entity) {
     const endpoints = {
-      cases: "/api/cases",
-      evidence: "/api/evidence",
-      reports: "/api/reports",
-      criminals: "/api/criminals",
-      activities: "/api/activities",
-      users: "/api/users",
-      canvasStates: "/api/canvas-states",
+      cases: '/api/cases',
+      evidence: '/api/evidence',
+      reports: '/api/reports',
+      criminals: '/api/criminals',
+      activities: '/api/activities',
+      users: '/api/users',
+      canvasStates: '/api/canvas-states',
     };
 
     return endpoints[entity] || `/api/${entity}`;
@@ -758,10 +691,10 @@ class ComprehensiveCRUDValidator {
   async makeRequest(endpoint, method, data = null) {
     const options = {
       method,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     };
 
-    if (data && (method === "POST" || method === "PUT" || method === "PATCH")) {
+    if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
       options.body = JSON.stringify(data);
     }
 
@@ -772,12 +705,12 @@ class ComprehensiveCRUDValidator {
     const options = {
       method,
       headers: {
-        "Content-Type": "application/json",
-        Cookie: this.authToken || "",
+        'Content-Type': 'application/json',
+        Cookie: this.authToken || '',
       },
     };
 
-    if (data && (method === "POST" || method === "PUT" || method === "PATCH")) {
+    if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
       options.body = JSON.stringify(data);
     }
 
@@ -786,7 +719,7 @@ class ComprehensiveCRUDValidator {
 
   printPhase(message) {
     console.log(colors.cyan + colors.bold + `\n${message}` + colors.reset);
-    console.log(colors.cyan + "─".repeat(message.length) + colors.reset);
+    console.log(colors.cyan + '─'.repeat(message.length) + colors.reset);
   }
 
   printSubPhase(message) {

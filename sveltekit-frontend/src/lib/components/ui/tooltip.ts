@@ -6,7 +6,7 @@ export { default as TooltipTrigger } from './TooltipTrigger.svelte.js';
 // Re-export from tooltip subdirectory if needed
 export { default as TooltipProvider } from './tooltip/TooltipProvider.svelte.js';
 
-// Export types
+// Export types;
 export type TooltipProps = {
   content?: string;
   placement?: "top" | "bottom" | "left" | "right";

@@ -11,7 +11,7 @@ export const GET: RequestHandler = async () => {
 			return json({ 
 				status: 'unhealthy',
 				cuda_available: false,
-				error: 'CUDA server not responding'
+				error: 'CUDA server not responding',
 			}, { status: 503 });
 		}
 
@@ -23,10 +23,10 @@ export const GET: RequestHandler = async () => {
 			gpu_info: {
 				device_count: health.device_count || 0,
 				compute_capability: health.compute_capability || 'unknown',
-				queue_size: health.queue_size || 0
+				queue_size: health.queue_size || 0,
 			},
 			service: health.service || 'unknown',
-			timestamp: health.timestamp || Date.now()
+			timestamp: health.timestamp || Date.now(),
 		});
 		
 	} catch (error) {
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async () => {
 			status: 'error',
 			cuda_available: false,
 			error: 'Failed to connect to CUDA server',
-			details: error instanceof Error ? error.message: String(error)
+			details: error instanceof Error ? error.message: String(error),
 		}, { status: 503 });
 	}
 };

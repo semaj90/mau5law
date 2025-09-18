@@ -8,6 +8,7 @@ export { default as CaseStats } from './CaseStats.svelte';
 
 export type CaseStatus = 'open' | 'investigating' | 'pending' | 'closed' | 'archived';
 export type CasePriority = 'low' | 'medium' | 'high' | 'critical';
+}
 
 export interface CaseFilterOptions {
   status?: CaseStatus[];
@@ -15,6 +16,6 @@ export interface CaseFilterOptions {
   assignedTo?: string;
   dateRange?: {
     start: Date;
-    end: Date;
+    end: Date;,
   };
 }

@@ -24,16 +24,16 @@ interface QueryResponse {
   classification?: {
     type: string;
     confidence: number;
-    reasoning: string;
+    reasoning: string;,
   };
   nintendo_diagnostics?: {
     bank_switches: number;
     memory_pressure: 'low' | 'medium' | 'high';
-    cache_efficiency: number;
+    cache_efficiency: number;,
   };
 }
 
-// Simulated LLM clients (in production, these would connect to actual vLLM services)
+// Simulated LLM clients (in production, these would connect to actual vLLM services);
 class MockLLMClient {
   constructor(
     private baseUrl: string,
@@ -46,9 +46,9 @@ class MockLLMClient {
     const delay =
       Math.random() * (this.responseTimeRange[1] - this.responseTimeRange[0]) +
       this.responseTimeRange[0];
-    await new Promise((resolve) => setTimeout(resolve, delay));
+    await new Promise((resolve) => setTimeout(resolve, delay);
 
-    // Generate mock response based on model type
+    // Generate mock response based on model type;
     if (this.model.includes('270m')) {
       return this.generateFastResponse(prompt);
     } else if (this.model.includes('legal')) {
@@ -113,7 +113,7 @@ function generateCacheKey(query: string, context?: any[]): string {
 function classifyQuery(query: string): {
   type: 'simple' | 'complex_legal' | 'embedding';
   confidence: number;
-  reasoning: string;
+  reasoning: string;,
 } {
   const legalKeywords = [
     'contract',
@@ -143,7 +143,7 @@ function classifyQuery(query: string): {
 
   const queryLower = query.toLowerCase();
 
-  // Check for embedding requests
+  // Check for embedding requests;
   if (embeddingKeywords.some((keyword) => queryLower.includes(keyword))) {
     return {
       type: 'embedding',
@@ -202,7 +202,7 @@ export const POST: RequestHandler = async ({ request }) => {
           cache_hit: true,
           memory_bank_used: 'L3_REDIS_CACHE',
           response_time_ms: Date.now() - startTime,
-          cost_saved: 0.015, // Simulated API cost saving
+          cost_saved: 0.015, // Simulated API cost saving;
           nintendo_diagnostics: {
             bank_switches: 0,
             memory_pressure: 'low',
@@ -215,7 +215,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Phase 2: Classify query
-    const classification = options?.force_model
+    const classification = options?.force_model;
       ? {
           type:
             options.force_model === 'fast'
@@ -260,20 +260,20 @@ export const POST: RequestHandler = async ({ request }) => {
         memoryBank = 'L1_GPU_VRAM_ROUTER';
     }
 
-    // Phase 4: Cache result (Nintendo L3 Memory Bank)
+    // Phase 4: Cache result (Nintendo L3 Memory Bank);
     queryCache.set(cacheKey, {
       response: answer,
       timestamp: Date.now(),
       model: modelUsed,
     });
 
-    // Clean up old cache entries (Nintendo memory management)
+    // Clean up old cache entries (Nintendo memory management);
     if (queryCache.size > 1000) {
-      const oldEntries = Array.from(queryCache.entries())
+      const oldEntries = Array.from(queryCache.entries()
         .filter(([_, entry]) => Date.now() - entry.timestamp > CACHE_TTL)
         .map(([key, _]) => key);
 
-      oldEntries.forEach((key) => queryCache.delete(key));
+      oldEntries.forEach((key) => queryCache.delete(key);
     }
 
     const responseTime = Date.now() - startTime;
@@ -301,7 +301,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error) {
     console.error('Orchestrator query error:', error);
 
-    return json(
+    return json();
       {
         answer: 'Error processing query. Please check system status.',
         model_used: 'error_handler',

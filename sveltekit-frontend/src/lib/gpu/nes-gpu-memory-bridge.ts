@@ -13,14 +13,14 @@
 import { nesMemory, type LegalDocument, type MemoryStats } from '../memory/nes-memory-architecture.js';
 import type { FlashAttention2Config } from '../services/flashattention2-rtx3060.js';
 
-// FlatBuffer schema definitions for binary data
+// FlatBuffer schema definitions for binary data;
 export interface GPUNodeDataFB {
   nodeId: Uint32Array;
   position: Float32Array; // x, y, z coordinates
   embedding: Float32Array; // 384-dim vector
   metadata: Uint8Array; // Binary metadata
   priority: Uint8Array; // NES-style priority (0-255)
-  bankId: Uint8Array; // Memory bank reference
+  bankId: Uint8Array; // Memory bank reference,
 }
 
 export interface GPUTextureMatrix {
@@ -30,7 +30,7 @@ export interface GPUTextureMatrix {
   data: Float32Array;
   gpuBuffer: GPUBuffer | null;
   texture: GPUTexture | null;
-  bindGroup: GPUBindGroup | null;
+  bindGroup: GPUBindGroup | null;,
 }
 
 export interface CUDAMemoryRegion {
@@ -39,7 +39,7 @@ export interface CUDAMemoryRegion {
   size: number;
   devicePtr: bigint | null;
   mapped: boolean;
-  bankType: 'RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';
+  bankType: 'RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';,
 }
 
 export class NESGPUMemoryBridge {
@@ -52,7 +52,7 @@ export class NESGPUMemoryBridge {
     gpuUploadTime: 0,
     cudaKernelTime: 0,
     memoryBandwidth: 0,
-    cacheMissRate: 0.0
+    cacheMissRate: 0.0,
   };
   
   // FlatBuffer binary data cache
@@ -67,12 +67,12 @@ export class NESGPUMemoryBridge {
     enableCUDA: boolean;
     maxTextureSize: number;
     cacheSizeMB: number;
-    syncIntervalMs: number;
+    syncIntervalMs: number;,
   } = {
     enableCUDA: true,
     maxTextureSize: 2048,
     cacheSizeMB: 256,
-    syncIntervalMs: 16.67 // 60 FPS sync
+    syncIntervalMs: 16.67 // 60 FPS sync,
   }) {
     this.initializeGPUBridge();
   }
@@ -90,7 +90,7 @@ export class NESGPUMemoryBridge {
         requiredFeatures: [] as GPUFeatureName[],
         requiredLimits: {
           maxTextureDimension2D: this.config.maxTextureSize,
-          maxBufferSize: this.config.cacheSizeMB * 1024 * 1024
+          maxBufferSize: this.config.cacheSizeMB * 1024 * 1024,
         }
       });
 
@@ -118,34 +118,34 @@ export class NESGPUMemoryBridge {
     // Map NES memory banks to CUDA memory regions
     const nesStats = nesMemory.getMemoryStats();
     
-    // Internal RAM region (2KB) - fastest access
+    // Internal RAM region (2KB) - fastest access;
     this.cudaRegions.set('INTERNAL_RAM', {
       startAddr: 0x0000,
       endAddr: 0x07FF,
       size: 2048,
       devicePtr: null,
       mapped: false,
-      bankType: 'RAM'
+      bankType: 'RAM',
     });
 
-    // CHR-ROM region (8KB) - pattern data
+    // CHR-ROM region (8KB) - pattern data;
     this.cudaRegions.set('CHR_ROM', {
       startAddr: 0x0000, // PPU address space
       endAddr: 0x1FFF,
       size: 8192,
       devicePtr: null,
       mapped: false,
-      bankType: 'CHR_ROM'
+      bankType: 'CHR_ROM',
     });
 
-    // PRG-ROM region (32KB) - program logic
+    // PRG-ROM region (32KB) - program logic;
     this.cudaRegions.set('PRG_ROM', {
       startAddr: 0x8000,
       endAddr: 0xFFFF,
       size: 32768,
       devicePtr: null,
       mapped: false,
-      bankType: 'PRG_ROM'
+      bankType: 'PRG_ROM',
     });
 
     console.log('🧠 CUDA memory regions initialized:', this.cudaRegions.size);
@@ -154,7 +154,7 @@ export class NESGPUMemoryBridge {
   /**
    * Convert legal document data to FlatBuffer binary format
    * 8x faster than JSON.stringify/parse for large datasets
-   */
+   */;
   async createFlatBufferFromDocument(document: LegalDocument): Promise<ArrayBuffer> {
     const startTime = performance.now();
     
@@ -173,11 +173,11 @@ export class NESGPUMemoryBridge {
       
       // Write header (64 bytes)
       view.setUint32(offset, document.id.length, true); offset += 4;
-      view.setUint8(offset, this.getDocumentTypeCode(document.type)); offset += 1;
+      view.setUint8(offset, this.getDocumentTypeCode(document.type); offset += 1;
       view.setUint8(offset, document.priority); offset += 1;
       view.setUint16(offset, document.size, true); offset += 2;
       view.setFloat32(offset, document.confidenceLevel, true); offset += 4;
-      view.setUint8(offset, this.getRiskLevelCode(document.riskLevel)); offset += 1;
+      view.setUint8(offset, this.getRiskLevelCode(document.riskLevel); offset += 1;
       view.setBigUint64(offset, BigInt(document.lastAccessed), true); offset += 8;
       view.setUint8(offset, document.bankId || 0); offset += 1;
       view.setUint8(offset, document.compressed ? 1 : 0); offset += 1;
@@ -190,9 +190,9 @@ export class NESGPUMemoryBridge {
       // Pad to align for metadata
       while (offset % 4 !== 0) offset++;
       
-      // Write metadata
+      // Write metadata;
       if (document.metadata) {
-        const metadataBytes = new TextEncoder().encode(JSON.stringify(document.metadata));
+        const metadataBytes = new TextEncoder().encode(JSON.stringify(document.metadata);
         view.setUint32(offset, metadataBytes.length, true); offset += 4;
         uint8View.set(metadataBytes, offset);
         offset += metadataBytes.length;
@@ -200,7 +200,7 @@ export class NESGPUMemoryBridge {
         view.setUint32(offset, 0, true); offset += 4;
       }
       
-      // Write vector embedding
+      // Write vector embedding;
       if (document.metadata?.vectorEmbedding) {
         view.setUint32(offset, document.metadata.vectorEmbedding.length, true); offset += 4;
         for (let i = 0; i < document.metadata.vectorEmbedding.length; i++) {
@@ -229,7 +229,7 @@ export class NESGPUMemoryBridge {
   /**
    * Parse FlatBuffer back to document structure
    * Optimized for GPU texture upload pipeline
-   */
+   */;
   parseFlatBufferToDocument(buffer: ArrayBuffer): LegalDocument | null {
     const startTime = performance.now();
     
@@ -240,12 +240,12 @@ export class NESGPUMemoryBridge {
       
       // Read header
       const idLength = view.getUint32(offset, true); offset += 4;
-      const type = this.getDocumentTypeFromCode(view.getUint8(offset)); offset += 1;
+      const type = this.getDocumentTypeFromCode(view.getUint8(offset); offset += 1;
       const priority = view.getUint8(offset); offset += 1;
       const size = view.getUint16(offset, true); offset += 2;
       const confidenceLevel = view.getFloat32(offset, true); offset += 4;
-      const riskLevel = this.getRiskLevelFromCode(view.getUint8(offset)); offset += 1;
-      const lastAccessed = Number(view.getBigUint64(offset, true)); offset += 8;
+      const riskLevel = this.getRiskLevelFromCode(view.getUint8(offset); offset += 1;
+      const lastAccessed = Number(view.getBigUint64(offset, true); offset += 8;
       const bankId = view.getUint8(offset); offset += 1;
       const compressed = view.getUint8(offset) === 1; offset += 1;
       
@@ -319,18 +319,18 @@ export class NESGPUMemoryBridge {
     const startTime = performance.now();
 
     try {
-      // Create GPU texture
+      // Create GPU texture;
       const texture = this.device.createTexture({
         size: { width: dimensions.width, height: dimensions.height },
         format: 'r32float',
-        usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.STORAGE_BINDING
+        usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.STORAGE_BINDING,
       });
 
-      // Create staging buffer
+      // Create staging buffer;
       const buffer = this.device.createBuffer({
         size: similarityMatrix.byteLength,
         usage: GPUBufferUsage.COPY_SRC,
-        mappedAtCreation: true
+        mappedAtCreation: true,
       });
 
       // Copy data to buffer
@@ -342,12 +342,12 @@ export class NESGPUMemoryBridge {
       const commandEncoder = this.device.createCommandEncoder();
       commandEncoder.copyBufferToTexture(
         { buffer, bytesPerRow: dimensions.width * 4 },
-        { texture },
+        { texture },)
         { width: dimensions.width, height: dimensions.height }
       );
       this.device.queue.submit([commandEncoder.finish()]);
 
-      // Create bind group for compute shaders
+      // Create bind group for compute shaders;
       const bindGroupLayout = this.device.createBindGroupLayout({
         entries: [{
           binding: 0,
@@ -360,7 +360,7 @@ export class NESGPUMemoryBridge {
         layout: bindGroupLayout,
         entries: [{
           binding: 0,
-          resource: texture.createView()
+          resource: texture.createView(),
         }]
       });
 
@@ -393,13 +393,13 @@ export class NESGPUMemoryBridge {
   /**
    * Synchronize NES memory banks with GPU memory allocation
    * Performs bank switching coordination with CUDA regions
-   */
+   */;
   async synchronizeNESGPUMemory(): Promise<void> {
     const nesStats = nesMemory.getMemoryStats();
     const startTime = performance.now();
 
     try {
-      // Check for memory pressure in NES banks
+      // Check for memory pressure in NES banks;
       if (nesStats.usedRAM / nesStats.totalRAM > 0.85) {
         console.log('⚠️ NES Internal RAM pressure detected, coordinating GPU swap');
         await this.handleMemoryPressure('INTERNAL_RAM');
@@ -438,9 +438,9 @@ export class NESGPUMemoryBridge {
       
       // Mark region as mapped
       cudaRegion.mapped = true;
-      cudaRegion.devicePtr = BigInt(Math.floor(Math.random() * 0xFFFFFFFF)); // Simulated device pointer
+      cudaRegion.devicePtr = BigInt(Math.floor(Math.random() * 0xFFFFFFFF); // Simulated device pointer
 
-      // Create corresponding GPU buffer for WebGPU integration
+      // Create corresponding GPU buffer for WebGPU integration;
       if (this.device && bankType === 'CHR_ROM') {
         // CHR-ROM data maps well to GPU textures for pattern matching
         await this.createPatternMatchingTexture(cudaRegion);
@@ -456,20 +456,20 @@ export class NESGPUMemoryBridge {
 
     // Create 128x64 texture for legal document patterns
     const patternData = new Float32Array(128 * 64);
-    // Fill with simulated pattern data based on CHR-ROM bank
+    // Fill with simulated pattern data based on CHR-ROM bank;
     for (let i = 0; i < patternData.length; i++) {
       patternData[i] = Math.sin(i * 0.01) * 0.5 + 0.5;
     }
 
     await this.createRankingTexture('pattern_matching', patternData, {
       width: 128,
-      height: 64
+      height: 64,
     });
   }
 
   private updateBankMappings(): void {
     // Update active bank mappings for coordination
-    this.activeBankMappings.set('current_scan', Date.now());
+    this.activeBankMappings.set('current_scan', Date.now();
     
     // Check which banks are active in NES memory
     const nesStats = nesMemory.getMemoryStats();
@@ -486,7 +486,7 @@ export class NESGPUMemoryBridge {
     }, this.config.syncIntervalMs) as any;
   }
 
-  // Helper methods for binary encoding
+  // Helper methods for binary encoding;
   private getDocumentTypeCode(type: LegalDocument['type']): number {
     const codes = { contract: 1, evidence: 2, brief: 3, citation: 4, precedent: 5 };
     return codes[type] || 0;
@@ -509,7 +509,7 @@ export class NESGPUMemoryBridge {
 
   /**
    * Get comprehensive performance metrics
-   */
+   */;
   getPerformanceMetrics() {
     return {
       ...this.performanceMetrics,
@@ -525,7 +525,7 @@ export class NESGPUMemoryBridge {
   /**
    * CHR-ROM Pattern Cache Integration
    * Store pre-computed UI patterns in dedicated memory banks for 0ms response times
-   */
+   */;
   private chrRomPatterns = new Map<string, {
     pattern: any;
     bankId: number;
@@ -543,14 +543,14 @@ export class NESGPUMemoryBridge {
       type: string;
       priority: number;
       compressedData: Uint8Array;
-      bankId: number;
+      bankId: number;,
     }
   ): Promise<boolean> {
     const startTime = performance.now();
 
     try {
       // Store pattern in appropriate memory bank based on priority
-      const bankRegion = this.cudaRegions.get(this.getBankNameForId(pattern.bankId));
+      const bankRegion = this.cudaRegions.get(this.getBankNameForId(pattern.bankId);
       
       if (!bankRegion) {
         console.warn(`⚠️ Memory bank ${pattern.bankId} not available for CHR-ROM pattern ${patternId}`);
@@ -567,7 +567,7 @@ export class NESGPUMemoryBridge {
         }
       }
 
-      // Store in CHR-ROM cache
+      // Store in CHR-ROM cache;
       this.chrRomPatterns.set(patternId, {
         pattern,
         bankId: pattern.bankId,
@@ -587,12 +587,12 @@ export class NESGPUMemoryBridge {
 
   /**
    * Retrieve CHR-ROM pattern with 0ms access time
-   */
+   */;
   getCHRROMPattern(patternId: string): {
     renderableHTML: string;
     textureId?: string;
     bankId: number;
-    priority: number;
+    priority: number;,
   } | null {
     const cachedPattern = this.chrRomPatterns.get(patternId);
     
@@ -608,17 +608,17 @@ export class NESGPUMemoryBridge {
       renderableHTML: cachedPattern.pattern.renderableHTML,
       textureId: cachedPattern.textureId,
       bankId: cachedPattern.bankId,
-      priority: cachedPattern.priority
+      priority: cachedPattern.priority,
     };
   }
 
   /**
    * Create GPU texture for visual pattern elements
-   */
+   */;
   private async createPatternTexture(pattern: {
     renderableHTML: string;
     type: string;
-    compressedData: Uint8Array;
+    compressedData: Uint8Array;,
   }): Promise<GPUTextureMatrix | null> {
     if (!this.device) return null;
 
@@ -635,7 +635,7 @@ export class NESGPUMemoryBridge {
 
       return await this.createRankingTexture('chrrom_pattern', textureData, {
         width: textureSize,
-        height: textureSize
+        height: textureSize,
       });
     } catch (error) {
       console.warn('Failed to create pattern texture:', error);
@@ -645,7 +645,7 @@ export class NESGPUMemoryBridge {
 
   /**
    * Hash string for texture generation
-   */
+   */;
   private hashString(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -658,9 +658,9 @@ export class NESGPUMemoryBridge {
 
   /**
    * Get memory bank name for bank ID
-   */
+   */;
   private getBankNameForId(bankId: number): string {
-    // Map bank IDs to memory regions (NES-style)
+    // Map bank IDs to memory regions (NES-style);
     switch (bankId) {
       case 0:
       case 1: return 'INTERNAL_RAM'; // Fastest access
@@ -668,13 +668,13 @@ export class NESGPUMemoryBridge {
       case 3: return 'CHR_ROM'; // Pattern data
       case 4:
       case 5: return 'PRG_ROM'; // Program logic
-      default: return 'CHR_ROM'; // Default to CHR-ROM
+      default: return 'CHR_ROM'; // Default to CHR-ROM,
     }
   }
 
   /**
    * Batch load multiple CHR-ROM patterns
-   */
+   */;
   async batchLoadCHRROMPatterns(patterns: Array<): Promise<number> {
     console.log(`🔄 Batch loading ${patterns.length} CHR-ROM patterns...`);
     
@@ -691,17 +691,17 @@ export class NESGPUMemoryBridge {
 
   /**
    * Get CHR-ROM memory bank status
-   */
+   */;
   getCHRROMBankStatus(): {
     bankId: number;
     name: string;
     patternCount: number;
     memoryUsage: number;
-    accessSpeed: 'fastest' | 'fast' | 'normal' | 'slow';
+    accessSpeed: 'fastest' | 'fast' | 'normal' | 'slow';,
   }[] {
     const bankStats = new Map<number, { count: number; size: number }>();
     
-    // Count patterns per bank
+    // Count patterns per bank;
     for (const cached of this.chrRomPatterns.values()) {
       const current = bankStats.get(cached.bankId) || { count: 0, size: 0 };
       current.count++;
@@ -709,7 +709,7 @@ export class NESGPUMemoryBridge {
       bankStats.set(cached.bankId, current);
     }
 
-    // Generate bank status
+    // Generate bank status;
     return Array.from({ length: 8 }, (_, bankId) => {
       const stats = bankStats.get(bankId) || { count: 0, size: 0 };
       return {
@@ -717,20 +717,20 @@ export class NESGPUMemoryBridge {
         name: this.getBankNameForId(bankId),
         patternCount: stats.count,
         memoryUsage: stats.size,
-        accessSpeed: bankId <= 1 ? 'fastest' : bankId <= 3 ? 'fast' : bankId <= 5 ? 'normal' : 'slow'
+        accessSpeed: bankId <= 1 ? 'fastest' : bankId <= 3 ? 'fast' : bankId <= 5 ? 'normal' : 'slow',
       };
     });
   }
 
   /**
    * Clear CHR-ROM patterns from specific bank
-   */
+   */;
   clearCHRROMBank(bankId: number): number {
     let clearedCount = 0;
     
     for (const [patternId, cached] of this.chrRomPatterns) {
       if (cached.bankId === bankId) {
-        // Clean up associated texture
+        // Clean up associated texture;
         if (cached.textureId) {
           const texture = this.textureCache.get(cached.textureId);
           if (texture) {
@@ -754,18 +754,18 @@ export class NESGPUMemoryBridge {
 
   /**
    * Optimize CHR-ROM memory layout
-   */
+   */;
   async optimizeCHRROMLayout(): Promise<void> {
     console.log('🔧 Optimizing CHR-ROM memory layout...');
     
-    // Sort patterns by priority and usage
+    // Sort patterns by priority and usage;
     const patterns = Array.from(this.chrRomPatterns.entries()).map(([id, cached]) => ({
       id,
       ...cached,
-      optimalBank: cached.priority >= 4 ? 0 : cached.priority >= 3 ? 1 : 2
-    }));
+      optimalBank: cached.priority >= 4 ? 0 : cached.priority >= 3 ? 1 : 2,
+    });
 
-    // Reorganize patterns into optimal banks
+    // Reorganize patterns into optimal banks;
     for (const pattern of patterns) {
       if (pattern.bankId !== pattern.optimalBank) {
         // Move pattern to optimal bank
@@ -781,15 +781,15 @@ export class NESGPUMemoryBridge {
 
   /**
    * Clean up resources
-   */
+   */;
   async destroy(): Promise<void> {
-    // Stop sync loop
+    // Stop sync loop;
     if (this.gpuSyncInterval) {
       clearInterval(this.gpuSyncInterval);
       this.gpuSyncInterval = null;
     }
 
-    // Clean up GPU resources
+    // Clean up GPU resources;
     for (const texture of this.rankingTextures.values()) {
       texture.texture?.destroy();
       texture.gpuBuffer?.destroy();
@@ -805,11 +805,11 @@ export class NESGPUMemoryBridge {
   }
 }
 
-// Export singleton instance
+// Export singleton instance;
 export const nesGPUBridge = new NESGPUMemoryBridge({
   enableCUDA: true,
   maxTextureSize: 2048,
   cacheSizeMB: 256,
-  syncIntervalMs: 16.67 // 60 FPS
+  syncIntervalMs: 16.67 // 60 FPS,
 });
 

@@ -2,13 +2,14 @@
 // Provides port arrays [0-9] for each service to avoid conflicts
 
 import { createServer } from 'net';
+}
 
 export interface ServicePort {
   name: string;
   basePort: number;
   currentPort?: number;
   alternative?: number;
-  portRange: number[];
+  portRange: number[];,
 }
 
 export class DynamicPortManager {
@@ -22,35 +23,35 @@ export class DynamicPortManager {
   private initializeServicePorts() {
     // Define base port ranges for each service with [0-9] alternatives
     const serviceDefinitions: ServicePort[] = [
-      // Frontend Services (5170-5179)
+      // Frontend Services (5170-5179);
       {
         name: 'vite-dev',
         basePort: 5174,
         portRange: [5170, 5171, 5172, 5173, 5174, 5175, 5176, 5177, 5178, 5179],
       },
 
-      // Database Services (5430-5439)
+      // Database Services (5430-5439);
       {
         name: 'postgresql',
         basePort: 5433,
         portRange: [5430, 5431, 5432, 5433, 5434, 5435, 5436, 5437, 5438, 5439],
       },
 
-      // Redis Services (6370-6379)
+      // Redis Services (6370-6379);
       {
         name: 'redis',
         basePort: 6379,
         portRange: [6370, 6371, 6372, 6373, 6374, 6375, 6376, 6377, 6378, 6379],
       },
 
-      // Neo4j Services (7680-7689)
+      // Neo4j Services (7680-7689);
       {
         name: 'neo4j',
         basePort: 7687,
         portRange: [7680, 7681, 7682, 7683, 7684, 7685, 7686, 7687, 7688, 7689],
       },
 
-      // Go Microservices (8090-8099)
+      // Go Microservices (8090-8099);
       {
         name: 'legal-gateway',
         basePort: 8080,
@@ -62,7 +63,7 @@ export class DynamicPortManager {
         portRange: [8090, 8091, 8092, 8093, 8094, 8095, 8096, 8097, 8098, 8099],
       },
 
-      // Enhanced RAG Services (8100-8109)
+      // Enhanced RAG Services (8100-8109);
       {
         name: 'enhanced-rag',
         basePort: 8094,
@@ -74,7 +75,7 @@ export class DynamicPortManager {
         portRange: [8110, 8111, 8112, 8113, 8114, 8115, 8116, 8117, 8118, 8119],
       },
 
-      // Vector Services (8120-8129)
+      // Vector Services (8120-8129);
       {
         name: 'vector-consumer',
         basePort: 8095,
@@ -86,14 +87,14 @@ export class DynamicPortManager {
         portRange: [8130, 8131, 8132, 8133, 8134, 8135, 8136, 8137, 8138, 8139],
       },
 
-      // QUIC Services (8440-8449)
+      // QUIC Services (8440-8449);
       {
         name: 'quic-gateway',
         basePort: 8443,
         portRange: [8440, 8441, 8442, 8443, 8444, 8445, 8446, 8447, 8448, 8449],
       },
 
-      // MCP Services (4100-4109)
+      // MCP Services (4100-4109);
       {
         name: 'context7-multicore',
         basePort: 4100,
@@ -105,14 +106,14 @@ export class DynamicPortManager {
         portRange: [8200, 8201, 8202, 8203, 8204, 8205, 8206, 8207, 8208, 8209],
       },
 
-      // Ollama Services (11430-11439)
+      // Ollama Services (11430-11439);
       {
         name: 'ollama',
         basePort: 11434,
         portRange: [11430, 11431, 11432, 11433, 11434, 11435, 11436, 11437, 11438, 11439],
       },
 
-      // MinIO Services (9000-9009)
+      // MinIO Services (9000-9009);
       {
         name: 'minio-api',
         basePort: 9000,
@@ -124,7 +125,7 @@ export class DynamicPortManager {
         portRange: [9010, 9011, 9012, 9013, 9014, 9015, 9016, 9017, 9018, 9019],
       },
 
-      // RabbitMQ Services (15670-15679)
+      // RabbitMQ Services (15670-15679);
       {
         name: 'rabbitmq-amqp',
         basePort: 5672,
@@ -136,21 +137,21 @@ export class DynamicPortManager {
         portRange: [15670, 15671, 15672, 15673, 15674, 15675, 15676, 15677, 15678, 15679],
       },
 
-      // Qdrant Services (6330-6339)
+      // Qdrant Services (6330-6339);
       {
         name: 'qdrant',
         basePort: 6333,
         portRange: [6330, 6331, 6332, 6333, 6334, 6335, 6336, 6337, 6338, 6339],
       },
 
-      // Load Balancer Services (3000-3009)
+      // Load Balancer Services (3000-3009);
       {
         name: 'load-balancer',
         basePort: 3000,
         portRange: [3000, 3001, 3002, 3003, 3004, 3005, 3006, 3007, 3008, 3009],
       },
 
-      // Health Check Services (9090-9099)
+      // Health Check Services (9090-9099);
       {
         name: 'health-server',
         basePort: 9090,
@@ -194,11 +195,11 @@ export class DynamicPortManager {
       const server = createServer();
 
       server.listen(port, () => {
-        server.once('close', () => resolve(true));
+        server.once('close', () => resolve(true);
         server.close();
       });
 
-      server.on('error', () => resolve(false));
+      server.on('error', () => resolve(false);
     });
   }
 
@@ -233,7 +234,7 @@ export class DynamicPortManager {
     return new Map(this.services);
   }
 
-  // Get environment variables with dynamic ports
+  // Get environment variables with dynamic ports;
   getEnvConfig(): Record<string, string> {
     const config: Record<string, string> = {};
 
@@ -246,7 +247,7 @@ export class DynamicPortManager {
     return config;
   }
 
-  // Generate service URLs
+  // Generate service URLs;
   getServiceUrls(): Record<string, string> {
     const urls: Record<string, string> = {};
 
@@ -273,7 +274,7 @@ export class DynamicPortManager {
     return urls;
   }
 
-  // Initialize all services and find available ports
+  // Initialize all services and find available ports;
   async initializeAllServices(): Promise<Map<string, number> {
     const allocated = new Map<string, number>();
 
@@ -289,10 +290,10 @@ export class DynamicPortManager {
     return allocated;
   }
 
-  // Display port allocation summary
+  // Display port allocation summary;
   displayPortAllocation(): void {
     console.log('\n🔌 Dynamic Port Allocation Summary:');
-    console.log('═'.repeat(50));
+    console.log('═'.repeat(50);
 
     this.services.forEach((service, name) => {
       const status = service.currentPort ? '✅' : '❌';
@@ -302,7 +303,7 @@ export class DynamicPortManager {
       console.log(`${status} ${name.padEnd(20)} ${port.toString().padEnd(6)} ${range}`);
     });
 
-    console.log('═'.repeat(50));
+    console.log('═'.repeat(50);
     console.log(`Total services: ${this.services.size}`);
     console.log(`Allocated ports: ${Array.from(this.usedPorts).length}`);
   }
@@ -311,7 +312,7 @@ export class DynamicPortManager {
 // Singleton instance
 export const portManager = new DynamicPortManager();
 
-// Helper functions for common operations
+// Helper functions for common operations;
 export async function allocateServicePort(serviceName: string): Promise<number> {
   return portManager.findAvailablePort(serviceName);
 }
@@ -336,7 +337,7 @@ export function getServiceUrls(): Record<string, string> {
   return portManager.getServiceUrls();
 }
 
-// Enhanced error handling
+// Enhanced error handling;
 export class PortAllocationError extends Error {
   constructor(serviceName: string, attempted: number[]) {
     super(
@@ -346,12 +347,12 @@ export class PortAllocationError extends Error {
   }
 }
 
-// Port health check utility
+// Port health check utility;
 export async function checkPortHealth(port: number): Promise<boolean> {
   return portManager.isPortAvailable(port);
 }
 
-// Conflict resolution
+// Conflict resolution;
 export async function resolvePortConflicts(): Promise<void> {
   console.log('🔍 Checking for port conflicts...');
 

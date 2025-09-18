@@ -12,7 +12,7 @@ const MEMORY_CONFIG = {
   embedDimensions: 768, // Gemma embeddings dimensions
   maxContextLength: 8192, // Gemma 3 Legal context window
   batchSize: 4, // Optimized for legal processing
-  gemmaEmbeddingPriority: true
+  gemmaEmbeddingPriority: true,
 };
 
 // Multi-model state management (supports LLaMA variants including Gemma)
@@ -45,7 +45,7 @@ const MODEL_VARIANTS = {
     contextWindow: 8192,
     quantization: 'int4',
     optimizations: ['legal-domain', 'context-compression'],
-    embeddingModel: 'embeddinggemma:latest'
+    embeddingModel: 'embeddinggemma:latest',
   },
   'embeddinggemma:latest': {
     id: 'embeddinggemma:latest',
@@ -57,7 +57,7 @@ const MODEL_VARIANTS = {
     contextWindow: 2048,
     quantization: 'int8',
     optimizations: ['embedding-focus', 'legal-vocab'],
-    outputDimensions: 768
+    outputDimensions: 768,
   },
   'legal-bert-onnx': {
     id: 'legal-bert-onnx',
@@ -68,8 +68,8 @@ const MODEL_VARIANTS = {
     capabilities: ['legal-entity-extraction', 'case-classification', 'ner', 'legal-embeddings'],
     contextWindow: 512,
     quantization: 'int8',
-    optimizations: ['onnx-runtime', 'legal-vocab', 'entity-focus']
-  }
+    optimizations: ['onnx-runtime', 'legal-vocab', 'entity-focus'],
+  },
 };
 
 // Import YoRHa Legal AI Pipeline dependencies
@@ -103,7 +103,11 @@ self.addEventListener('message', async (event) => {
         break;
 
       case 'SMART_MODEL_SELECT':
-        const smartResult = await intelligentModelSelection(data.query, data.userContext, data.intent);
+        const smartResult = await intelligentModelSelection(
+          data.query,
+          data.userContext,
+          data.intent
+        );
         postMessage({ type: 'SMART_MODEL_SELECTED', data: smartResult, id });
         break;
 
@@ -154,7 +158,7 @@ self.addEventListener('message', async (event) => {
     postMessage({
       type: 'ERROR',
       data: { message: error.message, stack: error.stack },
-      id
+      id,
     });
   }
 });
@@ -182,7 +186,7 @@ async function initializeLegalAIPipeline() {
       learningRate: 0.001,
       gamma: 0.99,
       legalDomainWeights: true,
-      gemmaEmbeddingPriority: true
+      gemmaEmbeddingPriority: true,
     });
 
     console.log('✅ YoRHa Legal AI Pipeline initialized successfully');
@@ -198,23 +202,29 @@ async function initializeLegalAIPipeline() {
  */
 async function initializeNESMemory() {
   // Import and initialize NES memory management
-  const { NESMemoryArchitecture, nesMemory } = await import('/src/lib/memory/nes-memory-architecture.ts');
-  
+  const { NESMemoryArchitecture, nesMemory } = await import(
+    '/src/lib/memory/nes-memory-architecture.ts'
+  );
+
   // Configure memory banks for legal AI workloads
-  await nesMemory.allocateDocument({
-    id: 'system_gemma_embeddings',
-    type: 'evidence',
-    confidenceLevel: 1.0,
-    riskLevel: 'critical',
-    compressed: false,
-    metadata: {
-      aiGenerated: true,
-      documentClass: 'embeddings_cache'
+  await nesMemory.allocateDocument(
+    {
+      id: 'system_gemma_embeddings',
+      type: 'evidence',
+      confidenceLevel: 1.0,
+      riskLevel: 'critical',
+      compressed: false,
+      metadata: {
+        aiGenerated: true,
+        documentClass: 'embeddings_cache',
+      },
+    },
+    new ArrayBuffer(MEMORY_CONFIG.embedDimensions * 4),
+    {
+      preferredBank: 'INTERNAL_RAM',
+      compress: false,
     }
-  }, new ArrayBuffer(MEMORY_CONFIG.embedDimensions * 4), {
-    preferredBank: 'INTERNAL_RAM',
-    compress: false
-  });
+  );
 
   console.log('🎮 NES Memory Architecture initialized');
 }
@@ -229,14 +239,17 @@ async function initializeOllamaService() {
     if (response.ok) {
       const models = await response.json();
       console.log('✅ Ollama service connected, available models:', models.models?.length || 0);
-      
+
       // Check for Gemma models
-      const gemmaModels = models.models?.filter(m => 
-        m.name.includes('gemma') || m.name.includes('embedding')
-      ) || [];
-      
+      const gemmaModels =
+        models.models?.filter((m) => m.name.includes('gemma') || m.name.includes('embedding')) ||
+        [];
+
       if (gemmaModels.length > 0) {
-        console.log('🎯 Gemma models available:', gemmaModels.map(m => m.name));
+        console.log(
+          '🎯 Gemma models available:',
+          gemmaModels.map((m) => m.name)
+        );
       }
     }
   } catch (error) {
@@ -250,9 +263,9 @@ async function initializeOllamaService() {
 async function initializeONNXService() {
   try {
     // Check for ONNX runtime availability
-    const onnxAvailable = typeof window !== 'undefined' && 
-                         (window.ort || await loadONNXRuntime());
-    
+    const onnxAvailable =
+      typeof window !== 'undefined' && (window.ort || (await loadONNXRuntime()));
+
     if (onnxAvailable) {
       console.log('✅ ONNX Runtime available for Legal-BERT');
     } else {
@@ -292,9 +305,9 @@ async function loadGemmaModel(modelName, config = {}) {
         config: {
           ...config,
           contextLength: config.contextLength || MEMORY_CONFIG.maxContextLength,
-          embeddingPriority: MEMORY_CONFIG.gemmaEmbeddingPriority
-        }
-      })
+          embeddingPriority: MEMORY_CONFIG.gemmaEmbeddingPriority,
+        },
+      }),
     });
 
     if (!response.ok) {
@@ -302,11 +315,11 @@ async function loadGemmaModel(modelName, config = {}) {
     }
 
     const result = await response.json();
-    
+
     if (result.success) {
       modelLoaded = true;
       activeModel = modelName;
-      
+
       // Store model info in loaded models
       loadedModels.set(modelName, {
         variant: modelName,
@@ -314,7 +327,7 @@ async function loadGemmaModel(modelName, config = {}) {
         loaded: true,
         lastUsed: Date.now(),
         memorySize: result.memorySize || 0,
-        loadTime: result.loadTime
+        loadTime: result.loadTime,
       });
 
       console.log(`✅ Gemma model loaded: ${modelName}`);
@@ -322,15 +335,14 @@ async function loadGemmaModel(modelName, config = {}) {
     } else {
       throw new Error(result.error || 'Model loading failed');
     }
-
   } catch (error) {
     console.error('❌ Gemma model loading failed:', error);
-    
+
     // Fallback to mock implementation
     console.log('🔄 Using mock Gemma implementation');
     modelLoaded = true;
     activeModel = modelName;
-    
+
     loadedModels.set(modelName, {
       variant: modelName,
       config: MODEL_VARIANTS[modelName] || {},
@@ -338,7 +350,7 @@ async function loadGemmaModel(modelName, config = {}) {
       lastUsed: Date.now(),
       memorySize: 1024 * 1024 * 1024, // 1GB mock
       loadTime: 100,
-      mock: true
+      mock: true,
     });
 
     return { success: true, mock: true };
@@ -376,15 +388,15 @@ async function performLegalAnalysis(prompt, context = [], documentType = 'docume
         ...cachedResult,
         source: 'chr_cache',
         cacheHit: true,
-        responseTime: performance.now() - startTime
+        responseTime: performance.now() - startTime,
       };
     }
 
     // Step 5: Generate analysis using our AI pipeline
     const analysisResult = await generateLegalAnalysisWithGemma(
-      prompt, 
-      context, 
-      documentType, 
+      prompt,
+      context,
+      documentType,
       legalAction
     );
 
@@ -398,8 +410,8 @@ async function performLegalAnalysis(prompt, context = [], documentType = 'docume
       metadata: {
         documentType,
         confidence: analysisResult.confidence,
-        generated: Date.now()
-      }
+        generated: Date.now(),
+      },
     });
 
     // Step 8: Update RL agent with legal domain feedback
@@ -423,14 +435,13 @@ async function performLegalAnalysis(prompt, context = [], documentType = 'docume
         action: legalAction,
         reward: legalReward,
         confidence: analysisResult.confidence,
-        documentType: documentType
+        documentType: documentType,
       },
       memoryUsage: getMemoryStats(),
       responseTime: responseTime,
       source: 'generated',
-      cacheKey: chrCacheKey
+      cacheKey: chrCacheKey,
     };
-
   } catch (error) {
     console.error('❌ Legal analysis failed:', error);
     return await performMockLegalAnalysis(prompt, context, documentType);
@@ -450,8 +461,8 @@ async function generateGemmaEmbedding(text, model = 'embeddinggemma:latest') {
         text,
         model,
         legalContext: true,
-        dimensions: MEMORY_CONFIG.embedDimensions
-      })
+        dimensions: MEMORY_CONFIG.embedDimensions,
+      }),
     });
 
     if (response.ok) {
@@ -475,7 +486,7 @@ async function extractLegalEntities(text) {
     const response = await fetch('/api/legal/onnx/extract-entities', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
+      body: JSON.stringify({ text }),
     });
 
     if (response.ok) {
@@ -505,8 +516,8 @@ async function generateLegalAnalysisWithGemma(prompt, context, documentType, act
         model: 'gemma3-legal:latest',
         action: action,
         extractEntities: true,
-        riskAssessment: true
-      })
+        riskAssessment: true,
+      }),
     });
 
     if (response.ok) {
@@ -515,9 +526,9 @@ async function generateLegalAnalysisWithGemma(prompt, context, documentType, act
         text: result.response || result.text,
         analysis: result.analysis || {},
         confidence: result.confidence || 0.85,
-        entities: result.entities || await extractLegalEntities(prompt),
+        entities: result.entities || (await extractLegalEntities(prompt)),
         riskFactors: result.riskFactors || [],
-        recommendations: result.recommendations || []
+        recommendations: result.recommendations || [],
       };
     }
   } catch (error) {
@@ -534,14 +545,14 @@ async function generateLegalAnalysisWithGemma(prompt, context, documentType, act
 async function performMockLegalAnalysis(prompt, context, documentType) {
   const entities = generateMockLegalEntities(prompt);
   const confidence = 0.75 + Math.random() * 0.2;
-  
+
   return {
     text: `Legal analysis for ${documentType}: ${prompt.substring(0, 100)}...`,
     analysis: {
       summary: `Mock analysis of ${documentType} document`,
       keyPoints: ['Point 1', 'Point 2', 'Point 3'],
       jurisdiction: 'Unknown',
-      applicableLaw: 'General'
+      applicableLaw: 'General',
     },
     confidence: confidence,
     entities: entities,
@@ -551,30 +562,30 @@ async function performMockLegalAnalysis(prompt, context, documentType) {
     legalMetrics: {
       action: { type: 'analyze', confidence: confidence },
       reward: confidence,
-      documentType: documentType
+      documentType: documentType,
     },
     memoryUsage: getMemoryStats(),
     responseTime: 50 + Math.random() * 100,
     source: 'mock',
-    mock: true
+    mock: true,
   };
 }
 
 function generateMockLegalEntities(text) {
   const entities = [];
   const words = text.toLowerCase().split(/\s+/);
-  
+
   // Mock entity detection
-  if (words.some(w => ['contract', 'agreement', 'party'].includes(w))) {
+  if (words.some((w) => ['contract', 'agreement', 'party'].includes(w))) {
     entities.push({ type: 'DOCUMENT_TYPE', value: 'Contract', confidence: 0.9 });
   }
-  if (words.some(w => ['court', 'judge', 'ruling'].includes(w))) {
+  if (words.some((w) => ['court', 'judge', 'ruling'].includes(w))) {
     entities.push({ type: 'LEGAL_ENTITY', value: 'Court', confidence: 0.85 });
   }
-  if (words.some(w => ['plaintiff', 'defendant', 'vs'].includes(w))) {
+  if (words.some((w) => ['plaintiff', 'defendant', 'vs'].includes(w))) {
     entities.push({ type: 'PARTY', value: 'Legal Party', confidence: 0.8 });
   }
-  
+
   return entities;
 }
 
@@ -590,7 +601,7 @@ function generateMockGlyph(documentType, confidence) {
   return {
     type: 'svg',
     data: `<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="#3B82F6" opacity="${confidence}"/><text x="8" y="12" font-size="8" fill="white">${documentType[0].toUpperCase()}</text></svg>`,
-    metadata: { documentType, confidence }
+    metadata: { documentType, confidence },
   };
 }
 
@@ -631,7 +642,7 @@ async function generateEmbedding(text) {
   const response = await fetch('/api/embed', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, model: 'nomic-embed-text' })
+    body: JSON.stringify({ text, model: 'nomic-embed-text' }),
   });
 
   const result = await response.json();
@@ -662,8 +673,8 @@ async function trainRLAgent(episodes) {
         data: {
           progress: (i / episodes.length) * 100,
           episode: i,
-          totalEpisodes: episodes.length
-        }
+          totalEpisodes: episodes.length,
+        },
       });
     }
   }
@@ -713,7 +724,7 @@ function calculateReward(response, prompt) {
   // Relevance (basic keyword matching)
   const promptWords = prompt.toLowerCase().split(' ');
   const responseWords = response.toLowerCase().split(' ');
-  const overlap = promptWords.filter(word => responseWords.includes(word));
+  const overlap = promptWords.filter((word) => responseWords.includes(word));
   reward += (overlap.length / promptWords.length) * 0.3;
 
   return Math.max(0, Math.min(1, reward));
@@ -748,7 +759,7 @@ function getMemoryStats() {
     jsHeapUsed: 0,
     jsHeapTotal: 0,
     modelLoaded: modelLoaded,
-    embeddingsCount: embeddings.length
+    embeddingsCount: embeddings.length,
   };
 
   // Performance memory API if available
@@ -767,7 +778,7 @@ async function triggerGarbageCollection() {
   await optimizeMemoryUsage();
 
   // Wait for GC to complete
-  await new Promise(resolve => setTimeout(resolve, 100));
+  await new Promise((resolve) => setTimeout(resolve, 100));
 }
 
 /**
@@ -812,7 +823,7 @@ async function loadModelVariant(variant, modelUrl, config = {}) {
         config,
         loaded: true,
         lastUsed: Date.now(),
-        memorySize: modelData.byteLength
+        memorySize: modelData.byteLength,
       };
 
       loadedModels.set(variant, modelInfo);
@@ -828,7 +839,6 @@ async function loadModelVariant(variant, modelUrl, config = {}) {
       wasmModule.instance.exports.free(modelPtr);
       throw new Error(`Failed to load model variant: ${variant}`);
     }
-
   } catch (error) {
     console.error(`❌ Failed to load model variant ${variant}:`, error);
     throw error;
@@ -853,7 +863,8 @@ async function switchActiveModel(targetModel, userContext = {}) {
     const cacheKey = `${activeModel}->${targetModel}`;
     if (modelSwitchCache.has(cacheKey)) {
       const cached = modelSwitchCache.get(cacheKey);
-      if (Date.now() - cached.timestamp < 60000) { // 1 minute cache
+      if (Date.now() - cached.timestamp < 60000) {
+        // 1 minute cache
         console.log(`⚡ Using cached switch: ${cacheKey}`);
         activeModel = targetModel;
         return { ...cached.result, cached: true };
@@ -880,13 +891,13 @@ async function switchActiveModel(targetModel, userContext = {}) {
         currentModel: targetModel,
         switchTime,
         userContext,
-        cached: false
+        cached: false,
       };
 
       // Cache this switch result
       modelSwitchCache.set(cacheKey, {
         result,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       console.log(`✅ Switched to ${targetModel} in ${switchTime.toFixed(2)}ms`);
@@ -894,14 +905,13 @@ async function switchActiveModel(targetModel, userContext = {}) {
     } else {
       throw new Error(`WASM model switch failed`);
     }
-
   } catch (error) {
     console.error(`❌ Model switch failed:`, error);
     return {
       success: false,
       error: error.message,
       previousModel: activeModel,
-      switchTime: performance.now() - startTime
+      switchTime: performance.now() - startTime,
     };
   }
 }
@@ -914,13 +924,16 @@ function getModelInfo() {
     loadedModels: Array.from(loadedModels.keys()),
     activeModel,
     modelCount: loadedModels.size,
-    totalMemoryUsed: Array.from(loadedModels.values()).reduce((sum, model) => sum + model.memorySize, 0),
+    totalMemoryUsed: Array.from(loadedModels.values()).reduce(
+      (sum, model) => sum + model.memorySize,
+      0
+    ),
     switchCacheSize: modelSwitchCache.size,
     lastUsageStats: Array.from(loadedModels.entries()).map(([variant, info]) => ({
       variant,
       lastUsed: info.lastUsed,
-      memorySize: info.memorySize
-    }))
+      memorySize: info.memorySize,
+    })),
   };
 }
 
@@ -951,8 +964,9 @@ async function intelligentModelSelection(query, userContext = {}, intent = {}) {
     }
 
     // Sort by score and select best model
-    const sortedModels = Array.from(modelScores.entries())
-      .sort(([,a], [,b]) => b.totalScore - a.totalScore);
+    const sortedModels = Array.from(modelScores.entries()).sort(
+      ([, a], [, b]) => b.totalScore - a.totalScore
+    );
 
     const bestModel = sortedModels[0];
     const selectedModelId = bestModel[0];
@@ -964,7 +978,9 @@ async function intelligentModelSelection(query, userContext = {}, intent = {}) {
     // Prepare preload recommendations
     const preloadRecommendations = generatePreloadRecommendations(sortedModels.slice(1, 4), intent);
 
-    console.log(`✅ Selected model: ${selectedModelId} (score: ${selectedScore.totalScore.toFixed(2)})`);
+    console.log(
+      `✅ Selected model: ${selectedModelId} (score: ${selectedScore.totalScore.toFixed(2)})`
+    );
 
     return {
       selectedModel: selectedModelId,
@@ -974,9 +990,8 @@ async function intelligentModelSelection(query, userContext = {}, intent = {}) {
       preloadRecommendations,
       analysisTime: performance.now() - startTime,
       queryAnalysis,
-      reasoning: selectedScore.reasoning
+      reasoning: selectedScore.reasoning,
     };
-
   } catch (error) {
     console.error('❌ Intelligent model selection failed:', error);
 
@@ -986,7 +1001,7 @@ async function intelligentModelSelection(query, userContext = {}, intent = {}) {
       modelSpec: MODEL_VARIANTS['gemma-270m-fast'],
       score: { totalScore: 0.5, fallback: true },
       error: error.message,
-      analysisTime: performance.now() - startTime
+      analysisTime: performance.now() - startTime,
     };
   }
 }
@@ -1000,8 +1015,10 @@ function analyzeQueryCharacteristics(query) {
   const avgWordLength = words.reduce((sum, word) => sum + word.length, 0) / words.length;
 
   // Complexity indicators
-  const complexityKeywords = /\b(analyze|compare|evaluate|synthesize|comprehensive|detailed|complex|expert)\b/gi;
-  const legalKeywords = /\b(law|legal|contract|statute|case|court|attorney|jurisdiction|litigation)\b/gi;
+  const complexityKeywords =
+    /\b(analyze|compare|evaluate|synthesize|comprehensive|detailed|complex|expert)\b/gi;
+  const legalKeywords =
+    /\b(law|legal|contract|statute|case|court|attorney|jurisdiction|litigation)\b/gi;
   const codeKeywords = /\b(function|class|variable|array|debug|error|api|code|programming)\b/gi;
   const chatKeywords = /\b(hello|hi|thanks|please|help|what|how|why|simple|quick)\b/gi;
 
@@ -1028,8 +1045,8 @@ function analyzeQueryCharacteristics(query) {
       legal: legalMatches > 0,
       code: codeMatches > 0,
       chat: chatMatches > 0 || wordCount < 5,
-      complex: complexityMatches > 0 || wordCount > 15
-    }
+      complex: complexityMatches > 0 || wordCount > 15,
+    },
   };
 }
 
@@ -1066,7 +1083,7 @@ function calculateModelScore(modelId, modelSpec, queryAnalysis, intent, userCont
   let performanceScore = 0;
   if (queryAnalysis.urgency > 0.7) {
     // High urgency - prefer faster models
-    performanceScore = Math.max(0, 1 - (modelSpec.targetLatency / 1000));
+    performanceScore = Math.max(0, 1 - modelSpec.targetLatency / 1000);
     reasoning.push(`Urgency preference for fast model (${modelSpec.targetLatency}ms)`);
   } else {
     // Balance performance with capability
@@ -1097,7 +1114,7 @@ function calculateModelScore(modelId, modelSpec, queryAnalysis, intent, userCont
   totalScore += complexityScore * 0.2;
 
   // Memory efficiency (15% weight)
-  let memoryScore = Math.max(0, 1 - (modelSpec.memoryFootprint / 8192));
+  let memoryScore = Math.max(0, 1 - modelSpec.memoryFootprint / 8192);
   totalScore += memoryScore * 0.15;
   reasoning.push(`Memory efficiency: ${modelSpec.memoryFootprint}MB`);
 
@@ -1143,7 +1160,7 @@ function calculateModelScore(modelId, modelSpec, queryAnalysis, intent, userCont
     complexityScore,
     memoryScore,
     contextScore,
-    reasoning
+    reasoning,
   };
 }
 
@@ -1167,7 +1184,7 @@ function generatePreloadRecommendations(alternatives, intent) {
   recommendations.push({
     modelId: 'gemma-270m-fast',
     reason: 'Fast response capability',
-    priority: 0.9
+    priority: 0.9,
   });
 
   // Recommend legal model if legal context detected
@@ -1175,7 +1192,7 @@ function generatePreloadRecommendations(alternatives, intent) {
     recommendations.push({
       modelId: 'legal-bert-fast',
       reason: 'Legal entity extraction',
-      priority: 0.8
+      priority: 0.8,
     });
   }
 
@@ -1184,7 +1201,7 @@ function generatePreloadRecommendations(alternatives, intent) {
     recommendations.push({
       modelId: alt[0],
       reason: `Alternative #${index + 1}`,
-      priority: 0.6 - (index * 0.1)
+      priority: 0.6 - index * 0.1,
     });
   });
 
@@ -1202,7 +1219,7 @@ function updateModelPerformanceStats(modelId, score, startTime) {
       avgScore: 0,
       successRate: 0.8, // Default
       avgLatency: MODEL_VARIANTS[modelId]?.targetLatency || 1000,
-      lastUsed: Date.now()
+      lastUsed: Date.now(),
     });
   }
 
@@ -1214,7 +1231,7 @@ function updateModelPerformanceStats(modelId, score, startTime) {
 
   // Update latency if we have timing data
   const elapsedTime = performance.now() - startTime;
-  stats.avgLatency = (stats.avgLatency * 0.9) + (elapsedTime * 0.1); // Exponential moving average
+  stats.avgLatency = stats.avgLatency * 0.9 + elapsedTime * 0.1; // Exponential moving average
 }
 
 /**
@@ -1229,20 +1246,20 @@ class SmartCacheManager {
   }
 
   optimizeLayout(activeModels, memoryConstraints = {}) {
-    const maxMemory = memoryConstraints.maxMemory || (8 * 1024); // 8GB default
+    const maxMemory = memoryConstraints.maxMemory || 8 * 1024; // 8GB default
     let currentOffset = 0;
     let totalMemory = 0;
 
     // Sort by access frequency and memory efficiency
     const sortedModels = activeModels
-      .map(modelId => {
+      .map((modelId) => {
         const spec = MODEL_VARIANTS[modelId];
         const accessCount = this.accessPatterns.get(modelId) || 0;
         return {
           modelId,
           spec,
           accessCount,
-          efficiency: accessCount / (spec?.memoryFootprint || 1000)
+          efficiency: accessCount / (spec?.memoryFootprint || 1000),
         };
       })
       .sort((a, b) => b.efficiency - a.efficiency);
@@ -1258,7 +1275,7 @@ class SmartCacheManager {
         this.cacheLayout.set(modelId, {
           offset: currentOffset,
           size: memoryNeeded,
-          loaded: loadedModels.has(modelId)
+          loaded: loadedModels.has(modelId),
         });
 
         currentOffset += memoryNeeded;
@@ -1273,15 +1290,14 @@ class SmartCacheManager {
       layout: this.cacheLayout,
       totalMemory,
       fragmentation: this.memoryFragmentation,
-      efficiency: totalMemory / maxMemory
+      efficiency: totalMemory / maxMemory,
     };
   }
 
   calculateFragmentation() {
     if (this.cacheLayout.size === 0) return 0;
 
-    const allocations = Array.from(this.cacheLayout.values())
-      .sort((a, b) => a.offset - b.offset);
+    const allocations = Array.from(this.cacheLayout.values()).sort((a, b) => a.offset - b.offset);
 
     let gaps = 0;
     let totalAllocated = 0;
@@ -1334,7 +1350,7 @@ async function preloadModels(modelIds, priority = 0.5) {
 
       // Prioritize based on urgency and available memory
       const loadTime = modelSpec.targetLatency * (1 / priority);
-      await new Promise(resolve => setTimeout(resolve, Math.min(loadTime, 1000)));
+      await new Promise((resolve) => setTimeout(resolve, Math.min(loadTime, 1000)));
 
       // Mark as loaded in memory simulation
       loadedModels.set(modelId, {
@@ -1343,12 +1359,11 @@ async function preloadModels(modelIds, priority = 0.5) {
         loaded: true,
         lastUsed: Date.now(),
         memorySize: modelSpec.memoryFootprint * 1024 * 1024,
-        preloaded: true
+        preloaded: true,
       });
 
       results.push({ modelId, status: 'preloaded', loadTime });
       console.log(`✅ Preloaded ${modelId}`);
-
     } catch (error) {
       results.push({ modelId, status: 'failed', error: error.message });
       console.error(`❌ Failed to preload ${modelId}:`, error);
@@ -1378,7 +1393,8 @@ async function optimizeModelCache(activeModels, memoryConstraints = {}) {
     // Recalculate after defragmentation
     const newOptimization = smartCacheManager.optimizeLayout(activeModels, memoryConstraints);
     optimization.defragmented = true;
-    optimization.fragmentationImprovement = optimization.fragmentation - newOptimization.fragmentation;
+    optimization.fragmentationImprovement =
+      optimization.fragmentation - newOptimization.fragmentation;
     Object.assign(optimization, newOptimization);
   }
 
@@ -1388,7 +1404,7 @@ async function optimizeModelCache(activeModels, memoryConstraints = {}) {
   return {
     ...optimization,
     recommendations: generateCacheOptimizationRecommendations(optimization),
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 }
 
@@ -1404,17 +1420,18 @@ async function performMemoryDefragmentation() {
   loadedModels.clear();
 
   // Reload in size-optimized order
-  const sortedModels = Array.from(modelBackup.entries())
-    .sort(([,a], [,b]) => a.memorySize - b.memorySize);
+  const sortedModels = Array.from(modelBackup.entries()).sort(
+    ([, a], [, b]) => a.memorySize - b.memorySize
+  );
 
   for (const [modelId, modelInfo] of sortedModels) {
     loadedModels.set(modelId, {
       ...modelInfo,
-      defragmented: true
+      defragmented: true,
     });
 
     // Small delay to simulate reloading
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise((resolve) => setTimeout(resolve, 10));
   }
 
   console.log('✅ Memory defragmentation complete');
@@ -1440,7 +1457,7 @@ function updatePreloadQueue(optimization) {
       smartCacheManager.preloadQueue.push({
         modelId,
         priority,
-        reason: `Access pattern prediction (${accessCount} uses)`
+        reason: `Access pattern prediction (${accessCount} uses)`,
       });
     }
   }
@@ -1459,7 +1476,7 @@ function generateCacheOptimizationRecommendations(optimization) {
     recommendations.push({
       type: 'defragmentation',
       message: `Consider defragmentation (${(optimization.fragmentation * 100).toFixed(1)}% fragmented)`,
-      priority: 'medium'
+      priority: 'medium',
     });
   }
 
@@ -1467,11 +1484,11 @@ function generateCacheOptimizationRecommendations(optimization) {
     recommendations.push({
       type: 'memory_expansion',
       message: 'Consider increasing memory allocation for better model caching',
-      priority: 'low'
+      priority: 'low',
     });
   }
 
-  const unusedModels = Array.from(loadedModels.keys()).filter(modelId => {
+  const unusedModels = Array.from(loadedModels.keys()).filter((modelId) => {
     const lastUsed = loadedModels.get(modelId)?.lastUsed || 0;
     return Date.now() - lastUsed > 600000; // 10 minutes
   });
@@ -1480,7 +1497,7 @@ function generateCacheOptimizationRecommendations(optimization) {
     recommendations.push({
       type: 'unload_unused',
       message: `Consider unloading unused models: ${unusedModels.join(', ')}`,
-      priority: 'low'
+      priority: 'low',
     });
   }
 
@@ -1500,14 +1517,14 @@ function getModelPerformanceReport() {
       activeModel,
       totalMemoryUsed: loadedModelsList.reduce((sum, model) => sum + (model.memorySize || 0), 0),
       cacheHitRate: calculateCacheHitRate(),
-      avgSwitchTime: calculateAverageSwitchTime()
+      avgSwitchTime: calculateAverageSwitchTime(),
     },
     models: performanceList,
     memoryLayout: smartCacheManager?.cacheLayout || new Map(),
     fragmentation: smartCacheManager?.memoryFragmentation || 0,
     accessPatterns: smartCacheManager?.accessPatterns || new Map(),
     preloadQueue: smartCacheManager?.preloadQueue || [],
-    recommendations: generatePerformanceRecommendations(performanceList)
+    recommendations: generatePerformanceRecommendations(performanceList),
   };
 }
 
@@ -1518,8 +1535,8 @@ function calculateCacheHitRate() {
   const cacheEntries = Array.from(modelSwitchCache.values());
   if (cacheEntries.length === 0) return 0;
 
-  const recentEntries = cacheEntries.filter(entry =>
-    Date.now() - entry.timestamp < 300000 // 5 minutes
+  const recentEntries = cacheEntries.filter(
+    (entry) => Date.now() - entry.timestamp < 300000 // 5 minutes
   );
 
   return recentEntries.length / Math.max(1, cacheEntries.length);
@@ -1533,11 +1550,12 @@ function calculateAverageSwitchTime() {
   if (cacheEntries.length === 0) return 0;
 
   const switchTimes = cacheEntries
-    .map(entry => entry.result?.switchTime || 0)
-    .filter(time => time > 0);
+    .map((entry) => entry.result?.switchTime || 0)
+    .filter((time) => time > 0);
 
-  return switchTimes.length > 0 ?
-    switchTimes.reduce((sum, time) => sum + time, 0) / switchTimes.length : 0;
+  return switchTimes.length > 0
+    ? switchTimes.reduce((sum, time) => sum + time, 0) / switchTimes.length
+    : 0;
 }
 
 /**
@@ -1546,21 +1564,21 @@ function calculateAverageSwitchTime() {
 function generatePerformanceRecommendations(performanceList) {
   const recommendations = [];
 
-  const lowPerformers = performanceList.filter(p => p.avgScore < 0.6);
+  const lowPerformers = performanceList.filter((p) => p.avgScore < 0.6);
   if (lowPerformers.length > 0) {
     recommendations.push({
       type: 'model_tuning',
-      message: `Consider retraining low-performing models: ${lowPerformers.map(p => p.modelId || p.variant).join(', ')}`,
-      priority: 'high'
+      message: `Consider retraining low-performing models: ${lowPerformers.map((p) => p.modelId || p.variant).join(', ')}`,
+      priority: 'high',
     });
   }
 
-  const slowModels = performanceList.filter(p => p.avgLatency > 2000);
+  const slowModels = performanceList.filter((p) => p.avgLatency > 2000);
   if (slowModels.length > 0) {
     recommendations.push({
       type: 'latency_optimization',
-      message: `Optimize high-latency models: ${slowModels.map(p => p.modelId || p.variant).join(', ')}`,
-      priority: 'medium'
+      message: `Optimize high-latency models: ${slowModels.map((p) => p.modelId || p.variant).join(', ')}`,
+      priority: 'medium',
     });
   }
 
@@ -1609,10 +1627,10 @@ async function storeCHRPattern(cacheKey, data) {
       payload: data,
       ttlMs: 30 * 60 * 1000, // 30 minutes
       createdAt: new Date().toISOString(),
-      meta: { 
+      meta: {
         source: 'legal_analysis',
-        documentType: data.metadata?.documentType
-      }
+        documentType: data.metadata?.documentType,
+      },
     });
 
     // Store in server-side CHR-ROM cache
@@ -1624,9 +1642,9 @@ async function storeCHRPattern(cacheKey, data) {
         pattern: {
           type: 'state',
           payload: data,
-          ttlMs: 30 * 60 * 1000
-        }
-      })
+          ttlMs: 30 * 60 * 1000,
+        },
+      }),
     });
   } catch (error) {
     console.warn('CHR pattern storage failed:', error);
@@ -1643,13 +1661,13 @@ async function generateAnalysisGlyph(analysisResult, documentType) {
         quantizationLevel: 8,
         compressionMethod: 'chr-rom',
         targetResolution: [32, 32],
-        colorSpace: 'sRGB'
+        colorSpace: 'sRGB',
       },
       legalContext: {
         documentType: documentType,
         confidentialityLevel: 'public',
-        renderingPriority: 'standard'
-      }
+        renderingPriority: 'standard',
+      },
     };
 
     // This would integrate with the glyph shader cache bridge
@@ -1735,7 +1753,7 @@ class YoRHaRLAgent {
       maxTokens: 512,
       extractEntities: true,
       riskAssessment: documentType !== 'citation',
-      confidence: 0.8 + Math.random() * 0.2
+      confidence: 0.8 + Math.random() * 0.2,
     };
 
     if (this.legalDomainWeights) {
@@ -1779,8 +1797,10 @@ class YoRHaRLAgent {
 if (typeof chrCache === 'undefined') {
   self.chrCache = {
     get: (key) => null,
-    set: (pattern) => console.log('Mock CHR cache set:', pattern.key)
+    set: (pattern) => console.log('Mock CHR cache set:', pattern.key),
   };
 }
 
-console.log('🎮 YoRHa Legal AI Worker initialized with CHR-ROM caching, NES memory, and Visual Memory Palace integration');
+console.log(
+  '🎮 YoRHa Legal AI Worker initialized with CHR-ROM caching, NES memory, and Visual Memory Palace integration'
+);

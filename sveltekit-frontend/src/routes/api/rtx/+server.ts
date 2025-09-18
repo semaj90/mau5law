@@ -8,7 +8,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { rtxSystemMonitor, type RTXSystemStatus, type PipelineMetrics } from '$lib/services/rtx-system-monitor';
 
-// Pipeline configuration matching your architecture
+// Pipeline configuration matching your architecture;
 const PIPELINE_CONFIG = {
   svelteKitPort: 5173,
   goMicroservicePort: 8080,
@@ -17,15 +17,15 @@ const PIPELINE_CONFIG = {
   webGPUEnabled: true,
   rtx3060TiOptimization: true,
   flashAttention2: true,
-  tensorCoreAcceleration: true
+  tensorCoreAcceleration: true,
 };
 
-// Benchmark targets from your specifications
+// Benchmark targets from your specifications;
 const BENCHMARK_TARGETS = {
   tensorCorePerformance: 150, // GFLOPS
   averageOperationTime: 200,  // μs
-  compressionRatio: 50,       // 50:1
-  searchThroughput: 10000000  // 10M nodes/sec
+  compressionRatio: 50,       // 50:1,
+  searchThroughput: 10000000  // 10M nodes/sec,
 };
 
 export const GET: RequestHandler = async ({ url, request }) => {
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       case 'metrics':
         return await handleMetricsRequest();
 
-      default:
+      default:;
         return json({
           error: 'Invalid action',
           availableActions: ['status', 'benchmark', 'pipeline', 'health', 'metrics']
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     return json({
       error: 'RTX system error',
       message: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       case 'benchmark-run':
         return await handleRunBenchmarkRequest(request);
 
-      default:
+      default:;
         return json({
           error: 'Invalid POST action',
           availableActions: ['process', 'configure', 'benchmark-run']
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json({
       error: 'RTX processing error',
       message: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 async function handleStatusRequest() {
   console.log('📊 RTX Status Request');
 
-  // Initialize if not already done
+  // Initialize if not already done;
   try {
     await rtxSystemMonitor.initialize();
   } catch (error) {
@@ -122,13 +122,13 @@ async function handleStatusRequest() {
       goToCuda: PIPELINE_CONFIG.cudaWorkerPort,
       cudaToPostgres: PIPELINE_CONFIG.postgresqlPort,
       webGPUFrontend: PIPELINE_CONFIG.webGPUEnabled,
-      status: status.pipelineStatus
+      status: status.pipelineStatus,
     },
     features: {
       flashAttention2: status.flashAttention2Active,
       neuralSpriteProcessing: status.neuralSpriteProcessing,
       quantizationMode: status.quantizationMode,
-      tensorCoreAcceleration: PIPELINE_CONFIG.tensorCoreAcceleration
+      tensorCoreAcceleration: PIPELINE_CONFIG.tensorCoreAcceleration,
     },
     metrics: systemInfo,
     benchmark: {
@@ -139,7 +139,7 @@ async function handleStatusRequest() {
         throughput: `${Math.round((status.searchThroughput / BENCHMARK_TARGETS.searchThroughput) * 100)}%`
       }
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -151,7 +151,7 @@ async function handleBenchmarkRequest() {
   if (!benchmarkResults) {
     return json({
       error: 'Benchmark failed',
-      message: 'Unable to run RTX benchmark'
+      message: 'Unable to run RTX benchmark',
     }, { status: 500 });
   }
 
@@ -176,22 +176,22 @@ async function handleBenchmarkRequest() {
       compression: '50:1 Compression: Legal documents with semantic preservation',
       acceleration: 'Tensor RT Acceleration: NVIDIA inference optimization runtime',
       precision: 'Mixed Precision Training: FP16/INT8 for maximum throughput',
-      rendering: 'Real-time Processing: 144fps rendering capability'
+      rendering: 'Real-time Processing: 144fps rendering capability',
     },
     orchestrator: {
       status: 'Physics-Aware GPU Orchestrator: Active',
       webgpu: 'WebGPU Polyfills: 16 polyfill references loaded',
-      nodejs: 'Node.js Compatibility: All polyfills resolved'
+      nodejs: 'Node.js Compatibility: All polyfills resolved',
     },
     services: {
       cudaInference: 'CUDA Inference: Python worker with batch collection',
       tensorOps: 'Tensor Operations: CUDA kernel execution',
       flashAttention: 'FlashAttention2: Memory-efficient attention mechanism',
       vectorSearch: 'Vector Search: PostgreSQL pgvector + Qdrant integration',
-      streaming: 'Real-time Streaming: Server-sent events for GPU inference'
+      streaming: 'Real-time Streaming: Server-sent events for GPU inference',
     },
     conclusion: `The FlashAttention2 RTX 3060 Ti integration is fully operational with multi-language CUDA bridging (Python ↔ Go ↔ CUDA C++), optimized batch processing, and real-time GPU monitoring. The system achieves ~${benchmarkResults.tensorCorePerformance} GFLOPS performance with ${benchmarkResults.compressionRatio}:1 compression ratios for legal document processing.`,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -208,7 +208,7 @@ async function handlePipelineRequest() {
     pipeline: {
       architecture: 'SvelteKit → Go → CUDA Pipeline',
       status: status.pipelineStatus,
-      components: pipelineHealth
+      components: pipelineHealth,
     },
     integration: {
       frontend: `SvelteKit (Port ${PIPELINE_CONFIG.svelteKitPort})`,
@@ -231,7 +231,7 @@ async function handlePipelineRequest() {
       webgpuRendering: metrics.webGPURendering,
       totalPipelineTime: `${Math.round(metrics.totalPipelineTime)}ms`
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -250,10 +250,10 @@ async function handleHealthRequest() {
       flashAttention2: status.flashAttention2Active ? '✅ Active' : '❌ Inactive',
       neuralSprites: status.neuralSpriteProcessing ? '✅ Processing' : '❌ Disabled',
       gpuUtilization: status.gpuUtilization < 95 ? '✅ Optimal' : '⚠️ High Load',
-      pipeline: status.pipelineStatus === 'active' ? '✅ Active' : '❌ Issues'
+      pipeline: status.pipelineStatus === 'active' ? '✅ Active' : '❌ Issues',
     },
     recommendations: generateHealthRecommendations(status),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -271,7 +271,7 @@ async function handleMetricsRequest() {
         compressionRatio: status.compressionRatio,
         searchThroughputNodes: status.searchThroughput,
         gpuUtilizationPercent: status.gpuUtilization,
-        memoryBandwidthGBs: status.memoryBandwidth
+        memoryBandwidthGBs: status.memoryBandwidth,
       },
       pipeline: {
         svelteKitRequests: metrics.svelteKitRequests,
@@ -279,22 +279,22 @@ async function handleMetricsRequest() {
         cudaWorkerOps: metrics.cudaWorkerOperations,
         postgresWrites: metrics.postgresqlStorage,
         webgpuFrames: metrics.webGPURendering,
-        totalPipelineTimeMs: metrics.totalPipelineTime
+        totalPipelineTimeMs: metrics.totalPipelineTime,
       },
       configuration: {
         quantizationMode: status.quantizationMode,
         flashAttention2: status.flashAttention2Active,
         neuralSprites: status.neuralSpriteProcessing,
-        pipelineStatus: status.pipelineStatus
+        pipelineStatus: status.pipelineStatus,
       }
     },
     benchmarkComparison: {
       targetGFLOPS: BENCHMARK_TARGETS.tensorCorePerformance,
       actualGFLOPS: status.tensorCorePerformance,
       performanceRatio: Math.round((status.tensorCorePerformance / BENCHMARK_TARGETS.tensorCorePerformance) * 100) / 100,
-      compressionEfficiency: Math.round((status.compressionRatio / BENCHMARK_TARGETS.compressionRatio) * 100) / 100
+      compressionEfficiency: Math.round((status.compressionRatio / BENCHMARK_TARGETS.compressionRatio) * 100) / 100,
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -308,7 +308,7 @@ async function handleProcessRequest(request: Request) {
     if (!document) {
       return json({
         error: 'Missing document data',
-        message: 'Document content is required for processing'
+        message: 'Document content is required for processing',
       }, { status: 400 });
     }
 
@@ -336,9 +336,9 @@ async function handleProcessRequest(request: Request) {
         goMicroservice: '✅ Routed to tensor processing',
         cudaWorker: '✅ FlashAttention2 + Tensor Core computation',
         postgresql: '✅ Tensor matrices stored',
-        webGPU: '✅ Real-time visualization ready'
+        webGPU: '✅ Real-time visualization ready',
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error) {
@@ -350,7 +350,7 @@ async function handleProcessRequest(request: Request) {
         goMicroservice: '❌ Processing error',
         cudaWorker: '❌ Failed',
         postgresql: '❌ Not reached',
-        webGPU: '❌ Not rendered'
+        webGPU: '❌ Not rendered',
       }
     }, { status: 500 });
   }
@@ -392,16 +392,16 @@ async function handleConfigureRequest(request: Request) {
         neuralSprites: updatedStatus.neuralSpriteProcessing,
         expectedPerformance: {
           tensorCoreGFLOPS: updatedStatus.tensorCorePerformance,
-          operationTimeμs: updatedStatus.averageOperationTime
+          operationTimeμs: updatedStatus.averageOperationTime,
         }
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error) {
     return json({
       error: 'Configuration failed',
-      message: error instanceof Error ? error.message: 'Unknown configuration error'
+      message: error instanceof Error ? error.message: 'Unknown configuration error',
     }, { status: 500 });
   }
 }
@@ -432,22 +432,22 @@ async function handleRunBenchmarkRequest(request: Request) {
           compressionRatio: benchmarkResults.compressionRatio,
           searchThroughputNodesPerSec: benchmarkResults.searchThroughput,
           gpuUtilizationPercent: benchmarkResults.gpuUtilization,
-          memoryBandwidthGBs: benchmarkResults.memoryBandwidth
+          memoryBandwidthGBs: benchmarkResults.memoryBandwidth,
         },
         analysis: {
           performance: benchmarkResults.tensorCorePerformance >= 140 ? 'Excellent' :
                       benchmarkResults.tensorCorePerformance >= 100 ? 'Good' : 'Needs Optimization',
           efficiency: benchmarkResults.compressionRatio >= 40 ? 'High' : 'Standard',
-          throughput: benchmarkResults.searchThroughput >= 8000000 ? 'High' : 'Standard'
+          throughput: benchmarkResults.searchThroughput >= 8000000 ? 'High' : 'Standard',
         }
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error) {
     return json({
       error: 'Benchmark run failed',
-      message: error instanceof Error ? error.message: 'Unknown benchmark error'
+      message: error instanceof Error ? error.message: 'Unknown benchmark error',
     }, { status: 500 });
   }
 }
@@ -459,20 +459,20 @@ async function testPipelineComponents(): Promise<Record<string, string> {
     // Test SvelteKit (self)
     health.svelteKit = '✅ Operational';
 
-    // Test Go Microservice (simplified check)
+    // Test Go Microservice (simplified check);
     try {
       const response = await fetch(`http://localhost:${PIPELINE_CONFIG.goMicroservicePort}/health`, {
-        signal: AbortSignal.timeout(3000)
+        signal: AbortSignal.timeout(3000),
       });
       health.goMicroservice = (response as { ok?: any }).ok ? '✅ Operational' : '⚠️ Degraded';
     } catch {
       health.goMicroservice = '❌ Unavailable';
     }
 
-    // Test CUDA Worker (simplified check)
+    // Test CUDA Worker (simplified check);
     try {
       const response = await fetch(`http://localhost:${PIPELINE_CONFIG.cudaWorkerPort}`, {
-        signal: AbortSignal.timeout(3000)
+        signal: AbortSignal.timeout(3000),
       });
       health.cudaWorker = (response as { ok?: any }).ok ? '✅ Operational' : '⚠️ Degraded';
     } catch {

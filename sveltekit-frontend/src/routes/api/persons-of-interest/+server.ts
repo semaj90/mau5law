@@ -22,32 +22,32 @@ export const GET: RequestHandler = async ({ url, request }) => {
     const conditions = [];
 
     if (searchQuery) {
-      conditions.push(like(personsOfInterest.name, `%${searchQuery}%`));
+      conditions.push(like(personsOfInterest.name, `%${searchQuery}%`);
     }
 
     if (threatLevel) {
-      conditions.push(eq(personsOfInterest.threatLevel, threatLevel));
+      conditions.push(eq(personsOfInterest.threatLevel, threatLevel);
     }
 
     if (status) {
-      conditions.push(eq(personsOfInterest.status, status));
+      conditions.push(eq(personsOfInterest.status, status);
     }
 
     if (relationship) {
-      conditions.push(eq(personsOfInterest.relationship, relationship));
+      conditions.push(eq(personsOfInterest.relationship, relationship);
     }
 
     if (caseId) {
-      conditions.push(eq(personsOfInterest.caseId, caseId));
+      conditions.push(eq(personsOfInterest.caseId, caseId);
     }
 
     if (conditions.length > 0) {
-      query = query.where(and(...conditions));
+      query = query.where(and(...conditions);
     }
 
     // Apply sorting
     const sortColumn = personsOfInterest[sortBy as keyof typeof personsOfInterest] || personsOfInterest.updatedAt;
-    query = query.orderBy(sortOrder === 'asc' ? asc(sortColumn) : desc(sortColumn));
+    query = query.orderBy(sortOrder === 'asc' ? asc(sortColumn) : desc(sortColumn);
 
     // Apply pagination
     query = query.limit(limit).offset(offset);
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         total,
         limit,
         offset,
-        hasMore: offset + persons.length < total
+        hasMore: offset + persons.length < total,
       }
     });
 
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     console.error('Error fetching persons of interest:', error);
     return json({
       success: false,
-      error: 'Failed to fetch persons of interest'
+      error: 'Failed to fetch persons of interest',
     }, { status: 500 });
   }
 };
@@ -82,11 +82,11 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     
-    // Validate required fields
+    // Validate required fields;
     if (!body.name || !body.relationship) {
       return json({
         success: false,
-        error: 'Name and relationship are required'
+        error: 'Name and relationship are required',
       }, { status: 400 });
     }
 
@@ -107,14 +107,14 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
       success: true,
-      data: newPerson
+      data: newPerson,
     }, { status: 201 });
 
   } catch (error) {
     console.error('Error creating person of interest:', error);
     return json({
       success: false,
-      error: 'Failed to create person of interest'
+      error: 'Failed to create person of interest',
     }, { status: 500 });
   }
 };
@@ -126,45 +126,45 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!body.id) {
       return json({
         success: false,
-        error: 'Person ID is required for updates'
+        error: 'Person ID is required for updates',
       }, { status: 400 });
     }
 
     const updateData = {
-      ...(body.name && { name: body.name }),
-      ...(body.aliases && { aliases: body.aliases }),
-      ...(body.relationship && { relationship: body.relationship }),
-      ...(body.threatLevel && { threatLevel: body.threatLevel }),
-      ...(body.status && { status: body.status }),
-      ...(body.profileData && { profileData: body.profileData }),
-      ...(body.tags && { tags: body.tags }),
-      ...(body.position && { position: body.position }),
-      updatedAt: new Date().toISOString()
+      ...(body.name && { name: body.name ,}),
+      ...(body.aliases && { aliases: body.aliases ,}),
+      ...(body.relationship && { relationship: body.relationship ,}),
+      ...(body.threatLevel && { threatLevel: body.threatLevel ,}),
+      ...(body.status && { status: body.status ,}),
+      ...(body.profileData && { profileData: body.profileData ,}),
+      ...(body.tags && { tags: body.tags ,}),
+      ...(body.position && { position: body.position ,}),
+      updatedAt: new Date().toISOString(),
     };
 
     const [updatedPerson] = await db
       .update(personsOfInterest)
       .set(updateData)
-      .where(eq(personsOfInterest.id, body.id))
+      .where(eq(personsOfInterest.id, body.id)
       .returning();
 
     if (!updatedPerson) {
       return json({
         success: false,
-        error: 'Person of interest not found'
+        error: 'Person of interest not found',
       }, { status: 404 });
     }
 
     return json({
       success: true,
-      data: updatedPerson
+      data: updatedPerson,
     });
 
   } catch (error) {
     console.error('Error updating person of interest:', error);
     return json({
       success: false,
-      error: 'Failed to update person of interest'
+      error: 'Failed to update person of interest',
     }, { status: 500 });
   }
 };
@@ -176,32 +176,32 @@ export const DELETE: RequestHandler = async ({ request }) => {
     if (!body.id) {
       return json({
         success: false,
-        error: 'Person ID is required for deletion'
+        error: 'Person ID is required for deletion',
       }, { status: 400 });
     }
 
     const [deletedPerson] = await db
       .delete(personsOfInterest)
-      .where(eq(personsOfInterest.id, body.id))
+      .where(eq(personsOfInterest.id, body.id)
       .returning();
 
     if (!deletedPerson) {
       return json({
         success: false,
-        error: 'Person of interest not found'
+        error: 'Person of interest not found',
       }, { status: 404 });
     }
 
     return json({
       success: true,
-      message: 'Person of interest deleted successfully'
+      message: 'Person of interest deleted successfully',
     });
 
   } catch (error) {
     console.error('Error deleting person of interest:', error);
     return json({
       success: false,
-      error: 'Failed to delete person of interest'
+      error: 'Failed to delete person of interest',
     }, { status: 500 });
   }
 };

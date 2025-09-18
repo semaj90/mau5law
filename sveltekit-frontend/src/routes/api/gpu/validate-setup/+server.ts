@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js';
 
 const GO_BASE = import.meta.env.GO_SERVICE_URL || import.meta.env.GO_SERVER_URL || import.meta.env.GO_MICROSERVICE_URL || "http://localhost:8084";
 
-// Tiny retry wrapper to smooth transient failures 
+// Tiny retry wrapper to smooth transient failures;
 async function fetchWithTimeout<T = unknown>(path: string, timeoutMs = 2500): Promise<T> {
   const controller = new AbortController();
   const t = setTimeout(() => controller.abort(), timeoutMs);
@@ -21,7 +21,7 @@ async function fetchWithTimeout<T = unknown>(path: string, timeoutMs = 2500): Pr
   }
 }
 
-// Ollama service helper
+// Ollama service helper;
 const ollamaService = {
   isHealthy: async () => {
     try {
@@ -76,7 +76,7 @@ type HealthPayload = {
 type AISummarizeChecks = {
   gpu: boolean;
   ollama: boolean;
-  model: boolean;
+  model: boolean;,
 };
 
 type Details = {
@@ -84,7 +84,7 @@ type Details = {
     ok: boolean;
     models_count: number;
     required_model: string;
-    model_present: boolean;
+    model_present: boolean;,
   };
   go_service: {
     ok: boolean;
@@ -94,7 +94,7 @@ type Details = {
     raw?: GPUStatus;
     health?: HealthPayload;
   };
-  ai_summarize_checks: AISummarizeChecks;
+  ai_summarize_checks: AISummarizeChecks;,
 };
 
 type CachePayload = {
@@ -122,7 +122,7 @@ export const GET: RequestHandler = async () => {
     
     let gpuStatus = gpuAttempt[0];
     if (gpuStatus.status === "rejected") {
-      await new Promise((r) => setTimeout(r, 150));
+      await new Promise((r) => setTimeout(r, 150);
       gpuStatus = (await Promise.allSettled([fetchWithTimeout<GPUStatus>("/api/gpu-status")]))[0];
     }
 
@@ -153,7 +153,7 @@ export const GET: RequestHandler = async () => {
         const v = gpuStatus.value;
         return Boolean(v?.available ?? v?.cuda?.available);
       })()) ||
-      (health.status === "fulfilled" && Boolean(health.value?.services?.gpu));
+      (health.status === "fulfilled" && Boolean(health.value?.services?.gpu);
 
     const details: Details = {
       ollama: {
@@ -168,12 +168,12 @@ export const GET: RequestHandler = async () => {
         source: gpuStatus.status === "fulfilled" ? "go" : "shim",
         version: "v1",
         raw: gpuStatus.status === "fulfilled" ? gpuStatus.value: undefined,
-        health: health.status === "fulfilled" ? health.value : undefined
+        health: health.status === "fulfilled" ? health.value : undefined,
       },
       ai_summarize_checks: {
         gpu: gpu_ok,
         ollama: ollama_ok,
-        model: model_present
+        model: model_present,
       }
     };
 
@@ -199,7 +199,7 @@ export const GET: RequestHandler = async () => {
     return json({
       ok: false,
       error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 };

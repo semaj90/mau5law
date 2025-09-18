@@ -6,13 +6,13 @@ import { EventEmitter } from "events";
  */
 
 
-// === Neural Network Self-Organizing Map for Cache Intelligence ===
+// === Neural Network Self-Organizing Map for Cache Intelligence ===;
 export interface SOMNode {
   weights: Float64Array;
   activation: number;
   cluster_id: number;
   access_count: number;
-  last_update: number;
+  last_update: number;,
 }
 
 export interface CacheEntry {
@@ -28,7 +28,7 @@ export interface CacheEntry {
     content_type: 'json' | 'string' | 'buffer' | 'object';
     compression_ratio?: number;
     access_pattern: 'frequent' | 'burst' | 'linear' | 'random';
-    ai_relevance: number; // 0-1 score
+    ai_relevance: number; // 0-1 score,
   };
 }
 
@@ -46,7 +46,7 @@ class SelfOrganizingMap {
     height = 20, 
     feature_dimensions = 8,
     initial_learning_rate = 0.1,
-    initial_radius = 5
+    initial_radius = 5;
   ) {
     this.width = width;
     this.height = height;
@@ -59,14 +59,14 @@ class SelfOrganizingMap {
   }
 
   private initializeNodes(): void {
-    this.nodes = Array.from({ length: this.height }, () =>
+    this.nodes = Array.from({ length: this.height }, () =>;
       Array.from({ length: this.width }, () => ({
         weights: new Float64Array(this.feature_dimensions).map(() => Math.random()),
         activation: 0,
         cluster_id: Math.floor(Math.random() * 10),
         access_count: 0,
-        last_update: Date.now()
-      }))
+        last_update: Date.now(),
+      })
     );
   }
 
@@ -109,7 +109,7 @@ class SelfOrganizingMap {
         );
 
         if (distance_to_bmu <= current_radius) {
-          const influence = Math.exp(-Math.pow(distance_to_bmu, 2) / (2 * Math.pow(current_radius, 2)));
+          const influence = Math.exp(-Math.pow(distance_to_bmu, 2) / (2 * Math.pow(current_radius, 2));
           
           for (let i = 0; i < this.feature_dimensions; i++) {
             this.nodes[y][x].weights[i] += 
@@ -139,7 +139,7 @@ class SelfOrganizingMap {
     total_clusters: number;
     active_clusters: number;
     avg_activation: number;
-    training_iterations: number;
+    training_iterations: number;,
   } {
     let active_count = 0;
     let total_activation = 0;
@@ -156,12 +156,12 @@ class SelfOrganizingMap {
       total_clusters: this.width * this.height,
       active_clusters: active_count,
       avg_activation: total_activation / (this.width * this.height),
-      training_iterations: this.training_iterations
+      training_iterations: this.training_iterations,
     };
   }
 }
 
-// === Advanced Redis-Compatible Cache with SOM Intelligence ===
+// === Advanced Redis-Compatible Cache with SOM Intelligence ===;
 export class RedisSOMapCache extends EventEmitter {
   private cache = new Map<string, CacheEntry>();
   private som: SelfOrganizingMap;
@@ -173,7 +173,7 @@ export class RedisSOMapCache extends EventEmitter {
     misses: 0,
     evictions: 0,
     compressions: 0,
-    total_operations: 0
+    total_operations: 0,
   };
 
   constructor(options: {
@@ -272,7 +272,7 @@ export class RedisSOMapCache extends EventEmitter {
   }
 
   private calculateKeySimilarity(key: string): number {
-    const existing_keys = Array.from(this.cache.keys());
+    const existing_keys = Array.from(this.cache.keys();
     if (existing_keys.length === 0) return 0;
 
     let max_similarity = 0;
@@ -391,7 +391,7 @@ export class RedisSOMapCache extends EventEmitter {
     const size = this.calculateSize(compressed);
     const priority_score = this.calculatePriorityScore(features, som_result);
 
-    // Memory pressure management
+    // Memory pressure management;
     if (this.current_memory + size > this.max_memory) {
       await this.intelligentEviction(size);
     }
@@ -431,7 +431,7 @@ export class RedisSOMapCache extends EventEmitter {
       return null;
     }
 
-    // TTL check
+    // TTL check;
     if (Date.now() - entry.created_at > entry.ttl) {
       this.delete(key);
       this.stats.misses++;
@@ -449,7 +449,7 @@ export class RedisSOMapCache extends EventEmitter {
     this.stats.hits++;
     this.emit('hit', { key, access_count: entry.access_count, cluster: som_result.cluster });
 
-    // Decompress if needed
+    // Decompress if needed;
     if (entry.metadata.compression_ratio && entry.metadata.compression_ratio > 1) {
       if (typeof entry.value === 'string') {
         return this.runLengthDecode(entry.value);
@@ -479,11 +479,11 @@ export class RedisSOMapCache extends EventEmitter {
   }
 
   async keys(pattern?: string): Promise<string[]> {
-    const all_keys = Array.from(this.cache.keys());
+    const all_keys = Array.from(this.cache.keys();
     if (!pattern) return all_keys;
     
-    const regex = new RegExp(pattern.replace(/\*/g, '.*'));
-    return all_keys.filter((key: any) => regex.test(key));
+    const regex = new RegExp(pattern.replace(/\*/g, '.*');
+    return all_keys.filter((key: any) => regex.test(key);
   }
 
   async flushAll(): Promise<boolean> {
@@ -495,7 +495,7 @@ export class RedisSOMapCache extends EventEmitter {
   }
 
   private async intelligentEviction(needed_space: number): Promise<void> {
-    const entries = Array.from(this.cache.entries());
+    const entries = Array.from(this.cache.entries();
     
     // Sort by priority score (lower = evict first)
     entries.sort(([, a], [, b]) => a.priority_score - b.priority_score);
@@ -540,10 +540,10 @@ export class RedisSOMapCache extends EventEmitter {
       }
     }
     
-    expired_keys.forEach((key: any) => this.delete(key));
+    expired_keys.forEach((key: any) => this.delete(key);
     
     // Retrain SOM with recent access patterns
-    const recent_entries = Array.from(this.cache.values())
+    const recent_entries = Array.from(this.cache.values()
       .filter((entry: any) => entry.access_count > 1)
       .slice(-100); // Last 100 accessed items
     
@@ -554,7 +554,7 @@ export class RedisSOMapCache extends EventEmitter {
     
     this.emit('optimization', {
       expired_removed: expired_keys.length,
-      som_retrained: recent_entries.length
+      som_retrained: recent_entries.length,
     });
   }
 
@@ -564,29 +564,29 @@ export class RedisSOMapCache extends EventEmitter {
       memory: {
         current: this.current_memory,
         max: this.max_memory,
-        utilization: (this.current_memory / this.max_memory) * 100
+        utilization: (this.current_memory / this.max_memory) * 100,
       },
       cache: {
         size: this.cache.size,
-        hit_rate: this.stats.hits / (this.stats.hits + this.stats.misses) * 100
+        hit_rate: this.stats.hits / (this.stats.hits + this.stats.misses) * 100,
       },
       som: this.som.getClusterStats(),
       compression: {
         enabled: this.compression_enabled,
-        compressions_performed: this.stats.compressions
+        compressions_performed: this.stats.compressions,
       }
     };
   }
 
-  // === Neural Network Analysis Methods ===
+  // === Neural Network Analysis Methods ===;
   async analyzeAccessPatterns(): Promise<{
     clusters: Array<any>;
-    recommendations: string[];
+    recommendations: string[];,
   }> {
     const som_stats = this.som.getClusterStats();
     const entries_by_cluster = new Map<number, CacheEntry[]>();
     
-    // Group entries by SOM cluster
+    // Group entries by SOM cluster;
     for (const entry of this.cache.values()) {
       if (!entries_by_cluster.has(entry.som_cluster)) {
         entries_by_cluster.set(entry.som_cluster, []);
@@ -598,7 +598,7 @@ export class RedisSOMapCache extends EventEmitter {
       id,
       patterns: entries.map((e: any) => e.metadata.access_pattern),
       confidence: entries.reduce((sum, e) => sum + e.priority_score, 0) / entries.length
-    }));
+    });
     
     const recommendations = this.generateRecommendations(clusters, som_stats);
     
@@ -607,7 +607,7 @@ export class RedisSOMapCache extends EventEmitter {
 
   private generateRecommendations(
     clusters: Array<any>,
-    som_stats: any
+    som_stats: any;
   ): string[] {
     const recommendations: string[] = [];
     
@@ -633,7 +633,7 @@ export class RedisSOMapCache extends EventEmitter {
   }
 }
 
-// === Factory and Helper Functions ===
+// === Factory and Helper Functions ===;
 export function createRedisSOMapCache(options?: {
   max_memory?: number;
   som_width?: number;
@@ -648,7 +648,7 @@ export function createDockerOptimizedCache(): RedisSOMapCache {
     max_memory: 256 * 1024 * 1024, // 256MB for Docker optimization
     som_width: 12,
     som_height: 12,
-    compression_enabled: true
+    compression_enabled: true,
   });
 }
 
@@ -657,6 +657,6 @@ export function create70GBDevCache(): RedisSOMapCache {
     max_memory: 2 * 1024 * 1024 * 1024, // 2GB for 70GB dev environment
     som_width: 20,
     som_height: 20,
-    compression_enabled: true
+    compression_enabled: true,
   });
 }

@@ -21,22 +21,22 @@ interface ImageGenerationRequest {
   provider?: 'stable-diffusion-webui' | 'comfyui' | 'ollama-vision' | 'fallback';
 }
 
-// Provider configurations
+// Provider configurations;
 const PROVIDERS = {
   'stable-diffusion-webui': {
     url: 'http://localhost:7860',
     endpoint: '/api/v1/txt2img',
-    healthCheck: '/api/v1/options'
+    healthCheck: '/api/v1/options',
   },
   'comfyui': {
     url: 'http://localhost:8188',
     endpoint: '/api/prompt',
-    healthCheck: '/api/system_stats'
+    healthCheck: '/api/system_stats',
   },
   'ollama-vision': {
     url: 'http://localhost:11434',
     endpoint: '/api/generate',
-    healthCheck: '/api/tags'
+    healthCheck: '/api/tags',
   }
 };
 
@@ -45,7 +45,7 @@ async function checkProviderHealth(provider: keyof typeof PROVIDERS): Promise<bo
     const config = PROVIDERS[provider];
     const response = await fetch(`${config.url}${config.healthCheck}`, {
       method: 'GET',
-      signal: AbortSignal.timeout(3000)
+      signal: AbortSignal.timeout(3000),
     });
     return (response as { ok?: any; json?: any; statusText?: any }).ok;
   } catch (error) {
@@ -64,14 +64,14 @@ Style: ${style || 'realistic'}
 Provide a detailed, professional prompt suitable for legal documentation. Include technical and artistic details while maintaining accuracy.
 
 Enhanced prompt:`,
-      stream: false
+      stream: false,
     };
 
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(enhancementRequest),
-      signal: AbortSignal.timeout(30000)
+      signal: AbortSignal.timeout(30000),
     });
 
     if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -98,14 +98,14 @@ async function generateWithStableDiffusion(request: ImageGenerationRequest): Pro
     seed: request.seed || -1,
     sampler_name: "DPM++ 2M Karras",
     batch_size: 1,
-    n_iter: 1
+    n_iter: 1,
   };
 
   const response = await fetch(`${config.url}${config.endpoint}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(60000)
+    signal: AbortSignal.timeout(60000),
   });
 
   if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -119,7 +119,7 @@ async function generateWithStableDiffusion(request: ImageGenerationRequest): Pro
     metadata: {
       seed: payload.seed,
       model: 'Stable Diffusion',
-      parameters: payload
+      parameters: payload,
     }
   };
 }
@@ -127,7 +127,7 @@ async function generateWithStableDiffusion(request: ImageGenerationRequest): Pro
 async function generateWithComfyUI(request: ImageGenerationRequest): Promise<any> {
   const config = PROVIDERS['comfyui'];
   
-  // Simplified ComfyUI workflow
+  // Simplified ComfyUI workflow;
   const workflow = {
     "1": {
       "inputs": { "text": request.prompt },
@@ -153,20 +153,20 @@ async function generateWithComfyUI(request: ImageGenerationRequest): Promise<any
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ prompt: workflow }),
-    signal: AbortSignal.timeout(60000)
+    signal: AbortSignal.timeout(60000),
   });
 
   if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
     throw new Error(`ComfyUI API error: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
   }
 
-  // Note: Real ComfyUI would require polling for completion
+  // Note: Real ComfyUI would require polling for completion;
   return {
-    imageBase64: null, // Would be actual ComfyUI result
+    imageBase64: null, // Would be actual ComfyUI result;
     metadata: {
       seed: workflow["3"].inputs.seed,
       model: 'ComfyUI',
-      parameters: request
+      parameters: request,
     }
   };
 }
@@ -184,9 +184,9 @@ Visual Description:`;
     body: JSON.stringify({
       model: 'gemma3-legal',
       prompt: descriptionPrompt,
-      stream: false
+      stream: false,
     }),
-    signal: AbortSignal.timeout(30000)
+    signal: AbortSignal.timeout(30000),
   });
 
   if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -209,7 +209,7 @@ Visual Description:`;
       seed: request.seed || -1,
       model: 'Ollama (Text Description)',
       description: (result as { response?: any; images?: any; imageBase64?: any; metadata?: any }).response,
-      parameters: request
+      parameters: request,
     }
   };
 }
@@ -280,13 +280,13 @@ export const POST: RequestHandler = async ({ request }) => {
       height: body.height || 512,
       steps: body.steps || 20,
       cfgScale: body.cfgScale || 7.5,
-      seed: body.seed || Math.floor(Math.random() * 1000000)
+      seed: body.seed || Math.floor(Math.random() * 1000000),
     };
 
     let result: any;
     let provider = body.provider;
 
-    // Auto-select provider if not specified
+    // Auto-select provider if not specified;
     if (!provider) {
       if (await checkProviderHealth('stable-diffusion-webui')) {
         provider = 'stable-diffusion-webui';
@@ -299,7 +299,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
 
-    // Generate image based on provider
+    // Generate image based on provider;
     try {
       switch (provider) {
         case 'stable-diffusion-webui':
@@ -311,13 +311,13 @@ export const POST: RequestHandler = async ({ request }) => {
         case 'ollama-vision':
           result = await generateWithOllama(enhancedRequest);
           break;
-        default:
+        default:;
           result = {
             imageBase64: createFallbackImage(enhancedRequest.prompt, enhancedRequest.width!, enhancedRequest.height!),
             metadata: {
               seed: enhancedRequest.seed,
               model: 'Fallback Generator',
-              parameters: enhancedRequest
+              parameters: enhancedRequest,
             }
           };
           provider = 'fallback';
@@ -331,7 +331,7 @@ export const POST: RequestHandler = async ({ request }) => {
           seed: enhancedRequest.seed,
           model: 'Fallback Generator (Error)',
           parameters: enhancedRequest,
-          error: providerError instanceof Error ? providerError.message: 'Unknown error'
+          error: providerError instanceof Error ? providerError.message: 'Unknown error',
         }
       };
       provider = 'fallback';
@@ -352,7 +352,7 @@ export const POST: RequestHandler = async ({ request }) => {
         ...result.metadata,
         size: {
           width: enhancedRequest.width,
-          height: enhancedRequest.height
+          height: enhancedRequest.height,
         }
       }
     };
@@ -385,6 +385,6 @@ export const GET: RequestHandler = async () => {
 
   return json({
     providers: providerStatus,
-    fallback: 'available'
+    fallback: 'available',
   });
 };

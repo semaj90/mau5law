@@ -40,8 +40,8 @@ export function useGamingEvolution() {
     bitsUICompatibility: $config.bitsUICompatibility,
     scanlines: $config.nesSettings?.enableScanlines || false,
     gradients: $config.snesSettings?.enableGradients || false,
-    antiAliasing: $config.n64Settings?.enableAntiAliasing || false
-  }));
+    antiAliasing: $config.n64Settings?.enableAntiAliasing || false,
+  });
 
   // Era capabilities
   const eraCapabilities = derived(currentEra, $era => {
@@ -54,7 +54,7 @@ export function useGamingEvolution() {
           audioChannels: 4,
           supportsGradients: false,
           supports3D: false,
-          supportsAntiAliasing: false
+          supportsAntiAliasing: false,
         };
       case '16bit':
         return {
@@ -64,7 +64,7 @@ export function useGamingEvolution() {
           audioChannels: 8,
           supportsGradients: true,
           supports3D: false,
-          supportsAntiAliasing: false
+          supportsAntiAliasing: false,
         };
       case 'n64':
         return {
@@ -74,10 +74,10 @@ export function useGamingEvolution() {
           audioChannels: 64,
           supportsGradients: true,
           supports3D: true,
-          supportsAntiAliasing: true
+          supportsAntiAliasing: true,
         };
       default:
-        return null;
+        return null;,
     }
   });
 
@@ -103,7 +103,7 @@ export function useGamingEvolution() {
       case 'particles':
         return state.currentEra === 'n64' && state.performanceLevel === 'high';
       default:
-        return false;
+        return false;,
     }
   };
 
@@ -123,7 +123,7 @@ export function useGamingEvolution() {
       enableScanlines: state.currentEra === '8bit' && state.performanceLevel !== 'low',
       enableGradients: ['16bit', 'n64'].includes(state.currentEra),
       enable3D: state.currentEra === 'n64' && (capabilities?.webgl || capabilities?.webgpu),
-      enableParticles: state.currentEra === 'n64' && state.performanceLevel === 'high'
+      enableParticles: state.currentEra === 'n64' && state.performanceLevel === 'high',
     };
   };
 
@@ -157,7 +157,7 @@ export function useGamingEvolution() {
       webglSupport: capabilities?.webgl || false,
       webgpuSupport: capabilities?.webgpu || false,
       screenSize: capabilities?.screenSize || { width: 0, height: 0 },
-      pixelRatio: capabilities?.pixelRatio || 1
+      pixelRatio: capabilities?.pixelRatio || 1,
     };
   });
 

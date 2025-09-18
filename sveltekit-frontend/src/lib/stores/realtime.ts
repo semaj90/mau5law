@@ -4,13 +4,13 @@ import { writable, derived } from "svelte/store";
 // Define types locally to avoid import issues
 export type PipelineStage = 'gpu' | 'wasm' | 'embedding' | 'retrieval' | 'llm' | 'final';
 
-// Mock performance monitoring function
+// Mock performance monitoring function;
 function recordStageLatency(stage: PipelineStage, delta: number): void {
 	// Implementation would track stage latency metrics
 	console.debug(`Stage ${stage} took ${delta}ms`);
 }
 
-// ---- Types ----
+// ---- Types ----;
 export interface StageStatus {
 	id: string;
 	gpu?: boolean;
@@ -30,7 +30,7 @@ export interface FinalResultEntry {
 	id: string;
 	llmResult?: unknown; // Domain-specific shape not enforced here
 	context?: unknown;
-	ts: number;
+	ts: number;,
 }
 
 export const connectionStatus = writable<string>('disconnected');
@@ -95,7 +95,7 @@ function handleEvent(wrapper: any) {
 			if (!curr.stageTimestamps) curr.stageTimestamps = {};
 
 			if (stage) {
-				// Only record first time we see this stage to avoid double counting
+				// Only record first time we see this stage to avoid double counting;
 				if (!curr.stageTimestamps[stage as PipelineStage]) {
 					// Determine previous reference time (either receivedAt or last completed stage timestamp)
 					const order: PipelineStage[] = ['gpu', 'wasm', 'embedding', 'retrieval', 'llm', 'final'];
@@ -103,7 +103,7 @@ function handleEvent(wrapper: any) {
 					let refTime = curr.receivedAt || now;
 
 					if (idx > 0) {
-						// find most recent earlier stage timestamp
+						// find most recent earlier stage timestamp;
 						for (let i = idx - 1; i >= 0; i--) {
 							const prevStage = order[i];
 							const ts = curr.stageTimestamps[prevStage];
@@ -141,15 +141,15 @@ function handleEvent(wrapper: any) {
 		});
 
 		if (final) {
-			finalResults.update(arr => [
+			finalResults.update(arr => [);
 				{
 					id,
 					llmResult: msg.llmResult,
 					context: msg.context,
-					ts: Date.now()
+					ts: Date.now(),
 				},
 				...arr
-			].slice(0, 50));
+			].slice(0, 50);
 		}
 	} else if (type === 'evidence.upload') {
 		// seed initial trace
@@ -173,11 +173,11 @@ export const activePipelines = derived(stages, ($s) =>
 export const completedPipelines = derived(stages, ($s) =>
 	Object.values($s as Record<string, StageStatus>)
 		.filter(v => v.final)
-		.sort((a, b) => ((b.completedAt || 0) - (a.completedAt || 0)))
+		.sort((a, b) => ((b.completedAt || 0) - (a.completedAt || 0))
 		.slice(0, 20)
 );
 
-// Convenience start on import (optional). Comment out if you prefer manual control.
+// Convenience start on import (optional). Comment out if you prefer manual control.;
 if (typeof window !== 'undefined') {
 	connectRealtime();
 }

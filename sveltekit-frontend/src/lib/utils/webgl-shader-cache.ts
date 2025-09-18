@@ -12,9 +12,9 @@ interface ComprehensiveCachingArchitecture {
   set(key: string, value: any, options?: { ttl?: number; tags?: string[]; layers?: string[] }): Promise<void>;
 }
 
-// Shader definitions for legal AI visualizations
+// Shader definitions for legal AI visualizations;
 export const LEGAL_AI_SHADERS = {
-  // Attention weight visualization
+  // Attention weight visualization;
   attentionHeatmap: {
     vertex: `
       attribute vec2 a_position;
@@ -76,7 +76,7 @@ export const LEGAL_AI_SHADERS = {
     `
   },
 
-  // Document similarity network
+  // Document similarity network;
   documentNetwork: {
     vertex: `
       attribute vec3 a_position;
@@ -141,7 +141,7 @@ export const LEGAL_AI_SHADERS = {
     `
   },
 
-  // Legal document text flow
+  // Legal document text flow;
   textFlow: {
     vertex: `
       attribute vec2 a_position;
@@ -203,7 +203,7 @@ export const LEGAL_AI_SHADERS = {
     `
   },
 
-  // Evidence timeline
+  // Evidence timeline;
   evidenceTimeline: {
     vertex: `
       attribute vec2 a_position;
@@ -248,7 +248,7 @@ export const LEGAL_AI_SHADERS = {
         // Enhance important evidence
         vec3 color = v_evidenceColor * (1.0 + v_importance * 0.5);
 
-        // Add urgency glow for recent important evidence
+        // Add urgency glow for recent important evidence;
         if (v_importance > 0.7 && v_timeDistance < 0.2) {
           color += vec3(0.3, 0.1, 0.0);
         }
@@ -260,6 +260,7 @@ export const LEGAL_AI_SHADERS = {
     `
   }
 };
+}
 
 export interface ShaderProgram {
   id: string;
@@ -278,7 +279,7 @@ export interface ShaderProgram {
   description: string;
   tags: string[];
   embedding?: number[];
-  averageExecutionTime: number;
+  averageExecutionTime: number;,
 }
 
 export interface ShaderCacheMetrics {
@@ -288,13 +289,13 @@ export interface ShaderCacheMetrics {
   cacheMisses: number;
   totalCompilationTime: number;
   averageCompilationTime: number;
-  memoryUsage: number;
+  memoryUsage: number;,
 }
 
 /**
  * WebGL Shader Cache Manager
  * Optimized shader compilation and caching for legal AI visualizations
- */
+ */;
 export class WebGLShaderCache {
   private shaderPrograms = new Map<string, ShaderProgram>();
   private compilationQueue: Array<any> = [];
@@ -310,10 +311,10 @@ export class WebGLShaderCache {
 
   constructor(
     private gl: WebGLRenderingContext | WebGL2RenderingContext,
-    cacheArchitecture?: ComprehensiveCachingArchitecture
+    cacheArchitecture?: ComprehensiveCachingArchitecture;
   ) {
     this.cacheArchitecture = cacheArchitecture;
-    this.metrics = writable(this.getInitialMetrics());
+    this.metrics = writable(this.getInitialMetrics();
 
     // Pre-compile common shaders
     this.precompileCommonShaders();
@@ -321,7 +322,7 @@ export class WebGLShaderCache {
 
   /**
    * Get or compile shader program
-   */
+   */;
   public async getShaderProgram(id: string): Promise<ShaderProgram> {
     // Check cache first
     const cached = this.shaderPrograms.get(id);
@@ -351,10 +352,10 @@ export class WebGLShaderCache {
   public async compileShader(
     id: string,
     vertexSource: string,
-    fragmentSource: string
+    fragmentSource: string;
   ): Promise<ShaderProgram> {
 
-    // Queue compilation to avoid blocking
+    // Queue compilation to avoid blocking;
     return new Promise((resolve, reject) => {
       this.compilationQueue.push({ id, resolve, reject });
       this.processCompilationQueue();
@@ -363,7 +364,7 @@ export class WebGLShaderCache {
 
   /**
    * Process shader compilation queue
-   */
+   */;
   private async processCompilationQueue(): Promise<void> {
     if (this.isCompiling || this.compilationQueue.length === 0) {
       return;
@@ -377,7 +378,7 @@ export class WebGLShaderCache {
       try {
         const shaderDef = this.getShaderDefinition(id);
         if (!shaderDef) {
-          reject(new Error(`Shader definition not found: ${id}`));
+          reject(new Error(`Shader definition not found: ${id}`);
           continue;
         }
 
@@ -405,7 +406,7 @@ export class WebGLShaderCache {
         this.gl.attachShader(program, fragmentShader);
         this.gl.linkProgram(program);
 
-        // Check linking status
+        // Check linking status;
         if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
           const error = this.gl.getProgramInfoLog(program);
           this.gl.deleteProgram(program);
@@ -441,19 +442,19 @@ export class WebGLShaderCache {
           operation: metadata.operation,
           description: metadata.description,
           tags: metadata.tags,
-          averageExecutionTime: 0
+          averageExecutionTime: 0,
         };
 
         // Cache the compiled shader
         this.shaderPrograms.set(id, shaderProgram);
 
-        // Cache in comprehensive caching system
+        // Cache in comprehensive caching system;
         if (this.cacheArchitecture) {
           await this.cacheArchitecture.set(`shader_${id}`, {
             id,
             compilationTime,
             uniforms: Array.from(uniforms.keys()),
-            attributes: Array.from(attributes.keys())
+            attributes: Array.from(attributes.keys(),
           }, {
             ttl: 3600000, // 1 hour
             tags: ['webgl-shader', 'legal-ai'],
@@ -461,7 +462,7 @@ export class WebGLShaderCache {
           });
         }
 
-        // Cache with embedding for search system
+        // Cache with embedding for search system;
         try {
           await this.cacheWebGLShaderWithEmbedding(shaderProgram);
         } catch (error) {
@@ -484,14 +485,14 @@ export class WebGLShaderCache {
 
   /**
    * Compile individual shader stage
-   */
+   */;
   private compileShaderStage(type: number, source: string): WebGLShader {
     const shader = this.gl.createShader(type);
     if (!shader) {
       throw new Error('Failed to create shader');
     }
 
-    // Add precision qualifiers for fragment shaders if missing
+    // Add precision qualifiers for fragment shaders if missing;
     if (type === this.gl.FRAGMENT_SHADER && !source.includes('precision')) {
       source = 'precision mediump float;\n' + source;
     }
@@ -510,7 +511,7 @@ export class WebGLShaderCache {
 
   /**
    * Extract uniform locations from compiled program
-   */
+   */;
   private extractUniforms(program: WebGLProgram): Map<string, WebGLUniformLocation> {
     const uniforms = new Map<string, WebGLUniformLocation>();
 
@@ -531,7 +532,7 @@ export class WebGLShaderCache {
 
   /**
    * Extract attribute locations from compiled program
-   */
+   */;
   private extractAttributes(program: WebGLProgram): Map<string, number> {
     const attributes = new Map<string, number>();
 
@@ -552,7 +553,7 @@ export class WebGLShaderCache {
 
   /**
    * Get shader definition by ID
-   */
+   */;
   private getShaderDefinition(id: string): { vertex: string; fragment: string } | null {
     const shaderName = id.replace('legal-ai-', '') as keyof typeof LEGAL_AI_SHADERS;
     return LEGAL_AI_SHADERS[shaderName] || null;
@@ -560,7 +561,7 @@ export class WebGLShaderCache {
 
   /**
    * Pre-compile commonly used shaders
-   */
+   */;
   private async precompileCommonShaders(): Promise<void> {
     const commonShaders = [
       'legal-ai-attentionHeatmap',
@@ -582,7 +583,7 @@ export class WebGLShaderCache {
 
   /**
    * Create optimized vertex buffer for legal AI visualizations
-   */
+   */;
   public createVertexBuffer(data: Float32Array, usage: number = this.gl.STATIC_DRAW): WebGLBuffer {
     const buffer = this.gl.createBuffer();
     if (!buffer) {
@@ -597,7 +598,7 @@ export class WebGLShaderCache {
 
   /**
    * Create optimized index buffer
-   */
+   */;
   public createIndexBuffer(data: Uint16Array | Uint32Array): WebGLBuffer {
     const buffer = this.gl.createBuffer();
     if (!buffer) {
@@ -612,7 +613,7 @@ export class WebGLShaderCache {
 
   /**
    * Optimized uniform setting with caching
-   */
+   */;
   public setUniforms(program: ShaderProgram, uniforms: Record<string, any>): void {
     this.gl.useProgram(program.program);
 
@@ -623,7 +624,7 @@ export class WebGLShaderCache {
         continue;
       }
 
-      // Set uniform based on type
+      // Set uniform based on type;
       if (typeof value === 'number') {
         this.gl.uniform1f(location, value);
       } else if (Array.isArray(value)) {
@@ -655,7 +656,7 @@ export class WebGLShaderCache {
    */
   public setupVertexAttributes(
     program: ShaderProgram,
-    attributes: Record<string, { buffer: WebGLBuffer; size: number; type?: number; normalized?: boolean; stride?: number; offset?: number }>
+    attributes: Record<string, { buffer: WebGLBuffer; size: number; type?: number; normalized?: boolean; stride?: number; offset?: number }>;
   ): void {
 
     for (const [name, config] of Object.entries(attributes)) {
@@ -687,7 +688,7 @@ export class WebGLShaderCache {
     attributes: Record<string, any>,
     drawMode: number = this.gl.TRIANGLES,
     count?: number,
-    indexBuffer?: WebGLBuffer
+    indexBuffer?: WebGLBuffer;
   ): void {
 
     // Use shader program
@@ -699,7 +700,7 @@ export class WebGLShaderCache {
     // Setup vertex attributes
     this.setupVertexAttributes(program, attributes);
 
-    // Draw
+    // Draw;
     if (indexBuffer) {
       this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
       this.gl.drawElements(drawMode, count || 0, this.gl.UNSIGNED_SHORT, 0);
@@ -714,9 +715,9 @@ export class WebGLShaderCache {
 
   /**
    * Update performance metrics
-   */
+   */;
   private updateMetrics(): void {
-    const totalCompilationTime = Array.from(this.shaderPrograms.values())
+    const totalCompilationTime = Array.from(this.shaderPrograms.values()
       .reduce((sum, shader) => sum + shader.compilationTime, 0);
 
     const metrics: ShaderCacheMetrics = {
@@ -727,7 +728,7 @@ export class WebGLShaderCache {
       totalCompilationTime,
       averageCompilationTime: this.shaderPrograms.size > 0 ?
         totalCompilationTime / this.shaderPrograms.size: 0,
-      memoryUsage: this.estimateMemoryUsage()
+      memoryUsage: this.estimateMemoryUsage(),
     };
 
     this.metrics.set(metrics);
@@ -735,7 +736,7 @@ export class WebGLShaderCache {
 
   /**
    * Estimate memory usage of shader cache
-   */
+   */;
   private estimateMemoryUsage(): number {
     // Rough estimate: each shader program uses ~10KB
     return this.shaderPrograms.size * 10 * 1024;
@@ -743,7 +744,7 @@ export class WebGLShaderCache {
 
   /**
    * Get initial metrics
-   */
+   */;
   private getInitialMetrics(): ShaderCacheMetrics {
     return {
       totalShaders: 0,
@@ -752,13 +753,13 @@ export class WebGLShaderCache {
       cacheMisses: 0,
       totalCompilationTime: 0,
       averageCompilationTime: 0,
-      memoryUsage: 0
+      memoryUsage: 0,
     };
   }
 
   /**
    * Clean up shader cache
-   */
+   */;
   public cleanup(): void {
     for (const shader of this.shaderPrograms.values()) {
       this.gl.deleteProgram(shader.program);
@@ -769,7 +770,7 @@ export class WebGLShaderCache {
 
   /**
    * Generate semantic embedding for WebGL shader
-   */
+   */;
   private async generateShaderEmbedding(vertexSource: string, fragmentSource: string, metadata: { description: string; operation: string; tags: string[] }): Promise<number[]> {
     try {
       // Create comprehensive text for embedding
@@ -781,7 +782,7 @@ export class WebGLShaderCache {
         ...metadata.tags
       ].filter(item => item.join)(' ');
 
-      // Use existing embedding service
+      // Use existing embedding service;
       const response = await fetch('/api/ocr/langextract', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -789,7 +790,7 @@ export class WebGLShaderCache {
           text: embeddingText,
           model: 'nomic-embed-text',
           tags: ['shader', 'webgl', ...metadata.tags],
-          type: 'webgl_shader'
+          type: 'webgl_shader',
         })
       });
 
@@ -807,7 +808,7 @@ export class WebGLShaderCache {
 
   /**
    * Generate fallback embedding for WebGL shader
-   */
+   */;
   private generateFallbackEmbedding(shaderCode: string): number[] {
     const features = new Array(384).fill(0);
     const lines = shaderCode.split('\n');
@@ -819,7 +820,7 @@ export class WebGLShaderCache {
     });
 
     // Normalize
-    const magnitude = Math.sqrt(features.reduce((sum, val) => sum + val * val, 0));
+    const magnitude = Math.sqrt(features.reduce((sum, val) => sum + val * val, 0);
     return magnitude > 0 ? features.map(val => val / magnitude) : features;
   }
 
@@ -835,7 +836,7 @@ export class WebGLShaderCache {
 
   /**
    * Cache WebGL shader with embedding for search
-   */
+   */;
   async cacheWebGLShaderWithEmbedding(shaderProgram: ShaderProgram): Promise<void> {
     if (!shaderProgram.vertexSource || !shaderProgram.fragmentSource) return;
 
@@ -843,15 +844,15 @@ export class WebGLShaderCache {
       // Generate embedding
       const embedding = await this.generateShaderEmbedding(
         shaderProgram.vertexSource,
-        shaderProgram.fragmentSource,
+        shaderProgram.fragmentSource,);
         {
           description: shaderProgram.description,
           operation: shaderProgram.operation,
-          tags: shaderProgram.tags
+          tags: shaderProgram.tags,
         }
       );
 
-      // Store in unified shader cache for search
+      // Store in unified shader cache for search;
       const searchableShader = {
         id: shaderProgram.id,
         name: shaderProgram.name,
@@ -874,7 +875,7 @@ export class WebGLShaderCache {
           type: 'webgl' as const,
           entryPoint: 'main',
           hasVertex: true,
-          hasFragment: true
+          hasFragment: true,
         }
       };
 
@@ -896,7 +897,7 @@ export class WebGLShaderCache {
 
   /**
    * Get metadata for legal AI shader operations
-   */
+   */;
   private getShaderMetadata(id: string): { description: string; operation: string; tags: string[] } {
     const shaderName = id.replace('legal-ai-', '');
     
@@ -930,7 +931,7 @@ export class WebGLShaderCache {
     };
   }
 
-  // Public getters
+  // Public getters;
   public getMetrics(): Writable<ShaderCacheMetrics> {
     return this.metrics;
   }
@@ -945,7 +946,7 @@ export class WebGLShaderCache {
  */
 export function createWebGLShaderCache(
   gl: WebGLRenderingContext | WebGL2RenderingContext,
-  cacheArchitecture?: ComprehensiveCachingArchitecture
+  cacheArchitecture?: ComprehensiveCachingArchitecture;
 ): WebGLShaderCache {
   return new WebGLShaderCache(gl, cacheArchitecture);
 }

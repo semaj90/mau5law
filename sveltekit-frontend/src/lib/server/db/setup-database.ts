@@ -5,11 +5,12 @@
 
 import { db } from './drizzle.js';
 import { sql } from 'drizzle-orm';
+}
 
 export interface DatabaseSetupResult {
   success: boolean;
   steps: Array<any>;
-  timestamp: string;
+  timestamp: string;,
 }
 
 export async function setupDatabase(): Promise<DatabaseSetupResult> {
@@ -213,7 +214,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
       // Text search indexes
       await db.execute(sql`
         CREATE INDEX IF NOT EXISTS idx_legal_documents_content_gin 
-        ON legal_documents USING gin (to_tsvector('english', content))
+        ON legal_documents USING gin (to_tsvector('english', content)
       `);
 
       await db.execute(sql`
@@ -289,7 +290,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
     return {
       success: steps.every(step => step.success),
       steps,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
   } catch (error: any) {
@@ -297,7 +298,7 @@ export async function setupDatabase(): Promise<DatabaseSetupResult> {
     return {
       success: false,
       steps: [...steps, { step: 'Overall setup', success: false, error: error.message }],
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 }
@@ -348,7 +349,7 @@ export async function checkDatabaseHealth(): Promise<any> {
       tablesExist: false,
       extensionsEnabled: false,
       indexesReady: false,
-      sampleDataPresent: false
+      sampleDataPresent: false,
     };
   }
 }
@@ -368,7 +369,7 @@ export async function getDatabaseStats(): Promise<any> {
       embeddingCacheSize: Number(results[1].rows[0].count),
       glyphCount: Number(results[2].rows[0].count),
       sessionCount: Number(results[3].rows[0].count),
-      performanceRecords: Number(results[4].rows[0].count)
+      performanceRecords: Number(results[4].rows[0].count),
     };
 
   } catch (error) {
@@ -377,7 +378,7 @@ export async function getDatabaseStats(): Promise<any> {
       embeddingCacheSize: 0,
       glyphCount: 0,
       sessionCount: 0,
-      performanceRecords: 0
+      performanceRecords: 0,
     };
   }
 }

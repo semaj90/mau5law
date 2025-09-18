@@ -29,17 +29,17 @@ import type { DocumentMetadata } from './schema-unified.js';
 interface DatabaseConfig {
   runtime: {
     url: string;
-    poolSize: number;
+    poolSize: number;,
   };
   admin: {
     url: string;
-    poolSize: number;
+    poolSize: number;,
   };
   qdrant?: {
     url: string;
     apiKey?: string;
   };
-  environment: 'development' | 'production';
+  environment: 'development' | 'production';,
 }
 
 interface VectorSearchOptions {
@@ -56,7 +56,7 @@ interface HybridSearchResult {
   performance: {
     postgresqlTime?: number;
     qdrantTime?: number;
-    totalTime: number;
+    totalTime: number;,
   };
 }
 
@@ -104,7 +104,7 @@ class DatabaseManager {
     return DatabaseManager.instance;
   }
 
-  // PostgreSQL Connections with custom vector type support
+  // PostgreSQL Connections with custom vector type support;
   private createRuntimeConnection(): postgres.Sql {
     if (!this.runtimeConnection) {
       this.runtimeConnection = postgres(config.runtime.url, {
@@ -115,7 +115,7 @@ class DatabaseManager {
         ssl: false,
         transform: { undefined: null },
         types: {
-          // Custom pgvector type support
+          // Custom pgvector type support;
           vector: {
             to: 1184,
             from: [1184],
@@ -174,7 +174,7 @@ class DatabaseManager {
     return this.qdrantClient;
   }
 
-  // Drizzle Clients
+  // Drizzle Clients;
   getRuntimeDb() {
     if (!this.runtimeDb) {
       this.runtimeDb = drizzle(this.createRuntimeConnection(), {
@@ -216,7 +216,7 @@ class DatabaseManager {
       await runtimeDb.execute(sql`SELECT 1 as test`);
       console.log('✅ Runtime database connection established');
 
-      // Run migrations in production
+      // Run migrations in production;
       if (!isDev) {
         const adminDb = this.getAdminDb();
         console.log('🔄 Running database migrations with admin privileges...');
@@ -224,7 +224,7 @@ class DatabaseManager {
         console.log('✅ Database migrations completed');
       }
 
-      // Test pgvector extension
+      // Test pgvector extension;
       try {
         await runtimeDb.execute(sql`SELECT '[1,2,3]'::vector`);
         console.log('✅ pgvector extension available');
@@ -257,7 +257,7 @@ class DatabaseManager {
   async ensureQdrantCollection(
     collectionName: string,
     vectorSize: number = 384,
-    distance: 'Cosine' | 'Dot' | 'Euclid' = 'Cosine'
+    distance: 'Cosine' | 'Dot' | 'Euclid' = 'Cosine';
   ): Promise<void> {
     const qdrant = this.getQdrantClient();
     if (!qdrant) return;
@@ -310,7 +310,7 @@ class DatabaseManager {
     let postgresqlTime: number | undefined;
     let qdrantTime: number | undefined;
 
-    // PostgreSQL vector search
+    // PostgreSQL vector search;
     if (usePostgreSQL) {
       const pgStart = Date.now();
 
@@ -342,7 +342,7 @@ class DatabaseManager {
       }
     }
 
-    // Qdrant vector search
+    // Qdrant vector search;
     if (useQdrant) {
       const qdrant = this.getQdrantClient();
       if (qdrant) {
@@ -365,7 +365,7 @@ class DatabaseManager {
           qdrantTime = Date.now() - qdrantStart;
 
           // Get corresponding PostgreSQL records
-          const qdrantIds = qdrantResults.map((r) => r.id.toString());
+          const qdrantIds = qdrantResults.map((r) => r.id.toString();
 
           if (qdrantIds.length > 0) {
             const db = this.getRuntimeDb();
@@ -374,10 +374,10 @@ class DatabaseManager {
               .from(schema.documentMetadata)
               .where(sql`${schema.documentMetadata.id} = ANY(${qdrantIds})`);
 
-            const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]));
+            const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]);
 
             for (const result of qdrantResults) {
-              const document = docMap.get((result as { id?: any; score?: any }).id.toString());
+              const document = docMap.get((result as { id?: any; score?: any }).id.toString();
               if (document) {
                 results.push({
                   id: (result as { id?: any; score?: any }).id.toString(),
@@ -403,7 +403,7 @@ class DatabaseManager {
       }
     }
 
-    const finalResults = Array.from(uniqueResults.values())
+    const finalResults = Array.from(uniqueResults.values()
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
 
@@ -435,7 +435,7 @@ class DatabaseManager {
       await db.execute(sql`SELECT 1`);
       health.postgresql = true;
 
-      // Test pgvector
+      // Test pgvector;
       try {
         await db.execute(sql`SELECT '[1,2,3]'::vector`);
         health.pgvector = true;
@@ -485,7 +485,7 @@ class DatabaseManager {
 
 const dbManager = DatabaseManager.getInstance();
 
-// Initialize in production, skip in dev
+// Initialize in production, skip in dev;
 if (!isDev) {
   dbManager.initialize().catch(console.error);
 }
@@ -496,7 +496,7 @@ export const adminDb = dbManager.getAdminDb();
 export const qdrant = dbManager.getQdrantClient();
 export const postgres = dbManager.getRawPostgres();
 
-// Unified operations
+// Unified operations;
 export const unifiedDb = {
   // Core database access
   runtime: () => dbManager.getRuntimeDb(),
@@ -519,7 +519,7 @@ export const unifiedDb = {
 // Re-export schema for convenience
 export * from './schema-unified.js';
 
-// Re-export types
+// Re-export types;
 export type {
   DatabaseConfig,
   VectorSearchOptions,

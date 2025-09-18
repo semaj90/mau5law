@@ -2,7 +2,9 @@
 
 **Nintendo-Inspired Memory Management for Legal AI Platform**
 
-Your Redis container (`legal-ai-redis`) is now the core optimization engine that transforms your legal AI platform into a console-game-level responsive system. This guide shows you how to implement the Redis orchestrator across your entire application.
+Your Redis container (`legal-ai-redis`) is now the core optimization engine that transforms your
+legal AI platform into a console-game-level responsive system. This guide shows you how to implement
+the Redis orchestrator across your entire application.
 
 ## 🚀 **Implementation Overview**
 
@@ -31,7 +33,7 @@ Your Redis container (`legal-ai-redis`) is now the core optimization engine that
 // Before: Standard endpoint
 export const POST: RequestHandler = async ({ request }) => {
   // Your existing logic
-  return json({ response: "AI result" });
+  return json({ response: 'AI result' });
 };
 
 // After: Redis-optimized endpoint
@@ -39,7 +41,7 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 export const POST = redisOptimized.aiChat(async ({ request }) => {
   // Same existing logic - Redis optimization happens automatically
-  return json({ response: "AI result" });
+  return json({ response: 'AI result' });
 });
 ```
 
@@ -53,7 +55,7 @@ export const optimizedEndpoints = optimizeEndpoints({
   aiChat: { handler: originalChatHandler, type: 'aiChat' },
   aiAnalysis: { handler: originalAnalysisHandler, type: 'aiAnalysis' },
   aiSearch: { handler: originalSearchHandler, type: 'aiSearch' },
-  customEndpoint: { handler: customHandler, type: 'generic', customName: 'my-endpoint' }
+  customEndpoint: { handler: customHandler, type: 'generic', customName: 'my-endpoint' },
 });
 ```
 
@@ -62,33 +64,41 @@ export const optimizedEndpoints = optimizeEndpoints({
 ## 🎯 **Endpoint Integration Patterns**
 
 ### **AI Chat Endpoints** (Aggressive Caching)
+
 ```typescript
 export const POST = redisOptimized.aiChat(originalHandler);
 ```
+
 - **Cache Strategy**: Aggressive (CHR_ROM memory bank)
 - **TTL**: 1 hour
 - **Best For**: Chat, Q&A, general queries
 
 ### **AI Analysis Endpoints** (Conservative Caching)
+
 ```typescript
 export const POST = redisOptimized.aiAnalysis(originalHandler);
 ```
-- **Cache Strategy**: Conservative (PRG_ROM memory bank)  
+
+- **Cache Strategy**: Conservative (PRG_ROM memory bank)
 - **TTL**: 30 minutes
 - **Best For**: Document analysis, evidence review
 
 ### **AI Search Endpoints** (Aggressive Caching)
+
 ```typescript
 export const POST = redisOptimized.aiSearch(originalHandler);
 ```
+
 - **Cache Strategy**: Aggressive (CHR_ROM memory bank)
-- **TTL**: 2 hours  
+- **TTL**: 2 hours
 - **Best For**: Vector search, semantic search
 
 ### **Document Processing** (Minimal Caching)
+
 ```typescript
 export const POST = redisOptimized.documentProcessing(originalHandler);
 ```
+
 - **Cache Strategy**: Minimal (SAVE_RAM memory bank)
 - **Fresh Processing**: Always processes fresh documents
 - **Best For**: File uploads, document ingestion
@@ -102,28 +112,27 @@ export const POST = redisOptimized.documentProcessing(originalHandler);
 ```svelte
 <script lang="ts">
   import { useRedisAI, useRedisTaskQueue } from '$lib/hooks/useRedisOrchestrator';
-  
+
   const { query, queueTask, isProcessing, lastResult, error } = useRedisAI();
   const { tasks, getAllTasks, getTasksByStatus } = useRedisTaskQueue();
-  
+
   async function handleSubmit() {
     try {
       // Fast Redis-optimized query
       const result = await query(userInput, {
         endpoint: 'my-component',
         caseId: currentCase.id,
-        userId: user.id
+        userId: user.id,
       });
-      
+
       console.log('Response:', result.response);
       console.log('Source:', result.source); // 'cache', 'fresh', or 'queued'
       console.log('Processing time:', result.processing_time);
-      
     } catch (err) {
       console.error('Query failed:', err);
     }
   }
-  
+
   async function handleComplexAnalysis() {
     // Queue complex task for background processing
     const taskId = await queueTask(
@@ -132,7 +141,7 @@ export const POST = redisOptimized.documentProcessing(originalHandler);
       { caseId: currentCase.id },
       200 // High priority
     );
-    
+
     console.log('Task queued:', taskId);
   }
 </script>
@@ -142,18 +151,17 @@ export const POST = redisOptimized.documentProcessing(originalHandler);
   <button onclick={handleSubmit} disabled={isProcessing}>
     {isProcessing ? 'Processing...' : 'Submit'}
   </button>
-  
+
   {#if lastResult}
     <div class="result">
       <p>{lastResult.response}</p>
       <small>
-        Source: {lastResult.source} | 
-        Time: {lastResult.processing_time}ms
+        Source: {lastResult.source} | Time: {lastResult.processing_time}ms
         {#if lastResult.cached}(Cached){/if}
       </small>
     </div>
   {/if}
-  
+
   {#if error}
     <div class="error">{error}</div>
   {/if}
@@ -165,20 +173,16 @@ export const POST = redisOptimized.documentProcessing(originalHandler);
 ```svelte
 <script lang="ts">
   import { useRedisForm } from '$lib/hooks/useRedisOrchestrator';
-  
+
   const { submitForm, isSubmitting, submitError, lastSubmission } = useRedisForm();
-  
+
   async function handleFormSubmit(formData: FormData) {
-    const result = await submitForm(
-      Object.fromEntries(formData),
-      'legal-analysis',
-      {
-        useCache: true,
-        priority: 150,
-        queueIfComplex: true
-      }
-    );
-    
+    const result = await submitForm(Object.fromEntries(formData), 'legal-analysis', {
+      useCache: true,
+      priority: 150,
+      queueIfComplex: true,
+    });
+
     if (result.type === 'queued') {
       alert(`Analysis queued. Task ID: ${result.taskId}`);
     } else {
@@ -220,22 +224,22 @@ export const POST = redisOptimized.documentProcessing(originalHandler);
 ```svelte
 <script lang="ts">
   import { useRedisComponent } from '$lib/hooks/useRedisOrchestrator';
-  
+
   const { queryWithCache, cacheStats, clearComponentCache } = useRedisComponent(
     'evidence-analyzer',
     {
       cacheStrategy: 'aggressive',
       memoryBank: 'CHR_ROM',
-      autoCache: true
+      autoCache: true,
     }
   );
-  
+
   async function analyzeEvidence(evidenceId: string) {
-    const result = await queryWithCache(
-      `Analyze evidence ${evidenceId}`,
-      { evidenceId, analysisType: 'forensic' }
-    );
-    
+    const result = await queryWithCache(`Analyze evidence ${evidenceId}`, {
+      evidenceId,
+      analysisType: 'forensic',
+    });
+
     console.log('Cache stats:', cacheStats);
     // { size: 25, hits: 45, misses: 12, hitRate: 78.9 }
   }
@@ -251,7 +255,7 @@ import { redisOrchestratorClient } from '$lib/stores/redis-orchestrator-store';
 await redisOrchestratorClient.processQuery('What are the contract terms?', {
   endpoint: 'manual-query',
   priority: 200,
-  useOrchestrator: true
+  useOrchestrator: true,
 });
 
 // Queue background task
@@ -273,21 +277,21 @@ console.log('Redis health:', health.status);
 
 ### **Cache Strategies**
 
-| Strategy | Memory Bank | TTL | Use Case |
-|----------|-------------|-----|----------|
-| `aggressive` | CHR_ROM | 2 hours | Chat, Search, FAQ |
-| `conservative` | PRG_ROM | 30 minutes | Analysis, Reports |
-| `minimal` | SAVE_RAM | 5 minutes | Processing, Uploads |
-| `bypass` | None | None | Critical operations |
+| Strategy       | Memory Bank | TTL        | Use Case            |
+| -------------- | ----------- | ---------- | ------------------- |
+| `aggressive`   | CHR_ROM     | 2 hours    | Chat, Search, FAQ   |
+| `conservative` | PRG_ROM     | 30 minutes | Analysis, Reports   |
+| `minimal`      | SAVE_RAM    | 5 minutes  | Processing, Uploads |
+| `bypass`       | None        | None       | Critical operations |
 
 ### **Memory Banks (Nintendo-Inspired)**
 
-| Bank | Size | Speed | Priority | Description |
-|------|------|-------|----------|-------------|
-| INTERNAL_RAM | 1MB | Fastest | 200+ | Critical legal queries |
-| CHR_ROM | 2MB | Fast | 150+ | UI patterns, common queries |
-| PRG_ROM | 4MB | Medium | 100+ | Analysis results |
-| SAVE_RAM | Unlimited | Slow | Any | Long-term storage |
+| Bank         | Size      | Speed   | Priority | Description                 |
+| ------------ | --------- | ------- | -------- | --------------------------- |
+| INTERNAL_RAM | 1MB       | Fastest | 200+     | Critical legal queries      |
+| CHR_ROM      | 2MB       | Fast    | 150+     | UI patterns, common queries |
+| PRG_ROM      | 4MB       | Medium  | 100+     | Analysis results            |
+| SAVE_RAM     | Unlimited | Slow    | Any      | Long-term storage           |
 
 ---
 
@@ -304,18 +308,22 @@ console.log('Redis health:', health.status);
 ### **Health Indicators**
 
 ```typescript
-import { memoryPressure, isRedisHealthy, totalQueuedTasks } from '$lib/stores/redis-orchestrator-store';
+import {
+  memoryPressure,
+  isRedisHealthy,
+  totalQueuedTasks,
+} from '$lib/stores/redis-orchestrator-store';
 
 // Monitor in your components
 $effect(() => {
   if ($memoryPressure === 'critical') {
     console.warn('Redis memory pressure critical!');
   }
-  
+
   if (!$isRedisHealthy) {
     console.error('Redis orchestrator offline!');
   }
-  
+
   if ($totalQueuedTasks > 100) {
     console.warn('Task queue overloaded!');
   }
@@ -357,20 +365,24 @@ save 60 10000
 ## 🎯 **Migration Strategy**
 
 ### **Phase 1: Critical Endpoints** (Week 1)
+
 - Legal chat API
 - Document analysis
 - Vector search
 
-### **Phase 2: Analysis Endpoints** (Week 2)  
+### **Phase 2: Analysis Endpoints** (Week 2)
+
 - Evidence processing
 - Case scoring
 - Report generation
 
 ### **Phase 3: All AI Endpoints** (Week 3)
+
 - Apply middleware to remaining 80+ AI endpoints
 - Monitor performance impact
 
 ### **Phase 4: Optimization** (Week 4)
+
 - Fine-tune cache strategies
 - Optimize memory bank allocation
 - Performance testing
@@ -381,12 +393,12 @@ save 60 10000
 
 ### **Common Issues**
 
-| Issue | Cause | Solution |
-|-------|--------|----------|
-| Cache misses high | Cache key generation | Check query normalization |
-| Memory pressure | Large cached responses | Implement compression |
-| Queue backlog | Insufficient workers | Scale background processing |
-| Connection errors | Redis unavailable | Check Redis service status |
+| Issue             | Cause                  | Solution                    |
+| ----------------- | ---------------------- | --------------------------- |
+| Cache misses high | Cache key generation   | Check query normalization   |
+| Memory pressure   | Large cached responses | Implement compression       |
+| Queue backlog     | Insufficient workers   | Scale background processing |
+| Connection errors | Redis unavailable      | Check Redis service status  |
 
 ### **Debug Mode**
 
@@ -405,7 +417,7 @@ console.log(await redisOrchestratorClient.getSystemHealth());
 After full implementation, you should see:
 
 - **Response Times**: 95% of queries <100ms (cache hits)
-- **User Experience**: Instant responses for common legal questions  
+- **User Experience**: Instant responses for common legal questions
 - **Resource Usage**: 60% reduction in AI model calls
 - **Scalability**: Support 10x more concurrent users
 - **Reliability**: 99.9% uptime with Redis failover
@@ -421,6 +433,8 @@ Your legal AI platform now operates like a classic Nintendo console:
 - **Background Processing**: Complex analysis queued like game cartridge loading
 - **Console Performance**: Sub-second response times for all operations
 
-This Redis orchestrator implementation transforms your legal AI from a traditional web app into a **console-game-level responsive legal intelligence platform** that scales effortlessly and provides instant gratification to your users.
+This Redis orchestrator implementation transforms your legal AI from a traditional web app into a
+**console-game-level responsive legal intelligence platform** that scales effortlessly and provides
+instant gratification to your users.
 
 Ready to deploy the most optimized legal AI platform ever built! 🚀

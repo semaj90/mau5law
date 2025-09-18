@@ -25,7 +25,6 @@ async function takeQuickScreenshot() {
     console.log('✅ Text editor screenshot saved');
 
     console.log('🎉 Screenshots complete! Server is running successfully on port 5175');
-
   } catch (error) {
     console.error('❌ Screenshot failed:', error.message);
   }

@@ -31,7 +31,7 @@ interface EnhancedSearchResult {
   relevance_level?: 'high' | 'medium' | 'low';
   doc?: any;
   metadata?: any;
-  source: 'langchain' | 'pgvector' | 'hybrid';
+  source: 'langchain' | 'pgvector' | 'hybrid';,
 }
 
 interface EnhancedSearchResponse {
@@ -47,7 +47,7 @@ interface EnhancedSearchResponse {
   semantic_scores?: {
     highest_relevance: number;
     lowest_relevance: number;
-    average_relevance: number;
+    average_relevance: number;,
   };
 }
 
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     let embeddingTime = 0;
     let searchTime = 0;
 
-    // Option 1: Use LangChain vector store (original functionality)
+    // Option 1: Use LangChain vector store (original functionality);
     if (!useGemmaEmbeddings && !includePgVector) {
       const searchStart = Date.now();
 
@@ -84,14 +84,14 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
       searchTime = Date.now() - searchStart;
 
-      // Hydrate documents from DB for richer metadata
+      // Hydrate documents from DB for richer metadata;
       for (const r of langchainResults) {
         const id = r.metadata?.id;
         if (id) {
           const docs = await db
             .select()
             .from(legalDocuments)
-            .where(eq(legalDocuments.id, id))
+            .where(eq(legalDocuments.id, id)
             .limit(1);
 
           if (docs[0]) {
@@ -128,7 +128,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       }
     }
 
-    // Option 2: Use Gemma embeddings + pgvector (enhanced functionality)
+    // Option 2: Use Gemma embeddings + pgvector (enhanced functionality);
     if (useGemmaEmbeddings || includePgVector) {
       try {
         const semanticResponse = await fetch('/api/rag/semantic-search', {
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
             embeddingTime = semanticData.embedding_time;
             searchTime += semanticData.search_time;
 
-            // Add pgvector results
+            // Add pgvector results;
             for (const result of semanticData.results) {
               const resultData = result as any;
               results.push({
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         }
       } catch (error) {
         console.error('Enhanced search fallback error:', error);
-        // Fallback to LangChain if Gemma/pgvector fails
+        // Fallback to LangChain if Gemma/pgvector fails;
         if (results.length === 0) {
           const store = getVectorStore();
           const fallbackResults = await store.similaritySearch(query, k);
@@ -212,15 +212,15 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         .length,
       total_results: results.length,
       processing_time: Date.now() - startTime,
-      ...(embeddingTime && { embedding_time: embeddingTime }),
-      ...(searchTime && { search_time: searchTime }),
-      ...(semanticScores && { semantic_scores: semanticScores }),
+      ...(embeddingTime && { embedding_time: embeddingTime ,}),
+      ...(searchTime && { search_time: searchTime ,}),
+      ...(semanticScores && { semantic_scores: semanticScores ,}),
     };
 
     return json(response);
   } catch (e: any) {
     console.error('Enhanced RAG API error:', e);
-    return json(
+    return json();
       {
         success: false,
         error: e.message,

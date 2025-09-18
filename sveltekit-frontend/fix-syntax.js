@@ -11,14 +11,14 @@ import path from 'path';
 const filesToFix = [
   // Core framework files
   'src/lib/optimization/context7-mcp-integration.ts',
-  'src/lib/parsers/simd-json-parser.ts', 
+  'src/lib/parsers/simd-json-parser.ts',
   'src/lib/routing/dynamic-navigation.ts',
   'src/lib/routing/dynamic-route-generator.ts',
   'src/lib/routing/route-guards.ts',
   'src/lib/routing/route-registry.ts',
   'src/lib/routing/unified-api-router.ts',
   'src/lib/routing/multidimensional-routing-matrix.ts',
-  
+
   // Server infrastructure
   'src/lib/server/ai/config.ts',
   'src/lib/server/ai/ollama-config.ts',
@@ -32,7 +32,7 @@ const filesToFix = [
   'src/lib/server/session.ts',
   'src/lib/server/utils/avatar-upload.ts',
   'src/lib/server/websocket.ts',
-  
+
   // State management
   'src/lib/machines/legal-case-machine-factory.ts',
   'src/lib/stores/aiHistoryStore.ts',
@@ -43,7 +43,7 @@ const filesToFix = [
   'src/lib/stores/machines/aiProcessingMachine.ts',
   'src/lib/stores/sessionManager.svelte.ts',
   'src/lib/state/legalFormMachine.ts',
-  
+
   // Schemas and types
   'src/lib/schemas.ts',
   'src/lib/schemas/auth.ts',
@@ -53,7 +53,7 @@ const filesToFix = [
   'src/lib/types/drizzle-enhanced.d.ts',
   'src/lib/types/gpu-cache-integration.ts',
   'src/lib/types/langchain-ollama-types.ts',
-  
+
   // Services
   'src/lib/services/quic-gateway-client.ts',
   'src/lib/services/rabbitmq-service.ts',
@@ -82,17 +82,17 @@ const filesToFix = [
   'src/lib/services/web-fetch-missing-implementations.ts',
   'src/lib/services/webgpu-som-error-fixer.ts',
   'src/lib/services/webgpu-texture-streaming.ts',
-  
+
   // Orchestration and caching
   'src/lib/caching/advanced-cache-manager.ts',
   'src/lib/orchestration/cognitive-routing-orchestrator.ts',
   'src/lib/orchestration/master-cognitive-hub.ts',
   'src/lib/optimization/comprehensive-orchestrator.ts',
-  
+
   // Components and utilities
   'src/lib/components/three/yorha-ui/components/YoRHaQuantumEffects3D.ts',
   'src/lib/utils/cuid.ts',
-  
+
   // API routes
   'src/routes/api/ai/chat-mock/+server.ts',
   'src/routes/api/ai/vector-search/stream/+server.ts',
@@ -103,9 +103,9 @@ const filesToFix = [
   'src/routes/api/ollama/pull/+server.ts',
   'src/routes/profile/drizzle-zod-superforms-example.ts',
   'src/routes/test-enhanced-upload/+page.server.ts',
-  
+
   // Tests
-  'src/lib/tests/integration-workflow.test.ts'
+  'src/lib/tests/integration-workflow.test.ts',
 ];
 
 function fixSyntaxErrors(filePath) {
@@ -126,7 +126,7 @@ function fixSyntaxErrors(filePath) {
       console.log(`📝 Fixed parameter list semicolons in ${filePath}`);
     }
 
-    // Fix pattern 1a: "[;" at start of array list 
+    // Fix pattern 1a: "[;" at start of array list
     const pattern1a = /\[\s*;/g;
     if (content.match(pattern1a)) {
       content = content.replace(pattern1a, '[');
@@ -188,7 +188,6 @@ function fixSyntaxErrors(filePath) {
       console.log(`ℹ️ No syntax fixes needed in ${filePath}`);
       return false;
     }
-
   } catch (error) {
     console.error(`❌ Error fixing ${filePath}:`, error.message);
     return false;
@@ -218,12 +217,12 @@ const machineFactoryPath = 'src/lib/machines/legal-case-machine-factory.ts';
 if (fs.existsSync(machineFactoryPath)) {
   try {
     let content = fs.readFileSync(machineFactoryPath, 'utf8');
-    
+
     // Fix common XState machine syntax issues
     content = content.replace(/,\s*\}\s*,/g, '}');
     content = content.replace(/:\s*\{\s*;/g, ': {');
     content = content.replace(/states:\s*;/g, 'states: {');
-    
+
     fs.writeFileSync(machineFactoryPath, content, 'utf8');
     console.log('✅ Applied specific fixes to legal-case-machine-factory.ts');
   } catch (error) {

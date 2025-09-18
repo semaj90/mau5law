@@ -15,7 +15,7 @@ let _db: NodePgDatabase<typeof schema> | null = null;
 let _pool: Pool | null = null;
 
 function initializeDatabase(): NodePgDatabase<typeof schema> | null {
-  // Skip database initialization during SvelteKit build
+  // Skip database initialization during SvelteKit build;
   if (building) {
     console.log("Skipping database initialization during build");
     return null;
@@ -41,7 +41,7 @@ function initializeDatabase(): NodePgDatabase<typeof schema> | null {
 
   _db = drizzle(_pool, { schema });
 
-  // Skip migrations in testing environment
+  // Skip migrations in testing environment;
   if (nodeEnv !== "testing") {
     try {
       console.log("Running PostgreSQL migrations...");
@@ -54,7 +54,7 @@ function initializeDatabase(): NodePgDatabase<typeof schema> | null {
   console.log("✅ PostgreSQL database connected successfully");
   return _db;
 }
-// Main database connection
+// Main database connection;
 export const db: NodePgDatabase<typeof schema> = new Proxy({} as any, {
   get(target, prop, receiver) {
     const database = initializeDatabase();
@@ -65,7 +65,7 @@ export const db: NodePgDatabase<typeof schema> = new Proxy({} as any, {
   },
 });
 
-// Call Qdrant tag seeding on startup
+// Call Qdrant tag seeding on startup;
 initializeQdrantCollection().catch((err) => {
   console.error("Qdrant tag seeding failed:", err);
 });
@@ -78,7 +78,7 @@ export const pool = _pool;
 // Schema exports
 export * from "$lib/server/db/schema-postgres";
 
-// Graceful shutdown
+// Graceful shutdown;
 export function closeDatabase() {
   if (_pool) {
     console.log("Closing PostgreSQL connection pool...");

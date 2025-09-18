@@ -53,12 +53,12 @@ export default class MultiTierCache<V = unknown> {
 	try {
 	  const ls = (globalThis as any).localStorage;
 	  if (!ls) return null;
-	  const raw = ls.getItem(this.storageKey(key));
+	  const raw = ls.getItem(this.storageKey(key);
 	  if (!raw) return null;
 	  const parsed = JSON.parse(raw) as PersistedEntry;
 	  if (this.isExpired(parsed.expiresAt ?? null)) {
 		// remove stale item
-		ls.removeItem(this.storageKey(key));
+		ls.removeItem(this.storageKey(key);
 		return null;
 	  }
 	  return { value: parsed.value as V, expiresAt: parsed.expiresAt ?? null };
@@ -73,7 +73,7 @@ export default class MultiTierCache<V = unknown> {
 	  const ls = (globalThis as any).localStorage;
 	  if (!ls) return;
 	  const toStore: PersistedEntry = { value, expiresAt: expiresAt ?? null };
-	  ls.setItem(this.storageKey(key), JSON.stringify(toStore));
+	  ls.setItem(this.storageKey(key), JSON.stringify(toStore);
 	} catch {
 	  // ignore storage errors (quota, serialization)
 	}
@@ -84,7 +84,7 @@ export default class MultiTierCache<V = unknown> {
 	try {
 	  const ls = (globalThis as any).localStorage;
 	  if (!ls) return;
-	  ls.removeItem(this.storageKey(key));
+	  ls.removeItem(this.storageKey(key);
 	} catch {
 	  // ignore
 	}
@@ -176,13 +176,13 @@ export default class MultiTierCache<V = unknown> {
 	}
   }
 
-  // convenience sync helpers (they still return Promise to keep API consistent)
+  // convenience sync helpers (they still return Promise to keep API consistent);
   async has(key: string): Promise<boolean> {
 	const v = await this.get(key);
 	return typeof v !== 'undefined';
   }
 
-  // number of items currently in-memory (not counting persisted-only)
+  // number of items currently in-memory (not counting persisted-only);
   size(): number {
 	this.pruneExpiredInMemory();
 	return this.memory.size;

@@ -15,9 +15,9 @@ import { webgpuTextureStreaming } from '$lib/services/webgpu-texture-streaming.j
 import { textureStreamer } from '$lib/webgpu/texture-streaming.js';
 import type { embeddingCache } from '$lib/server/embedding-cache-middleware.js';
 
-// GPU Tiling Configuration for RTX 3060 Ti
+// GPU Tiling Configuration for RTX 3060 Ti;
 const GPU_TILING_CONFIG = {
-  // Tensor Core Optimization
+  // Tensor Core Optimization;
   tensorCores: {
     precision: 'fp16' as const,
     batchSize: 128,
@@ -25,7 +25,7 @@ const GPU_TILING_CONFIG = {
     maxConcurrentTiles: 64,
   },
 
-  // Memory Tiling (NES Architecture)
+  // Memory Tiling (NES Architecture);
   memoryTiles: {
     CHR_ROM: { size: 8192, tiles: 32 }, // Character data tiles
     PRG_ROM: { size: 32768, tiles: 128 }, // Program logic tiles
@@ -33,7 +33,7 @@ const GPU_TILING_CONFIG = {
     PRG_RAM: { size: 8192, tiles: 32 }, // Dynamic program tiles
   },
 
-  // GPU Compute Configuration
+  // GPU Compute Configuration;
   compute: {
     workgroupSize: { x: 16, y: 16, z: 1 },
     maxComputeUnits: 28, // RTX 3060 Ti has 28 SMs
@@ -41,7 +41,7 @@ const GPU_TILING_CONFIG = {
     totalThreads: 28 * 1536,
   },
 
-  // SIMD Processing
+  // SIMD Processing;
   simd: {
     vectorWidth: 8, // AVX2 256-bit / 32-bit float = 8 floats
     parallelChunks: 16,
@@ -49,6 +49,7 @@ const GPU_TILING_CONFIG = {
     useGPUAcceleration: true,
   },
 };
+}
 
 export interface TiledEvidenceChunk {
   id: string;
@@ -56,16 +57,16 @@ export interface TiledEvidenceChunk {
   tileY: number;
   width: number;
   height: number;
-  data: Float32Array; // SIMD-optimized tensor data
+  data: Float32Array; // SIMD-optimized tensor data;
   metadata: {
     evidenceType: 'screenshot' | 'handwriting' | 'text' | 'mixed';
     confidence: number;
     processed: boolean;
     embedding?: Float32Array;
     simdProcessTime: number;
-    gpuProcessTime: number;
+    gpuProcessTime: number;,
   };
-  memoryRegion: keyof typeof GPU_TILING_CONFIG.memoryTiles;
+  memoryRegion: keyof typeof GPU_TILING_CONFIG.memoryTiles;,
 }
 
 export interface SIMDProcessingResult {
@@ -75,10 +76,10 @@ export interface SIMDProcessingResult {
     totalSIMDTime: number;
     totalGPUTime: number;
     throughputMBps: number;
-    parallelEfficiency: number;
+    parallelEfficiency: number;,
   };
   memoryUsage: Record<string, number>;
-  tensorCompressionRatio: number;
+  tensorCompressionRatio: number;,
 }
 
 export class SIMDGPUTilingEngine {
@@ -87,7 +88,7 @@ export class SIMDGPUTilingEngine {
   private tileCache: Map<string, TiledEvidenceChunk> = new Map();
   private isInitialized = false;
 
-  // Performance tracking
+  // Performance tracking;
   private metrics = {
     tilesProcessed: 0,
     totalSIMDTime: 0,
@@ -97,7 +98,7 @@ export class SIMDGPUTilingEngine {
   };
 
   constructor() {
-    // Only initialize in browser context
+    // Only initialize in browser context;
     if (typeof window !== 'undefined') {
       this.initialize().catch(console.error);
     }
@@ -106,7 +107,7 @@ export class SIMDGPUTilingEngine {
   private async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
-    // Check if we're in browser context
+    // Check if we're in browser context;
     if (typeof window === 'undefined') {
       console.log(
         '🚀 SIMD GPU Tiling Engine: Server-side context detected, skipping WebGPU initialization'
@@ -116,7 +117,7 @@ export class SIMDGPUTilingEngine {
 
     console.log('🚀 Initializing SIMD GPU Tiling Engine...');
 
-    // Initialize WebGPU device
+    // Initialize WebGPU device;
     if (!navigator.gpu) {
       console.warn('WebGPU not supported - falling back to CPU SIMD only');
       return;
@@ -170,13 +171,13 @@ export class SIMDGPUTilingEngine {
         tensor_compression: f32,
       }
 
-      @compute @workgroup_size(${GPU_TILING_CONFIG.compute.workgroupSize.x}, ${GPU_TILING_CONFIG.compute.workgroupSize.y})
+      @compute @workgroup_size(${GPU_TILING_CONFIG.compute.workgroupSize.x}, ${GPU_TILING_CONFIG.compute.workgroupSize.y});
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let tile_x = global_id.x;
         let tile_y = global_id.y;
 
         // Bounds check
-        if (tile_x >= (config.image_width / config.tile_width) ||
+        if (tile_x >= (config.image_width / config.tile_width) ||;
             tile_y >= (config.image_height / config.tile_height)) {
           return;
         }
@@ -194,12 +195,12 @@ export class SIMDGPUTilingEngine {
         var confidence_sum = 0.0;
         var processed_pixels = 0u;
 
-        // Process tile in SIMD-width chunks
+        // Process tile in SIMD-width chunks;
         for (var y = start_y; y < end_y; y++) {
           for (var x = start_x; x < end_x; x += config.simd_vector_width) {
             let vector_end = min(x + config.simd_vector_width, end_x);
 
-            // Vectorized processing of 8 pixels at once
+            // Vectorized processing of 8 pixels at once;
             for (var i = x; i < vector_end; i++) {
               let pixel_index = y * config.image_width + i;
               let pixel_value = input_data[pixel_index];
@@ -298,7 +299,7 @@ export class SIMDGPUTilingEngine {
     );
     const gpuTime = performance.now() - gpuStart;
 
-    // Step 3: Generate embeddings for each tile (if requested)
+    // Step 3: Generate embeddings for each tile (if requested);
     if (generateEmbeddings) {
       await this.generateTileEmbeddings(tiles);
     }
@@ -306,7 +307,7 @@ export class SIMDGPUTilingEngine {
     // Step 4: Store in NES memory architecture
     await this.storeTilesInNESMemory(tiles, evidenceId);
 
-    // Step 5: Cache results with compression
+    // Step 5: Cache results with compression;
     if (enableCompression) {
       await this.cacheTileResults(evidenceId, tiles);
     }
@@ -344,7 +345,7 @@ export class SIMDGPUTilingEngine {
     height: number,
     tileSize: number,
     evidenceType: string,
-    simdTime: number
+    simdTime: number;
   ): Promise<TiledEvidenceChunk[]> {
     if (!this.device || !this.computePipeline) {
       // Fallback to CPU tiling
@@ -357,7 +358,7 @@ export class SIMDGPUTilingEngine {
 
     console.log(`🔧 GPU tiling: ${totalTiles} tiles (${tilesX}x${tilesY})`);
 
-    // Create GPU buffers
+    // Create GPU buffers;
     const inputBuffer = this.device.createBuffer({
       size: imageData.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
@@ -398,7 +399,7 @@ export class SIMDGPUTilingEngine {
     // GPU performance timing
     const gpuStart = performance.now();
 
-    // Create bind group
+    // Create bind group;
     const bindGroup = this.device.createBindGroup({
       layout: this.computePipeline.getBindGroupLayout(0),
       entries: [
@@ -409,7 +410,7 @@ export class SIMDGPUTilingEngine {
       ],
     });
 
-    // Dispatch compute shader
+    // Dispatch compute shader;
     const commandEncoder = this.device.createCommandEncoder({
       label: 'Evidence-Tiling-Commands',
     });
@@ -423,7 +424,7 @@ export class SIMDGPUTilingEngine {
     computePass.dispatchWorkgroups(tilesX, tilesY);
     computePass.end();
 
-    // Create staging buffers for readback
+    // Create staging buffers for readback;
     const outputStagingBuffer = this.device.createBuffer({
       size: outputBuffer.size,
       usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
@@ -452,8 +453,8 @@ export class SIMDGPUTilingEngine {
     await outputStagingBuffer.mapAsync(GPUMapMode.READ);
     await metadataStagingBuffer.mapAsync(GPUMapMode.READ);
 
-    const outputData = new Float32Array(outputStagingBuffer.getMappedRange());
-    const metadataData = new Float32Array(metadataStagingBuffer.getMappedRange());
+    const outputData = new Float32Array(outputStagingBuffer.getMappedRange();
+    const metadataData = new Float32Array(metadataStagingBuffer.getMappedRange();
 
     // Create tile chunks
     const tiles: TiledEvidenceChunk[] = [];
@@ -508,7 +509,7 @@ export class SIMDGPUTilingEngine {
     height: number,
     tileSize: number,
     evidenceType: string,
-    simdTime: number
+    simdTime: number;
   ): Promise<TiledEvidenceChunk[]> {
     console.log('🔄 Falling back to CPU SIMD tiling...');
 
@@ -530,12 +531,12 @@ export class SIMDGPUTilingEngine {
         let confidence = 0;
         let pixelCount = 0;
 
-        // SIMD-style processing (process 8 pixels at once)
+        // SIMD-style processing (process 8 pixels at once);
         for (let y = startY; y < endY; y++) {
           for (let x = startX; x < endX; x += vectorWidth) {
             const vectorEnd = Math.min(x + vectorWidth, endX);
 
-            // Vectorized pixel processing
+            // Vectorized pixel processing;
             for (let i = x; i < vectorEnd; i++) {
               const sourceIndex = y * width + i;
               const tileIndex = (y - startY) * tileSize + (i - startX);
@@ -583,7 +584,7 @@ export class SIMDGPUTilingEngine {
     for (let i = 0; i < tiles.length; i += batchSize) {
       const batch = tiles.slice(i, i + batchSize);
 
-      // Convert tile data to text representation for embedding
+      // Convert tile data to text representation for embedding;
       const textRepresentations = batch.map((tile) => {
         const avgValue = tile.data.reduce((sum, val) => sum + val, 0) / tile.data.length;
         return `[${tile.metadata.evidenceType}] tile_${tile.tileX}_${tile.tileY} confidence:${tile.metadata.confidence.toFixed(3)} avg:${avgValue.toFixed(3)}`;
@@ -598,7 +599,7 @@ export class SIMDGPUTilingEngine {
           Array.from({ length: 384 }, () => Math.random() * 2 - 1)
         );
 
-        // Assign embeddings back to tiles
+        // Assign embeddings back to tiles;
         for (let j = 0; j < batch.length; j++) {
           batch[j].metadata.embedding = new Float32Array(embeddings[j]);
         }
@@ -610,7 +611,7 @@ export class SIMDGPUTilingEngine {
 
   private async storeTilesInNESMemory(
     tiles: TiledEvidenceChunk[],
-    evidenceId: string
+    evidenceId: string;
   ): Promise<void> {
     console.log(`💾 Storing ${tiles.length} tiles in NES memory architecture...`);
 
@@ -623,7 +624,7 @@ export class SIMDGPUTilingEngine {
       regionGroups[tile.memoryRegion].push(tile);
     }
 
-    // Store each region using texture streaming
+    // Store each region using texture streaming;
     for (const [region, regionTiles] of Object.entries(regionGroups)) {
       for (const tile of regionTiles) {
         // Convert tile data to texture format
@@ -634,7 +635,7 @@ export class SIMDGPUTilingEngine {
           `${evidenceId}_${tile.id}`,
           textureData,
           tile.width,
-          tile.height,
+          tile.height,);
           {
             region: region as any,
             priority: tile.metadata.confidence * 10, // Higher confidence = higher priority
@@ -655,10 +656,10 @@ export class SIMDGPUTilingEngine {
   private async cacheTileResults(evidenceId: string, tiles: TiledEvidenceChunk[]): Promise<void> {
     console.log(`🗂️ Caching ${tiles.length} tile results...`);
 
-    // Use SIMD Redis client for high-performance caching
+    // Use SIMD Redis client for high-performance caching;
     try {
       await simdRedisClient.integrateWithWebGPUCache(
-        `evidence_tiles_${evidenceId}`,
+        `evidence_tiles_${evidenceId}`,);
         {
           evidenceId,
           tileCount: tiles.length,
@@ -683,9 +684,9 @@ export class SIMDGPUTilingEngine {
 
   private determineMemoryRegion(
     dataSize: number,
-    evidenceType: string
+    evidenceType: string;
   ): keyof typeof GPU_TILING_CONFIG.memoryTiles {
-    // NES memory region assignment based on size and type
+    // NES memory region assignment based on size and type;
     if (evidenceType === 'handwriting') {
       return dataSize > 4096 ? 'CHR_ROM' : 'CHR_RAM';
     } else if (evidenceType === 'text') {
@@ -703,7 +704,7 @@ export class SIMDGPUTilingEngine {
     tileCount: number,
     simdTime: number,
     gpuTime: number,
-    throughput: number
+    throughput: number;
   ): void {
     this.metrics.tilesProcessed += tileCount;
     this.metrics.totalSIMDTime += simdTime;
@@ -724,7 +725,7 @@ export class SIMDGPUTilingEngine {
 
   /**
    * Get performance metrics and statistics
-   */
+   */;
   getPerformanceMetrics() {
     const avgSIMDTime =
       this.metrics.tilesProcessed > 0
@@ -746,7 +747,7 @@ export class SIMDGPUTilingEngine {
 
   /**
    * Shutdown and cleanup resources
-   */
+   */;
   async shutdown(): Promise<void> {
     console.log('🛑 Shutting down SIMD GPU Tiling Engine...');
 
@@ -767,20 +768,20 @@ export const simdGPUTilingEngine = (() => {
   return _simdGPUTilingEngine;
 })();
 
-// Additional utility functions
+// Additional utility functions;
 export function calculateOptimalTileSize(imageWidth: number, imageHeight: number): number {
   const totalPixels = imageWidth * imageHeight;
-  const targetTilesCount = Math.sqrt(totalPixels / (256 * 256)); // Target ~256x256 base tiles
-  return Math.max(64, Math.min(512, Math.floor(256 * Math.sqrt(targetTilesCount))));
+  const targetTilesCount = Math.sqrt(totalPixels / (256 * 256); // Target ~256x256 base tiles
+  return Math.max(64, Math.min(512, Math.floor(256 * Math.sqrt(targetTilesCount)));
 }
 
 export function estimateProcessingTime(
   imageWidth: number,
-  imageHeight: number
+  imageHeight: number;
 ): {
   estimatedSIMDTime: number;
   estimatedGPUTime: number;
-  estimatedTotalTime: number;
+  estimatedTotalTime: number;,
 } {
   const pixelCount = imageWidth * imageHeight;
   const complexity = pixelCount / (1920 * 1080); // Relative to 1080p

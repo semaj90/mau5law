@@ -13,6 +13,7 @@ import { URL } from "url";
 
 // Type definitions for evidence processing
 type StepName = 'ocr' | 'embedding' | 'analysis' | 'classification' | 'entity_extraction' | 'similarity' | 'indexing';
+}
 
 export interface ProcessingRequest {
   evidenceId: string;
@@ -87,12 +88,12 @@ class EvidenceProcessingService {
       error: null,
       startTime: new Date(),
       processingTime: 0,
-      gpuAccelerated: !!request.options?.useGPUAcceleration
+      gpuAccelerated: !!request.options?.useGPUAcceleration,
     };
 
     this.processingJobs.set(jobId, processingResult);
 
-    // Background processing (non-blocking)
+    // Background processing (non-blocking);
     this.processEvidence(sessionId, jobId, request).catch((err) => {
       console.error('Processing background error:', err);
       const r = this.processingJobs.get(jobId);
@@ -176,9 +177,9 @@ class EvidenceProcessingService {
       (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).processingTime = (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).startTime ? Date.now() - (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).startTime.getTime() : 0;
       this.processingJobs.set(jobId, result);
 
-      // Best-effort persist results
+      // Best-effort persist results;
       await this.updateEvidenceWithResults(request.evidenceId, results).catch((e: any) => {
-        console.warn('Failed to persist results:', e));
+        console.warn('Failed to persist results:', e);
       });
     } catch (err: any) {
       (result as { currentStep?: any; stepProgress?: any; progress?: any; status?: any; results?: any; endTime?: any; processingTime?: any; startTime?: any; error?: any }).status = 'error';
@@ -191,50 +192,50 @@ class EvidenceProcessingService {
 
   private async performOCR(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
     // stubbed OCR result
-    await new Promise((r) => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 100);
     return { text: evidenceData.description || evidenceData.title || '', confidence: 0.9 };
   }
 
   private async generateEmbedding(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
-    await new Promise((r) => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 100);
     const text = `${evidenceData.title || ''} ${evidenceData.description || ''}`.trim();
     const embedding = Array.from({ length: 8 }, (_, i) => (text.length + i) % 10 / 10);
     return { embedding, model: 'stub-embed', dimensions: embedding.length };
   }
 
   private async performAnalysis(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
-    await new Promise((r) => setTimeout(r, 120));
+    await new Promise((r) => setTimeout(r, 120);
     return {
       summary: (evidenceData.description || evidenceData.title || '').slice(0, 200),
       keywords: evidenceData.tags || [],
-      confidence: 0.8
+      confidence: 0.8,
     };
   }
 
   private async performClassification(_evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
-    await new Promise((r) => setTimeout(r, 80));
+    await new Promise((r) => setTimeout(r, 80);
     return {
       significance: 'medium',
       weight: 'circumstantial',
       admissibility: 'questionable',
       priority: 'routine',
-      categories: []
+      categories: [],
     };
   }
 
   private async extractEntities(evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
-    await new Promise((r) => setTimeout(r, 60));
+    await new Promise((r) => setTimeout(r, 60);
     const text = `${evidenceData.title || ''} ${evidenceData.description || ''}`;
     return { entities: text ? [{ text: text.slice(0, 30), type: 'text', confidence: 0.5 }] : [], method: 'stub' };
   }
 
   private async findSimilarEvidence(_evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
-    await new Promise((r) => setTimeout(r, 60));
+    await new Promise((r) => setTimeout(r, 60);
     return { similarEvidence: [], totalFound: 0 };
   }
 
   private async indexEvidence(_evidenceData: EvidenceData, _options?: ProcessingOptions): Promise<any> {
-    await new Promise((r) => setTimeout(r, 60));
+    await new Promise((r) => setTimeout(r, 60);
     return { indexed: true, vectorId: crypto.randomUUID(), collection: 'evidence' };
   }
 
@@ -249,7 +250,7 @@ class EvidenceProcessingService {
       updateData.embedding = JSON.stringify(results.embedding.embedding);
     }
     try {
-      await db.update(evidence).set(updateData).where(eq(evidence.id, evidenceId));
+      await db.update(evidence).set(updateData).where(eq(evidence.id, evidenceId);
     } catch (e: any) {
       // ignore persistence errors (best-effort)
       console.warn('DB update failed:', e);
@@ -276,7 +277,7 @@ class EvidenceProcessingService {
 
 const processingService = EvidenceProcessingService.getInstance();
 
-// POST endpoint: start processing
+// POST endpoint: start processing;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -294,7 +295,7 @@ export const POST: RequestHandler = async ({ request }) => {
         priority: options.priority ?? 'normal',
         notify: !!options.notify,
         saveIntermediateResults: !!options.saveIntermediateResults,
-        overrideExisting: !!options.overrideExisting
+        overrideExisting: !!options.overrideExisting,
       }
     };
 
@@ -305,7 +306,7 @@ export const POST: RequestHandler = async ({ request }) => {
       jobId,
       status: 'started',
       steps: processingRequest.steps,
-      options: processingRequest.options
+      options: processingRequest.options,
     });
   } catch (err: any) {
     console.error('POST processing error:', err);
@@ -313,7 +314,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// GET endpoint: get status
+// GET endpoint: get status;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const jobId = url.searchParams.get('jobId');
@@ -332,7 +333,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-// DELETE endpoint: cancel job
+// DELETE endpoint: cancel job;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const jobId = url.searchParams.get('jobId');
@@ -344,7 +345,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       cancelled,
       jobId,
-      message: cancelled ? 'Processing cancelled' : 'Job not found or not cancellable'
+      message: cancelled ? 'Processing cancelled' : 'Job not found or not cancellable',
     });
   } catch (err: any) {
     console.error('DELETE error:', err);

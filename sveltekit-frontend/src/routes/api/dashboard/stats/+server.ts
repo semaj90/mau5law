@@ -11,7 +11,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     // Import pool for direct database queries
     const { pool } = await import('$lib/database/connection');
 
-    // Ensure user is authenticated
+    // Ensure user is authenticated;
     if (!locals.user) {
       return json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const recentCases = recentCasesRes[0]?.count || 0;
     const recentEvidence = recentEvidenceRes[0]?.count || 0;
 
-    // Format breakdown data
+    // Format breakdown data;
     const casesByStatus = casesByStatusRes.reduce((acc: Record<string, number>, item: any) => {
       acc[item.status] = item.count;
       return acc;
@@ -114,7 +114,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const analysisRate =
       totalEvidence > 0 ? Math.round((analyzedEvidence / totalEvidence) * 100) : 0;
 
-    // Enhanced dashboard stats for WebSocket integration
+    // Enhanced dashboard stats for WebSocket integration;
     const dashboardStats = {
       // Core metrics (compatible with existing WebSocket store)
       totalCases,
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       completionRate,
       analysisRate,
 
-      // System health indicators
+      // System health indicators;
       systemHealth: {
         api: 'healthy',
         database: 'healthy',
@@ -158,13 +158,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       userId,
     };
 
-    return json(
-      {
+    return json({
         success: true,
         data: dashboardStats,
         // Legacy format for backward compatibility
         ...dashboardStats,
-      },
+      },);
       {
         status: 200,
         headers: {
@@ -175,9 +174,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   } catch (error: any) {
     console.error('Enhanced dashboard stats error:', error);
 
-    // Return comprehensive fallback stats
-    return json(
-      {
+    // Return comprehensive fallback stats;
+    return json({
         success: false,
         error: 'Failed to fetch dashboard statistics',
         details: error?.message || 'Unknown error',
@@ -211,7 +209,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
           recentActivity: 0,
           loading: false,
         },
-      },
+      },)>
       { status: 500 }
     );
   }

@@ -1,9 +1,9 @@
 // types/progress.ts
-export type ProgressMsg =
+export type ProgressMsg =;
   | {
       type: 'upload-progress';
       fileId: string;
-      progress: number; // 0-100
+      progress: number; // 0-100,
     }
   | {
       type: 'processing-step';
@@ -22,6 +22,7 @@ export type ProgressMsg =
       fileId: string;
       error: { message: string; code?: string; meta?: unknown };
     };
+}
 
 export interface EvidenceProcessRequest {
   evidenceId: string;
@@ -58,5 +59,5 @@ export interface RagResult {
   summary: string;
   snippets: string[];
   relevantDocs: any[];
-  confidence: number;
+  confidence: number;,
 }

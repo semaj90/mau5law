@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import fs from "fs/promises";
-import path from "path";
+import fs from 'fs/promises';
+import path from 'path';
 
 const finalFixes = [
   // Fix test-ai-ask duplicate svelte:head
   {
-    file: "src/routes/test-ai-ask/+page.svelte",
+    file: 'src/routes/test-ai-ask/+page.svelte',
     find: `<svelte:head>
 \t<title>Gemma3 Local LLM Test - Legal AI Assistant</title>
 </svelte:head>
@@ -17,7 +17,7 @@ const finalFixes = [
 
   // Fix frameworks demo variable declaration
   {
-    file: "src/routes/frameworks-demo/+page.svelte",
+    file: 'src/routes/frameworks-demo/+page.svelte',
     find: `  // Demo data
   let ;
   let sampleContent = \`MOTION TO DISMISS`,
@@ -28,28 +28,28 @@ const finalFixes = [
 
   // Fix SearchBar syntax error
   {
-    file: "src/lib/components/SearchBar.svelte",
+    file: 'src/lib/components/SearchBar.svelte',
     find: `                                / id="field-1">`,
     replace: `                                id="field-1">`,
   },
 
   // Fix AskAI syntax error
   {
-    file: "src/lib/components/ai/AskAI.svelte",
+    file: 'src/lib/components/ai/AskAI.svelte',
     find: `            / id="field-3">`,
     replace: `            id="field-3">`,
   },
 
   // Fix evidence page syntax error
   {
-    file: "src/routes/evidence/+page.svelte",
+    file: 'src/routes/evidence/+page.svelte',
     find: `          <input type="text" placeholder="Officer name..." class="w-full px-3 py-2 border rounded-md" / id="field-3">`,
     replace: `          <input type="text" placeholder="Officer name..." class="w-full px-3 py-2 border rounded-md" id="field-3">`,
   },
 
   // Fix Chat component duplicate function - will be handled separately
   {
-    file: "src/lib/components/Chat.svelte",
+    file: 'src/lib/components/Chat.svelte',
     find: `async function sendMessage() {
     if (!currentMessage.trim() || isGenerating) return;`,
     replace: `// Duplicate function removed - keeping only one implementation
@@ -59,7 +59,7 @@ const finalFixes = [
 
   // Fix EvidenceUploadModal syntax error
   {
-    file: "src/lib/components/modals/EvidenceUploadModal.svelte",
+    file: 'src/lib/components/modals/EvidenceUploadModal.svelte',
     find: `  $: if (caseId && !isOpen) {
 </script>`,
     replace: `  $: if (caseId && !isOpen) {
@@ -70,7 +70,7 @@ const finalFixes = [
 
   // Fix frameworks demo caseId attribute error
   {
-    file: "src/routes/frameworks-demo/+page.svelte",
+    file: 'src/routes/frameworks-demo/+page.svelte',
     find: `              <AskAI
                 caseId=evidenceIds={['evidence-1', 'evidence-2']}      
                 placeholder="Ask about legal procedures, case law, or document drafting..."`,
@@ -82,7 +82,7 @@ const finalFixes = [
 ];
 
 async function applyFinalFixes() {
-  console.log("🎯 Applying final critical fixes...");
+  console.log('🎯 Applying final critical fixes...');
 
   for (const fix of finalFixes) {
     try {
@@ -96,11 +96,11 @@ async function applyFinalFixes() {
         continue;
       }
 
-      let content = await fs.readFile(filePath, "utf-8");
+      let content = await fs.readFile(filePath, 'utf-8');
 
       if (content.includes(fix.find)) {
         content = content.replace(fix.find, fix.replace);
-        await fs.writeFile(filePath, content, "utf-8");
+        await fs.writeFile(filePath, content, 'utf-8');
         console.log(`✅ Fixed: ${fix.file}`);
       } else {
         console.log(`⚠️  Pattern not found in: ${fix.file}`);
@@ -115,7 +115,7 @@ async function applyFinalFixes() {
 async function createMissingUIComponents() {
   const components = [
     {
-      path: "src/lib/components/ui/context-menu/ContextMenuRoot.svelte",
+      path: 'src/lib/components/ui/context-menu/ContextMenuRoot.svelte',
       content: `<script lang="ts">
   import { createContextMenu, melt } from '@melt-ui/svelte';
   
@@ -131,7 +131,7 @@ async function createMissingUIComponents() {
 `,
     },
     {
-      path: "src/lib/components/ui/context-menu/ContextMenuTrigger.svelte",
+      path: 'src/lib/components/ui/context-menu/ContextMenuTrigger.svelte',
       content: `<script lang="ts">
   export let trigger;
 </script>
@@ -142,7 +142,7 @@ async function createMissingUIComponents() {
 `,
     },
     {
-      path: "src/lib/components/ui/context-menu/ContextMenuContent.svelte",
+      path: 'src/lib/components/ui/context-menu/ContextMenuContent.svelte',
       content: `<script lang="ts">
   export let menu;
 </script>
@@ -164,7 +164,7 @@ async function createMissingUIComponents() {
 `,
     },
     {
-      path: "src/lib/components/ui/context-menu/ContextMenuItem.svelte",
+      path: 'src/lib/components/ui/context-menu/ContextMenuItem.svelte',
       content: `<script lang="ts">
   import { createEventDispatcher } from 'svelte';
   
@@ -184,12 +184,12 @@ async function createMissingUIComponents() {
 `,
     },
     {
-      path: "src/lib/components/ui/context-menu/ContextMenuSeparator.svelte",
+      path: 'src/lib/components/ui/context-menu/ContextMenuSeparator.svelte',
       content: `<div class="h-px bg-gray-200 my-1"></div>
 `,
     },
     {
-      path: "src/lib/components/ui/select/SelectRoot.svelte",
+      path: 'src/lib/components/ui/select/SelectRoot.svelte',
       content: `<script lang="ts">
   import { createSelect, melt } from '@melt-ui/svelte';
   
@@ -210,7 +210,7 @@ async function createMissingUIComponents() {
 `,
     },
     {
-      path: "src/lib/components/ui/select/SelectTrigger.svelte",
+      path: 'src/lib/components/ui/select/SelectTrigger.svelte',
       content: `<script lang="ts">
   export let trigger;
   export let selectedLabel;
@@ -248,7 +248,7 @@ async function createMissingUIComponents() {
       try {
         await fs.access(filePath);
       } catch {
-        await fs.writeFile(filePath, component.content, "utf-8");
+        await fs.writeFile(filePath, component.content, 'utf-8');
         console.log(`✅ Created: ${component.path}`);
       }
     } catch (error) {
@@ -261,7 +261,7 @@ async function main() {
   await applyFinalFixes();
   await createMissingUIComponents();
 
-  console.log("🎉 Final fixes completed!");
+  console.log('🎉 Final fixes completed!');
   console.log('📋 Run "npm run check" to verify the improvements.');
 }
 

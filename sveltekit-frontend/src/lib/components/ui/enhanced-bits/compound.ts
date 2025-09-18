@@ -14,7 +14,7 @@ export const Dialog = CompoundDialog;
 export const Card = CompoundCard;
 export const Select = CompoundSelect;
 
-// Legacy compatibility - these provide the .Root syntax
+// Legacy compatibility - these provide the .Root syntax;
 export {
   CompoundButton as ButtonCompound,
   CompoundDialog as DialogCompound,

@@ -8,13 +8,13 @@ import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
 import { cpus } from 'os';
 import { performance } from 'perf_hooks';
 
-// Types for serialization context
+// Types for serialization context;
 interface SerializationTask {
   id: string;
   data: any;
   options: SerializationOptions;
   priority: 'low' | 'medium' | 'high' | 'critical';
-  timestamp: number;
+  timestamp: number;,
 }
 
 interface SerializationOptions {
@@ -41,7 +41,7 @@ interface SerializationResult {
   error?: string;
 }
 
-// Worker thread pool for CPU-intensive serialization
+// Worker thread pool for CPU-intensive serialization;
 class WorkerPool {
   private workers: Worker[] = [];
   private availableWorkers: Worker[] = [];
@@ -79,7 +79,7 @@ class WorkerPool {
                 seen.add(value);
               }
               
-              // Legal document specific handling
+              // Legal document specific handling;
               if (options.legalDocumentMode) {
                 if (key === 'embedding' && Array.isArray(value)) {
                   // Compress vector embeddings
@@ -93,7 +93,7 @@ class WorkerPool {
                 }
               }
               
-              // Handle special types
+              // Handle special types;
               if (value instanceof Date) {
                 return { _type: 'Date', value: value.toISOString() };
               }
@@ -116,7 +116,7 @@ class WorkerPool {
                 serializedSize: serialized.length,
                 compressionRatio: JSON.stringify(data).length / serialized.length,
                 processingTime,
-                method: 'worker'
+                method: 'worker',
               }
             };
           } catch (error) {
@@ -127,7 +127,7 @@ class WorkerPool {
                 serializedSize: 0,
                 compressionRatio: 1,
                 processingTime: performance.now() - start,
-                method: 'worker'
+                method: 'worker',
               }
             };
           }
@@ -136,7 +136,7 @@ class WorkerPool {
       
       parentPort.on('message', ({ id, data, options }) => {
         const result = JSONSerializer.serialize(data, options);
-        parentPort.postMessage({ id, ...result });
+        parentPort.postMessage({ id, ...result ,});
       });
     `;
 
@@ -197,7 +197,7 @@ class WorkerPool {
       return;
     }
 
-    // Sort by priority
+    // Sort by priority;
     this.taskQueue.sort((a, b) => {
       const priorities = { critical: 4, high: 3, medium: 2, low: 1 };
       return priorities[b.task.priority] - priorities[a.task.priority];
@@ -209,18 +209,18 @@ class WorkerPool {
     worker.postMessage({
       id: task.id,
       data: task.data,
-      options: task.options
+      options: task.options,
     });
   }
 
   terminate() {
-    this.workers.forEach(worker => worker.terminate());
+    this.workers.forEach(worker => worker.terminate();
   }
 }
 
 /**
  * Main concurrent JSON serialization service
- */
+ */;
 export class ConcurrentJSONSerializer {
   private static instance: ConcurrentJSONSerializer;
   private workerPool: WorkerPool;
@@ -276,7 +276,7 @@ export class ConcurrentJSONSerializer {
         ...options
       },
       priority: this.determinePriority(data, options),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     // Determine optimal serialization method
@@ -293,7 +293,7 @@ export class ConcurrentJSONSerializer {
 
   /**
    * GPU-accelerated serialization for large datasets
-   */
+   */;
   private async serializeWithGPU(task: SerializationTask): Promise<SerializationResult> {
     const start = performance.now();
     
@@ -307,11 +307,11 @@ export class ConcurrentJSONSerializer {
       const encoder = new TextEncoder();
       const inputData = encoder.encode(dataStr);
 
-      // Create GPU buffer
+      // Create GPU buffer;
       const buffer = this.gpuContext.createBuffer({
         size: inputData.byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-        mappedAtCreation: true
+        mappedAtCreation: true,
       });
 
       // Copy data to GPU
@@ -336,7 +336,7 @@ export class ConcurrentJSONSerializer {
 
   /**
    * Synchronous serialization for small data
-   */
+   */;
   private async serializeSync(task: SerializationTask): Promise<SerializationResult> {
     const start = performance.now();
     
@@ -345,7 +345,7 @@ export class ConcurrentJSONSerializer {
       const originalStr = JSON.stringify(task.data);
       
       const serialized = JSON.stringify(task.data, (key, value) => {
-        // Handle circular references
+        // Handle circular references;
         if (typeof value === 'object' && value !== null) {
           if (seen.has(value)) {
             return '[Circular Reference]';
@@ -353,7 +353,7 @@ export class ConcurrentJSONSerializer {
           seen.add(value);
         }
         
-        // Legal document optimizations
+        // Legal document optimizations;
         if (task.options.legalDocumentMode) {
           if (key === 'embedding' && Array.isArray(value) && value.length > 100) {
             return `[Vector:${value.length}]`;
@@ -368,7 +368,7 @@ export class ConcurrentJSONSerializer {
           }
         }
         
-        // Handle special types
+        // Handle special types;
         if (value instanceof Date) {
           return { _type: 'Date', value: value.toISOString() };
         }
@@ -392,7 +392,7 @@ export class ConcurrentJSONSerializer {
           serializedSize: serialized.length,
           compressionRatio: originalStr.length / serialized.length,
           processingTime,
-          method: 'cpu'
+          method: 'cpu',
         }
       };
     } catch (error) {
@@ -406,9 +406,9 @@ export class ConcurrentJSONSerializer {
           serializedSize: 2,
           compressionRatio: 1,
           processingTime,
-          method: 'cpu'
+          method: 'cpu',
         },
-        error: error instanceof Error ? error.message: 'Unknown serialization error'
+        error: error instanceof Error ? error.message: 'Unknown serialization error',
       };
     }
   }
@@ -422,11 +422,11 @@ export class ConcurrentJSONSerializer {
   ): Promise<SerializationResult[]> {
     const batchOptions = {
       ...options,
-      priority: 'medium' as const
+      priority: 'medium' as const,
     };
 
     // Process in parallel with worker pool
-    const promises = items.map((item, index) => 
+    const promises = items.map((item, index) =>;
       this.serialize(item, {
         ...batchOptions,
         // Remove priority as it's not a valid option
@@ -439,11 +439,11 @@ export class ConcurrentJSONSerializer {
 
   /**
    * Deserialize with type restoration
-   */
+   */;
   deserialize<T = any>(serialized: string): T {
     try {
       return JSON.parse(serialized, (key, value) => {
-        // Restore special types
+        // Restore special types;
         if (value && typeof value === 'object' && value._type) {
           switch (value._type) {
             case 'Date':
@@ -462,7 +462,7 @@ export class ConcurrentJSONSerializer {
 
   /**
    * Determine task priority based on data characteristics
-   */
+   */;
   private determinePriority(data: any, options: SerializationOptions): 'low' | 'medium' | 'high' | 'critical' {
     const size = this.estimateDataSize(data);
     
@@ -483,7 +483,7 @@ export class ConcurrentJSONSerializer {
 
   /**
    * Estimate data size without full serialization
-   */
+   */;
   private estimateDataSize(data: any): number {
     if (data === null || data === undefined) return 4;
     if (typeof data === 'boolean') return 4;
@@ -506,26 +506,26 @@ export class ConcurrentJSONSerializer {
 
   /**
    * Get performance statistics
-   */
+   */;
   getStats(): {
     activeWorkers: number;
     queueLength: number;
     totalProcessed: number;
     averageProcessingTime: number;
-    gpuEnabled: boolean;
+    gpuEnabled: boolean;,
   } {
     return {
       activeWorkers: this.workerPool['workers'].length,
       queueLength: this.workerPool['taskQueue'].length,
       totalProcessed: this.taskCounter,
       averageProcessingTime: 0, // Could be enhanced with metrics
-      gpuEnabled: !!this.gpuContext
+      gpuEnabled: !!this.gpuContext,
     };
   }
 
   /**
    * Cleanup resources
-   */
+   */;
   terminate() {
     this.workerPool.terminate();
   }
@@ -537,14 +537,14 @@ export const concurrentSerializer = ConcurrentJSONSerializer.getInstance();
 // Utility functions for common use cases
 export async function serializeForAPI<T>(
   data: T,
-  options?: Partial<SerializationOptions>
+  options?: Partial<SerializationOptions>;
 ): Promise<string> {
   const result = await concurrentSerializer.serialize(data, {
     compress: true,
     validateStructure: true,
     legalDocumentMode: false,
     ...options
-  });
+  ,});
   
   if ((result as { id?: any; metadata?: any; error?: any; serialized?: any }).error) {
     throw new Error(`API serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`);
@@ -555,7 +555,7 @@ export async function serializeForAPI<T>(
 
 export async function serializeLegalDocument<T>(
   document: T,
-  options?: Partial<SerializationOptions>
+  options?: Partial<SerializationOptions>;
 ): Promise<string> {
   const result = await concurrentSerializer.serialize(document, {
     legalDocumentMode: true,
@@ -563,7 +563,7 @@ export async function serializeLegalDocument<T>(
     validateStructure: true,
     maxDepth: 15, // Legal docs can be deeply nested
     ...options
-  });
+  ,});
   
   if ((result as { id?: any; metadata?: any; error?: any; serialized?: any }).error) {
     throw new Error(`Legal document serialization failed: ${(result as { id?: any; metadata?: any; error?: any; serialized?: any }).error}`);
@@ -574,20 +574,20 @@ export async function serializeLegalDocument<T>(
 
 export async function serializeBatchForCache<T>(
   items: T[],
-  options?: Partial<SerializationOptions>
+  options?: Partial<SerializationOptions>;
 ): Promise<SerializationResult[]> {
   return await concurrentSerializer.serializeBatch(items, {
     compress: true,
     gpuAccelerated: items.length > 100,
     ...options
-  });
+  ,});
 }
 
 export function deserializeFromAPI<T = any>(serialized: string): T {
   return concurrentSerializer.deserialize<T>(serialized);
 }
 
-// Process cleanup
+// Process cleanup;
 if (typeof process !== 'undefined') {
   process.on('exit', () => {
     concurrentSerializer.terminate();

@@ -1,4 +1,4 @@
-// Toast utility for user notifications
+// Toast utility for user notifications;
 export interface ToastOptions {
   duration?: number;
   type?: 'success' | 'error' | 'warning' | 'info';
@@ -31,13 +31,13 @@ function showToast(message: string, type: string, options: ToastOptions) {
   // Add to DOM
   document.body.appendChild(toast);
   
-  // Animate in
+  // Animate in;
   requestAnimationFrame(() => {
     toast.style.transform = 'translateX(0)';
     toast.style.opacity = '1';
   });
   
-  // Remove after duration
+  // Remove after duration;
   setTimeout(() => {
     toast.style.transform = 'translateX(100%)';
     toast.style.opacity = '0';
@@ -52,7 +52,7 @@ function getToastStyles(type: string): string {
     success: 'bg-green-500 text-white',
     error: 'bg-red-500 text-white',
     warning: 'bg-yellow-500 text-black',
-    info: 'bg-blue-500 text-white'
+    info: 'bg-blue-500 text-white',
   };
   return styles[type as keyof typeof styles] || styles.info;
 }

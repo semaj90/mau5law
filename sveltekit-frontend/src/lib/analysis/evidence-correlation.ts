@@ -6,7 +6,7 @@
 import { z } from 'zod';
 import type { EvidenceItem } from '../types/api.js';
 
-// Correlation analysis schemas
+// Correlation analysis schemas;
 const CorrelationAnalysisSchema = z.object({
   evidenceIds: z.array(z.string().uuid()),
   analysisType: z
@@ -14,7 +14,7 @@ const CorrelationAnalysisSchema = z.object({
     .default('comprehensive'),
   confidenceThreshold: z.number().min(0).max(1).default(0.6),
   includeWeakCorrelations: z.boolean().default(false),
-  timeWindow: z
+  timeWindow: z;
     .object({
       unit: z.enum(['hours', 'days', 'weeks', 'months']),
       value: z.number().positive(),
@@ -75,7 +75,7 @@ interface TimelineEvent {
   duration?: number;
   type: string;
   description: string;
-  evidenceIds: string[];
+  evidenceIds: string[];,
 }
 
 interface PatternMatch {
@@ -92,7 +92,7 @@ interface PatternMatch {
 interface PatternVisualization {
   type: string;
   data: any;
-  highlights: string[];
+  highlights: string[];,
 }
 
 interface EntityRelationship {
@@ -101,7 +101,7 @@ interface EntityRelationship {
   relationship: string;
   confidence: number;
   evidenceBasis: string[];
-  legalSignificance: string;
+  legalSignificance: string;,
 }
 
 interface CausalChain {
@@ -109,7 +109,7 @@ interface CausalChain {
   events: CausalEvent[];
   strength: number;
   legalTheory: string;
-  supportingEvidence: string[];
+  supportingEvidence: string[];,
 }
 
 interface CausalEvent {
@@ -117,16 +117,16 @@ interface CausalEvent {
   description: string;
   timestamp: Date;
   causality: 'cause' | 'effect' | 'mediating';
-  evidenceId: string;
+  evidenceId: string;,
 }
 
-// Advanced Evidence Correlation Engine
+// Advanced Evidence Correlation Engine;
 export class EvidenceCorrelationEngine {
   // Main correlation analysis
   static analyzeCorrelations(
     evidence: EvidenceItem[],
     analysisType: string,
-    confidenceThreshold: number
+    confidenceThreshold: number;
   ): CorrelationResult[] {
     const correlations: CorrelationResult[] = [];
 
@@ -135,7 +135,7 @@ export class EvidenceCorrelationEngine {
         const evidenceA = evidence[i];
         const evidenceB = evidence[j];
 
-        // Temporal correlation
+        // Temporal correlation;
         if (analysisType === 'temporal' || analysisType === 'comprehensive') {
           const temporalCorr = this.analyzeTemporalCorrelation(evidenceA, evidenceB);
           if (temporalCorr.confidence >= confidenceThreshold) {
@@ -143,7 +143,7 @@ export class EvidenceCorrelationEngine {
           }
         }
 
-        // Semantic correlation
+        // Semantic correlation;
         if (analysisType === 'semantic' || analysisType === 'comprehensive') {
           const semanticCorr = this.analyzeSemanticCorrelation(evidenceA, evidenceB);
           if (semanticCorr.confidence >= confidenceThreshold) {
@@ -151,7 +151,7 @@ export class EvidenceCorrelationEngine {
           }
         }
 
-        // Entity correlation
+        // Entity correlation;
         if (analysisType === 'entity' || analysisType === 'comprehensive') {
           const entityCorr = this.analyzeEntityCorrelation(evidenceA, evidenceB);
           if (entityCorr.confidence >= confidenceThreshold) {
@@ -159,7 +159,7 @@ export class EvidenceCorrelationEngine {
           }
         }
 
-        // Causal correlation
+        // Causal correlation;
         if (analysisType === 'causal' || analysisType === 'comprehensive') {
           const causalCorr = this.analyzeCausalCorrelation(evidenceA, evidenceB);
           if (causalCorr.confidence >= confidenceThreshold) {
@@ -175,11 +175,11 @@ export class EvidenceCorrelationEngine {
   // Temporal correlation analysis
   static analyzeTemporalCorrelation(
     evidenceA: EvidenceItem,
-    evidenceB: EvidenceItem
+    evidenceB: EvidenceItem;
   ): CorrelationResult {
     const timeA = new Date(evidenceA.uploadedAt);
     const timeB = new Date(evidenceB.uploadedAt);
-    const timeDiff = Math.abs(timeA.getTime() - timeB.getTime());
+    const timeDiff = Math.abs(timeA.getTime() - timeB.getTime();
     const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
 
     // Stronger correlation for evidence closer in time
@@ -213,14 +213,14 @@ export class EvidenceCorrelationEngine {
         type: 'timeline',
         data: { timeA, timeB, timeDiff },
         layout: {
-          timeline: [
+          timeline: [;
             {
               id: evidenceA.id,
               timestamp: timeA,
               type: evidenceA.type || evidenceA.evidenceType || 'unknown',
               description: evidenceA.filename,
               evidenceIds: [evidenceA.id],
-            },
+            },>;
             {
               id: evidenceB.id,
               timestamp: timeB,
@@ -237,7 +237,7 @@ export class EvidenceCorrelationEngine {
   // Semantic correlation analysis
   static analyzeSemanticCorrelation(
     evidenceA: EvidenceItem,
-    evidenceB: EvidenceItem
+    evidenceB: EvidenceItem;
   ): CorrelationResult {
     const tagsA = evidenceA.aiAnalysis?.tags || [];
     const tagsB = evidenceB.aiAnalysis?.tags || [];
@@ -251,8 +251,8 @@ export class EvidenceCorrelationEngine {
     const strength = (tagOverlap + lawOverlap) / 2;
     const confidence = strength > 0.5 ? 0.9 : 0.6;
 
-    const commonTags = tagsA.filter((tag: string) => tagsB.includes(tag));
-    const commonLaws = lawsA.filter((law: string) => lawsB.includes(law));
+    const commonTags = tagsA.filter((tag: string) => tagsB.includes(tag);
+    const commonLaws = lawsA.filter((law: string) => lawsB.includes(law);
 
     return {
       evidenceA: evidenceA.id,
@@ -276,7 +276,7 @@ export class EvidenceCorrelationEngine {
   // Entity correlation analysis
   static analyzeEntityCorrelation(
     evidenceA: EvidenceItem,
-    evidenceB: EvidenceItem
+    evidenceB: EvidenceItem;
   ): CorrelationResult {
     // Extract entities from filenames and analysis (simplified)
     const entitiesA = this.extractEntitiesFromEvidence(evidenceA);
@@ -286,7 +286,7 @@ export class EvidenceCorrelationEngine {
     const strength = entityOverlap;
     const confidence = entityOverlap > 0.3 ? 0.85 : 0.5;
 
-    const commonEntities = entitiesA.filter((entity) => entitiesB.includes(entity));
+    const commonEntities = entitiesA.filter((entity) => entitiesB.includes(entity);
 
     return {
       evidenceA: evidenceA.id,
@@ -309,7 +309,7 @@ export class EvidenceCorrelationEngine {
   // Causal correlation analysis
   static analyzeCausalCorrelation(
     evidenceA: EvidenceItem,
-    evidenceB: EvidenceItem
+    evidenceB: EvidenceItem;
   ): CorrelationResult {
     const timeA = new Date(evidenceA.uploadedAt);
     const timeB = new Date(evidenceB.uploadedAt);
@@ -343,30 +343,30 @@ export class EvidenceCorrelationEngine {
     };
   }
 
-  // Pattern detection
+  // Pattern detection;
   static detectPatterns(evidence: EvidenceItem[], patternTypes: string[]): PatternMatch[] {
     const patterns: PatternMatch[] = [];
 
     if (patternTypes.includes('sequence')) {
-      patterns.push(...this.detectSequencePatterns(evidence));
+      patterns.push(...this.detectSequencePatterns(evidence);
     }
 
     if (patternTypes.includes('cluster')) {
-      patterns.push(...this.detectClusterPatterns(evidence));
+      patterns.push(...this.detectClusterPatterns(evidence);
     }
 
     if (patternTypes.includes('anomaly')) {
-      patterns.push(...this.detectAnomalyPatterns(evidence));
+      patterns.push(...this.detectAnomalyPatterns(evidence);
     }
 
     if (patternTypes.includes('trend')) {
-      patterns.push(...this.detectTrendPatterns(evidence));
+      patterns.push(...this.detectTrendPatterns(evidence);
     }
 
     return patterns.sort((a, b) => b.confidence - a.confidence);
   }
 
-  // Sequence pattern detection
+  // Sequence pattern detection;
   static detectSequencePatterns(evidence: EvidenceItem[]): PatternMatch[] {
     const patterns: PatternMatch[] = [];
 
@@ -375,7 +375,7 @@ export class EvidenceCorrelationEngine {
       (a, b) => new Date(a.uploadedAt).getTime() - new Date(b.uploadedAt).getTime()
     );
 
-    // Look for sequential patterns
+    // Look for sequential patterns;
     for (let i = 0; i < sortedEvidence.length - 2; i++) {
       const sequence = sortedEvidence.slice(i, i + 3);
       const sequenceStrength = this.analyzeSequenceStrength(sequence);
@@ -400,7 +400,7 @@ export class EvidenceCorrelationEngine {
     return patterns;
   }
 
-  // Cluster pattern detection
+  // Cluster pattern detection;
   static detectClusterPatterns(evidence: EvidenceItem[]): PatternMatch[] {
     const patterns: PatternMatch[] = [];
 
@@ -430,7 +430,7 @@ export class EvidenceCorrelationEngine {
     return patterns;
   }
 
-  // Anomaly pattern detection
+  // Anomaly pattern detection;
   static detectAnomalyPatterns(evidence: EvidenceItem[]): PatternMatch[] {
     const patterns: PatternMatch[] = [];
 
@@ -446,7 +446,7 @@ export class EvidenceCorrelationEngine {
       const daysGap = timeGap / (1000 * 60 * 60 * 24);
 
       if (daysGap > 14) {
-        // Significant gap
+        // Significant gap;
         patterns.push({
           patternId: `anomaly_gap_${i}`,
           patternType: 'anomaly',
@@ -466,7 +466,7 @@ export class EvidenceCorrelationEngine {
     return patterns;
   }
 
-  // Trend pattern detection
+  // Trend pattern detection;
   static detectTrendPatterns(evidence: EvidenceItem[]): PatternMatch[] {
     const patterns: PatternMatch[] = [];
 
@@ -496,12 +496,12 @@ export class EvidenceCorrelationEngine {
   // Network analysis for entity relationships
   static buildEvidenceNetwork(
     evidence: EvidenceItem[],
-    correlations: CorrelationResult[]
+    correlations: CorrelationResult[];
   ): {
     nodes: NetworkNode[];
     edges: NetworkEdge[];
     communities: string[][];
-    centralNodes: string[];
+    centralNodes: string[];,
   } {
     const nodes: NetworkNode[] = evidence.map((e) => ({
       id: e.id,
@@ -514,7 +514,7 @@ export class EvidenceCorrelationEngine {
         prosecutionScore: e.aiAnalysis?.relevanceScore,
         relevantLaws: e.aiAnalysis?.legalImplications,
       },
-    }));
+    });
 
     const edges: NetworkEdge[] = correlations.map((corr) => ({
       source: corr.evidenceA,
@@ -522,7 +522,7 @@ export class EvidenceCorrelationEngine {
       weight: corr.strength,
       type: corr.correlationType,
       label: `${corr.correlationType} (${(corr.strength * 100).toFixed(0)}%)`,
-    }));
+    });
 
     // Detect communities using simple clustering
     const communities = this.detectCommunities(nodes, edges);
@@ -533,11 +533,11 @@ export class EvidenceCorrelationEngine {
     return { nodes, edges, communities, centralNodes };
   }
 
-  // Helper methods
+  // Helper methods;
   static calculateJaccardSimilarity(setA: string[], setB: string[]): number {
-    const a = new Set(setA.map((s) => s.toLowerCase()));
-    const b = new Set(setB.map((s) => s.toLowerCase()));
-    const intersection = new Set([...a].filter((x) => b.has(x)));
+    const a = new Set(setA.map((s) => s.toLowerCase());
+    const b = new Set(setB.map((s) => s.toLowerCase());
+    const intersection = new Set([...a].filter((x) => b.has(x));
     const union = new Set([...a, ...b]);
     return union.size === 0 ? 0 : intersection.size / union.size;
   }
@@ -549,7 +549,7 @@ export class EvidenceCorrelationEngine {
     const nameEntities = evidence.filename.match(/[A-Z][a-z]+/g) || [];
     entities.push(...nameEntities);
 
-    // Extract from AI analysis if available
+    // Extract from AI analysis if available;
     if (evidence.aiAnalysis?.tags && Array.isArray(evidence.aiAnalysis.tags)) {
       entities.push(...evidence.aiAnalysis.tags);
     }
@@ -563,7 +563,7 @@ export class EvidenceCorrelationEngine {
     const summary = later.aiAnalysis?.summary || '';
 
     const causalCount = causalWords.filter((word) =>
-      summary.toLowerCase().includes(word.toLowerCase())
+      summary.toLowerCase().includes(word.toLowerCase()
     ).length;
 
     return Math.min(1, causalCount * 0.3);
@@ -577,7 +577,7 @@ export class EvidenceCorrelationEngine {
     for (let i = 0; i < sequence.length - 1; i++) {
       const timeA = new Date(sequence[i].uploadedAt);
       const timeB = new Date(sequence[i + 1].uploadedAt);
-      intervals.push(timeB.getTime() - timeA.getTime());
+      intervals.push(timeB.getTime() - timeA.getTime();
     }
 
     // Regular intervals increase strength
@@ -611,7 +611,7 @@ export class EvidenceCorrelationEngine {
 
   static groupEvidenceByTimeWindows(
     evidence: EvidenceItem[],
-    windowHours: number
+    windowHours: number;
   ): Record<string, EvidenceItem[]> {
     const windows: Record<string, EvidenceItem[]> = {};
 
@@ -631,7 +631,7 @@ export class EvidenceCorrelationEngine {
   }
 
   static calculateMonthlyEvidenceVolume(
-    evidence: EvidenceItem[]
+    evidence: EvidenceItem[];
   ): { month: string; count: number }[] {
     const monthlyCounts: Record<string, number> = {};
 
@@ -642,13 +642,13 @@ export class EvidenceCorrelationEngine {
     });
 
     return Object.entries(monthlyCounts)
-      .map(([month, count]) => ({ month, count }))
-      .sort((a, b) => a.month.localeCompare(b.month));
+      .map(([month, count]) => ({ month, count })
+      .sort((a, b) => a.month.localeCompare(b.month);
   }
 
   static analyzeTrend(data: { month: string; count: number }[]): {
     slope: number;
-    direction: string;
+    direction: string;,
   } {
     if (data.length < 2) return { slope: 0, direction: 'flat' };
 
@@ -701,7 +701,7 @@ export class EvidenceCorrelationEngine {
     connectedEdges.forEach((edge) => {
       const nextNode = edge.source === nodeId ? edge.target: edge.source;
       if (!visited.has(nextNode)) {
-        component.push(...this.exploreComponent(nextNode, edges, visited));
+        component.push(...this.exploreComponent(nextNode, edges, visited);
       }
     });
 
@@ -711,7 +711,7 @@ export class EvidenceCorrelationEngine {
   static findCentralNodes(nodes: NetworkNode[], edges: NetworkEdge[]): string[] {
     const degrees = new Map<string, number>();
 
-    nodes.forEach((node) => degrees.set(node.id, 0));
+    nodes.forEach((node) => degrees.set(node.id, 0);
 
     edges.forEach((edge) => {
       degrees.set(edge.source, (degrees.get(edge.source) || 0) + 1);
@@ -720,13 +720,13 @@ export class EvidenceCorrelationEngine {
 
     const avgDegree = Array.from(degrees.values()).reduce((sum, d) => sum + d, 0) / degrees.size;
 
-    return Array.from(degrees.entries())
+    return Array.from(degrees.entries()
       .filter(([_, degree]) => degree > avgDegree * 1.5)
       .map(([nodeId, _]) => nodeId);
   }
 }
 
-// Export correlation analysis functions
+// Export correlation analysis functions;
 export {
   CorrelationAnalysisSchema,
   PatternDetectionSchema,

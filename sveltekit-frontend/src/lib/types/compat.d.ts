@@ -33,7 +33,7 @@ declare module '$lib/server/db/*' {
   export default whatever;
 }
 
-// Generic fallback for runtime-only modules used in a few paths.
+// Generic fallback for runtime-only modules used in a few paths.;
 declare module '$lib/server/*' {
   const whatever: any;
   export default whatever;

@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (!uploadHealth) {
 			return json({ 
 				error: 'Upload service unavailable',
-				details: 'Document upload service is not responding'
+				details: 'Document upload service is not responding',
 			}, { status: 503 });
 		}
 
@@ -37,13 +37,13 @@ export const POST: RequestHandler = async ({ request }) => {
 			quantization: (formData.get('quantization') as any) || '4bit',
 			negative_latent_space: formData.get('negative_latent_space') === 'true',
 			extract_embeddings: formData.get('extract_embeddings') === 'true',
-			processing_priority: (formData.get('processing_priority') as any) || 'normal'
+			processing_priority: (formData.get('processing_priority') as any) || 'normal',
 		};
 
 		if (!file) {
 			return json({ 
 				error: 'No file provided',
-				details: 'Please select a file to upload'
+				details: 'Please select a file to upload',
 			}, { status: 400 });
 		}
 
@@ -51,11 +51,11 @@ export const POST: RequestHandler = async ({ request }) => {
 		const uploadFormData = new FormData();
 		uploadFormData.append('file', file);
 		uploadFormData.append('extract_text', 'true');
-		uploadFormData.append('generate_embeddings', String(options.extract_embeddings));
+		uploadFormData.append('generate_embeddings', String(options.extract_embeddings);
 
 		const uploadResponse = await fetch(`${UPLOAD_SERVICE_URL}/upload`, {
 			method: 'POST',
-			body: uploadFormData
+			body: uploadFormData,
 		});
 
 		if (!uploadResponse.ok) {
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			return json({
 				error: 'Document upload failed',
 				details: uploadError,
-				phase: 'upload'
+				phase: 'upload',
 			}, { status: uploadResponse.status });
 		}
 
@@ -84,12 +84,12 @@ export const POST: RequestHandler = async ({ request }) => {
 						use_tensor_cores: options.use_tensor_cores,
 						quantization: options.quantization,
 						negative_latent_space: options.negative_latent_space,
-						processing_priority: options.processing_priority
+						processing_priority: options.processing_priority,
 					},
 					options: {
 						use_cache: true,
 						priority: options.processing_priority,
-						timeout: 30000 // 30 second timeout
+						timeout: 30000 // 30 second timeout,
 					}
 				};
 
@@ -98,29 +98,29 @@ export const POST: RequestHandler = async ({ request }) => {
 					headers: {
 						'Content-Type': 'application/json'
 					},
-					body: JSON.stringify(gpuProcessingRequest)
+					body: JSON.stringify(gpuProcessingRequest),
 				});
 
 				if (gpuResponse.ok) {
 					gpuProcessingResult = await gpuResponse.json();
 				} else {
-					// GPU processing failed, but we still have the upload
+					// GPU processing failed, but we still have the upload;
 					gpuProcessingResult = {
 						error: 'GPU processing failed',
 						details: await gpuResponse.text(),
-						fallback_used: true
+						fallback_used: true,
 					};
 				}
 			} catch (gpuError) {
 				gpuProcessingResult = {
 					error: 'GPU processing error',
 					details: gpuError instanceof Error ? gpuError.message: String(gpuError),
-					fallback_used: true
+					fallback_used: true,
 				};
 			}
 		}
 
-		// Phase 3: Combine results
+		// Phase 3: Combine results;
 		const result = {
 			success: true,
 			upload: {
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				file_size: uploadResult.size || file.size,
 				content_extracted: !!uploadResult.content,
 				embeddings_generated: !!uploadResult.embeddings,
-				processing_time_ms: uploadResult.processing_time_ms || 0
+				processing_time_ms: uploadResult.processing_time_ms || 0,
 			},
 			gpu_processing: options.enable_gpu ? {
 				enabled: true,
@@ -137,13 +137,13 @@ export const POST: RequestHandler = async ({ request }) => {
 				processing_result: gpuProcessingResult,
 				tensor_cores_used: options.use_tensor_cores && cudaHealth,
 				quantization_used: options.quantization,
-				negative_latent_space_used: options.negative_latent_space
+				negative_latent_space_used: options.negative_latent_space,
 			} : {
 				enabled: false,
-				reason: 'GPU processing not requested'
+				reason: 'GPU processing not requested',
 			},
 			total_processing_time_ms: Date.now() - Date.now(), // This would be tracked properly
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		};
 
 		return json(result);
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			error: 'Processing pipeline failed',
 			details: error instanceof Error ? error.message: String(error),
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		}, { status: 500 });
 	}
 };
@@ -161,15 +161,15 @@ export const POST: RequestHandler = async ({ request }) => {
 export const GET: RequestHandler = async () => {
 	try {
 		// Health check for the entire pipeline
-		const [uploadHealth, cudaHealth] = await Promise.all([
+		const [uploadHealth, cudaHealth] = await Promise.all([;
 			fetch(`${UPLOAD_SERVICE_URL}/health`).then(async (r) => ({
 				available: r.ok,
-				status: r.ok ? await r.json() : null
+				status: r.ok ? await r.json() : null,
 			})),
 			fetch(`${CUDA_SERVICE_URL}/health`).then(async (r) => ({
 				available: r.ok,
-				status: r.ok ? await r.json() : null
-			}))
+				status: r.ok ? await r.json() : null,
+			})
 		]).catch(() => [
 			{ available: false, status: null },
 			{ available: false, status: null }
@@ -181,12 +181,12 @@ export const GET: RequestHandler = async () => {
 				upload_service: {
 					url: UPLOAD_SERVICE_URL,
 					available: uploadHealth.available,
-					status: uploadHealth.status
+					status: uploadHealth.status,
 				},
 				cuda_service: {
 					url: CUDA_SERVICE_URL,
 					available: cudaHealth.available,
-					status: cudaHealth.status
+					status: cudaHealth.status,
 				}
 			},
 			features: {
@@ -195,16 +195,16 @@ export const GET: RequestHandler = async () => {
 				tensor_cores: cudaHealth.available && cudaHealth.status?.cuda_initialized,
 				quantization_support: ['4bit', '8bit', 'fp16', 'fp32'],
 				negative_latent_space: cudaHealth.available,
-				embedding_extraction: uploadHealth.available
+				embedding_extraction: uploadHealth.available,
 			},
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		});
 
 	} catch (error) {
 		return json({
 			pipeline_status: 'error',
 			error: 'Pipeline health check failed',
-			details: error instanceof Error ? error.message: String(error)
+			details: error instanceof Error ? error.message: String(error),
 		}, { status: 500 });
 	}
 };

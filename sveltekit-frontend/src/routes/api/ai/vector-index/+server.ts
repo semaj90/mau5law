@@ -21,7 +21,7 @@ import type { RequestHandler } from './$types.js';
 import { Pool } from 'pg';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-// Enhanced vector indexing with Bitmap HMM-SOM support
+// Enhanced vector indexing with Bitmap HMM-SOM support;
 interface VectorIndexRequest {
   table?: string;
   column?: string;
@@ -38,7 +38,7 @@ interface VectorIndexRequest {
   };
 }
 
-// POST: create enhanced vector indexes supporting both IVF_FLAT and HNSW algorithms
+// POST: create enhanced vector indexes supporting both IVF_FLAT and HNSW algorithms;
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const body: VectorIndexRequest = await request.json();
@@ -65,12 +65,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         const countRes = await client.query(`SELECT COUNT(*)::int AS cnt FROM ${table}`);
         const total = countRes.rows?.[0]?.cnt ?? 0;
 
-        // Create both IVF_FLAT and HNSW indexes if requested
+        // Create both IVF_FLAT and HNSW indexes if requested;
         if (vectorIndexAlgorithm === 'ivf_flat' || vectorIndexAlgorithm === 'both') {
           const computedLists =
             lists && Number.isInteger(lists)
               ? lists
-              : Math.max(32, Math.min(4096, Math.round(Math.sqrt(total || 1000))));
+              : Math.max(32, Math.min(4096, Math.round(Math.sqrt(total || 1000)));
 
           const ivfFlatIdxName = `idx_${table}_${column}_ivfflat`;
           const ivfFlatSql = `CREATE INDEX IF NOT EXISTS ${ivfFlatIdxName} ON ${table} USING ivfflat (${column} ${metric}_vector_ops) WITH (lists=${computedLists})`;
@@ -157,7 +157,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   }
 };
 
-// Create behavioral state indexes for Bitmap HMM-SOM integration with dual vector algorithms
+// Create behavioral state indexes for Bitmap HMM-SOM integration with dual vector algorithms;
 async function createBehavioralIndexes(client: any, config: any) {
   const indexes = [
     // Behavioral states vector indexes (both IVF_FLAT and HNSW for maximum flexibility)
@@ -244,7 +244,7 @@ async function createBehavioralIndexes(client: any, config: any) {
   await client.query(bitmapSimilarityFunction);
 }
 
-// Generate smart recommendations for index selection
+// Generate smart recommendations for index selection;
 function generateIndexRecommendations(algorithm: string, totalRows: number): any {
   const recommendations = {
     optimal: '',

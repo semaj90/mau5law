@@ -119,7 +119,7 @@ export class SystemStatusTracker {
     return criticalFiles.map((file) => ({
       file,
       status: "available",
-    }));
+    });
   }
 
   async checkService(service) {
@@ -185,10 +185,10 @@ console.log("🔧 System Fix Validation Complete");
 console.log("=====================================");
 
 const report = systemTracker.generateSystemReport();
-console.log("System Status:", JSON.stringify(report, null, 2));
+console.log("System Status:", JSON.stringify(report, null, 2);
 
 const fixSummary = systemTracker.getFixSummary();
-console.log("\nFix Summary:", JSON.stringify(fixSummary, null, 2));
+console.log("\nFix Summary:", JSON.stringify(fixSummary, null, 2);
 
 console.log("\n✅ ALL CRITICAL ERRORS FIXED");
 console.log("✅ ALL STUB FILES CREATED");

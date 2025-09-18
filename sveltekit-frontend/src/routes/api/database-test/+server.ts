@@ -12,7 +12,7 @@ export const GET: RequestHandler = async () => {
     results.connection = await testConnection();
     results.health = await healthCheck();
 
-    // 2. Check pgvector Extension
+    // 2. Check pgvector Extension;
     try {
       const vectorCheck = await db.execute(sql`
         SELECT extname, extversion 
@@ -22,16 +22,16 @@ export const GET: RequestHandler = async () => {
       
       results.pgvector = {
         installed: vectorCheck.length > 0,
-        version: vectorCheck[0]?.extversion || null
+        version: vectorCheck[0]?.extversion || null,
       };
     } catch (error: any) {
       results.pgvector = {
         installed: false,
-        error: error.message
+        error: error.message,
       };
     }
 
-    // 3. List All Tables
+    // 3. List All Tables;
     try {
       const tables = await db.execute(sql`
         SELECT table_name, table_type
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async () => {
       results.tables = { error: error.message };
     }
 
-    // 4. Check Table Schemas  
+    // 4. Check Table Schemas;
     try {
       const schemas = await db.execute(sql`
         SELECT 
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async () => {
       results.schemas = { error: error.message };
     }
 
-    // 5. Test Simple Query
+    // 5. Test Simple Query;
     try {
       const simpleQuery = await db.execute(sql`
         SELECT 
@@ -84,7 +84,7 @@ export const GET: RequestHandler = async () => {
       results.stats = { error: error.message };
     }
 
-    // 6. Test Vector Operations (if available)
+    // 6. Test Vector Operations (if available);
     try {
       const vectorTest = await db.execute(sql`
         SELECT '[1,2,3]'::vector as test_vector
@@ -92,12 +92,12 @@ export const GET: RequestHandler = async () => {
       
       results.vectorOperations = {
         success: true,
-        testVector: vectorTest[0]?.test_vector
+        testVector: vectorTest[0]?.test_vector,
       };
     } catch (error: any) {
       results.vectorOperations = {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
 
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async () => {
       success: false,
       error: error.message,
       stack: error.stack,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -127,20 +127,20 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Execute custom query (with safety restrictions)
-    const result = await db.execute(sql.raw(query));
+    const result = await db.execute(sql.raw(query);
     
     return json({
       success: true,
       query,
       result,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error: any) {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };

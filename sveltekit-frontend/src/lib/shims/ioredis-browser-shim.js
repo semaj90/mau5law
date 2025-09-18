@@ -23,7 +23,7 @@ export default class RedisShim {
       operations: 0,
       hits: 0,
       misses: 0,
-      errors: 0
+      errors: 0,
     };
 
     // Initialize offline storage
@@ -32,7 +32,7 @@ export default class RedisShim {
     console.log('🔧 Redis Browser Shim initialized for Legal AI Platform:', {
       config: this.config,
       offlineMode: this.offlineMode,
-      serviceWorker: this.config.useServiceWorker
+      serviceWorker: this.config.useServiceWorker,
     });
   }
 
@@ -132,7 +132,7 @@ export default class RedisShim {
         }
       }
 
-      localStorage.setItem(storageKey, JSON.stringify(dataToStore));
+      localStorage.setItem(storageKey, JSON.stringify(dataToStore);
       return 'OK';
     } catch (error) {
       this.stats.errors++;
@@ -200,7 +200,7 @@ export default class RedisShim {
     const existing = localStorage.getItem(`redis:${hash}`);
     const obj = existing ? JSON.parse(existing) : Record<string, any>;
     obj[field] = value;
-    localStorage.setItem(`redis:${hash}`, JSON.stringify(obj));
+    localStorage.setItem(`redis:${hash}`, JSON.stringify(obj);
     return 1;
   }
 
@@ -208,7 +208,7 @@ export default class RedisShim {
     const existing = localStorage.getItem(`redis:${key}`);
     const array = existing ? JSON.parse(existing) : [];
     array.unshift(...values);
-    localStorage.setItem(`redis:${key}`, JSON.stringify(array));
+    localStorage.setItem(`redis:${key}`, JSON.stringify(array);
     return array.length;
   }
 
@@ -217,7 +217,7 @@ export default class RedisShim {
     if (existing) {
       const array = JSON.parse(existing);
       const value = array.pop();
-      localStorage.setItem(`redis:${key}`, JSON.stringify(array));
+      localStorage.setItem(`redis:${key}`, JSON.stringify(array);
       return value;
     }
     return null;
@@ -225,15 +225,15 @@ export default class RedisShim {
 
   // Additional Redis methods that might be called
   async flushall() {
-    const keys = Object.keys(localStorage).filter(key => key.startsWith('redis:'));
-    keys.forEach(key => localStorage.removeItem(key));
+    const keys = Object.keys(localStorage).filter(key => key.startsWith('redis:');
+    keys.forEach(key => localStorage.removeItem(key);
     return 'OK';
   }
 
   async keys(pattern) {
     const keys = Object.keys(localStorage)
-      .filter(key => key.startsWith('redis:'))
-      .map(key => key.replace('redis:', ''));
+      .filter(key => key.startsWith('redis:')
+      .map(key => key.replace('redis:', '');
     return keys;
   }
 
@@ -262,7 +262,7 @@ export default class RedisShim {
     const current = await this.get(key);
     const value = parseInt(current) || 0;
     const newValue = value + 1;
-    await this.set(key, newValue.toString());
+    await this.set(key, newValue.toString();
     return newValue;
   }
 
@@ -274,7 +274,7 @@ export default class RedisShim {
     if (value) {
       const parsed = JSON.parse(value);
       parsed._ttl = Date.now() + (seconds * 1000);
-      localStorage.setItem(storageKey, JSON.stringify(parsed));
+      localStorage.setItem(storageKey, JSON.stringify(parsed);
       return 1;
     }
     return 0;
@@ -291,7 +291,7 @@ export default class RedisShim {
         bc.postMessage({
           channel,
           message: typeof message === 'string' ? message : JSON.stringify(message),
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
         bc.close();
         return 1;
@@ -302,9 +302,9 @@ export default class RedisShim {
         detail: {
           channel,
           message: typeof message === 'string' ? message : JSON.stringify(message),
-          timestamp: Date.now()
+          timestamp: Date.now(),
         }
-      }));
+      });
 
       return 1;
     } catch (error) {
@@ -382,7 +382,7 @@ export default class RedisShim {
       ...this.stats,
       hitRate: this.stats.operations > 0 ? (this.stats.hits / (this.stats.hits + this.stats.misses)) * 100 : 0,
       errorRate: this.stats.operations > 0 ? (this.stats.errors / this.stats.operations) * 100 : 0,
-      storage: this.getStorageInfo()
+      storage: this.getStorageInfo(),
     };
   }
 
@@ -402,7 +402,7 @@ export default class RedisShim {
       return {
         keys: totalKeys,
         sizeBytes: totalSize,
-        sizeKB: Math.round(totalSize / 1024)
+        sizeKB: Math.round(totalSize / 1024),
       };
     } catch (error) {
       return { keys: 0, sizeBytes: 0, sizeKB: 0 };
@@ -461,14 +461,14 @@ export default class RedisShim {
 
     if (section === 'memory') {
       return Object.entries(info)
-        .filter(([key]) => key.includes('memory') || key.includes('used'))
+        .filter(([key]) => key.includes('memory') || key.includes('used')
         .map(([key, value]) => `${key}:${value}`)
         .join('\r\n');
     }
 
     if (section === 'stats') {
       return Object.entries(info)
-        .filter(([key]) => key.includes('hits') || key.includes('operations') || key.includes('rate'))
+        .filter(([key]) => key.includes('hits') || key.includes('operations') || key.includes('rate')
         .map(([key, value]) => `${key}:${value}`)
         .join('\r\n');
     }

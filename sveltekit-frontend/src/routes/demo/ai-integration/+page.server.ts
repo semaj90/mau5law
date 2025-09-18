@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
           ollama: { status: 'timeout', details: 'Health check timeout' },
           postgres: { status: 'timeout', details: 'Health check timeout' },
           redis: { status: 'checking', details: 'Checking...' }
-        }), 3000))
+        }), 3000)
       ])
     ]);
 
@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
       }
     }
 
-    // Process system health
+    // Process system health;
     let healthData = {
       go: { status: 'unknown', details: 'Unable to check' },
       ollama: { status: 'unknown', details: 'Unable to check' },
@@ -48,7 +48,7 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
       { id: 'doc4', title: 'Compliance Review', content: 'The regulatory framework requires...' }
     ];
 
-    // Create demo embeddings (3D vectors for visualization)
+    // Create demo embeddings (3D vectors for visualization);
     const demoEmbeddings = demoDocuments.map((_, index) => {
       const base = index * 0.25;
       return [
@@ -68,22 +68,22 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
       initialLabels: demoDocuments.map(doc => doc.title),
       demoDocuments,
       
-      // Performance metrics baseline
+      // Performance metrics baseline;
       performanceMetrics: {
         requests: 0,
         avgResponseTime: 0,
         cacheHitRate: 85, // Start with realistic baseline
         embeddingsGenerated: demoDocuments.length,
-        vectorSimilarityQueries: 0
+        vectorSimilarityQueries: 0,
       },
       
       // Server-side timestamp for performance tracking
-      serverLoadTime: Date.now()
+      serverLoadTime: Date.now(),
     };
   } catch (err) {
     console.error('Server-side data loading error:', err);
     
-    // Don't fail the page, provide fallback data
+    // Don't fail the page, provide fallback data;
     return {
       systemHealth: {
         go: { status: 'error', details: 'Server load error' },
@@ -100,15 +100,15 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
         avgResponseTime: 0,
         cacheHitRate: 0,
         embeddingsGenerated: 0,
-        vectorSimilarityQueries: 0
+        vectorSimilarityQueries: 0,
       },
       serverLoadTime: Date.now(),
-      error: 'Failed to load initial data'
+      error: 'Failed to load initial data',
     };
   }
 };
 
-// Helper function to check system health
+// Helper function to check system health;
 async function checkSystemHealth(fetch: any) {
   const healthChecks = [
     { name: 'go', url: 'http://localhost:8080/health' },
@@ -118,7 +118,7 @@ async function checkSystemHealth(fetch: any) {
 
   const health: Record<string, { status: string; details?: string }> = {};
 
-  // Check each service with short timeout
+  // Check each service with short timeout;
   for (const check of healthChecks) {
     try {
       const controller = new AbortController();
@@ -126,7 +126,7 @@ async function checkSystemHealth(fetch: any) {
       
       const response = await fetch(check.url, {
         method: 'GET',
-        signal: controller.signal
+        signal: controller.signal,
       });
       
       clearTimeout(timeoutId);
@@ -138,7 +138,7 @@ async function checkSystemHealth(fetch: any) {
     } catch (error) {
       health[check.name] = {
         status: 'error',
-        details: error instanceof Error ? error.message: 'Connection failed'
+        details: error instanceof Error ? error.message: 'Connection failed',
       };
     }
   }

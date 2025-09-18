@@ -13,9 +13,9 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
     const rolesModule: any = await import('$lib/auth/roles');
     const AccessControl: any = rolesModule?.AccessControl ?? rolesModule?.default ?? rolesModule;
 
-    // Check current session
+    // Check current session;
     const sessionResponse = await fetch('/api/auth/session', {
-      credentials: 'include'
+      credentials: 'include',
     });
 
     if (!sessionResponse.ok) {
@@ -41,11 +41,11 @@ export const load: LayoutLoad = async ({ fetch, url, depends }) => {
     return {
       user: sessionData.user,
       session: sessionData.session,
-      permissions: AccessControl?.getRolePermissions?.(sessionData.user.role) ?? []
+      permissions: AccessControl?.getRolePermissions?.(sessionData.user.role) ?? [],
     };
 
   } catch (error: any) {
-    // Re-throw SvelteKit HTTP/redirect-like errors so the framework can handle them
+    // Re-throw SvelteKit HTTP/redirect-like errors so the framework can handle them;
     if (error && typeof (error as any).status === 'number') {
       throw error;
     }

@@ -34,13 +34,13 @@ class ParallaxDynamic {
 			fps: 0,
 			frameTime: 0,
 			lastFrameTime: 0,
-			transformsPerSecond: 0
+			transformsPerSecond: 0,
 		};
 		
 		this.callbacks = {
 			onUpdate: null,
 			onPerformanceChange: null,
-			onDeviceOrientationChange: null
+			onDeviceOrientationChange: null,
 		};
 		
 		this.animationId = null;
@@ -59,7 +59,7 @@ class ParallaxDynamic {
 			mobile: this.isMobile,
 			gyroscope: this.isGyroscopeAvailable,
 			webgpu: !!this.webgpuDevice,
-			performanceMode: this.config.performanceMode
+			performanceMode: this.config.performanceMode,
 		});
 	}
 	
@@ -80,7 +80,7 @@ class ParallaxDynamic {
 		
 		try {
 			const adapter = await navigator.gpu.requestAdapter({
-				powerPreference: 'high-performance'
+				powerPreference: 'high-performance',
 			});
 			
 			if (!adapter) return;
@@ -182,7 +182,7 @@ class ParallaxDynamic {
 			layout: 'auto',
 			compute: {
 				module: shaderModule,
-				entryPoint: 'main'
+				entryPoint: 'main',
 			}
 		});
 	}
@@ -236,28 +236,28 @@ class ParallaxDynamic {
 	
 	setupEventListeners() {
 		// Mouse events
-		window.addEventListener('mousemove', this.handleMouseMove.bind(this));
+		window.addEventListener('mousemove', this.handleMouseMove.bind(this);
 		
 		// Touch events for mobile
 		window.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-		window.addEventListener('touchstart', this.handleTouchStart.bind(this));
-		window.addEventListener('touchend', this.handleTouchEnd.bind(this));
+		window.addEventListener('touchstart', this.handleTouchStart.bind(this);
+		window.addEventListener('touchend', this.handleTouchEnd.bind(this);
 		
 		// Gyroscope events
 		if (this.isGyroscopeAvailable) {
-			window.addEventListener('deviceorientation', this.handleGyroscope.bind(this));
+			window.addEventListener('deviceorientation', this.handleGyroscope.bind(this);
 		}
 		
 		// Pointer events
-		window.addEventListener('pointermove', this.handlePointerMove.bind(this));
-		window.addEventListener('pointerdown', this.handlePointerDown.bind(this));
-		window.addEventListener('pointerup', this.handlePointerUp.bind(this));
+		window.addEventListener('pointermove', this.handlePointerMove.bind(this);
+		window.addEventListener('pointerdown', this.handlePointerDown.bind(this);
+		window.addEventListener('pointerup', this.handlePointerUp.bind(this);
 		
 		// Performance monitoring
-		window.addEventListener('resize', this.handleResize.bind(this));
+		window.addEventListener('resize', this.handleResize.bind(this);
 		
 		// Page visibility for performance optimization
-		document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+		document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this);
 	}
 	
 	handleMouseMove(event) {
@@ -395,7 +395,7 @@ class ParallaxDynamic {
 		const layerBuffer = this.webgpuDevice.createBuffer({
 			size: layerData.byteLength,
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-			mappedAtCreation: true
+			mappedAtCreation: true,
 		});
 		new Float32Array(layerBuffer.getMappedRange()).set(layerData);
 		layerBuffer.unmap();
@@ -403,7 +403,7 @@ class ParallaxDynamic {
 		const transformBuffer = this.webgpuDevice.createBuffer({
 			size: transformData.byteLength,
 			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-			mappedAtCreation: true
+			mappedAtCreation: true,
 		});
 		new Float32Array(transformBuffer.getMappedRange()).set(transformData);
 		transformBuffer.unmap();
@@ -420,7 +420,7 @@ class ParallaxDynamic {
 		const paramsBuffer = this.webgpuDevice.createBuffer({
 			size: paramsData.byteLength,
 			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-			mappedAtCreation: true
+			mappedAtCreation: true,
 		});
 		new Float32Array(paramsBuffer.getMappedRange()).set(paramsData);
 		paramsBuffer.unmap();
@@ -440,7 +440,7 @@ class ParallaxDynamic {
 		
 		computePass.setPipeline(this.transformPipeline);
 		computePass.setBindGroup(0, bindGroup);
-		computePass.dispatchWorkgroups(Math.ceil(this.layers.length / 64));
+		computePass.dispatchWorkgroups(Math.ceil(this.layers.length / 64);
 		computePass.end();
 		
 		this.webgpuDevice.queue.submit([commandEncoder.finish()]);
@@ -448,7 +448,7 @@ class ParallaxDynamic {
 		// Read back results
 		const readBuffer = this.webgpuDevice.createBuffer({
 			size: transformData.byteLength,
-			usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
+			usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
 		});
 		
 		const copyEncoder = this.webgpuDevice.createCommandEncoder();
@@ -456,7 +456,7 @@ class ParallaxDynamic {
 		this.webgpuDevice.queue.submit([copyEncoder.finish()]);
 		
 		await readBuffer.mapAsync(GPUMapMode.READ);
-		const resultData = new Float32Array(readBuffer.getMappedRange());
+		const resultData = new Float32Array(readBuffer.getMappedRange();
 		
 		// Apply transforms to DOM elements
 		this.layers.forEach((layer, i) => {
@@ -471,7 +471,7 @@ class ParallaxDynamic {
 				rotateY: resultData[offset + 4],
 				rotateZ: resultData[offset + 5],
 				scaleX: resultData[offset + 6],
-				scaleY: resultData[offset + 7]
+				scaleY: resultData[offset + 7],
 			};
 			
 			this.applyTransformToElement(layer, transform);
@@ -500,8 +500,8 @@ class ParallaxDynamic {
 		}
 		
 		// Clamp to maximum offset
-		inputX = Math.max(-this.config.maxOffset, Math.min(this.config.maxOffset, inputX));
-		inputY = Math.max(-this.config.maxOffset, Math.min(this.config.maxOffset, inputY));
+		inputX = Math.max(-this.config.maxOffset, Math.min(this.config.maxOffset, inputX);
+		inputY = Math.max(-this.config.maxOffset, Math.min(this.config.maxOffset, inputY);
 		
 		this.layers.forEach(layer => {
 			if (!layer.enabled || !layer.element) return;
@@ -523,7 +523,7 @@ class ParallaxDynamic {
 				rotateY: layer.currentOffset.x * 0.02,
 				rotateZ: 0,
 				scaleX: 1 + (layer.depth * 0.01),
-				scaleY: 1 + (layer.depth * 0.01)
+				scaleY: 1 + (layer.depth * 0.01),
 			};
 			
 			this.applyTransformToElement(layer, transform);
@@ -717,7 +717,7 @@ class ParallaxDynamic {
 			webgpu: !!navigator.gpu,
 			memory: navigator.deviceMemory || 4,
 			cores: navigator.hardwareConcurrency || 4,
-			pointerEvents: 'PointerEvent' in window
+			pointerEvents: 'PointerEvent' in window,
 		};
 	}
 }

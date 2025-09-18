@@ -1,12 +1,12 @@
 import * as $protobuf from "protobufjs";
 import Long = require("long");
-/** Namespace legal. */
+/** Namespace legal. */;
 export namespace legal {
 
-    /** Namespace api. */
+    /** Namespace api. */;
     namespace api {
 
-        /** Properties of a User. */
+        /** Properties of a User. */;
         interface IUser {
 
             /** User id */
@@ -31,7 +31,7 @@ export namespace legal {
             preferences?: (legal.api.IUserPreferences|null);
         }
 
-        /** Represents a User. */
+        /** Represents a User. */;
         class User implements IUser {
 
             /**
@@ -139,7 +139,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a UserPreferences. */
+        /** Properties of a UserPreferences. */;
         interface IUserPreferences {
 
             /** UserPreferences theme */
@@ -155,7 +155,7 @@ export namespace legal {
             analyticsOptIn?: (boolean|null);
         }
 
-        /** Represents a UserPreferences. */
+        /** Represents a UserPreferences. */;
         class UserPreferences implements IUserPreferences {
 
             /**
@@ -254,7 +254,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of an AuthRequest. */
+        /** Properties of an AuthRequest. */;
         interface IAuthRequest {
 
             /** AuthRequest email */
@@ -270,7 +270,7 @@ export namespace legal {
             clientInfo?: (string|null);
         }
 
-        /** Represents an AuthRequest. */
+        /** Represents an AuthRequest. */;
         class AuthRequest implements IAuthRequest {
 
             /**
@@ -369,7 +369,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of an AuthResponse. */
+        /** Properties of an AuthResponse. */;
         interface IAuthResponse {
 
             /** AuthResponse success */
@@ -388,7 +388,7 @@ export namespace legal {
             expiresAt?: (number|Long|null);
         }
 
-        /** Represents an AuthResponse. */
+        /** Represents an AuthResponse. */;
         class AuthResponse implements IAuthResponse {
 
             /**
@@ -490,7 +490,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a LegalDocument. */
+        /** Properties of a LegalDocument. */;
         interface ILegalDocument {
 
             /** LegalDocument id */
@@ -533,7 +533,7 @@ export namespace legal {
             securityLevel?: (legal.api.SecurityLevel|null);
         }
 
-        /** Represents a LegalDocument. */
+        /** Represents a LegalDocument. */;
         class LegalDocument implements ILegalDocument {
 
             /**
@@ -659,7 +659,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** DocumentType enum. */
+        /** DocumentType enum. */;
         enum DocumentType {
             DOCUMENT_TYPE_UNKNOWN = 0,
             DOCUMENT_TYPE_CONTRACT = 1,
@@ -672,7 +672,7 @@ export namespace legal {
             DOCUMENT_TYPE_CORRESPONDENCE = 8
         }
 
-        /** DocumentStatus enum. */
+        /** DocumentStatus enum. */;
         enum DocumentStatus {
             DOCUMENT_STATUS_DRAFT = 0,
             DOCUMENT_STATUS_REVIEW = 1,
@@ -681,7 +681,7 @@ export namespace legal {
             DOCUMENT_STATUS_DELETED = 4
         }
 
-        /** SecurityLevel enum. */
+        /** SecurityLevel enum. */;
         enum SecurityLevel {
             SECURITY_LEVEL_PUBLIC = 0,
             SECURITY_LEVEL_INTERNAL = 1,
@@ -689,7 +689,7 @@ export namespace legal {
             SECURITY_LEVEL_RESTRICTED = 3
         }
 
-        /** Properties of a DocumentMetadata. */
+        /** Properties of a DocumentMetadata. */;
         interface IDocumentMetadata {
 
             /** DocumentMetadata jurisdiction */
@@ -720,7 +720,7 @@ export namespace legal {
             caseInfo?: (legal.api.ICaseInformation|null);
         }
 
-        /** Represents a DocumentMetadata. */
+        /** Represents a DocumentMetadata. */;
         class DocumentMetadata implements IDocumentMetadata {
 
             /**
@@ -834,7 +834,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a Party. */
+        /** Properties of a Party. */;
         interface IParty {
 
             /** Party name */
@@ -850,7 +850,7 @@ export namespace legal {
             contact?: (legal.api.IContactInfo|null);
         }
 
-        /** Represents a Party. */
+        /** Represents a Party. */;
         class Party implements IParty {
 
             /**
@@ -949,7 +949,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a ContactInfo. */
+        /** Properties of a ContactInfo. */;
         interface IContactInfo {
 
             /** ContactInfo address */
@@ -965,7 +965,7 @@ export namespace legal {
             lawFirm?: (string|null);
         }
 
-        /** Represents a ContactInfo. */
+        /** Represents a ContactInfo. */;
         class ContactInfo implements IContactInfo {
 
             /**
@@ -1064,7 +1064,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a LegalCitation. */
+        /** Properties of a LegalCitation. */;
         interface ILegalCitation {
 
             /** LegalCitation citationText */
@@ -1080,7 +1080,7 @@ export namespace legal {
             type?: (legal.api.CitationType|null);
         }
 
-        /** Represents a LegalCitation. */
+        /** Represents a LegalCitation. */;
         class LegalCitation implements ILegalCitation {
 
             /**
@@ -1179,7 +1179,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** CitationType enum. */
+        /** CitationType enum. */;
         enum CitationType {
             CITATION_TYPE_CASE_LAW = 0,
             CITATION_TYPE_STATUTE = 1,
@@ -1187,7 +1187,7 @@ export namespace legal {
             CITATION_TYPE_SECONDARY = 3
         }
 
-        /** Properties of a CaseInformation. */
+        /** Properties of a CaseInformation. */;
         interface ICaseInformation {
 
             /** CaseInformation caseNumber */
@@ -1206,7 +1206,7 @@ export namespace legal {
             judges?: (string[]|null);
         }
 
-        /** Represents a CaseInformation. */
+        /** Represents a CaseInformation. */;
         class CaseInformation implements ICaseInformation {
 
             /**
@@ -1308,7 +1308,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** CaseStatus enum. */
+        /** CaseStatus enum. */;
         enum CaseStatus {
             CASE_STATUS_PENDING = 0,
             CASE_STATUS_ACTIVE = 1,
@@ -1318,7 +1318,7 @@ export namespace legal {
             CASE_STATUS_APPEALED = 5
         }
 
-        /** Properties of a SearchRequest. */
+        /** Properties of a SearchRequest. */;
         interface ISearchRequest {
 
             /** SearchRequest query */
@@ -1346,7 +1346,7 @@ export namespace legal {
             userId?: (string|null);
         }
 
-        /** Represents a SearchRequest. */
+        /** Represents a SearchRequest. */;
         class SearchRequest implements ISearchRequest {
 
             /**
@@ -1457,7 +1457,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a SearchFilter. */
+        /** Properties of a SearchFilter. */;
         interface ISearchFilter {
 
             /** SearchFilter field */
@@ -1470,7 +1470,7 @@ export namespace legal {
             values?: (string[]|null);
         }
 
-        /** Represents a SearchFilter. */
+        /** Represents a SearchFilter. */;
         class SearchFilter implements ISearchFilter {
 
             /**
@@ -1566,7 +1566,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a SortOptions. */
+        /** Properties of a SortOptions. */;
         interface ISortOptions {
 
             /** SortOptions field */
@@ -1576,7 +1576,7 @@ export namespace legal {
             descending?: (boolean|null);
         }
 
-        /** Represents a SortOptions. */
+        /** Represents a SortOptions. */;
         class SortOptions implements ISortOptions {
 
             /**
@@ -1669,7 +1669,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** SearchType enum. */
+        /** SearchType enum. */;
         enum SearchType {
             SEARCH_TYPE_FULL_TEXT = 0,
             SEARCH_TYPE_SEMANTIC = 1,
@@ -1678,7 +1678,7 @@ export namespace legal {
             SEARCH_TYPE_LEGAL_CITATION = 4
         }
 
-        /** Properties of a SearchResponse. */
+        /** Properties of a SearchResponse. */;
         interface ISearchResponse {
 
             /** SearchResponse results */
@@ -1700,7 +1700,7 @@ export namespace legal {
             metadata?: (legal.api.ISearchMetadata|null);
         }
 
-        /** Represents a SearchResponse. */
+        /** Represents a SearchResponse. */;
         class SearchResponse implements ISearchResponse {
 
             /**
@@ -1805,7 +1805,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a SearchResult. */
+        /** Properties of a SearchResult. */;
         interface ISearchResult {
 
             /** SearchResult document */
@@ -1827,7 +1827,7 @@ export namespace legal {
             relatedCitations?: (legal.api.ILegalCitation[]|null);
         }
 
-        /** Represents a SearchResult. */
+        /** Represents a SearchResult. */;
         class SearchResult implements ISearchResult {
 
             /**
@@ -1932,7 +1932,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a VectorSimilarity. */
+        /** Properties of a VectorSimilarity. */;
         interface IVectorSimilarity {
 
             /** VectorSimilarity cosineSimilarity */
@@ -1948,7 +1948,7 @@ export namespace legal {
             modelUsed?: (string|null);
         }
 
-        /** Represents a VectorSimilarity. */
+        /** Represents a VectorSimilarity. */;
         class VectorSimilarity implements IVectorSimilarity {
 
             /**
@@ -2047,7 +2047,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a SearchMetadata. */
+        /** Properties of a SearchMetadata. */;
         interface ISearchMetadata {
 
             /** SearchMetadata suggestedQueries */
@@ -2060,7 +2060,7 @@ export namespace legal {
             hasMoreResults?: (boolean|null);
         }
 
-        /** Represents a SearchMetadata. */
+        /** Represents a SearchMetadata. */;
         class SearchMetadata implements ISearchMetadata {
 
             /**
@@ -2156,7 +2156,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a SearchFacet. */
+        /** Properties of a SearchFacet. */;
         interface ISearchFacet {
 
             /** SearchFacet field */
@@ -2166,7 +2166,7 @@ export namespace legal {
             values?: (legal.api.IFacetValue[]|null);
         }
 
-        /** Represents a SearchFacet. */
+        /** Represents a SearchFacet. */;
         class SearchFacet implements ISearchFacet {
 
             /**
@@ -2259,7 +2259,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a FacetValue. */
+        /** Properties of a FacetValue. */;
         interface IFacetValue {
 
             /** FacetValue value */
@@ -2269,7 +2269,7 @@ export namespace legal {
             count?: (number|null);
         }
 
-        /** Represents a FacetValue. */
+        /** Represents a FacetValue. */;
         class FacetValue implements IFacetValue {
 
             /**
@@ -2362,7 +2362,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a ChatMessage. */
+        /** Properties of a ChatMessage. */;
         interface IChatMessage {
 
             /** ChatMessage id */
@@ -2390,7 +2390,7 @@ export namespace legal {
             metadata?: (legal.api.IMessageMetadata|null);
         }
 
-        /** Represents a ChatMessage. */
+        /** Represents a ChatMessage. */;
         class ChatMessage implements IChatMessage {
 
             /**
@@ -2501,7 +2501,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** MessageType enum. */
+        /** MessageType enum. */;
         enum MessageType {
             MESSAGE_TYPE_USER = 0,
             MESSAGE_TYPE_ASSISTANT = 1,
@@ -2510,7 +2510,7 @@ export namespace legal {
             MESSAGE_TYPE_FUNCTION_CALL = 4
         }
 
-        /** Properties of a MessageMetadata. */
+        /** Properties of a MessageMetadata. */;
         interface IMessageMetadata {
 
             /** MessageMetadata modelUsed */
@@ -2529,7 +2529,7 @@ export namespace legal {
             confidenceScore?: (number|null);
         }
 
-        /** Represents a MessageMetadata. */
+        /** Represents a MessageMetadata. */;
         class MessageMetadata implements IMessageMetadata {
 
             /**
@@ -2631,7 +2631,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a ChatRequest. */
+        /** Properties of a ChatRequest. */;
         interface IChatRequest {
 
             /** ChatRequest sessionId */
@@ -2650,7 +2650,7 @@ export namespace legal {
             options?: (legal.api.IChatOptions|null);
         }
 
-        /** Represents a ChatRequest. */
+        /** Represents a ChatRequest. */;
         class ChatRequest implements IChatRequest {
 
             /**
@@ -2752,7 +2752,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a ChatContext. */
+        /** Properties of a ChatContext. */;
         interface IChatContext {
 
             /** ChatContext documentIds */
@@ -2768,7 +2768,7 @@ export namespace legal {
             variables?: ({ [k: string]: string }|null);
         }
 
-        /** Represents a ChatContext. */
+        /** Represents a ChatContext. */;
         class ChatContext implements IChatContext {
 
             /**
@@ -2867,7 +2867,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a ChatOptions. */
+        /** Properties of a ChatOptions. */;
         interface IChatOptions {
 
             /** ChatOptions model */
@@ -2886,7 +2886,7 @@ export namespace legal {
             includeSources?: (boolean|null);
         }
 
-        /** Represents a ChatOptions. */
+        /** Represents a ChatOptions. */;
         class ChatOptions implements IChatOptions {
 
             /**
@@ -2988,7 +2988,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a ChatResponse. */
+        /** Properties of a ChatResponse. */;
         interface IChatResponse {
 
             /** ChatResponse response */
@@ -3013,7 +3013,7 @@ export namespace legal {
             actionItems?: (legal.api.IActionItem[]|null);
         }
 
-        /** Represents a ChatResponse. */
+        /** Represents a ChatResponse. */;
         class ChatResponse implements IChatResponse {
 
             /**
@@ -3121,7 +3121,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of an ActionItem. */
+        /** Properties of an ActionItem. */;
         interface IActionItem {
 
             /** ActionItem description */
@@ -3137,7 +3137,7 @@ export namespace legal {
             assignedTo?: (string|null);
         }
 
-        /** Represents an ActionItem. */
+        /** Represents an ActionItem. */;
         class ActionItem implements IActionItem {
 
             /**
@@ -3236,7 +3236,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** ActionPriority enum. */
+        /** ActionPriority enum. */;
         enum ActionPriority {
             ACTION_PRIORITY_LOW = 0,
             ACTION_PRIORITY_MEDIUM = 1,
@@ -3244,7 +3244,7 @@ export namespace legal {
             ACTION_PRIORITY_CRITICAL = 3
         }
 
-        /** Properties of an Attachment. */
+        /** Properties of an Attachment. */;
         interface IAttachment {
 
             /** Attachment filename */
@@ -3263,7 +3263,7 @@ export namespace legal {
             checksum?: (string|null);
         }
 
-        /** Represents an Attachment. */
+        /** Represents an Attachment. */;
         class Attachment implements IAttachment {
 
             /**
@@ -3365,7 +3365,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of an AnalysisRequest. */
+        /** Properties of an AnalysisRequest. */;
         interface IAnalysisRequest {
 
             /** AnalysisRequest documentId */
@@ -3384,7 +3384,7 @@ export namespace legal {
             userId?: (string|null);
         }
 
-        /** Represents an AnalysisRequest. */
+        /** Represents an AnalysisRequest. */;
         class AnalysisRequest implements IAnalysisRequest {
 
             /**
@@ -3486,7 +3486,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** AnalysisType enum. */
+        /** AnalysisType enum. */;
         enum AnalysisType {
             ANALYSIS_TYPE_RISK_ASSESSMENT = 0,
             ANALYSIS_TYPE_CLAUSE_EXTRACTION = 1,
@@ -3496,7 +3496,7 @@ export namespace legal {
             ANALYSIS_TYPE_SENTIMENT_ANALYSIS = 5
         }
 
-        /** Properties of an AnalysisOptions. */
+        /** Properties of an AnalysisOptions. */;
         interface IAnalysisOptions {
 
             /** AnalysisOptions jurisdiction */
@@ -3512,7 +3512,7 @@ export namespace legal {
             includeRecommendations?: (boolean|null);
         }
 
-        /** Represents an AnalysisOptions. */
+        /** Represents an AnalysisOptions. */;
         class AnalysisOptions implements IAnalysisOptions {
 
             /**
@@ -3611,7 +3611,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of an AnalysisResponse. */
+        /** Properties of an AnalysisResponse. */;
         interface IAnalysisResponse {
 
             /** AnalysisResponse analysisId */
@@ -3633,7 +3633,7 @@ export namespace legal {
             recommendations?: (legal.api.IRecommendation[]|null);
         }
 
-        /** Represents an AnalysisResponse. */
+        /** Represents an AnalysisResponse. */;
         class AnalysisResponse implements IAnalysisResponse {
 
             /**
@@ -3738,7 +3738,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of an AnalysisResult. */
+        /** Properties of an AnalysisResult. */;
         interface IAnalysisResult {
 
             /** AnalysisResult category */
@@ -3760,7 +3760,7 @@ export namespace legal {
             riskLevel?: (legal.api.RiskLevel|null);
         }
 
-        /** Represents an AnalysisResult. */
+        /** Represents an AnalysisResult. */;
         class AnalysisResult implements IAnalysisResult {
 
             /**
@@ -3865,7 +3865,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** RiskLevel enum. */
+        /** RiskLevel enum. */;
         enum RiskLevel {
             RISK_LEVEL_LOW = 0,
             RISK_LEVEL_MEDIUM = 1,
@@ -3873,7 +3873,7 @@ export namespace legal {
             RISK_LEVEL_CRITICAL = 3
         }
 
-        /** Properties of a Recommendation. */
+        /** Properties of a Recommendation. */;
         interface IRecommendation {
 
             /** Recommendation title */
@@ -3892,7 +3892,7 @@ export namespace legal {
             steps?: (string[]|null);
         }
 
-        /** Represents a Recommendation. */
+        /** Represents a Recommendation. */;
         class Recommendation implements IRecommendation {
 
             /**
@@ -3994,7 +3994,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** RecommendationType enum. */
+        /** RecommendationType enum. */;
         enum RecommendationType {
             RECOMMENDATION_TYPE_ACTION = 0,
             RECOMMENDATION_TYPE_RESEARCH = 1,
@@ -4002,7 +4002,7 @@ export namespace legal {
             RECOMMENDATION_TYPE_COMPLIANCE = 3
         }
 
-        /** Properties of a HealthCheckRequest. */
+        /** Properties of a HealthCheckRequest. */;
         interface IHealthCheckRequest {
 
             /** HealthCheckRequest service */
@@ -4012,7 +4012,7 @@ export namespace legal {
             includeDetails?: (boolean|null);
         }
 
-        /** Represents a HealthCheckRequest. */
+        /** Represents a HealthCheckRequest. */;
         class HealthCheckRequest implements IHealthCheckRequest {
 
             /**
@@ -4105,7 +4105,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a HealthCheckResponse. */
+        /** Properties of a HealthCheckResponse. */;
         interface IHealthCheckResponse {
 
             /** HealthCheckResponse healthy */
@@ -4124,7 +4124,7 @@ export namespace legal {
             version?: (string|null);
         }
 
-        /** Represents a HealthCheckResponse. */
+        /** Represents a HealthCheckResponse. */;
         class HealthCheckResponse implements IHealthCheckResponse {
 
             /**
@@ -4226,7 +4226,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a SystemStatus. */
+        /** Properties of a SystemStatus. */;
         interface ISystemStatus {
 
             /** SystemStatus serviceName */
@@ -4251,7 +4251,7 @@ export namespace legal {
             lastUpdated?: (google.protobuf.ITimestamp|null);
         }
 
-        /** Represents a SystemStatus. */
+        /** Represents a SystemStatus. */;
         class SystemStatus implements ISystemStatus {
 
             /**
@@ -4359,7 +4359,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a BatchRequest. */
+        /** Properties of a BatchRequest. */;
         interface IBatchRequest {
 
             /** BatchRequest batchId */
@@ -4375,7 +4375,7 @@ export namespace legal {
             userId?: (string|null);
         }
 
-        /** Represents a BatchRequest. */
+        /** Represents a BatchRequest. */;
         class BatchRequest implements IBatchRequest {
 
             /**
@@ -4474,7 +4474,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a BatchOperation. */
+        /** Properties of a BatchOperation. */;
         interface IBatchOperation {
 
             /** BatchOperation operationId */
@@ -4487,7 +4487,7 @@ export namespace legal {
             parameters?: ({ [k: string]: string }|null);
         }
 
-        /** Represents a BatchOperation. */
+        /** Represents a BatchOperation. */;
         class BatchOperation implements IBatchOperation {
 
             /**
@@ -4583,7 +4583,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a BatchOptions. */
+        /** Properties of a BatchOptions. */;
         interface IBatchOptions {
 
             /** BatchOptions parallelExecution */
@@ -4599,7 +4599,7 @@ export namespace legal {
             continueOnError?: (boolean|null);
         }
 
-        /** Represents a BatchOptions. */
+        /** Represents a BatchOptions. */;
         class BatchOptions implements IBatchOptions {
 
             /**
@@ -4698,7 +4698,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of a BatchResponse. */
+        /** Properties of a BatchResponse. */;
         interface IBatchResponse {
 
             /** BatchResponse batchId */
@@ -4720,7 +4720,7 @@ export namespace legal {
             errorMessage?: (string|null);
         }
 
-        /** Represents a BatchResponse. */
+        /** Represents a BatchResponse. */;
         class BatchResponse implements IBatchResponse {
 
             /**
@@ -4825,7 +4825,7 @@ export namespace legal {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** BatchStatus enum. */
+        /** BatchStatus enum. */;
         enum BatchStatus {
             BATCH_STATUS_PENDING = 0,
             BATCH_STATUS_RUNNING = 1,
@@ -4834,7 +4834,7 @@ export namespace legal {
             BATCH_STATUS_CANCELLED = 4
         }
 
-        /** Properties of a BatchResult. */
+        /** Properties of a BatchResult. */;
         interface IBatchResult {
 
             /** BatchResult operationId */
@@ -4853,7 +4853,7 @@ export namespace legal {
             processingTimeMs?: (number|null);
         }
 
-        /** Represents a BatchResult. */
+        /** Represents a BatchResult. */;
         class BatchResult implements IBatchResult {
 
             /**
@@ -4957,13 +4957,13 @@ export namespace legal {
     }
 }
 
-/** Namespace google. */
+/** Namespace google. */;
 export namespace google {
 
-    /** Namespace protobuf. */
+    /** Namespace protobuf. */;
     namespace protobuf {
 
-        /** Properties of a Timestamp. */
+        /** Properties of a Timestamp. */;
         interface ITimestamp {
 
             /** Timestamp seconds */
@@ -4973,7 +4973,7 @@ export namespace google {
             nanos?: (number|null);
         }
 
-        /** Represents a Timestamp. */
+        /** Represents a Timestamp. */;
         class Timestamp implements ITimestamp {
 
             /**

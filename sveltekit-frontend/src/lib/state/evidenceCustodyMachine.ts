@@ -12,7 +12,7 @@ import { db } from "$lib/db";
 import { evidence } from "$lib/db/schema"; // Removed non-existent evidenceVectors & collaborationSessions
 import { eq, and, desc } from "drizzle-orm";
 
-// Types for the custody workflow state machine
+// Types for the custody workflow state machine;
 export interface EvidenceCustodyContext {
   // Core evidence data
   evidenceId: string;
@@ -40,17 +40,17 @@ export interface EvidenceCustodyContext {
     timestampValid: boolean;
     digitalSignatureValid: boolean;
     aiAnalysisScore: number;
-    riskAssessment: string;
+    riskAssessment: string;,
   };
 
-  // AI analysis and recommendations
+  // AI analysis and recommendations;
   aiAnalysis?: {
     authenticity: number;
     completeness: number;
     relevance: number;
     riskLevel: "low" | "medium" | "high" | "critical";
     recommendations: string[];
-    flaggedAnomalies: string[];
+    flaggedAnomalies: string[];,
   };
 
   // Collaboration state
@@ -79,16 +79,16 @@ export interface EvidenceCustodyContext {
   error?: string;
   warnings: string[];
   retryCount: number;
-  maxRetries: number;
+  maxRetries: number;,
 }
 
-export type EvidenceCustodyEvent =
+export type EvidenceCustodyEvent =;
   | {
       type: "START_CUSTODY_WORKFLOW";
       evidenceId: string;
       caseId: string;
       userId: string;
-      originalHash: string;
+      originalHash: string;,
     }
   | { type: "VERIFY_INTEGRITY" }
   | { type: "START_AI_ANALYSIS" }
@@ -104,9 +104,8 @@ export type EvidenceCustodyEvent =
   | { type: "FORCE_COMPLETE" }
   | { type: "UPDATE_PROGRESS"; progress: number; stage: string };
 
-// Service implementations
-const evidenceIntakeService = fromPromise(
-  async ({ input }: { input: EvidenceCustodyContext }) => {
+// Service implementations;
+const evidenceIntakeService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
     console.log(
       `Starting evidence intake for custody workflow: ${input.evidenceId}`
     );
@@ -115,7 +114,7 @@ const evidenceIntakeService = fromPromise(
     const evidenceRecord = await db
       .select()
       .from(evidence)
-      .where(eq(evidence.id, input.evidenceId))
+      .where(eq(evidence.id, input.evidenceId)
       .limit(1);
 
     if (!evidenceRecord.length) {
@@ -128,7 +127,7 @@ const evidenceIntakeService = fromPromise(
     const currentHash = await generateEvidenceHash(evidenceData);
     const hashMatch = currentHash === input.originalHash;
 
-    // Create initial custody event
+    // Create initial custody event;
     const custodyEvent = {
       id: crypto.randomUUID(),
       eventType: "intake" as const,
@@ -158,13 +157,12 @@ const evidenceIntakeService = fromPromise(
   }
 );
 
-const integrityVerificationService = fromPromise(
-  async ({ input }: { input: EvidenceCustodyContext }) => {
+const integrityVerificationService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
     console.log(
       `Performing integrity verification for evidence: ${input.evidenceId}`
     );
 
-    // Multi-layer integrity verification
+    // Multi-layer integrity verification;
     const verificationResults = {
       hashMatch: input.currentHash === input.originalHash,
       metadataIntact: await verifyMetadataIntegrity(input.evidenceData!),
@@ -174,7 +172,7 @@ const integrityVerificationService = fromPromise(
       riskAssessment: "pending",
     };
 
-    // AI-powered integrity analysis
+    // AI-powered integrity analysis;
     try {
       const aiResponse = await fetch("/api/ai/analyze-evidence", {
         method: "POST",
@@ -209,12 +207,12 @@ const integrityVerificationService = fromPromise(
       integrityStatus = "compromised";
     } else if (
       verificationResults.aiAnalysisScore < 0.7 ||
-      !verificationResults.timestampValid
+      !verificationResults.timestampValid;
     ) {
       integrityStatus = "requires-attention";
     }
 
-    // Create verification event
+    // Create verification event;
     const custodyEvent = {
       id: crypto.randomUUID(),
       eventType: "verification" as const,
@@ -241,13 +239,12 @@ const integrityVerificationService = fromPromise(
   }
 );
 
-const aiAnalysisService = fromPromise(
-  async ({ input }: { input: EvidenceCustodyContext }) => {
+const aiAnalysisService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
     console.log(
       `Performing AI analysis for evidence custody: ${input.evidenceId}`
     );
 
-    // Multi-agent AI analysis using the existing pipeline
+    // Multi-agent AI analysis using the existing pipeline;
     const analysisResponse = await fetch("/api/multi-agent/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -269,7 +266,7 @@ const aiAnalysisService = fromPromise(
 
     const analysisResult = await analysisResponse.json();
 
-    // Structure the AI analysis for custody workflow
+    // Structure the AI analysis for custody workflow;
     const aiAnalysis = {
       authenticity: analysisResult.authenticityScore || 0.8,
       completeness: analysisResult.completenessScore || 0.9,
@@ -279,7 +276,7 @@ const aiAnalysisService = fromPromise(
       flaggedAnomalies: analysisResult.anomalies || [],
     };
 
-    // Create analysis event
+    // Create analysis event;
     const custodyEvent = {
       id: crypto.randomUUID(),
       eventType: "analysis" as const,
@@ -308,8 +305,7 @@ const aiAnalysisService = fromPromise(
   }
 );
 
-const collaborationService = fromPromise(
-  async ({ input }: { input: EvidenceCustodyContext }) => {
+const collaborationService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
     console.log(
       `Setting up collaboration session for evidence: ${input.evidenceId}`
     );
@@ -322,7 +318,7 @@ const collaborationService = fromPromise(
     // Collaboration session persistence temporarily disabled (schema entity missing)
     // TODO: Re-enable when collaborationSessions table is defined
 
-    // Set up real-time WebSocket connection for collaboration
+    // Set up real-time WebSocket connection for collaboration;
     const collaborationSession = {
       sessionId,
       participants: [
@@ -337,7 +333,7 @@ const collaborationService = fromPromise(
       annotations: input.collaborationSession?.annotations || [],
     };
 
-    // Notify other participants via WebSocket
+    // Notify other participants via WebSocket;
     await notifyCollaborators(sessionId, {
       type: "user-joined",
       userId: input.userId,
@@ -351,18 +347,17 @@ const collaborationService = fromPromise(
   }
 );
 
-const custodyTransferService = fromPromise(
-  async ({ input }: { input: EvidenceCustodyContext }) => {
+const custodyTransferService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
     console.log(
       `Processing custody transfer for evidence: ${input.evidenceId}`
     );
 
-    // Validate transfer requirements
+    // Validate transfer requirements;
     if (!input.transferReason) {
       throw new Error("Transfer reason is required for custody transfer");
     }
 
-    // Create transfer event with digital signatures
+    // Create transfer event with digital signatures;
     const transferEvent = {
       id: crypto.randomUUID(),
       eventType: "transfer" as const,
@@ -391,11 +386,10 @@ const custodyTransferService = fromPromise(
   }
 );
 
-const custodyFinalizationService = fromPromise(
-  async ({ input }: { input: EvidenceCustodyContext }) => {
+const custodyFinalizationService = fromPromise(async ({ input }: { input: EvidenceCustodyContext }) => {
     console.log(`Finalizing custody for evidence: ${input.evidenceId}`);
 
-    // Generate comprehensive custody report
+    // Generate comprehensive custody report;
     const custodyReport = {
       evidenceId: input.evidenceId,
       caseId: input.caseId,
@@ -418,7 +412,7 @@ const custodyFinalizationService = fromPromise(
     // Store final custody report
     await storeCustodyReport(custodyReport);
 
-    // Create finalization event
+    // Create finalization event;
     const finalizationEvent = {
       id: crypto.randomUUID(),
       eventType: "finalization" as const,
@@ -437,7 +431,7 @@ const custodyFinalizationService = fromPromise(
       }),
     };
 
-    // Close collaboration session
+    // Close collaboration session;
     if (input.collaborationSession) {
       await closeCollaborationSession(input.collaborationSession.sessionId);
     }
@@ -450,7 +444,7 @@ const custodyFinalizationService = fromPromise(
 );
 
 // Main Evidence Chain of Custody state machine
-export const evidenceCustodyMachine = createMachine(
+export const evidenceCustodyMachine = createMachine();
   {
     id: "evidenceCustody",
     types: {
@@ -667,7 +661,7 @@ export const evidenceCustodyMachine = createMachine(
                 event.userId,
               ],
               collaborationSession: ({ context, event }) =>
-                context.collaborationSession
+                context.collaborationSession;
                   ? {
                       ...context.collaborationSession,
                       participants: [
@@ -691,7 +685,7 @@ export const evidenceCustodyMachine = createMachine(
                   (id: any) => id !== event.userId
                 ),
               collaborationSession: ({ context, event }) =>
-                context.collaborationSession
+                context.collaborationSession;
                   ? {
                       ...context.collaborationSession,
                       participants:
@@ -705,7 +699,7 @@ export const evidenceCustodyMachine = createMachine(
           ADD_ANNOTATION: {
             actions: assign({
               collaborationSession: ({ context, event }) =>
-                context.collaborationSession
+                context.collaborationSession;
                   ? {
                       ...context.collaborationSession,
                       annotations: [
@@ -829,7 +823,7 @@ export const evidenceCustodyMachine = createMachine(
 
       error: {
         on: {
-          RETRY: [
+          RETRY: [;
             {
               target: "evidenceIntake",
               guard: ({ context }) => context.retryCount < context.maxRetries,
@@ -872,7 +866,7 @@ export const evidenceCustodyMachine = createMachine(
     },
   },
   {
-    // Guards
+    // Guards;
     guards: {
       requiresApproval: ({ context }) => context.requiresApproval,
       canRetry: ({ context }) => context.retryCount < context.maxRetries,
@@ -882,9 +876,9 @@ export const evidenceCustodyMachine = createMachine(
   }
 );
 
-// Helper functions
+// Helper functions;
 async function generateEvidenceHash(evidence: Evidence): Promise<string> {
-  // Implementation for generating evidence hash
+  // Implementation for generating evidence hash;
   const data = JSON.stringify({
     id: evidence.id,
     content: evidence.content,
@@ -893,8 +887,8 @@ async function generateEvidenceHash(evidence: Evidence): Promise<string> {
   });
 
   const encoder = new TextEncoder();
-  const buffer = await crypto.subtle.digest("SHA-256", encoder.encode(data));
-  const hashArray = Array.from(new Uint8Array(buffer));
+  const buffer = await crypto.subtle.digest("SHA-256", encoder.encode(data);
+  const hashArray = Array.from(new Uint8Array(buffer);
   return hashArray.map((b: any) => b.toString(16).padStart(2, "0")).join("");
 }
 
@@ -902,13 +896,13 @@ async function generateEventSignature(event: {
   evidenceId: string;
   userId: string;
   timestamp: string;
-  eventType: string;
+  eventType: string;,
 }): Promise<string> {
   // Implementation for digital signature generation
   const data = JSON.stringify(event);
   const encoder = new TextEncoder();
-  const buffer = await crypto.subtle.digest("SHA-256", encoder.encode(data));
-  const hashArray = Array.from(new Uint8Array(buffer));
+  const buffer = await crypto.subtle.digest("SHA-256", encoder.encode(data);
+  const hashArray = Array.from(new Uint8Array(buffer);
   return hashArray.map((b: any) => b.toString(16).padStart(2, "0")).join("");
 }
 
@@ -934,14 +928,14 @@ async function getWitnessSignatures(evidenceId: string): Promise<string[]> {
 
 async function notifyCollaborators(
   sessionId: string,
-  notification: any
+  notification: any;
 ): Promise<void> {
   // Implementation for WebSocket notifications
   console.log(`Notifying collaborators in session ${sessionId}:`, notification);
 }
 
 async function calculateSessionDuration(
-  session?: EvidenceCustodyContext["collaborationSession"]
+  session?: EvidenceCustodyContext["collaborationSession"];
 ): Promise<number> {
   if (!session) return 0;
   // Implementation for calculating session duration
@@ -962,7 +956,7 @@ async function closeCollaborationSession(sessionId: string): Promise<void> {
 
 // Export convenience functions
 export const createEvidenceCustodyActor = (
-  context?: Partial<EvidenceCustodyContext>
+  context?: Partial<EvidenceCustodyContext>;
 ) => {
   return evidenceCustodyMachine.provide({
     actions: {
@@ -974,7 +968,7 @@ export const createEvidenceCustodyActor = (
   });
 };
 
-// State machine utility functions
+// State machine utility functions;
 export const isCustodyWorkflowActive = (state: any): boolean => {
   return !["idle", "completed", "failed", "rejected", "cancelled"].includes(
     state.value
@@ -998,7 +992,7 @@ export const getActiveCollaborators = (state: any): string[] => {
 };
 
 export const getCustodyEvents = (
-  state: any
+  state: any;
 ): EvidenceCustodyContext["custodyEvents"] => {
   return state.context.custodyEvents;
 };

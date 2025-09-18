@@ -8,13 +8,13 @@
 
 // ===== SVELTE 5 CORE TYPES =====
 
-// Rune types
+// Rune types;
 export interface StateRune<T> {
-  current: T;
+  current: T;,
 }
 
 export interface DerivedRune<T> {
-  current: T;
+  current: T;,
 }
 
 export interface EffectRune {
@@ -29,7 +29,7 @@ export interface BindableRune<T> {
   (initial?: T): T;
 }
 
-// Snippet types (from Svelte 5)
+// Snippet types (from Svelte 5);
 export interface Snippet<Parameters extends readonly any[] = []> {
   (...args: Parameters): {
     render(): string;
@@ -38,7 +38,7 @@ export interface Snippet<Parameters extends readonly any[] = []> {
   };
 }
 
-// Component types
+// Component types;
 export interface Component<Props extends Record<string, any> = {}> {
   (props: Props): {
     render(): string;
@@ -49,13 +49,13 @@ export interface Component<Props extends Record<string, any> = {}> {
 
 export type ComponentProps<T> = T extends Component<infer P> ? P : never;
 
-// Action types
+// Action types;
 export interface ActionReturn<Parameter = any> {
   update?: (parameter: Parameter) => void;
   destroy?: () => void;
 }
 
-// Transition types
+// Transition types;
 export interface TransitionConfig {
   delay?: number;
   duration?: number;
@@ -64,7 +64,7 @@ export interface TransitionConfig {
   tick?: (t: number, u: number) => void;
 }
 
-// Animation types
+// Animation types;
 export interface AnimationConfig {
   delay?: number;
   duration?: number;
@@ -75,7 +75,7 @@ export interface AnimationConfig {
 
 // ===== SVELTEKIT 2 TYPES =====
 
-// Page and layout load functions
+// Page and layout load functions;
 export interface LoadEvent {
   params: Record<string, string>;
   url: URL;
@@ -98,7 +98,7 @@ export interface LayoutLoad<Data = any> {
   (event: LoadEvent): Promise<Data> | Data;
 }
 
-// Server-side request handlers
+// Server-side request handlers;
 export interface RequestEvent {
   params: Record<string, string>;
   url: URL;
@@ -117,7 +117,7 @@ export interface RequestHandler<Data = any> {
   (event: RequestEvent): Promise<Response> | Response;
 }
 
-// SvelteKit hooks
+// SvelteKit hooks;
 export interface Handle {
   (input: { event: RequestEvent; resolve: any }): Promise<Response>;
 }
@@ -130,7 +130,7 @@ export interface HandleFetch {
   (input: { event: RequestEvent; request: Request; fetch: typeof fetch }): Promise<Response>;
 }
 
-// SvelteKit stores
+// SvelteKit stores;
 export interface PageStore {
   url: URL;
   params: Record<string, string>;
@@ -138,7 +138,7 @@ export interface PageStore {
   data: Record<string, any>;
   error: any;
   state: Record<string, any>;
-  form: any;
+  form: any;,
 }
 
 export type NavigatingStore = {
@@ -146,6 +146,7 @@ export type NavigatingStore = {
   to?: { params: Record<string, string>; url: URL };
   type?: 'link' | 'popstate' | 'goto';
 } | null;
+}
 
 export interface UpdatedStore {
   current: boolean;
@@ -154,20 +155,21 @@ export interface UpdatedStore {
 
 // ===== DATABASE TYPES =====
 
-// SQL and query types
+// SQL and query types;
 export interface SQL<T = unknown> {
   queryChunks: readonly string[];
   params: readonly unknown[];
   typings?: { [key: string]: string };
   shouldInlineParams?: boolean;
-  sql: string;
+  sql: string;,
 }
 
 export interface QueryResult<T = any> {
   rows: T[];
   rowCount: number;
   command?: string;
-  fields?: Array<any>
+  fields?: Array<any>;
+}
 
 export interface DatabaseConnection {
   query<T = any>(sql: string, params?: any[]): Promise<QueryResult<T>;
@@ -175,7 +177,7 @@ export interface DatabaseConnection {
   end(): Promise<void>;
 }
 
-// Enhanced Postgres connection type to fix import issues
+// Enhanced Postgres connection type to fix import issues;
 export interface PostgresConnection {
   (options?: PostgresOptions): SQL<{}>;
   (url: string, options?: PostgresOptions): SQL<{}>;
@@ -198,14 +200,14 @@ export interface PostgresOptions {
   [key: string]: any;
 }
 
-// Drizzle ORM specific types
+// Drizzle ORM specific types;
 export interface DrizzleConfig {
   schema?: Record<string, any>;
   logger?: boolean | any;
   mode?: 'default' | 'planetscale';
 }
 
-// Enhanced Drizzle column functions to fix untyped function calls
+// Enhanced Drizzle column functions to fix untyped function calls;
 export interface DrizzleColumnHelpers {
   pgTable: any;
   serial: any;
@@ -244,7 +246,7 @@ export interface DrizzleColumnHelpers {
   and: any;
   or: any;
   not: any;
-  sql: any;
+  sql: any;,
 }
 
 export interface DrizzleTable<T extends Record<string, any> = Record<string, any> {
@@ -252,7 +254,7 @@ export interface DrizzleTable<T extends Record<string, any> = Record<string, any
     name: string;
     columns: T;
     schema?: string;
-    baseName: string;
+    baseName: string;,
   };
 }
 
@@ -266,7 +268,7 @@ export interface DrizzleColumn<T = any> {
   enumValues?: readonly string[];
 }
 
-// Vector database types
+// Vector database types;
 export interface EmbeddingVector {
   id: string;
   values: number[];
@@ -291,7 +293,7 @@ export interface VectorSearchOptions {
 
 // ===== AI/ML TYPES =====
 
-// Ollama types
+// Ollama types;
 export interface OllamaGenerateRequest {
   model: string;
   prompt: string;
@@ -335,7 +337,7 @@ export interface OllamaEmbeddingRequest {
 }
 
 export interface OllamaEmbeddingResponse {
-  embedding: number[];
+  embedding: number[];,
 }
 
 export interface OllamaModel {
@@ -351,7 +353,7 @@ export interface OllamaModel {
   };
 }
 
-// RAG types
+// RAG types;
 export interface RAGDocument {
   id: string;
   content: string;
@@ -383,7 +385,7 @@ export interface RAGResponse {
 
 // ===== CACHE TYPES =====
 
-// Enhanced cache configuration (fixing our previous errors)
+// Enhanced cache configuration (fixing our previous errors);
 export interface CacheConfiguration {
   layers: CacheLayerConfig[];
   defaultTtl: number;
@@ -460,12 +462,12 @@ export interface CachePolicy {
   evictionStrategy?: 'lru' | 'lfu' | 'fifo' | 'ttl';
   maxSize: number;
   ttl: number;
-  compressionEnabled: boolean;
+  compressionEnabled: boolean;,
 }
 
 // ===== LOKIJS ENHANCED TYPES =====
 
-// Enhanced LokiJS types to fix missing exports
+// Enhanced LokiJS types to fix missing exports;
 export interface Collection<T = any> {
   insert(obj: T | T[]): T | T[];
   find(query?: any): T[];
@@ -475,7 +477,7 @@ export interface Collection<T = any> {
   chain(): any;
   count(query?: any): number;
   data: T[];
-  name: string;
+  name: string;,
 }
 
 export interface LokiMemoryAdapter {
@@ -496,7 +498,7 @@ export interface Loki {
 
 // ===== REDIS ENHANCED TYPES =====
 
-// Enhanced Redis options to fix configuration errors
+// Enhanced Redis options to fix configuration errors;
 export interface EnhancedRedisOptions {
   host?: string;
   port?: number;
@@ -514,7 +516,8 @@ export interface EnhancedRedisOptions {
   [key: string]: any;
 }
 
-// ===== TESTING TYPES =====
+// ===== TESTING TYPES =====;
+}
 
 export interface TestContext {
   name: string;
@@ -525,7 +528,7 @@ export interface TestContext {
 
 export interface ExpectationResult {
   pass: boolean;
-  message: string;
+  message: string;,
 }
 
 export interface MockFunction<T extends (...args: any[]) => any = (...args: any[]) => any> {
@@ -541,7 +544,8 @@ export interface MockFunction<T extends (...args: any[]) => any = (...args: any[
   results: { type: 'return' | 'throw'; value: any }[];
 }
 
-// ===== ENVIRONMENT TYPES =====
+// ===== ENVIRONMENT TYPES =====;
+}
 
 export interface EnvironmentConfig {
   // Database
@@ -576,7 +580,7 @@ export interface EnvironmentConfig {
 
 // ===== UTILITY TYPES =====
 
-// Generic utility types
+// Generic utility types;
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
     ? DeepPartial<U>[]
@@ -610,7 +614,7 @@ export type ClassValue =
 
 // ===== GLOBAL AUGMENTATIONS =====
 
-// Global type augmentations for missing functionality
+// Global type augmentations for missing functionality;
 declare global {
   // Enhanced window interface
   interface Window {

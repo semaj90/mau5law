@@ -37,7 +37,7 @@ function getTableForEntity(entity: string) {
 
 // Convert a simple filters object into an array of drizzle WHERE conditions.
 // - Strings containing '%' are treated as LIKE patterns.
-// - Other values use equality.
+// - Other values use equality.;
 function buildWhereClauses(filters: Record<string, any> | undefined, table: any) {
   if (!filters || typeof filters !== 'object') return [];
   return Object.entries(filters).flatMap(([key, value]) => {
@@ -53,7 +53,7 @@ function buildWhereClauses(filters: Record<string, any> | undefined, table: any)
 
 // Lightweight text-search clause builder used in list/search handlers.
 // Lightweight text-search clause builder used in list/search handlers.
-// Returns an array of drizzle conditions (often a single `or(...)`) or [].
+// Returns an array of drizzle conditions (often a single `or(...)`) or [].;
 function buildSearchClause(entity: string, query: string, table: any) {
   if (!query) return [];
   if (entity === 'cases') {
@@ -68,7 +68,7 @@ function buildSearchClause(entity: string, query: string, table: any) {
   return [];
 }
 // Map entity names to tables (add/remove as needed)
-// Internal map (not exported to SvelteKit routing system)
+// Internal map (not exported to SvelteKit routing system);
 const entityMap = {
   users,
   cases,
@@ -82,6 +82,7 @@ const entityMap = {
 } as const;
 
 type EntityName = keyof typeof entityMap;
+}
 
 export interface CrudRequest {
   action: 'create' | 'read' | 'update' | 'delete' | 'list' | 'search' | 'vector_search';
@@ -133,7 +134,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     if (!entity || !entityMap[entity]) {
       return error(400, ensureError({
         message: `Invalid entity: ${entity}. Available: ${Object.keys(entityMap).join(', ')}`
-      }));
+      });
     }
 
     const table = entityMap[entity];
@@ -141,11 +142,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
     switch (action) {
       case 'read':
-        if (!id) return error(400, ensureError({ message: 'ID required for read operation' }));
+        if (!id) return error(400, ensureError({ message: 'ID required for read operation' });
 
         result = await db.select().from(table).where(eq((table as any).id, id)).limit(1);
         if ((result as { length?: any }).length === 0) {
-          return error(404, ensureError({ message: `${entity} with ID ${id} not found` }));
+          return error(404, ensureError({ message: `${entity} with ID ${id} not found` });
         }
         return json({
           success: true,
@@ -165,11 +166,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
         // Get paginated results
         const query = db.select().from(table).orderBy(orderBy).limit(limit).offset(offset);
 
-        // Add search if provided
+        // Add search if provided;
         if (searchQuery) {
           const searchClauses = buildSearchClause(entity, searchQuery, table);
           if (searchClauses.length > 0) {
-            query.where(and(...searchClauses));
+            query.where(and(...searchClauses);
           }
         }
 
@@ -182,12 +183,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
             total,
             page,
             limit,
-            processingTime: Date.now() - startTime
+            processingTime: Date.now() - startTime,
           }
         } satisfies ApiResponse);
 
       case 'search':
-        if (!searchQuery) return error(400, ensureError({ message: 'Search query required' }));
+        if (!searchQuery) return error(400, ensureError({ message: 'Search query required' });
 
         // Basic text search for now - can be enhanced with vector search
         let searchResult: any[] = [];
@@ -229,25 +230,25 @@ export const GET: RequestHandler = async ({ url, request }) => {
           data: searchResult,
           metadata: {
             total: searchResult.length,
-            processingTime: Date.now() - startTime
+            processingTime: Date.now() - startTime,
           }
         } satisfies ApiResponse);
 
       case 'vector_search':
-        if (!searchQuery) return error(400, ensureError({ message: 'Search query required for vector search' }));
+        if (!searchQuery) return error(400, ensureError({ message: 'Search query required for vector search' });
 
-        // Use the API orchestrator to perform vector search via Go services
+        // Use the API orchestrator to perform vector search via Go services;
         try {
           const vectorResponse = await apiOrchestrator.routeRequest(
             'enhancedRAG',
-            '/api/vector/search',
+            '/api/vector/search',);
             {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 query: searchQuery,
                 entity: entity,
                 limit: limit,
-                similarity_threshold: parseFloat(url.searchParams.get('similarity_threshold') || '0.7')
+                similarity_threshold: parseFloat(url.searchParams.get('similarity_threshold') || '0.7'),
               })
             }
           );
@@ -264,35 +265,35 @@ export const GET: RequestHandler = async ({ url, request }) => {
             metadata: {
               total: vectorData.total || vectorData.results?.length || 0,
               processingTime: Date.now() - startTime,
-              cached: false
+              cached: false,
             }
           } satisfies ApiResponse);
 
         } catch (vectorError) {
           console.error('Vector search error:', vectorError);
 
-          // Fallback to regular search if vector search fails
+          // Fallback to regular search if vector search fails;
           return json({
             success: true,
             data: [],
             error: 'Vector search unavailable, falling back to text search',
             metadata: {
               processingTime: Date.now() - startTime,
-              cached: true
+              cached: true,
             }
           } satisfies ApiResponse);
         }
 
       default:
-        return error(400, ensureError({ message: `Invalid action: ${action}` }));
+        return error(400, ensureError({ message: `Invalid action: ${action}` });
     }
 
   } catch (err: any) {
     console.error('CRUD GET error:', err);
     return error(500, ensureError({
       message: 'Internal server error',
-      details: err instanceof Error ? err.message: String(err)
-    }));
+      details: err instanceof Error ? err.message: String(err),
+    });
   }
 };
 
@@ -306,7 +307,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!entity || !entityMap[entity]) {
       return error(400, ensureError({
         message: `Invalid entity: ${entity}. Available: ${Object.keys(entityMap).join(', ')}`
-      }));
+      });
     }
 
     const table = entityMap[entity];
@@ -314,23 +315,23 @@ export const POST: RequestHandler = async ({ request }) => {
 
     switch (action) {
       case 'create':
-        if (!data) return error(400, ensureError({ message: 'Data required for create operation' }));
+        if (!data) return error(400, ensureError({ message: 'Data required for create operation' });
 
-        // Add timestamps for create
+        // Add timestamps for create;
         const createData = {
           ...data,
           createdAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
         };
 
         result = await db.insert(table).values(createData).returning();
 
-        // If this is a document or evidence with content, trigger embedding generation
+        // If this is a document or evidence with content, trigger embedding generation;
         if ((entity === 'evidence' || entity === 'legalDocuments') && (data as { content?: any; title?: any }).content) {
           try {
             await apiOrchestrator.routeRequest(
               'enhancedRAG',
-              '/api/embeddings/generate',
+              '/api/embeddings/generate',);
               {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -354,18 +355,18 @@ export const POST: RequestHandler = async ({ request }) => {
         } satisfies ApiResponse);
 
       case 'update':
-        if (!id || !data) return error(400, ensureError({ message: 'ID and data required for update operation' }));
+        if (!id || !data) return error(400, ensureError({ message: 'ID and data required for update operation' });
 
-        // Add updated timestamp
+        // Add updated timestamp;
         const updateData = {
           ...data,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         };
 
         result = await db.update(table).set(updateData).where(eq((table as any).id, id)).returning();
 
         if ((result as { length?: any }).length === 0) {
-          return error(404, ensureError({ message: `${entity} with ID ${id} not found` }));
+          return error(404, ensureError({ message: `${entity} with ID ${id} not found` });
         }
 
         return json({
@@ -375,21 +376,21 @@ export const POST: RequestHandler = async ({ request }) => {
         } satisfies ApiResponse);
 
       case 'delete':
-        if (!id) return error(400, ensureError({ message: 'ID required for delete operation' }));
+        if (!id) return error(400, ensureError({ message: 'ID required for delete operation' });
 
         // Perform deletion
         result = await db.delete(table).where(eq((table as any).id, id)).returning();
 
         if ((result as { length?: any }).length === 0) {
-          return error(404, ensureError({ message: `${entity} with ID ${id} not found` }));
+          return error(404, ensureError({ message: `${entity} with ID ${id} not found` });
         }
 
-        // Best-effort cleanup of embeddings / vectors for content entities
+        // Best-effort cleanup of embeddings / vectors for content entities;
         if (['evidence', 'legalDocuments'].includes(entity)) {
           try {
             await apiOrchestrator.routeRequest(
               'enhancedRAG',
-              '/api/embeddings/delete',
+              '/api/embeddings/delete',);
               {
                 body: JSON.stringify({ id, entity }),
                 headers: { 'Content-Type': 'application/json' }
@@ -407,15 +408,15 @@ export const POST: RequestHandler = async ({ request }) => {
         } satisfies ApiResponse);
 
       default:
-        return error(400, ensureError({ message: `Invalid action: ${action}` }));
+        return error(400, ensureError({ message: `Invalid action: ${action}` });
     }
 
   } catch (err: any) {
     console.error('CRUD POST error:', err);
     return error(500, ensureError({
       message: 'Internal server error',
-      details: err instanceof Error ? err.message: String(err)
-    }));
+      details: err instanceof Error ? err.message: String(err),
+    });
   }
 };
 

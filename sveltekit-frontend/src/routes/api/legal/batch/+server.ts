@@ -18,11 +18,11 @@ export const POST: RequestHandler = async ({ request }) => {
 			return json({ error: 'Documents array is required' }, { status: 400 });
 		}
 
-		// Validate document structure
+		// Validate document structure;
 		for (const doc of documents) {
 			if (!doc.id || !doc.content) {
 				return json({ 
-					error: 'Each document must have id and content properties' 
+					error: 'Each document must have id and content properties' ,
 				}, { status: 400 });
 			}
 		}
@@ -54,14 +54,14 @@ export const POST: RequestHandler = async ({ request }) => {
 			documentsProcessed: documents.length,
 			results: processedDocuments,
 			batchId: `batch_${Date.now()}`,
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		});
 
 	} catch (error) {
 		console.error('Batch processing error:', error);
 		return json({
 			success: false,
-			error: error instanceof Error ? error.message: 'Unknown error'
+			error: error instanceof Error ? error.message: 'Unknown error',
 		}, { status: 500 });
 	}
 };

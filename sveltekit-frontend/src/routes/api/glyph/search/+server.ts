@@ -19,20 +19,20 @@ export const GET: RequestHandler = async ({ url }) => {
     if (!query) {
       return json({
         success: false,
-        error: 'Query parameter "q" is required'
+        error: 'Query parameter "q" is required',
       }, { status: 400 });
     }
 
-    // Generate embedding for search query
+    // Generate embedding for search query;
     const queryEmbedding = await embeddingService.embed(query, {
       model: 'mock',
-      dimensions: 768
+      dimensions: 768,
     });
 
     if (!queryEmbedding?.embedding) {
       return json({
         success: false,
-        error: 'Failed to generate query embedding'
+        error: 'Failed to generate query embedding',
       }, { status: 500 });
     }
 
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ url }) => {
         search_stats: {
           total_candidates: results.length,
           filtered_by_style: !!style,
-          embedding_dimensions: queryEmbedding.embedding.length
+          embedding_dimensions: queryEmbedding.embedding.length,
         }
       }
     });
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Search failed'
+      error: error instanceof Error ? error.message: 'Search failed',
     }, { status: 500 });
   }
 };
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!embedding || !Array.isArray(embedding)) {
       return json({
         success: false,
-        error: 'embedding array is required'
+        error: 'embedding array is required',
       }, { status: 400 });
     }
 
@@ -113,7 +113,7 @@ export const POST: RequestHandler = async ({ request }) => {
         search_stats: {
           total_candidates: results.length,
           filtered_by_style: !!style,
-          embedding_dimensions: embedding.length
+          embedding_dimensions: embedding.length,
         }
       }
     });
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Vector search failed'
+      error: error instanceof Error ? error.message: 'Vector search failed',
     }, { status: 500 });
   }
 };

@@ -14,7 +14,7 @@ const projectRoot = process.cwd().includes("sveltekit-frontend")
     : process.cwd(); // If running from project root
 
 export const LOCAL_LLM_PATHS = {
-  // Ollama installation
+  // Ollama installation;
   ollama: {
     executable: join(projectRoot, 'Ollama', 'ollama.exe'),
     app: join(projectRoot, 'Ollama', 'ollama app.exe'),
@@ -23,14 +23,14 @@ export const LOCAL_LLM_PATHS = {
       import.meta.env.OLLAMA_MODELS || join(import.meta.env.USERPROFILE || '', '.ollama', 'models'),
   },
 
-  // llama.cpp installation
+  // llama.cpp installation;
   llamaCpp: {
     basePath: join(projectRoot, 'llama.cpp'),
     executable: join(projectRoot, 'llama.cpp', 'llama-server.exe'),
     baseUrl: 'http://localhost:8080',
   },
 
-  // Local Gemma3 Q4_K_M model
+  // Local Gemma3 Q4_K_M model;
   gemmaModel: {
     path: join(projectRoot, 'gemma3Q4_K_M', 'mohf16-Q4_K_M.gguf'),
     name: 'gemma3-legal:latest', // Use the custom model we'll create
@@ -42,9 +42,9 @@ export const LOCAL_LLM_PATHS = {
   },
 };
 
-// Model configurations for different use cases
+// Model configurations for different use cases;
 export const MODEL_CONFIGS = {
-  // Legal AI assistant configuration (optimized for Q4_K_M)
+  // Legal AI assistant configuration (optimized for Q4_K_M);
   legal: {
     temperature: 0.1,
     maxTokens: 1024,
@@ -55,7 +55,7 @@ export const MODEL_CONFIGS = {
     contextWindow: 8192,
   },
 
-  // Fast response configuration
+  // Fast response configuration;
   fast: {
     temperature: 0.3,
     maxTokens: 256,
@@ -66,7 +66,7 @@ export const MODEL_CONFIGS = {
     contextWindow: 2048,
   },
 
-  // Detailed analysis configuration
+  // Detailed analysis configuration;
   detailed: {
     temperature: 0.8,
     maxTokens: 1024,
@@ -78,7 +78,7 @@ export const MODEL_CONFIGS = {
   },
 };
 
-// Check if local installations are available
+// Check if local installations are available;
 export function checkLocalInstallations() {
   const status = {
     ollama: {
@@ -97,11 +97,11 @@ export function checkLocalInstallations() {
 
   return status;
 }
-// Get preferred local LLM provider
+// Get preferred local LLM provider;
 export function getPreferredProvider() {
   const installations = checkLocalInstallations();
 
-  // Priority: Ollama > llama.cpp (Ollama is easier to manage)
+  // Priority: Ollama > llama.cpp (Ollama is easier to manage);
   if (installations.ollama.available) {
     return "ollama";
   } else if (installations.llamaCpp.available) {
@@ -109,7 +109,7 @@ export function getPreferredProvider() {
   }
   return null;
 }
-// Environment variables for development
+// Environment variables for development;
 export const ENV_CONFIG = {
   // Ollama configuration
   OLLAMA_BASE_URL:
@@ -136,20 +136,20 @@ export const ENV_CONFIG = {
   LOG_LLM_REQUESTS: import.meta.env.LOG_LLM_REQUESTS === "true",
 };
 
-// Helper function to start local services
+// Helper function to start local services;
 export async function startLocalServices(): Promise<any> {
   const { spawn } = await import("child_process");
   const status = checkLocalInstallations();
 
   const services: Array<any> = [];
 
-  // Start Ollama if available
+  // Start Ollama if available;
   if (status.ollama.available) {
     try {
       console.log("🚀 Starting Ollama service...");
       const ollamaProcess = spawn(
         LOCAL_LLM_PATHS.ollama.executable,
-        ["serve"],
+        ["serve"],);
         {
           detached: true,
           stdio: "pipe",
@@ -163,14 +163,14 @@ export async function startLocalServices(): Promise<any> {
       });
 
       // Wait a moment for startup
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 3000);
     } catch (error: any) {
       console.error("Failed to start Ollama:", error);
     }
   }
   return services;
 }
-// Helper function to load Gemma model into Ollama
+// Helper function to load Gemma model into Ollama;
 export async function loadGemmaModel(): Promise<any> {
   const status = checkLocalInstallations();
 
@@ -220,7 +220,7 @@ SYSTEM """You are a specialized Legal AI Assistant powered by Gemma 3. You excel
           );
           resolve(LOCAL_LLM_PATHS.gemmaModel.name);
         } else {
-          reject(new Error(`Failed to load Gemma model, exit code: ${code}`));
+          reject(new Error(`Failed to load Gemma model, exit code: ${code}`);
         }
       });
 

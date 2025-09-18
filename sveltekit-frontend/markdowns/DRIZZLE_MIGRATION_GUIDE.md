@@ -2,7 +2,8 @@
 
 ## Overview
 
-This guide covers the best practices for using Drizzle ORM with JSON fields, custom ID generation, and proper SvelteKit integration. Your setup now includes:
+This guide covers the best practices for using Drizzle ORM with JSON fields, custom ID generation,
+and proper SvelteKit integration. Your setup now includes:
 
 - **Type-safe JSON fields** with Zod validation
 - **Custom ID generation** using CUID2 (where appropriate)
@@ -59,7 +60,7 @@ Your setup now uses Zod schemas for type-safe JSON fields:
 ```typescript
 // Define Zod schema
 export const userSettingsSchema = z.object({
-  theme: z.enum(["light", "dark", "system"]).default("system"),
+  theme: z.enum(['light', 'dark', 'system']).default('system'),
   notifications: z.object({
     email: z.boolean().default(true),
     push: z.boolean().default(false),
@@ -70,12 +71,12 @@ export const userSettingsSchema = z.object({
 export type UserSettings = z.infer<typeof userSettingsSchema>;
 
 // Use in Drizzle schema
-export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  settings: jsonb("settings")
+export const users = pgTable('users', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  settings: jsonb('settings')
     .$type<UserSettings>()
     .default({
-      theme: "system",
+      theme: 'system',
       notifications: { email: true, push: false },
     })
     .notNull(),
@@ -88,7 +89,7 @@ Always validate JSON data before database operations:
 
 ```typescript
 // In your API routes
-import { userSettingsSchema } from "$lib/server/db/unified-schema.ts";
+import { userSettingsSchema } from '$lib/server/db/unified-schema.ts';
 
 export async function PATCH({ request, locals }) {
   const data = await request.json();
@@ -97,10 +98,7 @@ export async function PATCH({ request, locals }) {
   const validatedSettings = userSettingsSchema.parse(data.settings);
 
   // Safe to use in database
-  await db
-    .update(users)
-    .set({ settings: validatedSettings })
-    .where(eq(users.id, locals.user.id));
+  await db.update(users).set({ settings: validatedSettings }).where(eq(users.id, locals.user.id));
 }
 ```
 
@@ -124,10 +122,10 @@ export async function PATCH({ request, locals }) {
 ### Custom ID Example
 
 ```typescript
-import { createId } from "@paralleldrive/cuid2";
+import { createId } from '@paralleldrive/cuid2';
 
-export const legalDocuments = pgTable("legal_documents", {
-  id: text("id")
+export const legalDocuments = pgTable('legal_documents', {
+  id: text('id')
     .primaryKey()
     .$defaultFn(() => createId()),
   // ... other fields
@@ -138,12 +136,12 @@ export const legalDocuments = pgTable("legal_documents", {
 
 ```typescript
 // In your auth code
-import { generateId } from "lucia";
+import { generateId } from 'lucia';
 
 const userId = generateId(15);
 await db.insert(users).values({
   id: userId,
-  email: "user@example.com",
+  email: 'user@example.com',
   // ... other fields
 });
 ```
@@ -156,12 +154,12 @@ For user-initiated actions (forms), use form actions:
 
 ```typescript
 // src/routes/documents/+page.server.ts
-import type { Actions } from "./$types";
+import type { Actions } from './$types';
 
 export const actions: Actions = {
   create: async ({ request, locals }) => {
     const formData = await request.formData();
-    const title = formData.get("title") as string;
+    const title = formData.get('title') as string;
 
     const documentId = createId();
     await db.insert(legalDocuments).values({
@@ -175,8 +173,8 @@ export const actions: Actions = {
 
   update: async ({ request, locals }) => {
     const formData = await request.formData();
-    const id = formData.get("id") as string;
-    const title = formData.get("title") as string;
+    const id = formData.get('id') as string;
+    const title = formData.get('title') as string;
 
     await db
       .update(legalDocuments)
@@ -194,8 +192,8 @@ For programmatic access (fetch from client, third-party APIs):
 
 ```typescript
 // src/routes/api/documents/[id]/+server.ts
-import { json } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ params, locals }) => {
   const document = await db.query.legalDocuments.findFirst({
@@ -203,7 +201,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   });
 
   if (!document) {
-    return json({ error: "Document not found" }, { status: 404 });
+    return json({ error: 'Document not found' }, { status: 404 });
   }
 
   return json(document);
@@ -288,4 +286,5 @@ npm run db:migrate
 npm run dev
 ```
 
-Your schema is now ready for production use with type-safe JSON fields, custom ID generation, and proper SvelteKit integration!
+Your schema is now ready for production use with type-safe JSON fields, custom ID generation, and
+proper SvelteKit integration!

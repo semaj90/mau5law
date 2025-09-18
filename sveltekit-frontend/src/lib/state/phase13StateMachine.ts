@@ -9,7 +9,7 @@ import { setup, assign, fromPromise, fromCallback, createActor, type StateValue 
 import { writable, derived, type Writable } from "svelte/store";
 import { NeuralSpriteEngine } from "$lib/engines/neural-sprite-engine";
 
-// Enhanced context for Phase 13 with WebGL vertex streaming
+// Enhanced context for Phase 13 with WebGL vertex streaming;
 export interface Phase13Context {
   // Legacy legal form fields
   evidenceFiles: File[];
@@ -22,28 +22,28 @@ export interface Phase13Context {
   streamingChunks: ArrayBuffer[];
   pageRankScores: Map<string, number>;
   
-  // Real-time feedback system
+  // Real-time feedback system;
   feedbackLoop: {
     positiveVotes: number;
     negativeVotes: number;
     confidence: number;
-    lastUpdate: number;
+    lastUpdate: number;,
   };
   
-  // Stateless API coordination
+  // Stateless API coordination;
   apiCoordination: {
     redisNodes: string[];
     natsChannels: string[];
     activeConnections: number;
-    queueDepth: number;
+    queueDepth: number;,
   };
   
-  // Context7 MCP integration
+  // Context7 MCP integration;
   mcpContext: {
     semanticSearchResults: any[];
     memoryGraphNodes: any[];
     agentRecommendations: any[];
-    bestPractices: string[];
+    bestPractices: string[];,
   };
   
   // Neural sprite engine integration
@@ -52,15 +52,15 @@ export interface Phase13Context {
   predictedStates: string[];
   cacheHitRate: number;
   
-  // GPU processing status
+  // GPU processing status;
   gpuStatus: {
     utilization: number;
     memoryUsed: number;
     temperature: number;
-    shaderPrograms: number;
+    shaderPrograms: number;,
   };
   
-  // Compiler Feedback Loop system
+  // Compiler Feedback Loop system;
   compilerFeedback: {
     isActive: boolean;
     currentEvents: any[];
@@ -72,27 +72,27 @@ export interface Phase13Context {
       totalEvents: number;
       successfulPatches: number;
       averageProcessingTime: number;
-      clusterCount: number;
+      clusterCount: number;,
     };
   };
   
-  // Multi-core processing
+  // Multi-core processing;
   workerThreads: {
     active: number;
     completed: number;
     failed: number;
-    queue: string[];
+    queue: string[];,
   };
   
-  // Performance metrics
+  // Performance metrics;
   performance: {
     frameRate: number;
     latency: number;
     throughput: number;
-    errorRate: number;
+    errorRate: number;,
   };
   
-  // AI recommendations with confidence
+  // AI recommendations with confidence;
   aiState: {
     currentModel: string;
     confidence: number;
@@ -129,7 +129,7 @@ export type Phase13Event =
   | { type: "RESET_SYSTEM" }
   | { type: "EMERGENCY_SHUTDOWN" };
 
-// WebGL vertex streaming service
+// WebGL vertex streaming service;
 const webglVertexStreamingService = fromCallback(({ sendBack, receive, input }) => {
   const { context } = input as { context: Phase13Context };
   
@@ -146,13 +146,13 @@ const webglVertexStreamingService = fromCallback(({ sendBack, receive, input }) 
   const vertexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
   
-  // Streaming loop with 60fps target
+  // Streaming loop with 60fps target;
   const streamLoop = () => {
     if (!streamingActive) return;
     
     frameCount++;
     
-    // Process any pending vertex data chunks
+    // Process any pending vertex data chunks;
     if (context.streamingChunks.length > 0) {
       const chunk = context.streamingChunks.shift();
       if (chunk) {
@@ -167,7 +167,7 @@ const webglVertexStreamingService = fromCallback(({ sendBack, receive, input }) 
       }
     }
     
-    // Performance monitoring
+    // Performance monitoring;
     if (frameCount % 60 === 0) {
       const performanceData = {
         frameRate: 60, // Target FPS
@@ -184,7 +184,7 @@ const webglVertexStreamingService = fromCallback(({ sendBack, receive, input }) 
   
   streamLoop();
   
-  // Cleanup on stop
+  // Cleanup on stop;
   receive((event: any) => {
     if (event.type === "STOP_STREAMING") {
       streamingActive = false;
@@ -195,7 +195,7 @@ const webglVertexStreamingService = fromCallback(({ sendBack, receive, input }) 
   });
 });
 
-// Enhanced RAG with real-time PageRank service
+// Enhanced RAG with real-time PageRank service;
 const enhancedRAGService = fromPromise(async ({ input }) => {
   const { query, context, pageRankScores } = input as { 
     query: string; 
@@ -206,21 +206,21 @@ const enhancedRAGService = fromPromise(async ({ input }) => {
   try {
     // Use copilot orchestrator for Context7 MCP integration
     const orchestrationResult = await copilotOrchestrator(
-      `Enhanced RAG query: ${query}`,
+      `Enhanced RAG query: ${query}`,);
       {
         useSemanticSearch: true,
         useMemory: true,
         useMultiAgent: true,
         synthesizeOutputs: true,
-        context: context
+        context: context,
       }
     );
     
-    // Apply PageRank scoring to results
+    // Apply PageRank scoring to results;
     const enhancedResults = orchestrationResult.semantic?.map((result: any) => ({
       ...result,
       pageRankScore: pageRankScores.get((result as { id?: any; relevance?: any }).id) || 0,
-      enhancedRelevance: (result as { id?: any; relevance?: any }).relevance * (1 + (pageRankScores.get((result as { id?: any; relevance?: any }).id) || 0))
+      enhancedRelevance: (result as { id?: any; relevance?: any }).relevance * (1 + (pageRankScores.get((result as { id?: any; relevance?: any }).id) || 0)
     })) || [];
     
     // Sort by enhanced relevance
@@ -231,14 +231,14 @@ const enhancedRAGService = fromPromise(async ({ input }) => {
       results: enhancedResults,
       pageRankApplied: true,
       orchestrationData: orchestrationResult,
-      processingTime: Date.now()
+      processingTime: Date.now(),
     };
   } catch (error: any) {
     throw new Error(`Enhanced RAG query failed: ${error}`);
   }
 });
 
-// Stateless API coordination service
+// Stateless API coordination service;
 const apiCoordinationService = fromCallback(({ sendBack, receive }) => {
   let coordinationActive = false;
   let redisConnections: any[] = [];
@@ -256,10 +256,10 @@ const apiCoordinationService = fromCallback(({ sendBack, receive }) => {
         sendBack({ 
           type: "API_COORDINATION_START", 
           connections: redisConnections.length,
-          channels: natsChannels.length
+          channels: natsChannels.length,
         });
         
-        // Heartbeat monitoring
+        // Heartbeat monitoring;
         const heartbeat = setInterval(() => {
           if (!coordinationActive) {
             clearInterval(heartbeat);
@@ -270,7 +270,7 @@ const apiCoordinationService = fromCallback(({ sendBack, receive }) => {
             type: "COORDINATION_HEARTBEAT",
             timestamp: Date.now(),
             activeConnections: redisConnections.length,
-            queueDepth: Math.floor(Math.random() * 100)
+            queueDepth: Math.floor(Math.random() * 100),
           });
         }, 1000);
         break;
@@ -285,7 +285,7 @@ const apiCoordinationService = fromCallback(({ sendBack, receive }) => {
   });
 });
 
-// Main Phase 13 state machine
+// Main Phase 13 state machine;
 export const phase13StateMachine = setup({
   types: {
     context: Record<string, any> as Phase13Context,
@@ -307,7 +307,7 @@ export const phase13StateMachine = setup({
             alpha: false,
           }) as WebGL2RenderingContext;
           
-          // Initialize WebGL state
+          // Initialize WebGL state;
           if (gl) {
             gl.enable(gl.DEPTH_TEST);
             gl.enable(gl.CULL_FACE);
@@ -670,7 +670,7 @@ export const phase13StateMachine = setup({
   },
 });
 
-// Svelte stores for reactive integration
+// Svelte stores for reactive integration;
 export const phase13Stores = {
   currentState: writable("initializing"),
   webglStatus: writable({ initialized: false, streaming: false }),
@@ -681,7 +681,7 @@ export const phase13Stores = {
   aiRecommendations: writable<string[]>([]),
 };
 
-// Derived stores for computed values
+// Derived stores for computed values;
 export const phase13Derived = {
   systemHealth: derived(
     [phase13Stores.webglStatus, phase13Stores.apiCoordination, phase13Stores.performanceMetrics],
@@ -711,12 +711,12 @@ export const phase13Derived = {
   ),
 };
 
-// Helper functions for Phase 13 integration
+// Helper functions for Phase 13 integration;
 export function createPhase13Integration(canvas: HTMLCanvasElement) {
   const actor = createActor(phase13StateMachine);
   actor.start();
   
-  // Initialize WebGL immediately
+  // Initialize WebGL immediately;
   setTimeout(() => {
     actor.send({ type: "INITIALIZE_WEBGL", canvas });
   }, 100);
@@ -727,7 +727,7 @@ export function createPhase13Integration(canvas: HTMLCanvasElement) {
     stores: phase13Stores,
     derived: phase13Derived,
     
-    // Convenience methods
+    // Convenience methods;
     startVertexStreaming: (vertices: Float32Array) => {
       actor.send({ type: "STREAM_VERTEX_DATA", vertices });
     },

@@ -10,10 +10,10 @@ import cluster from 'node:cluster';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    // Verify we're in primary process
+    // Verify we're in primary process;
     if (!cluster.isPrimary) {
       return json({
-        error: 'Cluster restart only available from primary process'
+        error: 'Cluster restart only available from primary process',
       }, { status: 403 });
     }
 
@@ -22,20 +22,20 @@ export const POST: RequestHandler = async ({ request }) => {
     
     if (!clusterManager) {
       return json({
-        error: 'Cluster manager not available'
+        error: 'Cluster manager not available',
       }, { status: 503 });
     }
 
-    // Check if already restarting
+    // Check if already restarting;
     if (globalThis.clusterRestarting) {
       return json({
         error: 'Rolling restart already in progress',
-        message: 'Please wait for the current restart to complete'
+        message: 'Please wait for the current restart to complete',
       }, { status: 409 });
     }
 
     // Parse optional parameters
-    const body = await request.json().catch(() => ({}));
+    const body = await request.json().catch(() => ({});
     const { force = false, timeout = 30000 } = body;
 
     // Get pre-restart state
@@ -48,24 +48,24 @@ export const POST: RequestHandler = async ({ request }) => {
     // Set restart flag
     globalThis.clusterRestarting = true;
 
-    // Start rolling restart in background
+    // Start rolling restart in background;
     const restartPromise = performRollingRestart(clusterManager, {
       force,
       timeout
     });
 
     // Don't await the full restart - return immediately
-    restartPromise
+    restartPromise;
       .then(() => {
-        console.log('✅ Rolling restart completed successfully'));
+        console.log('✅ Rolling restart completed successfully');
         globalThis.clusterRestarting = false;
-      })
+      });
       .catch((error) => {
         console.error('❌ Rolling restart failed:', error);
         globalThis.clusterRestarting = false;
       });
 
-    // Log restart action for audit
+    // Log restart action for audit;
     const auditLog = {
       timestamp: new Date().toISOString(),
       action: 'cluster_rolling_restart',
@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
       healthyWorkers: preRestartHealth.healthyWorkers,
       force,
       timeout,
-      initiator: 'admin_api'
+      initiator: 'admin_api',
     };
     
     console.log('📝 Restart audit log:', auditLog);
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
       estimatedDuration: `${Math.ceil(preRestartWorkers.length * 3)}s`,
       force,
       timeout,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
   } catch (error: any) {
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({
       error: 'Failed to initiate rolling restart',
-      message: error instanceof Error ? error.message: 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async () => {
     
     if (!clusterManager) {
       return json({
-        error: 'Cluster manager not available'
+        error: 'Cluster manager not available',
       }, { status: 503 });
     }
 
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async () => {
       healthyWorkers: health.healthyWorkers,
       lastRestart: globalThis.lastRestartTime || null,
       restartHistory: globalThis.restartHistory || [],
-      canRestart: !isRestarting && health.healthyWorkers > 0
+      canRestart: !isRestarting && health.healthyWorkers > 0,
     });
 
   } catch (error: any) {
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async () => {
     
     return json({
       error: 'Failed to get restart status',
-      message: error instanceof Error ? error.message: 'Unknown error'
+      message: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };
@@ -181,25 +181,25 @@ async function performRollingRestart(
     await waitForHealthyWorkers(clusterManager, workers.length);
     
     // Brief pause between restarts
-    await new Promise((resolve: any) => setTimeout(resolve, 1000));
+    await new Promise((resolve: any) => setTimeout(resolve, 1000);
   }
 
   const duration = Date.now() - startTime;
   console.log(`✅ Rolling restart completed in ${duration}ms`);
 
-  // Record restart in history
+  // Record restart in history;
   const restartRecord = {
     timestamp: new Date().toISOString(),
     duration,
     workersRestarted: workers.length,
-    success: true
+    success: true,
   };
 
   globalThis.lastRestartTime = Date.now();
   globalThis.restartHistory = globalThis.restartHistory || [];
   globalThis.restartHistory.unshift(restartRecord);
   
-  // Keep only last 10 restart records
+  // Keep only last 10 restart records;
   if (globalThis.restartHistory.length > 10) {
     globalThis.restartHistory = globalThis.restartHistory.slice(0, 10);
   }
@@ -207,7 +207,7 @@ async function performRollingRestart(
 
 /*
  * Wait for a worker to exit
- */
+ */;
 function waitForWorkerExit(worker: Worker): Promise<void> {
   return new Promise((resolve) => {
     const checkExit = () => {
@@ -227,7 +227,7 @@ function waitForWorkerExit(worker: Worker): Promise<void> {
 function waitForHealthyWorkers(
   clusterManager: any, 
   expectedCount: number, 
-  maxWait = 10000
+  maxWait = 10000;
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     const startTime = Date.now();
@@ -238,7 +238,7 @@ function waitForHealthyWorkers(
       if (health.healthyWorkers >= expectedCount) {
         resolve();
       } else if (Date.now() - startTime > maxWait) {
-        reject(new Error(`Timeout waiting for ${expectedCount} healthy workers`));
+        reject(new Error(`Timeout waiting for ${expectedCount} healthy workers`);
       } else {
         setTimeout(checkHealth, 500);
       }

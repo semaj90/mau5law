@@ -17,9 +17,15 @@ self.addEventListener('message', (e) => {
   }
   if (type === 'INIT_WASM' || type === 'INIT') {
     setTimeout(() => {
-      self.postMessage({ type: type + '_OK', payload: { note: 'Shim worker active (rl-workergemma.js)' } });
+      self.postMessage({
+        type: type + '_OK',
+        payload: { note: 'Shim worker active (rl-workergemma.js)' },
+      });
     }, 0);
     return;
   }
-  self.postMessage({ type: 'DEPRECATED_WORKER', payload: { message: 'rl-workergemma shim only. Use /workers/nes-rl.js directly.' }});
+  self.postMessage({
+    type: 'DEPRECATED_WORKER',
+    payload: { message: 'rl-workergemma shim only. Use /workers/nes-rl.js directly.' },
+  });
 });

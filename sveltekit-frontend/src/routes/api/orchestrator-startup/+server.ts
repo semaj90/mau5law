@@ -4,12 +4,12 @@ import type { RequestHandler } from './$types.js';
 // Orchestrator Startup API - Initialize and manage the comprehensive system
 // Handles startup, monitoring, and coordination of all services
 
-// GET /api/orchestrator-startup - Get startup status and system readiness
+// GET /api/orchestrator-startup - Get startup status and system readiness;
 export const GET: RequestHandler = async () => {
   try {
     const orchestratorStatus = (orchestrator as any).getStatus?.() || { isRunning: false };
 
-    // Check if orchestrator is running
+    // Check if orchestrator is running;
     if (!orchestratorStatus.isRunning) {
       return json({
         success: false,
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error.message,
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// POST /api/orchestrator-startup - Control orchestrator startup and operations
+// POST /api/orchestrator-startup - Control orchestrator startup and operations;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, configuration } = await request.json();
@@ -73,9 +73,8 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'configure':
         return await configureOrchestrator(configuration);
 
-      default:
-        return json(
-          {
+      default:;
+        return json({
             success: false,
             error: `Unknown action: ${action}`,
             available_actions: [
@@ -86,12 +85,12 @@ export const POST: RequestHandler = async ({ request }) => {
               'health_check',
               'configure',
             ],
-          },
+          },)
           { status: 400 }
         );
     }
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error.message,
@@ -102,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// Start the database orchestrator
+// Start the database orchestrator;
 async function startOrchestrator(configuration: any = {}): Promise<any> {
   try {
     const status = (orchestrator as any).getStatus?.() || { isRunning: false };
@@ -116,7 +115,7 @@ async function startOrchestrator(configuration: any = {}): Promise<any> {
       });
     }
 
-    // Configure before starting if configuration provided
+    // Configure before starting if configuration provided;
     if (configuration && Object.keys(configuration).length > 0) {
       await configureOrchestrator(configuration);
     }
@@ -139,7 +138,7 @@ async function startOrchestrator(configuration: any = {}): Promise<any> {
       ],
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: `Failed to start orchestrator: ${error.message}`,
@@ -150,7 +149,7 @@ async function startOrchestrator(configuration: any = {}): Promise<any> {
   }
 }
 
-// Stop the database orchestrator
+// Stop the database orchestrator;
 async function stopOrchestrator(): Promise<any> {
   try {
     const status = (orchestrator as any).getStatus?.() || { isRunning: false };
@@ -172,7 +171,7 @@ async function stopOrchestrator(): Promise<any> {
       shutdown_time: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: `Failed to stop orchestrator: ${error.message}`,
@@ -183,13 +182,13 @@ async function stopOrchestrator(): Promise<any> {
   }
 }
 
-// Restart the orchestrator
+// Restart the orchestrator;
 async function restartOrchestrator(configuration: any = {}): Promise<any> {
   try {
     await stopOrchestrator();
 
     // Wait a moment for cleanup
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000);
 
     const startResult = await startOrchestrator(configuration);
 
@@ -200,7 +199,7 @@ async function restartOrchestrator(configuration: any = {}): Promise<any> {
       start_result: startResult,
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: `Failed to restart orchestrator: ${error.message}`,
@@ -211,7 +210,7 @@ async function restartOrchestrator(configuration: any = {}): Promise<any> {
   }
 }
 
-// Initialize the full system
+// Initialize the full system;
 async function initializeFullSystem(configuration: any = {}): Promise<any> {
   try {
     const initializationSteps = [];
@@ -222,7 +221,7 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
 
     // Step 2: Setup default conditions
     initializationSteps.push('Setting up default conditions...');
-    const defaultConditions = [
+    const defaultConditions = [;
       {
         id: 'system_health_monitor',
         type: 'timer',
@@ -284,7 +283,7 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: `System initialization failed: ${error.message}`,
@@ -295,7 +294,7 @@ async function initializeFullSystem(configuration: any = {}): Promise<any> {
   }
 }
 
-// Perform comprehensive system health check
+// Perform comprehensive system health check;
 async function performSystemHealthCheck(): Promise<any> {
   try {
     const healthResults = {
@@ -333,7 +332,7 @@ async function performSystemHealthCheck(): Promise<any> {
       }
     }
 
-    // Test database connectivity
+    // Test database connectivity;
     try {
       const testQuery = await (orchestrator as any).queryDatabase?.({ limit: 1 }, 'cases');
       healthResults.database = {
@@ -371,7 +370,7 @@ async function performSystemHealthCheck(): Promise<any> {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: `Health check failed: ${error.message}`,
@@ -382,7 +381,7 @@ async function performSystemHealthCheck(): Promise<any> {
   }
 }
 
-// Configure orchestrator settings
+// Configure orchestrator settings;
 async function configureOrchestrator(configuration: any): Promise<any> {
   try {
     // Apply configuration settings
@@ -404,9 +403,8 @@ async function configureOrchestrator(configuration: any): Promise<any> {
       appliedSettings.push(`Context7 sync interval: ${configuration.context7SyncInterval}ms`);
     }
 
-    // Save configuration to database
-    await (orchestrator as any).saveToDatabase?.(
-      {
+    // Save configuration to database;
+    await (orchestrator as any).saveToDatabase?.({
         configuration,
         applied_settings: appliedSettings,
         configured_at: new Date(),
@@ -423,7 +421,7 @@ async function configureOrchestrator(configuration: any): Promise<any> {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: `Configuration failed: ${error.message}`,

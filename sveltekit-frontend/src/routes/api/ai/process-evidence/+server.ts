@@ -31,6 +31,7 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 // Enhanced RAG service integration (port 8094)
 const ENHANCED_RAG_URL = 'http://localhost:8094';
 const OLLAMA_URL = 'http://localhost:11434';
+}
 
 export interface ProcessEvidenceRequest {
   caseId: string;
@@ -51,10 +52,10 @@ export interface LegalAnalysisResponse {
   recommendations: string[];
   riskAssessment?: {
     level: 'low' | 'medium' | 'high';
-    factors: string[];
+    factors: string[];,
   };
   processingTime: number;
-  tokenCount: number;
+  tokenCount: number;,
 }
 
 const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
@@ -80,14 +81,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
       stream = false 
     } = body;
 
-    // Validate required fields
+    // Validate required fields;
     if (!caseId || !evidence || !userId) {
       return json({ 
         error: 'Missing required fields: caseId, evidence, userId' 
       }, { status: 400 });
     }
 
-    // Verify user matches authenticated user
+    // Verify user matches authenticated user;
     if (userId !== user.id) {
       return json({ error: 'User ID mismatch' }, { status: 403 });
     }
@@ -100,7 +101,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
       }, { status: 503 });
     }
 
-    // Prepare enhanced context for legal analysis
+    // Prepare enhanced context for legal analysis;
     const enhancedContext = {
       caseId,
       evidence,
@@ -114,11 +115,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
       metadata: {
         userRole: user.role,
         userSpecialties: user.legalSpecialties || [],
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     };
 
-    // Route to Enhanced RAG service GPU processing
+    // Route to Enhanced RAG service GPU processing;
     const ragResponse = await fetch(`${ENHANCED_RAG_URL}/api/gpu/compute`, {
       method: 'POST',
       headers: {
@@ -130,7 +131,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
         input_data: enhancedContext,
         operation: 'legal_analysis',
         model: model,
-        context: enhancedContext
+        context: enhancedContext,
       })
     });
 
@@ -148,7 +149,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
       return await processWithDirectOllama(enhancedContext, startTime);
     }
     
-    // Enhance response with additional legal analysis
+    // Enhance response with additional legal analysis;
     const enhancedResult: LegalAnalysisResponse = {
       summary: ragResult.summary || ragResult.response,
       sources: ragResult.sources || [],
@@ -157,17 +158,17 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
       recommendations: generateRecommendations(ragResult, analysisType),
       riskAssessment: assessLegalRisk(ragResult, evidence),
       processingTime: performance.now() - startTime,
-      tokenCount: ragResult.tokenCount || estimateTokenCount(ragResult.summary || '')
+      tokenCount: ragResult.tokenCount || estimateTokenCount(ragResult.summary || ''),
     };
 
-    // Log analysis for audit trail
+    // Log analysis for audit trail;
     await logAnalysis({
       userId,
       caseId,
       analysisType,
       model,
       confidence: enhancedResult.confidence,
-      processingTime: enhancedResult.processingTime
+      processingTime: enhancedResult.processingTime,
     });
 
     return json(enhancedResult);
@@ -178,12 +179,12 @@ const originalPOSTHandler: RequestHandler = async ({ request, cookies }) => {
     return json({
       error: 'Failed to process evidence',
       details: error instanceof Error ? error.message: 'Unknown error',
-      processingTime: performance.now() - startTime
+      processingTime: performance.now() - startTime,
     }, { status: 500 });
   }
 };
 
-// Check Ollama model availability
+// Check Ollama model availability;
 async function checkOllamaModel(model: string): Promise<any> {
   try {
     const response = await fetch(`${OLLAMA_URL}/api/tags`);
@@ -196,7 +197,7 @@ async function checkOllamaModel(model: string): Promise<any> {
     
     return {
       available: availableModels.includes(model),
-      models: availableModels
+      models: availableModels,
     };
   } catch (error: any) {
     console.error('Ollama availability check failed:', error);
@@ -204,7 +205,7 @@ async function checkOllamaModel(model: string): Promise<any> {
   }
 }
 
-// Get specialized system prompt for legal analysis
+// Get specialized system prompt for legal analysis;
 function getLegalSystemPrompt(analysisType: string): string {
   const basePrompt = `You are a specialized legal AI assistant trained on legal documents, case law, and statutory materials. 
 Provide accurate, precise analysis following legal standards and best practices.
@@ -225,13 +226,13 @@ Format: Comprehensive research memo with citations and legal analysis.`,
 
     case_comparison: `${basePrompt}
 Focus on: Similarities/differences in facts, legal issues, holdings, and reasoning.
-Format: Comparative analysis highlighting relevant patterns and distinctions.`
+Format: Comparative analysis highlighting relevant patterns and distinctions.`,
   };
 
   return typeSpecificPrompts[analysisType] || typeSpecificPrompts.summary;
 }
 
-// Fallback processing with direct Ollama integration
+// Fallback processing with direct Ollama integration;
 async function processWithDirectOllama(context: any, startTime: number): Promise<any> {
   try {
     const prompt = createLegalPrompt(context);
@@ -247,9 +248,9 @@ async function processWithDirectOllama(context: any, startTime: number): Promise
           temperature: context.temperature,
           num_predict: context.maxTokens,
           top_p: 0.9,
-          repeat_penalty: 1.1
+          repeat_penalty: 1.1,
         },
-        stream: false
+        stream: false,
       })
     });
 
@@ -274,7 +275,7 @@ async function processWithDirectOllama(context: any, startTime: number): Promise
   }
 }
 
-// Create optimized prompt for legal analysis
+// Create optimized prompt for legal analysis;
 function createLegalPrompt(context: any): string {
   const evidenceText = context.evidence
     .map((item: any, index: number) => `Evidence ${index + 1}: ${JSON.stringify(item)}`)
@@ -290,7 +291,7 @@ Please provide a comprehensive ${context.analysisType.replace('_', ' ')} of this
 Include relevant legal principles, potential issues, and actionable insights.`;
 }
 
-// Extract legal concepts from analysis text
+// Extract legal concepts from analysis text;
 function extractLegalConcepts(text: string): string[] {
   const legalTerms = [
     'negligence', 'contract', 'tort', 'liability', 'damages', 'breach',
@@ -299,13 +300,13 @@ function extractLegalConcepts(text: string): string[] {
     'substantive', 'discovery', 'motion', 'pleading', 'settlement'
   ];
 
-  const concepts = legalTerms.filter(item => item.includes(term.toLowerCase())
+  const concepts = legalTerms.filter(item => item.includes(term.toLowerCase()
   );
 
   return [...new Set(concepts)]; // Remove duplicates
 }
 
-// Generate contextual recommendations
+// Generate contextual recommendations;
 function generateRecommendations(result: any, analysisType: string): string[] {
   const recommendations: string[] = [];
 
@@ -326,7 +327,7 @@ function generateRecommendations(result: any, analysisType: string): string[] {
   return recommendations;
 }
 
-// Assess legal risk level
+// Assess legal risk level;
 function assessLegalRisk(result: any, evidence: any[]) {
   // Simple heuristic - in production, use more sophisticated analysis
   const riskKeywords = ['negligence', 'breach', 'violation', 'damages', 'liability'];
@@ -351,19 +352,19 @@ function assessLegalRisk(result: any, evidence: any[]) {
   return { level, factors };
 }
 
-// Estimate token count (rough approximation)
+// Estimate token count (rough approximation);
 function estimateTokenCount(text: string): number {
   return Math.ceil(text.split(/\s+/).length * 1.3); // Rough token estimation
 }
 
-// Log analysis for audit trail
+// Log analysis for audit trail;
 async function logAnalysis(data: any): Promise<any> {
   try {
-    // In production, log to database or audit service
+    // In production, log to database or audit service;
     console.log('Legal analysis logged:', {
       timestamp: new Date().toISOString(),
       ...data
-    });
+    ,});
   } catch (error: any) {
     console.warn('Failed to log analysis:', error);
   }

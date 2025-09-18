@@ -6,7 +6,7 @@ import crypto from "crypto";
  */
 
 import { setup, assign, fromPromise } from "xstate";
-// Local chat types to satisfy references
+// Local chat types to satisfy references;
 export interface ChatMessage {
   id: string;
   content: string;
@@ -18,7 +18,7 @@ export interface ChatMessage {
 export interface Conversation {
   id: string;
   title: string;
-  createdAt: Date;
+  createdAt: Date;,
 }
 
 export interface ChatSettings {
@@ -42,7 +42,7 @@ export interface ChatContext {
   contextInjection: {
     enabled: boolean;
     documents: string[];
-    vectorResults: any[];
+    vectorResults: any[];,
   };
 }
 
@@ -88,7 +88,7 @@ const initialContext: ChatContext = {
   },
 };
 
-// Services
+// Services;
 const sendMessageService = fromPromise(async ({ input }: { input: { context: ChatContext } }) => {
   const { context } = input;
   const response = await fetch("/api/ai/chat", {
@@ -98,7 +98,7 @@ const sendMessageService = fromPromise(async ({ input }: { input: { context: Cha
       message: context.messages[context.messages.length - 1]?.content,
       conversationId: context.currentConversation?.id,
       settings: context.settings,
-      contextInjection: context.contextInjection.enabled
+      contextInjection: context.contextInjection.enabled;
         ? {
             documents: context.contextInjection.documents,
           }
@@ -326,7 +326,7 @@ export const chatMachine = setup({
                   ];
                 }
 
-                // Create new assistant message if none exists
+                // Create new assistant message if none exists;
                 const newMessage: ChatMessage = {
                   id: crypto.randomUUID(),
                   content: event.chunk,

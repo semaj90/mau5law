@@ -45,7 +45,7 @@ parentPort.on("message", async (job: Job) => {
     let buffer = job.fileBuffer;
     let filename = job.filename ?? "unknown";
 
-    // Fetch from MinIO if URL provided
+    // Fetch from MinIO if URL provided;
     if (job.minioUrl) {
       const obj = await fetchMinioObject(job.minioUrl);
       buffer = obj.buffer;
@@ -91,7 +91,7 @@ parentPort.on("message", async (job: Job) => {
         processingMetadata.pdf = pdfResult.metadata;
       }
 
-      // Try to embed as image (simplified - in production you'd convert to image first)
+      // Try to embed as image (simplified - in production you'd convert to image first);
       try {
         const imgResult = await embedImageBuffer(buffer);
         if (imgResult.success) {
@@ -99,7 +99,7 @@ parentPort.on("message", async (job: Job) => {
           processingMetadata.imageEmbedding = imgResult.metadata;
         }
       } catch {
-        // Fallback to text embedding if image embedding fails
+        // Fallback to text embedding if image embedding fails;
         if (textContent) {
           const textResult = await embedText(textContent);
           if (textResult.success && 'embedding' in textResult) {
@@ -125,7 +125,7 @@ parentPort.on("message", async (job: Job) => {
           processingMetadata.audioEmbedding = audioEmbResult.metadata;
         }
 
-        // Cleanup temp audio file
+        // Cleanup temp audio file;
         try {
           await fs.unlink(audioResult.audioPath);
         } catch {
@@ -145,7 +145,7 @@ parentPort.on("message", async (job: Job) => {
         // Embed frames and pool embeddings
         const embeddings: number[][] = [];
         for (const frameBuffer of videoResult.frames) {
-          const frameResult = await embedImageBuffer(Buffer.from(frameBuffer));
+          const frameResult = await embedImageBuffer(Buffer.from(frameBuffer);
           if (frameResult.success) {
             embeddings.push(frameResult.embedding!);
           }
@@ -169,7 +169,7 @@ parentPort.on("message", async (job: Job) => {
           embedding = pooled;
           processingMetadata.videoEmbedding = {
             frameCount: embeddings.length,
-            poolingMethod: 'mean'
+            poolingMethod: 'mean',
           };
         }
       }
@@ -208,7 +208,7 @@ parentPort.on("message", async (job: Job) => {
       }
     }
 
-    // Insert into database with pgvector
+    // Insert into database with pgvector;
     if (embedding) {
       const documentData = {
         userId: job.userId,
@@ -222,8 +222,8 @@ parentPort.on("message", async (job: Job) => {
           modality,
           processingMetadata,
           ...job.metadata
-        }),
-        createdAt: new Date()
+        ,}),
+        createdAt: new Date(),
       };
 
       const [result] = await db.insert(userDocuments).values(documentData).returning();
@@ -234,7 +234,7 @@ parentPort.on("message", async (job: Job) => {
         documentId: (result as { id?: any }).id,
         modality,
         textLength: textContent.length,
-        embeddingDimensions: embedding.length
+        embeddingDimensions: embedding.length,
       });
     } else {
       throw new Error("Failed to generate embedding for content");
@@ -244,7 +244,7 @@ parentPort.on("message", async (job: Job) => {
     parentPort!.postMessage({
       jobId: job.id,
       error: String(err),
-      filename: job.filename || 'unknown'
+      filename: job.filename || 'unknown',
     });
   }
 });

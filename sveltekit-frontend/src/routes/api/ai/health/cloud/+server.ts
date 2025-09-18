@@ -28,7 +28,7 @@ export const GET: RequestHandler = async () => {
         error: "Cloud AI service not properly configured",
       });
     }
-    // Try a simple test request
+    // Try a simple test request;
     try {
       const testResponse = await aiService.generateResponse("Hello", {
         provider: "auto",
@@ -58,12 +58,11 @@ export const GET: RequestHandler = async () => {
     }
   } catch (error: any) {
     console.error("Cloud AI health check failed:", error);
-    return json(
-      {
+    return json({
         success: false,
         available: false,
         error: error instanceof Error ? error.message: "Health check failed",
-      },
+      },)
       { status: 500 },
     );
   }

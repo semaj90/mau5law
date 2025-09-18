@@ -10,7 +10,7 @@ import { aiSuggestionsClient } from '$lib/services/ai-suggestions-grpc-client.js
 
 /*
  * Health check endpoint for AI Suggestions services
- */
+ */;
 export async function GET({ url }: RequestEvent): Promise<any> {
   const startTime = Date.now();
   
@@ -33,16 +33,16 @@ export async function GET({ url }: RequestEvent): Promise<any> {
       services: {
         ollama: getHealthResult(ollamaHealth),
         enhancedRAG: getHealthResult(ragHealth),
-        protobufGRPC: getHealthResult(grpcHealth)
+        protobufGRPC: getHealthResult(grpcHealth),
       },
       overall: {
         healthy: 0,
         degraded: 0,
-        down: 0
+        down: 0,
       }
     };
 
-    // Calculate overall health metrics
+    // Calculate overall health metrics;
     Object.values(healthStatus.services).forEach(service => {
       if (service.status === 'healthy') {
         healthStatus.overall.healthy++;
@@ -53,7 +53,7 @@ export async function GET({ url }: RequestEvent): Promise<any> {
       }
     });
 
-    // Determine overall status
+    // Determine overall status;
     if (healthStatus.overall.down > 0) {
       healthStatus.status = 'partial_outage';
     } else if (healthStatus.overall.degraded > 0) {
@@ -95,7 +95,7 @@ async function checkOllamaService(): Promise<any> {
   } catch (error: any) {
     return {
       status: 'down',
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -115,7 +115,7 @@ async function checkEnhancedRAGService(): Promise<any> {
   } catch (error: any) {
     return {
       status: 'down',
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -128,12 +128,12 @@ async function checkGRPCService(): Promise<any> {
     return {
       status: isHealthy ? 'healthy' : 'down',
       connected: status.connected,
-      serviceUrl: status.serviceUrl
+      serviceUrl: status.serviceUrl,
     };
   } catch (error: any) {
     return {
       status: 'down',
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -144,7 +144,7 @@ function getHealthResult(promiseResult: PromiseSettledResult<any>) {
   } else {
     return {
       status: 'down',
-      error: promiseResult.reason?.message || 'Service check failed'
+      error: promiseResult.reason?.message || 'Service check failed',
     };
   }
 }

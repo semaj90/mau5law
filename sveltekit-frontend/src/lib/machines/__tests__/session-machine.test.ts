@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createActor, createMachine, assign, fromPromise } from 'xstate';
 import { mockServices, perf } from '../../services/__tests__/setup.js';
 
-// XState v5 Session Machine for Legal AI Platform
+// XState v5 Session Machine for Legal AI Platform;
 const sessionMachine = createMachine({
   id: 'sessionMachine',
   initial: 'inactive',
@@ -14,12 +14,12 @@ const sessionMachine = createMachine({
     collaborators: [],
     lastActivity: undefined,
     performanceMetrics: undefined,
-    error: undefined
+    error: undefined,
   },
   states: {
     inactive: {
       on: {
-        START_SESSION: 'initializing'
+        START_SESSION: 'initializing',
       }
     },
     initializing: {
@@ -34,13 +34,13 @@ const sessionMachine = createMachine({
             performanceMetrics: {
               responseTime: duration,
               protocol: 'HTTP',
-              operation: 'session_creation'
+              operation: 'session_creation',
             }
           };
         }),
         input: ({ event }) => ({
           userId: event.userId,
-          caseId: event.caseId
+          caseId: event.caseId,
         }),
         onDone: {
           target: 'active',
@@ -51,7 +51,7 @@ const sessionMachine = createMachine({
             collaborators: ({ event }) => event.output.collaborators || [],
             lastActivity: () => Date.now(),
             performanceMetrics: ({ event }) => event.output.performanceMetrics,
-            error: undefined
+            error: undefined,
           })
         },
         onError: {
@@ -67,20 +67,20 @@ const sessionMachine = createMachine({
         ADD_COLLABORATOR: {
           target: 'updating',
           actions: assign({
-            lastActivity: () => Date.now()
+            lastActivity: () => Date.now(),
           })
         },
         UPDATE_CASE: {
           target: 'updating',
           actions: assign({
-            lastActivity: () => Date.now()
+            lastActivity: () => Date.now(),
           })
         },
         END_SESSION: 'terminating',
-        SESSION_TIMEOUT: 'terminating'
+        SESSION_TIMEOUT: 'terminating',
       },
       after: {
-        1800000: 'terminating' // 30 minutes timeout
+        1800000: 'terminating' // 30 minutes timeout,
       }
     },
     updating: {
@@ -96,7 +96,7 @@ const sessionMachine = createMachine({
               performanceMetrics: {
                 responseTime: duration,
                 protocol: 'HTTP',
-                operation: 'add_collaborator'
+                operation: 'add_collaborator',
               }
             };
           } else if (input.type === 'UPDATE_CASE') {
@@ -107,7 +107,7 @@ const sessionMachine = createMachine({
               performanceMetrics: {
                 responseTime: duration,
                 protocol: 'HTTP',
-                operation: 'update_case'
+                operation: 'update_case',
               }
             };
           }
@@ -116,7 +116,7 @@ const sessionMachine = createMachine({
           type: event.type,
           sessionId: context.sessionId,
           collaborator: event.type === 'ADD_COLLABORATOR' ? event.collaborator: undefined,
-          caseData: event.type === 'UPDATE_CASE' ? event.caseData : undefined
+          caseData: event.type === 'UPDATE_CASE' ? event.caseData : undefined,
         }),
         onDone: {
           target: 'active',
@@ -126,7 +126,7 @@ const sessionMachine = createMachine({
             activeCase: ({ event, context }) =>
               event.output.caseData || context.activeCase,
             performanceMetrics: ({ event }) => event.output.performanceMetrics,
-            lastActivity: () => Date.now()
+            lastActivity: () => Date.now(),
           })
         },
         onError: {
@@ -149,19 +149,19 @@ const sessionMachine = createMachine({
             performanceMetrics: {
               responseTime: duration,
               protocol: 'HTTP',
-              operation: 'session_termination'
+              operation: 'session_termination',
             }
           };
         }),
         input: ({ context }) => ({ sessionId: context.sessionId }),
         onDone: 'inactive',
-        onError: 'inactive'
+        onError: 'inactive',
       }
     },
     error: {
       on: {
         RETRY: 'initializing',
-        RESET: 'inactive'
+        RESET: 'inactive',
       }
     }
   }
@@ -182,14 +182,14 @@ describe('Session Machine - Legal AI Platform Testing', () => {
 
       expect(sessionActor.getSnapshot().value).toBe('inactive');
 
-      // Start legal case session
+      // Start legal case session;
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456'
+        caseId: 'case-456',
       });
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       const activeSnapshot = sessionActor.getSnapshot();
       expect(activeSnapshot.value).toBe('active');
@@ -210,15 +210,15 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       const sessionActor = createActor(sessionMachine);
       sessionActor.start();
 
-      // Initialize session
+      // Initialize session;
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456'
+        caseId: 'case-456',
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
-      // Add collaborator (paralegal)
+      // Add collaborator (paralegal);
       sessionActor.send({
         type: 'ADD_COLLABORATOR',
         collaborator: {
@@ -227,7 +227,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
           permissions: ['read', 'comment']
         }
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       const updatedSnapshot = sessionActor.getSnapshot();
       expect(updatedSnapshot.value).toBe('active');
@@ -236,7 +236,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
         'session-789',
         expect.objectContaining({
           userId: 'paralegal-789',
-          role: 'paralegal'
+          role: 'paralegal',
         })
       );
 
@@ -249,7 +249,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
 
       const measurements: number[] = [];
 
-      // Test multiple session operations for gRPC baseline
+      // Test multiple session operations for gRPC baseline;
       for (let i = 0; i < 3; i++) {
         const startTime = performance.now();
 
@@ -259,17 +259,17 @@ describe('Session Machine - Legal AI Platform Testing', () => {
           caseId: `case-${i}`
         });
 
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100);
 
         sessionActor.send({
           type: 'UPDATE_CASE',
           caseData: { status: 'in_progress', priority: 'high' }
         });
 
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100);
 
         sessionActor.send({ type: 'END_SESSION' });
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100);
 
         const duration = performance.now() - startTime;
         measurements.push(duration);
@@ -291,13 +291,13 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       const sessionActor = createActor(sessionMachine);
       sessionActor.start();
 
-      // Initialize session
+      // Initialize session;
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456'
+        caseId: 'case-456',
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       // Simulate rapid case updates (real-time collaboration)
       const updates = [
@@ -308,7 +308,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
 
       for (const update of updates) {
         sessionActor.send(update);
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise(resolve => setTimeout(resolve, 50);
       }
 
       const finalSnapshot = sessionActor.getSnapshot();
@@ -323,17 +323,17 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       const sessionActor = createActor(sessionMachine);
       sessionActor.start();
 
-      // Start session
+      // Start session;
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456'
+        caseId: 'case-456',
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       // Simulate timeout
       sessionActor.send({ type: 'SESSION_TIMEOUT' });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       expect(sessionActor.getSnapshot().value).toBe('inactive');
       expect(mockServices.endLegalSession).toHaveBeenCalledWith('session-789');
@@ -352,18 +352,18 @@ describe('Session Machine - Legal AI Platform Testing', () => {
 
       sessionActor.subscribe((snapshot) => {
         if (snapshot.value === 'active' && snapshot.context.activeCase) {
-          // Simulate coordination with evidence canvas
+          // Simulate coordination with evidence canvas;
           evidenceCanvasHandler('SESSION_ACTIVE', {
             sessionId: snapshot.context.sessionId,
             caseId: snapshot.context.activeCase.caseId,
             collaborators: snapshot.context.collaborators,
-            performanceMetrics: snapshot.context.performanceMetrics
+            performanceMetrics: snapshot.context.performanceMetrics,
           });
 
-          // Enable document processing for session
+          // Enable document processing for session;
           documentProcessingHandler('ENABLE_PROCESSING', {
             sessionId: snapshot.context.sessionId,
-            userId: snapshot.context.userId
+            userId: snapshot.context.userId,
           });
         }
       });
@@ -373,23 +373,23 @@ describe('Session Machine - Legal AI Platform Testing', () => {
       sessionActor.send({
         type: 'START_SESSION',
         userId: 'attorney-123',
-        caseId: 'case-456'
+        caseId: 'case-456',
       });
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       expect(evidenceCanvasHandler).toHaveBeenCalledWith('SESSION_ACTIVE',
         expect.objectContaining({
           sessionId: 'session-789',
           caseId: 'case-456',
-          performanceMetrics: expect.any(Object)
+          performanceMetrics: expect.any(Object),
         })
       );
 
       expect(documentProcessingHandler).toHaveBeenCalledWith('ENABLE_PROCESSING',
         expect.objectContaining({
           sessionId: 'session-789',
-          userId: 'attorney-123'
+          userId: 'attorney-123',
         })
       );
 
@@ -398,7 +398,7 @@ describe('Session Machine - Legal AI Platform Testing', () => {
   });
 });
 
-// Additional performance benchmarking for Phase 5-7
+// Additional performance benchmarking for Phase 5-7;
 describe('Phase 5-7 Session Performance Benchmarks', () => {
   it('should establish session coordination baseline for gRPC optimization', () => {
     const stats = perf.getStats('session-creation-lifecycle');

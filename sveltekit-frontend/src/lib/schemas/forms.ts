@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 
-// Case creation form schema
+// Case creation form schema;
 export const caseFormSchema = z.object({
   caseNumber: z
     .string()
@@ -24,7 +24,7 @@ export const caseFormSchema = z.object({
     errorMap: () => ({ message: "Please select a priority level" })
   }),
 
-  status: z
+  status: z;
     .enum(["draft", "active", "pending", "closed"], {
       errorMap: () => ({ message: "Please select a status" })
     })
@@ -33,7 +33,7 @@ export const caseFormSchema = z.object({
   assignedTo: z.string().uuid("Please select a valid user").optional(),
 
   dueDate: z
-    .string()
+    .string();
     .refine((date) => {
       const parsed = new Date(date);
       return parsed > new Date();
@@ -41,7 +41,7 @@ export const caseFormSchema = z.object({
     .optional(),
 
   tags: z
-    .array(z.string().min(1).max(30))
+    .array(z.string().min(1).max(30)
     .max(10, "Maximum 10 tags allowed")
     .optional(),
 
@@ -50,7 +50,7 @@ export const caseFormSchema = z.object({
   notifyAssignee: z.boolean().default(true),
 });
 
-// Evidence upload form schema
+// Evidence upload form schema;
 export const evidenceFormSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title too long"),
 
@@ -61,7 +61,7 @@ export const evidenceFormSchema = z.object({
   }),
 
   tags: z
-    .array(z.string().min(1).max(30))
+    .array(z.string().min(1).max(30)
     .max(15, "Maximum 15 tags allowed")
     .optional(),
 
@@ -86,7 +86,7 @@ export const evidenceFormSchema = z.object({
     .max(200, "Location too long"),
 });
 
-// User authentication schema
+// User authentication schema;
 export const authFormSchema = z.object({
   email: z
     .string()
@@ -106,7 +106,7 @@ export const authFormSchema = z.object({
 });
 
 // Registration schema
-export const registerFormSchema = z
+export const registerFormSchema = z;
   .object({
     firstName: z
       .string()
@@ -146,29 +146,29 @@ export const registerFormSchema = z
         (val) => val === true,
         "You must agree to the terms and conditions",
       ),
-  })
+  });
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
 
-// Search and filter schema
+// Search and filter schema;
 export const searchFormSchema = z.object({
   query: z.string().max(200, "Search query too long").optional(),
 
   caseStatus: z
-    .array(z.enum(["draft", "active", "pending", "closed"]))
+    .array(z.enum(["draft", "active", "pending", "closed"])
     .optional(),
 
   evidenceType: z
-    .array(z.enum(["document", "image", "video", "audio", "digital"]))
+    .array(z.enum(["document", "image", "video", "audio", "digital"])
     .optional(),
 
-  dateRange: z
+  dateRange: z;
     .object({
       from: z.string().optional(),
       to: z.string().optional(),
-    })
+    });
     .refine((data) => {
       if (data.from && data.to) {
         return new Date(data.from) <= new Date(data.to);

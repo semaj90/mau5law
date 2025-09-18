@@ -52,6 +52,7 @@ export { default as BitsButton } from './bitsbutton.svelte';
 export type ComponentLibrary = 'enhanced-bits' | 'bits-ui' | 'legacy';
 export type LayoutVariant = 'full' | 'minimal' | 'demo' | 'admin' | 'evidence';
 export type LegalAITheme = 'yorha' | 'nier' | 'gaming' | 'professional';
+}
 
 export interface ComponentChoice {
   library: ComponentLibrary;
@@ -70,7 +71,7 @@ export interface LayoutConfig {
 export type { SelectOption } from './enhanced-bits';
 export { LEGAL_AI_VARIANTS } from './enhanced-bits';
 
-// === Utility Functions ===
+// === Utility Functions ===;
 export function selectComponentLibrary(choice: ComponentLibrary = 'enhanced-bits'): ComponentChoice {
   return {
     library: choice,
@@ -86,7 +87,7 @@ export function createLayoutConfig(variant: LayoutVariant, theme: LegalAITheme =
     theme,
     showSidebar: variant !== 'minimal',
     showFooter: true,
-    title: variant === 'demo' ? 'Demo Environment' : undefined
+    title: variant === 'demo' ? 'Demo Environment' : undefined,
   };
 }
 

@@ -3,14 +3,14 @@
  * Provides missing types for GPU operations and CUDA integration
  */
 
-// WebGPU Extensions
+// WebGPU Extensions;
 declare global {
   interface Navigator {
     gpu?: GPU;
   }
 }
 
-// CUDA Service Types
+// CUDA Service Types;
 export interface CUDADevice {
   id: number;
   name: string;
@@ -28,7 +28,7 @@ export interface CUDAServiceStatus {
   runtimeVersion?: string;
 }
 
-// WebGPU SOM Cache Types
+// WebGPU SOM Cache Types;
 export interface WebGPUSOMCache {
   maxNodes: number;
   dimensions: number;
@@ -43,7 +43,7 @@ export interface WebGPUSOMCache {
   storeVector(id: string, vector: Float32Array): void;
 }
 
-// WebGPU Topology Accelerator
+// WebGPU Topology Accelerator;
 export interface WebGPUTopologyAccelerator {
   device?: GPUDevice;
   queue?: GPUQueue;
@@ -54,7 +54,7 @@ export interface WebGPUTopologyAccelerator {
   cleanup(): void;
 }
 
-// Local LLM Connector
+// Local LLM Connector;
 export interface LocalLLMConnector {
   isConnected: boolean;
   modelName?: string;
@@ -64,13 +64,13 @@ export interface LocalLLMConnector {
   disconnect(): void;
 }
 
-// Hidden Markov Model for AssemblyScript compatibility
+// Hidden Markov Model for AssemblyScript compatibility;
 export class HiddenMarkaraiModel {
   constructor(config: {
     stateCount: number;
     observationCount: number;
     transitionSmoothness: number;
-    emissionSmoothness: number;
+    emissionSmoothness: number;,
   });
 
   train(observations: number[][]): void;
@@ -78,7 +78,7 @@ export class HiddenMarkaraiModel {
   getStateDistribution(): Float32Array;
 }
 
-// Tensor Acceleration Types
+// Tensor Acceleration Types;
 export interface TensorAccelerator {
   acceleratedSimilarity(a: Float32Array, b: Float32Array): number;
   batchProcess(vectors: Float32Array[]): Promise<Float32Array[]>;
@@ -88,14 +88,14 @@ export interface TensorAccelerator {
 export declare const tensorAccelerator: TensorAccelerator;
 export declare function acceleratedSimilarity(a: Float32Array, b: Float32Array): number;
 
-// WebAssembly Memory Types for AssemblyScript
+// WebAssembly Memory Types for AssemblyScript;
 export interface WASMMemory {
   buffer: ArrayBuffer;
   size(): number;
   grow(delta: number): number;
 }
 
-// AssemblyScript Math Functions
+// AssemblyScript Math Functions;
 export interface WASMMath {
   sqrt(x: number): number;
   abs(x: number): number;

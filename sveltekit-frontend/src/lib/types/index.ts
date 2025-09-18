@@ -10,17 +10,18 @@
 // --- Core Service & API Types ---
 
 export type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown';
+}
 
 export interface APIResponse<T> {
     success: boolean;
     data?: T;
     error?: {
         code: string;
-        message: string;
+        message: string;,
     };
     metadata?: {
         timestamp: string;
-        processingTimeMs: number;
+        processingTimeMs: number;,
     };
 }
 
@@ -28,6 +29,7 @@ export interface APIResponse<T> {
 
 export type AITaskType = "generate" | "analyze" | "embed" | "search" | "embedding" | "analysis" | "classification" | "summarization";
 export type WorkerMessageType = "error" | "status" | "result" | "task" | "TASK_STARTED" | "TASK_COMPLETED" | "TASK_ERROR" | "TASK_CANCELLED" | "STATUS_UPDATE";
+}
 
 export interface AITask {
   taskId: string;
@@ -52,9 +54,9 @@ export interface WorkerStatus {
   errors: number;
   performance: {
     avgTaskTime: number;
-    tasksPerMinute: number;
+    tasksPerMinute: number;,
   };
-  lastActivity: Date;
+  lastActivity: Date;,
 }
 
 export interface WorkerMessage {
@@ -67,6 +69,7 @@ export interface WorkerMessage {
 // --- Copilot & RAG Types (Fixes ~20+ errors) ---
 
 export type CopilotSource = "context7_mcp" | "enhanced_local_index" | "basic_index";
+}
 
 export interface CopilotIndexEntry {
   // Base properties
@@ -83,7 +86,7 @@ export interface CopilotIndexEntry {
   lastModified: Date;
   fileSize: number;
   language: string;
-  tags: string[];
+  tags: string[];,
 }
 
 export interface SimilarityResult {
@@ -92,10 +95,10 @@ export interface SimilarityResult {
     documentType: string;
     chunkIndex: number;
     content: string;
-    score: number;
+    score: number;,
 }
 
-// --- Database & Document Types ---
+// --- Database & Document Types ---;
 export interface LegalDocument {
     id: string;
     caseId: string;
@@ -107,13 +110,14 @@ export interface LegalDocument {
     embedding?: number[];
 }
 
-// --- NES-Style Canvas Engine & AI Prediction Types ---
+// --- NES-Style Canvas Engine & AI Prediction Types ---;
+}
 
 export interface CanvasState {
   id: string;
   animation: string;
   frame: number;
-  fabricJSON: object; // Represents the serialized fabric.js canvas state
+  fabricJSON: object; // Represents the serialized fabric.js canvas state;
   metadata: {
     duration?: number;
     transitions?: string[];
@@ -125,21 +129,21 @@ export interface CanvasState {
 export interface CanvasAnimation {
     name: string;
     frames: CanvasState[];
-    loop: boolean;
+    loop: boolean;,
 }
 
 export interface UserActivityLog {
     timestamp: number;
     action: string; // e.g., 'canvas_click', 'animation_changed'
     context: Record<string, any>;
-    sessionId: string;
+    sessionId: string;,
 }
 
-// --- XState & Machine Types ---
+// --- XState & Machine Types ---;
 export interface GlobalAppContext {
     user: { id: string; email: string; } | null;
     activeCaseId: string | null;
-    theme: 'light' | 'dark';
+    theme: 'light' | 'dark';,
 }
 
 export type GlobalAppEvent =
@@ -148,7 +152,8 @@ export type GlobalAppEvent =
   | { type: 'SET_CASE'; caseId: string }
   | { type: 'SET_THEME'; theme: 'light' | 'dark' };
 
-// --- Legal Case & Evidence Types ---
+// --- Legal Case & Evidence Types ---;
+}
 
 export interface LegalCase {
   id: string;
@@ -176,7 +181,8 @@ export interface Evidence {
   embedding?: number[];
 }
 
-// --- Vector & Search Types ---
+// --- Vector & Search Types ---;
+}
 
 export interface VectorSearchRequest {
   query: string;
@@ -192,7 +198,8 @@ export interface VectorSearchResult {
   metadata: Record<string, any>;
 }
 
-// --- Form & Validation Types ---
+// --- Form & Validation Types ---;
+}
 
 export interface FormValidationError {
   field: string;
@@ -204,12 +211,13 @@ export interface FormState<T> {
   data: T;
   errors: FormValidationError[];
   isValid: boolean;
-  isSubmitting: boolean;
+  isSubmitting: boolean;,
 }
 
 // --- Notification & Alert Types ---
 
 export type NotificationType = 'info' | 'success' | 'warning' | 'error';
+}
 
 export interface Notification {
   id: string;
@@ -221,7 +229,8 @@ export interface Notification {
   duration?: number;
 }
 
-// --- UI Component Props Types ---
+// --- UI Component Props Types ---;
+}
 
 export interface ButtonProps {
   variant?: 'default' | 'primary' | 'secondary' | 'outline' | 'ghost';
@@ -243,7 +252,8 @@ export interface ModalProps {
   class?: string;
 }
 
-// --- Authentication Types ---
+// --- Authentication Types ---;
+}
 
 export interface User {
   id: string;
@@ -263,7 +273,8 @@ export interface AuthSession {
   refreshToken?: string;
 }
 
-// --- File Upload Types ---
+// --- File Upload Types ---;
+}
 
 export interface FileUploadRequest {
   file: File;
@@ -278,12 +289,13 @@ export interface FileUploadResponse {
   fileSize: number;
   mimeType: string;
   url: string;
-  uploadedAt: string;
+  uploadedAt: string;,
 }
 
 // --- WebSocket & Real-time Types ---
 
 export type WebSocketMessageType = 'ping' | 'pong' | 'subscribe' | 'unsubscribe' | 'notification' | 'update';
+}
 
 export interface WebSocketMessage {
   type: WebSocketMessageType;

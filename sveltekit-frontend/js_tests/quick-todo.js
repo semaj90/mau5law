@@ -1,12 +1,12 @@
-const fs = require("fs");
-const { execSync } = require("child_process");
+const fs = require('fs');
+const { execSync } = require('child_process');
 
-console.log("Starting TODO generation...");
+console.log('Starting TODO generation...');
 
 // Create TODO.md file
 const todoContent = `# ✅ Project Issues Todo List
 
-Generated on ${new Date().toISOString().replace("T", " ").slice(0, 19)}
+Generated on ${new Date().toISOString().replace('T', ' ').slice(0, 19)}
 
 ## Summary
 This file contains all TypeScript, Svelte, and other issues found by running \`npm run check\`.
@@ -34,5 +34,5 @@ Visit \`/modern-demo\` to see all components in action!
 5. Test TODO generation automation
 `;
 
-fs.writeFileSync("TODO.md", todoContent);
-console.log("TODO.md created successfully!");
+fs.writeFileSync('TODO.md', todoContent);
+console.log('TODO.md created successfully!');

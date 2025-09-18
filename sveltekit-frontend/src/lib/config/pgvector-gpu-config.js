@@ -19,7 +19,7 @@ export const PGVECTOR_CONFIG = {
       hnsw: {
         m: 16,  // Number of connections
         efConstruction: 64,  // Size of dynamic candidate list
-        ef: 40  // Size of dynamic list for search
+        ef: 40  // Size of dynamic list for search,
       }
     }
   },
@@ -30,7 +30,7 @@ export const PGVECTOR_CONFIG = {
     models: {
       embedding: 'embeddinggemma:latest',  // Primary embedding model
       fallback: ['embeddinggemma', 'nomic-embed-text'],  // Fallback models
-      chat: 'gemma3:legal-latest'  // Chat model
+      chat: 'gemma3:legal-latest'  // Chat model,
     }
   },
 
@@ -42,7 +42,7 @@ export const PGVECTOR_CONFIG = {
       search: '/api/v1/search',
       submit: '/api/v1/submit',
       workers: '/api/v1/workers',
-      metrics: '/api/v1/metrics'
+      metrics: '/api/v1/metrics',
     },
     // RTX 3060 Ti specifications
     gpu: {
@@ -50,7 +50,7 @@ export const PGVECTOR_CONFIG = {
       cudaCores: 4864,
       tensorCores: 152,
       memoryGB: 8,
-      computeCapability: '8.6'
+      computeCapability: '8.6',
     }
   },
 
@@ -60,7 +60,7 @@ export const PGVECTOR_CONFIG = {
     vectorSearchLimit: 100,
     batchSize: 50,
     cacheEnabled: true,
-    cacheTTL: 3600  // 1 hour
+    cacheTTL: 3600  // 1 hour,
   }
 };
 

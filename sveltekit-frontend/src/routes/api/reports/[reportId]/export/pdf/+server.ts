@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const reportResult = await db
       .select()
       .from(reports)
-      .where(eq(reports.id, reportId))
+      .where(eq(reports.id, reportId)
       .limit(1);
 
     if (!reportResult.length) {
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const report = reportResult[0];
     const data = await request.json();
 
-    // PDF export options
+    // PDF export options;
     const exportOptions = {
       format: data.format || "legal-brief",
       includeMetadata: data.includeMetadata || true,

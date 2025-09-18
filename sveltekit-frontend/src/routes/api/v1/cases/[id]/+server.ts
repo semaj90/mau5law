@@ -20,10 +20,10 @@ const UUIDSchema = z.string().uuid('Invalid case ID format');
 /*
  * GET /api/v1/cases/[id]
  * Get a specific case by ID
- */
+ */;
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -47,10 +47,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       );
     }
 
-    const CaseResponse = z
+    const CaseResponse = z;
       .object({
         success: z.literal(true),
-        data: z
+        data: z;
           .object({
             id: z.string(),
             title: z.string().optional(),
@@ -118,10 +118,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 /*
  * PUT /api/v1/cases/[id]
  * Update a specific case
- */
+ */;
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -191,10 +191,10 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 /*
  * DELETE /api/v1/cases/[id]
  * Delete a specific case
- */
+ */;
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,

@@ -14,7 +14,7 @@ import { sql } from "drizzle-orm";
 
 // Using standard drizzle-orm pgvector support
 
-// Document vectors table for semantic search
+// Document vectors table for semantic search;
 export const documentVectors = pgTable("document_vectors", {
   id: uuid("id").primaryKey().defaultRandom(),
   documentId: uuid("document_id").references(() => documents.id).notNull(),
@@ -26,9 +26,9 @@ export const documentVectors = pgTable("document_vectors", {
 }, (table: any) => ({
   embeddingIdx: index("document_vectors_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
   documentIdx: index("document_vectors_document_idx").on(table.documentId),
-}));
+});
 
-// Case summary vectors for case-level search
+// Case summary vectors for case-level search;
 export const caseSummaryVectors = pgTable("case_summary_vectors", {
   id: uuid("id").primaryKey().defaultRandom(),
   caseId: uuid("case_id").references(() => cases.id).notNull().unique(),
@@ -38,9 +38,9 @@ export const caseSummaryVectors = pgTable("case_summary_vectors", {
   lastUpdated: timestamp("last_updated").defaultNow().notNull(),
 }, (table: any) => ({
   embeddingIdx: index("case_summary_vectors_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
-}));
+});
 
-// Evidence vectors for evidence search
+// Evidence vectors for evidence search;
 export const evidenceVectors = pgTable("evidence_vectors", {
   id: uuid("id").primaryKey().defaultRandom(),
   evidenceId: uuid("evidence_id").references(() => evidence.id).notNull(),
@@ -53,9 +53,9 @@ export const evidenceVectors = pgTable("evidence_vectors", {
 }, (table: any) => ({
   embeddingIdx: index("evidence_vectors_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
   evidenceIdx: index("evidence_vectors_evidence_idx").on(table.evidenceId),
-}));
+});
 
-// User query vectors for search history and recommendations
+// User query vectors for search history and recommendations;
 export const queryVectors = pgTable("query_vectors", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").references(() => users.id).notNull(),
@@ -67,9 +67,9 @@ export const queryVectors = pgTable("query_vectors", {
 }, (table: any) => ({
   embeddingIdx: index("query_vectors_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
   userIdx: index("query_vectors_user_idx").on(table.userId),
-}));
+});
 
-// Knowledge graph nodes for recommendation system
+// Knowledge graph nodes for recommendation system;
 export const knowledgeNodes = pgTable("knowledge_nodes", {
   id: uuid("id").primaryKey().defaultRandom(),
   nodeType: text("node_type").notNull(), // case, evidence, document, entity
@@ -82,9 +82,9 @@ export const knowledgeNodes = pgTable("knowledge_nodes", {
 }, (table: any) => ({
   embeddingIdx: index("knowledge_nodes_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
   nodeTypeIdx: index("knowledge_nodes_type_idx").on(table.nodeType),
-}));
+});
 
-// Knowledge graph edges for relationships
+// Knowledge graph edges for relationships;
 export const knowledgeEdges = pgTable("knowledge_edges", {
   id: uuid("id").primaryKey().defaultRandom(),
   sourceId: uuid("source_id").references(() => knowledgeNodes.id).notNull(),
@@ -97,9 +97,9 @@ export const knowledgeEdges = pgTable("knowledge_edges", {
   sourceIdx: index("knowledge_edges_source_idx").on(table.sourceId),
   targetIdx: index("knowledge_edges_target_idx").on(table.targetId),
   relationshipIdx: index("knowledge_edges_relationship_idx").on(table.relationship),
-}));
+});
 
-// Cached recommendations for users
+// Cached recommendations for users;
 export const recommendationCache = pgTable("recommendation_cache", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").references(() => users.id).notNull(),
@@ -110,12 +110,12 @@ export const recommendationCache = pgTable("recommendation_cache", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table: any) => ({
   userTypeIdx: index("recommendation_cache_user_type_idx").on(table.userId, table.recommendationType),
-}));
+});
 
 // Import required types from main schema
 import { documents, cases, evidence, users } from '../schema';
 
-// Helper functions for vector operations
+// Helper functions for vector operations;
 export const vectorOperations = {
   // Calculate cosine similarity
   cosineSimilarity: (embedding1: any, embedding2: any) => 

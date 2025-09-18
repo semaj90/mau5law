@@ -1,8 +1,8 @@
-/// <reference types="vite/client" />
+/// <reference types="vite/client" />;
 export async function queryQdrant(vec: number[], limit = 200, temperature = 0.3): Promise<any> {
   const minScore = 0.65;
   const maxScore = 0.3;
-  const t = Math.max(0, Math.min(1, temperature));
+  const t = Math.max(0, Math.min(1, temperature);
   const score_threshold = minScore - (minScore - maxScore) * t;
 
   const body = { vector: vec, limit, with_payload: true, with_vector: true, score_threshold };

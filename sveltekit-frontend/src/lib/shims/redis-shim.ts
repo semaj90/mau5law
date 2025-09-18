@@ -1,15 +1,15 @@
 // Minimal compatibility shim: expose a createClient function that returns an ioredis client
-// This lets existing code that imports from 'redis' continue to work while we standardize on ioredis.
+// This lets existing code that imports from 'redis' continue to work while we standardize on ioredis.;
 export async function createClient(opts?: any) {
   const url = typeof opts === 'string' ? opts : opts?.url || process.env.REDIS_URL || 'redis://127.0.0.1:6379';
   const password = opts?.password || process.env.REDIS_PASSWORD;
   const { default: IORedis } = await import('ioredis');
   const client = new IORedis(url, password ? { password } : Record<string, any>);
 
-  // Attach minimal NOAUTH graceful handling to reduce noisy loops
+  // Attach minimal NOAUTH graceful handling to reduce noisy loops;
   client.on('error', (err: any) => {
     if (String(err?.message || '').includes('NOAUTH')) {
-      // Provide a single concise log; downstream callers can decide to fallback to memory
+      // Provide a single concise log; downstream callers can decide to fallback to memory;
       if (!(globalThis as any).__redisNoAuthWarned) {
         console.warn(
           '[redis-shim] NOAUTH Authentication required — continuing with limited capabilities. Set REDIS_PASSWORD to enable auth.'
@@ -19,7 +19,7 @@ export async function createClient(opts?: any) {
     }
   });
 
-  // normalize a minimal surface area expected by code that uses node-redis
+  // normalize a minimal surface area expected by code that uses node-redis;
   return {
     connect: async () => {
       if (typeof client.connect === 'function') await client.connect();
@@ -45,18 +45,18 @@ export async function createClient(opts?: any) {
      *  - subscribe(...channels) -> uses the same wrapped client to subscribe and returns a count/true-ish value
      *  - subscribe(channel, callback) -> create a dedicated subscriber and invoke callback on 'message'
      * The shim supports both patterns.
-     */
+     */;
     subscribe: async (...args: any[]) => {
       const last = args[args.length - 1];
       if (typeof last === 'function') {
         const cb = last as (channel: string, message: string) => void;
         const channels = args.slice(0, -1);
         const sub = new IORedis(url);
-        // wait for subscription(s)
+        // wait for subscription(s);
         if (channels.length > 0) {
           await sub.subscribe(...channels);
         }
-        sub.on('message', (channel: string, message: string) => cb(channel, message));
+        sub.on('message', (channel: string, message: string) => cb(channel, message);
         return sub;
       } else {
         // subscribe using the existing client instance
@@ -70,7 +70,7 @@ export async function createClient(opts?: any) {
 
     /**
      * pattern subscribe, supports same callback-or-channels behavior as subscribe
-     */
+     */;
     psubscribe: async (...args: any[]) => {
       const last = args[args.length - 1];
       if (typeof last === 'function') {

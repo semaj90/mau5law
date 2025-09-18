@@ -6,6 +6,7 @@
 import { sql } from '$lib/database/connection';
 import { advisoryLocks, type LockType, type LockMode, LOCK_MODES } from './advisory-locks.js';
 import { randomUUID } from 'crypto';
+}
 
 export interface TransactionOptions {
   isolationLevel?: 'READ UNCOMMITTED' | 'READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE';
@@ -60,7 +61,7 @@ export class TransactionManager {
       return (await sql.begin(async (tx) => {
         // Set isolation level
         await tx`SET TRANSACTION ISOLATION LEVEL ${sql(isolationLevel)}`);
-        // Set statement timeout
+        // Set statement timeout;
         if (timeout) {
           await tx`SET statement_timeout = ${timeout}`;
         }
@@ -92,11 +93,11 @@ export class TransactionManager {
     options: TransactionOptions = {}
   ): Promise<T> {
     return this.withTransaction(async (ctx) => {
-      // Acquire lock within transaction
+      // Acquire lock within transaction;
       const lock = await advisoryLocks.acquireLock(entityType, entityId, mode, {
         userId: ctx.userId,
         sessionId: ctx.sessionId,
-        timeout: options.timeout
+        timeout: options.timeout,
       });
 
       if (!lock) {
@@ -126,7 +127,7 @@ export class TransactionManager {
   ): Promise<T> {
     return this.withTransactionAndLock('evidence', evidenceId, fn, LOCK_MODES.EXCLUSIVE, {
       ...options,
-      isolationLevel: 'SERIALIZABLE', // Highest isolation for custody
+      isolationLevel: 'SERIALIZABLE', // Highest isolation for custody;
       metadata: {
         ...options.metadata,
         operationType: 'chain_of_custody',
@@ -191,7 +192,7 @@ export class TransactionManager {
     return this.withTransactionAndLock('vector_index', indexName, fn, LOCK_MODES.EXCLUSIVE, {
       ...options,
       isolationLevel: 'SERIALIZABLE',
-      timeout: 60000, // Vector operations can take longer
+      timeout: 60000, // Vector operations can take longer;
       metadata: {
         ...options.metadata,
         operationType: 'vector_index_update',
@@ -214,16 +215,16 @@ export class TransactionManager {
         `${a.type}:${a.id}`.localeCompare(`${b.type}:${b.id}`)
       );
 
-      // Acquire all locks
+      // Acquire all locks;
       for (const entity of sortedEntities) {
         const lock = await advisoryLocks.acquireLock(
           entity.type,
           entity.id,
-          entity.mode || LOCK_MODES.EXCLUSIVE,
+          entity.mode || LOCK_MODES.EXCLUSIVE,);
           {
             userId: ctx.userId,
             sessionId: ctx.sessionId,
-            timeout: options.timeout
+            timeout: options.timeout,
           }
         );
 
@@ -241,7 +242,7 @@ export class TransactionManager {
       try {
         return await fn(ctx);
       } finally {
-        // Release locks in reverse order
+        // Release locks in reverse order;
         for (const lock of ctx.locks.reverse()) {
           await advisoryLocks.releaseLock(lock.entityType, lock.entityId, lock.mode);
         }
@@ -251,21 +252,21 @@ export class TransactionManager {
 
   /**
    * Get active transaction information
-   */
+   */;
   getActiveTransactions(): TransactionContext[] {
-    return Array.from(this.activeTransactions.values());
+    return Array.from(this.activeTransactions.values();
   }
 
   /**
    * Get transaction by ID
-   */
+   */;
   getTransaction(transactionId: string): TransactionContext | undefined {
     return this.activeTransactions.get(transactionId);
   }
 
   /**
    * Clean up expired transactions
-   */
+   */;
   async cleanupExpiredTransactions(): Promise<number> {
     const now = Date.now();
     let cleanedCount = 0;
@@ -273,7 +274,7 @@ export class TransactionManager {
     for (const [id, ctx] of this.activeTransactions.entries()) {
       const age = now - ctx.startTime.getTime();
 
-      // Clean up transactions older than 5 minutes
+      // Clean up transactions older than 5 minutes;
       if (age > 300000) {
         await this.cleanupTransaction(id);
         cleanedCount++;
@@ -289,14 +290,14 @@ export class TransactionManager {
 
   /**
    * Clean up a specific transaction
-   */
+   */;
   private async cleanupTransaction(transactionId: string): Promise<void> {
     const ctx = this.activeTransactions.get(transactionId);
     if (!ctx) return;
 
     console.log(`🧹 Cleaning up transaction ${transactionId}`);
 
-    // Release any locks that might still be held
+    // Release any locks that might still be held;
     for (const lock of ctx.locks) {
       try {
         await advisoryLocks.releaseLock(lock.entityType, lock.entityId, lock.mode);
@@ -311,9 +312,9 @@ export class TransactionManager {
 
   /**
    * Health check
-   */
+   */;
   async healthCheck(): Promise<any> {
-    const transactions = Array.from(this.activeTransactions.values());
+    const transactions = Array.from(this.activeTransactions.values();
     const now = Date.now();
 
     let oldestTransaction: { id: string; age: number } | undefined;
@@ -331,7 +332,7 @@ export class TransactionManager {
     return {
       activeTransactions: transactions.length,
       oldestTransaction,
-      locksHeld: totalLocks
+      locksHeld: totalLocks,
     };
   }
 }

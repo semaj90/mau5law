@@ -18,16 +18,16 @@ export interface SessionState {
   health: {
     isValid: boolean;
     warningCount: number;
-    lastCheck: Date | null;
+    lastCheck: Date | null;,
   };
   analytics: {
     loginTime: Date | null;
     activityCount: number;
-    featuresUsed: string[];
+    featuresUsed: string[];,
   };
 }
 
-// Create reactive session state using $state rune
+// Create reactive session state using $state rune;
 const sessionState = $state<SessionState>({
   isActive: false,
   user: null,
@@ -39,12 +39,12 @@ const sessionState = $state<SessionState>({
   health: {
     isValid: false,
     warningCount: 0,
-    lastCheck: null
+    lastCheck: null,
   },
   analytics: {
     loginTime: null,
     activityCount: 0,
-    featuresUsed: []
+    featuresUsed: [],
   }
 });
 
@@ -61,17 +61,17 @@ export class SessionManager {
     }
   }
 
-  // Get current session state (reactive)
+  // Get current session state (reactive);
   get state() {
     return sessionState;
   }
 
-  // Initialize session manager
+  // Initialize session manager;
   private initialize() {
     // Start the XState actor
     this.actor.start();
 
-    // Subscribe to state changes
+    // Subscribe to state changes;
     this.actor.subscribe((state) => {
       this.updateSessionState(state);
     });
@@ -83,7 +83,7 @@ export class SessionManager {
     this.checkExistingSession();
   }
 
-  // Update reactive session state from XState
+  // Update reactive session state from XState;
   private updateSessionState(machineState: any) {
     const { context } = machineState;
 
@@ -98,7 +98,7 @@ export class SessionManager {
     sessionState.analytics = context.analyticsData;
   }
 
-  // Start session with authenticated user
+  // Start session with authenticated user;
   async startSession(user: User, sessionId: string) {
     try {
       this.actor.send({
@@ -117,7 +117,7 @@ export class SessionManager {
     }
   }
 
-  // End current session
+  // End current session;
   async endSession() {
     try {
       this.actor.send({ type: 'LOGOUT' });
@@ -130,7 +130,7 @@ export class SessionManager {
     }
   }
 
-  // Refresh session to extend expiration
+  // Refresh session to extend expiration;
   async refreshSession() {
     if (!sessionState.isActive) {
       throw new Error('No active session to refresh');
@@ -145,7 +145,7 @@ export class SessionManager {
     }
   }
 
-  // Extend session for longer duration
+  // Extend session for longer duration;
   async extendSession() {
     if (!sessionState.isActive) {
       throw new Error('No active session to extend');
@@ -160,7 +160,7 @@ export class SessionManager {
     }
   }
 
-  // Check if user has specific permission
+  // Check if user has specific permission;
   hasPermission(permission: string): boolean {
     if (!sessionState.isActive || !sessionState.permissions) {
       return false;
@@ -170,7 +170,7 @@ export class SessionManager {
            sessionState.permissions.includes(permission);
   }
 
-  // Require specific permission (throws if not authorized)
+  // Require specific permission (throws if not authorized);
   requirePermission(permission: string) {
     if (!this.hasPermission(permission)) {
       this.actor.send({ type: 'PERMISSION_CHECK', permission });
@@ -178,7 +178,7 @@ export class SessionManager {
     }
   }
 
-  // Elevate security level for sensitive operations
+  // Elevate security level for sensitive operations;
   async elevateSecurityLevel(reason: string) {
     try {
       this.actor.send({ type: 'ELEVATE_SECURITY', reason });
@@ -189,7 +189,7 @@ export class SessionManager {
     }
   }
 
-  // Record user activity for analytics
+  // Record user activity for analytics;
   recordActivity(route: string, action: string, featureUsed?: string) {
     this.actor.send({
       type: 'ACTIVITY',
@@ -197,13 +197,13 @@ export class SessionManager {
       action
     });
 
-    // Track feature usage
+    // Track feature usage;
     if (featureUsed && !sessionState.analytics.featuresUsed.includes(featureUsed)) {
       sessionState.analytics.featuresUsed.push(featureUsed);
     }
   }
 
-  // Perform manual security check
+  // Perform manual security check;
   async performSecurityCheck() {
     try {
       this.actor.send({ type: 'SECURITY_CHECK' });
@@ -213,21 +213,21 @@ export class SessionManager {
     }
   }
 
-  // Get session analytics data
+  // Get session analytics data;
   getAnalytics() {
     return {
       ...sessionState.analytics,
       sessionDuration: sessionState.analytics.loginTime ?
         Date.now() - sessionState.analytics.loginTime.getTime() : 0,
       isHealthy: sessionState.health.isValid,
-      warningCount: sessionState.health.warningCount
+      warningCount: sessionState.health.warningCount,
     };
   }
 
-  // Check for existing session on initialization
+  // Check for existing session on initialization;
   private async checkExistingSession() {
     try {
-      // Check if auth service has an active session
+      // Check if auth service has an active session;
       if (authService.state.isAuthenticated && authService.state.user) {
         const sessionId = this.generateSessionId();
         await this.startSession(authService.state.user, sessionId);
@@ -237,16 +237,16 @@ export class SessionManager {
     }
   }
 
-  // Set up activity tracking
+  // Set up activity tracking;
   private setupActivityTracking() {
     if (!browser) return;
 
-    // Track page navigation
+    // Track page navigation;
     const trackNavigation = () => {
       this.recordActivity(window.location.pathname, 'navigation');
     };
 
-    // Track user interactions
+    // Track user interactions;
     const trackInteraction = (event: Event) => {
       const target = event.target as HTMLElement;
       const action = `${event.type}:${target.tagName.toLowerCase()}`;
@@ -258,7 +258,7 @@ export class SessionManager {
     document.addEventListener('click', trackInteraction);
     document.addEventListener('keydown', trackInteraction);
 
-    // Track activity every 30 seconds
+    // Track activity every 30 seconds;
     this.activityTimer = window.setInterval(() => {
       if (sessionState.isActive) {
         this.recordActivity(window.location.pathname, 'periodic_check');
@@ -266,7 +266,7 @@ export class SessionManager {
     }, 30000);
   }
 
-  // Stop activity tracking
+  // Stop activity tracking;
   private stopActivityTracking() {
     if (this.activityTimer) {
       window.clearInterval(this.activityTimer);
@@ -274,9 +274,9 @@ export class SessionManager {
     }
   }
 
-  // Start periodic health checks
+  // Start periodic health checks;
   private startHealthChecks() {
-    // Health check every 5 minutes
+    // Health check every 5 minutes;
     setInterval(() => {
       if (sessionState.isActive) {
         this.actor.send({ type: 'HEALTH_CHECK' });
@@ -284,24 +284,24 @@ export class SessionManager {
     }, 5 * 60 * 1000);
   }
 
-  // Stop health checks
+  // Stop health checks;
   private stopHealthChecks() {
     // Health checks will stop automatically when session ends
   }
 
-  // Generate unique session ID
+  // Generate unique session ID;
   private generateSessionId(): string {
     return `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  // Handle session expiration
+  // Handle session expiration;
   private handleSessionExpired() {
     console.warn('Session expired, redirecting to login');
     this.endSession();
     goto('/login');
   }
 
-  // Clean up on destroy
+  // Clean up on destroy;
   destroy() {
     this.actor.stop();
     this.stopActivityTracking();
@@ -327,9 +327,9 @@ export const recordActivity = (route: string, action: string, feature?: string) 
   sessionManager.recordActivity(route, action, feature);
 };
 
-// Initialize session manager when module loads
+// Initialize session manager when module loads;
 if (browser) {
-  // Auto-cleanup on page unload
+  // Auto-cleanup on page unload;
   window.addEventListener('beforeunload', () => {
     sessionManager.destroy();
   });

@@ -14,7 +14,7 @@ export class MCPApiClient {
     this.baseUrl = baseUrl;
   }
 
-  // Health check endpoint
+  // Health check endpoint;
   async getHealth(): Promise<MCPHealthStatus> {
     try {
       const response = await fetch(`${this.baseUrl}/health`);
@@ -27,12 +27,12 @@ export class MCPApiClient {
         uptime: 0,
         workers: 0,
         version: 'unknown',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
 
-  // Get server metrics
+  // Get server metrics;
   async getMetrics(): Promise<MCPMetrics> {
     try {
       const response = await fetch(`${this.baseUrl}/metrics`);
@@ -48,12 +48,12 @@ export class MCPApiClient {
         errorCount: 0,
         avgProcessingTime: 0,
         throughput: 0,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
 
-  // Get worker status
+  // Get worker status;
   async getWorkers(): Promise<MCPWorker[]> {
     try {
       const response = await fetch(`${this.baseUrl}/workers`);
@@ -66,7 +66,7 @@ export class MCPApiClient {
     }
   }
 
-  // Submit documents for processing
+  // Submit documents for processing;
   async processDocuments(files: File[], options: ProcessingOptions = {}): Promise<MCPJobSubmission> {
     try {
       const formData = new FormData();
@@ -75,11 +75,11 @@ export class MCPApiClient {
         formData.append(`document_${index}`, file);
       });
 
-      formData.append('options', JSON.stringify(options));
+      formData.append('options', JSON.stringify(options);
 
       const response = await fetch(`${this.baseUrl}/process`, {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -90,7 +90,7 @@ export class MCPApiClient {
     }
   }
 
-  // Get job status
+  // Get job status;
   async getJobStatus(jobId: string): Promise<MCPJob> {
     try {
       const response = await fetch(`${this.baseUrl}/jobs/${jobId}`);
@@ -102,7 +102,7 @@ export class MCPApiClient {
     }
   }
 
-  // Get job results
+  // Get job results;
   async getJobResults(jobId: string): Promise<MCPJobResult> {
     try {
       const response = await fetch(`${this.baseUrl}/jobs/${jobId}/results`);
@@ -114,11 +114,11 @@ export class MCPApiClient {
     }
   }
 
-  // Cancel a job
+  // Cancel a job;
   async cancelJob(jobId: string): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/jobs/${jobId}/cancel`, {
-        method: 'POST'
+        method: 'POST',
       });
       return response.ok;
     } catch (error) {
@@ -127,7 +127,7 @@ export class MCPApiClient {
     }
   }
 
-  // Real-time updates via WebSocket
+  // Real-time updates via WebSocket;
   connectWebSocket(onMessage: (data: MCPRealtimeEvent) => void): void {
     const wsUrl = this.baseUrl.replace('http', 'ws') + '/ws';
 
@@ -180,7 +180,7 @@ export class MCPApiClient {
     }
   }
 
-  // Restart server (admin function)
+  // Restart server (admin function);
   async restartServer(): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/admin/restart`, {
@@ -196,7 +196,7 @@ export class MCPApiClient {
     }
   }
 
-  // Get system logs
+  // Get system logs;
   async getLogs(limit = 100): Promise<MCPLogEntry[]> {
     try {
       const response = await fetch(`${this.baseUrl}/logs?limit=${limit}`);
@@ -209,7 +209,7 @@ export class MCPApiClient {
     }
   }
 
-  // GPU status and metrics
+  // GPU status and metrics;
   async getGPUStatus(): Promise<MCPGPUStatus> {
     try {
       const response = await fetch(`${this.baseUrl}/gpu/status`);
@@ -224,19 +224,19 @@ export class MCPApiClient {
         memoryTotal: 0,
         powerUsage: 0,
         utilization: 0,
-        name: 'Unknown'
+        name: 'Unknown',
       };
     }
   }
 }
 
-// Type definitions for MCP API
+// Type definitions for MCP API;
 export interface MCPHealthStatus {
   status: 'healthy' | 'degraded' | 'error' | 'restarting';
   uptime: number;
   workers: number;
   version: string;
-  timestamp: string;
+  timestamp: string;,
 }
 
 export interface MCPMetrics {
@@ -247,7 +247,7 @@ export interface MCPMetrics {
   errorCount: number;
   avgProcessingTime: number;
   throughput: number;
-  timestamp: string;
+  timestamp: string;,
 }
 
 export interface MCPWorker {
@@ -258,7 +258,7 @@ export interface MCPWorker {
   avgResponseTime: number;
   lastActivity?: string;
   memoryUsage: number;
-  cpuUsage: number;
+  cpuUsage: number;,
 }
 
 export interface ProcessingOptions {
@@ -274,7 +274,7 @@ export interface MCPJobSubmission {
   status: 'submitted';
   estimatedTime: number;
   queuePosition: number;
-  workers: number[];
+  workers: number[];,
 }
 
 export interface MCPJob {
@@ -299,13 +299,13 @@ export interface MCPJobResult {
     compliance: ComplianceCheck[];
     precedents: LegalPrecedent[];
     recommendations: string[];
-    confidence: number;
+    confidence: number;,
   };
   metadata: {
     processingTime: number;
     workerId: number;
     modelVersion: string;
-    documentType: string;
+    documentType: string;,
   };
 }
 
@@ -313,7 +313,7 @@ export interface LegalEntity {
   name: string;
   type: 'person' | 'organization' | 'location' | 'date' | 'amount';
   confidence: number;
-  context: string;
+  context: string;,
 }
 
 export interface RiskAssessment {
@@ -322,29 +322,29 @@ export interface RiskAssessment {
     financial: number;
     legal: number;
     operational: number;
-    regulatory: number;
+    regulatory: number;,
   };
-  factors: string[];
+  factors: string[];,
 }
 
 export interface ComplianceCheck {
   regulation: string;
   status: 'compliant' | 'non-compliant' | 'unclear';
   confidence: number;
-  notes: string;
+  notes: string;,
 }
 
 export interface LegalPrecedent {
   case: string;
   relevance: number;
   summary: string;
-  citation: string;
+  citation: string;,
 }
 
 export interface MCPRealtimeEvent {
   type: 'job_update' | 'worker_status' | 'metrics' | 'log' | 'alert';
   timestamp: string;
-  data: any;
+  data: any;,
 }
 
 export interface MCPLogEntry {
@@ -362,7 +362,7 @@ export interface MCPGPUStatus {
   memoryUsed: number;
   memoryTotal: number;
   powerUsage: number;
-  utilization: number;
+  utilization: number;,
 }
 
 // Singleton instance for easy import

@@ -8,6 +8,7 @@ import { cudaCacheMemoryOptimizer } from './cuda-cache-memory-optimizer.js';
 import { unifiedClientLLMOrchestrator } from './unified-client-llm-orchestrator.js';
 import { parallelCacheOrchestrator } from '$lib/cache/parallel-cache-orchestrator.js';
 import { browser } from '$app/environment';
+}
 
 export interface ModelSwitchDecision {
   shouldSwitch: boolean;
@@ -18,12 +19,12 @@ export interface ModelSwitchDecision {
   estimatedImprovement: {
     speedGain: number; // percentage
     qualityGain: number; // percentage
-    userSatisfactionGain: number; // percentage
+    userSatisfactionGain: number; // percentage,
   };
   switchCost: {
     timeMs: number;
     memoryMB: number;
-    cpuUsage: number;
+    cpuUsage: number;,
   };
 }
 
@@ -33,15 +34,15 @@ export interface UserLearningProfile {
   learningPhase: 'exploration' | 'specialization' | 'optimization' | 'mastery';
   preferredModels: Map<string, number>; // intent_category -> model_preference_score
   responseTimePreference: 'speed' | 'quality' | 'balanced';
-  domainExpertise: Map<string, number>; // domain -> expertise_level (0-1)
+  domainExpertise: Map<string, number>; // domain -> expertise_level (0-1);
   queryPatterns: {
     avgQueryLength: number;
     commonIntents: string[];
     peakUsageHours: number[];
-    taskComplexityPreference: number; // 0-1
+    taskComplexityPreference: number; // 0-1,
   };
   satisfactionHistory: Array<any>;
-  adaptationRate: number; // How quickly to adapt to new patterns
+  adaptationRate: number; // How quickly to adapt to new patterns,
 }
 
 export interface FastUXOptimization {
@@ -62,12 +63,12 @@ class IntelligentModelSwitcher {
   private learningEnabled = true;
   private minDataPoints = 5; // Minimum interactions before adaptation
   
-  // Performance monitoring
+  // Performance monitoring;
   private performanceMonitor = {
     totalSwitches: 0,
     successfulSwitches: 0,
     avgSwitchTime: 0,
-    userSatisfactionImprovement: 0
+    userSatisfactionImprovement: 0,
   };
 
   constructor() {
@@ -172,7 +173,7 @@ class IntelligentModelSwitcher {
         fastUXOptimizations: [],
         userLearningUpdates: [],
         didYouMeanSuggestions: [],
-        processingTime: performance.now() - startTime
+        processingTime: performance.now() - startTime,
       };
     }
   }
@@ -185,10 +186,10 @@ class IntelligentModelSwitcher {
     currentModel: string,
     recommendedModel: string,
     userProfile: UserLearningProfile,
-    optimizationResult: any
+    optimizationResult: any;
   ): Promise<ModelSwitchDecision> {
     
-    // Don't switch if already using recommended model
+    // Don't switch if already using recommended model;
     if (currentModel === recommendedModel) {
       return {
         shouldSwitch: false,
@@ -246,7 +247,7 @@ class IntelligentModelSwitcher {
   private async executeModelSwitch(
     fromModel: string,
     toModel: string,
-    userContext: any
+    userContext: any;
   ): Promise<any> {
     const startTime = performance.now();
     
@@ -256,11 +257,11 @@ class IntelligentModelSwitcher {
       // Use unified orchestrator to perform the switch
       await (unifiedClientLLMOrchestrator as any).performContextSwitch(
         fromModel,
-        toModel,
+        toModel,);
         {
           text: userContext || '',
           type: 'legal-analysis',
-          priority: 'normal'
+          priority: 'normal',
         }
       );
       
@@ -280,14 +281,14 @@ class IntelligentModelSwitcher {
       return {
         success: false,
         switchTime: performance.now() - startTime,
-        error: error?.message || 'Unknown error'
+        error: error?.message || 'Unknown error',
       };
     }
   }
 
   /**
    * Get or create user learning profile
-   */
+   */;
   private async getUserLearningProfile(userId: string, sessionId: string): Promise<UserLearningProfile> {
     const profileKey = `${userId}:${sessionId}`;
     
@@ -295,7 +296,7 @@ class IntelligentModelSwitcher {
       return this.userProfiles.get(profileKey)!;
     }
     
-    // Create new profile or load from storage
+    // Create new profile or load from storage;
     const profile: UserLearningProfile = {
       userId,
       sessionId,
@@ -314,15 +315,15 @@ class IntelligentModelSwitcher {
         avgQueryLength: 50,
         commonIntents: ['chat'],
         peakUsageHours: [9, 10, 14, 15], // Business hours
-        taskComplexityPreference: 0.5
+        taskComplexityPreference: 0.5,
       },
       satisfactionHistory: [],
-      adaptationRate: 0.1 // Moderate adaptation rate
+      adaptationRate: 0.1 // Moderate adaptation rate,
     };
     
     this.userProfiles.set(profileKey, profile);
     
-    // Try to load existing profile from cache
+    // Try to load existing profile from cache;
     try {
       const cachedProfile = await parallelCacheOrchestrator.executeParallel({
         id: `user-profile:${profileKey}`,
@@ -351,7 +352,7 @@ class IntelligentModelSwitcher {
     query: string,
     modelUsed: string,
     userIntent: any,
-    userFeedback?: number
+    userFeedback?: number;
   ): Promise<string[]> {
     const updates: string[] = [];
     
@@ -378,29 +379,29 @@ class IntelligentModelSwitcher {
       
       // Update model preferences based on intent
       const currentPreference = profile.preferredModels.get(userIntent.intentCategory) || 0.5;
-      const newPreference = currentPreference + (profile.adaptationRate * (userFeedback ? (userFeedback - 3) / 2 : 0.1));
-      profile.preferredModels.set(userIntent.intentCategory, Math.max(0.1, Math.min(1.0, newPreference)));
+      const newPreference = currentPreference + (profile.adaptationRate * (userFeedback ? (userFeedback - 3) / 2 : 0.1);
+      profile.preferredModels.set(userIntent.intentCategory, Math.max(0.1, Math.min(1.0, newPreference));
       updates.push(`updated_preference_${userIntent.intentCategory}`);
       
-      // Update domain expertise
+      // Update domain expertise;
       if (userIntent.domainSpecificity > 0.6) {
         const domain = 'legal'; // Simplified - would extract actual domain
         const currentExpertise = profile.domainExpertise.get(domain) || 0.5;
         const expertiseBoost = userIntent.complexity * 0.05;
-        profile.domainExpertise.set(domain, Math.min(1.0, currentExpertise + expertiseBoost));
+        profile.domainExpertise.set(domain, Math.min(1.0, currentExpertise + expertiseBoost);
         updates.push(`expertise_boost_${domain}`);
       }
       
-      // Record satisfaction if provided
+      // Record satisfaction if provided;
       if (userFeedback) {
         profile.satisfactionHistory.push({
           modelUsed,
           query,
           satisfactionScore: userFeedback,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
         
-        // Keep only recent 50 satisfaction scores
+        // Keep only recent 50 satisfaction scores;
         if (profile.satisfactionHistory.length > 50) {
           profile.satisfactionHistory = profile.satisfactionHistory.slice(-30);
         }
@@ -421,7 +422,7 @@ class IntelligentModelSwitcher {
         updates.push('phase_mastery');
       }
       
-      // Adjust adaptation rate based on learning phase
+      // Adjust adaptation rate based on learning phase;
       switch (profile.learningPhase) {
         case 'exploration':
           profile.adaptationRate = 0.15; // High adaptation
@@ -440,12 +441,12 @@ class IntelligentModelSwitcher {
       // Cache updated profile
       await parallelCacheOrchestrator.storeParallel(
         `user_profile:${profile.userId}:${profile.sessionId}`,
-        profile,
+        profile,);
         {
           tier: 'l2',
           ttl: 24 * 60 * 60 * 1000, // 24 hours
           priority: 'normal',
-          type: 'user_profile'
+          type: 'user_profile',
         }
       );
       
@@ -459,7 +460,7 @@ class IntelligentModelSwitcher {
 
   /**
    * Prepare fast UX optimizations for next interactions
-   */
+   */;
   private async prepareFastUXOptimizations(profile: UserLearningProfile, currentQuery: string): Promise<string[]> {
     const optimizations: string[] = [];
     
@@ -473,7 +474,7 @@ class IntelligentModelSwitcher {
           precomputedSwitches: new Map(),
           contextualPredictions: [],
           didYouMeanCache: new Map(),
-          userIntentShortcuts: new Map()
+          userIntentShortcuts: new Map(),
         };
         this.fastUXOptimizations.set(profileKey, fastUX);
       }
@@ -504,7 +505,7 @@ class IntelligentModelSwitcher {
     currentModel: string,
     recommendedModel: string,
     userProfile: UserLearningProfile,
-    optimizationResult: any
+    optimizationResult: any;
   ): { speedGain: number; qualityGain: number; userSatisfactionGain: number } {
     // Simplified calculation - would use actual performance data
     const speedGain = currentModel === 'llama-rl' && recommendedModel === 'gemma270m' ? 25 : 10;
@@ -515,7 +516,7 @@ class IntelligentModelSwitcher {
   }
 
   private async calculateSwitchCost(fromModel: string, toModel: string): Promise<any> {
-    // Estimated switch costs - would measure actual performance
+    // Estimated switch costs - would measure actual performance;
     const switchCosts: Record<string, { timeMs: number; memoryMB: number; cpuUsage: number }> = {
       'gemma270m->llama-rl': { timeMs: 200, memoryMB: 1024, cpuUsage: 60 },
       'llama-rl->gemma270m': { timeMs: 100, memoryMB: -1024, cpuUsage: 40 },
@@ -530,7 +531,7 @@ class IntelligentModelSwitcher {
   private calculateNetBenefit(
     improvements: { speedGain: number; qualityGain: number; userSatisfactionGain: number },
     switchCost: { timeMs: number; memoryMB: number; cpuUsage: number },
-    userProfile: UserLearningProfile
+    userProfile: UserLearningProfile;
   ): number {
     // Weight benefits based on user preferences
     let benefit = 0;
@@ -556,7 +557,7 @@ class IntelligentModelSwitcher {
   private predictNextLikelyModels(profile: UserLearningProfile): string[] {
     const predictions: string[] = [];
     
-    // Based on common intents
+    // Based on common intents;
     profile.queryPatterns.commonIntents.forEach(intent => {
       const preference = profile.preferredModels.get(intent);
       if (preference && preference > 0.6) {
@@ -573,7 +574,7 @@ class IntelligentModelSwitcher {
   private generateContextualPredictions(profile: UserLearningProfile, currentQuery: string): Array<{
     nextLikelyIntent: string;
     probability: number;
-    suggestedModel: string;
+    suggestedModel: string;,
   }> {
     // Simplified prediction based on patterns
     return [
@@ -600,7 +601,7 @@ class IntelligentModelSwitcher {
     fromModel: string,
     toModel: string,
     reason: string,
-    performance: number
+    performance: number;
   ): void {
     this.switchHistory.push({
       userId,
@@ -609,10 +610,10 @@ class IntelligentModelSwitcher {
       reason,
       performance,
       userSatisfaction: 0.8, // Would track actual satisfaction
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
     
-    // Keep only recent 1000 switches
+    // Keep only recent 1000 switches;
     if (this.switchHistory.length > 1000) {
       this.switchHistory = this.switchHistory.slice(-500);
     }
@@ -629,9 +630,9 @@ class IntelligentModelSwitcher {
 
   /**
    * Get switcher performance statistics
-   */
+   */;
   async getPerformanceStats(): Promise<any> {
-    const learningPhases = Array.from(this.userProfiles.values())
+    const learningPhases = Array.from(this.userProfiles.values()
       .map(profile => profile.learningPhase);
     
     const phaseDistribution = learningPhases.reduce((acc, phase) => {
@@ -646,7 +647,7 @@ class IntelligentModelSwitcher {
       avgSwitchTime: this.performanceMonitor.avgSwitchTime,
       userSatisfactionImprovement: this.performanceMonitor.userSatisfactionImprovement,
       activeUserProfiles: this.userProfiles.size,
-      learningPhaseDistribution: phaseDistribution
+      learningPhaseDistribution: phaseDistribution,
     };
   }
 }

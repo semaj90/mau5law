@@ -5,6 +5,7 @@
 
 import * as THREE from 'three';
 import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from '../YoRHaUI3D.js';
+}
 
 export interface YoRHaInput3DOptions extends Omit<YoRHaStyle, 'variant'> {
   value?: string;
@@ -58,13 +59,13 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       borderColor: options.borderColor || YORHA_COLORS.primary.grey,
       borderWidth: options.borderWidth || 0.02,
       borderRadius: options.borderRadius || 0.05,
-      // Interactive states
+      // Interactive states;
       hover: {
         borderColor: YORHA_COLORS.accent.gold,
         glow: {
           enabled: true,
           color: YORHA_COLORS.accent.gold,
-          intensity: 0.2
+          intensity: 0.2,
         },
         ...options.hover
       },
@@ -74,7 +75,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
         glow: {
           enabled: true,
           color: YORHA_COLORS.accent.gold,
-          intensity: 0.4
+          intensity: 0.4,
         },
         ...options.active
       }
@@ -126,7 +127,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       bevelEnabled: true,
       bevelSegments: 2,
       bevelSize: radius * 0.05,
-      bevelThickness: depth * 0.1
+      bevelThickness: depth * 0.1,
     };
 
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
@@ -136,7 +137,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     // Create text content
     this.createTextMesh();
     
-    // Create placeholder if no value
+    // Create placeholder if no value;
     if (!this.currentValue && this.options.placeholder) {
       this.createPlaceholder();
     }
@@ -144,12 +145,12 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     // Create cursor
     this.createCursor();
     
-    // Create icon if provided
+    // Create icon if provided;
     if (this.options.icon) {
       this.createIcon();
     }
     
-    // Create clear button if clearable and has value
+    // Create clear button if clearable and has value;
     if (this.options.clearable && this.currentValue) {
       this.createClearButton();
     }
@@ -171,7 +172,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       color: this.options.readonly 
         ? YORHA_COLORS.interaction.disabled: (this.style.textColor || YORHA_COLORS.primary.black),
       transparent: true,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
     });
 
     this.textMesh = new THREE.Mesh(textGeometry, textMaterial);
@@ -195,7 +196,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       color: YORHA_COLORS.primary.grey,
       transparent: true,
       opacity: 0.6,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
     });
 
     this.placeholderMesh = new THREE.Mesh(placeholderGeometry, placeholderMaterial);
@@ -213,7 +214,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const cursorMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.accent.gold,
       transparent: true,
-      opacity: 0
+      opacity: 0,
     });
 
     this.cursorMesh = new THREE.Mesh(cursorGeometry, cursorMaterial);
@@ -233,7 +234,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const iconMaterial = new THREE.MeshBasicMaterial({
       color: this.options.readonly 
         ? YORHA_COLORS.interaction.disabled: YORHA_COLORS.primary.grey,
-      transparent: true
+      transparent: true,
     });
 
     this.iconMesh = new THREE.Mesh(iconGeometry, iconMaterial);
@@ -253,7 +254,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const clearMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.primary.grey,
       transparent: true,
-      opacity: 0.7
+      opacity: 0.7,
     });
 
     this.clearButtonMesh = new THREE.Mesh(clearGeometry, clearMaterial);
@@ -263,7 +264,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       (this.style.depth || 0.08) / 2 + 0.001
     );
     
-    // Add hover effects
+    // Add hover effects;
     this.clearButtonMesh.userData = {
       interactive: true,
       onClick: () => this.clear(),
@@ -293,7 +294,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     const highlightMaterial = new THREE.MeshBasicMaterial({
       color: YORHA_COLORS.accent.gold,
       transparent: true,
-      opacity: 0
+      opacity: 0,
     });
 
     this.borderHighlight = new THREE.Mesh(highlightGeometry, highlightMaterial);
@@ -345,40 +346,40 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     variant: string,
     size: string,
     error?: boolean,
-    success?: boolean
+    success?: boolean;
   ): Partial<YoRHaStyle> {
-    // Size-based styles
+    // Size-based styles;
     const sizeStyles = {
       small: { fontSize: 0.12 },
       medium: { fontSize: 0.16 },
       large: { fontSize: 0.2 }
     };
     
-    // Variant-based styles
+    // Variant-based styles;
     const variantStyles = {
       default: {
         backgroundColor: YORHA_COLORS.primary.white,
         borderColor: YORHA_COLORS.primary.grey,
-        textColor: YORHA_COLORS.primary.black
+        textColor: YORHA_COLORS.primary.black,
       },
       outlined: {
         backgroundColor: 0x000000,
         opacity: 0.05,
         borderColor: YORHA_COLORS.primary.beige,
         borderWidth: 0.03,
-        textColor: YORHA_COLORS.primary.beige
+        textColor: YORHA_COLORS.primary.beige,
       },
       filled: {
         backgroundColor: YORHA_COLORS.primary.beige,
         borderColor: YORHA_COLORS.primary.grey,
-        textColor: YORHA_COLORS.primary.black
+        textColor: YORHA_COLORS.primary.black,
       },
       ghost: {
         backgroundColor: 0x000000,
         opacity: 0.1,
         borderColor: 0x000000,
         borderWidth: 0.01,
-        textColor: YORHA_COLORS.primary.black
+        textColor: YORHA_COLORS.primary.black,
       },
       terminal: {
         backgroundColor: YORHA_COLORS.primary.black,
@@ -387,14 +388,14 @@ export class YoRHaInput3D extends YoRHa3DComponent {
         glow: {
           enabled: true,
           color: YORHA_COLORS.accent.gold,
-          intensity: 0.2
+          intensity: 0.2,
         }
       }
     };
     
     let variantStyle = variantStyles[variant as keyof typeof variantStyles] || variantStyles.default;
     
-    // Apply error/success states (use any to bypass complex union types)
+    // Apply error/success states (use any to bypass complex union types);
     if (error) {
       variantStyle = {
         ...variantStyle,
@@ -413,7 +414,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     };
   }
 
-  // Helper methods
+  // Helper methods;
   private getDisplayValue(): string {
     if (this.options.type === 'password' && !this.isPasswordVisible) {
       return '•'.repeat(this.currentValue.length);
@@ -424,7 +425,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   private getTextOffsetX(): number {
     let offset = -(this.style.width || 3) / 2 + 0.2;
     
-    // Adjust for icon
+    // Adjust for icon;
     if (this.options.icon && this.options.iconPosition === 'left') {
       offset += 0.3;
     }
@@ -445,24 +446,24 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     return -(this.style.width || 3) / 2 + 0.2;
   }
 
-  // Public methods
+  // Public methods;
   public focus(): void {
     if (this.options.readonly) return;
     
     this.isFocused = true;
     
-    // Update visual state
+    // Update visual state;
     this.setStyle({
       borderColor: YORHA_COLORS.accent.gold,
-      borderWidth: 0.03
+      borderWidth: 0.03,
     });
     
-    // Show border highlight
+    // Show border highlight;
     if (this.borderHighlight?.material instanceof THREE.MeshBasicMaterial) {
       this.borderHighlight.material.opacity = 0.3;
     }
     
-    // Hide placeholder
+    // Hide placeholder;
     if (this.placeholderMesh) {
       this.placeholderMesh.visible = false;
     }
@@ -473,19 +474,19 @@ export class YoRHaInput3D extends YoRHa3DComponent {
   public blur(): void {
     this.isFocused = false;
     
-    // Reset visual state
+    // Reset visual state;
     this.setStyle({
       borderColor: this.options.error 
         ? YORHA_COLORS.status.error: (this.options.success ? YORHA_COLORS.status.success : YORHA_COLORS.primary.grey),
-      borderWidth: 0.02
+      borderWidth: 0.02,
     });
     
-    // Hide border highlight
+    // Hide border highlight;
     if (this.borderHighlight?.material instanceof THREE.MeshBasicMaterial) {
       this.borderHighlight.material.opacity = 0;
     }
     
-    // Show placeholder if no value
+    // Show placeholder if no value;
     if (!this.currentValue && this.placeholderMesh) {
       this.placeholderMesh.visible = true;
     }
@@ -554,7 +555,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
     if (this.options.readonly || !this.isFocused) return;
     
     switch (key) {
-      case 'Backspace':
+      case 'Backspace':;
         if (this.cursorPosition > 0) {
           this.currentValue = this.currentValue.substring(0, this.cursorPosition - 1) + 
                              this.currentValue.substring(this.cursorPosition);
@@ -564,7 +565,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
         }
         break;
         
-      case 'Delete':
+      case 'Delete':;
         if (this.cursorPosition < this.currentValue.length) {
           this.currentValue = this.currentValue.substring(0, this.cursorPosition) + 
                              this.currentValue.substring(this.cursorPosition + 1);
@@ -585,7 +586,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
         this.emitEvent('submit', { value: this.currentValue });
         break;
         
-      default:
+      default:;
         if (key.length === 1 && this.currentValue.length < (this.options.maxLength || 255)) {
           this.currentValue = this.currentValue.substring(0, this.cursorPosition) + 
                              key + 
@@ -605,7 +606,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       this.remove(this.textMesh);
       this.textMesh.geometry.dispose();
       if (Array.isArray(this.textMesh.material)) {
-        this.textMesh.material.forEach(mat => mat.dispose());
+        this.textMesh.material.forEach(mat => mat.dispose();
       } else {
         this.textMesh.material.dispose();
       }
@@ -639,7 +640,7 @@ export class YoRHaInput3D extends YoRHa3DComponent {
       if (mesh) {
         mesh.geometry.dispose();
         if (Array.isArray(mesh.material)) {
-          mesh.material.forEach(mat => mat.dispose());
+          mesh.material.forEach(mat => mat.dispose();
         } else {
           mesh.material.dispose();
         }

@@ -10,7 +10,7 @@ export interface SelectContext {
   selected: Writable<any>;
   open: Writable<boolean>;
   onSelect: (value: any) => void;
-  onToggle: () => void;
+  onToggle: () => void;,
 }
 
 export interface SelectItemProps extends SelectCommonProps {

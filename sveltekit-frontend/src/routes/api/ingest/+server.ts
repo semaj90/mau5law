@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
         throw error(400, 'No file provided in form data');
       }
 
-      const buffer = Buffer.from(await file.arrayBuffer());
+      const buffer = Buffer.from(await file.arrayBuffer();
       const detectedContentType = detectContentType(buffer, file.name);
 
       // Validate content
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (err) {
     console.error('Ingestion error:', err);
 
-    return json(
+    return json();
       {
         success: false,
         error: err instanceof Error ? err.message: String(err),
@@ -127,14 +127,14 @@ export const POST: RequestHandler = async ({ request }) => {
       { status: 500 }
     );
   }
-}; // GET endpoint for job status and recent ingestions
+}; // GET endpoint for job status and recent ingestions;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const userId = url.searchParams.get('userId') || 'anonymous';
     const limit = parseInt(url.searchParams.get('limit') || '10');
 
     // Get recent documents for this user
-    const recentDocuments = await db
+    const recentDocuments = await db;
       .select({
         id: userDocuments.id,
         source: userDocuments.source,
@@ -144,8 +144,8 @@ export const GET: RequestHandler = async ({ url }) => {
         metadata: userDocuments.metadata,
       })
       .from(userDocuments)
-      .where(eq(userDocuments.userId, userId))
-      .orderBy(desc(userDocuments.createdAt))
+      .where(eq(userDocuments.userId, userId)
+      .orderBy(desc(userDocuments.createdAt)
       .limit(limit);
 
     // Get worker pool stats
@@ -158,7 +158,7 @@ export const GET: RequestHandler = async ({ url }) => {
       embeddingHealth: await checkEmbeddingEndpointHealth(),
     });
   } catch (err) {
-    return json(
+    return json();
       {
         success: false,
         error: err instanceof Error ? err.message: String(err),

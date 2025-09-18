@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js';
 
 const UPLOAD_DIR = join(tmpdir(), "chunked-uploads");
 
-// Assembles the final file from chunks
+// Assembles the final file from chunks;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { fileId, filename } = await (request as any).json();

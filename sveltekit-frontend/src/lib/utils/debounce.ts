@@ -6,7 +6,7 @@
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number,
-  immediate?: boolean
+  immediate?: boolean;
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null;
 
@@ -30,7 +30,7 @@ export function debounce<T extends (...args: any[]) => any>(
  */
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
-  limit: number
+  limit: number;
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean = false;
 
@@ -47,7 +47,7 @@ export function throttle<T extends (...args: any[]) => any>(
  * RequestAnimationFrame-based throttle for smooth animations
  */
 export function rafThrottle<T extends (...args: any[]) => any>(
-  func: T
+  func: T;
 ): (...args: Parameters<T>) => void {
   let rafId: number | null = null;
 

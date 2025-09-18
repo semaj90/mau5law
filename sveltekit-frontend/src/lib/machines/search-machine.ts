@@ -2,6 +2,7 @@
 // Manages legal document and case search with history and analytics
 
 import { createMachine, assign, fromPromise } from 'xstate';
+}
 
 export interface SearchContext {
   query: string;
@@ -20,11 +21,11 @@ export interface SearchContext {
   analytics: {
     totalResults: number;
     searchTime: number;
-    relevanceScore: number;
+    relevanceScore: number;,
   };
   validationErrors: Record<string, string[]>;
   error: string | null;
-  isLoading: boolean;
+  isLoading: boolean;,
 }
 
 export const searchMachine = createMachine({
@@ -49,11 +50,11 @@ export const searchMachine = createMachine({
     analytics: {
       totalResults: 0,
       searchTime: 0,
-      relevanceScore: 0
+      relevanceScore: 0,
     },
     validationErrors: Record<string, any>,
     error: null,
-    isLoading: false
+    isLoading: false,
   },
   states: {
     idle: {
@@ -62,7 +63,7 @@ export const searchMachine = createMachine({
         UPDATE_QUERY: {
           actions: assign({
             query: ({ event }) => event.query,
-            error: null
+            error: null,
           })
         },
         UPDATE_FILTERS: {
@@ -70,18 +71,18 @@ export const searchMachine = createMachine({
             filters: ({ context, event }) => ({
               ...context.filters,
               ...event.filters
-            })
+            ,})
           })
         },
         SEARCH: 'validating',
-        LOAD_HISTORY: 'loadingHistory'
+        LOAD_HISTORY: 'loadingHistory',
       }
     },
     loadingHistory: {
       invoke: {
         id: 'loadSearchHistory',
         src: fromPromise(async () => {
-          // Load search history from localStorage or API
+          // Load search history from localStorage or API;
           try {
             const stored = localStorage.getItem('legal-ai:search-history');
             return stored ? JSON.parse(stored) : [];
@@ -98,7 +99,7 @@ export const searchMachine = createMachine({
         onError: {
           target: 'idle',
           actions: assign({
-            error: 'Failed to load search history'
+            error: 'Failed to load search history',
           })
         }
       }
@@ -117,7 +118,7 @@ export const searchMachine = createMachine({
             errors.query = ['Search query too long (max 200 characters)'];
           }
           
-          // Validate date range
+          // Validate date range;
           if (input.filters.dateRange?.from && input.filters.dateRange?.to) {
             const fromDate = new Date(input.filters.dateRange.from);
             const toDate = new Date(input.filters.dateRange.to);
@@ -138,14 +139,14 @@ export const searchMachine = createMachine({
           target: 'searching',
           actions: assign({
             validationErrors: Record<string, any>,
-            error: null
+            error: null,
           })
         },
         onError: {
           target: 'idle',
           actions: assign({
             validationErrors: ({ event }) => (event as any).error?.validationErrors || {},
-            error: 'Search validation failed'
+            error: 'Search validation failed',
           })
         }
       }
@@ -161,22 +162,22 @@ export const searchMachine = createMachine({
           const searchParams = new URLSearchParams();
           if (input.query) searchParams.append('query', input.query);
           
-          // Add filters
+          // Add filters;
           Object.entries(input.filters).forEach(([key, value]) => {
             if (Array.isArray(value)) {
-              searchParams.append(key, value.join(','));
+              searchParams.append(key, value.join(',');
             } else if (typeof value === 'object' && value !== null) {
-              // Handle date range
+              // Handle date range;
               if (key === 'dateRange') {
                 if ((value as any).from) searchParams.append('dateStart', (value as any).from);
                 if ((value as any).to) searchParams.append('dateEnd', (value as any).to);
               }
             } else if (value) {
-              searchParams.append(key, String(value));
+              searchParams.append(key, String(value);
             }
           });
           
-          // Perform search API call
+          // Perform search API call;
           const response = await fetch(`/api/search/legal?${searchParams}`, {
             method: 'GET',
             headers: {
@@ -197,26 +198,26 @@ export const searchMachine = createMachine({
             analytics: {
               totalResults: data.total || 0,
               searchTime,
-              relevanceScore: data.averageRelevance || 0
+              relevanceScore: data.averageRelevance || 0,
             }
           };
         }),
         input: ({ context }) => context,
         onDone: {
           target: 'results',
-          actions: [
+          actions: [;
             assign({
               results: ({ event }) => event.output.results,
               analytics: ({ event }) => event.output.analytics,
               error: null,
-              isLoading: false
+              isLoading: false,
             }),
-            // Save to search history
+            // Save to search history;
             ({ context }) => {
               if (context.query) {
                 const history = [...new Set([context.query, ...context.searchHistory])].slice(0, 10);
                 try {
-                  localStorage.setItem('legal-ai:search-history', JSON.stringify(history));
+                  localStorage.setItem('legal-ai:search-history', JSON.stringify(history);
                 } catch (e: any) {
                   console.warn('Failed to save search history:', e);
                 }
@@ -228,7 +229,7 @@ export const searchMachine = createMachine({
           target: 'error',
           actions: assign({
             error: ({ event }) => (event as any).error?.message || 'Search failed',
-            isLoading: false
+            isLoading: false,
           })
         }
       }
@@ -249,7 +250,7 @@ export const searchMachine = createMachine({
             filters: ({ context, event }) => ({
               ...context.filters,
               ...event.filters
-            })
+            ,})
           })
         },
         CLEAR_RESULTS: {
@@ -261,7 +262,7 @@ export const searchMachine = createMachine({
             analytics: {
               totalResults: 0,
               searchTime: 0,
-              relevanceScore: 0
+              relevanceScore: 0,
             }
           })
         }
@@ -275,7 +276,7 @@ export const searchMachine = createMachine({
           target: 'idle',
           actions: assign({
             error: null,
-            results: []
+            results: [],
           })
         }
       }

@@ -3,13 +3,13 @@
  * Implements gemma3:270m for lightweight, privacy-first inference
  */
 
-// Types for transformers.js integration
+// Types for transformers.js integration;
 export interface LocalModelConfig {
   modelId: string;
   quantized: boolean;
   device: 'webgpu' | 'wasm' | 'cpu';
   maxTokens: number;
-  temperature: number;
+  temperature: number;,
 }
 
 export interface LocalInferenceRequest {
@@ -26,7 +26,7 @@ export interface LocalInferenceResult {
   processingTime: number;
   device: string;
   confidence: number;
-  fromCache: boolean;
+  fromCache: boolean;,
 }
 
 export interface EmbeddingRequest {
@@ -38,7 +38,7 @@ export interface EmbeddingResult {
   embeddings: Float32Array[];
   processingTime: number;
   device: string;
-  dimensions: number;
+  dimensions: number;,
 }
 
 export interface SemanticSearchRequest {
@@ -55,14 +55,14 @@ export interface SemanticSearchResult {
   metadata?: any;
 }
 
-// Browser compatibility detection
+// Browser compatibility detection;
 export class BrowserCapabilities {
   static async detect(): Promise<{
     webgpu: boolean;
     wasm: boolean;
     sharedArrayBuffer: boolean;
     webworkers: boolean;
-    estimatedMemory: number;
+    estimatedMemory: number;,
   }> {
     const webgpu = !!navigator.gpu;
     const wasm = (() => {
@@ -78,10 +78,10 @@ export class BrowserCapabilities {
     const webworkers = typeof Worker !== 'undefined';
 
     // Estimate available memory
-    let estimatedMemory = 2048; // Default 2GB
+    let estimatedMemory = 2048; // Default 2GB;
     if ('memory' in performance && 'usedJSHeapSize' in (performance as any).memory) {
       const memory = (performance as any).memory;
-      estimatedMemory = Math.floor((memory.jsHeapSizeLimit - memory.usedJSHeapSize) / (1024 * 1024));
+      estimatedMemory = Math.floor((memory.jsHeapSizeLimit - memory.usedJSHeapSize) / (1024 * 1024);
     }
 
     return {
@@ -93,18 +93,18 @@ export class BrowserCapabilities {
     };
   }
 
-  static canRunModel(modelSizeMB: number, capabilities: Awaited<ReturnType<typeof BrowserCapabilities.detect>>): boolean {
+  static canRunModel(modelSizeMB: number, capabilities: Awaited<ReturnType<typeof BrowserCapabilities.detect>): boolean {
     const requiredMemory = modelSizeMB * 1.5; // 50% overhead
     const hasRequiredTech = capabilities.wasm || capabilities.webgpu;
     return hasRequiredTech && capabilities.estimatedMemory > requiredMemory;
   }
 }
 
-// Local AI Engine using transformers.js pattern
+// Local AI Engine using transformers.js pattern;
 export class BrowserLocalAI {
   private initialized = false;
   private modelLoaded = false;
-  private capabilities: Awaited<ReturnType<typeof BrowserCapabilities.detect>> | null = null;
+  private capabilities: Awaited<ReturnType<typeof BrowserCapabilities.detect> | null = null;
   private config: LocalModelConfig;
 
   // Model instances (would be actual transformers.js instances)
@@ -115,13 +115,13 @@ export class BrowserLocalAI {
   private inferenceCache = new Map<string, LocalInferenceResult>();
   private embeddingCache = new Map<string, Float32Array>();
 
-  // Performance metrics
+  // Performance metrics;
   private metrics = {
     totalInferences: 0,
     totalEmbeddings: 0,
     averageInferenceTime: 0,
     averageEmbeddingTime: 0,
-    cacheHits: 0
+    cacheHits: 0,
   };
 
   constructor(config: Partial<LocalModelConfig> = {}) {
@@ -143,7 +143,7 @@ export class BrowserLocalAI {
       console.log('📊 Browser capabilities:', this.capabilities);
 
       // Check if we can run the model
-      const modelSizeMB = 140; // gemma3:270m quantized ~140MB
+      const modelSizeMB = 140; // gemma3:270m quantized ~140MB;
       if (!BrowserCapabilities.canRunModel(modelSizeMB, this.capabilities)) {
         console.warn('❌ Insufficient browser capabilities for local AI');
         return false;
@@ -188,24 +188,24 @@ export class BrowserLocalAI {
     // });
 
     // For now, simulate successful loading
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 2000);
 
     this.textModel = {
       // Mock model interface
       generate: async (prompt: string, options: any) => {
-        await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
+        await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200);
         return {
           generated_text: `[Local AI Response] Based on the legal context: "${prompt}", here are the key considerations...`,
-          num_tokens: Math.floor(Math.random() * 100) + 50
+          num_tokens: Math.floor(Math.random() * 100) + 50,
         };
       }
     };
 
     this.embeddingModel = {
-      // Mock embedding model
+      // Mock embedding model;
       encode: async (texts: string[]) => {
-        await new Promise(resolve => setTimeout(resolve, 50 * texts.length));
-        return texts.map(() => new Float32Array(384).map(() => Math.random() - 0.5));
+        await new Promise(resolve => setTimeout(resolve, 50 * texts.length);
+        return texts.map(() => new Float32Array(384).map(() => Math.random() - 0.5);
       }
     };
 
@@ -221,7 +221,7 @@ export class BrowserLocalAI {
     const startTime = performance.now();
     const cacheKey = this.getCacheKey(request);
 
-    // Check cache first
+    // Check cache first;
     if (this.inferenceCache.has(cacheKey)) {
       this.metrics.cacheHits++;
       const cached = this.inferenceCache.get(cacheKey)!;
@@ -234,7 +234,7 @@ export class BrowserLocalAI {
         ? `${request.systemPrompt}\n\nUser: ${request.prompt}\nAssistant:`
         : request.prompt;
 
-      // Generate text using local model
+      // Generate text using local model;
       const result = await this.textModel.generate(fullPrompt, {
         max_tokens: request.maxTokens || this.config.maxTokens,
         temperature: request.temperature || this.config.temperature,
@@ -249,7 +249,7 @@ export class BrowserLocalAI {
         processingTime,
         device: this.config.device,
         confidence: 0.8 + Math.random() * 0.2, // Simulated confidence
-        fromCache: false
+        fromCache: false,
       };
 
       // Cache the result
@@ -293,7 +293,7 @@ export class BrowserLocalAI {
         }
       }
 
-      // Generate embeddings for uncached texts
+      // Generate embeddings for uncached texts;
       if (uncachedTexts.length > 0) {
         const newEmbeddings = await this.embeddingModel.encode(uncachedTexts);
 
@@ -316,7 +316,7 @@ export class BrowserLocalAI {
         embeddings,
         processingTime,
         device: this.config.device,
-        dimensions: embeddings[0]?.length || 384
+        dimensions: embeddings[0]?.length || 384,
       };
 
     } catch (error) {
@@ -350,16 +350,16 @@ export class BrowserLocalAI {
     similarities.sort((a, b) => b.similarity - a.similarity);
     const topResults = similarities.slice(0, request.topK || 10);
 
-    // Map back to documents
+    // Map back to documents;
     return topResults.map(({ index, similarity }) => ({
       id: request.documents[index].id,
       text: request.documents[index].text,
       similarity,
-      metadata: request.documents[index].metadata
+      metadata: request.documents[index].metadata,
     });
   }
 
-  // Utility methods
+  // Utility methods;
   private cosineSimilarity(a: Float32Array, b: Float32Array): number {
     let dotProduct = 0;
     let normA = 0;
@@ -371,7 +371,7 @@ export class BrowserLocalAI {
       normB += b[i] * b[i];
     }
 
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
   }
 
   private getCacheKey(request: LocalInferenceRequest): string {
@@ -379,15 +379,15 @@ export class BrowserLocalAI {
   }
 
   private cleanupCache(): void {
-    // Limit cache size to prevent memory issues
+    // Limit cache size to prevent memory issues;
     if (this.inferenceCache.size > 100) {
-      const keys = Array.from(this.inferenceCache.keys());
-      keys.slice(0, 50).forEach(key => this.inferenceCache.delete(key));
+      const keys = Array.from(this.inferenceCache.keys();
+      keys.slice(0, 50).forEach(key => this.inferenceCache.delete(key);
     }
 
     if (this.embeddingCache.size > 500) {
-      const keys = Array.from(this.embeddingCache.keys());
-      keys.slice(0, 250).forEach(key => this.embeddingCache.delete(key));
+      const keys = Array.from(this.embeddingCache.keys();
+      keys.slice(0, 250).forEach(key => this.embeddingCache.delete(key);
     }
   }
 
@@ -405,12 +405,12 @@ export class BrowserLocalAI {
       this.metrics.totalEmbeddings;
   }
 
-  // Public API methods
+  // Public API methods;
   isInitialized(): boolean {
     return this.initialized && this.modelLoaded;
   }
 
-  getCapabilities(): Awaited<ReturnType<typeof BrowserCapabilities.detect>> | null {
+  getCapabilities(): Awaited<ReturnType<typeof BrowserCapabilities.detect> | null {
     return this.capabilities;
   }
 
@@ -419,9 +419,9 @@ export class BrowserLocalAI {
       ...this.metrics,
       cacheSize: {
         inference: this.inferenceCache.size,
-        embeddings: this.embeddingCache.size
+        embeddings: this.embeddingCache.size,
       },
-      config: this.config
+      config: this.config,
     };
   }
 
@@ -440,15 +440,15 @@ export class BrowserLocalAI {
   }
 }
 
-// Singleton instance for the application
+// Singleton instance for the application;
 export const browserLocalAI = new BrowserLocalAI({
   modelId: 'gemma3-270m-q4',
   quantized: true,
   temperature: 0.2,
-  maxTokens: 512
+  maxTokens: 512,
 });
 
-// Legal-specific helper functions
+// Legal-specific helper functions;
 export class LegalLocalAI {
   constructor(private ai: BrowserLocalAI) {}
 
@@ -456,15 +456,15 @@ export class LegalLocalAI {
     fromId: string;
     toId: string;
     relationship: string;
-    confidence: number;
-  }>> {
+    confidence: number;,
+  }> {
     const suggestions = [];
 
     // Generate embeddings for all evidence
     const texts = evidenceNodes.map(node => `${node.title}: ${node.content}`);
     const embeddings = await this.ai.generateEmbeddings({ texts });
 
-    // Find potential links
+    // Find potential links;
     for (let i = 0; i < evidenceNodes.length; i++) {
       for (let j = i + 1; j < evidenceNodes.length; j++) {
         const similarity = this.cosineSimilarity(
@@ -483,14 +483,14 @@ Describe their relationship in one concise phrase:`;
           const result = await this.ai.generateText({
             prompt: relationshipPrompt,
             maxTokens: 50,
-            systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.'
+            systemPrompt: 'You are a legal AI assistant specialized in evidence analysis.',
           });
 
           suggestions.push({
             fromId: evidenceNodes[i].id,
             toId: evidenceNodes[j].id,
             relationship: result.text.trim(),
-            confidence: similarity
+            confidence: similarity,
           });
         }
       }
@@ -508,14 +508,14 @@ Suggest 3 additional bullet points that should be added to the notes:`;
     const result = await this.ai.generateText({
       prompt,
       maxTokens: 200,
-      systemPrompt: 'You are a legal AI assistant helping with case note preparation.'
+      systemPrompt: 'You are a legal AI assistant helping with case note preparation.',
     });
 
     // Parse suggestions from the response
     return result.text
       .split('\n')
-      .filter(line => line.trim().startsWith('-') || line.trim().startsWith('•'))
-      .map(line => line.trim().replace(/^[-•]\s*/, ''))
+      .filter(line => line.trim().startsWith('-') || line.trim().startsWith('•')
+      .map(line => line.trim().replace(/^[-•]\s*/, '')
       .filter(line => line.length > 10)
       .slice(0, 3);
   }
@@ -525,7 +525,7 @@ Suggest 3 additional bullet points that should be added to the notes:`;
       query,
       documents: documents.map(doc => ({ id: doc.id, text: doc.content })),
       topK: 5,
-      threshold: 0.4
+      threshold: 0.4,
     });
   }
 
@@ -540,7 +540,7 @@ Suggest 3 additional bullet points that should be added to the notes:`;
       normB += b[i] * b[i];
     }
 
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
   }
 }
 

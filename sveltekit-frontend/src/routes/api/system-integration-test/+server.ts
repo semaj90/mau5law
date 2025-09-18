@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url }) => {
   };
 
   try {
-    // Test PostgreSQL + pgvector
+    // Test PostgreSQL + pgvector;
     if (testType === 'all' || testType === 'database') {
       const dbStartTime = Date.now();
 
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
 
-    // Test Redis
+    // Test Redis;
     if (testType === 'all' || testType === 'redis') {
       const redisStartTime = Date.now();
 
@@ -102,7 +102,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
 
-    // Test NATS + QUIC
+    // Test NATS + QUIC;
     if (testType === 'all' || testType === 'nats') {
       const natsStartTime = Date.now();
 
@@ -131,12 +131,12 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
 
-    // Test Loki.js Integration
+    // Test Loki.js Integration;
     if (testType === 'all' || testType === 'loki') {
       const lokiStartTime = Date.now();
 
       try {
-        // Re-initialize if not healthy (getter added to cache class)
+        // Re-initialize if not healthy (getter added to cache class);
         if (!lokiRedisCache.isHealthy) {
           await lokiRedisCache.initialize();
         }
@@ -155,7 +155,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
 
-    // Test Instant Search
+    // Test Instant Search;
     if (testType === 'all' || testType === 'search') {
       const searchStartTime = Date.now();
 
@@ -176,7 +176,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
 
-    // Test RAG Pipeline
+    // Test RAG Pipeline;
     if (testType === 'all' || testType === 'rag') {
       const ragStartTime = Date.now();
 
@@ -222,7 +222,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message: 'Unknown system integration error';
     console.error('❌ System integration test failed:', error);
-    return json(
+    return json();
       {
         status: 'error',
         timestamp: new Date().toISOString(),
@@ -265,7 +265,7 @@ async function runStressTest(options: any = {}): Promise<Response> {
   // Run concurrent operations
   const promises = [];
   for (let i = 0; i < concurrent; i++) {
-    promises.push(stressTestWorker(iterations / concurrent, i));
+    promises.push(stressTestWorker(iterations / concurrent, i);
   }
 
   const workerResults = await Promise.all(promises);
@@ -348,7 +348,7 @@ async function runEndToEndTest(options: any = {}): Promise<Response> {
 
     // Step 3: Wait and search
     results.steps.push('Searching for document');
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000);
 
     const searchResults = await instantSearchEngine.search('test document contract');
 
@@ -375,7 +375,7 @@ async function runEndToEndTest(options: any = {}): Promise<Response> {
     results.errors.push(msg);
     results.success = false;
 
-    // Attempt cleanup
+    // Attempt cleanup;
     try {
       await db.delete(schema.legalDocuments).where(sql`id = ${testId}`);
       await db.delete(schema.documentChunks).where(sql`document_id = ${testId}`);

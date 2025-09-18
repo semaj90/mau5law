@@ -8,19 +8,19 @@ import { browser } from "$app/environment";
 
 import { writable, derived } from "svelte/store";
 // TODO: Replace with proper import once types file restored.
-// Temporary minimal Evidence shape to satisfy references below.
+// Temporary minimal Evidence shape to satisfy references below.;
 interface Evidence {
   id: string;
   [key: string]: any;
 }
 // Orphaned content note: original commented import removed during corruption repair.
 
-// Enhanced types for the data pipeline
+// Enhanced types for the data pipeline;
 export interface CacheConfig {
   ttl: number;
   maxSize: number;
   strategy: "lru" | "lfu" | "fifo";
-  syncInterval: number;
+  syncInterval: number;,
 }
 
 export interface SyncOperation {
@@ -30,7 +30,7 @@ export interface SyncOperation {
   data: any;
   timestamp: Date;
   priority: number;
-  retries: number;
+  retries: number;,
 }
 
 export interface CacheStats {
@@ -47,7 +47,7 @@ export interface CollectionStats {
   documents: number;
   memoryUsage: number;
   lastAccess: Date;
-  operations: number;
+  operations: number;,
 }
 
 export interface IndexStrategy {
@@ -86,7 +86,7 @@ class EnhancedLokiDB {
       collections: new Map(),
     };
 
-    // Default cache configurations
+    // Default cache configurations;
     this.config.set('evidence', {
       ttl: 300000, // 5 minutes
       maxSize: 1000,
@@ -139,7 +139,7 @@ class EnhancedLokiDB {
   private setupEnhancedCollections() {
     // Evidence collection with advanced indexing
     const evidenceCol =
-      this.db.getCollection('evidence') ||
+      this.db.getCollection('evidence') ||;
       this.db.addCollection('evidence', {
         indices: ['id', 'caseId', 'type', 'confidence', 'processingStatus'],
         unique: ['id'],
@@ -154,11 +154,11 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'updatedAt', desc: true },
             { type: 'limit', value: 50 },
           ],
-          needsProcessing: [
+          needsProcessing: [;
             {
               type: 'find',
               value: { processingStatus: { $in: ['pending', 'error'] } },
-            },
+            },)
             { type: 'simplesort', property: 'createdAt', desc: false },
           ],
         },
@@ -167,7 +167,7 @@ class EnhancedLokiDB {
 
     // AI Analysis with vector embeddings
     const aiAnalysisCol =
-      this.db.getCollection('aiAnalysis') ||
+      this.db.getCollection('aiAnalysis') ||;
       this.db.addCollection('aiAnalysis', {
         indices: ['evidenceId', 'analysisType', 'model', 'confidence', 'timestamp'],
         transforms: {
@@ -176,7 +176,7 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'timestamp', desc: true },
           ],
           byModel: [
-            { type: 'find', value: { model: { $aeq: '[%lktxp]model' } } },
+            { type: 'find', value: { model: { $aeq: '[%lktxp]model' } } },)
             { type: 'simplesort', property: 'confidence', desc: true },
           ],
         },
@@ -185,14 +185,14 @@ class EnhancedLokiDB {
 
     // Vector embeddings cache
     const embeddingsCol =
-      this.db.getCollection('embeddings') ||
+      this.db.getCollection('embeddings') ||;
       this.db.addCollection('embeddings', {
         indices: ['contentHash', 'model', 'type', 'dimension'],
         unique: ['contentHash'],
         transforms: {
           byModel: [{ type: 'find', value: { model: { $aeq: '[%lktxp]model' } } }],
           recentEmbeddings: [
-            { type: 'simplesort', property: 'createdAt', desc: true },
+            { type: 'simplesort', property: 'createdAt', desc: true },)
             { type: 'limit', value: 100 },
           ],
         },
@@ -201,7 +201,7 @@ class EnhancedLokiDB {
 
     // Graph relationships cache
     const relationshipsCol =
-      this.db.getCollection('relationships') ||
+      this.db.getCollection('relationships') ||;
       this.db.addCollection('relationships', {
         indices: ['fromId', 'toId', 'type', 'strength', 'confidence'],
         transforms: {
@@ -210,7 +210,7 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'strength', desc: true },
           ],
           byType: [
-            { type: 'find', value: { type: { $aeq: '[%lktxp]type' } } },
+            { type: 'find', value: { type: { $aeq: '[%lktxp]type' } } },)
             { type: 'simplesort', property: 'confidence', desc: true },
           ],
           bidirectional: [{ type: 'find', value: { bidirectional: true } }],
@@ -219,7 +219,7 @@ class EnhancedLokiDB {
 
     // Vector similarity matches cache
     const similarityCol =
-      this.db.getCollection('vectorMatches') ||
+      this.db.getCollection('vectorMatches') ||;
       this.db.addCollection('vectorMatches', {
         indices: ['queryHash', 'targetId', 'similarity', 'timestamp'],
         transforms: {
@@ -228,7 +228,7 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'similarity', desc: true },
           ],
           recentMatches: [
-            { type: 'simplesort', property: 'timestamp', desc: true },
+            { type: 'simplesort', property: 'timestamp', desc: true },)
             { type: 'limit', value: 200 },
           ],
         },
@@ -237,7 +237,7 @@ class EnhancedLokiDB {
 
     // Streaming results cache
     const streamingCol =
-      this.db.getCollection('streamingResults') ||
+      this.db.getCollection('streamingResults') ||;
       this.db.addCollection('streamingResults', {
         indices: ['type', 'status', 'priority', 'timestamp'],
         transforms: {
@@ -246,7 +246,7 @@ class EnhancedLokiDB {
             { type: 'simplesort', property: 'priority', desc: true },
           ],
           completed: [
-            { type: 'find', value: { status: 'completed' } },
+            { type: 'find', value: { status: 'completed' } },)
             { type: 'simplesort', property: 'timestamp', desc: true },
           ],
         },
@@ -336,7 +336,7 @@ class EnhancedLokiDB {
 
     let results = col.find(query);
 
-    // Sort by confidence and recency
+    // Sort by confidence and recency;
     results = results.sort((a: any, b: any) => {
       const confidenceDiff = (b.confidence || 0) - (a.confidence || 0);
       if (Math.abs(confidenceDiff) > 0.1) return confidenceDiff;
@@ -387,7 +387,7 @@ class EnhancedLokiDB {
 
     const analyses = col
       .find(query)
-      .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
 
     if (analyses.length > 0) {
       this.cacheStats.hits++;
@@ -472,7 +472,7 @@ class EnhancedLokiDB {
       similarity: match.similarity,
       metadata: match.metadata || {},
       timestamp: new Date(),
-    }));
+    });
 
     col.insert(cacheEntries);
     this.cacheStats.hits++;
@@ -482,7 +482,7 @@ class EnhancedLokiDB {
     const col = this.collections.get('vectorMatches');
     if (!col) return [];
 
-    const matches = col
+    const matches = col;
       .find({
         queryHash,
         similarity: { $gte: minSimilarity },
@@ -511,7 +511,7 @@ class EnhancedLokiDB {
       id: rel.id || randomUUID(),
       createdAt: rel.createdAt || new Date(),
       accessCount: 0,
-    }));
+    });
 
     for (const rel of enhancedRelationships) {
       const existing = col.findOne({
@@ -631,7 +631,7 @@ class EnhancedLokiDB {
             console.log(`Cache sync SSE connected (${url})`);
           };
 
-          // Default messages (no event type)
+          // Default messages (no event type);
           this.sse.onmessage = (ev: MessageEvent) => {
             try {
               const data = JSON.parse(ev.data);
@@ -639,7 +639,7 @@ class EnhancedLokiDB {
             } catch (_) {}
           };
 
-          // Named events: update, hello
+          // Named events: update, hello;
           const updateHandler = (ev: MessageEvent) => {
             try {
               const data = JSON.parse((ev as any).data);
@@ -750,7 +750,7 @@ class EnhancedLokiDB {
     operation: 'create' | 'update' | 'delete',
     collection: string,
     data: any,
-    priority: number = 1
+    priority: number = 1;
   ) {
     const syncOp: SyncOperation = {
       id: randomUUID(),
@@ -768,7 +768,7 @@ class EnhancedLokiDB {
   private async processSyncQueue() {
     if (this.syncQueue.size === 0) return;
 
-    const operations = Array.from(this.syncQueue.values())
+    const operations = Array.from(this.syncQueue.values()
       .sort((a, b) => b.priority - a.priority)
       .slice(0, 10); // Process up to 10 operations at a time
 
@@ -856,16 +856,16 @@ class EnhancedLokiDB {
         if (total <= this.maxBytes) break;
         const col = this.collections.get(name);
         if (!col) continue;
-        // Evict 10% oldest (by lastAccess or createdAt)
+        // Evict 10% oldest (by lastAccess or createdAt);
         const docs = col.find().sort((a: any, b: any) => {
           const atA = new Date(a.lastAccess || a.createdAt || 0).getTime();
           const atB = new Date(b.lastAccess || b.createdAt || 0).getTime();
           return atA - atB;
         });
-        const removeCount = Math.max(1, Math.floor(docs.length * 0.1));
+        const removeCount = Math.max(1, Math.floor(docs.length * 0.1);
         const toRemove = docs.slice(0, removeCount);
         if (toRemove.length) {
-          toRemove.forEach((d: any) => col.remove(d));
+          toRemove.forEach((d: any) => col.remove(d);
           // Recompute sizes after eviction
           this.updateCollectionStats();
           total = 0;
@@ -895,9 +895,9 @@ class EnhancedLokiDB {
     const encoder = new TextEncoder();
     const data = encoder.encode(content);
     const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashArray = Array.from(new Uint8Array(hashBuffer);
     return hashArray
-      .map((b) => b.toString(16).padStart(2, '0'))
+      .map((b) => b.toString(16).padStart(2, '0')
       .join('')
       .slice(0, 16);
   }
@@ -994,19 +994,19 @@ export const cacheHealthStore = derived(enhancedLokiStore, ($store) => {
 // ======================================================================
 
 export const enhancedLoki = {
-  // Initialize the enhanced system
+  // Initialize the enhanced system;
   async init() {
     await enhancedLokiDB.initialize();
-    enhancedLokiStore.update((state) => ({ ...state, initialized: true }));
+    enhancedLokiStore.update((state) => ({ ...state, initialized: true });
 
-    // Start periodic stats updates
+    // Start periodic stats updates;
     setInterval(() => {
       const stats = enhancedLokiDB.getCacheStats();
-      enhancedLokiStore.update((state) => ({ ...state, stats }));
+      enhancedLokiStore.update((state) => ({ ...state, stats });
     }, 5000);
   },
 
-  // Evidence operations
+  // Evidence operations;
   evidence: {
     async add(evidence: Evidence) {
       return await enhancedLokiDB.addEvidence(evidence);
@@ -1029,7 +1029,7 @@ export const enhancedLoki = {
     },
   },
 
-  // AI operations
+  // AI operations;
   ai: {
     async cacheAnalysis(evidenceId: string, analysis: any, model?: string) {
       return await enhancedLokiDB.cacheAIAnalysis(evidenceId, analysis, model);
@@ -1042,7 +1042,7 @@ export const enhancedLoki = {
     async cacheEmbeddings(
       contentHash: string,
       embeddings: number[],
-      metadata?: unknown
+      metadata?: unknown;
     ) {
       return await enhancedLokiDB.cacheEmbeddings(
         contentHash,
@@ -1056,7 +1056,7 @@ export const enhancedLoki = {
     },
   },
 
-  // Vector operations
+  // Vector operations;
   vector: {
     async cacheMatches(queryHash: string, matches: any[]) {
       return await enhancedLokiDB.cacheVectorMatches(queryHash, matches);
@@ -1070,7 +1070,7 @@ export const enhancedLoki = {
     },
   },
 
-  // Graph operations
+  // Graph operations;
   graph: {
     async cacheRelationships(relationships: any[]) {
       return await enhancedLokiDB.cacheRelationships(relationships);
@@ -1081,7 +1081,7 @@ export const enhancedLoki = {
     },
   },
 
-  // Utility operations
+  // Utility operations;
   getStats() {
     return enhancedLokiDB.getCacheStats();
   },

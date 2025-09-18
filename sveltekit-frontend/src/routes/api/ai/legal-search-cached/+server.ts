@@ -51,7 +51,7 @@ interface LegalSearchRequest {
   };
 }
 
-// POST: Cached legal search
+// POST: Cached legal search;
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
 
@@ -62,7 +62,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     if (!query) {
       return json({
         success: false,
-        error: 'Search query is required'
+        error: 'Search query is required',
       }, { status: 400 });
     }
 
@@ -75,7 +75,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     if (cachedResults) {
       console.log('[LegalSearchCached] Cache hit for legal search');
       
-      return cachedJson(
+      return cachedJson();
         {
           success: true,
           ...cachedResults,
@@ -104,7 +104,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       await setEmbeddingCache(embeddingCacheKey, embedding, 'legal-nomic-embed');
     }
 
-    // Perform specialized legal search
+    // Perform specialized legal search;
     const searchResults = await performLegalSearch({
       query,
       embedding,
@@ -129,11 +129,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         searchTime: searchResults.searchTime,
         embeddingFromCache,
         totalResponseTime: `${totalTime.toFixed(2)}ms`,
-        fromCache: false
+        fromCache: false,
       },
       legalContext: searchResults.legalContext,
       relatedCases: searchResults.relatedCases,
-      practiceAreaInsights: searchResults.practiceAreaInsights
+      practiceAreaInsights: searchResults.practiceAreaInsights,
     };
 
     // Cache the results with legal-specific TTL
@@ -149,12 +149,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       success: false,
       error: error.message,
       responseTime: `${totalTime.toFixed(2)}ms`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
 
-// GET: Legal search statistics and health
+// GET: Legal search statistics and health;
 const originalGETHandler: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'stats';
 
@@ -173,11 +173,11 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         cacheStatistics: {
           legalSearchEntries: legalCacheKeys.length,
           caseLawEntries: caseLawKeys.length,
-          totalCachedSearches: legalCacheKeys.length + caseLawKeys.length
+          totalCachedSearches: legalCacheKeys.length + caseLawKeys.length,
         },
         redisMemory: redisInfo?.memory,
         keyspace: redisInfo?.keyspace,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }, 'REALTIME');
 
     case 'health':
@@ -188,12 +188,12 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         health: {
           redis: isRedisHealthy,
           caching: true,
-          legalSearchOptimized: true
+          legalSearchOptimized: true,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
-    case 'clear-cache':
+    case 'clear-cache':;
       try {
         const legalKeys = await redisService.keys(`${LEGAL_CACHE_PREFIX}*`);
         const caseLawKeys = await redisService.keys(`${CASE_LAW_CACHE_PREFIX}*`);
@@ -208,17 +208,17 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           message: `Cleared ${allKeys.length} legal search cache entries`,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
         
       } catch (error: any) {
         return json({
           success: false,
-          error: error.message
+          error: error.message,
         }, { status: 500 });
       }
 
-    default:
+    default:;
       return json({
         error: 'Invalid action',
         availableActions: ['stats', 'health', 'clear-cache'],
@@ -226,7 +226,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
           search: 'POST /api/ai/legal-search-cached',
           stats: 'GET /api/ai/legal-search-cached?action=stats',
           health: 'GET /api/ai/legal-search-cached?action=health',
-          clearCache: 'GET /api/ai/legal-search-cached?action=clear-cache'
+          clearCache: 'GET /api/ai/legal-search-cached?action=clear-cache',
         }
       }, { status: 400 });
   }
@@ -234,7 +234,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 
 /**
  * Generate cache key for legal search requests
- */
+ */;
 async function generateLegalSearchKey(request: LegalSearchRequest): Promise<string> {
   const keyData = {
     query: request.query.toLowerCase().trim(),
@@ -246,7 +246,7 @@ async function generateLegalSearchKey(request: LegalSearchRequest): Promise<stri
       limit: request.options?.limit || 10,
       includeAnalysis: request.options?.includeAnalysis || false,
       includeSimilarCases: request.options?.includeSimilarCases || false,
-      confidenceThreshold: request.options?.confidenceThreshold || 0.7
+      confidenceThreshold: request.options?.confidenceThreshold || 0.7,
     }
   };
   
@@ -261,7 +261,7 @@ async function generateLegalSearchKey(request: LegalSearchRequest): Promise<stri
 async function generateLegalEmbedding(
   query: string, 
   searchType: string, 
-  practiceArea?: string
+  practiceArea?: string;
 ): Promise<number[]> {
   // Enhance query with legal context
   const legalContextPrompt = buildLegalContextPrompt(query, searchType, practiceArea);
@@ -271,7 +271,7 @@ async function generateLegalEmbedding(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'nomic-embed-text',
-      prompt: legalContextPrompt
+      prompt: legalContextPrompt,
     })
   });
 
@@ -285,7 +285,7 @@ async function generateLegalEmbedding(
 
 /**
  * Build legal context-aware prompt for better embeddings
- */
+ */;
 function buildLegalContextPrompt(query: string, searchType: string, practiceArea?: string): string {
   const contextPrefixes = {
     'case-law': 'Legal case law and judicial precedent: ',
@@ -307,7 +307,7 @@ function buildLegalContextPrompt(query: string, searchType: string, practiceArea
 
 /**
  * Perform specialized legal search
- */
+ */;
 async function performLegalSearch(params: {
   query: string;
   embedding: number[];
@@ -315,12 +315,12 @@ async function performLegalSearch(params: {
   jurisdiction?: string;
   practiceArea?: string;
   dateRange?: any;
-  options: any;
+  options: any;,
 }): Promise<any> {
   // Simulate legal search with specialized logic
   // In production, this would integrate with your legal database and AI services
   
-  const mockResults = [
+  const mockResults = [;
     {
       id: 'case-001',
       title: 'Employment Contract Dispute - Smith v. TechCorp',
@@ -366,14 +366,14 @@ async function performLegalSearch(params: {
     relatedCases: ['Doe v. RemoteCorp (2023)', 'Johnson v. WorkFromHome Inc (2024)'],
     practiceAreaInsights: {
       trendingIssues: ['Remote work disputes', 'Digital privacy rights'],
-      recentDevelopments: 'Increased focus on hybrid work arrangements'
+      recentDevelopments: 'Increased focus on hybrid work arrangements',
     }
   };
 }
 
 /**
  * Get cache TTL based on search type
- */
+ */;
 function getLegalCacheTTL(searchType: string): number {
   const ttlMap = {
     'case-law': 3600,      // 1 hour - case law changes slowly

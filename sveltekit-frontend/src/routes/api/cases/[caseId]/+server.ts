@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 		const caseResult = await db
 			.select()
 			.from(cases)
-			.where(eq(cases.id, caseId))
+			.where(eq(cases.id, caseId)
 			.limit(1);
 
 		if (caseResult.length === 0) {
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
 		const caseData = caseResult[0];
 
-		// Check if user has access
+		// Check if user has access;
 		if (caseData.userId !== session.user.userId) {
 			throw error(403, 'Access denied');
 		}
@@ -56,16 +56,16 @@ export const PUT: RequestHandler = async ({ request, params, locals }) => {
 
 	try {
 		const updateResult = await db
-			.update(cases)
+			.update(cases);
 			.set({
 				title,
 				description,
 				status,
 				priority,
 				tags,
-				updatedAt: new Date()
+				updatedAt: new Date(),
 			})
-			.where(eq(cases.id, caseId))
+			.where(eq(cases.id, caseId)
 			.returning();
 
 		return json({ success: true, case: updateResult[0] });
@@ -84,8 +84,8 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 	const caseId = params.caseId;
 
 	try {
-		await db.delete(evidence).where(eq(evidence.caseId, caseId));
-		await db.delete(cases).where(eq(cases.id, caseId));
+		await db.delete(evidence).where(eq(evidence.caseId, caseId);
+		await db.delete(cases).where(eq(cases.id, caseId);
 		return json({ success: true, message: 'Case deleted successfully' });
 	} catch (err) {
 		console.error('Error deleting case:', err);

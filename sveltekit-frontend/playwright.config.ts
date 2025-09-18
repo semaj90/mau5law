@@ -13,7 +13,7 @@ export default defineConfig({
   reporter: 'html',
   timeout: 180000, // 3 minutes for GPU inference tests
   expect: {
-    timeout: 30000
+    timeout: 30000,
   },
   // Global setup and teardown
   globalSetup: './test/global-setup.mjs',
@@ -22,33 +22,33 @@ export default defineConfig({
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure'
+    video: 'retain-on-failure',
   },
   projects: [
     {
       name: 'setup',
-      testMatch: '**/test-setup.spec.ts'
+      testMatch: '**/test-setup.spec.ts',
     },
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      dependencies: ['setup']
+      dependencies: ['setup'],
     },
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
-      dependencies: ['setup']
+      dependencies: ['setup'],
     },
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-      dependencies: ['setup']
-    }
+      dependencies: ['setup'],
+    },
   ],
   webServer: {
     command: 'npm run dev',
     url: 'http://localhost:5173',
     reuseExistingServer: true, // Use existing server
-    timeout: 120000
-  }
+    timeout: 120000,
+  },
 });

@@ -13,7 +13,7 @@ interface SearchRequest {
   };
   sort: string;
   page: number;
-  limit: number;
+  limit: number;,
 }
 
 interface LegalDocument {
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const searchRequest: SearchRequest = await request.json();
     const { query, mode, filters, sort, page, limit } = searchRequest;
 
-    // Vector search for semantic mode
+    // Vector search for semantic mode;
     if (mode === 'semantic') {
       const results = await performSemanticSearch(query, filters, sort, page, limit);
       return json({
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
         total: results.total,
         relatedTopics: results.relatedTopics,
         searchMode: mode,
-        processingTime: results.processingTime
+        processingTime: results.processingTime,
       });
     }
 
@@ -62,13 +62,13 @@ export const POST: RequestHandler = async ({ request }) => {
       total: results.total,
       relatedTopics: results.relatedTopics,
       searchMode: mode,
-      processingTime: results.processingTime
+      processingTime: results.processingTime,
     });
 
   } catch (error) {
     console.error('Legal research search error:', error);
     return json(
-      { success: false, error: 'Search failed', results: [], total: 0 },
+      { success: false, error: 'Search failed', results: [], total: 0 },)
       { status: 500 }
     );
   }
@@ -79,7 +79,7 @@ async function performSemanticSearch(
   filters: any,
   sort: string,
   page: number,
-  limit: number
+  limit: number;
 ) {
   const startTime = Date.now();
 
@@ -100,7 +100,7 @@ async function performSemanticSearch(
   const params: any[] = [JSON.stringify(queryEmbedding)];
   let paramIndex = 2;
 
-  // Apply filters
+  // Apply filters;
   if (filters.jurisdiction) {
     sql += ` AND ld.jurisdiction = $${paramIndex}`;
     params.push(filters.jurisdiction);
@@ -128,7 +128,7 @@ async function performSemanticSearch(
   // Group by for aggregation
   sql += ` GROUP BY ld.id, ld.embedding`;
 
-  // Apply sorting
+  // Apply sorting;
   switch (sort) {
     case 'relevance':
       sql += ` ORDER BY relevance_score DESC`;
@@ -145,7 +145,7 @@ async function performSemanticSearch(
       sql += ` ORDER BY ld.court, relevance_score DESC`;
       break;
     default:
-      sql += ` ORDER BY relevance_score DESC`;
+      sql += ` ORDER BY relevance_score DESC`;,
   }
 
   // Apply pagination
@@ -178,7 +178,7 @@ async function performKeywordSearch(
   filters: any,
   sort: string,
   page: number,
-  limit: number
+  limit: number;
 ) {
   const startTime = Date.now();
 
@@ -196,7 +196,7 @@ async function performKeywordSearch(
         array_agg(DISTINCT kw.keyword) FILTER (WHERE kw.keyword IS NOT NULL) as key_topics
       FROM legal_documents ld
       LEFT JOIN LATERAL unnest(ld.keywords) as kw(keyword) ON true
-      WHERE to_tsvector('english', coalesce(ld.content, ld.full_text, '')) 
+      WHERE to_tsvector('english', coalesce(ld.content, ld.full_text, '')
             @@ phraseto_tsquery('english', $1)
     `;
     params.push(query);
@@ -211,14 +211,14 @@ async function performKeywordSearch(
         array_agg(DISTINCT kw.keyword) FILTER (WHERE kw.keyword IS NOT NULL) as key_topics
       FROM legal_documents ld
       LEFT JOIN LATERAL unnest(ld.keywords) as kw(keyword) ON true
-      WHERE to_tsvector('english', coalesce(ld.content, ld.full_text, '')) 
+      WHERE to_tsvector('english', coalesce(ld.content, ld.full_text, '')
             @@ to_tsquery('english', $1)
     `;
-    params.push(query.replace(/\s+/g, ' & ')); // Convert to boolean query
+    params.push(query.replace(/\s+/g, ' & '); // Convert to boolean query
     paramIndex++;
   }
 
-  // Apply filters (same as semantic search)
+  // Apply filters (same as semantic search);
   if (filters.jurisdiction) {
     sql += ` AND ld.jurisdiction = $${paramIndex}`;
     params.push(filters.jurisdiction);
@@ -245,7 +245,7 @@ async function performKeywordSearch(
 
   sql += ` GROUP BY ld.id`;
 
-  // Apply sorting
+  // Apply sorting;
   switch (sort) {
     case 'relevance':
       sql += ` ORDER BY relevance_score DESC`;
@@ -254,7 +254,7 @@ async function performKeywordSearch(
       sql += ` ORDER BY ld.date_decided DESC`;
       break;
     default:
-      sql += ` ORDER BY relevance_score DESC`;
+      sql += ` ORDER BY relevance_score DESC`;,
   }
 
   sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
@@ -281,13 +281,13 @@ async function performKeywordSearch(
 
 async function generateQueryEmbedding(query: string): Promise<number[]> {
   try {
-    // In production, call your embedding service (OpenAI, local model, etc.)
+    // In production, call your embedding service (OpenAI, local model, etc.);
     const response = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'nomic-embed-text',
-        prompt: query
+        prompt: query,
       })
     });
 
@@ -304,7 +304,7 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
 }
 
 function generateMockSemanticResults(query: string, filters: any, page: number, limit: number) {
-  const allResults: LegalDocument[] = [
+  const allResults: LegalDocument[] = [;
     {
       id: '1',
       title: `${query} - Supreme Court Decision`,
@@ -377,7 +377,7 @@ function generateMockSemanticResults(query: string, filters: any, page: number, 
 
   return {
     documents: paginatedResults,
-    total: filteredResults.length
+    total: filteredResults.length,
   };
 }
 
@@ -385,7 +385,7 @@ function generateMockKeywordResults(query: string, mode: string, filters: any, p
   // Similar to semantic results but with different relevance scoring
   const results = generateMockSemanticResults(query, filters, page, limit);
   
-  // Adjust relevance scores for keyword matching
+  // Adjust relevance scores for keyword matching;
   results.documents.forEach(doc => {
     doc.relevanceScore = Math.max(0.6, doc.relevanceScore - 0.1);
   });

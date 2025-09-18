@@ -3,6 +3,7 @@
  */
 
 export type Backend = 'vllm' | 'ollama' | 'webasm' | 'go-micro';
+}
 
 export interface ChatMessage {
   id: string;
@@ -29,7 +30,7 @@ export interface AssistantConfig {
   model: string;
   systemPrompt: string;
   autoSwitchBackend: boolean;
-  persistHistory: boolean;
+  persistHistory: boolean;,
 }
 
 export interface ChatSession {
@@ -42,7 +43,7 @@ export interface ChatSession {
     totalMessages: number;
     primaryBackend: Backend;
     legalDomain?: string;
-    averageResponseTime: number;
+    averageResponseTime: number;,
   };
 }
 
@@ -95,7 +96,7 @@ export interface SemanticSearchResult {
   context?: string;
 }
 
-// Postgres/pgvector types
+// Postgres/pgvector types;
 export interface VectorSearchQuery {
   query: string;
   embedding?: number[];
@@ -116,17 +117,17 @@ export interface VectorSearchResult {
   metadata?: any;
 }
 
-// Loki.js specific types
+// Loki.js specific types;
 export interface LokiMessage extends ChatMessage {
   $loki?: number;
   meta?: {
     created: number;
     revision: number;
-    version: number;
+    version: number;,
   };
 }
 
-// Fuse.js configuration
+// Fuse.js configuration;
 export interface FuseSearchOptions {
   keys: string[];
   includeScore: boolean;
@@ -135,14 +136,14 @@ export interface FuseSearchOptions {
   limit?: number;
 }
 
-// Performance monitoring
+// Performance monitoring;
 export interface PerformanceMetrics {
   backend: Backend;
   averageLatency: number;
   requestCount: number;
   errorRate: number;
   lastUpdated: number;
-  healthScore: number;
+  healthScore: number;,
 }
 
 export interface BackendCapabilities {
@@ -159,11 +160,11 @@ export interface BackendCapabilities {
   pricing?: {
     inputTokens: number;
     outputTokens: number;
-    currency: string;
+    currency: string;,
   };
 }
 
-// Legal context specific types
+// Legal context specific types;
 export interface LegalContext {
   domain: 'contracts' | 'deeds' | 'litigation' | 'compliance' | 'general';
   jurisdiction?: string;
@@ -184,12 +185,12 @@ export interface LegalAnalysisResult {
   citations: {
     type: 'statute' | 'case_law' | 'regulation' | 'contract';
     citation: string;
-    relevance: number;
+    relevance: number;,
   }[];
-  confidence: number;
+  confidence: number;,
 }
 
-// WebGPU and CUDA integration types
+// WebGPU and CUDA integration types;
 export interface GPUAcceleration {
   enabled: boolean;
   device?: 'webgpu' | 'cuda' | 'opencl';
@@ -198,7 +199,7 @@ export interface GPUAcceleration {
   performance?: {
     tokensPerSecond: number;
     latencyMs: number;
-    throughput: number;
+    throughput: number;,
   };
 }
 
@@ -206,10 +207,10 @@ export interface WebGPUConfig {
   maxBufferSize: number;
   preferredLimits?: GPULimits;
   enableOptimizations: boolean;
-  fallbackToCPU: boolean;
+  fallbackToCPU: boolean;,
 }
 
-// Go microservice types
+// Go microservice types;
 export interface GoMicroRequest {
   service: string;
   method: string;
@@ -218,7 +219,7 @@ export interface GoMicroRequest {
   timeout?: number;
   retryPolicy?: {
     maxRetries: number;
-    backoffMs: number;
+    backoffMs: number;,
   };
 }
 
@@ -234,14 +235,14 @@ export interface GoMicroResponse {
   };
 }
 
-// WebAssembly specific types
+// WebAssembly specific types;
 export interface WebASMConfig {
   modelPath: string;
   contextLength: number;
   nThreads: number;
   enableGPU: boolean;
   memorySize: number;
-  cacheSize: number;
+  cacheSize: number;,
 }
 
 export interface WebASMResponse {
@@ -251,11 +252,12 @@ export interface WebASMResponse {
   confidence: number;
   fromCache: boolean;
   cacheHit: boolean;
-  processingPath: 'cpu' | 'gpu' | 'hybrid';
+  processingPath: 'cpu' | 'gpu' | 'hybrid';,
 }
 
 // Export formats
 export type ExportFormat = 'json' | 'markdown' | 'pdf' | 'docx' | 'csv';
+}
 
 export interface ExportOptions {
   format: ExportFormat;
@@ -268,7 +270,7 @@ export interface ExportOptions {
   };
 }
 
-// Real-time features
+// Real-time features;
 export interface RealtimeConfig {
   enableVoiceInput: boolean;
   enableVoiceOutput: boolean;
@@ -278,7 +280,7 @@ export interface RealtimeConfig {
     language: string;
     voice: string;
     rate: number;
-    pitch: number;
+    pitch: number;,
   };
 }
 
@@ -286,10 +288,10 @@ export interface VoiceInputResult {
   text: string;
   confidence: number;
   language: string;
-  duration: number;
+  duration: number;,
 }
 
-// Integration with existing legal platform
+// Integration with existing legal platform;
 export interface LegalPlatformIntegration {
   evidenceId?: string;
   caseId?: string;
@@ -299,17 +301,17 @@ export interface LegalPlatformIntegration {
   permissions?: {
     read: boolean;
     write: boolean;
-    share: boolean;
+    share: boolean;,
   };
 }
 
-// Cache optimization types
+// Cache optimization types;
 export interface CacheStrategy {
   type: 'lru' | 'lfu' | 'ttl' | 'hybrid';
   maxSize: number;
   ttlMs?: number;
   compressionEnabled: boolean;
-  persistToDisk: boolean;
+  persistToDisk: boolean;,
 }
 
 export interface CacheMetrics {
@@ -319,5 +321,5 @@ export interface CacheMetrics {
   averageHitTime: number;
   averageMissTime: number;
   memoryUsage: number;
-  diskUsage: number;
+  diskUsage: number;,
 }

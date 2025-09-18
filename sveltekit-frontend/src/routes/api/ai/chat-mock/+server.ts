@@ -26,7 +26,7 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
  * Production AI Chat Endpoint
  * Routes requests to available AI services (Ollama, Enhanced RAG, etc.)
  * Provides intelligent legal AI responses with source attribution
- */
+ */;
 const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
   const requestId = getRequestId(event);
   const body = await event.request.json();
@@ -47,7 +47,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     const messageId = randomUUID();
     const startTime = Date.now();
 
-    // Try Enhanced RAG service first (production microservice)
+    // Try Enhanced RAG service first (production microservice);
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 30000);
@@ -60,9 +60,9 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
             context: context || {},
             sessionId,
             includeVectorSearch: true,
-            includeCitations: true
+            includeCitations: true,
           }),
-          signal: controller.signal
+          signal: controller.signal,
         });
 
         if (ragResponse.ok) {
@@ -82,12 +82,12 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
                 confidence: ragData.confidence || 0.92,
                 executionTime,
                 fromCache: ragData.fromCache || false,
-                vectorMatches: ragData.vectorMatches || 0
+                vectorMatches: ragData.vectorMatches || 0,
               }
             },
             success: true,
             production: true,
-            service: 'enhanced-rag'
+            service: 'enhanced-rag',
           });
         }
       } finally {
@@ -97,7 +97,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
       console.warn('Enhanced RAG service unavailable:', ragError);
     }
 
-    // Fallback to Ollama service
+    // Fallback to Ollama service;
     try {
       const ollamaPayload = {
         model: targetModel,
@@ -117,7 +117,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(ollamaPayload),
-          signal: controller.signal
+          signal: controller.signal,
         });
 
         if (ollamaResponse.ok) {
@@ -141,12 +141,12 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
                 confidence: 0.85,
                 executionTime,
                 fromCache: false,
-                tokens: (ollamaData as any)?.eval_count || 0
+                tokens: (ollamaData as any)?.eval_count || 0,
               }
             },
             success: true,
             production: true,
-            service: 'ollama'
+            service: 'ollama',
           });
         }
       } finally {
@@ -159,20 +159,20 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
     // Final fallback - intelligent response based on legal context
     const executionTime = Date.now() - startTime;
 
-    // Intelligent fallback based on legal context patterns
+    // Intelligent fallback based on legal context patterns;
     const legalPatterns = {
       evidence: /evidence|proof|testimony|witness|exhibit/i,
       criminal: /criminal|defendant|prosecution|arrest|charge/i,
       civil: /civil|plaintiff|contract|tort|liability/i,
       constitutional: /constitutional|amendment|rights|due process/i,
-      procedure: /procedure|motion|filing|court|hearing/i
+      procedure: /procedure|motion|filing|court|hearing/i,
     };
 
     let intelligentResponse = "I understand you're seeking legal assistance. ";
     let detectedArea = 'general';
     let confidence = 0.75;
 
-    // Pattern matching for intelligent responses
+    // Pattern matching for intelligent responses;
     if (legalPatterns.evidence.test(message)) {
       detectedArea = 'evidence';
       confidence = 0.88;
@@ -205,7 +205,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
         confidence,
         executionTime,
         detectedArea,
-        sources: [
+        sources: [);
           {
             type: 'Legal Knowledge Base',
             score: confidence,
@@ -213,7 +213,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           }
         ],
         production: false,
-        fallback: true
+        fallback: true,
       });
     }
 
@@ -223,7 +223,7 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
         content: intelligentResponse,
         role: 'assistant',
         timestamp: new Date(),
-        sources: [
+        sources: [;
           {
             type: 'Legal Knowledge Base',
             score: confidence,
@@ -236,13 +236,13 @@ const originalPOSTHandler: RequestHandler = withErrorHandling(async (event) => {
           executionTime,
           fromCache: false,
           detectedArea,
-          patternMatched: true
+          patternMatched: true,
         }
       },
       success: true,
       production: false,
       fallback: true,
-      message_note: 'AI services unavailable - using intelligent pattern matching'
+      message_note: 'AI services unavailable - using intelligent pattern matching',
   });
 });
 

@@ -12,22 +12,22 @@ const OLLAMA_BASE_URL = 'http://localhost:11434';
 const LEGAL_MODEL = 'gemma3-legal:latest';
 const EMBEDDING_MODEL = 'nomic-embed-text:latest'; // Available in our Ollama instance
 
-// Request schemas
+// Request schemas;
 const SimilarSearchSchema = z.object({
   query: z.string().min(1),
   evidenceId: z.string().uuid().optional(),
   limit: z.number().min(1).max(20).default(5),
-  threshold: z.number().min(0).max(1).default(0.7)
+  threshold: z.number().min(0).max(1).default(0.7),
 });
 
 const SuggestionSchema = z.object({
   query: z.string().min(1),
   context: z.string().optional(),
   type: z.enum(['search', 'legal', 'case', 'precedent']).default('legal'),
-  limit: z.number().min(1).max(10).default(5)
+  limit: z.number().min(1).max(10).default(5),
 });
 
-// Types
+// Types;
 interface SearchSuggestion {
   text: string;
   type: 'case' | 'law' | 'evidence' | 'precedent';
@@ -42,10 +42,10 @@ interface SimilarEvidence {
   similarity: number;
   summary: string;
   relevantLaws: string[];
-  type: string;
+  type: string;,
 }
 
-// Ollama helpers
+// Ollama helpers;
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
@@ -53,7 +53,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: EMBEDDING_MODEL,
-        prompt: text
+        prompt: text,
       })
     });
 
@@ -81,7 +81,7 @@ async function queryOllama(prompt: string): Promise<string> {
         options: {
           temperature: 0.3,
           top_p: 0.9,
-          num_predict: 512
+          num_predict: 512,
         }
       })
     });
@@ -98,7 +98,7 @@ async function queryOllama(prompt: string): Promise<string> {
   }
 }
 
-// Calculate cosine similarity between vectors
+// Calculate cosine similarity between vectors;
 function cosineSimilarity(a: number[], b: number[]): number {
   if (a.length !== b.length) return 0;
 
@@ -123,13 +123,13 @@ function cosineSimilarity(a: number[], b: number[]): number {
 /*
  * POST /api/v1/evidence/search/similar
  * Find similar evidence using vector similarity
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals, url }) => {
   const endpoint = url.pathname.split('/').pop();
 
   if (endpoint === 'similar') {
     try {
-      // Check authentication
+      // Check authentication;
       if (!locals.session || !locals.user) {
         return json({ message: 'Authentication required' }, { status: 401 });
       }
@@ -142,14 +142,14 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
 
       // TODO: In production, this would query a vector database (pgvector)
       // For now, we'll simulate with mock similar evidence
-      const mockSimilarEvidence: SimilarEvidence[] = [
+      const mockSimilarEvidence: SimilarEvidence[] = [;
         {
           id: 'evidence-001',
           filename: 'financial_records_2023.pdf',
           similarity: 0.87,
           summary: 'Financial records showing suspicious transactions',
           relevantLaws: ['Money Laundering Prevention Act', '18 USC 1956'],
-          type: 'document'
+          type: 'document',
         },
         {
           id: 'evidence-002',
@@ -157,7 +157,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           similarity: 0.73,
           summary: 'Witness testimony corroborating financial irregularities',
           relevantLaws: ['Federal Rules of Evidence 801'],
-          type: 'document'
+          type: 'document',
         },
         {
           id: 'evidence-003',
@@ -165,7 +165,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           similarity: 0.68,
           summary: 'Bank emails discussing account activity',
           relevantLaws: ['Bank Secrecy Act', '31 USC 5311'],
-          type: 'document'
+          type: 'document',
         }
       ].filter(item => item.similarity) >= threshold)
        .slice(0, limit);
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
           total: mockSimilarEvidence.length,
           threshold,
           embedding: queryEmbedding, // Return for client-side caching
-          processedAt: new Date().toISOString()
+          processedAt: new Date().toISOString(),
         }
       });
 
@@ -188,13 +188,13 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
       if (error instanceof z.ZodError) {
         return json({
           message: 'Invalid search request',
-          details: error.errors
+          details: error.errors,
         }, { status: 400 });
       }
 
       return json({
         message: 'Similar evidence search failed',
-        details: error.message
+        details: error.message,
       }, { status: 500 });
     }
   }
@@ -202,10 +202,10 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
   /*
    * POST /api/v1/evidence/search/suggest
    * Get AI-powered search suggestions
-   */
+   */;
   if (endpoint === 'suggest') {
     try {
-      // Check authentication
+      // Check authentication;
       if (!locals.session || !locals.user) {
         return json({ message: 'Authentication required' }, { status: 401 });
       }
@@ -221,7 +221,7 @@ ${context ? `Context: ${context}` : ''}
 Suggestion Type: ${type}
 
 Generate ${limit} intelligent search suggestions that would help find relevant legal evidence, cases, or precedents. Format as JSON:
-[
+[;
   {
     "text": "suggested search term or phrase",
     "type": "case|law|evidence|precedent",
@@ -246,27 +246,27 @@ Focus on legal terminology, case citations, statutory references, and evidence c
         }
       } catch (parseError) {
         // Fallback suggestions if AI response parsing fails
-        suggestions = [
+        suggestions = [;
           {
             text: query + " legal precedent",
             type: 'precedent',
             confidence: 0.6,
             source: 'Automated suggestion',
-            reasoning: 'Adding legal precedent context'
+            reasoning: 'Adding legal precedent context',
           },
           {
             text: query + " evidence analysis",
             type: 'evidence',
             confidence: 0.6,
             source: 'Automated suggestion',
-            reasoning: 'Evidence-focused search'
+            reasoning: 'Evidence-focused search',
           },
           {
             text: query + " case law",
             type: 'case',
             confidence: 0.6,
             source: 'Automated suggestion',
-            reasoning: 'Case law research'
+            reasoning: 'Case law research',
           }
         ];
       }
@@ -278,7 +278,7 @@ Focus on legal terminology, case citations, statutory references, and evidence c
           suggestions: suggestions.slice(0, limit),
           type,
           generatedAt: new Date().toISOString(),
-          model: LEGAL_MODEL
+          model: LEGAL_MODEL,
         }
       });
 
@@ -288,13 +288,13 @@ Focus on legal terminology, case citations, statutory references, and evidence c
       if (error instanceof z.ZodError) {
         return json({
           message: 'Invalid suggestion request',
-          details: error.errors
+          details: error.errors,
         }, { status: 400 });
       }
 
       return json({
         message: 'Search suggestions failed',
-        details: error.message
+        details: error.message,
       }, { status: 500 });
     }
   }

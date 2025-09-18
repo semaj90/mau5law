@@ -1,6 +1,7 @@
 
 // Generic EmbeddingRepository abstraction for ingestion & semantic search
-// Minimal initial contract – can be extended with pagination, updates, deletions.
+// Minimal initial contract – can be extended with pagination, updates, deletions.;
+}
 
 export interface IngestionJobRequest {
   evidenceId: string;              // Existing evidence row id (metadata & file linkage)

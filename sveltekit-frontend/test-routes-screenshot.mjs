@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 const urls = [
   'http://127.0.0.1:5176/',
   'http://127.0.0.1:5176/all-routes',
-  'http://127.0.0.1:5176/text-editor'
+  'http://127.0.0.1:5176/text-editor',
 ];
 
 async function takeScreenshots() {
@@ -22,7 +22,7 @@ async function takeScreenshots() {
       console.log(`📷 Navigating to: ${url}`);
       await page.goto(url, {
         waitUntil: 'networkidle',
-        timeout: 10000
+        timeout: 10000,
       });
 
       // Wait a bit for any dynamic content to load
@@ -33,11 +33,10 @@ async function takeScreenshots() {
 
       await page.screenshot({
         path: filename,
-        fullPage: true
+        fullPage: true,
       });
 
       console.log(`✅ Screenshot saved: ${filename}`);
-
     } catch (error) {
       console.error(`❌ Failed to screenshot ${url}:`, error.message);
     }
@@ -48,7 +47,7 @@ async function takeScreenshots() {
     console.log('🎯 Testing all-routes modal functionality...');
     await page.goto('http://127.0.0.1:5176/all-routes', {
       waitUntil: 'networkidle',
-      timeout: 10000
+      timeout: 10000,
     });
 
     // Wait for route cards to load
@@ -62,12 +61,11 @@ async function takeScreenshots() {
 
       await page.screenshot({
         path: 'route-all-routes-modal-open.png',
-        fullPage: true
+        fullPage: true,
       });
 
       console.log('✅ Modal screenshot saved: route-all-routes-modal-open.png');
     }
-
   } catch (error) {
     console.error('❌ Failed to test modal functionality:', error.message);
   }

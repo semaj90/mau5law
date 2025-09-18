@@ -94,7 +94,7 @@ export const timelineEventsTable = pgTable('timeline_events', {
   created_at: timestamp('created_at').defaultNow(),
 });
 
-// Vector similarity search materialized view for performance
+// Vector similarity search materialized view for performance;
 export const vectorSimilarityView = pgTable('vector_similarity_cache', {
   id: uuid('id').primaryKey().defaultRandom(),
   source_id: uuid('source_id').notNull(),
@@ -106,7 +106,7 @@ export const vectorSimilarityView = pgTable('vector_similarity_cache', {
   expires_at: timestamp('expires_at'),
 });
 
-// Cache table for frequently accessed queries
+// Cache table for frequently accessed queries;
 export const queryCache = pgTable('query_cache', {
   id: uuid('id').primaryKey().defaultRandom(),
   cache_key: varchar('cache_key', { length: 255 }).unique().notNull(),
@@ -124,7 +124,7 @@ export const queryCache = pgTable('query_cache', {
   expires_at: timestamp('expires_at').notNull(),
 });
 
-// Analytics and metrics
+// Analytics and metrics;
 export const analyticsEvents = pgTable('analytics_events', {
   id: uuid('id').primaryKey().defaultRandom(),
   event_type: varchar('event_type', { length: 100 }).notNull(),
@@ -142,7 +142,7 @@ export const analyticsEvents = pgTable('analytics_events', {
   created_at: timestamp('created_at').defaultNow(),
 });
 
-// Full-text search configuration
+// Full-text search configuration;
 export const searchConfigTable = pgTable('search_config', {
   id: uuid('id').primaryKey().defaultRandom(),
   config_name: varchar('config_name', { length: 100 }).unique().notNull(),

@@ -2,6 +2,7 @@
 // Tiny, ready-to-render UI blocks: text, svg, or component state
 
 export type CHRPatternType = 'text' | 'svg' | 'state';
+}
 
 export interface CHRPatternBase {
   key: string; // stable lookup key (e.g., doc:<id>:summary)
@@ -33,6 +34,7 @@ export interface CHRStatePattern extends CHRPatternBase {
 }
 
 export type CHRPattern = CHRTextPattern | CHRSVGPattern | CHRStatePattern;
+}
 
 export interface PrecomputeContext {
   userId?: string;
@@ -42,7 +44,7 @@ export interface PrecomputeContext {
   query?: string;
 }
 
-// Real precompute using Enhanced RAG (Go service) and Glyph generator
+// Real precompute using Enhanced RAG (Go service) and Glyph generator;
 export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPattern[]> {
   const now = new Date().toISOString();
   const out: CHRPattern[] = [];
@@ -52,9 +54,9 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
   const FRONTEND_BASE = (import.meta as any).env?.FRONTEND_BASE_URL || 'http://localhost:5174';
   const REDIS_TTL_SECONDS = 120; // short-lived cross-instance share
 
-  // Helpers
+  // Helpers;
   const withTimeout = async <T>(p: Promise<T>, ms = 8000): Promise<T> => {
-    const t = new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms));
+    const t = new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms);
     return Promise.race([p, t]) as Promise<T>;
   };
 
@@ -67,7 +69,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
     return { ok: true, data, status: (res as any).status } as const;
   };
 
-  // Redis L1 for cross-instance CHR pattern sharing
+  // Redis L1 for cross-instance CHR pattern sharing;
   let cache: null | {
     getJSON: <T = unknown>(key: string) => Promise<T | null>;
     setJSON: (key: string, value: unknown, ttlSeconds?: number) => Promise<void>;
@@ -92,7 +94,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
     return val;
   };
 
-  // 1) Document-focused precompute (summary + glyph)
+  // 1) Document-focused precompute (summary + glyph);
   if (ctx.docId) {
     const docKey = `doc:${ctx.docId}`;
     const summaryQuery = 'Summarize this legal document in 3 concise bullets highlighting parties, obligations, and risks.';
@@ -111,7 +113,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
       const rag = await fetchJson(ragUrl, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(ragBody)
+        body: JSON.stringify(ragBody),
       }, 10_000);
       if (rag.ok) {
         const answer = (rag.data.answer || rag.data.response || '').toString();
@@ -138,7 +140,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
       if (summaryPattern) out.push(summaryPattern);
     }
 
-    // Generate a compact glyph based on summary (or doc id)
+    // Generate a compact glyph based on summary (or doc id);
     try {
       const glyphRes = await fetchJson(`${FRONTEND_BASE}/api/glyph/generate`, {
         method: 'POST',
@@ -174,7 +176,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
     } catch {}
   }
 
-  // 2) Query-focused precompute (answer + glyph)
+  // 2) Query-focused precompute (answer + glyph);
   if (ctx.query) {
     const qKey = `query:${hashKey(ctx.query)}`;
     try {
@@ -204,7 +206,7 @@ export async function generateCHRPatterns(ctx: PrecomputeContext): Promise<CHRPa
           if (answerPattern) out.push(answerPattern);
         }
 
-        // Query glyph
+        // Query glyph;
         try {
           const glyphRes = await fetchJson(`${FRONTEND_BASE}/api/glyph/generate`, {
             method: 'POST',

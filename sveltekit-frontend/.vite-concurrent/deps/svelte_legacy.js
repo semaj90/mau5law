@@ -11,13 +11,13 @@ import {
   self,
   stopImmediatePropagation,
   stopPropagation,
-  trusted
-} from "./chunk-VOC4A3DY.js";
-import "./chunk-YZBAU52E.js";
-import "./chunk-24FUCJ6P.js";
-import "./chunk-6SIJFJGE.js";
-import "./chunk-UWMOYZ25.js";
-import "./chunk-KWPVD4H7.js";
+  trusted,
+} from './chunk-VOC4A3DY.js';
+import './chunk-YZBAU52E.js';
+import './chunk-24FUCJ6P.js';
+import './chunk-6SIJFJGE.js';
+import './chunk-UWMOYZ25.js';
+import './chunk-KWPVD4H7.js';
 export {
   asClassComponent,
   createBubbler,
@@ -31,6 +31,6 @@ export {
   self,
   stopImmediatePropagation,
   stopPropagation,
-  trusted
+  trusted,
 };
 //# sourceMappingURL=svelte_legacy.js.map

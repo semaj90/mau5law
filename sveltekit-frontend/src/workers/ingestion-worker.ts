@@ -9,6 +9,7 @@ import { minioService, type FileMetadata, type UploadResult } from '$lib/server/
 declare const WorkerGlobalScope: any;
 import { embeddingService, type EmbeddingOptions } from '$lib/server/embedding-service';
 import type { SOMNeuralNetwork, SOMConfig } from '$lib/ai/som-neural-network';
+}
 
 export interface IngestionTask {
   id: string;
@@ -37,18 +38,18 @@ export interface IngestionResult {
   embeddings?: {
     documentEmbeddings: number;
     chunkEmbeddings: number;
-    processingTime: number;
+    processingTime: number;,
   };
   somClustering?: {
     clusters: number;
     quality: number;
-    processingTime: number;
+    processingTime: number;,
   };
   rtxCompression?: {
     originalSize: number;
     compressedSize: number;
     ratio: string;
-    processingTime: number;
+    processingTime: number;,
   };
   totalProcessingTime: number;
   error?: string;
@@ -57,7 +58,7 @@ export interface IngestionResult {
 export interface WorkerMessage {
   type: 'ingestion' | 'embedding' | 'som_clustering' | 'rtx_compression' | 'health_check';
   data: any;
-  taskId: string;
+  taskId: string;,
 }
 
 export interface WorkerResponse {
@@ -69,7 +70,7 @@ export interface WorkerResponse {
   stage?: string;
 }
 
-// Worker implementation
+// Worker implementation;
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
   class DocumentIngestionWorker {
     private processing = false;
@@ -77,7 +78,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     private cache = new Map<string, any>();
 
     constructor() {
-      self.addEventListener('message', this.handleMessage.bind(this));
+      self.addEventListener('message', this.handleMessage.bind(this);
       console.log('=� Document Ingestion Worker initialized');
     }
 
@@ -166,7 +167,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         totalProcessingTime: 0,
       };
 
-      // Step 2: Generate embeddings if requested
+      // Step 2: Generate embeddings if requested;
       if (options.generateEmbeddings) {
         this.postResponse({
           taskId: id,
@@ -188,7 +189,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         });
       }
 
-      // Step 3: SOM clustering if requested
+      // Step 3: SOM clustering if requested;
       if (options.enableSOMClustering && (result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).embeddings) {
         this.postResponse({
           taskId: id,
@@ -202,7 +203,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
         (result as { embeddings?: any; somClustering?: any; rtxCompression?: any; totalProcessingTime?: any; success?: any; size?: any }).somClustering = somResult;
       }
 
-      // Step 4: RTX compression if requested
+      // Step 4: RTX compression if requested;
       if (options.enableRTXCompression) {
         this.postResponse({
           taskId: id,
@@ -232,10 +233,10 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
     private async simulateMinIOUpload(
       file: File | Buffer,
       originalName: string,
-      options: any
+      options: any;
     ): Promise<UploadResult> {
       // Simulate MinIO upload process
-      await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000 + 500));
+      await new Promise((resolve) => setTimeout(resolve, Math.random() * 1000 + 500);
 
       const fileSize = file instanceof File ? file.size: file.length;
       const fileId = `${Date.now()}-${Math.random().toString(36).substring(2)}`;
@@ -276,10 +277,10 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
             options.overlap || 60
           );
 
-          // Generate embeddings for each chunk
+          // Generate embeddings for each chunk;
           for (const chunk of chunks) {
             // Simulate embedding generation
-            await new Promise((resolve) => setTimeout(resolve, 50));
+            await new Promise((resolve) => setTimeout(resolve, 50);
             chunkEmbeddings++;
           }
 
@@ -298,11 +299,11 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       const startTime = performance.now();
 
       // Simulate SOM clustering
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000);
 
       const clusters = Math.min(
         uploadResults.length,
-        Math.max(2, Math.floor(uploadResults.length / 3))
+        Math.max(2, Math.floor(uploadResults.length / 3)
       );
 
       return {
@@ -327,7 +328,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       }
 
       // Simulate RTX processing time
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500);
 
       return {
         originalSize,
@@ -343,7 +344,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
 
       for (const text of texts) {
         // Simulate embedding generation
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100);
         embeddings.push({
           text,
           embedding: new Array(384).fill(0).map(() => Math.random() - 0.5),
@@ -361,7 +362,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
       const { embeddings, config } = data;
 
       // Simulate SOM training
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 3000);
 
       return {
         clusters: Math.floor(Math.random() * 10) + 2,
@@ -379,11 +380,11 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
 
       for (const doc of documents) {
         totalOriginal += doc.size || 1000;
-        totalCompressed += Math.floor((doc.size || 1000) / (compressionRatio || 50));
+        totalCompressed += Math.floor((doc.size || 1000) / (compressionRatio || 50);
       }
 
       // Simulate RTX processing
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000);
 
       return {
         originalSize: totalOriginal,
@@ -421,7 +422,7 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
 
       while (start < text.length) {
         const end = Math.min(start + chunkSize, text.length);
-        chunks.push(text.slice(start, end));
+        chunks.push(text.slice(start, end);
         start = end - overlap;
 
         if (start >= text.length - overlap) break;
@@ -473,11 +474,11 @@ if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScop
   new DocumentIngestionWorker();
 }
 
-// Client-side worker manager
+// Client-side worker manager;
 export class IngestionWorkerManager {
   private worker: Worker | null = null;
   private pendingTasks = new Map<
-    string,
+    string,>;
     {
       resolve: (value: any) => void;
       reject: (error: Error) => void;
@@ -494,8 +495,8 @@ export class IngestionWorkerManager {
       try {
         // Create worker from this file
         this.worker = new Worker(new URL(import.meta.url), { type: 'module' });
-        this.worker.addEventListener('message', this.handleWorkerMessage.bind(this));
-        this.worker.addEventListener('error', this.handleWorkerError.bind(this));
+        this.worker.addEventListener('message', this.handleWorkerMessage.bind(this);
+        this.worker.addEventListener('error', this.handleWorkerError.bind(this);
         console.log('=� Ingestion worker manager initialized');
       } catch (error) {
         console.warn('Failed to initialize ingestion worker:', error);
@@ -517,7 +518,7 @@ export class IngestionWorkerManager {
     if (success) {
       task.resolve(data);
     } else {
-      task.reject(new Error(error || 'Ingestion task failed'));
+      task.reject(new Error(error || 'Ingestion task failed');
     }
 
     this.pendingTasks.delete(taskId);
@@ -527,7 +528,7 @@ export class IngestionWorkerManager {
     console.error('Ingestion worker error:', event.error);
 
     for (const [taskId, task] of this.pendingTasks) {
-      task.reject(new Error(`Worker error: ${event.error?.message || 'Unknown error'}`));
+      task.reject(new Error(`Worker error: ${event.error?.message || 'Unknown error'}`);
     }
 
     this.pendingTasks.clear();
@@ -535,7 +536,7 @@ export class IngestionWorkerManager {
 
   public async processIngestion(
     task: IngestionTask,
-    onProgress?: (progress: number, stage?: string, data?: any) => void
+    onProgress?: (progress: number, stage?: string, data?: any) => void;
   ): Promise<IngestionResult> {
     return this.executeTask('ingestion', task, onProgress);
   }
@@ -543,7 +544,7 @@ export class IngestionWorkerManager {
   public async generateEmbeddings(
     texts: string[],
     options: EmbeddingOptions = {},
-    onProgress?: (progress: number, stage?: string, data?: any) => void
+    onProgress?: (progress: number, stage?: string, data?: any) => void;
   ): Promise<any> {
     return this.executeTask('embedding', { texts, options }, onProgress);
   }
@@ -551,7 +552,7 @@ export class IngestionWorkerManager {
   public async performSOMClustering(
     embeddings: number[][],
     config: SOMConfig,
-    onProgress?: (progress: number, stage?: string, data?: any) => void
+    onProgress?: (progress: number, stage?: string, data?: any) => void;
   ): Promise<any> {
     return this.executeTask('som_clustering', { embeddings, config }, onProgress);
   }
@@ -559,7 +560,7 @@ export class IngestionWorkerManager {
   public async applyRTXCompression(
     documents: any[],
     compressionRatio: number = 50,
-    onProgress?: (progress: number, stage?: string, data?: any) => void
+    onProgress?: (progress: number, stage?: string, data?: any) => void;
   ): Promise<any> {
     return this.executeTask('rtx_compression', { documents, compressionRatio }, onProgress);
   }
@@ -571,7 +572,7 @@ export class IngestionWorkerManager {
   private async executeTask(
     type: WorkerMessage['type'],
     data: any,
-    onProgress?: (progress: number, stage?: string, data?: any) => void
+    onProgress?: (progress: number, stage?: string, data?: any) => void;
   ): Promise<any> {
     if (!this.worker) {
       throw new Error('Ingestion worker not available');
@@ -597,7 +598,7 @@ export class IngestionWorkerManager {
     }
 
     for (const [taskId, task] of this.pendingTasks) {
-      task.reject(new Error('Worker terminated'));
+      task.reject(new Error('Worker terminated');
     }
 
     this.pendingTasks.clear();

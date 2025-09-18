@@ -6,7 +6,7 @@ import { storeLogInVectorDB } from '$lib/server/services/vectorDBService'; // Yo
 
 console.log(' Log worker process started.');
 
-// The worker listens for jobs on the 'logQueue'
+// The worker listens for jobs on the 'logQueue';
 const worker = new Worker('logQueue', async (job) => {
   try {
     console.log(`Processing log job ${job.id}...`);
@@ -17,26 +17,26 @@ const worker = new Worker('logQueue', async (job) => {
     const embedding = await getEmbedding(logData.message);
 
     // 2. Enhanced RAG Integration
-    // Store the original log and its vector in your database for future analysis
+    // Store the original log and its vector in your database for future analysis;
     await storeLogInVectorDB({
       log: logData,
       embedding: embedding,
     });
         console.log(`✅ Successfully processed and indexed log job ${job.id}.`);
     // NEXT STEP: This is where you would trigger the self-prompting/analysis agent
-    // For now, we are just indexing the errors.
+    // For now, we are just indexing the errors.;
   } catch (error: any) {
     console.error(`❌ Failed to process log job ${job.id}:`, error);
     // It's important to throw the error so BullMQ knows the job failed and can retry it
     throw error;
   }
 }, {
-    // Configuration for the worker
+    // Configuration for the worker;
     connection: {
         host: 'localhost', // Your Redis host
-        port: 6379
+        port: 6379,
     },
-    concurrency: 5 // Process up to 5 logs at the same time
+    concurrency: 5 // Process up to 5 logs at the same time,
 });
 
 worker.on('failed', (job, err) => {

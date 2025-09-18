@@ -13,7 +13,8 @@ import { browser } from '$app/environment';
 
 // ======================================================================
 // ENHANCED TYPES
-// ======================================================================
+// ======================================================================;
+}
 
 export interface EnhancedAIContext {
   // Core evidence processing
@@ -46,7 +47,7 @@ export interface EnhancedAIContext {
 
   // System state
   systemHealth: 'healthy' | 'degraded' | 'critical';
-  lastSync: Date | null;
+  lastSync: Date | null;,
 }
 
 export interface ProcessingResult {
@@ -57,7 +58,7 @@ export interface ProcessingResult {
   result: any;
   confidence: number;
   processingTime: number;
-  timestamp: Date;
+  timestamp: Date;,
 }
 
 export interface VectorMatch {
@@ -66,7 +67,7 @@ export interface VectorMatch {
   similarity: number;
   content: string;
   metadata: Record<string, any>;
-  rank: number;
+  rank: number;,
 }
 
 export interface AIAnalysis {
@@ -75,7 +76,7 @@ export interface AIAnalysis {
   legalRelevance: number;
   suggestedActions: string[];
   confidenceScore: number;
-  processingModel: string;
+  processingModel: string;,
 }
 
 export interface GraphNode {
@@ -83,7 +84,7 @@ export interface GraphNode {
   type: 'evidence' | 'person' | 'location' | 'event' | 'concept';
   label: string;
   properties: Record<string, any>;
-  connections: GraphConnection[];
+  connections: GraphConnection[];,
 }
 
 export interface GraphConnection {
@@ -99,7 +100,7 @@ export interface StreamingUpdate {
   type: 'evidence_added' | 'analysis_complete' | 'relationship_found';
   data: any;
   timestamp: Date;
-  source: string;
+  source: string;,
 }
 
 export interface ProcessingError {
@@ -110,7 +111,7 @@ export interface ProcessingError {
   details: any;
   timestamp: Date;
   resolved: boolean;
-  retryable: boolean;
+  retryable: boolean;,
 }
 
 type EvidenceEvent =
@@ -138,14 +139,14 @@ export const evidenceProcessingMachine = setup({
   },
 
   actors: {
-    // Enhanced AI processing with multiple models
+    // Enhanced AI processing with multiple models;
     processEvidenceAI: fromPromise(async ({ input }: { input: { evidence: Evidence } }) => {
       const startTime = Date.now();
 
       try {
         // Parallel processing of multiple AI tasks
         const [embeddingResponse, taggingResponse, analysisResponse] = await Promise.allSettled([
-          // Generate embeddings using local/cloud models
+          // Generate embeddings using local/cloud models;
           fetch('/api/ai/embedding', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -155,7 +156,7 @@ export const evidenceProcessingMachine = setup({
             }),
           }).then((r: any) => (r.ok ? r.json() : Promise.reject(new Error('Embedding failed')))),
 
-          // AI tagging with enhanced context
+          // AI tagging with enhanced context;
           fetch('/api/ai/tag', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -166,7 +167,7 @@ export const evidenceProcessingMachine = setup({
             }),
           }).then((r: any) => (r.ok ? r.json() : Promise.reject(new Error('Tagging failed')))),
 
-          // Deep AI analysis using local LLM
+          // Deep AI analysis using local LLM;
           fetch('/api/ai/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -209,9 +210,8 @@ export const evidenceProcessingMachine = setup({
       }
     }),
 
-    // Vector similarity search
-    searchSimilarEvidence: fromPromise(
-      async ({ input }: { input: { embeddings: number[]; limit?: number } }) => {
+    // Vector similarity search;
+    searchSimilarEvidence: fromPromise(async ({ input }: { input: { embeddings: number[]; limit?: number } }) => {
         try {
           const response = await fetch('/api/vector/search', {
             method: 'POST',
@@ -232,7 +232,7 @@ export const evidenceProcessingMachine = setup({
       }
     ),
 
-    // Graph relationship discovery
+    // Graph relationship discovery;
     discoverRelationships: fromPromise(async ({ input }: { input: { evidenceId: string } }) => {
       try {
         const response = await fetch(`/api/graph/discover/${input.evidenceId}`, {
@@ -252,21 +252,21 @@ export const evidenceProcessingMachine = setup({
       }
     }),
 
-    // Health monitoring
+    // Health monitoring;
     systemHealthCheck: fromPromise(async () => {
       try {
         const checks = await Promise.allSettled([
           fetch('/api/ai/health/local')
-            .then((r) => r.json())
+            .then((r) => r.json()
             .catch(() => ({ status: 'down' })),
           fetch('/api/vector/health')
-            .then((r) => r.json())
+            .then((r) => r.json()
             .catch(() => ({ status: 'down' })),
           fetch('/api/graph/health')
-            .then((r) => r.json())
+            .then((r) => r.json()
             .catch(() => ({ status: 'down' })),
           fetch('/api/cache/health')
-            .then((r) => r.json())
+            .then((r) => r.json()
             .catch(() => ({ status: 'down' })),
         ]);
 
@@ -443,7 +443,7 @@ export const evidenceProcessingMachine = setup({
             onDone: {
               target: 'relationshipDiscovery',
               actions: assign({
-                vectorMatches: ({ event }) =>
+                vectorMatches: ({ event }) =>;
                   (event.output.matches || []).map((match: any, index: number) => ({
                     ...match,
                     rank: index + 1,
@@ -515,7 +515,7 @@ export const evidenceProcessingMachine = setup({
         },
 
         complete: {
-          always: [
+          always: [;
             {
               target: '#evidenceProcessing.queueing',
               actions: assign({
@@ -653,7 +653,7 @@ export const aiRecommendationsStore = derived(evidenceProcessingStore, ($store) 
   const analysis = $store.context?.aiAnalysis;
   if (!analysis) return [];
   return Array.from(analysis.values()).flatMap(
-    (a: any) =>
+    (a: any) =>;
       a.suggestedActions?.map((action: string) => ({
         id: crypto.randomUUID(),
         type: 'suggested_action',
@@ -679,9 +679,9 @@ export const systemHealthStore = derived(evidenceProcessingStore, ($store) => ({
   errors: $store.context?.errors?.filter((e: any) => !e.resolved) || [],
   cacheHits: $store.context?.cacheHits || 0,
   lastSync: $store.context?.lastSync,
-}));
+});
 
-// Streaming store for real-time updates
+// Streaming store for real-time updates;
 export const streamingStore = writable({
   isStreaming: false,
   streamType: null as string | null,
@@ -701,7 +701,7 @@ export async function initializeEnhancedMachines(): Promise<any> {
     // Create evidence processing machine
     const evidenceActor = createActor(evidenceProcessingMachine);
 
-    // Subscribe to state changes
+    // Subscribe to state changes;
     evidenceActor.subscribe((state: any) => {
       evidenceProcessingStore.set({
         machine: evidenceActor,

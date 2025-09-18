@@ -1,24 +1,25 @@
 
 // Enhanced Bits UI Component Types
-// Production-ready TypeScript definitions for legal AI UI components
+// Production-ready TypeScript definitions for legal AI UI components;
+}
 
 export interface ComponentModule {
   name: string;
-  default: any;
+  default: any;,
 }
 
 export interface EnhancedComponentConfig {
   name: string;
   component: ComponentModule;
   priority: number;
-  category: 'form' | 'display' | 'interaction' | 'layout';
+  category: 'form' | 'display' | 'interaction' | 'layout';,
 }
 
 export interface PerformanceMetrics {
   loadTime: number;
   renderTime: number;
   memoryUsage: number;
-  bundleSize: number;
+  bundleSize: number;,
 }
 
 export interface ComponentLoadResult {
@@ -32,7 +33,7 @@ export type ComponentPriority = 'high' | 'medium' | 'low';
 export type ComponentCategory = 'form' | 'display' | 'interaction' | 'layout';
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
 
-// Legal AI specific types
+// Legal AI specific types;
 export interface EvidenceItem {
   id: string;
   title: string;
@@ -60,7 +61,7 @@ export interface AIAnalysis {
   confidence: number;
   entities: Array<any>;
   themes: Array<any>;
-  summary: string;
+  summary: string;,
 }
 
 export interface VectorSearchResult {
@@ -77,7 +78,8 @@ export interface SemanticEntity {
   type: string;
   text?: string;
   properties: Record<string, any>;
-  relationships?: Array<any>
+  relationships?: Array<any>;
+}
 
 export interface SelectOption {
   value: string;
@@ -87,7 +89,7 @@ export interface SelectOption {
   category?: string;
 }
 
-// Board-specific types
+// Board-specific types;
 export interface BoardItem {
   id: string;
   x: number;
@@ -95,10 +97,10 @@ export interface BoardItem {
   width?: number;
   height?: number;
   data: any;
-  type: 'evidence' | 'note' | 'connection' | 'marker';
+  type: 'evidence' | 'note' | 'connection' | 'marker';,
 }
 
-// Chat and recommendation types for UI components
+// Chat and recommendation types for UI components;
 export interface ChatMessage {
   id: string;
   role: 'system' | 'user' | 'assistant';

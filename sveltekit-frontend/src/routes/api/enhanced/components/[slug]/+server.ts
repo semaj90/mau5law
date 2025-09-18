@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
   
   const cacheKey = `enhanced:${slug}:${variant}:${url.searchParams.toString()}`;
 
-  // Skip cache if refresh requested
+  // Skip cache if refresh requested;
   if (!refresh) {
     try {
       const cached = await cacheManager.get(cacheKey, 'enhanced-component');
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
     }
   }
 
-  // Generate enhanced component data
+  // Generate enhanced component data;
   try {
     const componentData = await generateEnhancedComponent(slug, variant, url.searchParams);
     
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ params, url, setHeaders }) => {
     return json({
       error: 'Component generation failed',
       slug,
-      details: error.message
+      details: error.message,
     }, { status: 500 });
   }
 };
@@ -96,7 +96,7 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
   const caseId = searchParams.get('case_id');
   const priority = searchParams.get('priority');
   
-  // Build enhanced query with vector similarity
+  // Build enhanced query with vector similarity;
   let query = db.select({
     id: evidenceTable.id,
     title: evidenceTable.title,
@@ -105,20 +105,20 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
     type: evidenceTable.type,
     metadata: evidenceTable.metadata,
     created_at: evidenceTable.created_at,
-    embedding_similarity: evidenceTable.embedding // This would need proper vector similarity calculation
+    embedding_similarity: evidenceTable.embedding // This would need proper vector similarity calculation,
   }).from(evidenceTable);
 
   // Apply filters
   const conditions = [];
-  if (caseId) conditions.push(eq(evidenceTable.case_id, caseId));
-  if (priority) conditions.push(eq(evidenceTable.priority, priority));
+  if (caseId) conditions.push(eq(evidenceTable.case_id, caseId);
+  if (priority) conditions.push(eq(evidenceTable.priority, priority);
   
   if (conditions.length > 0) {
-    query = query.where(and(...conditions));
+    query = query.where(and(...conditions);
   }
   
   const evidenceItems = await query
-    .orderBy(desc(evidenceTable.priority), desc(evidenceTable.created_at))
+    .orderBy(desc(evidenceTable.priority), desc(evidenceTable.created_at)
     .limit(limit);
 
   // Generate related insights using vector similarity
@@ -141,7 +141,7 @@ async function generateEvidenceBoard(variant: string, searchParams: URLSearchPar
     meta: {
       generated_at: new Date().toISOString(),
       cache_key: `evidence-board:${variant}`,
-      query_time_ms: Date.now() - Date.now()
+      query_time_ms: Date.now() - Date.now(),
     }
   };
 }
@@ -157,7 +157,7 @@ async function generateLegalTimeline(variant: string, searchParams: URLSearchPar
   const events = await db.select()
     .from(timelineEventsTable)
     .where(caseId ? eq(timelineEventsTable.case_id, caseId) : undefined)
-    .orderBy(desc(timelineEventsTable.event_date))
+    .orderBy(desc(timelineEventsTable.event_date)
     .limit(100);
 
   return {
@@ -166,10 +166,10 @@ async function generateLegalTimeline(variant: string, searchParams: URLSearchPar
     data: {
       events,
       milestones: events.filter(e => e.is_milestone),
-      range: timeRange
+      range: timeRange,
     },
     meta: {
-      generated_at: new Date().toISOString()
+      generated_at: new Date().toISOString(),
     }
   };
 }
@@ -205,11 +205,11 @@ async function generateSemanticSearch(variant: string, searchParams: URLSearchPa
     data: {
       results,
       query,
-      suggestions: await generateSearchSuggestions(query)
+      suggestions: await generateSearchSuggestions(query),
     },
     meta: {
       generated_at: new Date().toISOString(),
-      query_embedding_dims: queryEmbedding?.length || 0
+      query_embedding_dims: queryEmbedding?.length || 0,
     }
   };
 }
@@ -240,10 +240,10 @@ async function generateCaseAnalysis(variant: string, searchParams: URLSearchPara
       case: caseData,
       related_cases: relatedCases,
       insights,
-      risk_assessment: await calculateRiskScore(caseId)
+      risk_assessment: await calculateRiskScore(caseId),
     },
     meta: {
-      generated_at: new Date().toISOString()
+      generated_at: new Date().toISOString(),
     }
   };
 }
@@ -267,12 +267,12 @@ async function generateDocumentInsights(variant: string, searchParams: URLSearch
     variant,
     data: insights,
     meta: {
-      generated_at: new Date().toISOString()
+      generated_at: new Date().toISOString(),
     }
   };
 }
 
-// Helper functions (would be implemented based on your specific needs)
+// Helper functions (would be implemented based on your specific needs);
 async function generateRelatedInsights(evidenceItems: any[]) {
   // Vector similarity analysis
   return [];
@@ -293,7 +293,7 @@ async function getCaseData(caseId: string) {
   const { casesTable } = await import('$lib/server/database/schema');
   const { eq } = await import('drizzle-orm');
   
-  return await db.select().from(casesTable).where(eq(casesTable.id, caseId));
+  return await db.select().from(casesTable).where(eq(casesTable.id, caseId);
 }
 
 async function getRelatedCases(caseId: string) {
@@ -302,29 +302,29 @@ async function getRelatedCases(caseId: string) {
 }
 
 async function generateCaseInsights(caseId: string) {
-  // AI-powered case analysis
+  // AI-powered case analysis;
   return {
     key_points: [],
     risk_factors: [],
-    recommendations: []
+    recommendations: [],
   };
 }
 
 async function calculateRiskScore(caseId: string) {
-  // Risk assessment algorithm
+  // Risk assessment algorithm;
   return {
     score: 0.5,
     factors: [],
-    confidence: 0.8
+    confidence: 0.8,
   };
 }
 
 async function analyzeDocument(docId: string) {
-  // Document analysis with NLP and vector search
+  // Document analysis with NLP and vector search;
   return {
     summary: '',
     entities: [],
     key_phrases: [],
-    sentiment: 0.0
+    sentiment: 0.0,
   };
 }

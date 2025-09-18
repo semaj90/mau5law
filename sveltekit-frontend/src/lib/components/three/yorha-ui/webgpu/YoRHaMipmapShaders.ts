@@ -7,6 +7,7 @@
 /// <reference types="@webgpu/types" />
 
 import { yorhaWebGPU } from './YoRHaWebGPUMath.js';
+}
 
 export interface MipmapConfig {
   maxMipLevels: number;
@@ -14,7 +15,7 @@ export interface MipmapConfig {
   enableOptimizations: boolean;
   rtxOptimized: boolean;
   enableStreaming: boolean;
-  maxTextureSize: number;
+  maxTextureSize: number;,
 }
 
 export interface MipmapChainResult {
@@ -24,7 +25,7 @@ export interface MipmapChainResult {
   optimization: {
     levelsGenerated: number;
     streamingUsed: boolean;
-    rtxAcceleration: boolean;
+    rtxAcceleration: boolean;,
   };
 }
 
@@ -32,7 +33,7 @@ export interface TextureStreamingOptions {
   chunkSize: number;
   concurrentStreams: number;
   memoryBudget: number;
-  priority: 'quality' | 'performance' | 'balanced';
+  priority: 'quality' | 'performance' | 'balanced';,
 }
 
 export class YoRHaMipmapShaders {
@@ -47,14 +48,14 @@ export class YoRHaMipmapShaders {
     enableOptimizations: true,
     rtxOptimized: true,
     enableStreaming: true,
-    maxTextureSize: 4096
+    maxTextureSize: 4096,
   };
 
   async initialize(device?: GPUDevice): Promise<boolean> {
     if (this.isInitialized) return true;
 
     try {
-      this.device = device || (await this.getWebGPUDevice());
+      this.device = device || (await this.getWebGPUDevice();
       if (!this.device) {
         console.warn('WebGPU device not available for mipmap generation');
         return false;
@@ -75,19 +76,19 @@ export class YoRHaMipmapShaders {
   /**
    * Initialize headless WebGPU device for server-side processing
    * Based on https://eliemichel.github.io/LearnWebGPU/advanced-techniques/headless.html
-   */
+   */;
   async initializeHeadless(): Promise<boolean> {
     if (this.isInitialized) return true;
 
     try {
-      // Headless WebGPU initialization without surface dependencies
+      // Headless WebGPU initialization without surface dependencies;
       if (!navigator.gpu) {
         console.warn('WebGPU not available - falling back to CPU processing');
         return false;
       }
 
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance'
+        powerPreference: 'high-performance',
       });
 
       if (!adapter) {
@@ -101,7 +102,7 @@ export class YoRHaMipmapShaders {
           maxBufferSize: 256 * 1024 * 1024, // 256MB for large legal documents
           maxComputeWorkgroupStorageSize: 16384,
           maxComputeInvocationsPerWorkgroup: 256,
-          maxStorageBufferBindingSize: 128 * 1024 * 1024 // 128MB storage buffers
+          maxStorageBufferBindingSize: 128 * 1024 * 1024 // 128MB storage buffers,
         }
       });
 
@@ -128,7 +129,7 @@ export class YoRHaMipmapShaders {
       if (!navigator.gpu) return null;
       
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance'
+        powerPreference: 'high-performance',
       });
       if (!adapter) return null;
 
@@ -137,7 +138,7 @@ export class YoRHaMipmapShaders {
         requiredLimits: {
           maxBufferSize: 256 * 1024 * 1024, // 256MB for large textures
           maxComputeWorkgroupStorageSize: 16384,
-          maxComputeInvocationsPerWorkgroup: 256
+          maxComputeInvocationsPerWorkgroup: 256,
         }
       });
     } catch (error) {
@@ -148,7 +149,7 @@ export class YoRHaMipmapShaders {
 
   /**
    * Setup optimized compute pipelines based on NVIDIA vk_compute_mipmaps approach
-   */
+   */;
   private async setupMipmapPipelines(): Promise<void> {
     if (!this.device) return;
 
@@ -160,7 +161,7 @@ export class YoRHaMipmapShaders {
         module: this.device.createShaderModule({ code: boxFilterShader }),
         entryPoint: 'main',
       },
-    }));
+    });
 
     // 2. Bilinear filter (balanced quality/performance)
     const bilinearFilterShader = this.createBilinearFilterShader();
@@ -170,7 +171,7 @@ export class YoRHaMipmapShaders {
         module: this.device.createShaderModule({ code: bilinearFilterShader }),
         entryPoint: 'main',
       },
-    }));
+    });
 
     // 3. Gaussian filter (high quality, slower)
     const gaussianFilterShader = this.createGaussianFilterShader();
@@ -180,7 +181,7 @@ export class YoRHaMipmapShaders {
         module: this.device.createShaderModule({ code: gaussianFilterShader }),
         entryPoint: 'main',
       },
-    }));
+    });
 
     // 4. NVIDIA RTX-optimized tensor core acceleration
     const rtxOptimizedShader = this.createRTXOptimizedShader();
@@ -190,7 +191,7 @@ export class YoRHaMipmapShaders {
         module: this.device.createShaderModule({ code: rtxOptimizedShader }),
         entryPoint: 'main',
       },
-    }));
+    });
 
     // 5. Multi-level batch generation (parallel mip levels)
     const multiLevelShader = this.createMultiLevelBatchShader();
@@ -200,7 +201,7 @@ export class YoRHaMipmapShaders {
         module: this.device.createShaderModule({ code: multiLevelShader }),
         entryPoint: 'main',
       },
-    }));
+    });
 
     console.log('✅ Mipmap compute pipelines initialized');
   }
@@ -235,7 +236,7 @@ export class YoRHaMipmapShaders {
       let currentHeight = sourceHeight;
       let totalMemoryUsed = 0;
 
-      // Choose optimal generation strategy
+      // Choose optimal generation strategy;
       if (finalConfig.rtxOptimized && maxLevels > 6) {
         // Use RTX-optimized multi-level batch generation for large textures
         mipmapLevels = await this.generateMultiLevelBatch(
@@ -259,7 +260,7 @@ export class YoRHaMipmapShaders {
         );
       }
 
-      // Calculate memory usage
+      // Calculate memory usage;
       for (let i = 0; i < mipmapLevels.length; i++) {
         const levelWidth = Math.max(1, sourceWidth >> i);
         const levelHeight = Math.max(1, sourceHeight >> i);
@@ -278,7 +279,7 @@ export class YoRHaMipmapShaders {
         optimization: {
           levelsGenerated: mipmapLevels.length,
           streamingUsed: finalConfig.enableStreaming && sourceWidth > 2048,
-          rtxAcceleration: finalConfig.rtxOptimized && maxLevels > 6
+          rtxAcceleration: finalConfig.rtxOptimized && maxLevels > 6,
         }
       };
 
@@ -294,7 +295,7 @@ export class YoRHaMipmapShaders {
   private async generateMultiLevelBatch(
     sourceTexture: GPUTexture,
     maxLevels: number,
-    config: MipmapConfig
+    config: MipmapConfig;
   ): Promise<GPUTexture[]> {
     if (!this.device) throw new Error('Device not available');
 
@@ -307,7 +308,7 @@ export class YoRHaMipmapShaders {
     const sourceWidth = (sourceTexture as any).width || 1024;
     const sourceHeight = (sourceTexture as any).height || 1024;
 
-    // Create all mip level textures upfront
+    // Create all mip level textures upfront;
     for (let level = 1; level < maxLevels; level++) {
       const levelWidth = Math.max(1, sourceWidth >> level);
       const levelHeight = Math.max(1, sourceHeight >> level);
@@ -315,14 +316,14 @@ export class YoRHaMipmapShaders {
       const mipTexture = this.device.createTexture({
         size: [levelWidth, levelHeight, 1],
         format: 'rgba8unorm',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
       });
 
       mipmapLevels.push(mipTexture);
     }
 
     // Process multiple levels in parallel batches (RTX optimization)
-    const batchSize = 4; // Process 4 mip levels simultaneously
+    const batchSize = 4; // Process 4 mip levels simultaneously;
     for (let batchStart = 0; batchStart < mipmapLevels.length; batchStart += batchSize) {
       const batchEnd = Math.min(batchStart + batchSize, mipmapLevels.length);
       const batchPromises: Promise<void>[] = [];
@@ -348,7 +349,7 @@ export class YoRHaMipmapShaders {
   private async generateStreamingMipmaps(
     sourceTexture: GPUTexture,
     maxLevels: number,
-    config: MipmapConfig
+    config: MipmapConfig;
   ): Promise<GPUTexture[]> {
     if (!this.device) throw new Error('Device not available');
 
@@ -362,25 +363,25 @@ export class YoRHaMipmapShaders {
       chunkSize: 512,
       concurrentStreams: 2,
       memoryBudget: 128 * 1024 * 1024, // 128MB
-      priority: config.rtxOptimized ? 'performance' : 'balanced'
+      priority: config.rtxOptimized ? 'performance' : 'balanced',
     };
 
     let currentTexture = sourceTexture;
 
     for (let level = 1; level < maxLevels; level++) {
-      const sourceWidth = Math.max(1, ((sourceTexture as any).width || 1024) >> (level - 1));
-      const sourceHeight = Math.max(1, ((sourceTexture as any).height || 1024) >> (level - 1));
+      const sourceWidth = Math.max(1, ((sourceTexture as any).width || 1024) >> (level - 1);
+      const sourceHeight = Math.max(1, ((sourceTexture as any).height || 1024) >> (level - 1);
       const targetWidth = Math.max(1, sourceWidth >> 1);
       const targetHeight = Math.max(1, sourceHeight >> 1);
 
-      // Create target mip level texture
+      // Create target mip level texture;
       const mipTexture = this.device.createTexture({
         size: [targetWidth, targetHeight, 1],
         format: 'rgba8unorm',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
       });
 
-      // Use streaming for large levels, direct processing for small ones
+      // Use streaming for large levels, direct processing for small ones;
       if (sourceWidth > streamingOptions.chunkSize || sourceHeight > streamingOptions.chunkSize) {
         await this.generateMipLevelWithStreaming(
           currentTexture,
@@ -405,7 +406,7 @@ export class YoRHaMipmapShaders {
   private async generateSequentialMipmaps(
     sourceTexture: GPUTexture,
     maxLevels: number,
-    config: MipmapConfig
+    config: MipmapConfig;
   ): Promise<GPUTexture[]> {
     if (!this.device) throw new Error('Device not available');
 
@@ -417,15 +418,15 @@ export class YoRHaMipmapShaders {
     let currentTexture = sourceTexture;
 
     for (let level = 1; level < maxLevels; level++) {
-      const sourceWidth = Math.max(1, ((sourceTexture as any).width || 1024) >> (level - 1));
-      const sourceHeight = Math.max(1, ((sourceTexture as any).height || 1024) >> (level - 1));
+      const sourceWidth = Math.max(1, ((sourceTexture as any).width || 1024) >> (level - 1);
+      const sourceHeight = Math.max(1, ((sourceTexture as any).height || 1024) >> (level - 1);
       const targetWidth = Math.max(1, sourceWidth >> 1);
       const targetHeight = Math.max(1, sourceHeight >> 1);
 
       const mipTexture = this.device.createTexture({
         size: [targetWidth, targetHeight, 1],
         format: 'rgba8unorm',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
       });
 
       await this.generateSingleMipLevel(currentTexture, mipTexture, pipeline, config);
@@ -443,24 +444,24 @@ export class YoRHaMipmapShaders {
     sourceTexture: GPUTexture,
     targetTexture: GPUTexture,
     pipeline: GPUComputePipeline,
-    config: MipmapConfig
+    config: MipmapConfig;
   ): Promise<void> {
     if (!this.device) return;
 
     const commandEncoder = this.device.createCommandEncoder();
     const computePass = commandEncoder.beginComputePass();
 
-    // Create bind group for source and target textures
+    // Create bind group for source and target textures;
     const bindGroup = this.device.createBindGroup({
       layout: pipeline.getBindGroupLayout(0),
-      entries: [
+      entries: [;
         {
           binding: 0,
-          resource: sourceTexture.createView()
+          resource: sourceTexture.createView(),
         },
         {
           binding: 1,
-          resource: targetTexture.createView()
+          resource: targetTexture.createView(),
         }
       ]
     });
@@ -469,8 +470,8 @@ export class YoRHaMipmapShaders {
     computePass.setBindGroup(0, bindGroup);
     
     // Calculate dispatch size
-    const targetWidth = Math.max(1, ((targetTexture as any).width || 512));
-    const targetHeight = Math.max(1, ((targetTexture as any).height || 512));
+    const targetWidth = Math.max(1, ((targetTexture as any).width || 512);
+    const targetHeight = Math.max(1, ((targetTexture as any).height || 512);
     const workgroupsX = Math.ceil(targetWidth / 8);
     const workgroupsY = Math.ceil(targetHeight / 8);
     
@@ -487,7 +488,7 @@ export class YoRHaMipmapShaders {
     sourceTexture: GPUTexture,
     targetTexture: GPUTexture,
     pipeline: GPUComputePipeline,
-    options: TextureStreamingOptions
+    options: TextureStreamingOptions;
   ): Promise<void> {
     if (!this.device) return;
 
@@ -497,29 +498,29 @@ export class YoRHaMipmapShaders {
     const sourceHeight = (sourceTexture as any).height || 1024;
     const chunkSize = options.chunkSize;
 
-    // Process texture in chunks to stay within memory budget
+    // Process texture in chunks to stay within memory budget;
     for (let y = 0; y < sourceHeight; y += chunkSize) {
       for (let x = 0; x < sourceWidth; x += chunkSize) {
         const chunkWidth = Math.min(chunkSize, sourceWidth - x);
         const chunkHeight = Math.min(chunkSize, sourceHeight - y);
 
-        // Create temporary textures for this chunk
+        // Create temporary textures for this chunk;
         const sourceChunk = this.device.createTexture({
           size: [chunkWidth, chunkHeight, 1],
           format: 'rgba8unorm',
-          usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING
+          usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING,
         });
 
         const targetChunk = this.device.createTexture({
           size: [Math.ceil(chunkWidth / 2), Math.ceil(chunkHeight / 2), 1],
           format: 'rgba8unorm',
-          usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC
+          usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC,
         });
 
         // Copy chunk from source texture
         const commandEncoder = this.device.createCommandEncoder();
         commandEncoder.copyTextureToTexture(
-          { texture: sourceTexture, origin: [x, y, 0] },
+          { texture: sourceTexture, origin: [x, y, 0] },)
           { texture: sourceChunk },
           [chunkWidth, chunkHeight, 1]
         );
@@ -545,7 +546,7 @@ export class YoRHaMipmapShaders {
 
         // Copy result back to target texture
         commandEncoder.copyTextureToTexture(
-          { texture: targetChunk },
+          { texture: targetChunk },)>
           { texture: targetTexture, origin: [Math.floor(x / 2), Math.floor(y / 2), 0] },
           [Math.ceil(chunkWidth / 2), Math.ceil(chunkHeight / 2), 1]
         );
@@ -561,13 +562,13 @@ export class YoRHaMipmapShaders {
 
   /**
    * Box filter shader - fastest, good for thumbnails
-   */
+   */;
   private createBoxFilterShader(): string {
     return `
       @group(0) @binding(0) var sourceTexture: texture_2d<f32>;
       @group(0) @binding(1) var targetTexture: texture_storage_2d<rgba8unorm, write>;
 
-      @compute @workgroup_size(8, 8)
+      @compute @workgroup_size(8, 8);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let coord = vec2<i32>(global_id.xy);
         let sourceDim = textureDimensions(sourceTexture);
@@ -595,14 +596,14 @@ export class YoRHaMipmapShaders {
 
   /**
    * Bilinear filter shader - balanced quality/performance
-   */
+   */;
   private createBilinearFilterShader(): string {
     return `
       @group(0) @binding(0) var sourceTexture: texture_2d<f32>;
       @group(0) @binding(1) var targetTexture: texture_storage_2d<rgba8unorm, write>;
       @group(0) @binding(2) var linearSampler: sampler;
 
-      @compute @workgroup_size(8, 8)
+      @compute @workgroup_size(8, 8);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let coord = vec2<i32>(global_id.xy);
         let targetDim = textureDimensions(targetTexture);
@@ -624,7 +625,7 @@ export class YoRHaMipmapShaders {
 
   /**
    * Gaussian filter shader - high quality, slower
-   */
+   */;
   private createGaussianFilterShader(): string {
     return `
       @group(0) @binding(0) var sourceTexture: texture_2d<f32>;
@@ -636,7 +637,7 @@ export class YoRHaMipmapShaders {
         1.0/16.0, 2.0/16.0, 1.0/16.0
       );
 
-      @compute @workgroup_size(8, 8)
+      @compute @workgroup_size(8, 8);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let coord = vec2<i32>(global_id.xy);
         let sourceDim = textureDimensions(sourceTexture);
@@ -649,7 +650,7 @@ export class YoRHaMipmapShaders {
         let sourceCoord = coord * 2;
         var color = vec4<f32>(0.0);
 
-        // Apply 3x3 Gaussian kernel
+        // Apply 3x3 Gaussian kernel;
         for (var y: i32 = -1; y <= 1; y++) {
           for (var x: i32 = -1; x <= 1; x++) {
             let sampleCoord = clamp(
@@ -670,7 +671,7 @@ export class YoRHaMipmapShaders {
 
   /**
    * RTX-optimized shader with tensor core acceleration hints
-   */
+   */;
   private createRTXOptimizedShader(): string {
     return `
       @group(0) @binding(0) var sourceTexture: texture_2d<f32>;
@@ -683,7 +684,7 @@ export class YoRHaMipmapShaders {
       fn main(
         @builtin(global_invocation_id) global_id: vec3<u32>,
         @builtin(local_invocation_id) local_id: vec3<u32>,
-        @builtin(workgroup_id) workgroup_id: vec3<u32>
+        @builtin(workgroup_id) workgroup_id: vec3<u32>;
       ) {
         let coord = vec2<i32>(global_id.xy);
         let localCoord = vec2<i32>(local_id.xy);
@@ -718,7 +719,7 @@ export class YoRHaMipmapShaders {
                        samples[2] * weights.z + samples[3] * weights.w;
 
         // Additional RTX-specific optimizations
-        filteredColor = clamp(filteredColor, vec4<f32>(0.0), vec4<f32>(1.0));
+        filteredColor = clamp(filteredColor, vec4<f32>(0.0), vec4<f32>(1.0);
         
         textureStore(targetTexture, coord, filteredColor);
       }
@@ -727,7 +728,7 @@ export class YoRHaMipmapShaders {
 
   /**
    * Multi-level batch shader for parallel mip generation
-   */
+   */;
   private createMultiLevelBatchShader(): string {
     return `
       @group(0) @binding(0) var sourceTexture: texture_2d<f32>;
@@ -736,13 +737,13 @@ export class YoRHaMipmapShaders {
       @group(0) @binding(3) var mipLevel3: texture_storage_2d<rgba8unorm, write>;
       @group(0) @binding(4) var mipLevel4: texture_storage_2d<rgba8unorm, write>;
 
-      @compute @workgroup_size(8, 8)
+      @compute @workgroup_size(8, 8);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let baseCoord = vec2<i32>(global_id.xy);
         let sourceDim = textureDimensions(sourceTexture);
 
         // Generate multiple mip levels in parallel
-        // Level 1 (1/2 size)
+        // Level 1 (1/2 size);
         if (baseCoord.x < i32(sourceDim.x / 2u) && baseCoord.y < i32(sourceDim.y / 2u)) {
           let sourceCoord = baseCoord * 2;
           var color1 = vec4<f32>(0.0);
@@ -753,7 +754,7 @@ export class YoRHaMipmapShaders {
           textureStore(mipLevel1, baseCoord, color1 * 0.25);
         }
 
-        // Level 2 (1/4 size)
+        // Level 2 (1/4 size);
         if (baseCoord.x < i32(sourceDim.x / 4u) && baseCoord.y < i32(sourceDim.y / 4u)) {
           let sourceCoord = baseCoord * 4;
           var color2 = vec4<f32>(0.0);
@@ -766,7 +767,7 @@ export class YoRHaMipmapShaders {
           textureStore(mipLevel2, baseCoord, color2 / 16.0);
         }
 
-        // Level 3 (1/8 size)
+        // Level 3 (1/8 size);
         if (baseCoord.x < i32(sourceDim.x / 8u) && baseCoord.y < i32(sourceDim.y / 8u)) {
           let sourceCoord = baseCoord * 8;
           var color3 = vec4<f32>(0.0);
@@ -779,7 +780,7 @@ export class YoRHaMipmapShaders {
           textureStore(mipLevel3, baseCoord, color3 / 16.0);
         }
 
-        // Level 4 (1/16 size)
+        // Level 4 (1/16 size);
         if (baseCoord.x < i32(sourceDim.x / 16u) && baseCoord.y < i32(sourceDim.y / 16u)) {
           let sourceCoord = baseCoord * 16;
           var color4 = vec4<f32>(0.0);
@@ -797,13 +798,13 @@ export class YoRHaMipmapShaders {
 
   /**
    * Cleanup resources
-   */
+   */;
   dispose(): void {
     this.mipmapPipelines.clear();
     
-    // Cleanup streaming buffers
+    // Cleanup streaming buffers;
     this.streamingBuffers.forEach(buffers => {
-      buffers.forEach(buffer => buffer.destroy());
+      buffers.forEach(buffer => buffer.destroy();
     });
     this.streamingBuffers.clear();
 

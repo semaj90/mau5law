@@ -2,7 +2,8 @@
 /**
  * RAG (Retrieval Augmented Generation) Types
  * Standardized types for document processing and search
- */
+ */;
+}
 
 export interface DocumentType {
   id: string;
@@ -29,7 +30,7 @@ export interface RAGSearchResult {
     procedural: number;
     precedential: number;
     jurisdictional: number;
-    confidence: number;
+    confidence: number;,
   };
   relevanceScore?: number;
   rank?: number;
@@ -47,11 +48,12 @@ export interface RAGResponse {
   results: RAGSearchResult[];
   query: string;
   totalResults: number;
-  processingTime: number;
+  processingTime: number;,
 }
 
 // Fix for optimization files that expect "research" type
 export type ExtendedDocumentType = DocumentType['type'] | 'research';
+}
 
 export interface OptimizedRAGDocument {
   id: string;
@@ -61,7 +63,7 @@ export interface OptimizedRAGDocument {
   metadata: Record<string, any>;
 }
 
-// Type guards for safe type checking
+// Type guards for safe type checking;
 export function isValidDocumentType(type: string): type is DocumentType['type'] {
   return ['legal', 'case', 'evidence', 'research', 'document'].includes(type);
 }
@@ -71,14 +73,14 @@ export function normalizeDocumentType(type: string): DocumentType['type'] {
   return isValidDocumentType(type) ? type : 'document';
 }
 
-// Enhanced document processing types
+// Enhanced document processing types;
 export interface DocumentChunk {
   id: string;
   documentId: string;
   content: string;
   embedding: number[];
   metadata: Record<string, any>;
-  chunkIndex: number;
+  chunkIndex: number;,
 }
 
 export interface VectorSearchOptions {
@@ -91,10 +93,10 @@ export interface VectorSearchOptions {
 export interface EmbeddingConfig {
   model: string;
   dimensions: number;
-  provider: 'openai' | 'ollama' | 'local';
+  provider: 'openai' | 'ollama' | 'local';,
 }
 
-// Missing exports referenced by optimization files
+// Missing exports referenced by optimization files;
 export interface RAGDocument {
   id: string;
   title: string;
@@ -110,7 +112,7 @@ export interface RAGDocument {
     lastModified: Date;
     fileSize: number;
     language: string;
-    tags: string[];
+    tags: string[];,
   };
   createdAt?: Date;
   updatedAt?: Date;
@@ -139,11 +141,11 @@ export interface TextChunk {
   chunkType?: string;
 }
 
-// RAG source types
+// RAG source types;
 export interface RAGSource {
   id: string;
   title: string;
   content: string;
   relevance: number;
-  type: 'document' | 'evidence' | 'case' | 'legal' | 'research';
+  type: 'document' | 'evidence' | 'case' | 'legal' | 'research';,
 }

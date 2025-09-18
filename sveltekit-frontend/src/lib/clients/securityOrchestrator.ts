@@ -3,6 +3,7 @@
 
 // Use the SvelteKit API route we created for security validation
 const BASE_URL = (typeof process !== 'undefined' && process.env?.SECURITY_ORCH_URL) || '';
+}
 
 export interface SecurityValidationRequestClient {
   task: 'security_validation';
@@ -20,11 +21,11 @@ export interface SecurityValidationResponseClient {
   status: 'allow' | 'review' | 'deny';
   modelVersion: string;
   durationMs: number;
-  timestamp: string;
+  timestamp: string;,
 }
 
 export async function validateSecurity(payload: SecurityValidationRequestClient): Promise<SecurityValidationResponseClient> {
-  // Use our SvelteKit API route for security validation
+  // Use our SvelteKit API route for security validation;
   const res = await fetch(`${BASE_URL}/api/security/validate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -36,7 +37,7 @@ export async function validateSecurity(payload: SecurityValidationRequestClient)
       department: payload.user.department,
       jurisdiction: payload.user.jurisdiction,
       badgeNumber: payload.user.badgeNumber,
-      deviceInfo: payload.fingerprint
+      deviceInfo: payload.fingerprint,
     })
   });
   
@@ -59,7 +60,7 @@ export async function validateSecurity(payload: SecurityValidationRequestClient)
             apiResponse.riskLevel === 'high' ? 'review' : 'allow',
     modelVersion: 'enhanced-rag-v1',
     durationMs: apiResponse.processingTime || 0,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 }
 
@@ -70,7 +71,7 @@ export function connectProgress(onMessage: (msg: any) => void): WebSocket {
   
   const ws = new WebSocket(wsUrl);
   ws.onmessage = (e) => {
-    try { onMessage(JSON.parse(e.data)); } catch { /* ignore */ }
+    try { onMessage(JSON.parse(e.data); } catch { /* ignore */ }
   };
   return ws;
 }

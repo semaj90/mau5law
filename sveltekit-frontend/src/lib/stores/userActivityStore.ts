@@ -12,7 +12,7 @@ interface UserActivityMetrics {
   interactionCount: number;
   activityScore: number;
   isActive: boolean;
-  sessionStartTime: number;
+  sessionStartTime: number;,
 }
 
 interface ActivityEvent {
@@ -29,7 +29,7 @@ class UserActivityDetector {
     interactionCount: 0,
     activityScore: 0,
     isActive: true,
-    sessionStartTime: Date.now()
+    sessionStartTime: Date.now(),
   });
 
   private eventHistory: ActivityEvent[] = [];
@@ -58,14 +58,14 @@ class UserActivityDetector {
   }
 
   private initializeActivityTracking(): void {
-    // Attach event listeners for all tracked events
+    // Attach event listeners for all tracked events;
     this.TRACKED_EVENTS.forEach(eventType => {
       document.addEventListener(eventType, (event) => {
         this.recordActivity(eventType, event);
       }, { passive: true });
     });
 
-    // Page visibility API for better idle detection
+    // Page visibility API for better idle detection;
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         this.recordActivity('page_hidden');
@@ -83,11 +83,11 @@ class UserActivityDetector {
   private recordActivity(eventType: string, event?: Event): void {
     const now = Date.now();
 
-    // Create activity event
+    // Create activity event;
     const activityEvent: ActivityEvent = {
       type: eventType,
       timestamp: now,
-      target: event?.target ? (event.target as Element).tagName: undefined
+      target: event?.target ? (event.target as Element).tagName: undefined,
     };
 
     // Add to history
@@ -96,7 +96,7 @@ class UserActivityDetector {
       this.eventHistory.shift();
     }
 
-    // Update activity metrics
+    // Update activity metrics;
     this.activityStore.update(metrics => {
       const timeSinceLastActivity = now - metrics.lastActivity;
 
@@ -106,7 +106,7 @@ class UserActivityDetector {
         idleTimeMs: 0,
         interactionCount: metrics.interactionCount + 1,
         activityScore: this.calculateActivityScore(),
-        isActive: true
+        isActive: true,
       };
     });
 
@@ -116,7 +116,7 @@ class UserActivityDetector {
     // Reset idle timer
     this.resetIdleTimer();
 
-    // Throttled activity logging
+    // Throttled activity logging;
     if (this.shouldLogActivity(eventType)) {
       console.log(`👆 User activity: ${eventType}`);
     }
@@ -128,7 +128,7 @@ class UserActivityDetector {
     );
 
     // Score based on event diversity and frequency
-    const eventTypes = new Set(recentEvents.map(e => e.type));
+    const eventTypes = new Set(recentEvents.map(e => e.type);
     const frequency = recentEvents.length;
     const diversity = eventTypes.size;
 
@@ -166,12 +166,12 @@ class UserActivityDetector {
 
     this.activityStore.update(metrics => ({
       ...metrics,
-      isActive: false
-    }));
+      isActive: false,
+    });
 
-    // Send idle event to GPU bridge
+    // Send idle event to GPU bridge;
     this.sendActivityToGPUBridge('IDLE_TIMEOUT', {
-      idleTimeMs: this.idleThreshold
+      idleTimeMs: this.idleThreshold,
     });
   }
 
@@ -213,7 +213,7 @@ class UserActivityDetector {
         ...data
       };
 
-      this.wsConnection.send(JSON.stringify(message));
+      this.wsConnection.send(JSON.stringify(message);
     }
   }
 
@@ -273,17 +273,17 @@ class UserActivityDetector {
       ...metrics,
       recentEventCount: recentActivity.length,
       recentEventTypes: [...new Set(recentActivity.map(e => e.type))],
-      connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected'
+      connectionStatus: this.wsConnection?.readyState === WebSocket.OPEN ? 'connected' : 'disconnected',
     };
   }
 
   public destroy(): void {
-    // Clean up event listeners
+    // Clean up event listeners;
     this.TRACKED_EVENTS.forEach(eventType => {
       document.removeEventListener(eventType, this.recordActivity);
     });
 
-    // Clear timers
+    // Clear timers;
     if (this.activityTimer) {
       clearInterval(this.activityTimer);
     }
@@ -291,7 +291,7 @@ class UserActivityDetector {
       clearTimeout(this.idleTimer);
     }
 
-    // Close WebSocket
+    // Close WebSocket;
     if (this.wsConnection) {
       this.wsConnection.close();
     }

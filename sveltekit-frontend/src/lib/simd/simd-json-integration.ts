@@ -11,7 +11,7 @@ const USE_SIMDJSON = process.env.USE_SIMDJSON_NODE === '1' || dev;
 // SIMD JSON parsing function (Node.js addon wrapper)
 let parseJSONSIMD: ((json: string) => any) | null = null;
 
-// Initialize SIMD JSON addon if available
+// Initialize SIMD JSON addon if available;
 try {
   if (USE_SIMDJSON) {
     // This would be the compiled Node.js addon
@@ -26,7 +26,7 @@ try {
 /**
  * Fast JSON body reader for hot SvelteKit API endpoints
  * Uses SIMD JSON parsing when available, falls back to FastJSON utility
- */
+ */;
 export async function readBodyFast(request: Request): Promise<any> {
   try {
     const text = await request.text();
@@ -47,7 +47,7 @@ export async function readBodyFast(request: Request): Promise<any> {
 
 /**
  * SIMD JSON integration points in WebAssembly architecture
- */
+ */;
 export const SIMD_INTEGRATION_POINTS = {
   // 🔥 HIGHEST IMPACT - Hot API endpoints
   RABBITMQ_MESSAGES: '/api/workers/rabbitmq/*',
@@ -69,57 +69,57 @@ export const SIMD_INTEGRATION_POINTS = {
   // 🏗️ INFRASTRUCTURE - System operations
   HEALTH_CHECKS: '/api/*/health',
   METRICS_COLLECTION: '/api/metrics/*',
-  CONFIGURATION: '/api/config/*'
+  CONFIGURATION: '/api/config/*',
 } as const;
 
 /**
  * Message payload types that benefit most from SIMD parsing
- */
+ */;
 export const SIMD_OPTIMIZED_PAYLOADS = {
-  // RabbitMQ message payloads
+  // RabbitMQ message payloads;
   RABBITMQ_JOB_SUBMISSION: {
     fields: ['payload', 'metadata', 'dependencies'],
     avgSize: '2-10KB',
     frequency: 'very_high',
-    impact: 'critical'
+    impact: 'critical',
   },
   
-  // Vector/tensor data
+  // Vector/tensor data;
   VECTOR_EMBEDDINGS: {
     fields: ['embeddings', 'vectors', 'similarities'],
     avgSize: '50-500KB', 
     frequency: 'high',
-    impact: 'critical'
+    impact: 'critical',
   },
   
-  // Legal document data
+  // Legal document data;
   LEGAL_DOCUMENTS: {
     fields: ['content', 'metadata', 'entities', 'analysis'],
     avgSize: '10-100KB',
     frequency: 'high', 
-    impact: 'high'
+    impact: 'high',
   },
   
-  // Cache payloads
+  // Cache payloads;
   CACHE_ENTRIES: {
     fields: ['data', 'metadata', 'tags'],
     avgSize: '1-50KB',
     frequency: 'very_high',
-    impact: 'medium'
+    impact: 'medium',
   },
   
-  // Batch operations
+  // Batch operations;
   BATCH_REQUESTS: {
     fields: ['documents', 'operations', 'results'],
     avgSize: '100KB-5MB',
     frequency: 'medium',
-    impact: 'critical'
+    impact: 'critical',
   }
 } as const;
 
 /**
  * SIMD JSON performance metrics collector
- */
+ */;
 class SIMDMetrics {
   private stats = {
     simdParses: 0,
@@ -128,7 +128,7 @@ class SIMDMetrics {
     totalFallbackTime: 0,
     avgSIMDTime: 0,
     avgFallbackTime: 0,
-    speedupRatio: 1
+    speedupRatio: 1,
   };
   
   recordSIMDParse(timeMs: number) {
@@ -163,7 +163,7 @@ class SIMDMetrics {
       totalFallbackTime: 0,
       avgSIMDTime: 0,
       avgFallbackTime: 0,
-      speedupRatio: 1
+      speedupRatio: 1,
     };
   }
 }
@@ -172,7 +172,7 @@ export const simdMetrics = new SIMDMetrics();
 
 /**
  * Enhanced readBodyFast with performance metrics
- */
+ */;
 export async function readBodyFastWithMetrics(request: Request): Promise<any> {
   const startTime = performance.now();
   
@@ -203,7 +203,7 @@ export async function readBodyFastWithMetrics(request: Request): Promise<any> {
 
 /**
  * SIMD-optimized JSON stringify for responses (when available)
- */
+ */;
 export async function stringifyFast(obj: any): Promise<string> {
   try {
     // Use FastJSON utility with caching for better performance
@@ -218,7 +218,7 @@ export async function stringifyFast(obj: any): Promise<string> {
 
 /**
  * RabbitMQ message enhancer with SIMD JSON parsing
- */
+ */;
 export async function enhanceRabbitMQMessage(message: any): Promise<any> {
   // If message contains JSON strings, parse them with SIMD
   const enhanced = { ...message };
@@ -248,7 +248,7 @@ export async function enhanceRabbitMQMessage(message: any): Promise<any> {
 
 /**
  * Vector data parser optimized for SIMD
- */
+ */;
 export async function parseVectorData(jsonString: string): Promise<any> {
   const startTime = performance.now();
   
@@ -277,7 +277,7 @@ export async function parseVectorData(jsonString: string): Promise<any> {
 
 /**
  * Cache entry parser with SIMD optimization
- */
+ */;
 export async function parseCacheEntry(jsonString: string): Promise<any> {
   try {
     if (parseJSONSIMD && USE_SIMDJSON) {
@@ -295,7 +295,7 @@ export async function parseCacheEntry(jsonString: string): Promise<any> {
 
 /**
  * Get SIMD JSON status and configuration
- */
+ */;
 export function getSIMDStatus() {
   return {
     enabled: USE_SIMDJSON && parseJSONSIMD !== null,
@@ -303,27 +303,27 @@ export function getSIMDStatus() {
     environmentFlag: USE_SIMDJSON,
     metrics: simdMetrics.getStats(),
     integrationPoints: Object.keys(SIMD_INTEGRATION_POINTS).length,
-    optimizedPayloads: Object.keys(SIMD_OPTIMIZED_PAYLOADS).length
+    optimizedPayloads: Object.keys(SIMD_OPTIMIZED_PAYLOADS).length,
   };
 }
 
 /**
  * Benchmark SIMD vs standard JSON parsing
- */
+ */;
 export async function benchmarkJSONParsing(iterations: number = 1000): Promise<any> {
-  // Create test data similar to real payloads
+  // Create test data similar to real payloads;
   const testObj = {
     jobId: 'test-job-123',
     type: 'wasm_vector_operations',
     payload: {
       vectors: Array.from({ length: 100 }, () => 
-        Array.from({ length: 768 }, () => Math.random())
+        Array.from({ length: 768 }, () => Math.random()
       ),
       metadata: {
         userId: 'user-123',
         timestamp: Date.now(),
         source: 'legal_document_analysis',
-        priority: 2
+        priority: 2,
       }
     },
     analysis: {
@@ -356,11 +356,11 @@ export async function benchmarkJSONParsing(iterations: number = 1000): Promise<a
   return {
     simd: {
       avgTime: simdTime / iterations,
-      totalTime: simdTime
+      totalTime: simdTime,
     },
     standard: {
       avgTime: standardTime / iterations,
-      totalTime: standardTime
+      totalTime: standardTime,
     },
     speedup: simdTime > 0 ? standardTime / simdTime : 0,
     testData: `${Math.round(testData.length / 1024)}KB test payload`

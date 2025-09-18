@@ -36,7 +36,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
     }
     const conditions: any[] = [];
 
-    // Add filters (use correct schema)
+    // Add filters (use correct schema);
     if (caseId) {
       conditions.push(
         eq(useAiReports ? aiReports.caseId: reports.caseId, caseId)
@@ -49,9 +49,9 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
     }
     if (status && !useAiReports) {
       // aiReports does not have status, only filter if using reports
-      conditions.push(eq(reports.status, status));
+      conditions.push(eq(reports.status, status);
     }
-    // Add search filter
+    // Add search filter;
     if (search) {
       conditions.push(
         or(
@@ -63,9 +63,9 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
         )
       );
     }
-    // Apply filters
+    // Apply filters;
     if (conditions.length > 0) {
-      query = query.where(and(...conditions));
+      query = query.where(and(...conditions);
     }
     // Add sorting
     const orderColumn =
@@ -101,21 +101,20 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
       .from(useAiReports ? aiReports : reports);
 
     const finalCountQuery = conditions.length > 0
-      ? baseCountQuery.where(and(...conditions))
+      ? baseCountQuery.where(and(...conditions)
       : baseCountQuery;
 
     const totalCountResult = await finalCountQuery;
     const totalCount = totalCountResult[0]?.count || 0;
 
-    // Get associated canvas states for each report
-    const enrichedReports = await Promise.all(
-      reportResults.map(async (report: any) => {
+    // Get associated canvas states for each report;
+    const enrichedReports = await Promise.all(reportResults.map(async (report: any) => {
         try {
           const canvasState = await db
             .select()
             .from(canvasStates)
-            .where(eq(canvasStates.caseId, report.caseId))
-            .limit(1)));
+            .where(eq(canvasStates.caseId, report.caseId)
+            .limit(1));
           return {
             ...report,
             canvasState: canvasState[0] || null,
@@ -159,7 +158,7 @@ export async function POST({ request, locals }: RequestEvent): Promise<any> {
     }
     const data = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!data.title || !data.caseId) {
       return json({ error: "Title and case ID are required" }, { status: 400 });
     }
@@ -171,7 +170,7 @@ export async function POST({ request, locals }: RequestEvent): Promise<any> {
       .split(/\s+/)
       .filter((word: string) => word.length > 0).length;
 
-    // Map data to the reports table schema
+    // Map data to the reports table schema;
     const reportData = {
       title: data.title,
       content: data.content || "",
@@ -181,7 +180,7 @@ export async function POST({ request, locals }: RequestEvent): Promise<any> {
       isPublic: data.isPublic || false,
       tags: data.tags || [],
       metadata: {
-        ...(data.metadata || {}),
+        ...(data.metadata || {,}),
         wordCount,
         estimatedReadTime: Math.ceil(wordCount / 200),
         summary: data.summary || "",
@@ -220,7 +219,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<any> {
     const existingReport = await db
       .select()
       .from(reports)
-      .where(eq(reports.id, data.id))
+      .where(eq(reports.id, data.id)
       .limit(1);
 
     if (!existingReport.length) {
@@ -246,12 +245,12 @@ export async function PUT({ request, locals }: RequestEvent): Promise<any> {
     if (data.isPublic !== undefined) updateData.isPublic = data.isPublic;
     if (data.tags !== undefined) updateData.tags = data.tags;
 
-    // Update metadata with new calculated values
+    // Update metadata with new calculated values;
     if (data.content !== undefined || data.metadata !== undefined) {
       const currentMetadata = (existingReport[0].metadata as any) || {};
       updateData.metadata = {
         ...currentMetadata,
-        ...(data.metadata || {}),
+        ...(data.metadata || {,}),
         wordCount,
         estimatedReadTime: Math.ceil(wordCount / 200),
       };
@@ -259,7 +258,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<any> {
     const [updatedReport] = await db
       .update(reports)
       .set(updateData)
-      .where(eq(reports.id, data.id))
+      .where(eq(reports.id, data.id)
       .returning();
 
     return json(updatedReport);
@@ -284,7 +283,7 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<any> {
     const existingReport = await db
       .select()
       .from(reports)
-      .where(eq(reports.id, reportId))
+      .where(eq(reports.id, reportId)
       .limit(1);
 
     if (!existingReport.length) {
@@ -293,7 +292,7 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<any> {
     // Delete the report (cascade will handle related records)
     const [deletedReport] = await db
       .delete(reports)
-      .where(eq(reports.id, reportId))
+      .where(eq(reports.id, reportId)
       .returning();
 
     return json({ success: true, deletedReport });
@@ -302,7 +301,7 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<any> {
     return json({ error: "Failed to delete report" }, { status: 500 });
   }
 }
-// PATCH endpoint for partial updates
+// PATCH endpoint for partial updates;
 export async function PATCH({ request, url, locals }: RequestEvent): Promise<any> {
   try {
     if (!locals.user) {
@@ -321,7 +320,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
     const existingReport = await db
       .select()
       .from(reports)
-      .where(eq(reports.id, reportId))
+      .where(eq(reports.id, reportId)
       .limit(1);
 
     if (!existingReport.length) {
@@ -331,7 +330,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
       updatedAt: new Date(),
     };
 
-    // Handle specific patch operations
+    // Handle specific patch operations;
     if (data.operation === "publish") {
       updateData.status = "published";
       updateData.isPublic = data.isPublic || false;
@@ -348,7 +347,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
       const currentTags = (existingReport[0].tags as string[]) || [];
       updateData.tags = currentTags.filter((tag) => tag !== data.tag);
     } else {
-      // Regular field updates
+      // Regular field updates;
       Object.keys(data).forEach((key) => {
         if (key !== "operation") {
           updateData[key] = data[key];
@@ -358,7 +357,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
     const [updatedReport] = await db
       .update(reports)
       .set(updateData)
-      .where(eq(reports.id, reportId))
+      .where(eq(reports.id, reportId)
       .returning();
 
     return json(updatedReport);

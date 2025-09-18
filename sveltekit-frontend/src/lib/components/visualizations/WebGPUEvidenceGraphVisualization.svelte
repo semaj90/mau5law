@@ -352,7 +352,7 @@
     <div class="graph-controls">
       <select
         bind:value={layoutType}
-        on:change={handleLayoutChange}
+        onchange={handleLayoutChange}
         class="layout-select"
       >
         <option value="force">Force-Directed</option>
@@ -360,11 +360,11 @@
         <option value="hierarchical">Hierarchical</option>
       </select>
 
-      <Button on:click={toggleLabels} variant="secondary" size="sm">
+      <Button onclick={toggleLabels} variant="secondary" size="sm">
         {showLabels ? 'Hide' : 'Show'} Labels
       </Button>
 
-      <Button on:click={resetView} variant="secondary" size="sm">
+      <Button onclick={resetView} variant="secondary" size="sm">
         Reset View
       </Button>
     </div>

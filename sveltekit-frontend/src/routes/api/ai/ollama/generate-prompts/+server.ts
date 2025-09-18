@@ -56,9 +56,9 @@ For "after-upload": Focus on next steps, analysis results, and recommendations
 
 Each prompt should be actionable and specific to legal workflows.
 
-Respond in JSON format:
+Respond in JSON format:;
 {
-  "prompts": [
+  "prompts": [;
     {
       "id": "unique-id",
       "content": "Specific, actionable prompt text",
@@ -83,7 +83,7 @@ Respond in JSON format:
         stream: false,
         options: {
           temperature: 0.6,
-          top_p: 0.9
+          top_p: 0.9,
         }
       })
     });
@@ -102,12 +102,12 @@ Respond in JSON format:
       promptsData = generateFallbackPrompts(timing, context, legalContext);
     }
 
-    // Add timing property to each prompt
+    // Add timing property to each prompt;
     const prompts = promptsData.prompts.map((prompt: any) => ({
       ...prompt,
       timing: timing,
       id: prompt.id || `${timing}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    }));
+    });
 
     return json({ prompts });
 
@@ -138,7 +138,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.95,
         relevance: 0.9,
         actionable: true,
-        legalSpecific: true
+        legalSpecific: true,
       });
     }
 
@@ -150,7 +150,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.8,
         relevance: 0.7,
         actionable: true,
-        legalSpecific: true
+        legalSpecific: true,
       });
     }
 
@@ -162,7 +162,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.85,
         relevance: 0.8,
         actionable: true,
-        legalSpecific: true
+        legalSpecific: true,
       });
     }
   }
@@ -175,7 +175,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
       confidence: 0.9,
       relevance: 0.7,
       actionable: false,
-      legalSpecific: true
+      legalSpecific: true,
     });
 
     if (context.files?.length > 5) {
@@ -186,7 +186,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.8,
         relevance: 0.6,
         actionable: false,
-        legalSpecific: true
+        legalSpecific: true,
       });
     }
   }
@@ -199,7 +199,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
       confidence: 0.9,
       relevance: 0.8,
       actionable: true,
-      legalSpecific: true
+      legalSpecific: true,
     });
 
     if (legalContext?.caseId) {
@@ -210,7 +210,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
         confidence: 0.85,
         relevance: 0.9,
         actionable: true,
-        legalSpecific: true
+        legalSpecific: true,
       });
     }
 
@@ -221,7 +221,7 @@ function generateFallbackPrompts(timing: string, context: any, legalContext: any
       confidence: 0.8,
       relevance: 0.7,
       actionable: true,
-      legalSpecific: true
+      legalSpecific: true,
     });
   }
 

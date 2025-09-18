@@ -5,6 +5,7 @@
  */
 
 import { createMachine, assign, fromPromise } from "xstate";
+}
 
 export interface AISummaryContext {
   // Document/Evidence data
@@ -18,32 +19,32 @@ export interface AISummaryContext {
   keyInsights: string[];
   confidence: number;
 
-  // AI Mix Synthesis data (added for comprehensive integration)
+  // AI Mix Synthesis data (added for comprehensive integration);
   llmOutput: {
     content: string;
     model: string;
     confidence: number;
     tokens: number;
-    processingTime: number;
+    processingTime: number;,
   } | null;
   ragOutput: {
     relevantDocs: any[];
     contextSummary: string;
-    searchMetrics: any;
+    searchMetrics: any;,
   } | null;
   userActivity: {
     recentQueries: string[];
     preferredTopics: string[];
-    recommendations: string[];
+    recommendations: string[];,
   } | null;
 
-  // Synthesis progress tracking
+  // Synthesis progress tracking;
   synthesisPipeline: {
     llmComplete: boolean;
     ragComplete: boolean;
     userActivityComplete: boolean;
     fusejsComplete: boolean;
-    finalSynthesisComplete: boolean;
+    finalSynthesisComplete: boolean;,
   };
 
   // Reading state
@@ -65,7 +66,7 @@ export interface AISummaryContext {
   // User preferences
   voiceEnabled: boolean;
   highlightMode: "key_points" | "entities" | "legal_terms" | "none";
-  readingMode: "sequential" | "insight_focused" | "summary_only";
+  readingMode: "sequential" | "insight_focused" | "summary_only";,
 }
 
 export interface SummarySection {
@@ -80,7 +81,7 @@ export interface SummarySection {
     | "legal_implications";
   importance: "critical" | "high" | "medium" | "low";
   entities: Entity[];
-  wordCount: number;
+  wordCount: number;,
 }
 
 export interface Entity {
@@ -104,7 +105,7 @@ export interface AnalysisResult {
     | "evidence_strength";
   score: number;
   explanation: string;
-  recommendations: string[];
+  recommendations: string[];,
 }
 
 export interface SynthesisData {
@@ -113,7 +114,7 @@ export interface SynthesisData {
   supportingEvidence: string[];
   gaps: string[];
   legalImplications: string[];
-  nextSteps: string[];
+  nextSteps: string[];,
 }
 
 export type AISummaryEvent =
@@ -121,7 +122,7 @@ export type AISummaryEvent =
   | {
       type: "GENERATE_SUMMARY";
       content: string;
-      documentType: AISummaryContext["documentType"];
+      documentType: AISummaryContext["documentType"];,
     }
   | { type: "START_READING" }
   | { type: "PAUSE_READING" }
@@ -151,7 +152,7 @@ const initialContext: AISummaryContext = {
   ragOutput: null,
   userActivity: null,
   
-  // Synthesis progress tracking
+  // Synthesis progress tracking;
   synthesisPipeline: {
     llmComplete: false,
     ragComplete: false,
@@ -178,7 +179,7 @@ const initialContext: AISummaryContext = {
 export const aiSummaryMachine = createMachine({
   types: Record<string, any> as {
     context: AISummaryContext;
-    events: AISummaryEvent;
+    events: AISummaryEvent;,
   },
   id: "aiSummaryMachine",
   initial: "idle",
@@ -221,8 +222,7 @@ export const aiSummaryMachine = createMachine({
             }),
           },
           UPDATE_PREFERENCES: {
-            actions: assign(
-              ({
+            actions: assign(({
                 context,
                 event,
               }: {
@@ -446,7 +446,7 @@ export const aiSummaryMachine = createMachine({
   {
     actors: {
       loadDocument: fromPromise(async ({ input }: { input: AISummaryContext }) => {
-        // Mock implementation - would call actual API
+        // Mock implementation - would call actual API;
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve({
@@ -458,10 +458,10 @@ export const aiSummaryMachine = createMachine({
       }),
 
       generateSummary: fromPromise(async ({ input }: { input: AISummaryContext }) => {
-        // Mock implementation - would call RAG/AI service
+        // Mock implementation - would call RAG/AI service;
         return new Promise((resolve) => {
           setTimeout(() => {
-            const sections: SummarySection[] = [
+            const sections: SummarySection[] = [;
               {
                 id: "exec-summary",
                 title: "Executive Summary",
@@ -469,7 +469,7 @@ export const aiSummaryMachine = createMachine({
                   "This evidence report provides a comprehensive analysis of digital forensics findings in the case. Key evidence points to significant security violations and potential criminal activity.",
                 type: "executive_summary",
                 importance: "critical",
-                entities: [
+                entities: [;
                   {
                     text: "digital forensics",
                     type: "legal_term",
@@ -490,7 +490,7 @@ export const aiSummaryMachine = createMachine({
                   "Analysis of the digital evidence reveals unauthorized access attempts, data exfiltration, and potential insider threats. Timeline analysis shows coordinated activities over a 6-month period.",
                 type: "key_findings",
                 importance: "critical",
-                entities: [
+                entities: [;
                   {
                     text: "unauthorized access",
                     type: "legal_term",
@@ -512,7 +512,7 @@ export const aiSummaryMachine = createMachine({
                   "The evidence supports charges under the Computer Fraud and Abuse Act (CFAA) and state data protection laws. Recommended prosecution strategy includes focusing on the financial impact and systematic nature of the violations.",
                 type: "legal_implications",
                 importance: "high",
-                entities: [
+                entities: [;
                   {
                     text: "Computer Fraud and Abuse Act",
                     type: "legal_term",
@@ -549,11 +549,11 @@ export const aiSummaryMachine = createMachine({
       }),
 
       analyzeDocument: fromPromise(async ({ input }: { input: AISummaryContext }) => {
-        // Mock implementation - would call analysis service
+        // Mock implementation - would call analysis service;
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve({
-              results: [
+              results: [;
                 {
                   type: "relevance" as const,
                   score: 0.94,
@@ -573,7 +573,7 @@ export const aiSummaryMachine = createMachine({
                     "Verify forensic tool calibration",
                     "Document examiner credentials",
                   ],
-                },
+                },);
                 {
                   type: "legal_significance" as const,
                   score: 0.96,
@@ -591,7 +591,7 @@ export const aiSummaryMachine = createMachine({
       }),
 
       synthesizeInsights: fromPromise(async ({ input }: { input: AISummaryContext }) => {
-        // Mock implementation - would call synthesis service
+        // Mock implementation - would call synthesis service;
         return new Promise((resolve) => {
           setTimeout(() => {
             resolve({

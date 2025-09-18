@@ -31,31 +31,31 @@ export const POST: RequestHandler = async ({ request }) => {
       processedAt: new Date().toISOString(),
       documentId: `doc_${Date.now()}`,
       
-      // Enhanced RAG results
+      // Enhanced RAG results;
       ragResults: {
         embeddings: embeddings,
         semanticAnalysis: semanticAnalysis,
         recommendations: recommendations,
         metadata: enhancedMetadata,
         
-        // Vector search preparation
+        // Vector search preparation;
         vectorData: {
           chunks: chunkForVectorSearch(documentContent),
           dimensions: 384, // Using 384-dimensional embeddings
           similarity_threshold: 0.75,
-          max_results: 20
+          max_results: 20,
         },
         
-        // Legal context enhancement
+        // Legal context enhancement;
         legalContext: {
           jurisdiction: semanticAnalysis.jurisdiction || 'unknown',
           documentType: semanticAnalysis.documentType || 'general',
           practiceArea: inferPracticeArea(documentContent),
           complexity: calculateComplexity(documentContent),
-          precedentRelevance: assessPrecedentRelevance(documentContent)
+          precedentRelevance: assessPrecedentRelevance(documentContent),
         },
         
-        // Performance metrics
+        // Performance metrics;
         performance: {
           processingTime: Date.now() - (simdData.startTime || Date.now()),
           vectorization_time: embeddings.generationTime || 0,
@@ -78,7 +78,7 @@ function extractDocumentContent(simdData: any): unknown {
     fullText: simdData.document?.content?.fullText || '',
     sections: simdData.document?.structure?.sections || [],
     concepts: simdData.document?.legalAnalysis?.concepts || [],
-    citations: simdData.document?.legalAnalysis?.citations || []
+    citations: simdData.document?.legalAnalysis?.citations || [],
   };
 }
 
@@ -90,19 +90,19 @@ async function generateVectorEmbeddings(content: any): Promise<any> {
   const embeddings = chunks.map((chunk, index) => ({
     chunk_id: `chunk_${index}`,
     text: chunk,
-    embedding: generateMockEmbedding(384), // 384-dimensional vector
+    embedding: generateMockEmbedding(384), // 384-dimensional vector;
     metadata: {
       section: findChunkSection(chunk, content.sections),
       legal_concepts: extractChunkConcepts(chunk, content.concepts),
       citations: extractChunkCitations(chunk, content.citations)
     }
-  }));
+  });
 
   return {
     embeddings: embeddings,
     total_chunks: chunks.length,
     average_chunk_size: chunks.reduce((sum, chunk) => sum + chunk.length, 0) / chunks.length,
-    generationTime: Date.now() - startTime
+    generationTime: Date.now() - startTime,
   };
 }
 
@@ -124,7 +124,7 @@ async function performSemanticAnalysis(content: any): Promise<any> {
     // Quality metrics
     coherenceScore: calculateCoherenceScore(content.fullText),
     completenessScore: calculateCompletenessScore(content),
-    processingTime: Date.now() - startTime
+    processingTime: Date.now() - startTime,
   };
 
   return analysis;
@@ -135,7 +135,7 @@ async function generateRAGRecommendations(content: any, analysis: any): Promise<
   
   // Generate recommendations based on document content and semantic analysis
   
-  // Similar case recommendations
+  // Similar case recommendations;
   recommendations.push({
     type: 'similar_cases',
     title: 'Similar Legal Cases',
@@ -143,10 +143,10 @@ async function generateRAGRecommendations(content: any, analysis: any): Promise<
     relevance: Math.floor(Math.random() * 30) + 70, // 70-100%
     confidence: Math.floor(Math.random() * 20) + 80, // 80-100%
     items: generateSimilarCases(analysis.keyTopics),
-    actionRequired: false
+    actionRequired: false,
   });
   
-  // Legal precedent recommendations
+  // Legal precedent recommendations;
   if (content.citations.length > 0) {
     recommendations.push({
       type: 'precedent_analysis',
@@ -155,11 +155,11 @@ async function generateRAGRecommendations(content: any, analysis: any): Promise<
       relevance: Math.floor(Math.random() * 20) + 75, // 75-95%
       confidence: Math.floor(Math.random() * 15) + 85, // 85-100%
       items: analyzePrecedents(content.citations),
-      actionRequired: true
+      actionRequired: true,
     });
   }
   
-  // Document completeness recommendations
+  // Document completeness recommendations;
   if (analysis.completenessScore < 80) {
     recommendations.push({
       type: 'document_completeness',
@@ -168,11 +168,11 @@ async function generateRAGRecommendations(content: any, analysis: any): Promise<
       relevance: 100 - analysis.completenessScore,
       confidence: 90,
       items: generateCompletenessRecommendations(analysis),
-      actionRequired: true
+      actionRequired: true,
     });
   }
   
-  // Legal research recommendations
+  // Legal research recommendations;
   recommendations.push({
     type: 'research_suggestions',
     title: 'Additional Research Areas',
@@ -180,10 +180,10 @@ async function generateRAGRecommendations(content: any, analysis: any): Promise<
     relevance: Math.floor(Math.random() * 25) + 65, // 65-90%
     confidence: Math.floor(Math.random() * 20) + 75, // 75-95%
     items: generateResearchSuggestions(analysis.keyTopics, analysis.practiceArea),
-    actionRequired: false
+    actionRequired: false,
   });
 
-  return recommendations.sort((a, b) => (b.relevance * b.confidence) - (a.relevance * a.confidence));
+  return recommendations.sort((a, b) => (b.relevance * b.confidence) - (a.relevance * a.confidence);
 }
 
 function createEnhancedMetadata(simdData: any, analysis: any): unknown {
@@ -192,14 +192,14 @@ function createEnhancedMetadata(simdData: any, analysis: any): unknown {
       simd_processing_time: simdData.processingTime || 0,
       semantic_analysis_time: analysis.processingTime || 0,
       total_chunks: simdData.document?.vectorization?.chunks?.length || 0,
-      vector_dimensions: 384
+      vector_dimensions: 384,
     },
     
     quality: {
       ocr_confidence: simdData.document?.metadata?.averageConfidence || 0,
       semantic_coherence: analysis.coherenceScore || 0,
       document_completeness: analysis.completenessScore || 0,
-      legal_specificity: calculateLegalSpecificity(simdData.document?.legalAnalysis?.concepts || [])
+      legal_specificity: calculateLegalSpecificity(simdData.document?.legalAnalysis?.concepts || []),
     },
     
     legal: {
@@ -207,7 +207,7 @@ function createEnhancedMetadata(simdData: any, analysis: any): unknown {
       jurisdiction: analysis.jurisdiction || 'unknown',
       practice_area: analysis.practiceArea || 'general',
       complexity_level: calculateComplexity(simdData.document?.content?.fullText || ''),
-      citation_count: simdData.document?.legalAnalysis?.citations?.length || 0
+      citation_count: simdData.document?.legalAnalysis?.citations?.length || 0,
     }
   };
 }
@@ -222,7 +222,7 @@ function chunkForVectorSearch(text: string, chunkSize: number = 512, overlap: nu
     const end = Math.min(start + chunkSize, text.length);
     let chunk = text.slice(start, end);
     
-    // Try to end on sentence boundary
+    // Try to end on sentence boundary;
     if (end < text.length) {
       const lastSentenceEnd = chunk.lastIndexOf('.');
       if (lastSentenceEnd > chunk.length * 0.5) {
@@ -230,7 +230,7 @@ function chunkForVectorSearch(text: string, chunkSize: number = 512, overlap: nu
       }
     }
     
-    chunks.push(chunk.trim());
+    chunks.push(chunk.trim();
     start += chunk.length - overlap;
   }
   
@@ -240,14 +240,14 @@ function chunkForVectorSearch(text: string, chunkSize: number = 512, overlap: nu
 function generateMockEmbedding(dimensions: number): number[] {
   // Generate normalized random vector for testing
   const vector = Array.from({ length: dimensions }, () => Math.random() - 0.5);
-  const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
+  const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0);
   return vector.map(val => val / magnitude);
 }
 
 function findChunkSection(chunk: string, sections: any[]): string {
   if (!sections || sections.length === 0) return 'unknown';
   
-  // Find which section this chunk likely belongs to
+  // Find which section this chunk likely belongs to;
   for (const section of sections) {
     if (section.content && section.content.includes(chunk.slice(0, 100))) {
       return section.name || section.title || 'unnamed_section';
@@ -258,7 +258,7 @@ function findChunkSection(chunk: string, sections: any[]): string {
 }
 
 function extractChunkConcepts(chunk: string, concepts: string[]): string[] {
-  return concepts.filter(item => item.includes(concept.toLowerCase())
+  return concepts.filter(item => item.includes(concept.toLowerCase()
   );
 }
 
@@ -308,7 +308,7 @@ function analyzeLegalSentiment(text: string): unknown {
     positive: total > 0 ? (positive / total) * 100 : 0,
     negative: total > 0 ? (negative / total) * 100 : 0,
     neutral: total > 0 ? (neutral / total) * 100 : 0,
-    tone: positive > negative ? 'cooperative' : negative > positive ? 'adversarial' : 'neutral'
+    tone: positive > negative ? 'cooperative' : negative > positive ? 'adversarial' : 'neutral',
   };
 }
 
@@ -318,7 +318,7 @@ function recognizeNamedEntities(text: string): unknown {
     organizations: extractOrganizations(text),
     locations: extractLocations(text),
     dates: extractDates(text),
-    amounts: extractMonetaryAmounts(text)
+    amounts: extractMonetaryAmounts(text),
   };
   
   return entities;
@@ -343,7 +343,7 @@ function extractOrganizations(text: string): string[] {
   const organizations = new Set<string>();
   orgPatterns.forEach(pattern => {
     const matches = text.match(pattern) || [];
-    matches.forEach(match => organizations.add(match));
+    matches.forEach(match => organizations.add(match);
   });
   
   return Array.from(organizations).slice(0, 10);
@@ -358,7 +358,7 @@ function extractLocations(text: string): string[] {
   const locations = new Set<string>();
   locationPatterns.forEach(pattern => {
     const matches = text.match(pattern) || [];
-    matches.forEach(match => locations.add(match));
+    matches.forEach(match => locations.add(match);
   });
   
   return Array.from(locations).slice(0, 10);
@@ -374,7 +374,7 @@ function extractDates(text: string): string[] {
   const dates = new Set<string>();
   datePatterns.forEach(pattern => {
     const matches = text.match(pattern) || [];
-    matches.forEach(match => dates.add(match));
+    matches.forEach(match => dates.add(match);
   });
   
   return Array.from(dates);
@@ -389,13 +389,13 @@ function extractMonetaryAmounts(text: string): string[] {
   const amounts = new Set<string>();
   moneyPatterns.forEach(pattern => {
     const matches = text.match(pattern) || [];
-    matches.forEach(match => amounts.add(match));
+    matches.forEach(match => amounts.add(match);
   });
   
   return Array.from(amounts);
 }
 
-// Additional helper functions...
+// Additional helper functions...;
 function analyzeArgumentStructure(text: string): unknown {
   return { structure: 'analyzed', confidence: 85 };
 }
@@ -445,16 +445,16 @@ function generateSimilarCases(topics: string[]): unknown[] {
     case_name: `Sample Case ${index + 1} - ${topic}`,
     citation: `123 F.3d ${456 + index}`,
     similarity: Math.floor(Math.random() * 20) + 80,
-    year: 2020 + index
-  }));
+    year: 2020 + index,
+  });
 }
 
 function analyzePrecedents(citations: string[]): unknown[] {
   return citations.slice(0, 3).map(citation => ({
     citation,
     status: 'good_law',
-    relevance: Math.floor(Math.random() * 30) + 70
-  }));
+    relevance: Math.floor(Math.random() * 30) + 70,
+  });
 }
 
 function generateCompletenessRecommendations(analysis: any): unknown[] {
@@ -470,7 +470,7 @@ function generateResearchSuggestions(topics: string[], practiceArea: string): un
     research_area: topic,
     priority: Math.floor(Math.random() * 3) + 1,
     databases: ['Westlaw', 'Lexis', 'Google Scholar']
-  }));
+  });
 }
 
 function calculateLegalSpecificity(concepts: string[]): number {

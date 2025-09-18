@@ -7,7 +7,7 @@ export { default as DrawerHeader } from './drawer/drawer-header.svelte';
 export { default as DrawerTitle } from './drawer/drawer-title.svelte';
 export { default as DrawerTrigger } from './drawer/drawer-trigger.svelte';
 
-// Types
+// Types;
 export type DrawerProps = {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;

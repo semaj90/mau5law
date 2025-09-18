@@ -2,7 +2,7 @@
 // Fixes $state(), $derived(), and runes syntax errors
 
 import type {     Readable, Writable     } from 'svelte/store';
-// Import types
+// Import types;
 import type {
   User,
   ChatSession,
@@ -23,7 +23,7 @@ import type {
 // SVELTE 5 RUNES TYPES
 // =====================================================
 
-// Fix for $state() rune
+// Fix for $state() rune;
 declare global {
   function $state<T>(initial?: T): T;
   function $derived<T>(fn: () => T): T;
@@ -33,7 +33,8 @@ declare global {
 
 // =====================================================
 // STATE STORE TYPES
-// =====================================================
+// =====================================================;
+}
 
 export interface AppState {
   user: User | null;
@@ -43,7 +44,7 @@ export interface AppState {
   currentPage: string;
   notifications: Notification[];
   isLoading: boolean;
-  error: string | null;
+  error: string | null;,
 }
 
 export interface ChatState {
@@ -52,7 +53,7 @@ export interface ChatState {
   isTyping: boolean;
   isConnected: boolean;
   messages: ChatMessage[];
-  draft: string;
+  draft: string;,
 }
 
 export interface FileUploadState {
@@ -61,7 +62,7 @@ export interface FileUploadState {
   progress: number;
   error: string | null;
   completed: number;
-  total: number;
+  total: number;,
 }
 
 export interface SearchState {
@@ -70,7 +71,7 @@ export interface SearchState {
   isSearching: boolean;
   filters: SearchFilters;
   facets: SearchFacets;
-  history: string[];
+  history: string[];,
 }
 
 export interface AIState {
@@ -79,19 +80,20 @@ export interface AIState {
   isProcessing: boolean;
   responses: AIResponse[];
   usage: TokenUsage;
-  availability: ModelAvailability;
+  availability: ModelAvailability;,
 }
 
 // =====================================================
 // COMPONENT STATE TYPES
-// =====================================================
+// =====================================================;
+}
 
 export interface ComponentState {
   mounted: boolean;
   initialized: boolean;
   error: Error | null;
   loading: boolean;
-  data: any;
+  data: any;,
 }
 
 export interface FormState {
@@ -100,7 +102,7 @@ export interface FormState {
   touched: Record<string, boolean>;
   isValid: boolean;
   isSubmitting: boolean;
-  isDirty: boolean;
+  isDirty: boolean;,
 }
 
 export interface ModalState {
@@ -108,18 +110,19 @@ export interface ModalState {
   title: string;
   content: any;
   size: 'sm' | 'md' | 'lg' | 'xl' | 'full';
-  closable: boolean;
+  closable: boolean;,
 }
 
 export interface ToastState {
   toasts: Toast[];
   position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-  maxToasts: number;
+  maxToasts: number;,
 }
 
 // =====================================================
 // STORE CREATOR UTILITIES
-// =====================================================
+// =====================================================;
+}
 
 export interface StoreOptions<T> {
   initial: T;
@@ -137,14 +140,15 @@ export interface AsyncStoreOptions<T> extends StoreOptions<T> {
 
 // =====================================================
 // XSTATE INTEGRATION TYPES
-// =====================================================
+// =====================================================;
+}
 
 export interface MachineState {
   value: string;
   context: any;
   matches: (value: string) => boolean;
   can: (event: string) => boolean;
-  send: (event: any) => void;
+  send: (event: any) => void;,
 }
 
 export interface MachineConfig {
@@ -157,7 +161,8 @@ export interface MachineConfig {
 
 // =====================================================
 // FORM INTEGRATION TYPES
-// =====================================================
+// =====================================================;
+}
 
 export interface SuperFormsState<T = Record<string, any> {
   form: Writable<T>;
@@ -167,7 +172,7 @@ export interface SuperFormsState<T = Record<string, any> {
   submitting: Readable<boolean>;
   delayed: Readable<boolean>;
   timeout: Readable<boolean>;
-  posted: Readable<boolean>;
+  posted: Readable<boolean>;,
 }
 
 export interface ValidationConfig {
@@ -180,13 +185,14 @@ export interface ValidationConfig {
 
 // =====================================================
 // PERFORMANCE MONITORING TYPES
-// =====================================================
+// =====================================================;
+}
 
 export interface PerformanceState {
   metrics: PerformanceMetrics;
   history: PerformanceEntry[];
   alerts: PerformanceAlert[];
-  thresholds: PerformanceThresholds;
+  thresholds: PerformanceThresholds;,
 }
 
 export interface PerformanceAlert {
@@ -196,19 +202,20 @@ export interface PerformanceAlert {
   timestamp: string;
   metric: string;
   value: number;
-  threshold: number;
+  threshold: number;,
 }
 
 export interface PerformanceThresholds {
   responseTime: number;
   memoryUsage: number;
   cpuUsage: number;
-  errorRate: number;
+  errorRate: number;,
 }
 
 // =====================================================
 // WEBSOCKET STATE TYPES
-// =====================================================
+// =====================================================;
+}
 
 export interface WebSocketState {
   connected: boolean;
@@ -217,12 +224,13 @@ export interface WebSocketState {
   lastMessage: any;
   messageHistory: any[];
   reconnectAttempts: number;
-  maxReconnectAttempts: number;
+  maxReconnectAttempts: number;,
 }
 
 // =====================================================
 // NAVIGATION STATE TYPES
-// =====================================================
+// =====================================================;
+}
 
 export interface NavigationState {
   currentPath: string;
@@ -230,7 +238,7 @@ export interface NavigationState {
   breadcrumbs: Breadcrumb[];
   canGoBack: boolean;
   canGoForward: boolean;
-  isNavigating: boolean;
+  isNavigating: boolean;,
 }
 
 export interface Breadcrumb {
@@ -259,7 +267,7 @@ export type ComponentEvents<T extends SvelteComponent> = any;
 // Fix action types
 export type Action<T = HTMLElement, P = any> = (
   node: T,
-  parameters?: P
+  parameters?: P;
 ) => {
   update?: (parameters: P) => void;
   destroy?: () => void;

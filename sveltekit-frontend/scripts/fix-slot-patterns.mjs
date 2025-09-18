@@ -77,7 +77,7 @@ function processFile(filePath) {
     }
 
     // 6. Add Snippet import if we have snippet syntax but no import
-    if (content.includes('{@render') && !content.includes("import type { Snippet }")) {
+    if (content.includes('{@render') && !content.includes('import type { Snippet }')) {
       // Check if there are already imports from 'svelte'
       if (content.includes("from 'svelte'") || content.includes('from "svelte"')) {
         // Add Snippet to existing import
@@ -182,10 +182,14 @@ function main() {
   const svelteFiles = walkDirectory(srcDir, '.svelte');
 
   // Filter files that contain slot patterns
-  const filesWithSlots = svelteFiles.filter(file => {
+  const filesWithSlots = svelteFiles.filter((file) => {
     try {
       const content = readFileSync(file, 'utf8');
-      return content.includes('<slot') || content.includes('$$slots') || content.includes('<svelte:fragment');
+      return (
+        content.includes('<slot') ||
+        content.includes('$$slots') ||
+        content.includes('<svelte:fragment')
+      );
     } catch (error) {
       return false;
     }

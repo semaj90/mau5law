@@ -10,7 +10,7 @@ import {
   type VectorSearchResult
 } from '$lib/server/services/vectorDBService';
 import { chatRateLimiter } from '$lib/server/middleware/rate-limiter';
-// Simple console logger for now
+// Simple console logger for now;
 const logger = {
   info: (message: string, component: string, metadata?: any) =>
     console.log(`[${new Date().toLocaleTimeString()}] INFO [${component}] ${message}`, metadata ? JSON.stringify(metadata) : ''),
@@ -32,18 +32,18 @@ const logger = {
 import { createHash } from 'node:crypto';
 
 // Initialize database on startup (disabled for now due to DB connection issues)
-let dbInitialized = true; // Skip initialization
+let dbInitialized = true; // Skip initialization;
 async function ensureDbInitialized() {
   // Disabled for now due to PostgreSQL connection issues
   return Promise.resolve();
 }
 
-// Generate request ID for tracking
+// Generate request ID for tracking;
 function generateRequestId(): string {
   return `req_${Date.now()}_${createHash('sha256').update(Math.random().toString()).digest('hex').slice(0, 8)}`;
 }
 
-// Rate limiting wrapper
+// Rate limiting wrapper;
 async function withRateLimit(request: Request, handler: () => Promise<Response>): Promise<Response> {
   const result = chatRateLimiter.check(request);
 
@@ -54,7 +54,7 @@ async function withRateLimit(request: Request, handler: () => Promise<Response>)
       success: false,
       error: 'Too many requests. Please wait before sending another message.',
       retryAfter,
-      resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString()
+      resetTime: new Date((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!).toISOString();
     }, {
       status: 429,
       headers: {
@@ -68,19 +68,19 @@ async function withRateLimit(request: Request, handler: () => Promise<Response>)
   const response = await handler();
 
   // Add rate limit headers
-  (response as { headers?: any }).headers.set('X-RateLimit-Remaining', (result as { allowed?: any; resetTime?: any; remaining?: any }).remaining!.toString());
-  (response as { headers?: any }).headers.set('X-RateLimit-Reset', (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString());
+  (response as { headers?: any }).headers.set('X-RateLimit-Remaining', (result as { allowed?: any; resetTime?: any; remaining?: any }).remaining!.toString();
+  (response as { headers?: any }).headers.set('X-RateLimit-Reset', (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString();
 
   return response;
 }
 
-// Health check for dependencies
+// Health check for dependencies;
 async function performHealthChecks(): Promise<any> {
   const results = { ollama: false, database: false };
 
   try {
     const ollamaResponse = await fetch('http://localhost:11434/api/version', {
-      signal: AbortSignal.timeout(3000)
+      signal: AbortSignal.timeout(3000),
     });
     results.ollama = ollamaResponse.ok;
   } catch {
@@ -97,7 +97,7 @@ async function performHealthChecks(): Promise<any> {
   return results;
 }
 
-// Validate request input
+// Validate request input;
 function validateChatRequest(body: any): { valid: boolean; error?: string } {
   if (!body || typeof body !== 'object') {
     return { valid: false, error: 'Invalid request body' };
@@ -128,7 +128,7 @@ function validateChatRequest(body: any): { valid: boolean; error?: string } {
 
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
-  content: string;
+  content: string;,
 }
 
 export interface EnhancedChatRequest {
@@ -161,7 +161,7 @@ export interface ChatResponse {
     vectorSearchUsed: boolean;
     sourcesCount: number;
     requestId: string;
-    timestamp: string;
+    timestamp: string;,
   };
   error?: string;
 }
@@ -181,14 +181,14 @@ function sanitizeThinkingType(t?: string): AllowedThinking | undefined {
     case 'planning':
       return 'application';
     default:
-      return undefined;
+      return undefined;,
   }
 }
 
-// GET method for health check and service info
+// GET method for health check and service info;
 export const GET: RequestHandler = async ({ url, request }) => {
   return await withRateLimit(request, async () => {
-    const requestId = generateRequestId());
+    const requestId = generateRequestId();
     const requestLogger = logger.withRequestId(requestId);
     const startTime = Date.now();
 
@@ -215,27 +215,27 @@ export const GET: RequestHandler = async ({ url, request }) => {
             vectorCache: true,
             rateLimiting: true,
             structuredLogging: true,
-            productionReady: true
+            productionReady: true,
           },
           health: {
             ollama: healthChecks.ollama,
             database: healthChecks.database,
-            overall: overallHealth
+            overall: overallHealth,
           },
           performance: {
-            responseTimeMs: Date.now() - startTime
+            responseTimeMs: Date.now() - startTime,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
         requestLogger.info(
           `Health check completed: ${status}`,
-          'chat-api-v3',
+          'chat-api-v3',)
           { duration: Date.now() - startTime, health: healthChecks }
         );
 
         return json(response, {
-          status: overallHealth ? 200 : 503
+          status: overallHealth ? 200 : 503,
         });
       }
 
@@ -256,7 +256,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
         requestLogger.info(
           `Search completed: ${results.length} results`,
-          'chat-api-v3',
+          'chat-api-v3',)>
           { query, resultCount: results.length, duration: Date.now() - startTime }
         );
 
@@ -267,9 +267,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
           results,
           count: results.length,
           performance: {
-            searchTimeMs: Date.now() - startTime
+            searchTimeMs: Date.now() - startTime,
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       }
 
@@ -284,7 +284,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
     } catch (error: any) {
       requestLogger.error('GET request failed', 'chat-api-v3', error, {
         duration: Date.now() - startTime,
-        url: url.toString()
+        url: url.toString(),
       });
 
       return json({
@@ -292,16 +292,16 @@ export const GET: RequestHandler = async ({ url, request }) => {
         status: 'error',
         error: 'Internal server error',
         requestId,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }, { status: 503 });
     }
   });
 };
 
-// POST method for enhanced chat with vector embeddings
+// POST method for enhanced chat with vector embeddings;
 export const POST: RequestHandler = async ({ request }) => {
   return await withRateLimit(request, async () => {
-    const requestId = generateRequestId());
+    const requestId = generateRequestId();
     const requestLogger = logger.withRequestId(requestId);
     const startTime = Date.now();
 
@@ -317,7 +317,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: 'Invalid JSON in request body',
           requestId,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }, { status: 400 });
       }
 
@@ -329,7 +329,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: false,
           error: validation.error,
           requestId,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }, { status: 400 });
       }
 
@@ -349,13 +349,13 @@ export const POST: RequestHandler = async ({ request }) => {
         thinkingType = 'analysis'      // Default thinking type
       } = body;
 
-      const userMessage = message || messages?.filter(item => item.pop)()?.content || '';
+      const userMessage = message || messages?.filter(item => item.pop()?.content || '';
       // Use requestLogger directly since withConversation might not be available
     const conversationLogger = requestLogger;
 
       conversationLogger.info(
         'Chat request started',
-        'chat-api-v3',
+        'chat-api-v3',);
         {
           messageLength: userMessage.length,
           model,
@@ -366,7 +366,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       );
 
-      // For streaming responses
+      // For streaming responses;
       if (stream) {
         const encoder = new TextEncoder();
         const readable = new ReadableStream({
@@ -386,7 +386,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 useGrpoRecommendations,
                 enableThinkingCapture,
                 thinkingType: sanitizeThinkingType(thinkingType),
-                context: messages || []
+                context: messages || [],
               });
 
               let sources: VectorSearchResult[] = [];
@@ -398,9 +398,9 @@ export const POST: RequestHandler = async ({ request }) => {
                     type: 'sources',
                     sources,
                     requestId,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
                   };
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`));
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`);
                 } else if (chunk.metadata?.type === 'recommendations') {
                   const recommendations = (chunk.metadata.recommendations as any) || [];
                   const recommendationsChunk = {
@@ -408,9 +408,9 @@ export const POST: RequestHandler = async ({ request }) => {
                     recommendations,
                     count: recommendations.length,
                     requestId,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
                   };
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(recommendationsChunk)}\n\n`));
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(recommendationsChunk)}\n\n`);
                 } else if (chunk.metadata?.type === 'text') {
                   const textChunk = {
                     type: 'text',
@@ -418,7 +418,7 @@ export const POST: RequestHandler = async ({ request }) => {
                     confidence: chunk.metadata.confidence || 0.9,
                     requestId
                   };
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(textChunk)}\n\n`));
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(textChunk)}\n\n`);
                 } else if (chunk.metadata?.type === 'final') {
                   const finalChunk = {
                     type: 'final',
@@ -428,15 +428,15 @@ export const POST: RequestHandler = async ({ request }) => {
                     vectorSearchUsed: useVectorSearch,
                     sources
                   };
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`));
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`);
                 }
               }
 
-              controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+              controller.enqueue(encoder.encode('data: [DONE]\n\n');
               controller.close();
 
               conversationLogger.info('Streaming completed', 'chat-api-v3', {
-                duration: Date.now() - startTime
+                duration: Date.now() - startTime,
               });
 
             } catch (error: any) {
@@ -446,9 +446,9 @@ export const POST: RequestHandler = async ({ request }) => {
                 type: 'error',
                 error: 'An error occurred while processing your request',
                 requestId,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
               };
-              controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`);
               controller.close();
             }
           }
@@ -485,7 +485,7 @@ export const POST: RequestHandler = async ({ request }) => {
         useGrpoRecommendations,
         enableThinkingCapture,
         thinkingType: sanitizeThinkingType(thinkingType),
-        context: messages || []
+        context: messages || [],
       });
 
       for await (const chunk of streamGenerator) {
@@ -501,12 +501,12 @@ export const POST: RequestHandler = async ({ request }) => {
 
       conversationLogger.info(
         'Chat response completed',
-        'chat-api-v3',
+        'chat-api-v3',);
         {
           responseLength: fullResponse.length,
           vectorSearchUsed,
           sourcesFound: sources.length,
-          duration: processingTime
+          duration: processingTime,
         }
       );
 
@@ -523,7 +523,7 @@ export const POST: RequestHandler = async ({ request }) => {
           vectorSearchUsed,
           sourcesCount: sources.length,
           requestId,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }
       };
 
@@ -535,7 +535,7 @@ export const POST: RequestHandler = async ({ request }) => {
       requestLogger.error(
         'Chat request failed',
         'chat-api-v3',
-        error,
+        error,)
         { duration: processingTime }
       );
 
@@ -545,7 +545,7 @@ export const POST: RequestHandler = async ({ request }) => {
         requestId,
         metadata: {
           processingTimeMs: processingTime,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }
       }, { status: 500 });
     }

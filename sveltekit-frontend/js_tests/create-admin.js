@@ -1,56 +1,52 @@
 #!/usr/bin/env node
 
-import bcrypt from "bcryptjs";
-import { readFileSync } from "fs";
-import { dirname, join } from "path";
-import { Pool } from "pg";
-import { fileURLToPath } from "url";
+import bcrypt from 'bcryptjs';
+import { readFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { Pool } from 'pg';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Load environment variables
-const envPath = join(__dirname, ".env");
+const envPath = join(__dirname, '.env');
 try {
-  const envContent = readFileSync(envPath, "utf8");
-  envContent.split("\n").forEach((line) => {
-    const [key, value] = line.split("=");
+  const envContent = readFileSync(envPath, 'utf8');
+  envContent.split('\n').forEach((line) => {
+    const [key, value] = line.split('=');
     if (key && value) {
       process.env[key.trim()] = value.trim();
     }
   });
 } catch (error) {
-  console.log("No .env file found, using system environment variables");
+  console.log('No .env file found, using system environment variables');
 }
 
 const DATABASE_URL =
-  process.env.DATABASE_URL ||
-  "postgresql://postgres:postgres@localhost:5433/legal_ai_db";
+  process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5433/legal_ai_db';
 
 async function createAdminUser() {
-  console.log("👤 Creating admin user...");
+  console.log('👤 Creating admin user...');
 
   const pool = new Pool({
     connectionString: DATABASE_URL,
-    ssl: DATABASE_URL.includes("localhost")
-      ? false
-      : { rejectUnauthorized: false },
+    ssl: DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
   });
 
   try {
     // Check if admin user already exists
-    const existingUser = await pool.query(
-      "SELECT id FROM users WHERE email = $1",
-      ["admin@prosecutor.law"],
-    );
+    const existingUser = await pool.query('SELECT id FROM users WHERE email = $1', [
+      'admin@prosecutor.law',
+    ]);
 
     if (existingUser.rows.length > 0) {
-      console.log("✅ Admin user already exists");
+      console.log('✅ Admin user already exists');
       return;
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash("admin123!", 12);
+    const hashedPassword = await bcrypt.hash('admin123!', 12);
 
     // Create the admin user
     const result = await pool.query(
@@ -60,29 +56,29 @@ async function createAdminUser() {
       RETURNING id, email, name, role
     `,
       [
-        "admin@prosecutor.law",
+        'admin@prosecutor.law',
         hashedPassword,
-        "System Administrator",
-        "System",
-        "Administrator",
-        "admin",
+        'System Administrator',
+        'System',
+        'Administrator',
+        'admin',
         true,
-      ],
+      ]
     );
 
-    console.log("✅ Admin user created successfully:", {
+    console.log('✅ Admin user created successfully:', {
       id: result.rows[0].id,
       email: result.rows[0].email,
       name: result.rows[0].name,
       role: result.rows[0].role,
     });
 
-    console.log("");
-    console.log("🔐 Admin Login Credentials:");
-    console.log("   Email: admin@prosecutor.law");
-    console.log("   Password: admin123!");
+    console.log('');
+    console.log('🔐 Admin Login Credentials:');
+    console.log('   Email: admin@prosecutor.law');
+    console.log('   Password: admin123!');
   } catch (error) {
-    console.error("❌ Error creating admin user:", error);
+    console.error('❌ Error creating admin user:', error);
   } finally {
     await pool.end();
   }

@@ -24,7 +24,7 @@ export async function initialize(options: Context7InitOptions = {}) {
   if (isInitialized) return;
   mockLatency = options.mockLatencyMs ?? mockLatency;
   readyPromise = new Promise((resolve) => {
-    // Simulate WASM compile + initialization delay
+    // Simulate WASM compile + initialization delay;
     setTimeout(() => {
       isInitialized = true;
       resolve();
@@ -40,9 +40,9 @@ export function isReady() {
 export async function loadPatterns(prebuilt: Pattern[] = []) {
   await ensureReady();
   // shallow merge by id
-  const map = new Map(patterns.map((p) => [p.id, p]));
+  const map = new Map(patterns.map((p) => [p.id, p]);
   for (const p of prebuilt) map.set(p.id, p);
-  patterns = Array.from(map.values());
+  patterns = Array.from(map.values();
   // simulate IO
   await sleep(mockLatency);
   return patterns;
@@ -59,7 +59,7 @@ export async function runPattern(id: string, input: any = {}) {
   const p = patterns.find((x) => x.id === id);
   await sleep(mockLatency + 10);
   if (!p) return { success: false, error: 'pattern not found', id };
-  // Very small deterministic mock response
+  // Very small deterministic mock response;
   const output = {
     patternId: p.id,
     patternName: p.name,
@@ -73,7 +73,7 @@ export async function runPattern(id: string, input: any = {}) {
 export async function processFile(fileName: string, bytes: Uint8Array) {
   await ensureReady();
   await sleep(mockLatency + 20);
-  // Return a tiny mock text extraction
+  // Return a tiny mock text extraction;
   return {
     text: `Mock extracted text from ${fileName} (${bytes.length} bytes)`,
     mime: inferMime(fileName),
@@ -111,7 +111,7 @@ function inferMime(name: string) {
 }
 
 function sleep(ms: number) {
-  return new Promise((r) => setTimeout(r, ms));
+  return new Promise((r) => setTimeout(r, ms);
 }
 
 async function ensureReady() {

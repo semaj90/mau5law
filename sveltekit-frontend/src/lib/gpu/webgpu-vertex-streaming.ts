@@ -5,6 +5,7 @@
  */
 
 import { ensureBufferCompatibility, safeWriteBuffer } from '$lib/utils/buffer-utils';
+}
 
 export interface VertexData {
   position: [number, number, number];
@@ -29,7 +30,7 @@ export interface StreamingConfig {
   bufferSize: number;
   updateFrequency: number;
   chrRomIntegration: boolean;
-  nesMemoryBanks: number;
+  nesMemoryBanks: number;,
 }
 
 export class WebGPUVertexStreamer {
@@ -63,7 +64,7 @@ export class WebGPUVertexStreamer {
   }
 
   private initializeNESMemoryBanks(): void {
-    // Initialize memory banks like NES CHR-ROM (8KB each)
+    // Initialize memory banks like NES CHR-ROM (8KB each);
     for (let i = 0; i < this.config.nesMemoryBanks; i++) {
       this.nesMemoryBanks[i] = new ArrayBuffer(8192); // 8KB CHR-ROM bank
     }
@@ -102,7 +103,7 @@ export class WebGPUVertexStreamer {
     if (!this.device) throw new Error('Device not initialized');
 
     const shaderModule = this.device.createShaderModule({
-      code: `
+      code: `;
         struct Uniforms {
           mvpMatrix: mat4x4<f32>,
           time: f32,
@@ -127,7 +128,7 @@ export class WebGPUVertexStreamer {
         @group(0) @binding(0)
         var<uniform> uniforms: Uniforms;
 
-        @vertex
+        @vertex;
         fn vs_main(input: VertexInput) -> VertexOutput {
           var output: VertexOutput;
           
@@ -148,7 +149,7 @@ export class WebGPUVertexStreamer {
           return output;
         }
 
-        @fragment
+        @fragment;
         fn fs_main(input: VertexOutput) -> @location(0) vec4<f32> {
           // CHR-ROM style pattern-based rendering
           let patternX = u32(input.textureCoord.x * 8.0) % 8u;
@@ -184,7 +185,7 @@ export class WebGPUVertexStreamer {
           attributes: [
             { format: 'float32x3', offset: 0, shaderLocation: 0 }, // position
             { format: 'float32x4', offset: 12, shaderLocation: 1 }, // color
-            { format: 'float32x2', offset: 28, shaderLocation: 2 }, // textureCoord
+            { format: 'float32x2', offset: 28, shaderLocation: 2 }, // textureCoord)
             { format: 'uint32x4', offset: 36, shaderLocation: 3 }, // caseData
           ]
         }]
@@ -203,19 +204,19 @@ export class WebGPUVertexStreamer {
   private async createBuffers(): Promise<void> {
     if (!this.device) throw new Error('Device not initialized');
 
-    // Create vertex buffer
+    // Create vertex buffer;
     this.vertexBuffer = this.device.createBuffer({
       size: this.config.bufferSize,
       usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
     });
 
-    // Create uniform buffer
+    // Create uniform buffer;
     this.uniformBuffer = this.device.createBuffer({
       size: 80, // mat4x4 (64 bytes) + 2 floats (16 bytes for alignment)
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
-    // Create bind group
+    // Create bind group;
     this.bindGroup = this.device.createBindGroup({
       layout: this.pipeline!.getBindGroupLayout(0),
       entries: [{
@@ -227,7 +228,7 @@ export class WebGPUVertexStreamer {
 
   /**
    * Stream legal document vertices with CHR-ROM caching
-   */
+   */;
   async streamLegalDocuments(documents: Array<): Promise<void> {
     const newVertices: LegalVisualizationVertex[] = [];
     
@@ -273,7 +274,7 @@ export class WebGPUVertexStreamer {
     const pattern = new ArrayBuffer(64); // 8x8 pattern
     const view = new Uint8Array(pattern);
     
-    // Pattern generation based on document type
+    // Pattern generation based on document type;
     const typePatterns = {
       contract: [0x3C, 0x42, 0x81, 0x81, 0x81, 0x81, 0x42, 0x3C],
       evidence: [0xFF, 0x81, 0x81, 0xBD, 0xBD, 0x81, 0x81, 0xFF],
@@ -351,12 +352,12 @@ export class WebGPUVertexStreamer {
     for (let i = 0; i < this.vertices.length; i++) {
       const offset = i * 48;
       
-      // Write float data (36 bytes)
+      // Write float data (36 bytes);
       for (let j = 0; j < 9; j++) {
         bufferView.setFloat32(offset + j * 4, vertexData[i * 12 + j], true);
       }
       
-      // Write uint32 data (16 bytes)
+      // Write uint32 data (16 bytes);
       for (let j = 0; j < 4; j++) {
         bufferView.setUint32(offset + 36 + j * 4, caseData[i * 4 + j], true);
       }
@@ -415,24 +416,24 @@ export class WebGPUVertexStreamer {
 
   /**
    * Get performance metrics for monitoring
-   */
+   */;
   getMetrics(): {
     vertexCount: number;
     chrRomCacheSize: number;
     memoryBanksUsed: number;
-    bufferUtilization: number;
+    bufferUtilization: number;,
   } {
     return {
       vertexCount: this.vertices.length,
       chrRomCacheSize: this.chrRomCache.size,
       memoryBanksUsed: this.nesMemoryBanks.length,
-      bufferUtilization: (this.vertices.length * 48) / this.config.bufferSize
+      bufferUtilization: (this.vertices.length * 48) / this.config.bufferSize,
     };
   }
 
   /**
    * Clear CHR-ROM cache to free memory
-   */
+   */;
   clearCHRCache(): void {
     this.chrRomCache.clear();
     console.log('🧹 Cleared CHR-ROM pattern cache');
@@ -452,7 +453,7 @@ export class WebGPUVertexStreamer {
  * TypeScript-safe vertex buffer factory for legal documents
  */
 export function createLegalVertexBuffer(
-  documents: Array<
+  documents: Array<;
 ): VertexData[] {
   return documents.map((doc, index) => ({
     position: [
@@ -465,9 +466,9 @@ export function createLegalVertexBuffer(
       caseId: doc.metadata.caseId,
       documentType: doc.metadata.documentType,
       riskLevel: doc.metadata.riskLevel,
-      confidence: doc.metadata.confidence
+      confidence: doc.metadata.confidence,
     }
-  }));
+  });
 }
 
 function getRiskColorArray(riskLevel: string): [number, number, number, number] {

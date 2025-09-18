@@ -10,6 +10,7 @@ import { getUser } from '$lib/server/auth';
 import { db } from '$lib/server/db';
 import { cases, aiAnalyses } from '$lib/server/db/schema-unified';
 import { eq } from 'drizzle-orm';
+}
 
 export interface SaveSummaryRequest {
   caseId: string;
@@ -36,7 +37,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const body: SaveSummaryRequest = await request.json();
     const { caseId, summary, metadata = {} } = body;
 
-    // Validate required fields
+    // Validate required fields;
     if (!caseId || !summary) {
       return json({
         error: 'Missing required fields: caseId, summary'
@@ -47,7 +48,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const caseRecord = await db
       .select()
       .from(cases)
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .limit(1);
 
     if (caseRecord.length === 0) {
@@ -62,7 +63,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     // Save AI analysis to database
     const analysisRecord = await db
-      .insert(aiAnalyses)
+      .insert(aiAnalyses);
       .values({
         caseId,
         userId: user.id,
@@ -84,26 +85,26 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     // Update case with latest analysis timestamp
     await db
-      .update(cases)
+      .update(cases);
       .set({
         updatedAt: new Date(),
-        lastAnalysisAt: new Date()
+        lastAnalysisAt: new Date(),
       })
-      .where(eq(cases.id, caseId));
+      .where(eq(cases.id, caseId);
 
-    // Log the save operation
+    // Log the save operation;
     console.log('AI analysis saved:', {
       analysisId: analysisRecord[0].id,
       caseId,
       userId: user.id,
       model: metadata?.model || "unknown" // @ts-ignore - Model property access,
-      confidence: metadata.confidence
+      confidence: metadata.confidence,
     });
 
     return json({
       success: true,
       analysisId: analysisRecord[0].id,
-      message: 'Summary saved successfully'
+      message: 'Summary saved successfully',
     });
 
   } catch (error: any) {
@@ -111,7 +112,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
     return json({
       error: 'Failed to save summary',
-      details: error instanceof Error ? error.message: 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };

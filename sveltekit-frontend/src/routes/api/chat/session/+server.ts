@@ -14,14 +14,14 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Create new chat session
     const [newSession] = await db
-      .insert(chatSessions)
+      .insert(chatSessions);
       .values({
         id: sessionData.id,
         userId: sessionData.userId || null, // Optional user association
         title: sessionData.title || 'New Chat Session',
         context: sessionData.context || {},
         metadata: {
-          ...(sessionData.metadata || {}),
+          ...(sessionData.metadata || {,}),
           model: sessionData?.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal',
           messageCount: 0,
           isActive: true,
@@ -36,11 +36,10 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error('Error creating chat session:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to create chat session',
         details: error instanceof Error ? error.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }
@@ -55,7 +54,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const session = await db
         .select()
         .from(chatSessions)
-        .where(eq(chatSessions.id, sessionId))
+        .where(eq(chatSessions.id, sessionId)
         .limit(1);
 
       if (session.length === 0) {
@@ -68,18 +67,17 @@ export const GET: RequestHandler = async ({ url }) => {
       const sessions = await db
         .select()
         .from(chatSessions)
-        .orderBy(desc(chatSessions.updatedAt))
+        .orderBy(desc(chatSessions.updatedAt)
         .limit(50);
 
       return json({ sessions });
     }
   } catch (error: any) {
     console.error('Error fetching chat sessions:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to fetch chat sessions',
         details: error instanceof Error ? error.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }

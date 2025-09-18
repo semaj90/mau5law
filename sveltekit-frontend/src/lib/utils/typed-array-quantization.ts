@@ -13,7 +13,7 @@ import { type BufferLike, toFloat32Array, BufferTypeGuards } from './buffer-conv
 // 1. Ensure input is always Float32Array
 //
 export function ensureF32(
-  buf: BufferLike | number[]
+  buf: BufferLike | number[];
 ): Float32Array {
   if (buf instanceof Float32Array) return buf;
   if (buf instanceof ArrayBuffer) return new Float32Array(buf);
@@ -24,7 +24,7 @@ export function ensureF32(
 
 //
 // 2. FP16 conversion (half precision)
-//
+//;
 export function toFP16(f32: Float32Array): Uint16Array {
   const out = new Uint16Array(f32.length);
   for (let i = 0; i < f32.length; i++) {
@@ -41,7 +41,7 @@ export function fromFP16(fp16: Uint16Array): Float32Array {
   return out;
 }
 
-// Helpers: FP32 <-> FP16 conversion
+// Helpers: FP32 <-> FP16 conversion;
 function float32ToFloat16(val: number): number {
   const floatView = new Float32Array(1);
   const int32View = new Int32Array(floatView.buffer);
@@ -68,31 +68,31 @@ function float16ToFloat32(h: number): number {
   const f = h & 0x03FF;
 
   if (e === 0) {
-    return (s ? -1 : 1) * Math.pow(2, -14) * (f / Math.pow(2, 10));
+    return (s ? -1 : 1) * Math.pow(2, -14) * (f / Math.pow(2, 10);
   } else if (e === 0x1F) {
     return f ? NaN : (s ? -1 : 1) * Infinity;
   }
 
-  return (s ? -1 : 1) * Math.pow(2, e - 15) * (1 + f / Math.pow(2, 10));
+  return (s ? -1 : 1) * Math.pow(2, e - 15) * (1 + f / Math.pow(2, 10);
 }
 
 //
 // 3. INT8 quantization
-//
+//;
 export interface QuantizationParams {
   scale: number; // maxAbs / 127
   zeroPoint?: number; // for asymmetric quantization
-  method: 'symmetric' | 'asymmetric';
+  method: 'symmetric' | 'asymmetric';,
 }
 
 export function toInt8(
   f32: Float32Array,
-  method: 'symmetric' | 'asymmetric' = 'symmetric'
+  method: 'symmetric' | 'asymmetric' = 'symmetric';
 ): { data: Int8Array; params: QuantizationParams } {
   if (method === 'symmetric') {
     let maxAbs = 0;
     for (let i = 0; i < f32.length; i++) {
-      maxAbs = Math.max(maxAbs, Math.abs(f32[i]));
+      maxAbs = Math.max(maxAbs, Math.abs(f32[i]);
     }
     const scale = maxAbs / 127 || 1e-6;
     const out = new Int8Array(f32.length);
@@ -120,7 +120,7 @@ export function toInt8(
 
 export function fromInt8(
   int8: Int8Array,
-  params: QuantizationParams
+  params: QuantizationParams;
 ): Float32Array {
   const out = new Float32Array(int8.length);
   if (params.method === 'symmetric') {
@@ -140,29 +140,30 @@ export function fromInt8(
 // 4. Advanced quantization modes
 //
 export type QuantizationMode = 'fp32' | 'fp16' | 'int8_symmetric' | 'int8_asymmetric';
+}
 
 export interface QuantizedData {
   data: Float32Array | Uint16Array | Int8Array;
   originalType: QuantizationMode;
   params?: QuantizationParams;
   byteLength: number;
-  compressionRatio: number;
+  compressionRatio: number;,
 }
 
 export function quantize(
   input: BufferLike | number[],
-  mode: QuantizationMode = 'fp32'
+  mode: QuantizationMode = 'fp32';
 ): QuantizedData {
   const f32 = ensureF32(input);
   const originalByteLength = f32.byteLength;
   
   switch (mode) {
-    case 'fp32':
+    case 'fp32':;
       return {
         data: f32,
         originalType: 'fp32',
         byteLength: f32.byteLength,
-        compressionRatio: 1.0
+        compressionRatio: 1.0,
       };
       
     case 'fp16':
@@ -171,7 +172,7 @@ export function quantize(
         data: fp16,
         originalType: 'fp16',
         byteLength: fp16.byteLength,
-        compressionRatio: originalByteLength / fp16.byteLength
+        compressionRatio: originalByteLength / fp16.byteLength,
       };
       
     case 'int8_symmetric':
@@ -181,7 +182,7 @@ export function quantize(
         originalType: 'int8_symmetric',
         params: paramsSym,
         byteLength: int8Sym.byteLength,
-        compressionRatio: originalByteLength / int8Sym.byteLength
+        compressionRatio: originalByteLength / int8Sym.byteLength,
       };
       
     case 'int8_asymmetric':
@@ -191,7 +192,7 @@ export function quantize(
         originalType: 'int8_asymmetric',
         params: paramsAsym,
         byteLength: int8Asym.byteLength,
-        compressionRatio: originalByteLength / int8Asym.byteLength
+        compressionRatio: originalByteLength / int8Asym.byteLength,
       };
       
     default:
@@ -208,7 +209,7 @@ export function dequantize(quantizedData: QuantizedData): Float32Array {
       return fromFP16(quantizedData.data as Uint16Array);
       
     case 'int8_symmetric':
-    case 'int8_asymmetric':
+    case 'int8_asymmetric':;
       if (!quantizedData.params) {
         throw new Error('Quantization parameters required for dequantization');
       }
@@ -221,7 +222,7 @@ export function dequantize(quantizedData: QuantizedData): Float32Array {
 
 //
 // 5. WebGPU-optimized quantization utilities
-//
+//;
 export interface WebGPUQuantizationOptions {
   mode: QuantizationMode;
   alignment?: number; // WebGPU alignment requirements (default: 4)
@@ -244,7 +245,7 @@ export function quantizeForWebGPU(
 
 //
 // 6. Legal AI specific quantization profiles
-//
+//;
 export const LEGAL_AI_QUANTIZATION_PROFILES = {
   // High precision for critical legal analysis
   legal_critical: { mode: 'fp32' as QuantizationMode, alignment: 4 },
@@ -263,7 +264,7 @@ export type LegalAIProfile = keyof typeof LEGAL_AI_QUANTIZATION_PROFILES;
 
 export function quantizeForLegalAI(
   input: BufferLike | number[],
-  profile: LegalAIProfile = 'legal_standard'
+  profile: LegalAIProfile = 'legal_standard';
 ): QuantizedData & { alignedByteLength: number } {
   const options = LEGAL_AI_QUANTIZATION_PROFILES[profile];
   return quantizeForWebGPU(input, { ...options, debugLabel: `legal-ai-${profile}` });
@@ -274,9 +275,9 @@ export function quantizeForLegalAI(
 //
 export function quantizeBatch(
   inputs: (BufferLike | number[])[],
-  mode: QuantizationMode = 'fp32'
+  mode: QuantizationMode = 'fp32';
 ): QuantizedData[] {
-  return inputs.map(input => quantize(input, mode));
+  return inputs.map(input => quantize(input, mode);
 }
 
 export function dequantizeBatch(quantizedBatch: QuantizedData[]): Float32Array[] {
@@ -285,18 +286,18 @@ export function dequantizeBatch(quantizedBatch: QuantizedData[]): Float32Array[]
 
 //
 // 8. Performance monitoring
-//
+//;
 export interface QuantizationStats {
   originalSize: number;
   compressedSize: number;
   compressionRatio: number;
   quantizationTime: number;
-  mode: QuantizationMode;
+  mode: QuantizationMode;,
 }
 
 export function quantizeWithStats(
   input: BufferLike | number[],
-  mode: QuantizationMode = 'fp32'
+  mode: QuantizationMode = 'fp32';
 ): { data: QuantizedData; stats: QuantizationStats } {
   const startTime = performance.now();
   const data = quantize(input, mode);

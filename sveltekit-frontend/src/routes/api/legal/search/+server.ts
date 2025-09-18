@@ -12,8 +12,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     limit: 20,
     threshold: 0.7,
     caseId,
-    userId: locals.user.id
+    userId: locals.user.id,
   });
 
-  return new Response(JSON.stringify(results));
+  return new Response(JSON.stringify(results);
 };

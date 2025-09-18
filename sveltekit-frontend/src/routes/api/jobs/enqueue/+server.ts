@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!jobType) {
       return json({ 
         success: false, 
-        error: 'jobType is required' 
+        error: 'jobType is required' ,
       }, { status: 400 });
     }
 
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!text) {
           return json({ 
             success: false, 
-            error: 'text is required for embedding jobs' 
+            error: 'text is required for embedding jobs' ,
           }, { status: 400 });
         }
 
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
           jobId,
           jobType: 'embedding',
           statusEndpoint: `/api/jobs/stream?jobIds=${jobId}`,
-          estimatedDuration: Math.ceil(text.length * 0.1) + 1000 // rough estimate
+          estimatedDuration: Math.ceil(text.length * 0.1) + 1000 // rough estimate,
         });
       }
 
@@ -54,14 +54,14 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!Array.isArray(texts) || texts.length === 0) {
           return json({ 
             success: false, 
-            error: 'texts array is required for batch embedding jobs' 
+            error: 'texts array is required for batch embedding jobs' ,
           }, { status: 400 });
         }
 
         const batchId = `batch_${Date.now()}_${Math.random().toString(36).slice(2)}`;
         const jobIds: string[] = [];
 
-        // Enqueue all texts as separate jobs with shared batch ID
+        // Enqueue all texts as separate jobs with shared batch ID;
         for (let i = 0; i < texts.length; i++) {
           const text = texts[i];
           const jobId = await enhancedEmbeddingWorker.enqueueJob({
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
               ...meta,
               batchId,
               batchIndex: i,
-              batchSize: texts.length
+              batchSize: texts.length,
             },
             priority
           });
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
         });
       }
 
-      default:
+      default:;
         return json({ 
           success: false, 
           error: `Unknown job type: ${jobType}` 
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Job enqueueing error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };
@@ -115,13 +115,13 @@ export const GET: RequestHandler = async () => {
       success: true,
       queueStatus,
       workerStats,
-      availableJobTypes: [
+      availableJobTypes: [;
         {
           type: 'embedding',
           description: 'Generate embedding for a single text',
           requiredFields: ['text'],
           optionalFields: ['model', 'meta', 'priority']
-        },
+        },);
         {
           type: 'batch-embedding',
           description: 'Generate embeddings for multiple texts',
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async () => {
     console.error('Queue status error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };

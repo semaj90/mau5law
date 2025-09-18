@@ -39,7 +39,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     const history = await db
       .select()
       .from(aiHistory)
-      .where(eq(aiHistory.userId, userId));
+      .where(eq(aiHistory.userId, userId);
     return json({ history });
   } catch (error: any) {
     return json({ error: "Failed to fetch AI history" }, { status: 500 });

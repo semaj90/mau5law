@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { promises as fs } from "fs";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
+import { promises as fs } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -13,7 +13,7 @@ const globalFixes = [
   {
     pattern: /className="\$\{1\}"/g,
     replacement: 'class="placeholder"',
-    description: "Fix invalid className template literals",
+    description: 'Fix invalid className template literals',
   },
 
   // Fix className="classname" (different variations)
@@ -26,59 +26,59 @@ const globalFixes = [
   // Fix any remaining className= to class=
   {
     pattern: /className=/g,
-    replacement: "class=",
-    description: "Fix React className to Svelte class",
+    replacement: 'class=',
+    description: 'Fix React className to Svelte class',
   },
 
   // Fix tabindex={${1}} -> tabindex="0"
   {
     pattern: /tabindex=\{\$\{1\}\}/g,
     replacement: 'tabindex="0"',
-    description: "Fix invalid tabindex template literals",
+    description: 'Fix invalid tabindex template literals',
   },
 
   // Fix role="dialog" without tabindex
   {
     pattern: /(<[^>]*role="dialog"[^>]*)(>)/g,
     replacement: (match, p1, p2) => {
-      if (!p1.includes("tabindex")) {
+      if (!p1.includes('tabindex')) {
         return p1 + ' tabindex="-1"' + p2;
       }
       return match;
     },
-    description: "Add tabindex to dialog elements",
+    description: 'Add tabindex to dialog elements',
   },
 
   // Fix other invalid template literals in attributes
   {
     pattern: /="?\$\{1\}"?/g,
     replacement: '="placeholder"',
-    description: "Fix other invalid template literals",
+    description: 'Fix other invalid template literals',
   },
 ];
 
 // Semantic class name mappings for common elements
 const semanticMappings = {
-  button: "btn",
-  div: "container",
-  span: "text",
-  input: "input-field",
-  form: "form",
-  header: "header",
-  footer: "footer",
-  main: "main-content",
-  nav: "navigation",
-  section: "section",
-  article: "article",
-  aside: "sidebar",
-  ul: "list",
-  li: "list-item",
-  table: "table",
-  thead: "table-header",
-  tbody: "table-body",
-  tr: "table-row",
-  td: "table-cell",
-  th: "table-header-cell",
+  button: 'btn',
+  div: 'container',
+  span: 'text',
+  input: 'input-field',
+  form: 'form',
+  header: 'header',
+  footer: 'footer',
+  main: 'main-content',
+  nav: 'navigation',
+  section: 'section',
+  article: 'article',
+  aside: 'sidebar',
+  ul: 'list',
+  li: 'list-item',
+  table: 'table',
+  thead: 'table-header',
+  tbody: 'table-body',
+  tr: 'table-row',
+  td: 'table-cell',
+  th: 'table-header-cell',
 };
 
 async function findSvelteFiles(dir) {
@@ -91,20 +91,14 @@ async function findSvelteFiles(dir) {
       for (const item of items) {
         const fullPath = join(currentDir, item.name);
 
-        if (
-          item.isDirectory() &&
-          !item.name.startsWith(".") &&
-          item.name !== "node_modules"
-        ) {
+        if (item.isDirectory() && !item.name.startsWith('.') && item.name !== 'node_modules') {
           await traverse(fullPath);
-        } else if (item.isFile() && item.name.endsWith(".svelte")) {
+        } else if (item.isFile() && item.name.endsWith('.svelte')) {
           files.push(fullPath);
         }
       }
     } catch (error) {
-      console.warn(
-        `Warning: Could not read directory ${currentDir}: ${error.message}`,
-      );
+      console.warn(`Warning: Could not read directory ${currentDir}: ${error.message}`);
     }
   }
 
@@ -114,14 +108,14 @@ async function findSvelteFiles(dir) {
 
 async function fixSvelteFile(filePath) {
   try {
-    let content = await fs.readFile(filePath, "utf8");
+    let content = await fs.readFile(filePath, 'utf8');
     const originalContent = content;
     let changes = 0;
 
     // Apply global fixes
     for (const fix of globalFixes) {
       const beforeLength = content.length;
-      if (typeof fix.replacement === "function") {
+      if (typeof fix.replacement === 'function') {
         content = content.replace(fix.pattern, fix.replacement);
       } else {
         content = content.replace(fix.pattern, fix.replacement);
@@ -140,7 +134,7 @@ async function fixSvelteFile(filePath) {
 
       if (tagMatch) {
         const tagName = tagMatch[1].toLowerCase();
-        const semanticClass = semanticMappings[tagName] || "element";
+        const semanticClass = semanticMappings[tagName] || 'element';
         return `class="${semanticClass}"`;
       }
 
@@ -148,7 +142,7 @@ async function fixSvelteFile(filePath) {
     });
 
     if (content !== originalContent) {
-      await fs.writeFile(filePath, content, "utf8");
+      await fs.writeFile(filePath, content, 'utf8');
       return changes;
     }
 
@@ -161,12 +155,12 @@ async function fixSvelteFile(filePath) {
 
 async function fixAllSvelteFiles() {
   const startTime = Date.now();
-  console.log("🔍 Finding all Svelte files...");
+  console.log('🔍 Finding all Svelte files...');
 
-  const svelteFiles = await findSvelteFiles("./src");
+  const svelteFiles = await findSvelteFiles('./src');
   console.log(`📁 Found ${svelteFiles.length} Svelte files`);
 
-  console.log("🔧 Fixing syntax errors...");
+  console.log('🔧 Fixing syntax errors...');
 
   let totalChanges = 0;
   let filesModified = 0;
@@ -194,7 +188,7 @@ async function fixAllSvelteFiles() {
   if (results.length > 0) {
     console.log(`\n📋 Modified files:`);
     results.slice(0, 20).forEach(({ file, changes }) => {
-      const relativePath = file.replace(process.cwd(), ".");
+      const relativePath = file.replace(process.cwd(), '.');
       console.log(`   • ${relativePath}: ${changes} changes`);
     });
 
@@ -213,6 +207,6 @@ fixAllSvelteFiles()
     process.exit(0);
   })
   .catch((error) => {
-    console.error("❌ Mass fix failed:", error);
+    console.error('❌ Mass fix failed:', error);
     process.exit(1);
   });

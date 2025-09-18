@@ -3,14 +3,14 @@
 
 import type { User } from './user.js';
 
-// Base Props
+// Base Props;
 export interface BaseComponentProps {
   class?: string;
   id?: string;
   'data-testid'?: string;
 }
 
-// AI Assistant Chat Props
+// AI Assistant Chat Props;
 export interface AIAssistantChatProps extends BaseComponentProps {
   height?: string;
   showSettings?: boolean;
@@ -20,7 +20,7 @@ export interface AIAssistantChatProps extends BaseComponentProps {
   onMessage?: (message: string) => void;
 }
 
-// Enhanced Auth Form Props
+// Enhanced Auth Form Props;
 export interface EnhancedAuthFormProps extends BaseComponentProps {
   mode?: 'login' | 'register';
   open?: boolean;
@@ -30,7 +30,7 @@ export interface EnhancedAuthFormProps extends BaseComponentProps {
   loading?: boolean;
 }
 
-// Evidence Validation Modal Props
+// Evidence Validation Modal Props;
 export interface EvidenceValidationModalProps extends BaseComponentProps {
   open?: boolean;
   evidenceId?: string;
@@ -38,7 +38,7 @@ export interface EvidenceValidationModalProps extends BaseComponentProps {
   onValidationComplete?: (result: ValidationResult) => void;
 }
 
-// LLM Provider Selector Props
+// LLM Provider Selector Props;
 export interface LLMProviderSelectorProps extends BaseComponentProps {
   selectedProvider?: string;
   onProviderChange?: (provider: string) => void;
@@ -46,7 +46,7 @@ export interface LLMProviderSelectorProps extends BaseComponentProps {
   disabled?: boolean;
 }
 
-// Real Time Legal Search Props
+// Real Time Legal Search Props;
 export interface RealTimeLegalSearchProps extends BaseComponentProps {
   placeholder?: string;
   onSearch?: (query: string) => void;
@@ -55,7 +55,7 @@ export interface RealTimeLegalSearchProps extends BaseComponentProps {
   debounceMs?: number;
 }
 
-// YoRHa Detective Command Center Props
+// YoRHa Detective Command Center Props;
 export interface YoRHaDetectiveCommandCenterProps extends BaseComponentProps {
   cases?: CaseData[];
   onCaseSelect?: (caseId: string) => void;
@@ -63,7 +63,7 @@ export interface YoRHaDetectiveCommandCenterProps extends BaseComponentProps {
   showAnalytics?: boolean;
 }
 
-// AI Analysis Form Props
+// AI Analysis Form Props;
 export interface AIAnalysisFormProps extends BaseComponentProps {
   documentId?: string;
   analysisType?: AnalysisType;
@@ -71,7 +71,7 @@ export interface AIAnalysisFormProps extends BaseComponentProps {
   autoStart?: boolean;
 }
 
-// Button Component Props
+// Button Component Props;
 export interface ButtonProps extends BaseComponentProps {
   variant?: 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link' | 'danger' | 'success' | 'warning' | 'info' | 'default' | 'nier' | 'crimson' | 'gold';
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -83,13 +83,13 @@ export interface ButtonProps extends BaseComponentProps {
   type?: 'button' | 'submit' | 'reset';
 }
 
-// Badge Component Props  
+// Badge Component Props;
 export interface BadgeProps extends BaseComponentProps {
   variant?: 'default' | 'secondary' | 'destructive' | 'outline' | 'success' | 'warning' | 'info';
   size?: 'sm' | 'md' | 'lg';
 }
 
-// Checkbox Component Props
+// Checkbox Component Props;
 export interface CheckboxProps extends BaseComponentProps {
   checked?: boolean;
   disabled?: boolean;
@@ -100,7 +100,7 @@ export interface CheckboxProps extends BaseComponentProps {
   required?: boolean;
 }
 
-// Input Component Props
+// Input Component Props;
 export interface InputProps extends BaseComponentProps {
   type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search';
   value?: string;
@@ -116,7 +116,7 @@ export interface InputProps extends BaseComponentProps {
   onblur?: (event: FocusEvent) => void;
 }
 
-// Select Component Props
+// Select Component Props;
 export interface SelectProps extends BaseComponentProps {
   value?: string;
   onValueChange?: (value: string) => void;
@@ -127,7 +127,7 @@ export interface SelectProps extends BaseComponentProps {
   name?: string;
 }
 
-// Textarea Component Props
+// Textarea Component Props;
 export interface TextareaProps extends BaseComponentProps {
   value?: string;
   placeholder?: string;
@@ -141,13 +141,13 @@ export interface TextareaProps extends BaseComponentProps {
   onchange?: (event: Event) => void;
 }
 
-// Card Component Props
+// Card Component Props;
 export interface CardProps extends BaseComponentProps {
   variant?: 'default' | 'elevated' | 'outlined';
   padding?: 'none' | 'sm' | 'md' | 'lg';
 }
 
-// Modal/Dialog Component Props
+// Modal/Dialog Component Props;
 export interface DialogProps extends BaseComponentProps {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -158,7 +158,7 @@ export interface DialogProps extends BaseComponentProps {
   modal?: boolean;
 }
 
-// Supporting Types
+// Supporting Types;
 export interface ValidationResult {
   isValid: boolean;
   score?: number;
@@ -195,6 +195,7 @@ export interface PerformanceMetrics {
 }
 
 export type LLMStatus = 'online' | 'offline' | 'busy' | 'loading';
+}
 
 export interface SearchResult {
   id: string;
@@ -208,7 +209,7 @@ export interface SearchResult {
 export interface SearchFilters {
   dateRange?: {
     start: Date;
-    end: Date;
+    end: Date;,
   };
   jurisdiction?: string;
   documentType?: string[];
@@ -222,7 +223,7 @@ export interface CaseData {
   priority: 'low' | 'medium' | 'high' | 'critical';
   assignedTo?: string;
   createdAt: Date;
-  lastActivity: Date;
+  lastActivity: Date;,
 }
 
 export interface AnalysisResult {
@@ -243,6 +244,7 @@ export type AnalysisType =
   | 'entity_extraction'
   | 'sentiment'
   | 'risk_assessment';
+}
 
 export interface SelectOption {
   value: string;
@@ -251,13 +253,13 @@ export interface SelectOption {
   description?: string;
 }
 
-// Bits UI Demo Props
+// Bits UI Demo Props;
 export interface BitsDemoProps extends BaseComponentProps {
   caseTypes?: Array<any>;
   useLibrary?: 'bits-ui' | 'melt-ui';
 }
 
-// Document Upload Form Props
+// Document Upload Form Props;
 export interface DocumentUploadFormProps extends BaseComponentProps {
   caseId?: string;
   allowedTypes?: string[];
@@ -267,7 +269,7 @@ export interface DocumentUploadFormProps extends BaseComponentProps {
   onUploadError?: (error: string) => void;
 }
 
-// Smart Document Form Props
+// Smart Document Form Props;
 export interface SmartDocumentFormProps extends BaseComponentProps {
   documentId?: string;
   initialData?: DocumentFormData;
@@ -276,7 +278,7 @@ export interface SmartDocumentFormProps extends BaseComponentProps {
   autoSave?: boolean;
 }
 
-// Ollama Agent Shell Props
+// Ollama Agent Shell Props;
 export interface OllamaAgentShellProps extends BaseComponentProps {
   modelName?: string;
   endpoint?: string;
@@ -287,7 +289,7 @@ export interface OllamaAgentShellProps extends BaseComponentProps {
   onError?: (error: string) => void;
 }
 
-// Supporting Upload Types
+// Supporting Upload Types;
 export interface UploadedFile {
   id: string;
   name: string;
@@ -304,5 +306,5 @@ export interface DocumentFormData {
   content: string;
   tags: string[];
   confidentiality: 'public' | 'internal' | 'confidential' | 'restricted';
-  attachments: UploadedFile[];
+  attachments: UploadedFile[];,
 }

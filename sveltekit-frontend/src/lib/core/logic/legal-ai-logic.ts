@@ -1,7 +1,8 @@
 /**
  * Pure Legal AI Logic Layer
  * No rendering concerns - only business logic
- */
+ */;
+}
 
 export interface LegalDocument {
   id: string;
@@ -25,13 +26,13 @@ export interface AIAnalysis {
   confidence: number;
   entities: Array<any>;
   themes: Array<any>;
-  summary: string;
+  summary: string;,
 }
 
-// Pure logic functions - no UI dependencies
+// Pure logic functions - no UI dependencies;
 export class LegalAILogic {
   static processDocument(document: LegalDocument): AIAnalysis {
-    // Pure AI processing logic
+    // Pure AI processing logic;
     return {
       confidence: Math.random(),
       entities: [],
@@ -41,7 +42,7 @@ export class LegalAILogic {
   }
 
   static categorizeEvidence(evidence: EvidenceItem[]): Record<string, EvidenceItem[]> {
-    // Pure categorization logic
+    // Pure categorization logic;
     return evidence.reduce((acc, item) => {
       const category = (item as { type?: any; confidence?: any }).type;
       if (!acc[category]) acc[category] = [];
@@ -55,7 +56,7 @@ export class LegalAILogic {
     return evidence.reduce((score, item) => score + (item as { type?: any; confidence?: any }).confidence, 0) / evidence.length;
   }
 
-  // Determines if glyph engine is needed
+  // Determines if glyph engine is needed;
   static requiresGlyphEngine(data: any): boolean {
     // Use canvas for:
     if ((data as { documents?: any; textLength?: any; realTimeUpdates?: any; interactiveElements?: any }).documents?.length > 100) return true; // Large document sets

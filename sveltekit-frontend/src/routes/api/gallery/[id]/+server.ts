@@ -11,6 +11,7 @@ import { eq, and } from 'drizzle-orm';
 import { unlink } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
+}
 
 export interface GalleryItemDetail {
   id: string;
@@ -39,10 +40,10 @@ export interface GalleryItemDetail {
     ocrComplete: boolean;
     embeddingComplete: boolean;
     thumbnailComplete: boolean;
-    processed: boolean;
+    processed: boolean;,
   };
   downloadUrl: string;
-  shareUrl: string;
+  shareUrl: string;,
 }
 
 export interface UpdateGalleryItemRequest {
@@ -54,7 +55,7 @@ export interface UpdateGalleryItemRequest {
   metadata?: Record<string, any>;
 }
 
-// GET - Retrieve specific gallery item
+// GET - Retrieve specific gallery item;
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {
     const itemId = params.id;
@@ -64,7 +65,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     }
 
     // Query evidence table first (most common case)
-    const evidenceQuery = await db
+    const evidenceQuery = await db;
       .select({
         id: evidence.id,
         title: evidence.title,
@@ -83,11 +84,11 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         ocrText: evidence.ocrText,
         contentText: evidence.contentText,
         embedding: evidence.embedding,
-        caseTitle: cases.title
+        caseTitle: cases.title,
       })
       .from(evidence)
-      .leftJoin(cases, eq(evidence.caseId, cases.id))
-      .where(eq(evidence.id, itemId))
+      .leftJoin(cases, eq(evidence.caseId, cases.id)
+      .where(eq(evidence.id, itemId)
       .limit(1)
       .execute();
 
@@ -105,12 +106,12 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       itemType = 'document';
     }
     
-    // Check if it's AI-generated based on metadata
+    // Check if it's AI-generated based on metadata;
     if ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).metadata && typeof (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).metadata === 'object' && 'aiGenerated' in (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).metadata) {
       itemType = 'ai-generated';
     }
 
-    // Build response
+    // Build response;
     const response: GalleryItemDetail = {
       id: (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).id,
       type: itemType,
@@ -163,7 +164,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   }
 };
 
-// PUT - Update gallery item
+// PUT - Update gallery item;
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
     const itemId = params.id;
@@ -173,12 +174,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       throw error(400, 'Item ID is required');
     }
 
-    // Validate case ID if provided
+    // Validate case ID if provided;
     if (updateData.caseId) {
       const caseExists = await db
         .select({ id: cases.id })
         .from(cases)
-        .where(eq(cases.id, updateData.caseId))
+        .where(eq(cases.id, updateData.caseId)
         .limit(1)
         .execute();
 
@@ -215,7 +216,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       const currentItem = await db
         .select({ metadata: evidence.metadata })
         .from(evidence)
-        .where(eq(evidence.id, itemId))
+        .where(eq(evidence.id, itemId)
         .limit(1)
         .execute();
       
@@ -231,7 +232,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const result = await db
       .update(evidence)
       .set(updateFields)
-      .where(eq(evidence.id, itemId))
+      .where(eq(evidence.id, itemId)
       .execute();
 
     if ((result as { rowCount?: any }).rowCount === 0) {
@@ -242,14 +243,14 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const updatedItem = await db
       .select()
       .from(evidence)
-      .where(eq(evidence.id, itemId))
+      .where(eq(evidence.id, itemId)
       .limit(1)
       .execute();
 
     return json({
       success: true,
       item: updatedItem[0],
-      updated: Object.keys(updateFields)
+      updated: Object.keys(updateFields),
     });
 
   } catch (err) {
@@ -263,7 +264,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
   }
 };
 
-// DELETE - Remove gallery item
+// DELETE - Remove gallery item;
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
     const itemId = params.id;
@@ -273,14 +274,14 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     }
 
     // Get item details before deletion
-    const itemToDelete = await db
+    const itemToDelete = await db;
       .select({
         id: evidence.id,
         filePath: evidence.filePath,
-        fileName: evidence.fileName
+        fileName: evidence.fileName,
       })
       .from(evidence)
-      .where(eq(evidence.id, itemId))
+      .where(eq(evidence.id, itemId)
       .limit(1)
       .execute();
 
@@ -293,14 +294,14 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Delete from database
     const deleteResult = await db
       .delete(evidence)
-      .where(eq(evidence.id, itemId))
+      .where(eq(evidence.id, itemId)
       .execute();
 
     if (deleteResult.rowCount === 0) {
       throw error(404, 'Gallery item not found');
     }
 
-    // Delete physical file
+    // Delete physical file;
     if ((item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath) {
       try {
         const fullPath = path.join(process.cwd(), 'static', (item as { fileType?: any; metadata?: any; id?: any; title?: any; fileName?: any; description?: any; originalFileName?: any; fileSize?: any; filePath?: any; uploadedAt?: any; processedAt?: any; caseId?: any; caseTitle?: any; tags?: any; isPublic?: any; ocrText?: any; contentText?: any; embedding?: any }).filePath);
@@ -342,11 +343,11 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
   }
 };
 
-// Helper functions
+// Helper functions;
 function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
   if (!filePath || !fileType) return undefined;
   
-  // For images, generate thumbnail path
+  // For images, generate thumbnail path;
   if (fileType.startsWith('image/')) {
     const pathParts = filePath.split('/');
     const fileName = pathParts.pop();
@@ -354,7 +355,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
     return `${dir}/thumb_${fileName}`;
   }
   
-  // For other file types, return type-specific icons
+  // For other file types, return type-specific icons;
   if (fileType.includes('pdf')) {
     return '/icons/pdf-thumbnail.svg';
   }

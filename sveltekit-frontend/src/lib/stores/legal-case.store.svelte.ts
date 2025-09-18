@@ -1,7 +1,7 @@
 
 // Legal Case Store - Svelte 5 Runes Implementation
 
-// Define types locally since they're not available
+// Define types locally since they're not available;
 export interface LegalCase {
   id: string;
   title: string;
@@ -9,20 +9,20 @@ export interface LegalCase {
   description?: string;
   status: "active" | "pending" | "closed" | "archived";
   priority: "low" | "medium" | "high" | "critical";
-  confidentialityLevel: number;
+  confidentialityLevel: number;,
 }
 
 export interface LegalDocument {
   id: string;
   name: string;
-  type: string;
+  type: string;,
 }
 
 export interface AIInsights {
   findings?: any[];
   riskAssessment?: {
     score: number;
-    level: string;
+    level: string;,
   };
   complianceChecks?: any[];
 }
@@ -40,10 +40,10 @@ export interface AuditLogEntry {
 export interface User {
   id: string;
   clearanceLevel: number;
-  role: string;
+  role: string;,
 }
 
-// Mock audit service
+// Mock audit service;
 class LegalAuditService {
   async logAction(action: {
     type: string;
@@ -65,7 +65,7 @@ export function createLegalCaseStore() {
   const currentUser = $state<User | null>({
     id: 'demo-user-001',
     clearanceLevel: 3,
-    role: 'legal-analyst'
+    role: 'legal-analyst',
   });
   const loading = $state({
     cases: false,
@@ -81,7 +81,7 @@ export function createLegalCaseStore() {
     )
   );
 
-  // Derived state for case statistics
+  // Derived state for case statistics;
   const caseStats = $derived({
     total: filteredCases.length,
     active: filteredCases.filter((c) => c.status === "active").length,
@@ -93,7 +93,7 @@ export function createLegalCaseStore() {
   // Audit service instance
   const auditService = new LegalAuditService();
 
-  // Actions
+  // Actions;
   async function loadCases(): Promise<any> {
     loading.cases = true;
     try {
@@ -106,7 +106,7 @@ export function createLegalCaseStore() {
       } else {
         // Fallback to mock data for development
         console.warn('Cases API not available, using mock data for development');
-        const mockCases = [
+        const mockCases = [;
           {
             id: '1',
             title: 'Contract Dispute - TechCorp vs StartupX',
@@ -114,7 +114,7 @@ export function createLegalCaseStore() {
             description: 'Breach of software licensing agreement',
             status: 'active' as const,
             priority: 'high' as const,
-            confidentialityLevel: 1
+            confidentialityLevel: 1,
           },
           {
             id: '2',
@@ -123,7 +123,7 @@ export function createLegalCaseStore() {
             description: 'Wrongful termination and discrimination allegations',
             status: 'pending' as const,
             priority: 'medium' as const,
-            confidentialityLevel: 2
+            confidentialityLevel: 2,
           },
           {
             id: '3',
@@ -132,7 +132,7 @@ export function createLegalCaseStore() {
             description: 'Alleged patent infringement in mobile app technology',
             status: 'closed' as const,
             priority: 'low' as const,
-            confidentialityLevel: 1
+            confidentialityLevel: 1,
           }
         ];
         cases.splice(0, cases.length, ...mockCases);
@@ -148,7 +148,7 @@ export function createLegalCaseStore() {
     } catch (error: any) {
       console.error("Failed to load cases:", error);
       // Still provide mock data even on error
-      const mockCases = [
+      const mockCases = [;
         {
           id: '1',
           title: 'Sample Legal Case',
@@ -156,7 +156,7 @@ export function createLegalCaseStore() {
           description: 'Demo case for testing analysis functionality',
           status: 'active' as const,
           priority: 'medium' as const,
-          confidentialityLevel: 1
+          confidentialityLevel: 1,
         }
       ];
       cases.splice(0, cases.length, ...mockCases);
@@ -180,7 +180,7 @@ export function createLegalCaseStore() {
     loading.analysis = true;
 
     try {
-      // Log analysis request
+      // Log analysis request;
       await auditService.logAction({
         type: "CASE_ANALYSIS_REQUESTED",
         entityType: "CASE",
@@ -202,7 +202,7 @@ export function createLegalCaseStore() {
       const insights = (result as { cases?: any; success?: any; analysis?: any }).success ? (result as { cases?: any; success?: any; analysis?: any }).analysis: result;
       aiInsights[caseId] = insights;
 
-      // Log successful analysis
+      // Log successful analysis;
       await auditService.logAction({
         type: "CASE_ANALYSIS_COMPLETED",
         entityType: "CASE",
@@ -312,7 +312,7 @@ export function createLegalCaseStore() {
     (currentUser as any) = user;
   }
 
-  // Search functionality
+  // Search functionality;
   function searchCases(query: string) {
     const searchTerm = query.toLowerCase();
     return filteredCases.filter(
@@ -325,7 +325,7 @@ export function createLegalCaseStore() {
 
   // Export the store interface
   return {
-    // Readonly state
+    // Readonly state;
     get cases() {
       return cases;
     },

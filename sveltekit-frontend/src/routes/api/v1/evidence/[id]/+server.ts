@@ -15,10 +15,10 @@ const UUIDSchema = z.string().uuid('Invalid evidence ID format');
 /*
  * GET /api/v1/evidence/[id]
  * Get a specific evidence by ID
- */
+ */;
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
     }
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 
     if (err instanceof z.ZodError) {
       return json(
-        { message: 'Invalid evidence ID', code: 'INVALID_ID', details: err.errors },
+        { message: 'Invalid evidence ID', code: 'INVALID_ID', details: err.errors },)
         { status: 400 }
       );
     }
@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       return json({ message: 'Evidence not found', code: 'EVIDENCE_NOT_FOUND' }, { status: 404 });
     }
     return json(
-      { message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err?.message },
+      { message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err?.message },)
       { status: 500 }
     );
   }
@@ -62,10 +62,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 /*
  * PUT /api/v1/evidence/[id]
  * Update a specific evidence
- */
+ */;
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
     }
@@ -102,7 +102,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
     if (err instanceof z.ZodError) {
       return json(
-        { message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors },
+        { message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors },)
         { status: 400 }
       );
     }
@@ -110,7 +110,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
       return json({ message: 'Evidence not found', code: 'EVIDENCE_NOT_FOUND' }, { status: 404 });
     }
     return json(
-      { message: 'Failed to update evidence', code: 'UPDATE_FAILED', details: err?.message },
+      { message: 'Failed to update evidence', code: 'UPDATE_FAILED', details: err?.message },)
       { status: 500 }
     );
   }
@@ -119,10 +119,10 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 /*
  * DELETE /api/v1/evidence/[id]
  * Delete a specific evidence
- */
+ */;
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
     }
@@ -150,7 +150,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 
     if (err instanceof z.ZodError) {
       return json(
-        { message: 'Invalid evidence ID', code: 'INVALID_ID', details: err.errors },
+        { message: 'Invalid evidence ID', code: 'INVALID_ID', details: err.errors },)
         { status: 400 }
       );
     }
@@ -158,7 +158,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       return json({ message: 'Evidence not found', code: 'EVIDENCE_NOT_FOUND' }, { status: 404 });
     }
     return json(
-      { message: 'Failed to delete evidence', code: 'DELETE_FAILED', details: err?.message },
+      { message: 'Failed to delete evidence', code: 'DELETE_FAILED', details: err?.message },)
       { status: 500 }
     );
   }

@@ -6,7 +6,7 @@
 // XState service type (fallback if package not available)
 export type XStateService = any;
 
-// Core file upload state types
+// Core file upload state types;
 export interface FileUploadState {
   status:
     | 'idle'
@@ -42,7 +42,7 @@ export interface ProcessingStage {
   details?: string;
 }
 
-// GPU acceleration configuration
+// GPU acceleration configuration;
 export interface GPUUploadConfig {
   enabled: boolean;
   deviceId?: number;
@@ -54,7 +54,7 @@ export interface GPUUploadConfig {
   cudaSupport?: boolean;
 }
 
-// RAG Pipeline Integration
+// RAG Pipeline Integration;
 export interface RAGPipelineConfig {
   enabled: boolean;
   extractText: boolean;
@@ -67,7 +67,7 @@ export interface RAGPipelineConfig {
   vectorStorage?: 'qdrant' | 'pgvector' | 'neo4j';
 }
 
-// OCR and Content Extraction
+// OCR and Content Extraction;
 export interface OCRConfig {
   enabled: boolean;
   engines: ('tesseract' | 'langextract' | 'google-vision' | 'azure-ocr')[];
@@ -78,7 +78,7 @@ export interface OCRConfig {
   deskew?: boolean;
 }
 
-// YOLO Object Detection Configuration
+// YOLO Object Detection Configuration;
 export interface YOLOConfig {
   enabled: boolean;
   model?: 'yolov8' | 'yolov9' | 'yolo-legal-docs';
@@ -89,7 +89,7 @@ export interface YOLOConfig {
   detectTextRegions?: boolean;
 }
 
-// Enhanced processing pipeline
+// Enhanced processing pipeline;
 export interface ProcessingPipeline {
   gpu: GPUUploadConfig;
   rag: RAGPipelineConfig;
@@ -108,7 +108,7 @@ export interface ProcessingStep {
   config?: Record<string, any>;
 }
 
-// File metadata and analysis results
+// File metadata and analysis results;
 export interface FileMetadata {
   mimeType: string;
   encoding?: string;
@@ -135,7 +135,7 @@ export interface UploadProcessingResult {
   ocrResults?: OCRResult[];
   legalAnalysis?: UploadAnalysisResult;
   processingTime: number;
-  processingSteps: CompletedStep[];
+  processingSteps: CompletedStep[];,
 }
 
 export interface DetectedObject {
@@ -152,7 +152,7 @@ export interface OCRResult {
   text: string;
   confidence: number;
   words: OCRWord[];
-  processingTime: number;
+  processingTime: number;,
 }
 
 export interface OCRWord {
@@ -168,13 +168,13 @@ export interface UploadAnalysisResult {
   obligations: string[];
   risks: string[];
   compliance: ComplianceCheck[];
-  summary: string;
+  summary: string;,
 }
 
 export interface ComplianceCheck {
   rule: string;
   status: 'compliant' | 'non-compliant' | 'unclear';
-  details: string;
+  details: string;,
 }
 
 export interface CompletedStep {
@@ -185,7 +185,7 @@ export interface CompletedStep {
   result?: unknown;
 }
 
-// XState Machine Integration for Complex Upload Workflows
+// XState Machine Integration for Complex Upload Workflows;
 export interface XStateUploadMachine {
   currentState: string;
   context: UploadMachineContext;
@@ -218,7 +218,7 @@ export type UploadMachineEvent =
   | { type: 'CANCEL'; fileId?: string }
   | { type: 'RESET' };
 
-// Cache Strategy for Upload Components
+// Cache Strategy for Upload Components;
 export interface UploadCacheConfig {
   strategy: 'lru' | 'redis' | 'memory' | 'hybrid';
   maxSize?: number;
@@ -227,7 +227,7 @@ export interface UploadCacheConfig {
   compression?: boolean;
 }
 
-// Component Props Interface
+// Component Props Interface;
 export interface EnhancedFileUploadProps {
   caseId?: string;
   multiple?: boolean;
@@ -252,11 +252,11 @@ export interface EnhancedFileUploadProps {
 export type UploadStatus = FileUploadState['status'];
 export type ProcessingStageType = ProcessingStage['current'];
 
-// Event emitter types for upload events
+// Event emitter types for upload events;
 export interface UploadEventDetail<T = any> {
   fileId?: string;
   data: T;
-  timestamp: Date;
+  timestamp: Date;,
 }
 
 export type UploadEventMap = {

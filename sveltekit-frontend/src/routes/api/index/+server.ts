@@ -2,12 +2,12 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { cache } from '$lib/server/cache/redis';
 
-// Small ingest endpoint: text -> cache key -> queued to backends (stub)
+// Small ingest endpoint: text -> cache key -> queued to backends (stub);
 export const POST: RequestHandler = async ({ request }) => {
   const body = await request.json();
   const { text, model = 'nomic-embed-text', tags = [], id, embedding } = body || {};
 
-  // If embedding is provided, index immediately (fan-out best effort)
+  // If embedding is provided, index immediately (fan-out best effort);
   if (id && Array.isArray(embedding) && embedding.length) {
     try {
       const { indexPgVector } = await import('$lib/server/indexers/pgvector-indexer');
@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const [pg, qd, nj] = await Promise.all([
         indexPgVector({ id, text: text || '', embedding }).catch((e) => ({ ok: false, error: String(e) })),
         indexQdrant({ id, text: text || '', embedding }).catch((e) => ({ ok: false, error: String(e) })),
-        indexNeo4j({ id, text: text || '', embedding }).catch((e) => ({ ok: false, error: String(e) }))
+        indexNeo4j({ id, text: text || '', embedding }).catch((e) => ({ ok: false, error: String(e) })
       ]);
       return json({ ok: true, id, text, status: { pg, qdrant: qd, neo4j: nj } });
     } catch (e) {

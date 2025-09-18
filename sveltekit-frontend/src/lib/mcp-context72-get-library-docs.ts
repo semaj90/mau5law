@@ -4,6 +4,7 @@ import type { RequestHandler } from "@sveltejs/kit";
 // Enhanced for Svelte 5 + Bits UI v2 integration
 // Ensures #mcp_context72_get-library-docs is available in the codebase
 
+}
 
 export interface LibraryDocsRequest {
   context7CompatibleLibraryID: string;
@@ -18,12 +19,12 @@ export interface LibraryDocsResponse {
     library: string;
     version?: string;
     topic?: string;
-    tokenCount: number;
+    tokenCount: number;,
   };
   snippets?: {
     title: string;
     code: string;
-    description: string;
+    description: string;,
   }[];
 }
 
@@ -31,9 +32,9 @@ export async function mcpContext72GetLibraryDocs(
   libraryId: string,
   topic?: string,
   options: Partial<LibraryDocsRequest> = {},
-  fetchFn: typeof fetch = fetch
+  fetchFn: typeof fetch = fetch;
 ): Promise<LibraryDocsResponse> {
-  // Enhanced MCP context7.2 get-library-docs endpoint
+  // Enhanced MCP context7.2 get-library-docs endpoint;
   const response = await fetchFn('/api/mcp/context72/get-library-docs', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -47,7 +48,7 @@ export async function mcpContext72GetLibraryDocs(
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
+    const error = await response.json().catch(() => ({});
     throw new Error(
       `Failed to get library docs from Context7.2: ${error.message || response.statusText}`
     );
@@ -56,11 +57,11 @@ export async function mcpContext72GetLibraryDocs(
   return response.json();
 }
 
-// Specialized helpers for common libraries
+// Specialized helpers for common libraries;
 export async function getSvelte5Docs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
     '/svelte/svelte',
-    topic,
+    topic,);
     {
       format: 'typescript',
       tokens: 15000,
@@ -72,7 +73,7 @@ export async function getSvelte5Docs(topic?: string, fetchFn?: typeof fetch): Pr
 export async function getBitsUIv2Docs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
     '/bits-ui/bits-ui',
-    topic,
+    topic,);
     {
       format: 'typescript',
       tokens: 12000,
@@ -84,7 +85,7 @@ export async function getBitsUIv2Docs(topic?: string, fetchFn?: typeof fetch): P
 export async function getMeltUIDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
     '/melt-ui/melt-ui',
-    topic,
+    topic,);
     {
       format: 'typescript',
       tokens: 10000,
@@ -96,7 +97,7 @@ export async function getMeltUIDocs(topic?: string, fetchFn?: typeof fetch): Pro
 export async function getXStateDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs(
     '/xstate/xstate',
-    topic,
+    topic,);
     {
       format: 'typescript',
       tokens: 8000,
@@ -109,33 +110,33 @@ export async function getXStateDocs(topic?: string, fetchFn?: typeof fetch): Pro
 /**
  * WebGPU documentation helper (TypeScript snippets preferred).
  * Useful for WebGPU / WebAssembly integration guidance.
- */
+ */;
 export async function getWebGPUDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/webgpu/webgpu', topic, {
     format: 'typescript',
-    tokens: 10000
+    tokens: 10000,
   }, fetchFn);
 }
 
 /**
  * WebAssembly (wasm) documentation helper.
  * Returns practical guides and TS/markdown examples for wasm + JS interop.
- */
+ */;
 export async function getWebAssemblyDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/webassembly/wasm', topic, {
     format: 'markdown',
-    tokens: 8000
+    tokens: 8000,
   }, fetchFn);
 }
 
 /**
  * SvelteKit v2 documentation helper.
  * Targets SvelteKit-specific APIs, routing and adapter guidance.
- */
+ */;
 export async function getSvelteKitV2Docs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/sveltejs/kit', topic, {
     format: 'typescript',
-    tokens: 12000
+    tokens: 12000,
   }, fetchFn);
 }
 

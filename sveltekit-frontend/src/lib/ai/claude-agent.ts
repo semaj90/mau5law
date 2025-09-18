@@ -1,4 +1,4 @@
-// Minimal Claude agent stub to unblock orchestration endpoint
+// Minimal Claude agent stub to unblock orchestration endpoint;
 export interface ClaudeAgentExecutionInput {
   prompt: string;
   context?: any;
@@ -26,7 +26,7 @@ class ClaudeAgentStub {
         length: prompt.length,
         includeContext7: !!options?.includeContext7,
         autoFix: !!options?.autoFix,
-        contextKeys: context ? Object.keys(context) : []
+        contextKeys: context ? Object.keys(context) : [],
       }
     };
   }

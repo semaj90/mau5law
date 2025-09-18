@@ -4,7 +4,7 @@ import { createActor, createMachine, assign, fromPromise } from 'xstate';
 import { mockServices, perf } from '../../services/__tests__/setup.js';
 import type { AuthMachineState, LegalAIContext, LegalAIEvent } from '../../services/types.js';
 
-// XState v5 compatible auth machine for testing Phase 5-7 performance optimization
+// XState v5 compatible auth machine for testing Phase 5-7 performance optimization;
 const authMachine = createMachine({
   id: 'authMachine',
   initial: 'idle',
@@ -13,12 +13,12 @@ const authMachine = createMachine({
     authToken: undefined,
     error: undefined,
     retryCount: 0,
-    performanceMetrics: undefined
+    performanceMetrics: undefined,
   },
   states: {
     idle: {
       on: {
-        LOGIN: 'authenticating'
+        LOGIN: 'authenticating',
       }
     },
     authenticating: {
@@ -59,10 +59,10 @@ const authMachine = createMachine({
     authenticated: {
       on: {
         LOGOUT: 'idle',
-        TOKEN_EXPIRED: 'refreshingToken'
+        TOKEN_EXPIRED: 'refreshingToken',
       },
       after: {
-        3600000: 'refreshingToken' // Auto-refresh after 1 hour
+        3600000: 'refreshingToken' // Auto-refresh after 1 hour,
       }
     },
     refreshingToken: {
@@ -92,7 +92,7 @@ const authMachine = createMachine({
                 : String(err || 'Unknown error');
             },
             user: undefined,
-            authToken: undefined
+            authToken: undefined,
           })
         }
       }
@@ -126,14 +126,14 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       expect((authActor.getSnapshot() as any).value).toBe('idle');
       expect((authActor.getSnapshot() as any).context.user).toBeUndefined();
 
-      // Send login event
+      // Send login event;
       authActor.send({
         type: 'LOGIN',
         credentials: { email: 'test@example.com', password: 'password' }
       });
 
       // Wait for async completion
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       const finalSnapshot = authActor.getSnapshot();
 
@@ -144,10 +144,10 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       expect(finalSnapshot.context.error).toBeUndefined();
       expect(finalSnapshot.context.performanceMetrics).toBeDefined();
 
-      // Assert service was called correctly
+      // Assert service was called correctly;
       expect(mockServices.validateCredentials).toHaveBeenCalledWith({
         email: 'test@example.com',
-        password: 'password'
+        password: 'password',
       });
 
       const duration = endMeasure();
@@ -171,14 +171,14 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
           credentials: { email: `test${i}@example.com`, password: 'password' }
         });
 
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100);
 
         const duration = performance.now() - startTime;
         measurements.push(duration);
 
         // Reset for next iteration
         authActor.send({ type: 'LOGOUT' });
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise(resolve => setTimeout(resolve, 50);
       }
 
       const averageTime = measurements.reduce((a, b) => a + b, 0) / measurements.length;
@@ -206,32 +206,32 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       const authActor = createActor(authMachine);
       authActor.start();
 
-      // First attempt - should fail
+      // First attempt - should fail;
       authActor.send({
         type: 'LOGIN',
         credentials: { email: 'test@example.com', password: 'wrong' }
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       expect((authActor.getSnapshot() as any).value).toBe('error');
       expect(authActor.getSnapshot().context.retryCount).toBe(1);
 
-      // Second attempt - should fail
+      // Second attempt - should fail;
       authActor.send({
         type: 'LOGIN',
         credentials: { email: 'test@example.com', password: 'wrong' }
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       expect((authActor.getSnapshot() as any).value).toBe('error');
       expect(authActor.getSnapshot().context.retryCount).toBe(2);
 
-      // Third attempt - should succeed
+      // Third attempt - should succeed;
       authActor.send({
         type: 'LOGIN',
         credentials: { email: 'test@example.com', password: 'correct' }
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       expect((authActor.getSnapshot() as any).value).toBe('authenticated');
       expect(authActor.getSnapshot().context.authToken).toBe('success-token');
@@ -245,18 +245,18 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       const authActor = createActor(authMachine);
       authActor.start();
 
-      // Initial login
+      // Initial login;
       authActor.send({
         type: 'LOGIN',
         credentials: { email: 'test@example.com', password: 'password' }
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       expect((authActor.getSnapshot() as any).value).toBe('authenticated');
 
       // Simulate token expiration (important for gRPC streams)
       authActor.send({ type: 'TOKEN_EXPIRED' });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       const finalSnapshot = authActor.getSnapshot();
       expect(finalSnapshot.value).toBe('authenticated');
@@ -274,16 +274,16 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
       const authActor = createActor(authMachine);
       authActor.start();
 
-      // Login first
+      // Login first;
       authActor.send({
         type: 'LOGIN',
         credentials: { email: 'test@example.com', password: 'password' }
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       // Simulate token refresh failure
       authActor.send({ type: 'TOKEN_EXPIRED' });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       const finalSnapshot = authActor.getSnapshot();
       expect(finalSnapshot.value).toBe('idle');
@@ -304,16 +304,16 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
 
       authActor.subscribe((snapshot) => {
         if (snapshot.value === 'authenticated' && snapshot.context.user) {
-          // Simulate coordination with other legal AI machines
+          // Simulate coordination with other legal AI machines;
           sessionMachineHandler('USER_AUTHENTICATED', {
             userId: snapshot.context.user.userId || snapshot.context.user.id,
             token: snapshot.context.authToken,
-            performanceMetrics: snapshot.context.performanceMetrics
+            performanceMetrics: snapshot.context.performanceMetrics,
           });
 
           evidenceCanvasHandler('ENABLE_COLLABORATION', {
             userId: snapshot.context.user.userId || snapshot.context.user.id,
-            role: snapshot.context.user.role
+            role: snapshot.context.user.role,
           });
         }
       });
@@ -325,27 +325,27 @@ describe('Authentication Machine - Phase 5-7 Performance Testing', () => {
         credentials: { email: 'test@example.com', password: 'password' }
       });
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       expect(sessionMachineHandler).toHaveBeenCalledWith('USER_AUTHENTICATED',
         expect.objectContaining({
           userId: 'test-123',
           token: expect.any(String),
-          performanceMetrics: expect.any(Object)
+          performanceMetrics: expect.any(Object),
         })
       );
 
       expect(evidenceCanvasHandler).toHaveBeenCalledWith('ENABLE_COLLABORATION',
         expect.objectContaining({
           userId: 'test-123',
-          role: 'attorney'
+          role: 'attorney',
         })
       );      authActor.stop();
     });
   });
 });
 
-// Performance benchmarking for Phase 5-7 gRPC optimization
+// Performance benchmarking for Phase 5-7 gRPC optimization;
 describe('Phase 5-7 Performance Benchmarks', () => {
   it('should establish HTTP baseline for gRPC comparison', () => {
     const stats = perf.getStats('xstate-v5-login-success');

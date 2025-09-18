@@ -1,4 +1,4 @@
-// Chat types for Legal AI platform
+// Chat types for Legal AI platform;
 export interface ChatMessage {
   id: string;
   content: string;
@@ -37,7 +37,7 @@ export interface ChatState {
   messages: ChatMessage[];
   currentSession: ChatSession | null;
   isLoading: boolean;
-  error: string | null;
+  error: string | null;,
 }
 
 export interface OllamaResponse {

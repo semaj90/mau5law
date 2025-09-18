@@ -10,6 +10,18 @@ import sys
 import time
 from pathlib import Path
 
+# Python version guard: enforce stable 3.11.x unless override is set
+REQUIRED_MAJOR = 3
+REQUIRED_MINOR = 11
+if not os.environ.get("ALLOW_PY312_EXPERIMENTAL"):
+    if (sys.version_info.major, sys.version_info.minor) != (REQUIRED_MAJOR, REQUIRED_MINOR):
+        print(f"ERROR Unsupported Python version: {sys.version.split()[0]} (expected {REQUIRED_MAJOR}.{REQUIRED_MINOR}.x)")
+        print("This build script is pinned to Python 3.11 for TensorRT-LLM stability (see PYTHON_VERSION_POLICY.md).")
+        print("Set ALLOW_PY312_EXPERIMENTAL=1 to bypass (not recommended).")
+        sys.exit(1)
+else:
+    print("WARNING Experimental Python version override active; build may be unstable.")
+
 class RTX3060TiTensorRTLLMBuilder:
     def __init__(self):
         self.device = 0

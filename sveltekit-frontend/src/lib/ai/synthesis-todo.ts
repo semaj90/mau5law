@@ -1,6 +1,6 @@
 import { synthesizeMultiLLMOutput } from './custom-reranker.js';
 
-// TODOs and stub mocks for multi-LLM synthesis pipeline integration
+// TODOs and stub mocks for multi-LLM synthesis pipeline integration;
 import type {
   AIModelOutput,
   UserHistory,
@@ -16,9 +16,9 @@ import {
   mockSynthesisOptions,
 } from './types.js';
 
-// Example usage with stub mocks
+// Example usage with stub mocks;
 export async function runSynthesisExample(): Promise<any> {
-  // TODO: Replace mocks with real data from LLMs, user history, uploads, MCP servers
+  // TODO: Replace mocks with real data from LLMs, user history, uploads, MCP servers;
   const result = await synthesizeMultiLLMOutput({
     llmOutputs: [mockAIModelOutput],
     userHistory: mockUserHistory,
@@ -31,7 +31,7 @@ export async function runSynthesisExample(): Promise<any> {
   return result;
 }
 
-// Stub/mock pipeline functions for development
+// Stub/mock pipeline functions for development;
 export async function fetchLLMOutputs(): Promise<AIModelOutput[]> {
   // TODO: Integrate with Ollama, vLLM, etc.
   return [mockAIModelOutput];
@@ -133,7 +133,7 @@ export async function runFullSynthesisPipeline(): Promise<any> {
 // 5. Agent Orchestration: Use audit results to trigger agent actions (CrewAI, Autogen)
 //    - Feed TODOs and errors to agents for automated code review, fixes, and analysis
 
-// Example stub for phase 10 semantic audit integration
+// Example stub for phase 10 semantic audit integration;
 export async function phase10SemanticAudit(query: string): Promise<any> {
   // TODO: Wire up to real semantic_search utility or API
   // const results = await semantic_search(query);

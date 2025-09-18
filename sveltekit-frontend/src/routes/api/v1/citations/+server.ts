@@ -9,14 +9,14 @@
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
 
-// Citation schemas
+// Citation schemas;
 const CitationsQuerySchema = z.object({
   caseId: z.string().uuid('Invalid case ID'),
   citationType: z.enum(['case_law', 'statute', 'regulation', 'secondary_authority', 'legal_brief', 'court_document', 'expert_report', 'news_article', 'academic_paper', 'other']).optional(),
   verified: z.coerce.boolean().optional(),
   minRelevance: z.coerce.number().min(1).max(10).default(1),
   page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(20)
+  limit: z.coerce.number().min(1).max(100).default(20),
 });
 
 const CreateCitationSchema = z.object({
@@ -36,18 +36,18 @@ const CreateCitationSchema = z.object({
   publicationDate: z.string().datetime().optional(),
   jurisdiction: z.string().optional(),
   court: z.string().optional(),
-  tags: z.array(z.string()).default([])
+  tags: z.array(z.string()).default([]),
 });
 
 /**
  * Citations Service
- */
+ */;
 class CitationsService {
   constructor(private userId: string) {}
 
   async getCitations(query: z.infer<typeof CitationsQuerySchema>) {
     // Sample citations data - in production, query citations table
-    const sampleCitations = [
+    const sampleCitations = [;
       {
         id: crypto.randomUUID(),
         caseId: query.caseId,
@@ -66,7 +66,7 @@ class CitationsService {
         contextNotes: 'Establishes Miranda rights precedent',
         tags: ['constitutional', 'criminal procedure'],
         createdBy: this.userId,
-        dateCreated: new Date().toISOString()
+        dateCreated: new Date().toISOString(),
       },
       {
         id: crypto.randomUUID(),
@@ -83,7 +83,7 @@ class CitationsService {
         contextNotes: 'Defines relevant evidence',
         tags: ['evidence', 'relevancy'],
         createdBy: this.userId,
-        dateCreated: new Date().toISOString()
+        dateCreated: new Date().toISOString(),
       }
     ];
 
@@ -117,20 +117,20 @@ class CitationsService {
         total: filteredCitations.length,
         totalPages: Math.max(1, Math.ceil(filteredCitations.length / query.limit)),
         hasNext: query.page < Math.ceil(filteredCitations.length / query.limit),
-        hasPrev: query.page > 1
+        hasPrev: query.page > 1,
       }
     };
   }
 
   async createCitation(data: z.infer<typeof CreateCitationSchema>) {
-    // In production, insert into citations table
+    // In production, insert into citations table;
     const newCitation = {
       id: crypto.randomUUID(),
       ...data,
       verified: false,
       createdBy: this.userId,
       dateCreated: new Date().toISOString(),
-      dateModified: new Date().toISOString()
+      dateModified: new Date().toISOString(),
     };
 
     return newCitation;
@@ -138,12 +138,12 @@ class CitationsService {
 
   async verifyCitation(citationId: string) {
     // In production, verify citation against legal databases
-    // For now, return mock verification result
+    // For now, return mock verification result;
     return {
       id: citationId,
       verified: true,
       verifiedDate: new Date().toISOString(),
-      verificationNotes: 'Citation verified against legal database'
+      verificationNotes: 'Citation verified against legal database',
     };
   }
 }
@@ -151,20 +151,20 @@ class CitationsService {
 /**
  * GET /api/v1/citations
  * Get citations for a case
- */
+ */;
 export const GET: RequestHandler = async ({ request, locals, url }) => {
   try {
     if (!locals.session || !locals.user) {
       return json({ success: false, message: 'Authentication required' }, { status: 401 });
     }
 
-    const queryParams = Object.fromEntries(url.searchParams.entries());
+    const queryParams = Object.fromEntries(url.searchParams.entries();
     const validatedQuery = CitationsQuerySchema.parse(queryParams);
 
     const citationsService = new CitationsService(locals.user.id);
     const result = await citationsService.getCitations(validatedQuery);
 
-    // Response validation
+    // Response validation;
     const CitationItem = z.object({
       id: z.string(),
       caseId: z.string().uuid(),
@@ -233,7 +233,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
 /**
  * POST /api/v1/citations
  * Add citation to case
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.session || !locals.user) {

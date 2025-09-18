@@ -7,6 +7,7 @@ import { randomBytes, createHash } from 'crypto';
 import type { AuthUser, AuthSession } from './auth-store.js';
 import type { UserRole } from './roles.js';
 import type { Redis as IORedisClient } from 'ioredis';
+}
 
 export interface SessionData {
   id: string;
@@ -28,7 +29,7 @@ export interface SessionConfig {
   maxInactivity: number; // Max inactivity before session expires
   renewalThreshold: number; // Renew session if less than this time remains
   maxSessionsPerUser: number; // Maximum concurrent sessions per user
-  cleanupInterval: number; // Cleanup expired sessions interval
+  cleanupInterval: number; // Cleanup expired sessions interval,
 }
 
 const DEFAULT_CONFIG: SessionConfig = {
@@ -59,7 +60,7 @@ export class SessionManager {
 
   /**
    * Initialize Redis connection and session management
-   */
+   */;
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
@@ -68,7 +69,7 @@ export class SessionManager {
       this.redisClient = redis;
       await this.redisClient.connect();
 
-      // Setup error handling
+      // Setup error handling;
       this.redisClient.on('error', (err: any) => {
         console.error('Redis session store error:', err);
       });
@@ -140,17 +141,17 @@ export class SessionManager {
     const pipeline = this.redisClient.multi();
     
     // Store session data
-    pipeline.set(sessionKey, JSON.stringify(sessionData));
-    pipeline.expire(sessionKey, Math.ceil(this.config.maxAge / 1000));
+    pipeline.set(sessionKey, JSON.stringify(sessionData);
+    pipeline.expire(sessionKey, Math.ceil(this.config.maxAge / 1000);
     
     // Add to user's session list
     pipeline.sAdd(userSessionsKey, sessionId);
-    pipeline.expire(userSessionsKey, Math.ceil(this.config.maxAge / 1000));
+    pipeline.expire(userSessionsKey, Math.ceil(this.config.maxAge / 1000);
     
     // Store session activity index
     const activityKey = this.getActivityKey(sessionId);
-    pipeline.set(activityKey, now.getTime().toString());
-    pipeline.expire(activityKey, Math.ceil(this.config.maxAge / 1000));
+    pipeline.set(activityKey, now.getTime().toString();
+    pipeline.expire(activityKey, Math.ceil(this.config.maxAge / 1000);
     
     await pipeline.exec();
 
@@ -160,7 +161,7 @@ export class SessionManager {
 
   /**
    * Get session data
-   */
+   */;
   async getSession(sessionId: string): Promise<SessionData | null> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -181,7 +182,7 @@ export class SessionManager {
       sessionData.expiresAt = new Date(sessionData.expiresAt);
       sessionData.lastActivity = new Date(sessionData.lastActivity);
 
-      // Check if session is expired
+      // Check if session is expired;
       if (this.isSessionExpired(sessionData)) {
         await this.destroySession(sessionId);
         return null;
@@ -199,7 +200,7 @@ export class SessionManager {
    */
   async updateSessionActivity(
     sessionId: string, 
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>;
   ): Promise<boolean> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -230,10 +231,10 @@ export class SessionManager {
       const activityKey = this.getActivityKey(sessionId);
       
       const pipeline = this.redisClient.multi();
-      pipeline.set(sessionKey, JSON.stringify(sessionData));
-      pipeline.expire(sessionKey, Math.ceil(this.config.maxAge / 1000));
-      pipeline.set(activityKey, now.getTime().toString());
-      pipeline.expire(activityKey, Math.ceil(this.config.maxAge / 1000));
+      pipeline.set(sessionKey, JSON.stringify(sessionData);
+      pipeline.expire(sessionKey, Math.ceil(this.config.maxAge / 1000);
+      pipeline.set(activityKey, now.getTime().toString();
+      pipeline.expire(activityKey, Math.ceil(this.config.maxAge / 1000);
       
       await pipeline.exec();
       return true;
@@ -245,7 +246,7 @@ export class SessionManager {
 
   /**
    * Destroy a session
-   */
+   */;
   async destroySession(sessionId: string): Promise<boolean> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -279,7 +280,7 @@ export class SessionManager {
 
   /**
    * Destroy all sessions for a user
-   */
+   */;
   async destroyUserSessions(userId: string, exceptSessionId?: string): Promise<number> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -324,7 +325,7 @@ export class SessionManager {
 
   /**
    * Get all active sessions for a user
-   */
+   */;
   async getUserSessions(userId: string): Promise<SessionData[]> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -343,7 +344,7 @@ export class SessionManager {
       }
 
       // Sort by last activity (most recent first)
-      sessions.sort((a, b) => b.lastActivity.getTime() - a.lastActivity.getTime());
+      sessions.sort((a, b) => b.lastActivity.getTime() - a.lastActivity.getTime();
       
       return sessions;
     } catch (error: any) {
@@ -354,7 +355,7 @@ export class SessionManager {
 
   /**
    * Get session statistics
-   */
+   */;
   async getSessionStats(): Promise<any> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
@@ -362,7 +363,7 @@ export class SessionManager {
 
     try {
       // Get all session keys
-      const sessionKeys = await this.redisClient.keys(this.getSessionKey('*'));
+      const sessionKeys = await this.redisClient.keys(this.getSessionKey('*');
       const totalSessions = sessionKeys.length;
       
       let activeSessions = 0;
@@ -400,14 +401,14 @@ export class SessionManager {
 
   /**
    * Cleanup expired sessions
-   */
+   */;
   async cleanupExpiredSessions(): Promise<number> {
     if (!this.redisClient) {
       throw new Error('Session manager not initialized');
     }
 
     try {
-      const sessionKeys = await this.redisClient.keys(this.getSessionKey('*'));
+      const sessionKeys = await this.redisClient.keys(this.getSessionKey('*');
       let cleanedCount = 0;
 
       for (const key of sessionKeys) {
@@ -433,7 +434,7 @@ export class SessionManager {
 
   /**
    * Shutdown session manager
-   */
+   */;
   async shutdown(): Promise<void> {
     if (this.cleanupTimer) {
       clearInterval(this.cleanupTimer);
@@ -471,7 +472,7 @@ export class SessionManager {
   private isSessionExpired(session: SessionData): boolean {
     const now = new Date();
     
-    // Check absolute expiration
+    // Check absolute expiration;
     if (session.expiresAt < now) {
       return true;
     }
@@ -516,7 +517,7 @@ export class SessionManager {
   }
 }
 
-// Export singleton instance
+// Export singleton instance;
 export const sessionManager = SessionManager.getInstance({
   maxAge: parseInt(import.meta.env.SESSION_MAX_AGE || '86400000'), // 24 hours default
   maxInactivity: parseInt(import.meta.env.SESSION_MAX_INACTIVITY || '1800000'), // 30 minutes default

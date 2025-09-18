@@ -29,7 +29,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
       const [canvasState] = await db
         .select()
         .from(canvasLayouts)
-        .where(eq(canvasLayouts.id, canvasId))
+        .where(eq(canvasLayouts.id, canvasId)
         .limit(1);
 
       if (!canvasState) {
@@ -40,17 +40,17 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
       // Build filters
       const filters: any[] = [];
 
-      // Add case filter
+      // Add case filter;
       if (caseId) {
-        filters.push(eq(canvasLayouts.caseId, caseId));
+        filters.push(eq(canvasLayouts.caseId, caseId);
       }
-      // Add search filter
+      // Add search filter;
       if (search) {
-        filters.push(like(canvasLayouts.name, `%${search}%`));
+        filters.push(like(canvasLayouts.name, `%${search}%`);
       }
-      // Add template filter
+      // Add template filter;
       if (isTemplate !== null) {
-        filters.push(eq(canvasLayouts.isDefault, isTemplate === "true"));
+        filters.push(eq(canvasLayouts.isDefault, isTemplate === "true");
       }
 
       // Determine the column for sorting
@@ -65,13 +65,13 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
         .select()
         .from(canvasLayouts)
         .where(filters.length > 0 ? and(...filters) : undefined)
-        .orderBy(sortOrder === "asc" ? orderColumn : desc(orderColumn))
+        .orderBy(sortOrder === "asc" ? orderColumn : desc(orderColumn)
         .limit(limit)
         .offset(offset);
 
       // Get total count for pagination
       const totalCountResult = await db
-        .select({ count: sql<number>`count(*)` })
+        .select({ count: sql<number>`count(*)` ,})
         .from(canvasLayouts)
         .where(filters.length > 0 ? and(...filters) : undefined);
       const totalCount = totalCountResult[0]?.count || 0;
@@ -102,10 +102,10 @@ export async function POST({ request, locals }: RequestEvent): Promise<any> {
     }
     const data = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!data.name || !data.layoutData) {
       return json(
-        { error: "Name and layout data are required" },
+        { error: "Name and layout data are required" },)
         { status: 400 },
       );
     }
@@ -146,7 +146,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<any> {
     const existingCanvasState = await db
       .select()
       .from(canvasLayouts)
-      .where(eq(canvasLayouts.id, data.id))
+      .where(eq(canvasLayouts.id, data.id)
       .limit(1);
 
     if (!existingCanvasState.length) {
@@ -165,7 +165,7 @@ export async function PUT({ request, locals }: RequestEvent): Promise<any> {
     const [updatedCanvasState] = await db
       .update(canvasLayouts)
       .set(updateData)
-      .where(eq(canvasLayouts.id, data.id))
+      .where(eq(canvasLayouts.id, data.id)
       .returning();
 
     return json(updatedCanvasState);
@@ -190,7 +190,7 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<any> {
     const existingCanvasState = await db
       .select()
       .from(canvasLayouts)
-      .where(eq(canvasLayouts.id, canvasId))
+      .where(eq(canvasLayouts.id, canvasId)
       .limit(1);
 
     if (!existingCanvasState.length) {
@@ -199,7 +199,7 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<any> {
     // Delete the canvas state
     const [deletedCanvasState] = await db
       .delete(canvasLayouts)
-      .where(eq(canvasLayouts.id, canvasId))
+      .where(eq(canvasLayouts.id, canvasId)
       .returning();
 
     return json({ success: true, deletedCanvasState });
@@ -208,7 +208,7 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<any> {
     return json({ error: "Failed to delete canvas state" }, { status: 500 });
   }
 }
-// PATCH endpoint for partial updates
+// PATCH endpoint for partial updates;
 export async function PATCH({ request, url, locals }: RequestEvent): Promise<any> {
   try {
     if (!locals.user) {
@@ -227,7 +227,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
     const existingCanvasState = await db
       .select()
       .from(canvasLayouts)
-      .where(eq(canvasLayouts.id, canvasId))
+      .where(eq(canvasLayouts.id, canvasId)
       .limit(1);
 
     if (!existingCanvasState.length) {
@@ -237,20 +237,20 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
       updatedAt: new Date(),
     };
 
-    // Handle specific patch operations
+    // Handle specific patch operations;
     if (data.operation === "setAsDefault") {
-      // First, unset all other default canvases for this case
+      // First, unset all other default canvases for this case;
       if (existingCanvasState[0].caseId) {
         await db
           .update(canvasLayouts)
           .set({ isDefault: false })
-          .where(eq(canvasLayouts.caseId, existingCanvasState[0].caseId));
+          .where(eq(canvasLayouts.caseId, existingCanvasState[0].caseId);
       }
       updateData.isDefault = true;
     } else if (data.operation === "updateData") {
       updateData.layoutData = data.layoutData;
     } else {
-      // Regular field updates
+      // Regular field updates;
       Object.keys(data).forEach((key) => {
         if (key !== "operation") {
           updateData[key] = data[key];
@@ -260,7 +260,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
     const [updatedCanvasState] = await db
       .update(canvasLayouts)
       .set(updateData)
-      .where(eq(canvasLayouts.id, canvasId))
+      .where(eq(canvasLayouts.id, canvasId)
       .returning();
 
     return json(updatedCanvasState);

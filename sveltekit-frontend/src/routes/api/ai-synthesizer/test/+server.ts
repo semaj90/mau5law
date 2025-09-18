@@ -17,7 +17,7 @@ export const GET: RequestHandler = async () => {
     tests: [],
     health: Record<string, any>,
     performance: Record<string, any>,
-    recommendations: []
+    recommendations: [],
   };
 
   try {
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async () => {
     return json({
       success: true,
       ...results
-    });
+    ,});
 
   } catch (error: any) {
     logger.error('[Test] Integration test failed:', error);
@@ -84,7 +84,7 @@ async function testHealthCheck(): Promise<any> {
       result: {
         synthesizer: health,
         cache: cacheHealth,
-        ollama: ollamaHealth
+        ollama: ollamaHealth,
       }
     };
   } catch (error: any) {
@@ -92,7 +92,7 @@ async function testHealthCheck(): Promise<any> {
       name: 'Health Check',
       status: 'failed',
       duration: Date.now() - startTime,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -107,14 +107,14 @@ async function testBasicSynthesis(): Promise<any> {
       query: testQuery,
       context: {
         userId: 'test_user',
-        sessionId: 'test_session'
+        sessionId: 'test_session',
       },
       options: {
         enableMMR: true,
         enableCrossEncoder: true,
         enableLegalBERT: true,
         enableRAG: true,
-        maxSources: 5
+        maxSources: 5,
       }
     });
     
@@ -140,7 +140,7 @@ async function testBasicSynthesis(): Promise<any> {
       name: 'Basic Synthesis',
       status: 'failed',
       duration: Date.now() - startTime,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -173,7 +173,7 @@ async function testCaching(): Promise<any> {
         cacheWorking: passed,
         hitRate: stats.hitRate,
         memoryUsage: stats.memoryUsage,
-        redisConnected: stats.redisConnected
+        redisConnected: stats.redisConnected,
       }
     };
   } catch (error: any) {
@@ -181,7 +181,7 @@ async function testCaching(): Promise<any> {
       name: 'Caching Layer',
       status: 'failed',
       duration: Date.now() - startTime,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -216,7 +216,7 @@ async function testStreaming(): Promise<any> {
       result: {
         progressUpdates,
         stagesCompleted,
-        activeStreams: streamingService.getActiveStreams().length
+        activeStreams: streamingService.getActiveStreams().length,
       }
     };
   } catch (error: any) {
@@ -224,7 +224,7 @@ async function testStreaming(): Promise<any> {
       name: 'Streaming Service',
       status: 'failed',
       duration: Date.now() - startTime,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -239,13 +239,13 @@ async function testOllama(): Promise<any> {
     let embeddingResult = null;
     
     if (available) {
-      // Test generation
+      // Test generation;
       generateResult = await ollamaLLM.generate({
         model: 'llama2',
         prompt: 'What is a contract?',
         options: {
           temperature: 0.3,
-          num_predict: 50
+          num_predict: 50,
         }
       });
       
@@ -261,7 +261,7 @@ async function testOllama(): Promise<any> {
         available,
         models: available ? (await ollamaLLM.healthCheck()).models: [],
         generationWorks: !!generateResult,
-        embeddingsWork: !!embeddingResult
+        embeddingsWork: !!embeddingResult,
       }
     };
   } catch (error: any) {
@@ -269,7 +269,7 @@ async function testOllama(): Promise<any> {
       name: 'Ollama Local LLM',
       status: 'failed',
       duration: Date.now() - startTime,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -278,21 +278,21 @@ async function testFeedbackLoop(): Promise<any> {
   const startTime = Date.now();
   
   try {
-    // Record test interaction
+    // Record test interaction;
     await feedbackLoop.recordInteraction({
       requestId: 'test_request_' + Date.now(),
       query: 'Test query',
       result: { metadata: { confidence: 0.8 } },
       userId: 'test_user',
-      timestamp: new Date()
+      timestamp: new Date(),
     });
     
-    // Process test feedback
+    // Process test feedback;
     await feedbackLoop.processFeedback({
       requestId: 'test_request_' + Date.now(),
       userId: 'test_user',
       rating: 4,
-      feedback: 'Test feedback'
+      feedback: 'Test feedback',
     });
     
     // Get personalized recommendations
@@ -309,7 +309,7 @@ async function testFeedbackLoop(): Promise<any> {
         interactionCount: stats.interactionCount,
         queueSize: stats.queueSize,
         hasRecommendations: !!recommendations,
-        modelWeights: stats.modelWeights
+        modelWeights: stats.modelWeights,
       }
     };
   } catch (error: any) {
@@ -317,7 +317,7 @@ async function testFeedbackLoop(): Promise<any> {
       name: 'Feedback Loop',
       status: 'failed',
       duration: Date.now() - startTime,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -326,22 +326,22 @@ async function testMonitoring(): Promise<any> {
   const startTime = Date.now();
   
   try {
-    // Track test request
+    // Track test request;
     monitoringService.trackRequest({
       requestId: 'test_' + Date.now(),
       userId: 'test_user',
       query: 'Test query',
-      timestamp: new Date()
+      timestamp: new Date(),
     });
     
-    // Track test metrics
+    // Track test metrics;
     monitoringService.trackMetrics({
       requestId: 'test_' + Date.now(),
       processingTime: 1234,
       confidence: 0.85,
       sourceCount: 5,
       strategies: ['rag', 'mmr'],
-      qualityScore: 0.9
+      qualityScore: 0.9,
     });
     
     // Get stats
@@ -359,7 +359,7 @@ async function testMonitoring(): Promise<any> {
         successRate: stats.rates.successRate,
         cacheHitRate: stats.rates.cacheHitRate,
         performance: stats.performance,
-        hasPrometheusMetrics: prometheusMetrics.length > 0
+        hasPrometheusMetrics: prometheusMetrics.length > 0,
       }
     };
   } catch (error: any) {
@@ -367,7 +367,7 @@ async function testMonitoring(): Promise<any> {
       name: 'Monitoring Service',
       status: 'failed',
       duration: Date.now() - startTime,
-      error: error.message
+      error: error.message,
     };
   }
 }
@@ -382,7 +382,7 @@ function generateRecommendations(results) {
       priority: 'high',
       category: 'infrastructure',
       message: 'Install and run Ollama for local LLM support',
-      action: 'Run: curl -fsSL https://ollama.ai/install.sh | sh && ollama serve'
+      action: 'Run: curl -fsSL https://ollama.ai/install.sh | sh && ollama serve',
     });
   }
   
@@ -393,17 +393,17 @@ function generateRecommendations(results) {
       priority: 'medium',
       category: 'performance',
       message: 'Connect Redis for distributed caching',
-      action: 'Install Redis and set REDIS_HOST environment variable'
+      action: 'Install Redis and set REDIS_HOST environment variable',
     });
   }
   
-  // Check cache hit rate
+  // Check cache hit rate;
   if (cacheTest && parseFloat(cacheTest.result?.hitRate) < 0.3) {
     recommendations.push({
       priority: 'low',
       category: 'optimization',
       message: 'Low cache hit rate detected',
-      action: 'Consider warming cache with frequently accessed data'
+      action: 'Consider warming cache with frequently accessed data',
     });
   }
   
@@ -414,7 +414,7 @@ function generateRecommendations(results) {
       priority: 'high',
       category: 'performance',
       message: 'High P95 latency detected',
-      action: 'Optimize slow queries and consider adding more resources'
+      action: 'Optimize slow queries and consider adding more resources',
     });
   }
   
@@ -425,14 +425,14 @@ function generateRecommendations(results) {
       priority: 'medium',
       category: 'quality',
       message: 'Low confidence scores in synthesis',
-      action: 'Improve data quality and consider adding more training data'
+      action: 'Improve data quality and consider adding more training data',
     });
   }
   
   return recommendations;
 }
 
-// POST endpoint for manual testing with custom queries
+// POST endpoint for manual testing with custom queries;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { query, options } = await request.json();
@@ -447,7 +447,7 @@ export const POST: RequestHandler = async ({ request }) => {
       query,
       context: {
         userId: 'test_user',
-        sessionId: 'test_session_' + Date.now()
+        sessionId: 'test_session_' + Date.now(),
       },
       options: {
         enableMMR: true,
@@ -464,7 +464,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (await ollamaLLM.checkAvailability()) {
       ollamaResult = await ollamaLLM.processLegalDocument(
         query,
-        'analyze',
+        'analyze',)
         { format: 'json' }
       );
     }
@@ -476,7 +476,7 @@ export const POST: RequestHandler = async ({ request }) => {
       stats: {
         cache: await cachingLayer.getStats(),
         monitoring: monitoringService.getStats(),
-        feedback: feedbackLoop.getStats()
+        feedback: feedbackLoop.getStats(),
       }
     });
     
@@ -484,7 +484,7 @@ export const POST: RequestHandler = async ({ request }) => {
     logger.error('[Test] Manual test failed:', error);
     return json({
       success: false,
-      error: error.message
+      error: error.message,
     }, { status: 500 });
   }
 };

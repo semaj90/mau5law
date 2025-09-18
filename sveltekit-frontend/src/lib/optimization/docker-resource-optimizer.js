@@ -15,7 +15,7 @@ export class DockerResourceOptimizer {
     this.metrics = {
       memoryUsage: 0,
       cpuUsage: 0,
-      networkUsage: 0
+      networkUsage: 0,
     };
   }
 
@@ -67,7 +67,7 @@ export class DockerResourceOptimizer {
       totalMemoryUsage: this.metrics.memoryUsage,
       totalCpuUsage: this.metrics.cpuUsage,
       networkUsage: this.metrics.networkUsage,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -88,7 +88,7 @@ export class DockerResourceOptimizer {
         recommendedMemory: config.memory,
         currentCpus: config.cpus,
         recommendedCpus: config.cpus,
-        action: 'maintain'
+        action: 'maintain',
       });
     }
 
@@ -96,9 +96,9 @@ export class DockerResourceOptimizer {
       optimizations,
       totalSavings: {
         memory: 0,
-        cpu: 0
+        cpu: 0,
       },
-      recommendedActions: optimizations.length
+      recommendedActions: optimizations.length,
     };
   }
 
@@ -111,7 +111,7 @@ export class DockerResourceOptimizer {
     return {
       scaled: targetReplicas,
       currentReplicas: this.containers.size,
-      success: true
+      success: true,
     };
   }
 
@@ -157,7 +157,7 @@ export class DockerResourceOptimizer {
         key,
         data: compressed,
         compressed: true,
-        size: compressed.length * 0.7 // Simulate 30% compression
+        size: compressed.length * 0.7 // Simulate 30% compression,
       };
     } catch (error) {
       console.error(`[DockerResourceOptimizer] Cache compression failed for ${key}:`, error);

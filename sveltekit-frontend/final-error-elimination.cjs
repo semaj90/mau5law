@@ -129,7 +129,7 @@ declare module "./webgpu-rag-service" {
 }
 
 export {};
-`
+`,
   },
 
   // Fix specific import issues
@@ -137,7 +137,7 @@ export {};
     action: 'replaceContent',
     file: 'src/lib/services/documentUpdateLoop.ts',
     search: /from "\$lib\/server\/db\/schema"/g,
-    replace: 'from "$lib/server/db/schema-unified"'
+    replace: 'from "$lib/server/db/schema-unified"',
   },
 
   // Fix remaining property access issues with comprehensive any casting
@@ -148,10 +148,10 @@ export {};
       'src/lib/wasm/**/*.ts',
       'src/lib/services/search-service.ts',
       'src/lib/services/multiLayerCache.ts',
-      'src/lib/utils/webgpu-array-utils.ts'
+      'src/lib/utils/webgpu-array-utils.ts',
     ],
-    suppression: '// @ts-nocheck - Complex experimental service with external dependencies'
-  }
+    suppression: '// @ts-nocheck - Complex experimental service with external dependencies',
+  },
 ];
 
 async function applyFinalFixes() {
@@ -291,7 +291,6 @@ async function main() {
     console.log('\n🎉 Final error elimination completed!');
     console.log('🚀 Legal AI platform should now have zero or near-zero TypeScript errors');
     console.log('📊 Ready for a final error count check...');
-
   } catch (error) {
     console.error('❌ Error during final cleanup:', error);
   }

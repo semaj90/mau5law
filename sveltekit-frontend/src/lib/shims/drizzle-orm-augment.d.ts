@@ -1,6 +1,6 @@
 // Lightweight permissive shims for common 'drizzle-orm' symbols used across the repo.
 // These intentionally use `any` to reduce type noise during migration and allow
-// progressive, auditable replacement with concrete types later.
+// progressive, auditable replacement with concrete types later.;
 declare module 'drizzle-orm' {
   export const sql: any;
   export const desc: any;
@@ -29,7 +29,7 @@ declare module 'drizzle-orm' {
   export default any;
 }
 
-// Also provide a permissive export for local DB/schema modules imported with named members
+// Also provide a permissive export for local DB/schema modules imported with named members;
 declare module '$lib/server/db/*' {
   const whatever: any;
   export default whatever;

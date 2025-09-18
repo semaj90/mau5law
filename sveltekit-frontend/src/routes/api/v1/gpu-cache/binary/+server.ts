@@ -10,7 +10,7 @@ import { binaryGPUShaderCache } from '../../../../../lib/services/gpu-shader-cac
 import { binaryEncoder } from '../../../../../lib/middleware/binary-encoding.js';
 // URL is globally available in SvelteKit; avoid Node 'url' import
 
-// GET /api/v1/gpu-cache/binary/shader?key=<cacheKey>
+// GET /api/v1/gpu-cache/binary/shader?key=<cacheKey>;
 export const GET: RequestHandler = async ({ url, request }) => {
   try {
     const cacheKey = url.searchParams.get('key');
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       preferredFormat = 'msgpack';
     }
 
-    // Encode response with optimal format
+    // Encode response with optimal format;
     const responseData = {
       shader: {
         sourceCode: shader.sourceCode,
@@ -71,7 +71,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
   }
 };
 
-// POST /api/v1/gpu-cache/binary/shader
+// POST /api/v1/gpu-cache/binary/shader;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Auto-detect request encoding
@@ -94,7 +94,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!sourceCode || !compiledBinary) {
       return json(
-        { error: 'Missing required fields: sourceCode, compiledBinary' },
+        { error: 'Missing required fields: sourceCode, compiledBinary' },)
         { status: 400 }
       );
     }
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request }) => {
       binaryData = compiledBinary;
     }
 
-    // Store shader with binary optimization
+    // Store shader with binary optimization;
     const entry = await binaryGPUShaderCache.storeShader({
       sourceCode,
       compiledBinary: binaryData,
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// PUT /api/v1/gpu-cache/binary/batch
+// PUT /api/v1/gpu-cache/binary/batch;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const { shaders, workflowType } = await request.json();
@@ -202,7 +202,7 @@ export const PUT: RequestHandler = async ({ request }) => {
   }
 };
 
-// GET /api/v1/gpu-cache/binary/webgpu?key=<cacheKey>
+// GET /api/v1/gpu-cache/binary/webgpu?key=<cacheKey>;
 export const PATCH: RequestHandler = async ({ url }) => {
   try {
     const cacheKey = url.searchParams.get('key');
@@ -235,7 +235,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
   }
 };
 
-// DELETE /api/v1/gpu-cache/binary/metrics
+// DELETE /api/v1/gpu-cache/binary/metrics;
 export const DELETE: RequestHandler = async () => {
   try {
     // Clear encoding performance metrics
@@ -253,7 +253,7 @@ export const DELETE: RequestHandler = async () => {
   }
 };
 
-// OPTIONS for CORS support
+// OPTIONS for CORS support;
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,

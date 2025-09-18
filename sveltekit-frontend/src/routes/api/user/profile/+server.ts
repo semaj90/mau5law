@@ -70,14 +70,14 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     const usersAny: any = users;
     const authUser = locals.user;
     const [updatedUser] = await db
-      .update(usersAny)
+      .update(usersAny);
       .set({
         email,
         first_name: firstName || '', // snake_case for database
         last_name: lastName || '', // snake_case for database
         updated_at: new Date(), // snake_case for database
       })
-      .where(eq(usersAny.id, authUser.id))
+      .where(eq(usersAny.id, authUser.id);
       .returning({
         id: usersAny.id,
         email: usersAny.email,

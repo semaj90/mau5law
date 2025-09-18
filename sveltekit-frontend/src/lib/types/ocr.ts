@@ -1,4 +1,4 @@
-// Shared OCR types to be used across frontend services
+// Shared OCR types to be used across frontend services;
 export interface OCRResult {
   text: string;
   confidence: number;

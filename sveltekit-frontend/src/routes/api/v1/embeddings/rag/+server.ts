@@ -22,18 +22,18 @@ interface RAGRequest {
 /*
  * POST /api/v1/embeddings/rag
  * Enhanced RAG query with GPU-accelerated embeddings
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const ragRequest: RAGRequest = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!ragRequest.query) {
       return json({ error: 'Missing required field: query' }, { status: 400 });
     }
 
     if (!ragRequest.documents || !Array.isArray(ragRequest.documents)) {
-      return json(
+      return json()
         { error: 'Missing or invalid field: documents (must be array)' },
         { status: 400 }
       );
@@ -88,11 +88,10 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error) {
     console.error('Enhanced RAG API error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to process RAG query',
         message: error instanceof Error ? error.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }
@@ -101,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /*
  * GET /api/v1/embeddings/rag
  * Get enhanced RAG endpoint information
- */
+ */;
 export const GET: RequestHandler = async () => {
   return json({
     endpoint: 'POST /api/v1/embeddings/rag',
@@ -149,7 +148,7 @@ export const GET: RequestHandler = async () => {
       success: 'boolean',
       query: 'string',
       context: {
-        similarDocs: [
+        similarDocs: [;
           {
             document: 'string',
             score: 'number',

@@ -18,14 +18,14 @@ try {
 }
 const { cases } = schema;
 
-// GET - Get canvas data for a case
+// GET - Get canvas data for a case;
 export const GET: RequestHandler = async ({ params }) => {
   try {
     const caseId = params.caseId;
     if (!caseId) {
       return json({ error: "Case ID is required" }, { status: 400 });
     }
-    // Handle case where schema is not available
+    // Handle case where schema is not available;
     if (!cases) {
       console.warn("Cases table not available, returning mock data");
       return json({
@@ -35,13 +35,13 @@ export const GET: RequestHandler = async ({ params }) => {
       });
     }
     // Get case with canvas data
-    const [caseData] = await db
+    const [caseData] = await db;
       .select({
         canvasData: cases.canvasData,
         updatedAt: cases.updatedAt,
       })
       .from(cases)
-      .where(eq(cases.id, caseId));
+      .where(eq(cases.id, caseId);
 
     if (!caseData) {
       return json({ error: "Case not found" }, { status: 404 });
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ params }) => {
   }
 };
 
-// POST - Save canvas data for a case
+// POST - Save canvas data for a case;
 export const POST: RequestHandler = async ({ request, params }) => {
   try {
     const caseId = params.caseId;
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
     if (!canvasData) {
       return json({ error: "Canvas data is required" }, { status: 400 });
     }
-    // Handle case where schema is not available
+    // Handle case where schema is not available;
     if (!cases) {
       console.warn("Cases table not available, returning mock response");
       return json({
@@ -78,21 +78,21 @@ export const POST: RequestHandler = async ({ request, params }) => {
     }
     // Update case with canvas data
     const [updatedCase] = await db
-      .update(cases)
+      .update(cases);
       .set({
         canvasData: JSON.stringify(canvasData),
         updatedAt: new Date(),
       })
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .returning();
 
     if (!updatedCase) {
       return json({ error: "Case not found" }, { status: 404 });
     }
-    // If positions are provided, update evidence positions
+    // If positions are provided, update evidence positions;
     if (positions && Array.isArray(positions)) {
       try {
-        // Update evidence positions in parallel
+        // Update evidence positions in parallel;
         const evidenceUpdatePromises = positions.map(async (pos: any) => {
           if (pos.evidenceId) {
             // This would need an evidence table update

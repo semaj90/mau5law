@@ -97,7 +97,7 @@ declare module "lokijs" {
   }
 }
 
-// Tauri API module declarations (optional dependencies)
+// Tauri API module declarations (optional dependencies);
 declare module "@tauri-apps/api/tauri" {
   export function invoke<T = any>(
     cmd: string,

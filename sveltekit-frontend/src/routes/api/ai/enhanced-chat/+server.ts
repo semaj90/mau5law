@@ -87,19 +87,19 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       metadata: {
         model: settings?.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal:latest',
         tokensUsed: Math.ceil(aiResponse.length / 4),
-        enabledFeatures: ['basic-generation']
+        enabledFeatures: ['basic-generation'],
       },
-      recommendations: ['Verify legal advice with qualified counsel']
+      recommendations: ['Verify legal advice with qualified counsel'],
     };
 
     return json(response);
   } catch (error: any) {
     console.error('Enhanced AI chat API error:', error);
-    return json(
+    return json();
       { 
         error: 'Internal server error', 
         message: error instanceof Error ? error.message: 'Unknown error',
-        processingTime: Date.now() - startTime 
+        processingTime: Date.now() - startTime ,
       },
       { status: 500 }
     );
@@ -135,7 +135,7 @@ async function generateAIResponse(query: string, context: any): Promise<string> 
   }
 }
 
-// Health check endpoint
+// Health check endpoint;
 const originalGETHandler: RequestHandler = async () => {
   try {
     const status = {

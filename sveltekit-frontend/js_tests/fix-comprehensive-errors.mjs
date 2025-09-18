@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configuration
-const SRC_DIR = path.join(__dirname, "src");
+const SRC_DIR = path.join(__dirname, 'src');
 const FIXES_APPLIED = [];
 
 // Helper functions
 function readFile(filePath) {
   try {
-    return fs.readFileSync(filePath, "utf8");
+    return fs.readFileSync(filePath, 'utf8');
   } catch (error) {
     console.warn(`Could not read file: ${filePath}`);
     return null;
@@ -23,7 +23,7 @@ function readFile(filePath) {
 
 function writeFile(filePath, content) {
   try {
-    fs.writeFileSync(filePath, content, "utf8");
+    fs.writeFileSync(filePath, content, 'utf8');
     return true;
   } catch (error) {
     console.error(`Could not write file: ${filePath}`, error.message);
@@ -31,14 +31,14 @@ function writeFile(filePath, content) {
   }
 }
 
-function findFiles(dir, extensions = [".svelte", ".ts"]) {
+function findFiles(dir, extensions = ['.svelte', '.ts']) {
   const files = [];
 
   function traverse(currentDir) {
     try {
       const items = fs.readdirSync(currentDir);
       for (const item of items) {
-        if (item.startsWith(".") || item === "node_modules") continue;
+        if (item.startsWith('.') || item === 'node_modules') continue;
 
         const fullPath = path.join(currentDir, item);
         const stat = fs.statSync(fullPath);
@@ -74,11 +74,11 @@ function fixImportIssues(content, filePath) {
       pattern: /from\s+['"]([^'"]+)['"](?!\.(svelte|css|scss|less))/g,
       replacement: (match, importPath) => {
         if (
-          importPath.startsWith(".") &&
-          !importPath.endsWith(".js") &&
-          !importPath.endsWith(".svelte")
+          importPath.startsWith('.') &&
+          !importPath.endsWith('.js') &&
+          !importPath.endsWith('.svelte')
         ) {
-          return match.replace(importPath, importPath + ".js");
+          return match.replace(importPath, importPath + '.js');
         }
         return match;
       },
@@ -86,7 +86,7 @@ function fixImportIssues(content, filePath) {
   ];
 
   importFixes.forEach((fix) => {
-    if (typeof fix.replacement === "function") {
+    if (typeof fix.replacement === 'function') {
       fixed = fixed.replace(fix.pattern, fix.replacement);
     } else {
       fixed = fixed.replace(fix.pattern, fix.replacement);
@@ -101,37 +101,34 @@ function fixAccessibilityIssues(content, filePath) {
   let fixed = content;
 
   // Add missing ARIA roles for clickable divs
-  fixed = fixed.replace(
-    /<div([^>]*?)on:click([^>]*?)>/g,
-    (match, before, after) => {
-      if (!before.includes("role=")) {
-        return `<div${before}role="button"${after}>`;
-      }
-      return match;
-    },
-  );
+  fixed = fixed.replace(/<div([^>]*?)on:click([^>]*?)>/g, (match, before, after) => {
+    if (!before.includes('role=')) {
+      return `<div${before}role="button"${after}>`;
+    }
+    return match;
+  });
 
   // Add missing keyboard event handlers for clickable elements
   fixed = fixed.replace(
     /<div([^>]*?)on:click=([^>\s]+)([^>]*?)>/g,
     (match, before, onClick, after) => {
-      if (!before.includes("on:keydown") && !after.includes("on:keydown")) {
-        return `<div${before}on:click=${onClick} on:keydown={(e) => e.key === 'Enter' && ${onClick.replace(/[()]/g, "")}}${after}>`;
+      if (!before.includes('on:keydown') && !after.includes('on:keydown')) {
+        return `<div${before}on:click=${onClick} on:keydown={(e) => e.key === 'Enter' && ${onClick.replace(/[()]/g, '')}}${after}>`;
       }
       return match;
-    },
+    }
   );
 
   // Fix form labels without associated controls
   fixed = fixed.replace(
     /<label([^>]*?)class="([^"]*?)"([^>]*?)>([^<]*?)<\/label>/g,
     (match, before, className, after, text) => {
-      if (!before.includes("for=") && !after.includes("for=")) {
-        const id = text.toLowerCase().replace(/[^a-z0-9]/g, "-");
+      if (!before.includes('for=') && !after.includes('for=')) {
+        const id = text.toLowerCase().replace(/[^a-z0-9]/g, '-');
         return `<label${before}for="${id}" class="${className}"${after}>${text}</label>`;
       }
       return match;
-    },
+    }
   );
 
   return fixed;
@@ -142,27 +139,18 @@ function fixTypeScriptIssues(content, filePath) {
   let fixed = content;
 
   // Fix timeout type issues
-  fixed = fixed.replace(
-    /let\s+(\w*timer\w*)\s*:\s*number/g,
-    "let $1: NodeJS.Timeout | undefined",
-  );
+  fixed = fixed.replace(/let\s+(\w*timer\w*)\s*:\s*number/g, 'let $1: NodeJS.Timeout | undefined');
 
   // Fix error handling in catch blocks
-  fixed = fixed.replace(
-    /catch\s*\(\s*(\w+)\s*\)\s*{[^}]*\1\.message/g,
-    (match) => {
-      return match.replace(/(\w+)\.message/, "($1 as Error).message");
-    },
-  );
+  fixed = fixed.replace(/catch\s*\(\s*(\w+)\s*\)\s*{[^}]*\1\.message/g, (match) => {
+    return match.replace(/(\w+)\.message/, '($1 as Error).message');
+  });
 
   // Fix store subscription issues
-  fixed = fixed.replace(/\$:\s*(\w+)\s*=\s*\$(\w+Store)/g, "$: $1 = $2");
+  fixed = fixed.replace(/\$:\s*(\w+)\s*=\s*\$(\w+Store)/g, '$: $1 = $2');
 
   // Fix unknown property errors in objects
-  fixed = fixed.replace(
-    /timeout:\s*(\d+),/g,
-    "// timeout: $1, // Property not supported",
-  );
+  fixed = fixed.replace(/timeout:\s*(\d+),/g, '// timeout: $1, // Property not supported');
 
   return fixed;
 }
@@ -172,13 +160,13 @@ function fixStoreIssues(content, filePath) {
   let fixed = content;
 
   // Fix store access pattern
-  fixed = fixed.replace(/\$evidenceStore\.(\w+)/g, "$evidenceStore?.$1");
+  fixed = fixed.replace(/\$evidenceStore\.(\w+)/g, '$evidenceStore?.$1');
 
   // Add proper store imports if missing
   if (
-    fixed.includes("$evidenceStore") &&
-    !fixed.includes("import") &&
-    !fixed.includes("evidenceStore")
+    fixed.includes('$evidenceStore') &&
+    !fixed.includes('import') &&
+    !fixed.includes('evidenceStore')
   ) {
     const importLine = 'import { evidenceStore } from "$lib/stores/evidence";';
     fixed = fixed.replace(/(<script[^>]*>)/, `$1\n  ${importLine}`);
@@ -193,19 +181,19 @@ function fixCSSIssues(content, filePath) {
 
   // Remove unused CSS selectors (commented out instead of removed)
   const unusedSelectors = [
-    ".line-clamp-3",
-    ".close-button",
-    ":global(.screen-reader-mode) .sr-only",
-    ".canvas-background.drag-over",
-    ".endpoints-list",
+    '.line-clamp-3',
+    '.close-button',
+    ':global(.screen-reader-mode) .sr-only',
+    '.canvas-background.drag-over',
+    '.endpoints-list',
   ];
 
   unusedSelectors.forEach((selector) => {
     const regex = new RegExp(
-      `(\\s*${selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*{[^}]*})`,
-      "g",
+      `(\\s*${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*{[^}]*})`,
+      'g'
     );
-    fixed = fixed.replace(regex, "/* $1 */");
+    fixed = fixed.replace(regex, '/* $1 */');
   });
 
   return fixed;
@@ -218,14 +206,14 @@ function fixComponentProps(content, filePath) {
   // Fix unused export props
   fixed = fixed.replace(
     /export let (\w+): [^;]+;/g,
-    "export const $1: any = undefined; // TODO: Fix prop type",
+    'export const $1: any = undefined; // TODO: Fix prop type'
   );
 
   // Fix malformed textarea tags
-  fixed = fixed.replace(/<textarea([^>]*?)\/>/g, "<textarea$1></textarea>");
+  fixed = fixed.replace(/<textarea([^>]*?)\/>/g, '<textarea$1></textarea>');
 
   // Fix canvas self-closing tags
-  fixed = fixed.replace(/<canvas([^>]*?)\/>/g, "<canvas$1></canvas>");
+  fixed = fixed.replace(/<canvas([^>]*?)\/>/g, '<canvas$1></canvas>');
 
   return fixed;
 }
@@ -235,10 +223,7 @@ function addMissingTypes(content, filePath) {
   let fixed = content;
 
   // Add basic type definitions at the top of TypeScript files
-  if (
-    filePath.endsWith(".ts") ||
-    (filePath.endsWith(".svelte") && content.includes('lang="ts"'))
-  ) {
+  if (filePath.endsWith('.ts') || (filePath.endsWith('.svelte') && content.includes('lang="ts"'))) {
     const typeDefinitions = `
 // Type definitions
 interface Evidence {
@@ -279,8 +264,8 @@ interface Notification {
 `;
 
     if (
-      !fixed.includes("interface Evidence") &&
-      (fixed.includes("Evidence") || fixed.includes("evidence"))
+      !fixed.includes('interface Evidence') &&
+      (fixed.includes('Evidence') || fixed.includes('evidence'))
     ) {
       fixed = fixed.replace(/(<script[^>]*>)/, `$1${typeDefinitions}`);
     }
@@ -310,8 +295,7 @@ function applyFixes(filePath) {
     if (writeFile(filePath, fixed)) {
       FIXES_APPLIED.push({
         file: path.relative(SRC_DIR, filePath),
-        fixes:
-          "Multiple accessibility, TypeScript, and component fixes applied",
+        fixes: 'Multiple accessibility, TypeScript, and component fixes applied',
       });
       return true;
     }
@@ -322,7 +306,7 @@ function applyFixes(filePath) {
 
 // Main execution
 async function main() {
-  console.log("🔧 Starting comprehensive error fixes...\n");
+  console.log('🔧 Starting comprehensive error fixes...\n');
 
   const files = findFiles(SRC_DIR);
   console.log(`Found ${files.length} files to process`);
@@ -332,9 +316,7 @@ async function main() {
 
   for (const file of files) {
     processedCount++;
-    console.log(
-      `Processing (${processedCount}/${files.length}): ${path.relative(SRC_DIR, file)}`,
-    );
+    console.log(`Processing (${processedCount}/${files.length}): ${path.relative(SRC_DIR, file)}`);
 
     if (applyFixes(file)) {
       fixedCount++;
@@ -347,13 +329,13 @@ async function main() {
   console.log(`🔧 Fixed: ${fixedCount} files`);
 
   if (FIXES_APPLIED.length > 0) {
-    console.log("\n📋 Summary of fixes applied:");
+    console.log('\n📋 Summary of fixes applied:');
     FIXES_APPLIED.forEach((fix) => {
       console.log(`  • ${fix.file}: ${fix.fixes}`);
     });
 
     // Create a fix report
-    const reportPath = path.join(__dirname, "ERROR_FIX_REPORT.md");
+    const reportPath = path.join(__dirname, 'ERROR_FIX_REPORT.md');
     const report = `# Error Fix Report
 
 Generated: ${new Date().toISOString()}
@@ -364,7 +346,7 @@ Generated: ${new Date().toISOString()}
 
 ## Fixes Applied
 
-${FIXES_APPLIED.map((fix) => `### ${fix.file}\n- ${fix.fixes}\n`).join("\n")}
+${FIXES_APPLIED.map((fix) => `### ${fix.file}\n- ${fix.fixes}\n`).join('\n')}
 
 ## Next Steps
 1. Run \`npm run check\` to verify fixes
@@ -376,7 +358,7 @@ ${FIXES_APPLIED.map((fix) => `### ${fix.file}\n- ${fix.fixes}\n`).join("\n")}
     console.log(`\n📄 Fix report saved to: ERROR_FIX_REPORT.md`);
   }
 
-  console.log("\n🚀 Run `npm run check` to verify the fixes!");
+  console.log('\n🚀 Run `npm run check` to verify the fixes!');
 }
 
 // Execute if run directly
@@ -384,9 +366,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 
-export {
-  applyFixes,
-  fixImportIssues,
-  fixAccessibilityIssues,
-  fixTypeScriptIssues,
-};
+export { applyFixes, fixImportIssues, fixAccessibilityIssues, fixTypeScriptIssues };

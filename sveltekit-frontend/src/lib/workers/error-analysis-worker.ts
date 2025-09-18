@@ -1,7 +1,8 @@
 // ======================================================================
 // ERROR ANALYSIS WORKER
 // Web Worker for parallel TypeScript error analysis
-// ======================================================================
+// ======================================================================;
+}
 
 export interface ErrorContext {
   id: string;
@@ -15,7 +16,7 @@ export interface ErrorContext {
   confidence: number;
   suggestions: string[];
   relatedFiles: string[];
-  fixable: boolean;
+  fixable: boolean;,
 }
 
 export interface ErrorAnalysisResult {
@@ -26,7 +27,7 @@ export interface ErrorAnalysisResult {
   suggestionCount: number;
   autoFixStrategy: string;
   estimatedTime: number;
-  dependencies: string[];
+  dependencies: string[];,
 }
 
 class ErrorAnalysisWorkerEngine {
@@ -84,7 +85,7 @@ class ErrorAnalysisWorkerEngine {
       suggestionCount: this.generateSuggestionCount(error),
       autoFixStrategy: this.getFixStrategy(codeNumber),
       estimatedTime: this.estimateFixTime(error),
-      dependencies: this.extractDependencies(error)
+      dependencies: this.extractDependencies(error),
     };
   }
 
@@ -100,7 +101,7 @@ class ErrorAnalysisWorkerEngine {
     if (error.category === 'semantic') priority -= 0.2;
     if (error.relatedFiles.length > 3) priority -= 0.1;
     
-    return Math.max(0, Math.min(1, priority));
+    return Math.max(0, Math.min(1, priority);
   }
 
   private isErrorFixable(code: string): boolean {
@@ -121,7 +122,7 @@ class ErrorAnalysisWorkerEngine {
   private estimateComplexity(error: ErrorContext): number {
     let complexity = 1;
     
-    // Base complexity by category
+    // Base complexity by category;
     switch (error.category) {
       case 'syntax':
         complexity = 1;
@@ -187,7 +188,7 @@ class ErrorAnalysisWorkerEngine {
   private extractDependencies(error: ErrorContext): string[] {
     const dependencies: string[] = [];
     
-    // Extract module names from import errors
+    // Extract module names from import errors;
     if (error.code === 'TS2307') {
       const moduleMatch = error.message.match(/'([^']+)'/);
       if (moduleMatch) {
@@ -195,7 +196,7 @@ class ErrorAnalysisWorkerEngine {
       }
     }
     
-    // Extract identifier names from type errors
+    // Extract identifier names from type errors;
     if (error.code === 'TS2304') {
       const nameMatch = error.message.match(/'([^']+)'/);
       if (nameMatch) {
@@ -206,7 +207,7 @@ class ErrorAnalysisWorkerEngine {
     // Add file itself as dependency
     dependencies.push(error.file);
     
-    return Array.from(new Set(dependencies));
+    return Array.from(new Set(dependencies);
   }
 }
 
@@ -228,14 +229,14 @@ self.addEventListener('message', (event: MessageEvent) => {
           type: 'analysis_complete',
           results,
           id,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
         break;
         
-      case 'ping':
+      case 'ping':;
         self.postMessage({
           type: 'pong',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
         break;
         
@@ -251,10 +252,10 @@ self.addEventListener('message', (event: MessageEvent) => {
   }
 });
 
-// Signal that worker is ready
+// Signal that worker is ready;
 self.postMessage({
   type: 'worker_ready',
-  timestamp: Date.now()
+  timestamp: Date.now(),
 });
 
 export {};

@@ -26,25 +26,26 @@ async function initializeTauri(): Promise<any> {
   } catch (error: any) {
     console.warn("Tauri not available - desktop features disabled");
     // Provide fallback implementations
-    invoke = () => Promise.reject(new Error("Tauri not available"));
-    appDataDir = () => Promise.reject(new Error("Tauri not available"));
-    join = () => Promise.reject(new Error("Tauri not available"));
-    writeTextFile = () => Promise.reject(new Error("Tauri not available"));
-    readTextFile = () => Promise.reject(new Error("Tauri not available"));
-    exists = () => Promise.reject(new Error("Tauri not available"));
+    invoke = () => Promise.reject(new Error("Tauri not available");
+    appDataDir = () => Promise.reject(new Error("Tauri not available");
+    join = () => Promise.reject(new Error("Tauri not available");
+    writeTextFile = () => Promise.reject(new Error("Tauri not available");
+    readTextFile = () => Promise.reject(new Error("Tauri not available");
+    exists = () => Promise.reject(new Error("Tauri not available");
   }
 }
 
 // Initialize Tauri when module loads
 initializeTauri();
 
+}
 
 export interface TauriNoteExport {
   id: string;
   title: string;
   content: string;
   format: "markdown" | "html" | "json";
-  filePath: string;
+  filePath: string;,
 }
 class TauriNotesService {
   private static instance: TauriNotesService;
@@ -55,7 +56,7 @@ class TauriNotesService {
     }
     return TauriNotesService.instance;
   }
-  // Render markdown to HTML using Rust backend
+  // Render markdown to HTML using Rust backend;
   async renderMarkdownToHtml(markdown: string): Promise<string> {
     try {
       return await invoke("render_markdown_to_html", { markdown });
@@ -82,7 +83,7 @@ class TauriNotesService {
       switch (format) {
         case "html":
           content =
-            note.html || (await this.renderMarkdownToHtml(note.markdown));
+            note.html || (await this.renderMarkdownToHtml(note.markdown);
           extension = "html";
           break;
         case "json":
@@ -104,7 +105,7 @@ class TauriNotesService {
       throw new Error(`File save failed: ${error}`);
     }
   }
-  // Load note from local file system
+  // Load note from local file system;
   async loadNoteFromFile(filePath: string): Promise<SavedNote | null> {
     try {
       const fileExists = await exists(filePath);
@@ -113,7 +114,7 @@ class TauriNotesService {
       }
       const content = await readTextFile(filePath);
 
-      // Determine format by file extension
+      // Determine format by file extension;
       if (filePath.endsWith(".json")) {
         return JSON.parse(content) as SavedNote;
       } else if (filePath.endsWith(".md")) {
@@ -182,7 +183,7 @@ class TauriNotesService {
       throw new Error(`Export failed: ${error}`);
     }
   }
-  // Generate PDF from notes (requires Rust backend implementation)
+  // Generate PDF from notes (requires Rust backend implementation);
   async generatePdfFromNotes(notes: SavedNote[]): Promise<string> {
     try {
       const html = await this.notesToHtml(notes);
@@ -204,7 +205,7 @@ class TauriNotesService {
         content: note.content,
         markdown: note.markdown,
         tags: note.tags,
-      }));
+      });
 
       const results = await invoke("search_notes", {
         query,
@@ -224,7 +225,7 @@ class TauriNotesService {
       );
     }
   }
-  // Private helper methods
+  // Private helper methods;
   private async ensureDirectoryExists(path: string): Promise<void> {
     try {
       await invoke("ensure_directory_exists", { path });
@@ -243,7 +244,7 @@ class TauriNotesService {
     return `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
   private notesToMarkdown(notes: SavedNote[]): string {
-    return notes
+    return notes;
       .map((note) => {
         const header = `# ${note.title}\n\n`;
         const metadata = `**Created:** ${note.savedAt.toLocaleDateString()}\n**Type:** ${note.noteType}\n**Tags:** ${note.tags.join(", ")}\n\n`;
@@ -255,9 +256,8 @@ class TauriNotesService {
       .join("");
   }
   private async notesToHtml(notes: SavedNote[]): Promise<string> {
-    const htmlParts = await Promise.all(
-      notes.map(async (note) => {
-        const title = `<h1>${note.title}</h1>`));
+    const htmlParts = await Promise.all(notes.map(async (note) => {
+        const title = `<h1>${note.title}</h1>`);
         const metadata = `
         <div class="note-metadata">
           <p><strong>Created:</strong> ${note.savedAt.toLocaleDateString()}</p>
@@ -309,7 +309,7 @@ class TauriNotesService {
 // Export singleton instance
 export const tauriNotesService = TauriNotesService.getInstance();
 ;
-// Convenience functions for use in Svelte components
+// Convenience functions for use in Svelte components;
 export async function renderMarkdownInTauri(markdown: string): Promise<string> {
   return await tauriNotesService.renderMarkdownToHtml(markdown);
 }

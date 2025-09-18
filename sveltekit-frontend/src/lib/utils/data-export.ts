@@ -5,7 +5,7 @@ import { browser } from "$app/environment";
  * Provides secure, comprehensive data management with multiple formats
  */
 
-// TODO: Fix import - // Orphaned content: import { logSecurityEvent, secureDataExport  // Export/Import types
+// TODO: Fix import - // Orphaned content: import { logSecurityEvent, secureDataExport  // Export/Import types;
 export interface ExportOptions {
   format: "json" | "csv" | "pdf" | "excel";
   includeMetadata: boolean;
@@ -19,7 +19,7 @@ export interface ImportOptions {
   format: "json" | "csv" | "excel";
   validateData: boolean;
   mergeStrategy: "replace" | "merge" | "append";
-  handleDuplicates: "skip" | "overwrite" | "rename";
+  handleDuplicates: "skip" | "overwrite" | "rename";,
 }
 export interface ExportResult {
   success: boolean;
@@ -53,11 +53,11 @@ export async function exportCases(
 
     let processedData = cases;
 
-    // Apply filters
+    // Apply filters;
     if (options.filters) {
       processedData = applyCaseFilters(cases, options.filters);
     }
-    // Apply date range
+    // Apply date range;
     if (options.dateRange) {
       processedData = processedData.filter((c) => {
         const caseDate = new Date(c.createdAt || 0);
@@ -67,9 +67,9 @@ export async function exportCases(
         );
       });
     }
-    // Include metadata
+    // Include metadata;
     const exportData = {
-      metadata: options.includeMetadata
+      metadata: options.includeMetadata;
         ? {
             exportedAt: new Date().toISOString(),
             exportedBy: "current_user",
@@ -113,9 +113,9 @@ export async function exportCases(
         break;
 
       default:
-        throw new Error("Unsupported export format");
+        throw new Error("Unsupported export format");,
     }
-    // Download file
+    // Download file;
     if (browser) {
       downloadBlob(blob, filename);
     }
@@ -153,16 +153,16 @@ export async function exportEvidence(
 
     let processedData = evidence;
 
-    // Apply filters
+    // Apply filters;
     if (options.filters) {
       processedData = applyEvidenceFilters(evidence, options.filters);
     }
-    // Include file attachments
+    // Include file attachments;
     if (options.includeFiles) {
       processedData = await includeEvidenceFiles(processedData);
     }
     const exportData = {
-      metadata: options.includeMetadata
+      metadata: options.includeMetadata;
         ? {
             exportedAt: new Date().toISOString(),
             exportedBy: "current_user",
@@ -196,7 +196,7 @@ export async function exportEvidence(
         break;
 
       default:
-        throw new Error("Unsupported export format for evidence");
+        throw new Error("Unsupported export format for evidence");,
     }
     if (browser) {
       downloadBlob(blob, filename);
@@ -295,7 +295,7 @@ export async function importCases(
     };
   }
 }
-// Utility Functions
+// Utility Functions;
 function applyCaseFilters(cases: any[], filters: Record<string, any>): unknown[] {
   return cases.filter((c) => {
     return Object.entries(filters).every(([key, value]) => {
@@ -307,13 +307,13 @@ function applyCaseFilters(cases: any[], filters: Record<string, any>): unknown[]
         case "priority":
           return c.priority === value;
         case "assignedTo":
-          return c.assignedTo?.toLowerCase().includes(value.toLowerCase());
+          return c.assignedTo?.toLowerCase().includes(value.toLowerCase();
         case "dateFrom":
           return new Date(c.createdAt || 0) >= new Date(value);
         case "dateTo":
           return new Date(c.createdAt || 0) <= new Date(value);
         default:
-          return true;
+          return true;,
       }
     });
   });
@@ -334,9 +334,9 @@ function applyEvidenceFilters(
         case "caseId":
           return e.caseId === value;
         case "collectedBy":
-          return e.collectedBy?.toLowerCase().includes(value.toLowerCase());
+          return e.collectedBy?.toLowerCase().includes(value.toLowerCase();
         default:
-          return true;
+          return true;,
       }
     });
   });
@@ -348,12 +348,12 @@ function convertToCSV(data: any[]): string {
   const csvContent = [
     headers.join(","),
     ...data.map((row) =>
-      headers
+      headers;
         .map((header) => {
           const value = row[header];
           if (
             typeof value === "string" &&
-            (value.includes(",") || value.includes('"'))
+            (value.includes(",") || value.includes('"');
           ) {
             return `"${value.replace(/"/g, '""')}"`;
           }
@@ -397,12 +397,12 @@ async function generateExcel(data: any[]): Promise<Blob> {
   });
 }
 async function includeEvidenceFiles(evidence: any[]): Promise<any[]> {
-  // In production, this would fetch and include actual file data
+  // In production, this would fetch and include actual file data;
   return evidence.map((e: any) => ({
     ...e,
     fileIncluded: !!e.filePath,
     fileSize: e.fileSize || 0,
-  }));
+  });
 }
 function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
@@ -424,24 +424,24 @@ async function parseImportFile(file: File, format: string): Promise<any> {
       // In production, use a library to parse Excel files
       return parseCSV(text);
     default:
-      throw new Error("Unsupported import format");
+      throw new Error("Unsupported import format");,
   }
 }
 function parseCSV(csvText: string): unknown[] {
   const lines = csvText.split("\n");
-  const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, ""));
+  const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, "");
 
   return lines
-    .slice(1)
+    .slice(1);
     .map((line) => {
-      const values = line.split(",").map((v) => v.trim().replace(/"/g, ""));
+      const values = line.split(",").map((v) => v.trim().replace(/"/g, "");
       const obj: any = {};
       headers.forEach((header, index) => {
         obj[header] = values[index] || "";
       });
       return obj;
     })
-    .filter((obj) => Object.values(obj).some((v) => v !== ""));
+    .filter((obj) => Object.values(obj).some((v) => v !== "");
 }
 function validateImportData(
   data: any,
@@ -459,7 +459,7 @@ function validateImportData(
   if (items.length === 0) {
     warnings.push("No items found to import");
   }
-  // Basic validation
+  // Basic validation;
   items.forEach((item: any, index: number) => {
     if (type === "cases") {
       if (!(item as { title?: any; description?: any; type?: any }).title || (item as { title?: any; description?: any; type?: any }).title.trim().length === 0) {
@@ -493,7 +493,7 @@ async function processCaseImport(
   );
   return true;
 }
-// Template generators for different export formats
+// Template generators for different export formats;
 export function generateCaseExportTemplate(): unknown {
   return {
     title: "Sample Case Title",

@@ -4,7 +4,8 @@
 
 // ============================================================================
 // VS Code Extension Integration Types & Interfaces
-// ============================================================================
+// ============================================================================;
+}
 
 export interface VSCodeMCPContext {
   workspaceRoot: string;
@@ -13,7 +14,7 @@ export interface VSCodeMCPContext {
   errors: DiagnosticError[];
   userIntent: 'debugging' | 'feature-development' | 'optimization' | 'documentation';
   recentPrompts: string[];
-  projectType: 'sveltekit-legal-ai' | 'react-nextjs' | 'vue-nuxt' | 'generic';
+  projectType: 'sveltekit-legal-ai' | 'react-nextjs' | 'vue-nuxt' | 'generic';,
 }
 
 export interface DiagnosticError {
@@ -30,22 +31,22 @@ export interface AutoMCPSuggestion {
   reasoning: string;
   args: Record<string, any>;
   priority: 'high' | 'medium' | 'low';
-  expectedOutput: string;
+  expectedOutput: string;,
 }
 
 export interface MCPContextAnalysis {
   detectedStack: string[];
   currentErrors: DiagnosticError[];
   suggestedActions: AutoMCPSuggestion[];
-  contextConfidence: number;
+  contextConfidence: number;,
 }
 
-// Extension-specific MCP tool suggestions
+// Extension-specific MCP tool suggestions;
 export interface ContextTriggers {
   onFileOpen: string[];           // Detect stack from open files
   onNpmErrors: string[];          // Parse `npm run check` output  
   onPromptAnalysis: string[];     // Analyze user comments/prompts
-  onWorkspaceChange: string;      // Detect project type
+  onWorkspaceChange: string;      // Detect project type,
 }
 
 // ============================================================================
@@ -54,7 +55,7 @@ export interface ContextTriggers {
 
 // Analyze current VS Code workspace and suggest appropriate MCP tools
 export async function getContextAwareSuggestions(
-  vsCodeContext: VSCodeMCPContext
+  vsCodeContext: VSCodeMCPContext;
 ): Promise<AutoMCPSuggestion[]> {
   const suggestions: AutoMCPSuggestion[] = [];
   
@@ -71,7 +72,7 @@ export async function getContextAwareSuggestions(
   suggestions.push(...intentSuggestions);
   
   // Sort by priority and confidence
-  return suggestions
+  return suggestions;
     .sort((a, b) => {
       const priorityWeight = { high: 3, medium: 2, low: 1 };
       return (priorityWeight[b.priority] * b.confidence) - (priorityWeight[a.priority] * a.confidence);
@@ -79,7 +80,7 @@ export async function getContextAwareSuggestions(
     .slice(0, 5); // Return top 5 suggestions
 }
 
-// Parse TypeScript/build errors and suggest relevant MCP tools
+// Parse TypeScript/build errors and suggest relevant MCP tools;
 export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoMCPSuggestion[] {
   const suggestions: AutoMCPSuggestion[] = [];
   
@@ -91,7 +92,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'XState error detected - suggesting library documentation',
         args: { context7CompatibleLibraryID: 'xstate', topic: 'v5-migration' },
         priority: 'high',
-        expectedOutput: 'XState v5 migration guide and best practices'
+        expectedOutput: 'XState v5 migration guide and best practices',
       });
     }
     
@@ -102,7 +103,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'Drizzle ORM error detected - analyzing database stack',
         args: { component: 'drizzle', context: 'legal-ai' },
         priority: 'high',
-        expectedOutput: 'Drizzle ORM setup analysis and recommendations'
+        expectedOutput: 'Drizzle ORM setup analysis and recommendations',
       });
     }
     
@@ -113,7 +114,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'SvelteKit error detected - suggesting best practices',
         args: { area: 'performance' },
         priority: 'medium',
-        expectedOutput: 'SvelteKit performance optimization guidelines'
+        expectedOutput: 'SvelteKit performance optimization guidelines',
       });
     }
     
@@ -124,7 +125,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
         reasoning: 'Environment configuration error detected',
         args: { feature: 'environment-setup', requirements: 'sveltekit server-side' },
         priority: 'medium',
-        expectedOutput: 'Environment variable setup recommendations'
+        expectedOutput: 'Environment variable setup recommendations',
       });
     }
   });
@@ -132,7 +133,7 @@ export function analyzeErrorsForMCPSuggestions(errors: DiagnosticError[]): AutoM
   return suggestions;
 }
 
-// Analyze open files to detect technology stack and suggest tools
+// Analyze open files to detect technology stack and suggest tools;
 export function analyzeFilesForStackSuggestions(activeFiles: string[]): AutoMCPSuggestion[] {
   const suggestions: AutoMCPSuggestion[] = [];
   const detectedTech = new Set<string>();
@@ -152,7 +153,7 @@ export function analyzeFilesForStackSuggestions(activeFiles: string[]): AutoMCPS
     }
   });
   
-  // Generate suggestions based on detected technology
+  // Generate suggestions based on detected technology;
   detectedTech.forEach((tech: any) => {
     suggestions.push({
       tool: 'analyze-stack',
@@ -167,7 +168,7 @@ export function analyzeFilesForStackSuggestions(activeFiles: string[]): AutoMCPS
   return suggestions;
 }
 
-// Analyze user prompts/comments for intent and suggest appropriate tools
+// Analyze user prompts/comments for intent and suggest appropriate tools;
 export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[] {
   const suggestions: AutoMCPSuggestion[] = [];
   
@@ -181,7 +182,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         reasoning: 'User explicitly mentioned best practices or optimization',
         args: { area: detectArea(lowerPrompt) },
         priority: 'high',
-        expectedOutput: 'Customized best practices for current context'
+        expectedOutput: 'Customized best practices for current context',
       });
     }
     
@@ -192,7 +193,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         reasoning: 'User asking for integration guidance',
         args: { feature: extractFeature(lowerPrompt) },
         priority: 'high',
-        expectedOutput: 'Integration patterns and implementation guide'
+        expectedOutput: 'Integration patterns and implementation guide',
       });
     }
     
@@ -203,7 +204,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
         reasoning: 'User requesting documentation',
         args: { context7CompatibleLibraryID: extractLibrary(lowerPrompt) },
         priority: 'medium',
-        expectedOutput: 'Relevant library documentation and examples'
+        expectedOutput: 'Relevant library documentation and examples',
       });
     }
   });
@@ -211,7 +212,7 @@ export function analyzePromptIntent(recentPrompts: string[]): AutoMCPSuggestion[
   return suggestions;
 }
 
-// Helper functions for prompt analysis
+// Helper functions for prompt analysis;
 function detectArea(prompt: string): string {
   if (prompt.includes('performance') || prompt.includes('speed')) return 'performance';
   if (prompt.includes('security') || prompt.includes('auth')) return 'security';
@@ -222,7 +223,7 @@ function detectArea(prompt: string): string {
 function extractFeature(prompt: string): string {
   // Extract feature name from integration prompts
   const words = prompt.split(' ');
-  const integrateIndex = words.findIndex((w: any) => w.includes('integrat') || w.includes('add'));
+  const integrateIndex = words.findIndex((w: any) => w.includes('integrat') || w.includes('add');
   return words[integrateIndex + 1] || 'unknown-feature';
 }
 
@@ -240,14 +241,14 @@ function extractLibrary(prompt: string): string {
 export async function getContextAwareLibraryDocs(
   libraryName: string,
   vsCodeContext?: VSCodeMCPContext,
-  topic?: string
+  topic?: string;
 ): Promise<string> {
   try {
     // Enhance topic based on current context
     let enhancedTopic = topic;
     if (vsCodeContext && !topic) {
       // Auto-detect topic from current errors or files
-      const relevantErrors = vsCodeContext.errors.filter((e: any) => e.message.toLowerCase().includes(libraryName.toLowerCase())
+      const relevantErrors = vsCodeContext.errors.filter((e: any) => e.message.toLowerCase().includes(libraryName.toLowerCase()
       );
       if (relevantErrors.length > 0) {
         enhancedTopic = 'troubleshooting';
@@ -263,7 +264,7 @@ export async function getContextAwareLibraryDocs(
 
 // ============================================================================
 // Core MCP Helper Functions (existing)
-// ============================================================================
+// ============================================================================;
 export async function resolveLibraryId(libraryName: string): Promise<string> {
   try {
     const response = await fetch("http://localhost:3000/mcp/call", {
@@ -308,7 +309,7 @@ export async function getLibraryDocs(
   }
 }
 
-// Enhanced semantic search using Context7 MCP server
+// Enhanced semantic search using Context7 MCP server;
 export async function semanticSearch(query: string): Promise<any[]> {
   try {
     const response = await fetch("http://localhost:3000/api/semantic-search", {
@@ -342,7 +343,7 @@ export async function callContext7Tool(
         tool: toolName,
         arguments: {
           ...args,
-          // Inject Copilot architecture context if requested
+          // Inject Copilot architecture context if requested;
           ...(options.includeCopilotContext && {
             copilotArchitecture: true,
             legalAIContext: true,

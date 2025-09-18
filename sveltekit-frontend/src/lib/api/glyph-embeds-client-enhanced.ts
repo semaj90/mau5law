@@ -2,7 +2,8 @@
  * Enhanced Client-side API wrapper for SIMD Glyph Embeds with RAG Integration
  * Provides typed interface to /api/glyph/simd-embeds endpoint with comprehensive
  * RAG processing, glyph synthesis, and pgvector integration
- */
+ */;
+}
 
 export interface SIMDGlyphConfig {
   enable_tiling: boolean;
@@ -10,7 +11,7 @@ export interface SIMDGlyphConfig {
   compression_target: number;
   shader_format: 'webgl' | 'webgpu' | 'css' | 'svg';
   adaptive_quality: boolean;
-  performance_tier: 'nes' | 'snes' | 'n64';
+  performance_tier: 'nes' | 'snes' | 'n64';,
 }
 
 export interface GlyphEmbedRequest {
@@ -23,19 +24,20 @@ export interface GlyphEmbedRequest {
   neural_sprite_config?: {
     enable_compression: boolean;
     target_ratio: number;
-    predictive_frames: number;
+    predictive_frames: number;,
   };
   simd_config?: Partial<SIMDGlyphConfig>;
-  // RAG enhancement fields
+  // RAG enhancement fields;
   rag_config?: {
     enable_chunking: boolean;
     chunk_size: number;
     overlap_size: number;
     enable_summarization: boolean;
-    enable_vector_store: boolean;
+    enable_vector_store: boolean;,
   };
   article_urls?: string[];
-  content_sources?: Array<any>
+  content_sources?: Array<any>;
+}
 
 export interface SIMDShaderData {
   tiled_data: Float32Array;
@@ -46,7 +48,7 @@ export interface SIMDShaderData {
     tiling_time_ms: number;
     compression_time_ms: number;
     shader_generation_time_ms: number;
-    total_optimization_time_ms: number;
+    total_optimization_time_ms: number;,
   };
 }
 
@@ -57,14 +59,15 @@ export interface GlyphEmbedResult {
   generation_time_ms: number;
   cache_hits: number;
   enhanced_artifact_url?: string;
-  // RAG enhancement results
+  // RAG enhancement results;
   rag_results?: {
     chunks_processed: number;
     embeddings_generated: number;
     vector_store_updates: number;
     summary_tokens: number;
     semantic_matches: Array<any>;
-  synthesized_glyphs?: Array<any>
+  synthesized_glyphs?: Array<any>;
+}
 
 export interface GlyphEmbedResponse {
   success: boolean;
@@ -79,7 +82,7 @@ export interface GlyphEmbedResponse {
     compression_ratio: number;
     shader_format?: string;
     performance_tier?: string;
-    generated_at: string;
+    generated_at: string;,
   };
 }
 
@@ -95,7 +98,7 @@ export interface GlyphHealthStatus {
     tensor_caching: boolean;
     png_embedding: boolean;
     neural_sprite_integration: boolean;
-    portable_artifacts: boolean;
+    portable_artifacts: boolean;,
   };
   supported_formats: string[];
   performance_tiers: string[];
@@ -103,13 +106,13 @@ export interface GlyphHealthStatus {
   integration_status: {
     glyph_diffusion_service: string;
     simd_gpu_tiling_engine: string;
-    png_embed_extractor: string;
+    png_embed_extractor: string;,
   };
 }
 
 /**
  * Enhanced SIMD Glyph Embeds API Client with RAG Integration
- */
+ */;
 export class EnhancedGlyphEmbedsClient {
   private baseUrl: string;
 
@@ -119,7 +122,7 @@ export class EnhancedGlyphEmbedsClient {
 
   /**
    * Generate SIMD-optimized glyph with shader embeds
-   */
+   */;
   async generateGlyph(request: GlyphEmbedRequest): Promise<GlyphEmbedResponse> {
     try {
       const response = await fetch(`${this.baseUrl}/api/glyph/simd-embeds`, {
@@ -146,7 +149,7 @@ export class EnhancedGlyphEmbedsClient {
           },
           rag_config: request.rag_config,
           article_urls: request.article_urls,
-          content_sources: request.content_sources
+          content_sources: request.content_sources,
         })
       });
 
@@ -156,7 +159,7 @@ export class EnhancedGlyphEmbedsClient {
 
       const result: GlyphEmbedResponse = await (response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).json();
       
-      // Convert tiled_data back to Float32Array if it exists
+      // Convert tiled_data back to Float32Array if it exists;
       if ((result as { data?: any; status?: any; value?: any; reason?: any }).data?.simd_shader_data?.tiled_data) {
         const tiledDataArray = (result as { data?: any; status?: any; value?: any; reason?: any }).data.simd_shader_data.tiled_data;
         if (Array.isArray(tiledDataArray)) {
@@ -170,18 +173,18 @@ export class EnhancedGlyphEmbedsClient {
       console.error('SIMD glyph generation failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Unknown error occurred'
+        error: error instanceof Error ? error.message: 'Unknown error occurred',
       };
     }
   }
 
   /**
    * Get health status of SIMD glyph service
-   */
+   */;
   async getHealthStatus(): Promise<any> {
     try {
       const response = await fetch(`${this.baseUrl}/api/glyph/simd-embeds`, {
-        method: 'GET'
+        method: 'GET',
       });
 
       if (!(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).ok) {
@@ -194,7 +197,7 @@ export class EnhancedGlyphEmbedsClient {
       console.error('Health check failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Health check failed'
+        error: error instanceof Error ? error.message: 'Health check failed',
       };
     }
   }
@@ -204,15 +207,15 @@ export class EnhancedGlyphEmbedsClient {
    */
   async generateGlyphVariations(
     baseRequest: GlyphEmbedRequest,
-    variations: Partial<GlyphEmbedRequest>[]
+    variations: Partial<GlyphEmbedRequest>[];
   ): Promise<GlyphEmbedResponse[]> {
     const requests = variations.map(variation => ({
       ...baseRequest,
       ...variation
-    }));
+    ,});
 
     const results = await Promise.allSettled(
-      requests.map(request => this.generateGlyph(request))
+      requests.map(request => this.generateGlyph(request)
     );
 
     return results.map(result => 
@@ -249,7 +252,7 @@ export class EnhancedGlyphEmbedsClient {
       for (const article of articles) {
         let content = article.content;
         
-        // Fetch article if URL provided
+        // Fetch article if URL provided;
         if (article.url && !content) {
           try {
             const response = await fetch(article.url);
@@ -272,7 +275,7 @@ export class EnhancedGlyphEmbedsClient {
           let summary = '';
           let embedding: number[] | undefined;
 
-          // Generate summary using gemma3:legal-latest
+          // Generate summary using gemma3:legal-latest;
           if (enable_summarization) {
             try {
               const summaryResponse = await fetch(`${this.baseUrl}/api/llm/gemma3-legal/summarize`, {
@@ -281,7 +284,7 @@ export class EnhancedGlyphEmbedsClient {
                 body: JSON.stringify({
                   content: chunk,
                   max_tokens: 150,
-                  legal_context: true
+                  legal_context: true,
                 })
               });
               
@@ -294,14 +297,14 @@ export class EnhancedGlyphEmbedsClient {
             }
           }
 
-          // Generate embeddings using gemma embeds
+          // Generate embeddings using gemma embeds;
           try {
             const embedResponse = await fetch(`${this.baseUrl}/api/embeddings/gemma`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 text: summary || chunk,
-                model: 'embeddinggemma:latest'
+                model: 'embeddinggemma:latest',
               })
             });
             
@@ -313,7 +316,7 @@ export class EnhancedGlyphEmbedsClient {
             console.warn('Embedding generation failed:', error);
           }
 
-          // Update pgvector store
+          // Update pgvector store;
           if (enable_vector_store && embedding) {
             try {
               await fetch(`${this.baseUrl}/api/vector/pgvector/store`, {
@@ -329,7 +332,7 @@ export class EnhancedGlyphEmbedsClient {
                     source_url: article.url,
                     chunk_index: i,
                     processed_at: new Date().toISOString(),
-                    content_type: 'article_chunk'
+                    content_type: 'article_chunk',
                   }
                 })
               });
@@ -346,7 +349,7 @@ export class EnhancedGlyphEmbedsClient {
             metadata: {
               ...article.metadata,
               source_url: article.url,
-              chunk_index: i
+              chunk_index: i,
             }
           });
         }
@@ -354,14 +357,14 @@ export class EnhancedGlyphEmbedsClient {
 
       return {
         success: true,
-        chunks: processedChunks
+        chunks: processedChunks,
       };
 
     } catch (error) {
       console.error('RAG processing failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'RAG processing failed'
+        error: error instanceof Error ? error.message: 'RAG processing failed',
       };
     }
   }
@@ -385,7 +388,7 @@ export class EnhancedGlyphEmbedsClient {
         cache_synthesized = true
       } = options;
 
-      // Generate synthesis request
+      // Generate synthesis request;
       const synthesisResponse = await fetch(`${this.baseUrl}/api/glyph/synthesize`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -395,7 +398,7 @@ export class EnhancedGlyphEmbedsClient {
           synthesis_config: {
             enable_neural_blending: true,
             preserve_legal_semantics: true,
-            target_format: 'webgpu'
+            target_format: 'webgpu',
           }
         })
       });
@@ -407,7 +410,7 @@ export class EnhancedGlyphEmbedsClient {
       const synthesisResult = await synthesisResponse.json();
       let didYouMeanSuggestions: string[] = [];
 
-      // Generate 'did you mean' suggestions using gemma3:legal-latest
+      // Generate 'did you mean' suggestions using gemma3:legal-latest;
       if (enable_did_you_mean) {
         try {
           const suggestionsResponse = await fetch(`${this.baseUrl}/api/llm/gemma3-legal/suggest`, {
@@ -417,7 +420,7 @@ export class EnhancedGlyphEmbedsClient {
               original_prompt: prompt,
               base_glyphs: baseGlyphIds,
               max_suggestions: max_suggestions,
-              context_type: 'legal_synthesis'
+              context_type: 'legal_synthesis',
             })
           });
           
@@ -430,7 +433,7 @@ export class EnhancedGlyphEmbedsClient {
         }
       }
 
-      // Cache synthesized glyph if enabled
+      // Cache synthesized glyph if enabled;
       if (cache_synthesized && synthesisResult.success) {
         try {
           await fetch(`${this.baseUrl}/api/glyph/cache`, {
@@ -443,7 +446,7 @@ export class EnhancedGlyphEmbedsClient {
                 base_glyphs: baseGlyphIds,
                 prompt: prompt,
                 suggestions: didYouMeanSuggestions,
-                cached_at: new Date().toISOString()
+                cached_at: new Date().toISOString(),
               }
             })
           });
@@ -455,14 +458,14 @@ export class EnhancedGlyphEmbedsClient {
       return {
         success: true,
         synthesized_glyph: synthesisResult.synthesized_glyph,
-        did_you_mean_suggestions: didYouMeanSuggestions
+        did_you_mean_suggestions: didYouMeanSuggestions,
       };
 
     } catch (error) {
       console.error('Glyph synthesis failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Synthesis failed'
+        error: error instanceof Error ? error.message: 'Synthesis failed',
       };
     }
   }
@@ -485,13 +488,13 @@ export class EnhancedGlyphEmbedsClient {
     try {
       const { limit = 10, threshold = 0.7, include_synthesized = true } = options;
 
-      // Generate query embedding
+      // Generate query embedding;
       const embedResponse = await fetch(`${this.baseUrl}/api/embeddings/gemma`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: query,
-          model: 'embeddinggemma:latest'
+          model: 'embeddinggemma:latest',
         })
       });
 
@@ -501,7 +504,7 @@ export class EnhancedGlyphEmbedsClient {
 
       const { embedding } = await embedResponse.json();
 
-      // Search pgvector store
+      // Search pgvector store;
       const searchResponse = await fetch(`${this.baseUrl}/api/vector/pgvector/search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -523,14 +526,14 @@ export class EnhancedGlyphEmbedsClient {
 
       return {
         success: true,
-        matches: searchResults.matches || []
+        matches: searchResults.matches || [],
       };
 
     } catch (error) {
       console.error('Semantic glyph search failed:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Search failed'
+        error: error instanceof Error ? error.message: 'Search failed',
       };
     }
   }
@@ -540,7 +543,7 @@ export class EnhancedGlyphEmbedsClient {
    */
   async createShaderForCanvas(
     glyphResult: GlyphEmbedResult,
-    targetFormat: 'webgl' | 'webgpu' = 'webgpu'
+    targetFormat: 'webgl' | 'webgpu' = 'webgpu';
   ): Promise<any> {
     try {
       if (!glyphResult.simd_shader_data) {
@@ -549,18 +552,18 @@ export class EnhancedGlyphEmbedsClient {
 
       const shaderData = glyphResult.simd_shader_data;
       
-      // Check if shader format matches target
+      // Check if shader format matches target;
       if (shaderData.shader_code.includes('@compute') && targetFormat === 'webgpu') {
         return {
           success: true,
-          shaderCode: shaderData.shader_code
+          shaderCode: shaderData.shader_code,
         };
       }
 
       if (shaderData.shader_code.includes('precision mediump') && targetFormat === 'webgl') {
         return {
           success: true,
-          shaderCode: shaderData.shader_code
+          shaderCode: shaderData.shader_code,
         };
       }
 
@@ -568,13 +571,13 @@ export class EnhancedGlyphEmbedsClient {
       console.warn(`Shader format mismatch. Generated for different target. Using as-is.`);
       return {
         success: true,
-        shaderCode: shaderData.shader_code
+        shaderCode: shaderData.shader_code,
       };
 
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Shader creation failed'
+        error: error instanceof Error ? error.message: 'Shader creation failed',
       };
     }
   }
@@ -584,7 +587,7 @@ export class EnhancedGlyphEmbedsClient {
    */
   async downloadEnhancedArtifact(
     glyphResult: GlyphEmbedResult,
-    filename?: string
+    filename?: string;
   ): Promise<any> {
     try {
       if (!glyphResult.enhanced_artifact_url) {
@@ -603,14 +606,14 @@ export class EnhancedGlyphEmbedsClient {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message: 'Download failed'
+        error: error instanceof Error ? error.message: 'Download failed',
       };
     }
   }
 
   /**
    * Chunk text content for RAG processing
-   */
+   */;
   private chunkText(text: string, chunkSize: number, overlapSize: number): string[] {
     const chunks: string[] = [];
     const words = text.split(/\s+/);
@@ -618,7 +621,7 @@ export class EnhancedGlyphEmbedsClient {
     for (let i = 0; i < words.length; i += chunkSize - overlapSize) {
       const chunk = words.slice(i, i + chunkSize).join(' ');
       if (chunk.trim().length > 0) {
-        chunks.push(chunk.trim());
+        chunks.push(chunk.trim();
       }
       
       if (i + chunkSize >= words.length) break;
@@ -631,14 +634,14 @@ export class EnhancedGlyphEmbedsClient {
 // Default instance
 export const enhancedGlyphEmbedsClient = new EnhancedGlyphEmbedsClient();
 
-// Utility functions
+// Utility functions;
 export const GLYPH_PRESETS = {
   detective: {
     style: 'detective',
     simd_config: {
       performance_tier: 'n64' as const,
       shader_format: 'webgpu' as const,
-      compression_target: 50
+      compression_target: 50,
     }
   },
   legal: {
@@ -646,7 +649,7 @@ export const GLYPH_PRESETS = {
     simd_config: {
       performance_tier: 'snes' as const,
       shader_format: 'webgl' as const,
-      compression_target: 25
+      compression_target: 25,
     }
   },
   retro: {
@@ -654,7 +657,7 @@ export const GLYPH_PRESETS = {
     simd_config: {
       performance_tier: 'nes' as const,
       shader_format: 'css' as const,
-      compression_target: 100
+      compression_target: 100,
     }
   },
   modern: {
@@ -662,7 +665,7 @@ export const GLYPH_PRESETS = {
     simd_config: {
       performance_tier: 'n64' as const,
       shader_format: 'webgpu' as const,
-      compression_target: 10
+      compression_target: 10,
     }
   }
 } as const;
@@ -674,7 +677,7 @@ export const RAG_PRESETS = {
       chunk_size: 512,
       overlap_size: 50,
       enable_summarization: true,
-      enable_vector_store: true
+      enable_vector_store: true,
     }
   },
   case_law: {
@@ -683,7 +686,7 @@ export const RAG_PRESETS = {
       chunk_size: 1024,
       overlap_size: 100,
       enable_summarization: true,
-      enable_vector_store: true
+      enable_vector_store: true,
     }
   },
   contracts: {
@@ -692,7 +695,7 @@ export const RAG_PRESETS = {
       chunk_size: 256,
       overlap_size: 25,
       enable_summarization: true,
-      enable_vector_store: true
+      enable_vector_store: true,
     }
   }
 } as const;
@@ -701,7 +704,7 @@ export function createEnhancedGlyphRequest(
   evidenceId: string | number,
   prompt: string,
   preset: keyof typeof GLYPH_PRESETS = 'detective',
-  ragPreset: keyof typeof RAG_PRESETS = 'legal_documents'
+  ragPreset: keyof typeof RAG_PRESETS = 'legal_documents';
 ): GlyphEmbedRequest {
   return {
     evidence_id: evidenceId,

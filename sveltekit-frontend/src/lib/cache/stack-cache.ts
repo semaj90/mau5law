@@ -1,14 +1,14 @@
 
-// Cache Configuration for Complete Stack
+// Cache Configuration for Complete Stack;
 export const cacheConfig = {
-  // Database query caching
+  // Database query caching;
   database: {
     enabled: false,
     ttl: 300, // 5 minutes
     layers: ['redis', 'memory']
   },
   
-  // API response caching  
+  // API response caching;
   api: {
     enabled: true,
     routes: {
@@ -18,14 +18,14 @@ export const cacheConfig = {
     }
   },
   
-  // Go services caching
+  // Go services caching;
   microservices: {
     'enhanced-rag': { enabled: true, ttl: 300 },
     'vector-service': { enabled: true, ttl: 600 },
     'upload-service': { enabled: false } // Real-time needed
   },
   
-  // Frontend caching
+  // Frontend caching;
   frontend: {
     components: { enabled: true, ttl: 3600 },
     assets: { enabled: true, ttl: 86400 },
@@ -33,7 +33,7 @@ export const cacheConfig = {
   }
 };
 
-// Cache implementation
+// Cache implementation;
 export class StackCache {
   private redis: any = null;
   private memory: Map<string, any> = new Map();
@@ -44,7 +44,7 @@ export class StackCache {
   }
   
   async get(key: string): Promise<any> {
-    // Try Redis first, fallback to memory
+    // Try Redis first, fallback to memory;
     if (this.redis) {
       const cached = await this.redis.get(key);
       if (cached) return JSON.parse(cached);
@@ -55,7 +55,7 @@ export class StackCache {
   
   async set(key: string, value: any, ttl: number): Promise<void> {
     if (this.redis) {
-      await this.redis.setex(key, ttl, JSON.stringify(value));
+      await this.redis.setex(key, ttl, JSON.stringify(value);
     }
     
     this.memory.set(key, value);

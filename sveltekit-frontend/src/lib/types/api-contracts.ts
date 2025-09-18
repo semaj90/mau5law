@@ -10,16 +10,16 @@ export type { StandardApiResponse };
 
 // ==================== API CONTRACT TYPES ====================
 
-// Base API response wrapper
+// Base API response wrapper;
 export interface ApiContract<TRequest = any, TResponse = any> {
   request: TRequest;
-  response: StandardApiResponse<TResponse>;
+  response: StandardApiResponse<TResponse>;,
 }
 
 // ==================== CASE API CONTRACTS ====================
 
 export namespace CaseAPI {
-  // GET /api/cases - List and search cases
+  // GET /api/cases - List and search cases;
   export interface ListRequest {
     query?: string;
     status?: string[];
@@ -39,18 +39,18 @@ export namespace CaseAPI {
       limit: number;
       total: number;
       hasNext: boolean;
-      hasPrev: boolean;
+      hasPrev: boolean;,
     };
     search?: {
       term: string;
       resultsCount: number;
-      vectorSearchUsed: boolean;
+      vectorSearchUsed: boolean;,
     } | null;
   }
 
   export type List = ApiContract<ListRequest, ListResponse>;
 
-  // POST /api/cases - Create new case
+  // POST /api/cases - Create new case;
   export interface CreateRequest {
     title: string;
     description?: string;
@@ -63,12 +63,12 @@ export namespace CaseAPI {
 
   export interface CreateResponse {
     case: Case;
-    message: string;
+    message: string;,
   }
 
   export type Create = ApiContract<CreateRequest, CreateResponse>;
 
-  // PUT /api/cases?id=<id> - Update case
+  // PUT /api/cases?id=<id> - Update case;
   export interface UpdateRequest {
     title?: string;
     description?: string;
@@ -79,14 +79,14 @@ export namespace CaseAPI {
 
   export interface UpdateResponse {
     case: Case;
-    message: string;
+    message: string;,
   }
 
   export type Update = ApiContract<UpdateRequest, UpdateResponse>;
 
-  // GET /api/cases?id=<id> - Get single case
+  // GET /api/cases?id=<id> - Get single case;
   export interface GetRequest {
-    id: string;
+    id: string;,
   }
 
   export interface GetResponse {
@@ -103,7 +103,7 @@ export namespace CaseAPI {
 // ==================== EVIDENCE API CONTRACTS ====================
 
 export namespace EvidenceAPI {
-  // GET /api/evidence - List and search evidence
+  // GET /api/evidence - List and search evidence;
   export interface ListRequest {
     query?: string;
     caseId?: string;
@@ -123,18 +123,18 @@ export namespace EvidenceAPI {
       limit: number;
       total: number;
       hasNext: boolean;
-      hasPrev: boolean;
+      hasPrev: boolean;,
     };
     search?: {
       term: string;
       resultsCount: number;
-      vectorSearchUsed: boolean;
+      vectorSearchUsed: boolean;,
     } | null;
   }
 
   export type List = ApiContract<ListRequest, ListResponse>;
 
-  // POST /api/evidence - Create new evidence
+  // POST /api/evidence - Create new evidence;
   export interface CreateRequest {
     caseId?: string;
     title: string;
@@ -155,12 +155,12 @@ export namespace EvidenceAPI {
 
   export interface CreateResponse {
     evidence: Evidence;
-    message: string;
+    message: string;,
   }
 
   export type Create = ApiContract<CreateRequest, CreateResponse>;
 
-  // PUT /api/evidence?id=<id> - Update evidence
+  // PUT /api/evidence?id=<id> - Update evidence;
   export interface UpdateRequest {
     title?: string;
     description?: string;
@@ -172,12 +172,12 @@ export namespace EvidenceAPI {
 
   export interface UpdateResponse {
     evidence: Evidence;
-    message: string;
+    message: string;,
   }
 
   export type Update = ApiContract<UpdateRequest, UpdateResponse>;
 
-  // DELETE /api/evidence?id=<id> - Delete evidence
+  // DELETE /api/evidence?id=<id> - Delete evidence;
   export interface DeleteRequest {
     id: string;
     reason?: string;
@@ -185,7 +185,7 @@ export namespace EvidenceAPI {
 
   export interface DeleteResponse {
     message: string;
-    evidenceId: string;
+    evidenceId: string;,
   }
 
   export type Delete = ApiContract<DeleteRequest, DeleteResponse>;
@@ -198,7 +198,7 @@ export namespace ChatAPI {
     id: string;
     content: string;
     role: 'user' | 'assistant' | 'system';
-    timestamp: string; // ISO date
+    timestamp: string; // ISO date;
     metadata?: {
       model?: string;
       confidence?: number;
@@ -215,7 +215,7 @@ export namespace ChatAPI {
     metadata?: Record<string, any>;
   }
 
-  // POST /api/ai/enhanced-chat - AI Chat
+  // POST /api/ai/enhanced-chat - AI Chat;
   export interface ChatRequest {
     query: string;
     context?: {
@@ -316,11 +316,11 @@ export namespace HealthAPI {
       enhancedRAG: ServiceStatus;
       uploadService: ServiceStatus;
       memory: ServiceStatus;
-      cache: ServiceStatus;
+      cache: ServiceStatus;,
     };
     performance: {
       responseTime: number;
-      status: 'healthy' | 'degraded';
+      status: 'healthy' | 'degraded';,
     };
     errors?: string[];
     system?: {
@@ -334,9 +334,9 @@ export namespace HealthAPI {
 
   export type Health = ApiContract<HealthRequest, HealthResponse>;
 
-  // POST /api/health - System maintenance
+  // POST /api/health - System maintenance;
   export interface MaintenanceRequest {
-    action: 'clear_cache' | 'force_gc' | 'test_database';
+    action: 'clear_cache' | 'force_gc' | 'test_database';,
   }
 
   export interface MaintenanceResponse {
@@ -366,17 +366,17 @@ export type ApiClient<T extends ApiContract<any, any> = (
   request: RequestOf<T>
 ) => Promise<ResponseOf<T>;
 
-// API endpoint configuration
+// API endpoint configuration;
 export interface ApiEndpoint<T extends ApiContract<any, any> {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   path: string;
-  contract: T;
+  contract: T;,
 }
 
 // ==================== API ENDPOINT DEFINITIONS ====================
 
 export const API_ENDPOINTS = {
-  // Case endpoints
+  // Case endpoints;
   cases: {
     list: { method: 'GET', path: '/api/cases' } as ApiEndpoint<CaseAPI.List>,
     create: { method: 'POST', path: '/api/cases' } as ApiEndpoint<CaseAPI.Create>,
@@ -384,7 +384,7 @@ export const API_ENDPOINTS = {
     get: { method: 'GET', path: '/api/cases' } as ApiEndpoint<CaseAPI.Get>,
   },
   
-  // Evidence endpoints
+  // Evidence endpoints;
   evidence: {
     list: { method: 'GET', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.List>,
     create: { method: 'POST', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.Create>,
@@ -392,17 +392,17 @@ export const API_ENDPOINTS = {
     delete: { method: 'DELETE', path: '/api/evidence' } as ApiEndpoint<EvidenceAPI.Delete>,
   },
   
-  // AI/Chat endpoints
+  // AI/Chat endpoints;
   ai: {
     chat: { method: 'POST', path: '/api/ai/enhanced-chat' } as ApiEndpoint<ChatAPI.Chat>,
   },
   
-  // Vector search endpoints
+  // Vector search endpoints;
   vectorSearch: {
     search: { method: 'POST', path: '/api/vector-search' } as ApiEndpoint<VectorSearchAPI.Search>,
   },
   
-  // Health endpoints
+  // Health endpoints;
   health: {
     check: { method: 'GET', path: '/api/health' } as ApiEndpoint<HealthAPI.Health>,
     maintenance: { method: 'POST', path: '/api/health' } as ApiEndpoint<HealthAPI.Maintenance>,

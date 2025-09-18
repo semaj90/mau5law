@@ -8,14 +8,14 @@ declare global {
   }
 }
 
-// Drizzle ORM result augmentations
+// Drizzle ORM result augmentations;
 declare global {
   interface RowList<T> {
-    rows: T;
+    rows: T;,
   }
 }
 
-// Redis client augmentations
+// Redis client augmentations;
 declare module 'ioredis' {
   interface Redis {
     ping?(): Promise<string>;
@@ -26,7 +26,7 @@ declare module 'ioredis' {
   }
 }
 
-// XState type augmentations
+// XState type augmentations;
 declare global {
   interface AssignArgs<TContext, TEvent, TAction, TExpressionEvent, TActor> {
     userContext?: any;
@@ -34,7 +34,7 @@ declare global {
   }
 }
 
-// AI Service augmentations
+// AI Service augmentations;
 declare global {
   interface AIService {
     taskId?: string;
@@ -54,14 +54,14 @@ declare global {
   }
 }
 
-// Cache service augmentations
+// Cache service augmentations;
 declare global {
   interface CacheOptions {
     ttl: number;
     contentType?: string;
   }
   
-  // Worker message types
+  // Worker message types;
   interface WorkerMessage {
     taskId?: string;
     type: "error" | "status" | "result" | "task" | "TASK_STARTED" | "TASK_COMPLETED" | "TASK_ERROR" | "TASK_CANCELLED" | "STATUS_UPDATE";
@@ -81,7 +81,7 @@ declare global {
   }
 }
 
-// QdrantClient augmentations
+// QdrantClient augmentations;
 declare module '@qdrant/qdrant-js' {
   interface QdrantClient {
     baseUrl?: string;
@@ -103,7 +103,7 @@ declare global {
   }
 }
 
-// LokiJS types
+// LokiJS types;
 declare global {
   namespace loki {
     interface LokiMemoryAdapter {
@@ -112,7 +112,7 @@ declare global {
   }
 }
 
-// Ollama types
+// Ollama types;
 declare global {
   interface OllamaResponse {
     content?: string;

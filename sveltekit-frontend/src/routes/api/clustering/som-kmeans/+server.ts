@@ -30,24 +30,24 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       processedAt: new Date().toISOString(),
       
-      // K-means results
+      // K-means results;
       kmeans: {
         clusters: kmeansClusters,
         clusterCount: kmeansClusters.length,
         silhouetteScore: qualityMetrics.silhouetteScore,
-        inertia: qualityMetrics.inertia
+        inertia: qualityMetrics.inertia,
       },
       
-      // SOM results
+      // SOM results;
       som: {
         grid: somResults.grid,
         gridSize: `${somResults.width}x${somResults.height}`,
         neurons: somResults.neurons,
         trainingEpochs: somResults.trainingEpochs,
-        quantizationError: somResults.quantizationError
+        quantizationError: somResults.quantizationError,
       },
       
-      // Combined clustering insights
+      // Combined clustering insights;
       insights: {
         dominantTopics: identifyDominantTopics(kmeansClusters),
         documentSimilarity: calculateDocumentSimilarity(ragData, kmeansClusters),
@@ -55,21 +55,21 @@ export const POST: RequestHandler = async ({ request }) => {
         anomalies: detectAnomalies(features, kmeansClusters)
       },
       
-      // "Did you mean" recommendations
+      // "Did you mean" recommendations;
       recommendations: {
         suggestions: suggestions,
         confidence: calculateSuggestionConfidence(suggestions),
-        categories: categorizeSuggestions(suggestions)
+        categories: categorizeSuggestions(suggestions),
       },
       
-      // Quality and performance metrics
+      // Quality and performance metrics;
       metrics: {
         accuracy: qualityMetrics.accuracy,
         precision: qualityMetrics.precision,
         recall: qualityMetrics.recall,
         processingTime: qualityMetrics.processingTime,
         featureCount: features.vectors.length,
-        dimensionality: features.dimensions
+        dimensionality: features.dimensions,
       }
     };
 
@@ -99,7 +99,7 @@ function extractFeaturesForClustering(ragData: any): unknown {
     metadata: {
       documentId: document.documentId || 'unknown',
       processingTime: document.performance?.processingTime || 0,
-      confidence: document.performance?.confidence || 0
+      confidence: document.performance?.confidence || 0,
     }
   };
 }
@@ -207,7 +207,7 @@ async function performKMeansClustering(features: any, k: number): Promise<any[]>
   let centroids = initializeRandomCentroids(vectors, k);
   let clusters: any[] = [];
   
-  // K-means iterations
+  // K-means iterations;
   for (let iteration = 0; iteration < 100; iteration++) {
     // Assign points to nearest centroids
     clusters = assignPointsToClusters(vectors, centroids, features.labels);
@@ -215,7 +215,7 @@ async function performKMeansClustering(features: any, k: number): Promise<any[]>
     // Update centroids
     const newCentroids = updateCentroids(clusters);
     
-    // Check for convergence
+    // Check for convergence;
     if (centroidsConverged(centroids, newCentroids)) {
       console.log(`K-means converged after ${iteration + 1} iterations`);
       break;
@@ -231,7 +231,7 @@ async function performKMeansClustering(features: any, k: number): Promise<any[]>
     size: cluster.points.length,
     characteristics: analyzeClusterContent(cluster.points, features.labels),
     quality: calculateClusterQuality(cluster.points, cluster.centroid)
-  }));
+  });
 }
 
 async function performSOMAnalysis(features: any, config: { width: number, height: number }): Promise<any> {
@@ -246,7 +246,7 @@ async function performSOMAnalysis(features: any, config: { width: number, height
   let learningRate = 0.1;
   let neighborhoodRadius = Math.min(width, height) / 2;
   
-  // Training iterations
+  // Training iterations;
   for (let epoch = 0; epoch < trainingEpochs; epoch++) {
     for (const vector of vectors) {
       // Find Best Matching Unit (BMU)
@@ -258,7 +258,7 @@ async function performSOMAnalysis(features: any, config: { width: number, height
     
     // Decay learning rate and neighborhood radius
     learningRate = 0.1 * Math.exp(-epoch / trainingEpochs);
-    neighborhoodRadius = (Math.min(width, height) / 2) * Math.exp(-epoch / (trainingEpochs / 2));
+    neighborhoodRadius = (Math.min(width, height) / 2) * Math.exp(-epoch / (trainingEpochs / 2);
   }
   
   // Calculate quantization error
@@ -282,20 +282,20 @@ function generateDidYouMeanSuggestions(ragData: any, clusters: any[], somResults
   const documentText = ragData.ragResults?.embeddings?.embeddings?.[0]?.text || '';
   const concepts = ragData.ragResults?.legalContext?.concepts || [];
   
-  // Generate suggestions based on cluster analysis
+  // Generate suggestions based on cluster analysis;
   clusters.forEach(cluster => {
     cluster.characteristics.dominantTerms?.forEach((term: string) => {
       if (term && term.length > 3) {
-        suggestions.add(term.toLowerCase());
+        suggestions.add(term.toLowerCase();
       }
     });
   });
   
-  // Generate variations of legal concepts
+  // Generate variations of legal concepts;
   concepts.forEach((concept: string) => {
     if (concept.includes(' ')) {
       const variations = generateConceptVariations(concept);
-      variations.forEach(variation => suggestions.add(variation));
+      variations.forEach(variation => suggestions.add(variation);
     }
   });
   
@@ -323,7 +323,7 @@ function initializeRandomCentroids(vectors: number[][], k: number): number[][] {
   const dimensions = vectors[0].length;
   
   for (let i = 0; i < k; i++) {
-    const centroid = Array.from({ length: dimensions }, () => Math.random());
+    const centroid = Array.from({ length: dimensions }, () => Math.random();
     centroids.push(centroid);
   }
   
@@ -334,8 +334,8 @@ function assignPointsToClusters(vectors: number[][], centroids: number[][], labe
   const clusters = centroids.map((centroid, index) => ({
     centroid: [...centroid],
     points: [],
-    labels: []
-  }));
+    labels: [],
+  });
   
   vectors.forEach((vector, index) => {
     let minDistance = Infinity;
@@ -393,7 +393,7 @@ function initializeSOMGrid(width: number, height: number, dimensions: number): n
   for (let x = 0; x < width; x++) {
     grid[x] = [];
     for (let y = 0; y < height; y++) {
-      grid[x][y] = Array.from({ length: dimensions }, () => Math.random());
+      grid[x][y] = Array.from({ length: dimensions }, () => Math.random();
     }
   }
   
@@ -424,14 +424,14 @@ function updateSOMWeights(
   learningRate: number, 
   neighborhoodRadius: number, 
   width: number, 
-  height: number
+  height: number;
 ): void {
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
-      const distance = Math.sqrt(Math.pow(x - bmu.x, 2) + Math.pow(y - bmu.y, 2));
+      const distance = Math.sqrt(Math.pow(x - bmu.x, 2) + Math.pow(y - bmu.y, 2);
       
       if (distance <= neighborhoodRadius) {
-        const influence = Math.exp(-Math.pow(distance, 2) / (2 * Math.pow(neighborhoodRadius, 2)));
+        const influence = Math.exp(-Math.pow(distance, 2) / (2 * Math.pow(neighborhoodRadius, 2));
         const effectiveLearningRate = learningRate * influence;
         
         for (let i = 0; i < neurons[x][y].length; i++) {
@@ -463,7 +463,7 @@ function calculateClusteringQuality(kmeansClusters: any[], somResults: any): unk
     accuracy: 85 + Math.random() * 10, // Simulated
     precision: 80 + Math.random() * 15, // Simulated
     recall: 78 + Math.random() * 17, // Simulated
-    processingTime: Date.now() % 1000 + 1000 // Simulated
+    processingTime: Date.now() % 1000 + 1000 // Simulated,
   };
 }
 
@@ -472,7 +472,7 @@ function analyzeClusterContent(points: number[][], labels: string[]): unknown {
     dominantTerms: labels.slice(0, 3),
     averageVector: points[0] || [],
     variance: Math.random() * 10,
-    density: points.length / 10
+    density: points.length / 10,
   };
 }
 
@@ -481,8 +481,8 @@ function analyzeClusterCharacteristics(clusters: any[]): unknown[] {
     id: cluster.id,
     size: cluster.size,
     density: cluster.quality,
-    dominantFeatures: cluster.characteristics.dominantTerms || []
-  }));
+    dominantFeatures: cluster.characteristics.dominantTerms || [],
+  });
 }
 
 function identifyDominantTopics(clusters: any[]): string[] {
@@ -508,17 +508,17 @@ function categorizeSuggestions(suggestions: string[]): unknown {
     legal_terms: suggestions.filter(s => s.includes('law') || s.includes('legal')),
     procedural: suggestions.filter(s => s.includes('process') || s.includes('procedure')),
     contractual: suggestions.filter(s => s.includes('contract') || s.includes('agreement')),
-    general: suggestions.filter(s => !s.includes('law') && !s.includes('process') && !s.includes('contract'))
+    general: suggestions.filter(s => !s.includes('law') && !s.includes('process') && !s.includes('contract'),
   };
 }
 
 function calculateClusterQuality(points: number[][], centroid: number[]): number {
   if (points.length === 0) return 0;
   
-  const distances = points.map(point => calculateEuclideanDistance(point, centroid));
+  const distances = points.map(point => calculateEuclideanDistance(point, centroid);
   const avgDistance = distances.reduce((sum, d) => sum + d, 0) / distances.length;
   
-  return Math.max(0, 1 - (avgDistance / 10)); // Normalized quality score
+  return Math.max(0, 1 - (avgDistance / 10); // Normalized quality score
 }
 
 function generateSOMTopology(neurons: number[][][], width: number, height: number): unknown {
@@ -526,7 +526,7 @@ function generateSOMTopology(neurons: number[][][], width: number, height: numbe
     gridSize: `${width}x${height}`,
     totalNeurons: width * height,
     topology: 'rectangular',
-    neighborhoodFunction: 'gaussian'
+    neighborhoodFunction: 'gaussian',
   };
 }
 
@@ -534,10 +534,10 @@ function generateConceptVariations(concept: string): string[] {
   const variations = [];
   const words = concept.split(' ');
   
-  // Generate permutations and variations
+  // Generate permutations and variations;
   if (words.length > 1) {
-    variations.push(words.reverse().join(' '));
-    variations.push(words.join(' and '));
+    variations.push(words.reverse().join(' ');
+    variations.push(words.join(' and ');
     variations.push(`${words[0]} related to ${words.slice(1).join(' ')}`);
   }
   

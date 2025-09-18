@@ -1,7 +1,5 @@
-import {
-  true_default
-} from "./chunk-UWMOYZ25.js";
-import "./chunk-KWPVD4H7.js";
+import { true_default } from './chunk-UWMOYZ25.js';
+import './chunk-KWPVD4H7.js';
 
 // node_modules/@sveltejs/kit/src/exports/internal/index.js
 var HttpError = class {
@@ -11,7 +9,7 @@ var HttpError = class {
    */
   constructor(status, body) {
     this.status = status;
-    if (typeof body === "string") {
+    if (typeof body === 'string') {
       this.body = { message: body };
     } else if (body) {
       this.body = body;
@@ -45,34 +43,34 @@ var ActionFailure = class {
 };
 
 // node_modules/@sveltejs/kit/src/runtime/pathname.js
-var DATA_SUFFIX = "/__data.json";
-var HTML_DATA_SUFFIX = ".html__data.json";
+var DATA_SUFFIX = '/__data.json';
+var HTML_DATA_SUFFIX = '.html__data.json';
 function has_data_suffix(pathname) {
   return pathname.endsWith(DATA_SUFFIX) || pathname.endsWith(HTML_DATA_SUFFIX);
 }
 function add_data_suffix(pathname) {
-  if (pathname.endsWith(".html")) return pathname.replace(/\.html$/, HTML_DATA_SUFFIX);
-  return pathname.replace(/\/$/, "") + DATA_SUFFIX;
+  if (pathname.endsWith('.html')) return pathname.replace(/\.html$/, HTML_DATA_SUFFIX);
+  return pathname.replace(/\/$/, '') + DATA_SUFFIX;
 }
 function strip_data_suffix(pathname) {
   if (pathname.endsWith(HTML_DATA_SUFFIX)) {
-    return pathname.slice(0, -HTML_DATA_SUFFIX.length) + ".html";
+    return pathname.slice(0, -HTML_DATA_SUFFIX.length) + '.html';
   }
   return pathname.slice(0, -DATA_SUFFIX.length);
 }
-var ROUTE_SUFFIX = "/__route.js";
+var ROUTE_SUFFIX = '/__route.js';
 function has_resolution_suffix(pathname) {
   return pathname.endsWith(ROUTE_SUFFIX);
 }
 function add_resolution_suffix(pathname) {
-  return pathname.replace(/\/$/, "") + ROUTE_SUFFIX;
+  return pathname.replace(/\/$/, '') + ROUTE_SUFFIX;
 }
 function strip_resolution_suffix(pathname) {
   return pathname.slice(0, -ROUTE_SUFFIX.length);
 }
 
 // node_modules/@sveltejs/kit/src/version.js
-var VERSION = "2.27.3";
+var VERSION = '2.27.3';
 
 // node_modules/@sveltejs/kit/src/exports/index.js
 function error(status, body) {
@@ -87,7 +85,7 @@ function isHttpError(e, status) {
 }
 function redirect(status, location) {
   if ((!true_default || true_default) && (isNaN(status) || status < 300 || status > 308)) {
-    throw new Error("Invalid status code");
+    throw new Error('Invalid status code');
   }
   throw new Redirect(
     // @ts-ignore
@@ -101,31 +99,31 @@ function isRedirect(e) {
 function json(data, init) {
   const body = JSON.stringify(data);
   const headers = new Headers(init == null ? void 0 : init.headers);
-  if (!headers.has("content-length")) {
-    headers.set("content-length", encoder.encode(body).byteLength.toString());
+  if (!headers.has('content-length')) {
+    headers.set('content-length', encoder.encode(body).byteLength.toString());
   }
-  if (!headers.has("content-type")) {
-    headers.set("content-type", "application/json");
+  if (!headers.has('content-type')) {
+    headers.set('content-type', 'application/json');
   }
   return new Response(body, {
     ...init,
-    headers
+    headers,
   });
 }
 var encoder = new TextEncoder();
 function text(body, init) {
   const headers = new Headers(init == null ? void 0 : init.headers);
-  if (!headers.has("content-length")) {
+  if (!headers.has('content-length')) {
     const encoded = encoder.encode(body);
-    headers.set("content-length", encoded.byteLength.toString());
+    headers.set('content-length', encoded.byteLength.toString());
     return new Response(encoded, {
       ...init,
-      headers
+      headers,
     });
   }
   return new Response(body, {
     ...init,
-    headers
+    headers,
   });
 }
 function fail(status, data) {
@@ -135,10 +133,10 @@ function isActionFailure(e) {
   return e instanceof ActionFailure;
 }
 function normalizeUrl(url) {
-  url = new URL(url, "http://internal");
+  url = new URL(url, 'http://internal');
   const is_route_resolution = has_resolution_suffix(url.pathname);
   const is_data_request = has_data_suffix(url.pathname);
-  const has_trailing_slash = url.pathname !== "/" && url.pathname.endsWith("/");
+  const has_trailing_slash = url.pathname !== '/' && url.pathname.endsWith('/');
   if (is_route_resolution) {
     url.pathname = strip_resolution_suffix(url.pathname);
   } else if (is_data_request) {
@@ -155,11 +153,11 @@ function normalizeUrl(url) {
         new_url.pathname = add_resolution_suffix(new_url.pathname);
       } else if (is_data_request) {
         new_url.pathname = add_data_suffix(new_url.pathname);
-      } else if (has_trailing_slash && !new_url.pathname.endsWith("/")) {
-        new_url.pathname += "/";
+      } else if (has_trailing_slash && !new_url.pathname.endsWith('/')) {
+        new_url.pathname += '/';
       }
       return new_url;
-    }
+    },
   };
 }
 export {
@@ -172,6 +170,6 @@ export {
   json,
   normalizeUrl,
   redirect,
-  text
+  text,
 };
 //# sourceMappingURL=@sveltejs_kit.js.map

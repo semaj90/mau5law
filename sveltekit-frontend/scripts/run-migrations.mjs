@@ -4,7 +4,12 @@
  * Uses admin (postgres) connection for migrations and extensions
  */
 
-import { adminDb, adminPool, ensureExtensions, connectionInfo } from '../src/lib/server/db/connections.ts';
+import {
+  adminDb,
+  adminPool,
+  ensureExtensions,
+  connectionInfo,
+} from '../src/lib/server/db/connections.ts';
 import { spawn } from 'child_process';
 import { readFileSync } from 'fs';
 
@@ -17,7 +22,7 @@ async function runMigrations() {
     // Step 1: Ensure extensions are installed
     console.log('\n📦 Ensuring PostgreSQL extensions...');
     await ensureExtensions();
-    
+
     // Step 2: Run Drizzle migrations
     console.log('\n📋 Running Drizzle migrations...');
     const isWin = process.platform === 'win32';
@@ -26,10 +31,10 @@ async function runMigrations() {
       stdio: 'inherit',
       env: {
         ...process.env,
-        DATABASE_URL: process.env.MIGRATION_DATABASE_URL || process.env.ADMIN_DATABASE_URL
-      }
+        DATABASE_URL: process.env.MIGRATION_DATABASE_URL || process.env.ADMIN_DATABASE_URL,
+      },
     });
-    
+
     await new Promise((resolve, reject) => {
       drizzleProcess.on('exit', (code) => {
         if (code === 0) {
@@ -39,11 +44,11 @@ async function runMigrations() {
         }
       });
     });
-    
+
     // Step 3: Grant permissions to legal_admin
     console.log('\n🔐 Granting permissions to legal_admin...');
     const client = await adminPool.connect();
-    
+
     try {
       await client.query(`
         GRANT USAGE ON SCHEMA public TO legal_admin;
@@ -56,15 +61,14 @@ async function runMigrations() {
         ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO legal_admin;
         ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO legal_admin;
       `);
-      
+
       console.log('✅ Permissions granted to legal_admin');
     } finally {
       client.release();
     }
-    
+
     console.log('\n🎉 Migration completed successfully!');
     console.log('💡 Your app can now safely use legal_admin for all operations');
-    
   } catch (error) {
     console.error('\n❌ Migration failed:', error);
     process.exit(1);

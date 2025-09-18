@@ -27,7 +27,7 @@ import {
 
 /**
  * Example 1: Basic Legal Document Embedding Processing
- */
+ */;
 export async function basicLegalDocumentProcessing(device: GPUDevice) {
   // Simulate legal document embeddings (768-dimensional vectors)
   const documentEmbeddings = new Float32Array(1000 * 768); // 1000 documents
@@ -61,7 +61,7 @@ export async function basicLegalDocumentProcessing(device: GPUDevice) {
 
 /**
  * Example 2: Multi-Resolution Legal Analysis Pipeline
- */
+ */;
 export async function multiResolutionLegalAnalysis(device: GPUDevice) {
   console.log('⚖️ Multi-resolution legal analysis...');
   
@@ -85,7 +85,7 @@ export async function multiResolutionLegalAnalysis(device: GPUDevice) {
   console.log('- Bulk:', bulkBuffer.uploadStats);
   
   // Cache statistics
-  console.log('🗄️ Cache stats:', uploader.getCacheStats());
+  console.log('🗄️ Cache stats:', uploader.getCacheStats();
   
   // Cleanup
   [criticalBuffer, standardBuffer, bulkBuffer].forEach(result => 
@@ -95,7 +95,7 @@ export async function multiResolutionLegalAnalysis(device: GPUDevice) {
 
 /**
  * Example 3: Batch Legal Document Processing
- */
+ */;
 export async function batchLegalDocumentProcessing(device: GPUDevice) {
   console.log('📦 Batch legal document processing...');
   
@@ -110,17 +110,17 @@ export async function batchLegalDocumentProcessing(device: GPUDevice) {
   
   const uploader = new WebGPUBufferUploader(device);
   
-  // Batch upload with legal standard profile
+  // Batch upload with legal standard profile;
   const batchResults = await uploader.uploadBatch(legalDocuments, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     quantization: 'legal_standard',
     label: 'legal-document-batch',
-    debugMode: true
+    debugMode: true,
   });
   
   console.log(`✅ Batch processed ${batchResults.length} legal documents`);
   
-  // Process results
+  // Process results;
   batchResults.forEach((result, index) => {
     console.log(`📋 Document ${index + 1}:`, {
       compressionRatio: `${(result as { buffer?: any; uploadStats?: any }).uploadStats.compressionRatio.toFixed(2)}x`,
@@ -129,12 +129,12 @@ export async function batchLegalDocumentProcessing(device: GPUDevice) {
   });
   
   // Cleanup
-  batchResults.forEach(result => (result as { buffer?: any; uploadStats?: any }).buffer.destroy());
+  batchResults.forEach(result => (result as { buffer?: any; uploadStats?: any }).buffer.destroy();
 }
 
 /**
  * Example 4: Legal AI Compute Pipeline with Quantization
- */
+ */;
 export async function legalAIComputePipeline(device: GPUDevice) {
   console.log('🧠 Legal AI compute pipeline...');
   
@@ -154,24 +154,24 @@ export async function legalAIComputePipeline(device: GPUDevice) {
   
   const uploader = new WebGPUBufferUploader(device);
   
-  // Upload for compute shader
+  // Upload for compute shader;
   const weightsBuffer = await uploader.uploadBuffer(weightsQuantized.data.data as any, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     quantization: weightsQuantized.data.originalType,
-    label: 'legal-ai-weights'
+    label: 'legal-ai-weights',
   });
   
   const inputBuffer = await uploader.uploadBuffer(inputQuantized.data.data as any, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
     quantization: inputQuantized.data.originalType,
-    label: 'legal-ai-input'
+    label: 'legal-ai-input',
   });
   
-  // Create output buffer
+  // Create output buffer;
   const outputBuffer = device.createBuffer({
     size: inputDocument.byteLength,
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
-    label: 'legal-ai-output'
+    label: 'legal-ai-output',
   });
   
   console.log('✅ Legal AI compute buffers ready');
@@ -195,7 +195,7 @@ export async function legalAIComputePipeline(device: GPUDevice) {
 
 /**
  * Example 5: Legal Document Similarity Search with Mixed Precision
- */
+ */;
 export async function legalDocumentSimilaritySearch(device: GPUDevice) {
   console.log('🔍 Legal document similarity search...');
   
@@ -205,16 +205,16 @@ export async function legalDocumentSimilaritySearch(device: GPUDevice) {
   // Large corpus of legal documents (can use lower precision)
   const documentCorpus = [];
   for (let i = 0; i < 1000; i++) {
-    documentCorpus.push(new Float32Array(768).fill(0.1 + Math.random() * 0.8));
+    documentCorpus.push(new Float32Array(768).fill(0.1 + Math.random() * 0.8);
   }
   
   const uploader = new WebGPUBufferUploader(device);
   
-  // Upload query with high precision
+  // Upload query with high precision;
   const queryBuffer = await uploader.uploadBuffer(queryDocument, {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     quantization: 'legal_critical', // High precision for query
-    label: 'similarity-query'
+    label: 'similarity-query',
   });
   
   // Upload corpus with compression
@@ -222,7 +222,7 @@ export async function legalDocumentSimilaritySearch(device: GPUDevice) {
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     quantization: 'legal_compressed', // Compressed for bulk storage
     label: 'similarity-corpus',
-    debugMode: false
+    debugMode: false,
   });
   
   console.log('📚 Similarity search setup complete:');
@@ -241,12 +241,12 @@ export async function legalDocumentSimilaritySearch(device: GPUDevice) {
   
   // Cleanup
   queryBuffer.buffer.destroy();
-  corpusBuffers.forEach(result => (result as { buffer?: any; uploadStats?: any }).buffer.destroy());
+  corpusBuffers.forEach(result => (result as { buffer?: any; uploadStats?: any }).buffer.destroy();
 }
 
 /**
  * Example 6: Debug and Analysis Tools
- */
+ */;
 export async function debugAndAnalysisExample(device: GPUDevice) {
   console.log('🔧 Debug and analysis tools...');
   
@@ -269,7 +269,7 @@ export async function debugAndAnalysisExample(device: GPUDevice) {
     ensureF32(regularArray)
   ];
   
-  console.log('📊 Normalized data lengths:', normalizedData.map(d => d.length));
+  console.log('📊 Normalized data lengths:', normalizedData.map(d => d.length);
   
   // Test all quantization profiles
   console.log('🎯 Testing legal AI profiles:');
@@ -280,14 +280,14 @@ export async function debugAndAnalysisExample(device: GPUDevice) {
     console.log(`- ${profileName}:`, {
       compressionRatio: `${quantized.compressionRatio.toFixed(2)}x`,
       size: `${(quantized.byteLength / 1024).toFixed(2)} KB`,
-      mode: profile.mode
+      mode: profile.mode,
     });
   }
 }
 
 /**
  * Example 7: Real-world Legal AI Pipeline Integration
- */
+ */;
 export async function realWorldLegalAIPipeline(device: GPUDevice) {
   console.log('🏛️ Real-world legal AI pipeline...');
   
@@ -351,7 +351,7 @@ export async function realWorldLegalAIPipeline(device: GPUDevice) {
   });
   
   // Cleanup
-  results.forEach(result => (result as { buffer?: any; uploadStats?: any }).buffer.destroy());
+  results.forEach(result => (result as { buffer?: any; uploadStats?: any }).buffer.destroy();
   uploader.clearCache();
   
   console.log('✅ Legal AI pipeline complete');
@@ -359,7 +359,7 @@ export async function realWorldLegalAIPipeline(device: GPUDevice) {
 
 /**
  * Run all examples
- */
+ */;
 export async function runAllExamples(device: GPUDevice) {
   console.log('🚀 Running WebGPU Legal AI Buffer System Examples...\n');
   
@@ -392,7 +392,7 @@ export async function runAllExamples(device: GPUDevice) {
   }
 }
 
-// Export example runner for easy integration
+// Export example runner for easy integration;
 export default {
   basicLegalDocumentProcessing,
   multiResolutionLegalAnalysis,

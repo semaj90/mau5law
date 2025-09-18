@@ -3,27 +3,29 @@ console.log('🧪 Testing CHR-ROM Mipmap Integration...');
 
 try {
   // Mock browser environment for Node.js testing
-  global.window = { 
+  global.window = {
     __CHR_ROM_RUN_TESTS: true,
     document: {
-      createElement: () => ({ 
-        width: 0, 
-        height: 0, 
-        getContext: () => ({ 
+      createElement: () => ({
+        width: 0,
+        height: 0,
+        getContext: () => ({
           createImageData: () => ({ data: new Uint8Array(4) }),
           putImageData: () => {},
         }),
-        toDataURL: () => 'data:image/png;base64,test'
-      })
+        toDataURL: () => 'data:image/png;base64,test',
+      }),
     },
-    performance: { now: () => Date.now() }
+    performance: { now: () => Date.now() },
   };
   global.document = global.window.document;
   global.performance = global.window.performance;
 
   // Mock GPU classes
   global.GPUTexture = class {
-    destroy() { console.log('🧹 Mock GPU texture destroyed'); }
+    destroy() {
+      console.log('🧹 Mock GPU texture destroyed');
+    }
   };
 
   // Test basic functionality without full imports
@@ -39,7 +41,6 @@ try {
   console.log('   - Texture processing: Mock ready');
 
   console.log('\n✅ CHR-ROM Mipmap Integration is properly configured!');
-
 } catch (error) {
   console.error('❌ Test failed:', error.message);
   process.exit(1);

@@ -5,10 +5,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const { canvas_json, objects, canvas_size, options } = await request.json();
     
-    // Validate required fields
+    // Validate required fields;
     if (!canvas_json || !objects || !canvas_size) {
       return json(
-        { error: 'Missing required fields: canvas_json, objects, canvas_size' },
+        { error: 'Missing required fields: canvas_json, objects, canvas_size' },)
         { status: 400 }
       );
     }
@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const startTime = Date.now();
     
     // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 2000));
+    await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 2000);
     
     const processingTime = Date.now() - startTime;
     
@@ -38,9 +38,9 @@ ${shapeObjects > 0 ? `- Identified ${shapeObjects} visual element(s) that could 
 - Layout analysis suggests ${options?.analyze_layout ? 'organized spatial arrangement of evidence items' : 'basic evidence layout'}`;
 
     const summary = `Evidence canvas contains ${objectCount} total elements with ${
-      textObjects > 0 ? `${textObjects} text annotations and ` : ''
+      textObjects > 0 ? `${textObjects} text annotations and ` : '';
     }${shapeObjects} visual elements. ${
-      options?.extract_entities ? 'Entity extraction completed.' : ''
+      options?.extract_entities ? 'Entity extraction completed.' : '';
     } ${
       options?.generate_summary ? 'Summary generation completed.' : ''
     }`;
@@ -64,11 +64,10 @@ ${shapeObjects > 0 ? `- Identified ${shapeObjects} visual element(s) that could 
 
   } catch (error) {
     console.error('Evidence canvas analysis error:', error);
-    return json(
-      { 
+    return json({ 
         error: 'Internal server error during analysis',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },
+        details: error instanceof Error ? error.message: 'Unknown error',
+      },)
       { status: 500 }
     );
   }
@@ -80,6 +79,6 @@ export const GET: RequestHandler = async () => {
     endpoints: {
       'POST /api/evidence-canvas/analyze': 'Analyze canvas content and objects'
     },
-    version: '1.0.0'
+    version: '1.0.0',
   });
 };

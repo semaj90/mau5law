@@ -3,6 +3,7 @@ import path from 'path';
 import type { AuthenticatedUser } from './auth-guard.js';
 import { db } from './db.js';
 import { storage_audits } from './schema.js';
+}
 
 export interface AuditEntry {
   timestamp: string;
@@ -21,7 +22,7 @@ export interface AuditEntry {
 /**
  * Enhanced audit logging for storage operations
  * Supports both file-based and database logging
- */
+ */;
 export class StorageAuditLogger {
   private static logFile = path.resolve(process.cwd(), 'storage-audit.log');
   private static dbLogEnabled = !!process.env.DATABASE_URL;
@@ -37,7 +38,7 @@ export class StorageAuditLogger {
     request: Request,
     success: boolean,
     error?: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>;
   ): Promise<void> {
     const entry: AuditEntry = {
       timestamp: new Date().toISOString(),
@@ -56,7 +57,7 @@ export class StorageAuditLogger {
     // Log to file (always)
     await this.logToFile(entry);
 
-    // Log to database if available
+    // Log to database if available;
     if (this.dbLogEnabled && db) {
       try {
         await db.insert(storage_audits).values({
@@ -65,7 +66,7 @@ export class StorageAuditLogger {
           target: entry.key,
           bucket: entry.bucket,
           success: entry.success,
-          metadata: entry.metadata || null
+          metadata: entry.metadata || null,
         });
       } catch (e) {
         console.error('Failed to write audit entry to DB:', e);
@@ -75,7 +76,7 @@ export class StorageAuditLogger {
 
   /**
    * Log to file system
-   */
+   */;
   private static async logToFile(entry: AuditEntry): Promise<void> {
     try {
       const logLine = JSON.stringify(entry) + '\n';
@@ -87,14 +88,14 @@ export class StorageAuditLogger {
 
   /**
    * Log to database (if available)
-   */
+   */;
   private static async logToDatabase(entry: AuditEntry): Promise<void> {
     try {
       // This would integrate with your existing database setup
       // For now, we'll use a simple approach that can be extended
 
       if (typeof window === 'undefined' && global.database) {
-        // Example database integration - adjust based on your ORM/database setup
+        // Example database integration - adjust based on your ORM/database setup;
         await global.database.auditLog.create({
           data: {
             timestamp: new Date(entry.timestamp),
@@ -107,7 +108,7 @@ export class StorageAuditLogger {
             userAgent: entry.userAgent,
             success: entry.success,
             error: entry.error,
-            metadata: entry.metadata ? JSON.stringify(entry.metadata) : null
+            metadata: entry.metadata ? JSON.stringify(entry.metadata) : null,
           }
         });
       }
@@ -119,9 +120,8 @@ export class StorageAuditLogger {
 
   /**
    * Query audit logs (for admin dashboard)
-   */
-  static async getAuditLogs(
-    filters: {
+   */;
+  static async getAuditLogs(filters: {
       userId?: string;
       action?: string;
       bucket?: string;
@@ -147,8 +147,8 @@ export class StorageAuditLogger {
             userAgent: r.user_agent || undefined,
             success: r.success,
             error: r.error || undefined,
-            metadata: r.metadata || undefined
-          } as AuditEntry));
+            metadata: r.metadata || undefined,
+          } as AuditEntry);
         } catch (e) {
           console.error('DB audit query failed:', e);
           return this.queryLogFile(filters);
@@ -165,13 +165,13 @@ export class StorageAuditLogger {
 
   /**
    * Simple file-based log querying
-   */
+   */;
   private static async queryLogFile(filters: any): Promise<AuditEntry[]> {
     try {
       const content = await fs.promises.readFile(this.logFile, 'utf-8');
       const lines = content.trim().split('\n').filter(Boolean);
 
-      let entries: AuditEntry[] = lines
+      let entries: AuditEntry[] = lines;
         .map(line => {
           try {
             return JSON.parse(line) as AuditEntry;
@@ -181,7 +181,7 @@ export class StorageAuditLogger {
         })
         .filter(Boolean) as AuditEntry[];
 
-      // Apply filters
+      // Apply filters;
       if (filters.userId) {
         entries = entries.filter(e => e.userId === filters.userId);
       }
@@ -199,7 +199,7 @@ export class StorageAuditLogger {
       }
 
       // Sort by timestamp (newest first) and limit
-      entries.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      entries.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
 
       if (filters.limit) {
         entries = entries.slice(0, filters.limit);
@@ -214,18 +214,18 @@ export class StorageAuditLogger {
 
   /**
    * Archive old logs (for maintenance)
-   */
+   */;
   static async archiveLogs(olderThanDays = 90): Promise<void> {
     try {
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - olderThanDays);
 
       if (this.dbLogEnabled && global.database) {
-        // Archive database logs
+        // Archive database logs;
         await global.database.auditLog.deleteMany({
           where: {
             timestamp: {
-              lt: cutoffDate
+              lt: cutoffDate,
             }
           }
         });

@@ -7,7 +7,8 @@
 import { fromPromise, createActor, type ActorRefFrom } from "xstate";
 import { fetchWithTimeout } from "$lib/utils";
 
-// ===== EMBEDDING ACTOR =====
+// ===== EMBEDDING ACTOR =====;
+}
 
 export interface EmbeddingActorInput {
   text: string;
@@ -57,7 +58,8 @@ export const embeddingActor = fromPromise(async ({ input }: { input: EmbeddingAc
   }
 });
 
-// ===== DOCUMENT PROCESSING ACTOR =====
+// ===== DOCUMENT PROCESSING ACTOR =====;
+}
 
 export interface DocumentProcessingInput {
   documentId: string;
@@ -72,11 +74,10 @@ export interface DocumentProcessingOutput {
   entities?: Array<any>;
   embeddings?: { chunks: number; dimensions: number };
   processingTime: number;
-  success: boolean;
+  success: boolean;,
 }
 
-export const documentProcessingActor = fromPromise(
-  async ({ input }: { input: DocumentProcessingInput }) => {
+export const documentProcessingActor = fromPromise(async ({ input }: { input: DocumentProcessingInput }) => {
     const startTime = Date.now();
 
     try {
@@ -107,7 +108,8 @@ export const documentProcessingActor = fromPromise(
   }
 );
 
-// ===== LEGAL ANALYSIS ACTOR =====
+// ===== LEGAL ANALYSIS ACTOR =====;
+}
 
 export interface LegalAnalysisInput {
   content: string;
@@ -122,7 +124,7 @@ export interface LegalAnalysisOutput {
   recommendations: string[];
   precedents: Array<any>;
   confidence: number;
-  processingTime: number;
+  processingTime: number;,
 }
 
 export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAnalysisInput }) => {
@@ -155,7 +157,8 @@ export const legalAnalysisActor = fromPromise(async ({ input }: { input: LegalAn
   }
 });
 
-// ===== RAG SEARCH ACTOR =====
+// ===== RAG SEARCH ACTOR =====;
+}
 
 export interface RAGSearchInput {
   query: string;
@@ -169,7 +172,7 @@ export interface RAGSearchOutput {
   results: Array<any>;
   totalResults: number;
   processingTime: number;
-  model: string;
+  model: string;,
 }
 
 export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchInput }) => {
@@ -203,19 +206,19 @@ export const ragSearchActor = fromPromise(async ({ input }: { input: RAGSearchIn
 // ===== ACTOR FACTORY FUNCTIONS =====
 
 export function createEmbeddingActor(
-  input: EmbeddingActorInput
+  input: EmbeddingActorInput;
 ): ActorRefFrom<typeof embeddingActor> {
   return createActor(embeddingActor, { input });
 }
 
 export function createDocumentProcessingActor(
-  input: DocumentProcessingInput
+  input: DocumentProcessingInput;
 ): ActorRefFrom<typeof documentProcessingActor> {
   return createActor(documentProcessingActor, { input });
 }
 
 export function createLegalAnalysisActor(
-  input: LegalAnalysisInput
+  input: LegalAnalysisInput;
 ): ActorRefFrom<typeof legalAnalysisActor> {
   return createActor(legalAnalysisActor, { input });
 }
@@ -224,7 +227,8 @@ export function createRAGSearchActor(input: RAGSearchInput): ActorRefFrom<typeof
   return createActor(ragSearchActor, { input });
 }
 
-// ===== WORKFLOW ORCHESTRATION ACTOR =====
+// ===== WORKFLOW ORCHESTRATION ACTOR =====;
+}
 
 export interface WorkflowInput {
   steps: Array<any>;
@@ -235,7 +239,7 @@ export interface WorkflowOutput {
   results: Record<string, any>;
   totalTime: number;
   success: boolean;
-  errors: Array<any>;
+  errors: Array<any>;,
 }
 
 export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInput }) => {
@@ -245,7 +249,7 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
 
   try {
     if (input.parallel) {
-      // Execute steps in parallel
+      // Execute steps in parallel;
       const promises = input.steps.map(async (step, index) => {
         try {
           let actor: any; // XState v5 actor type
@@ -289,7 +293,7 @@ export const workflowActor = fromPromise(async ({ input }: { input: WorkflowInpu
 
       await Promise.allSettled(promises);
     } else {
-      // Execute steps sequentially
+      // Execute steps sequentially;
       for (let i = 0; i < input.steps.length; i++) {
         const step = input.steps[i];
         const stepId = `step_${i}`;

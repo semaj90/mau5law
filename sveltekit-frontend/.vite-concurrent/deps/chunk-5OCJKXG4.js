@@ -11,8 +11,8 @@ import {
   normalize_attribute,
   sanitize_location,
   set_should_intro,
-  should_intro
-} from "./chunk-VOC4A3DY.js";
+  should_intro,
+} from './chunk-VOC4A3DY.js';
 import {
   ATTACHMENT_KEY,
   BLOCK_EFFECT,
@@ -145,8 +145,8 @@ import {
   user_effect,
   user_pre_effect,
   validate_effect,
-  without_reactive_context
-} from "./chunk-YZBAU52E.js";
+  without_reactive_context,
+} from './chunk-YZBAU52E.js';
 import {
   assignment_value_stale,
   binding_property_non_reactive,
@@ -157,24 +157,18 @@ import {
   invalid_raw_snippet_render,
   ownership_invalid_binding,
   ownership_invalid_mutation,
-  select_multiple_invalid_value
-} from "./chunk-24FUCJ6P.js";
-import {
-  legacy_mode_flag
-} from "./chunk-6SIJFJGE.js";
-import {
-  true_default
-} from "./chunk-UWMOYZ25.js";
-import {
-  clsx
-} from "./chunk-KDVGFZWC.js";
+  select_multiple_invalid_value,
+} from './chunk-24FUCJ6P.js';
+import { legacy_mode_flag } from './chunk-6SIJFJGE.js';
+import { true_default } from './chunk-UWMOYZ25.js';
+import { clsx } from './chunk-KDVGFZWC.js';
 import {
   __privateAdd,
   __privateGet,
   __privateMethod,
   __privateSet,
-  __publicField
-} from "./chunk-KWPVD4H7.js";
+  __publicField,
+} from './chunk-KWPVD4H7.js';
 
 // node_modules/svelte/src/internal/client/dev/assign.js
 function compare(a, b, property, location) {
@@ -189,7 +183,7 @@ function compare(a, b, property, location) {
 }
 function assign(object, property, value, location) {
   return compare(
-    object[property] = value,
+    (object[property] = value),
     untrack(() => object[property]),
     property,
     location
@@ -251,7 +245,7 @@ function add_locations(fn, filename, locations) {
 function assign_location(element2, filename, location) {
   element2.__svelte_meta = {
     parent: dev_stack,
-    loc: { file: filename, line: location[0], column: location[1] }
+    loc: { file: filename, line: location[0], column: location[1] },
   };
   if (location[2]) {
     assign_locations(element2.firstChild, filename, location[2]);
@@ -262,10 +256,9 @@ function assign_locations(node, filename, locations) {
   var depth = 0;
   while (node && i < locations.length) {
     if (hydrating && node.nodeType === COMMENT_NODE) {
-      var comment2 = (
+      var comment2 =
         /** @type {Comment} */
-        node
-      );
+        node;
       if (comment2.data === HYDRATION_START || comment2.data === HYDRATION_START_ELSE) depth += 1;
       else if (comment2.data[0] === HYDRATION_END) depth -= 1;
     }
@@ -319,7 +312,7 @@ function hmr(original, get_source) {
     // The `get_source` parameter reads `wrapper[HMR].source`, but in the `accept`
     // function we always replace it with `previous[HMR].source`, which in practice
     // means we only ever update the original
-    source: source(original)
+    source: source(original),
   };
   return wrapper;
 }
@@ -328,7 +321,8 @@ function hmr(original, get_source) {
 function create_ownership_validator(props) {
   var _a, _b, _c;
   const component2 = (_a = component_context) == null ? void 0 : _a.function;
-  const parent = (_c = (_b = component_context) == null ? void 0 : _b.p) == null ? void 0 : _c.function;
+  const parent =
+    (_c = (_b = component_context) == null ? void 0 : _b.p) == null ? void 0 : _c.function;
   return {
     /**
      * @param {string} prop
@@ -360,7 +354,11 @@ function create_ownership_validator(props) {
      */
     binding: (key2, child_component, value) => {
       var _a2;
-      if (!is_bound_or_unset(props, key2) && parent && ((_a2 = value()) == null ? void 0 : _a2[STATE_SYMBOL])) {
+      if (
+        !is_bound_or_unset(props, key2) &&
+        parent &&
+        ((_a2 = value()) == null ? void 0 : _a2[STATE_SYMBOL])
+      ) {
         ownership_invalid_binding(
           component2[FILENAME],
           key2,
@@ -368,19 +366,23 @@ function create_ownership_validator(props) {
           parent[FILENAME]
         );
       }
-    }
+    },
   };
 }
 function is_bound_or_unset(props, prop_name) {
   var _a;
   const is_entry_props = STATE_SYMBOL in props || LEGACY_PROPS in props;
-  return !!((_a = get_descriptor(props, prop_name)) == null ? void 0 : _a.set) || is_entry_props && prop_name in props || !(prop_name in props);
+  return (
+    !!((_a = get_descriptor(props, prop_name)) == null ? void 0 : _a.set) ||
+    (is_entry_props && prop_name in props) ||
+    !(prop_name in props)
+  );
 }
 
 // node_modules/svelte/src/internal/client/dev/legacy.js
 function check_target(target) {
   if (target) {
-    component_api_invalid_new(target[FILENAME] ?? "a component", target.name);
+    component_api_invalid_new(target[FILENAME] ?? 'a component', target.name);
   }
 }
 function legacy_api() {
@@ -390,20 +392,19 @@ function legacy_api() {
     component_api_changed(method, component2[FILENAME]);
   }
   return {
-    $destroy: () => error("$destroy()"),
-    $on: () => error("$on(...)"),
-    $set: () => error("$set(...)")
+    $destroy: () => error('$destroy()'),
+    $on: () => error('$on(...)'),
+    $set: () => error('$set(...)'),
   };
 }
 
 // node_modules/svelte/src/internal/client/dev/inspect.js
 function inspect(get_value, inspector = console.log) {
-  validate_effect("$inspect");
+  validate_effect('$inspect');
   let initial = true;
-  let error = (
+  let error =
     /** @type {any} */
-    UNINITIALIZED
-  );
+    UNINITIALIZED;
   inspect_effect(() => {
     try {
       var value = get_value();
@@ -413,15 +414,14 @@ function inspect(get_value, inspector = console.log) {
     }
     var snap = snapshot(value, true);
     untrack(() => {
-      inspector(initial ? "init" : "update", ...snap);
+      inspector(initial ? 'init' : 'update', ...snap);
     });
     initial = false;
   });
   render_effect(() => {
     try {
       get_value();
-    } catch {
-    }
+    } catch {}
     if (error !== UNINITIALIZED) {
       console.error(error);
       error = UNINITIALIZED;
@@ -445,11 +445,11 @@ function async(node, expressions, fn) {
 
 // node_modules/svelte/src/internal/client/dev/validation.js
 function validate_snippet_args(anchor, ...args) {
-  if (typeof anchor !== "object" || !(anchor instanceof Node)) {
+  if (typeof anchor !== 'object' || !(anchor instanceof Node)) {
     invalid_snippet_arguments();
   }
   for (let arg of args) {
-    if (typeof arg !== "function") {
+    if (typeof arg !== 'function') {
       invalid_snippet_arguments();
     }
   }
@@ -467,21 +467,27 @@ function await_block(node, get_input, pending_fn, then_fn, catch_fn) {
   var anchor = node;
   var runes = is_runes();
   var active_component_context = component_context;
-  var component_function = true_default ? (_a = component_context) == null ? void 0 : _a.function : null;
+  var component_function = true_default
+    ? (_a = component_context) == null
+      ? void 0
+      : _a.function
+    : null;
   var dev_original_stack = true_default ? dev_stack : null;
   var input = UNINITIALIZED;
   var pending_effect;
   var then_effect;
   var catch_effect;
-  var input_source = runes ? source(
-    /** @type {V} */
-    void 0
-  ) : mutable_source(
-    /** @type {V} */
-    void 0,
-    false,
-    false
-  );
+  var input_source = runes
+    ? source(
+        /** @type {V} */
+        void 0
+      )
+    : mutable_source(
+        /** @type {V} */
+        void 0,
+        false,
+        false
+      );
   var error_source = runes ? source(void 0) : mutable_source(void 0, false, false);
   var resolved = false;
   function update2(state2, restore) {
@@ -509,13 +515,13 @@ function await_block(node, get_input, pending_fn, then_fn, catch_fn) {
         else catch_effect = branch(() => catch_fn(anchor, error_source));
       }
       if (state2 !== PENDING && pending_effect) {
-        pause_effect(pending_effect, () => pending_effect = null);
+        pause_effect(pending_effect, () => (pending_effect = null));
       }
       if (state2 !== THEN && then_effect) {
-        pause_effect(then_effect, () => then_effect = null);
+        pause_effect(then_effect, () => (then_effect = null));
       }
       if (state2 !== CATCH && catch_effect) {
-        pause_effect(catch_effect, () => catch_effect = null);
+        pause_effect(catch_effect, () => (catch_effect = null));
       }
     } finally {
       if (restore) {
@@ -573,7 +579,7 @@ function await_block(node, get_input, pending_fn, then_fn, catch_fn) {
     if (mismatch) {
       set_hydrating(true);
     }
-    return () => input = UNINITIALIZED;
+    return () => (input = UNINITIALIZED);
   });
   if (hydrating) {
     anchor = hydrate_node;
@@ -633,7 +639,7 @@ function if_block(node, fn, elseif = false) {
     var target = anchor;
     if (defer) {
       offscreen_fragment = document.createDocumentFragment();
-      offscreen_fragment.append(target = create_text());
+      offscreen_fragment.append((target = create_text()));
     }
     if (condition) {
       consequent_effect ?? (consequent_effect = fn2 && branch(() => fn2(target)));
@@ -641,10 +647,9 @@ function if_block(node, fn, elseif = false) {
       alternate_effect ?? (alternate_effect = fn2 && branch(() => fn2(target)));
     }
     if (defer) {
-      var batch = (
+      var batch =
         /** @type {Batch} */
-        current_batch
-      );
+        current_batch;
       var active = condition ? consequent_effect : alternate_effect;
       var inactive = condition ? alternate_effect : consequent_effect;
       if (active) batch.skipped_effects.delete(active);
@@ -692,12 +697,12 @@ function key(node, get_key, render_fn) {
     effect2 = pending_effect;
   }
   block(() => {
-    if (changed(key2, key2 = get_key())) {
+    if (changed(key2, (key2 = get_key()))) {
       var target = anchor;
       var defer = should_defer_append();
       if (defer) {
         offscreen_fragment = document.createDocumentFragment();
-        offscreen_fragment.append(target = create_text());
+        offscreen_fragment.append((target = create_text()));
       }
       pending_effect = branch(() => render_fn(target));
       if (defer) {
@@ -750,11 +755,10 @@ function pause_effects(state2, items, controlled_anchor) {
   }
   var is_controlled = length > 0 && transitions.length === 0 && controlled_anchor !== null;
   if (is_controlled) {
-    var parent_node = (
+    var parent_node =
       /** @type {Element} */
       /** @type {Element} */
-      controlled_anchor.parentNode
-    );
+      controlled_anchor.parentNode;
     clear_text_content(parent_node);
     parent_node.append(
       /** @type {Element} */
@@ -779,14 +783,15 @@ function each(node, flags, get_collection, get_key, render_fn, fallback_fn = nul
   var state2 = { flags, items: /* @__PURE__ */ new Map(), first: null };
   var is_controlled = (flags & EACH_IS_CONTROLLED) !== 0;
   if (is_controlled) {
-    var parent_node = (
+    var parent_node =
       /** @type {Element} */
-      node
-    );
-    anchor = hydrating ? set_hydrate_node(
-      /** @type {Comment | Text} */
-      get_first_child(parent_node)
-    ) : parent_node.appendChild(create_text());
+      node;
+    anchor = hydrating
+      ? set_hydrate_node(
+          /** @type {Comment | Text} */
+          get_first_child(parent_node)
+        )
+      : parent_node.appendChild(create_text());
   }
   if (hydrating) {
     hydrate_next();
@@ -827,8 +832,7 @@ function each(node, flags, get_collection, get_key, render_fn, fallback_fn = nul
     }
   }
   block(() => {
-    each_effect ?? (each_effect = /** @type {Effect} */
-    active_effect);
+    each_effect ?? (each_effect = /** @type {Effect} */ active_effect);
     array = get(each_array);
     var length = array.length;
     if (was_empty && length === 0) {
@@ -849,10 +853,12 @@ function each(node, flags, get_collection, get_key, render_fn, fallback_fn = nul
       var prev = null;
       var item;
       for (var i = 0; i < length; i++) {
-        if (hydrate_node.nodeType === COMMENT_NODE && /** @type {Comment} */
-        hydrate_node.data === HYDRATION_END) {
-          anchor = /** @type {Comment} */
-          hydrate_node;
+        if (
+          hydrate_node.nodeType === COMMENT_NODE &&
+          /** @type {Comment} */
+          hydrate_node.data === HYDRATION_END
+        ) {
+          anchor = /** @type {Comment} */ hydrate_node;
           mismatch = true;
           set_hydrating(false);
           break;
@@ -885,10 +891,9 @@ function each(node, flags, get_collection, get_key, render_fn, fallback_fn = nul
     } else {
       if (should_defer_append()) {
         var keys = /* @__PURE__ */ new Set();
-        var batch = (
+        var batch =
           /** @type {Batch} */
-          current_batch
-        );
+          current_batch;
         for (i = 0; i < length; i += 1) {
           value = array[i];
           key2 = get_key(value, i);
@@ -934,7 +939,17 @@ function each(node, flags, get_collection, get_key, render_fn, fallback_fn = nul
     anchor = hydrate_node;
   }
 }
-function reconcile(each_effect, array, state2, offscreen_items, anchor, render_fn, flags, get_key, get_collection) {
+function reconcile(
+  each_effect,
+  array,
+  state2,
+  offscreen_items,
+  anchor,
+  render_fn,
+  flags,
+  get_key,
+  get_collection
+) {
   var _a, _b, _c, _d;
   var is_animated = (flags & EACH_IS_ANIMATED) !== 0;
   var should_update = (flags & (EACH_ITEM_REACTIVE | EACH_INDEX_REACTIVE)) !== 0;
@@ -977,10 +992,10 @@ function reconcile(each_effect, array, state2, offscreen_items, anchor, render_f
         move(pending3, next2, anchor);
         prev = pending3;
       } else {
-        var child_anchor = current ? (
-          /** @type {TemplateNode} */
-          current.e.nodes_start
-        ) : anchor;
+        var child_anchor = current
+          ? /** @type {TemplateNode} */
+            current.e.nodes_start
+          : anchor;
         prev = create_item(
           child_anchor,
           state2,
@@ -1112,15 +1127,27 @@ function update_item(item, value, index2, type) {
     item.i = index2;
   }
 }
-function create_item(anchor, state2, prev, next2, value, key2, index2, render_fn, flags, get_collection, deferred) {
+function create_item(
+  anchor,
+  state2,
+  prev,
+  next2,
+  value,
+  key2,
+  index2,
+  render_fn,
+  flags,
+  get_collection,
+  deferred
+) {
   var previous_each_item = current_each_item;
   var reactive = (flags & EACH_ITEM_REACTIVE) !== 0;
   var mutable = (flags & EACH_ITEM_IMMUTABLE) === 0;
-  var v = reactive ? mutable ? mutable_source(value, false, false) : source(value) : value;
+  var v = reactive ? (mutable ? mutable_source(value, false, false) : source(value)) : value;
   var i = (flags & EACH_INDEX_REACTIVE) === 0 ? index2 : source(index2);
   if (true_default && reactive) {
     v.trace = () => {
-      var collection_index = typeof i === "number" ? index2 : i.v;
+      var collection_index = typeof i === 'number' ? index2 : i.v;
       get_collection()[collection_index];
     };
   }
@@ -1132,21 +1159,25 @@ function create_item(anchor, state2, prev, next2, value, key2, index2, render_fn
     // @ts-expect-error
     e: null,
     prev,
-    next: next2
+    next: next2,
   };
   current_each_item = item;
   try {
     if (anchor === null) {
       var fragment = document.createDocumentFragment();
-      fragment.append(anchor = create_text());
+      fragment.append((anchor = create_text()));
     }
-    item.e = branch(() => render_fn(
-      /** @type {Node} */
-      anchor,
-      v,
-      i,
-      get_collection
-    ), hydrating);
+    item.e = branch(
+      () =>
+        render_fn(
+          /** @type {Node} */
+          anchor,
+          v,
+          i,
+          get_collection
+        ),
+      hydrating
+    );
     item.e.prev = prev && prev.e;
     item.e.next = next2 && next2.e;
     if (prev === null) {
@@ -1167,23 +1198,21 @@ function create_item(anchor, state2, prev, next2, value, key2, index2, render_fn
   }
 }
 function move(item, next2, anchor) {
-  var end = item.next ? (
+  var end = item.next
+    ? /** @type {TemplateNode} */
+      item.next.e.nodes_start
+    : anchor;
+  var dest = next2
+    ? /** @type {TemplateNode} */
+      next2.e.nodes_start
+    : anchor;
+  var node =
     /** @type {TemplateNode} */
-    item.next.e.nodes_start
-  ) : anchor;
-  var dest = next2 ? (
-    /** @type {TemplateNode} */
-    next2.e.nodes_start
-  ) : anchor;
-  var node = (
-    /** @type {TemplateNode} */
-    item.e.nodes_start
-  );
+    item.e.nodes_start;
   while (node !== null && node !== end) {
-    var next_node = (
+    var next_node =
       /** @type {TemplateNode} */
-      get_next_sibling(node)
-    );
+      get_next_sibling(node);
     dest.before(node);
     node = next_node;
   }
@@ -1204,7 +1233,7 @@ function link(state2, prev, next2) {
 // node_modules/svelte/src/internal/client/dom/blocks/html.js
 function check_hash(element2, server_hash, value) {
   var _a, _b;
-  if (!server_hash || server_hash === hash(String(value ?? ""))) return;
+  if (!server_hash || server_hash === hash(String(value ?? ''))) return;
   let location;
   const loc = (_a = element2.__svelte_meta) == null ? void 0 : _a.loc;
   if (loc) {
@@ -1216,13 +1245,12 @@ function check_hash(element2, server_hash, value) {
 }
 function html(node, get_value, svg = false, mathml = false, skip_warning = false) {
   var anchor = node;
-  var value = "";
+  var value = '';
   template_effect(() => {
-    var effect2 = (
+    var effect2 =
       /** @type {Effect} */
-      active_effect
-    );
-    if (value === (value = get_value() ?? "")) {
+      active_effect;
+    if (value === (value = get_value() ?? '')) {
       if (hydrating) hydrate_next();
       return;
     }
@@ -1234,19 +1262,19 @@ function html(node, get_value, svg = false, mathml = false, skip_warning = false
       );
       effect2.nodes_start = effect2.nodes_end = null;
     }
-    if (value === "") return;
+    if (value === '') return;
     if (hydrating) {
-      var hash2 = (
+      var hash2 =
         /** @type {Comment} */
-        hydrate_node.data
-      );
+        hydrate_node.data;
       var next2 = hydrate_next();
       var last = next2;
-      while (next2 !== null && (next2.nodeType !== COMMENT_NODE || /** @type {Comment} */
-      next2.data !== "")) {
+      while (
+        next2 !== null &&
+        (next2.nodeType !== COMMENT_NODE || /** @type {Comment} */ next2.data !== '')
+      ) {
         last = next2;
-        next2 = /** @type {TemplateNode} */
-        get_next_sibling(next2);
+        next2 = /** @type {TemplateNode} */ get_next_sibling(next2);
       }
       if (next2 === null) {
         hydration_mismatch();
@@ -1264,13 +1292,12 @@ function html(node, get_value, svg = false, mathml = false, skip_warning = false
       anchor = set_hydrate_node(next2);
       return;
     }
-    var html2 = value + "";
+    var html2 = value + '';
     if (svg) html2 = `<svg>${html2}</svg>`;
     else if (mathml) html2 = `<math>${html2}</math>`;
     var node2 = create_fragment_from_html(html2);
     if (svg || mathml) {
-      node2 = /** @type {Element} */
-      get_first_child(node2);
+      node2 = /** @type {Element} */ get_first_child(node2);
     }
     assign_nodes(
       /** @type {TemplateNode} */
@@ -1300,7 +1327,7 @@ function slot(anchor, $$props, name, slot_props, fallback_fn) {
   var slot_fn = (_a = $$props.$$slots) == null ? void 0 : _a[name];
   var is_interop = false;
   if (slot_fn === true) {
-    slot_fn = $$props[name === "default" ? "children" : name];
+    slot_fn = $$props[name === 'default' ? 'children' : name];
     is_interop = true;
   }
   if (slot_fn === void 0) {
@@ -1329,20 +1356,20 @@ function validate_void_dynamic_element(tag_fn) {
 }
 function validate_dynamic_element_tag(tag_fn) {
   const tag2 = tag_fn();
-  const is_string = typeof tag2 === "string";
+  const is_string = typeof tag2 === 'string';
   if (tag2 && !is_string) {
     svelte_element_invalid_this_value();
   }
 }
 function validate_store(store, name) {
-  if (store != null && typeof store.subscribe !== "function") {
+  if (store != null && typeof store.subscribe !== 'function') {
     store_invalid_shape(name);
   }
 }
 function prevent_snippet_stringification(fn) {
   fn.toString = () => {
     snippet_without_render_tag();
-    return "";
+    return '';
   };
   return fn;
 }
@@ -1361,10 +1388,10 @@ function snippet(node, get_snippet, ...args) {
     if (true_default && snippet2 == null) {
       invalid_snippet();
     }
-    snippet_effect = branch(() => (
+    snippet_effect = branch(() =>
       /** @type {SnippetFn} */
       snippet2(anchor, ...args)
-    ));
+    );
   }, EFFECT_TRANSPARENT);
   if (hydrating) {
     anchor = hydrate_node;
@@ -1389,22 +1416,23 @@ function createRawSnippet(fn) {
     var snippet2 = fn(...params);
     var element2;
     if (hydrating) {
-      element2 = /** @type {Element} */
-      hydrate_node;
+      element2 = /** @type {Element} */ hydrate_node;
       hydrate_next();
     } else {
       var html2 = snippet2.render().trim();
       var fragment = create_fragment_from_html(html2);
-      element2 = /** @type {Element} */
-      get_first_child(fragment);
-      if (true_default && (get_next_sibling(element2) !== null || element2.nodeType !== ELEMENT_NODE)) {
+      element2 = /** @type {Element} */ get_first_child(fragment);
+      if (
+        true_default &&
+        (get_next_sibling(element2) !== null || element2.nodeType !== ELEMENT_NODE)
+      ) {
         invalid_raw_snippet_render();
       }
       anchor.before(element2);
     }
     const result = (_a = snippet2.setup) == null ? void 0 : _a.call(snippet2, element2);
     assign_nodes(element2, element2);
-    if (typeof result === "function") {
+    if (typeof result === 'function') {
       teardown(result);
     }
   };
@@ -1440,7 +1468,7 @@ function component(node, get_component, render_fn) {
       var target = anchor;
       if (defer) {
         offscreen_fragment = document.createDocumentFragment();
-        offscreen_fragment.append(target = create_text());
+        offscreen_fragment.append((target = create_text()));
       }
       pending_effect = branch(() => render_fn(target, component2));
     }
@@ -1462,24 +1490,23 @@ function element(node, get_tag, is_svg, render_fn, get_namespace, location) {
   if (hydrating) {
     hydrate_next();
   }
-  var filename = true_default && location && ((_a = component_context) == null ? void 0 : _a.function[FILENAME]);
+  var filename =
+    true_default && location && ((_a = component_context) == null ? void 0 : _a.function[FILENAME]);
   var tag2;
   var current_tag;
   var element2 = null;
   if (hydrating && hydrate_node.nodeType === ELEMENT_NODE) {
-    element2 = /** @type {Element} */
-    hydrate_node;
+    element2 = /** @type {Element} */ hydrate_node;
     hydrate_next();
   }
-  var anchor = (
+  var anchor =
     /** @type {TemplateNode} */
-    hydrating ? hydrate_node : node
-  );
+    hydrating ? hydrate_node : node;
   var effect2;
   var each_item_block = current_each_item;
   block(() => {
     const next_tag = get_tag() || null;
-    var ns = get_namespace ? get_namespace() : is_svg || next_tag === "svg" ? NAMESPACE_SVG : null;
+    var ns = get_namespace ? get_namespace() : is_svg || next_tag === 'svg' ? NAMESPACE_SVG : null;
     if (next_tag === tag2) return;
     var previous_each_item = current_each_item;
     set_current_each_item(each_item_block);
@@ -1498,29 +1525,30 @@ function element(node, get_tag, is_svg, render_fn, get_namespace, location) {
     }
     if (next_tag && next_tag !== current_tag) {
       effect2 = branch(() => {
-        element2 = hydrating ? (
-          /** @type {Element} */
-          element2
-        ) : ns ? document.createElementNS(ns, next_tag) : document.createElement(next_tag);
+        element2 = hydrating
+          ? /** @type {Element} */
+            element2
+          : ns
+            ? document.createElementNS(ns, next_tag)
+            : document.createElement(next_tag);
         if (true_default && location) {
           element2.__svelte_meta = {
             parent: dev_stack,
             loc: {
               file: filename,
               line: location[0],
-              column: location[1]
-            }
+              column: location[1],
+            },
           };
         }
         assign_nodes(element2, element2);
         if (render_fn) {
           if (hydrating && is_raw_text_element(next_tag)) {
-            element2.append(document.createComment(""));
+            element2.append(document.createComment(''));
           }
-          var child_anchor = (
+          var child_anchor =
             /** @type {TemplateNode} */
-            hydrating ? get_first_child(element2) : element2.appendChild(create_text())
-          );
+            hydrating ? get_first_child(element2) : element2.appendChild(create_text());
           if (hydrating) {
             if (child_anchor === null) {
               set_hydrating(false);
@@ -1549,19 +1577,15 @@ function element(node, get_tag, is_svg, render_fn, get_namespace, location) {
 function append_styles(anchor, css) {
   queue_micro_task(() => {
     var root = anchor.getRootNode();
-    var target = (
+    var target =
       /** @type {ShadowRoot} */
-      root.host ? (
-        /** @type {ShadowRoot} */
-        root
-      ) : (
-        /** @type {Document} */
-        root.head ?? /** @type {Document} */
-        root.ownerDocument.head
-      )
-    );
-    if (!target.querySelector("#" + css.hash)) {
-      const style = document.createElement("style");
+      root.host
+        ? /** @type {ShadowRoot} */
+          root
+        : /** @type {Document} */
+          (root.head ?? /** @type {Document} */ root.ownerDocument.head);
+    if (!target.querySelector('#' + css.hash)) {
+      const style = document.createElement('style');
       style.id = css.hash;
       style.textContent = css.code;
       target.appendChild(style);
@@ -1578,10 +1602,9 @@ function action(dom, action2, get_value) {
     var payload = untrack(() => action2(dom, get_value == null ? void 0 : get_value()) || {});
     if (get_value && (payload == null ? void 0 : payload.update)) {
       var inited = false;
-      var prev = (
+      var prev =
         /** @type {any} */
-        {}
-      );
+        {};
       render_effect(() => {
         var value = get_value();
         deep_read_state(value);
@@ -1593,10 +1616,9 @@ function action(dom, action2, get_value) {
       inited = true;
     }
     if (payload == null ? void 0 : payload.destroy) {
-      return () => (
+      return () =>
         /** @type {Function} */
-        payload.destroy()
-      );
+        payload.destroy();
     }
   });
 }
@@ -1613,10 +1635,10 @@ function attach(node, get_fn) {
       }
       if (fn) {
         e = branch(() => {
-          effect(() => (
+          effect(() =>
             /** @type {(node: Element) => void} */
             fn(node)
-          ));
+          );
         });
       }
     }
@@ -1627,15 +1649,15 @@ function attach(node, get_fn) {
 var ATTR_REGEX = /[&"<]/g;
 var CONTENT_REGEX = /[&<]/g;
 function escape_html(value, is_attr) {
-  const str = String(value ?? "");
+  const str = String(value ?? '');
   const pattern = is_attr ? ATTR_REGEX : CONTENT_REGEX;
   pattern.lastIndex = 0;
-  let escaped = "";
+  let escaped = '';
   let last = 0;
   while (pattern.test(str)) {
     const i = pattern.lastIndex - 1;
     const ch = str[i];
-    escaped += str.substring(last, i) + (ch === "&" ? "&amp;" : ch === '"' ? "&quot;" : "&lt;");
+    escaped += str.substring(last, i) + (ch === '&' ? '&amp;' : ch === '"' ? '&quot;' : '&lt;');
     last = i + 1;
   }
   return escaped + str.substring(last);
@@ -1644,40 +1666,43 @@ function escape_html(value, is_attr) {
 // node_modules/svelte/src/internal/shared/attributes.js
 var replacements = {
   translate: /* @__PURE__ */ new Map([
-    [true, "yes"],
-    [false, "no"]
-  ])
+    [true, 'yes'],
+    [false, 'no'],
+  ]),
 };
 function attr(name, value, is_boolean = false) {
-  if (value == null || !value && is_boolean) return "";
-  const normalized = name in replacements && replacements[name].get(value) || value;
-  const assignment = is_boolean ? "" : `="${escape_html(normalized, true)}"`;
+  if (value == null || (!value && is_boolean)) return '';
+  const normalized = (name in replacements && replacements[name].get(value)) || value;
+  const assignment = is_boolean ? '' : `="${escape_html(normalized, true)}"`;
   return ` ${name}${assignment}`;
 }
 function clsx2(value) {
-  if (typeof value === "object") {
+  if (typeof value === 'object') {
     return clsx(value);
   } else {
-    return value ?? "";
+    return value ?? '';
   }
 }
-var whitespace = [..." 	\n\r\f \v\uFEFF"];
+var whitespace = [...' 	\n\r\f \v\uFEFF'];
 function to_class(value, hash2, directives) {
-  var classname = value == null ? "" : "" + value;
+  var classname = value == null ? '' : '' + value;
   if (hash2) {
-    classname = classname ? classname + " " + hash2 : hash2;
+    classname = classname ? classname + ' ' + hash2 : hash2;
   }
   if (directives) {
     for (var key2 in directives) {
       if (directives[key2]) {
-        classname = classname ? classname + " " + key2 : key2;
+        classname = classname ? classname + ' ' + key2 : key2;
       } else if (classname.length) {
         var len = key2.length;
         var a = 0;
         while ((a = classname.indexOf(key2, a)) >= 0) {
           var b = a + len;
-          if ((a === 0 || whitespace.includes(classname[a - 1])) && (b === classname.length || whitespace.includes(classname[b]))) {
-            classname = (a === 0 ? "" : classname.substring(0, a)) + classname.substring(b + 1);
+          if (
+            (a === 0 || whitespace.includes(classname[a - 1])) &&
+            (b === classname.length || whitespace.includes(classname[b]))
+          ) {
+            classname = (a === 0 ? '' : classname.substring(0, a)) + classname.substring(b + 1);
           } else {
             a = b;
           }
@@ -1685,28 +1710,28 @@ function to_class(value, hash2, directives) {
       }
     }
   }
-  return classname === "" ? null : classname;
+  return classname === '' ? null : classname;
 }
 function append_styles2(styles, important = false) {
-  var separator = important ? " !important;" : ";";
-  var css = "";
+  var separator = important ? ' !important;' : ';';
+  var css = '';
   for (var key2 in styles) {
     var value = styles[key2];
-    if (value != null && value !== "") {
-      css += " " + key2 + ": " + value + separator;
+    if (value != null && value !== '') {
+      css += ' ' + key2 + ': ' + value + separator;
     }
   }
   return css;
 }
 function to_css_name(name) {
-  if (name[0] !== "-" || name[1] !== "-") {
+  if (name[0] !== '-' || name[1] !== '-') {
     return name.toLowerCase();
   }
   return name;
 }
 function to_style(value, styles) {
   if (styles) {
-    var new_style = "";
+    var new_style = '';
     var normal_styles;
     var important_styles;
     if (Array.isArray(styles)) {
@@ -1716,7 +1741,9 @@ function to_style(value, styles) {
       normal_styles = styles;
     }
     if (value) {
-      value = String(value).replaceAll(/\s*\/\*.*?\*\/\s*/g, "").trim();
+      value = String(value)
+        .replaceAll(/\s*\/\*.*?\*\/\s*/g, '')
+        .trim();
       var in_str = false;
       var in_apo = 0;
       var in_comment = false;
@@ -1733,34 +1760,34 @@ function to_style(value, styles) {
       for (var i = 0; i < len; i++) {
         var c = value[i];
         if (in_comment) {
-          if (c === "/" && value[i - 1] === "*") {
+          if (c === '/' && value[i - 1] === '*') {
             in_comment = false;
           }
         } else if (in_str) {
           if (in_str === c) {
             in_str = false;
           }
-        } else if (c === "/" && value[i + 1] === "*") {
+        } else if (c === '/' && value[i + 1] === '*') {
           in_comment = true;
         } else if (c === '"' || c === "'") {
           in_str = c;
-        } else if (c === "(") {
+        } else if (c === '(') {
           in_apo++;
-        } else if (c === ")") {
+        } else if (c === ')') {
           in_apo--;
         }
         if (!in_comment && in_str === false && in_apo === 0) {
-          if (c === ":" && name_index === -1) {
+          if (c === ':' && name_index === -1) {
             name_index = i;
-          } else if (c === ";" || i === len - 1) {
+          } else if (c === ';' || i === len - 1) {
             if (name_index !== -1) {
               var name = to_css_name(value.substring(start_index, name_index).trim());
               if (!reserved_names.includes(name)) {
-                if (c !== ";") {
+                if (c !== ';') {
                   i++;
                 }
                 var property = value.substring(start_index, i).trim();
-                new_style += " " + property + ";";
+                new_style += ' ' + property + ';';
               }
             }
             start_index = i + 1;
@@ -1776,7 +1803,7 @@ function to_style(value, styles) {
       new_style += append_styles2(important_styles, true);
     }
     new_style = new_style.trim();
-    return new_style === "" ? null : new_style;
+    return new_style === '' ? null : new_style;
   }
   return value == null ? null : String(value);
 }
@@ -1786,13 +1813,13 @@ function set_class(dom, is_html, value, hash2, prev_classes, next_classes) {
   var prev = dom.__className;
   if (hydrating || prev !== value || prev === void 0) {
     var next_class_name = to_class(value, hash2, next_classes);
-    if (!hydrating || next_class_name !== dom.getAttribute("class")) {
+    if (!hydrating || next_class_name !== dom.getAttribute('class')) {
       if (next_class_name == null) {
-        dom.removeAttribute("class");
+        dom.removeAttribute('class');
       } else if (is_html) {
         dom.className = next_class_name;
       } else {
-        dom.setAttribute("class", next_class_name);
+        dom.setAttribute('class', next_class_name);
       }
     }
     dom.__className = value;
@@ -1824,9 +1851,9 @@ function set_style(dom, value, prev_styles, next_styles) {
   var prev = dom.__style;
   if (hydrating || prev !== value) {
     var next_style_attr = to_style(value, next_styles);
-    if (!hydrating || next_style_attr !== dom.getAttribute("style")) {
+    if (!hydrating || next_style_attr !== dom.getAttribute('style')) {
       if (next_style_attr == null) {
-        dom.removeAttribute("style");
+        dom.removeAttribute('style');
       } else {
         dom.style.cssText = next_style_attr;
       }
@@ -1835,7 +1862,12 @@ function set_style(dom, value, prev_styles, next_styles) {
   } else if (next_styles) {
     if (Array.isArray(next_styles)) {
       update_styles(dom, prev_styles == null ? void 0 : prev_styles[0], next_styles[0]);
-      update_styles(dom, prev_styles == null ? void 0 : prev_styles[1], next_styles[1], "important");
+      update_styles(
+        dom,
+        prev_styles == null ? void 0 : prev_styles[1],
+        next_styles[1],
+        'important'
+      );
     } else {
       update_styles(dom, prev_styles, next_styles);
     }
@@ -1881,7 +1913,7 @@ function init_select(select) {
     // (doesn't get notified of select value changes,
     // because that property is not reflected as an attribute)
     attributes: true,
-    attributeFilter: ["value"]
+    attributeFilter: ['value'],
   });
   teardown(() => {
     observer.disconnect();
@@ -1889,14 +1921,15 @@ function init_select(select) {
 }
 function bind_select_value(select, get3, set2 = get3) {
   var mounting = true;
-  listen_to_event_and_reset_event(select, "change", (is_reset) => {
-    var query = is_reset ? "[selected]" : ":checked";
+  listen_to_event_and_reset_event(select, 'change', (is_reset) => {
+    var query = is_reset ? '[selected]' : ':checked';
     var value;
     if (select.multiple) {
       value = [].map.call(select.querySelectorAll(query), get_option_value);
     } else {
-      var selected_option = select.querySelector(query) ?? // will fall back to first non-disabled option if no option is selected
-      select.querySelector("option:not([disabled])");
+      var selected_option =
+        select.querySelector(query) ?? // will fall back to first non-disabled option if no option is selected
+        select.querySelector('option:not([disabled])');
       value = selected_option && get_option_value(selected_option);
     }
     set2(value);
@@ -1905,7 +1938,7 @@ function bind_select_value(select, get3, set2 = get3) {
     var value = get3();
     select_option(select, value, mounting);
     if (mounting && value === void 0) {
-      var selected_option = select.querySelector(":checked");
+      var selected_option = select.querySelector(':checked');
       if (selected_option !== null) {
         value = get_option_value(selected_option);
         set2(value);
@@ -1917,7 +1950,7 @@ function bind_select_value(select, get3, set2 = get3) {
   init_select(select);
 }
 function get_option_value(option) {
-  if ("__value" in option) {
+  if ('__value' in option) {
     return option.__value;
   } else {
     return option.value;
@@ -1925,24 +1958,24 @@ function get_option_value(option) {
 }
 
 // node_modules/svelte/src/internal/client/dom/elements/attributes.js
-var CLASS = Symbol("class");
-var STYLE = Symbol("style");
-var IS_CUSTOM_ELEMENT = Symbol("is custom element");
-var IS_HTML = Symbol("is html");
+var CLASS = Symbol('class');
+var STYLE = Symbol('style');
+var IS_CUSTOM_ELEMENT = Symbol('is custom element');
+var IS_HTML = Symbol('is html');
 function remove_input_defaults(input) {
   if (!hydrating) return;
   var already_removed = false;
   var remove_defaults = () => {
     if (already_removed) return;
     already_removed = true;
-    if (input.hasAttribute("value")) {
+    if (input.hasAttribute('value')) {
       var value = input.value;
-      set_attribute(input, "value", null);
+      set_attribute(input, 'value', null);
       input.value = value;
     }
-    if (input.hasAttribute("checked")) {
+    if (input.hasAttribute('checked')) {
       var checked = input.checked;
-      set_attribute(input, "checked", null);
+      set_attribute(input, 'checked', null);
       input.checked = checked;
     }
   };
@@ -1952,29 +1985,33 @@ function remove_input_defaults(input) {
 }
 function set_value(element2, value) {
   var attributes = get_attributes(element2);
-  if (attributes.value === (attributes.value = // treat null and undefined the same for the initial value
-  value ?? void 0) || // @ts-expect-error
-  // `progress` elements always need their value set when it's `0`
-  element2.value === value && (value !== 0 || element2.nodeName !== "PROGRESS")) {
+  if (
+    attributes.value ===
+      (attributes.value = value ?? void 0) || // treat null and undefined the same for the initial value // @ts-expect-error
+    // `progress` elements always need their value set when it's `0`
+    (element2.value === value && (value !== 0 || element2.nodeName !== 'PROGRESS'))
+  ) {
     return;
   }
-  element2.value = value ?? "";
+  element2.value = value ?? '';
 }
 function set_checked(element2, checked) {
   var attributes = get_attributes(element2);
-  if (attributes.checked === (attributes.checked = // treat null and undefined the same for the initial value
-  checked ?? void 0)) {
+  if (
+    attributes.checked ===
+    (attributes.checked = checked ?? void 0) // treat null and undefined the same for the initial value
+  ) {
     return;
   }
   element2.checked = checked;
 }
 function set_selected(element2, selected) {
   if (selected) {
-    if (!element2.hasAttribute("selected")) {
-      element2.setAttribute("selected", "");
+    if (!element2.hasAttribute('selected')) {
+      element2.setAttribute('selected', '');
     }
   } else {
-    element2.removeAttribute("selected");
+    element2.removeAttribute('selected');
   }
 }
 function set_default_checked(element2, checked) {
@@ -1991,27 +2028,31 @@ function set_attribute(element2, attribute, value, skip_warning) {
   var attributes = get_attributes(element2);
   if (hydrating) {
     attributes[attribute] = element2.getAttribute(attribute);
-    if (attribute === "src" || attribute === "srcset" || attribute === "href" && element2.nodeName === "LINK") {
+    if (
+      attribute === 'src' ||
+      attribute === 'srcset' ||
+      (attribute === 'href' && element2.nodeName === 'LINK')
+    ) {
       if (!skip_warning) {
-        check_src_in_dev_hydration(element2, attribute, value ?? "");
+        check_src_in_dev_hydration(element2, attribute, value ?? '');
       }
       return;
     }
   }
   if (attributes[attribute] === (attributes[attribute] = value)) return;
-  if (attribute === "loading") {
+  if (attribute === 'loading') {
     element2[LOADING_ATTR_SYMBOL] = value;
   }
   if (value == null) {
     element2.removeAttribute(attribute);
-  } else if (typeof value !== "string" && get_setters(element2).includes(attribute)) {
+  } else if (typeof value !== 'string' && get_setters(element2).includes(attribute)) {
     element2[attribute] = value;
   } else {
     element2.setAttribute(attribute, value);
   }
 }
 function set_xlink_attribute(dom, attribute, value) {
-  dom.setAttributeNS("http://www.w3.org/1999/xlink", attribute, value);
+  dom.setAttributeNS('http://www.w3.org/1999/xlink', attribute, value);
 }
 function set_custom_element_data(node, prop2, value) {
   var previous_reaction = active_reaction;
@@ -2025,11 +2066,14 @@ function set_custom_element_data(node, prop2, value) {
   try {
     if (
       // `style` should use `set_attribute` rather than the setter
-      prop2 !== "style" && // Don't compute setters for custom elements while they aren't registered yet,
+      prop2 !== 'style' && // Don't compute setters for custom elements while they aren't registered yet,
       // because during their upgrade/instantiation they might add more setters.
       // Instead, fall back to a simple "an object, then set as property" heuristic.
       (setters_cache.has(node.nodeName) || // customElements may not be available in browser extension contexts
-      !customElements || customElements.get(node.tagName.toLowerCase()) ? get_setters(node).includes(prop2) : value && typeof value === "object")
+      !customElements ||
+      customElements.get(node.tagName.toLowerCase())
+        ? get_setters(node).includes(prop2)
+        : value && typeof value === 'object')
     ) {
       node[prop2] = value;
     } else {
@@ -2052,7 +2096,7 @@ function set_attributes(element2, prev, next2, css_hash, skip_warning = false) {
     set_hydrating(false);
   }
   var current = prev || {};
-  var is_option_element = element2.tagName === "OPTION";
+  var is_option_element = element2.tagName === 'OPTION';
   for (var key2 in prev) {
     if (!(key2 in next2)) {
       next2[key2] = null;
@@ -2069,19 +2113,26 @@ function set_attributes(element2, prev, next2, css_hash, skip_warning = false) {
   var setters = get_setters(element2);
   for (const key3 in next2) {
     let value = next2[key3];
-    if (is_option_element && key3 === "value" && value == null) {
-      element2.value = element2.__value = "";
+    if (is_option_element && key3 === 'value' && value == null) {
+      element2.value = element2.__value = '';
       current[key3] = value;
       continue;
     }
-    if (key3 === "class") {
-      var is_html = element2.namespaceURI === "http://www.w3.org/1999/xhtml";
-      set_class(element2, is_html, value, css_hash, prev == null ? void 0 : prev[CLASS], next2[CLASS]);
+    if (key3 === 'class') {
+      var is_html = element2.namespaceURI === 'http://www.w3.org/1999/xhtml';
+      set_class(
+        element2,
+        is_html,
+        value,
+        css_hash,
+        prev == null ? void 0 : prev[CLASS],
+        next2[CLASS]
+      );
       current[key3] = value;
       current[CLASS] = next2[CLASS];
       continue;
     }
-    if (key3 === "style") {
+    if (key3 === 'style') {
       set_style(element2, value, prev == null ? void 0 : prev[STYLE], next2[STYLE]);
       current[key3] = value;
       current[STYLE] = next2[STYLE];
@@ -2093,10 +2144,10 @@ function set_attributes(element2, prev, next2, css_hash, skip_warning = false) {
     }
     current[key3] = value;
     var prefix = key3[0] + key3[1];
-    if (prefix === "$$") continue;
-    if (prefix === "on") {
+    if (prefix === '$$') continue;
+    if (prefix === 'on') {
       const opts = {};
-      const event_handle_key = "$$" + key3;
+      const event_handle_key = '$$' + key3;
       let event_name = key3.slice(2);
       var delegated = is_delegated(event_name);
       if (is_capture_event(event_name)) {
@@ -2110,7 +2161,7 @@ function set_attributes(element2, prev, next2, css_hash, skip_warning = false) {
       }
       if (value != null) {
         if (!delegated) {
-          let handle = function(evt) {
+          let handle = function (evt) {
             current[key3].call(this, evt);
           };
           current[event_handle_key] = create_event(event_name, element2, handle, opts);
@@ -2121,17 +2172,17 @@ function set_attributes(element2, prev, next2, css_hash, skip_warning = false) {
       } else if (delegated) {
         element2[`__${event_name}`] = void 0;
       }
-    } else if (key3 === "style") {
+    } else if (key3 === 'style') {
       set_attribute(element2, key3, value);
-    } else if (key3 === "autofocus") {
+    } else if (key3 === 'autofocus') {
       autofocus(
         /** @type {HTMLElement} */
         element2,
         Boolean(value)
       );
-    } else if (!is_custom_element && (key3 === "__value" || key3 === "value" && value != null)) {
+    } else if (!is_custom_element && (key3 === '__value' || (key3 === 'value' && value != null))) {
       element2.value = element2.__value = value;
-    } else if (key3 === "selected" && is_option_element) {
+    } else if (key3 === 'selected' && is_option_element) {
       set_selected(
         /** @type {HTMLOptionElement} */
         element2,
@@ -2142,16 +2193,15 @@ function set_attributes(element2, prev, next2, css_hash, skip_warning = false) {
       if (!preserve_attribute_case) {
         name = normalize_attribute(name);
       }
-      var is_default = name === "defaultValue" || name === "defaultChecked";
+      var is_default = name === 'defaultValue' || name === 'defaultChecked';
       if (value == null && !is_custom_element && !is_default) {
         attributes[key3] = null;
-        if (name === "value" || name === "checked") {
-          let input = (
+        if (name === 'value' || name === 'checked') {
+          let input =
             /** @type {HTMLInputElement} */
-            element2
-          );
+            element2;
           const use_default = prev === void 0;
-          if (name === "value") {
+          if (name === 'value') {
             let previous = input.defaultValue;
             input.removeAttribute(name);
             input.defaultValue = previous;
@@ -2165,9 +2215,12 @@ function set_attributes(element2, prev, next2, css_hash, skip_warning = false) {
         } else {
           element2.removeAttribute(key3);
         }
-      } else if (is_default || setters.includes(name) && (is_custom_element || typeof value !== "string")) {
+      } else if (
+        is_default ||
+        (setters.includes(name) && (is_custom_element || typeof value !== 'string'))
+      ) {
         element2[name] = value;
-      } else if (typeof value !== "function") {
+      } else if (typeof value !== 'function') {
         set_attribute(element2, name, value, skip_warning);
       }
     }
@@ -2181,12 +2234,12 @@ function attribute_effect(element2, fn, sync = [], async2 = [], css_hash, skip_w
   flatten(sync, async2, (values) => {
     var prev = void 0;
     var effects = {};
-    var is_select = element2.nodeName === "SELECT";
+    var is_select = element2.nodeName === 'SELECT';
     var inited = false;
     block(() => {
       var next2 = fn(...values.map(get));
       var current = set_attributes(element2, prev, next2, css_hash, skip_warning);
-      if (inited && is_select && "value" in next2) {
+      if (inited && is_select && 'value' in next2) {
         select_option(
           /** @type {HTMLSelectElement} */
           element2,
@@ -2207,10 +2260,9 @@ function attribute_effect(element2, fn, sync = [], async2 = [], css_hash, skip_w
       prev = current;
     });
     if (is_select) {
-      var select = (
+      var select =
         /** @type {HTMLSelectElement} */
-        element2
-      );
+        element2;
       effect(() => {
         select_option(
           select,
@@ -2228,9 +2280,10 @@ function get_attributes(element2) {
   return (
     /** @type {Record<string | symbol, unknown>} **/
     // @ts-expect-error
-    element2.__attributes ?? (element2.__attributes = {
-      [IS_CUSTOM_ELEMENT]: element2.nodeName.includes("-"),
-      [IS_HTML]: element2.namespaceURI === NAMESPACE_HTML
+    element2.__attributes ??
+    (element2.__attributes = {
+      [IS_CUSTOM_ELEMENT]: element2.nodeName.includes('-'),
+      [IS_HTML]: element2.namespaceURI === NAMESPACE_HTML,
     })
   );
 }
@@ -2238,7 +2291,7 @@ var setters_cache = /* @__PURE__ */ new Map();
 function get_setters(element2) {
   var setters = setters_cache.get(element2.nodeName);
   if (setters) return setters;
-  setters_cache.set(element2.nodeName, setters = []);
+  setters_cache.set(element2.nodeName, (setters = []));
   var descriptors;
   var proto = element2;
   var element_proto = Element.prototype;
@@ -2255,11 +2308,11 @@ function get_setters(element2) {
 }
 function check_src_in_dev_hydration(element2, attribute, value) {
   if (!true_default) return;
-  if (attribute === "srcset" && srcset_url_equal(element2, value)) return;
-  if (src_url_equal(element2.getAttribute(attribute) ?? "", value)) return;
+  if (attribute === 'srcset' && srcset_url_equal(element2, value)) return;
+  if (src_url_equal(element2.getAttribute(attribute) ?? '', value)) return;
   hydration_attribute_changed(
     attribute,
-    element2.outerHTML.replace(element2.innerHTML, element2.innerHTML && "..."),
+    element2.outerHTML.replace(element2.innerHTML, element2.innerHTML && '...'),
     String(value)
   );
 }
@@ -2268,18 +2321,22 @@ function src_url_equal(element_src, url) {
   return new URL(element_src, document.baseURI).href === new URL(url, document.baseURI).href;
 }
 function split_srcset(srcset) {
-  return srcset.split(",").map((src) => src.trim().split(" ").filter(Boolean));
+  return srcset.split(',').map((src) => src.trim().split(' ').filter(Boolean));
 }
 function srcset_url_equal(element2, srcset) {
   var element_urls = split_srcset(element2.srcset);
   var urls = split_srcset(srcset);
-  return urls.length === element_urls.length && urls.every(
-    ([url, width], i) => width === element_urls[i][1] && // We need to test both ways because Vite will create an a full URL with
-    // `new URL(asset, import.meta.url).href` for the client when `base: './'`, and the
-    // relative URLs inside srcset are not automatically resolved to absolute URLs by
-    // browsers (in contrast to img.src). This means both SSR and DOM code could
-    // contain relative or absolute URLs.
-    (src_url_equal(element_urls[i][0], url) || src_url_equal(url, element_urls[i][0]))
+  return (
+    urls.length === element_urls.length &&
+    urls.every(
+      ([url, width], i) =>
+        width === element_urls[i][1] && // We need to test both ways because Vite will create an a full URL with
+        // `new URL(asset, import.meta.url).href` for the client when `base: './'`, and the
+        // relative URLs inside srcset are not automatically resolved to absolute URLs by
+        // browsers (in contrast to img.src). This means both SSR and DOM code could
+        // contain relative or absolute URLs.
+        (src_url_equal(element_urls[i][0], url) || src_url_equal(url, element_urls[i][0]))
+    )
   );
 }
 
@@ -2289,12 +2346,11 @@ var raf = {
   // don't access requestAnimationFrame eagerly outside method
   // this allows basic testing of user code without JSDOM
   // bunder will eval and remove ternary when the user's app is built
-  tick: (
+  tick:
     /** @param {any} _ */
-    (_) => (true_default ? requestAnimationFrame : noop)(_)
-  ),
+    (_) => (true_default ? requestAnimationFrame : noop)(_),
   now: () => now(),
-  tasks: /* @__PURE__ */ new Set()
+  tasks: /* @__PURE__ */ new Set(),
 };
 
 // node_modules/svelte/src/internal/client/loop.js
@@ -2317,11 +2373,11 @@ function loop(callback) {
   }
   return {
     promise: new Promise((fulfill) => {
-      raf.tasks.add(task = { c: callback, f: fulfill });
+      raf.tasks.add((task = { c: callback, f: fulfill }));
     }),
     abort() {
       raf.tasks.delete(task);
-    }
+    },
   };
 }
 
@@ -2332,21 +2388,27 @@ function dispatch_event(element2, type) {
   });
 }
 function css_property_to_camelcase(style) {
-  if (style === "float") return "cssFloat";
-  if (style === "offset") return "cssOffset";
-  if (style.startsWith("--")) return style;
-  const parts = style.split("-");
+  if (style === 'float') return 'cssFloat';
+  if (style === 'offset') return 'cssOffset';
+  if (style.startsWith('--')) return style;
+  const parts = style.split('-');
   if (parts.length === 1) return parts[0];
-  return parts[0] + parts.slice(1).map(
-    /** @param {any} word */
-    (word) => word[0].toUpperCase() + word.slice(1)
-  ).join("");
+  return (
+    parts[0] +
+    parts
+      .slice(1)
+      .map(
+        /** @param {any} word */
+        (word) => word[0].toUpperCase() + word.slice(1)
+      )
+      .join('')
+  );
 }
 function css_to_keyframe(css) {
   const keyframe = {};
-  const parts = css.split(";");
+  const parts = css.split(';');
   for (const part of parts) {
-    const [property, value] = part.split(":");
+    const [property, value] = part.split(':');
     if (!property || value === void 0) break;
     const formatted_property = css_property_to_camelcase(property.trim());
     keyframe[formatted_property] = value.trim();
@@ -2355,67 +2417,74 @@ function css_to_keyframe(css) {
 }
 var linear = (t) => t;
 function animation(element2, get_fn, get_params) {
-  var item = (
+  var item =
     /** @type {EachItem} */
-    current_each_item
-  );
+    current_each_item;
   var from;
   var to;
   var animation2;
   var original_styles = null;
-  item.a ?? (item.a = {
-    element: element2,
-    measure() {
-      from = this.element.getBoundingClientRect();
-    },
-    apply() {
-      animation2 == null ? void 0 : animation2.abort();
-      to = this.element.getBoundingClientRect();
-      if (from.left !== to.left || from.right !== to.right || from.top !== to.top || from.bottom !== to.bottom) {
-        const options = get_fn()(this.element, { from, to }, get_params == null ? void 0 : get_params());
-        animation2 = animate(this.element, options, void 0, 1, () => {
-          animation2 == null ? void 0 : animation2.abort();
-          animation2 = void 0;
-        });
-      }
-    },
-    fix() {
-      if (element2.getAnimations().length) return;
-      var { position, width, height } = getComputedStyle(element2);
-      if (position !== "absolute" && position !== "fixed") {
-        var style = (
-          /** @type {HTMLElement | SVGElement} */
-          element2.style
-        );
-        original_styles = {
-          position: style.position,
-          width: style.width,
-          height: style.height,
-          transform: style.transform
-        };
-        style.position = "absolute";
-        style.width = width;
-        style.height = height;
-        var to2 = element2.getBoundingClientRect();
-        if (from.left !== to2.left || from.top !== to2.top) {
-          var transform = `translate(${from.left - to2.left}px, ${from.top - to2.top}px)`;
-          style.transform = style.transform ? `${style.transform} ${transform}` : transform;
+  item.a ??
+    (item.a = {
+      element: element2,
+      measure() {
+        from = this.element.getBoundingClientRect();
+      },
+      apply() {
+        animation2 == null ? void 0 : animation2.abort();
+        to = this.element.getBoundingClientRect();
+        if (
+          from.left !== to.left ||
+          from.right !== to.right ||
+          from.top !== to.top ||
+          from.bottom !== to.bottom
+        ) {
+          const options = get_fn()(
+            this.element,
+            { from, to },
+            get_params == null ? void 0 : get_params()
+          );
+          animation2 = animate(this.element, options, void 0, 1, () => {
+            animation2 == null ? void 0 : animation2.abort();
+            animation2 = void 0;
+          });
         }
-      }
-    },
-    unfix() {
-      if (original_styles) {
-        var style = (
-          /** @type {HTMLElement | SVGElement} */
-          element2.style
-        );
-        style.position = original_styles.position;
-        style.width = original_styles.width;
-        style.height = original_styles.height;
-        style.transform = original_styles.transform;
-      }
-    }
-  });
+      },
+      fix() {
+        if (element2.getAnimations().length) return;
+        var { position, width, height } = getComputedStyle(element2);
+        if (position !== 'absolute' && position !== 'fixed') {
+          var style =
+            /** @type {HTMLElement | SVGElement} */
+            element2.style;
+          original_styles = {
+            position: style.position,
+            width: style.width,
+            height: style.height,
+            transform: style.transform,
+          };
+          style.position = 'absolute';
+          style.width = width;
+          style.height = height;
+          var to2 = element2.getBoundingClientRect();
+          if (from.left !== to2.left || from.top !== to2.top) {
+            var transform = `translate(${from.left - to2.left}px, ${from.top - to2.top}px)`;
+            style.transform = style.transform ? `${style.transform} ${transform}` : transform;
+          }
+        }
+      },
+      unfix() {
+        if (original_styles) {
+          var style =
+            /** @type {HTMLElement | SVGElement} */
+            element2.style;
+          style.position = original_styles.position;
+          style.width = original_styles.width;
+          style.height = original_styles.height;
+          style.transform = original_styles.transform;
+        }
+      },
+    });
   item.a.element = element2;
 }
 function transition(flags, element2, get_fn, get_params) {
@@ -2423,7 +2492,7 @@ function transition(flags, element2, get_fn, get_params) {
   var is_outro = (flags & TRANSITION_OUT) !== 0;
   var is_both = is_intro && is_outro;
   var is_global = (flags & TRANSITION_GLOBAL) !== 0;
-  var direction = is_both ? "both" : is_intro ? "in" : "out";
+  var direction = is_both ? 'both' : is_intro ? 'in' : 'out';
   var current_options;
   var inert = element2.inert;
   var overflow = element2.style.overflow;
@@ -2431,10 +2500,16 @@ function transition(flags, element2, get_fn, get_params) {
   var outro;
   function get_options() {
     return without_reactive_context(() => {
-      return current_options ?? (current_options = get_fn()(element2, (get_params == null ? void 0 : get_params()) ?? /** @type {P} */
-      {}, {
-        direction
-      }));
+      return (
+        current_options ??
+        (current_options = get_fn()(
+          element2,
+          (get_params == null ? void 0 : get_params()) ?? /** @type {P} */ {},
+          {
+            direction,
+          }
+        ))
+      );
     });
   }
   var transition2 = {
@@ -2450,9 +2525,9 @@ function transition(flags, element2, get_fn, get_params) {
       if (!is_outro) {
         intro == null ? void 0 : intro.abort();
       }
-      dispatch_event(element2, "introstart");
+      dispatch_event(element2, 'introstart');
       intro = animate(element2, get_options(), outro, 1, () => {
-        dispatch_event(element2, "introend");
+        dispatch_event(element2, 'introend');
         intro == null ? void 0 : intro.abort();
         intro = current_options = void 0;
         element2.style.overflow = overflow;
@@ -2465,31 +2540,29 @@ function transition(flags, element2, get_fn, get_params) {
         return;
       }
       element2.inert = true;
-      dispatch_event(element2, "outrostart");
+      dispatch_event(element2, 'outrostart');
       outro = animate(element2, get_options(), intro, 0, () => {
-        dispatch_event(element2, "outroend");
+        dispatch_event(element2, 'outroend');
         fn == null ? void 0 : fn();
       });
     },
     stop: () => {
       intro == null ? void 0 : intro.abort();
       outro == null ? void 0 : outro.abort();
-    }
+    },
   };
-  var e = (
+  var e =
     /** @type {Effect} */
-    active_effect
-  );
+    active_effect;
   (e.transitions ?? (e.transitions = [])).push(transition2);
   if (is_intro && should_intro) {
     var run2 = is_global;
     if (!run2) {
-      var block2 = (
+      var block2 =
         /** @type {Effect | null} */
-        e.parent
-      );
+        e.parent;
       while (block2 && (block2.f & EFFECT_TRANSPARENT) !== 0) {
-        while (block2 = block2.parent) {
+        while ((block2 = block2.parent)) {
           if ((block2.f & BLOCK_EFFECT) !== 0) break;
         }
       }
@@ -2509,7 +2582,7 @@ function animate(element2, options, counterpart, t2, on_finish) {
     var aborted2 = false;
     queue_micro_task(() => {
       if (aborted2) return;
-      var o = options({ direction: is_intro ? "in" : "out" });
+      var o = options({ direction: is_intro ? 'in' : 'out' });
       a = animate(element2, o, counterpart, t2, on_finish);
     });
     return {
@@ -2519,7 +2592,7 @@ function animate(element2, options, counterpart, t2, on_finish) {
       },
       deactivate: () => a.deactivate(),
       reset: () => a.reset(),
-      t: () => a.t()
+      t: () => a.t(),
     };
   }
   counterpart == null ? void 0 : counterpart.deactivate();
@@ -2529,7 +2602,7 @@ function animate(element2, options, counterpart, t2, on_finish) {
       abort: noop,
       deactivate: noop,
       reset: noop,
-      t: () => t2
+      t: () => t2,
     };
   }
   const { delay = 0, css, tick: tick2, easing = linear } = options;
@@ -2544,16 +2617,15 @@ function animate(element2, options, counterpart, t2, on_finish) {
     }
   }
   var get_t = () => 1 - t2;
-  var animation2 = element2.animate(keyframes, { duration: delay, fill: "forwards" });
+  var animation2 = element2.animate(keyframes, { duration: delay, fill: 'forwards' });
   animation2.onfinish = () => {
     animation2.cancel();
     var t1 = (counterpart == null ? void 0 : counterpart.t()) ?? 1 - t2;
     counterpart == null ? void 0 : counterpart.abort();
     var delta = t2 - t1;
-    var duration = (
+    var duration =
       /** @type {number} */
-      options.duration * Math.abs(delta)
-    );
+      options.duration * Math.abs(delta);
     var keyframes2 = [];
     if (duration > 0) {
       var needs_overflow_hidden = false;
@@ -2563,30 +2635,29 @@ function animate(element2, options, counterpart, t2, on_finish) {
           var t = t1 + delta * easing(i / n);
           var styles2 = css_to_keyframe(css(t, 1 - t));
           keyframes2.push(styles2);
-          needs_overflow_hidden || (needs_overflow_hidden = styles2.overflow === "hidden");
+          needs_overflow_hidden || (needs_overflow_hidden = styles2.overflow === 'hidden');
         }
       }
       if (needs_overflow_hidden) {
-        element2.style.overflow = "hidden";
+        element2.style.overflow = 'hidden';
       }
       get_t = () => {
-        var time = (
+        var time =
           /** @type {number} */
           /** @type {globalThis.Animation} */
-          animation2.currentTime
-        );
+          animation2.currentTime;
         return t1 + delta * easing(time / duration);
       };
       if (tick2) {
         loop(() => {
-          if (animation2.playState !== "running") return false;
+          if (animation2.playState !== 'running') return false;
           var t3 = get_t();
           tick2(t3, 1 - t3);
           return true;
         });
       }
     }
-    animation2 = element2.animate(keyframes2, { duration, fill: "forwards" });
+    animation2 = element2.animate(keyframes2, { duration, fill: 'forwards' });
     animation2.onfinish = () => {
       get_t = () => t2;
       tick2 == null ? void 0 : tick2(t2, 1 - t2);
@@ -2609,15 +2680,14 @@ function animate(element2, options, counterpart, t2, on_finish) {
         tick2 == null ? void 0 : tick2(1, 0);
       }
     },
-    t: () => get_t()
+    t: () => get_t(),
   };
 }
 
 // node_modules/svelte/src/internal/client/dom/elements/bindings/document.js
 function bind_active_element(update2) {
-  listen(document, ["focusin", "focusout"], (event2) => {
-    if (event2 && event2.type === "focusout" && /** @type {FocusEvent} */
-    event2.relatedTarget) {
+  listen(document, ['focusin', 'focusout'], (event2) => {
+    if (event2 && event2.type === 'focusout' && /** @type {FocusEvent} */ event2.relatedTarget) {
       return;
     }
     update2(document.activeElement);
@@ -2628,8 +2698,8 @@ function bind_active_element(update2) {
 function bind_value(input, get3, set2 = get3) {
   var runes = is_runes();
   var batches = /* @__PURE__ */ new WeakSet();
-  listen_to_event_and_reset_event(input, "input", (is_reset) => {
-    if (true_default && input.type === "checkbox") {
+  listen_to_event_and_reset_event(input, 'input', (is_reset) => {
+    if (true_default && input.type === 'checkbox') {
       bind_invalid_checkbox_value();
     }
     var value = is_reset ? input.defaultValue : input.value;
@@ -2641,7 +2711,7 @@ function bind_value(input, get3, set2 = get3) {
     if (runes && value !== (value = get3())) {
       var start = input.selectionStart;
       var end = input.selectionEnd;
-      input.value = value ?? "";
+      input.value = value ?? '';
       if (end !== null) {
         input.selectionStart = start;
         input.selectionEnd = Math.min(end, input.value.length);
@@ -2651,9 +2721,9 @@ function bind_value(input, get3, set2 = get3) {
   if (
     // If we are hydrating and the value has since changed,
     // then use the updated value from the input instead.
-    hydrating && input.defaultValue !== input.value || // If defaultValue is set, then value == defaultValue
+    (hydrating && input.defaultValue !== input.value) || // If defaultValue is set, then value == defaultValue
     // TODO Svelte 6: remove input.value check and set to empty string?
-    untrack(get3) == null && input.value
+    (untrack(get3) == null && input.value)
   ) {
     set2(is_numberlike_input(input) ? to_number(input.value) : input.value);
     if (current_batch !== null) {
@@ -2661,15 +2731,14 @@ function bind_value(input, get3, set2 = get3) {
     }
   }
   render_effect(() => {
-    if (true_default && input.type === "checkbox") {
+    if (true_default && input.type === 'checkbox') {
       bind_invalid_checkbox_value();
     }
     var value = get3();
     if (input === document.activeElement) {
-      var batch = (
+      var batch =
         /** @type {Batch} */
-        previous_batch ?? current_batch
-      );
+        previous_batch ?? current_batch;
       if (batches.has(batch)) {
         return;
       }
@@ -2677,17 +2746,17 @@ function bind_value(input, get3, set2 = get3) {
     if (is_numberlike_input(input) && value === to_number(input.value)) {
       return;
     }
-    if (input.type === "date" && !value && !input.value) {
+    if (input.type === 'date' && !value && !input.value) {
       return;
     }
     if (value !== input.value) {
-      input.value = value ?? "";
+      input.value = value ?? '';
     }
   });
 }
 var pending = /* @__PURE__ */ new Set();
 function bind_group(inputs, group_index, input, get3, set2 = get3) {
-  var is_checkbox = input.getAttribute("type") === "checkbox";
+  var is_checkbox = input.getAttribute('type') === 'checkbox';
   var binding_group = inputs;
   let hydration_mismatch2 = false;
   if (group_index !== null) {
@@ -2698,7 +2767,7 @@ function bind_group(inputs, group_index, input, get3, set2 = get3) {
   binding_group.push(input);
   listen_to_event_and_reset_event(
     input,
-    "change",
+    'change',
     () => {
       var value = input.__value;
       if (is_checkbox) {
@@ -2731,7 +2800,7 @@ function bind_group(inputs, group_index, input, get3, set2 = get3) {
   if (!pending.has(binding_group)) {
     pending.add(binding_group);
     queue_micro_task(() => {
-      binding_group.sort((a, b) => a.compareDocumentPosition(b) === 4 ? -1 : 1);
+      binding_group.sort((a, b) => (a.compareDocumentPosition(b) === 4 ? -1 : 1));
       pending.delete(binding_group);
     });
   }
@@ -2749,14 +2818,14 @@ function bind_group(inputs, group_index, input, get3, set2 = get3) {
   });
 }
 function bind_checked(input, get3, set2 = get3) {
-  listen_to_event_and_reset_event(input, "change", (is_reset) => {
+  listen_to_event_and_reset_event(input, 'change', (is_reset) => {
     var value = is_reset ? input.defaultChecked : input.checked;
     set2(value);
   });
   if (
     // If we are hydrating and the value has since changed,
     // then use the update value from the input instead.
-    hydrating && input.defaultChecked !== input.checked || // If defaultChecked is set, then checked == defaultChecked
+    (hydrating && input.defaultChecked !== input.checked) || // If defaultChecked is set, then checked == defaultChecked
     untrack(get3) == null
   ) {
     set2(input.checked);
@@ -2780,19 +2849,20 @@ function get_binding_group_value(group, __value, checked) {
 }
 function is_numberlike_input(input) {
   var type = input.type;
-  return type === "number" || type === "range";
+  return type === 'number' || type === 'range';
 }
 function to_number(value) {
-  return value === "" ? null : +value;
+  return value === '' ? null : +value;
 }
 function bind_files(input, get3, set2 = get3) {
-  listen_to_event_and_reset_event(input, "change", () => {
+  listen_to_event_and_reset_event(input, 'change', () => {
     set2(input.files);
   });
   if (
     // If we are hydrating and the value has since changed,
     // then use the updated value from the input instead.
-    hydrating && input.files
+    hydrating &&
+    input.files
   ) {
     set2(input.files);
   }
@@ -2819,51 +2889,58 @@ function bind_current_time(media, get3, set2 = get3) {
     }
     var next_value = media.currentTime;
     if (value !== next_value) {
-      set2(value = next_value);
+      set2((value = next_value));
     }
   };
   raf_id = requestAnimationFrame(callback);
-  media.addEventListener("timeupdate", callback);
+  media.addEventListener('timeupdate', callback);
   render_effect(() => {
     var next_value = Number(get3());
-    if (value !== next_value && !isNaN(
-      /** @type {any} */
-      next_value
-    )) {
+    if (
+      value !== next_value &&
+      !isNaN(
+        /** @type {any} */
+        next_value
+      )
+    ) {
       media.currentTime = value = next_value;
     }
   });
   teardown(() => {
     cancelAnimationFrame(raf_id);
-    media.removeEventListener("timeupdate", callback);
+    media.removeEventListener('timeupdate', callback);
   });
 }
 function bind_buffered(media, set2) {
   var current;
-  listen(media, ["loadedmetadata", "progress", "timeupdate", "seeking"], () => {
+  listen(media, ['loadedmetadata', 'progress', 'timeupdate', 'seeking'], () => {
     var ranges = media.buffered;
-    if (!current || current.length !== ranges.length || current.some((range, i) => ranges.start(i) !== range.start || ranges.end(i) !== range.end)) {
+    if (
+      !current ||
+      current.length !== ranges.length ||
+      current.some((range, i) => ranges.start(i) !== range.start || ranges.end(i) !== range.end)
+    ) {
       current = time_ranges_to_array(ranges);
       set2(current);
     }
   });
 }
 function bind_seekable(media, set2) {
-  listen(media, ["loadedmetadata"], () => set2(time_ranges_to_array(media.seekable)));
+  listen(media, ['loadedmetadata'], () => set2(time_ranges_to_array(media.seekable)));
 }
 function bind_played(media, set2) {
-  listen(media, ["timeupdate"], () => set2(time_ranges_to_array(media.played)));
+  listen(media, ['timeupdate'], () => set2(time_ranges_to_array(media.played)));
 }
 function bind_seeking(media, set2) {
-  listen(media, ["seeking", "seeked"], () => set2(media.seeking));
+  listen(media, ['seeking', 'seeked'], () => set2(media.seeking));
 }
 function bind_ended(media, set2) {
-  listen(media, ["timeupdate", "ended"], () => set2(media.ended));
+  listen(media, ['timeupdate', 'ended'], () => set2(media.ended));
 }
 function bind_ready_state(media, set2) {
   listen(
     media,
-    ["loadedmetadata", "loadeddata", "canplay", "canplaythrough", "playing", "waiting", "emptied"],
+    ['loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'playing', 'waiting', 'emptied'],
     () => set2(media.readyState)
   );
 }
@@ -2875,7 +2952,7 @@ function bind_playback_rate(media, get3, set2 = get3) {
     }
   });
   effect(() => {
-    listen(media, ["ratechange"], () => {
+    listen(media, ['ratechange'], () => {
       set2(media.playbackRate);
     });
   });
@@ -2884,17 +2961,17 @@ function bind_paused(media, get3, set2 = get3) {
   var paused = get3();
   var update2 = () => {
     if (paused !== media.paused) {
-      set2(paused = media.paused);
+      set2((paused = media.paused));
     }
   };
-  listen(media, ["play", "pause", "canplay"], update2, paused == null);
+  listen(media, ['play', 'pause', 'canplay'], update2, paused == null);
   effect(() => {
     if ((paused = !!get3()) !== media.paused) {
       if (paused) {
         media.pause();
       } else {
         media.play().catch(() => {
-          set2(paused = true);
+          set2((paused = true));
         });
       }
     }
@@ -2907,7 +2984,7 @@ function bind_volume(media, get3, set2 = get3) {
   if (get3() == null) {
     callback();
   }
-  listen(media, ["volumechange"], callback, false);
+  listen(media, ['volumechange'], callback, false);
   render_effect(() => {
     var value = Number(get3());
     if (value !== media.volume && !isNaN(value)) {
@@ -2922,7 +2999,7 @@ function bind_muted(media, get3, set2 = get3) {
   if (get3() == null) {
     callback();
   }
-  listen(media, ["volumechange"], callback, false);
+  listen(media, ['volumechange'], callback, false);
   render_effect(() => {
     var value = !!get3();
     if (media.muted !== value) media.muted = value;
@@ -2931,7 +3008,7 @@ function bind_muted(media, get3, set2 = get3) {
 
 // node_modules/svelte/src/internal/client/dom/elements/bindings/navigator.js
 function bind_online(update2) {
-  listen(window, ["online", "offline"], () => {
+  listen(window, ['online', 'offline'], () => {
     update2(navigator.onLine);
   });
 }
@@ -2969,7 +3046,9 @@ var _ResizeObserverSingleton = class _ResizeObserverSingleton {
     var listeners = __privateGet(this, _listeners).get(element2) || /* @__PURE__ */ new Set();
     listeners.add(listener);
     __privateGet(this, _listeners).set(element2, listeners);
-    __privateMethod(this, _ResizeObserverSingleton_instances, getObserver_fn).call(this).observe(element2, __privateGet(this, _options));
+    __privateMethod(this, _ResizeObserverSingleton_instances, getObserver_fn)
+      .call(this)
+      .observe(element2, __privateGet(this, _options));
     return () => {
       var listeners2 = __privateGet(this, _listeners).get(element2);
       listeners2.delete(listener);
@@ -2984,33 +3063,45 @@ _listeners = new WeakMap();
 _observer = new WeakMap();
 _options = new WeakMap();
 _ResizeObserverSingleton_instances = new WeakSet();
-getObserver_fn = function() {
-  return __privateGet(this, _observer) ?? __privateSet(this, _observer, new ResizeObserver(
-    /** @param {any} entries */
-    (entries) => {
-      for (var entry of entries) {
-        _ResizeObserverSingleton.entries.set(entry.target, entry);
-        for (var listener of __privateGet(this, _listeners).get(entry.target) || []) {
-          listener(entry);
+getObserver_fn = function () {
+  return (
+    __privateGet(this, _observer) ??
+    __privateSet(
+      this,
+      _observer,
+      new ResizeObserver(
+        /** @param {any} entries */
+        (entries) => {
+          for (var entry of entries) {
+            _ResizeObserverSingleton.entries.set(entry.target, entry);
+            for (var listener of __privateGet(this, _listeners).get(entry.target) || []) {
+              listener(entry);
+            }
+          }
         }
-      }
-    }
-  ));
+      )
+    )
+  );
 };
 /** @static */
-__publicField(_ResizeObserverSingleton, "entries", /* @__PURE__ */ new WeakMap());
+__publicField(_ResizeObserverSingleton, 'entries', /* @__PURE__ */ new WeakMap());
 var ResizeObserverSingleton = _ResizeObserverSingleton;
 var resize_observer_content_box = new ResizeObserverSingleton({
-  box: "content-box"
+  box: 'content-box',
 });
 var resize_observer_border_box = new ResizeObserverSingleton({
-  box: "border-box"
+  box: 'border-box',
 });
 var resize_observer_device_pixel_content_box = new ResizeObserverSingleton({
-  box: "device-pixel-content-box"
+  box: 'device-pixel-content-box',
 });
 function bind_resize_observer(element2, type, set2) {
-  var observer = type === "contentRect" || type === "contentBoxSize" ? resize_observer_content_box : type === "borderBoxSize" ? resize_observer_border_box : resize_observer_device_pixel_content_box;
+  var observer =
+    type === 'contentRect' || type === 'contentBoxSize'
+      ? resize_observer_content_box
+      : type === 'borderBoxSize'
+        ? resize_observer_border_box
+        : resize_observer_device_pixel_content_box;
   var unsub = observer.observe(
     element2,
     /** @param {any} entry */
@@ -3028,7 +3119,10 @@ function bind_element_size(element2, type, set2) {
 
 // node_modules/svelte/src/internal/client/dom/elements/bindings/this.js
 function is_bound_this(bound_value, element_or_component) {
-  return bound_value === element_or_component || (bound_value == null ? void 0 : bound_value[STATE_SYMBOL]) === element_or_component;
+  return (
+    bound_value === element_or_component ||
+    (bound_value == null ? void 0 : bound_value[STATE_SYMBOL]) === element_or_component
+  );
 }
 function bind_this(element_or_component = {}, update2, get_value, get_parts) {
   effect(() => {
@@ -3059,7 +3153,7 @@ function bind_this(element_or_component = {}, update2, get_value, get_parts) {
 
 // node_modules/svelte/src/internal/client/dom/elements/bindings/universal.js
 function bind_content_editable(property, element2, get3, set2 = get3) {
-  element2.addEventListener("input", () => {
+  element2.addEventListener('input', () => {
     set2(element2[property]);
   });
   render_effect(() => {
@@ -3069,7 +3163,7 @@ function bind_content_editable(property, element2, get3, set2 = get3) {
         var non_null_value = element2[property];
         set2(non_null_value);
       } else {
-        element2[property] = value + "";
+        element2[property] = value + '';
       }
     }
   });
@@ -3093,22 +3187,23 @@ function bind_property(property, event_name, element2, set2, get3) {
   }
 }
 function bind_focused(element2, set2) {
-  listen(element2, ["focus", "blur"], () => {
+  listen(element2, ['focus', 'blur'], () => {
     set2(element2 === document.activeElement);
   });
 }
 
 // node_modules/svelte/src/internal/client/dom/elements/bindings/window.js
 function bind_window_scroll(type, get3, set2 = get3) {
-  var is_scrolling_x = type === "x";
-  var target_handler = () => without_reactive_context(() => {
-    scrolling = true;
-    clearTimeout(timeout);
-    timeout = setTimeout(clear, 100);
-    set2(window[is_scrolling_x ? "scrollX" : "scrollY"]);
-  });
-  addEventListener("scroll", target_handler, {
-    passive: true
+  var is_scrolling_x = type === 'x';
+  var target_handler = () =>
+    without_reactive_context(() => {
+      scrolling = true;
+      clearTimeout(timeout);
+      timeout = setTimeout(clear, 100);
+      set2(window[is_scrolling_x ? 'scrollX' : 'scrollY']);
+    });
+  addEventListener('scroll', target_handler, {
+    passive: true,
   });
   var scrolling = false;
   var timeout;
@@ -3133,28 +3228,26 @@ function bind_window_scroll(type, get3, set2 = get3) {
   });
   effect(target_handler);
   teardown(() => {
-    removeEventListener("scroll", target_handler);
+    removeEventListener('scroll', target_handler);
   });
 }
 function bind_window_size(type, set2) {
-  listen(window, ["resize"], () => without_reactive_context(() => set2(window[type])));
+  listen(window, ['resize'], () => without_reactive_context(() => set2(window[type])));
 }
 
 // node_modules/svelte/src/internal/client/dom/legacy/lifecycle.js
 function init(immutable = false) {
-  const context = (
+  const context =
     /** @type {ComponentContextLegacy} */
-    component_context
-  );
+    component_context;
   const callbacks = context.l.u;
   if (!callbacks) return;
   let props = () => deep_read_state(context.s);
   if (immutable) {
     let version = 0;
-    let prev = (
+    let prev =
       /** @type {Record<string, any>} */
-      {}
-    );
+      {};
     const d = derived(() => {
       let changed = false;
       const props2 = context.s;
@@ -3179,7 +3272,7 @@ function init(immutable = false) {
     const fns = untrack(() => callbacks.m.map(run));
     return () => {
       for (const fn of fns) {
-        if (typeof fn === "function") {
+        if (typeof fn === 'function') {
           fn();
         }
       }
@@ -3202,7 +3295,7 @@ function observe_all(context, props) {
 // node_modules/svelte/src/internal/client/dom/legacy/misc.js
 function reactive_import(fn) {
   var s = source(0);
-  return function() {
+  return function () {
     if (arguments.length === 1) {
       set(s, get(s) + 1);
       return arguments[0];
@@ -3214,10 +3307,9 @@ function reactive_import(fn) {
 }
 function bubble_event($$props, event2) {
   var _a;
-  var events = (
+  var events =
     /** @type {Record<string, Function[] | Function>} */
-    (_a = $$props.$$events) == null ? void 0 : _a[event2.type]
-  );
+    (_a = $$props.$$events) == null ? void 0 : _a[event2.type];
   var callbacks = is_array(events) ? events.slice() : events == null ? [] : [events];
   for (var fn of callbacks) {
     fn.call(this, event2);
@@ -3239,7 +3331,7 @@ function update_legacy_props($$new_props) {
 
 // node_modules/svelte/src/index-client.js
 if (true_default) {
-  let throw_rune_error = function(rune) {
+  let throw_rune_error = function (rune) {
     if (!(rune in globalThis)) {
       let value;
       Object.defineProperty(globalThis, rune, {
@@ -3253,16 +3345,16 @@ if (true_default) {
         },
         set: (v) => {
           value = v;
-        }
+        },
       });
     }
   };
-  throw_rune_error("$state");
-  throw_rune_error("$effect");
-  throw_rune_error("$derived");
-  throw_rune_error("$inspect");
-  throw_rune_error("$props");
-  throw_rune_error("$bindable");
+  throw_rune_error('$state');
+  throw_rune_error('$effect');
+  throw_rune_error('$derived');
+  throw_rune_error('$inspect');
+  throw_rune_error('$props');
+  throw_rune_error('$bindable');
 }
 function getAbortSignal() {
   var _a;
@@ -3273,23 +3365,24 @@ function getAbortSignal() {
 }
 function onMount(fn) {
   if (component_context === null) {
-    lifecycle_outside_component("onMount");
+    lifecycle_outside_component('onMount');
   }
   if (legacy_mode_flag && component_context.l !== null) {
     init_update_callbacks(component_context).m.push(fn);
   } else {
     user_effect(() => {
       const cleanup = untrack(fn);
-      if (typeof cleanup === "function") return (
-        /** @type {() => void} */
-        cleanup
-      );
+      if (typeof cleanup === 'function')
+        return (
+          /** @type {() => void} */
+          cleanup
+        );
     });
   }
 }
 function onDestroy(fn) {
   if (component_context === null) {
-    lifecycle_outside_component("onDestroy");
+    lifecycle_outside_component('onDestroy');
   }
   onMount(() => () => untrack(fn));
 }
@@ -3299,17 +3392,16 @@ function create_custom_event(type, detail, { bubbles = false, cancelable = false
 function createEventDispatcher() {
   const active_component_context = component_context;
   if (active_component_context === null) {
-    lifecycle_outside_component("createEventDispatcher");
+    lifecycle_outside_component('createEventDispatcher');
   }
   return (type, detail, options) => {
     var _a;
-    const events = (
+    const events =
       /** @type {Record<string, Function | Function[]>} */
-      (_a = active_component_context.s.$$events) == null ? void 0 : _a[
-        /** @type {any} */
-        type
-      ]
-    );
+      (_a = active_component_context.s.$$events) == null
+        ? void 0
+        : /** @type {any} */
+          _a[type];
     if (events) {
       const callbacks = is_array(events) ? events.slice() : [events];
       const event2 = create_custom_event(
@@ -3328,27 +3420,26 @@ function createEventDispatcher() {
 }
 function beforeUpdate(fn) {
   if (component_context === null) {
-    lifecycle_outside_component("beforeUpdate");
+    lifecycle_outside_component('beforeUpdate');
   }
   if (component_context.l === null) {
-    lifecycle_legacy_only("beforeUpdate");
+    lifecycle_legacy_only('beforeUpdate');
   }
   init_update_callbacks(component_context).b.push(fn);
 }
 function afterUpdate(fn) {
   if (component_context === null) {
-    lifecycle_outside_component("afterUpdate");
+    lifecycle_outside_component('afterUpdate');
   }
   if (component_context.l === null) {
-    lifecycle_legacy_only("afterUpdate");
+    lifecycle_legacy_only('afterUpdate');
   }
   init_update_callbacks(component_context).a.push(fn);
 }
 function init_update_callbacks(context) {
-  var l = (
+  var l =
     /** @type {ComponentContextLegacy} */
-    context.l
-  );
+    context.l;
   return l.u ?? (l.u = { a: [], b: [], m: [] });
 }
 
@@ -3359,8 +3450,8 @@ function subscribe_to_store(store, run2, invalidate) {
     if (invalidate) invalidate(void 0);
     return noop;
   }
-  const unsub = untrack(
-    () => store.subscribe(
+  const unsub = untrack(() =>
+    store.subscribe(
       run2,
       // @ts-expect-error
       invalidate
@@ -3373,7 +3464,7 @@ function subscribe_to_store(store, run2, invalidate) {
 var subscriber_queue = [];
 function readable(value, start) {
   return {
-    subscribe: writable(value, start).subscribe
+    subscribe: writable(value, start).subscribe,
   };
 }
 function writable(value, start = noop) {
@@ -3398,10 +3489,12 @@ function writable(value, start = noop) {
     }
   }
   function update2(fn) {
-    set2(fn(
-      /** @type {T} */
-      value
-    ));
+    set2(
+      fn(
+        /** @type {T} */
+        value
+      )
+    );
   }
   function subscribe(run2, invalidate = noop) {
     const subscriber = [run2, invalidate];
@@ -3427,7 +3520,7 @@ function derived2(stores, fn, initial_value) {
   const single = !Array.isArray(stores);
   const stores_array = single ? [stores] : stores;
   if (!stores_array.every(Boolean)) {
-    throw new Error("derived() expects stores as input, got a falsy value");
+    throw new Error('derived() expects stores as input, got a falsy value');
   }
   const auto = fn.length < 2;
   return readable(initial_value, (set2, update2) => {
@@ -3444,11 +3537,11 @@ function derived2(stores, fn, initial_value) {
       if (auto) {
         set2(result);
       } else {
-        cleanup = typeof result === "function" ? result : noop;
+        cleanup = typeof result === 'function' ? result : noop;
       }
     };
-    const unsubscribers = stores_array.map(
-      (store, i) => subscribe_to_store(
+    const unsubscribers = stores_array.map((store, i) =>
+      subscribe_to_store(
         store,
         (value) => {
           values[i] = value;
@@ -3474,12 +3567,12 @@ function derived2(stores, fn, initial_value) {
 function readonly(store) {
   return {
     // @ts-expect-error TODO i suspect the bind is unnecessary
-    subscribe: store.subscribe.bind(store)
+    subscribe: store.subscribe.bind(store),
   };
 }
 function get2(store) {
   let value;
-  subscribe_to_store(store, (_) => value = _)();
+  subscribe_to_store(store, (_) => (value = _))();
   return value;
 }
 
@@ -3487,11 +3580,13 @@ function get2(store) {
 var is_store_binding = false;
 var IS_UNMOUNTED = Symbol();
 function store_get(store, store_name, stores) {
-  const entry = stores[store_name] ?? (stores[store_name] = {
-    store: null,
-    source: mutable_source(void 0),
-    unsubscribe: noop
-  });
+  const entry =
+    stores[store_name] ??
+    (stores[store_name] = {
+      store: null,
+      source: mutable_source(void 0),
+      unsubscribe: noop,
+    });
   if (true_default) {
     entry.source.label = store_name;
   }
@@ -3546,7 +3641,7 @@ function setup_stores() {
       }
       define_property(stores, IS_UNMOUNTED, {
         enumerable: false,
-        value: true
+        value: true,
       });
     });
   }
@@ -3606,7 +3701,7 @@ var rest_props_handler = {
       return {
         enumerable: true,
         configurable: true,
-        value: target.props[key2]
+        value: target.props[key2],
       };
     }
   },
@@ -3616,7 +3711,7 @@ var rest_props_handler = {
   },
   ownKeys(target) {
     return Reflect.ownKeys(target.props).filter((key2) => !target.exclude.includes(key2));
-  }
+  },
 };
 function rest_props(props, exclude, name) {
   return new Proxy(
@@ -3639,7 +3734,7 @@ var legacy_rest_props_handler = {
           {
             get [key2]() {
               return target.props[key2];
-            }
+            },
           },
           /** @type {string} */
           key2,
@@ -3659,7 +3754,7 @@ var legacy_rest_props_handler = {
       return {
         enumerable: true,
         configurable: true,
-        value: target.props[key2]
+        value: target.props[key2],
       };
     }
   },
@@ -3675,7 +3770,7 @@ var legacy_rest_props_handler = {
   },
   ownKeys(target) {
     return Reflect.ownKeys(target.props).filter((key2) => !target.exclude.includes(key2));
-  }
+  },
 };
 function legacy_rest_props(props, exclude) {
   return new Proxy(
@@ -3687,10 +3782,9 @@ function legacy_rest_props(props, exclude) {
       // TODO this is only necessary because we need to track component
       // destruction inside `prop`, because of `bind:this`, but it
       // seems likely that we can simplify `bind:this` instead
-      parent_effect: (
+      parent_effect:
         /** @type {Effect} */
-        active_effect
-      )
+        active_effect,
     },
     legacy_rest_props_handler
   );
@@ -3701,7 +3795,7 @@ var spread_props_handler = {
     while (i--) {
       let p = target.props[i];
       if (is_function(p)) p = p();
-      if (typeof p === "object" && p !== null && key2 in p) return p[key2];
+      if (typeof p === 'object' && p !== null && key2 in p) return p[key2];
     }
   },
   set(target, key2, value) {
@@ -3722,7 +3816,7 @@ var spread_props_handler = {
     while (i--) {
       let p = target.props[i];
       if (is_function(p)) p = p();
-      if (typeof p === "object" && p !== null && key2 in p) {
+      if (typeof p === 'object' && p !== null && key2 in p) {
         const descriptor = get_descriptor(p, key2);
         if (descriptor && !descriptor.configurable) {
           descriptor.configurable = true;
@@ -3752,7 +3846,7 @@ var spread_props_handler = {
       }
     }
     return keys;
-  }
+  },
 };
 function spread_props(...props) {
   return new Proxy({ props }, spread_props_handler);
@@ -3762,39 +3856,40 @@ function prop(props, key2, flags, fallback2) {
   var runes = !legacy_mode_flag || (flags & PROPS_IS_RUNES) !== 0;
   var bindable = (flags & PROPS_IS_BINDABLE) !== 0;
   var lazy = (flags & PROPS_IS_LAZY_INITIAL) !== 0;
-  var fallback_value = (
+  var fallback_value =
     /** @type {V} */
-    fallback2
-  );
+    fallback2;
   var fallback_dirty = true;
   var get_fallback = () => {
     if (fallback_dirty) {
       fallback_dirty = false;
-      fallback_value = lazy ? untrack(
-        /** @type {() => V} */
-        fallback2
-      ) : (
-        /** @type {V} */
-        fallback2
-      );
+      fallback_value = lazy
+        ? untrack(
+            /** @type {() => V} */
+            fallback2
+          )
+        : /** @type {V} */
+          fallback2;
     }
     return fallback_value;
   };
   var setter;
   if (bindable) {
     var is_entry_props = STATE_SYMBOL in props || LEGACY_PROPS in props;
-    setter = ((_a = get_descriptor(props, key2)) == null ? void 0 : _a.set) ?? (is_entry_props && key2 in props ? (v) => props[key2] = v : void 0);
+    setter =
+      ((_a = get_descriptor(props, key2)) == null ? void 0 : _a.set) ??
+      (is_entry_props && key2 in props ? (v) => (props[key2] = v) : void 0);
   }
   var initial_value;
   var is_store_sub = false;
   if (bindable) {
-    [initial_value, is_store_sub] = capture_store_binding(() => (
-      /** @type {V} */
-      props[key2]
-    ));
+    [initial_value, is_store_sub] = capture_store_binding(
+      () =>
+        /** @type {V} */
+        props[key2]
+    );
   } else {
-    initial_value = /** @type {V} */
-    props[key2];
+    initial_value = /** @type {V} */ props[key2];
   }
   if (initial_value === void 0 && fallback2 !== void 0) {
     initial_value = get_fallback();
@@ -3806,23 +3901,20 @@ function prop(props, key2, flags, fallback2) {
   var getter;
   if (runes) {
     getter = () => {
-      var value = (
+      var value =
         /** @type {V} */
-        props[key2]
-      );
+        props[key2];
       if (value === void 0) return get_fallback();
       fallback_dirty = true;
       return value;
     };
   } else {
     getter = () => {
-      var value = (
+      var value =
         /** @type {V} */
-        props[key2]
-      );
+        props[key2];
       if (value !== void 0) {
-        fallback_value = /** @type {V} */
-        void 0;
+        fallback_value = /** @type {V} */ void 0;
       }
       return value === void 0 ? fallback_value : value;
     };
@@ -3832,7 +3924,7 @@ function prop(props, key2, flags, fallback2) {
   }
   if (setter) {
     var legacy_parent = props.$$legacy;
-    return function(value, mutation) {
+    return function (value, mutation) {
       if (arguments.length > 0) {
         if (!runes || !mutation || legacy_parent || is_store_sub) {
           setter(mutation ? getter() : value);
@@ -3851,11 +3943,10 @@ function prop(props, key2, flags, fallback2) {
     d.label = key2;
   }
   if (bindable) get(d);
-  var parent_effect = (
+  var parent_effect =
     /** @type {Effect} */
-    active_effect
-  );
-  return function(value, mutation) {
+    active_effect;
+  return function (value, mutation) {
     if (arguments.length > 0) {
       const new_value = mutation ? get(d) : runes && bindable ? proxy(value) : value;
       set(d, new_value);
@@ -3865,7 +3956,7 @@ function prop(props, key2, flags, fallback2) {
       }
       return value;
     }
-    if (is_destroying_effect && overridden || (parent_effect.f & DESTROYED) !== 0) {
+    if ((is_destroying_effect && overridden) || (parent_effect.f & DESTROYED) !== 0) {
       return d.v;
     }
     return get(d);
@@ -3877,7 +3968,11 @@ function validate_each_keys(collection, key_fn) {
   render_effect(() => {
     const keys = /* @__PURE__ */ new Map();
     const maybe_array = collection();
-    const array = is_array(maybe_array) ? maybe_array : maybe_array == null ? [] : Array.from(maybe_array);
+    const array = is_array(maybe_array)
+      ? maybe_array
+      : maybe_array == null
+        ? []
+        : Array.from(maybe_array);
     const length = array.length;
     for (let i = 0; i < length; i++) {
       const key2 = key_fn(array[i], i);
@@ -3885,7 +3980,7 @@ function validate_each_keys(collection, key_fn) {
         const a = String(keys.get(key2));
         const b = String(i);
         let k = String(key2);
-        if (k.startsWith("[object ")) k = null;
+        if (k.startsWith('[object ')) k = null;
         each_key_duplicate(a, b, k);
       }
       keys.set(key2, i);
@@ -3917,7 +4012,7 @@ function validate_binding(binding, get_object, get_property, line, column) {
 
 // node_modules/svelte/src/internal/client/dom/elements/custom-element.js
 var SvelteElement;
-if (typeof HTMLElement === "function") {
+if (typeof HTMLElement === 'function') {
   SvelteElement = class extends HTMLElement {
     /**
      * @param {*} $$componentCtor
@@ -3927,29 +4022,29 @@ if (typeof HTMLElement === "function") {
     constructor($$componentCtor, $$slots, use_shadow_dom) {
       super();
       /** The Svelte component constructor */
-      __publicField(this, "$$ctor");
+      __publicField(this, '$$ctor');
       /** Slots */
-      __publicField(this, "$$s");
+      __publicField(this, '$$s');
       /** @type {any} The Svelte component instance */
-      __publicField(this, "$$c");
+      __publicField(this, '$$c');
       /** Whether or not the custom element is connected */
-      __publicField(this, "$$cn", false);
+      __publicField(this, '$$cn', false);
       /** @type {Record<string, any>} Component props data */
-      __publicField(this, "$$d", {});
+      __publicField(this, '$$d', {});
       /** `true` if currently in the process of reflecting component props back to attributes */
-      __publicField(this, "$$r", false);
+      __publicField(this, '$$r', false);
       /** @type {Record<string, CustomElementPropDefinition>} Props definition (name, reflected, type etc) */
-      __publicField(this, "$$p_d", {});
+      __publicField(this, '$$p_d', {});
       /** @type {Record<string, EventListenerOrEventListenerObject[]>} Event listeners */
-      __publicField(this, "$$l", {});
+      __publicField(this, '$$l', {});
       /** @type {Map<EventListenerOrEventListenerObject, Function>} Event listener unsubscribe functions */
-      __publicField(this, "$$l_u", /* @__PURE__ */ new Map());
+      __publicField(this, '$$l_u', /* @__PURE__ */ new Map());
       /** @type {any} The managed render effect for reflecting attributes */
-      __publicField(this, "$$me");
+      __publicField(this, '$$me');
       this.$$ctor = $$componentCtor;
       this.$$s = $$slots;
       if (use_shadow_dom) {
-        this.attachShadow({ mode: "open" });
+        this.attachShadow({ mode: 'open' });
       }
     }
     /**
@@ -3984,10 +4079,10 @@ if (typeof HTMLElement === "function") {
     async connectedCallback() {
       this.$$cn = true;
       if (!this.$$c) {
-        let create_slot = function(name) {
+        let create_slot = function (name) {
           return (anchor) => {
-            const slot2 = document.createElement("slot");
-            if (name !== "default") slot2.name = name;
+            const slot2 = document.createElement('slot');
+            if (name !== 'default') slot2.name = name;
             append(anchor, slot2);
           };
         };
@@ -3999,7 +4094,7 @@ if (typeof HTMLElement === "function") {
         const existing_slots = get_custom_elements_slots(this);
         for (const name of this.$$s) {
           if (name in existing_slots) {
-            if (name === "default" && !this.$$d.children) {
+            if (name === 'default' && !this.$$d.children) {
               this.$$d.children = create_slot(name);
               $$slots.default = true;
             } else {
@@ -4010,7 +4105,7 @@ if (typeof HTMLElement === "function") {
         for (const attribute of this.attributes) {
           const name = this.$$g_p(attribute.name);
           if (!(name in this.$$d)) {
-            this.$$d[name] = get_custom_element_value(name, attribute.value, this.$$p_d, "toProp");
+            this.$$d[name] = get_custom_element_value(name, attribute.value, this.$$p_d, 'toProp');
           }
         }
         for (const key2 in this.$$p_d) {
@@ -4025,8 +4120,8 @@ if (typeof HTMLElement === "function") {
           props: {
             ...this.$$d,
             $$slots,
-            $$host: this
-          }
+            $$host: this,
+          },
         });
         this.$$me = effect_root(() => {
           render_effect(() => {
@@ -4039,7 +4134,7 @@ if (typeof HTMLElement === "function") {
                 key2,
                 this.$$d[key2],
                 this.$$p_d,
-                "toAttribute"
+                'toAttribute'
               );
               if (attribute_value == null) {
                 this.removeAttribute(this.$$p_d[key2].attribute || key2);
@@ -4070,7 +4165,7 @@ if (typeof HTMLElement === "function") {
       var _a;
       if (this.$$r) return;
       attr2 = this.$$g_p(attr2);
-      this.$$d[attr2] = get_custom_element_value(attr2, newValue, this.$$p_d, "toProp");
+      this.$$d[attr2] = get_custom_element_value(attr2, newValue, this.$$p_d, 'toProp');
       (_a = this.$$c) == null ? void 0 : _a.$set({ [attr2]: this.$$d[attr2] });
     }
     disconnectedCallback() {
@@ -4087,38 +4182,42 @@ if (typeof HTMLElement === "function") {
      * @param {string} attribute_name
      */
     $$g_p(attribute_name) {
-      return object_keys(this.$$p_d).find(
-        (key2) => this.$$p_d[key2].attribute === attribute_name || !this.$$p_d[key2].attribute && key2.toLowerCase() === attribute_name
-      ) || attribute_name;
+      return (
+        object_keys(this.$$p_d).find(
+          (key2) =>
+            this.$$p_d[key2].attribute === attribute_name ||
+            (!this.$$p_d[key2].attribute && key2.toLowerCase() === attribute_name)
+        ) || attribute_name
+      );
     }
   };
 }
 function get_custom_element_value(prop2, value, props_definition, transform) {
   var _a;
   const type = (_a = props_definition[prop2]) == null ? void 0 : _a.type;
-  value = type === "Boolean" && typeof value !== "boolean" ? value != null : value;
+  value = type === 'Boolean' && typeof value !== 'boolean' ? value != null : value;
   if (!transform || !props_definition[prop2]) {
     return value;
-  } else if (transform === "toAttribute") {
+  } else if (transform === 'toAttribute') {
     switch (type) {
-      case "Object":
-      case "Array":
+      case 'Object':
+      case 'Array':
         return value == null ? null : JSON.stringify(value);
-      case "Boolean":
-        return value ? "" : null;
-      case "Number":
+      case 'Boolean':
+        return value ? '' : null;
+      case 'Number':
         return value == null ? null : value;
       default:
         return value;
     }
   } else {
     switch (type) {
-      case "Object":
-      case "Array":
+      case 'Object':
+      case 'Array':
         return value && JSON.parse(value);
-      case "Boolean":
+      case 'Boolean':
         return value;
-      case "Number":
+      case 'Number':
         return value != null ? +value : value;
       default:
         return value;
@@ -4130,20 +4229,27 @@ function get_custom_elements_slots(element2) {
   element2.childNodes.forEach((node) => {
     result[
       /** @type {Element} node */
-      node.slot || "default"
+      node.slot || 'default'
     ] = true;
   });
   return result;
 }
-function create_custom_element(Component, props_definition, slots, exports, use_shadow_dom, extend) {
+function create_custom_element(
+  Component,
+  props_definition,
+  slots,
+  exports,
+  use_shadow_dom,
+  extend
+) {
   let Class = class extends SvelteElement {
     constructor() {
       super(Component, slots, use_shadow_dom);
       this.$$p_d = props_definition;
     }
     static get observedAttributes() {
-      return object_keys(props_definition).map(
-        (key2) => (props_definition[key2].attribute || key2).toLowerCase()
+      return object_keys(props_definition).map((key2) =>
+        (props_definition[key2].attribute || key2).toLowerCase()
       );
     }
   };
@@ -4165,7 +4271,7 @@ function create_custom_element(Component, props_definition, slots, exports, use_
             component2.$set({ [prop2]: value });
           }
         }
-      }
+      },
     });
   });
   exports.forEach((property) => {
@@ -4173,14 +4279,13 @@ function create_custom_element(Component, props_definition, slots, exports, use_
       get() {
         var _a;
         return (_a = this.$$c) == null ? void 0 : _a[property];
-      }
+      },
     });
   });
   if (extend) {
     Class = extend(Class);
   }
-  Component.element = /** @type {any} */
-  Class;
+  Component.element = /** @type {any} */ Class;
   return Class;
 }
 
@@ -4191,7 +4296,7 @@ function log_if_contains_state(method, ...objects) {
       let has_state = false;
       const transformed = [];
       for (const obj of objects) {
-        if (obj && typeof obj === "object" && STATE_SYMBOL in obj) {
+        if (obj && typeof obj === 'object' && STATE_SYMBOL in obj) {
           transformed.push(snapshot(obj, true));
           has_state = true;
         } else {
@@ -4200,10 +4305,9 @@ function log_if_contains_state(method, ...objects) {
       }
       if (has_state) {
         console_log_state(method);
-        console.log("%c[snapshot]", "color: grey", ...transformed);
+        console.log('%c[snapshot]', 'color: grey', ...transformed);
       }
-    } catch {
-    }
+    } catch {}
   });
   return objects;
 }
@@ -4212,10 +4316,11 @@ function log_if_contains_state(method, ...objects) {
 function createAttachmentKey() {
   return Symbol(ATTACHMENT_KEY);
 }
-function fromAction(action2, fn = (
+function fromAction(
+  action2,
   /** @type {() => T} */
-  noop
-)) {
+  fn = noop
+) {
   return (element2) => {
     const { update: update2, destroy } = untrack(() => action2(element2, fn()) ?? {});
     if (update2) {
@@ -4353,6 +4458,6 @@ export {
   onDestroy,
   createEventDispatcher,
   beforeUpdate,
-  afterUpdate
+  afterUpdate,
 };
 //# sourceMappingURL=chunk-5OCJKXG4.js.map

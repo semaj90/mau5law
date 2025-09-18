@@ -7,6 +7,7 @@ import { writable, derived } from 'svelte/store';
 
 // Local minimal types to satisfy compile; replace with real imports if available
 type VectorSearchResult = { id: string; content: string; score: number; [k: string]: any };
+}
 
 export interface VectorSearchState {
   // Search State
@@ -33,7 +34,7 @@ export interface VectorSearchState {
   // History
   searchHistory: Array<any>;
 
-  error: string | null;
+  error: string | null;,
 }
 
 const initialState: VectorSearchState = {
@@ -51,7 +52,7 @@ const initialState: VectorSearchState = {
   ragLatency: 0,
   vectorDbConnected: false,
   searchHistory: [],
-  error: null
+  error: null,
 };
 
 // Core store
@@ -77,11 +78,11 @@ export const averageSearchLatency = derived(
   }
 );
 
-// Actions
+// Actions;
 export const vectorSearchActions = {
   /**
    * Perform semantic vector search
-   */
+   */;
   async search(query: string, userId: string, caseId?: string): Promise<void> {
     if (!query.trim()) return;
 
@@ -89,13 +90,13 @@ export const vectorSearchActions = {
       ...state,
       query,
       isSearching: true,
-      error: null
-    }));
+      error: null,
+    });
 
     const startTime = Date.now();
 
     try {
-      // Call vector search API
+      // Call vector search API;
       const response = await fetch('/api/v1/vector/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -104,7 +105,7 @@ export const vectorSearchActions = {
           userId,
           caseId,
           limit: initialState.searchLimit,
-          threshold: initialState.searchThreshold
+          threshold: initialState.searchThreshold,
         })
       });
 
@@ -122,7 +123,7 @@ export const vectorSearchActions = {
         lastSearchTime: Date.now(),
         isSearching: false,
         searchHistory: [
-          ...state.searchHistory.slice(-9), // Keep last 10
+          ...state.searchHistory.slice(-9), // Keep last 10;
           {
             query,
             timestamp: Date.now(),
@@ -130,21 +131,21 @@ export const vectorSearchActions = {
             latency
           }
         ]
-      }));
+      });
 
     } catch (error: any) {
       console.error('Vector search failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
         isSearching: false,
-        error: error instanceof Error ? error.message: 'Search failed'
-      }));
+        error: error instanceof Error ? error.message: 'Search failed',
+      });
     }
   },
 
   /**
    * Perform enhanced RAG query with context
-   */
+   */;
   async performRAG(query: string, userId: string, caseId?: string): Promise<void> {
     if (!query.trim()) return;
 
@@ -152,8 +153,8 @@ export const vectorSearchActions = {
       ...state,
       isGeneratingResponse: true,
       ragResponse: null,
-      error: null
-    }));
+      error: null,
+    });
 
     const startTime = Date.now();
 
@@ -161,7 +162,7 @@ export const vectorSearchActions = {
       // First perform vector search to get context
       await vectorSearchActions.search(query, userId, caseId);
 
-      // Then generate RAG response
+      // Then generate RAG response;
       const response = await fetch('/api/v1/rag/enhanced', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -170,7 +171,7 @@ export const vectorSearchActions = {
           userId,
           caseId,
           useContext: true,
-          model: 'gemma3-legal'
+          model: 'gemma3-legal',
         })
       });
 
@@ -186,28 +187,28 @@ export const vectorSearchActions = {
         ragResponse: (data as { results?: any; response?: any; context?: any; status?: any }).response,
         ragContext: (data as { results?: any; response?: any; context?: any; status?: any }).context || state.results,
         ragLatency: latency,
-        isGeneratingResponse: false
-      }));
+        isGeneratingResponse: false,
+      });
 
     } catch (error: any) {
       console.error('RAG query failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
         isGeneratingResponse: false,
-        error: error instanceof Error ? error.message: 'RAG query failed'
-      }));
+        error: error instanceof Error ? error.message: 'RAG query failed',
+      });
     }
   },
 
   /**
    * Find similar cases using vector similarity
-   */
+   */;
   async findSimilarCases(caseId: string, userId: string, limit: number = 5): Promise<void> {
     vectorSearchStore.update(state => ({
       ...state,
       isSearching: true,
-      error: null
-    }));
+      error: null,
+    });
 
     try {
       const response = await fetch('/api/v1/vector/similar-cases', {
@@ -225,32 +226,32 @@ export const vectorSearchActions = {
       vectorSearchStore.update(state => ({
         ...state,
         results: (data as { results?: any; response?: any; context?: any; status?: any }).results || [],
-        isSearching: false
-      }));
+        isSearching: false,
+      });
 
     } catch (error: any) {
       console.error('Similar cases search failed:', error);
       vectorSearchStore.update(state => ({
         ...state,
         isSearching: false,
-        error: error instanceof Error ? error.message: 'Similar cases search failed'
-      }));
+        error: error instanceof Error ? error.message: 'Similar cases search failed',
+      });
     }
   },
 
   /**
    * Update search configuration
-   */
+   */;
   updateConfig(config: Partial): void {
     vectorSearchStore.update(state => ({
       ...state,
       ...config
-    }));
+    ,});
   },
 
   /**
    * Clear search results and state
-   */
+   */;
   clear(): void {
     vectorSearchStore.update(state => ({
       ...state,
@@ -258,13 +259,13 @@ export const vectorSearchActions = {
       results: [],
       ragContext: [],
       ragResponse: null,
-      error: null
-    }));
+      error: null,
+    });
   },
 
   /**
    * Check vector database connection
-   */
+   */;
   async checkConnection(): Promise<void> {
     try {
       const response = await fetch('/api/v1/vector/health');
@@ -273,17 +274,17 @@ export const vectorSearchActions = {
       vectorSearchStore.update(state => ({
         ...state,
         vectorDbConnected: (response as { ok?: any; statusText?: any; json?: any }).ok && (data as { results?: any; response?: any; context?: any; status?: any }).status === 'healthy'
-      }));
+      });
     } catch (error: any) {
       vectorSearchStore.update(state => ({
         ...state,
-        vectorDbConnected: false
-      }));
+        vectorDbConnected: false,
+      });
     }
   }
 };
 
-// Initialize connection check
+// Initialize connection check;
 if (typeof window !== 'undefined') {
   vectorSearchActions.checkConnection();
 }

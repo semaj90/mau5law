@@ -6,30 +6,30 @@
 
 import * as THREE from 'three';
 
-// YoRHa Color Scheme (NieR: Automata inspired)
+// YoRHa Color Scheme (NieR: Automata inspired);
 export const YORHA_COLORS = {
-  // Primary gothic palette
+  // Primary gothic palette;
   primary: {
     black: 0x0a0a0a,           // Deep gothic black
     white: 0xfaf6ed,           // Warm off-white
     beige: 0xd4c5a9,           // Desert sand
     grey: 0x8b8680,            // Stone grey
   },
-  // Accent colors
+  // Accent colors;
   accent: {
     gold: 0xd4af37,            // Golden highlights
     amber: 0xffc649,           // Amber glow
     bronze: 0xcd7f32,          // Bronze metallic
     copper: 0xb87333,          // Copper warm
   },
-  // Status colors
+  // Status colors;
   status: {
     success: 0x90ee90,         // Light green
     warning: 0xffa500,         // Orange warning
     error: 0xff6b6b,           // Soft red error
     info: 0x87ceeb,            // Sky blue info
   },
-  // UI states
+  // UI states;
   interaction: {
     hover: 0xe8dcc0,           // Warm hover
     active: 0xffd700,          // Gold active
@@ -38,7 +38,7 @@ export const YORHA_COLORS = {
   }
 } as const;
 
-// 3D CSS-like styling system
+// 3D CSS-like styling system;
 export interface YoRHaStyle {
   // Box model
   width?: number;
@@ -143,7 +143,7 @@ export interface YoRHaTransform {
   scale?: THREE.Vector3;
 }
 
-// Base YoRHa 3D UI Component
+// Base YoRHa 3D UI Component;
 export abstract class YoRHa3DComponent extends THREE.Group {
   protected style: YoRHaStyle;
   protected geometry!: THREE.BufferGeometry;
@@ -189,7 +189,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
         color: YORHA_COLORS.primary.black,
         blur: 0.5,
         intensity: 0.3,
-        offsetY: -0.1
+        offsetY: -0.1,
       },
       ...style
     };
@@ -206,7 +206,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       roughness: this.style.roughness,
     };
 
-    // Apply gradient if specified
+    // Apply gradient if specified;
     if (this.style.gradient) {
       this.material = this.createGradientMaterial(materialProps);
     } else {
@@ -244,7 +244,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     }
     
     // Add color stops
-    const stops = gradient.stops || gradient.colors.map((_, i) => i / (gradient.colors.length - 1));
+    const stops = gradient.stops || gradient.colors.map((_, i) => i / (gradient.colors.length - 1);
     gradient.colors.forEach((color, index) => {
       const hexColor = `#${color.toString(16).padStart(6, '0')}`;
       gradientObj.addColorStop(stops[index] || index / (gradient.colors.length - 1), hexColor);
@@ -257,7 +257,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     
     return new THREE.MeshStandardMaterial({
       ...baseProps,
-      map: texture
+      map: texture,
     });
   }
 
@@ -265,17 +265,17 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.add(this.mesh);
     
-    // Create border if specified
+    // Create border if specified;
     if (this.style.borderWidth && this.style.borderWidth > 0) {
       this.createBorder();
     }
     
-    // Create shadow if enabled
+    // Create shadow if enabled;
     if (this.style.shadow?.enabled) {
       this.createShadow();
     }
     
-    // Create glow effect if enabled
+    // Create glow effect if enabled;
     if (this.style.glow?.enabled) {
       this.createGlow();
     }
@@ -292,7 +292,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     const borderMesh = new THREE.Mesh(borderGeometry, borderMaterial);
     this.add(borderMesh);
     
-    // Apply border style effects
+    // Apply border style effects;
     if (this.style.borderStyle === 'glow') {
       this.createBorderGlow(borderMesh);
     } else if (this.style.borderStyle === 'scan') {
@@ -356,7 +356,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       glowMesh.scale.set(layerSize, layerSize, layerSize);
       this.add(glowMesh);
       
-      // Animate glow if specified
+      // Animate glow if specified;
       if (this.style.glow.animation === 'pulse') {
         this.createPulseAnimation(glowMesh, i * 0.2);
       }
@@ -377,7 +377,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
 
   protected createBorderScanAnimation(borderMesh: THREE.Mesh): void {
-    // Create animated scan line effect on border
+    // Create animated scan line effect on border;
     const scanMaterial = new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 0 },
@@ -413,14 +413,14 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     
     borderMesh.material = scanMaterial;
     
-    // Add to animation system
+    // Add to animation system;
     this.addCustomAnimation('borderScan', (deltaTime) => {
       (scanMaterial.uniforms.time as any).value += deltaTime;
     });
   }
 
   protected applyStyle(): void {
-    // Apply transform
+    // Apply transform;
     if (this.style.transform) {
       if (this.style.transform.position) {
         this.position.copy(this.style.transform.position);
@@ -536,7 +536,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
 
   protected createScanAnimation(animation: YoRHaAnimation): void {
-    // Add scan line effect
+    // Add scan line effect;
     const scanMaterial = new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 0 },
@@ -586,7 +586,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
         const scaleJitter = 1 + (Math.random() - 0.5) * 0.01;
         this.mesh.scale.setScalar(scaleJitter);
         
-        // Reset after short time
+        // Reset after short time;
         setTimeout(() => {
           this.mesh.position.x = 0;
           this.mesh.position.y = 0;
@@ -600,9 +600,9 @@ export abstract class YoRHa3DComponent extends THREE.Group {
 
   public update(deltaTime: number): void {
     // Update all custom animations
-    this.customAnimations.forEach(animation => animation(deltaTime));
+    this.customAnimations.forEach(animation => animation(deltaTime);
     
-    // Update animation mixer if it exists
+    // Update animation mixer if it exists;
     if (this.animationMixer) {
       this.animationMixer.update(deltaTime);
     }
@@ -611,7 +611,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     this.boundingBox.setFromObject(this);
   }
 
-  // Interaction handlers
+  // Interaction handlers;
   protected onHover(): void {
     if (this.isDisabled) return;
     
@@ -621,7 +621,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       this.applyStateStyle(this.style.hover);
     }
     
-    // Default hover effect
+    // Default hover effect;
     if (this.mesh.material instanceof THREE.MeshStandardMaterial) {
       this.mesh.material.emissive.setHex(YORHA_COLORS.interaction.hover);
       this.mesh.material.emissiveIntensity = 0.1;
@@ -660,7 +660,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   }
 
   protected applyStateStyle(stateStyle: Partial<YoRHaStyle>): void {
-    // Apply temporary style changes
+    // Apply temporary style changes;
     if (stateStyle.backgroundColor && this.mesh.material instanceof THREE.MeshStandardMaterial) {
       this.mesh.material.color.setHex(stateStyle.backgroundColor);
     }
@@ -679,7 +679,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     }
   }
 
-  // Utility methods
+  // Utility methods;
   public setStyle(newStyle: Partial<YoRHaStyle>): void {
     this.style = { ...this.style, ...newStyle };
     this.applyStyle();
@@ -704,7 +704,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     this.geometry.dispose();
     
     if (Array.isArray(this.material)) {
-      this.material.forEach(mat => mat.dispose());
+      this.material.forEach(mat => mat.dispose();
     } else {
       this.material.dispose();
     }
@@ -717,7 +717,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     }
   }
 
-  // Event handling methods
+  // Event handling methods;
   public addEventListener(eventType: string, listener: (event?: any) => void): void {
     if (!this.eventListeners.has(eventType)) {
       this.eventListeners.set(eventType, []);
@@ -738,11 +738,11 @@ export abstract class YoRHa3DComponent extends THREE.Group {
   protected emitEvent(eventType: string, event?: any): void {
     const listeners = this.eventListeners.get(eventType);
     if (listeners) {
-      listeners.forEach(listener => listener(event));
+      listeners.forEach(listener => listener(event);
     }
   }
 
-  // Custom animation methods
+  // Custom animation methods;
   public addCustomAnimation(name: string, animationFunction: (deltaTime: number) => void): void {
     this.customAnimations.set(name, animationFunction);
   }
@@ -757,7 +757,7 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     });
   }
 
-  // Initialize method for async setup
+  // Initialize method for async setup;
   public async initialize(): Promise<void> {
     // Base initialization - can be overridden in subclasses
     return Promise.resolve();

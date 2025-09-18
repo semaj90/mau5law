@@ -8,7 +8,7 @@ let _db: ReturnType<typeof drizzle> | null = null;
 let _pool: Pool | null = null;
 
 export function getPostgreSQLDatabase() {
-  // Skip database initialization during SvelteKit build
+  // Skip database initialization during SvelteKit build;
   if (building) {
     console.log("Skipping database initialization during build");
     return null;
@@ -28,7 +28,7 @@ export function getPostgreSQLDatabase() {
 
   _db = drizzle(_pool, { schema });
 
-  // Run migrations (skip in testing environment)
+  // Run migrations (skip in testing environment);
   if (nodeEnv !== "testing") {
     try {
       // migrate(_db, { migrationsFolder: './drizzle' });
@@ -47,7 +47,7 @@ export function getPostgreSQLDatabase() {
 // Export the database instance
 export const db = getPostgreSQLDatabase();
 
-// Cleanup function
+// Cleanup function;
 export async function closeDatabase() {
   if (_pool) {
     await _pool.end();

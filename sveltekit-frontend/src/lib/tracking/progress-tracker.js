@@ -83,7 +83,7 @@ export class ProductionTracker {
       },
     ];
 
-    phases.forEach((phase) => this.phases.set(phase.id, phase));
+    phases.forEach((phase) => this.phases.set(phase.id, phase);
   }
 
   updatePhaseProgress(phaseId, taskName, completed = true) {
@@ -114,7 +114,7 @@ export class ProductionTracker {
   }
 
   getOverallProgress() {
-    const phases = Array.from(this.phases.values());
+    const phases = Array.from(this.phases.values();
     const totalProgress = phases.reduce(
       (sum, phase) => sum + phase.progress,
       0,
@@ -127,11 +127,11 @@ export class ProductionTracker {
   }
 
   getAllPhases() {
-    return Array.from(this.phases.values());
+    return Array.from(this.phases.values();
   }
 
   getNextPhase() {
-    const phases = Array.from(this.phases.values());
+    const phases = Array.from(this.phases.values();
     return phases.find(
       (phase) => phase.status === "ready" || phase.status === "pending",
     );
@@ -150,10 +150,10 @@ export class ProductionTracker {
           (task) => `${task.completed ? "✅" : "⏳"} ${task.name}`,
         ),
       ],
-    }));
+    });
 
     const relations = [];
-    const phaseIds = Array.from(this.phases.keys());
+    const phaseIds = Array.from(this.phases.keys();
     for (let i = 0; i < phaseIds.length - 1; i++) {
       relations.push({
         from: `Phase_${phaseIds[i]}`,
@@ -171,14 +171,14 @@ export const mcpCommands = {
   createEntities: (tracker) => {
     const { entities } = tracker.exportForMCP();
     console.log("// #memory #create_entities");
-    console.log("const entities =", JSON.stringify(entities, null, 2));
+    console.log("const entities =", JSON.stringify(entities, null, 2);
     return entities;
   },
 
   createRelations: (tracker) => {
     const { relations } = tracker.exportForMCP();
     console.log("// #memory #create_relations");
-    console.log("const relations =", JSON.stringify(relations, null, 2));
+    console.log("const relations =", JSON.stringify(relations, null, 2);
     return relations;
   },
 

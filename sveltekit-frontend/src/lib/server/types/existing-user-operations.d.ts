@@ -49,7 +49,7 @@ declare module '$lib/server/db/existing-user-operations' {
   export { ExistingUserAuthService as ExistingUserAuthService };
 }
 
-// also declare the .js import path used by routes
+// also declare the .js import path used by routes;
 declare module '$lib/server/db/existing-user-operations.js' {
   export * from '$lib/server/db/existing-user-operations';
 }

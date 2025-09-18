@@ -22,8 +22,8 @@ describe('Legal AI PNG Evidence Workflow Integration', () => {
     mockPNG = new ArrayBuffer(100);
     const view = new DataView(mockPNG);
     // PNG signature
-    view.setUint32(0, 0x89504E47);
-    view.setUint32(4, 0x0D0A1A0A);
+    view.setUint32(0, 0x89504e47);
+    view.setUint32(4, 0x0d0a1a0a);
     // IHDR chunk
     view.setUint32(8, 13); // length
     view.setUint32(12, 0x49484452); // "IHDR"
@@ -38,13 +38,13 @@ describe('Legal AI PNG Evidence Workflow Integration', () => {
       summary: 'Test legal document for contract analysis',
       entities: [
         { name: 'John Doe', type: 'person', confidence: 0.9 },
-        { name: 'ABC Corp', type: 'organization', confidence: 0.85 }
+        { name: 'ABC Corp', type: 'organization', confidence: 0.85 },
       ],
       classifications: {
         documentType: 'contract',
         jurisdiction: 'federal',
         urgency: 'high',
-        confidentiality: 'confidential'
+        confidentiality: 'confidential',
       },
       riskAssessment: 'medium',
       complianceFlags: ['requires_review'],
@@ -54,14 +54,14 @@ describe('Legal AI PNG Evidence Workflow Integration', () => {
         { step: 'ocr_processing', durationMs: 2300, success: true },
         { step: 'entity_extraction', durationMs: 800, success: true },
         { step: 'classification', durationMs: 450, success: true },
-        { step: 'risk_analysis', durationMs: 600, success: true }
+        { step: 'risk_analysis', durationMs: 600, success: true },
       ],
       semanticHash: 'abc123def456',
       additionalData: {
         caseId: 'CASE-2024-001',
         evidenceType: 'contract',
-        chain_of_custody: ['officer_smith', 'evidence_clerk']
-      }
+        chain_of_custody: ['officer_smith', 'evidence_clerk'],
+      },
     };
 
     artifactId = `evidence-${Date.now()}`;
@@ -334,8 +334,8 @@ describe('Legal AI PNG Evidence Workflow Integration', () => {
       const largePNG = new ArrayBuffer(5 * 1024 * 1024);
       const view = new DataView(largePNG);
       // PNG signature
-      view.setUint32(0, 0x89504E47);
-      view.setUint32(4, 0x0D0A1A0A);
+      view.setUint32(0, 0x89504e47);
+      view.setUint32(4, 0x0d0a1a0a);
 
       const startTime = Date.now();
       const embeddedPNG = await PNGEmbedExtractor.embedMetadata(largePNG, testMetadata);
@@ -370,7 +370,7 @@ describe('Service Health Checks', () => {
       status: 'healthy',
       bucket: 'legal-artifacts',
       minio_status: 'connected',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     const health = await healthCheck();
@@ -383,7 +383,7 @@ describe('Service Health Checks', () => {
       status: 'healthy',
       db_status: 'connected',
       index_count: 0,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     const health = await dbHealthCheck();
@@ -396,7 +396,7 @@ describe('Service Health Checks', () => {
       status: 'healthy',
       model_status: 'loaded',
       avg_processing_time: 2.5,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     const health = await aiHealthCheck();

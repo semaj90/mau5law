@@ -12,7 +12,8 @@ import { documentUpdateLoop } from '$lib/services/documentUpdateLoop';
 
 // ============================================================================
 // TYPES & INTERFACES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface CrewAIContext {
   // Task management
@@ -45,7 +46,7 @@ export interface CrewAIContext {
   // Performance metrics
   startTime: number;
   processingTime: number;
-  qualityScore: number;
+  qualityScore: number;,
 }
 
 export type CrewAIEvents = 
@@ -74,26 +75,26 @@ export const crewAIOrchestrationMachine = setup({
   },
   
   actors: {
-    // Start multi-agent review
+    // Start multi-agent review;
     startAgentReview: fromPromise(async ({ input }: { input: { task: DocumentReviewTask } }) => {
       const taskId = await crewAIOrchestrator.startDocumentReview(input.task);
       return { taskId, task: input.task };
     }),
     
-    // Auto-save document changes
+    // Auto-save document changes;
     autoSaveDocument: fromPromise(async ({ input }: { input: { documentId: string; content: string } }) => {
       await documentUpdateLoop.queueDocumentUpdate(input.documentId, input.content);
       return { saved: true, timestamp: new Date().toISOString() };
     }),
     
-    // Generate self-prompting recommendations
+    // Generate self-prompting recommendations;
     generateSelfPrompt: fromPromise(async ({ input }: { input: { context: CrewAIContext } }) => {
       // This would integrate with your self-prompting system
       const recommendations = await generateContextualRecommendations(input.context);
       return { recommendations };
     }),
     
-    // Apply schema focus change
+    // Apply schema focus change;
     applySchemaFocus: fromPromise(async ({ input }: { input: { schema: string; context: CrewAIContext } }) => {
       const focusConfig = await generateSchemaFocusConfig(input.schema, input.context);
       return { focusConfig };
@@ -101,20 +102,20 @@ export const crewAIOrchestrationMachine = setup({
   },
   
   guards: {
-    // Check if all agents completed
+    // Check if all agents completed;
     allAgentsCompleted: ({ context }) => {
       return context.currentTask 
         ? context.agentResponses.length === context.currentTask.assignedAgents.length: false;
     },
     
-    // Check if user has been idle too long
+    // Check if user has been idle too long;
     userIdleTooLong: ({ context }) => {
       const now = Date.now();
       const lastActivity = new Date(context.lastActivity).getTime();
       return (now - lastActivity) > context.idleTimeout;
     },
     
-    // Check if auto-save is needed
+    // Check if auto-save is needed;
     needsAutoSave: ({ context }) => {
       if (!context.lastSaved) return true;
       const now = Date.now();
@@ -122,14 +123,14 @@ export const crewAIOrchestrationMachine = setup({
       return (now - lastSaved) > context.autoSaveInterval;
     },
     
-    // Check if should retry failed agents
+    // Check if should retry failed agents;
     shouldRetryAgents: ({ context }) => {
       return context.failedAgents.length > 0 && context.retryCount < 3;
     }
   },
   
   actions: {
-    // Initialize context
+    // Initialize context;
     initializeContext: assign({
       startTime: () => Date.now(),
       lastActivity: () => new Date().toISOString(),
@@ -142,10 +143,10 @@ export const crewAIOrchestrationMachine = setup({
       agentResponses: [],
       failedAgents: [],
       completedTasks: [],
-      taskQueue: []
+      taskQueue: [],
     }),
     
-    // Set current task
+    // Set current task;
     setCurrentTask: assign({
       currentTask: ({ event }) => {
         if (event.type === 'START_REVIEW') {
@@ -161,7 +162,7 @@ export const crewAIOrchestrationMachine = setup({
       }
     }),
     
-    // Record agent completion
+    // Record agent completion;
     recordAgentCompletion: assign({
       agentResponses: ({ context, event }) => {
         if (event.type === 'AGENT_COMPLETED') {
@@ -177,7 +178,7 @@ export const crewAIOrchestrationMachine = setup({
       }
     }),
     
-    // Record agent failure
+    // Record agent failure;
     recordAgentFailure: assign({
       failedAgents: ({ context, event }) => {
         if (event.type === 'AGENT_FAILED') {
@@ -199,12 +200,12 @@ export const crewAIOrchestrationMachine = setup({
       }
     }),
     
-    // Update user activity
+    // Update user activity;
     updateActivity: assign({
       lastActivity: () => new Date().toISOString(),
       userIntent: ({ event }) => {
         if (event.type === 'USER_ACTIVITY') {
-          // Infer intent from activity
+          // Infer intent from activity;
           if (event.activity.includes('edit') || event.activity.includes('type')) {
             return 'editing';
           } else if (event.activity.includes('review') || event.activity.includes('analyze')) {
@@ -215,18 +216,18 @@ export const crewAIOrchestrationMachine = setup({
       }
     }),
     
-    // Set user to idle
+    // Set user to idle;
     setUserIdle: assign({
       userIntent: 'idle',
-      focusSchema: 'idle_mode'
+      focusSchema: 'idle_mode',
     }),
     
-    // Set user to away
+    // Set user to away;
     setUserAway: assign({
-      userIntent: 'away'
+      userIntent: 'away',
     }),
     
-    // Change focus schema
+    // Change focus schema;
     changeFocusSchema: assign({
       focusSchema: ({ event }) => {
         if (event.type === 'FOCUS_CHANGED') {
@@ -236,7 +237,7 @@ export const crewAIOrchestrationMachine = setup({
       }
     }),
     
-    // Accept recommendation
+    // Accept recommendation;
     acceptRecommendation: assign({
       currentRecommendations: ({ context, event }) => {
         if (event.type === 'ACCEPT_RECOMMENDATION') {
@@ -249,17 +250,17 @@ export const crewAIOrchestrationMachine = setup({
       }
     }),
     
-    // Update last saved timestamp
+    // Update last saved timestamp;
     updateLastSaved: assign({
-      lastSaved: () => new Date().toISOString()
+      lastSaved: () => new Date().toISOString(),
     }),
     
-    // Increment retry count
+    // Increment retry count;
     incrementRetryCount: assign({
       retryCount: ({ context }) => context.retryCount + 1
     }),
     
-    // Reset for new task
+    // Reset for new task;
     resetForNewTask: assign({
       currentTask: null,
       agentResponses: [],
@@ -270,7 +271,7 @@ export const crewAIOrchestrationMachine = setup({
       processingTime: ({ context }) => Date.now() - context.startTime
     }),
     
-    // Complete task
+    // Complete task;
     completeTask: assign({
       completedTasks: ({ context }) => {
         if (context.currentTask) {
@@ -308,7 +309,7 @@ export const crewAIOrchestrationMachine = setup({
     lastError: null,
     startTime: Date.now(),
     processingTime: 0,
-    qualityScore: 0
+    qualityScore: 0,
   },
   
   states: {
@@ -318,15 +319,15 @@ export const crewAIOrchestrationMachine = setup({
       on: {
         START_REVIEW: {
           target: 'orchestrating',
-          actions: 'setCurrentTask'
+          actions: 'setCurrentTask',
         },
         
         USER_ACTIVITY: {
-          actions: 'updateActivity'
+          actions: 'updateActivity',
         }
       },
       
-      // Auto-save timer when idle
+      // Auto-save timer when idle;
       after: {
         30000: {
           target: 'idle',
@@ -339,31 +340,31 @@ export const crewAIOrchestrationMachine = setup({
     orchestrating: {
       initial: 'starting_agents',
       
-      // Monitor user activity during orchestration
+      // Monitor user activity during orchestration;
       on: {
         USER_ACTIVITY: {
-          actions: 'updateActivity'
+          actions: 'updateActivity',
         },
         
         USER_IDLE: {
-          actions: 'setUserIdle'
+          actions: 'setUserIdle',
         },
         
         USER_AWAY: {
-          actions: 'setUserAway'
+          actions: 'setUserAway',
         },
         
         FOCUS_CHANGED: {
-          actions: 'changeFocusSchema'
+          actions: 'changeFocusSchema',
         },
         
         ACCEPT_RECOMMENDATION: {
-          actions: 'acceptRecommendation'
+          actions: 'acceptRecommendation',
         },
         
         CANCEL_REVIEW: {
           target: 'idle',
-          actions: 'resetForNewTask'
+          actions: 'resetForNewTask',
         }
       },
       
@@ -374,7 +375,7 @@ export const crewAIOrchestrationMachine = setup({
             input: ({ context }) => ({ task: context.currentTask! }),
             
             onDone: {
-              target: 'agents_running'
+              target: 'agents_running',
             },
             
             onError: {
@@ -390,18 +391,18 @@ export const crewAIOrchestrationMachine = setup({
           on: {
             AGENT_COMPLETED: {
               actions: 'recordAgentCompletion',
-              target: 'checking_completion'
+              target: 'checking_completion',
             },
             
             AGENT_FAILED: {
               actions: 'recordAgentFailure',
-              target: 'checking_completion'
+              target: 'checking_completion',
             }
           },
           
-          // Periodic user activity check
+          // Periodic user activity check;
           after: {
-            60000: [
+            60000: [;
               {
                 guard: 'userIdleTooLong',
                 actions: raise({ type: 'USER_IDLE' })
@@ -411,17 +412,17 @@ export const crewAIOrchestrationMachine = setup({
         },
         
         checking_completion: {
-          always: [
+          always: [;
             {
               guard: 'allAgentsCompleted',
-              target: 'synthesizing_results'
+              target: 'synthesizing_results',
             },
             {
               guard: 'shouldRetryAgents',
-              target: 'retrying_failed'
+              target: 'retrying_failed',
             },
             {
-              target: 'agents_running'
+              target: 'agents_running',
             }
           ]
         },
@@ -429,10 +430,10 @@ export const crewAIOrchestrationMachine = setup({
         retrying_failed: {
           entry: 'incrementRetryCount',
           
-          // Retry failed agents
+          // Retry failed agents;
           after: {
             2000: {
-              target: 'agents_running'
+              target: 'agents_running',
             }
           }
         },
@@ -450,13 +451,13 @@ export const crewAIOrchestrationMachine = setup({
             },
             
             onError: {
-              target: 'completed' // Continue even if self-prompting fails
+              target: 'completed' // Continue even if self-prompting fails,
             }
           }
         },
         
         applying_recommendations: {
-          // Apply schema focus based on recommendations
+          // Apply schema focus based on recommendations;
           invoke: {
             src: 'applySchemaFocus',
             input: ({ context }) => ({ 
@@ -465,11 +466,11 @@ export const crewAIOrchestrationMachine = setup({
             }),
             
             onDone: {
-              target: 'completed'
+              target: 'completed',
             },
             
             onError: {
-              target: 'completed'
+              target: 'completed',
             }
           }
         },
@@ -477,31 +478,31 @@ export const crewAIOrchestrationMachine = setup({
         completed: {
           entry: 'completeTask',
           
-          // Auto-save results
+          // Auto-save results;
           invoke: {
             src: 'autoSaveDocument',
             input: ({ context }) => ({
               documentId: context.currentTask?.documentId || '',
-              content: 'updated_content' // This would come from the recommendations
+              content: 'updated_content' // This would come from the recommendations,
             }),
             
             onDone: {
-              actions: 'updateLastSaved'
+              actions: 'updateLastSaved',
             }
           },
           
           on: {
             QUEUE_NEXT_TASK: {
               target: '#crewAIOrchestration.idle',
-              actions: 'resetForNewTask'
+              actions: 'resetForNewTask',
             }
           },
           
-          // Auto-transition to idle after completion
+          // Auto-transition to idle after completion;
           after: {
             5000: {
               target: '#crewAIOrchestration.idle',
-              actions: 'resetForNewTask'
+              actions: 'resetForNewTask',
             }
           }
         },
@@ -510,21 +511,21 @@ export const crewAIOrchestrationMachine = setup({
           on: {
             RETRY_FAILED_AGENTS: {
               target: 'starting_agents',
-              guard: 'shouldRetryAgents'
+              guard: 'shouldRetryAgents',
             },
             
             CANCEL_REVIEW: {
               target: '#crewAIOrchestration.idle',
-              actions: 'resetForNewTask'
+              actions: 'resetForNewTask',
             }
           },
           
-          // Auto-retry after delay
+          // Auto-retry after delay;
           after: {
             10000: {
               target: 'starting_agents',
               guard: 'shouldRetryAgents',
-              actions: 'incrementRetryCount'
+              actions: 'incrementRetryCount',
             }
           }
         }
@@ -541,13 +542,13 @@ async function generateContextualRecommendations(context: CrewAIContext): Promis
   // This would implement your self-prompting logic
   const recommendations = [];
   
-  // Based on user intent and focus schema, generate recommendations
+  // Based on user intent and focus schema, generate recommendations;
   if (context.userIntent === 'idle' && context.focusSchema === 'idle_mode') {
     recommendations.push({
       id: 'auto_save_suggest',
       type: 'edit',
       text: 'Auto-save your progress and summarize changes?',
-      confidence: 0.8
+      confidence: 0.8,
     });
   }
   
@@ -556,7 +557,7 @@ async function generateContextualRecommendations(context: CrewAIContext): Promis
       id: 'review_suggestions',
       type: 'review',
       text: 'Review agent suggestions and apply recommended changes',
-      confidence: 0.9
+      confidence: 0.9,
     });
   }
   
@@ -564,27 +565,27 @@ async function generateContextualRecommendations(context: CrewAIContext): Promis
 }
 
 async function generateSchemaFocusConfig(schema: string, context: CrewAIContext): Promise<any> {
-  // Generate UI focus configuration based on schema
+  // Generate UI focus configuration based on schema;
   const configs = {
     document_edit: {
       showInlineEdits: true,
       highlightRecommendations: true,
-      autoComplete: true
+      autoComplete: true,
     },
     review_mode: {
       showAnalysis: true,
       highlightRisks: true,
-      compactView: false
+      compactView: false,
     },
     analysis_mode: {
       showMetrics: true,
       showAgentBreakdown: true,
-      detailedView: true
+      detailedView: true,
     },
     idle_mode: {
       showSummary: true,
       autoSavePrompt: true,
-      minimizeUI: true
+      minimizeUI: true,
     }
   };
   

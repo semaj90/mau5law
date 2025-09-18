@@ -1,5 +1,5 @@
 import stream from "stream";
-// AI Chat Type Definitions
+// AI Chat Type Definitions;
 export interface AIMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
@@ -15,7 +15,7 @@ export interface AIChat {
   temperature?: number;
   maxTokens?: number;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
 
 export interface AIStreamResponse {
@@ -41,6 +41,7 @@ export interface AIProvider {
 }
 
 export type AIModelType = 'gpt-4' | 'gpt-3.5-turbo' | 'claude' | 'gemma' | 'llama' | 'custom';
+}
 
 export interface AIConfig {
   provider: 'openai' | 'anthropic' | 'ollama' | 'custom';

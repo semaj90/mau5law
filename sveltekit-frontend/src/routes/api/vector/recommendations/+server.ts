@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       maxRecommendations: body.maxRecommendations || 10,
       scoreThreshold: body.scoreThreshold || 0.7,
       includeContext7Docs: body.includeContext7Docs || false,
-      useEnhancedReranking: body.useEnhancedReranking !== false // Default true
+      useEnhancedReranking: body.useEnhancedReranking !== false // Default true,
     };
 
     if (!enhancedRequest.context) {
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         userProfile: enhancedRequest.userProfile,
         currentCase: enhancedRequest.currentCase,
         maxRecommendations: enhancedRequest.maxRecommendations,
-        scoreThreshold: enhancedRequest.scoreThreshold
+        scoreThreshold: enhancedRequest.scoreThreshold,
       });
 
       const cachedResults = await legalAIResultCache.getCachedLegalResults(cacheKey);
@@ -101,11 +101,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
       }
     }
 
-    // === 3. Generate New Recommendations if Not Cached ===
+    // === 3. Generate New Recommendations if Not Cached ===;
     if (recommendations.length === 0) {
       cacheStatus = 'generated';
 
-      // Original vector intelligence recommendations
+      // Original vector intelligence recommendations;
       const baseRecommendations = await vectorIntelligenceService.generateRecommendations({
         context: enhancedRequest.context,
         userProfile: enhancedRequest.userProfile,
@@ -121,13 +121,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
           gpuUtilized = true;
 
           const ragResult = await gpuIntegrationBridge.performEnhancedRAGQuery(
-            enhancedRequest.context,
+            enhancedRequest.context,);
             {
               userId: enhancedRequest.userProfile?.id,
               caseId: enhancedRequest.currentCase?.id,
               documentTypes: ['legal_document', 'case_precedent', 'evidence', 'regulation'],
               maxResults: enhancedRequest.maxRecommendations * 2,
-              scoreThreshold: enhancedRequest.scoreThreshold * 0.8
+              scoreThreshold: enhancedRequest.scoreThreshold * 0.8,
             }
           );
 
@@ -146,9 +146,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
                 documentId: source.documentId,
                 processingTime: ragResult.metadata.processingTimeMs,
                 gpuUtilized: ragResult.metadata.gpuUtilized,
-                embeddingModel: ragResult.metadata.embeddingModel
+                embeddingModel: ragResult.metadata.embeddingModel,
               }
-            }));
+            });
 
             console.log(`🚀 GPU-enhanced RAG generated ${ragEnhancedRecommendations.length} insights`);
           }
@@ -188,7 +188,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           );
 
           if (rerankedResults && rerankedResults.length > 0) {
-            // Apply reranking scores to existing recommendations
+            // Apply reranking scores to existing recommendations;
             rerankedRecommendations = rerankedRecommendations.map(rec => {
               const reranked = rerankedResults.find(r => r.id === rec.id);
               if (reranked) {
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                   metadata: {
                     ...rec.metadata,
                     rerankScore: reranked.rerankScore,
-                    neo4jEnhanced: true
+                    neo4jEnhanced: true,
                   }
                 };
               }
@@ -212,7 +212,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         }
       }
 
-      // === 6. Context7 Documentation Enhancement ===
+      // === 6. Context7 Documentation Enhancement ===;
       if (enhancedRequest.includeContext7Docs) {
         try {
           const context = enhancedRequest.context.toLowerCase();
@@ -245,7 +245,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
                   library,
                   topic,
                   tokenCount: docs.metadata?.tokenCount || 0,
-                  version: docs.metadata?.version
+                  version: docs.metadata?.version,
                 }
               });
 
@@ -259,14 +259,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
       recommendations = rerankedRecommendations;
 
-      // === 7. Cache the Enhanced Results ===
+      // === 7. Cache the Enhanced Results ===;
       if (enhancedRequest.enableCaching && recommendations.length > 0) {
         const cacheKey = await legalAIResultCache.generateCacheKey({
           context: enhancedRequest.context,
           userProfile: enhancedRequest.userProfile,
           currentCase: enhancedRequest.currentCase,
           maxRecommendations: enhancedRequest.maxRecommendations,
-          scoreThreshold: enhancedRequest.scoreThreshold
+          scoreThreshold: enhancedRequest.scoreThreshold,
         });
 
         await legalAIResultCache.cacheLegalResults(cacheKey, {
@@ -286,7 +286,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Apply score threshold and sort
     recommendations = recommendations
       .filter(rec => (rec.confidence || 0) >= enhancedRequest.scoreThreshold)
-      .sort((a, b) => (b.confidence || 0) - (a.confidence || 0))
+      .sort((a, b) => (b.confidence || 0) - (a.confidence || 0)
       .slice(0, enhancedRequest.maxRecommendations);
 
     // Add diversity scoring
@@ -310,19 +310,19 @@ export const POST: RequestHandler = async ({ request, url }) => {
         hasPreferences: !!enhancedRequest.preferences,
         hasCurrentCase: !!enhancedRequest.currentCase,
       },
-      // Enhanced performance metrics
+      // Enhanced performance metrics;
       cachePerformance: {
         status: cacheStatus,
         hitRatio: cacheStats.overall.hitRate,
         totalRequests: cacheStats.overall.operations,
-        averageRetrievalTime: cacheStats.overall.averageRetrievalMs
+        averageRetrievalTime: cacheStats.overall.averageRetrievalMs,
       },
       gpuPerformance: {
         utilized: gpuUtilized,
         averageProcessingTime: gpuStats.averageProcessingTimeMs || 0,
         activeJobs: gpuStats.activeJobs || 0,
         queueLength: gpuStats.queueLength || 0,
-        memoryUsage: gpuStats.gpuMemoryUsedMB || 0
+        memoryUsage: gpuStats.gpuMemoryUsedMB || 0,
       },
       rlOptimization: rlOptimization,
       qualityMetrics: {
@@ -333,7 +333,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           gpuRAGEnhancement: gpuUtilized,
           neo4jReranking: enhancedRequest.useEnhancedReranking,
           context7Docs: enhancedRequest.includeContext7Docs,
-          rlCacheOptimization: rlOptimizationApplied
+          rlCacheOptimization: rlOptimizationApplied,
         }
       }
     };
@@ -353,7 +353,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       err && typeof err === 'object' && 'status' in err ? (err as any).status: 500;
 
     // Return structured error JSON
-    return json(
+    return json();
       {
         success: false,
         error: errorMessage,
@@ -382,7 +382,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const enableCache = url.searchParams.get("cache") !== "false"; // Default true
 
   if (!context) {
-    // Return enhanced API documentation
+    // Return enhanced API documentation;
     return json({
       message: "Enhanced Vector Intelligence Recommendations API - GPU Accelerated",
       version: "2.0.0",
@@ -404,7 +404,7 @@ export const GET: RequestHandler = async ({ url }) => {
             role: "User role for personalization (optional)",
             caseId: "Current case ID for context (optional)",
             gpu: "Enable GPU acceleration (default: true)",
-            cache: "Enable intelligent caching (default: true)"
+            cache: "Enable intelligent caching (default: true)",
           }
         }
       },
@@ -423,22 +423,22 @@ export const GET: RequestHandler = async ({ url }) => {
         gpuRAGEnhancement: "GPU-accelerated retrieval augmented generation",
         neo4jReranking: "Graph database enhanced result ranking",
         context7Docs: "Dynamic documentation integration",
-        rlCacheOptimization: "Reinforcement learning cache optimization"
+        rlCacheOptimization: "Reinforcement learning cache optimization",
       },
       performance: {
         averageLatency: "< 50ms (with cache hit)",
         gpuAcceleration: "10-100x speedup for complex queries",
         cacheHitRatio: "> 85% for repeated queries",
-        qualityImprovement: "+40% relevance with multi-layer enhancement"
+        qualityImprovement: "+40% relevance with multi-layer enhancement",
       }
     });
   }
 
   try {
-    // Build enhanced recommendation request from query parameters
+    // Build enhanced recommendation request from query parameters;
     const enhancedRequest = {
       context,
-      userProfile: role
+      userProfile: role;
         ? {
             id: `user_${role}_${Date.now()}`,
             role,
@@ -446,7 +446,7 @@ export const GET: RequestHandler = async ({ url }) => {
             specialization: [],
           }
         : undefined,
-      currentCase: caseId
+      currentCase: caseId;
         ? {
             id: caseId,
             type: 'general',
@@ -478,7 +478,7 @@ export const GET: RequestHandler = async ({ url }) => {
         context: enhancedRequest.context,
         role,
         caseId,
-        maxRecommendations: enhancedRequest.maxRecommendations
+        maxRecommendations: enhancedRequest.maxRecommendations,
       });
 
       const cachedResults = await legalAIResultCache.getCachedLegalResults(cacheKey);
@@ -488,11 +488,11 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
 
-    // Generate new if not cached
+    // Generate new if not cached;
     if (recommendations.length === 0) {
       cacheStatus = 'generated';
 
-      // Base recommendations
+      // Base recommendations;
       const baseRecommendations = await vectorIntelligenceService.generateRecommendations({
         context: enhancedRequest.context,
         userProfile: enhancedRequest.userProfile,
@@ -502,17 +502,17 @@ export const GET: RequestHandler = async ({ url }) => {
 
       recommendations = baseRecommendations;
 
-      // GPU enhancement for GET requests
+      // GPU enhancement for GET requests;
       if (enhancedRequest.enableGPUOptimization) {
         try {
           gpuUtilized = true;
           const ragResult = await gpuIntegrationBridge.performEnhancedRAGQuery(
-            enhancedRequest.context,
+            enhancedRequest.context,);
             {
               userId: enhancedRequest.userProfile?.id,
               caseId: enhancedRequest.currentCase?.id,
               maxResults: 3, // Fewer for GET endpoint
-              scoreThreshold: 0.7
+              scoreThreshold: 0.7,
             }
           );
 
@@ -528,9 +528,9 @@ export const GET: RequestHandler = async ({ url }) => {
               reasoning: `Vector analysis (${source.score.toFixed(3)} confidence)`,
               metadata: {
                 source: 'gpu_enhanced_rag',
-                processingTime: ragResult.metadata.processingTimeMs
+                processingTime: ragResult.metadata.processingTimeMs,
               }
-            }));
+            });
 
             recommendations = [...recommendations, ...ragInsights];
           }
@@ -539,13 +539,13 @@ export const GET: RequestHandler = async ({ url }) => {
         }
       }
 
-      // Cache results
+      // Cache results;
       if (enhancedRequest.enableCaching) {
         const cacheKey = await legalAIResultCache.generateCacheKey({
           context: enhancedRequest.context,
           role,
           caseId,
-          maxRecommendations: enhancedRequest.maxRecommendations
+          maxRecommendations: enhancedRequest.maxRecommendations,
         });
 
         await legalAIResultCache.cacheLegalResults(cacheKey, {
@@ -558,7 +558,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Final processing
     recommendations = recommendations
       .filter(rec => (rec.confidence || 0) >= enhancedRequest.scoreThreshold)
-      .sort((a, b) => (b.confidence || 0) - (a.confidence || 0))
+      .sort((a, b) => (b.confidence || 0) - (a.confidence || 0)
       .slice(0, enhancedRequest.maxRecommendations);
 
     const processingTime = Date.now() - startTime;
@@ -578,7 +578,7 @@ export const GET: RequestHandler = async ({ url }) => {
           enhancementLayers: {
             baseRecommendations: true,
             gpuRAGEnhancement: gpuUtilized,
-            caching: enhancedRequest.enableCaching
+            caching: enhancedRequest.enableCaching,
           }
         }
       },
@@ -617,12 +617,12 @@ async function getCurrentCacheState(): Promise<any> {
       seasonality: Math.sin((Date.now() / (1000 * 60 * 60 * 24 * 365)) * 2 * Math.PI) * 0.5 + 0.5,
       compressionRatio: 0.3 + Math.random() * 0.4, // 0.3 to 0.7
       vectorDimensionality: 384 / 4096, // Normalized to 0-1
-      tagDensity: 0.6 + Math.random() * 0.3 // 0.6 to 0.9
+      tagDensity: 0.6 + Math.random() * 0.3 // 0.6 to 0.9,
     };
   } catch (error: any) {
     console.warn('Failed to get cache state, using defaults:', error);
 
-    // Fallback default state
+    // Fallback default state;
     return {
       cacheUtilization: 0.7,
       hitRatio: 0.8,
@@ -638,7 +638,7 @@ async function getCurrentCacheState(): Promise<any> {
       seasonality: 0.5,
       compressionRatio: 0.4,
       vectorDimensionality: 0.1,
-      tagDensity: 0.7
+      tagDensity: 0.7,
     };
   }
 }
@@ -666,26 +666,26 @@ async function getRecentUserActivity(userId?: string): Promise<any[]> {
 
   // Placeholder for recent user activity retrieval
   // In production, this would query the database
-  return [
+  return [;
     {
       type: 'search',
       query: 'contract liability analysis',
       timestamp: Date.now() - 3600000,
       caseId: 'case_123',
-      confidence: 0.85
+      confidence: 0.85,
     },
     {
       type: 'document_view',
       documentId: 'doc_456',
       timestamp: Date.now() - 1800000,
       caseId: 'case_123',
-      viewDuration: 240
+      viewDuration: 240,
     },
     {
       type: 'recommendation_interaction',
       recommendationId: 'rec_789',
       action: 'accepted',
-      timestamp: Date.now() - 900000
+      timestamp: Date.now() - 900000,
     }
   ];
 }
@@ -693,27 +693,27 @@ async function getRecentUserActivity(userId?: string): Promise<any[]> {
 async function getCaseRelationships(caseId: string): Promise<any[]> {
   // Placeholder for Neo4j case relationship queries
   // In production, this would query Neo4j graph database
-  return [
+  return [;
     {
       relatedCaseId: 'case_456',
       relationship: 'similar_facts',
       strength: 0.82,
       sharedEntities: ['defendant_name', 'contract_type'],
-      jurisdiction: 'federal'
+      jurisdiction: 'federal',
     },
     {
       relatedCaseId: 'case_789',
       relationship: 'legal_precedent',
       strength: 0.91,
       citationCount: 15,
-      jurisdiction: 'state'
+      jurisdiction: 'state',
     },
     {
       relatedCaseId: 'case_101',
       relationship: 'temporal_sequence',
       strength: 0.67,
       timelineConnection: 'subsequent_filing',
-      jurisdiction: 'federal'
+      jurisdiction: 'federal',
     }
   ];
 }
@@ -723,7 +723,7 @@ function enhanceDiversity(recommendations: any[]): any[] {
 
   const diversified = [...recommendations];
 
-  // Calculate content similarity and apply diversity penalty
+  // Calculate content similarity and apply diversity penalty;
   for (let i = 0; i < diversified.length; i++) {
     for (let j = i + 1; j < diversified.length; j++) {
       const similarity = calculateContentSimilarity(
@@ -743,17 +743,17 @@ function enhanceDiversity(recommendations: any[]): any[] {
     }
   }
 
-  return diversified.sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
+  return diversified.sort((a, b) => (b.confidence || 0) - (a.confidence || 0);
 }
 
 function calculateContentSimilarity(content1: string, content2: string): number {
   if (!content1 || !content2) return 0;
 
   // Simple Jaccard similarity based on word overlap
-  const words1 = new Set(content1.toLowerCase().split(/\s+/).filter(word => word.length > 3));
-  const words2 = new Set(content2.toLowerCase().split(/\s+/).filter(word => word.length > 3));
+  const words1 = new Set(content1.toLowerCase().split(/\s+/).filter(word => word.length > 3);
+  const words2 = new Set(content2.toLowerCase().split(/\s+/).filter(word => word.length > 3);
 
-  const intersection = new Set([...words1].filter(x => words2.has(x)));
+  const intersection = new Set([...words1].filter(x => words2.has(x));
   const union = new Set([...words1, ...words2]);
 
   return union.size === 0 ? 0 : intersection.size / union.size;
@@ -780,7 +780,7 @@ function calculateDiversityScore(recommendations: any[]): number {
     }
   }
 
-  // Normalize to 0-1 scale (max diversity for n categories is log2(n))
-  const maxDiversity = Math.log2(Math.min(categoryDistribution.size, 6)); // Cap at 6 categories
+  // Normalize to 0-1 scale (max diversity for n categories is log2(n)
+  const maxDiversity = Math.log2(Math.min(categoryDistribution.size, 6); // Cap at 6 categories
   return maxDiversity > 0 ? diversityIndex / maxDiversity : 0;
 }

@@ -6,7 +6,8 @@
  *  - Abbreviation protection (Inc., Corp., Art., etc.)
  *  - Short fragment merging & filtering
  *  - Optional streaming interface (minimal stub for now)
- */
+ */;
+}
 
 export interface SplitterOptions {
   minFragmentLength?: number; // Minimum length to keep a fragment standalone
@@ -42,21 +43,21 @@ export function splitSentencesEnhanced(text: string, options: SplitterOptions = 
 
   // First pass naive split
   const raw = text
-    .split(/([.!?]+)/)
+    .split(/([.!?]+)/);
     .reduce<string[]>((acc, part, idx, arr) => {
       if (!part.trim()) return acc;
-      // If punctuation token, append to previous
+      // If punctuation token, append to previous;
       if (/^[.!?]+$/.test(part) && acc.length) {
         acc[acc.length - 1] += part;
       } else if (idx < arr.length - 1 && /^[.!?]+$/.test(arr[idx + 1] || '')) {
         // Will be handled when punctuation encountered next iteration
-        acc.push(part.trim());
+        acc.push(part.trim();
       } else {
-        acc.push(part.trim());
+        acc.push(part.trim();
       }
       return acc;
     }, [])
-    .map((s) => s.trim());
+    .map((s) => s.trim();
 
   // Protect abbreviations that caused premature splits by merging where pattern matches
   const sentences: string[] = [];
@@ -90,7 +91,7 @@ export function splitSentencesEnhanced(text: string, options: SplitterOptions = 
         continue;
       }
     }
-    // Ensure terminating punctuation for consistency
+    // Ensure terminating punctuation for consistency;
     if (!/[.!?]$/.test(sent)) {
       final.push(sent + '.');
     } else {
@@ -112,9 +113,9 @@ export class EnhancedSentenceSplitter {
     for (const a of abbrevs) this.customAbbrevs.add(a);
   }
   splitSentences(text: string): string[] {
-    return splitSentencesEnhanced(text, { ...this.options, customAbbreviations: [...this.customAbbrevs] });
+    return splitSentencesEnhanced(text, { ...this.options, customAbbreviations: [...this.customAbbrevs] ,});
   }
-  // Streaming API (minimal stub preserved for future)
+  // Streaming API (minimal stub preserved for future);
   processStreamingChunk(chunk: string, _context: any) {
     // For now accumulate and only split when we see clear sentence end; simplified placeholder
     return splitSentencesEnhanced(chunk, this.options);

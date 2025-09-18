@@ -331,7 +331,12 @@
       "Bash(TensorRT-LLM/tensorrt_env/bin/python -c \"import tensorrt_llm; print(''''✅ TensorRT-LLM version:'''', tensorrt_llm.__version__)\")",
       "Bash(TensorRT-LLM/tensorrt_env/bin/python -c \"import tensorrt_llm; print(''''Available tools:'''', dir(tensorrt_llm))\")",
       "WebFetch(domain:127.0.0.1)",
-      "Bash(legal-ai-ubuntu-deployment/tensorrt_env/bin/python -c \"import tensorrt_llm; print(''✅ TensorRT-LLM version:'', tensorrt_llm.__version__); print(''✅ Available modules:'', [x for x in dir(tensorrt_llm) if not x.startswith(''_'')][:10])\")"
+      "Bash(legal-ai-ubuntu-deployment/tensorrt_env/bin/python -c \"import tensorrt_llm; print(''✅ TensorRT-LLM version:'', tensorrt_llm.__version__); print(''✅ Available modules:'', [x for x in dir(tensorrt_llm) if not x.startswith(''_'')][:10])\")",
+      "Bash(git checkout:*)",
+      "Bash(git restore:*)",
+      "Bash(REDIS_PASSWORD=\"redis\" npm run dev:quic)",
+      "Bash(tensorrt_llm_ubuntu_env/bin/python:*)",
+      "Bash(code:*)"
     ],
     "deny": [],
     "ask": []

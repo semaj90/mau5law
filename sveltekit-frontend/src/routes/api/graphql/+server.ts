@@ -8,20 +8,20 @@ const createServer = null as any;
 const makeExecutableSchema = null as any;
 import { enhancedSearchWithNeo4j } from "$lib/ai/custom-reranker";
 
-const typeDefs = /* GraphQL */ `
+const typeDefs = /* GraphQL */ `;
   type Recommendation {
     id: ID!
     content: String!
     score: Float!
-    intent: String
-    timeOfDay: String
-    position: String
+    intent: String,
+    timeOfDay: String,
+    position: String,
   }
   type Query {
     recommendations(
       query: String!
-      userContext: JSON
-      neo4jContext: JSON
+      userContext: JSON,
+      neo4jContext: JSON,
       limit: Int
     ): [Recommendation!]!
   }
@@ -42,7 +42,7 @@ const resolvers = {
       );
       // const memory = await accessMemoryMCP(query, userContext);
       const docs = await mcpContext72GetLibraryDocs("svelte", "runes");
-      return reranked
+      return reranked;
         .map((result) => {
           let score = (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).rerankScore;
           // if (memory.some((m) => m.relatedId === (result as { rerankScore?: any; id?: any; intent?: any; content?: any; timeOfDay?: any; position?: any }).id)) score += 1;

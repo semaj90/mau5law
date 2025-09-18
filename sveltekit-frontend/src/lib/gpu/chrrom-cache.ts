@@ -32,7 +32,7 @@ class CHRCache {
     const expiresAt = Date.now() + ttl;
     this.map.set(p.key, { pattern: p, expiresAt });
 
-    // Optionally pre-prepare GPU assets for CHR patterns
+    // Optionally pre-prepare GPU assets for CHR patterns;
     if (p.type === 'state' && p.payload?.items?.length) {
       // Future: build small textures for instant rendering of lists/cards
     }

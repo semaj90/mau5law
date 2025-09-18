@@ -9,7 +9,7 @@ const ENHANCED_RAG_URL = 'http://localhost:8094';
 const UPLOAD_SERVICE_URL = 'http://localhost:8093';
 const KRATOS_SERVICE_URL = 'http://localhost:50051';
 
-// Service client for multi-protocol communication
+// Service client for multi-protocol communication;
 class LegalAIServiceClient {
   private async fetchWithFallback(url: string, options: RequestInit, fallbackPorts: number[] = []): Promise<Response> {
     try {
@@ -17,7 +17,7 @@ class LegalAIServiceClient {
       if ((response as { ok?: any; status?: any; statusText?: any }).ok) return response;
       throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any }).statusText}`);
     } catch (error: any) {
-      // Try fallback ports if primary fails
+      // Try fallback ports if primary fails;
       for (const port of fallbackPorts) {
         try {
           const fallbackUrl = url.replace(/:\d+/, `:${port}`);
@@ -44,7 +44,7 @@ class LegalAIServiceClient {
           ...context
         }
       })
-    }, [8095, 8096]).then(r => r.json());
+    }, [8095, 8096]).then(r => r.json();
   }
 
   async vectorSearch(query: string, categories: string[], limit: number = 20): Promise<any> {
@@ -56,9 +56,9 @@ class LegalAIServiceClient {
         categories,
         limit,
         threshold: 0.7,
-        includeMetadata: true
+        includeMetadata: true,
       })
-    }, [8095, 8096]).then(r => r.json());
+    }, [8095, 8096]).then(r => r.json();
   }
 
   async documentSearch(query: string, filters: any = {}): Promise<any> {
@@ -72,7 +72,7 @@ class LegalAIServiceClient {
           ...filters
         }
       })
-    }, [8092, 8091]).then(r => r.json());
+    }, [8092, 8091]).then(r => r.json();
   }
 
   async semanticAnalysis(text: string, analysisType: string = 'legal'): Promise<any> {
@@ -84,13 +84,13 @@ class LegalAIServiceClient {
         analysisType,
         includeEntities: true,
         includeSentiment: true,
-        includeKeywords: true
+        includeKeywords: true,
       })
-    }, [8095, 8096]).then(r => r.json());
+    }, [8095, 8096]).then(r => r.json();
   }
 }
 
-// Validation schema
+// Validation schema;
 const LegalSearchSchema = z.object({
   q: z.string().min(1, 'Query is required'),
   limit: z.coerce.number().min(1).max(100).default(20),
@@ -98,8 +98,9 @@ const LegalSearchSchema = z.object({
   categories: z.string().transform(str => str.split(',')).default('cases,evidence'),
   vectorSearch: z.coerce.boolean().default(true),
   aiSuggestions: z.coerce.boolean().default(true),
-  includeMetadata: z.coerce.boolean().default(true)
+  includeMetadata: z.coerce.boolean().default(true),
 });
+}
 
 export interface SearchResult {
   id: string;
@@ -135,7 +136,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     const startTime = Date.now();
     
-    // Enhanced parallel search execution
+    // Enhanced parallel search execution;
     const searchPromises = categories.map(async (category) => {
       try {
         switch (category.trim()) {
@@ -152,7 +153,7 @@ export const GET: RequestHandler = async ({ url }) => {
           case 'statutes':
             return await searchStatutes(query, limit);
           default:
-            return [];
+            return [];,
         }
       } catch (error: any) {
         console.error(`Error searching ${category}:`, error);
@@ -179,7 +180,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     // Sort by enhanced relevance scoring
     const sortedResults = processedResults
-      .sort((a, b) => calculateEnhancedScore(b, query) - calculateEnhancedScore(a, query))
+      .sort((a, b) => calculateEnhancedScore(b, query) - calculateEnhancedScore(a, query)
       .slice(0, limit);
 
     // AI-powered enhancement and analysis
@@ -188,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
       try {
         enhancedResults = await enhanceWithAI(sortedResults, query);
         
-        // Add semantic analysis for top results
+        // Add semantic analysis for top results;
         const semanticPromises = enhancedResults.slice(0, 5).map(async (result) => {
           try {
             const analysis = await serviceClient.semanticAnalysis(
@@ -218,7 +219,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     const processingTime = Date.now() - startTime;
     
-    // Enhanced response with legal AI platform optimization
+    // Enhanced response with legal AI platform optimization;
     return json({
       success: true,
       results: enhancedResults,
@@ -236,10 +237,10 @@ export const GET: RequestHandler = async ({ url }) => {
           enhancedRAG: true,
           uploadService: categories.includes('documents'),
           vectorDB: vectorSearch,
-          semanticAnalysis: aiSuggestions
+          semanticAnalysis: aiSuggestions,
         }
       },
-      // Legal AI platform specific enhancements
+      // Legal AI platform specific enhancements;
       legalContext: {
         jurisdiction: 'federal', // Could be dynamic based on user preferences
         practiceAreas: extractPracticeAreas(query),
@@ -256,7 +257,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: false,
         error: 'Invalid search parameters',
         details: error.errors,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }, { status: 400 });
     }
     
@@ -265,15 +266,15 @@ export const GET: RequestHandler = async ({ url }) => {
       error: 'Enhanced search failed',
       details: error instanceof Error ? error.message: 'Unknown error',
       timestamp: new Date().toISOString(),
-      fallbackAvailable: true
+      fallbackAvailable: true,
     }, { status: 500 });
   }
 };
 
-// Enhanced search functions using real API calls
+// Enhanced search functions using real API calls;
 async function searchCases(query: string, limit: number, threshold: number, vectorSearch: boolean): Promise<SearchResult[]> {
   try {
-    // Enhanced RAG search for cases with legal context
+    // Enhanced RAG search for cases with legal context;
     const ragResults = await serviceClient.enhancedRAGSearch(query, {
       entityType: 'cases',
       limit,
@@ -282,7 +283,7 @@ async function searchCases(query: string, limit: number, threshold: number, vect
       legalContext: {
         jurisdiction: 'all',
         practiceAreas: ['criminal', 'civil', 'constitutional', 'commercial'],
-        includePreservation: true
+        includePreservation: true,
       }
     });
 
@@ -325,7 +326,7 @@ async function searchCases(query: string, limit: number, threshold: number, vect
       court: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).court,
       practiceArea: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).practiceArea,
       attorneys: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).attorneys || []
-    }));
+    });
 
   } catch (error: any) {
     console.error('Error in enhanced case search:', error);
@@ -336,14 +337,14 @@ async function searchCases(query: string, limit: number, threshold: number, vect
 
 async function searchEvidence(query: string, limit: number, threshold: number, vectorSearch: boolean): Promise<SearchResult[]> {
   try {
-    // Enhanced evidence search with forensic analysis
+    // Enhanced evidence search with forensic analysis;
     const ragResults = await serviceClient.enhancedRAGSearch(query, {
       entityType: 'evidence',
       limit,
       threshold,
       forensicAnalysis: true,
       evidenceTypes: ['physical', 'digital', 'documentary', 'testimonial', 'forensic'],
-      chainOfCustody: true
+      chainOfCustody: true,
     });
 
     // Document search for evidence files
@@ -361,12 +362,12 @@ async function searchEvidence(query: string, limit: number, threshold: number, v
     // Process RAG results for evidence
     const processedResults = await processRAGResults(ragResults, 'evidence');
     
-    // Merge with document evidence
+    // Merge with document evidence;
     const allEvidence = [...processedResults, ...documentResults.map((doc: any) => ({
       ...doc,
       type: 'evidence',
       evidenceSource: 'document',
-      isAdmissible: doc.admissible !== false
+      isAdmissible: doc.admissible !== false,
     }))];
 
     // Vector search enhancement
@@ -409,7 +410,7 @@ async function searchEvidence(query: string, limit: number, threshold: number, v
       collectedBy: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).collectedBy,
       location: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).collectionLocation,
       labAnalysis: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).labAnalysis || {}
-    }));
+    });
 
   } catch (error: any) {
     console.error('Error in enhanced evidence search:', error);
@@ -419,7 +420,7 @@ async function searchEvidence(query: string, limit: number, threshold: number, v
 
 async function searchCriminals(query: string, limit: number, threshold: number): Promise<SearchResult[]> {
   try {
-    // Enhanced person/criminal search with legal context
+    // Enhanced person/criminal search with legal context;
     const ragResults = await serviceClient.enhancedRAGSearch(query, {
       entityType: 'persons',
       limit,
@@ -427,7 +428,7 @@ async function searchCriminals(query: string, limit: number, threshold: number):
       includeAliases: true,
       includeCriminalHistory: true,
       riskAssessment: true,
-      backgroundCheck: true
+      backgroundCheck: true,
     });
 
     const processedResults = await processRAGResults(ragResults, 'criminal');
@@ -457,7 +458,7 @@ async function searchCriminals(query: string, limit: number, threshold: number):
       lastKnownAddress: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).lastKnownAddress,
       criminalHistory: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).criminalHistory || [],
       associatedCases: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).associatedCases || []
-    }));
+    });
 
   } catch (error: any) {
     console.error('Error in enhanced person search:', error);
@@ -467,22 +468,22 @@ async function searchCriminals(query: string, limit: number, threshold: number):
 
 async function searchDocuments(query: string, limit: number, threshold: number, vectorSearch: boolean): Promise<SearchResult[]> {
   try {
-    // Enhanced document search using Upload Service
+    // Enhanced document search using Upload Service;
     const documentResults = await serviceClient.documentSearch(query, {
       documentTypes: ['legal-brief', 'court-filing', 'contract', 'motion', 'pleading', 'memorandum'],
       confidentiality: ['public', 'confidential', 'attorney-client'],
       includeContent: true,
-      includeMetadata: true
+      includeMetadata: true,
     });
 
-    // Enhanced RAG search for document content
+    // Enhanced RAG search for document content;
     const ragResults = await serviceClient.enhancedRAGSearch(query, {
       entityType: 'documents',
       limit,
       threshold,
       includeFullText: true,
       documentAnalysis: true,
-      legalCitations: true
+      legalCitations: true,
     });
 
     // Combine and process results
@@ -491,7 +492,7 @@ async function searchDocuments(query: string, limit: number, threshold: number, 
       ...documentResults.results?.map((doc: any) => ({
         ...doc,
         type: 'document',
-        documentSource: 'upload_service'
+        documentSource: 'upload_service',
       })) || []
     ];
 
@@ -536,7 +537,7 @@ async function searchDocuments(query: string, limit: number, threshold: number, 
       lastModified: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).lastModified,
       citations: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).citations || [],
       legalConcepts: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).legalConcepts || []
-    }));
+    });
 
   } catch (error: any) {
     console.error('Error in enhanced document search:', error);
@@ -557,14 +558,14 @@ async function fallbackDocumentSearch(query: string, limit: number): Promise<Sea
       confidentiality: 'unknown',
       tags: [query.toLowerCase(), 'fallback']
     },
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   }].slice(0, limit);
 }
 
-// Placeholder functions for legal-specific searches
+// Placeholder functions for legal-specific searches;
 async function searchPrecedents(query: string, limit: number): Promise<SearchResult[]> {
   // TODO: Integrate with legal precedent database or API
-  return [
+  return [;
     {
       id: `precedent-${Date.now()}`,
       title: `Precedent case for "${query}"`,
@@ -582,7 +583,7 @@ async function searchPrecedents(query: string, limit: number): Promise<SearchRes
 
 async function searchStatutes(query: string, limit: number): Promise<SearchResult[]> {
   // TODO: Integrate with statute database or API
-  return [
+  return [;
     {
       id: `statute-${Date.now()}`,
       title: `Relevant statute for "${query}"`,
@@ -598,14 +599,14 @@ async function searchStatutes(query: string, limit: number): Promise<SearchResul
   ];
 }
 
-// Calculate simple relevance score based on text matching
+// Calculate simple relevance score based on text matching;
 function calculateRelevanceScore(query: string, text: string): number {
   if (!text) return 0;
   
   const queryLower = query.toLowerCase();
   const textLower = text.toLowerCase();
   
-  // Exact match gets highest score
+  // Exact match gets highest score;
   if (textLower.includes(queryLower)) {
     return 0.9;
   }
@@ -624,10 +625,10 @@ function calculateRelevanceScore(query: string, text: string): number {
   return queryWords.length > 0 ? (matches / queryWords.length) * 0.8 : 0;
 }
 
-// Enhanced AI-powered result enhancement
+// Enhanced AI-powered result enhancement;
 async function enhanceWithAI(results: SearchResult[], query: string): Promise<SearchResult[]> {
   try {
-    // Enhanced RAG-powered result analysis
+    // Enhanced RAG-powered result analysis;
     const enhancementPromises = results.map(async (result) => {
       try {
         // Get AI analysis for each result
@@ -649,14 +650,14 @@ async function enhanceWithAI(results: SearchResult[], query: string): Promise<Se
             legalConcepts,
             relevanceExplanation: analysis.explanation,
             confidenceScore: analysis.confidence,
-            keyTerms: analysis.keyTerms || []
+            keyTerms: analysis.keyTerms || [],
           },
-          // Enhanced metadata with AI insights
+          // Enhanced metadata with AI insights;
           metadata: {
             ...result.metadata,
             aiEnhanced: true,
             relevanceFactors: analysis.relevanceFactors || [],
-            practiceAreaMatch: analysis.practiceAreaMatch || 'general'
+            practiceAreaMatch: analysis.practiceAreaMatch || 'general',
           }
         };
       } catch (error: any) {
@@ -672,7 +673,7 @@ async function enhanceWithAI(results: SearchResult[], query: string): Promise<Se
   }
 }
 
-// Utility functions for enhanced search processing
+// Utility functions for enhanced search processing;
 async function processRAGResults(ragResults: any, resultType: string): Promise<any[]> {
   try {
     if (!ragResults || !ragResults.results) return [];
@@ -682,8 +683,8 @@ async function processRAGResults(ragResults: any, resultType: string): Promise<a
       type: resultType,
       ragEnhanced: true,
       confidence: (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).confidence || (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).score || 0.5,
-      processingTimestamp: new Date().toISOString()
-    }));
+      processingTimestamp: new Date().toISOString(),
+    });
   } catch (error: any) {
     console.warn('Error processing RAG results:', error);
     return [];
@@ -694,23 +695,23 @@ async function mergeWithVectorResults(primaryResults: any[], vectorResults: any[
   try {
     const merged = [...primaryResults];
     
-    // Add unique vector results not already in primary results
+    // Add unique vector results not already in primary results;
     vectorResults.forEach((vectorResult: any) => {
       const exists = primaryResults.some(pr => 
         pr.id === vectorResult.id || 
-        (pr.title && vectorResult.title && pr.title.toLowerCase() === vectorResult.title.toLowerCase())
+        (pr.title && vectorResult.title && pr.title.toLowerCase() === vectorResult.title.toLowerCase()
       );
       
       if (!exists) {
         merged.push({
           ...vectorResult,
           vectorEnhanced: true,
-          score: vectorResult.similarity || vectorResult.score || 0.5
+          score: vectorResult.similarity || vectorResult.score || 0.5,
         });
       }
     });
     
-    return merged.sort((a, b) => (b.score || 0) - (a.score || 0));
+    return merged.sort((a, b) => (b.score || 0) - (a.score || 0);
   } catch (error: any) {
     console.warn('Error merging vector results:', error);
     return primaryResults;
@@ -720,22 +721,22 @@ async function mergeWithVectorResults(primaryResults: any[], vectorResults: any[
 function calculateEnhancedScore(result: SearchResult, query: string): number {
   let score = (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).score || 0;
   
-  // Boost for vector similarity
+  // Boost for vector similarity;
   if ((result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).similarity) {
     score = Math.max(score, (result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).similarity);
   }
   
-  // Boost for AI confidence
+  // Boost for AI confidence;
   if ((result as any).confidence) {
     score = (score + (result as any).confidence) / 2;
   }
   
-  // Boost for exact query matches in title
+  // Boost for exact query matches in title;
   if ((result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).title.toLowerCase().includes(query.toLowerCase())) {
     score += 0.2;
   }
   
-  // Boost for recent content
+  // Boost for recent content;
   if ((result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).metadata.date) {
     const age = Date.now() - new Date((result as { status?: any; value?: any; title?: any; content?: any; score?: any; id?: any; caseName?: any; description?: any; summary?: any; similarity?: any; createdAt?: any; filingDate?: any; jurisdiction?: any; court?: any; caseStatus?: any; caseNumber?: any; tags?: any; practiceAreas?: any; confidence?: any; highlights?: any; practiceArea?: any; attorneys?: any; evidenceName?: any; collectionDate?: any; confidentialityLevel?: any; classification?: any; caseId?: any; associatedCase?: any; isAdmissible?: any; evidenceType?: any; type?: any; chainOfCustody?: any; collectedBy?: any; collectionLocation?: any; labAnalysis?: any; fullName?: any; firstName?: any; lastName?: any; notes?: any; lastUpdated?: any; riskLevel?: any; aliases?: any; lastKnownAddress?: any; criminalHistory?: any; associatedCases?: any; documentName?: any; extractedText?: any; uploadDate?: any; documentType?: any; fileType?: any; fileSize?: any; pageCount?: any; fileExtension?: any; uploadedBy?: any; lastModified?: any; citations?: any; legalConcepts?: any; metadata?: any }).metadata.date).getTime();
     const daysSinceCreation = age / (1000 * 60 * 60 * 24);
@@ -744,7 +745,7 @@ function calculateEnhancedScore(result: SearchResult, query: string): number {
     }
   }
   
-  return Math.min(1.0, Math.max(0, score));
+  return Math.min(1.0, Math.max(0, score);
 }
 
 function extractPracticeAreas(query: string): string[] {
@@ -824,14 +825,14 @@ function extractHighlights(content: string, query: string): string[] {
     const regex = new RegExp(`(.{0,30}\\b${word}\\b.{0,30})`, 'gi');
     const matches = contentLower.match(regex);
     if (matches) {
-      highlights.push(...matches.slice(0, 2));
+      highlights.push(...matches.slice(0, 2);
     }
   }
   
   return Array.from(new Set(highlights)).slice(0, 3); // Remove duplicates and limit
 }
 
-// Fallback search functions for when enhanced search fails
+// Fallback search functions for when enhanced search fails;
 async function fallbackCaseSearch(query: string, limit: number): Promise<SearchResult[]> {
   return [{
     id: `fallback-case-${Date.now()}`,
@@ -844,7 +845,7 @@ async function fallbackCaseSearch(query: string, limit: number): Promise<SearchR
       status: 'fallback',
       tags: [query.toLowerCase(), 'fallback']
     },
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   }].slice(0, limit);
 }
 
@@ -861,7 +862,7 @@ async function fallbackEvidenceSearch(query: string, limit: number): Promise<Sea
       confidentiality: 'unknown',
       tags: [query.toLowerCase(), 'fallback']
     },
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   }].slice(0, limit);
 }
 
@@ -877,11 +878,11 @@ async function fallbackPersonSearch(query: string, limit: number): Promise<Searc
       status: 'fallback',
       tags: [query.toLowerCase(), 'fallback']
     },
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   }].slice(0, limit);
 }
 
-// Suggestions endpoint for AI-powered search suggestions
+// Suggestions endpoint for AI-powered search suggestions;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json();
@@ -907,13 +908,13 @@ export const POST: RequestHandler = async ({ request }) => {
     
     return json({ 
       success: false, 
-      error: 'Invalid action' 
+      error: 'Invalid action' ,
     }, { status: 400 });
     
   } catch (error: any) {
     return json({
       success: false,
-      error: 'Failed to process request'
+      error: 'Failed to process request',
     }, { status: 500 });
   }
 };

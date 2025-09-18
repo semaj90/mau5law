@@ -15,7 +15,7 @@ import {
 /**
  * GET /api/redis-orchestrator
  * Get comprehensive Redis statistics and health status
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const includeDetails = url.searchParams.get('details') === 'true';
@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ url }) => {
         performance_metrics: {
           cache_efficiency: llmCacheStats.hit_rate_estimate,
           memory_optimization: stats.redis_memory,
-          async_task_throughput: queueStats.completed_tasks_count
+          async_task_throughput: queueStats.completed_tasks_count,
         }
       };
     }
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString(),
       redis_stats: stats,
       ...detailedStats,
-      recommendations: generatePerformanceRecommendations(stats)
+      recommendations: generatePerformanceRecommendations(stats),
     });
     
   } catch (err) {
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ url }) => {
 /**
  * POST /api/redis-orchestrator
  * Process legal query through the Redis optimization pipeline
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -100,10 +100,10 @@ export const POST: RequestHandler = async ({ request }) => {
           response: cached.response,
           source: 'cache',
           processing_time: 0,
-          cached: true
+          cached: true,
         } : null,
         orchestrated: false,
-        processing_pipeline: cached ? 'L1_CACHE' : 'CACHE_MISS'
+        processing_pipeline: cached ? 'L1_CACHE' : 'CACHE_MISS',
       });
     }
     
@@ -116,7 +116,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /**
  * PUT /api/redis-orchestrator/cache
  * Manually cache a legal response
- */
+ */;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -153,7 +153,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 /**
  * DELETE /api/redis-orchestrator/cache
  * Clear Redis cache (with optional patterns)
- */
+ */;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const pattern = url.searchParams.get('pattern');
@@ -164,11 +164,11 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
     
     if (pattern) {
-      // Clear specific pattern - would need implementation
+      // Clear specific pattern - would need implementation;
       return json({
         success: true,
         message: `Cache pattern "${pattern}" clear not implemented - use full clear`,
-        cleared_keys: 0
+        cleared_keys: 0,
       });
     } else {
       // Clear all LLM cache
@@ -177,7 +177,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         message: 'Cache clear initiated',
-        note: 'Full cache clear method needs implementation in RedisLLMCache'
+        note: 'Full cache clear method needs implementation in RedisLLMCache',
       });
     }
     
@@ -190,7 +190,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 /**
  * Handle task-related queries in the main GET handler
  * Task management is integrated into the main Redis orchestrator endpoint
- */
+ */;
 async function handleTaskQuery(url: URL) {
   try {
     const queueStats = await RedisTaskQueue.getQueueStats();
@@ -203,7 +203,7 @@ async function handleTaskQuery(url: URL) {
       return json({
         taskId,
         result,
-        found: !!result
+        found: !!result,
       });
     }
     
@@ -211,7 +211,7 @@ async function handleTaskQuery(url: URL) {
       queue_stats: queueStats,
       queue_health: queueStats.queued_tasks < 100 ? 'healthy' : 'overloaded',
       processing_capacity: queueStats.processing_tasks,
-      recommendations: generateTaskQueueRecommendations(queueStats)
+      recommendations: generateTaskQueueRecommendations(queueStats),
     });
     
   } catch (err) {
@@ -223,7 +223,7 @@ async function handleTaskQuery(url: URL) {
 /**
  * POST /api/redis-orchestrator/tasks
  * Queue a complex legal analysis task
- */
+ */;
 export const POST_TASKS: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -266,7 +266,7 @@ export const POST_TASKS: RequestHandler = async ({ request }) => {
 
 /**
  * Generate performance recommendations based on Redis stats
- */
+ */;
 function generatePerformanceRecommendations(stats: any): string[] {
   const recommendations: string[] = [];
   
@@ -299,7 +299,7 @@ function generatePerformanceRecommendations(stats: any): string[] {
 
 /**
  * Generate task queue recommendations
- */
+ */;
 function generateTaskQueueRecommendations(queueStats: any): string[] {
   const recommendations: string[] = [];
   
@@ -321,7 +321,7 @@ function generateTaskQueueRecommendations(queueStats: any): string[] {
 
 /**
  * Estimate processing time based on task type and query complexity
- */
+ */;
 function estimateProcessingTime(taskType: string, query: string): string {
   const baseTimesByType = {
     'complex_legal': 30000, // 30 seconds

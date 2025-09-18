@@ -1,11 +1,5 @@
-import {
-  createSubscriber
-} from "./chunk-YZBAU52E.js";
-import {
-  __privateAdd,
-  __privateGet,
-  __privateSet
-} from "./chunk-KWPVD4H7.js";
+import { createSubscriber } from './chunk-YZBAU52E.js';
+import { __privateAdd, __privateGet, __privateSet } from './chunk-KWPVD4H7.js';
 
 // node_modules/svelte/src/reactivity/reactive-value.js
 var _fn, _subscribe;
@@ -29,7 +23,5 @@ var ReactiveValue = class {
 _fn = new WeakMap();
 _subscribe = new WeakMap();
 
-export {
-  ReactiveValue
-};
+export { ReactiveValue };
 //# sourceMappingURL=chunk-VHHKUK53.js.map

@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 
-// Memory access helper for MCP integration
+// Memory access helper for MCP integration;
 async function accessMemoryMCP(query: string, userContext: any) {
   // Simulate memory access - would integrate with actual MCP memory system
   return [
@@ -16,7 +16,7 @@ async function accessMemoryMCP(query: string, userContext: any) {
   ].filter(m => m.content);
 }
 
-// Recommendation endpoint using enhanced reranker, Neo4j, and memory
+// Recommendation endpoint using enhanced reranker, Neo4j, and memory;
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const action = url.searchParams.get('action') || 'suggest';
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const docs = await mcpContext72GetLibraryDocs("svelte", "runes");
         
         // Final scoring pass
-        const recommendations = reranked
+        const recommendations = reranked;
           .map((result) => {
             let score = (result as { rerankScore?: any; id?: any; intent?: any }).rerankScore;
             if (memory.some((m) => m.relatedId === (result as { rerankScore?: any; id?: any; intent?: any }).id)) score += 1;
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!userId) {
           return json({
             success: false,
-            error: 'userId is required'
+            error: 'userId is required',
           }, { status: 400 });
         }
 
@@ -82,13 +82,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
           userPattern: {
             complexity: patterns.queryComplexity,
             frequency: patterns.usageFrequency,
-            activeHours: patterns.timePatterns.mostActiveHours
+            activeHours: patterns.timePatterns.mostActiveHours,
           }
         });
       }
 
       case 'trending': {
-        // Mock trending searches - would query actual data in production
+        // Mock trending searches - would query actual data in production;
         return json({
           trending: [
             'contract indemnification clauses',
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             'privacy compliance regulations'
           ],
           period: '24h',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
@@ -119,11 +119,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           message: 'Feedback recorded successfully',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
-      default:
+      default:;
         return json({
           success: false,
           error: `Unknown action: ${action}`
@@ -131,11 +131,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
 
   } catch (error: any) {
-    return json(
-      { 
+    return json({ 
         success: false,
-        error: error.message || "Failed to generate recommendations" 
-      },
+        error: error.message || "Failed to generate recommendations" ,
+      },)
       { status: 500 }
     );
   }
@@ -160,12 +159,12 @@ export const GET: RequestHandler = async ({ url }) => {
           complexity: patterns.queryComplexity,
           frequency: patterns.usageFrequency,
           topTopics: patterns.preferredTopics.slice(0, 3),
-          activeHours: patterns.timePatterns.mostActiveHours
+          activeHours: patterns.timePatterns.mostActiveHours,
         }
       });
     }
 
-    // Service overview
+    // Service overview;
     return json({
       service: 'recommendation-engine',
       status: 'operational',
@@ -191,16 +190,16 @@ export const GET: RequestHandler = async ({ url }) => {
         userPatterns: true,
         contextAware: true,
         graphEnhanced: true,
-        machineLearning: true
+        machineLearning: true,
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }, { status: 500 });
   }
 };

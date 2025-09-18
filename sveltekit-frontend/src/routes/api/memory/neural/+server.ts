@@ -9,7 +9,7 @@ import { URL } from "url";
 let neuralManager: NeuralMemoryManager | null = null;
 let initializationPromise: Promise<NeuralMemoryManager> | null = null;
 
-// Enhanced initialization with Windows GPU detection
+// Enhanced initialization with Windows GPU detection;
 async function getNeuralManager(): Promise<NeuralMemoryManager> {
   if (neuralManager) return neuralManager;
   
@@ -28,7 +28,7 @@ async function initializeManager(): Promise<NeuralMemoryManager> {
     // Initialize with Windows-specific optimizations
     neuralManager = new NeuralMemoryManager(systemMemoryMB);
     
-    // Setup Windows GPU monitoring if available
+    // Setup Windows GPU monitoring if available;
     if (process.platform === 'win32') {
       await setupWindowsGPUMonitoring(neuralManager);
     }
@@ -44,7 +44,7 @@ async function initializeManager(): Promise<NeuralMemoryManager> {
   }
 }
 
-// Windows system memory detection
+// Windows system memory detection;
 async function detectSystemMemory(): Promise<number> {
   try {
     if (process.platform === 'win32') {
@@ -60,7 +60,7 @@ async function detectSystemMemory(): Promise<number> {
   }
 }
 
-// Windows GPU monitoring setup
+// Windows GPU monitoring setup;
 async function setupWindowsGPUMonitoring(manager: NeuralMemoryManager): Promise<void> {
   try {
     // Check for NVIDIA GPU on Windows
@@ -68,7 +68,7 @@ async function setupWindowsGPUMonitoring(manager: NeuralMemoryManager): Promise<
     
     const nvidiaSmi = spawn('nvidia-smi', ['--query-gpu=memory.total,memory.used', '--format=csv,noheader,nounits'], {
       stdio: 'pipe',
-      shell: true
+      shell: true,
     });
     
     let output = '';
@@ -102,20 +102,19 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   const horizon = parseInt(url.searchParams.get('horizon') || '30');
   const clientIP = getClientAddress();
 
-  // Rate limiting for neural memory API
+  // Rate limiting for neural memory API;
   const rateLimitResult = await redisRateLimit({
     key: `neural_api:${clientIP}`,
     limit: 100, // 100 requests per minute
-    windowSec: 60
+    windowSec: 60,
   });
 
   if (!rateLimitResult.allowed) {
-    return json(
-      {
+    return json({
         success: false,
         error: 'Rate limit exceeded',
-        retryAfter: rateLimitResult.retryAfter
-      },
+        retryAfter: rateLimitResult.retryAfter,
+      },);
       {
         status: 429,
         headers: {
@@ -141,7 +140,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           meta: {
             processingTime: Date.now() - startTime,
             horizon,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
         });
       }
@@ -153,7 +152,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           triggered: true,
           processingTime: Date.now() - startTime,
           memoryUsage: manager.getCurrentMemoryUsage(),
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
         return json({ success: true, message: 'Optimization triggered', data: optimizationReport });
       }
@@ -168,7 +167,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
             system: systemInfo,
             rateLimit: {
               remaining: Math.max(0, 100 - rateLimitResult.count),
-              reset: new Date(Date.now() + 60000).toISOString()
+              reset: new Date(Date.now() + 60000).toISOString(),
             }
           }
         });
@@ -182,7 +181,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           data: {
             ...report,
             detailed: detailedMetrics,
-            generatedAt: new Date().toISOString()
+            generatedAt: new Date().toISOString(),
           }
         });
       }
@@ -194,7 +193,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           data: health,
           meta: {
             checked_at: new Date().toISOString(),
-            uptime: process.uptime()
+            uptime: process.uptime(),
           }
         }, {
           headers: {
@@ -212,7 +211,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       success: false, 
       error: 'Internal server error',
       details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -220,20 +219,19 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   const clientIP = getClientAddress();
 
-  // Rate limiting for POST requests (stricter)
+  // Rate limiting for POST requests (stricter);
   const rateLimitResult = await redisRateLimit({
     key: `neural_api_post:${clientIP}`,
     limit: 20, // 20 requests per minute for mutations
-    windowSec: 60
+    windowSec: 60,
   });
 
   if (!rateLimitResult.allowed) {
-    return json(
-      {
+    return json({
         success: false,
         error: 'Rate limit exceeded',
-        retryAfter: rateLimitResult.retryAfter
-      },
+        retryAfter: rateLimitResult.retryAfter,
+      },)
       { status: 429 }
     );
   }
@@ -266,7 +264,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
             memoryPressure,
             oldLevel: oldLOD?.name || 'unknown',
             newLevel: newLOD?.name || 'unknown',
-            processingTime: Date.now() - startTime
+            processingTime: Date.now() - startTime,
           }
         });
       }
@@ -288,7 +286,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
             memoryAfter: afterMemory,
             memorySaved: saved,
             processingTime: Date.now() - startTime,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
         });
       }
@@ -310,7 +308,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           message: 'Cache cleared',
           data: {
             bytesCleared: clearedBytes,
-            processingTime: Date.now() - startTime
+            processingTime: Date.now() - startTime,
           }
         });
       }
@@ -324,12 +322,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       success: false, 
       error: 'Internal server error',
       details: dev ? (error instanceof Error ? error.message: 'Unknown error') : undefined,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
 
-// Helper functions for enhanced functionality
+// Helper functions for enhanced functionality;
 async function getSystemInfo(): Promise<any> {
   try {
     const os = await import('os');
@@ -340,7 +338,7 @@ async function getSystemInfo(): Promise<any> {
       totalMemory: Math.floor(os.totalmem() / 1024 / 1024), // MB
       freeMemory: Math.floor(os.freemem() / 1024 / 1024), // MB
       cpus: os.cpus().length,
-      uptime: process.uptime()
+      uptime: process.uptime(),
     };
   } catch {
     return { error: 'System info unavailable' };
@@ -352,12 +350,12 @@ async function getDetailedMetrics(manager: NeuralMemoryManager): Promise<any> {
     memoryBreakdown: {
       used: manager.getCurrentMemoryUsage(),
       total: (manager as any).maxMemoryMB, // Access private property
-      utilization: (manager.getCurrentMemoryUsage() / (manager as any).maxMemoryMB) * 100
+      utilization: (manager.getCurrentMemoryUsage() / (manager as any).maxMemoryMB) * 100,
     },
     performance: {
       predictionsCount: (manager as any).usageHistory?.length || 0,
       clustersActive: (manager as any).clusters?.size || 0,
-      neuralNetworkStatus: (manager as any).isTraining ? 'training' : 'idle'
+      neuralNetworkStatus: (manager as any).isTraining ? 'training' : 'idle',
     }
   };
 }
@@ -367,7 +365,7 @@ async function performHealthCheck(manager: NeuralMemoryManager): Promise<any> {
     memoryManager: 'healthy',
     neuralNetwork: 'healthy',
     clustering: 'healthy',
-    predictions: 'healthy'
+    predictions: 'healthy',
   };
 
   try {
@@ -387,14 +385,14 @@ async function performHealthCheck(manager: NeuralMemoryManager): Promise<any> {
     status: overallHealth,
     checks,
     memoryUsage: manager.getCurrentMemoryUsage(),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 }
 
 async function updateManagerConfiguration(manager: NeuralMemoryManager, config: any): Promise<any> {
   const updatedFields: string[] = [];
   
-  // Example configuration updates (extend based on manager capabilities)
+  // Example configuration updates (extend based on manager capabilities);
   if (config.maxMemoryMB && typeof config.maxMemoryMB === 'number') {
     (manager as any).maxMemoryMB = config.maxMemoryMB;
     updatedFields.push('maxMemoryMB');
@@ -403,7 +401,7 @@ async function updateManagerConfiguration(manager: NeuralMemoryManager, config: 
   return {
     updatedFields,
     currentConfig: {
-      maxMemoryMB: (manager as any).maxMemoryMB
+      maxMemoryMB: (manager as any).maxMemoryMB,
     }
   };
 }
@@ -411,7 +409,7 @@ async function updateManagerConfiguration(manager: NeuralMemoryManager, config: 
 async function clearManagerCache(manager: NeuralMemoryManager): Promise<number> {
   const beforeUsage = manager.getCurrentMemoryUsage();
   
-  // Clear various caches (implement based on manager capabilities)
+  // Clear various caches (implement based on manager capabilities);
   try {
     // Clear clusters
     (manager as any).clusters?.clear();

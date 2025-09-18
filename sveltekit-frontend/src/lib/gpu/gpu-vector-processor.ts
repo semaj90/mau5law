@@ -21,21 +21,21 @@ interface VectorProcessResult {
   error?: unknown;
 }
 
-// Explicit GPU run (embedding) result used by higher-level encoder consumption
+// Explicit GPU run (embedding) result used by higher-level encoder consumption;
 export interface GpuRunResult {
   backend: string;
   data: Float32Array;          // transformed values buffer
   stats?: Float32Array;         // optional [mean,std,(energy)?]* layout
   durationMs: number;
   dimension: number;
-  segments: number;
+  segments: number;,
 }
 
 /**
  * GPU Vector Processor
  * Demonstrates consumption of cached shader resources from LODCacheEngine and
  * unified compute dispatch via GPUContextProvider. Falls back gracefully.
- */
+ */;
 export class GPUVectorProcessor {
   private failureWindow: { ts: number; backend: string }[] = [];
   private demotionCooldownMs = 15000;
@@ -46,7 +46,7 @@ export class GPUVectorProcessor {
     webgpu: 384,
     webgl2: 320,
     webgl1: 256,
-    cpu: 192
+    cpu: 192,
   };
   // Stability / upscale tracking
   private successWindow: { ts: number; backend: string }[] = [];
@@ -56,17 +56,17 @@ export class GPUVectorProcessor {
   private upscaleWindowMs = 30000; // consider successes in last 30s
   private hysteresisSuccessCount = 6; // minimum successes after demotion before any upscale attempt
   private successesSinceLastDemotion = 0;
-  // WebGL1 cache for program + geometry (fullscreen quad) + uniform locations
+  // WebGL1 cache for program + geometry (fullscreen quad) + uniform locations;
   private webgl1Cache: {
     program: WebGLProgram;
     vbo: WebGLBuffer;
     attribLocation: number;
     uniforms: { uTex: WebGLUniformLocation | null; uPass: WebGLUniformLocation | null; uTotal: WebGLUniformLocation | null };
-    texSize: number; // last texSize used (for potential viewport reuse)
+    texSize: number; // last texSize used (for potential viewport reuse),
   } | null = null;
   // WebGL1 pooled resources keyed by texSize + floatMode
   private webgl1Pool: Map<string, { free: Array<any>; inUse: number }> = new Map();
-  // Enhanced WebGPU pipeline + buffer cache with dimension-keyed program caching
+  // Enhanced WebGPU pipeline + buffer cache with dimension-keyed program caching;
   private webgpuCache: Map<string, {
     device: GPUDevice;
     pipeline: GPUComputePipeline;
@@ -82,7 +82,7 @@ export class GPUVectorProcessor {
     compileTime: number; // shader compilation time
     uploadTime: number; // buffer upload time
     executeTime: number; // compute execution time
-    readbackTime: number; // result readback time
+    readbackTime: number; // result readback time;
     reduction?: {
       partialPipeline: GPUComputePipeline;
       finalPipeline: GPUComputePipeline;
@@ -93,7 +93,7 @@ export class GPUVectorProcessor {
       finalBindGroup: GPUBindGroup;
       segmentCapacity: number;
       segmentDim: number;
-      cfgBuffer: GPUBuffer;
+      cfgBuffer: GPUBuffer;,
     } | null;
   }> = new Map();
   private disposeWebGPUCache() {
@@ -131,7 +131,7 @@ export class GPUVectorProcessor {
     const existing = this.webgpuCache.get(cacheKey);
     if (existing && existing.capacity >= count) return existing;
 
-    // Dispose old cache entry if exists
+    // Dispose old cache entry if exists;
     if (existing) {
       try {
         existing.inBuffer.destroy();
@@ -160,7 +160,7 @@ export class GPUVectorProcessor {
         @group(0) @binding(0) var<storage, read> inData: array<vec4<f32>;
         @group(0) @binding(1) var<storage, read_write> outData: array<vec4<f32>;
 
-        @compute @workgroup_size(${workgroupSize})
+        @compute @workgroup_size(${workgroupSize});
         fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
           let i = gid.x;
           if (i < ${vec4Count}u) {
@@ -177,7 +177,7 @@ export class GPUVectorProcessor {
         @group(0) @binding(0) var<storage, read> inData: array<f32>;
         @group(0) @binding(1) var<storage, read_write> outData: array<f32>;
 
-        @compute @workgroup_size(${workgroupSize})
+        @compute @workgroup_size(${workgroupSize});
         fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
           let i = gid.x;
           if (i < ${count}u) {
@@ -193,7 +193,7 @@ export class GPUVectorProcessor {
 
     const bindGroupLayout = device.createBindGroupLayout({
       entries: [
-        { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
+        { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },)
         { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } },
       ],
       label: `legal-vector-bgl-${cacheKey}`,
@@ -218,7 +218,7 @@ export class GPUVectorProcessor {
     const bindGroup = device.createBindGroup({
       layout: bindGroupLayout,
       entries: [
-        { binding: 0, resource: { buffer: inBuffer } },
+        { binding: 0, resource: { buffer: inBuffer } },)>
         { binding: 1, resource: { buffer: outBuffer } },
       ],
       label: `legal-bg-${cacheKey}`,
@@ -245,7 +245,7 @@ export class GPUVectorProcessor {
 
     this.webgpuCache.set(cacheKey, cache);
 
-    // Emit telemetry for program caching
+    // Emit telemetry for program caching;
     telemetryBus.publish({
       type: 'gpu.vector.pipeline.compile' as any,
       meta: {
@@ -260,7 +260,7 @@ export class GPUVectorProcessor {
 
     return cache;
   }
-  /** Ensure two-pass mean/std/energy (abs-mean) reduction resources (single workgroup per segment) */
+  /** Ensure two-pass mean/std/energy (abs-mean) reduction resources (single workgroup per segment) */;
   private ensureWebGPUReduction(segmentCount: number, segmentDim: number): boolean {
     if (!this.webgpuCache) return false;
     const cache = this.webgpuCache.values().next().value; // Get first cache entry
@@ -300,12 +300,12 @@ export class GPUVectorProcessor {
       device.queue.writeBuffer(cfgBuffer, 0, cfgArr);
       const partialBG = device.createBindGroup({ layout: partialBGL, entries: [
         { binding: 0, resource: { buffer: cache.outBuffer } },
-        { binding: 1, resource: { buffer: partialBuf } },
+        { binding: 1, resource: { buffer: partialBuf } },)
         { binding: 2, resource: { buffer: cfgBuffer } }
       ]});
       const finalBG = device.createBindGroup({ layout: finalBGL, entries: [
         { binding: 0, resource: { buffer: partialBuf } },
-        { binding: 1, resource: { buffer: statsBuf } },
+        { binding: 1, resource: { buffer: statsBuf } },)
         { binding: 2, resource: { buffer: cfgBuffer } }
       ]});
       (cache as any).reduction = { partialPipeline, finalPipeline, partialBuffer: partialBuf, statsBuffer: statsBuf, statsReadBuffer: statsRead, partialBindGroup: partialBG, finalBindGroup: finalBG, segmentCapacity: segmentCount, segmentDim, cfgBuffer };
@@ -316,7 +316,7 @@ export class GPUVectorProcessor {
       return false;
     }
   }
-  private async runWebGPUCompute(input: Record<string, ArrayBufferView>): Promise<Record<string, ArrayBufferView>> {
+  private async runWebGPUCompute(input: Record<string, ArrayBufferView>): Promise<Record<string, ArrayBufferView> {
     const start = performance.now();
     const firstKey = Object.keys(input)[0];
     if (!firstKey) return {};
@@ -324,7 +324,7 @@ export class GPUVectorProcessor {
     const floatArray =
       arr instanceof Float32Array
         ? arr
-        : new Float32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
+        : new Float32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4);
     const count = floatArray.length;
 
     // Detect dimension for optimal caching
@@ -398,7 +398,7 @@ export class GPUVectorProcessor {
       const readbackStart = performance.now();
       await cache.readBuffer.mapAsync(GPUMapMode.READ);
       const mapped = cache.readBuffer.getMappedRange();
-      const transformed = new Float32Array(mapped.slice(0, count * 4));
+      const transformed = new Float32Array(mapped.slice(0, count * 4);
       cache.readBuffer.unmap();
       const readbackTime = performance.now() - readbackStart;
       cache.readbackTime = readbackTime;
@@ -406,7 +406,7 @@ export class GPUVectorProcessor {
         try {
           await cache.reduction.statsReadBuffer.mapAsync(GPUMapMode.READ);
           const sr = cache.reduction.statsReadBuffer.getMappedRange();
-          const raw = new Float32Array(sr.slice(0));
+          const raw = new Float32Array(sr.slice(0);
           // Raw layout stride 4 floats per segment (mean,std,energy,pad)
           const segments = raw.length / 4;
           const compact = new Float32Array(segments * 3);
@@ -422,7 +422,7 @@ export class GPUVectorProcessor {
 
       const durationMs = performance.now() - start;
 
-      // Enhanced telemetry with detailed timing breakdown
+      // Enhanced telemetry with detailed timing breakdown;
       telemetryBus.publish({
         type: 'gpu.vector.webgpu.compute' as any,
         meta: {
@@ -472,7 +472,7 @@ export class GPUVectorProcessor {
     }
   }
 
-  /** Manual override helpers for dashboard */
+  /** Manual override helpers for dashboard */;
   async forceDemote(reason = 'manual-override') {
     telemetryBus.publish({ type: 'gpu.backend.override' as any, meta: { action: 'force-demote', reason, from: gpuContextProvider.getActiveBackend() } });
     await gpuContextProvider.demoteBackend(reason);
@@ -536,7 +536,7 @@ export class GPUVectorProcessor {
         this.trackFailure(backend);
         if (!classified.retryable || attempt === DEFAULT_RETRY_POLICY.maxAttempts - 1) break;
         const delay = computeBackoff(attempt);
-        await new Promise(r => setTimeout(r, delay));
+        await new Promise(r => setTimeout(r, delay);
       }
     }
 
@@ -554,7 +554,7 @@ export class GPUVectorProcessor {
     return { backend, durationMs, outputs, shaderType, success, error: success ? undefined : lastError };
   }
 
-  /** Convenience wrapper for embedding-generation batch returning structured GpuRunResult */
+  /** Convenience wrapper for embedding-generation batch returning structured GpuRunResult */;
   async runEmbeddingBatch(batched: Float32Array, label = 'embed-batch'): Promise<GpuRunResult | null> {
     const backend = gpuContextProvider.getActiveBackend();
     const expected: 'compute' | 'vertex+fragment' = backend === 'webgpu' ? 'compute' : (backend === 'webgl2' || backend === 'webgl1') ? 'vertex+fragment' : 'compute';
@@ -593,7 +593,7 @@ export class GPUVectorProcessor {
     gpuTelemetryService.recordDemotion({ from: backend, to: target, reason: 'failure-threshold', timestamp: Date.now() });
     this.lastDemotionAt = now;
     this.successesSinceLastDemotion = 0; // reset hysteresis counter
-    // Perform actual backend demotion and shader reload
+    // Perform actual backend demotion and shader reload;
     this.executeBackendDemotion(backend, target, pipeline).catch(err => {
       console.error('❌ Demotion execution failed:', err);
     });
@@ -627,7 +627,7 @@ export class GPUVectorProcessor {
           toDimension: this.embeddingDimension,
           backend: newBackend,
           previousBackend,
-          reason: 'backend-demotion'
+          reason: 'backend-demotion',
         }
       });
       gpuTelemetryService.record({
@@ -635,7 +635,7 @@ export class GPUVectorProcessor {
         backend: newBackend,
         durationMs: 0,
         success: true,
-        shaderType: 'dimension-adapt'
+        shaderType: 'dimension-adapt',
       } as any);
     }
   }
@@ -664,7 +664,7 @@ export class GPUVectorProcessor {
 
     telemetryBus.publish({ type: 'lod.embed.upscale.attempt' as any, meta: { backend: currentBackend, stableCount, canPromoteBackend, canIncreaseDimension } });
 
-    // Prefer dimension restoration first (cheap) then backend promotion
+    // Prefer dimension restoration first (cheap) then backend promotion;
     if (canIncreaseDimension) {
       const oldDim = this.embeddingDimension;
       // Incrementally nudge dimension towards tier target (halfway step)
@@ -709,14 +709,14 @@ export class GPUVectorProcessor {
 
   getCurrentEmbeddingDimension() { return this.embeddingDimension; }
 
-  // WebGL2 transform feedback implementation with simple program+buffer caching
+  // WebGL2 transform feedback implementation with simple program+buffer caching;
   private webgl2Cache: {
     program: WebGLProgram;
     vao: WebGLVertexArrayObject;
     attribLoc: number;
     uniforms: { uScale: WebGLUniformLocation | null; uPass: WebGLUniformLocation | null };
     outBuffer: WebGLBuffer; // base sized buffer reused / resized
-    capacity: number; // float capacity
+    capacity: number; // float capacity,
   } | null = null;
   private disposeWebGL2Cache() {
     try {
@@ -754,7 +754,7 @@ export class GPUVectorProcessor {
     this.webgl2Cache = { program: prog, vao, attribLoc, uniforms, outBuffer, capacity: neededFloats };
     return this.webgl2Cache;
   }
-  private async simulateWebGL2TransformFeedback(_shaders: ShaderResources, input: Record<string, ArrayBufferView>): Promise<Record<string, ArrayBufferView>> {
+  private async simulateWebGL2TransformFeedback(_shaders: ShaderResources, input: Record<string, ArrayBufferView>): Promise<Record<string, ArrayBufferView> {
     const start = performance.now();
     const hybrid = (gpuContextProvider as any).getHybridContext?.();
     const ctxType = hybrid?.getActiveContextType?.();
@@ -766,7 +766,7 @@ export class GPUVectorProcessor {
     const firstKey = Object.keys(input)[0];
     if (!firstKey) return {};
     const arr = input[firstKey];
-    const floatArray = arr instanceof Float32Array ? arr : new Float32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
+    const floatArray = arr instanceof Float32Array ? arr : new Float32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4);
     const count = floatArray.length;
     try {
       const cache = this.ensureWebGL2Cache(gl, count);
@@ -788,7 +788,7 @@ export class GPUVectorProcessor {
       gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, cache.outBuffer);
 
       gl.enable(gl.RASTERIZER_DISCARD);
-      const passes = 2; // simple multi-pass accumulation
+      const passes = 2; // simple multi-pass accumulation;
       for (let p = 0; p < passes; p++) {
         if (cache.uniforms.uScale) gl.uniform1f(cache.uniforms.uScale, 1.0 + p * 0.001);
         if (cache.uniforms.uPass) gl.uniform1f(cache.uniforms.uPass, p);
@@ -818,8 +818,8 @@ export class GPUVectorProcessor {
     }
   }
 
-  // Simulation of WebGL1 framebuffer/texture pipeline (placeholder)
-  private async simulateWebGL1Framebuffer(_shaders: ShaderResources, input: Record<string, ArrayBufferView>): Promise<Record<string, ArrayBufferView>> {
+  // Simulation of WebGL1 framebuffer/texture pipeline (placeholder);
+  private async simulateWebGL1Framebuffer(_shaders: ShaderResources, input: Record<string, ArrayBufferView>): Promise<Record<string, ArrayBufferView> {
     const start = performance.now();
     try {
       const hybrid = (gpuContextProvider as any).getHybridContext?.();
@@ -839,7 +839,7 @@ export class GPUVectorProcessor {
       const firstKey = Object.keys(input)[0];
       if (!firstKey) return {};
       const arr = input[firstKey];
-      const floatArray = arr instanceof Float32Array ? arr : new Float32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
+      const floatArray = arr instanceof Float32Array ? arr : new Float32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4);
       const valueCount = floatArray.length;
 
       // Decide texture dimensions (pack 4 floats per RGBA pixel if float textures supported)
@@ -853,7 +853,7 @@ export class GPUVectorProcessor {
       const extRTTFloat = gl.getExtension('WEBGL_color_buffer_float') || gl.getExtension('EXT_color_buffer_half_float');
       const canFloatRTT = !!extTexFloat && !!extRTTFloat;
 
-      // Create helper to build texture
+      // Create helper to build texture;
       const createTexture = (data: ArrayBufferView | null, float: boolean) => {
         const t = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, t);
@@ -879,7 +879,7 @@ export class GPUVectorProcessor {
         // Simple byte quantization: clamp [-1,1] -> [0,255]
         const bytes = new Uint8Array(totalPixels * 4);
         for (let i = 0; i < valueCount; i++) {
-          const v = Math.max(-1, Math.min(1, floatArray[i]));
+          const v = Math.max(-1, Math.min(1, floatArray[i]);
           bytes[i] = Math.round((v * 0.5 + 0.5) * 255);
         }
         initialData = bytes;
@@ -893,7 +893,7 @@ export class GPUVectorProcessor {
       else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, texSize, texSize, 0, gl.RGBA, gl.UNSIGNED_BYTE, initialData as any);
       telemetryBus.publish({ type: 'gpu.vector.webgl1.pool' as any, meta: { action: 'borrow', key: `${texSize}-${floatMode}`, created } });
 
-      // Retrieve or build cached program + quad
+      // Retrieve or build cached program + quad;
       if (!this.webgl1Cache) {
         const vsSrc = `attribute vec2 a_pos;varying vec2 v_uv;void main(){v_uv=(a_pos+1.0)*0.5;gl_Position=vec4(a_pos,0.0,1.0);}`;
         const fsSrc = `precision highp float;varying vec2 v_uv;uniform sampler2D u_tex;uniform float u_pass;uniform float u_total;void main(){vec4 c=texture2D(u_tex,v_uv);c = c* (1.0 + 0.002*u_pass) + 0.0005*vec4(sin(u_pass+v_uv.x),cos(u_pass+v_uv.y),sin(u_pass*0.5),1.0);gl_FragColor=c;}`;
@@ -1029,7 +1029,7 @@ export class GPUVectorProcessor {
     if (!bucket) return;
     bucket.free.push({ textures, framebuffers });
     bucket.inUse = Math.max(0, bucket.inUse - 1);
-    // Optional eviction policy: cap free list size
+    // Optional eviction policy: cap free list size;
     if (bucket.free.length > 6) {
       const evict = bucket.free.splice(0, bucket.free.length - 6);
       const hybrid = (gpuContextProvider as any).getHybridContext?.();
@@ -1042,8 +1042,8 @@ export class GPUVectorProcessor {
             : null;
       if (gl) {
         evict.forEach(e => {
-          e.textures.forEach(t => gl.deleteTexture(t));
-          e.framebuffers.forEach(f => gl.deleteFramebuffer(f));
+          e.textures.forEach(t => gl.deleteTexture(t);
+          e.framebuffers.forEach(f => gl.deleteFramebuffer(f);
         });
       }
     }
@@ -1061,8 +1061,8 @@ export class GPUVectorProcessor {
     if (gl) {
       this.webgl1Pool.forEach(bucket => {
         bucket.free.forEach(e => {
-          e.textures.forEach(t => gl.deleteTexture(t));
-          e.framebuffers.forEach(f => gl.deleteFramebuffer(f));
+          e.textures.forEach(t => gl.deleteTexture(t);
+          e.framebuffers.forEach(f => gl.deleteFramebuffer(f);
         });
       });
     }
@@ -1073,7 +1073,7 @@ export class GPUVectorProcessor {
     return {
       cachedPipelines: Array.from(((lodCacheEngine as any).shaderResources?.keys?.() || []) as any),
       recentTelemetry: gpuTelemetryService.getRecent(10),
-      aggregates: gpuTelemetryService.getAggregates()
+      aggregates: gpuTelemetryService.getAggregates(),
     };
   }
 }

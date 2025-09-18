@@ -8,37 +8,33 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:svelte/recommended'
+    'plugin:@typescript-eslint/recommended'
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
-  overrides: [
-    {
-      files: ['*.svelte'],
-      parser: 'svelte-eslint-parser',
-      parserOptions: {
-        parser: '@typescript-eslint/parser',
-      },
-    },
-  ],
   parserOptions: {
-    ecmaVersion: 2020,
+    ecmaVersion: 'latest',
     sourceType: 'module',
+    extraFileExtensions: ['.svelte']
+  },
+  plugins: ['@typescript-eslint'],
+  rules: {
+    '@typescript-eslint/no-unused-vars': ['error', {
+      varsIgnorePattern: '^\\$',
+      argsIgnorePattern: '^_'
+    }],
+    // Disable for Svelte 5 runes
+    'no-undef': 'off'
   },
   ignorePatterns: [
-    '*.md', 
-    'dist', 
-    'build', 
-    '.svelte-kit', 
+    '*.md',
+    'dist',
+    'build',
+    '.svelte-kit',
     'node_modules',
     'js_tests/**/*',
     'playwright-report/**/*',
-    '*.js',
     'drizzle.config.ts',
-    'src/lib/**/*',
     'src/hooks.client.ts',
-    'src/routes/**/*',
     'src/service-worker.ts',
     'src/test-setup.ts',
     'tests/**/*',
@@ -47,6 +43,8 @@ module.exports = {
     'vite.config.ts',
     'vitest.config.ts',
     'uno.config.ts',
-    'unocss.config.ts'
+    'unocss.config.ts',
+    // Ignore Svelte files to avoid plugin circular reference issues
+    '*.svelte'
   ],
 };

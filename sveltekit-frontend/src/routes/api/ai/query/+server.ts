@@ -31,13 +31,13 @@ const querySchema = z.object({
     temperature: z.number().min(0).max(2).optional(),
     maxTokens: z.number().min(1).max(4000).optional(),
     includeContext: z.boolean().optional(),
-    saveQuery: z.boolean().optional()
+    saveQuery: z.boolean().optional(),
   }).optional()
 });
 
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.user) {
       return json({ error: 'Authentication required' }, { status: 401 });
     }
@@ -68,26 +68,24 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     console.error('AI query API error:', error);
 
     if (error instanceof z.ZodError) {
-      return json(
-        { 
+      return json({ 
           error: 'Validation failed', 
-          details: error.errors 
-        }, 
+          details: error.errors ,
+        }, )
         { status: 400 }
       );
     }
 
-    return json(
-      { 
+    return json({ 
         error: 'AI query processing failed',
-        message: error instanceof Error ? error.message: 'Unknown error'
-      }, 
+        message: error instanceof Error ? error.message: 'Unknown error',
+      }, )
       { status: 500 }
     );
   }
 };
 
-// Get similar queries for suggestions
+// Get similar queries for suggestions;
 const originalGETHandler: RequestHandler = async ({ url, locals }) => {
   try {
     if (!locals.user) {
@@ -112,14 +110,14 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     return json({
       success: true,
       data: {
-        suggestions: similarQueries
+        suggestions: similarQueries,
       }
     });
 
   } catch (error: any) {
     console.error('Similar queries API error:', error);
     return json(
-      { error: 'Failed to get query suggestions' }, 
+      { error: 'Failed to get query suggestions' }, )
       { status: 500 }
     );
   }

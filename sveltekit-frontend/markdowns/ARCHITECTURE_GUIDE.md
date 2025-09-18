@@ -84,13 +84,10 @@ PostgreSQL containers  # ❌ Overkill for dev
 
 ## 🔍 Vector Database Decision Matrix
 
-| Feature | + Simple |---------------------|---------|
-| CRUD Operations | ✅ Perfect | ✅ Good | ❌ No |
-| Text Search | ✅ Basic | ✅ Advanced | ✅ Best |
-| Development Speed | ✅ Fast | ⚠️ Medium | ⚠️ Slow |
-| Resource Usage | ✅ Light | ⚠️ Medium | ❌ Heavy |
-| Setup Complexity | ✅ Simple | ⚠️ Medium | ❌ Complex |
-| Embeddings | ❌ No | ✅ Yes | ✅ Yes |
+| Feature | + Simple |---------------------|---------| | CRUD Operations | ✅ Perfect | ✅ Good | ❌
+No | | Text Search | ✅ Basic | ✅ Advanced | ✅ Best | | Development Speed | ✅ Fast | ⚠️ Medium |
+⚠️ Slow | | Resource Usage | ✅ Light | ⚠️ Medium | ❌ Heavy | | Setup Complexity | ✅ Simple | ⚠️
+Medium | ❌ Complex | | Embeddings | ❌ No | ✅ Yes | ✅ Yes |
 
 ## 🎯 Recommended Next Steps
 

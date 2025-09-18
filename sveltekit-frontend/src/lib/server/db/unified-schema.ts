@@ -18,7 +18,7 @@ import {
 import { vector } from "pgvector/drizzle-orm";
 import { z } from "zod";
 
-// Zod schemas for type-safe JSON fields
+// Zod schemas for type-safe JSON fields;
 export const UserSettingsExtSchema = z.object({
   theme: z.enum(["light", "dark", "system"]).default("system"),
   notifications: z.boolean().default(true),
@@ -75,7 +75,7 @@ export const users = pgTable("users", {
 
   // Enhanced settings with proper typing
   settings: jsonb("settings")
-    .$type<UserSettingsExtType>()
+    .$type<UserSettingsExtType>();
     .default({
       theme: "system",
       notifications: true,
@@ -179,7 +179,7 @@ export const themes = pgTable("themes", {
   borderRadius: jsonb("border_radius").notNull(), // Border radius values
   shadows: jsonb("shadows").notNull(), // Box shadow definitions
   isSystem: boolean("is_system").default(false).notNull(), // Built-in vs user themes
-  isPublic: boolean("is_public").default(false).notNull(), // Shareable themes
+  isPublic: boolean("is_public").default(false).notNull(), // Shareable themes;
   createdBy: uuid("created_by").references(() => users.id, {
     onDelete: "cascade",
   }),
@@ -272,7 +272,7 @@ export const criminals = pgTable("criminals", {
 // === CASE MANAGEMENT ===
 
 export const cases = pgTable(
-  'cases',
+  'cases',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
     caseNumber: varchar('case_number', { length: 50 }).notNull().unique(),
@@ -354,7 +354,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
   profileImageUrl: text("profile_image_url"),
 
   // The structured "Who, What, Why, How" profile data
-  profileData: jsonb("profile_data")
+  profileData: jsonb("profile_data");
     .default({
       who: "",
       what: "",
@@ -384,7 +384,7 @@ export const personsOfInterest = pgTable("persons_of_interest", {
 // === EVIDENCE MANAGEMENT ===
 
 export const evidence = pgTable(
-  "evidence",
+  "evidence",);
   {
     id: uuid("id").primaryKey().defaultRandom(),
     caseId: uuid("case_id").references(() => cases.id, { onDelete: "cascade" }),
@@ -590,7 +590,7 @@ export const reports = pgTable("reports", {
 // === LEGAL DOCUMENTS ===
 
 export const legalDocuments = pgTable(
-  "legal_documents",
+  "legal_documents",);
   {
     id: text("id")
       .primaryKey()
@@ -607,7 +607,7 @@ export const legalDocuments = pgTable(
 
     // Type-safe JSON fields with Zod validation
     metadata: jsonb("metadata")
-      .$type<DocumentMetadataExt>()
+      .$type<DocumentMetadataExt>();
       .default({
         keywords: [],
         customFields: Record<string, any>,
@@ -618,7 +618,7 @@ export const legalDocuments = pgTable(
     citations: jsonb("citations").$type<Citation[]>().default([]).notNull(),
 
     autoSaveData: jsonb("auto_save_data")
-      .$type<AutoSaveData>()
+      .$type<AutoSaveData>();
       .default({
         content: "",
         citations: [],
@@ -664,7 +664,7 @@ export const legalDocuments = pgTable(
 // === NOTES ===
 
 export const notes = pgTable(
-  "notes",
+  "notes",);
   {
     id: text("id")
       .primaryKey()
@@ -719,7 +719,7 @@ export const notes = pgTable(
 // === SAVED CITATIONS ===
 
 export const savedCitations = pgTable(
-  "saved_citations",
+  "saved_citations",);
   {
     id: text("id")
       .primaryKey()
@@ -901,14 +901,14 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   legalDocuments: many(legalDocuments),
   notes: many(notes),
   savedCitations: many(savedCitations),
-}));
+});
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
     references: [users.id],
   }),
-}));
+});
 
 export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
@@ -927,7 +927,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   personsOfInterest: many(personsOfInterest),
   legalDocuments: many(legalDocuments),
   notes: many(notes),
-}));
+});
 
 export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
@@ -936,7 +936,7 @@ export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   }),
   cases: many(caseCriminals),
   evidence: many(evidence),
-}));
+});
 
 export const caseCriminalsRelations = relations(caseCriminals, ({ one }) => ({
   case: one(cases, {
@@ -951,7 +951,7 @@ export const caseCriminalsRelations = relations(caseCriminals, ({ one }) => ({
     fields: [caseCriminals.addedBy],
     references: [users.id],
   }),
-}));
+});
 
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
@@ -962,14 +962,14 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     fields: [evidence.caseId],
     references: [cases.id],
   }),
-}));
+});
 
 export const themesRelations = relations(themes, ({ one }) => ({
   createdBy: one(users, {
     fields: [themes.createdBy],
     references: [users.id],
   }),
-}));
+});
 
 export const reportsRelations = relations(reports, ({ one }) => ({
   createdBy: one(users, {
@@ -984,14 +984,14 @@ export const reportsRelations = relations(reports, ({ one }) => ({
     fields: [reports.generatedBy],
     references: [users.id],
   }),
-}));
+});
 
 export const citationPointsRelations = relations(citationPoints, ({ one }) => ({
   createdBy: one(users, {
     fields: [citationPoints.createdBy],
     references: [users.id],
   }),
-}));
+});
 
 export const attachmentVerificationsRelations = relations(
   attachmentVerifications,
@@ -1026,7 +1026,7 @@ export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
     fields: [legalDocuments.userId],
     references: [users.id],
   }),
-}));
+});
 
 export const notesRelations = relations(notes, ({ one }) => ({
   case: one(cases, {
@@ -1037,11 +1037,11 @@ export const notesRelations = relations(notes, ({ one }) => ({
     fields: [notes.userId],
     references: [users.id],
   }),
-}));
+});
 
 // Pattern Analysis Tables - pgvector integration for user pattern discovery
 export const userDocuments = pgTable(
-  "user_documents",
+  "user_documents",);
   {
     id: serial("id").primaryKey(),
     userId: text("user_id").notNull(),
@@ -1062,7 +1062,7 @@ export const userDocuments = pgTable(
 );
 
 export const userPatterns = pgTable(
-  "user_patterns",
+  "user_patterns",);
   {
     id: serial("id").primaryKey(),
     userId: text("user_id").notNull(),
@@ -1085,7 +1085,7 @@ export const userPatterns = pgTable(
 );
 
 export const patternSessions = pgTable(
-  "pattern_sessions",
+  "pattern_sessions",);
   {
     id: serial("id").primaryKey(),
     userId: text("user_id").notNull(),
@@ -1100,14 +1100,14 @@ export const patternSessions = pgTable(
   })
 );
 
-// Relations for pattern analysis tables
+// Relations for pattern analysis tables;
 export const userDocumentsRelations = relations(userDocuments, ({ one, many }) => ({
   user: one(users, {
     fields: [userDocuments.userId],
     references: [users.id],
   }),
   patterns: many(userPatterns),
-}));
+});
 
 export const userPatternsRelations = relations(userPatterns, ({ one }) => ({
   user: one(users, {
@@ -1118,11 +1118,11 @@ export const userPatternsRelations = relations(userPatterns, ({ one }) => ({
     fields: [userPatterns.representativeDocId],
     references: [userDocuments.id],
   }),
-}));
+});
 
 export const patternSessionsRelations = relations(patternSessions, ({ one }) => ({
   user: one(users, {
     fields: [patternSessions.userId],
     references: [users.id],
   }),
-}));
+});

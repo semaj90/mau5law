@@ -1,4 +1,4 @@
-// Minimal SvelteKit env shims for $env/static/private and $env/static/public keys used in this repo.
+// Minimal SvelteKit env shims for $env/static/private and $env/static/public keys used in this repo.;
 declare module '$env/static/private' {
   export const DATABASE_URL: string | undefined;
   export const QDRANT_URL: string | undefined;

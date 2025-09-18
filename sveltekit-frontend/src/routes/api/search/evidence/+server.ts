@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     switch (searchMode) {
       case "text":
-        // Fast metadata search
+        // Fast metadata search;
         results = await searchEvidenceText(query, {
           caseId,
           evidenceType,
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async ({ url }) => {
         break;
 
       case "content":
-        // Deep content search using Qdrant
+        // Deep content search using Qdrant;
         results = await searchEvidenceContent(query, {
           caseId,
           evidenceType,
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
         break;
 
       case "semantic":
-        // PostgreSQL vector search
+        // PostgreSQL vector search;
         results = await searchEvidenceSemantic(query, {
           caseId,
           evidenceType,
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
       case "hybrid":
       default:
-        // Best of all worlds
+        // Best of all worlds;
         results = await searchEvidenceHybrid(query, {
           caseId,
           evidenceType,
@@ -78,7 +78,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-// Fast text search on evidence metadata
+// Fast text search on evidence metadata;
 async function searchEvidenceText(query: string, options: any): Promise<any> {
   const { caseId, evidenceType, limit } = options;
   const whereConditions = [];
@@ -97,7 +97,7 @@ async function searchEvidenceText(query: string, options: any): Promise<any> {
   if (evidenceType)
     whereConditions.push(sql`${evidence.evidenceType} = ${evidenceType}`);
 
-  return await db
+  return await db;
     .select({
       id: evidence.id,
       caseId: evidence.caseId,
@@ -113,16 +113,16 @@ async function searchEvidenceText(query: string, options: any): Promise<any> {
       searchType: sql<string>`'text'`,
     })
     .from(evidence)
-    .where(and(...whereConditions))
-    .orderBy(desc(evidence.uploadedAt))
+    .where(and(...whereConditions)
+    .orderBy(desc(evidence.uploadedAt)
     .limit(limit);
 }
-// Deep content search using Qdrant
+// Deep content search using Qdrant;
 async function searchEvidenceContent(query: string, options: any): Promise<any> {
   const { caseId, evidenceType, limit } = options;
 
   try {
-    // Search Qdrant for document content
+    // Search Qdrant for document content;
     const qdrantResults = await searchEvidence(query, {
       limit,
       filter: {
@@ -141,7 +141,7 @@ async function searchEvidenceContent(query: string, options: any): Promise<any> 
     if (evidenceIds.length === 0) {
       return [];
     }
-    const evidenceRecords = await db
+    const evidenceRecords = await db;
       .select({
         id: evidence.id,
         caseId: evidence.caseId,
@@ -157,7 +157,7 @@ async function searchEvidenceContent(query: string, options: any): Promise<any> 
       .from(evidence)
       .where(sql`${evidence.id} = ANY(${evidenceIds})`);
 
-    // Merge with similarity scores
+    // Merge with similarity scores;
     return evidenceRecords.map((record) => {
       const qdrantMatch = qdrantResults.find(
         (r) => r.payload.evidence_id === record.id,
@@ -174,7 +174,7 @@ async function searchEvidenceContent(query: string, options: any): Promise<any> 
     return await searchEvidenceSemantic(query, options);
   }
 }
-// PostgreSQL vector search
+// PostgreSQL vector search;
 async function searchEvidenceSemantic(query: string, options: any): Promise<any> {
   const { caseId, evidenceType, limit } = options;
   const queryEmbedding = await generateEmbedding(query);
@@ -185,7 +185,7 @@ async function searchEvidenceSemantic(query: string, options: any): Promise<any>
   if (evidenceType)
     whereConditions.push(sql`${evidence.evidenceType} = ${evidenceType}`);
 
-  return await db
+  return await db;
     .select({
       id: evidence.id,
       caseId: evidence.caseId,
@@ -201,11 +201,11 @@ async function searchEvidenceSemantic(query: string, options: any): Promise<any>
       searchType: sql<string>`'semantic'`,
     })
     .from(evidence)
-    .where(and(...whereConditions))
+    .where(and(...whereConditions)
     .orderBy(evidence.uploadedAt)
     .limit(limit);
 }
-// Hybrid search combining all methods
+// Hybrid search combining all methods;
 async function searchEvidenceHybrid(query: string, options: any): Promise<any> {
   const { limit } = options;
 
@@ -223,7 +223,7 @@ async function searchEvidenceHybrid(query: string, options: any): Promise<any> {
   const allResults: any[] = [];
   const seenIds = new Set<string>();
 
-  // Merge results with deduplication
+  // Merge results with deduplication;
   const addResults = (results: any[], boost = 1) => {
     if (results) {
       results.forEach((result) => {
@@ -248,9 +248,9 @@ async function searchEvidenceHybrid(query: string, options: any): Promise<any> {
   // Sort by similarity and limit
   return allResults
     .sort((a, b) => b.similarity - a.similarity)
-    .slice(0, limit)
+    .slice(0, limit);
     .map((result) => ({
       ...result,
       searchType: "hybrid" as const,
-    }));
+    });
 }

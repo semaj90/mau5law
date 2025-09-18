@@ -26,7 +26,7 @@ import { sql } from 'drizzle-orm';
 
 /**
  * Primary shader cache entries with source code, compiled binaries, and metadata
- */
+ */;
 export const shaderCacheEntries = pgTable('shader_cache_entries', {
   id: uuid('id').defaultRandom().primaryKey(),
   
@@ -63,7 +63,7 @@ export const shaderCacheEntries = pgTable('shader_cache_entries', {
   
   // MinIO integration for large assets
   minioPath: text('minio_path'), // Optional path for large shader assets
-  assetBundle: jsonb('asset_bundle')
+  assetBundle: jsonb('asset_bundle'),
 }, (table) => ({
   // Primary indexes for fast retrieval
   shaderKeyIdx: index('shader_key_idx').on(table.shaderKey),
@@ -82,11 +82,11 @@ export const shaderCacheEntries = pgTable('shader_cache_entries', {
   // Legal context indexes (GIN for jsonb)
   legalContextIdx: index('legal_context_gin_idx').using('gin', table.legalContext),
   semanticTagsIdx: index('semantic_tags_gin_idx').using('gin', table.semanticTags)
-}));
+});
 
 /**
  * User shader access patterns for predictive preloading
- */
+ */;
 export const shaderUserPatterns = pgTable('shader_user_patterns', {
   id: serial('id').primaryKey(),
   
@@ -124,7 +124,7 @@ export const shaderUserPatterns = pgTable('shader_user_patterns', {
   actionVector: vector('action_vector', { dimensions: 32 }), // Action embedding
   reward: real('reward'), // Computed reward for this access
   
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow();
 }, (table) => ({
   // User and session indexes
   userIdIdx: index('user_patterns_user_id_idx').on(table.userId),
@@ -144,12 +144,12 @@ export const shaderUserPatterns = pgTable('shader_user_patterns', {
   // Performance indexes
   cacheHitIdx: index('cache_hit_idx').on(table.cacheHit),
   latencyIdx: index('load_latency_idx').on(table.loadLatencyMs),
-  rewardIdx: index('reward_idx').on(table.reward)
-}));
+  rewardIdx: index('reward_idx').on(table.reward),
+});
 
 /**
  * Predictive preloading rules learned by the reinforcement system
- */
+ */;
 export const shaderPreloadRules = pgTable('shader_preload_rules', {
   id: serial('id').primaryKey(),
   
@@ -179,7 +179,7 @@ export const shaderPreloadRules = pgTable('shader_preload_rules', {
   learningRate: real('learning_rate').default(0.01),
   lastTriggered: timestamp('last_triggered', { withTimezone: true }),
   lastUpdated: timestamp('last_updated', { withTimezone: true }).defaultNow(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow();
 }, (table) => ({
   ruleKeyIdx: index('rule_key_idx').on(table.ruleKey),
   ruleTypeIdx: index('rule_type_idx').on(table.ruleType),
@@ -193,12 +193,12 @@ export const shaderPreloadRules = pgTable('shader_preload_rules', {
   
   // Performance indexes
   triggerCountIdx: index('trigger_count_idx').on(table.triggerCount),
-  lastTriggeredIdx: index('last_triggered_idx').on(table.lastTriggered)
-}));
+  lastTriggeredIdx: index('last_triggered_idx').on(table.lastTriggered),
+});
 
 /**
  * Shader dependency graph for intelligent preloading
- */
+ */;
 export const shaderDependencies = pgTable('shader_dependencies', {
   id: serial('id').primaryKey(),
   
@@ -220,18 +220,18 @@ export const shaderDependencies = pgTable('shader_dependencies', {
   lastCoUsed: timestamp('last_co_used', { withTimezone: true }),
   
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow();
 }, (table) => ({
   parentChildIdx: index('parent_child_idx').on(table.parentShaderId, table.childShaderId),
   dependencyTypeIdx: index('dependency_type_idx').on(table.dependencyType),
   dependencyStrengthIdx: index('dependency_strength_idx').on(table.dependencyStrength),
   loadOrderIdx: index('load_order_idx').on(table.loadOrder),
-  coUsageFrequencyIdx: index('co_usage_frequency_idx').on(table.coUsageFrequency)
-}));
+  coUsageFrequencyIdx: index('co_usage_frequency_idx').on(table.coUsageFrequency),
+});
 
 /**
  * Real-time shader compilation queue for background processing
- */
+ */;
 export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
   id: serial('id').primaryKey(),
   
@@ -264,7 +264,7 @@ export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
   maxRetries: integer('max_retries').default(3),
   nextRetryAt: timestamp('next_retry_at', { withTimezone: true }),
   
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow();
 }, (table) => ({
   queueKeyIdx: index('queue_key_idx').on(table.queueKey),
   statusIdx: index('queue_status_idx').on(table.status),
@@ -276,7 +276,7 @@ export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
   // Composite indexes for queue processing
   statusPriorityIdx: index('status_priority_idx').on(table.status, table.priority),
   pendingQueueIdx: index('pending_queue_idx').on(table.status, table.priority, table.queuedAt)
-}));
+});
 
 // ============================================================================
 // VIEWS FOR COMMON QUERIES
@@ -285,7 +285,7 @@ export const shaderCompilationQueue = pgTable('shader_compilation_queue', {
 /**
  * Materialized view for fast shader recommendations
  * Updated periodically by background jobs
- */
+ */;
 export const shaderRecommendationsView = pgTable('shader_recommendations_view', {
   id: serial('id').primaryKey(),
   userId: text('user_id').notNull(),
@@ -305,13 +305,13 @@ export const shaderRecommendationsView = pgTable('shader_recommendations_view', 
   // Performance tracking
   timesRecommended: integer('times_recommended').default(0),
   timesAccepted: integer('times_accepted').default(0),
-  averageUserSatisfaction: real('average_user_satisfaction')
+  averageUserSatisfaction: real('average_user_satisfaction'),
 }, (table) => ({
   userRecommendationIdx: index('user_recommendation_idx').on(table.userId, table.recommendationType),
   confidenceIdx: index('recommendation_confidence_idx').on(table.confidence),
   validityIdx: index('recommendation_validity_idx').on(table.validUntil),
-  shaderKeyIdx: index('recommendation_shader_key_idx').on(table.shaderKey)
-}));
+  shaderKeyIdx: index('recommendation_shader_key_idx').on(table.shaderKey),
+});
 
 // ============================================================================
 // EXPORT TYPES FOR TYPESCRIPT

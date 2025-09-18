@@ -22,15 +22,15 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
   const session = typedLocals.session;
   const user = typedLocals.user;
   
-  // For development, create a mock user if no session exists
+  // For development, create a mock user if no session exists;
   if (!session || !user) {
-    // Set a development session cookie for consistency
+    // Set a development session cookie for consistency;
     cookies.set('dev_session', 'dev_user_session_' + Date.now(), {
       path: '/',
       httpOnly: false,
       secure: false,
       sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7 // 7 days
+      maxAge: 60 * 60 * 24 * 7 // 7 days,
     });
 
     const mockUser = {
@@ -54,15 +54,15 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         emailVerified: true,
         metadata: Record<string, any>,
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
       activity: {
         totalCases: 5,
         activeCases: 2,
-        totalEvidence: 15
+        totalEvidence: 15,
       },
       authenticated: true,
-      loadSource: 'development'
+      loadSource: 'development',
     };
 
     return createSSRResponse(mockUser);
@@ -90,12 +90,12 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
       return createSSRResponse({
         ...cachedUserData.content,
         authenticated: true,
-        loadSource: 'cache'
+        loadSource: 'cache',
       }, { cached: true });
     }
 
     // Get comprehensive user data from database
-    const [userProfile, userStats] = await Promise.all([
+    const [userProfile, userStats] = await Promise.all([;
       db.select({
         id: users.id,
         email: users.email,
@@ -115,7 +115,7 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         emailVerified: users.email_verified,
         metadata: users.metadata,
         createdAt: users.created_at,
-        updatedAt: users.updated_at
+        updatedAt: users.updated_at,
       }).from(users).where(eq(users.id, userId)).limit(1),
 
       db.select({
@@ -123,7 +123,7 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         // cast to any to avoid strict Drizzle SQL typing during migration shimming
         activeCases: (sql<number>`COUNT(CASE WHEN ${cases.status} IN ('open', 'active') THEN 1 END)` as any),
         totalEvidence: (sql<number>`(SELECT COUNT(*) FROM ${evidence} WHERE ${evidence.created_by} = ${userId})` as any)
-      }).from(cases).where(eq(cases.created_by, userId))
+      }).from(cases).where(eq(cases.created_by, userId)
     ]);
 
     const profile = userProfile[0];
@@ -154,21 +154,21 @@ export const GET: RequestHandler = withSSRHandler(async ({ locals, cookies }) =>
         emailVerified: profile.emailVerified,
         metadata: profile.metadata || {},
         createdAt: profile.createdAt,
-        updatedAt: profile.updatedAt
+        updatedAt: profile.updatedAt,
       },
       activity: {
         totalCases: stats?.totalCases || 0,
         activeCases: stats?.activeCases || 0,
-        totalEvidence: stats?.totalEvidence || 0
+        totalEvidence: stats?.totalEvidence || 0,
       },
       authenticated: true,
-      loadSource: 'database'
+      loadSource: 'database',
     };
 
-    // Cache the user data for future requests
+    // Cache the user data for future requests;
     await cognitiveCache.storeJsonbDocument(cacheKey, userData, {
       documentType: 'user-profile',
-      cached: true
+      cached: true,
     });
 
     return createSSRResponse(userData);

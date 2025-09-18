@@ -10,7 +10,7 @@ export class TextureStreamingService {
       CHR_ROM: new Map(),    // Pattern tiles (8x8)
       PRG_ROM: new Map(),    // Program data
       SRAM: new Map(),       // Save RAM for persistent cache
-      VRAM: new Map()        // Video RAM for active textures
+      VRAM: new Map()        // Video RAM for active textures,
     };
     this.maxCacheSize = 1000; // Nintendo memory constraints
     this.isInitialized = false;
@@ -61,7 +61,7 @@ export class TextureStreamingService {
       lodLevel,
       data: compress ? this.compressTexture(data) : data,
       timestamp: Date.now(),
-      accessCount: 0
+      accessCount: 0,
     };
 
     // Store in appropriate memory bank
@@ -71,7 +71,7 @@ export class TextureStreamingService {
     this.lodManager.registerTexture(textureId, {
       originalSize: data.length,
       lodLevel,
-      priority: options.priority || 'normal'
+      priority: options.priority || 'normal',
     });
 
     console.log(`🎮 Streamed texture ${textureId} to ${bankRegion} (LOD ${lodLevel})`);
@@ -102,7 +102,7 @@ export class TextureStreamingService {
   // Nintendo-style bank switching when memory is full
   performBankSwitch(bankRegion) {
     const bank = this.memoryBanks[bankRegion];
-    const entries = Array.from(bank.entries());
+    const entries = Array.from(bank.entries();
     
     // Sort by access count and age (LRU + Nintendo priority system)
     entries.sort((a, b) => {
@@ -138,7 +138,7 @@ export class TextureStreamingService {
       ...texture,
       lodLevel: targetLOD,
       data: adjustedData,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 
@@ -176,7 +176,7 @@ export class TextureStreamingService {
       type: 'pattern',
       data: compressed,
       patterns,
-      originalLength: text.length
+      originalLength: text.length,
     };
   }
 
@@ -200,7 +200,7 @@ export class TextureStreamingService {
     return {
       type: 'rle',
       data: new Uint8Array(compressed),
-      originalLength: data.length
+      originalLength: data.length,
     };
   }
 
@@ -209,9 +209,9 @@ export class TextureStreamingService {
     if (typeof data === 'string') {
       // For text, truncate or pad based on scale
       if (scaleFactor < 1) {
-        return data.substring(0, Math.floor(data.length * scaleFactor));
+        return data.substring(0, Math.floor(data.length * scaleFactor);
       } else {
-        return data.repeat(Math.ceil(scaleFactor));
+        return data.repeat(Math.ceil(scaleFactor);
       }
     }
     
@@ -250,11 +250,11 @@ export class TextureStreamingService {
       totalTextures: 0,
       memoryUsage: {},
       lodDistribution: {},
-      cacheHitRate: this.lodManager.getCacheHitRate()
+      cacheHitRate: this.lodManager.getCacheHitRate(),
     };
 
     for (const [bankName, bank] of Object.entries(this.memoryBanks)) {
-      const textures = Array.from(bank.values());
+      const textures = Array.from(bank.values();
       stats.memoryUsage[bankName] = {
         count: textures.length,
         totalSize: textures.reduce((sum, t) => sum + (t.data.length || 0), 0)
@@ -302,7 +302,7 @@ class N64LODManager {
     this.lodTable.set(textureId, {
       ...metadata,
       lastAccessed: Date.now(),
-      hitCount: 0
+      hitCount: 0,
     });
   }
 

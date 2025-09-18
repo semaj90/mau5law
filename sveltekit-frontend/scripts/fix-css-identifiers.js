@@ -13,7 +13,10 @@ const CSS_FIXES = [
   { from: /\.([\w-]+)\s*as\s*\{[^}]*\}\s*\.([\w-]+)/g, to: '.$1.$2' },
 
   // Fix invalid CSS identifiers
-  { from: /\.evidence-\(item\s+as\s+\{[^}]*\}\)\.(active|pending|selected)/g, to: '.evidence-item.$1' },
+  {
+    from: /\.evidence-\(item\s+as\s+\{[^}]*\}\)\.(active|pending|selected)/g,
+    to: '.evidence-item.$1',
+  },
   { from: /\.card-\(variant\s+as\s+\{[^}]*\}\)\.(primary|secondary|outline)/g, to: '.card-$1' },
   { from: /\.button-\(size\s+as\s+\{[^}]*\}\)\.(sm|md|lg)/g, to: '.button-$1' },
 
@@ -28,7 +31,7 @@ const CSS_FIXES = [
   { from: /\s*{\s*}\s*/g, to: ' ' },
 
   // Fix CSS variables with invalid syntax
-  { from: /var\(\s*--(\w+)-\(\w+\)\s*\)/g, to: 'var(--$1)' }
+  { from: /var\(\s*--(\w+)-\(\w+\)\s*\)/g, to: 'var(--$1)' },
 ];
 
 function processFile(filePath) {

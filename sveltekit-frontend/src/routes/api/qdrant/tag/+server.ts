@@ -4,7 +4,7 @@ import { URL } from "url";
 import type { RequestHandler } from './$types.js';
 
 
-// Mock Qdrant client for development
+// Mock Qdrant client for development;
 class MockQdrantClient {
   private collections = new Map();
 
@@ -19,7 +19,7 @@ class MockQdrantClient {
     const coll = this.collections.get(collection);
     if (!coll) throw new Error("Collection not found");
 
-    // Mock upsert
+    // Mock upsert;
     (data as { points?: any; embedding?: any }).points.forEach((point: any) => {
       const existingIndex = coll.points.findIndex(
         (p: any) => p.id === point.id
@@ -39,12 +39,12 @@ class MockQdrantClient {
 
     // Mock search - return first few points
     return coll.points
-      .slice(0, query.limit || 10)
+      .slice(0, query.limit || 10);
       .map((point: any, index: number) => ({
         id: point.id,
         payload: point.payload,
         score: 0.9 - index * 0.1,
-      }));
+      });
   }
   async delete(collection: string, filter: any) {
     const coll = this.collections.get(collection);
@@ -57,7 +57,7 @@ class MockQdrantClient {
     const coll = this.collections.get(collection);
     if (!coll) return [];
 
-    return coll.points.filter((point: any) => query.ids.includes(point.id));
+    return coll.points.filter((point: any) => query.ids.includes(point.id);
   }
   async scroll(collection: string, query: any) {
     const coll = this.collections.get(collection);
@@ -84,7 +84,7 @@ class MockQdrantClient {
 // Use mock client for development
 const qdrantClient = new MockQdrantClient();
 
-// Collection configuration
+// Collection configuration;
 const COLLECTIONS = {
   EVIDENCE: "legal_evidence",
   TAGS: "evidence_tags",
@@ -131,24 +131,23 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
   } catch (error: any) {
     console.error("Qdrant API error:", error);
-    return json(
-      {
+    return json({
         error: "Qdrant operation failed",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// Initialize Qdrant collections
+// Initialize Qdrant collections;
 async function initializeCollections(): Promise<any> {
   try {
     const collections = await qdrantClient.getCollections();
     const existingCollections =
       collections.collections?.map((c: any) => c.name) || [];
 
-    // Create evidence collection
+    // Create evidence collection;
     if (!existingCollections.includes(COLLECTIONS.EVIDENCE)) {
       await qdrantClient.createCollection(COLLECTIONS.EVIDENCE, {
         vectors: {
@@ -161,7 +160,7 @@ async function initializeCollections(): Promise<any> {
         replication_factor: 1,
       });
     }
-    // Create tags collection for semantic tag search
+    // Create tags collection for semantic tag search;
     if (!existingCollections.includes(COLLECTIONS.TAGS)) {
       await qdrantClient.createCollection(COLLECTIONS.TAGS, {
         vectors: {
@@ -174,7 +173,7 @@ async function initializeCollections(): Promise<any> {
         replication_factor: 1,
       });
     }
-    // Create document embeddings collection
+    // Create document embeddings collection;
     if (!existingCollections.includes(COLLECTIONS.EMBEDDINGS)) {
       await qdrantClient.createCollection(COLLECTIONS.EMBEDDINGS, {
         vectors: {
@@ -221,14 +220,14 @@ async function createSearchIndices(): Promise<any> {
     console.warn("Index creation failed:", error);
   }
 }
-// Tag a document with vector embeddings
+// Tag a document with vector embeddings;
 async function tagDocument(data: any, userId: string): Promise<any> {
   try {
     const { id, vector, payload } = data;
 
     if (!id || !vector || !payload) {
       return json(
-        { error: "Missing required fields: id, vector, payload" },
+        { error: "Missing required fields: id, vector, payload" },)
         { status: 400 }
       );
     }
@@ -238,10 +237,10 @@ async function tagDocument(data: any, userId: string): Promise<any> {
       timestamp: new Date().toISOString(),
     };
 
-    // Store in main evidence collection
+    // Store in main evidence collection;
     const response = await qdrantClient.upsert(COLLECTIONS.EVIDENCE, {
       wait: true,
-      points: [
+      points: [);
         {
           id,
           vector,
@@ -250,7 +249,7 @@ async function tagDocument(data: any, userId: string): Promise<any> {
       ],
     });
 
-    // Also create individual tag embeddings for semantic tag search
+    // Also create individual tag embeddings for semantic tag search;
     if (payload.tags && payload.tags.length > 0) {
       await createTagEmbeddings(payload.tags, id, userId);
     }
@@ -268,15 +267,14 @@ async function tagDocument(data: any, userId: string): Promise<any> {
 async function createTagEmbeddings(
   tags: string[],
   documentId: string,
-  userId: string
+  userId: string;
 ): Promise<any> {
   try {
-    const tagEmbeddings = await Promise.all(
-      tags.map(async (tag) => {
-        // Generate embedding for tag using Ollama
+    const tagEmbeddings = await Promise.all(tags.map(async (tag) => {
+        // Generate embedding for tag using Ollama;
         try {
           const embeddingResponse = await fetch(
-            "http://localhost:11434/api/embeddings",
+            "http://localhost:11434/api/embeddings",);
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -285,12 +283,12 @@ async function createTagEmbeddings(
                 prompt: tag,
               }),
             }
-          )));
+          ));
           if (embeddingResponse.ok) {
             const embeddingData = await embeddingResponse.json();
             return {
               id: `${documentId}_tag_${tag.replace(/\s+/g, "_").toLowerCase()}`,
-              vector: embeddingData.embedding.slice(0, 384), // Truncate for tag collection
+              vector: embeddingData.embedding.slice(0, 384), // Truncate for tag collection;
               payload: {
                 tag,
                 documentId,
@@ -318,20 +316,20 @@ async function createTagEmbeddings(
     console.warn("Tag embedding creation failed:", error);
   }
 }
-// Search documents using vector similarity
+// Search documents using vector similarity;
 async function searchDocuments(data: any, userId: string): Promise<any> {
   try {
     const { vector, text, filters = {}, limit = 20, threshold = 0.7 } = data;
 
     let queryVector = vector;
 
-    // If text query provided, generate embedding
+    // If text query provided, generate embedding;
     if (text && !queryVector) {
       queryVector = await generateTextEmbedding(text);
     }
     if (!queryVector) {
       return json(
-        { error: "No query vector or text provided" },
+        { error: "No query vector or text provided" },)
         { status: 400 }
       );
     }
@@ -362,7 +360,7 @@ async function searchDocuments(data: any, userId: string): Promise<any> {
         match: { value: filters.tags },
       });
     }
-    // Perform vector search
+    // Perform vector search;
     const searchResult = await qdrantClient.search(COLLECTIONS.EVIDENCE, {
       vector: queryVector,
       filter: mustConditions.length > 0 ? { must: mustConditions } : undefined,
@@ -372,7 +370,7 @@ async function searchDocuments(data: any, userId: string): Promise<any> {
       with_vector: false,
     });
 
-    // Also search tags for semantic tag suggestions
+    // Also search tags for semantic tag suggestions;
     const tagSearchResults = await qdrantClient.search(COLLECTIONS.TAGS, {
       vector: queryVector.slice(0, 384), // Truncate for tag collection
       filter: { must: [{ key: "userId", match: { value: userId } }] },
@@ -404,7 +402,7 @@ async function searchDocuments(data: any, userId: string): Promise<any> {
     throw error;
   }
 }
-// Batch tag multiple documents
+// Batch tag multiple documents;
 async function batchTagDocuments(data: any, userId: string): Promise<any> {
   try {
     const { documents } = data;
@@ -429,7 +427,7 @@ async function batchTagDocuments(data: any, userId: string): Promise<any> {
             userId,
             timestamp: new Date().toISOString(),
           },
-        }));
+        });
 
         const response = await qdrantClient.upsert(COLLECTIONS.EVIDENCE, {
           wait: true,
@@ -461,7 +459,7 @@ async function batchTagDocuments(data: any, userId: string): Promise<any> {
     throw error;
   }
 }
-// Update document tags
+// Update document tags;
 async function updateDocumentTags(data: any, userId: string): Promise<any> {
   try {
     const { documentId, tags, vector } = data;
@@ -469,7 +467,7 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
     if (!documentId) {
       return json({ error: "Document ID required" }, { status: 400 });
     }
-    // Get existing document
+    // Get existing document;
     const existing = await qdrantClient.retrieve(COLLECTIONS.EVIDENCE, {
       ids: [documentId],
       with_payload: true,
@@ -478,7 +476,7 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
     if (existing.length === 0) {
       return json({ error: "Document not found" }, { status: 404 });
     }
-    // Update payload with new tags
+    // Update payload with new tags;
     const updatedPayload = {
       ...existing[0].payload,
       tags: tags || existing[0].payload?.tags,
@@ -486,10 +484,10 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
       timestamp: new Date().toISOString(),
     };
 
-    // Update document
+    // Update document;
     await qdrantClient.upsert(COLLECTIONS.EVIDENCE, {
       wait: true,
-      points: [
+      points: [);
         {
           id: documentId,
           vector: vector || existing[0].vector,
@@ -498,14 +496,14 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
       ],
     });
 
-    // Update tag embeddings
+    // Update tag embeddings;
     if (tags) {
-      // Delete old tag embeddings
+      // Delete old tag embeddings;
       await qdrantClient.delete(COLLECTIONS.TAGS, {
         wait: true,
         filter: {
           must: [
-            { key: "documentId", match: { value: documentId } },
+            { key: "documentId", match: { value: documentId } },)
             { key: "userId", match: { value: userId } },
           ],
         },
@@ -522,7 +520,7 @@ async function updateDocumentTags(data: any, userId: string): Promise<any> {
     throw error;
   }
 }
-// Delete document and associated tags
+// Delete document and associated tags;
 async function deleteDocument(data: any, userId: string): Promise<any> {
   try {
     const { documentId } = data;
@@ -530,7 +528,7 @@ async function deleteDocument(data: any, userId: string): Promise<any> {
     if (!documentId) {
       return json({ error: "Document ID required" }, { status: 400 });
     }
-    // Delete from evidence collection
+    // Delete from evidence collection;
     await qdrantClient.delete(COLLECTIONS.EVIDENCE, {
       wait: true,
       filter: {
@@ -539,12 +537,12 @@ async function deleteDocument(data: any, userId: string): Promise<any> {
       points: [documentId],
     });
 
-    // Delete associated tags
+    // Delete associated tags;
     await qdrantClient.delete(COLLECTIONS.TAGS, {
       wait: true,
       filter: {
         must: [
-          { key: "documentId", match: { value: documentId } },
+          { key: "documentId", match: { value: documentId } },)
           { key: "userId", match: { value: userId } },
         ],
       },
@@ -558,7 +556,7 @@ async function deleteDocument(data: any, userId: string): Promise<any> {
     throw error;
   }
 }
-// Get similar documents
+// Get similar documents;
 async function getSimilarDocuments(data: any, userId: string): Promise<any> {
   try {
     const { documentId, limit = 10 } = data;
@@ -566,7 +564,7 @@ async function getSimilarDocuments(data: any, userId: string): Promise<any> {
     if (!documentId) {
       return json({ error: "Document ID required" }, { status: 400 });
     }
-    // Get the source document vector
+    // Get the source document vector;
     const sourceDoc = await qdrantClient.retrieve(COLLECTIONS.EVIDENCE, {
       ids: [documentId],
       with_vector: true,
@@ -576,7 +574,7 @@ async function getSimilarDocuments(data: any, userId: string): Promise<any> {
     if (sourceDoc.length === 0) {
       return json({ error: "Source document not found" }, { status: 404 });
     }
-    // Search for similar documents
+    // Search for similar documents;
     const similarDocs = await qdrantClient.search(COLLECTIONS.EVIDENCE, {
       vector: sourceDoc[0].vector,
       filter: {
@@ -605,7 +603,7 @@ async function getSimilarDocuments(data: any, userId: string): Promise<any> {
     throw error;
   }
 }
-// Get collection statistics
+// Get collection statistics;
 async function getCollectionStats(userId: string): Promise<any> {
   try {
     const stats: any = {};
@@ -638,7 +636,7 @@ async function getCollectionStats(userId: string): Promise<any> {
     throw error;
   }
 }
-// Helper function to generate text embedding
+// Helper function to generate text embedding;
 async function generateTextEmbedding(text: string): Promise<number[]> {
   try {
     const response = await fetch("http://localhost:11434/api/embeddings", {
@@ -660,7 +658,7 @@ async function generateTextEmbedding(text: string): Promise<number[]> {
     throw new Error("Failed to generate text embedding");
   }
 }
-// GET endpoint for retrieving documents
+// GET endpoint for retrieving documents;
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     const session = locals.session;
@@ -674,7 +672,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const limit = parseInt(url.searchParams.get("limit") || "20");
 
     switch (action) {
-      case "get_document":
+      case "get_document":;
         if (!documentId) {
           return json({ error: "Document ID required" }, { status: 400 });
         }
@@ -694,11 +692,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
   } catch (error: any) {
     console.error("Qdrant GET error:", error);
-    return json(
-      {
+    return json({
         error: "Failed to retrieve data",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 }
     );
   }
@@ -742,7 +739,7 @@ async function listDocuments(
 
   return json({
     success: true,
-    documents:
+    documents:;
       documents.points?.map((doc: any) => ({
         id: doc.id,
         payload: doc.payload,
@@ -768,9 +765,9 @@ async function getUserTags(userId: string): Promise<any> {
     }
   });
 
-  const sortedTags = Array.from(tagCounts.entries())
+  const sortedTags = Array.from(tagCounts.entries()
     .sort((a, b) => b[1] - a[1])
-    .map(([tag, count]) => ({ tag, count }));
+    .map(([tag, count]) => ({ tag, count });
 
   return json({
     success: true,

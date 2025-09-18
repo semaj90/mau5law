@@ -9,7 +9,7 @@ const DATABASE_URL = import.meta.env.VITE_DATABASE_URL ||
   import.meta.env.DATABASE_URL ||
   'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
 
-// Create PostgreSQL connection using postgres.js
+// Create PostgreSQL connection using postgres.js;
 const sql = postgres(DATABASE_URL, {
   max: 10,
   idle_timeout: 30,
@@ -22,7 +22,7 @@ export const db = drizzle(sql, { schema });
 // Export sql connection for direct queries
 export { sql };
 export const pool = sql; // alias for consistency (postgres.js instance)
-// Connection health check
+// Connection health check;
 export async function testDatabaseConnection(): Promise<any> {
   try {
     // Test basic connection
@@ -59,7 +59,7 @@ export async function vectorSimilaritySearch(
   table: 'documents' | 'search_index',
   queryEmbedding: number[],
   limit: number = 10,
-  threshold: number = 0.8
+  threshold: number = 0.8;
 ): Promise<any> {
   try {
     const tableName = table === 'documents' ? 'documents' : 'search_index';
@@ -128,7 +128,7 @@ export async function hybridSemanticSearch(
         )) OR
         (si.entity_type = 'evidence' AND EXISTS (
           SELECT 1 FROM evidence e WHERE e.id = si.entity_id AND e.case_id = $${paramIndex}
-        ))
+        )
       )`;
       params.push(caseId);
     }
@@ -174,7 +174,7 @@ export async function hybridSemanticSearch(
   }
 }
 
-// Initialize database with extensions and basic setup
+// Initialize database with extensions and basic setup;
 export async function initializeDatabase(): Promise<any> {
   try {
     console.log('🔄 Initializing database...');
@@ -206,7 +206,7 @@ export async function initializeDatabase(): Promise<any> {
   }
 }
 
-// Graceful shutdown
+// Graceful shutdown;
 export async function closeDatabaseConnection(): Promise<any> {
   try {
     await pool.end();
@@ -218,7 +218,7 @@ export async function closeDatabaseConnection(): Promise<any> {
 
 // Note: pool exported once at declaration to avoid duplicate export errors
 
-// Direct SQL for complex vector operations
+// Direct SQL for complex vector operations;
 export async function executeSQL(query: string, params: any[] = []) {
   try {
     const result = await pool.unsafe(query, params);

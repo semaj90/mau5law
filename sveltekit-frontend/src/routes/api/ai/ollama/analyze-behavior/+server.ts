@@ -54,7 +54,7 @@ Current Session:
 - Files Selected: ${context.files.length}
 - Total File Size: ${context.files.reduce((sum: number, f: any) => sum + f.size, 0)} bytes
 
-Provide analysis in JSON format:
+Provide analysis in JSON format:;
 {
   "behaviorPattern": "novice|intermediate|expert|power_user",
   "engagementLevel": "low|medium|high",
@@ -82,7 +82,7 @@ Provide analysis in JSON format:
         stream: false,
         options: {
           temperature: 0.4,
-          top_p: 0.8
+          top_p: 0.8,
         }
       })
     });
@@ -97,7 +97,7 @@ Provide analysis in JSON format:
     try {
       analysis = JSON.parse((result as { response?: any }).response);
     } catch (error) {
-      // Fallback analysis
+      // Fallback analysis;
       analysis = {
         behaviorPattern: userAnalytics.behaviorPattern,
         engagementLevel: 'medium',
@@ -106,29 +106,29 @@ Provide analysis in JSON format:
         legalSpecificInsights: {
           documentPreparation: 'Standard preparation observed',
           caseManagement: 'Active case management detected',
-          timeManagement: 'Efficient workflow patterns'
+          timeManagement: 'Efficient workflow patterns',
         },
         recommendations: ['Continue current workflow'],
         urgencyAwareness: legalContext?.urgency === 'critical' ? 1.0 : 0.7,
-        nextBestActions: ['Process selected documents']
+        nextBestActions: ['Process selected documents'],
       };
     }
 
-    // Update user analytics based on AI insights
+    // Update user analytics based on AI insights;
     const updatedAnalytics = {
       ...userAnalytics,
       behaviorPattern: analysis.behaviorPattern,
       contextualPreferences: {
         ...userAnalytics.contextualPreferences,
         preferredAIPromptStyle: analysis.behaviorPattern === 'expert' ? 'concise' : 'detailed',
-        helpLevel: analysis.behaviorPattern === 'novice' ? 'extensive' : 'moderate'
+        helpLevel: analysis.behaviorPattern === 'novice' ? 'extensive' : 'moderate',
       }
     };
 
     return json({
       analytics: updatedAnalytics,
       insights: analysis,
-      score: analysis.efficiencyScore
+      score: analysis.efficiencyScore,
     });
 
   } catch (error) {

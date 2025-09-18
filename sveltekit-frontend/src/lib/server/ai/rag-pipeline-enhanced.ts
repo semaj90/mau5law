@@ -42,18 +42,18 @@ import { ENV_CONFIG } from '$lib/config/environment.js';
 
 /**
  * RAG Pipeline Configuration
- */
+ */;
 export interface RAGConfig {
   database: DatabaseConfig;
   redis: RedisConfig;
   ollama: OllamaConfig;
   rag: RAGSettings;
-  security: SecuritySettings;
+  security: SecuritySettings;,
 }
 
 /**
  * Database Configuration
- */
+ */;
 export interface DatabaseConfig {
   host: string;
   port: number;
@@ -63,12 +63,12 @@ export interface DatabaseConfig {
   max: number;
   idle_timeout: number;
   ssl: boolean | string;
-  connect_timeout: number;
+  connect_timeout: number;,
 }
 
 /**
  * Redis Configuration
- */
+ */;
 export interface RedisConfig {
   host: string;
   port: number;
@@ -76,12 +76,12 @@ export interface RedisConfig {
   maxRetriesPerRequest: number;
   cacheTtl: number;
   enableReadyCheck: boolean;
-  lazyConnect: boolean;
+  lazyConnect: boolean;,
 }
 
 /**
  * Ollama Configuration
- */
+ */;
 export interface OllamaConfig {
   baseUrl: string;
   embeddingModel: string;
@@ -90,12 +90,12 @@ export interface OllamaConfig {
   timeout: number;
   temperature: number;
   numCtx: number;
-  numPredict: number;
+  numPredict: number;,
 }
 
 /**
  * RAG Settings
- */
+ */;
 export interface RAGSettings {
   chunkSize: number;
   chunkOverlap: number;
@@ -105,32 +105,32 @@ export interface RAGSettings {
   enableMetrics: boolean;
   enableAutoTagging: boolean;
   enableCaching: boolean;
-  batchSize: number;
+  batchSize: number;,
 }
 
 /**
  * Security Settings
- */
+ */;
 export interface SecuritySettings {
   rateLimit: {
     perMinute: number;
-    windowMs: number;
+    windowMs: number;,
   };
   validation: {
     maxInputLength: number;
     maxDocumentSize: number;
-    allowedDocumentTypes: string[];
+    allowedDocumentTypes: string[];,
   };
   sanitization: {
     removeHtmlTags: boolean;
     removeSqlChars: boolean;
-    maxLineLength: number;
+    maxLineLength: number;,
   };
 }
 
 /**
  * Default configuration with environment variable overrides
- */
+ */;
 const createDefaultConfig = (): RAGConfig => ({
   database: {
     host: process.env.DATABASE_HOST || 'localhost',
@@ -197,7 +197,7 @@ const createDefaultConfig = (): RAGConfig => ({
 
 /**
  * Document Ingestion Parameters
- */
+ */;
 export interface DocumentIngestionParams {
   title: string;
   content: string;
@@ -212,7 +212,7 @@ export interface DocumentIngestionParams {
 
 /**
  * Search Parameters
- */
+ */;
 export interface SearchParams {
   query: string;
   caseId?: string;
@@ -226,7 +226,7 @@ export interface SearchParams {
 
 /**
  * Question Answering Parameters
- */
+ */;
 export interface QuestionParams {
   question: string;
   caseId?: string;
@@ -239,7 +239,7 @@ export interface QuestionParams {
 
 /**
  * Search Result Document
- */
+ */;
 export interface SearchResult {
   id: string;
   content: string;
@@ -255,7 +255,7 @@ export interface SearchResult {
 
 /**
  * Answer Result
- */
+ */;
 export interface AnswerResult {
   answer: string;
   sources: Array<any>;
@@ -266,13 +266,13 @@ export interface AnswerResult {
   legalPrecedents?: string[];
   riskAssessment?: {
     level: 'low' | 'medium' | 'high';
-    factors: string[];
+    factors: string[];,
   };
 }
 
 /**
  * Contract Analysis Result
- */
+ */;
 export interface ContractAnalysisResult {
   contractType: string;
   parties: string[];
@@ -288,7 +288,7 @@ export interface ContractAnalysisResult {
 
 /**
  * Ingestion Result
- */
+ */;
 export interface IngestionResult {
   documentId: string;
   chunksCreated: number;
@@ -304,7 +304,7 @@ export interface IngestionResult {
 
 /**
  * Advanced Input Validation and Sanitization
- */
+ */;
 class InputValidator {
   private config: SecuritySettings;
 
@@ -319,17 +319,17 @@ class InputValidator {
 
     let sanitized = input.trim();
 
-    // Remove HTML tags if enabled
+    // Remove HTML tags if enabled;
     if (this.config.sanitization.removeHtmlTags) {
       sanitized = sanitized.replace(/<[^>]*>/g, '');
     }
 
-    // Remove SQL injection characters if enabled
+    // Remove SQL injection characters if enabled;
     if (this.config.sanitization.removeSqlChars) {
       sanitized = sanitized.replace(/['"`]/g, '');
     }
 
-    // Truncate excessively long lines
+    // Truncate excessively long lines;
     if (this.config.sanitization.maxLineLength > 0) {
       sanitized = sanitized
         .split('\n')
@@ -352,18 +352,18 @@ class InputValidator {
   }
 
   validateDocumentType(documentType: string): boolean {
-    return this.config.validation.allowedDocumentTypes.includes(documentType.toLowerCase());
+    return this.config.validation.allowedDocumentTypes.includes(documentType.toLowerCase();
   }
 
   validateConfidentialityLevel(level: string): boolean {
     const validLevels = ['public', 'confidential', 'privileged', 'attorney_client'];
-    return validLevels.includes(level.toLowerCase());
+    return validLevels.includes(level.toLowerCase();
   }
 }
 
 /**
  * Advanced Rate Limiting
- */
+ */;
 class RateLimiter {
   private requests = new Map<string, number[]>();
   private config: SecuritySettings['rateLimit'];
@@ -406,13 +406,13 @@ class RateLimiter {
     const oldestRequest = Math.min(...requests);
     const resetTime = oldestRequest + this.config.windowMs;
 
-    return Math.max(0, resetTime - Date.now());
+    return Math.max(0, resetTime - Date.now();
   }
 }
 
 /**
  * Comprehensive Metrics Collection
- */
+ */;
 class MetricsCollector {
   private metrics = new Map<string, number[]>();
   private counters = new Map<string, number>();
@@ -422,14 +422,14 @@ class MetricsCollector {
     const timings = this.metrics.get(operation) || [];
     timings.push(duration);
 
-    // Keep only last 1000 measurements
+    // Keep only last 1000 measurements;
     if (timings.length > 1000) {
       timings.shift();
     }
 
     this.metrics.set(operation, timings);
 
-    // Record labeled metrics
+    // Record labeled metrics;
     if (labels) {
       for (const [key, value] of Object.entries(labels)) {
         const labelKey = `${operation}_${key}_${value}`;
@@ -442,12 +442,12 @@ class MetricsCollector {
     const current = this.counters.get(name) || 0;
     this.counters.set(name, current + value);
 
-    // Record labeled counters
+    // Record labeled counters;
     if (labels) {
       for (const [key, labelValue] of Object.entries(labels)) {
         const labelKey = `${name}_${key}`;
         if (!this.labels.has(labelKey)) {
-          this.labels.set(labelKey, new Map());
+          this.labels.set(labelKey, new Map();
         }
         const labelMap = this.labels.get(labelKey)!;
         labelMap.set(labelValue, (labelMap.get(labelValue) || 0) + value);
@@ -458,7 +458,7 @@ class MetricsCollector {
   getMetrics(): Record<string, any> {
     const result: Record<string, any> = {};
 
-    // Add timing metrics with percentiles
+    // Add timing metrics with percentiles;
     for (const [operation, timings] of this.metrics.entries()) {
       if (timings.length > 0) {
         const sorted = [...timings].sort((a, b) => a - b);
@@ -472,12 +472,12 @@ class MetricsCollector {
       }
     }
 
-    // Add counter metrics
+    // Add counter metrics;
     for (const [name, value] of this.counters.entries()) {
       result[name] = value;
     }
 
-    // Add labeled metrics
+    // Add labeled metrics;
     for (const [labelKey, labelMap] of this.labels.entries()) {
       result[labelKey] = Object.fromEntries(labelMap);
     }
@@ -494,7 +494,7 @@ class MetricsCollector {
 
 /**
  * Legal Document Chunking Strategies
- */
+ */;
 class LegalChunker {
   private textSplitter: RecursiveCharacterTextSplitter;
   private config: RAGSettings;
@@ -518,7 +518,7 @@ class LegalChunker {
   async chunkDocument(content: string, documentType: string): Promise<string[]> {
     const chunks: string[] = [];
 
-    // Document type specific patterns
+    // Document type specific patterns;
     const patterns = {
       contract: [
         /(?:^|\n)(?:WHEREAS|NOW THEREFORE|SECTION|ARTICLE|CLAUSE)\s+[^\n]*/gi,
@@ -560,7 +560,7 @@ class LegalChunker {
 
           structuredChunks = sections
             .filter(item => item.length) > 50)
-            .map(section => section.trim());
+            .map(section => section.trim();
 
           if (structuredChunks.length > 1) break;
         }
@@ -569,26 +569,26 @@ class LegalChunker {
       }
     }
 
-    // Fallback to standard recursive chunking
+    // Fallback to standard recursive chunking;
     if (structuredChunks.length === 0) {
       const docs = await this.textSplitter.createDocuments([content]);
       structuredChunks = docs.map(d => d.pageContent);
     }
 
-    // Further split large chunks if needed
+    // Further split large chunks if needed;
     for (const chunk of structuredChunks) {
       if (chunk.length > this.config.chunkSize * 1.5) {
         const subDocs = await this.textSplitter.createDocuments([chunk]);
-        chunks.push(...subDocs.map(d => d.pageContent));
+        chunks.push(...subDocs.map(d => d.pageContent);
       } else if (chunk.trim().length > 0) {
-        chunks.push(chunk.trim());
+        chunks.push(chunk.trim();
       }
     }
 
     return chunks.filter(chunk => chunk.length > 10); // Filter out tiny chunks
   }
 
-  // Enhanced chunking for specific legal document sections
+  // Enhanced chunking for specific legal document sections;
   extractLegalSections(content: string, documentType: string): Record<string, string> {
     const sections: Record<string, string> = {};
 
@@ -597,20 +597,20 @@ class LegalChunker {
         parties: /(?:PARTIES|Party|Parties to this Agreement)[^\n]*\n([\s\S]*?)(?=\n(?:RECITALS|WHEREAS|BACKGROUND|TERMS|$))/i,
         recitals: /(?:RECITALS|WHEREAS)[^\n]*\n([\s\S]*?)(?=\n(?:NOW THEREFORE|TERMS|AGREEMENT|$))/i,
         terms: /(?:TERMS|AGREEMENT|NOW THEREFORE)[^\n]*\n([\s\S]*?)(?=\n(?:SIGNATURES|EXECUTION|$))/i,
-        signatures: /(?:SIGNATURES|EXECUTION|IN WITNESS WHEREOF)[^\n]*\n([\s\S]*?)$/i
+        signatures: /(?:SIGNATURES|EXECUTION|IN WITNESS WHEREOF)[^\n]*\n([\s\S]*?)$/i,
       },
       case_law: {
         facts: /(?:FACTS|BACKGROUND|PROCEDURAL HISTORY)[^\n]*\n([\s\S]*?)(?=\n(?:ISSUE|HOLDING|ANALYSIS|$))/i,
         issues: /(?:ISSUE|ISSUES|QUESTION)[^\n]*\n([\s\S]*?)(?=\n(?:HOLDING|ANALYSIS|RULE|$))/i,
         holding: /(?:HOLDING|RULE|RULING)[^\n]*\n([\s\S]*?)(?=\n(?:ANALYSIS|REASONING|CONCLUSION|$))/i,
         analysis: /(?:ANALYSIS|REASONING|DISCUSSION)[^\n]*\n([\s\S]*?)(?=\n(?:CONCLUSION|DISSENT|$))/i,
-        conclusion: /(?:CONCLUSION|DISPOSITION)[^\n]*\n([\s\S]*?)$/i
+        conclusion: /(?:CONCLUSION|DISPOSITION)[^\n]*\n([\s\S]*?)$/i,
       },
       statute: {
         title: /(?:TITLE|CHAPTER|ACT)[^\n]*\n([\s\S]*?)(?=\n(?:SECTION|§|DEFINITIONS|$))/i,
         definitions: /(?:DEFINITIONS|TERMS)[^\n]*\n([\s\S]*?)(?=\n(?:SECTION|§|PROVISIONS|$))/i,
         provisions: /(?:PROVISIONS|REQUIREMENTS)[^\n]*\n([\s\S]*?)(?=\n(?:PENALTIES|ENFORCEMENT|$))/i,
-        enforcement: /(?:ENFORCEMENT|PENALTIES|SANCTIONS)[^\n]*\n([\s\S]*?)$/i
+        enforcement: /(?:ENFORCEMENT|PENALTIES|SANCTIONS)[^\n]*\n([\s\S]*?)$/i,
       }
     };
 
@@ -635,7 +635,7 @@ class LegalChunker {
  *
  * Comprehensive RAG system for legal AI applications with advanced features
  * for document processing, vector search, and intelligent question answering.
- */
+ */;
 export class EnhancedLegalRAGPipeline {
   private config: RAGConfig;
   private initialized = false;
@@ -659,7 +659,7 @@ export class EnhancedLegalRAGPipeline {
 
   /**
    * Initialize all pipeline components
-   */
+   */;
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
@@ -695,7 +695,7 @@ export class EnhancedLegalRAGPipeline {
 
   /**
    * Initialize database connection
-   */
+   */;
   private async initializeDatabase(): Promise<void> {
     try {
       this.sql = postgres({
@@ -729,7 +729,7 @@ export class EnhancedLegalRAGPipeline {
 
   /**
    * Initialize Redis connection
-   */
+   */;
   private async initializeRedis(): Promise<void> {
     try {
       this.redis = new Redis({
@@ -739,7 +739,7 @@ export class EnhancedLegalRAGPipeline {
           console.warn('Redis reconnect on error:', err.message);
           return err.message.includes('READONLY');
         },
-        lazyConnect: this.config.redis.lazyConnect
+        lazyConnect: this.config.redis.lazyConnect,
       });
 
       // Test connection
@@ -752,10 +752,10 @@ export class EnhancedLegalRAGPipeline {
 
   /**
    * Initialize Ollama components
-   */
+   */;
   private async initializeOllama(): Promise<void> {
     try {
-      // Initialize embeddings
+      // Initialize embeddings;
       this.embeddings = new OllamaEmbeddings({
         baseUrl: ollamaConfig.getBaseUrl(),
         model: this.config.ollama.embeddingModel,
@@ -765,7 +765,7 @@ export class EnhancedLegalRAGPipeline {
         },
       });
 
-      // Initialize LLM
+      // Initialize LLM;
       this.llm = new Ollama({
         baseUrl: ollamaConfig.getBaseUrl(),
         model: this.config.ollama.llmModel,
@@ -775,7 +775,7 @@ export class EnhancedLegalRAGPipeline {
         topK: 40,
         topP: 0.9,
         repeatPenalty: 1.1,
-        callbacks: [
+        callbacks: [;
           {
             handleLLMStart: async () => {
               console.debug(`[RAG] LLM Started: ${this.config.ollama.llmModel}`);
@@ -801,7 +801,7 @@ export class EnhancedLegalRAGPipeline {
 
   /**
    * Verify all connections are working
-   */
+   */;
   private async verifyConnections(): Promise<void> {
     try {
       // Test database
@@ -824,7 +824,7 @@ export class EnhancedLegalRAGPipeline {
 
   /**
    * Ensure pipeline is initialized
-   */
+   */;
   private async ensureInitialized(): Promise<void> {
     if (!this.initialized) {
       await this.initialize();
@@ -835,7 +835,7 @@ export class EnhancedLegalRAGPipeline {
 
   /**
    * Ingest a legal document with comprehensive processing
-   */
+   */;
   async ingestLegalDocument(params: DocumentIngestionParams): Promise<IngestionResult> {
     const startTime = Date.now();
 
@@ -858,7 +858,7 @@ export class EnhancedLegalRAGPipeline {
         throw new Error(`Invalid confidentiality level: ${params.confidentialityLevel}`);
       }
 
-      // Rate limiting
+      // Rate limiting;
       if (!this.rateLimiter.isAllowed(userId)) {
         throw new Error('Rate limit exceeded. Please try again later.');
       }
@@ -867,9 +867,9 @@ export class EnhancedLegalRAGPipeline {
 
       const { caseId, metadata = {}, confidentialityLevel = 'public', jurisdiction, clientId } = params;
 
-      // Start transaction for document creation
+      // Start transaction for document creation;
   const [document] = await this.db!.transaction(async (tx: any) => {
-        const [doc] = await tx.insert(schema.legal_documents)
+        const [doc] = await tx.insert(schema.legal_documents);
           .values({
             title,
             content: content.substring(0, 10000), // Preview content
@@ -886,10 +886,10 @@ export class EnhancedLegalRAGPipeline {
               ...metadata,
               ingestionDate: new Date().toISOString(),
               version: '1.0',
-              source: 'rag_pipeline'
+              source: 'rag_pipeline',
             }
           })
-          .returning());
+          .returning();
         return [doc];
       });
 
@@ -902,7 +902,7 @@ export class EnhancedLegalRAGPipeline {
 
       await this.db!.update(schema.legal_documents)
         .set({ embedding: JSON.stringify(docEmbedding) })
-        .where(eq(schema.legal_documents.id, document.id));
+        .where(eq(schema.legal_documents.id, document.id);
 
       // Smart legal chunking
       const chunks = await this.chunker.chunkDocument(content, documentType);
@@ -919,10 +919,9 @@ export class EnhancedLegalRAGPipeline {
         const batch = chunks.slice(i, i + this.config.rag.batchSize);
 
         try {
-          const chunkRecords = await Promise.all(
-            batch.map(async (chunk, idx) => {
+          const chunkRecords = await Promise.all(batch.map(async (chunk, idx) => {
               try {
-                const embedding = await this.generateEmbedding(chunk)));
+                const embedding = await this.generateEmbedding(chunk));
                 successfulChunks++;
 
                 return {
@@ -995,7 +994,7 @@ export class EnhancedLegalRAGPipeline {
       this.metrics.incrementCounter('documents_ingested');
       this.metrics.recordTiming('ingestion_time', processingTime, {
         document_type: documentType,
-        confidentiality_level: confidentialityLevel
+        confidentiality_level: confidentialityLevel,
       });
 
       return {
@@ -1009,7 +1008,7 @@ export class EnhancedLegalRAGPipeline {
           documentType,
           confidentialityLevel,
           legalSections: Object.keys(legalSections),
-          totalChunks: chunks.length
+          totalChunks: chunks.length,
         },
         confidentialityLevel
       };
@@ -1029,7 +1028,7 @@ export class EnhancedLegalRAGPipeline {
 
   /**
    * Perform hybrid vector and keyword search
-   */
+   */;
   async hybridSearch(params: SearchParams): Promise<SearchResult[]> {
     const startTime = Date.now();
 
@@ -1045,7 +1044,7 @@ export class EnhancedLegalRAGPipeline {
         sortBy = 'relevance'
       } = params;
 
-      // Rate limiting if userId provided
+      // Rate limiting if userId provided;
       if (userId && !this.rateLimiter.isAllowed(userId)) {
         throw new Error('Rate limit exceeded. Please try again later.');
       }
@@ -1107,7 +1106,7 @@ export class EnhancedLegalRAGPipeline {
       // Combine and deduplicate results
       const combinedResults = new Map<string, any>();
 
-      // Add vector results with higher weight
+      // Add vector results with higher weight;
       vectorResults.forEach(r => {
         combinedResults.set(r.id, {
           ...r,
@@ -1116,7 +1115,7 @@ export class EnhancedLegalRAGPipeline {
         });
       });
 
-      // Add or update with keyword results
+      // Add or update with keyword results;
       keywordResults.forEach(r => {
         const existing = combinedResults.get(r.id);
         if (existing) {
@@ -1131,7 +1130,7 @@ export class EnhancedLegalRAGPipeline {
       });
 
       // Sort by combined score or other criteria
-      let sortedResults = Array.from(combinedResults.values());
+      let sortedResults = Array.from(combinedResults.values();
 
       switch (sortBy) {
         case 'date':
@@ -1141,7 +1140,7 @@ export class EnhancedLegalRAGPipeline {
           );
           break;
         case 'score':
-          sortedResults.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
+          sortedResults.sort((a, b) => (b.similarity || 0) - (a.similarity || 0);
           break;
         default: // relevance
           sortedResults.sort((a, b) => b.score - a.score);
@@ -1149,7 +1148,7 @@ export class EnhancedLegalRAGPipeline {
 
       sortedResults = sortedResults.slice(0, limit);
 
-      // Convert to SearchResult format
+      // Convert to SearchResult format;
       const searchResults: SearchResult[] = sortedResults.map(r => ({
         id: r.id,
         content: r.content,
@@ -1160,13 +1159,13 @@ export class EnhancedLegalRAGPipeline {
         textRank: r.text_rank || 0,
         metadata: includeMetadata ? r.metadata: Record<string, any>,
         confidentialityLevel: r.confidentiality_level,
-        highlights: r.highlights
-      }));
+        highlights: r.highlights,
+      });
 
       this.metrics.incrementCounter('searches_performed');
       this.metrics.recordTiming('search_time', Date.now() - startTime, {
         document_type: documentType || 'all',
-        sort_by: sortBy
+        sort_by: sortBy,
       });
 
       return searchResults;
@@ -1182,7 +1181,7 @@ export class EnhancedLegalRAGPipeline {
 
   /**
    * Answer legal questions with comprehensive context
-   */
+   */;
   async answerLegalQuestion(params: QuestionParams): Promise<AnswerResult> {
     const startTime = Date.now();
 
@@ -1201,21 +1200,21 @@ export class EnhancedLegalRAGPipeline {
         throw new Error('Invalid user ID format');
       }
 
-      // Rate limiting
+      // Rate limiting;
       if (!this.rateLimiter.isAllowed(userId)) {
         throw new Error('Rate limit exceeded. Please try again later.');
       }
 
       await this.ensureInitialized();
 
-      // Retrieve relevant context
+      // Retrieve relevant context;
       const relevantDocs = await this.hybridSearch({
         query: question,
         caseId,
         limit: maxSources,
         threshold: 0.6,
         userId,
-        sortBy: 'relevance'
+        sortBy: 'relevance',
       });
 
       if (requireSources && relevantDocs.length === 0) {
@@ -1239,7 +1238,7 @@ You are an expert legal AI assistant specializing in legal analysis and research
 
 ${conversationContext ? `Previous Conversation Context:\n${conversationContext}\n\n` : ''}
 
-Legal Context:
+Legal Context:)
 {context}
 
 Question: {question}
@@ -1259,7 +1258,7 @@ Answer:
       `);
 
       // Create chain and generate answer
-      const chain = RunnableSequence.from([
+      const chain = RunnableSequence.from([);
         {
           context: () => context,
           question: new RunnablePassthrough(),
@@ -1291,7 +1290,7 @@ Answer:
       // Assess legal risks mentioned in the answer
       const riskAssessment = this.assessLegalRisks(answer);
 
-      // Log the query for analytics and compliance
+      // Log the query for analytics and compliance;
       try {
         const queryEmbedding = await this.generateEmbedding(question);
 
@@ -1312,7 +1311,7 @@ Answer:
             confidentialityLevel,
             citations: citations.length,
             legalPrecedents: legalPrecedents.length,
-            riskLevel: riskAssessment.level
+            riskLevel: riskAssessment.level,
           },
         });
       } catch (error: any) {
@@ -1327,7 +1326,7 @@ Answer:
           title: d.title,
           score: d.score,
           excerpt: d.content.substring(0, 200) + '...',
-          confidentialityLevel: d.confidentialityLevel
+          confidentialityLevel: d.confidentialityLevel,
         })),
         confidence: analysis.confidence,
         keyPoints: analysis.keyPoints,
@@ -1340,7 +1339,7 @@ Answer:
       this.metrics.incrementCounter('questions_answered');
       this.metrics.recordTiming('qa_time', (result as { processingTime?: any; status?: any; reason?: any }).processingTime, {
         confidentiality_level: confidentialityLevel || 'general',
-        sources_count: relevantDocs.length.toString()
+        sources_count: relevantDocs.length.toString(),
       });
 
       return result;
@@ -1351,7 +1350,7 @@ Answer:
       console.error('[RAG] QA error:', error);
       this.metrics.incrementCounter('qa_errors');
 
-      // Log failed query
+      // Log failed query;
       try {
         await this.db!.insert(schema.userAiQueries).values({
           userId: params.userId,
@@ -1375,7 +1374,7 @@ Answer:
 
   /**
    * Analyze contracts with detailed legal assessment
-   */
+   */;
   async analyzeContract(contractText: string, jurisdiction?: string): Promise<ContractAnalysisResult> {
     const startTime = Date.now();
 
@@ -1389,7 +1388,7 @@ You are a legal expert specializing in contract analysis with extensive experien
 
 ${jurisdiction ? `Jurisdiction: ${jurisdiction}\n` : ''}
 
-Contract:
+Contract:)
 {contract}
 
 Provide your analysis in the following structured format:
@@ -1460,7 +1459,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
 
       this.metrics.incrementCounter('contracts_analyzed');
       this.metrics.recordTiming('contract_analysis_time', processingTime, {
-        jurisdiction: jurisdiction || 'general'
+        jurisdiction: jurisdiction || 'general',
       });
 
       return {
@@ -1482,12 +1481,12 @@ Provide specific clause references and line numbers where applicable. Focus on p
 
   /**
    * Generate embeddings with caching
-   */
+   */;
   private async generateEmbedding(text: string): Promise<number[]> {
     const textHash = this.hashText(text);
 
     try {
-      // Check cache first if enabled
+      // Check cache first if enabled;
       if (this.config.rag.enableCaching && this.redis) {
         const cached = await this.redis.get(`embedding:${textHash}`);
         if (cached) {
@@ -1501,9 +1500,9 @@ Provide specific clause references and line numbers where applicable. Focus on p
       // Generate new embedding
       const embedding = await this.embeddings!.embedQuery(text);
 
-      // Cache for configured TTL if enabled
+      // Cache for configured TTL if enabled;
       if (this.config.rag.enableCaching && this.redis) {
-        await this.redis.set(`embedding:${textHash}`, JSON.stringify(embedding));
+        await this.redis.set(`embedding:${textHash}`, JSON.stringify(embedding);
         // Set expiration using pexpire (milliseconds) or just use temporary storage
       }
 
@@ -1519,7 +1518,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
 
   /**
    * Generate auto-tags for documents
-   */
+   */;
   private async generateAutoTags(content: string, documentType: string): Promise<Array<any> {
     if (!this.config.rag.enableAutoTagging) return [];
 
@@ -1527,7 +1526,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
 Extract relevant legal tags from this {documentType} document.
 Focus on: legal concepts, practice areas, jurisdictions, case types, parties, and key legal topics.
 
-Document excerpt:
+Document excerpt:)
 {content}
 
 Return ONLY a JSON array of tags with confidence scores (0-1):
@@ -1543,7 +1542,7 @@ Limit to 10 most relevant tags.
     ]);
 
     try {
-      const llmResponse = await Promise.race([
+      const llmResponse = await Promise.race([;
         chain.invoke({
           documentType,
           content: content.substring(0, 3000),
@@ -1574,7 +1573,7 @@ Limit to 10 most relevant tags.
 
   /**
    * Analyze answer quality and extract key points
-   */
+   */;
   private async analyzeAnswer(answer: string, sources: SearchResult[]) {
     // Calculate confidence based on source relevance and answer characteristics
     const avgScore = sources.length > 0 ? sources.reduce((sum, doc) => sum + doc.score, 0) / sources.length: 0;
@@ -1590,7 +1589,7 @@ Limit to 10 most relevant tags.
       .split('\n')
       .filter(line => line.match(/^[\d.•-]|^[A-Z][a-z]+:/) && line.length > 10)
       .slice(0, 5)
-      .map(line => line.replace(/^[.\d•-]*\s*/, '').trim())
+      .map(line => line.replace(/^[.\d•-]*\s*/, '').trim()
       .filter(point => point.length > 0);
 
     return {
@@ -1601,7 +1600,7 @@ Limit to 10 most relevant tags.
 
   /**
    * Extract highlights from content based on query
-   */
+   */;
   private extractHighlights(content: string, query: string): string[] {
     const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 2);
     const highlights: string[] = [];
@@ -1610,7 +1609,7 @@ Limit to 10 most relevant tags.
       const regex = new RegExp(`\\b\\w*${word}\\w*\\b`, 'gi');
       const matches = content.match(regex);
       if (matches) {
-        highlights.push(...matches.slice(0, 3)); // Limit highlights per word
+        highlights.push(...matches.slice(0, 3); // Limit highlights per word
       }
     }
 
@@ -1619,7 +1618,7 @@ Limit to 10 most relevant tags.
 
   /**
    * Extract legal citations from text
-   */
+   */;
   private extractCitations(text: string): string[] {
     const citationPatterns = [
       /\d+\s+[A-Z][a-z]+\.?\s+\d+/g, // Basic citation pattern
@@ -1642,7 +1641,7 @@ Limit to 10 most relevant tags.
 
   /**
    * Extract legal precedents from text
-   */
+   */;
   private extractLegalPrecedents(text: string): string[] {
     const precedentPatterns = [
       /(?:In|in)\s+([A-Z][a-z]+\s+v\.?\s+[A-Z][a-z]+)/g,
@@ -1665,7 +1664,7 @@ Limit to 10 most relevant tags.
 
   /**
    * Assess legal risks mentioned in text
-   */
+   */;
   private assessLegalRisks(text: string): { level: 'low' | 'medium' | 'high'; factors: string[] } {
     const highRiskTerms = ['breach', 'violation', 'penalty', 'criminal', 'fraud', 'negligence'];
     const mediumRiskTerms = ['liability', 'compliance', 'regulation', 'obligation', 'duty'];
@@ -1707,7 +1706,7 @@ Limit to 10 most relevant tags.
 
   /**
    * Parse contract analysis results
-   */
+   */;
   private parseContractAnalysis(analysis: string): Omit<ContractAnalysisResult, 'confidence' | 'processingTime' | 'complianceFlags' | 'jurisdiction'> {
     const sections = {
       contractType: '',
@@ -1733,7 +1732,7 @@ Limit to 10 most relevant tags.
         const cleanLine = trimmed.replace(/^[-•*\d.]\s*/, '');
 
         switch (currentSection) {
-          case 'type':
+          case 'type':;
             if (!sections.contractType && !cleanLine.includes(':') && cleanLine.length > 3) {
               sections.contractType = cleanLine;
             }
@@ -1741,7 +1740,7 @@ Limit to 10 most relevant tags.
           case 'terms':
             if (cleanLine.length > 10) sections.keyTerms.push(cleanLine);
             break;
-          case 'risks':
+          case 'risks':;
             if (cleanLine.length > 10) {
               const severity: 'low' | 'medium' | 'high' =
                 cleanLine.toLowerCase().includes('high') ? 'high' :
@@ -1773,7 +1772,7 @@ Limit to 10 most relevant tags.
 
   /**
    * Extract compliance flags from analysis
-   */
+   */;
   private extractComplianceFlags(analysis: string): string[] {
     const flags: string[] = [];
     const lowerAnalysis = analysis.toLowerCase();
@@ -1798,7 +1797,7 @@ Limit to 10 most relevant tags.
 
   /**
    * Hash text for caching
-   */
+   */;
   private hashText(text: string): string {
     return crypto.createHash('sha256').update(text.trim()).digest('hex');
   }
@@ -1807,7 +1806,7 @@ Limit to 10 most relevant tags.
 
   /**
    * Get comprehensive health status
-   */
+   */;
   async getHealthStatus() {
     const checks = await Promise.allSettled([
       this.checkDatabaseHealth(),
@@ -1820,8 +1819,8 @@ Limit to 10 most relevant tags.
       service: services[index],
       status: (result as { processingTime?: any; status?: any; reason?: any }).status === 'fulfilled' ? 'healthy' : 'unhealthy',
       error: (result as { processingTime?: any; status?: any; reason?: any }).status === 'rejected' ? (result as { processingTime?: any; status?: any; reason?: any }).reason?.message: undefined,
-      timestamp: new Date().toISOString()
-    }));
+      timestamp: new Date().toISOString(),
+    });
   }
 
   private async checkDatabaseHealth() {
@@ -1845,7 +1844,7 @@ Limit to 10 most relevant tags.
 
   /**
    * Get comprehensive metrics
-   */
+   */;
   getMetrics(): Record<string, any> {
     return {
       ...this.metrics.getMetrics(),
@@ -1853,23 +1852,23 @@ Limit to 10 most relevant tags.
         chunkSize: this.config.rag.chunkSize,
         maxSources: this.config.rag.maxSources,
         enableCaching: this.config.rag.enableCaching,
-        enableAutoTagging: this.config.rag.enableAutoTagging
+        enableAutoTagging: this.config.rag.enableAutoTagging,
       },
       rateLimiting: {
         perMinute: this.config.security.rateLimit.perMinute,
-        windowMs: this.config.security.rateLimit.windowMs
+        windowMs: this.config.security.rateLimit.windowMs,
       }
     };
   }
 
   /**
    * Get rate limiting status for user
-   */
+   */;
   getRateLimitStatus(userId: string) {
     return {
       remaining: this.rateLimiter.getRemainingRequests(userId),
       resetTime: this.rateLimiter.getTimeUntilReset(userId),
-      limit: this.config.security.rateLimit.perMinute
+      limit: this.config.security.rateLimit.perMinute,
     };
   }
 
@@ -1877,7 +1876,7 @@ Limit to 10 most relevant tags.
 
   /**
    * Clean shutdown of all connections
-   */
+   */;
   async close(): Promise<void> {
     try {
       await Promise.allSettled([

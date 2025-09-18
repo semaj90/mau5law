@@ -12,7 +12,7 @@ import { URL } from "url";
 // SSE stream storage for real-time updates
 const activeStreams = new Map<string, any>();
 
-// Main synthesis endpoint
+// Main synthesis endpoint;
 export const POST: RequestHandler = async ({ request, url }) => {
   const startTime = Date.now();
   let requestId: string | undefined;
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const body = await request.json();
     const { query, context, options = {} } = body;
 
-    // Validate input
+    // Validate input;
     if (!query || typeof query !== 'string') {
       throw error(400, 'Query is required and must be a string');
     }
@@ -32,12 +32,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
     logger.info(`[API] Processing synthesis request ${requestId}: "${query}"`);
 
-    // Check if streaming is requested
+    // Check if streaming is requested;
     if (options.stream) {
       // Create stream ID for SSE
       const streamId = `stream_${requestId}`;
 
-      // Initialize stream tracking
+      // Initialize stream tracking;
       activeStreams.set(streamId, {
         query,
         startTime,
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       // Start async processing
       processStreamingRequest(streamId, query, context, options);
 
-      // Return stream ID immediately
+      // Return stream ID immediately;
       return json({
         success: true,
         streamId,
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       });
     }
 
-    // Non-streaming request - process synchronously
+    // Non-streaming request - process synchronously;
     const result = await aiOrchestrator.process(query, {
       ...options,
       context,
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     await monitoringService.recordMetric('api_request_duration', processingTime);
     await monitoringService.recordMetric('api_requests_total', 1);
 
-    // Return successful result
+    // Return successful result;
     return json({
       success: true,
       requestId,
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     await monitoringService.recordMetric('api_errors_total', 1);
 
     // Return error response
-    return json(
+    return json();
       {
         success: false,
         error: err.message || 'An error occurred during synthesis',
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   }
 };
 
-// Health check endpoint
+// Health check endpoint;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Get orchestrator health
@@ -115,7 +115,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Get monitoring metrics
     const metrics = await monitoringService.getMetrics();
 
-    // Compile comprehensive health status
+    // Compile comprehensive health status;
     const status = {
       status: health.status,
       timestamp: new Date().toISOString(),
@@ -180,7 +180,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (err: any) {
     logger.error('[API] Health check error:', err);
 
-    return json(
+    return json();
       {
         status: 'error',
         error: err.message,
@@ -191,14 +191,14 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-// Test endpoint for integration testing (consolidated with health check)
+// Test endpoint for integration testing (consolidated with health check);
 export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
   if (url.pathname.endsWith('/test')) {
     try {
       logger.info('[API] Running integration test...');
 
       // Test queries following MCP best practices
-      const testQueries = [
+      const testQueries = [;
         {
           query: 'What are the elements of negligence in tort law?',
           expectedSources: ['neo4j', 'pgvector', 'context7'],
@@ -259,7 +259,7 @@ export const GET_ALTERNATIVE: RequestHandler = async ({ url }) => {
     } catch (err: any) {
       logger.error('[API] Test error:', err);
 
-      return json(
+      return json();
         {
           success: false,
           error: err.message,
@@ -280,7 +280,7 @@ async function processStreamingRequest(
   streamId: string,
   query: string,
   context: any,
-  options: any
+  options: any;
 ): Promise<void> {
   try {
     // Update stream status
@@ -289,7 +289,7 @@ async function processStreamingRequest(
       stream.status = 'processing';
     }
 
-    // Process with streaming
+    // Process with streaming;
     const generator = aiOrchestrator.processStream(query, {
       ...options,
       context,
@@ -302,14 +302,14 @@ async function processStreamingRequest(
     for await (const update of generator) {
       updates.push(update);
 
-      // Update stream state
+      // Update stream state;
       if (stream) {
         stream.lastUpdate = update;
         stream.updates = updates;
       }
     }
 
-    // Mark as complete
+    // Mark as complete;
     if (stream) {
       stream.status = 'complete';
       stream.result = updates[updates.length - 1]?.result;
@@ -325,7 +325,7 @@ async function processStreamingRequest(
   }
 }
 
-// Cleanup old streams periodically
+// Cleanup old streams periodically;
 setInterval(() => {
   const now = Date.now();
   const maxAge = 5 * 60 * 1000; // 5 minutes

@@ -6,7 +6,7 @@ import { resolveLibraryId, getLibraryDocs } from '$lib/services/context7-lib-res
 import { readFile } from 'fs/promises';
 import { URL } from "url";
 
-// Load Copilot architecture context for enhanced prompting
+// Load Copilot architecture context for enhanced prompting;
 async function loadCopilotContext(): Promise<Record<string, string | null> {
   const contextFiles = [
     "markdown_files/copilot-architecture-summary.md",
@@ -56,12 +56,12 @@ export const load: PageServerLoad = async ({ url }) => {
       timestamp: new Date().toISOString(),
     };
 
-    // Enhanced: Run Copilot self-prompt orchestration on server if requested
+    // Enhanced: Run Copilot self-prompt orchestration on server if requested;
     if (url.searchParams.get("orchestrate") === "true") {
       orchestrationResult = await copilotSelfPrompt(prompt, {
         useSemanticSearch: true,
         useMemory: true,
-        useMultiAgent: false, // Disable heavy multi-agent for SSR performance
+        useMultiAgent: false, // Disable heavy multi-agent for SSR performance;
         context: {
           projectPath: process.cwd(),
           platform: "webapp" as const,
@@ -70,7 +70,7 @@ export const load: PageServerLoad = async ({ url }) => {
         },
       });
 
-      // Store architecture context for client hydration
+      // Store architecture context for client hydration;
       if (orchestrationResult) {
         (orchestrationResult as any).copilotArchitecture =
           copilotContext["copilot-architecture-summary"];
@@ -78,7 +78,7 @@ export const load: PageServerLoad = async ({ url }) => {
           copilotContext["copilot-context"];
       }
 
-      // Truncate large result for SSR transfer
+      // Truncate large result for SSR transfer;
       if (orchestrationResult) {
         orchestrationResult.synthesizedOutput =
           orchestrationResult.synthesizedOutput?.substring(0, 500) + "...";

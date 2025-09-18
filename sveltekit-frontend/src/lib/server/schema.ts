@@ -1,4 +1,4 @@
-// src/lib/server/schema.ts - Database schema definitions
+// src/lib/server/schema.ts - Database schema definitions;
 import {
   pgTable,
   serial,
@@ -40,7 +40,7 @@ export const storage_audits = pgTable('storage_audits', {
 
 // Evidence processing sessions
 export const evidenceProcessTable = pgTable(
-  'evidence_process',
+  'evidence_process',);
   {
     id: uuid('id').primaryKey(),
     evidence_id: text('evidence_id').notNull(),
@@ -63,7 +63,7 @@ export const evidenceProcessTable = pgTable(
 
 // OCR results
 export const evidenceOcrTable = pgTable(
-  'evidence_ocr',
+  'evidence_ocr',);
   {
     id: uuid('id').primaryKey(),
     evidence_id: text('evidence_id').notNull(),
@@ -80,7 +80,7 @@ export const evidenceOcrTable = pgTable(
 
 // Embedding metadata (actual vectors stored in pgvector table)
 export const evidenceEmbeddingsTable = pgTable(
-  'evidence_embeddings',
+  'evidence_embeddings',);
   {
     id: uuid('id').primaryKey(),
     evidence_id: text('evidence_id').notNull(),
@@ -97,7 +97,7 @@ export const evidenceEmbeddingsTable = pgTable(
 
 // pgvector table for similarity search
 export const evidenceVectorsTable = pgTable(
-  'evidence_vectors',
+  'evidence_vectors',);
   {
     id: uuid('id').primaryKey(),
     evidence_id: text('evidence_id').notNull(),
@@ -116,14 +116,14 @@ export const evidenceVectorsTable = pgTable(
     ),
     // IVFFlat index with L2 distance operator class for fast similarity search
     vectorIdx: index('evidence_vectors_vector_idx')
-      .using('ivfflat', table.vector.op('vector_l2_ops'))
+      .using('ivfflat', table.vector.op('vector_l2_ops')
       .with({ lists: 100 }),
   })
 );
 
 // RAG analysis results
 export const evidenceAnalysisTable = pgTable(
-  'evidence_analysis',
+  'evidence_analysis',);
   {
     id: uuid('id').primaryKey(),
     evidence_id: text('evidence_id').notNull(),
@@ -143,7 +143,7 @@ export const evidenceAnalysisTable = pgTable(
 
 // Base evidence table (if not already exists)
 export const evidenceTable = pgTable(
-  'evidence',
+  'evidence',);
   {
     id: uuid('id').primaryKey(),
     case_id: text('case_id').notNull(),
@@ -174,7 +174,7 @@ export const evidenceTable = pgTable(
 
 // Cases table (if not already exists)
 export const casesTable = pgTable(
-  'cases',
+  'cases',);
   {
     id: uuid('id').primaryKey(),
     title: text('title').notNull(),
@@ -198,7 +198,7 @@ export const casesTable = pgTable(
 
 // Reports table for detective/legal reports
 export const reportsTable = pgTable(
-  'reports',
+  'reports',);
   {
     id: uuid('id').primaryKey(),
     case_id: text('case_id').notNull(),
@@ -222,7 +222,7 @@ export const reportsTable = pgTable(
 
 // System health and monitoring
 export const systemHealthTable = pgTable(
-  'system_health',
+  'system_health',);
   {
     id: uuid('id').primaryKey(),
     service: text('service').notNull(), // 'worker', 'rabbitmq', 'qdrant', etc.
@@ -239,7 +239,7 @@ export const systemHealthTable = pgTable(
 
 // Queue monitoring
 export const queueStatsTable = pgTable(
-  'queue_stats',
+  'queue_stats',);
   {
     id: uuid('id').primaryKey(),
     queue_name: text('queue_name').notNull(),
@@ -257,7 +257,7 @@ export const queueStatsTable = pgTable(
 
 // Chat embeddings for AI assistant semantic search
 export const chatEmbeddings = pgTable(
-  'chat_embeddings',
+  'chat_embeddings',);
   {
     id: uuid('id').primaryKey(),
     messageId: text('message_id').notNull().unique(),

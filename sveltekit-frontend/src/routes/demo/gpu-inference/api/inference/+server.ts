@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ error: 'sessionId and message are required' }, { status: 400 });
     }
 
-    // Store user message in aiHistory
+    // Store user message in aiHistory;
     const [userMessage] = await db.insert(aiHistory).values({
       userId: sessionId,
       prompt: message,
@@ -35,12 +35,12 @@ export const POST: RequestHandler = async ({ request }) => {
 
     try {
       if (engine === 'auto') {
-        // Use cognitive smart router
+        // Use cognitive smart router;
         response = await cognitiveSmartRouter.route({
           prompt: message,
           requestType: 'legal-analysis',
           priority,
-          maxLatency: 10000
+          maxLatency: 10000,
         });
   engineUsed = (response as any).engineUsed || 'webgpu';
   cacheHit = (response as any).cacheHit || false;
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
       const responseTime = Date.now() - startTime;
 
-      // Store assistant response in aiHistory
+      // Store assistant response in aiHistory;
       const [assistantMessage] = await db.insert(aiHistory).values({
         userId: sessionId,
         prompt: `RESPONSE_TO: ${message.slice(0, 100)}...`,
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
           cacheHit,
           embedding: embedding ? embedding.slice(0, 10) : null, // Store first 10 dims as sample
           originalEngine: engine,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         })
       }).returning();
 
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
   metadata: (response as any).metadata,
         messageIds: {
           user: userMessage.id,
-          assistant: assistantMessage.id
+          assistant: assistantMessage.id,
         }
       });
 
@@ -92,7 +92,7 @@ export const POST: RequestHandler = async ({ request }) => {
       console.error('❌ Inference error:', inferenceError);
       const err = inferenceError as any;
 
-      // Store error message in aiHistory
+      // Store error message in aiHistory;
       await db.insert(aiHistory).values({
         userId: sessionId,
         prompt: `ERROR_RESPONSE: ${message.slice(0, 50)}...`,
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
           engine: 'error',
           responseTime: Date.now() - startTime,
           error: err?.message ?? 'Unknown error',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         })
       });
 
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
   response: `I encountered an error: ${err?.message ?? 'Unknown error'}`,
         engineUsed: 'error',
         responseTime: Date.now() - startTime,
-  error: err?.message ?? 'Unknown error'
+  error: err?.message ?? 'Unknown error',
       });
     }
 
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Internal server error',
-      message: err?.message ?? 'Unknown error'
+      message: err?.message ?? 'Unknown error',
     }, { status: 500 });
   }
 };
@@ -184,7 +184,7 @@ async function routeToOllama(message: string) {
       body: JSON.stringify({
         model: 'gemma3-legal',
         prompt: message,
-        stream: false
+        stream: false,
       })
     });
 
@@ -196,7 +196,7 @@ async function routeToOllama(message: string) {
     return {
       response: (result as { response?: any; cacheHit?: any; tokensGenerated?: any; eval_count?: any; embedding?: any }).response || 'Ollama processing completed',
       tokensGenerated: (result as { response?: any; cacheHit?: any; tokensGenerated?: any; eval_count?: any; embedding?: any }).eval_count || 100,
-      cacheHit: false
+      cacheHit: false,
     };
   } catch (error) {
     return {
@@ -207,7 +207,7 @@ async function routeToOllama(message: string) {
 
 async function routeToVLLM(message: string) {
   try {
-    // This would route to your enhanced vLLM CUDA integration
+    // This would route to your enhanced vLLM CUDA integration;
     const response = await fetch('http://localhost:8096/inference', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -215,7 +215,7 @@ async function routeToVLLM(message: string) {
         prompt: message,
         generateEmbedding: true,
         generateResponse: true,
-        requestType: 'legal-analysis'
+        requestType: 'legal-analysis',
       })
     });
 
@@ -232,7 +232,7 @@ async function routeToVLLM(message: string) {
     };
   } catch (error) {
     return {
-      response: `vLLM CUDA Enterprise Analysis: Your query would be processed using our Self-Organizing Map cache (85% hit rate) and Tensor Core acceleration for enterprise-grade legal analysis with 1000+ concurrent stream support.`
+      response: `vLLM CUDA Enterprise Analysis: Your query would be processed using our Self-Organizing Map cache (85% hit rate) and Tensor Core acceleration for enterprise-grade legal analysis with 1000+ concurrent stream support.`,
     };
   }
 }
@@ -247,7 +247,7 @@ async function routeToFastEmbed(message: string, generateEmbedding: boolean) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           texts: [message],
-          model: 'BAAI/bge-small-en-v1.5'
+          model: 'BAAI/bge-small-en-v1.5',
         })
       });
 
@@ -261,11 +261,11 @@ async function routeToFastEmbed(message: string, generateEmbedding: boolean) {
       response: `FastEmbed GPU Processing: Generated ${embedding ? embedding.length: 768}-dimensional embedding vector for semantic search and similarity analysis. GPU acceleration provides 5-20ms embedding generation for your query.`,
       embedding,
       tokensGenerated: 25,
-      cacheHit: Math.random() > 0.3 // Simulate cache behavior
+      cacheHit: Math.random() > 0.3 // Simulate cache behavior,
     };
   } catch (error) {
     return {
-      response: `FastEmbed GPU would generate high-dimensional embeddings for semantic search and vector similarity analysis using GPU acceleration.`
+      response: `FastEmbed GPU would generate high-dimensional embeddings for semantic search and vector similarity analysis using GPU acceleration.`,
     };
   }
 }

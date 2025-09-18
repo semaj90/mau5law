@@ -53,7 +53,7 @@ interface CudaInferenceResponse {
 		temperature: number;
 		active_streams: number;
 		vram_used_mb: number;
-		vram_total_mb: number;
+		vram_total_mb: number;,
 	};
 	grpo?: {
 		structured_reasoning: Record<string, any>;
@@ -73,15 +73,15 @@ interface VectorSearchRequest {
 }
 
 interface BatchInferenceRequest {
-	queries: CudaInferenceRequest[];
+	queries: CudaInferenceRequest[];,
 }
 
-// Health check for CUDA server
+// Health check for CUDA server;
 async function checkCudaServerHealth(): Promise<boolean> {
 	try {
 		const response = await fetch(`${CUDA_SERVER_URL}/health`, {
 			method: 'GET',
-			signal: AbortSignal.timeout(5000)
+			signal: AbortSignal.timeout(5000),
 		});
 		
 		if (!(response as { ok?: any; json?: any; status?: any }).ok) return false;
@@ -94,18 +94,18 @@ async function checkCudaServerHealth(): Promise<boolean> {
 	}
 }
 
-// POST endpoint for CUDA-accelerated inference
+// POST endpoint for CUDA-accelerated inference;
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
 	try {
 		const startTime = Date.now();
 		const requestData: CudaInferenceRequest = await request.json();
 
-		// Validate required fields
+		// Validate required fields;
 		if (!requestData.query?.trim()) {
 			return json({
 				success: false,
 				error: 'Query is required',
-				processing_time_ms: Date.now() - startTime
+				processing_time_ms: Date.now() - startTime,
 			}, { status: 400 });
 		}
 
@@ -116,11 +116,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 				success: false,
 				error: 'CUDA server is not available',
 				fallback_available: true,
-				processing_time_ms: Date.now() - startTime
+				processing_time_ms: Date.now() - startTime,
 			}, { status: 503 });
 		}
 
-		// Prepare CUDA inference request
+		// Prepare CUDA inference request;
 		const cudaRequest = {
 			query: requestData.query.trim(),
 			max_tokens: requestData.max_tokens || 2048,
@@ -136,11 +136,11 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 				sveltekit_frontend: true,
 				request_timestamp: new Date().toISOString(),
 				client_type: 'web',
-				performance_target: 'rtx_3060_ti'
+				performance_target: 'rtx_3060_ti',
 			}
 		};
 
-		// Make request to CUDA server
+		// Make request to CUDA server;
 		const cudaResponse = await fetch(`${CUDA_SERVER_URL}/api/legal/inference`, {
 			method: 'POST',
 			headers: {
@@ -149,7 +149,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 				'X-Request-ID': requestData.session_id || `req_${Date.now()}`
 			},
 			body: JSON.stringify(cudaRequest),
-			signal: AbortSignal.timeout(CUDA_TIMEOUT)
+			signal: AbortSignal.timeout(CUDA_TIMEOUT),
 		});
 
 		if (!cudaResponse.ok) {
@@ -188,12 +188,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 			details: error.message,
 			cuda_acceleration: false,
 			processing_time_ms: processingTime,
-			fallback_required: true
+			fallback_required: true,
 		}, { status: 500 });
 	}
 };
 
-// GET endpoint for CUDA server status and metrics
+// GET endpoint for CUDA server status and metrics;
 const originalGETHandler: RequestHandler = async ({ url }) => {
 	try {
 		const operation = url.searchParams.get('operation') || 'status';
@@ -228,7 +228,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 						vram_total_gb: 8,
 						cuda_cores: 4608,
 						compute_capability: '8.6',
-						memory_bandwidth: '448 GB/s'
+						memory_bandwidth: '448 GB/s',
 					}
 				});
 
@@ -239,9 +239,9 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 				return json({
 					success: true,
 					...gpuData
-				});
+				,});
 
-			default:
+			default:;
 				return json({
 					success: true,
 					message: 'CUDA-accelerated Legal AI API',
@@ -250,7 +250,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 					performance_targets: {
 						tokens_per_second: 50,
 						max_inference_time_ms: 2000,
-						memory_efficiency: 0.85
+						memory_efficiency: 0.85,
 					}
 				});
 		}
@@ -262,12 +262,12 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
 			success: false,
 			error: 'Failed to get CUDA server status',
 			details: error.message,
-			cuda_available: false
+			cuda_available: false,
 		}, { status: 503 });
 	}
 };
 
-// PATCH endpoint for vector search
+// PATCH endpoint for vector search;
 const originalPATCHHandler: RequestHandler = async ({ request }) => {
 	try {
 		const searchRequest: VectorSearchRequest = await request.json();
@@ -275,14 +275,14 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 		if (!searchRequest.query_vector || !Array.isArray(searchRequest.query_vector)) {
 			return json({
 				success: false,
-				error: 'query_vector array is required'
+				error: 'query_vector array is required',
 			}, { status: 400 });
 		}
 
 		if (searchRequest.query_vector.length !== 768) {
 			return json({
 				success: false,
-				error: 'query_vector must be 768-dimensional for compatibility with nomic-embed-text'
+				error: 'query_vector must be 768-dimensional for compatibility with nomic-embed-text',
 			}, { status: 400 });
 		}
 
@@ -291,14 +291,14 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 			top_k: searchRequest.top_k || 10,
 			threshold: searchRequest.threshold || 0.5,
 			legal_domain: searchRequest.legal_domain || 'general',
-			include_metadata: searchRequest.include_metadata ?? true
+			include_metadata: searchRequest.include_metadata ?? true,
 		};
 
 		const response = await fetch(`${CUDA_SERVER_URL}/api/legal/vector-search`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(vectorSearchRequest),
-			signal: AbortSignal.timeout(15000) // Vector search timeout
+			signal: AbortSignal.timeout(15000) // Vector search timeout,
 		});
 
 		if (!(response as { ok?: any; json?: any; status?: any }).ok) {
@@ -311,19 +311,19 @@ const originalPATCHHandler: RequestHandler = async ({ request }) => {
 			...result,
 			cuda_accelerated: true,
 			vector_dimensions: 768,
-			search_algorithm: 'cuda_optimized_cosine_similarity'
+			search_algorithm: 'cuda_optimized_cosine_similarity',
 		});
 
 	} catch (error: any) {
 		return json({
 			success: false,
 			error: 'CUDA vector search failed',
-			details: error.message
+			details: error.message,
 		}, { status: 500 });
 	}
 };
 
-// PUT endpoint for batch inference
+// PUT endpoint for batch inference;
 const originalPUTHandler: RequestHandler = async ({ request }) => {
 	try {
 		const batchRequest: BatchInferenceRequest = await request.json();
@@ -331,18 +331,18 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 		if (!batchRequest.queries || !Array.isArray(batchRequest.queries)) {
 			return json({
 				success: false,
-				error: 'queries array is required'
+				error: 'queries array is required',
 			}, { status: 400 });
 		}
 
 		if (batchRequest.queries.length > 16) {
 			return json({
 				success: false,
-				error: 'Maximum batch size is 16 queries for RTX 3060 Ti optimization'
+				error: 'Maximum batch size is 16 queries for RTX 3060 Ti optimization',
 			}, { status: 400 });
 		}
 
-		// Convert to CUDA server format
+		// Convert to CUDA server format;
 		const cudaBatchRequest = batchRequest.queries.map(query => ({
 			query: query.query,
 			max_tokens: query.max_tokens || 2048,
@@ -355,15 +355,15 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 			metadata: {
 				...query.metadata,
 				batch_processing: true,
-				rtx_3060_ti_optimized: true
+				rtx_3060_ti_optimized: true,
 			}
-		}));
+		});
 
 		const response = await fetch(`${CUDA_SERVER_URL}/api/legal/batch`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(cudaBatchRequest),
-			signal: AbortSignal.timeout(60000) // Extended timeout for batch
+			signal: AbortSignal.timeout(60000) // Extended timeout for batch,
 		});
 
 		if (!(response as { ok?: any; json?: any; status?: any }).ok) {
@@ -376,19 +376,19 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 			...result,
 			cuda_batch_processing: true,
 			parallel_streams: 8,
-			rtx_3060_ti_optimized: true
+			rtx_3060_ti_optimized: true,
 		});
 
 	} catch (error: any) {
 		return json({
 			success: false,
 			error: 'CUDA batch inference failed',
-			details: error.message
+			details: error.message,
 		}, { status: 500 });
 	}
 };
 
-// DELETE endpoint for cleanup and memory optimization
+// DELETE endpoint for cleanup and memory optimization;
 const originalDELETEHandler: RequestHandler = async () => {
 	try {
 		const response = await fetch(`${CUDA_SERVER_URL}/api/gpu/optimize`, {
@@ -406,14 +406,14 @@ const originalDELETEHandler: RequestHandler = async () => {
 		return json({
 			...result,
 			message: 'GPU memory optimization completed',
-			rtx_3060_ti_memory: '8GB VRAM optimized'
+			rtx_3060_ti_memory: '8GB VRAM optimized',
 		});
 
 	} catch (error: any) {
 		return json({
 			success: false,
 			error: 'Memory optimization failed',
-			details: error.message
+			details: error.message,
 		}, { status: 500 });
 	}
 };

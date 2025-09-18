@@ -1,18 +1,12 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync } from "fs";
-import { join } from "path";
+import { readFileSync, writeFileSync } from 'fs';
+import { join } from 'path';
 
-console.log("🔧 Fixing Help Articles...");
+console.log('🔧 Fixing Help Articles...');
 
-const helpPagePath = join(
-  process.cwd(),
-  "src",
-  "routes",
-  "help",
-  "+page.svelte",
-);
-let content = readFileSync(helpPagePath, "utf8");
+const helpPagePath = join(process.cwd(), 'src', 'routes', 'help', '+page.svelte');
+let content = readFileSync(helpPagePath, 'utf8');
 
 // Fix articles missing tags and lastUpdated fields
 const fixes = [
@@ -49,4 +43,4 @@ fixes.forEach((fix) => {
 writeFileSync(helpPagePath, content);
 
 console.log(`✅ Fixed ${fixedCount} help articles`);
-console.log("📝 All help articles now have tags and lastUpdated fields");
+console.log('📝 All help articles now have tags and lastUpdated fields');

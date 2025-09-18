@@ -4,6 +4,7 @@
 
 import { existsSync, readFileSync, watchFile } from "fs";
 import { resolve } from "path";
+}
 
 export interface VSCodeCommand {
   command: string;
@@ -24,7 +25,7 @@ export class VSCodeIntegration {
     this.logFile = logFile || resolve(process.cwd(), '.vscode/vite-errors.json');
   }
 
-  // Start watching for error log changes
+  // Start watching for error log changes;
   startWatching() {
     if (this.isWatching || !existsSync(this.logFile)) {
       return;
@@ -39,20 +40,20 @@ export class VSCodeIntegration {
     console.log(`📟 VS Code integration started - watching ${this.logFile}`);
   }
 
-  // Stop watching
+  // Stop watching;
   stopWatching() {
     this.isWatching = false;
     // Note: fs.watchFile doesn't return a watcher to close in Node.js
     console.log('📟 VS Code integration stopped');
   }
 
-  // Handle log file updates
+  // Handle log file updates;
   private handleLogUpdate() {
     try {
       const data = readFileSync(this.logFile, 'utf-8');
       const logData = JSON.parse(data);
       
-      // Get recent errors (last 5 minutes)
+      // Get recent errors (last 5 minutes);
       const recentErrors = logData.errors.filter((error: any) => {
         const errorTime = new Date(error.timestamp);
         const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
@@ -64,14 +65,14 @@ export class VSCodeIntegration {
       }
 
       // Notify callbacks
-      this.callbacks.forEach((callback: any) => callback(logData.errors));
+      this.callbacks.forEach((callback: any) => callback(logData.errors);
       
     } catch (error: any) {
       console.warn('Failed to parse error log:', error);
     }
   }
 
-  // Send error notifications
+  // Send error notifications;
   private notifyErrors(errors: any[]) {
     const errorCount = errors.filter((e: any) => e.level === 'error').length;
     const warningCount = errors.filter((e: any) => e.level === 'warn').length;
@@ -80,7 +81,7 @@ export class VSCodeIntegration {
       this.sendNotification({
         message: `Vite: ${errorCount} error(s) detected`,
         type: 'error',
-        actions: [
+        actions: [;
           {
             title: 'View Errors',
             command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
@@ -95,7 +96,7 @@ export class VSCodeIntegration {
       this.sendNotification({
         message: `Vite: ${warningCount} warning(s) detected`,
         type: 'warning',
-        actions: [
+        actions: [;
           {
             title: 'View Warnings',
             command: { command: 'workbench.action.tasks.runTask', args: ['View Vite Errors'] }
@@ -105,7 +106,7 @@ export class VSCodeIntegration {
     }
   }
 
-  // Send notification to VS Code
+  // Send notification to VS Code;
   private sendNotification(notification: VSCodeNotification) {
     // In a real VS Code extension, this would use the VS Code API
     // For now, we'll use console output with special formatting
@@ -121,12 +122,12 @@ export class VSCodeIntegration {
     }
   }
 
-  // Register callback for error updates
+  // Register callback for error updates;
   onErrorUpdate(callback: (errors: any[]) => void) {
     this.callbacks.push(callback);
   }
 
-  // Get current errors
+  // Get current errors;
   getCurrentErrors() {
     try {
       if (existsSync(this.logFile)) {
@@ -139,19 +140,19 @@ export class VSCodeIntegration {
     return { errors: [], diagnostics: [] };
   }
 
-  // Generate problem matcher for VS Code tasks
+  // Generate problem matcher for VS Code tasks;
   static generateProblemMatcher() {
     return {
       owner: 'vite-error-logger',
       fileLocation: ['relative', '${workspaceFolder}'],
-      pattern: [
+      pattern: [;
         {
           regexp: '^ERROR\\s+(.+):(\\d+):(\\d+)\\s+(.+)$',
           file: 1,
           line: 2,
           column: 3,
           message: 4,
-          severity: 'error'
+          severity: 'error',
         },
         {
           regexp: '^WARN\\s+(.+):(\\d+):(\\d+)\\s+(.+)$',
@@ -159,20 +160,20 @@ export class VSCodeIntegration {
           line: 2,
           column: 3,
           message: 4,
-          severity: 'warning'
+          severity: 'warning',
         }
       ]
     };
   }
 
-  // Generate VS Code settings for the integration
+  // Generate VS Code settings for the integration;
   static generateVSCodeSettings() {
     return {
       'files.associations': {
         'vite-errors.json': 'json',
         'vite-diagnostics.json': 'json'
       },
-      'json.schemas': [
+      'json.schemas': [;
         {
           fileMatch: ['vite-errors.json'],
           schema: {
@@ -213,7 +214,7 @@ export class VSCodeIntegration {
   }
 }
 
-// Error navigation utilities
+// Error navigation utilities;
 export class ErrorNavigator {
   private errors: any[] = [];
 
@@ -223,7 +224,7 @@ export class ErrorNavigator {
     });
   }
 
-  // Navigate to next error
+  // Navigate to next error;
   nextError() {
     const errorWithFile = this.errors.find((e: any) => e.level === 'error' && e.file);
     if (errorWithFile) {
@@ -231,7 +232,7 @@ export class ErrorNavigator {
     }
   }
 
-  // Navigate to previous error
+  // Navigate to previous error;
   previousError() {
     const errors = this.errors.filter((e: any) => e.level === 'error' && e.file).reverse();
     const errorWithFile = errors[0];
@@ -240,18 +241,18 @@ export class ErrorNavigator {
     }
   }
 
-  // Open file at specific location
+  // Open file at specific location;
   private openFile(file: string, line?: number, column?: number) {
     const location = line ? `:${line}${column ? `:${column}` : ''}` : '';
     console.log(`📂 Opening file: ${file}${location}`);
     
-    // In a real VS Code extension, this would use:
+    // In a real VS Code extension, this would use:;
     // vscode.window.showTextDocument(vscode.Uri.file(file), {
     //   selection: new vscode.Range(line - 1, column - 1, line - 1, column - 1)
     // });
   }
 
-  // Get error summary
+  // Get error summary;
   getErrorSummary() {
     const summary = {
       total: this.errors.length,
@@ -270,7 +271,7 @@ export class ErrorNavigator {
   }
 }
 
-// Auto-fix suggestions
+// Auto-fix suggestions;
 export class AutoFixSuggestions {
   static getSuggestions(error: any): Array< {
     const suggestions = [];
@@ -280,13 +281,13 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Install missing dependencies',
         command: 'npm install',
-        args: []
+        args: [],
       });
       
       suggestions.push({
         title: 'Check import paths',
         command: 'editor.action.quickFix',
-        args: []
+        args: [],
       });
     }
 
@@ -294,13 +295,13 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Run TypeScript check',
         command: 'workbench.action.tasks.runTask',
-        args: ['npm: check']
+        args: ['npm: check'],
       });
       
       suggestions.push({
         title: 'Generate missing types',
         command: 'typescript.generateGettersAndSetters',
-        args: []
+        args: [],
       });
     }
 
@@ -308,7 +309,7 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Check Svelte syntax',
         command: 'svelte.restartLanguageServer',
-        args: []
+        args: [],
       });
       
       suggestions.push({
@@ -322,7 +323,7 @@ export class AutoFixSuggestions {
       suggestions.push({
         title: 'Check UnoCSS configuration',
         command: 'editor.action.formatDocument',
-        args: []
+        args: [],
       });
     }
 

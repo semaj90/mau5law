@@ -1,6 +1,7 @@
 # 🧠 RAG-Powered Legal Case Management System
 
-A production-ready, modular Retrieval-Augmented Generation (RAG) system built with SvelteKit, PostgreSQL + pgvector, Qdrant, and comprehensive AI integration.
+A production-ready, modular Retrieval-Augmented Generation (RAG) system built with SvelteKit,
+PostgreSQL + pgvector, Qdrant, and comprehensive AI integration.
 
 ## 🏗️ Architecture Overview
 
@@ -191,29 +192,29 @@ MAX_CONCURRENT_EMBEDDINGS=5
 ### Basic Vector Search
 
 ```typescript
-import { searchVector } from "$lib/server/search/vector-search";
+import { searchVector } from '$lib/server/search/vector-search';
 
 // Fast pgvector search
-const results = await searchVector("gun evidence", {
-  searchType: "fast",
+const results = await searchVector('gun evidence', {
+  searchType: 'fast',
   threshold: 0.7,
   limit: 10,
 });
 
 // Advanced Qdrant search with filtering
-const filteredResults = await searchVector("drug possession", {
-  searchType: "comprehensive",
+const filteredResults = await searchVector('drug possession', {
+  searchType: 'comprehensive',
   filter: {
     must: [
-      { key: "case_status", match: { value: "open" } },
-      { key: "jurisdiction", match: { value: "federal" } },
+      { key: 'case_status', match: { value: 'open' } },
+      { key: 'jurisdiction', match: { value: 'federal' } },
     ],
   },
 });
 
 // Hybrid search (recommended)
-const hybridResults = await searchVector("witness testimony", {
-  searchType: "hybrid",
+const hybridResults = await searchVector('witness testimony', {
+  searchType: 'hybrid',
   fallbackToQdrant: true,
 });
 ```
@@ -228,7 +229,7 @@ const hybridResults = await searchVector("witness testimony", {
     const { answer, references, confidence } = event.detail;
     console.log(`AI Response (${Math.round(confidence * 100)}% confidence):`, answer);
 
-    references.forEach(ref => {
+    references.forEach((ref) => {
       console.log(`Reference: ${ref.type} - ${ref.title} (${ref.relevanceScore})`);
     });
   }
@@ -242,7 +243,7 @@ const hybridResults = await searchVector("witness testimony", {
 
 <AskAI
   caseId="case-123"
-  evidenceIds={["evidence-1", "evidence-2"]}
+  evidenceIds={['evidence-1', 'evidence-2']}
   showReferences={true}
   enableVoiceInput={true}
   on:response={handleAIResponse}
@@ -253,22 +254,19 @@ const hybridResults = await searchVector("witness testimony", {
 ### Client-side Caching
 
 ```typescript
-import {
-  getIndexedDBService,
-  trackUserActivity,
-} from "$lib/services/indexeddb";
+import { getIndexedDBService, trackUserActivity } from '$lib/services/indexeddb';
 
 const indexedDB = getIndexedDBService();
 
 // Cache embeddings locally
-await indexedDB.cacheEmbedding("search query", embedding, "openai");
+await indexedDB.cacheEmbedding('search query', embedding, 'openai');
 
 // Track user activity
 await trackUserActivity({
-  type: "search",
-  target: "case",
-  targetId: "case-123",
-  query: "evidence analysis",
+  type: 'search',
+  target: 'case',
+  targetId: 'case-123',
+  query: 'evidence analysis',
 });
 
 // Get recent activity for context
@@ -345,7 +343,7 @@ curl http://localhost:5173/api/ai/ask
 ```typescript
 // Check cache statistics
 const stats = await indexedDBService.getCacheStats();
-console.log("Cache stats:", stats);
+console.log('Cache stats:', stats);
 
 // Vector search performance
 const startTime = Date.now();
@@ -407,9 +405,9 @@ export async function generateCustomEmbedding(text: string): Promise<number[]> {
 
 ```typescript
 // Register custom search strategy
-vectorSearchService.strategies.set("custom", {
-  name: "Custom Strategy",
-  description: "Your custom search logic",
+vectorSearchService.strategies.set('custom', {
+  name: 'Custom Strategy',
+  description: 'Your custom search logic',
   execute: async (query, options) => {
     // Your search implementation
     return results;

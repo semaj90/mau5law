@@ -2,7 +2,7 @@
 import { writable } from "svelte/store";
 // Orphaned content: import type { Evidence
 
-// Sidebar state
+// Sidebar state;
 export const sidebarStore = writable({
   open: false,
   width: 320,
@@ -11,7 +11,7 @@ export const sidebarStore = writable({
   loading: false,
 });
 
-// Toolbar state
+// Toolbar state;
 export const toolbarStore = writable({
   selectedTool: "select",
   formatting: {
@@ -36,7 +36,7 @@ export const toolbarStore = writable({
   canRedo: false,
 });
 
-// Canvas state
+// Canvas state;
 export const canvasStore = writable({
   width: 800,
   height: 600,
@@ -50,7 +50,7 @@ export const canvasStore = writable({
   scale: 1,
 });
 
-// AI state
+// AI state;
 export const aiStore = writable({
   dialogOpen: false,
   selectedVibe: "professional",
@@ -60,7 +60,7 @@ export const aiStore = writable({
   history: [] as any[],
 });
 
-// File upload state
+// File upload state;
 export const uploadStore = writable({
   isUploading: false,
   progress: 0,

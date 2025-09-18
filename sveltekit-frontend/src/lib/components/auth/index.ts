@@ -15,7 +15,7 @@ export { default as NesAuthModal } from './NesAuthModal.svelte.js';
 // Re-export auth store for convenience
 export { authStore, useAuth } from '$lib/stores/auth-store.svelte';
 
-// Auth utility types
+// Auth utility types;
 export type AuthComponentProps = {
   children?: import('svelte').Snippet;
   fallback?: import('svelte').Snippet;
@@ -31,6 +31,7 @@ export type GuardProps = AuthComponentProps & {
 
 export type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password';
 export type AuthProviderType = 'email' | 'google' | 'github' | 'microsoft';
+}
 
 export interface AuthFormData {
   email: string;

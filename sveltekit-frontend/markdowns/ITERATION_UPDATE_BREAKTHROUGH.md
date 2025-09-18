@@ -5,7 +5,8 @@
 ### **Root Cause Identified & Fixed** ✅
 
 - **Issue**: Multiple export declarations in `src/lib/utils/accessibility.ts`
-- **Error**: `Multiple exports with the same name "AriaUtils", "ColorContrast", "FocusManager", "KeyboardNavigation", "MotionUtils"`
+- **Error**:
+  `Multiple exports with the same name "AriaUtils", "ColorContrast", "FocusManager", "KeyboardNavigation", "MotionUtils"`
 - **Solution**: Removed duplicate export block since classes were already exported individually
 - **Result**: Build now progresses to **4775 modules** (massive improvement!)
 

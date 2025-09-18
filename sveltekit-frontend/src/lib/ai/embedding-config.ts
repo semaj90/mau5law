@@ -1,7 +1,8 @@
 /**
  * Embedding Configuration for Legal AI
  * Defines embedding models with Gemma embeddings and nomic-embed-text fallback
- */
+ */;
+}
 
 export interface EmbeddingModelConfig {
   id: string;
@@ -13,11 +14,11 @@ export interface EmbeddingModelConfig {
   latency: number;
   accuracy: number;
   specialized: boolean;
-  capabilities: string[];
+  capabilities: string[];,
 }
 
 export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
-  // Primary: Gemma embeddings (optimized for legal and general tasks)
+  // Primary: Gemma embeddings (optimized for legal and general tasks);
   'embeddinggemma': {
     id: 'embeddinggemma',
     name: 'Gemma Embeddings',
@@ -42,7 +43,7 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text', 'context-understanding']
   },
 
-  // Fallback: nomic-embed-text (reliable backup)
+  // Fallback: nomic-embed-text (reliable backup);
   'nomic-embed-text': {
     id: 'nomic-embed-text',
     name: 'Nomic Embed Text',
@@ -55,7 +56,7 @@ export const EMBEDDING_MODELS: Record<string, EmbeddingModelConfig> = {
     capabilities: ['general-text', 'semantic-search', 'similarity', 'legal-text']
   },
 
-  // Specialized legal embedding
+  // Specialized legal embedding;
   'legal-bert-embeddings': {
     id: 'legal-bert-embeddings',
     name: 'Legal-BERT Embeddings',
@@ -90,7 +91,7 @@ export const EMBEDDING_FALLBACK_CHAINS = {
 
 export function getOptimalEmbeddingModel(
   taskType: 'legal-general' | 'legal-fast' | 'general' = 'legal-general',
-  availableModels: string[] = []
+  availableModels: string[] = [];
 ): string[] {
   const chain = EMBEDDING_FALLBACK_CHAINS[taskType];
   
@@ -99,7 +100,7 @@ export function getOptimalEmbeddingModel(
   }
   
   // Filter to only available models
-  const availableChain = chain.filter(modelId => availableModels.includes(modelId));
+  const availableChain = chain.filter(modelId => availableModels.includes(modelId);
   
   // If no models from the chain are available, return the full chain
   return availableChain.length > 0 ? availableChain : chain;

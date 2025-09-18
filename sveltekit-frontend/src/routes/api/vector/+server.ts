@@ -6,7 +6,7 @@ import VectorService from "$lib/server/services/vector-service";
 
 import { z } from "zod";
 
-// Request validation schemas
+// Request validation schemas;
 const searchSchema = z.object({
   query: z.string().min(1).max(1000),
   documentType: z.enum(["case", "evidence", "note", "report"]).optional(),
@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const results = await VectorService.semanticSearch(params.query, {
           type: params.documentType,
           limit: params.limit,
-          threshold: params.threshold
+          threshold: params.threshold,
         });
 
         return json({
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       }
       default:
         return json(
-          { success: false, error: "Invalid action" },
+          { success: false, error: "Invalid action" },)
           { status: 400 }
         );
     }
@@ -116,22 +116,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     if (error instanceof z.ZodError) {
       return json(
-        { success: false, error: "Validation error", details: error.errors },
+        { success: false, error: "Validation error", details: error.errors },)
         { status: 400 }
       );
     }
-    return json(
-      {
+    return json({
         success: false,
         error: error instanceof Error ? error.message: "Internal server error",
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
 export const GET: RequestHandler = async () => {
-  // Health check endpoint
+  // Health check endpoint;
   try {
     const ollamaUrl = import.meta.env.OLLAMA_URL || "http://localhost:11434";
     const response = await fetch(`${ollamaUrl}/api/tags`);
@@ -150,13 +149,12 @@ export const GET: RequestHandler = async () => {
       },
     });
   } catch (error: any) {
-    return json(
-      {
+    return json({
         success: false,
         status: "unhealthy",
         error: "Failed to connect to Ollama",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 503 }
     );
   }

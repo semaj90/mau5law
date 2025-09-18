@@ -10,12 +10,13 @@ import * as schema from '../db/schema.js';
 import { cache } from '../server/cache/redis.js';
 import { minioService } from '../server/storage/minio-service.js';
 
-// Database connection
+// Database connection;
 const pool = new Pool({
-  connectionString: import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db'
+  connectionString: import.meta.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db',
 });
 
 const db = drizzle(pool, { schema });
+}
 
 export interface CaseData {
   id?: string;
@@ -46,7 +47,7 @@ export interface EvidenceData {
 /**
  * MCP Tool: Load Case
  * Retrieves case data with caching layer
- */
+ */;
 export async function loadCase(caseId: string): Promise<CaseData | null> {
   try {
     console.log(`🔍 MCP Tool: loadCase(${caseId})`);
@@ -59,13 +60,13 @@ export async function loadCase(caseId: string): Promise<CaseData | null> {
       return cached;
     }
 
-    // Query PostgreSQL with Drizzle
+    // Query PostgreSQL with Drizzle;
     const result = await db.query.cases.findFirst({
       where: eq(schema.cases.id, caseId),
       with: {
         evidence: {
           limit: 10,
-          orderBy: desc(schema.evidence.createdAt)
+          orderBy: desc(schema.evidence.createdAt),
         }
       }
     });
@@ -90,7 +91,7 @@ export async function loadCase(caseId: string): Promise<CaseData | null> {
 /**
  * MCP Tool: Create Case
  * Creates new case with auto-generated case number
- */
+ */;
 export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | 'updatedAt'>): Promise<any> {
   try {
     console.log('🆕 MCP Tool: createCase', caseData.title);
@@ -98,24 +99,24 @@ export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | '
     // Generate case number if not provided
     const caseNumber = caseData.caseNumber || await generateCaseNumber();
 
-    // Insert into PostgreSQL
+    // Insert into PostgreSQL;
     const [newCase] = await db.insert(schema.cases).values({
       ...caseData,
       caseNumber,
       status: caseData.status || 'open',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }).returning();
 
     // Invalidate related caches
     await cache.del(`user:${caseData.userId}:cases`);
 
-    // Publish event for real-time updates
+    // Publish event for real-time updates;
     await cache.publish('case:created', {
       caseId: newCase.id,
       title: newCase.title,
       userId: newCase.userId,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     console.log(`✅ Case created: ${newCase.id}`);
@@ -130,18 +131,18 @@ export async function createCase(caseData: Omit<CaseData, 'id' | 'createdAt' | '
 /**
  * MCP Tool: Update Case
  * Updates case with optimistic locking
- */
+ */;
 export async function updateCase(caseId: string, updates: Partial<CaseData>): Promise<any> {
   try {
     console.log(`📝 MCP Tool: updateCase(${caseId})`);
 
     // Update in PostgreSQL
-    const [updated] = await db.update(schema.cases)
+    const [updated] = await db.update(schema.cases);
       .set({
         ...updates,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
-      .where(eq(schema.cases.id, caseId))
+      .where(eq(schema.cases.id, caseId)
       .returning();
 
     if (!updated) {
@@ -152,11 +153,11 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
     await cache.del(`case:${caseId}`);
     await cache.del(`user:${updated.userId}:cases`);
 
-    // Publish update event
+    // Publish update event;
     await cache.publish('case:updated', {
       caseId,
       changes: updates,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     console.log(`✅ Case ${caseId} updated`);
@@ -171,12 +172,12 @@ export async function updateCase(caseId: string, updates: Partial<CaseData>): Pr
 /**
  * MCP Tool: Add Evidence
  * Adds evidence to case with file upload support
- */
+ */;
 export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, 'id' | 'createdAt'>): Promise<any> {
   try {
     console.log(`📋 MCP Tool: addEvidence to case ${caseId}`);
 
-    // Verify case exists
+    // Verify case exists;
     const caseExists = await db.query.cases.findFirst({
       where: eq(schema.cases.id, caseId)
     });
@@ -185,7 +186,7 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
       return { success: false, error: 'Case not found' };
     }
 
-    // Insert evidence
+    // Insert evidence;
     const [newEvidence] = await db.insert(schema.evidence).values({
       caseId,
       title: evidence.source || 'Evidence Item',
@@ -195,18 +196,18 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
       createdBy: 'system', // TODO: get from context
       tags: evidence.tags ? JSON.stringify(evidence.tags) : null,
       metadata: evidence,
-      createdAt: new Date()
+      createdAt: new Date(),
     }).returning();
 
     // Invalidate case cache
     await cache.del(`case:${caseId}`);
 
-    // Publish evidence added event
+    // Publish evidence added event;
     await cache.publish('evidence:added', {
       caseId,
       evidenceId: newEvidence.id,
       evidenceType: evidence.evidenceType,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     console.log(`✅ Evidence added: ${newEvidence.id}`);
@@ -221,7 +222,7 @@ export async function addEvidence(caseId: string, evidence: Omit<EvidenceData, '
 /**
  * MCP Tool: Search Cases
  * Vector-enhanced case search with semantic similarity
- */
+ */;
 export async function searchCases(query: string, userId: string, filters?: {
   status?: string;
   priority?: string;
@@ -247,14 +248,14 @@ export async function searchCases(query: string, userId: string, filters?: {
     }
 
     if (filters?.status) {
-      conditions.push(eq(schema.cases.status, filters.status));
+      conditions.push(eq(schema.cases.status, filters.status);
     }
 
     if (filters?.priority) {
-      conditions.push(eq(schema.cases.priority, filters.priority));
+      conditions.push(eq(schema.cases.priority, filters.priority);
     }
 
-    // Execute search
+    // Execute search;
     const results = await db.query.cases.findMany({
       where: and(...conditions),
       orderBy: desc(schema.cases.updatedAt),
@@ -262,14 +263,14 @@ export async function searchCases(query: string, userId: string, filters?: {
       with: {
         evidence: {
           limit: 3,
-          orderBy: desc(schema.evidence.createdAt)
+          orderBy: desc(schema.evidence.createdAt),
         }
       }
     });
 
     const searchResult = {
       cases: results as CaseData[],
-      totalCount: results.length
+      totalCount: results.length,
     };
 
     // Cache results using specialized search cache
@@ -287,7 +288,7 @@ export async function searchCases(query: string, userId: string, filters?: {
 /**
  * MCP Tool: Get User Cases
  * Retrieves all cases for a user with pagination
- */
+ */;
 export async function getUserCases(userId: string, options: {
   limit?: number;
   offset?: number;
@@ -307,21 +308,21 @@ export async function getUserCases(userId: string, options: {
 
     let conditions = [eq(schema.cases.userId, userId)];
     if (status) {
-      conditions.push(eq(schema.cases.status, status));
+      conditions.push(eq(schema.cases.status, status);
     }
 
     const cases = await db.query.cases.findMany({
       where: and(...conditions),
       limit,
       offset,
-      orderBy: desc(schema.cases.updatedAt)
+      orderBy: desc(schema.cases.updatedAt),
     });
 
     // Get total count
     const [{ count }] = await db
       .select({ count: sql`count(*)`.mapWith(Number) })
       .from(schema.cases)
-      .where(and(...conditions));
+      .where(and(...conditions);
 
     const result = { cases: cases as CaseData[], totalCount: count };
 
@@ -339,7 +340,7 @@ export async function getUserCases(userId: string, options: {
 /**
  * Helper: Generate Case Number
  * Creates unique case number with format: CASE-YYYY-NNNN
- */
+ */;
 async function generateCaseNumber(): Promise<string> {
   const year = new Date().getFullYear();
   const prefix = `CASE-${year}-`;
@@ -348,13 +349,13 @@ async function generateCaseNumber(): Promise<string> {
   const result = await db
     .select({ caseNumber: schema.cases.caseNumber })
     .from(schema.cases)
-    .where(like(schema.cases.caseNumber, `${prefix}%`))
-    .orderBy(desc(schema.cases.caseNumber))
+    .where(like(schema.cases.caseNumber, `${prefix}%`)
+    .orderBy(desc(schema.cases.caseNumber)
     .limit(1);
 
   let nextNumber = 1;
   if ((result as { length?: any; rows?: any }).length > 0 && result[0].caseNumber) {
-    const lastNumber = parseInt(result[0].caseNumber.replace(prefix, ''));
+    const lastNumber = parseInt(result[0].caseNumber.replace(prefix, '');
     if (!isNaN(lastNumber)) {
       nextNumber = lastNumber + 1;
     }
@@ -366,7 +367,7 @@ async function generateCaseNumber(): Promise<string> {
 /**
  * MCP Tool: Health Check
  * Verifies database connectivity and performance
- */
+ */;
 export async function healthCheck(): Promise<any> {
   try {
     const start = Date.now();
@@ -384,7 +385,7 @@ export async function healthCheck(): Promise<any> {
         timestamp: firstRow?.timestamp || new Date().toISOString(),
         poolTotalCount: pool.totalCount,
         poolIdleCount: pool.idleCount,
-        poolWaitingCount: pool.waitingCount
+        poolWaitingCount: pool.waitingCount,
       }
     };
 
@@ -392,7 +393,7 @@ export async function healthCheck(): Promise<any> {
     return {
       status: 'unhealthy',
       details: {
-        error: error instanceof Error ? error.message: 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error',
       }
     };
   }

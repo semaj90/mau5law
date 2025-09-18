@@ -15,7 +15,7 @@ export const evidenceSchema = z.object({
 
 export type EvidenceFormData = z.infer<typeof evidenceSchema>;
 
-// Vector search result type (client-safe)
+// Vector search result type (client-safe);
 export interface VectorSearchResult {
   id: string;
   content: string;
@@ -24,7 +24,7 @@ export interface VectorSearchResult {
   embedding?: number[];
 }
 
-// Export common form schemas
+// Export common form schemas;
 export const caseSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),

@@ -10,7 +10,8 @@ import type { RAGDocument } from '$lib/types/rag';
 // Type definitions - using shared RAGDocument type
 export type { RAGDocument } from '$lib/types/rag';
 
-// All other interfaces remain the same, using the shared RAGDocument type
+// All other interfaces remain the same, using the shared RAGDocument type;
+}
 
 export interface SearchResult {
   id: string;
@@ -25,11 +26,11 @@ export interface SearchResult {
     procedural: number;
     precedential: number;
     jurisdictional: number;
-    confidence: number;
+    confidence: number;,
   };
   relevanceScore: number;
   rank: number;
-  snippet: string;
+  snippet: string;,
 }
 
 export interface RAGSystemStatus {
@@ -43,7 +44,7 @@ export interface RAGSystemStatus {
   memoryUsage: {
     current: number;
     peak: number;
-    limit: number;
+    limit: number;,
   };
   isInitialized: boolean;
   isIndexing: boolean;
@@ -51,7 +52,7 @@ export interface RAGSystemStatus {
   documentsCount: number;
   lastUpdate: number;
   cacheHitRate: number;
-  errorCount: number;
+  errorCount: number;,
 }
 
 export interface MLCachingMetrics {
@@ -69,7 +70,7 @@ export interface MLCachingMetrics {
   clusterCount: number;
   averageSearchTime: number;
   cacheSize: number;
-  recommendations: string[];
+  recommendations: string[];,
 }
 
 export interface RAGStoreState {
@@ -87,10 +88,10 @@ export interface RAGStoreState {
   somClusters: any[];
   neuralPredictions: any[];
   cachingLayers: Record<string, any>;
-  autoOptimization: boolean;
+  autoOptimization: boolean;,
 }
 
-// Mock classes for missing dependencies
+// Mock classes for missing dependencies;
 class SOMRAGSystem {
   constructor(config: any) {}
 
@@ -143,7 +144,7 @@ class NeuralMemoryManager {
   }
 }
 
-// Mock XState functions
+// Mock XState functions;
 function createActor(machine: any, options: any) {
   return {
     start: () => {},
@@ -154,7 +155,7 @@ function createActor(machine: any, options: any) {
 const ragStateMachine = {};
 
 export function createEnhancedRAGStore() {
-  // Initialize core systems
+  // Initialize core systems;
   const somRAG = new SOMRAGSystem({
     dimensions: 384,
     mapWidth: 10,
@@ -167,13 +168,13 @@ export function createEnhancedRAGStore() {
 
   const neuralMemory = new NeuralMemoryManager(512);
 
-  // Initialize XState machine
+  // Initialize XState machine;
   const ragActor = createActor(ragStateMachine, {
     input: { query: '', documents: [] },
   });
   ragActor.start();
 
-  // Core state
+  // Core state;
   const state = writable<RAGStoreState>({
     documents: [],
     searchResults: [],
@@ -224,7 +225,7 @@ export function createEnhancedRAGStore() {
     autoOptimization: true,
   });
 
-  // Performance metrics
+  // Performance metrics;
   const performanceMetrics = writable({
     totalQueries: 0,
     averageResponseTime: 0,
@@ -234,7 +235,7 @@ export function createEnhancedRAGStore() {
     throughputQPS: 0,
   });
 
-  // Multi-layer caching system
+  // Multi-layer caching system;
   const cachingLayers = {
     L1: new Map<string, any>(), // In-memory hot cache
     L2: new Map<string, any>(), // Compressed warm cache
@@ -250,7 +251,7 @@ export function createEnhancedRAGStore() {
     query: string,
     options: any = {}
   ): Promise<any> {
-    state.update((s) => ({ ...s, isLoading: true, currentQuery: query, error: null }));
+    state.update((s) => ({ ...s, isLoading: true, currentQuery: query, error: null });
 
     try {
       ragActor.send({ type: 'SEARCH_START', query });
@@ -262,9 +263,9 @@ export function createEnhancedRAGStore() {
           ...s,
           searchResults: cachedResult.results,
           recommendations: cachedResult.recommendations,
-        }));
+        });
 
-        performanceMetrics.update((p) => ({ ...p, cacheHits: p.cacheHits + 1 }));
+        performanceMetrics.update((p) => ({ ...p, cacheHits: p.cacheHits + 1 });
         updateCacheMetrics();
 
         return {
@@ -282,7 +283,7 @@ export function createEnhancedRAGStore() {
       // Perform semantic search with SOM clustering
       const results = await somRAG.semanticSearch(query, queryEmbedding, options.limit || 10);
 
-      // Convert results to SearchResult format
+      // Convert results to SearchResult format;
       const optimizedResults: SearchResult[] = results.map((docEmbedding: any, index: number) => ({
         id: docEmbedding.id,
         document: {
@@ -318,7 +319,7 @@ export function createEnhancedRAGStore() {
         relevanceScore: 0.8,
         rank: index + 1,
         snippet: docEmbedding.content?.substring(0, 200) || '',
-      }));
+      });
 
       // Update state
       const clusters = somRAG.getClusters();
@@ -332,9 +333,9 @@ export function createEnhancedRAGStore() {
         neuralPredictions: [memoryPrediction],
         recommendations,
         didYouMean,
-      }));
+      });
 
-      // Cache results in multiple layers
+      // Cache results in multiple layers;
       await cacheResultsMultiLayer(query, {
         results: optimizedResults,
         clusters,
@@ -343,7 +344,7 @@ export function createEnhancedRAGStore() {
       });
 
       // Update performance metrics
-      performanceMetrics.update((p) => ({ ...p, totalQueries: p.totalQueries + 1 }));
+      performanceMetrics.update((p) => ({ ...p, totalQueries: p.totalQueries + 1 });
       updatePerformanceMetrics();
 
       ragActor.send({ type: 'SEARCH_SUCCESS', results: optimizedResults });
@@ -354,7 +355,7 @@ export function createEnhancedRAGStore() {
       };
     } catch (error: any) {
       const errorMessage = error instanceof Error ? error.message: 'Search failed';
-      state.update((s) => ({ ...s, error: errorMessage }));
+      state.update((s) => ({ ...s, error: errorMessage });
       ragActor.send({ type: 'SEARCH_ERROR', error: errorMessage });
 
       return {
@@ -362,7 +363,7 @@ export function createEnhancedRAGStore() {
         recommendations: [],
       };
     } finally {
-      state.update((s) => ({ ...s, isLoading: false }));
+      state.update((s) => ({ ...s, isLoading: false });
     }
   }
 
@@ -377,18 +378,18 @@ export function createEnhancedRAGStore() {
       // Update neural memory
       neuralMemory.getCurrentMemoryUsage();
 
-      // Add to documents
+      // Add to documents;
       state.update((s) => ({
         ...s,
         documents: [...s.documents, document],
         embeddings: { ...s.embeddings, [document.id]: embeddings },
-      }));
+      });
 
       // Update caching layers
       await updateCachingLayers(document, embeddings);
     } catch (error: any) {
       const errorMessage = error instanceof Error ? error.message: 'Failed to add document';
-      state.update((s) => ({ ...s, error: errorMessage }));
+      state.update((s) => ({ ...s, error: errorMessage });
     }
   }
 
@@ -399,9 +400,9 @@ export function createEnhancedRAGStore() {
       embeddings: Object.fromEntries(
         Object.entries(s.embeddings).filter(([id]) => id !== documentId)
       ),
-    }));
+    });
 
-    // Clear from all cache layers
+    // Clear from all cache layers;
     Object.values(cachingLayers).forEach((layer) => {
       layer.delete(documentId);
     });
@@ -435,7 +436,7 @@ export function createEnhancedRAGStore() {
             clusterCount: optimization.clusterCount,
             averageSearchTime: p.averageResponseTime,
           },
-        }));
+        });
       });
     } catch (error: any) {
       console.error('Cache optimization failed:', error);
@@ -444,11 +445,11 @@ export function createEnhancedRAGStore() {
 
   async function exportSystemState(): Promise<any> {
     const currentState = await new Promise((resolve) => {
-      state.subscribe((s) => resolve(s))());
+      state.subscribe((s) => resolve(s))();
     });
 
     const currentMetrics = await new Promise((resolve) => {
-      performanceMetrics.subscribe((p) => resolve(p))());
+      performanceMetrics.subscribe((p) => resolve(p))();
     });
 
     return {
@@ -461,9 +462,9 @@ export function createEnhancedRAGStore() {
     };
   }
 
-  // Helper functions
+  // Helper functions;
   async function checkMultiLayerCache(query: string): Promise<any> {
-    // Check layers in order of speed (L1 = fastest)
+    // Check layers in order of speed (L1 = fastest);
     for (let i = 1; i <= 7; i++) {
       const layer = cachingLayers[`L${i}` as keyof typeof cachingLayers];
       if (layer.has(query)) {
@@ -501,7 +502,7 @@ export function createEnhancedRAGStore() {
 
   async function generateRecommendations(
     query: string,
-    results: SearchResult[]
+    results: SearchResult[];
   ): Promise<string[]> {
     // Generate intelligent recommendations based on search results and patterns
     const somRecommendations = await somRAG.generateRecommendations(query, results);
@@ -514,7 +515,7 @@ export function createEnhancedRAGStore() {
       state.update((s) => ({
         ...s,
         cacheMetrics: { ...s.cacheMetrics, hitRate },
-      }));
+      });
     });
   }
 
@@ -528,7 +529,7 @@ export function createEnhancedRAGStore() {
       performanceMetrics.update((p) => ({
         ...p,
         throughputQPS: p.totalQueries / timeDiff,
-      }));
+      });
     });
   }
 
@@ -541,7 +542,7 @@ export function createEnhancedRAGStore() {
   async function generateEmbeddings(content: string): Promise<number[]> {
     // Generate embeddings using configured model
     // This would interface with your embedding service
-    return new Array(768).fill(0).map(() => Math.random()); // Placeholder
+    return new Array(768).fill(0).map(() => Math.random(); // Placeholder
   }
 
   async function updateCachingLayers(document: RAGDocument, embeddings: number[]): Promise<any> {

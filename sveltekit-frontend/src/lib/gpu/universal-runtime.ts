@@ -5,7 +5,8 @@
  * 
  * Provides a unified API for tensor operations across all backends
  * with automatic fallback and performance optimization.
- */
+ */;
+}
 
 export interface TensorShape {
   rows: number;
@@ -17,10 +18,11 @@ export interface Tensor {
   data: Float32Array | any | WebGLTexture; // GPUBuffer | WebGLTexture for runtime flexibility
   shape: TensorShape;
   backend: BackendType;
-  id: string;
+  id: string;,
 }
 
 export type BackendType = 'tensorrt' | 'webgpu' | 'webgl2' | 'wasm-simd' | 'cpu-js';
+}
 
 export interface ComputeBackend {
   type: BackendType;
@@ -35,16 +37,16 @@ export interface ComputeBackend {
   dispose(): Promise<void>;
 }
 
-// Backend capability detection utilities
+// Backend capability detection utilities;
 class BackendDetector {
   static async detectBestBackend(): Promise<BackendType> {
-    // Check TensorRT support (highest priority)
+    // Check TensorRT support (highest priority);
     if (await this.checkTensorRTSupport()) {
       console.log('✅ TensorRT available');
       return 'tensorrt';
     }
 
-    // Check WebGPU support
+    // Check WebGPU support;
     if ('gpu' in navigator) {
       try {
         const adapter = await (navigator as any).gpu.requestAdapter();
@@ -59,7 +61,7 @@ class BackendDetector {
       }
     }
 
-    // Check WebGL2 support
+    // Check WebGL2 support;
     if (typeof WebGL2RenderingContext !== 'undefined') {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl2');
@@ -69,7 +71,7 @@ class BackendDetector {
       }
     }
 
-    // Check WASM SIMD support
+    // Check WASM SIMD support;
     if (typeof WebAssembly !== 'undefined') {
       try {
         // Check for SIMD support via feature detection
@@ -97,10 +99,10 @@ class BackendDetector {
 
   static async checkTensorRTSupport(): Promise<boolean> {
     try {
-      // Check if CUDA service is available
+      // Check if CUDA service is available;
       const response = await fetch('/api/cuda/health', {
         method: 'GET',
-        signal: AbortSignal.timeout(1000)
+        signal: AbortSignal.timeout(1000),
       });
 
       if (response.ok) {
@@ -152,7 +154,7 @@ class BackendDetector {
   }
 }
 
-// Abstract base class for compute backends
+// Abstract base class for compute backends;
 abstract class BaseBackend implements ComputeBackend {
   abstract type: BackendType;
   initialized = false;
@@ -173,7 +175,7 @@ abstract class BaseBackend implements ComputeBackend {
   abstract dispose(): Promise<void>;
 }
 
-// WebGPU Backend Implementation
+// WebGPU Backend Implementation;
 class WebGPUBackend extends BaseBackend {
   type: BackendType = 'webgpu';
   private device: any | null = null; // GPUDevice
@@ -189,7 +191,7 @@ class WebGPUBackend extends BaseBackend {
     this.device = await adapter.requestDevice();
     
     // Create compute shader for matrix multiplication
-    const matMulShader = `
+    const matMulShader = `;
       struct Matrix {
         data: array<f32>,
       }
@@ -199,7 +201,7 @@ class WebGPUBackend extends BaseBackend {
       @group(0) @binding(2) var<storage, read_write> result: Matrix;
       @group(0) @binding(3) var<uniform> dims: vec3<u32>; // M, K, N
 
-      @compute @workgroup_size(8, 8, 1)
+      @compute @workgroup_size(8, 8, 1);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let M = dims.x;
         let K = dims.y;
@@ -222,20 +224,20 @@ class WebGPUBackend extends BaseBackend {
     `;
 
     const shaderModule = this.device.createShaderModule({
-      code: matMulShader
+      code: matMulShader,
     });
 
-    // Create pipeline for matrix multiplication
+    // Create pipeline for matrix multiplication;
     this.matMulPipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: shaderModule,
-        entryPoint: 'main'
+        entryPoint: 'main',
       }
     });
 
     // Create batch matrix multiplication shader
-    const batchMatMulShader = `
+    const batchMatMulShader = `;
       struct BatchMatrix {
         data: array<f32>,
       }
@@ -245,7 +247,7 @@ class WebGPUBackend extends BaseBackend {
       @group(0) @binding(2) var<storage, read_write> result: BatchMatrix;
       @group(0) @binding(3) var<uniform> dims: vec4<u32>; // batch, M, K, N
 
-      @compute @workgroup_size(8, 8, 1)
+      @compute @workgroup_size(8, 8, 1);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let batch = global_id.z;
         let row = global_id.x;
@@ -274,14 +276,14 @@ class WebGPUBackend extends BaseBackend {
     `;
 
     const batchShaderModule = this.device.createShaderModule({
-      code: batchMatMulShader
+      code: batchMatMulShader,
     });
 
     this.batchMatMulPipeline = this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: batchShaderModule,
-        entryPoint: 'main'
+        entryPoint: 'main',
       }
     });
 
@@ -297,7 +299,7 @@ class WebGPUBackend extends BaseBackend {
     const buffer = this.device.createBuffer({
       size: size * 4, // Float32 is 4 bytes
       usage: 0x80 | 0x4 | 0x8, // STORAGE | COPY_DST | COPY_SRC
-      mappedAtCreation: !!data
+      mappedAtCreation: !!data,
     });
 
     if (data) {
@@ -309,7 +311,7 @@ class WebGPUBackend extends BaseBackend {
       data: buffer,
       shape,
       backend: 'webgpu',
-      id: this.generateId()
+      id: this.generateId(),
     };
 
     this.tensors.set(tensor.id, tensor);
@@ -331,7 +333,7 @@ class WebGPUBackend extends BaseBackend {
       throw new Error('WebGPU not initialized');
     }
 
-    // Validate dimensions: a(M,K) @ b(K,N) = result(M,N)
+    // Validate dimensions: a(M,K) @ b(K,N) = result(M,N);
     if (a.shape.cols !== b.shape.rows) {
       throw new Error(`Incompatible shapes for matmul: ${a.shape.rows}x${a.shape.cols} @ ${b.shape.rows}x${b.shape.cols}`);
     }
@@ -343,16 +345,16 @@ class WebGPUBackend extends BaseBackend {
     // Create output tensor
     const result = await this.allocate({ rows: M, cols: N });
 
-    // Create uniform buffer for dimensions
+    // Create uniform buffer for dimensions;
     const uniformBuffer = this.device.createBuffer({
       size: 16, // 3 u32 + padding
       usage: 0x40 | 0x4, // UNIFORM | COPY_DST
-      mappedAtCreation: true
+      mappedAtCreation: true,
     });
     new Uint32Array(uniformBuffer.getMappedRange()).set([M, K, N, 0]);
     uniformBuffer.unmap();
 
-    // Create bind group
+    // Create bind group;
     const bindGroup = this.device.createBindGroup({
       layout: this.matMulPipeline.getBindGroupLayout(0),
       entries: [
@@ -397,7 +399,7 @@ class WebGPUBackend extends BaseBackend {
     const uniformBuffer = this.device.createBuffer({
       size: 16,
       usage: 0x40 | 0x4, // UNIFORM | COPY_DST
-      mappedAtCreation: true
+      mappedAtCreation: true,
     });
     new Uint32Array(uniformBuffer.getMappedRange()).set([batch, M, K, N]);
     uniformBuffer.unmap();
@@ -443,10 +445,10 @@ class WebGPUBackend extends BaseBackend {
     const buffer = tensor.data as any; // GPUBuffer
     const size = tensor.shape.rows * tensor.shape.cols * (tensor.shape.batch || 1);
     
-    // Create staging buffer for readback
+    // Create staging buffer for readback;
     const stagingBuffer = this.device.createBuffer({
       size: size * 4,
-      usage: 0x4 | 0x1 // COPY_DST | MAP_READ
+      usage: 0x4 | 0x1 // COPY_DST | MAP_READ,
     });
 
     // Copy from GPU buffer to staging buffer
@@ -460,7 +462,7 @@ class WebGPUBackend extends BaseBackend {
     // Map and read data
     await stagingBuffer.mapAsync(0x0001); // READ mode
     const mappedRange = stagingBuffer.getMappedRange();
-    const result = new Float32Array(mappedRange.slice(0));
+    const result = new Float32Array(mappedRange.slice(0);
     stagingBuffer.unmap();
     stagingBuffer.destroy();
 
@@ -469,13 +471,13 @@ class WebGPUBackend extends BaseBackend {
 
   async dispose(): Promise<void> {
     // Free all tensors
-    const tensorList = Array.from(this.tensors.values());
+    const tensorList = Array.from(this.tensors.values();
     for (const tensor of tensorList) {
       await this.free(tensor);
     }
     this.tensors.clear();
     
-    // Destroy device
+    // Destroy device;
     if (this.device) {
       this.device.destroy();
       this.device = null;
@@ -486,7 +488,7 @@ class WebGPUBackend extends BaseBackend {
   }
 }
 
-// WebGL2 Backend Implementation (Fragment Shader Compute)
+// WebGL2 Backend Implementation (Fragment Shader Compute);
 class WebGL2Backend extends BaseBackend {
   type: BackendType = 'webgl2';
   private gl: WebGL2RenderingContext | null = null;
@@ -500,7 +502,7 @@ class WebGL2Backend extends BaseBackend {
     this.canvas = document.createElement('canvas');
     this.gl = this.canvas.getContext('webgl2', {
       antialias: false,
-      preserveDrawingBuffer: true
+      preserveDrawingBuffer: true,
     });
 
     if (!this.gl) {
@@ -538,8 +540,8 @@ class WebGL2Backend extends BaseBackend {
       out vec4 result;
 
       void main() {
-        int row = int(texCoord.y * float(M));
-        int col = int(texCoord.x * float(N));
+        int row = int(texCoord.y * float(M);
+        int col = int(texCoord.x * float(N);
 
         float sum = 0.0;
         for (int i = 0; i < K; i++) {
@@ -644,7 +646,7 @@ class WebGL2Backend extends BaseBackend {
       data: texture,
       shape,
       backend: 'webgl2',
-      id: this.generateId()
+      id: this.generateId(),
     };
 
     this.tensors.set(tensor.id, tensor);
@@ -726,7 +728,7 @@ class WebGL2Backend extends BaseBackend {
       data: resultTexture,
       shape: { rows: M, cols: N },
       backend: 'webgl2',
-      id: this.generateId()
+      id: this.generateId(),
     };
 
     this.tensors.set(result.id, result);
@@ -735,7 +737,7 @@ class WebGL2Backend extends BaseBackend {
 
   async batchMatMul(a: Tensor, b: Tensor): Promise<Tensor> {
     // Simplified: process each batch sequentially
-    // In production, use instanced rendering for parallel batch processing
+    // In production, use instanced rendering for parallel batch processing;
     if (!a.shape.batch || !b.shape.batch) {
       throw new Error('Batch dimension required');
     }
@@ -744,7 +746,7 @@ class WebGL2Backend extends BaseBackend {
     const batchSize = a.shape.batch;
 
     for (let i = 0; i < batchSize; i++) {
-      // Extract batch slices (simplified)
+      // Extract batch slices (simplified);
       const sliceA: Tensor = {
         data: a.data,
         shape: { rows: a.shape.rows, cols: a.shape.cols },
@@ -759,7 +761,7 @@ class WebGL2Backend extends BaseBackend {
         id: `${b.id}_batch_${i}`
       };
 
-      results.push(await this.matMul(sliceA, sliceB));
+      results.push(await this.matMul(sliceA, sliceB);
     }
 
     // Combine results (simplified)
@@ -803,14 +805,14 @@ class WebGL2Backend extends BaseBackend {
   }
 
   async dispose(): Promise<void> {
-    const tensorList = Array.from(this.tensors.values());
+    const tensorList = Array.from(this.tensors.values();
     for (const tensor of tensorList) {
       await this.free(tensor);
     }
     this.tensors.clear();
 
     if (this.gl) {
-      // Clean up WebGL resources
+      // Clean up WebGL resources;
       if (this.matMulProgram) {
         this.gl.deleteProgram(this.matMulProgram);
       }
@@ -827,7 +829,7 @@ class WebGL2Backend extends BaseBackend {
   }
 }
 
-// WASM SIMD Backend Implementation
+// WASM SIMD Backend Implementation;
 class WASMSIMDBackend extends BaseBackend {
   type: BackendType = 'wasm-simd';
   private wasmModule: WebAssembly.Module | null = null;
@@ -844,11 +846,11 @@ class WASMSIMDBackend extends BaseBackend {
     // emcc -O3 -msimd128 matmul.cpp -o matmul.wasm
 
     try {
-      // Create memory for WASM module
+      // Create memory for WASM module;
       this.memory = new WebAssembly.Memory({
         initial: 256, // 16MB initial
         maximum: 4096, // 256MB maximum
-        shared: typeof SharedArrayBuffer !== 'undefined' // Enable threading if available
+        shared: typeof SharedArrayBuffer !== 'undefined' // Enable threading if available,
       });
 
       // Example WASM module with SIMD operations
@@ -865,7 +867,7 @@ class WASMSIMDBackend extends BaseBackend {
       // const wasmBuffer = await response.arrayBuffer();
       // this.wasmModule = await WebAssembly.compile(wasmBuffer);
 
-      // Mock WASM exports for demonstration
+      // Mock WASM exports for demonstration;
       this.exports = {
         memory: this.memory,
         allocate: (size: number) => {
@@ -885,7 +887,7 @@ class WASMSIMDBackend extends BaseBackend {
           for (let i = 0; i < M; i++) {
             for (let j = 0; j < N; j++) {
               let sum = 0;
-              // SIMD would process 4 elements at once
+              // SIMD would process 4 elements at once;
               for (let k = 0; k < K; k++) {
                 const aIdx = (aPtr / 4) + i * K + k;
                 const bIdx = (bPtr / 4) + k * N + j;
@@ -943,7 +945,7 @@ class WASMSIMDBackend extends BaseBackend {
       data: ptr as any, // Store pointer as data
       shape,
       backend: 'wasm-simd',
-      id: this.generateId()
+      id: this.generateId(),
     };
 
     this.tensors.set(tensor.id, { ...tensor, ptr });
@@ -1042,7 +1044,7 @@ class WASMSIMDBackend extends BaseBackend {
   }
 
   async dispose(): Promise<void> {
-    const tensorList = Array.from(this.tensors.values());
+    const tensorList = Array.from(this.tensors.values();
     for (const tensor of tensorList) {
       await this.free(tensor as Tensor);
     }
@@ -1058,7 +1060,7 @@ class WASMSIMDBackend extends BaseBackend {
   }
 }
 
-// TensorRT Backend Implementation (Server-side GPU acceleration)
+// TensorRT Backend Implementation (Server-side GPU acceleration);
 class TensorRTBackend extends BaseBackend {
   type: BackendType = 'tensorrt';
   private cudaServiceUrl: string = 'http://localhost:8097';
@@ -1082,14 +1084,14 @@ class TensorRTBackend extends BaseBackend {
         throw new Error('TensorRT not available in CUDA service');
       }
 
-      // Initialize TensorRT session
+      // Initialize TensorRT session;
       const sessionResponse = await fetch(`${this.cudaServiceUrl}/api/v1/tensorrt/session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           device_id: 0, // RTX 3060 Ti
           max_batch_size: 8,
-          workspace_size: 1024 * 1024 * 1024 // 1GB workspace
+          workspace_size: 1024 * 1024 * 1024 // 1GB workspace,
         })
       });
 
@@ -1123,7 +1125,7 @@ class TensorRTBackend extends BaseBackend {
             inputShape: engine.input_shape,
             outputShape: engine.output_shape,
             dataType: engine.data_type,
-            maxBatchSize: engine.max_batch_size
+            maxBatchSize: engine.max_batch_size,
           });
         }
       }
@@ -1142,7 +1144,7 @@ class TensorRTBackend extends BaseBackend {
     let serverTensorId: string | null = null;
 
     if (data) {
-      // Upload tensor data to CUDA service
+      // Upload tensor data to CUDA service;
       const uploadResponse = await fetch(`${this.cudaServiceUrl}/api/v1/tensorrt/tensor`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1151,7 +1153,7 @@ class TensorRTBackend extends BaseBackend {
           tensor_id: tensorId,
           shape: [shape.batch || 1, shape.rows, shape.cols],
           data: Array.from(data),
-          data_type: 'float32'
+          data_type: 'float32',
         })
       });
 
@@ -1165,7 +1167,7 @@ class TensorRTBackend extends BaseBackend {
       data: { tensorId, serverTensorId, uploaded: !!serverTensorId },
       shape,
       backend: 'tensorrt',
-      id: tensorId
+      id: tensorId,
     };
 
     this.tensors.set(tensor.id, tensor);
@@ -1179,7 +1181,7 @@ class TensorRTBackend extends BaseBackend {
 
     const tensorData = tensor.data as any;
     if (tensorData.serverTensorId) {
-      // Free tensor on server
+      // Free tensor on server;
       try {
         await fetch(`${this.cudaServiceUrl}/api/v1/tensorrt/tensor/${tensorData.serverTensorId}`, {
           method: 'DELETE',
@@ -1204,7 +1206,7 @@ class TensorRTBackend extends BaseBackend {
     }
 
     // Use TensorRT matmul engine
-    const engineName = 'matmul_fp16'; // Assuming we have a matmul engine
+    const engineName = 'matmul_fp16'; // Assuming we have a matmul engine;
     if (!this.availableEngines.has(engineName)) {
       throw new Error(`TensorRT engine ${engineName} not available`);
     }
@@ -1221,7 +1223,7 @@ class TensorRTBackend extends BaseBackend {
           engine_name: engineName,
           inputs: {
             input_a: (a.data as any).serverTensorId,
-            input_b: (b.data as any).serverTensorId
+            input_b: (b.data as any).serverTensorId,
           },
           output_shape: [M, N]
         })
@@ -1233,16 +1235,16 @@ class TensorRTBackend extends BaseBackend {
 
       const result = await response.json();
 
-      // Create result tensor with server reference
+      // Create result tensor with server reference;
       const resultTensor: Tensor = {
         data: {
           tensorId: this.generateId(),
           serverTensorId: result.output_tensor_id,
-          uploaded: true
+          uploaded: true,
         },
         shape: { rows: M, cols: N },
         backend: 'tensorrt',
-        id: this.generateId()
+        id: this.generateId(),
       };
 
       this.tensors.set(resultTensor.id, resultTensor);
@@ -1278,7 +1280,7 @@ class TensorRTBackend extends BaseBackend {
           engine_name: engineName,
           inputs: {
             input_a: (a.data as any).serverTensorId,
-            input_b: (b.data as any).serverTensorId
+            input_b: (b.data as any).serverTensorId,
           },
           output_shape: [batch, M, N]
         })
@@ -1294,11 +1296,11 @@ class TensorRTBackend extends BaseBackend {
         data: {
           tensorId: this.generateId(),
           serverTensorId: result.output_tensor_id,
-          uploaded: true
+          uploaded: true,
         },
         shape: { rows: M, cols: N, batch },
         backend: 'tensorrt',
-        id: this.generateId()
+        id: this.generateId(),
       };
 
       this.tensors.set(resultTensor.id, resultTensor);
@@ -1343,17 +1345,17 @@ class TensorRTBackend extends BaseBackend {
 
   async dispose(): Promise<void> {
     // Free all tensors
-    const tensorList = Array.from(this.tensors.values());
+    const tensorList = Array.from(this.tensors.values();
     for (const tensor of tensorList) {
       await this.free(tensor);
     }
     this.tensors.clear();
 
-    // Close TensorRT session
+    // Close TensorRT session;
     if (this.sessionId) {
       try {
         await fetch(`${this.cudaServiceUrl}/api/v1/tensorrt/session/${this.sessionId}`, {
-          method: 'DELETE'
+          method: 'DELETE',
         });
       } catch (error) {
         console.warn('Failed to close TensorRT session:', error);
@@ -1367,7 +1369,7 @@ class TensorRTBackend extends BaseBackend {
   }
 }
 
-// CPU JavaScript Fallback Backend
+// CPU JavaScript Fallback Backend;
 class CPUJSBackend extends BaseBackend {
   type: BackendType = 'cpu-js';
 
@@ -1386,7 +1388,7 @@ class CPUJSBackend extends BaseBackend {
       data: tensorData,
       shape,
       backend: 'cpu-js',
-      id: this.generateId()
+      id: this.generateId(),
     };
 
     this.tensors.set(tensor.id, tensor);
@@ -1413,7 +1415,7 @@ class CPUJSBackend extends BaseBackend {
     const bData = b.data as Float32Array;
     const resultData = new Float32Array(M * N);
 
-    // Standard matrix multiplication (not optimized)
+    // Standard matrix multiplication (not optimized);
     for (let i = 0; i < M; i++) {
       for (let j = 0; j < N; j++) {
         let sum = 0;
@@ -1482,19 +1484,19 @@ class CPUJSBackend extends BaseBackend {
   }
 }
 
-// Main Universal Runtime Class
+// Main Universal Runtime Class;
 export class UniversalGPURuntime {
   private backend: ComputeBackend | null = null;
   private backendType: BackendType | null = null;
 
   /**
    * Initialize the runtime with automatic backend detection
-   */
+   */;
   async initialize(preferredBackend?: BackendType): Promise<BackendType> {
     // Detect best available backend
     const detectedBackend = preferredBackend || await BackendDetector.detectBestBackend();
 
-    // Create appropriate backend instance
+    // Create appropriate backend instance;
     switch (detectedBackend) {
       case 'tensorrt':
         this.backend = new TensorRTBackend();
@@ -1514,7 +1516,7 @@ export class UniversalGPURuntime {
         break;
     }
 
-    // Initialize backend
+    // Initialize backend;
     try {
       await this.backend.initialize();
       this.backendType = detectedBackend;
@@ -1523,7 +1525,7 @@ export class UniversalGPURuntime {
     } catch (error) {
       console.error(`Failed to initialize ${detectedBackend}:`, error);
 
-      // Fallback to CPU if preferred backend fails
+      // Fallback to CPU if preferred backend fails;
       if (detectedBackend !== 'cpu-js') {
         console.log('Falling back to CPU JavaScript backend...');
         this.backend = new CPUJSBackend();
@@ -1538,14 +1540,14 @@ export class UniversalGPURuntime {
 
   /**
    * Get current backend type
-   */
+   */;
   getBackendType(): BackendType | null {
     return this.backendType;
   }
 
   /**
    * Get backend requirements and limitations
-   */
+   */;
   getRequirements(): string[] {
     if (!this.backendType) return [];
     return BackendDetector.getRequirements(this.backendType);
@@ -1553,7 +1555,7 @@ export class UniversalGPURuntime {
 
   /**
    * Allocate a new tensor
-   */
+   */;
   async allocate(shape: TensorShape, data?: Float32Array): Promise<Tensor> {
     if (!this.backend) throw new Error('Runtime not initialized');
     return this.backend.allocate(shape, data);
@@ -1561,7 +1563,7 @@ export class UniversalGPURuntime {
 
   /**
    * Free a tensor from memory
-   */
+   */;
   async free(tensor: Tensor): Promise<void> {
     if (!this.backend) throw new Error('Runtime not initialized');
     return this.backend.free(tensor);
@@ -1569,7 +1571,7 @@ export class UniversalGPURuntime {
 
   /**
    * Perform matrix multiplication
-   */
+   */;
   async matMul(a: Tensor, b: Tensor): Promise<Tensor> {
     if (!this.backend) throw new Error('Runtime not initialized');
     return this.backend.matMul(a, b);
@@ -1577,7 +1579,7 @@ export class UniversalGPURuntime {
 
   /**
    * Perform batch matrix multiplication
-   */
+   */;
   async batchMatMul(a: Tensor, b: Tensor): Promise<Tensor> {
     if (!this.backend) throw new Error('Runtime not initialized');
     return this.backend.batchMatMul(a, b);
@@ -1585,7 +1587,7 @@ export class UniversalGPURuntime {
 
   /**
    * Convert Float32Array to tensor
-   */
+   */;
   async toTensor(data: Float32Array, shape: TensorShape): Promise<Tensor> {
     if (!this.backend) throw new Error('Runtime not initialized');
     return this.backend.toTensor(data, shape);
@@ -1593,7 +1595,7 @@ export class UniversalGPURuntime {
 
   /**
    * Read tensor data back to CPU
-   */
+   */;
   async readback(tensor: Tensor): Promise<Float32Array> {
     if (!this.backend) throw new Error('Runtime not initialized');
     return this.backend.readback(tensor);
@@ -1601,7 +1603,7 @@ export class UniversalGPURuntime {
 
   /**
    * Dispose of all resources
-   */
+   */;
   async dispose(): Promise<void> {
     if (this.backend) {
       await this.backend.dispose();
@@ -1612,19 +1614,19 @@ export class UniversalGPURuntime {
 
   /**
    * Benchmark matrix multiplication performance
-   */
+   */;
   async benchmark(size: number = 512): Promise<{
     backend: BackendType;
     matmulTime: number;
-    throughput: number;
+    throughput: number;,
   }> {
     if (!this.backend || !this.backendType) {
       throw new Error('Runtime not initialized');
     }
 
     // Create random matrices
-    const a = new Float32Array(size * size).map(() => Math.random());
-    const b = new Float32Array(size * size).map(() => Math.random());
+    const a = new Float32Array(size * size).map(() => Math.random();
+    const b = new Float32Array(size * size).map(() => Math.random();
 
     const tensorA = await this.toTensor(a, { rows: size, cols: size });
     const tensorB = await this.toTensor(b, { rows: size, cols: size });
@@ -1680,7 +1682,7 @@ For optimal performance with WASM SIMD and SharedArrayBuffer:
    console.log(crossOriginIsolated); // Should be true
 `;
 
-// Export all types and classes
+// Export all types and classes;
 export {
   TensorRTBackend,
   WebGPUBackend,

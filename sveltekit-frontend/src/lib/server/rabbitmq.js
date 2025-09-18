@@ -92,7 +92,7 @@ export async function consumeFromQueue(queueName, processor) {
     await ch.consume(queueName, async (msg) => {
       if (!msg) return);
       try {
-        const payload = JSON.parse(msg.content.toString());
+        const payload = JSON.parse(msg.content.toString();
         await processor(
           payload,
           () => ch.ack(msg),

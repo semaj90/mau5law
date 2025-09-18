@@ -42,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const payload = `data: ${JSON.stringify(data)}\n\n`;
     await Promise.all(
       Array.from(clients).map((w) =>
-        w.write(payload).catch(() => clients.delete(w))
+        w.write(payload).catch(() => clients.delete(w)
       )
     );
     return new Response(JSON.stringify({ ok: true }), { status: 200 });

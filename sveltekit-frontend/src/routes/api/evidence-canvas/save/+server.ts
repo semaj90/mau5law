@@ -10,7 +10,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     if (!canvas_json) {
       return json(
-        { error: 'Missing required field: canvas_json' },
+        { error: 'Missing required field: canvas_json' },)
         { status: 400 }
       );
     }
@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: metadata || {},
       name: name || `Evidence Canvas ${new Date().toLocaleDateString()}`,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     // Save to mock storage
@@ -33,33 +33,32 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       canvas_id: canvasId,
       message: 'Canvas saved successfully',
-      saved_at: savedCanvas.created_at
+      saved_at: savedCanvas.created_at,
     });
 
   } catch (error) {
     console.error('Canvas save error:', error);
-    return json(
-      { 
+    return json({ 
         error: 'Failed to save canvas',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },
+        details: error instanceof Error ? error.message: 'Unknown error',
+      },)
       { status: 500 }
     );
   }
 };
 
 export const GET: RequestHandler = async () => {
-  // Return list of saved canvases
+  // Return list of saved canvases;
   const canvases = Array.from(canvasStorage.values()).map(canvas => ({
     id: canvas.id,
     name: canvas.name,
     created_at: canvas.created_at,
     updated_at: canvas.updated_at,
-    object_count: canvas.metadata?.object_count || 0
-  }));
+    object_count: canvas.metadata?.object_count || 0,
+  });
 
   return json({
     canvases,
-    total: canvases.length
+    total: canvases.length,
   });
 };

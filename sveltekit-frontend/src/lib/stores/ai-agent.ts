@@ -8,7 +8,8 @@ import { realAIService } from "$lib/services/real-ai-service";
 // ======================================================================
 // ENHANCED AI AGENT STORE WITH PRODUCTION FEATURES
 // Integrates with local LLMs, vector search, and real-time capabilities
-// ======================================================================
+// ======================================================================;
+}
 
 export interface AIAgentState {
   // Connection & Health
@@ -28,11 +29,11 @@ export interface AIAgentState {
   processingQueue: ProcessingJob[];
   completedJobs: ProcessingJob[];
 
-  // RAG & Knowledge
+  // RAG & Knowledge;
   vectorStore: {
     isIndexed: boolean;
     documentCount: number;
-    lastIndexUpdate: Date | null;
+    lastIndexUpdate: Date | null;,
   };
   similarDocuments: SimilarDocument[];
   citationSources: CitationSource[];
@@ -50,7 +51,7 @@ export interface AIAgentState {
   responseTimeMs: number;
   averageResponseTime: number;
   totalRequests: number;
-  successRate: number;
+  successRate: number;,
 }
 
 export interface ProcessingJob {
@@ -62,7 +63,7 @@ export interface ProcessingJob {
   startTime: Date;
   endTime?: Date;
   error?: string;
-  retryCount: number;
+  retryCount: number;,
 }
 
 export interface SimilarDocument {
@@ -79,7 +80,7 @@ export interface CitationSource {
   url?: string;
   content: string;
   relevance: number;
-  type: "document" | "case" | "statute" | "evidence";
+  type: "document" | "case" | "statute" | "evidence";,
 }
 
 export interface AIError {
@@ -89,10 +90,10 @@ export interface AIError {
   timestamp: Date;
   context?: unknown;
   resolved: boolean;
-  retryable: boolean;
+  retryable: boolean;,
 }
 
-// Main AI Agent Store
+// Main AI Agent Store;
 const createAIAgentStore = () => {
   const { subscribe, set, update } = writable<AIAgentState>({
     isConnected: false,
@@ -127,9 +128,9 @@ const createAIAgentStore = () => {
   return {
     subscribe,
 
-    // Connection Management
+    // Connection Management;
     async connect(modelName?: string) {
-      update((state) => ({ ...state, isProcessing: true }));
+      update((state) => ({ ...state, isProcessing: true });
 
       try {
         // Use real AI service for connection
@@ -147,7 +148,7 @@ const createAIAgentStore = () => {
           availableModels: connectionResult.availableModels,
           lastHeartbeat: new Date(),
           systemHealth: "healthy",
-        }));
+        });
 
         // Start heartbeat
         this.startHeartbeat();
@@ -163,7 +164,7 @@ const createAIAgentStore = () => {
           isConnected: false,
           isProcessing: false,
           systemHealth: "critical",
-        }));
+        });
       }
     },
 
@@ -174,16 +175,16 @@ const createAIAgentStore = () => {
         systemHealth: "degraded",
         currentConversation: [],
         activeSessionId: null,
-      }));
+      });
     },
 
-    // Chat Functions
+    // Chat Functions;
     async sendMessage(message: string, context?: unknown) {
       const startTime = Date.now();
       const jobId = crypto.randomUUID();
       const sessionId = crypto.randomUUID();
 
-      // Add user message
+      // Add user message;
       const userMessage: ChatMessage = {
         id: crypto.randomUUID(),
         content: message,
@@ -197,9 +198,9 @@ const createAIAgentStore = () => {
         activeSessionId: sessionId,
         isProcessing: true,
         typingIndicator: true,
-      }));
+      });
 
-      // Add processing job
+      // Add processing job;
       const job: ProcessingJob = {
         id: jobId,
         type: "chat",
@@ -212,10 +213,10 @@ const createAIAgentStore = () => {
       update((state) => ({
         ...state,
         processingQueue: [...state.processingQueue, job],
-      }));
+      });
 
       try {
-        // Use real AI service for chat
+        // Use real AI service for chat;
         const chatResponse = await realAIService.sendMessage({
           message,
           sessionId,
@@ -225,7 +226,7 @@ const createAIAgentStore = () => {
           },
           options: {
             stream: true,
-            useRAG: true
+            useRAG: true,
           }
         });
 
@@ -243,7 +244,7 @@ const createAIAgentStore = () => {
           totalRequests: state.totalRequests + 1,
           isProcessing: false,
           typingIndicator: false,
-        }));
+        });
       } catch (error: any) {
         this.addError({
           type: "processing",
@@ -262,13 +263,13 @@ const createAIAgentStore = () => {
                   state.totalRequests) *
                 100
               : 0,
-        }));
+        });
 
         this.failJob(jobId, (error as Error).message);
       }
     },
 
-    // Streaming Response Handler
+    // Streaming Response Handler;
     async handleStreamingResponse(stream: ReadableStream, jobId: string) {
       const reader = stream.getReader();
       const decoder = new TextDecoder();
@@ -278,7 +279,7 @@ const createAIAgentStore = () => {
         ...state,
         isStreaming: true,
         streamingResponse: "",
-      }));
+      });
 
       try {
         while (true) {
@@ -291,14 +292,14 @@ const createAIAgentStore = () => {
           for (const line of lines) {
             if (line.startsWith("data: ")) {
               try {
-                const data = JSON.parse(line.slice(6));
+                const data = JSON.parse(line.slice(6);
                 if ((data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).content) {
                   assistantMessage += (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).content;
 
                   update((state) => ({
                     ...state,
                     streamingResponse: assistantMessage,
-                  }));
+                  });
                 }
 
                 if ((data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).done) {
@@ -317,7 +318,7 @@ const createAIAgentStore = () => {
           ...state,
           isStreaming: false,
           streamingResponse: "",
-        }));
+        });
       }
     },
 
@@ -341,24 +342,24 @@ const createAIAgentStore = () => {
         currentConversation: [...state.currentConversation, assistantMessage],
         similarDocuments: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).sources || [],
         citationSources: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).citations || [],
-      }));
+      });
 
       this.completeJob(jobId, { message: assistantMessage });
     },
 
-    // RAG Functions
+    // RAG Functions;
     async searchSimilarDocuments(query: string, limit = 5) {
       try {
-        // Use real AI service for document search
+        // Use real AI service for document search;
         const documents = await realAIService.searchSimilarDocuments(query, {
           limit,
-          threshold: 0.7
+          threshold: 0.7,
         });
 
         update((state) => ({
           ...state,
           similarDocuments: documents,
-        }));
+        });
 
         return documents;
       } catch (error: any) {
@@ -377,7 +378,7 @@ const createAIAgentStore = () => {
       metadata?: unknown;
     }) {
       try {
-        // Use real AI service for document indexing
+        // Use real AI service for document indexing;
         const result = await realAIService.indexDocument({
           title: document.title,
           content: document.content,
@@ -396,7 +397,7 @@ const createAIAgentStore = () => {
             lastIndexUpdate: new Date(),
             isIndexed: true,
           },
-        }));
+        });
 
         return { success: true };
       } catch (error: any) {
@@ -409,9 +410,9 @@ const createAIAgentStore = () => {
       }
     },
 
-    // Model Management
+    // Model Management;
     async switchModel(modelName: string) {
-      update((state) => ({ ...state, isProcessing: true }));
+      update((state) => ({ ...state, isProcessing: true });
 
       try {
         // Use real AI service for model switching
@@ -426,7 +427,7 @@ const createAIAgentStore = () => {
           currentModel: modelName,
           isProcessing: false,
           currentConversation: [], // Clear conversation on model switch
-        }));
+        });
       } catch (error: any) {
         this.addError({
           type: "model",
@@ -434,11 +435,11 @@ const createAIAgentStore = () => {
           retryable: true,
         });
 
-        update((state) => ({ ...state, isProcessing: false }));
+        update((state) => ({ ...state, isProcessing: false });
       }
     },
 
-    // Conversation Management
+    // Conversation Management;
     clearConversation() {
       update((state) => ({
         ...state,
@@ -447,7 +448,7 @@ const createAIAgentStore = () => {
         streamingResponse: "",
         similarDocuments: [],
         citationSources: [],
-      }));
+      });
     },
 
     saveConversation() {
@@ -459,7 +460,7 @@ const createAIAgentStore = () => {
         ],
         currentConversation: [],
         activeSessionId: null,
-      }));
+      });
     },
 
     loadConversation(index: number) {
@@ -475,7 +476,7 @@ const createAIAgentStore = () => {
       });
     },
 
-    // Error Handling
+    // Error Handling;
     addError(error: Omit<AIError, "id" | "timestamp" | "resolved">) {
       const newError: AIError = {
         id: crypto.randomUUID(),
@@ -489,7 +490,7 @@ const createAIAgentStore = () => {
         errors: [...state.errors, newError],
         systemHealth:
           state.systemHealth === "healthy" ? "degraded" : state.systemHealth,
-      }));
+      });
     },
 
     resolveError(errorId: string) {
@@ -498,7 +499,7 @@ const createAIAgentStore = () => {
         errors: state.errors.map((error) =>
           error.id === errorId ? { ...error, resolved: true } : error
         ),
-      }));
+      });
     },
 
     clearErrors() {
@@ -506,10 +507,10 @@ const createAIAgentStore = () => {
         ...state,
         errors: [],
         systemHealth: state.isConnected ? "healthy" : "degraded",
-      }));
+      });
     },
 
-    // Job Management
+    // Job Management;
     completeJob(jobId: string, result: any) {
       update((state) => {
         const job = state.processingQueue.find((j) => j.id === jobId);
@@ -550,7 +551,7 @@ const createAIAgentStore = () => {
       });
     },
 
-    // Health Monitoring
+    // Health Monitoring;
     startHeartbeat() {
       const interval = setInterval(async () => {
         try {
@@ -563,13 +564,13 @@ const createAIAgentStore = () => {
             systemHealth: health.overall ? "healthy" : "critical",
             availableModels: health.models.map(m => m.name),
             isConnected: health.overall,
-          }));
+          });
         } catch (error: any) {
           update((state) => ({
             ...state,
             systemHealth: "critical",
             isConnected: false,
-          }));
+          });
         }
       }, 30000); // Every 30 seconds
 
@@ -588,16 +589,16 @@ export const currentConversation = derived(aiAgentStore, (state) => state.curren
 export const isProcessing = derived(aiAgentStore, (state) => state.isProcessing);
 export const streamingResponse = derived(aiAgentStore, (state) => state.streamingResponse);
 export const similarDocuments = derived(aiAgentStore, (state) => state.similarDocuments);
-export const aiErrors = derived(aiAgentStore, (state) => state.errors.filter((e: any) => !e.resolved));
+export const aiErrors = derived(aiAgentStore, (state) => state.errors.filter((e: any) => !e.resolved);
 export const systemHealth = derived(aiAgentStore, (state) => state.systemHealth);
 export const performanceMetrics = derived(aiAgentStore, (state) => ({
   responseTime: state.responseTimeMs,
   averageResponseTime: state.averageResponseTime,
   totalRequests: state.totalRequests,
   successRate: state.successRate,
-}));
+});
 
-// Auto-connect on store initialization
+// Auto-connect on store initialization;
 if (typeof window !== "undefined") {
   aiAgentStore.connect().catch(console.error);
 }

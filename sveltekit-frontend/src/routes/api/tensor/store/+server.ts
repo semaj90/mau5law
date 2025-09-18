@@ -33,7 +33,7 @@ interface StoreResponse {
     total: number;
     successful: number;
     failed: number;
-    storage_time: number;
+    storage_time: number;,
   };
 }
 
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!Array.isArray(results) || results.length === 0) {
       return json({ 
         success: false, 
-        error: 'Results array is required' 
+        error: 'Results array is required' ,
       }, { status: 400 });
     }
     
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     // Process each tensor result
     const storageResults: StorageResult[] = await Promise.all(
-      results.map(result => storeTensorData(result, metadata))
+      results.map(result => storeTensorData(result, metadata)
     );
     
     const successful = storageResults.filter(r => !r.error);
@@ -75,7 +75,7 @@ export const POST: RequestHandler = async ({ request }) => {
         total: results.length,
         successful: successful.length,
         failed: failed.length,
-        storage_time: storageTime
+        storage_time: storageTime,
       }
     } satisfies StoreResponse);
     
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Tensor storage failed',
-      message: error.message
+      message: error.message,
     }, { status: 500 });
   }
 };
@@ -95,14 +95,14 @@ export const POST: RequestHandler = async ({ request }) => {
  */
 async function storeTensorData(
   result: TensorStoreRequest['results'][0],
-  metadata: TensorStoreRequest['metadata']
+  metadata: TensorStoreRequest['metadata'];
 ): Promise<StorageResult> {
   const startTime = performance.now();
   const storedIn: string[] = [];
   let error: string | undefined;
   
   try {
-    // 1. Store in Neo4j for graph relationships
+    // 1. Store in Neo4j for graph relationships;
     try {
       await storeInNeo4j(result, metadata);
       storedIn.push('neo4j');
@@ -110,7 +110,7 @@ async function storeTensorData(
       console.warn('Neo4j storage failed:', e);
     }
     
-    // 2. Store in PostgreSQL with pgvector
+    // 2. Store in PostgreSQL with pgvector;
     try {
       await storeInPostgreSQL(result, metadata);
       storedIn.push('postgresql');
@@ -118,7 +118,7 @@ async function storeTensorData(
       console.warn('PostgreSQL storage failed:', e);
     }
     
-    // 3. Store in Qdrant for vector search
+    // 3. Store in Qdrant for vector search;
     try {
       await storeInQdrant(result, metadata);
       storedIn.push('qdrant');
@@ -126,12 +126,12 @@ async function storeTensorData(
       console.warn('Qdrant storage failed:', e);
     }
     
-    // 4. Cache in Redis for quick access
+    // 4. Cache in Redis for quick access;
     try {
       await cache.set(`tensor:${(result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id}`, {
         ...result,
         metadata,
-        stored_at: Date.now()
+        stored_at: Date.now(),
       }, 24 * 60 * 60 * 1000); // 24 hours
       storedIn.push('redis');
     } catch (e) {
@@ -159,7 +159,7 @@ async function storeTensorData(
  */
 async function storeInNeo4j(
   result: TensorStoreRequest['results'][0],
-  metadata: TensorStoreRequest['metadata']
+  metadata: TensorStoreRequest['metadata'];
 ): Promise<void> {
   // Mock implementation - replace with actual Neo4j driver
   console.log('📊 Storing in Neo4j:', (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id);
@@ -171,12 +171,12 @@ async function storeInNeo4j(
     dimensions: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).dimensions,
     created_at: new Date().toISOString(),
     source: metadata.source || 'ocr',
-    relationships: []
+    relationships: [],
   };
   
   // TODO: Implement actual Neo4j storage
   // const session = driver.session();
-  // await session.run(`
+  // await session.run(`;
   //   CREATE (t:Tensor {
   //     id: $tensor_id,
   //     text: $text,
@@ -195,7 +195,7 @@ async function storeInNeo4j(
  */
 async function storeInPostgreSQL(
   result: TensorStoreRequest['results'][0],
-  metadata: TensorStoreRequest['metadata']
+  metadata: TensorStoreRequest['metadata'];
 ): Promise<void> {
   console.log('🐘 Storing in PostgreSQL:', (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id);
   
@@ -208,7 +208,7 @@ async function storeInPostgreSQL(
     search_index: (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).search_index,
     metadata: {
       ...metadata,
-      stored_at: new Date().toISOString()
+      stored_at: new Date().toISOString(),
     }
   };
   
@@ -241,7 +241,7 @@ async function storeInPostgreSQL(
  */
 async function storeInQdrant(
   result: TensorStoreRequest['results'][0],
-  metadata: TensorStoreRequest['metadata']
+  metadata: TensorStoreRequest['metadata'];
 ): Promise<void> {
   console.log('🔍 Storing in Qdrant:', (result as { tensor_id?: any; text?: any; confidence?: any; dimensions?: any; embeddings?: any; search_index?: any }).tensor_id);
   
@@ -279,7 +279,7 @@ async function storeInQdrant(
   }
 }
 
-// Health check endpoint
+// Health check endpoint;
 export const GET: RequestHandler = async () => {
   const healthChecks = await Promise.allSettled([
     checkNeo4j(),
@@ -292,7 +292,7 @@ export const GET: RequestHandler = async () => {
     neo4j: healthChecks[0].status === 'fulfilled' ? healthChecks[0].value: false,
     postgresql: healthChecks[1].status === 'fulfilled' ? healthChecks[1].value : false,
     qdrant: healthChecks[2].status === 'fulfilled' ? healthChecks[2].value : false,
-    redis: healthChecks[3].status === 'fulfilled' ? healthChecks[3].value : false
+    redis: healthChecks[3].status === 'fulfilled' ? healthChecks[3].value : false,
   };
   
   const allHealthy = Object.values(results).every(Boolean);
@@ -300,9 +300,9 @@ export const GET: RequestHandler = async () => {
   return json({
     healthy: allHealthy,
     services: results,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   }, {
-    status: allHealthy ? 200 : 503
+    status: allHealthy ? 200 : 503,
   });
 };
 

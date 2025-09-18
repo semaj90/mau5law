@@ -50,11 +50,11 @@ async function forwardToRAGBackend(
     if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
       const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text().catch(() => "Unknown error");
 
-      // Log failed API call
+      // Log failed API call;
       console.error(`RAG Backend API call failed [${duration}ms]:`, {
         endpoint,
         status: (response as { ok?: any; text?: any; status?: any; json?: any }).status,
-        error: errorText
+        error: errorText,
       });
 
       throw new Error(`RAG Backend Error (${(response as { ok?: any; text?: any; status?: any; json?: any }).status}): ${errorText}`);
@@ -62,10 +62,10 @@ async function forwardToRAGBackend(
 
     const result = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
 
-    // Log successful API call
+    // Log successful API call;
     console.log(`RAG Backend API call succeeded [${duration}ms]:`, {
       endpoint,
-      resultKeys: Object.keys(result)
+      resultKeys: Object.keys(result),
     });
 
     return result;
@@ -73,10 +73,10 @@ async function forwardToRAGBackend(
     clearTimeout(timeoutId);
     const duration = Date.now() - startTime;
 
-    // Log error
+    // Log error;
     console.error(`RAG Backend API call error [${duration}ms]:`, {
       endpoint,
-      error: err.message
+      error: err.message,
     });
 
     if (err.name === "AbortError") {
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
   } catch (err: any) {
     console.error("Enhanced RAG API Error:", err);
-    return json(
+    return json();
       {
         error: err.message || "Unknown error",
         action,
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 /*
  * Handle document upload via Enhanced RAG Backend
  */
-// Archived: handleUpload moved to archived-handlers.ts
+// Archived: handleUpload moved to archived-handlers.ts;
 async function handleQueueSummarize(request: Request): Promise<any> {
   try {
     const { content, documentId } = await request.json();
@@ -143,7 +143,7 @@ async function handleQueueSummarize(request: Request): Promise<any> {
 
 /*
  * Handle enhanced search (vector/hybrid/chunk) with local fallback
- */
+ */;
 async function handleSearch(request: Request): Promise<any> {
   try {
     const {
@@ -164,7 +164,7 @@ async function handleSearch(request: Request): Promise<any> {
       throw error(400, "Query is required");
     }
 
-    // Try Enhanced RAG Backend first
+    // Try Enhanced RAG Backend first;
     try {
       console.log('Attempting search via Enhanced RAG Backend...');
       const result = await forwardToRAGBackend("/api/v1/rag/search", {
@@ -192,12 +192,12 @@ async function handleSearch(request: Request): Promise<any> {
         results: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).results,
         metadata: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).metadata,
         total: (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).total || (result as { results?: any; metadata?: any; total?: any; analysis?: any; summary?: any; message?: any }).results?.length || 0,
-        source: 'rag-backend'
+        source: 'rag-backend',
       });
     } catch (backendError: any) {
       console.warn('RAG Backend search failed, falling back to local search:', backendError.message);
       
-      // Fallback to local search API
+      // Fallback to local search API;
       const localSearchResponse = await fetch(new URL('/api/rag/search', request.url), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -231,7 +231,7 @@ async function handleSearch(request: Request): Promise<any> {
         total: localResult.analytics?.totalResults || 0,
         source: 'local-search',
         fallback: true,
-        warning: 'Used local search due to backend unavailability'
+        warning: 'Used local search due to backend unavailability',
       });
     }
   } catch (err: any) {
@@ -242,7 +242,7 @@ async function handleSearch(request: Request): Promise<any> {
 
 /*
  * Handle AI text analysis
- */
+ */;
 async function handleAnalyze(request: Request): Promise<any> {
   try {
     const {
@@ -278,7 +278,7 @@ async function handleAnalyze(request: Request): Promise<any> {
 
 /*
  * Handle AI text summarization
- */
+ */;
 async function handleSummarize(request: Request): Promise<any> {
   try {
     const { text, length = "medium", options = {} } = await request.json();
@@ -320,7 +320,7 @@ async function handleSummarize(request: Request): Promise<any> {
 
 /*
  * Handle Enhanced RAG Backend health check
- */
+ */;
 async function handleStatus(): Promise<any> {
   try {
     const [healthResult, metricsResult, statsResult] = await Promise.allSettled(
@@ -369,7 +369,7 @@ async function handleStatus(): Promise<any> {
 
 /*
  * GET handler for status and stats
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get("action");
   // const endpoint = url.searchParams.get("endpoint"); // unused
@@ -404,7 +404,7 @@ export const GET: RequestHandler = async ({ url }) => {
           throw error(400, "Query parameter is required");
         }
 
-        // Try Enhanced RAG Backend first, fallback to local search
+        // Try Enhanced RAG Backend first, fallback to local search;
         try {
           const searchResult = await forwardToRAGBackend("/api/v1/rag/search", {
             method: "POST",
@@ -423,7 +423,7 @@ export const GET: RequestHandler = async ({ url }) => {
             query,
             results: searchResult.results,
             total: searchResult.total,
-            source: 'rag-backend'
+            source: 'rag-backend',
           });
         } catch (backendError: any) {
           console.warn('RAG Backend GET search failed, using local search:', backendError.message);
@@ -433,7 +433,7 @@ export const GET: RequestHandler = async ({ url }) => {
           localSearchUrl.searchParams.set('action', 'search');
           localSearchUrl.searchParams.set('query', query);
           localSearchUrl.searchParams.set('searchType', searchType);
-          localSearchUrl.searchParams.set('limit', limit.toString());
+          localSearchUrl.searchParams.set('limit', limit.toString();
           
           const localResponse = await fetch(localSearchUrl, { method: 'GET' });
           
@@ -449,7 +449,7 @@ export const GET: RequestHandler = async ({ url }) => {
             results: localResult.results,
             total: localResult.results?.length || 0,
             source: 'local-search',
-            fallback: true
+            fallback: true,
           });
         }
       }
@@ -468,7 +468,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 /*
  * PATCH handler for cache operations
- */
+ */;
 export const PATCH: RequestHandler = async ({ url }) => {
   try {
     const operation = url.searchParams.get("operation") || "refresh";
@@ -502,7 +502,7 @@ export const PATCH: RequestHandler = async ({ url }) => {
 
 /*
  * DELETE handler for cache clearing
- */
+ */;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const pattern = url.searchParams.get("pattern");

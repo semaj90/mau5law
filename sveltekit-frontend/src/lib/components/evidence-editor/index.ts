@@ -7,6 +7,7 @@ export { default as VisualEvidenceEditor } from './VisualEvidenceEditor.svelte';
 
 export type EvidenceType = 'image' | 'document' | 'video' | 'audio' | 'digital';
 export type AnnotationType = 'highlight' | 'redaction' | 'comment' | 'timestamp' | 'measurement';
+}
 
 export interface EvidenceAnnotation {
   id: string;

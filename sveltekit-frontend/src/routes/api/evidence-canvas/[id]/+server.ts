@@ -18,12 +18,12 @@ import type { RequestHandler } from './$types.js';
 import { db, canvasStates, canvasAnnotations } from '$lib/server/db/client.js';
 import { eq, and } from 'drizzle-orm';
 
-// CanvasStateCache - In-memory cache for performance optimization
+// CanvasStateCache - In-memory cache for performance optimization;
 const CanvasStateCache = new Map<string, { 
   data: any; 
   timestamp: number; 
   ttl: number; 
-  version: number; 
+  version: number; ,
 }>();
 const CANVAS_CACHE_TTL = 5 * 60 * 1000; // 5 minutes TTL
 const CACHE_VERSION = 1;
@@ -32,7 +32,7 @@ const CACHE_VERSION = 1;
  * CanvasCacheManager - Retrieves cached canvas state
  * @param id Canvas state ID
  * @returns Cached canvas data or null if expired/missing
- */
+ */;
 function getCanvasFromCache(id: string) {
   const cached = CanvasStateCache.get(id);
   if (cached && Date.now() - cached.timestamp < cached.ttl) {
@@ -47,20 +47,20 @@ function getCanvasFromCache(id: string) {
  * @param id Canvas state ID
  * @param data Canvas data to cache
  * @param ttl Cache time-to-live (optional)
- */
+ */;
 function setCanvasInCache(id: string, data: any, ttl: number = CANVAS_CACHE_TTL) {
   CanvasStateCache.set(id, {
     data,
     timestamp: Date.now(),
     ttl,
-    version: CACHE_VERSION
+    version: CACHE_VERSION,
   });
 }
 
 /**
  * CanvasCacheManager - Invalidates cached canvas state
  * @param id Canvas state ID to invalidate
- */
+ */;
 function invalidateCanvasCache(id: string) {
   CanvasStateCache.delete(id);
   console.log(`🗑️  Canvas cache invalidated for ID: ${id}`);
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
         success: true,
         canvas: cached,
         cached: true,
-        source: 'cache'
+        source: 'cache',
       });
     }
 
@@ -90,7 +90,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     const canvasState = await db
       .select()
       .from(canvasStates)
-      .where(eq(canvasStates.id, id))
+      .where(eq(canvasStates.id, id)
       .limit(1);
     
     if (!canvasState.length) {
@@ -101,17 +101,17 @@ export const GET: RequestHandler = async ({ params, url }) => {
     const annotations = await db
       .select()
       .from(canvasAnnotations)
-      .where(eq(canvasAnnotations.evidenceId, id));
+      .where(eq(canvasAnnotations.evidenceId, id);
 
-    // Combine canvas state with annotations
+    // Combine canvas state with annotations;
     const canvas = {
       ...canvasState[0],
       annotations: annotations,
-      canvas_json: canvasState[0].canvasData, // Map to expected field name
+      canvas_json: canvasState[0].canvasData, // Map to expected field name;
       metadata: {
         version: canvasState[0].version,
         isDefault: canvasState[0].isDefault,
-        annotationCount: annotations.length
+        annotationCount: annotations.length,
       }
     };
 
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       success: true,
       canvas,
       cached: false,
-      source: 'database'
+      source: 'database',
     });
 
   } catch (err) {
@@ -148,7 +148,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
 
     if (!canvas_json) {
       return json(
-        { error: 'Missing required field: canvas_json' },
+        { error: 'Missing required field: canvas_json' },)
         { status: 400 }
       );
     }
@@ -157,7 +157,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
     const existingCanvas = await db
       .select()
       .from(canvasStates)
-      .where(eq(canvasStates.id, id))
+      .where(eq(canvasStates.id, id)
       .limit(1);
     
     if (!existingCanvas.length) {
@@ -166,27 +166,27 @@ export const PUT: RequestHandler = async ({ params, request }) => {
 
     // Update canvas state in database
     const updatedCanvas = await db
-      .update(canvasStates)
+      .update(canvasStates);
       .set({
         canvasData: canvas_json,
         name: name || existingCanvas[0].name,
         version: existingCanvas[0].version + 1,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       })
-      .where(eq(canvasStates.id, id))
+      .where(eq(canvasStates.id, id)
       .returning();
 
-    // Update annotations if provided
+    // Update annotations if provided;
     if (annotations && Array.isArray(annotations)) {
       // Delete existing annotations for this canvas
       await db
         .delete(canvasAnnotations)
-        .where(eq(canvasAnnotations.evidenceId, id));
+        .where(eq(canvasAnnotations.evidenceId, id);
 
-      // Insert new annotations
+      // Insert new annotations;
       if (annotations.length > 0) {
         await db
-          .insert(canvasAnnotations)
+          .insert(canvasAnnotations);
           .values(annotations.map(ann => ({
             evidenceId: id,
             fabricData: ann.fabricData || ann,
@@ -200,15 +200,15 @@ export const PUT: RequestHandler = async ({ params, request }) => {
             metadata: ann.metadata || {},
             createdBy: null, // TODO: Get from session
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          })));
+            updatedAt: new Date().toISOString(),
+          }));
       }
     }
 
     // CanvasCacheManager - Invalidate and update cache
     invalidateCanvasCache(id);
 
-    // CanvasResponseBuilder - Create response with updated data
+    // CanvasResponseBuilder - Create response with updated data;
     const responseData = {
       ...updatedCanvas[0],
       canvas_json,
@@ -217,7 +217,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
         ...metadata,
         version: updatedCanvas[0].version,
         annotationCount: annotations?.length || 0,
-        lastModified: updatedCanvas[0].updatedAt
+        lastModified: updatedCanvas[0].updatedAt,
       }
     };
 
@@ -230,7 +230,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
       message: 'Canvas updated successfully',
       canvas_id: id,
       canvas: responseData,
-      updated_at: updatedCanvas[0].updatedAt
+      updated_at: updatedCanvas[0].updatedAt,
     });
 
   } catch (err) {
@@ -247,7 +247,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
 /**
  * CanvasDeleteHandler - Deletes canvas state and annotations
  * @description Removes canvas from database and invalidates cache
- */
+ */;
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
     const { id } = params;
@@ -260,7 +260,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
     const existingCanvas = await db
       .select({ id: canvasStates.id, name: canvasStates.name })
       .from(canvasStates)
-      .where(eq(canvasStates.id, id))
+      .where(eq(canvasStates.id, id)
       .limit(1);
     
     if (!existingCanvas.length) {
@@ -270,13 +270,13 @@ export const DELETE: RequestHandler = async ({ params }) => {
     // CanvasAnnotationManager - Delete all related annotations first
     const deletedAnnotations = await db
       .delete(canvasAnnotations)
-      .where(eq(canvasAnnotations.evidenceId, id))
+      .where(eq(canvasAnnotations.evidenceId, id)
       .returning({ id: canvasAnnotations.id });
 
     // CanvasStateManager - Delete canvas state
     const deletedCanvas = await db
       .delete(canvasStates)
-      .where(eq(canvasStates.id, id))
+      .where(eq(canvasStates.id, id)
       .returning({ id: canvasStates.id, name: canvasStates.name });
 
     // CanvasCacheManager - Invalidate cache
@@ -290,7 +290,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
       canvas_id: id,
       canvas_name: deletedCanvas[0].name,
       deleted_annotations: deletedAnnotations.length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (err) {

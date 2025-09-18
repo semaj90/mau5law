@@ -10,7 +10,7 @@ let evidenceCollection: any = null;
 let canvasStateCollection: any = null;
 let notesCollection: any = null;
 
-// Initialize Loki database
+// Initialize Loki database;
 async function initLoki(): Promise<any> {
   if (!browser) return;
 
@@ -53,7 +53,7 @@ function databaseInitialize() {
     });
   }
 }
-// Store for Loki operations
+// Store for Loki operations;
 export const lokiStore = writable({
   initialized: false,
   evidence: [] as Evidence[],
@@ -61,22 +61,22 @@ export const lokiStore = writable({
   notes: [] as any[],
 });
 
-// Loki operations
+// Loki operations;
 export const loki = {
-  // Initialize the database
+  // Initialize the database;
   async init() {
     await initLoki();
-    lokiStore.update((state) => ({ ...state, initialized: true }));
+    lokiStore.update((state) => ({ ...state, initialized: true });
   },
 
-  // Evidence operations
+  // Evidence operations;
   evidence: {
     add(evidence: Evidence) {
       if (!evidenceCollection) return;
 
       const existing = evidenceCollection.findOne({ id: evidence.id });
       if (existing) {
-        evidenceCollection.update({ ...existing, ...evidence });
+        evidenceCollection.update({ ...existing, ...evidence ,});
       } else {
         evidenceCollection.insert(evidence);
       }
@@ -97,7 +97,7 @@ export const loki = {
       if (!evidenceCollection || !query) return this.getAll();
 
       return evidenceCollection.find({
-        $or: [
+        $or: [)
           { fileName: { $regex: new RegExp(query, "i") } },
           { description: { $regex: new RegExp(query, "i") } },
           { tags: { $contains: query } },
@@ -115,11 +115,11 @@ export const loki = {
       lokiStore.update((state) => ({
         ...state,
         evidence: this.getAll(),
-      }));
+      });
     },
   },
 
-  // Canvas state operations
+  // Canvas state operations;
   canvasState: {
     save(reportId: string, canvasData: any) {
       if (!canvasStateCollection) return;
@@ -132,7 +132,7 @@ export const loki = {
       };
 
       if (existing) {
-        canvasStateCollection.update({ ...existing, ...stateData });
+        canvasStateCollection.update({ ...existing, ...stateData ,});
       } else {
         canvasStateCollection.insert(stateData);
       }
@@ -170,17 +170,17 @@ export const loki = {
       lokiStore.update((state) => ({
         ...state,
         canvasStates: this.getAll(),
-      }));
+      });
     },
   },
 
-  // Convenience methods for API compatibility
+  // Convenience methods for API compatibility;
   async saveCanvasState(canvasState: any) {
     if (!canvasStateCollection) return;
 
     const existing = canvasStateCollection.findOne({ id: canvasState.id });
     if (existing) {
-      canvasStateCollection.update({ ...existing, ...canvasState });
+      canvasStateCollection.update({ ...existing, ...canvasState ,});
     } else {
       canvasStateCollection.insert({
         ...canvasState,
@@ -204,14 +204,14 @@ export const loki = {
     this.canvasState.delete(id);
   },
 
-  // Notes operations
+  // Notes operations;
   notes: {
     add(note: any) {
       if (!notesCollection) return;
 
       const existing = notesCollection.findOne({ id: note.id });
       if (existing) {
-        notesCollection.update({ ...existing, ...note });
+        notesCollection.update({ ...existing, ...note ,});
       } else {
         notesCollection.insert({
           ...note,
@@ -232,7 +232,7 @@ export const loki = {
       if (!notesCollection || !query) return this.getAll();
 
       return notesCollection.find({
-        $or: [
+        $or: [)
           { title: { $regex: new RegExp(query, "i") } },
           { content: { $regex: new RegExp(query, "i") } },
           { tags: { $contains: query } },
@@ -255,11 +255,11 @@ export const loki = {
       lokiStore.update((state) => ({
         ...state,
         notes: this.getAll(),
-      }));
+      });
     },
   },
 
-  // Clear all data
+  // Clear all data;
   clearAll() {
     if (evidenceCollection) evidenceCollection.clear();
     if (canvasStateCollection) canvasStateCollection.clear();
@@ -270,6 +270,6 @@ export const loki = {
       evidence: [],
       canvasStates: [],
       notes: [],
-    }));
+    });
   },
 };

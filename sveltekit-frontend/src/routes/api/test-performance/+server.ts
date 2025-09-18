@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
       console.log(`Starting performance benchmark with ${iterations} iterations...`);
       const overallStart = Date.now();
       
-      // Test iterations
+      // Test iterations;
       for (let i = 0; i < iterations; i++) {
         const key = `perf-test-${i}`;
         
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
         
         const totalTime = setTime + getTime;
         
-        // Categorize by expected cache layer (simplified)
+        // Categorize by expected cache layer (simplified);
         if (totalTime < 5) {
           results.memory.total += totalTime;
           results.memory.iterations++;
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
         
         results.overall.total += totalTime;
         
-        // Verify data integrity
+        // Verify data integrity;
         if (!retrieved || JSON.stringify(retrieved) !== JSON.stringify(testData)) {
           console.warn(`Data integrity issue at iteration ${i}`);
         }
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request }) => {
           avgTimePerOp: overallTime / iterations,
           opsPerSecond: (iterations * 1000) / overallTime,
           results,
-          layerStats: cacheManager.getLayerStats()
+          layerStats: cacheManager.getLayerStats(),
         }
       });
     }
@@ -140,7 +140,7 @@ export const POST: RequestHandler = async ({ request }) => {
           opsPerSecond: (totals.success * 1000) / stressTime,
           successRate: (totals.success / (totals.success + totals.errors)) * 100,
           results: totals,
-          layerStats: cacheManager.getLayerStats()
+          layerStats: cacheManager.getLayerStats(),
         }
       });
     }

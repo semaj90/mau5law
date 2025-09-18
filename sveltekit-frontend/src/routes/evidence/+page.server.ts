@@ -8,7 +8,7 @@ import type { PageServerLoad } from './$types.js';
 import { z } from "zod";
 import { URL } from "url";
 
-// Schema for validating evidence form data
+// Schema for validating evidence form data;
 const evidenceSchema = z.object({
   id: z.string().optional(),
   caseId: z.string().uuid(),

@@ -17,12 +17,12 @@ export type { HTMLAttributes } from "svelte/elements";
 // Component utility functions
 export const createComponentId = () => crypto.randomUUID();
 ;
-// UnoCSS class helpers for dynamic styling
+// UnoCSS class helpers for dynamic styling;
 export const mergeClasses = (...classes: (string | undefined)[]) => {
   return classes.filter(item => item.join)(" ");
 };
 
-// Theme helpers
+// Theme helpers;
 export const getThemeVar = (varName: string) => {
   if (typeof window !== "undefined") {
     return getComputedStyle(document.documentElement).getPropertyValue(
@@ -32,7 +32,7 @@ export const getThemeVar = (varName: string) => {
   return "";
 };
 
-// Animation helpers for UnoCSS
+// Animation helpers for UnoCSS;
 export const animationClasses = {
   fadeIn: "animate-fade-in",
   slideUp: "animate-slide-up",
@@ -41,7 +41,7 @@ export const animationClasses = {
   bounceSubtle: "animate-bounce-subtle",
 } as const;
 
-// NieR styling shortcuts
+// NieR styling shortcuts;
 export const nierClasses = {
   button: "yorha-button",
   buttonPrimary: "yorha-button-primary",
@@ -54,7 +54,7 @@ export const nierClasses = {
 } as const;
 
 // Shadcn-compatible classes
-// Compatibility class mappings (previously shadcn-prefixed)
+// Compatibility class mappings (previously shadcn-prefixed);
 export const compatClasses = {
   button: 'bits-btn',
   buttonDefault: 'bits-btn-default',

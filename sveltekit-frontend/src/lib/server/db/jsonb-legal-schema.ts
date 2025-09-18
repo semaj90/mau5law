@@ -20,7 +20,7 @@ import { z } from 'zod';
 // LEGAL METADATA SCHEMA DEFINITIONS
 // ============================================================================
 
-// Base legal document metadata structure
+// Base legal document metadata structure;
 const LegalMetadataSchema = z.object({
   // Document Classification
   documentType: z.enum(['contract', 'brief', 'motion', 'pleading', 'evidence', 'citation', 'precedent', 'statute']),
@@ -36,22 +36,22 @@ const LegalMetadataSchema = z.object({
   confidentialityLevel: z.enum(['public', 'confidential', 'privileged', 'classified']).default('public'),
   retentionPeriod: z.number().int().positive().optional(), // Years
   
-  // Legal Entities
+  // Legal Entities;
   parties: z.array(z.object({
     name: z.string(),
     role: z.enum(['plaintiff', 'defendant', 'witness', 'counsel', 'judge', 'expert', 'third_party']),
     entityType: z.enum(['individual', 'corporation', 'government', 'organization']).optional()
   })).optional(),
   
-  // Citations and References
+  // Citations and References;
   citations: z.array(z.object({
     type: z.enum(['case_law', 'statute', 'regulation', 'treaty', 'secondary_source']),
     citation: z.string(),
     relevance: z.number().min(0).max(1).optional(), // Semantic relevance score
-    pinpoint: z.string().optional() // Specific page/paragraph reference
+    pinpoint: z.string().optional() // Specific page/paragraph reference,
   })).optional(),
   
-  // Semantic Analysis Metadata
+  // Semantic Analysis Metadata;
   semantics: z.object({
     keyTerms: z.array(z.string()).optional(),
     legalConcepts: z.array(z.string()).optional(),
@@ -59,24 +59,24 @@ const LegalMetadataSchema = z.object({
     argumentStructure: z.array(z.object({
       type: z.enum(['premise', 'conclusion', 'evidence', 'counterargument']),
       text: z.string(),
-      confidence: z.number().min(0).max(1)
+      confidence: z.number().min(0).max(1),
     })).optional()
   }).optional(),
   
-  // AI Processing Metadata
+  // AI Processing Metadata;
   aiMetadata: z.object({
     modelVersion: z.string().optional(),
     processingTimestamp: z.string().datetime().optional(),
     confidence: z.number().min(0).max(1).optional(),
     reviewStatus: z.enum(['pending', 'reviewed', 'approved', 'rejected']).default('pending'),
-    humanVerified: z.boolean().default(false)
+    humanVerified: z.boolean().default(false),
   }).optional(),
   
   // Custom Fields for Extensibility
   customFields: z.record(z.string(), z.any()).optional()
 });
 
-// Case-specific metadata
+// Case-specific metadata;
 const CaseMetadataSchema = z.object({
   caseNumber: z.string(),
   filingDate: z.string().datetime().optional(),
@@ -97,31 +97,31 @@ const CaseMetadataSchema = z.object({
   }).optional()
 });
 
-// Evidence metadata with chain of custody
+// Evidence metadata with chain of custody;
 const EvidenceMetadataSchema = z.object({
   evidenceType: z.enum(['document', 'physical', 'digital', 'testimony', 'expert_opinion', 'demonstrative']),
   authenticity: z.object({
     verified: z.boolean().default(false),
     method: z.string().optional(),
     verifier: z.string().optional(),
-    verificationDate: z.string().datetime().optional()
+    verificationDate: z.string().datetime().optional(),
   }).optional(),
   chainOfCustody: z.array(z.object({
     timestamp: z.string().datetime(),
     custodian: z.string(),
     action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'retrieved']),
     location: z.string().optional(),
-    condition: z.string().optional()
+    condition: z.string().optional(),
   })).optional(),
   relevance: z.object({
     score: z.number().min(0).max(1),
     reasoning: z.string().optional(),
-    relatedEvidence: z.array(z.string()).optional() // UUIDs of related evidence
+    relatedEvidence: z.array(z.string()).optional() // UUIDs of related evidence,
   }).optional(),
   admissibility: z.object({
     status: z.enum(['admissible', 'inadmissible', 'conditional', 'pending']),
     basis: z.string().optional(),
-    objections: z.array(z.string()).optional()
+    objections: z.array(z.string()).optional(),
   }).optional()
 });
 
@@ -173,7 +173,7 @@ export const casesJsonb = pgTable('cases_jsonb', {
   totalEvidence: integer('total_evidence').default(0),
   
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull()
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export const evidenceJsonb = pgTable('evidence_jsonb', {
@@ -199,10 +199,10 @@ export const evidenceJsonb = pgTable('evidence_jsonb', {
   relevanceScore: real('relevance_score').generatedAlwaysAs(sql`((metadata->'relevance'->>'score')::real)`),
   
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull()
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-// Semantic relationships between documents
+// Semantic relationships between documents;
 export const documentRelationshipsJsonb = pgTable('document_relationships_jsonb', {
   id: uuid('id').defaultRandom().primaryKey(),
   sourceId: uuid('source_id').notNull(),
@@ -214,7 +214,7 @@ export const documentRelationshipsJsonb = pgTable('document_relationships_jsonb'
   relationshipType: text('relationship_type').generatedAlwaysAs(sql`(relationship_metadata->>'type')`),
   strength: real('strength').generatedAlwaysAs(sql`((relationship_metadata->>'strength')::real)`),
   
-  createdAt: timestamp('created_at').defaultNow().notNull()
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 // ============================================================================
@@ -224,7 +224,7 @@ export const documentRelationshipsJsonb = pgTable('document_relationships_jsonb'
 export class LegalJsonbOperations {
   /**
    * Find documents by practice area with semantic filtering
-   */
+   */;
   static findDocumentsByPracticeArea(practiceArea: string, minRelevance = 0.7) {
     return sql`
       SELECT id, title, metadata, content_embedding
@@ -237,7 +237,7 @@ export class LegalJsonbOperations {
 
   /**
    * Complex legal entity search with JSONB path queries
-   */
+   */;
   static findDocumentsByParty(partyName: string, role?: string) {
     const roleFilter = role 
       ? sql`AND party->>'role' = ${role}`
@@ -255,7 +255,7 @@ export class LegalJsonbOperations {
 
   /**
    * Citation network analysis with graph-like JSONB queries
-   */
+   */;
   static findCitationNetwork(documentId: string, depth = 2) {
     return sql`
       WITH RECURSIVE citation_tree AS (
@@ -289,7 +289,7 @@ export class LegalJsonbOperations {
 
   /**
    * Advanced evidence chain of custody verification
-   */
+   */;
   static verifyEvidenceChain(evidenceId: string) {
     return sql`
       SELECT 
@@ -330,7 +330,7 @@ export class LegalJsonbOperations {
 
   /**
    * Semantic case similarity with JSONB metadata scoring
-   */
+   */;
   static findSimilarCases(caseId: string, threshold = 0.8) {
     return sql`
       WITH target_case AS (
@@ -389,7 +389,7 @@ export class LegalJsonbOperations {
 
   /**
    * Legal concept extraction and clustering
-   */
+   */;
   static extractLegalConcepts(documentIds: string[]) {
     return sql`
       WITH concept_extraction AS (
@@ -432,7 +432,7 @@ export class LegalJsonbOperations {
 // VALIDATION SCHEMAS
 // ============================================================================
 
-// Schema validation (commented out until drizzle-zod is available)
+// Schema validation (commented out until drizzle-zod is available);
 // export const insertLegalDocumentSchema = createInsertSchema(legalDocumentsJsonb, {
 //   metadata: LegalMetadataSchema,
 // });

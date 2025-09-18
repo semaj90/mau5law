@@ -13,7 +13,7 @@ const OLLAMA_BASE_URL = 'http://localhost:11434';
 const CUDA_SERVICE_URL = 'http://localhost:8096';
 const LEGAL_MODEL = 'gemma3-legal:latest';
 
-// Request schemas
+// Request schemas;
 const AnalyzeEvidenceSchema = z.object({
   evidenceId: z.string().uuid(),
   filename: z.string(),
@@ -25,7 +25,7 @@ const SimilarEvidenceSchema = z.object({
   evidenceId: z.string().uuid(),
   embedding: z.array(z.number()).optional(),
   content: z.string().optional(),
-  limit: z.number().min(1).max(20).default(5)
+  limit: z.number().min(1).max(20).default(5),
 });
 
 const SuggestionSchema = z.object({
@@ -34,7 +34,7 @@ const SuggestionSchema = z.object({
   type: z.enum(['search', 'legal', 'case', 'precedent']).default('legal')
 });
 
-// Types
+// Types;
 interface OllamaResponse {
   model: string;
   response: string;
@@ -55,10 +55,10 @@ interface AIAnalysisResult {
   prosecutionScore: number;
   legalRelevance: string;
   keyFindings: string[];
-  recommendations: string[];
+  recommendations: string[];,
 }
 
-// Ollama client helper
+// Ollama client helper;
 async function queryOllama(prompt: string, model: string = LEGAL_MODEL): Promise<string> {
   try {
     const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
@@ -72,7 +72,7 @@ async function queryOllama(prompt: string, model: string = LEGAL_MODEL): Promise
           temperature: 0.1, // Low temperature for consistent legal analysis
           top_p: 0.9,
           num_predict: 1024,
-          num_ctx: 4096
+          num_ctx: 4096,
         }
       })
     });
@@ -89,7 +89,7 @@ async function queryOllama(prompt: string, model: string = LEGAL_MODEL): Promise
   }
 }
 
-// CUDA service helper for embeddings and similarity
+// CUDA service helper for embeddings and similarity;
 async function getCudaEmbedding(text: string): Promise<number[] | null> {
   try {
     const response = await fetch(`${CUDA_SERVICE_URL}/process`, {
@@ -99,7 +99,7 @@ async function getCudaEmbedding(text: string): Promise<number[] | null> {
         job_id: `embedding_${Date.now()}`,
         type: 'text_embedding',
         content: text,
-        max_length: 512
+        max_length: 512,
       })
     });
 
@@ -119,10 +119,10 @@ async function getCudaEmbedding(text: string): Promise<number[] | null> {
 /*
  * POST /api/v1/evidence/analyze
  * Analyze evidence with AI using the legal model
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required' }, { status: 401 });
     }
@@ -139,7 +139,7 @@ EVIDENCE DETAILS:
 - Content: ${content ? content.substring(0, 2000) + (content.length > 2000 ? '...' : '') : 'No text content available'}
 
 ANALYSIS REQUIRED:
-Provide your analysis in this exact JSON format:
+Provide your analysis in this exact JSON format:;
 {
   "summary": "Brief 2-3 sentence summary of the evidence",
   "confidence": 0.85,
@@ -167,7 +167,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
         throw new Error('No JSON found in AI response');
       }
     } catch (parseError) {
-      // Fallback analysis if JSON parsing fails
+      // Fallback analysis if JSON parsing fails;
       analysisResult = {
         summary: aiResponse.substring(0, 300) + '...',
         confidence: 0.5,
@@ -176,7 +176,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
         prosecutionScore: 0.5,
         legalRelevance: 'Unknown - requires manual analysis',
         keyFindings: ['AI analysis incomplete'],
-        recommendations: ['Manual legal review recommended']
+        recommendations: ['Manual legal review recommended'],
       };
     }
 
@@ -194,7 +194,7 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
         embedding,
         processedAt: new Date().toISOString(),
         model: LEGAL_MODEL,
-        userId: locals.user.id
+        userId: locals.user.id,
       }
     });
 
@@ -204,13 +204,13 @@ Focus on legal relevance, admissibility concerns, and strategic value for prosec
     if (error instanceof z.ZodError) {
       return json({
         message: 'Invalid analysis request',
-        details: error.errors
+        details: error.errors,
       }, { status: 400 });
     }
 
     return json({
       message: 'Analysis failed',
-      details: error.message || 'Unknown error'
+      details: error.message || 'Unknown error',
     }, { status: 500 });
   }
 };

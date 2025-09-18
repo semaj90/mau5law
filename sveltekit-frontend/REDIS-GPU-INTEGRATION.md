@@ -2,11 +2,13 @@
 
 ## 🚀 Complete Integration Overview
 
-Your `npm run dev:full` command now includes a comprehensive Redis-GPU pipeline system that integrates seamlessly with your existing legal AI infrastructure.
+Your `npm run dev:full` command now includes a comprehensive Redis-GPU pipeline system that
+integrates seamlessly with your existing legal AI infrastructure.
 
 ## 🔧 What's Included
 
 ### **Enhanced `dev:full` Stack**
+
 When you run `npm run dev:full`, the following services now start automatically:
 
 1. **Docker Services** (PostgreSQL, Redis, RabbitMQ, MinIO, Qdrant)
@@ -19,18 +21,21 @@ When you run `npm run dev:full`, the following services now start automatically:
 ### **New Redis-GPU Components**
 
 #### **1. Redis-GPU Bridge (`redis-gpu-bridge.mjs`)**
+
 - **Job Queue Management**: Intelligent queueing of legal AI tasks
 - **Real-time Monitoring**: Performance metrics and health tracking
 - **Auto-scaling**: Dynamic worker allocation based on load
 - **Error Recovery**: Retry logic and graceful failure handling
 
 #### **2. GPU Cluster Executor (Enhanced)**
+
 - **Legal Task Definitions**: Specialized for legal document processing
 - **RTX 3060 Ti Optimization**: Memory-aware batch processing
 - **Performance Tracking**: Database integration for metrics storage
 - **Auto-restart**: Resilient operation with failure recovery
 
 #### **3. Legal AI Processing Scripts**
+
 - `generate-legal-embeddings.mjs`: Batch embedding generation
 - `process-case-similarity.mjs`: pgvector-powered case analysis
 - `process-evidence-batch.mjs`: Evidence processing with AI analysis
@@ -54,18 +59,21 @@ When you run `npm run dev:full`, the following services now start automatically:
 ## 🎯 Available Services After Startup
 
 ### **Frontend Services**
+
 - **Frontend**: http://localhost:[auto-discovered-port]
 - **pgvector test**: http://localhost:[port]/dev/pgvector-test
 - **WebSocket API**: ws://localhost:[port]/websocket
 - **Binary QLoRA**: http://localhost:[port]/api/ai/qlora-topology
 
 ### **AI Services**
+
 - **Ollama API**: http://localhost:[auto-discovered-port]
 - **CUDA Service**: http://localhost:[auto-discovered-port]
 - **Redis-GPU Bridge**: Active (job queue processing)
 - **GPU Cluster**: Legal AI pipeline running
 
 ### **Docker Services**
+
 - **PostgreSQL**: http://localhost:5433 (legal-ai-postgres)
 - **Redis**: http://localhost:6379 (legal-ai-redis)
 - **RabbitMQ**: http://localhost:15672 (legal-ai-rabbitmq)
@@ -73,6 +81,7 @@ When you run `npm run dev:full`, the following services now start automatically:
 - **Qdrant**: http://localhost:6333 (legal-ai-qdrant)
 
 ### **Legal AI Pipeline Features**
+
 - **📄 Legal Document Embeddings** (GPU-accelerated)
 - **⚖️ Case Similarity Analysis** (pgvector)
 - **📁 Evidence Processing** (Gemma3-legal)
@@ -81,11 +90,13 @@ When you run `npm run dev:full`, the following services now start automatically:
 ## 🚀 Usage
 
 ### **Start Complete System**
+
 ```bash
 npm run dev:full
 ```
 
 ### **Individual Components**
+
 ```bash
 # Just Redis-GPU integration without postgres test
 npm run dev:full:redis-gpu
@@ -115,6 +126,7 @@ The enhanced `dev:full` provides color-coded console output:
 ## 🔧 Configuration
 
 ### **Environment Variables (Auto-set by dev:full)**
+
 ```bash
 ENABLE_GPU=true
 RTX_3060_OPTIMIZATION=true
@@ -125,6 +137,7 @@ REDIS_URL=redis://127.0.0.1:6379
 ```
 
 ### **GPU Cluster Configuration**
+
 - **Workers**: 4 concurrent workers
 - **GPU Contexts**: 2 (optimized for RTX 3060 Ti)
 - **Memory Reservation**: 6GB VRAM
@@ -144,6 +157,7 @@ REDIS_URL=redis://127.0.0.1:6379
 ## 🚦 Health Monitoring
 
 The system includes automatic health monitoring:
+
 - **Redis Connection**: Continuous connectivity checks
 - **GPU Memory**: RTX 3060 Ti utilization tracking
 - **Job Queue Status**: Processing rates and success metrics
@@ -155,4 +169,6 @@ The system includes automatic health monitoring:
 - **Graceful Shutdown**: SIGINT/SIGTERM handling
 - **Process Cleanup**: Proper resource cleanup on exit
 
-Your `npm run dev:full` now provides a complete, production-ready legal AI development environment with Redis-GPU pipeline integration, optimized specifically for your RTX 3060 Ti hardware and legal document processing workflows.
+Your `npm run dev:full` now provides a complete, production-ready legal AI development environment
+with Redis-GPU pipeline integration, optimized specifically for your RTX 3060 Ti hardware and legal
+document processing workflows.

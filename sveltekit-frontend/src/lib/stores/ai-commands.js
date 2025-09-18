@@ -27,7 +27,7 @@ export const addCommand = (command, result = null) => {
       },
     ],
     lastResult: result,
-  }));
+  });
 };
 
 // Set current command
@@ -35,7 +35,7 @@ export const setCurrentCommand = (command) => {
   aiCommands.update((store) => ({
     ...store,
     current: command,
-  }));
+  });
 };
 
 // Set processing state
@@ -43,7 +43,7 @@ export const setProcessing = (isProcessing) => {
   aiCommands.update((store) => ({
     ...store,
     isProcessing,
-  }));
+  });
 };
 
 // Set error state
@@ -51,7 +51,7 @@ export const setError = (error) => {
   aiCommands.update((store) => ({
     ...store,
     error,
-  }));
+  });
 };
 
 // Clear command history
@@ -62,7 +62,7 @@ export const clearHistory = () => {
     current: "",
     lastResult: null,
     error: null,
-  }));
+  });
 };
 
 // Export default

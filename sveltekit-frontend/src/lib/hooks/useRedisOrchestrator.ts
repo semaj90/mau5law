@@ -16,7 +16,7 @@ import {
 
 /**
  * Hook for Redis-optimized AI queries
- */
+ */;
 export function useRedisAI() {
   let isProcessing = $state(false);
   let lastResult: RedisOptimizationResult | null = $state(null);
@@ -50,7 +50,7 @@ export function useRedisAI() {
     taskType: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment',
     query: string,
     metadata: any = {},
-    priority = 100
+    priority = 100;
   ): Promise<string> => {
     isProcessing = true;
     error = null;
@@ -83,7 +83,7 @@ export function useRedisAI() {
 
 /**
  * Hook for Redis system monitoring
- */
+ */;
 export function useRedisMonitoring() {
   let healthData: any = $state(null);
   let isLoading = $state(false);
@@ -122,12 +122,12 @@ export function useRedisMonitoring() {
 
 /**
  * Hook for managing queued tasks
- */
+ */;
 export function useRedisTaskQueue() {
-  let tasks: Map<string, QueuedTask> = $state(new Map());
+  let tasks: Map<string, QueuedTask> = $state(new Map();
   let isPolling = $state(false);
 
-  // Subscribe to task updates
+  // Subscribe to task updates;
   const unsubscribe = queuedTasks.subscribe(value => {
     tasks = value;
   });
@@ -181,7 +181,7 @@ export function useRedisTaskQueue() {
 
 /**
  * Hook for auto-initializing Redis orchestrator
- */
+ */;
 export function useRedisInit(options: { pollInterval?: number; autoStart?: boolean } = {}) {
   let isInitialized = $state(false);
   let initError: string | null = $state(null);
@@ -225,31 +225,31 @@ export function useRedisComponent(
     autoCache?: boolean;
   } = {}
 ) {
-  let componentCache: Map<string, any> = $state(new Map());
+  let componentCache: Map<string, any> = $state(new Map();
   let lastQuery: string | null = $state(null);
   let cacheHits = $state(0);
   let cacheMisses = $state(0);
 
   const queryWithCache = async (query: string, context: any = {}) => {
-    const cacheKey = `${componentName}:${JSON.stringify({ query, ...context })}`;
+    const cacheKey = `${componentName}:${JSON.stringify({ query, ...context ,})}`;
     
-    // Check local component cache first
+    // Check local component cache first;
     if (config.autoCache !== false && componentCache.has(cacheKey)) {
       cacheHits++;
       return componentCache.get(cacheKey);
     }
 
-    // Use Redis orchestrator
+    // Use Redis orchestrator;
     const result = await redisOrchestratorClient.processQuery(query, {
       endpoint: componentName,
       ...context
-    });
+    ,});
 
-    // Cache result locally
+    // Cache result locally;
     if (config.autoCache !== false && (result as { cached?: any }).cached) {
       componentCache.set(cacheKey, result);
       
-      // Limit cache size
+      // Limit cache size;
       if (componentCache.size > 50) {
         const firstKey = componentCache.keys().next().value;
         componentCache.delete(firstKey);
@@ -276,7 +276,7 @@ export function useRedisComponent(
     size: componentCache.size,
     hits: cacheHits,
     misses: cacheMisses,
-    hitRate: cacheHits + cacheMisses > 0 ? (cacheHits / (cacheHits + cacheMisses)) * 100 : 0
+    hitRate: cacheHits + cacheMisses > 0 ? (cacheHits / (cacheHits + cacheMisses)) * 100 : 0,
   });
 
   return {
@@ -289,7 +289,7 @@ export function useRedisComponent(
 
 /**
  * Hook for Redis-optimized form submissions
- */
+ */;
 export function useRedisForm() {
   let isSubmitting = $state(false);
   let submitError: string | null = $state(null);
@@ -315,7 +315,7 @@ export function useRedisForm() {
         // Queue complex form submissions
         const taskId = await redisOrchestratorClient.queueTask(
           'complex_legal',
-          query,
+          query,)
           { formData, endpoint },
           options.priority || 150
         );
@@ -323,13 +323,13 @@ export function useRedisForm() {
         lastSubmission = {
           type: 'queued',
           taskId,
-          estimatedTime: '30-45 seconds'
+          estimatedTime: '30-45 seconds',
         };
       } else {
-        // Process immediately with Redis optimization
+        // Process immediately with Redis optimization;
         const result = await redisOrchestratorClient.processQuery(query, {
           endpoint,
-          useOrchestrator: options.useCache !== false
+          useOrchestrator: options.useCache !== false,
         });
         
         lastSubmission = {

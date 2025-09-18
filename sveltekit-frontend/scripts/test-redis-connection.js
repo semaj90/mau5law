@@ -27,7 +27,7 @@ async function testRedis() {
 
     // Clean up
     await cache.del('test_key');
-    
+
     console.log('🎉 All Redis tests passed!');
     process.exit(0);
   } catch (error) {

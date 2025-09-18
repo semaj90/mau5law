@@ -7,7 +7,7 @@ import { writeFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
  * - Writes a JSON log to .vscode/vite-errors.json
  * - Listens for devServer ws 'vite:error' and 'vite:warning'
  * - Records buildStart/buildEnd events
- */
+ */;
 export function vscodeErrorLogger(options: any = {}) {
   const config = {
     enabled: true,
@@ -26,13 +26,13 @@ export function vscodeErrorLogger(options: any = {}) {
       if (existsSync(config.logFile)) {
         const raw = readFileSync(config.logFile, 'utf8');
         const parsed = JSON.parse(raw);
-        // Normalize shape so later code can safely read metadata and errors
+        // Normalize shape so later code can safely read metadata and errors;
         errorLog = {
           metadata: {
             lastUpdated: parsed?.metadata?.lastUpdated || new Date().toISOString(),
-            version: parsed?.metadata?.version || 1
+            version: parsed?.metadata?.version || 1,
           },
-          errors: Array.isArray(parsed?.errors) ? parsed.errors: []
+          errors: Array.isArray(parsed?.errors) ? parsed.errors: [],
         };
       }
     } catch (e: any) {
@@ -48,7 +48,7 @@ export function vscodeErrorLogger(options: any = {}) {
       errorLog.metadata = errorLog.metadata || { version: 1 };
       errorLog.metadata.lastUpdated = new Date().toISOString();
       errorLog.errors = Array.isArray(errorLog.errors) ? errorLog.errors: [];
-      writeFileSync(config.logFile, JSON.stringify(errorLog, null, 2));
+      writeFileSync(config.logFile, JSON.stringify(errorLog, null, 2);
     } catch (e: any) {
     // ignore
     }
@@ -73,7 +73,7 @@ export function vscodeErrorLogger(options: any = {}) {
       column: err?.loc?.column || undefined,
       frame: err?.frame || undefined,
       plugin: err?.plugin || undefined,
-      buildPhase: 'vite'
+      buildPhase: 'vite',
     };
     return entry;
   }
@@ -125,5 +125,5 @@ export const defaultVSCodeErrorConfig = {
   autoOpenProblems: false,
   notificationLevel: 'errors-only',
   integrateTasks: true,
-  generateDiagnostics: true
+  generateDiagnostics: true,
 };

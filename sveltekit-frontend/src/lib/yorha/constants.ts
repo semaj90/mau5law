@@ -94,7 +94,7 @@ type AbortLike = { signal?: any; abort?: () => void };
  * withAbort - Accepts a function that receives an optional signal (for environments
  * that have AbortController) and returns an object with the promise and an abort function.
  * Uses a runtime check to avoid TypeScript/compile errors when DOM types are unavailable.
- */
+ */;
 export function withAbort<T>(fn: (signal?: any) => Promise<T>): { promise: Promise<T>; abort: () => void } {
   const controller = (typeof AbortController !== 'undefined')
     ? (new AbortController() as AbortLike)
@@ -102,13 +102,13 @@ export function withAbort<T>(fn: (signal?: any) => Promise<T>): { promise: Promi
 
   return {
     promise: fn(controller.signal),
-    abort: () => controller.abort && controller.abort()
+    abort: () => controller.abort && controller.abort(),
   };
 }
 
 /**
  * debounce - Simple debounce helper that returns a debounced version of the provided function.
- */
+ */;
 export function debounce<T extends (...args: any[]) => void>(fn: T, wait = 300): T {
   let t: ReturnType<typeof setTimeout> | undefined;
   return function (this: any, ...a: any[]) {

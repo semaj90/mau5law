@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const [document] = await db
       .select()
       .from(documents)
-      .where(eq(documents.id, documentId))
+      .where(eq(documents.id, documentId)
       .limit(1);
 
     if (!document) {
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request }) => {
           action: 'queued',
           documentId,
           message: 'Document update queued for processing',
-          status: await documentUpdateLoop.getQueueStatus()
+          status: await documentUpdateLoop.getQueueStatus(),
         };
         break;
 
@@ -65,8 +65,8 @@ export const POST: RequestHandler = async ({ request }) => {
               queryId: job.queryId,
               query: job.query.substring(0, 100) + '...',
               improvement: job.improvement,
-              newResultsCount: job.newResults.length
-            }))
+              newResultsCount: job.newResults.length,
+            })
           }
         };
         break;
@@ -81,9 +81,9 @@ export const POST: RequestHandler = async ({ request }) => {
             changeType: change.changeType,
             priority: change.priority,
             affectedChunks: change.affectedChunks?.length || 0,
-            hasChanges: true
+            hasChanges: true,
           } : {
-            hasChanges: false
+            hasChanges: false,
           }
         };
         break;
@@ -95,7 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: true,
       data: result,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (err: any) {
@@ -125,7 +125,7 @@ export const GET: RequestHandler = async ({ url }) => {
           data: {
             queue: status,
             service: 'Document Update Loop',
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
         });
 
@@ -147,7 +147,7 @@ export const GET: RequestHandler = async ({ url }) => {
             ]
           }
         }, { 
-          status: isHealthy ? 200 : 503 
+          status: isHealthy ? 200 : 503 ,
         });
 
       default:
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     return json({
       success: false,
-      error: err instanceof Error ? err.message: 'Unknown error'
+      error: err instanceof Error ? err.message: 'Unknown error',
     }, { status: 500 });
   }
 };
@@ -177,7 +177,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
     }
 
     switch (action) {
-      case 'batch_reembed':
+      case 'batch_reembed':;
         if (!documentIds || !Array.isArray(documentIds)) {
           throw error(400, 'Document IDs array is required for batch operations');
         }
@@ -196,7 +196,7 @@ export const PATCH: RequestHandler = async ({ request }) => {
             batchResults.push({
               documentId,
               success: false,
-              error: err instanceof Error ? err.message: 'Unknown error'
+              error: err instanceof Error ? err.message: 'Unknown error',
             });
           }
         }
@@ -208,17 +208,17 @@ export const PATCH: RequestHandler = async ({ request }) => {
             processed: batchResults.length,
             successful: batchResults.filter((r: any) => r.success).length,
             failed: batchResults.filter((r: any) => !r.success).length,
-            results: batchResults
+            results: batchResults,
           }
         });
 
       case 'clear_queue':
-        // This would require adding a method to clear the queue
+        // This would require adding a method to clear the queue;
         return json({
           success: true,
           data: {
             action: 'clear_queue',
-            message: 'Queue cleared (implementation needed in DocumentUpdateLoop class)'
+            message: 'Queue cleared (implementation needed in DocumentUpdateLoop class)',
           }
         });
 

@@ -37,7 +37,7 @@ export class SIMDJSONWorkerClient {
   
   /**
    * Initialize the SIMD JSON worker
-   */
+   */;
   private async initWorker(): Promise<void> {
     try {
       this.worker = new Worker('/simd-json-worker.js');
@@ -48,7 +48,7 @@ export class SIMDJSONWorkerClient {
       
       this.worker.addEventListener('error', (error) => {
         console.error('SIMD JSON Worker Error:', error);
-        this.rejectAllPending(new Error('Worker error occurred'));
+        this.rejectAllPending(new Error('Worker error occurred');
       });
       
       console.log('🚀 SIMD JSON Worker Client initialized');
@@ -60,17 +60,17 @@ export class SIMDJSONWorkerClient {
   
   /**
    * Handle messages from the worker
-   */
+   */;
   private handleWorkerMessage(message: SIMDWorkerMessage): void {
     const { type, id } = message;
     
-    // Handle worker ready message
+    // Handle worker ready message;
     if (type === 'WORKER_READY') {
       console.log('✅ SIMD JSON Worker ready');
       return;
     }
     
-    // Handle initialization complete
+    // Handle initialization complete;
     if (type === 'INIT_COMPLETE') {
       this.isReady = message.success || false;
       console.log(`🔧 SIMD JSON Worker initialization: ${this.isReady ? 'success' : 'failed'}`);
@@ -80,7 +80,7 @@ export class SIMDJSONWorkerClient {
     const pending = this.pendingRequests.get(id);
     if (!pending) return;
     
-    // Clear timeout
+    // Clear timeout;
     if (pending.timeout) {
       clearTimeout(pending.timeout);
     }
@@ -88,57 +88,57 @@ export class SIMDJSONWorkerClient {
     // Remove from pending
     this.pendingRequests.delete(id);
     
-    // Resolve or reject based on message type
+    // Resolve or reject based on message type;
     switch (type) {
       case 'PARSE_COMPLETE':
       case 'BATCH_COMPLETE':
       case 'VECTOR_PARSE_COMPLETE':
       case 'STATS':
       case 'BENCHMARK_COMPLETE':
-      case 'STATS_RESET':
+      case 'STATS_RESET':;
         pending.resolve({
           data: message.data,
           metadata: message.metadata,
-          success: true
+          success: true,
         });
         break;
         
       case 'PARSE_ERROR':
       case 'ERROR':
-        pending.reject(new Error(message.error || 'Unknown worker error'));
+        pending.reject(new Error(message.error || 'Unknown worker error');
         break;
         
       default:
-        pending.reject(new Error(`Unknown message type: ${type}`));
+        pending.reject(new Error(`Unknown message type: ${type}`);
     }
   }
   
   /**
    * Send message to worker and return promise
-   */
+   */;
   private sendMessage(type: string, data?: any, options: ParseOptions = {}): Promise<any> {
     if (!this.worker) {
-      return Promise.reject(new Error('Worker not available'));
+      return Promise.reject(new Error('Worker not available');
     }
     
     const id = `msg-${++this.messageId}-${Date.now()}`;
     const timeout = options.timeout || 30000; // 30s default timeout
     
     return new Promise((resolve, reject) => {
-      // Set up timeout
+      // Set up timeout;
       const timeoutId = setTimeout(() => {
         this.pendingRequests.delete(id);
-        reject(new Error('Worker request timeout'));
+        reject(new Error('Worker request timeout');
       }, timeout);
       
-      // Store pending request
+      // Store pending request;
       this.pendingRequests.set(id, {
         resolve,
         reject,
-        timeout: timeoutId
+        timeout: timeoutId,
       });
       
-      // Send message to worker
+      // Send message to worker;
       this.worker!.postMessage({
         type,
         id,
@@ -149,7 +149,7 @@ export class SIMDJSONWorkerClient {
   
   /**
    * Initialize worker with SIMD capabilities
-   */
+   */;
   async initialize(): Promise<boolean> {
     if (this.initPromise) {
       return this.initPromise;
@@ -172,7 +172,7 @@ export class SIMDJSONWorkerClient {
   
   /**
    * Parse JSON string using SIMD acceleration
-   */
+   */;
   async parseJSON(jsonString: string, options: ParseOptions = {}): Promise<any> {
     if (!this.isReady) {
       await this.initialize();
@@ -195,7 +195,7 @@ export class SIMDJSONWorkerClient {
   
   /**
    * Parse multiple JSON strings in batch
-   */
+   */;
   async parseBatch(jsonStrings: string[], options: ParseOptions = {}): Promise<any[]> {
     if (!this.isReady) {
       await this.initialize();
@@ -203,7 +203,7 @@ export class SIMDJSONWorkerClient {
     
     if (!this.worker) {
       // Fallback to native JSON.parse
-      return jsonStrings.map(json => JSON.parse(json));
+      return jsonStrings.map(json => JSON.parse(json);
     }
     
     try {
@@ -212,13 +212,13 @@ export class SIMDJSONWorkerClient {
     } catch (error) {
       // Fallback to native JSON.parse
       console.warn('SIMD batch parsing failed, falling back to native:', error);
-      return jsonStrings.map(json => JSON.parse(json));
+      return jsonStrings.map(json => JSON.parse(json);
     }
   }
   
   /**
    * Parse vector/tensor data with validation
-   */
+   */;
   async parseVectorData(vectorJson: string, options: ParseOptions = {}): Promise<any> {
     if (!this.isReady) {
       await this.initialize();
@@ -241,7 +241,7 @@ export class SIMDJSONWorkerClient {
   
   /**
    * Get worker performance statistics
-   */
+   */;
   async getStats(): Promise<any> {
     if (!this.worker) {
       return {
@@ -249,7 +249,7 @@ export class SIMDJSONWorkerClient {
         totalTime: 0,
         avgTime: 0,
         errors: 0,
-        simdReady: false
+        simdReady: false,
       };
     }
     
@@ -264,7 +264,7 @@ export class SIMDJSONWorkerClient {
   
   /**
    * Run performance benchmark
-   */
+   */;
   async benchmark(iterations: number = 1000, testSize: 'small' | 'medium' | 'large' = 'medium'): Promise<any> {
     if (!this.worker) {
       throw new Error('Worker not available for benchmarking');
@@ -276,7 +276,7 @@ export class SIMDJSONWorkerClient {
   
   /**
    * Reset worker statistics
-   */
+   */;
   async resetStats(): Promise<void> {
     if (!this.worker) return;
     
@@ -285,14 +285,14 @@ export class SIMDJSONWorkerClient {
   
   /**
    * Check if worker is ready and SIMD is available
-   */
+   */;
   isWorkerReady(): boolean {
     return this.isReady && this.worker !== null;
   }
   
   /**
    * Reject all pending requests
-   */
+   */;
   private rejectAllPending(error: Error): void {
     for (const [id, pending] of this.pendingRequests) {
       if (pending.timeout) {
@@ -305,10 +305,10 @@ export class SIMDJSONWorkerClient {
   
   /**
    * Terminate worker and cleanup
-   */
+   */;
   terminate(): void {
     if (this.worker) {
-      this.rejectAllPending(new Error('Worker terminated'));
+      this.rejectAllPending(new Error('Worker terminated');
       this.worker.terminate();
       this.worker = null;
       this.isReady = false;
@@ -320,7 +320,7 @@ export class SIMDJSONWorkerClient {
 // Export singleton instance for global use
 export const simdJSONClient = new SIMDJSONWorkerClient();
 
-// Convenience functions for common operations
+// Convenience functions for common operations;
 export async function parseJSONOffThread(jsonString: string, timeout?: number): Promise<any> {
   return simdJSONClient.parseJSON(jsonString, { timeout });
 }

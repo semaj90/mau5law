@@ -11,17 +11,17 @@ import { createWasmGpuService } from './gpu-wasm-init.js';
 import { wasmClusteringService } from './clustering-wasm.js';
 import type { LegalDocument } from '../memory/nes-memory-architecture.js';
 
-// Browser SIMD detection and capabilities
+// Browser SIMD detection and capabilities;
 interface BrowserSIMDCapabilities {
   wasmSIMD: boolean;
   webgpuCompute: boolean;
   sharedArrayBuffer: boolean;
   atomics: boolean;
   bigInt64Array: boolean;
-  supportLevel: 'none' | 'basic' | 'advanced' | 'optimal';
+  supportLevel: 'none' | 'basic' | 'advanced' | 'optimal';,
 }
 
-// Ultra JSON parsing configuration
+// Ultra JSON parsing configuration;
 export interface UltraJSONConfig {
   enableBrowserSIMD: boolean;
   enableWebGPUAcceleration: boolean;
@@ -34,10 +34,10 @@ export interface UltraJSONConfig {
   legalDocumentOptimization: boolean;
   entityExtractionMode: boolean;
   citationPatternMatching: boolean;
-  bulkProcessingMode: boolean;
+  bulkProcessingMode: boolean;,
 }
 
-// Ultra JSON performance metrics
+// Ultra JSON performance metrics;
 export interface UltraJSONMetrics {
   parseTime: number;
   serializedSize: number;
@@ -46,7 +46,7 @@ export interface UltraJSONMetrics {
   webgpuAcceleration: number;
   throughputMBps: number;
   operationsPerSecond: number;
-  memoryEfficiency: number;
+  memoryEfficiency: number;,
 }
 
 export class UltraJSONParser {
@@ -80,7 +80,7 @@ export class UltraJSONParser {
       sharedArrayBuffer: false,
       atomics: false,
       bigInt64Array: false,
-      supportLevel: 'none'
+      supportLevel: 'none',
     };
 
     if (browser) {
@@ -90,23 +90,23 @@ export class UltraJSONParser {
 
   /**
    * Initialize Ultra JSON Parser with capability detection
-   */
+   */;
   private async initialize(): Promise<void> {
     console.log('🚀 Initializing Ultra JSON Parser with SIMD acceleration...');
     
     // Detect browser capabilities
     await this.detectCapabilities();
     
-    // Initialize WebGPU service if available
+    // Initialize WebGPU service if available;
     if (this.capabilities.webgpuCompute && this.config.enableWebGPUAcceleration) {
       this.wasmGpuService = createWasmGpuService({
         documentProcessingMode: this.config.legalDocumentOptimization,
         vectorSearchOptimization: true,
-        embeddingCacheSize: 512
+        embeddingCacheSize: 512,
       });
     }
 
-    // Initialize clustering WASM
+    // Initialize clustering WASM;
     if (this.capabilities.wasmSIMD && this.config.enableClusteringWASM) {
       await wasmClusteringService.initializeWasm();
     }
@@ -117,13 +117,13 @@ export class UltraJSONParser {
       supportLevel: this.capabilities.supportLevel,
       webgpu: this.capabilities.webgpuCompute,
       simd: this.capabilities.wasmSIMD,
-      config: this.config
+      config: this.config,
     });
   }
 
   /**
    * Detect browser SIMD and GPU capabilities
-   */
+   */;
   private async detectCapabilities(): Promise<void> {
     // Check WebAssembly SIMD support
     this.capabilities.wasmSIMD = await this.checkWasmSIMDSupport();
@@ -148,7 +148,7 @@ export class UltraJSONParser {
 
   /**
    * Check WebAssembly SIMD support
-   */
+   */;
   private async checkWasmSIMDSupport(): Promise<boolean> {
     try {
       // Test SIMD instruction compilation
@@ -168,7 +168,7 @@ export class UltraJSONParser {
 
   /**
    * Check WebGPU compute support
-   */
+   */;
   private async checkWebGPUSupport(): Promise<boolean> {
     if (!('gpu' in navigator)) return false;
     
@@ -182,9 +182,9 @@ export class UltraJSONParser {
 
   /**
    * Calculate overall support level
-   */
+   */;
   private calculateSupportLevel(): BrowserSIMDCapabilities['supportLevel'] {
-    if (this.capabilities.webgpuCompute && this.capabilities.wasmSIMD && 
+    if (this.capabilities.webgpuCompute && this.capabilities.wasmSIMD &&;
         this.capabilities.sharedArrayBuffer && this.capabilities.atomics) {
       return 'optimal';
     }
@@ -202,7 +202,7 @@ export class UltraJSONParser {
 
   /**
    * Ultra-fast JSON parsing with SIMD acceleration
-   */
+   */;
   async fastParse<T = any>(jsonString: string, options: {
     enableSIMD?: boolean;
     enableGPU?: boolean;
@@ -218,7 +218,7 @@ export class UltraJSONParser {
     try {
       let result: T;
       
-      // Check performance cache first
+      // Check performance cache first;
       if (opts.cacheKey && this.performanceCache.has(opts.cacheKey)) {
         const cached = this.performanceCache.get(opts.cacheKey)!;
         console.log(`� Using cached parse result for ${opts.cacheKey}`);
@@ -246,7 +246,7 @@ export class UltraJSONParser {
           break;
           
         default:
-          result = JSON.parse(jsonString);
+          result = JSON.parse(jsonString);,
       }
 
       // Record performance metrics
@@ -259,7 +259,7 @@ export class UltraJSONParser {
         webgpuAcceleration: strategy.includes('webgpu') ? 3.0 : 1.0,
         throughputMBps: (jsonString.length / 1024 / 1024) / (parseTime / 1000),
         operationsPerSecond: 1000 / parseTime,
-        memoryEfficiency: 0.85 // Would calculate actual memory efficiency
+        memoryEfficiency: 0.85 // Would calculate actual memory efficiency,
       };
 
       if (opts.cacheKey) {
@@ -277,24 +277,24 @@ export class UltraJSONParser {
 
   /**
    * Select optimal parsing strategy based on data and capabilities
-   */
+   */;
   private selectParsingStrategy(dataSize: number, options: any): string {
-    // Small data (< 1KB) - use native JSON for minimal overhead
+    // Small data (< 1KB) - use native JSON for minimal overhead;
     if (dataSize < 1024) {
       return 'native';
     }
 
-    // Large data with GPU support - use WebGPU compute
+    // Large data with GPU support - use WebGPU compute;
     if (dataSize > 100000 && this.capabilities.webgpuCompute && options.enableGPU) {
       return 'webgpu-compute';
     }
 
-    // Medium data with SIMD support - use WASM SIMD
+    // Medium data with SIMD support - use WASM SIMD;
     if (dataSize > 10000 && this.capabilities.wasmSIMD && options.enableSIMD) {
       return 'wasm-simd';
     }
 
-    // Legal documents - use NES bridge for FlatBuffer optimization
+    // Legal documents - use NES bridge for FlatBuffer optimization;
     if (this.config.legalDocumentOptimization && dataSize > 5000) {
       return 'nes-bridge';
     }
@@ -305,13 +305,13 @@ export class UltraJSONParser {
 
   /**
    * WebAssembly SIMD parsing implementation
-   */
+   */;
   private async wasmSIMDParse<T>(jsonString: string): Promise<T> {
     // In production, this would use a compiled WASM module with SIMD JSON parsing
     // For now, simulate with optimized native parsing
     console.log('⚡ Using WASM SIMD parsing...');
     
-    // Pre-process for legal document patterns
+    // Pre-process for legal document patterns;
     if (this.config.legalDocumentOptimization) {
       return this.parseLegalDocumentOptimized<T>(jsonString);
     }
@@ -321,7 +321,7 @@ export class UltraJSONParser {
 
   /**
    * WebGPU compute shader parsing for very large JSON
-   */
+   */;
   private async webgpuComputeParse<T>(jsonString: string): Promise<T> {
     console.log('� Using WebGPU compute parsing...');
     
@@ -332,7 +332,7 @@ export class UltraJSONParser {
       
       const parsed = JSON.parse(jsonString);
       
-      // If it's an array of embeddings, use GPU for similarity calculations
+      // If it's an array of embeddings, use GPU for similarity calculations;
       if (Array.isArray(parsed) && parsed.length > 100 && parsed[0]?.embedding) {
         console.log('<� Using GPU for embedding post-processing...');
         // Would process embeddings on GPU here
@@ -346,7 +346,7 @@ export class UltraJSONParser {
 
   /**
    * NES bridge parsing with FlatBuffer optimization
-   */
+   */;
   private async nesBridgeParse<T>(jsonString: string): Promise<T> {
     console.log('<� Using NES bridge parsing...');
     
@@ -355,7 +355,7 @@ export class UltraJSONParser {
         // Parse to intermediate object
         const obj = JSON.parse(jsonString);
         
-        // If it looks like a legal document, use FlatBuffer optimization
+        // If it looks like a legal document, use FlatBuffer optimization;
         if (this.isLegalDocument(obj)) {
           const document: LegalDocument = obj;
           const flatBuffer = await nesGPUBridge.createFlatBufferFromDocument(document);
@@ -372,11 +372,11 @@ export class UltraJSONParser {
 
   /**
    * Optimized native parsing with legal document preprocessing
-   */
+   */;
   private async nativeOptimizedParse<T>(jsonString: string): Promise<T> {
     console.log('🚀 Using native optimized parsing...');
     
-    // Pre-process for legal patterns if enabled
+    // Pre-process for legal patterns if enabled;
     if (this.config.legalDocumentOptimization && this.config.entityExtractionMode) {
       const processedJson = this.preprocessLegalJSON(jsonString);
       return JSON.parse(processedJson);
@@ -387,9 +387,9 @@ export class UltraJSONParser {
 
   /**
    * Parse legal documents with optimized patterns
-   */
+   */;
   private parseLegalDocumentOptimized<T>(jsonString: string): T {
-    // Extract common legal patterns before full parsing
+    // Extract common legal patterns before full parsing;
     const patterns = {
       citations: /"\d+\s+[UF]\.\d*d?\s+\d+"/g,
       statutes: /"\d+\s+U\.S\.C\.\s+�?\s*\d+"/g,
@@ -399,7 +399,7 @@ export class UltraJSONParser {
 
     let optimizedJson = jsonString;
     
-    // Pre-index legal entities for faster parsing
+    // Pre-index legal entities for faster parsing;
     for (const [type, pattern] of Object.entries(patterns)) {
       const matches = jsonString.match(pattern);
       if (matches) {
@@ -412,7 +412,7 @@ export class UltraJSONParser {
 
   /**
    * Preprocess legal JSON for optimization
-   */
+   */;
   private preprocessLegalJSON(jsonString: string): string {
     // Normalize legal citations and statutes for faster parsing
     let processed = jsonString;
@@ -434,7 +434,7 @@ export class UltraJSONParser {
 
   /**
    * Check if object is a legal document
-   */
+   */;
   private isLegalDocument(obj: any): obj is LegalDocument {
     return obj && 
            typeof obj.id === 'string' &&
@@ -445,7 +445,7 @@ export class UltraJSONParser {
 
   /**
    * Ultra-fast JSON stringification with SIMD acceleration
-   */
+   */;
   async fastStringify(obj: any, options: {
     enableSIMD?: boolean;
     enableGPU?: boolean;
@@ -497,7 +497,7 @@ export class UltraJSONParser {
 
   /**
    * Select optimal stringification strategy
-   */
+   */;
   private selectStringifyStrategy(objectSize: number, options: any): string {
     if (objectSize > 100000 && this.capabilities.webgpuCompute && options.enableGPU) {
       return 'webgpu-compute';
@@ -516,7 +516,7 @@ export class UltraJSONParser {
 
   /**
    * WASM SIMD stringification
-   */
+   */;
   private async wasmSIMDStringify(obj: any, options: any): Promise<string> {
     console.log('⚡ Using WASM SIMD stringification...');
     
@@ -526,7 +526,7 @@ export class UltraJSONParser {
 
   /**
    * WebGPU compute stringification
-   */
+   */;
   private async webgpuComputeStringify(obj: any, options: any): Promise<string> {
     console.log('� Using WebGPU compute stringification...');
     
@@ -536,7 +536,7 @@ export class UltraJSONParser {
 
   /**
    * NES bridge stringification with FlatBuffer
-   */
+   */;
   private async nesBridgeStringify(obj: any, options: any): Promise<string> {
     console.log('<� Using NES bridge stringification...');
     
@@ -553,7 +553,7 @@ export class UltraJSONParser {
 
   /**
    * Estimate object size for strategy selection
-   */
+   */;
   private estimateObjectSize(obj: any): number {
     // Rough estimation - would use more sophisticated method in production
     return JSON.stringify(obj).length;
@@ -561,7 +561,7 @@ export class UltraJSONParser {
 
   /**
    * Bulk process multiple JSON documents
-   */
+   */;
   async bulkProcess<T>(documents: string[], options: {
     enableParallel?: boolean;
     batchSize?: number;
@@ -584,11 +584,11 @@ export class UltraJSONParser {
       
       if (opts.enableParallel && this.capabilities.sharedArrayBuffer) {
         // Process batch in parallel
-        const batchPromises = batch.map(doc => this.fastParse<T>(doc));
+        const batchPromises = batch.map(doc => this.fastParse<T>(doc);
         const batchResults = await Promise.all(batchPromises);
         results.push(...batchResults);
       } else {
-        // Process batch sequentially
+        // Process batch sequentially;
         for (const doc of batch) {
           const result = await this.fastParse<T>(doc);
           results.push(result);
@@ -598,7 +598,7 @@ export class UltraJSONParser {
       console.log(`🚀 Processed batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(documents.length / batchSize)}`);
     }
 
-    // Optional clustering analysis
+    // Optional clustering analysis;
     if (opts.enableClustering && results.length > 10) {
       await this.performClusteringAnalysis(results);
     }
@@ -609,7 +609,7 @@ export class UltraJSONParser {
 
   /**
    * Perform clustering analysis on processed documents
-   */
+   */;
   private async performClusteringAnalysis(documents: any[]): Promise<void> {
     try {
       // Extract embeddings if available
@@ -634,15 +634,15 @@ export class UltraJSONParser {
 
   /**
    * Get comprehensive performance metrics
-   */
+   */;
   getPerformanceMetrics(): {
     capabilities: BrowserSIMDCapabilities;
     cacheSize: number;
     averageParseTime: number;
     totalOperations: number;
-    recommendedSettings: Partial<UltraJSONConfig>;
+    recommendedSettings: Partial<UltraJSONConfig>;,
   } {
-    const cachedMetrics = Array.from(this.performanceCache.values());
+    const cachedMetrics = Array.from(this.performanceCache.values();
     const avgParseTime = cachedMetrics.length > 0 
       ? cachedMetrics.reduce((sum, m) => sum + m.parseTime, 0) / cachedMetrics.length: 0;
 
@@ -654,25 +654,25 @@ export class UltraJSONParser {
       recommendedSettings: {
         enableBrowserSIMD: this.capabilities.wasmSIMD,
         enableWebGPUAcceleration: this.capabilities.webgpuCompute,
-        bulkProcessingMode: this.capabilities.supportLevel === 'optimal'
+        bulkProcessingMode: this.capabilities.supportLevel === 'optimal',
       }
     };
   }
 
   /**
    * Clear performance cache
-   */
+   */;
   clearCache(): void {
     this.performanceCache.clear();
     console.log('>� Ultra JSON Parser cache cleared');
   }
 }
 
-// Create singleton instance
+// Create singleton instance;
 export const ultraJSONParser = new UltraJSONParser({
   legalDocumentOptimization: true,
   entityExtractionMode: true,
-  citationPatternMatching: true
+  citationPatternMatching: true,
 });
 
 // Convenience functions

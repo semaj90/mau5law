@@ -38,7 +38,7 @@ export interface Evidence {
   classification?: {
     category: string;
     relevance: number;
-    confidence: number;
+    confidence: number;,
   };
   timeline?: {
     createdAt: string;
@@ -56,7 +56,7 @@ export interface EvidenceStoreState {
   evidence: Evidence[];
   isLoading: boolean;
   error: string | null;
-  isConnected: boolean;
+  isConnected: boolean;,
 }
 
 class UnifiedEvidenceStore {
@@ -77,7 +77,7 @@ class UnifiedEvidenceStore {
       this.initializeConnection();
       this.loadFromLocalStorage();
 
-      // Safe subscription to selectedCase
+      // Safe subscription to selectedCase;
       if (selectedCase?.subscribe) {
         selectedCase.subscribe((caseId: string | null) => {
           this.fetchEvidence(caseId);
@@ -109,9 +109,8 @@ class UnifiedEvidenceStore {
       this.websocket = new WebSocket(wsUrl);
 
       this.websocket.onopen = () => {
-        this.store.update((s) => ({ ...s, isConnected: true }));
-        this.websocket?.send(
-          JSON.stringify({
+        this.store.update((s) => ({ ...s, isConnected: true });
+        this.websocket?.send(JSON.stringify({
             type: "subscribe",
             channels: ["evidence_update"],
           }),
@@ -128,10 +127,9 @@ class UnifiedEvidenceStore {
       };
 
       this.websocket.onclose = () => {
-        this.store.update((s) => ({ ...s, isConnected: false }));
+        this.store.update((s) => ({ ...s, isConnected: false });
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
-          setTimeout(
-            () => {
+          setTimeout(() => {
               this.reconnectAttempts++;
               this.connectWebSocket();
             },
@@ -154,25 +152,25 @@ class UnifiedEvidenceStore {
       const { type, data } = message.data;
 
       switch (type) {
-        case "EVIDENCE_CREATED":
+        case "EVIDENCE_CREATED":;
           this.store.update((s) => ({
             ...s,
             evidence: [...s.evidence, data],
-          }));
+          });
           break;
-        case "EVIDENCE_UPDATED":
+        case "EVIDENCE_UPDATED":;
           this.store.update((s) => ({
             ...s,
             evidence: s.evidence.map((e: any) =>
               e.id === (data as { id?: any; lastUpdated?: any; evidence?: any }).id ? { ...e, ...data } : e,
             ),
-          }));
+          });
           break;
-        case "EVIDENCE_DELETED":
+        case "EVIDENCE_DELETED":;
           this.store.update((s) => ({
             ...s,
             evidence: s.evidence.filter((e: any) => e.id !== (data as { id?: any; lastUpdated?: any; evidence?: any }).id),
-          }));
+          });
           break;
       }
       this.saveToLocalStorage();
@@ -181,11 +179,11 @@ class UnifiedEvidenceStore {
 
   public async fetchEvidence(caseId: string | null) {
     if (!caseId) {
-      this.store.update((s) => ({ ...s, evidence: [], error: null }));
+      this.store.update((s) => ({ ...s, evidence: [], error: null });
       return;
     }
 
-    this.store.update((s) => ({ ...s, isLoading: true, error: null }));
+    this.store.update((s) => ({ ...s, isLoading: true, error: null });
 
     try {
       const response = await fetch(`/api/evidence/${caseId}`);
@@ -198,14 +196,14 @@ class UnifiedEvidenceStore {
         ...s,
         evidence: evidenceList,
         isLoading: false,
-      }));
+      });
       this.saveToLocalStorage();
     } catch (error: any) {
       this.store.update((s) => ({
         ...s,
         isLoading: false,
         error: error.message,
-      }));
+      });
       console.error("Failed to fetch evidence:", error);
     }
   }
@@ -218,7 +216,7 @@ class UnifiedEvidenceStore {
       throw new Error("No case selected");
     }
 
-    this.store.update((s) => ({ ...s, isLoading: true }));
+    this.store.update((s) => ({ ...s, isLoading: true });
 
     try {
       const response = await fetch("/api/evidence", {
@@ -236,14 +234,14 @@ class UnifiedEvidenceStore {
         ...s,
         evidence: [...s.evidence, createdEvidence],
         isLoading: false,
-      }));
+      });
       this.saveToLocalStorage();
     } catch (error: any) {
       this.store.update((s) => ({
         ...s,
         isLoading: false,
         error: error.message,
-      }));
+      });
       throw error;
     }
   }
@@ -279,7 +277,7 @@ class UnifiedEvidenceStore {
             e.id === evidenceId ? originalEvidence! : e,
           ),
           error: error.message,
-        }));
+        });
       }
       throw error;
     }
@@ -310,7 +308,7 @@ class UnifiedEvidenceStore {
           ...s,
           evidence: [...s.evidence, originalEvidence!],
           error: error.message,
-        }));
+        });
       }
       throw error;
     }
@@ -357,7 +355,7 @@ class UnifiedEvidenceStore {
   }
 
   public clearError() {
-    this.store.update((s) => ({ ...s, error: null }));
+    this.store.update((s) => ({ ...s, error: null });
   }
 
   public disconnect() {
@@ -369,7 +367,7 @@ class UnifiedEvidenceStore {
       this.eventSource.close();
       this.eventSource = null;
     }
-    this.store.update((s) => ({ ...s, isConnected: false }));
+    this.store.update((s) => ({ ...s, isConnected: false });
   }
 
   public subscribe = this.store.subscribe;
@@ -379,7 +377,7 @@ export const evidenceStore = new UnifiedEvidenceStore();
 ;
 export const evidenceById = derived(evidenceStore, ($store) => {
   const map = new Map<string, Evidence>();
-  $store.evidence.forEach((item) => map.set((item as { id?: any; caseId?: any }).id, item));
+  $store.evidence.forEach((item) => map.set((item as { id?: any; caseId?: any }).id, item);
   return map;
 });
 

@@ -9,6 +9,7 @@ import { EventEmitter } from 'events';
 
 // Lazy-import amqplib at runtime so this module can be loaded in non-Node builds (e.g. SvelteKit client).
 let amqp: any = null;
+}
 
 export interface SpecializedJob {
   id: string;
@@ -36,7 +37,7 @@ export interface WorkerResult {
     id: string;
     type: string;
     version: string;
-    capabilities: string[];
+    capabilities: string[];,
   };
 }
 
@@ -48,13 +49,13 @@ export interface WorkerStats {
   queuedJobs: number;
   activeWorkers: number;
   systemHealth: 'healthy' | 'degraded' | 'critical';
-  lastUpdate: Date;
+  lastUpdate: Date;,
 }
 
 /**
  * Central Job Orchestrator - The "Queen Bee"
  * Manages job distribution and worker coordination
- */
+ */;
 export class JobOrchestrator extends EventEmitter {
   private connection: any | null = null;
   private channel: any | null = null;
@@ -69,7 +70,7 @@ export class JobOrchestrator extends EventEmitter {
     queuedJobs: 0,
     activeWorkers: 0,
     systemHealth: 'healthy',
-    lastUpdate: new Date()
+    lastUpdate: new Date(),
   };
 
   constructor(private rabbitmqUrl: string = 'amqp://localhost') {
@@ -78,7 +79,7 @@ export class JobOrchestrator extends EventEmitter {
 
   async initialize(): Promise<void> {
     try {
-      // dynamically import amqplib to avoid bundling Node-only libs into browser builds
+      // dynamically import amqplib to avoid bundling Node-only libs into browser builds;
       if (!amqp) {
         const mod = await import('amqplib');
         amqp = mod;
@@ -111,7 +112,7 @@ export class JobOrchestrator extends EventEmitter {
     const fullJob: SpecializedJob = {
       ...job,
       id: jobId,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     this.jobQueue.set(jobId, fullJob);
@@ -126,7 +127,7 @@ export class JobOrchestrator extends EventEmitter {
         Buffer.from(JSON.stringify(fullJob)),
         {
           persistent: true,
-          priority: this.getPriorityNumber(job.priority)
+          priority: this.getPriorityNumber(job.priority),
         }
       );
 
@@ -144,7 +145,7 @@ export class JobOrchestrator extends EventEmitter {
   async waitForJobResult(jobId: string, timeout: number = 30000): Promise<WorkerResult> {
     return new Promise((resolve, reject) => {
       const timeoutId = setTimeout(() => {
-        reject(new Error(`Job ${jobId} timed out after ${timeout}ms`));
+        reject(new Error(`Job ${jobId} timed out after ${timeout}ms`);
       }, timeout);
 
       const checkResult = () => {
@@ -190,7 +191,7 @@ export class JobOrchestrator extends EventEmitter {
     await this.channel.consume('job_results', (msg) => {
       if (msg) {
         try {
-          const result: WorkerResult = JSON.parse(msg.content.toString()));
+          const result: WorkerResult = JSON.parse(msg.content.toString());
           this.results.set((result as { jobId?: any; success?: any }).jobId, result);
 
           if ((result as { jobId?: any; success?: any }).success) {
@@ -200,7 +201,7 @@ export class JobOrchestrator extends EventEmitter {
           }
 
           // Update average processing time
-          const totalProcessingTime = Array.from(this.results.values())
+          const totalProcessingTime = Array.from(this.results.values()
             .reduce((sum, r) => sum + r.processingTime, 0);
           this.stats.averageProcessingTime = totalProcessingTime / this.results.size;
 
@@ -240,7 +241,7 @@ export class JobOrchestrator extends EventEmitter {
 
 /**
  * Base Specialized Worker - Individual "Bee" in the Hive
- */
+ */;
 export abstract class SpecializedWorker extends EventEmitter {
   protected workerId: string;
   protected workerType: string;
@@ -256,7 +257,7 @@ export abstract class SpecializedWorker extends EventEmitter {
     workerId: string,
     workerType: string,
     capabilities: string[] = [],
-    rabbitmqUrl: string = 'amqp://localhost'
+    rabbitmqUrl: string = 'amqp://localhost';
   ) {
     super();
     this.workerId = workerId;
@@ -267,7 +268,7 @@ export abstract class SpecializedWorker extends EventEmitter {
 
   async initialize(): Promise<void> {
     try {
-      // dynamically import amqplib to avoid bundling Node-only libs into browser builds
+      // dynamically import amqplib to avoid bundling Node-only libs into browser builds;
       if (!amqp) {
         const mod = await import('amqplib');
         amqp = mod;
@@ -300,7 +301,7 @@ export abstract class SpecializedWorker extends EventEmitter {
         const startTime = Date.now();
 
         try {
-          const job: SpecializedJob = JSON.parse(msg.content.toString());
+          const job: SpecializedJob = JSON.parse(msg.content.toString();
           console.log(`⚙️ Worker ${this.workerId} processing job ${job.id}`);
 
           const result = await this.processJob(job);
@@ -315,7 +316,7 @@ export abstract class SpecializedWorker extends EventEmitter {
               id: this.workerId,
               type: this.workerType,
               version: this.version,
-              capabilities: this.capabilities
+              capabilities: this.capabilities,
             }
           };
 
@@ -342,7 +343,7 @@ export abstract class SpecializedWorker extends EventEmitter {
               id: this.workerId,
               type: this.workerType,
               version: this.version,
-              capabilities: this.capabilities
+              capabilities: this.capabilities,
             }
           };
 
@@ -383,7 +384,7 @@ export abstract class SpecializedWorker extends EventEmitter {
 
 /**
  * Document Summarization Worker
- */
+ */;
 export class DocumentSummarizationWorker extends SpecializedWorker {
   constructor(workerId: string, rabbitmqUrl?: string) {
     super(workerId, 'DocumentSummarizer', ['summarization', 'nlp', 'legal-docs'], rabbitmqUrl);
@@ -409,7 +410,7 @@ export class DocumentSummarizationWorker extends SpecializedWorker {
       metadata: {
         originalLength: document.content.length,
         summaryLength: summary.length,
-        compressionRatio: summary.length / document.content.length
+        compressionRatio: summary.length / document.content.length,
       }
     };
   }
@@ -417,7 +418,7 @@ export class DocumentSummarizationWorker extends SpecializedWorker {
   private async generateSummary(content: string, options: any): Promise<string> {
     // Placeholder for LLM integration
     const words = content.split(' ');
-    const summaryLength = Math.min(options.maxLength || 200, Math.floor(words.length * 0.3));
+    const summaryLength = Math.min(options.maxLength || 200, Math.floor(words.length * 0.3);
     return words.slice(0, summaryLength).join(' ') + '...';
   }
 
@@ -430,7 +431,7 @@ export class DocumentSummarizationWorker extends SpecializedWorker {
 
 /**
  * Case Law Research Worker
- */
+ */;
 export class CaseLawWorker extends SpecializedWorker {
   constructor(workerId: string, rabbitmqUrl?: string) {
     super(workerId, 'CaseLawResearcher', ['legal-research', 'case-law', 'precedent-analysis'], rabbitmqUrl);
@@ -454,7 +455,7 @@ export class CaseLawWorker extends SpecializedWorker {
         jurisdiction,
         dateRange,
         searchTime: new Date(),
-        relevanceThreshold: 0.7
+        relevanceThreshold: 0.7,
       }
     };
   }
@@ -464,10 +465,10 @@ export class CaseLawWorker extends SpecializedWorker {
     const q = typeof query === 'string' ? query : String(query || '');
     const baseRelevance = 0.5;
     const lengthBoost = Math.min(0.45, q.length / 200); // longer queries get a small boost
-    const relevanceScore = Math.max(0, Math.min(1, baseRelevance + lengthBoost));
+    const relevanceScore = Math.max(0, Math.min(1, baseRelevance + lengthBoost);
 
   // Return a small set of mocked cases that reference the query so the parameter is read
-    return [
+    return [;
       {
         id: 'case_001',
         title: `Sample v. Legal Case — matched for "${q.slice(0, 60)}"`,
@@ -478,7 +479,7 @@ export class CaseLawWorker extends SpecializedWorker {
         relevanceScore,
         summary: `A sample legal case generated for query "${q}". This is placeholder data for testing.`,
         keyHoldings: ['Sample holding 1', 'Sample holding 2'],
-        precedentialValue: 'binding'
+        precedentialValue: 'binding',
       }
     ];
   }
@@ -486,7 +487,7 @@ export class CaseLawWorker extends SpecializedWorker {
 
 /**
  * Embedding Generation Worker
- */
+ */;
 export class EmbeddingWorker extends SpecializedWorker {
   constructor(workerId: string, rabbitmqUrl?: string) {
     super(workerId, 'EmbeddingGenerator', ['embeddings', 'vector-search', 'semantic-analysis'], rabbitmqUrl);
@@ -508,7 +509,7 @@ export class EmbeddingWorker extends SpecializedWorker {
       dimensions: embedding.length,
       model,
       metadata: {
-        textLength: text.length
+        textLength: text.length,
       }
     };
   }
@@ -543,7 +544,7 @@ export class EmbeddingWorker extends SpecializedWorker {
 
 // Factory function for creating the orchestrator with common workers
 export async function createSpecializedWorkerSystem(
-  rabbitmqUrl: string = 'amqp://localhost'
+  rabbitmqUrl: string = 'amqp://localhost';
 ): Promise<any> {
   const orchestrator = new JobOrchestrator(rabbitmqUrl);
   await orchestrator.initialize();
@@ -554,7 +555,7 @@ export async function createSpecializedWorkerSystem(
     new EmbeddingWorker('embedding_001', rabbitmqUrl)
   ];
 
-  // Initialize all workers
+  // Initialize all workers;
   for (const worker of workers) {
     await worker.initialize();
     orchestrator.registerWorker(worker);

@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     let query = db.select().from(criminals);
     const filters = [];
 
-    // Add search filter
+    // Add search filter;
     if (search) {
       filters.push(
         or(
@@ -37,13 +37,13 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         ),
       );
     }
-    // Add threat level filter
+    // Add threat level filter;
     if (threatLevel) {
-      filters.push(eq(criminals.threatLevel, threatLevel));
+      filters.push(eq(criminals.threatLevel, threatLevel);
     }
-    // Add status filter
+    // Add status filter;
     if (status) {
-      filters.push(eq(criminals.status, status));
+      filters.push(eq(criminals.status, status);
     }
     // Apply filters
     let finalQuery = db
@@ -107,14 +107,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
     const data = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!data.firstName || !data.lastName) {
       return json(
-        { error: "First name and last name are required" },
+        { error: "First name and last name are required" },)
         { status: 400 },
       );
     }
-    // Map frontend data to schema fields
+    // Map frontend data to schema fields;
     const criminalData = {
       firstName: data.firstName.trim(),
       lastName: data.lastName.trim(),

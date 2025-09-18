@@ -6,7 +6,7 @@ interface QueueMessage {
   data: any;
   timestamp: number;
   attempts: number;
-  maxAttempts: number;
+  maxAttempts: number;,
 }
 
 interface QueueOptions {
@@ -31,14 +31,14 @@ class InMemoryQueue extends EventEmitter {
     };
   }
 
-  // Redis-compatible methods
+  // Redis-compatible methods;
   async lpush(queueName: string, data: string): Promise<number> {
     const message: QueueMessage = {
       id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       data: typeof data === 'string' ? JSON.parse(data) : data,
       timestamp: Date.now(),
       attempts: 0,
-      maxAttempts: this.options.maxRetries || 3
+      maxAttempts: this.options.maxRetries || 3,
     };
 
     if (!this.messages.has(queueName)) {
@@ -57,7 +57,7 @@ class InMemoryQueue extends EventEmitter {
       data: typeof data === 'string' ? JSON.parse(data) : data,
       timestamp: Date.now(),
       attempts: 0,
-      maxAttempts: this.options.maxRetries || 3
+      maxAttempts: this.options.maxRetries || 3,
     };
 
     if (!this.messages.has(queueName)) {
@@ -81,7 +81,7 @@ class InMemoryQueue extends EventEmitter {
         }
 
         if (timeout === 0) {
-          // Block indefinitely
+          // Block indefinitely;
           this.once('message', (name: string) => {
             if (name === queueName) {
               tryPop();
@@ -102,10 +102,10 @@ class InMemoryQueue extends EventEmitter {
     return queue ? queue.length: 0;
   }
 
-  // RabbitMQ-compatible methods
+  // RabbitMQ-compatible methods;
   async publish(exchange: string, routingKey: string, content: any, options: any = {}): Promise<boolean> {
     const queueName = `${exchange}:${routingKey}`;
-    await this.rpush(queueName, JSON.stringify(content));
+    await this.rpush(queueName, JSON.stringify(content);
     return true;
   }
 
@@ -156,13 +156,13 @@ class InMemoryQueue extends EventEmitter {
 
     if (message.attempts < message.maxAttempts) {
       message.attempts++;
-      // Requeue with delay
+      // Requeue with delay;
       setTimeout(() => {
         this.messages.get(queueName)!.push(message);
         this.emit('message', queueName, message);
       }, this.options.retryDelay);
     } else {
-      // Move to dead letter queue
+      // Move to dead letter queue;
       if (!this.deadLetter.has(queueName)) {
         this.deadLetter.set(queueName, []);
       }
@@ -171,7 +171,7 @@ class InMemoryQueue extends EventEmitter {
     }
   }
 
-  // Health and monitoring
+  // Health and monitoring;
   getStats(queueName?: string): any {
     if (queueName) {
       return {
@@ -198,11 +198,11 @@ class InMemoryQueue extends EventEmitter {
   }
 }
 
-// Singleton instance
+// Singleton instance;
 const messageQueue = new InMemoryQueue({
   maxRetries: 3,
   retryDelay: 2000,
-  concurrency: 10
+  concurrency: 10,
 });
 
 // Redis-compatible interface
@@ -244,7 +244,7 @@ export const rabbit = {
   },
 };
 
-// Enhanced message queue with workflow support
+// Enhanced message queue with workflow support;
 export class WorkflowQueue extends InMemoryQueue {
   private workflows: Map<string, any> = new Map();
 
@@ -288,7 +288,7 @@ export class WorkflowQueue extends InMemoryQueue {
   }
 
   getAllWorkflows(): any[] {
-    return Array.from(this.workflows.values());
+    return Array.from(this.workflows.values();
   }
 }
 

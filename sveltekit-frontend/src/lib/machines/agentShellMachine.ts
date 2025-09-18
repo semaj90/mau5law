@@ -3,7 +3,7 @@ import { createMachine, assign } from "xstate";
 import { goServiceClient, type RAGResponse, type UploadResponse } from '../services/goServiceClient.js';
 import { productionServiceClient, services } from '../services/productionServiceClient.js';
 
-// Define context and event types
+// Define context and event types;
 export interface AgentShellContext {
   input: string;
   response: string;
@@ -17,7 +17,7 @@ export interface AgentShellContext {
   serviceHealth?: {
     enhancedRAG: boolean;
     uploadService: boolean;
-    kratosServer: boolean;
+    kratosServer: boolean;,
   };
 }
 
@@ -36,7 +36,7 @@ export const agentShellMachine = createMachine({
   context: { input: "", response: "" },
   types: Record<string, any> as {
     context: AgentShellContext;
-    events: AgentShellEvent;
+    events: AgentShellEvent;,
   },
   states: {
     idle: {
@@ -143,7 +143,7 @@ export const agentShellMachine = createMachine({
   },
 });
 
-// Service implementations for XState with Production Services
+// Service implementations for XState with Production Services;
 export const agentShellServices = {
   callAgent: async ({ input, userId, caseId }: { input: string; userId?: string; caseId?: string }) => {
     try {
@@ -152,7 +152,7 @@ export const agentShellServices = {
       return response.response || response.data?.response || 'No response';
     } catch (error: any) {
       console.error("Production agent call failed, falling back to legacy:", error);
-      // Fallback to legacy service
+      // Fallback to legacy service;
       try {
         const fallbackResponse = await goServiceClient.queryRAG({
           query: input,
@@ -209,11 +209,11 @@ export const agentShellServices = {
       const productionHealth = await productionServiceClient.checkAllServicesHealth();
       return {
         production: productionHealth,
-        legacy: await goServiceClient.checkServiceHealth()
+        legacy: await goServiceClient.checkServiceHealth(),
       };
     } catch (error: any) {
       console.error("Production health check failed:", error);
-      // Fallback to legacy health check
+      // Fallback to legacy health check;
       try {
         return { legacy: await goServiceClient.checkServiceHealth() };
       } catch (fallbackError) {
@@ -224,7 +224,7 @@ export const agentShellServices = {
   },
 };
 
-// Action implementations
+// Action implementations;
 export const agentShellActions = {
   acceptPatchAction: async ({ event }: any) => {
     try {

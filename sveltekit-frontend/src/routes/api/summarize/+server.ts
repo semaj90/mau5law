@@ -7,7 +7,7 @@ async function generateSummary(content: string): Promise<string> {
     body: JSON.stringify({
       model: 'gemma2',
       prompt: `Summarize this legal document:\n\n${content}`,
-      stream: false
+      stream: false,
     })
   });
   const data = await response.json();
@@ -20,5 +20,5 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   const { content } = await request.json();
   const summary = await generateSummary(content);
   
-  return new Response(JSON.stringify({ summary }));
+  return new Response(JSON.stringify({ summary });
 };

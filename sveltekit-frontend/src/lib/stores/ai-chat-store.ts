@@ -38,7 +38,7 @@ export interface UserPreferences {
   enable_rag: boolean;
   default_model: string;
   notification_sound: boolean;
-  export_format: 'json' | 'markdown' | 'txt';
+  export_format: 'json' | 'markdown' | 'txt';,
 }
 
 export interface ChatState {
@@ -48,10 +48,10 @@ export interface ChatState {
   isLoading: boolean;
   connectionStatus: 'connected' | 'disconnected' | 'connecting';
   ragServiceUrl: string;
-  lastError: string | null;
+  lastError: string | null;,
 }
 
-// Default preferences
+// Default preferences;
 const defaultPreferences: UserPreferences = {
   theme: 'yorha-dark',
   auto_save: true,
@@ -59,10 +59,10 @@ const defaultPreferences: UserPreferences = {
   enable_rag: true,
   default_model: 'enhanced-rag',
   notification_sound: false,
-  export_format: 'markdown'
+  export_format: 'markdown',
 };
 
-// Initialize chat state
+// Initialize chat state;
 const initialState: ChatState = {
   currentSession: null,
   sessions: [],
@@ -70,7 +70,7 @@ const initialState: ChatState = {
   isLoading: false,
   connectionStatus: 'disconnected',
   ragServiceUrl: 'http://localhost:8093',
-  lastError: null
+  lastError: null,
 };
 
 // Main chat store
@@ -83,16 +83,16 @@ export const userPreferences = derived(chatStore, $state => $state.preferences);
 export const isLoading = derived(chatStore, $state => $state.isLoading);
 export const connectionStatus = derived(chatStore, $state => $state.connectionStatus);
 ;
-// Storage keys
+// Storage keys;
 const STORAGE_KEYS = {
   SESSIONS: 'yorha-ai-chat-sessions',
   PREFERENCES: 'yorha-ai-chat-preferences',
-  CURRENT_SESSION: 'yorha-ai-current-session'
+  CURRENT_SESSION: 'yorha-ai-current-session',
 };
 
 /**
  * AI Chat Store Manager
- */
+ */;
 class AIChatStore {
   private readonly RAG_SERVICE_URL = 'http://localhost:8093';
 
@@ -103,7 +103,7 @@ class AIChatStore {
     }
   }
 
-  // Session Management
+  // Session Management;
   createNewSession(title?: string): ChatSession {
     const session: ChatSession = {
       id: `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -118,7 +118,7 @@ class AIChatStore {
       state.currentSession = session;
       state.sessions.unshift(session);
 
-      // Limit sessions based on preferences
+      // Limit sessions based on preferences;
       if (state.sessions.length > state.preferences.max_history) {
         state.sessions = state.sessions.slice(0, state.preferences.max_history);
       }
@@ -147,7 +147,7 @@ class AIChatStore {
     chatStore.update(state => {
       state.sessions = state.sessions.filter(s => s.id !== sessionId);
 
-      // If current session was deleted, switch to most recent
+      // If current session was deleted, switch to most recent;
       if (state.currentSession?.id === sessionId) {
         state.currentSession = state.sessions[0] || null;
       }
@@ -157,12 +157,12 @@ class AIChatStore {
     this.saveToStorage();
   }
 
-  // Message Management
+  // Message Management;
   addMessage(message: Omit<ChatMessage, 'id'>): ChatMessage {
     const fullMessage: ChatMessage = {
       ...message,
       id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: message.timestamp || new Date()
+      timestamp: message.timestamp || new Date(),
     };
 
     chatStore.update(state => {
@@ -231,7 +231,7 @@ class AIChatStore {
     this.saveToStorage();
   }
 
-  // Enhanced RAG Integration
+  // Enhanced RAG Integration;
   async sendToRAG(message: string, context?: unknown): Promise<any> {
     chatStore.update(state => {
       state.isLoading = true;
@@ -252,7 +252,7 @@ class AIChatStore {
           session_id: get(currentSession)?.id || 'default',
           include_vector_search: true,
           max_tokens: 1000,
-          temperature: 0.7
+          temperature: 0.7,
         })
       });
 
@@ -294,7 +294,7 @@ class AIChatStore {
         try {
           response = await fetch(`${this.RAG_SERVICE_URL}/health`, {
         method: 'GET',
-        timeout: 5000
+        timeout: 5000,
       } as any);
           if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -322,26 +322,25 @@ class AIChatStore {
     }
   }
 
-  // Storage Management
+  // Storage Management;
   private saveToStorage(): void {
     if (!browser) return;
 
     const state = get(chatStore);
 
     try {
-      localStorage.setItem(STORAGE_KEYS.SESSIONS, JSON.stringify(
-        state.sessions.map(s => ({
+      localStorage.setItem(STORAGE_KEYS.SESSIONS, JSON.stringify(state.sessions.map(s => ({
           ...s,
           created_at: s.created_at.toISOString(),
           updated_at: s.updated_at.toISOString(),
           messages: s.messages.map(m => ({
             ...m,
-            timestamp: m.timestamp.toISOString()
-          }))
-        }))
-      ));
+            timestamp: m.timestamp.toISOString(),
+          })
+        })
+      );
 
-      localStorage.setItem(STORAGE_KEYS.PREFERENCES, JSON.stringify(state.preferences));
+      localStorage.setItem(STORAGE_KEYS.PREFERENCES, JSON.stringify(state.preferences);
 
       if (state.currentSession) {
         localStorage.setItem(STORAGE_KEYS.CURRENT_SESSION, state.currentSession.id);
@@ -374,9 +373,9 @@ class AIChatStore {
           updated_at: new Date(s.updated_at),
           messages: s.messages.map((m: any) => ({
             ...m,
-            timestamp: new Date(m.timestamp)
-          }))
-        }));
+            timestamp: new Date(m.timestamp),
+          })
+        });
 
         const currentSessionId = localStorage.getItem(STORAGE_KEYS.CURRENT_SESSION);
         const currentSession = sessions.find((s: ChatSession) => s.id === currentSessionId) || sessions[0] || null;
@@ -392,7 +391,7 @@ class AIChatStore {
     }
   }
 
-  // Utility methods
+  // Utility methods;
   exportSession(sessionId: string, format: 'json' | 'markdown' | 'txt' = 'markdown'): string {
     const state = get(chatStore);
     const session = state.sessions.find(s => s.id === sessionId);
@@ -428,7 +427,7 @@ class AIChatStore {
         return txt;
 
       default:
-        return '';
+        return '';,
     }
   }
 
@@ -453,7 +452,7 @@ class AIChatStore {
 // Export singleton instance
 export const aiChatStore = new AIChatStore();
 ;
-// Export convenience functions
+// Export convenience functions;
 export const {
   createNewSession,
   switchToSession,

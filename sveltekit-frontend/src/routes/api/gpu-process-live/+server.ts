@@ -8,7 +8,7 @@ import { URL } from "url";
 // Direct processing of live TypeScript errors with GPU acceleration
 // ======================================================================
 
-// Mock GPU processing service
+// Mock GPU processing service;
 class GPULiveProcessor {
   private processes = new Map<string, any>();
 
@@ -19,7 +19,7 @@ class GPULiveProcessor {
       status: 'running',
       config,
       startTime: new Date(),
-      progress: 0
+      progress: 0,
     };
     
     this.processes.set(processId, process);
@@ -52,7 +52,7 @@ class GPULiveProcessor {
   }
 
   getAllProcesses() {
-    return Array.from(this.processes.values());
+    return Array.from(this.processes.values();
   }
 
   stopProcess(processId: string) {
@@ -72,7 +72,7 @@ async function getLiveTypeScriptErrors(): Promise<string> {
   return "Mock TypeScript errors output";
 }
 
-// POST - Start new GPU processing
+// POST - Start new GPU processing;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, data } = await request.json();
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const stopped = gpuProcessor.stopProcess(data.processId);
         return json({
           success: stopped,
-          message: stopped ? 'Process stopped' : 'Process not found'
+          message: stopped ? 'Process stopped' : 'Process not found',
         });
 
       case 'errors':
@@ -99,22 +99,22 @@ export const POST: RequestHandler = async ({ request }) => {
           errors
         });
 
-      default:
+      default:;
         return json({
           success: false,
-          error: 'Invalid action'
+          error: 'Invalid action',
         }, { status: 400 });
     }
   } catch (error: any) {
     console.error('GPU Live Processing error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };
 
-// GET - Get process status
+// GET - Get process status;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const processId = url.searchParams.get('processId');
@@ -124,7 +124,7 @@ export const GET: RequestHandler = async ({ url }) => {
       if (!process) {
         return json({
           success: false,
-          error: 'Process not found'
+          error: 'Process not found',
         }, { status: 404 });
       }
 
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('GPU Live Processing GET error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };

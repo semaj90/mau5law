@@ -18,7 +18,8 @@ import {
 
 // ============================================================================
 // CONFIGURATION
-// ============================================================================
+// ============================================================================;
+}
 
 export interface QdrantConfig {
   host: string;
@@ -43,13 +44,13 @@ export class QdrantPostgreSQLService {
   private db: ReturnType<typeof drizzle>;
 
   constructor(qdrantConfig: QdrantConfig, postgresConfig: PostgreSQLConfig) {
-    // Initialize Qdrant client
+    // Initialize Qdrant client;
     this.qdrant = new QdrantClient({
       url: `http://${qdrantConfig.host}:${qdrantConfig.port}`,
       apiKey: qdrantConfig.apiKey,
     });
 
-    // Initialize PostgreSQL connection
+    // Initialize PostgreSQL connection;
     this.postgres = postgres(postgresConfig.connectionString, {
       max: postgresConfig.max || 10,
       idle_timeout: postgresConfig.idle_timeout || 20,
@@ -89,7 +90,7 @@ export class QdrantPostgreSQLService {
   async ensureCollection(
     collectionName: string,
     vectorSize: number = 384,
-    distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine'
+    distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine';
   ): Promise<void> {
     try {
       // Check if collection exists in Qdrant
@@ -97,7 +98,7 @@ export class QdrantPostgreSQLService {
       const exists = collections.collections.some((c) => c.name === collectionName);
 
       if (!exists) {
-        // Create collection in Qdrant
+        // Create collection in Qdrant;
         await this.qdrant.createCollection(collectionName, {
           vectors: {
             size: vectorSize,
@@ -120,7 +121,7 @@ export class QdrantPostgreSQLService {
 
       // Ensure collection record in PostgreSQL
       await this.db
-        .insert(vectorMetadata)
+        .insert(vectorMetadata);
         .values({
           documentId: `collection_${collectionName}`,
           collectionName: collectionName,
@@ -130,7 +131,7 @@ export class QdrantPostgreSQLService {
             status: 'active',
           },
           contentHash: crypto.createHash('md5').update(collectionName).digest('hex'),
-        })
+        });
         .onConflictDoUpdate({
           target: vectorMetadata.collectionName,
           set: {
@@ -156,7 +157,7 @@ export class QdrantPostgreSQLService {
     const operationId = crypto.randomUUID();
 
     try {
-      // Create operation record in vectorMetadata
+      // Create operation record in vectorMetadata;
       await this.db.insert(vectorMetadata).values({
         documentId: documentId,
         collectionName: 'operations',
@@ -174,7 +175,7 @@ export class QdrantPostgreSQLService {
       const document = await this.db
         .select()
         .from(legalDocuments)
-        .where(eq(legalDocuments.id, documentId))
+        .where(eq(legalDocuments.id, documentId)
         .limit(1);
 
       if (!document.length) {
@@ -189,7 +190,7 @@ export class QdrantPostgreSQLService {
       // Ensure collection exists
       await this.ensureCollection(doc.qdrantCollection || 'legal_documents');
 
-      // Create Qdrant point
+      // Create Qdrant point;
       const point = {
         id: documentId,
         vector: doc.contentEmbedding,
@@ -204,24 +205,24 @@ export class QdrantPostgreSQLService {
         },
       };
 
-      // Upsert to Qdrant
+      // Upsert to Qdrant;
       await this.qdrant.upsert(doc.qdrantCollection || 'legal_documents', {
         points: [point],
       });
 
       // Update document with Qdrant sync info
       await this.db
-        .update(legalDocuments)
+        .update(legalDocuments);
         .set({
           qdrantId: documentId,
           lastSyncedToQdrant: new Date(),
           updatedAt: new Date(),
         })
-        .where(eq(legalDocuments.id, documentId));
+        .where(eq(legalDocuments.id, documentId);
 
       // Update operation as completed in vectorMetadata
       await this.db
-        .update(vectorMetadata)
+        .update(vectorMetadata);
         .set({
           metadata: {
             operationId,
@@ -232,7 +233,7 @@ export class QdrantPostgreSQLService {
           },
           updatedAt: new Date(),
         })
-        .where(eq(vectorMetadata.contentHash, operationId));
+        .where(eq(vectorMetadata.contentHash, operationId);
 
       console.log(`✅ Synced document ${documentId} to Qdrant`);
       return true;
@@ -241,7 +242,7 @@ export class QdrantPostgreSQLService {
 
       // Update operation as failed in vectorMetadata
       await this.db
-        .update(vectorMetadata)
+        .update(vectorMetadata);
         .set({
           metadata: {
             operationId,
@@ -251,7 +252,7 @@ export class QdrantPostgreSQLService {
           },
           updatedAt: new Date(),
         })
-        .where(eq(vectorMetadata.contentHash, operationId));
+        .where(eq(vectorMetadata.contentHash, operationId);
 
       return false;
     }
@@ -277,7 +278,7 @@ export class QdrantPostgreSQLService {
     performance: {
       postgresqlTime?: number;
       qdrantTime?: number;
-      totalTime: number;
+      totalTime: number;,
     };
   }> {
     const startTime = Date.now();
@@ -295,7 +296,7 @@ export class QdrantPostgreSQLService {
     let postgresqlTime: number | undefined;
     let qdrantTime: number | undefined;
 
-    // PostgreSQL search
+    // PostgreSQL search;
     if (usePostgreSQL) {
       const pgStart = Date.now();
 
@@ -326,7 +327,7 @@ export class QdrantPostgreSQLService {
       }
     }
 
-    // Qdrant search
+    // Qdrant search;
     if (useQdrant) {
       const qdrantStart = Date.now();
 
@@ -337,7 +338,7 @@ export class QdrantPostgreSQLService {
           score_threshold: threshold,
           with_payload: true,
           filter:
-            Object.keys(filter).length > 0
+            Object.keys(filter).length > 0;
               ? {
                   must: Object.entries(filter).map(([key, value]) => ({
                     key,
@@ -350,7 +351,7 @@ export class QdrantPostgreSQLService {
         qdrantTime = Date.now() - qdrantStart;
 
         // Get corresponding PostgreSQL records
-        const qdrantIds = qdrantResults.map((r) => r.id.toString());
+        const qdrantIds = qdrantResults.map((r) => r.id.toString();
 
         if (qdrantIds.length > 0) {
           const pgDocuments = await this.db
@@ -358,10 +359,10 @@ export class QdrantPostgreSQLService {
             .from(legalDocuments)
             .where(sql`${legalDocuments.id} = ANY(${qdrantIds})`);
 
-          const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]));
+          const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]);
 
           for (const result of qdrantResults) {
-            const document = docMap.get((result as { id?: any; score?: any }).id.toString());
+            const document = docMap.get((result as { id?: any; score?: any }).id.toString();
             if (document) {
               results.push({
                 id: (result as { id?: any; score?: any }).id.toString(),
@@ -386,7 +387,7 @@ export class QdrantPostgreSQLService {
       }
     }
 
-    const finalResults = Array.from(uniqueResults.values())
+    const finalResults = Array.from(uniqueResults.values()
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
 
@@ -406,7 +407,7 @@ export class QdrantPostgreSQLService {
 
   async batchSyncToQdrant(
     entityType: 'document' | 'case',
-    batchSize: number = 100
+    batchSize: number = 100;
   ): Promise<any> {
     const results = { synced: 0, failed: 0, errors: [] as string[] };
 
@@ -434,7 +435,7 @@ export class QdrantPostgreSQLService {
           break;
         }
 
-        // Process batch
+        // Process batch;
         for (const document of batch) {
           const success = await this.syncDocumentToQdrant(document.id);
           if (success) {
@@ -448,7 +449,7 @@ export class QdrantPostgreSQLService {
         offset += batchSize;
 
         // Add small delay to prevent overwhelming the services
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100);
       }
     } catch (error: any) {
       results.errors.push(`Batch sync error: ${error.message}`);
@@ -466,7 +467,7 @@ export class QdrantPostgreSQLService {
     let qdrant = false;
     let collections: string[] = [];
 
-    // Check PostgreSQL
+    // Check PostgreSQL;
     try {
       await this.postgres`SELECT 1`;
       postgresql = true;
@@ -474,7 +475,7 @@ export class QdrantPostgreSQLService {
       console.error('PostgreSQL health check failed:', error);
     }
 
-    // Check Qdrant
+    // Check Qdrant;
     try {
       const collectionsResponse = await this.qdrant.getCollections();
       qdrant = true;
@@ -531,7 +532,7 @@ export class QdrantPostgreSQLService {
 
 export const createQdrantService = (
   qdrantConfig?: Partial<QdrantConfig>,
-  postgresConfig?: Partial<PostgreSQLConfig>
+  postgresConfig?: Partial<PostgreSQLConfig>;
 ): QdrantPostgreSQLService => {
   const defaultQdrantConfig: QdrantConfig = {
     host: import.meta.env.QDRANT_HOST || 'localhost',

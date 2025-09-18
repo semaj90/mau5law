@@ -15,7 +15,7 @@ import { z } from 'zod';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid citation ID format');
 
-// Update citation schema
+// Update citation schema;
 const UpdateCitationSchema = z.object({
   title: z.string().min(1).optional(),
   citation: z.string().min(1).optional(),
@@ -35,10 +35,10 @@ const UpdateCitationSchema = z.object({
 /*
  * GET /api/v1/citations/[id]
  * Get a specific citation by ID
- */
+ */;
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     // Get citation from database
     const [citation] = await db.select()
       .from(citations)
-      .where(eq(citations.id, citationId))
+      .where(eq(citations.id, citationId)
       .limit(1);
 
     if (!citation) {
@@ -101,10 +101,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 /*
  * PUT /api/v1/citations/[id]
  * Update a specific citation
- */
+ */;
 export const PUT: RequestHandler = async ({ params, request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -122,7 +122,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     // Check if citation exists
     const [existingCitation] = await db.select()
       .from(citations)
-      .where(eq(citations.id, citationId))
+      .where(eq(citations.id, citationId)
       .limit(1);
 
     if (!existingCitation) {
@@ -133,12 +133,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     }
 
     // Update citation
-    const [updatedCitation] = await db.update(citations)
+    const [updatedCitation] = await db.update(citations);
       .set({
         ...updateData,
         updatedAt: new Date(),
       })
-      .where(eq(citations.id, citationId))
+      .where(eq(citations.id, citationId)
       .returning();
 
     return json({
@@ -183,10 +183,10 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 /*
  * DELETE /api/v1/citations/[id]
  * Delete a specific citation
- */
+ */;
 export const DELETE: RequestHandler = async ({ params, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -200,7 +200,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Check if citation exists
     const [existingCitation] = await db.select()
       .from(citations)
-      .where(eq(citations.id, citationId))
+      .where(eq(citations.id, citationId)
       .limit(1);
 
     if (!existingCitation) {
@@ -212,7 +212,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
 
     // Delete citation
     await db.delete(citations)
-      .where(eq(citations.id, citationId));
+      .where(eq(citations.id, citationId);
 
     return json({
       success: true,

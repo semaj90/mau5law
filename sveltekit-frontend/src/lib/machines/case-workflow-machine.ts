@@ -4,7 +4,8 @@ import { orchestrator } from '../services/unified-legal-orchestrator.js';
 // import { rabbitmq } from '../server/queue/rabbitmq-manager.js';
 
 // XState machine for case workflow management with contextual memory
-// Handles: case creation → document upload → analysis → recommendations → action
+// Handles: case creation → document upload → analysis → recommendations → action;
+}
 
 export interface CaseWorkflowContext {
   case_id?: string;
@@ -19,12 +20,12 @@ export interface CaseWorkflowContext {
   progress: {
     total_steps: number;
     completed_steps: number;
-    current_action: string;
+    current_action: string;,
   };
   }); const settings = {
     auto_analyze: boolean;
     notification_level: 'minimal' | 'normal' | 'detailed';
-    ai_assistance_level: 'basic' | 'enhanced' | 'proactive';
+    ai_assistance_level: 'basic' | 'enhanced' | 'proactive';,
   };
 }
 
@@ -55,12 +56,12 @@ export const caseWorkflowMachine = createMachine({
     progress: {
       total_steps: 6,
       completed_steps: 0,
-      current_action: 'Ready to start'
+      current_action: 'Ready to start',
     },
     }); const settings = {
       auto_analyze: true,
       notification_level: 'normal',
-      ai_assistance_level: 'enhanced'
+      ai_assistance_level: 'enhanced',
     }
   },
 
@@ -76,7 +77,7 @@ export const caseWorkflowMachine = createMachine({
             current_step: 'creating_case',
             progress: ({ context }) => ({
               ...context.progress,
-              current_action: 'Creating case...'
+              current_action: 'Creating case...',
             })
           })
         }
@@ -88,7 +89,7 @@ export const caseWorkflowMachine = createMachine({
         src: fromPromise(async ({ input }) => {
           const { case_data, user_id } = input.context;
           
-          // Create case through orchestrator
+          // Create case through orchestrator;
           const result = await orchestrator.processRequest({
             type: 'process',
             payload: {
@@ -97,7 +98,7 @@ export const caseWorkflowMachine = createMachine({
             },
             context: {
               user_id,
-              priority: 'normal'
+              priority: 'normal',
             }
           });
 
@@ -118,7 +119,7 @@ export const caseWorkflowMachine = createMachine({
             progress: ({ context }) => ({
               ...context.progress,
               completed_steps: 1,
-              current_action: 'Case created successfully'
+              current_action: 'Case created successfully',
             })
           })
         },
@@ -134,7 +135,7 @@ export const caseWorkflowMachine = createMachine({
 
     caseReady: {
       entry: assign({
-        current_step: 'case_ready'
+        current_step: 'case_ready',
       }),
       
       on: {
@@ -143,7 +144,7 @@ export const caseWorkflowMachine = createMachine({
           actions: assign({
             progress: ({ context }) => ({
               ...context.progress,
-              current_action: 'Uploading document...'
+              current_action: 'Uploading document...',
             })
           })
         },
@@ -154,7 +155,7 @@ export const caseWorkflowMachine = createMachine({
         },
         
         REQUEST_AI_ASSISTANCE: {
-          target: 'providingAssistance'
+          target: 'providingAssistance',
         }
       }
     },
@@ -165,7 +166,7 @@ export const caseWorkflowMachine = createMachine({
           const { case_id, user_id } = input.context;
           const { file, metadata } = input.event;
           
-          // Upload through orchestrator
+          // Upload through orchestrator;
           const result = await orchestrator.processRequest({
             type: 'process',
             payload: {
@@ -177,11 +178,11 @@ export const caseWorkflowMachine = createMachine({
             context: {
               user_id,
               case_id,
-              priority: 'normal'
+              priority: 'normal',
             }
           });
 
-          // Record interaction in memory
+          // Record interaction in memory;
           await caseMemoryEngine.recordInteraction({
             case_id,
             user_id,
@@ -208,7 +209,7 @@ export const caseWorkflowMachine = createMachine({
               ...context.progress,
               completed_steps: Math.min(context.progress.completed_steps + 1, context.progress.total_steps),
               current_action: 'Document uploaded, processing...'
-            })
+            ,})
           })
         },
         
@@ -228,7 +229,7 @@ export const caseWorkflowMachine = createMachine({
           const latestDoc = documents[documents.length - 1];
           
           // Queue document for background processing
-          // TODO: Re-enable when rabbitmq is properly configured
+          // TODO: Re-enable when rabbitmq is properly configured;
           // await rabbitmq.publishDocumentProcessing({
           //   document_id: latestDoc.id,
           //   content: latestDoc.content,
@@ -236,7 +237,7 @@ export const caseWorkflowMachine = createMachine({
           //   case_id
           // });
 
-          // Auto-analyze if enabled
+          // Auto-analyze if enabled;
           if (input.context.settings.auto_analyze) {
             return await orchestrator.processRequest({
               type: 'analyze',
@@ -248,7 +249,7 @@ export const caseWorkflowMachine = createMachine({
               context: {
                 user_id,
                 case_id,
-                priority: 'normal'
+                priority: 'normal',
               }
             });
           }
@@ -256,14 +257,14 @@ export const caseWorkflowMachine = createMachine({
           return { processed: true, auto_analysis: false };
         }),
         
-        onDone: [
+        onDone: [;
           {
             target: 'caseReady',
             guard: ({ event }) => !event.output.analysis,
             actions: assign({
               progress: ({ context }) => ({
                 ...context.progress,
-                current_action: 'Document processed'
+                current_action: 'Document processed',
               })
             })
           },
@@ -293,7 +294,7 @@ export const caseWorkflowMachine = createMachine({
         current_step: 'analyzing',
         progress: ({ context }) => ({
           ...context.progress,
-          current_action: 'Analyzing case and documents...'
+          current_action: 'Analyzing case and documents...',
         })
       }),
       
@@ -301,26 +302,26 @@ export const caseWorkflowMachine = createMachine({
         src: fromPromise(async ({ input }) => {
           const { case_id, user_id, documents } = input.context;
           
-          // Comprehensive case analysis
+          // Comprehensive case analysis;
           const analysis = await orchestrator.processRequest({
             type: 'analyze',
             payload: {
               action: 'comprehensive_analysis',
               case_id,
               documents: documents.map(d => d.id),
-              analysis_type: 'full'
+              analysis_type: 'full',
             },
             context: {
               user_id,
               case_id,
-              priority: 'high'
+              priority: 'high',
             }
           });
 
           // Generate recommendations based on analysis
           const recommendations = await caseMemoryEngine.generateSelfPromptRecommendations(
             case_id,
-            user_id,
+            user_id,);
             {
               type: 'analysis',
               content: 'Comprehensive case analysis completed',
@@ -343,7 +344,7 @@ export const caseWorkflowMachine = createMachine({
               ...context.progress,
               completed_steps: Math.min(context.progress.completed_steps + 1, context.progress.total_steps),
               current_action: 'Analysis complete, reviewing recommendations...'
-            })
+            ,})
           })
         },
         
@@ -358,7 +359,7 @@ export const caseWorkflowMachine = createMachine({
 
     reviewingRecommendations: {
       entry: assign({
-        current_step: 'reviewing_recommendations'
+        current_step: 'reviewing_recommendations',
       }),
       
       on: {
@@ -367,7 +368,7 @@ export const caseWorkflowMachine = createMachine({
           actions: assign({
             progress: ({ context }) => ({
               ...context.progress,
-              current_action: 'Executing recommendation...'
+              current_action: 'Executing recommendation...',
             })
           })
         },
@@ -380,7 +381,7 @@ export const caseWorkflowMachine = createMachine({
         },
         
         REQUEST_AI_ASSISTANCE: {
-          target: 'providingAssistance'
+          target: 'providingAssistance',
         },
         
         NEXT_STEP: {
@@ -401,7 +402,7 @@ export const caseWorkflowMachine = createMachine({
             throw new Error('Recommendation not found');
           }
 
-          // Execute recommendation through orchestrator
+          // Execute recommendation through orchestrator;
           const result = await orchestrator.processRequest({
             type: recommendation.type === 'next_action' ? 'process' : 'analyze',
             payload: {
@@ -413,11 +414,11 @@ export const caseWorkflowMachine = createMachine({
             context: {
               user_id,
               case_id,
-              priority: recommendation.timing_suggestion === 'immediate' ? 'high' : 'normal'
+              priority: recommendation.timing_suggestion === 'immediate' ? 'high' : 'normal',
             }
           });
 
-          // Record execution in memory
+          // Record execution in memory;
           await caseMemoryEngine.recordInteraction({
             case_id,
             user_id,
@@ -426,7 +427,7 @@ export const caseWorkflowMachine = createMachine({
             response: JSON.stringify(result),
             metadata: {
               recommendation_id,
-              execution_result: result
+              execution_result: result,
             }
           });
 
@@ -445,7 +446,7 @@ export const caseWorkflowMachine = createMachine({
             progress: ({ context }) => ({
               ...context.progress,
               completed_steps: Math.min(context.progress.completed_steps + 1, context.progress.total_steps),
-              current_action: 'Recommendation executed successfully'
+              current_action: 'Recommendation executed successfully',
             })
           })
         },
@@ -470,7 +471,7 @@ export const caseWorkflowMachine = createMachine({
           const { case_id, user_id, memory_context } = input.context;
           const { query } = input.event;
           
-          // Get AI assistance using contextual memory
+          // Get AI assistance using contextual memory;
           const assistance = await orchestrator.processRequest({
             type: 'chat',
             payload: {
@@ -482,7 +483,7 @@ export const caseWorkflowMachine = createMachine({
             context: {
               user_id,
               case_id,
-              priority: 'normal'
+              priority: 'normal',
             }
           });
 
@@ -494,7 +495,7 @@ export const caseWorkflowMachine = createMachine({
           actions: assign({
             progress: ({ context }) => ({
               ...context.progress,
-              current_action: 'AI assistance provided'
+              current_action: 'AI assistance provided',
             })
           })
         },
@@ -515,7 +516,7 @@ export const caseWorkflowMachine = createMachine({
         progress: ({ context }) => ({
           ...context.progress,
           completed_steps: context.progress.total_steps,
-          current_action: 'Workflow completed successfully'
+          current_action: 'Workflow completed successfully',
         })
       })
     },
@@ -525,7 +526,7 @@ export const caseWorkflowMachine = createMachine({
         RETRY: {
           target: 'idle',
           actions: assign({
-            error_message: undefined
+            error_message: undefined,
           })
         },
         
@@ -542,7 +543,7 @@ export const caseWorkflowMachine = createMachine({
             progress: {
               total_steps: 6,
               completed_steps: 0,
-              current_action: 'Ready to start'
+              current_action: 'Ready to start',
             }
           })
         }
@@ -550,14 +551,14 @@ export const caseWorkflowMachine = createMachine({
     }
   },
 
-  // Global transitions
+  // Global transitions;
   on: {
     UPDATE_SETTINGS: {
       actions: assign({
         settings: ({ context, event }) => ({
           ...context.settings,
           ...event.settings
-        })
+        ,})
       })
     }
   }

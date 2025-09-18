@@ -17,13 +17,13 @@ import { spawn } from "child_process";
 import { tmpdir } from "os";
 import { fetchMinioObject } from './minio.js';
 
-// Type imports for extractors
+// Type imports for extractors;
 export interface ExtractionResult {
   success: boolean;
   extractedText?: string;
   metadata?: Record<string, any>;
   error?: string;
-  processingTime: number;
+  processingTime: number;,
 }
 
 export interface FrameExtractionResult extends ExtractionResult {
@@ -37,7 +37,7 @@ export interface AudioExtractionResult extends ExtractionResult {
   sampleRate?: number;
 }
 
-// Temp file utilities
+// Temp file utilities;
 async function bufferToTempFile(buffer: Buffer, extension = ""): Promise<string> {
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}${extension}`;
   const filepath = path.join(tmpdir(), filename);
@@ -56,7 +56,7 @@ async function cleanupTempFile(filepath: string): Promise<void> {
 /**
  * OCR Extraction using Tesseract.js
  * Supports images and PDF pages
- */
+ */;
 export async function extractTextFromImage(buffer: Buffer, options: {
   language?: string;
   pageSegMode?: number;
@@ -91,7 +91,7 @@ export async function extractTextFromImage(buffer: Buffer, options: {
       await worker.loadLanguage(language);
       await worker.initialize(language);
 
-      // Set OCR parameters
+      // Set OCR parameters;
       await worker.setParameters({
         tessedit_pageseg_mode: pageSegMode.toString(),
         preserve_interword_spaces: preserveInterword ? '1' : '0',
@@ -107,9 +107,9 @@ export async function extractTextFromImage(buffer: Buffer, options: {
           wordCount: data.words?.length || 0,
           language,
           pageSegMode,
-          imageOptimization: 'greyscale_sharpen'
+          imageOptimization: 'greyscale_sharpen',
         },
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       };
     } finally {
       await worker.terminate();
@@ -118,7 +118,7 @@ export async function extractTextFromImage(buffer: Buffer, options: {
     return {
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     };
   }
 }
@@ -126,7 +126,7 @@ export async function extractTextFromImage(buffer: Buffer, options: {
 /**
  * PDF to Images and OCR extraction
  * Note: This is a simplified version. For production, consider pdf2pic or pdf-poppler
- */
+ */;
 export async function extractTextFromPDF(buffer: Buffer): Promise<ExtractionResult> {
   const startTime = Date.now();
 
@@ -139,20 +139,20 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<ExtractionResu
 
     return await extractTextFromImage(buffer, {
       language: 'eng',
-      pageSegMode: 6
+      pageSegMode: 6,
     });
   } catch (error) {
     return {
       success: false,
       error: `PDF extraction failed: ${error}`,
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     };
   }
 }
 
 /**
  * Audio extraction from video/audio files using ffmpeg
- */
+ */;
 export async function extractAudioFromBuffer(buffer: Buffer, filename: string): Promise<AudioExtractionResult> {
   const startTime = Date.now();
   let inputPath: string | null = null;
@@ -177,7 +177,7 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
         '-f', 'wav',
         '-y', // Overwrite output
         outputPath!
-      ], { stdio: 'pipe' }));
+      ], { stdio: 'pipe' });
       let stderr = '';
       ffmpeg.stderr?.on('data', (data) => {
         stderr += data.toString();
@@ -187,7 +187,7 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
         if (code === 0) {
           resolve();
         } else {
-          reject(new Error(`ffmpeg failed with code ${code}: ${stderr}`));
+          reject(new Error(`ffmpeg failed with code ${code}: ${stderr}`);
         }
       });
 
@@ -207,11 +207,11 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
         extractedFormat: 'wav',
         sampleRate: audioInfo.sampleRate,
         duration: audioInfo.duration,
-        channels: audioInfo.channels
+        channels: audioInfo.channels,
       },
       duration: audioInfo.duration,
       sampleRate: audioInfo.sampleRate,
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     };
   } catch (error) {
     // Cleanup on error
@@ -220,7 +220,7 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
     return {
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     };
   } finally {
     // Cleanup input file
@@ -230,7 +230,7 @@ export async function extractAudioFromBuffer(buffer: Buffer, filename: string): 
 
 /**
  * Video frame sampling using ffmpeg
- */
+ */;
 export async function sampleFramesFromVideo(buffer: Buffer, filename: string, frameCount = 3): Promise<FrameExtractionResult> {
   const startTime = Date.now();
   let inputPath: string | null = null;
@@ -253,7 +253,7 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
     // Calculate frame timestamps (evenly distributed)
     const timestamps: number[] = [];
     for (let i = 1; i <= frameCount; i++) {
-      timestamps.push((i * duration) / (frameCount + 1));
+      timestamps.push((i * duration) / (frameCount + 1);
     }
 
     // Extract frames
@@ -273,7 +273,7 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
           '-s', '1280x720', // Resize to standard size
           '-y',
           outputPath
-        ], { stdio: 'pipe' }));
+        ], { stdio: 'pipe' });
         let stderr = '';
         ffmpeg.stderr?.on('data', (data) => {
           stderr += data.toString();
@@ -283,7 +283,7 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
           if (code === 0) {
             resolve();
           } else {
-            reject(new Error(`Frame extraction failed: ${stderr}`));
+            reject(new Error(`Frame extraction failed: ${stderr}`);
           }
         });
 
@@ -303,15 +303,15 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
         originalFormat: extension,
         videoDuration: duration,
         frameTimestamps: timestamps,
-        frameResolution: '1280x720'
+        frameResolution: '1280x720',
       },
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     };
   } catch (error) {
     return {
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     };
   } finally {
     // Cleanup
@@ -324,13 +324,13 @@ export async function sampleFramesFromVideo(buffer: Buffer, filename: string, fr
 
 /**
  * Large JSON parsing with simdjson-wasm
- */
+ */;
 export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionResult> {
   const startTime = Date.now();
 
   try {
     // Try simdjson-wasm first for large JSON files
-    if (jsonText.length > 1024 * 1024) { // 1MB+
+    if (jsonText.length > 1024 * 1024) { // 1MB+;
       try {
         const simdjson = await import('simdjson');
         const parsed = simdjson.parse(jsonText);
@@ -343,7 +343,7 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
             originalSize: jsonText.length,
             jsonKeys: typeof parsed === 'object' ? Object.keys(parsed || {}).length: 0
           },
-          processingTime: Date.now() - startTime
+          processingTime: Date.now() - startTime,
         };
       } catch (simdjsonError) {
         // Fallback to native JSON.parse
@@ -362,20 +362,20 @@ export async function parseJsonWithSimd(jsonText: string): Promise<ExtractionRes
         originalSize: jsonText.length,
         jsonKeys: typeof parsed === 'object' ? Object.keys(parsed || {}).length: 0
       },
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     };
   } catch (error) {
     return {
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     };
   }
 }
 
 /**
  * Utility functions for media info
- */
+ */;
 async function getAudioInfo(filePath: string, ffmpegPath: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const ffprobe = spawn(ffmpegPath.replace('ffmpeg', 'ffprobe'), [
@@ -393,7 +393,7 @@ async function getAudioInfo(filePath: string, ffmpegPath: string): Promise<any> 
 
     ffprobe.on('close', (code) => {
       if (code !== 0) {
-        reject(new Error(`ffprobe failed with code ${code}`));
+        reject(new Error(`ffprobe failed with code ${code}`);
         return;
       }
 
@@ -404,7 +404,7 @@ async function getAudioInfo(filePath: string, ffmpegPath: string): Promise<any> 
         resolve({
           duration: parseFloat(info.format?.duration || '0'),
           sampleRate: parseInt(audioStream?.sample_rate || '16000'),
-          channels: parseInt(audioStream?.channels || '1')
+          channels: parseInt(audioStream?.channels || '1'),
         });
       } catch (error) {
         reject(error);
@@ -432,7 +432,7 @@ async function getVideoInfo(filePath: string, ffmpegPath: string): Promise<any> 
 
     ffprobe.on('close', (code) => {
       if (code !== 0) {
-        reject(new Error(`ffprobe failed with code ${code}`));
+        reject(new Error(`ffprobe failed with code ${code}`);
         return;
       }
 
@@ -443,7 +443,7 @@ async function getVideoInfo(filePath: string, ffmpegPath: string): Promise<any> 
         resolve({
           duration: parseFloat(info.format?.duration || '0'),
           width: parseInt(videoStream?.width || '0'),
-          height: parseInt(videoStream?.height || '0')
+          height: parseInt(videoStream?.height || '0'),
         });
       } catch (error) {
         reject(error);
@@ -456,7 +456,7 @@ async function getVideoInfo(filePath: string, ffmpegPath: string): Promise<any> 
 
 /**
  * Main extractor router - determines which extractor to use based on content type
- */
+ */;
 export async function extractContent(buffer: Buffer, contentType: string, filename?: string): Promise<ExtractionResult> {
   const startTime = Date.now();
 
@@ -476,9 +476,9 @@ export async function extractContent(buffer: Buffer, contentType: string, filena
         extractedText: text,
         metadata: {
           originalSize: buffer.length,
-          encoding: 'utf-8'
+          encoding: 'utf-8',
         },
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       };
     }
 
@@ -487,7 +487,7 @@ export async function extractContent(buffer: Buffer, contentType: string, filena
       return await parseJsonWithSimd(jsonText);
     }
 
-    // For audio/video, we don't extract text but return metadata
+    // For audio/video, we don't extract text but return metadata;
     if (contentType.startsWith('audio/') || contentType.startsWith('video/')) {
       return {
         success: true,
@@ -495,22 +495,22 @@ export async function extractContent(buffer: Buffer, contentType: string, filena
         metadata: {
           contentType,
           size: buffer.length,
-          requiresSpecialProcessing: true
+          requiresSpecialProcessing: true,
         },
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       };
     }
 
     return {
       success: false,
       error: `Unsupported content type for text extraction: ${contentType}`,
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     };
   } catch (error) {
     return {
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     };
   }
 }

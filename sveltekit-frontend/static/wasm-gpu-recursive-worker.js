@@ -13,11 +13,11 @@ const WASM_GPU_CONFIG = {
   wasmModules: {
     llamaCpp: '/static/wasm/llama-cpp.wasm',
     legalBert: '/static/wasm/legal-bert.wasm',
-    vectorOperations: '/static/wasm/vector-ops.wasm'
+    vectorOperations: '/static/wasm/vector-ops.wasm',
   },
   enableWebGPU: true,
   enableCUDA: true,
-  fallbackToCPU: true
+  fallbackToCPU: true,
 };
 
 // Global state
@@ -66,11 +66,11 @@ class WASMModuleManager {
         memory: new WebAssembly.Memory({
           initial: 256,
           maximum: 1024,
-          shared: true
+          shared: true,
         }),
         table: new WebAssembly.Table({
           initial: 1,
-          element: 'anyfunc'
+          element: 'anyfunc',
         }),
         // Math functions for WASM
         sin: Math.sin,
@@ -85,8 +85,8 @@ class WASMModuleManager {
         console_log: (ptr, len) => {
           const str = this.readString(ptr, len);
           console.log(`[WASM ${moduleName}]:`, str);
-        }
-      }
+        },
+      },
     });
 
     return module.instance;
@@ -211,10 +211,14 @@ class GPUAccelerationManager {
       }
     `;
 
-    this.computeShaders.set('vectorSimilarity',
-      this.device.createShaderModule({ code: vectorSimilarityShader }));
-    this.computeShaders.set('documentClassification',
-      this.device.createShaderModule({ code: documentClassificationShader }));
+    this.computeShaders.set(
+      'vectorSimilarity',
+      this.device.createShaderModule({ code: vectorSimilarityShader })
+    );
+    this.computeShaders.set(
+      'documentClassification',
+      this.device.createShaderModule({ code: documentClassificationShader })
+    );
   }
 
   async computeVectorSimilarity(vectorA, vectorB) {
@@ -226,7 +230,7 @@ class GPUAccelerationManager {
     const bufferB = this.createBuffer(vectorB);
     const resultBuffer = this.device.createBuffer({
       size: vectorA.length * 4,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
     });
 
     const bindGroup = this.device.createBindGroup({
@@ -234,8 +238,8 @@ class GPUAccelerationManager {
       entries: [
         { binding: 0, resource: { buffer: bufferA } },
         { binding: 1, resource: { buffer: bufferB } },
-        { binding: 2, resource: { buffer: resultBuffer } }
-      ]
+        { binding: 2, resource: { buffer: resultBuffer } },
+      ],
     });
 
     const computePass = this.device.createCommandEncoder().beginComputePass();
@@ -266,7 +270,7 @@ class GPUAccelerationManager {
   createBuffer(data) {
     const buffer = this.device.createBuffer({
       size: data.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
 
     this.queue.writeBuffer(buffer, 0, data);
@@ -276,7 +280,7 @@ class GPUAccelerationManager {
   async readBuffer(buffer) {
     const readBuffer = this.device.createBuffer({
       size: buffer.size,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
     });
 
     const encoder = this.device.createCommandEncoder();
@@ -313,8 +317,10 @@ class RecursiveWASMInference {
 
     try {
       // Load appropriate WASM module
-      const wasmModule = await this.wasmManager.loadModule('legalBert',
-        WASM_GPU_CONFIG.wasmModules.legalBert);
+      const wasmModule = await this.wasmManager.loadModule(
+        'legalBert',
+        WASM_GPU_CONFIG.wasmModules.legalBert
+      );
 
       // Process current document with WASM inference
       const currentAnalysis = await this.wasmInference(wasmModule, document.content);
@@ -332,7 +338,7 @@ class RecursiveWASMInference {
         embedding,
         similarities,
         isBaseCase: false,
-        wasmProcessingTime: currentAnalysis.processingTime
+        wasmProcessingTime: currentAnalysis.processingTime,
       };
 
       // RECURSIVE CASE: Process nested documents
@@ -368,7 +374,7 @@ class RecursiveWASMInference {
       content: document.content,
       isBaseCase: true,
       wordCount: document.content.split(' ').length,
-      processingTime: 1 // Minimal processing time
+      processingTime: 1, // Minimal processing time
     };
   }
 
@@ -391,7 +397,7 @@ class RecursiveWASMInference {
 
       return {
         ...result,
-        processingTime: performance.now() - startTime
+        processingTime: performance.now() - startTime,
       };
     } catch (error) {
       throw new Error(`WASM inference failed: ${error.message}`);
@@ -405,7 +411,7 @@ class RecursiveWASMInference {
       legalEntities: ['plaintiff', 'defendant', 'contract'],
       confidence: 0.87,
       classification: 'contract_analysis',
-      keyTerms: ['agreement', 'obligations', 'terms']
+      keyTerms: ['agreement', 'obligations', 'terms'],
     };
   }
 
@@ -423,7 +429,7 @@ class RecursiveWASMInference {
     // Simplified GPU embedding generation
     const encoder = new TextEncoder();
     const bytes = encoder.encode(content);
-    const normalized = new Float32Array(bytes.map(b => b / 255.0));
+    const normalized = new Float32Array(bytes.map((b) => b / 255.0));
 
     // Use GPU for normalization and dimensionality reduction
     return normalized.slice(0, 384); // BERT-like embedding size
@@ -433,7 +439,9 @@ class RecursiveWASMInference {
     // Simple CPU-based embedding
     const encoder = new TextEncoder();
     const bytes = encoder.encode(content);
-    return Array.from(bytes).map(b => b / 255.0).slice(0, 384);
+    return Array.from(bytes)
+      .map((b) => b / 255.0)
+      .slice(0, 384);
   }
 
   async computeSimilarities(embedding) {
@@ -441,7 +449,7 @@ class RecursiveWASMInference {
     const knownEmbeddings = [
       new Float32Array(384).fill(0.5), // Contract template
       new Float32Array(384).fill(0.3), // Legal brief template
-      new Float32Array(384).fill(0.7)  // Evidence document template
+      new Float32Array(384).fill(0.7), // Evidence document template
     ];
 
     const similarities = [];
@@ -461,7 +469,7 @@ class RecursiveWASMInference {
       id: document.id,
       type: 'error',
       error: error.message,
-      isBaseCase: true
+      isBaseCase: true,
     };
   }
 }
@@ -492,9 +500,9 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     Promise.all([
       // Clean old caches
-      caches.keys().then(cacheNames => {
+      caches.keys().then((cacheNames) => {
         return Promise.all(
-          cacheNames.map(cacheName => {
+          cacheNames.map((cacheName) => {
             if (cacheName !== WASM_GPU_CONFIG.cacheName) {
               return caches.delete(cacheName);
             }
@@ -503,7 +511,7 @@ self.addEventListener('activate', (event) => {
       }),
       // Initialize WASM modules
       wasmManager.loadModule('legalBert', WASM_GPU_CONFIG.wasmModules.legalBert),
-      wasmManager.loadModule('vectorOperations', WASM_GPU_CONFIG.wasmModules.vectorOperations)
+      wasmManager.loadModule('vectorOperations', WASM_GPU_CONFIG.wasmModules.vectorOperations),
     ])
   );
 });
@@ -524,8 +532,8 @@ self.addEventListener('message', async (event) => {
           stats: {
             totalProcessed: recursiveInference.processedDocuments.size,
             gpuEnabled: gpuManager.device !== null,
-            wasmModulesLoaded: wasmManager.loadedModules.size
-          }
+            wasmModulesLoaded: wasmManager.loadedModules.size,
+          },
         });
         break;
 
@@ -538,7 +546,7 @@ self.addEventListener('message', async (event) => {
         event.ports[0].postMessage({
           id,
           type: 'SIMILARITY_COMPUTED',
-          similarity
+          similarity,
         });
         break;
 
@@ -548,7 +556,7 @@ self.addEventListener('message', async (event) => {
         event.ports[0].postMessage({
           id,
           type: 'WASM_MODULE_LOADED',
-          moduleName: data.moduleName
+          moduleName: data.moduleName,
         });
         break;
 
@@ -556,14 +564,14 @@ self.addEventListener('message', async (event) => {
         event.ports[0].postMessage({
           id,
           type: 'ERROR',
-          error: `Unknown message type: ${type}`
+          error: `Unknown message type: ${type}`,
         });
     }
   } catch (error) {
     event.ports[0].postMessage({
       id,
       type: 'ERROR',
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -573,6 +581,6 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     WASMModuleManager,
     GPUAccelerationManager,
-    RecursiveWASMInference
+    RecursiveWASMInference,
   };
 }

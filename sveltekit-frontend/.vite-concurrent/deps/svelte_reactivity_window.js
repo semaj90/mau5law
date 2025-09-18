@@ -1,52 +1,36 @@
-import {
-  ReactiveValue
-} from "./chunk-VHHKUK53.js";
-import "./chunk-7RQDXF5S.js";
-import "./chunk-5OCJKXG4.js";
-import "./chunk-VOC4A3DY.js";
-import {
-  get,
-  on,
-  set,
-  source,
-  tag
-} from "./chunk-YZBAU52E.js";
-import "./chunk-24FUCJ6P.js";
-import "./chunk-6SIJFJGE.js";
-import {
-  true_default
-} from "./chunk-UWMOYZ25.js";
-import "./chunk-KDVGFZWC.js";
-import {
-  __privateAdd,
-  __privateGet,
-  __privateMethod
-} from "./chunk-KWPVD4H7.js";
+import { ReactiveValue } from './chunk-VHHKUK53.js';
+import './chunk-7RQDXF5S.js';
+import './chunk-5OCJKXG4.js';
+import './chunk-VOC4A3DY.js';
+import { get, on, set, source, tag } from './chunk-YZBAU52E.js';
+import './chunk-24FUCJ6P.js';
+import './chunk-6SIJFJGE.js';
+import { true_default } from './chunk-UWMOYZ25.js';
+import './chunk-KDVGFZWC.js';
+import { __privateAdd, __privateGet, __privateMethod } from './chunk-KWPVD4H7.js';
 
 // node_modules/svelte/src/reactivity/window/index.js
-var scrollX = new ReactiveValue(
-  true_default ? () => window.scrollX : () => void 0,
-  (update) => on(window, "scroll", update)
+var scrollX = new ReactiveValue(true_default ? () => window.scrollX : () => void 0, (update) =>
+  on(window, 'scroll', update)
 );
-var scrollY = new ReactiveValue(
-  true_default ? () => window.scrollY : () => void 0,
-  (update) => on(window, "scroll", update)
+var scrollY = new ReactiveValue(true_default ? () => window.scrollY : () => void 0, (update) =>
+  on(window, 'scroll', update)
 );
 var innerWidth = new ReactiveValue(
   true_default ? () => window.innerWidth : () => void 0,
-  (update) => on(window, "resize", update)
+  (update) => on(window, 'resize', update)
 );
 var innerHeight = new ReactiveValue(
   true_default ? () => window.innerHeight : () => void 0,
-  (update) => on(window, "resize", update)
+  (update) => on(window, 'resize', update)
 );
 var outerWidth = new ReactiveValue(
   true_default ? () => window.outerWidth : () => void 0,
-  (update) => on(window, "resize", update)
+  (update) => on(window, 'resize', update)
 );
 var outerHeight = new ReactiveValue(
   true_default ? () => window.outerHeight : () => void 0,
-  (update) => on(window, "resize", update)
+  (update) => on(window, 'resize', update)
 );
 var screenLeft = new ReactiveValue(
   true_default ? () => window.screenLeft : () => void 0,
@@ -78,19 +62,16 @@ var screenTop = new ReactiveValue(
     };
   }
 );
-var online = new ReactiveValue(
-  true_default ? () => navigator.onLine : () => void 0,
-  (update) => {
-    const unsub_online = on(window, "online", update);
-    const unsub_offline = on(window, "offline", update);
-    return () => {
-      unsub_online();
-      unsub_offline();
-    };
-  }
-);
+var online = new ReactiveValue(true_default ? () => navigator.onLine : () => void 0, (update) => {
+  const unsub_online = on(window, 'online', update);
+  const unsub_offline = on(window, 'offline', update);
+  return () => {
+    unsub_online();
+    unsub_offline();
+  };
+});
 var _dpr, _DevicePixelRatio_instances, update_fn, _a;
-var devicePixelRatio = new (_a = class {
+var devicePixelRatio = new ((_a = class {
   constructor() {
     __privateAdd(this, _DevicePixelRatio_instances);
     __privateAdd(this, _dpr, source(true_default ? window.devicePixelRatio : void 0));
@@ -98,24 +79,28 @@ var devicePixelRatio = new (_a = class {
       __privateMethod(this, _DevicePixelRatio_instances, update_fn).call(this);
     }
     if (true_default) {
-      tag(__privateGet(this, _dpr), "window.devicePixelRatio");
+      tag(__privateGet(this, _dpr), 'window.devicePixelRatio');
     }
   }
   get current() {
     get(__privateGet(this, _dpr));
     return true_default ? window.devicePixelRatio : void 0;
   }
-}, _dpr = new WeakMap(), _DevicePixelRatio_instances = new WeakSet(), update_fn = function() {
+}),
+(_dpr = new WeakMap()),
+(_DevicePixelRatio_instances = new WeakSet()),
+(update_fn = function () {
   const off = on(
     window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`),
-    "change",
+    'change',
     () => {
       set(__privateGet(this, _dpr), window.devicePixelRatio);
       off();
       __privateMethod(this, _DevicePixelRatio_instances, update_fn).call(this);
     }
   );
-}, _a)();
+}),
+_a)();
 export {
   devicePixelRatio,
   innerHeight,
@@ -126,6 +111,6 @@ export {
   screenLeft,
   screenTop,
   scrollX,
-  scrollY
+  scrollY,
 };
 //# sourceMappingURL=svelte_reactivity_window.js.map

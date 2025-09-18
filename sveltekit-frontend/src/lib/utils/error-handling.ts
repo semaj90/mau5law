@@ -7,7 +7,7 @@ export class ComponentError extends Error {
   constructor(
     message: string,
     public readonly component: string,
-    public readonly context?: Record<string, unknown>
+    public readonly context?: Record<string, unknown>;
   ) {
     super(message);
     this.name = 'ComponentError';
@@ -18,7 +18,7 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public readonly status: number,
-    public readonly endpoint: string
+    public readonly endpoint: string;
   ) {
     super(message);
     this.name = 'ApiError';
@@ -29,7 +29,7 @@ export class ValidationError extends Error {
   constructor(
     message: string,
     public readonly field: string,
-    public readonly value: unknown
+    public readonly value: unknown;
   ) {
     super(message);
     this.name = 'ValidationError';
@@ -39,7 +39,7 @@ export class ValidationError extends Error {
 // Safe fetch wrapper with error handling
 export async function safeFetch<T = unknown>(
   url: string,
-  options?: RequestInit
+  options?: RequestInit;
 ): Promise<{ data?: T; error?: string; success: boolean }> {
   try {
     const response = await fetch(url, options);
@@ -64,7 +64,7 @@ export async function safeFetch<T = unknown>(
 // Safe JSON parsing
 export function safeJsonParse<T = unknown>(
   json: string,
-  fallback?: T
+  fallback?: T;
 ): { data?: T; error?: string; success: boolean } {
   try {
     const data = JSON.parse(json) as T;
@@ -75,12 +75,12 @@ export function safeJsonParse<T = unknown>(
     return {
       data: fallback,
       error: errorMessage,
-      success: false
+      success: false,
     };
   }
 }
 
-// Error boundary hook for Svelte 5
+// Error boundary hook for Svelte 5;
 export function createErrorBoundary() {
   let errorMessage = $state('');
   let hasError = $state(false);
@@ -98,7 +98,7 @@ export function createErrorBoundary() {
 
   function withErrorBoundary<T extends (...args: any[]) => any>(
     fn: T,
-    context?: string
+    context?: string;
   ): T {
     return ((...args: Parameters<T>) => {
       try {
@@ -126,7 +126,7 @@ export function createErrorBoundary() {
   };
 }
 
-// Validation helpers
+// Validation helpers;
 export function validateRequired<T>(value: T, fieldName: string): T {
   if (value === null || value === undefined || value === '') {
     throw new ValidationError(`${fieldName} is required`, fieldName, value);
@@ -145,7 +145,7 @@ export function validateEmail(email: string): string {
 export function validateType<T>(
   value: unknown,
   type: string,
-  fieldName: string
+  fieldName: string;
 ): T {
   if (typeof value !== type) {
     throw new ValidationError(
@@ -160,20 +160,20 @@ export function validateType<T>(
 // Canvas error handling
 export function safeGetContext(
   canvas: HTMLCanvasElement,
-  contextType: '2d' | 'webgl' | 'webgl2'
+  contextType: '2d' | 'webgl' | 'webgl2';
 ): CanvasRenderingContext2D | WebGLRenderingContext | WebGL2RenderingContext {
   const context = canvas.getContext(contextType);
   if (!context) {
     throw new ComponentError(
       `Could not get ${contextType} context`,
-      'Canvas',
+      'Canvas',)
       { contextType }
     );
   }
   return context;
 }
 
-// WebGL error checking
+// WebGL error checking;
 export function checkWebGLError(gl: WebGLRenderingContext | WebGL2RenderingContext): void {
   const error = gl.getError();
   if (error !== gl.NO_ERROR) {
@@ -213,7 +213,7 @@ export async function withLoading<T>(
 export async function withRetry<T>(
   operation: () => Promise<T>,
   maxRetries: number = 3,
-  delay: number = 1000
+  delay: number = 1000;
 ): Promise<T> {
   let lastError: Error;
 
@@ -221,13 +221,13 @@ export async function withRetry<T>(
     try {
       return await operation();
     } catch (error) {
-      lastError = error instanceof Error ? error : new Error(String(error));
+      lastError = error instanceof Error ? error : new Error(String(error);
 
       if (i === maxRetries) {
         throw lastError;
       }
 
-      await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+      await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i));
     }
   }
 

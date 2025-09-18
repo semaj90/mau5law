@@ -3,7 +3,8 @@
 /**
  * WebAssembly Clustering Support
  * High-performance clustering algorithms for legal document processing
- */
+ */;
+}
 
 export interface WebAssemblyClusteringConfig {
   algorithm: 'kmeans' | 'som' | 'dbscan';
@@ -40,7 +41,7 @@ export class WebAssemblyClusteringService {
       console.log(`Loading WASM module from ${wasmPath}...`);
       
       // Mock WASM loading - in production you would do:
-      // const wasmModule = await WebAssembly.instantiateStreaming(fetch(wasmPath));
+      // const wasmModule = await WebAssembly.instantiateStreaming(fetch(wasmPath);
       // this.wasmInstance = wasmModule.instance;
       
       // Simulate successful loading
@@ -57,7 +58,7 @@ export class WebAssemblyClusteringService {
   async performKMeansClustering(
     embeddings: number[][],
     k: number,
-    config: any
+    config: any;
   ): Promise<any> {
     if (this.wasmInstance && this.isWasmSupported) {
       try {
@@ -71,7 +72,7 @@ export class WebAssemblyClusteringService {
         return {
           clusters,
           centroids,
-          iterations: config.maxIterations || 100
+          iterations: config.maxIterations || 100,
         };
       } catch (error: any) {
         console.warn('WASM K-Means failed, falling back to JavaScript:', error);
@@ -84,7 +85,7 @@ export class WebAssemblyClusteringService {
 
   async performSOMTraining(
     embeddings: number[][],
-    config: any
+    config: any;
   ): Promise<any> {
     if (this.wasmInstance && this.isWasmSupported) {
       try {
@@ -104,10 +105,10 @@ export class WebAssemblyClusteringService {
     return this.jsSOMTraining(embeddings, config);
   }
 
-  // Mock implementations for demonstration
+  // Mock implementations for demonstration;
   private mockKMeansClustering(embeddings: number[][], k: number): number[] {
     // Simple random assignment for demo - real WASM would implement proper K-Means
-    return embeddings.map(() => Math.floor(Math.random() * k));
+    return embeddings.map(() => Math.floor(Math.random() * k);
   }
 
   private calculateCentroids(embeddings: number[][], clusters: number[], k: number): number[][] {
@@ -118,7 +119,7 @@ export class WebAssemblyClusteringService {
       const clusterPoints = embeddings.filter((_, idx) => clusters[idx] === i);
       if (clusterPoints.length === 0) {
         // Random centroid if no points assigned
-        centroids.push(Array(dimensions).fill(0).map(() => Math.random()));
+        centroids.push(Array(dimensions).fill(0).map(() => Math.random());
         continue;
       }
 
@@ -144,14 +145,14 @@ export class WebAssemblyClusteringService {
     for (let i = 0; i < width; i++) {
       weights[i] = [];
       for (let j = 0; j < height; j++) {
-        weights[i][j] = Array(dimensions).fill(0).map(() => Math.random());
+        weights[i][j] = Array(dimensions).fill(0).map(() => Math.random();
       }
     }
     return weights;
   }
 
   private mockSOMClustering(embeddings: number[][], weights: number[][][]): number[] {
-    // Mock SOM clustering - find best matching unit for each embedding
+    // Mock SOM clustering - find best matching unit for each embedding;
     return embeddings.map((embedding, idx) => {
       // Simple assignment based on index for demo
       return idx % (weights.length * weights[0].length);
@@ -162,7 +163,7 @@ export class WebAssemblyClusteringService {
   private async jsKMeansClustering(
     embeddings: number[][],
     k: number,
-    config: any
+    config: any;
   ): Promise<any> {
     console.log('Using JavaScript K-Means clustering fallback...');
     
@@ -173,13 +174,13 @@ export class WebAssemblyClusteringService {
     return {
       clusters,
       centroids,
-      iterations: config.maxIterations || 100
+      iterations: config.maxIterations || 100,
     };
   }
 
   private async jsSOMTraining(
     embeddings: number[][],
-    config: any
+    config: any;
   ): Promise<any> {
     console.log('Using JavaScript SOM training fallback...');
     
@@ -192,7 +193,7 @@ export class WebAssemblyClusteringService {
   getPerformanceMetrics(): {
     wasmSupported: boolean;
     wasmLoaded: boolean;
-    recommendedForDataSize: (dataSize: number) => boolean;
+    recommendedForDataSize: (dataSize: number) => boolean;,
   } {
     return {
       wasmSupported: this.isWasmSupported,
@@ -208,7 +209,7 @@ export class WebAssemblyClusteringService {
 // Singleton instance
 export const wasmClusteringService = new WebAssemblyClusteringService();
 ;
-// Auto-initialize WASM on module load
+// Auto-initialize WASM on module load;
 if (typeof window !== 'undefined') {
   wasmClusteringService.initializeWasm().catch(console.warn);
 }

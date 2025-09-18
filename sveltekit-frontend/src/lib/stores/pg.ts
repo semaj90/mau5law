@@ -6,7 +6,7 @@ const pool = new Pool({ connectionString: import.meta.env.PG_CONN });
 function tempToPgRadius(temp = 0.3) {
   const minRadius = 0.1; // tight
   const maxRadius = 0.5; // wide
-  const t = Math.max(0, Math.min(1, temp));
+  const t = Math.max(0, Math.min(1, temp);
   return minRadius + (maxRadius - minRadius) * t;
 }
 

@@ -15,7 +15,8 @@ import { CallbackManagerForRetrieverRun } from "@langchain/core/callbacks/manage
 
 // ============================================================================
 // CONFIGURATION & TYPES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface LangChainConfig {
   ollamaBaseUrl: string;
@@ -27,7 +28,7 @@ export interface LangChainConfig {
   chunkOverlap: number;
   maxRetrieverResults: number;
   useCuda: boolean;
-  vectorDimensions: number;
+  vectorDimensions: number;,
 }
 
 export interface ProcessingResult {
@@ -38,7 +39,7 @@ export interface ProcessingResult {
   metadata: {
     totalTokens: number;
     avgChunkSize: number;
-    model: string;
+    model: string;,
   };
 }
 
@@ -46,10 +47,10 @@ export interface QueryResult {
   answer: string;
   sources: Array<any>;
   confidence: number;
-  processingTime: number;
+  processingTime: number;,
 }
 
-// Default configuration optimized for legal AI
+// Default configuration optimized for legal AI;
 const DEFAULT_CONFIG: LangChainConfig = {
   ollamaBaseUrl: "http://localhost:11434",
   model: "gemma3-legal:latest",
@@ -60,7 +61,7 @@ const DEFAULT_CONFIG: LangChainConfig = {
   chunkOverlap: 200,
   maxRetrieverResults: 10,
   useCuda: true,
-  vectorDimensions: 384
+  vectorDimensions: 384,
 };
 
 // ============================================================================
@@ -82,7 +83,7 @@ export class LangChainOllamaService {
   }
 
   private initializeModels() {
-    // Initialize Chat Model with CUDA optimization
+    // Initialize Chat Model with CUDA optimization;
     this.chatModel = new ChatOllama({
       baseUrl: this.config.ollamaBaseUrl,
       model: this.config?.model || 'gemma3:2b',
@@ -90,7 +91,7 @@ export class LangChainOllamaService {
       // Note: numCtx, useGpu, numGpu, numThread may not be available in current ChatOllama version
     });
 
-    // Initialize Embeddings with optimized settings
+    // Initialize Embeddings with optimized settings;
     this.embeddings = new OllamaEmbeddings({
       baseUrl: this.config.ollamaBaseUrl,
       model: this.config.embeddingModel,
@@ -124,7 +125,7 @@ export class LangChainOllamaService {
       // Split document into chunks
       const chunks = await this.textSplitter.splitText(content);
 
-      // Create LangChain documents
+      // Create LangChain documents;
       const documents = chunks.map((chunk, index) => ({
         pageContent: chunk,
         metadata: {
@@ -133,9 +134,9 @@ export class LangChainOllamaService {
           chunkIndex: index,
           chunkId: `${documentId}_${index}`
         }
-      }));
+      });
 
-      // Create vector store if it doesn't exist
+      // Create vector store if it doesn't exist;
       if (!this.vectorStore) {
         this.vectorStore = await MemoryVectorStore.fromDocuments(
           documents,
@@ -148,7 +149,7 @@ export class LangChainOllamaService {
 
       // Calculate embeddings for return data
       const embeddings = await Promise.all(
-        chunks.map(chunk => this.embeddings.embedQuery(chunk))
+        chunks.map(chunk => this.embeddings.embedQuery(chunk)
       );
 
       const processingTime = Date.now() - startTime;
@@ -162,7 +163,7 @@ export class LangChainOllamaService {
         metadata: {
           totalTokens: content.length / 4, // Rough estimate
           avgChunkSize: Math.round(avgChunkSize),
-          model: this.config.embeddingModel
+          model: this.config.embeddingModel,
         }
       };
 
@@ -197,12 +198,12 @@ export class LangChainOllamaService {
     const relevanceThreshold = context.relevanceThreshold || 0.7;
 
     try {
-      // Create retriever with enhanced filtering
+      // Create retriever with enhanced filtering;
       const retriever = this.vectorStore.asRetriever({
         k: maxResults,
         searchType: "similarity",
         // Note: searchKwargs may not be available in current version
-        filter: (doc) => true // Simple filter function
+        filter: (doc) => true // Simple filter function,
       });
 
       // Get relevant documents
@@ -227,7 +228,7 @@ export class LangChainOllamaService {
         sources: filteredDocs.map(doc => ({
           content: doc.pageContent,
           metadata: doc.metadata,
-          score: doc.metadata.score || 0.8
+          score: doc.metadata.score || 0.8,
         })),
         confidence,
         processingTime
@@ -248,16 +249,16 @@ export class LangChainOllamaService {
 
   private filterDocumentsByContext(
     documents: LangChainDocument[],
-    context: any
+    context: any;
   ): LangChainDocument[] {
     let filtered = documents;
 
-    // Filter by document types
+    // Filter by document types;
     if (context.documentTypes && context.documentTypes.length > 0) {
-      filtered = filtered.filter((doc) => context.documentTypes.includes(doc.metadata.type));
+      filtered = filtered.filter((doc) => context.documentTypes.includes(doc.metadata.type);
     }
 
-    // Filter by date range
+    // Filter by date range;
     if (context.dateRange) {
       filtered = filtered.filter(doc => {
         const docDate = new Date(doc.metadata.createdAt);
@@ -288,7 +289,7 @@ Instructions:
 - Use legal terminology appropriately
 - Structure your response clearly with bullet points or numbered lists when appropriate
 
-Answer:`;
+Answer:`;,
   }
 
   private calculateConfidence(documents: LangChainDocument[], question: string): number {
@@ -327,7 +328,7 @@ Answer:`;
     };
   }
 
-  // Clear vector store and reset
+  // Clear vector store and reset;
   reset() {
     this.vectorStore = null;
     this.isInitialized = false;

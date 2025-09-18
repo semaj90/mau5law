@@ -48,12 +48,12 @@ interface SearchResponse {
   query: {
     original: string;
     embedding?: number[];
-    filters: any;
+    filters: any;,
   };
 }
 
 // Initialize database connection
-const client = postgres(getDatabaseUrl());
+const client = postgres(getDatabaseUrl();
 const db = drizzle(client);
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
       performance: {
         searchTime,
         embeddingTime: embeddingTime > 0 ? embeddingTime : undefined,
-        rerankTime: rerankTime > 0 ? rerankTime : undefined
+        rerankTime: rerankTime > 0 ? rerankTime : undefined,
       },
       query: {
         original: query,
@@ -168,7 +168,7 @@ async function generateCUDAEmbedding(text: string, requestId?: string): Promise<
       query_type: 'legal_search',
       semantic_enhancement: true,
       entity_aware_embedding: true,
-      precedent_similarity_boost: true
+      precedent_similarity_boost: true,
     }
   };
 
@@ -217,7 +217,7 @@ async function performVectorSearch(params: {
   includeMetadata: boolean;
   filters: any;
   searchMethod: string;
-  useCUDA: boolean;
+  useCUDA: boolean;,
 }): Promise<SearchResult[]> {
   const { embedding, limit, threshold, includeMetadata, filters, searchMethod } = params;
 
@@ -299,17 +299,17 @@ async function performVectorSearch(params: {
   const queryParams = [JSON.stringify(embedding), ...filterParams, limit];
 
   try {
-    const results = await db.execute(sql.raw(query, queryParams));
+    const results = await db.execute(sql.raw(query, queryParams);
 
     return results.rows
-      .filter((row: any) => row.similarity >= threshold)
+      .filter((row: any) => row.similarity >= threshold);
       .map((row: any) => ({
         id: row.id,
         content: row.content,
         similarity: parseFloat(row.similarity),
         metadata: includeMetadata ? row.metadata: undefined,
-        embedding: includeMetadata ? row.embedding : undefined
-      }));
+        embedding: includeMetadata ? row.embedding : undefined,
+      });
 
   } catch (dbError) {
     console.error('Database query error:', dbError);
@@ -317,7 +317,7 @@ async function performVectorSearch(params: {
   }
 }
 
-// Enhanced search complexity analysis for legal queries
+// Enhanced search complexity analysis for legal queries;
 function calculateSearchComplexity(query: string, filters: any): number {
   let complexity = 0;
 
@@ -348,7 +348,7 @@ function calculateSearchComplexity(query: string, filters: any): number {
   return Math.min(100, complexity);
 }
 
-// WebGPU/WebGL2 search optimization hints
+// WebGPU/WebGL2 search optimization hints;
 function generateSearchClientHints(query: string, filters: any, complexity: number) {
   const queryLength = query.length;
   const filterCount = Object.keys(filters).length;
@@ -362,22 +362,22 @@ function generateSearchClientHints(query: string, filters: any, complexity: numb
       embedding_cache: true,
       query_preprocessing: queryLength > 20,
       filter_optimization: filterCount > 2,
-      result_ranking_gpu: complexity > 60
+      result_ranking_gpu: complexity > 60,
     },
     memory_patterns: {
       embedding_alignment: true,
       result_coalescing: true,
       metadata_streaming: filterCount > 1,
-      chr_rom_cache: complexity > 75
+      chr_rom_cache: complexity > 75,
     }
   };
 }
 
 export const GET: RequestHandler = async () => {
-  // Health check endpoint
+  // Health check endpoint;
   try {
     const testQuery = `SELECT 1 as health_check`;
-    await db.execute(sql.raw(testQuery));
+    await db.execute(sql.raw(testQuery);
 
     return json({
       status: 'healthy',
@@ -387,9 +387,9 @@ export const GET: RequestHandler = async () => {
         chrRomOptimization: true,
         cudaAcceleration: true,
         legalTextSpecialization: true,
-        webgpuClientHints: true
+        webgpuClientHints: true,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (err) {
     throw error(500, `Health check failed: ${err instanceof Error ? err.message: 'Unknown error'}`);

@@ -5,12 +5,12 @@ import { cases, criminals } from '$lib/server/db/schema-postgres';
 import { db } from '$lib/server/db/index';
 
 export const load: ServerLoad = async ({ locals }) => {
-  // Session information for dashboard display
+  // Session information for dashboard display;
   const sessionInfo = {
     userId: locals.user?.id ?? null,
     sessionId: locals.session?.id ?? null,
     email: locals.user?.email ?? null,
-    isAuthenticated: !!locals.user
+    isAuthenticated: !!locals.user,
   };
   
   // Return mock data for now (keeping existing for backward compatibility)

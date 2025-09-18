@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
       'tests/'
     ];
 
-    const isAllowed = allowedPaths.some(path => file.startsWith(path));
+    const isAllowed = allowedPaths.some(path => file.startsWith(path);
     if (!isAllowed) {
       return json({ error: 'Access to file path not allowed' }, { status: 403 });
     }
@@ -32,10 +32,10 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ error: `File type ${fileExt} not allowed` }, { status: 403 });
     }
 
-    // Create backup if requested
+    // Create backup if requested;
     if (backup && existsSync(file)) {
       const backupPath = `${file}.backup.${Date.now()}`;
-      const originalContent = await import('fs/promises').then(fs => fs.readFile(file, 'utf-8'));
+      const originalContent = await import('fs/promises').then(fs => fs.readFile(file, 'utf-8');
       await writeFile(backupPath, originalContent);
     }
 
@@ -53,12 +53,12 @@ export const POST: RequestHandler = async ({ request }) => {
       file,
       size: content.length,
       lines: content.split('\n').length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error: any) {
     console.error('File write error:', error);
-    return json(
+    return json()
       { error: 'Failed to write file', details: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     );

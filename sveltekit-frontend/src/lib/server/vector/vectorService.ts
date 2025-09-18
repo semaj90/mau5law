@@ -14,6 +14,7 @@ import {
 } from '../db/schema-postgres.js';
 import { eq, and, sql, or, ilike } from 'drizzle-orm';
 import cuid2 from '@paralleldrive/cuid2';
+}
 
 export interface VectorSearchOptions {
   limit?: number;
@@ -26,7 +27,7 @@ export interface EmbeddingResult {
   id: string;
   score: number;
   metadata: any;
-  content: string;
+  content: string;,
 }
 
 export class VectorService {
@@ -59,7 +60,7 @@ export class VectorService {
     this.collectionName = import.meta.env.QDRANT_COLLECTION || 'legal_documents';
   }
 
-  // Initialize vector collection with proper schema
+  // Initialize vector collection with proper schema;
   async initializeCollection(): Promise<void> {
     try {
       const collections = await this.qdrant.getCollections();
@@ -97,7 +98,7 @@ export class VectorService {
     }
   }
 
-  // Generate embeddings using Ollama with Nomic Embed model
+  // Generate embeddings using Ollama with Nomic Embed model;
   async generateEmbedding(text: string): Promise<number[]> {
     const cacheKey = `embedding:${Buffer.from(text).toString('base64')}`;
 
@@ -108,7 +109,7 @@ export class VectorService {
         return JSON.parse(cached);
       }
 
-      // Generate new embedding using Ollama
+      // Generate new embedding using Ollama;
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: {
@@ -127,18 +128,18 @@ export class VectorService {
       const result = await (response as { ok?: any; statusText?: any; json?: any; points?: any }).json();
       const embedding = (result as { embedding?: any; id?: any; score?: any }).embedding;
 
-      // Cache the result with 24-hour expiry - using modern Redis syntax
+      // Cache the result with 24-hour expiry - using modern Redis syntax;
       if (typeof (this.redis as any).setex === 'function') {
-        await (this.redis as any).setex(cacheKey, 24 * 60 * 60, JSON.stringify(embedding));
+        await (this.redis as any).setex(cacheKey, 24 * 60 * 60, JSON.stringify(embedding);
       } else {
         // Fallback: set then expire
-        await this.redis.set(cacheKey, JSON.stringify(embedding));
+        await this.redis.set(cacheKey, JSON.stringify(embedding);
         await (this.redis as any).expire(cacheKey, 24 * 60 * 60);
       }
 
       // Also store in PostgreSQL for persistence
       await db
-        .insert(embeddingCache)
+        .insert(embeddingCache);
         .values({
           id: cuid2.createId(),
           textHash: Buffer.from(text).toString('base64'),
@@ -152,12 +153,12 @@ export class VectorService {
     } catch (error: any) {
       console.error('Failed to generate embedding:', error);
 
-      // Fallback: check PostgreSQL cache
+      // Fallback: check PostgreSQL cache;
       try {
         const cached = await db
           .select()
           .from(embeddingCache)
-          .where(eq(embeddingCache.textHash, Buffer.from(text).toString('base64')))
+          .where(eq(embeddingCache.textHash, Buffer.from(text).toString('base64'))
           .limit(1);
 
         if (cached.length > 0) {
@@ -187,10 +188,10 @@ export class VectorService {
       // Generate embedding
       const embedding = await this.generateEmbedding(content);
 
-      // Store in Qdrant
+      // Store in Qdrant;
       await this.qdrant.upsert(this.collectionName, {
         wait: true,
-        points: [
+        points: [);
           {
             id: id,
             vector: embedding,
@@ -204,7 +205,7 @@ export class VectorService {
 
       // Store metadata in PostgreSQL
       await db
-        .insert(vectorMetadata)
+        .insert(vectorMetadata);
         .values({
           id: cuid2.createId(),
           documentId: id,
@@ -212,7 +213,7 @@ export class VectorService {
           metadata: metadata,
           contentHash: Buffer.from(content).toString('base64'),
           createdAt: new Date(),
-        })
+        });
         .onConflictDoUpdate({
           target: vectorMetadata.documentId,
           set: {
@@ -229,7 +230,7 @@ export class VectorService {
     }
   }
 
-  // Semantic search with hybrid scoring
+  // Semantic search with hybrid scoring;
   async search(query: string, options: VectorSearchOptions = {}): Promise<EmbeddingResult[]> {
     const { limit = 10, threshold = 0.7, filter = {}, includeMetadata = true } = options;
 
@@ -240,7 +241,7 @@ export class VectorService {
       // Build Qdrant filter
       const qdrantFilter = this.buildQdrantFilter(filter);
 
-      // Perform vector search
+      // Perform vector search;
       const searchResult = await this.qdrant.search(this.collectionName, {
         vector: queryEmbedding,
         limit,
@@ -249,20 +250,20 @@ export class VectorService {
         with_payload: true,
       });
 
-      // Format results
+      // Format results;
       const results: EmbeddingResult[] = searchResult.map((point: any) => ({
         id: point.id.toString(),
         score: point.score,
         metadata: includeMetadata ? point.payload: Record<string, any>,
         content: (point.payload?.content as string) || '',
-      }));
+      });
 
       // Cache search results
       const cacheKey = `search:${Buffer.from(query + JSON.stringify(options)).toString('base64')}`;
       if (typeof (this.redis as any).setex === 'function') {
-        await (this.redis as any).setex(cacheKey, 5 * 60, JSON.stringify(results));
+        await (this.redis as any).setex(cacheKey, 5 * 60, JSON.stringify(results);
       } else {
-        await this.redis.set(cacheKey, JSON.stringify(results));
+        await this.redis.set(cacheKey, JSON.stringify(results);
         await (this.redis as any).expire(cacheKey, 5 * 60);
       }
 
@@ -290,7 +291,7 @@ export class VectorService {
     } = options;
 
     try {
-      // Perform vector search
+      // Perform vector search;
       const vectorResults = await this.search(query, {
         ...options,
         limit: limit * 2,
@@ -318,12 +319,12 @@ export class VectorService {
   private async keywordSearch(
     query: string,
     filter: Record<string, any>,
-    limit: number
+    limit: number;
   ): Promise<EmbeddingResult[]> {
     try {
       const results: EmbeddingResult[] = [];
 
-      // Search cases
+      // Search cases;
       if (!filter.type || filter.type === 'case') {
         const caseResults = await db
           .select()
@@ -337,17 +338,16 @@ export class VectorService {
           )
           .limit(limit);
 
-        results.push(
-          ...caseResults.map((c: any) => ({
+        results.push(...caseResults.map((c: any) => ({
             id: c.id,
             score: 0.8, // Default keyword score
             metadata: { type: 'case', title: c.title, case_id: c.id },
             content: `${c.title} ${c.description}`,
-          }))
+          })
         );
       }
 
-      // Search evidence
+      // Search evidence;
       if (!filter.type || filter.type === 'evidence') {
         const evidenceResults = await db
           .select()
@@ -361,17 +361,16 @@ export class VectorService {
           )
           .limit(limit);
 
-        results.push(
-          ...evidenceResults.map((e: any) => ({
+        results.push(...evidenceResults.map((e: any) => ({
             id: e.id,
             score: 0.8,
             metadata: { type: 'evidence', title: e.title, case_id: e.caseId },
             content: `${e.title} ${e.description || ''} ${e.summary || ''}`,
-          }))
+          })
         );
       }
 
-      // Search criminals
+      // Search criminals;
       if (!filter.type || filter.type === 'criminal') {
         const criminalResults = await db
           .select()
@@ -385,8 +384,7 @@ export class VectorService {
           )
           .limit(limit);
 
-        results.push(
-          ...criminalResults.map((c: any) => ({
+        results.push(...criminalResults.map((c: any) => ({
             id: c.id,
             score: 0.8,
             metadata: {
@@ -394,7 +392,7 @@ export class VectorService {
               title: `${c.firstName} ${c.lastName}`,
             },
             content: `${c.firstName} ${c.lastName} ${c.notes || ''}`,
-          }))
+          })
         );
       }
 
@@ -410,11 +408,11 @@ export class VectorService {
     vectorResults: EmbeddingResult[],
     keywordResults: EmbeddingResult[],
     vectorWeight: number,
-    keywordWeight: number
+    keywordWeight: number;
   ): EmbeddingResult[] {
     const combinedMap = new Map<string, EmbeddingResult>();
 
-    // Add vector results
+    // Add vector results;
     vectorResults.forEach((result) => {
       combinedMap.set((result as { embedding?: any; id?: any; score?: any }).id, {
         ...result,
@@ -422,7 +420,7 @@ export class VectorService {
       });
     });
 
-    // Add keyword results
+    // Add keyword results;
     keywordResults.forEach((result) => {
       const existing = combinedMap.get((result as { embedding?: any; id?: any; score?: any }).id);
       if (existing) {
@@ -440,7 +438,7 @@ export class VectorService {
     return Array.from(combinedMap.values()).sort((a, b) => b.score - a.score);
   }
 
-  // Build Qdrant filter from options
+  // Build Qdrant filter from options;
   private buildQdrantFilter(filter: Record<string, any>): unknown {
     if (!filter || Object.keys(filter).length === 0) {
       return undefined;
@@ -491,7 +489,7 @@ export class VectorService {
       // const point = (response as { ok?: any; statusText?: any; json?: any; points?: any }).points;
 
       // Placeholder response for now
-      const response: { points: Array< } =
+      const response: { points: Array< } =>
         { points: [] };
       const point = (response as { ok?: any; statusText?: any; json?: any; points?: any }).points;
 
@@ -505,7 +503,7 @@ export class VectorService {
       const document = point[0] as { id: string | number; vector?: number[]; payload?: any };
       const vector = (document.vector || []) as number[];
 
-      // Search for similar documents
+      // Search for similar documents;
       const similar = await this.qdrant.search(this.collectionName, {
         vector,
         limit: (options.limit || 10) + 1, // +1 to exclude self
@@ -516,13 +514,13 @@ export class VectorService {
 
       // Filter out the original document
       const results = similar
-        .filter((p: any) => p.id.toString() !== documentId)
+        .filter((p: any) => p.id.toString() !== documentId);
         .map((point: any) => ({
           id: point.id.toString(),
           score: point.score,
           metadata: point.payload,
           content: (point.payload?.content as string) || '',
-        }));
+        });
 
       return results.slice(0, options.limit || 10);
     } catch (error: any) {
@@ -533,7 +531,7 @@ export class VectorService {
 
   // Bulk index documents
   async bulkIndex(
-    documents: Array<
+    documents: Array<;
   ): Promise<void> {
     try {
       const batchSize = 50;
@@ -543,10 +541,10 @@ export class VectorService {
 
         // Generate embeddings for batch
         const embeddings = await Promise.all(
-          batch.map((doc) => this.generateEmbedding(doc.content))
+          batch.map((doc) => this.generateEmbedding(doc.content)
         );
 
-        // Prepare points for Qdrant
+        // Prepare points for Qdrant;
         const points = batch.map((doc, index) => ({
           id: doc.id,
           vector: embeddings[index],
@@ -554,15 +552,15 @@ export class VectorService {
             content: doc.content,
             ...doc.metadata,
           },
-        }));
+        });
 
-        // Upsert batch to Qdrant
+        // Upsert batch to Qdrant;
         await this.qdrant.upsert(this.collectionName, {
           wait: true,
           points,
         });
 
-        // Store metadata in PostgreSQL
+        // Store metadata in PostgreSQL;
         const metadataRecords = batch.map((doc) => ({
           id: cuid2.createId(),
           documentId: doc.id,
@@ -570,7 +568,7 @@ export class VectorService {
           metadata: doc.metadata,
           contentHash: Buffer.from(doc.content).toString('base64'),
           createdAt: new Date(),
-        }));
+        });
 
         await db.insert(vectorMetadata).values(metadataRecords).onConflictDoNothing();
 
@@ -586,17 +584,17 @@ export class VectorService {
     }
   }
 
-  // Delete document
+  // Delete document;
   async deleteDocument(documentId: string): Promise<void> {
     try {
-      // Delete from Qdrant
+      // Delete from Qdrant;
       await this.qdrant.delete(this.collectionName, {
         wait: true,
         points: [documentId],
       });
 
       // Delete metadata from PostgreSQL
-      await db.delete(vectorMetadata).where(eq(vectorMetadata.documentId, documentId));
+      await db.delete(vectorMetadata).where(eq(vectorMetadata.documentId, documentId);
 
       console.log(`Deleted document ${documentId}`);
     } catch (error: any) {
@@ -605,7 +603,7 @@ export class VectorService {
     }
   }
 
-  // Health check
+  // Health check;
   async healthCheck(): Promise<any> {
     const status = {
       qdrant: false,
@@ -626,7 +624,7 @@ export class VectorService {
     }
 
     try {
-      // Check Redis
+      // Check Redis;
       if (typeof (this.redis as any).ping === 'function') {
         await (this.redis as any).ping();
       } else {
@@ -640,7 +638,7 @@ export class VectorService {
     return status;
   }
 
-  // Get collection stats
+  // Get collection stats;
   async getStats(): Promise<any> {
     try {
       const info = await this.qdrant.getCollection(this.collectionName);
@@ -658,7 +656,7 @@ export class VectorService {
     }
   }
 
-  // Close connections
+  // Close connections;
   async close(): Promise<void> {
     try {
       await this.redis.quit();

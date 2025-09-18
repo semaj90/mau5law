@@ -18,13 +18,13 @@ const gpuServicePool = [
   'http://localhost:8097',  // Tertiary GPU service
 ];
 
-// Service health tracking
+// Service health tracking;
 export interface ServiceHealth {
   url: string;
   healthy: boolean;
   lastCheck: number;
   responseTime: number;
-  errorCount: number;
+  errorCount: number;,
 }
 
 class GPUServiceManager {
@@ -33,14 +33,14 @@ class GPUServiceManager {
   private healthCheckInterval: NodeJS.Timeout | null = null;
 
   constructor() {
-    // Initialize health tracking for all services
+    // Initialize health tracking for all services;
     gpuServicePool.forEach(url => {
       this.serviceHealth.set(url, {
         url,
         healthy: true,
         lastCheck: 0,
         responseTime: 0,
-        errorCount: 0
+        errorCount: 0,
       });
     });
 
@@ -55,7 +55,7 @@ class GPUServiceManager {
   }
 
   private async checkAllServicesHealth(): Promise<void> {
-    const healthPromises = gpuServicePool.map(url => this.checkServiceHealth(url));
+    const healthPromises = gpuServicePool.map(url => this.checkServiceHealth(url);
     await Promise.all(healthPromises);
   }
 
@@ -66,13 +66,13 @@ class GPUServiceManager {
     try {
       const response = await fetch(`${url}/health`, {
         method: 'GET',
-        timeout: 5000 // 5 second timeout
+        timeout: 5000 // 5 second timeout,
       } as CustomRequestInit);
 
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
         health.healthy = true;
         health.responseTime = Date.now() - startTime;
-        health.errorCount = Math.max(0, health.errorCount - 1); // Reduce error count on success
+        health.errorCount = Math.max(0, health.errorCount - 1); // Reduce error count on success;
       } else {
         health.healthy = false;
         health.errorCount++;
@@ -87,7 +87,7 @@ class GPUServiceManager {
 
   getHealthyService(): string | null {
     // Get healthy services sorted by response time
-    const healthyServices = Array.from(this.serviceHealth.values())
+    const healthyServices = Array.from(this.serviceHealth.values()
       .filter(service => service.healthy)
       .sort((a, b) => a.responseTime - b.responseTime);
 
@@ -102,7 +102,7 @@ class GPUServiceManager {
   }
 
   getServiceForHash(hash: string): string {
-    const healthyServices = Array.from(this.serviceHealth.values())
+    const healthyServices = Array.from(this.serviceHealth.values()
       .filter(service => service.healthy);
 
     if (healthyServices.length === 0) {
@@ -131,8 +131,8 @@ class GPUServiceManager {
       healthy: health.healthy,
       responseTime: health.responseTime,
       errorCount: health.errorCount,
-      lastCheck: health.lastCheck
-    }));
+      lastCheck: health.lastCheck,
+    });
   }
 
   cleanup(): void {
@@ -145,7 +145,7 @@ class GPUServiceManager {
 // Global service manager instance
 let serviceManager: GPUServiceManager;
 
-// Initialize service manager in development
+// Initialize service manager in development;
 if (dev) {
   serviceManager = new GPUServiceManager();
 } else {
@@ -153,13 +153,13 @@ if (dev) {
   serviceManager = new GPUServiceManager();
 }
 
-// Request processing statistics
+// Request processing statistics;
 export interface ProcessingStats {
   totalRequests: number;
   successfulRequests: number;
   failedRequests: number;
   cacheHits: number;
-  averageProcessingTime: number;
+  averageProcessingTime: number;,
 }
 
 const stats: ProcessingStats = {
@@ -167,10 +167,10 @@ const stats: ProcessingStats = {
   successfulRequests: 0,
   failedRequests: 0,
   cacheHits: 0,
-  averageProcessingTime: 0
+  averageProcessingTime: 0,
 };
 
-// POST: Process tensor with GPU acceleration
+// POST: Process tensor with GPU acceleration;
 export const POST: RequestHandler = async ({ request, getClientAddress, url }) => {
   const startTime = Date.now();
   stats.totalRequests++;
@@ -178,20 +178,20 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
   try {
     const tensorData = await request.json();
 
-    // Validate tensor data structure
+    // Validate tensor data structure;
     if (!tensorData.shape || !tensorData.data) {
       stats.failedRequests++;
       throw error(400, ensureError({
-        message: 'Invalid tensor data: missing shape or data fields'
-      }));
+        message: 'Invalid tensor data: missing shape or data fields',
+      });
     }
 
-    // Validate tensor shape
+    // Validate tensor shape;
     if (!Array.isArray(tensorData.shape) || tensorData.shape.some((dim: any) => typeof dim !== 'number' || dim <= 0)) {
       stats.failedRequests++;
       throw error(400, ensureError({
-        message: 'Invalid tensor shape: must be array of positive integers'
-      }));
+        message: 'Invalid tensor shape: must be array of positive integers',
+      });
     }
 
     // Validate tensor data
@@ -199,14 +199,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     if (!Array.isArray(tensorData.data) || tensorData.data.length !== expectedSize) {
       stats.failedRequests++;
       throw error(400, ensureError({
-        message: 'Tensor data size mismatch'
-      }));
+        message: 'Tensor data size mismatch',
+      });
     }
 
     // Generate cache key for consistent routing
     const cacheKey = generateCacheKey(tensorData);
 
-    // Enhance tensor data with metadata
+    // Enhance tensor data with metadata;
     const enhancedTensorData = {
       ...tensorData,
       cacheKey,
@@ -217,7 +217,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       context: 'legal-ai-processing',
       dimensions: tensorData.shape.length,
       layout: tensorData.layout || 'standard',
-      lodLevel: tensorData.lodLevel || 0
+      lodLevel: tensorData.lodLevel || 0,
     };
 
     // Select appropriate GPU service
@@ -226,8 +226,8 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     if (!targetService) {
       stats.failedRequests++;
       throw error(503, ensureError({
-        message: 'All GPU services unavailable'
-      }));
+        message: 'All GPU services unavailable',
+      });
     }
 
     // Process with primary service
@@ -255,7 +255,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         totalRequests: stats.totalRequests,
         successRate: (stats.successfulRequests / stats.totalRequests) * 100,
         averageProcessingTime: stats.averageProcessingTime,
-        cacheHitRate: (stats.cacheHits / stats.totalRequests) * 100
+        cacheHitRate: (stats.cacheHits / stats.totalRequests) * 100,
       }
     });
 
@@ -270,23 +270,23 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
 
     throw error(500, ensureError({
       message: `Processing failed: ${(err as Error).message}`
-    }));
+    });
   }
 };
 
-// GET: Retrieve processing statistics and service health
+// GET: Retrieve processing statistics and service health;
 export const GET: RequestHandler = async ({ url }) => {
   const statsType = url.searchParams.get('type');
 
   try {
     switch (statsType) {
-      case 'health':
+      case 'health':;
         return json({
           serviceHealth: serviceManager.getHealthStats(),
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
 
-      case 'stats':
+      case 'stats':;
         return json({
           processing: {
             totalRequests: stats.totalRequests,
@@ -296,10 +296,10 @@ export const GET: RequestHandler = async ({ url }) => {
               (stats.successfulRequests / stats.totalRequests) * 100 : 0,
             cacheHitRate: stats.totalRequests > 0 ?
               (stats.cacheHits / stats.totalRequests) * 100 : 0,
-            averageProcessingTime: stats.averageProcessingTime
+            averageProcessingTime: stats.averageProcessingTime,
           },
           services: serviceManager.getHealthStats(),
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
 
       case 'full':
@@ -320,30 +320,30 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           api: {
             processing: stats,
-            services: serviceManager.getHealthStats()
+            services: serviceManager.getHealthStats(),
           },
           gpuService: serviceStats,
           timestamp: Date.now(),
           uptime: process.uptime(),
-          environment: dev ? 'development' : 'production'
+          environment: dev ? 'development' : 'production',
         });
     }
   } catch (err: any) {
     console.error('Stats retrieval error:', err);
     throw error(500, ensureError({
       message: `Stats retrieval failed: ${err.message}`,
-      code: 'STATS_ERROR'
-    }));
+      code: 'STATS_ERROR',
+    });
   }
 };
 
-// DELETE: Clear caches and reset statistics (development only)
+// DELETE: Clear caches and reset statistics (development only);
 export const DELETE: RequestHandler = async ({ url }) => {
   if (!dev) {
     throw error(403, ensureError({
       message: 'Cache clearing only available in development mode',
-      code: 'PRODUCTION_PROTECTION'
-    }));
+      code: 'PRODUCTION_PROTECTION',
+    });
   }
 
   try {
@@ -359,11 +359,11 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
 
     if (clearType === 'cache' || clearType === 'all') {
-      // Clear caches in GPU services
+      // Clear caches in GPU services;
       const clearPromises = gpuServicePool.map(async (serviceUrl) => {
         try {
           const response = await fetch(`${serviceUrl}/stats`, {
-            method: 'DELETE'
+            method: 'DELETE',
           });
           return { service: serviceUrl, success: (response as { ok?: any; json?: any; status?: any; statusText?: any }).ok };
         } catch (error: any) {
@@ -378,26 +378,26 @@ export const DELETE: RequestHandler = async ({ url }) => {
         message: `${clearType} cleared successfully`,
         details: {
           clearedType: clearType,
-          serviceResults: results
+          serviceResults: results,
         }
       });
     }
 
     return json({
       success: true,
-      message: 'Operation completed'
+      message: 'Operation completed',
     });
 
   } catch (err: any) {
     console.error('Cache clearing error:', err);
     throw error(500, ensureError({
       message: `Cache clearing failed: ${err.message}`,
-      code: 'CACHE_CLEAR_ERROR'
-    }));
+      code: 'CACHE_CLEAR_ERROR',
+    });
   }
 };
 
-// Helper functions
+// Helper functions;
 async function processWithService(serviceUrl: string, tensorData: any): Promise<any> {
   const maxRetries = 2;
   let lastError: Error | null = null;
@@ -416,7 +416,7 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
         },
         body: JSON.stringify(tensorData),
         // Add timeout
-        signal: AbortSignal.timeout(30000) // 30 second timeout
+        signal: AbortSignal.timeout(30000) // 30 second timeout,
       });
 
       if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
@@ -437,7 +437,7 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
 
       if (attempt < maxRetries - 1) {
         // Wait before retry with exponential backoff
-        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000);
       }
     }
   }
@@ -459,7 +459,7 @@ async function processWithService(serviceUrl: string, tensorData: any): Promise<
           'X-Fallback': 'true'
         },
         body: JSON.stringify(tensorData),
-        signal: AbortSignal.timeout(15000) // Shorter timeout for fallback
+        signal: AbortSignal.timeout(15000) // Shorter timeout for fallback,
       });
 
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
@@ -487,7 +487,7 @@ function generateCacheKey(tensorData: any): string {
 }
 
 function hashArray(arr: number[], sampleSize: number): string {
-  const sample = arr.slice(0, Math.min(sampleSize, arr.length));
+  const sample = arr.slice(0, Math.min(sampleSize, arr.length);
   let hash = 0;
 
   for (let i = 0; i < sample.length; i++) {
@@ -520,7 +520,7 @@ function updateProcessingStats(processingTime: number, cacheHit: boolean): void 
     stats.cacheHits++;
   }
 
-  // Update average processing time
+  // Update average processing time;
   if (stats.successfulRequests > 0) {
     const totalTime = stats.averageProcessingTime * (stats.successfulRequests - 1);
     stats.averageProcessingTime = (totalTime + processingTime) / stats.successfulRequests;
@@ -529,7 +529,7 @@ function updateProcessingStats(processingTime: number, cacheHit: boolean): void 
   }
 }
 
-// Cleanup on process exit
+// Cleanup on process exit;
 if (typeof process !== 'undefined') {
   process.on('exit', () => {
     serviceManager?.cleanup();

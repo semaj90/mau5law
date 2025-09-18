@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json({ 
       success: false, 
       error: error?.message || 'Unknown error',
-      test: testType 
+      test: testType ,
     }, { status: 500 });
   }
 };
@@ -48,22 +48,22 @@ async function testBasicCaching() {
   const testData = { 
     message: 'Hello from cache!', 
     timestamp: new Date().toISOString(),
-    data: Array.from({ length: 100 }, (_, i) => ({ id: i, value: `item-${i}` }))
+    data: Array.from({ length: 100 }, (_, i) => ({ id: i, value: `item-${i}` })
   };
 
-  // Store in cache
+  // Store in cache;
   await parallelCacheOrchestrator.storeParallel(testKey, testData, {
     tier: 'all',
     ttl: 60000, // 1 minute
-    priority: 'normal'
+    priority: 'normal',
   });
 
-  // Retrieve from cache
+  // Retrieve from cache;
   const result = await parallelCacheOrchestrator.executeParallel({
     id: 'basic-test',
     type: 'hybrid',
     priority: 'normal',
-    keys: [testKey]
+    keys: [testKey],
   });
 
   return json({
@@ -85,17 +85,17 @@ async function testParallelCaching() {
       id: i, 
       name: `Test Item ${i}`,
       legal_data: `Legal document content for item ${i}`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }
-  }));
+  });
 
   // Store test data in parallel
-  await Promise.all(testData.map(({ key, data }) =>
+  await Promise.all(testData.map(({ key, data }) =>;
     parallelCacheOrchestrator.storeParallel(key, data, {
       tier: 'all',
-      priority: 'high'
+      priority: 'high',
     })
-  ));
+  );
 
   // Retrieve in parallel
   const startTime = performance.now();
@@ -115,7 +115,7 @@ async function testParallelCaching() {
       id: `seq-${key}`,
       type: 'hybrid',
       priority: 'normal',
-      keys: [key]
+      keys: [key],
     });
     sequentialResults.push(seqResult);
   }
@@ -144,16 +144,16 @@ async function testRAGCaching() {
   const ragData = {
     query: "Find legal precedents for Fourth Amendment violations",
     embeddings: new Array(768).fill(0).map(() => Math.random()),
-    results: [
+    results: [;
       {
         case: "State v. Johnson (2023)",
         relevance: 0.89,
-        summary: "Fourth Amendment search and seizure violation"
+        summary: "Fourth Amendment search and seizure violation",
       },
       {
         case: "People v. Davis (2022)", 
         relevance: 0.76,
-        summary: "Unreasonable search of vehicle"
+        summary: "Unreasonable search of vehicle",
       }
     ],
     ragContext: [
@@ -166,18 +166,18 @@ async function testRAGCaching() {
   const result = await ssrLegalAPICache.cacheSet(
     '/api/v1/rag/search',
     { query: ragData.query },
-    { success: true, data: ragData },
+    { success: true, data: ragData },);
     {
       ttl: 300000, // 5 minutes
       ragContext: ragData.ragContext,
-      userId: 'rag-test-user'
+      userId: 'rag-test-user',
     }
   );
 
   // Retrieve RAG data
   const cached = await ssrLegalAPICache.cacheGet(
     '/api/v1/rag/search',
-    { query: ragData.query },
+    { query: ragData.query },)
     { ragContext: true, userId: 'rag-test-user' }
   );
 
@@ -187,12 +187,12 @@ async function testRAGCaching() {
     cached: cached !== null,
     ragContextPresent: cached?.data?.ragContext ? true : false,
     embeddingsDimension: cached?.data?.embeddings?.length || 0,
-    precedentsFound: cached?.data?.results?.length || 0
+    precedentsFound: cached?.data?.results?.length || 0,
   });
 }
 
 async function testQuantizedCaching() {
-  // Large response to test quantization
+  // Large response to test quantization;
   const largeResponse = {
     success: true,
     data: {
@@ -206,13 +206,13 @@ async function testQuantizedCaching() {
           dateCreated: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
           tags: ['litigation', 'contract', 'corporate', 'criminal', 'civil'].slice(0, Math.floor(Math.random() * 3) + 1)
         }
-      }))
+      })
     },
     meta: {
       userId: 'quantize-test',
       timestamp: new Date().toISOString(),
       processingTime: 234.56,
-      aiModel: 'gemma-3-legal'
+      aiModel: 'gemma-3-legal',
     }
   };
 
@@ -222,17 +222,17 @@ async function testQuantizedCaching() {
   await ssrLegalAPICache.cacheSet(
     '/api/v1/cases/bulk',
     { page: 1, limit: 100 },
-    largeResponse,
+    largeResponse,);
     {
       quantize: true,
-      userId: 'quantize-test'
+      userId: 'quantize-test',
     }
   );
 
   // Retrieve quantized data
   const quantized = await ssrLegalAPICache.cacheGet(
     '/api/v1/cases/bulk',
-    { page: 1, limit: 100 },
+    { page: 1, limit: 100 },)
     { userId: 'quantize-test' }
   );
 
@@ -246,7 +246,7 @@ async function testQuantizedCaching() {
     quantizedSize: quantizedSize,
     compressionRatio: `${compressionRatio.toFixed(2)}x smaller`,
     compressionPercent: `${((1 - quantizedSize / originalSize) * 100).toFixed(1)}% reduction`,
-    dataIntact: quantized?.data?.cases?.length === 100
+    dataIntact: quantized?.data?.cases?.length === 100,
   });
 }
 
@@ -263,7 +263,7 @@ async function getCacheStats() {
     parallel: {
       metrics: parallelStats.currentMetrics,
       cacheStats: parallelStats.cacheStats,
-      systemResources: parallelStats.systemResources
+      systemResources: parallelStats.systemResources,
     }
   });
 }
@@ -282,13 +282,13 @@ async function testLegalAPIIntegration(userId: string) {
     try {
       const startTime = performance.now();
       
-      // Try cached call first
+      // Try cached call first;
       const response = await ssrLegalAPICache.cachedApiCall(endpoint, {
         method: 'GET',
         params,
         userId,
         ragContext: endpoint.includes('recommendations'),
-        quantize: true
+        quantize: true,
       });
 
       const responseTime = performance.now() - startTime;
@@ -299,14 +299,14 @@ async function testLegalAPIIntegration(userId: string) {
         responseTime: Math.round(responseTime),
         cached: response?.meta?.cached || false,
         cacheLayer: response?.meta?.cacheLayer,
-        dataPresent: !!response?.data
+        dataPresent: !!response?.data,
       });
 
     } catch (error: any) {
       results.push({
         endpoint,
         success: false,
-        error: error?.message || 'Unknown error'
+        error: error?.message || 'Unknown error',
       });
     }
   }
@@ -331,19 +331,19 @@ async function testLegalAPIIntegration(userId: string) {
   });
 }
 
-// Clear cache endpoint
+// Clear cache endpoint;
 export const DELETE: RequestHandler = async () => {
   try {
     await parallelCacheOrchestrator.clearAll();
     
     return json({
       success: true,
-      message: 'All caches cleared successfully'
+      message: 'All caches cleared successfully',
     });
   } catch (error: any) {
     return json({
       success: false,
-      error: error?.message || 'Unknown error'
+      error: error?.message || 'Unknown error',
     }, { status: 500 });
   }
 };

@@ -1,14 +1,19 @@
 Lucia v3 How‑To Guide
 
 Purpose
-- This guide shows how to install, configure and migrate to Lucia v3 in a SvelteKit project (server + client integration). It includes sample `hooks.server.ts`, a protected route example, environment variables to set, session storage options, and troubleshooting tips.
+
+- This guide shows how to install, configure and migrate to Lucia v3 in a SvelteKit project
+  (server + client integration). It includes sample `hooks.server.ts`, a protected route example,
+  environment variables to set, session storage options, and troubleshooting tips.
 
 Prerequisites
+
 - Node.js >= 20
 - SvelteKit project (v1 / compatible with Svelte 5)
-- A database adapter supported by Lucia (e.g., Postgres via `lucia-auth` adapters, or `lucia-auth-sqlite`, etc.)
+- A database adapter supported by Lucia (e.g., Postgres via `lucia-auth` adapters, or
+  `lucia-auth-sqlite`, etc.)
 
-1) Install Lucia v3 and a DB adapter
+1. Install Lucia v3 and a DB adapter
 
 From the `sveltekit-frontend` folder run (powershell):
 
@@ -20,7 +25,7 @@ npm install @lucia-auth/postgres-adapter
 # npm install lucia-auth@^3.0.0 @lucia-auth/prisma-adapter
 ```
 
-2) Add environment variables
+2. Add environment variables
 
 Create or edit your `.env` (do NOT commit credentials):
 
@@ -31,7 +36,7 @@ LUCIA_SECRET=some-long-random-secret
 LUCIA_REDIRECT_URL=http://localhost:5173/auth/callback
 ```
 
-3) Minimal server setup (hooks and auth)
+3. Minimal server setup (hooks and auth)
 
 Create `src/lib/server/auth.ts` (example using a postgres adapter):
 
@@ -49,8 +54,8 @@ export const auth = lucia({
   cookie: {
     secure: !dev,
     httpOnly: true,
-    sameSite: 'lax'
-  }
+    sameSite: 'lax',
+  },
 });
 ```
 
@@ -69,7 +74,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 };
 ```
 
-4) Protecting routes
+4. Protecting routes
 
 In `src/routes/protected/+page.server.ts`:
 
@@ -93,9 +98,10 @@ export const GET: RequestHandler = async ({ locals }) => {
 };
 ```
 
-5) Client-side usage
+5. Client-side usage
 
-To fetch current user data in a Svelte page component, rely on server-provided data (via `load`) or fetch an API route that returns `locals.user`.
+To fetch current user data in a Svelte page component, rely on server-provided data (via `load`) or
+fetch an API route that returns `locals.user`.
 
 Example `src/routes/profile/+page.server.ts`:
 
@@ -119,30 +125,35 @@ Then in `+page.svelte`:
 {/if}
 ```
 
-6) Login / OAuth flows
+6. Login / OAuth flows
 
-Lucia v3 offers built-in strategies for OAuth providers. Configure a provider strategy per adapter docs and create callback routes that call `auth.createSession`.
+Lucia v3 offers built-in strategies for OAuth providers. Configure a provider strategy per adapter
+docs and create callback routes that call `auth.createSession`.
 
-7) Session management options
+7. Session management options
 
 - Cookie sessions (recommended for SSR apps): configure lifetimes in `auth` init.
 - JWT sessions: optional via adapters.
 
-8) Migration notes from older Lucia versions
+8. Migration notes from older Lucia versions
 
-- API names may change between v2 and v3; check `auth.createSession`, `auth.invalidateSession`, and `auth.getSessionFromRequest` signatures.
+- API names may change between v2 and v3; check `auth.createSession`, `auth.invalidateSession`, and
+  `auth.getSessionFromRequest` signatures.
 - `auth.getUser` may be `auth.getUserById` depending on adapter.
 
-9) Troubleshooting
+9. Troubleshooting
 
 - Missing types/errors: ensure `types` are installed and TS paths include `node_modules`.
-- Session not found: check `LUCIA_SECRET`, cookie names, `sameSite` and `secure` flags when running locally.
+- Session not found: check `LUCIA_SECRET`, cookie names, `sameSite` and `secure` flags when running
+  locally.
 - OAuth: ensure redirect URLs match provider console and `LUCIA_REDIRECT_URL`.
-- If using edge adapters or Vercel/Netlify, prefer stateless JWT sessions or ensure adapter supports the environment.
+- If using edge adapters or Vercel/Netlify, prefer stateless JWT sessions or ensure adapter supports
+  the environment.
 
-10) Example quick-check script
+10. Example quick-check script
 
-Run a simple script to verify DB connectivity and basic auth operations (save as `scripts/lucia-test.mjs`):
+Run a simple script to verify DB connectivity and basic auth operations (save as
+`scripts/lucia-test.mjs`):
 
 ```mjs
 import { auth } from '../src/lib/server/auth.js';
@@ -150,17 +161,22 @@ import { auth } from '../src/lib/server/auth.js';
   try {
     const u = await auth.createUser({
       primaryKey: { providerId: 'email', providerUserId: 'demo@example.com' },
-      attributes: { email: 'demo@example.com' }
+      attributes: { email: 'demo@example.com' },
     });
     console.log('created user', u.id);
-  } catch (e) { console.error('error', e); }
+  } catch (e) {
+    console.error('error', e);
+  }
 })();
 ```
 
 Files added
+
 - `sveltekit-frontend/docs/LUCIA_V3_HOWTO.md` (this file)
 
 If you want, I can also:
-- Add concrete `src/lib/server/auth.ts` + `src/hooks.server.ts` files tailored to your DB adapter (Postgres/Prisma/Drizzle).
+
+- Add concrete `src/lib/server/auth.ts` + `src/hooks.server.ts` files tailored to your DB adapter
+  (Postgres/Prisma/Drizzle).
 - Add a small example `+page.server.ts` and `+page.svelte` for a protected route.
 - Run a local quick check script to verify connectivity (if you want me to run commands, say so).

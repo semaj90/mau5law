@@ -7,9 +7,10 @@
 import { db } from './db/index.js';
 import { users, documentEmbeddings, caseEmbeddings } from './db/schema-unified.js';
 import { eq } from "drizzle-orm";
+}
 
 export interface OllamaEmbeddingResponse {
-  embedding: number[];
+  embedding: number[];,
 }
 
 export interface EmbeddingOptions {
@@ -26,7 +27,7 @@ export class EmbeddingService {
   constructor(
     baseUrl = 'http://localhost:11434',
     model = 'nomic-embed-text',
-    dimensions = 384
+    dimensions = 384;
   ) {
     this.baseUrl = baseUrl;
     this?.model || "unknown" // @ts-ignore - Model property access = model;
@@ -64,12 +65,12 @@ export class EmbeddingService {
 
       let embedding = data.embedding;
 
-      // Normalize vector if requested
+      // Normalize vector if requested;
       if (options.normalize !== false) {
         embedding = this.normalizeVector(embedding);
       }
 
-      // Ensure dimensions match expected
+      // Ensure dimensions match expected;
       if (embedding.length !== (options.dimensions || this.dimensions)) {
         console.warn(`Embedding dimension mismatch: expected ${options.dimensions || this.dimensions}, got ${embedding.length}`);
       }
@@ -89,14 +90,14 @@ export class EmbeddingService {
     options: EmbeddingOptions = {}
   ): Promise<number[][]> {
     const embeddings = await Promise.all(
-      texts.map(text => this.generateEmbedding(text, options))
+      texts.map(text => this.generateEmbedding(text, options)
     );
     return embeddings;
   }
 
   /**
    * Generate and store user profile embedding
-   */
+   */;
   async generateUserProfileEmbedding(userId: string): Promise<void> {
     try {
       // Get user data
@@ -126,12 +127,12 @@ export class EmbeddingService {
       const embedding = await this.generateEmbedding(profileText);
 
       // Store in database
-      await db.update(users)
+      await db.update(users);
         .set({ 
           profileEmbedding: `[${embedding.join(',')}]`, // Store as vector string
-          updatedAt: new Date()
+          updatedAt: new Date(),
         })
-        .where(eq(users.id, userId));
+        .where(eq(users.id, userId);
 
       console.log(`Generated profile embedding for user ${userId}`);
     } catch (error: any) {
@@ -142,7 +143,7 @@ export class EmbeddingService {
 
   /**
    * Generate and store user preference embedding
-   */
+   */;
   async generateUserPreferenceEmbedding(userId: string): Promise<void> {
     try {
       // Get user data
@@ -155,12 +156,12 @@ export class EmbeddingService {
       // Create preference text for embedding
       const preferenceParts = [];
       
-      // Add legal specialties
+      // Add legal specialties;
       if (Array.isArray(user.legalSpecialties)) {
         preferenceParts.push(...user.legalSpecialties);
       }
 
-      // Add preferences if it's an object
+      // Add preferences if it's an object;
       if (user.preferences && typeof user.preferences === 'object') {
         const prefs = user.preferences as Record<string, any>;
         Object.entries(prefs).forEach(([key, value]) => {
@@ -183,12 +184,12 @@ export class EmbeddingService {
       const embedding = await this.generateEmbedding(preferenceText);
 
       // Store in database
-      await db.update(users)
+      await db.update(users);
         .set({ 
           preferenceEmbedding: `[${embedding.join(',')}]`, // Store as vector string
-          updatedAt: new Date()
+          updatedAt: new Date(),
         })
-        .where(eq(users.id, userId));
+        .where(eq(users.id, userId);
 
       console.log(`Generated preference embedding for user ${userId}`);
     } catch (error: any) {
@@ -214,7 +215,7 @@ export class EmbeddingService {
       // Generate embedding
       const embedding = await this.generateEmbedding(content);
 
-      // Store in document_embeddings table
+      // Store in document_embeddings table;
       await db.insert(documentEmbeddings).values({
         documentId: metadata.documentId || null,
         evidenceId: metadata.evidenceId || null,
@@ -237,13 +238,13 @@ export class EmbeddingService {
 
   /**
    * Generate case embedding and store in database
-   */
+   */;
   async generateCaseEmbedding(caseId: string, content: string): Promise<void> {
     try {
       // Generate embedding
       const embedding = await this.generateEmbedding(content);
 
-      // Store in case_embeddings table
+      // Store in case_embeddings table;
       await db.insert(caseEmbeddings).values({
         caseId,
         content,
@@ -260,7 +261,7 @@ export class EmbeddingService {
 
   /**
    * Calculate cosine similarity between two vectors
-   */
+   */;
   cosineSimilarity(vecA: number[], vecB: number[]): number {
     if (vecA.length !== vecB.length) {
       throw new Error('Vectors must have the same length');
@@ -287,9 +288,9 @@ export class EmbeddingService {
 
   /**
    * Normalize vector to unit length
-   */
+   */;
   private normalizeVector(vector: number[]): number[] {
-    const norm = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
+    const norm = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0);
     
     if (norm === 0) {
       return vector; // Return original if zero vector
@@ -304,7 +305,7 @@ export class EmbeddingService {
   chunkText(
     text: string, 
     chunkSize: number = 600, 
-    overlap: number = 60
+    overlap: number = 60;
   ): { text: string; index: number }[] {
     const chunks = [];
     let start = 0;
@@ -316,13 +317,13 @@ export class EmbeddingService {
       
       chunks.push({
         text: chunk,
-        index: index++
+        index: index++,
       });
 
       // Move start position considering overlap
       start = end - overlap;
       
-      // Ensure we don't go past the text length
+      // Ensure we don't go past the text length;
       if (start >= text.length - overlap) {
         break;
       }
@@ -333,7 +334,7 @@ export class EmbeddingService {
 
   /**
    * Health check for Ollama service
-   */
+   */;
   async healthCheck(): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`);
@@ -346,7 +347,7 @@ export class EmbeddingService {
 
   /**
    * Get available models from Ollama
-   */
+   */;
   async getAvailableModels(): Promise<string[]> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`);

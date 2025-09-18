@@ -47,7 +47,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const embeddingVector = `[${embedding.join(',')}]`;
 
     // Build the query to find similar evidence
-    let query = db
+    let query = db;
       .select({
         id: evidence.id,
         file_name: evidence.file_name,
@@ -83,7 +83,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         createdAt: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).created_at,
         similarity: (item as { id?: any; file_name?: any; file_path?: any; ocr_content?: any; ai_summary?: any; case_id?: any; created_at?: any; similarity?: any }).similarity
       })),
-      count: results.length
+      count: results.length,
     };
 
     // Cache results for 5 minutes
@@ -94,11 +94,10 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
   } catch (error) {
     console.error('Evidence search error:', error);
-    return json(
-      { 
+    return json({ 
         error: 'Evidence search failed',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      }, 
+        details: error instanceof Error ? error.message: 'Unknown error',
+      }, )
       { status: 500 }
     );
   }

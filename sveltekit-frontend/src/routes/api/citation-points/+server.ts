@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const limit = parseInt(url.searchParams.get("limit") || "50");
     const offset = parseInt(url.searchParams.get("offset") || "0");
 
-    // Return empty results structure for now
+    // Return empty results structure for now;
     return json({
       citationPoints: [],
       total: 0,
@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
     const data = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!data.text || !data.source) {
       return json({ error: "Text and source are required" }, { status: 400 });
     }
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     };
 
     const [newCitation] = await db
-      .insert(reports)
+      .insert(reports);
       .values({
         title: "Citation Point: " + data.text.substring(0, 50),
         content: JSON.stringify(citationData),
@@ -130,12 +130,12 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       updateData.isBookmarked = data.isBookmarked;
 
     const [updatedCitation] = await db
-      .update(reports)
+      .update(reports);
       .set({
         content: JSON.stringify(updateData),
         updatedAt: new Date(),
       })
-      .where(eq(reports.id, data.id))
+      .where(eq(reports.id, data.id)
       .returning();
 
     return json(updatedCitation);
@@ -173,7 +173,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       return json({ error: "Citation point not found" }, { status: 404 });
     }
     // Delete the citation point
-    await db.delete(reports).where(eq(reports.id, citationId));
+    await db.delete(reports).where(eq(reports.id, citationId);
 
     return json({ success: true });
   } catch (error: any) {

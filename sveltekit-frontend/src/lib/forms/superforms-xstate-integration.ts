@@ -24,6 +24,7 @@ import {
 // ============================================================================
 
 export type SnapshotOf<M> = M extends { getSnapshot: () => infer S } ? S : { status: any; context: any };
+}
 
 export interface FormMachineIntegration<M extends { getSnapshot: () => any }> {
   form: ReturnType<typeof superForm>;
@@ -60,7 +61,7 @@ export function createDocumentUploadForm(
   const actor = createActor(documentUploadMachine as any);
   actor.start();
 
-  // Create Superform
+  // Create Superform;
   const form = superForm(data, {
     validators: zod(DocumentUploadSchema as any),
     resetForm: options.resetOnSuccess ?? true,
@@ -69,16 +70,16 @@ export function createDocumentUploadForm(
     invalidateAll: false,
     onUpdated: ({ form }) => {
       // When the form becomes valid, ask the actor to validate the form data;
-      // otherwise inform the machine of the updated form (data as { query?: any }).
+      // otherwise inform the machine of the updated form (data as { query?: any }).;
       if ((form as any).valid) {
         actor.send({
           type: 'VALIDATE_FORM',
-          data: (form as any).data || form
+          data: (form as any).data || form,
         } as any);
       } else {
         actor.send({
           type: 'UPDATE_FORM',
-          data: (form as any).data || form
+          data: (form as any).data || form,
         } as any);
       }
     },
@@ -90,7 +91,7 @@ export function createDocumentUploadForm(
       } else {
         actor.send({
           type: 'SUBMIT',
-          data: formData
+          data: formData,
         } as any);
       }
     }
@@ -108,7 +109,7 @@ export function createDocumentUploadForm(
     // Flatten the complex superforms error structure to match interface
     const flattened: Record<string, string[]> = {};
 
-    // Handle superforms errors (which can be nested objects)
+    // Handle superforms errors (which can be nested objects);
     const flattenErrors = (obj: any, prefix = ''): void => {
       for (const [key, value] of Object.entries(obj || {})) {
         const fullKey = prefix ? `${prefix}.${key}` : key;
@@ -122,7 +123,7 @@ export function createDocumentUploadForm(
 
     flattenErrors($errors);
 
-    // Add context validation errors
+    // Add context validation errors;
     if ($context?.validationErrors) {
       Object.assign(flattened, $context.validationErrors);
     }
@@ -133,14 +134,14 @@ export function createDocumentUploadForm(
     Math.max($context?.uploadProgress ?? 0, $context?.processingProgress ?? 0)
   );
 
-  // Subscribe to actor changes (XState v5 compatibility)
+  // Subscribe to actor changes (XState v5 compatibility);
   actor.subscribe((snapshot) => {
     const stateValue = (snapshot as any).status || (snapshot as any).value || 'idle';
     const contextValue = (snapshot as any).context || {};
     state.set(stateValue);
     context.set(contextValue);
 
-    // Handle state-specific actions
+    // Handle state-specific actions;
     if (stateValue === 'completed' && options.onSuccess) {
       options.onSuccess(contextValue?.aiResults);
     } else if (stateValue === 'failed' && options.onError) {
@@ -148,7 +149,7 @@ export function createDocumentUploadForm(
     }
   });
 
-  // Auto-save functionality
+  // Auto-save functionality;
   if (options.autoSave) {
     const autoSaveDelay = options.autoSaveDelay ?? 2000;
     let autoSaveTimeout: ReturnType<typeof setTimeout>;
@@ -158,7 +159,7 @@ export function createDocumentUploadForm(
         clearTimeout(autoSaveTimeout);
         autoSaveTimeout = setTimeout(() => {
           try {
-            localStorage.setItem('document-upload-draft', JSON.stringify(($form as any).data || $form));
+            localStorage.setItem('document-upload-draft', JSON.stringify(($form as any).data || $form);
           } catch (e: any) {
             console.warn('Failed to write draft to localStorage', e);
           }
@@ -200,7 +201,7 @@ export function createCaseCreationForm(
     onUpdated: ({ form }) => {
       actor.send({
         type: 'UPDATE_FORM',
-        data: (form as any).data || form
+        data: (form as any).data || form,
       } as any);
     },
     onSubmit: async ({ formData, cancel }) => {
@@ -210,7 +211,7 @@ export function createCaseCreationForm(
       } else {
         actor.send({
           type: 'SUBMIT_CASE',
-          data: formData
+          data: formData,
         } as any);
       }
     }
@@ -227,7 +228,7 @@ export function createCaseCreationForm(
     // Flatten the complex superforms error structure to match interface
     const flattened: Record<string, string[]> = {};
 
-    // Handle superforms errors (which can be nested objects)
+    // Handle superforms errors (which can be nested objects);
     const flattenErrors = (obj: any, prefix = ''): void => {
       for (const [key, value] of Object.entries(obj || {})) {
         const fullKey = prefix ? `${prefix}.${key}` : key;
@@ -241,7 +242,7 @@ export function createCaseCreationForm(
 
     flattenErrors($errors);
 
-    // Add context validation errors
+    // Add context validation errors;
     if ($context?.validationErrors) {
       Object.assign(flattened, $context.validationErrors);
     }
@@ -303,7 +304,7 @@ export function createSearchForm(
     timeoutMs: 15000, // Longer timeout for searches
     invalidateAll: false,
     onUpdated: ({ form }) => {
-      // Don't auto-submit on every change for search
+      // Don't auto-submit on every change for search;
       if ((form as any).data?.query && (form as any).data.query.length > 2) {
         // Optional: Trigger search suggestions
       }
@@ -315,7 +316,7 @@ export function createSearchForm(
       } else {
         actor.send({
           type: 'SEARCH',
-          data: formData
+          data: formData,
         } as any);
       }
     }
@@ -333,7 +334,7 @@ export function createSearchForm(
     // Flatten the complex superforms error structure to match interface
     const flattened: Record<string, string[]> = {};
 
-    // Handle superforms errors (which can be nested objects)
+    // Handle superforms errors (which can be nested objects);
     const flattenErrors = (obj: any, prefix = ''): void => {
       for (const [key, value] of Object.entries(obj || {})) {
         const fullKey = prefix ? `${prefix}.${key}` : key;
@@ -347,7 +348,7 @@ export function createSearchForm(
 
     flattenErrors($errors);
 
-    // Add context validation errors
+    // Add context validation errors;
     if ($context?.validationErrors) {
       Object.assign(flattened, $context.validationErrors);
     }
@@ -370,7 +371,7 @@ export function createSearchForm(
     if (stateValue === 'results' && options.onSuccess) {
       options.onSuccess({
         results: contextValue?.results,
-        analytics: contextValue?.analytics
+        analytics: contextValue?.analytics,
       });
     } else if (stateValue === 'error' && options.onError) {
       options.onError(contextValue?.error || 'Search failed');
@@ -417,7 +418,7 @@ export function createAIAnalysisForm(
       } else {
         actor.send({
           type: 'START_ANALYSIS',
-          data: formData
+          data: formData,
         } as any);
       }
     }
@@ -435,7 +436,7 @@ export function createAIAnalysisForm(
     // Flatten the complex superforms error structure to match interface
     const flattened: Record<string, string[]> = {};
 
-    // Handle superforms errors (which can be nested objects)
+    // Handle superforms errors (which can be nested objects);
     const flattenErrors = (obj: any, prefix = ''): void => {
       for (const [key, value] of Object.entries(obj || {})) {
         const fullKey = prefix ? `${prefix}.${key}` : key;
@@ -449,7 +450,7 @@ export function createAIAnalysisForm(
 
     flattenErrors($errors);
 
-    // Add context validation errors
+    // Add context validation errors;
     if ($context?.validationErrors) {
       Object.assign(flattened, $context.validationErrors);
     }
@@ -474,7 +475,7 @@ export function createAIAnalysisForm(
         results: contextValue?.analysisResults,
         confidence: contextValue?.confidence,
         processingTime: contextValue?.processingTime,
-        tokensUsed: contextValue?.tokensUsed
+        tokensUsed: contextValue?.tokensUsed,
       });
     } else if (stateValue === 'error' && options.onError) {
       options.onError(contextValue?.error || 'Analysis failed');
@@ -562,8 +563,8 @@ export class FormStatePersistence {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify({
         data,
-        timestamp: Date.now()
-      }));
+        timestamp: Date.now(),
+      });
     } catch (error: any) {
       console.warn('Failed to save form state:', error);
     }
@@ -574,7 +575,7 @@ export class FormStatePersistence {
       const stored = localStorage.getItem(this.storageKey);
       if (stored) {
         const parsed = JSON.parse(stored);
-        // Check if data is not too old (24 hours)
+        // Check if data is not too old (24 hours);
         if (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) {
           return parsed.data;
         }
@@ -613,12 +614,12 @@ export const formValidators = {
   documentUpload: createFormValidator(DocumentUploadSchema),
   caseCreation: createFormValidator(CaseCreationSchema),
   searchQuery: createFormValidator(SearchQuerySchema),
-  aiAnalysis: createFormValidator(AIAnalysisSchema)
+  aiAnalysis: createFormValidator(AIAnalysisSchema),
 };
 
 export const FORM_STORAGE_KEYS = {
   DOCUMENT_UPLOAD: 'legal-ai:document-upload',
   CASE_CREATION: 'legal-ai:case-creation',
   SEARCH_QUERY: 'legal-ai:search-query',
-  AI_ANALYSIS: 'legal-ai:ai-analysis'
+  AI_ANALYSIS: 'legal-ai:ai-analysis',
 } as const;

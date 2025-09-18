@@ -1,7 +1,8 @@
 /**
  * Gemma3 Legal Model Configuration
  * Optimized for RTX 3060 Ti and legal document analysis
- */
+ */;
+}
 
 export interface Gemma3LegalConfig {
   model: {
@@ -10,7 +11,7 @@ export interface Gemma3LegalConfig {
     size: string;
     context_length: number;
     gpu_layers: number;
-    memory_requirement: string;
+    memory_requirement: string;,
   };
   generation: {
     temperature: number;
@@ -18,7 +19,7 @@ export interface Gemma3LegalConfig {
     top_k: number;
     repeat_penalty: number;
     max_tokens: number;
-    stop_sequences: string[];
+    stop_sequences: string[];,
   };
   legal_prompts: {
     contract_analysis: string;
@@ -26,7 +27,7 @@ export interface Gemma3LegalConfig {
     document_review: string;
     precedent_search: string;
     compliance_check: string;
-    risk_assessment: string;
+    risk_assessment: string;,
   };
   gpu_optimization: {
     enable_gpu: boolean;
@@ -34,7 +35,7 @@ export interface Gemma3LegalConfig {
     batch_size: number;
     parallel_requests: number;
     quantization: 'int8' | 'int4' | 'fp16' | 'fp32';
-    tensor_parallel: boolean;
+    tensor_parallel: boolean;,
   };
   rag_integration: {
     enable_rag: boolean;
@@ -42,7 +43,7 @@ export interface Gemma3LegalConfig {
     embedding_model: string;
     similarity_threshold: number;
     max_context_chunks: number;
-    rerank_results: boolean;
+    rerank_results: boolean;,
   };
   legal_domains: {
     contract_law: boolean;
@@ -52,7 +53,7 @@ export interface Gemma3LegalConfig {
     employment_law: boolean;
     real_estate: boolean;
     family_law: boolean;
-    tax_law: boolean;
+    tax_law: boolean;,
   };
 }
 
@@ -63,7 +64,7 @@ export const GEMMA3_LEGAL_CONFIG: Gemma3LegalConfig = {
     size: '7.3GB',
     context_length: 8192,
     gpu_layers: 35, // Optimized for RTX 3060 Ti (8GB VRAM)
-    memory_requirement: '7.3GB'
+    memory_requirement: '7.3GB',
   },
   
   generation: {
@@ -173,7 +174,7 @@ Provide detailed risk matrix with severity and likelihood ratings.`
     batch_size: 8,
     parallel_requests: 4,
     quantization: 'int8', // Balance between speed and quality
-    tensor_parallel: false // Single GPU setup
+    tensor_parallel: false // Single GPU setup,
   },
 
   rag_integration: {
@@ -182,7 +183,7 @@ Provide detailed risk matrix with severity and likelihood ratings.`
     embedding_model: 'nomic-embed-text',
     similarity_threshold: 0.7,
     max_context_chunks: 10,
-    rerank_results: true
+    rerank_results: true,
   },
 
   legal_domains: {
@@ -193,11 +194,11 @@ Provide detailed risk matrix with severity and likelihood ratings.`
     employment_law: true,
     real_estate: true,
     family_law: false, // Specialized domain
-    tax_law: false     // Specialized domain
+    tax_law: false     // Specialized domain,
   }
 };
 
-// Legal entity extraction patterns
+// Legal entity extraction patterns;
 export const LEGAL_ENTITY_PATTERNS = {
   parties: [
     /\b(plaintiff|defendant|appellant|appellee|petitioner|respondent)\b/gi,
@@ -228,50 +229,50 @@ export const LEGAL_ENTITY_PATTERNS = {
   ]
 };
 
-// Performance optimization settings
+// Performance optimization settings;
 export const PERFORMANCE_CONFIG = {
-  // Model loading optimization
+  // Model loading optimization;
   model_loading: {
     preload: true,
     keep_alive: '30m',
     offload_kqv: true,
-    flash_attention: true
+    flash_attention: true,
   },
   
-  // Memory management
+  // Memory management;
   memory: {
     mlock: true,
     mmap: true,
     numa: false, // Single GPU setup
-    low_vram: false // RTX 3060 Ti has sufficient VRAM
+    low_vram: false // RTX 3060 Ti has sufficient VRAM,
   },
   
-  // Inference optimization
+  // Inference optimization;
   inference: {
     use_fast_tokenizer: true,
     use_cache: true,
     cache_size: '2GB',
     beam_search: false, // Use sampling for legal creativity
-    early_stopping: true
+    early_stopping: true,
   },
   
-  // Multi-threading
+  // Multi-threading;
   threading: {
     num_threads: 8, // Match CPU cores
     num_gpu_layers: 35,
     num_batch: 512,
-    num_predict: 2048
+    num_predict: 2048,
   }
 };
 
-// API integration endpoints
+// API integration endpoints;
 export const API_ENDPOINTS = {
   ollama: {
     base_url: 'http://localhost:11434',
     generate: '/api/generate',
     chat: '/api/chat',
     embeddings: '/api/embeddings',
-    models: '/api/tags'
+    models: '/api/tags',
   },
   
   enhanced_rag: {
@@ -279,18 +280,18 @@ export const API_ENDPOINTS = {
     query: '/api/v1/rag',
     search: '/api/v1/search',
     index: '/api/v1/index',
-    health: '/health'
+    health: '/health',
   },
   
   legal_services: {
     base_url: 'grpc://localhost:50051',
     analyze: '/legal.v1.LegalService/Analyze',
     review: '/legal.v1.LegalService/Review',
-    search: '/legal.v1.LegalService/Search'
+    search: '/legal.v1.LegalService/Search',
   }
 };
 
-// Prompt templates for specific legal tasks
+// Prompt templates for specific legal tasks;
 export const PROMPT_TEMPLATES = {
   contract_clause_extraction: `Extract all clauses from this contract and categorize them:
 

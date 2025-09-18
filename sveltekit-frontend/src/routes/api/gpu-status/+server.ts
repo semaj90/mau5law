@@ -10,7 +10,7 @@ async function fetchWithTimeout(path: string, timeoutMs = 2500): Promise<any> {
   
   try {
     const res = await fetch(`${GO_BASE}${path}`, { 
-      signal: controller.signal 
+      signal: controller.signal ,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
@@ -28,7 +28,7 @@ export const GET: RequestHandler = async () => {
       data 
     });
   } catch (err: any) {
-    // Fallback: try Go health endpoint for minimal GPU availability signal
+    // Fallback: try Go health endpoint for minimal GPU availability signal;
     try {
       const health = await fetchWithTimeout("/api/health");
       const available = health?.services?.gpu === "enabled" || Boolean(health?.services?.gpu);
@@ -39,16 +39,16 @@ export const GET: RequestHandler = async () => {
         data: { available } 
       });
     } catch (e2) {
-      return json(
+      return json();
         {
           ok: false,
           source: "shim",
           data: {
             available: false,
             message: "GPU status service unavailable",
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           },
-          error: (err as Error).message
+          error: (err as Error).message,
         },
         { status: 200 }
       );

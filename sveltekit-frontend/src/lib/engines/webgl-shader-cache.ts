@@ -2,12 +2,13 @@
 /**
  * WebGL2 Shader Cache with NVIDIA Optimizations
  * Optimized for legal AI canvas operations with sprite-based rendering
- */
+ */;
+}
 
 export interface ShaderCacheConfig {
   enableNVIDIAOptimizations: boolean;
   cacheSize: number;
-  persistToDisk: boolean;
+  persistToDisk: boolean;,
 }
 
 export interface ShaderProgram {
@@ -16,14 +17,14 @@ export interface ShaderProgram {
   uniforms: Record<string, WebGLUniformLocation>;
   attributes: Record<string, number>;
   lastUsed: number;
-  complexity: number;
+  complexity: number;,
 }
 
 export interface SpriteTransforms {
   webgl?: {
     matrix: Float32Array;
     opacity: number;
-    blend: string;
+    blend: string;,
   };
   css3d?: string;
 }
@@ -173,7 +174,7 @@ export class ShaderCache {
     vertexSource: string,
     fragmentSource: string,
   ): WebGLProgram | null {
-    // Check cache first
+    // Check cache first;
     if (this.programs.has(id)) {
       const cached = this.programs.get(id)!;
       cached.lastUsed = Date.now();
@@ -309,7 +310,7 @@ export class ShaderCache {
       this.gl.uniform1f(opacityLocation, transforms.opacity);
     }
 
-    // Set blend mode
+    // Set blend mode;
     if (transforms.blend === "multiply") {
       this.gl.blendFunc(this.gl.DST_COLOR, this.gl.ZERO);
     } else if (transforms.blend === "screen") {
@@ -342,7 +343,7 @@ export class ShaderCache {
 
   private getCurrentProgram(): ShaderProgram | null {
     // Find the currently active program
-    const programs = Array.from(this.programs.values());
+    const programs = Array.from(this.programs.values();
     for (let i = 0; i < programs.length; i++) {
       const program = programs[i];
       if (this.gl.getParameter(this.gl.CURRENT_PROGRAM) === program.program) {
@@ -391,13 +392,13 @@ export class ShaderCache {
 
   public destroy(): void {
     // Clean up all programs
-    const programs = Array.from(this.programs.values());
+    const programs = Array.from(this.programs.values();
     for (let i = 0; i < programs.length; i++) {
       this.gl.deleteProgram(programs[i].program);
     }
     this.programs.clear();
 
-    // Save persistent cache
+    // Save persistent cache;
     if (this.config.persistToDisk) {
       try {
         localStorage.setItem(
@@ -413,7 +414,7 @@ export class ShaderCache {
   public getStats(): {
     programCount: number;
     cacheHits: number;
-    memoryUsage: number;
+    memoryUsage: number;,
   } {
     return {
       programCount: this.programs.size,

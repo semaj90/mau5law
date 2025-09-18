@@ -1,6 +1,4 @@
-import {
-  ReactiveValue
-} from "./chunk-VHHKUK53.js";
+import { ReactiveValue } from './chunk-VHHKUK53.js';
 import {
   active_reaction,
   get,
@@ -13,18 +11,16 @@ import {
   state,
   tag,
   update_version,
-  user_derived
-} from "./chunk-YZBAU52E.js";
-import {
-  true_default
-} from "./chunk-UWMOYZ25.js";
+  user_derived,
+} from './chunk-YZBAU52E.js';
+import { true_default } from './chunk-UWMOYZ25.js';
 import {
   __privateAdd,
   __privateGet,
   __privateMethod,
   __privateSet,
-  __superGet
-} from "./chunk-KWPVD4H7.js";
+  __superGet,
+} from './chunk-KWPVD4H7.js';
 
 // node_modules/svelte/src/reactivity/date.js
 var inited = false;
@@ -39,7 +35,7 @@ var _SvelteDate = class _SvelteDate extends Date {
     __privateAdd(this, _deriveds, /* @__PURE__ */ new Map());
     __privateAdd(this, _reaction, active_reaction);
     if (true_default) {
-      tag(__privateGet(this, _time), "SvelteDate.#time");
+      tag(__privateGet(this, _time), 'SvelteDate.#time');
     }
     if (!inited) __privateMethod(this, _SvelteDate_instances, init_fn).call(this);
   }
@@ -48,17 +44,16 @@ _time = new WeakMap();
 _deriveds = new WeakMap();
 _reaction = new WeakMap();
 _SvelteDate_instances = new WeakSet();
-init_fn = function() {
+init_fn = function () {
   inited = true;
   var proto = _SvelteDate.prototype;
   var date_proto = Date.prototype;
-  var methods = (
+  var methods =
     /** @type {Array<keyof Date & string>} */
-    Object.getOwnPropertyNames(date_proto)
-  );
+    Object.getOwnPropertyNames(date_proto);
   for (const method of methods) {
-    if (method.startsWith("get") || method.startsWith("to") || method === "valueOf") {
-      proto[method] = function(...args) {
+    if (method.startsWith('get') || method.startsWith('to') || method === 'valueOf') {
+      proto[method] = function (...args) {
         if (args.length > 0) {
           get(__privateGet(this, _time));
           return date_proto[method].apply(this, args);
@@ -77,8 +72,8 @@ init_fn = function() {
         return get(d);
       };
     }
-    if (method.startsWith("set")) {
-      proto[method] = function(...args) {
+    if (method.startsWith('set')) {
+      proto[method] = function (...args) {
         var result = date_proto[method].apply(this, args);
         set(__privateGet(this, _time), date_proto.getTime.call(this));
         return result;
@@ -89,8 +84,8 @@ init_fn = function() {
 var SvelteDate = _SvelteDate;
 
 // node_modules/svelte/src/reactivity/set.js
-var read_methods = ["forEach", "isDisjointFrom", "isSubsetOf", "isSupersetOf"];
-var set_like_methods = ["difference", "intersection", "symmetricDifference", "union"];
+var read_methods = ['forEach', 'isDisjointFrom', 'isSubsetOf', 'isSupersetOf'];
+var set_like_methods = ['difference', 'intersection', 'symmetricDifference', 'union'];
 var inited2 = false;
 var _sources, _version, _size, _update_version, _SvelteSet_instances, source_fn, init_fn2;
 var _SvelteSet = class _SvelteSet extends Set {
@@ -107,8 +102,8 @@ var _SvelteSet = class _SvelteSet extends Set {
     __privateAdd(this, _update_version, update_version || -1);
     if (true_default) {
       value = new Set(value);
-      tag(__privateGet(this, _version), "SvelteSet version");
-      tag(__privateGet(this, _size), "SvelteSet.size");
+      tag(__privateGet(this, _version), 'SvelteSet version');
+      tag(__privateGet(this, _size), 'SvelteSet.size');
     }
     if (value) {
       for (var element of value) {
@@ -206,27 +201,26 @@ _SvelteSet_instances = new WeakSet();
  * @param {T} value
  * @returns {Source<T>}
  */
-source_fn = function(value) {
+source_fn = function (value) {
   return update_version === __privateGet(this, _update_version) ? state(value) : source(value);
 };
 // We init as part of the first instance so that we can treeshake this class
-init_fn2 = function() {
+init_fn2 = function () {
   inited2 = true;
   var proto = _SvelteSet.prototype;
   var set_proto = Set.prototype;
   for (const method of read_methods) {
-    proto[method] = function(...v) {
+    proto[method] = function (...v) {
       get(__privateGet(this, _version));
       return set_proto[method].apply(this, v);
     };
   }
   for (const method of set_like_methods) {
-    proto[method] = function(...v) {
+    proto[method] = function (...v) {
       get(__privateGet(this, _version));
-      var set2 = (
+      var set2 =
         /** @type {Set<T>} */
-        set_proto[method].apply(this, v)
-      );
+        set_proto[method].apply(this, v);
       return new _SvelteSet(set2);
     };
   }
@@ -249,8 +243,8 @@ var _SvelteMap = class _SvelteMap extends Map {
     __privateAdd(this, _update_version2, update_version || -1);
     if (true_default) {
       value = new Map(value);
-      tag(__privateGet(this, _version2), "SvelteMap version");
-      tag(__privateGet(this, _size2), "SvelteMap.size");
+      tag(__privateGet(this, _version2), 'SvelteMap version');
+      tag(__privateGet(this, _size2), 'SvelteMap.size');
     }
     if (value) {
       for (var [key, v] of value) {
@@ -329,12 +323,14 @@ var _SvelteMap = class _SvelteMap extends Map {
     } else if (prev_res !== value) {
       increment(s);
       var v_reactions = version.reactions === null ? null : new Set(version.reactions);
-      var needs_version_increase = v_reactions === null || !((_a = s.reactions) == null ? void 0 : _a.every(
-        (r) => (
-          /** @type {NonNullable<typeof v_reactions>} */
-          v_reactions.has(r)
-        )
-      ));
+      var needs_version_increase =
+        v_reactions === null ||
+        !((_a = s.reactions) == null
+          ? void 0
+          : _a.every((r) =>
+              /** @type {NonNullable<typeof v_reactions>} */
+              v_reactions.has(r)
+            ));
       if (needs_version_increase) {
         increment(version);
       }
@@ -401,14 +397,14 @@ _SvelteMap_instances = new WeakSet();
  * @param {T} value
  * @returns {Source<T>}
  */
-source_fn2 = function(value) {
+source_fn2 = function (value) {
   return update_version === __privateGet(this, _update_version2) ? state(value) : source(value);
 };
-read_all_fn = function() {
+read_all_fn = function () {
   get(__privateGet(this, _version2));
   var sources = __privateGet(this, _sources2);
   if (__privateGet(this, _size2).v !== sources.size) {
-    for (var key of __superGet(_SvelteMap.prototype, this, "keys").call(this)) {
+    for (var key of __superGet(_SvelteMap.prototype, this, 'keys').call(this)) {
       if (!sources.has(key)) {
         var s = __privateMethod(this, _SvelteMap_instances, source_fn2).call(this, 0);
         if (true_default) {
@@ -431,7 +427,11 @@ var SvelteURLSearchParams = class extends URLSearchParams {
   constructor() {
     super(...arguments);
     __privateAdd(this, _SvelteURLSearchParams_instances);
-    __privateAdd(this, _version3, true_default ? tag(state(0), "SvelteURLSearchParams version") : state(0));
+    __privateAdd(
+      this,
+      _version3,
+      true_default ? tag(state(0), 'SvelteURLSearchParams version') : state(0)
+    );
     __privateAdd(this, _url, get_current_url());
     __privateAdd(this, _updating, false);
   }
@@ -509,9 +509,9 @@ var SvelteURLSearchParams = class extends URLSearchParams {
    * @returns {void}
    */
   set(name, value) {
-    var previous = super.getAll(name).join("");
+    var previous = super.getAll(name).join('');
     super.set(name, value);
-    if (previous !== super.getAll(name).join("")) {
+    if (previous !== super.getAll(name).join('')) {
       __privateMethod(this, _SvelteURLSearchParams_instances, update_url_fn).call(this);
       increment(__privateGet(this, _version3));
     }
@@ -545,7 +545,7 @@ _version3 = new WeakMap();
 _url = new WeakMap();
 _updating = new WeakMap();
 _SvelteURLSearchParams_instances = new WeakSet();
-update_url_fn = function() {
+update_url_fn = function () {
   if (!__privateGet(this, _url) || __privateGet(this, _updating)) return;
   __privateSet(this, _updating, true);
   const search = this.toString();
@@ -577,14 +577,14 @@ var SvelteURL = class extends URL {
     __privateAdd(this, _search, state(super.search));
     __privateAdd(this, _searchParams);
     if (true_default) {
-      tag(__privateGet(this, _protocol), "SvelteURL.protocol");
-      tag(__privateGet(this, _username), "SvelteURL.username");
-      tag(__privateGet(this, _password), "SvelteURL.password");
-      tag(__privateGet(this, _hostname), "SvelteURL.hostname");
-      tag(__privateGet(this, _port), "SvelteURL.port");
-      tag(__privateGet(this, _pathname), "SvelteURL.pathname");
-      tag(__privateGet(this, _hash), "SvelteURL.hash");
-      tag(__privateGet(this, _search), "SvelteURL.search");
+      tag(__privateGet(this, _protocol), 'SvelteURL.protocol');
+      tag(__privateGet(this, _username), 'SvelteURL.username');
+      tag(__privateGet(this, _password), 'SvelteURL.password');
+      tag(__privateGet(this, _hostname), 'SvelteURL.hostname');
+      tag(__privateGet(this, _port), 'SvelteURL.port');
+      tag(__privateGet(this, _pathname), 'SvelteURL.pathname');
+      tag(__privateGet(this, _hash), 'SvelteURL.hash');
+      tag(__privateGet(this, _search), 'SvelteURL.search');
     }
     current_url = this;
     __privateSet(this, _searchParams, new SvelteURLSearchParams(url.searchParams));
@@ -708,29 +708,33 @@ _searchParams = new WeakMap();
 
 // node_modules/svelte/src/reactivity/media-query.js
 var parenthesis_regex = /\(.+\)/;
-var non_parenthesized_keywords = /* @__PURE__ */ new Set(["all", "print", "screen", "and", "or", "not", "only"]);
+var non_parenthesized_keywords = /* @__PURE__ */ new Set([
+  'all',
+  'print',
+  'screen',
+  'and',
+  'or',
+  'not',
+  'only',
+]);
 var MediaQuery = class extends ReactiveValue {
   /**
    * @param {string} query A media query string
    * @param {boolean} [fallback] Fallback value for the server
    */
   constructor(query, fallback) {
-    let final_query = parenthesis_regex.test(query) || // we need to use `some` here because technically this `window.matchMedia('random,screen')` still returns true
-    query.split(/[\s,]+/).some((keyword) => non_parenthesized_keywords.has(keyword.trim())) ? query : `(${query})`;
+    let final_query =
+      parenthesis_regex.test(query) || // we need to use `some` here because technically this `window.matchMedia('random,screen')` still returns true
+      query.split(/[\s,]+/).some((keyword) => non_parenthesized_keywords.has(keyword.trim()))
+        ? query
+        : `(${query})`;
     const q = window.matchMedia(final_query);
     super(
       () => q.matches,
-      (update) => on(q, "change", update)
+      (update) => on(q, 'change', update)
     );
   }
 };
 
-export {
-  SvelteDate,
-  SvelteSet,
-  SvelteMap,
-  SvelteURLSearchParams,
-  SvelteURL,
-  MediaQuery
-};
+export { SvelteDate, SvelteSet, SvelteMap, SvelteURLSearchParams, SvelteURL, MediaQuery };
 //# sourceMappingURL=chunk-C4DSKXON.js.map

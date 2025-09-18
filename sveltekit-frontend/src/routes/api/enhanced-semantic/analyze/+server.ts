@@ -9,11 +9,11 @@ export const GET: RequestHandler = async ({ url }) => {
 		if (!text) {
 			return json({
 				success: false,
-				error: 'Missing text parameter for semantic analysis'
+				error: 'Missing text parameter for semantic analysis',
 			}, { status: 400 });
 		}
 
-		// Forward request to Enhanced Semantic Architecture service
+		// Forward request to Enhanced Semantic Architecture service;
 		const response = await fetch(`http://localhost:8095/api/semantic-analysis?text=${encodeURIComponent(text)}`, {
 			method: 'GET',
 			headers: {
@@ -38,11 +38,11 @@ export const GET: RequestHandler = async ({ url }) => {
 					embedding_dimensions: data.data.embedding?.length || 384,
 					som_grid_size: '20x20',
 					processing_time: Date.now(),
-					webgpu_accelerated: true
+					webgpu_accelerated: true,
 				}
 			},
 			timestamp: new Date().toISOString(),
-			source: 'Enhanced Semantic Architecture'
+			source: 'Enhanced Semantic Architecture',
 		});
 		
 	} catch (error: any) {
@@ -52,7 +52,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		const text = url.searchParams.get('text') || '';
 		const words = text.toLowerCase().split(/\s+/);
 		
-		// Mock embedding (384 dimensions like nomic-embed-text)
+		// Mock embedding (384 dimensions like nomic-embed-text);
 		const embedding = Array(384).fill(0).map((_, i) => {
 			const wordIndex = i % words.length;
 			const word = words[wordIndex] || '';
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			},
 			timestamp: new Date().toISOString(),
 			source: 'Fallback Analyzer',
-			note: 'Using fallback semantic analysis. Start Enhanced Semantic Architecture service for full SOM clustering.'
+			note: 'Using fallback semantic analysis. Start Enhanced Semantic Architecture service for full SOM clustering.',
 		});
 	}
 };
@@ -113,11 +113,11 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (!text) {
 			return json({
 				success: false,
-				error: 'Missing text for analysis'
+				error: 'Missing text for analysis',
 			}, { status: 400 });
 		}
 
-		// Forward to Enhanced Semantic Architecture for deep analysis
+		// Forward to Enhanced Semantic Architecture for deep analysis;
 		const response = await fetch('http://localhost:8095/api/semantic-analysis', {
 			method: 'POST',
 			headers: {
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		}, { status: 500 });
 	}
 };

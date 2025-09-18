@@ -14,36 +14,36 @@ const FIXES = [
   {
     pattern: /<Button([^>]*)>\s*([\s\S]*?)\s*<\/button>/g,
     replacement: '<Button$1>\n$2\n</Button>',
-    description: 'Fix Button component closing tags'
+    description: 'Fix Button component closing tags',
   },
 
   // Fix missing parentheses in async functions
   {
     pattern: /setTimeout\(resolve,\s*(\d+)\);/g,
     replacement: 'setTimeout(resolve, $1));',
-    description: 'Fix missing parentheses in setTimeout'
+    description: 'Fix missing parentheses in setTimeout',
   },
 
   // Fix mixed Card component tags
   {
     pattern: /<\/Card\.(\w+)>/g,
     replacement: '</div.$1>',
-    description: 'Fix inconsistent Card component closing tags'
+    description: 'Fix inconsistent Card component closing tags',
   },
 
   // Fix duplicate role attributes
   {
     pattern: /role="[^"]*"\s+([^>]*)\s+role="[^"]*"/g,
     replacement: 'role="button" $1',
-    description: 'Remove duplicate role attributes'
+    description: 'Remove duplicate role attributes',
   },
 
   // Fix unexpected block closing tags
   {
     pattern: /\{\s*\/if\s*\}\s*\{\s*\/if\s*\}/g,
     replacement: '{/if}',
-    description: 'Remove duplicate if block closing tags'
-  }
+    description: 'Remove duplicate if block closing tags',
+  },
 ];
 
 function processFile(filePath) {

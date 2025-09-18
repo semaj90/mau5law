@@ -56,7 +56,7 @@ const EnvSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development')
 });
 
-// Parse and validate environment variables
+// Parse and validate environment variables;
 function parseEnvironment() {
   try {
     return EnvSchema.parse(process.env);
@@ -81,7 +81,7 @@ export function createRAGConfig(): RAGConfiguration {
     maxRetries: env.RAG_MAX_RETRIES,
     timeoutMs: env.RAG_TIMEOUT_MS,
     cacheEnabled: env.RAG_ENABLE_CACHING,
-    cacheTtl: env.RAG_CACHE_TTL
+    cacheTtl: env.RAG_CACHE_TTL,
 };
 }
 
@@ -89,21 +89,21 @@ export function createRAGConfig(): RAGConfiguration {
 
 /**
  * Creates a SHA-256 hash of the input text
- */
+ */;
 export function hashText(text: string): string {
   return crypto.createHash('sha256').update(text.trim()).digest('hex');
 }
 
 /**
  * Creates a deterministic ID from multiple components
- */
+ */;
 export function createId(...components: string[]): string {
-  return hashText(components.join('|'));
+  return hashText(components.join('|');
 }
 
 /**
  * Sanitizes user input to prevent injection attacks
- */
+ */;
 export function sanitizeInput(input: string): string {
   return input
     .replace(/[<>]/g, '') // Remove HTML tags
@@ -114,7 +114,7 @@ export function sanitizeInput(input: string): string {
 
 /**
  * Validates if a string is a valid UUID
- */
+ */;
 export function isValidUUID(uuid: string): boolean {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   return uuidRegex.test(uuid);
@@ -126,7 +126,7 @@ export function isValidUUID(uuid: string): boolean {
 export function withRetry<T>(
   operation: () => Promise<T>,
   maxRetries: number = env.RAG_MAX_RETRIES,
-  baseDelay: number = 1000
+  baseDelay: number = 1000;
 ): Promise<T> {
   return new Promise(async (resolve, reject) => {
     let lastError: Error;
@@ -147,7 +147,7 @@ export function withRetry<T>(
 
         const delay = baseDelay * Math.pow(2, attempt);
         logger.warn(`Attempt ${attempt + 1} failed, retrying in ${delay}ms:`, error);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise(resolve => setTimeout(resolve, delay);
       }
     }
   });
@@ -159,7 +159,7 @@ export function withRetry<T>(
 export function withTimeout<T>(
   operation: Promise<T>,
   timeoutMs: number = env.RAG_TIMEOUT_MS,
-  errorMessage: string = 'Operation timed out'
+  errorMessage: string = 'Operation timed out';
 ): Promise<T> {
   return Promise.race([
     operation,
@@ -171,7 +171,7 @@ export function withTimeout<T>(
 
 /**
  * Rate limiter using in-memory store (consider Redis for production)
- */
+ */;
 class RateLimiter {
   private requests = new Map<string, number[]>();
   private readonly windowMs = 60 * 1000; // 1 minute
@@ -226,7 +226,7 @@ export const rateLimiter = new RateLimiter();
 ;
 /**
  * Circuit breaker pattern for external service calls
- */
+ */;
 class CircuitBreaker {
   private failures = 0;
   private lastFailureTime = 0;
@@ -277,12 +277,12 @@ class CircuitBreaker {
     return {
       state: this.state,
       failures: this.failures,
-      lastFailureTime: this.lastFailureTime
+      lastFailureTime: this.lastFailureTime,
     };
   }
 }
 
-// Create circuit breakers for external services
+// Create circuit breakers for external services;
 export const circuitBreakers = {
   ollama: new CircuitBreaker(5, 60000, 'Ollama'),
   database: new CircuitBreaker(3, 30000, 'Database'),
@@ -291,7 +291,7 @@ export const circuitBreakers = {
 
 /**
  * Performance metrics collector
- */
+ */;
 class MetricsCollector {
   private metrics = new Map<string, number[]>();
   private counters = new Map<string, number>();
@@ -302,7 +302,7 @@ class MetricsCollector {
     const timings = this.metrics.get(operation) || [];
     timings.push(duration);
 
-    // Keep only last 1000 measurements
+    // Keep only last 1000 measurements;
     if (timings.length > 1000) {
       timings.shift();
     }
@@ -329,7 +329,7 @@ class MetricsCollector {
   getAllMetrics(): Record<string, any> {
     const result: Record<string, any> = {};
 
-    // Timing metrics
+    // Timing metrics;
     for (const [operation, timings] of this.metrics.entries()) {
       if (timings.length > 0) {
         result[`${operation}_avg_ms`] = this.getAverageTime(operation);
@@ -339,7 +339,7 @@ class MetricsCollector {
       }
     }
 
-    // Counter metrics
+    // Counter metrics;
     for (const [name, value] of this.counters.entries()) {
       result[name] = value;
     }
@@ -357,12 +357,12 @@ export const metrics = new MetricsCollector();
 ;
 /**
  * Timing decorator for measuring function execution time
- */
+ */;
 export function measureTime(operation: string) {
   return function <T extends (...args: any[]) => Promise<any>(
     _target: any,
     _propertyName: string,
-    descriptor: TypedPropertyDescriptor<T>
+    descriptor: TypedPropertyDescriptor<T>;
   ) {
     const method = descriptor.value!;
 
@@ -382,7 +382,7 @@ export function measureTime(operation: string) {
 
 /**
  * Validates document size before processing
- */
+ */;
 export function validateDocumentSize(content: string): void {
   const sizeBytes = Buffer.byteLength(content, 'utf8');
   if (sizeBytes > env.RAG_MAX_DOCUMENT_SIZE) {
@@ -396,7 +396,7 @@ export function validateDocumentSize(content: string): void {
  * Extracts legal entities from text using simple patterns
  */
 export function extractLegalEntities(
-  text: string
+  text: string;
 ): Array< {
   const entities: Array<any> = [];
 
@@ -426,12 +426,13 @@ export function extractLegalEntities(
 
 /**
  * Creates a unique session ID
- */
+ */;
 export function createSessionId(): string {
   return `rag_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 }
 
-// === HEALTH CHECK UTILITIES ===
+// === HEALTH CHECK UTILITIES ===;
+}
 
 export interface HealthStatus {
   service: string;
@@ -450,14 +451,14 @@ export async function checkServiceHealth(name: string, checkFn: () => Promise<an
     return {
       service: name,
       status: 'healthy',
-      responseTime: Date.now() - start
+      responseTime: Date.now() - start,
 };
   } catch (error: any) {
     return {
       service: name,
       status: 'unhealthy',
       responseTime: Date.now() - start,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
 };
   }
 }

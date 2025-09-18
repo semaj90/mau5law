@@ -26,7 +26,7 @@ import { URL } from "url";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 // Rate limiting configuration
-// Simple rate limiter stub that returns the expected format
+// Simple rate limiter stub that returns the expected format;
 const rateLimiter = {
   check: (ip: string) => Promise.resolve({ allowed: true, retryAfter: null }),
   windowMs: 60 * 1000,
@@ -44,7 +44,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
       return json({
         success: false,
         error: 'Rate limit exceeded',
-        retryAfter: rateLimitResult.retryAfter
+        retryAfter: rateLimitResult.retryAfter,
       }, { status: 429 });
     }
 
@@ -58,7 +58,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
       return json({
         success: false,
         error: 'Query parameter "q" is required and must be at least 2 characters',
-        query: query
+        query: query,
       }, { status: 400 });
     }
 
@@ -102,7 +102,7 @@ const originalGETHandler: RequestHandler = async ({ url, getClientAddress }) => 
       success: false,
       error: 'Search service temporarily unavailable',
       details: import.meta.env.NODE_ENV === 'development' ? String(error) : undefined,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -117,7 +117,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
       return json({
         success: false,
         error: 'Rate limit exceeded',
-        retryAfter: rateLimitResult.retryAfter
+        retryAfter: rateLimitResult.retryAfter,
       }, { status: 429 });
     }
 
@@ -143,14 +143,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
 
     const startTime = Date.now();
 
-    // Perform enhanced search with advanced options
+    // Perform enhanced search with advanced options;
     const results = await enhancedLegalSearch.search(query, {
       jurisdiction: jurisdiction !== 'all' ? jurisdiction : undefined,
       category: category !== 'all' ? category : undefined,
       maxResults: Math.min(maxResults, 50), // Cap at 50 results
       useAI,
       ...advancedOptions
-    });
+    ,});
 
     const searchTime = Date.now() - startTime;
 
@@ -160,7 +160,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
     // AI enhancement if requested
     let aiEnhancement = null;
     if (useAI && results.length > 0) {
-      aiEnhancement = await generateAIEnhancement(query, results.slice(0, 5));
+      aiEnhancement = await generateAIEnhancement(query, results.slice(0, 5);
     }
 
     return json({
@@ -188,12 +188,12 @@ const originalPOSTHandler: RequestHandler = async ({ request, getClientAddress }
       success: false,
       error: 'Search service temporarily unavailable',
       details: import.meta.env.NODE_ENV === 'development' ? String(error) : undefined,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
 
-// Analytics calculation functions
+// Analytics calculation functions;
 function calculateSearchAnalytics(results: LegalSearchResult[], query: string, searchTime: number) {
   if (results.length === 0) {
     return {
@@ -203,7 +203,7 @@ function calculateSearchAnalytics(results: LegalSearchResult[], query: string, s
       jurisdictions: Record<string, any>,
       categories: Record<string, any>,
       searchTime,
-      resultCount: 0
+      resultCount: 0,
     };
   }
 
@@ -235,14 +235,14 @@ function calculateSearchAnalytics(results: LegalSearchResult[], query: string, s
     resultCount: results.length,
     topScore: Math.max(...results.map(r => r.score)),
     queryLength: query.length,
-    queryTerms: query.split(' ').length
+    queryTerms: query.split(' ').length,
   };
 }
 
 function calculateAdvancedAnalytics(results: LegalSearchResult[], query: string, searchTime: number, requestBody: any) {
   const basicAnalytics = calculateSearchAnalytics(results, query, searchTime);
   
-  // Add advanced metrics
+  // Add advanced metrics;
   const relevanceFactors = results.reduce((acc, r) => {
     acc.semantic += r.relevanceFactors.semantic;
     acc.exact_match += r.relevanceFactors.exact_match;
@@ -253,7 +253,7 @@ function calculateAdvancedAnalytics(results: LegalSearchResult[], query: string,
     semantic: 0,
     exact_match: 0,
     jurisdiction_match: 0,
-    category_match: 0
+    category_match: 0,
   });
 
   const count = results.length;
@@ -269,7 +269,7 @@ function calculateAdvancedAnalytics(results: LegalSearchResult[], query: string,
     vectorSearchUsed: results.some(r => r.searchType === 'vector'),
     hybridSearchUsed: results.some(r => r.searchType === 'hybrid'),
     fallbackUsed: results.some(r => r.searchType === 'fallback'),
-    requestSize: JSON.stringify(requestBody).length
+    requestSize: JSON.stringify(requestBody).length,
   };
 }
 
@@ -296,7 +296,7 @@ async function generateAIEnhancement(query: string, topResults: LegalSearchResul
   }
 }
 
-// Health check endpoint
+// Health check endpoint;
 export const OPTIONS: RequestHandler = async () => {
   return json({
     status: 'healthy',
@@ -311,7 +311,7 @@ export const OPTIONS: RequestHandler = async () => {
       'pgvector-support',
       'ai-enhancement'
     ],
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };
 

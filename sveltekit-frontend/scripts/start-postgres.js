@@ -19,7 +19,7 @@ const colors = {
   red: '\x1b[31m',
   blue: '\x1b[34m',
   reset: '\x1b[0m',
-  bold: '\x1b[1m'
+  bold: '\x1b[1m',
 };
 
 function log(message, color = 'reset') {
@@ -29,22 +29,22 @@ function log(message, color = 'reset') {
 // Find PostgreSQL installation
 async function findPostgreSQLPath() {
   const basePath = 'C:\\Program Files\\PostgreSQL';
-  
+
   for (const version of POSTGRES_VERSIONS) {
     const versionPath = path.join(basePath, version);
     const binPath = path.join(versionPath, 'bin');
     const dataPath = path.join(versionPath, 'data');
-    
+
     if (fs.existsSync(binPath) && fs.existsSync(dataPath)) {
       return {
         version,
         binPath,
         dataPath,
-        pgCtl: path.join(binPath, 'pg_ctl.exe')
+        pgCtl: path.join(binPath, 'pg_ctl.exe'),
       };
     }
   }
-  
+
   return null;
 }
 
@@ -62,22 +62,22 @@ async function isPostgreSQLRunning(pgPath) {
 async function startPostgreSQL(pgPath) {
   return new Promise((resolve, reject) => {
     log(`Starting PostgreSQL ${pgPath.version}...`, 'blue');
-    
+
     const child = spawn(pgPath.pgCtl, ['-D', pgPath.dataPath, 'start'], {
-      stdio: ['ignore', 'pipe', 'pipe']
+      stdio: ['ignore', 'pipe', 'pipe'],
     });
-    
+
     let output = '';
     let errorOutput = '';
-    
+
     child.stdout.on('data', (data) => {
       output += data.toString();
     });
-    
+
     child.stderr.on('data', (data) => {
       errorOutput += data.toString();
     });
-    
+
     child.on('close', (code) => {
       if (code === 0 || output.includes('server started')) {
         log('✅ PostgreSQL started successfully', 'green');
@@ -89,7 +89,7 @@ async function startPostgreSQL(pgPath) {
         reject(new Error(`PostgreSQL start failed: ${errorOutput || 'Unknown error'}`));
       }
     });
-    
+
     child.on('error', (error) => {
       log(`❌ Error starting PostgreSQL: ${error.message}`, 'red');
       reject(error);
@@ -101,11 +101,11 @@ async function startPostgreSQL(pgPath) {
 async function testConnection() {
   try {
     log('🔍 Testing database connection...', 'yellow');
-    
+
     const testCommand = `set PGPASSWORD=123456 && psql -h localhost -p ${DEFAULT_PORT} -U legal_admin -d legal_ai_db -c "SELECT version();" -t`;
-    
+
     const { stdout } = await execAsync(testCommand, { timeout: 10000 });
-    
+
     if (stdout.includes('PostgreSQL')) {
       log('✅ Database connection successful', 'green');
       log('📊 legal_ai_db is ready for use', 'blue');
@@ -125,7 +125,7 @@ async function testConnection() {
 async function main() {
   try {
     log('🚀 Initializing PostgreSQL startup...', 'bold');
-    
+
     // Find PostgreSQL installation
     const pgPath = await findPostgreSQLPath();
     if (!pgPath) {
@@ -133,25 +133,24 @@ async function main() {
       log('💡 Expected location: C:\\Program Files\\PostgreSQL\\[version]', 'yellow');
       process.exit(1);
     }
-    
+
     log(`📦 Found PostgreSQL ${pgPath.version} at ${pgPath.binPath}`, 'blue');
-    
+
     // Check if already running
     if (await isPostgreSQLRunning(pgPath)) {
       log('✅ PostgreSQL is already running', 'green');
     } else {
       // Start PostgreSQL
       await startPostgreSQL(pgPath);
-      
+
       // Wait a moment for startup
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
-    
+
     // Test connection
     await testConnection();
-    
+
     log('🎉 PostgreSQL setup complete - ready for dev:full', 'green');
-    
   } catch (error) {
     log(`❌ Startup failed: ${error.message}`, 'red');
     process.exit(1);
