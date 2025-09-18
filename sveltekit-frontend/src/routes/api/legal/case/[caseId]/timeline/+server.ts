@@ -19,26 +19,26 @@ interface TimelineEvent {
   verified: boolean;
   source: string;
   sourceType: 'WITNESS' | 'DOCUMENT' | 'PHYSICAL_EVIDENCE' | 'DIGITAL_EVIDENCE' | 'OFFICIAL_RECORD' | 'EXPERT_ANALYSIS';
-  confidence: number; // 0-1
+  confidence: number; // 0-1;
   metadata: {
     weather?: string;
     lighting?: string;
     witnesses?: string[];
     recordingDevice?: string;
     chain_of_custody?: string[];
-    tags: string[];
+    tags: string[];,
   };
   correlations: {
     before: string[]; // Event IDs that occurred before and may be related
     after: string[]; // Event IDs that occurred after and may be related
     concurrent: string[]; // Events that occurred at the same time
-    causal: string[]; // Events that this event may have caused
+    causal: string[]; // Events that this event may have caused,
   };
   legalImplications: {
     relevantLaws: string[];
     potentialCharges?: string[];
     evidentialValue: number; // 0-100
-    admissibilityIssues: string[];
+    admissibilityIssues: string[];,
   };
   analysisNotes?: string;
   updates: Array<any>
@@ -48,7 +48,7 @@ interface TimelineAnalysis {
   timeRange: {
     start: string;
     end: string;
-    duration: string;
+    duration: string;,
   };
   eventsByType: Record<string, number>;
   eventsBySignificance: Record<string, number>;
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     
     if (!caseId) {
       return json(
-        { success: false, error: 'Case ID required' },
+        { success: false, error: 'Case ID required' },)
         { status: 400 }
       );
     }
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       includeAnalysis,
       groupBy: groupBy as TimelineRequest['groupBy'],
       sortBy: sortBy as TimelineRequest['sortBy'],
-      sortOrder: sortOrder as TimelineRequest['sortOrder']
+      sortOrder: sortOrder as TimelineRequest['sortOrder'],
     };
 
     // Get timeline events
@@ -120,17 +120,17 @@ export const GET: RequestHandler = async ({ params, url }) => {
         totalEvents: timelineData.events.length,
         dateRange: {
           start: timelineData.events.length > 0 ? timelineData.events[0].timestamp: null,
-          end: timelineData.events.length > 0 ? timelineData.events[timelineData.events.length - 1].timestamp : null
+          end: timelineData.events.length > 0 ? timelineData.events[timelineData.events.length - 1].timestamp : null,
         },
         filters: request,
-        generatedAt: new Date().toISOString()
+        generatedAt: new Date().toISOString(),
       }
     });
 
   } catch (error) {
     console.error('Timeline API error:', error);
     return json(
-      { success: false, error: 'Failed to retrieve timeline data' },
+      { success: false, error: 'Failed to retrieve timeline data' },)
       { status: 500 }
     );
   }
@@ -143,15 +143,15 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
     if (!caseId) {
       return json(
-        { success: false, error: 'Case ID required' },
+        { success: false, error: 'Case ID required' },)
         { status: 400 }
       );
     }
 
-    // Validate event data
+    // Validate event data;
     if (!eventData.title || !eventData.timestamp) {
       return json(
-        { success: false, error: 'Event title and timestamp are required' },
+        { success: false, error: 'Event title and timestamp are required' },)
         { status: 400 }
       );
     }
@@ -166,13 +166,13 @@ export const POST: RequestHandler = async ({ params, request }) => {
       success: true,
       event: newEvent,
       correlations: updatedCorrelations,
-      message: 'Timeline event created successfully'
+      message: 'Timeline event created successfully',
     });
 
   } catch (error) {
     console.error('Timeline creation error:', error);
     return json(
-      { success: false, error: 'Failed to create timeline event' },
+      { success: false, error: 'Failed to create timeline event' },)
       { status: 500 }
     );
   }
@@ -185,7 +185,7 @@ export const PUT: RequestHandler = async ({ params, request }) => {
 
     if (!caseId) {
       return json(
-        { success: false, error: 'Case ID required' },
+        { success: false, error: 'Case ID required' },)
         { status: 400 }
       );
     }
@@ -200,13 +200,13 @@ export const PUT: RequestHandler = async ({ params, request }) => {
       success: true,
       updatedEvents,
       analysis,
-      message: 'Timeline updated successfully'
+      message: 'Timeline updated successfully',
     });
 
   } catch (error) {
     console.error('Timeline update error:', error);
     return json(
-      { success: false, error: 'Failed to update timeline' },
+      { success: false, error: 'Failed to update timeline' },)
       { status: 500 }
     );
   }
@@ -218,7 +218,7 @@ async function getTimelineEvents(caseId: string, request: TimelineRequest): Prom
 
   let mockEvents = generateMockTimelineEvents(caseId);
 
-  // Apply filters
+  // Apply filters;
   if (request.startDate) {
     mockEvents = mockEvents.filter(event => event.timestamp >= request.startDate!);
   }
@@ -228,16 +228,16 @@ async function getTimelineEvents(caseId: string, request: TimelineRequest): Prom
   }
 
   if (request.eventTypes && request.eventTypes.length > 0) {
-    mockEvents = mockEvents.filter(event => request.eventTypes!.includes(event.eventType));
+    mockEvents = mockEvents.filter(event => request.eventTypes!.includes(event.eventType);
   }
 
   if (request.significance && request.significance.length > 0) {
-    mockEvents = mockEvents.filter(event => request.significance!.includes(event.significance));
+    mockEvents = mockEvents.filter(event => request.significance!.includes(event.significance);
   }
 
-  // Apply sorting
+  // Apply sorting;
   switch (request.sortBy) {
-    case 'chronological':
+    case 'chronological':;
       mockEvents.sort((a, b) => {
         const comparison = new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
         return request.sortOrder === 'desc' ? -comparison : comparison;
@@ -250,7 +250,7 @@ async function getTimelineEvents(caseId: string, request: TimelineRequest): Prom
         return request.sortOrder === 'desc' ? -comparison : comparison;
       });
       break;
-    case 'type':
+    case 'type':;
       mockEvents.sort((a, b) => {
         const comparison = a.eventType.localeCompare(b.eventType);
         return request.sortOrder === 'desc' ? -comparison : comparison;
@@ -270,18 +270,18 @@ async function generateTimelineAnalysis(events: TimelineEvent[]): Promise<Timeli
       eventsBySignificance: Record<string, any>,
       correlationClusters: [],
       gaps: [],
-      inconsistencies: []
+      inconsistencies: [],
     };
   }
 
   // Calculate time range
-  const sortedEvents = [...events].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  const sortedEvents = [...events].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
   const start = sortedEvents[0].timestamp;
   const end = sortedEvents[sortedEvents.length - 1].timestamp;
   const startDate = new Date(start);
   const endDate = new Date(end);
   const durationMs = endDate.getTime() - startDate.getTime();
-  const durationDays = Math.ceil(durationMs / (1000 * 60 * 60 * 24));
+  const durationDays = Math.ceil(durationMs / (1000 * 60 * 60 * 24);
 
   // Count events by type
   const eventsByType: Record<string, number> = {};
@@ -320,7 +320,7 @@ async function generateTimelineAnalysis(events: TimelineEvent[]): Promise<Timeli
 }
 
 async function createTimelineEvent(caseId: string, eventData: any): Promise<TimelineEvent> {
-  // In production, this would create in database
+  // In production, this would create in database;
   const newEvent: TimelineEvent = {
     id: `EVENT-${Date.now()}`,
     caseId,
@@ -342,26 +342,26 @@ async function createTimelineEvent(caseId: string, eventData: any): Promise<Time
     confidence: eventData.confidence || 0.8,
     metadata: {
       ...eventData.metadata,
-      tags: eventData.metadata?.tags || []
+      tags: eventData.metadata?.tags || [],
     },
     correlations: {
       before: [],
       after: [],
       concurrent: [],
-      causal: []
+      causal: [],
     },
     legalImplications: {
       relevantLaws: eventData.legalImplications?.relevantLaws || [],
       potentialCharges: eventData.legalImplications?.potentialCharges,
       evidentialValue: eventData.legalImplications?.evidentialValue || 50,
-      admissibilityIssues: eventData.legalImplications?.admissibilityIssues || []
+      admissibilityIssues: eventData.legalImplications?.admissibilityIssues || [],
     },
     analysisNotes: eventData.analysisNotes,
     updates: [{
       timestamp: new Date().toISOString(),
       updatedBy: 'System',
       changes: 'Event created',
-      reason: 'Initial creation'
+      reason: 'Initial creation',
     }]
   };
 
@@ -369,11 +369,11 @@ async function createTimelineEvent(caseId: string, eventData: any): Promise<Time
 }
 
 async function updateEventCorrelations(newEvent: TimelineEvent): Promise<any> {
-  // Mock correlation analysis
+  // Mock correlation analysis;
   return {
     correlationsFound: Math.floor(Math.random() * 5) + 1,
     strongCorrelations: Math.floor(Math.random() * 2),
-    weakCorrelations: Math.floor(Math.random() * 3) + 1
+    weakCorrelations: Math.floor(Math.random() * 3) + 1,
   };
 }
 
@@ -381,16 +381,16 @@ async function updateTimelineEvents(caseId: string, updates: any): Promise<Timel
   // Mock update implementation
   const mockEvents = generateMockTimelineEvents(caseId);
   
-  // Apply updates (mock implementation)
+  // Apply updates (mock implementation);
   return mockEvents.map(event => ({
     ...event,
     updates: [...event.updates, {
       timestamp: new Date().toISOString(),
       updatedBy: 'User',
       changes: 'Batch update applied',
-      reason: 'Timeline reconstruction'
+      reason: 'Timeline reconstruction',
     }]
-  }));
+  });
 }
 
 function generateMockTimelineEvents(caseId: string): TimelineEvent[] {
@@ -402,7 +402,7 @@ function generateMockTimelineEvents(caseId: string): TimelineEvent[] {
   const baseDate = new Date('2024-01-15');
   
   return Array.from({ length: 20 }, (_, i) => {
-    const eventDate = new Date(baseDate.getTime() + (i * 24 * 60 * 60 * 1000) + (Math.random() * 12 * 60 * 60 * 1000));
+    const eventDate = new Date(baseDate.getTime() + (i * 24 * 60 * 60 * 1000) + (Math.random() * 12 * 60 * 60 * 1000);
     
     return {
       id: `EVENT-${String(i + 1).padStart(3, '0')}`,
@@ -422,14 +422,14 @@ function generateMockTimelineEvents(caseId: string): TimelineEvent[] {
       verified: Math.random() > 0.2,
       source: ['Officer Martinez', 'Detective Johnson', 'CSI Team', 'Witness Statement', 'Court Record'][Math.floor(Math.random() * 5)],
       sourceType: sourceTypes[Math.floor(Math.random() * sourceTypes.length)],
-      confidence: Math.random() * 0.4 + 0.6, // 0.6-1.0
+      confidence: Math.random() * 0.4 + 0.6, // 0.6-1.0;
       metadata: {
         weather: ['Clear', 'Rainy', 'Overcast', 'Sunny'][Math.floor(Math.random() * 4)],
         lighting: ['Daylight', 'Artificial', 'Low Light', 'Dark'][Math.floor(Math.random() * 4)],
         witnesses: generateRandomWitnesses(),
         recordingDevice: Math.random() > 0.5 ? ['Body Camera', 'Security Camera', 'Phone', 'Dashboard Cam'][Math.floor(Math.random() * 4)] : undefined,
         chain_of_custody: ['Collected', 'Logged', 'Analyzed', 'Stored'],
-        tags: generateRandomTags()
+        tags: generateRandomTags(),
       },
       correlations: {
         before: i > 0 ? [`EVENT-${String(Math.max(1, i)).padStart(3, '0')}`] : [],
@@ -448,7 +448,7 @@ function generateMockTimelineEvents(caseId: string): TimelineEvent[] {
         timestamp: eventDate.toISOString(),
         updatedBy: 'System',
         changes: 'Initial event creation',
-        reason: 'Timeline construction'
+        reason: 'Timeline construction',
       }]
     };
   });
@@ -471,24 +471,24 @@ function generateRandomTags(): string[] {
 
 function generateCorrelationClusters(events: TimelineEvent[]): TimelineAnalysis['correlationClusters'] {
   // Mock correlation cluster generation
-  return [
+  return [;
     {
       id: 'CLUSTER-001',
       events: events.slice(0, 3).map(e => e.id),
       theme: 'Initial Investigation Phase',
-      significance: 'HIGH'
+      significance: 'HIGH',
     },
     {
       id: 'CLUSTER-002',
       events: events.slice(5, 8).map(e => e.id),
       theme: 'Evidence Collection Period',
-      significance: 'CRITICAL'
+      significance: 'CRITICAL',
     },
     {
       id: 'CLUSTER-003',
       events: events.slice(10, 13).map(e => e.id),
       theme: 'Legal Proceedings',
-      significance: 'MEDIUM'
+      significance: 'MEDIUM',
     }
   ];
 }
@@ -502,7 +502,7 @@ function identifyTimelineGaps(sortedEvents: TimelineEvent[]): TimelineAnalysis['
     const gapMs = next.getTime() - current.getTime();
     const gapDays = gapMs / (1000 * 60 * 60 * 24);
     
-    // Identify gaps larger than 2 days
+    // Identify gaps larger than 2 days;
     if (gapDays > 2) {
       gaps.push({
         start: sortedEvents[i].timestamp,
@@ -523,16 +523,16 @@ function identifyTimelineGaps(sortedEvents: TimelineEvent[]): TimelineAnalysis['
 
 function findTimelineInconsistencies(events: TimelineEvent[]): TimelineAnalysis['inconsistencies'] {
   // Mock inconsistency detection
-  return [
+  return [;
     {
       events: [events[2]?.id, events[5]?.id].filter(Boolean),
       issue: 'Conflicting witness statements about timing',
-      severity: 'MEDIUM'
+      severity: 'MEDIUM',
     },
     {
       events: [events[8]?.id, events[12]?.id].filter(Boolean),
       issue: 'Evidence collection dates do not align with incident reports',
-      severity: 'HIGH'
+      severity: 'HIGH',
     }
   ];
 }

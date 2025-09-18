@@ -41,7 +41,10 @@ function analyzeComponent(filePath) {
       componentWarnings.push('Lists without key attributes (performance impact)');
     }
 
-    if (content.includes('$derived(') && (content.includes('.map(') || content.includes('.filter('))) {
+    if (
+      content.includes('$derived(') &&
+      (content.includes('.map(') || content.includes('.filter('))
+    ) {
       componentWarnings.push('Expensive operations in derived state');
     }
 
@@ -92,12 +95,13 @@ function analyzeComponent(filePath) {
     }
 
     // 10. Check for critical component patterns
-    const isCritical = fileName.includes('Canvas') ||
-                      fileName.includes('Editor') ||
-                      fileName.includes('Chat') ||
-                      fileName.includes('Upload') ||
-                      fileName.includes('Auth') ||
-                      fileName.includes('Evidence');
+    const isCritical =
+      fileName.includes('Canvas') ||
+      fileName.includes('Editor') ||
+      fileName.includes('Chat') ||
+      fileName.includes('Upload') ||
+      fileName.includes('Auth') ||
+      fileName.includes('Evidence');
 
     if (isCritical && componentIssues.length > 0) {
       errors.push({
@@ -105,7 +109,7 @@ function analyzeComponent(filePath) {
         path: filePath,
         issues: componentIssues,
         warnings: componentWarnings,
-        critical: true
+        critical: true,
       });
     } else if (componentIssues.length > 0 || componentWarnings.length > 0) {
       warnings.push({
@@ -113,7 +117,7 @@ function analyzeComponent(filePath) {
         path: filePath,
         issues: componentIssues,
         warnings: componentWarnings,
-        critical: isCritical
+        critical: isCritical,
       });
     }
 
@@ -124,11 +128,11 @@ function analyzeComponent(filePath) {
       console.log(`📋 ${fileName}`);
       if (componentIssues.length > 0) {
         console.log(`    ❌ Issues: ${componentIssues.length}`);
-        componentIssues.forEach(issue => console.log(`       • ${issue}`));
+        componentIssues.forEach((issue) => console.log(`       • ${issue}`));
       }
       if (componentWarnings.length > 0) {
         console.log(`    ⚠️  Warnings: ${componentWarnings.length}`);
-        componentWarnings.forEach(warning => console.log(`       • ${warning}`));
+        componentWarnings.forEach((warning) => console.log(`       • ${warning}`));
       }
       console.log('');
     }
@@ -136,7 +140,7 @@ function analyzeComponent(filePath) {
     return {
       issues: componentIssues.length,
       warnings: componentWarnings.length,
-      critical: isCritical
+      critical: isCritical,
     };
   } catch (error) {
     console.error(`❌ Error analyzing ${filePath}:`, error.message);
@@ -184,9 +188,9 @@ function generateReport() {
 
     errors.forEach((error, index) => {
       console.log(`${index + 1}. ${error.file} ${error.critical ? '(CRITICAL)' : ''}`);
-      error.issues.forEach(issue => console.log(`   ❌ ${issue}`));
+      error.issues.forEach((issue) => console.log(`   ❌ ${issue}`));
       if (error.warnings.length > 0) {
-        error.warnings.forEach(warning => console.log(`   ⚠️  ${warning}`));
+        error.warnings.forEach((warning) => console.log(`   ⚠️  ${warning}`));
       }
       console.log('');
     });
@@ -199,9 +203,9 @@ function generateReport() {
     warnings.slice(0, 5).forEach((warning, index) => {
       console.log(`${index + 1}. ${warning.file}`);
       if (warning.issues.length > 0) {
-        warning.issues.forEach(issue => console.log(`   ❌ ${issue}`));
+        warning.issues.forEach((issue) => console.log(`   ❌ ${issue}`));
       }
-      warning.warnings.slice(0, 3).forEach(warn => console.log(`   ⚠️  ${warn}`));
+      warning.warnings.slice(0, 3).forEach((warn) => console.log(`   ⚠️  ${warn}`));
       console.log('');
     });
   }
@@ -230,16 +234,18 @@ function generateReport() {
     actionItems.push(`Fix ${errors.length} critical component errors`);
   }
 
-  const memoryLeaks = warnings.filter(w =>
-    w.issues.some(i => i.includes('Event listeners') || i.includes('Intervals'))
+  const memoryLeaks = warnings.filter((w) =>
+    w.issues.some((i) => i.includes('Event listeners') || i.includes('Intervals'))
   ).length;
 
   if (memoryLeaks > 0) {
     actionItems.push(`Fix ${memoryLeaks} potential memory leaks`);
   }
 
-  const accessibilityIssues = warnings.filter(w =>
-    w.warnings.some(w => w.includes('accessibility') || w.includes('aria-') || w.includes('label'))
+  const accessibilityIssues = warnings.filter((w) =>
+    w.warnings.some(
+      (w) => w.includes('accessibility') || w.includes('aria-') || w.includes('label')
+    )
   ).length;
 
   if (accessibilityIssues > 0) {
@@ -258,7 +264,7 @@ function generateReport() {
     issuesFound,
     criticalErrors: errors.length,
     warningsCount: warnings.length,
-    actionItems
+    actionItems,
   };
 }
 
@@ -273,24 +279,28 @@ function main() {
   console.log('2️⃣ Analyzing components...\n');
 
   // Focus on critical components first
-  const criticalComponents = svelteFiles.filter(file => {
+  const criticalComponents = svelteFiles.filter((file) => {
     const fileName = file.split(/[/\\]/).pop();
-    return fileName.includes('Canvas') ||
-           fileName.includes('Editor') ||
-           fileName.includes('Chat') ||
-           fileName.includes('Upload') ||
-           fileName.includes('Auth') ||
-           fileName.includes('Evidence');
+    return (
+      fileName.includes('Canvas') ||
+      fileName.includes('Editor') ||
+      fileName.includes('Chat') ||
+      fileName.includes('Upload') ||
+      fileName.includes('Auth') ||
+      fileName.includes('Evidence')
+    );
   });
 
   // Then analyze a sample of other components
   const otherComponents = svelteFiles
-    .filter(file => !criticalComponents.includes(file))
+    .filter((file) => !criticalComponents.includes(file))
     .slice(0, 50); // Sample for performance
 
   const allToAnalyze = [...criticalComponents, ...otherComponents];
 
-  console.log(`Analyzing ${allToAnalyze.length} components (${criticalComponents.length} critical)...\n`);
+  console.log(
+    `Analyzing ${allToAnalyze.length} components (${criticalComponents.length} critical)...\n`
+  );
 
   for (const file of allToAnalyze) {
     analyzeComponent(file);
@@ -304,8 +314,8 @@ function main() {
   const summary = {
     timestamp: new Date().toISOString(),
     ...report,
-    errors: errors.map(e => ({ file: e.file, issues: e.issues.length, critical: e.critical })),
-    topWarnings: warnings.slice(0, 10).map(w => ({ file: w.file, warnings: w.warnings.length }))
+    errors: errors.map((e) => ({ file: e.file, issues: e.issues.length, critical: e.critical })),
+    topWarnings: warnings.slice(0, 10).map((w) => ({ file: w.file, warnings: w.warnings.length })),
   };
 
   writeFileSync('component-analysis-report.json', JSON.stringify(summary, null, 2));

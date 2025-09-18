@@ -1,7 +1,8 @@
 /**
  * Gaming UI Component Types
  * Type definitions for N64, NES, and retro gaming components
- */
+ */;
+}
 
 export interface GamingComponentProps {
   variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'outline';
@@ -22,10 +23,11 @@ export interface N64RenderingOptions {
   materialType: 'basic' | 'phong' | 'pbr';
   enableShadows: boolean;
   enableReflections: boolean;
-  shadowMapSize: 256 | 512 | 1024 | 2048;
+  shadowMapSize: 256 | 512 | 1024 | 2048;,
 }
 
 export type GamingEra = 'nes' | 'snes' | 'n64' | 'ps1' | 'dreamcast' | 'modern' | '8bit' | '16bit';
+}
 
 export interface NESColorPalette {
   background: string[];
@@ -73,7 +75,7 @@ export interface N64ButtonConfig {
   shape: 'round' | 'square' | 'dpad' | 'analog';
   color: string;
   pressDepth: number;
-  springTension: number;
+  springTension: number;,
 }
 
 export interface GamepadState {
@@ -81,7 +83,7 @@ export interface GamepadState {
   id: string;
   buttons: boolean[];
   axes: number[];
-  timestamp: number;
+  timestamp: number;,
 }
 
 export interface GamingThemeState {
@@ -102,7 +104,7 @@ export interface RetroEffect {
   type: 'visual' | 'audio' | 'haptic';
   intensity: number;
   duration: number;
-  easing: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'bounce';
+  easing: 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out' | 'bounce';,
 }
 
 export interface GamingAudioConfig {
@@ -111,7 +113,7 @@ export interface GamingAudioConfig {
   soundEffectVolume: number;
   musicVolume: number;
   audioContext?: AudioContext;
-  reverbLevel: number;
+  reverbLevel: number;,
 }
 
 export interface ProgressiveGamingConfig {

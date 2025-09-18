@@ -28,6 +28,7 @@ export interface User { id: string; name?: string; firstName?: string; lastName?
 
 // --- Added Unified Types (API / AI / DB / Canvas / GPU / State Machine) ---
 export type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown';
+}
 
 export interface APIResponse<T> {
   success: boolean;

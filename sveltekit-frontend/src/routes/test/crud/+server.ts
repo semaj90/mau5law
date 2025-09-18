@@ -9,7 +9,7 @@ import { cases } from '$lib/server/db/schema-postgres';
 import { eq } from '$lib/server/db/index';
 import { URL } from "url";
 
-// DELETE request handler
+// DELETE request handler;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const caseId = url.searchParams.get('id');
@@ -23,7 +23,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     // Delete the case
     const [deletedCase] = await db
       .delete(cases)
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .returning();
 
     if (!deletedCase) {
@@ -35,7 +35,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       message: 'Case deleted successfully',
-      deletedId: deletedCase.id
+      deletedId: deletedCase.id,
     });
 
   } catch (err: any) {
@@ -49,7 +49,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   }
 };
 
-// GET request handler for health check
+// GET request handler for health check;
 export const GET: RequestHandler = async () => {
   try {
     // Simple health check
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async () => {
         connected: true,
         responseTime
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (err: any) {
@@ -73,9 +73,9 @@ export const GET: RequestHandler = async () => {
       status: 'unhealthy',
       database: {
         connected: false,
-        error: err.message
+        error: err.message,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 503 });
   }
 };

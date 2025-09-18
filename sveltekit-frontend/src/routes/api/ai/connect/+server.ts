@@ -26,15 +26,15 @@ export const POST: RequestHandler = async ({ request }) => {
     const availableModels = await healthResponse.json();
     const modelList = availableModels.models?.map((m: any) => m.name) || [];
 
-    // Verify requested model exists
+    // Verify requested model exists;
     if (model && !modelList.includes(model)) {
       throw error(404, `Model '${model}' not found. Available models: ${modelList.join(', ')}`);
     }
 
-    // Test the model with a simple request
+    // Test the model with a simple request;
     if (model) {
       const testResponse = await fetchWithTimeout(
-        'http://localhost:11434/api/generate',
+        'http://localhost:11434/api/generate',);
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -58,18 +58,18 @@ export const POST: RequestHandler = async ({ request }) => {
       model: model || modelList[0] || 'none',
       availableModels: modelList,
       status: 'connected',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (err: any) {
     console.error('AI connection error:', err);
 
-    // If this is a SvelteKit HttpError rethrow it
+    // If this is a SvelteKit HttpError rethrow it;
     if (err && typeof err === 'object' && 'status' in err) {
       throw err;
     }
 
-    // Node/Fetch abort results in an AbortError
+    // Node/Fetch abort results in an AbortError;
     if (err && (err.name === 'AbortError' || err.name === 'TimeoutError')) {
       throw error(504, 'Connection timeout. Please check if Ollama is running.');
     }

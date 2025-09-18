@@ -27,6 +27,7 @@ export type Jurisdiction =
   | 'UK'
   | 'CA'
   | 'AU';
+}
 
 export interface EnhancedSearchOptions {
   query?: string;
@@ -35,7 +36,7 @@ export interface EnhancedSearchOptions {
   documentTypes?: string[];
   dateRange?: {
     from: Date;
-    to: Date;
+    to: Date;,
   };
   maxResults?: number;
   limit?: number;
@@ -71,7 +72,7 @@ export interface EnhancedSearchResult {
   };
   highlights?: {
     field: string;
-    matches: string[];
+    matches: string[];,
   }[];
   confidence: number;
   relevanceScore: number;
@@ -89,7 +90,7 @@ export interface AIAnalysisResult {
   citations: string[];
   recommendations: string[];
   confidence: number;
-  processingTime: number;
+  processingTime: number;,
 }
 
 export interface VectorSearchOptions {
@@ -108,7 +109,7 @@ export interface VectorSearchResult {
   metadata: Record<string, any>;
 }
 
-// Enhanced AI Processing Types
+// Enhanced AI Processing Types;
 export interface EnhancedProcessingOptions {
   useGoMicroservice?: boolean;
   enableCaching?: boolean;
@@ -128,7 +129,7 @@ export interface ProcessingResult {
   source?: "go-microservice" | "local-ai" | "cache";
 }
 
-// AI Model Configuration
+// AI Model Configuration;
 export interface AIModelConfig {
   modelName: string;
   temperature?: number;
@@ -140,7 +141,7 @@ export interface AIModelConfig {
   systemPrompt?: string;
 }
 
-// Legal-specific AI types
+// Legal-specific AI types;
 export interface LegalDocumentAnalysis {
   documentType: string;
   practiceArea: PracticeArea;
@@ -150,13 +151,13 @@ export interface LegalDocumentAnalysis {
     organizations: string[];
     locations: string[];
     dates: string[];
-    amounts: string[];
+    amounts: string[];,
   };
   legalConcepts: string[];
   citations: string[];
   riskFactors: string[];
   recommendations: string[];
-  confidenceScore: number;
+  confidenceScore: number;,
 }
 
 export interface CaseAnalysis {
@@ -168,5 +169,5 @@ export interface CaseAnalysis {
   outcome: string;
   significance: number;
   practiceArea: PracticeArea;
-  jurisdiction: Jurisdiction;
+  jurisdiction: Jurisdiction;,
 }

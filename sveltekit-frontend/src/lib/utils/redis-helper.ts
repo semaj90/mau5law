@@ -9,11 +9,11 @@ let redisClient: Redis | null = null;
 /**
  * Creates a Redis connection with optimized configuration for Legal AI Platform
  * Uses centralized config from redis-config.ts
- */
+ */;
 export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
   const config = getRedisConfig();
 
-  // Merge with custom options if provided
+  // Merge with custom options if provided;
   const finalConfig: RedisOptions = {
     ...config,
     ...options,
@@ -21,7 +21,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
 
   const client = new Redis(finalConfig);
 
-  // Enhanced error handling and logging
+  // Enhanced error handling and logging;
   client.on('connect', () => {
     console.log('✅ Redis connected successfully', {
       host: finalConfig.host,
@@ -33,7 +33,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
   client.on('error', (error) => {
     console.error('❌ Redis connection error:', error.message);
 
-    // Provide helpful error messages
+    // Provide helpful error messages;
     if (error.message.includes('ECONNREFUSED')) {
       console.error('💡 Tip: Start Redis server with: npm run redis:start');
       console.error('💡 Config file: redis.conf should be in the frontend directory');
@@ -48,7 +48,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
 
   client.on('reconnecting', (delay) => {
     console.log(`🔄 Redis reconnecting in ${delay}ms...`);
-  });
+  ,});
 
   client.on('close', () => {
     console.log('🔌 Redis connection closed');
@@ -60,7 +60,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
 /**
  * Get or create a singleton Redis client
  * Use this for general purpose Redis operations
- */
+ */;
 export function getRedisClient(): Redis {
   if (!redisClient) {
     redisClient = createRedisConnection();
@@ -71,7 +71,7 @@ export function getRedisClient(): Redis {
 /**
  * Health check for Redis connection
  * Returns true if Redis is healthy, false otherwise
- */
+ */;
 export async function checkRedisHealth(): Promise<boolean> {
   try {
     const client = getRedisClient();
@@ -101,7 +101,7 @@ export async function checkRedisHealth(): Promise<boolean> {
 
 /**
  * Get Redis connection info and stats
- */
+ */;
 export async function getRedisInfo(): Promise<any> {
   try {
     const client = getRedisClient();
@@ -129,7 +129,7 @@ export async function getRedisInfo(): Promise<any> {
 
 /**
  * Parse Redis INFO response into key-value pairs
- */
+ */;
 function parseRedisInfo(infoString: string): Record<string, string> {
   const info: Record<string, string> = {};
 
@@ -148,7 +148,7 @@ function parseRedisInfo(infoString: string): Record<string, string> {
 /**
  * Gracefully close Redis connection
  * Call this during application shutdown
- */
+ */;
 export async function closeRedisConnection(): Promise<void> {
   if (redisClient) {
     try {
@@ -166,7 +166,7 @@ export async function closeRedisConnection(): Promise<void> {
 /**
  * Setup function to validate Redis configuration
  * Call this during application startup
- */
+ */;
 export async function setupRedisFromConfig(): Promise<boolean> {
   try {
     console.log('🔧 Setting up Redis connection...');

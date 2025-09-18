@@ -22,9 +22,9 @@ export async function findSimilarForAudit(
   const similar = await qdrantService.searchSimilar(vector, limit);
   // Log results to console (replace with file/db logging as needed)
   console.log("[Qdrant Audit] Similar documents:", similar);
-  // TODO: Write to phase10-todo.log or DB
+  // TODO: Write to phase10-todo.log or DB;
   if (triggerAgent && similar.length > 0) {
-    // Example: trigger agent action for each similar doc (stub)
+    // Example: trigger agent action for each similar doc (stub);
     for (const doc of similar) {
       // TODO: Replace with real agent trigger (CrewAI/Autogen, Context7)
       console.log(`[Agent Trigger] Would trigger agent for doc: ${doc.id}`);
@@ -34,7 +34,8 @@ export async function findSimilarForAudit(
 }
 
 // TODO: After initial test, connect this to /api/audit/semantic and agent integration for live pipeline validation
-// Qdrant Service for Legal Document Vector Operations
+// Qdrant Service for Legal Document Vector Operations;
+}
 
 export interface LegalDocumentMetadata {
   documentId: string;
@@ -49,7 +50,7 @@ export interface LegalDocumentMetadata {
     practiceArea: string;
     jurisdiction: string;
     confidentialityLevel: string;
-    tags: string[];
+    tags: string[];,
   };
   extractedData?: {
     parties?: string[];
@@ -93,7 +94,7 @@ export class QdrantService {
     try {
       await this.client.getCollection(this.collectionName);
     } catch (error: any) {
-      // Collection doesn't exist, create it
+      // Collection doesn't exist, create it;
       await this.client.createCollection(this.collectionName, {
         vectors: {
           size: this.vectorSize,
@@ -132,7 +133,7 @@ export class QdrantService {
       id: (result as { id?: any; score?: any; payload?: any }).id as string,
       score: (result as { id?: any; score?: any; payload?: any }).score,
       payload: (result as { id?: any; score?: any; payload?: any }).payload as LegalDocumentMetadata,
-    }));
+    });
   }
 
   async deletePoints(ids: string[]): Promise<void> {
@@ -151,7 +152,7 @@ export class QdrantService {
   }
 }
 
-// Export singleton instance
+// Export singleton instance;
 export const qdrantService = new QdrantService({
   url: import.meta.env.QDRANT_URL || "http://localhost:6333",
   collectionName: "legal_documents",

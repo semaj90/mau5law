@@ -5,6 +5,7 @@
 
 import { Redis } from 'ioredis';
 import { env } from '$env/dynamic/private';
+}
 
 export interface RedisConfig {
   host: string;
@@ -13,13 +14,13 @@ export interface RedisConfig {
   db: number;
   retryDelayOnFailover: number;
   maxRetriesPerRequest: number;
-  lazyConnect: boolean;
+  lazyConnect: boolean;,
 }
 
 // Use REDIS_URL if provided, otherwise fallback to individual config
 const redisUrl = env.REDIS_URL || 'redis://:redis@localhost:6379';
 
-// Default Redis configuration
+// Default Redis configuration;
 const defaultConfig: RedisConfig = {
   host: env.REDIS_HOST || 'localhost',
   port: parseInt(env.REDIS_PORT || '6379'),
@@ -27,7 +28,7 @@ const defaultConfig: RedisConfig = {
   db: 0,
   retryDelayOnFailover: 100,
   maxRetriesPerRequest: 3,
-  lazyConnect: true
+  lazyConnect: true,
 };
 
 let redis: Redis | null = null;
@@ -35,14 +36,14 @@ let isConnected = false;
 
 /**
  * Get Redis client instance
- */
+ */;
 export async function getRedisClient(): Promise<Redis | null> {
   if (redis && isConnected) {
     return redis;
   }
 
   try {
-    // Use Redis URL if available, otherwise use config object
+    // Use Redis URL if available, otherwise use config object;
     if (redisUrl.includes('redis://')) {
       redis = new Redis(redisUrl, {
         retryAttempts: 3,
@@ -92,14 +93,14 @@ export async function getRedisClient(): Promise<Redis | null> {
 
 /**
  * Check Redis connection status
- */
+ */;
 export function isRedisConnected(): boolean {
   return isConnected && redis !== null;
 }
 
 /**
  * Close Redis connection
- */
+ */;
 export async function closeRedisConnection(): Promise<void> {
   if (redis) {
     await redis.quit();
@@ -111,14 +112,14 @@ export async function closeRedisConnection(): Promise<void> {
 
 /**
  * Create Redis client for specific use case
- */
+ */;
 export function createRedisClient(customConfig: Partial<RedisConfig> = {}): Redis {
   const config = { ...defaultConfig, ...customConfig };
   
   const client = new Redis({
     ...config,
     retryAttempts: 3,
-    retryDelayOnConnect: 1000
+    retryDelayOnConnect: 1000,
   });
 
   client.on('error', (error) => {
@@ -130,7 +131,7 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): Redi
 
 /**
  * Redis health check
- */
+ */;
 export async function checkRedisHealth(): Promise<any> {
   try {
     const start = Date.now();
@@ -151,7 +152,7 @@ export async function checkRedisHealth(): Promise<any> {
   } catch (error) {
     return { 
       status: 'error', 
-      error: error instanceof Error ? error.message: String(error)
+      error: error instanceof Error ? error.message: String(error),
     };
   }
 }

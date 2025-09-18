@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async ({ locals }) => {
   // Dev-only endpoint to inspect SSR locals (user/session). Safe to leave in repo
-  // since it returns 403 outside development.
+  // since it returns 403 outside development.;
   if (process.env.NODE_ENV !== 'development') {
     return new Response('Not allowed', { status: 403 });
   }

@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js';
 databaseOrchestrator // alias exported in orchestrator stub
 import { db } from "$lib/server/db/drizzle";
 import { cases, evidence, legalDocuments, personsOfInterest } from "drizzle-orm";
-// GET /api/database-orchestrator - Get orchestrator status
+// GET /api/database-orchestrator - Get orchestrator status;
 export const GET: RequestHandler = async () => {
   try {
     const status = databaseOrchestrator.getStatus();
@@ -25,7 +25,7 @@ export const GET: RequestHandler = async () => {
       },
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error.message,
@@ -36,7 +36,7 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// POST /api/database-orchestrator - Control orchestrator operations
+// POST /api/database-orchestrator - Control orchestrator operations;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action, data } = await request.json();
@@ -91,17 +91,16 @@ export const POST: RequestHandler = async ({ request }) => {
           table: data.table,
         });
 
-      default:
-        return json(
-          {
+      default:;
+        return json({
             success: false,
             error: `Unknown action: ${action}`,
-          },
+          },)
           { status: 400 }
         );
     }
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error.message,

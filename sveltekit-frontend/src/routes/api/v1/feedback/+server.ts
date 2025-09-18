@@ -26,17 +26,17 @@ export const POST: RequestHandler = async ({ request, url }) => {
           metadata
         } = data;
 
-        // Validate required fields
+        // Validate required fields;
         if (!userId || !sessionId || !interactionId || !ratingType || score === undefined) {
           return json({ 
             error: 'Missing required fields: userId, sessionId, interactionId, ratingType, score' 
           }, { status: 400 });
         }
 
-        // Validate score range
+        // Validate score range;
         if (score < 1 || score > 5) {
           return json({ 
-            error: 'Score must be between 1 and 5' 
+            error: 'Score must be between 1 and 5' ,
           }, { status: 400 });
         }
 
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({ 
           success: true, 
           ratingId,
-          message: 'Rating collected successfully' 
+          message: 'Rating collected successfully' ,
         });
       }
 
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         
         if (!Array.isArray(ratings)) {
           return json({ 
-            error: 'Ratings must be an array' 
+            error: 'Ratings must be an array' ,
           }, { status: 400 });
         }
 
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             results.push({ 
               success: false, 
               error: error instanceof Error ? error.message: 'Unknown error',
-              rating: rating.interactionId 
+              rating: rating.interactionId ,
             });
           }
         }
@@ -86,11 +86,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
           results,
           processed: results.length,
           successful: results.filter(item => item.length),
-          failed: results.filter(item => item.length)
+          failed: results.filter(item => item.length),
         });
       }
 
-      default:
+      default:;
         return json({ 
           error: 'Invalid action. Supported actions: rate, batch_rate' 
         }, { status: 400 });
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error: any) {
     console.error('❌ Feedback API Error:', error);
     return json({ 
-      error: error instanceof Error ? error.message: 'Internal server error' 
+      error: error instanceof Error ? error.message: 'Internal server error' ,
     }, { status: 500 });
   }
 };
@@ -112,14 +112,14 @@ export const GET: RequestHandler = async ({ url }) => {
       case 'recommendations': {
         if (!userId) {
           return json({ 
-            error: 'userId parameter is required for recommendations' 
+            error: 'userId parameter is required for recommendations' ,
           }, { status: 400 });
         }
 
         const recommendations = await feedbackLoopService.getUserRecommendations(userId);
         return json({ 
           success: true, 
-          data: recommendations 
+          data: recommendations ,
         });
       }
 
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const metrics = await feedbackLoopService.getFeedbackMetrics();
         return json({ 
           success: true, 
-          data: metrics 
+          data: metrics ,
         });
       }
 
@@ -148,7 +148,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
 
-      default:
+      default:;
         return json({ 
           error: 'Invalid action. Supported actions: recommendations, metrics, health' 
         }, { status: 400 });
@@ -156,7 +156,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('❌ Feedback API Error:', error);
     return json({ 
-      error: error instanceof Error ? error.message: 'Internal server error' 
+      error: error instanceof Error ? error.message: 'Internal server error' ,
     }, { status: 500 });
   }
 };

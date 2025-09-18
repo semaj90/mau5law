@@ -184,7 +184,8 @@ interface EvidenceAnalysis {
 
 ## 🎉 **STRATEGIC VISION: INDUSTRY-LEADING EVIDENCE INTEGRITY**
 
-Your hash verification system is positioned to become the **gold standard** for legal evidence management:
+Your hash verification system is positioned to become the **gold standard** for legal evidence
+management:
 
 ### **Competitive Advantages**
 

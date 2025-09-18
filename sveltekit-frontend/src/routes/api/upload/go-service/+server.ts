@@ -9,7 +9,7 @@ const GO_UPLOAD_TIMEOUT = 30000; // 30 seconds
 /*
  * Proxy to Go Upload Service
  * Routes file uploads to the Go microservice for processing
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     console.log('📤 Proxying upload request to Go service...');
@@ -32,10 +32,10 @@ export const POST: RequestHandler = async ({ request }) => {
     const title = formData.get('title');
     const evidenceType = formData.get('evidenceType');
 
-    if (caseId) goFormData.append('case_id', caseId.toString());
-    if (evidenceId) goFormData.append('user_id', evidenceId.toString()); // Map evidenceId to user_id for now
-    if (title) goFormData.append('title', title.toString());
-    if (evidenceType) goFormData.append('evidence_type', evidenceType.toString());
+    if (caseId) goFormData.append('case_id', caseId.toString();
+    if (evidenceId) goFormData.append('user_id', evidenceId.toString(); // Map evidenceId to user_id for now
+    if (title) goFormData.append('title', title.toString();
+    if (evidenceType) goFormData.append('evidence_type', evidenceType.toString();
 
     console.log('📋 Sending to Go service:', {
       fileName: file.name,
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
       evidenceId: evidenceId?.toString(),
     });
 
-    // Forward to Go service
+    // Forward to Go service;
     const response = await fetch(`${GO_UPLOAD_SERVICE_URL}/upload`, {
       method: 'POST',
       body: goFormData,
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 /*
  * Health check endpoint for Go service
- */
+ */;
 export const GET: RequestHandler = async () => {
   try {
     const response = await fetch(`${GO_UPLOAD_SERVICE_URL}/health`, {
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async () => {
     const isHealthy = response.ok;
     const status = isHealthy ? 200 : 503;
 
-    return json(
+    return json();
       {
         service: 'go-upload-service',
         url: GO_UPLOAD_SERVICE_URL,
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async () => {
     const err: any = healthError;
     console.error('❌ Go upload service health check failed:', err);
 
-    return json(
+    return json();
       {
         service: 'go-upload-service',
         url: GO_UPLOAD_SERVICE_URL,

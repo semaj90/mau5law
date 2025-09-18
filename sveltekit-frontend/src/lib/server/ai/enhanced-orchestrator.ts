@@ -71,14 +71,14 @@ export const synthesisCache = pgTable('synthesis_cache', {
 
 // ===== DYNAMIC PORT CONFIGURATION =====
 
-// Initialize dynamic port allocation for all services
+// Initialize dynamic port allocation for all services;
 async function initializeDynamicPorts() {
   const allocatedPorts = await portManager.initializeAllServices();
-  logger.info('🔌 Dynamic ports allocated:', Array.from(allocatedPorts.entries()));
+  logger.info('🔌 Dynamic ports allocated:', Array.from(allocatedPorts.entries());
   return allocatedPorts;
 }
 
-// Helper function to get service port with fallback
+// Helper function to get service port with fallback;
 function getServicePortWithFallback(serviceName: string, fallbackPort: number): number {
   const dynamicPort = getServicePort(serviceName);
   return dynamicPort || fallbackPort;
@@ -87,14 +87,14 @@ function getServicePortWithFallback(serviceName: string, fallbackPort: number): 
 // ===== SERVICE CONFIGURATION =====
 
 const services = {
-  // Core AI Services
+  // Core AI Services;
   neo4j: {
     uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
     user: process.env.NEO4J_USER || 'neo4j',
     password: process.env.NEO4J_PASSWORD || 'password',
   },
 
-  // Go Microservices with dynamic ports
+  // Go Microservices with dynamic ports;
   goMicroservice: {
     enhancedRAG: `http://localhost:${getServicePortWithFallback('enhanced-rag', 8094)}`,
     gpuOrchestrator: `http://localhost:${getServicePortWithFallback('gpu-orchestrator', 8095)}`,
@@ -103,7 +103,7 @@ const services = {
     quicServer: `quic://localhost:${getServicePortWithFallback('quic-gateway', 8443)}`,
   },
 
-  // Ollama Configuration with dynamic port
+  // Ollama Configuration with dynamic port;
   ollama: {
     baseUrl: `http://localhost:${getServicePortWithFallback('ollama', 11434)}`,
     models: {
@@ -117,7 +117,7 @@ const services = {
   context7MultiCore: 'http://localhost:4100',
   aiSynthesisMCP: 'http://localhost:8200',
 
-  // Database with dynamic port
+  // Database with dynamic port;
   postgres: {
     host: process.env.POSTGRES_HOST || 'localhost',
     port: parseInt(
@@ -128,7 +128,7 @@ const services = {
     password: process.env.POSTGRES_PASSWORD || '123456',
   },
 
-  // Redis Configuration with dynamic port
+  // Redis Configuration with dynamic port;
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
     port: parseInt(process.env.REDIS_PORT || getServicePortWithFallback('redis', 6379).toString()),
@@ -220,10 +220,10 @@ function calculateSimilarity(doc1: any, doc2: any): number {
   const text1 = (doc1.pageContent || doc1.content || '').toLowerCase();
   const text2 = (doc2.pageContent || doc2.content || '').toLowerCase();
 
-  const words1 = new Set(text1.split(/\s+/));
-  const words2 = new Set(text2.split(/\s+/));
+  const words1 = new Set(text1.split(/\s+/);
+  const words2 = new Set(text2.split(/\s+/);
 
-  const intersection = new Set(Array.from(words1).filter((x) => words2.has(x)));
+  const intersection = new Set(Array.from(words1).filter((x) => words2.has(x));
   const union = new Set([...Array.from(words1), ...Array.from(words2)]);
 
   return intersection.size / union.size;
@@ -236,7 +236,7 @@ QUERY: ${input.query}
 
 `;
 
-  // Add LegalBERT analysis
+  // Add LegalBERT analysis;
   if (input.legalBertAnalysis) {
     prompt += `LEGAL ANALYSIS:
 - Identified Entities: ${input.legalBertAnalysis.entities.map((e: any) => e.text).join(', ')}
@@ -247,7 +247,7 @@ QUERY: ${input.query}
 `;
   }
 
-  // Add relevant sources
+  // Add relevant sources;
   if (input.rankedResults?.length > 0) {
     prompt += `RELEVANT LEGAL SOURCES:
 `;
@@ -261,10 +261,10 @@ ${i + 1}. ${title} (Relevance: ${(relevance * 100).toFixed(1)}%)
 ${content.substring(0, 500)}...
 
 `;
-    });
+    ,});
   }
 
-  // Add Context7 documentation if available
+  // Add Context7 documentation if available;
   if (input.context7Docs) {
     prompt += `
 TECHNICAL DOCUMENTATION:
@@ -273,7 +273,7 @@ ${JSON.stringify(input.context7Docs, null, 2).substring(0, 1000)}...
 `;
   }
 
-  // Add Go-Llama response if available
+  // Add Go-Llama response if available;
   if (input.goLlamaResponse) {
     prompt += `
 ADDITIONAL ANALYSIS:
@@ -356,12 +356,12 @@ const orchestrationMachine = createMachine({
         checkingCache: {
           invoke: {
             src: 'checkCache',
-            onDone: [
+            onDone: [;
               {
                 target: 'complete',
                 guard: 'cacheHit',
                 actions: 'useCachedResult',
-              },
+              },);
               {
                 target: 'analyzingQuery',
               },
@@ -516,7 +516,7 @@ export class EnhancedAISynthesisOrchestrator {
       await initializeDynamicPorts();
       logger.info('[Orchestrator] Dynamic ports initialized successfully');
 
-      // Initialize Ollama with gemma3-legal:latest
+      // Initialize Ollama with gemma3-legal:latest;
       this.ollama = new ChatOllama({
         baseUrl: services.ollama.baseUrl,
         model: services.ollama.models.legal,
@@ -527,7 +527,7 @@ export class EnhancedAISynthesisOrchestrator {
         format: 'json',
       });
 
-      // Initialize nomic-embed-text embeddings
+      // Initialize nomic-embed-text embeddings;
       this.embeddings = new OllamaEmbeddings({
         baseUrl: services.ollama.baseUrl,
         model: services.ollama.models.embedding,
@@ -559,7 +559,7 @@ export class EnhancedAISynthesisOrchestrator {
 
   private async initializeNeo4j() {
     try {
-      // Initialize Neo4j store with fallback
+      // Initialize Neo4j store with fallback;
       try {
         this.neo4jStore = new (Neo4jVectorStore as any)(this.embeddings, {
           url: services.neo4j.uri,
@@ -589,7 +589,7 @@ export class EnhancedAISynthesisOrchestrator {
         max: 20,
       };
 
-      // Initialize PGVector store with fallback
+      // Initialize PGVector store with fallback;
       try {
         this.pgVectorStore = new (PGVectorStore as any)(this.embeddings, {
           postgresConnectionOptions: pgConfig,
@@ -647,22 +647,22 @@ export class EnhancedAISynthesisOrchestrator {
           const dbCache = await db
             .select()
             .from(synthesisCache)
-            .where(eq(synthesisCache.queryHash, cacheKey))
+            .where(eq(synthesisCache.queryHash, cacheKey)
             .limit(1);
 
           if (dbCache.length > 0) {
             logger.info('[Cache] Database hit');
             // Update hit count and last accessed
             await db
-              .update(synthesisCache)
+              .update(synthesisCache);
               .set({
                 hitCount: sql`${synthesisCache.hitCount} + 1`,
                 lastAccessed: new Date(),
               })
-              .where(eq(synthesisCache.id, dbCache[0].id));
+              .where(eq(synthesisCache.id, dbCache[0].id);
 
             // Store in Redis for next time
-            await (redis as any).setex(cacheKey, 3600, JSON.stringify(dbCache[0].result));
+            await (redis as any).setex(cacheKey, 3600, JSON.stringify(dbCache[0].result);
 
             return { hit: true, data: dbCache[0].result };
           }
@@ -706,7 +706,7 @@ export class EnhancedAISynthesisOrchestrator {
           return results.map((doc, index) => ({
             ...doc,
             score: 1.0 - index * 0.1,
-          }));
+          });
         }),
 
         runEnhancedRAGPipeline: fromPromise(async ({ input }: { input: any }) => {
@@ -798,7 +798,7 @@ export class EnhancedAISynthesisOrchestrator {
 
         enhanceWithContext7: fromPromise(async ({ input }: { input: any }) => {
           try {
-            // Query Context7 MCP for relevant documentation
+            // Query Context7 MCP for relevant documentation;
             const response = await fetch(`${services.context7}/api/query`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -827,7 +827,7 @@ export class EnhancedAISynthesisOrchestrator {
           try {
             // Try GPU Orchestrator first for acceleration
             const gpuResponse = await fetch(
-              `${services.goMicroservice.gpuOrchestrator}/api/generate`,
+              `${services.goMicroservice.gpuOrchestrator}/api/generate`,);
               {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -851,7 +851,7 @@ export class EnhancedAISynthesisOrchestrator {
             logger.warn('[GPU Orchestrator] Falling back to Ollama');
           }
 
-          // Fallback to direct Ollama API call
+          // Fallback to direct Ollama API call;
           const ollamaResponse = await fetch(`${services.ollama.baseUrl}/api/generate`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -872,7 +872,7 @@ export class EnhancedAISynthesisOrchestrator {
         }),
 
         performFinalSynthesis: fromPromise(async ({ input }: { input: any }) => {
-          // Use the main AI synthesizer
+          // Use the main AI synthesizer;
           const result = await aiAssistantSynthesizer.synthesizeInput({
             query: input.query,
             context: {
@@ -890,7 +890,7 @@ export class EnhancedAISynthesisOrchestrator {
             },
           });
 
-          // Track in monitoring service
+          // Track in monitoring service;
           // monitoringService.recordSynthesis({
           //   requestId: (result as { response?: any; pageContent?: any; content?: any; text?: any; metadata?: any; confidence_score?: any }).metadata?.requestId,
           //   processingTime: Date.now() - (input.performance?.startTime || Date.now()),
@@ -905,9 +905,9 @@ export class EnhancedAISynthesisOrchestrator {
           const result = input.finalSynthesis;
 
           // Store in Redis
-          await (redis as any).setex(cacheKey, 3600, JSON.stringify(result));
+          await (redis as any).setex(cacheKey, 3600, JSON.stringify(result);
 
-          // Store in PostgreSQL
+          // Store in PostgreSQL;
           await db.insert(synthesisCache).values({
             queryHash: cacheKey,
             result: result,
@@ -1018,7 +1018,7 @@ export class EnhancedAISynthesisOrchestrator {
 
     // XState v5 uses createActor instead of interpret
     this.service = createActor(this.machine);
-    // @ts-ignore snapshot typing not critical for logging
+    // @ts-ignore snapshot typing not critical for logging;
     this.service.subscribe((snapshot: any) => {
       try {
         logger.debug(`[State] ${JSON.stringify(snapshot.value || snapshot.status)}`);
@@ -1051,7 +1051,7 @@ export class EnhancedAISynthesisOrchestrator {
         models.some(
           (m: any) =>
             m?.name === 'gemma3-legal:latest' ||
-            (m?.name?.includes('gemma') && m?.name?.includes('legal'))
+            (m?.name?.includes('gemma') && m?.name?.includes('legal')
         );
 
       if (!hasGemma3Legal) {
@@ -1227,10 +1227,10 @@ TEMPLATE """{{ if .System }}<|system|>
     const text1 = (doc1.pageContent || doc1.content || '').toLowerCase();
     const text2 = (doc2.pageContent || doc2.content || '').toLowerCase();
 
-    const words1 = new Set(text1.split(/\s+/));
-    const words2 = new Set(text2.split(/\s+/));
+    const words1 = new Set(text1.split(/\s+/);
+    const words2 = new Set(text2.split(/\s+/);
 
-    const intersection = new Set(Array.from(words1).filter((x) => words2.has(x)));
+    const intersection = new Set(Array.from(words1).filter((x) => words2.has(x));
     const union = new Set([...Array.from(words1), ...Array.from(words2)]);
 
     return intersection.size / union.size;
@@ -1249,7 +1249,7 @@ TEMPLATE """{{ if .System }}<|system|>
       const service = createActor(this.machine, {
         input: {
           query,
-          ...(options || {}),
+          ...(options || {,}),
           performance: {
             startTime: Date.now(),
             endTime: null,
@@ -1265,7 +1265,7 @@ TEMPLATE """{{ if .System }}<|system|>
             const startTime = (snapshot.context as any)?.performance?.startTime || Date.now();
 
             // Record in autosolve_results table
-            db.insert(autoSolveResults)
+            db.insert(autoSolveResults);
               .values({
                 query,
                 solution: result,
@@ -1280,7 +1280,7 @@ TEMPLATE """{{ if .System }}<|system|>
 
             resolve(result);
           } else if (snapshot.status === 'error') {
-            reject(new Error('Processing failed'));
+            reject(new Error('Processing failed');
           }
         },
         error: reject,
@@ -1293,7 +1293,7 @@ TEMPLATE """{{ if .System }}<|system|>
 
   async processWithStreaming(
     query: string,
-    options?: Record<string, any>
+    options?: Record<string, any>;
   ): Promise<AsyncGenerator<any> {
     const self = this;
 
@@ -1304,7 +1304,7 @@ TEMPLATE """{{ if .System }}<|system|>
       const service = createActor(self.machine, {
         input: {
           query,
-          ...(options || {}),
+          ...(options || {,}),
           streaming: true,
         },
       });
@@ -1330,7 +1330,7 @@ TEMPLATE """{{ if .System }}<|system|>
         if (events.length > 0) {
           yield events.shift();
         }
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100);
       }
     }
 
@@ -1358,7 +1358,7 @@ TEMPLATE """{{ if .System }}<|system|>
     return (stages as any)[stateString as any] || 0;
   }
 
-  // Health check
+  // Health check;
   async health(): Promise<any> {
     return {
       status: this.initialized ? 'healthy' : 'initializing',

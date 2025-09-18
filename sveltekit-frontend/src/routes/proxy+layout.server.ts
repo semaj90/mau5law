@@ -40,7 +40,7 @@ type LayoutData = {
     errors: { message: string }[];
     startTime: number;
     initTime: number;
-    bitsUICompatible: boolean;
+    bitsUICompatible: boolean;,
   } | null;
   _cacheHit?: boolean;
   _mocked?: boolean;
@@ -64,10 +64,9 @@ export const load: LayoutServerLoad = async (event): Promise<LayoutData> => {
     };
   }
 
-  // 2. Cache miss — use SSR-optimized loading
-  const data = await loadWithSSR<import('$lib/server/api-ssr-helpers').BitsUICompatibleData>(
-    async () => {
-      // Return SSR-optimized startup status for Bits UI (development mode)
+  // 2. Cache miss — use SSR-optimized loading;
+  const data = await loadWithSSR<import('$lib/server/api-ssr-helpers').BitsUICompatibleData>(async () => {
+      // Return SSR-optimized startup status for Bits UI (development mode);
       const startupStatus = {
         initialized: true,
         services: {
@@ -96,7 +95,7 @@ export const load: LayoutServerLoad = async (event): Promise<LayoutData> => {
       };
       return result as unknown as import('$lib/server/api-ssr-helpers').BitsUICompatibleData;
     },
-    // Fallback data for SSR errors
+    // Fallback data for SSR errors;
     {
       startupStatus: null,
       error: 'Failed to initialize startup services',

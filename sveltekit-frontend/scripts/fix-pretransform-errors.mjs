@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 // Files with pre-transform errors that need immediate fixing
 const criticalFiles = [
   'src/routes/admin/cluster/+page.svelte',
-  'src/routes/admin/gpu-demo/+page.svelte', 
+  'src/routes/admin/gpu-demo/+page.svelte',
   'src/routes/ai-assistant/+page.svelte',
   'src/routes/auth/+page.svelte',
   'src/routes/cache-demo/+page.svelte',
@@ -36,7 +36,7 @@ const criticalFiles = [
   'src/routes/demo/progressive-gaming-ui/+page.svelte',
   'src/routes/demo/recommendation-system/+page.svelte',
   'src/routes/demo/retro-gpu-metrics/+page.svelte',
-  'src/routes/demo/semantic-search/+page.svelte'
+  'src/routes/demo/semantic-search/+page.svelte',
 ];
 
 function fixFile(filePath) {
@@ -50,7 +50,7 @@ function fixFile(filePath) {
     const originalContent = content;
     let changes = 0;
 
-    // Fix $ prefix imports/variables  
+    // Fix $ prefix imports/variables
     content = content.replace(/import\s+\{\s*\$[^}]+\}/g, '// Invalid $ imports removed');
     if (content !== originalContent) changes++;
 
@@ -74,7 +74,10 @@ function fixFile(filePath) {
     const scriptMatches = content.match(/<script[^>]*>/g);
     const scriptCloses = content.match(/<\/script>/g);
     if (scriptMatches && (!scriptCloses || scriptMatches.length > scriptCloses.length)) {
-      content = content.replace(/<script([^>]*)>(?![\s\S]*<\/script>)/g, '<script$1>\n// Script content\n</script>');
+      content = content.replace(
+        /<script([^>]*)>(?![\s\S]*<\/script>)/g,
+        '<script$1>\n// Script content\n</script>'
+      );
       changes++;
     }
 
@@ -87,12 +90,17 @@ function fixFile(filePath) {
     if (content !== originalContent) changes++;
 
     // Fix invalid closing tags
-    content = content.replace(/<\/([^>]+)>\s*attempted to close/g, '<!-- Invalid close tag $1 removed -->');
+    content = content.replace(
+      /<\/([^>]+)>\s*attempted to close/g,
+      '<!-- Invalid close tag $1 removed -->'
+    );
     if (content !== originalContent) changes++;
 
     // Fix identifier already declared
     content = content.replace(/import\s+(\w+)[\s\S]*?import\s+\1\s+/g, (match, identifier) => {
-      return match.replace(new RegExp(`import\\s+${identifier}\\s+`, 'g'), `import ${identifier} `).slice(0, -(`import ${identifier} `.length));
+      return match
+        .replace(new RegExp(`import\\s+${identifier}\\s+`, 'g'), `import ${identifier} `)
+        .slice(0, -`import ${identifier} `.length);
     });
     if (content !== originalContent) changes++;
 

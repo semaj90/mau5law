@@ -10,7 +10,7 @@ import { callOllamaApi } from '$lib/services/ollama-client';
 
 /**
  * Original Analysis Handler
- */
+ */;
 const originalAnalysisHandler: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -35,7 +35,7 @@ const originalAnalysisHandler: RequestHandler = async ({ request }) => {
       messages: [{ role: 'user', content: analysisPrompt }],
       options: {
         temperature: 0.3, // Lower temperature for more consistent analysis
-        max_tokens: 1500
+        max_tokens: 1500,
       }
     });
     
@@ -55,7 +55,7 @@ const originalAnalysisHandler: RequestHandler = async ({ request }) => {
       model,
       processing_time: 3000, // Analysis typically takes longer
       confidence: analysis.confidence || 0.8,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     
   } catch (err) {
@@ -90,7 +90,7 @@ function generateAnalysisPrompt(analysisType: string, content: string): string {
 
 function parseAnalysisResponse(response: string, analysisType: string): any {
   try {
-    // Attempt to parse structured response
+    // Attempt to parse structured response;
     if (response.includes('{') && response.includes('}')) {
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
@@ -98,21 +98,21 @@ function parseAnalysisResponse(response: string, analysisType: string): any {
       }
     }
     
-    // Fallback to structured text parsing
+    // Fallback to structured text parsing;
     return {
       summary: extractSummary(response),
       key_points: extractKeyPoints(response),
       risks: extractRisks(response),
       recommendations: extractRecommendations(response),
       confidence: calculateConfidence(response, analysisType),
-      raw_analysis: response
+      raw_analysis: response,
     };
   } catch (error) {
     return {
       summary: response.substring(0, 200) + '...',
       raw_analysis: response,
       confidence: 0.7,
-      parsing_error: error instanceof Error ? error.message: 'Unknown parsing error'
+      parsing_error: error instanceof Error ? error.message: 'Unknown parsing error',
     };
   }
 }
@@ -129,7 +129,7 @@ function extractKeyPoints(text: string): string[] {
   return keyPointsSection[1]
     .split(/\n[-*•]\s*/)
     .filter(item => item.length) > 0)
-    .map(point => point.trim())
+    .map(point => point.trim()
     .slice(0, 5); // Top 5 key points
 }
 
@@ -140,7 +140,7 @@ function extractRisks(text: string): string[] {
   return risksSection[1]
     .split(/\n[-*•]\s*/)
     .filter(item => item.length) > 0)
-    .map(risk => risk.trim())
+    .map(risk => risk.trim()
     .slice(0, 3); // Top 3 risks
 }
 
@@ -151,7 +151,7 @@ function extractRecommendations(text: string): string[] {
   return recommendationsSection[1]
     .split(/\n[-*•]\s*/)
     .filter(item => item.length) > 0)
-    .map(rec => rec.trim())
+    .map(rec => rec.trim()
     .slice(0, 3); // Top 3 recommendations
 }
 
@@ -166,16 +166,16 @@ function calculateConfidence(response: string, analysisType: string): number {
   if (response.includes('Key points:') || response.includes('Summary:')) confidence += 0.05;
   if (response.includes('Risks:') || response.includes('Recommendations:')) confidence += 0.05;
   
-  // Analysis type specific adjustments
+  // Analysis type specific adjustments;
   const typeMultipliers = {
     general: 1.0,
     contract: 1.1, // Contract analysis is typically more structured
     evidence: 0.9, // Evidence analysis can be more subjective
     case_law: 1.2, // Case law analysis benefits from precedent
-    document: 1.0
+    document: 1.0,
   };
   
   confidence *= typeMultipliers[analysisType as keyof typeof typeMultipliers] || 1.0;
   
-  return Math.min(0.95, Math.max(0.5, confidence)); // Clamp between 0.5 and 0.95
+  return Math.min(0.95, Math.max(0.5, confidence); // Clamp between 0.5 and 0.95
 }

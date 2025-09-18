@@ -21,7 +21,7 @@ import { json } from '@sveltejs/kit';
 import { cache, cacheEmbedding, cacheSearchResults } from '$lib/server/cache/redis';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-// Accept text and return embedding tensor with caching and indexing hooks
+// Accept text and return embedding tensor with caching and indexing hooks;
 const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
   try {
     const body = await request.json();
@@ -51,7 +51,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
   const fastApiUrl = process.env.FASTAPI_URL || process.env.PUBLIC_FASTAPI_URL;
   const vllmUrl = (process.env.VLLM_ENDPOINT || process.env.PUBLIC_VLLM_ENDPOINT || '').replace(/\/$/, '');
 
-    // Helper to finalize and cache response
+    // Helper to finalize and cache response;
     const finalize = async (embedding: number[], wasCached = false, backend: 'fastapi' | 'vllm' | 'ollama' | 'go') => {
       await cache.set(key, embedding, 24 * 60 * 60 * 1000);
       await cacheEmbedding(text, embedding, model);
@@ -59,7 +59,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       return json({ tensor: embedding, embedding, cached: wasCached, model, tags, type, backend });
     };
 
-    // Primary: FastAPI embed service
+    // Primary: FastAPI embed service;
     if (fastApiUrl) {
       try {
         const resp = await fetch(`${fastApiUrl.replace(/\/$/, '')}/embed`, {
@@ -71,13 +71,13 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
           const data = (await resp.json()) as { embedding: number[] };
           return await finalize(data.embedding, false, 'fastapi');
         }
-        // fall through to Go fallback when FastAPI responds non-OK
+        // fall through to Go fallback when FastAPI responds non-OK;
       } catch {
         // fall through to Go fallback on error
       }
     }
 
-    // Secondary fallback: OpenAI-compatible embeddings (e.g., vLLM) if configured
+    // Secondary fallback: OpenAI-compatible embeddings (e.g., vLLM) if configured;
     if (vllmUrl) {
       try {
         const vResp = await fetch(`${vllmUrl}/embeddings`, {
@@ -97,7 +97,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       }
     }
 
-    // Tertiary fallback: Ollama embeddings API (local default port 11434)
+    // Tertiary fallback: Ollama embeddings API (local default port 11434);
     try {
       const ollamaUrl = (process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL || 'http://localhost:11434').replace(/\/$/, '');
       const oResp = await fetch(`${ollamaUrl}/api/embeddings`, {
@@ -116,7 +116,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       // continue to Go fallback
     }
 
-    // Quaternary fallback: Go tensor bridge (mock-capable) when others aren't available
+    // Quaternary fallback: Go tensor bridge (mock-capable) when others aren't available;
     try {
       const goReq = {
         operation: 'vectorize',
@@ -127,7 +127,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       const goResp = await fetch('/api/tensor', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(goReq)
+        body: JSON.stringify(goReq),
       });
     if (goResp.ok) {
         const goJson = await goResp.json();

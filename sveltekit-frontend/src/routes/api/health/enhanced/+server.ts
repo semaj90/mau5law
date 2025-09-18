@@ -22,17 +22,17 @@ export const GET: RequestHandler = async ({ url }) => {
       database: 'unknown',
       migrations: 'unknown',
       backgroundJobs: 'unknown',
-      aiServices: 'unknown'
+      aiServices: 'unknown',
     },
     metrics: {
       memoryUsage: process.memoryUsage(),
       nodeVersion: process.version,
-      platform: process.platform
+      platform: process.platform,
     }
   };
 
   try {
-    // Check database connection
+    // Check database connection;
     if (checkMigrations && env.DATABASE_URL) {
       const migrator = new DatabaseMigrator(env.DATABASE_URL);
 
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
             appliedMigrations: migrationStatus.appliedMigrations,
             pendingMigrations: migrationStatus.pendingMigrations,
             lastMigration: migrationStatus.lastMigration,
-            systemHealthy: migrationStatus.systemHealthy
+            systemHealthy: migrationStatus.systemHealthy,
           };
         }
 
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
 
-    // Check background jobs (if job queue table exists)
+    // Check background jobs (if job queue table exists);
     try {
       if (env.DATABASE_URL) {
         const migrator = new DatabaseMigrator(env.DATABASE_URL);
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ url }) => {
           (healthCheck as any).backgroundJobsDetails = {
             pendingJobs,
             threshold: 100,
-            status: healthCheck.services.backgroundJobs
+            status: healthCheck.services.backgroundJobs,
           };
         }
 
@@ -91,11 +91,11 @@ export const GET: RequestHandler = async ({ url }) => {
       healthCheck.services.backgroundJobs = 'unknown';
     }
 
-    // Check AI services (Ollama)
+    // Check AI services (Ollama);
     try {
       const response = await fetch('http://localhost:11434/api/tags', {
         method: 'GET',
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(5000),
       });
 
       if (response.ok) {
@@ -105,7 +105,7 @@ export const GET: RequestHandler = async ({ url }) => {
         if (detailed) {
           (healthCheck as any).aiServicesDetails = {
             modelsAvailable: models.models?.length || 0,
-            models: models.models?.map((m: any) => m.name) || []
+            models: models.models?.map((m: any) => m.name) || [],
           };
         }
       } else {
@@ -125,12 +125,12 @@ export const GET: RequestHandler = async ({ url }) => {
       healthCheck.status = 'partial';
     }
 
-    // Add system load metrics if detailed
+    // Add system load metrics if detailed;
     if (detailed) {
       (healthCheck as any).systemMetrics = {
         loadAverage: process.loadavg ? process.loadavg() : null,
         freeMemory: process.memoryUsage().heapUsed / process.memoryUsage().heapTotal,
-        cpuUsage: process.cpuUsage ? process.cpuUsage() : null
+        cpuUsage: process.cpuUsage ? process.cpuUsage() : null,
       };
     }
 
@@ -151,7 +151,7 @@ export const GET: RequestHandler = async ({ url }) => {
         database: 'unknown',
         migrations: 'unknown',
         backgroundJobs: 'unknown',
-        aiServices: 'unknown'
+        aiServices: 'unknown',
       }
     }, { status: 500 });
   }

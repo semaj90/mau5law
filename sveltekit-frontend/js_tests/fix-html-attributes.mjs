@@ -5,19 +5,19 @@
  * Fixes common React-to-Svelte conversion issues and template placeholders
  */
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-console.log("🔧 Svelte HTML Attribute Fixer");
-console.log("===============================\n");
+console.log('🔧 Svelte HTML Attribute Fixer');
+console.log('===============================\n');
 
 // Configuration
 const config = {
-  srcDir: "src",
-  extensions: [".svelte", ".ts", ".js"],
+  srcDir: 'src',
+  extensions: ['.svelte', '.ts', '.js'],
   dryRun: false, // Set to true to see what would be changed without actually changing files
   backup: true, // Create backup files
 };
@@ -27,85 +27,85 @@ const replacements = [
   // React to Svelte attribute conversions
   {
     pattern: /className=/g,
-    replacement: "class=",
-    description: "className → class",
+    replacement: 'class=',
+    description: 'className → class',
   },
-  { pattern: /htmlFor=/g, replacement: "for=", description: "htmlFor → for" },
+  { pattern: /htmlFor=/g, replacement: 'for=', description: 'htmlFor → for' },
 
   // Template placeholders to actual CSS classes
   {
     pattern: /className="\$\{1\}"/g,
     replacement: 'class="container"',
-    description: "Template placeholder → container class",
+    description: 'Template placeholder → container class',
   },
   {
     pattern: /class="\$\{1\}"/g,
     replacement: 'class="container"',
-    description: "Template placeholder → container class",
+    description: 'Template placeholder → container class',
   },
 
   // Common React event handlers to Svelte
   {
     pattern: /onClick=/g,
-    replacement: "on:click=",
-    description: "onClick → on:click",
+    replacement: 'on:click=',
+    description: 'onClick → on:click',
   },
   {
     pattern: /onChange=/g,
-    replacement: "on:change=",
-    description: "onChange → on:change",
+    replacement: 'on:change=',
+    description: 'onChange → on:change',
   },
   {
     pattern: /onSubmit=/g,
-    replacement: "on:submit=",
-    description: "onSubmit → on:submit",
+    replacement: 'on:submit=',
+    description: 'onSubmit → on:submit',
   },
   {
     pattern: /onFocus=/g,
-    replacement: "on:focus=",
-    description: "onFocus → on:focus",
+    replacement: 'on:focus=',
+    description: 'onFocus → on:focus',
   },
   {
     pattern: /onBlur=/g,
-    replacement: "on:blur=",
-    description: "onBlur → on:blur",
+    replacement: 'on:blur=',
+    description: 'onBlur → on:blur',
   },
   {
     pattern: /onInput=/g,
-    replacement: "on:input=",
-    description: "onInput → on:input",
+    replacement: 'on:input=',
+    description: 'onInput → on:input',
   },
   {
     pattern: /onKeyDown=/g,
-    replacement: "on:keydown=",
-    description: "onKeyDown → on:keydown",
+    replacement: 'on:keydown=',
+    description: 'onKeyDown → on:keydown',
   },
   {
     pattern: /onKeyUp=/g,
-    replacement: "on:keyup=",
-    description: "onKeyUp → on:keyup",
+    replacement: 'on:keyup=',
+    description: 'onKeyUp → on:keyup',
   },
   {
     pattern: /onMouseEnter=/g,
-    replacement: "on:mouseenter=",
-    description: "onMouseEnter → on:mouseenter",
+    replacement: 'on:mouseenter=',
+    description: 'onMouseEnter → on:mouseenter',
   },
   {
     pattern: /onMouseLeave=/g,
-    replacement: "on:mouseleave=",
-    description: "onMouseLeave → on:mouseleave",
+    replacement: 'on:mouseleave=',
+    description: 'onMouseLeave → on:mouseleave',
   },
 
   // React-style inline styles to Svelte
   {
     pattern: /style=\{\{/g,
     replacement: 'style="',
-    description: "React inline styles → Svelte styles (start)",
+    description: 'React inline styles → Svelte styles (start)',
   },
   {
     pattern: /\}\}/g,
     replacement: '"',
-    description: "React inline styles → Svelte styles (end)",
+    description: 'React inline styles → Svelte styles (end)',
   },
 ];
 
@@ -114,38 +114,37 @@ const smartClassReplacements = [
   {
     pattern: /class="container"/g,
     replacement: 'class="mx-auto px-4 max-w-7xl"',
-    context: "main containers",
+    context: 'main containers',
   },
   {
     pattern: /class="header"/g,
     replacement: 'class="bg-blue-600 text-white p-4"',
-    context: "headers",
+    context: 'headers',
   },
   {
     pattern: /class="card"/g,
     replacement: 'class="bg-white rounded-lg shadow-md p-6"',
-    context: "cards",
+    context: 'cards',
   },
   {
     pattern: /class="button"/g,
-    replacement:
-      'class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"',
-    context: "buttons",
+    replacement: 'class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"',
+    context: 'buttons',
   },
   {
     pattern: /class="input"/g,
     replacement: 'class="border rounded px-3 py-2 w-full"',
-    context: "inputs",
+    context: 'inputs',
   },
   {
     pattern: /class="grid"/g,
     replacement: 'class="grid gap-4"',
-    context: "grids",
+    context: 'grids',
   },
   {
     pattern: /class="flex"/g,
     replacement: 'class="flex items-center gap-2"',
-    context: "flex containers",
+    context: 'flex containers',
   },
 ];
 
@@ -173,11 +172,7 @@ function findFiles(dir, extensions) {
 
       if (stat.isDirectory()) {
         // Skip node_modules and other build directories
-        if (
-          !["node_modules", ".git", ".svelte-kit", "build", "dist"].includes(
-            item,
-          )
-        ) {
+        if (!['node_modules', '.git', '.svelte-kit', 'build', 'dist'].includes(item)) {
           traverse(fullPath);
         }
       } else if (stat.isFile()) {
@@ -199,7 +194,7 @@ function findFiles(dir, extensions) {
 function createBackup(filePath) {
   if (!config.backup) return;
 
-  const backupPath = filePath + ".backup";
+  const backupPath = filePath + '.backup';
   fs.copyFileSync(filePath, backupPath);
   console.log(`  📋 Backup created: ${path.basename(backupPath)}`);
 }
@@ -209,7 +204,7 @@ function createBackup(filePath) {
  */
 function processFile(filePath) {
   try {
-    const originalContent = fs.readFileSync(filePath, "utf8");
+    const originalContent = fs.readFileSync(filePath, 'utf8');
     let content = originalContent;
     let fileChanges = 0;
     const changedPatterns = [];
@@ -217,7 +212,7 @@ function processFile(filePath) {
     // Apply basic replacements
     for (const replacement of replacements) {
       const before = content;
-      if (typeof replacement.replacement === "function") {
+      if (typeof replacement.replacement === 'function') {
         content = content.replace(replacement.pattern, replacement.replacement);
       } else {
         content = content.replace(replacement.pattern, replacement.replacement);
@@ -239,16 +234,11 @@ function processFile(filePath) {
     if (content.includes('class="container"')) {
       for (const smartReplacement of smartClassReplacements) {
         const before = content;
-        content = content.replace(
-          smartReplacement.pattern,
-          smartReplacement.replacement,
-        );
+        content = content.replace(smartReplacement.pattern, smartReplacement.replacement);
         if (content !== before) {
           const matches = (before.match(smartReplacement.pattern) || []).length;
           fileChanges += matches;
-          changedPatterns.push(
-            `Smart CSS classes for ${smartReplacement.context} (${matches}x)`,
-          );
+          changedPatterns.push(`Smart CSS classes for ${smartReplacement.context} (${matches}x)`);
         }
       }
     }
@@ -265,7 +255,7 @@ function processFile(filePath) {
 
       if (!config.dryRun) {
         createBackup(filePath);
-        fs.writeFileSync(filePath, content, "utf8");
+        fs.writeFileSync(filePath, content, 'utf8');
         console.log(`  💾 File updated`);
       } else {
         console.log(`  👀 Would update file (dry run)`);
@@ -282,19 +272,14 @@ function processFile(filePath) {
  * Fix a specific problematic file with custom logic
  */
 function fixUiDemoFile() {
-  const uiDemoPath = path.join(
-    config.srcDir,
-    "routes",
-    "ui-demo",
-    "+page.svelte",
-  );
+  const uiDemoPath = path.join(config.srcDir, 'routes', 'ui-demo', '+page.svelte');
 
   if (!fs.existsSync(uiDemoPath)) {
-    console.log("ℹ️ ui-demo file not found, skipping specific fix");
+    console.log('ℹ️ ui-demo file not found, skipping specific fix');
     return;
   }
 
-  console.log("🎯 Applying specific fix for ui-demo page...\n");
+  console.log('🎯 Applying specific fix for ui-demo page...\n');
 
   const content = `<script lang="ts">
   import HeadlessDemo from "$lib/components/HeadlessDemo.svelte";
@@ -538,10 +523,10 @@ function fixUiDemoFile() {
 
   if (!config.dryRun) {
     createBackup(uiDemoPath);
-    fs.writeFileSync(uiDemoPath, content, "utf8");
+    fs.writeFileSync(uiDemoPath, content, 'utf8');
   }
 
-  console.log("✅ Fixed ui-demo page with proper Svelte syntax and styling\n");
+  console.log('✅ Fixed ui-demo page with proper Svelte syntax and styling\n');
 }
 
 /**
@@ -556,11 +541,9 @@ function main() {
   }
 
   console.log(`📂 Scanning directory: ${srcPath}`);
-  console.log(`🔍 Looking for files: ${config.extensions.join(", ")}`);
-  console.log(
-    `🚀 Mode: ${config.dryRun ? "DRY RUN (no changes)" : "APPLY CHANGES"}`,
-  );
-  console.log(`💾 Backup: ${config.backup ? "ENABLED" : "DISABLED"}`);
+  console.log(`🔍 Looking for files: ${config.extensions.join(', ')}`);
+  console.log(`🚀 Mode: ${config.dryRun ? 'DRY RUN (no changes)' : 'APPLY CHANGES'}`);
+  console.log(`💾 Backup: ${config.backup ? 'ENABLED' : 'DISABLED'}`);
   console.log();
 
   // Fix the specific problematic file first
@@ -576,15 +559,15 @@ function main() {
   }
 
   // Print summary
-  console.log("📊 SUMMARY");
-  console.log("==========");
+  console.log('📊 SUMMARY');
+  console.log('==========');
   console.log(`Files processed: ${stats.filesProcessed}`);
   console.log(`Files changed: ${stats.filesChanged}`);
   console.log(`Total replacements: ${stats.totalReplacements}`);
   console.log();
 
   if (Object.keys(stats.replacementsByType).length > 0) {
-    console.log("Replacements by type:");
+    console.log('Replacements by type:');
     for (const [type, count] of Object.entries(stats.replacementsByType)) {
       console.log(`  • ${type}: ${count}`);
     }
@@ -592,7 +575,7 @@ function main() {
   }
 
   if (stats.errors.length > 0) {
-    console.log("❌ Errors encountered:");
+    console.log('❌ Errors encountered:');
     stats.errors.forEach((error) => console.log(`  • ${error}`));
     console.log();
   }
@@ -600,13 +583,13 @@ function main() {
   if (stats.filesChanged > 0) {
     console.log(`✅ Successfully fixed ${stats.filesChanged} files!`);
     if (config.backup) {
-      console.log("💾 Backup files created (*.backup)");
+      console.log('💾 Backup files created (*.backup)');
     }
   } else {
-    console.log("ℹ️ No files needed fixing.");
+    console.log('ℹ️ No files needed fixing.');
   }
 
-  console.log("\n🎉 HTML attribute fixing complete!");
+  console.log('\n🎉 HTML attribute fixing complete!');
 }
 
 // Run the script

@@ -4,10 +4,10 @@ import { eq, and, or, like, desc, sql } from "drizzle-orm";
 import { db } from "$lib/server/db";
 import { cases, evidence, reports } from "$lib/server/db/schema-postgres";
 
-// Fixed query builder implementation
+// Fixed query builder implementation;
 export class DrizzleQueryBuilder {
   static async getCases(query: any) {
-    let caseQuery = db
+    let caseQuery = db;
       .select({
         case: cases,
       })
@@ -25,7 +25,7 @@ export class DrizzleQueryBuilder {
   }
 
   static async getEvidence(query: any) {
-    let evidenceQuery = db
+    let evidenceQuery = db;
       .select({
         evidence: evidence,
       })
@@ -47,7 +47,7 @@ export class DrizzleQueryBuilder {
   }
 
   static async getReports(query: any) {
-    let reportQuery = db
+    let reportQuery = db;
       .select({
         report: reports,
       })

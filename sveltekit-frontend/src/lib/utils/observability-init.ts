@@ -14,13 +14,13 @@ let currentRouteId: string | null = null;
 
 /**
  * Initialize observability system with SvelteKit integration
- */
+ */;
 export function initializeObservability() {
   if (!browser || isInitialized) return;
 
   console.log('🔍 Initializing observability system...');
 
-  // Configure observability client with development-friendly settings
+  // Configure observability client with development-friendly settings;
   observabilityClient.initialize({
     enableMetrics: true,
     enablePerformanceTracking: true,
@@ -32,7 +32,7 @@ export function initializeObservability() {
                window.location.search.includes('debug-observability')
   });
 
-  // Track initial page load
+  // Track initial page load;
   if (typeof document !== 'undefined' && document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       trackInitialPageLoad();
@@ -47,14 +47,14 @@ export function initializeObservability() {
   // Set up performance monitoring
   setupPerformanceMonitoring();
 
-  // Track visibility changes for metrics flushing
+  // Track visibility changes for metrics flushing;
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       observabilityClient.flushMetrics();
     }
   });
 
-  // Track before unload for final metrics flush
+  // Track before unload for final metrics flush;
   window.addEventListener('beforeunload', () => {
     observabilityClient.flushMetrics();
   });
@@ -68,7 +68,7 @@ function trackInitialPageLoad() {
   currentRouteId = routeId;
   trackPageLoad(routeId);
   
-  // Track initial performance metrics
+  // Track initial performance metrics;
   setTimeout(() => {
     const snapshot = observabilityClient.getPerformanceSnapshot();
     console.log('📊 Initial performance snapshot:', snapshot);
@@ -76,7 +76,7 @@ function trackInitialPageLoad() {
 }
 
 function setupNavigationTracking() {
-  // Listen to page store changes for SvelteKit navigation
+  // Listen to page store changes for SvelteKit navigation;
   if (typeof page !== 'undefined' && page.subscribe) {
     page.subscribe(($page) => {
       if ($page.route?.id && $page.route.id !== currentRouteId) {
@@ -118,16 +118,16 @@ function setupNavigationTracking() {
 }
 
 function setupPerformanceMonitoring() {
-  // Monitor long tasks
+  // Monitor long tasks;
   if ('PerformanceObserver' in window) {
     try {
       const longTaskObserver = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          if (entry.duration > 50) { // Tasks longer than 50ms
+          if (entry.duration > 50) { // Tasks longer than 50ms;
             console.warn(`⚡ Long task detected: ${Math.round(entry.duration)}ms`, {
               name: entry.name,
               startTime: entry.startTime,
-              duration: entry.duration
+              duration: entry.duration,
             });
           }
         }
@@ -139,7 +139,7 @@ function setupPerformanceMonitoring() {
     }
   }
 
-  // Monitor resource loading
+  // Monitor resource loading;
   if (window.performance && window.performance.getEntriesByType) {
     setTimeout(() => {
       const resources = performance.getEntriesByType('resource');
@@ -150,14 +150,14 @@ function setupPerformanceMonitoring() {
           name: r.name.split('/').pop(),
           duration: `${Math.round(r.duration)}ms`,
           size: r.transferSize ? `${Math.round(r.transferSize / 1024)}KB` : 'unknown'
-        })));
+        }));
       }
     }, 2000);
   }
 }
 
 function extractRouteId(): string {
-  // Try to extract route ID from current location
+  // Try to extract route ID from current location;
   if (browser && typeof page !== 'undefined') {
     try {
       // Access page store synchronously (may not work in all contexts)
@@ -183,7 +183,7 @@ function extractRouteId(): string {
                  .replace(/\/[^\/]+\.(json|html|xml)$/, '/[file]');
 }
 
-// Svelte store getter fallback
+// Svelte store getter fallback;
 function get(store: any) {
   let value: any;
   const unsubscribe = store.subscribe((v: any) => { value = v; });
@@ -193,7 +193,7 @@ function get(store: any) {
 
 /**
  * Create an enhanced fetch function with observability
- */
+ */;
 export function createObservableFetch() {
   if (!browser) return fetch;
   
@@ -202,7 +202,7 @@ export function createObservableFetch() {
 
 /**
  * Track a custom performance event
- */
+ */;
 export function trackCustomEvent(name: string, data?: any) {
   if (!browser || !isInitialized) return;
   
@@ -215,7 +215,7 @@ export function trackCustomEvent(name: string, data?: any) {
 
 /**
  * Get current observability status
- */
+ */;
 export function getObservabilityStatus() {
   if (!browser) {
     return { initialized: false, browser: false };
@@ -226,13 +226,13 @@ export function getObservabilityStatus() {
     browser: true,
     currentRoute: currentRouteId,
     capabilities: observabilityClient.getCapabilities(),
-    performanceSnapshot: isInitialized ? observabilityClient.getPerformanceSnapshot() : null
+    performanceSnapshot: isInitialized ? observabilityClient.getPerformanceSnapshot() : null,
   };
 }
 
-// Auto-initialize if in browser
+// Auto-initialize if in browser;
 if (browser) {
-  // Wait for DOM to be ready
+  // Wait for DOM to be ready;
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeObservability);
   } else {

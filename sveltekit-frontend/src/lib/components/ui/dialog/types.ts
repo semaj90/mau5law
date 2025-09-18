@@ -1,6 +1,6 @@
 import type { Snippet } from 'svelte';
 
-// Simple dialog component prop types
+// Simple dialog component prop types;
 export interface DialogProps {
   open?: boolean;
   children?: Snippet;

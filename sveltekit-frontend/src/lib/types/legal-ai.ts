@@ -1,6 +1,7 @@
 /**
  * TypeScript definitions for N64-Inspired Legal AI Integration
- */
+ */;
+}
 
 export interface LegalDocument {
   id: string;
@@ -38,14 +39,14 @@ export interface ProcessingPipeline {
   stages: ProcessingStage[];
   totalTime: number;
   compressionAchieved: number;
-  cacheHits: number;
+  cacheHits: number;,
 }
 
 export interface CacheHierarchy {
   l1: Map<string, any>; // Browser memory cache
   l2: Map<string, any>; // CHR-ROM patterns
   l3: Map<string, any>; // Palace cache
-  getTotalHits: () => number;
+  getTotalHits: () => number;,
 }
 
 export interface N64VisualizationState {
@@ -57,7 +58,7 @@ export interface N64VisualizationState {
     frameRate: number;
     memoryUsage: number;
     cacheHitRate: number;
-    compressionRatio: number;
+    compressionRatio: number;,
   };
 }
 
@@ -73,12 +74,12 @@ export interface SimdTileResult {
   tiles: Uint8Array[];
   compressionRatio: number;
   processingTime: number;
-  simdOptimized: boolean;
+  simdOptimized: boolean;,
 }
 
 export interface YoRHaMipmapResult {
   textures: GPUTexture[];
   mipmapLevels: number;
   rtxOptimized: boolean;
-  streamingEnabled: boolean;
+  streamingEnabled: boolean;,
 }

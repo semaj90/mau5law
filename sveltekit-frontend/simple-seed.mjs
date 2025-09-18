@@ -9,13 +9,13 @@ try {
   // Set environment variable for Windows compatibility
   const env = {
     ...process.env,
-    DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db'
+    DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
   };
 
   execSync('npx tsx src/lib/server/db/seed.ts', {
     stdio: 'inherit',
     cwd: process.cwd(),
-    env
+    env,
   });
   console.log('✅ Seed completed successfully!');
 } catch (error) {

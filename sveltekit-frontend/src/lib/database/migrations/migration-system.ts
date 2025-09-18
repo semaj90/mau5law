@@ -12,7 +12,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { createHash } from 'crypto';
 
-// Migration tracking table
+// Migration tracking table;
 export const migrations = pgTable('schema_migrations', {
   id: serial('id').primaryKey(),
   version: text('version').notNull().unique(),
@@ -23,8 +23,9 @@ export const migrations = pgTable('schema_migrations', {
   success: boolean('success').notNull().default(true),
   error_message: text('error_message'),
   rollback_sql: text('rollback_sql'),
-  metadata: json('metadata')
+  metadata: json('metadata'),
 });
+}
 
 export interface Migration {
   version: string;
@@ -41,7 +42,7 @@ export interface MigrationResult {
   version: string;
   executionTime: number;
   error?: string;
-  applied: boolean;
+  applied: boolean;,
 }
 
 export class DatabaseMigrator {
@@ -51,7 +52,7 @@ export class DatabaseMigrator {
 
   constructor(
     connectionString: string,
-    migrationsPath: string = './src/lib/database/migrations'
+    migrationsPath: string = './src/lib/database/migrations';
   ) {
     this.sql = postgres(connectionString);
     this.db = drizzle(this.sql);
@@ -60,7 +61,7 @@ export class DatabaseMigrator {
 
   /**
    * Initialize migration system - create migrations table if it doesn't exist
-   */
+   */;
   async initialize(): Promise<void> {
     try {
       await this.sql`
@@ -94,12 +95,12 @@ export class DatabaseMigrator {
 
   /**
    * Load migration files from the migrations directory
-   */
+   */;
   async loadMigrations(): Promise<Migration[]> {
     try {
       const files = await fs.readdir(this.migrationsPath);
       const migrationFiles = files
-        .filter(file => file.endsWith('.sql') || file.endsWith('.ts') || file.endsWith('.js'))
+        .filter(file => file.endsWith('.sql') || file.endsWith('.ts') || file.endsWith('.js')
         .sort();
 
       const migrations: Migration[] = [];
@@ -133,7 +134,7 @@ export class DatabaseMigrator {
    * CREATE TABLE users ...;
    * -- Down
    * DROP TABLE users;
-   */
+   */;
   private parseSQLMigration(filename: string, content: string): Migration {
     const lines = content.split('\n');
     let name = filename.replace(/\.(sql|ts|js)$/, '');
@@ -161,7 +162,7 @@ export class DatabaseMigrator {
       }
     }
 
-    // Extract version from filename if not found in content
+    // Extract version from filename if not found in content;
     if (!version) {
       const match = filename.match(/^(\d+)/);
       version = match ? match[1] : Date.now().toString();
@@ -171,20 +172,20 @@ export class DatabaseMigrator {
       version,
       name,
       up: upSQL.trim(),
-      down: downSQL.trim() || undefined
+      down: downSQL.trim() || undefined,
     };
   }
 
   /**
    * Check which migrations have been applied
-   */
+   */;
   async getAppliedMigrations(): Promise<string[]> {
     try {
       const result = await this.db
         .select({ version: migrations.version })
         .from(migrations)
-        .where(eq(migrations.success, true))
-        .orderBy(asc(migrations.version));
+        .where(eq(migrations.success, true)
+        .orderBy(asc(migrations.version);
 
       return result.map(row => row.version);
     } catch (error) {
@@ -195,7 +196,7 @@ export class DatabaseMigrator {
 
   /**
    * Calculate checksum for migration content
-   */
+   */;
   private calculateChecksum(migration: Migration): string {
     const content = migration.up + (migration.down || '');
     return createHash('sha256').update(content).digest('hex');
@@ -203,7 +204,7 @@ export class DatabaseMigrator {
 
   /**
    * Execute a single migration
-   */
+   */;
   async executeMigration(migration: Migration): Promise<MigrationResult> {
     const startTime = Date.now();
     const checksum = this.calculateChecksum(migration);
@@ -213,7 +214,7 @@ export class DatabaseMigrator {
       const existingMigration = await this.db
         .select()
         .from(migrations)
-        .where(eq(migrations.version, migration.version))
+        .where(eq(migrations.version, migration.version)
         .limit(1);
 
       if (existingMigration.length > 0) {
@@ -226,11 +227,11 @@ export class DatabaseMigrator {
           success: true,
           version: migration.version,
           executionTime: 0,
-          applied: false
+          applied: false,
         };
       }
 
-      // Check dependencies if defined
+      // Check dependencies if defined;
       if (migration.checkDependencies) {
         const dependenciesOk = await migration.checkDependencies();
         if (!dependenciesOk) {
@@ -240,9 +241,9 @@ export class DatabaseMigrator {
 
       console.log(`🚀 Executing migration ${migration.version}: ${migration.name}`);
 
-      // Execute migration in transaction
+      // Execute migration in transaction;
       await this.sql.begin(async sql => {
-        // Execute the migration SQL
+        // Execute the migration SQL;
         if (migration.up.trim()) {
           await sql.unsafe(migration.up);
         }
@@ -262,7 +263,7 @@ export class DatabaseMigrator {
         `;
       });
 
-      // Execute post-migration hook if defined
+      // Execute post-migration hook if defined;
       if (migration.postMigration) {
         await migration.postMigration();
       }
@@ -274,7 +275,7 @@ export class DatabaseMigrator {
         success: true,
         version: migration.version,
         executionTime,
-        applied: true
+        applied: true,
       };
 
     } catch (error) {
@@ -283,7 +284,7 @@ export class DatabaseMigrator {
 
       console.error(`❌ Migration ${migration.version} failed:`, errorMessage);
 
-      // Record failed migration
+      // Record failed migration;
       try {
         await this.db.insert(migrations).values({
           version: migration.version,
@@ -304,14 +305,14 @@ export class DatabaseMigrator {
         version: migration.version,
         executionTime,
         error: errorMessage,
-        applied: false
+        applied: false,
       };
     }
   }
 
   /**
    * Run all pending migrations
-   */
+   */;
   async migrate(): Promise<MigrationResult[]> {
     console.log('🔄 Starting database migration...');
 
@@ -338,7 +339,7 @@ export class DatabaseMigrator {
         const result = await this.executeMigration(migration);
         results.push(result);
 
-        // Stop on first failure
+        // Stop on first failure;
         if (!result.success) {
           console.error(`❌ Migration failed, stopping execution`);
           break;
@@ -360,7 +361,7 @@ export class DatabaseMigrator {
 
   /**
    * Rollback the last migration
-   */
+   */;
   async rollback(): Promise<MigrationResult> {
     console.log('🔄 Starting migration rollback...');
 
@@ -369,8 +370,8 @@ export class DatabaseMigrator {
       const lastMigration = await this.db
         .select()
         .from(migrations)
-        .where(eq(migrations.success, true))
-        .orderBy(desc(migrations.executed_at))
+        .where(eq(migrations.success, true)
+        .orderBy(desc(migrations.executed_at)
         .limit(1);
 
       if (lastMigration.length === 0) {
@@ -379,7 +380,7 @@ export class DatabaseMigrator {
           success: true,
           version: '',
           executionTime: 0,
-          applied: false
+          applied: false,
         };
       }
 
@@ -393,7 +394,7 @@ export class DatabaseMigrator {
 
       console.log(`🔙 Rolling back migration ${migration.version}: ${migration.name}`);
 
-      // Execute rollback in transaction
+      // Execute rollback in transaction;
       await this.sql.begin(async sql => {
         // Execute the rollback SQL
         await sql.unsafe(migration.rollback_sql!);
@@ -411,7 +412,7 @@ export class DatabaseMigrator {
         success: true,
         version: migration.version,
         executionTime,
-        applied: true
+        applied: true,
       };
 
     } catch (error) {
@@ -423,19 +424,19 @@ export class DatabaseMigrator {
         version: '',
         executionTime: 0,
         error: errorMessage,
-        applied: false
+        applied: false,
       };
     }
   }
 
   /**
    * Get migration status
-   */
+   */;
   async getStatus(): Promise<{
     appliedMigrations: number;
     pendingMigrations: number;
     lastMigration: string | null;
-    systemHealthy: boolean;
+    systemHealthy: boolean;,
   }> {
     try {
       const allMigrations = await this.loadMigrations();
@@ -444,8 +445,8 @@ export class DatabaseMigrator {
       const lastMigrationResult = await this.db
         .select({ version: migrations.version, executed_at: migrations.executed_at })
         .from(migrations)
-        .where(eq(migrations.success, true))
-        .orderBy(desc(migrations.executed_at))
+        .where(eq(migrations.success, true)
+        .orderBy(desc(migrations.executed_at)
         .limit(1);
 
       const pendingCount = allMigrations.length - appliedVersions.length;
@@ -455,13 +456,13 @@ export class DatabaseMigrator {
       const failedMigrations = await this.db
         .select()
         .from(migrations)
-        .where(eq(migrations.success, false));
+        .where(eq(migrations.success, false);
 
       return {
         appliedMigrations: appliedVersions.length,
         pendingMigrations: pendingCount,
         lastMigration,
-        systemHealthy: failedMigrations.length === 0
+        systemHealthy: failedMigrations.length === 0,
       };
 
     } catch (error) {
@@ -470,14 +471,14 @@ export class DatabaseMigrator {
         appliedMigrations: 0,
         pendingMigrations: 0,
         lastMigration: null,
-        systemHealthy: false
+        systemHealthy: false,
       };
     }
   }
 
   /**
    * Create a new migration file
-   */
+   */;
   async createMigration(name: string, sql?: string): Promise<string> {
     const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+/, '');
     const version = timestamp.slice(0, 14); // YYYYMMDDHHMMSS
@@ -514,10 +515,10 @@ export class DatabaseMigrator {
 
   /**
    * Validate migration integrity
-   */
+   */;
   async validateIntegrity(): Promise<{
     valid: boolean;
-    issues: string[];
+    issues: string[];,
   }> {
     const issues: string[] = [];
 
@@ -526,10 +527,10 @@ export class DatabaseMigrator {
       const appliedMigrations = await this.db
         .select()
         .from(migrations)
-        .where(eq(migrations.success, true))
-        .orderBy(asc(migrations.version));
+        .where(eq(migrations.success, true)
+        .orderBy(asc(migrations.version);
 
-      // Check for checksum mismatches
+      // Check for checksum mismatches;
       for (const applied of appliedMigrations) {
         const migration = allMigrations.find(m => m.version === applied.version);
         if (migration) {
@@ -566,15 +567,15 @@ export class DatabaseMigrator {
 
   /**
    * Close database connection
-   */
+   */;
   async close(): Promise<void> {
     await this.sql.end();
   }
 }
 
-// Example migration files generator
+// Example migration files generator;
 export const generateInitialMigrations = async (migrator: DatabaseMigrator) => {
-  const migrations = [
+  const migrations = [;
     {
       name: 'create_enhanced_cases_table',
       sql: `-- Migration: create_enhanced_cases_table
@@ -630,7 +631,7 @@ CREATE TABLE IF NOT EXISTS evidence (
   ai_summary TEXT,
   vector_embedding vector(384),
   ocr_text TEXT,
-  analysis_status VARCHAR(20) DEFAULT 'pending' CHECK (analysis_status IN ('pending', 'processing', 'completed', 'failed'))
+  analysis_status VARCHAR(20) DEFAULT 'pending' CHECK (analysis_status IN ('pending', 'processing', 'completed', 'failed')
 );
 
 CREATE INDEX IF NOT EXISTS idx_evidence_case_id ON evidence(case_id);
@@ -779,7 +780,7 @@ export const runMigrationCLI = async (command: string, args: string[] = []) => {
         console.log(`Validation: ${validation.valid ? '✅ Valid' : '❌ Invalid'}`);
         if (validation.issues.length > 0) {
           console.log('Issues:');
-          validation.issues.forEach(issue => console.log(`  - ${issue}`));
+          validation.issues.forEach(issue => console.log(`  - ${issue}`);
         }
         break;
 
@@ -798,7 +799,7 @@ export const runMigrationCLI = async (command: string, args: string[] = []) => {
   }
 };
 
-// If run directly
+// If run directly;
 if (import.meta.url === `file://${process.argv[1]}`) {
   const command = process.argv[2];
   const args = process.argv.slice(3);

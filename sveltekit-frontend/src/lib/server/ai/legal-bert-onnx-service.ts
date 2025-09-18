@@ -18,7 +18,7 @@ interface ONNXModelConfig {
     enableMemPattern: boolean;
     enableCpuMemArena: boolean;
     executionMode: 'sequential' | 'parallel';
-    logSeverityLevel: number;
+    logSeverityLevel: number;,
   };
   inputSpec: {
     inputIds: { name: string; type: string; shape: number[] };
@@ -35,24 +35,24 @@ interface ONNXModelConfig {
 interface LegalEntityExtractionResult {
   entities: Array<any>;
   processingTime: number;
-  modelUsed: string;
+  modelUsed: string;,
 }
 
 interface LegalClassificationResult {
   predictions: Array<any>;
   topPrediction: {
     label: string;
-    confidence: number;
+    confidence: number;,
   };
   processingTime: number;
-  modelUsed: string;
+  modelUsed: string;,
 }
 
 interface LegalEmbeddingResult {
   embeddings: number[];
   dimensions: number;
   processingTime: number;
-  modelUsed: string;
+  modelUsed: string;,
 }
 
 export class LegalBertONNXService extends EventEmitter {
@@ -74,16 +74,16 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Get default ONNX configuration for Legal-BERT
-   */
+   */;
   private getDefaultConfig(): ONNXModelConfig {
     return {
       modelPath: './models/legal-bert-onnx/model.onnx',
-      providerOptions: [
+      providerOptions: [;
         {
           name: 'CPUExecutionProvider',
           deviceType: 'CPU',
         },
-        // GPU provider as fallback if available
+        // GPU provider as fallback if available;
         {
           name: 'CUDAExecutionProvider',
           deviceType: 'GPU',
@@ -131,7 +131,7 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Initialize ONNX session and tokenizer
-   */
+   */;
   async initialize(): Promise<void> {
     try {
       // Dynamic import to avoid loading ONNX in environments where it's not available
@@ -139,7 +139,7 @@ export class LegalBertONNXService extends EventEmitter {
       
       // Create inference session
       this.session = await ort.InferenceSession.create(
-        this.modelConfig.modelPath,
+        this.modelConfig.modelPath,);
         {
           executionProviders: this.modelConfig.providerOptions.map(p => p.name),
           ...this.modelConfig.sessionOptions,
@@ -164,7 +164,7 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Load ONNX Runtime with fallback handling
-   */
+   */;
   private async loadONNXRuntime(): Promise<any> {
     try {
       // Try to load ONNX Runtime
@@ -181,7 +181,7 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Initialize tokenizer (placeholder - integrate with actual BERT tokenizer)
-   */
+   */;
   private async initializeTokenizer(): Promise<any> {
     // This is a placeholder. In production, you would:
     // 1. Load the actual BERT tokenizer (e.g., from @xenova/transformers)
@@ -198,7 +198,7 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Mock tokenization (replace with actual BERT tokenizer)
-   */
+   */;
   private mockTokenize(text: string): { input_ids: number[]; attention_mask: number[]; token_type_ids: number[] } {
     // This is a simplified mock. In production, use proper BERT tokenization
     const words = text.toLowerCase().split(/\s+/).slice(0, 510); // Leave room for special tokens
@@ -211,14 +211,14 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Mock detokenization
-   */
+   */;
   private mockDetokenize(tokens: number[]): string {
     return tokens.map(t => `token_${t}`).join(' ');
   }
 
   /**
    * Extract legal entities from text
-   */
+   */;
   async extractLegalEntities(text: string): Promise<LegalEntityExtractionResult> {
     const startTime = Date.now();
     
@@ -263,7 +263,7 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Classify legal document type
-   */
+   */;
   async classifyLegalDocument(text: string): Promise<LegalClassificationResult> {
     const startTime = Date.now();
     
@@ -273,7 +273,7 @@ export class LegalBertONNXService extends EventEmitter {
 
     try {
       // Tokenize input
-      const tokens = this.tokenizer.encode(text.substring(0, 512)); // Truncate to max length
+      const tokens = this.tokenizer.encode(text.substring(0, 512); // Truncate to max length
       
       // Prepare ONNX inputs
       const inputs = await this.prepareONNXInputs(tokens);
@@ -309,7 +309,7 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Generate embeddings for legal text
-   */
+   */;
   async generateEmbeddings(text: string): Promise<LegalEmbeddingResult> {
     const startTime = Date.now();
     
@@ -319,7 +319,7 @@ export class LegalBertONNXService extends EventEmitter {
 
     try {
       // Tokenize input
-      const tokens = this.tokenizer.encode(text.substring(0, 512));
+      const tokens = this.tokenizer.encode(text.substring(0, 512);
       
       // Prepare ONNX inputs
       const inputs = await this.prepareONNXInputs(tokens);
@@ -355,7 +355,7 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Prepare inputs for ONNX inference
-   */
+   */;
   private async prepareONNXInputs(tokens: any): Promise<Record<string, any> {
     // Use the ONNX runtime that was loaded during initialization
     const ort = await this.loadONNXRuntime();
@@ -369,7 +369,7 @@ export class LegalBertONNXService extends EventEmitter {
     const paddedAttentionMask = tokens.attention_mask.slice(0, paddedLength);
     const paddedTokenTypeIds = tokens.token_type_ids.slice(0, paddedLength);
     
-    // Pad if shorter than max length
+    // Pad if shorter than max length;
     while (paddedInputIds.length < paddedLength) {
       paddedInputIds.push(0);
       paddedAttentionMask.push(0);
@@ -385,7 +385,7 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Process NER outputs to extract entities
-   */
+   */;
   private processNEROutputs(outputs: any, originalText: string, tokens: any): Array< {
     // This is a simplified implementation
     // In production, you would:
@@ -395,21 +395,21 @@ export class LegalBertONNXService extends EventEmitter {
     
     const mockEntities = [
       { text: 'Contract', label: 'LEGAL_DOCUMENT', confidence: 0.95, start: 0, end: 8 },
-      { text: 'Supreme Court', label: 'COURT', confidence: 0.92, start: 50, end: 63 },
+      { text: 'Supreme Court', label: 'COURT', confidence: 0.92, start: 50, end: 63 },>
       { text: 'defendant', label: 'LEGAL_ROLE', confidence: 0.88, start: 100, end: 109 },
     ];
     
-    return mockEntities.filter(item => item.includes(entity.text.toLowerCase()));
+    return mockEntities.filter(item => item.includes(entity.text.toLowerCase());
   }
 
   /**
    * Process classification outputs
-   */
+   */;
   private processClassificationOutputs(outputs: any): Array< {
     // Mock classification results - replace with actual processing
     const legalDocTypes = [
       { label: 'contract', confidence: 0.85 },
-      { label: 'court_decision', confidence: 0.12 },
+      { label: 'court_decision', confidence: 0.12 },>
       { label: 'legal_brief', confidence: 0.03 },
     ];
     
@@ -418,7 +418,7 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Extract embeddings from model outputs
-   */
+   */;
   private extractEmbeddings(outputs: any): number[] {
     // Extract from pooler output or perform mean pooling
     // This is a mock implementation
@@ -428,7 +428,7 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Update performance metrics
-   */
+   */;
   private updateMetrics(latency: number, success: boolean): void {
     this.performanceMetrics.totalInferences++;
     this.performanceMetrics.averageLatency = 
@@ -450,21 +450,21 @@ export class LegalBertONNXService extends EventEmitter {
 
   /**
    * Get performance metrics
-   */
+   */;
   getPerformanceMetrics() {
     return { ...this.performanceMetrics };
   }
 
   /**
    * Check if service is ready
-   */
+   */;
   isReady(): boolean {
     return this.isInitialized && this.session !== null;
   }
 
   /**
    * Cleanup resources
-   */
+   */;
   async dispose(): Promise<void> {
     try {
       if (this.session) {
@@ -482,7 +482,7 @@ export class LegalBertONNXService extends EventEmitter {
 // Export singleton instance
 export const legalBertONNXService = new LegalBertONNXService();
 
-// Export types
+// Export types;
 export type {
   LegalEntityExtractionResult,
   LegalClassificationResult,

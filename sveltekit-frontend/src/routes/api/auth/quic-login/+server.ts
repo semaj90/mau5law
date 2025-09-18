@@ -8,14 +8,14 @@ import { eq } from 'drizzle-orm';
 /**
  * POST /api/auth/quic-login
  * Authenticate user via QUIC server and sync with Lucia session
- */
+ */;
 export const POST: RequestHandler = async ({ request, cookies, getClientAddress }) => {
     try {
         const { email, password } = await request.json();
 
         if (!email || !password) {
             return json(
-                { success: false, error: 'Email and password are required' },
+                { success: false, error: 'Email and password are required' },)
                 { status: 400 }
             );
         }
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
         const ipAddress = getClientAddress();
         const userAgent = request.headers.get('user-agent') || 'unknown';
 
-        // Authenticate with QUIC server
+        // Authenticate with QUIC server;
         const authResponse = await quicAuthClient.login({
             email,
             password,
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
 
         if (!authResponse.success || !authResponse.sessionId) {
             return json(
-                { success: false, error: authResponse.error || 'Authentication failed' },
+                { success: false, error: authResponse.error || 'Authentication failed' },)
                 { status: 401 }
             );
         }
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
         const existingUser = await db
             .select()
             .from(usersTable)
-            .where(eq(usersTable.email, email))
+            .where(eq(usersTable.email, email)
             .limit(1);
 
         let userId: string;
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
         if (existingUser.length === 0 && authResponse.profile) {
             // Create user in local database if doesn't exist
             const newUser = await db
-                .insert(usersTable)
+                .insert(usersTable);
                 .values({
                     id: authResponse.userId!,
                     email: authResponse.profile.email,
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
                     last_name: authResponse.profile.lastName,
                     role: authResponse.profile.role || 'user',
                     created_at: new Date(),
-                    updated_at: new Date()
+                    updated_at: new Date(),
                 })
                 .returning();
 
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
             session_context: {
                 quic_auth: true,
                 access_token: authResponse.accessToken,
-                refresh_token: authResponse.refreshToken
+                refresh_token: authResponse.refreshToken,
             }
         });
 
@@ -95,15 +95,15 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
                 email: authResponse.profile?.email,
                 firstName: authResponse.profile?.firstName,
                 lastName: authResponse.profile?.lastName,
-                role: authResponse.profile?.role
+                role: authResponse.profile?.role,
             },
             sessionId: authResponse.sessionId,
-            expiresAt: authResponse.expiresAt
+            expiresAt: authResponse.expiresAt,
         });
     } catch (error) {
         console.error('QUIC login error:', error);
         return json(
-            { success: false, error: 'Internal server error' },
+            { success: false, error: 'Internal server error' },)
             { status: 500 }
         );
     }
@@ -112,14 +112,14 @@ export const POST: RequestHandler = async ({ request, cookies, getClientAddress 
 /**
  * GET /api/auth/quic-login
  * Validate current session with QUIC server
- */
+ */;
 export const GET: RequestHandler = async ({ cookies, getClientAddress }) => {
     try {
         const sessionId = cookies.get('session_id') || cookies.get('session');
 
         if (!sessionId) {
             return json(
-                { valid: false, error: 'No session found' },
+                { valid: false, error: 'No session found' },)
                 { status: 401 }
             );
         }
@@ -136,10 +136,10 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress }) => {
 
         if (!validation.valid) {
             // Clear invalid session from database
-            await db.delete(sessionsTable).where(eq(sessionsTable.id, sessionId));
+            await db.delete(sessionsTable).where(eq(sessionsTable.id, sessionId);
 
             return json(
-                { valid: false, error: validation.error || 'Invalid session' },
+                { valid: false, error: validation.error || 'Invalid session' },)
                 { status: 401 }
             );
         }
@@ -151,14 +151,14 @@ export const GET: RequestHandler = async ({ cookies, getClientAddress }) => {
                 email: validation.profile?.email,
                 firstName: validation.profile?.firstName,
                 lastName: validation.profile?.lastName,
-                role: validation.profile?.role
+                role: validation.profile?.role,
             },
-            expiresAt: validation.expiresAt
+            expiresAt: validation.expiresAt,
         });
     } catch (error) {
         console.error('QUIC session validation error:', error);
         return json(
-            { valid: false, error: 'Internal server error' },
+            { valid: false, error: 'Internal server error' },)
             { status: 500 }
         );
     }

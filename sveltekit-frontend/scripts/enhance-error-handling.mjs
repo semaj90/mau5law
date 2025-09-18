@@ -66,7 +66,10 @@ function processFile(filePath) {
       if (!effectBody.includes('try') && !effectBody.includes('catch')) {
         return `$effect(() => {
     try {
-${effectBody.split('\n').map(line => '      ' + line).join('\n')}
+${effectBody
+  .split('\n')
+  .map((line) => '      ' + line)
+  .join('\n')}
     } catch (error) {
       console.error('Effect error:', error);
       // Handle error gracefully
@@ -88,28 +91,30 @@ ${effectBody.split('\n').map(line => '      ' + line).join('\n')}
 
     content = content.replace(functionRegex, (match, funcName, params) => {
       if (!match.includes('validate') && params.trim()) {
-        const paramNames = params.split(',').map(p => p.trim().split(':')[0].trim());
-        const validations = paramNames.map(param => {
-          if (param === 'element') {
-            return `if (!${param} || !(${param} instanceof HTMLElement)) {
+        const paramNames = params.split(',').map((p) => p.trim().split(':')[0].trim());
+        const validations = paramNames
+          .map((param) => {
+            if (param === 'element') {
+              return `if (!${param} || !(${param} instanceof HTMLElement)) {
       throw new Error('Invalid element parameter');
     }`;
-          } else if (param.includes('id')) {
-            return `if (!${param} || typeof ${param} !== 'string') {
+            } else if (param.includes('id')) {
+              return `if (!${param} || typeof ${param} !== 'string') {
       throw new Error('Invalid ${param} parameter');
     }`;
-          } else if (param.includes('data') || param.includes('obj')) {
-            return `if (!${param} || typeof ${param} !== 'object') {
+            } else if (param.includes('data') || param.includes('obj')) {
+              return `if (!${param} || typeof ${param} !== 'object') {
       throw new Error('Invalid ${param} parameter');
     }`;
-          }
-          return null;
-        }).filter(Boolean);
+            }
+            return null;
+          })
+          .filter(Boolean);
 
         if (validations.length > 0) {
           return `function ${funcName}(${params}) {
     // Parameter validation
-${validations.map(v => '    ' + v).join('\n')}
+${validations.map((v) => '    ' + v).join('\n')}
 `;
         }
       }
@@ -129,8 +134,10 @@ ${validations.map(v => '    ' + v).join('\n')}
       const stateMatch = content.match(stateRegex);
 
       if (stateMatch) {
-        content = content.replace(stateMatch[0],
-          `${stateMatch[0]}\n  let errorMessage = $state('');`);
+        content = content.replace(
+          stateMatch[0],
+          `${stateMatch[0]}\n  let errorMessage = $state('');`
+        );
 
         changes++;
         modified = true;
@@ -144,8 +151,10 @@ ${validations.map(v => '    ' + v).join('\n')}
       const stateMatch = content.match(stateRegex);
 
       if (stateMatch) {
-        content = content.replace(stateMatch[0],
-          `${stateMatch[0]}\n  let isLoading = $state(false);`);
+        content = content.replace(
+          stateMatch[0],
+          `${stateMatch[0]}\n  let isLoading = $state(false);`
+        );
 
         changes++;
         modified = true;
@@ -236,9 +245,11 @@ ${validations.map(v => '    ' + v).join('\n')}
     }
 
     // 10. Add global error boundary component reference
-    if (content.includes('error') && !content.includes('ErrorBoundary') &&
-        (content.includes('throw') || content.includes('catch'))) {
-
+    if (
+      content.includes('error') &&
+      !content.includes('ErrorBoundary') &&
+      (content.includes('throw') || content.includes('catch'))
+    ) {
       const errorHandlingComment = `
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->`;
@@ -254,7 +265,9 @@ ${validations.map(v => '    ' + v).join('\n')}
       writeFileSync(filePath, content, 'utf8');
       filesFixed++;
       totalChanges += changes;
-      console.log(`  📝 Enhanced error handling in ${filePath.split(/[/\\]/).pop()} (${changes} improvements)`);
+      console.log(
+        `  📝 Enhanced error handling in ${filePath.split(/[/\\]/).pop()} (${changes} improvements)`
+      );
     }
 
     return modified;
@@ -549,7 +562,7 @@ function main() {
   const svelteFiles = walkDirectory(srcDir, '.svelte');
 
   // Filter files that could benefit from error handling
-  const errorHandlingFiles = svelteFiles.filter(file => {
+  const errorHandlingFiles = svelteFiles.filter((file) => {
     try {
       const content = readFileSync(file, 'utf8');
       return (
@@ -567,7 +580,9 @@ function main() {
     }
   });
 
-  console.log(`Found ${errorHandlingFiles.length} components that could benefit from better error handling\n`);
+  console.log(
+    `Found ${errorHandlingFiles.length} components that could benefit from better error handling\n`
+  );
 
   if (errorHandlingFiles.length === 0) {
     console.log('✨ No error handling improvements needed!');

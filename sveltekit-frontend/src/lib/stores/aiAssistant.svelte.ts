@@ -21,16 +21,16 @@ export interface AIAssistantState {
   ollamaClusterHealth: {
     primary: boolean;
     secondary: boolean;
-    embeddings: boolean;
+    embeddings: boolean;,
   };
   context7Analysis?: Context7Analysis;
   usage: {
     totalQueries: number;
     totalTokens: number;
-    averageResponseTime: number;
+    averageResponseTime: number;,
   };
   streamingActive: boolean;
-  streamBuffer: string;
+  streamBuffer: string;,
 }
 
 export interface ConversationEntry {
@@ -43,7 +43,7 @@ export interface ConversationEntry {
     temperature: number;
     responseTime: number;
     tokenCount: number;
-    context7Used: boolean;
+    context7Used: boolean;,
   };
 }
 
@@ -51,10 +51,10 @@ export interface Context7Analysis {
   suggestions: string[];
   codeExamples: any[];
   documentation: string;
-  confidence: number;
+  confidence: number;,
 }
 
-// Create reactive AI assistant state using $state rune
+// Create reactive AI assistant state using $state rune;
 const aiAssistantState = $state<AIAssistantState>({
   isActive: false,
   isProcessing: false,
@@ -68,21 +68,21 @@ const aiAssistantState = $state<AIAssistantState>({
   ollamaClusterHealth: {
     primary: false,
     secondary: false,
-    embeddings: false
+    embeddings: false,
   },
   usage: {
     totalQueries: 0,
     totalTokens: 0,
-    averageResponseTime: 0
+    averageResponseTime: 0,
   },
   streamingActive: false,
-  streamBuffer: ''
+  streamBuffer: '',
 });
 
-// Create XState actor for AI assistant
+// Create XState actor for AI assistant;
 const aiAssistantActor = browser ? createActor(aiAssistantMachine, {
   services: aiAssistantServices,
-  actions: aiAssistantActions
+  actions: aiAssistantActions,
 }) : null;
 
 export class AIAssistantManager {
@@ -98,16 +98,16 @@ export class AIAssistantManager {
     }
   }
 
-  // Get current AI assistant state (reactive)
+  // Get current AI assistant state (reactive);
   get state() {
     return aiAssistantState;
   }
 
-  // Initialize AI assistant manager
+  // Initialize AI assistant manager;
   private async initialize() {
     if (!this.actor) return;
     
-    // Initialize WebAssembly AI adapter if supported
+    // Initialize WebAssembly AI adapter if supported;
     if (webAssemblyAIAdapter.isSupported()) {
       try {
         console.log('[AI Assistant] Initializing WebAssembly backend...');
@@ -136,7 +136,7 @@ export class AIAssistantManager {
     // Start the XState actor
     this.actor.start();
 
-    // Subscribe to state changes
+    // Subscribe to state changes;
     this.actor.subscribe((state) => {
       this.updateAIAssistantState(state);
     });
@@ -148,7 +148,7 @@ export class AIAssistantManager {
     this.checkClusterHealth();
   }
 
-  // Update reactive state from XState machine
+  // Update reactive state from XState machine;
   private updateAIAssistantState(machineState: any) {
     const { context } = machineState;
     
@@ -168,7 +168,7 @@ export class AIAssistantManager {
     aiAssistantState.streamBuffer = context.streamBuffer;
   }
 
-  // Send a message to the AI assistant
+  // Send a message to the AI assistant;
   async sendMessage(message: string, options?: {
     useContext7?: boolean;
     useWebAssembly?: boolean;
@@ -186,7 +186,7 @@ export class AIAssistantManager {
     }
 
     try {
-      // Set model and temperature if provided
+      // Set model and temperature if provided;
       if (options?.model) {
         this.setModel(options.model);
       }
@@ -206,11 +206,11 @@ export class AIAssistantManager {
       } else if (useWebAssembly) {
         await this.sendMessageWebAssembly(message, options);
       } else {
-        // Send message to XState actor (original path)
+        // Send message to XState actor (original path);
         this.actor.send({
           type: 'SEND_MESSAGE',
           message: message.trim(),
-          useContext7: options?.useContext7 || false
+          useContext7: options?.useContext7 || false,
         });
       }
 
@@ -225,7 +225,7 @@ export class AIAssistantManager {
     }
   }
 
-  // WebAssembly-enhanced message processing
+  // WebAssembly-enhanced message processing;
   private async sendMessageWebAssembly(message: string, options?: any) {
     try {
       // Update state to processing
@@ -233,16 +233,16 @@ export class AIAssistantManager {
       aiAssistantState.currentQuery = message;
       aiAssistantState.error = null;
 
-      // Send to WebAssembly AI adapter
+      // Send to WebAssembly AI adapter;
       const response: WebAssemblyAIResponse = await webAssemblyAIAdapter.sendMessage(message, {
         conversationHistory: aiAssistantState.conversationHistory,
         useContext: options?.useContext7,
         model: options?.model || aiAssistantState.model || 'unknown',
         temperature: options?.temperature || aiAssistantState.temperature,
-        maxTokens: aiAssistantState.maxTokens
+        maxTokens: aiAssistantState.maxTokens,
       });
 
-      // Update conversation history
+      // Update conversation history;
       const userEntry: ConversationEntry = {
         id: crypto.randomUUID(),
         type: 'user',
@@ -253,7 +253,7 @@ export class AIAssistantManager {
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: 0,
           tokenCount: message.split(' ').length * 1.5,
-          context7Used: options?.useContext7 || false
+          context7Used: options?.useContext7 || false,
         }
       };
 
@@ -267,7 +267,7 @@ export class AIAssistantManager {
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: response.metadata.processingTime,
           tokenCount: response.metadata.tokensGenerated,
-          context7Used: false
+          context7Used: false,
         }
       };
 
@@ -287,7 +287,7 @@ export class AIAssistantManager {
         tokensGenerated: response.metadata.tokensGenerated,
         processingTime: response.metadata.processingTime,
         fromCache: response.metadata.fromCache,
-        confidence: response.metadata.confidence
+        confidence: response.metadata.confidence,
       });
 
     } catch (error: any) {
@@ -297,19 +297,19 @@ export class AIAssistantManager {
       aiAssistantState.isProcessing = false;
       aiAssistantState.error = `WebAssembly AI error: ${error.message}`;
       
-      // Fallback to XState machine if WebAssembly fails
+      // Fallback to XState machine if WebAssembly fails;
       if (this.webAssemblyFallback && this.actor) {
         console.log('[AI Assistant] Falling back to XState machine...');
         this.actor.send({
           type: 'SEND_MESSAGE',
           message: message.trim(),
-          useContext7: options?.useContext7 || false
+          useContext7: options?.useContext7 || false,
         });
       }
     }
   }
 
-  // LangChain RAG-enhanced message processing
+  // LangChain RAG-enhanced message processing;
   private async sendMessageLangChainRAG(message: string, options?: any) {
     try {
       // Update state to processing
@@ -319,7 +319,7 @@ export class AIAssistantManager {
 
       console.log('[AI Assistant] Processing with LangChain RAG bridge...');
 
-      // Send to WebAssembly-LangChain bridge
+      // Send to WebAssembly-LangChain bridge;
       const ragResult: any = await webAssemblyLangChainBridge.query(message, {
         useWebAssembly: options?.useWebAssembly !== false,
         useHybridMode: options?.useHybridRAG,
@@ -327,10 +327,10 @@ export class AIAssistantManager {
         verbose: options?.verbose,
         maxRetrievedDocs: 5,
         useCompression: true,
-        confidenceThreshold: 0.7
+        confidenceThreshold: 0.7,
       });
 
-      // Update conversation history
+      // Update conversation history;
       const userEntry: ConversationEntry = {
         id: crypto.randomUUID(),
         type: 'user',
@@ -341,7 +341,7 @@ export class AIAssistantManager {
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: 0,
           tokenCount: message.split(' ').length * 1.5,
-          context7Used: options?.useContext7 || false
+          context7Used: options?.useContext7 || false,
         }
       };
 
@@ -355,7 +355,7 @@ export class AIAssistantManager {
           temperature: options?.temperature || aiAssistantState.temperature,
           responseTime: ragResult.metadata.processingTime,
           tokenCount: ragResult.answer.split(' ').length * 1.3,
-          context7Used: false
+          context7Used: false,
         }
       };
 
@@ -377,7 +377,7 @@ export class AIAssistantManager {
         retrievedChunks: ragResult.metadata.retrievedChunks,
         confidence: ragResult.confidence,
         usedWebAssembly: ragResult.metadata.usedWebAssembly,
-        sourceDocuments: ragResult.sourceDocuments.length
+        sourceDocuments: ragResult.sourceDocuments.length,
       });
 
     } catch (error: any) {
@@ -387,7 +387,7 @@ export class AIAssistantManager {
       aiAssistantState.isProcessing = false;
       aiAssistantState.error = `LangChain RAG error: ${error.message}`;
       
-      // Fallback to WebAssembly-only processing
+      // Fallback to WebAssembly-only processing;
       if (this.webAssemblyEnabled && this.webAssemblyFallback) {
         console.log('[AI Assistant] Falling back to WebAssembly processing...');
         await this.sendMessageWebAssembly(message, options);
@@ -396,13 +396,13 @@ export class AIAssistantManager {
         this.actor.send({
           type: 'SEND_MESSAGE',
           message: message.trim(),
-          useContext7: options?.useContext7 || false
+          useContext7: options?.useContext7 || false,
         });
       }
     }
   }
 
-  // Set the AI model
+  // Set the AI model;
   setModel(model: string) {
     if (!this.actor) {
       throw new Error('AI Assistant actor not initialized');
@@ -426,7 +426,7 @@ export class AIAssistantManager {
     });
   }
 
-  // Set temperature for response generation
+  // Set temperature for response generation;
   setTemperature(temperature: number) {
     if (!this.actor) {
       throw new Error('AI Assistant actor not initialized');
@@ -442,28 +442,28 @@ export class AIAssistantManager {
     });
   }
 
-  // Clear conversation history
+  // Clear conversation history;
   clearConversation() {
     if (!this.actor) return;
     this.actor.send({ type: 'CLEAR_CONVERSATION' });
     console.log('Conversation cleared');
   }
 
-  // Retry the last failed query
+  // Retry the last failed query;
   retryLast() {
     if (!this.actor || !aiAssistantState.error) return;
     this.actor.send({ type: 'RETRY_LAST' });
     console.log('Retrying last query');
   }
 
-  // Stop current generation
+  // Stop current generation;
   stopGeneration() {
     if (!this.actor || !aiAssistantState.isProcessing) return;
     this.actor.send({ type: 'STOP_GENERATION' });
     console.log('Generation stopped');
   }
 
-  // Start streaming mode
+  // Start streaming mode;
   startStreaming(message: string) {
     if (!message.trim()) {
       throw new Error('Message cannot be empty');
@@ -474,14 +474,14 @@ export class AIAssistantManager {
     }
 
     this.actor.send({
-      type: 'START_STREAMING'
+      type: 'START_STREAMING',
     });
 
     // Then send the message
     this.sendMessage(message);
   }
 
-  // Check Ollama cluster health
+  // Check Ollama cluster health;
   async checkClusterHealth() {
     if (!this.actor) return;
     
@@ -493,7 +493,7 @@ export class AIAssistantManager {
     }
   }
 
-  // Analyze query with Context7
+  // Analyze query with Context7;
   async analyzeWithContext7(topic: string) {
     if (!this.actor) {
       throw new Error('AI Assistant actor not initialized');
@@ -511,7 +511,7 @@ export class AIAssistantManager {
     }
   }
 
-  // Get conversation statistics
+  // Get conversation statistics;
   getConversationStats() {
     const history = aiAssistantState.conversationHistory;
     const userMessages = history.filter(entry => entry.type === 'user');
@@ -528,7 +528,7 @@ export class AIAssistantManager {
     };
   }
 
-  // Export conversation to JSON
+  // Export conversation to JSON;
   exportConversation() {
     const stats = this.getConversationStats();
     const exportData = {
@@ -537,11 +537,11 @@ export class AIAssistantManager {
       temperature: aiAssistantState.temperature,
       conversation: aiAssistantState.conversationHistory,
       statistics: stats,
-      usage: aiAssistantState.usage
+      usage: aiAssistantState.usage,
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json'
+      type: 'application/json',
     });
 
     const url = URL.createObjectURL(blob);
@@ -556,7 +556,7 @@ export class AIAssistantManager {
     console.log('Conversation exported');
   }
 
-  // Import conversation from JSON
+  // Import conversation from JSON;
   async importConversation(file: File) {
     try {
       const text = await file.text();
@@ -566,13 +566,13 @@ export class AIAssistantManager {
         // Clear current conversation
         this.clearConversation();
 
-        // Restore conversation history
+        // Restore conversation history;
         aiAssistantState.conversationHistory = data.conversation.map((entry: any) => ({
           ...entry,
-          timestamp: new Date(entry.timestamp)
-        }));
+          timestamp: new Date(entry.timestamp),
+        });
 
-        // Restore settings if available
+        // Restore settings if available;
         if (data?.model) {
           this.setModel(data.model);
         }
@@ -590,7 +590,7 @@ export class AIAssistantManager {
     }
   }
 
-  // Get cluster status summary
+  // Get cluster status summary;
   getClusterStatus() {
     const health = aiAssistantState.ollamaClusterHealth;
     const healthyCount = Object.values(health).filter(item => item.length);
@@ -602,30 +602,30 @@ export class AIAssistantManager {
       totalCount,
       status: healthyCount === totalCount ? 'all_healthy' : 
               healthyCount > 0 ? 'partial' : 'all_down',
-      details: health
+      details: health,
     };
   }
 
-  // Get available models from cluster and WebAssembly
+  // Get available models from cluster and WebAssembly;
   async getAvailableModels() {
     try {
       const ollamaModels: string[] = [];
       const webAssemblyModels: string[] = [];
 
-      // Get Ollama models
+      // Get Ollama models;
       try {
         const response = await fetch('http://localhost:11434/api/tags');
         if (response.ok) {
           const data = await response.json();
-          ollamaModels.push(...(data.models?.map((model: any) => model.name) || []));
+          ollamaModels.push(...(data.models?.map((model: any) => model.name) || []);
         }
       } catch (error) {
         console.warn('Failed to fetch Ollama models:', error);
       }
 
-      // Get WebAssembly models
+      // Get WebAssembly models;
       if (this.webAssemblyEnabled) {
-        webAssemblyModels.push(...webAssemblyAIAdapter.getAvailableModels());
+        webAssemblyModels.push(...webAssemblyAIAdapter.getAvailableModels();
       }
 
       // Combine and deduplicate
@@ -642,7 +642,7 @@ export class AIAssistantManager {
   async analyzeLegalDocument(
     title: string,
     content: string,
-    analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive'
+    analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive';
   ) {
     if (!this.webAssemblyEnabled) {
       throw new Error('WebAssembly not available for legal document analysis');
@@ -658,7 +658,7 @@ export class AIAssistantManager {
         keyTerms: analysis.keyTerms.length,
         entities: analysis.entities.length,
         risks: analysis.risks.length,
-        processingTime: analysis.processingTime
+        processingTime: analysis.processingTime,
       });
 
       return analysis;
@@ -668,15 +668,15 @@ export class AIAssistantManager {
     }
   }
 
-  // Start periodic health checks
+  // Start periodic health checks;
   private startHealthChecks() {
-    // Health check every 30 seconds
+    // Health check every 30 seconds;
     this.healthCheckInterval = window.setInterval(() => {
       this.checkClusterHealth();
     }, 30000);
   }
 
-  // Stop health checks
+  // Stop health checks;
   private stopHealthChecks() {
     if (this.healthCheckInterval) {
       window.clearInterval(this.healthCheckInterval);
@@ -684,7 +684,7 @@ export class AIAssistantManager {
     }
   }
 
-  // Clean up on destroy
+  // Clean up on destroy;
   destroy() {
     if (this.actor) {
       this.actor.stop();
@@ -707,7 +707,7 @@ export const aiError = () => aiAssistantState.error;
 export const clusterHealth = () => aiAssistantState.ollamaClusterHealth;
 export const context7Analysis = () => aiAssistantState.context7Analysis;
 export const aiUsage = () => aiAssistantState.usage;
-// Convenience functions
+// Convenience functions;
 export const sendAIMessage = (message: string, options?: unknown) => {
   aiAssistantManager.sendMessage(message, options);
 };
@@ -715,9 +715,9 @@ export const setAIModel = (model: string) => aiAssistantManager.setModel(model);
 export const setAITemperature = (temp: number) => aiAssistantManager.setTemperature(temp);
 export const clearAIConversation = () => aiAssistantManager.clearConversation();
 export const checkAIClusterHealth = () => aiAssistantManager.checkClusterHealth();
-// Initialize AI assistant manager when module loads
+// Initialize AI assistant manager when module loads;
 if (browser) {
-  // Auto-cleanup on page unload
+  // Auto-cleanup on page unload;
   window.addEventListener('beforeunload', () => {
     aiAssistantManager.destroy();
   });

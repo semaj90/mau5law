@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit';
 import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager';
 import type { ShaderSearchQuery, ShaderSearchResult } from '$lib/webgpu/shader-cache-manager';
 
-// GET endpoint - Get shader search capabilities info
+// GET endpoint - Get shader search capabilities info;
 export const GET: RequestHandler = async () => {
   try {
     const stats = await shaderCacheManager.getShaderStats();
@@ -18,17 +18,17 @@ export const GET: RequestHandler = async () => {
         operation: 'string (optional) - Filter by shader operation',
         tags: 'string[] (optional) - Filter by tags',
         sortBy: 'string (optional) - "relevance", "performance", "usage", or "recent"',
-        limit: 'number (optional) - Maximum results to return (default: 20)'
+        limit: 'number (optional) - Maximum results to return (default: 20)',
       },
       responseFormat: {
         shaders: 'ShaderSearchResult[] - Array of matching shaders',
         metadata: {
           totalResults: 'number - Total matching shaders',
           searchTime: 'number - Search execution time in ms',
-          query: 'object - Original search query'
+          query: 'object - Original search query',
         }
       },
-      examples: [
+      examples: [;
         {
           description: 'Search for vector similarity shaders',
           query: { text: 'vector similarity', operation: 'vector_similarity' }
@@ -50,17 +50,17 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// POST endpoint - Search shaders
+// POST endpoint - Search shaders;
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
 
   try {
     const query: ShaderSearchQuery = await request.json();
 
-    // Validate query
+    // Validate query;
     if (query.limit && (query.limit < 1 || query.limit > 100)) {
       return json({
-        error: 'limit must be between 1 and 100'
+        error: 'limit must be between 1 and 100',
       }, { status: 400 });
     }
 
@@ -89,12 +89,12 @@ export const POST: RequestHandler = async ({ request }) => {
         embeddingSimilarity: shader.embeddingSimilarity,
         // Truncate WGSL code in list view for performance
         wgslPreview: shader.wgsl.length > 500 ? shader.wgsl.substring(0, 500) + '...' : shader.wgsl
-      })),
+      ,})),
       metadata: {
         totalResults: results.length,
         searchTime,
         query: query,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     };
 
@@ -111,7 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
         totalResults: 0,
         searchTime,
         query: Record<string, any>,
-        error: error.message || 'Search failed'
+        error: error.message || 'Search failed',
       }
     }, { status: 500 });
   }

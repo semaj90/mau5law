@@ -9,7 +9,7 @@ import type { User } from "$lib/types/user";
 import crypto from "crypto";
 import { EventEmitter } from "events";
 
-// Security configuration
+// Security configuration;
 export interface SecurityConfig {
   maxFileSize: number;
   allowedFileTypes: string[];
@@ -43,7 +43,7 @@ export const DEFAULT_SECURITY_CONFIG: SecurityConfig = {
   requireMFA: false,
 };
 
-// Authentication and session management
+// Authentication and session management;
 export interface UserSession {
   userId: string;
   username: string;
@@ -81,7 +81,7 @@ export interface SecurityEvent {
   };
 }
 
-// Session management
+// Session management;
 class SessionManager {
   private session: UserSession | null = null;
   private config: SecurityConfig;
@@ -184,7 +184,7 @@ class SessionManager {
 
 // Singleton session manager
 export const sessionManager = new SessionManager();
-// Data protection utilities for legal documents
+// Data protection utilities for legal documents;
 export function encryptSensitiveData(data: string, key?: string): string {
   // Simple XOR cipher for demo purposes
   // In production, use proper encryption like AES
@@ -201,7 +201,7 @@ export function encryptSensitiveData(data: string, key?: string): string {
 
 export function decryptSensitiveData(
   encryptedData: string,
-  key?: string
+  key?: string;
 ): string {
   try {
     if (!key) key = "legal-ai-security-key-2024";
@@ -219,7 +219,7 @@ export function decryptSensitiveData(
   }
 }
 
-// Hash generation for file integrity and evidence chain
+// Hash generation for file integrity and evidence chain;
 export async function generateFileHash(file: File): Promise<string> {
   if (!browser || !crypto.subtle) {
     return Math.random().toString(36); // Fallback for non-browser environments
@@ -228,7 +228,7 @@ export async function generateFileHash(file: File): Promise<string> {
   try {
     const arrayBuffer = await file.arrayBuffer();
     const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashArray = Array.from(new Uint8Array(hashBuffer);
     return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   } catch (error: any) {
     console.error("Error generating file hash:", error);
@@ -236,7 +236,7 @@ export async function generateFileHash(file: File): Promise<string> {
   }
 }
 
-// Input sanitization for security
+// Input sanitization for security;
 export function sanitizeForSQL(input: string): string {
   return input
     .replace(/['";\\]/g, "") // Remove SQL injection characters
@@ -278,7 +278,7 @@ export function sanitizeForJavaScript(input: string): string {
 // Generic input sanitization function
 export function sanitizeInput(
   input: string,
-  type: "html" | "sql" | "js" = "html"
+  type: "html" | "sql" | "js" = "html";
 ): string {
   switch (type) {
     case "html":
@@ -288,11 +288,11 @@ export function sanitizeInput(
     case "js":
       return sanitizeForJavaScript(input);
     default:
-      return sanitizeForHTML(input);
+      return sanitizeForHTML(input);,
   }
 }
 
-// File security checks with legal document considerations
+// File security checks with legal document considerations;
 export interface FileSecurityResult {
   isSafe: boolean;
   issues: string[];
@@ -307,13 +307,13 @@ export function checkFileSecurityAI(file: File): FileSecurityResult {
   let isLegalDocument = false;
   let requiresPrivilegedAccess = false;
 
-  // File size check
+  // File size check;
   if (file.size > DEFAULT_SECURITY_CONFIG.maxFileSize) {
     issues.push("File size exceeds maximum allowed");
     risk = "medium";
   }
 
-  // File type check
+  // File type check;
   if (!DEFAULT_SECURITY_CONFIG.allowedFileTypes.includes(file.type)) {
     issues.push("File type not allowed");
     risk = "high";
@@ -384,7 +384,7 @@ export function checkFileSecurityAI(file: File): FileSecurityResult {
   };
 }
 
-// Rate limiting for security
+// Rate limiting for security;
 class RateLimiter {
   private attempts: Map<string, number[]> = new Map();
 
@@ -405,7 +405,7 @@ class RateLimiter {
     const recentAttempts = attempts.filter((time) => time > windowStart);
     this.attempts.set(identifier, recentAttempts);
 
-    // Check if under limit
+    // Check if under limit;
     if (recentAttempts.length >= maxAttempts) {
       return false;
     }
@@ -437,7 +437,7 @@ export const rateLimiter = new RateLimiter();
 ;
 // Security monitoring with legal context
 export function logSecurityEvent(
-  event: Omit<SecurityEvent, "timestamp">
+  event: Omit<SecurityEvent, "timestamp">;
 ): void {
   const fullEvent: SecurityEvent = {
     ...event,
@@ -451,15 +451,15 @@ export function logSecurityEvent(
 
   console.log("Security Event:", fullEvent);
 
-  // Store locally for demo (in production, send to security service)
+  // Store locally for demo (in production, send to security service);
   if (browser) {
     const events = JSON.parse(localStorage.getItem("security_events") || "[]");
     events.push(fullEvent);
-    // Keep only last 100 events
+    // Keep only last 100 events;
     if (events.length > 100) {
       events.splice(0, events.length - 100);
     }
-    localStorage.setItem("security_events", JSON.stringify(events));
+    localStorage.setItem("security_events", JSON.stringify(events);
   }
 }
 
@@ -473,7 +473,7 @@ export function getSecurityEvents(): SecurityEvent[] {
   }
 }
 
-// Content Security Policy helpers
+// Content Security Policy helpers;
 export function generateCSPNonce(): string {
   if (browser && crypto.randomUUID) {
     return crypto.randomUUID();
@@ -481,11 +481,11 @@ export function generateCSPNonce(): string {
   return Math.random().toString(36).substring(2);
 }
 
-// Password security
+// Password security;
 export function checkPasswordStrength(password: string): {
   score: number;
   feedback: string[];
-  isStrong: boolean;
+  isStrong: boolean;,
 } {
   const feedback: string[] = [];
   let score = 0;
@@ -512,7 +512,7 @@ export function checkPasswordStrength(password: string): {
   return { score, feedback, isStrong };
 }
 
-// Secure random string generation
+// Secure random string generation;
 export function generateSecureToken(length: number = 32): string {
   if (browser && crypto.getRandomValues) {
     const array = new Uint8Array(length);
@@ -526,12 +526,12 @@ export function generateSecureToken(length: number = 32): string {
   let result = "";
   const chars = "abcdef0123456789";
   for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
+    result += chars.charAt(Math.floor(Math.random() * chars.length);
   }
   return result;
 }
 
-// Evidence chain of custody protection for legal compliance
+// Evidence chain of custody protection for legal compliance;
 export interface ChainOfCustodyEvent {
   timestamp: number;
   action: "created" | "accessed" | "modified" | "transferred" | "analyzed" | "sealed";
@@ -548,14 +548,14 @@ export interface ChainOfCustodyEvent {
 
 export function addChainOfCustodyEvent(
   evidenceId: string,
-  event: Omit<ChainOfCustodyEvent, "timestamp">
+  event: Omit<ChainOfCustodyEvent, "timestamp">;
 ): void {
   const fullEvent: ChainOfCustodyEvent = {
     ...event,
     timestamp: Date.now(),
   };
 
-  // In a real app, this would be cryptographically signed and stored immutably
+  // In a real app, this would be cryptographically signed and stored immutably;
   logSecurityEvent({
     type: "evidence_access",
     userId: event.userId,
@@ -569,7 +569,7 @@ export function addChainOfCustodyEvent(
   });
 }
 
-// Data export security with legal privilege protection
+// Data export security with legal privilege protection;
 export function secureDataExport(data: any, userId: string, legalContext?: unknown): void {
   logSecurityEvent({
     type: "data_export",
@@ -585,7 +585,7 @@ export function secureDataExport(data: any, userId: string, legalContext?: unkno
   });
 }
 
-// XSS protection
+// XSS protection;
 export function escapeHTML(unsafe: string): string {
   return unsafe
     .replace(/&/g, "&amp;")
@@ -595,7 +595,7 @@ export function escapeHTML(unsafe: string): string {
     .replace(/'/g, "&#039;");
 }
 
-// CSRF protection (client-side helpers)
+// CSRF protection (client-side helpers);
 export function getCSRFToken(): string {
   if (browser) {
     const token = document
@@ -607,7 +607,7 @@ export function getCSRFToken(): string {
 }
 
 export function addCSRFToken(formData: FormData): FormData {
-  formData.append("csrf_token", getCSRFToken());
+  formData.append("csrf_token", getCSRFToken();
   return formData;
 }
 
@@ -615,7 +615,7 @@ export function addCSRFToken(formData: FormData): FormData {
 export function checkAttorneyClientPrivilege(
   userId: string,
   documentId: string,
-  action: string
+  action: string;
 ): boolean {
   const session = sessionManager.getSession();
 
@@ -638,7 +638,7 @@ export function checkAttorneyClientPrivilege(
 
 export function validateLegalAccess(
   requiredPermission: string,
-  caseId?: string
+  caseId?: string;
 ): boolean {
   const session = sessionManager.getSession();
 
@@ -669,7 +669,7 @@ export function validateLegalAccess(
 export function trackPrivilegedAccess(
   documentId: string,
   action: "view" | "edit" | "download" | "print",
-  caseId?: string
+  caseId?: string;
 ): void {
   const session = sessionManager.getSession();
 

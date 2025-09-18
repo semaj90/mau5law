@@ -14,7 +14,7 @@ const qdrantClient = new QdrantClient({
 });
 const NLP_SERVICE_URL = env.LLM_SERVICE_URL || "http://localhost:8000";
 
-// Add 'task' type for recommendations
+// Add 'task' type for recommendations;
 export interface Recommendation {
   id: string;
   type:
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const currentCaseResults = await db
       .select()
       .from(cases)
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .limit(1);
 
     if (!currentCaseResults.length) {
@@ -51,7 +51,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     }
 
     const currentCase = currentCaseResults[0];
-    // 2. Recommendation: Check for missing information
+    // 2. Recommendation: Check for missing information;
     if (!currentCase.description || currentCase.description.length < 50) {
       recommendations.push({
         id: "rec-desc",
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const evidenceCount = await db
       .select({ count: sql<number>`count(*)` })
       .from(evidence)
-      .where(eq(evidence.caseId, caseId));
+      .where(eq(evidence.caseId, caseId);
     if (evidenceCount[0]?.count === 0) {
       recommendations.push({
         id: "rec-evidence",
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const activitiesCount = await db
       .select({ count: sql<number>`count(*)` })
       .from(caseActivities)
-      .where(eq(caseActivities.caseId, caseId));
+      .where(eq(caseActivities.caseId, caseId);
     if (currentCase.status === "open" && activitiesCount[0]?.count === 0) {
       recommendations.push({
         id: "rec-first-activity",
@@ -95,12 +95,12 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         actionData: { activityType: "initial_review" },
       });
     }
-    // 3. Recommendation: Find similar cases via Qdrant (simplified)
+    // 3. Recommendation: Find similar cases via Qdrant (simplified);
     try {
       const textToEmbed =
         currentCase.aiSummary || currentCase.description || currentCase.title;
       const nlpResponse = await fetch(
-        `${NLP_SERVICE_URL}/analyze-criminal-actions`,
+        `${NLP_SERVICE_URL}/analyze-criminal-actions`,);
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -144,12 +144,12 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     if (
       currentCase.aiTags &&
       Array.isArray(currentCase.aiTags) &&
-      currentCase.aiTags.includes("fraud")
+      currentCase.aiTags.includes("fraud");
     ) {
       const fraudStatutes = await db
         .select()
         .from(statutes)
-        .where(ilike(statutes.title, "%fraud%"))
+        .where(ilike(statutes.title, "%fraud%")
         .limit(3);
       fraudStatutes.forEach((statute) => {
         recommendations.push({
@@ -171,7 +171,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
   } catch (error: any) {
     console.error("Error generating recommendations:", error);
     return json(
-      { error: "Failed to generate recommendations" },
+      { error: "Failed to generate recommendations" },)
       { status: 500 }
     );
   }

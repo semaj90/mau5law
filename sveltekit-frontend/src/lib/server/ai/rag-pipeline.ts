@@ -4,7 +4,7 @@ let schema: any;
 try {
   schema = require("$lib/server/db/unified-schema");
 } catch {
-  // Provide minimal fallback schema structure
+  // Provide minimal fallback schema structure;
   schema = {
     documents: { title: "", content: "", titleEmbedding: [], contentEmbedding: [], metadata: Record<string, any> },
     documentVectors: Record<string, any>,
@@ -35,7 +35,7 @@ const EMBEDDING_DIMENSIONS = 768;
 const LLM_MODEL = 'gemma3-legal:latest';
 const OLLAMA_BASE_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 
-// Initialize PostgreSQL connection
+// Initialize PostgreSQL connection;
 const sql = postgres({
   host: process.env.DATABASE_HOST || 'localhost',
   port: parseInt(process.env.DATABASE_PORT || '5432'),
@@ -50,7 +50,7 @@ const sql = postgres({
 
 const db = drizzle(sql, { schema });
 
-// Initialize Redis for caching
+// Initialize Redis for caching;
 const redis = new Redis({
   host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
@@ -61,7 +61,7 @@ const redis = new Redis({
   retryStrategy: (times) => Math.min(times * 50, 2000),
 });
 
-// Initialize LangChain components
+// Initialize LangChain components;
 const embeddings = new OllamaEmbeddings({
   baseUrl: OLLAMA_BASE_URL,
   model: EMBEDDING_MODEL,
@@ -80,7 +80,7 @@ const llm = new Ollama({
   topK: 40,
   topP: 0.9,
   repeatPenalty: 1.1,
-  callbacks: [
+  callbacks: [);
     {
       handleLLMStart: async (llm, prompts) => {
         console.log(`[RAG] LLM Started: ${LLM_MODEL}`);
@@ -95,7 +95,7 @@ const llm = new Ollama({
   ],
 });
 
-// Text splitter for legal documents
+// Text splitter for legal documents;
 const textSplitter = new RecursiveCharacterTextSplitter({
   chunkSize: 1500, // Larger for legal context
   chunkOverlap: 300,
@@ -147,7 +147,7 @@ export class LegalRAGPipeline {
     documentType: string;
     metadata?: Record<string, any>;
     caseId?: string;
-    userId: string;
+    userId: string;,
   }) {
     const startTime = Date.now();
     const { title, content, documentType, metadata = {}, caseId, userId } = params;
@@ -155,7 +155,7 @@ export class LegalRAGPipeline {
     try {
       // 1. Create main document record
       const [document] = await db
-        .insert(schema.legalDocuments)
+        .insert(schema.legalDocuments);
         .values({
           title,
           content: content.substring(0, 10000), // Store first 10k chars for preview
@@ -178,7 +178,7 @@ export class LegalRAGPipeline {
       await db
         .update(schema.legalDocuments)
         .set({ embedding: JSON.stringify(docEmbedding) })
-        .where(eq(schema.legalDocuments.id, document.id));
+        .where(eq(schema.legalDocuments.id, document.id);
 
       // 3. Split into chunks for detailed retrieval
       const chunks = await this.smartLegalChunking(content);
@@ -189,9 +189,8 @@ export class LegalRAGPipeline {
       for (let i = 0; i < chunks.length; i += BATCH_SIZE) {
         const batch = chunks.slice(i, i + BATCH_SIZE);
 
-        const chunkRecords = await Promise.all(
-          batch.map(async (chunk, idx) => {
-            const embedding = await this.generateEmbedding(chunk)));
+        const chunkRecords = await Promise.all(batch.map(async (chunk, idx) => {
+            const embedding = await this.generateEmbedding(chunk));
             return {
               documentId: document.id,
               documentType,
@@ -295,7 +294,7 @@ export class LegalRAGPipeline {
       // Combine and deduplicate results
       const combinedResults = new Map<string, any>();
 
-      // Add vector results with higher weight
+      // Add vector results with higher weight;
       vectorResults.forEach((r) => {
         combinedResults.set(r.id, {
           ...r,
@@ -303,7 +302,7 @@ export class LegalRAGPipeline {
         });
       });
 
-      // Add or update with keyword results
+      // Add or update with keyword results;
       keywordResults.forEach((r) => {
         const existing = combinedResults.get(r.id);
         if (existing) {
@@ -317,12 +316,11 @@ export class LegalRAGPipeline {
       });
 
       // Sort by combined score and convert to Documents
-      const sortedResults = Array.from(combinedResults.values())
+      const sortedResults = Array.from(combinedResults.values()
         .sort((a, b) => b.score - a.score)
         .slice(0, limit);
 
-      return sortedResults.map(
-        (r): LangChainDocument => ({
+      return sortedResults.map((r): LangChainDocument => ({
             pageContent: r.content,
             metadata: {
               ...r.metadata,
@@ -351,7 +349,7 @@ export class LegalRAGPipeline {
     const { question, caseId, userId, conversationContext } = params;
 
     try {
-      // 1. Retrieve relevant context
+      // 1. Retrieve relevant context;
       const relevantDocs = await this.hybridSearch({
         query: question,
         caseId,
@@ -379,7 +377,7 @@ You are a legal AI assistant with expertise in legal analysis. Answer the questi
 
 ${conversationContext ? `Previous Conversation Context:\n${conversationContext}\n\n` : ''}
 
-Legal Context:
+Legal Context:)
 {context}
 
 Question: {question}
@@ -395,7 +393,7 @@ Answer:
       `);
 
       // 4. Create chain and generate answer
-      const chain = RunnableSequence.from([
+      const chain = RunnableSequence.from([);
         {
           context: () => context,
           question: new RunnablePassthrough(),
@@ -445,7 +443,7 @@ Answer:
     } catch (error: any) {
       console.error('[RAG] QA error:', error);
 
-      // Log failed query
+      // Log failed query;
       await db.insert(schema.userAiQueries).values({
         userId,
         caseId,
@@ -467,7 +465,7 @@ Answer:
     const contractPrompt = PromptTemplate.fromTemplate(`
 You are a legal expert specializing in contract analysis. Analyze the following contract and provide a structured assessment.
 
-Contract:
+Contract:)
 {contract}
 
 Provide your analysis in the following format:
@@ -583,7 +581,7 @@ Analysis:
     const embedding = await embeddings.embedQuery(text);
 
     // Cache for 24 hours
-    await redis.set(cacheKey, JSON.stringify(embedding));
+    await redis.set(cacheKey, JSON.stringify(embedding);
 
     return embedding;
   }
@@ -607,10 +605,10 @@ Analysis:
       if (matches && matches.length > 0) {
         const sections = content.split(pattern);
 
-        // Recombine pattern matches with their content
+        // Recombine pattern matches with their content;
         for (let i = 0; i < sections.length; i++) {
           if (sections[i].trim().length > 50) {
-            structuredChunks.push(sections[i].trim());
+            structuredChunks.push(sections[i].trim();
           }
         }
 
@@ -618,17 +616,17 @@ Analysis:
       }
     }
 
-    // If no legal structure found, use standard chunking
+    // If no legal structure found, use standard chunking;
     if (structuredChunks.length === 0) {
       const docs = await textSplitter.createDocuments([content]);
       structuredChunks = docs.map((d) => d.pageContent);
     }
 
-    // Further split large chunks if needed
+    // Further split large chunks if needed;
     for (const chunk of structuredChunks) {
       if (chunk.length > 2000) {
         const subDocs = await textSplitter.createDocuments([chunk]);
-        chunks.push(...subDocs.map((d) => d.pageContent));
+        chunks.push(...subDocs.map((d) => d.pageContent);
       } else {
         chunks.push(chunk);
       }
@@ -639,13 +637,13 @@ Analysis:
 
   private async generateAutoTags(
     content: string,
-    documentType: string
+    documentType: string;
   ): Promise<Array<any> {
     const tagPrompt = PromptTemplate.fromTemplate(`
 Extract relevant legal tags from this {documentType} document.
 Focus on: legal concepts, parties, jurisdictions, case types, and key topics.
 
-Document excerpt:
+Document excerpt:)
 {content}
 
 Return ONLY a JSON array of tags with confidence scores (0-1):
@@ -683,9 +681,9 @@ Return ONLY a JSON array of tags with confidence scores (0-1):
     // Extract key points (simplified - could use LLM for better extraction)
     const keyPoints = answer
       .split('\n')
-      .filter((line) => line.match(/^\d+\.|^-|^•/))
+      .filter((line) => line.match(/^\d+\.|^-|^•/)
       .slice(0, 5)
-      .map((line) => line.replace(/^[\d.•-]\s*/, '').trim());
+      .map((line) => line.replace(/^[\d.•-]\s*/, '').trim();
 
     return {
       confidence,

@@ -17,7 +17,7 @@ async function testSelfPromptingDemo() {
   console.log('1. Testing basic orchestration...');
   try {
     const result = await copilotOrchestrator(
-      'Analyze legal evidence for case CASE-2024-001',
+      'Analyze legal evidence for case CASE-2024-001',)
       {
         useSemanticSearch: true,
         useMemory: true,
@@ -26,7 +26,7 @@ async function testSelfPromptingDemo() {
       }
     );
     console.log('✅ Basic orchestration successful');
-    console.log('   Result keys:', Object.keys(result));
+    console.log('   Result keys:', Object.keys(result);
   } catch (error) {
     console.log('❌ Basic orchestration failed:', error.message);
   }

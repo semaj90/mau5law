@@ -9,7 +9,7 @@ import type { RequestHandler } from './$types.js';
 import { reinforcementLearningCache } from '$lib/caching/reinforcement-learning-cache';
 import { reinforcementLearningCache as serverCache } from '$lib/caching/reinforcement-learning-cache.server';
 
-// 3D Asset Categories for Legal AI Platform
+// 3D Asset Categories for Legal AI Platform;
 interface Asset3DSearchRequest {
   query: string;
   context: {
@@ -34,17 +34,17 @@ interface Asset3DSearchResult {
   precomputedData?: {
     webgpuTextures: string[];
     animationFrames: Float32Array;
-    compressionRatio: number;
+    compressionRatio: number;,
   };
   semanticTags: string[];
   optimizationHints: {
     enableWebGPU: boolean;
     enableCHRROM: boolean;
-    cacheStrategy: 'immediate' | 'lazy' | 'predictive';
+    cacheStrategy: 'immediate' | 'lazy' | 'predictive';,
   };
 }
 
-// Brain Graph Integration - 3D Asset Topology
+// Brain Graph Integration - 3D Asset Topology;
 const assetGraphTopology = {
   nodes: [
     { id: '3d-asset-search', type: 'search-engine' },
@@ -62,7 +62,7 @@ const assetGraphTopology = {
 };
 
 // Legal 3D Asset Database (would be replaced with actual asset management system)
-const legalAssetDatabase = [
+const legalAssetDatabase = [;
   {
     assetId: 'contract_stack_3d',
     assetType: '3d_model' as const,
@@ -97,7 +97,7 @@ const legalAssetDatabase = [
     renderPriority: 7,
     semanticTags: ['gavel', 'animation', 'decision', 'strike', 'particles'],
     animationUrl: '/assets/3d/animations/gavel_strike.json',
-    particleSystemUrl: '/assets/3d/particles/wood_chips.json'
+    particleSystemUrl: '/assets/3d/particles/wood_chips.json',
   },
   {
     assetId: 'justice_scale_3d',
@@ -109,7 +109,7 @@ const legalAssetDatabase = [
     renderPriority: 10,
     semanticTags: ['justice', 'scales', 'balance', 'gold', 'dynamic'],
     webglUrl: '/assets/3d/legal/justice_scales.glb',
-    materialUrl: '/assets/3d/materials/gold_metallic.json'
+    materialUrl: '/assets/3d/materials/gold_metallic.json',
   },
   {
     assetId: 'legal_text_particle_3d',
@@ -121,7 +121,7 @@ const legalAssetDatabase = [
     renderPriority: 5,
     semanticTags: ['text', 'particles', 'flow', 'words', 'transitions'],
     particleSystemUrl: '/assets/3d/particles/legal_text.json',
-    shaderUrl: '/assets/3d/shaders/text_particle.glsl'
+    shaderUrl: '/assets/3d/shaders/text_particle.glsl',
   }
 ];
 
@@ -160,7 +160,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // STEP 3: Context-Aware Ranking (CNN-like pattern recognition)
     const rankedResults = await rankAssetsByContext(semanticResults, searchRequest.context);
 
-    // STEP 4: Precompute Animations if Requested (Autoencoder compression)
+    // STEP 4: Precompute Animations if Requested (Autoencoder compression);
     if (searchRequest.precomputeAnimations) {
       await precomputeAssetAnimations(rankedResults, searchRequest.context);
     }
@@ -184,12 +184,12 @@ export const POST: RequestHandler = async ({ request }) => {
         searchTime,
         cacheHits: predictions.length,
         chrRomPatterns: chrRomPatterns.length,
-        totalAssets: rankedResults.length
+        totalAssets: rankedResults.length,
       },
       metadata: {
         query: searchRequest.query,
         predictiveMode: searchRequest.predictiveMode,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     });
 
@@ -198,7 +198,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       error: 'Asset search failed',
       message: error instanceof Error ? error.message: 'Unknown error',
-      results: []
+      results: [],
     }, { status: 500 });
   }
 };
@@ -216,7 +216,7 @@ async function performSemanticAssetSearch(request: Asset3DSearchRequest): Promis
     // Calculate semantic similarity score (simplified transformer-like approach)
     let score = 0;
 
-    // Match semantic tags
+    // Match semantic tags;
     for (const tag of asset.semanticTags) {
       for (const token of allTokens) {
         if (tag.includes(token) || token.includes(tag)) {
@@ -225,13 +225,13 @@ async function performSemanticAssetSearch(request: Asset3DSearchRequest): Promis
       }
     }
 
-    // Context relevance bonus
+    // Context relevance bonus;
     if (request.context.documentType) {
       const contextMatch = asset.legalContext.includes(request.context.documentType);
       if (contextMatch) score += 3;
     }
 
-    // Complexity matching
+    // Complexity matching;
     if (request.context.complexity === asset.complexity) {
       score += 1;
     }
@@ -243,7 +243,7 @@ async function performSemanticAssetSearch(request: Asset3DSearchRequest): Promis
         optimizationHints: {
           enableWebGPU: asset.complexity === 'high',
           enableCHRROM: score > 5,
-          cacheStrategy: score > 7 ? 'immediate' : score > 3 ? 'predictive' : 'lazy'
+          cacheStrategy: score > 7 ? 'immediate' : score > 3 ? 'predictive' : 'lazy',
         }
       };
       results.push(result);
@@ -254,7 +254,7 @@ async function performSemanticAssetSearch(request: Asset3DSearchRequest): Promis
 }
 
 async function rankAssetsByContext(assets: Asset3DSearchResult[], context: Asset3DSearchRequest['context']): Promise<Asset3DSearchResult[]> {
-  // CNN-like pattern recognition for interaction context
+  // CNN-like pattern recognition for interaction context;
   const interactionWeights = {
     'hover': { animation: 0.3, model: 0.7, texture: 0.2, particle_system: 0.4, material: 0.1 },
     'click': { animation: 0.8, model: 0.6, texture: 0.3, particle_system: 0.7, material: 0.2 },
@@ -272,7 +272,7 @@ async function rankAssetsByContext(assets: Asset3DSearchResult[], context: Asset
 }
 
 async function precomputeAssetAnimations(assets: Asset3DSearchResult[], context: Asset3DSearchRequest['context']): Promise<void> {
-  for (const asset of assets.slice(0, 3)) { // Precompute top 3 assets only
+  for (const asset of assets.slice(0, 3)) { // Precompute top 3 assets only;
     if (asset.assetType === 'animation' || asset.assetType === 'particle_system') {
       // Simulate autoencoder-like compression for animation frames
       const frameCount = 60; // 1 second at 60fps
@@ -289,7 +289,7 @@ async function precomputeAssetAnimations(assets: Asset3DSearchResult[], context:
       asset.precomputedData = {
         webgpuTextures: [`texture_${asset.assetId}_frame_buffer`],
         animationFrames: compressedFrames,
-        compressionRatio: 0.4 // 60% size reduction
+        compressionRatio: 0.4 // 60% size reduction,
       };
 
       console.log(`🎬 Precomputed ${frameCount} animation frames for ${asset.assetId}`);
@@ -303,11 +303,11 @@ async function prepareCHRROMPatterns(assets: Asset3DSearchResult[]): Promise<str
   for (const asset of assets.slice(0, 5)) { // Prepare CHR-ROM patterns for top 5 assets
     const patternId = `chr_rom_3d_${asset.assetId}`;
 
-    // Store in both client and server RL caches
+    // Store in both client and server RL caches;
     await reinforcementLearningCache.set(patternId, {
       renderableHTML: `<div class="3d-asset-preview" data-asset="${asset.assetId}">${asset.name}</div>`,
       assetMetadata: asset,
-      compressionRatio: asset.precomputedData?.compressionRatio || 1.0
+      compressionRatio: asset.precomputedData?.compressionRatio || 1.0,
     });
 
     patterns.push(patternId);
@@ -322,13 +322,13 @@ async function updateRLModels(request: Asset3DSearchRequest, results: Asset3DSea
   const interactionSequence = request.context.userBehaviorPattern || [];
   const currentAction = `search_${request.query}_${request.context.interactionType}`;
 
-  // Update client-side RL cache with search patterns
+  // Update client-side RL cache with search patterns;
   if (interactionSequence.length > 0) {
     const lastAction = interactionSequence[interactionSequence.length - 1];
     await reinforcementLearningCache.predict3DComponent(lastAction, currentAction);
   }
 
-  // Update server-side RL cache with result quality
+  // Update server-side RL cache with result quality;
   for (const result of results.slice(0, 3)) {
     serverCache.set(`quality_${(result as { assetId?: any; predictedUsage?: any }).assetId}`, (result as { assetId?: any; predictedUsage?: any }).predictedUsage);
   }

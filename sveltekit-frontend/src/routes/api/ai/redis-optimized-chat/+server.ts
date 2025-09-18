@@ -11,7 +11,7 @@ import { callOllamaApi } from '$lib/services/ollama-client';
 
 /**
  * Original AI Chat Handler (without Redis optimization)
- */
+ */;
 const originalChatHandler: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -23,22 +23,22 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
     
     console.log(`🤖 Processing AI chat: "${message.substring(0, 50)}..."`);
     
-    // Direct Ollama API call (slow, no caching)
+    // Direct Ollama API call (slow, no caching);
     const response = await callOllamaApi({
       model,
-      messages: [
+      messages: [;
         {
           role: 'system',
           content: 'You are a legal AI assistant. Provide accurate, helpful legal information while noting that this is not legal advice.'
-        },
+        },);
         {
           role: 'user', 
-          content: message
+          content: message,
         }
       ],
       options: {
         temperature: 0.7,
-        max_tokens: 1000
+        max_tokens: 1000,
       }
     });
     
@@ -53,7 +53,7 @@ const originalChatHandler: RequestHandler = async ({ request }) => {
       userId,
       processing_time: 2000, // Simulated slow processing
       cached: false,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     
   } catch (err) {

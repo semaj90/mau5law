@@ -1,6 +1,7 @@
 /**
  * Shared metric types for client and server-side observability
- */
+ */;
+}
 
 export interface CognitiveMetrics {
   routingEfficiency: number;
@@ -8,7 +9,7 @@ export interface CognitiveMetrics {
   gpuUtilization: number;
   consciousnessLevel: number;
   quantumCoherence: number;
-  timestamp: string;
+  timestamp: string;,
 }
 
 export interface RouteMetrics {
@@ -40,21 +41,21 @@ export interface TimingMetrics {
   requestId?: string;
   timestamp: number;
   url: string;
-  userAgent: string;
+  userAgent: string;,
 }
 
 export interface ClientMetricsPayload {
   metrics: RouteMetrics[];
   timestamp: number;
   userAgent: string;
-  url: string;
+  url: string;,
 }
 
 export interface PerformanceMetrics {
   overall: {
     status: 'excellent' | 'good' | 'fair' | 'poor';
     score: number;
-    timestamp: string;
+    timestamp: string;,
   };
   frontend: {
     averageLoadTime: number;
@@ -64,16 +65,16 @@ export interface PerformanceMetrics {
       lcp: number;
       fid: number;
       cls: number;
-      fcp: number;
+      fcp: number;,
     };
   };
   backend: {
     averageResponseTime: number;
     requestsPerSecond: number;
     errorRate: number;
-    uptime: number;
+    uptime: number;,
   };
-  cognitive: CognitiveMetrics;
+  cognitive: CognitiveMetrics;,
 }
 
 export interface SystemMetrics {
@@ -83,19 +84,19 @@ export interface SystemMetrics {
       heapUsed: number;
       heapTotal: number;
       external: number;
-      rss: number;
+      rss: number;,
     };
     cpu: {
       usage: number;
-      loadAverage: number[];
+      loadAverage: number[];,
     };
     gpu?: {
       utilization: number;
       memory: {
         used: number;
-        total: number;
+        total: number;,
       };
-      temperature: number;
+      temperature: number;,
     };
   };
   services: {
@@ -115,13 +116,14 @@ export interface MetricsAggregation {
     lcp: number;
     fid: number;
     cls: number;
-    fcp: number;
+    fcp: number;,
   };
   topRoutes: Array<any>;
-  cognitiveMetrics: CognitiveMetrics;
+  cognitiveMetrics: CognitiveMetrics;,
 }
 
-// ---- Cognitive Metrics Builders & Utilities ----
+// ---- Cognitive Metrics Builders & Utilities ----;
+}
 
 export interface PartialCognitiveMetrics {
   routingEfficiency?: number;
@@ -134,15 +136,15 @@ export interface PartialCognitiveMetrics {
 
 /**
  * Normalize a raw metric (0-100 nominal) into bounded range with optional clamping.
- */
+ */;
 export function clampMetric(value: number | undefined, min = 0, max = 100): number {
   if (value == null || Number.isNaN(value)) return 0;
-  return Math.min(max, Math.max(min, value));
+  return Math.min(max, Math.max(min, value);
 }
 
 /**
  * Build a complete CognitiveMetrics object, filling defaults and timestamp.
- */
+ */;
 export function buildCognitiveMetrics(partial: PartialCognitiveMetrics): CognitiveMetrics {
   return {
     routingEfficiency: clampMetric(partial.routingEfficiency),
@@ -150,7 +152,7 @@ export function buildCognitiveMetrics(partial: PartialCognitiveMetrics): Cogniti
     gpuUtilization: clampMetric(partial.gpuUtilization),
     consciousnessLevel: clampMetric(partial.consciousnessLevel),
     quantumCoherence: clampMetric(partial.quantumCoherence),
-    timestamp: partial.timestamp || new Date().toISOString()
+    timestamp: partial.timestamp || new Date().toISOString(),
   };
 }
 
@@ -158,9 +160,9 @@ export function buildCognitiveMetrics(partial: PartialCognitiveMetrics): Cogniti
  * Derive synthetic emergent cognitive fields if not supplied by server subsystems.
  * consciousnessLevel: weighted mean of efficiency & cache quality signals.
  * quantumCoherence: sinusoidal temporal modulation blended with GPU utilization (for demo UX).
- */
+ */;
 export function deriveEmergentCognitiveSignals(base: CognitiveMetrics): CognitiveMetrics {
-  const derivedConsciousness = base.consciousnessLevel || clampMetric((base.routingEfficiency * 0.5 + base.cacheHitRatio * 0.5));
+  const derivedConsciousness = base.consciousnessLevel || clampMetric((base.routingEfficiency * 0.5 + base.cacheHitRatio * 0.5);
   const timeFactor = Date.now() / 12000; // slow oscillation
   const wave = (Math.sin(timeFactor) + 1) / 2; // 0..1
   const derivedQuantum = base.quantumCoherence || clampMetric(base.gpuUtilization * 0.4 + wave * 60);

@@ -25,7 +25,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         action: 'cache_info',
         data: cacheInfo,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
     
@@ -53,9 +53,9 @@ export const GET: RequestHandler = async ({ url }) => {
           testPassed,
           original: testData,
           retrieved,
-          cacheInfo: await cacheService.getCacheInfo()
+          cacheInfo: await cacheService.getCacheInfo(),
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
     
@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (!text || !embedding) {
         return json({
           success: false,
-          error: 'Missing text or embedding data'
+          error: 'Missing text or embedding data',
         }, { status: 400 });
       }
       
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
           testPassed,
           original: embedding,
           cached: cachedEmbedding,
-          compressionInfo: 'Embedding cached with gzip compression'
+          compressionInfo: 'Embedding cached with gzip compression',
         }
       });
     }
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
       if (!query || !results) {
         return json({
           success: false,
-          error: 'Missing query or results data'
+          error: 'Missing query or results data',
         }, { status: 400 });
       }
       
@@ -136,22 +136,22 @@ export const POST: RequestHandler = async ({ request }) => {
           testPassed,
           original: results,
           cached: cachedResults,
-          compressionInfo: 'Search results cached with gzip compression'
+          compressionInfo: 'Search results cached with gzip compression',
         }
       });
     }
     
     if (action === 'large_payload') {
-      // Test compression with large payload
+      // Test compression with large payload;
       const largeArray = Array.from({ length: 1000 }, (_, i) => ({
         id: i,
         data: `This is test data item ${i}`,
         metadata: { 
           created: new Date().toISOString(),
           tags: ['test', 'large', 'payload'],
-          values: Array.from({ length: 10 }, (_, j) => Math.random())
+          values: Array.from({ length: 10 }, (_, j) => Math.random()
         }
-      }));
+      });
       
       const startTime = Date.now();
       
@@ -175,7 +175,7 @@ export const POST: RequestHandler = async ({ request }) => {
           compressedTest: compressedPassed,
           uncompressedTest: uncompressedPassed,
           processingTime: endTime - startTime,
-          compressionBenefit: 'Large arrays benefit significantly from gzip compression'
+          compressionBenefit: 'Large arrays benefit significantly from gzip compression',
         }
       });
     }
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };

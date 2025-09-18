@@ -18,7 +18,11 @@ const tagFixes = [
   { open: '<Dialog.Footer', close: '</DialogFooter>', correctClose: '</Dialog.Footer>' },
   { open: '<Dialog.Content', close: '</DialogContent>', correctClose: '</Dialog.Content>' },
   { open: '<Dialog.Title', close: '</DialogTitle>', correctClose: '</Dialog.Title>' },
-  { open: '<Dialog.Description', close: '</DialogDescription>', correctClose: '</Dialog.Description>' },
+  {
+    open: '<Dialog.Description',
+    close: '</DialogDescription>',
+    correctClose: '</Dialog.Description>',
+  },
 
   // Card components (common pattern)
   { open: '<Card.Header', close: '</CardHeader>', correctClose: '</Card.Header>' },
@@ -68,7 +72,7 @@ function fixSvelteFile(filePath) {
 function fixSvelteFiles(dir) {
   const files = fs.readdirSync(dir, { withFileTypes: true });
 
-  files.forEach(file => {
+  files.forEach((file) => {
     const filePath = path.join(dir, file.name);
 
     if (file.isDirectory()) {
@@ -93,7 +97,7 @@ try {
     try {
       execSync('timeout 15s npx svelte-check --output machine 2>/dev/null', {
         stdio: 'inherit',
-        timeout: 20000
+        timeout: 20000,
       });
       console.log('✅ Svelte component syntax verified');
     } catch (error) {

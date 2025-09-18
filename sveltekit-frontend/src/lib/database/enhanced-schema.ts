@@ -21,7 +21,7 @@ import {
 import { sql } from "drizzle-orm";
 import { relations } from "drizzle-orm";
 
-// Custom vector type for pgvector
+// Custom vector type for pgvector;
 const vector = customType({
   dataType(config) {
     return `vector(${(config as any)?.dimensions ?? 1536})`;
@@ -34,7 +34,7 @@ const vector = customType({
   }
 });
 
-// Core tables (existing)
+// Core tables (existing);
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   email: varchar('email', { length: 255 }).notNull().unique(),
@@ -44,7 +44,7 @@ export const users = pgTable('users', {
   role: varchar('role', { length: 50 }).notNull().default('user'),
   isActive: boolean('is_active').default(true),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 
 export const cases = pgTable('cases', {
@@ -57,10 +57,10 @@ export const cases = pgTable('cases', {
   createdBy: uuid('created_by').references(() => users.id),
   assignedTo: uuid('assigned_to').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-// Enhanced Documents table with nomic-embed-text (768 dimensions)
+// Enhanced Documents table with nomic-embed-text (768 dimensions);
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   caseId: uuid('case_id').references(() => cases.id),
@@ -78,15 +78,15 @@ export const documents = pgTable('documents', {
   source: varchar('source', { length: 100 }).default('upload'),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 }, (table: any) => ({
   // Optimized indexes for vector operations
   embeddingIdx: index('documents_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   caseIdx: index('documents_case_idx').on(table.caseId),
   contentIdx: index('documents_content_idx').using('gin', sql`to_tsvector('english', ${table.content})`)
-}));
+});
 
-// Document chunks for optimized retrieval
+// Document chunks for optimized retrieval;
 export const documentChunks = pgTable('document_chunks', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   documentId: uuid('document_id').references(() => documents.id).notNull(),
@@ -98,15 +98,15 @@ export const documentChunks = pgTable('document_chunks', {
   endIndex: integer('end_index'),
   tokenCount: integer('token_count'),
   metadata: json('metadata'),
-  createdAt: timestamp('created_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow(),
 }, (table: any) => ({
   // Optimized vector search index
   embeddingIdx: index('document_chunks_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   documentIdx: index('document_chunks_document_idx').on(table.documentId),
   chunkIdx: index('document_chunks_chunk_idx').on(table.documentId, table.chunkIndex)
-}));
+});
 
-// Enhanced evidence table
+// Enhanced evidence table;
 export const evidence = pgTable('evidence', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   caseId: uuid('case_id').references(() => cases.id),
@@ -125,13 +125,13 @@ export const evidence = pgTable('evidence', {
   embedding: vector('embedding', { dimensions: 768 }),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 }, (table: any) => ({
   embeddingIdx: index('evidence_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
-  caseIdx: index('evidence_case_idx').on(table.caseId)
-}));
+  caseIdx: index('evidence_case_idx').on(table.caseId),
+});
 
-// Enhanced search index with optimized vector operations
+// Enhanced search index with optimized vector operations;
 export const searchIndex = pgTable('search_index', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   entityType: varchar('entity_type', { length: 50 }).notNull(),
@@ -141,15 +141,15 @@ export const searchIndex = pgTable('search_index', {
   embedding: vector('embedding', { dimensions: 768 }).notNull(),
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 }, (table: any) => ({
   // High-performance vector index for similarity search
   embeddingIdx: index('search_index_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   entityIdx: index('search_index_entity_idx').on(table.entityType, table.entityId),
   contentIdx: index('search_index_content_idx').using('gin', sql`to_tsvector('english', ${table.content})`)
-}));
+});
 
-// AI chat interactions with conversation context
+// AI chat interactions with conversation context;
 export const aiInteractions = pgTable('ai_interactions', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   userId: uuid('user_id').references(() => users.id),
@@ -165,14 +165,14 @@ export const aiInteractions = pgTable('ai_interactions', {
   contextEmbedding: vector('context_embedding', { dimensions: 768 }),
   feedback: json('feedback'),
   metadata: json('metadata'),
-  createdAt: timestamp('created_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow(),
 }, (table: any) => ({
   contextEmbeddingIdx: index('ai_interactions_context_embedding_idx').using('ivfflat', table.contextEmbedding.op('vector_cosine_ops')),
   sessionIdx: index('ai_interactions_session_idx').on(table.sessionId),
-  userIdx: index('ai_interactions_user_idx').on(table.userId)
-}));
+  userIdx: index('ai_interactions_user_idx').on(table.userId),
+});
 
-// Vector similarity cache for performance optimization
+// Vector similarity cache for performance optimization;
 export const vectorSimilarityCache = pgTable('vector_similarity_cache', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   queryHash: varchar('query_hash', { length: 64 }).notNull().unique(),
@@ -181,13 +181,13 @@ export const vectorSimilarityCache = pgTable('vector_similarity_cache', {
   hitCount: integer('hit_count').default(1),
   lastAccessed: timestamp('last_accessed').defaultNow(),
   expiresAt: timestamp('expires_at'),
-  createdAt: timestamp('created_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow(),
 }, (table: any) => ({
   queryHashIdx: index('vector_similarity_cache_hash_idx').on(table.queryHash),
-  expiresIdx: index('vector_similarity_cache_expires_idx').on(table.expiresAt)
-}));
+  expiresIdx: index('vector_similarity_cache_expires_idx').on(table.expiresAt),
+});
 
-// Legal knowledge base with semantic embeddings
+// Legal knowledge base with semantic embeddings;
 export const legalKnowledgeBase = pgTable('legal_knowledge_base', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   title: varchar('title', { length: 255 }).notNull(),
@@ -205,14 +205,14 @@ export const legalKnowledgeBase = pgTable('legal_knowledge_base', {
   verifiedBy: uuid('verified_by').references(() => users.id),
   verifiedAt: timestamp('verified_at'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 }, (table: any) => ({
   embeddingIdx: index('legal_knowledge_base_embedding_idx').using('ivfflat', table.embedding.op('vector_cosine_ops')),
   categoryIdx: index('legal_knowledge_base_category_idx').on(table.category, table.subcategory),
-  jurisdictionIdx: index('legal_knowledge_base_jurisdiction_idx').on(table.jurisdiction)
-}));
+  jurisdictionIdx: index('legal_knowledge_base_jurisdiction_idx').on(table.jurisdiction),
+});
 
-// Embedding processing jobs for background processing
+// Embedding processing jobs for background processing;
 export const embeddingJobs = pgTable('embedding_jobs', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   entityType: varchar('entity_type', { length: 50 }).notNull(),
@@ -228,80 +228,80 @@ export const embeddingJobs = pgTable('embedding_jobs', {
   error: text('error'),
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 }, (table: any) => ({
   statusIdx: index('embedding_jobs_status_idx').on(table.status),
   entityIdx: index('embedding_jobs_entity_idx').on(table.entityType, table.entityId),
   priorityIdx: index('embedding_jobs_priority_idx').on(table.priority, table.createdAt)
-}));
+});
 
-// Define relations
+// Define relations;
 export const documentsRelations = relations(documents, ({ one, many }) => ({
   case: one(cases, {
     fields: [documents.caseId],
-    references: [cases.id]
+    references: [cases.id],
   }),
   creator: one(users, {
     fields: [documents.createdBy],
-    references: [users.id]
+    references: [users.id],
   }),
   chunks: many(documentChunks),
-  evidence: many(evidence)
-}));
+  evidence: many(evidence),
+});
 
 export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
   document: one(documents, {
     fields: [documentChunks.documentId],
-    references: [documents.id]
+    references: [documents.id],
   })
-}));
+});
 
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   case: one(cases, {
     fields: [evidence.caseId],
-    references: [cases.id]
+    references: [cases.id],
   }),
   document: one(documents, {
     fields: [evidence.documentId],
-    references: [documents.id]
+    references: [documents.id],
   }),
   creator: one(users, {
     fields: [evidence.createdBy],
-    references: [users.id]
+    references: [users.id],
   })
-}));
+});
 
 export const casesRelations = relations(cases, ({ one, many }) => ({
   creator: one(users, {
     fields: [cases.createdBy],
-    references: [users.id]
+    references: [users.id],
   }),
   assignee: one(users, {
     fields: [cases.assignedTo],
-    references: [users.id]
+    references: [users.id],
   }),
   documents: many(documents),
   evidence: many(evidence),
-  aiInteractions: many(aiInteractions)
-}));
+  aiInteractions: many(aiInteractions),
+});
 
 export const aiInteractionsRelations = relations(aiInteractions, ({ one }) => ({
   user: one(users, {
     fields: [aiInteractions.userId],
-    references: [users.id]
+    references: [users.id],
   }),
   case: one(cases, {
     fields: [aiInteractions.caseId],
-    references: [cases.id]
+    references: [cases.id],
   })
-}));
+});
 
 export const legalKnowledgeBaseRelations = relations(legalKnowledgeBase, ({ one }) => ({
   verifier: one(users, {
     fields: [legalKnowledgeBase.verifiedBy],
-    references: [users.id]
+    references: [users.id],
   })
-}));
+});
 
 // Type exports
 export type User = typeof users.$inferSelect;
@@ -334,7 +334,7 @@ export type NewLegalKnowledgeBase = typeof legalKnowledgeBase.$inferInsert;
 export type EmbeddingJob = typeof embeddingJobs.$inferSelect;
 export type NewEmbeddingJob = typeof embeddingJobs.$inferInsert;
 
-// AI Processing Jobs table
+// AI Processing Jobs table;
 export const aiProcessingJobs = pgTable('ai_processing_jobs', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   type: varchar('type', { length: 50 }).notNull(),
@@ -345,7 +345,7 @@ export const aiProcessingJobs = pgTable('ai_processing_jobs', {
   progress: integer('progress').default(0),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
-  completedAt: timestamp('completed_at')
+  completedAt: timestamp('completed_at'),
 });
 
 export type AIProcessingJob = typeof aiProcessingJobs.$inferSelect;

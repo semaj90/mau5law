@@ -5,7 +5,7 @@ import { pgTable, uuid, varchar, text, timestamp, integer, decimal, boolean, jso
 import { relations } from 'drizzle-orm/relations';
 import { users, cases, evidence, legalDocuments } from './unified-schema.js';
 
-// Evidence Chain of Custody
+// Evidence Chain of Custody;
 export const evidenceChainOfCustody = pgTable("evidence_chain_of_custody", {
   id: uuid("id").primaryKey().defaultRandom(),
   evidenceId: uuid("evidence_id").references(() => evidence.id).notNull(),
@@ -22,7 +22,7 @@ export const evidenceChainOfCustody = pgTable("evidence_chain_of_custody", {
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// Case Assignments
+// Case Assignments;
 export const caseAssignments = pgTable("case_assignments", {
   id: uuid("id").primaryKey().defaultRandom(),
   caseId: uuid("case_id").references(() => cases.id).notNull(),
@@ -36,7 +36,7 @@ export const caseAssignments = pgTable("case_assignments", {
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// AI Query Storage
+// AI Query Storage;
 export const userAiQueries = pgTable("user_ai_queries", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").references(() => users.id).notNull(),
@@ -53,7 +53,7 @@ export const userAiQueries = pgTable("user_ai_queries", {
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// Embedding Cache
+// Embedding Cache;
 export const embeddingCache = pgTable("embedding_cache", {
   textHash: varchar("text_hash", { length: 64 }).primaryKey(),
   embedding: vector("embedding", { dimensions: 384 }),
@@ -61,7 +61,7 @@ export const embeddingCache = pgTable("embedding_cache", {
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// RAG Sessions  
+// RAG Sessions;
 export const ragSessions = pgTable("rag_sessions", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").references(() => users.id).notNull(),
@@ -76,7 +76,7 @@ export const ragSessions = pgTable("rag_sessions", {
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// RAG Messages
+// RAG Messages;
 export const ragMessages = pgTable("rag_messages", {
   id: uuid("id").primaryKey().defaultRandom(),
   sessionId: uuid("session_id").references(() => ragSessions.id).notNull(),
@@ -89,7 +89,7 @@ export const ragMessages = pgTable("rag_messages", {
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// Document Chunks for RAG
+// Document Chunks for RAG;
 export const documentChunks = pgTable("document_chunks", {
   id: uuid("id").primaryKey().defaultRandom(),
   documentId: uuid("document_id").references(() => legalDocuments.id).notNull(),
@@ -101,7 +101,7 @@ export const documentChunks = pgTable("document_chunks", {
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// Case Embeddings for vector search
+// Case Embeddings for vector search;
 export const caseEmbeddings = pgTable("case_embeddings", {
   id: uuid("id").primaryKey().defaultRandom(),
   caseId: uuid("case_id").references(() => cases.id).notNull(),
@@ -113,7 +113,7 @@ export const caseEmbeddings = pgTable("case_embeddings", {
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// Evidence Vectors
+// Evidence Vectors;
 export const evidenceVectors = pgTable("evidence_vectors", {
   id: uuid("id").primaryKey().defaultRandom(),
   evidenceId: uuid("evidence_id").references(() => evidence.id).notNull(),
@@ -125,7 +125,7 @@ export const evidenceVectors = pgTable("evidence_vectors", {
   updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
 });
 
-// Legal Precedents
+// Legal Precedents;
 export const legalPrecedents = pgTable("legal_precedents", {
   id: uuid("id").primaryKey().defaultRandom(),
   title: varchar("title", { length: 500 }).notNull(),

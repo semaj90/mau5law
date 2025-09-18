@@ -7,7 +7,7 @@ import { browser } from '$app/environment';
 import { writable, type Writable } from 'svelte/store';
 import path from "path";
 
-// Production-compatible types without external dependencies
+// Production-compatible types without external dependencies;
 export interface SoraGraphNode {
   id: string;
   type: 'document' | 'entity' | 'concept' | 'relationship' | 'case' | 'evidence';
@@ -32,7 +32,7 @@ export interface SoraTraversalPath {
   edges: SoraGraphEdge[];
   totalScore: number;
   pathLength: number;
-  semanticCoherence: number;
+  semanticCoherence: number;,
 }
 
 export interface MoogleVisualizationOutput {
@@ -45,7 +45,7 @@ export interface MoogleVisualizationOutput {
     bounds: { minX: number; maxX: number; minY: number; maxY: number };
     renderTime: number;
     nodeCount: number;
-    edgeCount: number;
+    edgeCount: number;,
   };
 }
 
@@ -60,7 +60,7 @@ export interface SoraTraversalOptions {
     enabled: boolean;
     explorationRate: number;
     learningRate: number;
-    discountFactor: number;
+    discountFactor: number;,
   };
 }
 
@@ -74,12 +74,12 @@ export interface MoogleVisualizationConfig {
   layout: 'force-directed' | 'hierarchical' | 'circular' | 'grid' | 'legal-context';
   useWebGL: boolean;
   enableCaching: boolean;
-  qualityLevel: 'low' | 'medium' | 'high' | 'ultra';
+  qualityLevel: 'low' | 'medium' | 'high' | 'ultra';,
 }
 
 /**
  * Production Sora Graph Traversal Service
- */
+ */;
 export class ProductionSoraService {
   private cache: Map<string, SoraTraversalPath[]> = new Map();
   private isInitialized = false;
@@ -115,12 +115,12 @@ export class ProductionSoraService {
       scoreThreshold: 0.6,
       traversalStrategy: 'best-first',
       semanticFiltering: true,
-      useGPUAcceleration: false, // Disabled for production safety
+      useGPUAcceleration: false, // Disabled for production safety;
       reinforcementLearning: {
         enabled: false, // Disabled for production simplicity
         explorationRate: 0.1,
         learningRate: 0.01,
-        discountFactor: 0.95
+        discountFactor: 0.95,
       },
       ...options
     };
@@ -147,9 +147,9 @@ export class ProductionSoraService {
   private async performSimpleTraversal(
     startNodeId: string,
     query: string,
-    config: SoraTraversalOptions
+    config: SoraTraversalOptions;
   ): Promise<SoraTraversalPath[]> {
-    // Mock traversal for production - replace with actual Neo4j queries
+    // Mock traversal for production - replace with actual Neo4j queries;
     const mockNode: SoraGraphNode = {
       id: startNodeId,
       type: 'document',
@@ -163,7 +163,7 @@ export class ProductionSoraService {
       edges: [],
       totalScore: 0.85,
       pathLength: 1,
-      semanticCoherence: 0.9
+      semanticCoherence: 0.9,
     };
 
     return [mockPath];
@@ -176,14 +176,14 @@ export class ProductionSoraService {
   public getCacheStats(): { size: number; keys: string[] } {
     return {
       size: this.cache.size,
-      keys: Array.from(this.cache.keys())
+      keys: Array.from(this.cache.keys(),
     };
   }
 }
 
 /**
  * Production Moogle Visualization Service
- */
+ */;
 export class ProductionMoogleService {
   private canvas: HTMLCanvasElement | null = null;
   private context: CanvasRenderingContext2D | null = null;
@@ -246,7 +246,7 @@ export class ProductionMoogleService {
 
   private async render2DVisualization(
     paths: SoraTraversalPath[],
-    config: MoogleVisualizationConfig
+    config: MoogleVisualizationConfig;
   ): Promise<MoogleVisualizationOutput> {
     if (!this.canvas || !this.context) {
       throw new Error('Canvas not initialized');
@@ -267,8 +267,8 @@ export class ProductionMoogleService {
     const allEdges = new Map<string, SoraGraphEdge>();
 
     paths.forEach(path => {
-      path.nodes.forEach(node => allNodes.set(node.id, node));
-      path.edges.forEach(edge => allEdges.set(edge.id, edge));
+      path.nodes.forEach(node => allNodes.set(node.id, node);
+      path.edges.forEach(edge => allEdges.set(edge.id, edge);
     });
 
     const nodePositions = this.calculateNodePositions(allNodes, allEdges, config);
@@ -280,7 +280,7 @@ export class ProductionMoogleService {
     this.renderNodes(allNodes, nodePositions, config);
 
     // Generate metadata
-    const positions = Array.from(nodePositions.entries()).map(([id, pos]) => ({ id, x: pos.x, y: pos.y }));
+    const positions = Array.from(nodePositions.entries()).map(([id, pos]) => ({ id, x: pos.x, y: pos.y });
     const bounds = this.calculateBounds(positions);
 
     const imageData = this.context.getImageData(0, 0, config.width, config.height);
@@ -297,7 +297,7 @@ export class ProductionMoogleService {
         bounds,
         renderTime: performance.now() - startTime,
         nodeCount: allNodes.size,
-        edgeCount: allEdges.size
+        edgeCount: allEdges.size,
       }
     };
   }
@@ -305,7 +305,7 @@ export class ProductionMoogleService {
   private calculateNodePositions(
     nodes: Map<string, SoraGraphNode>,
     edges: Map<string, SoraGraphEdge>,
-    config: MoogleVisualizationConfig
+    config: MoogleVisualizationConfig;
   ): Map<string, { x: number; y: number }> {
     const positions = new Map<string, { x: number; y: number }>();
 
@@ -314,12 +314,12 @@ export class ProductionMoogleService {
     const centerY = config.height / 2;
     const radius = Math.min(config.width, config.height) * 0.3;
 
-    const nodeArray = Array.from(nodes.values());
+    const nodeArray = Array.from(nodes.values();
     nodeArray.forEach((node, index) => {
       const angle = (index / nodeArray.length) * 2 * Math.PI;
       positions.set(node.id, {
         x: centerX + Math.cos(angle) * radius,
-        y: centerY + Math.sin(angle) * radius
+        y: centerY + Math.sin(angle) * radius,
       });
     });
 
@@ -329,7 +329,7 @@ export class ProductionMoogleService {
   private renderEdges(
     edges: Map<string, SoraGraphEdge>,
     positions: Map<string, { x: number; y: number }>,
-    config: MoogleVisualizationConfig
+    config: MoogleVisualizationConfig;
   ): void {
     if (!this.context) return;
 
@@ -355,7 +355,7 @@ export class ProductionMoogleService {
   private renderNodes(
     nodes: Map<string, SoraGraphNode>,
     positions: Map<string, { x: number; y: number }>,
-    config: MoogleVisualizationConfig
+    config: MoogleVisualizationConfig;
   ): void {
     if (!this.context) return;
 
@@ -372,7 +372,7 @@ export class ProductionMoogleService {
       const pos = positions.get(node.id);
       if (!pos) return;
 
-      const size = config.nodeSize.min + ((node.score || 0.5) * (config.nodeSize.max - config.nodeSize.min));
+      const size = config.nodeSize.min + ((node.score || 0.5) * (config.nodeSize.max - config.nodeSize.min);
       
       this.context!.fillStyle = nodeColors[node.type] || '#888888';
       this.context!.beginPath();
@@ -395,23 +395,23 @@ export class ProductionMoogleService {
       minX: Math.min(...positions.map(p => p.x)),
       maxX: Math.max(...positions.map(p => p.x)),
       minY: Math.min(...positions.map(p => p.y)),
-      maxY: Math.max(...positions.map(p => p.y))
+      maxY: Math.max(...positions.map(p => p.y),
     };
   }
 
   private generateSVG(
     nodes: Map<string, SoraGraphNode>,
     positions: Map<string, { x: number; y: number }>,
-    config: MoogleVisualizationConfig
+    config: MoogleVisualizationConfig;
   ): string {
     let svg = `<svg width="${config.width}" height="${config.height}" xmlns="http://www.w3.org/2000/svg">`;
     svg += `<rect width="100%" height="100%" fill="${config.backgroundColor}"/>`;
 
-    // Add nodes as circles
+    // Add nodes as circles;
     nodes.forEach(node => {
       const pos = positions.get(node.id);
       if (pos) {
-        const size = config.nodeSize.min + ((node.score || 0.5) * (config.nodeSize.max - config.nodeSize.min));
+        const size = config.nodeSize.min + ((node.score || 0.5) * (config.nodeSize.max - config.nodeSize.min);
         svg += `<circle cx="${pos.x}" cy="${pos.y}" r="${size/2}" fill="#4CAF50" stroke="#ffffff"/>`;
       }
     });
@@ -427,7 +427,7 @@ export class ProductionMoogleService {
         bounds: { minX: 0, maxX: config.width, minY: 0, maxY: config.height },
         renderTime: 0,
         nodeCount: 0,
-        edgeCount: 0
+        edgeCount: 0,
       }
     };
   }
@@ -439,7 +439,7 @@ export class ProductionMoogleService {
   public getCacheStats(): { size: number; memoryUsage: number } {
     return {
       size: this.cache.size,
-      memoryUsage: this.cache.size * 1024 // Estimated
+      memoryUsage: this.cache.size * 1024 // Estimated,
     };
   }
 }
@@ -448,19 +448,19 @@ export class ProductionMoogleService {
 export const soraService = new ProductionSoraService();
 export const moogleService = new ProductionMoogleService();
 ;
-// Production-ready stores
+// Production-ready stores;
 export const soraStore = writable({
   isInitialized: false,
   currentPaths: [] as SoraTraversalPath[],
   isLoading: false,
-  error: null as string | null
+  error: null as string | null,
 });
 
 export const moogleStore = writable({
   isInitialized: false,
   currentVisualization: null as MoogleVisualizationOutput | null,
   isRendering: false,
-  error: null as string | null
+  error: null as string | null,
 });
 
 // Helper functions for integration with existing stack
@@ -470,26 +470,26 @@ export async function performLegalGraphQuery(
   options: Partial<SoraTraversalOptions> = {}
 ): Promise<SoraTraversalPath[]> {
   try {
-    soraStore.update(state => ({ ...state, isLoading: true, error: null }));
+    soraStore.update(state => ({ ...state, isLoading: true, error: null });
 
     const startNodeId = caseId || 'root';
     const paths = await soraService.traverseGraph(startNodeId, query, {
       ...options,
       maxNodes: 50, // Production limit
-      useGPUAcceleration: false // Safe for all environments
+      useGPUAcceleration: false // Safe for all environments,
     });
 
     soraStore.update(state => ({ 
       ...state, 
       currentPaths: paths, 
       isLoading: false,
-      isInitialized: true
-    }));
+      isInitialized: true,
+    });
 
     return paths;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message: 'Unknown error';
-    soraStore.update(state => ({ ...state, error: errorMessage, isLoading: false }));
+    soraStore.update(state => ({ ...state, error: errorMessage, isLoading: false });
     throw error;
   }
 }
@@ -499,36 +499,36 @@ export async function generateLegalVisualization(
   options: Partial<MoogleVisualizationConfig> = {}
 ): Promise<MoogleVisualizationOutput> {
   try {
-    moogleStore.update(state => ({ ...state, isRendering: true, error: null }));
+    moogleStore.update(state => ({ ...state, isRendering: true, error: null });
 
     const visualization = await moogleService.synthesize2D(paths, {
       ...options,
       qualityLevel: 'medium', // Production setting
-      useWebGL: false // Safe for all browsers
+      useWebGL: false // Safe for all browsers,
     });
 
     moogleStore.update(state => ({ 
       ...state, 
       currentVisualization: visualization, 
       isRendering: false,
-      isInitialized: true
-    }));
+      isInitialized: true,
+    });
 
     return visualization;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message: 'Unknown error';
-    moogleStore.update(state => ({ ...state, error: errorMessage, isRendering: false }));
+    moogleStore.update(state => ({ ...state, error: errorMessage, isRendering: false });
     throw error;
   }
 }
 
-// Export for existing stack integration - using safe imports
+// Export for existing stack integration - using safe imports;
 export const semanticAnalysisPipeline = {
   processDocument: async (content: string) => ({ content, processed: true }),
-  extractEntities: async (content: string) => []
+  extractEntities: async (content: string) => [],
 };
 
-// Safe export without dependency issues
+// Safe export without dependency issues;
 export const vectorIntelligenceService = {
-  generateRecommendations: async (options: any) => []
+  generateRecommendations: async (options: any) => [],
 };

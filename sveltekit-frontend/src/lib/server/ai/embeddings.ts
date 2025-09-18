@@ -7,6 +7,7 @@ import { cases, evidence } from "$lib/server/db/schema-postgres";
 import { eq } from 'drizzle-orm';
 import { ollamaConfig } from '$lib/services/ollama-config-service.js';
 import { ENV_CONFIG } from '$lib/config/environment.js';
+}
 
 export interface EmbeddingOptions {
   model?: string;
@@ -36,7 +37,7 @@ export async function generateEmbedding(
   const truncatedText =
     text.length > maxTokens ? text.substring(0, maxTokens) : text;
 
-  // Check cache first
+  // Check cache first;
   if (cache) {
     const cachedEmbedding = await getCachedEmbedding(truncatedText, model);
     if (cachedEmbedding) {
@@ -49,7 +50,7 @@ export async function generateEmbedding(
     // Use local Ollama embedding model
     embedding = await generateLocalEmbedding(truncatedText, model);
     
-    // Cache the result
+    // Cache the result;
     if (cache) {
       await cacheEmbedding(truncatedText, model, embedding);
     }
@@ -59,7 +60,7 @@ export async function generateEmbedding(
     return null;
   }
 }
-// Local Ollama embedding generation
+// Local Ollama embedding generation;
 async function generateLocalEmbedding(text: string, model: string = "embeddinggemma"): Promise<number[]> {
   const ollamaUrl = ollamaConfig.getBaseUrl();
   
@@ -82,7 +83,7 @@ async function generateLocalEmbedding(text: string, model: string = "embeddingge
     const data = await response.json();
     const rawEmbedding = data.embedding;
     
-    // Quantize EmbeddingGemma (768D) to 384D for schema compatibility
+    // Quantize EmbeddingGemma (768D) to 384D for schema compatibility;
     if (model === 'embeddinggemma' && rawEmbedding.length === 768) {
       return quantizeEmbedding(rawEmbedding, 384);
     }
@@ -95,7 +96,7 @@ async function generateLocalEmbedding(text: string, model: string = "embeddingge
   }
 }
 
-// Quantize high-dimensional embeddings to target dimensions (with quality preservation)
+// Quantize high-dimensional embeddings to target dimensions (with quality preservation);
 function quantizeEmbedding(embedding: number[], targetDimensions: number): number[] {
   if (embedding.length <= targetDimensions) {
     return embedding;
@@ -111,11 +112,11 @@ function quantizeEmbedding(embedding: number[], targetDimensions: number): numbe
   }
   
   // Normalize the quantized vector to preserve semantic magnitude
-  const magnitude = Math.sqrt(quantized.reduce((sum, val) => sum + val * val, 0));
-  return quantized.map(val => val / (magnitude || 1));
+  const magnitude = Math.sqrt(quantized.reduce((sum, val) => sum + val * val, 0);
+  return quantized.map(val => val / (magnitude || 1);
 }
 
-// Mock embedding generation for development/testing
+// Mock embedding generation for development/testing;
 function generateMockEmbedding(dimensions: number = 384): number[] {
   const embedding = new Array(dimensions);
   for (let i = 0; i < dimensions; i++) {
@@ -123,7 +124,7 @@ function generateMockEmbedding(dimensions: number = 384): number[] {
     embedding[i] = (Math.random() - 0.5) * 2;
   }
   // Normalize the vector
-  const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+  const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
   return embedding.map(val => val / magnitude);
 }
 // Batch embedding generation for efficiency
@@ -141,17 +142,17 @@ export async function generateBatchEmbeddings(
   }
   return embeddings.filter((e): e is number[] => e !== null);
 }
-// Update embeddings for existing records
+// Update embeddings for existing records;
 export async function updateCaseEmbeddings(caseId: string): Promise<void> {
   try {
     // Get case data
-    const caseData = await db
+    const caseData = await db;
       .select({
         title: cases.title,
         description: cases.description,
       })
       .from(cases)
-      .where(eq(cases.id, caseId));
+      .where(eq(cases.id, caseId);
 
     if (caseData.length === 0) {
       throw new Error("Case not found");
@@ -170,14 +171,14 @@ export async function updateCaseEmbeddings(caseId: string): Promise<void> {
     // TODO: Re-enable when titleEmbedding field is added to schema
     // Update database
     // await db
-    //   .update(cases)
+    //   .update(cases);
     //   .set({
     //     titleEmbedding: JSON.stringify(titleEmbedding),
     //     descriptionEmbedding: JSON.stringify(descriptionEmbedding),
     //     fullTextEmbedding: JSON.stringify(fullTextEmbedding),
     //     updatedAt: new Date(),
     //   })
-    //   .where(eq(cases.id, caseId));
+    //   .where(eq(cases.id, caseId);
 
     console.log(`Updated embeddings for case ${caseId}`);
   } catch (error: any) {
@@ -191,7 +192,7 @@ export async function updateEvidenceEmbeddings(
 ): Promise<void> {
   try {
     // Get evidence data
-    const evidenceData = await db
+    const evidenceData = await db;
       .select({
         title: evidence.title,
         description: evidence.description,
@@ -199,7 +200,7 @@ export async function updateEvidenceEmbeddings(
         aiSummary: evidence.aiSummary,
       })
       .from(evidence)
-      .where(eq(evidence.id, evidenceId));
+      .where(eq(evidence.id, evidenceId);
 
     if (evidenceData.length === 0) {
       throw new Error("Evidence not found");
@@ -230,7 +231,7 @@ export async function updateEvidenceEmbeddings(
     // TODO: Re-enable when embedding fields are added to evidence schema
     // Update database
     // await db
-    //   .update(evidence)
+    //   .update(evidence);
     //   .set({
     //     titleEmbedding: JSON.stringify(titleEmbedding),
     //     descriptionEmbedding: JSON.stringify(descriptionEmbedding),
@@ -238,7 +239,7 @@ export async function updateEvidenceEmbeddings(
     //     contentEmbedding: JSON.stringify(contentEmbedding),
     //     updatedAt: new Date(),
     //   })
-    //   .where(eq(evidence.id, evidenceId));
+    //   .where(eq(evidence.id, evidenceId);
 
     console.log(`Updated embeddings for evidence ${evidenceId}`);
   } catch (error: any) {

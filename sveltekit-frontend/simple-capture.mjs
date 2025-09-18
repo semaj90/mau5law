@@ -5,7 +5,7 @@ async function simpleCapture() {
 
   const browser = await puppeteer.launch({
     headless: true, // Run headless for speed
-    defaultViewport: { width: 1920, height: 1080 }
+    defaultViewport: { width: 1920, height: 1080 },
   });
 
   const page = await browser.newPage();
@@ -14,7 +14,7 @@ async function simpleCapture() {
     console.log('Navigating to page...');
     await page.goto('http://localhost:5174/persons-of-interest', {
       waitUntil: 'domcontentloaded',
-      timeout: 15000
+      timeout: 15000,
     });
 
     console.log('Waiting 5 seconds for render...');
@@ -23,18 +23,17 @@ async function simpleCapture() {
     console.log('Taking screenshot...');
     await page.screenshot({
       path: 'fugitivedx-screenshot.png',
-      fullPage: true
+      fullPage: true,
     });
 
     console.log('Success! Screenshot saved as fugitivedx-screenshot.png');
-
   } catch (error) {
     console.error('Error:', error.message);
     console.log('Attempting basic screenshot anyway...');
 
     try {
       await page.screenshot({
-        path: 'fugitivedx-basic.png'
+        path: 'fugitivedx-basic.png',
       });
       console.log('Basic screenshot saved as fugitivedx-basic.png');
     } catch (e) {

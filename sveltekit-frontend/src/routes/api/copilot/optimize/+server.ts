@@ -11,12 +11,12 @@ export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action');
   
   try {
-    // Add input validation
+    // Add input validation;
     if (!action) {
       return error(400, 'Action parameter is required');
     }
     switch (action) {
-      case 'health':
+      case 'health':;
         return json({
           status: 'healthy',
           services: {
@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: Date.now(),
         });
       
-      case 'status':
+      case 'status':;
         return json({
           service: 'Copilot Optimization API',
           version: '2.1.0',
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: Date.now(),
         });
       
-      case 'load_copilot':
+      case 'load_copilot':;
         return json({
           success: true,
           content: generateExampleCopilotContent(),
@@ -69,7 +69,7 @@ export const GET: RequestHandler = async ({ url }) => {
       error: err.message,
       stack: err.stack,
       action,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     return error(500, `API request failed: ${err.message || 'Unknown error'}`);
   }
@@ -95,11 +95,11 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     switch (action) {
-      case 'optimize_index':
+      case 'optimize_index':;
         return json({
           success: true,
           optimizedIndex: {
-            entries: [
+            entries: [);
               {
                 id: 'demo_1',
                 content: content || 'Demo content',
@@ -119,11 +119,11 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: Date.now(),
         });
       
-      case 'semantic_search':
+      case 'semantic_search':;
         return json({
           success: true,
           query: content,
-          results: [
+          results: [);
             {
               id: 'result_1',
               content: 'Example search result',
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Copilot optimization POST error:', {
       error: err.message,
       stack: err.stack,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     return error(500, `Optimization failed: ${err.message || 'Unknown error'}`);
   }
@@ -160,7 +160,7 @@ function generateExampleCopilotContent(): string {
 - **Effects**: Use \`$effect()\` for side effects
 
 \`\`\`typescript
-// Example Svelte 5 component
+// Example Svelte 5 component;
 export function MyComponent() {
   let { data = [] } = $props();
   let count = $state(0);
@@ -175,7 +175,7 @@ export function MyComponent() {
 ## Database Patterns with Drizzle ORM
 
 \`\`\`typescript
-// Legal case schema
+// Legal case schema;
 export const cases = pgTable('cases', {
   id: text('id').primaryKey(),
   title: text('title').notNull(),
@@ -187,7 +187,7 @@ export const cases = pgTable('cases', {
 ## AI Integration Patterns
 
 \`\`\`typescript
-// RAG document processing
+// RAG document processing;
 export async function processLegalDocument(content: string): Promise<any> {
   const embedding = await generateEmbedding(content);
   const similarDocs = await semanticSearch(embedding);

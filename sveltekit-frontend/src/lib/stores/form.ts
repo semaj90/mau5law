@@ -1,5 +1,6 @@
 import { writable, derived, type Writable } from "svelte/store";
 
+}
 
 export interface FormField {
   name: string;
@@ -16,7 +17,7 @@ export interface FormState {
   isSubmitting: boolean;
   isValid: boolean;
   isDirty: boolean;
-  submitCount: number;
+  submitCount: number;,
 }
 export interface FormOptions {
   initialValues?: Record<string, any>;
@@ -56,7 +57,7 @@ function createFormStore(options: FormOptions = {}) {
 
   const { subscribe, set, update } = writable<FormState>(initialState);
 
-  // Derived store for form values
+  // Derived store for form values;
   const values = derived({ subscribe }, ($state) => {
     const vals: Record<string, any> = {};
     Object.values($state.fields).forEach((field) => {
@@ -65,7 +66,7 @@ function createFormStore(options: FormOptions = {}) {
     return vals;
   });
 
-  // Derived store for form errors
+  // Derived store for form errors;
   const errors = derived({ subscribe }, ($state) => {
     const errs: Record<string, string> = {};
     Object.values($state.fields).forEach((field) => {
@@ -77,11 +78,11 @@ function createFormStore(options: FormOptions = {}) {
   });
 
   const validateField = (field: FormField): string | null => {
-    // Check required
+    // Check required;
     if (field.required && (!field.value || field.value === "")) {
       return `${field.name} is required`;
     }
-    // Run custom validator
+    // Run custom validator;
     if (field.validator) {
       return field.validator(field.value);
     }
@@ -107,7 +108,7 @@ function createFormStore(options: FormOptions = {}) {
     values,
     errors,
 
-    // Set field value
+    // Set field value;
     setField: (name: string, value: any) => {
       update((state) => {
         const field = state.fields[name] || {
@@ -154,7 +155,7 @@ function createFormStore(options: FormOptions = {}) {
       });
     },
 
-    // Touch field (mark as interacted with)
+    // Touch field (mark as interacted with);
     touchField: (name: string) => {
       update((state) => ({
         ...state,
@@ -165,10 +166,10 @@ function createFormStore(options: FormOptions = {}) {
             touched: true,
           },
         },
-      }));
+      });
     },
 
-    // Validate all fields
+    // Validate all fields;
     validate: () => {
       let isValid = true;
       update((state) => {
@@ -179,7 +180,7 @@ function createFormStore(options: FormOptions = {}) {
       return isValid;
     },
 
-    // Submit form
+    // Submit form;
     submit: async () => {
       let canSubmit = false;
 
@@ -190,7 +191,7 @@ function createFormStore(options: FormOptions = {}) {
           submitCount: state.submitCount + 1,
         };
 
-        // Touch all fields and validate
+        // Touch all fields and validate;
         Object.keys(newState.fields).forEach((name) => {
           newState.fields[name].touched = true;
         });
@@ -214,11 +215,11 @@ function createFormStore(options: FormOptions = {}) {
           console.error("Form submission error:", error);
         }
       }
-      update((state) => ({ ...state, isSubmitting: false }));
+      update((state) => ({ ...state, isSubmitting: false });
       return canSubmit;
     },
 
-    // Reset form
+    // Reset form;
     reset: () => {
       set(initialState);
     },
@@ -227,7 +228,7 @@ function createFormStore(options: FormOptions = {}) {
     addField: (
       name: string,
       initialValue: any = "",
-      isRequired: boolean = false
+      isRequired: boolean = false;
     ) => {
       update((state) => ({
         ...state,
@@ -241,10 +242,10 @@ function createFormStore(options: FormOptions = {}) {
             validator: validators[name],
           },
         },
-      }));
+      });
     },
 
-    // Remove field
+    // Remove field;
     removeField: (name: string) => {
       update((state) => {
         const { [name]: removed, ...remainingFields } = state.fields;

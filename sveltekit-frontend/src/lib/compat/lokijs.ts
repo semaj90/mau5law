@@ -12,7 +12,7 @@ class MemoryCollection<T extends Doc = Doc> {
 	}
 	insert(doc: T | T[]): T | T[] {
 		if (Array.isArray(doc)) {
-			doc.forEach((d) => this.insert(d));
+			doc.forEach((d) => this.insert(d);
 			return doc;
 		}
 		const clone = { ...(doc as any) } as T;
@@ -23,7 +23,7 @@ class MemoryCollection<T extends Doc = Doc> {
 	find(query: Partial<T> = {} as Partial<T>): T[] {
 		const keys = Object.keys(query) as (keyof T)[];
 		if (keys.length === 0) return [...this.data];
-		return this.data.filter((item) => keys.every((k) => (item as any)[k] === (query as any)[k]));
+		return this.data.filter((item) => keys.every((k) => (item as any)[k] === (query as any)[k]);
 	}
 	findOne(query: Partial<T>): T | null {
 		return this.find(query)[0] || null;
@@ -69,7 +69,7 @@ class Loki {
 		return (this.collections.get(name) as MemoryCollection<T>) || null;
 	}
 	getCollections(): MemoryCollection<any>[] {
-		return Array.from(this.collections.values());
+		return Array.from(this.collections.values();
 	}
 	removeCollection(name: string) {
 		this.collections.delete(name);

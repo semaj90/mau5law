@@ -7,11 +7,11 @@ export const load: PageServerLoad = async () => {
       data: {
         title: '',
         description: '',
-        priority: 'medium' as const
+        priority: 'medium' as const,
       },
       errors: Record<string, any>,
       valid: true,
-      posted: false
+      posted: false,
     }
   };
 };
@@ -22,7 +22,7 @@ export const actions: Actions = {
     const data = {
       title: formData.get('title')?.toString() || '',
       description: formData.get('description')?.toString() || '',
-      priority: formData.get('priority')?.toString() || 'medium'
+      priority: formData.get('priority')?.toString() || 'medium',
     };
 
     // Basic validation
@@ -37,7 +37,7 @@ export const actions: Actions = {
           data,
           errors,
           valid: false,
-          posted: true
+          posted: true,
         }
       });
     }
@@ -50,10 +50,10 @@ export const actions: Actions = {
         data,
         errors: Record<string, any>,
         valid: true,
-        posted: true
+        posted: true,
       },
       success: true,
-      message: 'Form submitted successfully!'
+      message: 'Form submitted successfully!',
     };
   }
 };

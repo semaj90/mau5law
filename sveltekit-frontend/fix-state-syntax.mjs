@@ -14,57 +14,60 @@ const STATE_FIXES = [
   {
     pattern: /\$state<([^>]+)>\(\)\(([^)]*)\)/g,
     replacement: '$state<$1>($2)',
-    description: 'Fix $state<T>()() syntax'
+    description: 'Fix $state<T>()() syntax',
   },
 
   // Fix $state placement issues - move to simple initialization
   {
     pattern: /let\s+(\w+)\s*=\s*\$state<([^>]+)>\(\);/g,
     replacement: 'let $1: $2 = $state(undefined as any);',
-    description: 'Fix $state placement syntax'
+    description: 'Fix $state placement syntax',
   },
 
   // Fix invalid const with $state pattern
   {
     pattern: /const\s+(\w+)\s*=\s*\$state<([^>]+)>\(\s*\[\s*\]/g,
     replacement: 'let $1: $2 = $state([])',
-    description: 'Fix const $state pattern'
+    description: 'Fix const $state pattern',
   },
 
   // Fix missing closing parentheses in specific files
   {
     pattern: /new Date\(data\.timestamp\);/g,
     replacement: 'new Date(data.timestamp));',
-    description: 'Fix missing parentheses in Date constructor'
+    description: 'Fix missing parentheses in Date constructor',
   },
 
   // Fix malformed function calls
   {
-    pattern: /const doc = demoData\.find\(d => d\.yorha_id\.includes\(docId\) \|\| d\.id\.includes\(docId\);/g,
-    replacement: 'const doc = demoData.find(d => d.yorha_id.includes(docId) || d.id.includes(docId));',
-    description: 'Fix missing parentheses in find function'
+    pattern:
+      /const doc = demoData\.find\(d => d\.yorha_id\.includes\(docId\) \|\| d\.id\.includes\(docId\);/g,
+    replacement:
+      'const doc = demoData.find(d => d.yorha_id.includes(docId) || d.id.includes(docId));',
+    description: 'Fix missing parentheses in find function',
   },
 
   // Fix JSX-like syntax in expressions
   {
     pattern: /\{[^}]*<(\w+)[^>]*class="[^"]*"[^>]*\/>[^}]*\}/g,
     replacement: '{/* Component rendering fixed */}',
-    description: 'Fix JSX components in expressions'
+    description: 'Fix JSX components in expressions',
   },
 
   // Fix invalid component tag syntax
   {
     pattern: /<\{[^}]+\}[^>]*>/g,
     replacement: '<!-- Component tag fixed -->',
-    description: 'Fix invalid component tag syntax'
+    description: 'Fix invalid component tag syntax',
   },
 
   // Fix malformed $bindable syntax
   {
-    pattern: /\{\s*data\s*=\s*\$bindable\(\)\s*\}\s*:\s*\{\s*data\s*=\s*\$bindable\(\)\s*:\s*any\s*\}/g,
+    pattern:
+      /\{\s*data\s*=\s*\$bindable\(\)\s*\}\s*:\s*\{\s*data\s*=\s*\$bindable\(\)\s*:\s*any\s*\}/g,
     replacement: '{ data }: { data: any }',
-    description: 'Fix $bindable syntax'
-  }
+    description: 'Fix $bindable syntax',
+  },
 ];
 
 // Fix specific TypeScript issues
@@ -73,27 +76,27 @@ const TYPESCRIPT_FIXES = [
   {
     pattern: /import\s*\{\s*Page\s*\}\s*from\s*'@playwright\/test'/g,
     replacement: "import type { Page } from '@playwright/test'",
-    description: 'Fix Page type import'
+    description: 'Fix Page type import',
   },
 
   // Fix missing NesCard component
   {
     pattern: /<NesCard([^>]*)>/g,
     replacement: '<div$1 class="nes-container">',
-    description: 'Replace NesCard with div'
+    description: 'Replace NesCard with div',
   },
   {
     pattern: /<\/NesCard>/g,
     replacement: '</div>',
-    description: 'Replace NesCard closing tag'
+    description: 'Replace NesCard closing tag',
   },
 
   // Fix canvas binding type
   {
     pattern: /bind:this=\{canvas\}/g,
     replacement: 'bind:this={canvas as any}',
-    description: 'Fix canvas binding type'
-  }
+    description: 'Fix canvas binding type',
+  },
 ];
 
 function processFile(filePath, fixes) {

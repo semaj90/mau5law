@@ -11,7 +11,7 @@ export async function load(event) {
       session: {
         id: session.id,
         fresh: session.fresh,
-        expiresAt: session.expiresAt
+        expiresAt: session.expiresAt,
       }
     };
   } catch (err) {

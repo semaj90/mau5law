@@ -2,11 +2,13 @@
 
 ## Overview
 
-The storage API has been enhanced with comprehensive security features, audit trails, and improved error handling to meet enterprise security requirements.
+The storage API has been enhanced with comprehensive security features, audit trails, and improved
+error handling to meet enterprise security requirements.
 
 ## Security Features Implemented
 
 ### 1. **Enhanced Authentication** ✅
+
 - **Session-based authentication**: Integrates with existing Lucia auth system
 - **JWT Bearer tokens**: Supports standard JWT authentication
 - **API key fallback**: For service-to-service communication
@@ -20,12 +22,14 @@ The storage API has been enhanced with comprehensive security features, audit tr
 ```
 
 ### 2. **Ownership Verification** ✅
+
 - **File ownership tracking**: Every file linked to uploader's user ID
 - **Access control**: Users can only delete files they own
 - **Admin override**: Admin and system roles can access any file
 - **Database integration**: Metadata stored for ownership verification
 
 ### 3. **Comprehensive Audit Logging** ✅
+
 - **Dual logging**: File-based and database logging
 - **Detailed metadata**: User, IP, timestamp, file details, success/failure
 - **Admin dashboard**: Query and filter audit logs
@@ -50,18 +54,21 @@ The storage API has been enhanced with comprehensive security features, audit tr
 ```
 
 ### 4. **Soft Delete with Safety** ✅
+
 - **Soft delete first**: Mark files as deleted in database
 - **Scheduled hard delete**: Configurable delay before actual deletion
 - **Recovery period**: Files can be restored during soft-delete period
 - **Admin oversight**: Deletion tracking and approval workflows
 
 ### 5. **Rate Limiting & Validation** ✅
+
 - **Upload rate limits**: Configurable per-user request limits
 - **File size validation**: Configurable maximum file sizes
 - **Filename sanitization**: Automatic cleanup of potentially dangerous filenames
 - **Type validation**: MIME type checking and validation
 
 ### 6. **Enhanced Client Safety** ✅
+
 - **Conditional removal**: Client only removes files after server confirms deletion
 - **Error handling**: Comprehensive error reporting and user feedback
 - **Retry logic**: Built-in retry mechanisms for network failures
@@ -70,6 +77,7 @@ The storage API has been enhanced with comprehensive security features, audit tr
 ## API Endpoints
 
 ### Upload File
+
 ```bash
 POST /api/v1/storage/upload
 Authorization: Bearer <jwt-token>
@@ -83,6 +91,7 @@ x-api-key: <api-key>
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -95,12 +104,14 @@ x-api-key: <api-key>
 ```
 
 ### Delete File
+
 ```bash
 DELETE /api/v1/storage/delete?bucket=legal-documents&key=filename.pdf
 Authorization: Bearer <jwt-token>
 ```
 
 **Response:**
+
 ```json
 {
   "ok": true,
@@ -112,12 +123,14 @@ Authorization: Bearer <jwt-token>
 ```
 
 ### Check File Status
+
 ```bash
 GET /api/v1/storage/delete?bucket=legal-documents&key=filename.pdf
 Authorization: Bearer <jwt-token>
 ```
 
 ### View Audit Logs (Admin Only)
+
 ```bash
 GET /api/v1/storage/audit?userId=user_123&action=delete&limit=100
 Authorization: Bearer <admin-jwt-token>
@@ -149,6 +162,7 @@ DATABASE_URL=postgresql://user:pass@localhost:5432/database
 ## Client Usage Examples
 
 ### Basic Upload
+
 ```typescript
 import { SecureStorageClient } from '$lib/client/secure-storage-client';
 
@@ -164,6 +178,7 @@ if (result.ok) {
 ```
 
 ### Reactive Storage Manager (Svelte)
+
 ```typescript
 import { createStorageManager } from '$lib/client/secure-storage-client';
 
@@ -184,6 +199,7 @@ $: error = storage.state.error;
 ## Security Best Practices
 
 ### For Developers:
+
 1. **Always authenticate**: Never bypass authentication checks
 2. **Validate ownership**: Verify user owns resource before allowing access
 3. **Log everything**: Comprehensive audit trails for security compliance
@@ -191,6 +207,7 @@ $: error = storage.state.error;
 5. **Rate limit**: Prevent abuse with request limiting
 
 ### For Administrators:
+
 1. **Regular audit reviews**: Monitor unusual access patterns
 2. **Access control**: Use role-based permissions appropriately
 3. **Backup strategies**: Ensure audit logs are backed up
@@ -214,6 +231,7 @@ curl -X POST /api/v1/storage/upload \
 ## Monitoring & Maintenance
 
 ### Audit Log Monitoring
+
 ```bash
 # View recent uploads
 GET /api/v1/storage/audit?action=upload&limit=50
@@ -226,6 +244,7 @@ DELETE /api/v1/storage/audit?olderThanDays=90
 ```
 
 ### File Cleanup
+
 - Soft-deleted files are automatically scheduled for hard deletion
 - Configure `HARD_DELETE_DELAY_HOURS` for your recovery window needs
 - Monitor storage usage and implement cleanup policies
@@ -233,6 +252,7 @@ DELETE /api/v1/storage/audit?olderThanDays=90
 ## Security Compliance
 
 This implementation supports:
+
 - **SOC 2 Type II**: Comprehensive audit trails and access controls
 - **GDPR**: User data protection and deletion capabilities
 - **HIPAA**: Audit logging and secure file handling

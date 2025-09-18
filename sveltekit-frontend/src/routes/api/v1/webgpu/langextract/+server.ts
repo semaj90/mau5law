@@ -25,7 +25,7 @@ interface WebGPULangExtractRequest {
   };
 }
 
-// GET - System status and capabilities
+// GET - System status and capabilities;
 export const GET: RequestHandler = async () => {
   try {
     const stats = await getLangChainWebGPUStats();
@@ -37,28 +37,28 @@ export const GET: RequestHandler = async () => {
         webgpuOptimization: stats.webgpuOptimizer.gpuMetrics.availableComputeUnits > 0,
         embeddingCache: stats.embeddingCache.redisConnected,
         langchainService: stats.langchainService.available,
-        availableModels: stats.langchainService.models || []
+        availableModels: stats.langchainService.models || [],
       },
       systemStats: stats,
       endpoints: {
         process: 'POST with action: "process" - Single document processing',
         batch: 'POST with action: "batch" - Batch document processing', 
         benchmark: 'POST with action: "benchmark" - Performance testing',
-        config: 'POST with action: "config" - Update configuration'
+        config: 'POST with action: "config" - Update configuration',
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
     
   } catch (error) {
     return json({
       success: false,
       error: 'Failed to get WebGPU LangExtract status',
-      details: error instanceof Error ? error.message: String(error)
+      details: error instanceof Error ? error.message: String(error),
     }, { status: 500 });
   }
 };
 
-// POST - WebGPU-enhanced legal document processing
+// POST - WebGPU-enhanced legal document processing;
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     const requestData: WebGPULangExtractRequest = await request.json();
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         result = await handleConfigurationUpdate(requestData);
         break;
         
-      default:
+      default:;
         return json({
           success: false,
           error: 'Invalid action',
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         processingTime,
         timestamp: Date.now(),
         clientAddress: getClientAddress(),
-        webgpuEnabled: config.useWebGPUCache !== false
+        webgpuEnabled: config.useWebGPUCache !== false,
       }
     });
     
@@ -117,14 +117,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     return json({
       success: false,
       error: 'WebGPU LangExtract processing failed',
-      details: error instanceof Error ? error.message: String(error)
+      details: error instanceof Error ? error.message: String(error),
     }, { status: 500 });
   }
 };
 
 /**
  * Handle single document processing with WebGPU optimization
- */
+ */;
 async function handleSingleDocumentProcessing(request: WebGPULangExtractRequest) {
   if (!request.text) {
     throw new Error('Text is required for single document processing');
@@ -162,7 +162,7 @@ async function handleSingleDocumentProcessing(request: WebGPULangExtractRequest)
 
 /**
  * Handle batch document processing with parallel optimization
- */
+ */;
 async function handleBatchDocumentProcessing(request: WebGPULangExtractRequest) {
   if (!request.documents || request.documents.length === 0) {
     throw new Error('Documents array is required for batch processing');
@@ -197,7 +197,7 @@ async function handleBatchDocumentProcessing(request: WebGPULangExtractRequest) 
       performance: {
         processingTime: r.performance.totalTime,
         webgpuUtilized: r.performance.webgpuUtilized,
-        cacheHit: r.embeddings.cacheHit
+        cacheHit: r.embeddings.cacheHit,
       }
     })),
     aggregateStats: {
@@ -213,7 +213,7 @@ async function handleBatchDocumentProcessing(request: WebGPULangExtractRequest) 
 
 /**
  * Handle performance benchmark testing
- */
+ */;
 async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
   const iterations = request.benchmark?.iterations || 10;
   const compareStandard = request.benchmark?.compareStandard || false;
@@ -235,7 +235,7 @@ async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
     const doc = sampleDocuments[i % sampleDocuments.length];
     const result = await processLegalDocumentWithWebGPU(doc, {
       useWebGPUCache: true,
-      compressVectors: true
+      compressVectors: true,
     });
     webgpuResults.push(result);
   }
@@ -253,7 +253,7 @@ async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
       const doc = sampleDocuments[i % sampleDocuments.length];
       const result = await processLegalDocumentWithWebGPU(doc, {
         useWebGPUCache: false,
-        compressVectors: false
+        compressVectors: false,
       });
       standardResults.push(result);
     }
@@ -264,7 +264,7 @@ async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
   return {
     benchmark: {
       iterations,
-      sampleDocumentLength: sampleDocuments[0].length
+      sampleDocumentLength: sampleDocuments[0].length,
     },
     webgpuResults: {
       totalTime: webgpuTime,
@@ -277,19 +277,19 @@ async function handleBenchmarkTesting(request: WebGPULangExtractRequest) {
       totalTime: standardTime,
       avgTimePerDoc: standardTime / iterations,
       throughput: (iterations / standardTime) * 1000,
-      speedupRatio: standardTime / webgpuTime
+      speedupRatio: standardTime / webgpuTime,
     } : null,
     recommendations: {
       useWebGPU: webgpuTime < standardTime,
       optimalBatchSize: Math.min(128, Math.max(32, Math.floor(iterations / 4))),
-      compressionBenefit: webgpuResults[0]?.embeddings.compressionRatio > 2
+      compressionBenefit: webgpuResults[0]?.embeddings.compressionRatio > 2,
     }
   };
 }
 
 /**
  * Handle configuration updates
- */
+ */;
 async function handleConfigurationUpdate(request: WebGPULangExtractRequest) {
   if (!request.config) {
     throw new Error('Configuration object is required');
@@ -300,11 +300,11 @@ async function handleConfigurationUpdate(request: WebGPULangExtractRequest) {
   return {
     message: 'Configuration updated successfully',
     newConfig: request.config,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 }
 
-// PUT - Update system configuration
+// PUT - Update system configuration;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const config = await request.json();
@@ -315,45 +315,45 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       message: 'WebGPU LangExtract configuration updated',
       config,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
     
   } catch (error) {
     return json({
       success: false,
       error: 'Failed to update configuration',
-      details: error instanceof Error ? error.message: String(error)
+      details: error instanceof Error ? error.message: String(error),
     }, { status: 500 });
   }
 };
 
-// DELETE - Clear caches and reset system
+// DELETE - Clear caches and reset system;
 export const DELETE: RequestHandler = async () => {
   try {
     // Clear WebGPU optimizer caches
     console.log('🗑️ Clearing WebGPU LangExtract caches');
     
-    // Reset to default configuration
+    // Reset to default configuration;
     webgpuLangChainBridge.updateConfig({
       useWebGPUCache: true,
       batchSize: 128,
       cacheEmbeddings: true,
       compressVectors: true,
       practiceArea: 'legal-ai',
-      documentType: 'general'
+      documentType: 'general',
     });
     
     return json({
       success: true,
       message: 'WebGPU LangExtract system reset successfully',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
     
   } catch (error) {
     return json({
       success: false,
       error: 'Failed to reset system',
-      details: error instanceof Error ? error.message: String(error)
+      details: error instanceof Error ? error.message: String(error),
     }, { status: 500 });
   }
 };

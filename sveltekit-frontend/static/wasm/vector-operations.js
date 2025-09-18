@@ -11,11 +11,20 @@ export const {
   normalize,
   computeBatchSimilarity,
   hashEmbedding,
-} = await (async url => instantiate(
-  await (async () => {
-    const isNodeOrBun = typeof process != "undefined" && process.versions != null && (process.versions.node != null || process.versions.bun != null);
-    if (isNodeOrBun) { return globalThis.WebAssembly.compile(await (await import("node:fs/promises")).readFile(url)); }
-    else { return await globalThis.WebAssembly.compileStreaming(globalThis.fetch(url)); }
-  })(), {
-  }
-))(new URL("vector-operations.wasm", import.meta.url));
+} = await (async (url) =>
+  instantiate(
+    await (async () => {
+      const isNodeOrBun =
+        typeof process != 'undefined' &&
+        process.versions != null &&
+        (process.versions.node != null || process.versions.bun != null);
+      if (isNodeOrBun) {
+        return globalThis.WebAssembly.compile(
+          await (await import('node:fs/promises')).readFile(url)
+        );
+      } else {
+        return await globalThis.WebAssembly.compileStreaming(globalThis.fetch(url));
+      }
+    })(),
+    {}
+  ))(new URL('vector-operations.wasm', import.meta.url));

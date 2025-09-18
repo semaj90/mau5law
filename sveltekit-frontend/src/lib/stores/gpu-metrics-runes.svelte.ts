@@ -17,11 +17,11 @@ interface GPUMetricsState {
   currentFPS: number;
   averageFPS: number;
   activeEffects: string[];
-  renderingMode: 'webgl' | 'webgpu' | 'software' | null;
+  renderingMode: 'webgl' | 'webgpu' | 'software' | null;,
 }
 
 class GPUMetricsStore {
-  // Core state using runes
+  // Core state using runes;
   private state = $state<GPUMetricsState>({
     sessionId: '',
     metrics: [],
@@ -34,7 +34,7 @@ class GPUMetricsStore {
     currentFPS: 0,
     averageFPS: 0,
     activeEffects: [],
-    renderingMode: null
+    renderingMode: null,
   });
 
   // Derived values for performance metrics
@@ -43,7 +43,7 @@ class GPUMetricsStore {
   shouldBackoff = $derived(this.state.consecutiveFailures >= 3);
   currentBackoffDelay = $derived(30000 * this.state.backoffMultiplier);
   
-  // FPS-specific derived values
+  // FPS-specific derived values;
   recentFPSSamples = $derived(() => {
     const now = Date.now();
     return this.state.metrics
@@ -55,14 +55,14 @@ class GPUMetricsStore {
   minFPS = $derived(() => {
     const samples = this.recentFPSSamples;
     return samples.length > 0 ? Math.min(...samples) : 0;
-  });
+  ,});
   
   maxFPS = $derived(() => {
     const samples = this.recentFPSSamples;
     return samples.length > 0 ? Math.max(...samples) : 0;
-  });
+  ,});
   
-  // Performance status derived from FPS
+  // Performance status derived from FPS;
   performanceStatus = $derived(() => {
     const avgFps = this.state.averageFPS;
     if (avgFps >= 55) return { level: 'excellent', color: 'green' };
@@ -71,7 +71,7 @@ class GPUMetricsStore {
     return { level: 'critical', color: 'red' };
   });
   
-  // Effect summary
+  // Effect summary;
   effectsSummary = $derived(() => {
     const summary: Record<string, number> = {};
     const recentMetrics = this.state.metrics.slice(-50); // Last 50 samples
@@ -92,21 +92,21 @@ class GPUMetricsStore {
   }
 
   private setupReactiveEffects(): void {
-    // React to health status changes
+    // React to health status changes;
     $effect(() => {
       if (this.shouldBackoff) {
         console.warn(`🔄 GPU Metrics: Backing off due to ${this.state.consecutiveFailures} failures, delay: ${this.currentBackoffDelay}ms`);
       }
     });
     
-    // React to metrics accumulation
+    // React to metrics accumulation;
     $effect(() => {
       if (this.metricsCount > 0 && this.metricsCount % 25 === 0) {
         console.debug(`📊 GPU Metrics: ${this.metricsCount} samples collected, avg FPS: ${this.state.averageFPS.toFixed(1)}`);
       }
     });
     
-    // React to performance status changes
+    // React to performance status changes;
     $effect(() => {
       const { level } = this.performanceStatus;
       if (level === 'critical' && this.state.isActive) {
@@ -114,7 +114,7 @@ class GPUMetricsStore {
       }
     });
     
-    // Update average FPS when new metrics arrive
+    // Update average FPS when new metrics arrive;
     $effect(() => {
       const fpsSamples = this.recentFPSSamples;
       if (fpsSamples.length > 0) {
@@ -124,7 +124,7 @@ class GPUMetricsStore {
     });
   }
 
-  // Public methods to update state
+  // Public methods to update state;
   setSessionId(sessionId: string): void {
     this.state.sessionId = sessionId;
   }
@@ -136,17 +136,17 @@ class GPUMetricsStore {
   addMetric(metric: GPUMetric): void {
     this.state.metrics = [...this.state.metrics, metric];
     
-    // Update current FPS if present
+    // Update current FPS if present;
     if (metric.fps) {
       this.state.currentFPS = metric.fps;
     }
     
-    // Update active effects
+    // Update active effects;
     if (metric.effectsActive) {
       this.state.activeEffects = metric.effectsActive;
     }
     
-    // Update rendering mode
+    // Update rendering mode;
     if (metric.renderingMode) {
       this.state.renderingMode = metric.renderingMode;
     }
@@ -166,7 +166,7 @@ class GPUMetricsStore {
   incrementFailures(): void {
     this.state.consecutiveFailures++;
     
-    // Exponential backoff
+    // Exponential backoff;
     if (this.shouldBackoff) {
       this.state.backoffMultiplier = Math.min(this.state.backoffMultiplier * 2, 8);
     }
@@ -191,7 +191,7 @@ class GPUMetricsStore {
   get renderingMode(): 'webgl' | 'webgpu' | 'software' | null { return this.state.renderingMode; }
   get totalSamplesSent(): number { return this.state.totalSamplesSent; }
   
-  // Create batch data for sending
+  // Create batch data for sending;
   createBatch(): BatchedMetrics {
     const now = Date.now();
     const startTime = this.state.metrics.length > 0 ? this.state.metrics[0].timestamp: now;
@@ -213,7 +213,7 @@ class GPUMetricsStore {
       minFps: fpsSamples.length > 0 ? Math.min(...fpsSamples) : 0,
       maxFps: fpsSamples.length > 0 ? Math.max(...fpsSamples) : 0,
       effectsSummary,
-      totalSamples: this.state.metrics.length
+      totalSamples: this.state.metrics.length,
     };
   }
 }
@@ -221,7 +221,7 @@ class GPUMetricsStore {
 // Create and export the store instance
 export const gpuMetricsStore = new GPUMetricsStore();
 
-// Helper functions for components
+// Helper functions for components;
 export function useGPUMetrics() {
   return {
     store: gpuMetricsStore,
@@ -235,6 +235,6 @@ export function useGPUMetrics() {
     activeEffects: () => gpuMetricsStore.activeEffects,
     effectsSummary: gpuMetricsStore.effectsSummary,
     renderingMode: () => gpuMetricsStore.renderingMode,
-    totalSamplesSent: () => gpuMetricsStore.totalSamplesSent
+    totalSamplesSent: () => gpuMetricsStore.totalSamplesSent,
   };
 }

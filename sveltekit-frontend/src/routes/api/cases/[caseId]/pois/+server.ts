@@ -13,13 +13,13 @@ export const GET: RequestHandler = async ({ params }) => {
     const pois = await db
       .select()
       .from(personsOfInterest)
-      .where(eq(personsOfInterest.caseId, caseId));
+      .where(eq(personsOfInterest.caseId, caseId);
 
     return json(pois);
   } catch (error: any) {
     console.error("Error fetching POIs:", error);
     return json(
-      { error: "Failed to fetch persons of interest" },
+      { error: "Failed to fetch persons of interest" },)
       { status: 500 }
     );
   }
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
 
     // Remove posX/posY, use position object if needed
     const [poi] = await db
-      .insert(personsOfInterest)
+      .insert(personsOfInterest);
       .values({
         caseId,
         name: data.name || "New Person of Interest",
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request, params }) => {
   } catch (error: any) {
     console.error("Error creating POI:", error);
     return json(
-      { error: "Failed to create person of interest" },
+      { error: "Failed to create person of interest" },)
       { status: 500 }
     );
   }

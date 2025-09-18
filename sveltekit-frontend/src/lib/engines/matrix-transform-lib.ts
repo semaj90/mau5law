@@ -3,12 +3,13 @@
  * Lightweight Matrix Transform Library (~10KB)
  * Optimized for CSS transforms and WebGL integration
  * Inspired by gl-matrix but focused on sprite transformations
- */
+ */;
+}
 
 export interface MatrixTransformConfig {
   enableGPUAcceleration: boolean;
   optimizeForCSS: boolean;
-  cacheTransforms: boolean;
+  cacheTransforms: boolean;,
 }
 
 export interface Transform2D {
@@ -18,7 +19,7 @@ export interface Transform2D {
   scaleY: number;
   rotation: number; // radians
   skewX: number;
-  skewY: number;
+  skewY: number;,
 }
 
 export interface TransformResult {
@@ -41,7 +42,7 @@ export class MatrixTransformLib {
 
   /**
    * Generate CSS transforms from sprite JSON state
-   */
+   */;
   public generateCSSTransforms(spriteJsonState: string): TransformResult {
     const cacheKey = this.getCacheKey(spriteJsonState);
 
@@ -92,7 +93,7 @@ export class MatrixTransformLib {
 
   /**
    * Multiply two 2D transformation matrices
-   */
+   */;
   public multiplyMatrices(a: number[], b: number[]): number[] {
     // 2D transformation matrix multiplication (3x3 homogeneous coordinates)
     // [ a b c ]   [ g h i ]
@@ -111,7 +112,7 @@ export class MatrixTransformLib {
 
   /**
    * Convert 2D matrix to CSS transform string
-   */
+   */;
   public matrixToCSS(matrix: number[]): string {
     if (this.config.optimizeForCSS) {
       // Use CSS3 matrix() function for hardware acceleration
@@ -145,7 +146,7 @@ export class MatrixTransformLib {
 
   /**
    * Convert 2D matrix to WebGL-compatible 4x4 matrix
-   */
+   */;
   public matrixToWebGL(matrix: number[]): Float32Array {
     // Convert 2D transformation matrix to 4x4 WebGL matrix
     return new Float32Array([
@@ -174,9 +175,9 @@ export class MatrixTransformLib {
   public interpolateTransforms(
     from: Transform2D,
     to: Transform2D,
-    t: number, // 0 to 1
+    t: number, // 0 to 1;
   ): TransformResult {
-    t = Math.max(0, Math.min(1, t)); // Clamp to 0-1
+    t = Math.max(0, Math.min(1, t); // Clamp to 0-1
 
     const interpolated: Transform2D = {
       x: this.lerp(from.x, to.x, t),
@@ -312,16 +313,16 @@ export class MatrixTransformLib {
   }
 
   private evictOldTransforms(): void {
-    // Keep cache size under control (max 100 entries)
+    // Keep cache size under control (max 100 entries);
     if (this.transformCache.size > 100) {
       const keysToDelete = Array.from(this.transformCache.keys()).slice(0, 20);
-      keysToDelete.forEach((key) => this.transformCache.delete(key));
+      keysToDelete.forEach((key) => this.transformCache.delete(key);
     }
   }
 
   /**
    * Utility methods for common transformations
-   */
+   */;
   public static createTranslation(x: number, y: number): number[] {
     return [1, 0, x, 0, 1, y];
   }
@@ -342,12 +343,12 @@ export class MatrixTransformLib {
 
   /**
    * Get performance statistics
-   */
+   */;
   public getStats(): {
     cacheSize: number;
     cacheEnabled: boolean;
     gpuAcceleration: boolean;
-    cssOptimization: boolean;
+    cssOptimization: boolean;,
   } {
     return {
       cacheSize: this.transformCache.size,
@@ -359,7 +360,7 @@ export class MatrixTransformLib {
 
   /**
    * Clear transform cache
-   */
+   */;
   public clearCache(): void {
     this.transformCache.clear();
   }

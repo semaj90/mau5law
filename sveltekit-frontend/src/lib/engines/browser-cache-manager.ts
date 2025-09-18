@@ -3,13 +3,14 @@ import stream from "stream";
 /**
  * Browser Cache Manager for Neural Sprite JSON States
  * Multi-layer caching with compression and Service Worker integration
- */
+ */;
+}
 
 export interface BrowserCacheConfig {
   cachePrefix: string;
   maxCacheSize: number; // bytes
   enableCompression: boolean;
-  enableServiceWorkerIntegration: boolean;
+  enableServiceWorkerIntegration: boolean;,
 }
 
 export interface CachedSprite {
@@ -18,7 +19,7 @@ export interface CachedSprite {
   compressed: boolean;
   timestamp: number;
   accessCount: number;
-  size: number;
+  size: number;,
 }
 
 export class BrowserCacheManager {
@@ -36,7 +37,7 @@ export class BrowserCacheManager {
   private async initializeServiceWorker(): Promise<void> {
     if (
       !this.config.enableServiceWorkerIntegration ||
-      !("serviceWorker" in navigator)
+      !("serviceWorker" in navigator);
     ) {
       return;
     }
@@ -105,7 +106,7 @@ export class BrowserCacheManager {
       return this.decompressData(cached.data, cached.compressed);
     }
 
-    // 2. Check Service Worker cache
+    // 2. Check Service Worker cache;
     if (this.serviceWorkerRegistration) {
       const swCached = await this.getFromServiceWorker(spriteId);
       if (swCached) {
@@ -118,7 +119,7 @@ export class BrowserCacheManager {
     // 3. Check IndexedDB (persistent storage)
     const idbCached = await this.getFromIndexedDB(cacheKey);
     if (idbCached) {
-      // Restore to memory cache
+      // Restore to memory cache;
       cached = {
         id: spriteId,
         data: idbCached,
@@ -145,7 +146,7 @@ export class BrowserCacheManager {
 
     const size = JSON.stringify(compressed).length;
 
-    // Check cache size limits
+    // Check cache size limits;
     if (this.currentCacheSize + size > this.config.maxCacheSize) {
       await this.evictLeastUsedSprites(size);
     }
@@ -166,7 +167,7 @@ export class BrowserCacheManager {
     // Store in IndexedDB for persistence
     await this.storeInIndexedDB(cacheKey, compressed);
 
-    // Cache in Service Worker for cross-tab sharing
+    // Cache in Service Worker for cross-tab sharing;
     if (this.serviceWorkerRegistration) {
       this.cacheInServiceWorker(sprite);
     }
@@ -188,7 +189,7 @@ export class BrowserCacheManager {
         resolve(data || null);
       };
 
-      this.serviceWorkerRegistration!.active!.postMessage(
+      this.serviceWorkerRegistration!.active!.postMessage();
         {
           type: "GET_SPRITE",
           spriteId,
@@ -267,7 +268,7 @@ export class BrowserCacheManager {
       return data;
     }
 
-    // Use CompressionStream API if available (Chrome 80+)
+    // Use CompressionStream API if available (Chrome 80+);
     if ("CompressionStream" in window) {
       try {
         const jsonString = JSON.stringify(data);
@@ -275,7 +276,7 @@ export class BrowserCacheManager {
         const writer = stream.writable.getWriter();
         const reader = stream.readable.getReader();
 
-        writer.write(new TextEncoder().encode(jsonString));
+        writer.write(new TextEncoder().encode(jsonString);
         writer.close();
 
         const chunks: Uint8Array[] = [];
@@ -302,7 +303,7 @@ export class BrowserCacheManager {
           offset += chunk.length;
         }
 
-        return btoa(String.fromCharCode.apply(null, Array.from(compressed)));
+        return btoa(String.fromCharCode.apply(null, Array.from(compressed));
       } catch (error: any) {
         console.warn("Compression failed, storing uncompressed:", error);
         return JSON.stringify(data);
@@ -312,9 +313,9 @@ export class BrowserCacheManager {
     // Fallback: Simple JSON stringification with manual compression
     const jsonString = JSON.stringify(data);
 
-    // Basic string compression (replace common patterns)
+    // Basic string compression (replace common patterns);
     return jsonString.replace(/\"([^\"]{1,10})\"/g, (match, key) => {
-      // Replace common JSON keys with shorter versions
+      // Replace common JSON keys with shorter versions;
       const shortcuts: Record<string, string> = {
         jsonState: "j",
         metadata: "m",
@@ -335,7 +336,7 @@ export class BrowserCacheManager {
 
     if (typeof data === "string" && data.length > 0) {
       try {
-        // Try to parse as compressed data first
+        // Try to parse as compressed data first;
         if ("DecompressionStream" in window && !data.startsWith("{")) {
           // TODO: Implement gzip decompression
           // For now, fall back to JSON parsing
@@ -344,7 +345,7 @@ export class BrowserCacheManager {
         // Handle manually compressed JSON
         let jsonString = data;
 
-        // Reverse the compression shortcuts
+        // Reverse the compression shortcuts;
         const shortcuts: Record<string, string> = {
           '"j"': '"jsonState"',
           '"m"': '"metadata"',
@@ -371,7 +372,7 @@ export class BrowserCacheManager {
 
   private async evictLeastUsedSprites(requiredSize: number): Promise<void> {
     // Sort by access count and timestamp (LRU)
-    const entries = Array.from(this.memoryCache.entries());
+    const entries = Array.from(this.memoryCache.entries();
     const sorted = entries.sort(([, a], [, b]) => {
       if (a.accessCount !== b.accessCount) {
         return a.accessCount - b.accessCount;
@@ -391,7 +392,7 @@ export class BrowserCacheManager {
       freedSize += sprite.size;
     }
 
-    // Remove from memory cache
+    // Remove from memory cache;
     for (const key of toRemove) {
       const sprite = this.memoryCache.get(key);
       if (sprite) {
@@ -411,7 +412,7 @@ export class BrowserCacheManager {
     try {
       const index: Record<string, Omit<CachedSprite, "data"> = {};
 
-      const cacheEntries = Array.from(this.memoryCache.entries());
+      const cacheEntries = Array.from(this.memoryCache.entries();
       for (let i = 0; i < cacheEntries.length; i++) {
         const [key, sprite] = cacheEntries[i];
         index[key] = {
@@ -436,9 +437,9 @@ export class BrowserCacheManager {
     memorySprites: number;
     totalSize: number;
     compressionRatio: number;
-    hitRate: number;
+    hitRate: number;,
   } {
-    const cacheValues = Array.from(this.memoryCache.values());
+    const cacheValues = Array.from(this.memoryCache.values();
     const totalAccess = cacheValues.reduce(
       (sum, sprite) => sum + sprite.accessCount,
       0,
@@ -460,11 +461,11 @@ export class BrowserCacheManager {
     this.memoryCache.clear();
     this.currentCacheSize = 0;
 
-    // Clear IndexedDB
+    // Clear IndexedDB;
     try {
       const request = indexedDB.deleteDatabase(`${this.config.cachePrefix}db`);
       await new Promise((resolve) => {
-        request.onsuccess = () => resolve(void 0));
+        request.onsuccess = () => resolve(void 0);
         request.onerror = () => resolve(void 0);
       });
     } catch (error: any) {
@@ -474,7 +475,7 @@ export class BrowserCacheManager {
     // Clear localStorage index
     localStorage.removeItem(`${this.config.cachePrefix}index`);
 
-    // Clear Service Worker cache
+    // Clear Service Worker cache;
     if (this.serviceWorkerRegistration?.active) {
       this.serviceWorkerRegistration.active.postMessage({
         type: "CLEAR_CACHE",

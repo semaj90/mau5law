@@ -5,7 +5,7 @@ import { db, vectorSearch } from '$lib/server/database/connection';
 import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service';
 import type { RequestHandler } from './$types.js';
 
-// Unified Search API with hybrid vector + text + filtered search
+// Unified Search API with hybrid vector + text + filtered search;
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!query) {
       return json({
         error: 'Query parameter is required',
-        status: 'error'
+        status: 'error',
       }, { status: 400 });
     }
 
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
       queryEmbedding = await generateQueryEmbedding(query);
     }
 
-    // Build orchestration request
+    // Build orchestration request;
     const orchestrationRequest = {
       type: 'search' as const,
       payload: {
@@ -47,16 +47,16 @@ export const POST: RequestHandler = async ({ request }) => {
         collections,
         embedding: queryEmbedding,
         dataset_size: await estimateDatasetSize(collections, filters),
-        has_filters: Object.keys(filters).length > 0
+        has_filters: Object.keys(filters).length > 0,
       },
       context: {
         user_id,
         case_id,
-        priority: 'normal' as const
+        priority: 'normal' as const,
       },
       performance_requirements: {
         max_latency_ms: 2000,
-        accuracy_threshold: threshold
+        accuracy_threshold: threshold,
       }
     };
 
@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
       finalResults = await performHybridSearch(query, queryEmbedding, filters, limit, threshold, collections);
     }
 
-    // Track search analytics via NATS
+    // Track search analytics via NATS;
     await natsQuicSearchService.publishAnalytics({
       event_type: 'search_request',
       event_data: {
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request }) => {
           latency_ms: Date.now() - startTime,
           cached: (response as { _metadata?: any })._metadata?.cached,
           threshold_used: threshold,
-          collections_searched: collections
+          collections_searched: collections,
         },
         suggestions: await generateSearchSuggestions(query, finalResults.results || [])
       }
@@ -109,12 +109,12 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       error: 'Search processing failed',
       details: error.message,
-      status: 'error'
+      status: 'error',
     }, { status: 500 });
   }
 };
 
-// GET endpoint for saved searches and search history
+// GET endpoint for saved searches and search history;
 export const GET: RequestHandler = async ({ url }) => {
   const user_id = url.searchParams.get('user_id');
   const action = url.searchParams.get('action') || 'history';
@@ -122,7 +122,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   try {
     switch (action) {
-      case 'history':
+      case 'history':;
         if (!user_id) {
           return json({ error: 'user_id required for search history' }, { status: 400 });
         }
@@ -157,12 +157,12 @@ export const GET: RequestHandler = async ({ url }) => {
     
     return json({
       error: 'Search request failed',
-      details: error.message
+      details: error.message,
     }, { status: 500 });
   }
 };
 
-// Helper functions
+// Helper functions;
 async function generateQueryEmbedding(query: string): Promise<number[]> {
   try {
     // In production, this would call your embedding service
@@ -201,22 +201,21 @@ async function performHybridSearch(
   filters: any, 
   limit: number, 
   threshold: number, 
-  collections: string[]
+  collections: string[];
 ): Promise<any> {
   try {
     // Run multiple search strategies in parallel
     const searchTasks = [];
 
-    // 1. Vector similarity search in Qdrant
+    // 1. Vector similarity search in Qdrant;
     for (const collection of collections) {
-      searchTasks.push(
-        qdrant.hybridSearch({
+      searchTasks.push(qdrant.hybridSearch({
           query,
           queryEmbedding,
           collection: collection as any,
           filters,
           limit: Math.ceil(limit / collections.length),
-          scoreThreshold: threshold
+          scoreThreshold: threshold,
         })
       );
     }
@@ -226,7 +225,7 @@ async function performHybridSearch(
       vectorSearch.searchSimilarDocuments(queryEmbedding, limit, threshold)
     );
 
-    // 3. Direct text search if query is short
+    // 3. Direct text search if query is short;
     if (query.length < 100) {
       searchTasks.push(
         performTextSearch(query, filters, limit)
@@ -254,17 +253,17 @@ async function performTextSearch(query: string, filters: any, limit: number): Pr
     const conditions = [];
     
     // Add text search condition
-    conditions.push(ilike(documentsTable.content, `%${query}%`));
+    conditions.push(ilike(documentsTable.content, `%${query}%`);
     
-    // Add filters
+    // Add filters;
     for (const [key, value] of Object.entries(filters)) {
       if (key === 'case_id') {
-        conditions.push(eq(documentsTable.case_id, value as string));
+        conditions.push(eq(documentsTable.case_id, value as string);
       }
       // Add more filter conditions as needed
     }
     
-    const searchQuery = db.select().from(documentsTable).where(and(...conditions));
+    const searchQuery = db.select().from(documentsTable).where(and(...conditions);
     
     const results = await searchQuery.limit(limit);
     
@@ -274,8 +273,8 @@ async function performTextSearch(query: string, filters: any, limit: number): Pr
         title: doc.title,
         content_preview: doc.content?.substring(0, 200),
         score: 0.5, // Default score for text search
-        source: 'text_search'
-      }))
+        source: 'text_search',
+      })
     };
     
   } catch (error) {
@@ -288,11 +287,11 @@ function combineSearchResults(results: PromiseSettledResult<any>[], query: strin
   const combinedResults: any[] = [];
   const seenIds = new Set<string>();
   
-  // Process each search result
+  // Process each search result;
   for (const result of results) {
     if ((result as { status?: any; value?: any; title?: any; content_preview?: any }).status === 'fulfilled' && (result as { status?: any; value?: any; title?: any; content_preview?: any }).value?.results) {
       for (const item of (result as { status?: any; value?: any; title?: any; content_preview?: any }).value.results) {
-        // Avoid duplicates
+        // Avoid duplicates;
         if (!seenIds.has((item as { id?: any; source?: any; score?: any }).id)) {
           seenIds.add((item as { id?: any; source?: any; score?: any }).id);
           combinedResults.push({
@@ -313,14 +312,14 @@ function combineSearchResults(results: PromiseSettledResult<any>[], query: strin
   }
   
   // Sort by relevance score
-  combinedResults.sort((a, b) => (b.score || 0) - (a.score || 0));
+  combinedResults.sort((a, b) => (b.score || 0) - (a.score || 0);
   
   return {
     results: combinedResults,
     metadata: {
       hybrid: true,
       sources_combined: results.length,
-      total_results: combinedResults.length
+      total_results: combinedResults.length,
     }
   };
 }
@@ -329,13 +328,13 @@ async function generateSearchSuggestions(query: string, results: any[]): Promise
   // Generate search suggestions based on query and results
   const suggestions: string[] = [];
   
-  // Extract common terms from successful results
+  // Extract common terms from successful results;
   if (results.length > 0) {
     const commonTerms = extractCommonTerms(results);
-    suggestions.push(...commonTerms.slice(0, 3));
+    suggestions.push(...commonTerms.slice(0, 3);
   }
   
-  // Add query variations
+  // Add query variations;
   if (query.length > 3) {
     suggestions.push(`"${query}"`, `${query} AND legal`, `${query} case law`);
   }
@@ -355,7 +354,7 @@ function extractCommonTerms(results: any[]): string[] {
     }
   }
   
-  return Array.from(termCounts.entries())
+  return Array.from(termCounts.entries()
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10)
     .map(([term]) => term);

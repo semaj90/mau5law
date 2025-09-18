@@ -11,11 +11,10 @@ export const GET: RequestHandler = async ({ url }) => {
     const email = url.searchParams.get('email');
 
     if (!email) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Email parameter is required',
-        },
+        },)
         { status: 400 }
       );
     }
@@ -24,11 +23,10 @@ export const GET: RequestHandler = async ({ url }) => {
     const user = await db.select().from(users).where(eq(users.email, email.toLowerCase())).limit(1);
 
     if (user.length === 0) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'User not found',
-        },
+        },)
         { status: 404 }
       );
     }
@@ -41,7 +39,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const profile = await db
         .select()
         .from(userProfiles)
-        .where(eq(userProfiles.userId, userData.id))
+        .where(eq(userProfiles.userId, userData.id)
         .limit(1);
 
       if (profile.length > 0) {
@@ -49,7 +47,7 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     } catch (profileError) {
       const pe: any = profileError;
-      console.log('⚠️ Could not fetch user profile:', pe?.message || String(pe));
+      console.log('⚠️ Could not fetch user profile:', pe?.message || String(pe);
     }
 
     // Remove sensitive data
@@ -59,7 +57,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: true,
       user: {
         data: safeUserData,
-        profile: userProfile
+        profile: userProfile,
       }
     });
 
@@ -67,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error("❌ Error fetching user info:", error);
     return json({
       success: false,
-      error: "Internal server error"
+      error: "Internal server error",
     }, { status: 500 });
   }
 };

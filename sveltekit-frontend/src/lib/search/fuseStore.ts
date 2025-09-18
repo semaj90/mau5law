@@ -1,5 +1,6 @@
 import Fuse from 'fuse.js';
 import { writable, derived, type Readable } from 'svelte/store';
+}
 
 export interface SearchItem { id: string; title: string; body: string; tags?: string[] }
 
@@ -20,7 +21,7 @@ items.subscribe(list => { fuse = new Fuse(list, options); });
 
 const results: Readable<Array<any> = derived([items, query], ([$items, $query]) => {
   if (!fuse || !$query.trim()) return [];
-  return fuse.search($query).slice(0, 30).map(r => ({ item: r.item, score: r.score ?? 0 }));
+  return fuse.search($query).slice(0, 30).map(r => ({ item: r.item, score: r.score ?? 0 });
 });
 
 export const searchStore = { items, query, results };

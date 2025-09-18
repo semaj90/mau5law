@@ -10,6 +10,7 @@ export type TelemetryEventType =
   | 'gpu.vector.process.typeMismatch'
   | 'gpu.vector.process.end'
   | 'error';
+}
 
 export interface TelemetryBaseEvent<T extends TelemetryEventType = TelemetryEventType> {
   type: T;

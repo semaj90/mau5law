@@ -12,25 +12,25 @@ export const GET: RequestHandler = async () => {
     const systemStatus = {
       services: {
         ollama: await checkOllamaStatus(),
-        database: await checkDatabaseStatus()
+        database: await checkDatabaseStatus(),
       },
       environment: {
-        ollamaUrl: OLLAMA_URL
+        ollamaUrl: OLLAMA_URL,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     return json(systemStatus);
   } catch (error: any) {
     console.error('System status check failed:', error);
-    return json(
+    return json();
       {
         services: {
           ollama: { status: 'error', error: 'System check failed' },
           database: { status: 'error', error: 'System check failed' }
         },
         environment: { ollamaUrl: OLLAMA_URL },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -60,7 +60,7 @@ async function checkOllamaStatus(): Promise<any> {
     return {
       status: 'connected',
       version: (data as { version?: any }).version || 'unknown',
-      url: OLLAMA_URL
+      url: OLLAMA_URL,
     };
   } catch (error: any) {
     console.error('Ollama connection failed:', error);
@@ -79,7 +79,7 @@ async function checkOllamaStatus(): Promise<any> {
     return {
       status: 'error',
       error: errorMessage,
-      url: OLLAMA_URL
+      url: OLLAMA_URL,
     };
   }
 }
@@ -92,13 +92,13 @@ async function checkDatabaseStatus(): Promise<any> {
       return {
         status: 'connected',
         type: 'PostgreSQL',
-        tablesAccessible: (result as any).tablesAccessible
+        tablesAccessible: (result as any).tablesAccessible,
       };
     } else {
       return {
         status: 'error',
         error: (result as { status?: any; error?: any }).error,
-        type: 'PostgreSQL'
+        type: 'PostgreSQL',
       };
     }
   } catch (error: any) {
@@ -107,7 +107,7 @@ async function checkDatabaseStatus(): Promise<any> {
     return {
       status: 'error',
       error: error instanceof Error ? error.message: 'Unknown error',
-      type: 'PostgreSQL'
+      type: 'PostgreSQL',
     };
   }
 }

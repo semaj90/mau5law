@@ -11,10 +11,11 @@ import type { RequestHandler } from './$types.js';
 
 const SERVICE_URL = 'http://localhost:8227'; // INGEST_SERVICE_URL ||
 const TIMEOUT = 120000; // 2 minutes for batch processing
-const BATCH_SIZE_LIMIT = parseInt('10'); // MAX_BATCH_SIZE ||
+const BATCH_SIZE_LIMIT = parseInt('10'); // MAX_BATCH_SIZE ||;
+}
 
 export interface BatchIngestRequest {
-  documents: Array<any>;
+  documents: Array<any>;,
 }
 
 export interface BatchIngestResponse {
@@ -31,21 +32,20 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const requestData: BatchIngestRequest = await request.json();
 
-    // Validate request structure
+    // Validate request structure;
     if (!requestData.documents || !Array.isArray(requestData.documents)) {
       return json(
-        { error: 'Missing required field: documents array is required' },
+        { error: 'Missing required field: documents array is required' },)
         { status: 400 }
       );
     }
 
-    // Validate batch size
+    // Validate batch size;
     if (requestData.documents.length > BATCH_SIZE_LIMIT) {
-      return json(
-        {
+      return json({
           error: `Batch size ${requestData.documents.length} exceeds maximum of ${BATCH_SIZE_LIMIT}`,
-          max_batch_size: BATCH_SIZE_LIMIT
-        },
+          max_batch_size: BATCH_SIZE_LIMIT,
+        },)
         { status: 400 }
       );
     }
@@ -62,16 +62,15 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     });
 
     if (validationErrors.length > 0) {
-      return json(
-        {
+      return json({
           error: 'Document validation failed',
-          validation_errors: validationErrors
-        },
+          validation_errors: validationErrors,
+        },)
         { status: 400 }
       );
     }
 
-    // Transform to Go service format with enhanced metadata
+    // Transform to Go service format with enhanced metadata;
     const batchRequest = {
       documents: requestData.documents.map((doc, index) => ({
         title: doc.title,
@@ -86,35 +85,35 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           batch_id: `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           api_version: 'v1',
           timestamp: new Date().toISOString(),
-          user_agent: request.headers.get('user-agent') || 'unknown'
+          user_agent: request.headers.get('user-agent') || 'unknown',
         }
-      }))
+      })
     };
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
 
     try {
-      // Call Go batch ingest service
+      // Call Go batch ingest service;
       const response = await fetch(`${SERVICE_URL}/api/ingest/batch`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(batchRequest),
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
 
       if (!(response as { ok?: any; text?: any; status?: any; json?: any }).ok) {
         const errorText = await (response as { ok?: any; text?: any; status?: any; json?: any }).text();
-        return json(
+        return json();
           {
             error: `Batch ingest service error: ${(response as { ok?: any; text?: any; status?: any; json?: any }).status} - ${errorText}`,
             service: 'ingest-service',
             port: '8227',
-            batch_size: requestData.documents.length
+            batch_size: requestData.documents.length,
           },
           { status: (response as { ok?: any; text?: any; status?: any; json?: any }).status }
         );
@@ -123,10 +122,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       const result: BatchIngestResponse = await (response as { ok?: any; text?: any; status?: any; json?: any }).json();
       const processingTime = Date.now() - startTime;
 
-      // Enhanced response with comprehensive metadata
+      // Enhanced response with comprehensive metadata;
       return json({
         ...result,
-        // Performance metrics following your patterns
+        // Performance metrics following your patterns;
         performance: {
           total_processing_time_ms: processingTime,
           average_document_time_ms: (result as { results?: any; processed?: any; errors?: any }).results.length > 0
@@ -140,7 +139,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
           port: '8227',
           proxy: 'sveltekit-batch-api',
           architecture: 'multi-protocol',
-          batch_enabled: true
+          batch_enabled: true,
         },
         // Follow your established success pattern
         success: true,
@@ -159,13 +158,12 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       clearTimeout(timeoutId);
 
       if ((fetchError as any)?.name === 'AbortError') {
-        return json(
-          {
+        return json({
             error: 'Batch processing timeout',
             message: `Processing ${requestData.documents.length} documents took longer than ${TIMEOUT/1000} seconds`,
             batch_size: requestData.documents.length,
-            timeout_ms: TIMEOUT
-          },
+            timeout_ms: TIMEOUT,
+          },)
           { status: 504 }
         );
       }
@@ -178,19 +176,18 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
     console.error('Batch ingest API error:', error);
 
-    return json(
-      {
+    return json({
         error: 'Internal server error during batch processing',
         message: error instanceof Error ? error.message: 'Unknown error',
         service: 'sveltekit-batch-ingest-proxy',
-        processing_time_ms: processingTime
-      },
+        processing_time_ms: processingTime,
+      },)
       { status: 500 }
     );
   }
 };
 
-// Batch status endpoint
+// Batch status endpoint;
 export const GET: RequestHandler = async ({ url, fetch }) => {
   const batchId = url.searchParams.get('batch_id');
 
@@ -204,23 +201,23 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         endpoints: {
           batch_ingest: '/api/v1/ingest/batch',
           single_ingest: '/api/v1/ingest',
-          health: '/api/v1/ingest'
+          health: '/api/v1/ingest',
         }
       },
-      // Follow your API documentation pattern
+      // Follow your API documentation pattern;
       architecture: {
         frontend: 'sveltekit-2',
         backend: 'go-gin-microservice',
         database: 'postgresql-pgvector',
-        embeddings: 'ollama-nomic-embed-text'
+        embeddings: 'ollama-nomic-embed-text',
       }
     });
   }
 
-  // Future: implement batch status tracking with your established patterns
+  // Future: implement batch status tracking with your established patterns;
   return json({
     batch_id: batchId,
     status: 'not_implemented',
-    message: 'Batch status tracking will be implemented with Redis/PostgreSQL integration'
+    message: 'Batch status tracking will be implemented with Redis/PostgreSQL integration',
   });
 };

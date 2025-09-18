@@ -2,7 +2,8 @@
 
 /**
  * Comprehensive Error Handling System for Legal AI Application
- */
+ */;
+}
 
 export interface AppError {
   id: string;
@@ -13,7 +14,7 @@ export interface AppError {
   userId?: string;
   caseId?: string;
   stack?: string;
-  severity: "low" | "medium" | "high" | "critical";
+  severity: "low" | "medium" | "high" | "critical";,
 }
 
 export interface ErrorReport {
@@ -50,7 +51,7 @@ class ErrorHandler {
       severity,
     };
 
-    // Add context if available
+    // Add context if available;
     if (typeof window !== "undefined") {
       error.userId = localStorage.getItem("userId") || undefined;
       error.caseId = sessionStorage.getItem("currentCaseId") || undefined;
@@ -58,7 +59,7 @@ class ErrorHandler {
 
     this.errors.unshift(error);
 
-    // Limit array size
+    // Limit array size;
     if (this.errors.length > this.maxErrors) {
       this.errors = this.errors.slice(0, this.maxErrors);
     }
@@ -66,7 +67,7 @@ class ErrorHandler {
     // Notify listeners
     this.notifyListeners(error);
 
-    // Console logging for development
+    // Console logging for development;
     if (import.meta.env.NODE_ENV === "development") {
       console.error(
         `[${error.type.toUpperCase()}] ${error.message}`,
@@ -74,7 +75,7 @@ class ErrorHandler {
       );
     }
 
-    // Critical errors should be reported immediately
+    // Critical errors should be reported immediately;
     if (severity === "critical") {
       this.reportCriticalError(error);
     }
@@ -105,7 +106,7 @@ class ErrorHandler {
 
   /**
    * Get error report
-   */
+   */;
   getErrorReport(): ErrorReport {
     const byType: Record<string, number> = {};
     const bySeverity: Record<string, number> = {};
@@ -146,14 +147,14 @@ class ErrorHandler {
 
   /**
    * Clear errors
-   */
+   */;
   clearErrors() {
     this.errors = [];
   }
 
   /**
    * Subscribe to error events
-   */
+   */;
   onError(callback: (error: AppError) => void) {
     this.listeners.push(callback);
     return () => {
@@ -163,7 +164,7 @@ class ErrorHandler {
 
   /**
    * Get errors by criteria
-   */
+   */;
   getErrors(criteria?: {
     type?: AppError["type"];
     severity?: AppError["severity"];
@@ -225,7 +226,7 @@ export async function withErrorHandling<T>(
   } catch (error: any) {
     errorHandler.logError(
       errorType,
-      errorMessage,
+      errorMessage,);
       {
         originalError: error instanceof Error ? error.message: error,
         stack: error instanceof Error ? error.stack : undefined,
@@ -238,7 +239,7 @@ export async function withErrorHandling<T>(
 
 /**
  * Fetch wrapper with error handling
- */
+ */;
 export async function safeFetch(url: string, options?: RequestInit): Promise<any> {
   try {
     const response = await fetch(url, options);
@@ -260,7 +261,7 @@ export async function safeFetch(url: string, options?: RequestInit): Promise<any
 
 /**
  * Database error handling
- */
+ */;
 export function handleDatabaseError(error: any, operation: string): string {
   console.error(`Database error during ${operation}:`, {
     message: error.message,
@@ -268,7 +269,7 @@ export function handleDatabaseError(error: any, operation: string): string {
     timestamp: new Date().toISOString(),
   });
 
-  // Return user-friendly error message
+  // Return user-friendly error message;
   if (error.message.includes('connection')) {
     return 'Database connection failed. Please try again later.';
   }
@@ -290,7 +291,7 @@ export function handleDatabaseError(error: any, operation: string): string {
 
 /**
  * Session validation helper
- */
+ */;
 export function validateUserSession(locals: any): unknown {
   if (!locals.user) {
     throw new Error('Authentication required');
@@ -305,18 +306,17 @@ export function validateUserSession(locals: any): unknown {
 
 /**
  * API response error handler
- */
+ */;
 export function handleAPIError(error: any, endpoint: string): Response {
   const errorMessage = handleDatabaseError(error, `API call to ${endpoint}`);
 
   errorHandler.system(`API error at ${endpoint}`, {
     error: error.message,
     endpoint,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 
-  return new Response(
-    JSON.stringify({
+  return new Response(JSON.stringify({
       error: errorMessage,
       timestamp: new Date().toISOString(),
       endpoint
@@ -333,7 +333,7 @@ export function handleAPIError(error: any, endpoint: string): Response {
  */
 export function validateForm(
   data: Record<string, any>,
-  rules: Record<string, any>
+  rules: Record<string, any>;
 ) {
   const errors: string[] = [];
 

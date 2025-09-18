@@ -25,6 +25,7 @@ import type { RequestHandler } from './$types.js';
 
 import { synthesizeAIInput, processAIAssistantQuery } from "$lib/services/comprehensive-database-orchestrator";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+}
 
 export interface DocumentDraftingRequest {
   documentType: string;
@@ -56,7 +57,7 @@ export interface DraftingAssistance {
   legalConsiderations: string[];
   complianceChecklist: string[];
   commonPitfalls: string[];
-  nextSteps: string[];
+  nextSteps: string[];,
 }
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
@@ -118,7 +119,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Document drafting API error:', error);
 
-    return json(
+    return json();
       {
         error: 'Drafting assistance failed',
         message: error.message,
@@ -130,7 +131,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 };
 
 async function generateDraftingAssistance(
-  request: DocumentDraftingRequest
+  request: DocumentDraftingRequest;
 ): Promise<DraftingAssistance> {
   const { documentType, jurisdiction, parties, complexity } = request;
 
@@ -162,7 +163,7 @@ async function generateDraftingAssistance(
 
 function getDocumentStructure(documentType: string, jurisdiction: string) {
   const commonStructures = {
-    contract: [
+    contract: [;
       {
         section: 'Title and Parties',
         description: 'Document title and identification of all parties',
@@ -220,7 +221,7 @@ function getDocumentStructure(documentType: string, jurisdiction: string) {
         guidance: ['Include entire agreement clause', 'Address amendments', 'Include signatures'],
       },
     ],
-    motion: [
+    motion: [;
       {
         section: 'Caption',
         description: 'Court identification and case information',
@@ -256,7 +257,7 @@ function getDocumentStructure(documentType: string, jurisdiction: string) {
         guidance: ['Summarize argument', 'Specify relief requested', 'Include prayer for relief'],
       },
     ],
-    brief: [
+    brief: [;
       {
         section: 'Table of Contents',
         description: 'Document outline with page numbers',
@@ -315,7 +316,7 @@ function getDocumentStructure(documentType: string, jurisdiction: string) {
 
 async function generateTemplateContent(
   request: DocumentDraftingRequest,
-  structure: any[]
+  structure: any[];
 ): Promise<string> {
   const { documentType, parties, keyTerms, jurisdiction } = request;
 
@@ -328,7 +329,7 @@ async function generateTemplateContent(
   });
   template += `\n`;
 
-  // Add structure sections
+  // Add structure sections;
   structure.forEach((section) => {
     template += `${section.section.toUpperCase()}\n`;
     template += `[${section.description}]\n\n`;
@@ -352,11 +353,11 @@ async function generateTemplateContent(
 function generateLegalConsiderations(
   documentType: string,
   jurisdiction: string,
-  complexity: string
+  complexity: string;
 ): string[] {
   const considerations = [];
 
-  // Document-specific considerations
+  // Document-specific considerations;
   switch (documentType.toLowerCase()) {
     case 'contract':
       considerations.push(
@@ -380,7 +381,7 @@ function generateLegalConsiderations(
       break;
   }
 
-  // Jurisdiction considerations
+  // Jurisdiction considerations;
   if (jurisdiction === 'federal') {
     considerations.push('Review Federal Rules of Civil Procedure');
     considerations.push('Consider federal question or diversity jurisdiction');
@@ -389,7 +390,7 @@ function generateLegalConsiderations(
     considerations.push('Consider state-specific procedural rules');
   }
 
-  // Complexity considerations
+  // Complexity considerations;
   if (complexity === 'complex') {
     considerations.push('Consider engaging specialized counsel');
     considerations.push('Plan for extended review and revision process');
@@ -408,7 +409,7 @@ function generateComplianceChecklist(documentType: string, jurisdiction: string)
     'Review filing deadlines and procedures',
   ];
 
-  // Document-specific compliance
+  // Document-specific compliance;
   switch (documentType.toLowerCase()) {
     case 'contract':
       checklist.push('Verify parties have authority to enter contract');
@@ -434,7 +435,7 @@ function generateCommonPitfalls(documentType: string, parties: any[]): string[] 
     'Inadequate dispute resolution provisions',
   ];
 
-  // Document-specific pitfalls
+  // Document-specific pitfalls;
   switch (documentType.toLowerCase()) {
     case 'contract':
       pitfalls.push('Unclear payment terms or schedules');
@@ -448,7 +449,7 @@ function generateCommonPitfalls(documentType: string, parties: any[]): string[] 
       break;
   }
 
-  // Party-specific considerations
+  // Party-specific considerations;
   if (parties.some((p) => p.type === 'corporation')) {
     pitfalls.push('Failure to verify corporate authority');
     pitfalls.push('Missing corporate resolutions if required');
@@ -489,7 +490,7 @@ function generateNextSteps(documentType: string, complexity: string): string[] {
 
 async function generateAIContentSuggestions(
   request: DocumentDraftingRequest,
-  assistance: DraftingAssistance
+  assistance: DraftingAssistance;
 ): Promise<string> {
   const prompt = `Generate specific content suggestions for a ${request.documentType} involving:
 
@@ -532,7 +533,7 @@ async function generateComplianceAnalysis(request: DocumentDraftingRequest): Pro
   analysisPoints.push(`• Review applicable state/federal law`);
   analysisPoints.push(`• Verify court rules compliance if litigation document`);
 
-  // Document type compliance
+  // Document type compliance;
   switch (request.documentType.toLowerCase()) {
     case 'contract':
       analysisPoints.push('Contract Formation Requirements:');
@@ -546,7 +547,7 @@ async function generateComplianceAnalysis(request: DocumentDraftingRequest): Pro
       break;
   }
 
-  // Party-specific compliance
+  // Party-specific compliance;
   if (request.parties.some((p) => p.type === 'corporation')) {
     analysisPoints.push('Corporate Compliance:');
     analysisPoints.push('• Verify corporate authority and good standing');
@@ -558,7 +559,7 @@ async function generateComplianceAnalysis(request: DocumentDraftingRequest): Pro
 
 function calculateDraftingConfidence(
   request: DocumentDraftingRequest,
-  assistance: DraftingAssistance
+  assistance: DraftingAssistance;
 ): number {
   let confidence = 0.5; // Base confidence
 
@@ -568,12 +569,12 @@ function calculateDraftingConfidence(
     confidence += 0.2;
   }
 
-  // Boost from complete party information
+  // Boost from complete party information;
   if (request.parties.every((p) => p.name && p.role)) {
     confidence += 0.15;
   }
 
-  // Boost from jurisdiction specification
+  // Boost from jurisdiction specification;
   if (request.jurisdiction) {
     confidence += 0.1;
   }
@@ -587,11 +588,11 @@ function calculateDraftingConfidence(
 
 function generateDraftingRecommendations(
   request: DocumentDraftingRequest,
-  assistance: DraftingAssistance
+  assistance: DraftingAssistance;
 ): string[] {
   const recommendations = [];
 
-  // Based on complexity
+  // Based on complexity;
   switch (request.complexity) {
     case 'simple':
       recommendations.push('Use standard templates and proven language');
@@ -604,7 +605,7 @@ function generateDraftingRecommendations(
       break;
   }
 
-  // Based on urgency
+  // Based on urgency;
   switch (request.urgency) {
     case 'high':
       recommendations.push('Prioritize essential terms over comprehensive coverage');

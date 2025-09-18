@@ -38,7 +38,7 @@ export default {
   },
   
   // Path constants
-  EOL: '\n'
+  EOL: '\n',
 };
 
 // Named exports for ESM compatibility

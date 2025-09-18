@@ -1,6 +1,7 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import jwt from 'jsonwebtoken';
+}
 
 export interface AuthenticatedUser {
   id: string;
@@ -13,7 +14,7 @@ export interface AuthenticatedUser {
 /**
  * Enhanced authentication guard for storage operations
  * Supports both session-based and JWT authentication
- */
+ */;
 export async function requireAuthentication(event: RequestEvent): Promise<AuthenticatedUser | null> {
   try {
     // Development mode: Always authenticate with a default dev user
@@ -30,7 +31,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
           email: devUserEmail || 'dev-user@legal-ai.local',
           firstName: 'Dev',
           lastName: 'User',
-          role: 'admin'
+          role: 'admin',
         };
       }
       
@@ -41,7 +42,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
         email: 'developer@legal-ai.local',
         firstName: 'Development',
         lastName: 'User',
-        role: 'admin'
+        role: 'admin',
       };
     }
 
@@ -56,7 +57,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
         email: session.user.email,
         firstName: session.user.firstName,
         lastName: session.user.lastName,
-        role: session.user.role
+        role: session.user.role,
       };
     }
 
@@ -74,7 +75,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
             email: decoded.email,
             firstName: decoded.firstName,
             lastName: decoded.lastName,
-            role: decoded.role
+            role: decoded.role,
           };
         } catch (jwtError) {
           console.warn('JWT verification failed:', jwtError);
@@ -90,7 +91,7 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
         return {
           id: 'system',
           email: 'system@legal-ai.local',
-          role: 'system'
+          role: 'system',
         };
       }
     }
@@ -108,14 +109,14 @@ export async function requireAuthentication(event: RequestEvent): Promise<Authen
 export function checkOwnership(
   user: AuthenticatedUser, 
   resourceOwnerId: string, 
-  allowedRoles: string[] = ['admin', 'system']
+  allowedRoles: string[] = ['admin', 'system'];
 ): boolean {
-  // User owns the resource
+  // User owns the resource;
   if (user.id === resourceOwnerId) {
     return true;
   }
   
-  // User has privileged role
+  // User has privileged role;
   if (user.role && allowedRoles.includes(user.role)) {
     return true;
   }
@@ -125,7 +126,7 @@ export function checkOwnership(
 
 /**
  * Rate limiting for storage operations
- */
+ */;
 export class StorageRateLimit {
   private static requests = new Map<string, { count: number; resetTime: number }>();
   

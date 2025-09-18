@@ -21,7 +21,11 @@ function processFile(filePath) {
 
     // Look for expensive computations that could be memoized
     content = content.replace(computedRegex, (match, varName, computation) => {
-      if (computation.includes('.map(') || computation.includes('.filter(') || computation.includes('.reduce(')) {
+      if (
+        computation.includes('.map(') ||
+        computation.includes('.filter(') ||
+        computation.includes('.reduce(')
+      ) {
         // Add untrack for expensive operations
         if (!computation.includes('untrack(')) {
           return `let ${varName} = $derived(${computation}); // TODO: Consider untrack() for expensive operations`;
@@ -60,10 +64,14 @@ ${effectBody}
     }
 
     // 3. Add lazy loading for heavy components
-    if (content.includes('import') && !content.includes('lazy(') &&
-        (content.includes('Chart') || content.includes('Canvas') || content.includes('Editor'))) {
-
-      const heavyImports = content.match(/import\s+(\w+)\s+from\s+['"]([^'"]*(?:Chart|Canvas|Editor)[^'"]*)['"];?/g);
+    if (
+      content.includes('import') &&
+      !content.includes('lazy(') &&
+      (content.includes('Chart') || content.includes('Canvas') || content.includes('Editor'))
+    ) {
+      const heavyImports = content.match(
+        /import\s+(\w+)\s+from\s+['"]([^'"]*(?:Chart|Canvas|Editor)[^'"]*)['"];?/g
+      );
 
       if (heavyImports && heavyImports.length > 0) {
         // Add lazy loading utilities if not present
@@ -75,7 +83,7 @@ ${effectBody}
           );
         }
 
-        heavyImports.forEach(importLine => {
+        heavyImports.forEach((importLine) => {
           const match = importLine.match(/import\s+(\w+)\s+from\s+['"]([^'"]*)['"];?/);
           if (match) {
             const componentName = match[1];
@@ -103,8 +111,11 @@ ${effectBody}
         // Add virtual scrolling hint if list might be large
         if (content.includes(`${listVar}.length`) || content.includes(`${listVar}.map`)) {
           const eachBlockRegex = new RegExp(`(\\{#each\\s+${listVar}[^}]+\\})`, 'g');
-          content = content.replace(eachBlockRegex, `$1
-<!-- TODO: Consider virtual scrolling for large lists (${listVar}) -->`);
+          content = content.replace(
+            eachBlockRegex,
+            `$1
+<!-- TODO: Consider virtual scrolling for large lists (${listVar}) -->`
+          );
 
           changes++;
           modified = true;
@@ -130,10 +141,7 @@ ${effectBody}
         inputHandlers.forEach((handler, index) => {
           const handlerFunction = handler.match(/oninput=\{([^}]+)\}/)[1];
           if (!handlerFunction.includes('debounce')) {
-            content = content.replace(
-              handler,
-              `oninput={debounce(${handlerFunction}, 300)}`
-            );
+            content = content.replace(handler, `oninput={debounce(${handlerFunction}, 300)}`);
           }
         });
 
@@ -148,7 +156,7 @@ ${effectBody}
       const eachWithoutKey = content.match(/\{#each\s+\w+\s+as\s+\w+\}[^{]*\{\/each\}/g);
 
       if (eachWithoutKey && eachWithoutKey.length > 0) {
-        eachWithoutKey.forEach(block => {
+        eachWithoutKey.forEach((block) => {
           if (!block.includes('(')) {
             const match = block.match(/\{#each\s+(\w+)\s+as\s+(\w+)\}/);
             if (match) {
@@ -176,7 +184,8 @@ ${effectBody}
     if (content.includes('WebGL') || content.includes('Canvas') || content.includes('GPU')) {
       if (!content.includes('performance.mark')) {
         // Add performance markers
-        const functionRegex = /(function\s+\w+\([^)]*\)\s*\{|const\s+\w+\s*=\s*\([^)]*\)\s*=>\s*\{)/g;
+        const functionRegex =
+          /(function\s+\w+\([^)]*\)\s*\{|const\s+\w+\s*=\s*\([^)]*\)\s*=>\s*\{)/g;
         content = content.replace(functionRegex, (match) => {
           return `${match}
     performance.mark('function-start');`;
@@ -234,7 +243,7 @@ function main() {
   const svelteFiles = walkDirectory(srcDir, '.svelte');
 
   // Filter files that might benefit from optimization
-  const candidateFiles = svelteFiles.filter(file => {
+  const candidateFiles = svelteFiles.filter((file) => {
     try {
       const content = readFileSync(file, 'utf8');
       return (
@@ -260,7 +269,8 @@ function main() {
 
   console.log('2️⃣ Applying performance optimizations...\n');
 
-  for (const file of candidateFiles.slice(0, 25)) { // Process first 25
+  for (const file of candidateFiles.slice(0, 25)) {
+    // Process first 25
     console.log(`Processing: ${file}`);
     processFile(file);
     console.log('');

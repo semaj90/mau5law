@@ -5,10 +5,10 @@ import type { RequestHandler } from './$types.js';
 import { json } from "@sveltejs/kit";
 import { ollamaService } from "$lib/services/ollama-service";
 
-// Test Ollama connection directly
+// Test Ollama connection directly;
 async function testOllamaConnection(): Promise<any> {
   try {
-    // Test connection
+    // Test connection;
     const versionResponse = await fetch("http://localhost:11434/api/version", {
       method: "GET",
       signal: AbortSignal.timeout(5000),
@@ -17,7 +17,7 @@ async function testOllamaConnection(): Promise<any> {
     if (!versionResponse.ok) {
       return { success: false, message: "Ollama not responding on port 11434" };
     }
-    // Get available models
+    // Get available models;
     const modelsResponse = await fetch("http://localhost:11434/api/tags", {
       method: "GET",
       signal: AbortSignal.timeout(5000),
@@ -43,10 +43,10 @@ async function testOllamaConnection(): Promise<any> {
     };
   }
 }
-// Test llama.cpp connection
+// Test llama.cpp connection;
 async function testLlamaCppConnection(): Promise<any> {
   try {
-    // Use working Node API endpoint instead of problematic 8080
+    // Use working Node API endpoint instead of problematic 8080;
     const response = await fetch("http://localhost:3005/healthz", {
       method: "GET",
       signal: AbortSignal.timeout(5000),
@@ -74,10 +74,10 @@ export const GET: RequestHandler = async () => {
     // Test both Ollama service and direct connection
     const [ollamaServiceCheck, ollamaDirectCheck, llamaCppCheck] =
       await Promise.all([
-        // Service-based check
+        // Service-based check;
         (async () => {
           try {
-            const isAvailable = ollamaService.getIsAvailable()));
+            const isAvailable = ollamaService.getIsAvailable());
             if (!isAvailable) {
               // Try to initialize
               await ollamaService.initialize();
@@ -134,8 +134,7 @@ export const GET: RequestHandler = async () => {
     });
   } catch (error: any) {
     console.error("Local AI health check failed:", error);
-    return json(
-      {
+    return json({
         success: false,
         available: false,
         error: error instanceof Error ? error.message: "Health check failed",
@@ -143,13 +142,13 @@ export const GET: RequestHandler = async () => {
           ollama: { available: false },
           llamaCpp: { available: false },
         },
-      },
+      },)
       { status: 500 },
     );
   }
 };
 
-// Test generation endpoint
+// Test generation endpoint;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const {
@@ -161,7 +160,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let result: any = {};
 
     if (service === "ollama" || service === "auto") {
-      // Try Ollama generation
+      // Try Ollama generation;
       try {
         const response = await fetch("http://localhost:11434/api/generate", {
           method: "POST",
@@ -190,7 +189,7 @@ export const POST: RequestHandler = async ({ request }) => {
         } else {
           // Try with fallback model
           const fallbackResponse = await fetch(
-            "http://localhost:11434/api/generate",
+            "http://localhost:11434/api/generate",);
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -249,12 +248,11 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     return json(result);
   } catch (error: any) {
-    return json(
-      {
+    return json({
         success: false,
         error:
           error instanceof Error ? error.message: "Unknown error occurred",
-      },
+      },)
       { status: 500 },
     );
   }

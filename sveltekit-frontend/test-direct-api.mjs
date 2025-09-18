@@ -27,7 +27,7 @@ async function testPersonsOfInterestAPI() {
       url: mockUrl,
       request: mockRequest,
       params: {},
-      locals: {}
+      locals: {},
     };
 
     console.log('📡 Calling API handler...');
@@ -54,7 +54,6 @@ async function testPersonsOfInterestAPI() {
       console.log('📋 Error data:', JSON.stringify(errorData, null, 2));
       return false;
     }
-
   } catch (error) {
     console.error('❌ ERROR testing API:', error);
 

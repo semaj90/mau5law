@@ -54,7 +54,7 @@ async function semanticCandidates(query: string, limit: number) {
     return Object.entries(freq)
       .sort((a, b) => b[1] - a[1])
       .slice(0, limit)
-      .map(([term, score]) => ({ term, score, source: 'semantic' as const }));
+      .map(([term, score]) => ({ term, score, source: 'semantic' as const });
   } catch (e) {
     console.error('semanticCandidates error', e);
     return [];
@@ -73,7 +73,7 @@ async function lexicalCandidates(query: string, limit: number) {
     term: r.term as string,
     score: Number(r.score),
     source: 'lexical' as const,
-  }));
+  });
 }
 
 function rankMerge(lex: any[], sem: any[], k: number) {
@@ -115,8 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
   const key = `dym:v2:${query.toLowerCase()}:${limit}:${userId || 'anon'}:${includeAI}`;
   const cached = await redis.getCache(key);
   if (cached) {
-    return new Response(
-      JSON.stringify({
+    return new Response(JSON.stringify({
         query,
         suggestions: cached.suggestions,
         aiSuggestions: cached.aiSuggestions,
@@ -129,7 +128,7 @@ export const POST: RequestHandler = async ({ request }) => {
     );
   }
 
-  // Track term usage (fire and forget)
+  // Track term usage (fire and forget);
   try {
     if (sql) {
       await sql`SELECT increment_search_term(${query}, ${query})`;
@@ -182,12 +181,12 @@ export const POST: RequestHandler = async ({ request }) => {
   // Combine with AI suggestions if available
   let combinedSuggestions = traditionalSuggestions;
   if (aiSuggestions && aiSuggestions.didYouMean) {
-    // Add AI suggestions with enhanced scoring
+    // Add AI suggestions with enhanced scoring;
     const aiEnhanced = aiSuggestions.didYouMean.map((suggestion: any) => ({
       ...suggestion,
       source: 'ai',
       enhanced: true,
-    }));
+    });
 
     // Merge and deduplicate
     const allSuggestions = [...traditionalSuggestions, ...aiEnhanced];
@@ -200,8 +199,8 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
 
-    combinedSuggestions = Array.from(uniqueSuggestions.values())
-      .sort((a, b) => (b.score || b.confidence || 0) - (a.score || a.confidence || 0))
+    combinedSuggestions = Array.from(uniqueSuggestions.values()
+      .sort((a, b) => (b.score || b.confidence || 0) - (a.score || a.confidence || 0)
       .slice(0, limit);
   }
 
@@ -210,7 +209,7 @@ export const POST: RequestHandler = async ({ request }) => {
     suggestions: combinedSuggestions,
     aiSuggestions: aiSuggestions || null,
     taskSuggestions: taskSuggestions || [],
-    userProfile: userInsights
+    userProfile: userInsights;
       ? {
           confidenceLevel: userInsights.confidenceLevel,
           learningPhase: userInsights.learningPhase,
@@ -223,7 +222,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // Cache the combined results
   await redis.setCache(
-    key,
+    key,);
     {
       suggestions: combinedSuggestions,
       aiSuggestions: aiSuggestions || null,

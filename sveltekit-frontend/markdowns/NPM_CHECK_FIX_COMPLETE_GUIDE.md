@@ -2,7 +2,8 @@
 
 ## Overview
 
-I've created a comprehensive solution to fix all the errors reported by `npm run check` (svelte-check). The main issues were:
+I've created a comprehensive solution to fix all the errors reported by `npm run check`
+(svelte-check). The main issues were:
 
 1. **412 Import Errors** - Incorrect module paths
 2. **CSS Warnings** - @apply directives (Tailwind syntax in a UnoCSS project)

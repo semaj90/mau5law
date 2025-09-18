@@ -1,5 +1,5 @@
 
-// Simplified Vector Schema - Production Ready
+// Simplified Vector Schema - Production Ready;
 import {
   jsonb,
   pgTable,
@@ -10,7 +10,7 @@ import {
   varchar
 } from "drizzle-orm/pg-core";
 
-// Chat embeddings table for AI conversations
+// Chat embeddings table for AI conversations;
 export const chatEmbeddings = pgTable("chat_embeddings", {
   id: uuid("id").primaryKey().defaultRandom(),
   conversationId: uuid("conversation_id").notNull(),
@@ -19,10 +19,10 @@ export const chatEmbeddings = pgTable("chat_embeddings", {
   embedding: jsonb("embedding").notNull(),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow()
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Evidence embeddings table
+// Evidence embeddings table;
 export const evidenceVectors = pgTable("evidence_vectors", {
   id: uuid("id").primaryKey().defaultRandom(),
   evidenceId: uuid("evidence_id").notNull(),
@@ -30,10 +30,10 @@ export const evidenceVectors = pgTable("evidence_vectors", {
   embedding: jsonb("embedding").notNull(),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow()
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Case embeddings table
+// Case embeddings table;
 export const caseEmbeddings = pgTable("case_embeddings", {
   id: uuid("id").primaryKey().defaultRandom(),
   caseId: uuid("case_id").notNull(),
@@ -42,10 +42,10 @@ export const caseEmbeddings = pgTable("case_embeddings", {
   embedding: jsonb("embedding").notNull(),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow()
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// User embeddings table
+// User embeddings table;
 export const userEmbeddings = pgTable("user_embeddings", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").notNull(),
@@ -54,10 +54,10 @@ export const userEmbeddings = pgTable("user_embeddings", {
   embedding: jsonb("embedding").notNull(),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow()
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Document embeddings table
+// Document embeddings table;
 export const documentEmbeddings = pgTable("document_embeddings", {
   id: uuid("id").primaryKey().defaultRandom(),
   documentId: uuid("document_id").notNull(),
@@ -66,10 +66,10 @@ export const documentEmbeddings = pgTable("document_embeddings", {
   embedding: jsonb("embedding").notNull(),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow()
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Vector similarity table
+// Vector similarity table;
 export const vectorSimilarity = pgTable("vector_similarity", {
   id: uuid("id").primaryKey().defaultRandom(),
   sourceId: uuid("source_id").notNull(),
@@ -78,10 +78,10 @@ export const vectorSimilarity = pgTable("vector_similarity", {
   targetType: varchar("target_type", { length: 50 }).notNull(),
   similarity: real("similarity").notNull(),
   metadata: jsonb("metadata"),
-  createdAt: timestamp("created_at").defaultNow()
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Semantic search cache
+// Semantic search cache;
 export const semanticSearchCache = pgTable("semantic_search_cache", {
   id: uuid("id").primaryKey().defaultRandom(),
   queryHash: varchar("query_hash", { length: 64 }).notNull(),
@@ -90,7 +90,7 @@ export const semanticSearchCache = pgTable("semantic_search_cache", {
   embedding: jsonb("embedding").notNull(),
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow(),
-  expiresAt: timestamp("expires_at")
+  expiresAt: timestamp("expires_at"),
 });
 
 // Export types for use in services
@@ -115,7 +115,7 @@ export type NewVectorSimilarity = typeof vectorSimilarity.$inferInsert;
 export type SemanticSearchCache = typeof semanticSearchCache.$inferSelect;
 export type NewSemanticSearchCache = typeof semanticSearchCache.$inferInsert;
 
-// Embedding type helpers
+// Embedding type helpers;
 export interface EmbeddingOptions {
   caseId?: string;
   userId?: string;

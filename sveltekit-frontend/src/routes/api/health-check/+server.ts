@@ -6,11 +6,11 @@ export const GET: RequestHandler = async () => {
   const health = {
     timestamp: new Date().toISOString(),
     services: Record<string, any>,
-    overall: 'unknown'
+    overall: 'unknown',
   };
 
   const checks = [
-    // Redis Health Check
+    // Redis Health Check;
     {
       name: 'redis',
       check: async () => {
@@ -27,14 +27,14 @@ export const GET: RequestHandler = async () => {
       }
     },
     
-    // Qdrant Health Check
+    // Qdrant Health Check;
     {
       name: 'qdrant',
       check: async () => {
         try {
           const start = Date.now();
           const response = await fetch('http://localhost:6333', {
-            signal: AbortSignal.timeout(5000)
+            signal: AbortSignal.timeout(5000),
           });
           const responseTime = Date.now() - start;
           
@@ -49,14 +49,14 @@ export const GET: RequestHandler = async () => {
       }
     },
     
-    // Ollama Health Check
+    // Ollama Health Check;
     {
       name: 'ollama',
       check: async () => {
         try {
           const start = Date.now();
           const response = await fetch('http://localhost:11434/api/tags', {
-            signal: AbortSignal.timeout(5000)
+            signal: AbortSignal.timeout(5000),
           });
           const responseTime = Date.now() - start;
           
@@ -76,15 +76,15 @@ export const GET: RequestHandler = async () => {
       }
     },
     
-    // SvelteKit App Health Check
+    // SvelteKit App Health Check;
     {
       name: 'sveltekit',
       check: async () => {
         try {
           const start = Date.now();
-          // Test a simple API endpoint
+          // Test a simple API endpoint;
           const response = await fetch('http://localhost:5173/api/test-crud', {
-            signal: AbortSignal.timeout(5000)
+            signal: AbortSignal.timeout(5000),
           });
           const responseTime = Date.now() - start;
           
@@ -99,7 +99,7 @@ export const GET: RequestHandler = async () => {
       }
     },
     
-    // Cache Layer Health Check
+    // Cache Layer Health Check;
     {
       name: 'cache_layers',
       check: async () => {
@@ -125,10 +125,9 @@ export const GET: RequestHandler = async () => {
     }
   ];
 
-  // Run all health checks in parallel
-  const results = await Promise.allSettled(
-    checks.map(async ({ name, check }) => {
-      const result = await check()));
+  // Run all health checks in parallel;
+  const results = await Promise.allSettled(checks.map(async ({ name, check }) => {
+      const result = await check());
       return { name, ...result };
     })
   );
@@ -146,7 +145,7 @@ export const GET: RequestHandler = async () => {
         healthyCount++;
       }
     } else {
-      // Handle rejected promises
+      // Handle rejected promises;
       health.services[`unknown_${totalCount}`] = {
         status: 'unhealthy',
         error: (result as { status?: any; value?: any; reason?: any }).reason?.message || 'Unknown error'
@@ -154,7 +153,7 @@ export const GET: RequestHandler = async () => {
     }
   });
 
-  // Determine overall health
+  // Determine overall health;
   if (healthyCount === totalCount) {
     health.overall = 'healthy';
   } else if (healthyCount >= totalCount * 0.7) {

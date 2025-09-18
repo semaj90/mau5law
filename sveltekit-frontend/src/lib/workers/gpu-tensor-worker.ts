@@ -3,7 +3,7 @@
  * Integrates with Go GPU microservice and NES-style caching
  */
 
-// Worker message types
+// Worker message types;
 export interface WorkerMessage {
   type: 'PROCESS_TENSOR' | 'INITIALIZE' | 'GET_STATS' | 'CLEAR_CACHE';
   id?: string;
@@ -33,7 +33,7 @@ export interface GPUProcessingStats {
   cacheHitRate: number;
   averageProcessingTime: number;
   webgpuSupported: boolean;
-  lastProcessedTime: number;
+  lastProcessedTime: number;,
 }
 
 class GPUTensorWorker {
@@ -46,7 +46,7 @@ class GPUTensorWorker {
     cacheHitRate: 0,
     averageProcessingTime: 0,
     webgpuSupported: false,
-    lastProcessedTime: 0
+    lastProcessedTime: 0,
   };
   private goServiceUrl = 'http://localhost:8095'; // GPU tensor service
 
@@ -66,7 +66,7 @@ class GPUTensorWorker {
         data: {
           webgpuSupported: this.stats.webgpuSupported,
           wasmLoaded: this.wasmModule !== null,
-          goServiceConnected: true
+          goServiceConnected: true,
         }
       });
 
@@ -85,7 +85,7 @@ class GPUTensorWorker {
     if ('gpu' in navigator) {
       try {
         const adapter = await navigator.gpu.requestAdapter({
-          powerPreference: 'high-performance'
+          powerPreference: 'high-performance',
         });
 
         if (adapter) {
@@ -93,7 +93,7 @@ class GPUTensorWorker {
             requiredFeatures: ['shader-f16'] as GPUFeatureName[],
             requiredLimits: {
               maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
-              maxComputeWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension
+              maxComputeWorkgroupsPerDimension: adapter.limits.maxComputeWorkgroupsPerDimension,
             }
           });
 
@@ -152,7 +152,7 @@ class GPUTensorWorker {
 
       this.updateCacheStats(false);
 
-      // Try WebGPU processing first
+      // Try WebGPU processing first;
       if (this.gpuDevice && this.stats.webgpuSupported) {
         const result = await this.processWithWebGPU(tensorData);
         this.cacheResult(tensorData.cacheKey, result);
@@ -184,7 +184,7 @@ class GPUTensorWorker {
       @group(0) @binding(2) var<uniform> tensorShape: array<i32, 4>;
       @group(0) @binding(3) var<uniform> metadata: vec4<i32>; // [dimensions, lodLevel, totalElements, padding]
 
-      @compute @workgroup_size(256, 1, 1)
+      @compute @workgroup_size(256, 1, 1);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         let totalElements = metadata.z;
@@ -196,7 +196,7 @@ class GPUTensorWorker {
         var indices: array<i32, 4>;
         var remaining = i32(index);
 
-        // Convert linear index to multi-dimensional indices
+        // Convert linear index to multi-dimensional indices;
         for (var d = dimensions - 1; d >= 0; d--) {
           indices[d] = remaining % tensorShape[d];
           remaining = remaining / tensorShape[d];
@@ -204,7 +204,7 @@ class GPUTensorWorker {
 
         let value = inputTensor[index];
 
-        // Apply legal AI specific transformations for 4D tensors
+        // Apply legal AI specific transformations for 4D tensors;
         if (dimensions == 4) {
           // 4D tensor processing: [cases, docs, paragraphs, embeddings]
           let caseIdx = indices[0];
@@ -215,12 +215,12 @@ class GPUTensorWorker {
           // Semantic similarity weighting (nomic-embed-text optimization)
           var weight = 1.0;
           if (embedIdx < 384) {
-            weight = 1.1; // First half of embeddings (more important)
+            weight = 1.1; // First half of embeddings (more important);
           } else {
             weight = 0.95; // Second half
           }
 
-          // Tricubic interpolation for spatial coherence
+          // Tricubic interpolation for spatial coherence;
           if (caseIdx > 0 && docIdx > 0 && paraIdx > 0) {
             let x = f32(caseIdx) / f32(tensorShape[0]);
             let y = f32(docIdx) / f32(tensorShape[1]);
@@ -244,23 +244,23 @@ class GPUTensorWorker {
       }
     `;
 
-    // Create or reuse compute pipeline
+    // Create or reuse compute pipeline;
     if (!this.computePipeline) {
       const shaderModule = this.gpuDevice.createShaderModule({ code: computeShader });
       this.computePipeline = this.gpuDevice.createComputePipeline({
         layout: 'auto',
         compute: {
           module: shaderModule,
-          entryPoint: 'main'
+          entryPoint: 'main',
         }
       });
     }
 
-    // Create GPU buffers
+    // Create GPU buffers;
     const inputBuffer = this.gpuDevice.createBuffer({
       size: tensorData.data.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true
+      mappedAtCreation: true,
     });
 
     new Float32Array(inputBuffer.getMappedRange()).set(tensorData.data);
@@ -268,17 +268,17 @@ class GPUTensorWorker {
 
     const outputBuffer = this.gpuDevice.createBuffer({
       size: tensorData.data.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
     });
 
-    // Create uniform buffers for shape and metadata
+    // Create uniform buffers for shape and metadata;
     const shapeBuffer = this.gpuDevice.createBuffer({
       size: 16, // 4 * 4 bytes for int32 array
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true
+      mappedAtCreation: true,
     });
 
-    const shapeData = new Int32Array(shapeBuffer.getMappedRange());
+    const shapeData = new Int32Array(shapeBuffer.getMappedRange();
     for (let i = 0; i < 4; i++) {
       shapeData[i] = i < tensorData.shape.length ? tensorData.shape[i] : 1;
     }
@@ -287,10 +287,10 @@ class GPUTensorWorker {
     const metadataBuffer = this.gpuDevice.createBuffer({
       size: 16, // 4 * 4 bytes for vec4<i32>
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true
+      mappedAtCreation: true,
     });
 
-    const metadataArray = new Int32Array(metadataBuffer.getMappedRange());
+    const metadataArray = new Int32Array(metadataBuffer.getMappedRange();
     metadataArray[0] = tensorData.dimensions;
     metadataArray[1] = tensorData.lodLevel;
     metadataArray[2] = tensorData.data.length;
@@ -303,7 +303,7 @@ class GPUTensorWorker {
 
     passEncoder.setPipeline(this.computePipeline);
 
-    // Create bind group
+    // Create bind group;
     const bindGroup = this.gpuDevice.createBindGroup({
       layout: this.computePipeline.getBindGroupLayout(0),
       entries: [
@@ -323,10 +323,10 @@ class GPUTensorWorker {
 
     this.gpuDevice.queue.submit([commandEncoder.finish()]);
 
-    // Read results back
+    // Read results back;
     const resultBuffer = this.gpuDevice.createBuffer({
       size: tensorData.data.byteLength,
-      usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST
+      usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
     });
 
     const copyEncoder = this.gpuDevice.createCommandEncoder();
@@ -334,7 +334,7 @@ class GPUTensorWorker {
     this.gpuDevice.queue.submit([copyEncoder.finish()]);
 
     await resultBuffer.mapAsync(GPUMapMode.READ);
-    const resultArray = new Float32Array(resultBuffer.getMappedRange());
+    const resultArray = new Float32Array(resultBuffer.getMappedRange();
     const processedData = new Float32Array(resultArray);
     resultBuffer.unmap();
 
@@ -349,7 +349,7 @@ class GPUTensorWorker {
       ...tensorData,
       data: processedData,
       layout: 'webgpu_processed',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 
@@ -362,7 +362,7 @@ class GPUTensorWorker {
           'X-Request-ID': `worker_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
           'X-Processing-Mode': 'webworker',
         },
-        body: JSON.stringify(tensorData)
+        body: JSON.stringify(tensorData),
       });
 
       if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
@@ -377,7 +377,7 @@ class GPUTensorWorker {
 
       return {
         ...result.data,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
     } catch (error: any) {
       throw new Error(`Go service communication failed: ${error.message}`);
@@ -385,7 +385,7 @@ class GPUTensorWorker {
   }
 
   private cacheResult(cacheKey: string, result: MultiDimArray): void {
-    // Implement LRU cache with size limit
+    // Implement LRU cache with size limit;
     if (this.tensorCache.size > 100) {
       const oldestKey = Array.from(this.tensorCache.keys())[0];
       this.tensorCache.delete(oldestKey);
@@ -393,7 +393,7 @@ class GPUTensorWorker {
 
     this.tensorCache.set(cacheKey, {
       data: result,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 
@@ -415,7 +415,7 @@ class GPUTensorWorker {
     return {
       ...this.stats,
       cacheHitRate: Math.round(this.stats.cacheHitRate * 10000) / 100, // Convert to percentage with 2 decimals
-      averageProcessingTime: Math.round(this.stats.averageProcessingTime * 100) / 100 // Round to 2 decimals
+      averageProcessingTime: Math.round(this.stats.averageProcessingTime * 100) / 100 // Round to 2 decimals,
     };
   }
 
@@ -433,7 +433,7 @@ class GPUTensorWorker {
 // Worker instance
 const tensorWorker = new GPUTensorWorker();
 
-// Message handler
+// Message handler;
 self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
   const { type, id, data } = e.data;
 
@@ -454,7 +454,7 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
         tensorWorker.postMessage({
           type: 'SUCCESS',
           id,
-          data: result
+          data: result,
         });
         break;
 
@@ -463,7 +463,7 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
         tensorWorker.postMessage({
           type: 'STATS',
           id,
-          data: stats
+          data: stats,
         });
         break;
 
@@ -483,7 +483,7 @@ self.onmessage = async function(e: MessageEvent<WorkerMessage>) {
     tensorWorker.postMessage({
       type: 'ERROR',
       id,
-      error: error instanceof Error ? error.message: String(error)
+      error: error instanceof Error ? error.message: String(error),
     });
   }
 };

@@ -6,7 +6,7 @@ import * as schema from './schema-postgres.js';
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 // Create a mock pool for build time
-const createMockPool = () =>
+const createMockPool = () =>;
   ({
     connect: () =>
       Promise.reject(new Error("Database not available during build")),
@@ -26,7 +26,7 @@ const isBuilding =
   process.env.DATABASE_URL?.includes("build");
 
 export const pool = isBuilding
-  ? createMockPool()
+  ? createMockPool();
   : new Pool({
       connectionString,
       max: 20,
@@ -34,7 +34,7 @@ export const pool = isBuilding
       connectionTimeoutMillis: 2000,
     });
 
-// Properly typed database instance
+// Properly typed database instance;
 export const db: NodePgDatabase<typeof schema> = drizzle(pool, {
   schema,
   logger: false,

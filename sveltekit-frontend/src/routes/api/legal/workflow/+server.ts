@@ -8,7 +8,7 @@ import { logger } from '$lib/server/ai/logger';
 
 let isInitialized = false;
 
-// Initialize RabbitMQ on first request
+// Initialize RabbitMQ on first request;
 async function ensureRabbitMQInitialized() {
   if (!isInitialized && !rabbitmqService.connected) {
     try {
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { content, documentType, caseId, priority = 'normal' } = body;
     
-    // Validate required fields
+    // Validate required fields;
     if (!content || !documentType || !caseId) {
       return json({
         success: false,
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Ensure RabbitMQ is initialized
     await ensureRabbitMQInitialized();
     
-    // Create legal document message
+    // Create legal document message;
     const documentMessage: LegalDocumentMessage = {
       id: `doc_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
       documentId: `${caseId}_${Date.now()}`,
@@ -101,7 +101,7 @@ export const GET: RequestHandler = async () => {
     // Get queue statistics
     const queueStats = await rabbitmqService.getQueueStats();
     
-    // Calculate total messages across all queues
+    // Calculate total messages across all queues;
     const totalMessages = Object.values(queueStats).reduce((total, stat: any) => {
       return total + (typeof stat.messageCount === 'number' ? stat.messageCount: 0);
     }, 0);

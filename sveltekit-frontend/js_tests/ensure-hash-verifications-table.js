@@ -1,22 +1,22 @@
 #!/usr/bin/env node
 
-import { Client } from "pg";
-import * as dotenv from "dotenv";
+import { Client } from 'pg';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
 const client = new Client({
-  host: process.env.POSTGRES_HOST || "localhost",
-  port: parseInt(process.env.POSTGRES_PORT || "5433"),
-  database: process.env.POSTGRES_DB || "prosecutor_db",
-  user: process.env.POSTGRES_USER || "postgres",
-  password: process.env.POSTGRES_PASSWORD || "postgres",
+  host: process.env.POSTGRES_HOST || 'localhost',
+  port: parseInt(process.env.POSTGRES_PORT || '5433'),
+  database: process.env.POSTGRES_DB || 'prosecutor_db',
+  user: process.env.POSTGRES_USER || 'postgres',
+  password: process.env.POSTGRES_PASSWORD || 'postgres',
 });
 
 async function ensureHashVerificationsTable() {
   try {
     await client.connect();
-    console.log("Connected to PostgreSQL database");
+    console.log('Connected to PostgreSQL database');
 
     // Check if table exists
     const tableExists = await client.query(`
@@ -28,7 +28,7 @@ async function ensureHashVerificationsTable() {
     `);
 
     if (!tableExists.rows[0].exists) {
-      console.log("Creating hash_verifications table...");
+      console.log('Creating hash_verifications table...');
 
       await client.query(`
         CREATE TABLE hash_verifications (
@@ -57,9 +57,9 @@ async function ensureHashVerificationsTable() {
         CREATE INDEX idx_hash_verifications_result ON hash_verifications(result);
       `);
 
-      console.log("✅ hash_verifications table created successfully");
+      console.log('✅ hash_verifications table created successfully');
     } else {
-      console.log("✅ hash_verifications table already exists");
+      console.log('✅ hash_verifications table already exists');
     }
 
     // Test the table structure
@@ -70,14 +70,14 @@ async function ensureHashVerificationsTable() {
       ORDER BY ordinal_position;
     `);
 
-    console.log("\nTable structure:");
+    console.log('\nTable structure:');
     columns.rows.forEach((col) => {
       console.log(
-        `  ${col.column_name}: ${col.data_type} (${col.is_nullable === "YES" ? "nullable" : "not null"})`,
+        `  ${col.column_name}: ${col.data_type} (${col.is_nullable === 'YES' ? 'nullable' : 'not null'})`
       );
     });
   } catch (error) {
-    console.error("Error ensuring hash_verifications table:", error);
+    console.error('Error ensuring hash_verifications table:', error);
     process.exit(1);
   } finally {
     await client.end();

@@ -11,7 +11,7 @@ import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
 import { z } from 'zod';
 
-// Detective analysis request schemas
+// Detective analysis request schemas;
 const DetectiveAnalysisSchema = z.object({
   caseId: z.string().uuid(),
   analysisType: z.enum(['full', 'timeline', 'connections', 'patterns', 'anomalies']).default('full'),
@@ -45,10 +45,10 @@ const DETECTIVE_MODEL = 'gemma3-legal:latest';
 /*
  * POST /api/v1/detective/analyze
  * Run comprehensive detective analysis on a case
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -73,13 +73,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       );
     }
 
-    // Check if detective mode is enabled for this case
+    // Check if detective mode is enabled for this case;
     if (!caseData.detectiveMode) {
       return error(
         403,
         makeHttpErrorPayload({
           message: 'Detective mode not enabled for this case',
-          code: 'DETECTIVE_MODE_DISABLED'
+          code: 'DETECTIVE_MODE_DISABLED',
         })
       );
     }
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       options
     );
 
-    // Update case with analysis timestamp
+    // Update case with analysis timestamp;
     await casesService.update(caseId, {
       metadata: {
         ...caseData.metadata,
@@ -161,10 +161,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 /*
  * GET /api/v1/detective/insights
  * Get AI-generated insights for a case
- */
+ */;
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -260,7 +260,7 @@ async function performDetectiveAnalysis(
   };
 
   try {
-    // Temporal Analysis
+    // Temporal Analysis;
     if (analysisType === 'full' || analysisType === 'timeline') {
       const timelineAnalysis = analyzeTimeline(evidence);
       analysis.timeline = timelineAnalysis.events;
@@ -268,7 +268,7 @@ async function performDetectiveAnalysis(
       analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.8);
     }
 
-    // Connection Analysis
+    // Connection Analysis;
     if (analysisType === 'full' || analysisType === 'connections') {
       const connectionAnalysis = analyzeConnections(evidence);
       analysis.connections = connectionAnalysis.connections;
@@ -276,7 +276,7 @@ async function performDetectiveAnalysis(
       analysis.overallConfidence = Math.max(analysis.overallConfidence, 0.75);
     }
 
-    // Pattern Detection
+    // Pattern Detection;
     if (analysisType === 'full' || analysisType === 'patterns') {
       const patternAnalysis = detectPatterns(evidence, focusAreas);
       analysis.patterns.push(...patternAnalysis.patterns);
@@ -302,9 +302,9 @@ async function performDetectiveAnalysis(
 
 /*
  * Analyze timeline patterns in evidence
- */
+ */;
 function analyzeTimeline(evidence: any[]): any {
-  // Mock implementation - would analyze actual timestamps and patterns
+  // Mock implementation - would analyze actual timestamps and patterns;
   return {
     events: evidence.map((item, index) => ({
       id: (item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).id,
@@ -313,7 +313,7 @@ function analyzeTimeline(evidence: any[]): any {
       significance: Math.random() * 0.5 + 0.5, // Mock significance score
       description: `Evidence item: ${(item as { id?: any; createdAt?: any; evidenceType?: any; title?: any }).title}`,
     })),
-    patterns: [
+    patterns: [;
       {
         type: 'temporal_clustering',
         confidence: 0.82,
@@ -326,7 +326,7 @@ function analyzeTimeline(evidence: any[]): any {
 
 /*
  * Analyze connections between evidence items
- */
+ */;
 function analyzeConnections(evidence: any[]): any {
   return {
     connections: evidence.slice(0, 3).map((item, index) => ({
@@ -336,7 +336,7 @@ function analyzeConnections(evidence: any[]): any {
       strength: Math.random() * 0.4 + 0.6,
       evidence: ['Common location metadata', 'Similar timestamp'],
     })),
-    findings: [
+    findings: [;
       {
         type: 'strong_connection',
         confidence: 0.89,
@@ -349,10 +349,10 @@ function analyzeConnections(evidence: any[]): any {
 
 /*
  * Detect suspicious patterns in evidence
- */
+ */;
 function detectPatterns(evidence: any[], focusAreas?: string[]): any {
   return {
-    patterns: [
+    patterns: [;
       {
         type: 'behavioral',
         confidence: 0.76,
@@ -368,7 +368,7 @@ function detectPatterns(evidence: any[], focusAreas?: string[]): any {
         significance: 'medium',
       },
     ],
-    anomalies: [
+    anomalies: [;
       {
         type: 'timing_anomaly',
         confidence: 0.91,
@@ -382,7 +382,7 @@ function detectPatterns(evidence: any[], focusAreas?: string[]): any {
 
 /*
  * Generate case insights based on analysis
- */
+ */;
 async function generateCaseInsights(caseData: any, userId: string): Promise<any> {
   return {
     summary: `Case "${caseData.title}" analysis reveals several key patterns and connections.`,
@@ -408,7 +408,7 @@ async function generateCaseInsights(caseData: any, userId: string): Promise<any>
 
 /*
  * Generate detective recommendations
- */
+ */;
 function generateDetectiveRecommendations(analysis: any): string[] {
   const recommendations: string[] = [];
 
@@ -429,7 +429,7 @@ function generateDetectiveRecommendations(analysis: any): string[] {
 
 /*
  * Generate detective alerts
- */
+ */;
 function generateDetectiveAlerts(analysis: any): string[] {
   const alerts: string[] = [];
 

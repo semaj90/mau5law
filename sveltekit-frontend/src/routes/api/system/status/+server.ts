@@ -11,7 +11,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Get all service statuses
     const serviceStatuses = await apiRegistry.checkAllServices();
 
-    // Basic system info
+    // Basic system info;
     const systemInfo = {
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
     };
 
     // Service summary
-    const services = Array.from(serviceStatuses.values());
+    const services = Array.from(serviceStatuses.values();
     const healthyServices = services.filter((s) => s.status === 'healthy');
     const requiredServices = services.filter((s) => s.required);
     const healthyRequiredServices = requiredServices.filter((s) => s.status === 'healthy');
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ url }) => {
       },
     };
 
-    // Build response based on query parameters
+    // Build response based on query parameters;
     let response: any = {
       system: systemInfo,
       summary,
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message: 'Unknown system status error';
     console.error('System status check failed:', error);
-    return json(
+    return json();
       {
         system: { timestamp: new Date().toISOString() },
         summary: { overall: { status: 'error', error: msg } },

@@ -11,7 +11,7 @@ import { z } from 'zod';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid evidence ID format');
 
-// Analysis request schema
+// Analysis request schema;
 const AnalysisRequestSchema = z.object({
   analysisType: z.enum(['content', 'metadata', 'forensic', 'legal', 'comprehensive']).default('comprehensive'),
   options: z.object({
@@ -36,10 +36,10 @@ const LEGAL_MODEL = 'gemma3-legal:latest';
 /*
  * POST /api/v1/evidence/[id]/analyze
  * Analyze specific evidence with AI
- */
+ */;
 export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Perform AI analysis based on evidence type and content
     const analysisResult = await performAIAnalysis(evidence, analysisType, options, context);
 
-    // Update evidence with analysis results
+    // Update evidence with analysis results;
     const updatedMetadata = {
       ...evidence.metadata,
       aiAnalysis: {
@@ -149,7 +149,7 @@ async function performAIAnalysis(
   evidence: any,
   analysisType: string,
   options: any,
-  context: any
+  context: any;
 ): Promise<any> {
   const analysisResults: any = {
     type: analysisType,
@@ -161,28 +161,28 @@ async function performAIAnalysis(
   };
 
   try {
-    // Content Analysis
+    // Content Analysis;
     if (analysisType === 'content' || analysisType === 'comprehensive') {
       const contentAnalysis = await analyzeContent(evidence, options);
       analysisResults.content = contentAnalysis;
       analysisResults.confidence = Math.max(analysisResults.confidence, contentAnalysis.confidence);
     }
 
-    // Legal Analysis
+    // Legal Analysis;
     if (analysisType === 'legal' || analysisType === 'comprehensive') {
       const legalAnalysis = await analyzeLegal(evidence, context);
       analysisResults.legal = legalAnalysis;
       analysisResults.confidence = Math.max(analysisResults.confidence, legalAnalysis.confidence);
     }
 
-    // Metadata Analysis
+    // Metadata Analysis;
     if (analysisType === 'metadata' || analysisType === 'comprehensive') {
       const metadataAnalysis = await analyzeMetadata(evidence);
       analysisResults.metadata = metadataAnalysis;
       analysisResults.confidence = Math.max(analysisResults.confidence, metadataAnalysis.confidence);
     }
 
-    // Forensic Analysis
+    // Forensic Analysis;
     if (analysisType === 'forensic' || (analysisType === 'comprehensive' && options.includeForensics)) {
       const forensicAnalysis = await analyzeForensic(evidence);
       analysisResults.forensic = forensicAnalysis;
@@ -207,9 +207,9 @@ async function performAIAnalysis(
 
 /*
  * Analyze evidence content using AI
- */
+ */;
 async function analyzeContent(evidence: any, options: any): Promise<any> {
-  // Mock implementation for now - would integrate with actual AI services
+  // Mock implementation for now - would integrate with actual AI services;
   return {
     confidence: 0.85,
     contentType: evidence.evidenceType,
@@ -224,7 +224,7 @@ async function analyzeContent(evidence: any, options: any): Promise<any> {
 
 /*
  * Analyze evidence from legal perspective
- */
+ */;
 async function analyzeLegal(evidence: any, context: any): Promise<any> {
   return {
     confidence: 0.78,
@@ -239,7 +239,7 @@ async function analyzeLegal(evidence: any, context: any): Promise<any> {
 
 /*
  * Analyze evidence metadata
- */
+ */;
 async function analyzeMetadata(evidence: any): Promise<any> {
   return {
     confidence: 0.92,
@@ -257,7 +257,7 @@ async function analyzeMetadata(evidence: any): Promise<any> {
 
 /*
  * Perform forensic analysis
- */
+ */;
 async function analyzeForensic(evidence: any): Promise<any> {
   return {
     confidence: 0.73,
@@ -270,7 +270,7 @@ async function analyzeForensic(evidence: any): Promise<any> {
 
 /*
  * Generate recommendations based on analysis
- */
+ */;
 function generateRecommendations(analysis: any): string[] {
   const recommendations: string[] = [];
 
@@ -291,7 +291,7 @@ function generateRecommendations(analysis: any): string[] {
 
 /*
  * Generate alerts based on analysis
- */
+ */;
 function generateAlerts(analysis: any): string[] {
   const alerts: string[] = [];
 

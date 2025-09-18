@@ -8,7 +8,7 @@ import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
 import { z } from 'zod';
 
-// Pattern detection request schema
+// Pattern detection request schema;
 const PatternDetectionSchema = z.object({
   caseId: z.string().uuid(),
   evidenceIds: z.array(z.string().uuid()).optional(),
@@ -25,10 +25,10 @@ const PatternDetectionSchema = z.object({
 /*
  * POST /api/v1/detective/patterns
  * Detect suspicious patterns in case evidence and data
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -58,9 +58,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (evidenceIds && evidenceIds.length > 0) {
       // Get specific evidence items
       evidence = await Promise.all(
-        evidenceIds.map(id => evidenceService.getById(id))
+        evidenceIds.map(id => evidenceService.getById(id)
       );
-      evidence = evidence.filter(Boolean); // Remove null results
+      evidence = evidence.filter(Boolean); // Remove null results;
     } else {
       // Get all case evidence
       const evidenceResult = await evidenceService.listByCase(caseId, { page: 1, limit: 100 });
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       options
     );
 
-    // Update case metadata with pattern analysis
+    // Update case metadata with pattern analysis;
     await casesService.update(caseId, {
       metadata: {
         ...caseData.metadata,
@@ -158,7 +158,7 @@ async function detectSuspiciousPatterns(
   try {
     const detectionTypes = patternTypes || ['temporal', 'location', 'behavior', 'communication', 'financial', 'digital'];
 
-    // Temporal Pattern Detection
+    // Temporal Pattern Detection;
     if (detectionTypes.includes('temporal')) {
       const temporalPatterns = await detectTemporalPatterns(evidence, sensitivity, options);
       results.patterns.push(...temporalPatterns.patterns);
@@ -166,7 +166,7 @@ async function detectSuspiciousPatterns(
       results.confidence = Math.max(results.confidence, temporalPatterns.confidence);
     }
 
-    // Location Pattern Detection
+    // Location Pattern Detection;
     if (detectionTypes.includes('location')) {
       const locationPatterns = await detectLocationPatterns(evidence, sensitivity, options);
       results.patterns.push(...locationPatterns.patterns);
@@ -174,7 +174,7 @@ async function detectSuspiciousPatterns(
       results.confidence = Math.max(results.confidence, locationPatterns.confidence);
     }
 
-    // Behavioral Pattern Detection
+    // Behavioral Pattern Detection;
     if (detectionTypes.includes('behavior')) {
       const behaviorPatterns = await detectBehavioralPatterns(evidence, sensitivity, options);
       results.patterns.push(...behaviorPatterns.patterns);
@@ -182,7 +182,7 @@ async function detectSuspiciousPatterns(
       results.confidence = Math.max(results.confidence, behaviorPatterns.confidence);
     }
 
-    // Communication Pattern Detection
+    // Communication Pattern Detection;
     if (detectionTypes.includes('communication')) {
       const commPatterns = await detectCommunicationPatterns(evidence, sensitivity, options);
       results.patterns.push(...commPatterns.patterns);
@@ -190,7 +190,7 @@ async function detectSuspiciousPatterns(
       results.confidence = Math.max(results.confidence, commPatterns.confidence);
     }
 
-    // Financial Pattern Detection
+    // Financial Pattern Detection;
     if (detectionTypes.includes('financial')) {
       const financialPatterns = await detectFinancialPatterns(evidence, sensitivity, options);
       results.patterns.push(...financialPatterns.patterns);
@@ -198,7 +198,7 @@ async function detectSuspiciousPatterns(
       results.confidence = Math.max(results.confidence, financialPatterns.confidence);
     }
 
-    // Digital Pattern Detection
+    // Digital Pattern Detection;
     if (detectionTypes.includes('digital')) {
       const digitalPatterns = await detectDigitalPatterns(evidence, sensitivity, options);
       results.patterns.push(...digitalPatterns.patterns);
@@ -224,12 +224,12 @@ async function detectSuspiciousPatterns(
 
 /*
  * Detect temporal patterns and anomalies
- */
+ */;
 async function detectTemporalPatterns(evidence: any[], sensitivity: number, options: any): Promise<any> {
   const patterns = [];
   const anomalies = [];
 
-  // Mock temporal pattern detection
+  // Mock temporal pattern detection;
   patterns.push({
     id: `temporal_${Date.now()}`,
     type: 'temporal',
@@ -245,7 +245,7 @@ async function detectTemporalPatterns(evidence: any[], sensitivity: number, opti
     implications: ['Coordinated activity', 'Time-based planning'],
   });
 
-  // Detect temporal anomalies
+  // Detect temporal anomalies;
   if (options.includeAnomalies) {
     anomalies.push({
       id: `temporal_anomaly_${Date.now()}`,
@@ -268,10 +268,10 @@ async function detectTemporalPatterns(evidence: any[], sensitivity: number, opti
 
 /*
  * Detect location-based patterns
- */
+ */;
 async function detectLocationPatterns(evidence: any[], sensitivity: number, options: any): Promise<any> {
   return {
-    patterns: [
+    patterns: [;
       {
         id: `location_${Date.now()}`,
         type: 'location',
@@ -286,7 +286,7 @@ async function detectLocationPatterns(evidence: any[], sensitivity: number, opti
         significance: 'high',
       },
     ],
-    anomalies: [
+    anomalies: [;
       {
         id: `location_anomaly_${Date.now()}`,
         type: 'location',
@@ -304,10 +304,10 @@ async function detectLocationPatterns(evidence: any[], sensitivity: number, opti
 
 /*
  * Detect behavioral patterns
- */
+ */;
 async function detectBehavioralPatterns(evidence: any[], sensitivity: number, options: any): Promise<any> {
   return {
-    patterns: [
+    patterns: [;
       {
         id: `behavior_${Date.now()}`,
         type: 'behavior',
@@ -323,7 +323,7 @@ async function detectBehavioralPatterns(evidence: any[], sensitivity: number, op
         significance: 'very_high',
       },
     ],
-    anomalies: [
+    anomalies: [;
       {
         id: `behavior_anomaly_${Date.now()}`,
         type: 'behavior',
@@ -340,10 +340,10 @@ async function detectBehavioralPatterns(evidence: any[], sensitivity: number, op
 
 /*
  * Detect communication patterns
- */
+ */;
 async function detectCommunicationPatterns(evidence: any[], sensitivity: number, options: any): Promise<any> {
   return {
-    patterns: [
+    patterns: [;
       {
         id: `comm_${Date.now()}`,
         type: 'communication',
@@ -355,7 +355,7 @@ async function detectCommunicationPatterns(evidence: any[], sensitivity: number,
         significance: 'medium',
       },
     ],
-    anomalies: [
+    anomalies: [;
       {
         id: `comm_anomaly_${Date.now()}`,
         type: 'communication',
@@ -373,10 +373,10 @@ async function detectCommunicationPatterns(evidence: any[], sensitivity: number,
 
 /*
  * Detect financial patterns
- */
+ */;
 async function detectFinancialPatterns(evidence: any[], sensitivity: number, options: any): Promise<any> {
   return {
-    patterns: [
+    patterns: [;
       {
         id: `financial_${Date.now()}`,
         type: 'financial',
@@ -389,7 +389,7 @@ async function detectFinancialPatterns(evidence: any[], sensitivity: number, opt
         significance: 'high',
       },
     ],
-    anomalies: [
+    anomalies: [;
       {
         id: `financial_anomaly_${Date.now()}`,
         type: 'financial',
@@ -407,10 +407,10 @@ async function detectFinancialPatterns(evidence: any[], sensitivity: number, opt
 
 /*
  * Detect digital forensics patterns
- */
+ */;
 async function detectDigitalPatterns(evidence: any[], sensitivity: number, options: any): Promise<any> {
   return {
-    patterns: [
+    patterns: [;
       {
         id: `digital_${Date.now()}`,
         type: 'digital',
@@ -423,7 +423,7 @@ async function detectDigitalPatterns(evidence: any[], sensitivity: number, optio
         significance: 'high',
       },
     ],
-    anomalies: [
+    anomalies: [;
       {
         id: `digital_anomaly_${Date.now()}`,
         type: 'digital',
@@ -442,7 +442,7 @@ async function detectDigitalPatterns(evidence: any[], sensitivity: number, optio
 
 /*
  * Generate insights from detected patterns
- */
+ */;
 function generatePatternInsights(patterns: any[], anomalies: any[]): string[] {
   const insights = [];
 
@@ -469,7 +469,7 @@ function generatePatternInsights(patterns: any[], anomalies: any[]): string[] {
 
 /*
  * Generate pattern analysis summary
- */
+ */;
 function generatePatternSummary(results: any): string {
   const { patterns, anomalies, confidence } = results;
 

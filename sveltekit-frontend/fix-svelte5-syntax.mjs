@@ -14,70 +14,70 @@ const SVELTE5_FIXES = [
   {
     pattern: /on:onclick\s*=\s*\{([^}]+)\}/g,
     replacement: 'onclick={$1}',
-    description: 'Convert on:onclick to onclick'
+    description: 'Convert on:onclick to onclick',
   },
   {
     pattern: /on:input\s*=\s*\{([^}]+)\}/g,
     replacement: 'oninput={$1}',
-    description: 'Convert on:input to oninput'
+    description: 'Convert on:input to oninput',
   },
   {
     pattern: /on:keydown\s*=\s*\{([^}]+)\}/g,
     replacement: 'onkeydown={$1}',
-    description: 'Convert on:keydown to onkeydown'
+    description: 'Convert on:keydown to onkeydown',
   },
   {
     pattern: /on:change\s*=\s*\{([^}]+)\}/g,
     replacement: 'onchange={$1}',
-    description: 'Convert on:change to onchange'
+    description: 'Convert on:change to onchange',
   },
   {
     pattern: /on:submit\s*=\s*\{([^}]+)\}/g,
     replacement: 'onsubmit={$1}',
-    description: 'Convert on:submit to onsubmit'
+    description: 'Convert on:submit to onsubmit',
   },
 
   // Fix enhance() function calls - common pattern issue
   {
     pattern: /use:enhance\(\s*\(\{[^}]+\}\)\s*=>\s*\{/g,
     replacement: 'use:enhance={() => {',
-    description: 'Fix enhance() function syntax'
+    description: 'Fix enhance() function syntax',
   },
 
   // Fix mixed event handler syntax warnings
   {
     pattern: /on:(\w+)\s*=\s*\{[^}]+\}\s+(\w+)\s*=\s*\{[^}]+\}/g,
     replacement: 'on$1={$2}',
-    description: 'Fix mixed event handler syntaxes'
+    description: 'Fix mixed event handler syntaxes',
   },
 
   // Fix $state syntax issues - common malformed patterns
   {
     pattern: /let\s+(\w+)\s*=\s*\$state\s*<([^>]+)>/g,
     replacement: 'let $1 = $state<$2>()',
-    description: 'Fix $state generic syntax'
+    description: 'Fix $state generic syntax',
   },
 
   // Fix duplicate identifier issues
   {
     pattern: /let\s+(\w+)\s*=\s*[^;]+;\s*let\s+\1\s*=\s*\$derived\(/g,
     replacement: 'let $1 = $derived(',
-    description: 'Remove duplicate let declarations'
+    description: 'Remove duplicate let declarations',
   },
 
   // Fix CSS syntax errors
   {
     pattern: /grid-template-columns:\s*repeat\(auto-fill,\s*minmax\([^)]+\);/g,
     replacement: 'grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));',
-    description: 'Fix CSS grid syntax'
+    description: 'Fix CSS grid syntax',
   },
 
   // Fix JSX-like syntax in Svelte (should be {expressions})
   {
     pattern: /\{[^}]*<\s*(\w+)[^>]*>[^<]*<\/\s*\1\s*>[^}]*\}/g,
     replacement: '{/* JSX syntax converted to Svelte */}',
-    description: 'Fix JSX-like syntax in expressions'
-  }
+    description: 'Fix JSX-like syntax in expressions',
+  },
 ];
 
 // Additional TypeScript-specific fixes
@@ -86,22 +86,22 @@ const TYPESCRIPT_FIXES = [
   {
     pattern: /(\w+)\.(\w+)\s*\?\?\s*''/g,
     replacement: '($1 as any)?.$2 ?? ""',
-    description: 'Add type assertion for property access'
+    description: 'Add type assertion for property access',
   },
 
   // Fix missing type annotations for common props
   {
     pattern: /let\s+\{\s*([^}]+)\s*\}\s*=\s*\$props\(\);/g,
     replacement: 'let { $1 }: { $1: any } = $props();',
-    description: 'Add basic type annotations to $props()'
+    description: 'Add basic type annotations to $props()',
   },
 
   // Fix transitifly attribute (seems to be a typo)
   {
     pattern: /transitifly\s*=\s*\{[^}]+\}/g,
     replacement: '/* transition removed */',
-    description: 'Remove invalid transitifly attribute'
-  }
+    description: 'Remove invalid transitifly attribute',
+  },
 ];
 
 function processFile(filePath, fixes) {

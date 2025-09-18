@@ -40,7 +40,7 @@ self.onmessage = async function(event) {
 			data: {
 				error: error.message,
 				stack: error.stack,
-				taskId: currentTask?.id
+				taskId: currentTask?.id,
 			}
 		});
 	}
@@ -110,7 +110,7 @@ async function handleProcessTask(task) {
 				metrics: {
 					tokensProcessed: result.tokensProcessed || 0,
 					throughput: result.tokensProcessed ? (result.tokensProcessed / duration * 1000) : 0,
-					memoryUsed: getMemoryUsage()
+					memoryUsed: getMemoryUsage(),
 				}
 			}
 		});
@@ -147,7 +147,7 @@ async function processEmbedding(task) {
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			model,
-			prompt: text
+			prompt: text,
 		})
 	});
 
@@ -158,7 +158,7 @@ async function processEmbedding(task) {
 	const data = await response.json();
 	return {
 		embedding: data.embedding,
-		tokensProcessed: text.split(' ').length // Approximate
+		tokensProcessed: text.split(' ').length // Approximate,
 	};
 }
 
@@ -186,7 +186,7 @@ async function processGeneration(task) {
 		text: data.response,
 		tokensProcessed: estimateTokens(data.response),
 		model: data.model,
-		context: data.context
+		context: data.context,
 	};
 }
 
@@ -235,14 +235,14 @@ async function processAnalysis(task) {
 		return {
 			analysis,
 			analysisType,
-			tokensProcessed: estimateTokens(content + data.response)
+			tokensProcessed: estimateTokens(content + data.response),
 		};
 	} catch {
 		// Fallback if JSON parsing fails
 		return {
 			analysis: { raw_response: data.response },
 			analysisType,
-			tokensProcessed: estimateTokens(content + data.response)
+			tokensProcessed: estimateTokens(content + data.response),
 		};
 	}
 }
@@ -273,7 +273,7 @@ Provide a well-structured synthesis that combines insights from all sources.`;
 		body: JSON.stringify({
 			model: 'gemma3-legal',
 			prompt,
-			stream: false
+			stream: false,
 		})
 	});
 
@@ -286,7 +286,7 @@ Provide a well-structured synthesis that combines insights from all sources.`;
 		synthesis: data.response,
 		sourcesCount: sources.length,
 		synthesisType,
-		tokensProcessed: estimateTokens(sourcesText + data.response)
+		tokensProcessed: estimateTokens(sourcesText + data.response),
 	};
 }
 
@@ -300,7 +300,7 @@ async function processVectorSearch(task) {
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			model: 'nomic-embed-text',
-			prompt: query
+			prompt: query,
 		})
 	});
 
@@ -323,13 +323,13 @@ async function processVectorSearch(task) {
 			}
 		],
 		query,
-		executionTime: Date.now()
+		executionTime: Date.now(),
 	};
 
 	return {
 		searchResults: mockResults,
 		queryVector,
-		tokensProcessed: estimateTokens(query)
+		tokensProcessed: estimateTokens(query),
 	};
 }
 
@@ -354,7 +354,7 @@ function sendStatus() {
 			currentTask: currentTask?.id || null,
 			tasksCompleted,
 			averageTaskTime: tasksCompleted > 0 ? totalProcessingTime / tasksCompleted : 0,
-			status: currentTask ? 'busy' : 'idle'
+			status: currentTask ? 'busy' : 'idle',
 		}
 	});
 }
@@ -372,7 +372,7 @@ self.onerror = function(error) {
 		data: {
 			error: error.message,
 			filename: error.filename,
-			lineno: error.lineno
+			lineno: error.lineno,
 		}
 	});
 };

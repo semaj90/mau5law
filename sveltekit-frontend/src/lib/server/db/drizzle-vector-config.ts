@@ -20,7 +20,7 @@ import { relations } from 'drizzle-orm/relations';
 import { customType } from 'drizzle-orm/pg-core';
 import postgres from 'postgres';
 
-// Custom vector type for pgvector
+// Custom vector type for pgvector;
 const vector = customType({
   dataType(config: { dimensions?: number } = {}) {
     return `vector(${config?.dimensions || 768})`;
@@ -47,7 +47,7 @@ const sql_client = postgres(connectionString, {
 });
 
 export const db = drizzle(sql_client);
-// Schema definitions
+// Schema definitions;
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
   email: varchar('email', { length: 255 }).notNull().unique(),
@@ -61,7 +61,7 @@ export const users = pgTable('users', {
 });
 
 export const cases = pgTable(
-  'cases',
+  'cases',);
   {
     id: serial('id').primaryKey(),
     title: varchar('title', { length: 500 }).notNull(),
@@ -96,7 +96,7 @@ export const cases = pgTable(
 );
 
 export const documents = pgTable(
-  'documents',
+  'documents',);
   {
     id: serial('id').primaryKey(),
     caseId: integer('case_id').references(() => cases.id),
@@ -133,7 +133,7 @@ export const documents = pgTable(
 );
 
 export const evidence = pgTable(
-  'evidence',
+  'evidence',);
   {
     id: serial('id').primaryKey(),
     caseId: integer('case_id').references(() => cases.id),
@@ -170,7 +170,7 @@ export const evidence = pgTable(
 );
 
 export const vectorSearchLogs = pgTable(
-  'vector_search_logs',
+  'vector_search_logs',);
   {
     id: serial('id').primaryKey(),
     query: text('query').notNull(),
@@ -192,11 +192,11 @@ export const vectorSearchLogs = pgTable(
   })
 );
 
-// Relations
+// Relations;
 export const usersRelations = relations(users, ({ many }) => ({
   cases: many(cases),
   vectorSearchLogs: many(vectorSearchLogs),
-}));
+});
 
 export const casesRelations = relations(cases, ({ one, many }) => ({
   user: one(users, {
@@ -205,7 +205,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   }),
   documents: many(documents),
   evidence: many(evidence),
-}));
+});
 
 export const documentsRelations = relations(documents, ({ one, many }) => ({
   case: one(cases, {
@@ -213,7 +213,7 @@ export const documentsRelations = relations(documents, ({ one, many }) => ({
     references: [cases.id],
   }),
   evidence: many(evidence),
-}));
+});
 
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   case: one(cases, {
@@ -224,20 +224,20 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     fields: [evidence.documentId],
     references: [documents.id],
   }),
-}));
+});
 
 export const vectorSearchLogsRelations = relations(vectorSearchLogs, ({ one }) => ({
   user: one(users, {
     fields: [vectorSearchLogs.userId],
     references: [users.id],
   }),
-}));
+});
 
-// Vector search utility functions
+// Vector search utility functions;
 export class VectorSearchService {
   /**
    * Perform similarity search across cases
-   */
+   */;
   static async searchCases(queryEmbedding: number[], threshold: number = 0.7, limit: number = 10) {
     const results = await db.execute(sql`
       SELECT
@@ -272,7 +272,7 @@ export class VectorSearchService {
     queryEmbedding: number[],
     caseId?: number,
     threshold: number = 0.7,
-    limit: number = 10
+    limit: number = 10;
   ) {
     const caseFilter = caseId ? sql`AND case_id = ${caseId}` : sql``;
 
@@ -310,7 +310,7 @@ export class VectorSearchService {
     caseId?: number,
     evidenceType?: string,
     threshold: number = 0.7,
-    limit: number = 10
+    limit: number = 10;
   ) {
     const caseFilter = caseId ? sql`AND case_id = ${caseId}` : sql``;
     const typeFilter = evidenceType ? sql`AND evidence_type = ${evidenceType}` : sql``;
@@ -345,7 +345,7 @@ export class VectorSearchService {
 
   /**
    * Mixed search across all content types
-   */
+   */;
   static async searchAll(queryEmbedding: number[], threshold: number = 0.7, limit: number = 30) {
     const [caseResults, documentResults, evidenceResults] = await Promise.all([
       this.searchCases(queryEmbedding, threshold, Math.floor(limit / 3)),
@@ -374,7 +374,7 @@ export class VectorSearchService {
     searchTimeMs: number,
     userId?: number,
     searchType: string = 'mixed',
-    similarityThreshold: number = 0.7
+    similarityThreshold: number = 0.7;
   ) {
     await db.insert(vectorSearchLogs).values({
       query,
@@ -404,7 +404,7 @@ export type NewCase = typeof cases.$inferInsert;
 export type NewDocument = typeof documents.$inferInsert;
 export type NewEvidence = typeof evidence.$inferInsert;
 
-// Health check function
+// Health check function;
 export async function healthCheck(): Promise<any> {
   try {
     const result = await db.execute(sql`SELECT 1 as health`);

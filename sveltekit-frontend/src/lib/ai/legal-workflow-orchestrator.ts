@@ -11,7 +11,7 @@ import type { LegalContext, HybridPredictionResult } from './hybrid-gemma-bitmap
 import { createRedisInstance } from '$lib/server/redis.js';
 import type IORedis from 'ioredis';
 
-// Legal workflow stage definitions
+// Legal workflow stage definitions;
 export interface LegalWorkflowStage {
   stage: 'intake' | 'analysis' | 'research' | 'drafting' | 'review' | 'filing';
   substage?: string;
@@ -20,26 +20,26 @@ export interface LegalWorkflowStage {
   nextStages: Array<{
     stage: string;
     probability: number;
-    timeEstimate: number;
+    timeEstimate: number;,
   }>;
 }
 
-// Legal document types with specialized handling
+// Legal document types with specialized handling;
 export interface LegalDocumentProfile {
   type: 'contract' | 'case_law' | 'statute' | 'brief' | 'evidence' | 'motion' | 'discovery';
   domain: 'corporate' | 'litigation' | 'criminal' | 'family' | 'intellectual_property' | 'real_estate';
   complexity: 'simple' | 'moderate' | 'complex' | 'highly_complex';
   urgency: 'routine' | 'priority' | 'urgent' | 'emergency';
   requiredAssets: string[];
-  recommendedActions: string[];
+  recommendedActions: string[];,
 }
 
-// Asset preloading strategies for different legal contexts
+// Asset preloading strategies for different legal contexts;
 export interface AssetPreloadingStrategy {
   immediate: string[];     // Load instantly (< 100ms)
   background: string[];    // Load in background (< 2s)
   predictive: string[];    // Predict and cache (< 5s)
-  ondemand: string[];      // Load when explicitly requested
+  ondemand: string[];      // Load when explicitly requested,
 }
 
 export class LegalWorkflowOrchestrator {
@@ -60,12 +60,12 @@ export class LegalWorkflowOrchestrator {
    */
   async orchestrateWorkflow(
     currentContext: LegalContext,
-    userQuery?: string
+    userQuery?: string;
   ): Promise<{
     prediction: HybridPredictionResult;
     workflowGuidance: WorkflowGuidance;
     preloadingStrategy: AssetPreloadingStrategy;
-    nextSteps: NextStepRecommendation[];
+    nextSteps: NextStepRecommendation[];,
   }> {
     // Get hybrid prediction combining semantic + behavioral intelligence
     const prediction = userQuery
@@ -99,7 +99,7 @@ export class LegalWorkflowOrchestrator {
    * Generate contextual prediction without explicit query
    */
   private async generateContextualPrediction(
-    context: LegalContext
+    context: LegalContext;
   ): Promise<HybridPredictionResult> {
     // Generate implicit query based on current workflow context
     const implicitQuery = this.generateImplicitQuery(context);
@@ -112,7 +112,7 @@ export class LegalWorkflowOrchestrator {
    */
   private generateWorkflowGuidance(
     context: LegalContext,
-    prediction: HybridPredictionResult
+    prediction: HybridPredictionResult;
   ): WorkflowGuidance {
     const currentStage = this.workflowProfiles.get(context.workflowStage);
     const documentProfile = context.documentContext
@@ -134,16 +134,16 @@ export class LegalWorkflowOrchestrator {
    */
   private calculatePreloadingStrategy(
     context: LegalContext,
-    prediction: HybridPredictionResult
+    prediction: HybridPredictionResult;
   ): AssetPreloadingStrategy {
     const strategy: AssetPreloadingStrategy = {
       immediate: [],
       background: [],
       predictive: [],
-      ondemand: []
+      ondemand: [],
     };
 
-    // Categorize assets based on prediction confidence and system performance
+    // Categorize assets based on prediction confidence and system performance;
     for (const asset of prediction.behavioralPrediction.recommendedAssets) {
       if (asset.priority > 85 && context.systemMetrics.fps > 55) {
         strategy.immediate.push(asset.type);
@@ -169,7 +169,7 @@ export class LegalWorkflowOrchestrator {
    */
   private generateNextStepRecommendations(
     context: LegalContext,
-    prediction: HybridPredictionResult
+    prediction: HybridPredictionResult;
   ): NextStepRecommendation[] {
     const recommendations: NextStepRecommendation[] = [];
 
@@ -183,12 +183,12 @@ export class LegalWorkflowOrchestrator {
           priority: Math.round(nextStage.probability * 100),
           timeEstimate: nextStage.timeEstimate,
           reasoning: `${(nextStage.probability * 100).toFixed(1)}% chance of progressing to ${nextStage.stage}`,
-          assets: this.getStageAssets(nextStage.stage)
+          assets: this.getStageAssets(nextStage.stage),
         });
       }
     }
 
-    // Behavioral prediction recommendations
+    // Behavioral prediction recommendations;
     for (const nextState of prediction.behavioralPrediction.nextStates.slice(0, 3)) {
       recommendations.push({
         type: 'behavioral_prediction',
@@ -202,7 +202,7 @@ export class LegalWorkflowOrchestrator {
       });
     }
 
-    // Semantic similarity recommendations
+    // Semantic similarity recommendations;
     if (prediction.semanticSimilarity.length > 0) {
       const topMatch = prediction.semanticSimilarity[0];
       recommendations.push({
@@ -223,21 +223,21 @@ export class LegalWorkflowOrchestrator {
    */
   private async executeAssetPreloading(
     strategy: AssetPreloadingStrategy,
-    context: LegalContext
+    context: LegalContext;
   ): Promise<void> {
-    // Immediate loading (highest priority)
+    // Immediate loading (highest priority);
     for (const asset of strategy.immediate) {
       this.preloadAsset(asset, 'immediate', context);
     }
 
-    // Background loading
+    // Background loading;
     setTimeout(() => {
       for (const asset of strategy.background) {
         this.preloadAsset(asset, 'background', context);
       }
     }, 100);
 
-    // Predictive loading
+    // Predictive loading;
     setTimeout(() => {
       for (const asset of strategy.predictive) {
         this.preloadAsset(asset, 'predictive', context);
@@ -251,7 +251,7 @@ export class LegalWorkflowOrchestrator {
   private async preloadAsset(
     assetType: string,
     loadingType: string,
-    context: LegalContext
+    context: LegalContext;
   ): Promise<void> {
     const cacheKey = `preload:${assetType}:${context.sessionId}`;
 
@@ -264,7 +264,7 @@ export class LegalWorkflowOrchestrator {
 
     // Cache with appropriate TTL
     const ttl = loadingType === 'immediate' ? 600 : loadingType === 'background' ? 300 : 180;
-    await this.redis.setex(cacheKey, ttl, JSON.stringify(assetData));
+    await this.redis.setex(cacheKey, ttl, JSON.stringify(assetData);
 
     console.log(`🎮 Preloaded ${assetType} (${loadingType}) for session ${context.sessionId}`);
   }
@@ -274,7 +274,7 @@ export class LegalWorkflowOrchestrator {
   // =============================================================================
 
   private initializeWorkflowProfiles(): void {
-    const profiles: Array<[string, LegalWorkflowStage]> = [
+    const profiles: Array<[string, LegalWorkflowStage]> = [;
       ['intake', {
         stage: 'intake',
         priority: 100,
@@ -343,7 +343,7 @@ export class LegalWorkflowOrchestrator {
   }
 
   private initializeDocumentProfiles(): void {
-    const profiles: Array<[string, LegalDocumentProfile]> = [
+    const profiles: Array<[string, LegalDocumentProfile]> = [;
       ['contract:corporate', {
         type: 'contract',
         domain: 'corporate',
@@ -389,7 +389,7 @@ export class LegalWorkflowOrchestrator {
 
   private generateStageAdvice(
     stage: LegalWorkflowStage | undefined,
-    context: LegalContext
+    context: LegalContext;
   ): string {
     if (!stage) return 'Continue with current workflow';
 
@@ -398,7 +398,7 @@ export class LegalWorkflowOrchestrator {
 
   private generateNextStagePreparation(
     currentStage: LegalWorkflowStage | undefined,
-    prediction: HybridPredictionResult
+    prediction: HybridPredictionResult;
   ): string {
     if (!currentStage || currentStage.nextStages.length === 0) {
       return 'Prepare for workflow continuation based on case requirements';
@@ -410,7 +410,7 @@ export class LegalWorkflowOrchestrator {
 
   private generateDocumentGuidance(
     profile: LegalDocumentProfile | null,
-    context: LegalContext
+    context: LegalContext;
   ): string {
     if (!profile) return 'Apply general document handling best practices';
 
@@ -419,7 +419,7 @@ export class LegalWorkflowOrchestrator {
 
   private generateEfficiencyTips(
     context: LegalContext,
-    prediction: HybridPredictionResult
+    prediction: HybridPredictionResult;
   ): string[] {
     const tips = [
       `System predicts ${prediction.fusedInsights.confidenceScore}% accuracy - leverage AI insights`,
@@ -435,7 +435,7 @@ export class LegalWorkflowOrchestrator {
 
   private generateRiskAlerts(
     context: LegalContext,
-    prediction: HybridPredictionResult
+    prediction: HybridPredictionResult;
   ): string[] {
     const alerts = [];
 
@@ -456,7 +456,7 @@ export class LegalWorkflowOrchestrator {
 
   private generateQualityChecklist(
     stage: LegalWorkflowStage | undefined,
-    profile: LegalDocumentProfile | null
+    profile: LegalDocumentProfile | null;
   ): string[] {
     const checklist = ['Verify all required information is complete'];
 
@@ -486,7 +486,7 @@ export class LegalWorkflowOrchestrator {
 
     return {
       essential: stage.expectedAssets.slice(0, 2),
-      recommended: stage.expectedAssets.slice(2)
+      recommended: stage.expectedAssets.slice(2),
     };
   }
 
@@ -496,15 +496,15 @@ export class LegalWorkflowOrchestrator {
   }
 
   private generateAssetData(assetType: string, context: LegalContext): any {
-    // Generate appropriate asset data based on type and context
+    // Generate appropriate asset data based on type and context;
     const baseData = {
       assetType,
       sessionId: context.sessionId,
       generatedAt: new Date().toISOString(),
-      workflowStage: context.workflowStage
+      workflowStage: context.workflowStage,
     };
 
-    // Add specific data based on asset type
+    // Add specific data based on asset type;
     switch (assetType) {
       case 'document_viewer':
         return { ...baseData, viewerConfig: { mode: 'legal', annotations: true } };
@@ -513,22 +513,22 @@ export class LegalWorkflowOrchestrator {
       case 'legal_database':
         return { ...baseData, searchConfig: { domain: context.documentContext?.domain } };
       default:
-        return baseData;
+        return baseData;,
     }
   }
 
   private async recordWorkflowTransition(
     context: LegalContext,
-    prediction: HybridPredictionResult
+    prediction: HybridPredictionResult;
   ): Promise<void> {
     const transitionData = {
       fromStage: context.workflowStage,
       timestamp: new Date().toISOString(),
       predictionConfidence: prediction.fusedInsights.confidenceScore,
-      sessionId: context.sessionId
+      sessionId: context.sessionId,
     };
 
-    await this.redis.lpush('workflow:transitions', JSON.stringify(transitionData));
+    await this.redis.lpush('workflow:transitions', JSON.stringify(transitionData);
     await this.redis.ltrim('workflow:transitions', 0, 999); // Keep last 1000 transitions
   }
 }
@@ -543,7 +543,7 @@ interface WorkflowGuidance {
   documentSpecificGuidance: string;
   efficiencyTips: string[];
   riskAlerts: string[];
-  qualityChecklist: string[];
+  qualityChecklist: string[];,
 }
 
 interface NextStepRecommendation {
@@ -552,7 +552,7 @@ interface NextStepRecommendation {
   priority: number;
   timeEstimate: number;
   reasoning: string;
-  assets: string[];
+  assets: string[];,
 }
 
 export { WorkflowGuidance, NextStepRecommendation, AssetPreloadingStrategy };

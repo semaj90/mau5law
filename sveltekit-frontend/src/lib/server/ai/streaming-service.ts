@@ -5,15 +5,16 @@ import { EventEmitter } from "events";
 
 import { logger } from './logger.js';
 import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
+}
 
 export interface StreamEvent {
   type: 'status' | 'progress' | 'stage' | 'source' | 'complete' | 'error' | 'heartbeat';
-  data: any;
+  data: any;,
 }
 
 export interface StreamSubscriber {
   callback: (event: StreamEvent) => void;
-  subscribed: number;
+  subscribed: number;,
 }
 
 export interface StreamingOptions {
@@ -51,7 +52,7 @@ class StreamingService extends EventEmitter {
 
   /**
    * Subscribe to a stream
-   */
+   */;
   subscribe(streamId: string, callback: (event: StreamEvent) => void): () => void {
     if (!this.streams.has(streamId)) {
       this.streams.set(streamId, []);
@@ -59,7 +60,7 @@ class StreamingService extends EventEmitter {
     
     const subscriber: StreamSubscriber = {
       callback,
-      subscribed: Date.now()
+      subscribed: Date.now(),
     };
     
     this.streams.get(streamId).push(subscriber);
@@ -75,7 +76,7 @@ class StreamingService extends EventEmitter {
     
     logger.debug(`[StreamingService] Subscriber added to stream ${streamId}`);
     
-    // Return unsubscribe function
+    // Return unsubscribe function;
     return () => {
       const subscribers = this.streams.get(streamId);
       if (subscribers) {
@@ -96,22 +97,22 @@ class StreamingService extends EventEmitter {
 
   /**
    * Synthesize with progressive streaming updates
-   */
+   */;
   async synthesizeWithProgress(options: StreamingOptions): Promise<any> {
     const streamId = `stream_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     try {
       logger.info(`[StreamingService] Starting progressive synthesis for stream ${streamId}`);
       
-      // Track processing state
+      // Track processing state;
       this.activeProcessing.set(streamId, {
         startTime: Date.now(),
         status: 'processing',
         progress: 0,
-        currentStage: 'initialization'
+        currentStage: 'initialization',
       });
       
-      // Initialize progress tracking
+      // Initialize progress tracking;
       this.progressTracking.set(streamId, {
         stages: {
           query_analysis: { progress: 0, complete: false },
@@ -121,12 +122,12 @@ class StreamingService extends EventEmitter {
           quality_assessment: { progress: 0, complete: false }
         },
         sources: [],
-        totalProgress: 0
+        totalProgress: 0,
       });
       
-      // Stage 1: Query Analysis (0-20%)
+      // Stage 1: Query Analysis (0-20%);
       await this.processStage(streamId, 'query_analysis', async () => {
-        options.onStage?.('query_analysis', { status: 'starting' }));
+        options.onStage?.('query_analysis', { status: 'starting' });
         const result = await this.simulateQueryAnalysis(options.input.query);
         
         options.onProgress?.('query_analysis', 100, result);
@@ -135,9 +136,9 @@ class StreamingService extends EventEmitter {
         return result;
       }, 0, 20);
       
-      // Stage 2: Multi-Strategy Retrieval (20-50%)
+      // Stage 2: Multi-Strategy Retrieval (20-50%);
       const sources = await this.processStage(streamId, 'retrieval', async () => {
-        options.onStage?.('retrieval', { status: 'starting' }));
+        options.onStage?.('retrieval', { status: 'starting' });
         const sources = await this.streamRetrieval(
           options.input,
           (source, index, total) => {
@@ -155,17 +156,17 @@ class StreamingService extends EventEmitter {
         
         options.onStage?.('retrieval', { 
           status: 'complete', 
-          sourceCount: sources.length 
+          sourceCount: sources.length ,
         });
         
         return sources;
       }, 20, 50);
       
-      // Stage 3: Ranking and Processing (50-70%)
+      // Stage 3: Ranking and Processing (50-70%);
       const rankedSources = await this.processStage(streamId, 'ranking', async () => {
-        options.onStage?.('ranking', { status: 'starting' }));
+        options.onStage?.('ranking', { status: 'starting' });
         const ranked = await this.streamRanking(sources, (progress) => {
-          options.onProgress?.('ranking', progress));
+          options.onProgress?.('ranking', progress);
         });
         
         options.onStage?.('ranking', { 
@@ -176,32 +177,32 @@ class StreamingService extends EventEmitter {
         return ranked;
       }, 50, 70);
       
-      // Stage 4: Prompt Construction (70-85%)
+      // Stage 4: Prompt Construction (70-85%);
       const prompt = await this.processStage(streamId, 'prompt_construction', async () => {
-        options.onStage?.('prompt_construction', { status: 'starting' }));
+        options.onStage?.('prompt_construction', { status: 'starting' });
         const prompt = await this.constructPromptWithProgress(
           options.input,
           rankedSources,
           (progress) => {
-            options.onProgress?.('prompt_construction', progress));
+            options.onProgress?.('prompt_construction', progress);
           }
         );
         
         options.onStage?.('prompt_construction', { 
           status: 'complete',
-          promptLength: prompt.length
+          promptLength: prompt.length,
         });
         
         return prompt;
       }, 70, 85);
       
-      // Stage 5: Quality Assessment (85-100%)
+      // Stage 5: Quality Assessment (85-100%);
       const finalResult = await this.processStage(streamId, 'quality_assessment', async () => {
-        options.onStage?.('quality_assessment', { status: 'starting' }));
-        // Actually call the synthesizer for the complete result
+        options.onStage?.('quality_assessment', { status: 'starting' });
+        // Actually call the synthesizer for the complete result;
         const result = await aiAssistantSynthesizer.synthesizeInput({
           query: options.input.query,
-          context: { userId: '', ...((options.input.context || {}) as Record<string, any>) },
+          context: { userId: '', ...((options.input.context || {,}) as Record<string, any>) },
           options: {
             enableMMR: true,
             enableCrossEncoder: true,
@@ -210,7 +211,7 @@ class StreamingService extends EventEmitter {
             maxSources: 5,
             similarityThreshold: 0.7,
             diversityLambda: 0.3,
-            ...((options.input.options || {}) as Record<string, any>)
+            ...((options.input.options || {,}) as Record<string, any>)
           }
         });
         
@@ -263,7 +264,7 @@ class StreamingService extends EventEmitter {
       throw error;
       
     } finally {
-      // Cleanup after delay
+      // Cleanup after delay;
       setTimeout(() => {
         this.activeProcessing.delete(streamId);
         this.progressTracking.delete(streamId);
@@ -273,7 +274,7 @@ class StreamingService extends EventEmitter {
 
   /**
    * Send event to stream subscribers
-   */
+   */;
   private sendEvent(streamId: string, event: StreamEvent): void {
     const subscribers = this.streams.get(streamId);
     
@@ -286,7 +287,7 @@ class StreamingService extends EventEmitter {
         }
       }
     } else {
-      // Buffer events if no subscribers yet
+      // Buffer events if no subscribers yet;
       if (!this.streamBuffer.has(streamId)) {
         this.streamBuffer.set(streamId, []);
       }
@@ -294,7 +295,7 @@ class StreamingService extends EventEmitter {
       const buffer = this.streamBuffer.get(streamId);
       buffer.push(event);
       
-      // Limit buffer size
+      // Limit buffer size;
       if (buffer.length > 100) {
         buffer.shift();
       }
@@ -309,7 +310,7 @@ class StreamingService extends EventEmitter {
     stageName: string,
     processor: () => Promise<any>,
     startProgress: number,
-    endProgress: number
+    endProgress: number;
   ): Promise<any> {
     const processing = this.activeProcessing.get(streamId);
     if (processing) {
@@ -327,7 +328,7 @@ class StreamingService extends EventEmitter {
       // Execute the stage processor
       const result = await processor();
       
-      // Update completion status
+      // Update completion status;
       if (tracking) {
         tracking.stages[stageName].progress = 100;
         tracking.stages[stageName].complete = true;
@@ -353,7 +354,7 @@ class StreamingService extends EventEmitter {
 
   /**
    * Simulate query analysis with progress
-   */
+   */;
   private async simulateQueryAnalysis(query: string): Promise<any> {
     // Simulate processing time
     await this.delay(500);
@@ -363,7 +364,7 @@ class StreamingService extends EventEmitter {
       enhanced: query + ' [enhanced]',
       intent: 'legal_query',
       entities: [],
-      complexity: 0.7
+      complexity: 0.7,
     };
   }
 
@@ -372,7 +373,7 @@ class StreamingService extends EventEmitter {
    */
   private async streamRetrieval(
     input: any,
-    onSource: (source: any, index: number, total: number) => void
+    onSource: (source: any, index: number, total: number) => void;
   ): Promise<any[]> {
     const sources = [];
     const totalSources = 10; // Simulate finding 10 sources
@@ -386,7 +387,7 @@ class StreamingService extends EventEmitter {
         title: `Legal Document ${i + 1}`,
         content: `Content of document ${i + 1}...`,
         relevanceScore: Math.random(),
-        type: 'document'
+        type: 'document',
       };
       
       sources.push(source);
@@ -401,7 +402,7 @@ class StreamingService extends EventEmitter {
    */
   private async streamRanking(
     sources: any[],
-    onProgress: (progress: number) => void
+    onProgress: (progress: number) => void;
   ): Promise<any[]> {
     const steps = 5;
     
@@ -420,7 +421,7 @@ class StreamingService extends EventEmitter {
   private async constructPromptWithProgress(
     input: any,
     sources: any[],
-    onProgress: (progress: number) => void
+    onProgress: (progress: number) => void;
   ): Promise<string> {
     const steps = 3;
     let prompt = '';
@@ -444,7 +445,7 @@ class StreamingService extends EventEmitter {
 
   /**
    * Get stream status
-   */
+   */;
   getStreamStatus(streamId: string): unknown {
     const processing = this.activeProcessing.get(streamId);
     const tracking = this.progressTracking.get(streamId);
@@ -459,13 +460,13 @@ class StreamingService extends EventEmitter {
       sources: tracking?.sources?.length || 0,
       subscribers: subscribers?.length || 0,
       startTime: processing?.startTime,
-      duration: processing?.duration
+      duration: processing?.duration,
     };
   }
 
   /**
    * Get all active streams
-   */
+   */;
   getActiveStreams(): unknown[] {
     const streams = [];
     
@@ -476,7 +477,7 @@ class StreamingService extends EventEmitter {
         progress: processing.progress,
         currentStage: processing.currentStage,
         startTime: processing.startTime,
-        subscribers: this.streams.get(streamId)?.length || 0
+        subscribers: this.streams.get(streamId)?.length || 0,
       });
     }
     
@@ -485,12 +486,12 @@ class StreamingService extends EventEmitter {
 
   /**
    * Clean up inactive streams
-   */
+   */;
   private cleanupInactiveStreams(): void {
     const now = Date.now();
     const maxAge = 5 * 60 * 1000; // 5 minutes
     
-    // Clean up old processing records
+    // Clean up old processing records;
     for (const [streamId, processing] of Array.from(this.activeProcessing.entries())) {
       if (processing.endTime && (now - processing.endTime > maxAge)) {
         this.activeProcessing.delete(streamId);
@@ -499,7 +500,7 @@ class StreamingService extends EventEmitter {
       }
     }
     
-    // Clean up orphaned buffers
+    // Clean up orphaned buffers;
     for (const [streamId, buffer] of Array.from(this.streamBuffer.entries())) {
       if (!this.streams.has(streamId) && buffer.length > 0) {
         const lastEvent = buffer[buffer.length - 1];
@@ -512,16 +513,16 @@ class StreamingService extends EventEmitter {
 
   /**
    * Utility delay function
-   */
+   */;
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms);
   }
 
   /**
    * Shutdown streaming service
-   */
+   */;
   async shutdown(): Promise<void> {
-    // Send closing events to all active streams
+    // Send closing events to all active streams;
     for (const [streamId, subscribers] of Array.from(this.streams.entries())) {
       const event: StreamEvent = {
         type: 'error',
@@ -550,7 +551,7 @@ class StreamingService extends EventEmitter {
 // Export singleton instance
 export const streamingService = new StreamingService();
 ;
-// Support for Ollama local LLM integration
+// Support for Ollama local LLM integration;
 export class OllamaStreamingAdapter {
   private ollamaUrl: string;
   
@@ -565,7 +566,7 @@ export class OllamaStreamingAdapter {
     model: string,
     prompt: string,
     onToken: (token: string) => void,
-    onComplete: (response: string) => void
+    onComplete: (response: string) => void;
   ): Promise<void> {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
@@ -576,7 +577,7 @@ export class OllamaStreamingAdapter {
         body: JSON.stringify({
           model,
           prompt,
-          stream: true
+          stream: true,
         })
       });
 
@@ -593,7 +594,7 @@ export class OllamaStreamingAdapter {
         if (done) break;
 
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\n').filter(line => line.trim());
+        const lines = chunk.split('\n').filter(line => line.trim();
 
         for (const line of lines) {
           try {
@@ -618,7 +619,7 @@ export class OllamaStreamingAdapter {
 
   /**
    * Check if Ollama is available
-   */
+   */;
   async checkAvailability(): Promise<boolean> {
     try {
       const response = await fetch(`${this.ollamaUrl}/api/tags`);

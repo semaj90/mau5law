@@ -3,7 +3,7 @@
  * Modern TypeScript patterns for WASM integration
  */
 
-// Global WebAssembly module declarations
+// Global WebAssembly module declarations;
 declare module '*.wasm' {
   const wasmModule: (imports?: WebAssembly.Imports) => Promise<WebAssembly.Instance>;
   export default wasmModule;
@@ -14,7 +14,7 @@ declare module '*.wasm?url' {
   export default wasmUrl;
 }
 
-// Enhanced WebAssembly memory management types
+// Enhanced WebAssembly memory management types;
 export interface WASMMemoryManager {
   memory: WebAssembly.Memory;
   view: DataView;
@@ -59,15 +59,15 @@ export interface LegalWASMBridge {
   module: LegalWASMModule;
   memory: WASMMemoryManager;
 
-  // High-level document processing methods
+  // High-level document processing methods;
   processLegalDocument(content: string): Promise<{
     entities: Array<any>;
     classification: string;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    confidence: number;
+    confidence: number;,
   }>;
 
-  extractMetadata(content: string): Promise<Record<string, unknown>>;
+  extractMetadata(content: string): Promise<Record<string, unknown>;
 
   // Vector operations
   normalizeEmbeddings(embeddings: Float32Array): Float32Array;
@@ -75,7 +75,7 @@ export interface LegalWASMBridge {
   batchSimilarity(vectors: Float32Array[], query: Float32Array): number[];
 }
 
-// RabbitMQ + WASM integration types
+// RabbitMQ + WASM integration types;
 export interface WASMRabbitMQMessage {
   id: string;
   type: 'legal_document' | 'embedding_request' | 'similarity_search';
@@ -89,18 +89,18 @@ export interface WASMRabbitMQMessage {
   processingResult?: {
     success: boolean;
     data: unknown;
-    processingTime: number;
+    processingTime: number;,
   };
 }
 
-// Memory allocation utilities
+// Memory allocation utilities;
 export interface WASMAllocator {
   malloc(size: number): number;
   free(ptr: number): void;
   realloc(ptr: number, newSize: number): number;
 }
 
-// WASM instantiation options
+// WASM instantiation options;
 export interface WASMInstantiationOptions {
   memory?: {
     initial: number;
@@ -113,35 +113,35 @@ export interface WASMInstantiationOptions {
   };
 }
 
-// Performance monitoring for WASM operations
+// Performance monitoring for WASM operations;
 export interface WASMPerformanceMetrics {
   instantiationTime: number;
   memoryUsage: number;
   operationCounts: {
     textProcessing: number;
     vectorOperations: number;
-    memoryAllocations: number;
+    memoryAllocations: number;,
   };
   averageOperationTime: {
     documentProcessing: number;
     embeddingNormalization: number;
-    similarityCalculation: number;
+    similarityCalculation: number;,
   };
 }
 
-// Error types for WASM operations
+// Error types for WASM operations;
 export class WASMError extends Error {
   constructor(
     message: string,
     public code: 'INSTANTIATION_FAILED' | 'MEMORY_ERROR' | 'PROCESSING_ERROR' | 'INVALID_INPUT',
-    public details?: unknown
+    public details?: unknown;
   ) {
     super(message);
     this.name = 'WASMError';
   }
 }
 
-// WASM module loader utility type
+// WASM module loader utility type;
 export interface WASMLoader {
   loadModule(url: string, options?: WASMInstantiationOptions): Promise<LegalWASMBridge>;
   precompileModule(bytes: ArrayBuffer): Promise<WebAssembly.Module>;
@@ -151,7 +151,7 @@ export interface WASMLoader {
   ): Promise<WebAssembly.Instance>;
 }
 
-// Vector operations result types
+// Vector operations result types;
 export interface VectorOperationResult {
   success: boolean;
   result: Float32Array | number | number[];
@@ -165,7 +165,7 @@ export interface SimilaritySearchResult {
   metadata: Record<string, unknown>;
 }
 
-// Global augmentation for WASM-enhanced features
+// Global augmentation for WASM-enhanced features;
 declare global {
   interface Window {
     wasmModules?: Map<string, LegalWASMBridge>;
@@ -178,7 +178,7 @@ declare global {
   }
 }
 
-// Re-export commonly used types
+// Re-export commonly used types;
 export type {
   WebAssembly,
 };

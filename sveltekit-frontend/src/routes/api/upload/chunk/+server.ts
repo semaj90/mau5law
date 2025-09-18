@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js';
 
 const UPLOAD_DIR = join(tmpdir(), "chunked-uploads");
 
-// Receives and appends a single chunk
+// Receives and appends a single chunk;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     await mkdir(UPLOAD_DIR, { recursive: true });
@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
       throw error(400, 'Invalid chunk data.');
     }
     const tempFilePath = join(UPLOAD_DIR, fileId);
-    await appendFile(tempFilePath, Buffer.from(await chunk.arrayBuffer()));
+    await appendFile(tempFilePath, Buffer.from(await chunk.arrayBuffer());
 
     return json({ success: true });
   } catch (err: any) {

@@ -3,47 +3,47 @@
 
 import { mcpContext72GetLibraryDocs, type LibraryDocsResponse } from './mcp-context72-get-library-docs.js';
 
-// Get RabbitMQ (amqplib) documentation
+// Get RabbitMQ (amqplib) documentation;
 export async function getRabbitMQDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/amqplib/amqplib', topic, { 
     format: 'typescript',
-    tokens: 12000 
+    tokens: 12000 ,
   }, fetchFn);
 }
 
-// Get Redis (ioredis) documentation
+// Get Redis (ioredis) documentation;
 export async function getRedisDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/ioredis/ioredis', topic, { 
     format: 'typescript',
-    tokens: 10000 
+    tokens: 10000 ,
   }, fetchFn);
 }
 
-// Get Node Redis client documentation
+// Get Node Redis client documentation;
 export async function getNodeRedisDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/redis/node-redis', topic, { 
     format: 'typescript',
-    tokens: 8000 
+    tokens: 8000 ,
   }, fetchFn);
 }
 
-// Get LokiJS documentation
+// Get LokiJS documentation;
 export async function getLokiJSDocs(topic?: string, fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/lokijs/lokijs', topic, { 
     format: 'typescript',
-    tokens: 8000 
+    tokens: 8000 ,
   }, fetchFn);
 }
 
-// Get best practices for RabbitMQ + Redis integration
+// Get best practices for RabbitMQ + Redis integration;
 export async function getMessageQueueRedisBestPractices(fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return mcpContext72GetLibraryDocs('/patterns/message-queue-redis', 'integration-patterns', { 
     format: 'typescript',
-    tokens: 15000 
+    tokens: 15000 ,
   }, fetchFn);
 }
 
-// Helper functions for specific Redis topics
+// Helper functions for specific Redis topics;
 export async function getRedisConnectionPatterns(fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
   return getRedisDocs('connection-patterns', fetchFn);
 }
@@ -68,7 +68,7 @@ export async function getNodeRedisTransactions(fetchFn?: typeof fetch): Promise<
   return getNodeRedisDocs('transactions', fetchFn);
 }
 
-// Quick access to get all Redis documentation
+// Quick access to get all Redis documentation;
 export async function getAllRedisDocs(fetchFn?: typeof fetch): Promise<any> {
   const [ioredis, nodeRedis, patterns] = await Promise.all([
     getRedisDocs(undefined, fetchFn),

@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     const [document] = await enhanced_db
       .select()
       .from(legal_documents)
-      .where(eq(legal_documents.id, docId))
+      .where(eq(legal_documents.id, docId)
       .limit(1);
 
     if (!document) {
@@ -39,7 +39,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     let graphConnections: any[] = [];
     let caseAssociations: any[] = [];
 
-    // 3. Perform vector similarity search if embedding exists
+    // 3. Perform vector similarity search if embedding exists;
     if (embedding) {
       try {
         // Vector similarity search using pgvector extension
@@ -61,13 +61,13 @@ export const GET: RequestHandler = async ({ params, url }) => {
           content: doc.content?.substring(0, 500) + '...',
           title: doc.title,
           documentType: doc.document_type,
-          similarity: 1 - doc.similarity_distance, // Convert distance to similarity score
+          similarity: 1 - doc.similarity_distance, // Convert distance to similarity score;
           metadata: {
             source: 'pgvector_similarity',
             vector_search: true,
-            similarity_distance: doc.similarity_distance
+            similarity_distance: doc.similarity_distance,
           }
-        }));
+        });
 
       } catch (vectorError) {
         console.warn('[API] Vector similarity search failed:', vectorError);
@@ -75,20 +75,20 @@ export const GET: RequestHandler = async ({ params, url }) => {
       }
     }
 
-    // 4. Find associated cases and evidence
+    // 4. Find associated cases and evidence;
     try {
-      const associatedCases = await enhanced_db
+      const associatedCases = await enhanced_db;
         .select({
           id: cases.id,
           title: cases.title,
           status: cases.status,
           priority: cases.priority,
-          created_at: cases.created_at
+          created_at: cases.created_at,
         })
         .from(cases)
-        .leftJoin(evidence, eq(evidence.case_id, cases.id))
-        .where(eq(evidence.document_id, docId))
-        .orderBy(desc(cases.created_at))
+        .leftJoin(evidence, eq(evidence.case_id, cases.id)
+        .where(eq(evidence.document_id, docId)
+        .orderBy(desc(cases.created_at)
         .limit(5);
 
       caseAssociations = associatedCases;
@@ -97,37 +97,37 @@ export const GET: RequestHandler = async ({ params, url }) => {
       console.warn('[API] Case association lookup failed:', caseError);
     }
 
-    // 5. Simulate Neo4j graph connections (in production, this would be real Neo4j queries)
+    // 5. Simulate Neo4j graph connections (in production, this would be real Neo4j queries);
     try {
       // Mock Neo4j-style relationships for demonstration
-      graphConnections = [
+      graphConnections = [;
         {
           type: 'CITES',
           targetId: `precedent_${Math.floor(Math.random() * 1000)}`,
           targetTitle: 'Legal Precedent: Contract Interpretation Standards',
           relationship_strength: 0.89,
-          connection_type: 'legal_citation'
+          connection_type: 'legal_citation',
         },
         {
           type: 'REFERENCES',
           targetId: `statute_${Math.floor(Math.random() * 1000)}`,
           targetTitle: 'Statutory Reference: Commercial Law Section 4.2',
           relationship_strength: 0.76,
-          connection_type: 'statutory_reference'
+          connection_type: 'statutory_reference',
         },
         {
           type: 'SIMILAR_PATTERN',
           targetId: `pattern_${Math.floor(Math.random() * 1000)}`,
           targetTitle: 'Similar Legal Pattern: Liability Clause Analysis',
           relationship_strength: 0.83,
-          connection_type: 'pattern_similarity'
+          connection_type: 'pattern_similarity',
         }
       ];
     } catch (graphError) {
       console.warn('[API] Graph connection lookup failed:', graphError);
     }
 
-    // 6. Enhanced metadata analysis
+    // 6. Enhanced metadata analysis;
     const enhancedMetadata = {
       processing_time: Date.now(),
       total_related_docs: relatedDocuments.length,
@@ -141,7 +141,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
         postgres_query_time: '~15ms',
         vector_search_time: embedding ? '~25ms' : 'skipped',
         graph_traversal_time: '~10ms',
-        total_server_time: '~50ms'
+        total_server_time: '~50ms',
       }
     };
 
@@ -157,7 +157,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
           body: JSON.stringify({
             text: document.content.substring(0, 2000), // First 2000 chars
             context: relatedDocuments.map(d => d.title).slice(0, 3),
-            analysisType: 'legal'
+            analysisType: 'legal',
           })
         });
 
@@ -167,7 +167,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
             confidence: gpuData.confidence,
             legalAnalysis: gpuData.result?.legalAnalysis,
             processingTime: gpuData.processingTime,
-            rtx_3060_ti: true
+            rtx_3060_ti: true,
           };
         }
       } catch (gpuError) {
@@ -175,7 +175,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
       }
     }
 
-    // 8. Comprehensive response
+    // 8. Comprehensive response;
     const response = {
       success: true,
       document: {
@@ -188,7 +188,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
         created_at: document.created_at,
         updated_at: document.updated_at,
         has_embedding: !!document.content_embedding,
-        content_hash: document.content_hash
+        content_hash: document.content_hash,
       },
       related_documents: relatedDocuments,
       graph_connections: graphConnections,
@@ -199,7 +199,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
         cache_duration: 5 * 60 * 1000, // 5 minutes
         cache_key: enhancedMetadata.cache_key,
         auto_refresh: false,
-        priority: 'normal'
+        priority: 'normal',
       }
     };
 
@@ -212,7 +212,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
   }
 };
 
-// Optional: Support for partial updates or specific data requests
+// Optional: Support for partial updates or specific data requests;
 export const POST: RequestHandler = async ({ params, request }) => {
   const docId = params.id;
   const body = await request.json();
@@ -227,11 +227,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
       
     case 'get_relations_only':
       // Return only relationship data for performance
-      // Implementation would be similar but more focused
+      // Implementation would be similar but more focused;
       return json({ 
         success: true, 
         relations: [], 
-        message: 'Relations-only endpoint not yet implemented' 
+        message: 'Relations-only endpoint not yet implemented' ,
       });
       
     default:

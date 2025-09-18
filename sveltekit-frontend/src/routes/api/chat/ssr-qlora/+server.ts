@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js';
 import { ssrChatAssistant } from '$lib/server/chat/ssr-qlora-gpu-chat-assistant';
 import { qloraRLOrchestrator } from '$lib/services/qlora-rl-langextract-integration';
 
-// SSR Chat Response for initial page load
+// SSR Chat Response for initial page load;
 export const GET: RequestHandler = async ({ url, request, getClientAddress }) => {
   const userId = url.searchParams.get('userId');
   const sessionId = url.searchParams.get('sessionId'); 
@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url, request, getClientAddress }) =>
   if (!userId || !sessionId) {
     return json({
       success: false,
-      error: 'Missing userId or sessionId parameters'
+      error: 'Missing userId or sessionId parameters',
     }, { status: 400 });
   }
 
@@ -43,21 +43,21 @@ export const GET: RequestHandler = async ({ url, request, getClientAddress }) =>
           preferredStyle: ssrResult.ssrContext.userDictionary.preferredStyle,
           domainExpertise: ssrResult.ssrContext.userDictionary.domainExpertise,
           termCount: ssrResult.ssrContext.userDictionary.legalTerms.size,
-          interactionCount: ssrResult.ssrContext.userDictionary.interactionHistory.length
+          interactionCount: ssrResult.ssrContext.userDictionary.interactionHistory.length,
         },
         systemStatus: {
           nesMemoryReady: true,
           gpuCacheReady: true,
           qloraReady: orchestratorStats.completedQLoRAJobs > 0,
           wasmBridgeReady: true,
-          ollamaReady: true
+          ollamaReady: true,
         }
       },
       prerenderedHTML: ssrResult.prerenderedHTML,
       preloadedData: ssrResult.preloadedData,
       orchestratorStats,
       clientAddress: getClientAddress(),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error: any) {
@@ -65,19 +65,19 @@ export const GET: RequestHandler = async ({ url, request, getClientAddress }) =>
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
 
-// Streaming chat response
+// Streaming chat response;
 export const POST: RequestHandler = async ({ request, url }) => {
   const { sessionId, message, metadata } = await request.json();
 
   if (!sessionId || !message) {
     return json({
       success: false,
-      error: 'Missing sessionId or message'
+      error: 'Missing sessionId or message',
     }, { status: 400 });
   }
 
@@ -87,7 +87,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Create streaming response
     const stream = await ssrChatAssistant.streamChatResponse(
       sessionId,
-      message,
+      message,)
       { request, url } as any
     );
 
@@ -106,19 +106,19 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
 
-// Update user feedback and trigger QLoRA retraining
+// Update user feedback and trigger QLoRA retraining;
 export const PUT: RequestHandler = async ({ request }) => {
   const { sessionId, interactionId, feedback, userDictionaryUpdates } = await request.json();
 
   if (!sessionId || !interactionId) {
     return json({
       success: false,
-      error: 'Missing required parameters'
+      error: 'Missing required parameters',
     }, { status: 400 });
   }
 
@@ -128,7 +128,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     // TODO: Implement feedback update in SSR chat assistant
     // await ssrChatAssistant.updateInteractionFeedback(sessionId, interactionId, feedback);
     
-    // If feedback is very positive or negative, trigger QLoRA retraining
+    // If feedback is very positive or negative, trigger QLoRA retraining;
     if (Math.abs(feedback) > 0.8) {
       console.log('🔥 Triggering QLoRA retraining based on feedback');
       // Implement QLoRA retraining trigger
@@ -138,7 +138,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       message: 'Feedback updated successfully',
       qloraRetrained: Math.abs(feedback) > 0.8,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error: any) {
@@ -146,12 +146,12 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
 
-// Get chat session analytics
+// Get chat session analytics;
 export const PATCH: RequestHandler = async ({ url }) => {
   const sessionId = url.searchParams.get('sessionId');
   const action = url.searchParams.get('action');
@@ -159,38 +159,38 @@ export const PATCH: RequestHandler = async ({ url }) => {
   if (!sessionId) {
     return json({
       success: false,
-      error: 'Missing sessionId parameter'
+      error: 'Missing sessionId parameter',
     }, { status: 400 });
   }
 
   try {
     switch (action) {
       case 'stats':
-        // Get session statistics
+        // Get session statistics;
         const stats = {
-          messagesCount: 0, // TODO: Implement
+          messagesCount: 0, // TODO: Implement,
           averageResponseTime: 0,
           gpuCacheHitRate: 0,
           qloraJobsTriggered: 0,
-          userSatisfaction: 0
+          userSatisfaction: 0,
         };
 
         return json({
           success: true,
           sessionId,
           stats,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'export':
-        // Export conversation for analysis
+        // Export conversation for analysis;
         return json({
           success: true,
           message: 'Export functionality not yet implemented',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
-      default:
+      default:;
         return json({
           success: false,
           error: `Unknown action: ${action}`,
@@ -203,12 +203,12 @@ export const PATCH: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
 
-// Delete chat session and cleanup
+// Delete chat session and cleanup;
 export const DELETE: RequestHandler = async ({ url }) => {
   const sessionId = url.searchParams.get('sessionId');
   const cleanup = url.searchParams.get('cleanup') === 'true';
@@ -216,7 +216,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
   if (!sessionId) {
     return json({
       success: false,
-      error: 'Missing sessionId parameter'
+      error: 'Missing sessionId parameter',
     }, { status: 400 });
   }
 
@@ -231,7 +231,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       sessionId,
       cleaned: cleanup,
       message: 'Session deleted successfully',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error: any) {
@@ -239,7 +239,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };

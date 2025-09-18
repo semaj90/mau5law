@@ -33,7 +33,7 @@ const env = process.env || {};
  * Integrates with enhanced legal AI index and documentation system
  *
  * @type {import('./$types').RequestHandler}
- */
+ */;
 export async function GET({ url }): Promise<any> {
   try {
     // Get query parameters for context filtering
@@ -44,12 +44,12 @@ export async function GET({ url }): Promise<any> {
     // Get current application context
     const currentContext = await ContextService.getCurrentContext();
 
-    // Enhanced context for Gemma3 Legal LLM
+    // Enhanced context for Gemma3 Legal LLM;
     const enhancedContext: any = {
       // Core application context
       application: currentContext,
 
-      // AI Model configuration
+      // AI Model configuration;
       aiModel: {
         name: "gemma3-legal",
         endpoint: env.OLLAMA_URL || "http://ollama:11434",
@@ -69,7 +69,7 @@ export async function GET({ url }): Promise<any> {
         },
       },
 
-      // System architecture context
+      // System architecture context;
       architecture: {
         frontend: "SvelteKit 2 with Svelte 5 runes",
         backend: "Drizzle ORM + PostgreSQL",
@@ -79,7 +79,7 @@ export async function GET({ url }): Promise<any> {
         messaging: "RabbitMQ",
       },
 
-      // Development guidelines
+      // Development guidelines;
       guidelines: {
         svelte: {
           runesRequired: true,
@@ -96,7 +96,7 @@ export async function GET({ url }): Promise<any> {
       },
     };
 
-    // Add documentation context if requested
+    // Add documentation context if requested;
     if (includeDocumentation) {
       enhancedContext.documentation = {
         copilotContext: "Enhanced Legal AI Index with Context7 MCP",
@@ -105,7 +105,7 @@ export async function GET({ url }): Promise<any> {
       };
     }
 
-    // Add case-specific context if requested
+    // Add case-specific context if requested;
     if (includeCaseData && contextType === "legal") {
       enhancedContext.legalDomain = {
         focus: "prosecutor_case_management",
@@ -128,12 +128,11 @@ export async function GET({ url }): Promise<any> {
     });
   } catch (error: any) {
     console.error("Context API error:", error);
-    return json(
-      {
+    return json({
         success: false,
         error: "Failed to retrieve AI context",
         message: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }
@@ -141,12 +140,12 @@ export async function GET({ url }): Promise<any> {
 
 /*
  * POST endpoint for updating context with AI interactions
- */
+ */;
 export async function POST({ request }): Promise<any> {
   try {
     const { contextUpdate, interactionType } = await request.json();
 
-    // Update context based on AI interaction
+    // Update context based on AI interaction;
     if (interactionType === "chat_message") {
       await ContextService.updateChatContext(contextUpdate);
     } else if (interactionType === "case_analysis") {
@@ -159,11 +158,10 @@ export async function POST({ request }): Promise<any> {
     });
   } catch (error: any) {
     console.error("Context update error:", error);
-    return json(
-      {
+    return json({
         success: false,
         error: "Failed to update context",
-      },
+      },)
       { status: 500 },
     );
   }

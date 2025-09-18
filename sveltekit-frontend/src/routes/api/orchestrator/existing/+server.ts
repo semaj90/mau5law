@@ -13,7 +13,7 @@ interface HealthResponse {
   existing_infrastructure: {
     redis: boolean;
     postgres: boolean;
-    ollama: boolean;
+    ollama: boolean;,
   };
   nintendo_memory_banks: {
     L1_EXISTING: { status: string };
@@ -22,50 +22,50 @@ interface HealthResponse {
   };
 }
 
-// Simple health check for existing services
+// Simple health check for existing services;
 async function checkExistingServices() {
   const services = [];
   
-  // Check existing Redis (port 6379)
+  // Check existing Redis (port 6379);
   try {
-    // Redis is confirmed running from docker ps
+    // Redis is confirmed running from docker ps;
     services.push({
       service: 'Existing Redis Cache',
       status: 'healthy' as const,
-      details: 'Port 6379 - Nintendo L3 Memory Bank'
+      details: 'Port 6379 - Nintendo L3 Memory Bank',
     });
   } catch {
     services.push({
       service: 'Existing Redis Cache', 
       status: 'down' as const,
-      details: 'Connection failed'
+      details: 'Connection failed',
     });
   }
   
-  // Check existing PostgreSQL (port 5433)
+  // Check existing PostgreSQL (port 5433);
   services.push({
     service: 'Existing PostgreSQL + pgvector',
     status: 'healthy' as const,
-    details: 'Port 5433 - Legal document storage'
+    details: 'Port 5433 - Legal document storage',
   });
   
-  // Check for Ollama
+  // Check for Ollama;
   try {
     const response = await fetch('http://localhost:11434/api/tags', { 
       method: 'GET',
-      signal: AbortSignal.timeout(2000)
+      signal: AbortSignal.timeout(2000),
     });
     
     services.push({
       service: 'Existing Ollama Service',
       status: response.ok ? 'healthy' as const : 'down' as const,
-      details: response.ok ? 'Port 11434 - AI model service' : 'Service unavailable'
+      details: response.ok ? 'Port 11434 - AI model service' : 'Service unavailable',
     });
   } catch {
     services.push({
       service: 'Existing Ollama Service',
       status: 'down' as const, 
-      details: 'Port 11434 - Not responding'
+      details: 'Port 11434 - Not responding',
     });
   }
   
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ url }) => {
     existing_infrastructure: {
       redis: true, // Confirmed running from docker ps
       postgres: true, // Confirmed running from docker ps  
-      ollama: services.find(s => s.service.includes('Ollama'))?.status === 'healthy' || false
+      ollama: services.find(s => s.service.includes('Ollama'))?.status === 'healthy' || false,
     },
     nintendo_memory_banks: {
       L1_EXISTING: { status: 'Using existing Ollama/GPU resources' },
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let modelUsed: string;
     let memoryBank: string;
     
-    // Use your actual Ollama models
+    // Use your actual Ollama models;
     if (isEmbedding) {
       try {
         const response = await fetch('http://localhost:11434/api/embeddings', {
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: 'embeddinggemma:latest',
-            prompt: query
+            prompt: query,
           })
         });
 
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request }) => {
           body: JSON.stringify({
             model,
             prompt,
-            stream: false
+            stream: false,
           })
         });
 
@@ -164,7 +164,7 @@ export const POST: RequestHandler = async ({ request }) => {
           throw new Error('Ollama API failed');
         }
       } catch (error) {
-        // Fallback response
+        // Fallback response;
         if (isLegal) {
           answer = `**Legal Analysis (Fallback Mode):**
 
@@ -216,7 +216,7 @@ This legal matter requires consideration of several key factors:
   } catch (error) {
     return json({
       error: 'Query processing failed',
-      details: error instanceof Error ? error.message: 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };

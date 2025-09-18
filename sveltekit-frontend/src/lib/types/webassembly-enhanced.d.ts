@@ -3,7 +3,7 @@
  * Fixes GPU device to ImportValue conversion issues
  */
 
-// Enhanced WebAssembly ImportValue to handle GPU devices
+// Enhanced WebAssembly ImportValue to handle GPU devices;
 export interface EnhancedImportValue extends WebAssembly.ImportValue {
   // GPU device can be passed as import value
   gpu?: GPUDevice;
@@ -13,15 +13,15 @@ export interface EnhancedImportValue extends WebAssembly.ImportValue {
   memory?: WebAssembly.Memory;
 }
 
-// GPU device to ImportValue conversion utilities
+// GPU device to ImportValue conversion utilities;
 export const webAssemblyGPUUtils = {
-  // Safe conversion of GPUDevice to ImportValue
+  // Safe conversion of GPUDevice to ImportValue;
   convertGPUDeviceToImportValue: (device: GPUDevice): WebAssembly.ImportValue => {
     // Instead of converting directly, create a function that provides access
     return (() => device) as any;
   },
 
-  // Create WebAssembly import object with GPU support
+  // Create WebAssembly import object with GPU support;
   createImportsWithGPU: (device: GPUDevice, additionalImports: any = {}): WebAssembly.Imports => {
     return {
       env: {
@@ -33,14 +33,14 @@ export const webAssemblyGPUUtils = {
     };
   },
 
-  // Type assertion helper for GPU device conversion
+  // Type assertion helper for GPU device conversion;
   assertGPUDevice: (device: unknown): device is GPUDevice => {
     return device !== null &&
       typeof device === 'object' &&
            'createBuffer' in (device as any);
   },
 
-  // Safe type conversion for analysis results
+  // Safe type conversion for analysis results;
   convertAnalysisResult: (analysis: unknown): any => {
     if (analysis && typeof analysis === 'object') {
       return {
@@ -64,19 +64,19 @@ export const webAssemblyGPUUtils = {
       recommendations: [],
       confidence: 0,
       processingTime: 0,
-      method: 'error'
+      method: 'error',
     };
   }
 };
 
-// Module declaration for WebAssembly enhancements
+// Module declaration for WebAssembly enhancements;
 declare module 'webassembly' {
   interface ImportValue {
     gpu?: GPUDevice;
   }
 }
 
-// Global type augmentations for WebAssembly
+// Global type augmentations for WebAssembly;
 declare global {
   namespace WebAssembly {
     interface ImportValue {

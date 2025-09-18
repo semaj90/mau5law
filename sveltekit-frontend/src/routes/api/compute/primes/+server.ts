@@ -37,15 +37,14 @@ export const GET: RequestHandler = async ({ url }) => {
     const end = Math.min(start + segmentSize, max);
     if (start >= end) break;
 
-    promises.push(
-      new Promise((resolve, reject) => {
+    promises.push(new Promise((resolve, reject) => {
         const worker = new Worker(scriptPath, {
           workerData: { start, end, mode }
         });
-        worker.on('message', (msg) => resolve(msg));
+        worker.on('message', (msg) => resolve(msg);
         worker.on('error', reject);
         worker.on('exit', (code) => {
-          if (code !== 0) reject(new Error(`Worker ${i} exited with code ${code}`));
+          if (code !== 0) reject(new Error(`Worker ${i} exited with code ${code}`);
         });
       })
     );
@@ -57,15 +56,14 @@ export const GET: RequestHandler = async ({ url }) => {
     const primes = mode === 'list' ? results.flatMap(r => r.primes || []) : undefined;
     const durationMs = performance.now() - started;
 
-    return new Response(
-      JSON.stringify({
+    return new Response(JSON.stringify({
         max,
         mode,
         workers: workerCount,
         totalCount,
         primes,
         durationMs: Math.round(durationMs),
-        throughput: Math.round(totalCount / (durationMs / 1000))
+        throughput: Math.round(totalCount / (durationMs / 1000),
       }),
       { headers: { 'Content-Type': 'application/json' } }
     );

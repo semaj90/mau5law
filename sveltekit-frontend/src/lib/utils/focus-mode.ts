@@ -5,6 +5,7 @@
  */
 
 import { writable } from "svelte/store";
+}
 
 export interface FocusSettings {
   dimOpacity: number;
@@ -12,7 +13,7 @@ export interface FocusSettings {
   hideElements: string[];
   exemptElements: string[];
   enableFullscreen: boolean;
-  enableZenMode: boolean;
+  enableZenMode: boolean;,
 }
 
 export const defaultFocusSettings: FocusSettings = {
@@ -46,7 +47,7 @@ export class FocusManager {
 
   /**
    * Activate focus mode
-   */
+   */;
   activate(): void {
     if (this.isActive) return;
 
@@ -59,7 +60,7 @@ export class FocusManager {
     // Set up observer to handle dynamically added elements
     this.setupMutationObserver();
 
-    // Optional: Enter fullscreen
+    // Optional: Enter fullscreen;
     if (this.settings.enableFullscreen) {
       this.enterFullscreen();
     }
@@ -68,12 +69,12 @@ export class FocusManager {
     document.body.classList.add("focus-mode-active");
 
     // Dispatch custom event
-    window.dispatchEvent(new CustomEvent("focusModeActivated"));
+    window.dispatchEvent(new CustomEvent("focusModeActivated");
   }
 
   /**
    * Deactivate focus mode
-   */
+   */;
   deactivate(): void {
     if (!this.isActive) return;
 
@@ -83,13 +84,13 @@ export class FocusManager {
     // Restore original styles
     this.restoreOriginalStyles();
 
-    // Disconnect observer
+    // Disconnect observer;
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
     }
 
-    // Exit fullscreen if it was enabled
+    // Exit fullscreen if it was enabled;
     if (document.fullscreenElement) {
       document.exitFullscreen();
     }
@@ -98,12 +99,12 @@ export class FocusManager {
     document.body.classList.remove("focus-mode-active");
 
     // Dispatch custom event
-    window.dispatchEvent(new CustomEvent("focusModeDeactivated"));
+    window.dispatchEvent(new CustomEvent("focusModeDeactivated");
   }
 
   /**
    * Toggle focus mode
-   */
+   */;
   toggle(): void {
     if (this.isActive) {
       this.deactivate();
@@ -114,19 +115,19 @@ export class FocusManager {
 
   /**
    * Check if focus mode is active
-   */
+   */;
   isActivated(): boolean {
     return this.isActive;
   }
 
   /**
    * Update focus settings
-   */
+   */;
   updateSettings(newSettings: Partial<FocusSettings>): void {
     this.settings = { ...this.settings, ...newSettings };
     focusSettings.set(this.settings);
 
-    // Reapply styles if focus mode is active
+    // Reapply styles if focus mode is active;
     if (this.isActive) {
       this.restoreOriginalStyles();
       this.applyFocusStyles();
@@ -135,7 +136,7 @@ export class FocusManager {
 
   /**
    * Apply focus mode styles to all elements
-   */
+   */;
   private applyFocusStyles(): void {
     // Get all elements in the document
     const allElements = document.querySelectorAll("*");
@@ -143,7 +144,7 @@ export class FocusManager {
     allElements.forEach((element) => {
       const htmlElement = element as HTMLElement;
 
-      // Skip if element should be exempt
+      // Skip if element should be exempt;
       if (this.shouldExemptElement(htmlElement)) {
         return;
       }
@@ -151,7 +152,7 @@ export class FocusManager {
       // Store original style
       this.originalStyles.set(element, htmlElement.style.cssText);
 
-      // Apply dimming or hiding based on settings
+      // Apply dimming or hiding based on settings;
       if (this.shouldHideElement(htmlElement)) {
         htmlElement.style.display = "none";
       } else if (this.shouldDimElement(htmlElement)) {
@@ -167,7 +168,7 @@ export class FocusManager {
 
   /**
    * Restore original styles to all modified elements
-   */
+   */;
   private restoreOriginalStyles(): void {
     this.originalStyles.forEach((originalStyle, element) => {
       const htmlElement = element as HTMLElement;
@@ -183,7 +184,7 @@ export class FocusManager {
 
   /**
    * Check if element should be exempt from focus mode effects
-   */
+   */;
   private shouldExemptElement(element: HTMLElement): boolean {
     return this.settings.exemptElements.some(
       (selector) => element.matches(selector) || element.closest(selector),
@@ -192,7 +193,7 @@ export class FocusManager {
 
   /**
    * Check if element should be hidden in focus mode
-   */
+   */;
   private shouldHideElement(element: HTMLElement): boolean {
     if (this.settings.enableZenMode) {
       return this.settings.hideElements.some(
@@ -204,9 +205,9 @@ export class FocusManager {
 
   /**
    * Check if element should be dimmed in focus mode
-   */
+   */;
   private shouldDimElement(element: HTMLElement): boolean {
-    // Don't dim if zen mode is enabled and element should be hidden
+    // Don't dim if zen mode is enabled and element should be hidden;
     if (this.settings.enableZenMode && this.shouldHideElement(element)) {
       return false;
     }
@@ -229,7 +230,7 @@ export class FocusManager {
 
   /**
    * Handle mouse enter event for dimmed elements
-   */
+   */;
   private handleMouseEnter = (event: Event): void => {
     const element = event.target as HTMLElement;
     element.style.opacity = "1";
@@ -237,7 +238,7 @@ export class FocusManager {
 
   /**
    * Handle mouse leave event for dimmed elements
-   */
+   */;
   private handleMouseLeave = (event: Event): void => {
     const element = event.target as HTMLElement;
     element.style.opacity = this.settings.dimOpacity.toString();
@@ -245,7 +246,7 @@ export class FocusManager {
 
   /**
    * Set up mutation observer to handle dynamically added elements
-   */
+   */;
   private setupMutationObserver(): void {
     this.observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
@@ -266,7 +267,7 @@ export class FocusManager {
 
   /**
    * Apply focus styles to a single element
-   */
+   */;
   private applyFocusStylesToElement(element: HTMLElement): void {
     if (this.shouldExemptElement(element)) {
       return;
@@ -288,7 +289,7 @@ export class FocusManager {
 
   /**
    * Enter fullscreen mode
-   */
+   */;
   private enterFullscreen(): void {
     if (document.documentElement.requestFullscreen) {
       document.documentElement.requestFullscreen();
@@ -299,7 +300,7 @@ export class FocusManager {
 // Global focus manager instance
 export const globalFocusManager = new FocusManager();
 ;
-// Svelte action for focus mode
+// Svelte action for focus mode;
 export function focusModeAction(node: HTMLElement, enabled: boolean = false) {
   const manager = new FocusManager();
 
@@ -330,20 +331,20 @@ export const focusModeStyles = `;
 
   .focus-mode-active .focus-dim {
     opacity: var(--focus-dim-opacity);
-    transition: var(--focus-transition);
+    transition: var(--focus-transition);,
   }
 
   .focus-mode-active .focus-dim: hover {
-    opacity: 1;
+    opacity: 1;,
   }
 
   .focus-mode-active .focus-hide {
-    display: none;
+    display: none;,
   }
 
   .focus-mode-active .focus-exempt {
     opacity: 1 !important;
-    display: block !important;
+    display: block !important;,
   }
 
   /* Zen mode styles */
@@ -353,7 +354,7 @@ export const focusModeStyles = `;
   .focus-mode-active.zen-mode .header-actions {
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease;,
   }
 
   .focus-mode-active.zen-mode .toolbar: hover,
@@ -371,13 +372,13 @@ export const focusModeStyles = `;
     border-radius: 8px;
   }
 
-  /* Smooth animations */
+  /* Smooth animations */;
   .focus-mode-transition {
     transition: opacity 0.3s ease, transform 0.3s ease;
   }
 `;
 
-// Utility functions for Svelte components
+// Utility functions for Svelte components;
 export function createFocusMode(initialSettings?: Partial<FocusSettings>) {
   const manager = new FocusManager(initialSettings);
 
@@ -393,7 +394,7 @@ export function createFocusMode(initialSettings?: Partial<FocusSettings>) {
 
 // Keyboard shortcut integration
 export function setupFocusModeShortcut(
-  manager: FocusManager = globalFocusManager
+  manager: FocusManager = globalFocusManager;
 ) {
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "F10") {
@@ -409,7 +410,7 @@ export function setupFocusModeShortcut(
   };
 }
 
-// Presets for different focus levels
+// Presets for different focus levels;
 export const focusPresets = {
   minimal: {
     dimOpacity: 0.7,

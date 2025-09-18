@@ -4,7 +4,7 @@
  * Eliminates JSON bottlenecks with FlatBuffers + WebGPU textures
  */
 
-// WebGPU type definitions (temporary until proper types are available)
+// WebGPU type definitions (temporary until proper types are available);
 declare global {
   interface GPUDevice {
     createBuffer(descriptor: any): GPUBuffer;
@@ -40,7 +40,7 @@ declare global {
   // Stub WebGPU constants - will be overridden by actual WebGPU when available
 }
 
-// Local WebGPU constants (stubs)
+// Local WebGPU constants (stubs);
 const GPUBufferUsage = {
   MAP_READ: 0x0001,
   MAP_WRITE: 0x0002,
@@ -51,7 +51,7 @@ const GPUBufferUsage = {
   UNIFORM: 0x0040,
   STORAGE: 0x0080,
   INDIRECT: 0x0100,
-  QUERY_RESOLVE: 0x0200
+  QUERY_RESOLVE: 0x0200,
 };
 
 const GPUTextureUsage = {
@@ -59,15 +59,15 @@ const GPUTextureUsage = {
   COPY_DST: 0x02,
   TEXTURE_BINDING: 0x04,
   STORAGE_BINDING: 0x08,
-  RENDER_ATTACHMENT: 0x10
+  RENDER_ATTACHMENT: 0x10,
 };
 
 const GPUMapMode = {
   READ: 0x0001,
-  WRITE: 0x0002
+  WRITE: 0x0002,
 };
 
-// Local LegalDocument type definition (avoiding module resolution issues)
+// Local LegalDocument type definition (avoiding module resolution issues);
 export interface LegalDocument {
   id: string;
   title: string;
@@ -99,7 +99,7 @@ export interface LegalDocument {
 // import { multiLayerCache } from '$lib/services/multiLayerCache';
 // import { gpuRankingMatrices, type RankingMatrix } from '$lib/webgpu/gpu-ranking-matrices';
 
-// Temporary stub implementations with enhanced methods
+// Temporary stub implementations with enhanced methods;
 const nesMemory = {
   allocate: () => new ArrayBuffer(1024),
   allocateDocument: (doc: LegalDocument, binaryDoc?: any, options?: any) => new ArrayBuffer(1024),
@@ -111,7 +111,7 @@ const webgpuPolyfill = {
 };
 const wasmAccelerator = {
   process: () => Promise.resolve(new ArrayBuffer(1024)),
-  computeEmbeddingsSIMD: () => Promise.resolve(new Float32Array(384))
+  computeEmbeddingsSIMD: () => Promise.resolve(new Float32Array(384),
 };
 const multiLayerCache = {
   get: (key?: any, namespace?: any) => null,
@@ -129,12 +129,12 @@ const gpuRankingMatrices = {
     cacheHitRate: 0.95,
     lastUpdateTime: Date.now(),
     gpuMemoryUsed: 1024,
-    averageRankingTime: 10
+    averageRankingTime: 10,
   })
 };
 type RankingMatrix = Float32Array;
 
-// FlatBuffers schema for legal documents (binary serialization)
+// FlatBuffers schema for legal documents (binary serialization);
 export interface LegalDocumentBinary {
   id: Uint32Array;           // 4 bytes
   type: Uint8Array;          // 1 byte enum
@@ -144,25 +144,25 @@ export interface LegalDocumentBinary {
   embedding: Float32Array;   // 384*4 = 1536 bytes
   rankingMatrix: Float32Array; // 4x4 = 64 bytes
   metadata: Uint8Array;      // Variable length
-  contentHash: Uint32Array;  // 4 bytes for quick comparisons
+  contentHash: Uint32Array;  // 4 bytes for quick comparisons,
 }
 
-// GPU texture layout for legal document graph
+// GPU texture layout for legal document graph;
 export interface GPULegalGraphTexture {
   nodeDataTexture: GPUTexture;        // Node positions + metadata
   adjacencyTexture: GPUTexture;       // Graph connections
   rankingMatrixTexture: GPUTexture;   // 4x4 ranking matrices per node
-  embeddingTexture: GPUTexture;       // High-dimensional embeddings
+  embeddingTexture: GPUTexture;       // High-dimensional embeddings,
 }
 
-// Performance tracking
+// Performance tracking;
 export interface PipelineStats {
   binaryParseTime: number;
   gpuUploadTime: number;
   wasmProcessTime: number;
   totalPipelineTime: number;
   documentsProcessed: number;
-  cacheHitRatio: number;
+  cacheHitRatio: number;,
 }
 
 export class NESGPUIntegration {
@@ -175,7 +175,7 @@ export class NESGPUIntegration {
     wasmProcessTime: 0,
     totalPipelineTime: 0,
     documentsProcessed: 0,
-    cacheHitRatio: 0
+    cacheHitRatio: 0,
   };
 
   constructor() {
@@ -217,7 +217,7 @@ export class NESGPUIntegration {
   /**
    * ULTRA-FAST: Binary pipeline for legal document ingestion
    * Bypasses JSON completely - uses FlatBuffers + NES memory banks
-   */
+   */;
   async ingestLegalDocumentsBinary(documents: LegalDocument[]): Promise<void> {
     const startTime = performance.now();
     console.log(`🚀 Starting binary ingestion of ${documents.length} documents`);
@@ -229,7 +229,7 @@ export class NESGPUIntegration {
       // Step 2: Create binary FlatBuffer representation (1ms per 1000 docs)
       const binaryBuffer = await this.createBinaryDocumentBuffer(documents);
 
-      // Step 3: Upload to GPU textures (sub-millisecond on RTX)
+      // Step 3: Upload to GPU textures (sub-millisecond on RTX);
       if (this.device) {
         await this.uploadToGPUTextures(binaryBuffer, documents.length);
       }
@@ -255,7 +255,7 @@ export class NESGPUIntegration {
 
   /**
    * Pack documents into NES memory banks using 8-bit addressing
-   */
+   */;
   private async packDocumentsIntoNESBanks(documents: LegalDocument[]): Promise<void> {
     const startTime = performance.now();
 
@@ -266,11 +266,11 @@ export class NESGPUIntegration {
       // Store in appropriate NES memory bank based on document characteristics
       await nesMemory.allocateDocument(
         document,
-        binaryDoc,
+        binaryDoc,);
         {
           compress: true,
           compressionLevel: 2,
-          preferredBank: this.selectOptimalNESBank(document)
+          preferredBank: this.selectOptimalNESBank(document),
         }
       );
     }
@@ -280,24 +280,24 @@ export class NESGPUIntegration {
 
   /**
    * Select optimal NES memory bank based on legal document characteristics
-   */
+   */;
   private selectOptimalNESBank(document: LegalDocument): string {
-    // Critical legal documents → Fast RAM (2KB)
+    // Critical legal documents → Fast RAM (2KB);
     if (document.riskLevel === 'critical' || (document.priority && document.priority > 200)) {
       return 'INTERNAL_RAM';
     }
 
-    // Evidence and contracts → Character ROM (8KB) for pattern matching
+    // Evidence and contracts → Character ROM (8KB) for pattern matching;
     if (document.type === 'evidence' || document.type === 'contract') {
       return 'CHR_ROM';
     }
 
-    // Legal briefs and precedents → Program ROM (32KB) for processing logic
+    // Legal briefs and precedents → Program ROM (32KB) for processing logic;
     if (document.type === 'brief' || document.type === 'precedent') {
       return 'PRG_ROM';
     }
 
-    // Case-related documents → Save RAM (8KB) for persistence
+    // Case-related documents → Save RAM (8KB) for persistence;
     if (document.metadata?.caseId) {
       return 'SAVE_RAM';
     }
@@ -308,7 +308,7 @@ export class NESGPUIntegration {
 
   /**
    * Create binary FlatBuffer representation (eliminates JSON parsing)
-   */
+   */;
   private createBinaryDocument(document: LegalDocument): ArrayBuffer {
     // Calculate exact binary size
     const baseSize = 64; // Fixed fields
@@ -324,14 +324,14 @@ export class NESGPUIntegration {
 
     // Pack fixed fields (ultra-fast)
     view.setUint32(offset, this.stringToId(document.id), true); offset += 4;
-    view.setUint8(offset, this.documentTypeToEnum(document.type || 'unknown')); offset += 1;
+    view.setUint8(offset, this.documentTypeToEnum(document.type || 'unknown'); offset += 1;
     view.setUint8(offset, document.priority || 0); offset += 1;
-    view.setUint8(offset, this.riskLevelToEnum(document.riskLevel || 'low')); offset += 1;
+    view.setUint8(offset, this.riskLevelToEnum(document.riskLevel || 'low'); offset += 1;
     view.setUint32(offset, document.size || 0, true); offset += 4;
     view.setFloat64(offset, document.lastAccessed || Date.now(), true); offset += 8;
     view.setUint32(offset, Number(document.bankId) || 0, true); offset += 4;
 
-    // Pack embedding if available (SIMD-optimized)
+    // Pack embedding if available (SIMD-optimized);
     if (document.metadata?.vectorEmbedding) {
       const embedding = document.metadata.vectorEmbedding;
       for (let i = 0; i < Math.min(384, embedding.length); i++) {
@@ -350,7 +350,7 @@ export class NESGPUIntegration {
     }
 
     // Pack metadata as compressed binary
-    const metadataBytes = new TextEncoder().encode(JSON.stringify(document.metadata));
+    const metadataBytes = new TextEncoder().encode(JSON.stringify(document.metadata);
     new Uint8Array(buffer, offset).set(metadataBytes);
 
     return buffer;
@@ -358,7 +358,7 @@ export class NESGPUIntegration {
 
   /**
    * Generate 4x4 ranking matrix based on legal document properties
-   */
+   */;
   private generateRankingMatrix(document: LegalDocument): Float32Array {
     const matrix = new Float32Array(16);
 
@@ -379,39 +379,39 @@ export class NESGPUIntegration {
 
   /**
    * Upload binary data to GPU textures for ultra-fast rendering
-   */
+   */;
   private async uploadToGPUTextures(binaryBuffer: ArrayBuffer, documentCount: number): Promise<void> {
     if (!this.device) return;
 
     const startTime = performance.now();
 
     try {
-      // Create node data texture (positions + metadata)
+      // Create node data texture (positions + metadata);
       const nodeDataTexture = this.device.createTexture({
         size: [documentCount, 1, 1],
         format: 'rgba32float',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST,
       });
 
-      // Create adjacency texture (graph connections)
+      // Create adjacency texture (graph connections);
       const adjacencyTexture = this.device.createTexture({
         size: [documentCount * 8, 1, 1], // Max 8 connections per node
         format: 'r32uint',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST,
       });
 
-      // Create ranking matrix texture (4x4 matrices)
+      // Create ranking matrix texture (4x4 matrices);
       const rankingMatrixTexture = this.device.createTexture({
         size: [documentCount * 4, 4, 1], // 4x4 matrix per document
         format: 'rgba32float',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST,
       });
 
-      // Create embedding texture (high-dimensional)
+      // Create embedding texture (high-dimensional);
       const embeddingTexture = this.device.createTexture({
         size: [384, Math.ceil(documentCount / 4), 1], // Pack 4 embeddings per row
         format: 'rgba32float',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
+        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST,
       });
 
       this.graphTextures = {
@@ -434,19 +434,19 @@ export class NESGPUIntegration {
 
   /**
    * Copy binary data to GPU textures using compute shaders
-   */
+   */;
   private async copyBinaryToTextures(binaryBuffer: ArrayBuffer, documentCount: number): Promise<void> {
     if (!this.device || !this.graphTextures) return;
 
-    // Create staging buffer
+    // Create staging buffer;
     const stagingBuffer = this.device.createBuffer({
       size: binaryBuffer.byteLength,
-      usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.MAP_WRITE
+      usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.MAP_WRITE,
     });
 
     // Map and copy data
     await stagingBuffer.mapAsync(GPUMapMode.WRITE);
-    new Uint8Array(stagingBuffer.getMappedRange()).set(new Uint8Array(binaryBuffer));
+    new Uint8Array(stagingBuffer.getMappedRange()).set(new Uint8Array(binaryBuffer);
     stagingBuffer.unmap();
 
     // Use compute shader to unpack binary data into textures
@@ -455,7 +455,7 @@ export class NESGPUIntegration {
 
     const computePass = commandEncoder.beginComputePass();
     computePass.setPipeline(computeShader);
-    computePass.dispatchWorkgroups(Math.ceil(documentCount / 256));
+    computePass.dispatchWorkgroups(Math.ceil(documentCount / 256);
     computePass.end();
 
     this.device.queue.submit([commandEncoder.finish()]);
@@ -463,9 +463,9 @@ export class NESGPUIntegration {
 
   /**
    * Create compute shader for unpacking binary data
-   */
+   */;
   private createBinaryUnpackShader(documentCount: number): GPUComputePipeline {
-    const shaderCode = `
+    const shaderCode = `;
       struct LegalDocumentData {
         id: u32,
         doc_type: u32,
@@ -479,7 +479,7 @@ export class NESGPUIntegration {
       @group(0) @binding(0) var<storage, read> binary_data: array<u32>;
       @group(0) @binding(1) var<storage, read_write> node_data: array<LegalDocumentData>;
 
-      @compute @workgroup_size(256)
+      @compute @workgroup_size(256);
       fn unpack_binary(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         if (index >= ${documentCount}u) { return; }
@@ -521,7 +521,7 @@ export class NESGPUIntegration {
     const { limit = 20, threshold = 0.7, useNESCache = true, enableGPUAcceleration = true } = options;
 
     try {
-      // Step 1: Check NES memory cache first (sub-millisecond)
+      // Step 1: Check NES memory cache first (sub-millisecond);
       if (useNESCache) {
         const cacheKey = `search:${query}:${limit}`;
         const cachedResults = await this.checkNESMemoryCache(cacheKey);
@@ -543,7 +543,7 @@ export class NESGPUIntegration {
         results = await this.performNESMemorySearch(queryEmbedding, limit, threshold);
       }
 
-      // Step 4: Cache results in NES memory for future queries
+      // Step 4: Cache results in NES memory for future queries;
       if (useNESCache) {
         await this.cacheResultsInNESMemory(`search:${query}:${limit}`, results);
       }
@@ -561,7 +561,7 @@ export class NESGPUIntegration {
 
   /**
    * Generate query embedding using WebAssembly acceleration
-   */
+   */;
   private async generateQueryEmbeddingWASM(query: string): Promise<Float32Array> {
     const startTime = performance.now();
 
@@ -573,7 +573,7 @@ export class NESGPUIntegration {
       return embedding;
     } catch (error: any) {
       console.warn('WASM embedding failed, using CPU fallback:', error);
-      return new Float32Array(this.textToVector(query));
+      return new Float32Array(this.textToVector(query);
     }
   }
 
@@ -583,7 +583,7 @@ export class NESGPUIntegration {
   private async performGPUSimilaritySearchWithRanking(
     queryEmbedding: Float32Array,
     limit: number,
-    threshold: number
+    threshold: number;
   ): Promise<LegalDocument[]> {
     if (!this.device || !this.graphTextures) {
       throw new Error('GPU not available');
@@ -595,7 +595,7 @@ export class NESGPUIntegration {
       // Step 1: Get document IDs that we want to search
       const candidateDocumentIds = await this.getCandidateDocumentIds(limit * 2); // Get 2x to allow for filtering
 
-      // Step 2: Use GPU ranking matrices for initial scoring
+      // Step 2: Use GPU ranking matrices for initial scoring;
       const rankingScores = await gpuRankingMatrices.computeAggregateRanking({
         documentIds: candidateDocumentIds,
         weights: [0.4, 0.3, 0.2, 0.1] // Weights: relevance, precedent, recency, authority
@@ -607,20 +607,20 @@ export class NESGPUIntegration {
       // Step 4: Create compute shader for combined similarity + ranking calculation
       const combinedShader = this.createCombinedSimilarityRankingShader();
 
-      // Step 5: Create buffers for GPU computation
+      // Step 5: Create buffers for GPU computation;
       const queryBuffer = this.device.createBuffer({
         size: queryEmbedding.byteLength,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
       });
 
       const rankingBuffer = this.device.createBuffer({
         size: rankingScores.length * 4, // Float32 per score
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
       });
 
       const resultsBuffer = this.device.createBuffer({
         size: limit * 32, // id + similarity + ranking + combined score per result
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
       });
 
       // Step 6: Upload data to GPU - ensure proper ArrayBuffer
@@ -635,7 +635,7 @@ export class NESGPUIntegration {
 
       computePass.setPipeline(combinedShader);
 
-      // Create bind group for buffers and textures
+      // Create bind group for buffers and textures;
       const bindGroup = this.device.createBindGroup({
         layout: combinedShader.getBindGroupLayout(0),
         entries: [
@@ -648,7 +648,7 @@ export class NESGPUIntegration {
       });
 
       computePass.setBindGroup(0, bindGroup);
-      computePass.dispatchWorkgroups(Math.ceil(candidateDocumentIds.length / 256));
+      computePass.dispatchWorkgroups(Math.ceil(candidateDocumentIds.length / 256);
       computePass.end();
 
       // Step 8: Submit GPU computation
@@ -692,7 +692,7 @@ export class NESGPUIntegration {
   private async performBasicGPUSimilaritySearch(
     queryEmbedding: Float32Array,
     limit: number,
-    threshold: number
+    threshold: number;
   ): Promise<LegalDocument[]> {
     if (!this.device || !this.graphTextures) {
       throw new Error('GPU not available');
@@ -701,15 +701,15 @@ export class NESGPUIntegration {
     // Create compute shader for similarity calculation only
     const similarityShader = this.createSimilarityComputeShader();
 
-    // Create buffers for query and results
+    // Create buffers for query and results;
     const queryBuffer = this.device.createBuffer({
       size: queryEmbedding.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
 
     const resultsBuffer = this.device.createBuffer({
       size: limit * 16, // id + similarity score per result
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
     });
 
     // Upload query embedding - ensure proper ArrayBuffer
@@ -722,7 +722,7 @@ export class NESGPUIntegration {
 
     computePass.setPipeline(similarityShader);
     // Bind buffers and textures
-    computePass.dispatchWorkgroups(Math.ceil(this.stats.documentsProcessed / 256));
+    computePass.dispatchWorkgroups(Math.ceil(this.stats.documentsProcessed / 256);
     computePass.end();
 
     // Read results
@@ -734,7 +734,7 @@ export class NESGPUIntegration {
 
   /**
    * Utility functions
-   */
+   */;
   private stringToId(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -779,7 +779,7 @@ export class NESGPUIntegration {
 
   /**
    * Get candidate document IDs for similarity search
-   */
+   */;
   private async getCandidateDocumentIds(limit: number): Promise<string[]> {
     // In a real implementation, this would query NES memory banks
     // For now, return mock document IDs
@@ -792,16 +792,16 @@ export class NESGPUIntegration {
 
   /**
    * Create compute shader for combined similarity + ranking calculation
-   */
+   */;
   private createCombinedSimilarityRankingShader(): GPUComputePipeline {
     if (!this.device) throw new Error('GPU device not initialized');
 
-    const shaderCode = `
+    const shaderCode = `;
       struct RankingResult {
         documentId: u32,
         similarity: f32,
         rankingScore: f32,
-        combinedScore: f32
+        combinedScore: f32,
       };
 
       @group(0) @binding(0) var<storage, read> queryEmbedding: array<f32>;
@@ -810,7 +810,7 @@ export class NESGPUIntegration {
       @group(0) @binding(3) var embeddingTexture: texture_2d<f32>;
       @group(0) @binding(4) var rankingTexture: texture_2d<f32>;
 
-      @compute @workgroup_size(256)
+      @compute @workgroup_size(256);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         if (index >= arrayLength(&rankingScores)) { return; }
@@ -821,10 +821,10 @@ export class NESGPUIntegration {
         var docMagnitude: f32 = 0.0;
 
         // Sample document embedding from texture
-        let texCoord = vec2<i32>(i32(index % 384u), i32(index / 384u));
+        let texCoord = vec2<i32>(i32(index % 384u), i32(index / 384u);
         let docEmbedding = textureLoad(embeddingTexture, texCoord, 0);
 
-        // Compute dot product and magnitudes
+        // Compute dot product and magnitudes;
         for (var i: u32 = 0u; i < 384u; i++) {
           let queryVal = queryEmbedding[i];
           let docVal = docEmbedding[i % 4]; // Approximate for demo
@@ -834,9 +834,9 @@ export class NESGPUIntegration {
           docMagnitude += docVal * docVal;
         }
 
-        // Normalize to get cosine similarity
+        // Normalize to get cosine similarity;
         if (queryMagnitude > 0.0 && docMagnitude > 0.0) {
-          similarity = similarity / (sqrt(queryMagnitude) * sqrt(docMagnitude));
+          similarity = similarity / (sqrt(queryMagnitude) * sqrt(docMagnitude);
         }
 
         // Get ranking score
@@ -871,7 +871,7 @@ export class NESGPUIntegration {
     documentIds: string[],
     rankingMatrices: Map<string, RankingMatrix>,
     limit: number,
-    threshold: number
+    threshold: number;
   ): Promise<LegalDocument[]> {
     // In a real implementation, this would:
     // 1. Read GPU buffer results
@@ -900,13 +900,13 @@ export class NESGPUIntegration {
           caseId: `case-${docId}`,
           jurisdiction: 'US',
           documentClass: 'contract',
-          aiGenerated: false
+          aiGenerated: false,
         },
       } as any as LegalDocument & {
         // Additional computed properties for the UI
         combinedScore: number;
         rankingScore: number;
-        similarityScore: number;
+        similarityScore: number;,
       };
 
       // Add the extra properties after creating the base object
@@ -922,7 +922,7 @@ export class NESGPUIntegration {
     );
   }
 
-  // Placeholder methods for full implementation
+  // Placeholder methods for full implementation;
   private async checkNESMemoryCache(key: string): Promise<LegalDocument[] | null> {
     // Implementation would check NES memory banks
     return null;
@@ -958,14 +958,14 @@ export class NESGPUIntegration {
 
   /**
    * Get comprehensive performance statistics including GPU ranking
-   */
+   */;
   async getPerformanceStats(): Promise<PipelineStats & {
     gpuRankingStats?: {
       totalDocuments: number;
       cacheHitRate: number;
       lastUpdateTime: number;
       gpuMemoryUsed: number;
-      averageRankingTime: number;
+      averageRankingTime: number;,
     }
   }> {
     try {
@@ -982,7 +982,7 @@ export class NESGPUIntegration {
 
   /**
    * Cleanup GPU resources
-   */
+   */;
   dispose(): void {
     if (this.graphTextures) {
       this.graphTextures.nodeDataTexture.destroy();

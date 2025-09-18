@@ -7,6 +7,7 @@ import { timingMetrics, createTimedFetch, type TimingMetrics } from './timing-me
 import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import { get } from 'svelte/store';
+}
 
 export interface ObservabilityConfig {
   enableMetrics: boolean;
@@ -15,7 +16,7 @@ export interface ObservabilityConfig {
   metricsEndpoint: string;
   batchSize: number;
   flushInterval: number;
-  debugMode: boolean;
+  debugMode: boolean;,
 }
 
 export interface RouteMetrics {
@@ -43,7 +44,7 @@ class ObservabilityClient {
     metricsEndpoint: '/api/v1/metrics/client',
     batchSize: 10,
     flushInterval: 30000, // 30 seconds
-    debugMode: false
+    debugMode: false,
   };
 
   private metricsBuffer: RouteMetrics[] = [];
@@ -53,7 +54,7 @@ class ObservabilityClient {
 
   /**
    * Initialize observability client with configuration
-   */
+   */;
   initialize(config?: Partial<ObservabilityConfig>): void {
     if (!browser || this.initialized) return;
 
@@ -66,21 +67,21 @@ class ObservabilityClient {
     // Initialize timing metrics
     timingMetrics.initialize();
 
-    // Set up periodic metrics flushing
+    // Set up periodic metrics flushing;
     if (this.config.flushInterval > 0) {
       this.flushTimer = window.setInterval(() => {
         this.flushMetrics();
       }, this.config.flushInterval);
     }
 
-    // Track page visibility changes
+    // Track page visibility changes;
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         this.flushMetrics(); // Flush when page becomes hidden
       }
     });
 
-    // Track before unload
+    // Track before unload;
     window.addEventListener('beforeunload', () => {
       this.flushMetrics();
     });
@@ -94,7 +95,7 @@ class ObservabilityClient {
 
   /**
    * Track route navigation with comprehensive metrics
-   */
+   */;
   trackRouteNavigation(routeId: string, pathname: string): void {
     if (!browser || !this.config.enableMetrics) return;
 
@@ -103,7 +104,7 @@ class ObservabilityClient {
     
     timingMetrics.mark(`route-start-${routeId}`);
     
-    // Schedule metrics collection after route is fully loaded
+    // Schedule metrics collection after route is fully loaded;
     requestIdleCallback(() => {
       this.collectRouteMetrics(routeId, pathname, startTime);
     });
@@ -111,7 +112,7 @@ class ObservabilityClient {
 
   /**
    * Track component mount performance
-   */
+   */;
   trackComponentMount(componentName: string): () => void {
     if (!browser || !this.config.enablePerformanceTracking) return () => {};
 
@@ -137,10 +138,10 @@ class ObservabilityClient {
 
   /**
    * Track API call performance
-   */
+   */;
   trackAPICall(endpoint: string, method: string = 'GET'): {
     start: () => void;
-    end: (response?: Response) => void;
+    end: (response?: Response) => void;,
   } {
     let startTime: number;
     let requestId: string;
@@ -170,7 +171,7 @@ class ObservabilityClient {
             clientDuration: `${Math.round(duration * 100) / 100}ms`,
             serverTiming,
             requestId: (serverRequestId || requestId).slice(0, 8),
-            status: response?.status
+            status: response?.status,
           });
         }
       }
@@ -179,7 +180,7 @@ class ObservabilityClient {
 
   /**
    * Create enhanced fetch with observability
-   */
+   */;
   createObservableFetch(): typeof fetch {
     if (!browser) return fetch;
     
@@ -188,7 +189,7 @@ class ObservabilityClient {
 
   /**
    * Get current performance snapshot
-   */
+   */;
   getPerformanceSnapshot(): {
     timing: TimingMetrics;
     route: string | undefined;
@@ -201,12 +202,12 @@ class ObservabilityClient {
       memory: (performance as any).memory ? {
         usedJSHeapSize: (performance as any).memory.usedJSHeapSize,
         totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
-        jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit
+        jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
       } : undefined,
       connection: (navigator as any).connection ? {
         effectiveType: (navigator as any).connection.effectiveType,
         downlink: (navigator as any).connection.downlink,
-        rtt: (navigator as any).connection.rtt
+        rtt: (navigator as any).connection.rtt,
       } : undefined
     };
 
@@ -215,7 +216,7 @@ class ObservabilityClient {
 
   /**
    * Manually flush metrics to server
-   */
+   */;
   async flushMetrics(): Promise<void> {
     if (!browser || this.metricsBuffer.length === 0) return;
 
@@ -232,7 +233,7 @@ class ObservabilityClient {
           metrics: metricsToSend,
           timestamp: Date.now(),
           userAgent: navigator.userAgent,
-          url: window.location.href
+          url: window.location.href,
         })
       });
 
@@ -250,7 +251,7 @@ class ObservabilityClient {
 
   /**
    * Collect comprehensive route metrics
-   */
+   */;
   private collectRouteMetrics(routeId: string, pathname: string, startTime: number): void {
     const endTime = performance.now();
     const loadTime = endTime - startTime;
@@ -263,12 +264,12 @@ class ObservabilityClient {
       `route-end-${routeId}`
     );
 
-    // Get Web Vitals if available
+    // Get Web Vitals if available;
     const webVitals = this.config.enableWebVitals ? {
       lcp: timingMetrics.getMetrics().largestContentfulPaint,
       fid: timingMetrics.getMetrics().firstInputDelay,
       cls: timingMetrics.getMetrics().cumulativeLayoutShift,
-      fcp: timingMetrics.getMetrics().firstContentfulPaint
+      fcp: timingMetrics.getMetrics().firstContentfulPaint,
     } : undefined;
 
     const routeMetrics: RouteMetrics = {
@@ -278,13 +279,13 @@ class ObservabilityClient {
       renderTime,
       serverTiming: Record<string, any>, // Will be populated by Server-Timing headers during SSR
       webVitals,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     // Add to buffer
     this.metricsBuffer.push(routeMetrics);
 
-    // Auto-flush if buffer is full
+    // Auto-flush if buffer is full;
     if (this.metricsBuffer.length >= this.config.batchSize) {
       this.flushMetrics();
     }
@@ -296,7 +297,7 @@ class ObservabilityClient {
 
   /**
    * Cleanup and destroy observability client
-   */
+   */;
   destroy(): void {
     if (this.flushTimer) {
       clearInterval(this.flushTimer);
@@ -316,7 +317,7 @@ class ObservabilityClient {
 // Singleton instance
 export const observabilityClient = new ObservabilityClient();
 
-// Auto-initialize in browser with default config
+// Auto-initialize in browser with default config;
 if (browser) {
   // Check for debug mode from URL or localStorage
   const urlParams = new URLSearchParams(window.location.search);
@@ -327,11 +328,11 @@ if (browser) {
     debugMode,
     enableMetrics: true,
     enablePerformanceTracking: true,
-    enableWebVitals: true
+    enableWebVitals: true,
   });
 }
 
-// SvelteKit integration helpers
+// SvelteKit integration helpers;
 export function trackPageLoad(routeId: string) {
   if (browser) {
     observabilityClient.trackRouteNavigation(routeId, window.location.pathname);

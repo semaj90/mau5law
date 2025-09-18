@@ -29,16 +29,18 @@ class AsyncFileConverter {
 
     for (let i = 0; i < files.length; i += batchSize) {
       const batch = files.slice(i, i + batchSize);
-      console.log(`🔄 Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(files.length / batchSize)} (${batch.length} files)`);
+      console.log(
+        `🔄 Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(files.length / batchSize)} (${batch.length} files)`
+      );
 
       // Process batch in parallel with concurrency limit
-      const batchPromises = batch.map(file => this.processFileWithStats(file));
+      const batchPromises = batch.map((file) => this.processFileWithStats(file));
       const batchResults = await Promise.allSettled(batchPromises);
 
       results.push(...batchResults);
 
       // Progress update
-      const progress = ((i + batch.length) / files.length * 100).toFixed(1);
+      const progress = (((i + batch.length) / files.length) * 100).toFixed(1);
       console.log(`📊 Progress: ${progress}% (${i + batch.length}/${files.length} files)`);
     }
 
@@ -58,7 +60,9 @@ class AsyncFileConverter {
       this.processed++;
       if (converted) {
         this.converted++;
-        console.log(`✅ Converted: ${path.relative(process.cwd(), filePath)} (${duration.toFixed(1)}ms)`);
+        console.log(
+          `✅ Converted: ${path.relative(process.cwd(), filePath)} (${duration.toFixed(1)}ms)`
+        );
       }
 
       return { success: true, converted, duration, filePath };
@@ -87,8 +91,8 @@ class AsyncFileConverter {
         '**/*.spec.*',
         '**/*.test.*',
         '**/dist/**',
-        '**/build/**'
-      ]
+        '**/build/**',
+      ],
     });
 
     console.log(`📁 Found ${files.length} Svelte files to process\n`);
@@ -100,7 +104,7 @@ class AsyncFileConverter {
 
     // Group files by size for optimal batching
     const fileStats = await Promise.all(
-      files.map(async file => {
+      files.map(async (file) => {
         try {
           const stats = await fs.stat(file);
           return { file, size: stats.size };
@@ -111,9 +115,7 @@ class AsyncFileConverter {
     );
 
     // Sort by size (larger files first for better load balancing)
-    const sortedFiles = fileStats
-      .sort((a, b) => b.size - a.size)
-      .map(item => item.file);
+    const sortedFiles = fileStats.sort((a, b) => b.size - a.size).map((item) => item.file);
 
     // Process with dynamic batching based on file sizes
     const batchSize = Math.max(10, Math.floor(files.length / (this.concurrency * 4)));
@@ -131,9 +133,9 @@ class AsyncFileConverter {
    */
   generateReport(totalFiles, results) {
     const totalTime = (performance.now() - this.startTime) / 1000;
-    const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
-    const converted = results.filter(r => r.status === 'fulfilled' && r.value.converted).length;
-    const failed = results.filter(r => r.status === 'rejected' || !r.value?.success).length;
+    const successful = results.filter((r) => r.status === 'fulfilled' && r.value.success).length;
+    const converted = results.filter((r) => r.status === 'fulfilled' && r.value.converted).length;
+    const failed = results.filter((r) => r.status === 'rejected' || !r.value?.success).length;
 
     console.log('\n' + '='.repeat(80));
     console.log('🎉 ASYNC CONVERSION COMPLETED');
@@ -146,11 +148,12 @@ class AsyncFileConverter {
     console.log(`   Failed:           ${failed.toLocaleString()}`);
     console.log(`   Total Time:       ${totalTime.toFixed(2)}s`);
     console.log(`   Files/Second:     ${(totalFiles / totalTime).toFixed(1)}`);
-    console.log(`   Avg Time/File:    ${(totalTime * 1000 / totalFiles).toFixed(2)}ms`);
+    console.log(`   Avg Time/File:    ${((totalTime * 1000) / totalFiles).toFixed(2)}ms`);
 
     // Calculate async efficiency
     const sequentialEstimate = totalFiles * 5; // Assume 5ms per file sequentially
-    const efficiency = ((sequentialEstimate / 1000 - totalTime) / (sequentialEstimate / 1000) * 100);
+    const efficiency =
+      ((sequentialEstimate / 1000 - totalTime) / (sequentialEstimate / 1000)) * 100;
 
     console.log('\n⚡ Async Performance:');
     console.log(`   Sequential Estimate: ${(sequentialEstimate / 1000).toFixed(2)}s`);
@@ -175,12 +178,12 @@ class AsyncFileConverter {
     // Show top conversion examples
     if (converted > 0) {
       const convertedFiles = results
-        .filter(r => r.status === 'fulfilled' && r.value.converted)
+        .filter((r) => r.status === 'fulfilled' && r.value.converted)
         .slice(0, 10)
-        .map(r => path.relative(process.cwd(), r.value.filePath));
+        .map((r) => path.relative(process.cwd(), r.value.filePath));
 
       console.log('\n🔧 Sample Converted Files:');
-      convertedFiles.forEach(file => console.log(`   ${file}`));
+      convertedFiles.forEach((file) => console.log(`   ${file}`));
       if (converted > 10) {
         console.log(`   ... and ${converted - 10} more files`);
       }
@@ -234,7 +237,7 @@ async function processFilesInChunks(files, chunkSize = 100) {
     }
 
     // Progress update
-    const progress = (totalProcessed / files.length * 100).toFixed(1);
+    const progress = ((totalProcessed / files.length) * 100).toFixed(1);
     console.log(`📊 Overall progress: ${progress}% (${totalConverted} total converted)`);
   }
 
@@ -259,7 +262,7 @@ async function mainChunked() {
 
   const files = await glob('src/**/*.svelte', {
     cwd: process.cwd(),
-    absolute: true
+    absolute: true,
   });
 
   const { totalProcessed, totalConverted } = await processFilesInChunks(files, 50);

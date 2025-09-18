@@ -12,7 +12,7 @@ import pdf from 'pdf-parse';
 import crypto from 'node:crypto';
 import { v4 as uuidv4 } from 'uuid';
 
-// Enhanced RAG processing pipeline
+// Enhanced RAG processing pipeline;
 export interface LegalDocument {
     id: string;
     filename: string;
@@ -22,7 +22,7 @@ export interface LegalDocument {
     chunks: DocumentChunk[];
     factChecks: FactCheck[];
     prosecutionScore: number;
-    processingMetadata: ProcessingMetadata;
+    processingMetadata: ProcessingMetadata;,
 }
 
 export interface LegalEntity {
@@ -31,7 +31,7 @@ export interface LegalEntity {
     confidence: number;
     startIndex: number;
     endIndex: number;
-    jurisdiction: string;
+    jurisdiction: string;,
 }
 
 export interface DocumentChunk {
@@ -40,7 +40,7 @@ export interface DocumentChunk {
     embedding?: number[];
     position: number;
     legalRelevance: number;
-    entities: string[];
+    entities: string[];,
 }
 
 export interface FactCheck {
@@ -48,7 +48,7 @@ export interface FactCheck {
     status: 'FACT' | 'FICTION' | 'UNVERIFIED' | 'DISPUTED';
     sources: string[];
     confidence: number;
-    jurisdiction: string;
+    jurisdiction: string;,
 }
 
 export interface ProcessingMetadata {
@@ -59,34 +59,34 @@ export interface ProcessingMetadata {
     fileHash: string;
     fileSize: number;
     pageCount: number;
-    wordCount: number;
+    wordCount: number;,
 }
 
-// Legal jurisdictions and their patterns
+// Legal jurisdictions and their patterns;
 const JURISDICTION_PATTERNS = {
     'federal': {
         keywords: ['federal', 'supreme court', 'circuit court', 'district court', 'fda', 'sec', 'ftc'],
         statutes: ['usc', 'cfr', 'federal register'],
-        weight: 1.0
+        weight: 1.0,
     },
     'state': {
         keywords: ['state court', 'superior court', 'appellate court'],
         statutes: ['state code', 'revised statutes'],
-        weight: 0.8
+        weight: 0.8,
     },
     'local': {
         keywords: ['municipal', 'county court', 'magistrate'],
         statutes: ['ordinance', 'municipal code'],
-        weight: 0.6
+        weight: 0.6,
     },
     'international': {
         keywords: ['international court', 'treaty', 'convention'],
         statutes: ['un charter', 'geneva convention'],
-        weight: 0.9
+        weight: 0.9,
     }
 };
 
-// Entity extraction patterns for legal documents
+// Entity extraction patterns for legal documents;
 const LEGAL_ENTITY_PATTERNS = {
     WHO: [
         /(?:plaintiff|defendant|appellant|appellee|petitioner|respondent)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/gi,
@@ -150,10 +150,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
         const processedDocuments: LegalDocument[] = [];
 
-        // Process each PDF in parallel for performance
+        // Process each PDF in parallel for performance;
         const processingPromises = files.map(async (file, index) => {
             const fileStartTime = Date.now();
-            const fileBuffer = Buffer.from(await file.arrayBuffer());
+            const fileBuffer = Buffer.from(await file.arrayBuffer();
             const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
 
             console.log(`📄 Processing: ${file.name} (${file.size} bytes)`);
@@ -212,7 +212,7 @@ export const POST: RequestHandler = async ({ request }) => {
                     fileHash,
                     fileSize: file.size,
                     pageCount: pdfData.numpages,
-                    wordCount: pdfData.text.split(/\s+/).length
+                    wordCount: pdfData.text.split(/\s+/).length,
                 }
             };
 
@@ -226,7 +226,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const results = await Promise.all(processingPromises);
         processedDocuments.push(...results);
 
-        // Enhanced RAG integration if requested
+        // Enhanced RAG integration if requested;
         if (enhanceRAG) {
             console.log('🧠 Applying enhanced RAG processing...');
             await enhanceWithRAG(processedDocuments, caseId);
@@ -276,7 +276,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 factCheckSummary: {
                     total: doc.factChecks.length,
                     verified: doc.factChecks.filter((fc: any) => fc.status === 'FACT').length,
-                    disputed: doc.factChecks.filter((fc: any) => fc.status === 'FICTION').length
+                    disputed: doc.factChecks.filter((fc: any) => fc.status === 'FICTION').length,
                 }
             })),
             nextSteps: [
@@ -309,12 +309,12 @@ export const POST: RequestHandler = async ({ request }) => {
 function detectJurisdiction(text: string, providedJurisdiction: string): string {
     const textLower = text.toLowerCase();
 
-    // Calculate jurisdiction scores based on keyword matches
+    // Calculate jurisdiction scores based on keyword matches;
     const scores = Object.entries(JURISDICTION_PATTERNS).map(([jurisdiction, patterns]) => {
-        const keywordMatches = patterns.keywords.filter((keyword: any) => textLower.includes(keyword.toLowerCase())
+        const keywordMatches = patterns.keywords.filter((keyword: any) => textLower.includes(keyword.toLowerCase()
         ).length;
 
-        const statuteMatches = patterns.statutes.filter((statute: any) => textLower.includes(statute.toLowerCase())
+        const statuteMatches = patterns.statutes.filter((statute: any) => textLower.includes(statute.toLowerCase()
         ).length;
 
         const score = (keywordMatches * 2 + statuteMatches * 3) * patterns.weight;
@@ -392,7 +392,7 @@ function createSmartChunks(text: string, entities: LegalEntity[]): DocumentChunk
 
         // Find entities within this chunk
         const chunkEntities = entities
-            .filter((entity: any) => chunkText.includes(entity.text))
+            .filter((entity: any) => chunkText.includes(entity.text)
             .map((entity: any) => entity.text);
 
         // Calculate legal relevance based on entity density and types
@@ -403,7 +403,7 @@ function createSmartChunks(text: string, entities: LegalEntity[]): DocumentChunk
             text: chunkText,
             position: i,
             legalRelevance,
-            entities: chunkEntities
+            entities: chunkEntities,
         });
     }
 
@@ -428,11 +428,11 @@ function calculateLegalRelevance(text: string, entities: string[]): number {
 
 async function generateEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChunk[]> {
     // Simulate embedding generation with nomic-embed-text
-    // In production, this would call the actual embedding model
+    // In production, this would call the actual embedding model;
     return chunks.map((chunk: any) => ({
         ...chunk,
         embedding: Array.from({ length: 384 }, () => Math.random() - 0.5) // Mock 384-dim embedding
-    }));
+    });
 }
 
 function performFactChecking(entities: LegalEntity[], jurisdiction: string): FactCheck[] {
@@ -465,7 +465,7 @@ function calculateProsecutionScore(
     entities: LegalEntity[],
     factChecks: FactCheck[],
     jurisdiction: string,
-    chunks: DocumentChunk[]
+    chunks: DocumentChunk[];
 ): number {
     let score = 0.3; // Base score
 
@@ -501,10 +501,10 @@ function calculateCaseAISummaryScore(documents: LegalDocument[]): number {
     const avgEntityCount = documents.reduce((sum, doc) => sum + doc.entities.length, 0) / documents.length;
     const completenessBonus = Math.min(0.1, avgEntityCount / 50); // Bonus for rich entity extraction
 
-    return Math.min(100, Math.round((avgScore + completenessBonus) * 100));
+    return Math.min(100, Math.round((avgScore + completenessBonus) * 100);
 }
 
-// Database integration functions (mock implementations)
+// Database integration functions (mock implementations);
 async function storeDocumentsInDatabase(documents: LegalDocument[], caseId: string): Promise<void> {
     console.log(`💾 Storing ${documents.length} documents in PostgreSQL + pgvector`);
     // TODO: Implement actual database storage with Drizzle ORM

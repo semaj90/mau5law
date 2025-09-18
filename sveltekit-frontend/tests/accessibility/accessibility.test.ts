@@ -69,17 +69,28 @@ test.describe('Accessibility Tests', () => {
     const results = await accessibilityTester.runFullAccessibilityTest();
 
     // Overall accessibility score should be high
-    const overallSuccessRate = results.summary.totalPassed / (results.summary.totalPassed + results.summary.totalFailed);
+    const overallSuccessRate =
+      results.summary.totalPassed / (results.summary.totalPassed + results.summary.totalFailed);
     expect(overallSuccessRate).toBeGreaterThan(0.85);
 
     // Generate detailed report
     console.log('\n🔍 Detailed Accessibility Report:');
     console.log('=====================================');
-    console.log(`Keyboard Navigation: ${results.keyboard.passed}/${results.keyboard.passed + results.keyboard.failed} passed`);
-    console.log(`Screen Reader: ${results.screenReader.passed}/${results.screenReader.passed + results.screenReader.failed} passed`);
-    console.log(`AI Features: ${results.aiFeatures.passed}/${results.aiFeatures.passed + results.aiFeatures.failed} passed`);
-    console.log(`Focus Management: ${results.focusManagement.passed}/${results.focusManagement.passed + results.focusManagement.failed} passed`);
-    console.log(`Visual Features: ${results.visual.passed}/${results.visual.passed + results.visual.failed} passed`);
+    console.log(
+      `Keyboard Navigation: ${results.keyboard.passed}/${results.keyboard.passed + results.keyboard.failed} passed`
+    );
+    console.log(
+      `Screen Reader: ${results.screenReader.passed}/${results.screenReader.passed + results.screenReader.failed} passed`
+    );
+    console.log(
+      `AI Features: ${results.aiFeatures.passed}/${results.aiFeatures.passed + results.aiFeatures.failed} passed`
+    );
+    console.log(
+      `Focus Management: ${results.focusManagement.passed}/${results.focusManagement.passed + results.focusManagement.failed} passed`
+    );
+    console.log(
+      `Visual Features: ${results.visual.passed}/${results.visual.passed + results.visual.failed} passed`
+    );
     console.log(`\nOverall Score: ${Math.round(overallSuccessRate * 100)}%`);
 
     if (results.summary.allIssues.length > 0) {

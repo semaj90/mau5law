@@ -9,7 +9,8 @@ import Dexie, { type Table, liveQuery } from 'dexie';
 
 // ============================================================================
 // DATABASE SCHEMA DEFINITIONS
-// ============================================================================
+// ============================================================================;
+}
 
 export interface ChatMessage {
   id?: number;
@@ -39,7 +40,7 @@ export interface LegalDocument {
   quantizedEmbedding?: Uint8Array; // Compressed embedding
   created: Date;
   modified: Date;
-  tags: string[];
+  tags: string[];,
 }
 
 export interface GraphNode {
@@ -49,15 +50,15 @@ export interface GraphNode {
   position: { x: number; y: number; z?: number }; // Layout coordinates
   embedding: number[]; // 384d vector from nomic-embed
   rankingMatrix: number[]; // 4x4 matrix flattened to 16 elements
-  varianceMatrix: number[]; // 4x4 variance matrix
+  varianceMatrix: number[]; // 4x4 variance matrix;
   metadata: {
     documentType?: string;
     jurisdiction?: string;
     practiceArea?: string;
     confidence: number;
-    lastUpdated: Date;
+    lastUpdated: Date;,
   };
-  connections: string[]; // Connected node IDs
+  connections: string[]; // Connected node IDs,
 }
 
 export interface GraphEdge {
@@ -75,7 +76,8 @@ export interface UserSession {
   userId?: string;
   startTime: Date;
   endTime?: Date;
-  activities: Array<any>
+  activities: Array<any>;
+}
 
 export interface CacheEntry {
   id?: number;
@@ -84,7 +86,7 @@ export interface CacheEntry {
   createdAt: Date;
   expiresAt: Date;
   size: number;
-  hitCount: number;
+  hitCount: number;,
 }
 
 // ============================================================================
@@ -103,7 +105,7 @@ export class LegalAIDatabase extends Dexie {
   constructor() {
     super('LegalAIDatabase');
     
-    // Version 1: Initial schema
+    // Version 1: Initial schema;
     this.version(1).stores({
       chatHistory: '++id, timestamp, role, [metadata.legalContext.documentType]',
       legalDocuments: '++id, title, documentType, jurisdiction, practiceArea, created, *tags',
@@ -113,7 +115,7 @@ export class LegalAIDatabase extends Dexie {
       cache: '++id, key, createdAt, expiresAt, hitCount'
     });
 
-    // Version 2: Add indexes for performance
+    // Version 2: Add indexes for performance;
     this.version(2).stores({
       chatHistory: '++id, timestamp, role, [metadata.legalContext.documentType], [metadata.legalContext.jurisdiction]',
       legalDocuments: '++id, title, documentType, jurisdiction, practiceArea, created, modified, *tags',
@@ -123,7 +125,7 @@ export class LegalAIDatabase extends Dexie {
       cache: '++id, key, createdAt, expiresAt, hitCount, size'
     });
 
-    // Hooks for automatic cleanup and maintenance
+    // Hooks for automatic cleanup and maintenance;
     this.cache.hook('creating', (primKey, obj, trans) => {
       (obj as any).hitCount = 0;
       (obj as any).createdAt = new Date();
@@ -141,11 +143,11 @@ export class LegalAIDatabase extends Dexie {
   async addChatMessage(message: Omit<ChatMessage, 'id' | 'timestamp'>): Promise<number> {
     return await this.chatHistory.add({
       ...message,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 
-  // Reactive query - automatically updates UI when data changes
+  // Reactive query - automatically updates UI when data changes;
   getChatHistory(limit = 100) {
     return liveQuery(() => 
       this.chatHistory
@@ -188,7 +190,7 @@ export class LegalAIDatabase extends Dexie {
     return await this.legalDocuments.add({
       ...document,
       created: new Date(),
-      modified: new Date()
+      modified: new Date(),
     });
   }
 
@@ -216,7 +218,7 @@ export class LegalAIDatabase extends Dexie {
     return await this.legalDocuments
       .filter(item => item.includes)(searchTerm) ||
         doc.content.toLowerCase().includes(searchTerm) ||
-        doc.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+        doc.tags.some(tag => tag.toLowerCase().includes(searchTerm)
       )
       .toArray();
   }
@@ -230,7 +232,7 @@ export class LegalAIDatabase extends Dexie {
       ...node,
       metadata: {
         ...node.metadata,
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
       }
     });
   }
@@ -240,7 +242,7 @@ export class LegalAIDatabase extends Dexie {
   }
 
   getGraphNodes() {
-    return liveQuery(() => this.graphNodes.toArray());
+    return liveQuery(() => this.graphNodes.toArray();
   }
 
   getGraphNodesByRegion(bounds: { x: number; y: number; width: number; height: number }) {
@@ -298,7 +300,7 @@ export class LegalAIDatabase extends Dexie {
       createdAt: new Date(),
       expiresAt,
       size,
-      hitCount: 0
+      hitCount: 0,
     });
   }
 
@@ -307,7 +309,7 @@ export class LegalAIDatabase extends Dexie {
     
     if (!entry) return null;
     
-    // Check expiration
+    // Check expiration;
     if (entry.expiresAt < new Date()) {
       await this.cache.where('key').equals(key).delete();
       return null;
@@ -332,7 +334,7 @@ export class LegalAIDatabase extends Dexie {
       sessionId,
       userId,
       startTime: new Date(),
-      activities: []
+      activities: [],
     });
   }
 
@@ -344,19 +346,19 @@ export class LegalAIDatabase extends Dexie {
     if (session) {
       const newActivity = {
         ...activity,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
       
       session.activities.push(newActivity);
       await this.userSessions.where('sessionId').equals(sessionId).modify({
-        activities: session.activities
+        activities: session.activities,
       });
     }
   }
 
   async endSession(sessionId: string): Promise<void> {
     await this.userSessions.where('sessionId').equals(sessionId).modify({
-      endTime: new Date()
+      endTime: new Date(),
     });
   }
 
@@ -399,9 +401,9 @@ export class LegalAIDatabase extends Dexie {
       userSessions: sessionsCount,
       cache: {
         entries: cacheCount,
-        totalSize: cacheSize
+        totalSize: cacheSize,
       },
-      estimatedSize: cacheSize + (chatCount * 1000) + (documentsCount * 5000) // Rough estimate
+      estimatedSize: cacheSize + (chatCount * 1000) + (documentsCount * 5000) // Rough estimate,
     };
   }
 
@@ -434,7 +436,7 @@ export class LegalAIDatabase extends Dexie {
       graphNodes: await this.graphNodes.toArray(),
       graphEdges: await this.graphEdges.toArray(),
       userSessions: await this.userSessions.toArray(),
-      exportedAt: new Date().toISOString()
+      exportedAt: new Date().toISOString(),
     };
 
     return data;
@@ -442,7 +444,7 @@ export class LegalAIDatabase extends Dexie {
 
   async importData(data: any): Promise<void> {
     await this.transaction('rw', this.tables, async () => {
-      if (data.chatHistory) await this.chatHistory.bulkAdd(data.chatHistory));
+      if (data.chatHistory) await this.chatHistory.bulkAdd(data.chatHistory);
       if (data.legalDocuments) await this.legalDocuments.bulkAdd(data.legalDocuments);
       if (data.graphNodes) await this.graphNodes.bulkAdd(data.graphNodes);
       if (data.graphEdges) await this.graphEdges.bulkAdd(data.graphEdges);
@@ -468,13 +470,13 @@ export const chatHistory = db.getChatHistory();
 export const legalDocuments = db.getLegalDocuments();
 export const graphNodes = db.getGraphNodes();
 ;
-// Auto-cleanup on browser close
+// Auto-cleanup on browser close;
 if (typeof window !== 'undefined') {
   window.addEventListener('beforeunload', () => {
     db.cleanupDatabase();
   });
   
-  // Periodic cleanup every 10 minutes
+  // Periodic cleanup every 10 minutes;
   setInterval(() => {
     db.clearExpiredCache();
   }, 10 * 60 * 1000);

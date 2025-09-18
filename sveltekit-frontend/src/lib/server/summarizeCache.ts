@@ -1,6 +1,7 @@
 import crypto from "crypto";
 // Centralized cache utilities for summarize endpoint (memory + optional Redis)
-// Provides LRU + TTL eviction and write-through to Redis if available.
+// Provides LRU + TTL eviction and write-through to Redis if available.;
+}
 
 export interface CachePerformanceMeta {
   duration: number;
@@ -8,7 +9,7 @@ export interface CachePerformanceMeta {
   promptTokens: number;
   tokensPerSecond: number | string;
   modelUsed: string;
-  fallbackUsed: boolean;
+  fallbackUsed: boolean;,
 }
 
 export interface SummarizeCacheEntry {
@@ -20,7 +21,7 @@ export interface SummarizeCacheEntry {
   ts: number;               // creation timestamp
   lastAccess: number;        // last access timestamp (for LRU)
   perf: CachePerformanceMeta;
-  ttlMs: number;             // ttl applied when stored
+  ttlMs: number;             // ttl applied when stored,
 }
 
 const MAX_ITEMS = Number((import.meta as any).env?.SUMMARIZE_CACHE_MAX_ITEMS || import.meta.env.SUMMARIZE_CACHE_MAX_ITEMS || 200);
@@ -44,7 +45,7 @@ function evictIfNeeded() {
       memoryCache.delete(k);
     }
   }
-  // Size-based LRU eviction
+  // Size-based LRU eviction;
   while (memoryCache.size > MAX_ITEMS) {
     // oldest = first inserted (Map preserves insertion order; we refresh on access)
     const oldestKey = memoryCache.keys().next().value as string | undefined;
@@ -74,7 +75,7 @@ export async function getFromRedis(key: string): Promise<SummarizeCacheEntry | n
     const raw = await redis.get(REDIS_PREFIX + key);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as SummarizeCacheEntry;
-    // Check TTL client-side in case Redis TTL not enforced (should be though)
+    // Check TTL client-side in case Redis TTL not enforced (should be though);
     if (Date.now() - parsed.ts > parsed.ttlMs) {
       return null;
     }
@@ -132,14 +133,14 @@ export function memoryStats() {
     size: memoryCache.size,
     keys: Array.from(memoryCache.keys()).slice(0, 20),
     maxItems: MAX_ITEMS,
-    ttlMs: TTL_MS
+    ttlMs: TTL_MS,
   };
 }
 
 export async function redisHas(key: string): Promise<boolean> {
   const redis = getRedisClient();
   if (!redis) return false;
-  try { return !!(await redis.exists(REDIS_PREFIX + key)); } catch { return false; }
+  try { return !!(await redis.exists(REDIS_PREFIX + key); } catch { return false; }
 }
 
 export async function redisTTL(key: string): Promise<number | null> {

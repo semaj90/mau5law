@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const BASE_URL = "http://localhost:5173";
+const BASE_URL = 'http://localhost:5173';
 
 // Simple cookie jar for session management
 let sessionCookie = null;
 
 async function makeRequest(url, options = {}) {
-  const { default: fetch } = await import("node-fetch");
+  const { default: fetch } = await import('node-fetch');
 
   // Add session cookie to headers if available
   const headers = {
@@ -21,15 +21,12 @@ async function makeRequest(url, options = {}) {
   };
 
   // Only add Content-Type for JSON requests, not for FormData
-  if (
-    !headers["Content-Type"] &&
-    !options.body?.constructor?.name?.includes("FormData")
-  ) {
-    headers["Content-Type"] = "application/json";
+  if (!headers['Content-Type'] && !options.body?.constructor?.name?.includes('FormData')) {
+    headers['Content-Type'] = 'application/json';
   }
 
-  if (sessionCookie && !headers["Cookie"]) {
-    headers["Cookie"] = sessionCookie;
+  if (sessionCookie && !headers['Cookie']) {
+    headers['Cookie'] = sessionCookie;
   }
 
   const response = await fetch(url, {
@@ -38,9 +35,9 @@ async function makeRequest(url, options = {}) {
   });
 
   // Store session cookie from response
-  const setCookie = response.headers.get("set-cookie");
+  const setCookie = response.headers.get('set-cookie');
   if (setCookie) {
-    sessionCookie = setCookie.split(";")[0]; // Extract just the cookie value
+    sessionCookie = setCookie.split(';')[0]; // Extract just the cookie value
   }
 
   return response;
@@ -48,91 +45,91 @@ async function makeRequest(url, options = {}) {
 
 async function testRegistration() {
   try {
-    console.log("Testing user registration...");
+    console.log('Testing user registration...');
 
     const response = await makeRequest(`${BASE_URL}/api/auth/register`, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
-        name: "Avatar Test User",
-        email: "avatar.test@example.com",
-        password: "testpassword123",
-        role: "prosecutor",
+        name: 'Avatar Test User',
+        email: 'avatar.test@example.com',
+        password: 'testpassword123',
+        role: 'prosecutor',
       }),
     });
 
     const data = await response.json();
-    console.log("Registration response:", data);
+    console.log('Registration response:', data);
 
     if (response.ok) {
-      console.log("✅ Registration successful!");
+      console.log('✅ Registration successful!');
       return data.user;
     } else {
-      console.log("❌ Registration failed:", data.error);
+      console.log('❌ Registration failed:', data.error);
       return null;
     }
   } catch (error) {
-    console.error("❌ Registration error:", error.message);
+    console.error('❌ Registration error:', error.message);
     return null;
   }
 }
 
 async function testLogin() {
   try {
-    console.log("Testing user login...");
+    console.log('Testing user login...');
 
     const response = await makeRequest(`${BASE_URL}/api/auth/login`, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
-        email: "avatar.test@example.com",
-        password: "testpassword123",
+        email: 'avatar.test@example.com',
+        password: 'testpassword123',
       }),
     });
 
     const data = await response.json();
-    console.log("Login response:", data);
+    console.log('Login response:', data);
 
     if (response.ok) {
-      console.log("✅ Login successful!");
-      console.log("Session cookie:", sessionCookie);
+      console.log('✅ Login successful!');
+      console.log('Session cookie:', sessionCookie);
       return data.user;
     } else {
-      console.log("❌ Login failed:", data.error);
+      console.log('❌ Login failed:', data.error);
       return null;
     }
   } catch (error) {
-    console.error("❌ Login error:", error.message);
+    console.error('❌ Login error:', error.message);
     return null;
   }
 }
 
 async function testProfileAPI() {
   try {
-    console.log("Testing profile API...");
+    console.log('Testing profile API...');
 
     const response = await makeRequest(`${BASE_URL}/api/user/profile`, {
-      method: "GET",
+      method: 'GET',
     });
 
     const data = await response.json();
-    console.log("Profile response:", data);
+    console.log('Profile response:', data);
 
     if (response.ok) {
-      console.log("✅ Profile fetch successful!");
+      console.log('✅ Profile fetch successful!');
       return data.user;
     } else {
-      console.log("❌ Profile fetch failed:", data.error);
+      console.log('❌ Profile fetch failed:', data.error);
       return null;
     }
   } catch (error) {
-    console.error("❌ Profile fetch error:", error.message);
+    console.error('❌ Profile fetch error:', error.message);
     return null;
   }
 }
 
 async function testAvatarUpload() {
-  console.log("Testing avatar upload...");
+  console.log('Testing avatar upload...');
 
-  const testImagePath = path.join(__dirname, "test-avatar.png");
+  const testImagePath = path.join(__dirname, 'test-avatar.png');
 
   try {
     // Create a minimal test image
@@ -214,15 +211,15 @@ async function testAvatarUpload() {
     fs.writeFileSync(testImagePath, pngBuffer);
 
     // Use FormData for file upload
-    const { default: FormData } = await import("form-data");
+    const { default: FormData } = await import('form-data');
     const formData = new FormData();
-    formData.append("avatar", fs.createReadStream(testImagePath), {
-      filename: "test-avatar.png",
-      contentType: "image/png",
+    formData.append('avatar', fs.createReadStream(testImagePath), {
+      filename: 'test-avatar.png',
+      contentType: 'image/png',
     });
 
     const response = await makeRequest(`${BASE_URL}/api/user/avatar/upload`, {
-      method: "POST",
+      method: 'POST',
       body: formData,
       headers: {
         ...formData.getHeaders(), // This will set the correct multipart/form-data header
@@ -231,7 +228,7 @@ async function testAvatarUpload() {
     });
 
     const data = await response.json();
-    console.log("Avatar upload response:", data);
+    console.log('Avatar upload response:', data);
 
     // Clean up test file
     if (fs.existsSync(testImagePath)) {
@@ -239,14 +236,14 @@ async function testAvatarUpload() {
     }
 
     if (response.ok) {
-      console.log("✅ Avatar upload successful!");
+      console.log('✅ Avatar upload successful!');
       return true;
     } else {
-      console.log("❌ Avatar upload failed:", data.error);
+      console.log('❌ Avatar upload failed:', data.error);
       return false;
     }
   } catch (error) {
-    console.error("❌ Avatar upload error:", error.message);
+    console.error('❌ Avatar upload error:', error.message);
     if (fs.existsSync(testImagePath)) {
       fs.unlinkSync(testImagePath);
     }
@@ -255,39 +252,39 @@ async function testAvatarUpload() {
 }
 
 async function main() {
-  console.log("🚀 Starting Avatar System Test with Session Management\n");
+  console.log('🚀 Starting Avatar System Test with Session Management\n');
 
   // Test registration
   const registeredUser = await testRegistration();
-  console.log("");
+  console.log('');
 
   // Test login
   const loggedInUser = await testLogin();
-  console.log("");
+  console.log('');
 
   if (!loggedInUser) {
-    console.log("❌ Cannot continue without successful login");
+    console.log('❌ Cannot continue without successful login');
     return;
   }
 
   // Test profile API (should work now with session)
   const profileUser = await testProfileAPI();
-  console.log("");
+  console.log('');
 
   if (!profileUser) {
-    console.log("❌ Profile API failed - authentication may not be working");
+    console.log('❌ Profile API failed - authentication may not be working');
     return;
   }
 
   // Test avatar upload
   const avatarUpload = await testAvatarUpload();
-  console.log("");
+  console.log('');
 
-  console.log("🎉 Avatar system test complete!");
-  console.log("");
-  console.log("🔗 Visit http://localhost:5173/profile to test the avatar UI");
-  console.log("🔗 Visit http://localhost:5173/register to register a new user");
-  console.log("🔗 Visit http://localhost:5173/login to login");
+  console.log('🎉 Avatar system test complete!');
+  console.log('');
+  console.log('🔗 Visit http://localhost:5173/profile to test the avatar UI');
+  console.log('🔗 Visit http://localhost:5173/register to register a new user');
+  console.log('🔗 Visit http://localhost:5173/login to login');
 }
 
 main().catch(console.error);

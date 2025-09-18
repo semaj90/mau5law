@@ -5,6 +5,7 @@
  */
 
 import type { LegalAIRequest } from '../services/unified-legal-orchestrator.js';
+}
 
 export interface WebGPUComputeResult {
   success: boolean;
@@ -32,16 +33,16 @@ class WebGPUComputeService {
     
     try {
       // For now, return a stub implementation
-      // This can be expanded to use the existing WebGPU AI engine
+      // This can be expanded to use the existing WebGPU AI engine;
       const result = {
         success: true,
         data: {
           message: 'WebGPU compute request processed',
           requestType: request.type,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
         performance: {
-          executionTime: performance.now() - startTime
+          executionTime: performance.now() - startTime,
         }
       };
       
@@ -51,7 +52,7 @@ class WebGPUComputeService {
         success: false,
         error: error instanceof Error ? error.message: 'Unknown WebGPU error',
         performance: {
-          executionTime: performance.now() - startTime
+          executionTime: performance.now() - startTime,
         }
       };
     }

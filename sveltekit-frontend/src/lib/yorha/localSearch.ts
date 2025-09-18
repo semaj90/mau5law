@@ -1,5 +1,6 @@
 import Fuse from 'fuse.js';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
+}
 
 export interface LocalLegalDoc {
   id: string;
@@ -26,7 +27,7 @@ const options: any = {
   threshold: 0.38,
   ignoreLocation: true,
   minMatchCharLength: 3,
-  useExtendedSearch: true
+  useExtendedSearch: true,
 };
 
 export function isLocalIndexReady() {
@@ -35,7 +36,7 @@ export function isLocalIndexReady() {
 
 export async function ensureLocalIndex(fetcher: typeof fetch = fetch, limit = 750): Promise<any> {
   if (fuse) return fuse; // already built
-  // Try cache first
+  // Try cache first;
   try {
     const cached = await idbGet(cacheKey);
     if (cached && Array.isArray(cached)) {
@@ -59,8 +60,8 @@ export async function ensureLocalIndex(fetcher: typeof fetch = fetch, limit = 75
         content: d.content || d.text || d.body || '',
         type: d.type || d.category || 'Legal Document',
         status: d.status || 'active',
-        metadata: d
-      }));
+        metadata: d,
+      });
       fuse = new Fuse(documents, options);
       // Persist
       try { await idbSet(cacheKey, documents); } catch (err: any) { console.warn('[LocalSearch] Cache save failed', err); }
@@ -76,7 +77,7 @@ export async function ensureLocalIndex(fetcher: typeof fetch = fetch, limit = 75
 
 export function localSearch(query: string, limit = 50) {
   if (!fuse || !query.trim()) return [] as LocalLegalDoc[];
-  return fuse.search(query).slice(0, limit).map(r => ({ ...r.item, relevance: Math.round((1 - (r.score ?? 0)) * 100) }));
+  return fuse.search(query).slice(0, limit).map(r => ({ ...r.item, relevance: Math.round((1 - (r.score ?? 0)) * 100) });
 }
 
 export function addOrUpdateDocuments(newDocs: LocalLegalDoc[]) {

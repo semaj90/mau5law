@@ -5,7 +5,7 @@
 
 import { createMachine, assign, fromPromise, createActor, type StateFrom } from 'xstate';
 
-// Message types
+// Message types;
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -20,7 +20,7 @@ export interface ChatSettings {
   systemPrompt?: string;
 }
 
-// Machine Context
+// Machine Context;
 export interface ChatContext {
   messages: ChatMessage[];
   error: string | null;
@@ -38,7 +38,7 @@ type ChatEvent =
   | { type: 'STREAM_DONE' }
   | { type: 'RETRY' };
 
-// Stream chat service
+// Stream chat service;
 const streamChatService = fromPromise(async ({ input }: { input: { messages: ChatMessage[]; settings: ChatSettings } }) => {
   const { messages, settings } = input;
   

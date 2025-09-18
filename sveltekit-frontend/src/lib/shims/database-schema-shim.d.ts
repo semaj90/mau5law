@@ -1,4 +1,4 @@
-// Database schema shims for common imports used across routes
+// Database schema shims for common imports used across routes;
 declare module '$lib/database/schema/legal-documents' {
   export const legalDocuments: any;
   export const documentChunks: any;
@@ -54,7 +54,7 @@ declare module '$lib/server/db/index' {
   export default _default;
 }
 
-// Common database operations shim
+// Common database operations shim;
 declare module '$lib/server/db/*' {
   const _whatever: any;
   export default _whatever;

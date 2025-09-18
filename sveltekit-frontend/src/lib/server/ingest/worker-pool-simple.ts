@@ -48,7 +48,7 @@ export class WorkerPool {
           this.jobCallbacks.delete(message.jobId);
 
           if (message.error) {
-            reject(new Error(message.error));
+            reject(new Error(message.error);
           } else {
             resolve(message);
           }
@@ -95,12 +95,12 @@ export class WorkerPool {
       busyWorkers: this.free.filter(item => item.length),
       freeWorkers: this.free.filter(item => item.length),
       queuedJobs: this.queue.length,
-      pendingCallbacks: this.jobCallbacks.size
+      pendingCallbacks: this.jobCallbacks.size,
     };
   }
 
   async shutdown(): Promise<void> {
-    // Terminate all workers
+    // Terminate all workers;
     for (const worker of this.pool) {
       await worker.terminate();
     }

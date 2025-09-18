@@ -1,14 +1,12 @@
-import {
-  cubicOut
-} from "./chunk-7QVV7TAH.js";
-import "./chunk-KWPVD4H7.js";
+import { cubicOut } from './chunk-7QVV7TAH.js';
+import './chunk-KWPVD4H7.js';
 
 // node_modules/svelte/src/animate/index.js
 function flip(node, { from, to }, params = {}) {
   var { delay = 0, duration = (d) => Math.sqrt(d) * 120, easing = cubicOut } = params;
   var style = getComputedStyle(node);
-  var transform = style.transform === "none" ? "" : style.transform;
-  var [ox, oy] = style.transformOrigin.split(" ").map(parseFloat);
+  var transform = style.transform === 'none' ? '' : style.transform;
+  var [ox, oy] = style.transformOrigin.split(' ').map(parseFloat);
   ox /= node.clientWidth;
   oy /= node.clientHeight;
   var zoom = get_zoom(node);
@@ -24,7 +22,7 @@ function flip(node, { from, to }, params = {}) {
   var dsy = from.height / to.height;
   return {
     delay,
-    duration: typeof duration === "function" ? duration(Math.sqrt(dx * dx + dy * dy)) : duration,
+    duration: typeof duration === 'function' ? duration(Math.sqrt(dx * dx + dy * dy)) : duration,
     easing,
     css: (t, u) => {
       var x = u * dx;
@@ -32,11 +30,11 @@ function flip(node, { from, to }, params = {}) {
       var sx2 = t + u * dsx;
       var sy2 = t + u * dsy;
       return `transform: ${transform} translate(${x}px, ${y}px) scale(${sx2}, ${sy2});`;
-    }
+    },
   };
 }
 function get_zoom(element) {
-  if ("currentCSSZoom" in element) {
+  if ('currentCSSZoom' in element) {
     return (
       /** @type {number} */
       element.currentCSSZoom
@@ -46,12 +44,9 @@ function get_zoom(element) {
   var zoom = 1;
   while (current !== null) {
     zoom *= +getComputedStyle(current).zoom;
-    current = /** @type {Element | null} */
-    current.parentElement;
+    current = /** @type {Element | null} */ current.parentElement;
   }
   return zoom;
 }
-export {
-  flip
-};
+export { flip };
 //# sourceMappingURL=svelte_animate.js.map

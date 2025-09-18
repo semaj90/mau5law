@@ -6,7 +6,7 @@ interface ServiceHealthStatus {
   message?: string;
   details?: any;
   responseTime?: number;
-  lastChecked: string;
+  lastChecked: string;,
 }
 
 interface AggregatedHealthResponse {
@@ -21,19 +21,19 @@ interface AggregatedHealthResponse {
     vectorSearch: ServiceHealthStatus;
     minio: ServiceHealthStatus;
     cluster: ServiceHealthStatus;
-    svelteKit: ServiceHealthStatus;
+    svelteKit: ServiceHealthStatus;,
   };
   metadata: {
     nodeVersion: string;
     platform: string;
     arch: string;
     pid: number;
-    uptime: number;
+    uptime: number;,
   };
   performance: {
     memoryUsage: NodeJS.MemoryUsage;
     cpuUsage: NodeJS.CpuUsage;
-    loadAverage: number[] | string;
+    loadAverage: number[] | string;,
   };
   summary: {
     totalServices: number;
@@ -41,7 +41,7 @@ interface AggregatedHealthResponse {
     degradedServices: number;
     unhealthyServices: number;
     unknownServices: number;
-    overallHealthScore: number;
+    overallHealthScore: number;,
   };
 }
 
@@ -55,14 +55,14 @@ async function checkServiceHealth(url: string, timeout: number = 5000): Promise<
     const response = await fetch(url, {
       method: 'GET',
       headers: { 'Accept': 'application/json' },
-      signal: controller.signal
+      signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
     const responseTime = Date.now() - startTime;
 
     if ((response as { ok?: any; json?: any; status?: any; summary?: any }).ok) {
-      const data = await (response as { ok?: any; json?: any; status?: any; summary?: any }).json().catch(() => ({}));
+      const data = await (response as { ok?: any; json?: any; status?: any; summary?: any }).json().catch(() => ({});
       return { status: 'healthy', responseTime, details: data };
     } else {
       return { status: 'degraded', responseTime, details: { statusCode: (response as { ok?: any; json?: any; status?: any; summary?: any }).status } };
@@ -92,14 +92,14 @@ async function checkDatabaseHealth(): Promise<ServiceHealthStatus> {
       message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'PostgreSQL connection successful' : 'Database connection issues',
       details: (result as { status?: any; details?: any; responseTime?: any }).details,
       responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   } catch (error: any) {
     return {
       status: 'unhealthy',
       message: `Database health check failed: ${error.message}`,
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -113,14 +113,14 @@ async function checkRedisHealth(): Promise<ServiceHealthStatus> {
       message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'Redis connection active' : 'Redis connection issues',
       details: (result as { status?: any; details?: any; responseTime?: any }).details,
       responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   } catch (error: any) {
     return {
       status: 'unknown',
       message: 'Redis health endpoint not accessible',
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -134,14 +134,14 @@ async function checkNeo4jHealth(): Promise<ServiceHealthStatus> {
       message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'Neo4j graph database active' : 'Neo4j connection issues',
       details: (result as { status?: any; details?: any; responseTime?: any }).details,
       responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   } catch (error: any) {
     return {
       status: 'unknown',
       message: 'Neo4j health endpoint not accessible',
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -155,7 +155,7 @@ async function checkOllamaHealth(): Promise<ServiceHealthStatus> {
       message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'Ollama AI service running' : 'Ollama service issues',
       details: (result as { status?: any; details?: any; responseTime?: any }).details,
       responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   } catch (error: any) {
     return {
@@ -163,7 +163,7 @@ async function checkOllamaHealth(): Promise<ServiceHealthStatus> {
       message: 'Ollama service unavailable',
       details: { error: error.message },
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -184,7 +184,7 @@ async function checkOCRHealth(): Promise<ServiceHealthStatus> {
         capabilities: (result as { status?: any; details?: any; responseTime?: any }).details?.features || []
       },
       responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   } catch (error: any) {
     return {
@@ -192,10 +192,10 @@ async function checkOCRHealth(): Promise<ServiceHealthStatus> {
       message: 'OCR service unavailable',
       details: {
         error: error.message,
-        endpoint: (globalThis as any).__OCR_BASE__ || '/api/ocr'
+        endpoint: (globalThis as any).__OCR_BASE__ || '/api/ocr',
       },
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -209,14 +209,14 @@ async function checkVectorSearchHealth(): Promise<ServiceHealthStatus> {
       message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'Vector search service operational' : 'Vector search issues',
       details: (result as { status?: any; details?: any; responseTime?: any }).details,
       responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   } catch (error: any) {
     return {
       status: 'unknown',
       message: 'Vector search health endpoint not accessible',
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -230,14 +230,14 @@ async function checkMinIOHealth(): Promise<ServiceHealthStatus> {
       message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'MinIO storage service operational' : 'MinIO storage issues',
       details: (result as { status?: any; details?: any; responseTime?: any }).details,
       responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   } catch (error: any) {
     return {
       status: 'degraded',
       message: 'MinIO service unavailable - file storage in degraded mode',
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -251,14 +251,14 @@ async function checkClusterHealth(): Promise<ServiceHealthStatus> {
       message: (result as { status?: any; details?: any; responseTime?: any }).status === 'healthy' ? 'Cluster orchestration active' : 'Cluster management issues',
       details: (result as { status?: any; details?: any; responseTime?: any }).details,
       responseTime: (result as { status?: any; details?: any; responseTime?: any }).responseTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   } catch (error: any) {
     return {
       status: 'unknown',
       message: 'Cluster health endpoint not accessible',
       responseTime: Date.now() - startTime,
-      lastChecked: new Date().toISOString()
+      lastChecked: new Date().toISOString(),
     };
   }
 }
@@ -281,7 +281,7 @@ function calculateHealthScore(services: AggregatedHealthResponse['services']): n
       case 'degraded': return 50;
       case 'unknown': return 25;
       case 'unhealthy': return 0;
-      default: return 0;
+      default: return 0;,
     }
   });
 
@@ -315,17 +315,17 @@ export const GET: RequestHandler = async () => {
       checkClusterHealth()
     ]);
 
-    // SvelteKit service is always healthy if we can respond
+    // SvelteKit service is always healthy if we can respond;
     const svelteKit: ServiceHealthStatus = {
       status: 'healthy',
       message: 'SvelteKit frontend service operational',
       details: {
         uptime: process.uptime(),
         memory: process.memoryUsage(),
-        pid: process.pid
+        pid: process.pid,
       },
       responseTime: 0,
-      lastChecked: timestamp
+      lastChecked: timestamp,
     };
 
     const services = {
@@ -355,12 +355,12 @@ export const GET: RequestHandler = async () => {
         platform: process.platform,
         arch: process.arch,
         pid: process.pid,
-        uptime: process.uptime()
+        uptime: process.uptime(),
       },
       performance: {
         memoryUsage: process.memoryUsage(),
         cpuUsage: process.cpuUsage(),
-        loadAverage: process.platform !== 'win32' ? require('os').loadavg() : 'N/A (Windows)'
+        loadAverage: process.platform !== 'win32' ? require('os').loadavg() : 'N/A (Windows)',
       },
       summary: {
         totalServices: serviceStatuses.length,
@@ -368,7 +368,7 @@ export const GET: RequestHandler = async () => {
         degradedServices,
         unhealthyServices,
         unknownServices,
-        overallHealthScore: calculateHealthScore(services)
+        overallHealthScore: calculateHealthScore(services),
       }
     };
 
@@ -405,7 +405,7 @@ export const GET: RequestHandler = async () => {
         degradedServices: 0,
         unhealthyServices: 0,
         unknownServices: 0,
-        overallHealthScore: 0
+        overallHealthScore: 0,
       }
     }, {
       status: 503,
@@ -417,7 +417,7 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// Optional: Support POST for forced health checks or specific service checks
+// Optional: Support POST for forced health checks or specific service checks;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { service, force } = await request.json();
@@ -442,7 +442,7 @@ export const POST: RequestHandler = async ({ request }) => {
         case 'ocr':
           serviceHealth = await checkOCRHealth();
           break;
-        default:
+        default:;
           return json({
             error: 'Unknown service',
             availableServices: ['database', 'redis', 'neo4j', 'ollama', 'ocr']
@@ -452,7 +452,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         service,
         health: serviceHealth,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
@@ -462,7 +462,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json({
       error: 'Invalid request',
-      message: error.message
+      message: error.message,
     }, { status: 400 });
   }
 };

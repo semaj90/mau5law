@@ -1,11 +1,12 @@
 import { writable } from "svelte/store";
 import { browser } from "$app/environment";
+}
 
 export interface AvatarState {
   url: string | null;
   isUploading: boolean;
   error: string | null;
-  lastUpdated: number | null;
+  lastUpdated: number | null;,
 }
 
 const initialState: AvatarState = {
@@ -21,7 +22,7 @@ function createAvatarStore() {
   return {
     subscribe,
 
-    // Load avatar from local storage and API with SSR support
+    // Load avatar from local storage and API with SSR support;
     loadAvatar: async () => {
       if (!browser) return;
 
@@ -30,7 +31,7 @@ function createAvatarStore() {
       const cachedTimestamp = localStorage.getItem("user_avatar_timestamp");
       const cacheExpiry = 5 * 60 * 1000; // 5 minutes
 
-      // Use cached avatar if it's recent
+      // Use cached avatar if it's recent;
       if (cachedAvatar && cachedTimestamp) {
         const timestamp = parseInt(cachedTimestamp);
         if (Date.now() - timestamp < cacheExpiry) {
@@ -38,14 +39,14 @@ function createAvatarStore() {
             ...state,
             url: cachedAvatar,
             lastUpdated: timestamp,
-          }));
+          });
         }
       }
 
-      // Always fetch from API for up-to-date data
+      // Always fetch from API for up-to-date data;
       try {
         const response = await fetch("/api/user/profile", {
-          credentials: "include", // Important for SSR session handling
+          credentials: "include", // Important for SSR session handling;
           headers: {
             Accept: "application/json",
           },
@@ -57,17 +58,17 @@ function createAvatarStore() {
             data.user?.avatarUrl || "/images/default-avatar.svg";
           const now = Date.now();
 
-          // Update store and cache
+          // Update store and cache;
           update((state) => ({
             ...state,
             url: avatarUrl,
             error: null,
             lastUpdated: now,
-          }));
+          });
 
           // Update local storage with timestamp
           localStorage.setItem("user_avatar_url", avatarUrl);
-          localStorage.setItem("user_avatar_timestamp", now.toString());
+          localStorage.setItem("user_avatar_timestamp", now.toString();
         } else if (response.status === 401) {
           // User not authenticated - clear cache
           localStorage.removeItem("user_avatar_url");
@@ -76,19 +77,19 @@ function createAvatarStore() {
             ...state,
             url: "/images/default-avatar.svg",
             error: null,
-          }));
+          });
         }
       } catch (error: any) {
         console.error("Failed to load avatar:", error);
-        // Only show error if we don't have a cached avatar
+        // Only show error if we don't have a cached avatar;
         update((state) => ({
           ...state,
           error: !state.url ? "Failed to load avatar" : null,
-        }));
+        });
       }
     },
 
-    // Upload new avatar with progress tracking
+    // Upload new avatar with progress tracking;
     uploadAvatar: async (file: File) => {
       if (!browser) {
         return { success: false, error: "Upload not available on server" };
@@ -97,11 +98,11 @@ function createAvatarStore() {
       // Validate file before upload
       const validation = validateFile(file);
       if (!validation.valid) {
-        update((state) => ({ ...state, error: validation.error }));
+        update((state) => ({ ...state, error: validation.error });
         return { success: false, error: validation.error };
       }
 
-      update((state) => ({ ...state, isUploading: true, error: null }));
+      update((state) => ({ ...state, isUploading: true, error: null });
 
       try {
         const formData = new FormData();
@@ -125,11 +126,11 @@ function createAvatarStore() {
             isUploading: false,
             error: null,
             lastUpdated: now,
-          }));
+          });
 
           // Update local storage with timestamp
           localStorage.setItem("user_avatar_url", newAvatarUrl);
-          localStorage.setItem("user_avatar_timestamp", now.toString());
+          localStorage.setItem("user_avatar_timestamp", now.toString();
 
           return { success: true, url: newAvatarUrl };
         } else {
@@ -142,12 +143,12 @@ function createAvatarStore() {
           ...state,
           isUploading: false,
           error: errorMessage,
-        }));
+        });
         return { success: false, error: errorMessage };
       }
     },
 
-    // Remove avatar
+    // Remove avatar;
     removeAvatar: async () => {
       if (!browser) {
         return { success: false, error: "Remove not available on server" };
@@ -168,11 +169,11 @@ function createAvatarStore() {
             url: defaultAvatar,
             error: null,
             lastUpdated: now,
-          }));
+          });
 
           // Update local storage
           localStorage.setItem("user_avatar_url", defaultAvatar);
-          localStorage.setItem("user_avatar_timestamp", now.toString());
+          localStorage.setItem("user_avatar_timestamp", now.toString();
 
           return { success: true };
         } else {
@@ -181,12 +182,12 @@ function createAvatarStore() {
       } catch (error: any) {
         const errorMessage =
           error instanceof Error ? error.message: "Removal failed";
-        update((state) => ({ ...state, error: errorMessage }));
+        update((state) => ({ ...state, error: errorMessage });
         return { success: false, error: errorMessage };
       }
     },
 
-    // Preload avatar for given user (useful for SSR)
+    // Preload avatar for given user (useful for SSR);
     preloadAvatar: (avatarUrl: string | null) => {
       if (!browser) return;
 
@@ -195,19 +196,19 @@ function createAvatarStore() {
         ...state,
         url,
         lastUpdated: Date.now(),
-      }));
+      });
 
       // Cache the preloaded avatar
       localStorage.setItem("user_avatar_url", url);
-      localStorage.setItem("user_avatar_timestamp", Date.now().toString());
+      localStorage.setItem("user_avatar_timestamp", Date.now().toString();
     },
 
-    // Clear error
+    // Clear error;
     clearError: () => {
-      update((state) => ({ ...state, error: null }));
+      update((state) => ({ ...state, error: null });
     },
 
-    // Reset store
+    // Reset store;
     reset: () => {
       set(initialState);
       if (browser) {
@@ -216,7 +217,7 @@ function createAvatarStore() {
       }
     },
 
-    // Force refresh from server
+    // Force refresh from server;
     refresh: async () => {
       if (!browser) return;
 
@@ -230,7 +231,7 @@ function createAvatarStore() {
   };
 }
 
-// File validation helper
+// File validation helper;
 function validateFile(file: File): { valid: boolean; error?: string } {
   const allowedTypes = [
     "image/jpeg",

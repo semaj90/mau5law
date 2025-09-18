@@ -1,0 +1,22 @@
+{
+  "recommendations": [
+    // Essential for Svelte 5 Development
+    "svelte.svelte-vscode",          // Official Svelte extension with Svelte 5 support
+    "esbenp.prettier-vscode",        // Prettier formatter with Svelte 5 compatibility
+
+    // TypeScript & Linting
+    "ms-vscode.vscode-typescript-next",  // Latest TypeScript features
+    "dbaeumer.vscode-eslint",            // ESLint with Svelte support
+
+    // Additional helpful extensions
+    "bradlc.vscode-tailwindcss",         // TailwindCSS IntelliSense
+    "ms-vscode.vscode-json",             // JSON support
+    "ms-playwright.playwright",          // Playwright test support
+    "ms-vscode.test-adapter-converter"   // Test runner integration
+  ],
+  "unwantedRecommendations": [
+    // These are outdated for Svelte 5
+    "JamesBirtles.svelte-vscode",        // Old Svelte extension
+    "ardenivanov.svelte-intellisense"    // Conflicts with official extension
+  ]
+}

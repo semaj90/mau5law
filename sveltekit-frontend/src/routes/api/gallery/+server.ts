@@ -9,6 +9,7 @@ import { db } from '$lib/server/database';
 import { cases, evidence, users, legalDocuments } from '$lib/server/database';
 import { eq, desc, asc, and, or, like, isNull } from 'drizzle-orm';
 import { URL } from "url";
+}
 
 export interface GalleryItem {
   id: string;
@@ -41,7 +42,7 @@ export interface GalleryResponse {
   pagination: {
     page: number;
     pageSize: number;
-    totalPages: number;
+    totalPages: number;,
   };
 }
 
@@ -61,12 +62,12 @@ interface GalleryFilters {
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Parse query parameters
-    const page = Math.max(1, parseInt(url.searchParams.get('page') || '1'));
-    const pageSize = Math.min(100, Math.max(10, parseInt(url.searchParams.get('pageSize') || '20')));
+    const page = Math.max(1, parseInt(url.searchParams.get('page') || '1');
+    const pageSize = Math.min(100, Math.max(10, parseInt(url.searchParams.get('pageSize') || '20'));
     const sortBy = url.searchParams.get('sortBy') || 'uploadedAt';
     const sortOrder = url.searchParams.get('sortOrder') || 'desc';
 
-    // Parse filters
+    // Parse filters;
     const filters: GalleryFilters = {
       type: url.searchParams.get('type') || undefined,
       category: url.searchParams.get('category') || undefined,
@@ -77,7 +78,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       dateFrom: url.searchParams.get('dateFrom') || undefined,
       dateTo: url.searchParams.get('dateTo') || undefined,
       fileTypes: url.searchParams.get('fileTypes')?.split(',').filter(Boolean) || undefined,
-      isPublic: url.searchParams.get('isPublic') ? url.searchParams.get('isPublic') === 'true' : undefined
+      isPublic: url.searchParams.get('isPublic') ? url.searchParams.get('isPublic') === 'true' : undefined,
     };
 
     const startTime = Date.now();
@@ -99,7 +100,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       ...aiGeneratedItems.items
     ];
 
-    // Sort combined items
+    // Sort combined items;
     allItems.sort((a, b) => {
       const aVal = a[sortBy as keyof GalleryItem] || '';
       const bVal = b[sortBy as keyof GalleryItem] || '';
@@ -115,11 +116,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const paginatedItems = allItems.slice(offset, offset + pageSize);
     const totalCount = allItems.length;
 
-    // Prepare filter options
+    // Prepare filter options;
     const filterOptions = {
       types: ['evidence', 'document', 'image', 'ai-generated', 'upload'],
       cases: casesData.map(c => ({ id: c.id, title: c.title })),
-      users: usersData.map(u => ({ id: u.id, name: u.email || 'Unknown' }))
+      users: usersData.map(u => ({ id: u.id, name: u.email || 'Unknown' })
     };
 
     const processingTime = Date.now() - startTime;
@@ -132,7 +133,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       pagination: {
         page,
         pageSize,
-        totalPages: Math.ceil(totalCount / pageSize)
+        totalPages: Math.ceil(totalCount / pageSize),
       }
     };
 
@@ -152,7 +153,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
 async function getEvidenceItems(filters: GalleryFilters, page: number, pageSize: number, sortBy: string, sortOrder: string) {
   try {
-    const evidenceQuery = db
+    const evidenceQuery = db;
       .select({
         id: evidence.id,
         title: evidence.title,
@@ -167,16 +168,16 @@ async function getEvidenceItems(filters: GalleryFilters, page: number, pageSize:
         tags: evidence.tags,
         metadata: evidence.metadata,
         isPublic: evidence.isPublic,
-        contentText: evidence.contentText
+        contentText: evidence.contentText,
       })
       .from(evidence)
-      .leftJoin(cases, eq(evidence.caseId, cases.id));
+      .leftJoin(cases, eq(evidence.caseId, cases.id);
 
     // Apply filters
     const conditions = [];
     
     if (filters.caseId) {
-      conditions.push(eq(evidence.caseId, filters.caseId));
+      conditions.push(eq(evidence.caseId, filters.caseId);
     }
     
     if (filters.search) {
@@ -191,16 +192,16 @@ async function getEvidenceItems(filters: GalleryFilters, page: number, pageSize:
     
     if (filters.fileTypes && filters.fileTypes.length > 0) {
       conditions.push(
-        or(...filters.fileTypes.map(type => like(evidence.fileType, `%${type}%`)))
+        or(...filters.fileTypes.map(type => like(evidence.fileType, `%${type}%`))
       );
     }
 
     if (filters.isPublic !== undefined) {
-      conditions.push(eq(evidence.isPublic, filters.isPublic));
+      conditions.push(eq(evidence.isPublic, filters.isPublic);
     }
 
     if (conditions.length > 0) {
-      evidenceQuery.where(and(...conditions));
+      evidenceQuery.where(and(...conditions);
     }
 
     const evidenceData = await evidenceQuery.execute();
@@ -223,7 +224,7 @@ async function getEvidenceItems(filters: GalleryFilters, page: number, pageSize:
       isPublic: (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).isPublic || false,
       category: 'Legal Evidence',
       searchableText: [(item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).title, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).description, (item as { id?: any; title?: any; fileName?: any; description?: any; filePath?: any; fileType?: any; fileSize?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; isPublic?: any; contentText?: any }).contentText].filter(item => item.join)(' ')
-    }));
+    });
 
     return { items, total: items.length };
   } catch (err) {
@@ -276,13 +277,13 @@ async function getCategories() {
 
 async function getCases() {
   try {
-    return await db
+    return await db;
       .select({
         id: cases.id,
-        title: cases.title
+        title: cases.title,
       })
       .from(cases)
-      .orderBy(asc(cases.title))
+      .orderBy(asc(cases.title)
       .execute();
   } catch (err) {
     console.error('Error fetching cases:', err);
@@ -292,13 +293,13 @@ async function getCases() {
 
 async function getUsers() {
   try {
-    return await db
+    return await db;
       .select({
         id: users.id,
-        email: users.email
+        email: users.email,
       })
       .from(users)
-      .orderBy(asc(users.email))
+      .orderBy(asc(users.email)
       .execute();
   } catch (err) {
     console.error('Error fetching users:', err);
@@ -309,12 +310,12 @@ async function getUsers() {
 function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
   if (!filePath || !fileType) return undefined;
   
-  // For images, we can serve them directly as thumbnails
+  // For images, we can serve them directly as thumbnails;
   if (fileType.startsWith('image/')) {
     return `/api/files/thumbnails/${encodeURIComponent(filePath)}`;
   }
   
-  // For other file types, return appropriate icons
+  // For other file types, return appropriate icons;
   if (fileType.includes('pdf')) {
     return '/icons/pdf-thumbnail.svg';
   }
@@ -334,7 +335,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const data = await request.json();
     
-    // Handle bulk operations like delete, move, tag
+    // Handle bulk operations like delete, move, tag;
     if ((data as { action?: any; ids?: any; tags?: any; caseId?: any }).action === 'bulk_delete') {
       return await handleBulkDelete((data as { action?: any; ids?: any; tags?: any; caseId?: any }).ids);
     }

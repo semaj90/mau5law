@@ -12,9 +12,9 @@ import type { HealthCheckResult } from '$lib/types/api';
 
 // Production Service Configuration - Windows Native
 // NOTE: Using Partial<ServiceEndpoints> shape to avoid requiring full 37-service map
-// Only actively configured services are declared here; others may be added over time.
+// Only actively configured services are declared here; others may be added over time.;
 const PRODUCTION_ENDPOINTS = {
-  // Core AI Services (Tier 1)
+  // Core AI Services (Tier 1);
   enhancedRAG: {
     http: 'http://localhost:8094',
     grpc: 'localhost:50051',
@@ -22,91 +22,91 @@ const PRODUCTION_ENDPOINTS = {
     websocket: 'ws://localhost:8094/ws',
     tier: 'ULTRA_FAST',
     health: '/health',
-    status: 'active'
+    status: 'active',
   },
   uploadService: {
     http: 'http://localhost:8093',
     health: '/health',
-    status: 'active'
+    status: 'active',
   },
   documentProcessor: {
     http: 'http://localhost:8081',
     health: '/api/health',
-    status: 'active'
+    status: 'active',
   },
 
-  // AI Enhancement Services (Tier 2)
+  // AI Enhancement Services (Tier 2);
   advancedCUDA: {
     http: 'http://localhost:8095',
     tier: 'ULTRA_FAST',
     health: '/health',
-    status: 'experimental'
+    status: 'experimental',
   },
   dimensionalCache: {
     http: 'http://localhost:8097',
     tier: 'HIGH_PERF',
     health: '/health',
-    status: 'experimental'
+    status: 'experimental',
   },
 
-  // Multi-Core Ollama Cluster
+  // Multi-Core Ollama Cluster;
   ollama: {
     primary: 'http://localhost:11434',
     secondary: 'http://localhost:11435',
     embeddings: 'http://localhost:11436',
     health: '/api/tags',
-    status: 'active'
+    status: 'active',
   },
 
-  // Database Services
+  // Database Services;
   postgresql: {
     host: 'localhost',
     port: 5432,
     database: 'legal_ai_db',
-    status: 'active'
+    status: 'active',
   },
   redis: {
     host: 'localhost',
     port: 6379,
-    status: 'active'
+    status: 'active',
   },
   qdrant: {
     http: 'http://localhost:6333',
     health: '/health',
-    status: 'active'
+    status: 'active',
   },
 
-  // Messaging & State Management
+  // Messaging & State Management;
   nats: {
     server: 'nats://localhost:4225',
     websocket: 'ws://localhost:4226',
     monitor: 'http://localhost:8225',
     health: '/healthz',
-    status: 'active'
+    status: 'active',
   },
   xstateManager: {
     http: 'http://localhost:8212',
     health: '/health',
-    status: 'active'
+    status: 'active',
   },
 
-  // Infrastructure Services
+  // Infrastructure Services;
   clusterManager: {
     http: 'http://localhost:8213',
     health: '/health',
-    status: 'active'
+    status: 'active',
   },
   loadBalancer: {
     http: 'http://localhost:8224',
     health: '/health',
-    status: 'active'
+    status: 'active',
   },
 
-  // Development & Monitoring
+  // Development & Monitoring;
   sveltekit: {
     http: 'http://localhost:5173',
     dev: 'http://localhost:5174',
-    status: 'active'
+    status: 'active',
   }
 } as const;
 
@@ -157,7 +157,7 @@ async function makeServiceRequest(
 
     return response;
   } catch (fetchError) {
-    // Failover logic for multi-protocol services
+    // Failover logic for multi-protocol services;
     if ('http' in serviceConfig && baseUrl !== serviceConfig.http) {
       console.warn(`Service ${service} failover: ${baseUrl} → ${serviceConfig.http}`);
       return fetch(`${serviceConfig.http}${endpoint}`, options);
@@ -169,7 +169,7 @@ async function makeServiceRequest(
 
 /*
  * GET /api/v1 - API Discovery & Health Overview
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   const query = url.searchParams.get('action');
   const started = Date.now();
@@ -198,18 +198,18 @@ export const GET: RequestHandler = async ({ url }) => {
             upload: '/api/v1/upload',
             ai: '/api/v1/ai',
             search: '/api/v1/search',
-            document: '/api/v1/document'
+            document: '/api/v1/document',
           },
           protocols: ['HTTP', 'gRPC', 'QUIC', 'WebSocket'],
           deployment: 'Windows Native (No Docker)',
-          status: 'production'
+          status: 'production',
         };
         return json({
           success: true,
           data,
           metadata: {
             timestamp: new Date().toISOString(),
-            processingTimeMs: Date.now() - started
+            processingTimeMs: Date.now() - started,
           }
         } satisfies APIResponse<typeof data>);
       }
@@ -221,11 +221,11 @@ export const GET: RequestHandler = async ({ url }) => {
       success: false,
       error: {
         code: 'INTERNAL_ERROR',
-        message: dev ? e.message: 'Service temporarily unavailable'
+        message: dev ? e.message: 'Service temporarily unavailable',
       },
       metadata: {
         timestamp: new Date().toISOString(),
-        processingTimeMs: Date.now() - started
+        processingTimeMs: Date.now() - started,
       }
     } satisfies APIResponse<any>, { status: 500 });
   }
@@ -233,24 +233,23 @@ export const GET: RequestHandler = async ({ url }) => {
 
 /*
  * Comprehensive health check across all services
- */
+ */;
 async function handleHealthCheck(): Promise<Response> {
   const started = Date.now();
   const healthChecks: Record<string, HealthCheckResult> = {};
   const checkPromises: Promise<void>[] = [];
 
-  // Core services health check
+  // Core services health check;
   for (const [serviceName, config] of Object.entries(PRODUCTION_ENDPOINTS)) {
     if (config.status !== 'active') continue;
 
-    checkPromises.push(
-      (async () => {
+    checkPromises.push((async () => {
         try {
           const healthEndpoint = 'health' in config ? config.health || '/health' : '/health';
           const reqStarted = performance.now?.() ?? Date.now();
           const response = await makeServiceRequest(
             serviceName as keyof typeof PRODUCTION_ENDPOINTS,
-            healthEndpoint,
+            healthEndpoint,)
             { method: 'GET' }
           );
 
@@ -258,13 +257,13 @@ async function handleHealthCheck(): Promise<Response> {
             status: response.ok ? 'healthy' : 'unhealthy',
             responseTime: (performance.now?.() ?? Date.now()) - reqStarted,
             endpoint: healthEndpoint,
-            lastCheck: new Date().toISOString()
+            lastCheck: new Date().toISOString(),
           };
         } catch (error: any) {
           healthChecks[serviceName] = {
             status: 'error',
             error: String(error),
-            lastCheck: new Date().toISOString()
+            lastCheck: new Date().toISOString(),
           };
         }
       })()
@@ -284,32 +283,32 @@ async function handleHealthCheck(): Promise<Response> {
     summary: {
       total: totalServices,
       healthy: healthyServices,
-      unhealthy: totalServices - healthyServices
+      unhealthy: totalServices - healthyServices,
     },
     timestamp: new Date().toISOString(),
-    deployment: 'Windows Native'
+    deployment: 'Windows Native',
   };
   return json({
     success: true,
     data,
     metadata: {
       timestamp: new Date().toISOString(),
-      processingTimeMs: Date.now() - started
+      processingTimeMs: Date.now() - started,
     }
   } satisfies APIResponse<typeof data>);
 }
 
 /*
  * Service discovery endpoint
- */
+ */;
 async function handleServiceDiscovery(): Promise<Response> {
   const started = Date.now();
   const services = Object.entries(PRODUCTION_ENDPOINTS).map(([name, config]) => ({
     name,
     config,
     protocols: getServiceProtocols(config),
-    tier: 'tier' in config ? config.tier: 'STANDARD'
-  }));
+    tier: 'tier' in config ? config.tier: 'STANDARD',
+  });
   const data = {
     services,
     total: services.length,
@@ -319,7 +318,7 @@ async function handleServiceDiscovery(): Promise<Response> {
       HTTP: services.filter(s => s.protocols.includes('HTTP')).length,
       gRPC: services.filter(s => s.protocols.includes('gRPC')).length,
       QUIC: services.filter(s => s.protocols.includes('QUIC')).length,
-      WebSocket: services.filter(s => s.protocols.includes('WebSocket')).length
+      WebSocket: services.filter(s => s.protocols.includes('WebSocket')).length,
     }
   };
   return json({
@@ -331,30 +330,30 @@ async function handleServiceDiscovery(): Promise<Response> {
 
 /*
  * Performance metrics endpoint
- */
+ */;
 async function handleMetrics(): Promise<Response> {
   const started = Date.now();
   // This would integrate with actual monitoring systems
-  // For now, return basic metrics structure
+  // For now, return basic metrics structure;
   const data = {
     performance: {
       averageResponseTime: '< 50ms',
       uptime: '99.9%',
-      throughput: '1000 req/min'
+      throughput: '1000 req/min',
     },
     resources: {
       cpu: '45%',
       memory: '6.2GB / 16GB',
       gpu: '87% (RTX 3060 Ti)',
-      storage: '125GB / 500GB'
+      storage: '125GB / 500GB',
     },
     protocols: {
       QUIC: '< 5ms avg',
       gRPC: '< 15ms avg',
       HTTP: '< 50ms avg',
-      WebSocket: '< 1ms latency'
+      WebSocket: '< 1ms latency',
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
   return json({
     success: true,
@@ -365,17 +364,17 @@ async function handleMetrics(): Promise<Response> {
 
 /*
  * Cluster status with Windows-native process monitoring
- */
+ */;
 async function handleClusterStatus(): Promise<Response> {
   const started = Date.now();
-  // This would integrate with actual cluster monitoring
+  // This would integrate with actual cluster monitoring;
   const data = {
     cluster: {
       status: 'operational',
       nodes: 1,
       services: Object.keys(PRODUCTION_ENDPOINTS).length,
       platform: 'Windows Native',
-      docker: false
+      docker: false,
     },
     processes: {
       sveltekit: { status: 'running', pid: process.pid },
@@ -383,7 +382,7 @@ async function handleClusterStatus(): Promise<Response> {
       ollama: { status: 'running', instances: 3 },
       databases: { status: 'connected', count: 3 }
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
   return json({
     success: true,
@@ -394,7 +393,7 @@ async function handleClusterStatus(): Promise<Response> {
 
 /*
  * Helper function to determine service protocols
- */
+ */;
 function getServiceProtocols(config: any): string[] {
   const protocols: string[] = [];
 

@@ -9,7 +9,7 @@ import type { HybridGPUContext } from './hybrid-gpu-context';
 // Import GPU configuration from environment
 import { GPU_CONFIG, CLIENT_ENV } from '../config/env';
 
-// NES PPU (Picture Processing Unit) Memory Map
+// NES PPU (Picture Processing Unit) Memory Map;
 export const NES_MEMORY_MAP = {
   // Pattern Tables (CHR-ROM/RAM) - 8KB
   PATTERN_TABLE_0: { start: 0x0000, size: 0x1000 }, // Background patterns
@@ -43,12 +43,13 @@ export const NES_PALETTE = new Uint32Array([
   0xFEFEFF, 0xC0DFFF, 0xD3D2FF, 0xE8C8FF, 0xFBC2FF, 0xFEC4EA, 0xFECCC5, 0xF7D8A5,
   0xE4E594, 0xCFEF96, 0xBDF4AB, 0xB3F3CC, 0xB5EBF2, 0xB8B8B8, 0x000000, 0x000000
 ]);
+}
 
 export interface NESMemoryRegion {
   buffer: ArrayBuffer;
   view: DataView;
   gpuBuffer?: GPUBuffer | WebGLBuffer;
-  isDirty: boolean;
+  isDirty: boolean;,
 }
 
 export interface GPUAcceleration {
@@ -66,7 +67,7 @@ class GlobalGPUManager {
   private initialized = false;
 
   private constructor() {
-    // Only create canvas in browser environment
+    // Only create canvas in browser environment;
     if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       this.canvas = document.createElement('canvas');
       this.canvas.width = 256;  // NES resolution
@@ -76,7 +77,7 @@ class GlobalGPUManager {
     this.acceleration = {
       isEnabled: false,
       contextType: 'cpu',
-      nesMemory: new Map()
+      nesMemory: new Map(),
     };
   }
 
@@ -89,11 +90,11 @@ class GlobalGPUManager {
 
   /**
    * Initialize the global GPU manager with NES memory architecture
-   */
+   */;
   async initialize(preferredCanvas?: HTMLCanvasElement): Promise<void> {
     if (this.initialized) return;
 
-    // Check if GPU acceleration is enabled via environment
+    // Check if GPU acceleration is enabled via environment;
     if (!CLIENT_ENV.GPU_ACCELERATION) {
       console.log('🎮 GPU acceleration disabled via environment configuration');
       this.acceleration.isEnabled = false;
@@ -110,14 +111,14 @@ class GlobalGPUManager {
     try {
       const { createHybridGPUContext } = await import('./hybrid-gpu-context.js');
       
-      // Use environment-based GPU configuration
+      // Use environment-based GPU configuration;
       this.acceleration.hybridContext = await createHybridGPUContext(this.canvas, {
         preferWebGPU: GPU_CONFIG.preferWebGPU,
         allowWebGL2: GPU_CONFIG.allowWebGL2,
         allowWebGL1: GPU_CONFIG.allowWebGL1,
         requireCompute: GPU_CONFIG.requireCompute,
         lodSystemIntegration: GPU_CONFIG.lodSystemIntegration,
-        nesMemoryOptimization: GPU_CONFIG.nesMemoryOptimization
+        nesMemoryOptimization: GPU_CONFIG.nesMemoryOptimization,
       });
 
       this.acceleration.isEnabled = true;
@@ -144,7 +145,7 @@ class GlobalGPUManager {
 
   /**
    * Initialize NES memory regions with GPU buffers
-   */
+   */;
   private async initializeNESMemory(): Promise<void> {
     const regions = [
       'PATTERN_TABLE_0', 'PATTERN_TABLE_1',
@@ -161,17 +162,17 @@ class GlobalGPUManager {
       const memoryRegion: NESMemoryRegion = {
         buffer,
         view,
-        isDirty: false
+        isDirty: false,
       };
 
-      // Create GPU buffer if GPU acceleration is available
+      // Create GPU buffer if GPU acceleration is available;
       if (this.acceleration.hybridContext) {
         try {
           if (this.acceleration.contextType === 'webgpu') {
             const device = this.acceleration.hybridContext.getActiveContextType() as unknown as GPUDevice;
             memoryRegion.gpuBuffer = device.createBuffer({
               size: region.size,
-              usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
+              usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
             });
           } else {
             const gl = this.acceleration.hybridContext.getActiveContextType() as unknown as WebGL2RenderingContext | WebGLRenderingContext;
@@ -191,7 +192,7 @@ class GlobalGPUManager {
 
   /**
    * CPU fallback for NES memory initialization
-   */
+   */;
   private async initializeNESMemoryCPU(): Promise<void> {
     const regions = [
       'PATTERN_TABLE_0', 'PATTERN_TABLE_1',
@@ -208,7 +209,7 @@ class GlobalGPUManager {
       this.acceleration.nesMemory.set(regionName, {
         buffer,
         view,
-        isDirty: false
+        isDirty: false,
       });
     }
 
@@ -217,19 +218,19 @@ class GlobalGPUManager {
 
   /**
    * Load NES color palette into palette RAM
-   */
+   */;
   private async loadNESPalette(): Promise<void> {
     const paletteRAM = this.acceleration.nesMemory.get('PALETTE_RAM');
     if (!paletteRAM) return;
 
-    // Load background palette (16 colors)
+    // Load background palette (16 colors);
     for (let i = 0; i < 16; i++) {
       const colorIndex = i % NES_PALETTE.length;
       const color = NES_PALETTE[colorIndex];
       paletteRAM.view.setUint32(i * 4, color, true);
     }
 
-    // Load sprite palette (16 colors)
+    // Load sprite palette (16 colors);
     for (let i = 0; i < 16; i++) {
       const colorIndex = (i + 16) % NES_PALETTE.length;
       const color = NES_PALETTE[colorIndex];
@@ -242,7 +243,7 @@ class GlobalGPUManager {
 
   /**
    * Create NES-style color quantization shader
-   */
+   */;
   private createNESColorQuantizationShader(): string {
     return `
       @group(0) @binding(0) var<storage, read> inputPixels: array<vec4f>;
@@ -250,7 +251,7 @@ class GlobalGPUManager {
       @group(0) @binding(2) var<storage, read> nesPalette: array<vec4f>;
       @group(0) @binding(3) var<uniform> config: vec4f; // width, height, paletteSize, dithering
       
-      // Convert RGB to NES color index
+      // Convert RGB to NES color index;
       fn rgbToNESIndex(color: vec3f) -> u32 {
         var bestIndex: u32 = 0;
         var bestDistance: f32 = 999999.0;
@@ -270,7 +271,7 @@ class GlobalGPUManager {
         return bestIndex;
       }
       
-      // Apply NES-style dithering
+      // Apply NES-style dithering;
       fn applyNESDithering(color: vec3f, x: i32, y: i32) -> vec3f {
         let ditherPattern = array<f32, 4>(
           -0.5, 0.0, 0.5, 0.25
@@ -279,10 +280,10 @@ class GlobalGPUManager {
         let patternIndex = (x % 2) + (y % 2) * 2;
         let dither = ditherPattern[patternIndex] * 0.1;
         
-        return clamp(color + vec3f(dither), vec3f(0.0), vec3f(1.0));
+        return clamp(color + vec3f(dither), vec3f(0.0), vec3f(1.0);
       }
       
-      @compute @workgroup_size(8, 8)
+      @compute @workgroup_size(8, 8);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let width = i32(config.x);
         let height = i32(config.y);
@@ -296,7 +297,7 @@ class GlobalGPUManager {
         
         var color = inputColor.rgb;
         
-        // Apply dithering if enabled
+        // Apply dithering if enabled;
         if (config.w > 0.5) {
           color = applyNESDithering(color, x, y);
         }
@@ -341,7 +342,7 @@ class GlobalGPUManager {
       }
 
       const results = await (this.acceleration.hybridContext as any).runComputeShader(
-        this.acceleration.colorQuantizationShader!,
+        this.acceleration.colorQuantizationShader!,);
         {
           inputPixels: imageData,
           nesPalette: paletteData,
@@ -386,15 +387,15 @@ class GlobalGPUManager {
       let b = imageData[i + 2];
       const a = imageData[i + 3];
 
-      // Apply dithering
+      // Apply dithering;
       if (options.dithering) {
         const ditherPattern = [-0.5, 0.0, 0.5, 0.25];
         const patternIndex = (x % 2) + (y % 2) * 2;
         const dither = ditherPattern[patternIndex] * 0.1;
         
-        r = Math.max(0, Math.min(1, r + dither));
-        g = Math.max(0, Math.min(1, g + dither));
-        b = Math.max(0, Math.min(1, b + dither));
+        r = Math.max(0, Math.min(1, r + dither);
+        g = Math.max(0, Math.min(1, g + dither);
+        b = Math.max(0, Math.min(1, b + dither);
       }
 
       // Find closest NES color
@@ -430,7 +431,7 @@ class GlobalGPUManager {
 
   /**
    * Sync NES memory region to GPU buffer
-   */
+   */;
   private async syncNESMemoryToGPU(regionName: string): Promise<void> {
     const region = this.acceleration.nesMemory.get(regionName);
     if (!region || !region.isDirty || !region.gpuBuffer) return;
@@ -455,35 +456,35 @@ class GlobalGPUManager {
 
   /**
    * Get hybrid GPU context for external components
-   */
+   */;
   getHybridGPU(): HybridGPUContext | null {
     return this.acceleration.hybridContext || null;
   }
 
   /**
    * Get NES memory region
-   */
+   */;
   getNESMemory(regionName: string): NESMemoryRegion | null {
     return this.acceleration.nesMemory.get(regionName) || null;
   }
 
   /**
    * Check if GPU acceleration is available
-   */
+   */;
   isGPUEnabled(): boolean {
     return this.acceleration.isEnabled;
   }
 
   /**
    * Get current GPU context type
-   */
+   */;
   getContextType(): string {
     return this.acceleration.contextType;
   }
 
   /**
    * Get canvas element
-   */
+   */;
   getCanvas(): HTMLCanvasElement {
     return this.canvas;
   }

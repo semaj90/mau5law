@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync } from "fs";
-import { glob } from "glob";
+import { readFileSync, writeFileSync } from 'fs';
+import { glob } from 'glob';
 
-console.log("🔧 Fixing UI component imports...");
+console.log('🔧 Fixing UI component imports...');
 
 // Get all TypeScript and Svelte files
-const files = glob.sync("src/**/*.{ts,svelte}");
+const files = glob.sync('src/**/*.{ts,svelte}');
 
 let fixedFiles = 0;
 let totalFixes = 0;
@@ -57,12 +57,12 @@ const componentMappings = [
     from: /import \{([^}]*), Scales([^}]*)\} from 'lucide-svelte'/g,
     to: "import {$1, Scale$2} from 'lucide-svelte'",
   },
-  { from: /Scales/g, to: "Scale" },
+  { from: /Scales/g, to: 'Scale' },
 ];
 
 for (const file of files) {
   try {
-    const content = readFileSync(file, "utf8");
+    const content = readFileSync(file, 'utf8');
     let newContent = content;
     let fileFixes = 0;
 
@@ -75,7 +75,7 @@ for (const file of files) {
     }
 
     if (newContent !== content) {
-      writeFileSync(file, newContent, "utf8");
+      writeFileSync(file, newContent, 'utf8');
       fixedFiles++;
       totalFixes += fileFixes;
       console.log(`✅ Fixed ${fileFixes} UI imports in ${file}`);
@@ -85,6 +85,4 @@ for (const file of files) {
   }
 }
 
-console.log(
-  `\n🎉 Fixed UI component imports in ${fixedFiles} files (${totalFixes} total fixes)`,
-);
+console.log(`\n🎉 Fixed UI component imports in ${fixedFiles} files (${totalFixes} total fixes)`);

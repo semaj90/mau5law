@@ -4,7 +4,7 @@ import { writable, derived, get } from "svelte/store";
 import { authStore } from './authStore.js';
 import type { Case, Evidence, Report } from '$lib/server/db/schema';
 
-// Extended case type with relations
+// Extended case type with relations;
 export interface CaseWithRelations extends Case {
   evidence?: Evidence[];
   reports?: Report[];
@@ -12,6 +12,7 @@ export interface CaseWithRelations extends Case {
 
 // Alias for backward compatibility
 export type CaseData = CaseWithRelations;
+}
 
 export interface CaseState {
   cases: CaseWithRelations[];
@@ -28,7 +29,7 @@ export interface CaseState {
   pagination: {
     page: number;
     limit: number;
-    total: number;
+    total: number;,
   };
 }
 
@@ -50,9 +51,9 @@ const createCaseStore = () => {
   return {
     subscribe,
 
-    // Load cases from database
+    // Load cases from database;
     async loadCases(filters?: Partial<CaseState["filters"]>) {
-      update((state) => ({ ...state, isLoading: true, error: null }));
+      update((state) => ({ ...state, isLoading: true, error: null });
 
       try {
         const params = new URLSearchParams();
@@ -62,8 +63,8 @@ const createCaseStore = () => {
         if (filters?.search) params.append("search", filters.search);
 
         const currentState = get({ subscribe });
-        params.append("page", currentState.pagination.page.toString());
-        params.append("limit", currentState.pagination.limit.toString());
+        params.append("page", currentState.pagination.page.toString();
+        params.append("limit", currentState.pagination.limit.toString();
 
         const response = await fetch(`/api/cases?${params}`, {
           credentials: "include",
@@ -80,27 +81,27 @@ const createCaseStore = () => {
             },
             filters: { ...state.filters, ...filters },
             isLoading: false,
-          }));
+          });
         } else {
           const error = await response.json();
           update((state) => ({
             ...state,
             error: error.message || "Failed to load cases",
             isLoading: false,
-          }));
+          });
         }
       } catch (error: any) {
         update((state) => ({
           ...state,
           error: "Network error while loading cases",
           isLoading: false,
-        }));
+        });
       }
     },
 
-    // Load specific case with relations
+    // Load specific case with relations;
     async loadCase(caseId: string) {
-      update((state) => ({ ...state, isLoading: true, error: null }));
+      update((state) => ({ ...state, isLoading: true, error: null });
 
       try {
         const response = await fetch(`/api/cases/${caseId}`, {
@@ -114,7 +115,7 @@ const createCaseStore = () => {
             activeCase: caseData,
             activeCaseId: caseId,
             isLoading: false,
-          }));
+          });
           return { success: true, case: caseData };
         } else {
           const error = await response.json();
@@ -122,7 +123,7 @@ const createCaseStore = () => {
             ...state,
             error: error.message || "Failed to load case",
             isLoading: false,
-          }));
+          });
           return { success: false, error: error.message };
         }
       } catch (error: any) {
@@ -130,19 +131,19 @@ const createCaseStore = () => {
           ...state,
           error: "Network error while loading case",
           isLoading: false,
-        }));
+        });
         return { success: false, error: "Network error" };
       }
     },
 
-    // Create new case
+    // Create new case;
     async createCase(caseData: {
       title: string;
       description?: string;
       caseType?: string;
       priority?: string;
     }) {
-      update((state) => ({ ...state, isLoading: true, error: null }));
+      update((state) => ({ ...state, isLoading: true, error: null });
 
       try {
         const response = await fetch("/api/cases", {
@@ -164,7 +165,7 @@ const createCaseStore = () => {
               total: state.pagination.total + 1,
             },
             isLoading: false,
-          }));
+          });
           return { success: true, case: newCase };
         } else {
           const error = await response.json();
@@ -172,7 +173,7 @@ const createCaseStore = () => {
             ...state,
             error: error.message || "Failed to create case",
             isLoading: false,
-          }));
+          });
           return { success: false, error: error.message };
         }
       } catch (error: any) {
@@ -180,14 +181,14 @@ const createCaseStore = () => {
           ...state,
           error: "Network error while creating case",
           isLoading: false,
-        }));
+        });
         return { success: false, error: "Network error" };
       }
     },
 
-    // Update case
+    // Update case;
     async updateCase(caseId: string, updates: Partial<Case>) {
-      update((state) => ({ ...state, isLoading: true, error: null }));
+      update((state) => ({ ...state, isLoading: true, error: null });
 
       try {
         const response = await fetch(`/api/cases/${caseId}`, {
@@ -211,7 +212,7 @@ const createCaseStore = () => {
                 ? { ...state.activeCase, ...updatedCase }
                 : state.activeCase,
             isLoading: false,
-          }));
+          });
           return { success: true, case: updatedCase };
         } else {
           const error = await response.json();
@@ -219,7 +220,7 @@ const createCaseStore = () => {
             ...state,
             error: error.message || "Failed to update case",
             isLoading: false,
-          }));
+          });
           return { success: false, error: error.message };
         }
       } catch (error: any) {
@@ -227,14 +228,14 @@ const createCaseStore = () => {
           ...state,
           error: "Network error while updating case",
           isLoading: false,
-        }));
+        });
         return { success: false, error: "Network error" };
       }
     },
 
-    // Delete case
+    // Delete case;
     async deleteCase(caseId: string) {
-      update((state) => ({ ...state, isLoading: true, error: null }));
+      update((state) => ({ ...state, isLoading: true, error: null });
 
       try {
         const response = await fetch(`/api/cases/${caseId}`, {
@@ -255,7 +256,7 @@ const createCaseStore = () => {
               total: Math.max(0, state.pagination.total - 1),
             },
             isLoading: false,
-          }));
+          });
           return { success: true };
         } else {
           const error = await response.json();
@@ -263,7 +264,7 @@ const createCaseStore = () => {
             ...state,
             error: error.message || "Failed to delete case",
             isLoading: false,
-          }));
+          });
           return { success: false, error: error.message };
         }
       } catch (error: any) {
@@ -271,7 +272,7 @@ const createCaseStore = () => {
           ...state,
           error: "Network error while deleting case",
           isLoading: false,
-        }));
+        });
         return { success: false, error: "Network error" };
       }
     },
@@ -280,9 +281,9 @@ const createCaseStore = () => {
     async generateReport(
       caseId: string,
       reportType: string,
-      customPrompt?: string
+      customPrompt?: string;
     ) {
-      update((state) => ({ ...state, isLoading: true, error: null }));
+      update((state) => ({ ...state, isLoading: true, error: null });
 
       try {
         const response = await fetch(`/api/cases/${caseId}/generate-report`, {
@@ -301,17 +302,17 @@ const createCaseStore = () => {
         if (response.ok) {
           const report = await response.json();
 
-          // Update case with new report
+          // Update case with new report;
           update((state) => ({
             ...state,
-            activeCase: state.activeCase
+            activeCase: state.activeCase;
               ? {
                   ...state.activeCase,
                   reports: [...(state.activeCase.reports || []), report],
                 }
               : state.activeCase,
             isLoading: false,
-          }));
+          });
 
           return { success: true, report };
         } else {
@@ -320,7 +321,7 @@ const createCaseStore = () => {
             ...state,
             error: error.message || "Failed to generate report",
             isLoading: false,
-          }));
+          });
           return { success: false, error: error.message };
         }
       } catch (error: any) {
@@ -328,12 +329,12 @@ const createCaseStore = () => {
           ...state,
           error: "Network error while generating report",
           isLoading: false,
-        }));
+        });
         return { success: false, error: "Network error" };
       }
     },
 
-    // Set active case
+    // Set active case;
     setActiveCase(caseId: string | null) {
       update((state) => {
         const activeCase = caseId
@@ -347,48 +348,48 @@ const createCaseStore = () => {
       });
     },
 
-    // Update filters
+    // Update filters;
     setFilters(filters: Partial<CaseState["filters"]>) {
       update((state) => ({
         ...state,
         filters: { ...state.filters, ...filters },
         pagination: { ...state.pagination, page: 1 }, // Reset to first page
-      }));
+      });
 
       // Reload cases with new filters
       this.loadCases(get({ subscribe }).filters);
     },
 
-    // Clear filters
+    // Clear filters;
     clearFilters() {
       update((state) => ({
         ...state,
         filters: Record<string, any>,
         pagination: { ...state.pagination, page: 1 },
-      }));
+      });
 
       this.loadCases();
     },
 
-    // Pagination
+    // Pagination;
     setPage(page: number) {
       update((state) => ({
         ...state,
         pagination: { ...state.pagination, page },
-      }));
+      });
 
       this.loadCases(get({ subscribe }).filters);
     },
 
-    // Clear error
+    // Clear error;
     clearError() {
-      update((state) => ({ ...state, error: null }));
+      update((state) => ({ ...state, error: null });
     },
 
     // AI-powered case analysis using Context7 MCP
     async analyzeCase(
       caseId: string,
-      analysisType: "evidence" | "legal" | "timeline" | "poi"
+      analysisType: "evidence" | "legal" | "timeline" | "poi";
     ) {
       try {
         const response = await fetch(`/api/cases/${caseId}/analyze`, {
@@ -428,7 +429,7 @@ export const casesLoading = derived(caseStore, ($cases) => $cases.isLoading);
 export const casesError = derived(caseStore, ($cases) => $cases.error);
 export const casesPagination = derived(caseStore, ($cases) => $cases.pagination);
 
-// Initialize cases when authenticated
+// Initialize cases when authenticated;
 if (browser) {
   authStore.subscribe((auth) => {
     if (auth.isAuthenticated && !auth.isLoading) {

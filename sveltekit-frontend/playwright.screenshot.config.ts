@@ -8,18 +8,18 @@ export default defineConfig({
   reporter: 'list',
   timeout: 60000,
   expect: {
-    timeout: 10000
+    timeout: 10000,
   },
   use: {
     baseURL: 'http://localhost:5174',
     trace: 'off',
     screenshot: 'off',
-    video: 'off'
+    video: 'off',
   },
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
-    }
-  ]
+      use: { ...devices['Desktop Chrome'] },
+    },
+  ],
 });

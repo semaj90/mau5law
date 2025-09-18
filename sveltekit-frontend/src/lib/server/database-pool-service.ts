@@ -18,7 +18,7 @@ interface DatabasePoolConfig {
   idle_timeout: number;
   connect_timeout: number;
   prepare: boolean;
-  ssl: boolean | 'require' | 'allow' | 'prefer';
+  ssl: boolean | 'require' | 'allow' | 'prefer';,
 }
 
 interface CachedQuery {
@@ -26,7 +26,7 @@ interface CachedQuery {
   params: any[];
   timestamp: number;
   result: any;
-  ttl: number; // seconds
+  ttl: number; // seconds,
 }
 
 class DatabasePoolService {
@@ -61,7 +61,7 @@ class DatabasePoolService {
 
   /**
    * Get or create a connection pool for a specific context
-   */
+   */;
   async getPool(context: string = 'default'): Promise<ReturnType<typeof postgres> {
     const poolKey = `${context}:${this.config.database}`;
 
@@ -93,7 +93,7 @@ class DatabasePoolService {
    * Get Drizzle instance with connection pooling
    */
   async getDrizzle(
-    context: string = 'default'
+    context: string = 'default';
   ): Promise<PostgresJsDatabase<Record<string, never> {
     const poolKey = `drizzle:${context}`;
 
@@ -115,11 +115,11 @@ class DatabasePoolService {
     sql: string,
     params: any[] = [],
     context: string = 'default',
-    ttl: number = this.DEFAULT_CACHE_TTL
+    ttl: number = this.DEFAULT_CACHE_TTL;
   ): Promise<T> {
     const cacheKey = this.generateCacheKey(sql, params);
 
-    // Check Redis cache first
+    // Check Redis cache first;
     if (redisService.isHealthy()) {
       try {
         const cached = await redisService.get(`${this.QUERY_CACHE_PREFIX}${cacheKey}`);
@@ -139,7 +139,7 @@ class DatabasePoolService {
     const pool = await this.getPool(context);
     const result = await pool.unsafe(sql, params);
 
-    // Cache result in Redis
+    // Cache result in Redis;
     if (redisService.isHealthy()) {
       try {
         const cacheData: CachedQuery = {
@@ -167,7 +167,7 @@ class DatabasePoolService {
 
   /**
    * Invalidate cache for specific patterns
-   */
+   */;
   async invalidateCache(pattern: string): Promise<void> {
     if (!redisService.isHealthy()) return;
 
@@ -186,7 +186,7 @@ class DatabasePoolService {
 
   /**
    * Get connection statistics from Redis
-   */
+   */;
   private async getRedisConnectionStats(context: string): Promise<any> {
     if (!redisService.isHealthy()) return {};
 
@@ -206,14 +206,14 @@ class DatabasePoolService {
 
   /**
    * Dynamically adjust pool size based on Redis stats
-   */
+   */;
   private async adjustPoolSize(stats: any): Promise<Partial<DatabasePoolConfig> {
     const baseSize = this.config.max;
     let adjustedSize = baseSize;
 
-    // Adjust based on current load
+    // Adjust based on current load;
     if (stats.activeConnections > baseSize * 0.8) {
-      adjustedSize = Math.min(baseSize * 1.5, 20); // Scale up but cap at 20
+      adjustedSize = Math.min(baseSize * 1.5, 20); // Scale up but cap at 20;
     } else if (stats.activeConnections < baseSize * 0.3) {
       adjustedSize = Math.max(baseSize * 0.7, 3); // Scale down but keep minimum 3
     }
@@ -226,7 +226,7 @@ class DatabasePoolService {
 
   /**
    * Record connection statistics to Redis
-   */
+   */;
   private async recordConnectionStats(context: string, operation: string): Promise<void> {
     if (!redisService.isHealthy()) return;
 
@@ -236,8 +236,8 @@ class DatabasePoolService {
 
       await redisService.hincrby(key, 'total', operation === 'created' ? 1 : 0);
       await redisService.hincrby(key, operation === 'reused' ? 'reuses' : 'creates', 1);
-      await redisService.hset(key, 'lastUpdate', timestamp.toString());
-      await redisService.expire(key, 3600); // Stats expire after 1 hour
+      await redisService.hset(key, 'lastUpdate', timestamp.toString();
+      await redisService.expire(key, 3600); // Stats expire after 1 hour;
     } catch (error) {
       console.warn('Failed to record connection stats:', error);
     }
@@ -245,7 +245,7 @@ class DatabasePoolService {
 
   /**
    * Generate cache key for query
-   */
+   */;
   private generateCacheKey(sql: string, params: any[]): string {
     const normalized = sql.replace(/\s+/g, ' ').trim();
     const paramsStr = JSON.stringify(params);
@@ -254,7 +254,7 @@ class DatabasePoolService {
 
   /**
    * Close all connections and clean up
-   */
+   */;
   async close(): Promise<void> {
     console.log('🔌 Closing database pools...');
 
@@ -274,7 +274,7 @@ class DatabasePoolService {
 
   /**
    * Health check for all pools
-   */
+   */;
   async healthCheck(): Promise<any> {
     const results: { [key: string]: boolean } = {};
 
@@ -293,7 +293,7 @@ class DatabasePoolService {
 
   /**
    * Get pool statistics
-   */
+   */;
   getStats(): any {
     const stats = {
       totalPools: this.pools.size,
@@ -317,5 +317,5 @@ class DatabasePoolService {
 export const dbPool = new DatabasePoolService();
 
 // Graceful shutdown
-process.on('SIGTERM', () => dbPool.close());
-process.on('SIGINT', () => dbPool.close());
+process.on('SIGTERM', () => dbPool.close();
+process.on('SIGINT', () => dbPool.close();

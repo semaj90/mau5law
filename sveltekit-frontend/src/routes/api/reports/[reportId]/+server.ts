@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const reportResult = await db
       .select()
       .from(reports)
-      .where(eq(reports.id, reportId))
+      .where(eq(reports.id, reportId)
       .limit(1);
 
     if (!reportResult.length) {
@@ -50,7 +50,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const existingReport = await db
       .select()
       .from(reports)
-      .where(eq(reports.id, reportId))
+      .where(eq(reports.id, reportId)
       .limit(1);
 
     if (!existingReport.length) {
@@ -76,12 +76,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (data.isPublic !== undefined) updateData.isPublic = data.isPublic;
     if (data.tags !== undefined) updateData.tags = data.tags;
 
-    // Update metadata with new calculated values
+    // Update metadata with new calculated values;
     if (data.content !== undefined || data.metadata !== undefined) {
       const currentMetadata = (existingReport[0].metadata as any) || {};
       updateData.metadata = {
         ...currentMetadata,
-        ...(data.metadata || {}),
+        ...(data.metadata || {,}),
         wordCount,
         estimatedReadTime: Math.ceil(wordCount / 200),
       };
@@ -89,7 +89,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const [updatedReport] = await db
       .update(reports)
       .set(updateData)
-      .where(eq(reports.id, reportId))
+      .where(eq(reports.id, reportId)
       .returning();
 
     return json(updatedReport);
@@ -115,7 +115,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     const existingReport = await db
       .select()
       .from(reports)
-      .where(eq(reports.id, reportId))
+      .where(eq(reports.id, reportId)
       .limit(1);
 
     if (!existingReport.length) {
@@ -124,7 +124,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Delete the report (cascade will handle related records)
     const [deletedReport] = await db
       .delete(reports)
-      .where(eq(reports.id, reportId))
+      .where(eq(reports.id, reportId)
       .returning();
 
     return json({ success: true, deletedReport });
@@ -152,7 +152,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     const existingReport = await db
       .select()
       .from(reports)
-      .where(eq(reports.id, reportId))
+      .where(eq(reports.id, reportId)
       .limit(1);
 
     if (!existingReport.length) {
@@ -162,7 +162,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       updatedAt: new Date(),
     };
 
-    // Handle specific patch operations
+    // Handle specific patch operations;
     if (data.operation === "publish") {
       updateData.status = "published";
       updateData.isPublic = data.isPublic || false;
@@ -179,7 +179,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       const currentTags = (existingReport[0].tags as string[]) || [];
       updateData.tags = currentTags.filter((tag) => tag !== data.tag);
     } else {
-      // Regular field updates
+      // Regular field updates;
       Object.keys(data).forEach((key) => {
         if (key !== "operation") {
           updateData[key] = data[key];
@@ -189,7 +189,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     const [updatedReport] = await db
       .update(reports)
       .set(updateData)
-      .where(eq(reports.id, reportId))
+      .where(eq(reports.id, reportId)
       .returning();
 
     return json(updatedReport);

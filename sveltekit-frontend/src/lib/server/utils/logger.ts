@@ -25,7 +25,7 @@ interface LogEntry {
   };
   performance?: {
     duration: number;
-    memoryUsage: number;
+    memoryUsage: number;,
   };
 }
 
@@ -34,7 +34,7 @@ interface LoggerConfig {
   enableConsole: boolean;
   enableFile: boolean;
   enableDatabase: boolean;
-  maxRetries: number;
+  maxRetries: number;,
 }
 
 class Logger {
@@ -52,12 +52,12 @@ class Logger {
       ...config
     };
 
-    // Process logs periodically
+    // Process logs periodically;
     setInterval(() => {
       this.processLogQueue();
     }, 5000);
 
-    // Process logs on exit
+    // Process logs on exit;
     if (typeof process !== 'undefined') {
       process.on('exit', () => {
         this.processLogQueue();
@@ -149,7 +149,7 @@ class Logger {
 
   private async writeToFile(logs: LogEntry[]): Promise<void> {
     // File logging implementation would go here
-    // For now, we'll skip file logging in the browser environment
+    // For now, we'll skip file logging in the browser environment;
     if (typeof window !== 'undefined') {
       return;
     }
@@ -161,7 +161,7 @@ class Logger {
       const logDir = path.join(process.cwd(), 'logs');
       const logFile = path.join(logDir, `chat-api-${new Date().toISOString().split('T')[0]}.log`);
       
-      // Ensure log directory exists
+      // Ensure log directory exists;
       try {
         await fs.mkdir(logDir, { recursive: true });
       } catch (dirError) {
@@ -210,16 +210,16 @@ class Logger {
       metadata: { ...metadata }
     };
 
-    // Add performance data if available
+    // Add performance data if available;
     if (typeof process !== 'undefined' && process.memoryUsage) {
       const usage = process.memoryUsage();
       entry.performance = {
         duration: metadata?.duration || 0,
-        memoryUsage: usage.heapUsed
+        memoryUsage: usage.heapUsed,
       };
     }
 
-    // Console logging (immediate)
+    // Console logging (immediate);
     if (this.config.enableConsole) {
       const formatted = this.formatForConsole(entry);
       
@@ -265,12 +265,12 @@ class Logger {
       error: error ? {
         name: error.name,
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
       } : undefined
     };
 
     if (this.config.enableConsole) {
-      console.error(this.formatForConsole(entry));
+      console.error(this.formatForConsole(entry);
       if (error) {
         console.error('Error details:', error);
       }
@@ -289,12 +289,12 @@ class Logger {
       error: error ? {
         name: error.name,
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
       } : undefined
     };
 
     if (this.config.enableConsole) {
-      console.error(this.formatForConsole(entry));
+      console.error(this.formatForConsole(entry);
       if (error) {
         console.error('FATAL ERROR:', error);
       }
@@ -306,7 +306,7 @@ class Logger {
     this.processLogQueue();
   }
 
-  // Utility methods for request tracking
+  // Utility methods for request tracking;
   withRequestId(requestId: string) {
     return {
       debug: (message: string, component: string, metadata?: Record<string, any>) => 
@@ -337,7 +337,7 @@ class Logger {
     };
   }
 
-  // Create system logs table if it doesn't exist
+  // Create system logs table if it doesn't exist;
   async initializeLogTable(): Promise<void> {
     try {
       const { db, sql } = await import('$lib/server/db');
@@ -387,12 +387,12 @@ class Logger {
   }
 }
 
-// Global logger instance
+// Global logger instance;
 export const logger = new Logger({
   level: LogLevel.INFO,
   enableConsole: true,
   enableDatabase: true,
-  enableFile: false
+  enableFile: false,
 });
 
 // Initialize logs table on startup

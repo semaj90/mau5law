@@ -15,13 +15,13 @@ interface AnalysisResult {
   similarCases: Array<{
     id: string;
     title: string;
-    similarity: number;
+    similarity: number;,
   }>;
   complianceStatus: 'compliant' | 'non-compliant' | 'needs-review';
   timeline: Array<{
     event: string;
     date: string;
-    importance: 'low' | 'medium' | 'high';
+    importance: 'low' | 'medium' | 'high';,
   }>;
 }
 
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const caseData = await db
       .select()
       .from(legalCases)
-      .where(eq(legalCases.id, caseId))
+      .where(eq(legalCases.id, caseId)
       .limit(1);
 
     if (caseData.length === 0) {
@@ -52,14 +52,14 @@ export const POST: RequestHandler = async ({ params, request }) => {
     const evidenceData = await db
       .select()
       .from(evidence)
-      .where(eq(evidence.caseId, caseId))
+      .where(eq(evidence.caseId, caseId)
       .limit(50);
 
     // 3. Get document metadata with embeddings for vector similarity
     const documentsWithEmbeddings = await db
       .select()
       .from(documentMetadata)
-      .where(eq(documentMetadata.caseId, caseId))
+      .where(eq(documentMetadata.caseId, caseId)
       .limit(20);
 
     // 4. Perform AI-powered analysis
@@ -113,12 +113,12 @@ export const POST: RequestHandler = async ({ params, request }) => {
         similarCases = similarityResults.map((row: any) => ({
           id: row.id,
           title: row.title,
-          similarity: Math.round(row.similarity * 100) / 100
-        }));
+          similarity: Math.round(row.similarity * 100) / 100,
+        });
       }
     }
 
-    // 6. Generate mock AI analysis (replace with actual AI service call)
+    // 6. Generate mock AI analysis (replace with actual AI service call);
     const analysisResult: AnalysisResult = {
       caseId,
       summary: `Comprehensive analysis of ${case_.title}. Case involves ${evidenceData.length} pieces of evidence with ${case_.priority} priority level. Analysis indicates ${
@@ -140,21 +140,21 @@ export const POST: RequestHandler = async ({ params, request }) => {
       ],
       similarCases,
       complianceStatus: evidenceData.length >= 3 ? 'compliant' : 'needs-review',
-      timeline: [
+      timeline: [;
         {
           event: 'Case Analysis Initiated',
           date: new Date().toISOString(),
-          importance: 'medium'
+          importance: 'medium',
         },
         {
           event: `Evidence Review (${evidenceData.length} items)`,
           date: new Date().toISOString(),
-          importance: evidenceData.length > 5 ? 'high' : 'medium'
+          importance: evidenceData.length > 5 ? 'high' : 'medium',
         },
         {
           event: 'Vector Similarity Analysis Completed',
           date: new Date().toISOString(),
-          importance: similarCases.length > 0 ? 'high' : 'low'
+          importance: similarCases.length > 0 ? 'high' : 'low',
         }
       ]
     };
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
         evidenceCount: evidenceData.length,
         documentCount: documentsWithEmbeddings.length,
         similarCasesFound: similarCases.length,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     });
 
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
     return json({
       success: false,
       error: 'Failed to analyze case',
-      details: error instanceof Error ? error.message: 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };

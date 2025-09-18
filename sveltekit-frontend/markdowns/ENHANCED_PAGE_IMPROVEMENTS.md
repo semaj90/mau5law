@@ -2,13 +2,15 @@
 
 ## Overview
 
-The enhanced case management page (`/cases/[id]/enhanced/+page.svelte`) has been significantly improved with advanced features, better user experience, and comprehensive error handling.
+The enhanced case management page (`/cases/[id]/enhanced/+page.svelte`) has been significantly
+improved with advanced features, better user experience, and comprehensive error handling.
 
 ## Key Enhancements Added
 
 ### 1. **Advanced State Management**
 
-- Enhanced loading states for all operations (evidence, reports, AI analysis, canvas saving, report saving)
+- Enhanced loading states for all operations (evidence, reports, AI analysis, canvas saving, report
+  saving)
 - Comprehensive error handling with user-friendly error messages
 - Success message notifications for completed operations
 - Real-time state updates and feedback
@@ -90,20 +92,20 @@ function addSuccessMessage(message: string) {
 const handleKeyPress = (e: KeyboardEvent) => {
   if (e.ctrlKey || e.metaKey) {
     switch (e.key) {
-      case "b":
+      case 'b':
         sidebarOpen.update((open) => !open);
         break;
-      case "1":
-        activeTab.set("canvas");
+      case '1':
+        activeTab.set('canvas');
         break;
-      case "2":
-        activeTab.set("editor");
+      case '2':
+        activeTab.set('editor');
         break;
-      case "3":
-        activeTab.set("evidence");
+      case '3':
+        activeTab.set('evidence');
         break;
-      case "4":
-        activeTab.set("reports");
+      case '4':
+        activeTab.set('reports');
         break;
     }
   }
@@ -283,4 +285,5 @@ The enhanced case management page now provides a comprehensive, user-friendly in
 - ✅ Auto-save functionality
 - ✅ Professional UI/UX design
 
-The page is now production-ready with robust error handling, excellent user experience, and comprehensive feature integration.
+The page is now production-ready with robust error handling, excellent user experience, and
+comprehensive feature integration.

@@ -20,6 +20,7 @@ const RAG_QUIC_CONFIG = {
   etagRevalidation: true,
   maxPayloadSize: 10 * 1024 * 1024, // 10MB
 };
+}
 
 export interface RAGRequest {
   query: string;
@@ -38,7 +39,7 @@ export interface RAGResponse {
   model: string;
   confidence: number;
   executionTime: number;
-  cached: boolean;
+  cached: boolean;,
 }
 
 // Import the Go microservice manager
@@ -48,12 +49,12 @@ import { URL } from 'url';
 
 /*
  * GET /api/v1/quic/rag-proxy - RAG proxy health and metrics
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const includeMetrics = url.searchParams.get('metrics') === 'true';
 
-    // Check RAG proxy health
+    // Check RAG proxy health;
     const healthResponse = await fetch(`${RAG_QUIC_CONFIG.baseUrl}/health`, {
       signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout),
     });
@@ -64,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
     if (healthResponse.ok) {
       responseData = await healthResponse.json();
     } else {
-      // Try fallback HTTP/2
+      // Try fallback HTTP/2;
       const fallbackResponse = await fetch(`${RAG_QUIC_CONFIG.fallbackUrl}/health`, {
         signal: AbortSignal.timeout(RAG_QUIC_CONFIG.timeout),
       });
@@ -145,29 +146,29 @@ export const GET: RequestHandler = async ({ url }) => {
 
 /*
  * POST /api/v1/quic/rag-proxy - Enhanced RAG query with caching
- */
+ */;
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const ragRequest: RAGRequest = await request.json();
     const useHttp3 = url.searchParams.get('http3') !== 'false';
     const bypassCache = url.searchParams.get('bypass-cache') === 'true';
 
-    // Validate RAG request
+    // Validate RAG request;
     if (!ragRequest.query || ragRequest.query.trim().length === 0) {
-      error(400, ensureError({ message: 'Query is required and cannot be empty' }));
+      error(400, ensureError({ message: 'Query is required and cannot be empty' });
     }
 
     if (ragRequest.maxResults && (ragRequest.maxResults < 1 || ragRequest.maxResults > 100)) {
-      error(400, ensureError({ message: 'Max results must be between 1 and 100' }));
+      error(400, ensureError({ message: 'Max results must be between 1 and 100' });
     }
 
     if (ragRequest.threshold && (ragRequest.threshold < 0 || ragRequest.threshold > 1)) {
-      error(400, ensureError({ message: 'Threshold must be between 0 and 1' }));
+      error(400, ensureError({ message: 'Threshold must be between 0 and 1' });
     }
 
     // Placeholder: Enhanced RAG go client is not available; use HTTP path or future client
 
-    // Prepare request payload for Go service
+    // Prepare request payload for Go service;
     const requestPayload = {
       query: ragRequest.query,
       context: ragRequest.context || [],
@@ -185,7 +186,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     };
 
     // Generate ETag for caching
-    const requestHash = await generateRequestHash(JSON.stringify(requestPayload));
+    const requestHash = await generateRequestHash(JSON.stringify(requestPayload);
 
     let response: Response;
     let protocol: string;
@@ -198,7 +199,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         'X-QUIC-Request': 'true',
       };
 
-      // Add ETag for cache revalidation
+      // Add ETag for cache revalidation;
       if (RAG_QUIC_CONFIG.etagRevalidation && requestPayload.useCache) {
         headers['If-None-Match'] = requestHash;
       }
@@ -225,7 +226,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       );
     }
 
-    // Handle 304 Not Modified (cached response)
+    // Handle 304 Not Modified (cached response);
     if (response.status === 304) {
       return json({
         success: true,
@@ -276,15 +277,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 /*
  * PUT /api/v1/quic/rag-proxy - Update document in RAG index
- */
+ */;
 export const PUT: RequestHandler = async ({ request, url }) => {
   try {
     const document = await request.json();
     const useHttp3 = url.searchParams.get('http3') !== 'false';
 
-    // Validate document
+    // Validate document;
     if (!document.id || !document.content) {
-      error(400, ensureError({ message: 'Document ID and content are required' }));
+      error(400, ensureError({ message: 'Document ID and content are required' });
     }
 
     const targetUrl = useHttp3
@@ -327,14 +328,14 @@ export const PUT: RequestHandler = async ({ request, url }) => {
 
 /*
  * DELETE /api/v1/quic/rag-proxy - Remove document from RAG index
- */
+ */;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const documentId = url.searchParams.get('documentId');
     const useHttp3 = url.searchParams.get('http3') !== 'false';
 
     if (!documentId) {
-      error(400, ensureError({ message: 'Document ID is required' }));
+      error(400, ensureError({ message: 'Document ID is required' });
     }
 
     const targetUrl = useHttp3
@@ -375,11 +376,11 @@ export const DELETE: RequestHandler = async ({ url }) => {
 
 /*
  * Generate SHA-256 hash for request caching
- */
+ */;
 async function generateRequestHash(content: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(content);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashArray = Array.from(new Uint8Array(hashBuffer);
   return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 }

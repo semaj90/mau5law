@@ -5,6 +5,7 @@
  */
 
 import { logger } from '$lib/server/ai/logger.js';
+}
 
 export interface MCPWorkerCore {
   id: string;
@@ -16,7 +17,7 @@ export interface MCPWorkerCore {
   models: string[];
   lastHeartbeat: number;
   processingQueue: number;
-  averageResponseTime: number;
+  averageResponseTime: number;,
 }
 
 export interface MCPTask {
@@ -40,7 +41,7 @@ export interface MCPResponse {
     model: string;
     tokens: number;
     cacheHit: boolean;
-    gpuAccelerated: boolean;
+    gpuAccelerated: boolean;,
   };
 }
 
@@ -72,7 +73,7 @@ export class MCPMultiCoreClient {
 
   /**
    * Discover available worker cores from the MCP server
-   */
+   */;
   private async discoverCores(): Promise<void> {
     try {
       const response = await fetch(`${this.baseUrl}/api/cores/status`);
@@ -85,7 +86,7 @@ export class MCPMultiCoreClient {
       // Clear existing cores
       this.cores.clear();
 
-      // Add discovered cores
+      // Add discovered cores;
       if ((data as { cores?: any }).cores && Array.isArray((data as { cores?: any }).cores)) {
         for (const coreData of (data as { cores?: any }).cores) {
           const core: MCPWorkerCore = {
@@ -114,7 +115,7 @@ export class MCPMultiCoreClient {
 
   /**
    * Start periodic health checking of worker cores
-   */
+   */;
   private startHealthChecking(): void {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);
@@ -127,7 +128,7 @@ export class MCPMultiCoreClient {
 
   /**
    * Check health of all worker cores
-   */
+   */;
   private async checkCoreHealth(): Promise<void> {
     const healthPromises = Array.from(this.cores.values()).map(async (core) => {
       try {
@@ -157,7 +158,7 @@ export class MCPMultiCoreClient {
 
   /**
    * Submit a task to the most appropriate worker core
-   */
+   */;
   async submitTask(task: MCPTask): Promise<MCPResponse> {
     const startTime = Date.now();
     task.startTime = startTime;
@@ -174,7 +175,7 @@ export class MCPMultiCoreClient {
 
       logger.info(`[MCP Multi-Core] Submitting task ${task.id} to core ${selectedCore.id}`);
 
-      // Submit to selected core
+      // Submit to selected core;
       const response = await fetch(`${this.baseUrl}/api/cores/${selectedCore.id}/process`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -236,7 +237,7 @@ export class MCPMultiCoreClient {
 
   /**
    * Select the optimal worker core for a given task
-   */
+   */;
   private selectOptimalCore(task: MCPTask): MCPWorkerCore | null {
     const availableCores = Array.from(this.cores.values()).filter(
       (core) =>
@@ -276,7 +277,7 @@ export class MCPMultiCoreClient {
 
   /**
    * Check if a core supports a given task type
-   */
+   */;
   private coreSupportsTask(core: MCPWorkerCore, task: MCPTask): boolean {
     if (core.capabilities.includes('all')) {
       return true;
@@ -287,11 +288,11 @@ export class MCPMultiCoreClient {
 
   /**
    * Submit multiple tasks in parallel
-   */
+   */;
   async submitParallelTasks(tasks: MCPTask[]): Promise<MCPResponse[]> {
     logger.info(`[MCP Multi-Core] Submitting ${tasks.length} parallel tasks`);
 
-    const taskPromises = tasks.map((task) => this.submitTask(task));
+    const taskPromises = tasks.map((task) => this.submitTask(task);
     const results = await Promise.allSettled(taskPromises);
 
     return results.map((result, index) => {
@@ -312,23 +313,23 @@ export class MCPMultiCoreClient {
 
   /**
    * Get status of all worker cores
-   */
+   */;
   getCoreStatus(): MCPWorkerCore[] {
-    return Array.from(this.cores.values());
+    return Array.from(this.cores.values();
   }
 
   /**
    * Get active task count
-   */
+   */;
   getActiveTaskCount(): number {
     return this.activeTasks.size;
   }
 
   /**
    * Get performance metrics
-   */
+   */;
   getPerformanceMetrics() {
-    const cores = Array.from(this.cores.values());
+    const cores = Array.from(this.cores.values();
     const onlineCores = cores.filter((core) => core.status === 'online');
 
     return {
@@ -347,7 +348,7 @@ export class MCPMultiCoreClient {
 
   /**
    * Set load balancing strategy
-   */
+   */;
   setLoadBalancingStrategy(strategy: 'round-robin' | 'least-loaded' | 'capability-based') {
     this.loadBalancingStrategy = strategy;
     logger.info(`[MCP Multi-Core] Load balancing strategy set to: ${strategy}`);
@@ -355,7 +356,7 @@ export class MCPMultiCoreClient {
 
   /**
    * Cleanup and disconnect
-   */
+   */;
   async disconnect(): Promise<void> {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval);

@@ -9,7 +9,7 @@ interface RateLimitConfig {
 
 interface RateLimitEntry {
   count: number;
-  resetTime: number;
+  resetTime: number;,
 }
 
 class RateLimiter {
@@ -19,7 +19,7 @@ class RateLimiter {
   constructor(config: RateLimitConfig) {
     this.config = config;
 
-    // Clean up expired entries periodically
+    // Clean up expired entries periodically;
     setInterval(() => {
       this.cleanup();
     }, this.config.windowMs);
@@ -58,16 +58,16 @@ class RateLimiter {
       return {
         allowed: true,
         resetTime,
-        remaining: this.config.maxRequests - 1
+        remaining: this.config.maxRequests - 1,
       };
     }
 
     if (entry.count >= this.config.maxRequests) {
-      // Rate limit exceeded
+      // Rate limit exceeded;
       return {
         allowed: false,
         resetTime: entry.resetTime,
-        remaining: 0
+        remaining: 0,
       };
     }
 
@@ -76,15 +76,15 @@ class RateLimiter {
     return {
       allowed: true,
       resetTime: entry.resetTime,
-      remaining: this.config.maxRequests - entry.count
+      remaining: this.config.maxRequests - entry.count,
     };
   }
 }
 
-// Create rate limiters for different endpoints
+// Create rate limiters for different endpoints;
 export const chatRateLimiter = new RateLimiter({
   windowMs: 60 * 1000, // 1 minute window
-  maxRequests: 30, // 30 requests per minute
+  maxRequests: 30, // 30 requests per minute;
   keyGenerator: (request) => {
     // More sophisticated key generation for chat
     const forwarded = request.headers.get('x-forwarded-for');
@@ -105,10 +105,10 @@ export const heavyRateLimiter = new RateLimiter({
   maxRequests: 10, // 10 requests per minute for heavy operations
 });
 
-// Higher-throughput limiter for GRPO operations
+// Higher-throughput limiter for GRPO operations;
 export const grpoRateLimiter = new RateLimiter({
   windowMs: 60 * 1000, // 1 minute window
-  maxRequests: 100, // Allow more requests for GRPO endpoints
+  maxRequests: 100, // Allow more requests for GRPO endpoints;
   keyGenerator: (request) => {
     const forwarded = request.headers.get('x-forwarded-for');
     const ip = forwarded ? forwarded.split(',')[0] : 'unknown';
@@ -121,7 +121,7 @@ export const grpoRateLimiter = new RateLimiter({
 // Middleware function to apply rate limiting
 export function withRateLimit(
   rateLimiter: RateLimiter,
-  errorMessage: string = 'Too many requests'
+  errorMessage: string = 'Too many requests';
 ) {
   return (handler: (request: Request) => Promise<Response>) => {
     return async (request: Request): Promise<Response> => {
@@ -130,8 +130,7 @@ export function withRateLimit(
       if (!(result as { allowed?: any; resetTime?: any; remaining?: any }).allowed) {
         const retryAfter = Math.ceil(((result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime! - Date.now()) / 1000);
 
-        return new Response(
-          JSON.stringify({
+        return new Response(JSON.stringify({
             success: false,
             error: errorMessage,
             retryAfter,
@@ -153,8 +152,8 @@ export function withRateLimit(
       const response = await handler(request);
 
       if ((response as { headers?: any }).headers.get('Content-Type')?.includes('application/json')) {
-        (response as { headers?: any }).headers.set('X-RateLimit-Remaining', (result as { allowed?: any; resetTime?: any; remaining?: any }).remaining!.toString());
-        (response as { headers?: any }).headers.set('X-RateLimit-Reset', (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString());
+        (response as { headers?: any }).headers.set('X-RateLimit-Remaining', (result as { allowed?: any; resetTime?: any; remaining?: any }).remaining!.toString();
+        (response as { headers?: any }).headers.set('X-RateLimit-Reset', (result as { allowed?: any; resetTime?: any; remaining?: any }).resetTime!.toString();
       }
 
       return response;

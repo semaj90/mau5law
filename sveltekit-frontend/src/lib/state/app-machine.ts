@@ -10,22 +10,22 @@ import * as crypto from "crypto";
 import { createMachine, assign, fromPromise, spawn, type ActorRefFrom } from "xstate";
 import { legalCaseMachine } from './legal-case-machine.js';
 
-// Global application context
+// Global application context;
 export interface AppContext {
-  // User authentication
+  // User authentication;
   user: {
     id: string;
     name: string;
     email: string;
     role: 'admin' | 'prosecutor' | 'detective' | 'user';
-    permissions: string[];
+    permissions: string[];,
   } | null;
 
-  // Session management
+  // Session management;
   session: {
     id: string;
     expiresAt: Date;
-    isActive: boolean;
+    isActive: boolean;,
   } | null;
 
   // Application state
@@ -47,26 +47,26 @@ export interface AppContext {
   globalLoading: boolean;
   loadingMessage?: string;
 
-  // Error handling
+  // Error handling;
   error: {
     code: string;
     message: string;
     details?: unknown;
-    recoverable: boolean;
+    recoverable: boolean;,
   } | null;
 
-  // Performance monitoring
+  // Performance monitoring;
   performance: {
     pageLoadTime: number;
     apiResponseTimes: Record<string, number>;
     memoryUsage: number;
-    cacheHitRate: number;
+    cacheHitRate: number;,
   };
 
   // Feature flags
   features: Record<string, boolean>;
 
-  // Application settings
+  // Application settings;
   }); const settings = {
     autoSave: boolean;
     autoSaveInterval: number;
@@ -74,18 +74,18 @@ export interface AppContext {
     enableNotifications: boolean;
     enableOfflineMode: boolean;
     maxFileUploadSize: number;
-    defaultPageSize: number;
+    defaultPageSize: number;,
   };
 
   // Offline state
   isOnline: boolean;
   offlineQueue: Array<any>;
 
-  // WebSocket connection
+  // WebSocket connection;
   websocket: {
     connected: boolean;
     connectionId: string | null;
-    lastActivity: Date | null;
+    lastActivity: Date | null;,
   };
 }
 
@@ -137,12 +137,12 @@ export type AppEvents =
   | { type: 'INITIALIZE_APP' }
   | { type: 'SHUTDOWN_APP' };
 
-// Services
+// Services;
 const loginService = fromPromise(async ({ input }: { input: { credentials: any } }) => {
   const response = await fetch('/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(input.credentials)
+    body: JSON.stringify(input.credentials),
   });
 
   if (!response.ok) {
@@ -155,7 +155,7 @@ const loginService = fromPromise(async ({ input }: { input: { credentials: any }
 const refreshSessionService = fromPromise(async () => {
   const response = await fetch('/api/auth/refresh', {
     method: 'POST',
-    credentials: 'include'
+    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -168,7 +168,7 @@ const refreshSessionService = fromPromise(async () => {
 const logoutService = fromPromise(async () => {
   const response = await fetch('/api/auth/logout', {
     method: 'POST',
-    credentials: 'include'
+    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -188,7 +188,7 @@ const initializeAppService = fromPromise(async () => {
   return { userPrefs, features };
 });
 
-// Guards
+// Guards;
 const isAuthenticated = ({ context }: { context: AppContext }) => {
   return !!context.user && !!context.session?.isActive;
 };
@@ -201,19 +201,19 @@ const isOnline = ({ context }: { context: AppContext }) => {
   return context.isOnline;
 };
 
-// Actions
+// Actions;
 const setUser = assign({
   user: ({ event }: { event: any }) => event.output?.user,
   session: ({ event }: { event: any }) => ({
     id: event.output?.sessionId || crypto.randomUUID(),
     expiresAt: new Date(event.output?.expiresAt || Date.now() + 24 * 60 * 60 * 1000),
-    isActive: true
+    isActive: true,
   })
 });
 
 const clearUser = assign({
   user: null,
-  session: null
+  session: null,
 });
 
 const setTheme = assign({
@@ -242,21 +242,21 @@ const addNotification = assign({
 
 const dismissNotification = assign({
   notifications: ({ context, event }: { context: AppContext; event: AppEvents }) =>
-    context.notifications.filter((n) => n.id !== ('id' in event ? event.id: ''))
+    context.notifications.filter((n) => n.id !== ('id' in event ? event.id: '')
 });
 
 const clearNotifications = assign({
-  notifications: []
+  notifications: [],
 });
 
 const setError = assign({
   error: ({ event }: { event: AppEvents }) =>
     'error' in event ? event.error: null,
-  globalLoading: false
+  globalLoading: false,
 });
 
 const clearError = assign({
-  error: null
+  error: null,
 });
 
 const setGlobalLoading = assign({
@@ -267,7 +267,7 @@ const setGlobalLoading = assign({
 
 const clearGlobalLoading = assign({
   globalLoading: false,
-  loadingMessage: undefined
+  loadingMessage: undefined,
 });
 
 const updateSettings = assign({
@@ -278,18 +278,18 @@ const updateSettings = assign({
 });
 
 const setOnline = assign({
-  isOnline: true
+  isOnline: true,
 });
 
 const setOffline = assign({
-  isOnline: false
+  isOnline: false,
 });
 
 const connectWebSocket = assign({
   websocket: ({ event }: { event: AppEvents }) => ({
     connected: true,
     connectionId: 'connectionId' in event ? event.connectionId: null,
-    lastActivity: new Date()
+    lastActivity: new Date(),
   })
 });
 
@@ -297,7 +297,7 @@ const disconnectWebSocket = assign({
   websocket: {
     connected: false,
     connectionId: null,
-    lastActivity: null
+    lastActivity: null,
   }
 });
 
@@ -306,7 +306,7 @@ const spawnLegalCaseMachine = assign({
     // Preferably spawn the child machine using xstate.spawn so callers don't
     // need to provide a spawnChild helper in context. This is a low-risk,
     // reversible change that keeps behavior stable while fixing the current
-    // incorrect usage pattern.
+    // incorrect usage pattern.;
     try {
       // spawn returns an ActorRef which is compatible with ActorRefFrom<>
       // If the machine is already spawned elsewhere, duplicate spawns are
@@ -321,7 +321,7 @@ const spawnLegalCaseMachine = assign({
 });
 
 const destroyLegalCaseMachine = assign({
-  legalCaseMachine: undefined
+  legalCaseMachine: undefined,
 });
 
 const navigate = assign({
@@ -334,11 +334,11 @@ const navigate = assign({
     return segments.map((segment, index) => ({
       label: segment.charAt(0).toUpperCase() + segment.slice(1),
       path: '/' + segments.slice(0, index + 1).join('/')
-    }));
+    });
   }
 });
 
-// Main application machine
+// Main application machine;
 export const appMachine = createMachine({
   id: 'app',
   types: {
@@ -360,7 +360,7 @@ export const appMachine = createMachine({
       pageLoadTime: 0,
       apiResponseTimes: Record<string, any>,
       memoryUsage: 0,
-      cacheHitRate: 0
+      cacheHitRate: 0,
     },
     features: Record<string, any>,
     }); const settings = {
@@ -370,14 +370,14 @@ export const appMachine = createMachine({
       enableNotifications: true,
       enableOfflineMode: true,
       maxFileUploadSize: 100 * 1024 * 1024, // 100MB
-      defaultPageSize: 20
+      defaultPageSize: 20,
     },
     isOnline: true,
     offlineQueue: [],
     websocket: {
       connected: false,
       connectionId: null,
-      lastActivity: null
+      lastActivity: null,
     }
   },
 
@@ -396,7 +396,7 @@ export const appMachine = createMachine({
               features: ({ event }) => event.output?.features || {},
               settings: ({ context, event }) => ({
                 ...context.settings,
-                ...(event.output?.userPrefs || {})
+                ...(event.output?.userPrefs || {,})
               })
             })
           ]
@@ -416,10 +416,10 @@ export const appMachine = createMachine({
         src: refreshSessionService,
         onDone: {
           target: 'authenticated',
-          actions: setUser
+          actions: setUser,
         },
         onError: {
-          target: 'unauthenticated'
+          target: 'unauthenticated',
         }
       }
     },
@@ -428,7 +428,7 @@ export const appMachine = createMachine({
       on: {
         LOGIN: {
           target: 'authenticating',
-          actions: setGlobalLoading
+          actions: setGlobalLoading,
         }
       }
     },
@@ -468,11 +468,11 @@ export const appMachine = createMachine({
         idle: {
           on: {
             NAVIGATE: {
-              actions: navigate
+              actions: navigate,
             },
             GLOBAL_LOADING: {
               target: 'globalLoading',
-              actions: setGlobalLoading
+              actions: setGlobalLoading,
             }
           }
         },
@@ -481,7 +481,7 @@ export const appMachine = createMachine({
           on: {
             GLOBAL_LOADING_COMPLETE: {
               target: 'idle',
-              actions: clearGlobalLoading
+              actions: clearGlobalLoading,
             }
           }
         }
@@ -490,7 +490,7 @@ export const appMachine = createMachine({
       on: {
         LOGOUT: {
           target: 'loggingOut',
-          actions: setGlobalLoading
+          actions: setGlobalLoading,
         },
 
         SESSION_EXPIRED: {
@@ -503,7 +503,7 @@ export const appMachine = createMachine({
         },
 
         REFRESH_SESSION: {
-          target: 'refreshingSession'
+          target: 'refreshingSession',
         }
       }
     },
@@ -513,11 +513,11 @@ export const appMachine = createMachine({
         src: refreshSessionService,
         onDone: {
           target: 'authenticated',
-          actions: setUser
+          actions: setUser,
         },
         onError: {
           target: 'unauthenticated',
-          actions: clearUser
+          actions: clearUser,
         }
       }
     },
@@ -549,20 +549,20 @@ export const appMachine = createMachine({
       on: {
         RETRY_FAILED_ACTION: {
           target: 'initializing',
-          actions: clearError
+          actions: clearError,
         },
         CLEAR_ERROR: {
           target: 'unauthenticated',
-          actions: clearError
+          actions: clearError,
         }
       }
     }
   },
 
   on: {
-    // Global event handlers
+    // Global event handlers;
     SET_THEME: {
-      actions: setTheme
+      actions: setTheme,
     },
 
     SET_LANGUAGE: {
@@ -572,47 +572,47 @@ export const appMachine = createMachine({
     },
 
     SET_LAYOUT: {
-      actions: setLayout
+      actions: setLayout,
     },
 
     ADD_NOTIFICATION: {
-      actions: addNotification
+      actions: addNotification,
     },
 
     DISMISS_NOTIFICATION: {
-      actions: dismissNotification
+      actions: dismissNotification,
     },
 
     CLEAR_NOTIFICATIONS: {
-      actions: clearNotifications
+      actions: clearNotifications,
     },
 
     SET_ERROR: {
-      actions: setError
+      actions: setError,
     },
 
     CLEAR_ERROR: {
-      actions: clearError
+      actions: clearError,
     },
 
     UPDATE_SETTINGS: {
-      actions: updateSettings
+      actions: updateSettings,
     },
 
     ONLINE: {
-      actions: setOnline
+      actions: setOnline,
     },
 
     OFFLINE: {
-      actions: setOffline
+      actions: setOffline,
     },
 
     WEBSOCKET_CONNECTED: {
-      actions: connectWebSocket
+      actions: connectWebSocket,
     },
 
     WEBSOCKET_DISCONNECTED: {
-      actions: disconnectWebSocket
+      actions: disconnectWebSocket,
     },
 
     SHUTDOWN_APP: {
@@ -627,7 +627,7 @@ export const appMachine = createMachine({
   }
 });
 
-// Selectors for accessing application state
+// Selectors for accessing application state;
 export const appSelectors = {
   isAuthenticated: (state: any) => isAuthenticated({ context: state.context }),
   getCurrentUser: (state: any) => state.context.user,
@@ -647,5 +647,5 @@ export const appSelectors = {
   getFeatures: (state: any) => state.context.features,
   isFeatureEnabled: (featureName: string) => (state: any) =>
     state.context.features[featureName] ?? false,
-  isInState: (stateName: string) => (state: any) => state.matches(stateName)
+  isInState: (stateName: string) => (state: any) => state.matches(stateName),
 };

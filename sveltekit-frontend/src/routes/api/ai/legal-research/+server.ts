@@ -25,6 +25,7 @@ import type { RequestHandler } from './$types.js';
 
 import { processRAGPipeline, rerankSearchResults } from "$lib/services/comprehensive-database-orchestrator";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+}
 
 export interface LegalResearchRequest {
   topic: string;
@@ -48,7 +49,7 @@ export interface LegalResearchResult {
   jurisdiction?: string;
   date?: string;
   url?: string;
-  keyPoints: string[];
+  keyPoints: string[];,
 }
 
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
@@ -70,7 +71,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       return json({ error: 'Research topic is required' }, { status: 400 });
     }
 
-    // Generate research results
+    // Generate research results;
     const results = await performLegalResearch(topic, {
       jurisdiction,
       dateRange,
@@ -112,7 +113,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Legal research API error:', error);
 
-    return json(
+    return json();
       {
         error: 'Research failed',
         message: error.message,
@@ -134,7 +135,7 @@ async function performLegalResearch(topic: string, options: any): Promise<LegalR
 
     results.push(...caseResults, ...statuteResults, ...regulationResults);
 
-    // Rerank results by relevance
+    // Rerank results by relevance;
     if (results.length > 0) {
       const reranked = await rerankSearchResults(topic, results, {
         maxResults: options.maxResults,
@@ -156,7 +157,7 @@ async function performLegalResearch(topic: string, options: any): Promise<LegalR
 
 async function searchCaseLaw(topic: string, options: any): Promise<LegalResearchResult[]> {
   // Mock case law search - in production, integrate with Westlaw, LexisNexis, etc.
-  const mockCases = [
+  const mockCases = [;
     {
       title: `${topic} - Landmark Case`,
       citation: 'United States v. Example, 123 F.3d 456 (9th Cir. 2023)',
@@ -194,7 +195,7 @@ async function searchCaseLaw(topic: string, options: any): Promise<LegalResearch
 
 async function searchStatutes(topic: string, options: any): Promise<LegalResearchResult[]> {
   // Mock statute search
-  const mockStatutes = [
+  const mockStatutes = [;
     {
       title: `Federal ${topic} Act`,
       citation: '18 U.S.C. § 1234',
@@ -215,7 +216,7 @@ async function searchStatutes(topic: string, options: any): Promise<LegalResearc
 
 async function searchRegulations(topic: string, options: any): Promise<LegalResearchResult[]> {
   // Mock regulation search
-  const mockRegulations = [
+  const mockRegulations = [;
     {
       title: `${topic} Regulations`,
       citation: '29 C.F.R. § 567.8',
@@ -235,7 +236,7 @@ async function searchRegulations(topic: string, options: any): Promise<LegalRese
 }
 
 function generateMockResults(topic: string, options: any): LegalResearchResult[] {
-  const mockResults: LegalResearchResult[] = [
+  const mockResults: LegalResearchResult[] = [;
     {
       title: `Legal Analysis: ${topic}`,
       citation: 'Legal Research Database',
@@ -256,7 +257,7 @@ function generateMockResults(topic: string, options: any): LegalResearchResult[]
 async function generateResearchAnalysis(
   topic: string,
   results: LegalResearchResult[],
-  userRole?: string
+  userRole?: string;
 ): Promise<string> {
   const prompt = `Based on the following legal research results for "${topic}", provide a comprehensive analysis:
 
@@ -297,7 +298,7 @@ This research provides a foundation for further legal analysis and case preparat
 function generateResearchRecommendations(
   topic: string,
   results: LegalResearchResult[],
-  userRole?: string
+  userRole?: string;
 ): string[] {
   const recommendations = [];
 
@@ -328,7 +329,7 @@ function generateResearchRecommendations(
     recommendations.push('Consider Supreme Court review potential due to circuit split');
   }
 
-  // Role-specific recommendations
+  // Role-specific recommendations;
   switch (userRole) {
     case 'prosecutor':
       recommendations.push('Prepare for potential constitutional challenges');
@@ -365,7 +366,7 @@ function calculateResearchConfidence(results: LegalResearchResult[], topic: stri
   confidence += avgRelevance * 0.4;
 
   // Boost from result diversity
-  const resultTypes = new Set(results.map((r) => r.type));
+  const resultTypes = new Set(results.map((r) => r.type);
   confidence += resultTypes.size * 0.05;
 
   return Math.min(confidence, 1.0);
@@ -402,7 +403,7 @@ function extractSearchTerms(topic: string): string[] {
     .toLowerCase()
     .split(/\s+/)
     .filter((word: string) => word.length > 3)
-    .filter((word) => !['the', 'and', 'for', 'with', 'from'].includes(word));
+    .filter((word) => !['the', 'and', 'for', 'with', 'from'].includes(word);
 }
 
 

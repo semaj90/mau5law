@@ -1,4 +1,4 @@
-// Minimal logger to satisfy imports. Extend with winston/pino as needed.
+// Minimal logger to satisfy imports. Extend with winston/pino as needed.;
 export const logger = {
   info: (...args: any[]) => console.log('[INFO]', ...args),
   warn: (...args: any[]) => console.warn('[WARN]', ...args),

@@ -6,6 +6,7 @@ import { randomUUID, createHash } from 'crypto';
 // TTL (ms) after which inactive streams are cleaned
 const STREAM_TTL_MS = 5 * 60 * 1000; // 5 minutes
 let lastSweep = Date.now();
+}
 
 export interface ActiveStream {
   id: string;
@@ -88,15 +89,15 @@ export function generateSummary(id: string, maxSentences = 3): string | undefine
 }
 
 export function listActive() {
-  return Array.from(streams.values()).map((s) => ({ id: s.id, tokens: s.tokens.length }));
+  return Array.from(streams.values()).map((s) => ({ id: s.id, tokens: s.tokens.length });
 }
 
-// Retrieve or compute & store summary in cache (memory/redis)
+// Retrieve or compute & store summary in cache (memory/redis);
 export async function cachedSummary(text: string, maxSentences = 3): Promise<string | undefined> {
   if (!text) return undefined;
   const hash = createHash('sha256').update(text).digest('hex');
   const key = SUMMARY_CACHE_PREFIX + hash + ':' + maxSentences;
-  // Redis first
+  // Redis first;
   if (redis) {
     try {
       const existing = await redis.get(key);
@@ -105,7 +106,7 @@ export async function cachedSummary(text: string, maxSentences = 3): Promise<str
   }
   // Memory cache via Map keyed by key (reuse streams map not ideal) – lightweight singleton
   const mem =
-    (globalThis as any).__ragSummaryCache || ((globalThis as any).__ragSummaryCache = new Map());
+    (globalThis as any).__ragSummaryCache || ((globalThis as any).__ragSummaryCache = new Map();
   if (mem.has(key)) return mem.get(key);
   const summary = summarizeText(text, maxSentences);
   if (summary) {
@@ -124,7 +125,7 @@ export async function cachedSummary(text: string, maxSentences = 3): Promise<str
 function summarizeText(text: string, maxSentences: number): string | undefined {
   const sentences = text
     .split(/(?<=[.!?])\s+/)
-    .map((x) => x.trim())
+    .map((x) => x.trim()
     .filter(Boolean);
   if (!sentences.length) return text.slice(0, 300);
   // Build TF counts
@@ -140,15 +141,15 @@ function summarizeText(text: string, maxSentences: number): string | undefined {
       unique.add(t);
       termFreq[t] = (termFreq[t] || 0) + 1;
     }
-    sentenceTerms.push(Array.from(unique));
+    sentenceTerms.push(Array.from(unique);
   }
   // IDF approximation
   const totalSent = sentences.length;
   const idf: Record<string, number> = {};
   for (const [term, tf] of Object.entries(termFreq)) {
-    idf[term] = Math.log(1 + totalSent / (1 + tf));
+    idf[term] = Math.log(1 + totalSent / (1 + tf);
   }
-  // Score sentences
+  // Score sentences;
   const scored = sentences.map((s, i) => {
     const terms = sentenceTerms[i];
     let score = 0;

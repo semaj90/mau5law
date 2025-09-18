@@ -13,7 +13,7 @@ export interface MachineState<TContext = any> {
   context: TContext;
   matches: (value: string) => boolean;
   can: (event: string) => boolean;
-  hasTag: (tag: string) => boolean;
+  hasTag: (tag: string) => boolean;,
 }
 
 export interface MachineService<TContext = any> {
@@ -21,13 +21,13 @@ export interface MachineService<TContext = any> {
   send: (event: AnyEventObject | string) => void;
   start: () => void;
   stop: () => void;
-  isRunning: Readable<boolean>;
+  isRunning: Readable<boolean>;,
 }
 
 /**
  * XState v5 Service Adapter
  * Wraps XState v5 actors and provides Svelte-friendly reactive state
- */
+ */;
 export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
   private actor: Actor<TMachine> | null = null;
   private stateStore = writable<MachineState>();
@@ -58,14 +58,14 @@ export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
 
     this.actor = createActor(this.machine);
     
-    // Subscribe to actor state changes
+    // Subscribe to actor state changes;
     this.actor.subscribe((snapshot) => {
       const simpleState: MachineState = {
         value: typeof snapshot.value === 'string' ? snapshot.value: JSON.stringify(snapshot.value),
         context: snapshot.context,
         matches: (value: string) => snapshot.matches(value),
         can: (event: string) => snapshot.can({ type: event }),
-        hasTag: (tag: string) => snapshot.hasTag(tag)
+        hasTag: (tag: string) => snapshot.hasTag(tag),
       };
       
       this.stateStore.set(simpleState);
@@ -84,7 +84,7 @@ export class XStateServiceAdapter<TMachine extends AnyStateMachine> {
   }
 }
 
-// Specific service adapters for different machine types
+// Specific service adapters for different machine types;
 export interface ChatMachineContext {
   messages: Array<any>;
   currentMessage: string;
@@ -93,7 +93,7 @@ export interface ChatMachineContext {
   session: any;
   error: string;
   confidence: number;
-  model: string;
+  model: string;,
 }
 
 export interface SearchMachineContext {
@@ -102,7 +102,7 @@ export interface SearchMachineContext {
   loading: boolean;
   error: any;
   confidence: number;
-  sources: any[];
+  sources: any[];,
 }
 
 export interface UploadMachineContext {
@@ -117,13 +117,13 @@ export interface UploadMachineContext {
     qdrant: boolean;
     redis: boolean;
     rabbitmq: boolean;
-    ollama: boolean;
+    ollama: boolean;,
   };
 }
 
 /**
  * Factory functions for creating typed service adapters
- */
+ */;
 export function createChatService(machine: AnyStateMachine): MachineService<ChatMachineContext> {
   const adapter = new XStateServiceAdapter(machine);
   return adapter.createService();
@@ -143,7 +143,7 @@ export function createUploadService(machine: AnyStateMachine): MachineService<Up
  * Generic service creator for any machine
  */
 export function createMachineService<TContext = any>(
-  machine: AnyStateMachine
+  machine: AnyStateMachine;
 ): MachineService<TContext> {
   const adapter = new XStateServiceAdapter(machine);
   return adapter.createService();
@@ -151,7 +151,7 @@ export function createMachineService<TContext = any>(
 
 /**
  * Helper utilities for common XState patterns
- */
+ */;
 export const xstateUtils = {
   // Convert XState v4 style state access to v5
   getStateValue: (state: MachineState) => state.value,
@@ -161,7 +161,7 @@ export const xstateUtils = {
   isState: (state: MachineState, stateName: string) => state.matches(stateName),
   canTransition: (state: MachineState, event: string) => state.can(event),
   
-  // Safe property access
+  // Safe property access;
   safeGet: <T>(obj: any, path: string, defaultValue: T): T => {
     try {
       return path.split('.').reduce((o, p) => o?.[p], obj) ?? defaultValue;
@@ -173,9 +173,9 @@ export const xstateUtils = {
 
 /**
  * Migration helpers for existing XState v4 code
- */
+ */;
 export const migrationHelpers = {
-  // Convert old machine.state access to new pattern
+  // Convert old machine.state access to new pattern;
   wrapLegacyMachine: (machine: AnyStateMachine) => {
     const service = createMachineService(machine);
     service.start();
@@ -186,13 +186,13 @@ export const migrationHelpers = {
       snapshot: service.state,
       // Legacy send method that accepts string or object
       send: service.send,
-      // Legacy state access (derived from reactive state)
+      // Legacy state access (derived from reactive state);
       state: derived(service.state, $state => ({
         value: $state.value,
         context: $state.context,
         matches: $state.matches,
-        can: $state.can
-      }))
+        can: $state.can,
+      })
     };
   }
 };

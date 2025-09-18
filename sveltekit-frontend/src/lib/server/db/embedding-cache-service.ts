@@ -23,11 +23,11 @@ export async function upsertEmbedding(opts: UpsertEmbeddingOptions): Promise<any
   const { model, textHash, embedding, packMethod = 'int8-symmetric' } = opts;
   const db = await getDb();
   const { b64, scale, method } = packEmbedding(embedding, packMethod);
-  const existing = await db.select().from(embeddingCache).where(eq(embeddingCache.textHash, textHash));
+  const existing = await db.select().from(embeddingCache).where(eq(embeddingCache.textHash, textHash);
   if (existing.length) {
     await db.update(embeddingCache)
       .set({ embedding, packedEmbedding: b64, embeddingScale: scale?.toString(), model })
-      .where(eq(embeddingCache.textHash, textHash));
+      .where(eq(embeddingCache.textHash, textHash);
     return { updated: true, method, scale };
   } else {
     await db.insert(embeddingCache).values({ textHash, embedding, packedEmbedding: b64, embeddingScale: scale?.toString(), model });
@@ -37,6 +37,6 @@ export async function upsertEmbedding(opts: UpsertEmbeddingOptions): Promise<any
 
 export async function getEmbedding(textHash: string): Promise<any> {
   const db = await getDb();
-  const rows = await db.select().from(embeddingCache).where(eq(embeddingCache.textHash, textHash));
+  const rows = await db.select().from(embeddingCache).where(eq(embeddingCache.textHash, textHash);
   return rows[0] || null;
 }

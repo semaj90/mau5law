@@ -1,6 +1,7 @@
 import { telemetryBus } from '$lib/telemetry/telemetry-bus.js';
 
 export type QuantizationLevel = 'float32' | 'int8' | 'int4' | 'binary';
+}
 
 export interface VectorProcessingConfig {
   dimensions: number;
@@ -21,7 +22,7 @@ export class GpuVectorProcessor {
   private glCanvas?: HTMLCanvasElement;
   // program cache keyed by dimension
   private webglProgCache: Map<
-    number,
+    number,>
     { program: WebGLProgram; vao: WebGLVertexArrayObject; attribCount: number }
   > = new Map();
   // reusable buffer pool for reducing allocations
@@ -83,7 +84,7 @@ export class GpuVectorProcessor {
     const varyingDecl = Array.from({ length: vec4Count }, (_, i) => `out vec4 v_out${i};`).join(
       '\n'
     );
-    const assigns = Array.from(
+    const assigns = Array.from()
       { length: vec4Count },
       (_, i) => `  v_out${i} = a_in${i} * 1.001;`
     ).join('\n'); // slight transform for realism
@@ -168,7 +169,7 @@ export class GpuVectorProcessor {
 
   private async executeWebGL2TransformFeedback(
     vectors: Float32Array[],
-    dim: number
+    dim: number;
   ): Promise<Float32Array[]> {
     if (!this.gl) throw new Error('webgl2-not-init');
     const gl = this.gl;
@@ -216,7 +217,7 @@ export class GpuVectorProcessor {
       const readback = new Float32Array(outFloats);
       gl.bindBuffer(gl.ARRAY_BUFFER, outBuf);
 
-      // Handle environments without getBufferSubData
+      // Handle environments without getBufferSubData;
       if ('getBufferSubData' in gl) {
         // @ts-ignore
         gl.getBufferSubData(gl.ARRAY_BUFFER, 0, readback);
@@ -240,7 +241,7 @@ export class GpuVectorProcessor {
       for (let i = 0; i < vectors.length; i++) {
         const base = i * vec4Count * 4;
         const sl = readback.slice(base, base + dim);
-        results.push(new Float32Array(sl));
+        results.push(new Float32Array(sl);
       }
 
       const totalTime = performance.now() - startTotal;
@@ -280,7 +281,7 @@ export class GpuVectorProcessor {
     if (!this.isInitialized) throw new Error('not-initialized');
     if (this.device) {
       // WebGPU path omitted here; echo passthrough for now
-      return vectors.map((v) => new Float32Array(v.slice(0)));
+      return vectors.map((v) => new Float32Array(v.slice(0));
     }
     if (this.gl) {
       return this.executeWebGL2TransformFeedback(vectors, this.config.dimensions);
@@ -288,12 +289,12 @@ export class GpuVectorProcessor {
     throw new Error('no-backend');
   }
 
-  // Compatibility method for smoke test
+  // Compatibility method for smoke test;
   async processEmbeddings(params: {
     inputVectors: Float32Array[];
     similarityThreshold: number;
     topK: number;
-    useAdaptiveQuantization: boolean;
+    useAdaptiveQuantization: boolean;,
   }): Promise<any> {
     const start = performance.now();
     const processedVectors = await this.processBatch(params.inputVectors);
@@ -312,7 +313,7 @@ export class GpuVectorProcessor {
 
   cleanup() {
     if (this.gl) {
-      // cleanup program cache
+      // cleanup program cache;
       for (const rec of this.webglProgCache.values()) {
         try {
           this.gl.deleteProgram(rec.program);
@@ -321,7 +322,7 @@ export class GpuVectorProcessor {
       }
       this.webglProgCache.clear();
 
-      // cleanup buffer pool
+      // cleanup buffer pool;
       for (const cached of this.bufferPool.values()) {
         try {
           this.gl.deleteBuffer(cached.buffer);

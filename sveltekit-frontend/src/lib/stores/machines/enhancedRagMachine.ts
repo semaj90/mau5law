@@ -1,12 +1,13 @@
 
 import { createMachine, fromPromise, assign } from 'xstate';
 import { writable } from 'svelte/store';
+}
 
 export interface RagContext {
   query: string;
   results: any[];
   error: string | null;
-  loading: boolean;
+  loading: boolean;,
 }
 
 type RagEvent =
@@ -18,14 +19,14 @@ export const enhancedRagMachine = createMachine({
   id: 'enhancedRag',
   types: Record<string, any> as {
     context: RagContext;
-    events: RagEvent;
+    events: RagEvent;,
   },
   initial: 'idle',
   context: {
     query: '',
     results: [] as any[],
     error: null as string | null,
-    loading: false
+    loading: false,
   },
   states: {
     idle: {
@@ -33,8 +34,8 @@ export const enhancedRagMachine = createMachine({
         EXECUTE: {
           target: 'retrieving',
           actions: assign(({ context, event }) => ({
-            query: event.type === 'EXECUTE' ? event.query: context.query
-          }))
+            query: event.type === 'EXECUTE' ? event.query: context.query,
+          })
         },
         RESET: { actions: assign(() => ({ query: '', results: [], error: null, loading: false })) }
       }
@@ -53,8 +54,8 @@ export const enhancedRagMachine = createMachine({
           target: 'ready',
           actions: assign(({ event, context }) => ({
             results: (event.output && event.output.results) ? event.output.results : context.results,
-            loading: false
-          }))
+            loading: false,
+          })
         },
         onError: {
           target: 'failure',

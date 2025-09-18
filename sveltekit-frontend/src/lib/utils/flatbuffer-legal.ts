@@ -4,14 +4,14 @@
 import { Builder, ByteBuffer } from 'flatbuffers';
 
 // Mock FlatBuffer types until we can generate from schemas
-// In production, these would be auto-generated from legal_data.fbs
+// In production, these would be auto-generated from legal_data.fbs;
 interface DocumentContent {
   id: string;
   title: string;
   content: Uint8Array;
   contentType: string;
   compressed: boolean;
-  checksum: number;
+  checksum: number;,
 }
 
 interface VectorEmbedding {
@@ -19,7 +19,7 @@ interface VectorEmbedding {
   embedding: Float32Array;
   model: string;
   dimension: number;
-  confidence: number;
+  confidence: number;,
 }
 
 interface LegalEntityExtraction {
@@ -30,7 +30,7 @@ interface LegalEntityExtraction {
  * FlatBuffer Legal Document Processor
  * Optimized for zero-copy access to large legal documents
  * Integrates with Go microservices via QUIC/HTTP3
- */
+ */;
 export class FlatBufferLegalProcessor {
   private builder: Builder;
   private readonly API_BASE = 'http://localhost:8084'; // Go microservice endpoint
@@ -42,7 +42,7 @@ export class FlatBufferLegalProcessor {
   /**
    * Store large legal document using FlatBuffer for efficient access
    * Integrates with your Go microservice search-embedder-service
-   */
+   */;
   async storeLegalDocument(document: {
     id: string;
     title: string;
@@ -62,14 +62,14 @@ export class FlatBufferLegalProcessor {
       ? await this.compressContent(contentBytes)
       : contentBytes;
 
-    // Create FlatBuffer (mock structure - would use generated types)
+    // Create FlatBuffer (mock structure - would use generated types);
     const fbDocument = this.createDocumentFlatBuffer({
       id: document.id,
       title: document.title,
       content: processedContent,
       contentType: document.contentType,
       compressed: !!document.compress,
-      checksum: this.calculateChecksum(processedContent)
+      checksum: this.calculateChecksum(processedContent),
     });
 
     return fbDocument;
@@ -78,7 +78,7 @@ export class FlatBufferLegalProcessor {
   /**
    * Process vector embeddings with FlatBuffer for GPU acceleration
    * Optimized for your CUDA/SIMD Go microservices
-   */
+   */;
   async storeVectorEmbeddings(embeddings: {
     documentId: string;
     vectors: Float32Array;
@@ -99,7 +99,7 @@ export class FlatBufferLegalProcessor {
       embedding: quantizedEmbeddings,
       model: embeddings?.model || "unknown" // @ts-ignore - Model property access,
       dimension: embeddings.vectors.length,
-      confidence: 0.95 // Would come from Go AI processing
+      confidence: 0.95 // Would come from Go AI processing,
     });
 
     return fbEmbeddings;
@@ -108,10 +108,10 @@ export class FlatBufferLegalProcessor {
   /**
    * Execute legal entity extraction using FlatBuffer for zero-copy processing
    * Calls your Go microservice with experimental SIMD optimization
-   */
+   */;
   async extractLegalEntities(documentId: string, content: Uint8Array): Promise<LegalEntityExtraction> {
     try {
-      // Call Go microservice with FlatBuffer data
+      // Call Go microservice with FlatBuffer data;
       const response = await fetch(`${this.API_BASE}/api/extract/entities`, {
         method: 'POST',
         headers: {
@@ -119,7 +119,7 @@ export class FlatBufferLegalProcessor {
           'X-Processing-Mode': 'simd', // Use SIMD optimizations
           'X-GPU-Acceleration': 'cuda' // Use CUDA if available
         },
-        body: content
+        body: content,
       });
 
       if (!(response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).ok) {
@@ -127,7 +127,7 @@ export class FlatBufferLegalProcessor {
       }
 
       const resultBuffer = await (response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).arrayBuffer();
-      return this.parseLegalEntitiesFromFlatBuffer(new Uint8Array(resultBuffer));
+      return this.parseLegalEntitiesFromFlatBuffer(new Uint8Array(resultBuffer);
 
     } catch (error) {
       console.error('Legal entity extraction error:', error);
@@ -139,7 +139,7 @@ export class FlatBufferLegalProcessor {
   /**
    * Perform semantic search using FlatBuffer vector operations
    * Optimized for your GPU-accelerated Go search service
-   */
+   */;
   async semanticSearch(query: {
     text: string;
     embedding?: Float32Array;
@@ -157,7 +157,7 @@ export class FlatBufferLegalProcessor {
           'X-Search-Engine': 'gpu-accelerated',
           'X-Vector-Quantization': 'int8' // Use quantized vectors for speed
         },
-        body: searchRequest
+        body: searchRequest,
       });
 
       if (!(response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).ok) {
@@ -165,7 +165,7 @@ export class FlatBufferLegalProcessor {
       }
 
       const resultBuffer = await (response as { ok?: any; statusText?: any; arrayBuffer?: any; body?: any }).arrayBuffer();
-      return this.parseSearchResultsFromFlatBuffer(new Uint8Array(resultBuffer));
+      return this.parseSearchResultsFromFlatBuffer(new Uint8Array(resultBuffer);
 
     } catch (error) {
       console.error('Semantic search error:', error);
@@ -176,7 +176,7 @@ export class FlatBufferLegalProcessor {
   /**
    * Stream WebGPU texture data for legal document visualization
    * Integrates with your NES texture streaming pipeline
-   */
+   */;
   async streamDocumentTexture(documentId: string, options: {
     qualityLevel?: number;
     chunkSize?: number;
@@ -259,7 +259,7 @@ export class FlatBufferLegalProcessor {
   }
 
   private async compressContent(content: Uint8Array): Promise<Uint8Array> {
-    // Use CompressionStream API for gzip compression
+    // Use CompressionStream API for gzip compression;
     if ('CompressionStream' in window) {
       const compressionStream = new CompressionStream('gzip');
       const writer = compressionStream.writable.getWriter();
@@ -295,7 +295,7 @@ export class FlatBufferLegalProcessor {
   private createEmbeddingBatches(vectors: Float32Array, batchSize: number): Float32Array[] {
     const batches: Float32Array[] = [];
     for (let i = 0; i < vectors.length; i += batchSize) {
-      batches.push(vectors.slice(i, i + batchSize));
+      batches.push(vectors.slice(i, i + batchSize);
     }
     return batches;
   }
@@ -344,16 +344,16 @@ export class FlatBufferLegalProcessor {
   }
 
   private parseLegalEntitiesFromFlatBuffer(buffer: Uint8Array): LegalEntityExtraction {
-    // Mock parsing - would use generated FlatBuffer classes
+    // Mock parsing - would use generated FlatBuffer classes;
     return {
       documentId: 'parsed-doc-id',
-      entities: [
+      entities: [;
         {
           text: 'Sample Entity',
           type: 'ORGANIZATION',
           confidence: 0.95,
           startPos: 0,
-          endPos: 13
+          endPos: 13,
         }
       ]
     };
@@ -361,7 +361,7 @@ export class FlatBufferLegalProcessor {
 
   private parseSearchResultsFromFlatBuffer(buffer: Uint8Array): Array<any> {
     // Mock parsing - would use generated FlatBuffer classes
-    return [
+    return [;
       {
         documentId: 'result-doc-1',
         score: 0.89,
@@ -372,15 +372,15 @@ export class FlatBufferLegalProcessor {
   }
 
   private extractEntitiesLocally(documentId: string, content: Uint8Array): LegalEntityExtraction {
-    // Fallback local entity extraction
+    // Fallback local entity extraction;
     return {
       documentId,
-      entities: []
+      entities: [],
     };
   }
 }
 
-// Performance monitoring for FlatBuffer operations
+// Performance monitoring for FlatBuffer operations;
 export class FlatBufferPerformanceMonitor {
   private metrics: Map<string, number[]> = new Map();
 
@@ -413,7 +413,7 @@ export class FlatBufferPerformanceMonitor {
         avg: this.getAverageTime(operation),
         min: Math.min(...times),
         max: Math.max(...times),
-        count: times.length
+        count: times.length,
       };
     }
 

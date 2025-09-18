@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
     const currentCaseResults = await db
       .select()
       .from(cases)
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .limit(1);
 
     if (!currentCaseResults.length) {
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
     const recentActivities = await db
       .select()
       .from(caseActivities)
-      .where(eq(caseActivities.caseId, caseId))
+      .where(eq(caseActivities.caseId, caseId)
       .orderBy((activities) => activities.createdAt)
       .limit(3);
 
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ params, locals, request }) => {
       const queryEmbedding = (await embeddingResponse.json()).embedding;
 
       const qdrantSearchResults = await qdrantClient.search(
-        "prosecutor_text_fragments",
+        "prosecutor_text_fragments",);
         {
           vector: queryEmbedding,
           limit: 3,

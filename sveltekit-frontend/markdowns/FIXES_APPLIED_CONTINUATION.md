@@ -4,7 +4,8 @@
 
 ### 1. ChatInterface.svelte
 
-- **Fixed**: Store mutability issues with `isLoading` and `isTyping` (converted from derived to writable)
+- **Fixed**: Store mutability issues with `isLoading` and `isTyping` (converted from derived to
+  writable)
 - **Fixed**: Incorrect method name `startNewConversation` → `newConversation`
 - **Fixed**: Parameter order in `addMessage` calls
 - **Fixed**: Keyboard event handler type mismatch

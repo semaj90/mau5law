@@ -72,7 +72,7 @@ interface SearchResponse {
   pagination: {
     page: number;
     pageSize: number;
-    totalPages: number;
+    totalPages: number;,
   };
 }
 
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const includeContent = options.includeContent || false;
 
     // Build the base query
-    const baseQuery = db
+    const baseQuery = db;
       .select({
         id: evidence.id,
         title: evidence.title,
@@ -110,26 +110,26 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         ocrText: includeContent ? evidence.ocrText : sql`NULL`,
         contentText: includeContent ? evidence.contentText : sql`NULL`,
         embedding: evidence.embedding,
-        isPublic: evidence.isPublic
+        isPublic: evidence.isPublic,
       })
       .from(evidence)
-      .leftJoin(cases, eq(evidence.caseId, cases.id));
+      .leftJoin(cases, eq(evidence.caseId, cases.id);
 
     // Build WHERE conditions
     const conditions = await buildSearchConditions(filters);
     
     if (conditions.length > 0) {
-      baseQuery.where(and(...conditions));
+      baseQuery.where(and(...conditions);
     }
 
     // Count total results
     const countQuery = db
       .select({ count: sql<number>`count(*)` })
       .from(evidence)
-      .leftJoin(cases, eq(evidence.caseId, cases.id));
+      .leftJoin(cases, eq(evidence.caseId, cases.id);
     
     if (conditions.length > 0) {
-      countQuery.where(and(...conditions));
+      countQuery.where(and(...conditions);
     }
 
     const [countResult, searchResults] = await Promise.all([
@@ -141,12 +141,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     // Process results and calculate relevance scores
     const processedResults = await Promise.all(
-      searchResults.map(item => processSearchResult(item, filters))
+      searchResults.map(item => processSearchResult(item, filters)
     );
 
-    // Sort by relevance if we have a search query
+    // Sort by relevance if we have a search query;
     if (filters.query) {
-      processedResults.sort((a, b) => (b.relevanceScore || 0) - (a.relevanceScore || 0));
+      processedResults.sort((a, b) => (b.relevanceScore || 0) - (a.relevanceScore || 0);
     }
 
     // Generate facets
@@ -166,7 +166,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       pagination: {
         page,
         pageSize,
-        totalPages: Math.ceil(totalCount / pageSize)
+        totalPages: Math.ceil(totalCount / pageSize),
       }
     };
 
@@ -187,7 +187,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 async function buildSearchConditions(filters: SearchFilters) {
   const conditions = [];
 
-  // Text search across multiple fields
+  // Text search across multiple fields;
   if (filters.query) {
     const searchTerm = `%${filters.query}%`;
     conditions.push(
@@ -203,37 +203,37 @@ async function buildSearchConditions(filters: SearchFilters) {
     );
   }
 
-  // File type filters
+  // File type filters;
   if (filters.fileTypes && filters.fileTypes.length > 0) {
     conditions.push(
-      or(...filters.fileTypes.map(type => ilike(evidence.fileType, `%${type}%`)))
+      or(...filters.fileTypes.map(type => ilike(evidence.fileType, `%${type}%`))
     );
   }
 
-  // Case filters
+  // Case filters;
   if (filters.caseIds && filters.caseIds.length > 0) {
-    conditions.push(inArray(evidence.caseId, filters.caseIds));
+    conditions.push(inArray(evidence.caseId, filters.caseIds);
   }
 
-  // Date range filters
+  // Date range filters;
   if (filters.dateFrom) {
-    conditions.push(gte(evidence.uploadedAt, new Date(filters.dateFrom)));
+    conditions.push(gte(evidence.uploadedAt, new Date(filters.dateFrom));
   }
 
   if (filters.dateTo) {
-    conditions.push(lte(evidence.uploadedAt, new Date(filters.dateTo)));
+    conditions.push(lte(evidence.uploadedAt, new Date(filters.dateTo));
   }
 
-  // File size filters
+  // File size filters;
   if (filters.fileSizeMin) {
-    conditions.push(gte(evidence.fileSize, filters.fileSizeMin));
+    conditions.push(gte(evidence.fileSize, filters.fileSizeMin);
   }
 
   if (filters.fileSizeMax) {
-    conditions.push(lte(evidence.fileSize, filters.fileSizeMax));
+    conditions.push(lte(evidence.fileSize, filters.fileSizeMax);
   }
 
-  // Processing status filters
+  // Processing status filters;
   if (filters.hasOCR !== undefined) {
     if (filters.hasOCR) {
       conditions.push(sql`${evidence.ocrText} IS NOT NULL AND ${evidence.ocrText} != ''`);
@@ -258,17 +258,17 @@ async function buildSearchConditions(filters: SearchFilters) {
     }
   }
 
-  // Public/private filter
+  // Public/private filter;
   if (filters.isPublic !== undefined) {
-    conditions.push(eq(evidence.isPublic, filters.isPublic));
+    conditions.push(eq(evidence.isPublic, filters.isPublic);
   }
 
-  // Tag filters
+  // Tag filters;
   if (filters.tags && filters.tags.length > 0) {
     conditions.push(
       or(...filters.tags.map(tag => 
         sql`${evidence.tags} @> ${JSON.stringify([tag])}`
-      ))
+      )
     );
   }
 
@@ -279,9 +279,9 @@ async function executeSearchQuery(query: any, sortBy: string, sortOrder: string,
   // Apply sorting
   const orderColumn = getOrderColumn(sortBy);
   if (sortOrder === 'desc') {
-    query.orderBy(desc(orderColumn));
+    query.orderBy(desc(orderColumn);
   } else {
-    query.orderBy(asc(orderColumn));
+    query.orderBy(asc(orderColumn);
   }
 
   // Apply pagination
@@ -304,7 +304,7 @@ function getOrderColumn(sortBy: string) {
     case 'caseTitle':
       return cases.title;
     default:
-      return evidence.uploadedAt;
+      return evidence.uploadedAt;,
   }
 }
 
@@ -345,34 +345,34 @@ function calculateRelevanceScore(item: any, filters: SearchFilters): number {
   let score = 0;
   const query = filters.query.toLowerCase();
 
-  // Title match (highest weight)
+  // Title match (highest weight);
   if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).title?.toLowerCase().includes(query)) {
     score += 10;
     if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).title?.toLowerCase().startsWith(query)) score += 5;
   }
 
-  // Filename match
+  // Filename match;
   if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileName?.toLowerCase().includes(query)) {
     score += 7;
   }
 
-  // Description match
+  // Description match;
   if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).description?.toLowerCase().includes(query)) {
     score += 5;
   }
 
-  // Case title match
+  // Case title match;
   if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).caseTitle?.toLowerCase().includes(query)) {
     score += 4;
   }
 
-  // Content match
+  // Content match;
   if (filters.contentSearch) {
     if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).ocrText?.toLowerCase().includes(query)) score += 3;
     if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).contentText?.toLowerCase().includes(query)) score += 3;
   }
 
-  // Tag match
+  // Tag match;
   if (Array.isArray((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags)) {
     for (const tag of (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags) {
       if (tag.toLowerCase().includes(query)) {
@@ -418,7 +418,7 @@ function generateSnippet(item: any, query?: string): string | undefined {
   const text = (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).contentText || (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).ocrText || (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).description || '';
   if (!text) return undefined;
 
-  const index = text.toLowerCase().indexOf(query.toLowerCase());
+  const index = text.toLowerCase().indexOf(query.toLowerCase();
   if (index === -1) return undefined;
 
   const start = Math.max(0, index - 50);
@@ -465,7 +465,7 @@ async function generateFacets(filters: SearchFilters) {
       fileTypes: [],
       cases: [],
       tags: [],
-      dateRanges: []
+      dateRanges: [],
     };
   }
 }
@@ -487,29 +487,29 @@ async function getFileTypeFacets() {
     { name: 'PDF', count: 0 },
     { name: 'Image', count: 0 },
     { name: 'Word', count: 0 },
-    { name: 'Excel', count: 0 },
+    { name: 'Excel', count: 0 },>
     { name: 'Video', count: 0 }
   ];
 }
 
 async function getCaseFacets() {
   try {
-    const caseCounts = await db
+    const caseCounts = await db;
       .select({
         id: cases.id,
         title: cases.title,
         count: sql<number>`count(${evidence.id})`
       })
       .from(cases)
-      .leftJoin(evidence, eq(cases.id, evidence.caseId))
+      .leftJoin(evidence, eq(cases.id, evidence.caseId)
       .groupBy(cases.id, cases.title)
       .execute();
 
     return caseCounts.map(c => ({
       id: c.id,
       title: c.title || 'Untitled',
-      count: c.count || 0
-    }));
+      count: c.count || 0,
+    });
   } catch (error) {
     return [];
   }
@@ -536,7 +536,7 @@ async function generateSuggestions(query?: string): Promise<string[]> {
   ];
 
   return suggestions
-    .filter(item => item.includes(query.toLowerCase()))
+    .filter(item => item.includes(query.toLowerCase())
     .slice(0, 5);
 }
 
@@ -561,7 +561,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
     return `${dir}/thumb_${fileName}`;
   }
   
-  // Return type-specific icons for non-images
+  // Return type-specific icons for non-images;
   const typeIconMap: Record<string, string> = {
     'application/pdf': '/icons/pdf-thumbnail.svg',
     'video/': '/icons/video-thumbnail.svg',
@@ -576,7 +576,7 @@ function generateThumbnailUrl(filePath: string | null, fileType: string | null):
   return '/icons/file-thumbnail.svg';
 }
 
-// GET endpoint for simple search
+// GET endpoint for simple search;
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     const query = url.searchParams.get('q') || '';
@@ -589,7 +589,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       query,
       types: type ? [type] : undefined,
       caseIds: caseId ? [caseId] : undefined,
-      contentSearch: true
+      contentSearch: true,
     };
 
     const options: SearchOptions = {
@@ -597,10 +597,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       pageSize,
       sortBy: 'uploadedAt',
       sortOrder: 'desc',
-      includeContent: false
+      includeContent: false,
     };
 
-    // Reuse POST logic
+    // Reuse POST logic;
     const request = new Request('', {
       method: 'POST',
       body: JSON.stringify({ filters, options }),

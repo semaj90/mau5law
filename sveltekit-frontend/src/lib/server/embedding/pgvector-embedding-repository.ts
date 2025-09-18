@@ -91,8 +91,8 @@ async function querySimilar(query: string, options: SimilarityQueryOptions = {})
     documentType: String(r.document_type),
     chunkIndex: Number(r.chunk_index),
     content: String(r.content),
-    score: 1 - Number(r.distance)
-  }));
+    score: 1 - Number(r.distance),
+  });
 }
 
 export const pgvectorEmbeddingRepository: EmbeddingRepository = {

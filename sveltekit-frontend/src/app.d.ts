@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */;
 declare global {
   namespace App {
     interface Locals {
@@ -26,7 +26,7 @@ declare global {
     }
   }
 
-  // Node.js process polyfill for browser compatibility
+  // Node.js process polyfill for browser compatibility;
   interface ProcessEnv {
     NODE_ENV: string;
     BROWSER?: string;

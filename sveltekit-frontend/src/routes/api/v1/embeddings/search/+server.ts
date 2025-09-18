@@ -11,21 +11,21 @@ import type { SemanticSearchRequest } from '$lib/services/gpu-semantic-embedding
 /*
  * POST /api/v1/embeddings/search
  * Perform semantic search with GPU acceleration
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const searchRequest: SemanticSearchRequest = await request.json();
     
-    // Validate required fields
+    // Validate required fields;
     if (!searchRequest.query) {
       return json(
-        { error: 'Missing required field: query' },
+        { error: 'Missing required field: query' },)
         { status: 400 }
       );
     }
     
     if (!searchRequest.documents || !Array.isArray(searchRequest.documents)) {
-      return json(
+      return json()
         { error: 'Missing or invalid field: documents (must be array)' },
         { status: 400 }
       );
@@ -41,7 +41,7 @@ export const POST: RequestHandler = async ({ request }) => {
           resultsFound: 0,
           processingTime: 0,
           threshold: searchRequest.threshold || 0.3,
-          topK: searchRequest.topK || 10
+          topK: searchRequest.topK || 10,
         }
       });
     }
@@ -63,18 +63,17 @@ export const POST: RequestHandler = async ({ request }) => {
         resultsFound: results.length,
         threshold: searchRequest.threshold || 0.3,
         topK: searchRequest.topK || 10,
-        gpuUsed: searchRequest.useGPU !== false
+        gpuUsed: searchRequest.useGPU !== false,
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
   } catch (error) {
     console.error('Semantic search API error:', error);
-    return json(
-      { 
+    return json({ 
         error: 'Failed to perform semantic search',
-        message: error instanceof Error ? error.message: 'Unknown error'
-      },
+        message: error instanceof Error ? error.message: 'Unknown error',
+      },)
       { status: 500 }
     );
   }
@@ -83,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /*
  * GET /api/v1/embeddings/search
  * Get semantic search endpoint information
- */
+ */;
 export const GET: RequestHandler = async () => {
   return json({
     endpoint: 'POST /api/v1/embeddings/search',
@@ -101,14 +100,14 @@ export const GET: RequestHandler = async () => {
       results: [{
         document: 'string',
         score: 'number',
-        index: 'number'
+        index: 'number',
       }],
       metadata: {
         documentCount: 'number',
         resultsFound: 'number',
         threshold: 'number',
         topK: 'number',
-        gpuUsed: 'boolean'
+        gpuUsed: 'boolean',
       }
     },
     examples: {
@@ -121,9 +120,9 @@ export const GET: RequestHandler = async () => {
         ],
         threshold: 0.4,
         topK: 5,
-        useGPU: true
+        useGPU: true,
       }
     },
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
 };

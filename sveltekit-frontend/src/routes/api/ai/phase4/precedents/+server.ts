@@ -42,11 +42,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (error) {
     console.error('Precedent discovery API error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to discover legal precedents',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },
+        details: error instanceof Error ? error.message: 'Unknown error',
+      },)
       { status: 500 }
     );
   }
@@ -70,12 +69,12 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json({
       success: true,
-      discovery: discoveryResult
+      discovery: discoveryResult,
     });
 
   } catch (error) {
     return json(
-      { error: 'Failed to discover precedents' },
+      { error: 'Failed to discover precedents' },)
       { status: 500 }
     );
   }

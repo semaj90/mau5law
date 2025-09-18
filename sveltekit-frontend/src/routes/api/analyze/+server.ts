@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = (await request.json()) as AnalysisRequest;
     const startTime = Date.now();
 
-    // Basic validation
+    // Basic validation;
     if (!body.text && !body.evidenceId && !body.caseId) {
       return json({ error: 'Missing required field: text, evidenceId, or caseId' }, { status: 400 });
     }
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
         textLength: documentText.length,
         processingTimeMs: Date.now() - startTime,
         timestamp: new Date().toISOString(),
-        model: modelName
+        model: modelName,
       }
     };
 
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Analysis endpoint error:', error);
     return json(
-      { error: 'Internal server error', details: error instanceof Error ? error.message: 'Unknown error' },
+      { error: 'Internal server error', details: error instanceof Error ? error.message: 'Unknown error' },)
       { status: 500 }
     );
   }
@@ -108,7 +108,7 @@ function buildEnhancedAnalysisPrompt(
   documentType: string,
   useThinkingStyle: boolean,
   contextualInfo: string,
-  documentMetadata: any
+  documentMetadata: any;
 ): string {
   const basePrompt = `Analyze this ${documentType} document for ${analysisType}.
 

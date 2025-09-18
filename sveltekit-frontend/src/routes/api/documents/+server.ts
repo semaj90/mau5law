@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Try cache first
     const cached = await redis.get(cacheKey);
     if (cached) {
-      return json(JSON.parse(cached));
+      return json(JSON.parse(cached);
     }
     
     // Build query conditions
@@ -48,21 +48,21 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     
     if (caseId) {
-      conditions.push(eq(documents.case_id, caseId));
+      conditions.push(eq(documents.case_id, caseId);
     }
     
     if (documentType) {
-      conditions.push(eq(documents.document_type, documentType));
+      conditions.push(eq(documents.document_type, documentType);
     }
     
     if (riskLevel) {
-      conditions.push(eq(documents.risk_level, riskLevel));
+      conditions.push(eq(documents.risk_level, riskLevel);
     }
     
-    conditions.push(eq(documents.is_active, true));
+    conditions.push(eq(documents.is_active, true);
     
     // Execute query with relations
-    const query = db
+    const query = db;
       .select({
         id: documents.id,
         title: documents.title,
@@ -87,12 +87,12 @@ export const GET: RequestHandler = async ({ url }) => {
         updated_at: documents.updated_at,
         created_by: documents.created_by,
         is_indexed: documents.is_indexed,
-        case_title: cases.title
+        case_title: cases.title,
       })
       .from(documents)
-      .leftJoin(cases, eq(documents.case_id, cases.id))
+      .leftJoin(cases, eq(documents.case_id, cases.id)
       .where(conditions.length > 0 ? and(...conditions) : undefined)
-      .orderBy(desc(documents.created_at))
+      .orderBy(desc(documents.created_at)
       .limit(limit)
       .offset(offset);
     
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     // Get total count for pagination
     const totalQuery = db
-      .select({ count: sql`count(*)` })
+      .select({ count: sql`count(*)` ,})
       .from(documents)
       .where(conditions.length > 0 ? and(...conditions) : undefined);
     
@@ -115,18 +115,18 @@ export const GET: RequestHandler = async ({ url }) => {
         total,
         pages: Math.ceil(total / limit),
         hasNext: page * limit < total,
-        hasPrev: page > 1
+        hasPrev: page > 1,
       }
     };
     
     // Cache results
-    await redis.setex(cacheKey, CACHE_TTL, JSON.stringify(response));
+    await redis.setex(cacheKey, CACHE_TTL, JSON.stringify(response);
     
     return json(response);
     
   } catch (error) {
     console.error('Error fetching documents:', error);
-    return json(
+    return json()
       { error: 'Failed to fetch documents', details: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     );
@@ -141,10 +141,10 @@ export const POST: RequestHandler = async ({ request }) => {
       generate_summary?: boolean;
     };
     
-    // Validate required fields
+    // Validate required fields;
     if (!data.title || !data.content) {
       return json(
-        { error: 'Title and content are required' },
+        { error: 'Title and content are required' },)
         { status: 400 }
       );
     }
@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // Generate title embedding
         titleEmbedding = await createEmbedding(data.title);
         
-        // Generate summary embedding if we have AI summary
+        // Generate summary embedding if we have AI summary;
         if (data.ai_summary) {
           summaryEmbedding = await createEmbedding(data.ai_summary);
         }
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     
-    // Prepare document data
+    // Prepare document data;
     const documentData: NewDocument = {
       title: data.title,
       content: data.content,
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
       embedding_model: data.embedding_model || 'nomic-embed-text',
       created_by: data.created_by,
       is_public: data.is_public || false,
-      is_indexed: data.is_indexed || false
+      is_indexed: data.is_indexed || false,
     };
     
     // Insert document
@@ -204,7 +204,7 @@ export const POST: RequestHandler = async ({ request }) => {
       .values(documentData)
       .returning();
     
-    // Update with embeddings if generated
+    // Update with embeddings if generated;
     if (embedding || titleEmbedding || summaryEmbedding) {
       const updates: Partial<Document> = {};
       
@@ -225,7 +225,7 @@ export const POST: RequestHandler = async ({ request }) => {
         await db
           .update(documents)
           .set(updates)
-          .where(eq(documents.id, newDocument.id));
+          .where(eq(documents.id, newDocument.id);
       }
     }
     
@@ -239,12 +239,12 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       document: newDocument,
       embeddings_generated: !!(embedding || titleEmbedding || summaryEmbedding),
-      message: 'Document created successfully'
+      message: 'Document created successfully',
     }, { status: 201 });
     
   } catch (error) {
     console.error('Error creating document:', error);
-    return json(
+    return json()
       { error: 'Failed to create document', details: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     );
@@ -266,7 +266,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     const existingDocument = await db
       .select()
       .from(documents)
-      .where(eq(documents.id, documentId))
+      .where(eq(documents.id, documentId)
       .limit(1);
     
     if (existingDocument.length === 0) {
@@ -292,13 +292,13 @@ export const PUT: RequestHandler = async ({ request, url }) => {
       }
     }
     
-    // Prepare update data
+    // Prepare update data;
     const updateData: Partial<Document> = {
       ...data,
-      updated_at: new Date()
+      updated_at: new Date(),
     };
     
-    // Add embeddings if generated
+    // Add embeddings if generated;
     if (embedding) {
       updateData.embedding = sql`${JSON.stringify(embedding)}::vector`;
       updateData.is_indexed = true;
@@ -319,7 +319,7 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     const [updatedDocument] = await db
       .update(documents)
       .set(updateData)
-      .where(eq(documents.id, documentId))
+      .where(eq(documents.id, documentId)
       .returning();
     
     // Clear relevant caches
@@ -332,12 +332,12 @@ export const PUT: RequestHandler = async ({ request, url }) => {
     return json({
       document: updatedDocument,
       embeddings_updated: !!(embedding || titleEmbedding || summaryEmbedding),
-      message: 'Document updated successfully'
+      message: 'Document updated successfully',
     });
     
   } catch (error) {
     console.error('Error updating document:', error);
-    return json(
+    return json()
       { error: 'Failed to update document', details: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     );
@@ -353,12 +353,12 @@ export const DELETE: RequestHandler = async ({ url }) => {
     
     // Soft delete - mark as inactive
     const [deletedDocument] = await db
-      .update(documents)
+      .update(documents);
       .set({ 
         is_active: false, 
-        updated_at: new Date() 
+        updated_at: new Date() ,
       })
-      .where(eq(documents.id, documentId))
+      .where(eq(documents.id, documentId)
       .returning();
     
     if (!deletedDocument) {
@@ -374,12 +374,12 @@ export const DELETE: RequestHandler = async ({ url }) => {
     
     return json({
       message: 'Document deleted successfully',
-      document_id: documentId
+      document_id: documentId,
     });
     
   } catch (error) {
     console.error('Error deleting document:', error);
-    return json(
+    return json()
       { error: 'Failed to delete document', details: error instanceof Error ? error.message: String(error) },
       { status: 500 }
     );

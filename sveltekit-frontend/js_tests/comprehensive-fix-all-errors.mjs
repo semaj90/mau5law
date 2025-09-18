@@ -1,27 +1,21 @@
 #!/usr/bin/env node
 
-import {
-    existsSync,
-    readdirSync,
-    readFileSync,
-    statSync,
-    writeFileSync,
-} from "fs";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const srcPath = join(__dirname, "src");
+const srcPath = join(__dirname, 'src');
 
-console.log("🔧 Starting comprehensive SvelteKit error fixes...");
+console.log('🔧 Starting comprehensive SvelteKit error fixes...');
 
 // 1. Fix database index exports
 function fixDatabaseIndex() {
-  console.log("🔄 Fixing database index exports...");
+  console.log('🔄 Fixing database index exports...');
 
-  const dbIndexPath = join(srcPath, "lib", "server", "db", "index.ts");
+  const dbIndexPath = join(srcPath, 'lib', 'server', 'db', 'index.ts');
 
   const fixedDbIndex = `// Database connection and schema exports
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -87,41 +81,35 @@ if (process.env.NODE_ENV !== 'production') {
 }`;
 
   writeFileSync(dbIndexPath, fixedDbIndex);
-  console.log("✅ Fixed database index exports");
+  console.log('✅ Fixed database index exports');
 }
 
 // 2. Fix vector service types
 function fixVectorService() {
-  console.log("🔄 Fixing vector service types...");
+  console.log('🔄 Fixing vector service types...');
 
-  const vectorServicePath = join(
-    srcPath,
-    "lib",
-    "server",
-    "services",
-    "vector-service.ts",
-  );
+  const vectorServicePath = join(srcPath, 'lib', 'server', 'services', 'vector-service.ts');
 
   if (!existsSync(vectorServicePath)) {
-    console.log("⚠️  Vector service not found, skipping...");
+    console.log('⚠️  Vector service not found, skipping...');
     return;
   }
 
-  let content = readFileSync(vectorServicePath, "utf-8");
+  let content = readFileSync(vectorServicePath, 'utf-8');
 
   // Fix type issues with embeddings
   content = content.replace(
     /embedding:\s*string\s*\|\s*SQL<unknown>\s*\|\s*Placeholder<[^>]*>/g,
-    "embedding: number[]",
+    'embedding: number[]'
   );
 
   // Fix metadata property issues
-  content = content.replace(/options\.metadata/g, "(options as any).metadata");
+  content = content.replace(/options\.metadata/g, '(options as any).metadata');
 
   // Fix rows property access
   content = content.replace(
     /results\.rows/g,
-    "Array.isArray(results) ? results : (results as any).rows || results",
+    'Array.isArray(results) ? results : (results as any).rows || results'
   );
 
   // Fix database insert issues
@@ -132,7 +120,7 @@ function fixVectorService() {
                 content,
                 embedding: JSON.stringify(embedding),
                 metadata: metadata || {}
-            })`,
+            })`
   );
 
   // Fix evidence embedding inserts
@@ -142,105 +130,81 @@ function fixVectorService() {
                 content,
                 embedding: JSON.stringify(embedding),
                 metadata: metadata || {}
-            })`,
+            })`
   );
 
   writeFileSync(vectorServicePath, content);
-  console.log("✅ Fixed vector service types");
+  console.log('✅ Fixed vector service types');
 }
 
 // 3. Fix embedding service error types
 function fixEmbeddingService() {
-  console.log("🔄 Fixing embedding service error types...");
+  console.log('🔄 Fixing embedding service error types...');
 
-  const embeddingServicePath = join(
-    srcPath,
-    "lib",
-    "server",
-    "services",
-    "embedding-service.ts",
-  );
+  const embeddingServicePath = join(srcPath, 'lib', 'server', 'services', 'embedding-service.ts');
 
   if (!existsSync(embeddingServicePath)) {
-    console.log("⚠️  Embedding service not found, skipping...");
+    console.log('⚠️  Embedding service not found, skipping...');
     return;
   }
 
-  let content = readFileSync(embeddingServicePath, "utf-8");
+  let content = readFileSync(embeddingServicePath, 'utf-8');
 
   // Fix error type issues
-  content = content.replace(
-    /error\.message/g,
-    "(error as Error).message || String(error)",
-  );
+  content = content.replace(/error\.message/g, '(error as Error).message || String(error)');
 
   // Fix unknown error handling
-  content = content.replace(
-    /catch\s*\(\s*error\s*\)/g,
-    "catch (error: unknown)",
-  );
+  content = content.replace(/catch\s*\(\s*error\s*\)/g, 'catch (error: unknown)');
 
   writeFileSync(embeddingServicePath, content);
-  console.log("✅ Fixed embedding service error types");
+  console.log('✅ Fixed embedding service error types');
 }
 
 // 4. Fix AI service embedding types
 function fixAIService() {
-  console.log("🔄 Fixing AI service embedding types...");
+  console.log('🔄 Fixing AI service embedding types...');
 
-  const aiServicePath = join(srcPath, "lib", "services", "ai-service.ts");
+  const aiServicePath = join(srcPath, 'lib', 'services', 'ai-service.ts');
 
   if (!existsSync(aiServicePath)) {
-    console.log("⚠️  AI service not found, skipping...");
+    console.log('⚠️  AI service not found, skipping...');
     return;
   }
 
-  let content = readFileSync(aiServicePath, "utf-8");
+  let content = readFileSync(aiServicePath, 'utf-8');
 
   // Fix embedding type assignment
   content = content.replace(
     /embedding:\s*Array\.isArray\(embedding\[0\]\)\s*\?\s*embedding\[0\]\s*:\s*embedding/g,
-    "embedding: Array.isArray(embedding[0]) ? (embedding[0] as number[]) : (embedding as number[])",
+    'embedding: Array.isArray(embedding[0]) ? (embedding[0] as number[]) : (embedding as number[])'
   );
 
   // Add proper type annotations
-  if (!content.includes("type EmbeddingVector = number[];")) {
+  if (!content.includes('type EmbeddingVector = number[];')) {
     content = `type EmbeddingVector = number[];\n\n${content}`;
   }
 
   writeFileSync(aiServicePath, content);
-  console.log("✅ Fixed AI service embedding types");
+  console.log('✅ Fixed AI service embedding types');
 }
 
 // 5. Fix vector schema Drizzle syntax
 function fixVectorSchema() {
-  console.log("🔄 Fixing vector schema Drizzle syntax...");
+  console.log('🔄 Fixing vector schema Drizzle syntax...');
 
-  const vectorSchemaPath = join(
-    srcPath,
-    "lib",
-    "server",
-    "database",
-    "vector-schema.ts",
-  );
+  const vectorSchemaPath = join(srcPath, 'lib', 'server', 'database', 'vector-schema.ts');
 
   // Remove the problematic original schema if it exists
   if (existsSync(vectorSchemaPath)) {
-    const content = readFileSync(vectorSchemaPath, "utf-8").trim();
+    const content = readFileSync(vectorSchemaPath, 'utf-8').trim();
     if (content.length < 100) {
       // If it's nearly empty, remove it
-      writeFileSync(vectorSchemaPath, "// Replaced by vector-schema-simple.ts");
+      writeFileSync(vectorSchemaPath, '// Replaced by vector-schema-simple.ts');
     }
   }
 
   // Ensure the simple schema is properly formatted
-  const simpleSchemaPath = join(
-    srcPath,
-    "lib",
-    "server",
-    "database",
-    "vector-schema-simple.ts",
-  );
+  const simpleSchemaPath = join(srcPath, 'lib', 'server', 'database', 'vector-schema-simple.ts');
 
   const improvedSimpleSchema = `// Simplified Vector Schema - Production Ready
 import { jsonb, pgTable, real, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
@@ -366,82 +330,82 @@ export interface VectorSearchResult {
 `;
 
   writeFileSync(simpleSchemaPath, improvedSimpleSchema);
-  console.log("✅ Fixed vector schema Drizzle syntax");
+  console.log('✅ Fixed vector schema Drizzle syntax');
 }
 
 // 6. Fix cache type issues
 function fixCacheTypes() {
-  console.log("🔄 Fixing cache type issues...");
+  console.log('🔄 Fixing cache type issues...');
 
   const files = [
-    join(srcPath, "lib", "server", "search", "vector-search.ts"),
-    join(srcPath, "lib", "server", "cache", "redis.ts"),
+    join(srcPath, 'lib', 'server', 'search', 'vector-search.ts'),
+    join(srcPath, 'lib', 'server', 'cache', 'redis.ts'),
   ];
 
   files.forEach((filePath) => {
     if (!existsSync(filePath)) return;
 
-    let content = readFileSync(filePath, "utf-8");
+    let content = readFileSync(filePath, 'utf-8');
 
     // Fix untyped function calls
-    content = content.replace(/cache\.get<([^>]+)>\(/g, "cache.get(");
+    content = content.replace(/cache\.get<([^>]+)>\(/g, 'cache.get(');
 
     // Add proper type assertions
     content = content.replace(
       /const cached = await cache\.get\([^)]+\);/g,
-      "const cached = await cache.get(cacheKey) as VectorSearchResult[] | null;",
+      'const cached = await cache.get(cacheKey) as VectorSearchResult[] | null;'
     );
 
     writeFileSync(filePath, content);
   });
 
-  console.log("✅ Fixed cache type issues");
+  console.log('✅ Fixed cache type issues');
 }
 
 // 7. Fix Svelte configuration
 function fixSvelteConfig() {
-  console.log("🔄 Fixing Svelte configuration...");
+  console.log('🔄 Fixing Svelte configuration...');
 
-  const svelteConfigPath = join(__dirname, "svelte.config.js");
+  const svelteConfigPath = join(__dirname, 'svelte.config.js');
 
   if (!existsSync(svelteConfigPath)) {
-    console.log("⚠️  svelte.config.js not found, skipping...");
+    console.log('⚠️  svelte.config.js not found, skipping...');
     return;
   }
 
-  let content = readFileSync(svelteConfigPath, "utf-8");
+  let content = readFileSync(svelteConfigPath, 'utf-8');
 
   // Fix experimental.inspector config
   content = content.replace(
     /experimental:\s*\{[\s\S]*?inspector:\s*true[\s\S]*?\}/g,
-    "inspector: true",
+    'inspector: true'
   );
 
   // Ensure proper Vite config
-  if (!content.includes("inspector: true")) {
+  if (!content.includes('inspector: true')) {
     content = content.replace(
       /vite:\s*\{/,
       `vite: {
-        inspector: true,`,
+        inspector: true,`
     );
   }
 
   writeFileSync(svelteConfigPath, content);
-  console.log("✅ Fixed Svelte configuration");
+  console.log('✅ Fixed Svelte configuration');
 }
 
 // 8. Fix TypeScript configuration
 function fixTsConfig() {
-  console.log("🔄 Fixing TypeScript configuration...");
+  console.log('🔄 Fixing TypeScript configuration...');
 
-  const tsConfigPath = join(__dirname, "tsconfig.json");
+  const tsConfigPath = join(__dirname, 'tsconfig.json');
 
   if (!existsSync(tsConfigPath)) {
-    console.log("⚠️  tsconfig.json not found, skipping...");
+    console.log('⚠️  tsconfig.json not found, skipping...');
     return;
   }
 
-  const tsConfig = JSON.parse(readFileSync(tsConfigPath, "utf-8"));
+  const tsConfig = JSON.parse(readFileSync(tsConfigPath, 'utf-8'));
 
   // Ensure proper compiler options
   tsConfig.compilerOptions = {
@@ -455,23 +419,23 @@ function fixTsConfig() {
   };
 
   writeFileSync(tsConfigPath, JSON.stringify(tsConfig, null, 2));
-  console.log("✅ Fixed TypeScript configuration");
+  console.log('✅ Fixed TypeScript configuration');
 }
 
 // 9. Fix import/export issues
 function fixImportExportIssues() {
-  console.log("🔄 Fixing import/export issues...");
+  console.log('🔄 Fixing import/export issues...');
 
   const searchPatterns = [
-    join(srcPath, "lib", "server", "**", "*.ts"),
-    join(srcPath, "lib", "services", "**", "*.ts"),
-    join(srcPath, "routes", "**", "*.ts"),
+    join(srcPath, 'lib', 'server', '**', '*.ts'),
+    join(srcPath, 'lib', 'services', '**', '*.ts'),
+    join(srcPath, 'routes', '**', '*.ts'),
   ];
 
   function processFile(filePath) {
-    if (!existsSync(filePath) || !filePath.endsWith(".ts")) return;
+    if (!existsSync(filePath) || !filePath.endsWith('.ts')) return;
 
-    let content = readFileSync(filePath, "utf-8");
+    let content = readFileSync(filePath, 'utf-8');
     let modified = false;
 
     // Fix undefined imports
@@ -480,14 +444,14 @@ function fixImportExportIssues() {
         /import\s*\{([^}]+)\}\s*from\s*"\$lib\/server\/db\/index"/g,
         (match, imports) => {
           const importList = imports
-            .split(",")
+            .split(',')
             .map((i) => i.trim())
             .filter((i) => i);
-          if (importList.includes("isPostgreSQL")) {
+          if (importList.includes('isPostgreSQL')) {
             return match; // Keep as is
           }
           return match;
-        },
+        }
       );
       modified = true;
     }
@@ -495,10 +459,7 @@ function fixImportExportIssues() {
     // Fix error handling
     content = content.replace(
       /catch\s*\(\s*error\s*\)\s*{([^}]*error\.message[^}]*)}/g,
-      "catch (error: unknown) {$1}".replace(
-        "error.message",
-        "(error as Error).message",
-      ),
+      'catch (error: unknown) {$1}'.replace('error.message', '(error as Error).message')
     );
 
     if (modified) {
@@ -517,55 +478,54 @@ function fixImportExportIssues() {
 
       if (stat.isDirectory()) {
         walkDirectory(fullPath);
-      } else if (item.endsWith(".ts")) {
+      } else if (item.endsWith('.ts')) {
         processFile(fullPath);
       }
     });
   }
 
-  walkDirectory(join(srcPath, "lib"));
-  walkDirectory(join(srcPath, "routes"));
+  walkDirectory(join(srcPath, 'lib'));
+  walkDirectory(join(srcPath, 'routes'));
 
-  console.log("✅ Fixed import/export issues");
+  console.log('✅ Fixed import/export issues');
 }
 
 // 10. Update package.json dependencies
 function updatePackageJson() {
-  console.log("🔄 Updating package.json dependencies...");
+  console.log('🔄 Updating package.json dependencies...');
 
-  const packageJsonPath = join(__dirname, "package.json");
+  const packageJsonPath = join(__dirname, 'package.json');
 
   if (!existsSync(packageJsonPath)) {
-    console.log("⚠️  package.json not found, skipping...");
+    console.log('⚠️  package.json not found, skipping...');
     return;
   }
 
-  const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+  const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
 
   // Add missing dev dependencies
   packageJson.devDependencies = {
     ...packageJson.devDependencies,
-    "@types/pg": "^8.15.4",
-    "@types/postgres": "^3.0.4",
-    "drizzle-kit": "^0.31.4",
+    '@types/pg': '^8.15.4',
+    '@types/postgres': '^3.0.4',
+    'drizzle-kit': '^0.31.4',
   };
 
   // Ensure proper script is in place
   packageJson.scripts = {
     ...packageJson.scripts,
-    "fix:all": "node comprehensive-fix-all-errors.mjs",
-    "check:types":
-      "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --threshold warning",
+    'fix:all': 'node comprehensive-fix-all-errors.mjs',
+    'check:types': 'svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --threshold warning',
   };
 
   writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-  console.log("✅ Updated package.json dependencies");
+  console.log('✅ Updated package.json dependencies');
 }
 
 // Main execution function
 async function main() {
   try {
-    console.log("🚀 Starting comprehensive SvelteKit error fixes...\n");
+    console.log('🚀 Starting comprehensive SvelteKit error fixes...\n');
 
     fixDatabaseIndex();
     fixVectorSchema();
@@ -578,14 +538,14 @@ async function main() {
     fixImportExportIssues();
     updatePackageJson();
 
-    console.log("\n✅ All fixes completed successfully!");
-    console.log("\n📋 Next steps:");
-    console.log("1. Run: npm install");
-    console.log("2. Run: npm run check");
-    console.log("3. Run: npm run dev");
-    console.log("\n🎉 Your SvelteKit app should now be error-free!");
+    console.log('\n✅ All fixes completed successfully!');
+    console.log('\n📋 Next steps:');
+    console.log('1. Run: npm install');
+    console.log('2. Run: npm run check');
+    console.log('3. Run: npm run dev');
+    console.log('\n🎉 Your SvelteKit app should now be error-free!');
   } catch (error) {
-    console.error("❌ Error during fixes:", error);
+    console.error('❌ Error during fixes:', error);
     process.exit(1);
   }
 }

@@ -12,7 +12,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { sql } from 'drizzle-orm';
 import { eq, and, or, ilike, like, desc, asc, count } from 'drizzle-orm';
 
-// Re-export commonly used pg-core helpers for schema files that import from $lib/server/db
+// Re-export commonly used pg-core helpers for schema files that import from $lib/server/db;
 export {
   pgTable,
   serial,
@@ -33,7 +33,7 @@ const CONNECTION = process.env.DATABASE_URL || '';
 let db: ReturnType<typeof drizzle> | null = null;
 if (CONNECTION) {
   const pool = new Pool({ connectionString: CONNECTION });
-  // Combine schemas so Drizzle has knowledge of both sets
+  // Combine schemas so Drizzle has knowledge of both sets;
   const combinedSchema = {
     ...(pgSchema as Record<string, unknown>),
     ...(domainSchema as Record<string, unknown>),

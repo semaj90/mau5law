@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import { normalizePerformanceProfile, clampMemoryMB } from '$lib/gpu/types';
 
-// Raw environment (unvalidated)
+// Raw environment (unvalidated);
 const RAW_ENV = {
   OLLAMA_URL: import.meta.env.OLLAMA_URL,
   OLLAMA_MODEL: import.meta.env.OLLAMA_MODEL,
@@ -17,6 +17,7 @@ const RAW_ENV = {
   VITE_SHADER_DEBUG: import.meta.env.VITE_SHADER_DEBUG,
   VITE_REDUCTION_MODE: import.meta.env.VITE_REDUCTION_MODE,
 };
+}
 
 export interface EnvConfig {
   OLLAMA_URL: string;
@@ -31,7 +32,7 @@ export interface EnvConfig {
   PERFORMANCE_PROFILE: 'auto' | 'mobile' | 'desktop' | 'high-end';
   GPU_DEBUG: boolean;
   SHADER_DEBUG: boolean;
-  REDUCTION_MODE: 'auto' | 'gpu' | 'cpu';
+  REDUCTION_MODE: 'auto' | 'gpu' | 'cpu';,
 }
 
 function coerceBoolean(value: string | undefined, defaultValue: boolean): boolean {
@@ -40,7 +41,7 @@ function coerceBoolean(value: string | undefined, defaultValue: boolean): boolea
 }
 
 function validateAndBuildEnv(): EnvConfig {
-  const memoryMB = clampMemoryMB(parseInt(RAW_ENV.VITE_GPU_MEMORY_LIMIT || '512', 10));
+  const memoryMB = clampMemoryMB(parseInt(RAW_ENV.VITE_GPU_MEMORY_LIMIT || '512', 10);
   const profile = normalizePerformanceProfile(RAW_ENV.VITE_PERFORMANCE_PROFILE);
 
   const cfg: EnvConfig = {
@@ -70,7 +71,7 @@ function validateAndBuildEnv(): EnvConfig {
 
 export const ENV_CONFIG: EnvConfig = validateAndBuildEnv();
 
-// Client-safe environment access with GPU configuration
+// Client-safe environment access with GPU configuration;
 export const CLIENT_ENV = Object.freeze({
   OLLAMA_URL: typeof window !== 'undefined' ? 'http://localhost:8086' : ENV_CONFIG.OLLAMA_URL,
   APP_URL: ENV_CONFIG.PUBLIC_APP_URL,
@@ -84,7 +85,7 @@ export const CLIENT_ENV = Object.freeze({
   REDUCTION_MODE: ENV_CONFIG.REDUCTION_MODE,
 });
 
-// GPU Context Configuration based on environment
+// GPU Context Configuration based on environment;
 export const GPU_CONFIG = Object.freeze({
   // Context preferences
   preferWebGPU: CLIENT_ENV.WEBGPU_ENABLED,

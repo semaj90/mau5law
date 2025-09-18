@@ -25,6 +25,7 @@ const ENHANCED_RAG_CONFIG = {
     fallback: 'llama2-legal',
   },
 };
+}
 
 export interface EnhancedRAGRequest {
   query: string;
@@ -48,7 +49,7 @@ export interface EnhancedRAGResponse {
 
 /*
  * GET /api/v1/enhanced-rag - Enhanced RAG service health and capabilities
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const includeModels = url.searchParams.get('models') === 'true';
@@ -58,7 +59,7 @@ export const GET: RequestHandler = async ({ url }) => {
     let uploadHealth = null;
     let vectorHealth = null;
 
-    // Check Enhanced RAG service
+    // Check Enhanced RAG service;
     try {
       const ragResponse = await fetch(`${ENHANCED_RAG_CONFIG.baseUrl}/health`, {
         signal: AbortSignal.timeout(5000),
@@ -71,7 +72,7 @@ export const GET: RequestHandler = async ({ url }) => {
       console.warn('Enhanced RAG health check failed:', ragError);
     }
 
-    // Check Upload service
+    // Check Upload service;
     try {
       const uploadResponse = await fetch(`${ENHANCED_RAG_CONFIG.uploadServiceUrl}/health`, {
         signal: AbortSignal.timeout(5000),
@@ -84,7 +85,7 @@ export const GET: RequestHandler = async ({ url }) => {
       console.warn('Upload service health check failed:', uploadError);
     }
 
-    // Check vector operations if requested
+    // Check vector operations if requested;
     if (checkVector) {
       try {
         const tv = await testVectorOperations();
@@ -171,18 +172,18 @@ export const GET: RequestHandler = async ({ url }) => {
 
 /*
  * POST /api/v1/enhanced-rag - Enhanced RAG query with vector integration
- */
+ */;
 export const POST: RequestHandler = async ({ request, url }) => {
   try {
     const ragRequest: EnhancedRAGRequest = await request.json();
     const useVectorFallback = url.searchParams.get('vector-fallback') === 'true';
 
-    // Validate request
+    // Validate request;
     if (!ragRequest.query || ragRequest.query.trim().length === 0) {
       throw error(400, 'Query is required and cannot be empty');
     }
 
-    // Prepare Enhanced RAG request
+    // Prepare Enhanced RAG request;
     const enhancedRequest = {
       query: ragRequest.query,
       context: ragRequest.context || [],
@@ -199,7 +200,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     let vectorResults: any[] | null = null;
 
     try {
-      // Try Enhanced RAG service first
+      // Try Enhanced RAG service first;
       ragResponse = await fetch(`${ENHANCED_RAG_CONFIG.baseUrl}/api/rag`, {
         method: 'POST',
         headers: {
@@ -220,7 +221,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     } catch (ragError) {
       console.warn('Enhanced RAG service failed:', ragError);
 
-      // Fallback to vector operations if enabled
+      // Fallback to vector operations if enabled;
       if (useVectorFallback) {
         console.log('Using vector operations fallback...');
 
@@ -236,7 +237,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
             content: r.content,
             score: r.similarity,
             metadata: r.metadata,
-          }));
+          });
 
           responseData = {
             answer: `Based on vector similarity search, found ${vectorResults.length} relevant documents. (Fallback used while Enhanced RAG unavailable)`,
@@ -290,7 +291,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 /*
  * PUT /api/v1/enhanced-rag - Upload document for RAG processing
- */
+ */;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData();
@@ -341,7 +342,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 
 /*
  * DELETE /api/v1/enhanced-rag - Remove document from RAG index
- */
+ */;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const documentId = url.searchParams.get('documentId');
@@ -351,7 +352,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
 
     const deleteResponse = await fetch(
-      `${ENHANCED_RAG_CONFIG.baseUrl}/api/rag/documents/${documentId}`,
+      `${ENHANCED_RAG_CONFIG.baseUrl}/api/rag/documents/${documentId}`,);
       {
         method: 'DELETE',
         headers: {

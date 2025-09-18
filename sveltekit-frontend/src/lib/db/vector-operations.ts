@@ -17,7 +17,7 @@ export class LegalVectorService {
 
   /**
    * Store document with embedding from gemma3-legal:latest
-   */
+   */;
   async storeDocumentWithEmbedding(document: {
     title: string;
     content: string;
@@ -31,7 +31,7 @@ export class LegalVectorService {
     originalFilename?: string;
     fileSize?: number;
     mimeType?: string;
-    processingTimeMs: number;
+    processingTimeMs: number;,
   }): Promise<LegalDocument> {
     // Generate document hash for duplicate detection
     const crypto = await import('crypto');
@@ -41,7 +41,7 @@ export class LegalVectorService {
     const existingDoc = await this.database
       .select()
       .from(legalDocuments)
-      .where(eq(legalDocuments.documentHash, documentHash))
+      .where(eq(legalDocuments.documentHash, documentHash)
       .limit(1);
 
     if (existingDoc.length > 0) {
@@ -65,7 +65,7 @@ export class LegalVectorService {
       documentHash,
       originalFilename: document.originalFilename,
       fileSize: document.fileSize,
-      mimeType: document.mimeType
+      mimeType: document.mimeType,
     }).returning();
 
     console.log(`✅ Stored legal document: ${result[0].title} (ID: ${result[0].id})`);
@@ -74,7 +74,7 @@ export class LegalVectorService {
 
   /**
    * Vector similarity search with pgvector cosine similarity
-   */
+   */;
   async findSimilarDocuments(queryEmbedding: number[], options: {
     threshold?: number;
     limit?: number;
@@ -90,7 +90,7 @@ export class LegalVectorService {
     const limit = options.limit ?? 10;
 
     // Build base query with similarity calculation
-    let query = this.database
+    let query = this.database;
       .select({
         id: legalDocuments.id,
         title: legalDocuments.title,
@@ -122,27 +122,27 @@ export class LegalVectorService {
     ];
 
     if (options.documentType) {
-      conditions.push(eq(legalDocuments.documentType, options.documentType));
+      conditions.push(eq(legalDocuments.documentType, options.documentType);
     }
 
     if (options.practiceArea) {
-      conditions.push(eq(legalDocuments.practiceArea, options.practiceArea));
+      conditions.push(eq(legalDocuments.practiceArea, options.practiceArea);
     }
 
     if (options.jurisdiction) {
-      conditions.push(eq(legalDocuments.jurisdiction, options.jurisdiction));
+      conditions.push(eq(legalDocuments.jurisdiction, options.jurisdiction);
     }
 
     if (options.caseId) {
-      conditions.push(eq(legalDocuments.caseId, options.caseId));
+      conditions.push(eq(legalDocuments.caseId, options.caseId);
     }
 
     if (options.clientId) {
-      conditions.push(eq(legalDocuments.clientId, options.clientId));
+      conditions.push(eq(legalDocuments.clientId, options.clientId);
     }
 
     if (options.confidentialityLevel) {
-      conditions.push(eq(legalDocuments.confidentialityLevel, options.confidentialityLevel));
+      conditions.push(eq(legalDocuments.confidentialityLevel, options.confidentialityLevel);
     }
 
     if (options.excludeDocumentIds && options.excludeDocumentIds.length > 0) {
@@ -150,14 +150,14 @@ export class LegalVectorService {
     }
 
     // Apply all conditions
-    query = query.where(and(...conditions));
+    query = query.where(and(...conditions);
 
     // Order by similarity and limit results
     const results = await query
-      .orderBy(desc(sql`1 - (${legalDocuments.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`})`))
+      .orderBy(desc(sql`1 - (${legalDocuments.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`})`)
       .limit(limit);
 
-    // Update last accessed timestamp
+    // Update last accessed timestamp;
     if (results.length > 0) {
       const documentIds = results.map(r => r.id);
       await this.database
@@ -172,7 +172,7 @@ export class LegalVectorService {
 
   /**
    * Store similarity query for analytics
-   */
+   */;
   async logSimilarityQuery(query: {
     queryText: string;
     queryEmbedding: number[];
@@ -199,13 +199,13 @@ export class LegalVectorService {
       similarityThreshold: query.similarityThreshold,
       topResults: query.topResults,
       queryIntent: query.queryIntent,
-      userSatisfaction: query.userSatisfaction
+      userSatisfaction: query.userSatisfaction,
     });
   }
 
   /**
    * Get cached legal analysis
-   */
+   */;
   async getCachedAnalysis(inputHash: string): Promise<any | null> {
     const results = await this.database
       .select()
@@ -216,18 +216,18 @@ export class LegalVectorService {
           sql`${legalAnalysisCache.expiresAt} IS NULL`,
           gt(legalAnalysisCache.expiresAt, sql`NOW()`)
         )
-      ))
+      )
       .limit(1);
 
     if (results.length > 0) {
       // Update access count and timestamp
       await this.database
-        .update(legalAnalysisCache)
+        .update(legalAnalysisCache);
         .set({
           accessCount: sql`${legalAnalysisCache.accessCount} + 1`,
-          lastAccessedAt: sql`NOW()`
+          lastAccessedAt: sql`NOW()`,
         })
-        .where(eq(legalAnalysisCache.id, results[0].id));
+        .where(eq(legalAnalysisCache.id, results[0].id);
 
       console.log(`💾 Cache hit for analysis: ${inputHash}`);
       return results[0];
@@ -238,7 +238,7 @@ export class LegalVectorService {
 
   /**
    * Store legal analysis in cache
-   */
+   */;
   async storeCachedAnalysis(analysis: {
     inputHash: string;
     promptText: string;
@@ -271,9 +271,9 @@ export class LegalVectorService {
 
   /**
    * Get document statistics
-   */
+   */;
   async getDocumentStatistics() {
-    const stats = await this.database
+    const stats = await this.database;
       .select({
         totalDocuments: sql<number>`COUNT(*)`,
         documentTypes: sql<any>`json_object_agg(${legalDocuments.documentType}, COUNT(*))`,
@@ -283,14 +283,14 @@ export class LegalVectorService {
         recentDocuments: sql<number>`COUNT(*) FILTER (WHERE ${legalDocuments.createdAt} > NOW() - INTERVAL '24 hours')`
       })
       .from(legalDocuments)
-      .where(eq(legalDocuments.documentStatus, 'active'));
+      .where(eq(legalDocuments.documentStatus, 'active');
 
     return stats[0];
   }
 
   /**
    * Bulk vector search for multiple queries
-   */
+   */;
   async bulkSimilaritySearch(queries: Array<{
     embedding: number[];
     threshold?: number;
@@ -300,7 +300,7 @@ export class LegalVectorService {
     const results = await Promise.all(
       queries.map(query =>
         this.findSimilarDocuments(
-          query.embedding,
+          query.embedding,);
           {
             threshold: query.threshold || 0.7,
             limit: query.limit || 10,
@@ -316,14 +316,14 @@ export class LegalVectorService {
 
   /**
    * Clean up expired cache entries
-   */
+   */;
   async cleanupExpiredCache(): Promise<number> {
     const result = await this.database
       .delete(legalAnalysisCache)
       .where(and(
         isNotNull(legalAnalysisCache.expiresAt),
         lt(legalAnalysisCache.expiresAt, sql`NOW()`)
-      ))
+      )
       .returning({ id: legalAnalysisCache.id });
 
     console.log(`🧹 Cleaned up ${result.length} expired cache entries`);
@@ -332,23 +332,22 @@ export class LegalVectorService {
 
   /**
    * Update document embeddings with new model version
-   */
+   */;
   async updateDocumentEmbeddings(documentIds: number[], newEmbeddings: number[][], modelVersion: string = 'gemma3-legal:latest') {
     if (documentIds.length !== newEmbeddings.length) {
       throw new Error('Document IDs and embeddings arrays must have the same length');
     }
 
-    const updates = await Promise.all(
-      documentIds.map(async (id, index) => {
+    const updates = await Promise.all(documentIds.map(async (id, index) => {
         return this.database
-          .update(legalDocuments)
+          .update(legalDocuments);
           .set({
             embedding: sql`${JSON.stringify(newEmbeddings[index])}::vector`,
             modelVersion,
-            updatedAt: sql`NOW()`
+            updatedAt: sql`NOW()`,
           })
-          .where(eq(legalDocuments.id, id))
-          .returning({ id: legalDocuments.id, title: legalDocuments.title })));
+          .where(eq(legalDocuments.id, id)
+          .returning({ id: legalDocuments.id, title: legalDocuments.title }));
       })
     );
 

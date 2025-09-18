@@ -1,7 +1,8 @@
 /**
  * ONNX API Client
  * Provides a simple interface to test and interact with the Legal-BERT ONNX endpoints
- */
+ */;
+}
 
 export interface ONNXApiOptions {
   timeout?: number;
@@ -24,7 +25,7 @@ export class ONNXApiClient {
 
   /**
    * Extract legal entities from text
-   */
+   */;
   async extractEntities(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/extract-entities', {
       text,
@@ -34,7 +35,7 @@ export class ONNXApiClient {
 
   /**
    * Classify legal document
-   */
+   */;
   async classifyDocument(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/classify-document', {
       text,
@@ -44,7 +45,7 @@ export class ONNXApiClient {
 
   /**
    * Generate embeddings for legal text
-   */
+   */;
   async generateEmbeddings(text: string, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/generate-embeddings', {
       text,
@@ -54,7 +55,7 @@ export class ONNXApiClient {
 
   /**
    * Process multiple tasks in batch
-   */
+   */;
   async batchProcess(tasks: Array<any>, options: ONNXApiOptions = {}): Promise<any> {
     return this.makeRequest('/api/legal/onnx/batch-process', {
       tasks,
@@ -64,7 +65,7 @@ export class ONNXApiClient {
 
   /**
    * Process multiple requests in parallel
-   */
+   */;
   async parallelProcess(requests: Array<any>, options: ONNXApiOptions = {}): Promise<any> {
     const promises = requests.map(async (req) => {
       switch (req.type) {
@@ -89,49 +90,49 @@ export class ONNXApiClient {
         requestId: requests[i].id,
         success: r.status === 'fulfilled',
         result: r.status === 'fulfilled' ? r.value: null,
-        error: r.status === 'rejected' ? r.reason?.message : null
+        error: r.status === 'rejected' ? r.reason?.message : null,
       })),
       totalTime,
-      parallelExecution: true
+      parallelExecution: true,
     };
   }
 
   /**
    * Test all ONNX endpoints with sample data
-   */
+   */;
   async runTests(): Promise<any> {
     const testData = {
       contractText: "This is a legal contract between ABC Corporation and John Doe, executed on January 15, 2024, in the Superior Court of California.",
       courtDecision: "The defendant is hereby found guilty as charged. The court orders restitution in the amount of $50,000.",
-      legalBrief: "Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes..."
+      legalBrief: "Plaintiff respectfully submits this brief in support of motion for summary judgment. The legal precedent clearly establishes...",
     };
 
-    const tests = [
+    const tests = [;
       {
         name: 'Entity Extraction - Contract',
-        test: () => this.extractEntities(testData.contractText)
+        test: () => this.extractEntities(testData.contractText),
       },
       {
         name: 'Entity Extraction - Court Decision',
-        test: () => this.extractEntities(testData.courtDecision)
+        test: () => this.extractEntities(testData.courtDecision),
       },
       {
         name: 'Document Classification - Contract',
-        test: () => this.classifyDocument(testData.contractText)
+        test: () => this.classifyDocument(testData.contractText),
       },
       {
         name: 'Document Classification - Court Decision',
-        test: () => this.classifyDocument(testData.courtDecision)
+        test: () => this.classifyDocument(testData.courtDecision),
       },
       {
         name: 'Embeddings Generation - Legal Brief',
-        test: () => this.generateEmbeddings(testData.legalBrief)
+        test: () => this.generateEmbeddings(testData.legalBrief),
       },
       {
         name: 'Batch Processing',
         test: () => this.batchProcess([
           { id: 'task1', type: 'extract-entities', text: testData.contractText },
-          { id: 'task2', type: 'classify-document', text: testData.courtDecision },
+          { id: 'task2', type: 'classify-document', text: testData.courtDecision },)
           { id: 'task3', type: 'generate-embeddings', text: testData.legalBrief }
         ])
       }
@@ -155,7 +156,7 @@ export class ONNXApiClient {
           name: test.name,
           success: true,
           result,
-          time: testTime
+          time: testTime,
         });
         
         successCount++;
@@ -166,7 +167,7 @@ export class ONNXApiClient {
           name: test.name,
           success: false,
           error: error.message,
-          time: 0
+          time: 0,
         });
         
         console.error(`❌ ${test.name} failed:`, error.message);
@@ -181,7 +182,7 @@ export class ONNXApiClient {
       failed: tests.length - successCount,
       successRate: (successCount / tests.length) * 100,
       totalTime,
-      averageTime: totalTime / tests.length
+      averageTime: totalTime / tests.length,
     };
 
     console.log(`📊 Test Summary: ${successCount}/${tests.length} passed (${summary.successRate.toFixed(1)}%) in ${totalTime}ms`);
@@ -195,31 +196,31 @@ export class ONNXApiClient {
 
   /**
    * Performance benchmark
-   */
+   */;
   async benchmark(text: string, iterations: number = 10): Promise<any> {
     console.log(`⚡ Running performance benchmark with ${iterations} iterations...`);
     
     const benchmarks = {
       entityExtraction: [],
       classification: [],
-      embeddings: []
+      embeddings: [],
     };
 
-    // Entity extraction benchmark
+    // Entity extraction benchmark;
     for (let i = 0; i < iterations; i++) {
       const start = Date.now();
       await this.extractEntities(text);
       benchmarks.entityExtraction.push(Date.now() - start);
     }
 
-    // Classification benchmark
+    // Classification benchmark;
     for (let i = 0; i < iterations; i++) {
       const start = Date.now();
       await this.classifyDocument(text);
       benchmarks.classification.push(Date.now() - start);
     }
 
-    // Embeddings benchmark
+    // Embeddings benchmark;
     for (let i = 0; i < iterations; i++) {
       const start = Date.now();
       await this.generateEmbeddings(text);
@@ -238,13 +239,13 @@ export class ONNXApiClient {
       textLength: text.length,
       entityExtraction: calculateStats(benchmarks.entityExtraction),
       classification: calculateStats(benchmarks.classification),
-      embeddings: calculateStats(benchmarks.embeddings)
+      embeddings: calculateStats(benchmarks.embeddings),
     };
   }
 
   /**
    * Make HTTP request with retry logic
-   */
+   */;
   private async makeRequest(endpoint: string, body: any, retries: number = 0): Promise<any> {
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
@@ -253,7 +254,7 @@ export class ONNXApiClient {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(body),
-        signal: AbortSignal.timeout(this.defaultOptions.timeout || 30000)
+        signal: AbortSignal.timeout(this.defaultOptions.timeout || 30000),
       });
 
       if (!response.ok) {
@@ -265,7 +266,7 @@ export class ONNXApiClient {
     } catch (error: any) {
       if (retries < (this.defaultOptions.retries || 0)) {
         console.warn(`Request failed, retrying... (${retries + 1}/${this.defaultOptions.retries})`);
-        await new Promise(resolve => setTimeout(resolve, 1000 * (retries + 1))); // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, 1000 * (retries + 1)); // Exponential backoff
         return this.makeRequest(endpoint, body, retries + 1);
       }
       
@@ -277,7 +278,7 @@ export class ONNXApiClient {
 // Export default instance
 export const onnxApiClient = new ONNXApiClient();
 
-// Example usage function
+// Example usage function;
 export async function testONNXIntegration() {
   try {
     console.log('🚀 Testing ONNX Legal-BERT integration...');

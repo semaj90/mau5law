@@ -1,10 +1,11 @@
 // SOM-based intent clustering utilities (browser-friendly stub)
-// In production, consider running this in a worker or backend service for performance.
+// In production, consider running this in a worker or backend service for performance.;
+}
 
 export interface IntentPoint {
   id: string;
   vector: number[]; // normalized embedding
-  ts: number; // timestamp
+  ts: number; // timestamp,
 }
 
 export interface SOMGridConfig {
@@ -77,7 +78,7 @@ export class SOMGrid {
         const dy = y - by;
         const d2 = dx * dx + dy * dy;
         if (d2 <= r2) {
-          const g = Math.exp(-d2 / (2 * r2));
+          const g = Math.exp(-d2 / (2 * r2);
           const i = this.idx(x, y);
           const w = this.neurons[i];
           for (let k = 0; k < this.dim; k++) {

@@ -30,7 +30,7 @@ interface DeviceCapabilities {
   screenSize: { width: number; height: number };
   pixelRatio: number;
   webgl: boolean;
-  webgpu: boolean;
+  webgpu: boolean;,
 }
 
 export class GamingEvolutionManager {
@@ -85,7 +85,7 @@ export class GamingEvolutionManager {
     },
     soundEnabled: true,
     particleEffects: true,
-    retroShaders: true
+    retroShaders: true,
   };
 
     this.initialize();
@@ -105,9 +105,9 @@ export class GamingEvolutionManager {
       this.determineOptimalEra();
 
       // Listen for device changes
-      window.addEventListener('resize', () => this.handleDeviceChange());
+      window.addEventListener('resize', () => this.handleDeviceChange();
 
-      // Check for memory pressure events
+      // Check for memory pressure events;
       if ('memory' in performance) {
         this.monitorMemoryPressure();
       }
@@ -124,11 +124,11 @@ export class GamingEvolutionManager {
       connection: this.detectConnectionSpeed(),
       screenSize: {
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
       },
       pixelRatio: window.devicePixelRatio || 1,
       webgl: this.hasWebGL(),
-      webgpu: await this.hasWebGPU()
+      webgpu: await this.hasWebGPU(),
     };
 
     this.capabilities = capabilities;
@@ -149,7 +149,7 @@ export class GamingEvolutionManager {
 
       if (
         typeof renderer === 'string' &&
-        (renderer.includes('NVIDIA') || renderer.includes('AMD') || renderer.includes('Radeon'))
+        (renderer.includes('NVIDIA') || renderer.includes('AMD') || renderer.includes('Radeon');
       ) {
         return 'discrete';
       }
@@ -174,7 +174,7 @@ export class GamingEvolutionManager {
   private hasWebGL(): boolean {
     try {
       const canvas = document.createElement('canvas');
-      return !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+      return !!(canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
     } catch {
       return false;
     }
@@ -199,7 +199,7 @@ export class GamingEvolutionManager {
           if (entry.entryType === 'measure' || entry.entryType === 'navigation') {
             this.frameMetrics.push(entry.duration);
 
-            // Keep only last 60 measurements
+            // Keep only last 60 measurements;
             if (this.frameMetrics.length > 60) {
               this.frameMetrics.shift();
             }
@@ -259,10 +259,10 @@ export class GamingEvolutionManager {
   private updatePerformanceLevel(level: GamingThemeState['performanceLevel']): void {
     this.currentState = {
       ...this.currentState,
-      performanceLevel: level
+      performanceLevel: level,
     };
 
-    // Auto-adjust era based on performance
+    // Auto-adjust era based on performance;
     if (this.config.enableAutoEvolution) {
       if (level === 'low' && this.currentState.currentEra === 'n64') {
         this.downgradeEra();
@@ -279,12 +279,12 @@ export class GamingEvolutionManager {
 
     const { memory, cores, gpu, webgl, webgpu } = this.capabilities;
 
-    // N64 requirements: Good GPU, WebGL, 4GB+ memory
+    // N64 requirements: Good GPU, WebGL, 4GB+ memory;
     if (webgpu || (webgl && gpu !== 'basic' && memory >= 4 && cores >= 4)) {
       return 'n64';
     }
 
-    // SNES requirements: Moderate specs
+    // SNES requirements: Moderate specs;
     if (memory >= 2 && cores >= 2) {
       return '16bit';
     }
@@ -298,18 +298,18 @@ export class GamingEvolutionManager {
 
     this.currentState = {
       ...this.currentState,
-      isTransitioning: true
+      isTransitioning: true,
     };
 
     this.notifyListeners();
 
     // Wait for transition
-    await new Promise(resolve => setTimeout(resolve, this.currentState.transitionDuration));
+    await new Promise(resolve => setTimeout(resolve, this.currentState.transitionDuration);
 
     this.currentState = {
       ...this.currentState,
       currentEra: era,
-      isTransitioning: false
+      isTransitioning: false,
     };
 
     this.notifyListeners();
@@ -341,7 +341,7 @@ export class GamingEvolutionManager {
   }
 
   private handleDeviceChange(): void {
-    // Re-detect capabilities on device change
+    // Re-detect capabilities on device change;
     setTimeout(() => {
       this.detectDeviceCapabilities().then(() => {
         if (this.config.enableAutoEvolution) {
@@ -366,7 +366,7 @@ export class GamingEvolutionManager {
   }
 
   private notifyListeners(): void {
-    this.listeners.forEach(callback => callback(this.currentState));
+    this.listeners.forEach(callback => callback(this.currentState);
   }
 
   public getCurrentState(): GamingThemeState {

@@ -1,41 +1,38 @@
 #!/usr/bin/env node
 
-import { Pool } from "pg";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { readFileSync } from "fs";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
+import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Load environment variables
-const envPath = join(__dirname, ".env");
+const envPath = join(__dirname, '.env');
 try {
-  const envContent = readFileSync(envPath, "utf8");
-  envContent.split("\n").forEach((line) => {
-    const [key, value] = line.split("=");
+  const envContent = readFileSync(envPath, 'utf8');
+  envContent.split('\n').forEach((line) => {
+    const [key, value] = line.split('=');
     if (key && value) {
       process.env[key.trim()] = value.trim();
     }
   });
 } catch (error) {
-  console.log("No .env file found, using system environment variables");
+  console.log('No .env file found, using system environment variables');
 }
 
 const DATABASE_URL =
-  process.env.DATABASE_URL ||
-  "postgresql://postgres:postgres@localhost:5433/prosecutor_db";
+  process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5433/prosecutor_db';
 
 async function setupDatabase() {
-  console.log("🚀 Setting up PostgreSQL database...");
+  console.log('🚀 Setting up PostgreSQL database...');
 
   // First connect to postgres database to create our database
   const adminPool = new Pool({
-    connectionString: DATABASE_URL.replace("/prosecutor_db", "/postgres"),
-    ssl: DATABASE_URL.includes("localhost")
-      ? false
-      : { rejectUnauthorized: false },
+    connectionString: DATABASE_URL.replace('/prosecutor_db', '/postgres'),
+    ssl: DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
   });
 
   try {
@@ -44,12 +41,12 @@ async function setupDatabase() {
     await adminPool.query(`
       CREATE DATABASE prosecutor_db;
     `);
-    console.log("✅ Database created successfully");
+    console.log('✅ Database created successfully');
   } catch (error) {
-    if (error.code === "42P04") {
-      console.log("✅ Database already exists");
+    if (error.code === '42P04') {
+      console.log('✅ Database already exists');
     } else {
-      console.error("❌ Error creating database:", error.message);
+      console.error('❌ Error creating database:', error.message);
     }
   } finally {
     await adminPool.end();
@@ -58,18 +55,16 @@ async function setupDatabase() {
   // Now connect to our database
   const pool = new Pool({
     connectionString: DATABASE_URL,
-    ssl: DATABASE_URL.includes("localhost")
-      ? false
-      : { rejectUnauthorized: false },
+    ssl: DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
   });
 
   const db = drizzle(pool);
 
   try {
-    console.log("🔄 Running database migrations...");
+    console.log('🔄 Running database migrations...');
 
     // Create tables manually since we don't have migration files
-    console.log("📝 Creating users table...");
+    console.log('📝 Creating users table...');
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
@@ -84,7 +79,7 @@ async function setupDatabase() {
       );
     `);
 
-    console.log("📝 Creating cases table...");
+    console.log('📝 Creating cases table...');
     await pool.query(`
       CREATE TABLE IF NOT EXISTS cases (
         id SERIAL PRIMARY KEY,
@@ -101,7 +96,7 @@ async function setupDatabase() {
       );
     `);
 
-    console.log("📝 Creating evidence table...");
+    console.log('📝 Creating evidence table...');
     await pool.query(`
       CREATE TABLE IF NOT EXISTS evidence (
         id SERIAL PRIMARY KEY,
@@ -120,7 +115,7 @@ async function setupDatabase() {
       );
     `);
 
-    console.log("📝 Creating reports table...");
+    console.log('📝 Creating reports table...');
     await pool.query(`
       CREATE TABLE IF NOT EXISTS reports (
         id SERIAL PRIMARY KEY,
@@ -136,7 +131,7 @@ async function setupDatabase() {
       );
     `);
 
-    console.log("📝 Creating citation_points table...");
+    console.log('📝 Creating citation_points table...');
     await pool.query(`
       CREATE TABLE IF NOT EXISTS citation_points (
         id SERIAL PRIMARY KEY,
@@ -154,7 +149,7 @@ async function setupDatabase() {
       );
     `);
 
-    console.log("📝 Creating canvas_states table...");
+    console.log('📝 Creating canvas_states table...');
     await pool.query(`
       CREATE TABLE IF NOT EXISTS canvas_states (
         id SERIAL PRIMARY KEY,
@@ -168,7 +163,7 @@ async function setupDatabase() {
       );
     `);
 
-    console.log("📝 Creating criminals table...");
+    console.log('📝 Creating criminals table...');
     await pool.query(`
       CREATE TABLE IF NOT EXISTS criminals (
         id SERIAL PRIMARY KEY,
@@ -186,7 +181,7 @@ async function setupDatabase() {
       );
     `);
 
-    console.log("📝 Creating statutes table...");
+    console.log('📝 Creating statutes table...');
     await pool.query(`
       CREATE TABLE IF NOT EXISTS statutes (
         id SERIAL PRIMARY KEY,
@@ -202,7 +197,7 @@ async function setupDatabase() {
       );
     `);
 
-    console.log("📝 Creating indexes...");
+    console.log('📝 Creating indexes...');
     await pool.query(`
       CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
       CREATE INDEX IF NOT EXISTS idx_cases_case_number ON cases(case_number);
@@ -214,12 +209,12 @@ async function setupDatabase() {
     `);
 
     // Create a default admin user if none exists
-    console.log("📝 Creating default admin user...");
-    const existingUsers = await pool.query("SELECT COUNT(*) FROM users");
+    console.log('📝 Creating default admin user...');
+    const existingUsers = await pool.query('SELECT COUNT(*) FROM users');
     if (parseInt(existingUsers.rows[0].count) === 0) {
       // Hash a default password
-      const bcrypt = await import("bcryptjs");
-      const hashedPassword = await bcrypt.hash("admin123!", 12);
+      const bcrypt = await import('bcryptjs');
+      const hashedPassword = await bcrypt.hash('admin123!', 12);
 
       await pool.query(
         `
@@ -227,27 +222,27 @@ async function setupDatabase() {
         VALUES ($1, $2, $3, $4, $5, $6)
       `,
         [
-          "admin@prosecutor.law",
+          'admin@prosecutor.law',
           hashedPassword,
-          "System Administrator",
-          "System",
-          "Administrator",
-          "admin",
-        ],
+          'System Administrator',
+          'System',
+          'Administrator',
+          'admin',
+        ]
       );
 
-      console.log("✅ Default admin user created:");
-      console.log("   Email: admin@prosecutor.law");
-      console.log("   Password: admin123!");
+      console.log('✅ Default admin user created:');
+      console.log('   Email: admin@prosecutor.law');
+      console.log('   Password: admin123!');
     }
 
-    console.log("✅ Database setup completed successfully!");
-    console.log("");
-    console.log("🔗 Database URL:", DATABASE_URL);
-    console.log("");
-    console.log("You can now start the application with: npm run dev");
+    console.log('✅ Database setup completed successfully!');
+    console.log('');
+    console.log('🔗 Database URL:', DATABASE_URL);
+    console.log('');
+    console.log('You can now start the application with: npm run dev');
   } catch (error) {
-    console.error("❌ Error setting up database:", error);
+    console.error('❌ Error setting up database:', error);
     process.exit(1);
   } finally {
     await pool.end();

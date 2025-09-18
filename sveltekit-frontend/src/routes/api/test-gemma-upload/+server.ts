@@ -17,7 +17,7 @@ interface MCPProcessingResult {
 		text: string;
 		chunks: string[];
 		embeddings: number[][];
-		metadata: any;
+		metadata: any;,
 	};
 	error?: string;
 }
@@ -31,7 +31,7 @@ interface MinIOUploadResult {
 
 /**
  * Extract text from PDF using pdf-lib
- */
+ */;
 async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
 	try {
 		const pdfDoc = await PDFDocument.load(arrayBuffer);
@@ -39,7 +39,7 @@ async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
 		let fullText = '';
 
 		// For demo purposes, just get basic PDF structure
-		// In production, you'd use more sophisticated text extraction
+		// In production, you'd use more sophisticated text extraction;
 		for (let i = 0; i < pages.length; i++) {
 			const page = pages[i];
 			const { width, height } = page.getSize();
@@ -58,7 +58,7 @@ async function extractTextFromPDF(arrayBuffer: ArrayBuffer): Promise<string> {
 
 /**
  * Upload file to MinIO
- */
+ */;
 async function uploadToMinIO(file: File): Promise<MinIOUploadResult> {
 	try {
 		const timestamp = new Date().toISOString().slice(0, 10);
@@ -80,14 +80,14 @@ async function uploadToMinIO(file: File): Promise<MinIOUploadResult> {
 	} catch (error: any) {
 		return {
 			success: false,
-			error: error.message
+			error: error.message,
 		};
 	}
 }
 
 /**
  * Process with MCP multi-core server
- */
+ */;
 async function processWithMCP(text: string, filename: string): Promise<MCPProcessingResult> {
 	try {
 		const response = await fetch(`${MCP_SERVER_URL}/mcp/process`, {
@@ -100,13 +100,13 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
 				metadata: {
 					filename,
 					source: 'legal-pdf',
-					timestamp: new Date().toISOString()
+					timestamp: new Date().toISOString(),
 				},
 				options: {
 					chunkSize: 1000,
 					overlap: 100,
 					simdEnabled: true,
-					fastJsonEnabled: true
+					fastJsonEnabled: true,
 				}
 			})
 		});
@@ -121,14 +121,14 @@ async function processWithMCP(text: string, filename: string): Promise<MCPProces
 		console.error('MCP processing error:', error);
 		return {
 			success: false,
-			error: error.message
+			error: error.message,
 		};
 	}
 }
 
 /**
  * Generate Gemma embeddings
- */
+ */;
 async function generateGemmaEmbeddings(chunks: string[]): Promise<number[][]> {
 	try {
 		const embeddings: number[][] = [];
@@ -141,7 +141,7 @@ async function generateGemmaEmbeddings(chunks: string[]): Promise<number[][]> {
 				},
 				body: JSON.stringify({
 					model: 'embeddinggemma:latest',
-					prompt: chunk
+					prompt: chunk,
 				})
 			});
 
@@ -161,13 +161,13 @@ async function generateGemmaEmbeddings(chunks: string[]): Promise<number[][]> {
 	} catch (error) {
 		console.error('Gemma embedding error:', error);
 		// Return mock embeddings for demo
-		return chunks.map(() => Array.from({ length: 384 }, () => Math.random() * 2 - 1));
+		return chunks.map(() => Array.from({ length: 384 }, () => Math.random() * 2 - 1);
 	}
 }
 
 /**
  * Store in PostgreSQL with pgvector
- */
+ */;
 async function storeInDatabase(data: any, minioPath: string): Promise<boolean> {
 	try {
 		// Simulate database storage
@@ -232,7 +232,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		console.log(`[API] Generated ${embeddings.length} Gemma embeddings`);
 
-		// Step 5: Store in PostgreSQL
+		// Step 5: Store in PostgreSQL;
 		const stored = await storeInDatabase({
 			...mcpResult.data,
 			embeddings
@@ -242,14 +242,14 @@ export const POST: RequestHandler = async ({ request }) => {
 			return json({ success: false, error: 'Database storage failed' }, { status: 500 });
 		}
 
-		// Return comprehensive result
+		// Return comprehensive result;
 		return json({
 			success: true,
 			data: {
 				file: {
 					name: file.name,
 					size: file.size,
-					type: file.type
+					type: file.type,
 				},
 				minioPath: minioResult.objectPath,
 				minioUrl: minioResult.url,
@@ -265,7 +265,7 @@ export const POST: RequestHandler = async ({ request }) => {
 					'✅ PostgreSQL storage with pgvector'
 				],
 				searchable: true,
-				ragReady: true
+				ragReady: true,
 			},
 			message: `Successfully processed ${file.name} with Gemma embeddings pipeline`
 		});
@@ -274,7 +274,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		console.error('[API] Processing error:', error);
 		return json({
 			success: false,
-			error: error.message || 'Internal server error'
+			error: error.message || 'Internal server error',
 		}, { status: 500 });
 	}
 };

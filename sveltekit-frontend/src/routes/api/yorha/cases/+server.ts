@@ -9,7 +9,7 @@ import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 
-// GET - Fetch cases
+// GET - Fetch cases;
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     const limit = parseInt(url.searchParams.get('limit') || '10');
@@ -19,11 +19,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     // Build query conditions
     const conditions = [];
-    if (status) conditions.push(eq(cases.status, status));
-    if (priority) conditions.push(eq(cases.priority, priority));
+    if (status) conditions.push(eq(cases.status, status);
+    if (priority) conditions.push(eq(cases.priority, priority);
 
     // Query cases with optional filters
-    const casesList = await db
+    const casesList = await db;
       .select({
         id: cases.id,
         title: cases.title,
@@ -32,11 +32,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         priority: cases.priority,
         createdAt: cases.createdAt,
         updatedAt: cases.updatedAt,
-        createdBy: cases.createdBy
+        createdBy: cases.createdBy,
       })
       .from(cases)
       .where(conditions.length > 0 ? and(...conditions) : undefined)
-      .orderBy(desc(cases.updatedAt))
+      .orderBy(desc(cases.updatedAt)
       .limit(limit)
       .offset(offset);
 
@@ -46,28 +46,28 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       pagination: {
         limit,
         offset,
-        total: casesList.length
+        total: casesList.length,
       }
     });
 
   } catch (err: any) {
     console.error('Error fetching cases:', err);
     return error(500, ensureError({
-      message: 'Failed to fetch cases'
-    }));
+      message: 'Failed to fetch cases',
+    });
   }
 };
 
-// POST - Create new case
+// POST - Create new case;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const body = await request.json();
     
-    // Validate required fields
+    // Validate required fields;
     if (!body.title || !body.description) {
       return error(400, ensureError({
-        message: 'Title and description are required'
-      }));
+        message: 'Title and description are required',
+      });
     }
 
     // Get current user (from auth or default)
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Generate case ID
     const caseId = `CASE-${new Date().getFullYear()}-${nanoid(6).toUpperCase()}`;
 
-    // Prepare case data
+    // Prepare case data;
     const newCase = {
       id: caseId,
       title: body.title,
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Insert into database
     const insertedCase = await db
       .insert(cases)
-      .values(newCase)
+      .values(newCase);
       .returning({
         id: cases.id,
         title: cases.title,
@@ -99,59 +99,59 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         status: cases.status,
         priority: cases.priority,
         createdAt: cases.createdAt,
-        updatedAt: cases.updatedAt
+        updatedAt: cases.updatedAt,
       });
 
-    // Return created case
+    // Return created case;
     return json({
       success: true,
       data: insertedCase[0],
-      message: 'Case created successfully'
+      message: 'Case created successfully',
     }, { status: 201 });
 
   } catch (err: any) {
     console.error('Error creating case:', err);
     
     // Handle specific database errors
-    if (err.code === '23505') { // Unique constraint violation
+    if (err.code === '23505') { // Unique constraint violation;
       return error(409, ensureError({
-        message: 'Case with this ID already exists'
-      }));
+        message: 'Case with this ID already exists',
+      });
     }
 
     return error(500, ensureError({
-      message: 'Failed to create case'
-    }));
+      message: 'Failed to create case',
+    });
   }
 };
 
-// PUT - Update existing case
+// PUT - Update existing case;
 export const PUT: RequestHandler = async ({ request, locals }) => {
   try {
     const body = await request.json();
     
     if (!body.id) {
       return error(400, ensureError({
-        message: 'Case ID is required for updates'
-      }));
+        message: 'Case ID is required for updates',
+      });
     }
 
     // Check if case exists
     const existingCase = await db
       .select({ id: cases.id })
       .from(cases)
-      .where(eq(cases.id, body.id))
+      .where(eq(cases.id, body.id)
       .limit(1);
 
     if (existingCase.length === 0) {
       return error(404, ensureError({
-        message: 'Case not found'
-      }));
+        message: 'Case not found',
+      });
     }
 
-    // Prepare update data
+    // Prepare update data;
     const updateData: any = {
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     if (body.title) updateData.title = body.title;
@@ -165,72 +165,72 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     const updatedCase = await db
       .update(cases)
       .set(updateData)
-      .where(eq(cases.id, body.id))
+      .where(eq(cases.id, body.id);
       .returning({
         id: cases.id,
         title: cases.title,
         description: cases.description,
         status: cases.status,
         priority: cases.priority,
-        updatedAt: cases.updatedAt
+        updatedAt: cases.updatedAt,
       });
 
     return json({
       success: true,
       data: updatedCase[0],
-      message: 'Case updated successfully'
+      message: 'Case updated successfully',
     });
 
   } catch (err: any) {
     console.error('Error updating case:', err);
     return error(500, ensureError({
-      message: 'Failed to update case'
-    }));
+      message: 'Failed to update case',
+    });
   }
 };
 
-// DELETE - Delete case
+// DELETE - Delete case;
 export const DELETE: RequestHandler = async ({ url, locals }) => {
   try {
     const caseId = url.searchParams.get('id');
     
     if (!caseId) {
       return error(400, ensureError({
-        message: 'Case ID is required'
-      }));
+        message: 'Case ID is required',
+      });
     }
 
     // Check if case exists
     const existingCase = await db
       .select({ id: cases.id })
       .from(cases)
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .limit(1);
 
     if (existingCase.length === 0) {
       return error(404, ensureError({
-        message: 'Case not found'
-      }));
+        message: 'Case not found',
+      });
     }
 
     // Soft delete by updating status
     await db
-      .update(cases)
+      .update(cases);
       .set({ 
         status: 'deleted',
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
-      .where(eq(cases.id, caseId));
+      .where(eq(cases.id, caseId);
 
     return json({
       success: true,
-      message: 'Case deleted successfully'
+      message: 'Case deleted successfully',
     });
 
   } catch (err: any) {
     console.error('Error deleting case:', err);
     return error(500, ensureError({
-      message: 'Failed to delete case'
-    }));
+      message: 'Failed to delete case',
+    });
   }
 };

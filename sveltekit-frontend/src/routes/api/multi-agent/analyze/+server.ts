@@ -21,11 +21,10 @@ export const POST: RequestHandler = async ({ request }) => {
     } = await request.json();
 
     if (!caseId || !evidenceContent || !evidenceTitle) {
-      return json(
-        {
+      return json({
           error:
             "Missing required fields: caseId, evidenceContent, evidenceTitle",
-        },
+        },)
         { status: 400 }
       );
     }
@@ -69,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let neo4jUpdates = {};
 
     try {
-      // Try to read each result file
+      // Try to read each result file;
       if (existsSync(`${analysisDir}/evidence_analysis.json`)) {
         const data = await readFile(
           `${analysisDir}/evidence_analysis.json`,
@@ -105,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
       console.warn("Error parsing analysis results:", parseError);
     }
 
-    // Compile final analysis result
+    // Compile final analysis result;
     const analysisResult = {
       id: `analysis_${caseId}_${timestamp}`,
       caseId,
@@ -114,7 +113,7 @@ export const POST: RequestHandler = async ({ request }) => {
       caseSynthesis,
       neo4jUpdates,
       timestamp: new Date().toISOString(),
-      // Remove confidence property (not in schema)
+      // Remove confidence property (not in schema);
       metadata: {
         evidenceTitle,
         evidenceType,
@@ -131,18 +130,17 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error("Multi-agent analysis error:", error);
 
-    return json(
-      {
+    return json({
         success: false,
         error: error.message,
         message: "Multi-agent analysis failed",
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// GET endpoint to retrieve analysis results
+// GET endpoint to retrieve analysis results;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const caseId = url.searchParams.get("caseId");
@@ -153,13 +151,13 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     // Production-ready retrieval: read analysis directories from a configurable storage directory,
-    // validate inputs to prevent path traversal, and return either a single analysis or a list.
+    // validate inputs to prevent path traversal, and return either a single analysis or a list.;
     try {
-      // Basic validation
+      // Basic validation;
       if (!caseId) {
         return json({ error: "Missing caseId parameter" }, { status: 400 });
       }
-      // Allow only safe characters in caseId to avoid traversal injection
+      // Allow only safe characters in caseId to avoid traversal injection;
       if (!/^[A-Za-z0-9_-]+$/.test(caseId)) {
         return json({ error: "Invalid caseId" }, { status: 400 });
       }
@@ -173,7 +171,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const nodeFs = await import("fs");
       const baseDir = path.resolve(storageDir);
 
-      // If storage directory doesn't exist, return empty result (no analyses yet)
+      // If storage directory doesn't exist, return empty result (no analyses yet);
       if (!nodeFs.existsSync(baseDir)) {
         return json({
           success: true,
@@ -191,7 +189,7 @@ export const GET: RequestHandler = async ({ url }) => {
         (d) => d.isDirectory() && d.name.startsWith(prefix)
       );
 
-      // Helper to safely read JSON file if present
+      // Helper to safely read JSON file if present;
       const safeReadJson = async (dir: string, filename: string) => {
         try {
           const p = path.join(dir, filename);
@@ -220,7 +218,7 @@ export const GET: RequestHandler = async ({ url }) => {
         if (parts.length >= 3) {
           // last part(s) after prefix are treated as timestamp
           timestamp = parts.slice(2).join("_");
-          // try to normalize to ISO if it's numeric
+          // try to normalize to ISO if it's numeric;
           if (/^\d+$/.test(timestamp)) {
             timestamp = new Date(Number(timestamp)).toISOString();
           }
@@ -246,7 +244,7 @@ export const GET: RequestHandler = async ({ url }) => {
         });
       }
 
-      // If a specific analysisId was requested, return that one or 404
+      // If a specific analysisId was requested, return that one or 404;
       if (analysisId) {
         const found = analyses.find((a) => a.id === analysisId);
         if (!found) {
@@ -255,7 +253,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({ success: true, analysis: found });
       }
 
-      // Return list (sorted by timestamp desc if available)
+      // Return list (sorted by timestamp desc if available);
       analyses.sort((a, b) => {
         const ta = a.timestamp ? Date.parse(a.timestamp) : 0;
         const tb = b.timestamp ? Date.parse(b.timestamp) : 0;
@@ -270,7 +268,7 @@ export const GET: RequestHandler = async ({ url }) => {
     } catch (error: any) {
       console.error("Error retrieving analyses:", error);
 
-      return json(
+      return json();
         {
           success: false,
               error: error?.message ?? String(error),
@@ -282,7 +280,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error("GET handler error:", error);
 
-    return json(
+    return json();
       {
         success: false,
         error: error?.message ?? String(error),

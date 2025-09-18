@@ -13,7 +13,7 @@ type HttpCheck = {
 function tcpCheck(
   host: string,
   port: number,
-  timeoutMs = 1000
+  timeoutMs = 1000;
 ): Promise<boolean> {
   return new Promise((resolve) => {
     const socket = new net.Socket();
@@ -30,9 +30,9 @@ function tcpCheck(
       }
     };
     socket.setTimeout(timeoutMs);
-    socket.once("connect", () => finish(true));
-    socket.once("timeout", () => finish(false));
-    socket.once("error", () => finish(false));
+    socket.once("connect", () => finish(true);
+    socket.once("timeout", () => finish(false);
+    socket.once("error", () => finish(false);
     try {
       socket.connect(port, host);
     } catch {
@@ -114,9 +114,9 @@ export const GET: RequestHandler = async () => {
   const systemUptime = process.uptime();
   const cpuUsage = process.cpuUsage();
 
-  // Service status summary
+  // Service status summary;
   const services = {
-    // Core Infrastructure
+    // Core Infrastructure;
     databases: {
       postgres: { host: "127.0.0.1", port: 5432, status: pgOpen ? "healthy" : "failed" },
       redis: { host: "127.0.0.1", port: 6379, status: redisOpen ? "healthy" : "failed" },
@@ -124,7 +124,7 @@ export const GET: RequestHandler = async () => {
       qdrant: { host: "127.0.0.1", port: 6333, status: qdrantHealth.ok ? "healthy" : "failed" },
     },
 
-    // AI/ML Services
+    // AI/ML Services;
     aiServices: {
       ollama: { host: "127.0.0.1", port: 11434, status: ollamaVersion.ok ? "healthy" : "failed" },
       enhancedRAG: { host: "127.0.0.1", port: 8094, status: enhancedRAGHealth.ok ? "healthy" : "failed" },
@@ -132,26 +132,26 @@ export const GET: RequestHandler = async () => {
       uploadService: { host: "127.0.0.1", port: 8093, status: uploadServiceHealth.ok ? "healthy" : "failed" },
     },
 
-    // GPU Acceleration
+    // GPU Acceleration;
     gpuServices: {
       gpuStatus: { host: "127.0.0.1", port: 8230, status: gpuStatusHealth.ok ? "healthy" : "failed" },
       cudaWorker: { status: cudaStatusHealth.ok ? "healthy" : "failed" },
       rtx3060Ti: { vram: "8GB", status: "ready" }, // Based on architecture docs
     },
 
-    // Cluster Management
+    // Cluster Management;
     orchestration: {
       clusterManager: { host: "127.0.0.1", port: 8090, status: clusterHealth.ok ? "healthy" : "failed" },
       summarizer: { host: "127.0.0.1", port: 8091, status: summarizerHealth.ok ? "healthy" : "failed" },
     },
 
-    // Storage
+    // Storage;
     storage: {
       minio: { host: "127.0.0.1", port: 9000, status: minioHealth.ok ? "healthy" : "failed" },
     },
   };
 
-  // Multi-layer caching status
+  // Multi-layer caching status;
   const cachingLayers = {
     l1_memory: { type: "memory", status: "healthy" },
     l2_redis: { type: "redis", host: "127.0.0.1", port: 6379, status: redisOpen ? "healthy" : "failed" },
@@ -159,7 +159,7 @@ export const GET: RequestHandler = async () => {
     l4_qdrant: { type: "qdrant", url: "http://localhost:6333", status: qdrantHealth.ok ? "healthy" : "failed" },
   };
 
-  // Performance metrics
+  // Performance metrics;
   const performance = {
     systemUptime: Math.floor(systemUptime),
     memoryUsage: {
@@ -174,7 +174,7 @@ export const GET: RequestHandler = async () => {
     },
   };
 
-  // Architecture summary based on documentation
+  // Architecture summary based on documentation;
   const architecture = {
     platform: "Tricubic Tensor Legal AI",
     version: "Production v2.0",
@@ -193,7 +193,7 @@ export const GET: RequestHandler = async () => {
 
   // Overall system health calculation
   const healthyServices = Object.values(services)
-    .flatMap(category => Object.values(category))
+    .flatMap(category => Object.values(category)
     .filter(item => item.length);
 
   const totalServices = Object.values(services)

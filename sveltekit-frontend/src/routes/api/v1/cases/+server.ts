@@ -14,7 +14,7 @@ import {
 import { queueCaseSynthesis } from '$lib/server/services/background-job-queue';
 import { z } from 'zod';
 
-// Query parameters schema for GET requests
+// Query parameters schema for GET requests;
 const CasesQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(20),
@@ -27,10 +27,10 @@ const CasesQuerySchema = z.object({
 /*
  * GET /api/v1/cases
  * List user's cases with pagination and filtering
- */
+ */;
 export const GET: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -40,14 +40,14 @@ export const GET: RequestHandler = async ({ request, locals }) => {
 
     // Parse query parameters
     const url = new URL(request.url);
-    const queryParams = Object.fromEntries(url.searchParams.entries());
+    const queryParams = Object.fromEntries(url.searchParams.entries();
 
     const validatedQuery = CasesQuerySchema.parse(queryParams);
 
     // Create service instance
     const casesService = new CasesCRUDService(locals.user.id);
 
-    // Get cases with pagination
+    // Get cases with pagination;
     const result = await casesService.list({
       page: validatedQuery.page,
       limit: validatedQuery.limit,
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
 
     // Map service ListResult<T> => route payload shape
     // Validate response shape with zod before returning
-    const CaseItemSchema = z
+    const CaseItemSchema = z;
       .object({
         id: z.string(),
         title: z.string().optional(),
@@ -70,7 +70,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       })
       .passthrough();
 
-    const CasesListResponse = z
+    const CasesListResponse = z;
       .object({
         success: z.literal(true),
         data: z.array(CaseItemSchema),
@@ -144,10 +144,10 @@ export const GET: RequestHandler = async ({ request, locals }) => {
 /*
  * POST /api/v1/cases
  * Create a new case
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -168,7 +168,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Get the created case details
     const createdCase = await casesService.getById(caseId);
 
-    // Queue background synthesis
+    // Queue background synthesis;
     try {
       const jobId = await queueCaseSynthesis(caseId, locals.user.id);
       console.log(`[Cases API] Queued synthesis job ${jobId} for case ${caseId}`);
@@ -177,7 +177,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       // Don't fail the request, just log the error
     }
 
-    return json(
+    return json();
       {
         success: true,
         data: createdCase,
@@ -205,7 +205,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
 
     if (err.message.includes('not found') || err.message.includes('access denied')) {
-      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' }));
+      return error(403, makeHttpErrorPayload({ message: err.message, code: 'ACCESS_DENIED' });
     }
 
     return error(

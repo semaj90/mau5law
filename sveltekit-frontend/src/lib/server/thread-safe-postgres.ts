@@ -6,7 +6,7 @@
 import postgres from 'postgres';
 import { dev } from '$app/environment';
 
-// Simple PostgreSQL connection using postgres.js
+// Simple PostgreSQL connection using postgres.js;
 const sql = postgres({
   host: 'localhost',
   port: 5432,
@@ -16,8 +16,9 @@ const sql = postgres({
   max: 20,
   idle_timeout: 30,
   connect_timeout: 10,
-  debug: dev
+  debug: dev,
 });
+}
 
 export interface ThreadSafePostgres {
   query: typeof sql;
@@ -45,7 +46,7 @@ export const threadSafePostgres: ThreadSafePostgres = {
   },
   queryJsonbDocuments: async (table: string, criteria: any, _options?: any) => {
     // Very naive JSONB lookup simulation: expects criteria { path, value, operator }
-    // For stabilization only; replace with real implementation later.
+    // For stabilization only; replace with real implementation later.;
     try {
       const rows = await sql.unsafe(`SELECT * FROM ${table} LIMIT 25`);
       return rows as any[];

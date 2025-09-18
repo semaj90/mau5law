@@ -5,6 +5,7 @@
  */
 
 import { createMachine, assign } from "xstate";
+}
 
 export interface RAGContext {
   query: string;
@@ -13,7 +14,7 @@ export interface RAGContext {
   retryCount: number;
   searchStartTime: number;
   cacheStatus: "miss" | "hit" | "partial";
-  optimizationLevel: "basic" | "enhanced" | "neural";
+  optimizationLevel: "basic" | "enhanced" | "neural";,
 }
 
 export type RAGEvent =

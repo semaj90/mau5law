@@ -50,7 +50,7 @@ class VectorComputationPool {
         this.workers[i] = {
           worker: worker,
           busy: false,
-          lastUsed: Date.now()
+          lastUsed: Date.now(),
         };
       }
 
@@ -77,7 +77,7 @@ class VectorComputationPool {
         task: task,
         resolve: resolve,
         reject: reject,
-        startTime: performance.now()
+        startTime: performance.now(),
       };
 
       this.activeJobs.set(jobId, job);
@@ -97,12 +97,12 @@ class VectorComputationPool {
    */
   async calculateBatchSimilarity(queryVector, vectorDatabase, options = {}) {
     const { batchSize = 100, threshold = 0.0, topK = 10 } = options;
-    const vectors = Array.from(vectorDatabase.values());
+    const vectors = Array.from(vectorDatabase.values();
     
     // Split into batches for parallel processing
     const batches = [];
     for (let i = 0; i < vectors.length; i += batchSize) {
-      batches.push(vectors.slice(i, i + batchSize));
+      batches.push(vectors.slice(i, i + batchSize);
     }
 
     // Process batches in parallel
@@ -112,7 +112,7 @@ class VectorComputationPool {
         queryVector: queryVector,
         vectorBatch: batch,
         batchIndex: index,
-        threshold: threshold
+        threshold: threshold,
       })
     );
 
@@ -136,7 +136,7 @@ class VectorComputationPool {
     // Split documents into batches
     const batches = [];
     for (let i = 0; i < documents.length; i += batchSize) {
-      batches.push(documents.slice(i, i + batchSize));
+      batches.push(documents.slice(i, i + batchSize);
     }
 
     // Process batches in parallel
@@ -145,7 +145,7 @@ class VectorComputationPool {
         type: 'generate_embeddings',
         documentBatch: batch,
         batchIndex: index,
-        options: options
+        options: options,
       })
     );
 
@@ -169,7 +169,7 @@ class VectorComputationPool {
 
     workerInfo.worker.postMessage({
       jobId: job.id,
-      task: job.task
+      task: job.task,
     });
   }
 
@@ -189,7 +189,7 @@ class VectorComputationPool {
     if (success) {
       job.resolve(data);
     } else {
-      job.reject(new Error(error));
+      job.reject(new Error(error);
     }
 
     // Remove job from active jobs
@@ -215,7 +215,7 @@ class VectorComputationPool {
       poolSize: this.poolSize,
       activeJobs: this.activeJobs.size,
       queuedJobs: this.taskQueue.length,
-      busyWorkers: this.workers.filter(item => item.length)
+      busyWorkers: this.workers.filter(item => item.length),
     };
   }
 }
@@ -253,7 +253,7 @@ class LegalLLMWorkerPool {
         this.workers[i] = {
           worker: worker,
           busy: false,
-          lastUsed: Date.now()
+          lastUsed: Date.now(),
         };
       }
 
@@ -280,7 +280,7 @@ class LegalLLMWorkerPool {
         task: task,
         resolve: resolve,
         reject: reject,
-        startTime: performance.now()
+        startTime: performance.now(),
       };
 
       this.activeJobs.set(jobId, job);
@@ -311,7 +311,7 @@ class LegalLLMWorkerPool {
 
     workerInfo.worker.postMessage({
       jobId: job.id,
-      task: job.task
+      task: job.task,
     });
   }
 
@@ -326,7 +326,7 @@ class LegalLLMWorkerPool {
     if (success) {
       job.resolve(data);
     } else {
-      job.reject(new Error(error));
+      job.reject(new Error(error);
     }
 
     this.activeJobs.delete(jobId);
@@ -384,14 +384,14 @@ function setupWorkerThread() {
       parentPort.postMessage({
         jobId: jobId,
         success: true,
-        data: result
+        data: result,
       });
       
     } catch (error) {
       parentPort.postMessage({
         jobId: jobId,
         success: false,
-        error: error.message
+        error: error.message,
       });
     }
   });
@@ -411,7 +411,7 @@ function setupWorkerThread() {
         results.push({
           id: vector.id,
           similarity: similarity,
-          metadata: vector.metadata
+          metadata: vector.metadata,
         });
       }
     }
@@ -434,7 +434,7 @@ function setupWorkerThread() {
       results.push({
         documentId: document.id,
         embedding: embedding,
-        text: text
+        text: text,
       });
     }
     
@@ -461,7 +461,7 @@ function setupWorkerThread() {
           options: {
             temperature: 0.1, // Low temperature for legal analysis
             top_p: 0.9,
-            max_tokens: 2048
+            max_tokens: 2048,
           }
         })
       });
@@ -475,7 +475,7 @@ function setupWorkerThread() {
         analysis: data.response,
         confidence: calculateConfidence(data.response),
         model: 'gemma3-legal:latest',
-        analysisType: analysisType
+        analysisType: analysisType,
       };
     } catch (error) {
       throw new Error(`Legal analysis failed: ${error.message}`);
@@ -496,7 +496,7 @@ function setupWorkerThread() {
           model: model,
           prompt: prompt,
           stream: false,
-          options: options
+          options: options,
         })
       });
 
@@ -522,7 +522,7 @@ function setupWorkerThread() {
       normB += vecB[i] * vecB[i];
     }
     
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
   }
 
   function prepareDocumentText(document) {
@@ -561,7 +561,7 @@ function setupWorkerThread() {
     confidence -= (uncertaintyIndicators * 0.1);
     confidence += Math.min(words / 100, 0.2); // Longer responses tend to be more confident
     
-    return Math.max(0.1, Math.min(0.9, confidence));
+    return Math.max(0.1, Math.min(0.9, confidence);
   }
 }
 

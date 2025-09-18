@@ -16,7 +16,7 @@ import { qdrantService } from '$lib/services/qdrantService';
 const UPLOADS_DIR = path.join(process.cwd(), 'uploads', 'documents');
 const OCR_DIR = path.join(process.cwd(), 'uploads', 'ocr-processed');
 
-// Ensure upload directories exist
+// Ensure upload directories exist;
 async function ensureDirectories(): Promise<any> {
   if (!existsSync(UPLOADS_DIR)) {
     await mkdir(UPLOADS_DIR, { recursive: true });
@@ -26,7 +26,7 @@ async function ensureDirectories(): Promise<any> {
   }
 }
 
-// Local file storage (replaces MinIO)
+// Local file storage (replaces MinIO);
 async function saveFileLocally(file: File, filename: string): Promise<string> {
   await ensureDirectories();
   const filePath = path.join(UPLOADS_DIR, filename);
@@ -36,15 +36,15 @@ async function saveFileLocally(file: File, filename: string): Promise<string> {
   return filePath;
 }
 
-// Tesseract OCR helper (lazy import so project can run without the package installed)
+// Tesseract OCR helper (lazy import so project can run without the package installed);
 async function ocrWithTesseract(filePath: string): Promise<string> {
   try {
     const mod: any = await import('tesseract.js');
     const createWorker: any = mod.createWorker;
-    // createWorker may return a Promise or a worker directly depending on version
+    // createWorker may return a Promise or a worker directly depending on version;
     const worker: any = await createWorker({
       logger: (m: any) => {
-        if (import.meta.env.MCP_DEBUG === 'true') console.log('TESSERACT:', m));
+        if (import.meta.env.MCP_DEBUG === 'true') console.log('TESSERACT:', m);
       },
     });
 
@@ -56,7 +56,7 @@ async function ocrWithTesseract(filePath: string): Promise<string> {
     const result: any = (await worker.recognize) ? await worker.recognize(filePath) : await worker;
     if (typeof worker.terminate === 'function') await worker.terminate();
 
-    // Extract text from OCR result with simplified access pattern
+    // Extract text from OCR result with simplified access pattern;
     if (result?.data?.text) {
       return result.data.text;
     } else if (result?.text) {
@@ -72,7 +72,7 @@ async function ocrWithTesseract(filePath: string): Promise<string> {
   }
 }
 
-// OCR processing using native libraries and Tesseract.js for images
+// OCR processing using native libraries and Tesseract.js for images;
 async function processWithOCR(filePath: string, mimeType: string): Promise<string> {
   try {
     if (mimeType === 'application/pdf') {
@@ -80,7 +80,7 @@ async function processWithOCR(filePath: string, mimeType: string): Promise<strin
       const buffer = await require('fs/promises').readFile(filePath);
       const data = await pdf(buffer);
 
-      // If pdf-parse returns little or no text, fallback to running OCR on the first page image (not implemented here)
+      // If pdf-parse returns little or no text, fallback to running OCR on the first page image (not implemented here);
       if (data && typeof (data as { text?: any }).text === 'string' && (data as { text?: any }).text.trim().length > 50) {
         return (data as { text?: any }).text;
       }
@@ -104,14 +104,14 @@ async function processWithOCR(filePath: string, mimeType: string): Promise<strin
   }
 }
 
-// Save document to database with native processing
+// Save document to database with native processing;
 async function saveDocument(docData: {
   filename: string;
   content: string;
   metadata: any;
   confidence?: number;
   legalAnalysis?: unknown;
-  filePath: string;
+  filePath: string;,
 }): Promise<any> {
   try {
     const [result] = await db.insert(documents).values({
@@ -130,7 +130,7 @@ async function saveDocument(docData: {
   }
 }
 
-// Generate embeddings using Ollama
+// Generate embeddings using Ollama;
 async function generateEmbeddings(content: string, documentId: string): Promise<any> {
   try {
     const response = await fetch('http://localhost:11434/api/embeddings', {
@@ -153,11 +153,11 @@ async function generateEmbeddings(content: string, documentId: string): Promise<
     const TARGET_QDRANT_DIM = parseInt(import.meta.env.VECTOR_DIM || import.meta.env.EMBEDDING_DIM || '768', 10);
     if (embeddingArray.length !== TARGET_DB_DIM) {
       if (embeddingArray.length > TARGET_DB_DIM) embeddingArray = embeddingArray.slice(0, TARGET_DB_DIM);
-      else if (embeddingArray.length < TARGET_DB_DIM) embeddingArray = embeddingArray.concat(Array(TARGET_DB_DIM - embeddingArray.length).fill(0));
+      else if (embeddingArray.length < TARGET_DB_DIM) embeddingArray = embeddingArray.concat(Array(TARGET_DB_DIM - embeddingArray.length).fill(0);
       console.warn(`Adjusted embedding length to ${TARGET_DB_DIM}`);
     }
 
-    // Store in PostgreSQL (pgvector)
+    // Store in PostgreSQL (pgvector);
     await db.insert(embeddings).values({
       documentId: documentId,
       content: content.substring(0, 1000),
@@ -166,16 +166,16 @@ async function generateEmbeddings(content: string, documentId: string): Promise<
         model: 'nomic-embed-text',
         contentLength: content.length,
         generatedAt: new Date().toISOString(),
-        embeddingDim: TARGET_DB_DIM
+        embeddingDim: TARGET_DB_DIM,
       },
-      model: 'nomic-embed-text'
+      model: 'nomic-embed-text',
     });
 
     // Prepare vector for Qdrant (slice/pad if different dimension)
     let qdrantVector = embeddingArray;
     if (TARGET_QDRANT_DIM !== TARGET_DB_DIM) {
       if (qdrantVector.length > TARGET_QDRANT_DIM) qdrantVector = qdrantVector.slice(0, TARGET_QDRANT_DIM);
-      else if (qdrantVector.length < TARGET_QDRANT_DIM) qdrantVector = qdrantVector.concat(Array(TARGET_QDRANT_DIM - qdrantVector.length).fill(0));
+      else if (qdrantVector.length < TARGET_QDRANT_DIM) qdrantVector = qdrantVector.concat(Array(TARGET_QDRANT_DIM - qdrantVector.length).fill(0);
     }
     await qdrantService.upsert('legal-documents', [{
       id: documentId,
@@ -185,7 +185,7 @@ async function generateEmbeddings(content: string, documentId: string): Promise<
         documentId: documentId,
         model: 'nomic-embed-text',
         dbEmbeddingDim: TARGET_DB_DIM,
-        qdrantEmbeddingDim: TARGET_QDRANT_DIM
+        qdrantEmbeddingDim: TARGET_QDRANT_DIM,
       }
     }]);
 
@@ -196,7 +196,7 @@ async function generateEmbeddings(content: string, documentId: string): Promise<
   }
 }
 
-// Legal analysis using local Gemma3-legal model
+// Legal analysis using local Gemma3-legal model;
 async function performLegalAnalysis(content: string): Promise<any> {
   try {
     const response = await fetch('http://localhost:11434/api/generate', {
@@ -213,7 +213,7 @@ async function performLegalAnalysis(content: string): Promise<any> {
 
 Document content:
 ${content.substring(0, 4000)}`,
-        stream: false
+        stream: false,
       })
     });
 
@@ -222,7 +222,7 @@ ${content.substring(0, 4000)}`,
       return {
         documentType: 'Unknown',
         confidence: 0.5,
-        analysis: 'Basic analysis - legal model not available'
+        analysis: 'Basic analysis - legal model not available',
       };
     }
 
@@ -231,7 +231,7 @@ ${content.substring(0, 4000)}`,
       analysis: (result as { data?: any; text?: any; embedding?: any; embeddings?: any; response?: any }).response,
       confidence: 0.8,
       model: 'gemma3-legal',
-      analyzedAt: new Date().toISOString()
+      analyzedAt: new Date().toISOString(),
     };
   } catch (error: any) {
     console.error('Legal analysis failed:', error);
@@ -272,7 +272,7 @@ export const POST: RequestHandler = async ({ request }) => {
           content = await processWithOCR(filePath, file.type);
           console.log('OCR processing completed, content length:', content.length);
         } else {
-          // Basic file reading for non-OCR processing
+          // Basic file reading for non-OCR processing;
           if (file.type === 'text/plain' || file.type.includes('text')) {
             const arrayBuffer = await file.arrayBuffer();
             content = new TextDecoder().decode(arrayBuffer);
@@ -288,7 +288,7 @@ export const POST: RequestHandler = async ({ request }) => {
           console.log('Legal analysis completed for document:', docId);
         }
 
-        // Save document to database
+        // Save document to database;
         const documentRecord = await saveDocument({
           filename: file.name,
           content,
@@ -301,7 +301,7 @@ export const POST: RequestHandler = async ({ request }) => {
             enableRAG,
             localPath: filePath,
             ocrProcessed: enableOCR,
-            contentLength: content.length
+            contentLength: content.length,
           },
           confidence: legalAnalysis?.confidence || 0.7,
           legalAnalysis,
@@ -332,7 +332,7 @@ export const POST: RequestHandler = async ({ request }) => {
           contentLength: content.length,
           confidence: legalAnalysis?.confidence || 0.7,
           size: file.size,
-          processedAt: new Date().toISOString()
+          processedAt: new Date().toISOString(),
         });
 
       } catch (error: any) {
@@ -341,7 +341,7 @@ export const POST: RequestHandler = async ({ request }) => {
           filename: file.name,
           status: 'error',
           error: error.message,
-          size: file.size
+          size: file.size,
         });
       }
     }
@@ -357,14 +357,14 @@ export const POST: RequestHandler = async ({ request }) => {
         vectorSearch: 'Qdrant',
         embeddings: 'Ollama (nomic-embed-text)',
         legalAnalysis: 'Gemma3-legal model',
-        ocr: 'Native PDF parsing + image processing'
+        ocr: 'Native PDF parsing + image processing',
       }
     });
 
   } catch (error: any) {
     console.error('RAG process error:', error);
     return json(
-      { error: 'Failed to process files', details: error.message },
+      { error: 'Failed to process files', details: error.message },)
       { status: 500 }
     );
   }
@@ -380,12 +380,12 @@ export const GET: RequestHandler = async () => {
       vectorSearch: 'Qdrant',
       embeddings: 'Ollama (nomic-embed-text)',
       legalAnalysis: 'Gemma3-legal model',
-      ocr: 'Native PDF parsing + image processing'
+      ocr: 'Native PDF parsing + image processing',
     },
     endpoints: {
       process: 'POST /api/rag/process',
       status: 'GET /api/rag/status',
-      search: 'POST /api/rag/search'
+      search: 'POST /api/rag/search',
     },
     features: [
       'OCR text extraction (PDF, images)',

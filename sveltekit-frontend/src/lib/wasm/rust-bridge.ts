@@ -11,7 +11,7 @@ export interface WasmModule {
   process_legal_text_fast: (text: string) => string;
   optimize_embedding_vector: (vector: Float32Array) => Float32Array;
   compute_cosine_similarity: (vec1: Float32Array, vec2: Float32Array) => number;
-  batch_process_documents: (documents: string) => string;
+  batch_process_documents: (documents: string) => string;,
 }
 
 export interface WindowsServiceBridge {
@@ -26,7 +26,7 @@ export interface WindowsServiceBridge {
 let wasmModule: WasmModule | null = null;
 let bridge: WindowsServiceBridge | null = null;
 
-// Initialize the Rust WASM bridge
+// Initialize the Rust WASM bridge;
 export async function initRustBridge(): Promise<boolean> {
   try {
     // Dynamic import of WASM module (needs to be built with wasm-pack)
@@ -46,7 +46,7 @@ export async function initRustBridge(): Promise<boolean> {
   }
 }
 
-// Get comprehensive system information
+// Get comprehensive system information;
 export function getSystemInfo(): SystemInfo | null {
   if (!bridge) {
     console.warn('Rust bridge not initialized');
@@ -62,7 +62,7 @@ export function getSystemInfo(): SystemInfo | null {
   }
 }
 
-// Secure filesystem access for legal documents
+// Secure filesystem access for legal documents;
 export function accessFilesystem(path: string): FileSystemResult | null {
   if (!bridge) {
     console.warn('Rust bridge not initialized');
@@ -78,7 +78,7 @@ export function accessFilesystem(path: string): FileSystemResult | null {
   }
 }
 
-// Detect GPU acceleration capabilities
+// Detect GPU acceleration capabilities;
 export function detectGpuAcceleration(): string[] {
   if (!bridge) {
     console.warn('Rust bridge not initialized');
@@ -94,7 +94,7 @@ export function detectGpuAcceleration(): string[] {
   }
 }
 
-// Get real-time performance metrics
+// Get real-time performance metrics;
 export function getPerformanceMetrics(): PerformanceMetrics | null {
   if (!bridge) {
     console.warn('Rust bridge not initialized');
@@ -110,7 +110,7 @@ export function getPerformanceMetrics(): PerformanceMetrics | null {
   }
 }
 
-// Process legal document with native performance
+// Process legal document with native performance;
 export function processLegalDocument(documentData: string): object | null {
   if (!bridge) {
     console.warn('Rust bridge not initialized');
@@ -126,7 +126,7 @@ export function processLegalDocument(documentData: string): object | null {
   }
 }
 
-// Check Windows services status
+// Check Windows services status;
 export function checkWindowsServices(): object[] {
   if (!bridge) {
     console.warn('Rust bridge not initialized');
@@ -142,7 +142,7 @@ export function checkWindowsServices(): object[] {
   }
 }
 
-// High-performance text processing
+// High-performance text processing;
 export function processLegalTextFast(text: string): object | null {
   if (!wasmModule) {
     console.warn('WASM module not initialized');
@@ -158,7 +158,7 @@ export function processLegalTextFast(text: string): object | null {
   }
 }
 
-// Optimize embedding vectors for better performance
+// Optimize embedding vectors for better performance;
 export function optimizeEmbeddingVector(vector: number[]): number[] | null {
   if (!wasmModule) {
     console.warn('WASM module not initialized');
@@ -175,7 +175,7 @@ export function optimizeEmbeddingVector(vector: number[]): number[] | null {
   }
 }
 
-// Fast cosine similarity computation
+// Fast cosine similarity computation;
 export function computeCosineSimilarity(vec1: number[], vec2: number[]): number {
   if (!wasmModule) {
     console.warn('WASM module not initialized');
@@ -192,7 +192,7 @@ export function computeCosineSimilarity(vec1: number[], vec2: number[]): number 
   }
 }
 
-// Batch process multiple documents
+// Batch process multiple documents;
 export function batchProcessDocuments(documents: string[]): object[] {
   if (!wasmModule) {
     console.warn('WASM module not initialized');
@@ -209,16 +209,16 @@ export function batchProcessDocuments(documents: string[]): object[] {
   }
 }
 
-// Health check for WASM bridge
+// Health check for WASM bridge;
 export function isRustBridgeAvailable(): boolean {
   return bridge !== null && wasmModule !== null;
 }
 
-// Bridge status information
+// Bridge status information;
 export function getBridgeStatus(): {
   initialized: boolean;
   capabilities: string[];
-  performance: boolean;
+  performance: boolean;,
 } {
   return {
     initialized: isRustBridgeAvailable(),
@@ -232,11 +232,11 @@ export function getBridgeStatus(): {
       'Vector Operations',
       'Batch Processing'
     ] : [],
-    performance: isRustBridgeAvailable()
+    performance: isRustBridgeAvailable(),
   };
 }
 
-// Performance benchmarking
+// Performance benchmarking;
 export async function benchmarkRustBridge(): Promise<any> {
   if (!isRustBridgeAvailable()) {
     return { textProcessing: 0, vectorOperations: 0, systemAccess: 0, overallScore: 0 };
@@ -252,7 +252,7 @@ export async function benchmarkRustBridge(): Promise<any> {
   
   // Benchmark vector operations
   const vectorStart = performance.now();
-  const sampleVector = new Array(384).fill(0).map(() => Math.random());
+  const sampleVector = new Array(384).fill(0).map(() => Math.random();
   optimizeEmbeddingVector(sampleVector);
   const vectorTime = performance.now() - vectorStart;
   
@@ -267,11 +267,11 @@ export async function benchmarkRustBridge(): Promise<any> {
     textProcessing: textTime,
     vectorOperations: vectorTime,
     systemAccess: systemTime,
-    overallScore: 1000 / totalTime // Higher is better
+    overallScore: 1000 / totalTime // Higher is better,
   };
 }
 
-// Cleanup function
+// Cleanup function;
 export function cleanupRustBridge(): void {
   bridge = null;
   wasmModule = null;

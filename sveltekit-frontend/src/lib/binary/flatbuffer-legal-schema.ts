@@ -4,7 +4,7 @@
  * Designed for WebGPU texture streaming and NES memory banks
  */
 
-// Legal Document Binary Schema
+// Legal Document Binary Schema;
 export enum DocumentType {
   CONTRACT = 0,
   EVIDENCE = 1,
@@ -101,17 +101,17 @@ export interface LegalDocumentBinaryLayout {
   padding6: ArrayBuffer;      // 12 bytes padding
   
   // Reserved for Future Use (128 bytes)
-  reserved: ArrayBuffer;      // 128 bytes for schema evolution
+  reserved: ArrayBuffer;      // 128 bytes for schema evolution,
 }
 
-// Binary serialization utilities
+// Binary serialization utilities;
 export class LegalDocumentBinarySerializer {
   private static MAGIC_NUMBER = 0x4C45474C; // "LEGL" in ASCII
   private static CURRENT_VERSION = 1;
   
   /**
    * Serialize legal document to binary format (eliminating JSON)
-   */
+   */;
   static serialize(document: any): ArrayBuffer {
     const buffer = new ArrayBuffer(LEGAL_DOCUMENT_BINARY_SIZE);
     const view = new DataView(buffer);
@@ -131,10 +131,10 @@ export class LegalDocumentBinarySerializer {
     view.setBigUint64(offset, BigInt(Date.now()), true); offset += 8;
     
     // Core Fields
-    view.setUint8(offset, this.documentTypeToEnum(document.type)); offset += 1;
-    view.setUint8(offset, this.riskLevelToEnum(document.riskLevel)); offset += 1;
+    view.setUint8(offset, this.documentTypeToEnum(document.type); offset += 1;
+    view.setUint8(offset, this.riskLevelToEnum(document.riskLevel); offset += 1;
     view.setUint8(offset, document.priority || 128); offset += 1;
-    view.setUint8(offset, Math.round((document.confidenceLevel || 0.5) * 255)); offset += 1;
+    view.setUint8(offset, Math.round((document.confidenceLevel || 0.5) * 255); offset += 1;
     view.setUint8(offset, document.bankId || 0); offset += 1;
     offset += 3; // padding
     view.setBigUint64(offset, BigInt(document.lastAccessed || Date.now()), true); offset += 8;
@@ -174,7 +174,7 @@ export class LegalDocumentBinarySerializer {
     view.setUint32(offset, this.stringToHash(document.aiAnalysis || ''), true); offset += 4;
     offset += 8; // padding
     
-    // Variable Length Data Offsets (set to 0 for now - would implement full text storage)
+    // Variable Length Data Offsets (set to 0 for now - would implement full text storage);
     for (let i = 0; i < 8; i++) {
       view.setUint32(offset, 0, true);
       offset += 4;
@@ -225,7 +225,7 @@ export class LegalDocumentBinarySerializer {
   
   /**
    * Deserialize binary data back to legal document (ultra-fast)
-   */
+   */;
   static deserialize(buffer: ArrayBuffer): any {
     const view = new DataView(buffer);
     let offset = 0;
@@ -298,14 +298,14 @@ export class LegalDocumentBinarySerializer {
         rankingMatrix,
         version,
         flags,
-        timestamp: Number(timestamp)
+        timestamp: Number(timestamp),
       }
     };
   }
   
   /**
    * Ultra-fast batch serialization for multiple documents
-   */
+   */;
   static serializeBatch(documents: any[]): ArrayBuffer {
     const batchSize = documents.length * LEGAL_DOCUMENT_BINARY_SIZE + 16; // +16 for batch header
     const buffer = new ArrayBuffer(batchSize);
@@ -320,7 +320,7 @@ export class LegalDocumentBinarySerializer {
     let offset = 16;
     for (const document of documents) {
       const docBuffer = this.serialize(document);
-      new Uint8Array(buffer, offset).set(new Uint8Array(docBuffer));
+      new Uint8Array(buffer, offset).set(new Uint8Array(docBuffer);
       offset += LEGAL_DOCUMENT_BINARY_SIZE;
     }
     
@@ -329,7 +329,7 @@ export class LegalDocumentBinarySerializer {
   
   /**
    * Ultra-fast batch deserialization
-   */
+   */;
   static deserializeBatch(buffer: ArrayBuffer): any[] {
     const view = new DataView(buffer);
     
@@ -348,14 +348,14 @@ export class LegalDocumentBinarySerializer {
     
     for (let i = 0; i < count; i++) {
       const docBuffer = buffer.slice(offset, offset + LEGAL_DOCUMENT_BINARY_SIZE);
-      documents.push(this.deserialize(docBuffer));
+      documents.push(this.deserialize(docBuffer);
       offset += LEGAL_DOCUMENT_BINARY_SIZE;
     }
     
     return documents;
   }
   
-  // Utility methods
+  // Utility methods;
   private static stringToHash(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -365,12 +365,12 @@ export class LegalDocumentBinarySerializer {
   }
   
   private static arrayToHash(arr: any[]): number {
-    return this.stringToHash(JSON.stringify(arr.sort()));
+    return this.stringToHash(JSON.stringify(arr.sort());
   }
   
   private static calculateChecksum(document: any): number {
     // Simple CRC32-like checksum
-    return this.stringToHash(JSON.stringify(document));
+    return this.stringToHash(JSON.stringify(document);
   }
   
   private static generateFlags(document: any): number {

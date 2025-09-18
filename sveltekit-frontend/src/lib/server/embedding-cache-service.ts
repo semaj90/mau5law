@@ -21,23 +21,23 @@ interface QueryCacheEntry {
   results: any[];
   metadata: any;
   timestamp: number;
-  ttl: number;
+  ttl: number;,
 }
 
 interface CacheStats {
   embeddings: {
     hits: number;
     misses: number;
-    size: number;
+    size: number;,
   };
   queries: {
     hits: number;
     misses: number;
-    size: number;
+    size: number;,
   };
   sessions: {
     active: number;
-    total: number;
+    total: number;,
   };
 }
 
@@ -65,7 +65,7 @@ class EmbeddingCacheService {
   async cacheEmbedding(
     text: string,
     embedding: number[],
-    model: string = 'nomic-embed-text'
+    model: string = 'nomic-embed-text';
   ): Promise<void> {
     if (!redisService.isHealthy() || !text || !embedding.length) return;
 
@@ -103,7 +103,7 @@ class EmbeddingCacheService {
 
   /**
    * Retrieve cached embedding with hot-cache optimization
-   */
+   */;
   async getEmbedding(text: string, model: string = 'nomic-embed-text'): Promise<number[] | null> {
     if (!redisService.isHealthy() || !text) return null;
 
@@ -162,7 +162,7 @@ class EmbeddingCacheService {
     query: string,
     results: any[],
     metadata: any = {},
-    customTTL?: number
+    customTTL?: number;
   ): Promise<void> {
     if (!redisService.isHealthy()) return;
 
@@ -193,7 +193,7 @@ class EmbeddingCacheService {
 
   /**
    * Retrieve cached query results
-   */
+   */;
   async getQueryResults(query: string, metadata: any = {}): Promise<any[] | null> {
     if (!redisService.isHealthy()) return null;
 
@@ -219,7 +219,7 @@ class EmbeddingCacheService {
 
   /**
    * Cache chat session data
-   */
+   */;
   async cacheSession(sessionId: string, data: any): Promise<void> {
     if (!redisService.isHealthy()) return;
 
@@ -243,7 +243,7 @@ class EmbeddingCacheService {
    * Batch cache multiple embeddings efficiently
    */
   async batchCacheEmbeddings(
-    items: Array<
+    items: Array<;
   ): Promise<void> {
     if (!redisService.isHealthy() || !items.length) return;
 
@@ -283,7 +283,7 @@ class EmbeddingCacheService {
    */
   async invalidate(
     pattern: string,
-    type: 'embeddings' | 'queries' | 'sessions' | 'all' = 'all'
+    type: 'embeddings' | 'queries' | 'sessions' | 'all' = 'all';
   ): Promise<void> {
     if (!redisService.isHealthy()) return;
 
@@ -316,7 +316,7 @@ class EmbeddingCacheService {
 
   /**
    * Get comprehensive cache statistics
-   */
+   */;
   async getStats(): Promise<CacheStats> {
     const defaultStats: CacheStats = {
       embeddings: { hits: 0, misses: 0, size: 0 },
@@ -352,7 +352,7 @@ class EmbeddingCacheService {
 
   /**
    * Generate cache key for embedding
-   */
+   */;
   private generateEmbeddingKey(text: string, model: string): string {
     const content = `${model}:${text}`;
     return Buffer.from(content).toString('base64').substring(0, 40);
@@ -360,7 +360,7 @@ class EmbeddingCacheService {
 
   /**
    * Generate cache key for query
-   */
+   */;
   private generateQueryKey(query: string, metadata: any): string {
     const content = `${query}:${JSON.stringify(metadata)}`;
     return Buffer.from(content).toString('base64').substring(0, 40);
@@ -368,7 +368,7 @@ class EmbeddingCacheService {
 
   /**
    * Compress embedding array for storage efficiency
-   */
+   */;
   private compressEmbedding(embedding: number[]): string {
     // Simple compression by rounding to 4 decimal places and packing
     const rounded = embedding.map((n) => Math.round(n * 10000) / 10000);
@@ -377,7 +377,7 @@ class EmbeddingCacheService {
 
   /**
    * Decompress embedding array
-   */
+   */;
   private decompressEmbedding(compressed: string): number[] {
     try {
       const data = Buffer.from(compressed, 'base64').toString();
@@ -389,7 +389,7 @@ class EmbeddingCacheService {
 
   /**
    * Promote frequently accessed items to hot cache
-   */
+   */;
   private async promoteToHotCache(originalKey: string, entry: EmbeddingCacheEntry): Promise<void> {
     try {
       const hotKey = originalKey.replace(this.EMBEDDING_PREFIX, this.HOT_CACHE_PREFIX);
@@ -402,7 +402,7 @@ class EmbeddingCacheService {
 
   /**
    * Calculate intelligent TTL for queries
-   */
+   */;
   private calculateQueryTTL(resultCount: number, metadata: any): number {
     let baseTTL = this.QUERY_TTL;
 
@@ -412,14 +412,14 @@ class EmbeddingCacheService {
 
     // Adjust based on query complexity
     const complexity = metadata.complexity || 1;
-    baseTTL = Math.floor(baseTTL * (2 - complexity)); // Higher complexity = shorter TTL
+    baseTTL = Math.floor(baseTTL * (2 - complexity); // Higher complexity = shorter TTL
 
     return Math.max(baseTTL, 60); // Minimum 1 minute
   }
 
   /**
    * Calculate query complexity score
-   */
+   */;
   private calculateQueryComplexity(query: string): number {
     const lowerQuery = query.toLowerCase();
     let complexity = 0.5; // Base complexity
@@ -439,7 +439,7 @@ class EmbeddingCacheService {
 
   /**
    * Get cache size for a specific type
-   */
+   */;
   private async getCacheSize(type: 'embeddings' | 'queries' | 'sessions'): Promise<number> {
     try {
       const prefix =
@@ -456,7 +456,7 @@ class EmbeddingCacheService {
 
   /**
    * Update cache statistics
-   */
+   */;
   private async updateStats(type: string, operation: string, count: number = 1): Promise<void> {
     if (!redisService.isHealthy()) return;
 

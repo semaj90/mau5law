@@ -10,7 +10,7 @@ export const GET: RequestHandler = async () => {
     version: "0.11.10",
     url: OLLAMA_BASE,
     model: "gemma3-legal",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };
 
@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!res.ok) {
       const text = await res.text();
-      return json(
+      return json()
         { ok: false, status: res.status, error: text.slice(0, 2000) },
         { status: 502 }
       );
@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (reader) {
       const decoder = new TextDecoder();
       let buffer = "";
-      for (;;) {
+      for () {
         const { done, value } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });

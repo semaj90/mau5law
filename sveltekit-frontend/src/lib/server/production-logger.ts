@@ -9,6 +9,7 @@ import type { LoggingConfig } from '../config/unified-config.js';
 
 // Log levels in order of severity
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+}
 
 export interface LogContext {
   userId?: string;
@@ -69,7 +70,7 @@ export interface LogMetrics {
   };
 }
 
-// Windows-specific performance monitoring
+// Windows-specific performance monitoring;
 class WindowsPerformanceMonitor {
   private isWindows = typeof process !== 'undefined' && process.platform === 'win32';
   private performanceCounters: Map<string, any> = new Map();
@@ -108,7 +109,7 @@ class WindowsPerformanceMonitor {
           [
             '--query-gpu=memory.total,memory.used,temperature.gpu,utilization.gpu',
             '--format=csv,noheader,nounits',
-          ],
+          ],)
           { stdio: 'pipe', shell: true }
         );
 
@@ -131,7 +132,7 @@ class WindowsPerformanceMonitor {
           }
         });
 
-        child.on('error', () => resolve(null));
+        child.on('error', () => resolve(null);
       });
     } catch {
       return null;
@@ -165,7 +166,7 @@ class WindowsPerformanceMonitor {
   }
 }
 
-// Main logging service
+// Main logging service;
 export class ProductionLogger {
   private config: LoggingConfig;
   private logBuffer: LogEntry[] = [];
@@ -187,26 +188,26 @@ export class ProductionLogger {
   }
 
   private initializeLogging(): void {
-    // Setup periodic log flushing for file output
+    // Setup periodic log flushing for file output;
     if (this.config.outputs.includes('file') && this.config.file) {
       this.flushInterval = setInterval(() => {
         this.flushBufferedLogs();
       }, 5000); // Flush every 5 seconds
     }
 
-    // Setup metrics collection
+    // Setup metrics collection;
     this.metricsInterval = setInterval(async () => {
       await this.collectMetrics();
     }, 30000); // Collect metrics every 30 seconds
 
-    // Graceful shutdown handling
+    // Graceful shutdown handling;
     if (typeof process !== 'undefined') {
-      process.on('SIGINT', () => this.shutdown());
-      process.on('SIGTERM', () => this.shutdown());
+      process.on('SIGINT', () => this.shutdown();
+      process.on('SIGTERM', () => this.shutdown();
     }
   }
 
-  // Core logging methods
+  // Core logging methods;
   public debug(message: string, context?: LogContext, metadata?: Record<string, any>): void {
     if (this.shouldLog('debug')) {
       this.log('debug', message, context, metadata);
@@ -229,10 +230,10 @@ export class ProductionLogger {
     message: string,
     error?: Error,
     context?: LogContext,
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>;
   ): void {
     if (this.shouldLog('error')) {
-      const errorInfo = error
+      const errorInfo = error;
         ? {
             name: error.name,
             message: error.message,
@@ -251,7 +252,7 @@ export class ProductionLogger {
     endpoint: string,
     statusCode: number,
     duration: number,
-    context?: Partial<LogContext>
+    context?: Partial<LogContext>;
   ): void {
     const level: LogLevel = statusCode >= 500 ? 'error' : statusCode >= 400 ? 'warn' : 'info';
 
@@ -264,7 +265,7 @@ export class ProductionLogger {
         endpoint,
         statusCode,
         duration,
-      },
+      },);
       {
         responseTime: duration,
         httpStatus: statusCode,
@@ -276,7 +277,7 @@ export class ProductionLogger {
     this.log(
       'warn',
       `Security Event: ${event}`,
-      context,
+      context,);
       {
         ...metadata,
         securityEvent: true,
@@ -293,7 +294,7 @@ export class ProductionLogger {
     this.log(
       level,
       `Performance: ${operation}`,
-      context,
+      context,);
       {
         operation,
         duration,
@@ -309,7 +310,7 @@ export class ProductionLogger {
       this.log(
         'info',
         `Windows: ${event}`,
-        context,
+        context,);
         {
           ...data,
           windowsEvent: true,
@@ -328,7 +329,7 @@ export class ProductionLogger {
     context?: LogContext,
     metadata?: Record<string, any>,
     error?: LogEntry['error'],
-    tags: string[] = []
+    tags: string[] = [];
   ): void {
     const logEntry: LogEntry = {
       timestamp: new Date().toISOString(),
@@ -338,7 +339,7 @@ export class ProductionLogger {
       error,
       metadata,
       tags: tags.length > 0 ? tags : undefined,
-      performance: this.includePerformanceData()
+      performance: this.includePerformanceData();
         ? {
             memoryUsage: typeof process !== 'undefined' ? process.memoryUsage() : ({} as any),
             timing: Date.now(),
@@ -368,12 +369,12 @@ export class ProductionLogger {
     this.metrics.totalLogs++;
     this.metrics.logsByLevel[entry.level]++;
 
-    // Update error rate
+    // Update error rate;
     if (entry.level === 'error') {
       this.metrics.errorRate = this.metrics.logsByLevel.error / this.metrics.totalLogs;
     }
 
-    // Update response time (if available)
+    // Update response time (if available);
     if (entry.context?.duration) {
       const currentAvg = this.metrics.averageResponseTime;
       const newCount = this.metrics.totalLogs;
@@ -381,7 +382,7 @@ export class ProductionLogger {
         (currentAvg * (newCount - 1) + entry.context.duration) / newCount;
     }
 
-    // Update memory trend (keep last 100 entries)
+    // Update memory trend (keep last 100 entries);
     if (entry.performance?.memoryUsage?.rss) {
       this.metrics.memoryTrend.push(entry.performance.memoryUsage.rss);
       if (this.metrics.memoryTrend.length > 100) {
@@ -391,22 +392,22 @@ export class ProductionLogger {
   }
 
   private outputLog(entry: LogEntry): void {
-    // Console output
+    // Console output;
     if (this.config.outputs.includes('console')) {
       this.outputToConsole(entry);
     }
 
-    // File output (buffered)
+    // File output (buffered);
     if (this.config.outputs.includes('file')) {
       this.logBuffer.push(entry);
 
-      // Immediate flush for errors
+      // Immediate flush for errors;
       if (entry.level === 'error' && this.config.file) {
         this.flushBufferedLogs();
       }
     }
 
-    // Syslog output (Windows Event Log if on Windows)
+    // Syslog output (Windows Event Log if on Windows);
     if (this.config.outputs.includes('syslog')) {
       this.outputToSyslog(entry);
     }
@@ -445,7 +446,7 @@ export class ProductionLogger {
 
       let formatted = parts.join(' ');
 
-      // Add context information
+      // Add context information;
       if (entry.context && Object.keys(entry.context).length > 0) {
         const contextStr = Object.entries(entry.context)
           .filter(([key]) => key !== 'component')
@@ -457,7 +458,7 @@ export class ProductionLogger {
         }
       }
 
-      // Add error information
+      // Add error information;
       if (entry.error) {
         formatted += ` | ERROR: ${entry.error.name}: ${entry.error.message}`;
         if (entry.error.stack && this.config.includeStack) {
@@ -465,7 +466,7 @@ export class ProductionLogger {
         }
       }
 
-      // Add metadata
+      // Add metadata;
       if (entry.metadata && Object.keys(entry.metadata).length > 0) {
         formatted += ` | ${JSON.stringify(entry.metadata)}`;
       }
@@ -495,7 +496,7 @@ export class ProductionLogger {
       // Write to log file
       fs.appendFileSync(this.config.file.path, logData, 'utf8');
 
-      // Handle log rotation if needed
+      // Handle log rotation if needed;
       if (this.config.file.rotate) {
         await this.handleLogRotation();
       }
@@ -517,18 +518,18 @@ export class ProductionLogger {
       const maxSizeBytes = this.parseSize(this.config.file.maxSize);
 
       if (stats.size > maxSizeBytes) {
-        const baseName = path.basename(this.config.file.path, path.extname(this.config.file.path));
+        const baseName = path.basename(this.config.file.path, path.extname(this.config.file.path);
         const extension = path.extname(this.config.file.path);
         const dirName = path.dirname(this.config.file.path);
 
-        // Rotate existing files
+        // Rotate existing files;
         for (let i = this.config.file.maxFiles - 1; i >= 1; i--) {
           const oldFile = path.join(dirName, `${baseName}.${i}${extension}`);
           const newFile = path.join(dirName, `${baseName}.${i + 1}${extension}`);
 
           if (fs.existsSync(oldFile)) {
             if (i === this.config.file.maxFiles - 1) {
-              fs.unlinkSync(oldFile); // Remove oldest
+              fs.unlinkSync(oldFile); // Remove oldest;
             } else {
               fs.renameSync(oldFile, newFile);
             }
@@ -556,7 +557,7 @@ export class ProductionLogger {
 
   private outputToSyslog(entry: LogEntry): void {
     // Windows Event Log integration would go here
-    // For now, just output to console with syslog format
+    // For now, just output to console with syslog format;
     if (typeof process !== 'undefined' && process.platform === 'win32') {
       this.windowsSpecific(`Syslog: ${entry.message}`, { level: entry.level });
     }
@@ -564,7 +565,7 @@ export class ProductionLogger {
 
   private async collectMetrics(): Promise<void> {
     try {
-      // Collect Windows-specific metrics
+      // Collect Windows-specific metrics;
       if (typeof process !== 'undefined' && process.platform === 'win32') {
         const windowsMetrics = await this.windowsMonitor.getWindowsMetrics();
         if (windowsMetrics) {
@@ -572,7 +573,7 @@ export class ProductionLogger {
         }
       }
 
-      // Log metrics summary (debug level)
+      // Log metrics summary (debug level);
       this.debug('Logger metrics collected', undefined, {
         metrics: {
           totalLogs: this.metrics.totalLogs,
@@ -586,7 +587,7 @@ export class ProductionLogger {
     }
   }
 
-  // Public API methods
+  // Public API methods;
   public getMetrics(): LogMetrics {
     return { ...this.metrics };
   }
@@ -640,7 +641,7 @@ export class ProductionLogger {
       clearInterval(this.metricsInterval);
     }
 
-    // Final flush
+    // Final flush;
     if (this.logBuffer.length > 0) {
       this.flushBufferedLogs();
     }

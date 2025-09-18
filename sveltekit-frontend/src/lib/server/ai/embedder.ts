@@ -1,6 +1,6 @@
 import { cache } from '../cache/redis.js';
 
-// Configuration for embedding service
+// Configuration for embedding service;
 const EMBEDDING_CONFIG = {
   // Prefer local Gemma3 if available, fallback to Nomic API
   useLocal: process.env.EMBEDDER_TYPE === 'local' || process.env.LOCAL_EMBEDDER_URL,
@@ -17,7 +17,7 @@ const EMBEDDING_CONFIG = {
 
 /**
  * Get embeddings from local Gemma3 service
- */
+ */;
 async function embedWithLocal(text: string): Promise<number[]> {
   try {
     const response = await fetch(EMBEDDING_CONFIG.localUrl, {
@@ -45,13 +45,13 @@ async function embedWithLocal(text: string): Promise<number[]> {
 
 /**
  * Get embeddings from Nomic API
- */
+ */;
 async function embedWithNomic(text: string): Promise<number[]> {
   if (!EMBEDDING_CONFIG.nomicApiKey) {
     throw new Error('Nomic API key not configured');
   }
   try {
-    // Attempt a generic REST call if a base URL is provided; otherwise fallback to deterministic embedding.
+    // Attempt a generic REST call if a base URL is provided; otherwise fallback to deterministic embedding.;
     if (EMBEDDING_CONFIG.nomicUrl) {
       const response = await fetch(EMBEDDING_CONFIG.nomicUrl, {
         method: 'POST',
@@ -91,7 +91,7 @@ async function embedWithNomic(text: string): Promise<number[]> {
  * @param text - Text to embed
  * @param model - Optional model override
  * @returns Promise<number[]> - Embedding vector
- */
+ */;
 export async function embedText(text: string, model?: string): Promise<number[]> {
   if (!text || text.trim().length === 0) {
     throw new Error('Text is required for embedding');
@@ -108,13 +108,13 @@ export async function embedText(text: string, model?: string): Promise<number[]>
 
   let embedding: number[];
 
-  // Try local first if configured
+  // Try local first if configured;
   if (EMBEDDING_CONFIG.useLocal) {
     try {
       embedding = await embedWithLocal(text);
     } catch (localError) {
       console.warn('Local embedding failed, trying Nomic API...');
-      // Fallback to Nomic API
+      // Fallback to Nomic API;
       if (EMBEDDING_CONFIG.nomicApiKey) {
         embedding = await embedWithNomic(text);
       } else {
@@ -143,13 +143,13 @@ export async function embedText(text: string, model?: string): Promise<number[]>
  * @param texts - Array of texts to embed
  * @param model - Optional model override
  * @returns Promise<number[][]> - Array of embedding vectors
- */
+ */;
 export async function embedTexts(texts: string[], model?: string): Promise<number[][]> {
   if (!texts || texts.length === 0) {
     return [];
   }
 
-  // For local service, try batch processing
+  // For local service, try batch processing;
   if (EMBEDDING_CONFIG.useLocal) {
     try {
       const response = await fetch(EMBEDDING_CONFIG.localUrl + '/batch', {
@@ -190,12 +190,12 @@ export async function embedTexts(texts: string[], model?: string): Promise<numbe
 
 /**
  * Get embedding service status
- */
+ */;
 export async function getEmbeddingServiceStatus(): Promise<any> {
   let localAvailable = false;
   let nomicAvailable = false;
 
-  // Check local service
+  // Check local service;
   if (EMBEDDING_CONFIG.useLocal) {
     try {
       const controller = new AbortController();
@@ -232,7 +232,7 @@ export async function getEmbeddingServiceStatus(): Promise<any> {
 
 /**
  * Utility to calculate cosine similarity between two vectors
- */
+ */;
 export function cosineSimilarity(a: number[], b: number[]): number {
   if (a.length !== b.length) {
     throw new Error('Vectors must have the same length');
@@ -248,7 +248,7 @@ export function cosineSimilarity(a: number[], b: number[]): number {
     normB += b[i] * b[i];
   }
 
-  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
 }
 
 export default {

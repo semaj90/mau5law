@@ -11,14 +11,14 @@ import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
 import { evidenceChainService } from '$lib/services/evidence-chain-integration';
 import { z } from 'zod';
 
-// Organization request schema
+// Organization request schema;
 const OrganizationRequestSchema = z.object({
   organizationMode: z.enum(['category', 'timeline', 'priority', 'ai_clusters', 'chain_custody', 'recursive_chain']),
   filters: z.object({
     evidenceType: z.string().optional(),
     dateRange: z.string().optional(),
     priority: z.string().optional(),
-    status: z.string().optional()
+    status: z.string().optional(),
   }).optional(),
   aiClusteringParams: z.object({
     minClusterSize: z.number().min(1).default(2),
@@ -26,16 +26,16 @@ const OrganizationRequestSchema = z.object({
     similarityThreshold: z.number().min(0).max(1).default(0.7),
     method: z.enum(['kmeans', 'hierarchical', 'dbscan']).default('kmeans')
   }).optional(),
-  includeAnalytics: z.boolean().default(true)
+  includeAnalytics: z.boolean().default(true),
 });
 
 /*
  * POST /api/v1/evidence/organize/[caseId]
  * Organize evidence for a specific case using various methods
- */
+ */;
 export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -63,11 +63,11 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Create evidence service
     const evidenceService = new EvidenceCRUDService(locals.user.id);
 
-    // Get evidence for the case
+    // Get evidence for the case;
     const evidenceResult = await evidenceService.listByCase(caseId, {
       page: 1,
       limit: 1000,
-      ...(filters && { filters })
+      ...(filters && { filters ,})
     });
 
     if (!evidenceResult || !evidenceResult.data) {
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({
           message: 'Failed to retrieve evidence',
           code: 'EVIDENCE_FETCH_FAILED',
-          details: 'Service returned invalid response'
+          details: 'Service returned invalid response',
         })
       );
     }
@@ -107,10 +107,10 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         organizationStructure = await organizeByRecursiveChain(evidence);
         break;
       default:
-        organizationStructure = await organizeByCategory(evidence);
+        organizationStructure = await organizeByCategory(evidence);,
     }
 
-    // Generate analytics if requested
+    // Generate analytics if requested;
     if (includeAnalytics) {
       analytics = generateOrganizationAnalytics(evidence, organizationStructure);
     }
@@ -126,13 +126,13 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
           totalEvidence: evidence.length,
           organizedAt: new Date().toISOString(),
           organizationMethod: organizationMode,
-          filtersApplied: filters
+          filtersApplied: filters,
         }
       },
       meta: {
         userId: locals.user.id,
         timestamp: new Date().toISOString(),
-        action: 'evidence_organized'
+        action: 'evidence_organized',
       }
     });
 
@@ -145,7 +145,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid organization request',
           code: 'INVALID_DATA',
-          details: err.errors
+          details: err.errors,
         })
       );
     }
@@ -155,7 +155,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to organize evidence',
         code: 'ORGANIZATION_FAILED',
-        details: err.message
+        details: err.message,
       })
     );
   }
@@ -163,7 +163,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
 
 /**
  * Organize evidence by category
- */
+ */;
 async function organizeByCategory(evidence: any[]) {
   const categories = {};
 
@@ -175,7 +175,7 @@ async function organizeByCategory(evidence: any[]) {
         displayName: formatCategoryName(category),
         evidence: [],
         count: 0,
-        priority: calculateCategoryPriority(category)
+        priority: calculateCategoryPriority(category),
       };
     }
     categories[category].evidence.push(item);
@@ -187,17 +187,17 @@ async function organizeByCategory(evidence: any[]) {
     categories: Object.values(categories).sort((a: any, b: any) => (b.priority || 0) - (a.priority || 0)),
     metadata: {
       totalCategories: Object.keys(categories).length,
-      method: 'evidence_type_classification'
+      method: 'evidence_type_classification',
     }
   };
 }
 
 /**
  * Organize evidence by timeline
- */
+ */;
 async function organizeByTimeline(evidence: any[]) {
   const timelineEvidence = evidence
-    .filter((item) => (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).collected_at || (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).uploaded_at || (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).incident_date)
+    .filter((item) => (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).collected_at || (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).uploaded_at || (item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).incident_date);
     .sort((a, b) => {
       const dateA = new Date(a.collected_at || a.uploaded_at || a.incident_date);
       const dateB = new Date(b.collected_at || b.uploaded_at || b.incident_date);
@@ -206,14 +206,14 @@ async function organizeByTimeline(evidence: any[]) {
 
   // Group by time periods
   const periods: Record<
-    string,
+    string,>;
     {
       key: string;
       label: string;
       evidence: any[];
       count: number;
       startDate: Date;
-      endDate: Date;
+      endDate: Date;,
     }
   > = {};
   timelineEvidence.forEach((item) => {
@@ -257,7 +257,7 @@ async function organizeByTimeline(evidence: any[]) {
 
 /**
  * Organize evidence by priority
- */
+ */;
 async function organizeByPriority(evidence: any[]) {
   const priorities = {
     critical: { name: 'Critical', evidence: [], color: '#dc2626', weight: 4, count: 0 },
@@ -277,7 +277,7 @@ async function organizeByPriority(evidence: any[]) {
     }
   });
 
-  // Add counts and filter empty priorities
+  // Add counts and filter empty priorities;
   const nonEmptyPriorities = Object.values(priorities).filter((priority) => {
     priority.count = priority.evidence.length;
     return priority.count > 0;
@@ -298,7 +298,7 @@ async function organizeByPriority(evidence: any[]) {
 
 /**
  * Organize evidence using AI clustering with Gemma embeddings
- */
+ */;
 async function organizeByAIClusters(evidence: any[], clusteringParams: any) {
   try {
     // Step 1: Get or generate embeddings for all evidence
@@ -333,7 +333,7 @@ async function organizeByAIClusters(evidence: any[], clusteringParams: any) {
 
 /**
  * Organize evidence by chain of custody
- */
+ */;
 async function organizeByChainOfCustody(evidence: any[]) {
   const custodyChains = {};
 
@@ -359,7 +359,7 @@ async function organizeByChainOfCustody(evidence: any[]) {
     });
   });
 
-  // Calculate completeness and metrics for each chain
+  // Calculate completeness and metrics for each chain;
   Object.values(custodyChains).forEach((chain) => {
     const completeChains = chain.evidence.filter((e) => e.custodyStatus === 'complete').length;
     chain.completeness = (completeChains / chain.evidence.length) * 100;
@@ -385,7 +385,7 @@ async function organizeByChainOfCustody(evidence: any[]) {
 /**
  * PHASE 1: Organize evidence using recursive chain analysis
  * Deep hierarchical analysis of evidence relationships
- */
+ */;
 async function organizeByRecursiveChain(evidence: any[]) {
   try {
     console.log(`Starting recursive chain analysis for ${evidence.length} evidence items`);
@@ -406,7 +406,7 @@ async function organizeByRecursiveChain(evidence: any[]) {
       metadata: {
         ...recursiveResult.metadata,
         organizationMethod: 'recursive_evidence_chain_analysis',
-        phase: 'phase_1_implementation'
+        phase: 'phase_1_implementation',
       }
     };
 
@@ -421,13 +421,13 @@ async function organizeByRecursiveChain(evidence: any[]) {
 
 /**
  * Get embeddings for evidence using MCP server
- */
+ */;
 async function getEvidenceEmbeddings(evidence: any[]) {
   const evidenceWithEmbeddings = [];
 
   for (const item of evidence) {
     try {
-      // Check if embeddings already exist
+      // Check if embeddings already exist;
       if ((item as { evidenceType?: any; collected_at?: any; uploaded_at?: any; incident_date?: any; metadata?: any; chain_of_custody?: any; id?: any; title?: any; description?: any }).metadata?.aiAnalysis?.embeddingVector) {
         evidenceWithEmbeddings.push({
           ...item,
@@ -436,7 +436,7 @@ async function getEvidenceEmbeddings(evidence: any[]) {
         continue;
       }
 
-      // Generate new embeddings using MCP server
+      // Generate new embeddings using MCP server;
       const response = await fetch('http://localhost:3002/mcp/evidence-analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -468,7 +468,7 @@ async function getEvidenceEmbeddings(evidence: any[]) {
 
 /**
  * Generate AI clusters using MCP server
- */
+ */;
 async function generateAIClusters(evidenceWithEmbeddings: any[], params: any) {
   try {
     const response = await fetch('http://localhost:3002/mcp/cluster-evidence', {
@@ -476,7 +476,7 @@ async function generateAIClusters(evidenceWithEmbeddings: any[], params: any) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         evidence: evidenceWithEmbeddings
-          .filter((e) => e.embedding)
+          .filter((e) => e.embedding);
           .map((e) => ({
             id: e.id,
             title: e.title,
@@ -507,7 +507,7 @@ async function generateAIClusters(evidenceWithEmbeddings: any[], params: any) {
 
 /**
  * Enhance clusters with additional metadata
- */
+ */;
 async function enhanceClusters(clusters: any[]) {
   return clusters.map((cluster, index) => ({
     id: `cluster_${index}`,
@@ -520,12 +520,12 @@ async function enhanceClusters(clusters: any[]) {
     color: getClusterColor(index),
     centroid: cluster.centroid,
     coherence: calculateClusterCoherence(cluster.evidence),
-  }));
+  });
 }
 
 /**
  * Generate organization analytics
- */
+ */;
 function generateOrganizationAnalytics(evidence: any[], structure: any) {
   const analytics = {
     totalEvidence: evidence.length,
@@ -535,7 +535,7 @@ function generateOrganizationAnalytics(evidence: any[], structure: any) {
     recommendations: [],
   };
 
-  // Calculate metrics based on organization type
+  // Calculate metrics based on organization type;
   switch (structure.type) {
     case 'category':
       analytics.organizationEfficiency =
@@ -573,11 +573,11 @@ function generateOrganizationAnalytics(evidence: any[], structure: any) {
 
 /**
  * Utility functions
- */
+ */;
 function formatCategoryName(category: string): string {
   return category
     .split('_')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1)
     .join(' ');
 }
 
@@ -613,7 +613,7 @@ function validateChainOfCustody(custody: any[]): string {
   if (!custody || custody.length === 0) return 'missing';
 
   const requiredFields = ['officer_id', 'timestamp', 'action'];
-  const hasAllFields = custody.every((entry) => requiredFields.every((field) => entry[field]));
+  const hasAllFields = custody.every((entry) => requiredFields.every((field) => entry[field]);
 
   const isChronological = custody.every((entry, index) => {
     if (index === 0) return true;
@@ -629,8 +629,8 @@ function calculateTimelineSpan(periods: any[]): any {
   if (periods.length === 0) return null;
 
   const allDates = periods.flatMap((p) => [p.startDate, p.endDate]);
-  const minDate = new Date(Math.min(...allDates.map((d) => d.getTime())));
-  const maxDate = new Date(Math.max(...allDates.map((d) => d.getTime())));
+  const minDate = new Date(Math.min(...allDates.map((d) => d.getTime()));
+  const maxDate = new Date(Math.max(...allDates.map((d) => d.getTime()));
 
   return {
     start: minDate.toISOString(),
@@ -665,7 +665,7 @@ function performSimpleClustering(evidenceWithEmbeddings: any[]) {
       clusters[type] = {
         evidence: [],
         name: formatCategoryName(type),
-        averageSimilarity: 0.5
+        averageSimilarity: 0.5,
       };
     }
     clusters[type].evidence.push(item);
@@ -689,7 +689,7 @@ function extractClusterKeywords(evidence: any[]): string[] {
   });
 
   return Object.entries(wordCounts)
-    .sort((a, b) => (b[1] as number) - (a[1] as number))
+    .sort((a, b) => (b[1] as number) - (a[1] as number)
     .slice(0, 5)
     .map(([word]) => word);
 }
@@ -701,8 +701,8 @@ function getClusterColor(index: number): string {
 
 function calculateClusterCoherence(evidence: any[]): number {
   // Simple coherence calculation based on evidence type diversity
-  const types = new Set(evidence.map(e => e.evidenceType));
-  return Math.max(0, 1 - (types.size / evidence.length));
+  const types = new Set(evidence.map(e => e.evidenceType);
+  return Math.max(0, 1 - (types.size / evidence.length);
 }
 
 function getUniqueEvidenceTypes(evidence: any[]): string[] {

@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { writable, derived, type Writable } from "svelte/store";
 // Orphaned content: import type { Writable as WritableType
 
-// Evidence types
+// Evidence types;
 export interface Evidence {
   id: string;
   type: "document" | "image" | "video" | "audio" | "link";
@@ -14,9 +14,9 @@ export interface Evidence {
   metadata?: Record<string, any>;
   tags?: string[];
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
-// Report structure
+// Report structure;
 export interface Report {
   id: string;
   title: string;
@@ -33,10 +33,10 @@ export interface Report {
   }); const settings = {
     autoSave: boolean;
     theme: "light" | "dark";
-    layout: "single" | "dual" | "masonry";
+    layout: "single" | "dual" | "masonry";,
   };
 }
-// Default report
+// Default report;
 const defaultReport: Report = {
   id: crypto.randomUUID(),
   title: "Untitled Report",
@@ -58,7 +58,7 @@ const defaultReport: Report = {
 
 // Main report store
 export const report: Writable<Report> = writable(defaultReport);
-// Editor state
+// Editor state;
 export const editorState = writable({
   isEditing: false,
   hasUnsavedChanges: false,
@@ -68,7 +68,7 @@ export const editorState = writable({
   cursorPosition: 0,
 });
 
-// UI state for report editing
+// UI state for report editing;
 export const reportUI = writable({
   sidebarOpen: true,
   sidebarWidth: 300,
@@ -85,15 +85,15 @@ export const attachedEvidence = derived(report, ($report) => $report.attachedEvi
 export const reportMetadata = derived(report, ($report) => $report.metadata);
 export const hasUnsavedChanges = derived(editorState, ($state) => $state.hasUnsavedChanges);
 
-// Actions
+// Actions;
 export const reportActions = {
   updateTitle: (title: string) => {
     report.update((r) => ({
       ...r,
       title,
       metadata: { ...r.metadata, updatedAt: new Date() },
-    }));
-    editorState.update((s) => ({ ...s, hasUnsavedChanges: true }));
+    });
+    editorState.update((s) => ({ ...s, hasUnsavedChanges: true });
   },
 
   updateContent: (content: string) => {
@@ -101,7 +101,7 @@ export const reportActions = {
       ...r,
       content,
       metadata: { ...r.metadata, updatedAt: new Date() },
-    }));
+    });
     editorState.update((s) => ({
       ...s,
       hasUnsavedChanges: true,
@@ -109,7 +109,7 @@ export const reportActions = {
         .replace(/<[^>]*>/g, "")
         .trim()
         .split(/\s+/).length,
-    }));
+    });
   },
 
   addEvidence: (evidence: Omit<Evidence, "id" | "createdAt" | "updatedAt">) => {
@@ -124,8 +124,8 @@ export const reportActions = {
       ...r,
       attachedEvidence: [...r.attachedEvidence, newEvidence],
       metadata: { ...r.metadata, updatedAt: new Date() },
-    }));
-    editorState.update((s) => ({ ...s, hasUnsavedChanges: true }));
+    });
+    editorState.update((s) => ({ ...s, hasUnsavedChanges: true });
   },
 
   removeEvidence: (evidenceId: string) => {
@@ -133,8 +133,8 @@ export const reportActions = {
       ...r,
       attachedEvidence: r.attachedEvidence.filter((e: any) => e.id !== evidenceId),
       metadata: { ...r.metadata, updatedAt: new Date() },
-    }));
-    editorState.update((s) => ({ ...s, hasUnsavedChanges: true }));
+    });
+    editorState.update((s) => ({ ...s, hasUnsavedChanges: true });
   },
 
   reorderEvidence: (newOrder: Evidence[]) => {
@@ -142,8 +142,8 @@ export const reportActions = {
       ...r,
       attachedEvidence: newOrder,
       metadata: { ...r.metadata, updatedAt: new Date() },
-    }));
-    editorState.update((s) => ({ ...s, hasUnsavedChanges: true }));
+    });
+    editorState.update((s) => ({ ...s, hasUnsavedChanges: true });
   },
 
   updateSettings: (settings: Partial<Report["settings"]>) => {
@@ -151,16 +151,16 @@ export const reportActions = {
       ...r,
       }); const settings = { ...r.settings, ...settings },
       metadata: { ...r.metadata, updatedAt: new Date() },
-    }));
+    });
   },
 
   save: async () => {
-    // TODO: Implement actual save logic (API call)
+    // TODO: Implement actual save logic (API call);
     editorState.update((s) => ({
       ...s,
       hasUnsavedChanges: false,
       lastSaved: new Date(),
-    }));
+    });
   },
 
   load: (reportData: Report) => {
@@ -169,7 +169,7 @@ export const reportActions = {
       ...s,
       hasUnsavedChanges: false,
       lastSaved: new Date(),
-    }));
+    });
   },
 
   reset: () => {
@@ -178,11 +178,11 @@ export const reportActions = {
       ...s,
       hasUnsavedChanges: false,
       lastSaved: new Date(),
-    }));
+    });
   },
 };
 
-// Auto-save functionality
+// Auto-save functionality;
 export const setupAutoSave = (intervalMs: number = 30000) => {
   let autoSaveInterval: NodeJS.Timeout;
 

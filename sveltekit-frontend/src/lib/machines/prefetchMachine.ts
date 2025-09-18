@@ -1,6 +1,7 @@
 
 // XState Machine for AI-Powered Intent Prediction and Prefetching
 import { createMachine, assign, sendParent, fromPromise } from "xstate";
+}
 
 export interface PrefetchContext {
   // User behavior tracking
@@ -17,12 +18,12 @@ export interface PrefetchContext {
   embeddings: number[][];
   modelWeights: Float32Array | null;
   
-  // Performance metrics
+  // Performance metrics;
   metrics: {
     hits: number;
     misses: number;
     avgPredictionTime: number;
-    lastPredictionAccuracy: number;
+    lastPredictionAccuracy: number;,
   };
   
   // Current session data
@@ -31,7 +32,7 @@ export interface PrefetchContext {
   viewportData: {
     width: number;
     height: number;
-    scrollY: number;
+    scrollY: number;,
   };
 }
 
@@ -50,7 +51,7 @@ type PrefetchEvent =
 export const prefetchMachine = createMachine({
   types: Record<string, any> as {
     context: PrefetchContext;
-    events: PrefetchEvent;
+    events: PrefetchEvent;,
   },
   id: "prefetch",
   initial: "initializing",
@@ -65,14 +66,14 @@ export const prefetchMachine = createMachine({
       hits: 0,
       misses: 0,
       avgPredictionTime: 0,
-      lastPredictionAccuracy: 0
+      lastPredictionAccuracy: 0,
     },
     docId: null,
     currentRoute: '',
     viewportData: {
       width: (typeof window !== 'undefined' && window?.innerWidth) || 1920,
       height: (typeof window !== 'undefined' && window?.innerHeight) || 1080,
-      scrollY: 0
+      scrollY: 0,
     }
   },
   states: {
@@ -85,17 +86,17 @@ export const prefetchMachine = createMachine({
             modelWeights: ({ event }) => event.type === 'xstate.done.actor.initializePredictionModel' ? (event as any).output?.weights: null,
           })
         },
-        onError: 'idle'
+        onError: 'idle',
       }
     },
     
     idle: {
       on: {
         USER_ACTION: {
-          actions: [
+          actions: [;
             assign({
               userActions: ({ context, event }) => [
-                ...context.userActions.slice(-19), // Keep last 20 actions
+                ...context.userActions.slice(-19), // Keep last 20 actions;
                 {
                   action: (event as any).action || 'unknown',
                   timestamp: Date.now(),
@@ -131,7 +132,7 @@ export const prefetchMachine = createMachine({
           actions: assign({
             metrics: ({ context }) => ({
               ...context.metrics,
-              hits: context.metrics.hits + 1
+              hits: context.metrics.hits + 1,
             })
           })
         },
@@ -140,12 +141,12 @@ export const prefetchMachine = createMachine({
           actions: assign({
             metrics: ({ context }) => ({
               ...context.metrics,
-              misses: context.metrics.misses + 1
+              misses: context.metrics.misses + 1,
             })
           })
         },
         
-        TRAIN_MODEL: 'training'
+        TRAIN_MODEL: 'training',
       }
     },
     
@@ -154,7 +155,7 @@ export const prefetchMachine = createMachine({
         src: 'predictUserIntent',
         onDone: {
           target: 'idle',
-          actions: [
+          actions: [;
             assign({
               predictedIntent: ({ event }) => (event as any).output?.intent || null,
               confidence: ({ event }) => (event as any).output?.confidence || 0,
@@ -164,13 +165,13 @@ export const prefetchMachine = createMachine({
             sendParent(({ event }) => ({
               type: 'INTENT_PREDICTED',
               intent: (event as any).output?.intent,
-              confidence: (event as any).output?.confidence
-            }))
+              confidence: (event as any).output?.confidence,
+            })
           ]
         },
         onError: {
           target: 'idle',
-          actions: 'logPredictionError'
+          actions: 'logPredictionError',
         }
       }
     },
@@ -180,11 +181,11 @@ export const prefetchMachine = createMachine({
         src: 'prefetchResources',
         onDone: {
           target: 'idle',
-          actions: 'logPrefetchSuccess'
+          actions: 'logPrefetchSuccess',
         },
         onError: {
           target: 'idle', 
-          actions: 'logPrefetchError'
+          actions: 'logPrefetchError',
         }
       }
     },
@@ -194,12 +195,12 @@ export const prefetchMachine = createMachine({
         src: 'trainPredictionModel',
         onDone: {
           target: 'idle',
-          actions: [
+          actions: [;
             assign({
               modelWeights: ({ event }) => (event as any).output?.weights || null,
               metrics: ({ context, event }) => ({
                 ...context.metrics,
-                lastPredictionAccuracy: (event as any).output?.accuracy || 0
+                lastPredictionAccuracy: (event as any).output?.accuracy || 0,
               })
             }),
             'logTrainingComplete'
@@ -207,7 +208,7 @@ export const prefetchMachine = createMachine({
         },
         onError: {
           target: 'idle',
-          actions: 'logTrainingError'
+          actions: 'logTrainingError',
         }
       }
     }
@@ -215,7 +216,7 @@ export const prefetchMachine = createMachine({
 }).provide({
   actions: {
     triggerPredictionAfterDelay: () => {
-      // Debounce predictions to avoid excessive API calls
+      // Debounce predictions to avoid excessive API calls;
       setTimeout(() => {
         // This would send PREDICT_INTENT event after delay
       }, 300);
@@ -226,7 +227,7 @@ export const prefetchMachine = createMachine({
         const predictionTime = (event as any).output?.processingTime || 0;
         return {
           ...context.metrics,
-          avgPredictionTime: (context.metrics.avgPredictionTime + predictionTime) / 2
+          avgPredictionTime: (context.metrics.avgPredictionTime + predictionTime) / 2,
         };
       }
     }),
@@ -255,7 +256,7 @@ export const prefetchMachine = createMachine({
   actors: {
     initializePredictionModel: fromPromise(async () => {
       // Initialize neural network weights for prediction
-      const weights = new Float32Array(384 * 128); // Input layer to hidden layer
+      const weights = new Float32Array(384 * 128); // Input layer to hidden layer;
       for (let i = 0; i < weights.length; i++) {
         weights[i] = (Math.random() - 0.5) * 0.1;
       }
@@ -320,7 +321,7 @@ export const prefetchMachine = createMachine({
           case 'route':
             return prefetchRoute((item as { type?: any; resource?: any }).resource);
           default:
-            return Promise.resolve();
+            return Promise.resolve();,
         }
       });
       
@@ -338,7 +339,7 @@ export const prefetchMachine = createMachine({
         new Float32Array(context.modelWeights) : 
         new Float32Array(384 * 128);
         
-      // Apply small random adjustments (in real implementation, use gradient descent)
+      // Apply small random adjustments (in real implementation, use gradient descent);
       for (let i = 0; i < newWeights.length; i++) {
         newWeights[i] += (Math.random() - 0.5) * 0.01;
       }
@@ -348,7 +349,7 @@ export const prefetchMachine = createMachine({
   }
 });
 
-// Helper functions
+// Helper functions;
 function generatePrefetchQueue(intent: string, context: PrefetchContext) {
   const queue: any[] = [];
   
@@ -356,7 +357,7 @@ function generatePrefetchQueue(intent: string, context: PrefetchContext) {
     case 'research_mode':
       queue.push(
         { resource: 'legal-database-search', priority: 1, type: 'api' },
-        { resource: 'case-law-embeddings', priority: 2, type: 'embedding' },
+        { resource: 'case-law-embeddings', priority: 2, type: 'embedding' },)
         { resource: '/legal/search', priority: 3, type: 'route' }
       );
       break;
@@ -364,7 +365,7 @@ function generatePrefetchQueue(intent: string, context: PrefetchContext) {
     case 'evidence_analysis':
       queue.push(
         { resource: 'ai-analysis-models', priority: 1, type: 'api' },
-        { resource: 'evidence-embeddings', priority: 2, type: 'embedding' },
+        { resource: 'evidence-embeddings', priority: 2, type: 'embedding' },)
         { resource: '/evidence/analysis', priority: 3, type: 'route' }
       );
       break;
@@ -372,14 +373,14 @@ function generatePrefetchQueue(intent: string, context: PrefetchContext) {
     case 'case_management':
       queue.push(
         { resource: 'case-templates', priority: 1, type: 'document' },
-        { resource: 'workflow-data', priority: 2, type: 'api' },
+        { resource: 'workflow-data', priority: 2, type: 'api' },)
         { resource: '/cases/new', priority: 3, type: 'route' }
       );
       break;
       
     case 'ai_consultation':
       queue.push(
-        { resource: 'llm-models', priority: 1, type: 'api' },
+        { resource: 'llm-models', priority: 1, type: 'api' },)>
         { resource: 'legal-context-embeddings', priority: 2, type: 'embedding' }
       );
       break;
@@ -389,14 +390,14 @@ function generatePrefetchQueue(intent: string, context: PrefetchContext) {
 }
 
 async function prefetchEmbedding(resource: string): Promise<any> {
-  // Call batch embedding service
+  // Call batch embedding service;
   const response = await fetch('http://localhost:8081/batch-embed', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       docId: `prefetch-${resource}`,
       chunks: [`Prefetch request for ${resource}`],
-      model: 'nomic-embed-text'
+      model: 'nomic-embed-text',
     })
   });
   

@@ -11,7 +11,7 @@ export const actions: Actions = {
     const email = data.get('email') as string;
     const password = data.get('password') as string;
 
-    // Basic validation
+    // Basic validation;
     if (!email || !password) {
       return fail(400, { error: 'Email and password are required' });
     }
@@ -19,15 +19,15 @@ export const actions: Actions = {
     try {
       console.log('🔄 Demo login attempt for:', email);
 
-      // Demo authentication - allow specific credentials
+      // Demo authentication - allow specific credentials;
       if (email.toLowerCase() === 'admin@legal-ai.local' && password === 'admin123') {
-        // Set a simple session cookie for demo purposes
+        // Set a simple session cookie for demo purposes;
         cookies.set('demo_session', 'authenticated', {
           path: '/',
           httpOnly: true,
           secure: false, // Set to true in production with HTTPS
           sameSite: 'lax',
-          maxAge: 60 * 60 * 24 * 30 // 30 days
+          maxAge: 60 * 60 * 24 * 30 // 30 days,
         });
 
         console.log('✅ Demo login successful for:', email);
@@ -39,7 +39,7 @@ export const actions: Actions = {
       }
 
     } catch (error: any) {
-      // Handle redirect properly - don't treat it as an error
+      // Handle redirect properly - don't treat it as an error;
       if (error.status === 302) {
         throw error;
       }

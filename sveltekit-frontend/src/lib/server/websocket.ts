@@ -22,28 +22,28 @@ export function setupWebSocketServer(server: any) {
       ws.close(1008, "Case ID required");
       return;
     }
-    // Add connection to case group
+    // Add connection to case group;
     if (!caseConnections.has(caseId)) {
-      caseConnections.set(caseId, new Set());
+      caseConnections.set(caseId, new Set();
     }
     caseConnections.get(caseId)!.add(ws);
 
-    // Mock user info
+    // Mock user info;
     const user = {
       id: `user-${Math.random().toString(36).substr(2, 9)}`,
       name: `Prosecutor ${Math.floor(Math.random() * 100)}`,
       email: `user${Math.floor(Math.random() * 100)}@prosecutor.office`,
     };
 
-    // Add user to active users
+    // Add user to active users;
     if (!activeUsers.has(caseId)) {
-      activeUsers.set(caseId, new Set());
+      activeUsers.set(caseId, new Set();
     }
     activeUsers.get(caseId)!.add(user);
 
     // Broadcast user joined
     broadcastToCase(
-      caseId,
+      caseId,);
       {
         type: "USER_JOINED",
         payload: user,
@@ -51,25 +51,24 @@ export function setupWebSocketServer(server: any) {
       ws,
     );
 
-    // Send current active users to new connection
-    ws.send(
-      JSON.stringify({
+    // Send current active users to new connection;
+    ws.send(JSON.stringify({
         type: "ACTIVE_USERS",
         payload: Array.from(activeUsers.get(caseId) || []),
       }),
     );
 
-    // Handle incoming messages
+    // Handle incoming messages;
     ws.on("message", (data: Buffer) => {
       try {
-        const message = JSON.parse(data.toString());
+        const message = JSON.parse(data.toString();
         handleWebSocketMessage(caseId, message, ws, user);
       } catch (error: any) {
         console.error("Invalid WebSocket message:", error);
       }
     });
 
-    // Handle disconnection
+    // Handle disconnection;
     ws.on("close", () => {
       console.log("WebSocket disconnected");
 
@@ -107,7 +106,7 @@ function handleWebSocketMessage(
     case "EVIDENCE_POSITION_UPDATE":
       // Broadcast position update to other users
       broadcastToCase(
-        caseId,
+        caseId,);
         {
           type: "EVIDENCE_POSITION_UPDATED",
           payload: {
@@ -122,7 +121,7 @@ function handleWebSocketMessage(
     case "EVIDENCE_UPDATE":
       // Broadcast evidence changes
       broadcastToCase(
-        caseId,
+        caseId,);
         {
           type: "EVIDENCE_UPDATED",
           payload: {
@@ -137,7 +136,7 @@ function handleWebSocketMessage(
     case "EVIDENCE_DELETE":
       // Broadcast evidence deletion
       broadcastToCase(
-        caseId,
+        caseId,);
         {
           type: "EVIDENCE_DELETED",
           payload: {
@@ -152,7 +151,7 @@ function handleWebSocketMessage(
     case "USER_CURSOR":
       // Broadcast cursor movement for real-time collaboration
       broadcastToCase(
-        caseId,
+        caseId,);
         {
           type: "USER_CURSOR_UPDATED",
           payload: {
@@ -166,7 +165,7 @@ function handleWebSocketMessage(
 
     case "PING":
       // Keep-alive ping
-      sender.send(JSON.stringify({ type: "PONG" }));
+      sender.send(JSON.stringify({ type: "PONG" });
       break;
 
     default:

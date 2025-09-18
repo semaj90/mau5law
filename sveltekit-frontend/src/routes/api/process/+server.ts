@@ -24,12 +24,11 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(result);
   } catch (error: any) {
     console.error("Document processing failed:", error);
-    return json(
-      {
+    return json({
         success: false,
         message: `Processing failed: ${error.message}`,
         error: error.message,
-      },
+      },)
       { status: 500 }
     );
   }

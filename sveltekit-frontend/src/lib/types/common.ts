@@ -25,7 +25,8 @@ export type DeepReadonly<T> = {
 
 // ============================================================================
 // API RESPONSE TYPES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface BaseResponse<T = unknown> {
   success: boolean;
@@ -42,7 +43,7 @@ export interface PaginatedResponse<T = unknown> extends BaseResponse<T[]> {
     total: number;
     totalPages: number;
     hasNext: boolean;
-    hasPrev: boolean;
+    hasPrev: boolean;,
   };
 }
 
@@ -51,20 +52,21 @@ export interface ErrorResponse {
   error: string;
   code?: string;
   details?: Record<string, unknown>;
-  timestamp: Date;
+  timestamp: Date;,
 }
 
 // ============================================================================
 // DATABASE ENTITY TYPES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface TimestampedEntity {
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
 
 export interface UserOwnedEntity extends TimestampedEntity {
-  userId: string;
+  userId: string;,
 }
 
 export interface CaseEntity extends UserOwnedEntity {
@@ -89,7 +91,7 @@ export interface DocumentEntity extends UserOwnedEntity {
   embedding?: number[];
   metadata?: DocumentMetadata;
   tags?: string[];
-  isIndexed: boolean;
+  isIndexed: boolean;,
 }
 
 export interface DocumentMetadata {
@@ -105,13 +107,14 @@ export interface DocumentMetadata {
 
 // ============================================================================
 // AI/ML TYPES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface EmbeddingResult {
   vector: number[];
   model: string;
   dimensions: number;
-  processingTime: number;
+  processingTime: number;,
 }
 
 export interface AIAnalysisResult {
@@ -121,7 +124,7 @@ export interface AIAnalysisResult {
   classification?: string;
   confidence: number;
   model: string;
-  processingTime: number;
+  processingTime: number;,
 }
 
 export interface SearchResult {
@@ -134,7 +137,8 @@ export interface SearchResult {
 
 // ============================================================================
 // XSTATE MACHINE TYPES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface BaseMachineContext {
   error?: string;
@@ -172,7 +176,8 @@ export interface ChatMessage {
 
 // ============================================================================
 // UPLOAD/FILE TYPES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface FileMetadata {
   filename: string;
@@ -189,7 +194,7 @@ export interface UploadProgress {
   percentage: number;
   speed?: number;
   timeRemaining?: number;
-  stage: 'uploading' | 'processing' | 'indexing' | 'complete';
+  stage: 'uploading' | 'processing' | 'indexing' | 'complete';,
 }
 
 export interface UploadResult extends BaseResponse<DocumentEntity> {
@@ -201,7 +206,8 @@ export interface UploadResult extends BaseResponse<DocumentEntity> {
 
 // ============================================================================
 // EVENT TYPES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface BaseEvent {
   type: string;
@@ -222,7 +228,8 @@ export interface ChatEvent extends BaseEvent {
 
 // ============================================================================
 // VALIDATION TYPES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface ValidationError {
   field: string;
@@ -238,7 +245,8 @@ export interface ValidationResult {
 
 // ============================================================================
 // CONFIGURATION TYPES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface AIConfig {
   model: string;

@@ -7,7 +7,7 @@
 import { pgTable, text, timestamp, integer, boolean, json, uuid, varchar, vector } from "drizzle-orm/pg-core";
 import { sql } from 'drizzle-orm';
 
-// Users table with enhanced authentication fields
+// Users table with enhanced authentication fields;
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   email: varchar('email', { length: 255 }).notNull().unique(),
@@ -28,20 +28,20 @@ export const users = pgTable('users', {
   profilePicture: text('profile_picture'),
   preferences: json('preferences').default(sql`'{}'::json`),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-// Sessions table for Lucia v3 compatibility
+// Sessions table for Lucia v3 compatibility;
 export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),
   userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
   ipAddress: varchar('ip_address', { length: 45 }),
   userAgent: text('user_agent'),
-  createdAt: timestamp('created_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-// User audit logs for security tracking
+// User audit logs for security tracking;
 export const userAuditLogs = pgTable('user_audit_logs', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   userId: uuid('user_id').references(() => users.id),
@@ -49,10 +49,10 @@ export const userAuditLogs = pgTable('user_audit_logs', {
   ipAddress: varchar('ip_address', { length: 45 }),
   userAgent: text('user_agent'),
   metadata: json('metadata'),
-  createdAt: timestamp('created_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-// Cases table
+// Cases table;
 export const cases = pgTable('cases', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   title: varchar('title', { length: 255 }).notNull(),
@@ -63,10 +63,10 @@ export const cases = pgTable('cases', {
   createdBy: uuid('created_by').references(() => users.id),
   assignedTo: uuid('assigned_to').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-// Documents table with vector embeddings
+// Documents table with vector embeddings;
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   caseId: uuid('case_id').references(() => cases.id),
@@ -83,10 +83,10 @@ export const documents = pgTable('documents', {
   source: varchar('source', { length: 100 }).default('upload'), // upload, scan, email, etc.
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-// Evidence table
+// Evidence table;
 export const evidence = pgTable('evidence', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   caseId: uuid('case_id').references(() => cases.id),
@@ -102,10 +102,10 @@ export const evidence = pgTable('evidence', {
   aiAnalysis: json('ai_analysis'),
   createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-// AI chat history and interactions
+// AI chat history and interactions;
 export const aiInteractions = pgTable('ai_interactions', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   userId: uuid('user_id').references(() => users.id),
@@ -119,10 +119,10 @@ export const aiInteractions = pgTable('ai_interactions', {
   confidence: integer('confidence'), // 0-100
   feedback: json('feedback'),
   metadata: json('metadata'),
-  createdAt: timestamp('created_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow(),
 });
 
-// Search index for semantic search
+// Search index for semantic search;
 export const searchIndex = pgTable('search_index', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   entityType: varchar('entity_type', { length: 50 }).notNull(), // document, case, evidence, etc.
@@ -131,10 +131,10 @@ export const searchIndex = pgTable('search_index', {
   embedding: vector('embedding', { dimensions: 1536 }),
   metadata: json('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
 
-// Relations for type safety
+// Relations for type safety;
 export const relations = {
   users: {
     sessions: sessions,
@@ -143,34 +143,34 @@ export const relations = {
     assignedCases: cases,
     createdDocuments: documents,
     createdEvidence: evidence,
-    aiInteractions: aiInteractions
+    aiInteractions: aiInteractions,
   },
   sessions: {
-    user: users
+    user: users,
   },
   userAuditLogs: {
-    user: users
+    user: users,
   },
   cases: {
     creator: users,
     assignee: users,
     documents: documents,
     evidence: evidence,
-    aiInteractions: aiInteractions
+    aiInteractions: aiInteractions,
   },
   documents: {
     case: cases,
     creator: users,
-    evidence: evidence
+    evidence: evidence,
   },
   evidence: {
     case: cases,
     document: documents,
-    creator: users
+    creator: users,
   },
   aiInteractions: {
     user: users,
-    case: cases
+    case: cases,
   }
 };
 

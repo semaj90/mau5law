@@ -3,7 +3,7 @@
  * Fixes missing imports for state management and orchestration
  */
 
-// Re-export from actual orchestration file
+// Re-export from actual orchestration file;
 export type {
   JobDefinition,
   JobType,
@@ -16,7 +16,7 @@ export {
   optimizedOrchestrator
 } from './optimized-rabbitmq-orchestrator.js';
 
-// Sora Integration Exports
+// Sora Integration Exports;
 export interface SoraMoogleIntegration {
   initialize(): Promise<void>;
   processDocument(doc: any): Promise<any>;
@@ -31,7 +31,7 @@ export interface SoraGraphTraversal {
   getNodeNeighbors(nodeId: string): Promise<string[]>;
 }
 
-// Mock implementations for missing services
+// Mock implementations for missing services;
 export const soraMoogleIntegration: SoraMoogleIntegration = {
   async initialize() {
     console.log('[SoraMoogle] Mock initialization complete');
@@ -43,7 +43,7 @@ export const soraMoogleIntegration: SoraMoogleIntegration = {
       id: doc.id,
       processed: true,
       analysis: 'Mock analysis result',
-      confidence: 0.85
+      confidence: 0.85,
     };
   },
 

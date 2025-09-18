@@ -2,7 +2,7 @@
  * XState v5 Compatibility and Missing Type Definitions
  */
 
-// Re-export XState v5 compatible types
+// Re-export XState v5 compatible types;
 export type {
   StateFrom,
   ActorRefFrom,
@@ -29,7 +29,7 @@ export {
   fromEventObservable
 } from 'xstate';
 
-// Common state machine types
+// Common state machine types;
 export interface MachineContext {
   [key: string]: unknown;
 }
@@ -39,7 +39,7 @@ export interface MachineEvent {
   [key: string]: unknown;
 }
 
-// Promise snapshot types for XState v5
+// Promise snapshot types for XState v5;
 export interface PromiseSnapshot<TOutput, TInput = unknown> {
   status: 'pending' | 'fulfilled' | 'rejected';
   output?: TOutput;
@@ -47,7 +47,7 @@ export interface PromiseSnapshot<TOutput, TInput = unknown> {
   input?: TInput;
 }
 
-// Actor wrapper compatibility
+// Actor wrapper compatibility;
 export interface ActorWrapper<T = unknown> {
   send(event: MachineEvent): void;
   subscribe(observer: StateObserver): Subscription;
@@ -56,7 +56,7 @@ export interface ActorWrapper<T = unknown> {
   stop(): void;
 }
 
-// Observer pattern for XState v5
+// Observer pattern for XState v5;
 export interface StateObserver<T = unknown> {
   next?: (value: T) => void;
   error?: (error: unknown) => void;
@@ -80,6 +80,7 @@ export type JobType =
   | 'ai_chat'
   | 'notification'
   | 'search_indexing';
+}
 
 export interface JobDefinition {
   id: string;
@@ -91,7 +92,7 @@ export interface JobDefinition {
     attempts?: number;
     backoff?: {
       type: 'exponential' | 'fixed';
-      delay: number;
+      delay: number;,
     };
   };
 }
@@ -112,13 +113,13 @@ export interface QueueState {
   size: number;
   processing: number;
   completed: number;
-  failed: number;
+  failed: number;,
 }
 
-// State machine context for async operations
+// State machine context for async operations;
 export interface AsyncStateContext {
   jobs: Map<string, JobStatus>;
   queues: Map<string, QueueState>;
   errors: string[];
-  isProcessing: boolean;
+  isProcessing: boolean;,
 }

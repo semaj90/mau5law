@@ -20,7 +20,7 @@ async function runDemo() {
   // Test 3: Generate MCP commands
   console.log("\n3. MCP Commands:");
   const commands = productionController.generateMCPCommands();
-  commands.forEach((cmd) => console.log(cmd));
+  commands.forEach((cmd) => console.log(cmd);
 
   // Test 4: Get documentation prompts
   console.log("\n4. Documentation Prompts:");
@@ -28,7 +28,7 @@ async function runDemo() {
     component: "Dialog",
     svelteFeature: "snippets",
   });
-  docs.forEach((doc) => console.log(doc));
+  docs.forEach((doc) => console.log(doc);
 
   // Test 5: Final assessment
   console.log("\n5. Updated Assessment:");

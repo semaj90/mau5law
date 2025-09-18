@@ -1,7 +1,7 @@
 // Temporary legacy ambient declarations to reduce TypeScript noise during phased cleanup.
 // Narrow and delete once real implementations are added.
 
-// Generic Redis shim (methods used in various legacy endpoints)
+// Generic Redis shim (methods used in various legacy endpoints);
 declare interface RedisLegacy {
   connect?: () => Promise<void>;
   ping?: () => Promise<string>;
@@ -14,7 +14,7 @@ declare interface RedisLegacy {
 
 declare const redis: RedisLegacy;
 
-// Enhanced Ollama service placeholder methods referenced but not yet implemented
+// Enhanced Ollama service placeholder methods referenced but not yet implemented;
 interface EnhancedOllamaServiceLegacy {
   generate?: (prompt: string, opts?: unknown) => Promise<unknown>;
   generateCompletion?: (prompt: string, opts?: unknown) => Promise<unknown>;
@@ -27,7 +27,7 @@ interface EnhancedOllamaServiceLegacy {
 
 declare const enhancedOllamaService: EnhancedOllamaServiceLegacy;
 
-// Misc legacy symbols
+// Misc legacy symbols;
 interface CrewAIOrchestratorLegacy {
   [key: string]: any;
 }

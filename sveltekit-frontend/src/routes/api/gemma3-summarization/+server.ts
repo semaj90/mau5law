@@ -3,7 +3,7 @@ import { json, error } from '@sveltejs/kit';
 
 const GEMMA3_SUMMARIZATION_SERVICE_URL = 'http://localhost:8080';
 
-// Health check endpoint
+// Health check endpoint;
 export const GET: RequestHandler = async ({ url }) => {
   const endpoint = url.pathname.split('/').pop();
 
@@ -16,14 +16,14 @@ export const GET: RequestHandler = async ({ url }) => {
         status: response.ok ? 'healthy' : 'degraded',
         service: 'gemma3-summarization',
         timestamp: new Date().toISOString(),
-        backend: healthData
+        backend: healthData,
       });
     } catch (err) {
       return json({
         status: 'unavailable',
         service: 'gemma3-summarization',
         timestamp: new Date().toISOString(),
-        error: 'Service unreachable'
+        error: 'Service unreachable',
       }, { status: 503 });
     }
   }
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
   error(404, 'Not found');
 };
 
-// Summarization endpoints
+// Summarization endpoints;
 export const POST: RequestHandler = async ({ request, url }) => {
   const endpoint = url.pathname.split('/').pop();
 
@@ -55,11 +55,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+      const errorData = await response.json().catch(() => ({});
       error(response.status, errorData.error || 'Summarization service error');
     }
 

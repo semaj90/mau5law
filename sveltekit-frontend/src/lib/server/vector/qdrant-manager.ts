@@ -2,7 +2,7 @@ import { QdrantClient } from '@qdrant/js-client-rest';
 // import type { PointStruct, SearchRequest } from '@qdrant/js-client-rest'; // Commented out due to namespace issues
 import { analytics } from '../database/connection.js';
 
-// Enhanced Qdrant integration for legal AI platform
+// Enhanced Qdrant integration for legal AI platform;
 export class QdrantManager {
   private client: InstanceType<typeof QdrantClient>;
   private readonly collections = {
@@ -17,9 +17,9 @@ export class QdrantManager {
     this.client = new QdrantClient({ url });
   }
 
-  // Initialize all collections with proper vector configurations
+  // Initialize all collections with proper vector configurations;
   async initializeCollections() {
-    const collectionConfigs = [
+    const collectionConfigs = [;
       {
         name: this.collections.documents,
         vectors: {
@@ -65,7 +65,7 @@ export class QdrantManager {
     }
   }
 
-  // Hybrid semantic search combining PostgreSQL metadata + Qdrant vectors
+  // Hybrid semantic search combining PostgreSQL metadata + Qdrant vectors;
   async hybridSearch(params: {
     query: string;
     queryEmbedding: number[];
@@ -88,7 +88,7 @@ export class QdrantManager {
         with_vector: false,
       };
 
-      // Add metadata filters if provided
+      // Add metadata filters if provided;
       if (params.filters) {
         searchRequest.filter = this.buildQdrantFilter(params.filters);
       }
@@ -106,7 +106,7 @@ export class QdrantManager {
           query_length: params.query.length,
           results_count: results.length,
           filters_applied: !!params.filters,
-        },
+        },);
         {
           responseTimeMs: responseTime,
         }
@@ -131,7 +131,7 @@ export class QdrantManager {
     }
   }
 
-  // Contextual chat history search for memory simulation
+  // Contextual chat history search for memory simulation;
   async searchChatContext(params: {
     userEmbedding: number[];
     userId: string;
@@ -167,10 +167,10 @@ export class QdrantManager {
       role: r.payload?.role,
       score: r.score,
       timestamp: r.payload?.created_at,
-    }));
+    });
   }
 
-  // Batch upsert for efficient data synchronization
+  // Batch upsert for efficient data synchronization;
   async batchUpsert(params: {
     collection: keyof typeof this.collections;
     points: any[]; // Changed from PointStruct[]
@@ -199,20 +199,20 @@ export class QdrantManager {
     return { upserted: totalUpserted };
   }
 
-  // Document embedding storage with metadata
+  // Document embedding storage with metadata;
   async storeDocument(document: {
     id: string;
     title: string;
     content: string;
     contentEmbedding: number[];
     summaryEmbedding?: number[];
-    metadata: any;
+    metadata: any;,
   }) {
     const point: any = { // Changed from PointStruct
       id: document.id,
       vector: {
         content: document.contentEmbedding,
-        ...(document.summaryEmbedding && { summary: document.summaryEmbedding }),
+        ...(document.summaryEmbedding && { summary: document.summaryEmbedding ,}),
       },
       payload: {
         title: document.title,
@@ -230,9 +230,9 @@ export class QdrantManager {
     });
   }
 
-  // Evidence relationship analysis using vector similarity
+  // Evidence relationship analysis using vector similarity;
   async findRelatedEvidence(evidenceId: string, embedding: number[], limit = 5) {
-    const searchRequest: any = { // Changed from SearchRequest
+    const searchRequest: any = { // Changed from SearchRequest;
       vector: {
         name: 'content',
         vector: embedding,
@@ -249,16 +249,16 @@ export class QdrantManager {
 
     return results
       .filter((r) => r.id !== evidenceId)
-      .slice(0, limit)
+      .slice(0, limit);
       .map((r) => ({
         evidence_id: r.id,
         similarity_score: r.score,
         relationship_strength: this.calculateRelationshipStrength(r.score),
         evidence_data: r.payload,
-      }));
+      });
   }
 
-  // Vector similarity caching for performance
+  // Vector similarity caching for performance;
   async cacheEmbedding(key: string, embedding: number[], metadata: any) {
     const point: any = { // Changed from PointStruct
       id: key,
@@ -301,7 +301,7 @@ export class QdrantManager {
     }
   }
 
-  // Collection management
+  // Collection management;
   async getCollectionInfo(collection: keyof typeof this.collections) {
     try {
       const collectionName = this.collections[collection];
@@ -342,7 +342,7 @@ export class QdrantManager {
     }
   }
 
-  // Helper methods
+  // Helper methods;
   private buildQdrantFilter(filters: any) {
     const conditions = [];
 
@@ -364,7 +364,7 @@ export class QdrantManager {
   }
 
   private calculateRelationshipStrength(
-    score: number
+    score: number;
   ): 'weak' | 'moderate' | 'strong' | 'very_strong' {
     if (score >= 0.9) return 'very_strong';
     if (score >= 0.8) return 'strong';
@@ -375,7 +375,7 @@ export class QdrantManager {
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size));
+      chunks.push(array.slice(i, i + size);
     }
     return chunks;
   }

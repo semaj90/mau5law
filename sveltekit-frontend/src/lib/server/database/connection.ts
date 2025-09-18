@@ -15,7 +15,7 @@ const connectionString =
   process.env.DATABASE_URL ||
   'postgres://legal_admin:123456@localhost:5433/legal_ai_db?sslmode=disable';
 
-// Create postgres client with pgvector extension
+// Create postgres client with pgvector extension;
 const client = postgres(connectionString, {
   max: 10,
   idle_timeout: 20,
@@ -23,7 +23,7 @@ const client = postgres(connectionString, {
   prepare: false, // Required for pgvector
 });
 
-// Initialize Drizzle with enhanced error handling
+// Initialize Drizzle with enhanced error handling;
 export const db = drizzle(client, {
   schema: {
     cases: casesTable,
@@ -36,9 +36,9 @@ export const db = drizzle(client, {
   logger: process.env.NODE_ENV === 'development',
 });
 
-// Vector similarity search utilities
+// Vector similarity search utilities;
 export class VectorSearchManager {
-  // Semantic document search with pgvector
+  // Semantic document search with pgvector;
   async searchSimilarDocuments(queryEmbedding: number[], limit = 10, threshold = 0.7) {
     const query = `
       SELECT
@@ -53,7 +53,7 @@ export class VectorSearchManager {
     return await client.unsafe(query, [`[${queryEmbedding.join(',')}]`, threshold, limit]);
   }
 
-  // Chat history semantic search for contextual prompting
+  // Chat history semantic search for contextual prompting;
   async searchChatHistory(userEmbedding: number[], userId: string, limit = 5) {
     const query = `
       SELECT
@@ -69,13 +69,13 @@ export class VectorSearchManager {
     return await client.unsafe(query, [`[${userEmbedding.join(',')}]`, userId, limit]);
   }
 
-  // Cache vector similarity calculations for performance
+  // Cache vector similarity calculations for performance;
   async cacheVectorSimilarity(sourceId: string, targetId: string, score: number, type: string) {
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + 24); // 24-hour cache
 
     await db
-      .insert(vectorSimilarityView)
+      .insert(vectorSimilarityView);
       .values({
         source_id: sourceId,
         target_id: targetId,
@@ -86,7 +86,7 @@ export class VectorSearchManager {
       .onConflictDoNothing();
   }
 
-  // Get cached similarities to avoid recomputation
+  // Get cached similarities to avoid recomputation;
   async getCachedSimilarity(sourceId: string, targetId: string, type: string) {
     return await db
       .select()
@@ -103,7 +103,7 @@ export class VectorSearchManager {
   }
 }
 
-// Query cache manager for enhanced performance
+// Query cache manager for enhanced performance;
 export class QueryCacheManager {
   async get(cacheKey: string) {
     const result = await db
@@ -115,7 +115,7 @@ export class QueryCacheManager {
     if ((result as { length?: any }).length > 0) {
       // Update access metrics
       await db
-        .update(queryCacheTable)
+        .update(queryCacheTable);
         .set({
           access_count: sql`access_count + 1`,
           last_accessed: new Date(),
@@ -133,13 +133,13 @@ export class QueryCacheManager {
     expiresAt.setSeconds(expiresAt.getSeconds() + ttlSeconds);
 
     await db
-      .insert(queryCacheTable)
+      .insert(queryCacheTable);
       .values({
         cache_key: cacheKey,
         query_type: queryType,
         result_data: data,
         expires_at: expiresAt,
-      })
+      });
       .onConflictDoUpdate({
         target: [queryCacheTable.cache_key],
         set: {
@@ -156,7 +156,7 @@ export class QueryCacheManager {
   }
 }
 
-// Analytics tracking
+// Analytics tracking;
 export class AnalyticsManager {
   async trackEvent(
     eventType: string,
@@ -201,7 +201,7 @@ export const vectorSearch = new VectorSearchManager();
 export const queryCache = new QueryCacheManager();
 export const analytics = new AnalyticsManager();
 
-// Database health check
+// Database health check;
 export async function checkDatabaseHealth() {
   try {
     await client`SELECT 1`;

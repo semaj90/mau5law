@@ -1,9 +1,9 @@
 // @ts-nocheck
-import { sveltekit } from "@sveltejs/kit/vite";
-import { defineConfig } from "vite";
-import UnoCSS from "unocss/vite";
-import { resolve } from "path";
-import { vscodeErrorLogger } from "./src/lib/vite/vscode-error-logger";
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
+import UnoCSS from 'unocss/vite';
+import { resolve } from 'path';
+import { vscodeErrorLogger } from './src/lib/vite/vscode-error-logger';
 
 // Import Node.js polyfills to fix server-side issues
 import '@sveltejs/kit/node/polyfills';

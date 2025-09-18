@@ -3,19 +3,20 @@ import { error } from '@sveltejs/kit';
 import type { RouteDefinition } from '$lib/data/routes-config';
 import * as fs from 'fs';
 import * as path from 'path';
+}
 
 export interface SystemHealthData {
   system_overview: {
     healthy_services: number;
     total_services: number;
     uptime_hours: number;
-    last_updated: string;
+    last_updated: string;,
   };
   services: Array<any>;
   performance: {
     cpu_usage: number;
     memory_usage: number;
-    disk_usage: number;
+    disk_usage: number;,
   };
 }
 
@@ -32,7 +33,7 @@ export interface UserSession {
       notifications: Record<string, boolean>;
     };
   } | null;
-  isAuthenticated: boolean;
+  isAuthenticated: boolean;,
 }
 
 export interface RoutePageData {
@@ -47,7 +48,7 @@ export interface RoutePageData {
       fileBased: number;
       api: number;
       configMissingFiles: number;
-      filesMissingConfig: number;
+      filesMissingConfig: number;,
     };
     configMissingFiles: string[];
     filesMissingConfig: string[];
@@ -68,7 +69,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
   ];
 
   // Helper that prefers global fetch but falls back to node-fetch when needed.
-  // Using a runtime fallback and Promise.race for timeout avoids relying on AbortController types
+  // Using a runtime fallback and Promise.race for timeout avoids relying on AbortController types;
   const fetchWithFallback = async (url: string, opts?: any, timeoutMs = 2000) => {
     const globalFetch = (globalThis as any).fetch;
     const fetchFn = globalFetch ?? (await import('node-fetch')).default;
@@ -78,16 +79,15 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
     ]);
   };
 
-  const serviceResults = await Promise.allSettled(
-    services.map(async (service) => {
+  const serviceResults = await Promise.allSettled(services.map(async (service) => {
       try {
-        const startTime = Date.now()));
-        // For HTTP services, try a simple fetch with timeout
+        const startTime = Date.now());
+        // For HTTP services, try a simple fetch with timeout;
         if ([8094, 8093, 7474, 9000, 6333, 11436].includes(service.port)) {
           let response: any = null;
           try {
             response = await fetchWithFallback(
-              `http://localhost:${service.port}/health`,
+              `http://localhost:${service.port}/health`,);
               {
                 method: 'GET',
               },
@@ -135,7 +135,7 @@ async function checkServiceHealth(): Promise<SystemHealthData> {
       last_updated: new Date().toISOString(),
     },
     services: serviceResults.map((result) =>
-      (result as { status?: any; value?: any }).status === 'fulfilled'
+      (result as { status?: any; value?: any }).status === 'fulfilled';
         ? (result as { status?: any; value?: any }).value:  {
             name: 'Unknown Service',
             status: 'down' as const,
@@ -162,7 +162,7 @@ async function getUserSession(cookies: any): Promise<UserSession> {
 
   try {
     // Mock user session - in production this would verify the token
-    // against your authentication system
+    // against your authentication system;
     const mockUser = {
       id: 'user_123',
       email: 'demo@legal-ai.com',
@@ -200,16 +200,16 @@ export const load: PageServerLoad = async ({ url, cookies, depends }) => {
 
   try {
     // Load system health data in parallel
-    const [systemHealth, userSession] = await Promise.all([
+    const [systemHealth, userSession] = await Promise.all([;
       checkServiceHealth().catch((error) => {
-        console.error('System health check failed:', error)));
+        console.error('System health check failed:', error));
         return null;
       }),
       getUserSession(cookies),
     ]);
 
     // Mock recent operations for demo
-    const recentOperations = [
+    const recentOperations = [;
       {
         operation: 'System Health Check',
         timestamp: new Date(Date.now() - 1000 * 60 * 2).toISOString(),

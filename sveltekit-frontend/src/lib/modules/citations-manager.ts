@@ -2,7 +2,8 @@
  * Citations Manager Module
  * Authentication-aware citation saving and importing system
  * Compatible with SvelteKit and gaming aesthetic UI
- */
+ */;
+}
 
 export interface Citation {
   id: string;
@@ -26,7 +27,7 @@ export interface SavedCitation extends Citation {
   savedAt: Date;
   userId: string;
   collection?: string;
-  isPrivate: boolean;
+  isPrivate: boolean;,
 }
 
 export interface CitationCollection {
@@ -37,7 +38,7 @@ export interface CitationCollection {
   userId: string;
   createdAt: Date;
   updatedAt: Date;
-  isShared: boolean;
+  isShared: boolean;,
 }
 
 export interface AuthUser {
@@ -45,14 +46,14 @@ export interface AuthUser {
   email: string;
   name: string;
   role: 'attorney' | 'paralegal' | 'clerk' | 'admin';
-  isAuthenticated: boolean;
+  isAuthenticated: boolean;,
 }
 
 export interface CitationImportOptions {
   format: 'bluebook' | 'apa' | 'mla' | 'custom';
   includeKeyPoints: boolean;
   includeSummary: boolean;
-  includeNotes: boolean;
+  includeNotes: boolean;,
 }
 
 export class CitationsManager {
@@ -65,7 +66,7 @@ export class CitationsManager {
     this.loadUserState();
   }
 
-  // Authentication Methods
+  // Authentication Methods;
   setUser(user: AuthUser | null): void {
     this.currentUser = user;
     this.saveUserState();
@@ -88,10 +89,10 @@ export class CitationsManager {
   }
 
   private notifySubscribers(): void {
-    this.subscribers.forEach(callback => callback(this.currentUser));
+    this.subscribers.forEach(callback => callback(this.currentUser);
   }
 
-  // Citation Management Methods
+  // Citation Management Methods;
   async saveCitation(citation: Citation, collection?: string): Promise<boolean> {
     if (!this.isAuthenticated()) {
       throw new Error('User must be authenticated to save citations');
@@ -103,7 +104,7 @@ export class CitationsManager {
         savedAt: new Date(),
         userId: this.currentUser!.id,
         collection,
-        isPrivate: true
+        isPrivate: true,
       };
 
       const savedCitations = this.getSavedCitations();
@@ -117,7 +118,7 @@ export class CitationsManager {
 
       this.storeSavedCitations(savedCitations);
 
-      // If saving to a collection, update the collection
+      // If saving to a collection, update the collection;
       if (collection) {
         await this.addCitationToCollection(collection, citation.id);
       }
@@ -138,11 +139,11 @@ export class CitationsManager {
 
       const allCitations: SavedCitation[] = JSON.parse(saved);
       return allCitations
-        .filter(c => c.userId === this.currentUser!.id)
+        .filter(c => c.userId === this.currentUser!.id);
         .map(c => ({
           ...c,
-          savedAt: new Date(c.savedAt)
-        }));
+          savedAt: new Date(c.savedAt),
+        });
     } catch (error) {
       console.error('Failed to load saved citations:', error);
       return [];
@@ -170,7 +171,7 @@ export class CitationsManager {
     }
   }
 
-  // Collection Management Methods
+  // Collection Management Methods;
   createCollection(name: string, description?: string): CitationCollection {
     if (!this.isAuthenticated()) {
       throw new Error('User must be authenticated to create collections');
@@ -184,7 +185,7 @@ export class CitationsManager {
       userId: this.currentUser!.id,
       createdAt: new Date(),
       updatedAt: new Date(),
-      isShared: false
+      isShared: false,
     };
 
     const collections = this.getCollections();
@@ -203,12 +204,12 @@ export class CitationsManager {
 
       const allCollections: CitationCollection[] = JSON.parse(saved);
       return allCollections
-        .filter(c => c.userId === this.currentUser!.id)
+        .filter(c => c.userId === this.currentUser!.id);
         .map(c => ({
           ...c,
           createdAt: new Date(c.createdAt),
-          updatedAt: new Date(c.updatedAt)
-        }));
+          updatedAt: new Date(c.updatedAt),
+        });
     } catch (error) {
       console.error('Failed to load collections:', error);
       return [];
@@ -257,7 +258,7 @@ export class CitationsManager {
     }
   }
 
-  // Import/Export Methods
+  // Import/Export Methods;
   formatCitationForImport(citation: Citation, options: CitationImportOptions): string {
     switch (options.format) {
       case 'bluebook':
@@ -273,10 +274,10 @@ export class CitationsManager {
 
   exportCitations(citationIds: string[], options: CitationImportOptions): string {
     const savedCitations = this.getSavedCitations();
-    const citationsToExport = savedCitations.filter(c => citationIds.includes(c.id));
+    const citationsToExport = savedCitations.filter(c => citationIds.includes(c.id);
 
     return citationsToExport
-      .map(citation => this.formatCitationForImport(citation, options))
+      .map(citation => this.formatCitationForImport(citation, options)
       .join('\n\n');
   }
 
@@ -291,7 +292,7 @@ export class CitationsManager {
     return Promise.resolve(true);
   }
 
-  // Search and Filter Methods
+  // Search and Filter Methods;
   searchSavedCitations(query: string, filters?: {
     category?: string;
     court?: string;
@@ -300,18 +301,18 @@ export class CitationsManager {
   }): SavedCitation[] {
     let citations = this.getSavedCitations();
 
-    // Text search
+    // Text search;
     if (query.trim()) {
       const lowercaseQuery = query.toLowerCase();
       citations = citations.filter(item => item.includes)(lowercaseQuery) ||
         c.citation.toLowerCase().includes(lowercaseQuery) ||
         c.keyPoints.some(kp => kp.toLowerCase().includes(lowercaseQuery)) ||
         c.notes?.toLowerCase().includes(lowercaseQuery) ||
-        c.tags?.some(tag => tag.toLowerCase().includes(lowercaseQuery))
+        c.tags?.some(tag => tag.toLowerCase().includes(lowercaseQuery)
       );
     }
 
-    // Apply filters
+    // Apply filters;
     if (filters) {
       if (filters.category) {
         citations = citations.filter(c => c.category === filters.category);
@@ -325,15 +326,15 @@ export class CitationsManager {
       if (filters.collection) {
         const collection = this.getCollections().find(col => col.id === filters.collection);
         if (collection) {
-          citations = citations.filter(c => collection.citations.includes(c.id));
+          citations = citations.filter(c => collection.citations.includes(c.id);
         }
       }
     }
 
-    return citations.sort((a, b) => b.savedAt.getTime() - a.savedAt.getTime());
+    return citations.sort((a, b) => b.savedAt.getTime() - a.savedAt.getTime();
   }
 
-  // Private helper methods
+  // Private helper methods;
   private formatBluebook(citation: Citation, options: CitationImportOptions): string {
     let formatted = `${citation.title}, ${citation.citation} (${citation.year}).`;
 
@@ -411,7 +412,7 @@ export class CitationsManager {
       const allSaved = this.getAllStoredCitations();
       const filtered = allSaved.filter(c => c.userId !== this.currentUser!.id);
       const updated = [...filtered, ...citations];
-      localStorage.setItem(this.storageKey, JSON.stringify(updated));
+      localStorage.setItem(this.storageKey, JSON.stringify(updated);
     } catch (error) {
       console.error('Failed to store citations:', error);
     }
@@ -431,7 +432,7 @@ export class CitationsManager {
       const allCollections = this.getAllStoredCollections();
       const filtered = allCollections.filter(c => c.userId !== this.currentUser!.id);
       const updated = [...filtered, ...collections];
-      localStorage.setItem(this.collectionsKey, JSON.stringify(updated));
+      localStorage.setItem(this.collectionsKey, JSON.stringify(updated);
     } catch (error) {
       console.error('Failed to store collections:', error);
     }
@@ -460,7 +461,7 @@ export class CitationsManager {
   private saveUserState(): void {
     try {
       if (this.currentUser) {
-        localStorage.setItem('legal-ai-auth-user', JSON.stringify(this.currentUser));
+        localStorage.setItem('legal-ai-auth-user', JSON.stringify(this.currentUser);
       } else {
         localStorage.removeItem('legal-ai-auth-user');
       }
@@ -473,7 +474,7 @@ export class CitationsManager {
 // Create singleton instance
 export const citationsManager = new CitationsManager();
 
-// Utility functions for easy integration
+// Utility functions for easy integration;
 export const useCitationsManager = () => {
   return {
     manager: citationsManager,
@@ -484,6 +485,6 @@ export const useCitationsManager = () => {
     searchCitations: citationsManager.searchSavedCitations.bind(citationsManager),
     createCollection: citationsManager.createCollection.bind(citationsManager),
     getCollections: citationsManager.getCollections.bind(citationsManager),
-    exportCitations: citationsManager.exportCitations.bind(citationsManager)
+    exportCitations: citationsManager.exportCitations.bind(citationsManager),
   };
 };

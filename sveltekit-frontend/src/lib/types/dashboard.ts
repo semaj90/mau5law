@@ -7,6 +7,6 @@ export type DashboardCard = {
 
 export type DashboardLayout = {
   [key: string]: {
-    cards: DashboardCard[];
+    cards: DashboardCard[];,
   };
 };

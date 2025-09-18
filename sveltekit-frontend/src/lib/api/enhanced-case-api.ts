@@ -3,6 +3,7 @@
 
 import { restClient, type APIResponse } from './enhanced-rest-architecture.js';
 import type { CaseForm } from '../schemas/forms.js';
+}
 
 export interface CaseCreationRequest {
   // Core case fields from CaseForm
@@ -17,7 +18,7 @@ export interface CaseCreationRequest {
   isConfidential?: boolean;
   notifyAssignee?: boolean;
   
-  // Additional metadata
+  // Additional metadata;
   metadata?: {
     createdVia?: string;
     formVersion?: string;
@@ -40,7 +41,7 @@ export interface CaseResponse {
   caseType?: string;
   createdBy?: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt: string;,
 }
 
 export interface WorkerTriggerResponse {
@@ -55,7 +56,7 @@ export interface WorkerTriggerResponse {
   metadata: {
     timestamp: string;
     worker: string;
-    version: string;
+    version: string;,
   };
 }
 
@@ -63,12 +64,12 @@ export class EnhancedCaseAPI {
   
   /**
    * Create a new legal case with full workflow integration
-   */
-  async createCase(data: CaseCreationRequest): Promise<APIResponse<CaseResponse>> {
+   */;
+  async createCase(data: CaseCreationRequest): Promise<APIResponse<CaseResponse> {
     try {
       console.log('🚀 Creating case with enhanced API:', data);
       
-      // Step 1: Create the case via REST API
+      // Step 1: Create the case via REST API;
       const caseResponse = await restClient.post<CaseResponse>('/cases', {
         ...data,
         metadata: {
@@ -87,7 +88,7 @@ export class EnhancedCaseAPI {
       const createdCase = caseResponse.data;
       console.log('✅ Case created successfully:', createdCase);
 
-      // Step 2: Trigger PostgreSQL-first worker for auto-tagging
+      // Step 2: Trigger PostgreSQL-first worker for auto-tagging;
       if (createdCase && createdCase.id) {
         try {
           await this.triggerWorkerProcessing(createdCase.id, data);
@@ -104,7 +105,7 @@ export class EnhancedCaseAPI {
       return {
         success: false,
         error: error instanceof Error ? error.message: String(error),
-        data: undefined
+        data: undefined,
       };
     }
   }
@@ -114,8 +115,8 @@ export class EnhancedCaseAPI {
    */
   async triggerWorkerProcessing(
     caseId: string, 
-    formData: CaseCreationRequest
-  ): Promise<APIResponse<WorkerTriggerResponse>> {
+    formData: CaseCreationRequest;
+  ): Promise<APIResponse<WorkerTriggerResponse> {
     try {
       console.log('📡 Triggering worker processing for case:', caseId);
 
@@ -136,7 +137,7 @@ export class EnhancedCaseAPI {
             location: 'not_specified',
             jurisdiction: 'not_specified',
             clientName: 'not_specified',
-            assignedTo: formData.assignedTo
+            assignedTo: formData.assignedTo,
           }
         }
       });
@@ -154,21 +155,21 @@ export class EnhancedCaseAPI {
       return {
         success: false,
         error: error instanceof Error ? error.message: String(error),
-        data: undefined
+        data: undefined,
       };
     }
   }
 
   /**
    * Get case by ID with enhanced data
-   */
-  async getCaseById(caseId: string): Promise<APIResponse<CaseResponse>> {
+   */;
+  async getCaseById(caseId: string): Promise<APIResponse<CaseResponse> {
     return restClient.get<CaseResponse>(`/cases/${caseId}`);
   }
 
   /**
    * Search cases with enhanced filtering
-   */
+   */;
   async searchCases(params: {
     query?: string;
     status?: string[];
@@ -183,9 +184,9 @@ export class EnhancedCaseAPI {
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
         if (Array.isArray(value)) {
-          searchParams.append(key, value.join(','));
+          searchParams.append(key, value.join(',');
         } else {
-          searchParams.append(key, String(value));
+          searchParams.append(key, String(value);
         }
       }
     });
@@ -198,8 +199,8 @@ export class EnhancedCaseAPI {
    */
   async updateCase(
     caseId: string, 
-    updates: Partial<CaseCreationRequest>
-  ): Promise<APIResponse<CaseResponse>> {
+    updates: Partial<CaseCreationRequest>;
+  ): Promise<APIResponse<CaseResponse> {
     return restClient.post<CaseResponse>(`/cases/${caseId}`, {
       ...updates,
       metadata: {
@@ -213,7 +214,7 @@ export class EnhancedCaseAPI {
 
   /**
    * Get worker processing status for a case
-   */
+   */;
   async getWorkerStatus(caseId?: string): Promise<APIResponse> {
     const url = caseId 
       ? `/worker/autotag/trigger?caseId=${caseId}`
@@ -224,7 +225,7 @@ export class EnhancedCaseAPI {
 
   /**
    * Get case analytics with clustering data
-   */
+   */;
   async getCaseAnalytics(params: {
     dateRange?: { start: string; end: string };
     caseType?: string[];
@@ -232,7 +233,7 @@ export class EnhancedCaseAPI {
     includeClusterData?: boolean;
   } = {}): Promise<APIResponse<{
       daily: Array<any>;
-      weekly: Array<any>;
+      weekly: Array<any>;,
   }>> {
     const searchParams = new URLSearchParams();
     
@@ -242,11 +243,11 @@ export class EnhancedCaseAPI {
     }
     
     if (params.caseType?.length) {
-      searchParams.append('caseType', params.caseType.join(','));
+      searchParams.append('caseType', params.caseType.join(',');
     }
     
     if (params.priority?.length) {
-      searchParams.append('priority', params.priority.join(','));
+      searchParams.append('priority', params.priority.join(',');
     }
     
     if (params.includeClusterData) {
@@ -258,7 +259,7 @@ export class EnhancedCaseAPI {
 
   /**
    * Cluster similar cases using enhanced REST architecture
-   */
+   */;
   async clusterSimilarCases(params: {
     caseId?: string;
     algorithm?: 'kmeans' | 'som' | 'hierarchical';
@@ -267,12 +268,12 @@ export class EnhancedCaseAPI {
   }): Promise<APIResponse<{
     clusters: Array<any>;
     silhouetteScore: number;
-    totalCases: number;
+    totalCases: number;,
   }>> {
     return restClient.post('/cases/cluster', {
       ...params,
       algorithm: params.algorithm || 'kmeans',
-      k: params.k || 5
+      k: params.k || 5,
     });
   }
 }

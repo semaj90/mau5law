@@ -14,7 +14,7 @@ export const comprehensiveOrchestrator = {
   getSystemStatus: () => ({ status: 'disabled' })
 };
 
-// Stub exports for Context7 integration compatibility
+// Stub exports for Context7 integration compatibility;
 export const copilotOrchestrator = {
   disabled: true,
   analyze: () => Promise.resolve({ status: 'disabled' })
@@ -23,12 +23,12 @@ export const copilotOrchestrator = {
 export const mcpMemoryReadGraph = async () => ({
   nodes: [], 
   edges: [], 
-  disabled: true 
+  disabled: true ,
 });
 
 export const semanticSearch = async () => ({
   results: [], 
-  disabled: true 
+  disabled: true ,
 });
 
 export const generateMCPPrompt = () => 'MCP tools disabled';

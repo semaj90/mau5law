@@ -10,7 +10,8 @@ import postgres from 'postgres';
 import { eq } from 'drizzle-orm';
 
 // Database connection
-const connectionString = process.env.DATABASE_URL || 'postgres://legal_admin:123456@localhost:5433/legal_ai_db';
+const connectionString =
+  process.env.DATABASE_URL || 'postgres://legal_admin:123456@localhost:5433/legal_ai_db';
 const sql = postgres(connectionString);
 const db = drizzle(sql);
 
@@ -27,13 +28,16 @@ async function seedPersonsOfInterest() {
       console.log(`📁 Using existing case: ${existingCases[0].title}`);
     } else {
       // Create a sample case first
-      const [newCase] = await db.insert(cases).values({
-        caseNumber: 'CASE-2024-001',
-        title: 'Operation Digital Hunt',
-        description: 'High-profile cybercrime investigation involving multiple suspects',
-        priority: 'high',
-        status: 'active'
-      }).returning();
+      const [newCase] = await db
+        .insert(cases)
+        .values({
+          caseNumber: 'CASE-2024-001',
+          title: 'Operation Digital Hunt',
+          description: 'High-profile cybercrime investigation involving multiple suspects',
+          priority: 'high',
+          status: 'active',
+        })
+        .returning();
 
       caseId = newCase.id;
       console.log(`📁 Created new case: ${newCase.title}`);
@@ -76,15 +80,23 @@ async function seedPersonsOfInterest() {
           eyes: 'Blue',
           weight: '82 kg',
           distinguishingMarks: 'Scar on left cheek, tribal tattoo on right arm',
-          associates: ['Maria "The Shadow" Smith', 'Carlos "El Lobo" Rodriguez', 'Unknown accomplices'],
-          habits: ['Prefers night operations', 'Uses encrypted communications', 'Frequent coffee shop visitor'],
+          associates: [
+            'Maria "The Shadow" Smith',
+            'Carlos "El Lobo" Rodriguez',
+            'Unknown accomplices',
+          ],
+          habits: [
+            'Prefers night operations',
+            'Uses encrypted communications',
+            'Frequent coffee shop visitor',
+          ],
           lastKnownLocation: 'Downtown Tech District',
           vehicles: ['Black Honda Civic (stolen)', 'Red Yamaha motorcycle'],
-          dangerLevel: 8.5
+          dangerLevel: 8.5,
         },
         tags: ['hacker', 'military-background', 'high-risk', 'fugitive', 'armed-dangerous'],
         position: { x: 100, y: 150 },
-        createdBy: userId
+        createdBy: userId,
       },
       {
         caseId,
@@ -109,11 +121,11 @@ async function seedPersonsOfInterest() {
           habits: ['Early riser', 'Yoga practitioner', 'Drives luxury vehicles'],
           lastKnownLocation: 'Financial District',
           vehicles: ['White BMW 3 Series', 'Silver Tesla Model S'],
-          dangerLevel: 6.0
+          dangerLevel: 6.0,
         },
         tags: ['financial-crimes', 'white-collar', 'money-laundering', 'insider-trading'],
         position: { x: 250, y: 300 },
-        createdBy: userId
+        createdBy: userId,
       },
       {
         caseId,
@@ -138,11 +150,11 @@ async function seedPersonsOfInterest() {
           habits: ['Night owl', 'Pool player', 'Motorcycle enthusiast'],
           lastKnownLocation: 'East Side Neighborhoods',
           vehicles: ['Harley-Davidson motorcycle', 'Old pickup truck'],
-          dangerLevel: 3.5
+          dangerLevel: 3.5,
         },
         tags: ['street-level', 'support-network', 'communications', 'logistics'],
         position: { x: 400, y: 200 },
-        createdBy: userId
+        createdBy: userId,
       },
       {
         caseId,
@@ -167,11 +179,11 @@ async function seedPersonsOfInterest() {
           habits: ['All-night coding sessions', 'Energy drink consumer', 'Privacy advocate'],
           lastKnownLocation: 'University District',
           vehicles: ['Electric bicycle', 'Shared rideshare services only'],
-          dangerLevel: 7.8
+          dangerLevel: 7.8,
         },
         tags: ['cryptographer', 'technical-expert', 'privacy-advocate', 'high-intelligence'],
         position: { x: 300, y: 400 },
-        createdBy: userId
+        createdBy: userId,
       },
       {
         caseId,
@@ -196,27 +208,24 @@ async function seedPersonsOfInterest() {
           habits: ['Chess player', 'Fine dining', 'Cigar smoker'],
           lastKnownLocation: 'Upscale Hotel District',
           vehicles: ['Black Mercedes-Benz S-Class', 'Private driver'],
-          dangerLevel: 5.5
+          dangerLevel: 5.5,
         },
         tags: ['information-broker', 'ex-intelligence', 'informant', 'international'],
         position: { x: 150, y: 350 },
-        createdBy: userId
-      }
+        createdBy: userId,
+      },
     ];
 
     console.log('📝 Inserting persons of interest...');
 
     for (const person of mockPersons) {
-      const [inserted] = await db.insert(personsOfInterest)
-        .values(person)
-        .returning();
+      const [inserted] = await db.insert(personsOfInterest).values(person).returning();
 
       console.log(`✅ Added: ${inserted.name} (Threat: ${inserted.threatLevel.toUpperCase()})`);
     }
 
     console.log(`🎉 Successfully seeded ${mockPersons.length} persons of interest!`);
     console.log('🔗 View them at: http://localhost:5174/persons-of-interest');
-
   } catch (error) {
     console.error('❌ Seeding failed:', error);
   } finally {

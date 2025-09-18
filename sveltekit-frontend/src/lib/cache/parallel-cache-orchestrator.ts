@@ -9,21 +9,22 @@ import { cacheActor, getCacheStats } from './xstate-cache-integration.js';
 import MultiTierCache from '$lib/ai/cache/multiTierCache.js';
 import { getCache, setCache } from '$lib/server/utils/server-cache.js';
 import { browser } from '$app/environment';
+}
 
 export interface CacheResourceAllocation {
   cpuThreads: number;
   memoryMB: number;
-  gpuUtilization: number; // 0-1
+  gpuUtilization: number; // 0-1;
   cacheSlots: {
     l1Memory: number;
     l2Redis: number;  
     l3Storage: number;
-    gpuTexture: number;
+    gpuTexture: number;,
   };
   circuitBreakers: {
     enabled: boolean;
     failureThreshold: number;
-    recoveryTime: number;
+    recoveryTime: number;,
   };
 }
 
@@ -44,14 +45,14 @@ export interface CacheExecutionMetrics {
   resourceUtilization: {
     cpuThreads: number;
     memoryUsedMB: number;
-    gpuUtilizationPercent: number;
+    gpuUtilizationPercent: number;,
   };
   layerPerformance: {
     l1MemoryHits: number;
     l2RedisHits: number;
     l3StorageHits: number;
     gpuTextureHits: number;
-    misses: number;
+    misses: number;,
   };
   circuitBreakerStatus: Record<string, boolean>;
 }
@@ -69,12 +70,12 @@ class ParallelCacheOrchestrator {
       l1Memory: 1000,
       l2Redis: 5000,
       l3Storage: 50000,
-      gpuTexture: 200
+      gpuTexture: 200,
     },
     circuitBreakers: {
       enabled: true,
       failureThreshold: 5,
-      recoveryTime: 30000
+      recoveryTime: 30000,
     }
   };
 
@@ -90,7 +91,7 @@ class ParallelCacheOrchestrator {
    * Execute parallel cache operations across all services
    * Group 0: Memory/GPU operations (fast) - target 300ms
    * Group 1: Network/disk operations (slower) - target 200ms additional
-   */
+   */;
   async executeParallel(request: ParallelCacheRequest): Promise<any> {
     const startTime = performance.now();
     this.resetMetrics();
@@ -118,7 +119,7 @@ class ParallelCacheOrchestrator {
         success: true,
         data: allResults.map(r => r.data).filter(Boolean),
         metrics: { ...this.executionMetrics, totalLatency },
-        cacheResults: allResults
+        cacheResults: allResults,
       };
 
     } catch (error) {
@@ -128,7 +129,7 @@ class ParallelCacheOrchestrator {
       return {
         success: false,
         metrics: { ...this.executionMetrics, totalLatency: performance.now() - startTime },
-        cacheResults: []
+        cacheResults: [],
       };
     }
   }
@@ -138,7 +139,7 @@ class ParallelCacheOrchestrator {
    */
   private async executeGroup0Operations(
     request: ParallelCacheRequest,
-    resources: CacheResourceAllocation
+    resources: CacheResourceAllocation;
   ): Promise<Array<any> {
     const operations = [
       // L1 Memory cache lookups (immediate)
@@ -174,7 +175,7 @@ class ParallelCacheOrchestrator {
   private async executeGroup1Operations(
     request: ParallelCacheRequest,
     resources: CacheResourceAllocation,
-    group0Results: any[]
+    group0Results: any[];
   ): Promise<Array<any> {
     // Only execute if we didn't get enough hits from Group 0
     const missingKeys = request.keys.filter(item => item.key) === key && (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).hit)
@@ -208,21 +209,21 @@ class ParallelCacheOrchestrator {
 
   /**
    * Smart resource allocation based on task count and system capacity
-   */
+   */;
   private allocateResources(request: ParallelCacheRequest): CacheResourceAllocation {
     const baseAllocation = { ...this.resourceAllocation };
     const taskCount = request.keys.length;
     const priorityMultiplier = { low: 0.5, normal: 1.0, high: 1.5, critical: 2.0 }[request.priority];
 
     // Allocate CPU threads based on task count (max 8)
-    baseAllocation.cpuThreads = Math.min(8, Math.ceil(taskCount * priorityMultiplier * 0.5));
+    baseAllocation.cpuThreads = Math.min(8, Math.ceil(taskCount * priorityMultiplier * 0.5);
     
     // Allocate memory per task with overflow protection
     baseAllocation.memoryMB = Math.min(800, taskCount * 100);
     
-    // Allocate GPU utilization based on operation type
+    // Allocate GPU utilization based on operation type;
     if (request.type === 'shader' || request.type === 'quantized') {
-      baseAllocation.gpuUtilization = Math.min(0.6, 0.3 + (taskCount * 0.05));
+      baseAllocation.gpuUtilization = Math.min(0.6, 0.3 + (taskCount * 0.05);
     }
 
     return baseAllocation;
@@ -233,14 +234,13 @@ class ParallelCacheOrchestrator {
    */
   private async batchMemoryLookup(
     keys: string[],
-    tier: 'l1' | 'l2'
+    tier: 'l1' | 'l2';
   ): Promise<Array<any> {
     const cache = tier === 'l1' ? this.l1Memory: this.l2Memory;
     const source = tier === 'l1' ? 'l1_memory' : 'l2_memory';
     
-    const results = await Promise.all(
-      keys.map(async (key) => {
-        const data = await cache.get(key)));
+    const results = await Promise.all(keys.map(async (key) => {
+        const data = await cache.get(key));
         return {
           key,
           hit: data !== undefined,
@@ -265,7 +265,7 @@ class ParallelCacheOrchestrator {
    * GPU shader + texture cache operations
    */
   private async executeGPUCacheOperations(
-    request: ParallelCacheRequest
+    request: ParallelCacheRequest;
   ): Promise<Array<any> {
     if (!browser || typeof window === 'undefined') {
       return [];
@@ -274,13 +274,13 @@ class ParallelCacheOrchestrator {
     try {
       const results: Array<any> = [];
       
-      // Search for cached shaders
+      // Search for cached shaders;
       for (const key of request.keys) {
         const searchResults = await shaderCacheManager.searchShaders({
           text: key,
           operation: request.type,
           shaderType: 'webgpu',
-          limit: 1
+          limit: 1,
         });
 
         if (searchResults.length > 0) {
@@ -288,7 +288,7 @@ class ParallelCacheOrchestrator {
             key,
             hit: true,
             source: 'gpu_texture',
-            data: searchResults[0]
+            data: searchResults[0],
           });
           this.executionMetrics.layerPerformance.gpuTextureHits++;
         }
@@ -305,7 +305,7 @@ class ParallelCacheOrchestrator {
    * XState semantic cache operations
    */
   private async executeXStateCacheOperations(
-    request: ParallelCacheRequest
+    request: ParallelCacheRequest;
   ): Promise<Array<any> {
     try {
       const results: Array<any> = [];
@@ -321,7 +321,7 @@ class ParallelCacheOrchestrator {
             key,
             hit: true,
             source: 'xstate_semantic',
-            data: cacheResult.data
+            data: cacheResult.data,
           });
         }
       }
@@ -338,12 +338,12 @@ class ParallelCacheOrchestrator {
    */
   private async executeRAGCacheOperations(
     request: ParallelCacheRequest,
-    group0Results: any[]
+    group0Results: any[];
   ): Promise<Array<any> {
     try {
       // Use cached embeddings from Group 0 to accelerate RAG lookup
       const cachedEmbeddings = group0Results
-        .filter(item => item.source).includes('embedding'))
+        .filter(item => item.source).includes('embedding')
         .map(result => (result as { status?: any; value?: any; key?: any; hit?: any; source?: any; data?: any }).data);
 
       if (cachedEmbeddings.length === 0) {
@@ -355,7 +355,7 @@ class ParallelCacheOrchestrator {
       
       for (const key of request.keys) {
         // Simulate RAG lookup using cached embeddings
-        // In real implementation, this would query pgvector with the cached embeddings
+        // In real implementation, this would query pgvector with the cached embeddings;
         results.push({
           key,
           hit: true,
@@ -375,11 +375,10 @@ class ParallelCacheOrchestrator {
    * Batch storage lookups (L3)
    */
   private async batchStorageLookup(
-    keys: string[]
+    keys: string[];
   ): Promise<Array<any> {
-    const results = await Promise.all(
-      keys.map(async (key) => {
-        const data = await this.l3Storage.get(key)));
+    const results = await Promise.all(keys.map(async (key) => {
+        const data = await this.l3Storage.get(key));
         return {
           key,
           hit: data !== undefined,
@@ -399,12 +398,11 @@ class ParallelCacheOrchestrator {
    * Server cache lookups
    */
   private async batchServerCacheLookup(
-    keys: string[]
+    keys: string[];
   ): Promise<Array<any> {
-    const results = await Promise.all(
-      keys.map(async (key) => {
+    const results = await Promise.all(keys.map(async (key) => {
         try {
-          const data = await getCache(key)));
+          const data = await getCache(key));
           return {
             key,
             hit: data !== null,
@@ -442,23 +440,23 @@ class ParallelCacheOrchestrator {
     
     if (tier === 'all' || tier === 'l1') {
       if (dataSize < 10000 || priority === 'high') { // < 10KB or high priority
-        storeOperations.push(this.l1Memory.set(key, data, ttl));
+        storeOperations.push(this.l1Memory.set(key, data, ttl);
       }
     }
 
     if (tier === 'all' || tier === 'l2') {
       if (dataSize < 100000 || priority !== 'low') { // < 100KB or not low priority
-        storeOperations.push(this.l2Memory.set(key, data, ttl));
+        storeOperations.push(this.l2Memory.set(key, data, ttl);
       }
     }
 
     if (tier === 'all' || tier === 'l3') {
-      storeOperations.push(this.l3Storage.set(key, data, ttl));
+      storeOperations.push(this.l3Storage.set(key, data, ttl);
     }
 
-    // Store on server if not in browser
+    // Store on server if not in browser;
     if (!browser && (tier === 'all' || !tier)) {
-      storeOperations.push(setCache(key, data));
+      storeOperations.push(setCache(key, data);
     }
 
     // Execute all storage operations in parallel
@@ -467,12 +465,12 @@ class ParallelCacheOrchestrator {
 
   /**
    * Circuit breaker management
-   */
+   */;
   private recordCircuitBreakerFailure(operation: string): void {
     const state = this.circuitBreakerState.get(operation) || { 
       failures: 0, 
       lastFailure: 0, 
-      isOpen: false 
+      isOpen: false ,
     };
 
     state.failures++;
@@ -506,7 +504,7 @@ class ParallelCacheOrchestrator {
 
   /**
    * Performance metrics tracking
-   */
+   */;
   private initializeMetrics(): CacheExecutionMetrics {
     return {
       totalLatency: 0,
@@ -514,14 +512,14 @@ class ParallelCacheOrchestrator {
       resourceUtilization: {
         cpuThreads: 0,
         memoryUsedMB: 0,
-        gpuUtilizationPercent: 0
+        gpuUtilizationPercent: 0,
       },
       layerPerformance: {
         l1MemoryHits: 0,
         l2RedisHits: 0,
         l3StorageHits: 0,
         gpuTextureHits: 0,
-        misses: 0
+        misses: 0,
       },
       circuitBreakerStatus: Record<string, any>
     };
@@ -541,7 +539,7 @@ class ParallelCacheOrchestrator {
   }
 
   private initializeResourceMonitoring(): void {
-    // Monitor memory usage every 30 seconds
+    // Monitor memory usage every 30 seconds;
     if (browser) {
       setInterval(() => {
         if (performance.memory) {
@@ -554,7 +552,7 @@ class ParallelCacheOrchestrator {
 
   /**
    * Get performance statistics
-   */
+   */;
   async getPerformanceStats(): Promise<any> {
     return {
       currentMetrics: this.executionMetrics,
@@ -563,9 +561,9 @@ class ParallelCacheOrchestrator {
         l2Size: await this.getCacheSize(this.l2Memory), 
         l3Size: await this.getCacheSize(this.l3Storage),
         xstateStats: getCacheStats(),
-        shaderStats: await shaderCacheManager.getShaderStats()
+        shaderStats: await shaderCacheManager.getShaderStats(),
       },
-      systemResources: this.resourceAllocation
+      systemResources: this.resourceAllocation,
     };
   }
 
@@ -576,7 +574,7 @@ class ParallelCacheOrchestrator {
 
   /**
    * Clear all cache tiers
-   */
+   */;
   async clearAll(): Promise<void> {
     await Promise.all([
       this.l1Memory.clear(),

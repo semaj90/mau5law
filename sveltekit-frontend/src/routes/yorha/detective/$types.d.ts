@@ -1,4 +1,5 @@
 import type { PageServerLoad } from './$types.js';
+}
 
 export interface PageData {
   systemData: {
@@ -9,7 +10,7 @@ export interface PageData {
     systemLoad: number;
     gpuUtilization: number;
     memoryUsage: number;
-    networkLatency: number;
+    networkLatency: number;,
   };
   recentCases: Array<any>;
   recentEvidence: Array<any>;
@@ -17,7 +18,7 @@ export interface PageData {
     id: string;
     firstName: string | null;
     lastName: string | null;
-    role: string;
+    role: string;,
   };
 }
 

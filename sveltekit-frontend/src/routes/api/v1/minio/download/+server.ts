@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const initialized = await minioService.initialize();
     if (!initialized) {
       return new Response(JSON.stringify({
-        error: 'MinIO service unavailable'
+        error: 'MinIO service unavailable',
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (!bucket || !fileName) {
       return new Response(JSON.stringify({
-        error: 'bucket and file parameters are required'
+        error: 'bucket and file parameters are required',
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (!fileData) {
       return new Response(JSON.stringify({
-        error: 'File not found'
+        error: 'File not found',
       }), {
         status: 404,
         headers: { 'Content-Type': 'application/json' }
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const headers = new Headers();
     headers.set('Content-Type', fileData.contentType || 'application/octet-stream');
     headers.set('Content-Disposition', `attachment; filename="${fileData.originalName || fileName}"`);
-    headers.set('Content-Length', fileData.size.toString());
+    headers.set('Content-Length', fileData.size.toString();
     headers.set('Cache-Control', 'private, max-age=3600'); // Cache for 1 hour
 
     return new Response(fileData.buffer, {
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('File download error:', error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to download file',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
@@ -71,14 +71,14 @@ export const GET: RequestHandler = async ({ url }) => {
 
 /**
  * POST: Get signed URL for client-side download (for large files)
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { bucket, fileName, expirySeconds = 3600 } = await request.json();
 
     if (!bucket || !fileName) {
       return new Response(JSON.stringify({
-        error: 'bucket and fileName are required'
+        error: 'bucket and fileName are required',
       }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const initialized = await minioService.initialize();
     if (!initialized) {
       return new Response(JSON.stringify({
-        error: 'MinIO service unavailable'
+        error: 'MinIO service unavailable',
       }), {
         status: 503,
         headers: { 'Content-Type': 'application/json' }
@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ request }) => {
       expiresIn: expirySeconds,
       bucket,
       fileName,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('Presigned URL generation error:', error);
     return new Response(JSON.stringify({
       error: error instanceof Error ? error.message: 'Failed to generate download URL',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

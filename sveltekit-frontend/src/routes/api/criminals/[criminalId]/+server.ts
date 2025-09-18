@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const criminalResult = await db
       .select()
       .from(criminals)
-      .where(eq(criminals.id, criminalId))
+      .where(eq(criminals.id, criminalId)
       .limit(1);
 
     if (!criminalResult.length) {
@@ -50,7 +50,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const existingCriminal = await db
       .select()
       .from(criminals)
-      .where(eq(criminals.id, criminalId))
+      .where(eq(criminals.id, criminalId)
       .limit(1);
 
     if (!existingCriminal.length) {
@@ -108,7 +108,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const [updatedCriminal] = await db
       .update(criminals)
       .set(updateData)
-      .where(eq(criminals.id, criminalId))
+      .where(eq(criminals.id, criminalId)
       .returning();
 
     return json(updatedCriminal);
@@ -134,7 +134,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     const existingCriminal = await db
       .select()
       .from(criminals)
-      .where(eq(criminals.id, criminalId))
+      .where(eq(criminals.id, criminalId)
       .limit(1);
 
     if (!existingCriminal.length) {
@@ -143,7 +143,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     // Delete the criminal record (cascade will handle related records)
     const [deletedCriminal] = await db
       .delete(criminals)
-      .where(eq(criminals.id, criminalId))
+      .where(eq(criminals.id, criminalId)
       .returning();
 
     return json({ success: true, deletedCriminal });
@@ -153,7 +153,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
   }
 };
 
-// PATCH endpoint for partial updates (like status changes)
+// PATCH endpoint for partial updates (like status changes);
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   try {
     if (!locals.user) {
@@ -172,7 +172,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     const existingCriminal = await db
       .select()
       .from(criminals)
-      .where(eq(criminals.id, criminalId))
+      .where(eq(criminals.id, criminalId)
       .limit(1);
 
     if (!existingCriminal.length) {
@@ -182,7 +182,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       updatedAt: new Date(),
     };
 
-    // Handle specific patch operations
+    // Handle specific patch operations;
     if (data.operation === "updateThreatLevel") {
       updateData.threatLevel = data.threatLevel;
     } else if (data.operation === "updateStatus") {
@@ -202,7 +202,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     } else if (data.operation === "updateFingerprints") {
       updateData.fingerprints = data.fingerprints;
     } else {
-      // Regular field updates
+      // Regular field updates;
       Object.keys(data).forEach((key) => {
         if (key !== "operation") {
           updateData[key] = data[key];
@@ -212,7 +212,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     const [updatedCriminal] = await db
       .update(criminals)
       .set(updateData)
-      .where(eq(criminals.id, criminalId))
+      .where(eq(criminals.id, criminalId)
       .returning();
 
     return json(updatedCriminal);

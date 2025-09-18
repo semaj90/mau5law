@@ -13,7 +13,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
     let parsedData: any;
     let parser: 'simdjson' | 'native' = 'native';
 
-    // Use simdjson for large files (>1MB)
+    // Use simdjson for large files (>1MB);
     if (originalSize > 1024 * 1024) {
       try {
         // Dynamic import simdjson-wasm
@@ -65,7 +65,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
         parser,
         originalSize,
         textFields: textFields.length,
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       }
     };
 
@@ -77,7 +77,7 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
         parser: 'native',
         originalSize,
         textFields: 0,
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       }
     };
   }
@@ -89,18 +89,18 @@ export async function parseLargeJsonWithSimd(jsonString: string): Promise<any> {
  */
 export async function parseJsonStream(
   jsonString: string,
-  chunkSize = 1024 * 1024 // 1MB chunks
+  chunkSize = 1024 * 1024 // 1MB chunks;
 ): Promise<any> {
   try {
     const chunks: string[] = [];
     const extractedTexts: string[] = [];
 
-    // Split into chunks
+    // Split into chunks;
     for (let i = 0; i < jsonString.length; i += chunkSize) {
-      chunks.push(jsonString.slice(i, i + chunkSize));
+      chunks.push(jsonString.slice(i, i + chunkSize);
     }
 
-    // Process each chunk
+    // Process each chunk;
     for (const chunk of chunks) {
       try {
         // Try to find complete JSON objects in chunk
@@ -126,7 +126,7 @@ export async function parseJsonStream(
     return {
       success: true,
       extractedTexts: extractedTexts.slice(0, 1000), // Limit results
-      totalChunks: chunks.length
+      totalChunks: chunks.length,
     };
 
   } catch (error) {
@@ -134,14 +134,14 @@ export async function parseJsonStream(
       success: false,
       extractedTexts: [],
       totalChunks: 0,
-      error: error instanceof Error ? error.message: String(error)
+      error: error instanceof Error ? error.message: String(error),
     };
   }
 }
 
 /**
  * Extract text fields from a JSON object
- */
+ */;
 function extractTextFromObject(obj: any): string[] {
   const texts: string[] = [];
 
@@ -151,9 +151,9 @@ function extractTextFromObject(obj: any): string[] {
     if (typeof value === 'string' && value.length > 10) {
       texts.push(value);
     } else if (Array.isArray(value)) {
-      value.slice(0, 20).forEach(item => walk(item, depth + 1));
+      value.slice(0, 20).forEach(item => walk(item, depth + 1);
     } else if (value && typeof value === 'object') {
-      Object.values(value).slice(0, 20).forEach(item => walk(item, depth + 1));
+      Object.values(value).slice(0, 20).forEach(item => walk(item, depth + 1);
     }
   }
 

@@ -4,11 +4,20 @@ import fs from 'fs';
 import path from 'path';
 
 const cwd = process.cwd();
-const guessedFrontend = path.basename(cwd) === 'sveltekit-frontend' ? cwd : path.join(cwd, 'sveltekit-frontend');
-const frontendDir = fs.existsSync(path.join(guessedFrontend, 'src')) ? guessedFrontend : path.join(cwd, 'sveltekit-frontend');
+const guessedFrontend =
+  path.basename(cwd) === 'sveltekit-frontend' ? cwd : path.join(cwd, 'sveltekit-frontend');
+const frontendDir = fs.existsSync(path.join(guessedFrontend, 'src'))
+  ? guessedFrontend
+  : path.join(cwd, 'sveltekit-frontend');
 const root = path.basename(frontendDir) === 'sveltekit-frontend' ? path.dirname(frontendDir) : cwd;
 const routesConfigPath = path.join(frontendDir, 'src', 'lib', 'data', 'routes-config.ts');
-const multiProtoConfigPath = path.join(frontendDir, 'src', 'lib', 'config', 'multi-protocol-routes.ts');
+const multiProtoConfigPath = path.join(
+  frontendDir,
+  'src',
+  'lib',
+  'config',
+  'multi-protocol-routes.ts'
+);
 const routesDir = path.join(frontendDir, 'src', 'routes');
 const outputPath = path.join(root, 'ROUTE_MAP_EXPORT.txt');
 const jsonOutputPath = path.join(root, 'ROUTE_MAP_EXPORT.json');

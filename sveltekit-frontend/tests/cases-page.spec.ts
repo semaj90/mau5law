@@ -7,7 +7,9 @@ test.describe('Cases Page Headless UI', () => {
     await page.goto('/cases');
   });
 
-  test('create case dialog opens, validates, submits, and optimistic evidence works', async ({ page }) => {
+  test('create case dialog opens, validates, submits, and optimistic evidence works', async ({
+    page,
+  }) => {
     // Open create case dialog
     await page.getByRole('button', { name: /new case/i }).click();
     await expect(page.getByRole('dialog')).toBeVisible();

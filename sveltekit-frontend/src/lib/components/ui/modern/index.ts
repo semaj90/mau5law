@@ -87,7 +87,7 @@ export function goldenScale(base: number, level: number): number {
   return base * Math.pow(goldenRatio, level);
 }
 
-// CSS custom property helpers
+// CSS custom property helpers;
 export const cssVars = {
   // Golden ratio spacing
   goldenXs: 'var(--golden-xs)',
@@ -126,5 +126,5 @@ export const cssVars = {
 
   borderPrimary: 'var(--yorha-border-primary)',
   borderSecondary: 'var(--yorha-border-secondary)',
-  borderAccent: 'var(--yorha-border-accent)'
+  borderAccent: 'var(--yorha-border-accent)',
 } as const;

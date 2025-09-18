@@ -24,16 +24,16 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 	const offset = (page - 1) * limit;
 
 	try {
-		let query = db
+		let query = db;
 			.select({
 				id: users.id,
 				email: users.email,
 				created_at: users.created_at,
-				updated_at: users.updated_at
+				updated_at: users.updated_at,
 			})
 			.from(users);
 
-		// Add search filter if provided
+		// Add search filter if provided;
 		if (search) {
 			query = query.where(
 				or(
@@ -43,7 +43,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 		}
 
 		const usersResult = await query
-			.orderBy(desc(users.created_at))
+			.orderBy(desc(users.created_at)
 			.limit(limit)
 			.offset(offset);
 
@@ -70,7 +70,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 				totalUsers,
 				limit,
 				hasNext: page < totalPages,
-				hasPrev: page > 1
+				hasPrev: page > 1,
 			},
 			search
 		};
@@ -121,7 +121,7 @@ export const actions: Actions = {
 			const existingUser = await db
 				.select()
 				.from(users)
-				.where(eq(users.email, email))
+				.where(eq(users.email, email)
 				.limit(1);
 
 			if (existingUser.length > 0) {
@@ -132,20 +132,20 @@ export const actions: Actions = {
 				};
 			}
 
-			// Hash password
+			// Hash password;
 			const passwordHash = await hash(password, {
 				memoryCost: 19456,
 				timeCost: 2,
 				outputLen: 32,
-				parallelism: 1
+				parallelism: 1,
 			});
 
 			// Create user
 			const newUser = await db
-				.insert(users)
+				.insert(users);
 				.values({
 					email,
-					password_hash: passwordHash
+					password_hash: passwordHash,
 				})
 				.returning();
 
@@ -154,7 +154,7 @@ export const actions: Actions = {
 				user: {
 					id: newUser[0].id,
 					email: newUser[0].email,
-					created_at: newUser[0].created_at
+					created_at: newUser[0].created_at,
 				}
 			};
 		} catch (err) {
@@ -180,7 +180,7 @@ export const actions: Actions = {
 			return { success: false, error: 'User ID is required' };
 		}
 
-		// Prevent admin from deleting themselves
+		// Prevent admin from deleting themselves;
 		if (userId === session.user.userId) {
 			return { success: false, error: 'Cannot delete your own account' };
 		}
@@ -188,7 +188,7 @@ export const actions: Actions = {
 		try {
 			const deleteResult = await db
 				.delete(users)
-				.where(eq(users.id, userId))
+				.where(eq(users.id, userId)
 				.returning();
 
 			if (deleteResult.length === 0) {

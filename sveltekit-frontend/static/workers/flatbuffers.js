@@ -68,12 +68,15 @@ class Builder {
 
     // Search for an existing vtable that matches
     let existing_vtable = 0;
-    const vt1 = this.bb.bytes_.subarray(this.space, this.space + (trimmed_size + standard_fields) * SIZEOF_SHORT);
+    const vt1 = this.bb.bytes_.subarray(
+      this.space,
+      this.space + (trimmed_size + standard_fields) * SIZEOF_SHORT
+    );
 
     outer: for (let j = 0; j < this.vtables.length; j++) {
       const vt2_offset = this.bb.capacity_ - this.vtables[j];
       const vt2 = this.bb.bytes_.subarray(vt2_offset, vt2_offset + vt1.length);
-      
+
       if (vt1.length === vt2.length) {
         for (let k = 0; k < vt1.length; k++) {
           if (vt1[k] !== vt2[k]) {
@@ -174,20 +177,20 @@ class Builder {
       if (c < 0x80) {
         utf8.push(c);
       } else if (c < 0x800) {
-        utf8.push(0xC0 | (c >> 6));
-        utf8.push(0x80 | (c & 0x3F));
-      } else if (c < 0xD800 || c >= 0xE000) {
-        utf8.push(0xE0 | (c >> 12));
-        utf8.push(0x80 | ((c >> 6) & 0x3F));
-        utf8.push(0x80 | (c & 0x3F));
+        utf8.push(0xc0 | (c >> 6));
+        utf8.push(0x80 | (c & 0x3f));
+      } else if (c < 0xd800 || c >= 0xe000) {
+        utf8.push(0xe0 | (c >> 12));
+        utf8.push(0x80 | ((c >> 6) & 0x3f));
+        utf8.push(0x80 | (c & 0x3f));
       } else {
         // Surrogate pair
         i++;
-        c = 0x10000 + (((c & 0x3FF) << 10) | (s.charCodeAt(i) & 0x3FF));
-        utf8.push(0xF0 | (c >> 18));
-        utf8.push(0x80 | ((c >> 12) & 0x3F));
-        utf8.push(0x80 | ((c >> 6) & 0x3F));
-        utf8.push(0x80 | (c & 0x3F));
+        c = 0x10000 + (((c & 0x3ff) << 10) | (s.charCodeAt(i) & 0x3ff));
+        utf8.push(0xf0 | (c >> 18));
+        utf8.push(0x80 | ((c >> 12) & 0x3f));
+        utf8.push(0x80 | ((c >> 6) & 0x3f));
+        utf8.push(0x80 | (c & 0x3f));
       }
     }
 
@@ -258,22 +261,22 @@ class Builder {
 
   addInt16(value) {
     this.prep(SIZEOF_SHORT, 0);
-    this.bb.writeInt16(this.space -= SIZEOF_SHORT, value);
+    this.bb.writeInt16((this.space -= SIZEOF_SHORT), value);
   }
 
   addInt32(value) {
     this.prep(SIZEOF_INT, 0);
-    this.bb.writeInt32(this.space -= SIZEOF_INT, value);
+    this.bb.writeInt32((this.space -= SIZEOF_INT), value);
   }
 
   addInt64(value) {
     this.prep(8, 0);
-    this.bb.writeInt64(this.space -= 8, value);
+    this.bb.writeInt64((this.space -= 8), value);
   }
 
   addFloat32(value) {
     this.prep(SIZEOF_INT, 0);
-    this.bb.writeFloat32(this.space -= SIZEOF_INT, value);
+    this.bb.writeFloat32((this.space -= SIZEOF_INT), value);
   }
 
   addOffset(offset) {
@@ -283,7 +286,7 @@ class Builder {
 
   static growByteBuffer(bb) {
     const old_buf_size = bb.capacity_;
-    if (old_buf_size & 0xC0000000) {
+    if (old_buf_size & 0xc0000000) {
       throw new Error('FlatBuffers: cannot grow buffer beyond 2 gigabytes');
     }
     const new_buf_size = old_buf_size << 1;
@@ -323,7 +326,7 @@ class ByteBuffer {
 
   // Read methods
   readInt8(offset) {
-    return this.readUint8(offset) << 24 >> 24;
+    return (this.readUint8(offset) << 24) >> 24;
   }
 
   readUint8(offset) {
@@ -331,7 +334,7 @@ class ByteBuffer {
   }
 
   readInt16(offset) {
-    return this.readUint16(offset) << 16 >> 16;
+    return (this.readUint16(offset) << 16) >> 16;
   }
 
   readUint16(offset) {
@@ -339,10 +342,12 @@ class ByteBuffer {
   }
 
   readInt32(offset) {
-    return this.bytes_[offset] | 
-           (this.bytes_[offset + 1] << 8) | 
-           (this.bytes_[offset + 2] << 16) | 
-           (this.bytes_[offset + 3] << 24);
+    return (
+      this.bytes_[offset] |
+      (this.bytes_[offset + 1] << 8) |
+      (this.bytes_[offset + 2] << 16) |
+      (this.bytes_[offset + 3] << 24)
+    );
   }
 
   readUint32(offset) {
@@ -350,8 +355,7 @@ class ByteBuffer {
   }
 
   readInt64(offset) {
-    return BigInt(this.readUint32(offset)) | 
-           (BigInt(this.readUint32(offset + 4)) << 32n);
+    return BigInt(this.readUint32(offset)) | (BigInt(this.readUint32(offset + 4)) << 32n);
   }
 
   readFloat32(offset) {
@@ -395,7 +399,7 @@ class ByteBuffer {
   }
 
   writeInt64(offset, value) {
-    this.writeInt32(offset, Number(value & 0xFFFFFFFFn));
+    this.writeInt32(offset, Number(value & 0xffffffffn));
     this.writeInt32(offset + 4, Number(value >> 32n));
   }
 
@@ -415,7 +419,7 @@ class ByteBuffer {
     const length = this.readInt32(offset);
     let result = '';
     offset += 4;
-    
+
     if (encoding === 'utf8') {
       for (let i = 0; i < length; i++) {
         const byte = this.bytes_[offset + i];
@@ -425,22 +429,22 @@ class ByteBuffer {
           // Handle multi-byte UTF-8 sequences
           let charCode = 0;
           let bytesToRead = 0;
-          
-          if ((byte & 0xE0) === 0xC0) {
-            charCode = byte & 0x1F;
+
+          if ((byte & 0xe0) === 0xc0) {
+            charCode = byte & 0x1f;
             bytesToRead = 1;
-          } else if ((byte & 0xF0) === 0xE0) {
-            charCode = byte & 0x0F;
+          } else if ((byte & 0xf0) === 0xe0) {
+            charCode = byte & 0x0f;
             bytesToRead = 2;
-          } else if ((byte & 0xF8) === 0xF0) {
+          } else if ((byte & 0xf8) === 0xf0) {
             charCode = byte & 0x07;
             bytesToRead = 3;
           }
-          
+
           for (let j = 0; j < bytesToRead && i + j + 1 < length; j++) {
-            charCode = (charCode << 6) | (this.bytes_[offset + i + j + 1] & 0x3F);
+            charCode = (charCode << 6) | (this.bytes_[offset + i + j + 1] & 0x3f);
           }
-          
+
           result += String.fromCharCode(charCode);
           i += bytesToRead;
         }
@@ -451,7 +455,7 @@ class ByteBuffer {
         result += String.fromCharCode(this.bytes_[offset + i]);
       }
     }
-    
+
     return result;
   }
 
@@ -480,7 +484,7 @@ const MessageType = {
   EMBEDDING_REQUEST: 2,
   EMBEDDING_RESPONSE: 3,
   TRAINING_DATA: 4,
-  ERROR_MESSAGE: 5
+  ERROR_MESSAGE: 5,
 };
 
 /**
@@ -491,7 +495,7 @@ function createPromptRequest(builder, prompt, context = [], options = {}) {
   const promptOffset = builder.createString(prompt);
   const contextOffset = builder.createString(JSON.stringify(context));
   const optionsOffset = builder.createString(JSON.stringify(options));
-  
+
   // Build the message
   builder.startObject(5);
   builder.addFieldInt32(0, MessageType.PROMPT_REQUEST, 0); // message_type
@@ -499,7 +503,7 @@ function createPromptRequest(builder, prompt, context = [], options = {}) {
   builder.addFieldOffset(2, contextOffset, 0); // context
   builder.addFieldOffset(3, optionsOffset, 0); // options
   builder.addFieldInt64(4, BigInt(Date.now()), 0n); // timestamp
-  
+
   return builder.endObject();
 }
 
@@ -509,13 +513,13 @@ function createPromptRequest(builder, prompt, context = [], options = {}) {
 function createEmbeddingRequest(builder, text, model = 'nomic-embed-text') {
   const textOffset = builder.createString(text);
   const modelOffset = builder.createString(model);
-  
+
   builder.startObject(4);
   builder.addFieldInt32(0, MessageType.EMBEDDING_REQUEST, 0);
   builder.addFieldOffset(1, textOffset, 0);
   builder.addFieldOffset(2, modelOffset, 0);
   builder.addFieldInt64(3, BigInt(Date.now()), 0n);
-  
+
   return builder.endObject();
 }
 
@@ -524,12 +528,12 @@ function createEmbeddingRequest(builder, text, model = 'nomic-embed-text') {
  */
 function createTrainingData(builder, episodes) {
   const dataOffset = builder.createString(JSON.stringify(episodes));
-  
+
   builder.startObject(3);
   builder.addFieldInt32(0, MessageType.TRAINING_DATA, 0);
   builder.addFieldOffset(1, dataOffset, 0);
   builder.addFieldInt64(2, BigInt(Date.now()), 0n);
-  
+
   return builder.endObject();
 }
 
@@ -540,7 +544,7 @@ const flatbuffers = {
   MessageType,
   createPromptRequest,
   createEmbeddingRequest,
-  createTrainingData
+  createTrainingData,
 };
 
 if (typeof module !== 'undefined' && module.exports) {

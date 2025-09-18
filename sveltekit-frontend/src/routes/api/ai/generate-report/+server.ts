@@ -84,7 +84,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     if (
       !reportType ||
-      !REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES]
+      !REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES];
     ) {
       return json({ error: "Invalid report type" }, { status: 400 });
     }
@@ -93,7 +93,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       REPORT_TEMPLATES[reportType as keyof typeof REPORT_TEMPLATES];
 
     // Simulate AI processing delay
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000);
 
     // Generate structured report content
     const reportContent = generateReportContent(
@@ -150,7 +150,7 @@ function generateReportContent(
     </div>
   `;
 
-  // Add AI-generated content for each section
+  // Add AI-generated content for each section;
   template.sections.forEach((section: string, index: number) => {
     content += `
       <div style="margin-bottom: 32px;">

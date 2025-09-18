@@ -11,7 +11,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 const isProduction = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
 
-// Base Redis configuration
+// Base Redis configuration;
 export const REDIS_BASE_CONFIG: RedisOptions = {
   host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
@@ -34,7 +34,7 @@ export const REDIS_BASE_CONFIG: RedisOptions = {
   maxLoadingTimeout: 5000,
 };
 
-// Development-specific optimizations
+// Development-specific optimizations;
 export const REDIS_DEV_CONFIG: RedisOptions = {
   ...REDIS_BASE_CONFIG,
   maxRetriesPerRequest: 1,
@@ -48,14 +48,14 @@ export const REDIS_DEV_CONFIG: RedisOptions = {
   },
 };
 
-// Production-specific optimizations
+// Production-specific optimizations;
 export const REDIS_PROD_CONFIG: RedisOptions = {
   ...REDIS_BASE_CONFIG,
   maxRetriesPerRequest: 5,
   connectTimeout: 15000,
   commandTimeout: 10000,
   
-  // Production retry strategy with exponential backoff
+  // Production retry strategy with exponential backoff;
   retryStrategy: (times: number) => {
     if (times > 10) {
       console.error('Redis: Max reconnection attempts reached in production');
@@ -71,7 +71,7 @@ export const REDIS_PROD_CONFIG: RedisOptions = {
   enableAutoPipelining: true,
 };
 
-// Database assignments for different services
+// Database assignments for different services;
 export const REDIS_DATABASES = {
   CACHE: 0,           // General caching (redis-service.ts)
   SESSIONS: 1,        // User sessions
@@ -85,16 +85,16 @@ export const REDIS_DATABASES = {
   VECTOR_CACHE: 9,    // Vector embedding cache
 } as const;
 
-// Service-specific configurations
+// Service-specific configurations;
 export const SERVICE_CONFIGS = {
-  // Main cache service (redis-service.ts)
+  // Main cache service (redis-service.ts);
   MAIN_CACHE: {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.CACHE,
     keyPrefix: 'legal_ai:',
   },
   
-  // Rate limiting service (redisRateLimit.ts)
+  // Rate limiting service (redisRateLimit.ts);
   RATE_LIMIT: {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.RATE_LIMITING,
@@ -102,7 +102,7 @@ export const SERVICE_CONFIGS = {
     maxRetriesPerRequest: 1, // Fast fail for rate limiting
   },
   
-  // Loki.js integration (loki-redis-integration.ts)
+  // Loki.js integration (loki-redis-integration.ts);
   LOKI_INTEGRATION: {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.LOKI_CACHE,
@@ -110,7 +110,7 @@ export const SERVICE_CONFIGS = {
     enableAutoPipelining: true,
   },
   
-  // GPU cache orchestration
+  // GPU cache orchestration;
   GPU_ORCHESTRATOR: {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.GPU_CACHE,
@@ -118,7 +118,7 @@ export const SERVICE_CONFIGS = {
     commandTimeout: 15000, // Longer timeout for GPU operations
   },
   
-  // Worker queues
+  // Worker queues;
   WORKER_QUEUE: {
     ...REDIS_BASE_CONFIG,
     db: REDIS_DATABASES.WORKER_QUEUE,
@@ -127,7 +127,7 @@ export const SERVICE_CONFIGS = {
     maxLoadingTimeout: 10000,
   },
   
-  // Pub/Sub for real-time features
+  // Pub/Sub for real-time features;
   PUBSUB: {
     ...REDIS_BASE_CONFIG,
     db: 0, // Pub/Sub uses db 0
@@ -136,7 +136,7 @@ export const SERVICE_CONFIGS = {
   },
 } as const;
 
-// Environment-specific configuration selection
+// Environment-specific configuration selection;
 export function getRedisConfig(service?: keyof typeof SERVICE_CONFIGS): RedisOptions {
   const baseConfig = isProduction ? REDIS_PROD_CONFIG : 
                      isDevelopment ? REDIS_DEV_CONFIG : 
@@ -152,7 +152,7 @@ export function getRedisConfig(service?: keyof typeof SERVICE_CONFIGS): RedisOpt
   return baseConfig;
 }
 
-// Connection URL builder for external tools
+// Connection URL builder for external tools;
 export function getRedisUrl(database?: number): string {
   const host = process.env.REDIS_HOST || 'localhost';
   const port = process.env.REDIS_PORT || '6379';
@@ -163,14 +163,14 @@ export function getRedisUrl(database?: number): string {
   return `redis://${auth}${host}:${port}/${db}`;
 }
 
-// Health check configuration
+// Health check configuration;
 export const HEALTH_CHECK_CONFIG = {
   timeout: 5000,
   retries: 3,
   interval: 30000, // Check every 30 seconds
 };
 
-// Cache TTL configurations by data type
+// Cache TTL configurations by data type;
 export const CACHE_TTL = {
   // Session management
   SESSION: 24 * 60 * 60,        // 24 hours
@@ -196,7 +196,7 @@ export const CACHE_TTL = {
   SYSTEM_METRICS: 60 * 60,      // 1 hour
 } as const;
 
-// Key patterns for consistent naming
+// Key patterns for consistent naming;
 export const KEY_PATTERNS = {
   // User-related keys
   USER_SESSION: (sessionId: string) => `session:${sessionId}`,
@@ -225,7 +225,7 @@ export const KEY_PATTERNS = {
   SYSTEM_METRICS: (component: string) => `metrics:${component}`,
 } as const;
 
-// Lua scripts for atomic operations
+// Lua scripts for atomic operations;
 export const LUA_SCRIPTS = {
   // Rate limiting script (from redisRateLimit.ts)
   RATE_LIMIT: `
@@ -279,9 +279,9 @@ export const LUA_SCRIPTS = {
   `,
 } as const;
 
-// Connection pool configuration
+// Connection pool configuration;
 export const POOL_CONFIG = {
-  // Development pool (smaller)
+  // Development pool (smaller);
   development: {
     min: 2,
     max: 10,
@@ -293,7 +293,7 @@ export const POOL_CONFIG = {
     maxRetries: 3,
   },
   
-  // Production pool (larger)
+  // Production pool (larger);
   production: {
     min: 5,
     max: 50,
@@ -309,12 +309,12 @@ export const POOL_CONFIG = {
 // Export the configuration based on environment
 export const REDIS_CONFIG = getRedisConfig();
 
-// Utility function to create service-specific clients
+// Utility function to create service-specific clients;
 export function createServiceConfig(service: keyof typeof SERVICE_CONFIGS) {
   return getRedisConfig(service);
 }
 
-// Health monitoring configuration
+// Health monitoring configuration;
 export const MONITORING_CONFIG = {
   healthCheckInterval: 30000,     // 30 seconds
   metricsCollectionInterval: 5000, // 5 seconds
@@ -329,7 +329,7 @@ export const MONITORING_CONFIG = {
   },
 };
 
-// Export everything for easy importing
+// Export everything for easy importing;
 export default {
   REDIS_CONFIG,
   SERVICE_CONFIGS,

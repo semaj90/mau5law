@@ -4,6 +4,7 @@
  */
 
 import { getLocalOllamaUrl, LOCAL_LLM_CONFIG } from "$lib/constants/local-llm-config";
+}
 
 export interface LLMCallOptions {
   model?: string;
@@ -19,10 +20,10 @@ export interface LLMResponse {
   tokensUsed?: number;
   model: string;
   duration?: number;
-  success: boolean;
+  success: boolean;,
 }
 
-// Placeholder implementations for missing dependencies
+// Placeholder implementations for missing dependencies;
 const todoAutogen = {
   logPerformanceIssue: async (type: string, details: any) => {
     console.warn(`Performance issue: ${type}`, details);
@@ -38,14 +39,14 @@ const retryLLMCall = async (fn: () => Promise<any>, model: string, prompt: strin
       return await fn();
     } catch (error: any) {
       if (i === retries - 1) throw error;
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1));
     }
   }
 };
 
 /**
  * Enhanced LLM wrapper with retry logic and TODO generation
- */
+ */;
 export class OllamaRetryWrapper {
   private readonly baseUrl: string;
   private failureCount = 0;
@@ -71,16 +72,15 @@ export class OllamaRetryWrapper {
       useGPU = true
     } = options;
 
-    // Validate local-only operation
+    // Validate local-only operation;
     if (!this.baseUrl.includes('localhost') && !this.baseUrl.includes('127.0.0.1')) {
       throw new Error('❌ Only local Ollama LLMs allowed. Remote access blocked.');
     }
 
     const startTime = Date.now();
 
-    return await retryLLMCall(
-      async () => {
-        const controller = new AbortController());
+    return await retryLLMCall(async () => {
+        const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), timeout);
 
         try {
@@ -97,7 +97,7 @@ export class OllamaRetryWrapper {
                 num_predict: maxTokens,
                 num_ctx: LOCAL_LLM_CONFIG.MAX_CONTEXT_LENGTH,
                 num_gpu: useGPU ? -1 : 0, // -1 = use all GPU layers
-                num_thread: useGPU ? 1 : 4 // Fewer threads when using GPU
+                num_thread: useGPU ? 1 : 4 // Fewer threads when using GPU,
               }
             })
           });
@@ -117,7 +117,7 @@ export class OllamaRetryWrapper {
           this.lastSuccessTime = Date.now();
 
           // Log performance issues
-          if (duration > 30000) { // 30 second threshold
+          if (duration > 30000) { // 30 second threshold;
             await todoAutogen.logPerformanceIssue('timeout', {
               model,
               duration,
@@ -131,7 +131,7 @@ export class OllamaRetryWrapper {
             tokensUsed: (data as { eval_count?: any; response?: any; models?: any }).eval_count || 0,
             model,
             duration,
-            success: true
+            success: true,
           };
 
         } catch (error: any) {
@@ -140,12 +140,12 @@ export class OllamaRetryWrapper {
           // Track failures
           this.failureCount++;
 
-          // Log specific error types
+          // Log specific error types;
           if (error.name === 'AbortError') {
             await todoAutogen.logPerformanceIssue('timeout', {
               model,
               timeout,
-              promptLength: prompt.length
+              promptLength: prompt.length,
             });
             throw new Error(`LLM call timed out after ${timeout}ms`);
           }
@@ -154,7 +154,7 @@ export class OllamaRetryWrapper {
             await todoAutogen.logPerformanceIssue('gpu', {
               model,
               error: error.message,
-              gpuMemoryFraction: LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION
+              gpuMemoryFraction: LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION,
             });
           }
 
@@ -169,7 +169,7 @@ export class OllamaRetryWrapper {
 
   /**
    * Health check for Ollama service
-   */
+   */;
   async healthCheck(): Promise<any> {
     try {
       const response = await fetch(`${this.baseUrl}/api/tags`, {
@@ -188,7 +188,7 @@ export class OllamaRetryWrapper {
       const requiredModels = Object.values(LOCAL_LLM_CONFIG.OLLAMA_MODELS);
       const availableModels = models.map((m: any) => m.name);
       const missingModels = requiredModels.filter((model: string) =>
-        !availableModels.some((available: string) => available.includes(model))
+        !availableModels.some((available: string) => available.includes(model)
       );
 
       const status = missingModels.length === 0 ? 'healthy' : 'degraded';
@@ -199,7 +199,7 @@ export class OllamaRetryWrapper {
         missingModels,
         lastSuccessTime: this.lastSuccessTime,
         failureCount: this.failureCount,
-        url: this.baseUrl
+        url: this.baseUrl,
       };
 
       if (status === 'degraded') {
@@ -216,7 +216,7 @@ export class OllamaRetryWrapper {
         model: 'health-check',
         prompt: 'health check request',
         error: error.message,
-        retryCount: 0
+        retryCount: 0,
       });
 
       return {
@@ -224,7 +224,7 @@ export class OllamaRetryWrapper {
         details: {
           error: error.message,
           url: this.baseUrl,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }
       };
     }
@@ -232,7 +232,7 @@ export class OllamaRetryWrapper {
 
   /**
    * Get system performance metrics
-   */
+   */;
   getMetrics() {
     return {
       failureCount: this.failureCount,
@@ -241,7 +241,7 @@ export class OllamaRetryWrapper {
       baseUrl: this.baseUrl,
       memoryConfig: {
         maxOldSpaceSize: (import.meta as any).env?.NODE_OPTIONS?.includes('max-old-space-size'),
-        gpuMemoryFraction: LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION
+        gpuMemoryFraction: LOCAL_LLM_CONFIG.GPU_MEMORY_FRACTION,
       }
     };
   }
@@ -256,12 +256,12 @@ export const ollamaWrapper = new OllamaRetryWrapper();
 export async function promptLLM(
   prompt: string,
   model?: string,
-  options?: Partial<LLMCallOptions>
+  options?: Partial<LLMCallOptions>;
 ): Promise<string> {
   const result = await ollamaWrapper.callLLM(prompt, {
     model,
     ...options
-  });
+  ,});
 
   return (result as { response?: any }).response;
 }
@@ -309,7 +309,7 @@ export async function* streamLLM(
       if (done) break;
 
       const chunk = decoder.decode(value);
-      const lines = chunk.split('\n').filter((line: string) => line.trim());
+      const lines = chunk.split('\n').filter((line: string) => line.trim();
 
       for (const line of lines) {
         try {
@@ -328,7 +328,7 @@ export async function* streamLLM(
       model,
       prompt: prompt.substring(0, 200) + '...',
       error: error.message,
-      retryCount: 0
+      retryCount: 0,
     });
     throw error;
   } finally {

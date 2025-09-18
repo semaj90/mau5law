@@ -12,6 +12,7 @@
 
 import fetch from 'node-fetch';
 import fs from 'fs/promises';
+}
 
 export interface EmbeddingResult {
   success: boolean;
@@ -34,13 +35,13 @@ export interface BatchEmbeddingResult {
     batchSize: number;
     successCount: number;
     failureCount: number;
-    totalProcessingTime: number;
+    totalProcessingTime: number;,
   };
 }
 
 /**
  * Text embedding using Gemma
- */
+ */;
 export async function embedText(texts: string | string[]): Promise<EmbeddingResult | BatchEmbeddingResult> {
   const startTime = Date.now();
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
@@ -48,7 +49,7 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
   if (!endpoint) {
     return {
       success: false,
-      error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
+      error: 'GEMMA_EMBED_ENDPOINT environment variable not set',
     };
   }
 
@@ -64,9 +65,9 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
       },
       body: JSON.stringify({
         mode: 'text',
-        input: inputTexts
+        input: inputTexts,
       }),
-      timeout: 30000 // 30 second timeout
+      timeout: 30000 // 30 second timeout,
     });
 
     if (!(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).ok) {
@@ -85,7 +86,7 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
           batchSize: inputTexts.length,
           successCount: embeddings.length,
           failureCount: Math.max(0, inputTexts.length - embeddings.length),
-          totalProcessingTime: Date.now() - startTime
+          totalProcessingTime: Date.now() - startTime,
         }
       };
     } else {
@@ -97,21 +98,21 @@ export async function embedText(texts: string | string[]): Promise<EmbeddingResu
           dimensions: embeddings[0]?.length,
           processingTime: Date.now() - startTime,
           inputType: 'text',
-          inputSize: texts.length
+          inputSize: texts.length,
         }
       };
     }
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message: String(error)
+      error: error instanceof Error ? error.message: String(error),
     };
   }
 }
 
 /**
  * Image embedding using Gemma multimodal
- */
+ */;
 export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult> {
   const startTime = Date.now();
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
@@ -119,7 +120,7 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
   if (!endpoint) {
     return {
       success: false,
-      error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
+      error: 'GEMMA_EMBED_ENDPOINT environment variable not set',
     };
   }
 
@@ -136,9 +137,9 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
       },
       body: JSON.stringify({
         mode: 'image',
-        input: dataUri
+        input: dataUri,
       }),
-      timeout: 60000 // 60 second timeout for images
+      timeout: 60000 // 60 second timeout for images,
     });
 
     if (!(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).ok) {
@@ -161,20 +162,20 @@ export async function embedImageBuffer(buffer: Buffer): Promise<EmbeddingResult>
         dimensions: embedding.length,
         processingTime: Date.now() - startTime,
         inputType: 'image',
-        inputSize: buffer.length
+        inputSize: buffer.length,
       }
     };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message: String(error)
+      error: error instanceof Error ? error.message: String(error),
     };
   }
 }
 
 /**
  * Audio embedding using Gemma audio endpoint
- */
+ */;
 export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResult> {
   const startTime = Date.now();
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
@@ -182,7 +183,7 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
   if (!endpoint) {
     return {
       success: false,
-      error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
+      error: 'GEMMA_EMBED_ENDPOINT environment variable not set',
     };
   }
 
@@ -200,9 +201,9 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
       },
       body: JSON.stringify({
         mode: 'audio',
-        input: dataUri
+        input: dataUri,
       }),
-      timeout: 90000 // 90 second timeout for audio
+      timeout: 90000 // 90 second timeout for audio,
     });
 
     if (!(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).ok) {
@@ -225,20 +226,20 @@ export async function embedAudioFilePath(wavPath: string): Promise<EmbeddingResu
         dimensions: embedding.length,
         processingTime: Date.now() - startTime,
         inputType: 'audio',
-        inputSize: audioBuffer.length
+        inputSize: audioBuffer.length,
       }
     };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message: String(error)
+      error: error instanceof Error ? error.message: String(error),
     };
   }
 }
 
 /**
  * Audio embedding from buffer (convenience method)
- */
+ */;
 export async function embedAudioBuffer(buffer: Buffer, tempPath?: string): Promise<EmbeddingResult> {
   let audioPath = tempPath;
   let shouldCleanup = false;
@@ -255,7 +256,7 @@ export async function embedAudioBuffer(buffer: Buffer, tempPath?: string): Promi
 
     return await embedAudioFilePath(audioPath);
   } finally {
-    // Cleanup temp file
+    // Cleanup temp file;
     if (shouldCleanup && audioPath) {
       try {
         await fs.unlink(audioPath);
@@ -268,7 +269,7 @@ export async function embedAudioBuffer(buffer: Buffer, tempPath?: string): Promi
 
 /**
  * Batch image embedding
- */
+ */;
 export async function embedImageBuffers(buffers: Buffer[], options: {
   concurrency?: number;
   failFast?: boolean;
@@ -278,7 +279,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
 
   const results: Array<any> = [];
 
-  // Process in batches to avoid overwhelming the endpoint
+  // Process in batches to avoid overwhelming the endpoint;
   for (let i = 0; i < buffers.length; i += concurrency) {
     const batch = buffers.slice(i, i + concurrency);
     const batchPromises = batch.map(async (buffer) => {
@@ -289,7 +290,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
         if (failFast) throw error;
         return {
           success: false,
-          error: error instanceof Error ? error.message: String(error)
+          error: error instanceof Error ? error.message: String(error),
         };
       }
     });
@@ -323,7 +324,7 @@ export async function embedImageBuffers(buffers: Buffer[], options: {
       batchSize: buffers.length,
       successCount: embeddings.length,
       failureCount: errors.length,
-      totalProcessingTime: Date.now() - startTime
+      totalProcessingTime: Date.now() - startTime,
     }
   };
 }
@@ -343,7 +344,7 @@ export async function embedContent(
     return await embedText(content);
   }
 
-  // Buffer content - route by content type
+  // Buffer content - route by content type;
   if (contentType.startsWith('image/')) {
     return await embedImageBuffer(content);
   }
@@ -369,7 +370,7 @@ export async function embedContent(
 
 /**
  * Health check for Gemma embedding endpoint
- */
+ */;
 export async function checkEmbeddingEndpointHealth(): Promise<any> {
   const startTime = Date.now();
   const endpoint = process.env.GEMMA_EMBED_ENDPOINT;
@@ -377,12 +378,12 @@ export async function checkEmbeddingEndpointHealth(): Promise<any> {
   if (!endpoint) {
     return {
       healthy: false,
-      error: 'GEMMA_EMBED_ENDPOINT environment variable not set'
+      error: 'GEMMA_EMBED_ENDPOINT environment variable not set',
     };
   }
 
   try {
-    // Try a simple health check or small embedding
+    // Try a simple health check or small embedding;
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
@@ -391,9 +392,9 @@ export async function checkEmbeddingEndpointHealth(): Promise<any> {
       },
       body: JSON.stringify({
         mode: 'text',
-        input: ['health check']
+        input: ['health check'],
       }),
-      timeout: 10000 // 10 second timeout for health check
+      timeout: 10000 // 10 second timeout for health check,
     });
 
     if (!(response as { ok?: any; text?: any; status?: any; json?: any; statusText?: any }).ok) {
@@ -411,7 +412,7 @@ export async function checkEmbeddingEndpointHealth(): Promise<any> {
     return {
       healthy: false,
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: String(error)
+      error: error instanceof Error ? error.message: String(error),
     };
   }
 }

@@ -8,7 +8,7 @@ import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import { EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
 import { z } from 'zod';
 
-// Query parameters schema
+// Query parameters schema;
 const EvidenceQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(50),
@@ -22,10 +22,10 @@ const EvidenceQuerySchema = z.object({
 /*
  * GET /api/v1/evidence/by-case/[caseId]
  * Retrieve all evidence items for a specific case with optional filtering and analysis
- */
+ */;
 export const GET: RequestHandler = async ({ params, url, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     }
 
     // Parse query parameters
-    const queryParams = Object.fromEntries(url.searchParams.entries());
+    const queryParams = Object.fromEntries(url.searchParams.entries();
     const {
       page,
       limit,
@@ -56,15 +56,15 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     // Create evidence service
     const evidenceService = new EvidenceCRUDService(locals.user.id);
 
-    // Build query options
+    // Build query options;
     const options = {
       page,
       limit,
       sortBy,
       sortOrder,
       filters: {
-        ...(type && { evidenceType: type }),
-        ...(search && { search })
+        ...(type && { evidenceType: type ,}),
+        ...(search && { search ,})
       }
     };
 
@@ -77,24 +77,23 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         makeHttpErrorPayload({
           message: 'Failed to retrieve evidence',
           code: 'EVIDENCE_FETCH_FAILED',
-          details: evidenceResult.error
+          details: evidenceResult.error,
         })
       );
     }
 
     let enhancedEvidence = evidenceResult.data;
 
-    // Enhance with AI analysis if requested
+    // Enhance with AI analysis if requested;
     if (includeAnalysis) {
-      enhancedEvidence = await Promise.all(
-        evidenceResult.data.map(async (evidence) => {
+      enhancedEvidence = await Promise.all(evidenceResult.data.map(async (evidence) => {
           try {
-            // Check if evidence already has analysis
+            // Check if evidence already has analysis;
             if (evidence.metadata?.aiAnalysis) {
-              return evidence));
+              return evidence);
             }
 
-            // Call MCP server for Gemma embeddings analysis
+            // Call MCP server for Gemma embeddings analysis;
             const mcpResponse = await fetch('http://localhost:3002/mcp/evidence-analyze', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -104,14 +103,14 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                 title: evidence.title,
                 evidenceType: evidence.evidenceType,
                 useGemmaEmbeddings: true,
-                analysisType: 'comprehensive'
+                analysisType: 'comprehensive',
               })
             });
 
             if (mcpResponse.ok) {
               const analysisData = await mcpResponse.json();
               
-              // Add analysis to evidence metadata
+              // Add analysis to evidence metadata;
               return {
                 ...evidence,
                 metadata: {
@@ -125,7 +124,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
                     embeddingVector: analysisData.embedding,
                     confidence: analysisData.confidence || 0,
                     analyzedAt: new Date().toISOString(),
-                    analyzedBy: 'gemma-embeddings'
+                    analyzedBy: 'gemma-embeddings',
                   }
                 }
               };
@@ -146,7 +145,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     const analysisStatus = {
       total: enhancedEvidence.length,
       analyzed: enhancedEvidence.filter(item => item.length),
-      pending: enhancedEvidence.filter(item => item.length)
+      pending: enhancedEvidence.filter(item => item.length),
     };
 
     return json({
@@ -159,7 +158,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           total: evidenceResult.total || enhancedEvidence.length,
           pages: Math.ceil((evidenceResult.total || enhancedEvidence.length) / limit),
           hasNext: page * limit < (evidenceResult.total || enhancedEvidence.length),
-          hasPrev: page > 1
+          hasPrev: page > 1,
         },
         metadata: {
           caseId,
@@ -167,7 +166,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
           totalSize,
           analysisStatus,
           includeAnalysis,
-          filters: options.filters
+          filters: options.filters,
         }
       },
       meta: {
@@ -187,7 +186,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
         makeHttpErrorPayload({
           message: 'Invalid query parameters',
           code: 'INVALID_PARAMS',
-          details: err.errors
+          details: err.errors,
         })
       );
     }
@@ -197,7 +196,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
       makeHttpErrorPayload({
         message: 'Failed to retrieve evidence',
         code: 'EVIDENCE_FETCH_FAILED',
-        details: err.message
+        details: err.message,
       })
     );
   }

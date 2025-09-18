@@ -26,7 +26,7 @@ export async function fetchWithTimeout(
   try {
     const response = await fetch(resource, {
       ...fetchOptions,
-      signal: controller.signal
+      signal: controller.signal,
     });
     clearTimeout(id);
     return response;
@@ -43,7 +43,7 @@ export function formatFileSize(bytes: number): string {
 
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(bytes) / Math.log(k);
 
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
@@ -57,7 +57,7 @@ export function formatDate(date: Date | string): string {
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   });
 }
 
@@ -77,7 +77,7 @@ export function generateId(): string {
 
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
-  wait: number
+  wait: number;
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
@@ -88,7 +88,7 @@ export function debounce<T extends (...args: any[]) => any>(
 
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
-  limit: number
+  limit: number;
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
   return (...args: Parameters<T>) => {
@@ -206,7 +206,7 @@ export const storage = {
   set: <T>(key: string, value: T): void => {
     if (!isBrowser) return;
     try {
-      localStorage.setItem(key, JSON.stringify(value));
+      localStorage.setItem(key, JSON.stringify(value);
     } catch (error: any) {
       console.error('Failed to save to localStorage:', error);
     }

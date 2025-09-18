@@ -10,6 +10,7 @@ import { aiSuggestionsClient } from '$lib/services/ai-suggestions-grpc-client';
 import { pgvectorHealthCheck } from '$lib/server/db/pgvector-utils';
 import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced';
 import { db, healthCheck as dbHealthCheck } from '$lib/server/db/index';
+}
 
 export interface IntegrationTestResult {
   service: string;
@@ -23,41 +24,41 @@ export interface IntegrationTestResult {
 /*
  * Comprehensive AI Suggestions Integration Test
  * Tests all services, database connections, and Protocol Buffers integration
- */
+ */;
 export async function GET({ url }: RequestEvent): Promise<any> {
   const startTime = Date.now();
   const testResults: IntegrationTestResult[] = [];
   const testContent = "The defendant was found with stolen evidence. We need to analyze the chain of custody and prepare charges for prosecution.";
   
   // Test 1: Database Connection
-  testResults.push(await testDatabaseConnection());
+  testResults.push(await testDatabaseConnection();
   
   // Test 2: pgvector Integration
-  testResults.push(await testPgVectorIntegration());
+  testResults.push(await testPgVectorIntegration();
   
   // Test 3: Embedding Generation
-  testResults.push(await testEmbeddingGeneration(testContent));
+  testResults.push(await testEmbeddingGeneration(testContent);
   
   // Test 4: Ollama AI Service
-  testResults.push(await testOllamaService());
+  testResults.push(await testOllamaService();
   
   // Test 5: Enhanced RAG Service
-  testResults.push(await testEnhancedRAGService());
+  testResults.push(await testEnhancedRAGService();
   
   // Test 6: Protocol Buffers gRPC Client
-  testResults.push(await testProtobufGRPCService());
+  testResults.push(await testProtobufGRPCService();
   
   // Test 7: Main Suggestions API
-  testResults.push(await testMainSuggestionsAPI());
+  testResults.push(await testMainSuggestionsAPI();
   
   // Test 8: Streaming API
-  testResults.push(await testStreamingAPI());
+  testResults.push(await testStreamingAPI();
   
   // Test 9: Rating API
-  testResults.push(await testRatingAPI());
+  testResults.push(await testRatingAPI();
   
   // Test 10: Health Check API
-  testResults.push(await testHealthCheckAPI());
+  testResults.push(await testHealthCheckAPI();
   
   // Calculate overall status
   const passCount = testResults.filter(item => item.length);
@@ -80,7 +81,7 @@ export async function GET({ url }: RequestEvent): Promise<any> {
     },
     results: testResults,
     timestamp: new Date().toISOString(),
-    recommendations: generateRecommendations(testResults)
+    recommendations: generateRecommendations(testResults),
   });
 }
 
@@ -106,7 +107,7 @@ async function testDatabaseConnection(): Promise<IntegrationTestResult> {
         message: 'Database connection failed',
         details: health,
         responseTime,
-        error: health.error
+        error: health.error,
       };
     }
   } catch (error: any) {
@@ -115,7 +116,7 @@ async function testDatabaseConnection(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Database connection test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -142,7 +143,7 @@ async function testPgVectorIntegration(): Promise<IntegrationTestResult> {
         message: 'pgvector extension not available',
         details: health,
         responseTime,
-        error: health.error
+        error: health.error,
       };
     }
   } catch (error: any) {
@@ -151,7 +152,7 @@ async function testPgVectorIntegration(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'pgvector test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -163,7 +164,7 @@ async function testEmbeddingGeneration(content: string): Promise<IntegrationTest
     const embedding = await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
       legalDomain: true,
-      cache: true
+      cache: true,
     });
     
     const responseTime = Date.now() - startTime;
@@ -176,7 +177,7 @@ async function testEmbeddingGeneration(content: string): Promise<IntegrationTest
         details: {
           dimensions: embedding.length,
           sampleValues: embedding.slice(0, 5),
-          provider: 'nomic-embed'
+          provider: 'nomic-embed',
         },
         responseTime
       };
@@ -195,7 +196,7 @@ async function testEmbeddingGeneration(content: string): Promise<IntegrationTest
       status: 'fail',
       message: 'Embedding generation failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -215,7 +216,7 @@ async function testOllamaService(): Promise<IntegrationTestResult> {
         details: {
           model: (result as any)?.model || "unknown",
           availableModels: (result as any).availableModels,
-          testSuggestion: (result as any).testSuggestion
+          testSuggestion: (result as any).testSuggestion,
         },
         responseTime
       };
@@ -226,7 +227,7 @@ async function testOllamaService(): Promise<IntegrationTestResult> {
         message: 'Ollama service not available',
         details: result,
         responseTime,
-        error: (result as any)?.error
+        error: (result as any)?.error,
       };
     }
   } catch (error: any) {
@@ -235,7 +236,7 @@ async function testOllamaService(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Ollama test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -256,7 +257,7 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
           serviceAvailable: (result as any).serviceAvailable,
           version: (result as any).version,
           testSuggestion: (result as any).testSuggestion,
-          responseTime: (result as any).responseTime
+          responseTime: (result as any).responseTime,
         },
         responseTime
       };
@@ -267,7 +268,7 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
         message: (result as any)?.serviceAvailable ? 'Service available but test failed' : 'Enhanced RAG service not available',
         details: result,
         responseTime,
-        error: (result as any)?.error
+        error: (result as any)?.error,
       };
     }
   } catch (error: any) {
@@ -276,7 +277,7 @@ async function testEnhancedRAGService(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Enhanced RAG test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -312,7 +313,7 @@ async function testProtobufGRPCService(): Promise<IntegrationTestResult> {
       status: 'warning',
       message: 'gRPC test failed (HTTP fallback available)',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -330,7 +331,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
         maxSuggestions: 3,
         useVectorSearch: true,
         useOllamaAI: true,
-        useEnhancedRAG: false // Disable to avoid timeout in tests
+        useEnhancedRAG: false // Disable to avoid timeout in tests,
       })
     });
     
@@ -346,7 +347,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
         details: {
           suggestionsCount: result?.suggestions?.length || 0,
           confidence: result?.confidence,
-          servicesUsed: result?.servicesUsed
+          servicesUsed: result?.servicesUsed,
         },
         responseTime
       };
@@ -357,7 +358,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
         status: 'fail',
         message: `API request failed with status ${response.status}`,
         responseTime,
-        error: errorText
+        error: errorText,
       };
     }
   } catch (error: any) {
@@ -366,7 +367,7 @@ async function testMainSuggestionsAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -376,7 +377,7 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
   
   try {
     const response = await fetch('/api/ai/suggestions/stream?content=Test streaming suggestions&max=2', {
-      method: 'GET'
+      method: 'GET',
     });
     
     const responseTime = Date.now() - startTime;
@@ -388,7 +389,7 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
         message: 'Streaming API is operational',
         details: {
           contentType: response.headers.get('content-type'),
-          status: response.status
+          status: response.status,
         },
         responseTime
       };
@@ -406,7 +407,7 @@ async function testStreamingAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Streaming API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -419,7 +420,7 @@ async function testRatingAPI(): Promise<IntegrationTestResult> {
     const response = await fetch('/api/ai/suggestions/rate');
     const responseTime = Date.now() - startTime;
     
-    // Should return 400 for missing userId
+    // Should return 400 for missing userId;
     if (response.status === 400) {
       return {
         service: 'Rating API',
@@ -427,7 +428,7 @@ async function testRatingAPI(): Promise<IntegrationTestResult> {
         message: 'Rating API is operational (validation working)',
         details: {
           status: response.status,
-          validation: 'userId parameter required'
+          validation: 'userId parameter required',
         },
         responseTime
       };
@@ -446,7 +447,7 @@ async function testRatingAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Rating API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
@@ -482,7 +483,7 @@ async function testHealthCheckAPI(): Promise<IntegrationTestResult> {
       status: 'fail',
       message: 'Health check API test failed',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }

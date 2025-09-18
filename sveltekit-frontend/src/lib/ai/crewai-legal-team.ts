@@ -1,6 +1,7 @@
 
 // CrewAI Legal Team Integration
-// Orchestrated multi-agent workflows for legal case management
+// Orchestrated multi-agent workflows for legal case management;
+}
 
 export interface CrewMember {
   id: string;
@@ -11,7 +12,7 @@ export interface CrewMember {
   tools: string[];
   maxExecutionTime: number;
   memoryEnabled: boolean;
-  verboseMode: boolean;
+  verboseMode: boolean;,
 }
 
 export interface Task {
@@ -32,7 +33,7 @@ export interface CrewConfig {
   process: "sequential" | "hierarchical" | "consensus";
   verbose: boolean;
   memorySystem: boolean;
-  maxIterations: number;
+  maxIterations: number;,
 }
 
 export interface WorkflowResult {
@@ -43,12 +44,12 @@ export interface WorkflowResult {
   finalDeliverable: string;
   totalTime: number;
   insights: string[];
-  recommendations: string[];
+  recommendations: string[];,
 }
 
 class CrewAILegalTeam {
   private crews: Map<string, CrewConfig>;
-  private activeWorkflows: Map<string, Promise<WorkflowResult>>;
+  private activeWorkflows: Map<string, Promise<WorkflowResult>;
   private aiEndpoint: string;
 
   constructor(config: { aiEndpoint?: string } = {}) {
@@ -59,14 +60,14 @@ class CrewAILegalTeam {
   }
 
   private initializeLegalCrews() {
-    // Case Investigation Crew
+    // Case Investigation Crew;
     this.crews.set("case_investigation", {
       name: "Case Investigation Team",
       process: "sequential",
       verbose: true,
       memorySystem: true,
       maxIterations: 3,
-      members: [
+      members: [;
         {
           id: "lead_investigator",
           name: "Lead Case Investigator",
@@ -108,7 +109,7 @@ class CrewAILegalTeam {
           verboseMode: false,
         },
       ],
-      tasks: [
+      tasks: [;
         {
           id: "initial_case_review",
           description:
@@ -132,7 +133,7 @@ class CrewAILegalTeam {
           priority: "high",
           estimatedDuration: 180000,
           context: Record<string, any>,
-        },
+        },);
         {
           id: "legal_research",
           description:
@@ -148,14 +149,14 @@ class CrewAILegalTeam {
       ],
     });
 
-    // Trial Preparation Crew
+    // Trial Preparation Crew;
     this.crews.set("trial_preparation", {
       name: "Trial Preparation Team",
       process: "hierarchical",
       verbose: true,
       memorySystem: true,
       maxIterations: 2,
-      members: [
+      members: [;
         {
           id: "trial_attorney",
           name: "Lead Trial Attorney",
@@ -193,7 +194,7 @@ class CrewAILegalTeam {
           verboseMode: false,
         },
       ],
-      tasks: [
+      tasks: [;
         {
           id: "trial_strategy",
           description:
@@ -216,7 +217,7 @@ class CrewAILegalTeam {
           priority: "high",
           estimatedDuration: 120000,
           context: Record<string, any>,
-        },
+        },);
         {
           id: "exhibit_organization",
           description:
@@ -232,14 +233,14 @@ class CrewAILegalTeam {
       ],
     });
 
-    // Appeal Analysis Crew
+    // Appeal Analysis Crew;
     this.crews.set("appeal_analysis", {
       name: "Appeal Analysis Team",
       process: "consensus",
       verbose: false,
       memorySystem: true,
       maxIterations: 4,
-      members: [
+      members: [;
         {
           id: "appellate_attorney",
           name: "Appellate Attorney",
@@ -273,7 +274,7 @@ class CrewAILegalTeam {
           verboseMode: false,
         },
       ],
-      tasks: [
+      tasks: [;
         {
           id: "appeal_vulnerability_analysis",
           description:
@@ -285,7 +286,7 @@ class CrewAILegalTeam {
           priority: "high",
           estimatedDuration: 180000,
           context: Record<string, any>,
-        },
+        },);
         {
           id: "procedural_compliance_review",
           description:
@@ -326,7 +327,7 @@ class CrewAILegalTeam {
         crewId: workflowId,
         workflowName: crewName,
         totalTime: Date.now() - startTime,
-      }));
+      });
       this.activeWorkflows.set(workflowId, workflowPromise);
 
       const result = await workflowPromise;
@@ -344,13 +345,13 @@ class CrewAILegalTeam {
     crew: CrewConfig,
     context: Record<string, any>,
     workflowId: string,
-  ): Promise<Omit<WorkflowResult, "crewId" | "workflowName" | "totalTime">> {
+  ): Promise<Omit<WorkflowResult, "crewId" | "workflowName" | "totalTime"> {
     const results: WorkflowResult["results"] = [];
     const insights: string[] = [];
     const recommendations: string[] = [];
 
     try {
-      // Execute tasks based on crew process type
+      // Execute tasks based on crew process type;
       switch (crew.process) {
         case "sequential":
           await this.executeSequentialTasks(crew, context, results);
@@ -370,10 +371,10 @@ class CrewAILegalTeam {
         context,
       );
 
-      // Extract insights and recommendations
+      // Extract insights and recommendations;
       for (const result of results) {
-        insights.push(...this.extractInsights((result as { output?: any }).output));
-        recommendations.push(...this.extractRecommendations((result as { output?: any }).output));
+        insights.push(...this.extractInsights((result as { output?: any ,}).output);
+        recommendations.push(...this.extractRecommendations((result as { output?: any ,}).output);
       }
 
       return {
@@ -413,7 +414,7 @@ class CrewAILegalTeam {
 
       const startTime = Date.now();
 
-      // Build task context including previous results
+      // Build task context including previous results;
       const taskContext = {
         ...context,
         previousResults: results.map((r) => ({
@@ -449,7 +450,7 @@ class CrewAILegalTeam {
     const manager = crew.members[0];
     const subordinates = crew.members.slice(1);
 
-    // Manager creates work plan
+    // Manager creates work plan;
     const planningTask: Task = {
       id: "work_planning",
       description:
@@ -496,9 +497,9 @@ class CrewAILegalTeam {
     const subordinateResults = (await Promise.all(taskPromises)).filter(
       (r) => r !== null,
     );
-    results.push(...(subordinateResults as WorkflowResult["results"]));
+    results.push(...(subordinateResults as WorkflowResult["results"]);
 
-    // Manager reviews and synthesizes
+    // Manager reviews and synthesizes;
     const reviewTask: Task = {
       id: "final_review",
       description: "Review team outputs and provide final synthesis",
@@ -528,11 +529,11 @@ class CrewAILegalTeam {
     context: Record<string, any>,
     results: WorkflowResult["results"],
   ): Promise<void> {
-    // All agents work on the same tasks and reach consensus
+    // All agents work on the same tasks and reach consensus;
     for (const task of crew.tasks) {
       const agentOutputs: Array<any> = [];
 
-      // Get output from each agent
+      // Get output from each agent;
       for (const agent of crew.members) {
         const startTime = Date.now();
         const output = await this.executeAgentTask(agent, task, context);
@@ -704,7 +705,7 @@ Final synthesis:`;
         break;
       }
 
-      // Sort by priority within executable tasks
+      // Sort by priority within executable tasks;
       canExecute.sort((a, b) => {
         const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 };
         return priorityOrder[b.priority] - priorityOrder[a.priority];
@@ -788,9 +789,9 @@ Consensus output:`;
     if (timeRatio > 2) confidence -= 0.1; // Too slow
 
     // Check for key indicators
-    if (output.includes("recommend") || output.includes("suggest"))
+    if (output.includes("recommend") || output.includes("suggest")
       confidence += 0.05;
-    if (output.includes("analysis") || output.includes("conclusion"))
+    if (output.includes("analysis") || output.includes("conclusion")
       confidence += 0.05;
 
     return Math.min(Math.max(confidence, 0.1), 0.95); // Clamp between 0.1 and 0.95
@@ -808,7 +809,7 @@ Consensus output:`;
       const matches = output.matchAll(pattern);
       for (const match of matches) {
         if (match[1]?.trim()) {
-          insights.push(match[1].trim());
+          insights.push(match[1].trim();
         }
       }
     }
@@ -828,7 +829,7 @@ Consensus output:`;
       const matches = output.matchAll(pattern);
       for (const match of matches) {
         if (match[1]?.trim()) {
-          recommendations.push(match[1].trim());
+          recommendations.push(match[1].trim();
         }
       }
     }
@@ -836,9 +837,9 @@ Consensus output:`;
     return recommendations.slice(0, 8); // Limit to top 8 recommendations
   }
 
-  // Public methods for crew management
+  // Public methods for crew management;
   getCrews(): string[] {
-    return Array.from(this.crews.keys());
+    return Array.from(this.crews.keys();
   }
 
   getCrewConfig(crewName: string): CrewConfig | undefined {
@@ -846,7 +847,7 @@ Consensus output:`;
   }
 
   getActiveWorkflows(): string[] {
-    return Array.from(this.activeWorkflows.keys());
+    return Array.from(this.activeWorkflows.keys();
   }
 
   async cancelWorkflow(workflowId: string): Promise<boolean> {

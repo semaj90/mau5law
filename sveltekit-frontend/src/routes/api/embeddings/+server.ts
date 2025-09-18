@@ -4,19 +4,19 @@ import type { RequestHandler } from './$types.js';
 
 // Embeddings API Endpoint
 // Handles embedding generation and bulk embedding operations
-// TODO: Implement enhanced ollama service
+// TODO: Implement enhanced ollama service;
 // import {
 //   generateBatchEmbeddings,
 //   generateEmbedding,
 // } from "$lib/services/enhanced-ollama-service";
 
-// Placeholder functions until enhanced-ollama-service is implemented
+// Placeholder functions until enhanced-ollama-service is implemented;
 async function generateBatchEmbeddings(texts: string[]): Promise<number[][]> {
-  return texts.map(text => Array.from({length: 768}, () => Math.random()));
+  return texts.map(text => Array.from({length: 768}, () => Math.random());
 }
 
 async function generateEmbedding(text: string): Promise<number[]> {
-  return Array.from({length: 768}, () => Math.random());
+  return Array.from({length: 768}, () => Math.random();
 }
 import { fetchEmbedding } from "$lib/server/qdrant";
 // import { syncDocumentEmbeddings
@@ -31,35 +31,34 @@ async function syncDocumentEmbeddings(
   return { total: 0, updated: 0, errors: 0 };
 }
 
-// Single embedding request
+// Single embedding request;
 export interface EmbeddingRequest {
   text: string;
   model?: string;
 }
-// Batch embedding request
+// Batch embedding request;
 export interface BatchEmbeddingRequest {
   texts: string[];
   model?: string;
   batchSize?: number;
 }
-// Sync request for database documents
+// Sync request for database documents;
 export interface SyncRequest {
   type?: "cases" | "evidence" | "documents" | "all";
   limit?: number;
   forceRegenerate?: boolean;
 }
-// Generate single embedding
+// Generate single embedding;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const body: EmbeddingRequest = await request.json();
     const { text, model } = body;
 
     if (!text || text.trim().length === 0) {
-      return json(
-        {
+      return json({
           success: false,
           error: "Text is required",
-        },
+        },)
         { status: 400 },
       );
     }
@@ -85,38 +84,35 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     });
   } catch (error: any) {
     console.error("Embedding generation error:", error);
-    return json(
-      {
+    return json({
         success: false,
         error: "Failed to generate embedding",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }
 };
 
-// Batch embedding generation
+// Batch embedding generation;
 export const PUT: RequestHandler = async ({ request, locals }) => {
   try {
     const body: BatchEmbeddingRequest = await request.json();
     const { texts, model, batchSize = 10 } = body;
 
     if (!texts || !Array.isArray(texts) || texts.length === 0) {
-      return json(
-        {
+      return json({
           success: false,
           error: "Texts array is required",
-        },
+        },)
         { status: 400 },
       );
     }
     if (texts.length > 100) {
-      return json(
-        {
+      return json({
           success: false,
           error: "Maximum 100 texts per batch",
-        },
+        },)
         { status: 400 },
       );
     }
@@ -134,30 +130,28 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     });
   } catch (error: any) {
     console.error("Batch embedding generation error:", error);
-    return json(
-      {
+    return json({
         success: false,
         error: "Failed to generate batch embeddings",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }
 };
 
-// Sync embeddings for existing database documents
+// Sync embeddings for existing database documents;
 export const PATCH: RequestHandler = async ({ request, locals }) => {
   try {
     const body: SyncRequest = await request.json();
     const { type = "all", limit = 100, forceRegenerate = false } = body;
 
-    // Check if user has permission for bulk operations
+    // Check if user has permission for bulk operations;
     if (!locals.user || locals.user.role !== "admin") {
-      return json(
-        {
+      return json({
           success: false,
           error: "Admin privileges required for bulk operations",
-        },
+        },)
         { status: 403 },
       );
     }
@@ -219,12 +213,11 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
           },
         };
         break;
-      default:
-        return json(
-          {
+      default:;
+        return json({
             success: false,
             error: "Invalid sync type. Use: cases, evidence, documents, or all",
-          },
+          },)
           { status: 400 },
         );
     }
@@ -238,22 +231,21 @@ export const PATCH: RequestHandler = async ({ request, locals }) => {
     });
   } catch (error: any) {
     console.error("Embedding sync error:", error);
-    return json(
-      {
+    return json({
         success: false,
         error: "Failed to sync embeddings",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }
 };
 
-// Get embedding status and statistics
+// Get embedding status and statistics;
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // This could be expanded to show embedding statistics
-    // For now, return basic info
+    // For now, return basic info;
     return json({
       success: true,
       data: {
@@ -272,11 +264,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     });
   } catch (error: any) {
     console.error("Embeddings status error:", error);
-    return json(
-      {
+    return json({
         success: false,
         error: "Failed to get embeddings status",
-      },
+      },)
       { status: 500 },
     );
   }

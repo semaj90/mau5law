@@ -14,7 +14,7 @@ import { sql } from 'drizzle-orm';
 
 // Case Management Tables
 export const cases = pgTable(
-  'cases',
+  'cases',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
     caseNumber: text('case_number').notNull().unique(),
@@ -79,7 +79,7 @@ export const cases = pgTable(
 
 // Evidence Management Tables
 export const evidence = pgTable(
-  'evidence',
+  'evidence',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
     caseId: uuid('case_id').notNull().references(() => cases.id, { onDelete: 'cascade' }),
@@ -89,7 +89,7 @@ export const evidence = pgTable(
     title: text('title').notNull(),
     description: text('description'),
     
-    // Evidence type and classification
+    // Evidence type and classification;
     evidenceType: text('evidence_type', {
       enum: [
         'document', 'photo', 'video', 'audio', 'physical', 
@@ -124,7 +124,7 @@ export const evidence = pgTable(
     relatedEvidence: uuid('related_evidence').array().default(sql`ARRAY[]::uuid[]`),
     mentionedEntities: jsonb('mentioned_entities').default(sql`'[]'::jsonb`),
     
-    // Classification and tags
+    // Classification and tags;
     confidentialityLevel: text('confidentiality_level', {
       enum: ['public', 'confidential', 'restricted', 'top_secret']
     }).notNull().default('public'),
@@ -159,12 +159,12 @@ export const evidence = pgTable(
 
 // Case Timeline and Events
 export const caseTimeline = pgTable(
-  'case_timeline',
+  'case_timeline',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
     caseId: uuid('case_id').notNull().references(() => cases.id, { onDelete: 'cascade' }),
     
-    // Event details
+    // Event details;
     eventType: text('event_type', {
       enum: [
         'case_created', 'evidence_added', 'evidence_analyzed', 
@@ -206,12 +206,12 @@ export const caseTimeline = pgTable(
 
 // Citations and References
 export const citations = pgTable(
-  'citations',
+  'citations',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
     caseId: uuid('case_id').notNull().references(() => cases.id, { onDelete: 'cascade' }),
     
-    // Citation details
+    // Citation details;
     citationType: text('citation_type', {
       enum: [
         'case_law', 'statute', 'regulation', 'secondary_authority',
@@ -235,7 +235,7 @@ export const citations = pgTable(
     contextNotes: text('context_notes'),
     
     // Relationship to case
-    relevanceScore: integer('relevance_score').default(5), // 1-10 scale
+    relevanceScore: integer('relevance_score').default(5), // 1-10 scale;
     citationPurpose: text('citation_purpose', {
       enum: ['support', 'distinguish', 'authority', 'background', 'counter_argument']
     }).notNull().default('support'),
@@ -272,12 +272,12 @@ export const citations = pgTable(
 
 // Case Notes and Detective Analysis
 export const caseNotes = pgTable(
-  'case_notes',
+  'case_notes',);
   {
     id: uuid('id').primaryKey().defaultRandom(),
     caseId: uuid('case_id').notNull().references(() => cases.id, { onDelete: 'cascade' }),
     
-    // Note details
+    // Note details;
     noteType: text('note_type', {
       enum: [
         'general', 'strategy', 'observation', 'hypothesis',
@@ -304,7 +304,7 @@ export const caseNotes = pgTable(
       enum: ['low', 'medium', 'high', 'urgent'] 
     }).notNull().default('medium'),
     
-    // Status and workflow
+    // Status and workflow;
     status: text('status', {
       enum: ['draft', 'review', 'approved', 'archived']
     }).notNull().default('draft'),
@@ -333,13 +333,13 @@ export const caseNotes = pgTable(
   })
 );
 
-// Define relationships between tables
+// Define relationships between tables;
 export const casesRelations = relations(cases, ({ many }) => ({
   evidence: many(evidence),
   timeline: many(caseTimeline),
   citations: many(citations),
   notes: many(caseNotes),
-}));
+});
 
 export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   case: one(cases, {
@@ -347,7 +347,7 @@ export const evidenceRelations = relations(evidence, ({ one, many }) => ({
     references: [cases.id],
   }),
   timelineEvents: many(caseTimeline),
-}));
+});
 
 export const timelineRelations = relations(caseTimeline, ({ one }) => ({
   case: one(cases, {
@@ -358,21 +358,21 @@ export const timelineRelations = relations(caseTimeline, ({ one }) => ({
     fields: [caseTimeline.evidenceId],
     references: [evidence.id],
   }),
-}));
+});
 
 export const citationsRelations = relations(citations, ({ one }) => ({
   case: one(cases, {
     fields: [citations.caseId],
     references: [cases.id],
   }),
-}));
+});
 
 export const notesRelations = relations(caseNotes, ({ one }) => ({
   case: one(cases, {
     fields: [caseNotes.caseId],
     references: [cases.id],
   }),
-}));
+});
 
 // Export all types for use in application
 export type Case = typeof cases.$inferSelect;

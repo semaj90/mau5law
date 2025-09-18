@@ -8,6 +8,7 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { YoRHa3DComponent, type YoRHaStyle, YORHA_COLORS } from '../YoRHaUI3D.js';
 import { resolveVariantStyle } from '../theme/yorha-theme-adapter.js';
+}
 
 export interface YoRHaButton3DOptions extends Omit<YoRHaStyle, 'variant'> {
   text?: string;
@@ -43,7 +44,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
         offsetY: -0.05,
         ...options.shadow
       },
-      // Interactive states
+      // Interactive states;
       hover: {
         transform: {
           position: new THREE.Vector3(0, 0.02, 0),
@@ -73,17 +74,17 @@ export class YoRHaButton3D extends YoRHa3DComponent {
 
     this.options = options;
 
-    // Add text if provided
+    // Add text if provided;
     if (options.text) {
       this.createText();
     }
 
-    // Add icon if provided
+    // Add icon if provided;
     if (options.icon) {
       this.createIcon();
     }
 
-    // Add loading state if enabled
+    // Add loading state if enabled;
     if (options.loading) {
       this.createLoadingSpinner();
     }
@@ -124,7 +125,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       bevelEnabled: true,
       bevelSegments: 4,
       bevelSize: radius * 0.1,
-      bevelThickness: depth * 0.1
+      bevelThickness: depth * 0.1,
     };
 
     return new THREE.ExtrudeGeometry(shape, extrudeSettings);
@@ -141,7 +142,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     const textMaterial = new THREE.MeshBasicMaterial({
       color: this.style.textColor || YORHA_COLORS.primary.black,
       transparent: true,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
     });
 
     this.textMesh = new THREE.Mesh(textGeometry, textMaterial);
@@ -257,7 +258,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     const ringMaterial = new THREE.MeshStandardMaterial({
       color: YORHA_COLORS.accent.gold,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.8,
     });
 
     const ring = new THREE.Mesh(ringGeometry, ringMaterial);
@@ -266,7 +267,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     this.loadingSpinner.add(ring);
     this.add(this.loadingSpinner);
 
-    // Add spinning animation
+    // Add spinning animation;
     this.addCustomAnimation('loading', (deltaTime) => {
       if (this.loadingSpinner) {
         this.loadingSpinner.rotation.z += deltaTime * 5; // 5 radians per second
@@ -295,11 +296,11 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       hover: resolved.hover ? { backgroundColor: resolved.hover.backgroundColor, textColor: resolved.hover.textColor } : undefined,
       glow: resolved.glow,
       opacity: resolved.opacity,
-      borderWidth: resolved.borderWidth || (variant === 'ghost' ? 0.03 : 0.02)
+      borderWidth: resolved.borderWidth || (variant === 'ghost' ? 0.03 : 0.02),
     };
   }
 
-  // Public methods
+  // Public methods;
   public setText(text: string): void {
     this.options.text = text;
 
@@ -307,7 +308,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
       this.remove(this.textMesh);
       this.textMesh.geometry.dispose();
       if (Array.isArray(this.textMesh.material)) {
-        this.textMesh.material.forEach(mat => mat.dispose());
+        this.textMesh.material.forEach(mat => mat.dispose();
       } else {
         this.textMesh.material.dispose();
       }
@@ -344,14 +345,14 @@ export class YoRHaButton3D extends YoRHa3DComponent {
 
     super.onClick();
 
-    // Add click animation
+    // Add click animation;
     this.addCustomAnimation('clickPulse', (deltaTime) => {
       const time = Date.now() * 0.01;
       const pulse = Math.sin(time) * 0.05 + 1;
       this.mesh.scale.setScalar(pulse);
     });
 
-    // Remove click animation after short time
+    // Remove click animation after short time;
     setTimeout(() => {
       this.customAnimations.delete('clickPulse');
       this.mesh.scale.setScalar(1);
@@ -364,7 +365,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     if (this.textMesh) {
       this.textMesh.geometry.dispose();
       if (Array.isArray(this.textMesh.material)) {
-        this.textMesh.material.forEach(mat => mat.dispose());
+        this.textMesh.material.forEach(mat => mat.dispose();
       } else {
         this.textMesh.material.dispose();
       }
@@ -373,7 +374,7 @@ export class YoRHaButton3D extends YoRHa3DComponent {
     if (this.iconMesh) {
       this.iconMesh.geometry.dispose();
       if (Array.isArray(this.iconMesh.material)) {
-        this.iconMesh.material.forEach(mat => mat.dispose());
+        this.iconMesh.material.forEach(mat => mat.dispose();
       } else {
         this.iconMesh.material.dispose();
       }

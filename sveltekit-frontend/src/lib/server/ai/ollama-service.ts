@@ -13,12 +13,12 @@ import type { SelfPromptingSuggestion } from '../../ai/intelligent-model-orchest
 /**
  * Clean, single-definition EnhancedOllamaService that preserves the public API surface
  * and provides deterministic stub implementations so the codebase can compile and run.
- */
+ */;
 class EnhancedOllamaService extends EventEmitter {
   private baseUrl: string = OLLAMA_CONFIG.baseUrl;
   private cache = new Map<string, any>();
   private availableModels: string[] = [];
-  private requestQueue: Array<() => Promise<void>> = [];
+  private requestQueue: Array<() => Promise<void> = [];
   private activeRequests = 0;
 
   constructor() {
@@ -59,7 +59,7 @@ class EnhancedOllamaService extends EventEmitter {
 
   private async selectModelForTask(
     task: 'generation' | 'legal-analysis' | 'embedding',
-    prompt?: string
+    prompt?: string;
   ): Promise<string> {
     await this.ensureModels();
     if (task === 'embedding') return 'nomic-embed-text';
@@ -72,13 +72,13 @@ class EnhancedOllamaService extends EventEmitter {
     prompt: string,
     options: Partial<OllamaGenerateRequest> = {}
   ): Promise<OllamaResponse> {
-    const model = options.model || (await this.selectModelForTask('generation', prompt));
+    const model = options.model || (await this.selectModelForTask('generation', prompt);
     const cacheKey = this.getCacheKey('generate', prompt, { model, options });
     if (OLLAMA_CONFIG.performance?.cacheEnabled && this.cache.has(cacheKey)) {
       return this.cache.get(cacheKey) as OllamaResponse;
     }
 
-    // Simple deterministic stub response
+    // Simple deterministic stub response;
     const resp: OllamaResponse = {
       model,
       response: `Stub response: ${prompt.slice(0, 200)}`,
@@ -109,7 +109,7 @@ class EnhancedOllamaService extends EventEmitter {
   async analyzeLegalDocument(document: LegalDocument): Promise<AnalysisResult> {
     const model = await this.selectModelForTask('legal-analysis', document.content);
     return this.formatAnalysisResult(
-      document.id,
+      document.id,);
       {
         summary: 'Stub legal analysis summary',
         keyPoints: ['Key point 1', 'Key point 2'],
@@ -132,14 +132,14 @@ class EnhancedOllamaService extends EventEmitter {
   private buildQueryContext(chunks: DocumentChunk[]): string {
     return chunks
       .slice(0, 5)
-      .map((c) => c.content.slice(0, 200))
+      .map((c) => c.content.slice(0, 200)
       .join('\n---\n');
   }
 
   private formatAnalysisResult(
     documentId: string,
     analysis: any,
-    modelUsed?: string
+    modelUsed?: string;
   ): AnalysisResult {
     return {
       documentId,
@@ -219,7 +219,7 @@ class EnhancedOllamaService extends EventEmitter {
     return this.analyzeLegalDocument(document);
   }
 
-  // Lightweight request queueing for parallelism limit
+  // Lightweight request queueing for parallelism limit;
   private async queueRequest<T>(fn: () => Promise<T>): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       this.requestQueue.push(async () => {
@@ -237,7 +237,7 @@ class EnhancedOllamaService extends EventEmitter {
     setInterval(() => {
       if (
         this.requestQueue.length > 0 &&
-        this.activeRequests < (OLLAMA_CONFIG.performance?.parallelRequests ?? 4)
+        this.activeRequests < (OLLAMA_CONFIG.performance?.parallelRequests ?? 4);
       ) {
         const job = this.requestQueue.shift();
         if (job) {
@@ -257,7 +257,7 @@ class EnhancedOllamaService extends EventEmitter {
 
   // Simple smart selection stub (keeps API)
   async smartModelSelection(
-    query: string
+    query: string;
   ): Promise<{ selectedModel: string; confidence: number; reasoning: string[] }> {
     const model = await this.selectModelForTask('generation', query);
     return { selectedModel: model, confidence: 0.5, reasoning: ['stub-selection'] };

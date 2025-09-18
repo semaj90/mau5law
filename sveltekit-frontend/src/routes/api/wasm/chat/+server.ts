@@ -15,14 +15,14 @@ interface WasmLLMService {
   isAvailable(): boolean;
 }
 
-// Mock WebAssembly LLM service (replace with actual implementation)
+// Mock WebAssembly LLM service (replace with actual implementation);
 class MockWasmLLM implements WasmLLMService {
   private initialized = false;
   
   async initialize(): Promise<void> {
     // Initialize WebAssembly model
     console.log('Initializing WebAssembly LLM...');
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate loading
+    await new Promise(resolve => setTimeout(resolve, 1000); // Simulate loading
     this.initialized = true;
   }
   
@@ -51,7 +51,7 @@ class MockWasmLLM implements WasmLLMService {
     ];
 
     for (let i = 0; i < responses.length; i++) {
-      await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
+      await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200);
       yield responses[i];
     }
   }
@@ -60,7 +60,7 @@ class MockWasmLLM implements WasmLLMService {
 // Global WebAssembly service instance
 let wasmService: WasmLLMService | null = null;
 
-// Initialize service
+// Initialize service;
 async function getWasmService(): Promise<WasmLLMService> {
   if (!wasmService) {
     wasmService = new MockWasmLLM();
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!message) {
       return json({
         success: false,
-        error: 'Message is required'
+        error: 'Message is required',
       }, { status: 400 });
     }
 
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!wasm.isAvailable()) {
       return json({
         success: false,
-        error: 'WebAssembly LLM service not available'
+        error: 'WebAssembly LLM service not available',
       }, { status: 503 });
     }
 
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
       fullPrompt += `You are a legal AI assistant running in WebAssembly mode. Provide helpful legal guidance while acknowledging your limitations compared to full-scale models.\n\n`;
     }
 
-    // Add conversation context
+    // Add conversation context;
     if (context.length > 0) {
       fullPrompt += 'Previous conversation:\n';
       context.slice(-5).forEach((msg: any) => {
@@ -120,13 +120,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
     fullPrompt += `User: ${message}\nAssistant: `;
 
-    // For streaming responses
+    // For streaming responses;
     if (stream) {
       const encoder = new TextEncoder();
       const readable = new ReadableStream({
         async start(controller) {
           try {
-            // Send initial metadata
+            // Send initial metadata;
             const initialChunk = {
               text: '',
               metadata: {
@@ -134,13 +134,13 @@ export const POST: RequestHandler = async ({ request }) => {
                 sources: [{
                   type: 'system',
                   content: 'WebAssembly Legal Assistant',
-                  confidence: 0.7
+                  confidence: 0.7,
                 }]
               }
             };
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify(initialChunk)}\n\n`));
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify(initialChunk)}\n\n`);
 
-            // Stream response
+            // Stream response;
             const responseGenerator = wasm.generateResponse(fullPrompt, {
               temperature,
               maxTokens
@@ -152,16 +152,16 @@ export const POST: RequestHandler = async ({ request }) => {
                 metadata: {
                   type: 'text',
                   confidence: 0.75,
-                  model: 'webassembly-llm'
+                  model: 'webassembly-llm',
                 }
               };
               
               const data = `data: ${JSON.stringify(streamChunk)}\n\n`;
-              controller.enqueue(encoder.encode(data));
+              controller.enqueue(encoder.encode(data);
             }
 
             // Send completion marker
-            controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+            controller.enqueue(encoder.encode('data: [DONE]\n\n');
             controller.close();
           } catch (error: any) {
             console.error('WebAssembly streaming error:', error);
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request }) => {
               text: 'I apologize, but I encountered an error processing your request in WebAssembly mode. Please try again or connect to the full Ollama service for enhanced capabilities.',
               metadata: { type: 'error', error: error.message }
             };
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`);
             controller.close();
           }
         }
@@ -205,11 +205,11 @@ export const POST: RequestHandler = async ({ request }) => {
         sources: [{
           type: 'system',
           content: 'WebAssembly Legal Assistant',
-          confidence: 0.7
+          confidence: 0.7,
         }],
         conversationId,
         timestamp: new Date().toISOString(),
-        note: 'Response generated using WebAssembly fallback. Connect to Ollama for enhanced capabilities.'
+        note: 'Response generated using WebAssembly fallback. Connect to Ollama for enhanced capabilities.',
       }
     });
 
@@ -218,7 +218,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: 'Failed to process chat request in WebAssembly mode',
-      details: error instanceof Error ? error.message: String(error)
+      details: error instanceof Error ? error.message: String(error),
     }, { status: 500 });
   }
 };
@@ -246,13 +246,13 @@ export const GET: RequestHandler = async () => {
           'Limited legal knowledge base'
         ]
       },
-      note: 'WebAssembly mode provides basic functionality when Ollama is unavailable'
+      note: 'WebAssembly mode provides basic functionality when Ollama is unavailable',
     });
   } catch (error: any) {
     return json({
       success: false,
       error: 'WebAssembly service error',
-      details: error.message
+      details: error.message,
     }, { status: 500 });
   }
 };

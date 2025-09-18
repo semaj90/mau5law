@@ -1,7 +1,7 @@
 // Minimal pgvector indexer using Drizzle (safe no-op if db not configured)
 import type { InferInsertModel } from 'drizzle-orm/table';
 
-// Lazy imports to avoid build failure when not configured
+// Lazy imports to avoid build failure when not configured;
 export async function indexPgVector(doc: { id: string; text: string; embedding: number[] }) {
   try {
     const mod = await import('$lib/server/db/connection');
@@ -13,7 +13,7 @@ export async function indexPgVector(doc: { id: string; text: string; embedding: 
       id: doc.id,
       content: doc.text,
       embedding: doc.embedding as any,
-      createdAt: new Date()
+      createdAt: new Date(),
     } as any;
     await db.insert(table).values(row);
     return { ok: true };

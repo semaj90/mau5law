@@ -7,7 +7,7 @@ import { setup, createActor, assign, fromPromise } from 'xstate';
 import { cases, evidence } from '../server/db/schema-unified.js';
 import { db } from '../server/db/drizzle.js';
 
-// Zod Validation Schemas
+// Zod Validation Schemas;
 export const CaseFormSchema = z.object({
   // Step 1: Basic Information
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -16,7 +16,7 @@ export const CaseFormSchema = z.object({
   incidentDate: z.string().optional(),
   location: z.string().optional(),
 
-  // Step 2: Classification
+  // Step 2: Classification,
   priority: z.enum(["low", "medium", "high", "urgent"]),
   status: z.enum(["open", "closed", "pending", "archived", "under_review"]),
   category: z.string().min(1, "Category is required"),
@@ -24,7 +24,7 @@ export const CaseFormSchema = z.object({
   estimatedValue: z.number().optional(),
   jurisdiction: z.string().optional(),
 
-  // Step 3: Assignment
+  // Step 3: Assignment,
   leadProsecutor: z.string().optional(),
   assignedTeam: z.array(z.string()).default([]),
   tags: z.array(z.string()).default([]),
@@ -61,14 +61,14 @@ export const EvidenceFormSchema = z.object({
   location: z.string().optional(),
   chainOfCustody: z.array(z.any()).default([]),
 
-  // Step 4: Classification
+  // Step 4: Classification,
   tags: z.array(z.string()).default([]),
   isAdmissible: z.boolean().default(true),
   confidentialityLevel: z
     .enum(["public", "standard", "confidential", "classified"])
     .default("standard"),
 
-  // Step 5: Analysis
+  // Step 5: Analysis,
   aiAnalysis: z.record(z.any()).default({}),
   aiTags: z.array(z.string()).default([]),
   aiSummary: z.string().optional(),
@@ -89,7 +89,7 @@ export const CriminalFormSchema = z.object({
   phone: z.string().optional(),
   email: z.string().email().optional().or(z.literal("")),
 
-  // Step 3: Identification
+  // Step 3: Identification,
   socialSecurityNumber: z.string().optional(),
   driversLicense: z.string().optional(),
 
@@ -119,7 +119,7 @@ export const CriminalFormSchema = z.object({
   metadata: z.record(z.any()).default({}),
 });
 
-// Form step validation schemas
+// Form step validation schemas;
 export const CaseFormSteps = {
   step1: CaseFormSchema.pick({
     title: true,
@@ -218,16 +218,15 @@ export const CriminalFormSteps = {
   }),
 };
 
-// Database operations
-const saveToDatabase = fromPromise(
-  async ({ input }: { input: { formType: string; data: any } }) => {
+// Database operations;
+const saveToDatabase = fromPromise(async ({ input }: { input: { formType: string; data: any } }) => {
     const { formType, data } = input;
 
     try {
       switch (formType) {
         case "case":
           const [newCase] = await db
-            .insert(cases)
+            .insert(cases);
             .values({
               ...data,
               id: crypto.randomUUID(),
@@ -239,7 +238,7 @@ const saveToDatabase = fromPromise(
 
         case "evidence":
           const [newEvidence] = await db
-            .insert(evidence)
+            .insert(evidence);
             .values({
               ...data,
               id: crypto.randomUUID(),
@@ -253,7 +252,7 @@ const saveToDatabase = fromPromise(
           const [newCriminal] = await db
             // TODO: verify correct table name; placeholder symbol 'criminals' was likely corrupted
             // .insert(criminals)
-            .insert([] as any)
+            .insert([] as any);
             .values({
               ...data,
               id: crypto.randomUUID(),
@@ -273,9 +272,8 @@ const saveToDatabase = fromPromise(
   },
 );
 
-// Vector embedding integration
-const generateEmbeddings = fromPromise(
-  async ({ input }: { input: { formType: string; data: any; id: string } }) => {
+// Vector embedding integration;
+const generateEmbeddings = fromPromise(async ({ input }: { input: { formType: string; data: any; id: string } }) => {
     const { formType, data, id } = input;
 
     try {
@@ -294,7 +292,7 @@ const generateEmbeddings = fromPromise(
           break;
       }
 
-      // Generate embeddings using Ollama or other embedding service
+      // Generate embeddings using Ollama or other embedding service;
       const response = await fetch("/api/embeddings/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -321,7 +319,7 @@ const generateEmbeddings = fromPromise(
   },
 );
 
-// Multi-step form machine setup
+// Multi-step form machine setup;
 export const multiStepFormMachine = setup({
   types: {
     context: Record<string, any> as {
@@ -334,7 +332,7 @@ export const multiStepFormMachine = setup({
       isValid: boolean;
       isSubmitting: boolean;
       submitResult: any;
-      userId: string;
+      userId: string;,
     },
     events: Record<string, any> as
       | { type: "NEXT"; stepData: Record<string, any> }
@@ -407,7 +405,7 @@ export const multiStepFormMachine = setup({
                 case "criminal":
                   return 6;
                 default:
-                  return 4;
+                  return 4;,
               }
             },
             formData: Record<string, any>,
@@ -436,7 +434,7 @@ export const multiStepFormMachine = setup({
         isValid: false,
         errors: Record<string, any>,
       }),
-      always: [
+      always: [;
         {
           target: "editing",
           guard: ({ context }) => {
@@ -456,7 +454,7 @@ export const multiStepFormMachine = setup({
                   stepSchema = CriminalFormSteps[`step${currentStep}`];
                   break;
                 default:
-                  return false;
+                  return false;,
               }
 
               stepSchema.parse(stepData);
@@ -585,7 +583,7 @@ export const multiStepFormMachine = setup({
           }),
         },
         onError: {
-          target: "success", // Continue even if embeddings fail
+          target: "success", // Continue even if embeddings fail;
           actions: assign({
             isSubmitting: false,
             submitResult: ({ context, event }) => ({
@@ -636,7 +634,7 @@ export const multiStepFormMachine = setup({
 // Helper functions for Svelte components
 export function createMultiStepFormActor(
   userId: string,
-  formType: "case" | "evidence" | "criminal" = "case"
+  formType: "case" | "evidence" | "criminal" = "case";
 ) {
   const actor = createActor(multiStepFormMachine, {
     input: {
@@ -676,7 +674,7 @@ export function getFullSchema(formType: string) {
   }
 }
 
-// Export types for TypeScript
+// Export types for TypeScript;
 export type MultiStepFormContext = {
   formType: "case" | "evidence" | "criminal";
   currentStep: number;
@@ -687,7 +685,7 @@ export type MultiStepFormContext = {
   isValid: boolean;
   isSubmitting: boolean;
   submitResult: any;
-  userId: string;
+  userId: string;,
 };
 
 export type CaseFormData = z.infer<typeof CaseFormSchema>;

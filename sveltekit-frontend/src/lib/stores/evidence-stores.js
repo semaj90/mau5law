@@ -18,7 +18,7 @@ export const recursionMetrics = writable({
   recursionStatistics: {
     visitedNodes: 0,
     maxDepth: 50,
-    actualDepth: 0
+    actualDepth: 0,
   }
 });
 
@@ -30,7 +30,7 @@ export const evidenceFilter = writable({
   showLegalImplications: true,
   minConfidence: 0.0,
   maxDepth: 50,
-  relationshipTypes: ['all']
+  relationshipTypes: ['all'],
 });
 
 // Canvas integration state
@@ -41,7 +41,7 @@ export const canvasState = writable({
   width: 1200,
   height: 800,
   gridEnabled: false,
-  snapToGrid: false
+  snapToGrid: false,
 });
 
 // Processing queue and worker management
@@ -52,9 +52,9 @@ export const processingQueue = writable<Array<{
   startTime?: number;
   endTime?: number;
   error?: string;
-}>>([]);
+}>([]);
 
-export const activeWorkers = writable<Map<string, Worker>>(new Map());
+export const activeWorkers = writable<Map<string, Worker>(new Map();
 
 // Performance metrics
 export const performanceMetrics = writable({
@@ -63,7 +63,7 @@ export const performanceMetrics = writable({
   errorRate: 0,
   cacheHitRate: 0,
   memoryUsage: 0,
-  lastUpdated: Date.now()
+  lastUpdated: Date.now(),
 });
 
 // Derived stores for computed values
@@ -88,7 +88,7 @@ export const processingProgress = derived(
       completed: completedJobs,
       total: totalJobs,
       nodesProcessed: $metrics.totalNodesProcessed,
-      currentDepth: $metrics.recursionStatistics.actualDepth
+      currentDepth: $metrics.recursionStatistics.actualDepth,
     };
   }
 );
@@ -167,8 +167,8 @@ export const evidenceWorkerStore = (() => {
               ...metrics,
               totalEvidenceProcessed: metrics.totalEvidenceProcessed + (metadata.totalNodesProcessed || 0),
               averageProcessingTime: updateAverageProcessingTime(metrics, metadata.totalProcessingTime),
-              lastUpdated: Date.now()
-            }));
+              lastUpdated: Date.now(),
+            });
           } else {
             console.error('Evidence processing failed:', error);
             processingStatus.set('error');
@@ -177,8 +177,8 @@ export const evidenceWorkerStore = (() => {
             performanceMetrics.update(metrics => ({
               ...metrics,
               errorRate: updateErrorRate(metrics, true),
-              lastUpdated: Date.now()
-            }));
+              lastUpdated: Date.now(),
+            });
           }
         };
 
@@ -190,8 +190,8 @@ export const evidenceWorkerStore = (() => {
         update(state => ({
           ...state,
           worker,
-          isConnected: true
-        }));
+          isConnected: true,
+        });
 
         activeWorkers.update(workers => {
           const workerId = `worker_${Date.now()}`;
@@ -214,12 +214,12 @@ export const evidenceWorkerStore = (() => {
 
           // Add to processing queue
           processingQueue.update(queue => [
-            ...queue,
+            ...queue,)
             {
               id: messageId,
               evidenceId,
               status: 'queued',
-              startTime: Date.now()
+              startTime: Date.now(),
             }
           ]);
 
@@ -308,7 +308,7 @@ export const evidenceWorkerStore = (() => {
           worker: null,
           isConnected: false,
           processingQueue: [],
-          messageHandlers: new Map()
+          messageHandlers: new Map(),
         };
       });
     }
@@ -356,12 +356,12 @@ function filterEvidenceHierarchy(hierarchy: any, filter: any): any {
 
   // Recursively filter children
   const filteredChildren = hierarchy.children
-    ?.map((child: any) => filterEvidenceHierarchy(child, filter))
+    ?.map((child: any) => filterEvidenceHierarchy(child, filter)
     .filter((child: any) => child !== null) || [];
 
   return {
     ...hierarchy,
-    children: filteredChildren
+    children: filteredChildren,
   };
 }
 
@@ -373,7 +373,7 @@ function calculateHierarchyStatistics(hierarchy: any): any {
     chainIntegrityStats: {
       high: 0,    // > 0.8
       medium: 0,  // 0.6 - 0.8
-      low: 0      // < 0.6
+      low: 0      // < 0.6,
     },
     relationshipStats: {
       chainLinks: 0,
@@ -381,14 +381,14 @@ function calculateHierarchyStatistics(hierarchy: any): any {
       location: 0,
       causal: 0,
       documentary: 0,
-      other: 0
+      other: 0,
     },
     legalImplicationStats: {
       critical: 0,
       chainIntegrity: 0,
       timelineGaps: 0,
       authentication: 0,
-      other: 0
+      other: 0,
     }
   };
 
@@ -450,7 +450,7 @@ function analyzeChainIntegrityOverview(hierarchy: any): any {
     incompleteChains: 0,
     gapsDetected: 0,
     averageIntegrity: 0,
-    issues: [] as string[]
+    issues: [] as string[],
   };
 
   function analyzeNode(node: any) {

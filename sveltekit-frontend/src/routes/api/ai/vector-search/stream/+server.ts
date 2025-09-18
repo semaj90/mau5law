@@ -46,7 +46,7 @@ const originalGETHandler: RequestHandler = (async ({ url }) => {
     async start(controller) {
       function send(event: string, data: any) {
         const payload = `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
-        controller.enqueue(encoder.encode(payload));
+        controller.enqueue(encoder.encode(payload);
       }
       try {
         send('meta', { mode, limit, threshold, model, startedAt: new Date().toISOString() });
@@ -57,7 +57,7 @@ const originalGETHandler: RequestHandler = (async ({ url }) => {
           send('result', r);
           emitted++;
           // Slight delay for incremental UX (optional)
-          await new Promise((res) => setTimeout(res, 5));
+          await new Promise((res) => setTimeout(res, 5);
         }
         send('done', { total: emitted, elapsedMs: Date.now() - started });
       } catch (e: any) {
@@ -73,7 +73,7 @@ const originalGETHandler: RequestHandler = (async ({ url }) => {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-transform',
-      Connection: 'keep-alive'
+      Connection: 'keep-alive',
     }
   });
 });

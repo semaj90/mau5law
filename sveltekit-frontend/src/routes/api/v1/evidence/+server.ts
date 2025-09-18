@@ -9,7 +9,7 @@ import { EvidenceCRUDService, CreateEvidenceSchema, type CreateEvidenceData } fr
 import { queueEvidenceAnalysis } from '$lib/server/services/background-job-queue';
 import { z } from 'zod';
 
-// Query parameters schema for GET requests
+// Query parameters schema for GET requests;
 const EvidenceQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(20),
@@ -21,28 +21,28 @@ const EvidenceQuerySchema = z.object({
 /*
  * GET /api/v1/evidence
  * List user's evidence with pagination and filtering
- */
+ */;
 export const GET: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
     }
 
     // Parse query parameters
     const url = new URL(request.url);
-    const queryParams = Object.fromEntries(url.searchParams.entries());
+    const queryParams = Object.fromEntries(url.searchParams.entries();
     const validatedQuery = EvidenceQuerySchema.parse(queryParams);
 
     // Create service instance
     const evidenceService = new EvidenceCRUDService(locals.user.id);
 
     // Get evidence with pagination - filter by case if specified
-    const result = validatedQuery.caseId
+    const result = validatedQuery.caseId;
       ? await evidenceService.listByCase(validatedQuery.caseId, {
           page: validatedQuery.page,
           limit: validatedQuery.limit,
-        })
+        });
       : await evidenceService.list({
           page: validatedQuery.page,
           limit: validatedQuery.limit,
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
 
     if (err instanceof z.ZodError) {
       return json(
-        { message: 'Invalid query parameters', code: 'INVALID_QUERY', details: err.errors },
+        { message: 'Invalid query parameters', code: 'INVALID_QUERY', details: err.errors },)
         { status: 400 }
       );
     }
@@ -88,7 +88,7 @@ export const GET: RequestHandler = async ({ request, locals }) => {
       return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 });
     }
     return json(
-      { message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err?.message },
+      { message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err?.message },)
       { status: 500 }
     );
   }
@@ -97,10 +97,10 @@ export const GET: RequestHandler = async ({ request, locals }) => {
 /*
  * POST /api/v1/evidence
  * Create new evidence
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 });
     }
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Get the created evidence details
     const createdEvidence = await evidenceService.getById(evidenceId);
 
-    // Queue background analysis
+    // Queue background analysis;
     try {
       const jobId = await queueEvidenceAnalysis(evidenceId, locals.user.id);
       console.log(`[Evidence API] Queued analysis job ${jobId} for evidence ${evidenceId}`);
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       // Don't fail the request, just log the error
     }
 
-    return json(
+    return json();
       {
         success: true,
         data: createdEvidence,
@@ -146,7 +146,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     if (err instanceof z.ZodError) {
       return json(
-        { message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors },
+        { message: 'Invalid evidence data', code: 'INVALID_DATA', details: err.errors },)
         { status: 400 }
       );
     }
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({ message: err.message, code: 'ACCESS_DENIED' }, { status: 403 });
     }
     return json(
-      { message: 'Failed to create evidence', code: 'CREATE_FAILED', details: err?.message },
+      { message: 'Failed to create evidence', code: 'CREATE_FAILED', details: err?.message },)
       { status: 500 }
     );
   }

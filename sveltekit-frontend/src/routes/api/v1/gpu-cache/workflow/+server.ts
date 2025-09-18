@@ -26,6 +26,7 @@ export type LegalWorkflowType =
   | 'discovery_management'
   | 'legal_research'
   | 'compliance_audit';
+}
 
 export interface LegalWorkflowContext {
   type: LegalWorkflowType;
@@ -37,7 +38,7 @@ export interface LegalWorkflowContext {
   requiresEncryption?: boolean;
   retentionPeriod?: number; // days
   collaborators?: number;
-  urgency: 'low' | 'medium' | 'high' | 'emergency';
+  urgency: 'low' | 'medium' | 'high' | 'emergency';,
 }
 
 export interface WorkflowOptimizationResult {
@@ -50,10 +51,10 @@ export interface WorkflowOptimizationResult {
     allocation: Record<string, number>;
   };
   webgpuAcceleration: boolean;
-  securityLevel: 'standard' | 'enhanced' | 'maximum';
+  securityLevel: 'standard' | 'enhanced' | 'maximum';,
 }
 
-// POST /api/v1/gpu-cache/workflow/optimize
+// POST /api/v1/gpu-cache/workflow/optimize;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const {
@@ -67,10 +68,9 @@ export const POST: RequestHandler = async ({ request }) => {
     } = await request.json();
 
     if (!workflowContext || !workflowContext.type) {
-      return json(
-        {
+      return json({
           error: 'Missing workflow context or type',
-        },
+        },)
         { status: 400 }
       );
     }
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Determine WebGPU acceleration requirements
     const webgpuRequirements = assessWebGPUNeeds(workflowContext);
 
-    // Calculate comprehensive optimization
+    // Calculate comprehensive optimization;
     const optimizationResult: WorkflowOptimizationResult = {
       recommendedEncoding: determineOptimalEncoding(workflowContext, baseOptimization),
       cacheStrategy: determineCacheStrategy(workflowContext),
@@ -116,28 +116,27 @@ export const POST: RequestHandler = async ({ request }) => {
         encoding: getEncodingRecommendation(optimizationResult),
         caching: getCachingRecommendation(optimizationResult),
         security: getSecurityRecommendation(optimizationResult),
-        performance: getPerformanceRecommendation(optimizationResult)
+        performance: getPerformanceRecommendation(optimizationResult),
       },
       metadata: {
         analyzedAt: new Date().toISOString(),
         optimizationLevel: optimization,
-        contextComplexity: workflowContext.complexity
+        contextComplexity: workflowContext.complexity,
       }
     });
 
   } catch (error: any) {
     console.error('Workflow optimization error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to optimize workflow',
         details: error instanceof Error ? error.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// GET /api/v1/gpu-cache/workflow/profiles
+// GET /api/v1/gpu-cache/workflow/profiles;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const workflowType = url.searchParams.get('type') as LegalWorkflowType;
@@ -168,17 +167,16 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     console.error('Workflow profiles error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to retrieve workflow profiles',
         details: error instanceof Error ? error.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// PUT /api/v1/gpu-cache/workflow/apply
+// PUT /api/v1/gpu-cache/workflow/apply;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const {
@@ -201,7 +199,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       webgpu: { applied: 0, failed: 0, details: [] as any[] },
     };
 
-    // Apply encoding optimizations to existing cache entries
+    // Apply encoding optimizations to existing cache entries;
     for (const cacheKey of cacheKeys) {
       try {
         // Re-encode with optimal format
@@ -230,14 +228,14 @@ export const PUT: RequestHandler = async ({ request }) => {
       }
     }
 
-    // Apply NES cache optimizations
+    // Apply NES cache optimizations;
     if (applyToNES) {
       try {
         const memoryStats = nesCacheOrchestrator.getMemoryStats();
 
         // Optimize memory allocation based on workflow requirements
         for (const [region, allocation] of Object.entries(
-          optimization.memoryOptimization.allocation
+          optimization.memoryOptimization.allocation;
         )) {
           if (allocation > 0) {
             // This would trigger NES cache reorganization
@@ -258,14 +256,14 @@ export const PUT: RequestHandler = async ({ request }) => {
       }
     }
 
-    // Apply WebGPU optimizations
+    // Apply WebGPU optimizations;
     if (applyToWebGPU && optimization.webgpuAcceleration) {
       try {
         await webgpuRAGService.initializeWebGPU();
 
         // Process workflow-specific GPU optimizations
         const webgpuResult = await webgpuRAGService.processQuery(
-          `workflow-optimize:${workflowType}`,
+          `workflow-optimize:${workflowType}`,)
           { embeddings: [], context: { optimization, workflowType, cacheKeys } }
         );
 
@@ -302,11 +300,10 @@ export const PUT: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error('Workflow application error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to apply workflow optimizations',
         details: error instanceof Error ? error.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }
@@ -315,12 +312,12 @@ export const PUT: RequestHandler = async ({ request }) => {
 // Helper functions
 function analyzeWorkflowRequirements(
   context: LegalWorkflowContext,
-  optimization: string
+  optimization: string;
 ): {
   dataIntensity: number;
   processingComplexity: number;
   securityRequirements: number;
-  performancePriority: number;
+  performancePriority: number;,
 } {
   const base = {
     dataIntensity: context.documentCount ? Math.min(context.documentCount / 100, 1) : 0.5,
@@ -329,7 +326,7 @@ function analyzeWorkflowRequirements(
     performancePriority: { low: 0.25, medium: 0.5, high: 0.75, emergency: 1.0 }[context.urgency],
   };
 
-  // Adjust based on optimization preference
+  // Adjust based on optimization preference;
   switch (optimization) {
     case 'speed':
       base.performancePriority *= 1.5;
@@ -352,7 +349,7 @@ function calculateNESMemoryAllocation(context: LegalWorkflowContext): {
   const regions = [];
   const allocation: Record<string, number> = {};
 
-  // Base allocations (in bytes)
+  // Base allocations (in bytes);
   switch (context.type) {
     case 'document_upload':
       regions.push('CHR_ROM', 'RAM');
@@ -391,7 +388,7 @@ function calculateNESMemoryAllocation(context: LegalWorkflowContext): {
 function assessWebGPUNeeds(context: LegalWorkflowContext): {
   recommended: boolean;
   priority: 'low' | 'medium' | 'high';
-  estimatedBenefit: number;
+  estimatedBenefit: number;,
 } {
   const highGPUWorkflows: LegalWorkflowType[] = [
     'case_analysis',
@@ -422,14 +419,14 @@ function assessWebGPUNeeds(context: LegalWorkflowContext): {
 
 function determineOptimalEncoding(
   context: LegalWorkflowContext,
-  baseOptimization: any
+  baseOptimization: any;
 ): EncodingFormat {
-  // High security workflows prefer CBOR
+  // High security workflows prefer CBOR;
   if (context.requiresEncryption || context.complexity === 'critical') {
     return 'cbor';
   }
 
-  // Large document workflows prefer compression
+  // Large document workflows prefer compression;
   if (context.documentCount && context.documentCount > 100) {
     return 'cbor';
   }
@@ -439,7 +436,7 @@ function determineOptimalEncoding(
 }
 
 function determineCacheStrategy(
-  context: LegalWorkflowContext
+  context: LegalWorkflowContext;
 ): 'memory' | 'nes' | 'hybrid' | 'distributed' {
   if (context.collaborators && context.collaborators > 5) return 'distributed';
   if (context.complexity === 'critical') return 'hybrid';
@@ -468,7 +465,7 @@ function calculatePerformanceGain(context: LegalWorkflowContext, baseOptimizatio
 }
 
 function determineSecurityLevel(
-  context: LegalWorkflowContext
+  context: LegalWorkflowContext;
 ): 'standard' | 'enhanced' | 'maximum' {
   if (context.requiresEncryption) return 'maximum';
   if (context.complexity === 'critical') return 'enhanced';
@@ -477,7 +474,7 @@ function determineSecurityLevel(
 
 function generateWorkflowConfiguration(
   context: LegalWorkflowContext,
-  optimization: WorkflowOptimizationResult
+  optimization: WorkflowOptimizationResult;
 ): any {
   return {
     encoding: {
@@ -503,7 +500,7 @@ function generateWorkflowConfiguration(
 
 function generatePerformancePredictions(
   context: LegalWorkflowContext,
-  optimization: WorkflowOptimizationResult
+  optimization: WorkflowOptimizationResult;
 ): any {
   return {
     expectedSpeedImprovement: `${(optimization.estimatedPerformanceGain * 100).toFixed(1)}%`,
@@ -606,13 +603,13 @@ function getAllWorkflowProfiles(): Record<LegalWorkflowType, any> {
 }
 
 async function getWorkflowMetrics(workflowType: LegalWorkflowType): Promise<any> {
-  // This would integrate with actual metrics collection
+  // This would integrate with actual metrics collection;
   return {
     usage: Math.floor(Math.random() * 1000),
     averagePerformance: (Math.random() * 0.5 + 0.5).toFixed(2),
     successRate: (Math.random() * 0.2 + 0.8).toFixed(2),
     popularEncodingFormats: ['cbor', 'msgpack'],
-    lastUpdated: new Date().toISOString()
+    lastUpdated: new Date().toISOString(),
   };
 }
 

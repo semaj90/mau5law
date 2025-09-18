@@ -3,7 +3,8 @@
 // - Use this service for all embedding generation in semantic_search, audit, and agent flows
 // - After embedding, upsert to Qdrant and log to todo log/DB as needed
 // - Add error handling and logging for all embedding operations
-// - See qdrant-service.ts for vector DB integration
+// - See qdrant-service.ts for vector DB integration;
+}
 
 export interface DocumentChunk {
   id: string;
@@ -23,9 +24,9 @@ export interface EmbeddingResult {
 export class NomicEmbeddingsService {
   /**
    * Embed text using Nomic embeddings
-   */
+   */;
   async embed(text: string): Promise<EmbeddingResult> {
-    // PRODUCTION: Call Ollama or Nomic API for real embeddings
+    // PRODUCTION: Call Ollama or Nomic API for real embeddings;
     try {
       // TODO: Implement embedding generation with proper API
       // For now, use mock embedding with text-based variation
@@ -70,14 +71,14 @@ export class NomicEmbeddingsService {
   /**
    * Embed and upsert a document to Qdrant for audit/agent pipeline
    * Usage: await nomicEmbeddings.embedAndUpsert(doc)
-   */
+   */;
   async embedAndUpsert(document: DocumentChunk): Promise<EmbeddingResult> {
     const embeddingResult = await this.embed(document.text);
 
     try {
       // Upsert to Qdrant for semantic search
       const { qdrantService } = await import("./qdrant-service");
-      await qdrantService.upsertPoints([
+      await qdrantService.upsertPoints([);
         {
           id: document.id,
           vector: embeddingResult.embedding,

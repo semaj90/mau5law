@@ -12,7 +12,7 @@ import {
   mockDataGenerators,
 } from '$lib/server/sync/mock-api-sync-simple';
 
-// GET /api/sync - Health check and status
+// GET /api/sync - Health check and status;
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action') || 'status';
 
@@ -30,9 +30,9 @@ export const GET: RequestHandler = async ({ url }) => {
             sync: '/api/sync?action=full',
             search: '/api/sync/search',
             generate: '/api/sync/generate',
-            qloraSamples: '/api/sync/qlora-samples'
+            qloraSamples: '/api/sync/qlora-samples',
           },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'full':
@@ -41,7 +41,7 @@ export const GET: RequestHandler = async ({ url }) => {
           action: 'full_sync',
           result: fullSync,
           message: 'Neural topology mock data synchronized successfully',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'legal-docs':
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           action: 'legal_documents_sync',
           result: docSync,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'qlora':
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           action: 'qlora_sync',
           result: qloraSync,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'cache':
@@ -65,14 +65,14 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           action: 'predictive_cache_sync',
           result: cacheSync,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
-      default:
+      default:;
         return json({
           error: 'Unknown action',
           availableActions: ['status', 'health', 'full', 'legal-docs', 'qlora', 'cache'],
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }, { status: 400 });
     }
   } catch (error) {
@@ -80,12 +80,12 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       error: 'Sync operation failed',
       message: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
 
-// POST /api/sync - Manual sync operations
+// POST /api/sync - Manual sync operations;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ request }) => {
           results: searchResults,
           count: searchResults.length,
           params: { limit, threshold },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'generate_mock_data':
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request }) => {
           type,
           data: mockData,
           count: mockData.length,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'bulk_sync':
@@ -165,14 +165,14 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           action: 'bulk_sync',
           results: bulkResults,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
-      default:
+      default:;
         return json({
           error: 'Unknown POST action',
           availableActions: ['vector_search', 'generate_mock_data', 'bulk_sync'],
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }, { status: 400 });
     }
   } catch (error) {
@@ -180,7 +180,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       error: 'POST operation failed',
       message: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };

@@ -14,7 +14,8 @@ import { db, type GraphNode, type GraphEdge } from '../db/dexie-integration.js';
 
 // ============================================================================
 // GPU DATA STRUCTURES
-// ============================================================================
+// ============================================================================;
+}
 
 export interface GPUNodeData {
   position: [number, number, number]; // vec3<f32> layout coordinates
@@ -22,19 +23,19 @@ export interface GPUNodeData {
   rankingMatrixIndex: number; // u32 index into ranking texture
   varianceMatrixIndex: number; // u32 index into variance texture
   neighborOffset: number; // u32 offset into adjacency buffer
-  neighborCount: number; // u32 count of neighbors
+  neighborCount: number; // u32 count of neighbors,
 }
 
 export interface GPUAdjacencyData {
   nodeIds: Uint32Array; // Flattened adjacency list
-  offsets: Uint32Array; // Starting positions for each node
+  offsets: Uint32Array; // Starting positions for each node,
 }
 
 export interface GPUTextureData {
   rankingTexture: GPUTexture; // rgba32float - 4x4 matrices as 4 pixels
   varianceTexture: GPUTexture; // rgba32float - variance matrices
   nodeDataBuffer: GPUBuffer; // Storage buffer for node data
-  adjacencyBuffer: GPUBuffer; // Storage buffer for adjacency lists
+  adjacencyBuffer: GPUBuffer; // Storage buffer for adjacency lists,
 }
 
 export interface LODLevel {
@@ -59,7 +60,7 @@ class GraphSpatialLayout {
    */
   async computeBFSLayout(
     nodes: GraphNode[], 
-    edges: GraphEdge[]
+    edges: GraphEdge[];
   ): Promise<Map<string, number> {
     // Build adjacency map
     const adjacency = new Map<string, string[]>();
@@ -92,11 +93,11 @@ class GraphSpatialLayout {
       // Add unvisited neighbors to queue (sorted by confidence for deterministic order)
       const neighbors = adjacency.get(currentNode) || [];
       const unvisitedNeighbors = neighbors
-        .filter(neighbor => !visited.has(neighbor))
+        .filter(neighbor => !visited.has(neighbor);
         .map(neighbor => ({
           id: neighbor,
-          confidence: nodes.find(n => n.nodeId === neighbor)?.metadata.confidence || 0
-        }))
+          confidence: nodes.find(n => n.nodeId === neighbor)?.metadata.confidence || 0,
+        })
         .sort((a, b) => b.confidence - a.confidence) // High confidence first
         .map(n => n.id);
         
@@ -108,7 +109,7 @@ class GraphSpatialLayout {
       }
     }
     
-    // Add any disconnected nodes
+    // Add any disconnected nodes;
     for (const node of nodes) {
       if (!visited.has(node.nodeId)) {
         layoutOrder.push(node.nodeId);
@@ -133,31 +134,31 @@ class GraphSpatialLayout {
   async computeForceDirectedLayout(
     nodes: GraphNode[], 
     edges: GraphEdge[],
-    iterations = 500
+    iterations = 500;
   ): Promise<void> {
     const width = 1000;
     const height = 1000;
     const k = Math.sqrt((width * height) / nodes.length);
     const c = 0.01; // Cooling factor
     
-    // Initialize random positions
+    // Initialize random positions;
     for (const node of nodes) {
       this.nodePositions.set(node.nodeId, {
         x: Math.random() * width,
         y: Math.random() * height,
-        z: 0
+        z: 0,
       });
     }
     
     for (let iter = 0; iter < iterations; iter++) {
       const forces = new Map<string, { x: number; y: number }>();
       
-      // Initialize forces
+      // Initialize forces;
       for (const node of nodes) {
         forces.set(node.nodeId, { x: 0, y: 0 });
       }
       
-      // Repulsive forces between all pairs
+      // Repulsive forces between all pairs;
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const node1 = nodes[i];
@@ -180,7 +181,7 @@ class GraphSpatialLayout {
         }
       }
       
-      // Attractive forces for connected nodes
+      // Attractive forces for connected nodes;
       for (const edge of edges) {
         const pos1 = this.nodePositions.get(edge.fromNodeId)!;
         const pos2 = this.nodePositions.get(edge.toNodeId)!;
@@ -200,7 +201,7 @@ class GraphSpatialLayout {
       }
       
       // Apply forces with cooling
-      const temperature = Math.max(0.1, 1.0 - (iter / iterations));
+      const temperature = Math.max(0.1, 1.0 - (iter / iterations);
       for (const node of nodes) {
         const pos = this.nodePositions.get(node.nodeId)!;
         const force = forces.get(node.nodeId)!;
@@ -212,8 +213,8 @@ class GraphSpatialLayout {
         pos.y += (force.y / displacement) * limitedDisplacement;
         
         // Keep within bounds
-        pos.x = Math.max(0, Math.min(width, pos.x));
-        pos.y = Math.max(0, Math.min(height, pos.y));
+        pos.x = Math.max(0, Math.min(width, pos.x);
+        pos.y = Math.max(0, Math.min(height, pos.y);
       }
     }
     
@@ -254,7 +255,7 @@ export class GraphTextureManager {
       requiredLimits: {
         maxBufferSize: 512 * 1024 * 1024, // 512MB
         maxStorageBufferBindingSize: 256 * 1024 * 1024, // 256MB
-        maxTextureDimension2D: 8192
+        maxTextureDimension2D: 8192,
       }
     });
     
@@ -263,7 +264,7 @@ export class GraphTextureManager {
 
   /**
    * Load graph data with optimal memory layout
-   */
+   */;
   async loadGraphData(bounds?: { x: number; y: number; width: number; height: number }): Promise<void> {
     if (!this.device) await this.initialize();
     
@@ -287,7 +288,7 @@ export class GraphTextureManager {
     // Create GPU data structures
     const gpuData = await this.createGPUDataStructures(nodes, edges, memoryLayout);
     
-    // Create LOD level
+    // Create LOD level;
     const lodLevel: LODLevel = {
       level: 0,
       bounds: bounds || { x: 0, y: 0, width: 1000, height: 1000 },
@@ -307,11 +308,11 @@ export class GraphTextureManager {
   private async createGPUDataStructures(
     nodes: GraphNode[],
     edges: GraphEdge[],
-    memoryLayout: Map<string, number>
+    memoryLayout: Map<string, number>;
   ): Promise<GPUTextureData> {
     if (!this.device) throw new Error('WebGPU device not initialized');
 
-    // Sort nodes by memory layout order for cache performance
+    // Sort nodes by memory layout order for cache performance;
     const orderedNodes = nodes.sort((a, b) => {
       const orderA = memoryLayout.get(a.nodeId) || 0;
       const orderB = memoryLayout.get(b.nodeId) || 0;
@@ -349,7 +350,7 @@ export class GraphTextureManager {
     const nodeDataBuffer = this.device.createBuffer({
       size: nodeDataArray.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true
+      mappedAtCreation: true,
     });
     
     new Float32Array(nodeDataBuffer.getMappedRange()).set(nodeDataArray);
@@ -379,7 +380,7 @@ export class GraphTextureManager {
     const adjacencyBuffer = this.device.createBuffer({
       size: adjacencyData.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true
+      mappedAtCreation: true,
     });
     
     new Uint32Array(adjacencyBuffer.getMappedRange()).set(adjacencyData);
@@ -390,7 +391,7 @@ export class GraphTextureManager {
     // ========================================================================
     
     // Each 4x4 matrix needs 4 pixels (4 rows × 4 RGBA components)
-    const matrixTextureSize = Math.ceil(Math.sqrt(orderedNodes.length));
+    const matrixTextureSize = Math.ceil(Math.sqrt(orderedNodes.length);
     const rankingTextureData = new Float32Array(matrixTextureSize * matrixTextureSize * 4 * 4); // 4 pixels per matrix
     
     for (let i = 0; i < orderedNodes.length; i++) {
@@ -402,7 +403,7 @@ export class GraphTextureManager {
       const matrixRow = Math.floor(i / matricesPerRow);
       const matrixCol = i % matricesPerRow;
       
-      // Each matrix occupies a 2x2 block of pixels
+      // Each matrix occupies a 2x2 block of pixels;
       for (let row = 0; row < 4; row++) {
         const pixelY = matrixRow * 2 + Math.floor(row / 2);
         const pixelX = matrixCol * 2 + (row % 2);
@@ -420,13 +421,13 @@ export class GraphTextureManager {
     const rankingTexture = this.device.createTexture({
       size: { width: matrixTextureSize, height: matrixTextureSize },
       format: 'rgba32float',
-      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
+      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST,
     });
     
     this.device.queue.writeTexture(
       { texture: rankingTexture },
       rankingTextureData,
-      { bytesPerRow: matrixTextureSize * 16, rowsPerImage: matrixTextureSize },
+      { bytesPerRow: matrixTextureSize * 16, rowsPerImage: matrixTextureSize },)>
       { width: matrixTextureSize, height: matrixTextureSize }
     );
 
@@ -461,13 +462,13 @@ export class GraphTextureManager {
     const varianceTexture = this.device.createTexture({
       size: { width: matrixTextureSize, height: matrixTextureSize },
       format: 'rgba32float',
-      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST
+      usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_DST,
     });
     
     this.device.queue.writeTexture(
       { texture: varianceTexture },
       varianceTextureData,
-      { bytesPerRow: matrixTextureSize * 16, rowsPerImage: matrixTextureSize },
+      { bytesPerRow: matrixTextureSize * 16, rowsPerImage: matrixTextureSize },)>
       { width: matrixTextureSize, height: matrixTextureSize }
     );
 
@@ -481,7 +482,7 @@ export class GraphTextureManager {
 
   /**
    * Stream new data based on viewport changes (LOD system)
-   */
+   */;
   async updateViewport(bounds: { x: number; y: number; width: number; height: number }): Promise<void> {
     this.currentViewport = bounds;
     
@@ -501,9 +502,9 @@ export class GraphTextureManager {
 
   /**
    * Create compute shader for graph traversal
-   */
+   */;
   createGraphTraversalShader(): string {
-    return `
+    return `;
       struct NodeData {
         position: vec3<f32>,
         metadata: vec4<f32>,
@@ -519,7 +520,7 @@ export class GraphTextureManager {
       @group(0) @binding(3) var variance_texture: texture_storage_2d<rgba32float, read>;
       @group(0) @binding(4) var<storage, read_write> results: array<f32>;
 
-      @compute @workgroup_size(64)
+      @compute @workgroup_size(64);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let node_index = global_id.x;
         if (node_index >= arrayLength(&node_data)) {
@@ -531,15 +532,15 @@ export class GraphTextureManager {
         // Read 4x4 ranking matrix from texture
         let matrix_coord = vec2<u32>(u32(node.matrix_index) % 256u, u32(node.matrix_index) / 256u);
         let ranking_row0 = textureLoad(ranking_texture, matrix_coord * 2u);
-        let ranking_row1 = textureLoad(ranking_texture, matrix_coord * 2u + vec2<u32>(1u, 0u));
-        let ranking_row2 = textureLoad(ranking_texture, matrix_coord * 2u + vec2<u32>(0u, 1u));
-        let ranking_row3 = textureLoad(ranking_texture, matrix_coord * 2u + vec2<u32>(1u, 1u));
+        let ranking_row1 = textureLoad(ranking_texture, matrix_coord * 2u + vec2<u32>(1u, 0u);
+        let ranking_row2 = textureLoad(ranking_texture, matrix_coord * 2u + vec2<u32>(0u, 1u);
+        let ranking_row3 = textureLoad(ranking_texture, matrix_coord * 2u + vec2<u32>(1u, 1u);
         
         // Read variance matrix
         let variance_row0 = textureLoad(variance_texture, matrix_coord * 2u);
-        let variance_row1 = textureLoad(variance_texture, matrix_coord * 2u + vec2<u32>(1u, 0u));
-        let variance_row2 = textureLoad(variance_texture, matrix_coord * 2u + vec2<u32>(0u, 1u));
-        let variance_row3 = textureLoad(variance_texture, matrix_coord * 2u + vec2<u32>(1u, 1u));
+        let variance_row1 = textureLoad(variance_texture, matrix_coord * 2u + vec2<u32>(1u, 0u);
+        let variance_row2 = textureLoad(variance_texture, matrix_coord * 2u + vec2<u32>(0u, 1u);
+        let variance_row3 = textureLoad(variance_texture, matrix_coord * 2u + vec2<u32>(1u, 1u);
         
         // Calculate confidence score using both matrices
         let confidence = node.metadata.x; // Base confidence
@@ -566,7 +567,7 @@ export class GraphTextureManager {
 
   /**
    * Get performance statistics
-   */
+   */;
   getPerformanceStats() {
     return {
       lodLevels: this.lodLevels.length,
@@ -576,13 +577,13 @@ export class GraphTextureManager {
         // Rough calculation of GPU memory usage
         return sum + (level.nodeCount * 32) + (1024 * 1024 * 2); // Node data + textures
       }, 0),
-      currentViewport: this.currentViewport
+      currentViewport: this.currentViewport,
     };
   }
 
   /**
    * Cleanup GPU resources
-   */
+   */;
   async cleanup(): Promise<void> {
     for (const level of this.lodLevels) {
       if (level.gpuData) {

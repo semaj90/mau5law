@@ -9,6 +9,7 @@ type RankingCacheMetrics = import('../webgpu/webasm-ranking-cache').CacheMetrics
 // Define missing types locally
 type RankingAlgorithm = 'cosine' | 'euclidean' | 'dot_product' | 'manhattan';
 type LlamaGenerationParams = { maxTokens?: number; temperature?: number };
+}
 
 export interface WebLlamaConfig {
   modelUrl: string;
@@ -51,7 +52,7 @@ export interface WebLlamaResponse {
     embeddingTime: number;
     inferenceTime: number;
     cacheTime: number;
-    totalTime: number;
+    totalTime: number;,
   };
 }
 
@@ -75,7 +76,7 @@ class WebAssemblyLlamaService {
     cacheMisses: number;
     evictions: number;
     memoryUsage: number;
-    lastUpdated: number;
+    lastUpdated: number;,
   } = {
     hitRatio: 0,
     avgLatency: 0,
@@ -113,7 +114,7 @@ class WebAssemblyLlamaService {
 
   /**
    * Initialize WebGPU for hardware acceleration
-   */
+   */;
   private async initializeWebGPU(): Promise<any> {
     if (!this.config.enableWebGPU || !navigator.gpu) {
       console.log('[WebLlama] WebGPU not available, falling back to CPU');
@@ -131,7 +132,7 @@ class WebAssemblyLlamaService {
       }
 
       this.webgpuDevice = await adapter.requestDevice({
-        requiredFeatures: [] as GPUFeatureName[], // No special features for broader compatibility
+        requiredFeatures: [] as GPUFeatureName[], // No special features for broader compatibility;
         requiredLimits: {
           maxBufferSize: 1024 * 1024 * 1024, // 1GB
           maxStorageBufferBindingSize: 512 * 1024 * 1024, // 512MB
@@ -140,7 +141,7 @@ class WebAssemblyLlamaService {
 
       console.log('[WebLlama] WebGPU initialized successfully');
 
-      // Set up error handling
+      // Set up error handling;
       (this.webgpuDevice as any).onuncapturederror = (event: any) => {
         console.error('[WebLlama] WebGPU error:', event.error);
       };
@@ -151,11 +152,11 @@ class WebAssemblyLlamaService {
 
   /**
    * Initialize WebAssembly Ranking Cache with service worker support
-   */
+   */;
   private async initializeRankingCache(): Promise<void> {
     if (!this.config.enableRankingCache) return;
 
-    // Check if we're in a browser environment
+    // Check if we're in a browser environment;
     if (typeof window === 'undefined') {
       console.log(
         '[WebLlama] Browser environment not available, skipping ranking cache initialization'
@@ -167,7 +168,7 @@ class WebAssemblyLlamaService {
       // Import the ranking cache module dynamically
       const { WebASMRankingCache } = await import('../webgpu/webasm-ranking-cache');
 
-      // Map our config to the cache's API
+      // Map our config to the cache's API;
       this.rankingCache = new WebASMRankingCache({
         maxEntries: this.config.maxCacheSize,
         ttlSeconds: 300,
@@ -177,12 +178,12 @@ class WebAssemblyLlamaService {
 
       await this.rankingCache.initialize();
 
-      // Set up service worker for concurrent processing
+      // Set up service worker for concurrent processing;
       if (this.config.enableServiceWorker && 'serviceWorker' in navigator) {
-        // Register lightweight SW; ignore failures in dev
+        // Register lightweight SW; ignore failures in dev;
         try {
           this.serviceWorkerRegistration = await navigator.serviceWorker.register(
-            '/sw-webasm-cache.js',
+            '/sw-webasm-cache.js',)
             { scope: '/' }
           );
         } catch (e) {
@@ -201,16 +202,16 @@ class WebAssemblyLlamaService {
 
   /**
    * Initialize Web Worker for multi-threading
-   */
+   */;
   private initializeWorker(): void {
-    // Only initialize workers in browser context
+    // Only initialize workers in browser context;
     if (typeof window === 'undefined' || typeof Worker === 'undefined') {
       console.log('[WebLlama] Skipping worker initialization - not in browser context');
       return;
     }
 
     try {
-      // Create a module worker for parallel generation
+      // Create a module worker for parallel generation;
       this.worker = new Worker(new URL('../../workers/webllama.worker.ts', import.meta.url), {
         type: 'module',
       } as WorkerOptions);
@@ -229,7 +230,7 @@ class WebAssemblyLlamaService {
 
   /**
         console.log('[WebLlama] Optional ranking cache setup (SW only) complete');
-   */
+   */;
   async loadModel(): Promise<boolean> {
     try {
       console.log('[WebLlama] Connecting to Ollama API...');
@@ -281,7 +282,7 @@ class WebAssemblyLlamaService {
 
     // Enhanced cache lookup with ranking (disabled in this build; using legacy cache below)
 
-    // Fallback to legacy cache
+    // Fallback to legacy cache;
     if (options.useCache !== false) {
       const cacheKey = this.getCacheKey(prompt, options);
       const cached = this.cache.get(cacheKey);
@@ -321,7 +322,7 @@ class WebAssemblyLlamaService {
       (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).processingPath = this.worker && this.config.enableMultiCore ? 'worker' : 'wasm';
       (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).metrics = metrics;
 
-      // Store in enhanced ranking cache
+      // Store in enhanced ranking cache;
       if (options.useCache !== false && (result as { processingTime?: any; fromCache?: any; cacheHit?: any; processingPath?: any; metrics?: any; confidence?: any; text?: any }).confidence > 0.7) {
         await this.storeInRankingCache(prompt, result, options);
         this.addToCache(prompt, options, result); // Legacy cache backup
@@ -344,7 +345,7 @@ class WebAssemblyLlamaService {
   async analyzeLegalDocument(
     title: string,
     content: string,
-    analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive'
+    analysisType: 'comprehensive' | 'quick' | 'risk-focused' = 'comprehensive';
   ): Promise<{
     summary: string;
     keyTerms: string[];
@@ -353,7 +354,7 @@ class WebAssemblyLlamaService {
     recommendations: string[];
     confidence: number;
     processingTime: number;
-    method: string;
+    method: string;,
   }> {
     const prompt = this.buildLegalAnalysisPrompt(title, content, analysisType);
 
@@ -379,10 +380,10 @@ class WebAssemblyLlamaService {
 
   /**
    * Generate embedding for semantic similarity
-   */
+   */;
   private async generateEmbedding(text: string): Promise<Float32Array> {
     try {
-      // Use WebGPU for embedding if available
+      // Use WebGPU for embedding if available;
       if (this.webgpuDevice) {
         return await this.generateEmbeddingWebGPU(text);
       }
@@ -412,12 +413,12 @@ class WebAssemblyLlamaService {
     return vec;
   }
 
-  // WASM embedding fallback (mock): reuse hash embedding for now
+  // WASM embedding fallback (mock): reuse hash embedding for now;
   private async generateEmbeddingWASM(text: string): Promise<Float32Array> {
     return this.generateHashEmbedding(text);
   }
 
-  // Pure JS hash embedding as last resort
+  // Pure JS hash embedding as last resort;
   private generateHashEmbedding(text: string): Float32Array {
     const dim = 256;
     const vec = new Float32Array(dim);
@@ -442,7 +443,7 @@ class WebAssemblyLlamaService {
   private async storeInRankingCache(
     prompt: string,
     result: WebLlamaResponse,
-    options: any
+    options: any;
   ): Promise<void> {
     // Deferred: the ranking cache API doesn't expose direct set/get; storage not supported in this build
     void prompt;
@@ -452,14 +453,14 @@ class WebAssemblyLlamaService {
 
   /**
    * Update cache performance metrics
-   */
+   */;
   private updateCacheMetrics(): void {
     const now = Date.now();
     this.cacheMetrics.hitRatio =
       this.cacheMetrics.totalRequests > 0
         ? this.cacheMetrics.cacheHits / this.cacheMetrics.totalRequests: 0;
     this.cacheMetrics.lastUpdated = now;
-    // Optionally pull memory usage from ranking cache metrics
+    // Optionally pull memory usage from ranking cache metrics;
     if (this.rankingCache) {
       const m = this.rankingCache.getMetrics();
       this.cacheMetrics.memoryUsage = m.memoryUsage;
@@ -468,7 +469,7 @@ class WebAssemblyLlamaService {
 
   /**
    * Get comprehensive service health and capabilities
-   */
+   */;
   getHealthStatus(): {
     modelLoaded: boolean;
     webgpuAvailable: boolean;
@@ -488,12 +489,12 @@ class WebAssemblyLlamaService {
       cacheMisses: number;
       evictions: number;
       memoryUsage: number;
-      lastUpdated: number;
+      lastUpdated: number;,
     };
     performance: {
       avgLatency: number;
       hitRatio: number;
-      throughput: number;
+      throughput: number;,
     };
   } {
     return {
@@ -518,7 +519,7 @@ class WebAssemblyLlamaService {
 
   /**
    * Get detailed cache analytics
-   */
+   */;
   getCacheAnalytics(): {
     legacy: { size: number; maxSize: number };
     ranking: RankingCacheMetrics | null;
@@ -539,7 +540,7 @@ class WebAssemblyLlamaService {
 
   /**
    * Clear all caches
-   */
+   */;
   async clearCaches(): Promise<void> {
     // Clear legacy cache
     this.cache.clear();
@@ -547,7 +548,7 @@ class WebAssemblyLlamaService {
     // Clear ranking cache
     // No external ranking cache to clear
 
-    // Reset metrics
+    // Reset metrics;
     this.cacheMetrics = {
       hitRatio: 0,
       avgLatency: 0,
@@ -577,13 +578,13 @@ class WebAssemblyLlamaService {
         // WebGPU device interface for hardware acceleration
         webgpu_device: this.webgpuDevice as unknown as WebAssembly.ImportValue,
 
-        // Threading support
+        // Threading support;
         __pthread_create: (thread: number, attr: number, func: number, arg: number) => {
           // Thread creation for multi-core processing
           return 0;
         },
 
-        // Memory management
+        // Memory management;
         malloc: (size: number) => {
           // Custom malloc implementation
           return 0;
@@ -593,7 +594,7 @@ class WebAssemblyLlamaService {
           // Custom free implementation
         },
 
-        // Logging
+        // Logging;
         console_log: (ptr: number, len: number) => {
           const bytes = new Uint8Array(memory.buffer, ptr, len);
           const str = new TextDecoder().decode(bytes);
@@ -630,12 +631,12 @@ class WebAssemblyLlamaService {
   private async generateWithWorker(prompt: string, options: any): Promise<WebLlamaResponse> {
     return new Promise((resolve, reject) => {
       if (!this.worker) {
-        reject(new Error('Worker not available'));
+        reject(new Error('Worker not available');
         return;
       }
 
       const timeout = setTimeout(() => {
-        reject(new Error('Worker generation timeout'));
+        reject(new Error('Worker generation timeout');
       }, 30000);
 
       const messageHandler = (e: MessageEvent) => {
@@ -652,7 +653,7 @@ class WebAssemblyLlamaService {
         } else if (type === 'generation_error') {
           clearTimeout(timeout);
           this.worker!.removeEventListener('message', messageHandler);
-          reject(new Error(error));
+          reject(new Error(error);
         }
       };
 
@@ -740,7 +741,7 @@ Provide analysis in structured format:
   }
 
   private parseLegalAnalysisResponse(response: string): any {
-    // Similar parsing logic as in the server-side version
+    // Similar parsing logic as in the server-side version;
     const analysis = {
       summary: '',
       keyTerms: [] as string[],
@@ -759,7 +760,7 @@ Provide analysis in structured format:
       if (keyTermsMatch) {
         analysis.keyTerms = keyTermsMatch[1]
           .split(',')
-          .map((t) => t.trim())
+          .map((t) => t.trim()
           .filter((t) => t);
       }
 
@@ -767,7 +768,7 @@ Provide analysis in structured format:
       if (entitiesMatch) {
         analysis.entities = entitiesMatch[1]
           .split('\n')
-          .filter((line) => line.trim())
+          .filter((line) => line.trim();
           .map((line) => {
             const [type, value, confidenceStr] = line.split(':');
             return {
@@ -783,7 +784,7 @@ Provide analysis in structured format:
       if (risksMatch) {
         analysis.risks = risksMatch[1]
           .split('\n')
-          .filter((line) => line.trim())
+          .filter((line) => line.trim();
           .map((line) => {
             const [type, severity, description] = line.split(':');
             return {
@@ -799,7 +800,7 @@ Provide analysis in structured format:
       if (recommendationsMatch) {
         analysis.recommendations = recommendationsMatch[1]
           .split('\n')
-          .map((r) => r.trim())
+          .map((r) => r.trim()
           .filter((r) => r);
       }
 
@@ -822,7 +823,7 @@ Provide analysis in structured format:
   private addToCache(prompt: string, options: any, result: WebLlamaResponse): void {
     const key = this.getCacheKey(prompt, options);
 
-    // LFU cache implementation
+    // LFU cache implementation;
     if (this.cache.size >= this.maxCacheSize) {
       // Remove oldest entry
       const iter = this.cache.keys().next();
@@ -839,17 +840,17 @@ Provide analysis in structured format:
 
   /**
    * Clean up resources
-   */
+   */;
   async dispose(): Promise<void> {
     console.log('[WebLlama] Disposing resources...');
 
-    // Terminate worker
+    // Terminate worker;
     if (this.worker) {
       this.worker.terminate();
       this.worker = null;
     }
 
-    // Clean up WebGPU resources
+    // Clean up WebGPU resources;
     if (this.webgpuDevice) {
       // GPUDevice doesn't have a destroy method - it's automatically cleaned up
       this.webgpuDevice = null;
@@ -857,7 +858,7 @@ Provide analysis in structured format:
 
     // No external ranking cache to dispose in this mode
 
-    // Unregister service worker
+    // Unregister service worker;
     if (this.serviceWorkerRegistration) {
       try {
         await this.serviceWorkerRegistration.unregister();

@@ -38,7 +38,7 @@ async function checkExistingServices() {
     console.log('📋 Current Docker Desktop Stack:');
     console.log(stdout);
 
-    const runningServices = stdout.split('\n').filter(line => line.includes('legal-ai'));
+    const runningServices = stdout.split('\n').filter((line) => line.includes('legal-ai'));
     console.log(`✅ Found ${runningServices.length - 1} legal-ai services running`);
 
     return runningServices.length > 1;
@@ -75,7 +75,7 @@ async function startTensorRTLLMService() {
         RTX_3060_OPTIMIZATION: 'true',
         GEMMA_EMBEDDINGS: 'true',
         GEMMA3_LEGAL_MODEL: 'true',
-      }
+      },
     });
 
     tensorrtProcess.on('spawn', () => {
@@ -95,13 +95,21 @@ async function setupRedisClientIntegration() {
 
   try {
     // Test Redis connection with client libraries
-    const { stdout } = await execAsync(`redis-cli -h localhost -p ${config.redisPort} -a redis ping`);
+    const { stdout } = await execAsync(
+      `redis-cli -h localhost -p ${config.redisPort} -a redis ping`
+    );
     console.log('✅ Redis client connection:', stdout.trim());
 
     // Set up tensor caching keys
-    await execAsync(`redis-cli -h localhost -p ${config.redisPort} -a redis SET tensorrt:status "initialized"`);
-    await execAsync(`redis-cli -h localhost -p ${config.redisPort} -a redis SET gemma:270m:wasm "enabled"`);
-    await execAsync(`redis-cli -h localhost -p ${config.redisPort} -a redis SET gemma3:legal:cuda "enabled"`);
+    await execAsync(
+      `redis-cli -h localhost -p ${config.redisPort} -a redis SET tensorrt:status "initialized"`
+    );
+    await execAsync(
+      `redis-cli -h localhost -p ${config.redisPort} -a redis SET gemma:270m:wasm "enabled"`
+    );
+    await execAsync(
+      `redis-cli -h localhost -p ${config.redisPort} -a redis SET gemma3:legal:cuda "enabled"`
+    );
 
     console.log('✅ Redis client libraries configured');
     return true;
@@ -117,7 +125,7 @@ async function integrateWithNATS() {
   try {
     // Test NATS connection
     const natsTest = spawn('curl', ['-f', `http://localhost:${config.natsPort}/varz`], {
-      stdio: 'pipe'
+      stdio: 'pipe',
     });
 
     return new Promise((resolve) => {
@@ -143,7 +151,7 @@ async function setupQUICIntegration() {
   try {
     // Test QUIC endpoint
     const quicTest = spawn('curl', ['-f', `http://localhost:${config.caddyPort}/health`], {
-      stdio: 'pipe'
+      stdio: 'pipe',
     });
 
     return new Promise((resolve) => {
@@ -181,7 +189,7 @@ async function testIntegratedStack() {
     {
       name: 'SvelteKit frontend',
       command: `curl -f http://localhost:${config.frontendPort}`,
-    }
+    },
   ];
 
   for (const test of tests) {
@@ -240,7 +248,6 @@ async function main() {
 
     // Display summary
     await displayIntegrationSummary();
-
   } catch (error) {
     console.error('❌ Integration failed:', error.message);
     process.exit(1);

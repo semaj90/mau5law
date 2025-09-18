@@ -7,7 +7,7 @@ import type {
   WorkerStatus as ProperWorkerStatus,
 } from '$lib/types/svelte5-patterns';
 
-// AI/LLM Types - Using proper definitions
+// AI/LLM Types - Using proper definitions;
 declare global {
   type LLMProvider = 'ollama' | 'openai' | 'anthropic' | 'huggingface';
   type AITask = ProperAITask;
@@ -17,7 +17,7 @@ declare global {
     taskId: string;
     type: 'status' | 'result' | 'error';
     data: unknown;
-    timestamp: Date;
+    timestamp: Date;,
   };
   type EnhancedRAGEngine = {
     query: (input: string, options?: { limit?: number; threshold?: number }) => Promise<AIResponse>;
@@ -25,11 +25,11 @@ declare global {
     similaritySearch: (query: string, options?: { limit?: number }) => Promise<any[]>;
   };
   type ErrorProcessingPipeline = {
-    processErrors: (errors: Error[]) => Promise<Array<any>>;
-    analyzeError: (error: Error) => Promise<any>;
+    processErrors: (errors: Error[]) => Promise<Array<any>;
+    analyzeError: (error: Error) => Promise<any>;,
   };
 
-  // API Request/Response Types - Using proper definitions
+  // API Request/Response Types - Using proper definitions;
   import type {
     CaseCreateRequest as ProperCaseCreateRequest,
     CaseUpdateRequest as ProperCaseUpdateRequest,
@@ -55,13 +55,13 @@ declare global {
     };
     type CommandSearchResponse = {
       results: Array<any>;
-      total: number;
+      total: number;,
     };
     type BulkOperationResponse = ProperBulkOperationResponse;
     type FormSubmissionResult<T = any> = ProperFormSubmissionResult<T>;
   }
 
-  // Database Types - Using proper definitions
+  // Database Types - Using proper definitions;
   import type {
     CaseState,
     EvidenceState,
@@ -102,7 +102,7 @@ declare global {
       entityType: 'case' | 'evidence' | 'document';
       tag: string;
       confidence: number;
-      createdAt: Date;
+      createdAt: Date;,
     };
     export type Case = CaseState;
     export type Evidence = EvidenceState;
@@ -110,13 +110,13 @@ declare global {
     export type VectorSearchResult = ProperVectorSearchResult;
   }
 
-  // Service Types
+  // Service Types;
   declare global {
     type DocumentCache = any;
     type ReinforcementLearningCache = any;
     type PGVectorStore = {
       ensureTableInDatabase?: () => Promise<void>;
-      similaritySearchWithScore?: (query: string, limit?: number) => Promise<Array<[any, number]>>;
+      similaritySearchWithScore?: (query: string, limit?: number) => Promise<Array<[any, number]>;
       addDocuments?: (docs: any[]) => Promise<void>;
       delete?: (options?: any) => Promise<void>;
       [key: string]: any;
@@ -128,7 +128,7 @@ declare global {
     };
   }
 
-  // XState Types
+  // XState Types;
   declare global {
     type RecommendationMachineContext = {
       userContext?: any;
@@ -139,7 +139,7 @@ declare global {
     type WorkerResult = any;
   }
 
-  // External Library Types
+  // External Library Types;
   declare module '$lib/types' {
     // Duplicate removed: // Duplicate removed: export type Case = any;
   }
@@ -153,14 +153,14 @@ declare global {
       topK: number;
       repeatPenalty: number;
       stopTokens: string[];
-      priority: any;
+      priority: any;,
     };
   }
 
-  // Row/Database result types
+  // Row/Database result types;
   declare global {
     interface RowList<T> {
-      rows: T;
+      rows: T;,
     }
   }
 

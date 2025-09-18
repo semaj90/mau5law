@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from "fs";
-import { join, extname } from "path";
+import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
+import { join, extname } from 'path';
 
-console.log("🔧 Fixing TypeScript import errors...");
+console.log('🔧 Fixing TypeScript import errors...');
 
 const projectRoot = process.cwd();
-const srcPath = join(projectRoot, "src");
+const srcPath = join(projectRoot, 'src');
 
 // Common fixes for import paths
 const importFixes = [
@@ -27,8 +27,7 @@ const importFixes = [
   },
   {
     // Standardize Button imports
-    pattern:
-      /import\s+\{\s*Button\s*\}\s+from\s+['"]\$lib\/components\/ui\/Button\.svelte['"]/g,
+    pattern: /import\s+\{\s*Button\s*\}\s+from\s+['"]\$lib\/components\/ui\/Button\.svelte['"]/g,
     replacement: "import { Button } from '$lib/components/ui'",
   },
   {
@@ -47,15 +46,11 @@ function findFiles(dir, files = []) {
     const fullPath = join(dir, item);
     const stat = statSync(fullPath);
 
-    if (
-      stat.isDirectory() &&
-      !item.startsWith(".") &&
-      item !== "node_modules"
-    ) {
+    if (stat.isDirectory() && !item.startsWith('.') && item !== 'node_modules') {
       findFiles(fullPath, files);
     } else if (
       stat.isFile() &&
-      (item.endsWith(".ts") || item.endsWith(".svelte") || item.endsWith(".js"))
+      (item.endsWith('.ts') || item.endsWith('.svelte') || item.endsWith('.js'))
     ) {
       files.push(fullPath);
     }
@@ -67,7 +62,7 @@ function findFiles(dir, files = []) {
 // Apply fixes to a file
 function fixFile(filePath) {
   try {
-    let content = readFileSync(filePath, "utf8");
+    let content = readFileSync(filePath, 'utf8');
     let modified = false;
 
     for (const fix of importFixes) {
@@ -79,8 +74,8 @@ function fixFile(filePath) {
     }
 
     if (modified) {
-      writeFileSync(filePath, content, "utf8");
-      console.log(`✅ Fixed: ${filePath.replace(projectRoot, ".")}`);
+      writeFileSync(filePath, content, 'utf8');
+      console.log(`✅ Fixed: ${filePath.replace(projectRoot, '.')}`);
       return true;
     }
   } catch (error) {
@@ -106,14 +101,14 @@ function main() {
   console.log(`\n🎉 Fixed ${fixedCount} files with import errors`);
 
   if (fixedCount > 0) {
-    console.log("\n📝 Common fixes applied:");
-    console.log("  • Removed /index suffixes from UI imports");
-    console.log("  • Fixed malformed import paths");
-    console.log("  • Standardized component imports");
-    console.log("  • Merged duplicate imports");
+    console.log('\n📝 Common fixes applied:');
+    console.log('  • Removed /index suffixes from UI imports');
+    console.log('  • Fixed malformed import paths');
+    console.log('  • Standardized component imports');
+    console.log('  • Merged duplicate imports');
   }
 
-  console.log("\n✨ Import fix complete! Run `npm run check` to verify.");
+  console.log('\n✨ Import fix complete! Run `npm run check` to verify.');
 }
 
 main();

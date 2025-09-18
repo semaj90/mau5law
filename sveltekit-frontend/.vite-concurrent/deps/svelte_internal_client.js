@@ -105,8 +105,8 @@ import {
   validate_snippet_args,
   validate_store,
   validate_void_dynamic_element,
-  wrap_snippet
-} from "./chunk-5OCJKXG4.js";
+  wrap_snippet,
+} from './chunk-5OCJKXG4.js';
 import {
   append,
   comment,
@@ -124,8 +124,8 @@ import {
   stopPropagation,
   text,
   trusted,
-  with_script
-} from "./chunk-VOC4A3DY.js";
+  with_script,
+} from './chunk-VOC4A3DY.js';
 import {
   $document,
   $window,
@@ -190,13 +190,13 @@ import {
   update_pre,
   user_derived,
   user_effect,
-  user_pre_effect
-} from "./chunk-YZBAU52E.js";
-import "./chunk-24FUCJ6P.js";
-import "./chunk-6SIJFJGE.js";
-import "./chunk-UWMOYZ25.js";
-import "./chunk-KDVGFZWC.js";
-import "./chunk-KWPVD4H7.js";
+  user_pre_effect,
+} from './chunk-YZBAU52E.js';
+import './chunk-24FUCJ6P.js';
+import './chunk-6SIJFJGE.js';
+import './chunk-UWMOYZ25.js';
+import './chunk-KDVGFZWC.js';
+import './chunk-KWPVD4H7.js';
 export {
   CLASS,
   FILENAME,
@@ -385,6 +385,6 @@ export {
   validate_void_dynamic_element,
   $window as window,
   with_script,
-  wrap_snippet
+  wrap_snippet,
 };
 //# sourceMappingURL=svelte_internal_client.js.map

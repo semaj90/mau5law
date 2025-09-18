@@ -1,4 +1,5 @@
 import Fuse from 'fuse.js';
+}
 
 export interface LocalDoc {
   id: string;
@@ -7,12 +8,12 @@ export interface LocalDoc {
 }
 
 export interface LocalSearchResult extends LocalDoc {
-  score: number; // 0..1 (higher is better)
+  score: number; // 0..1 (higher is better),
 }
 
 type MaybePromise<T> = T | Promise<T>;
 
-// Very small in-memory TTL cache (fallback when Redis is not available)
+// Very small in-memory TTL cache (fallback when Redis is not available);
 class TinyTTLCache<V> {
   private map = new Map<string, { v: V; t: number }>();
   constructor(private ttlMs = 60_000) {}
@@ -36,7 +37,7 @@ export class LocalSearchPipeline {
   private fallbackCache = new TinyTTLCache<LocalSearchResult[]>(90_000);
   private ready = false;
   private redis:
-    | undefined
+    | undefined;
     | {
         get: (key: string) => MaybePromise<string | null>;
         setex?: (key: string, seconds: number, value: string) => MaybePromise<any>;
@@ -49,7 +50,7 @@ export class LocalSearchPipeline {
       includeScore: true,
       threshold: 0.33,
       keys: [
-        { name: 'text', weight: 0.8 },
+        { name: 'text', weight: 0.8 },)
         { name: 'metadata.title', weight: 0.2 },
       ] as any,
     });
@@ -58,7 +59,7 @@ export class LocalSearchPipeline {
   private async ensureReady(): Promise<void> {
     if (this.ready) return;
 
-    // Try to attach Redis cache if available (multiple possible modules in repo)
+    // Try to attach Redis cache if available (multiple possible modules in repo);
     try {
       const modA: any = await import('$lib/server/cache/redis');
       if (modA?.cache?.get && (modA.cache.setex || modA.cache.set || modA.cache.expire)) {
@@ -75,9 +76,9 @@ export class LocalSearchPipeline {
       } catch {}
     }
 
-    // Seed with a tiny demo set if empty so first searches return something
+    // Seed with a tiny demo set if empty so first searches return something;
     if (this.docs.size === 0) {
-      const seed: LocalDoc[] = [
+      const seed: LocalDoc[] = [;
         {
           id: 'seed-1',
           text: 'Contract indemnification clause and liability limitations for commercial agreements.',
@@ -107,7 +108,7 @@ export class LocalSearchPipeline {
   }
 
   private rebuildIndex(): void {
-    this.fuse.setCollection(Array.from(this.docs.values()));
+    this.fuse.setCollection(Array.from(this.docs.values());
   }
 
   async search(query: string, limit = 5): Promise<LocalSearchResult[]> {
@@ -116,7 +117,7 @@ export class LocalSearchPipeline {
 
     const key = `local-search:${query}:${limit}`;
 
-    // Redis cache first
+    // Redis cache first;
     if (this.redis?.get) {
       try {
         const cached = await this.redis.get(key);
@@ -137,7 +138,7 @@ export class LocalSearchPipeline {
       text: h.item.text,
       metadata: h.item.metadata,
       score: 1 - (h.score ?? 0),
-    }));
+    });
 
     // Cache result
     const payload = JSON.stringify(results);

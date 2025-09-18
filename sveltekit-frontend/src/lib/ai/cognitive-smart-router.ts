@@ -29,7 +29,7 @@ export interface RouteDecision {
   reasoning: string;
   expectedLatency: number;
   fallbackChain: string[];
-  confidence: number;
+  confidence: number;,
 }
 
 export interface CognitiveMetrics {
@@ -41,7 +41,7 @@ export interface CognitiveMetrics {
   successRate: Record<string, number>;
 }
 
-// Configuration using existing infrastructure
+// Configuration using existing infrastructure;
 const ROUTING_CONFIG = {
   thresholds: {
     cacheHitRatio: 0.85,
@@ -50,7 +50,7 @@ const ROUTING_CONFIG = {
     gpuMemoryThreshold: 0.8,
   },
 
-  // Based on your existing engines
+  // Based on your existing engines;
   engineCapabilities: {
     'webasm-cache': {
       maxLatency: 5,
@@ -78,7 +78,7 @@ const ROUTING_CONFIG = {
     },
   },
 
-  // Based on your task patterns
+  // Based on your task patterns;
   routingMatrix: {
     'legal-analysis': ['nes-orchestrator', 'ollama', 'llamacpp-cuda'],
     'ui-interaction': ['webasm-cache', 'nes-orchestrator'],
@@ -99,7 +99,7 @@ class CognitiveSmartRouter {
     | 'ollama'
     | 'webasm-cache'
     | 'nes-orchestrator'
-    | 'llamacpp-cuda'
+    | 'llamacpp-cuda';
     | 'ollama-fallback' {
     switch (engine) {
       case 'ollama':
@@ -119,7 +119,7 @@ class CognitiveSmartRouter {
       case 'llamacpp-cuda':
         return 'llamacpp-cuda';
       default:
-        return 'fallback';
+        return 'fallback';,
     }
   }
 
@@ -144,7 +144,7 @@ class CognitiveSmartRouter {
 
   /**
    * Main routing method - determines best engine for request
-   */
+   */;
   async route(request: RouteRequest): Promise<WebLlamaResponse> {
     const startTime = performance.now();
     this.metrics.totalRequests++;
@@ -160,7 +160,7 @@ class CognitiveSmartRouter {
       const latency = performance.now() - startTime;
       this.updateMetrics(decision.engine, latency, true);
 
-      // 4. Enhance response with routing metadata
+      // 4. Enhance response with routing metadata;
       return {
         ...response,
         processingPath: this.mapEngineToPath(decision.engine),
@@ -191,14 +191,14 @@ class CognitiveSmartRouter {
 
   /**
    * Smart routing decision logic based on your existing infrastructure
-   */
+   */;
   async determineRoute(request: RouteRequest): Promise<RouteDecision> {
     const { requestType, priority, maxLatency, prompt } = request;
 
     // Check cache potential first
     const cacheScore = await this.estimateCacheScore(prompt);
 
-    // High cache hit probability -> WebASM cache
+    // High cache hit probability -> WebASM cache;
     if (cacheScore > ROUTING_CONFIG.thresholds.cacheHitRatio && this.isWebGPUAvailable) {
       return {
         engine: 'webasm-cache',
@@ -209,7 +209,7 @@ class CognitiveSmartRouter {
       };
     }
 
-    // Critical latency requirements
+    // Critical latency requirements;
     if (priority === 'critical' || (maxLatency && maxLatency < 100)) {
       if (this.isWebGPUAvailable) {
         return {
@@ -241,7 +241,7 @@ class CognitiveSmartRouter {
       }
     }
 
-    // Final fallback
+    // Final fallback;
     return {
       engine: 'ollama',
       reasoning: 'Default fallback - most reliable',
@@ -253,10 +253,10 @@ class CognitiveSmartRouter {
 
   /**
    * Execute request on specific engine using existing services
-   */
+   */;
   private async executeOnEngine(engine: string, request: RouteRequest): Promise<WebLlamaResponse> {
     switch (engine) {
-      case 'webasm-cache':
+      case 'webasm-cache':;
         return await webLlamaService.generate(request.prompt, {
           maxTokens: 2048,
           useCache: true,
@@ -284,13 +284,13 @@ class CognitiveSmartRouter {
 
   /**
    * Process request through NES Cache Orchestrator
-   */
+   */;
   private async processWithNESOrchestrator(request: RouteRequest): Promise<WebLlamaResponse> {
     // Use your existing NES orchestrator for legal analysis
     const startTime = performance.now();
 
     // This would integrate with your existing NES cache system
-    // For now, we'll simulate the response format
+    // For now, we'll simulate the response format;
     const response: WebLlamaResponse = {
       text: `[NES Orchestrator Processing] ${request.prompt}`,
       tokensGenerated: Math.floor(Math.random() * 500) + 100,
@@ -313,11 +313,11 @@ class CognitiveSmartRouter {
 
   /**
    * Process request through Ollama using existing integration
-   */
+   */;
   private async processWithOllama(request: RouteRequest): Promise<WebLlamaResponse> {
     const startTime = performance.now();
 
-    // Use your existing Ollama configuration
+    // Use your existing Ollama configuration;
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
@@ -360,9 +360,9 @@ class CognitiveSmartRouter {
 
   /**
    * Initialize health checks for existing services
-   */
+   */;
   private async initializeHealthChecks(): Promise<void> {
-    // Check WebGPU availability (for webasm-llamacpp)
+    // Check WebGPU availability (for webasm-llamacpp);
     if (typeof navigator !== 'undefined' && 'gpu' in navigator && navigator.gpu) {
       try {
         const adapter = await navigator.gpu.requestAdapter();
@@ -372,7 +372,7 @@ class CognitiveSmartRouter {
       }
     }
 
-    // Check Ollama availability
+    // Check Ollama availability;
     try {
       const response = await fetch('http://localhost:11434/api/version');
       this.isOllamaAvailable = (response as { json?: any; ok?: any }).ok;
@@ -380,7 +380,7 @@ class CognitiveSmartRouter {
       this.isOllamaAvailable = false;
     }
 
-    // Initialize NES orchestrator
+    // Initialize NES orchestrator;
     if (nesCacheOrchestrator.initialize) {
       nesCacheOrchestrator.initialize();
     }
@@ -390,12 +390,12 @@ class CognitiveSmartRouter {
    * Check health of specific engine
    */
   private async checkEngineHealth(
-    engine: string
+    engine: string;
   ): Promise<any> {
     const cached = this.engineHealthCache.get(engine);
     const now = Date.now();
 
-    // Use cached result if recent (30 seconds)
+    // Use cached result if recent (30 seconds);
     if (cached && now - cached.lastCheck < 30000) {
       return cached;
     }
@@ -417,7 +417,7 @@ class CognitiveSmartRouter {
         healthy = this.isOllamaAvailable; // Fallback for now
         break;
       default:
-        healthy = false;
+        healthy = false;,
     }
 
     const result = { healthy, lastCheck: now };
@@ -427,7 +427,7 @@ class CognitiveSmartRouter {
 
   /**
    * Estimate cache hit probability for a prompt
-   */
+   */;
   private async estimateCacheScore(prompt: string): Promise<number> {
     // Simple heuristic - would integrate with your actual cache
     const commonLegalTerms = ['contract', 'liability', 'indemnification', 'legal', 'clause'];
@@ -438,7 +438,7 @@ class CognitiveSmartRouter {
 
   /**
    * Update performance metrics
-   */
+   */;
   private updateMetrics(engine: string, latency: number, success: boolean): void {
     // Update routing decisions count
     this.metrics.routingDecisions[engine] = (this.metrics.routingDecisions[engine] || 0) + 1;
@@ -460,14 +460,14 @@ class CognitiveSmartRouter {
 
   /**
    * Get comprehensive performance metrics
-   */
+   */;
   getPerformanceMetrics(): CognitiveMetrics {
     return { ...this.metrics };
   }
 
   /**
    * Reset all performance metrics
-   */
+   */;
   resetMetrics(): void {
     this.metrics = {
       totalRequests: 0,
@@ -481,10 +481,10 @@ class CognitiveSmartRouter {
 
   /**
    * Configure GPU layers (reasonable default, not 999)
-   */
+   */;
   setGPULayers(layers: number): void {
     // Reasonable range for RTX 3060
-    this.gpuLayers = Math.max(1, Math.min(layers, 50));
+    this.gpuLayers = Math.max(1, Math.min(layers, 50);
   }
 }
 

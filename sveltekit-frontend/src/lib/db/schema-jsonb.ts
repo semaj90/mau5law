@@ -19,7 +19,7 @@ import {
 import {
   sql
 } from "drizzle-orm";
-// Custom vector type for pgvector
+// Custom vector type for pgvector;
 const vector = customType({
   dataType() {
     return 'vector(1536)';
@@ -74,7 +74,7 @@ export interface SummaryData {
   recommendations: Recommendation[];
   risk_assessment: RiskAssessment;
   confidence_score: number;
-  processing_metrics: ProcessingMetrics;
+  processing_metrics: ProcessingMetrics;,
 }
 
 export interface LegalIssue {
@@ -94,7 +94,7 @@ export interface Recommendation {
 export interface RiskAssessment {
   overall_risk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   risk_factors: Array<any>;
-  mitigation: string[];
+  mitigation: string[];,
 }
 
 export interface ProcessingMetrics {
@@ -139,11 +139,11 @@ export interface UserPreferences {
   };
   api_limits: {
     daily_quota: number;
-    rate_limit_per_minute: number;
+    rate_limit_per_minute: number;,
   };
 }
 
-// Main documents table
+// Main documents table;
 export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
   id: uuid('id').defaultRandom().primaryKey(),
   documentName: varchar('document_name', { length: 255 }).notNull(),
@@ -200,7 +200,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
     sql`setweight(to_tsvector('english', coalesce(document_name, '')), 'A') ||
         setweight(to_tsvector('english', coalesce(original_text, '')), 'D') ||
         setweight(to_tsvector('english', coalesce(summary->>'executive_summary', '')), 'B')`
-  )
+  );
 }, (table: any) => ({
   statusIdx: index('idx_documents_status').on(table.status),
   typeIdx: index('idx_documents_type').on(table.documentType),
@@ -211,9 +211,9 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
   confidenceIdx: index('idx_summary_confidence').on(sql`(summary_data->>'confidence_score')`),
   findingsIdx: index('idx_summary_findings').using('gin', sql`(summary_data->'key_findings')`),
   issuesIdx: index('idx_summary_issues').using('gin', sql`(summary_data->'legal_issues')`)
-}));
+});
 
-// Vector embeddings table
+// Vector embeddings table;
 export const documentEmbeddings = pgTable('document_embeddings', {
   id: uuid('id').defaultRandom().primaryKey(),
   documentId: uuid('document_id').notNull().references(() => aiSummarizedDocuments.id, { onDelete: 'cascade' }),
@@ -222,14 +222,14 @@ export const documentEmbeddings = pgTable('document_embeddings', {
   embedding: vector('embedding'),
   metadata: jsonb('metadata').default(sql`'{}'::jsonb`).notNull(),
   modelName: varchar('model_name', { length: 100 }),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow();
 }, (table: any) => ({
   documentIdx: index('idx_embeddings_document').on(table.documentId),
   uniqueChunk: uniqueIndex('unique_document_chunk').on(table.documentId, table.chunkIndex),
   // Note: IVFFlat index for vector similarity search would be added via migration
-}));
+});
 
-// Summarization jobs queue
+// Summarization jobs queue;
 export const summarizationJobs = pgTable('summarization_jobs', {
   id: uuid('id').defaultRandom().primaryKey(),
   documentId: uuid('document_id').references(() => aiSummarizedDocuments.id, { onDelete: 'cascade' }),
@@ -259,14 +259,14 @@ export const summarizationJobs = pgTable('summarization_jobs', {
   lockedAt: timestamp('locked_at', { withTimezone: true }),
   
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow();
 }, (table: any) => ({
   statusPriorityIdx: index('idx_jobs_status_priority').on(table.status, table.priority, table.scheduledAt),
   documentIdx: index('idx_jobs_document').on(table.documentId),
   lockedIdx: index('idx_jobs_locked').on(table.lockedBy, table.lockedAt)
-}));
+});
 
-// User preferences
+// User preferences;
 export const userPreferences = pgTable('user_preferences', {
   userId: uuid('user_id').primaryKey(),
   preferences: jsonb('preferences').default(sql`'{
@@ -294,7 +294,7 @@ export const userPreferences = pgTable('user_preferences', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 });
 
-// Export all tables
+// Export all tables;
 export const schema = {
   aiSummarizedDocuments,
   documentEmbeddings,

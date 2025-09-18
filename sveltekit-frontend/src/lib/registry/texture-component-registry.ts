@@ -4,6 +4,7 @@
  */
 
 import type { MemoryBank } from '$lib/config/legal-priorities';
+}
 
 export interface TextureSlot {
   slotId: string;
@@ -11,7 +12,7 @@ export interface TextureSlot {
   memoryBank: MemoryBank;
   size: number; // bytes
   lastAccessed: number;
-  lockCount: number; // Reference counting
+  lockCount: number; // Reference counting,
 }
 
 export interface ComponentManifest {
@@ -31,7 +32,7 @@ export interface ComponentRegistration {
   textureSlots: Map<string, TextureSlot>;
   isActive: boolean;
   registrationTime: number;
-  lastActivity: number;
+  lastActivity: number;,
 }
 
 export interface MemoryBankStats {
@@ -42,7 +43,7 @@ export interface MemoryBankStats {
   componentCount: number;
   textureCount: number;
   fragmentationRatio: number;
-  hitRate: number;
+  hitRate: number;,
 }
 
 export interface RegistryStats {
@@ -52,13 +53,13 @@ export interface RegistryStats {
   memoryBanks: Record<MemoryBank, MemoryBankStats>;
   conflicts: number;
   evictions: number;
-  lastDefrag: number;
+  lastDefrag: number;,
 }
 
 /**
  * Global Component Texture Registry
  * Manages GPU memory allocation like an NES memory mapper
- */
+ */;
 class ComponentTextureRegistry {
   private components = new Map<string, ComponentRegistration>();
   private textureSlots = new Map<string, TextureSlot>();
@@ -85,15 +86,15 @@ class ComponentTextureRegistry {
   /**
    * Register a component with the texture registry
    * This must be called before any texture operations
-   */
+   */;
   register(componentId: string, manifest: ComponentManifest): boolean {
-    // Check for naming conflicts
+    // Check for naming conflicts;
     if (this.components.has(componentId)) {
       console.warn(`🎮 Component ${componentId} already registered`);
       return false;
     }
     
-    // Validate memory bank capacity
+    // Validate memory bank capacity;
     if (!this.canAllocateInBank(manifest.memoryBank, manifest.estimatedUsage || 0)) {
       console.warn(`🎮 Insufficient memory in ${manifest.memoryBank} for ${componentId}`);
       
@@ -107,17 +108,17 @@ class ComponentTextureRegistry {
       }
     }
     
-    // Create component registration
+    // Create component registration;
     const registration: ComponentRegistration = {
       componentId,
       manifest,
       textureSlots: new Map(),
       isActive: true,
       registrationTime: Date.now(),
-      lastActivity: Date.now()
+      lastActivity: Date.now(),
     };
     
-    // Reserve texture slots
+    // Reserve texture slots;
     manifest.textureSlots.forEach(slotId => {
       const textureSlot: TextureSlot = {
         slotId,
@@ -125,7 +126,7 @@ class ComponentTextureRegistry {
         memoryBank: manifest.memoryBank,
         size: 0,
         lastAccessed: Date.now(),
-        lockCount: 0
+        lockCount: 0,
       };
       
       registration.textureSlots.set(slotId, textureSlot);
@@ -140,14 +141,14 @@ class ComponentTextureRegistry {
   
   /**
    * Unregister a component and free its textures
-   */
+   */;
   unregister(componentId: string): boolean {
     const registration = this.components.get(componentId);
     if (!registration) {
       return false;
     }
     
-    // Free all texture slots
+    // Free all texture slots;
     registration.textureSlots.forEach(slot => {
       this.freeTextureSlot(slot.textureId);
     });
@@ -160,7 +161,7 @@ class ComponentTextureRegistry {
   
   /**
    * Allocate texture in the component's assigned memory bank
-   */
+   */;
   allocateTexture(componentId: string, slotId: string, size: number): string | null {
     const registration = this.components.get(componentId);
     if (!registration) {
@@ -174,9 +175,9 @@ class ComponentTextureRegistry {
       return null;
     }
     
-    // Check memory bank capacity
+    // Check memory bank capacity;
     if (!this.canAllocateInBank(textureSlot.memoryBank, size)) {
-      // Try to free memory through eviction
+      // Try to free memory through eviction;
       if (this.performEviction(textureSlot.memoryBank, size)) {
         console.log(`🎮 Freed memory in ${textureSlot.memoryBank} through eviction`);
       } else {
@@ -203,7 +204,7 @@ class ComponentTextureRegistry {
   
   /**
    * Free texture slot and update memory usage
-   */
+   */;
   freeTextureSlot(textureId: string): boolean {
     const textureSlot = this.textureSlots.get(textureId);
     if (!textureSlot) {
@@ -212,7 +213,7 @@ class ComponentTextureRegistry {
     
     // Update memory bank usage
     const currentUsage = this.memoryBankUsage.get(textureSlot.memoryBank) || 0;
-    this.memoryBankUsage.set(textureSlot.memoryBank, Math.max(0, currentUsage - textureSlot.size));
+    this.memoryBankUsage.set(textureSlot.memoryBank, Math.max(0, currentUsage - textureSlot.size);
     
     // Reset texture slot
     textureSlot.size = 0;
@@ -224,9 +225,9 @@ class ComponentTextureRegistry {
   
   /**
    * Check if memory bank can accommodate allocation
-   */
+   */;
   private canAllocateInBank(bank: MemoryBank, size: number): boolean {
-    // Import memory bank configuration
+    // Import memory bank configuration;
     const bankConfig = {
       INTERNAL_RAM: { size: 1024 * 1024 },    // 1MB
       CHR_ROM: { size: 2 * 1024 * 1024 },     // 2MB
@@ -242,9 +243,9 @@ class ComponentTextureRegistry {
   
   /**
    * Find alternative memory bank for component
-   */
+   */;
   private findAlternativeMemoryBank(priority: number): MemoryBank | null {
-    // Priority-based fallback chain
+    // Priority-based fallback chain;
     if (priority >= 200 && this.canAllocateInBank('CHR_ROM', 0)) {
       return 'CHR_ROM';
     }
@@ -259,11 +260,11 @@ class ComponentTextureRegistry {
   
   /**
    * Perform eviction to free memory (NES-style)
-   */
+   */;
   private performEviction(bank: MemoryBank, neededSize: number): boolean {
     const candidatesForEviction: TextureSlot[] = [];
     
-    // Find textures in the target bank that can be evicted
+    // Find textures in the target bank that can be evicted;
     this.textureSlots.forEach(slot => {
       if (slot.memoryBank === bank && slot.lockCount === 0) {
         candidatesForEviction.push(slot);
@@ -292,7 +293,7 @@ class ComponentTextureRegistry {
   
   /**
    * NES-style garbage collection
-   */
+   */;
   private performGarbageCollection() {
     let inactiveComponents = 0;
     const inactivityThreshold = 5 * 60 * 1000; // 5 minutes
@@ -312,7 +313,7 @@ class ComponentTextureRegistry {
   
   /**
    * Memory defragmentation (NES-style memory management)
-   */
+   */;
   private performDefragmentation() {
     // This would be where you'd compact memory and reduce fragmentation
     // For now, just log the operation
@@ -322,7 +323,7 @@ class ComponentTextureRegistry {
   
   /**
    * Get comprehensive registry statistics
-   */
+   */;
   getStats(): RegistryStats {
     const memoryBanks = {} as Record<MemoryBank, MemoryBankStats>;
     
@@ -337,30 +338,30 @@ class ComponentTextureRegistry {
         totalSize: maxSize,
         usedSize: usage,
         availableSize: maxSize - usage,
-        componentCount: Array.from(this.components.values())
+        componentCount: Array.from(this.components.values()
           .filter(item => item.length),
-        textureCount: Array.from(this.textureSlots.values())
+        textureCount: Array.from(this.textureSlots.values()
           .filter(item => item.length),
         fragmentationRatio: 0, // Would calculate actual fragmentation
-        hitRate: 0.9 // Placeholder for hit rate calculation
+        hitRate: 0.9 // Placeholder for hit rate calculation,
       };
     });
     
     return {
       totalComponents: this.components.size,
-      activeComponents: Array.from(this.components.values())
+      activeComponents: Array.from(this.components.values()
         .filter(item => item.length),
       totalTextures: this.textureSlots.size,
       memoryBanks,
       conflicts: this.conflictLog.length,
       evictions: this.evictionCount,
-      lastDefrag: this.lastDefragTime
+      lastDefrag: this.lastDefragTime,
     };
   }
   
   /**
    * Debug information for development
-   */
+   */;
   debug(): void {
     const stats = this.getStats();
     console.group('🎮 Component Texture Registry Stats');

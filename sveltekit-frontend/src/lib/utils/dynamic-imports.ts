@@ -2,7 +2,7 @@
 // This helps reduce initial bundle size by loading AI components only when needed
 
 export const loadAIComponents = {
-  // Core AI components
+  // Core AI components;
   async detectives() {
     const [DetectiveBoard, EvidenceCard] = await Promise.all([
       import('$lib/components/detective/DetectiveBoard.svelte'),
@@ -26,7 +26,7 @@ export const loadAIComponents = {
     return LegalAnalysisDialog;
   },
 
-  // Upload components
+  // Upload components;
   async uploads() {
     const [MinIOUpload, N64Upload] = await Promise.all([
       import('$lib/components/upload/OptimizedMinIOUpload.svelte'),
@@ -35,7 +35,7 @@ export const loadAIComponents = {
     return { MinIOUpload: MinIOUpload.default, N64Upload: N64Upload.default };
   },
 
-  // WebGPU components
+  // WebGPU components;
   async webgpu() {
     const [WebGPULoader, TextureStreaming] = await Promise.all([
       import('$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte'),
@@ -45,7 +45,7 @@ export const loadAIComponents = {
   }
 };
 
-// Service workers for heavy AI processing
+// Service workers for heavy AI processing;
 export const loadAIServices = {
   async embeddingWorker() {
     const { enhancedEmbeddingWorker } = await import('$lib/workers/embedding-worker-enhanced.js');
@@ -73,23 +73,23 @@ export const loadAIServices = {
   }
 };
 
-// Utilities for managing dynamic imports
+// Utilities for managing dynamic imports;
 export class ComponentLoader {
   private loadedComponents = new Map<string, any>();
-  private loadingPromises = new Map<string, Promise<any>>();
+  private loadingPromises = new Map<string, Promise<any>();
 
   async load<T>(key: string, loader: () => Promise<T>): Promise<T> {
-    // Return already loaded component
+    // Return already loaded component;
     if (this.loadedComponents.has(key)) {
       return this.loadedComponents.get(key);
     }
 
-    // Return existing loading promise
+    // Return existing loading promise;
     if (this.loadingPromises.has(key)) {
       return this.loadingPromises.get(key);
     }
 
-    // Start loading
+    // Start loading;
     const loadingPromise = loader().then(component => {
       this.loadedComponents.set(key, component);
       this.loadingPromises.delete(key);
@@ -129,9 +129,9 @@ export class ComponentLoader {
 // Global component loader instance
 export const componentLoader = new ComponentLoader();
 
-// Preload strategies
+// Preload strategies;
 export const preloadStrategies = {
-  // Preload components likely to be used soon
+  // Preload components likely to be used soon;
   async onIdle() {
     if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
       return new Promise<void>(resolve => {
@@ -145,7 +145,7 @@ export const preloadStrategies = {
     }
   },
 
-  // Preload on user interaction
+  // Preload on user interaction;
   async onInteraction() {
     const commonComponents = [
       { key: 'qloraMonitoring', loader: loadAIComponents.qloraMonitoring },
@@ -161,9 +161,9 @@ export const preloadStrategies = {
     );
   },
 
-  // Preload based on route
+  // Preload based on route;
   async forRoute(routeId: string) {
-    const routeComponentMap: Record<string, Array<any>> = {
+    const routeComponentMap: Record<string, Array<any> = {
       '/detective': [
         { key: 'detectives', loader: loadAIComponents.detectives },
         { key: 'fabricCanvas', loader: loadAIComponents.fabricCanvas }
@@ -186,12 +186,12 @@ export const preloadStrategies = {
   }
 };
 
-// Bundle analysis helper
+// Bundle analysis helper;
 export function getBundleStats() {
   return {
     loadedComponents: componentLoader['loadedComponents'].size,
     loadingComponents: componentLoader['loadingPromises'].size,
     componentsInMemory: Array.from(componentLoader['loadedComponents'].keys()),
-    currentlyLoading: Array.from(componentLoader['loadingPromises'].keys())
+    currentlyLoading: Array.from(componentLoader['loadingPromises'].keys(),
   };
 }

@@ -13,13 +13,13 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
   if (typeof endpoint !== 'string' || !endpoint.startsWith('/')) {
     throw error(400, 'Provide endpoint starting with /');
   }
-  const iters = Math.max(1, Math.min(2000, Number(iterations) || 100));
+  const iters = Math.max(1, Math.min(2000, Number(iterations) || 100);
 
   // Build absolute URL to target this same server
   const base = `${url.protocol}//${url.host}`;
   const target = `${base}${endpoint}`;
 
-  // Helper to run one sweep
+  // Helper to run one sweep;
   const runSweep = async () => {
     const t0 = performance.now();
     for (let i = 0; i < iters; i++) {
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request, fetch, url }) => {
 
   // Restore to env default (prefer enabled when env says so)
   const envDefault = process.env.USE_SIMDJSON_NODE === '1' || process.env.ENABLE_SIMD_JSON === 'true';
-  simdBodyParser.toggleSIMD(Boolean(envDefault));
+  simdBodyParser.toggleSIMD(Boolean(envDefault);
 
   return json({
     ok: true,

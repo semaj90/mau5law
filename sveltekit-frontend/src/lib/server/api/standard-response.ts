@@ -5,6 +5,7 @@
 
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
+}
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -12,7 +13,7 @@ export interface ApiResponse<T = any> {
   error?: string;
   message?: string;
   requestId?: string;
-  timestamp: string;
+  timestamp: string;,
 }
 
 export interface ApiError {
@@ -27,12 +28,12 @@ export interface ApiError {
 export function apiSuccess<T>(
   data: T,
   message?: string,
-  requestId?: string
+  requestId?: string;
 ) {
   const response: ApiResponse<T> = {
     success: true,
     data,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   if (message) response.message = message;
@@ -49,12 +50,12 @@ export function apiError(
   status: number = 400,
   code?: string,
   details?: any,
-  requestId?: string
+  requestId?: string;
 ) {
   const response: ApiResponse = {
     success: false,
     error: message,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   if (requestId) response.requestId = requestId;
@@ -70,7 +71,7 @@ export function apiError(
  */
 export function validateRequest(
   body: any,
-  requiredFields: string[]
+  requiredFields: string[];
 ): string | null {
   if (!body || typeof body !== 'object') {
     return 'Invalid request body';
@@ -87,14 +88,14 @@ export function validateRequest(
 
 /**
  * Get request ID from locals (set by hooks.server.ts)
- */
+ */;
 export function getRequestId(event: RequestEvent): string {
   return (event.locals as any).requestId || `req_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }
 
 /**
  * Create standardized cache headers
- */
+ */;
 export function getCacheHeaders(maxAge: number = 0) {
   if (maxAge === 0) {
     return {
@@ -113,7 +114,7 @@ export function getCacheHeaders(maxAge: number = 0) {
  * Standardized API handler wrapper with error catching
  */
 export function withErrorHandling<T extends RequestEvent>(
-  handler: (event: T) => Promise<Response>
+  handler: (event: T) => Promise<Response>;
 ) {
   return async (event: T): Promise<Response> => {
     const requestId = getRequestId(event);

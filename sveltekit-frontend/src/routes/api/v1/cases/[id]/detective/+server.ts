@@ -11,7 +11,7 @@ import { z } from 'zod';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid case ID format');
 
-// Detective mode request schema
+// Detective mode request schema;
 const DetectiveModeSchema = z.object({
   enabled: z.boolean(),
   reason: z.string().optional(),
@@ -21,10 +21,10 @@ const DetectiveModeSchema = z.object({
 /*
  * POST /api/v1/cases/[id]/detective
  * Toggle detective mode for a specific case
- */
+ */;
 export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       );
     }
 
-    // Update detective mode
+    // Update detective mode;
     const updateData = {
       detectiveMode: enabled,
       metadata: {

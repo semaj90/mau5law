@@ -1,23 +1,24 @@
 
 // Real-Time Matrix LOD System with AI-Aware Rendering
-// GPU-accelerated Level of Detail with cubic filter blending
+// GPU-accelerated Level of Detail with cubic filter blending;
+}
 
 export interface LODCache {
   [componentId: string]: {
     low: {
       vertices: Float32Array;
       cssClasses: string[];
-      priority: number;
+      priority: number;,
     };
     mid: {
       vertices: Float32Array;
       cssClasses: string[];
-      priority: number;
+      priority: number;,
     };
     high: {
       vertices: Float32Array;
       cssClasses: string[];
-      priority: number;
+      priority: number;,
     };
   };
 }
@@ -27,7 +28,7 @@ export interface ViewportFocus {
   centerY: number;
   radius: number;
   aiSuggestions: string[];
-  confidenceScore: number;
+  confidenceScore: number;,
 }
 
 export interface GPULoadMetrics {
@@ -35,7 +36,7 @@ export interface GPULoadMetrics {
   gpuUtilization: number;
   memoryUsage: number;
   renderTime: number;
-  activeBuffers: number;
+  activeBuffers: number;,
 }
 
 export class MatrixLODSystem {
@@ -92,12 +93,12 @@ export class MatrixLODSystem {
     
     out vec4 fragColor;
     
-    // Cubic interpolation function
+    // Cubic interpolation function;
     float cubic(float t) {
       return t * t * (3.0 - 2.0 * t);
     }
     
-    // AI-aware LOD blending
+    // AI-aware LOD blending;
     vec4 blendLOD(vec2 uv, float level, float focus, float aiBoost) {
       vec4 lowSample = texture(u_lowTexture, uv);
       vec4 midSample = texture(u_midTexture, uv);
@@ -107,12 +108,12 @@ export class MatrixLODSystem {
       float adjustedLevel = level + aiBoost * u_aiConfidence;
       adjustedLevel *= (1.0 - focus * 0.5); // Focus area gets higher quality
       
-      // Performance mode fallback
+      // Performance mode fallback;
       if (u_performanceMode > 0.5) {
         adjustedLevel = max(adjustedLevel, 0.5);
       }
       
-      // Cubic filter blending between LOD levels
+      // Cubic filter blending between LOD levels;
       if (adjustedLevel < 0.5) {
         float t = cubic(adjustedLevel * 2.0);
         return mix(lowSample, midSample, t);
@@ -133,11 +134,11 @@ export class MatrixLODSystem {
       fragColor = blendLOD(v_texcoord, v_lodLevel, v_focusDistance, aiBoost);
       
       // Debug visualization (remove in production)
-      #ifdef DEBUG_LOD
+      #ifdef DEBUG_LOD;
         if (v_lodLevel < 1.0) {
-          fragColor.rgb = mix(fragColor.rgb, vec3(1.0, 0.0, 0.0), 0.2); // Red for low
+          fragColor.rgb = mix(fragColor.rgb, vec3(1.0, 0.0, 0.0), 0.2); // Red for low;
         } else if (v_lodLevel < 2.0) {
-          fragColor.rgb = mix(fragColor.rgb, vec3(0.0, 1.0, 0.0), 0.2); // Green for mid
+          fragColor.rgb = mix(fragColor.rgb, vec3(0.0, 1.0, 0.0), 0.2); // Green for mid;
         } else {
           fragColor.rgb = mix(fragColor.rgb, vec3(0.0, 0.0, 1.0), 0.2); // Blue for high
         }
@@ -162,7 +163,7 @@ export class MatrixLODSystem {
 
   /**
    * Initialize hybrid GPU context for WebGPU/WebGL fallback
-   */
+   */;
   private async initializeHybridGPU(canvas: HTMLCanvasElement): Promise<void> {
     if (!this.useHybridAcceleration) return;
     
@@ -174,7 +175,7 @@ export class MatrixLODSystem {
         allowWebGL1: true,
         requireCompute: false,
         lodSystemIntegration: true,
-        nesMemoryOptimization: true
+        nesMemoryOptimization: true,
       });
       
       console.log(`🚀 Matrix LOD System using ${this.hybridGPU.getActiveContextType()} acceleration`);
@@ -186,7 +187,7 @@ export class MatrixLODSystem {
 
   /**
    * Initialize GLSL shaders for LOD blending
-   */
+   */;
   private initializeShaders(): void {
     const vertexShader = this.createShader(
       this.gl.VERTEX_SHADER,
@@ -273,11 +274,11 @@ export class MatrixLODSystem {
 
   /**
    * Calculate AI-based priority for components
-   */
+   */;
   private calculateAIPriority(metadata: Record<string, unknown>): number {
     let priority = 1.0;
 
-    // Boost for AI-generated content
+    // Boost for AI-generated content;
     if (metadata.aiGenerated) {
       priority += 0.5;
     }
@@ -290,12 +291,12 @@ export class MatrixLODSystem {
       priority += 0.1;
     }
 
-    // Boost for legal evidence
+    // Boost for legal evidence;
     if (metadata.evidenceType) {
       priority += 0.4;
     }
 
-    // Boost for critical priority
+    // Boost for critical priority;
     if (metadata.priority === "critical") {
       priority += 0.6;
     }
@@ -327,7 +328,7 @@ export class MatrixLODSystem {
 
   /**
    * Generate LOD-specific CSS classes
-   */
+   */;
   private generateLowLODClasses(metadata: Record<string, unknown>): string[] {
     return ["lod-low", "yorha-simplified", "opacity-80", "transform-scale-95"];
   }
@@ -344,7 +345,7 @@ export class MatrixLODSystem {
       "transform-scale-100",
     ];
 
-    // Add AI-specific enhancements
+    // Add AI-specific enhancements;
     if (metadata.aiGenerated) {
       classes.push("ai-enhanced", "glow-subtle");
     }
@@ -358,7 +359,7 @@ export class MatrixLODSystem {
 
   /**
    * Update viewport focus based on user interaction and AI suggestions
-   */
+   */;
   async updateViewportFocus(focus: ViewportFocus): Promise<void> {
     this.viewportFocus = focus;
 
@@ -369,11 +370,11 @@ export class MatrixLODSystem {
   /**
    * Recalculate LOD levels based on current state
    * Uses hybrid GPU acceleration when available
-   */
+   */;
   private async recalculateLODLevels(): Promise<void> {
     if (!this.viewportFocus) return;
 
-    // Use hybrid GPU acceleration for LOD calculations when available
+    // Use hybrid GPU acceleration for LOD calculations when available;
     if (this.hybridGPU && this.useHybridAcceleration) {
       await this.recalculateLODLevelsGPU();
       return;
@@ -385,14 +386,14 @@ export class MatrixLODSystem {
 
   /**
    * GPU-accelerated LOD level calculation
-   */
+   */;
   private async recalculateLODLevelsGPU(): Promise<void> {
     if (!this.hybridGPU || !this.viewportFocus) return;
 
     const componentIds = Object.keys(this.lodCache);
     const positions = new Float32Array(componentIds.length * 2);
     
-    // Collect element positions
+    // Collect element positions;
     componentIds.forEach((componentId, index) => {
       const element = document.getElementById(componentId);
       if (element) {
@@ -409,7 +410,7 @@ export class MatrixLODSystem {
       @group(0) @binding(2) var<uniform> viewportFocus: vec3f; // x, y, radius
       @group(0) @binding(3) var<uniform> aiSuggestions: array<i32, 64>;
       
-      @compute @workgroup_size(64)
+      @compute @workgroup_size(64);
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         if (index >= arrayLength(&positions)) { return; }
@@ -422,14 +423,14 @@ export class MatrixLODSystem {
         let normalizedDistance = distance / focusRadius;
         
         // Base LOD calculation
-        var lodLevel: f32 = 0.0; // low
+        var lodLevel: f32 = 0.0; // low;
         if (normalizedDistance < 0.3) {
-          lodLevel = 2.0; // high
+          lodLevel = 2.0; // high;
         } else if (normalizedDistance < 0.7) {
           lodLevel = 1.0; // mid
         }
         
-        // AI boost logic (simplified for GPU)
+        // AI boost logic (simplified for GPU);
         if (aiSuggestions[index % 64] > 0) {
           lodLevel = min(lodLevel + 1.0, 2.0);
         }
@@ -453,7 +454,7 @@ export class MatrixLODSystem {
 
       const lodLevels = (results as any).lodLevels || results as Float32Array;
 
-      // Apply calculated LOD levels
+      // Apply calculated LOD levels;
       componentIds.forEach((componentId, index) => {
         const levelValue = lodLevels[index];
         let lodLevel: "low" | "mid" | "high";
@@ -473,7 +474,7 @@ export class MatrixLODSystem {
 
   /**
    * CPU fallback LOD level calculation
-   */
+   */;
   private recalculateLODLevelsCPU(): void {
     if (!this.viewportFocus) return;
 
@@ -501,7 +502,7 @@ export class MatrixLODSystem {
         lodLevel = "mid";
       }
 
-      // AI boost for suggested elements
+      // AI boost for suggested elements;
       if (this.viewportFocus!.aiSuggestions.includes(componentId)) {
         if (lodLevel === "low") lodLevel = "mid";
         else if (lodLevel === "mid") lodLevel = "high";
@@ -539,7 +540,7 @@ export class MatrixLODSystem {
 
   /**
    * Update WebGL buffer with new vertex data
-   */
+   */;
   private updateWebGLBuffer(componentId: string, vertices: Float32Array): void {
     // Implementation would update the GPU buffer
     // This is a simplified version
@@ -550,7 +551,7 @@ export class MatrixLODSystem {
 
   /**
    * Initialize GPU performance metrics
-   */
+   */;
   private initializeGPUMetrics(): void {
     this.gpuMetrics = {
       frameRate: 60,
@@ -563,7 +564,7 @@ export class MatrixLODSystem {
 
   /**
    * Start performance monitoring loop
-   */
+   */;
   private startPerformanceMonitoring(): void {
     let lastTime = performance.now();
     let frameCount = 0;
@@ -572,7 +573,7 @@ export class MatrixLODSystem {
       const currentTime = performance.now();
       frameCount++;
 
-      // Update frame rate every second
+      // Update frame rate every second;
       if (currentTime - lastTime >= 1000) {
         this.gpuMetrics.frameRate = frameCount;
         frameCount = 0;
@@ -590,22 +591,22 @@ export class MatrixLODSystem {
 
   /**
    * Adaptive quality control based on performance
-   */
+   */;
   private adaptiveQualityControl(): void {
     const { frameRate, gpuUtilization } = this.gpuMetrics;
 
-    // Reduce quality if performance is poor
+    // Reduce quality if performance is poor;
     if (frameRate < 30 || gpuUtilization > 90) {
       this.degradeQuality();
     }
-    // Increase quality if performance allows
+    // Increase quality if performance allows;
     else if (frameRate > 55 && gpuUtilization < 60) {
       this.enhanceQuality();
     }
   }
 
   private degradeQuality(): void {
-    // Force more components to lower LOD levels
+    // Force more components to lower LOD levels;
     Object.keys(this.lodCache).forEach((componentId) => {
       const element = document.getElementById(componentId);
       if (element?.classList.contains("lod-high")) {
@@ -617,7 +618,7 @@ export class MatrixLODSystem {
   }
 
   private enhanceQuality(): void {
-    // Allow components to use higher LOD levels
+    // Allow components to use higher LOD levels;
     Object.keys(this.lodCache).forEach((componentId) => {
       const element = document.getElementById(componentId);
       if (element?.classList.contains("lod-low")) {
@@ -630,14 +631,14 @@ export class MatrixLODSystem {
 
   /**
    * Get current performance metrics
-   */
+   */;
   getPerformanceMetrics(): GPULoadMetrics {
     return { ...this.gpuMetrics };
   }
 
   /**
    * Toggle AI awareness features
-   */
+   */;
   async setAIAwareness(enabled: boolean): Promise<void> {
     this.aiAwarenessEnabled = enabled;
     if (!enabled) {
@@ -648,7 +649,7 @@ export class MatrixLODSystem {
 
   /**
    * Cleanup resources
-   */
+   */;
   dispose(): void {
     if (this.shaderProgram) {
       this.gl.deleteProgram(this.shaderProgram);
@@ -659,7 +660,7 @@ export class MatrixLODSystem {
   }
 }
 
-// Integration with existing matrix compiler
+// Integration with existing matrix compiler;
 export function createLODRenderer(canvas: HTMLCanvasElement): MatrixLODSystem {
   return new MatrixLODSystem(canvas);
 }

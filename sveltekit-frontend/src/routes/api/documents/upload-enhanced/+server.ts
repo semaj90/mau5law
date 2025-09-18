@@ -5,7 +5,7 @@ import { legalRAG } from '$lib/ai/langchain-rag';
 /**
  * Enhanced document upload endpoint with LangChain RAG integration
  * Provides immediate text extraction and semantic indexing
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData();
@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!file) {
       return json({
         success: false,
-        error: 'No file provided'
+        error: 'No file provided',
       }, { status: 400 });
     }
 
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (file.size > maxSize) {
       return json({
         success: false,
-        error: 'File size exceeds 50MB limit'
+        error: 'File size exceeds 50MB limit',
       }, { status: 400 });
     }
 
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log(`📄 Processing document upload: ${file.name} (${file.size} bytes)`);
 
-    // Process the document upload with enhanced LangChain RAG
+    // Process the document upload with enhanced LangChain RAG;
     const result = await legalRAG.uploadDocument(file.name, {
       file,
       caseId,
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
         userAgent: request.headers.get('user-agent'),
         uploadedAt: new Date().toISOString(),
         apiVersion: '2.0',
-        enhancedProcessing: true
+        enhancedProcessing: true,
       }
     });
 
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
           textExtraction: true,
           semanticIndexing: true,
           legalClassification: true,
-          enhancedSearch: true
+          enhancedSearch: true,
         }
       });
     } else {
@@ -99,20 +99,20 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown upload error',
-      details: 'An error occurred during document processing'
+      details: 'An error occurred during document processing',
     }, { status: 500 });
   }
 };
 
 /**
  * Get upload configuration and capabilities
- */
+ */;
 export const GET: RequestHandler = async () => {
   return json({
     maxFileSize: '50MB',
     supportedFormats: [
       { extension: 'pdf', mimeType: 'application/pdf', description: 'PDF Document', aiProcessing: true },
-      { extension: 'doc', mimeType: 'application/msword', description: 'Microsoft Word Document', aiProcessing: true },
+      { extension: 'doc', mimeType: 'application/msword', description: 'Microsoft Word Document', aiProcessing: true },)
       { extension: 'docx', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', description: 'Microsoft Word Document (Modern)', aiProcessing: true },
       { extension: 'txt', mimeType: 'text/plain', description: 'Plain Text', aiProcessing: true },
       { extension: 'md', mimeType: 'text/markdown', description: 'Markdown Document', aiProcessing: true },
@@ -134,9 +134,9 @@ export const GET: RequestHandler = async () => {
       documentClassification: 'Legal-specific ML classification',
       semanticIndexing: 'Vector-based semantic chunking',
       searchIntegration: 'Real-time enhanced search integration',
-      confidenceScoring: 'AI-powered quality assessment'
+      confidenceScoring: 'AI-powered quality assessment',
     },
     apiVersion: '2.0',
-    processingEngine: 'LangChain RAG + Enhanced Semantic Search'
+    processingEngine: 'LangChain RAG + Enhanced Semantic Search',
   });
 };

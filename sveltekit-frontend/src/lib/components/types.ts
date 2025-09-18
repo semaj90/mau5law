@@ -10,14 +10,14 @@ export interface EditableNode {
   metadata?: Record<string, any>;
 }
 
-// Renamed to avoid conflict with Evidence from data/types.ts
+// Renamed to avoid conflict with Evidence from data/types.ts;
 export interface ComponentEvidence {
   id: string;
   filename: string;
   content: string;
   metadata: Record<string, any>;
   uploadedAt: string;
-  userId: string;
+  userId: string;,
 }
 
 export interface CanvasState {
@@ -32,12 +32,12 @@ export interface SearchResult {
   source: string;
   score: number;
   content: string;
-  relevanceScore: number;
+  relevanceScore: number;,
 }
 
 export interface WebSocketMessage {
   type: string;
   payload: any;
   userId: string;
-  timestamp: number;
+  timestamp: number;,
 }

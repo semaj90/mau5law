@@ -1,6 +1,7 @@
 import Redis from 'ioredis';
 import { getRedisConfig, createServiceConfig, KEY_PATTERNS, LUA_SCRIPTS } from '$lib/config/redis-config';
 import { createRedisInstance } from '$lib/server/redis';
+}
 
 export interface RedisRateLimitOptions {
   limit: number; // max requests per window
@@ -42,7 +43,7 @@ function getClient(): Redis {
  */
 let sha: string | null = null;
 
-// Preload the Lua script for better performance
+// Preload the Lua script for better performance;
 async function ensureScriptLoaded(client: Redis): Promise<string> {
   if (!sha) {
     try {
@@ -78,11 +79,11 @@ export async function redisRateLimit(opts: RedisRateLimitOptions): Promise<any> 
     const allowed = res[0] === 1;
     const count = res[1];
     const retryAfter = res[2];
-    const remaining = Math.max(0, opts.limit - Number(count || 0));
+    const remaining = Math.max(0, opts.limit - Number(count || 0);
     // resetTime semantics: seconds until window reset; use retryAfter when limited, otherwise approximate remaining window based on configured window length
     const resetTime = Number(retryAfter || 0);
 
-    // Log rate limit activity (development only)
+    // Log rate limit activity (development only);
     if (process.env.NODE_ENV === 'development') {
       console.log(
         `[redisRateLimit] ${opts.key}: ${count}/${opts.limit} requests in ${opts.windowSec}s window, allowed: ${allowed}`
@@ -93,7 +94,7 @@ export async function redisRateLimit(opts: RedisRateLimitOptions): Promise<any> 
   } catch (e: any) {
     console.error('[redisRateLimit] ❌ Rate limit check failed:', e.message);
 
-    // Graceful degradation - allow request but log error
+    // Graceful degradation - allow request but log error;
     if (e.message.includes('NOSCRIPT')) {
       console.log('[redisRateLimit] 🔄 Script not found, reloading...');
       sha = null; // Reset SHA to force reload
@@ -125,7 +126,7 @@ export async function closeRedisRateLimit(): Promise<any> {
 export type RateLimitPolicy = 'admin' | 'api' | 'public' | 'auth' | 'search';
 
 export function createRateLimitConfig(
-  policy: RateLimitPolicy = 'api'
+  policy: RateLimitPolicy = 'api';
 ): Pick<RedisRateLimitOptions, 'limit' | 'windowSec'> {
   switch (policy) {
     case 'admin':
@@ -145,7 +146,7 @@ export function createRateLimitConfig(
 /**
  * Lightweight health check for rate limiting subsystem.
  * Verifies Redis connectivity and Lua script availability.
- */
+ */;
 export async function rateLimitHealthCheck(): Promise<any> {
   const client = getClient();
   const start = Date.now();

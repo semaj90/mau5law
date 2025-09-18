@@ -38,7 +38,7 @@ interface CudaStreamResponse {
   recommendations?: string[];
 }
 
-// GET: Retrieve chat session messages
+// GET: Retrieve chat session messages;
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       return json({ error: 'Session ID required' }, { status: 400 });
     }
 
-    // Get chat session
+    // Get chat session;
     const session = await db.query.chatSessions.findFirst({
       where: eq(chatSessions.id, sessionId),
     });
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       return json({ error: 'Session not found' }, { status: 404 });
     }
 
-    // Get messages for session
+    // Get messages for session;
     const messages = await db.query.chatMessages.findMany({
       where: eq(chatMessages.sessionId, sessionId),
       orderBy: [desc(chatMessages.timestamp)],
@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   }
 };
 
-// POST: Handle streaming chat with CUDA server integration
+// POST: Handle streaming chat with CUDA server integration;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const body: ChatRequest = await readBodyFast(request);
@@ -112,7 +112,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       sessionId: currentSessionId,
       content: lastUserMessage.content,
       role: 'user',
-      embedding: null, // Will be populated by embedding worker later
+      embedding: null, // Will be populated by embedding worker later;
       metadata: {
         model,
         userId: (locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747',
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     // Update session with new message count in metadata
     await db
-      .update(chatSessions)
+      .update(chatSessions);
       .set({
         metadata: {
           model,
@@ -131,11 +131,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         },
         updatedAt: new Date(),
       })
-      .where(eq(chatSessions.id, currentSessionId));
+      .where(eq(chatSessions.id, currentSessionId);
 
     if (!stream) {
       // Non-streaming response
-      const personalization = useProfile
+      const personalization = useProfile;
         ? await buildUserContextPrompt((locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747', {
             jurisdictionHint: true,
             practiceAreasHint: true,
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         sessionId: currentSessionId,
         content: cudaResponse.response,
         role: 'assistant',
-        embedding: null, // Will be populated by embedding worker later
+        embedding: null, // Will be populated by embedding worker later;
         metadata: {
           model,
           confidence: cudaResponse.confidence,
@@ -176,7 +176,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       });
     }
 
-    // HTTP Streaming response (preferred for AI chat)
+    // HTTP Streaming response (preferred for AI chat);
     const readable = new ReadableStream({
       async start(controller) {
         try {
@@ -186,7 +186,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           let metadata: any = {};
           let aiMessageId = generateId();
 
-          // Send initial session info
+          // Send initial session info;
           const sessionInfo = {
             type: 'session',
             sessionId: currentSessionId,
@@ -196,7 +196,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           controller.enqueue(`data: ${JSON.stringify(sessionInfo)}\n\n`);
 
           // Build contextual query again in stream scope
-          const personalization = useProfile
+          const personalization = useProfile;
             ? await buildUserContextPrompt((locals.user as any)?.id || 'ba2c97bb-2f5a-4887-9e1c-324f7f011747', {
                 jurisdictionHint: true,
                 practiceAreasHint: true,
@@ -207,7 +207,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             ? `${personalization}\n\nUser: ${lastUserMessage.content}`
             : lastUserMessage.content;
 
-          // Stream from CUDA server
+          // Stream from CUDA server;
           const response = await fetch(`${CUDA_SERVER_URL}${ENHANCED_GRPO_ENDPOINT}`, {
             method: 'POST',
             headers: {
@@ -286,14 +286,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             }
           }
 
-          // Store complete AI response in database
+          // Store complete AI response in database;
           if (fullResponse) {
             const newAiMessage: NewChatMessage = {
               id: aiMessageId,
               sessionId: currentSessionId,
               content: fullResponse,
               role: 'assistant',
-              embedding: null, // Will be populated by embedding worker later
+              embedding: null, // Will be populated by embedding worker later;
               metadata: {
                 model,
                 confidence,
@@ -305,7 +305,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
             // Update session message count in metadata
             await db
-              .update(chatSessions)
+              .update(chatSessions);
               .set({
                 metadata: {
                   model,
@@ -314,10 +314,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 },
                 updatedAt: new Date(),
               })
-              .where(eq(chatSessions.id, currentSessionId));
+              .where(eq(chatSessions.id, currentSessionId);
           }
 
-          // Send completion signal
+          // Send completion signal;
           const completion = {
             type: 'complete',
             sessionId: currentSessionId,
@@ -354,19 +354,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     });
   } catch (error) {
     console.error('Chat API error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to process chat request',
         details: error instanceof Error ? error.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// Helper function for non-streaming CUDA requests
+// Helper function for non-streaming CUDA requests;
 async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaStreamResponse> {
-  // Submit task to CUDA service
+  // Submit task to CUDA service;
   const submitResponse = await fetch(`${CUDA_SERVER_URL}${ENHANCED_GRPO_ENDPOINT}`, {
     method: 'POST',
     headers: {
@@ -400,7 +399,7 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
   const maxAttempts = 30; // 30 seconds max wait
 
   while (attempts < maxAttempts) {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second
+    await new Promise((resolve) => setTimeout(resolve, 1000); // Wait 1 second
     attempts++;
 
     const resultResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/result/${taskId}`);
@@ -436,7 +435,7 @@ async function fetchCudaResponse(query: string, stream: boolean): Promise<CudaSt
   throw new Error('CUDA task timed out');
 }
 
-// OPTIONS: CORS preflight
+// OPTIONS: CORS preflight;
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,
@@ -449,7 +448,7 @@ export const OPTIONS: RequestHandler = async () => {
   });
 };
 
-// DELETE: Delete chat session
+// DELETE: Delete chat session;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');
@@ -459,10 +458,10 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
 
     // Delete all messages in session
-    await db.delete(chatMessages).where(eq(chatMessages.sessionId, sessionId));
+    await db.delete(chatMessages).where(eq(chatMessages.sessionId, sessionId);
 
     // Delete session
-    await db.delete(chatSessions).where(eq(chatSessions.id, sessionId));
+    await db.delete(chatSessions).where(eq(chatSessions.id, sessionId);
 
     return json({ success: true, sessionId });
   } catch (error) {

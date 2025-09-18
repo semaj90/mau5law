@@ -1,29 +1,30 @@
 # Comprehensive Svelte 5 Reactive Example: EnhancedCaseForm Migration
 
-This document demonstrates a complete migration from legacy Svelte patterns to modern Svelte 5 reactive patterns, using a real-world legal case management form as an example.
+This document demonstrates a complete migration from legacy Svelte patterns to modern Svelte 5
+reactive patterns, using a real-world legal case management form as an example.
 
 ## Migration Overview
 
 ### Legacy Patterns → Modern Svelte 5 Patterns
 
-| Legacy Pattern | Modern Svelte 5 Pattern | Benefits |
-|---|---|---|
-| `export let prop = default` | `let { prop = default } = $props()` | Better TypeScript support, destructuring |
-| `let reactive: Derived` | `let reactive = $derived(computation)` | Clearer reactivity intent |
-| `$: reactive = computation` | `let reactive = $derived(computation)` | Explicit derived state |
-| `let state = value` | `let state = $state(value)` | Explicit state tracking |
-| Manual validation logic | `$derived` validation | Automatic revalidation |
-| Event dispatchers | Modern event handling | Simplified event patterns |
+| Legacy Pattern              | Modern Svelte 5 Pattern                | Benefits                                 |
+| --------------------------- | -------------------------------------- | ---------------------------------------- |
+| `export let prop = default` | `let { prop = default } = $props()`    | Better TypeScript support, destructuring |
+| `let reactive: Derived`     | `let reactive = $derived(computation)` | Clearer reactivity intent                |
+| `$: reactive = computation` | `let reactive = $derived(computation)` | Explicit derived state                   |
+| `let state = value`         | `let state = $state(value)`            | Explicit state tracking                  |
+| Manual validation logic     | `$derived` validation                  | Automatic revalidation                   |
+| Event dispatchers           | Modern event handling                  | Simplified event patterns                |
 
 ## Complete Migrated Component
 
 ```svelte
 <!-- EnhancedCaseForm.svelte - Modern Svelte 5 Version -->
 <script lang="ts">
-  import { notifications } from "$lib/stores/notification";
-  import type { User } from "$lib/types/user";
-  import { createEventDispatcher, onMount } from "svelte";
-  import type { Case } from "$lib/types/index";
+  import { notifications } from '$lib/stores/notification';
+  import type { User } from '$lib/types/user';
+  import { createEventDispatcher, onMount } from 'svelte';
+  import type { Case } from '$lib/types/index';
 
   // ============================================================================
   // PROPS & BINDABLE STATE
@@ -40,7 +41,7 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
     case_ = $bindable(),
     user = $bindable(),
     autoSave = false,
-    showAdvanced = true
+    showAdvanced = true,
   } = $props<Props>();
 
   const dispatch = createEventDispatcher<{
@@ -56,21 +57,21 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
 
   // Form data state - explicitly tracked
   let formData = $state({
-    title: case_?.title || "",
-    description: case_?.description || "",
-    caseNumber: case_?.caseNumber || "",
-    name: case_?.name || "",
+    title: case_?.title || '',
+    description: case_?.description || '',
+    caseNumber: case_?.caseNumber || '',
+    name: case_?.name || '',
     incidentDate: case_?.incidentDate
-      ? new Date(case_.incidentDate).toISOString().split("T")[0]
-      : "",
-    location: case_?.location || "",
-    priority: case_?.priority || "medium",
-    status: case_?.status || "open",
-    category: case_?.category || "",
+      ? new Date(case_.incidentDate).toISOString().split('T')[0]
+      : '',
+    location: case_?.location || '',
+    priority: case_?.priority || 'medium',
+    status: case_?.status || 'open',
+    category: case_?.category || '',
     dangerScore: case_?.dangerScore || 0,
-    estimatedValue: case_?.estimatedValue || "",
-    jurisdiction: case_?.jurisdiction || "",
-    leadProsecutor: case_?.leadProsecutor || user?.id || "",
+    estimatedValue: case_?.estimatedValue || '',
+    jurisdiction: case_?.jurisdiction || '',
+    leadProsecutor: case_?.leadProsecutor || user?.id || '',
     assignedTeam: case_?.assignedTeam || [],
     tags: case_?.tags || [],
     metadata: case_?.metadata || {},
@@ -91,26 +92,26 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
     const errors: Record<string, string> = {};
 
     if (!formData.title.trim()) {
-      errors.title = "Title is required";
+      errors.title = 'Title is required';
     }
 
     if (!formData.caseNumber.trim()) {
-      errors.caseNumber = "Case number is required";
+      errors.caseNumber = 'Case number is required';
     }
 
     if (formData.dangerScore < 0 || formData.dangerScore > 10) {
-      errors.dangerScore = "Danger score must be between 0 and 10";
+      errors.dangerScore = 'Danger score must be between 0 and 10';
     }
 
     if (formData.estimatedValue && isNaN(Number(formData.estimatedValue))) {
-      errors.estimatedValue = "Estimated value must be a number";
+      errors.estimatedValue = 'Estimated value must be a number';
     }
 
     if (formData.incidentDate) {
       const incidentDate = new Date(formData.incidentDate);
       const today = new Date();
       if (incidentDate > today) {
-        errors.incidentDate = "Incident date cannot be in the future";
+        errors.incidentDate = 'Incident date cannot be in the future';
       }
     }
 
@@ -132,9 +133,10 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
     const optionalFields = ['location', 'category', 'jurisdiction'];
     const allFields = [...requiredFields, ...optionalFields];
 
-    const filledFields = allFields.filter(field =>
-      formData[field as keyof typeof formData] &&
-      String(formData[field as keyof typeof formData]).trim()
+    const filledFields = allFields.filter(
+      (field) =>
+        formData[field as keyof typeof formData] &&
+        String(formData[field as keyof typeof formData]).trim()
     );
 
     return Math.round((filledFields.length / allFields.length) * 100);
@@ -142,21 +144,31 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
 
   let statusBadgeVariant = $derived(() => {
     switch (formData.status) {
-      case 'open': return 'default';
-      case 'active': return 'secondary';
-      case 'closed': return 'success';
-      case 'suspended': return 'warning';
-      default: return 'outline';
+      case 'open':
+        return 'default';
+      case 'active':
+        return 'secondary';
+      case 'closed':
+        return 'success';
+      case 'suspended':
+        return 'warning';
+      default:
+        return 'outline';
     }
   });
 
   let priorityBadgeVariant = $derived(() => {
     switch (formData.priority) {
-      case 'urgent': return 'destructive';
-      case 'high': return 'warning';
-      case 'medium': return 'secondary';
-      case 'low': return 'outline';
-      default: return 'outline';
+      case 'urgent':
+        return 'destructive';
+      case 'high':
+        return 'warning';
+      case 'medium':
+        return 'secondary';
+      case 'low':
+        return 'outline';
+      default:
+        return 'outline';
     }
   });
 
@@ -182,9 +194,9 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
     tags: formData.tags,
     metadata: {
       ...formData.metadata,
-      formVersion: "2.0",
+      formVersion: '2.0',
       lastModified: new Date().toISOString(),
-      completionPercentage
+      completionPercentage,
     },
   }));
 
@@ -196,26 +208,28 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
   $effect(() => {
     // This runs whenever formData changes
     if (case_) {
-      const hasChanges = JSON.stringify(formData) !== JSON.stringify({
-        title: case_.title || "",
-        description: case_.description || "",
-        caseNumber: case_.caseNumber || "",
-        name: case_.name || "",
-        incidentDate: case_.incidentDate
-          ? new Date(case_.incidentDate).toISOString().split("T")[0]
-          : "",
-        location: case_.location || "",
-        priority: case_.priority || "medium",
-        status: case_.status || "open",
-        category: case_.category || "",
-        dangerScore: case_.dangerScore || 0,
-        estimatedValue: case_.estimatedValue || "",
-        jurisdiction: case_.jurisdiction || "",
-        leadProsecutor: case_.leadProsecutor || user?.id || "",
-        assignedTeam: case_.assignedTeam || [],
-        tags: case_.tags || [],
-        metadata: case_.metadata || {},
-      });
+      const hasChanges =
+        JSON.stringify(formData) !==
+        JSON.stringify({
+          title: case_.title || '',
+          description: case_.description || '',
+          caseNumber: case_.caseNumber || '',
+          name: case_.name || '',
+          incidentDate: case_.incidentDate
+            ? new Date(case_.incidentDate).toISOString().split('T')[0]
+            : '',
+          location: case_.location || '',
+          priority: case_.priority || 'medium',
+          status: case_.status || 'open',
+          category: case_.category || '',
+          dangerScore: case_.dangerScore || 0,
+          estimatedValue: case_.estimatedValue || '',
+          jurisdiction: case_.jurisdiction || '',
+          leadProsecutor: case_.leadProsecutor || user?.id || '',
+          assignedTeam: case_.assignedTeam || [],
+          tags: case_.tags || [],
+          metadata: case_.metadata || {},
+        });
       isDirty = hasChanges;
     } else {
       // New case - dirty if any required fields are filled
@@ -251,9 +265,9 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
 
     if (!isValid) {
       notifications.add({
-        type: "error",
-        title: "Validation Error",
-        message: "Please fix the form errors before submitting.",
+        type: 'error',
+        title: 'Validation Error',
+        message: 'Please fix the form errors before submitting.',
       });
       return;
     }
@@ -261,38 +275,37 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
     loading = true;
 
     try {
-      const url = case_ ? `/api/cases/${case_.id}` : "/api/cases";
-      const method = case_ ? "PUT" : "POST";
+      const url = case_ ? `/api/cases/${case_.id}` : '/api/cases';
+      const method = case_ ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(apiPayload),
       });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData?.error || "Failed to save case");
+        throw new Error(errorData?.error || 'Failed to save case');
       }
 
       const savedCase = await response.json();
 
       notifications.add({
-        type: "success",
-        title: case_ ? "Case Updated" : "Case Created",
-        message: `Case "${savedCase.title}" has been ${case_ ? "updated" : "created"} successfully.`,
+        type: 'success',
+        title: case_ ? 'Case Updated' : 'Case Created',
+        message: `Case "${savedCase.title}" has been ${case_ ? 'updated' : 'created'} successfully.`,
       });
 
       lastSaved = new Date();
       isDirty = false;
-      dispatch(case_ ? "updated" : "created", savedCase);
-
+      dispatch(case_ ? 'updated' : 'created', savedCase);
     } catch (error) {
-      console.error("Error saving case:", error);
+      console.error('Error saving case:', error);
       notifications.add({
-        type: "error",
-        title: "Save Error",
-        message: error instanceof Error ? error.message : "Failed to save case. Please try again.",
+        type: 'error',
+        title: 'Save Error',
+        message: error instanceof Error ? error.message : 'Failed to save case. Please try again.',
       });
     } finally {
       loading = false;
@@ -307,15 +320,15 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
       localStorage.setItem(`case-draft-${case_?.id || 'new'}`, JSON.stringify(apiPayload));
 
       lastSaved = new Date();
-      dispatch("draft_saved", apiPayload);
+      dispatch('draft_saved', apiPayload);
 
       notifications.add({
-        type: "info",
-        title: "Draft Saved",
-        message: "Your changes have been saved as a draft.",
+        type: 'info',
+        title: 'Draft Saved',
+        message: 'Your changes have been saved as a draft.',
       });
     } catch (error) {
-      console.error("Error saving draft:", error);
+      console.error('Error saving draft:', error);
     }
   }
 
@@ -330,7 +343,7 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
         isDirty = true;
       }
     } catch (error) {
-      console.error("Error loading draft:", error);
+      console.error('Error loading draft:', error);
     }
   }
 
@@ -338,27 +351,27 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
     if (case_) {
       // Reset to original case data
       Object.assign(formData, {
-        title: case_.title || "",
-        description: case_.description || "",
-        caseNumber: case_.caseNumber || "",
+        title: case_.title || '',
+        description: case_.description || '',
+        caseNumber: case_.caseNumber || '',
         // ... etc
       });
     } else {
       // Reset to empty form
       Object.assign(formData, {
-        title: "",
-        description: "",
-        caseNumber: "",
-        name: "",
-        incidentDate: "",
-        location: "",
-        priority: "medium",
-        status: "open",
-        category: "",
+        title: '',
+        description: '',
+        caseNumber: '',
+        name: '',
+        incidentDate: '',
+        location: '',
+        priority: 'medium',
+        status: 'open',
+        category: '',
         dangerScore: 0,
-        estimatedValue: "",
-        jurisdiction: "",
-        leadProsecutor: user?.id || "",
+        estimatedValue: '',
+        jurisdiction: '',
+        leadProsecutor: user?.id || '',
         assignedTeam: [],
         tags: [],
         metadata: {},
@@ -412,7 +425,9 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
           {isEditing ? 'Edit Case' : 'Create New Case'}
         </h2>
         <p class="text-muted-foreground">
-          {isEditing ? `Editing case: ${case_?.caseNumber}` : 'Fill out the form to create a new case'}
+          {isEditing
+            ? `Editing case: ${case_?.caseNumber}`
+            : 'Fill out the form to create a new case'}
         </p>
       </div>
 
@@ -454,7 +469,6 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
 
   <!-- Main Form -->
   <form onsubmit|preventDefault={handleSubmit} class="space-y-8">
-
     <!-- Basic Information Section -->
     <Card>
       <CardHeader>
@@ -464,13 +478,10 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
         </CardTitle>
       </CardHeader>
       <CardContent class="space-y-4">
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Title -->
           <div class="space-y-2">
-            <Label for="title">
-              Case Title *
-            </Label>
+            <Label for="title">Case Title *</Label>
             <Input
               id="title"
               bind:value={formData.title}
@@ -485,9 +496,7 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
 
           <!-- Case Number -->
           <div class="space-y-2">
-            <Label for="caseNumber">
-              Case Number *
-            </Label>
+            <Label for="caseNumber">Case Number *</Label>
             <Input
               id="caseNumber"
               bind:value={formData.caseNumber}
@@ -516,11 +525,7 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-2">
             <Label for="location">Location</Label>
-            <Input
-              id="location"
-              bind:value={formData.location}
-              placeholder="Incident location"
-            />
+            <Input id="location" bind:value={formData.location} placeholder="Incident location" />
           </div>
 
           <div class="space-y-2">
@@ -548,7 +553,6 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
         </CardTitle>
       </CardHeader>
       <CardContent class="space-y-4">
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <!-- Priority -->
           <div class="space-y-2">
@@ -585,20 +589,14 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
           <!-- Category -->
           <div class="space-y-2">
             <Label for="category">Category</Label>
-            <Input
-              id="category"
-              bind:value={formData.category}
-              placeholder="Case category"
-            />
+            <Input id="category" bind:value={formData.category} placeholder="Case category" />
           </div>
         </div>
 
         <!-- Danger Score and Estimated Value -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-2">
-            <Label for="dangerScore">
-              Danger Score (0-10)
-            </Label>
+            <Label for="dangerScore">Danger Score (0-10)</Label>
             <Input
               id="dangerScore"
               type="number"
@@ -690,43 +688,24 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
     <div class="flex justify-between items-center pt-6 border-t">
       <div class="flex items-center gap-4">
         {#if isDirty}
-          <Badge variant="outline" class="text-xs">
-            Unsaved changes
-          </Badge>
+          <Badge variant="outline" class="text-xs">Unsaved changes</Badge>
         {/if}
 
         {#if autoSave}
-          <span class="text-xs text-muted-foreground">
-            Auto-save enabled
-          </span>
+          <span class="text-xs text-muted-foreground"> Auto-save enabled </span>
         {/if}
       </div>
 
       <div class="flex gap-3">
         {#if canSaveDraft}
-          <Button
-            type="button"
-            variant="outline"
-            onclick={saveDraft}
-            disabled={loading}
-          >
+          <Button type="button" variant="outline" onclick={saveDraft} disabled={loading}>
             Save Draft
           </Button>
         {/if}
 
-        <Button
-          type="button"
-          variant="ghost"
-          onclick={resetForm}
-          disabled={loading}
-        >
-          Reset
-        </Button>
+        <Button type="button" variant="ghost" onclick={resetForm} disabled={loading}>Reset</Button>
 
-        <Button
-          type="submit"
-          disabled={!canSubmit}
-        >
+        <Button type="submit" disabled={!canSubmit}>
           {#if loading}
             <Loader2 class="mr-2 animate-spin" size={16} />
             {isEditing ? 'Updating...' : 'Creating...'}
@@ -753,6 +732,7 @@ This document demonstrates a complete migration from legacy Svelte patterns to m
 ## Key Migration Benefits
 
 ### 1. **Explicit State Management**
+
 ```typescript
 // Before (implicit)
 let formData = { ... };
@@ -762,6 +742,7 @@ let formData = $state({ ... });
 ```
 
 ### 2. **Reactive Validation**
+
 ```typescript
 // Before (manual)
 function validateForm() { ... }
@@ -772,6 +753,7 @@ let isValid = $derived(Object.keys(validationErrors).length === 0);
 ```
 
 ### 3. **Auto-computed Properties**
+
 ```typescript
 // Before (manual updates)
 let completionPercentage = 0;
@@ -784,6 +766,7 @@ let completionPercentage = $derived(() => {
 ```
 
 ### 4. **Cleaner Side Effects**
+
 ```typescript
 // Before (lifecycle hooks)
 $: if (shouldAutoSave) { ... }
@@ -797,6 +780,7 @@ $effect(() => {
 ```
 
 ### 5. **Better TypeScript Integration**
+
 ```typescript
 // Before (weak typing)
 export let case_: Case | null = null;
@@ -819,4 +803,5 @@ let { case_ = $bindable() } = $props<{ case_?: Case | null }>();
 3. **Better Debugging**: Clear reactive dependency chains
 4. **Reduced Boilerplate**: Less manual state management
 
-This migration example shows how modern Svelte 5 patterns create more maintainable, performant, and developer-friendly components while preserving all functionality.
+This migration example shows how modern Svelte 5 patterns create more maintainable, performant, and
+developer-friendly components while preserving all functionality.

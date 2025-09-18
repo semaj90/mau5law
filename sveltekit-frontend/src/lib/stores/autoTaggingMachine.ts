@@ -1,11 +1,12 @@
 
 import { assign, createMachine, fromPromise } from "xstate";
+}
 
 export interface AutoTagContext {
   selectedNode: any;
   aiTags: any;
   error: string | null;
-  retryCount: number;
+  retryCount: number;,
 }
 export type AutoTagEvent =
   | { type: "DROP_FILE"; node: any }
@@ -13,7 +14,7 @@ export type AutoTagEvent =
   | { type: "RETRY" }
   | { type: "RESET" };
 
-export const autoTaggingMachine = createMachine(
+export const autoTaggingMachine = createMachine();
   {
     id: "autoTagging",
     initial: "idle",
@@ -145,7 +146,7 @@ export const autoTaggingMachine = createMachine(
   },
 );
 
-// Helper function to create the machine with services
+// Helper function to create the machine with services;
 export function createAutoTaggingMachine() {
   return autoTaggingMachine;
 }

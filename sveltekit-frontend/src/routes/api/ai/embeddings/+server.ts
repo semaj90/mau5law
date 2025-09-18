@@ -40,12 +40,12 @@ interface EmbeddingResponse {
   model: string;
   backend: string;
   dimensions: number;
-  processingTime: number;
+  processingTime: number;,
 }
 
 /**
  * Generate embeddings using available AI backends
- */
+ */;
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
 
@@ -85,7 +85,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json({ error: 'All embedding backends unavailable' }, { status: 503 });
   } catch (error) {
     console.error('Embedding API error:', error);
-    return json(
+    return json();
       {
         error: 'Internal server error',
         details: error instanceof Error ? error.message: String(error),
@@ -97,7 +97,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
 /**
  * Get embedding backend health status
- */
+ */;
 const originalGETHandler: RequestHandler = async () => {
   const health = {
     ollama: await checkOllamaHealth(),
@@ -115,7 +115,7 @@ async function generateEmbedding(
   text: string,
   model: string,
   backend: string,
-  targetDimensions: number
+  targetDimensions: number;
 ): Promise<any> {
   switch (backend) {
     case 'ollama':
@@ -128,13 +128,13 @@ async function generateEmbedding(
       return await generateFallbackEmbedding(text, targetDimensions);
 
     default:
-      return null;
+      return null;,
   }
 }
 
 /**
  * Generate embedding using Ollama
- */
+ */;
 async function generateOllamaEmbedding(text: string, model: string) {
   try {
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/embeddings`, {
@@ -170,7 +170,7 @@ async function generateOllamaEmbedding(text: string, model: string) {
 
 /**
  * Generate embedding using vLLM (OpenAI-compatible)
- */
+ */;
 async function generateVLLMEmbedding(text: string, model: string) {
   try {
     const response = await fetch(`${VLLM_ENDPOINT}/embeddings`, {
@@ -207,7 +207,7 @@ async function generateVLLMEmbedding(text: string, model: string) {
 /**
  * Generate fallback embedding using simple text analysis
  * This is a basic implementation - in production you'd use a proper embedding model
- */
+ */;
 async function generateFallbackEmbedding(text: string, dimensions: number) {
   try {
     // Simple bag-of-words + TF-IDF approach for fallback
@@ -220,7 +220,7 @@ async function generateFallbackEmbedding(text: string, dimensions: number) {
     // Create a basic embedding based on text features
     const embedding = new Array(dimensions).fill(0);
 
-    // Hash-based feature extraction
+    // Hash-based feature extraction;
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
       const hash = simpleHash(word);
@@ -232,7 +232,7 @@ async function generateFallbackEmbedding(text: string, dimensions: number) {
     }
 
     // Normalize the vector
-    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
     if (magnitude > 0) {
       for (let i = 0; i < embedding.length; i++) {
         embedding[i] /= magnitude;
@@ -244,7 +244,7 @@ async function generateFallbackEmbedding(text: string, dimensions: number) {
     const avgWordLength = words.reduce((sum, w) => sum + w.length, 0) / words.length;
     const uniqueWords = new Set(words).size;
 
-    // Incorporate these features into the embedding
+    // Incorporate these features into the embedding;
     if (dimensions > 10) {
       embedding[0] = Math.tanh(textLength / 1000); // Text length feature
       embedding[1] = Math.tanh(avgWordLength / 10); // Avg word length feature
@@ -264,7 +264,7 @@ async function generateFallbackEmbedding(text: string, dimensions: number) {
 
 /**
  * Simple hash function for consistent word hashing
- */
+ */;
 function simpleHash(str: string): number {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -277,11 +277,11 @@ function simpleHash(str: string): number {
 
 /**
  * Check Ollama health
- */
+ */;
 async function checkOllamaHealth(): Promise<any> {
   try {
     const response = await fetch(`${ollamaConfig.getBaseUrl()}/api/tags`, {
-      signal: AbortSignal.timeout(5000)
+      signal: AbortSignal.timeout(5000),
     });
 
     if ((response as { ok?: any; status?: any; json?: any }).ok) {
@@ -310,11 +310,11 @@ async function checkOllamaHealth(): Promise<any> {
 
 /**
  * Check vLLM health
- */
+ */;
 async function checkVLLMHealth(): Promise<any> {
   try {
     const response = await fetch(`${VLLM_ENDPOINT}/models`, {
-      signal: AbortSignal.timeout(5000)
+      signal: AbortSignal.timeout(5000),
     });
 
     if ((response as { ok?: any; status?: any; json?: any }).ok) {

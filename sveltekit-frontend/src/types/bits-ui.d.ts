@@ -32,7 +32,7 @@ declare module 'bits-ui' {
     Tooltip: ComponentCtor;
     Avatar: ComponentCtor;
     Menu: ComponentCtor;
-    ScrollAreaViewport: ComponentCtor;
+    ScrollAreaViewport: ComponentCtor;,
   };
 
   export default _default;

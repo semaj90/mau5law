@@ -25,14 +25,14 @@ interface PredictRequest {
   enhancedMode?: boolean;
 }
 
-// Record user action for learning
+// Record user action for learning;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json() as RecordRequest;
 
     if (!body.userId || !body.action) {
       return json(
-        { error: 'Missing required fields: userId, action' },
+        { error: 'Missing required fields: userId, action' },)
         { status: 400 }
       );
     }
@@ -52,21 +52,21 @@ export const POST: RequestHandler = async ({ request }) => {
         totalTransitions: stats.totalTransitions,
         uniqueActions: stats.uniqueActions,
         redisConnected: stats.redisConnected,
-        pendingUpdates: stats.pendingUpdates
+        pendingUpdates: stats.pendingUpdates,
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
   } catch (error) {
     console.error('Predictor recording error:', error);
     return json(
-      { error: 'Failed to record action' },
+      { error: 'Failed to record action' },)
       { status: 500 }
     );
   }
 };
 
-// Get predictions for next actions
+// Get predictions for next actions;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action');
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (!action) {
       return json(
-        { error: 'Missing required parameter: action' },
+        { error: 'Missing required parameter: action' },)
         { status: 400 }
       );
     }
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     let predictions;
 
-    // Use enhanced predictions with SIMD acceleration if requested
+    // Use enhanced predictions with SIMD acceleration if requested;
     if (enhancedMode && (context.docId || context.query)) {
       predictions = await predictor.predictNextWithSimilarity(action, context, topK);
     } else {
@@ -106,40 +106,39 @@ export const GET: RequestHandler = async ({ url }) => {
         uniqueActions: stats.uniqueActions,
         cacheEnabled: stats.cacheEnabled,
         redisConnected: stats.redisConnected,
-        lastSync: stats.lastSync
+        lastSync: stats.lastSync,
       },
       performance: {
         predictionsGenerated: predictions.length,
         cacheHit: predictions.length > 0,
-        simdAccelerated: enhancedMode && (context.docId || context.query)
+        simdAccelerated: enhancedMode && (context.docId || context.query),
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
   } catch (error) {
     console.error('Predictor prediction error:', error);
     return json(
-      { error: 'Failed to generate predictions' },
+      { error: 'Failed to generate predictions' },)
       { status: 500 }
     );
   }
 };
 
-// Bulk prediction endpoint for multiple actions
+// Bulk prediction endpoint for multiple actions;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json() as PredictRequest[];
 
     if (!Array.isArray(body) || body.length === 0) {
       return json(
-        { error: 'Expected array of prediction requests' },
+        { error: 'Expected array of prediction requests' },)
         { status: 400 }
       );
     }
 
-    const results = await Promise.all(
-      body.map(async (req) => {
-        const context = req.context || {}));
+    const results = await Promise.all(body.map(async (req) => {
+        const context = req.context || {});
         const topK = req.topK || 3;
 
         let predictions;
@@ -153,7 +152,7 @@ export const PUT: RequestHandler = async ({ request }) => {
           action: req.action,
           predictions,
           context,
-          enhancedMode: req.enhancedMode || false
+          enhancedMode: req.enhancedMode || false,
         };
       })
     );
@@ -166,15 +165,15 @@ export const PUT: RequestHandler = async ({ request }) => {
       stats: {
         totalTransitions: stats.totalTransitions,
         uniqueActions: stats.uniqueActions,
-        redisConnected: stats.redisConnected
+        redisConnected: stats.redisConnected,
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
   } catch (error) {
     console.error('Bulk prediction error:', error);
     return json(
-      { error: 'Failed to process bulk predictions' },
+      { error: 'Failed to process bulk predictions' },)
       { status: 500 }
     );
   }

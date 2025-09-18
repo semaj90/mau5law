@@ -36,7 +36,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       return json({ error: 'No content to analyze', relevance: 'No content to analyze' }, { status: 400 });
     }
 
-    // Quick legal relevance analysis
+    // Quick legal relevance analysis;
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -50,7 +50,7 @@ Context: ${context}
 
 Provide a brief 1-sentence legal relevance assessment and classification.
 Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|procedure|other", "actionable": true}`,
-        stream: false
+        stream: false,
       })
     });
 
@@ -68,7 +68,7 @@ Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|proc
       analysis = {
         relevance: 'Content may have legal significance',
         legalContext: 'general',
-        actionable: false
+        actionable: false,
       };
     } else if (typeof result === 'string') {
       try {
@@ -77,7 +77,7 @@ Format as JSON: {"relevance": "...", "legalContext": "evidence|case|statute|proc
         analysis = { raw: result };
       }
     } else if ((result as { response?: any }).response) {
-      // (result as { response?: any }).response might be a JSON string or already an object
+      // (result as { response?: any }).response might be a JSON string or already an object;
       if (typeof (result as { response?: any }).response === 'string') {
         try {
           analysis = JSON.parse((result as { response?: any }).response);

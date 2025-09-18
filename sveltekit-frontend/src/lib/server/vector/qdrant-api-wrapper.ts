@@ -16,7 +16,7 @@ export class QdrantApiWrapper {
     });
   }
 
-  // Collection management with proper v1.15+ API
+  // Collection management with proper v1.15+ API;
   async getCollections() {
     try {
       const response = await this.client.getCollections();
@@ -25,7 +25,7 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },);
         {
           collectionCount: response.collections?.length || 0,
         }
@@ -65,7 +65,7 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },);
         {
           collection: collectionName,
           vectorSize: config.vectors?.size,
@@ -80,14 +80,14 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },)
         { collection: collectionName, config }
       );
       throw error;
     }
   }
 
-  // Delete collection method with API compatibility handling
+  // Delete collection method with API compatibility handling;
   async deleteCollection(collectionName: string) {
     try {
       // Try different method signatures based on actual API
@@ -106,7 +106,7 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },)
         { collection: collectionName }
       );
       return response;
@@ -117,7 +117,7 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },)
         { collection: collectionName }
       );
       throw error;
@@ -129,7 +129,7 @@ export class QdrantApiWrapper {
     collectionName: string,
     options: {
       wait?: boolean;
-      points: Array<any>
+      points: Array<any>;
   ) {
     try {
       const response = await this.client.upsert(collectionName, options);
@@ -138,7 +138,7 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },);
         {
           collection: collectionName,
           pointCount: options.points.length,
@@ -152,7 +152,7 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },)
         { collection: collectionName, pointCount: options.points.length }
       );
       throw error;
@@ -178,7 +178,7 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },);
         {
           collection: collectionName,
           resultsCount: response.length,
@@ -193,7 +193,7 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },)
         { collection: collectionName }
       );
       throw error;
@@ -218,14 +218,14 @@ export class QdrantApiWrapper {
           with_vector: options.with_vector,
         });
       } else if (typeof (this.client as any).getPoints === 'function') {
-        // Alternative method name in some versions
+        // Alternative method name in some versions;
         response = await (this.client as any).getPoints(collectionName, {
           ids: options.ids,
           with_payload: options.with_payload,
           with_vector: options.with_vector,
         });
       } else {
-        // Fallback: return empty array if method not available
+        // Fallback: return empty array if method not available;
         logger.warn(`Retrieve method not available, returning empty result for ${collectionName}`, {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
@@ -238,7 +238,7 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },);
         {
           collection: collectionName,
           pointCount: options.ids.length,
@@ -252,7 +252,7 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },)
         { collection: collectionName, ids: options.ids }
       );
       throw error;
@@ -276,7 +276,7 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },);
         {
           collection: collectionName,
           pointCount: options.points?.length || 0,
@@ -290,14 +290,14 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },)
         { collection: collectionName }
       );
       throw error;
     }
   }
 
-  // Index management - using the correct API methods
+  // Index management - using the correct API methods;
   async createFieldIndex(collectionName: string, fieldName: string, options?: any) {
     try {
       // In v1.15+, index creation is handled via createPayloadIndex or through field schema
@@ -307,7 +307,7 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },);
         {
           collection: collectionName,
           field: fieldName,
@@ -326,14 +326,14 @@ export class QdrantApiWrapper {
         {
           component: 'QdrantApiWrapper',
           service: 'qdrant',
-        },
+        },)
         { collection: collectionName, field: fieldName }
       );
       throw error;
     }
   }
 
-  // Health check
+  // Health check;
   async healthCheck() {
     try {
       // Simple collection list to verify connectivity

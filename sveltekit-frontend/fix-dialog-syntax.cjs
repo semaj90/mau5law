@@ -39,7 +39,7 @@ const dialogFiles = [
   'src/lib/components/ui/RetroModal.svelte',
   'src/lib/components/unified/UnifiedDialog.svelte',
   'src/lib/components/upload/EnhancedLegalUpload.svelte',
-  'src/lib/components/yorha/YoRHaDialogManager.svelte'
+  'src/lib/components/yorha/YoRHaDialogManager.svelte',
 ];
 
 // Common compound component fixes
@@ -76,7 +76,7 @@ const fixes = [
   { pattern: /<\/SheetHeader>/g, replacement: '</Sheet.Header>' },
   { pattern: /<SheetHeader>/g, replacement: '<Sheet.Header>' },
   { pattern: /<\/SheetTitle>/g, replacement: '</Sheet.Title>' },
-  { pattern: /<SheetTitle>/g, replacement: '<Sheet.Title>' }
+  { pattern: /<SheetTitle>/g, replacement: '<Sheet.Title>' },
 ];
 
 let fixedCount = 0;
@@ -113,7 +113,6 @@ for (const file of dialogFiles) {
     } else {
       console.log(`  ○ No fixes needed: ${file}`);
     }
-
   } catch (error) {
     console.log(`  ❌ Failed to fix: ${file} - ${error.message}`);
   }

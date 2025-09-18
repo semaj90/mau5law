@@ -13,16 +13,16 @@ interface DetectiveSystemStatus {
   grpc: {
     connected: boolean;
     caseScoringAvailable: boolean;
-    streamingActive: boolean;
+    streamingActive: boolean;,
   };
   evidence: {
     totalItems: number;
     processingQueue: number;
-    lastSync: Date | null;
+    lastSync: Date | null;,
   };
   realTime: {
     activeConnections: number;
-    lastHeartbeat: Date | null;
+    lastHeartbeat: Date | null;,
   };
 }
 
@@ -32,16 +32,16 @@ export class ComprehensiveIntegration {
     grpc: {
       connected: false,
       caseScoringAvailable: false,
-      streamingActive: false
+      streamingActive: false,
     },
     evidence: {
       totalItems: 0,
       processingQueue: 0,
-      lastSync: null
+      lastSync: null,
     },
     realTime: {
       activeConnections: 0,
-      lastHeartbeat: null
+      lastHeartbeat: null,
     }
   };
 
@@ -49,7 +49,7 @@ export class ComprehensiveIntegration {
 
   /**
    * Initialize the comprehensive integration system with Phase 5-7 enhancements
-   */
+   */;
   async initialize(): Promise<DetectiveSystemStatus> {
     try {
       console.log('🔧 Initializing Comprehensive Detective Mode Integration...');
@@ -78,7 +78,7 @@ export class ComprehensiveIntegration {
 
   /**
    * Initialize gRPC services for binary protocol optimization
-   */
+   */;
   private async initializeGrpcServices(): Promise<void> {
     try {
       // Test gRPC case scoring service connection
@@ -100,10 +100,10 @@ export class ComprehensiveIntegration {
 
   /**
    * Setup real-time evidence streaming
-   */
+   */;
   private async setupEvidenceStreaming(): Promise<void> {
     try {
-      // Subscribe to evidence store changes
+      // Subscribe to evidence store changes;
       const unsubscribeEvidence = evidenceStore.subscribe((state) => {
         this.systemStatus.evidence.totalItems = state.evidence?.length || 0;
         this.systemStatus.evidence.lastSync = new Date();
@@ -114,12 +114,12 @@ export class ComprehensiveIntegration {
 
       this.streamingCleanup.push(unsubscribeEvidence);
 
-      // Setup streaming scoring for cases
+      // Setup streaming scoring for cases;
       if (this.systemStatus.grpc.caseScoringAvailable) {
         const cleanupScoring = await caseScoringServiceGrpc.streamScoringUpdates(
-          [], // Will be populated with active case IDs
+          [], // Will be populated with active case IDs;
           (update) => {
-            console.log('📊 Real-time scoring update:', update));
+            console.log('📊 Real-time scoring update:', update);
             this.broadcastScoringUpdate(update);
           }
         );
@@ -135,28 +135,28 @@ export class ComprehensiveIntegration {
 
   /**
    * Setup performance monitoring for detective mode operations
-   */
+   */;
   private async setupPerformanceMonitoring(): Promise<void> {
-    // Monitor system performance every 30 seconds
+    // Monitor system performance every 30 seconds;
     const performanceInterval = setInterval(() => {
       this.updatePerformanceMetrics();
     }, 30000);
 
     // Cleanup interval on destroy
-    this.streamingCleanup.push(() => clearInterval(performanceInterval));
+    this.streamingCleanup.push(() => clearInterval(performanceInterval);
   }
 
   /**
    * Broadcast evidence updates to connected clients
-   */
+   */;
   private broadcastEvidenceUpdate(evidenceState: any): void {
-    // This would integrate with WebSocket/SSE in production
+    // This would integrate with WebSocket/SSE in production;
     const event = new CustomEvent('detective-evidence-update', {
       detail: {
         timestamp: new Date(),
         totalItems: evidenceState.evidence?.length || 0,
         isLoading: evidenceState.isLoading || false,
-        error: evidenceState.error
+        error: evidenceState.error,
       }
     });
 
@@ -167,14 +167,14 @@ export class ComprehensiveIntegration {
 
   /**
    * Broadcast case scoring updates
-   */
+   */;
   private broadcastScoringUpdate(update: any): void {
     const event = new CustomEvent('detective-scoring-update', {
       detail: {
         timestamp: new Date(),
         caseId: update.caseId,
         eventType: update.eventType,
-        data: update.data
+        data: update.data,
       }
     });
 
@@ -185,27 +185,27 @@ export class ComprehensiveIntegration {
 
   /**
    * Update system performance metrics
-   */
+   */;
   private updatePerformanceMetrics(): void {
     this.systemStatus.realTime.lastHeartbeat = new Date();
 
-    // Get gRPC performance comparison
+    // Get gRPC performance comparison;
     if (this.systemStatus.grpc.caseScoringAvailable) {
       const metrics = caseScoringServiceGrpc.getPerformanceMetrics();
       console.log(`🔧 gRPC Performance: ${metrics.comparison.improvement.toFixed(1)}% improvement`);
     }
 
-    // Log system status
+    // Log system status;
     console.log('📊 Detective Mode Status:', {
       grpc: this.systemStatus.grpc,
       evidence: this.systemStatus.evidence,
-      realTime: this.systemStatus.realTime
+      realTime: this.systemStatus.realTime,
     });
   }
 
   /**
    * Score a case using the enhanced gRPC service
-   */
+   */;
   async scoreCase(caseData: Case): Promise<any> {
     if (!this.initialized) {
       throw new Error('Comprehensive Integration not initialized');
@@ -224,7 +224,7 @@ export class ComprehensiveIntegration {
           legal_precedent: 0.5,
           public_interest: 0.4,
           case_complexity: 0.6,
-          resource_requirements: 0.5
+          resource_requirements: 0.5,
         }
       };
 
@@ -245,23 +245,23 @@ export class ComprehensiveIntegration {
 
   /**
    * Check if the system is initialized
-   */
+   */;
   isInitialized(): boolean {
     return this.initialized;
   }
 
   /**
    * Get current system status
-   */
+   */;
   getSystemStatus(): DetectiveSystemStatus {
     return this.systemStatus;
   }
 
   /**
    * Cleanup resources
-   */
+   */;
   destroy(): void {
-    this.streamingCleanup.forEach(cleanup => cleanup());
+    this.streamingCleanup.forEach(cleanup => cleanup();
     this.streamingCleanup = [];
     this.initialized = false;
     console.log('🧹 Comprehensive Integration destroyed');

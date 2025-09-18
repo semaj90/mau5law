@@ -3,7 +3,8 @@
 
 // =====================================================
 // CORE COMPONENT INTERFACES
-// =====================================================
+// =====================================================;
+}
 
 export interface Props {
   data?: unknown;
@@ -23,7 +24,8 @@ export interface PageProps {
 
 // =====================================================
 // SYSTEM STATUS & HEALTH
-// =====================================================
+// =====================================================;
+}
 
 export interface SystemStatus {
   // Core service flags – made optional to tolerate partial initialization in pages
@@ -57,7 +59,8 @@ export interface ServiceHealth {
 
 // =====================================================
 // SEARCH & RETRIEVAL
-// =====================================================
+// =====================================================;
+}
 
 export interface SearchResults {
   documents: LegalDocument[];
@@ -74,7 +77,7 @@ export interface SearchResults {
   searchMetadata?: {
     index: string;
     algorithm: string;
-    filters: any[];
+    filters: any[];,
   };
 }
 
@@ -91,7 +94,7 @@ export interface TestResults {
   accuracy?: number;
   // Error can be simple string or structured
   error?:
-    | string
+    | string;
     | {
         message: string;
         code: string;
@@ -129,32 +132,33 @@ export interface AnalysisResults {
     confidence?: number;
   };
   error?:
-    | string
+    | string;
     | {
         message: string;
         code: string;
     details?: unknown;
       };
-  summary?:
+  summary?:;
     | {
         text: string;
         keyPoints: string[];
-        confidence: number;
+        confidence: number;,
       }
     | string; // some assignments use plain string
   riskAssessment?:
-    | string
+    | string;
     | {
         level: 'low' | 'medium' | 'high' | 'critical';
         factors: string[];
-        score: number;
+        score: number;,
       };
   similarity?: number;
 }
 
 // =====================================================
 // LEGAL DOMAIN TYPES
-// =====================================================
+// =====================================================;
+}
 
 export interface LegalDocument {
   id: string;
@@ -190,7 +194,7 @@ export interface CaseFile {
   evidence: Evidence[];
   timeline: TimelineEvent[];
   created_at: string;
-  updated_at: string;
+  updated_at: string;,
 }
 
 export interface Evidence {
@@ -203,7 +207,7 @@ export interface Evidence {
   hash?: string;
   chain_of_custody: CustodyEntry[];
   metadata: Record<string, any>;
-  created_at: string;
+  created_at: string;,
 }
 
 export interface PersonOfInterest {
@@ -216,7 +220,7 @@ export interface PersonOfInterest {
     address?: string;
   };
   notes: string;
-  cases: string[];
+  cases: string[];,
 }
 
 export interface CustodyEntry {
@@ -242,7 +246,7 @@ export interface TimelineEvent {
 
 // =====================================================
 // DOCUMENT / LEGAL DOCUMENT
-// A lightweight, canonical Document type used across frontend components
+// A lightweight, canonical Document type used across frontend components;
 export interface Document {
   id: string;
   title: string;
@@ -257,7 +261,8 @@ export interface Document {
 
 // =====================================================
 // USER & AUTHENTICATION
-// =====================================================
+// =====================================================;
+}
 
 export interface User {
   id: string;
@@ -272,7 +277,7 @@ export interface User {
 
 export interface Permission {
   resource: string;
-  actions: ('read' | 'write' | 'delete' | 'admin')[];
+  actions: ('read' | 'write' | 'delete' | 'admin')[];,
 }
 
 export interface UserPreferences {
@@ -280,19 +285,20 @@ export interface UserPreferences {
   language: string;
   notifications: boolean;
   ai_assistance: boolean;
-  default_view: string;
+  default_view: string;,
 }
 
 export interface DemoUser {
   email: string;
   password: string;
   name: string;
-  role: 'prosecutor' | 'defense' | 'judge' | 'investigator' | 'admin' | 'analyst' | 'user';
+  role: 'prosecutor' | 'defense' | 'judge' | 'investigator' | 'admin' | 'analyst' | 'user';,
 }
 
 // =====================================================
 // AI & MACHINE LEARNING
-// =====================================================
+// =====================================================;
+}
 
 export interface AIResponse {
   response: string;
@@ -308,7 +314,7 @@ export interface EmbeddingResult {
   text: string;
   embedding: number[];
   model: string;
-  processing_time: number;
+  processing_time: number;,
 }
 
 export interface VectorSearchResult {
@@ -324,7 +330,7 @@ export interface Entity {
   label: string;
   start: number;
   end: number;
-  confidence: number;
+  confidence: number;,
 }
 
 export interface Citation {
@@ -339,7 +345,8 @@ export interface Citation {
 
 // =====================================================
 // FILE UPLOAD & PROCESSING
-// =====================================================
+// =====================================================;
+}
 
 export interface UploadedFile {
   id: string;
@@ -375,7 +382,8 @@ export interface FileUploadOptions {
 
 // =====================================================
 // CHAT & MESSAGING
-// =====================================================
+// =====================================================;
+}
 
 export interface ChatMessage {
   id: string;
@@ -402,7 +410,8 @@ export interface ChatSession {
 
 // =====================================================
 // ERROR HANDLING & VALIDATION
-// =====================================================
+// =====================================================;
+}
 
 export interface APIError {
   code: string;
@@ -429,7 +438,8 @@ export interface ValidationFormState {
 
 // =====================================================
 // PERFORMANCE & MONITORING
-// =====================================================
+// =====================================================;
+}
 
 export interface PerformanceMetrics {
   response_time: number;
@@ -439,7 +449,7 @@ export interface PerformanceMetrics {
   memory_usage: number;
   disk_usage: number;
   active_connections: number;
-  timestamp: string;
+  timestamp: string;,
 }
 
 export interface GPUMetrics {
@@ -448,12 +458,13 @@ export interface GPUMetrics {
   memory_total: number;
   temperature: number;
   power_draw: number;
-  driver_version: string;
+  driver_version: string;,
 }
 
 // =====================================================
 // WORKFLOW & STATE MANAGEMENT
-// =====================================================
+// =====================================================;
+}
 
 export interface WorkflowState {
   current_step: string;
@@ -461,7 +472,7 @@ export interface WorkflowState {
   data: Record<string, any>;
   errors: string[];
   started_at: string;
-  updated_at: string;
+  updated_at: string;,
 }
 
 export interface TaskProgress {
@@ -477,7 +488,8 @@ export interface TaskProgress {
 
 // =====================================================
 // MISSING TYPES FOR STATE.TS IMPORTS
-// =====================================================
+// =====================================================;
+}
 
 export interface TokenUsage {
   promptTokens: number;

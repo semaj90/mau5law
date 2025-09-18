@@ -54,7 +54,7 @@ self.addEventListener('message', async (event) => {
     console.error('Worker error:', error);
     postMessage({
       type: 'error',
-      payload: { error: error.message }
+      payload: { error: error.message },
     });
   }
 });
@@ -69,7 +69,7 @@ async function handleInit() {
     // Check if WebAssembly is supported
     if (typeof WebAssembly !== 'undefined') {
       console.log('✅ WebAssembly supported, attempting WASM initialization...');
-      
+
       try {
         // Try to load WASM module first (faster, client-side)
         wasmModule = await initializeWasm();
@@ -86,9 +86,9 @@ async function handleInit() {
     try {
       const response = await fetch(goBackendUrl.replace('/infer', '/health'), {
         method: 'GET',
-        signal: AbortSignal.timeout(5000) // 5 second timeout
+        signal: AbortSignal.timeout(5000), // 5 second timeout
       });
-      
+
       if (response.ok) {
         console.log('✅ Go backend available');
       } else {
@@ -100,12 +100,11 @@ async function handleInit() {
 
     isInitialized = true;
     postMessage({ type: 'initialized' });
-
   } catch (error) {
     console.error('❌ Worker initialization failed:', error);
     postMessage({
       type: 'error',
-      payload: { error: `Initialization failed: ${error.message}` }
+      payload: { error: `Initialization failed: ${error.message}` },
     });
   }
 }
@@ -122,11 +121,11 @@ async function initializeWasm() {
     }
 
     const wasmBytes = await wasmResponse.arrayBuffer();
-    
+
     // Create memory for the WASM module (128MB initial, 512MB max)
-    const memory = new WebAssembly.Memory({ 
+    const memory = new WebAssembly.Memory({
       initial: 2048, // 128MB
-      maximum: 8192  // 512MB
+      maximum: 8192, // 512MB
     });
 
     // Import object for WASM module
@@ -147,7 +146,7 @@ async function initializeWasm() {
         },
         free: (ptr) => {
           // Memory deallocation
-        }
+        },
       },
       wasi_snapshot_preview1: {
         // WASI functions if needed
@@ -157,13 +156,13 @@ async function initializeWasm() {
         fd_write: (fd, iovs, iovs_len, nwritten) => {
           // Handle file descriptor writes
           return 0;
-        }
-      }
+        },
+      },
     };
 
     // Instantiate the WASM module
     const wasmModule = await WebAssembly.instantiate(wasmBytes, importObject);
-    
+
     // Initialize the WASM runtime
     if (wasmModule.instance.exports.initialize) {
       const initResult = wasmModule.instance.exports.initialize();
@@ -173,7 +172,6 @@ async function initializeWasm() {
     }
 
     return wasmModule;
-
   } catch (error) {
     console.error('WASM initialization error:', error);
     throw error;
@@ -201,12 +199,11 @@ async function handleLoadModel(payload) {
     isModelLoaded = true;
     postMessage({ type: 'loaded' });
     console.log('✅ Model loaded successfully');
-
   } catch (error) {
     console.error('❌ Model loading failed:', error);
     postMessage({
       type: 'error',
-      payload: { error: `Model loading failed: ${error.message}` }
+      payload: { error: `Model loading failed: ${error.message}` },
     });
   }
 }
@@ -252,7 +249,7 @@ async function loadGoModel(modelUrl) {
   const testResponse = await fetch(`${goBackendUrl}/test`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ modelPath: modelUrl })
+    body: JSON.stringify({ modelPath: modelUrl }),
   });
 
   if (!testResponse.ok) {
@@ -272,7 +269,7 @@ async function handleInference(payload) {
   }
 
   const { prompt, temperature = 0.7, topK = 40, topP = 0.9, maxTokens = 512 } = payload;
-  
+
   isGenerating = true;
   stopRequested = false;
   tokensGenerated = 0;
@@ -292,23 +289,22 @@ async function handleInference(payload) {
 
     postMessage({
       type: 'result',
-      payload: { result }
+      payload: { result },
     });
 
     postMessage({
       type: 'complete',
-      payload: { 
+      payload: {
         totalTokens: tokensGenerated,
         tokensPerSecond: tokensPerSecond,
-        inferenceTime: inferenceTime
-      }
+        inferenceTime: inferenceTime,
+      },
     });
-
   } catch (error) {
     console.error('Inference error:', error);
     postMessage({
       type: 'error',
-      payload: { error: error.message }
+      payload: { error: error.message },
     });
   } finally {
     isGenerating = false;
@@ -324,7 +320,7 @@ async function handleStreamingInference(payload) {
   }
 
   const { prompt, temperature = 0.7, maxTokens = 512 } = payload;
-  
+
   isGenerating = true;
   stopRequested = false;
   tokensGenerated = 0;
@@ -342,17 +338,16 @@ async function handleStreamingInference(payload) {
 
     postMessage({
       type: 'complete',
-      payload: { 
+      payload: {
         totalTokens: tokensGenerated,
-        tokensPerSecond: tokensPerSecond
-      }
+        tokensPerSecond: tokensPerSecond,
+      },
     });
-
   } catch (error) {
     console.error('Streaming error:', error);
     postMessage({
       type: 'error',
-      payload: { error: error.message }
+      payload: { error: error.message },
     });
   } finally {
     isGenerating = false;
@@ -370,12 +365,12 @@ async function generateWithWasm(prompt, options) {
 
   for (const chunk of chunks) {
     if (stopRequested) break;
-    
+
     result += chunk;
     tokensGenerated++;
-    
+
     // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   return result;
@@ -385,18 +380,29 @@ async function generateWithWasm(prompt, options) {
  * Stream tokens using WASM
  */
 async function streamWithWasm(prompt, options) {
-  const chunks = ['Legal ', 'analysis: ', 'This ', 'contract ', 'contains ', 'standard ', 'clauses...'];
-  
+  const chunks = [
+    'Legal ',
+    'analysis: ',
+    'This ',
+    'contract ',
+    'contains ',
+    'standard ',
+    'clauses...',
+  ];
+
   for (const chunk of chunks) {
     if (stopRequested) break;
-    
+
     postMessage({
       type: 'token',
-      payload: { token: chunk, tokensPerSecond: tokensGenerated / ((performance.now() - inferenceStartTime) / 1000) }
+      payload: {
+        token: chunk,
+        tokensPerSecond: tokensGenerated / ((performance.now() - inferenceStartTime) / 1000),
+      },
     });
-    
+
     tokensGenerated++;
-    await new Promise(resolve => setTimeout(resolve, 150));
+    await new Promise((resolve) => setTimeout(resolve, 150));
   }
 }
 
@@ -410,8 +416,8 @@ async function generateWithGo(prompt, options) {
     body: JSON.stringify({
       prompt: prompt,
       temperature: options.temperature,
-      tokens: options.maxTokens
-    })
+      tokens: options.maxTokens,
+    }),
   });
 
   if (!response.ok) {
@@ -419,7 +425,7 @@ async function generateWithGo(prompt, options) {
   }
 
   const data = await response.json();
-  
+
   if (data.error) {
     throw new Error(data.error);
   }
@@ -436,19 +442,19 @@ async function streamWithGo(prompt, options) {
   // For now, simulate streaming by breaking up a regular response
   const fullResponse = await generateWithGo(prompt, options);
   const words = fullResponse.split(' ');
-  
+
   for (const word of words) {
     if (stopRequested) break;
-    
+
     postMessage({
       type: 'token',
-      payload: { 
+      payload: {
         token: word + ' ',
-        tokensPerSecond: tokensGenerated / ((performance.now() - inferenceStartTime) / 1000)
-      }
+        tokensPerSecond: tokensGenerated / ((performance.now() - inferenceStartTime) / 1000),
+      },
     });
-    
-    await new Promise(resolve => setTimeout(resolve, 100));
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 }
 
@@ -466,7 +472,7 @@ self.addEventListener('error', (error) => {
   console.error('Worker error:', error);
   postMessage({
     type: 'error',
-    payload: { error: error.message }
+    payload: { error: error.message },
   });
 });
 
@@ -474,7 +480,7 @@ self.addEventListener('unhandledrejection', (event) => {
   console.error('Worker unhandled rejection:', event.reason);
   postMessage({
     type: 'error',
-    payload: { error: event.reason.message || 'Unhandled promise rejection' }
+    payload: { error: event.reason.message || 'Unhandled promise rejection' },
   });
 });
 

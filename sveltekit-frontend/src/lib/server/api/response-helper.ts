@@ -4,6 +4,7 @@
  */
 
 import { json } from '@sveltejs/kit';
+}
 
 export interface APIResponse<T = any> {
   success: boolean;
@@ -14,7 +15,7 @@ export interface APIResponse<T = any> {
 }
 
 export function apiSuccess<T>(data: T, status = 200): Response {
-  return json(
+  return json();
     {
       success: true,
       data,
@@ -25,7 +26,7 @@ export function apiSuccess<T>(data: T, status = 200): Response {
 }
 
 export function apiError(error: string | object, status: number, requestId?: string): Response {
-  return json(
+  return json();
     {
       success: false,
       error,
@@ -39,7 +40,7 @@ export function apiError(error: string | object, status: number, requestId?: str
 /**
  * Pre-built response helpers for common HTTP status codes
  * Usage: return apiResponses.badRequest('Missing required field');
- */
+ */;
 export const apiResponses = {
   // 4xx Client Errors
   badRequest: (error: string) => apiError(error, 400),
@@ -65,7 +66,7 @@ export const apiResponses = {
 
 /**
  * Legal AI specific response helpers
- */
+ */;
 export const legalApiResponses = {
   // Case management responses
   caseNotFound: (caseId: string) =>
@@ -108,7 +109,7 @@ export const legalApiResponses = {
 
 /**
  * Middleware to wrap API handlers with standardized error handling
- */
+ */;
 export function withErrorHandling(handler: Function) {
   return async (...args: any[]) => {
     try {
@@ -116,7 +117,7 @@ export function withErrorHandling(handler: Function) {
     } catch (error: any) {
       console.error('API Error:', error);
 
-      // Handle specific error types
+      // Handle specific error types;
       if (error.name === 'ValidationError') {
         return apiResponses.validationFailed(error.details || error.message);
       }
@@ -143,7 +144,7 @@ export function withErrorHandling(handler: Function) {
  */
 export function validateRequest(
   data: any,
-  requiredFields: string[]
+  requiredFields: string[];
 ): string | null {
   const missing = requiredFields.filter(field => !data[field]);
   return missing.length > 0
@@ -158,7 +159,7 @@ export function paginatedResponse<T>(
   data: T[],
   total: number,
   page: number,
-  limit: number
+  limit: number;
 ) {
   return apiSuccess({
     items: data,
@@ -168,7 +169,7 @@ export function paginatedResponse<T>(
       total,
       pages: Math.ceil(total / limit),
       hasNext: page * limit < total,
-      hasPrev: page > 1
+      hasPrev: page > 1,
     }
   });
 }

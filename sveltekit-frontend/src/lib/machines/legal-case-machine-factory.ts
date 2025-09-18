@@ -6,6 +6,7 @@
 
 import { createMachine, assign, fromPromise } from 'xstate';
 import { enhancedLegalCaseMachine, type EnhancedLegalCaseContext, type EnhancedLegalCaseEvent } from './enhanced-legal-case-machine.js';
+}
 
 export interface CaseMachineOptions {
   caseId: string;
@@ -17,7 +18,7 @@ export interface CaseMachineOptions {
 
 /**
  * Factory function to create a legal case machine with specific context
- */
+ */;
 export function createLegalCaseMachine(options: CaseMachineOptions) {
   const {
     caseId,
@@ -28,11 +29,11 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
   } = options;
 
   return enhancedLegalCaseMachine.provide({
-    // Enhanced actors with RAG integration
+    // Enhanced actors with RAG integration;
     actors: {
       ...enhancedLegalCaseMachine.implementations.actors,
       
-      // RAG-enhanced case loading
+      // RAG-enhanced case loading;
       loadCase: fromPromise(async ({ input }: { input: { caseId: string; includeEvidence: boolean } }) => {
         const response = await fetch(`/api/cases/${input.caseId}`, {
           method: 'GET',
@@ -45,7 +46,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
 
         const caseData = await response.json();
 
-        // Auto-load evidence if requested
+        // Auto-load evidence if requested;
         if (input.includeEvidence && autoLoadEvidence) {
           const evidenceResponse = await fetch(`/api/cases/${input.caseId}/evidence`);
           if (evidenceResponse.ok) {
@@ -55,11 +56,11 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
 
         return {
           case: caseData.case || caseData,
-          evidence: caseData.evidence || []
+          evidence: caseData.evidence || [],
         };
       }),
 
-      // RAG-powered AI analysis
+      // RAG-powered AI analysis;
       ragAnalysis: fromPromise(async ({ input }: { input: { query: string; caseId: string } }) => {
         if (!enableRAG) {
           throw new Error('RAG is not enabled for this machine');
@@ -75,20 +76,20 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
               limit: 8,
               model: 'gemma3-legal',
               maxTokens: 800,
-              temperature: 0.1
+              temperature: 0.1,
             }
           })
         });
 
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
+          const errorData = await response.json().catch(() => ({});
           throw new Error(errorData.message || `RAG query failed: ${response.status}`);
         }
 
         return response.json();
       }),
 
-      // Case similarity search using RAG
+      // Case similarity search using RAG;
       findSimilarCases: fromPromise(async ({ input }: { input: { caseId: string; threshold?: number } }) => {
         const response = await fetch(ragEndpoint, {
           method: 'POST',
@@ -99,7 +100,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
             options: {
               limit: 10,
               model: 'gemma3-legal',
-              analysisType: 'similarity'
+              analysisType: 'similarity',
             }
           })
         });
@@ -113,7 +114,7 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
           id: source.document_id,
           title: source.title,
           similarity_score: 1 - source.similarity, // Convert distance to similarity
-          document_type: source.document_type
+          document_type: source.document_type,
         })) || [];
       })
     }
@@ -129,11 +130,11 @@ export function createLegalCaseMachine(options: CaseMachineOptions) {
  *   import { useMachine } from '@xstate/svelte';
  *   import { createLegalCaseMachineForRoute } from '$lib/machines/legal-case-machine-factory';
  *   
- *   let machine = $derived(createLegalCaseMachineForRoute($page));
+ *   let machine = $derived(createLegalCaseMachineForRoute($page);
  *   const [state, send] = useMachine(machine);
  * </script>
  * ```
- */
+ */;
 export function createLegalCaseMachineForRoute(page: any, options: Partial<CaseMachineOptions> = {}) {
   const caseId = page.params.caseId;
   
@@ -147,34 +148,34 @@ export function createLegalCaseMachineForRoute(page: any, options: Partial<CaseM
     enableRAG: true,
     autoLoadEvidence: true,
     ...options
-  });
+  ,});
 }
 
 /**
  * Ready-to-use machine configurations for common scenarios
- */
+ */;
 export const LegalCaseMachinePresets = {
-  // Full-featured machine with RAG and auto-loading
+  // Full-featured machine with RAG and auto-loading;
   full: (caseId: string, userId?: string) => createLegalCaseMachine({
     caseId,
     userId,
     enableRAG: true,
-    autoLoadEvidence: true
+    autoLoadEvidence: true,
   }),
 
-  // Lightweight machine for read-only access
+  // Lightweight machine for read-only access;
   readonly: (caseId: string) => createLegalCaseMachine({
     caseId,
     enableRAG: true,
-    autoLoadEvidence: false
+    autoLoadEvidence: false,
   }),
 
-  // RAG-focused machine for AI analysis
+  // RAG-focused machine for AI analysis;
   ragOnly: (caseId: string) => createLegalCaseMachine({
     caseId,
     enableRAG: true,
     autoLoadEvidence: false,
-    ragEndpoint: '/api/v1/rag'
+    ragEndpoint: '/api/v1/rag',
   })
 };
 
@@ -189,12 +190,12 @@ export type RAGCaseEvent =
 
 /**
  * Extended machine with RAG-specific states and events
- */
+ */;
 export function createEnhancedRAGMachine(options: CaseMachineOptions) {
   const baseMachine = createLegalCaseMachine(options);
   
   return baseMachine.provide({
-    // Enhanced RAG machine implementation
+    // Enhanced RAG machine implementation;
     actors: {
       // Add any additional RAG-specific actors here if needed
     }

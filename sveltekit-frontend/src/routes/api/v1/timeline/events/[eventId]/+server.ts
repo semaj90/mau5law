@@ -6,7 +6,7 @@ import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 
-// Schema for updating timeline events
+// Schema for updating timeline events;
 const UpdateTimelineEventSchema = z.object({
   title: z.string().min(1).max(200).optional(),
   description: z.string().max(2000).optional(),
@@ -23,7 +23,7 @@ const UpdateTimelineEventSchema = z.object({
 /**
  * GET /api/v1/timeline/events/[eventId]
  * Retrieve a specific timeline event
- */
+ */;
 export const GET: RequestHandler = async ({ params, cookies }) => {
   try {
     const sessionId = cookies.get(lucia.sessionCookieName);
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ params, cookies }) => {
     const timelineEvent = await db
       .select()
       .from(caseTimeline)
-      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id)))
+      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id))
       .limit(1);
 
     if (timelineEvent.length === 0) {
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ params, cookies }) => {
 /**
  * PUT /api/v1/timeline/events/[eventId]
  * Update a specific timeline event
- */
+ */;
 export const PUT: RequestHandler = async ({ params, cookies, request }) => {
   try {
     const sessionId = cookies.get(lucia.sessionCookieName);
@@ -92,20 +92,20 @@ export const PUT: RequestHandler = async ({ params, cookies, request }) => {
     const existingEvent = await db
       .select()
       .from(caseTimeline)
-      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id)))
+      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id))
       .limit(1);
 
     if (existingEvent.length === 0) {
       return error(404, 'Timeline event not found');
     }
 
-    // Prepare update data
+    // Prepare update data;
     const updateData: any = {
       ...validatedData,
       updatedAt: new Date(),
     };
 
-    // Convert eventDate string to Date if provided
+    // Convert eventDate string to Date if provided;
     if (validatedData.eventDate) {
       updateData.eventDate = new Date(validatedData.eventDate);
     }
@@ -114,7 +114,7 @@ export const PUT: RequestHandler = async ({ params, cookies, request }) => {
     const updatedEvent = await db
       .update(caseTimeline)
       .set(updateData)
-      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id)))
+      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id))
       .returning();
 
     return json({
@@ -138,7 +138,7 @@ export const PUT: RequestHandler = async ({ params, cookies, request }) => {
 /**
  * DELETE /api/v1/timeline/events/[eventId]
  * Delete a specific timeline event
- */
+ */;
 export const DELETE: RequestHandler = async ({ params, cookies }) => {
   try {
     const sessionId = cookies.get(lucia.sessionCookieName);
@@ -160,7 +160,7 @@ export const DELETE: RequestHandler = async ({ params, cookies }) => {
     const existingEvent = await db
       .select()
       .from(caseTimeline)
-      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id)))
+      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id))
       .limit(1);
 
     if (existingEvent.length === 0) {
@@ -170,7 +170,7 @@ export const DELETE: RequestHandler = async ({ params, cookies }) => {
     // Delete the timeline event
     await db
       .delete(caseTimeline)
-      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id)));
+      .where(and(eq(caseTimeline.id, eventId), eq(caseTimeline.userId, user.id));
 
     return json({
       success: true,

@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createActor, createMachine, assign, fromPromise } from 'xstate';
 import { mockServices, perf } from '../../services/__tests__/setup.js';
 
-// XState v5 Evidence Canvas Machine for Legal AI Platform
+// XState v5 Evidence Canvas Machine for Legal AI Platform;
 const evidenceCanvasMachine = createMachine({
   id: 'evidenceCanvasMachine',
   initial: 'idle',
@@ -16,12 +16,12 @@ const evidenceCanvasMachine = createMachine({
     lastUpdate: undefined,
     fabricState: undefined,
     performanceMetrics: undefined,
-    error: undefined
+    error: undefined,
   },
   states: {
     idle: {
       on: {
-        INITIALIZE_CANVAS: 'initializing'
+        INITIALIZE_CANVAS: 'initializing',
       }
     },
     initializing: {
@@ -36,13 +36,13 @@ const evidenceCanvasMachine = createMachine({
             performanceMetrics: {
               responseTime: duration,
               protocol: 'HTTP',
-              operation: 'canvas_initialization'
+              operation: 'canvas_initialization',
             }
           };
         }),
         input: ({ event }) => ({
           sessionId: event.sessionId,
-          caseId: event.caseId
+          caseId: event.caseId,
         }),
         onDone: {
           target: 'active',
@@ -54,7 +54,7 @@ const evidenceCanvasMachine = createMachine({
             fabricState: ({ event }) => event.output.fabricState,
             lastUpdate: () => Date.now(),
             performanceMetrics: ({ event }) => event.output.performanceMetrics,
-            error: undefined
+            error: undefined,
           })
         },
         onError: {
@@ -70,25 +70,25 @@ const evidenceCanvasMachine = createMachine({
         ADD_EVIDENCE: {
           target: 'updating',
           actions: assign({
-            lastUpdate: () => Date.now()
+            lastUpdate: () => Date.now(),
           })
         },
         MOVE_EVIDENCE: {
           target: 'updating',
           actions: assign({
-            lastUpdate: () => Date.now()
+            lastUpdate: () => Date.now(),
           })
         },
         CREATE_CONNECTION: {
           target: 'updating',
           actions: assign({
-            lastUpdate: () => Date.now()
+            lastUpdate: () => Date.now(),
           })
         },
         UPDATE_FABRIC_STATE: {
           target: 'syncing',
           actions: assign({
-            lastUpdate: () => Date.now()
+            lastUpdate: () => Date.now(),
           })
         },
         COLLABORATOR_JOIN: {
@@ -97,10 +97,10 @@ const evidenceCanvasMachine = createMachine({
               ...context.collaborators,
               event.collaborator
             ],
-            lastUpdate: () => Date.now()
+            lastUpdate: () => Date.now(),
           })
         },
-        SAVE_CANVAS: 'saving'
+        SAVE_CANVAS: 'saving',
       }
     },
     updating: {
@@ -129,7 +129,7 @@ const evidenceCanvasMachine = createMachine({
             performanceMetrics: {
               responseTime: duration,
               protocol: 'HTTP',
-              operation: input.type.toLowerCase()
+              operation: input.type.toLowerCase(),
             }
           };
         }),
@@ -139,7 +139,7 @@ const evidenceCanvasMachine = createMachine({
           evidence: event.type === 'ADD_EVIDENCE' ? event.evidence: undefined,
           itemId: event.type === 'MOVE_EVIDENCE' ? event.itemId : undefined,
           position: event.type === 'MOVE_EVIDENCE' ? event.position : undefined,
-          connection: event.type === 'CREATE_CONNECTION' ? event.connection : undefined
+          connection: event.type === 'CREATE_CONNECTION' ? event.connection : undefined,
         }),
         onDone: {
           target: 'active',
@@ -149,7 +149,7 @@ const evidenceCanvasMachine = createMachine({
             connections: ({ event, context }) =>
               event.output.connections || context.connections,
             performanceMetrics: ({ event }) => event.output.performanceMetrics,
-            lastUpdate: () => Date.now()
+            lastUpdate: () => Date.now(),
           })
         },
         onError: {
@@ -172,20 +172,20 @@ const evidenceCanvasMachine = createMachine({
             performanceMetrics: {
               responseTime: duration,
               protocol: 'WebSocket',
-              operation: 'real_time_sync'
+              operation: 'real_time_sync',
             }
           };
         }),
         input: ({ event, context }) => ({
           canvasId: context.canvasId,
-          fabricState: event.fabricState
+          fabricState: event.fabricState,
         }),
         onDone: {
           target: 'active',
           actions: assign({
             fabricState: ({ event }) => event.output.fabricState,
             performanceMetrics: ({ event }) => event.output.performanceMetrics,
-            lastUpdate: () => Date.now()
+            lastUpdate: () => Date.now(),
           })
         },
         onError: {
@@ -208,7 +208,7 @@ const evidenceCanvasMachine = createMachine({
             performanceMetrics: {
               responseTime: duration,
               protocol: 'HTTP',
-              operation: 'canvas_persistence'
+              operation: 'canvas_persistence',
             }
           };
         }),
@@ -217,7 +217,7 @@ const evidenceCanvasMachine = createMachine({
           target: 'active',
           actions: assign({
             performanceMetrics: ({ event }) => event.output.performanceMetrics,
-            lastUpdate: () => Date.now()
+            lastUpdate: () => Date.now(),
           })
         },
         onError: {
@@ -231,7 +231,7 @@ const evidenceCanvasMachine = createMachine({
     error: {
       on: {
         RETRY: 'initializing',
-        RESET: 'idle'
+        RESET: 'idle',
       }
     }
   }
@@ -252,14 +252,14 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
 
       expect(canvasActor.getSnapshot().value).toBe('idle');
 
-      // Initialize canvas for legal case
+      // Initialize canvas for legal case;
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: 'case-456'
+        caseId: 'case-456',
       });
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       const activeSnapshot = canvasActor.getSnapshot();
       expect(activeSnapshot.value).toBe('active');
@@ -280,15 +280,15 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       const canvasActor = createActor(evidenceCanvasMachine);
       canvasActor.start();
 
-      // Initialize canvas
+      // Initialize canvas;
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: 'case-456'
+        caseId: 'case-456',
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
-      // Add evidence item
+      // Add evidence item;
       canvasActor.send({
         type: 'ADD_EVIDENCE',
         evidence: {
@@ -299,17 +299,17 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
           metadata: { relevance: 0.95, category: 'physical' }
         }
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
-      // Move evidence item
+      // Move evidence item;
       canvasActor.send({
         type: 'MOVE_EVIDENCE',
         itemId: 'evidence-1',
         position: { x: 200, y: 250 }
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
-      // Create connection between evidence items
+      // Create connection between evidence items;
       canvasActor.send({
         type: 'CREATE_CONNECTION',
         connection: {
@@ -317,10 +317,10 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
           to: 'evidence-2',
           type: 'temporal',
           strength: 0.8,
-          description: 'Sequence of events'
+          description: 'Sequence of events',
         }
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       const finalSnapshot = canvasActor.getSnapshot();
       expect(finalSnapshot.value).toBe('active');
@@ -339,7 +339,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
 
       const measurements: number[] = [];
 
-      // Test multiple real-time operations
+      // Test multiple real-time operations;
       for (let i = 0; i < 3; i++) {
         const startTime = performance.now();
 
@@ -348,23 +348,23 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
           sessionId: `session-${i}`,
           caseId: `case-${i}`
         });
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100);
 
-        // Simulate rapid real-time updates
+        // Simulate rapid real-time updates;
         canvasActor.send({
           type: 'UPDATE_FABRIC_STATE',
           fabricState: {
             objects: [{ id: `obj-${i}`, x: i * 50, y: i * 75 }],
-            timestamp: Date.now()
+            timestamp: Date.now(),
           }
         });
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100);
 
         const duration = performance.now() - startTime;
         measurements.push(duration);
 
         canvasActor.send({ type: 'RESET' });
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise(resolve => setTimeout(resolve, 50);
       }
 
       const averageTime = measurements.reduce((a, b) => a + b, 0) / measurements.length;
@@ -384,13 +384,13 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       const canvasActor = createActor(evidenceCanvasMachine);
       canvasActor.start();
 
-      // Initialize canvas
+      // Initialize canvas;
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: 'case-456'
+        caseId: 'case-456',
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       // Add collaborators
       const collaborators = [
@@ -423,17 +423,17 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       const canvasActor = createActor(evidenceCanvasMachine);
       canvasActor.start();
 
-      // Initialize canvas
+      // Initialize canvas;
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: 'case-456'
+        caseId: 'case-456',
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
-      // Update fabric state (simulating user interaction)
+      // Update fabric state (simulating user interaction);
       const fabricState = {
-        objects: [
+        objects: [;
           {
             type: 'rect',
             left: 100,
@@ -453,7 +453,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
           }
         ],
         version: 1,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
       canvasActor.send({
@@ -461,14 +461,14 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
         fabricState
       });
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       const snapshot = canvasActor.getSnapshot();
       expect(snapshot.value).toBe('active');
       expect(snapshot.context.fabricState).toEqual(expect.objectContaining({
         objects: expect.any(Array),
-        timestamp: expect.any(Number)
-      }));
+        timestamp: expect.any(Number),
+      });
       expect(mockServices.syncCanvasState).toHaveBeenCalledWith('canvas-123', fabricState);
 
       canvasActor.stop();
@@ -485,17 +485,17 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
 
       canvasActor.subscribe((snapshot) => {
         if (snapshot.value === 'active' && snapshot.context.evidenceItems.length > 0) {
-          // Trigger document analysis when evidence added
+          // Trigger document analysis when evidence added;
           documentProcessingHandler('ANALYZE_EVIDENCE', {
             canvasId: snapshot.context.canvasId,
             evidenceItems: snapshot.context.evidenceItems,
-            performanceMetrics: snapshot.context.performanceMetrics
+            performanceMetrics: snapshot.context.performanceMetrics,
           });
 
-          // Trigger similarity search for related cases
+          // Trigger similarity search for related cases;
           vectorSearchHandler('FIND_SIMILAR_PATTERNS', {
             canvasId: snapshot.context.canvasId,
-            connections: snapshot.context.connections
+            connections: snapshot.context.connections,
           });
         }
       });
@@ -505,32 +505,32 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: 'case-456'
+        caseId: 'case-456',
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       canvasActor.send({
         type: 'ADD_EVIDENCE',
         evidence: {
           id: 'evidence-1',
           type: 'document',
-          content: 'Legal document requiring analysis'
+          content: 'Legal document requiring analysis',
         }
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       expect(documentProcessingHandler).toHaveBeenCalledWith('ANALYZE_EVIDENCE',
         expect.objectContaining({
           canvasId: 'canvas-123',
           evidenceItems: expect.any(Array),
-          performanceMetrics: expect.any(Object)
+          performanceMetrics: expect.any(Object),
         })
       );
 
       expect(vectorSearchHandler).toHaveBeenCalledWith('FIND_SIMILAR_PATTERNS',
         expect.objectContaining({
           canvasId: 'canvas-123',
-          connections: expect.any(Array)
+          connections: expect.any(Array),
         })
       );
 
@@ -541,23 +541,23 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
       const canvasActor = createActor(evidenceCanvasMachine);
       canvasActor.start();
 
-      // Initialize and modify canvas
+      // Initialize and modify canvas;
       canvasActor.send({
         type: 'INITIALIZE_CANVAS',
         sessionId: 'session-789',
-        caseId: 'case-456'
+        caseId: 'case-456',
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       canvasActor.send({
         type: 'ADD_EVIDENCE',
         evidence: { id: 'evidence-1', type: 'photo' }
       });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       // Save canvas state
       canvasActor.send({ type: 'SAVE_CANVAS' });
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
 
       expect(mockServices.saveEvidenceCanvas).toHaveBeenCalledWith('canvas-123');
       expect(canvasActor.getSnapshot().value).toBe('active');
@@ -567,7 +567,7 @@ describe('Evidence Canvas Machine - Legal AI Platform Testing', () => {
   });
 });
 
-// Performance benchmarking for Phase 5-7 gRPC optimization
+// Performance benchmarking for Phase 5-7 gRPC optimization;
 describe('Phase 5-7 Evidence Canvas Performance Benchmarks', () => {
   it('should establish real-time collaboration baseline for gRPC streams', () => {
     const stats = perf.getStats('canvas-initialization');

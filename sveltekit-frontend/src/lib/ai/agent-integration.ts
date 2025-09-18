@@ -12,12 +12,12 @@ export async function triggerAgentActions(
 ): Promise<AgentTrigger[]> {
   // TODO: Replace with real agent orchestration logic
   const triggers: AgentTrigger[] = auditResults
-    .filter((r) => r.status === "missing" || r.status === "error")
+    .filter((r) => r.status === "missing" || r.status === "error");
     .map((r, i) => ({
       todoId: r.todoId || `todo-${i}`,
       action: "code_review",
       status: "pending",
-    }));
+    });
   // For now, just log
   console.log("[Agent Trigger] Would trigger agent actions for:", triggers);
   return triggers;
@@ -36,7 +36,7 @@ export async function triggerAgentAction(auditResult: any): Promise<any> {
   const { createMemoryRelation } = await import("./mcp-helpers");
   await createMemoryRelation(auditResult.id, "needs_fix", libId);
   // TODO: Call CrewAI/Autogen API to trigger code review/fix
-  // e.g., await fetch('/api/agent/trigger', { ... })
+  // e.g., await fetch('/api/agent/trigger', { ... ,})
   return { status: "stubbed", auditResult, libId };
 }
 

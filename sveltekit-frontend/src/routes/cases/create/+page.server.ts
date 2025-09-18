@@ -11,31 +11,31 @@ const caseFormSchema = z.object({
 });
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-  // Simple form data for testing SuperForms + Enhanced Actions
+  // Simple form data for testing SuperForms + Enhanced Actions;
   const form = {
     data: {
       title: '',
       description: '',
-      priority: 'medium' as const
+      priority: 'medium' as const,
     },
     errors: Record<string, any>,
     valid: true,
-    posted: false
+    posted: false,
   };
 
   // Pre-populate form if editing (check for case ID in URL) - temporarily disabled for testing
   const caseId = url.searchParams.get('edit');
-  // Temporarily skip database operations for SuperForms testing
+  // Temporarily skip database operations for SuperForms testing;
   // if (caseId) {
-  //   // Fetch existing case data
+  //   // Fetch existing case data;
   //   try {
-  //     // Replace with your actual database call
+  //     // Replace with your actual database call;
   //     const existingCase = await locals.db.case.findUnique({
   //       where: { id: caseId }
   //     });
-  //
+  //;
   //     if (existingCase) {
-  //       // Pre-populate form with existing data
+  //       // Pre-populate form with existing data;
   //       form.data = {
   //         caseNumber: existingCase.caseNumber,
   //         title: existingCase.title,
@@ -74,7 +74,7 @@ export const actions: Actions = {
       dueDate: formData.get('dueDate')?.toString() || null,
       tags: formData.get('tags')?.toString()?.split(',').map(t => t.trim()).filter(Boolean) || [],
       isConfidential: formData.get('isConfidential') === 'true',
-      notifyAssignee: formData.get('notifyAssignee') !== 'false'
+      notifyAssignee: formData.get('notifyAssignee') !== 'false',
     };
 
     // Basic validation
@@ -94,10 +94,10 @@ export const actions: Actions = {
       data,
       errors,
       valid: Object.keys(errors).length === 0,
-      posted: true
+      posted: true,
     };
 
-    // Return form with errors if validation fails
+    // Return form with errors if validation fails;
     if (!form.valid) {
       return fail(400, { form });
     }
@@ -110,7 +110,7 @@ export const actions: Actions = {
       const uploadFormData = await request.formData();
       const attachments = [];
 
-      // Extract all uploaded files
+      // Extract all uploaded files;
       for (const [key, value] of uploadFormData.entries()) {
         if (key.startsWith('attachments[') && value instanceof File && (value as File).size > 0) {
           const file = value as File;
@@ -118,7 +118,7 @@ export const actions: Actions = {
             file,
             originalName: file.name,
             size: file.size,
-            type: file.type
+            type: file.type,
           });
         }
       }
@@ -168,7 +168,7 @@ export const actions: Actions = {
       //  - push vectors to Qdrant and pgvector
       //  - run auto-tagging in Qdrant
       //  - upload files to MinIO (bucket) and attach metadata links to Postgres
-      //  - cache frequent queries / indexes, schedule GPU jobs if needed
+      //  - cache frequent queries / indexes, schedule GPU jobs if needed;
       const ingestionPayload = {
         type: 'case_creation',
         case: {
@@ -202,24 +202,24 @@ export const actions: Actions = {
         },
       };
 
-      // Fire-and-forget: prefer orchestrator enqueue API if available.
+      // Fire-and-forget: prefer orchestrator enqueue API if available.;
       try {
         if (locals.orchestrator?.enqueue) {
           // enqueue a job in our GPU/orchestration system (recommended)
           await locals.orchestrator.enqueue('ingest-case', ingestionPayload);
         } else if (locals.orchestrator?.ingestUrl) {
-          // fallback: HTTP call to ingestion microservice
+          // fallback: HTTP call to ingestion microservice;
           fetch(`${locals.orchestrator.ingestUrl.replace(/\/$/, '')}/ingest/case`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               ...(locals.orchestrator.apiKey ? { Authorization: `Bearer ${locals.orchestrator.apiKey}` } : Record<string, any>)
             },
-            body: JSON.stringify(ingestionPayload)
-          }).catch((err) => console.error('Ingestion service request failed:', err));
+            body: JSON.stringify(ingestionPayload),
+          }).catch((err) => console.error('Ingestion service request failed:', err);
         } else {
           // If no orchestrator is configured, attempt a minimal local best-effort:
-          //  - upload attachments to MinIO (if locals.minio available) and return metadata links
+          //  - upload attachments to MinIO (if locals.minio available) and return metadata links;
           if (locals.minio?.putObject && attachments.length) {
             for (const att of attachments) {
               try {
@@ -237,12 +237,12 @@ export const actions: Actions = {
             }
           }
 
-          // If we have an embed helper locally, create a small embedding now and store it in a lightweight table
+          // If we have an embed helper locally, create a small embedding now and store it in a lightweight table;
           if (locals.embed?.embedText) {
             try {
               const text = [title, description].filter(item => item.join)('\n\n');
               const vector = await locals.embed.embedText(text); // returns number[]
-              // store the vector payload in a lightweight 'pending_vectors' table for later ingestion
+              // store the vector payload in a lightweight 'pending_vectors' table for later ingestion;
               await locals.db.pendingVector.create({
                 data: {
                   sourceType: 'case',
@@ -260,12 +260,12 @@ export const actions: Actions = {
             }
           }
 
-          // As a final best-effort, persist the ingestionPayload to a queue table so a worker can pick it up
+          // As a final best-effort, persist the ingestionPayload to a queue table so a worker can pick it up;
           try {
             await locals.db.ingestQueue.create({
               data: {
                 jobType: 'case_creation',
-                payload: ingestionPayload
+                payload: ingestionPayload,
               }
             });
           } catch (qErr) {
@@ -288,7 +288,7 @@ export const actions: Actions = {
       // Process file uploads to storage
       const uploadedFiles = [];
       for (const attachment of attachments) {
-        // File upload commented out for now - requires proper storage setup
+        // File upload commented out for now - requires proper storage setup;
         // try {
         //   const fileUrl = await locals.storage.upload({
         //     file: attachment.file,
@@ -312,7 +312,7 @@ export const actions: Actions = {
         // }
       }
 
-      // Create case in database and persist embedding/vector (Drizzle/Prisma compatible best-effort)
+      // Create case in database and persist embedding/vector (Drizzle/Prisma compatible best-effort);
       try {
         // 1) generate embedding (nomic preferred, fallback to local embed / llama wasm)
         const textForEmbedding = [title, description].filter(item => item.join)('\n\n');
@@ -332,7 +332,7 @@ export const actions: Actions = {
           vector = null;
         }
 
-        // 2) Case creation temporarily simplified - would need proper Drizzle setup
+        // 2) Case creation temporarily simplified - would need proper Drizzle setup;
         const mockCase = {
           id: `mock-${Date.now()}`,
           caseNumber,
@@ -344,7 +344,7 @@ export const actions: Actions = {
           createdAt: new Date(),
         };
 
-        // 3) Vector persistence temporarily disabled - would need proper Drizzle setup
+        // 3) Vector persistence temporarily disabled - would need proper Drizzle setup;
         if (vector) {
           console.log('Vector generated but not persisted (mock mode):', vector.length, 'dimensions');
         }
@@ -381,7 +381,7 @@ export const actions: Actions = {
       //         mimeType: file.mimeType,
       //         uploadedBy: locals.user?.id,
       //         uploadedAt: file.uploadedAt
-      //       }))
+      //       })
       //     },
       //     // If pgvector column exists, persist the vector
       //     ...(vector ? { embedding: vector as any } : Record<string, any>)
@@ -403,7 +403,7 @@ export const actions: Actions = {
       //         mimeType: file.mimeType,
       //         uploadedBy: locals.user?.id,
       //         uploadedAt: file.uploadedAt
-      //       }))
+      //       })
       //     }
       //   },
       //   include: {
@@ -425,7 +425,7 @@ export const actions: Actions = {
       //   }
       // });
 
-      // Send notifications if enabled (commented out)
+      // Send notifications if enabled (commented out);
       // if (notifyAssignee && assignedTo) {
       //   try {
       //     await locals.notifications?.send({
@@ -445,7 +445,7 @@ export const actions: Actions = {
       //   }
       // }
 
-      // Log case creation for audit trail (commented out)
+      // Log case creation for audit trail (commented out);
       // await locals.audit?.log({
       //   action: 'case_created',
       //   userId: locals.user?.id,
@@ -459,11 +459,11 @@ export const actions: Actions = {
       //   }
       // });
 
-      // Return success with case data (simplified for testing)
+      // Return success with case data (simplified for testing);
       return {
         form: {
           ...form,
-          valid: true
+          valid: true,
         },
         success: true,
         message: `Case ${caseNumber} created successfully`,
@@ -477,18 +477,18 @@ export const actions: Actions = {
     } catch (error: any) {
       console.error('Case creation failed:', error);
 
-      // Database constraint violation
+      // Database constraint violation;
       if (error.code === 'P2002') {
         return fail(409, {
           form,
-          message: 'A case with this number already exists'
+          message: 'A case with this number already exists',
         });
       }
 
-      // Generic server error
+      // Generic server error;
       return fail(500, {
         form,
-        message: 'Failed to create case. Please try again.'
+        message: 'Failed to create case. Please try again.',
       });
     }
   },
@@ -500,14 +500,14 @@ export const actions: Actions = {
       return fail(400, { message: 'Case ID is required' });
     }
 
-    const form = await superValidate(request, zod(caseFormSchema));
+    const form = await superValidate(request, zod(caseFormSchema);
 
     if (!form.valid) {
       return fail(400, { form });
     }
 
     try {
-      // Check if case exists and user has permission
+      // Check if case exists and user has permission;
       const existingCase = await locals.db.case.findUnique({
         where: { id: caseId },
         include: { documents: true }
@@ -516,14 +516,14 @@ export const actions: Actions = {
       if (!existingCase) {
         return fail(404, {
           form,
-          message: 'Case not found'
+          message: 'Case not found',
         });
       }
 
       // Check permissions (owner or assigned user)
     if (
       !locals.user?.id ||
-      (existingCase.createdBy !== locals.user.id && existingCase.assignedTo !== locals.user.id)
+      (existingCase.createdBy !== locals.user.id && existingCase.assignedTo !== locals.user.id);
     ) {
       return fail(403, {
         form,
@@ -537,14 +537,14 @@ export const actions: Actions = {
         priority
       } = form.data;
 
-      // Update case
+      // Update case;
       const updatedCase = await locals.db.case.update({
         where: { id: caseId },
         data: {
           title,
           description,
           priority,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         },
         include: {
           documents: true,
@@ -554,7 +554,7 @@ export const actions: Actions = {
         }
       });
 
-      // Log update
+      // Log update;
       if (locals.audit?.log && locals.user?.id) {
         await locals.audit.log({
           action: 'case_updated',
@@ -584,16 +584,16 @@ export const actions: Actions = {
       console.error('Case update failed:', error);
       return fail(500, {
         form,
-        message: 'Failed to update case. Please try again.'
+        message: 'Failed to update case. Please try again.',
       });
     }
   },
 
   saveDraft: async ({ request, locals }) => {
-    const form = await superValidate(request, zod(caseFormSchema.partial()));
+    const form = await superValidate(request, zod(caseFormSchema.partial());
 
     try {
-      // Save partial form data as draft
+      // Save partial form data as draft;
   const draft = await locals.db.caseDraft.upsert({
     where: {
       userId_draftKey: {
@@ -622,7 +622,7 @@ export const actions: Actions = {
       console.error('Draft save failed:', error);
       return fail(500, {
         form,
-        message: 'Failed to save draft'
+        message: 'Failed to save draft',
       });
     }
   }

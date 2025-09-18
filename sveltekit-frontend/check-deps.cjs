@@ -1,5 +1,5 @@
 const pkg = require('./package.json');
-const deps = {...pkg.dependencies, ...pkg.devDependencies};
+const deps = { ...pkg.dependencies, ...pkg.devDependencies };
 console.log('Checking for invalid version strings...');
 let hasInvalid = false;
 for (const [name, version] of Object.entries(deps)) {

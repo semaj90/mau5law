@@ -4,17 +4,17 @@ import { db } from './index.js';
 import { legalDocuments, userAiQueries, embeddingCache } from './schema-postgres.js';
 import { sql } from 'drizzle-orm';
 
-// GRPMO imports
+// GRPMO imports;
 interface GRPMOConfig {
   hotCacheThreshold: number;  // <100ms
   warmCacheThreshold: number; // <1s  
   coldCacheThreshold: number; // <5s
   reinforcementLearningRate: number;
   predictiveWindowMs: number;
-  glyphCompressionRatio: number;
+  glyphCompressionRatio: number;,
 }
 
-// Extended thinking stages
+// Extended thinking stages;
 interface ExtendedThinkingStage {
   name: string;
   duration: number;
@@ -23,13 +23,13 @@ interface ExtendedThinkingStage {
   glyphData?: string;
 }
 
-// PPO Reinforcement Learning state
+// PPO Reinforcement Learning state;
 interface PPOState {
   stateVector: number[];
   actionHistory: string[];
   rewardSignal: number;
   policyGradient: number[];
-  valueFunction: number;
+  valueFunction: number;,
 }
 
 const defaultGRPMOConfig: GRPMOConfig = {
@@ -38,7 +38,7 @@ const defaultGRPMOConfig: GRPMOConfig = {
   coldCacheThreshold: 5000,
   reinforcementLearningRate: 0.01,
   predictiveWindowMs: 30000,
-  glyphCompressionRatio: 50
+  glyphCompressionRatio: 50,
 };
 
 // Enhanced interface for GRPMO vector similarity search results
@@ -57,12 +57,12 @@ interface SimilarityResult {
   reinforcementContext?: PPOState;
 }
 
-// Generate a sample embedding (replace with actual AI model in production)
+// Generate a sample embedding (replace with actual AI model in production);
 export function generateSampleEmbedding(dimensions: number = 384): number[] {
   return Array.from({ length: dimensions }, () => Math.random() * 2 - 1);
 }
 
-// Convert array to pgvector format
+// Convert array to pgvector format;
 export function arrayToPgVector(embedding: number[]): string {
   return `[${embedding.join(',')}]`;
 }
@@ -71,7 +71,7 @@ export function arrayToPgVector(embedding: number[]): string {
 export async function searchSimilarDocuments(
   queryEmbedding: number[], 
   limit: number = 10,
-  similarityThreshold: number = 0.7
+  similarityThreshold: number = 0.7;
 ): Promise<SimilarityResult[]> {
   try {
     const vectorString = arrayToPgVector(queryEmbedding);
@@ -97,9 +97,9 @@ export async function searchSimilarDocuments(
       similarity: parseFloat(row.similarity),
       metadata: {
         keywords: row.keywords,
-        topics: row.topics
+        topics: row.topics,
       }
-    }));
+    });
   } catch (error) {
     console.error('Vector similarity search failed:', error);
     // Fallback to text search if vector search fails
@@ -107,11 +107,11 @@ export async function searchSimilarDocuments(
   }
 }
 
-// Fallback text search when vector operations fail
+// Fallback text search when vector operations fail;
 async function fallbackTextSearch(queryEmbedding: number[], limit: number): Promise<SimilarityResult[]> {
   console.log('Using fallback text search...');
   
-  const results = await db
+  const results = await db;
     .select({
       id: legalDocuments.id,
       title: legalDocuments.title,
@@ -126,12 +126,12 @@ async function fallbackTextSearch(queryEmbedding: number[], limit: number): Prom
     id: doc.id,
     content: doc.content || '',
     title: doc.title,
-    similarity: 1 - (index * 0.1), // Fake similarity scores
+    similarity: 1 - (index * 0.1), // Fake similarity scores;
     metadata: {
       keywords: doc.keywords,
-      topics: doc.topics
+      topics: doc.topics,
     }
-  }));
+  });
 }
 
 // Store AI query with embedding for future similarity search
@@ -155,7 +155,7 @@ export async function storeAiQueryWithEmbedding(
     });
   } catch (error) {
     console.error('Failed to store AI query with embedding:', error);
-    // Store without embedding as fallback
+    // Store without embedding as fallback;
     await db.insert(userAiQueries).values({
       userId,
       caseId, 
@@ -171,7 +171,7 @@ export async function storeAiQueryWithEmbedding(
 export async function cacheEmbedding(
   textHash: string,
   embedding: number[],
-  model: string = 'nomic-embed-text'
+  model: string = 'nomic-embed-text';
 ): Promise<void> {
   try {
     await db.insert(embeddingCache).values({
@@ -184,7 +184,7 @@ export async function cacheEmbedding(
   }
 }
 
-// Retrieve cached embedding
+// Retrieve cached embedding;
 export async function getCachedEmbedding(textHash: string): Promise<number[] | null> {
   try {
     const result = await db
@@ -197,7 +197,7 @@ export async function getCachedEmbedding(textHash: string): Promise<number[] | n
       // Parse pgvector format back to array
       const vectorString = result[0].embedding;
       if (typeof vectorString === 'string') {
-        return JSON.parse(vectorString.replace(/^\[|\]$/g, '').split(',').map(n => parseFloat(n)));
+        return JSON.parse(vectorString.replace(/^\[|\]$/g, '').split(',').map(n => parseFloat(n));
       }
     }
     return null;
@@ -211,11 +211,11 @@ export async function getCachedEmbedding(textHash: string): Promise<number[] | n
 export async function hybridSearch(
   queryText: string,
   queryEmbedding: number[],
-  limit: number = 10
+  limit: number = 10;
 ): Promise<SimilarityResult[]> {
   try {
     // First try vector search
-    const vectorResults = await searchSimilarDocuments(queryEmbedding, Math.ceil(limit * 0.7));
+    const vectorResults = await searchSimilarDocuments(queryEmbedding, Math.ceil(limit * 0.7);
     
     // Then add text search results
     const textResults = await db.execute(sql`
@@ -236,18 +236,18 @@ export async function hybridSearch(
       id: row.id,
       content: row.content,
       title: row.title,
-      similarity: parseFloat(row.rank) * 0.5, // Scale down text search scores
+      similarity: parseFloat(row.rank) * 0.5, // Scale down text search scores;
       metadata: {
         keywords: row.keywords,
         topics: row.topics,
-        searchType: 'text'
+        searchType: 'text',
       }
-    }));
+    });
 
     // Combine and deduplicate results
     const combinedResults = [...vectorResults, ...textSearchResults];
     const uniqueResults = Array.from(
-      new Map(combinedResults.map(item => [(item as { id?: any; similarity?: any; metadata?: any }).id, item])).values()
+      new Map(combinedResults.map(item => [(item as { id?: any; similarity?: any; metadata?: any ,}).id, item])).values()
     );
 
     // Sort by similarity and return top results
@@ -261,7 +261,7 @@ export async function hybridSearch(
   }
 }
 
-// Check if pgvector extension is available
+// Check if pgvector extension is available;
 export async function checkPgVectorAvailable(): Promise<boolean> {
   try {
     await db.execute(sql`SELECT 1::vector;`);
@@ -272,7 +272,7 @@ export async function checkPgVectorAvailable(): Promise<boolean> {
   }
 }
 
-// Vector operations test function
+// Vector operations test function;
 export async function testVectorOperations(): Promise<any> {
   const pgvectorAvailable = await checkPgVectorAvailable();
   
@@ -305,7 +305,7 @@ export async function testVectorOperations(): Promise<any> {
   };
 }
 
-// GRPMO Extended Thinking Engine
+// GRPMO Extended Thinking Engine;
 export class GRPMOOrchestrator {
   private config: GRPMOConfig;
   private memoryCache: Map<string, { data: any; timestamp: number; layer: string }> = new Map();
@@ -321,7 +321,7 @@ export class GRPMOOrchestrator {
     query: string,
     queryEmbedding: number[],
     userId: string,
-    caseId?: string
+    caseId?: string;
   ): Promise<any> {
     const startTime = Date.now();
     const stages: ExtendedThinkingStage[] = [];
@@ -338,7 +338,7 @@ export class GRPMOOrchestrator {
         duration: Date.now() - startTime,
         cacheLayer: 'hot',
         confidence: 0.95,
-        glyphData: this.compressToGlyph(hotResult.data)
+        glyphData: this.compressToGlyph(hotResult.data),
       });
       return { result: hotResult.data, thinkingStages: stages, cachePerformance };
     }
@@ -354,7 +354,7 @@ export class GRPMOOrchestrator {
         duration: Date.now() - startTime,
         cacheLayer: 'warm',
         confidence: 0.80,
-        glyphData: this.compressToGlyph(warmResult.data)
+        glyphData: this.compressToGlyph(warmResult.data),
       });
       
       // Predictive enhancement
@@ -363,12 +363,12 @@ export class GRPMOOrchestrator {
       return { result: enhanced, thinkingStages: stages, cachePerformance };
     }
 
-    // Stage 3: Cold cache with full vector search
+    // Stage 3: Cold cache with full vector search;
     stages.push({
       name: 'Deep Vector Analysis',
       duration: Date.now() - startTime,
       cacheLayer: 'cold',
-      confidence: 0.60
+      confidence: 0.60,
     });
 
     const fullResults = await this.performDeepVectorSearch(query, queryEmbedding, userId, caseId);
@@ -376,7 +376,7 @@ export class GRPMOOrchestrator {
 
     // Stage 4: Reinforcement learning optimization
     const optimizedResults = await this.reinfrocementAgent.optimizeResults(
-      fullResults, 
+      fullResults, )
       { query, userId, caseId, embedding: queryEmbedding }
     );
 
@@ -422,12 +422,12 @@ export class GRPMOOrchestrator {
   }
 
   private compressToGlyph(data: SimilarityResult[]): string {
-    // 7-bit compression algorithm for visual glyph generation
+    // 7-bit compression algorithm for visual glyph generation;
     const compressed = (data as { map?: any }).map(item => ({
       id: (item as { id?: any; similarity?: any; metadata?: any }).id.slice(0, 8),
       sim: Math.round((item as { id?: any; similarity?: any; metadata?: any }).similarity * 127),
       key: (item as { id?: any; similarity?: any; metadata?: any }).metadata?.keywords?.[0] || ''
-    }));
+    });
     return JSON.stringify(compressed);
   }
 
@@ -450,8 +450,8 @@ export class GRPMOOrchestrator {
     return (data as { map?: any }).map(item => ({
       ...item,
       predictiveScore: this.calculatePredictiveScore(item, queryEmbedding),
-      cacheLayer: 'warm'
-    }));
+      cacheLayer: 'warm',
+    });
   }
 
   private calculatePredictiveScore(item: SimilarityResult, queryEmbedding: number[]): number {
@@ -465,12 +465,12 @@ export class GRPMOOrchestrator {
       ...item,
       cacheLayer: 'cold',
       responseTime: Date.now(),
-      extendedThinkingStages: []
-    }));
+      extendedThinkingStages: [],
+    });
   }
 }
 
-// PPO Reinforcement Learning Agent
+// PPO Reinforcement Learning Agent;
 class PPOAgent {
   private learningRate: number;
   private policyNetwork: Map<string, number[]> = new Map();
@@ -484,7 +484,7 @@ class PPOAgent {
     const stateKey = this.generateStateKey(context);
     const currentPolicy = this.policyNetwork.get(stateKey) || new Array(results.length).fill(1.0);
     
-    // Apply policy weights to results
+    // Apply policy weights to results;
     return results.map((item, index) => ({
       ...item,
       similarity: (item as { id?: any; similarity?: any; metadata?: any }).similarity * currentPolicy[index],
@@ -493,9 +493,9 @@ class PPOAgent {
         actionHistory: [stateKey],
         rewardSignal: (item as { id?: any; similarity?: any; metadata?: any }).similarity,
         policyGradient: currentPolicy,
-        valueFunction: this.valueNetwork.get(stateKey) || 0.5
+        valueFunction: this.valueNetwork.get(stateKey) || 0.5,
       }
-    }));
+    });
   }
 
   private generateStateKey(context: any): string {

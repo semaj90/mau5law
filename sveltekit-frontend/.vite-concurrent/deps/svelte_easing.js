@@ -29,9 +29,9 @@ import {
   quintOut,
   sineIn,
   sineInOut,
-  sineOut
-} from "./chunk-7QVV7TAH.js";
-import "./chunk-KWPVD4H7.js";
+  sineOut,
+} from './chunk-7QVV7TAH.js';
+import './chunk-KWPVD4H7.js';
 export {
   backIn,
   backInOut,
@@ -63,6 +63,6 @@ export {
   quintOut,
   sineIn,
   sineInOut,
-  sineOut
+  sineOut,
 };
 //# sourceMappingURL=svelte_easing.js.map

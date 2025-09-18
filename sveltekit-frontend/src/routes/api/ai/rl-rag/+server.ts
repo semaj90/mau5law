@@ -22,7 +22,7 @@ import type { RequestHandler } from './$types.js';
 import { json, error } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 
-// GPU-Accelerated RL-RAG Interface
+// GPU-Accelerated RL-RAG Interface;
 interface RAGRequest {
 	query: string;
 	context?: string[];
@@ -45,7 +45,7 @@ interface RAGResponse {
 			legal_category: string;
 			confidence: number;
 			processing_time_ms: number;
-			gpu_accelerated: boolean;
+			gpu_accelerated: boolean;,
 		};
 	}>;
 	performance: {
@@ -55,7 +55,7 @@ interface RAGResponse {
 		gpu_acceleration_used: boolean;
 		simd_optimization_used: boolean;
 		cache_hit_rate: number;
-		tensor_cores_utilized: boolean;
+		tensor_cores_utilized: boolean;,
 	};
 }
 
@@ -65,12 +65,12 @@ const REDIS_CACHE_TTL = 300; // 5 minutes
 const GEMMA_MODEL = 'gemma3:legal-latest';
 const EMBEDDING_MODEL = 'embeddinggemma:latest';
 
-// Redis-optimized RL-RAG endpoint with GPU acceleration
+// Redis-optimized RL-RAG endpoint with GPU acceleration;
 export const POST: RequestHandler = redisOptimized({
 	cacheKey: (request) => `rl-rag:${JSON.stringify(request)}`,
 	ttl: REDIS_CACHE_TTL,
 	memoryBank: 'PRG_ROM',
-	category: 'conservative'
+	category: 'conservative',
 }, async ({ request }) => {
 	const startTime = performance.now();
 
@@ -126,7 +126,7 @@ export const POST: RequestHandler = redisOptimized({
 				gpu_acceleration_used: use_gpu,
 				simd_optimization_used: true,
 				cache_hit_rate: await getCacheHitRate(),
-				tensor_cores_utilized: use_gpu
+				tensor_cores_utilized: use_gpu,
 			}
 		};
 
@@ -137,7 +137,7 @@ export const POST: RequestHandler = redisOptimized({
 				ranking_ms: Math.round(rankingTime * 100) / 100,
 				total_ms: Math.round(totalTime * 100) / 100,
 				model: GEMMA_MODEL,
-				embedding_model: EMBEDDING_MODEL
+				embedding_model: EMBEDDING_MODEL,
 			});
 		}
 
@@ -147,12 +147,12 @@ export const POST: RequestHandler = redisOptimized({
 		console.error('RL-RAG Error:', err);
 		return error(500, {
 			message: 'Internal server error during RAG processing',
-			details: dev ? String(err) : 'Contact support if this persists'
+			details: dev ? String(err) : 'Contact support if this persists',
 		});
 	}
 });
 
-// SIMD-accelerated text preprocessing (AVX2/SSE4 optimized)
+// SIMD-accelerated text preprocessing (AVX2/SSE4 optimized);
 async function preprocessQuerySIMD(query: string): Promise<string> {
 	// Legal-specific preprocessing with SIMD optimization
 	// Remove legal stop words, normalize case, extract legal entities
@@ -166,16 +166,16 @@ async function preprocessQuerySIMD(query: string): Promise<string> {
 		.trim();
 }
 
-// GPU-accelerated vector similarity search with Gemma embeddings
+// GPU-accelerated vector similarity search with Gemma embeddings;
 async function performCudaVectorSearch(params: {
 	query: string;
 	context: string[];
 	max_results: number;
 	use_gpu: boolean;
-	legal_filter: any;
+	legal_filter: any;,
 }): Promise<Array<{ content: string; score: number; metadata: any }> {
 	try {
-		// Step 1: Generate embedding with our CUDA service (8097)
+		// Step 1: Generate embedding with our CUDA service (8097);
 		const embeddingResponse = await fetch(`${CUDA_SERVICE_URL}/api/v1/search`, {
 			method: 'POST',
 			headers: {
@@ -185,15 +185,15 @@ async function performCudaVectorSearch(params: {
 				query: params.query,
 				model: EMBEDDING_MODEL,
 				limit: params.max_results,
-				use_gpu: params.use_gpu
+				use_gpu: params.use_gpu,
 			}),
-			signal: AbortSignal.timeout(15000)
+			signal: AbortSignal.timeout(15000),
 		});
 
 		if (embeddingResponse.ok) {
 			const embeddingResults = await embeddingResponse.json();
 
-			// Map CUDA service results to our format
+			// Map CUDA service results to our format;
 			return (embeddingResults.results || []).map((result: any, index: number) => ({
 				content: result.content || `Legal document content for query: ${params.query}`,
 				score: result.similarity || 0.8,
@@ -202,12 +202,12 @@ async function performCudaVectorSearch(params: {
 					legal_category: params.legal_filter.category || 'general',
 					confidence: result.confidence || 0.8,
 					processing_time_ms: embeddingResults.performance?.search_time_ms || 50,
-					gpu_accelerated: true
+					gpu_accelerated: true,
 				}
-			}));
+			});
 		}
 
-		// Try legal extraction service (8098) as backup
+		// Try legal extraction service (8098) as backup;
 		const extractionResponse = await fetch('http://localhost:8098/api/v1/extract', {
 			method: 'POST',
 			headers: {
@@ -218,9 +218,9 @@ async function performCudaVectorSearch(params: {
 				title: 'Search Query',
 				content: params.query,
 				doc_type: 'query',
-				metadata: params.legal_filter
+				metadata: params.legal_filter,
 			}),
-			signal: AbortSignal.timeout(10000)
+			signal: AbortSignal.timeout(10000),
 		});
 
 		if (extractionResponse.ok) {
@@ -234,7 +234,7 @@ async function performCudaVectorSearch(params: {
 					legal_category: 'extracted_content',
 					confidence: 0.75,
 					processing_time_ms: extractionResults.processing_time?.total_time_ms || 100,
-					gpu_accelerated: false
+					gpu_accelerated: false,
 				}
 			}];
 		}
@@ -248,12 +248,12 @@ async function performCudaVectorSearch(params: {
 	}
 }
 
-// Knowledge Graph Service fallback (8099)
+// Knowledge Graph Service fallback (8099);
 async function fallbackKnowledgeGraphSearch(params: {
 	query: string;
 	context: string[];
 	max_results: number;
-	legal_filter: any;
+	legal_filter: any;,
 }): Promise<Array<{ content: string; score: number; metadata: any }> {
 	try {
 		const kgResponse = await fetch('http://localhost:8099/api/v1/knowledge-graph', {
@@ -266,9 +266,9 @@ async function fallbackKnowledgeGraphSearch(params: {
 				title: 'Knowledge Graph Search',
 				content: params.query,
 				doc_type: 'search',
-				metadata: params.legal_filter
+				metadata: params.legal_filter,
 			}),
-			signal: AbortSignal.timeout(10000)
+			signal: AbortSignal.timeout(10000),
 		});
 
 		if (kgResponse.ok) {
@@ -282,7 +282,7 @@ async function fallbackKnowledgeGraphSearch(params: {
 					legal_category: 'knowledge_graph',
 					confidence: 0.7,
 					processing_time_ms: kgResults.processing_time_ms || 2062,
-					gpu_accelerated: false
+					gpu_accelerated: false,
 				}
 			}];
 		}
@@ -296,18 +296,18 @@ async function fallbackKnowledgeGraphSearch(params: {
 	}
 }
 
-// PostgreSQL + pgvector fallback
+// PostgreSQL + pgvector fallback;
 async function fallbackPostgreSQLSearch(params: {
 	query: string;
 	context: string[];
 	max_results: number;
-	legal_filter: any;
+	legal_filter: any;,
 }): Promise<Array<{ content: string; score: number; metadata: any }> {
 	// In production, this would query PostgreSQL 17 with pgvector
 	// Using Drizzle ORM for type-safe queries
 	// Example: SELECT content, 1 - (embedding <=> $1) as similarity FROM legal_documents
 
-	return [
+	return [;
 		{
 			content: `Legal document related to: ${params.query}. This is a fallback response when all GPU services are unavailable.`,
 			score: 0.65,
@@ -316,7 +316,7 @@ async function fallbackPostgreSQLSearch(params: {
 				legal_category: 'general',
 				confidence: 0.65,
 				processing_time_ms: 5,
-				gpu_accelerated: false
+				gpu_accelerated: false,
 			}
 		}
 	];
@@ -326,7 +326,7 @@ async function fallbackPostgreSQLSearch(params: {
 async function reinforcementLearningRanking(
 	results: Array<{ content: string; score: number; metadata: any }>,
 	query: string,
-	legal_filter: any
+	legal_filter: any;
 ): Promise<Array<{ content: string; score: number; metadata: any }> {
 	// Apply RL-trained model optimized for legal document relevance:
 	// 1. Legal precedent weight (case law > statutes > regulations)
@@ -335,11 +335,11 @@ async function reinforcementLearningRanking(
 	// 4. Citation frequency (highly cited documents boost)
 	// 5. User interaction patterns (click-through rates)
 
-	return results
+	return results;
 		.map(result => {
 			let boostedScore = result.score;
 
-			// Legal category boosting
+			// Legal category boosting;
 			switch (result.metadata.legal_category) {
 				case 'case_law':
 					boostedScore *= 1.3; // Highest precedent value
@@ -355,14 +355,14 @@ async function reinforcementLearningRanking(
 					break;
 			}
 
-			// Confidence boosting
+			// Confidence boosting;
 			if (result.metadata.confidence > 0.9) {
 				boostedScore *= 1.2;
 			} else if (result.metadata.confidence > 0.8) {
 				boostedScore *= 1.1;
 			}
 
-			// GPU acceleration bonus (faster processing = higher priority)
+			// GPU acceleration bonus (faster processing = higher priority);
 			if (result.metadata.gpu_accelerated) {
 				boostedScore *= 1.05;
 			}
@@ -375,14 +375,14 @@ async function reinforcementLearningRanking(
 		.sort((a, b) => b.score - a.score);
 }
 
-// Redis cache hit rate monitoring
+// Redis cache hit rate monitoring;
 async function getCacheHitRate(): Promise<number> {
 	// In production, query Redis for cache statistics
 	// REDIS_PASSWORD=redis connection
 	return 0.78; // Mock 78% cache hit rate
 }
 
-// Health check endpoint with GPU status
+// Health check endpoint with GPU status;
 export const GET: RequestHandler = async () => {
 	try {
 		// Check all our running services
@@ -416,7 +416,7 @@ export const GET: RequestHandler = async () => {
 			models: {
 				primary: GEMMA_MODEL,
 				embedding: EMBEDDING_MODEL,
-				client_parser: 'gemma:270m-simd'
+				client_parser: 'gemma:270m-simd',
 			},
 			services: {
 				cuda_service_8097: cudaAvailable,
@@ -428,14 +428,14 @@ export const GET: RequestHandler = async () => {
 				vector_search: cudaAvailable || extractionAvailable,
 				reinforcement_learning: true,
 				redis_cache: true,
-				postgresql_pgvector: true
+				postgresql_pgvector: true,
 			},
 			gpu_status: gpuStats ? {
 				total_vram_mb: gpuStats.total_vram_mb,
 				used_vram_mb: gpuStats.used_vram_mb,
 				utilization_percent: gpuStats.utilization_percent,
 				loaded_engines: gpuStats.loaded_engines,
-				mps_enabled: gpuStats.mps_enabled
+				mps_enabled: gpuStats.mps_enabled,
 			} : null,
 			optimizations: [
 				'RTX 3060 Ti Tensor Cores',
@@ -458,7 +458,7 @@ export const GET: RequestHandler = async () => {
 		return json({
 			status: 'error',
 			message: 'Health check failed',
-			error: dev ? String(err) : 'Service temporarily unavailable'
+			error: dev ? String(err) : 'Service temporarily unavailable',
 		});
 	}
 };

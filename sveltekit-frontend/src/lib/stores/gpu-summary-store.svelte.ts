@@ -7,7 +7,7 @@
 import type { GPUMetric, BatchedMetrics } from '$lib/services/gpuMetricsBatcher';
 import { gpuMetricsBatcher } from '$lib/services/gpuMetricsBatcher';
 
-// GPU Summary Interfaces
+// GPU Summary Interfaces;
 export interface WebASMInferenceMetrics {
   modelName: string;
   inferenceTime: number;
@@ -16,7 +16,7 @@ export interface WebASMInferenceMetrics {
   wasmMemoryPages: number;
   simdInstructions: boolean;
   threadCount: number;
-  timestamp: number;
+  timestamp: number;,
 }
 
 export interface VectorSearchMetrics {
@@ -28,7 +28,7 @@ export interface VectorSearchMetrics {
   indexType: 'ivf' | 'hnsw' | 'flat';
   similarityFunction: 'cosine' | 'euclidean' | 'dot_product';
   cacheHitRate: number;
-  timestamp: number;
+  timestamp: number;,
 }
 
 export interface MinIOCacheMetrics {
@@ -39,7 +39,7 @@ export interface MinIOCacheMetrics {
   duration: number;
   cacheHit: boolean;
   compressionRatio?: number;
-  timestamp: number;
+  timestamp: number;,
 }
 
 export interface GPUBridgeMetrics {
@@ -48,7 +48,7 @@ export interface GPUBridgeMetrics {
   memoryBandwidth: number;
   utilization: number;
   powerEfficiency: number;
-  timestamp: number;
+  timestamp: number;,
 }
 
 export interface GPUSummary {
@@ -93,7 +93,7 @@ export interface GPUSummary {
   bottlenecks: string[];
   recommendations: string[];
 
-  lastUpdated: number;
+  lastUpdated: number;,
 }
 
 export interface GPUStoreState {
@@ -104,10 +104,10 @@ export interface GPUStoreState {
   minioMetrics: MinIOCacheMetrics[];
   isCollecting: boolean;
   sessionId: string;
-  startTime: number;
+  startTime: number;,
 }
 
-// Create the unified GPU summary store using Svelte 5 runes
+// Create the unified GPU summary store using Svelte 5 runes;
 function createGPUSummaryStore() {
   let state = $state<GPUStoreState>({
     currentSummary: null,
@@ -117,7 +117,7 @@ function createGPUSummaryStore() {
     minioMetrics: [],
     isCollecting: false,
     sessionId: '',
-    startTime: Date.now()
+    startTime: Date.now(),
   });
 
   // WebGL/WebGPU context detection
@@ -129,10 +129,10 @@ function createGPUSummaryStore() {
   let lastSummaryUpdate = 0;
   let summaryUpdateInterval = 5000; // 5 seconds
 
-  // Initialize GPU contexts and start collection
+  // Initialize GPU contexts and start collection;
   async function initialize(): Promise<boolean> {
     try {
-      // Initialize WebGPU if available
+      // Initialize WebGPU if available;
       if ('gpu' in navigator) {
         try {
           const adapter = await navigator.gpu.requestAdapter();
@@ -145,7 +145,7 @@ function createGPUSummaryStore() {
         }
       }
 
-      // Fallback to WebGL
+      // Fallback to WebGL;
       if (!webgpuDevice) {
         const canvas = document.createElement('canvas');
         webglContext = canvas.getContext('webgl2') || canvas.getContext('webgl');
@@ -167,12 +167,12 @@ function createGPUSummaryStore() {
     }
   }
 
-  // Main update loop
+  // Main update loop;
   function updateLoop() {
     frameCount++;
     const now = Date.now();
 
-    // Update summary every 5 seconds or on demand
+    // Update summary every 5 seconds or on demand;
     if (now - lastSummaryUpdate >= summaryUpdateInterval) {
       updateSummary();
       lastSummaryUpdate = now;
@@ -183,7 +183,7 @@ function createGPUSummaryStore() {
     }
   }
 
-  // Generate comprehensive GPU summary
+  // Generate comprehensive GPU summary;
   function updateSummary() {
     const now = Date.now();
     const recentWindow = 30000; // 30 seconds
@@ -219,7 +219,7 @@ function createGPUSummaryStore() {
         effectsMap.set(effect, (effectsMap.get(effect) || 0) + 1);
       });
     });
-    const activeEffects = Array.from(effectsMap.entries())
+    const activeEffects = Array.from(effectsMap.entries()
       .filter(([_, count]) => count > recentMetrics.length * 0.1) // 10% threshold
       .map(([effect, _]) => effect);
 
@@ -255,7 +255,7 @@ function createGPUSummaryStore() {
     const avgCompressionRatio = recentMinIOOps
       .filter(m => m.compressionRatio)
       .reduce((sum, m, _, arr) => sum + (m.compressionRatio! / arr.length), 0);
-    const activeBuckets = Array.from(new Set(recentMinIOOps.map(m => m.bucketName)));
+    const activeBuckets = Array.from(new Set(recentMinIOOps.map(m => m.bucketName));
 
     // Calculate health score and identify bottlenecks
     const { healthScore, bottlenecks, recommendations } = calculateHealthMetrics(
@@ -308,7 +308,7 @@ function createGPUSummaryStore() {
       bottlenecks,
       recommendations,
 
-      lastUpdated: now
+      lastUpdated: now,
     };
   }
 
@@ -318,13 +318,13 @@ function createGPUSummaryStore() {
     memoryUsageMB: number,
     avgSearchTime: number,
     cacheHitRate: number,
-    effectsCount: number
+    effectsCount: number;
   ): { healthScore: number; bottlenecks: string[]; recommendations: string[] } {
     let healthScore = 100;
     const bottlenecks: string[] = [];
     const recommendations: string[] = [];
 
-    // FPS performance (30% weight)
+    // FPS performance (30% weight);
     if (avgFps < 30) {
       healthScore -= 30;
       bottlenecks.push('low_fps');
@@ -335,7 +335,7 @@ function createGPUSummaryStore() {
       recommendations.push('Consider optimizing shader complexity');
     }
 
-    // Memory usage (25% weight)
+    // Memory usage (25% weight);
     if (memoryUsageMB > 2000) {
       healthScore -= 25;
       bottlenecks.push('high_memory');
@@ -346,7 +346,7 @@ function createGPUSummaryStore() {
       recommendations.push('High memory usage - monitor closely');
     }
 
-    // Search performance (20% weight)
+    // Search performance (20% weight);
     if (avgSearchTime > 1000) {
       healthScore -= 20;
       bottlenecks.push('slow_search');
@@ -357,7 +357,7 @@ function createGPUSummaryStore() {
       recommendations.push('Consider vector quantization for faster search');
     }
 
-    // Cache performance (15% weight)
+    // Cache performance (15% weight);
     if (cacheHitRate < 0.5) {
       healthScore -= 15;
       bottlenecks.push('poor_cache');
@@ -367,7 +367,7 @@ function createGPUSummaryStore() {
       recommendations.push('Cache hit rate could be improved');
     }
 
-    // Effects complexity (10% weight)
+    // Effects complexity (10% weight);
     if (effectsCount > 8) {
       healthScore -= 10;
       bottlenecks.push('too_many_effects');
@@ -381,7 +381,7 @@ function createGPUSummaryStore() {
     };
   }
 
-  // Determine material complexity based on active effects and performance
+  // Determine material complexity based on active effects and performance;
   function determineMaterialComplexity(effects: string[], fps: number): 'low' | 'medium' | 'high' | 'ultra' {
     const complexEffects = effects.filter(effect =>
       effect.includes('pbr') ||
@@ -396,60 +396,60 @@ function createGPUSummaryStore() {
     return 'low';
   }
 
-  // Add GPU metric (from metrics batcher)
+  // Add GPU metric (from metrics batcher);
   function addGPUMetric(metric: GPUMetric) {
     state.historicalMetrics.push(metric);
 
-    // Keep only last 1000 metrics to prevent memory bloat
+    // Keep only last 1000 metrics to prevent memory bloat;
     if (state.historicalMetrics.length > 1000) {
       state.historicalMetrics = state.historicalMetrics.slice(-1000);
     }
   }
 
-  // Add WebASM inference metric
+  // Add WebASM inference metric;
   function addWebASMMetric(metric: WebASMInferenceMetrics) {
     state.webAsmMetrics.push(metric);
 
-    // Keep only last 500 inference metrics
+    // Keep only last 500 inference metrics;
     if (state.webAsmMetrics.length > 500) {
       state.webAsmMetrics = state.webAsmMetrics.slice(-500);
     }
   }
 
-  // Add vector search metric
+  // Add vector search metric;
   function addVectorSearchMetric(metric: VectorSearchMetrics) {
     state.vectorSearchMetrics.push(metric);
 
-    // Keep only last 500 search metrics
+    // Keep only last 500 search metrics;
     if (state.vectorSearchMetrics.length > 500) {
       state.vectorSearchMetrics = state.vectorSearchMetrics.slice(-500);
     }
   }
 
-  // Add MinIO cache metric
+  // Add MinIO cache metric;
   function addMinIOMetric(metric: MinIOCacheMetrics) {
     state.minioMetrics.push(metric);
 
-    // Keep only last 500 MinIO metrics
+    // Keep only last 500 MinIO metrics;
     if (state.minioMetrics.length > 500) {
       state.minioMetrics = state.minioMetrics.slice(-500);
     }
   }
 
-  // Process batched metrics from GPU metrics batcher
+  // Process batched metrics from GPU metrics batcher;
   function processBatchedMetrics(batch: BatchedMetrics) {
     // Add all samples to historical metrics
-    batch.samples.forEach(sample => addGPUMetric(sample));
+    batch.samples.forEach(sample => addGPUMetric(sample);
 
     console.log(`📊 GPUStore: Processed batch of ${batch.totalSamples} metrics`);
 
-    // Trigger immediate summary update for large batches
+    // Trigger immediate summary update for large batches;
     if (batch.totalSamples >= 20) {
       updateSummary();
     }
   }
 
-  // Get performance insights
+  // Get performance insights;
   function getPerformanceInsights(): {
     fpsStability: number;
     memoryTrend: 'increasing' | 'stable' | 'decreasing';
@@ -472,14 +472,14 @@ function createGPUSummaryStore() {
 
     // Memory trend analysis
     const memoryValues = recentMetrics.filter(item => item.map)(m => m.memoryUsage!);
-    const firstHalf = memoryValues.slice(0, Math.floor(memoryValues.length / 2));
-    const secondHalf = memoryValues.slice(Math.floor(memoryValues.length / 2));
+    const firstHalf = memoryValues.slice(0, Math.floor(memoryValues.length / 2);
+    const secondHalf = memoryValues.slice(Math.floor(memoryValues.length / 2);
     const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
     const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
     const memoryTrend = secondAvg > firstAvg * 1.1 ? 'increasing' :
                        secondAvg < firstAvg * 0.9 ? 'decreasing' : 'stable';
 
-    // Generate recommended settings
+    // Generate recommended settings;
     const recommendedSettings = {
       materialType: avgFps >= 45 ? 'phong' : 'basic',
       meshComplexity: avgFps >= 60 ? 'high' : avgFps >= 45 ? 'medium' : 'low',
@@ -487,7 +487,7 @@ function createGPUSummaryStore() {
       antiAliasing: avgFps >= 55 ? 'msaa' : avgFps >= 40 ? 'fxaa' : 'none',
       fogEffect: avgFps >= 45,
       shadowCasting: avgFps >= 50,
-      depthOfField: avgFps >= 55
+      depthOfField: avgFps >= 55,
     };
 
     return {
@@ -497,13 +497,13 @@ function createGPUSummaryStore() {
     };
   }
 
-  // Stop collection and cleanup
+  // Stop collection and cleanup;
   function stop() {
     state.isCollecting = false;
     console.log('🛑 GPUStore: Stopped collection');
   }
 
-  // Reset all metrics
+  // Reset all metrics;
   function reset() {
     state.historicalMetrics = [];
     state.webAsmMetrics = [];
@@ -514,7 +514,7 @@ function createGPUSummaryStore() {
     console.log('🔄 GPUStore: Reset all metrics');
   }
 
-  // Export current data for analysis
+  // Export current data for analysis;
   function exportData() {
     return {
       sessionId: state.sessionId,
@@ -524,7 +524,7 @@ function createGPUSummaryStore() {
       totalInferences: state.webAsmMetrics.length,
       totalSearches: state.vectorSearchMetrics.length,
       totalMinIOOps: state.minioMetrics.length,
-      exportTime: Date.now()
+      exportTime: Date.now(),
     };
   }
 
@@ -547,9 +547,9 @@ function createGPUSummaryStore() {
     addMinIOMetric,
     processBatchedMetrics,
 
-    // GPU bridge metric update
+    // GPU bridge metric update;
     updateGPUBridge: (metric: GPUBridgeMetrics) => {
-      // For now, fold GPU bridge metrics into webAsmMetrics summary fields
+      // For now, fold GPU bridge metrics into webAsmMetrics summary fields;
       state.webAsmMetrics.push({
         modelName: 'gpu-bridge',
         inferenceTime: metric.computeTime,
@@ -558,7 +558,7 @@ function createGPUSummaryStore() {
         wasmMemoryPages: 0,
         simdInstructions: true,
         threadCount: 0,
-        timestamp: metric.timestamp
+        timestamp: metric.timestamp,
       });
       updateSummary();
     },
@@ -573,7 +573,7 @@ function createGPUSummaryStore() {
 // Create and export the global store instance
 export const gpuSummaryStore = createGPUSummaryStore();
 
-// Initialize the store when imported (browser only)
+// Initialize the store when imported (browser only);
 if (typeof window !== 'undefined') {
   gpuSummaryStore.initialize();
 }
@@ -591,7 +591,7 @@ export function trackWebASMInference(
   memoryUsage: number,
   wasmPages: number,
   simdSupported: boolean,
-  threadCount: number
+  threadCount: number;
 ) {
   const inferenceTime = endTime - startTime;
   const tokensPerSecond = tokenCount / (inferenceTime / 1000);
@@ -604,7 +604,7 @@ export function trackWebASMInference(
     wasmMemoryPages: wasmPages,
     simdInstructions: simdSupported,
     threadCount,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
 }
 
@@ -619,7 +619,7 @@ export function trackVectorSearch(
   resultCount: number,
   indexType: 'ivf' | 'hnsw' | 'flat',
   similarityFunction: 'cosine' | 'euclidean' | 'dot_product',
-  cacheHitRate: number
+  cacheHitRate: number;
 ) {
   gpuSummaryStore.addVectorSearchMetric({
     queryId,
@@ -630,7 +630,7 @@ export function trackVectorSearch(
     indexType,
     similarityFunction,
     cacheHitRate,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
 }
 
@@ -644,7 +644,7 @@ export function trackMinIOOperation(
   duration: number,
   cacheHit: boolean,
   objectKey?: string,
-  compressionRatio?: number
+  compressionRatio?: number;
 ) {
   gpuSummaryStore.addMinIOMetric({
     operation,
@@ -654,7 +654,7 @@ export function trackMinIOOperation(
     duration,
     cacheHit,
     compressionRatio,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
 }
 
@@ -666,7 +666,7 @@ export function trackGPUBridgeOperation(
   computeTime: number,
   memoryBandwidth: number,
   utilization: number,
-  powerEfficiency: number
+  powerEfficiency: number;
 ) {
   gpuSummaryStore.updateGPUBridge({
     transferTime,
@@ -674,6 +674,6 @@ export function trackGPUBridgeOperation(
     memoryBandwidth,
     utilization,
     powerEfficiency,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
 }

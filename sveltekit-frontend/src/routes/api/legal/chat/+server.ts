@@ -36,7 +36,7 @@ export interface LegalChatResponse {
   confidence: number;
   sources: Array<any>;
   recommendations: string[];
-  processingTime: number;
+  processingTime: number;,
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!prompt || !userId) {
       return json(
-        { error: "Missing required fields: prompt, userId" },
+        { error: "Missing required fields: prompt, userId" },)
         { status: 400 }
       );
     }
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
       context
     );
 
-    // 3. Create analysis session record
+    // 3. Create analysis session record;
     const sessionInsert: InsertLegalAnalysisSession = {
       caseId: caseId || null,
       userId,
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error("Legal chat error:", error);
     return json(
-      { error: "Failed to process legal analysis request" },
+      { error: "Failed to process legal analysis request" },)
       { status: 500 }
     );
   }
@@ -125,29 +125,29 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = parseInt(searchParams.get("limit") || "20");
 
     const conditions = [];
-    if (caseId) conditions.push(eq(legalAnalysisSessions.caseId, caseId));
-    if (userId) conditions.push(eq(legalAnalysisSessions.userId, userId));
+    if (caseId) conditions.push(eq(legalAnalysisSessions.caseId, caseId);
+    if (userId) conditions.push(eq(legalAnalysisSessions.userId, userId);
     if (sessionType)
-      conditions.push(eq(legalAnalysisSessions.sessionType, sessionType));
+      conditions.push(eq(legalAnalysisSessions.sessionType, sessionType);
 
     const sessions = await db
       .select()
       .from(legalAnalysisSessions)
       .where(conditions.length > 0 ? and(...conditions) : undefined)
-      .orderBy(desc(legalAnalysisSessions.createdAt))
+      .orderBy(desc(legalAnalysisSessions.createdAt)
       .limit(limit);
 
     return json(sessions);
   } catch (error: any) {
     console.error("Error fetching legal analysis sessions:", error);
     return json(
-      { error: "Failed to fetch analysis sessions" },
+      { error: "Failed to fetch analysis sessions" },)
       { status: 500 }
     );
   }
 };
 
-// Helper function to find relevant legal sources
+// Helper function to find relevant legal sources;
 async function findRelevantLegalSources(prompt: string, caseId?: string): Promise<any> {
   const sources = [];
 
@@ -166,16 +166,16 @@ async function findRelevantLegalSources(prompt: string, caseId?: string): Promis
       )
       .limit(5);
 
-    sources.push(...documents.map((doc) => ({ ...doc, type: "document" })));
+    sources.push(...documents.map((doc) => ({ ...doc, type: "document" }));
 
     // Search legal precedents (vector similarity would be ideal here)
     const precedents = await db
       .select()
       .from(legalPrecedents)
-      .where(like(legalPrecedents.summary, `%${prompt}%`))
+      .where(like(legalPrecedents.summary, `%${prompt}%`)
       .limit(3);
 
-    sources.push(...precedents.map((prec) => ({ ...prec, type: "precedent" })));
+    sources.push(...precedents.map((prec) => ({ ...prec, type: "precedent" }));
   } catch (error: any) {
     console.warn("Error searching legal sources:", error);
   }
@@ -187,7 +187,7 @@ async function findRelevantLegalSources(prompt: string, caseId?: string): Promis
 async function generateLegalAnalysis(
   prompt: string,
   sources: any[],
-  context?: unknown
+  context?: unknown;
 ): Promise<any> {
   try {
     // Construct analysis prompt with legal context
@@ -219,7 +219,7 @@ Format your response as structured JSON.
 `;
 
     // In a real implementation, this would call the Gemma3 Legal model via Ollama
-    // For now, return a structured response
+    // For now, return a structured response;
     const analysisResult = {
       analysis: `Based on the legal query and available sources, the analysis indicates several key considerations for the prosecution. The relevant precedents and documents suggest a strong foundation for the case, with particular attention needed to evidence handling and procedural requirements.
 

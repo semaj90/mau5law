@@ -1,4 +1,4 @@
-// Common component properties for UI components
+// Common component properties for UI components;
 export interface CommonProps {
   class?: string;
   id?: string;

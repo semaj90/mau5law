@@ -14,7 +14,7 @@ const presignedRequestSchema = z.object({
   caseId: z.string().uuid(),
 });
 
-// Initialize MinIO client
+// Initialize MinIO client;
 const minioClient = new Client({
   endPoint: 'localhost',
   port: 9000,
@@ -45,16 +45,16 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
     const uniqueFilename = `${fileId}.${fileExtension}`;
     const minioPath = `cases/${caseId}/documents/${uniqueFilename}`;
 
-    // Ensure bucket exists
+    // Ensure bucket exists;
     try {
       const bucketExists = await minioClient.bucketExists(BUCKET_NAME);
       if (!bucketExists) {
         await minioClient.makeBucket(BUCKET_NAME, 'us-east-1');
 
-        // Set bucket policy to allow uploads
+        // Set bucket policy to allow uploads;
         const policy = {
           Version: '2012-10-17',
-          Statement: [
+          Statement: [;
             {
               Effect: 'Allow',
               Principal: { AWS: ['*'] },
@@ -69,7 +69,7 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
             },
           ],
         };
-        await minioClient.setBucketPolicy(BUCKET_NAME, JSON.stringify(policy));
+        await minioClient.setBucketPolicy(BUCKET_NAME, JSON.stringify(policy);
       }
     } catch (bucketError) {
       console.error('MinIO bucket setup error:', bucketError);
@@ -80,7 +80,7 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
     const presignedUrl = await minioClient.presignedPutObject(
       BUCKET_NAME,
       minioPath,
-      UPLOAD_EXPIRY,
+      UPLOAD_EXPIRY,);
       {
         'Content-Type': contentType,
         'x-amz-meta-original-name': filename,
@@ -91,7 +91,7 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
 
     // Create document record in database
     const [document] = await db
-      .insert(documents)
+      .insert(documents);
       .values({
         uuid: fileId,
         caseId: caseRecord.id,
@@ -131,7 +131,7 @@ export async function POST({ request }: Parameters<RequestHandler>[0]): Promise<
   }
 }
 
-// Optional: GET method to check upload status
+// Optional: GET method to check upload status;
 export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<any> {
   const fileId = url.searchParams.get('fileId');
 
@@ -155,9 +155,9 @@ export async function GET({ url }: Parameters<RequestHandler>[0]): Promise<any> 
       fileExists = true;
       fileSize = stat.size;
 
-      // Update file size in database if it changed
+      // Update file size in database if it changed;
       if (document.fileSize !== fileSize) {
-        await db.update(documents).set({ fileSize }).where(eq(documents.id, document.id));
+        await db.update(documents).set({ fileSize }).where(eq(documents.id, document.id);
       }
     } catch (statError) {
       // File doesn't exist yet or access error

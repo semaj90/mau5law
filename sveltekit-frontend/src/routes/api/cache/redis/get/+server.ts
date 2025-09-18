@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!key) {
       return json({
         success: false,
-        error: 'Key is required'
+        error: 'Key is required',
       }, { status: 400 });
     }
     
@@ -29,18 +29,18 @@ export const POST: RequestHandler = async ({ request }) => {
         success: true,
         key,
         value: null,
-        message: 'Key not found in cache'
+        message: 'Key not found in cache',
       });
     }
     
-    // Check if expired
+    // Check if expired;
     if (cached.expires < Date.now()) {
       memoryCache.delete(key);
       return json({
         success: true,
         key,
         value: null,
-        message: 'Key expired and removed from cache'
+        message: 'Key expired and removed from cache',
       });
     }
     
@@ -48,13 +48,13 @@ export const POST: RequestHandler = async ({ request }) => {
       success: true,
       key,
       value: cached.value,
-      message: 'Value retrieved from Redis cache'
+      message: 'Value retrieved from Redis cache',
     });
     
   } catch (error: any) {
     return json({
       success: false,
-      error: error.message
+      error: error.message,
     }, { status: 500 });
   }
 };

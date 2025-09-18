@@ -23,7 +23,7 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types.js';
 
 
-// Minimal vector search endpoint leveraging pgvector embedding repository
+// Minimal vector search endpoint leveraging pgvector embedding repository;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const contentType = request.headers.get('content-type');

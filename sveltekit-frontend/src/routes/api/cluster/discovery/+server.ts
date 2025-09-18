@@ -21,19 +21,19 @@ interface ServiceInstance {
     latency: number;
     uptime: number;
     lastCheck: string;
-    consecutiveFailures: number;
+    consecutiveFailures: number;,
   };
   metadata: {
     version: string;
     capabilities: string[];
     region?: string;
-    weight: number;
+    weight: number;,
   };
   failover: {
     primary: boolean;
     backups: string[];
     autoFailover: boolean;
-    failoverThreshold: number;
+    failoverThreshold: number;,
   };
 }
 
@@ -45,7 +45,7 @@ interface DiscoveryRegistry {
   discoveryConfig: {
     checkInterval: number;
     failoverTimeout: number;
-    healthThreshold: number;
+    healthThreshold: number;,
   };
 }
 
@@ -57,7 +57,7 @@ interface FailoverEvent {
   from: string;
   to: string;
   duration: number;
-  success: boolean;
+  success: boolean;,
 }
 
 // Service registry - in production, this would be persistent storage
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!service || !service.name || !service.port) {
           return json({
             success: false,
-            error: 'Service name and port are required'
+            error: 'Service name and port are required',
           }, { status: 400 });
         }
 
@@ -108,7 +108,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           action: 'register',
           service: registered,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: deregistered,
           action: 'deregister',
           serviceId,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
@@ -136,7 +136,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           action: 'health-check',
           health,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: failoverResult.success,
           action: 'failover',
           result: failoverResult,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
@@ -162,7 +162,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           action: 'update-config',
           config: updated,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
@@ -176,11 +176,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
           action: 'discover',
           discovered: discovered.length,
           services: discovered,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
-      default:
+      default:;
         return json({
           success: false,
           error: `Unknown action: ${action}`,
@@ -193,7 +193,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }, { status: 500 });
   }
 };
@@ -213,7 +213,7 @@ export const GET: RequestHandler = async ({ url }) => {
         instances,
         healthy: instances.filter(item => item.length),
         total: instances.length,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     }
 
@@ -237,9 +237,9 @@ export const GET: RequestHandler = async ({ url }) => {
         register: '/api/cluster/discovery?action=register (POST)',
         health_check: '/api/cluster/discovery?action=health-check (POST)',
         failover: '/api/cluster/discovery?action=failover (POST)',
-        discover: '/api/cluster/discovery?action=discover (POST)'
+        discover: '/api/cluster/discovery?action=discover (POST)',
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     if (includeHistory) {
@@ -252,7 +252,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }, { status: 500 });
   }
 };
@@ -276,7 +276,7 @@ async function getServiceRegistry(): Promise<DiscoveryRegistry> {
     discoveryConfig: {
       checkInterval: 30000, // 30 seconds
       failoverTimeout: 5000, // 5 seconds  
-      healthThreshold: 70
+      healthThreshold: 70,
     }
   };
 }
@@ -294,19 +294,19 @@ async function registerService(serviceData: any): Promise<ServiceInstance> {
       latency: 0,
       uptime: 0,
       lastCheck: new Date().toISOString(),
-      consecutiveFailures: 0
+      consecutiveFailures: 0,
     },
     metadata: {
       version: serviceData.version || '1.0.0',
       capabilities: serviceData.capabilities || [],
       region: serviceData.region,
-      weight: serviceData.weight || 100
+      weight: serviceData.weight || 100,
     },
     failover: {
       primary: serviceData.primary || false,
       backups: serviceData.backups || [],
       autoFailover: serviceData.autoFailover !== false,
-      failoverThreshold: serviceData.failoverThreshold || 3
+      failoverThreshold: serviceData.failoverThreshold || 3,
     }
   };
 
@@ -357,7 +357,7 @@ async function checkServiceHealth(serviceId: string, force: boolean = false): Pr
     service.health.latency = latency;
     service.health.lastCheck = new Date().toISOString();
 
-    // Trigger failover if needed
+    // Trigger failover if needed;
     if (service.status === 'unhealthy' && service.failover.autoFailover && service.failover.primary) {
       await executeFailover(serviceId, 'health-check-failure');
     }
@@ -366,7 +366,7 @@ async function checkServiceHealth(serviceId: string, force: boolean = false): Pr
       serviceId,
       status: service.status,
       health: service.health,
-      failoverTriggered: service.status === 'unhealthy' && service.failover.autoFailover
+      failoverTriggered: service.status === 'unhealthy' && service.failover.autoFailover,
     };
 
   } catch (error: any) {
@@ -378,7 +378,7 @@ async function checkServiceHealth(serviceId: string, force: boolean = false): Pr
       serviceId,
       status: 'unhealthy',
       error: error.message,
-      health: service.health
+      health: service.health,
     };
   }
 }
@@ -387,7 +387,7 @@ async function performFullHealthCheck(force: boolean = false): Promise<any> {
   const allServices = Array.from(serviceRegistry.values()).flat();
   
   const results = await Promise.all(
-    allServices.map(service => checkServiceHealth(service.id, force))
+    allServices.map(service => checkServiceHealth(service.id, force)
   );
 
   const healthy = results.filter(item => item.length);
@@ -398,10 +398,10 @@ async function performFullHealthCheck(force: boolean = false): Promise<any> {
       total,
       healthy,
       unhealthy: total - healthy,
-      healthPercentage: Math.round((healthy / total) * 100)
+      healthPercentage: Math.round((healthy / total) * 100),
     },
     results: results.slice(0, 10), // First 10 detailed results
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 }
 
@@ -438,7 +438,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
     
     target.failover.primary = true;
     
-    // Record failover event
+    // Record failover event;
     const failoverEvent: FailoverEvent = {
       id: `failover-${Date.now()}`,
       timestamp: new Date().toISOString(),
@@ -447,12 +447,12 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       from: service.id,
       to: target.id,
       duration: Date.now() - startTime,
-      success: true
+      success: true,
     };
     
     failoverHistory.push(failoverEvent);
     
-    // Keep only last 100 events
+    // Keep only last 100 events;
     if (failoverHistory.length > 100) {
       failoverHistory.splice(0, failoverHistory.length - 100);
     }
@@ -463,7 +463,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       to: target.id,
       reason,
       duration: failoverEvent.duration,
-      event: failoverEvent
+      event: failoverEvent,
     };
 
   } catch (error: any) {
@@ -475,7 +475,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       from: service.id,
       to: 'none',
       duration: Date.now() - startTime,
-      success: false
+      success: false,
     };
     
     failoverHistory.push(failoverEvent);
@@ -484,7 +484,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
       success: false,
       error: error.message,
       duration: failoverEvent.duration,
-      event: failoverEvent
+      event: failoverEvent,
     };
   }
 }
@@ -492,7 +492,7 @@ async function executeFailover(serviceId: string, reason: string, targetInstance
 async function discoverServices(force: boolean = false): Promise<ServiceInstance[]> {
   const discovered: ServiceInstance[] = [];
 
-  // Initialize known services if registry is empty or force discovery
+  // Initialize known services if registry is empty or force discovery;
   if (serviceRegistry.size === 0 || force) {
     for (const knownService of KNOWN_SERVICES) {
       const service = await registerService({
@@ -502,7 +502,7 @@ async function discoverServices(force: boolean = false): Promise<ServiceInstance
         protocols: knownService.protocols,
         primary: knownService.primary,
         capabilities: [`${knownService.name}-service`],
-        autoFailover: true
+        autoFailover: true,
       });
       
       discovered.push(service);
@@ -513,12 +513,12 @@ async function discoverServices(force: boolean = false): Promise<ServiceInstance
 }
 
 async function updateDiscoveryConfig(config: any): Promise<any> {
-  // In production, this would update persistent configuration
+  // In production, this would update persistent configuration;
   return {
     checkInterval: config.checkInterval || 30000,
     failoverTimeout: config.failoverTimeout || 5000,
     healthThreshold: config.healthThreshold || 70,
-    updated: new Date().toISOString()
+    updated: new Date().toISOString(),
   };
 }
 
@@ -541,7 +541,7 @@ async function performHealthCheck(service: ServiceInstance): Promise<boolean> {
   }
 }
 
-// Initialize registry with known services on startup
+// Initialize registry with known services on startup;
 setTimeout(async () => {
   if (serviceRegistry.size === 0) {
     await discoverServices(true);

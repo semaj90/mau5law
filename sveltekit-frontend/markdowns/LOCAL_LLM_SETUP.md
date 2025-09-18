@@ -1,6 +1,7 @@
 # Local LLM Integration with SvelteKit
 
-This guide will help you set up and test the local LLM integration using Ollama and llama.cpp with the Gemma3 Q4_K_M model for your legal AI assistant.
+This guide will help you set up and test the local LLM integration using Ollama and llama.cpp with
+the Gemma3 Q4_K_M model for your legal AI assistant.
 
 ## 🚀 Quick Start
 

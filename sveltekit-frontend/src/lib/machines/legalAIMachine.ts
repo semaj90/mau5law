@@ -1,7 +1,7 @@
 import { setup, assign, createActor, fromPromise } from 'xstate';
 import { writable } from 'svelte/store';
 
-// Legal AI Application State Machine - XState v5
+// Legal AI Application State Machine - XState v5;
 export interface Case {
   id: string;
   title: string;
@@ -27,7 +27,7 @@ export interface LegalAIContext {
     email: string | null;
     role: string | null;
     permissions: string[];
-    isAuthenticated: boolean;
+    isAuthenticated: boolean;,
   };
   cases: {
     items: Case[];
@@ -36,15 +36,15 @@ export interface LegalAIContext {
       search: string;
       status: string;
       priority: string;
-      category: string;
+      category: string;,
     };
     pagination: {
       page: number;
       limit: number;
-      total: number;
+      total: number;,
     };
     loading: boolean;
-    error: string | null;
+    error: string | null;,
   };
   ai: {
     isProcessing: boolean;
@@ -54,7 +54,7 @@ export interface LegalAIContext {
     models: {
       primary: string;
       embedding: string;
-      available: string[];
+      available: string[];,
     };
   };
   system: {
@@ -63,12 +63,12 @@ export interface LegalAIContext {
       database: boolean;
       redis: boolean;
       ollama: boolean;
-      gpu: boolean;
+      gpu: boolean;,
     };
     metrics: {
       errorCount: number;
       performanceScore: number;
-      uptime: number;
+      uptime: number;,
     };
   };
 }
@@ -126,12 +126,12 @@ const initialContext: LegalAIContext = {
       database: false,
       redis: false,
       ollama: false,
-      gpu: false
+      gpu: false,
     },
     metrics: {
       errorCount: 0,
       performanceScore: 0,
-      uptime: 0
+      uptime: 0,
     }
   }
 };
@@ -139,7 +139,7 @@ const initialContext: LegalAIContext = {
 export const legalAIMachine = setup({
   types: Record<string, any> as {
     context: LegalAIContext;
-    events: LegalAIEvent;
+    events: LegalAIEvent;,
   },
   actions: {
     updateSystem: assign({
@@ -148,13 +148,13 @@ export const legalAIMachine = setup({
     setSystemError: assign({
       system: ({ context }) => ({
         ...context.system,
-        connected: false
+        connected: false,
       })
     }),
     setUser: assign({
       user: ({ event }) => ({
         ...(event as any).output,
-        isAuthenticated: true
+        isAuthenticated: true,
       })
     }),
     clearUser: assign({
@@ -163,34 +163,34 @@ export const legalAIMachine = setup({
         email: null,
         role: null,
         permissions: [],
-        isAuthenticated: false
+        isAuthenticated: false,
       })
     }),
     setCases: assign({
       cases: ({ context, event }) => ({
         ...context.cases,
         items: (event as any).output || [],
-        loading: false
+        loading: false,
       })
     }),
     setCurrentCase: assign({
       cases: ({ context, event }) => ({
         ...context.cases,
-        currentCase: (event as any).case
+        currentCase: (event as any).case,
       })
     }),
     setAIResponse: assign({
       ai: ({ context, event }) => ({
         ...context.ai,
         lastResponse: (event as any).output,
-        isProcessing: false
+        isProcessing: false,
       })
     }),
     setAIError: assign({
       ai: ({ context, event }) => ({
         ...context.ai,
         error: (event as any).error || 'AI processing failed',
-        isProcessing: false
+        isProcessing: false,
       })
     }),
     startAIProcessing: assign({
@@ -198,14 +198,14 @@ export const legalAIMachine = setup({
         ...context.ai,
         isProcessing: true,
         currentQuery: (event as any).prompt || '',
-        error: null
+        error: null,
       })
     })
   },
   actors: {
     checkSystemStatus: fromPromise(async () => {
       // Mock system status check
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1000);
       return {
         connected: true,
         services: { database: true, redis: true, ollama: true, gpu: true },
@@ -214,7 +214,7 @@ export const legalAIMachine = setup({
     }),
     authenticateUser: fromPromise(async ({ input }: { input: any }) => {
       // Mock authentication
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 1500);
       return {
         id: '1',
         email: input.credentials?.email || 'user@example.com',
@@ -224,7 +224,7 @@ export const legalAIMachine = setup({
     }),
     loadCases: fromPromise(async ({ input }: { input: any }) => {
       // Mock case loading
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1000);
       return [
         { id: '1', title: 'Corporate Fraud Case', status: 'active', priority: 'high', category: 'criminal' },
         { id: '2', title: 'Contract Dispute', status: 'pending', priority: 'medium', category: 'civil' }
@@ -232,12 +232,12 @@ export const legalAIMachine = setup({
     }),
     processAIQuery: fromPromise(async ({ input }: { input: any }) => {
       // Mock AI processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 2000);
       return {
         response: `AI analysis for: "${input.prompt}"`,
         confidence: 0.95,
         sources: ['case_law_1', 'statute_2'],
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     })
   }
@@ -251,11 +251,11 @@ export const legalAIMachine = setup({
         src: 'checkSystemStatus',
         onDone: {
           target: 'idle',
-          actions: 'updateSystem'
+          actions: 'updateSystem',
         },
         onError: {
           target: 'error',
-          actions: 'setSystemError'
+          actions: 'setSystemError',
         }
       }
     },
@@ -275,11 +275,11 @@ export const legalAIMachine = setup({
         input: ({ event }) => ({ credentials: (event as any).credentials }),
         onDone: {
           target: 'authenticated',
-          actions: 'setUser'
+          actions: 'setUser',
         },
         onError: {
           target: 'idle',
-          actions: 'clearUser'
+          actions: 'clearUser',
         }
       }
     },
@@ -300,10 +300,10 @@ export const legalAIMachine = setup({
         src: 'loadCases',
         onDone: {
           target: 'authenticated',
-          actions: 'setCases'
+          actions: 'setCases',
         },
         onError: {
-          target: 'authenticated'
+          target: 'authenticated',
         }
       }
     },
@@ -314,11 +314,11 @@ export const legalAIMachine = setup({
         input: ({ event }) => ({ prompt: (event as any).prompt }),
         onDone: {
           target: 'authenticated',
-          actions: 'setAIResponse'
+          actions: 'setAIResponse',
         },
         onError: {
           target: 'authenticated',
-          actions: 'setAIError'
+          actions: 'setAIError',
         }
       }
     },
@@ -327,20 +327,20 @@ export const legalAIMachine = setup({
         'SYSTEM.CHECK_STATUS': 'initializing'
       }
     },
-    // Placeholder states
+    // Placeholder states;
     registering: {
       after: {
-        1000: 'idle'
+        1000: 'idle',
       }
     },
     creatingCase: {
       after: {
-        1000: 'authenticated'
+        1000: 'authenticated',
       }
     },
     checkingStatus: {
       after: {
-        500: 'idle'
+        500: 'idle',
       }
     }
   }
@@ -350,9 +350,9 @@ export const legalAIMachine = setup({
 export const legalAIActor = createActor(legalAIMachine);
 ;
 // Create Svelte store for reactive state
-export const legalAIState = writable(legalAIActor.getSnapshot());
+export const legalAIState = writable(legalAIActor.getSnapshot();
 ;
-// Update store when state changes
+// Update store when state changes;
 legalAIActor.subscribe((snapshot) => {
   legalAIState.set(snapshot);
 });

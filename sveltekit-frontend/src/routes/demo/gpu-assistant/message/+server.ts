@@ -33,13 +33,13 @@ async function generateGemmaEmbedding(text: string, model: string = 'nomic-embed
       return cached;
     }
 
-    // Generate new embedding
+    // Generate new embedding;
     const res = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
         model,
-        prompt: text 
+        prompt: text ,
       })
     });
     if (!res.ok) throw new Error(`Embedding error ${res.status}`);
@@ -59,7 +59,7 @@ async function generateGemmaEmbedding(text: string, model: string = 'nomic-embed
   }
 }
 
-// Send a message and get AI response
+// Send a message and get AI response;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate embedding for user message
     const userEmbedding = await generateGemmaEmbedding(content);
     
-    // Insert user message with embedding
+    // Insert user message with embedding;
     const userMsg = { 
       id: randomUUID(), 
       sessionId, 
@@ -129,7 +129,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate embedding for assistant response
     const assistantEmbedding = await generateGemmaEmbedding(reply);
     
-    // Insert assistant message with embedding
+    // Insert assistant message with embedding;
     const asstMsg = { 
       id: randomUUID(), 
       sessionId, 
@@ -155,25 +155,25 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ 
       success: true,
       userMessage: userMsg,
-      assistant: asstMsg 
+      assistant: asstMsg ,
     });
   } catch (error) {
     console.error('Failed to process chat message:', error);
     return json(
-      { error: 'Failed to process message' },
+      { error: 'Failed to process message' },)
       { status: 500 }
     );
   }
 };
 
-// Get messages for a session
+// Get messages for a session;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');
     
     if (!sessionId) {
       return json(
-        { error: 'sessionId parameter is required' },
+        { error: 'sessionId parameter is required' },)
         { status: 400 }
       );
     }
@@ -200,7 +200,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Failed to get chat messages:', error);
     return json(
-      { error: 'Failed to get messages' },
+      { error: 'Failed to get messages' },)
       { status: 500 }
     );
   }

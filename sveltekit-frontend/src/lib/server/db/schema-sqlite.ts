@@ -1,5 +1,5 @@
 // @ts-nocheck
-// SQLite schema for development
+// SQLite schema for development;
 import {
   sqliteTable,
   text,
@@ -154,7 +154,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   activitiesAssigned: many(caseActivities, { relationName: "assignedTo" }),
   activitiesCreated: many(caseActivities, { relationName: "createdBy" }),
   criminalsCreated: many(criminals),
-}));
+});
 
 export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
@@ -169,7 +169,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   }),
   evidence: many(evidence),
   activities: many(caseActivities),
-}));
+});
 
 export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
@@ -177,7 +177,7 @@ export const criminalsRelations = relations(criminals, ({ one, many }) => ({
     references: [users.id],
   }),
   evidence: many(evidence),
-}));
+});
 
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
@@ -188,7 +188,7 @@ export const evidenceRelations = relations(evidence, ({ one }) => ({
     fields: [evidence.caseId],
     references: [cases.id],
   }),
-}));
+});
 
 export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
   case: one(cases, {
@@ -205,4 +205,4 @@ export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
     references: [users.id],
     relationName: "createdBy",
   }),
-}));
+});

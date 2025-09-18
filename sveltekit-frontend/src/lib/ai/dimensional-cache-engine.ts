@@ -2,7 +2,8 @@
  * Advanced Dimensional Array Caching Engine
  * Handles multi-dimensional tensors with kernel attention splicing
  * Supports offline/online state transitions with RabbitMQ
- */
+ */;
+}
 
 export interface DimensionalArray {
   data: Float32Array | Float64Array | Int32Array;
@@ -13,7 +14,7 @@ export interface DimensionalArray {
     created: number;
     lastAccessed: number;
     computationHash: string;
-    attentionWeights: Float32Array;
+    attentionWeights: Float32Array;,
   };
 }
 
@@ -22,7 +23,7 @@ export interface KernelAttentionSlice {
   endIndex: number;
   attentionScore: number;
   recommendationVector: Float32Array;
-  contextEmbedding: Float32Array;
+  contextEmbedding: Float32Array;,
 }
 
 export interface CacheEntry {
@@ -33,7 +34,7 @@ export interface CacheEntry {
   userContext: {
     userId: string;
     sessionId: string;
-    behaviorPattern: string;
+    behaviorPattern: string;,
   };
 }
 
@@ -46,7 +47,7 @@ export class DimensionalCacheEngine {
   constructor(
     private maxCacheSize = 1000,
     private defaultTTL = 300000, // 5 minutes
-    private cacheStrategy: 'LRU' | 'LFU' | 'FIFO' = 'LRU'
+    private cacheStrategy: 'LRU' | 'LFU' | 'FIFO' = 'LRU';
   ) {
     this.initializeOfflineQueue();
   }
@@ -57,7 +58,7 @@ export class DimensionalCacheEngine {
   async createDimensionalArray(
     data: number[],
     shape: number[],
-    attentionWeights: number[]
+    attentionWeights: number[];
   ): Promise<DimensionalArray> {
     const flatData = new Float32Array(data);
     const attention = new Float32Array(attentionWeights);
@@ -74,7 +75,7 @@ export class DimensionalCacheEngine {
         created: Date.now(),
         lastAccessed: Date.now(),
         computationHash: this.generateHash(flatData, shape),
-        attentionWeights: attention
+        attentionWeights: attention,
       }
     };
 
@@ -117,7 +118,7 @@ export class DimensionalCacheEngine {
   private generateKernelSlices(
     data: Float32Array,
     attention: Float32Array,
-    shape: number[]
+    shape: number[];
   ): KernelAttentionSlice[] {
     const slices: KernelAttentionSlice[] = [];
     const totalElements = data.length;
@@ -134,7 +135,7 @@ export class DimensionalCacheEngine {
       const recommendationVector = this.generateRecommendationVector(sliceAttention);
       
       // Create context embedding
-      const contextEmbedding = this.createContextEmbedding(data.slice(i, endIndex));
+      const contextEmbedding = this.createContextEmbedding(data.slice(i, endIndex);
 
       slices.push({
         startIndex: i,
@@ -150,7 +151,7 @@ export class DimensionalCacheEngine {
 
   /**
    * Generate recommendation vector based on attention patterns
-   */
+   */;
   private generateRecommendationVector(attention: Float32Array): Float32Array {
     const size = Math.min(attention.length, 384); // Standard embedding size
     const vector = new Float32Array(size);
@@ -165,11 +166,11 @@ export class DimensionalCacheEngine {
 
   /**
    * Create context embedding for modular switching
-   */
+   */;
   private createContextEmbedding(data: Float32Array): Float32Array {
     const embedding = new Float32Array(384);
     
-    // Simple pooling for context
+    // Simple pooling for context;
     for (let i = 0; i < embedding.length; i++) {
       const dataIndex = Math.floor((i / embedding.length) * data.length);
       embedding[i] = data[dataIndex] || 0;
@@ -184,7 +185,7 @@ export class DimensionalCacheEngine {
   async getRecommendations(
     userId: string,
     currentContext: string,
-    limit = 5
+    limit = 5;
   ): Promise<any> {
     const history = this.computationHistory.get(userId) || [];
     const similar: DimensionalArray[] = [];
@@ -192,7 +193,7 @@ export class DimensionalCacheEngine {
     const didYouMean: string[] = [];
     const othersSearched: string[] = [];
 
-    // Find similar computations
+    // Find similar computations;
     for (const computation of history) {
       const similarity = this.calculateSimilarity(currentContext, computation);
       if (similarity > 0.7) {
@@ -235,7 +236,7 @@ export class DimensionalCacheEngine {
 
   /**
    * Calculate similarity between context and computation
-   */
+   */;
   private calculateSimilarity(context: string, computation: DimensionalArray): number {
     // Simplified cosine similarity
     const contextHash = this.generateHash(new Float32Array([context.length]), [1]);
@@ -272,9 +273,9 @@ export class DimensionalCacheEngine {
 
   /**
    * Initialize offline queue for RabbitMQ
-   */
+   */;
   private initializeOfflineQueue(): void {
-    // Monitor network status
+    // Monitor network status;
     if (typeof window !== 'undefined') {
       window.addEventListener('online', () => {
         this.isOnline = true;
@@ -289,7 +290,7 @@ export class DimensionalCacheEngine {
 
   /**
    * Process offline queue when back online
-   */
+   */;
   private async processOfflineQueue(): Promise<void> {
     if (!this.isOnline || this.rabbitMQQueue.length === 0) return;
 
@@ -333,13 +334,13 @@ export class DimensionalCacheEngine {
 
   /**
    * Evict cache entry based on strategy
-   */
+   */;
   private evictEntry(): void {
     if (this.cacheStrategy === 'LRU') {
       let oldestTime = Date.now();
       let oldestKey = '';
       
-      const entries = Array.from(this.cache.entries());
+      const entries = Array.from(this.cache.entries();
       for (const [key, entry] of entries) {
         if (entry.dimensionalArray.metadata.lastAccessed < oldestTime) {
           oldestTime = entry.dimensionalArray.metadata.lastAccessed;
@@ -355,7 +356,7 @@ export class DimensionalCacheEngine {
 
   /**
    * Generate hash for computation deduplication
-   */
+   */;
   private generateHash(data: Float32Array, shape: number[]): string {
     const combined = `${Array.from(data).slice(0, 10).join(',')}:${shape.join(',')}`;
     let hash = 0;
@@ -369,14 +370,14 @@ export class DimensionalCacheEngine {
 
   /**
    * Get cache statistics
-   */
+   */;
   getStats(): {
     cacheSize: number;
     hitRate: number;
     avgAttentionScore: number;
-    totalComputations: number;
+    totalComputations: number;,
   } {
-    const totalAttentionScores = Array.from(this.cache.values())
+    const totalAttentionScores = Array.from(this.cache.values()
       .flatMap(entry => entry.dimensionalArray.kernelSplices)
       .map(slice => slice.attentionScore);
     
@@ -387,7 +388,7 @@ export class DimensionalCacheEngine {
       cacheSize: this.cache.size,
       hitRate: 0.85, // Placeholder
       avgAttentionScore,
-      totalComputations: Array.from(this.computationHistory.values())
+      totalComputations: Array.from(this.computationHistory.values()
         .reduce((total, computations) => total + computations.length, 0)
     };
   }

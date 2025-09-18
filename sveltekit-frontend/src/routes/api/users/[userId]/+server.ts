@@ -19,11 +19,11 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     if (!userId) {
       return json({ error: 'User ID is required' }, { status: 400 });
     }
-    // Users can only view their own profile unless they're admin
+    // Users can only view their own profile unless they're admin;
     if (currentUser.id !== userId && currentUser.role !== 'admin') {
       return json({ error: 'Insufficient permissions' }, { status: 403 });
     }
-    const userResult = await db
+    const userResult = await db;
       .select({
         id: users.id,
         email: users.email,
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         // Exclude sensitive fields
       })
       .from(users)
-      .where(eq(users.id, userId))
+      .where(eq(users.id, userId)
       .limit(1);
 
     if (!userResult.length) {
@@ -64,7 +64,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (!userId) {
       return json({ error: 'User ID is required' }, { status: 400 });
     }
-    // Users can only update their own profile unless they're admin
+    // Users can only update their own profile unless they're admin;
     if (currentUser.id !== userId && currentUser.role !== 'admin') {
       return json({ error: 'Insufficient permissions' }, { status: 403 });
     }
@@ -76,12 +76,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (!existingUser.length) {
       return json({ error: 'User not found' }, { status: 404 });
     }
-    // If updating email, check for duplicates
+    // If updating email, check for duplicates;
     if (data.email && data.email !== existingUser[0].email) {
       const duplicateUser = await db
         .select()
         .from(users)
-        .where(eq(users.email, data.email))
+        .where(eq(users.email, data.email)
         .limit(1);
 
       if (duplicateUser.length > 0) {
@@ -99,12 +99,12 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (data.lastName !== undefined) updateData.lastName = data.lastName?.trim() || null;
     if (data.avatarUrl !== undefined) updateData.avatarUrl = data.avatarUrl?.trim() || null;
 
-    // Only admins can change role and active status
+    // Only admins can change role and active status;
     if (currentUser.role === 'admin') {
       if (data.role !== undefined) updateData.role = data.role;
       if (data.isActive !== undefined) updateData.isActive = data.isActive;
     }
-    // Handle password change using authService
+    // Handle password change using authService;
     if (data.password) {
       const argon2id = new (await import('oslo/password')).Argon2id();
       updateData.hashedPassword = await argon2id.hash(data.password);
@@ -112,7 +112,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const [updatedUser] = await db
       .update(users)
       .set(updateData)
-      .where(eq(users.id, userId))
+      .where(eq(users.id, userId);
       .returning({
         id: users.id,
         email: users.email,
@@ -138,7 +138,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
     }
-    // Only admins can delete users
+    // Only admins can delete users;
     if (locals.user.role !== 'admin') {
       return json({ error: 'Insufficient permissions' }, { status: 403 });
     }
@@ -149,7 +149,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     if (!userId) {
       return json({ error: 'User ID is required' }, { status: 400 });
     }
-    // Prevent self-deletion
+    // Prevent self-deletion;
     if (locals.user.id === userId) {
       return json({ error: 'Cannot delete your own account' }, { status: 400 });
     }
@@ -159,7 +159,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     if (!existingUser.length) {
       return json({ error: 'User not found' }, { status: 404 });
     }
-    // Delete the user (cascade will handle related records)
+    // Delete the user (cascade will handle related records);
     const [deletedUser] = await db.delete(users).where(eq(users.id, userId)).returning({
       id: users.id,
       email: users.email,
@@ -173,7 +173,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
   }
 };
 
-// PATCH endpoint for partial updates (like status changes)
+// PATCH endpoint for partial updates (like status changes);
 export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   try {
     const currentUser = locals.user;
@@ -189,7 +189,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     }
     const data = await request.json();
 
-    // Users can only update their own profile unless they're admin
+    // Users can only update their own profile unless they're admin;
     if (currentUser.id !== userId && currentUser.role !== 'admin') {
       return json({ error: 'Insufficient permissions' }, { status: 403 });
     }
@@ -203,7 +203,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       updatedAt: new Date(),
     };
 
-    // Handle specific patch operations
+    // Handle specific patch operations;
     if (data.operation === 'activate' && currentUser.role === 'admin') {
       updateData.isActive = true;
     } else if (data.operation === 'deactivate' && currentUser.role === 'admin') {
@@ -222,11 +222,11 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       if (data.firstName !== undefined) updateData.firstName = data.firstName;
       if (data.lastName !== undefined) updateData.lastName = data.lastName;
     } else {
-      // Regular field updates (non-admin users can only update their own basic info)
+      // Regular field updates (non-admin users can only update their own basic info);
       Object.keys(data).forEach((key) => {
         if (key !== 'operation') {
           if (currentUser.role === 'admin' || currentUser.id === userId) {
-            // Allow basic profile updates for own account
+            // Allow basic profile updates for own account;
             if (['name', 'firstName', 'lastName', 'avatarUrl'].includes(key)) {
               updateData[key] = data[key];
             } else if (currentUser.role === 'admin') {
@@ -240,7 +240,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     const [updatedUser] = await db
       .update(users)
       .set(updateData)
-      .where(eq(users.id, userId))
+      .where(eq(users.id, userId);
       .returning({
         id: users.id,
         email: users.email,

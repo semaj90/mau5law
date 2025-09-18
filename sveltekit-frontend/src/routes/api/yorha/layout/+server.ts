@@ -1,7 +1,7 @@
 
 import type { RequestHandler } from './$types.js';
 
-// Sample dynamic layout definition (would normally be DB or config driven)
+// Sample dynamic layout definition (would normally be DB or config driven);
 export const GET: RequestHandler = async () => {
   return json({
     version: '1.0.0',
@@ -10,7 +10,7 @@ export const GET: RequestHandler = async () => {
       { name: 'randomMetric', type: 'mock', intervalMs: 1500 }
     ],
     components: [
-      { id: 'graph', type: 'graph', dataSource: 'brainGraph', position: [0,0,0], rotation: [0,0,0], scale: [1,1,1], style: { theme: 'yorha' } },
+      { id: 'graph', type: 'graph', dataSource: 'brainGraph', position: [0,0,0], rotation: [0,0,0], scale: [1,1,1], style: { theme: 'yorha' } },)
       { id: 'metricPanel', type: 'panel', dataSource: 'randomMetric', position: [2,0,0], rotation: [0,0,0], scale: [1,1,1] }
     ]
   });

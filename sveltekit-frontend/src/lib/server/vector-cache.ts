@@ -5,6 +5,7 @@
  */
 
 import crypto from "crypto";
+}
 
 export interface VectorCacheEntry {
   results: any[];
@@ -20,7 +21,7 @@ export interface VectorCacheEntry {
   };
   ts: number;
   lastAccess: number;
-  ttlMs: number;
+  ttlMs: number;,
 }
 
 export interface EmbeddingCacheEntry {
@@ -30,7 +31,7 @@ export interface EmbeddingCacheEntry {
   dimensions: number;
   ts: number;
   lastAccess: number;
-  ttlMs: number;
+  ttlMs: number;,
 }
 
 // Configuration
@@ -52,7 +53,7 @@ function getRedisClient(): any | null {
 
 /**
  * Generate cache key for vector searches
- */
+ */;
 function generateVectorKey(query: string, options: any = {}): string {
   const keyData = {
     query: query.trim().toLowerCase(),
@@ -60,14 +61,14 @@ function generateVectorKey(query: string, options: any = {}): string {
     metric: options.metric || 'cosine',
     threshold: options.threshold || 1,
     documentType: options.documentType,
-    includeContent: options.includeContent
+    includeContent: options.includeContent,
   };
   return crypto.createHash('sha256').update(JSON.stringify(keyData)).digest('hex').substring(0, 16);
 }
 
 /**
  * Generate cache key for embeddings
- */
+ */;
 function generateEmbeddingKey(text: string, model: string = 'default'): string {
   const keyData = { text: text.trim(), model };
   return crypto.createHash('sha256').update(JSON.stringify(keyData)).digest('hex').substring(0, 16);
@@ -75,18 +76,18 @@ function generateEmbeddingKey(text: string, model: string = 'default'): string {
 
 /**
  * Evict expired and excess entries from vector cache
- */
+ */;
 function evictVectorCache() {
   const now = Date.now();
   
-  // Remove expired entries
+  // Remove expired entries;
   for (const [k, v] of vectorCache) {
     if (now - v.ts > v.ttlMs) {
       vectorCache.delete(k);
     }
   }
   
-  // LRU eviction if over limit
+  // LRU eviction if over limit;
   while (vectorCache.size > VECTOR_CACHE_MAX_ITEMS) {
     const oldestKey = vectorCache.keys().next().value;
     if (oldestKey) vectorCache.delete(oldestKey);
@@ -95,18 +96,18 @@ function evictVectorCache() {
 
 /**
  * Evict expired and excess entries from embedding cache
- */
+ */;
 function evictEmbeddingCache() {
   const now = Date.now();
   
-  // Remove expired entries
+  // Remove expired entries;
   for (const [k, v] of embeddingCache) {
     if (now - v.ts > v.ttlMs) {
       embeddingCache.delete(k);
     }
   }
   
-  // LRU eviction if over limit
+  // LRU eviction if over limit;
   while (embeddingCache.size > VECTOR_CACHE_MAX_ITEMS) {
     const oldestKey = embeddingCache.keys().next().value;
     if (oldestKey) embeddingCache.delete(oldestKey);
@@ -115,7 +116,7 @@ function evictEmbeddingCache() {
 
 /**
  * Get cached vector search results
- */
+ */;
 export async function getVectorCache(query: string, options: any = {}): Promise<any> {
   const key = generateVectorKey(query, options);
   const now = Date.now();
@@ -172,7 +173,7 @@ export async function setVectorCache(
     metadata,
     ts: now,
     lastAccess: now,
-    ttlMs: VECTOR_TTL_MS
+    ttlMs: VECTOR_TTL_MS,
   };
   
   // Store in memory
@@ -185,7 +186,7 @@ export async function setVectorCache(
     try {
       const redisKey = `${REDIS_VECTOR_PREFIX}${key}`;
       const ttlSeconds = Math.round(VECTOR_TTL_MS / 1000);
-      await redis.setex(redisKey, ttlSeconds, JSON.stringify(entry));
+      await redis.setex(redisKey, ttlSeconds, JSON.stringify(entry);
     } catch (error) {
       console.warn('[VectorCache] Redis set failed:', error);
     }
@@ -194,7 +195,7 @@ export async function setVectorCache(
 
 /**
  * Get cached embedding
- */
+ */;
 export async function getEmbeddingCache(text: string, model: string = 'default'): Promise<any> {
   const key = generateEmbeddingKey(text, model);
   const now = Date.now();
@@ -238,7 +239,7 @@ export async function getEmbeddingCache(text: string, model: string = 'default')
 export async function setEmbeddingCache(
   text: string, 
   embedding: number[], 
-  model: string = 'default'
+  model: string = 'default';
 ): Promise<void> {
   const key = generateEmbeddingKey(text, model);
   const now = Date.now();
@@ -250,7 +251,7 @@ export async function setEmbeddingCache(
     dimensions: embedding.length,
     ts: now,
     lastAccess: now,
-    ttlMs: EMBEDDING_TTL_MS
+    ttlMs: EMBEDDING_TTL_MS,
   };
   
   // Store in memory
@@ -263,7 +264,7 @@ export async function setEmbeddingCache(
     try {
       const redisKey = `${REDIS_EMBEDDING_PREFIX}${key}`;
       const ttlSeconds = Math.round(EMBEDDING_TTL_MS / 1000);
-      await redis.setex(redisKey, ttlSeconds, JSON.stringify(entry));
+      await redis.setex(redisKey, ttlSeconds, JSON.stringify(entry);
     } catch (error) {
       console.warn('[EmbeddingCache] Redis set failed:', error);
     }
@@ -272,7 +273,7 @@ export async function setEmbeddingCache(
 
 /**
  * Clear vector cache
- */
+ */;
 export async function clearVectorCache(): Promise<void> {
   vectorCache.clear();
   embeddingCache.clear();
@@ -295,18 +296,18 @@ export async function clearVectorCache(): Promise<void> {
 
 /**
  * Get cache statistics
- */
+ */;
 export function getVectorCacheStats() {
   return {
     memory: {
       vectorEntries: vectorCache.size,
       embeddingEntries: embeddingCache.size,
-      maxItems: VECTOR_CACHE_MAX_ITEMS
+      maxItems: VECTOR_CACHE_MAX_ITEMS,
     },
     config: {
       vectorTtlMs: VECTOR_TTL_MS,
       embeddingTtlMs: EMBEDDING_TTL_MS,
-      redisEnabled: !!getRedisClient()
+      redisEnabled: !!getRedisClient(),
     }
   };
 }
@@ -317,7 +318,7 @@ export function getVectorCacheStats() {
 export function withVectorCache<T>(
   cacheKey: string,
   operation: () => Promise<T>,
-  ttlMs: number = VECTOR_TTL_MS
+  ttlMs: number = VECTOR_TTL_MS;
 ) {
   return async (): Promise<T> => {
     // Implementation for generic operation caching
@@ -338,7 +339,7 @@ export function withVectorCache<T>(
     if (redis) {
       try {
         const ttlSeconds = Math.round(ttlMs / 1000);
-        await redis.setex(cacheKey, ttlSeconds, JSON.stringify(result));
+        await redis.setex(cacheKey, ttlSeconds, JSON.stringify(result);
       } catch (error) {
         console.warn('[VectorCache] Middleware set failed:', error);
       }

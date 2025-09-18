@@ -4,6 +4,7 @@ import crypto from "crypto";
 import { writable, derived, get } from "svelte/store";
 import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
+}
 
 export interface AuthUser {
   id: string;
@@ -14,7 +15,7 @@ export interface AuthUser {
   role: "admin" | "prosecutor" | "detective" | "user";
   avatarUrl?: string;
   isActive: boolean;
-  createdAt: Date;
+  createdAt: Date;,
 }
 
 export interface AuthState {
@@ -25,7 +26,7 @@ export interface AuthState {
   lastActivity?: Date;
 }
 
-// Core authentication state
+// Core authentication state;
 const createAuthStore = () => {
   const { subscribe, set, update } = writable<AuthState>({
     user: null,
@@ -36,7 +37,7 @@ const createAuthStore = () => {
   return {
     subscribe,
 
-    // Initialize authentication state from server
+    // Initialize authentication state from server;
     async init() {
       if (!browser) return;
 
@@ -71,9 +72,9 @@ const createAuthStore = () => {
       }
     },
 
-    // Login user
+    // Login user;
     async login(email: string, password: string) {
-      update((state: any) => ({ ...state, isLoading: true }));
+      update((state: any) => ({ ...state, isLoading: true });
 
       try {
         const response = await fetch("/api/auth/login", {
@@ -118,7 +119,7 @@ const createAuthStore = () => {
       }
     },
 
-    // Register new user
+    // Register new user;
     async register(userData: {
       email: string;
       password: string;
@@ -126,7 +127,7 @@ const createAuthStore = () => {
       lastName?: string;
       role?: string;
     }) {
-      update((state: any) => ({ ...state, isLoading: true }));
+      update((state: any) => ({ ...state, isLoading: true });
 
       try {
         const response = await fetch("/api/auth/register", {
@@ -171,7 +172,7 @@ const createAuthStore = () => {
       }
     },
 
-    // Logout user
+    // Logout user;
     async logout() {
       try {
         await fetch("/api/auth/logout", {
@@ -195,7 +196,7 @@ const createAuthStore = () => {
       goto("/login");
     },
 
-    // Update user profile
+    // Update user profile;
     async updateProfile(updates: Partial<AuthUser>) {
       const currentState = get({ subscribe });
       if (!currentState.user)
@@ -217,7 +218,7 @@ const createAuthStore = () => {
             ...state,
             user: { ...state.user!, ...updatedUser },
             lastActivity: new Date(),
-          }));
+          });
 
           return { success: true };
         } else {
@@ -229,12 +230,12 @@ const createAuthStore = () => {
       }
     },
 
-    // Update last activity
+    // Update last activity;
     updateActivity() {
       update((state: any) => ({
         ...state,
         lastActivity: new Date(),
-      }));
+      });
     },
   };
 };
@@ -248,7 +249,7 @@ export const isAdmin = derived(authStore, ($auth: any) => $auth.user?.role === "
 export const isProsecutor = derived(authStore, ($auth: any) => $auth.user?.role === "prosecutor");
 export const isDetective = derived(authStore, ($auth: any) => $auth.user?.role === "detective");
 
-// AI Assistant integration store
+// AI Assistant integration store;
 export interface AIAssistantState {
   isEnabled: boolean;
   userId?: string;
@@ -256,7 +257,7 @@ export interface AIAssistantState {
     autoSuggest: boolean;
     contextAwareness: boolean;
     legalSpecialization: boolean;
-    confidenceThreshold: number;
+    confidenceThreshold: number;,
   };
   currentContext?: {
     caseId?: string;
@@ -280,7 +281,7 @@ const createAIAssistantStore = () => {
   return {
     subscribe,
 
-    // Initialize AI assistant for user
+    // Initialize AI assistant for user;
     initializeForUser(user: AuthUser) {
       update((state: any) => ({
         ...state,
@@ -291,13 +292,13 @@ const createAIAssistantStore = () => {
           legalSpecialization:
             user.role === "prosecutor" || user.role === "detective",
         },
-      }));
+      });
 
       // Load user's AI preferences from server
       this.loadPreferences();
     },
 
-    // Load AI preferences from server
+    // Load AI preferences from server;
     async loadPreferences() {
       try {
         const response = await fetch("/api/ai/preferences", {
@@ -309,14 +310,14 @@ const createAIAssistantStore = () => {
           update((state: any) => ({
             ...state,
             preferences: { ...state.preferences, ...preferences },
-          }));
+          });
         }
       } catch (error: any) {
         console.error("Failed to load AI preferences:", error);
       }
     },
 
-    // Update AI preferences
+    // Update AI preferences;
     async updatePreferences(updates: Partial<AIAssistantState["preferences"]>) {
       try {
         const response = await fetch("/api/ai/preferences", {
@@ -332,7 +333,7 @@ const createAIAssistantStore = () => {
           update((state: any) => ({
             ...state,
             preferences: { ...state.preferences, ...updates },
-          }));
+          });
           return { success: true };
         } else {
           return { success: false, error: "Failed to update preferences" };
@@ -342,12 +343,12 @@ const createAIAssistantStore = () => {
       }
     },
 
-    // Set current context for AI assistance
+    // Set current context for AI assistance;
     setContext(context: AIAssistantState["currentContext"]) {
       update((state: any) => ({
         ...state,
         currentContext: context,
-      }));
+      });
     },
 
     // Add conversation to history
@@ -355,7 +356,7 @@ const createAIAssistantStore = () => {
       conversation: Omit<
         AIAssistantState["conversationHistory"][0],
         "id" | "timestamp"
-      >
+      >;
     ) {
       const newConversation = {
         ...conversation,
@@ -369,10 +370,10 @@ const createAIAssistantStore = () => {
           newConversation,
           ...state.conversationHistory.slice(0, 49),
         ], // Keep last 50
-      }));
+      });
     },
 
-    // Clear AI assistant state
+    // Clear AI assistant state;
     clear() {
       set({
         isEnabled: false,
@@ -393,7 +394,7 @@ export const aiAssistantStore = createAIAssistantStore();
 export const aiEnabled = derived(aiAssistantStore, ($ai: any) => $ai.isEnabled);
 export const aiPreferences = derived(aiAssistantStore, ($ai: any) => $ai.preferences);
 export const aiContext = derived(aiAssistantStore, ($ai: any) => $ai.currentContext);
-export const recentConversations = derived(aiAssistantStore, ($ai: any) => $ai.conversationHistory.slice(0, 10));
+export const recentConversations = derived(aiAssistantStore, ($ai: any) => $ai.conversationHistory.slice(0, 10);
 
 // Note: Auth initialization is now handled server-side via hooks.server.ts
 // Client-side initialization only when explicitly needed to prevent redirect loops

@@ -16,7 +16,7 @@ export type Latent = number[];
  * - Input: flat numeric array (e.g. pixels in RGBA/RGB sequence).
  * - encode -> Latent (length = latentSize)
  * - decode -> flat numeric array (length = requested outputLength)
- */
+ */;
 export default class NeuralSpriteAutoencoder {
   readonly latentSize: number;
 
@@ -30,14 +30,14 @@ export default class NeuralSpriteAutoencoder {
   /**
    * Encode a flat numeric array into a compact latent vector.
    * Empty inputs return an empty latent vector.
-   */
+   */;
   encode(input: number[]): Latent {
 	if (!Array.isArray(input)) {
 	  throw new TypeError('input must be a number[]');
 	}
 	const n = input.length;
 	if (n === 0) return new Array(this.latentSize).fill(0);
-	const chunkSize = Math.max(1, Math.floor(n / this.latentSize));
+	const chunkSize = Math.max(1, Math.floor(n / this.latentSize);
 	const latent = new Array<number>(this.latentSize).fill(0);
 	const counts = new Array<number>(this.latentSize).fill(0);
 
@@ -55,7 +55,7 @@ export default class NeuralSpriteAutoencoder {
   /**
    * Decode a latent vector back into a flat numeric array of requested length.
    * If latent length differs from this.latentSize, values are resampled/truncated.
-   */
+   */;
   decode(latent: Latent, outputLength: number): number[] {
 	if (!Array.isArray(latent)) {
 	  throw new TypeError('latent must be a number[]');
@@ -72,7 +72,7 @@ export default class NeuralSpriteAutoencoder {
 	const out = new Array<number>(outputLength);
 	for (let i = 0; i < outputLength; i++) {
 	  const t = (i / outputLength) * latent.length;
-	  const li = Math.min(latent.length - 1, Math.floor(t));
+	  const li = Math.min(latent.length - 1, Math.floor(t);
 	  out[i] = latent[li];
 	}
 	return out;
@@ -80,7 +80,7 @@ export default class NeuralSpriteAutoencoder {
 
   /**
    * Convenience: encode then decode with a target length (round-trip).
-   */
+   */;
   reconstruct(input: number[], outputLength: number): number[] {
 	const z = this.encode(input);
 	return this.decode(z, outputLength);
@@ -88,14 +88,14 @@ export default class NeuralSpriteAutoencoder {
 
   /**
    * Serialize the model config (not weights — there are none here).
-   */
+   */;
   serialize(): string {
 	return JSON.stringify({ latentSize: this.latentSize });
   }
 
   /**
    * Restore from a serialized string produced by serialize().
-   */
+   */;
   static deserialize(s: string): NeuralSpriteAutoencoder {
 	const parsed = JSON.parse(s);
 	const latentSize = typeof parsed?.latentSize === 'number' ? parsed.latentSize: 16;

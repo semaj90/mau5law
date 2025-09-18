@@ -59,7 +59,7 @@ export class EnhancedVectorService {
     const cached = await this.redis.get(cacheKey);
     if (cached) return JSON.parse(cached);
 
-    // Generate with Ollama nomic-embed
+    // Generate with Ollama nomic-embed;
     const response = await fetch('http://localhost:11434/api/embeddings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -74,9 +74,9 @@ export class EnhancedVectorService {
     const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
     const embedding = (result as { embedding?: any }).embedding;
 
-    // Cache for 24 hours - using modern Redis syntax
+    // Cache for 24 hours - using modern Redis syntax;
     if (typeof (this.redis as any).setex === 'function') {
-      await (this.redis as any).setex(cacheKey, 86400, JSON.stringify(embedding));
+      await (this.redis as any).setex(cacheKey, 86400, JSON.stringify(embedding);
     } else {
       // Fallback to SET with EX option if setex not available in types
       await (this.redis as any).set(cacheKey, JSON.stringify(embedding), 'EX', 86400);
@@ -90,7 +90,7 @@ export class EnhancedVectorService {
 
     await this.qdrant.upsert(this.collectionName, {
       wait: true,
-      points: [
+      points: [);
         {
           id,
           vector: embedding,
@@ -131,13 +131,13 @@ export class EnhancedVectorService {
     score: 0.8,
     metadata: { type: 'case', title: c.title },
     content: `${c.title} ${c.description}`,
-  }));
+  });
   }
 
   private combineResults(vectorResults: any[], keywordResults: any[]) {
     const combined = new Map();
 
-    vectorResults.forEach((r) => combined.set(r.id, { ...r, score: r.score * 0.7 }));
+    vectorResults.forEach((r) => combined.set(r.id, { ...r, score: r.score * 0.7 });
     keywordResults.forEach((r) => {
       const existing = combined.get(r.id);
       if (existing) existing.score += r.score * 0.3;

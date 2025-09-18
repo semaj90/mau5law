@@ -10,7 +10,7 @@
 import { lodCacheEngine, type LODCacheEntry } from './lod-cache-engine.js';
 import type { SIMDProcessingResult } from '../evidence/simd-gpu-tiling-engine.js';
 
-// Vector encoding configurations for different use cases
+// Vector encoding configurations for different use cases;
 interface VectorEncodingConfig {
   embedding_dimensions: number;
   clustering_method: 'kmeans' | 'hierarchical' | 'som' | 'neural';
@@ -19,7 +19,7 @@ interface VectorEncodingConfig {
   topology_awareness: boolean;
   predictive_features: boolean;
   search_optimization: 'speed' | 'accuracy' | 'balanced';
-  index_type: 'hnsw' | 'ivf' | 'flat' | 'hybrid';
+  index_type: 'hnsw' | 'ivf' | 'flat' | 'hybrid';,
 }
 
 interface EncodedVectorMetadata {
@@ -29,42 +29,42 @@ interface EncodedVectorMetadata {
   topology_features: Float32Array;
   predictive_scores: Float32Array;
 
-  // Multi-level embeddings for LOD support
+  // Multi-level embeddings for LOD support;
   lod_embeddings: {
     glyph: Float32Array;
     tile: Float32Array;
     block: Float32Array;
     section: Float32Array;
-    document: Float32Array;
+    document: Float32Array;,
   };
 
-  // Search optimization indices
+  // Search optimization indices;
   search_indices: {
     inverted_index: Map<string, number[]>;
     spatial_index: Float32Array;
     temporal_index: number[];
     frequency_index: Map<string, number>;
-    similarity_graph: Map<string, Array<any>>;
+    similarity_graph: Map<string, Array<any>;
   };
 
-  // Compressed glyph representations for instant retrieval
+  // Compressed glyph representations for instant retrieval;
   glyph_encodings: {
     visual_features: Uint8Array;      // 7-bit visual characteristics
     semantic_features: Uint8Array;    // 7-bit semantic properties
     contextual_features: Uint8Array;  // 7-bit context information
     retrieval_features: Uint8Array;   // 7-bit retrieval optimization
-    compressed_text: Uint8Array;      // 7-bit text compression
+    compressed_text: Uint8Array;      // 7-bit text compression,
   };
 
-  // Metadata for enhanced RAG
+  // Metadata for enhanced RAG;
   rag_metadata: {
     contextual_anchors: string[];
     retrieval_patterns: Array<any>;
     semantic_relationships: Array<any>;
-    predictive_suggestions: string[];
+    predictive_suggestions: string[];,
   };
 
-  // Encoding metadata
+  // Encoding metadata;
   encoding_metadata: {
     created_at: number;
     encoding_version: string;
@@ -72,12 +72,12 @@ interface EncodedVectorMetadata {
       original_size: number;
       encoded_size: number;
       compression_ratio: number;
-      semantic_loss: number;
+      semantic_loss: number;,
     };
     performance_metrics: {
       encoding_time: number;
       retrieval_speed_score: number;
-      accuracy_score: number;
+      accuracy_score: number;,
     };
   };
 }
@@ -90,7 +90,7 @@ interface SearchIndexIntegration {
     id_field: string;
     vector_field: string;
     metadata_fields: string[];
-    lod_fields: string[];
+    lod_fields: string[];,
   };
 }
 
@@ -138,7 +138,7 @@ class VectorMetadataAutoEncoder {
   ): Promise<{
     encoded_metadata: any;
     index_operations: any;
-    encoding_stats: any;
+    encoding_stats: any;,
   }> {
     console.log(`🔄 Encoding LOD entry ${lodEntry.id} to vector metadata...`);
 
@@ -169,7 +169,7 @@ class VectorMetadataAutoEncoder {
     // Phase 7: Extract RAG-specific metadata
     const ragMetadata = await this.extractRAGMetadata(lodEntry, clusteringResults, predictiveResults);
 
-    // Phase 8: Assemble complete encoded metadata
+    // Phase 8: Assemble complete encoded metadata;
     const encodedMetadata: EncodedVectorMetadata = {
       primary_embedding: lodEmbeddings.document,
       semantic_clusters: clusteringResults.cluster_assignments,
@@ -211,7 +211,7 @@ class VectorMetadataAutoEncoder {
         topology_features_extracted: topologyFeatures.length,
         predictive_features_generated: predictiveResults.scores.length,
         search_indices_built: Object.keys(searchIndices).length,
-        compression_achieved: encodedMetadata.encoding_metadata.compression_stats.compression_ratio
+        compression_achieved: encodedMetadata.encoding_metadata.compression_stats.compression_ratio,
       }
     };
   }
@@ -233,7 +233,7 @@ class VectorMetadataAutoEncoder {
     results: Array<any>;
     enhanced_context: string;
     predictive_queries: string[];
-    topology_insights: Array<any>;
+    topology_insights: Array<any>;,
   }> {
     console.log(`🔍 Glyph-based RAG retrieval for: "${query}"`);
 
@@ -254,9 +254,8 @@ class VectorMetadataAutoEncoder {
       ? await this.applyTopologyFiltering(similarityResults, query)
       : similarityResults;
 
-    // Phase 4: Generate glyph-based summaries
-    const enhancedResults = await Promise.all(
-      topologyFiltered.slice(0, options.max_results || 10).map(async (result) => {
+    // Phase 4: Generate glyph-based summaries;
+    const enhancedResults = await Promise.all(topologyFiltered.slice(0, options.max_results || 10).map(async (result) => {
         const encodedMetadata = this.encodingCache.get((result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).entry_id);
         if (!encodedMetadata) return null;
 
@@ -274,7 +273,7 @@ class VectorMetadataAutoEncoder {
           vector_similarity: (result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).vector_similarity,
           predictive_confidence: (result as { entry_id?: any; similarity_score?: any; matched_lod?: any; vector_similarity?: any; predictive_confidence?: any; glyph_summary?: any }).predictive_confidence,
           rag_context: ragContext,
-          svg_visualization: svgVisualization
+          svg_visualization: svgVisualization,
         };
       })
     );
@@ -297,27 +296,27 @@ class VectorMetadataAutoEncoder {
       results: validResults,
       enhanced_context: enhancedContext,
       predictive_queries: predictiveQueries,
-      topology_insights: topologyInsights
+      topology_insights: topologyInsights,
     };
   }
 
   /**
    * Generate LOD-level embeddings from cache entry
-   */
+   */;
   private async generateLODEmbeddings(lodEntry: LODCacheEntry): Promise<any> {
     const embeddings = {
       glyph: new Float32Array(this.config.embedding_dimensions),
       tile: new Float32Array(this.config.embedding_dimensions),
       block: new Float32Array(this.config.embedding_dimensions),
       section: new Float32Array(this.config.embedding_dimensions),
-      document: new Float32Array(this.config.embedding_dimensions)
+      document: new Float32Array(this.config.embedding_dimensions),
     };
 
-    // Generate embeddings for each LOD level
+    // Generate embeddings for each LOD level;
     for (const [level, compressed] of Object.entries(lodEntry.compressed_data)) {
       const embedding = embeddings[level as keyof typeof embeddings];
 
-      // Convert compressed 7-bit data to semantic embeddings
+      // Convert compressed 7-bit data to semantic embeddings;
       for (let i = 0; i < embedding.length; i++) {
         const compressedIndex = i % compressed.length;
         const semanticValue = (compressed[compressedIndex] / 127) - 0.5; // Normalize to [-0.5, 0.5]
@@ -343,7 +342,7 @@ class VectorMetadataAutoEncoder {
       tile: 0.8 + Math.cos(position * 0.2) * 0.3,
       block: 0.6 + Math.sin(position * 0.3) * 0.4,
       section: 0.4 + Math.cos(position * 0.4) * 0.5,
-      document: 0.2 + Math.sin(position * 0.5) * 0.6
+      document: 0.2 + Math.sin(position * 0.5) * 0.6,
     };
     return weights[level as keyof typeof weights] || 1.0;
   }
@@ -375,7 +374,7 @@ class VectorMetadataAutoEncoder {
    */
   private async performSemanticClustering(
     embeddings: any,
-    lodEntry: LODCacheEntry
+    lodEntry: LODCacheEntry;
   ): Promise<any> {
     return this.semanticClusterModel.performClustering(embeddings, lodEntry);
   }
@@ -386,7 +385,7 @@ class VectorMetadataAutoEncoder {
   private async buildSearchIndices(
     lodEntry: LODCacheEntry,
     embeddings: any,
-    clusteringResults: any
+    clusteringResults: any;
   ): Promise<EncodedVectorMetadata['search_indices']> {
     // Build inverted index from contextual anchors
     const invertedIndex = new Map<string, number[]>();
@@ -425,10 +424,10 @@ class VectorMetadataAutoEncoder {
     });
 
     // Build similarity graph (simplified)
-    const similarityGraph = new Map<string, Array<any>>();
+    const similarityGraph = new Map<string, Array<any>();
     similarityGraph.set(lodEntry.id, [
       { id: `similar-${lodEntry.id}-1`, weight: 0.8 },
-      { id: `similar-${lodEntry.id}-2`, weight: 0.6 },
+      { id: `similar-${lodEntry.id}-2`, weight: 0.6 },)
       { id: `similar-${lodEntry.id}-3`, weight: 0.4 }
     ]);
 
@@ -437,7 +436,7 @@ class VectorMetadataAutoEncoder {
       spatial_index: spatialIndex,
       temporal_index: temporalIndex,
       frequency_index: frequencyIndex,
-      similarity_graph: similarityGraph
+      similarity_graph: similarityGraph,
     };
   }
 
@@ -447,9 +446,9 @@ class VectorMetadataAutoEncoder {
   private async extractRAGMetadata(
     lodEntry: LODCacheEntry,
     clusteringResults: any,
-    predictiveResults: any
+    predictiveResults: any;
   ): Promise<EncodedVectorMetadata['rag_metadata']> {
-    // Enhanced contextual anchors with clustering information
+    // Enhanced contextual anchors with clustering information;
     const contextualAnchors = lodEntry.vector_metadata.context_anchors.map((anchor, index) => {
       const clusterInfo = clusteringResults.cluster_assignments[index] || 0;
       return `${anchor}[cluster:${clusterInfo}]`;
@@ -472,14 +471,14 @@ class VectorMetadataAutoEncoder {
       contextual_anchors: contextualAnchors,
       retrieval_patterns: retrievalPatterns,
       semantic_relationships: semanticRelationships,
-      predictive_suggestions: [...new Set(predictiveSuggestions)] // Remove duplicates
+      predictive_suggestions: [...new Set(predictiveSuggestions)] // Remove duplicates,
     };
   }
 
   private identifyRetrievalPatterns(lodEntry: LODCacheEntry) {
     const patterns = [];
 
-    // Pattern detection based on content characteristics
+    // Pattern detection based on content characteristics;
     if (lodEntry.original_text.includes('contract') || lodEntry.original_text.includes('agreement')) {
       patterns.push({
         query_type: 'legal_document',
@@ -497,7 +496,7 @@ class VectorMetadataAutoEncoder {
     }
 
     if (lodEntry.vector_metadata.context_anchors.some(anchor =>
-      ['analysis', 'report', 'conclusion', 'findings'].some(term => anchor.includes(term))
+      ['analysis', 'report', 'conclusion', 'findings'].some(term => anchor.includes(term);
     )) {
       patterns.push({
         query_type: 'analytical_content',
@@ -510,11 +509,11 @@ class VectorMetadataAutoEncoder {
   }
 
   private async extractSemanticRelationships(lodEntry: LODCacheEntry, clusteringResults: any) {
-    // Simple relationship extraction - would be more sophisticated in production
+    // Simple relationship extraction - would be more sophisticated in production;
     return lodEntry.vector_metadata.context_anchors.map((anchor, index) => ({
       related_id: `semantic-${lodEntry.id}-${index}`,
       relationship_type: this.determineRelationshipType(anchor, index, clusteringResults),
-      strength: Math.random() * 0.5 + 0.5 // Simplified strength calculation
+      strength: Math.random() * 0.5 + 0.5 // Simplified strength calculation,
     });
   }
 
@@ -528,7 +527,7 @@ class VectorMetadataAutoEncoder {
     // Extract key terms and generate related suggestions
     const keyTerms = lodEntry.original_text.toLowerCase()
       .split(/\s+/)
-      .filter(word => word.length > 4 && !this.isStopWord(word))
+      .filter(word => word.length > 4 && !this.isStopWord(word)
       .slice(0, 5);
 
     return keyTerms.map(term => `related to ${term}`);
@@ -545,10 +544,10 @@ class VectorMetadataAutoEncoder {
   private async updateSearchIndexes(
     entryId: string,
     encodedMetadata: EncodedVectorMetadata,
-    targetIndexes?: string[]
-  ): Promise<Array<any>> {
+    targetIndexes?: string[];
+  ): Promise<Array<any> {
     const operations: Array<any> = [];
-    const indexesToUpdate = targetIndexes || Array.from(this.searchIndexes.keys());
+    const indexesToUpdate = targetIndexes || Array.from(this.searchIndexes.keys();
 
     for (const indexId of indexesToUpdate) {
       const indexConfig = this.searchIndexes.get(indexId);
@@ -559,14 +558,14 @@ class VectorMetadataAutoEncoder {
         operations.push({
           index_id: indexId,
           operation: operation.operation,
-          status: operation.success ? 'success' : 'failed'
+          status: operation.success ? 'success' : 'failed',
         });
       } catch (error) {
         console.error(`Failed to update index ${indexId}:`, error);
         operations.push({
           index_id: indexId,
           operation: 'upsert',
-          status: 'failed'
+          status: 'failed',
         });
       }
     }
@@ -578,7 +577,7 @@ class VectorMetadataAutoEncoder {
     indexId: string,
     entryId: string,
     metadata: EncodedVectorMetadata,
-    config: SearchIndexIntegration
+    config: SearchIndexIntegration;
   ): Promise<any> {
     // Simulate index operations - would integrate with actual search engines
     console.log(`📊 Updating ${config.index_type} index ${indexId} for entry ${entryId}`);
@@ -587,7 +586,7 @@ class VectorMetadataAutoEncoder {
     const indexDocument = this.convertToIndexFormat(entryId, metadata, config);
 
     // Simulate successful operation
-    await new Promise(resolve => setTimeout(resolve, 10));
+    await new Promise(resolve => setTimeout(resolve, 10);
 
     return { operation: 'upsert', success: true };
   }
@@ -602,14 +601,14 @@ class VectorMetadataAutoEncoder {
         tile: Array.from(metadata.lod_embeddings.tile),
         block: Array.from(metadata.lod_embeddings.block),
         section: Array.from(metadata.lod_embeddings.section),
-        document: Array.from(metadata.lod_embeddings.document)
+        document: Array.from(metadata.lod_embeddings.document),
       },
       contextual_anchors: metadata.rag_metadata.contextual_anchors,
       semantic_clusters: Array.from(metadata.semantic_clusters),
       predictive_scores: Array.from(metadata.predictive_scores),
       glyph_visual: Array.from(metadata.glyph_encodings.visual_features),
       glyph_semantic: Array.from(metadata.glyph_encodings.semantic_features),
-      compression_ratio: metadata.encoding_metadata.compression_stats.compression_ratio
+      compression_ratio: metadata.encoding_metadata.compression_stats.compression_ratio,
     };
 
     return document;
@@ -617,11 +616,11 @@ class VectorMetadataAutoEncoder {
 
   /**
    * Helper methods for retrieval
-   */
+   */;
   private async generateQueryEmbedding(query: string): Promise<Float32Array> {
     const embedding = new Float32Array(this.config.embedding_dimensions);
 
-    // Simple query embedding generation - would use actual embedding service
+    // Simple query embedding generation - would use actual embedding service;
     for (let i = 0; i < embedding.length; i++) {
       const charValue = query.charCodeAt(i % query.length) / 127;
       const positionWeight = Math.sin((i / embedding.length) * Math.PI * 2);
@@ -635,8 +634,8 @@ class VectorMetadataAutoEncoder {
   private async performMultiLevelSimilaritySearch(
     queryEmbedding: Float32Array,
     lodPreference: string,
-    maxResults: number
-  ): Promise<Array<any>> {
+    maxResults: number;
+  ): Promise<Array<any> {
     const results = [];
 
     for (const [entryId, metadata] of this.encodingCache.entries()) {
@@ -655,7 +654,7 @@ class VectorMetadataAutoEncoder {
         similarity_score: similarity,
         vector_similarity: similarity,
         predictive_confidence: predictiveConfidence,
-        matched_lod: lodPreference
+        matched_lod: lodPreference,
       });
     }
 
@@ -684,7 +683,7 @@ class VectorMetadataAutoEncoder {
   }
 
   private async applyTopologyFiltering(results: any[], query: string): Promise<any[]> {
-    // Apply topology-aware filtering based on structural relationships
+    // Apply topology-aware filtering based on structural relationships;
     return results.filter(item => {
       const metadata = this.encodingCache.get(item.entry_id);
       if (!metadata) return false;
@@ -695,7 +694,7 @@ class VectorMetadataAutoEncoder {
     });
   }
 
-  // Additional methods for glyph-based processing
+  // Additional methods for glyph-based processing;
   private async generateGlyphSummary(metadata: EncodedVectorMetadata, query: string) {
     const visualRep = this.decodeVisualFeatures(metadata.glyph_encodings.visual_features);
     const semanticSummary = this.decodeSemanticFeatures(metadata.glyph_encodings.semantic_features, query);
@@ -704,13 +703,13 @@ class VectorMetadataAutoEncoder {
     return {
       visual_representation: visualRep,
       semantic_summary: semanticSummary,
-      context_anchors: contextAnchors
+      context_anchors: contextAnchors,
     };
   }
 
   private decodeVisualFeatures(visualFeatures: Uint8Array): string {
     // Decode 7-bit visual features into textual representation
-    const features = Array.from(visualFeatures).map(f => (f / 127).toFixed(2));
+    const features = Array.from(visualFeatures).map(f => (f / 127).toFixed(2);
     return `Visual complexity: ${features[0]}, Color variance: ${features[1]}, Structure: ${features[2]}`;
   }
 
@@ -786,7 +785,7 @@ class VectorMetadataAutoEncoder {
         insights.push({
           relationship,
           entries,
-          strength: 0.7 + Math.random() * 0.3
+          strength: 0.7 + Math.random() * 0.3,
         });
       }
     }
@@ -794,7 +793,7 @@ class VectorMetadataAutoEncoder {
     return insights;
   }
 
-  // Utility methods
+  // Utility methods;
   private calculateCompressionStats(lodEntry: LODCacheEntry, glyphEncodings: any) {
     const originalSize = lodEntry.original_text.length;
     let encodedSize = 0;
@@ -806,7 +805,7 @@ class VectorMetadataAutoEncoder {
       original_size: originalSize,
       encoded_size: encodedSize,
       compression_ratio: encodedSize > 0 ? originalSize / encodedSize : 0,
-      semantic_loss: 0.1 // Estimated semantic loss
+      semantic_loss: 0.1 // Estimated semantic loss,
     };
   }
 
@@ -817,7 +816,7 @@ class VectorMetadataAutoEncoder {
     const indexComplexity = Number(invertedSize) + Number(frequencySize);
 
     // Simple heuristic - more indices and complexity = slower retrieval
-    return Math.max(0.1, 1.0 - (indexComplexity / 10000));
+    return Math.max(0.1, 1.0 - (indexComplexity / 10000);
   }
 
   private estimateAccuracyScore(clusteringResults: any, topologyFeatures: Float32Array): number {
@@ -827,7 +826,7 @@ class VectorMetadataAutoEncoder {
     return (clusterQuality + topologyQuality) / 2;
   }
 
-  // Public API methods
+  // Public API methods;
   addSearchIndex(indexId: string, config: SearchIndexIntegration) {
     this.searchIndexes.set(indexId, config);
     console.log(`📊 Added search index: ${indexId} (${config.index_type})`);
@@ -838,7 +837,7 @@ class VectorMetadataAutoEncoder {
       total_encoded_entries: this.encodingCache.size,
       search_indexes: this.searchIndexes.size,
       encoding_config: this.config,
-      cache_utilization: (this.encodingCache.size / 10000) * 100 // Assuming max 10k entries
+      cache_utilization: (this.encodingCache.size / 10000) * 100 // Assuming max 10k entries,
     };
   }
 
@@ -853,7 +852,7 @@ class VectorMetadataAutoEncoder {
   }
 }
 
-// Supporting classes for specialized processing
+// Supporting classes for specialized processing;
 class SemanticClusteringEngine {
   constructor(private config: VectorEncodingConfig) {}
 
@@ -867,16 +866,16 @@ class SemanticClusteringEngine {
     const intraDistances = new Float32Array(clusterCount);
     const interDistances = [];
 
-    // Assign embeddings to clusters (simplified)
+    // Assign embeddings to clusters (simplified);
     Object.values(embeddings).forEach((embedding: unknown, index) => {
       const embeddingArray = embedding as Float32Array;
       assignments[index] = index % clusterCount;
     });
 
-    // Generate cluster centers
+    // Generate cluster centers;
     for (let i = 0; i < clusterCount; i++) {
       const center = new Float32Array(this.config.embedding_dimensions);
-      // Initialize with random values
+      // Initialize with random values;
       for (let j = 0; j < center.length; j++) {
         center[j] = (Math.random() - 0.5) * 2;
       }
@@ -884,7 +883,7 @@ class SemanticClusteringEngine {
       intraDistances[i] = Math.random() * 0.5 + 0.3;
     }
 
-    // Calculate inter-cluster distances
+    // Calculate inter-cluster distances;
     for (let i = 0; i < clusterCount; i++) {
       const distances = new Float32Array(clusterCount);
       for (let j = 0; j < clusterCount; j++) {
@@ -898,7 +897,7 @@ class SemanticClusteringEngine {
       cluster_centers: centers,
       cluster_count: clusterCount,
       intra_cluster_distances: intraDistances,
-      inter_cluster_distances: interDistances
+      inter_cluster_distances: interDistances,
     };
   }
 }
@@ -920,11 +919,11 @@ class TopologyAwareVectorAnalyzer {
     features[2] = paragraphCount / 10; // Normalized paragraph count
     features[3] = clusteringResults.cluster_count / 10; // Normalized cluster count
 
-    // Fill remaining features with derived metrics
+    // Fill remaining features with derived metrics;
     for (let i = 4; i < 64; i++) {
       const baseValue = features[i % 4];
       const variation = Math.sin(i * 0.1) * 0.2;
-      features[i] = Math.max(0, Math.min(1, baseValue + variation));
+      features[i] = Math.max(0, Math.min(1, baseValue + variation);
     }
 
     return features;
@@ -937,7 +936,7 @@ class PredictiveVectorEncoder {
   async generatePredictiveFeatures(lodEntry: LODCacheEntry, clusteringResults: any) {
     const scores = new Float32Array(lodEntry.vector_metadata.retrieval_scores.length);
 
-    // Enhance retrieval scores with clustering information
+    // Enhance retrieval scores with clustering information;
     for (let i = 0; i < scores.length; i++) {
       const baseScore = lodEntry.vector_metadata.retrieval_scores[i];
       const clusterBoost = clusteringResults.cluster_count > 2 ? 0.1 : 0;
@@ -961,7 +960,7 @@ class GlyphVectorCompressor {
       semantic_features: this.extractSemanticFeatures(lodEntry),
       contextual_features: this.extractContextualFeatures(lodEntry),
       retrieval_features: this.extractRetrievalFeatures(lodEntry),
-      compressed_text: lodEntry.compressed_data.glyph
+      compressed_text: lodEntry.compressed_data.glyph,
     };
   }
 
@@ -979,7 +978,7 @@ class GlyphVectorCompressor {
     features[3] = (textComplexity + punctuationDensity) / 2 & 0x7F;
     features[4] = Math.min(127, lodEntry.vector_metadata.context_anchors.length * 10) & 0x7F;
     features[5] = Math.min(127, Math.random() * 127) & 0x7F; // Placeholder
-    features[6] = this.calculateChecksum(features.slice(0, 6));
+    features[6] = this.calculateChecksum(features.slice(0, 6);
 
     return features;
   }
@@ -998,7 +997,7 @@ class GlyphVectorCompressor {
     features[3] = Math.min(127, lodEntry.cache_metadata.retrieval_priority * 127) & 0x7F;
     features[4] = Math.min(127, uniqueWords / 10) & 0x7F;
     features[5] = Math.min(127, totalWords / 50) & 0x7F;
-    features[6] = this.calculateChecksum(features.slice(0, 6));
+    features[6] = this.calculateChecksum(features.slice(0, 6);
 
     return features;
   }
@@ -1013,7 +1012,7 @@ class GlyphVectorCompressor {
     features[3] = Math.min(127, lodEntry.vector_metadata.topology_features[0] * 127) & 0x7F;
     features[4] = Math.min(127, lodEntry.lod_level === 'document' ? 100 : lodEntry.lod_level === 'section' ? 75 : 50) & 0x7F;
     features[5] = Math.min(127, Math.random() * 127) & 0x7F; // Placeholder
-    features[6] = this.calculateChecksum(features.slice(0, 6));
+    features[6] = this.calculateChecksum(features.slice(0, 6);
 
     return features;
   }
@@ -1030,7 +1029,7 @@ class GlyphVectorCompressor {
     features[3] = Math.min(127, lodEntry.vector_metadata.context_anchors.length * 8) & 0x7F;
     features[4] = Math.min(127, lodEntry.original_text.includes('legal') ? 100 : 50) & 0x7F;
     features[5] = Math.min(127, lodEntry.original_text.includes('contract') ? 100 : 50) & 0x7F;
-    features[6] = this.calculateChecksum(features.slice(0, 6));
+    features[6] = this.calculateChecksum(features.slice(0, 6);
 
     return features;
   }

@@ -6,7 +6,7 @@
 // Ensure WebGPU types are available globally
 /// <reference types="@webgpu/types" />
 
-// Extended WebGPU types for better TypeScript support
+// Extended WebGPU types for better TypeScript support;
 declare global {
   interface Navigator {
     gpu?: GPU;
@@ -29,7 +29,7 @@ declare global {
 export type GPUBufferCompatible = ArrayBuffer | ArrayBufferView | SharedArrayBuffer;
 export type TypedArrayTypes = Float32Array | Uint32Array | Uint16Array | Int8Array | Uint8Array;
 
-// Enhanced buffer creation options
+// Enhanced buffer creation options;
 export interface ExtendedGPUBufferDescriptor extends GPUBufferDescriptor {
   data?: GPUBufferCompatible;
   label?: string;
@@ -45,69 +45,69 @@ export interface LegalWebGPUContext {
   documentProcessingPipeline: GPUComputePipeline;
   embeddingNormalizationPipeline: GPUComputePipeline;
   similaritySearchPipeline: GPUComputePipeline;
-  visualizationPipeline: GPURenderPipeline;
+  visualizationPipeline: GPURenderPipeline;,
 }
 
-// Buffer management for legal documents
+// Buffer management for legal documents;
 export interface LegalDocumentGPUBuffers {
   embeddings: GPUBuffer;
   metadata: GPUBuffer;
   colors: GPUBuffer;
   indices: GPUBuffer;
-  uniforms: GPUBuffer;
+  uniforms: GPUBuffer;,
 }
 
-// Shader module definitions
+// Shader module definitions;
 export interface LegalAIShaderModules {
   documentVertex: GPUShaderModule;
   documentFragment: GPUShaderModule;
   embeddingCompute: GPUShaderModule;
   similarityCompute: GPUShaderModule;
   visualizationVertex: GPUShaderModule;
-  visualizationFragment: GPUShaderModule;
+  visualizationFragment: GPUShaderModule;,
 }
 
-// WebGPU compute pipeline for legal AI operations
+// WebGPU compute pipeline for legal AI operations;
 export interface LegalComputePipelineDescriptor {
   type: 'embedding_normalization' | 'similarity_search' | 'document_clustering' | 'risk_assessment';
   shaderModule: GPUShaderModule;
   workgroupSize: [number, number, number];
-  bufferLayout: GPUBufferBindingLayout[];
+  bufferLayout: GPUBufferBindingLayout[];,
 }
 
-// Render pipeline for legal document visualization
+// Render pipeline for legal document visualization;
 export interface LegalRenderPipelineDescriptor {
   vertex: {
     module: GPUShaderModule;
     entryPoint: string;
-    buffers: GPUVertexBufferLayout[];
+    buffers: GPUVertexBufferLayout[];,
   };
   fragment: {
     module: GPUShaderModule;
     entryPoint: string;
-    targets: GPUColorTargetState[];
+    targets: GPUColorTargetState[];,
   };
   primitive: GPUPrimitiveState;
   depthStencil?: GPUDepthStencilState;
 }
 
-// WebGPU performance metrics
+// WebGPU performance metrics;
 export interface WebGPUPerformanceMetrics {
   renderTime: number;
   computeTime: number;
   memoryUsage: {
     buffers: number;
     textures: number;
-    total: number;
+    total: number;,
   };
   pipelineStats: {
     drawCalls: number;
     computeDispatches: number;
-    bufferUpdates: number;
+    bufferUpdates: number;,
   };
 }
 
-// Error handling for WebGPU operations
+// Error handling for WebGPU operations;
 export class WebGPUError extends Error {
   constructor(
     message: string,
@@ -123,7 +123,7 @@ export class WebGPUError extends Error {
   }
 }
 
-// Texture streaming for legal documents
+// Texture streaming for legal documents;
 export interface LegalDocumentTexture {
   texture: GPUTexture;
   view: GPUTextureView;
@@ -134,10 +134,10 @@ export interface LegalDocumentTexture {
     height: number;
     depth?: number;
   };
-  mipLevels: number;
+  mipLevels: number;,
 }
 
-// CHR-ROM pattern cache integration
+// CHR-ROM pattern cache integration;
 export interface CHRROMGPUPattern {
   patternId: string;
   texture: GPUTexture;
@@ -146,11 +146,11 @@ export interface CHRROMGPUPattern {
     bankId: number;
     tileIndex: number;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    documentType: string;
+    documentType: string;,
   };
 }
 
-// WebGPU utility functions type definitions
+// WebGPU utility functions type definitions;
 export interface WebGPUUtilities {
   createBuffer(device: GPUDevice, data: GPUBufferCompatible, usage: GPUBufferUsageFlags): GPUBuffer;
   createTexture(device: GPUDevice, descriptor: GPUTextureDescriptor): GPUTexture;
@@ -159,23 +159,23 @@ export interface WebGPUUtilities {
   createComputePipeline(device: GPUDevice, descriptor: LegalComputePipelineDescriptor): GPUComputePipeline;
 }
 
-// Buffer streaming for large datasets
+// Buffer streaming for large datasets;
 export interface BufferStreamer {
   streamBuffer(device: GPUDevice, buffer: GPUBuffer, data: AsyncIterable<GPUBufferCompatible>): Promise<void>;
   streamTexture(device: GPUDevice, texture: GPUTexture, data: AsyncIterable<ImageData>): Promise<void>;
 }
 
-// Legal document vertex structure for WebGPU
+// Legal document vertex structure for WebGPU;
 export interface LegalDocumentVertex {
   position: [number, number, number];
   color: [number, number, number, number];
   texCoord: [number, number];
   documentId: number;
   riskLevel: number; // 0=low, 1=medium, 2=high, 3=critical
-  confidence: number; // 0.0-1.0
+  confidence: number; // 0.0-1.0,
 }
 
-// WebGPU command encoder utilities
+// WebGPU command encoder utilities;
 export interface LegalCommandEncoder {
   encoder: GPUCommandEncoder;
   renderPass: GPURenderPassEncoder | null;
@@ -187,7 +187,7 @@ export interface LegalCommandEncoder {
   submitCommands(): void;
 }
 
-// Animation and interaction state for legal visualizations
+// Animation and interaction state for legal visualizations;
 export interface LegalVisualizationState {
   camera: {
     position: [number, number, number];
@@ -195,24 +195,24 @@ export interface LegalVisualizationState {
     up: [number, number, number];
     fov: number;
     near: number;
-    far: number;
+    far: number;,
   };
   lighting: {
     ambient: [number, number, number];
     directional: {
       direction: [number, number, number];
       color: [number, number, number];
-      intensity: number;
+      intensity: number;,
     };
   };
   interaction: {
     selectedDocument: string | null;
     hoveredDocument: string | null;
-    filterLevel: 'all' | 'low' | 'medium' | 'high' | 'critical';
+    filterLevel: 'all' | 'low' | 'medium' | 'high' | 'critical';,
   };
 }
 
-// WebGPU resource management
+// WebGPU resource management;
 export interface WebGPUResourceManager {
   buffers: Map<string, GPUBuffer>;
   textures: Map<string, GPUTexture>;

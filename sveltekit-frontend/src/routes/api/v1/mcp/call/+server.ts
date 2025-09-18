@@ -11,7 +11,7 @@ import { json } from '@sveltejs/kit';
 import * as casesMCP from '../../../../../lib/mcp/cases.mcp.js';
 import { URL } from "url";
 
-// MCP Tool Registry
+// MCP Tool Registry;
 const MCP_TOOLS = {
   // Cases management tools
   'cases.loadCase': casesMCP.loadCase,
@@ -29,6 +29,7 @@ const MCP_TOOLS = {
 } as const;
 
 type MCPToolName = keyof typeof MCP_TOOLS;
+}
 
 export interface MCPCallRequest {
   tool: MCPToolName;
@@ -48,7 +49,7 @@ export interface MCPCallResponse {
     requestId?: string;
     executionTime?: number;
     tool: string;
-    timestamp: number;
+    timestamp: number;,
   };
 }
 
@@ -59,7 +60,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
   try {
     requestBody = await request.json();
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: 'Invalid JSON in request body',
@@ -75,9 +76,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
 
   const { tool, args = {}, metadata = {} } = requestBody;
 
-  // Validate tool name
+  // Validate tool name;
   if (!tool || !(tool in MCP_TOOLS)) {
-    return json(
+    return json();
       {
         success: false,
         error: `Unknown MCP tool: ${tool}. Available tools: ${Object.keys(MCP_TOOLS).join(', ')}`,
@@ -92,7 +93,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
     );
   }
 
-  // Add request metadata for logging and tracing
+  // Add request metadata for logging and tracing;
   const requestMetadata = {
     requestId: metadata.requestId || `mcp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     userId: metadata.userId,
@@ -145,7 +146,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       executionTime: `${executionTime}ms`,
     });
 
-    return json(
+    return json();
       {
         success: false,
         error: errorMessage,
@@ -161,7 +162,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
   }
 };
 
-// Health check endpoint for MCP tools
+// Health check endpoint for MCP tools;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Test database connectivity through health check tool
@@ -180,7 +181,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json(response);
   } catch (error: any) {
-    return json(
+    return json();
       {
         status: 'error',
         timestamp: Date.now(),

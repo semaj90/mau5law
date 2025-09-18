@@ -9,26 +9,26 @@
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
 
-// Recommendation schemas
+// Recommendation schemas;
 const RecommendationsQuerySchema = z.object({
   caseId: z.string().uuid().optional(),
   type: z.enum(['legal_strategy', 'evidence_collection', 'case_preparation', 'risk_mitigation', 'timeline_optimization', 'resource_allocation']).optional(),
   priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
   status: z.enum(['pending', 'accepted', 'rejected', 'implemented']).optional(),
   page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(10)
+  limit: z.coerce.number().min(1).max(100).default(10),
 });
 
 const RateRecommendationSchema = z.object({
   recommendationId: z.string().uuid('Invalid recommendation ID'),
   rating: z.number().min(1).max(5),
   feedback: z.string().optional(),
-  implemented: z.boolean().default(false)
+  implemented: z.boolean().default(false),
 });
 
 /**
  * AI Recommendations Service
- */
+ */;
 class RecommendationsService {
   constructor(private userId: string) {}
 
@@ -36,7 +36,7 @@ class RecommendationsService {
     // AI-powered recommendations based on case analysis
     // In production, this would use your local LLM to analyze cases and generate recommendations
 
-    const sampleRecommendations = [
+    const sampleRecommendations = [;
       {
         id: crypto.randomUUID(),
         caseId: query.caseId,
@@ -58,7 +58,7 @@ class RecommendationsService {
         status: 'pending',
         tags: ['constitutional', 'motion-to-suppress', 'fourth-amendment'],
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        createdBy: 'ai-system'
+        createdBy: 'ai-system',
       },
       {
         id: crypto.randomUUID(),
@@ -81,7 +81,7 @@ class RecommendationsService {
         status: 'pending',
         tags: ['witnesses', 'timeline', 'evidence-collection'],
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-        createdBy: 'ai-system'
+        createdBy: 'ai-system',
       },
       {
         id: crypto.randomUUID(),
@@ -104,7 +104,7 @@ class RecommendationsService {
         status: 'pending',
         tags: ['expert-witness', 'digital-forensics', 'technical-evidence'],
         createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-        createdBy: 'ai-system'
+        createdBy: 'ai-system',
       },
       {
         id: crypto.randomUUID(),
@@ -126,7 +126,7 @@ class RecommendationsService {
         status: 'pending',
         tags: ['jury-selection', 'voir-dire', 'bias-assessment'],
         createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-        createdBy: 'ai-system'
+        createdBy: 'ai-system',
       }
     ];
 
@@ -164,7 +164,7 @@ class RecommendationsService {
         total: filteredRecommendations.length,
         totalPages: Math.max(1, Math.ceil(filteredRecommendations.length / query.limit)),
         hasNext: query.page < Math.ceil(filteredRecommendations.length / query.limit),
-        hasPrev: query.page > 1
+        hasPrev: query.page > 1,
       },
       analytics: {
         totalRecommendations: filteredRecommendations.length,
@@ -172,7 +172,7 @@ class RecommendationsService {
           critical: filteredRecommendations.filter(item => item.length),
           high: filteredRecommendations.filter(item => item.length),
           medium: filteredRecommendations.filter(item => item.length),
-          low: filteredRecommendations.filter(item => item.length)
+          low: filteredRecommendations.filter(item => item.length),
         },
         avgConfidence: filteredRecommendations.reduce((sum, r) => sum + r.confidence, 0) / filteredRecommendations.length
       }
@@ -180,7 +180,7 @@ class RecommendationsService {
   }
 
   async rateRecommendation(data: z.infer<typeof RateRecommendationSchema>) {
-    // In production, store rating in database and use for ML feedback
+    // In production, store rating in database and use for ML feedback;
     const ratingRecord = {
       id: crypto.randomUUID(),
       recommendationId: (data as { recommendationId?: any; rating?: any; feedback?: any; implemented?: any }).recommendationId,
@@ -188,13 +188,13 @@ class RecommendationsService {
       feedback: (data as { recommendationId?: any; rating?: any; feedback?: any; implemented?: any }).feedback,
       implemented: (data as { recommendationId?: any; rating?: any; feedback?: any; implemented?: any }).implemented,
       userId: this.userId,
-      ratedAt: new Date().toISOString()
+      ratedAt: new Date().toISOString(),
     };
 
     return {
       success: true,
       data: ratingRecord,
-      message: 'Recommendation rating recorded'
+      message: 'Recommendation rating recorded',
     };
   }
 }
@@ -202,14 +202,14 @@ class RecommendationsService {
 /**
  * GET /api/v1/recommendations
  * Get AI-powered recommendations
- */
+ */;
 export const GET: RequestHandler = async ({ request, locals, url }) => {
   try {
     if (!locals.session || !locals.user) {
       return json({ success: false, message: 'Authentication required' }, { status: 401 });
     }
 
-    const queryParams = Object.fromEntries(url.searchParams.entries());
+    const queryParams = Object.fromEntries(url.searchParams.entries();
     const validatedQuery = RecommendationsQuerySchema.parse(queryParams);
 
     const recommendationsService = new RecommendationsService(locals.user.id);
@@ -277,7 +277,7 @@ export const GET: RequestHandler = async ({ request, locals, url }) => {
 /**
  * POST /api/v1/recommendations/rate
  * Rate a recommendation for ML feedback
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.session || !locals.user) {
@@ -294,7 +294,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       ...result,
       meta: {
         userId: locals.user.id,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     }, { status: 201 });
 

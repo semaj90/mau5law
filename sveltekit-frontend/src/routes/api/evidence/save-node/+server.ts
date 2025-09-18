@@ -5,7 +5,7 @@ import crypto from "crypto";
 import { URL } from "url";
 
 
-// Validation schemas
+// Validation schemas;
 const evidenceNodeSchema = z.object({
   id: z.string(),
   name: z.string().min(1).max(255),
@@ -20,10 +20,10 @@ const evidenceNodeSchema = z.object({
     y: z.number(),
     width: z.number(),
     height: z.number(),
-    connections: z.array(z.string()).optional()
+    connections: z.array(z.string()).optional(),
   }),
   caseId: z.string().optional(),
-  userId: z.string()
+  userId: z.string(),
 });
 
 export const POST: RequestHandler = async ({ request, locals }) => {
@@ -47,26 +47,25 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
   } catch (error: any) {
     console.error("Save API error:", error);
-    return json(
-      { 
+    return json({ 
         error: "Failed to save evidence", 
-        details: error instanceof Error ? error.message: "Unknown error" 
-      },
+        details: error instanceof Error ? error.message: "Unknown error" ,
+      },)
       { status: 500 }
     );
   }
 };
 
-// Save individual evidence node
+// Save individual evidence node;
 async function saveEvidenceNode(nodeData: any, userId: string): Promise<any> {
   try {
-    // Validate input
+    // Validate input;
     const validatedNode = evidenceNodeSchema.parse({
       ...nodeData,
       userId
     });
 
-    // Create evidence data structure
+    // Create evidence data structure;
     const evidenceData = {
       id: validatedNode.id,
       fileName: validatedNode.name,
@@ -80,19 +79,19 @@ async function saveEvidenceNode(nodeData: any, userId: string): Promise<any> {
       caseId: validatedNode.caseId,
       userId: userId,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     return json({
       success: true,
       evidence: evidenceData,
-      message: "Evidence saved successfully"
+      message: "Evidence saved successfully",
     });
 
   } catch (error: any) {
     if (error instanceof z.ZodError) {
       return json(
-        { error: "Validation failed", details: error.errors },
+        { error: "Validation failed", details: error.errors },)
         { status: 400 }
       );
     }
@@ -100,7 +99,7 @@ async function saveEvidenceNode(nodeData: any, userId: string): Promise<any> {
   }
 }
 
-// Save canvas state
+// Save canvas state;
 async function saveCanvasState(canvasData: any, userId: string): Promise<any> {
   try {
     const canvasStateData = {
@@ -108,13 +107,13 @@ async function saveCanvasState(canvasData: any, userId: string): Promise<any> {
       canvasData: canvasData,
       userId: userId,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     return json({
       success: true,
       canvasState: canvasStateData,
-      message: "Canvas state saved successfully"
+      message: "Canvas state saved successfully",
     });
 
   } catch (error: any) {
@@ -122,7 +121,7 @@ async function saveCanvasState(canvasData: any, userId: string): Promise<any> {
   }
 }
 
-// GET endpoint for loading evidence
+// GET endpoint for loading evidence;
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     const user = locals.user;
@@ -143,11 +142,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
   } catch (error: any) {
     console.error("Load API error:", error);
-    return json(
-      { 
+    return json({ 
         error: "Failed to load evidence", 
-        details: error instanceof Error ? error.message: "Unknown error" 
-      },
+        details: error instanceof Error ? error.message: "Unknown error" ,
+      },)
       { status: 500 }
     );
   }

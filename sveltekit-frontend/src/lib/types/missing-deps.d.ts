@@ -82,7 +82,7 @@ declare module '@tailwindcss/postcss' {
   export default plugin;
 }
 
-// Global type declarations
+// Global type declarations;
 declare global {
   interface Window {
     __TAURI__?: unknown;

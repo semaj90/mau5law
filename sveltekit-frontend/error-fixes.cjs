@@ -15,57 +15,58 @@ const fixes = [
   {
     file: 'src/lib/services/ollama-cuda-service.ts',
     find: 'this.updateMetrics(this.chatModel.model, inferenceTime, response.length);',
-    replace: '// @ts-ignore - ChatOllama model property access\n              this.updateMetrics(this.chatModel.model || "unknown", inferenceTime, response.length);'
+    replace:
+      '// @ts-ignore - ChatOllama model property access\n              this.updateMetrics(this.chatModel.model || "unknown", inferenceTime, response.length);',
   },
 
   // Fix 3: LangChain callback format
   {
     file: 'src/lib/services/ollama-cuda-service.ts',
     find: '] as CallbackManagerForLLMRun,',
-    replace: '// @ts-ignore - LangChain callback format compatibility\n        ] as any,'
+    replace: '// @ts-ignore - LangChain callback format compatibility\n        ] as any,',
   },
 
   // Fix 4: Streaming options parameter mismatch
   {
     file: 'src/lib/services/ollama-cuda-service.ts',
     find: 'streaming?: StreamingOptions;',
-    replace: 'streaming?: StreamingOptions | any;'
+    replace: 'streaming?: StreamingOptions | any;',
   },
 
   // Fix 5: Fuse.js namespace issue
   {
     file: 'src/lib/services/search-service.ts',
-    find: 'Namespace \'Fuse\' has no exported member \'FuseOptions\'',
-    replace: '// @ts-ignore - Fuse.js types\n    const fuseOptions: any = {'
+    find: "Namespace 'Fuse' has no exported member 'FuseOptions'",
+    replace: '// @ts-ignore - Fuse.js types\n    const fuseOptions: any = {',
   },
 
   // Fix 6: WebGPU adapter name property
   {
     file: 'src/lib/webgpu/tensor-acceleration.ts',
     find: 'adapter.name',
-    replace: '// @ts-ignore - WebGPU adapter name\n                adapter.name || "unknown"'
+    replace: '// @ts-ignore - WebGPU adapter name\n                adapter.name || "unknown"',
   },
 
   // Fix 7: Missing schema exports
   {
     file: 'src/lib/services/documentUpdateLoop.ts',
-    find: '} from \'$lib/server/db/schema\';',
-    replace: '// @ts-ignore - schema exports\n} from \'$lib/server/db/schema\';'
+    find: "} from '$lib/server/db/schema';",
+    replace: "// @ts-ignore - schema exports\n} from '$lib/server/db/schema';",
   },
 
   // Fix 8: WASM module loading
   {
     file: 'src/lib/wasm/vector-wasm-wrapper.ts',
     find: 'This expression is not callable',
-    replace: '// @ts-ignore - WASM module loading\n      const wasmModule = await import'
+    replace: '// @ts-ignore - WASM module loading\n      const wasmModule = await import',
   },
 
   // Fix 9: RabbitMQ service methods
   {
     file: 'src/lib/workers/rabbitmq-service-worker.ts',
-    find: 'Property \'connect\' does not exist',
-    replace: '// @ts-ignore - RabbitMQ service API\n        await this.rabbitService.connect'
-  }
+    find: "Property 'connect' does not exist",
+    replace: '// @ts-ignore - RabbitMQ service API\n        await this.rabbitService.connect',
+  },
 ];
 
 console.log('🔧 Applying systematic error fixes...\n');

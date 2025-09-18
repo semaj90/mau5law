@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ fetch, url }) => {
     initialSuggestions,
     meta: {
       title: 'Legal AI Recommendations Demo',
-      description: 'Friend-of-a-friend professional network and intelligent search suggestions'
+      description: 'Friend-of-a-friend professional network and intelligent search suggestions',
     }
   };
 };

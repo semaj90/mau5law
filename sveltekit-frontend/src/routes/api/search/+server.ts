@@ -5,7 +5,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 // TODO: Implement enhanced vector search service
 // import { enhancedVectorSearchService } from '$lib/services/enhanced-vector-search';
 
-// Placeholder service until enhanced-vector-search is implemented
+// Placeholder service until enhanced-vector-search is implemented;
 const enhancedVectorSearchService = {
   async unifiedVectorSearch(query: string, options: any) {
     return {
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!body.query || typeof body.query !== 'string') {
       return json({
         error: 'Query text is required',
-        code: 'MISSING_QUERY'
+        code: 'MISSING_QUERY',
       }, { status: 400 });
     }
 
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
           },
           body: JSON.stringify({
             model: 'nomic-embed-text',
-            prompt: body.query
+            prompt: body.query,
           })
         });
 
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           error: 'Unable to connect to Ollama for embedding generation',
           code: 'OLLAMA_CONNECTION_ERROR',
-          details: error instanceof Error ? error.message: 'Unknown connection error'
+          details: error instanceof Error ? error.message: 'Unknown connection error',
         }, { status: 502 });
       }
     }
@@ -94,13 +94,13 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!Array.isArray(queryEmbedding) || queryEmbedding.length === 0) {
       return json({
         error: 'Invalid embedding generated',
-        code: 'INVALID_EMBEDDING'
+        code: 'INVALID_EMBEDDING',
       }, { status: 500 });
     }
 
     console.log('🔍 Performing vector similarity search...');
     const searchResults = await enhancedVectorSearchService.unifiedVectorSearch(
-      queryEmbedding,
+      queryEmbedding,);
       {
         limit: body.options?.limit || 10,
         threshold: body.options?.threshold || 0.6,
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request }) => {
         embeddingDimensions: queryEmbedding.length,
         threshold: body.options?.threshold || 0.6,
         searchTypes: body.options?.entityTypes || ['evidence'],
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     });
 
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       error: 'Internal server error during search',
       code: 'INTERNAL_ERROR',
-      details: error instanceof Error ? error.message: 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };
@@ -168,11 +168,11 @@ export const GET: RequestHandler = async () => {
         ollama: {
           status: ollamaStatus,
           embeddingModel: ollamaModels.includes('nomic-embed-text') ? 'available' : 'missing',
-          availableModels: ollamaModels
+          availableModels: ollamaModels,
         },
         vectorSearch: {
           status: vectorHealth.status,
-          details: vectorHealth.details
+          details: vectorHealth.details,
         }
       },
       capabilities: {
@@ -186,7 +186,7 @@ export const GET: RequestHandler = async () => {
   } catch (error) {
     return json({
       error: 'Failed to get search system status',
-      code: 'STATUS_ERROR'
+      code: 'STATUS_ERROR',
     }, { status: 500 });
   }
 };

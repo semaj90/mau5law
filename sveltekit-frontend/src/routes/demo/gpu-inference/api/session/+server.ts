@@ -8,7 +8,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { sessionName, userId, engineUsed } = await request.json();
 
-    // Create a session marker in aiHistory table
+    // Create a session marker in aiHistory table;
     const [session] = await db.insert(aiHistory).values({
       userId: userId || 'anonymous',
       prompt: `SESSION_START: ${sessionName || 'GPU Demo Session'}`,
@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
         sessionName,
         engineUsed,
         userAgent: request.headers.get('user-agent'),
-        created: new Date().toISOString()
+        created: new Date().toISOString(),
       })
     }).returning();
 
@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
       sessionName,
       userId: session.userId,
       engineUsed: engineUsed || 'auto',
-      createdAt: session.createdAt
+      createdAt: session.createdAt,
     });
 
   } catch (error) {
@@ -44,7 +44,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const [session] = await db
         .select()
         .from(aiHistory)
-  .where((helpers.eq as any)(aiHistory.id, sessionId))
+  .where((helpers.eq as any)(aiHistory.id, sessionId)
         .limit(1);
 
       if (!session) {
@@ -56,25 +56,24 @@ export const GET: RequestHandler = async ({ url }) => {
         sessionName: session.prompt.replace('SESSION_START: ', ''),
         userId: session.userId,
         createdAt: session.createdAt,
-        response: session.response
+        response: session.response,
       });
     } else {
       // Get recent sessions (those marked as SESSION_START)
       const sessions = await db
         .select()
         .from(aiHistory)
-  .where((helpers.eq as any)(aiHistory.prompt, 'SESSION_START'))
+  .where((helpers.eq as any)(aiHistory.prompt, 'SESSION_START')
         .orderBy(aiHistory.createdAt)
         .limit(50);
 
-  return json(
-    sessions.map((s: any) => ({
+  return json(sessions.map((s: any) => ({
       id: s.id,
       sessionName:
         s.prompt === 'SESSION_START' ? 'New Session' : s.prompt.replace('SESSION_START: ', ''),
       userId: s.userId,
       createdAt: s.createdAt,
-    }))
+    })
   );
     }
 
@@ -93,12 +92,12 @@ export const PATCH: RequestHandler = async ({ request }) => {
     }
 
     const [session] = await db
-      .update(gpuInferenceSessions)
+      .update(gpuInferenceSessions);
       .set({
         ...updates,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
-  .where((helpers.eq as any)(gpuInferenceSessions.id, sessionId))
+  .where((helpers.eq as any)(gpuInferenceSessions.id, sessionId)
       .returning();
 
     if (!session) {

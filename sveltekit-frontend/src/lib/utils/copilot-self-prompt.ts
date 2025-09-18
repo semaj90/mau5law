@@ -12,19 +12,19 @@ import { autonomousEngineeringSystem } from '../services/autonomous-engineering-
 // Mock functions for missing services
 const analyzeLegalCaseWithCrew = async (caseData: any): Promise<any> => ({ analysis: 'completed' });
 
-// Mock types and imports
+// Mock types and imports;
 export interface AITask {
   id: string;
   type: string;
   data?: any;
 }
 
-// Mock embeddings service
+// Mock embeddings service;
 const OpenAIEmbeddings = class {
-  embedQuery = async (query: string) => new Array(384).fill(0).map(() => Math.random());
+  embedQuery = async (query: string) => new Array(384).fill(0).map(() => Math.random();
 };
 
-// Mock database pool
+// Mock database pool;
 const pool = {
   query: async (query: string, params?: any[]) => ({ rows: [] })
 };
@@ -39,14 +39,14 @@ async function getRedisClient(): Promise<any> {
     redisClient = createClient({
       url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
     });
-    redisClient.on("error", (err) => console.error("Redis Client Error", err));
+    redisClient.on("error", (err) => console.error("Redis Client Error", err);
     await redisClient.connect();
     console.log("✅ Redis client connected for caching.");
   }
   return redisClient;
 }
 
-// Enhanced context with Redis cache and LangChain/Nomic embeddings
+// Enhanced context with Redis cache and LangChain/Nomic embeddings;
 export async function getEnhancedContext(query: string): Promise<any> {
   const cacheKey = `context:${query}`;
   const client = await getRedisClient();
@@ -64,7 +64,7 @@ export async function getEnhancedContext(query: string): Promise<any> {
     console.log('CACHE MISS for:', query);
     // Use LangChain to embed the query with local Nomic embed LLM (no baseURL property)
     const embeddings = new OpenAIEmbeddings();
-    // Simplified vector search using mock pool
+    // Simplified vector search using mock pool;
     const vectorStore = {
       similaritySearch: async (_query: string, _k: number) => [] as any[],
     };
@@ -80,7 +80,7 @@ export async function getEnhancedContext(query: string): Promise<any> {
   }
 }
 
-// Example: Inject enhanced context into Copilot prompt
+// Example: Inject enhanced context into Copilot prompt;
 export async function injectContextToCopilotPrompt(query: string, code: string): Promise<any> {
   const context = await getEnhancedContext(query);
   return `/* Copilot Context Injection: ${JSON.stringify(context)} */\n${code}`;
@@ -116,7 +116,7 @@ export interface CopilotSelfPromptResult {
     processingTime: number;
     confidence: number;
     sources: string[];
-    tokensUsed: number;
+    tokensUsed: number;,
   };
 }
 
@@ -137,14 +137,14 @@ export interface Recommendation {
   description: string;
   impact: 'low' | 'medium' | 'high';
   effort: 'low' | 'medium' | 'high';
-  priority: number;
+  priority: number;,
 }
 
 export interface ExecutionPlan {
   phases: ExecutionPhase[];
   totalEstimatedTime: number;
   parallelizable: boolean;
-  criticalPath: string[];
+  criticalPath: string[];,
 }
 
 export interface ExecutionPhase {
@@ -152,7 +152,7 @@ export interface ExecutionPhase {
   name: string;
   actions: string[];
   order: number;
-  canRunInParallel: boolean;
+  canRunInParallel: boolean;,
 }
 
 /**
@@ -182,7 +182,7 @@ export async function copilotSelfPrompt(
   let tokensUsed = 0;
 
   try {
-    // Phase 1: Semantic Search & Memory Integration
+    // Phase 1: Semantic Search & Memory Integration;
     if (useSemanticSearch) {
       contextResults = await performSemanticSearch(prompt, context);
       console.log(`📚 Found ${contextResults.length} semantic matches`);
@@ -193,14 +193,14 @@ export async function copilotSelfPrompt(
       console.log(`🧠 Retrieved ${memoryResults.length} memory entries`);
     }
 
-    // Phase 2: Multi-Agent Analysis
+    // Phase 2: Multi-Agent Analysis;
     if (useMultiAgent) {
       agentResults = await orchestrateMultiAgentAnalysis(prompt, context);
       console.log(`👥 Completed multi-agent analysis with ${agentResults.length} agent responses`);
       tokensUsed += agentResults.reduce((sum, result) => sum + ((result as { tokensUsed?: any; response?: any; source?: any; metadata?: any; nextActions?: any; recommendations?: any }).tokensUsed || 0), 0);
     }
 
-    // Phase 3: Autonomous Engineering (if enabled)
+    // Phase 3: Autonomous Engineering (if enabled);
     if (useAutonomousEngineering) {
       engineeringAnalysis = await autonomousEngineeringSystem.solveProblemAutonomously(prompt, {
         projectPath: context.projectPath,
@@ -258,7 +258,7 @@ export async function copilotSelfPrompt(
       },
     };
   } catch (error: any) {
-    // Log error to MCP_TODO_LOG.md for productionization
+    // Log error to MCP_TODO_LOG.md for productionization;
     try {
       const { mcpLogErrorOrContextLoss } = await import('./mcp-helpers.js');
       await mcpLogErrorOrContextLoss(`Copilot self-prompt failed: ${error?.message || error}`);
@@ -272,7 +272,7 @@ export async function copilotSelfPrompt(
 
 /**
  * Enhanced semantic search with caching and relevance scoring
- */
+ */;
 async function performSemanticSearch(prompt: string, context: any): Promise<any[]> {
   try {
     // Quick health check with timeout to avoid hanging
@@ -297,9 +297,9 @@ async function performSemanticSearch(prompt: string, context: any): Promise<any[
 
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
-        // Sort by relevance_score if available
+        // Sort by relevance_score if available;
         if (Array.isArray((data as { results?: any; memories?: any }).results)) {
-          return (data as { results?: any; memories?: any }).results.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0));
+          return (data as { results?: any; memories?: any }).results.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0);
         }
         return (data as { results?: any; memories?: any }).results || [];
       }
@@ -316,7 +316,7 @@ async function performSemanticSearch(prompt: string, context: any): Promise<any[
 
 /**
  * Access memory MCP servers for context and history
- */
+ */;
 export async function accessMemoryMCP(prompt: string, context: any): Promise<any[]> {
   try {
     // Quick timeout to avoid hanging
@@ -339,9 +339,9 @@ export async function accessMemoryMCP(prompt: string, context: any): Promise<any
 
       if ((response as { ok?: any; json?: any }).ok) {
         const data = await (response as { ok?: any; json?: any }).json();
-        // Sort by recency or relevance if available
+        // Sort by recency or relevance if available;
         if (Array.isArray((data as { results?: any; memories?: any }).memories)) {
-          return (data as { results?: any; memories?: any }).memories.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0));
+          return (data as { results?: any; memories?: any }).memories.sort((a, b) => (b.relevance_score || 0) - (a.relevance_score || 0);
         }
         return (data as { results?: any; memories?: any }).memories || [];
       }
@@ -358,7 +358,7 @@ export async function accessMemoryMCP(prompt: string, context: any): Promise<any
 
 /**
  * Orchestrate multi-agent analysis with AutoGen and CrewAI
- */
+ */;
 async function orchestrateMultiAgentAnalysis(prompt: string, context: any): Promise<any[]> {
   const results: any[] = [];
   try {
@@ -401,7 +401,7 @@ async function synthesizeAllResults(
   contextResults: any[],
   memoryResults: any[],
   agentResults: any[],
-  engineeringAnalysis: any
+  engineeringAnalysis: any;
 ): Promise<string> {
   const synthesisPrompt = `
 As an advanced AI synthesis engine, analyze and synthesize the following comprehensive analysis results:
@@ -464,7 +464,7 @@ function generateBasicSummary(
   prompt: string,
   contextResults: any[],
   memoryResults: any[],
-  agentResults: any[]
+  agentResults: any[];
 ): string {
   return `
 # Analysis Summary
@@ -497,11 +497,11 @@ ${prompt}
 async function generateNextActions(
   prompt: string,
   synthesis: string,
-  engineeringAnalysis: any
+  engineeringAnalysis: any;
 ): Promise<NextAction[]> {
   const actions: NextAction[] = [];
 
-  // Extract actions from engineering analysis
+  // Extract actions from engineering analysis;
   if (engineeringAnalysis?.solutions) {
     engineeringAnalysis.solutions.forEach((solution: any, index: number) => {
       solution.steps?.forEach((step: any, stepIndex: number) => {
@@ -519,7 +519,7 @@ async function generateNextActions(
     });
   }
 
-  // Add default actions if none found
+  // Add default actions if none found;
   if (actions.length === 0) {
     actions.push({
       id: 'investigate',
@@ -539,7 +539,7 @@ async function generateNextActions(
  */
 async function generateRecommendations(
   engineeringAnalysis: any,
-  context: any
+  context: any;
 ): Promise<Recommendation[]> {
   const recommendations: Recommendation[] = [];
 
@@ -556,7 +556,7 @@ async function generateRecommendations(
     });
   }
 
-  // Add platform-specific recommendations
+  // Add platform-specific recommendations;
   if (context.platform === 'all') {
     recommendations.push({
       category: 'architecture',
@@ -576,7 +576,7 @@ async function generateRecommendations(
  */
 async function createExecutionPlan(
   actions: NextAction[],
-  recommendations: Recommendation[]
+  recommendations: Recommendation[];
 ): Promise<ExecutionPlan> {
   const phases: ExecutionPhase[] = [];
 
@@ -630,8 +630,8 @@ async function createExecutionPlan(
 
   const totalTime = actions.reduce((sum, action) => sum + action.estimatedTime, 0);
   const parallelTime = phases.reduce((sum, phase) => {
-    const phaseActions = actions.filter((a) => phase.actions.includes(a.id));
-    const maxTime = Math.max(...phaseActions.map((a) => a.estimatedTime));
+    const phaseActions = actions.filter((a) => phase.actions.includes(a.id);
+    const maxTime = Math.max(...phaseActions.map((a) => a.estimatedTime);
     return sum + maxTime;
   }, 0);
 
@@ -651,7 +651,7 @@ function generateCopilotSelfPrompt(
   synthesis: string,
   nextActions: NextAction[],
   recommendations: Recommendation[],
-  outputFormat: string
+  outputFormat: string;
 ): string {
   const formatInstruction =
     outputFormat === 'json'
@@ -686,7 +686,7 @@ ${formatInstruction}
   `;
 }
 
-// RAG Copilot Self-Prompting Utility
+// RAG Copilot Self-Prompting Utility;
 export class CopilotSelfPrompt {
   private vectorStore: any;
   private embeddings: any;
@@ -717,13 +717,13 @@ export class CopilotSelfPrompt {
     // const prioritized = this.offsetByTodo(ranked, todoList);
 
     // Cache results
-    // await this.redisClient.set(cacheKey, JSON.stringify(prioritized));
+    // await this.redisClient.set(cacheKey, JSON.stringify(prioritized);
     // return prioritized;
     return [];
   }
 
   offsetByTodo(results: any[], todoList: string[]) {
-    // Boost results related to todoList items
+    // Boost results related to todoList items;
     return results.map((r) => {
       r.relevance_score += todoList.some((todo) => r.content.includes(todo)) ? 0.2 : 0;
       return r;
@@ -742,7 +742,7 @@ export class CopilotSelfPrompt {
   }
 }
 
-// Helper functions
+// Helper functions;
 function inferActionType(action: string): NextAction['type'] {
   const actionLower = action.toLowerCase();
   if (actionLower.includes('test')) return 'test';
@@ -756,7 +756,7 @@ function inferActionType(action: string): NextAction['type'] {
 function calculateConfidence(
   contextResults: any[],
   agentResults: any[],
-  engineeringAnalysis: any
+  engineeringAnalysis: any;
 ): number {
   let confidence = 0.5; // Base confidence
 
@@ -770,7 +770,7 @@ function calculateConfidence(
 function extractSources(
   contextResults: any[],
   memoryResults: any[],
-  agentResults: any[]
+  agentResults: any[];
 ): string[] {
   const sources = new Set<string>();
 
@@ -789,7 +789,7 @@ function extractSources(
   return Array.from(sources);
 }
 
-// RL Ranking Datastore Implementation
+// RL Ranking Datastore Implementation;
 export interface RLRankingSummary {
   id: string;
   timestamp: number;
@@ -802,7 +802,7 @@ export interface RLRankingSummary {
   userFeedback?: 'positive' | 'negative' | 'neutral';
   effectiveness: number; // 0-1 score
   nextActions: NextAction[];
-  recommendations: Recommendation[];
+  recommendations: Recommendation[];,
 }
 
 export class RLRankingDatastore {
@@ -863,7 +863,7 @@ export class RLRankingDatastore {
     try {
       const summaries = await this.redisClient.zrevrange(this.summariesKey, 0, limit - 1);
 
-      return summaries.map((s: string) => JSON.parse(s));
+      return summaries.map((s: string) => JSON.parse(s);
     } catch (error: any) {
       console.error('Failed to get top summaries:', error);
       return [];
@@ -872,7 +872,7 @@ export class RLRankingDatastore {
 
   async updateUserFeedback(
     summaryId: string,
-    feedback: 'positive' | 'negative' | 'neutral'
+    feedback: 'positive' | 'negative' | 'neutral';
   ): Promise<void> {
     if (!this.redisClient) return;
 
@@ -885,7 +885,7 @@ export class RLRankingDatastore {
         if (summary.id === summaryId) {
           summary.userFeedback = feedback;
 
-          // Adjust effectiveness based on feedback
+          // Adjust effectiveness based on feedback;
           if (feedback === 'positive') {
             summary.effectiveness = Math.min(1.0, summary.effectiveness + 0.1);
           } else if (feedback === 'negative') {

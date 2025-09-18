@@ -19,36 +19,36 @@ import { monitoringService } from './monitoring-service.js';
 // Type-safe stub for production
 const prisma = null as any; // Will be replaced with proper Drizzle implementation
 
-// Type definitions for TypeScript safety
+// Type definitions for TypeScript safety;
 export interface ServiceConfig {
   neo4j: {
     uri: string;
     user: string;
-    password: string;
+    password: string;,
   };
   postgres: {
     host: string;
     port: number;
     database: string;
     user: string;
-    password: string;
+    password: string;,
   };
   redis: {
     host: string;
-    port: number;
+    port: number;,
   };
   goMicroservices: {
     rag: string;
     gpu: string;
-    llama: string;
+    llama: string;,
   };
   ollama: {
     baseUrl: string;
-    model: string;
+    model: string;,
   };
   mcp: {
     context7: string;
-    synthesis: string;
+    synthesis: string;,
   };
 }
 
@@ -73,11 +73,11 @@ export interface AutoSolveResult {
     processingTime: number;
     model: string;
     tokensUsed: number;
-    cacheHit: boolean;
+    cacheHit: boolean;,
   };
 }
 
-// Service configuration from environment
+// Service configuration from environment;
 const serviceConfig: ServiceConfig = {
   neo4j: {
     uri: import.meta.env.NEO4J_URI || 'bolt://localhost:7687',
@@ -110,7 +110,7 @@ const serviceConfig: ServiceConfig = {
   },
 };
 
-// Database connection with Drizzle ORM (TypeScript-safe)
+// Database connection with Drizzle ORM (TypeScript-safe);
 const pgConnection = postgres({
   host: serviceConfig.postgres.host,
   port: serviceConfig.postgres.port,
@@ -124,7 +124,7 @@ const pgConnection = postgres({
 
 export const db = drizzle(pgConnection);
 ;
-// Redis connection for caching and Go service communication
+// Redis connection for caching and Go service communication;
 const redis = new Redis({
   host: serviceConfig.redis.host,
   port: serviceConfig.redis.port,
@@ -132,7 +132,7 @@ const redis = new Redis({
   retryStrategy: (times: number) => Math.min(times * 50, 2000),
 });
 
-// XState machine definition for orchestration flow
+// XState machine definition for orchestration flow;
 const orchestrationMachine = createMachine({
   id: 'aiSynthesisOrchestration',
   initial: 'idle',
@@ -163,12 +163,12 @@ const orchestrationMachine = createMachine({
         checkingCache: {
           invoke: {
             src: 'checkCache',
-            onDone: [
+            onDone: [;
               {
                 guard: 'cacheHit',
                 target: 'complete',
                 actions: 'storeCachedResult',
-              },
+              },);
               {
                 target: 'analyzingQuery',
               },
@@ -322,7 +322,7 @@ const orchestrationMachine = createMachine({
   },
 });
 
-// Main orchestrator class
+// Main orchestrator class;
 export class EnhancedAISynthesisOrchestrator {
   private machine: typeof orchestrationMachine;
   private service: any;
@@ -342,7 +342,7 @@ export class EnhancedAISynthesisOrchestrator {
       temperature: 0.3,
     });
 
-    // Use nomic-embed-text for embeddings as requested
+    // Use nomic-embed-text for embeddings as requested;
     this.embeddings = new OllamaEmbeddings({
       baseUrl: serviceConfig.ollama.baseUrl,
       model: 'nomic-embed-text',
@@ -351,7 +351,7 @@ export class EnhancedAISynthesisOrchestrator {
     // Create alias for compatibility
     this.ollamaEmbeddings = this.embeddings;
 
-    // Initialize cache service (simple in-memory for now)
+    // Initialize cache service (simple in-memory for now);
     this.cacheService = {
       cache: new Map(),
       get: async (key: string) => this.cacheService.cache.get(key),
@@ -365,9 +365,9 @@ export class EnhancedAISynthesisOrchestrator {
 
     logger.info('[Orchestrator] Initializing Enhanced AI Synthesis Orchestrator...');
 
-    // Initialize Neo4j vector store
+    // Initialize Neo4j vector store;
     try {
-      // Initialize Neo4j store with fallback to mock
+      // Initialize Neo4j store with fallback to mock;
       try {
         this.neo4jStore = new (Neo4jVectorStore as any)(this.embeddings, {
           url: serviceConfig.neo4j.uri,
@@ -375,7 +375,7 @@ export class EnhancedAISynthesisOrchestrator {
           password: serviceConfig.neo4j.password,
           indexName: 'legal_documents',
           textNodeProperty: 'text',
-          embeddingNodeProperty: 'embedding'
+          embeddingNodeProperty: 'embedding',
         });
       } catch {
         this.neo4jStore = null;
@@ -385,7 +385,7 @@ export class EnhancedAISynthesisOrchestrator {
       logger.warn('[Orchestrator] ⚠️ Neo4j connection failed:', error);
     }
 
-    // Initialize PostgreSQL pgvector store
+    // Initialize PostgreSQL pgvector store;
     try {
       const pgConfig: PoolConfig = {
         host: serviceConfig.postgres.host,
@@ -396,7 +396,7 @@ export class EnhancedAISynthesisOrchestrator {
         max: 20,
       };
 
-      // Initialize PGVector store with fallback
+      // Initialize PGVector store with fallback;
       try {
         this.pgVectorStore = new (PGVectorStore as any)(this.embeddings, {
           postgresConnectionOptions: pgConfig,
@@ -430,7 +430,7 @@ export class EnhancedAISynthesisOrchestrator {
   }
 
   private setupStateMachine(): void {
-    // In XState v5, we use provide() to add implementations
+    // In XState v5, we use provide() to add implementations;
     this.machine = orchestrationMachine.provide({
       guards: {
         cacheHit: ({ context, event }) => {
@@ -466,7 +466,7 @@ export class EnhancedAISynthesisOrchestrator {
             logger.error('[Neo4j] Search failed:', error);
             return [];
           }
-        }) as any, // Temporary cast to fix UnknownActorLogic
+        }) as any, // Temporary cast to fix UnknownActorLogic;
         searchPGVector: (async ({ context }) => {
           if (!this.pgVectorStore || !context.query) return [];
 
@@ -476,7 +476,7 @@ export class EnhancedAISynthesisOrchestrator {
             logger.error('[PGVector] Search failed:', error);
             return [];
           }
-        }) as any, // Temporary cast to fix UnknownActorLogic
+        }) as any, // Temporary cast to fix UnknownActorLogic;
         runRAGPipeline: (async ({ context }) => {
           if (!context.query) return [];
 
@@ -498,7 +498,7 @@ export class EnhancedAISynthesisOrchestrator {
             logger.error('[RAG] Pipeline failed:', error);
             return [];
           }
-        }) as any, // Temporary cast to fix UnknownActorLogic
+        }) as any, // Temporary cast to fix UnknownActorLogic;
         generateWithGemma3Legal: (async ({ context }) => {
           const prompt = this.buildEnhancedPrompt(context);
 
@@ -509,11 +509,11 @@ export class EnhancedAISynthesisOrchestrator {
             logger.error('[Orchestrator] Generation failed:', error);
             throw error;
           }
-        }) as any, // Temporary cast to fix UnknownActorLogic
+        }) as any, // Temporary cast to fix UnknownActorLogic;
         performFinalSynthesis: (async ({ context }) => {
           const startTime = Date.now();
 
-          // Use the main AI synthesizer for final processing
+          // Use the main AI synthesizer for final processing;
           const result = await aiAssistantSynthesizer.synthesizeInput({
             query: context.query || '',
             context: {
@@ -531,7 +531,7 @@ export class EnhancedAISynthesisOrchestrator {
             },
           });
 
-          // Add metadata
+          // Add metadata;
           (result as { metadata?: any }).metadata = {
             processingTime: Date.now() - startTime,
             confidence: 0.8,
@@ -541,12 +541,12 @@ export class EnhancedAISynthesisOrchestrator {
           };
 
           return result;
-        }) as any, // Temporary cast to fix UnknownActorLogic
+        }) as any, // Temporary cast to fix UnknownActorLogic;
         cacheResult: (async ({ context }) => {
           if (!context.finalSynthesis || !context.query) return;
 
           const cacheKey = `synthesis:${Buffer.from(context.query).toString('base64')}`;
-          await (redis as any).setex(cacheKey, 3600, JSON.stringify(context.finalSynthesis));
+          await (redis as any).setex(cacheKey, 3600, JSON.stringify(context.finalSynthesis);
 
           // Also update monitoring metrics
           await monitoringService.recordMetric('synthesis_completed', 1);
@@ -703,7 +703,7 @@ QUERY: ${context.query}
 
 `;
 
-    // Add LegalBERT analysis if available
+    // Add LegalBERT analysis if available;
     if (context.legalBertAnalysis) {
       prompt += `LEGAL ANALYSIS:
 - Identified Entities: ${context.legalBertAnalysis.entities.map((e: any) => e.text).join(', ')}
@@ -714,7 +714,7 @@ QUERY: ${context.query}
 `;
     }
 
-    // Add ranked sources if available
+    // Add ranked sources if available;
     if (context.rankedResults?.length > 0) {
       prompt += `RELEVANT LEGAL SOURCES:
 `;
@@ -728,7 +728,7 @@ ${i + 1}. ${title} (Relevance: ${(relevance * 100).toFixed(1)}%)
 ${content.substring(0, 500)}...
 
 `;
-      });
+      ,});
     }
 
     prompt += `Please provide a comprehensive legal analysis that:
@@ -793,16 +793,16 @@ RESPONSE:`;
   private calculateSimilarity(text1: string, text2: string): number {
     // Simple Jaccard similarity for demonstration
     // In production, use embeddings for semantic similarity
-    const words1 = new Set(text1.toLowerCase().split(/\s+/));
-    const words2 = new Set(text2.toLowerCase().split(/\s+/));
+    const words1 = new Set(text1.toLowerCase().split(/\s+/);
+    const words2 = new Set(text2.toLowerCase().split(/\s+/);
 
-    const intersection = new Set([...words1].filter((x) => words2.has(x)));
+    const intersection = new Set([...words1].filter((x) => words2.has(x));
     const union = new Set([...words1, ...words2]);
 
     return intersection.size / union.size;
   }
 
-  // Public API
+  // Public API;
   async process(query: string, options?: Record<string, any>): Promise<AutoSolveResult> {
     // Ensure initialization
     await this.initialize();
@@ -815,15 +815,15 @@ RESPONSE:`;
 
     return new Promise((resolve, reject) => {
       try {
-        // Create a new service instance for this request
+        // Create a new service instance for this request;
         const service = createActor(this.machine, {
           input: {
             query,
-            ...(options || {}),
+            ...(options || {,}),
           },
         }).start();
 
-        // Subscribe to state changes
+        // Subscribe to state changes;
         const subscription = service.subscribe((snapshot) => {
           if ((snapshot as any).status === 'done' || (snapshot as any).value === 'done') {
             const result = (snapshot as any).context?.finalSynthesis;
@@ -835,11 +835,11 @@ RESPONSE:`;
               resolve(result);
             } else {
               subscription.unsubscribe();
-              reject(new Error('No synthesis result'));
+              reject(new Error('No synthesis result');
             }
           } else if ((snapshot as any).status === 'error' || (snapshot as any).value === 'error') {
             subscription.unsubscribe();
-            reject(new Error('Processing failed'));
+            reject(new Error('Processing failed');
           }
         });
 
@@ -851,18 +851,18 @@ RESPONSE:`;
     });
   }
 
-  // Streaming API
+  // Streaming API;
   async *processStream(query: string, options?: Record<string, any>): AsyncGenerator<any> {
     await this.initialize();
 
     logger.info(`[Orchestrator] Starting streaming for: "${query}"`);
 
-    // Create a service with streaming enabled
+    // Create a service with streaming enabled;
     const service = createActor(this.machine, {
       input: {
         query,
         stream: true,
-        ...(options || {}),
+        ...(options || {,}),
       },
     }).start();
 
@@ -887,7 +887,7 @@ RESPONSE:`;
         const change = stateChanges.shift();
         yield change;
       }
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100);
       snapshot = service.getSnapshot() as any;
     }
 
@@ -901,11 +901,11 @@ RESPONSE:`;
     }
   }
 
-  // Health check
+  // Health check;
   async health(): Promise<any> {
     const services: any = {};
 
-    // Check each service
+    // Check each service;
     try {
       await (redis as any).setex('health-check', 1, 'ok');
       services.redis = 'healthy';

@@ -17,12 +17,12 @@ type CancelProcessing = { type: 'CANCEL_PROCESSING' };
 type RetryProcessing = { type: 'RETRY_PROCESSING' };
 type AnyEvt = StartProcessing | ProcessingProgress | CancelProcessing | RetryProcessing | { type: string; [k: string]: any };
 
-export const aiProcessingMachine = createMachine(
+export const aiProcessingMachine = createMachine();
   {
     id: "aiProcessing",
     types: Record<string, any> as {
       context: AIProcessingContext;
-      events: AnyEvt;
+      events: AnyEvt;,
     },
 
     context: {
@@ -66,8 +66,7 @@ export const aiProcessingMachine = createMachine(
           executing: {
             invoke: {
               id: "executeTask",
-              src: fromPromise(
-                async ({
+              src: fromPromise(async ({
                   input,
                 }: {
                   input: { task: AITask; provider: string };
@@ -139,7 +138,7 @@ export const aiProcessingMachine = createMachine(
         entry: ["logError"],
 
         on: {
-          RETRY_PROCESSING: [
+          RETRY_PROCESSING: [;
             {
               target: "processing",
               guard: "canRetry",
@@ -200,10 +199,9 @@ export const aiProcessingMachine = createMachine(
       },
 
       notifyCompletion: ({ context }) => {
-        // Dispatch custom event for UI updates
+        // Dispatch custom event for UI updates;
         if (typeof window !== "undefined") {
-          window.dispatchEvent(
-            new CustomEvent("ai-task-complete", {
+          window.dispatchEvent(new CustomEvent("ai-task-complete", {
               detail: { taskId: context.task.id, result: context.result },
             })
           );
@@ -223,7 +221,7 @@ export const aiProcessingMachine = createMachine(
   }
 );
 
-// Task execution functions
+// Task execution functions;
 async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
   const startTime = Date.now();
 
@@ -231,7 +229,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
     let response: any;
 
     switch (task.type) {
-      case "parse":
+      case "parse":;
         response = await fetch("/api/parse", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -243,7 +241,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
         });
         break;
 
-      case "som-train":
+      case "som-train":;
         response = await fetch("/api/train-som", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -257,7 +255,7 @@ async function executeGoMicroserviceTask(task: AITask): Promise<AITaskResult> {
         });
         break;
 
-      case "cuda-infer":
+      case "cuda-infer":;
         response = await fetch("/api/cuda-infer", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -315,7 +313,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
     let response: any;
 
     switch (task.type) {
-      case "embed":
+      case "embed":;
         response = await fetch("/api/llm/embeddings", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -326,7 +324,7 @@ async function executeOllamaTask(task: AITask): Promise<AITaskResult> {
         });
         break;
 
-      case "analyze":
+      case "analyze":;
         response = await fetch("/api/llm/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -376,7 +374,7 @@ async function executeLocalLLMTask(task: AITask): Promise<AITaskResult> {
   const startTime = Date.now();
 
   // Simulate processing
-  await new Promise((resolve: any) => setTimeout(resolve, 1000));
+  await new Promise((resolve: any) => setTimeout(resolve, 1000);
 
   return {
     taskId: task.id,
@@ -401,7 +399,7 @@ export const createAITask = (
   estimatedDuration: options?.estimatedDuration,
 });
 
-// Common AI task creators
+// Common AI task creators;
 export const aiTaskCreators = {
   parseJSON: (data: any, options?: Record<string, unknown>) =>
     createAITask(
@@ -410,28 +408,28 @@ export const aiTaskCreators = {
         data,
         format: "json",
         options,
-      },
+      },)
       { priority: "high" }
     ),
 
   trainSOM: (vectors: number[][], labels: string[], options?: Record<string, unknown>) =>
     createAITask(
-      "som-train",
+      "som-train",);
       {
         vectors,
         labels,
-  ...(options || {}),
+  ...(options || {,}),
       },
       { priority: "low", estimatedDuration: 30000 }
     ),
 
   cudaInference: (model: string, input: any, options?: Record<string, unknown>) =>
     createAITask(
-      "cuda-infer",
+      "cuda-infer",);
       {
         model,
         input,
-  ...(options || {}),
+  ...(options || {,}),
       },
       { priority: "high" }
     ),
@@ -442,7 +440,7 @@ export const aiTaskCreators = {
       {
         text,
         model: model || "nomic-embed-text",
-      },
+      },)
       { priority: "medium" }
     ),
 
@@ -453,22 +451,22 @@ export const aiTaskCreators = {
         prompt,
         model: model || "gemma3-legal",
         format,
-      },
+      },)
       { priority: "medium" }
     ),
 };
 
-// Helper to check if processing is active
+// Helper to check if processing is active;
 export const isProcessingActive = (state: any) => {
   return state.matches("processing");
 };
 
-// Helper to get processing progress
+// Helper to get processing progress;
 export const getProcessingProgress = (state: any): number => {
   return state.context.progress;
 };
 
-// Helper to get last result
+// Helper to get last result;
 export const getLastResult = (state: any): AITaskResult | undefined => {
   return state.context.result;
 };

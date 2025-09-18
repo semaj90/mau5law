@@ -5,18 +5,18 @@
  * Fixes TypeScript errors, database schema issues, and import problems
  */
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-console.log("🔧 Comprehensive Error Fixer for SvelteKit Legal AI");
-console.log("===================================================\n");
+console.log('🔧 Comprehensive Error Fixer for SvelteKit Legal AI');
+console.log('===================================================\n');
 
 // Configuration
 const config = {
-  srcDir: "src",
+  srcDir: 'src',
   dryRun: false,
   backup: true,
   verbose: true,
@@ -29,17 +29,17 @@ const fixes = {
     {
       pattern: /id:\s*uuid\("id"\)\s*\.primaryKey\(\)/g,
       replacement: 'id: uuid("id").primaryKey().defaultRandom()',
-      description: "Fix Drizzle UUID primary key syntax",
+      description: 'Fix Drizzle UUID primary key syntax',
     },
     {
       pattern: /\.default\(sql`uuid_generate_v4\(\)`\)/g,
-      replacement: ".defaultRandom()",
-      description: "Fix UUID default value syntax",
+      replacement: '.defaultRandom()',
+      description: 'Fix UUID default value syntax',
     },
     {
       pattern: /pgTable\(\s*\{/g,
       replacement: 'pgTable("table_name", {',
-      description: "Fix pgTable syntax - missing table name",
+      description: 'Fix pgTable syntax - missing table name',
     },
   ],
 
@@ -48,35 +48,33 @@ const fixes = {
     {
       pattern: /export \* from ['"]\.\//g,
       replacement: 'export * from "./',
-      description: "Fix export syntax",
+      description: 'Fix export syntax',
     },
     {
       pattern: /import\s*\{\s*([^}]+)\s*\}\s*from\s*['"]\.\//g,
       replacement: (match, imports) => `import { ${imports.trim()} } from "./`,
-      description: "Fix import syntax",
+      description: 'Fix import syntax',
     },
     {
       pattern: /UserSettings(?!Ext)/g,
-      replacement: "UserSettingsExt",
-      description: "Fix UserSettings import to UserSettingsExt",
+      replacement: 'UserSettingsExt',
+      description: 'Fix UserSettings import to UserSettingsExt',
     },
   ],
 
   // 3. Array Type Fixes
   arrayTypes: [
     {
-      pattern:
-        /Array\.isArray\(([^)]+)\[0\]\)\s*\?\s*([^:]+)\[0\]\s*:\s*([^,};\n]+)/g,
-      replacement:
-        "Array.isArray($1) && Array.isArray($1[0]) ? $1[0] as number[] : $1 as number[]",
-      description: "Fix nested array type handling",
+      pattern: /Array\.isArray\(([^)]+)\[0\]\)\s*\?\s*([^:]+)\[0\]\s*:\s*([^,};\n]+)/g,
+      replacement: 'Array.isArray($1) && Array.isArray($1[0]) ? $1[0] as number[] : $1 as number[]',
+      description: 'Fix nested array type handling',
     },
     {
       pattern:
         /embedding:\s*Array\.isArray\(embedding\[0\]\)\s*\?\s*embedding\[0\]\s*:\s*embedding/g,
       replacement:
         'embedding: Array.isArray(embedding) && typeof embedding[0] === "object" ? embedding[0] as number[] : embedding as number[]',
-      description: "Fix embedding array type assertion",
+      description: 'Fix embedding array type assertion',
     },
   ],
 
@@ -84,18 +82,18 @@ const fixes = {
   syntaxErrors: [
     {
       pattern: /return\s+await\s+([^}]+)\s*\}\s*\)\s*$/gm,
-      replacement: "return await $1;\n}",
-      description: "Fix return await syntax",
+      replacement: 'return await $1;\n}',
+      description: 'Fix return await syntax',
     },
     {
       pattern: /\}\s*\)\s*\.onConflictDoNothing\(\);\s*$/gm,
-      replacement: "}).onConflictDoNothing();",
-      description: "Fix method chaining syntax",
+      replacement: '}).onConflictDoNothing();',
+      description: 'Fix method chaining syntax',
     },
     {
       pattern: /^\s*\}\s*$/gm,
-      replacement: "}",
-      description: "Fix orphaned closing braces",
+      replacement: '}',
+      description: 'Fix orphaned closing braces',
     },
   ],
 
@@ -103,28 +101,28 @@ const fixes = {
   svelteComponents: [
     {
       pattern: /className=/g,
-      replacement: "class=",
-      description: "Fix React className to Svelte class",
+      replacement: 'class=',
+      description: 'Fix React className to Svelte class',
     },
     {
       pattern: /htmlFor=/g,
-      replacement: "for=",
-      description: "Fix React htmlFor to Svelte for",
+      replacement: 'for=',
+      description: 'Fix React htmlFor to Svelte for',
     },
     {
       pattern: /onClick=/g,
-      replacement: "on:click=",
-      description: "Fix React onClick to Svelte on:click",
+      replacement: 'on:click=',
+      description: 'Fix React onClick to Svelte on:click',
     },
     {
       pattern: /onChange=/g,
-      replacement: "on:change=",
-      description: "Fix React onChange to Svelte on:change",
+      replacement: 'on:change=',
+      description: 'Fix React onChange to Svelte on:change',
     },
     {
       pattern: /onSubmit=/g,
-      replacement: "on:submit=",
-      description: "Fix React onSubmit to Svelte on:submit",
+      replacement: 'on:submit=',
+      description: 'Fix React onSubmit to Svelte on:submit',
     },
   ],
 };
@@ -141,7 +139,7 @@ let stats = {
 /**
  * Find all files to process
  */
-function findFiles(dir, extensions = [".ts", ".js", ".svelte"]) {
+function findFiles(dir, extensions = ['.ts', '.js', '.svelte']) {
   const files = [];
 
   function traverse(currentDir) {
@@ -153,11 +151,7 @@ function findFiles(dir, extensions = [".ts", ".js", ".svelte"]) {
         const stat = fs.statSync(fullPath);
 
         if (stat.isDirectory()) {
-          if (
-            !["node_modules", ".git", ".svelte-kit", "build", "dist"].includes(
-              item,
-            )
-          ) {
+          if (!['node_modules', '.git', '.svelte-kit', 'build', 'dist'].includes(item)) {
             traverse(fullPath);
           }
         } else if (stat.isFile()) {
@@ -183,7 +177,7 @@ function createBackup(filePath) {
   if (!config.backup) return;
 
   try {
-    const backupPath = filePath + ".backup";
+    const backupPath = filePath + '.backup';
     fs.copyFileSync(filePath, backupPath);
     if (config.verbose) {
       console.log(`  📋 Backup: ${path.basename(backupPath)}`);
@@ -198,7 +192,7 @@ function createBackup(filePath) {
  */
 function processFile(filePath) {
   try {
-    const originalContent = fs.readFileSync(filePath, "utf8");
+    const originalContent = fs.readFileSync(filePath, 'utf8');
     let content = originalContent;
     let fileChanges = 0;
     const appliedFixes = [];
@@ -208,7 +202,7 @@ function processFile(filePath) {
       for (const fix of categoryFixes) {
         const beforeContent = content;
 
-        if (typeof fix.replacement === "function") {
+        if (typeof fix.replacement === 'function') {
           content = content.replace(fix.pattern, fix.replacement);
         } else {
           content = content.replace(fix.pattern, fix.replacement);
@@ -241,7 +235,7 @@ function processFile(filePath) {
 
       if (!config.dryRun) {
         createBackup(filePath);
-        fs.writeFileSync(filePath, content, "utf8");
+        fs.writeFileSync(filePath, content, 'utf8');
         if (config.verbose) {
           console.log(`  💾 File updated\n`);
         }
@@ -259,16 +253,10 @@ function processFile(filePath) {
  * Fix specific problematic files
  */
 function fixSpecificFiles() {
-  console.log("🎯 Fixing specific problematic files...\n");
+  console.log('🎯 Fixing specific problematic files...\n');
 
   // Fix vector-schema.ts
-  const vectorSchemaPath = path.join(
-    "src",
-    "lib",
-    "server",
-    "database",
-    "vector-schema.ts",
-  );
+  const vectorSchemaPath = path.join('src', 'lib', 'server', 'database', 'vector-schema.ts');
   if (fs.existsSync(vectorSchemaPath)) {
     const fixedVectorSchema = `// Enhanced Drizzle schema with pgvector support
 import { sql } from "drizzle-orm";
@@ -386,35 +374,35 @@ export const searchEmbeddings = pgTable(
 
     if (!config.dryRun) {
       createBackup(vectorSchemaPath);
-      fs.writeFileSync(vectorSchemaPath, fixedVectorSchema, "utf8");
+      fs.writeFileSync(vectorSchemaPath, fixedVectorSchema, 'utf8');
     }
-    console.log("✅ Fixed vector-schema.ts with proper Drizzle syntax\n");
+    console.log('✅ Fixed vector-schema.ts with proper Drizzle syntax\n');
   }
 
   // Fix seed.ts file
-  const seedPath = path.join("src", "lib", "server", "db", "seed.ts");
+  const seedPath = path.join('src', 'lib', 'server', 'db', 'seed.ts');
   if (fs.existsSync(seedPath)) {
     try {
-      let seedContent = fs.readFileSync(seedPath, "utf8");
+      let seedContent = fs.readFileSync(seedPath, 'utf8');
 
       // Fix syntax errors in seed file
       seedContent = seedContent.replace(
         /return\s+await\s+seedDatabase\(\)\s*\}\s*\)\s*$/gm,
-        "return await seedDatabase();\n}",
+        'return await seedDatabase();\n}'
       );
       seedContent = seedContent.replace(
         /\}\s*\)\s*\.onConflictDoNothing\(\);\s*$/gm,
-        "}).onConflictDoNothing();",
+        '}).onConflictDoNothing();'
       );
-      seedContent = seedContent.replace(/UserSettings/g, "UserSettingsExt");
+      seedContent = seedContent.replace(/UserSettings/g, 'UserSettingsExt');
 
       if (!config.dryRun) {
         createBackup(seedPath);
-        fs.writeFileSync(seedPath, seedContent, "utf8");
+        fs.writeFileSync(seedPath, seedContent, 'utf8');
       }
-      console.log("✅ Fixed seed.ts syntax errors\n");
+      console.log('✅ Fixed seed.ts syntax errors\n');
     } catch (error) {
-      console.log("⚠️ Could not fix seed.ts automatically\n");
+      console.log('⚠️ Could not fix seed.ts automatically\n');
     }
   }
 }
@@ -423,10 +411,10 @@ export const searchEmbeddings = pgTable(
  * Fix AI service type issues
  */
 function fixAIServiceTypes() {
-  const aiServicePath = path.join("src", "lib", "services", "ai-service.ts");
+  const aiServicePath = path.join('src', 'lib', 'services', 'ai-service.ts');
   if (fs.existsSync(aiServicePath)) {
     try {
-      let content = fs.readFileSync(aiServicePath, "utf8");
+      let content = fs.readFileSync(aiServicePath, 'utf8');
 
       // Fix embedding array type issues
       const fixedEmbeddingHandling = `
@@ -445,21 +433,21 @@ embedding: normalizeEmbedding(embedding),
       // Apply the fix
       content = content.replace(
         /embedding:\s*Array\.isArray\(embedding\[0\]\)\s*\?\s*embedding\[0\]\s*:\s*embedding,/g,
-        "embedding: normalizeEmbedding(embedding),",
+        'embedding: normalizeEmbedding(embedding),'
       );
 
       // Add the helper function if not present
-      if (!content.includes("normalizeEmbedding")) {
+      if (!content.includes('normalizeEmbedding')) {
         content = fixedEmbeddingHandling + content;
       }
 
       if (!config.dryRun) {
         createBackup(aiServicePath);
-        fs.writeFileSync(aiServicePath, content, "utf8");
+        fs.writeFileSync(aiServicePath, content, 'utf8');
       }
-      console.log("✅ Fixed AI service type issues\n");
+      console.log('✅ Fixed AI service type issues\n');
     } catch (error) {
-      console.log("⚠️ Could not fix AI service automatically\n");
+      console.log('⚠️ Could not fix AI service automatically\n');
     }
   }
 }
@@ -476,8 +464,8 @@ function main() {
   }
 
   console.log(`📂 Scanning: ${srcPath}`);
-  console.log(`🚀 Mode: ${config.dryRun ? "DRY RUN" : "APPLY FIXES"}`);
-  console.log(`💾 Backup: ${config.backup ? "ENABLED" : "DISABLED"}\n`);
+  console.log(`🚀 Mode: ${config.dryRun ? 'DRY RUN' : 'APPLY FIXES'}`);
+  console.log(`💾 Backup: ${config.backup ? 'ENABLED' : 'DISABLED'}\n`);
 
   // Fix specific problematic files first
   fixSpecificFiles();
@@ -490,15 +478,15 @@ function main() {
   files.forEach(processFile);
 
   // Print summary
-  console.log("\n📊 SUMMARY");
-  console.log("===========");
+  console.log('\n📊 SUMMARY');
+  console.log('===========');
   console.log(`Files processed: ${stats.filesProcessed}`);
   console.log(`Files changed: ${stats.filesChanged}`);
   console.log(`Total fixes applied: ${stats.totalFixes}`);
   console.log();
 
   if (Object.keys(stats.fixesByCategory).length > 0) {
-    console.log("Fixes by category:");
+    console.log('Fixes by category:');
     for (const [category, count] of Object.entries(stats.fixesByCategory)) {
       console.log(`  • ${category}: ${count} fixes`);
     }
@@ -506,24 +494,24 @@ function main() {
   }
 
   if (stats.errors.length > 0) {
-    console.log("❌ Errors encountered:");
+    console.log('❌ Errors encountered:');
     stats.errors.forEach((error) => console.log(`  • ${error}`));
     console.log();
   }
 
   if (stats.filesChanged > 0) {
     console.log(
-      `✅ Successfully fixed ${stats.totalFixes} issues across ${stats.filesChanged} files!`,
+      `✅ Successfully fixed ${stats.totalFixes} issues across ${stats.filesChanged} files!`
     );
-    console.log("\n🚀 Next steps:");
+    console.log('\n🚀 Next steps:');
     console.log('1. Run "npm run check" to verify fixes');
     console.log('2. Test your application with "npm run dev"');
-    console.log("3. Remove backup files once satisfied");
+    console.log('3. Remove backup files once satisfied');
   } else {
-    console.log("ℹ️ No issues found to fix.");
+    console.log('ℹ️ No issues found to fix.');
   }
 
-  console.log("\n🎉 Error fixing complete!");
+  console.log('\n🎉 Error fixing complete!');
 }
 
 // Run the fixer

@@ -1,6 +1,6 @@
 // WebSocket server startup script
-const { WebSocketServer } = require("ws");
-const { createClient } = require("redis");
+const { WebSocketServer } = require('ws');
+const { createClient } = require('redis');
 
 const PORT = process.env.WEBSOCKET_PORT || 3030;
 
@@ -21,11 +21,11 @@ class SimpleWebSocketServer {
 
       // Setup Redis clients
       this.redisClient = createClient({
-        url: process.env.REDIS_URL || "redis://localhost:6379",
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
       });
 
       this.redisSub = createClient({
-        url: process.env.REDIS_URL || "redis://localhost:6379",
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
       });
 
       // Connect Redis clients
@@ -33,59 +33,59 @@ class SimpleWebSocketServer {
       await this.redisSub.connect();
 
       // Subscribe to evidence updates
-      await this.redisSub.subscribe("evidence_update", (message) => {
+      await this.redisSub.subscribe('evidence_update', (message) => {
         this.broadcast(message);
       });
 
       // Setup WebSocket connections
-      this.wss.on("connection", (ws) => {
-        console.log("Client connected");
+      this.wss.on('connection', (ws) => {
+        console.log('Client connected');
         this.clients.add(ws);
 
-        ws.on("message", (message) => {
+        ws.on('message', (message) => {
           try {
             const data = JSON.parse(message.toString());
-            console.log("Received:", data);
+            console.log('Received:', data);
 
-            if (data.type === "subscribe") {
+            if (data.type === 'subscribe') {
               // Handle subscription requests
               ws.subscriptions = data.channels || [];
             }
           } catch (error) {
-            console.error("Message parse error:", error);
+            console.error('Message parse error:', error);
           }
         });
 
-        ws.on("close", () => {
-          console.log("Client disconnected");
+        ws.on('close', () => {
+          console.log('Client disconnected');
           this.clients.delete(ws);
         });
 
-        ws.on("error", (error) => {
-          console.error("WebSocket error:", error);
+        ws.on('error', (error) => {
+          console.error('WebSocket error:', error);
           this.clients.delete(ws);
         });
 
         // Send welcome message
         ws.send(
           JSON.stringify({
-            type: "welcome",
-            message: "Connected to real-time server",
+            type: 'welcome',
+            message: 'Connected to real-time server',
             timestamp: new Date().toISOString(),
-          }),
+          })
         );
       });
 
-      console.log("✅ WebSocket server initialized");
+      console.log('✅ WebSocket server initialized');
     } catch (error) {
-      console.error("❌ Failed to initialize WebSocket server:", error);
+      console.error('❌ Failed to initialize WebSocket server:', error);
       throw error;
     }
   }
 
   broadcast(message) {
     const messageStr = JSON.stringify({
-      type: "update",
+      type: 'update',
       data: JSON.parse(message),
       timestamp: new Date().toISOString(),
     });
@@ -95,7 +95,7 @@ class SimpleWebSocketServer {
         try {
           client.send(messageStr);
         } catch (error) {
-          console.error("Failed to send message to client:", error);
+          console.error('Failed to send message to client:', error);
           this.clients.delete(client);
         }
       }
@@ -125,9 +125,9 @@ class SimpleWebSocketServer {
         await this.redisSub.quit();
       }
 
-      console.log("✅ WebSocket server shut down gracefully");
+      console.log('✅ WebSocket server shut down gracefully');
     } catch (error) {
-      console.error("❌ Error during shutdown:", error);
+      console.error('❌ Error during shutdown:', error);
     }
   }
 
@@ -142,7 +142,7 @@ class SimpleWebSocketServer {
 
 async function startWebSocketServer() {
   try {
-    console.log("🚀 Starting WebSocket server...");
+    console.log('🚀 Starting WebSocket server...');
     const server = new SimpleWebSocketServer(PORT);
 
     // Initialize the server
@@ -155,24 +155,24 @@ async function startWebSocketServer() {
     setInterval(() => {
       const stats = server.getStats();
       console.log(
-        `📊 Stats: ${stats.connectedClients} clients, uptime: ${Math.floor(stats.uptime)}s`,
+        `📊 Stats: ${stats.connectedClients} clients, uptime: ${Math.floor(stats.uptime)}s`
       );
     }, 30000);
 
     // Handle graceful shutdown
-    process.on("SIGINT", async () => {
-      console.log("\n⏹️ Shutting down WebSocket server...");
+    process.on('SIGINT', async () => {
+      console.log('\n⏹️ Shutting down WebSocket server...');
       await server.shutdown();
       process.exit(0);
     });
 
-    process.on("SIGTERM", async () => {
-      console.log("\n⏹️ Shutting down WebSocket server...");
+    process.on('SIGTERM', async () => {
+      console.log('\n⏹️ Shutting down WebSocket server...');
       await server.shutdown();
       process.exit(0);
     });
   } catch (error) {
-    console.error("❌ Failed to start WebSocket server:", error);
+    console.error('❌ Failed to start WebSocket server:', error);
     process.exit(1);
   }
 }

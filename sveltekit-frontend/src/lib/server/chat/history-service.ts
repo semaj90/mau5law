@@ -13,15 +13,15 @@ export class ChatHistoryService {
       .select()
       .from(chatSessions)
       .where(sql`${(chatSessions as any).metadata} ->> 'userId' = ${userId}`)
-      .orderBy(desc(chatSessions.updatedAt))
+      .orderBy(desc(chatSessions.updatedAt)
       .limit(limit);
   }
 
   static async getMessages(sessionId: string) {
     return db.select()
       .from(chatMessages)
-      .where(eq(chatMessages.sessionId, sessionId))
-      .orderBy(desc(chatMessages.createdAt));
+      .where(eq(chatMessages.sessionId, sessionId)
+      .orderBy(desc(chatMessages.createdAt);
   }
 
   static async createSession(userId: string, model = "gemma3-legal") {
@@ -50,7 +50,7 @@ export class ChatHistoryService {
       embedding: null,
       metadata: {
         model: params?.model || 'unknown',
-        ...(params.metadata || {}),
+        ...(params.metadata || {,}),
       },
     };
     await db.insert(chatMessages).values(msg);
@@ -59,13 +59,13 @@ export class ChatHistoryService {
     const currentSession = await db
       .select()
       .from(chatSessions)
-      .where(eq(chatSessions.id, params.sessionId))
+      .where(eq(chatSessions.id, params.sessionId)
       .limit(1);
 
     if (currentSession.length > 0) {
       const currentCount = (currentSession[0].metadata as any)?.messageCount || 0;
       await db
-        .update(chatSessions)
+        .update(chatSessions);
         .set({
           metadata: {
             ...(currentSession[0].metadata as object),
@@ -73,7 +73,7 @@ export class ChatHistoryService {
           },
           updatedAt: new Date(),
         })
-        .where(eq(chatSessions.id, params.sessionId));
+        .where(eq(chatSessions.id, params.sessionId);
     }
     return id;
   }

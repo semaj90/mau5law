@@ -23,8 +23,9 @@ async function run() {
     process.exit(1);
   }
 
-  const files = fs.readdirSync(migrationsDir)
-    .filter(f => f.endsWith('.sql'))
+  const files = fs
+    .readdirSync(migrationsDir)
+    .filter((f) => f.endsWith('.sql'))
     .sort();
 
   if (files.length === 0) {

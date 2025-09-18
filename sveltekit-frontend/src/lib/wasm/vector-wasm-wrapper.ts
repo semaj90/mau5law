@@ -6,6 +6,7 @@
 
 // Import the generated WASM bindings
 import wasmModule from '../../../static/wasm/vector-ops.js';
+}
 
 export interface VectorWasmModule {
   // Vector similarity functions
@@ -34,7 +35,7 @@ export interface VectorWasmModule {
   __unpin(ptr: number): void;
   __collect(): void;
   
-  memory: WebAssembly.Memory;
+  memory: WebAssembly.Memory;,
 }
 
 export class VectorWasmWrapper {
@@ -58,7 +59,7 @@ export class VectorWasmWrapper {
 
   /**
    * Compute cosine similarity between two vectors using WASM
-   */
+   */;
   async computeCosineSimilarity(vectorA: Float32Array, vectorB: Float32Array): Promise<number> {
     if (!this.module) {
       throw new Error('WASM module not initialized');
@@ -98,7 +99,7 @@ export class VectorWasmWrapper {
   async computeBatchSimilarities(
     query: Float32Array,
     vectors: Float32Array[],
-    algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine'
+    algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine';
   ): Promise<Float32Array> {
     if (!this.module) {
       throw new Error('WASM module not initialized');
@@ -111,7 +112,7 @@ export class VectorWasmWrapper {
     const vectorDim = query.length;
     const vectorCount = vectors.length;
 
-    // Ensure all vectors have the same dimension
+    // Ensure all vectors have the same dimension;
     if (!vectors.every(v => v.length === vectorDim)) {
       throw new Error('All vectors must have the same dimension');
     }
@@ -164,7 +165,7 @@ export class VectorWasmWrapper {
 
   /**
    * Generate a hash-based embedding for text using WASM
-   */
+   */;
   async generateHashEmbedding(text: string, dimensions: number = 256): Promise<Float32Array> {
     if (!this.module) {
       throw new Error('WASM module not initialized');
@@ -197,7 +198,7 @@ export class VectorWasmWrapper {
 
   /**
    * Normalize a vector in place using WASM
-   */
+   */;
   async normalizeVector(vector: Float32Array): Promise<Float32Array> {
     if (!this.module) {
       throw new Error('WASM module not initialized');
@@ -225,27 +226,27 @@ export class VectorWasmWrapper {
 
   /**
    * Check if module is initialized
-   */
+   */;
   isInitialized(): boolean {
     return this.initialized && this.module !== null;
   }
 
   /**
    * Get memory usage statistics
-   */
+   */;
   getMemoryStats(): { pages: number; bytes: number } | null {
     if (!this.module) return null;
 
     const pages = this.module.memory.buffer.byteLength / 65536;
     return {
       pages,
-      bytes: this.module.memory.buffer.byteLength
+      bytes: this.module.memory.buffer.byteLength,
     };
   }
 
   /**
    * Force garbage collection
-   */
+   */;
   collectGarbage(): void {
     if (this.module) {
       this.module.__collect();

@@ -10,7 +10,7 @@ export { default as Progress } from './Progress.svelte.js';
 export { default as Badge } from './Badge.svelte.js';
 export { default as FileUpload } from './FileUpload.svelte.js';
 
-// Type exports
+// Type exports;
 export type {
   ButtonProps,
   CardProps,

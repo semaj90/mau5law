@@ -2,6 +2,7 @@
 import { users } from "$lib/server/db/schema-postgres";
 import { eq } from "drizzle-orm";
 import { db } from './index.js';
+}
 
 export interface User {
   id: string;
@@ -13,14 +14,14 @@ export interface User {
   isActive: boolean;
   avatarUrl: string | null;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
 export async function getUserById(id: string): Promise<User | null> {
   try {
     const result = await db
       .select()
       .from(users)
-      .where(eq(users.id, id))
+      .where(eq(users.id, id)
       .limit(1);
     return result[0] || null;
   } catch (error) {
@@ -33,7 +34,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
     const result = await db
       .select()
       .from(users)
-      .where(eq(users.email, email))
+      .where(eq(users.email, email)
       .limit(1);
     return result[0] || null;
   } catch (error) {
@@ -51,7 +52,7 @@ export async function createUser(userData: {
 }): Promise<User | null> {
   try {
     const result = await db
-      .insert(users)
+      .insert(users);
       .values({
         email: userData.email,
         hashedPassword: userData.hashedPassword,
@@ -76,7 +77,7 @@ export async function updateUser(
     const result = await db
       .update(users)
       .set({ ...updates, updatedAt: new Date() })
-      .where(eq(users.id, id))
+      .where(eq(users.id, id)
       .returning();
 
     return result[0] || null;

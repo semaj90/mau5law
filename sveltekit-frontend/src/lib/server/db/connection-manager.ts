@@ -20,7 +20,7 @@ let postgresjsDb: PostgresJsDatabase<typeof schema> | null = null;
 
 /**
  * Initialize application database pool
- */
+ */;
 export function getAppPool(): Pool {
   if (!appPool) {
     const validation = validateDatabaseConfig();
@@ -33,12 +33,12 @@ export function getAppPool(): Pool {
 
     appPool = new Pool(poolConfig);
 
-    // Handle pool errors
+    // Handle pool errors;
     appPool.on('error', (err) => {
       console.error('Database pool error:', err);
     });
 
-    // Handle pool connection
+    // Handle pool connection;
     appPool.on('connect', (client) => {
       console.log('✅ Database pool connection established');
     });
@@ -51,13 +51,13 @@ export function getAppPool(): Pool {
 
 /**
  * Initialize admin database pool (for migrations and admin tasks)
- */
+ */;
 export function getAdminPool(): Pool {
   if (!adminPool) {
     const poolConfig = {
       ...getPoolConfig(),
       connectionString: getConnectionString('admin'),
-      max: 2 // Smaller pool for admin operations
+      max: 2 // Smaller pool for admin operations,
     };
 
     adminPool = new Pool(poolConfig);
@@ -74,7 +74,7 @@ export function getAdminPool(): Pool {
 
 /**
  * Get postgres.js client (for complex queries and better performance)
- */
+ */;
 export function getPostgresJsClient(): postgres.Sql {
   if (!postgresJsClient) {
     const connectionString = getConnectionString();
@@ -85,10 +85,10 @@ export function getPostgresJsClient(): postgres.Sql {
       idle_timeout: 20,
       connect_timeout: 10,
       types: {
-        bigint: postgres.BigInt
+        bigint: postgres.BigInt,
       },
       onnotice: () => {}, // Suppress notices
-      debug: process.env.NODE_ENV === 'development'
+      debug: process.env.NODE_ENV === 'development',
     });
 
     console.log('🚀 Postgres.js client initialized');
@@ -99,7 +99,7 @@ export function getPostgresJsClient(): postgres.Sql {
 
 /**
  * Get Drizzle database instance (node-postgres adapter)
- */
+ */;
 export function getDrizzleDb(): NodePgDatabase<typeof schema> {
   if (!drizzleDb) {
     const pool = getAppPool();
@@ -112,7 +112,7 @@ export function getDrizzleDb(): NodePgDatabase<typeof schema> {
 
 /**
  * Get Drizzle database instance (postgres.js adapter)
- */
+ */;
 export function getPostgresJsDrizzleDb(): PostgresJsDatabase<typeof schema> {
   if (!postgresjsDb) {
     const client = getPostgresJsClient();
@@ -128,7 +128,7 @@ export function getPostgresJsDrizzleDb(): PostgresJsDatabase<typeof schema> {
  */
 export async function executeQuery<T>(
   queryFn: (client: PoolClient) => Promise<T>,
-  useAdmin = false
+  useAdmin = false;
 ): Promise<T> {
   const pool = useAdmin ? getAdminPool() : getAppPool();
   const client = await pool.connect();
@@ -143,7 +143,7 @@ export async function executeQuery<T>(
 
 /**
  * Test database connectivity
- */
+ */;
 export async function testDatabaseConnection(): Promise<any> {
   try {
     const pool = getAppPool();
@@ -184,29 +184,29 @@ export async function testDatabaseConnection(): Promise<any> {
     console.error('Database connection test failed:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
 
 /**
  * Close all database connections
- */
+ */;
 export async function closeDatabaseConnections(): Promise<void> {
   const promises: Promise<void>[] = [];
 
   if (appPool) {
-    promises.push(appPool.end());
+    promises.push(appPool.end();
     appPool = null;
   }
 
   if (adminPool) {
-    promises.push(adminPool.end());
+    promises.push(adminPool.end();
     adminPool = null;
   }
 
   if (postgresJsClient) {
-    promises.push(postgresJsClient.end());
+    promises.push(postgresJsClient.end();
     postgresJsClient = null;
   }
 
@@ -220,7 +220,7 @@ export async function closeDatabaseConnections(): Promise<void> {
 
 /**
  * Health check for database connections
- */
+ */;
 export async function getDatabaseHealth() {
   const config = getDatabaseConfig();
   const validation = validateDatabaseConfig();
@@ -229,7 +229,7 @@ export async function getDatabaseHealth() {
     return {
       status: 'unhealthy',
       errors: validation.errors,
-      config: null
+      config: null,
     };
   }
 
@@ -243,14 +243,14 @@ export async function getDatabaseHealth() {
         port: config.port,
         database: config.database,
         user: config.user,
-        ssl: config.ssl
+        ssl: config.ssl,
       },
       connection: connectionTest,
       pools: {
         app: {
           totalCount: appPool?.totalCount || 0,
           idleCount: appPool?.idleCount || 0,
-          waitingCount: appPool?.waitingCount || 0
+          waitingCount: appPool?.waitingCount || 0,
         }
       }
     };
@@ -258,7 +258,7 @@ export async function getDatabaseHealth() {
     return {
       status: 'error',
       error: error instanceof Error ? error.message: 'Unknown error',
-      config: null
+      config: null,
     };
   }
 }

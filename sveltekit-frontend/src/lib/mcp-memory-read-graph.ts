@@ -4,6 +4,7 @@
 // Ensures #mcp_memory2_read_graph is available in the codebase
 
 import type { RequestHandler } from "@sveltejs/kit";
+}
 
 export interface GraphNode {
   id: string;
@@ -12,7 +13,7 @@ export interface GraphNode {
   file: string;
   lineNumber?: number;
   duplicateCount?: number;
-  relationships: string[];
+  relationships: string[];,
 }
 
 export interface GraphReadResponse {
@@ -20,19 +21,19 @@ export interface GraphReadResponse {
   edges: {
     from: string;
     to: string;
-    type: 'declares' | 'uses' | 'imports' | 'exports' | 'duplicates';
+    type: 'declares' | 'uses' | 'imports' | 'exports' | 'duplicates';,
   }[];
   metadata: {
     totalNodes: number;
     duplicateVariables: number;
     componentCount: number;
-    lastUpdated: string;
+    lastUpdated: string;,
   };
 }
 
 export async function mcpMemory2ReadGraph(
   filter?: string,
-  nodeType?: string
+  nodeType?: string;
 ): Promise<GraphReadResponse> {
   // Enhanced MCP memory2 read_graph endpoint with filtering
   const params = new URLSearchParams();
@@ -45,14 +46,14 @@ export async function mcpMemory2ReadGraph(
   });
   
   if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
+    const error = await response.json().catch(() => ({});
     throw new Error(`Failed to read MCP memory2 graph: ${error.message || response.statusText}`);
   }
   
   return response.json();
 }
 
-// Specialized helpers for duplicate variable tracking
+// Specialized helpers for duplicate variable tracking;
 export async function findDuplicateVariables(): Promise<GraphNode[]> {
   const graph = await mcpMemory2ReadGraph(undefined, 'variable');
   return graph.nodes.filter(node => 
@@ -83,16 +84,16 @@ export async function analyzeComponentStructure(componentName: string): Promise<
     component: componentNode,
     variables: relatedNodes.filter(n => n.type === 'variable'),
     props: relatedNodes.filter(n => n.type === 'prop'),
-    duplicates: relatedNodes.filter(n => (n.duplicateCount || 0) > 1)
+    duplicates: relatedNodes.filter(n => (n.duplicateCount || 0) > 1),
   };
 }
 
-// Helper for prop destructuring consolidation analysis
+// Helper for prop destructuring consolidation analysis;
 export async function analyzePropDestructuring(filePath: string): Promise<any> {
   const graph = await mcpMemory2ReadGraph(filePath, 'prop');
-  const propNodes = graph.nodes.filter(n => n.file.includes(filePath));
+  const propNodes = graph.nodes.filter(n => n.file.includes(filePath);
   
-  // Group by duplicate names
+  // Group by duplicate names;
   const duplicateGroups = propNodes.reduce((acc, node) => {
     if (!acc[node.name]) acc[node.name] = [];
     acc[node.name].push(node);

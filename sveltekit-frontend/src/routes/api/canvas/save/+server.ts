@@ -9,15 +9,15 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     if (!canvasState || !reportId) {
       return json(
-        { error: "Canvas state and report ID are required" },
+        { error: "Canvas state and report ID are required" },)
         { status: 400 },
       );
     }
-    // Validate canvas state structure
+    // Validate canvas state structure;
     if (!canvasState.id || !canvasState.data) {
       return json({ error: "Invalid canvas state format" }, { status: 400 });
     }
-    // Add metadata
+    // Add metadata;
     const enhancedCanvasState = {
       ...canvasState,
       reportId,
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     if (!canvasId && !reportId) {
       return json(
-        { error: "Canvas ID or Report ID is required" },
+        { error: "Canvas ID or Report ID is required" },)
         { status: 400 },
       );
     }
@@ -88,7 +88,7 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     // Check permissions (basic check - in production would be more sophisticated)
     if (
       canvasState.updatedBy !== locals.user?.id &&
-      locals.user?.role !== "admin"
+      locals.user?.role !== "admin";
     ) {
       return json({ error: "Insufficient permissions" }, { status: 403 });
     }

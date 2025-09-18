@@ -18,6 +18,6 @@ export const GET = async () => {
     redis: { ok: redisOk, latencyMs },
     uptimeSeconds: Math.round(process.uptime()),
     timestamp: new Date().toISOString(),
-    totalTimeMs: Date.now() - start
+    totalTimeMs: Date.now() - start,
   }, { status: redisOk ? 200 : 503 });
 };

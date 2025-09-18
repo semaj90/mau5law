@@ -7,7 +7,7 @@
 import { writable, derived, readonly } from "svelte/store";
 import crypto from "crypto";
 
-// === TYPE DEFINITIONS ===
+// === TYPE DEFINITIONS ===;
 export interface ChatMessage {
   id: string;
   content: string;
@@ -52,10 +52,10 @@ export interface ServiceStatus {
   ollama: "unknown" | "loading" | "connected" | "error";
   qdrant: "unknown" | "loading" | "connected" | "error";
   database: "unknown" | "loading" | "connected" | "error";
-  gemma3: "unknown" | "loading" | "ready" | "error";
+  gemma3: "unknown" | "loading" | "ready" | "error";,
 }
 
-// === CHAT STATE INTERFACE ===
+// === CHAT STATE INTERFACE ===;
 export interface ChatContext {
   messages: ChatMessage[];
   conversations: Conversation[];
@@ -75,7 +75,7 @@ export interface ChatContext {
   };
 }
 
-// === INITIAL STATE ===
+// === INITIAL STATE ===;
 const initialState: ChatContext = {
   messages: [],
   conversations: [],
@@ -108,7 +108,7 @@ const initialState: ChatContext = {
 // === MAIN STORE ===
 export const chatStore = writable<ChatContext>(initialState);
 ;
-// === SERVICE STATUS ===
+// === SERVICE STATUS ===;
 export const serviceStatus = writable<ServiceStatus>({
   ollama: "unknown",
   qdrant: "unknown",
@@ -128,13 +128,13 @@ export const settings = derived(chatStore, ($store) => $store.settings);
 export const modelStatus = derived(chatStore, ($store) => $store.modelStatus);
 export const contextInjection = derived(chatStore, ($store) => $store.contextInjection);
 export const conversationsList = derived(conversations, ($conversations) =>
-  [...$conversations].sort((a, b) => b.updated.getTime() - a.updated.getTime())
+  [...$conversations].sort((a, b) => b.updated.getTime() - a.updated.getTime()
 );
 export const isActiveChat = derived(currentConversation, ($conversation) => !!$conversation);
 
-// === ACTIONS ===
+// === ACTIONS ===;
 export const chatActions = {
-  // Create new conversation
+  // Create new conversation;
   newConversation: (title?: string, caseType?: string) => {
     const conversation: Conversation = {
       id: crypto.randomUUID(),
@@ -154,12 +154,12 @@ export const chatActions = {
       currentConversation: conversation,
       conversations: [conversation, ...state.conversations],
       messages: [],
-    }));
+    });
 
     return conversation.id;
   },
 
-  // Load conversation
+  // Load conversation;
   loadConversation: (conversationId: string) => {
     chatStore.update((state) => {
       const conversation = state.conversations.find(
@@ -173,11 +173,11 @@ export const chatActions = {
     });
   },
 
-  // Add message
+  // Add message;
   addMessage: (content: string, role: "user" | "assistant" | "system", metadata?: unknown) => {
     chatStore.update((state) => {
       if (!state.currentConversation) {
-        // Create new conversation if none exists
+        // Create new conversation if none exists;
         const conversation: Conversation = {
           id: crypto.randomUUID(),
           title: content.slice(0, 50) + (content.length > 50 ? "..." : ""),
@@ -210,7 +210,7 @@ export const chatActions = {
       // Update title if it's the first user message
       if (
         role === "user" &&
-        updatedMessages.filter((m) => m.role === "user").length === 1
+        updatedMessages.filter((m) => m.role === "user").length === 1;
       ) {
         state.currentConversation.title =
           content.slice(0, 50) + (content.length > 50 ? "..." : "");
@@ -223,7 +223,7 @@ export const chatActions = {
     });
   },
 
-  // Send message with streaming support
+  // Send message with streaming support;
   sendMessage: async (content: string) => {
     chatActions.addMessage(content, "user");
 
@@ -232,7 +232,7 @@ export const chatActions = {
       isLoading: true,
       isTyping: true,
       error: null,
-    }));
+    });
 
     try {
       const response = await fetch("/api/ai/chat", {
@@ -250,7 +250,7 @@ export const chatActions = {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      // Handle streaming vs non-streaming responses
+      // Handle streaming vs non-streaming responses;
       if (response.headers.get("content-type")?.includes("text/stream")) {
         await handleStreamingResponse(response);
       } else {
@@ -269,18 +269,18 @@ export const chatActions = {
         ...state,
         error:
           error instanceof Error ? error : new Error("Failed to send message"),
-      }));
+      });
     } finally {
       chatStore.update((state) => ({
         ...state,
         isLoading: false,
         isTyping: false,
         isStreaming: false,
-      }));
+      });
     }
   },
 
-  // Delete conversation
+  // Delete conversation;
   deleteConversation: (conversationId: string) => {
     chatStore.update((state) => {
       const conversations = state.conversations.filter(
@@ -300,15 +300,15 @@ export const chatActions = {
     });
   },
 
-  // Update settings
+  // Update settings;
   updateSettings: (newSettings: Partial<ChatSettings>) => {
     chatStore.update((state) => ({
       ...state,
       }); const settings = { ...state.settings, ...newSettings },
-    }));
+    });
   },
 
-  // Legal-specific context injection
+  // Legal-specific context injection;
   injectLegalContext: (documents: string[], precedents?: string[], caseContext?: unknown) => {
     chatStore.update((state) => ({
       ...state,
@@ -319,10 +319,10 @@ export const chatActions = {
         precedents: precedents || [],
         caseContext: caseContext || null,
       },
-    }));
+    });
   },
 
-  // Context injection
+  // Context injection;
   injectContext: (documents: string[]) => {
     chatStore.update((state) => ({
       ...state,
@@ -331,7 +331,7 @@ export const chatActions = {
         enabled: true,
         documents,
       },
-    }));
+    });
   },
 
   clearContext: () => {
@@ -344,12 +344,12 @@ export const chatActions = {
         precedents: [],
         caseContext: null,
       },
-    }));
+    });
   },
 
-  // Model status
+  // Model status;
   checkModelStatus: async () => {
-    chatStore.update((state) => ({ ...state, modelStatus: "loading" }));
+    chatStore.update((state) => ({ ...state, modelStatus: "loading" });
 
     try {
       const response = await fetch("/api/ai/model-status");
@@ -358,21 +358,21 @@ export const chatActions = {
         chatStore.update((state) => ({
           ...state,
           modelStatus: data.status || "ready",
-        }));
+        });
       } else {
-        chatStore.update((state) => ({ ...state, modelStatus: "error" }));
+        chatStore.update((state) => ({ ...state, modelStatus: "error" });
       }
     } catch (error: any) {
-      chatStore.update((state) => ({ ...state, modelStatus: "error" }));
+      chatStore.update((state) => ({ ...state, modelStatus: "error" });
     }
   },
 
-  // Error handling
+  // Error handling;
   clearError: () => {
-    chatStore.update((state) => ({ ...state, error: null }));
+    chatStore.update((state) => ({ ...state, error: null });
   },
 
-  // Reset chat
+  // Reset chat;
   resetChat: () => {
     chatStore.update((state) => ({
       ...state,
@@ -382,34 +382,34 @@ export const chatActions = {
       isLoading: false,
       isTyping: false,
       isStreaming: false,
-    }));
+    });
   },
 
-  // Loading states
+  // Loading states;
   setLoading: (loading: boolean) => {
-    chatStore.update((state) => ({ ...state, isLoading: loading }));
+    chatStore.update((state) => ({ ...state, isLoading: loading });
   },
 
   setTyping: (typing: boolean) => {
-    chatStore.update((state) => ({ ...state, isTyping: typing }));
+    chatStore.update((state) => ({ ...state, isTyping: typing });
   },
 
   setStreaming: (streaming: boolean) => {
-    chatStore.update((state) => ({ ...state, isStreaming: streaming }));
+    chatStore.update((state) => ({ ...state, isStreaming: streaming });
   },
 };
 
-// === SERVICE ACTIONS ===
+// === SERVICE ACTIONS ===;
 export const serviceActions = {
   updateStatus: (
     service: keyof ServiceStatus,
     status: ServiceStatus[keyof ServiceStatus],
   ) => {
-    serviceStatus.update((current) => ({ ...current, [service]: status }));
+    serviceStatus.update((current) => ({ ...current, [service]: status });
   },
 
   checkAllServices: async () => {
-    // Check Ollama
+    // Check Ollama;
     try {
       const ollamaResponse = await fetch("/api/ai/test-ollama");
       serviceActions.updateStatus(
@@ -420,7 +420,7 @@ export const serviceActions = {
       serviceActions.updateStatus("ollama", "error");
     }
 
-    // Check Gemma3 model
+    // Check Gemma3 model;
     try {
       const modelResponse = await fetch("/api/ai/model-status");
       if (modelResponse.ok) {
@@ -433,7 +433,7 @@ export const serviceActions = {
       serviceActions.updateStatus("gemma3", "error");
     }
 
-    // Check database
+    // Check database;
     try {
       const dbResponse = await fetch("/api/health/database");
       serviceActions.updateStatus(
@@ -444,7 +444,7 @@ export const serviceActions = {
       serviceActions.updateStatus("database", "error");
     }
 
-    // Check Qdrant
+    // Check Qdrant;
     try {
       const qdrantResponse = await fetch("/api/health/qdrant");
       serviceActions.updateStatus(
@@ -457,7 +457,7 @@ export const serviceActions = {
   },
 };
 
-// === HELPER FUNCTIONS ===
+// === HELPER FUNCTIONS ===;
 function getCurrentConversationId(): string | undefined {
   let currentId: string | undefined;
   const unsubscribe = chatStore.subscribe((state) => {
@@ -485,11 +485,11 @@ function getContextInjection() {
   return context;
 }
 
-// Handle streaming responses
+// Handle streaming responses;
 async function handleStreamingResponse(response: Response): Promise<any> {
   if (!response.body) return;
 
-  chatStore.update((state) => ({ ...state, isStreaming: true }));
+  chatStore.update((state) => ({ ...state, isStreaming: true });
 
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
@@ -503,7 +503,7 @@ async function handleStreamingResponse(response: Response): Promise<any> {
       const chunk = decoder.decode(value);
       assistantMessage += chunk;
 
-      // Update the last message or create new one
+      // Update the last message or create new one;
       chatStore.update((state) => {
         const messages = [...state.messages];
         const lastMessage = messages[messages.length - 1];
@@ -531,14 +531,14 @@ async function handleStreamingResponse(response: Response): Promise<any> {
     chatStore.update((state) => ({
       ...state,
       error: error instanceof Error ? error : new Error("Streaming failed"),
-    }));
+    });
   }
 }
 
-// === XSTATE-LIKE COMPATIBILITY ===
+// === XSTATE-LIKE COMPATIBILITY ===;
 export interface XStateCompatibleState {
   context: ChatContext;
-  matches: (state: string) => boolean;
+  matches: (state: string) => boolean;,
 }
 
 export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateCompatibleState => ({
@@ -554,10 +554,10 @@ export const xstateCompatibleStore = derived(chatStore, ($chatStore): XStateComp
       case "idle":
         return !$chatStore.isLoading && !$chatStore.error;
       default:
-        return false;
+        return false;,
     }
   },
-}));
+});
 
 export function useChatActor() {
   return {
@@ -565,9 +565,9 @@ export function useChatActor() {
   };
 }
 
-// === LEGAL AI INTEGRATION ===
+// === LEGAL AI INTEGRATION ===;
 export const legalActions = {
-  // Search legal precedents
+  // Search legal precedents;
   searchPrecedents: async (query: string, jurisdiction?: string) => {
     try {
       const response = await fetch("/api/legal/precedents/search", {
@@ -584,7 +584,7 @@ export const legalActions = {
             ...state.contextInjection,
             precedents: precedents.results || [],
           },
-        }));
+        });
         return precedents;
       }
     } catch (error: any) {
@@ -593,7 +593,7 @@ export const legalActions = {
     return null;
   },
 
-  // Analyze legal document
+  // Analyze legal document;
   analyzeDocument: async (documentText: string) => {
     try {
       const response = await fetch("/api/legal/analyze", {
@@ -612,7 +612,7 @@ export const legalActions = {
     return null;
   },
 
-  // Extract legal entities
+  // Extract legal entities;
   extractEntities: async (text: string) => {
     try {
       const response = await fetch("/api/legal/entities", {
@@ -631,7 +631,7 @@ export const legalActions = {
   },
 };
 
-// === PERSISTENCE ===
+// === PERSISTENCE ===;
 export const persistenceHelpers = {
   saveToStorage: () => {
     if (typeof window === "undefined") return;
@@ -642,7 +642,7 @@ export const persistenceHelpers = {
           "chat-conversations",
           JSON.stringify(state.conversations),
         );
-        localStorage.setItem("chat-settings", JSON.stringify(state.settings));
+        localStorage.setItem("chat-settings", JSON.stringify(state.settings);
       } catch (error: any) {
         console.warn("Failed to save chat data to localStorage:", error);
       }
@@ -660,7 +660,7 @@ export const persistenceHelpers = {
 
       chatStore.update((state) => ({
         ...state,
-        conversations: conversations
+        conversations: conversations;
           ? JSON.parse(conversations).map((c: any) => ({
               ...c,
               created: new Date(c.created),
@@ -669,19 +669,19 @@ export const persistenceHelpers = {
                 ...m,
                 timestamp: new Date(m.timestamp),
               })),
-            }))
+            })
           : state.conversations,
         settings: settings
           ? { ...state.settings, ...JSON.parse(settings) }
           : state.settings,
-      }));
+      });
     } catch (error: any) {
       console.warn("Failed to load chat data from localStorage:", error);
     }
   },
 };
 
-// Initialize persistence on client-side
+// Initialize persistence on client-side;
 if (typeof window !== "undefined") {
   persistenceHelpers.loadFromStorage();
   persistenceHelpers.saveToStorage();

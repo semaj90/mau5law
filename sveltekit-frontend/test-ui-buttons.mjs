@@ -37,11 +37,14 @@ async function testUI() {
     await page.waitForTimeout(2000);
 
     console.log('🔍 Finding all buttons...');
-    const buttons = await page.locator('button, [role="button"], input[type="submit"], input[type="button"], .btn').all();
+    const buttons = await page
+      .locator('button, [role="button"], input[type="submit"], input[type="button"], .btn')
+      .all();
     console.log(`Found ${buttons.length} button elements`);
 
     // Test clicking each button
-    for (let i = 0; i < Math.min(buttons.length, 20); i++) { // Limit to first 20 buttons
+    for (let i = 0; i < Math.min(buttons.length, 20); i++) {
+      // Limit to first 20 buttons
       try {
         const button = buttons[i];
         const text = await button.textContent().catch(() => '');
@@ -106,7 +109,6 @@ async function testUI() {
         console.log(`❌ Error testing input ${i + 1}: ${error.message}`);
       }
     }
-
   } catch (error) {
     console.error('💥 Critical error during testing:', error.message);
   } finally {

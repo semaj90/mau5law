@@ -1,4 +1,4 @@
-// @ts-nocheck - Complex experimental service with external dependencies
+// @ts-nocheck - Complex experimental service with external dependencies;
 export type WebGPUDiagResult = {
   supported: boolean;
   adapterFound: boolean;
@@ -19,7 +19,7 @@ export type WebGPUDiagResult = {
     isFallbackAdapter?: boolean;
   };
   deviceLimits?: Record<string, number>;
-  recommendedActions: string[];
+  recommendedActions: string[];,
 };
 
 async function tryRequestAdapter(powerPreference: 'high-performance' | 'low-power' | 'default') {
@@ -48,7 +48,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
   }
 
   // Basic support check
-  // @ts-ignore
+  // @ts-ignore;
   if (!navigator.gpu) {
     recommended.push(
       'Update to latest Chrome/Edge or enable WebGPU support.',
@@ -73,7 +73,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
   let t1: number | undefined;
   let t2: number | undefined;
 
-  // Try high-performance → default → low-power
+  // Try high-performance → default → low-power;
   for (const pref of ['high-performance', 'default', 'low-power'] as const) {
     tried.push(pref);
     try {
@@ -82,7 +82,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
         t1 = performance.now();
         // Keep track of which pref yielded an adapter
         var usedPref: 'high-performance' | 'low-power' | 'default' = pref;
-        // Try creating device
+        // Try creating device;
         try {
           device = await adapter.requestDevice();
           t2 = performance.now();
@@ -109,7 +109,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
             recommendedActions: recommended,
           };
 
-          // Heuristics and suggestions
+          // Heuristics and suggestions;
           if ((adapter as any).isFallbackAdapter) {
             warnings.push('Browser reports a fallback adapter (likely no native GPU path).');
             recommended.push(
@@ -147,7 +147,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagResult> {
     warnings,
     powerPreferenceTried: tried,
     timings: t1 ? { requestAdapterMs: t1 - t0 } : Record<string, any>,
-    adapter: adapter
+    adapter: adapter;
       ? {
           label: (adapter as any).label ?? undefined,
           features: Array.from(adapter.features ?? [] as any),

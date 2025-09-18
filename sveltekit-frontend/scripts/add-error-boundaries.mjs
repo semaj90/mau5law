@@ -23,7 +23,10 @@ function processFile(filePath) {
         if (!effectBody.includes('try')) {
           return `$effect(() => {
     try {
-${effectBody.split('\n').map(line => '      ' + line).join('\n')}
+${effectBody
+  .split('\n')
+  .map((line) => '      ' + line)
+  .join('\n')}
     } catch (error) {
       console.error('Effect error:', error);
     }
@@ -69,13 +72,20 @@ ${effectBody.split('\n').map(line => '      ' + line).join('\n')}
     }
 
     // 3. Add proper loading states
-    if (content.includes('$state(') && !content.includes('isLoading') && content.includes('fetch(')) {
+    if (
+      content.includes('$state(') &&
+      !content.includes('isLoading') &&
+      content.includes('fetch(')
+    ) {
       const stateRegex = /let\s+(\w+)\s*=\s*\$state\([^)]+\);/;
       const match = content.match(stateRegex);
 
       if (match && !content.includes('let isLoading')) {
         const insertPoint = content.indexOf(match[0]) + match[0].length;
-        content = content.slice(0, insertPoint) + '\n  let isLoading = $state(false);' + content.slice(insertPoint);
+        content =
+          content.slice(0, insertPoint) +
+          '\n  let isLoading = $state(false);' +
+          content.slice(insertPoint);
         changes++;
         modified = true;
         console.log(`    ✅ Added loading state`);
@@ -97,8 +107,11 @@ ${effectBody.split('\n').map(line => '      ' + line).join('\n')}
 
       content = content.replace(errorHandlingRegex, (match, errorBody) => {
         if (!errorBody.includes('errorMessage')) {
-          return match.replace(errorBody, `${errorBody}
-    errorMessage = error instanceof Error ? error.message : 'An error occurred';`);
+          return match.replace(
+            errorBody,
+            `${errorBody}
+    errorMessage = error instanceof Error ? error.message : 'An error occurred';`
+          );
         }
         return match;
       });
@@ -118,18 +131,21 @@ ${effectBody.split('\n').map(line => '      ' + line).join('\n')}
       content = content.replace(effectRegex, (match, effectBody) => {
         if (!effectBody.includes('return')) {
           const lines = effectBody.split('\n');
-          const addEventListenerLines = lines.filter(line => line.includes('addEventListener'));
+          const addEventListenerLines = lines.filter((line) => line.includes('addEventListener'));
 
           if (addEventListenerLines.length > 0) {
-            const cleanup = addEventListenerLines.map(line => {
-              const eventMatch = line.match(/addEventListener\(['"]([^'"]+)['"],\s*([^)]+)\)/);
-              if (eventMatch) {
-                const eventType = eventMatch[1];
-                const handler = eventMatch[2];
-                return `    element.removeEventListener('${eventType}', ${handler});`;
-              }
-              return '';
-            }).filter(Boolean).join('\n');
+            const cleanup = addEventListenerLines
+              .map((line) => {
+                const eventMatch = line.match(/addEventListener\(['"]([^'"]+)['"],\s*([^)]+)\)/);
+                if (eventMatch) {
+                  const eventType = eventMatch[1];
+                  const handler = eventMatch[2];
+                  return `    element.removeEventListener('${eventType}', ${handler});`;
+                }
+                return '';
+              })
+              .filter(Boolean)
+              .join('\n');
 
             return `$effect(() => {
 ${effectBody}
@@ -196,7 +212,7 @@ function main() {
   const svelteFiles = walkDirectory(srcDir, '.svelte');
 
   // Filter files that might benefit from error boundaries
-  const complexComponents = svelteFiles.filter(file => {
+  const complexComponents = svelteFiles.filter((file) => {
     try {
       const content = readFileSync(file, 'utf8');
       return (
@@ -220,7 +236,8 @@ function main() {
 
   console.log('2️⃣ Adding error boundaries and type guards...\n');
 
-  for (const file of complexComponents.slice(0, 20)) { // Process first 20 to avoid overwhelming
+  for (const file of complexComponents.slice(0, 20)) {
+    // Process first 20 to avoid overwhelming
     console.log(`Processing: ${file}`);
     processFile(file);
     console.log('');

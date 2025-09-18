@@ -2,12 +2,13 @@ import { createHash } from "crypto";
 
 import { existsSync, mkdirSync, writeFileSync, unlinkSync } from "fs";
 import { join } from "path";
+}
 
 export interface UploadConfig {
   uploadDir: string;
   maxFileSize: number;
   allowedTypes: string[];
-  allowedExtensions: string[];
+  allowedExtensions: string[];,
 }
 
 export interface ValidationResult {
@@ -23,7 +24,7 @@ export interface UploadResult {
   error?: string;
 }
 
-// Default configuration for avatar uploads
+// Default configuration for avatar uploads;
 export const AVATAR_UPLOAD_CONFIG: UploadConfig = {
   uploadDir: "static/uploads/avatars",
   maxFileSize: 5 * 1024 * 1024, // 5MB
@@ -44,25 +45,25 @@ export function validateAvatarFile(
   file: File,
   config = AVATAR_UPLOAD_CONFIG,
 ): ValidationResult {
-  // Check if file exists
+  // Check if file exists;
   if (!file) {
     return { valid: false, error: "No file provided" };
   }
 
-  // Check file size
+  // Check file size;
   if (file.size === 0) {
     return { valid: false, error: "File is empty" };
   }
 
   if (file.size > config.maxFileSize) {
-    const maxSizeMB = Math.round(config.maxFileSize / (1024 * 1024));
+    const maxSizeMB = Math.round(config.maxFileSize / (1024 * 1024);
     return {
       valid: false,
       error: `File too large. Maximum size is ${maxSizeMB}MB`,
     };
   }
 
-  // Check MIME type
+  // Check MIME type;
   if (!config.allowedTypes.includes(file.type)) {
     return {
       valid: false,
@@ -85,7 +86,7 @@ export function validateAvatarFile(
   if (
     file.name.includes("..") ||
     file.name.includes("/") ||
-    file.name.includes("\\")
+    file.name.includes("\\");
   ) {
     return {
       valid: false,
@@ -115,7 +116,7 @@ export function generateAvatarFileName(
 
 /**
  * Ensure upload directory exists with proper permissions
- */
+ */;
 export function ensureUploadDirectory(uploadDir: string): void {
   if (!existsSync(uploadDir)) {
     mkdirSync(uploadDir, { recursive: true, mode: 0o755 });
@@ -148,7 +149,7 @@ export async function handleAvatarUpload(
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Additional security check - verify file is actually an image
+    // Additional security check - verify file is actually an image;
     if (!isValidImageBuffer(buffer, file.type)) {
       return {
         success: false,
@@ -179,7 +180,7 @@ export async function handleAvatarUpload(
 
 /**
  * Remove old avatar file from filesystem
- */
+ */;
 export function removeAvatarFile(avatarUrl: string | null): boolean {
   if (!avatarUrl || avatarUrl === "/images/default-avatar.svg") {
     return true; // Nothing to remove
@@ -205,7 +206,7 @@ export function removeAvatarFile(avatarUrl: string | null): boolean {
 
 /**
  * Basic image validation using file headers
- */
+ */;
 function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
   const signatures: Record<string, number[]> = {
     "image/jpeg": [0xff, 0xd8, 0xff],
@@ -214,7 +215,7 @@ function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
     "image/webp": [0x52, 0x49, 0x46, 0x46],
   };
 
-  // For SVG, check if it starts with valid XML/SVG tags
+  // For SVG, check if it starts with valid XML/SVG tags;
   if (declaredType === "image/svg+xml") {
     const content = buffer.toString("utf8", 0, 100).toLowerCase();
     return content.includes("<svg") || content.includes("<?xml");
@@ -223,7 +224,7 @@ function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
   const signature = signatures[declaredType];
   if (!signature) return true; // Allow unknown types to pass through
 
-  // Check if buffer starts with expected signature
+  // Check if buffer starts with expected signature;
   for (let i = 0; i < signature.length; i++) {
     if (buffer[i] !== signature[i]) {
       return false;
@@ -235,25 +236,25 @@ function isValidImageBuffer(buffer: Buffer, declaredType: string): boolean {
 
 /**
  * Get file size in human-readable format
- */
+ */;
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 Bytes";
 
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(bytes) / Math.log(k);
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
 /**
  * Generate initials from user name for avatar fallback
- */
+ */;
 export function generateInitials(user: {
   name?: string;
   firstName?: string;
   lastName?: string;
-  email: string;
+  email: string;,
 }): string {
   if (user.firstName && user.lastName) {
     return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();

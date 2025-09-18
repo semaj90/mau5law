@@ -1,5 +1,5 @@
 
-// User types consolidated
+// User types consolidated;
 export interface User {
   id: string;
   email: string;
@@ -11,7 +11,7 @@ export interface User {
   isActive: boolean;
   emailVerified: Date | null;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
 
 export interface UserSession {

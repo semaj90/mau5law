@@ -19,18 +19,18 @@ export const EnhancedCaseFormSchema = CaseSchema.extend({
   clientContact: z.object({
     name: z.string().min(1, 'Contact name required'),
     email: z.string().email('Valid email required'),
-    phone: z.string().optional()
+    phone: z.string().optional(),
   }),
   // Form state
   step: z.number().min(1).max(4).default(1),
-  isDraft: z.boolean().default(true)
+  isDraft: z.boolean().default(true),
 }).omit({ 
   id: true, 
   createdAt: true, 
   updatedAt: true, 
   _cached: true, 
   _lastSync: true, 
-  _dirty: true 
+  _dirty: true ,
 });
 
 export type EnhancedCaseForm = z.infer<typeof EnhancedCaseFormSchema>;
@@ -46,8 +46,8 @@ export const EvidenceUploadFormSchema = EvidenceSchema.extend({
     timestamp: z.date(),
     handler: z.string(),
     action: z.string(),
-    notes: z.string().optional()
-  })).default([])
+    notes: z.string().optional(),
+  })).default([]);
 }).omit({ 
   id: true, 
   createdAt: true, 
@@ -55,7 +55,7 @@ export const EvidenceUploadFormSchema = EvidenceSchema.extend({
   fileSize: true,
   _cached: true, 
   _lastSync: true, 
-  _dirty: true 
+  _dirty: true ,
 });
 
 export type EvidenceUploadForm = z.infer<typeof EvidenceUploadFormSchema>;
@@ -76,7 +76,7 @@ export class CacheFirstFormManager {
   createEnhancedCaseForm(initialData?: Partial<EnhancedCaseForm>) {
     const formId = `case-form-${Date.now()}`;
     
-    // Initialize with cache-first data
+    // Initialize with cache-first data;
     const defaultData: EnhancedCaseForm = {
       title: '',
       description: '',
@@ -89,7 +89,7 @@ export class CacheFirstFormManager {
       clientContact: {
         name: '',
         email: '',
-        phone: ''
+        phone: '',
       },
       step: 1,
       isDraft: true,
@@ -101,14 +101,14 @@ export class CacheFirstFormManager {
     this.updateActiveForm(formId);
 
     const form = superForm(
-      { data: defaultData } as SuperValidated<Infer<typeof EnhancedCaseFormSchema>,
+      { data: defaultData } as SuperValidated<Infer<typeof EnhancedCaseFormSchema>,);
       {
         SPA: true,
         validators: zod(EnhancedCaseFormSchema),
         resetForm: false,
         invalidateAll: false,
         
-        // Cache-first validation
+        // Cache-first validation;
         onUpdate: ({ form }) => {
           this.handleFormUpdate(formId, form.data);
           this.startAutosave(formId, form.data);
@@ -139,7 +139,7 @@ export class CacheFirstFormManager {
           this.formErrors.update(errors => ({
             ...errors,
             [formId]: (result as { type?: any; data?: any; error?: any }).error
-          }));
+          });
         }
       }
     );
@@ -182,7 +182,7 @@ export class CacheFirstFormManager {
     this.updateActiveForm(formId);
 
     const form = superForm(
-      { data: defaultData } as SuperValidated<Infer<typeof EvidenceUploadFormSchema>,
+      { data: defaultData } as SuperValidated<Infer<typeof EvidenceUploadFormSchema>,);
       {
         SPA: true,
         validators: zod(EvidenceUploadFormSchema),
@@ -280,7 +280,7 @@ export class CacheFirstFormManager {
     this.formProgress.update(current => ({
       ...current,
       [formId]: progress
-    }));
+    });
   }
 
   private updateActiveForm(formId: string) {
@@ -291,7 +291,7 @@ export class CacheFirstFormManager {
     this.formCache.delete(formId);
     this.clearAutosave(formId);
     
-    this.activeForms.update(forms => forms.filter(id => id !== formId));
+    this.activeForms.update(forms => forms.filter(id => id !== formId);
     this.formErrors.update(errors => {
       delete errors[formId];
       return errors;
@@ -326,11 +326,11 @@ export class CacheFirstFormManager {
     const formData = this.formCache.get(formId);
     if (formData) {
       try {
-        // Save to localStorage as backup
+        // Save to localStorage as backup;
         localStorage.setItem(`draft-${formId}`, JSON.stringify({
           data: formData,
-          timestamp: new Date().toISOString()
-        }));
+          timestamp: new Date().toISOString(),
+        });
         
         console.log(`Draft saved for form ${formId}`);
       } catch (error) {
@@ -375,12 +375,12 @@ export class CacheFirstFormManager {
           const response = JSON.parse(xhr.responseText);
           resolve((response as { fileUrl?: any }).fileUrl);
         } else {
-          reject(new Error(`Upload failed: ${xhr.statusText}`));
+          reject(new Error(`Upload failed: ${xhr.statusText}`);
         }
       });
       
       xhr.addEventListener('error', () => {
-        reject(new Error('Upload failed'));
+        reject(new Error('Upload failed');
       });
       
       xhr.open('POST', '/api/upload');

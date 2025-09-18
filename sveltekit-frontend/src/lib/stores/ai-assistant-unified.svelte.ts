@@ -3,7 +3,7 @@
  * Replaces both ai-assistant.ts and ai-assistant.svelte.ts with proper Svelte 5 implementation
  */
 
-// Core types
+// Core types;
 export interface AIMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
@@ -45,11 +45,12 @@ export interface CaseAIContext {
     description: string;
     confidence: number;
     evidenceIds: string[];
-    timestamp: number;
+    timestamp: number;,
   }>;
 }
 
 export type Backend = 'vllm' | 'ollama' | 'webasm' | 'go-micro';
+}
 
 export interface AssistantConfig {
   temperature: number;
@@ -58,10 +59,10 @@ export interface AssistantConfig {
   systemPrompt: string;
   autoSwitchBackend: boolean;
   persistHistory: boolean;
-  enableAcceleration: boolean;
+  enableAcceleration: boolean;,
 }
 
-// Global AI Assistant Store using Svelte 5 Runes
+// Global AI Assistant Store using Svelte 5 Runes;
 class AIAssistantGlobalStore {
   // Core state using proper Svelte 5 runes
   cases = $state<Record<string, CaseAIContext>({});
@@ -79,7 +80,7 @@ class AIAssistantGlobalStore {
     'go-micro': 0.6
   });
 
-  // Configuration
+  // Configuration;
   config = $state<AssistantConfig>({
     temperature: 0.2,
     maxTokens: 2048,
@@ -87,10 +88,10 @@ class AIAssistantGlobalStore {
     systemPrompt: 'You are a specialized legal AI assistant focusing on deeds, contracts, and legal analysis.',
     autoSwitchBackend: true,
     persistHistory: true,
-    enableAcceleration: false
+    enableAcceleration: false,
   });
 
-  // Performance metrics
+  // Performance metrics;
   metrics = $state({
     totalQueries: 0,
     averageResponseTime: 0,
@@ -102,13 +103,13 @@ class AIAssistantGlobalStore {
     } as Record<Backend, number>
   });
 
-  // Global insights
+  // Global insights;
   globalInsights = $state<Array<{
     id: string;
     type: 'trend' | 'pattern' | 'recommendation';
     description: string;
     affectedCases: string[];
-    timestamp: number;
+    timestamp: number;,
   }>([]);
 
   // Derived states using $derived rune
@@ -122,7 +123,7 @@ class AIAssistantGlobalStore {
   private contextCache = new Map<string, AIMessage[]>();
 
   constructor() {
-    // Initialize from localStorage if available
+    // Initialize from localStorage if available;
     if (typeof window !== 'undefined') {
       this.loadPersistedState();
       this.startHealthMonitoring();
@@ -140,9 +141,9 @@ class AIAssistantGlobalStore {
         evidenceMap: {},
         currentSession: {
           isActive: false,
-          lastActivity: Date.now()
+          lastActivity: Date.now(),
         },
-        insights: []
+        insights: [],
       };
     }
   }
@@ -163,7 +164,7 @@ class AIAssistantGlobalStore {
     const newMessage: AIMessage = {
       ...message,
       id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
     this.cases[caseId].messages.push(newMessage);
@@ -172,7 +173,7 @@ class AIAssistantGlobalStore {
     // Cache the message
     this.messageCache.set(newMessage.id, newMessage);
 
-    // Persist if enabled
+    // Persist if enabled;
     if (this.config.persistHistory) {
       this.persistState();
     }
@@ -197,13 +198,13 @@ class AIAssistantGlobalStore {
     const startTime = performance.now();
 
     try {
-      // Add user message
+      // Add user message;
       await this.addMessage(caseId, {
         role: 'user',
         content,
         evidenceIds,
         metadata: {
-          legalContext: options?.legalContext
+          legalContext: options?.legalContext,
         }
       });
 
@@ -224,7 +225,7 @@ class AIAssistantGlobalStore {
         response = await this.sendToBackend(backend, contextMessages);
       }
 
-      // Create assistant message
+      // Create assistant message;
       const assistantMessage: AIMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
@@ -235,7 +236,7 @@ class AIAssistantGlobalStore {
           model: response.model || this.config.model,
           tokenCount: response.tokenCount,
           processingTime: performance.now() - startTime,
-          confidence: response.confidence
+          confidence: response.confidence,
         }
       };
 
@@ -251,7 +252,7 @@ class AIAssistantGlobalStore {
       console.error('❌ AI message failed:', error);
       this.error = error instanceof Error ? error.message: String(error);
 
-      // Try fallback backends
+      // Try fallback backends;
       if (!options?.backend && this.config.autoSwitchBackend) {
         const fallbackBackends = this.availableBackends.filter(b => b !== this.currentBackend);
         for (const fallbackBackend of fallbackBackends) {
@@ -259,7 +260,7 @@ class AIAssistantGlobalStore {
             console.log(`🔄 Trying fallback backend: ${fallbackBackend}`);
             return await this.sendMessage(caseId, content, evidenceIds, {
               ...options,
-              backend: fallbackBackend
+              backend: fallbackBackend,
             });
           } catch (fallbackError) {
             console.error(`❌ Fallback ${fallbackBackend} failed:`, fallbackError);
@@ -282,7 +283,7 @@ class AIAssistantGlobalStore {
     const hasLegalContext = this.hasLegalContext(message, context);
     const requiresSpeed = this.requiresSpeedOptimization(message);
 
-    // Calculate scores for each backend
+    // Calculate scores for each backend;
     const scores: Record<Backend, number> = {
       'vllm': this.calculateBackendScore('vllm', complexity, hasLegalContext, requiresSpeed),
       'ollama': this.calculateBackendScore('ollama', complexity, hasLegalContext, requiresSpeed),
@@ -303,11 +304,11 @@ class AIAssistantGlobalStore {
     backend: Backend,
     complexity: string,
     hasLegalContext: boolean,
-    requiresSpeed: boolean
+    requiresSpeed: boolean;
   ): number {
     let score = this.backendHealth[backend] * 0.4; // Base health (40%)
 
-    // Complexity preferences
+    // Complexity preferences;
     const complexityScores = {
       'vllm': { simple: 0.7, medium: 0.9, complex: 1.0 },
       'ollama': { simple: 0.9, medium: 0.8, complex: 0.9 },
@@ -316,13 +317,13 @@ class AIAssistantGlobalStore {
     };
     score += complexityScores[backend][complexity as keyof typeof complexityScores[Backend]] * 0.3;
 
-    // Legal context bonus
+    // Legal context bonus;
     if (hasLegalContext) {
       const legalBonuses = { 'vllm': 0.2, 'ollama': 0.3, 'webasm': 0.1, 'go-micro': 0.3 };
       score += legalBonuses[backend];
     }
 
-    // Speed optimization
+    // Speed optimization;
     if (requiresSpeed) {
       const speedScores = { 'vllm': 0.6, 'ollama': 0.8, 'webasm': 1.0, 'go-micro': 0.7 };
       score += speedScores[backend] * 0.2;
@@ -332,7 +333,7 @@ class AIAssistantGlobalStore {
     const latencyPenalty = Math.min(this.metrics.backendLatency[backend] / 5000, 0.3);
     score -= latencyPenalty;
 
-    return Math.max(0, Math.min(1, score));
+    return Math.max(0, Math.min(1, score);
   }
 
   // === Enhanced Acceleration Integration ===
@@ -357,7 +358,7 @@ class AIAssistantGlobalStore {
     // Import browser-local AI dynamically
     const { browserLocalAI } = await import('$lib/ai/browser-local-ai.js');
 
-    // Initialize if needed
+    // Initialize if needed;
     if (!browserLocalAI.isInitialized()) {
       const initialized = await browserLocalAI.initialize();
       if (!initialized) {
@@ -386,7 +387,7 @@ class AIAssistantGlobalStore {
         totalProcessingTime: result.processingTime,
         accelerationUsed: 'browser-local',
         device: result.device,
-        fromCache: result.fromCache
+        fromCache: result.fromCache,
       }
     };
   }
@@ -414,7 +415,7 @@ class AIAssistantGlobalStore {
         jurisdiction: 'general',
         practiceArea: 'legal_assistance',
         documentType: 'conversation',
-        confidentiality: 'attorney-client'
+        confidentiality: 'attorney-client',
       }
     });
 
@@ -429,7 +430,7 @@ class AIAssistantGlobalStore {
         accelerationUsed: 'cuda-tensorrt',
         gpuUtilization: result.gpuUtilization,
         precision: result.precision,
-        tensorrtVersion: result.metadata.tensorrtVersion
+        tensorrtVersion: result.metadata.tensorrtVersion,
       }
     };
   }
@@ -438,31 +439,31 @@ class AIAssistantGlobalStore {
     // Import existing SIMD + WebGPU acceleration
     const { enhanceAIResponse } = await import('$lib/ai/accelerated-legal-assistant.js');
 
-    // Mock document data for acceleration
+    // Mock document data for acceleration;
     const mockCaseDocuments = Array.from({ length: 5 }, (_, i) => ({
       id: `case_${i}`,
       title: `Case Document ${i + 1}`,
       content: `Mock case content`,
-      embedding: new Float32Array(768).map(() => Math.random())
-    }));
+      embedding: new Float32Array(768).map(() => Math.random(),
+    });
 
     const mockEvidenceDocuments = Array.from({ length: 10 }, (_, i) => ({
       id: `evidence_${i}`,
       title: `Evidence Document ${i + 1}`,
       content: `Mock evidence content`,
-      embedding: new Float32Array(768).map(() => Math.random())
-    }));
+      embedding: new Float32Array(768).map(() => Math.random(),
+    });
 
     // Use accelerated processing
     const acceleratedResult = await enhanceAIResponse(
       content,
       mockCaseDocuments,
-      mockEvidenceDocuments,
+      mockEvidenceDocuments,);
       {
         maxResults: 10,
         similarityThreshold: 0.3,
         enableGPUAcceleration: true,
-        enableSIMDPreprocessing: true
+        enableSIMDPreprocessing: true,
       }
     );
 
@@ -471,7 +472,7 @@ class AIAssistantGlobalStore {
       model: 'simd-webgpu-accelerated',
       confidence: 0.9,
       tokenCount: acceleratedResult.enhancedResponse.length / 4, // Rough estimate
-      accelerationMetrics: acceleratedResult.acceleratedResults.processingMetrics
+      accelerationMetrics: acceleratedResult.acceleratedResults.processingMetrics,
     };
   }
 
@@ -489,11 +490,11 @@ class AIAssistantGlobalStore {
     // Get recent messages (last 10)
     const recentMessages = caseMessages.slice(-10);
 
-    // Simple relevance search
+    // Simple relevance search;
     const relevantMessages = caseMessages.filter(msg => {
       const queryLower = query.toLowerCase();
       return msg.content.toLowerCase().includes(queryLower) ||
-             (legalContext && msg.content.toLowerCase().includes(legalContext.toLowerCase()));
+             (legalContext && msg.content.toLowerCase().includes(legalContext.toLowerCase());
     }).slice(0, 5);
 
     // Combine and deduplicate
@@ -505,10 +506,10 @@ class AIAssistantGlobalStore {
     // Cache result
     this.contextCache.set(cacheKey, contextMessages);
 
-    // Cleanup old cache entries
+    // Cleanup old cache entries;
     if (this.contextCache.size > 100) {
-      const keys = Array.from(this.contextCache.keys());
-      keys.slice(0, 50).forEach(key => this.contextCache.delete(key));
+      const keys = Array.from(this.contextCache.keys();
+      keys.slice(0, 50).forEach(key => this.contextCache.delete(key);
     }
 
     return contextMessages;
@@ -523,7 +524,7 @@ class AIAssistantGlobalStore {
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
@@ -548,7 +549,7 @@ class AIAssistantGlobalStore {
     const basePayload = {
       messages: messages.map(msg => ({ role: msg.role, content: msg.content })),
       temperature: this.config.temperature,
-      model: this.config.model
+      model: this.config.model,
     };
 
     switch (backend) {
@@ -559,7 +560,7 @@ class AIAssistantGlobalStore {
       case 'go-micro':
         return { ...basePayload, service: 'legal-analysis', priority: 'high' };
       default:
-        return basePayload;
+        return basePayload;,
     }
   }
 
@@ -644,9 +645,9 @@ class AIAssistantGlobalStore {
         cases: this.cases,
         currentCaseId: this.currentCaseId,
         config: this.config,
-        metrics: this.metrics
+        metrics: this.metrics,
       };
-      localStorage.setItem('ai-assistant-unified-state', JSON.stringify(stateToSave));
+      localStorage.setItem('ai-assistant-unified-state', JSON.stringify(stateToSave);
     } catch (error) {
       console.error('Failed to persist AI assistant state:', error);
     }
@@ -700,7 +701,7 @@ class AIAssistantGlobalStore {
       messages: caseData.messages,
       insights: caseData.insights,
       exportedAt: new Date().toISOString(),
-      totalMessages: caseData.messages.length
+      totalMessages: caseData.messages.length,
     };
 
     if (format === 'markdown') {
@@ -734,17 +735,17 @@ class AIAssistantGlobalStore {
 // Create singleton instance with proper SvelteKit 2 + Svelte 5 pattern
 export const aiAssistant = new AIAssistantGlobalStore();
 
-// Export derived stores for compatibility with existing components
+// Export derived stores for compatibility with existing components;
 export const currentCase = {
-  get: () => aiAssistant.currentCase
+  get: () => aiAssistant.currentCase,
 };
 
 export const currentCaseMessages = {
-  get: () => aiAssistant.currentMessages
+  get: () => aiAssistant.currentMessages,
 };
 
 export const isProcessing = {
-  get: () => aiAssistant.isProcessing
+  get: () => aiAssistant.isProcessing,
 };
 
 export const currentResponse = {
@@ -756,5 +757,5 @@ export const currentResponse = {
 };
 
 export const aiError = {
-  get: () => aiAssistant.error
+  get: () => aiAssistant.error,
 };

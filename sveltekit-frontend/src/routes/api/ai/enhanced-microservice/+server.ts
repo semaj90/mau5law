@@ -26,12 +26,13 @@ import type { RequestHandler } from './$types.js';
 import { json } from "@sveltejs/kit";
 import { URL } from "url";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+}
 
 export interface GoMicroserviceConfig {
   baseUrl: string;
   timeout: number;
   retries: number;
-  enableCache: boolean;
+  enableCache: boolean;,
 }
 
 export interface ProcessDocumentRequest {
@@ -71,7 +72,7 @@ class GoMicroserviceClient {
   private async makeRequest(
     endpoint: string,
     method: string = "GET",
-    body?: unknown
+    body?: unknown;
   ): Promise<any> {
     const url = `${this.baseUrl}${endpoint}`;
 
@@ -133,7 +134,7 @@ class GoMicroserviceClient {
 // Initialize the client
 const goClient = new GoMicroserviceClient(config);
 
-// Health check endpoint
+// Health check endpoint;
 const originalGETHandler: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get("action");
 
@@ -155,18 +156,17 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       });
     }
 
-    return json(
-      {
+    return json({
         status: "error",
         message: "Invalid action parameter",
         availableActions: ["health"],
-      },
+      },)
       { status: 400 }
     );
   } catch (error: any) {
     console.error("Health check failed:", error);
 
-    return json(
+    return json();
       {
         status: "error",
         message: "Microservice unavailable",
@@ -178,7 +178,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
   }
 };
 
-// Document processing and search endpoints
+// Document processing and search endpoints;
 const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get("action");
 
@@ -187,14 +187,13 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
 
     switch (action) {
       case "process-document": {
-        // Validate required fields
+        // Validate required fields;
         if (!body.content || !body.document_type || !body.jurisdiction) {
-          return json(
-            {
+          return json({
               status: "error",
               message:
                 "Missing required fields: content, document_type, jurisdiction",
-            },
+            },)
             { status: 400 }
           );
         }
@@ -224,11 +223,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
 
       case "search": {
         if (!body.query) {
-          return json(
-            {
+          return json({
               status: "error",
               message: "Query parameter is required",
-            },
+            },)
             { status: 400 }
           );
         }
@@ -258,16 +256,15 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
 
       case "enhanced-rag": {
         if (!body.query) {
-          return json(
-            {
+          return json({
               status: "error",
               message: "Query parameter is required for enhanced RAG",
-            },
+            },)
             { status: 400 }
           );
         }
 
-        // Enhanced RAG with multiple microservice calls
+        // Enhanced RAG with multiple microservice calls;
         const searchRequest: SearchRequest = {
           query: body.query,
           limit: body.limit || 20,
@@ -281,7 +278,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
           goClient.healthCheck(),
         ]);
 
-        // Enhanced response with microservice status
+        // Enhanced response with microservice status;
         return json({
           status: "success",
           timestamp: new Date().toISOString(),
@@ -318,16 +315,15 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
 
       case "legal-analysis": {
         if (!body.content) {
-          return json(
-            {
+          return json({
               status: "error",
               message: "Content parameter is required for legal analysis",
-            },
+            },)
             { status: 400 }
           );
         }
 
-        // Comprehensive legal analysis combining processing and search
+        // Comprehensive legal analysis combining processing and search;
         const processRequest: ProcessDocumentRequest = {
           content: body.content,
           document_type: body.document_type || "general",
@@ -353,14 +349,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
 
         const relatedSearches = await Promise.all(
           searchQueries.map((query: string) =>
-            goClient
+            goClient;
               .searchDocuments({
                 query,
                 limit: 5,
                 use_rag: true,
                 include_context: true,
               })
-              .catch(() => ({ results: [], total_found: 0 }))
+              .catch(() => ({ results: [], total_found: 0 })
           )
         );
 
@@ -400,9 +396,8 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
         });
       }
 
-      default:
-        return json(
-          {
+      default:;
+        return json({
             status: "error",
             message: "Invalid action parameter",
             availableActions: [
@@ -411,14 +406,14 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
               "enhanced-rag",
               "legal-analysis",
             ],
-          },
+          },)
           { status: 400 }
         );
     }
   } catch (error: any) {
     console.error(`API action failed (${action}):`, error);
 
-    return json(
+    return json();
       {
         status: "error",
         message: "Microservice request failed",
@@ -431,7 +426,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, url }) => {
   }
 };
 
-// Helper functions
+// Helper functions;
 function calculateConfidenceScore(results: any[]): number {
   if (!results || results.length === 0) return 0;
 
@@ -463,18 +458,18 @@ function extractCrossReferences(searches: any[]): string[] {
 
 function generateRecommendations(
   processResult: any,
-  relatedSearches: any[]
+  relatedSearches: any[];
 ): string[] {
   const recommendations: string[] = [];
 
-  // Risk-based recommendations
+  // Risk-based recommendations;
   if (processResult.risk_assessment?.overall_score > 0.7) {
     recommendations.push(
       "High risk detected - recommend immediate legal review"
     );
   }
 
-  // Entity-based recommendations
+  // Entity-based recommendations;
   if (processResult.legal_entities?.length > 5) {
     recommendations.push(
       "Multiple legal entities identified - consider entity relationship mapping"
@@ -492,7 +487,7 @@ function generateRecommendations(
     );
   }
 
-  // Default recommendations
+  // Default recommendations;
   if (recommendations.length === 0) {
     recommendations.push(
       "Document analyzed successfully - consider cross-referencing with similar cases"

@@ -56,7 +56,7 @@ declare module '$lib/server/db/schema-postgres' {
   export const __any: any;
 }
 
-// Also support importing from the JS-extended path
+// Also support importing from the JS-extended path;
 declare module '$lib/server/db/schema-postgres.js' {
   const shim: any;
   export = shim;

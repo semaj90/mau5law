@@ -96,11 +96,11 @@ with SSR/SPA hybrid architecture, URL-driven modal state, and AJAX filtering.
 🎉 Ready to use! Visit /cases to see it in action.
 `);
 
-console.log("\n🧪 To test the implementation:");
-console.log("   node test-cases-implementation.mjs");
+console.log('\n🧪 To test the implementation:');
+console.log('   node test-cases-implementation.mjs');
 
-console.log("\n📖 For detailed documentation:");
-console.log("   cat CASES_SSR_SPA_IMPLEMENTATION.md");
+console.log('\n📖 For detailed documentation:');
+console.log('   cat CASES_SSR_SPA_IMPLEMENTATION.md');
 
-console.log("\n🚀 To start the development server:");
-console.log("   npm run dev");
+console.log('\n🚀 To start the development server:');
+console.log('   npm run dev');

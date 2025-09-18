@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async ({ url }) => {
 	try {
-		// Forward request to Enhanced Semantic Architecture service
+		// Forward request to Enhanced Semantic Architecture service;
 		const response = await fetch('http://localhost:8095/api/intelligent-todos', {
 			method: 'GET',
 			headers: {
@@ -38,7 +38,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		console.error('Enhanced Semantic API Error:', error);
 		
 		// Fallback: Generate mock intelligent todos based on system analysis
-		const mockTodos = [
+		const mockTodos = [;
 			{
 				id: `todo_fallback_${Date.now()}`,
 				title: '🔧 Fix Enhanced Semantic Architecture Connection',
@@ -122,7 +122,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const { text, options } = await request.json();
 		
-		// Forward to Enhanced Semantic Architecture for processing
+		// Forward to Enhanced Semantic Architecture for processing;
 		const response = await fetch('http://localhost:8095/api/intelligent-todos', {
 			method: 'POST',
 			headers: {
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error',
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		}, { status: 500 });
 	}
 };

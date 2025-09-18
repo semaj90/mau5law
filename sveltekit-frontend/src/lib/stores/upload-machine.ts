@@ -14,7 +14,7 @@ export interface UploadContext {
     filename: string;
     fileSize: number;
     contentType: string;
-    expiresAt: Date;
+    expiresAt: Date;,
   };
   jobIds: {
     extraction?: string;
@@ -46,12 +46,12 @@ type UploadEvent =
   | { type: 'RETRY' }
   | { type: 'RESET' };
 
-// Upload and processing state machine
+// Upload and processing state machine;
 export const uploadMachine = createMachine({
   id: 'upload',
   types: Record<string, any> as {
     context: UploadContext;
-    events: UploadEvent;
+    events: UploadEvent;,
   },
   initial: 'idle',
   context: {
@@ -343,7 +343,7 @@ export const uploadMachine = createMachine({
   },
 }, {
   actors: {
-    // Presigned URL request actor
+    // Presigned URL request actor;
     requestPresignedUrls: fromPromise(async ({ input }: { input: { files: File[]; caseId: string } }) => {
       const { files, caseId } = input;
       const file = files[0]; // Handle single file for now
@@ -370,9 +370,9 @@ export const uploadMachine = createMachine({
       return await response.json();
     }),
 
-    // Chunk upload actor
+    // Chunk upload actor;
     uploadFileChunks: fromPromise(async ({
-      input
+      input;
     }: {
       input: { files: File[]; presignedUrls: string[]; uploadId: string };
     }) => {
@@ -403,7 +403,7 @@ export const uploadMachine = createMachine({
 
       const etags = await Promise.all(uploadPromises);
 
-      // Complete multipart upload
+      // Complete multipart upload;
       const completeResponse = await fetch('/api/upload/presign', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -420,7 +420,7 @@ export const uploadMachine = createMachine({
       return await completeResponse.json();
     }),
 
-    // Document extraction actor
+    // Document extraction actor;
     startDocumentExtraction: fromPromise(async ({ input }: {
       input: { uploadId: string; caseId: string; metadata: any }
     }) => {
@@ -444,7 +444,7 @@ export const uploadMachine = createMachine({
       return await response.json();
     }),
 
-    // Embedding generation actor
+    // Embedding generation actor;
     generateEmbeddings: fromPromise(async ({ input }: {
       input: { uploadId: string; extractedText: string }
     }) => {
@@ -466,7 +466,7 @@ export const uploadMachine = createMachine({
       return await response.json();
     }),
 
-    // Tensor processing actor
+    // Tensor processing actor;
     processTensorData: fromPromise(async ({ input }: {
       input: { uploadId: string; embeddings: number[][] }
     }) => {
@@ -476,7 +476,7 @@ export const uploadMachine = createMachine({
       const tensorData = embeddings.flat();
       const batchSize = 1;
       const depth = embeddings.length;
-      const height = Math.ceil(Math.sqrt(embeddings[0]?.length || 1));
+      const height = Math.ceil(Math.sqrt(embeddings[0]?.length || 1);
       const width = height;
 
       const response = await fetch('https://localhost:4433/tensor/process', {
@@ -502,7 +502,7 @@ export const uploadMachine = createMachine({
       return await response.json();
     }),
 
-    // Vector indexing actor
+    // Vector indexing actor;
     indexVectors: fromPromise(async ({ input }: {
       input: { uploadId: string; embeddings: number[][]; metadata: any }
     }) => {
@@ -532,7 +532,7 @@ export const uploadMachine = createMachine({
 export type UploadState = StateFrom<typeof uploadMachine>;
 export type UploadActor = ReturnType<typeof createActor<typeof uploadMachine>;
 
-// Svelte store integration
+// Svelte store integration;
 function createUploadStore() {
   const actor = createActor(uploadMachine);
   const { subscribe } = writable(actor.getSnapshot(), (set) => {

@@ -6,12 +6,12 @@ import { yorhaDetectiveService } from '$lib/services/yorha-detective-service';
 
 export const load: PageServerLoad = async ({ url, locals, fetch }) => {
   try {
-    // Get current user from locals (if authenticated)
+    // Get current user from locals (if authenticated);
     const currentUser = locals.user || {
       id: 'guest',
       name: 'Detective Guest',
       role: 'detective',
-      clearanceLevel: 'standard'
+      clearanceLevel: 'standard',
     };
 
     // Fetch system metrics in parallel
@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ url, locals, fetch }) => {
       getRecentActivity()
     ]);
 
-    // Compile system data
+    // Compile system data;
     const systemData = {
       activeCases: casesData.total,
       evidenceItems: evidenceData.total,
@@ -36,26 +36,26 @@ export const load: PageServerLoad = async ({ url, locals, fetch }) => {
       systemLoad: systemMetrics.systemLoad,
       gpuUtilization: systemMetrics.gpuUtilization,
       memoryUsage: systemMetrics.memoryUsage,
-      networkLatency: systemMetrics.networkLatency
+      networkLatency: systemMetrics.networkLatency,
     };
 
     return {
       currentUser,
       systemData,
       recentActivity,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
   } catch (error: any) {
     console.error('Error loading command center data:', error);
 
-    // Return fallback data if database is unavailable
+    // Return fallback data if database is unavailable;
     return {
       currentUser: {
         id: 'guest',
         name: 'Detective Guest',
         role: 'detective',
-        clearanceLevel: 'standard'
+        clearanceLevel: 'standard',
       },
       systemData: {
         activeCases: 12,
@@ -65,25 +65,25 @@ export const load: PageServerLoad = async ({ url, locals, fetch }) => {
         systemLoad: 34,
         gpuUtilization: 67,
         memoryUsage: 42,
-        networkLatency: 23
+        networkLatency: 23,
       },
-      recentActivity: [
+      recentActivity: [;
         {
           id: 1,
           action: 'Case Analysis Completed',
           target: 'CASE-2024-087',
           time: '2 minutes ago',
-          type: 'success'
+          type: 'success',
         },
         {
           id: 2,
           action: 'Evidence Upload',
           target: 'Digital Forensics Report',
           time: '5 minutes ago',
-          type: 'info'
+          type: 'info',
         }
       ],
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 };
@@ -96,17 +96,17 @@ async function getSystemMetrics(): Promise<any> {
       systemLoad: metrics.cpu,
       gpuUtilization: metrics.gpu,
       memoryUsage: metrics.memory,
-      networkLatency: metrics.network
+      networkLatency: metrics.network,
     };
   } catch (error: any) {
     console.warn('YoRHa Detective Service unavailable, using fallback metrics');
 
-    // Fallback to simulated metrics
+    // Fallback to simulated metrics;
     return {
       systemLoad: Math.floor(Math.random() * 40 + 20),
       gpuUtilization: Math.floor(Math.random() * 30 + 40),
       memoryUsage: Math.floor(Math.random() * 20 + 30),
-      networkLatency: Math.floor(Math.random() * 20 + 10)
+      networkLatency: Math.floor(Math.random() * 20 + 10),
     };
   }
 }
@@ -128,14 +128,14 @@ async function getCasesData(): Promise<any> {
     return {
       total: activeCasesCount[0]?.count || 12,
       personsOfInterest: Math.floor((activeCasesCount[0]?.count || 12) * 0.7), // Estimated
-      aiQueries: (activeCasesCount[0]?.count || 12) * 127 // Estimated based on activity
+      aiQueries: (activeCasesCount[0]?.count || 12) * 127 // Estimated based on activity,
     };
   } catch (error: any) {
     console.warn('Database unavailable for cases data, using fallback');
     return {
       total: 12,
       personsOfInterest: 8,
-      aiQueries: 1543
+      aiQueries: 1543,
     };
   }
 }
@@ -149,12 +149,12 @@ async function getEvidenceData(): Promise<any> {
       .limit(1);
 
     return {
-      total: evidenceCount[0]?.count || 247
+      total: evidenceCount[0]?.count || 247,
     };
   } catch (error: any) {
     console.warn('Database unavailable for evidence data, using fallback');
     return {
-      total: 247
+      total: 247,
     };
   }
 }
@@ -162,49 +162,49 @@ async function getEvidenceData(): Promise<any> {
 async function getRecentActivity(): Promise<any> {
   try {
     // Query for recent case updates, evidence uploads, etc.
-    const recentCases = await db
+    const recentCases = await db;
       .select({
         id: cases.id,
         title: cases.title,
         status: cases.status,
-        updated_at: cases.updated_at
+        updated_at: cases.updated_at,
       })
       .from(cases)
       .orderBy(helpers.desc(cases.updated_at) as any)
       .limit(5);
 
-    // Transform to activity format
+    // Transform to activity format;
     return recentCases.map((case_: typeof cases.$inferSelect, index: number) => ({
       id: index + 1,
       action: `Case ${case_.status === 'open' ? 'Updated' : 'Status Changed'}`,
       target: case_.title,
       time: getRelativeTime(case_.updated_at),
       type: case_.status === 'open' ? 'success' : 'info',
-    }));
+    });
 
   } catch (error: any) {
     console.warn('Database unavailable for recent activity, using fallback');
-    return [
+    return [;
       {
         id: 1,
         action: 'Case Analysis Completed',
         target: 'CASE-2024-087',
         time: '2 minutes ago',
-        type: 'success'
+        type: 'success',
       },
       {
         id: 2,
         action: 'Evidence Upload',
         target: 'Digital Forensics Report',
         time: '5 minutes ago',
-        type: 'info'
+        type: 'info',
       },
       {
         id: 3,
         action: 'AI Query Processed',
         target: 'Contract Liability Analysis',
         time: '8 minutes ago',
-        type: 'ai'
+        type: 'ai',
       }
     ];
   }

@@ -6,6 +6,7 @@ export type UserContext = {
   roles?: string[];
   orgId?: string;
 };
+}
 
 export interface PolicyInput {
   user?: UserContext | null;
@@ -17,7 +18,7 @@ export interface PolicyInput {
 const ROLE_PERMISSIONS: Record<string, string[]> = {
   admin: ['evidence:create', 'evidence:delete', 'evidence:read'],
   user: ['evidence:create', 'evidence:read'],
-  reviewer: ['evidence:read']
+  reviewer: ['evidence:read'],
 };
 
 export function authorize({ user, action, resource, ownershipUserId }: PolicyInput) {
@@ -25,7 +26,7 @@ export function authorize({ user, action, resource, ownershipUserId }: PolicyInp
 
   const permission = `${resource}:${action}`;
   const roles = user.roles || [];
-  const hasRolePermission = roles.some(r => ROLE_PERMISSIONS[r]?.includes(permission));
+  const hasRolePermission = roles.some(r => ROLE_PERMISSIONS[r]?.includes(permission);
   if (!hasRolePermission) return { allowed: false, reason: 'forbidden' };
 
   if (action === 'delete' && ownershipUserId && ownershipUserId !== user.id && !roles.includes('admin')) {

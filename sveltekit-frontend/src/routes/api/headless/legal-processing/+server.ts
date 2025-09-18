@@ -36,7 +36,7 @@ interface BatchProcessingRequest {
 /**
  * POST /api/headless/legal-processing
  * Process a single legal document through the headless pipeline
- */
+ */;
 export const POST: RequestHandler = async ({ request, url }) => {
   const startTime = Date.now();
   
@@ -47,13 +47,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
       return json({
         success: false,
         error: 'Document text is required',
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       }, { status: 400 });
     }
 
     console.log(`📄 Processing legal document: ${body.text.length} chars, type: ${body.documentType || 'general'}`);
 
-    // Initialize headless processor if needed
+    // Initialize headless processor if needed;
     if (!headlessLegalProcessorFactory.getStats().isInitialized) {
       console.log('🎯 Initializing headless legal processor...');
       const initialized = await headlessLegalProcessorFactory.initializeHeadless();
@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: false,
           error: 'Failed to initialize headless WebGPU processor',
           processingTime: Date.now() - startTime,
-          fallback: 'CPU processing available'
+          fallback: 'CPU processing available',
         }, { status: 500 });
       }
     }
@@ -71,13 +71,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Configure processing based on document type
     const processingConfig = buildProcessingConfig(body.documentType, body.config);
     
-    // Add processing context
+    // Add processing context;
     const context = {
       documentId: body.documentId,
       documentType: body.documentType,
       requestId: generateRequestId(),
       timestamp: Date.now(),
-      metadata: body.metadata
+      metadata: body.metadata,
     };
 
     console.log(`⚡ Starting headless processing with config: ${JSON.stringify(processingConfig)}`);
@@ -88,21 +88,21 @@ export const POST: RequestHandler = async ({ request, url }) => {
       processingConfig
     );
 
-    // Build API response
+    // Build API response;
     const response = {
       success: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).success,
       processingTime: Date.now() - startTime,
       requestId: context.requestId,
       
-      // Processing results
+      // Processing results;
       document: {
         id: body.documentId,
         type: body.documentType,
         length: body.text.length,
-        processingMode: 'headless-webgpu'
+        processingMode: 'headless-webgpu',
       },
 
-      // WebGPU results
+      // WebGPU results;
       webgpu: {
         mipmapGenerated: !!(result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).mipmapChain,
         mipmapLevels: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).mipmapChain?.levels || 0,
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         rtxOptimized: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).mipmapChain?.rtxOptimized || false
       },
 
-      // LOD cache results
+      // LOD cache results;
       lod: {
         compressionRatio: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).lodEntry?.cache_metadata.compression_stats.compression_ratio,
         svgSummariesGenerated: !!(result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).svgVisualizations,
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       // SVG visualizations (if requested)
       visualizations: processingConfig.generateSVGSummaries ? (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).svgVisualizations: undefined,
 
-      // Performance metrics
+      // Performance metrics;
       performance: {
         totalTime: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).processingTime,
         webgpuInitTime: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).metrics.webgpuInitTime,
@@ -135,7 +135,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       // File outputs (if saved)
       outputFiles: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).outputFiles || [],
 
-      // System info
+      // System info;
       system: {
         webgpuAvailable: true,
         headlessMode: true,
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           mipmap: processingConfig.enableMipmapGeneration,
           lod: processingConfig.enableLODCaching,
           offscreen: processingConfig.enableOffscreenRendering,
-          streaming: processingConfig.enableStreamingOptimization
+          streaming: processingConfig.enableStreamingOptimization,
         }
       }
     };
@@ -161,7 +161,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       system: {
         webgpuAvailable: false,
         fallbackMode: 'cpu',
-        error: error.name
+        error: error.name,
       }
     }, { status: 500 });
   }
@@ -169,7 +169,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
 /**
  * PUT /api/headless/legal-processing (Batch processing)
- */
+ */;
 export const PUT: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
   
@@ -180,13 +180,13 @@ export const PUT: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: 'Documents array is required for batch processing',
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       }, { status: 400 });
     }
 
     console.log(`📦 Batch processing ${body.documents.length} legal documents`);
 
-    // Initialize if needed
+    // Initialize if needed;
     if (!headlessLegalProcessorFactory.getStats().isInitialized) {
       await headlessLegalProcessorFactory.initializeHeadless();
     }
@@ -203,7 +203,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       processingConfig
     );
 
-    // Calculate batch statistics
+    // Calculate batch statistics;
     const batchStats = {
       totalDocuments: body.documents.length,
       successful: results.filter(item => item.length),
@@ -211,7 +211,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       totalProcessingTime: results.reduce((sum, r) => sum + r.processingTime, 0),
       averageProcessingTime: results.reduce((sum, r) => sum + r.processingTime, 0) / results.length,
       totalMemoryUsed: results.reduce((sum, r) => sum + (r.mipmapChain?.totalMemoryUsed || 0), 0),
-      compressionRatios: results.map(r => r.lodEntry?.cache_metadata.compression_stats.compression_ratio).filter(Boolean)
+      compressionRatios: results.map(r => r.lodEntry?.cache_metadata.compression_stats.compression_ratio).filter(Boolean),
     };
 
     const response = {
@@ -222,7 +222,7 @@ export const PUT: RequestHandler = async ({ request }) => {
       // Batch results
       batch: batchStats,
       
-      // Individual results
+      // Individual results;
       results: results.map((result, index) => ({
         documentIndex: index,
         documentId: body.documents[index].id,
@@ -234,14 +234,14 @@ export const PUT: RequestHandler = async ({ request }) => {
         error: (result as { success?: any; mipmapChain?: any; lodEntry?: any; svgVisualizations?: any; legalAnalysis?: any; processingTime?: any; metrics?: any; outputFiles?: any }).success ? undefined : 'Processing failed'
       })),
 
-      // Performance summary
+      // Performance summary;
       performance: {
         documentsPerSecond: body.documents.length / ((Date.now() - startTime) / 1000),
         parallelizationEfficiency: batchStats.totalProcessingTime / (Date.now() - startTime),
-        memoryEfficiency: batchStats.totalMemoryUsed / (1024 * 1024) // MB
+        memoryEfficiency: batchStats.totalMemoryUsed / (1024 * 1024) // MB,
       },
 
-      system: headlessLegalProcessorFactory.getStats()
+      system: headlessLegalProcessorFactory.getStats(),
     };
 
     console.log(`✅ Batch processing completed: ${body.documents.length} documents in ${(response as { processingTime?: any }).processingTime}ms`);
@@ -253,14 +253,14 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message || 'Batch processing failed',
-      processingTime: Date.now() - startTime
+      processingTime: Date.now() - startTime,
     }, { status: 500 });
   }
 };
 
 /**
  * GET /api/headless/legal-processing (Status and capabilities)
- */
+ */;
 export const GET: RequestHandler = async () => {
   const stats = headlessLegalProcessorFactory.getStats();
   
@@ -274,20 +274,20 @@ export const GET: RequestHandler = async () => {
       streamingOptimization: true,
       batchProcessing: true,
       svgGeneration: true,
-      legalAIAnalysis: true
+      legalAIAnalysis: true,
     },
     performance: {
       isInitialized: stats.isInitialized,
       queueLength: stats.queueLength,
-      cacheStats: stats.lodCacheStats
+      cacheStats: stats.lodCacheStats,
     },
-    configuration: DEFAULT_HEADLESS_CONFIG
+    configuration: DEFAULT_HEADLESS_CONFIG,
   });
 };
 
 /**
  * DELETE /api/headless/legal-processing (Cleanup)
- */
+ */;
 export const DELETE: RequestHandler = async () => {
   try {
     headlessLegalProcessorFactory.dispose();
@@ -295,13 +295,13 @@ export const DELETE: RequestHandler = async () => {
     return json({
       success: true,
       message: 'Headless processor resources cleaned up',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   } catch (error: any) {
     return json({
       success: false,
       error: error.message,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }, { status: 500 });
   }
 };
@@ -310,13 +310,13 @@ export const DELETE: RequestHandler = async () => {
 
 function buildProcessingConfig(
   documentType?: string, 
-  customConfig?: Partial<HeadlessProcessingConfig>
+  customConfig?: Partial<HeadlessProcessingConfig>;
 ): HeadlessProcessingConfig {
   const baseConfig = { ...DEFAULT_HEADLESS_CONFIG };
 
-  // Adjust config based on document type
+  // Adjust config based on document type;
   switch (documentType) {
-    case 'contract':
+    case 'contract':;
       return {
         ...baseConfig,
         documentAnalysisLevel: 'comprehensive',
@@ -326,7 +326,7 @@ function buildProcessingConfig(
         ...customConfig
       };
       
-    case 'evidence':
+    case 'evidence':;
       return {
         ...baseConfig,
         documentAnalysisLevel: 'advanced',
@@ -336,7 +336,7 @@ function buildProcessingConfig(
         ...customConfig
       };
       
-    case 'brief':
+    case 'brief':;
       return {
         ...baseConfig,
         documentAnalysisLevel: 'comprehensive',
@@ -346,7 +346,7 @@ function buildProcessingConfig(
         ...customConfig
       };
       
-    default:
+    default:;
       return {
         ...baseConfig,
         ...customConfig

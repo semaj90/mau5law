@@ -12,7 +12,7 @@
 import { S3Client, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { Readable } from "stream";
 
-// S3 client for ingestion pipeline (separate from main MinIO service)
+// S3 client for ingestion pipeline (separate from main MinIO service);
 export const S3 = new S3Client({
   endpoint: process.env.MINIO_ENDPOINT,
   region: "us-east-1",
@@ -25,18 +25,18 @@ export const S3 = new S3Client({
 
 /**
  * Convert stream to buffer for processing
- */
+ */;
 export async function streamToBuffer(stream: Readable): Promise<Buffer> {
   const chunks: Buffer[] = [];
   for await (const chunk of stream) {
-    chunks.push(Buffer.from(chunk));
+    chunks.push(Buffer.from(chunk);
   }
   return Buffer.concat(chunks);
 }
 
 /**
  * Parse MinIO URL format: minio://bucket/key
- */
+ */;
 export function parseMinioUrl(minioUrl: string): { bucket: string; key: string } {
   const match = minioUrl.match(/^minio:\/\/([^\/]+)\/(.+)$/);
   if (!match) {
@@ -48,15 +48,15 @@ export function parseMinioUrl(minioUrl: string): { bucket: string; key: string }
 
 /**
  * Fetch object from MinIO using minio:// URL
- */
+ */;
 export async function fetchMinioObject(minioUrl: string) {
   const { bucket, key } = parseMinioUrl(minioUrl);
 
   try {
     const response = await S3.send(new GetObjectCommand({
       Bucket: bucket,
-      Key: key
-    }));
+      Key: key,
+    });
 
     const body = (response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).Body as Readable;
     const buffer = await streamToBuffer(body);
@@ -76,14 +76,14 @@ export async function fetchMinioObject(minioUrl: string) {
 
 /**
  * List objects with a prefix in MinIO bucket
- */
+ */;
 export async function listMinioPrefix(bucket: string, prefix: string) {
   try {
     const response = await S3.send(new ListObjectsV2Command({
       Bucket: bucket,
       Prefix: prefix,
-      MaxKeys: 1000
-    }));
+      MaxKeys: 1000,
+    });
 
     return ((response as { Body?: any; ContentType?: any; Metadata?: any; ContentLength?: any; LastModified?: any; ETag?: any; Contents?: any }).Contents ?? []).map(obj => ({
       key: obj.Key!,
@@ -91,7 +91,7 @@ export async function listMinioPrefix(bucket: string, prefix: string) {
       lastModified: obj.LastModified!,
       etag: obj.ETag!,
       minioUrl: `minio://${bucket}/${obj.Key}`
-    }));
+    });
   } catch (error) {
     throw new Error(`Failed to list objects in ${bucket}/${prefix}: ${error}`);
   }
@@ -99,7 +99,7 @@ export async function listMinioPrefix(bucket: string, prefix: string) {
 
 /**
  * Batch fetch multiple MinIO objects
- */
+ */;
 export async function batchFetchMinioObjects(minioUrls: string[], options: {
   concurrency?: number;
   failFast?: boolean;
@@ -107,7 +107,7 @@ export async function batchFetchMinioObjects(minioUrls: string[], options: {
   const { concurrency = 5, failFast = false } = options;
   const results: Array<any> = [];
 
-  // Process in batches to avoid overwhelming MinIO
+  // Process in batches to avoid overwhelming MinIO;
   for (let i = 0; i < minioUrls.length; i += concurrency) {
     const batch = minioUrls.slice(i, i + concurrency);
     const batchPromises = batch.map(async (url) => {
@@ -140,7 +140,7 @@ export async function batchFetchMinioObjects(minioUrls: string[], options: {
 
 /**
  * Detect content type for ingestion pipeline
- */
+ */;
 export function detectContentType(buffer: Buffer, filename?: string): string {
   // Check magic bytes first
   const magicBytes = buffer.slice(0, 16);
@@ -166,13 +166,13 @@ export function detectContentType(buffer: Buffer, filename?: string): string {
   if (magicBytes.slice(4, 12).toString('ascii') === 'ftypmp4' || magicBytes.slice(4, 12).toString('ascii') === 'ftypisom') return 'video/mp4';
   if (magicBytes[0] === 0x1A && magicBytes[1] === 0x45 && magicBytes[2] === 0xDF && magicBytes[3] === 0xA3) return 'video/webm';
 
-  // Text/JSON detection by trying to parse first few bytes as UTF-8
+  // Text/JSON detection by trying to parse first few bytes as UTF-8;
   try {
     const textSample = buffer.slice(0, 512).toString('utf-8');
     if (textSample.trim().startsWith('{') || textSample.trim().startsWith('[')) {
       return 'application/json';
     }
-    // Check if it's mostly printable ASCII/UTF-8
+    // Check if it's mostly printable ASCII/UTF-8;
     if (/^[\x20-\x7E\s\t\n\r]*$/u.test(textSample)) {
       return 'text/plain';
     }
@@ -180,7 +180,7 @@ export function detectContentType(buffer: Buffer, filename?: string): string {
     // Not valid UTF-8
   }
 
-  // Fallback to filename extension
+  // Fallback to filename extension;
   if (filename) {
     const ext = filename.toLowerCase().split('.').pop();
     const extensionMap: Record<string, string> = {
@@ -201,11 +201,11 @@ export function detectContentType(buffer: Buffer, filename?: string): string {
 
 /**
  * Validate content for ingestion pipeline
- */
+ */;
 export function validateContentForIngestion(contentType: string, size: number): {
   valid: boolean;
   reason?: string;
-  type: 'text' | 'image' | 'audio' | 'video' | 'json' | 'other';
+  type: 'text' | 'image' | 'audio' | 'video' | 'json' | 'other';,
 } {
   // Size limits (in bytes)
   const MAX_TEXT_SIZE = 50 * 1024 * 1024; // 50MB

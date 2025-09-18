@@ -20,17 +20,16 @@ export const POST: RequestHandler = async ({ request }) => {
       embeddings,
       dimensions: embeddings.length,
       processingTime: Date.now() - startTime,
-      modelUsed: 'legal-bert-onnx'
+      modelUsed: 'legal-bert-onnx',
     });
     
   } catch (error: any) {
     console.error('Embedding generation error:', error);
-    return json(
-      { 
+    return json({ 
         success: false, 
         error: 'Embedding generation failed', 
-        details: error.message 
-      },
+        details: error.message ,
+      },)
       { status: 500 }
     );
   }

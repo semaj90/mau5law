@@ -10,13 +10,6 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules/**/*",
-    "build/**/*",
-    ".svelte-kit/**/*",
-    "src/lib/types/external.d.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/**/*", "build/**/*", ".svelte-kit/**/*", "src/lib/types/external.d.ts"]
 }

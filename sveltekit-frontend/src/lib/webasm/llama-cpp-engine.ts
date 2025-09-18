@@ -4,7 +4,8 @@
  * Eliminates server round-trips for 2-5 second response times
  */
 
-/// <reference path="../types/webgpu.d.ts" />
+/// <reference path="../types/webgpu.d.ts" />;
+}
 
 export interface LlamaCppConfig {
   modelPath: string;
@@ -13,7 +14,7 @@ export interface LlamaCppConfig {
   threadCount: number;
   batchSize: number;
   useGPU: boolean;
-  quantization: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';
+  quantization: 'f16' | 'q4_0' | 'q4_1' | 'q5_0' | 'q5_1' | 'q8_0';,
 }
 
 export interface InferenceRequest {
@@ -53,13 +54,13 @@ export class WebASMLlamaCppEngine {
       threadCount: config.threadCount || navigator.hardwareConcurrency || 8,
       batchSize: config.batchSize || 512,
       useGPU: config.useGPU ?? true,
-      quantization: config.quantization || 'q4_0'
+      quantization: config.quantization || 'q4_0',
     };
   }
 
   /**
    * Initialize WebAssembly module and GPU acceleration
-   */
+   */;
   async initialize(): Promise<boolean> {
     try {
       console.log('🚀 Initializing WebASM llama.cpp engine...');
@@ -71,7 +72,7 @@ export class WebASMLlamaCppEngine {
       
       this.wasmModule = await this.loadWasmModule(wasmUrl);
       
-      // Initialize GPU if available
+      // Initialize GPU if available;
       if (this.config.useGPU) {
         await this.initializeGPU();
       }
@@ -90,7 +91,7 @@ export class WebASMLlamaCppEngine {
 
   /**
    * Load WebAssembly module with optimization flags
-   */
+   */;
   private async loadWasmModule(wasmUrl: string): Promise<any> {
     const response = await fetch(wasmUrl);
     const wasmBytes = await response.arrayBuffer();
@@ -98,11 +99,11 @@ export class WebASMLlamaCppEngine {
     // Compile with optimizations for RTX 3060 Ti
     const wasmModule = await WebAssembly.compile(wasmBytes);
     
-    // Instantiate with memory and GPU bindings
+    // Instantiate with memory and GPU bindings;
     const memory = new WebAssembly.Memory({ 
       initial: 256,  // 16MB initial
       maximum: 2048, // 128MB maximum
-      shared: true   // Enable SharedArrayBuffer for threading
+      shared: true   // Enable SharedArrayBuffer for threading,
     });
     
     const instance = await WebAssembly.instantiate(wasmModule, {
@@ -116,7 +117,7 @@ export class WebASMLlamaCppEngine {
         __pthread_create: this.pthreadCreate.bind(this),
         __pthread_join: this.pthreadJoin.bind(this),
         // Performance counters
-        get_time_ms: () => performance.now()
+        get_time_ms: () => performance.now(),
       }
     });
     
@@ -125,7 +126,7 @@ export class WebASMLlamaCppEngine {
 
   /**
    * Initialize WebGPU for tensor operations
-   */
+   */;
   private async initializeGPU(): Promise<void> {
     if (!navigator.gpu) {
       console.warn('WebGPU not available, using CPU fallback');
@@ -133,7 +134,7 @@ export class WebASMLlamaCppEngine {
     }
 
     const adapter = await navigator.gpu.requestAdapter({
-      powerPreference: 'high-performance'  // RTX 3060 Ti
+      powerPreference: 'high-performance'  // RTX 3060 Ti,
     });
 
     if (!adapter) {
@@ -145,7 +146,7 @@ export class WebASMLlamaCppEngine {
       requiredLimits: {
         maxComputeWorkgroupSizeX: 1024,
         maxComputeInvocationsPerWorkgroup: 1024,
-        maxBufferSize: 2 * 1024 * 1024 * 1024 // 2GB for large models
+        maxBufferSize: 2 * 1024 * 1024 * 1024 // 2GB for large models,
       }
     });
 
@@ -154,7 +155,7 @@ export class WebASMLlamaCppEngine {
 
   /**
    * Load quantized model into WebASM memory
-   */
+   */;
   private async loadModel(): Promise<void> {
     console.log(`📦 Loading model: ${this.config.modelPath}`);
     
@@ -169,7 +170,7 @@ export class WebASMLlamaCppEngine {
     const wasmMemory = new Uint8Array(this.wasmModule.memory.buffer);
     wasmMemory.set(new Uint8Array(modelData), modelPtr);
     
-    // Initialize llama.cpp context
+    // Initialize llama.cpp context;
     const success = this.wasmModule.llama_init({
       model_ptr: modelPtr,
       model_size: modelSize,
@@ -177,7 +178,7 @@ export class WebASMLlamaCppEngine {
       gpu_layers: this.config.gpuLayers,
       thread_count: this.config.threadCount,
       batch_size: this.config.batchSize,
-      use_gpu: this.config.useGPU ? 1 : 0
+      use_gpu: this.config.useGPU ? 1 : 0,
     });
     
     if (!success) {
@@ -190,7 +191,7 @@ export class WebASMLlamaCppEngine {
 
   /**
    * Download and cache model file
-   */
+   */;
   private async downloadModel(modelPath: string): Promise<ArrayBuffer> {
     // Check IndexedDB cache first
     const cachedModel = await this.getCachedModel(modelPath);
@@ -220,7 +221,7 @@ export class WebASMLlamaCppEngine {
 
   /**
    * Run inference with WebASM + GPU acceleration
-   */
+   */;
   async runInference(request: InferenceRequest): Promise<InferenceResult> {
     if (!this.modelLoaded) {
       throw new Error('Model not loaded. Call initialize() first.');
@@ -237,7 +238,7 @@ export class WebASMLlamaCppEngine {
       let outputText = '';
       
       if (request.stream) {
-        // Streaming inference
+        // Streaming inference;
         for await (const token of this.streamInference(inputTokens, request)) {
           outputTokens.push(token);
           outputText += await this.detokenize([token]);
@@ -264,7 +265,7 @@ export class WebASMLlamaCppEngine {
         processingTime,
         tokensPerSecond,
         memoryUsage: this.getMemoryUsage(),
-        gpuUtilization: await this.getGPUUtilization()
+        gpuUtilization: await this.getGPUUtilization(),
       };
       
     } catch (error) {
@@ -278,19 +279,19 @@ export class WebASMLlamaCppEngine {
    */
   private async* streamInference(
     inputTokens: number[], 
-    request: InferenceRequest
+    request: InferenceRequest;
   ): AsyncGenerator<number> {
-    // Set sampling parameters
+    // Set sampling parameters;
     this.wasmModule.llama_set_params({
       temperature: request.temperature,
       top_p: request.topP,
-      max_tokens: request.maxTokens
+      max_tokens: request.maxTokens,
     });
     
     // Initialize context with input tokens
     this.wasmModule.llama_eval(inputTokens);
     
-    // Generate tokens one by one
+    // Generate tokens one by one;
     for (let i = 0; i < request.maxTokens; i++) {
       const token = this.wasmModule.llama_sample();
       
@@ -310,20 +311,20 @@ export class WebASMLlamaCppEngine {
    */
   private async batchInference(
     inputTokens: number[], 
-    request: InferenceRequest
+    request: InferenceRequest;
   ): Promise<number[]> {
     return this.wasmModule.llama_generate({
       input_tokens: inputTokens,
       max_tokens: request.maxTokens,
       temperature: request.temperature,
       top_p: request.topP,
-      batch_size: this.config.batchSize
+      batch_size: this.config.batchSize,
     });
   }
 
   /**
    * Tokenize text to token IDs
-   */
+   */;
   private async tokenize(text: string): Promise<number[]> {
     const encoder = new TextEncoder();
     const textBytes = encoder.encode(text);
@@ -352,7 +353,7 @@ export class WebASMLlamaCppEngine {
 
   /**
    * Detokenize token IDs to text
-   */
+   */;
   private async detokenize(tokens: number[]): Promise<string> {
     const textPtr = this.wasmModule.llama_detokenize(tokens);
     const textLength = this.wasmModule.llama_text_length(textPtr);
@@ -368,13 +369,13 @@ export class WebASMLlamaCppEngine {
     return decoder.decode(textBytes);
   }
 
-  // GPU Memory Management for WebASM
+  // GPU Memory Management for WebASM;
   private gpuMalloc(size: number): number {
     if (!this.gpuDevice) return 0;
     
     const buffer = this.gpuDevice.createBuffer({
       size,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
     });
     
     // Return buffer ID (simplified)
@@ -389,7 +390,7 @@ export class WebASMLlamaCppEngine {
     // GPU memory copy operations
   }
 
-  // Threading support for WebASM
+  // Threading support for WebASM;
   private pthreadCreate(): number {
     // WebWorker creation for threading
     return 0;
@@ -399,7 +400,7 @@ export class WebASMLlamaCppEngine {
     // WebWorker cleanup
   }
 
-  // Performance monitoring
+  // Performance monitoring;
   private updateMetrics(tokens: number, time: number): void {
     this.totalInferences++;
     this.totalTokens += tokens;
@@ -415,13 +416,13 @@ export class WebASMLlamaCppEngine {
     return 0.75; // Placeholder
   }
 
-  // Model caching
+  // Model caching;
   private async getCachedModel(modelPath: string): Promise<ArrayBuffer | null> {
     try {
       const db = await this.openIndexedDB();
       const transaction = db.transaction(['models'], 'readonly');
       const store = transaction.objectStore('models');
-      const result = await this.promisifyRequest(store.get(modelPath));
+      const result = await this.promisifyRequest(store.get(modelPath);
       return result?.data || null;
     } catch {
       return null;
@@ -433,7 +434,7 @@ export class WebASMLlamaCppEngine {
       const db = await this.openIndexedDB();
       const transaction = db.transaction(['models'], 'readwrite');
       const store = transaction.objectStore('models');
-      await this.promisifyRequest(store.put({ path: modelPath, data }));
+      await this.promisifyRequest(store.put({ path: modelPath, data });
     } catch (error) {
       console.warn('Failed to cache model:', error);
     }
@@ -460,26 +461,26 @@ export class WebASMLlamaCppEngine {
 
   /**
    * Get performance statistics
-   */
+   */;
   getStats(): {
     totalInferences: number;
     totalTokens: number;
     averageLatency: number;
     tokensPerSecond: number;
-    memoryUsage: number;
+    memoryUsage: number;,
   } {
     return {
       totalInferences: this.totalInferences,
       totalTokens: this.totalTokens,
       averageLatency: this.averageLatency,
       tokensPerSecond: this.averageLatency > 0 ? 1000 / this.averageLatency: 0,
-      memoryUsage: this.getMemoryUsage()
+      memoryUsage: this.getMemoryUsage(),
     };
   }
 
   /**
    * Cleanup resources
-   */
+   */;
   async destroy(): Promise<void> {
     if (this.wasmModule) {
       this.wasmModule.llama_cleanup();
@@ -493,14 +494,14 @@ export class WebASMLlamaCppEngine {
   }
 }
 
-// Export singleton instance
+// Export singleton instance;
 export const llamaCppEngine = new WebASMLlamaCppEngine({
   modelPath: '/models/gemma-2b-q4_0.gguf',
   contextSize: 2048,
   gpuLayers: 35,
   threadCount: 8,
   useGPU: true,
-  quantization: 'q4_0'
+  quantization: 'q4_0',
 });
 
 // Convenience function for quick inference

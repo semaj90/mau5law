@@ -20,7 +20,7 @@ export class AccessibilityTester {
     const results = {
       passed: 0,
       failed: 0,
-      issues: [] as string[]
+      issues: [] as string[],
     };
 
     // Test Tab navigation through main interface
@@ -76,7 +76,7 @@ export class AccessibilityTester {
     try {
       await this.page.keyboard.press('Alt+s');
       const mainContent = await this.page.locator('main, [role="main"]').first();
-      const isFocused = await mainContent.evaluate(el => document.activeElement === el);
+      const isFocused = await mainContent.evaluate((el) => document.activeElement === el);
 
       if (isFocused) {
         results.passed++;
@@ -99,7 +99,7 @@ export class AccessibilityTester {
     const results = {
       passed: 0,
       failed: 0,
-      issues: [] as string[]
+      issues: [] as string[],
     };
 
     await this.page.goto('/');
@@ -115,7 +115,9 @@ export class AccessibilityTester {
     }
 
     // Test ARIA labels and descriptions
-    const interactiveElements = await this.page.locator('button, a, input, select, [role="button"], [role="link"]').all();
+    const interactiveElements = await this.page
+      .locator('button, a, input, select, [role="button"], [role="link"]')
+      .all();
 
     for (const element of interactiveElements) {
       try {
@@ -127,7 +129,7 @@ export class AccessibilityTester {
           results.passed++;
         } else {
           results.failed++;
-          const tagName = await element.evaluate(el => el.tagName.toLowerCase());
+          const tagName = await element.evaluate((el) => el.tagName.toLowerCase());
           results.issues.push(`Interactive element (${tagName}) missing accessible name`);
         }
       } catch (error) {
@@ -143,7 +145,7 @@ export class AccessibilityTester {
 
     for (const heading of headings) {
       try {
-        const tagName = await heading.evaluate(el => el.tagName.toLowerCase());
+        const tagName = await heading.evaluate((el) => el.tagName.toLowerCase());
         const level = parseInt(tagName.charAt(1));
 
         if (level === 1) {
@@ -153,7 +155,9 @@ export class AccessibilityTester {
         // Check heading hierarchy
         if (previousLevel > 0 && level > previousLevel + 1) {
           results.failed++;
-          results.issues.push(`Heading hierarchy skip detected: ${tagName} after h${previousLevel}`);
+          results.issues.push(
+            `Heading hierarchy skip detected: ${tagName} after h${previousLevel}`
+          );
         } else {
           results.passed++;
         }
@@ -180,7 +184,7 @@ export class AccessibilityTester {
     const results = {
       passed: 0,
       failed: 0,
-      issues: [] as string[]
+      issues: [] as string[],
     };
 
     // Navigate to AI Hub
@@ -189,7 +193,9 @@ export class AccessibilityTester {
     // Test AI operation announcements
     try {
       // Look for AI processing indicators
-      const aiIndicators = await this.page.locator('[data-ai-status], [aria-describedby*="ai"], [role="status"]').all();
+      const aiIndicators = await this.page
+        .locator('[data-ai-status], [aria-describedby*="ai"], [role="status"]')
+        .all();
 
       if (aiIndicators.length > 0) {
         results.passed++;
@@ -237,7 +243,7 @@ export class AccessibilityTester {
     const results = {
       passed: 0,
       failed: 0,
-      issues: [] as string[]
+      issues: [] as string[],
     };
 
     await this.page.goto('/');
@@ -251,7 +257,9 @@ export class AccessibilityTester {
       await this.page.waitForSelector('[role="dialog"]', { timeout: 2000 });
 
       // Try to tab out of modal
-      const focusableInModal = await modal.locator('button, a, input, select, [tabindex="0"]').all();
+      const focusableInModal = await modal
+        .locator('button, a, input, select, [tabindex="0"]')
+        .all();
 
       if (focusableInModal.length > 0) {
         // Focus first element
@@ -264,7 +272,7 @@ export class AccessibilityTester {
 
         // Check if focus is still in modal
         const currentFocus = await this.page.locator(':focus').first();
-        const isInModal = await modal.locator(':focus').count() > 0;
+        const isInModal = (await modal.locator(':focus').count()) > 0;
 
         if (isInModal) {
           results.passed++;
@@ -279,8 +287,8 @@ export class AccessibilityTester {
       await this.page.waitForSelector('[role="dialog"]', { state: 'hidden', timeout: 2000 });
 
       const focusAfterClose = await this.page.locator(':focus').first();
-      const isAccessibilityButton = await focusAfterClose.evaluate(el =>
-        el.getAttribute('aria-label')?.includes('accessibility') || false
+      const isAccessibilityButton = await focusAfterClose.evaluate(
+        (el) => el.getAttribute('aria-label')?.includes('accessibility') || false
       );
 
       if (isAccessibilityButton) {
@@ -289,7 +297,6 @@ export class AccessibilityTester {
         results.failed++;
         results.issues.push('Focus not restored to accessibility button after modal close');
       }
-
     } catch (error) {
       results.failed++;
       results.issues.push(`Focus management error: ${error}`);
@@ -305,7 +312,7 @@ export class AccessibilityTester {
     const results = {
       passed: 0,
       failed: 0,
-      issues: [] as string[]
+      issues: [] as string[],
     };
 
     await this.page.goto('/');
@@ -316,7 +323,10 @@ export class AccessibilityTester {
       await this.page.waitForSelector('[role="dialog"]');
 
       // Find and click high contrast toggle
-      const highContrastToggle = await this.page.locator('[aria-checked]').filter({ hasText: /high contrast/i }).first();
+      const highContrastToggle = await this.page
+        .locator('[aria-checked]')
+        .filter({ hasText: /high contrast/i })
+        .first();
       await highContrastToggle.click();
 
       // Check if high contrast styles are applied
@@ -345,7 +355,10 @@ export class AccessibilityTester {
       const fontSizes = ['large', 'extra-large'];
 
       for (const size of fontSizes) {
-        const sizeButton = await this.page.locator('button').filter({ hasText: new RegExp(size, 'i') }).first();
+        const sizeButton = await this.page
+          .locator('button')
+          .filter({ hasText: new RegExp(size, 'i') })
+          .first();
         await sizeButton.click();
         await this.page.waitForTimeout(300);
 
@@ -355,7 +368,8 @@ export class AccessibilityTester {
 
         // Font size should increase for larger settings
         const fontSize = parseFloat(rootFontSize);
-        if (fontSize >= 16) { // Assuming base is 16px
+        if (fontSize >= 16) {
+          // Assuming base is 16px
           results.passed++;
         } else {
           results.failed++;
@@ -391,16 +405,26 @@ export class AccessibilityTester {
       focusManagement: focusResults,
       visual: visualResults,
       summary: {
-        totalPassed: keyboardResults.passed + screenReaderResults.passed + aiResults.passed + focusResults.passed + visualResults.passed,
-        totalFailed: keyboardResults.failed + screenReaderResults.failed + aiResults.failed + focusResults.failed + visualResults.failed,
+        totalPassed:
+          keyboardResults.passed +
+          screenReaderResults.passed +
+          aiResults.passed +
+          focusResults.passed +
+          visualResults.passed,
+        totalFailed:
+          keyboardResults.failed +
+          screenReaderResults.failed +
+          aiResults.failed +
+          focusResults.failed +
+          visualResults.failed,
         allIssues: [
           ...keyboardResults.issues,
           ...screenReaderResults.issues,
           ...aiResults.issues,
           ...focusResults.issues,
-          ...visualResults.issues
-        ]
-      }
+          ...visualResults.issues,
+        ],
+      },
     };
 
     // Generate accessibility report
@@ -424,12 +448,12 @@ export const accessibilityTestConfig = {
   testDir: './tests/accessibility',
   timeout: 30000,
   expect: {
-    timeout: 5000
+    timeout: 5000,
   },
   use: {
     // Enable accessibility tree in Playwright
     actionTimeout: 0,
     trace: 'on-first-retry',
-    screenshot: 'only-on-failure'
-  }
+    screenshot: 'only-on-failure',
+  },
 };

@@ -11,7 +11,8 @@ import { json, error as svelteError } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import { URL } from "url";
 
-// ===== TYPES AND INTERFACES =====
+// ===== TYPES AND INTERFACES =====;
+}
 
 export interface RouteConfig {
   path: string;
@@ -27,6 +28,7 @@ export interface RouteConfig {
 }
 
 export type RouteHandler = (event: RequestEvent, context: RouteContext) => Promise<Response>;
+}
 
 export interface RouteContext {
   params: Record<string, string>;
@@ -35,10 +37,11 @@ export interface RouteContext {
   session?: Session;
   startTime: number;
   requestId: string;
-  encoding: EncodingFormat;
+  encoding: EncodingFormat;,
 }
 
 export type Middleware = (event: RequestEvent, context: RouteContext, next: () => Promise<Response>) => Promise<Response>;
+}
 
 export interface RateLimitConfig {
   windowMs: number;
@@ -57,7 +60,7 @@ export interface User {
   id: string;
   email: string;
   role: string;
-  permissions: string[];
+  permissions: string[];,
 }
 
 export interface Session {
@@ -80,7 +83,7 @@ export interface ResponseMetadata {
   timestamp: string;
   processingTime: number;
   encoding: EncodingFormat;
-  version: string;
+  version: string;,
 }
 
 // ===== UNIFIED API ROUTER CLASS =====
@@ -101,7 +104,7 @@ export class UnifiedAPIRouter {
 
   /**
    * Register a new API route
-   */
+   */;
   register(routeConfig: RouteConfig): void {
     const key = this.createRouteKey(routeConfig.path, routeConfig.method);
     this.routes.set(key, routeConfig);
@@ -113,14 +116,14 @@ export class UnifiedAPIRouter {
 
   /**
    * Register multiple routes at once
-   */
+   */;
   registerMany(routes: RouteConfig[]): void {
-    routes.forEach(route => this.register(route));
+    routes.forEach(route => this.register(route);
   }
 
   /**
    * Add global middleware
-   */
+   */;
   use(middleware: Middleware): void {
     this.middleware.push(middleware);
   }
@@ -129,19 +132,19 @@ export class UnifiedAPIRouter {
 
   /**
    * Main request handler - called from SvelteKit API routes
-   */
+   */;
   async handle(event: RequestEvent): Promise<Response> {
     const startTime = Date.now();
     const requestId = this.generateRequestId();
     
     try {
-      // Create route context
+      // Create route context;
       const context: RouteContext = {
         params: event.params,
         query: event.url.searchParams,
         startTime,
         requestId,
-        encoding: this.detectEncoding(event)
+        encoding: this.detectEncoding(event),
       };
 
       // Find matching route
@@ -150,7 +153,7 @@ export class UnifiedAPIRouter {
         return this.createErrorResponse('Route not found', 404, context);
       }
 
-      // Check rate limiting
+      // Check rate limiting;
       if (route.rateLimit && !this.checkRateLimit(event, route.rateLimit)) {
         return this.createErrorResponse('Rate limit exceeded', 429, context);
       }
@@ -169,7 +172,7 @@ export class UnifiedAPIRouter {
         () => route.handler(event, context)
       );
 
-      // Cache response if configured
+      // Cache response if configured;
       if (route.cache && response.status === 200) {
         this.setCachedResponse(event, route.cache, response);
       }
@@ -195,7 +198,7 @@ export class UnifiedAPIRouter {
     middleware: Middleware[],
     event: RequestEvent,
     context: RouteContext,
-    finalHandler: () => Promise<Response>
+    finalHandler: () => Promise<Response>;
   ): Promise<Response> {
     let index = 0;
 
@@ -220,7 +223,7 @@ export class UnifiedAPIRouter {
       return this.routes.get(directKey);
     }
 
-    // Pattern matching for dynamic routes
+    // Pattern matching for dynamic routes;
     for (const [key, route] of this.routes.entries()) {
       if (this.matchesPattern(pathname, route.path) && route.method === method) {
         return route;
@@ -285,7 +288,7 @@ export class UnifiedAPIRouter {
     // Clean old requests
     tracker.requests = tracker.requests.filter(time => time > windowStart);
 
-    // Check if limit exceeded
+    // Check if limit exceeded;
     if (tracker.requests.length >= config.maxRequests) {
       return false;
     }
@@ -333,7 +336,7 @@ export class UnifiedAPIRouter {
         body: buffer,
         status: response.status,
         headers: Object.fromEntries(response.headers.entries()),
-        expiresAt: Date.now() + (config.ttl * 1000)
+        expiresAt: Date.now() + (config.ttl * 1000),
       });
     });
   }
@@ -347,7 +350,7 @@ export class UnifiedAPIRouter {
         timestamp: new Date().toISOString(),
         processingTime: context.startTime ? Date.now() - context.startTime: 0,
         encoding: context.encoding || 'json',
-        version: '2.0.0'
+        version: '2.0.0',
       }
     };
 
@@ -372,7 +375,7 @@ export class UnifiedAPIRouter {
   // ===== DEFAULT MIDDLEWARE =====
 
   private initializeDefaultMiddleware(): void {
-    // CORS middleware
+    // CORS middleware;
     this.use(async (event, context, next) => {
       const response = await next();
       
@@ -392,14 +395,14 @@ export class UnifiedAPIRouter {
       return response;
     });
 
-    // Request ID middleware
+    // Request ID middleware;
     this.use(async (event, context, next) => {
       const response = await next();
       response.headers.set('x-request-id', context.requestId);
       return response;
     });
 
-    // Error handling middleware
+    // Error handling middleware;
     this.use(async (event, context, next) => {
       try {
         return await next();
@@ -413,7 +416,7 @@ export class UnifiedAPIRouter {
   // ===== DEFAULT ROUTES =====
 
   private initializeDefaultRoutes(): void {
-    // Health check
+    // Health check;
     this.register({
       path: '/api/health',
       method: 'GET',
@@ -422,14 +425,14 @@ export class UnifiedAPIRouter {
           status: 'healthy',
           timestamp: new Date().toISOString(),
           services: await this.services.getHealthStatus(),
-          version: '2.0.0'
+          version: '2.0.0',
         };
 
         return json({ success: true, data: health });
       }
     });
 
-    // Service discovery
+    // Service discovery;
     this.register({
       path: '/api/services',
       method: 'GET',
@@ -439,7 +442,7 @@ export class UnifiedAPIRouter {
       }
     });
 
-    // Route listing (dev only)
+    // Route listing (dev only);
     if (dev) {
       this.register({
         path: '/api/routes',
@@ -451,8 +454,8 @@ export class UnifiedAPIRouter {
             method: config.method,
             auth: config.auth || false,
             rateLimit: !!config.rateLimit,
-            cache: !!config.cache
-          }));
+            cache: !!config.cache,
+          });
 
           return json({ success: true, data: routes });
         }
@@ -461,18 +464,19 @@ export class UnifiedAPIRouter {
   }
 }
 
-// ===== SUPPORTING CLASSES =====
+// ===== SUPPORTING CLASSES =====;
+}
 
 export interface RateLimitTracker {
   requests: number[];
-  windowMs: number;
+  windowMs: number;,
 }
 
 export interface CachedResponse {
   body: ArrayBuffer;
   status: number;
   headers: Record<string, string>;
-  expiresAt: number;
+  expiresAt: number;,
 }
 
 class ServiceRegistry {
@@ -484,7 +488,7 @@ class ServiceRegistry {
     for (const [name, info] of this.services.entries()) {
       try {
         const response = await fetch(`${info.url}/health`, { 
-          signal: AbortSignal.timeout(5000) 
+          signal: AbortSignal.timeout(5000) ,
         });
         health[name] = response.ok ? 'healthy' : 'unhealthy';
       } catch {
@@ -496,7 +500,7 @@ class ServiceRegistry {
   }
 
   async getAllServices(): Promise<ServiceInfo[]> {
-    return Array.from(this.services.values());
+    return Array.from(this.services.values();
   }
 
   registerService(name: string, info: ServiceInfo): void {
@@ -525,7 +529,7 @@ export const unifiedAPIRouter = new UnifiedAPIRouter({
   enableCaching: true,
   enableRateLimit: true,
   enableLogging: dev,
-  defaultEncoding: 'json'
+  defaultEncoding: 'json',
 });
 
 // ===== UTILITY FUNCTIONS =====
@@ -537,7 +541,7 @@ export function createAPIResponse<T>(
   data: T,
   success: boolean = true,
   message?: string,
-  meta?: Partial<ResponseMetadata>
+  meta?: Partial<ResponseMetadata>;
 ): APIResponse<T> {
   return {
     success,
@@ -557,7 +561,7 @@ export function createAPIResponse<T>(
 
 /**
  * Middleware factory for authentication
- */
+ */;
 export function createAuthMiddleware(options: { required?: boolean } = {}): Middleware {
   return async (event, context, next) => {
     const authHeader = event.request.headers.get('authorization');
@@ -577,7 +581,7 @@ export function createAuthMiddleware(options: { required?: boolean } = {}): Midd
 
 /**
  * Middleware factory for request validation
- */
+ */;
 export function createValidationMiddleware<T>(schema: any): Middleware {
   return async (event, context, next) => {
     try {

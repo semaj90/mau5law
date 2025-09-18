@@ -3,7 +3,7 @@
 
 interface RateLimitOptions {
   window: number; // time window in ms
-  max: number; // max requests per window
+  max: number; // max requests per window,
 }
 
 interface RateLimitResult {
@@ -31,7 +31,7 @@ class InMemoryRateLimiter {
         allowed: false,
         remaining: 0,
         reset: existing.expires,
-        retryAfter: Math.max(0, Math.ceil((existing.expires - now) / 1000))
+        retryAfter: Math.max(0, Math.ceil((existing.expires - now) / 1000)
       };
     }
 

@@ -6,7 +6,7 @@ import { safeFetchJson } from '$lib/server/fetch-wrapper';
 const RAG_BASE = process.env.RAG_SERVICE_URL || 'http://localhost:8094';
 
 export const POST: RequestHandler = async ({ request }) => {
-  const body = await request.json().catch(() => ({}));
+  const body = await request.json().catch(() => ({});
   const parsed = ragRequestSchema.safeParse(body);
   if (!parsed.success) {
     return json({ error: 'Invalid request', details: parsed.error.flatten() }, { status: 400 });
@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
   const upstream = await safeFetchJson<any>(`${RAG_BASE}/rag/enhanced`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(parsed.data)
+    body: JSON.stringify(parsed.data),
   });
   if (!upstream.ok) {
     return json({ error: 'Upstream error', detail: upstream.error }, { status: upstream.status || 502 });

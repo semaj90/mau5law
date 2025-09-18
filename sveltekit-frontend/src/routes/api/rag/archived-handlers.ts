@@ -8,7 +8,7 @@ import { librarySyncService } from "$lib/services/library-sync-service";
 const RAG_BACKEND_URL = import.meta.env.RAG_BACKEND_URL || "http://localhost:8000";
 const RAG_TIMEOUT = 30000;
 
-// Safe error message extractor to avoid using "any"
+// Safe error message extractor to avoid using "any";
 function errorMessage(err: any): string {
   if (err instanceof Error) return err.message;
   try {
@@ -32,7 +32,7 @@ async function forwardToRAGBackend(
       signal: controller.signal,
       headers: {
         "User-Agent": "SvelteKit-Frontend/1.0.0",
-        ...(options.headers || {}),
+        ...(options.headers || {,}),
       },
     });
 
@@ -91,7 +91,7 @@ async function forwardToRAGBackend(
       typeof err === "object" &&
       err &&
       "name" in err &&
-      (err as { name?: string }).name === "AbortError"
+      (err as { name?: string }).name === "AbortError";
     ) {
       throw new Error("RAG Backend request timed out");
     }
@@ -99,7 +99,7 @@ async function forwardToRAGBackend(
   }
 }
 
-// Full preserved implementations
+// Full preserved implementations;
 export async function handleUpload(request: Request): Promise<any> {
   try {
     const formData = await request.formData();
@@ -246,7 +246,7 @@ export async function handlePgaiProcess(request: Request): Promise<any> {
       body: JSON.stringify({
         model: "gemma3-summary",
         prompt: `Process this legal document and provide structured analysis in JSON format:
-
+);
         {
           "summary": "2-3 sentence overview",
           "key_points": ["point1", "point2", "point3"],

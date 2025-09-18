@@ -10,15 +10,23 @@ const STATIC_RESOURCES = [
   '/webasm/legal-vector-processor.wasm',
   '/webasm/simd-acceleration.wasm',
   '/shaders/legal-similarity.wgsl',
-  '/shaders/top-k-selection.wgsl'
+  '/shaders/top-k-selection.wgsl',
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     Promise.all([
-      caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_RESOURCES.filter(url => url.endsWith('.js') || url.endsWith('.css')))),
-      caches.open(WEBASM_CACHE_NAME).then(cache => cache.addAll(STATIC_RESOURCES.filter(url => url.endsWith('.wasm')))),
-      caches.open(VECTOR_CACHE_NAME)
+      caches
+        .open(CACHE_NAME)
+        .then((cache) =>
+          cache.addAll(
+            STATIC_RESOURCES.filter((url) => url.endsWith('.js') || url.endsWith('.css'))
+          )
+        ),
+      caches
+        .open(WEBASM_CACHE_NAME)
+        .then((cache) => cache.addAll(STATIC_RESOURCES.filter((url) => url.endsWith('.wasm')))),
+      caches.open(VECTOR_CACHE_NAME),
     ]).then(() => {
       console.log('🚀 Legal AI WebASM cache initialized');
       self.skipWaiting();
@@ -31,16 +39,17 @@ self.addEventListener('activate', (event) => {
     Promise.all([
       self.clients.claim(),
       // Clean up old caches
-      caches.keys().then(cacheNames => {
+      caches.keys().then((cacheNames) => {
         return Promise.all(
           cacheNames
-            .filter(cacheName =>
-              cacheName.startsWith('legal-ai-') &&
-              ![CACHE_NAME, WEBASM_CACHE_NAME, VECTOR_CACHE_NAME].includes(cacheName)
+            .filter(
+              (cacheName) =>
+                cacheName.startsWith('legal-ai-') &&
+                ![CACHE_NAME, WEBASM_CACHE_NAME, VECTOR_CACHE_NAME].includes(cacheName)
             )
-            .map(cacheName => caches.delete(cacheName))
+            .map((cacheName) => caches.delete(cacheName))
         );
-      })
+      }),
     ]).then(() => {
       console.log('✅ Legal AI service worker activated');
     })
@@ -96,7 +105,7 @@ async function handleBatchRanking(data, port) {
       port.postMessage({
         type: 'batch-ranking-complete',
         data: results,
-        processingTime: performance.now() - (data.startTime || 0)
+        processingTime: performance.now() - (data.startTime || 0),
       });
     }
   } catch (error) {
@@ -121,7 +130,7 @@ async function handleVectorSimilarityBatch(data, port) {
         port.postMessage({
           type: 'vector-similarity-complete',
           data: cached,
-          cached: true
+          cached: true,
         });
       }
       return;
@@ -137,7 +146,7 @@ async function handleVectorSimilarityBatch(data, port) {
       port.postMessage({
         type: 'vector-similarity-complete',
         data: similarities,
-        cached: false
+        cached: false,
       });
     }
   } catch (error) {
@@ -160,7 +169,7 @@ async function handleWebGPUComputeRequest(data, port) {
     if (port) {
       port.postMessage({
         type: 'webgpu-compute-complete',
-        data: results
+        data: results,
       });
     }
   } catch (error) {
@@ -178,7 +187,7 @@ async function handleCacheVectorEmbeddings(data, port) {
     const cache = await caches.open(VECTOR_CACHE_NAME);
 
     const cacheResponse = new Response(JSON.stringify({ embeddings, metadata }), {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
 
     await cache.put(`/vectors/${metadata.id}`, cacheResponse);
@@ -186,7 +195,7 @@ async function handleCacheVectorEmbeddings(data, port) {
     if (port) {
       port.postMessage({
         type: 'cache-embeddings-complete',
-        cached: true
+        cached: true,
       });
     }
   } catch (error) {
@@ -208,7 +217,7 @@ async function handleSIMDPreprocessing(data, port) {
     if (port) {
       port.postMessage({
         type: 'simd-preprocessing-complete',
-        data: processedVectors
+        data: processedVectors,
       });
     }
   } catch (error) {
@@ -227,16 +236,19 @@ async function processBatchRankingSIMD(queries, documents, options) {
   for (let i = 0; i < Math.min(queries.length, 10); i++) {
     results.push({
       queryIndex: i,
-      scores: documents.map((_, docIndex) => ({
-        documentIndex: docIndex,
-        similarity: Math.random() * 0.8 + 0.2, // Simulated similarity score
-        confidence: Math.random() * 0.6 + 0.4
-      })).sort((a, b) => b.similarity - a.similarity).slice(0, options.maxResults || 50)
+      scores: documents
+        .map((_, docIndex) => ({
+          documentIndex: docIndex,
+          similarity: Math.random() * 0.8 + 0.2, // Simulated similarity score
+          confidence: Math.random() * 0.6 + 0.4,
+        }))
+        .sort((a, b) => b.similarity - a.similarity)
+        .slice(0, options.maxResults || 50),
     });
   }
 
   // Simulate processing delay
-  await new Promise(resolve => setTimeout(resolve, 10));
+  await new Promise((resolve) => setTimeout(resolve, 10));
 
   return results;
 }
@@ -253,7 +265,7 @@ async function computeVectorSimilarities(queryVectors, documentVectors, threshol
           queryIndex: qIdx,
           documentIndex: dIdx,
           similarity,
-          confidence: similarity * 0.8 + 0.2
+          confidence: similarity * 0.8 + 0.2,
         });
       }
     }
@@ -276,10 +288,10 @@ async function simulateWebGPUCompute(shaderType, bufferData, workgroupSize) {
 
 async function preprocessVectorsSIMD(vectors, dimensions, normalization) {
   // Simulate SIMD vector preprocessing
-  const processed = vectors.map(vector => {
+  const processed = vectors.map((vector) => {
     if (normalization) {
       const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
-      return vector.map(val => magnitude > 0 ? val / magnitude : 0);
+      return vector.map((val) => (magnitude > 0 ? val / magnitude : 0));
     }
     return vector;
   });
@@ -298,7 +310,7 @@ function hashArray(arr) {
   // Simple hash function for cache keys
   let hash = 0;
   for (let i = 0; i < Math.min(arr.length, 100); i++) {
-    hash = ((hash << 5) - hash) + (arr[i] * 1000 | 0);
+    hash = (hash << 5) - hash + ((arr[i] * 1000) | 0);
     hash = hash & hash; // Convert to 32-bit integer
   }
   return Math.abs(hash).toString(36);
@@ -324,8 +336,8 @@ async function cacheVectorResults(cacheKey, results) {
     const response = new Response(JSON.stringify(results), {
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'max-age=3600' // 1 hour cache
-      }
+        'Cache-Control': 'max-age=3600', // 1 hour cache
+      },
     });
     await cache.put(`/cache/${cacheKey}`, response);
   } catch (error) {
@@ -340,15 +352,15 @@ self.addEventListener('fetch', (event) => {
   // Handle WebASM module requests
   if (url.pathname.endsWith('.wasm') || url.pathname.includes('/webasm/')) {
     event.respondWith(
-      caches.match(event.request).then(response => {
+      caches.match(event.request).then((response) => {
         if (response) {
           return response;
         }
-        return fetch(event.request).then(fetchResponse => {
+        return fetch(event.request).then((fetchResponse) => {
           // Cache successful WebASM fetches
           if (fetchResponse.ok) {
             const responseClone = fetchResponse.clone();
-            caches.open(WEBASM_CACHE_NAME).then(cache => {
+            caches.open(WEBASM_CACHE_NAME).then((cache) => {
               cache.put(event.request, responseClone);
             });
           }
@@ -361,15 +373,15 @@ self.addEventListener('fetch', (event) => {
   // Handle vector embedding requests
   if (url.pathname.includes('/api/embeddings/') || url.pathname.includes('/vectors/')) {
     event.respondWith(
-      caches.match(event.request).then(response => {
+      caches.match(event.request).then((response) => {
         if (response) {
           return response;
         }
-        return fetch(event.request).then(fetchResponse => {
+        return fetch(event.request).then((fetchResponse) => {
           // Cache embedding responses for 1 hour
           if (fetchResponse.ok) {
             const responseClone = fetchResponse.clone();
-            caches.open(VECTOR_CACHE_NAME).then(cache => {
+            caches.open(VECTOR_CACHE_NAME).then((cache) => {
               cache.put(event.request, responseClone);
             });
           }

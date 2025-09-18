@@ -27,7 +27,7 @@ import type { RequestHandler } from './$types.js';
 import { json } from "@sveltejs/kit";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-// Import AI services
+// Import AI services;
 export interface ProcessingPipeline {
   evidenceId: string;
   stages: {
@@ -52,7 +52,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       return json({ error: "Invalid evidence data" }, { status: 400 });
     }
 
-    // Initialize processing pipeline
+    // Initialize processing pipeline;
     const pipeline: ProcessingPipeline = {
       evidenceId: evidence.id,
       stages: {
@@ -66,7 +66,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       startTime: new Date(),
     };
 
-    // Stage 1: Generate Embeddings
+    // Stage 1: Generate Embeddings;
     try {
       pipeline.stages.embedding.status = "processing";
 
@@ -87,7 +87,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       pipeline.stages.embedding.error = error.message;
     }
 
-    // Stage 2: AI Tagging (parallel with analysis)
+    // Stage 2: AI Tagging (parallel with analysis);
     const taggingPromise = (async () => {
       try {
         pipeline.stages.tagging.status = "processing";
@@ -115,7 +115,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       }
     })();
 
-    // Stage 3: Deep AI Analysis (parallel with tagging)
+    // Stage 3: Deep AI Analysis (parallel with tagging);
     const analysisPromise = (async () => {
       try {
         pipeline.stages.analysis.status = "processing";
@@ -223,7 +223,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     );
     pipeline.overallStatus = hasErrors ? "error" : "complete";
 
-    // Return comprehensive results
+    // Return comprehensive results;
     return json({
       success: true,
       evidenceId: evidence.id,
@@ -251,11 +251,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
     });
   } catch (error: any) {
     console.error("Evidence processing failed:", error);
-    return json(
-      {
+    return json({
         error: "Processing failed",
         details: error.message,
-      },
+      },)
       { status: 500 },
     );
   }

@@ -7,14 +7,14 @@ import { physicsAwareGPUOrchestrator } from '$lib/gpu/physics-aware-gpu-orchestr
 import type { CognitiveMetrics } from '$lib/types/metrics';
 import { redirect, fail } from '@sveltejs/kit';
 
-// Types for our API responses
+// Types for our API responses;
 interface SystemHealth {
   overall: {
     status: 'healthy' | 'degraded' | 'unhealthy';
     healthScore: number;
     healthyServices: number;
     totalServices: number;
-    timestamp: string;
+    timestamp: string;,
   };
   services: {
     databases: Record<string, { host: string; port: number; status: string }>;
@@ -29,7 +29,7 @@ interface SystemHealth {
       heapUsed: number;
       heapTotal: number;
       external: number;
-      rss: number;
+      rss: number;,
     };
   };
   architecture: {
@@ -38,7 +38,7 @@ interface SystemHealth {
     gpuArchitecture: string;
     microservices: number;
     protocols: string[];
-    features: string[];
+    features: string[];,
   };
 }
 
@@ -49,32 +49,32 @@ interface SystemInfo {
   gpuInfo: string;
   memoryUsage: string;
   nodeVersion: string;
-  uptime: number;
+  uptime: number;,
 }
 
 export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
-  // Set cache headers for performance
+  // Set cache headers for performance;
   setHeaders({
     'Cache-Control': 'public, max-age=30', // Cache for 30 seconds
   });
 
-  // Session information for homepage display
+  // Session information for homepage display;
   const sessionInfo = {
     userId: locals.session?.user?.id ?? null,
     sessionId: locals.session?.id ?? null,
     email: locals.session?.user?.email ?? null,
-    isAuthenticated: !!locals.session?.user
+    isAuthenticated: !!locals.session?.user,
   };
 
   try {
-    // Mock health data for development (replaced disabled API calls)
+    // Mock health data for development (replaced disabled API calls);
     const systemHealth: SystemHealth = {
       overall: {
         status: 'healthy',
         healthScore: 100,
         healthyServices: 8,
         totalServices: 8,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       services: {
         databases: { postgres: { host: 'localhost', port: 5432, status: 'mocked' } },
@@ -84,12 +84,12 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
         storage: { minio: { host: 'localhost', port: 9000, status: 'mocked' } }
       },
       performance: {
-        systemUptime: Date.now() - 1000 * 60 * 60, // 1 hour
+        systemUptime: Date.now() - 1000 * 60 * 60, // 1 hour;
         memoryUsage: {
           heapUsed: 50 * 1024 * 1024,
           heapTotal: 100 * 1024 * 1024,
           external: 10 * 1024 * 1024,
-          rss: 200 * 1024 * 1024
+          rss: 200 * 1024 * 1024,
         }
       },
       architecture: {
@@ -109,7 +109,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       gpuInfo: 'RTX 3060 Ti (8GB VRAM)',
       memoryUsage: '16GB',
       nodeVersion: '22.17.1',
-      uptime: Date.now() - 1000 * 60 * 60
+      uptime: Date.now() - 1000 * 60 * 60,
     };
 
     // Initialize server-only cognitive subsystems (lightweight stubs)
@@ -125,20 +125,20 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
       gpuUtilization: physicsAwareGPUOrchestrator.getGPUUtilization() * 100,
       consciousnessLevel: 12,
       quantumCoherence: 50,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
-    // Dashboard metrics - simulated for demo (augmented with cognitive metrics)
+    // Dashboard metrics - simulated for demo (augmented with cognitive metrics);
     const dashboardStats = {
       activeCases: 42,
       evidenceItems: 1337,
       aiAnalyses: 89,
       systemUptime: systemHealth?.performance.systemUptime || 0,
-      cognitive: cognitiveMetrics
+      cognitive: cognitiveMetrics,
     };
 
     // Recent activities - YoRHa themed data
-    const recentActivities = [
+    const recentActivities = [;
       {
         id: '001',
         type: 'case_created',
@@ -179,7 +179,7 @@ export const load: PageServerLoad = async ({ locals, fetch, setHeaders }) => {
   } catch (err) {
     console.error('Failed to load dashboard data:', err);
 
-    // Return minimal fallback data instead of throwing
+    // Return minimal fallback data instead of throwing;
     return {
       ...sessionInfo,
       health: null,
@@ -206,7 +206,7 @@ export const actions: Actions = {
     throw redirect(303, '/');
   },
 
-  // Quick case creation action
+  // Quick case creation action;
   createQuickCase: async ({ request, fetch }) => {
     const data = await request.formData();
     const title = data.get('title')?.toString();
@@ -218,7 +218,7 @@ export const actions: Actions = {
 
     try {
       // Mock case creation - in real app would call API
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500); // Simulate API delay
 
       return {
         success: true,
@@ -234,12 +234,12 @@ export const actions: Actions = {
       console.error('Case creation failed:', err);
       return fail(500, {
         title,
-        error: 'Failed to create case. Please try again.'
+        error: 'Failed to create case. Please try again.',
       });
     }
   },
 
-  // System refresh action
+  // System refresh action;
   refreshSystem: async ({ fetch }) => {
     try {
       const healthResponse = await fetch('/api/health');
@@ -254,7 +254,7 @@ export const actions: Actions = {
     } catch (err) {
       console.error('System refresh failed:', err);
       return fail(500, {
-        error: 'Failed to refresh system status.'
+        error: 'Failed to refresh system status.',
       });
     }
   },

@@ -1,4 +1,4 @@
-// Type Assertion Utilities for Complex Services
+// Type Assertion Utilities for Complex Services;
 export function assertAny<T>(value: unknown): T {
   return value as T;
 }
@@ -19,7 +19,7 @@ export function withFallback<T>(fn: () => T, fallback: T): T {
   }
 }
 
-// WebGPU compatibility
+// WebGPU compatibility;
 export function asBuffer(data: any): ArrayBuffer {
   if (data instanceof ArrayBuffer) return data;
   if (data?.buffer instanceof ArrayBuffer) return data.buffer;
@@ -27,7 +27,7 @@ export function asBuffer(data: any): ArrayBuffer {
   return new ArrayBuffer(0);
 }
 
-// Property access helpers
+// Property access helpers;
 export function hasProperty(obj: any, prop: string): boolean {
   return obj != null && typeof obj === 'object' && prop in obj;
 }

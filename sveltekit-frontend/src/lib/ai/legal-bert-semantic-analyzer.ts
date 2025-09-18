@@ -15,14 +15,14 @@ import { lokiRedisCache, type CachedDocument } from '../cache/loki-redis-integra
 import { nesMemory } from '../memory/nes-memory-architecture.js';
 import { EventEmitter } from 'events';
 
-// Legal-BERT model configurations
+// Legal-BERT model configurations;
 const LEGAL_BERT_CONFIG = {
   models: {
     classification: {
       name: 'nlpaueb/legal-bert-base-uncased',
       maxLength: 512,
       batchSize: 16,
-      confidenceThreshold: 0.75
+      confidenceThreshold: 0.75,
     },
     ner: {
       name: 'law-ai/legalbert-ner',
@@ -33,7 +33,7 @@ const LEGAL_BERT_CONFIG = {
     similarity: {
       name: 'sentence-transformers/legal-bert-base-uncased',
       dimensions: 384,
-      similarityThreshold: 0.7
+      similarityThreshold: 0.7,
     }
   },
   
@@ -42,16 +42,17 @@ const LEGAL_BERT_CONFIG = {
     overlapSize: 32,          // Overlap between chunks
     maxConcurrentTasks: 4,    // Parallel processing limit
     cacheEnabled: true,       // Cache analysis results
-    gpuAcceleration: true     // Use GPU if available
+    gpuAcceleration: true     // Use GPU if available,
   },
   
   realtime: {
     streamingEnabled: true,
     debounceMs: 300,          // Debounce real-time updates
     batchIntervalMs: 1000,    // Batch processing interval
-    maxStreamingTokens: 128   // Max tokens for real-time analysis
+    maxStreamingTokens: 128   // Max tokens for real-time analysis,
   }
 } as const;
+}
 
 export interface LegalEntity {
   text: string;
@@ -67,7 +68,7 @@ export interface DocumentClassification {
   category: 'contract' | 'litigation' | 'regulatory' | 'corporate' | 'intellectual_property' | 'employment' | 'real_estate' | 'tax' | 'other';
   subcategory: string;
   confidence: number;
-  topPredictions: Array<any>;
+  topPredictions: Array<any>;,
 }
 
 export interface RiskAssessment {
@@ -99,23 +100,23 @@ export interface SemanticAnalysis {
   // Processing metadata
   processingTime: number;
   modelVersions: Record<string, string>;
-  cacheHit: boolean;
+  cacheHit: boolean;,
 }
 
 export interface StreamingUpdate {
   documentId: string;
   updateType: 'entity' | 'risk' | 'classification' | 'similarity';
   data: Partial<SemanticAnalysis>;
-  isComplete: boolean;
+  isComplete: boolean;,
 }
 
 export class LegalBERTSemanticAnalyzer extends EventEmitter {
   private models: Map<string, any> = new Map();
   private isInitialized = false;
-  private processingQueue: Map<string, Promise<SemanticAnalysis>> = new Map();
+  private processingQueue: Map<string, Promise<SemanticAnalysis> = new Map();
   private streamingTasks: Map<string, NodeJS.Timeout> = new Map();
   
-  // Performance tracking
+  // Performance tracking;
   private stats = {
     documentsAnalyzed: 0,
     averageProcessingTime: 0,
@@ -123,17 +124,17 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     modelAccuracy: 0,
     entitiesExtracted: 0,
     risksIdentified: 0,
-    precedentsMatched: 0
+    precedentsMatched: 0,
   };
 
   private batchProcessor: {
     queue: Array<any>;
     processing: boolean;
-    lastProcessTime: number;
+    lastProcessTime: number;,
   } = {
     queue: [],
     processing: false,
-    lastProcessTime: 0
+    lastProcessTime: 0,
   };
 
   async initialize(): Promise<void> {
@@ -179,7 +180,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
           confidence: 0.8 + Math.random() * 0.2,
           topPredictions: categories.slice(0, 3).map(cat => ({
             category: cat,
-            confidence: Math.random()
+            confidence: Math.random(),
           })).sort((a, b) => b.confidence - a.confidence)
         };
       },
@@ -226,7 +227,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
               label,
               confidence: 0.8 + Math.random() * 0.2,
               startPos: match.index,
-              endPos: match.index + match[0].length
+              endPos: match.index + match[0].length,
             });
           }
         }
@@ -252,7 +253,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
         }
         
         // Normalize the embedding
-        const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+        const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
         for (let i = 0; i < 768; i++) {
           embedding[i] /= norm;
         }
@@ -272,7 +273,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
           normB += embeddingB[i] * embeddingB[i];
         }
         
-        return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+        return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
       }
     };
     
@@ -298,7 +299,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     } = options;
 
     try {
-      // Check cache first
+      // Check cache first;
       if (useCache) {
         const cached = await this.getCachedAnalysis(documentId);
         if (cached) {
@@ -313,7 +314,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
         return await existingPromise;
       }
 
-      // Start analysis
+      // Start analysis;
       const analysisPromise = this.performAnalysis(documentId, text, {
         realTimeUpdates,
         includePrecedents
@@ -324,7 +325,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       try {
         const result = await analysisPromise;
         
-        // Cache result
+        // Cache result;
         if (useCache) {
           await this.cacheAnalysis(documentId, result);
         }
@@ -357,11 +358,11 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   ): Promise<SemanticAnalysis> {
     const analysisStart = Date.now();
 
-    // Initialize analysis object
+    // Initialize analysis object;
     const analysis: Partial<SemanticAnalysis> = {
       documentId,
       timestamp: Date.now(),
-      cacheHit: false
+      cacheHit: false,
     };
 
     // Parallel execution of core analysis tasks
@@ -389,12 +390,12 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     analysis.sentiment = sentiment;
     analysis.complexity = complexity;
 
-    // Legal-specific analysis
+    // Legal-specific analysis;
     if (classification.category === 'contract') {
       analysis.contractTerms = await this.extractContractTerms(text);
     }
 
-    // Precedent matching if requested
+    // Precedent matching if requested;
     if (options.includePrecedents) {
       analysis.precedentMatches = await this.findPrecedentMatches(embeddings, classification);
     }
@@ -404,7 +405,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     analysis.modelVersions = {
       classification: this.models.get('classification').version,
       ner: this.models.get('ner').version,
-      similarity: this.models.get('similarity').version
+      similarity: this.models.get('similarity').version,
     };
 
     return analysis as SemanticAnalysis;
@@ -419,7 +420,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
         documentId: streamingDocumentId,
         updateType: 'classification',
         data: { classification: result },
-        isComplete: false
+        isComplete: false,
       });
     }
     
@@ -435,7 +436,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
         documentId: streamingDocumentId,
         updateType: 'entity',
         data: { entities },
-        isComplete: false
+        isComplete: false,
       });
     }
     
@@ -450,31 +451,31 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   private async assessRisk(
     text: string,
     classification: DocumentClassification,
-    entities: LegalEntity[]
+    entities: LegalEntity[];
   ): Promise<RiskAssessment> {
     const riskFactors: RiskAssessment['riskFactors'] = [];
     
     // Risk factor detection patterns
-    const riskPatterns = [
+    const riskPatterns = [;
       {
         pattern: /indemnif\w+|liability|damages|breach|default/gi,
         factor: 'liability_risk',
-        severity: 'high' as const
+        severity: 'high' as const,
       },
       {
         pattern: /terminate|termination|cancel|void/gi,
         factor: 'termination_risk',
-        severity: 'medium' as const
+        severity: 'medium' as const,
       },
       {
         pattern: /force majeure|act of god|unforeseeable/gi,
         factor: 'force_majeure',
-        severity: 'low' as const
+        severity: 'low' as const,
       },
       {
         pattern: /confidential|proprietary|trade secret/gi,
         factor: 'confidentiality_risk',
-        severity: 'medium' as const
+        severity: 'medium' as const,
       }
     ];
 
@@ -486,7 +487,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
           severity,
           confidence: 0.7 + Math.random() * 0.3,
           location: { start: match.index, end: match.index + match[0].length },
-          mitigation: this.getMitigationSuggestion(factor)
+          mitigation: this.getMitigationSuggestion(factor),
         });
       }
     }
@@ -521,13 +522,13 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
       liability_risk: 'Consider adding liability caps and mutual indemnification clauses',
       termination_risk: 'Include clear termination procedures and notice requirements',
       force_majeure: 'Define specific force majeure events and mitigation procedures',
-      confidentiality_risk: 'Implement comprehensive confidentiality and data protection measures'
+      confidentiality_risk: 'Implement comprehensive confidentiality and data protection measures',
     };
     
     return mitigations[factor] || 'Consult legal counsel for specific mitigation strategies';
   }
 
-  private async extractKeyphrases(text: string): Promise<Array<any>> {
+  private async extractKeyphrases(text: string): Promise<Array<any> {
     // Simple keyphrase extraction (in production, use TF-IDF or similar)
     const words = text.toLowerCase().match(/\b\w{4,}\b/g) || [];
     const wordFreq: Record<string, number> = {};
@@ -538,18 +539,18 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     
     return Object.entries(wordFreq)
       .sort(([, a], [, b]) => b - a)
-      .slice(0, 10)
+      .slice(0, 10);
       .map(([phrase, freq]) => ({
         phrase,
-        relevance: freq / words.length
-      }));
+        relevance: freq / words.length,
+      });
   }
 
   private async analyzeSentiment(text: string): Promise<any> {
-    // Mock sentiment analysis
+    // Mock sentiment analysis;
     return {
       polarity: Math.random() * 2 - 1, // -1 (negative) to 1 (positive)
-      objectivity: Math.random()       // 0 (subjective) to 1 (objective)
+      objectivity: Math.random()       // 0 (subjective) to 1 (objective),
     };
   }
 
@@ -571,26 +572,26 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   private async extractContractTerms(text: string): Promise<SemanticAnalysis['contractTerms']> {
     const terms: SemanticAnalysis['contractTerms'] = [];
     
-    const termPatterns = [
+    const termPatterns = [;
       {
         pattern: /shall\s+(?:not\s+)?(\w+(?:\s+\w+)*)/gi,
-        type: 'obligation' as const
+        type: 'obligation' as const,
       },
       {
         pattern: /may\s+(\w+(?:\s+\w+)*)/gi,
-        type: 'right' as const
+        type: 'right' as const,
       },
       {
         pattern: /if\s+(.+?),?\s+then/gi,
-        type: 'condition' as const
+        type: 'condition' as const,
       },
       {
         pattern: /warrants?\s+(?:and\s+represents?\s+)?that\s+(.+?)(?:\.|;)/gi,
-        type: 'warranty' as const
+        type: 'warranty' as const,
       },
       {
         pattern: /indemnify\s+(.+?)(?:\.|;)/gi,
-        type: 'indemnity' as const
+        type: 'indemnity' as const,
       }
     ];
     
@@ -601,7 +602,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
           term: match[1] || match[0],
           type,
           enforceability: 0.7 + Math.random() * 0.3,
-          riskLevel: Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low'
+          riskLevel: Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low',
         });
       }
     }
@@ -611,22 +612,22 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
 
   private async findPrecedentMatches(
     embeddings: Float32Array,
-    classification: DocumentClassification
+    classification: DocumentClassification;
   ): Promise<SemanticAnalysis['precedentMatches']> {
     // In a real implementation, this would search a precedent database
     // For now, return mock matches
-    const mockPrecedents = [
+    const mockPrecedents = [;
       {
         caseId: 'Smith v. Johnson Corp',
         similarity: 0.85,
         relevantSections: ['Contract formation', 'Breach of warranty'],
-        jurisdiction: 'Federal'
+        jurisdiction: 'Federal',
       },
       {
         caseId: 'Tech Innovations LLC v. DataCorp',
         similarity: 0.78,
         relevantSections: ['Intellectual property', 'Trade secrets'],
-        jurisdiction: 'California'
+        jurisdiction: 'California',
       }
     ];
     
@@ -687,7 +688,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
 
   private async cacheAnalysis(documentId: string, analysis: SemanticAnalysis): Promise<void> {
     try {
-      // Store in Loki.js + Redis cache
+      // Store in Loki.js + Redis cache;
       await lokiRedisCache.storeDocument({
         id: documentId,
         type: analysis.classification.category as 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent',
@@ -707,7 +708,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
   private calculatePriority(analysis: SemanticAnalysis): number {
     let priority = 128; // Base priority
     
-    // Risk-based priority adjustment
+    // Risk-based priority adjustment;
     switch (analysis.riskAssessment.overallRisk) {
       case 'critical': priority = 255; break;
       case 'high': priority = 200; break;
@@ -718,7 +719,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     // Confidence adjustment
     priority += analysis.classification.confidence * 50;
     
-    return Math.min(255, Math.max(0, Math.round(priority)));
+    return Math.min(255, Math.max(0, Math.round(priority));
   }
 
   private updateStats(update: {
@@ -758,7 +759,7 @@ export class LegalBERTSemanticAnalyzer extends EventEmitter {
     // Clear processing queue
     this.processingQueue.clear();
     
-    // Clear streaming tasks
+    // Clear streaming tasks;
     for (const timeout of this.streamingTasks.values()) {
       clearTimeout(timeout);
     }

@@ -7,7 +7,7 @@ import { z } from 'zod';
 // import type { EvidenceMetadata } from '$lib/server/db/schema-unified-postgres.js';
 import { URL } from "url";
 
-// Define EvidenceMetadata type locally since schema-unified-postgres doesn't exist
+// Define EvidenceMetadata type locally since schema-unified-postgres doesn't exist;
 type EvidenceMetadata = {
   source?: string;
   type?: string;
@@ -43,7 +43,7 @@ const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/avi', 'video/mov', 'video/mkv']
 const ALLOWED_AUDIO_TYPES = ['audio/mp3', 'audio/wav', 'audio/aac', 'audio/ogg'];
 const ALLOWED_TEXT_TYPES = ['text/plain', 'text/csv', 'application/rtf'];
 
-// Evidence type to MIME types mapping (unified with existing file-upload.ts)
+// Evidence type to MIME types mapping (unified with existing file-upload.ts);
 const EVIDENCE_TYPE_MAPPINGS = {
   PDF: ALLOWED_PDF_TYPES,
   IMAGE: ALLOWED_IMAGE_TYPES,
@@ -68,17 +68,17 @@ export const legacyEvidenceTypeEnum = z.enum([
   'chain_of_custody'
 ]);
 
-// Chain of custody entry schema (from file-upload.ts)
+// Chain of custody entry schema (from file-upload.ts);
 export const chainOfCustodyEntrySchema = z.object({
   timestamp: z.string().datetime(),
   officer: z.string().min(1, 'Officer name is required'),
   action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'returned']),
   location: z.string().min(1, 'Location is required'),
   notes: z.string().optional(),
-  signature: z.string().optional()
+  signature: z.string().optional(),
 });
 
-// Base evidence upload schema (unified with file-upload.ts compatibility)
+// Base evidence upload schema (unified with file-upload.ts compatibility);
 export const evidenceUploadSchema = z.object({
   // Required fields
   case_id: z.string().uuid('Please select a valid case').optional(), // Made optional for compatibility
@@ -116,17 +116,17 @@ export const evidenceUploadSchema = z.object({
   // Legacy evidence type support
   legacyEvidenceType: legacyEvidenceTypeEnum.optional(),
 
-  // OCR and analysis results
+  // OCR and analysis results;
   ocrResult: z.object({
     extractedText: z.string().optional(),
     confidence: z.number().min(0).max(100).optional(),
     legalConcepts: z.array(z.string()).default([]),
     citations: z.array(z.string()).default([]),
-    pageCount: z.number().optional()
+    pageCount: z.number().optional(),
   }).optional()
 });
 
-// PDF-specific metadata schema
+// PDF-specific metadata schema;
 export const pdfMetadataSchema = z.object({
   kind: z.literal('PDF'),
   pageCount: z.number().int().positive(),
@@ -137,7 +137,7 @@ export const pdfMetadataSchema = z.object({
   createdDate: z.string().optional(),
 });
 
-// Image-specific metadata schema
+// Image-specific metadata schema;
 export const imageMetadataSchema = z.object({
   kind: z.literal('IMAGE'),
   resolution: z.object({
@@ -150,7 +150,7 @@ export const imageMetadataSchema = z.object({
   colorSpace: z.string().optional(),
 });
 
-// Video-specific metadata schema
+// Video-specific metadata schema;
 export const videoMetadataSchema = z.object({
   kind: z.literal('VIDEO'),
   durationSeconds: z.number().positive(),
@@ -164,7 +164,7 @@ export const videoMetadataSchema = z.object({
   bitrate: z.number().optional(),
 });
 
-// Audio-specific metadata schema
+// Audio-specific metadata schema;
 export const audioMetadataSchema = z.object({
   kind: z.literal('AUDIO'),
   durationSeconds: z.number().positive(),
@@ -175,7 +175,7 @@ export const audioMetadataSchema = z.object({
   bitrate: z.number().optional(),
 });
 
-// Text-specific metadata schema
+// Text-specific metadata schema;
 export const textMetadataSchema = z.object({
   kind: z.literal('TEXT'),
   wordCount: z.number().int().nonnegative(),
@@ -185,7 +185,7 @@ export const textMetadataSchema = z.object({
   fileSize: z.number().optional(),
 });
 
-// Link-specific metadata schema
+// Link-specific metadata schema;
 export const linkMetadataSchema = z.object({
   kind: z.literal('LINK'),
   url: z.string().url(),
@@ -206,12 +206,12 @@ export const evidenceMetadataSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('UNKNOWN') }),
 ]);
 
-// Enhanced evidence upload schema with typed metadata
+// Enhanced evidence upload schema with typed metadata;
 export const enhancedEvidenceUploadSchema = evidenceUploadSchema.extend({
   metadata: evidenceMetadataSchema.optional(),
 });
 
-// File validation functions
+// File validation functions;
 export function validateFileType(file: File, evidenceType: string): boolean {
   const allowedTypes = EVIDENCE_TYPE_MAPPINGS[evidenceType as keyof typeof EVIDENCE_TYPE_MAPPINGS];
   if (!allowedTypes || allowedTypes.length === 0) return true; // Allow all types for LINK/UNKNOWN
@@ -231,7 +231,7 @@ export function getFileTypeFromMime(mimeType: string): string {
   return 'UNKNOWN';
 }
 
-// Helper function to generate metadata based on file
+// Helper function to generate metadata based on file;
 export async function generateMetadataFromFile(file: File, evidenceType: string): Promise<EvidenceMetadata> {
   const baseMetadata = {
     fileSize: file.size,
@@ -239,7 +239,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
   };
 
   switch (evidenceType) {
-    case 'PDF':
+    case 'PDF':;
       return {
         kind: 'PDF',
         pageCount: 0, // Will be determined by server-side processing
@@ -248,7 +248,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
       } as EvidenceMetadata;
 
     case 'IMAGE':
-      // For images, we can read dimensions client-side
+      // For images, we can read dimensions client-side;
       return new Promise((resolve) => {
         const img = new Image();
         img.onload = () => {
@@ -272,7 +272,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
         img.src = URL.createObjectURL(file as any);
       });
 
-    case 'VIDEO':
+    case 'VIDEO':;
       return new Promise((resolve) => {
         const video = document.createElement('video');
         video.onloadedmetadata = () => {
@@ -298,7 +298,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
         video.src = URL.createObjectURL(file as any);
       });
 
-    case 'AUDIO':
+    case 'AUDIO':;
       return new Promise((resolve) => {
         const audio = document.createElement('audio');
         audio.onloadedmetadata = () => {
@@ -325,7 +325,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
       });
 
     case 'TEXT':
-      // For text files, we can read content client-side
+      // For text files, we can read content client-side;
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (e: any) => {
@@ -349,7 +349,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
         reader.readAsText(file);
       });
 
-    default:
+    default:;
       return {
         kind: 'UNKNOWN',
         ...baseMetadata,
@@ -357,7 +357,7 @@ export async function generateMetadataFromFile(file: File, evidenceType: string)
   }
 }
 
-// Form validation messages
+// Form validation messages;
 export const validationMessages = {
   case_id: 'Please select a case for this evidence',
   title: 'Evidence title is required',

@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ request }) => {
     start(controller) {
       const send = (data: any) => {
         const payload = `data: ${JSON.stringify(data)}\n\n`;
-        controller.enqueue(new TextEncoder().encode(payload));
+        controller.enqueue(new TextEncoder().encode(payload);
       };
 
   (jobStore as any).listJobs?.().then((items: any) => send({ type: 'snapshot', items })).catch(() => {});

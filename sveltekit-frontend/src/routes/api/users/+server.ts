@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const sortOrder = url.searchParams.get("sortOrder") || "desc";
 
     // Build query with filters
-    let query = db
+    let query = db;
       .select({
         id: users.id,
         email: users.email,
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
     const filters = [];
 
-    // Add search filter
+    // Add search filter;
     if (search) {
       filters.push(
         or(
@@ -53,13 +53,13 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         ),
       );
     }
-    // Add role filter
+    // Add role filter;
     if (role) {
-      filters.push(eq(users.role, role));
+      filters.push(eq(users.role, role);
     }
-    // Add active status filter
+    // Add active status filter;
     if (isActive !== null) {
-      filters.push(eq(users.isActive, isActive === "true"));
+      filters.push(eq(users.isActive, isActive === "true");
     }
     // Build query with filters
     const whereClause = filters.length > 0 ? and(...filters) : undefined;
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
               ? users.updatedAt
               : users.createdAt;
 
-    const userResults = await db
+    const userResults = await db;
       .select({
         id: users.id,
         name: users.name,
@@ -89,7 +89,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
       })
       .from(users)
       .where(whereClause)
-      .orderBy(sortOrder === "asc" ? orderColumn : desc(orderColumn))
+      .orderBy(sortOrder === "asc" ? orderColumn : desc(orderColumn)
       .limit(limit)
       .offset(offset);
 
@@ -121,7 +121,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     if (!locals.user) {
       return json({ error: "Not authenticated" }, { status: 401 });
     }
-    // Check if user has admin privileges
+    // Check if user has admin privileges;
     if (locals.user.role !== "admin" && locals.user.role !== "prosecutor") {
       return json({ error: "Insufficient permissions" }, { status: 403 });
     }
@@ -130,10 +130,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     }
     const data = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!data.email || !data.password) {
       return json(
-        { error: "Email and password are required" },
+        { error: "Email and password are required" },)
         { status: 400 },
       );
     }
@@ -141,7 +141,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const existingUser = await db
       .select()
       .from(users)
-      .where(eq(users.email, data.email))
+      .where(eq(users.email, data.email)
       .limit(1);
 
     if (existingUser.length > 0) {
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const bcrypt = await import("bcrypt");
     const hashedPassword = await bcrypt.hash(data.password, 12);
 
-    // Map frontend data to schema fields
+    // Map frontend data to schema fields;
     const userData = {
       email: data.email.trim().toLowerCase(),
       hashedPassword,

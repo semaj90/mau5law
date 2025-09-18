@@ -2,16 +2,16 @@ import { cases, helpers } from "$lib/server/db";
 import type { LayoutServerLoad } from './$types.js';
 
 // This runs for /cases and all its sub-pages
-// Perfect for loading persistent 3-column layout data
+// Perfect for loading persistent 3-column layout data;
 export const load: LayoutServerLoad = async ({ locals, url }) => {
-  // Temporarily bypass authentication for SuperForms testing
+  // Temporarily bypass authentication for SuperForms testing;
   const user = locals.user || {
     id: 'test-user-id',
     role: 'user' as const,
-    email: 'test@example.com'
+    email: 'test@example.com',
   };
 
-  // REMOVED: Authentication redirect for testing
+  // REMOVED: Authentication redirect for testing;
   // if (!user?.id) {
   //   throw redirect(303, "/login");
   // }
@@ -37,10 +37,10 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
     }
   }
   if (statusFilter !== "all") {
-    if (helpers.eq) whereConditions.push(helpers.eq((cases as any).status, statusFilter));
+    if (helpers.eq) whereConditions.push(helpers.eq((cases as any).status, statusFilter);
   }
   if (priorityFilter !== "all") {
-    if (helpers.eq) whereConditions.push(helpers.eq((cases as any).priority, priorityFilter));
+    if (helpers.eq) whereConditions.push(helpers.eq((cases as any).priority, priorityFilter);
   }
 
   // Safely determine sort column
@@ -51,7 +51,7 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
   let caseStats = [];
 
   // Mock data for testing purposes
-  userCases = [
+  userCases = [;
     {
       id: 'case-1',
       title: 'Test Case 1',
@@ -68,10 +68,10 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
     { status: 'closed', count: 0 }
   ];
 
-  // DISABLED: Database queries for testing
+  // DISABLED: Database queries for testing;
   // try {
   //   userCases = await db.select(...).from(cases)...
-  //   caseStats = await db.select(...).from(cases)...
+  //   caseStats = await db.select(...).from(cases)...;
   // } catch (error: any) {
   //   console.error("Database query failed:", error);
   //   userCases = [];

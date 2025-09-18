@@ -13,7 +13,7 @@ services:
       POSTGRES_PASSWORD: 123456
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./src/lib/server/db/migrations:/docker-entrypoint-initdb.d
@@ -27,7 +27,7 @@ services:
     container_name: legal-ai-redis
     command: redis-server --requirepass redis --maxmemory 2gb --maxmemory-policy allkeys-lru
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     networks:
@@ -62,9 +62,9 @@ services:
       WEBSOCKET_PORT: 8097
       HEALTH_PORT: 8098
     ports:
-      - "8096:8096"  # TensorRT-LLM API
-      - "8097:8097"  # WebSocket for real-time
-      - "8098:8098"  # Health/metrics
+      - '8096:8096' # TensorRT-LLM API
+      - '8097:8097' # WebSocket for real-time
+      - '8098:8098' # Health/metrics
     volumes:
       - ../TensorRT-LLM/tensorrt_env:/opt/tensorrt_env:ro
       - ../models:/opt/models:ro
@@ -116,8 +116,8 @@ services:
       VITE_DEV_MODE: true
       HMR_PORT: 24678
     ports:
-      - "5173:5173"  # SvelteKit dev server
-      - "24678:24678"  # HMR
+      - '5173:5173' # SvelteKit dev server
+      - '24678:24678' # HMR
     volumes:
       - .:/app
       - /app/node_modules

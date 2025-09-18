@@ -9,7 +9,7 @@ const meta = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'YoRHa Command Center Dashboard - Main interface for legal AI operations'
+        component: 'YoRHa Command Center Dashboard - Main interface for legal AI operations',
       }
     }
   },
@@ -29,7 +29,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Default story with baseline system data
+// Default story with baseline system data;
 export const Default: Story = {
   args: {
     systemData: {
@@ -40,12 +40,12 @@ export const Default: Story = {
       systemLoad: 35,
       gpuUtilization: 22,
       memoryUsage: 68,
-      networkLatency: 45
+      networkLatency: 45,
     }
   }
 };
 
-// High load scenario
+// High load scenario;
 export const HighLoad: Story = {
   args: {
     systemData: {
@@ -56,19 +56,19 @@ export const HighLoad: Story = {
       systemLoad: 85,
       gpuUtilization: 92,
       memoryUsage: 87,
-      networkLatency: 125
+      networkLatency: 125,
     }
   },
   parameters: {
     docs: {
       description: {
-        story: 'Command Center under high system load - shows warning indicators'
+        story: 'Command Center under high system load - shows warning indicators',
       }
     }
   }
 };
 
-// Critical system state
+// Critical system state;
 export const Critical: Story = {
   args: {
     systemData: {
@@ -79,19 +79,19 @@ export const Critical: Story = {
       systemLoad: 96,
       gpuUtilization: 98,
       memoryUsage: 94,
-      networkLatency: 250
+      networkLatency: 250,
     }
   },
   parameters: {
     docs: {
       description: {
-        story: 'Critical system state - all metrics in red zone'
+        story: 'Critical system state - all metrics in red zone',
       }
     }
   }
 };
 
-// Low activity scenario
+// Low activity scenario;
 export const LowActivity: Story = {
   args: {
     systemData: {
@@ -102,19 +102,19 @@ export const LowActivity: Story = {
       systemLoad: 15,
       gpuUtilization: 8,
       memoryUsage: 32,
-      networkLatency: 18
+      networkLatency: 18,
     }
   },
   parameters: {
     docs: {
       description: {
-        story: 'Low activity scenario - minimal system usage'
+        story: 'Low activity scenario - minimal system usage',
       }
     }
   }
 };
 
-// Empty state
+// Empty state;
 export const EmptyState: Story = {
   args: {
     systemData: {
@@ -125,19 +125,19 @@ export const EmptyState: Story = {
       systemLoad: 5,
       gpuUtilization: 2,
       memoryUsage: 15,
-      networkLatency: 12
+      networkLatency: 12,
     }
   },
   parameters: {
     docs: {
       description: {
-        story: 'Empty state - fresh system with no active cases or data'
+        story: 'Empty state - fresh system with no active cases or data',
       }
     }
   }
 };
 
-// Interactive demo with actions
+// Interactive demo with actions;
 export const Interactive: Story = {
   args: {
     systemData: {
@@ -148,13 +148,13 @@ export const Interactive: Story = {
       systemLoad: 55,
       gpuUtilization: 42,
       memoryUsage: 63,
-      networkLatency: 38
+      networkLatency: 38,
     }
   },
   parameters: {
     docs: {
       description: {
-        story: 'Interactive demo - test all quick actions and modal interactions'
+        story: 'Interactive demo - test all quick actions and modal interactions',
       }
     }
   },
@@ -162,7 +162,7 @@ export const Interactive: Story = {
     const canvas = within(canvasElement);
     
     await step('Click new case action', async () => {
-      const newCaseButton = canvas.getByText('Create New Case'));
+      const newCaseButton = canvas.getByText('Create New Case');
       await userEvent.click(newCaseButton);
       
       // Modal should appear

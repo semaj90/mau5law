@@ -11,8 +11,8 @@
       <p class="title">Confirm</p>
       <p>{message}</p>
       <menu class="dialog-menu">
-        <button type="button" class="nes-btn" on:click={onCancel}>Cancel</button>
-        <button type="button" class="nes-btn is-primary" on:click={onConfirm}>OK</button>
+        <button type="button" class="nes-btn" onclick={onCancel}>Cancel</button>
+        <button type="button" class="nes-btn is-primary" onclick={onConfirm}>OK</button>
       </menu>
     </form>
   </dialog>

@@ -16,7 +16,7 @@ import { URL } from 'url';
 // Use sparingly; replace with proper types when refactoring DB layer.
 const dbAny = db as unknown as any;
 
-// Authentication helper
+// Authentication helper;
 async function getAuthenticatedUser(locals: App.Locals) {
   const user = locals.user;
   const session = locals.session;
@@ -34,7 +34,7 @@ async function getAuthenticatedUser(locals: App.Locals) {
   return { user, session };
 }
 
-// Validation schema for case creation with enhanced fields
+// Validation schema for case creation with enhanced fields;
 const createCaseSchema = z.object({
   caseNumber: z.string().min(1, 'Case number is required'),
   title: z.string().min(1, 'Title is required'),
@@ -47,7 +47,7 @@ const createCaseSchema = z.object({
   metadata: z.record(z.any()).default({}),
 });
 
-// Validation schema for case updates
+// Validation schema for case updates;
 const updateCaseSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
@@ -59,7 +59,7 @@ const updateCaseSchema = z.object({
   metadata: z.record(z.any()).optional(),
 });
 
-// GET: Retrieve cases (authenticated users only see their own cases or cases assigned to them)
+// GET: Retrieve cases (authenticated users only see their own cases or cases assigned to them);
 export const GET: RequestHandler = async ({ url, locals }) => {
   try {
     // Authenticate user
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
     if (caseId) {
       // Get specific case with related data (only if user owns it or is assigned)
-      const caseData = await db
+      const caseData = await db;
         .select({
           id: cases.id,
           caseNumber: cases.caseNumber,
@@ -113,23 +113,23 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       const documents = await db
         .select()
         .from(caseDocuments)
-        .where(eq(caseDocuments.caseId, caseId))
-        .orderBy(desc(caseDocuments.created_at));
+        .where(eq(caseDocuments.caseId, caseId)
+        .orderBy(desc(caseDocuments.created_at);
 
       // Get activities
       const activities = await db
         .select()
         .from(caseActivities)
-        .where(eq(caseActivities.caseId, caseId))
-        .orderBy(desc(caseActivities.timestamp))
+        .where(eq(caseActivities.caseId, caseId)
+        .orderBy(desc(caseActivities.timestamp)
         .limit(50); // Limit activity history
 
       // Get timeline events
       const timeline = await db
         .select()
         .from(caseTimeline)
-        .where(eq(caseTimeline.caseId, caseId))
-        .orderBy(desc(caseTimeline.timestamp));
+        .where(eq(caseTimeline.caseId, caseId)
+        .orderBy(desc(caseTimeline.timestamp);
 
       return json({
         success: true,
@@ -148,18 +148,18 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     ];
 
     if (status) {
-      whereConditions.push(eq(cases.status, status));
+      whereConditions.push(eq(cases.status, status);
     }
 
-    // If search term provided, search in title and description
+    // If search term provided, search in title and description;
     if (search) {
       whereConditions.push(
-        or(ilike(cases.title, `%${search}%`), ilike(cases.description, `%${search}%`))
+        or(ilike(cases.title, `%${search}%`), ilike(cases.description, `%${search}%`)
       );
     }
 
     // Get cases with pagination
-    const result = await db
+    const result = await db;
       .select({
         id: cases.id,
         caseNumber: cases.caseNumber,
@@ -174,8 +174,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         metadata: cases.metadata,
       })
       .from(cases)
-      .where(and(...whereConditions))
-      .orderBy(desc(cases.updated_at))
+      .where(and(...whereConditions)
+      .orderBy(desc(cases.updated_at)
       .limit(limit)
       .offset(offset);
 
@@ -183,7 +183,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const [{ total }] = await db
       .select({ total: count() })
       .from(cases)
-      .where(and(...whereConditions));
+      .where(and(...whereConditions);
 
     return json({
       success: true,
@@ -219,7 +219,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   }
 };
 
-// POST: Create a new case (authenticated)
+// POST: Create a new case (authenticated);
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     // Authenticate user
@@ -249,7 +249,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const existingCase = await db
       .select({ id: cases.id })
       .from(cases)
-      .where(and(eq(cases.caseNumber, validatedData.caseNumber), eq(cases.createdBy, user.id)))
+      .where(and(eq(cases.caseNumber, validatedData.caseNumber), eq(cases.createdBy, user.id))
       .limit(1);
 
     if (existingCase.length > 0) {
@@ -264,7 +264,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     // Insert case into database
     const newCase = await dbAny
-      .insert(cases)
+      .insert(cases);
       .values({
         id: caseId,
         caseNumber: validatedData.caseNumber,
@@ -274,7 +274,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         status: validatedData.status,
         assigned_attorney: validatedData.assignedAttorney || null,
         createdBy: user.id,
-        userId: user.id, // For compatibility
+        userId: user.id, // For compatibility;
         metadata: {
           ...validatedData.metadata,
           tags: validatedData.tags,
@@ -287,7 +287,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       })
       .returning();
 
-    // Create initial activity log
+    // Create initial activity log;
     await dbAny.insert(caseActivities).values({
       id: crypto.randomUUID(),
       caseId: caseId,
@@ -303,7 +303,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       },
     });
 
-    // Create initial timeline event
+    // Create initial timeline event;
     await dbAny.insert(caseTimeline).values({
       id: crypto.randomUUID(),
       caseId: caseId,
@@ -318,14 +318,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       },
     });
 
-    // If embedding was generated, store it in the embedding cache for future use
+    // If embedding was generated, store it in the embedding cache for future use;
     if (caseEmbedding && caseEmbedding.length > 0) {
       try {
         const { embeddingCache } = await import('$lib/server/db/schema');
         const contentHash = await hashContent(caseContent);
 
         await dbAny
-          .insert(embeddingCache)
+          .insert(embeddingCache);
           .values({
             id: crypto.randomUUID(),
             content_hash: contentHash,
@@ -339,14 +339,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             created_at: now,
             expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
           })
-          .onConflictDoNothing(); // Don't error if hash already exists
+          .onConflictDoNothing(); // Don't error if hash already exists;
       } catch (cacheError) {
         console.warn('Failed to cache embedding:', cacheError);
         // Non-critical, continue
       }
     }
 
-    return json(
+    return json();
       {
         success: true,
         message: 'Case created successfully',
@@ -388,17 +388,17 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   }
 };
 
-// Helper function to hash content for embedding cache
+// Helper function to hash content for embedding cache;
 async function hashContent(content: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(content);
   const hash = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(hash))
-    .map((b) => b.toString(16).padStart(2, '0'))
+  return Array.from(new Uint8Array(hash)
+    .map((b) => b.toString(16).padStart(2, '0')
     .join('');
 }
 
-// PUT: Update an existing case (authenticated, owner or assigned only)
+// PUT: Update an existing case (authenticated, owner or assigned only);
 export const PUT: RequestHandler = async ({ request, url, locals }) => {
   try {
     // Authenticate user
@@ -419,7 +419,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
     const now = new Date();
 
     // Check if user has permission to update this case
-    const existingCase = await db
+    const existingCase = await db;
       .select({
         id: cases.id,
         title: cases.title,
@@ -427,11 +427,11 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         assigned_attorney: cases.assigned_attorney,
       })
       .from(cases)
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .limit(1);
 
     if (existingCase.length === 0) {
-      throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
+      throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' });
     }
 
     const caseRecord = existingCase[0];
@@ -466,7 +466,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       }
     }
 
-    // Build update object with only provided fields
+    // Build update object with only provided fields;
     const updateData: any = {
       updated_at: now,
     };
@@ -479,13 +479,13 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
     if (validatedData.assignedAttorney !== undefined)
       updateData.assigned_attorney = validatedData.assignedAttorney;
 
-    // Update metadata
+    // Update metadata;
     if (validatedData.metadata || validatedData.tags || newEmbedding) {
       updateData.metadata = {
         ...(caseRecord as any).metadata,
         ...validatedData.metadata,
-        ...(validatedData.tags && { tags: validatedData.tags }),
-        ...(newEmbedding && { embedding: true }),
+        ...(validatedData.tags && { tags: validatedData.tags ,}),
+        ...(newEmbedding && { embedding: true ,}),
         updatedBy: user.id,
         updatedByEmail: user.email,
         lastUpdated: now.toISOString(),
@@ -496,7 +496,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
     const updatedCase = await db
       .update(cases)
       .set(updateData)
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .returning();
 
     // Log the update activity with detailed changes
@@ -520,7 +520,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
       },
     });
 
-    // Update embedding cache if embedding was regenerated
+    // Update embedding cache if embedding was regenerated;
     if (newEmbedding && newEmbedding.length > 0) {
       try {
         const { embeddingCache } = await import('$lib/server/db/schema');
@@ -530,7 +530,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
         const contentHash = await hashContent(newContent);
 
         await db
-          .insert(embeddingCache)
+          .insert(embeddingCache);
           .values({
             id: crypto.randomUUID(),
             content_hash: contentHash,
@@ -544,7 +544,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
             },
             created_at: now,
             expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-          })
+          });
           .onConflictDoUpdate({
             target: [embeddingCache.content_hash],
             set: {
@@ -596,7 +596,7 @@ export const PUT: RequestHandler = async ({ request, url, locals }) => {
   }
 };
 
-// DELETE: Delete a case (authenticated, owner or admin only)
+// DELETE: Delete a case (authenticated, owner or admin only);
 export const DELETE: RequestHandler = async ({ url, locals }) => {
   try {
     // Authenticate user
@@ -612,21 +612,21 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     }
 
     // Check if user has permission to delete this case
-    const existingCase = await db
+    const existingCase = await db;
       .select({
         id: cases.id,
         title: cases.title,
         caseNumber: cases.caseNumber,
         createdBy: cases.createdBy,
         assigned_attorney: cases.assigned_attorney,
-        status: cases.status
+        status: cases.status,
       })
       .from(cases)
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .limit(1);
 
     if (existingCase.length === 0) {
-      throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' }));
+      throw error(404, makeHttpErrorPayload({ message: 'Case not found', code: 'CASE_NOT_FOUND' });
     }
 
     const caseRecord = existingCase[0];
@@ -658,7 +658,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
 
     const now = new Date();
 
-    // Log deletion activity before actual deletion
+    // Log deletion activity before actual deletion;
     await db.insert(caseActivities).values({
       id: crypto.randomUUID(),
       caseId: caseId,
@@ -671,11 +671,11 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
           id: caseRecord.id,
           title: caseRecord.title,
           caseNumber: caseRecord.caseNumber,
-          status: caseRecord.status
+          status: caseRecord.status,
         },
         deletedBy: user.id,
         deletedByEmail: user.email,
-        isAdmin: user.role === 'admin'
+        isAdmin: user.role === 'admin',
       }
     });
 
@@ -683,10 +683,10 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     const deleteResults = await Promise.allSettled([
       db.delete(caseTimeline).where(eq(caseTimeline.caseId, caseId)),
       db.delete(caseActivities).where(eq(caseActivities.caseId, caseId)),
-      db.delete(caseDocuments).where(eq(caseDocuments.caseId, caseId))
+      db.delete(caseDocuments).where(eq(caseDocuments.caseId, caseId)
     ]);
 
-    // Log any failures in related data deletion
+    // Log any failures in related data deletion;
     deleteResults.forEach((result, index) => {
       if ((result as { status?: any; reason?: any }).status === 'rejected') {
         const tableName = ['timeline', 'activities', 'documents'][index];
@@ -697,7 +697,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
     // Delete the case itself
     const deletedCase = await db
       .delete(cases)
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .returning();
 
     if (deletedCase.length === 0) {
@@ -710,12 +710,12 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
       );
     }
 
-    // Clean up embedding cache for this case
+    // Clean up embedding cache for this case;
     try {
       const { embeddingCache } = await import('$lib/server/db/schema');
       await db
         .delete(embeddingCache)
-        .where(eq(embeddingCache.metadata, { entityType: 'case', entityId: caseId }));
+        .where(eq(embeddingCache.metadata, { entityType: 'case', entityId: caseId });
     } catch (cacheError) {
       console.warn('Failed to clean up embedding cache:', cacheError);
       // Non-critical, continue
@@ -737,7 +737,7 @@ export const DELETE: RequestHandler = async ({ url, locals }) => {
         relatedDataDeleted: {
           timeline: deleteResults[0].status === 'fulfilled',
           activities: deleteResults[1].status === 'fulfilled',
-          documents: deleteResults[2].status === 'fulfilled'
+          documents: deleteResults[2].status === 'fulfilled',
         }
       }
     });

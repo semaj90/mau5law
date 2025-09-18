@@ -13,7 +13,7 @@ import { rabbitmqService } from '$lib/server/messaging/rabbitmq-service';
 import { workflowOrchestrator } from '$lib/machines/workflow-machine';
 import { URL } from "url";
 
-// API Response types
+// API Response types;
 export interface APIResponse<T = any> {
   success: boolean;
   data?: T;
@@ -24,7 +24,7 @@ export interface APIResponse<T = any> {
   performance?: {
     executionTime: number;
     cacheHit?: boolean;
-    servicesUsed: string[];
+    servicesUsed: string[];,
   };
 }
 
@@ -36,7 +36,7 @@ function createResponse<T>(
   success: boolean,
   data?: T,
   error?: string,
-  performance?: any
+  performance?: any;
 ): APIResponse<T> {
   return {
     success,
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
   try {
     switch (action) {
-      case 'health':
+      case 'health':;
         const healthStatus = {
           status: 'healthy',
           services: {
@@ -77,38 +77,37 @@ export const GET: RequestHandler = async ({ url }) => {
 
         return json(createResponse(true, healthStatus, undefined, {
           executionTime: Date.now() - startTime,
-          servicesUsed: ['all']
-        }));
+          servicesUsed: ['all'],
+        });
 
       case 'search':
         const query = url.searchParams.get('query');
         if (!query) {
-          return json(createResponse(false, null, 'Query parameter required'));
+          return json(createResponse(false, null, 'Query parameter required');
         }
 
-        // Mock search results
+        // Mock search results;
         const searchResults = {
           query,
           results: [
             { id: 1, title: 'Legal Document 1', score: 0.95, type: 'document' },
             { id: 2, title: 'Case Evidence 2', score: 0.87, type: 'evidence' }
           ],
-          total: 2
+          total: 2,
         };
 
-        return json(
-          createResponse(true, searchResults, undefined, {
+        return json(createResponse(true, searchResults, undefined, {
             executionTime: Date.now() - startTime,
             servicesUsed: ['postgresql', 'redis'],
           })
         );
 
       default:
-        return json(createResponse(false, null, `Unknown action: ${action}`));
+        return json(createResponse(false, null, `Unknown action: ${action}`);
     }
   } catch (error: any) {
     return json(createResponse(false, null, error instanceof Error ? error.message: 'Unknown error'), {
-      status: 500
+      status: 500,
     });
   }
 };
@@ -118,13 +117,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action');
 
   try {
-    const body = await request.json().catch(() => ({}));
+    const body = await request.json().catch(() => ({});
 
     switch (action) {
       case 'rag':
         const { query, caseId } = body;
         if (!query) {
-          return json(createResponse(false, null, 'Query required'));
+          return json(createResponse(false, null, 'Query required');
         }
 
         const ragResponse = {
@@ -135,14 +134,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
           caseId
         };
 
-        return json(
-          createResponse(true, ragResponse, undefined, {
+        return json(createResponse(true, ragResponse, undefined, {
             executionTime: Date.now() - startTime,
             servicesUsed: ['postgresql', 'redis', 'rabbitmq'],
           })
         );
 
-      case 'upload':
+      case 'upload':;
         const uploadResult = {
           fileId: `file_${Date.now()}`,
           fileName: body.fileName || 'document.pdf',
@@ -154,14 +152,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json(createResponse(true, uploadResult, undefined, {
           executionTime: Date.now() - startTime,
           servicesUsed: ['minio', 'rabbitmq']
-        }));
+        });
 
       default:
-        return json(createResponse(false, null, `Unknown action: ${action}`));
+        return json(createResponse(false, null, `Unknown action: ${action}`);
     }
   } catch (error: any) {
     return json(createResponse(false, null, error instanceof Error ? error.message: 'Unknown error'), {
-      status: 500
+      status: 500,
     });
   }
 };

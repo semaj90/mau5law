@@ -2,14 +2,17 @@
 
 ## Summary of Latest Fixes
 
-This iteration focused on completing the missing API endpoints and component method exports needed for the enhanced case management page.
+This iteration focused on completing the missing API endpoints and component method exports needed
+for the enhanced case management page.
 
 ## ✅ Issues Fixed
 
 ### 1. Missing API Endpoints
 
-- **Created `/api/evidence/[id]/+server.ts`**: Added PATCH, GET, and DELETE endpoints for individual evidence items
-- **Fixed AI Service Methods**: Added missing `generateAnalysis` and `generateCaseSummaryReport` methods to `aiSummarizationService.js`
+- **Created `/api/evidence/[id]/+server.ts`**: Added PATCH, GET, and DELETE endpoints for individual
+  evidence items
+- **Fixed AI Service Methods**: Added missing `generateAnalysis` and `generateCaseSummaryReport`
+  methods to `aiSummarizationService.js`
 
 ### 2. Component Method Exports
 

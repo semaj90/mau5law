@@ -12,8 +12,8 @@ import { glob } from 'glob';
 console.log('🚀 Starting Svelte 5 Bulk Migration Fix...');
 
 // Find all .svelte files
-const svelteFiles = await glob('src/**/*.svelte', { 
-  ignore: ['**/node_modules/**', '**/components-backup/**'] 
+const svelteFiles = await glob('src/**/*.svelte', {
+  ignore: ['**/node_modules/**', '**/components-backup/**'],
 });
 
 console.log(`📁 Found ${svelteFiles.length} Svelte files to process`);
@@ -30,7 +30,8 @@ for (const filePath of svelteFiles) {
     // 1. Fix duplicate string identifier in $props()
     // BEFORE: const { checked: boolean = false, label: string = '', id: string = '' } = $props();
     // AFTER:  let { checked = $state(false), label = '', id = '' } = $props();
-    const duplicateStringRegex = /const\s*{\s*([^}]*?:\s*string[^}]*?string[^}]*?)}\s*=\s*\$props\(\);/g;
+    const duplicateStringRegex =
+      /const\s*{\s*([^}]*?:\s*string[^}]*?string[^}]*?)}\s*=\s*\$props\(\);/g;
     content = content.replace(duplicateStringRegex, (match, props) => {
       replacements++;
       // Simple fix: remove type annotations and convert to let
@@ -39,7 +40,7 @@ for (const filePath of svelteFiles) {
         .replace(/:\s*boolean/g, '')
         .replace(/:\s*number/g, '')
         .split(',')
-        .map(prop => {
+        .map((prop) => {
           const trimmed = prop.trim();
           // Convert to $state() for state variables
           if (trimmed.includes('checked')) {
@@ -48,7 +49,7 @@ for (const filePath of svelteFiles) {
           return trimmed;
         })
         .join(', ');
-      
+
       return `let { ${cleanProps} } = $props();`;
     });
 
@@ -57,14 +58,14 @@ for (const filePath of svelteFiles) {
     // AFTER:  let { title = '' } = $props();
     const exportLetRegex = /export\s+let\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*([^;]+);/g;
     const exportLets = [...content.matchAll(exportLetRegex)];
-    
+
     if (exportLets.length > 0) {
       // Group all export lets into a single $props() declaration
-      const propsList = exportLets.map(match => `${match[1]} = ${match[2]}`).join(', ');
-      
+      const propsList = exportLets.map((match) => `${match[1]} = ${match[2]}`).join(', ');
+
       // Remove individual export let declarations
       content = content.replace(exportLetRegex, '');
-      
+
       // Add $props() declaration at the beginning of script
       content = content.replace(
         /(<script[^>]*>)([\s\S]*?)(<\/script>)/,
@@ -72,7 +73,7 @@ for (const filePath of svelteFiles) {
           if (scriptContent.includes('$props()')) {
             return match; // Already has $props()
           }
-          
+
           replacements += exportLets.length;
           return `${openTag}\n  let { ${propsList} } = $props();\n${scriptContent}${closeTag}`;
         }
@@ -83,12 +84,23 @@ for (const filePath of svelteFiles) {
     // BEFORE: import { Button } from '$lib/components/ui/Button.svelte';
     // AFTER:  import Button from '$lib/components/ui/Button.svelte';
     const namedComponentImports = [
-      'Button', 'Card', 'CardContent', 'CardHeader', 'CardTitle',
-      'Badge', 'Input', 'Label', 'Textarea', 'Select'
+      'Button',
+      'Card',
+      'CardContent',
+      'CardHeader',
+      'CardTitle',
+      'Badge',
+      'Input',
+      'Label',
+      'Textarea',
+      'Select',
     ];
-    
+
     for (const component of namedComponentImports) {
-      const namedImportRegex = new RegExp(`import\\s*{\\s*${component}\\s*}\\s*from\\s*(['"].*?${component}\\.svelte['"])`, 'g');
+      const namedImportRegex = new RegExp(
+        `import\\s*{\\s*${component}\\s*}\\s*from\\s*(['"].*?${component}\\.svelte['"])`,
+        'g'
+      );
       if (namedImportRegex.test(content)) {
         content = content.replace(namedImportRegex, `import ${component} from $1`);
         replacements++;
@@ -135,7 +147,6 @@ for (const filePath of svelteFiles) {
       totalFilesProcessed++;
       totalReplacements += replacements;
     }
-
   } catch (error) {
     console.error(`❌ Error processing ${filePath}:`, error.message);
   }

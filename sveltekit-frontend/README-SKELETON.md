@@ -5,12 +5,14 @@ A complete, ready-to-run skeleton project demonstrating modern web development w
 ## 🚀 Features
 
 ### ✅ **WASM + Web Worker Embeddings**
+
 - High-performance text preprocessing with WebAssembly
 - Multi-worker parallel embedding generation
 - Browser-based vector operations
 - Automatic worker pool management
 
 ### ✅ **Drag & Drop Evidence Nodes**
+
 - Interactive canvas with draggable evidence items
 - Real-time position sync with store
 - Touch support for mobile devices
@@ -18,6 +20,7 @@ A complete, ready-to-run skeleton project demonstrating modern web development w
 - Constraint-based dragging (canvas bounds)
 
 ### ✅ **SPA-Style Modal CRUD**
+
 - Full CRUD operations for evidence management
 - File upload with drag & drop
 - Real-time validation
@@ -25,6 +28,7 @@ A complete, ready-to-run skeleton project demonstrating modern web development w
 - Auto-save with optimistic updates
 
 ### ✅ **AI Assistant with Server GPU**
+
 - QUIC/HTTP3 streaming for low latency
 - Real-time GPU status monitoring
 - Streaming chat responses
@@ -32,6 +36,7 @@ A complete, ready-to-run skeleton project demonstrating modern web development w
 - Investigation suggestions
 
 ### ✅ **Modern Svelte 5 Patterns**
+
 - `$state`, `$derived`, `$effect` runes
 - `{@render children?.()}` instead of slots
 - `$bindable` for two-way binding
@@ -116,31 +121,31 @@ Visit: `http://localhost:5173/demo/skeleton`
 
 ```typescript
 // WASM Worker System
-src/lib/workers/embeddings-worker.ts          // WebAssembly worker
-src/lib/services/embeddings-service.ts        // Worker pool manager
+src / lib / workers / embeddings - worker.ts; // WebAssembly worker
+src / lib / services / embeddings - service.ts; // Worker pool manager
 
 // Drag & Drop System
-src/lib/components/evidence/DraggableEvidenceNode.svelte
-src/lib/components/evidence/EvidenceCanvas.svelte
-src/lib/actions/draggable.ts                  // Enhanced drag action
+src / lib / components / evidence / DraggableEvidenceNode.svelte;
+src / lib / components / evidence / EvidenceCanvas.svelte;
+src / lib / actions / draggable.ts; // Enhanced drag action
 
 // Modal CRUD System
-src/lib/components/modals/EvidenceCRUDModal.svelte
+src / lib / components / modals / EvidenceCRUDModal.svelte;
 
 // AI Assistant System
-src/lib/components/ai/GPUAIAssistant.svelte
-src/lib/services/gpu-ai-service.ts            // QUIC client
+src / lib / components / ai / GPUAIAssistant.svelte;
+src / lib / services / gpu - ai - service.ts; // QUIC client
 
 // State Management
-src/lib/stores/evidence.ts                    // Evidence store
-src/lib/stores/alerts.ts                      // Notification system
-src/lib/stores/detectiveBoard.ts              // AI context store
+src / lib / stores / evidence.ts; // Evidence store
+src / lib / stores / alerts.ts; // Notification system
+src / lib / stores / detectiveBoard.ts; // AI context store
 ```
 
 ### Demo Page
 
 ```typescript
-src/routes/demo/skeleton/+page.svelte         // Complete integration demo
+src / routes / demo / skeleton / +page.svelte; // Complete integration demo
 ```
 
 ## 🎯 Usage Examples
@@ -154,15 +159,13 @@ import { embeddingsService } from '$lib/services/embeddings-service';
 await embeddingsService.initialize();
 
 // Generate single embedding
-const result = await embeddingsService.generateEmbedding(
-  "Legal contract analysis text"
-);
+const result = await embeddingsService.generateEmbedding('Legal contract analysis text');
 
 // Batch processing
 const results = await embeddingsService.generateBatchEmbeddings([
-  "Contract clause 1",
-  "Contract clause 2",
-  "Contract clause 3"
+  'Contract clause 1',
+  'Contract clause 2',
+  'Contract clause 3',
 ]);
 ```
 
@@ -177,15 +180,18 @@ const results = await embeddingsService.generateBatchEmbeddings([
     id: 'evidence-1',
     title: 'Contract',
     x: 100,
-    y: 100
+    y: 100,
   });
 </script>
 
 <div
   use:draggable={{
     id: evidence.id,
-    onDrag: (x, y) => { evidence.x = x; evidence.y = y; },
-    constraint: { container: canvasElement }
+    onDrag: (x, y) => {
+      evidence.x = x;
+      evidence.y = y;
+    },
+    constraint: { container: canvasElement },
   }}
 >
   <EvidenceCard {evidence} />
@@ -221,7 +227,7 @@ const results = await embeddingsService.generateBatchEmbeddings([
   async function chatWithAI() {
     // Streaming response
     for await (const chunk of gpuAIService.chatStreamingWithAI(
-      "Analyze this evidence",
+      'Analyze this evidence',
       caseId,
       selectedEvidenceIds
     )) {
@@ -298,18 +304,21 @@ POST /api/ai/embeddings
 ## 🚀 Performance
 
 ### WASM Workers
+
 - **4-8x faster** than pure JavaScript
 - **Parallel processing** across CPU cores
 - **Memory efficient** with manual management
 - **~50ms** per embedding generation
 
 ### GPU Acceleration
+
 - **QUIC/HTTP3** for reduced latency
 - **Streaming responses** for real-time UX
 - **30% latency reduction** vs HTTP/2
 - **RTX 3060 optimized** inference
 
 ### Database
+
 - **pgvector** for similarity search
 - **JSONB** for flexible metadata
 - **Drizzle ORM** with TypeScript
@@ -349,6 +358,7 @@ npm run test:performance
 ## 📈 Monitoring
 
 Built-in performance monitoring:
+
 - **WASM operation** timing
 - **GPU utilization** tracking
 - **Worker pool** status
@@ -358,12 +368,14 @@ Built-in performance monitoring:
 ## 🎨 Customization
 
 ### Themes
+
 - Built on **UnoCSS** + **Enhanced Bits UI**
 - **Dark/Light mode** support
 - **Legal AI** specific styling
 - **Responsive** design
 
 ### Models
+
 - **Gemma3:legal-latest** (primary)
 - **embeddinggemma:latest** (embeddings)
 - **Custom model** support
@@ -390,4 +402,5 @@ MIT License - see [LICENSE](./LICENSE) for details
 
 ---
 
-**🎯 This skeleton provides everything needed for a production-ready legal AI platform with modern web technologies and high-performance AI integration.**
+**🎯 This skeleton provides everything needed for a production-ready legal AI platform with modern
+web technologies and high-performance AI integration.**

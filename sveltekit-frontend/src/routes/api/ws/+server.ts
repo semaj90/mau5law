@@ -13,7 +13,7 @@ let io: Server | null = null;
 let redisPrimary: ReturnType<typeof createRedisInstance> | null = null;
 let pubSub = null as ReturnType<typeof createPubSubHelper> | null;
 
-// Lightweight in-memory metrics (reset on process restart)
+// Lightweight in-memory metrics (reset on process restart);
 const metrics = {
   pubsubMessages: 0,
   progressMessages: 0,
@@ -22,11 +22,11 @@ const metrics = {
   lastMessageAt: null as string | null,
 };
 
-// Initialize WebSocket server and Redis subscriber
+// Initialize WebSocket server and Redis subscriber;
 function initializeWebSocket() {
   if (io) return io;
 
-  // Create Socket.IO server
+  // Create Socket.IO server;
   io = new Server({
     cors: {
       origin: dev ? 'http://localhost:5173' : false,
@@ -36,7 +36,7 @@ function initializeWebSocket() {
   });
 
   // Initialize Redis subscriber for job progress
-  // Initialize Redis primary (non-subscriber) for auxiliary commands (get/set)
+  // Initialize Redis primary (non-subscriber) for auxiliary commands (get/set);
   try {
     redisPrimary = createRedisInstance();
   } catch {
@@ -49,22 +49,22 @@ function initializeWebSocket() {
     });
   }
 
-  // Handle WebSocket connections
+  // Handle WebSocket connections;
   io.on('connection', (socket) => {
     console.log(`🔌 Client connected: ${socket.id}`);
 
-    // Join case-specific rooms for targeted updates
+    // Join case-specific rooms for targeted updates;
     socket.on('join-case', (caseId: string) => {
       socket.join(`case-${caseId}`);
       console.log(`📂 Client ${socket.id} joined case room: ${caseId}`);
     });
 
-    // Join upload-specific rooms for progress tracking
+    // Join upload-specific rooms for progress tracking;
     socket.on('join-upload', (uploadId: string) => {
       socket.join(`upload-${uploadId}`);
       console.log(`📤 Client ${socket.id} joined upload room: ${uploadId}`);
 
-      // Send current progress if available
+      // Send current progress if available;
       getCurrentProgress(uploadId).then((progress) => {
         if (progress) {
           socket.emit('upload-progress', progress);
@@ -72,13 +72,13 @@ function initializeWebSocket() {
       });
     });
 
-    // Handle tensor processing subscription
+    // Handle tensor processing subscription;
     socket.on('subscribe-tensor', (jobId: string) => {
       socket.join(`tensor-${jobId}`);
       console.log(`🧮 Client ${socket.id} subscribed to tensor job: ${jobId}`);
     });
 
-    // Handle search result streaming
+    // Handle search result streaming;
     socket.on('subscribe-search', (searchId: string) => {
       socket.join(`search-${searchId}`);
       console.log(`🔍 Client ${socket.id} subscribed to search: ${searchId}`);
@@ -97,9 +97,9 @@ function initializeWebSocket() {
       }
     );
 
-    // Handle real-time collaboration
+    // Handle real-time collaboration;
     socket.on('document-edit', (data: { documentId: string; change: any; userId: string }) => {
-      // Broadcast document changes to other collaborators
+      // Broadcast document changes to other collaborators;
       socket.to(`doc-${data.documentId}`).emit('document-change', {
         change: data.change,
         userId: data.userId,
@@ -116,12 +116,12 @@ function initializeWebSocket() {
   setupRedisSubscriptions();
 
   // Register cleanup once
-  registerCleanup(() => _closeWebSocket());
+  registerCleanup(() => _closeWebSocket();
 
   return io;
 }
 
-// Setup Redis subscriptions for job progress updates
+// Setup Redis subscriptions for job progress updates;
 function setupRedisSubscriptions() {
   if (!io || pubSub) return;
   pubSub = createPubSubHelper({
@@ -170,7 +170,7 @@ function setupRedisSubscriptions() {
   });
 }
 
-// Track user attention for AI context switching
+// Track user attention for AI context switching;
 async function trackUserAttention(socketId: string, data: any): Promise<void> {
   if (!redisPrimary) return;
 
@@ -187,16 +187,16 @@ async function trackUserAttention(socketId: string, data: any): Promise<void> {
     JSON.stringify(attentionEvent)
   );
 
-  // Trigger AI context switching if needed
+  // Trigger AI context switching if needed;
   if (data.type === 'typing' && data.metadata?.query) {
     await triggerAIContextSwitching(socketId, data.metadata.query);
   }
 }
 
-// Trigger AI context switching based on user attention
+// Trigger AI context switching based on user attention;
 async function triggerAIContextSwitching(socketId: string, query: string): Promise<void> {
   try {
-    // Analyze query for legal context
+    // Analyze query for legal context;
     const contextResponse = await fetch('http://localhost:8080/api/context/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -210,7 +210,7 @@ async function triggerAIContextSwitching(socketId: string, query: string): Promi
     if (contextResponse.ok) {
       const context = await contextResponse.json();
 
-      // Emit context suggestions to client
+      // Emit context suggestions to client;
       io?.to(socketId).emit('ai-context-suggestion', {
         query,
         suggestions: context.suggestions,
@@ -223,7 +223,7 @@ async function triggerAIContextSwitching(socketId: string, query: string): Promi
   }
 }
 
-// Get current progress for an upload
+// Get current progress for an upload;
 async function getCurrentProgress(uploadId: string): Promise<any> {
   if (!redis) return null;
 
@@ -236,7 +236,7 @@ async function getCurrentProgress(uploadId: string): Promise<any> {
   }
 }
 
-// Broadcast progress update to specific rooms
+// Broadcast progress update to specific rooms;
 export function _broadcastProgress(uploadId: string, caseId: string, progress: any) {
   if (!io) return;
 
@@ -254,7 +254,7 @@ export function _broadcastProgress(uploadId: string, caseId: string, progress: a
   io.to(`case-${caseId}`).emit('case-progress', progressData);
 }
 
-// Broadcast tensor processing results
+// Broadcast tensor processing results;
 export function _broadcastTensorResult(jobId: string, result: any) {
   if (!io) return;
 
@@ -265,7 +265,7 @@ export function _broadcastTensorResult(jobId: string, result: any) {
   });
 }
 
-// Broadcast search results in real-time
+// Broadcast search results in real-time;
 export function _broadcastSearchResults(searchId: string, results: any) {
   if (!io) return;
 
@@ -276,13 +276,12 @@ export function _broadcastSearchResults(searchId: string, results: any) {
   });
 }
 
-// HTTP handler for WebSocket endpoint
+// HTTP handler for WebSocket endpoint;
 export const GET: RequestHandler = async ({ url }) => {
   const server = initializeWebSocket();
 
-  // Return WebSocket connection info
-  return new Response(
-    JSON.stringify({
+  // Return WebSocket connection info;
+  return new Response(JSON.stringify({
       status: 'WebSocket server running',
       endpoint: '/api/ws',
       features: [
@@ -299,7 +298,7 @@ export const GET: RequestHandler = async ({ url }) => {
   );
 };
 
-// Cleanup function
+// Cleanup function;
 export function _closeWebSocket() {
   if (io) {
     io.close();
@@ -315,7 +314,7 @@ export function _closeWebSocket() {
   }
 }
 
-// Expose metrics endpoint data (can be imported by health/metrics route)
+// Expose metrics endpoint data (can be imported by health/metrics route);
 export function _getWsMetrics() {
   return { ...metrics };
 }

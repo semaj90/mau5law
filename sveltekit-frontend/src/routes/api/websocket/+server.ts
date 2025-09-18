@@ -7,7 +7,7 @@ import { URL } from "url";
 // Supporting streaming updates, live processing results, and system monitoring
 // ======================================================================
 
-// Enhanced WebSocket message types
+// Enhanced WebSocket message types;
 export interface WebSocketMessage {
   type: 
     | "evidence_processing"
@@ -54,7 +54,7 @@ class EnhancedWebSocketManager {
 
     this.clients.set(clientId, client);
 
-    // Send welcome message with current system status
+    // Send welcome message with current system status;
     this.sendToClient(clientId, {
       type: "system_health",
       data: {
@@ -84,9 +84,9 @@ class EnhancedWebSocketManager {
   sendToClient(clientId: string, message: WebSocketMessage) {
     const client = this.clients.get(clientId);
     if (client && client.ws.readyState === 1) {
-      // WebSocket.OPEN
+      // WebSocket.OPEN;
       try {
-        client.ws.send(JSON.stringify(message));
+        client.ws.send(JSON.stringify(message);
         client.lastSeen = new Date();
       } catch (error: any) {
         console.warn(`Failed to send message to client ${clientId}:`, error);
@@ -101,7 +101,7 @@ class EnhancedWebSocketManager {
   ) {
     const clients = filter
       ? Array.from(this.clients.values()).filter(filter)
-      : Array.from(this.clients.values());
+      : Array.from(this.clients.values();
 
     let successCount = 0;
     let failureCount = 0;
@@ -110,7 +110,7 @@ class EnhancedWebSocketManager {
       try {
         if (client.ws.readyState === 1) {
           // WebSocket.OPEN
-          client.ws.send(JSON.stringify(message));
+          client.ws.send(JSON.stringify(message);
           client.lastSeen = new Date();
           successCount++;
         }
@@ -129,7 +129,7 @@ class EnhancedWebSocketManager {
   subscribeClient(clientId: string, subscriptions: string[]) {
     const client = this.clients.get(clientId);
     if (client) {
-      subscriptions.forEach((sub) => client.subscriptions.add(sub));
+      subscriptions.forEach((sub) => client.subscriptions.add(sub);
       this.sendToClient(clientId, {
         type: "system_health",
         data: {
@@ -144,13 +144,13 @@ class EnhancedWebSocketManager {
   unsubscribeClient(clientId: string, subscriptions: string[]) {
     const client = this.clients.get(clientId);
     if (client) {
-      subscriptions.forEach((sub) => client.subscriptions.delete(sub));
+      subscriptions.forEach((sub) => client.subscriptions.delete(sub);
     }
   }
 
-  // Send evidence processing updates
+  // Send evidence processing updates;
   broadcastEvidenceProcessing(evidenceId: string, stage: string, result: any) {
-    this.broadcast(
+    this.broadcast();
       {
         type: "evidence_processing",
         data: {
@@ -165,9 +165,9 @@ class EnhancedWebSocketManager {
     );
   }
 
-  // Send AI analysis results
+  // Send AI analysis results;
   broadcastAIResult(evidenceId: string, resultType: string, result: any) {
-    this.broadcast(
+    this.broadcast();
       {
         type: "ai_result",
         data: {
@@ -182,9 +182,9 @@ class EnhancedWebSocketManager {
     );
   }
 
-  // Send vector similarity matches
+  // Send vector similarity matches;
   broadcastVectorMatches(evidenceId: string, matches: any[]) {
-    this.broadcast(
+    this.broadcast();
       {
         type: "vector_match",
         data: {
@@ -202,9 +202,9 @@ class EnhancedWebSocketManager {
     );
   }
 
-  // Send graph relationship updates
+  // Send graph relationship updates;
   broadcastGraphUpdate(evidenceId: string, relationships: any[]) {
-    this.broadcast(
+    this.broadcast();
       {
         type: "graph_update",
         data: {
@@ -223,9 +223,9 @@ class EnhancedWebSocketManager {
     );
   }
 
-  // Send system health updates
+  // Send system health updates;
   broadcastSystemHealth(healthData: any) {
-    this.broadcast(
+    this.broadcast();
       {
         type: "system_health",
         data: {
@@ -239,9 +239,9 @@ class EnhancedWebSocketManager {
     );
   }
 
-  // Send cache performance updates
+  // Send cache performance updates;
   broadcastCacheUpdate(cacheStats: any) {
-    this.broadcast(
+    this.broadcast();
       {
         type: "cache_update",
         data: cacheStats,
@@ -256,7 +256,7 @@ class EnhancedWebSocketManager {
       const now = new Date();
       const staleClients: string[] = [];
 
-      // Check for stale connections (no activity in 5 minutes)
+      // Check for stale connections (no activity in 5 minutes);
       for (const [clientId, client] of this.clients) {
         const timeSinceLastSeen = now.getTime() - client.lastSeen.getTime();
         if (timeSinceLastSeen > 5 * 60 * 1000) {
@@ -266,9 +266,9 @@ class EnhancedWebSocketManager {
       }
 
       // Remove stale clients
-      staleClients.forEach((clientId) => this.removeClient(clientId));
+      staleClients.forEach((clientId) => this.removeClient(clientId);
 
-      // Send health ping to remaining clients
+      // Send health ping to remaining clients;
       this.broadcast({
         type: "system_health",
         data: {
@@ -286,7 +286,7 @@ class EnhancedWebSocketManager {
       clearInterval(this.healthCheckInterval);
     }
 
-    // Close all connections
+    // Close all connections;
     for (const client of this.clients.values()) {
       try {
         client.ws.close();
@@ -301,8 +301,7 @@ class EnhancedWebSocketManager {
   getStats() {
     return {
       connectedClients: this.clients.size,
-      subscriptions: Array.from(this.clients.values()).reduce(
-        (acc, client) => {
+      subscriptions: Array.from(this.clients.values()).reduce((acc, client) => {
           client.subscriptions.forEach((sub) => {
             acc[sub] = (acc[sub] || 0) + 1;
           });
@@ -320,7 +319,7 @@ const wsManager = new EnhancedWebSocketManager();
 // Export manager for use in other modules
 export { wsManager };
 
-// WebSocket upgrade handler
+// WebSocket upgrade handler;
 export const GET: RequestHandler = async ({ request, url }) => {
   // Check if this is a WebSocket upgrade request
   const upgrade = request.headers.get("upgrade");
@@ -333,8 +332,7 @@ export const GET: RequestHandler = async ({ request, url }) => {
     // In a real implementation, you'd handle the WebSocket upgrade here
     // This is a placeholder since SvelteKit handles WebSocket differently
 
-    return new Response(
-      JSON.stringify({
+    return new Response(JSON.stringify({
         message: "WebSocket endpoint ready",
         path: url.pathname,
         supportedTypes: [
@@ -363,7 +361,7 @@ export const GET: RequestHandler = async ({ request, url }) => {
   }
 };
 
-// Helper functions for external use
+// Helper functions for external use;
 export const webSocketHelpers = {
   broadcastEvidenceProcessing: (
     evidenceId: string,

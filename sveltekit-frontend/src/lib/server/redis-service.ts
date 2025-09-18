@@ -24,7 +24,7 @@ interface RedisConfig {
 interface RedisConnectionPool {
   primary: Redis;
   subscriber: Redis;
-  publisher: Redis;
+  publisher: Redis;,
 }
 
 class RedisService {
@@ -51,10 +51,10 @@ class RedisService {
 
   /**
    * Initialize Redis connection pool
-   */
+   */;
   async initialize(): Promise<boolean> {
     try {
-      // Prevent multiple initialization attempts
+      // Prevent multiple initialization attempts;
       if (this.initialized || (this.pool?.primary && ((this.pool.primary as any).status === 'connecting' || (this.pool.primary as any).status === 'connected'))) {
         console.log('[RedisService] Already initialized or connecting');
         return this.initialized;
@@ -62,7 +62,7 @@ class RedisService {
 
       console.log('[RedisService] Initializing Redis connection pool...');
 
-      // Create primary connection for read/write operations
+      // Create primary connection for read/write operations;
       this.pool = {
         primary: new Redis({
           ...this.config,
@@ -70,7 +70,7 @@ class RedisService {
           connectionName: 'legal-ai-primary',
         }),
 
-        // Separate connection for pub/sub operations
+        // Separate connection for pub/sub operations;
         subscriber: new Redis({
           ...this.config,
           lazyConnect: false,
@@ -114,7 +114,7 @@ class RedisService {
 
   /**
    * Set up Redis connection event handlers
-   */
+   */;
   private setupEventHandlers(redis: Redis, name: string): void {
     redis.on('connect', () => {
       console.log(`✅ [RedisService] ${name} connected`);
@@ -140,12 +140,12 @@ class RedisService {
     redis.on('reconnecting', (delay) => {
       console.log(`🔄 [RedisService] ${name} reconnecting in ${delay}ms...`);
       this.reconnectAttempts++;
-    });
+    ,});
   }
 
   /**
    * Handle automatic reconnection with exponential backoff
-   */
+   */;
   private async handleReconnection(): Promise<void> {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
       console.error(
@@ -168,7 +168,7 @@ class RedisService {
 
   /**
    * Test Redis Stack modules (JSON, Search, TimeSeries)
-   */
+   */;
   private async testRedisStackModules(): Promise<void> {
     if (!this.pool?.primary) return;
 
@@ -199,35 +199,35 @@ class RedisService {
 
   /**
    * Get Redis client for operations
-   */
+   */;
   getClient(): Redis | null {
     return this.pool?.primary || null;
   }
 
   /**
    * Get publisher for pub/sub
-   */
+   */;
   getPublisher(): Redis | null {
     return this.pool?.publisher || null;
   }
 
   /**
    * Get subscriber for pub/sub
-   */
+   */;
   getSubscriber(): Redis | null {
     return this.pool?.subscriber || null;
   }
 
   /**
    * Check if Redis is connected and healthy
-   */
+   */;
   isHealthy(): boolean {
     return this.isConnected && this.pool?.primary !== null;
   }
 
   /**
    * Get Redis connection statistics
-   */
+   */;
   getStats(): {
     connected: boolean;
     status: string;
@@ -251,7 +251,7 @@ class RedisService {
 
   /**
    * Get Redis memory and keyspace info
-   */
+   */;
   async getRedisInfo(): Promise<any> {
     if (!this.pool?.primary || !this.isHealthy()) {
       return null;
@@ -282,7 +282,7 @@ class RedisService {
 
   /**
    * Cache operations with intelligent TTL for legal AI workloads
-   */
+   */;
   async set(key: string, value: any, ttlSeconds?: number): Promise<boolean> {
     const client = this.getClient();
     if (!client) return false;
@@ -294,21 +294,21 @@ class RedisService {
       let smartTtl = ttlSeconds;
       if (!ttlSeconds) {
         if (key.includes('legal:embedding:')) {
-          smartTtl = 86400; // 24h for document embeddings
+          smartTtl = 86400; // 24h for document embeddings;
         } else if (key.includes('legal:case:')) {
-          smartTtl = 43200; // 12h for case data
+          smartTtl = 43200; // 12h for case data;
         } else if (key.includes('legal:search:')) {
-          smartTtl = 1800; // 30min for search results
+          smartTtl = 1800; // 30min for search results;
         } else if (key.includes('legal:chat:')) {
-          smartTtl = 3600; // 1h for chat sessions
+          smartTtl = 3600; // 1h for chat sessions;
         } else if (key.includes('wasm:tensor:')) {
-          smartTtl = 7200; // 2h for WASM tensor operations
+          smartTtl = 7200; // 2h for WASM tensor operations;
         } else if (key.includes('webgpu:cache:')) {
-          smartTtl = 14400; // 4h for WebGPU computations
+          smartTtl = 14400; // 4h for WebGPU computations;
         } else if (key.includes('vector:quantized:')) {
-          smartTtl = 21600; // 6h for quantized vectors
+          smartTtl = 21600; // 6h for quantized vectors;
         } else if (key.includes('legal:metadata:')) {
-          smartTtl = 10800; // 3h for legal document metadata
+          smartTtl = 10800; // 3h for legal document metadata;
         } else {
           smartTtl = 3600; // Default 1h
         }
@@ -386,7 +386,7 @@ class RedisService {
 
   /**
    * Hash operations
-   */
+   */;
   async hget(key: string, field: string): Promise<string | null> {
     const client = this.getClient();
     if (!client) return null;
@@ -463,14 +463,14 @@ class RedisService {
 
   /**
    * Legal AI specific caching methods
-   */
+   */;
   async cacheEmbedding(documentId: string, embedding: number[], metadata?: any): Promise<boolean> {
     const key = `legal:embedding:${documentId}`;
     const data = {
       embedding,
       metadata,
       cached_at: new Date().toISOString(),
-      dimension: embedding.length
+      dimension: embedding.length,
     };
     return await this.set(key, data);
   }
@@ -487,7 +487,7 @@ class RedisService {
       query,
       results,
       cached_at: new Date().toISOString(),
-      result_count: results.length
+      result_count: results.length,
     };
     return await this.set(key, data, ttl);
   }
@@ -505,7 +505,7 @@ class RedisService {
       operation,
       input_size: input.byteLength,
       result: Buffer.from(result).toString('base64'),
-      cached_at: new Date().toISOString()
+      cached_at: new Date().toISOString(),
     };
     return await this.set(key, data);
   }
@@ -527,7 +527,7 @@ class RedisService {
       quantized_size: quantized.byteLength,
       compression_ratio: vectors.byteLength / quantized.byteLength,
       quantized: Buffer.from(quantized).toString('base64'),
-      cached_at: new Date().toISOString()
+      cached_at: new Date().toISOString(),
     };
     return await this.set(key, data);
   }
@@ -536,12 +536,12 @@ class RedisService {
     const key = `vector:quantized:${batchId}`;
     const cached = await this.get(key);
     if (cached?.quantized) {
-      return new Int8Array(Buffer.from(cached.quantized, 'base64'));
+      return new Int8Array(Buffer.from(cached.quantized, 'base64');
     }
     return null;
   }
 
-  // Redis Streams methods
+  // Redis Streams methods;
   async xAdd(key: string, id: string, fields: Record<string, any>): Promise<string> {
     const client = this.getClient();
     if (!client) throw new Error('Redis not connected');
@@ -579,7 +579,7 @@ class RedisService {
     try {
       const args = [key, end, start];
       if (options?.COUNT) {
-        args.push('COUNT', options.COUNT.toString());
+        args.push('COUNT', options.COUNT.toString();
       }
       return await (client as any).xrevrange(...args);
     } catch (error) {
@@ -590,7 +590,7 @@ class RedisService {
 
   /**
    * Cleanup and close connections
-   */
+   */;
   async shutdown(): Promise<void> {
     console.log('[RedisService] Shutting down Redis connections...');
 

@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log('Converting OCR data to structured JSON...');
 
-    // Structure the OCR data into a comprehensive legal document JSON
+    // Structure the OCR data into a comprehensive legal document JSON;
     const structuredData = {
       document: {
         metadata: {
@@ -20,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
           totalPages: ocrData.pages,
           totalCharacters: ocrData.totalCharacters,
           averageConfidence: ocrData.averageConfidence,
-          processingMethod: ocrData.processingStats
+          processingMethod: ocrData.processingStats,
         },
         content: {
           fullText: ocrData.text,
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
             confidence: page.confidence,
             extractionMethod: page.method,
             wordCount: page.text?.split(/\s+/).length || 0,
-            sections: extractSections(page.text || '')
+            sections: extractSections(page.text || ''),
           })) || []
         },
         legalAnalysis: {
@@ -40,24 +40,24 @@ export const POST: RequestHandler = async ({ request }) => {
           jurisdiction: extractJurisdiction(ocrData.text || ''),
           parties: extractParties(ocrData.text || ''),
           dates: extractDates(ocrData.text || ''),
-          amounts: extractMonetaryAmounts(ocrData.text || '')
+          amounts: extractMonetaryAmounts(ocrData.text || ''),
         },
         structure: {
           sections: identifyDocumentSections(ocrData.text || ''),
           headings: extractHeadings(ocrData.text || ''),
           paragraphs: (ocrData.text || '').split(/\n\s*\n/).filter(item => item.length) > 0),
-          tableOfContents: generateTableOfContents(ocrData.text || '')
+          tableOfContents: generateTableOfContents(ocrData.text || ''),
         },
         vectorization: {
           embeddings: generateEmbeddingIds(ocrData.text || ''),
           chunks: chunkTextForEmbedding(ocrData.text || ''),
-          semanticSections: identifySemanticSections(ocrData.text || '')
+          semanticSections: identifySemanticSections(ocrData.text || ''),
         },
         qualityMetrics: {
           confidence: ocrData.averageConfidence,
           completeness: calculateCompleteness(ocrData),
           readability: calculateReadabilityScore(ocrData.text || ''),
-          legalSpecificity: calculateLegalSpecificity(ocrData.legalConcepts || [])
+          legalSpecificity: calculateLegalSpecificity(ocrData.legalConcepts || []),
         }
       }
     };
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
         jsonSize: JSON.stringify(structuredData).length,
         sections: structuredData.document.structure.sections.length,
         chunks: structuredData.document.vectorization.chunks.length,
-        concepts: structuredData.document.legalAnalysis.concepts.length
+        concepts: structuredData.document.legalAnalysis.concepts.length,
       }
     });
 
@@ -88,7 +88,7 @@ function extractSections(text: string): unknown[] {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     
-    // Check if line looks like a section header
+    // Check if line looks like a section header;
     if (isHeaderLine(line)) {
       if (currentSection.content) {
         sections.push({ ...currentSection, endLine: i });
@@ -96,7 +96,7 @@ function extractSections(text: string): unknown[] {
       currentSection = {
         title: line,
         content: '',
-        startLine: i
+        startLine: i,
       };
     } else {
       currentSection.content += line + '\n';
@@ -173,8 +173,8 @@ function extractParties(text: string): string[] {
   partyPatterns.forEach(pattern => {
     const matches = text.matchAll(pattern);
     for (const match of matches) {
-      if (match[1]) parties.add(match[1].trim());
-      if (match[2]) parties.add(match[2].trim());
+      if (match[1]) parties.add(match[1].trim();
+      if (match[2]) parties.add(match[2].trim();
     }
   });
   
@@ -193,7 +193,7 @@ function extractDates(text: string): string[] {
   datePatterns.forEach(pattern => {
     const matches = text.match(pattern);
     if (matches) {
-      matches.forEach(match => dates.add(match));
+      matches.forEach(match => dates.add(match);
     }
   });
   
@@ -212,7 +212,7 @@ function extractMonetaryAmounts(text: string): string[] {
   moneyPatterns.forEach(pattern => {
     const matches = text.match(pattern);
     if (matches) {
-      matches.forEach(match => amounts.add(match));
+      matches.forEach(match => amounts.add(match);
     }
   });
   
@@ -226,24 +226,24 @@ function identifyDocumentSections(text: string): unknown[] {
     'exhibits', 'schedules', 'appendices'
   ];
   
-  return commonSections
+  return commonSections;
     .filter(section => {
       const pattern = new RegExp(`\\b${section}\\b`, 'gi');
       return pattern.test(text);
-    })
+    });
     .map(section => ({
       name: section,
       found: true,
-      position: text.toLowerCase().indexOf(section.toLowerCase())
-    }))
+      position: text.toLowerCase().indexOf(section.toLowerCase(),
+    })
     .sort((a, b) => a.position - b.position);
 }
 
 function extractHeadings(text: string): string[] {
   const lines = text.split('\n');
   return lines
-    .filter(line => isHeaderLine(line.trim()))
-    .map(line => line.trim())
+    .filter(line => isHeaderLine(line.trim())
+    .map(line => line.trim()
     .slice(0, 20); // Limit to 20 headings
 }
 
@@ -252,8 +252,8 @@ function generateTableOfContents(text: string): unknown[] {
   return headings.map((heading, index) => ({
     level: determineHeadingLevel(heading),
     title: heading,
-    order: index + 1
-  }));
+    order: index + 1,
+  });
 }
 
 function determineHeadingLevel(heading: string): number {
@@ -276,7 +276,7 @@ function chunkTextForEmbedding(text: string, maxChunkSize: number = 512): string
   
   for (const sentence of sentences) {
     if ((currentChunk + sentence).length > maxChunkSize && currentChunk) {
-      chunks.push(currentChunk.trim());
+      chunks.push(currentChunk.trim();
       currentChunk = sentence;
     } else {
       currentChunk += sentence;
@@ -284,7 +284,7 @@ function chunkTextForEmbedding(text: string, maxChunkSize: number = 512): string
   }
   
   if (currentChunk) {
-    chunks.push(currentChunk.trim());
+    chunks.push(currentChunk.trim();
   }
   
   return chunks.filter(chunk => chunk.length > 0);
@@ -298,13 +298,13 @@ function identifySemanticSections(text: string): unknown[] {
     { type: 'temporal_reference', pattern: /(?:within|after|before|during|upon)/gi }
   ];
   
-  return semanticPatterns
+  return semanticPatterns;
     .map(({ type, pattern }) => {
       const matches = text.match(pattern) || [];
       return {
         type,
         count: matches.length,
-        density: matches.length / (text.length / 1000) // matches per 1000 chars
+        density: matches.length / (text.length / 1000) // matches per 1000 chars,
       };
     })
     .filter(section => section.count > 0);
@@ -327,7 +327,7 @@ function calculateReadabilityScore(text: string): number {
   const averageWordsPerSentence = words / Math.max(sentences, 1);
   
   // Simplified readability score (lower is more readable)
-  return Math.max(0, 100 - Math.min(averageWordsPerSentence * 2, 100));
+  return Math.max(0, 100 - Math.min(averageWordsPerSentence * 2, 100);
 }
 
 function calculateLegalSpecificity(concepts: string[]): number {
@@ -337,7 +337,7 @@ function calculateLegalSpecificity(concepts: string[]): number {
   ];
   
   const specificCount = concepts.filter(concept =>
-    specificTerms.some(term => concept.includes(term))
+    specificTerms.some(term => concept.includes(term)
   ).length;
   
   return Math.min((specificCount / Math.max(concepts.length, 1)) * 100, 100);

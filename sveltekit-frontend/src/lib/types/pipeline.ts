@@ -1,4 +1,5 @@
 export type BackendId = 'fastapi' | 'vllm' | 'ollama' | 'go' | 'cache' | 'unknown';
+}
 
 export interface ChunkJob {
   docId: string;

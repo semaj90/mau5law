@@ -16,7 +16,8 @@ function processFile(filePath) {
     let modified = false;
 
     // 1. Fix remaining Button imports that aren't bits-ui
-    const buttonImportRegex = /import\s*\{\s*Button\s*\}\s*from\s*['"]([^'"]*\/Button\.svelte)['"];?/g;
+    const buttonImportRegex =
+      /import\s*\{\s*Button\s*\}\s*from\s*['"]([^'"]*\/Button\.svelte)['"];?/g;
     const originalButtonImports = content;
     content = content.replace(buttonImportRegex, "import Button from '$1';");
     if (content !== originalButtonImports) {
@@ -35,7 +36,7 @@ function processFile(filePath) {
       while ((match = exportLetRegex.exec(content)) !== null) {
         exportLets.push({
           name: match[1],
-          defaultValue: match[2]?.trim()
+          defaultValue: match[2]?.trim(),
         });
       }
 
@@ -44,13 +45,15 @@ function processFile(filePath) {
         content = content.replace(/export let\s+\w+(?:\s*=\s*[^;]+)?;?\s*\n?/g, '');
 
         // Create $props destructuring
-        const propsPattern = exportLets.map(prop => {
-          if (prop.defaultValue) {
-            return `${prop.name} = ${prop.defaultValue}`;
-          } else {
-            return prop.name;
-          }
-        }).join(', ');
+        const propsPattern = exportLets
+          .map((prop) => {
+            if (prop.defaultValue) {
+              return `${prop.name} = ${prop.defaultValue}`;
+            } else {
+              return prop.name;
+            }
+          })
+          .join(', ');
 
         // Insert after script tag
         content = content.replace(
@@ -88,9 +91,12 @@ function processFile(filePath) {
     // Note: This pattern should already work in Svelte 5
 
     // 6. Add proper TypeScript types for common patterns
-    if (!content.includes('import type') && (content.includes('interface') || content.includes('type '))) {
+    if (
+      !content.includes('import type') &&
+      (content.includes('interface') || content.includes('type '))
+    ) {
       // Check if we need to add type imports
-      if (content.includes('Snippet') && !content.includes("import type { Snippet }")) {
+      if (content.includes('Snippet') && !content.includes('import type { Snippet }')) {
         content = content.replace(
           /(<script[^>]*>)/,
           "$1\n\timport type { Snippet } from 'svelte';"
@@ -158,7 +164,7 @@ function main() {
   const svelteFiles = walkDirectory(srcDir, '.svelte');
 
   // Filter files that might need fixes
-  const problematicFiles = svelteFiles.filter(file => {
+  const problematicFiles = svelteFiles.filter((file) => {
     try {
       const content = readFileSync(file, 'utf8');
       return (

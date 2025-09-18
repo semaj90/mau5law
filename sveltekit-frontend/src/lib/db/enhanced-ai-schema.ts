@@ -4,7 +4,7 @@
 import { pgTable, uuid, text, timestamp, jsonb, boolean, integer, decimal, real, vector } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
-// AI Responses with GRPO-thinking context and embeddings
+// AI Responses with GRPO-thinking context and embeddings;
 export const aiResponses = pgTable('ai_responses', {
   id: uuid('id').defaultRandom().primaryKey(),
   
@@ -58,7 +58,7 @@ export const aiResponses = pgTable('ai_responses', {
   flaggedForReview: boolean('flagged_for_review').default(false),
 });
 
-// Recommendation scores and rankings
+// Recommendation scores and rankings;
 export const recommendationScores = pgTable('recommendation_scores', {
   id: uuid('id').defaultRandom().primaryKey(),
   
@@ -83,7 +83,7 @@ export const recommendationScores = pgTable('recommendation_scores', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-// Feedback loop for GRPO (Generalized Reinforcement from Preference Optimization)
+// Feedback loop for GRPO (Generalized Reinforcement from Preference Optimization);
 export const grpoFeedback = pgTable('grpo_feedback', {
   id: uuid('id').defaultRandom().primaryKey(),
   
@@ -112,7 +112,7 @@ export const grpoFeedback = pgTable('grpo_feedback', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-// Vector similarity cache for performance
+// Vector similarity cache for performance;
 export const similarityCache = pgTable('similarity_cache', {
   id: uuid('id').defaultRandom().primaryKey(),
   
@@ -129,7 +129,7 @@ export const similarityCache = pgTable('similarity_cache', {
   validUntil: timestamp('valid_until').notNull(), // Expiry for cache invalidation
 });
 
-// Legal entity relationships for graph-based recommendations
+// Legal entity relationships for graph-based recommendations;
 export const legalEntityRelations = pgTable('legal_entity_relations', {
   id: uuid('id').defaultRandom().primaryKey(),
   
@@ -152,7 +152,7 @@ export const legalEntityRelations = pgTable('legal_entity_relations', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-// Performance analytics for recommendation tuning
+// Performance analytics for recommendation tuning;
 export const recommendationAnalytics = pgTable('recommendation_analytics', {
   id: uuid('id').defaultRandom().primaryKey(),
   
@@ -184,18 +184,18 @@ export type SimilarityCache = typeof similarityCache.$inferSelect;
 export type LegalEntityRelation = typeof legalEntityRelations.$inferSelect;
 export type RecommendationAnalytics = typeof recommendationAnalytics.$inferSelect;
 
-// Recommendation scoring weights (configurable)
+// Recommendation scoring weights (configurable);
 export const RECOMMENDATION_WEIGHTS = {
   SEMANTIC_SIMILARITY: 0.35,
   TEMPORAL_SCORE: 0.15,
   CONTEXT_RELEVANCE: 0.25,
   USER_PREFERENCE: 0.20,
-  USAGE_COUNT: 0.05
+  USAGE_COUNT: 0.05,
 } as const;
 
-// Temporal decay function parameters
+// Temporal decay function parameters;
 export const TEMPORAL_DECAY = {
   HALF_LIFE_DAYS: 30, // Score halves every 30 days
   MIN_SCORE: 0.1, // Minimum temporal score
-  MAX_SCORE: 1.0 // Maximum temporal score
+  MAX_SCORE: 1.0 // Maximum temporal score,
 } as const;

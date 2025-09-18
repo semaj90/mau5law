@@ -1,6 +1,7 @@
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import { webgpuPolyfill } from '$lib/webgpu/webgpu-polyfill';
+}
 
 export interface VectorSimilarityRequest {
   vector1: number[];
@@ -22,7 +23,7 @@ export interface VectorSimilarityResponse {
   error?: string;
 }
 
-// GET endpoint for WebGPU capabilities info
+// GET endpoint for WebGPU capabilities info;
 export const GET: RequestHandler = async () => {
   try {
     const capabilities = {
@@ -34,13 +35,13 @@ export const GET: RequestHandler = async () => {
         vector1: 'number[] - First vector',
         vector2: 'number[] - Second vector (must be same length as vector1)',
         mode: 'string (optional) - "webgpu", "webgl", "cpu", or "auto" (default)',
-        returnDiagnostics: 'boolean (optional) - Include performance diagnostics'
+        returnDiagnostics: 'boolean (optional) - Include performance diagnostics',
       },
       responseFormat: {
         similarity: 'number - Cosine similarity score (-1 to 1)',
         mode: 'string - Actual computation mode used',
         executionTimeMs: 'number - Execution time in milliseconds',
-        diagnostics: 'object (optional) - Performance and capability info'
+        diagnostics: 'object (optional) - Performance and capability info',
       },
       notes: [
         'Vectors must be the same length',
@@ -56,17 +57,17 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// POST endpoint for vector similarity computation
+// POST endpoint for vector similarity computation;
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
   
   try {
     const body: VectorSimilarityRequest = await request.json();
     
-    // Validate input
+    // Validate input;
     if (!Array.isArray(body.vector1) || !Array.isArray(body.vector2)) {
       return json({
-        error: 'Both vector1 and vector2 must be arrays of numbers'
+        error: 'Both vector1 and vector2 must be arrays of numbers',
       } as VectorSimilarityResponse, { status: 400 });
     }
 
@@ -78,18 +79,18 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (body.vector1.length === 0) {
       return json({
-        error: 'Vectors cannot be empty'
+        error: 'Vectors cannot be empty',
       } as VectorSimilarityResponse, { status: 400 });
     }
 
-    // Validate that all elements are numbers
+    // Validate that all elements are numbers;
     const isValidVector = (vec: any[]): vec is number[] => {
-      return vec.every(v => typeof v === 'number' && !isNaN(v) && isFinite(v));
+      return vec.every(v => typeof v === 'number' && !isNaN(v) && isFinite(v);
     };
 
     if (!isValidVector(body.vector1) || !isValidVector(body.vector2)) {
       return json({
-        error: 'All vector elements must be finite numbers'
+        error: 'All vector elements must be finite numbers',
       } as VectorSimilarityResponse, { status: 400 });
     }
 
@@ -103,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
       initResult = await webgpuPolyfill.initialize();
       
       if (mode === 'webgpu' || mode === 'auto') {
-        // Try WebGPU first
+        // Try WebGPU first;
         try {
           similarity = await webgpuPolyfill.computeSimilarity(body.vector1, body.vector2);
           actualMode = 'webgpu';
@@ -142,10 +143,10 @@ export const POST: RequestHandler = async ({ request }) => {
     const response: VectorSimilarityResponse = {
       similarity,
       mode: actualMode,
-      executionTimeMs: executionTime
+      executionTimeMs: executionTime,
     };
 
-    // Add diagnostics if requested
+    // Add diagnostics if requested;
     if (body.returnDiagnostics) {
       const stats = webgpuPolyfill.getPerformanceStats();
       response.diagnostics = {
@@ -156,7 +157,7 @@ export const POST: RequestHandler = async ({ request }) => {
           operationsCompleted: stats.operationsCompleted,
           averageProcessingTime: stats.averageProcessingTime,
           webgpuPercentage: stats.webgpuPercentage,
-          webglPercentage: stats.webglPercentage
+          webglPercentage: stats.webglPercentage,
         }
       };
     }

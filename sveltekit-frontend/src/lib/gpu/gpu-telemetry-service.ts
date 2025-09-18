@@ -1,4 +1,5 @@
 import { telemetryBus } from '../telemetry/telemetry-bus.js';
+}
 
 export interface OperationSample {
   pipeline: string;
@@ -6,7 +7,7 @@ export interface OperationSample {
   durationMs: number;
   success: boolean;
   shaderType: string | null;
-  timestamp: number;
+  timestamp: number;,
 }
 
 export interface GPUErrorSample {
@@ -15,14 +16,14 @@ export interface GPUErrorSample {
   category: string;
   retryable: boolean;
   message: string;
-  timestamp: number;
+  timestamp: number;,
 }
 
 export interface BackendDemotionEvent {
   from: string;
   to: string;
   reason: string;
-  timestamp: number;
+  timestamp: number;,
 }
 
 interface Aggregates {
@@ -30,7 +31,7 @@ interface Aggregates {
   successes: number;
   totalMs: number;
   maxMs: number;
-  minMs: number;
+  minMs: number;,
 }
 
 export class GPUTelemetryService {
@@ -76,7 +77,7 @@ export class GPUTelemetryService {
         successes: a.successes,
         totalMs: a.totalMs,
         maxMs: a.maxMs,
-        minMs: a.minMs
+        minMs: a.minMs,
       } as any);
     }
     return results.sort((a, b) => b.timestamp - a.timestamp);
@@ -107,7 +108,7 @@ export class GPUTelemetryService {
 
 export const gpuTelemetryService = new GPUTelemetryService();
 
-// Optional: wire bus listener (can be expanded later)
+// Optional: wire bus listener (can be expanded later);
 telemetryBus.subscribe(evt => {
   if (evt.type === 'gpu.vector.process.end') {
     const meta = evt.meta as any;
@@ -117,7 +118,7 @@ telemetryBus.subscribe(evt => {
       durationMs: meta.durationMs,
       success: meta.success,
       shaderType: meta.shaderType,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   } else if (evt.type === 'error') {
     const meta = evt.meta as any;
@@ -128,7 +129,7 @@ telemetryBus.subscribe(evt => {
         category: meta.category,
         retryable: !!meta.retryable,
         message: meta.message || 'unknown',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     }
   } else if (evt.type === 'gpu.backend') {
@@ -138,7 +139,7 @@ telemetryBus.subscribe(evt => {
         from: meta.from,
         to: meta.to,
         reason: meta.reason || 'unspecified',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     }
   }

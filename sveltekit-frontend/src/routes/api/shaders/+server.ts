@@ -4,11 +4,11 @@ import { shaderCacheManager } from '$lib/webgpu/shader-cache-manager';
 import { cache } from '$lib/server/cache/redis';
 import type { CompiledShader } from '$lib/webgpu/shader-cache-manager';
 
-// GET endpoint - List all cached shaders with pagination
+// GET endpoint - List all cached shaders with pagination;
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const page = Math.max(1, parseInt(url.searchParams.get('page') || '1'));
-    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get('limit') || '20')));
+    const page = Math.max(1, parseInt(url.searchParams.get('page') || '1');
+    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get('limit') || '20'));
 
     // Get shader index
     const shaderIndex = await cache.get<string[]>('webgpu_shader_index') || [];
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url }) => {
           // Include preview of WGSL for list view
           wgslPreview: shader.wgsl.length > 200 ? 
             shader.wgsl.substring(0, 200) + '...' : shader.wgsl,
-          hasEmbedding: !!shader.embedding
+          hasEmbedding: !!shader.embedding,
         });
       }
     }
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ url }) => {
         total,
         totalPages,
         hasNext: page < totalPages,
-        hasPrev: page > 1
+        hasPrev: page > 1,
       }
     });
 
@@ -56,7 +56,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-// POST endpoint - Cache a new shader with embedding
+// POST endpoint - Cache a new shader with embedding;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
@@ -70,14 +70,14 @@ export const POST: RequestHandler = async ({ request }) => {
       tags = [] 
     } = body;
 
-    // Validate required fields
+    // Validate required fields;
     if (!id || !wgsl || !config) {
       return json({
         error: 'Missing required fields: id, wgsl, config'
       }, { status: 400 });
     }
 
-    // Create shader object
+    // Create shader object;
     const shader: CompiledShader = {
       id,
       wgsl,
@@ -119,12 +119,12 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Failed to cache shader:', error);
     return json({
-      error: 'Failed to cache shader: ' + error.message
+      error: 'Failed to cache shader: ' + error.message,
     }, { status: 500 });
   }
 };
 
-// DELETE endpoint - Clear shader cache
+// DELETE endpoint - Clear shader cache;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const shaderId = url.searchParams.get('id');
@@ -153,7 +153,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       // Clear all shaders
       const index = await cache.get<string[]>('webgpu_shader_index') || [];
       
-      // Delete all shader entries
+      // Delete all shader entries;
       for (const id of index) {
         await cache.delete(`webgpu_shader:${id}`);
       }

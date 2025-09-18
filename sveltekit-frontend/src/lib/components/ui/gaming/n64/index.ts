@@ -15,7 +15,7 @@
  * - Accessibility-first design
  *
  * Usage:
- * ```typescript
+ * ```typescript;
  * import {
     Card,
     CardHeader,
@@ -76,7 +76,7 @@ export { default as useRetroTransform } from './useRetroTransform.js';
 export { default as parallaxDynamic } from './parallaxDynamic.js';
 export { default as tokens } from './tokens.ts.js';
 
-// Type exports for component props
+// Type exports for component props;
 export type {
   GamingComponentProps,
   N64RenderingOptions,
@@ -91,7 +91,7 @@ export type {
   ProgressiveGamingConfig
 } from '../types/gaming-types.js';
 
-// Constants and presets
+// Constants and presets;
 export {
   NES_COLOR_PALETTE,
   SNES_COLOR_PALETTE,
@@ -109,7 +109,7 @@ export {
  *
  * Default settings for rapid prototyping with N64 components.
  * These can be overridden on a per-component basis.
- */
+ */;
 export const N64_QUICK_START_CONFIG = {
   defaultRenderOptions: N64_TEXTURE_PRESETS.balanced,
   defaultMaterialType: 'phong' as const,
@@ -122,16 +122,16 @@ export const N64_QUICK_START_CONFIG = {
   enableTextureFiltering: true,
   animationStyle: 'smooth' as const,
   perspective: 1000,
-  glowIntensity: 0.4
+  glowIntensity: 0.4,
 };
 
 /**
  * Performance Presets
  *
  * Pre-configured settings for different performance targets.
- */
+ */;
 export const N64_PERFORMANCE_PRESETS = {
-  // Maximum quality for high-end devices
+  // Maximum quality for high-end devices;
   ultra: {
     renderOptions: N64_TEXTURE_PRESETS.ultraEnhanced,
     materialType: 'pbr' as const,
@@ -141,10 +141,10 @@ export const N64_PERFORMANCE_PRESETS = {
     enableParticles: true,
     enableSpatialAudio: true,
     glowIntensity: 0.8,
-    perspective: 1200
+    perspective: 1200,
   },
 
-  // Balanced quality for most devices
+  // Balanced quality for most devices;
   balanced: {
     renderOptions: N64_TEXTURE_PRESETS.balanced,
     materialType: 'phong' as const,
@@ -154,10 +154,10 @@ export const N64_PERFORMANCE_PRESETS = {
     enableParticles: false,
     enableSpatialAudio: true,
     glowIntensity: 0.4,
-    perspective: 1000
+    perspective: 1000,
   },
 
-  // Optimized for low-end devices
+  // Optimized for low-end devices;
   performance: {
     renderOptions: N64_TEXTURE_PRESETS.lowPoly,
     materialType: 'basic' as const,
@@ -167,7 +167,7 @@ export const N64_PERFORMANCE_PRESETS = {
     enableParticles: false,
     enableSpatialAudio: false,
     glowIntensity: 0.2,
-    perspective: 800
+    perspective: 800,
   }
 };
 
@@ -175,30 +175,30 @@ export const N64_PERFORMANCE_PRESETS = {
  * Theme Variants
  *
  * Pre-configured color schemes for different use cases.
- */
+ */;
 export const N64_THEME_VARIANTS = {
-  // Classic N64 controller inspired
+  // Classic N64 controller inspired;
   classic: {
     primary: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' },
     secondary: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
     accent: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
   },
 
-  // Dark cyberpunk theme
+  // Dark cyberpunk theme;
   cyberpunk: {
     primary: { base: '#00ff88', highlight: '#33ffaa', shadow: '#00cc66' },
     secondary: { base: '#ff0080', highlight: '#ff33aa', shadow: '#cc0066' },
     accent: { base: '#0088ff', highlight: '#33aaff', shadow: '#0066cc' }
   },
 
-  // Retro arcade theme
+  // Retro arcade theme;
   arcade: {
     primary: { base: '#ff6b35', highlight: '#ff8c66', shadow: '#cc5529' },
     secondary: { base: '#f7931e', highlight: '#ffaa4d', shadow: '#c5741a' },
     accent: { base: '#c5299b', highlight: '#d14daa', shadow: '#9e2179' }
   },
 
-  // Military/tactical theme
+  // Military/tactical theme;
   military: {
     primary: { base: '#4a5c2a', highlight: '#6b8039', shadow: '#3a4620' },
     secondary: { base: '#8b4513', highlight: '#a0611a', shadow: '#6d3410' },
@@ -210,7 +210,7 @@ export const N64_THEME_VARIANTS = {
  * Accessibility Helpers
  *
  * Utilities for ensuring components meet accessibility standards.
- */
+ */;
 export const N64_A11Y_HELPERS = {
   // ARIA label generators
   generateProgressLabel: (value: number, max: number) =>
@@ -245,9 +245,9 @@ export const N64_A11Y_HELPERS = {
  * Utility Functions
  *
  * Helper functions for working with N64 components.
- */
+ */;
 export const N64_UTILS = {
-  // Color manipulation
+  // Color manipulation;
   hexToRgb: (hex: string) => {
     const result = /^#?([a-f\d]{2}) => [a-f\d]{2}) => [a-f\d]{2})$/i.exec(hex);
     return result ? {
@@ -260,17 +260,17 @@ export const N64_UTILS = {
   rgbToHex: (r: number, g: number, b: number) =>
     "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1),
 
-  // Audio context management
+  // Audio context management;
   createSpatialAudio: () => {
     try {
-      return new (window.AudioContext || (window as any).webkitAudioContext)();
+      return new (window.AudioContext || (window as any).webkitAudioContext();
     } catch (error) {
       console.warn('Web Audio API not supported');
       return null;
     }
   },
 
-  // Performance detection
+  // Performance detection;
   getDeviceMemory: () => {
     return (navigator as any).deviceMemory || 4; // Default to 4GB if not available
   },
@@ -279,7 +279,7 @@ export const N64_UTILS = {
     return navigator.hardwareConcurrency || 2; // Default to 2 cores
   },
 
-  // Recommended preset based on device capabilities
+  // Recommended preset based on device capabilities;
   getRecommendedPreset: () => {
     const memory = N64_UTILS.getDeviceMemory();
     const cores = N64_UTILS.getHardwareConcurrency();
@@ -296,9 +296,9 @@ export const N64_UTILS = {
  * CSS Class Generators
  *
  * Utility functions for generating CSS classes based on component state.
- */
+ */;
 export const N64_CSS_GENERATORS = {
-  // Generate texture filtering classes
+  // Generate texture filtering classes;
   getTextureClasses: (options: Partial<N64RenderingOptions>) => {
     const classes: string[] = [];
 
@@ -314,14 +314,14 @@ export const N64_CSS_GENERATORS = {
     return classes.join(' ');
   },
 
-  // Generate variant classes
+  // Generate variant classes;
   getVariantClasses: (variant: string, size: string, disabled: boolean) => {
     const classes = [`variant-${variant}`, `size-${size}`];
     if (disabled) classes.push('disabled');
     return classes.join(' ');
   },
 
-  // Generate state classes
+  // Generate state classes;
   getStateClasses: (states: Record<string, boolean>) => {
     return Object.entries(states)
       .filter(([_, active]) => active)
@@ -330,7 +330,7 @@ export const N64_CSS_GENERATORS = {
   }
 };
 
-// Default export for convenient importing
+// Default export for convenient importing;
 export default {
   components: {
     N64Button,
@@ -365,5 +365,5 @@ export default {
   themes: N64_THEME_VARIANTS,
   utils: N64_UTILS,
   a11y: N64_A11Y_HELPERS,
-  css: N64_CSS_GENERATORS
+  css: N64_CSS_GENERATORS,
 };

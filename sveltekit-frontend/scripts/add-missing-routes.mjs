@@ -26,16 +26,16 @@ const missingRoutes = routeMap.filesMissingConfig || [];
 console.log(`📊 Found ${missingRoutes.length} missing routes to add`);
 
 // Generate route configuration entries
-const routeEntries = missingRoutes.map(route => {
+const routeEntries = missingRoutes.map((route) => {
   // Parse route to determine properties
   const routeParts = route.split('/').filter(Boolean);
   const lastPart = routeParts[routeParts.length - 1] || 'home';
-  
+
   // Determine category based on route structure
   let category = 'utilities';
   let status = 'active';
   let tags = ['auto-generated'];
-  
+
   if (route.includes('/admin/')) {
     category = 'admin';
     tags.push('admin', 'management');
@@ -66,22 +66,24 @@ const routeEntries = missingRoutes.map(route => {
     category = 'system';
     tags.push('gpu', 'performance');
   }
-  
+
   // Generate clean ID
-  const id = route
-    .replace(/^\//, '')
-    .replace(/[/:]/g, '-')
-    .replace(/[^a-zA-Z0-9-]/g, '')
-    .toLowerCase() || 'root-page';
-  
+  const id =
+    route
+      .replace(/^\//, '')
+      .replace(/[/:]/g, '-')
+      .replace(/[^a-zA-Z0-9-]/g, '')
+      .toLowerCase() || 'root-page';
+
   // Generate human-readable label
-  const label = lastPart
-    .replace(/-/g, ' ')
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ') || 'Page';
-  
+  const label =
+    lastPart
+      .replace(/-/g, ' ')
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ') || 'Page';
+
   // Add specific icons based on category/route
   let icon = '📄';
   if (category === 'ai') icon = '🤖';
@@ -91,7 +93,7 @@ const routeEntries = missingRoutes.map(route => {
   else if (category === 'legal') icon = '⚖️';
   else if (category === 'system') icon = '🔧';
   else if (category === 'dev') icon = '🔬';
-  
+
   return {
     id,
     label,
@@ -99,12 +101,14 @@ const routeEntries = missingRoutes.map(route => {
     icon,
     category,
     status,
-    tags: tags.slice(0, 4) // Limit to 4 tags
+    tags: tags.slice(0, 4), // Limit to 4 tags
   };
 });
 
 // Generate the TypeScript configuration code
-const configCode = routeEntries.map(entry => `  {
+const configCode = routeEntries
+  .map(
+    (entry) => `  {
     id: '${entry.id}',
     label: '${entry.label}',
     route: '${entry.route}',
@@ -112,8 +116,10 @@ const configCode = routeEntries.map(entry => `  {
     description: '${entry.category} ${entry.label.toLowerCase()} functionality',
     category: '${entry.category}',
     status: '${entry.status}',
-    tags: [${entry.tags.map(tag => `'${tag}'`).join(', ')}]
-  }`).join(',\n');
+    tags: [${entry.tags.map((tag) => `'${tag}'`).join(', ')}]
+  }`
+  )
+  .join(',\n');
 
 // Read current routes config
 let routesConfigContent;
@@ -137,10 +143,12 @@ const afterInsertion = routesConfigContent.substring(insertionPoint);
 
 // Ensure proper comma separation
 const needsComma = beforeInsertion.trim().endsWith('}');
-const newContent = beforeInsertion + 
-  (needsComma ? ',\n' : '') + 
+const newContent =
+  beforeInsertion +
+  (needsComma ? ',\n' : '') +
   '  // Auto-generated missing routes\n' +
-  configCode + '\n' +
+  configCode +
+  '\n' +
   afterInsertion;
 
 // Write the updated config
@@ -156,13 +164,13 @@ try {
 
 // Generate summary report
 const categoryStats = {};
-routeEntries.forEach(entry => {
+routeEntries.forEach((entry) => {
   categoryStats[entry.category] = (categoryStats[entry.category] || 0) + 1;
 });
 
 console.log('\n📊 Category Breakdown:');
 Object.entries(categoryStats)
-  .sort(([,a], [,b]) => b - a)
+  .sort(([, a], [, b]) => b - a)
   .forEach(([category, count]) => {
     console.log(`  ${category}: ${count} routes`);
   });

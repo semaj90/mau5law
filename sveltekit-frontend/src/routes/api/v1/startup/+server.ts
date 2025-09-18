@@ -15,13 +15,13 @@ const logsDir = join(process.cwd(), 'logs');
 /*
  * GET /api/v1/startup
  * Get current startup status and service health
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'status';
 
     switch (action) {
-      case 'status':
+      case 'status':;
         return json({
           ready: await startupFlagService.isReady(),
           summary: startupFlagService.getServiceSummary(),
@@ -36,9 +36,8 @@ export const GET: RequestHandler = async ({ url }) => {
           health: healthGrade,
           ready: await startupFlagService.isReady(),
           criticalServices: Object.entries(summary.services)
-            .filter(([, service]) => !service.isOptional)
-            .reduce<Record<string, { status: string; health: string; startupTime?: number }>(
-              (acc, [name, service]) => {
+            .filter(([, service]) => !service.isOptional);
+            .reduce<Record<string, { status: string; health: string; startupTime?: number }>((acc, [name, service]) => {
                 acc[name] = {
                   status: service.status,
                   health: service.health,
@@ -51,7 +50,7 @@ export const GET: RequestHandler = async ({ url }) => {
           timestamp: Date.now(),
         });
 
-      case 'diff':
+      case 'diff':;
         try {
           const diffPath = join(logsDir, 'startup-diff.json');
           if (existsSync(diffPath)) {
@@ -68,16 +67,15 @@ export const GET: RequestHandler = async ({ url }) => {
             });
           }
         } catch (error) {
-          return json(
-            {
+          return json({
               error: 'Failed to load startup diff',
               message: error instanceof Error ? error.message: 'Unknown error',
-            },
+            },)
             { status: 500 }
           );
         }
 
-      case 'flag':
+      case 'flag':;
         try {
           const flagPath = join(logsDir, 'ready.flag');
           if (existsSync(flagPath)) {
@@ -96,31 +94,28 @@ export const GET: RequestHandler = async ({ url }) => {
             });
           }
         } catch (error) {
-          return json(
-            {
+          return json({
               error: 'Failed to read ready flag',
               message: error instanceof Error ? error.message: 'Unknown error',
-            },
+            },)
             { status: 500 }
           );
         }
 
-      default:
-        return json(
-          {
+      default:;
+        return json({
             error: 'Invalid action',
             availableActions: ['status', 'health', 'diff', 'flag'],
-          },
+          },)
           { status: 400 }
         );
     }
   } catch (error) {
     console.error('Startup API error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to get startup status',
         message: error instanceof Error ? error.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }
@@ -129,7 +124,7 @@ export const GET: RequestHandler = async ({ url }) => {
 /*
  * POST /api/v1/startup
  * Control startup monitoring (start/stop/restart)
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { action } = await request.json();
@@ -164,22 +159,20 @@ export const POST: RequestHandler = async ({ request }) => {
           timestamp: Date.now(),
         });
 
-      default:
-        return json(
-          {
+      default:;
+        return json({
             error: 'Invalid action',
             availableActions: ['start', 'shutdown', 'check-ready'],
-          },
+          },)
           { status: 400 }
         );
     }
   } catch (error) {
     console.error('Startup control error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to control startup monitoring',
         message: error instanceof Error ? error.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }
@@ -187,7 +180,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 /*
  * Calculate overall health grade based on service summary
- */
+ */;
 function calculateOverallHealth(summary: any): string {
   const totalServices = summary.totalServices;
   const readyServices = summary.readyServices;
@@ -196,12 +189,12 @@ function calculateOverallHealth(summary: any): string {
     (s: any) => !s.isOptional && s.status === 'failed'
   ).length;
 
-  // Critical services failed = critical health
+  // Critical services failed = critical health;
   if (criticalFailed > 0) {
     return 'critical';
   }
 
-  // All services ready = excellent
+  // All services ready = excellent;
   if (readyServices === totalServices) {
     return 'excellent';
   }

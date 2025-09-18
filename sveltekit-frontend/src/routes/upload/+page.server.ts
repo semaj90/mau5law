@@ -9,7 +9,7 @@ import type { Actions } from './$types.js';
 const UPLOAD_SERVICE_URL = import.meta.env.UPLOAD_SERVICE_URL || 'http://localhost:8093';
 
 // Fallback minimal schema used only to keep typechecking stable during incremental edits.
-// Replace with the project's canonical `fileUploadSchema` when available.
+// Replace with the project's canonical `fileUploadSchema` when available.;
 const fallbackFileUploadSchema = z.object({
   caseId: z.string().optional(),
   type: z.string().optional(),
@@ -17,7 +17,7 @@ const fallbackFileUploadSchema = z.object({
   description: z.string().optional(),
   tags: z.array(z.string()).optional(),
   isPrivate: z.boolean().optional(),
-  aiAnalysis: z.boolean().optional()
+  aiAnalysis: z.boolean().optional(),
 });
 
 const getSchema = () => {
@@ -31,7 +31,7 @@ const getSchema = () => {
 export const load: PageServerLoad = async () => {
   // Initialize the form
   const schema = getSchema();
-  const form = await superValidate(zod(schema));
+  const form = await superValidate(zod(schema);
 
   return {
     form
@@ -42,7 +42,7 @@ export const actions: Actions = {
   upload: async ({ request, fetch }) => {
     const formData = await request.formData();
     const schema = getSchema();
-    const form = await superValidate(formData, zod(schema));
+    const form = await superValidate(formData, zod(schema);
 
     if (!form.valid) {
       return fail(400, { form });
@@ -57,13 +57,13 @@ export const actions: Actions = {
       if (!(file instanceof File)) {
         return fail(400, {
           form,
-          message: 'Invalid file provided'
+          message: 'Invalid file provided',
         });
       }
       if (!file || file.size === 0) {
         return fail(400, {
           form,
-          message: 'No file provided'
+          message: 'No file provided',
         });
       }
 
@@ -75,30 +75,29 @@ export const actions: Actions = {
         uploadFormData.append('description', form.data.description);
       }
 
-      // Add tags if provided
+      // Add tags if provided;
       if (form.data.tags && Array.isArray(form.data.tags) && form.data.tags.length > 0) {
-        uploadFormData.append('tags', JSON.stringify(
-          (form.data.tags as string[]).reduce((acc, tag) => {
+        uploadFormData.append('tags', JSON.stringify((form.data.tags as string[]).reduce((acc, tag) => {
             acc[tag] = 'true';
             return acc;
           }, {} as Record<string, string>)
-        ));
+        );
       }
 
-      // Add metadata
+      // Add metadata;
       const metadata = {
         title: form.data.title,
         isPrivate: form.data.isPrivate.toString(),
         aiAnalysis: form.data.aiAnalysis.toString(),
         uploadedBy: 'user', // TODO: Get from session
-        uploadedAt: new Date().toISOString()
+        uploadedAt: new Date().toISOString(),
       };
-      uploadFormData.append('metadata', JSON.stringify(metadata));
+      uploadFormData.append('metadata', JSON.stringify(metadata);
 
-      // Upload to MinIO service
+      // Upload to MinIO service;
       const uploadResponse = await fetch(`${UPLOAD_SERVICE_URL}/upload`, {
         method: 'POST',
-        body: uploadFormData
+        body: uploadFormData,
       });
 
       if (!uploadResponse.ok) {
@@ -115,22 +114,22 @@ export const actions: Actions = {
       if (!uploadResult.success) {
         return fail(500, {
           form,
-          message: uploadResult.message || 'Upload failed'
+          message: uploadResult.message || 'Upload failed',
         });
       }
 
-      // Return success with upload result
+      // Return success with upload result;
       return {
         form,
         uploadResult,
-        message: 'Document uploaded successfully!'
+        message: 'Document uploaded successfully!',
       };
 
     } catch (error: any) {
       console.error('Upload error:', error);
       return fail(500, {
         form,
-        message: 'Internal server error during upload'
+        message: 'Internal server error during upload',
       });
     }
   }

@@ -36,7 +36,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     const type = url.searchParams.get('type'); // document type filter
 
     // Mock document history data
-    const mockHistory = [
+    const mockHistory = [;
       {
         id: 'doc_001',
         title: 'Motion to Suppress Evidence - State v. Johnson',
@@ -48,9 +48,9 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           lastModified: '2024-09-09T16:45:00Z',
           version: 3,
           wordCount: 1247,
-          completionScore: 92
+          completionScore: 92,
         },
-        aiSuggestions: [
+        aiSuggestions: [;
           {
             id: 'sugg_001',
             type: 'legal_point',
@@ -58,7 +58,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
             suggestion: 'Consider adding a reference to Terry v. Ohio for stop and frisk analysis',
             reasoning: 'The case facts suggest a Terry stop scenario that should be analyzed',
             confidence: 0.85,
-            applied: false
+            applied: false,
           }
         ],
         status: 'review',
@@ -75,11 +75,11 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           lastModified: '2024-09-07T18:20:00Z',
           version: 2,
           wordCount: 2156,
-          completionScore: 98
+          completionScore: 98,
         },
         aiSuggestions: [],
         status: 'finalized',
-        collaborators: ['attorney_003']
+        collaborators: ['attorney_003'],
       },
       {
         id: 'doc_003',
@@ -92,9 +92,9 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           lastModified: '2024-09-06T11:30:00Z',
           version: 1,
           wordCount: 892,
-          completionScore: 87
+          completionScore: 87,
         },
-        aiSuggestions: [
+        aiSuggestions: [;
           {
             id: 'sugg_002',
             type: 'content',
@@ -102,7 +102,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
             suggestion: 'Add request for body camera footage',
             reasoning: 'Case involves police interaction where body camera evidence would be relevant',
             confidence: 0.92,
-            applied: true
+            applied: true,
           }
         ],
         status: 'draft',
@@ -119,9 +119,9 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           lastModified: '2024-09-08T15:30:00Z',
           version: 4,
           wordCount: 1789,
-          completionScore: 89
+          completionScore: 89,
         },
-        aiSuggestions: [
+        aiSuggestions: [;
           {
             id: 'sugg_003',
             type: 'structure',
@@ -129,11 +129,11 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
             suggestion: 'Consider reorganizing the timeline presentation for clarity',
             reasoning: 'The current chronology may confuse the jury; a clearer structure would be more persuasive',
             confidence: 0.78,
-            applied: false
+            applied: false,
           }
         ],
         status: 'review',
-        collaborators: ['attorney_006']
+        collaborators: ['attorney_006'],
       },
       {
         id: 'doc_005',
@@ -146,9 +146,9 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
           lastModified: '2024-09-04T16:20:00Z',
           version: 1,
           wordCount: 3421,
-          completionScore: 94
+          completionScore: 94,
         },
-        aiSuggestions: [
+        aiSuggestions: [;
           {
             id: 'sugg_004',
             type: 'citation',
@@ -156,7 +156,7 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
             suggestion: 'Add citation to United States v. Booker for sentencing discretion argument',
             reasoning: 'Booker is highly relevant for arguing judicial discretion in sentencing',
             confidence: 0.96,
-            applied: false
+            applied: false,
           }
         ],
         status: 'finalized',
@@ -178,13 +178,13 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
     // Apply pagination
     const paginatedHistory = filteredHistory.slice(offset, offset + limit);
 
-    // Calculate statistics
+    // Calculate statistics;
     const stats = {
       total: filteredHistory.length,
       byStatus: {
         draft: filteredHistory.filter(item => item.length),
         review: filteredHistory.filter(item => item.length),
-        finalized: filteredHistory.filter(item => item.length)
+        finalized: filteredHistory.filter(item => item.length),
       },
       byType: filteredHistory.reduce((acc, doc) => {
         acc[doc.type] = (acc[doc.type] || 0) + 1;
@@ -201,19 +201,19 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
         limit,
         offset,
         total: filteredHistory.length,
-        hasMore: offset + limit < filteredHistory.length
+        hasMore: offset + limit < filteredHistory.length,
       },
       stats,
       meta: {
         userId: locals?.user?.id || 'anonymous',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     });
 
   } catch (error) {
     console.error('Error fetching document history:', error);
     return json(
-      { success: false, message: 'Failed to fetch document history' },
+      { success: false, message: 'Failed to fetch document history' },)>
       { status: 500 }
     );
   }

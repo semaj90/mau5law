@@ -1,50 +1,50 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from "fs";
-import { join, extname } from "path";
-import { glob } from "glob";
+import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
+import { join, extname } from 'path';
+import { glob } from 'glob';
 
-console.log("🔧 Fixing Svelte 5 runes and component errors...");
+console.log('🔧 Fixing Svelte 5 runes and component errors...');
 
 const projectRoot = process.cwd();
-const srcPath = join(projectRoot, "src");
+const srcPath = join(projectRoot, 'src');
 
 // Fix the critical Svelte 5 runes errors
 const fixPatterns = [
   {
     // Fix $state import - replace with proper runes
     from: /import\s+\{\s*\$state\s*\}\s+from\s+['"']svelte['"'];?/g,
-    to: "// State management using Svelte 5 runes",
+    to: '// State management using Svelte 5 runes',
   },
   {
     // Replace $state usage with let declarations
     from: /let\s+(\w+)\s*=\s*\$state\s*\(([^)]*)\);?/g,
-    to: "let $1 = $2;",
+    to: 'let $1 = $2;',
   },
   {
     // Replace $state usage without parentheses
     from: /let\s+(\w+)\s*=\s*\$state<([^>]*)>\s*\(([^)]*)\);?/g,
-    to: "let $1: $2 = $3;",
+    to: 'let $1: $2 = $3;',
   },
   {
     // Remove invalid $state imports and variables
     from: /\$state\s*\([^)]*\)/g,
-    to: "false", // Default fallback value
+    to: 'false', // Default fallback value
   },
   {
     // Fix KeyboardEvent vs CustomEvent type mismatches
     from: /\(e:\s*KeyboardEvent\)\s*=>\s*void/g,
-    to: "(e: CustomEvent<any>) => void",
+    to: '(e: CustomEvent<any>) => void',
   },
   {
     // Fix event handler parameter types
     from: /on:keydown=\{([^}]+)\}/g,
-    to: "on:keydown={(e) => $1(e)}",
+    to: 'on:keydown={(e) => $1(e)}',
   },
   {
     // Fix createDialog import from bits-ui (doesn't exist)
     from: /import\s+\{\s*createDialog\s*\}\s+from\s+['"']bits-ui['"'];?/g,
-    to: "// Dialog functionality needs proper implementation",
+    to: '// Dialog functionality needs proper implementation',
   },
   {
     // Fix case-sensitive imports - Card vs card
@@ -59,12 +59,12 @@ const fixPatterns = [
   {
     // Fix Button class prop issues
     from: /"class":/g,
-    to: "class:",
+    to: 'class:',
   },
   {
     // Fix className prop issues
     from: /"className":/g,
-    to: "class:",
+    to: 'class:',
   },
   {
     // Fix missing Select exports
@@ -74,17 +74,17 @@ const fixPatterns = [
   {
     // Fix Timeout vs number type issues
     from: /:\s*number\s*=\s*setTimeout/g,
-    to: ": ReturnType<typeof setTimeout> = setTimeout",
+    to: ': ReturnType<typeof setTimeout> = setTimeout',
   },
   {
     // Fix event target files property
     from: /event\.target\.files/g,
-    to: "(event.target as HTMLInputElement).files",
+    to: '(event.target as HTMLInputElement).files',
   },
   {
     // Fix bits-ui Progress import issues
     from: /import\s+\{\s*Progress\s*\}\s+from\s+['"']bits-ui['"']/g,
-    to: "// Progress component needs proper implementation",
+    to: '// Progress component needs proper implementation',
   },
   {
     // Fix lucide-svelte missing icon imports
@@ -109,7 +109,7 @@ const fixPatterns = [
 ];
 
 // Get all Svelte and TypeScript files
-const files = glob.sync("src/**/*.{svelte,ts}", { cwd: projectRoot });
+const files = glob.sync('src/**/*.{svelte,ts}', { cwd: projectRoot });
 
 let fixedFiles = 0;
 let totalFixes = 0;
@@ -118,7 +118,7 @@ for (const file of files) {
   const filePath = join(projectRoot, file);
 
   try {
-    let content = readFileSync(filePath, "utf-8");
+    let content = readFileSync(filePath, 'utf-8');
     let modified = false;
     let fileFixes = 0;
 
@@ -133,11 +133,11 @@ for (const file of files) {
     }
 
     // Additional specific fixes for enhanced-bits components
-    if (file.includes("enhanced-bits")) {
+    if (file.includes('enhanced-bits')) {
       // Fix $state runes properly for Svelte 5
       content = content.replace(
         /let\s+(\w+)\s*=\s*\$state\s*<([^>]*)>\s*\(([^)]*)\)/g,
-        "let $1: $2 = $state($3)"
+        'let $1: $2 = $state($3)'
       );
 
       // Replace old $state import with runes
@@ -146,16 +146,16 @@ for (const file of files) {
           "import { $state } from 'svelte'",
           "import { writable } from 'svelte/store'"
         );
-        content = content.replace(/\$state\(/g, "writable(");
+        content = content.replace(/\$state\(/g, 'writable(');
         modified = true;
         fileFixes++;
       }
     }
 
     // Fix specific component issues
-    if (file.includes("Select.svelte")) {
+    if (file.includes('Select.svelte')) {
       // Add proper exports for Select component
-      if (!content.includes("export const SelectValue")) {
+      if (!content.includes('export const SelectValue')) {
         content += `
 // Export missing Select components for compatibility
 export const SelectValue = 'div';
@@ -168,7 +168,7 @@ export const SelectSeparator = 'hr';
     }
 
     if (modified) {
-      writeFileSync(filePath, content, "utf-8");
+      writeFileSync(filePath, content, 'utf-8');
       fixedFiles++;
       totalFixes += fileFixes;
       console.log(`✅ Fixed ${fileFixes} issues in ${file}`);
@@ -181,11 +181,11 @@ export const SelectSeparator = 'hr';
 console.log(`\n🎉 Fixed ${totalFixes} issues across ${fixedFiles} files!`);
 
 // Create missing component files
-console.log("\n📦 Creating missing UI component files...");
+console.log('\n📦 Creating missing UI component files...');
 
 const missingComponents = [
   {
-    path: "src/lib/components/ui/separator/Separator.svelte",
+    path: 'src/lib/components/ui/separator/Separator.svelte',
     content: `<script lang="ts">
   interface Props {
     orientation?: 'horizontal' | 'vertical';
@@ -203,12 +203,12 @@ const missingComponents = [
 ></div>`,
   },
   {
-    path: "src/lib/components/ui/separator/index.ts",
+    path: 'src/lib/components/ui/separator/index.ts',
     content: `export { default as Separator } from './Separator.svelte';
 export { default } from './Separator.svelte';`,
   },
   {
-    path: "src/lib/components/ui/select/SelectRoot.svelte",
+    path: 'src/lib/components/ui/select/SelectRoot.svelte',
     content: `<script lang="ts">
   import { createSelect } from 'bits-ui';
 
@@ -241,17 +241,17 @@ export { default } from './Separator.svelte';`,
 
 for (const component of missingComponents) {
   const fullPath = join(projectRoot, component.path);
-  const dir = join(fullPath, "..");
+  const dir = join(fullPath, '..');
 
   try {
     // Create directory if it doesn't exist
-    import("fs").then((fs) => {
+    import('fs').then((fs) => {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
 
       if (!fs.existsSync(fullPath)) {
-        writeFileSync(fullPath, component.content, "utf-8");
+        writeFileSync(fullPath, component.content, 'utf-8');
         console.log(`✅ Created ${component.path}`);
       }
     });
@@ -260,4 +260,4 @@ for (const component of missingComponents) {
   }
 }
 
-console.log("\n🚀 Svelte 5 runes and component fixes complete!");
+console.log('\n🚀 Svelte 5 runes and component fixes complete!');

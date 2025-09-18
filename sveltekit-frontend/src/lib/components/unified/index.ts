@@ -12,7 +12,7 @@
 export { default as UnifiedButton } from './UnifiedButton.svelte';
 export { default as UnifiedDialog } from './UnifiedDialog.svelte';
 
-// Export types for TypeScript support
+// Export types for TypeScript support;
 export type UnifiedButtonProps = {
   variant?: 'primary' | 'secondary' | 'legal' | 'evidence' | 'case' | 'ghost';
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -50,7 +50,7 @@ export type UnifiedDialogProps = {
     aiAnalysis?: {
       riskLevel: 'low' | 'medium' | 'high';
       confidence: number;
-      suggestions: string[];
+      suggestions: string[];,
     };
   };
   onOpenChange?: (open: boolean) => void;

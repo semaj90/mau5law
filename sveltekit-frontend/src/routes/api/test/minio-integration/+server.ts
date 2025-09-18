@@ -26,7 +26,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       testResults.push({
         test: 'health-check',
         status: 'error',
-        error: error instanceof Error ? error.message: 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error',
       });
     }
 
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       testResults.push({
         test: 'initialization',
         status: 'error',
-        error: error instanceof Error ? error.message: 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error',
       });
     }
 
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
         timing: `${Date.now() - startTime}ms`
       });
 
-      // Ensure all buckets exist
+      // Ensure all buckets exist;
       const ensureBucketsResponse = await fetch('/api/v1/minio/buckets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -85,7 +85,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       testResults.push({
         test: 'bucket-management',
         status: 'error',
-        error: error instanceof Error ? error.message: 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error',
       });
     }
 
@@ -107,7 +107,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
       `;
 
       const testFile = new File([testFileContent], 'test-legal-document.txt', {
-        type: 'text/plain'
+        type: 'text/plain',
       });
 
       const formData = new FormData();
@@ -118,7 +118,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
 
       const uploadResponse = await fetch('/api/v1/minio/process', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
       const uploadData = await uploadResponse.json();
 
@@ -129,7 +129,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
         timing: `${Date.now() - startTime}ms`
       });
 
-      // Test 5: File listing after upload
+      // Test 5: File listing after upload;
       if (uploadResponse.ok && uploadData.success) {
         console.log('📋 Testing file listing...');
         const listResponse = await fetch('/api/v1/minio/files?bucket=legal-documents&limit=10');
@@ -152,7 +152,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
           response: {
             status: downloadResponse.status,
             headers: Object.fromEntries(downloadResponse.headers.entries()),
-            contentLength: downloadResponse.headers.get('content-length')
+            contentLength: downloadResponse.headers.get('content-length'),
           },
           timing: `${Date.now() - startTime}ms`
         });
@@ -161,7 +161,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
       testResults.push({
         test: 'file-operations',
         status: 'error',
-        error: error instanceof Error ? error.message: 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error',
       });
     }
 
@@ -182,7 +182,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
       },
       results: testResults,
       timestamp: new Date().toISOString(),
-      phase: 'Phase 1: Basic upload, AI analysis, storage functionality'
+      phase: 'Phase 1: Basic upload, AI analysis, storage functionality';
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
@@ -193,7 +193,7 @@ Test ID: ${Math.random().toString(36).substring(7)}
       testSuite: 'MinIO Integration Phase 1',
       error: error instanceof Error ? error.message: 'Test suite failed',
       partialResults: testResults,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

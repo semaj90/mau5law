@@ -10,13 +10,14 @@ import type {
   FeedbackAnalytics,
   UserFeedbackContext 
 } from '../types/feedback.js';
+}
 
 export interface FeedbackState {
   activeSession: FeedbackSession | null;
   pendingFeedback: FeedbackTrigger[];
   analytics: FeedbackAnalytics;
   userContext: UserFeedbackContext;
-  isCollecting: boolean;
+  isCollecting: boolean;,
 }
 
 class FeedbackStore {
@@ -27,15 +28,15 @@ class FeedbackStore {
       totalInteractions: 0,
       averageRating: 0,
       completionRate: 0,
-      topIssues: []
+      topIssues: [],
     },
     userContext: {
       userId: '',
       sessionId: '',
       deviceType: 'desktop',
-      userType: 'attorney'
+      userType: 'attorney',
     },
-    isCollecting: false
+    isCollecting: false,
   });
 
   // Getters
@@ -47,7 +48,7 @@ class FeedbackStore {
 
   /**
    * Initialize feedback session for user
-   */
+   */;
   initializeSession(userId: string, sessionId?: string): FeedbackSession {
     const session: FeedbackSession = {
       id: sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -59,7 +60,7 @@ class FeedbackStore {
         userAgent: navigator.userAgent,
         viewport: {
           width: window.innerWidth,
-          height: window.innerHeight
+          height: window.innerHeight,
         }
       }
     };
@@ -74,7 +75,7 @@ class FeedbackStore {
 
   /**
    * Track user interaction for feedback opportunities
-   */
+   */;
   trackInteraction(type: string, context: any = {}, options: { 
     autoTrigger?: boolean;
     priority?: 'low' | 'medium' | 'high';
@@ -92,21 +93,21 @@ class FeedbackStore {
       context: {
         ...context,
         page: window.location.pathname,
-        sessionTime: Date.now() - this.state.activeSession.startTime.getTime()
+        sessionTime: Date.now() - this.state.activeSession.startTime.getTime(),
       }
     };
 
     this.state.activeSession.interactions.push(interaction);
     this.state.analytics.totalInteractions++;
 
-    // Auto-trigger feedback collection based on interaction type
+    // Auto-trigger feedback collection based on interaction type;
     if (options.autoTrigger !== false) {
       this.queueFeedbackTrigger({
         interactionId: interaction.id,
         type: this.getFeedbackTypeForInteraction(type),
         priority: options.priority || 'medium',
         delay: options.delay || this.getDefaultDelay(type),
-        context: interaction.context
+        context: interaction.context,
       });
     }
 
@@ -115,7 +116,7 @@ class FeedbackStore {
 
   /**
    * Queue feedback trigger for later display
-   */
+   */;
   queueFeedbackTrigger(trigger: FeedbackTrigger) {
     // Remove any existing trigger for the same interaction
     this.state.pendingFeedback = this.state.pendingFeedback.filter(
@@ -127,7 +128,7 @@ class FeedbackStore {
       this.getPriorityValue(b.priority) - this.getPriorityValue(a.priority)
     );
 
-    // Schedule feedback display
+    // Schedule feedback display;
     if (trigger.delay > 0) {
       setTimeout(() => {
         this.showNextFeedback();
@@ -139,7 +140,7 @@ class FeedbackStore {
 
   /**
    * Show next feedback request if not already collecting
-   */
+   */;
   showNextFeedback(): FeedbackTrigger | null {
     if (this.state.isCollecting || this.state.pendingFeedback.length === 0) {
       return null;
@@ -158,7 +159,7 @@ class FeedbackStore {
     interactionId: string,
     rating: number,
     feedback?: string,
-    ratingType: string = 'response_quality'
+    ratingType: string = 'response_quality';
   ): Promise<boolean> {
     try {
       const response = await fetch('/api/v1/feedback?action=rate', {
@@ -181,7 +182,7 @@ class FeedbackStore {
             platform: navigator.platform,
             language: navigator.language,
             featureUsed: ratingType,
-            deviceType: this.state.userContext.deviceType
+            deviceType: this.state.userContext.deviceType,
           }
         })
       });
@@ -202,14 +203,14 @@ class FeedbackStore {
 
   /**
    * Cancel current feedback collection
-   */
+   */;
   cancelFeedback() {
     this.state.isCollecting = false;
   }
 
   /**
    * Get feedback recommendations based on user behavior
-   */
+   */;
   async getRecommendations(): Promise<any[]> {
     if (!this.state.userContext.userId) return [];
 
@@ -229,14 +230,14 @@ class FeedbackStore {
 
   /**
    * Clear feedback session
-   */
+   */;
   clearSession() {
     this.state.activeSession = null;
     this.state.pendingFeedback = [];
     this.state.isCollecting = false;
   }
 
-  // Helper methods
+  // Helper methods;
   private detectDeviceType(): 'mobile' | 'tablet' | 'desktop' {
     const width = window.innerWidth;
     if (width < 768) return 'mobile';
@@ -276,7 +277,7 @@ class FeedbackStore {
     const analytics = this.state.analytics;
     const totalRatings = analytics.totalInteractions;
     
-    // Update average rating
+    // Update average rating;
     if (totalRatings === 1) {
       analytics.averageRating = rating;
     } else {

@@ -10,9 +10,9 @@ import type { RequestHandler } from './$types.js';
 import { ensureError } from '$lib/utils/ensure-error';
 import { dev } from '$app/environment';
 
-// Go microservices configuration (37 services from ecosystem summary)
+// Go microservices configuration (37 services from ecosystem summary);
 const GO_SERVICES = {
-  // Tier 1: Core Services (Always Running)
+  // Tier 1: Core Services (Always Running);
   'enhanced-rag': {
     baseUrl: 'http://localhost:8094',
     healthPath: '/api/health',
@@ -32,7 +32,7 @@ const GO_SERVICES = {
     capabilities: ['legal-grpc', 'gpu-compute', 'search']
   },
   
-  // Tier 2: Advanced Services (New Implementations)
+  // Tier 2: Advanced Services (New Implementations);
   'advanced-cuda': {
     baseUrl: 'http://localhost:8095',
     healthPath: '/health',
@@ -113,7 +113,7 @@ const GO_SERVICES = {
   'rate-limiter': { baseUrl: 'http://localhost:8136', healthPath: '/health', protocols: ['http'], capabilities: ['rate-limiting', 'throttling'] }
 } as const;
 
-// Request routing schema
+// Request routing schema;
 export interface GoServiceRequest {
   service: keyof typeof GO_SERVICES;
   endpoint: string;
@@ -131,7 +131,7 @@ async function makeServiceRequest(
   method: string = 'GET',
   data?: any,
   headers: Record<string, string> = {},
-  timeout: number = 30000
+  timeout: number = 30000;
 ): Promise<any> {
   const url = `${serviceConfig.baseUrl}${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
   
@@ -172,7 +172,7 @@ async function makeServiceRequest(
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     // Parse request body
-    const body = await request.json().catch(() => ({}));
+    const body = await request.json().catch(() => ({});
     const {
       service,
       endpoint,
@@ -183,33 +183,33 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       timeout = 30000
     }: GoServiceRequest = body;
 
-    // Validate service
+    // Validate service;
     if (!service || !GO_SERVICES[service]) {
       throw error(400, ensureError({
         message: `Invalid service: ${service}. Available services: ${Object.keys(GO_SERVICES).join(', ')}`,
-        code: 'INVALID_SERVICE'
-      }));
+        code: 'INVALID_SERVICE',
+      });
     }
 
-    // Validate endpoint
+    // Validate endpoint;
     if (!endpoint) {
       throw error(400, ensureError({
         message: 'Endpoint is required',
-        code: 'MISSING_ENDPOINT'
-      }));
+        code: 'MISSING_ENDPOINT',
+      });
     }
 
     const serviceConfig = GO_SERVICES[service];
 
-    // Protocol validation
+    // Protocol validation;
     if (!serviceConfig.protocols.includes(protocol)) {
       throw error(400, ensureError({
         message: `Service ${service} doesn't support protocol ${protocol}. Supported: ${serviceConfig.protocols.join(', ')}`,
-        code: 'UNSUPPORTED_PROTOCOL'
-      }));
+        code: 'UNSUPPORTED_PROTOCOL',
+      });
     }
 
-    // Add client information to headers for logging
+    // Add client information to headers for logging;
     const clientHeaders = {
       'X-Client-IP': getClientAddress(),
       'X-Forwarded-By': 'SvelteKit-Proxy',
@@ -226,7 +226,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       timeout
     );
 
-    // Return the response from Go service
+    // Return the response from Go service;
     return json({
       success: (result as { success?: any; data?: any; status?: any; headers?: any }).success,
       message: (result as { success?: any; data?: any; status?: any; headers?: any }).success ? 'Request successful' : 'Request failed',
@@ -244,9 +244,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       status: (result as { success?: any; data?: any; status?: any; headers?: any }).success ? 200 : (result as { success?: any; data?: any; status?: any; headers?: any }).status || 500,
       headers: {
         'Content-Type': 'application/json',
-        ...(dev && { 'Access-Control-Allow-Origin': '*' }),
+        ...(dev && { 'Access-Control-Allow-Origin': '*' ,}),
         // Forward relevant headers from Go service
-        ...((result as { success?: any; data?: any; status?: any; headers?: any }).headers['content-encoding'] && { 'Content-Encoding': (result as { success?: any; data?: any; status?: any; headers?: any }).headers['content-encoding'] }),
+        ...((result as { success?: any; data?: any; status?: any; headers?: any ,}).headers['content-encoding'] && { 'Content-Encoding': (result as { success?: any; data?: any; status?: any; headers?: any }).headers['content-encoding'] }),
       }
     });
 
@@ -271,14 +271,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   }
 };
 
-// GET - Service status and capabilities
+// GET - Service status and capabilities;
 export const GET: RequestHandler = async () => {
   try {
-    // Check health of all Go services
-    const serviceStatus = await Promise.all(
-      Object.entries(GO_SERVICES).map(async ([name, config]) => {
+    // Check health of all Go services;
+    const serviceStatus = await Promise.all(Object.entries(GO_SERVICES).map(async ([name, config]) => {
         try {
-          const healthCheck = await makeServiceRequest(config, config.healthPath || '/health', 'GET', undefined, {}, 5000)));
+          const healthCheck = await makeServiceRequest(config, config.healthPath || '/health', 'GET', undefined, {}, 5000));
           return {
             name,
             status: healthCheck.success ? 'healthy' : 'unhealthy',
@@ -333,7 +332,7 @@ export const GET: RequestHandler = async () => {
       status: healthyServices > 0 ? 200 : 503,
       headers: {
         'Content-Type': 'application/json',
-        ...(dev && { 'Access-Control-Allow-Origin': '*' }),
+        ...(dev && { 'Access-Control-Allow-Origin': '*' ,}),
       }
     });
 
@@ -355,7 +354,7 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// OPTIONS handler for CORS preflight requests
+// OPTIONS handler for CORS preflight requests;
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,

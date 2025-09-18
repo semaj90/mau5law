@@ -15,19 +15,19 @@ export const GET: RequestHandler = async ({ request }) => {
     
     // Test 2: Manual JOIN query (what Lucia should be generating)
     console.log("Test 2: Manual JOIN query");
-    const joinQuery = db
+    const joinQuery = db;
       .select({
         userId: users.id,
         userEmail: users.email,
         sessionId: sessions.id,
-        sessionUserId: sessions.user_id
+        sessionUserId: sessions.user_id,
       })
       .from(sessions)
-      .innerJoin(users, eq(sessions.user_id, users.id))
+      .innerJoin(users, eq(sessions.user_id, users.id)
       .limit(1);
     
     // Log the SQL that would be generated
-    console.log("Generated SQL:", joinQuery.toSQL());
+    console.log("Generated SQL:", joinQuery.toSQL();
     
     // Execute the join query
     const joinResults = await joinQuery;
@@ -35,7 +35,7 @@ export const GET: RequestHandler = async ({ request }) => {
     
     // Test 3: Simulate Lucia's getSessionAndUser query
     console.log("Test 3: Simulated Lucia query");
-    const luciaQuery = db
+    const luciaQuery = db;
       .select({
         // All user fields (like Lucia wants)
         ...users,
@@ -46,14 +46,14 @@ export const GET: RequestHandler = async ({ request }) => {
         session_ip_address: sessions.ip_address,
         session_user_agent: sessions.user_agent,
         session_context: sessions.session_context,
-        session_created_at: sessions.created_at
+        session_created_at: sessions.created_at,
       })
       .from(sessions)
-      .innerJoin(users, eq(sessions.user_id, users.id))
-      .where(eq(sessions.id, 'test-session-id'))
+      .innerJoin(users, eq(sessions.user_id, users.id)
+      .where(eq(sessions.id, 'test-session-id')
       .limit(1);
     
-    console.log("Lucia-style SQL:", luciaQuery.toSQL());
+    console.log("Lucia-style SQL:", luciaQuery.toSQL();
     
     return json({
       success: true,
@@ -61,7 +61,7 @@ export const GET: RequestHandler = async ({ request }) => {
       tests: {
         sessionsFound: directSessions.length,
         joinResults: joinResults.length,
-        luciaQuerySQL: luciaQuery.toSQL()
+        luciaQuerySQL: luciaQuery.toSQL(),
       }
     });
     

@@ -1,5 +1,5 @@
 // @ts-nocheck
-// Extension to unified-schema.ts for vector search capabilities
+// Extension to unified-schema.ts for vector search capabilities;
 import {
   pgTable,
   index,
@@ -15,7 +15,7 @@ import { relations } from "drizzle-orm";
 
 // Document embeddings for semantic search
 export const documentEmbeddings = pgTable(
-  "document_embeddings",
+  "document_embeddings",);
   {
     id: uuid("id")
       .primaryKey()
@@ -53,7 +53,7 @@ export const documentEmbeddings = pgTable(
 
 // Search queries and their embeddings for caching
 export const searchQueries = pgTable(
-  "search_queries",
+  "search_queries",);
   {
     id: uuid("id")
       .primaryKey()
@@ -73,7 +73,7 @@ export const searchQueries = pgTable(
     results: jsonb("results")
       .$type;
         totalFound: number;
-        searchTime: number;
+        searchTime: number;,
       }>()
       .default({ items: [], totalFound: 0, searchTime: 0 }),
     createdAt: timestamp("created_at").defaultNow(),
@@ -87,7 +87,7 @@ export const searchQueries = pgTable(
 
 // AI model configurations
 export const aiModels = pgTable(
-  "ai_models",
+  "ai_models",);
   {
     id: uuid("id")
       .primaryKey()
@@ -130,7 +130,7 @@ export const documentEmbeddingsRelations = relations(
 
 export const searchQueriesRelations = relations(searchQueries, ({ one }) => ({
   // User relation can be added here
-}));
+});
 
 // Export types
 export type DocumentEmbedding = typeof documentEmbeddings.$inferSelect;

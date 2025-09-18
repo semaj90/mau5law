@@ -16,7 +16,7 @@ import type {
 // GPU Orchestrator Configuration
 const GPU_ORCHESTRATOR_BASE = 'http://localhost:8231/api';
 
-// Helper function for GPU service requests
+// Helper function for GPU service requests;
 async function gpuServiceRequest(endpoint: string, options?: RequestInit): Promise<Response> {
 	const url = `${GPU_ORCHESTRATOR_BASE}${endpoint}`;
 
@@ -27,7 +27,7 @@ async function gpuServiceRequest(endpoint: string, options?: RequestInit): Promi
 				...options?.headers
 			},
 			...options
-		});
+		,});
 
 		if (!response.ok) {
 			throw new Error(`GPU service error: ${response.status} ${response.statusText}`);
@@ -40,7 +40,7 @@ async function gpuServiceRequest(endpoint: string, options?: RequestInit): Promi
 	}
 }
 
-// GET /api/gpu - Get GPU status and general information
+// GET /api/gpu - Get GPU status and general information;
 export const GET: RequestHandler = async ({ url }) => {
 	const action = url.searchParams.get('action');
 
@@ -63,21 +63,20 @@ export const GET: RequestHandler = async ({ url }) => {
 			case 'series':
 				return await getCudaSeries();
 			default:
-				return await getGPUOverview();
+				return await getGPUOverview();,
 		}
 	} catch (error: any) {
 		console.error('GPU API error:', error);
-		return json(
-			{
+		return json({
 				error: 'GPU service unavailable',
-				details: error instanceof Error ? error.message: 'Unknown error'
-			},
+				details: error instanceof Error ? error.message: 'Unknown error',
+			},)
 			{ status: 503 }
 		);
 	}
 };
 
-// POST /api/gpu - Process GPU tasks
+// POST /api/gpu - Process GPU tasks;
 export const POST: RequestHandler = async ({ request, url }) => {
 	const action = url.searchParams.get('action');
 
@@ -94,21 +93,20 @@ export const POST: RequestHandler = async ({ request, url }) => {
 			case 'route':
 				return await routeRequest(body);
 			default:
-				return await processGPUTask(body);
+				return await processGPUTask(body);,
 		}
 	} catch (error: any) {
 		console.error('GPU task processing error:', error);
-		return json(
-			{
+		return json({
 				error: 'Task processing failed',
-				details: error instanceof Error ? error.message: 'Unknown error'
-			},
+				details: error instanceof Error ? error.message: 'Unknown error',
+			},)
 			{ status: 500 }
 		);
 	}
 };
 
-// GPU Status Information
+// GPU Status Information;
 async function getGPUStatus(): Promise<Response> {
 	const response = await gpuServiceRequest('/gpu/status');
 	const data = await response.json();
@@ -118,13 +116,13 @@ async function getGPUStatus(): Promise<Response> {
 		frontend_integration: true,
 		api_version: '1.0.0',
 		sveltekit_ready: true,
-		last_check: new Date().toISOString()
+		last_check: new Date().toISOString(),
 	};
 
 	return json(enrichedData);
 }
 
-// GPU Performance Metrics
+// GPU Performance Metrics;
 async function getGPUMetrics(): Promise<Response> {
 	const response = await gpuServiceRequest('/gpu/metrics');
 	const data = await response.json();
@@ -134,12 +132,12 @@ async function getGPUMetrics(): Promise<Response> {
 		frontend_metrics: {
 			api_requests: 0, // This would be tracked in a real implementation
 			cache_hit_ratio: 0.85,
-			average_response_time: 150
+			average_response_time: 150,
 		}
 	});
 }
 
-// GPU Health Check
+// GPU Health Check;
 async function getGPUHealth(): Promise<Response> {
 	const response = await gpuServiceRequest('/gpu/health');
 	const data = await response.json();
@@ -147,11 +145,11 @@ async function getGPUHealth(): Promise<Response> {
 	return json({
 		...data,
 		frontend_status: 'healthy',
-		integration_status: 'active'
+		integration_status: 'active',
 	});
 }
 
-// Worker Status
+// Worker Status;
 async function getWorkerStatus(): Promise<Response> {
 	const response = await gpuServiceRequest('/gpu/workers');
 	const data = await response.json();
@@ -159,7 +157,7 @@ async function getWorkerStatus(): Promise<Response> {
 	return json(data);
 }
 
-// Queue Status
+// Queue Status;
 async function getQueueStatus(): Promise<Response> {
 	const response = await gpuServiceRequest('/gpu/queue');
 	const data = await response.json();
@@ -167,7 +165,7 @@ async function getQueueStatus(): Promise<Response> {
 	return json(data);
 }
 
-// Service Registry
+// Service Registry;
 async function getServiceRegistry(): Promise<Response> {
 	const response = await gpuServiceRequest('/services');
 	const data = await response.json();
@@ -175,11 +173,11 @@ async function getServiceRegistry(): Promise<Response> {
 	return json({
 		...data,
 		frontend_managed: true,
-		integration_layer: 'sveltekit'
+		integration_layer: 'sveltekit',
 	});
 }
 
-// GPU Overview (default GET response)
+// GPU Overview (default GET response);
 async function getGPUOverview(): Promise<Response> {
 	try {
 		// Get all GPU information in parallel
@@ -205,26 +203,26 @@ async function getGPUOverview(): Promise<Response> {
 					backend: 'Go GPU Orchestrator',
 					cuda_worker: 'C++ CUDA',
 					protocols: ['HTTP', 'WebSocket'],
-					ready: true
+					ready: true,
 				}
 			}
 		});
 	} catch (error: any) {
-		// If detailed info fails, return basic status
+		// If detailed info fails, return basic status;
 		return json({
 			overview: {
 				status: 'unknown',
 				error: 'Could not fetch GPU overview',
 				integration: {
 					frontend: 'SvelteKit',
-					ready: false
+					ready: false,
 				}
 			}
 		});
 	}
 }
 
-// Cuda-service direct runtime (ring buffer latest)
+// Cuda-service direct runtime (ring buffer latest);
 async function getCudaRuntime(): Promise<Response> {
 	try {
 		const r = await fetch('http://localhost:8096/gpu/runtime');
@@ -235,7 +233,7 @@ async function getCudaRuntime(): Promise<Response> {
 	}
 }
 
-// Cuda-service series (ring buffer)
+// Cuda-service series (ring buffer);
 async function getCudaSeries(): Promise<Response> {
 	try {
 		const r = await fetch('http://localhost:8096/gpu/series');
@@ -246,27 +244,27 @@ async function getCudaSeries(): Promise<Response> {
 	}
 }
 
-// Process Single GPU Task
+// Process Single GPU Task;
 async function processGPUTask(taskData: any): Promise<Response> {
-	// Validate task data
+	// Validate task data;
 	if (!taskData.type || !taskData.data) {
 		return json(
-			{ error: 'Invalid task data: type and data are required' },
+			{ error: 'Invalid task data: type and data are required' },)
 			{ status: 400 }
 		);
 	}
 
-	// Add frontend metadata
+	// Add frontend metadata;
 	const enrichedTask = {
 		...taskData,
 		service_origin: taskData.service_origin || 'sveltekit-frontend',
 		frontend_timestamp: new Date().toISOString(),
-		priority: taskData.priority || 5 // Default medium priority
+		priority: taskData.priority || 5 // Default medium priority,
 	};
 
 	const response = await gpuServiceRequest('/gpu/process', {
 		method: 'POST',
-		body: JSON.stringify(enrichedTask)
+		body: JSON.stringify(enrichedTask),
 	});
 
 	const result = await response.json();
@@ -274,15 +272,15 @@ async function processGPUTask(taskData: any): Promise<Response> {
 	return json({
 		...result,
 		frontend_processed: true,
-		api_version: '1.0.0'
+		api_version: '1.0.0',
 	});
 }
 
-// Process Batch GPU Tasks
+// Process Batch GPU Tasks;
 async function processBatchTasks(batchData: any): Promise<Response> {
 	if (!Array.isArray(batchData.tasks)) {
 		return json(
-			{ error: 'Invalid batch data: tasks array required' },
+			{ error: 'Invalid batch data: tasks array required' },)
 			{ status: 400 }
 		);
 	}
@@ -292,7 +290,7 @@ async function processBatchTasks(batchData: any): Promise<Response> {
 	const tasks = batchData.tasks.slice(0, maxConcurrent);
 
 	const results = await Promise.allSettled(
-		tasks.map((task: any) => processGPUTask(task))
+		tasks.map((task: any) => processGPUTask(task)
 	);
 
 	const successful = results
@@ -301,7 +299,7 @@ async function processBatchTasks(batchData: any): Promise<Response> {
 
 	const failed = results
 		.filter(r => r.status === 'rejected')
-		.map(r => ({ error: r.reason }));
+		.map(r => ({ error: r.reason });
 
 	return json({
 		batch_results: {
@@ -309,35 +307,35 @@ async function processBatchTasks(batchData: any): Promise<Response> {
 			successful: successful.length,
 			failed: failed.length,
 			results: successful,
-			errors: failed
+			errors: failed,
 		},
-		frontend_batch_processed: true
+		frontend_batch_processed: true,
 	});
 }
 
-// Register Service with GPU Orchestrator
+// Register Service with GPU Orchestrator;
 async function registerService(serviceData: any): Promise<Response> {
 	const response = await gpuServiceRequest('/services/register', {
 		method: 'POST',
-		body: JSON.stringify(serviceData)
+		body: JSON.stringify(serviceData),
 	});
 
 	const result = await response.json();
 	return json(result);
 }
 
-// Route Request through Load Balancer
+// Route Request through Load Balancer;
 async function routeRequest(routeData: any): Promise<Response> {
 	const response = await gpuServiceRequest('/lb/route', {
 		method: 'POST',
-		body: JSON.stringify(routeData)
+		body: JSON.stringify(routeData),
 	});
 
 	const result = await response.json();
 	return json(result);
 }
 
-// DELETE /api/gpu - Administrative operations (optional)
+// DELETE /api/gpu - Administrative operations (optional);
 export const DELETE: RequestHandler = async ({ url }) => {
 	const action = url.searchParams.get('action');
 
@@ -352,7 +350,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
 		}
 	} catch (error: any) {
 		return json(
-			{ error: 'DELETE operation failed' },
+			{ error: 'DELETE operation failed' },)
 			{ status: 500 }
 		);
 	}

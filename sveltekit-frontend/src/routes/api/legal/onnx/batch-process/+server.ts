@@ -14,7 +14,7 @@ interface BatchResult {
   success: boolean;
   result?: any;
   error?: string;
-  processingTime: number;
+  processingTime: number;,
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ error: 'Tasks array is required and must not be empty' }, { status: 400 });
     }
     
-    // Validate tasks
+    // Validate tasks;
     for (const task of tasks) {
       if (!task.id || !task.type || !task.text) {
         return json({ 
@@ -50,12 +50,12 @@ export const POST: RequestHandler = async ({ request }) => {
     const results: BatchResult[] = [];
     const chunks: BatchTask[][] = [];
     
-    // Split tasks into chunks
+    // Split tasks into chunks;
     for (let i = 0; i < tasks.length; i += maxConcurrency) {
-      chunks.push(tasks.slice(i, i + maxConcurrency));
+      chunks.push(tasks.slice(i, i + maxConcurrency);
     }
     
-    // Process each chunk in parallel
+    // Process each chunk in parallel;
     for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex++) {
       const chunk = chunks[chunkIndex];
       
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
               result = { 
                 embeddings, 
                 dimensions: embeddings.length,
-                modelUsed: 'legal-bert-onnx'
+                modelUsed: 'legal-bert-onnx',
               };
               break;
             default:
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
             taskId: task.id,
             success: false,
             error: error.message,
-            processingTime: Date.now() - taskStartTime
+            processingTime: Date.now() - taskStartTime,
           };
         }
       });
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Wait for chunk to complete
       const chunkResults = await Promise.allSettled(chunkPromises);
       
-      // Extract results
+      // Extract results;
       chunkResults.forEach((settledResult, index) => {
         if (settledResult.status === 'fulfilled') {
           results.push(settledResult.value);
@@ -119,7 +119,7 @@ export const POST: RequestHandler = async ({ request }) => {
             taskId: chunk[index].id,
             success: false,
             error: settledResult.reason?.message || 'Unknown error',
-            processingTime: 0
+            processingTime: 0,
           });
         }
       });
@@ -143,18 +143,17 @@ export const POST: RequestHandler = async ({ request }) => {
         totalTime,
         averageProcessingTime,
         throughput: tasks.length / (totalTime / 1000), // tasks per second
-        concurrency: maxConcurrency
+        concurrency: maxConcurrency,
       }
     });
     
   } catch (error: any) {
     console.error('Batch processing error:', error);
-    return json(
-      { 
+    return json({ 
         success: false, 
         error: 'Batch processing failed', 
-        details: error.message 
-      },
+        details: error.message ,
+      },)
       { status: 500 }
     );
   }

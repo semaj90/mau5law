@@ -1,12 +1,13 @@
 /**
  * Client-side utilities to extract and report server timing & custom headers.
- */
+ */;
+}
 
 export interface ExtractedTimingHeaders {
   requestId?: string;
   responseTimeMs?: number;
   serverTiming: Record<string, number>;
-  receivedAt: number;
+  receivedAt: number;,
 }
 
 export function parseServerTiming(header: string | null): Record<string, number> {
@@ -25,13 +26,13 @@ export function extractTimingHeaders(res: Response): ExtractedTimingHeaders {
     requestId: res.headers.get('X-Request-ID') || undefined,
     responseTimeMs: res.headers.get('X-Response-Time') ? parseFloat(res.headers.get('X-Response-Time')!) : undefined,
     serverTiming: parseServerTiming(res.headers.get('Server-Timing')),
-    receivedAt: Date.now()
+    receivedAt: Date.now(),
   };
 }
 
 /**
  * Convenience wrapper to fetch JSON and capture timing metadata.
- */
+ */;
 export async function fetchWithTimings<T = any>(input: RequestInfo | URL, init?: RequestInit): Promise<any> {
   const res = await fetch(input, init);
   const timings = extractTimingHeaders(res);

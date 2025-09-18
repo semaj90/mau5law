@@ -5,19 +5,19 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
   preprocess: vitePreprocess({
     typescript: true,
-    script: true
+    script: true,
   }),
 
   kit: {
     adapter: adapter(),
     alias: {
-      $lib: "src/lib",
-      $components: "src/lib/components",
-      $stores: "src/lib/stores",
-      $utils: "src/lib/utils",
-      $types: "src/lib/types"
-    }
-  }
+      $lib: 'src/lib',
+      $components: 'src/lib/components',
+      $stores: 'src/lib/stores',
+      $utils: 'src/lib/utils',
+      $types: 'src/lib/types',
+    },
+  },
 };
 
 export default config;

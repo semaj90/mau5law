@@ -13,14 +13,14 @@ test('FugitiveDx Screenshot', async ({ page }) => {
   // Take a full page screenshot
   await page.screenshot({
     path: 'fugitivedx-screenshot.png',
-    fullPage: true
+    fullPage: true,
   });
 
   // Try to find the main layout and take a screenshot if it exists
   const mainLayout = page.locator('.main-layout');
-  if (await mainLayout.count() > 0) {
+  if ((await mainLayout.count()) > 0) {
     await mainLayout.screenshot({
-      path: 'fugitivedx-main-layout.png'
+      path: 'fugitivedx-main-layout.png',
     });
   }
 

@@ -1,4 +1,4 @@
-// Legal Case Management Types
+// Legal Case Management Types;
 export interface Case {
   id: string;
   title: string;
@@ -53,10 +53,10 @@ export interface CaseFormState {
   isSubmitting: boolean;
   isValid: boolean;
   isDirty: boolean;
-  touchedFields: Set<keyof CaseForm>;
+  touchedFields: Set<keyof CaseForm>;,
 }
 
-// Case Timeline and Events
+// Case Timeline and Events;
 export interface TimelineEvent {
   id: string;
   caseId: string;
@@ -68,10 +68,10 @@ export interface TimelineEvent {
   documents?: string[];
   metadata?: Record<string, unknown>;
   createdBy: string;
-  createdAt: Date;
+  createdAt: Date;,
 }
 
-// Case Analytics and Metrics  
+// Case Analytics and Metrics;
 export interface CaseMetrics {
   caseId: string;
   totalDocuments: number;
@@ -82,17 +82,17 @@ export interface CaseMetrics {
   lastActivity: Date;
   progressPercentage: number;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
-  confidenceScore: number;
+  confidenceScore: number;,
 }
 
-// Legal Context and Relationships
+// Legal Context and Relationships;
 export interface LegalContext {
   caseId: string;
   precedents: LegalPrecedent[];
   statutes: LegalStatute[];
   regulations: LegalRegulation[];
   jurisdiction: JurisdictionInfo;
-  practiceArea: string[];
+  practiceArea: string[];,
 }
 
 export interface LegalPrecedent {
@@ -114,7 +114,7 @@ export interface LegalStatute {
   jurisdiction: string;
   effectiveDate: Date;
   summary: string;
-  relevanceScore: number;
+  relevanceScore: number;,
 }
 
 export interface LegalRegulation {
@@ -124,14 +124,14 @@ export interface LegalRegulation {
   cfr?: string;
   effectiveDate: Date;
   summary: string;
-  relevanceScore: number;
+  relevanceScore: number;,
 }
 
 export interface JurisdictionInfo {
   name: string;
   type: 'federal' | 'state' | 'local';
   code: string;
-  courts: CourtInfo[];
+  courts: CourtInfo[];,
 }
 
 export interface CourtInfo {

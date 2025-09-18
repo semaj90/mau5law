@@ -22,7 +22,7 @@ export const GOLDEN_RATIO_CUBED = 4.236067977499;
 ;
 /**
  * Utility functions for golden ratio calculations
- */
+ */;
 export const goldenRatioUtils = {
   /**
    * Calculate golden ratio proportion of a value
@@ -42,7 +42,7 @@ export const goldenRatioUtils = {
    * Split a value into golden ratio proportions
    * @param total - Total value to split
    * @returns Object with major and minor proportions
-   */
+   */;
   split: (total: number) => ({
     major: total * INVERSE_GOLDEN_RATIO,
     minor: total * (1 - INVERSE_GOLDEN_RATIO),
@@ -53,7 +53,7 @@ export const goldenRatioUtils = {
    * @param baseSize - Base font size in rem
    * @param scale - Scale factor (positive for larger, negative for smaller)
    * @returns Calculated font size
-   */
+   */;
   fontSize: (baseSize: number = 1, scale: number = 0): number => {
     return baseSize * Math.pow(GOLDEN_RATIO, scale);
   },
@@ -63,7 +63,7 @@ export const goldenRatioUtils = {
    * @param baseSpacing - Base spacing in rem
    * @param scale - Scale factor
    * @returns Calculated spacing
-   */
+   */;
   spacing: (baseSpacing: number = 1, scale: number = 0): number => {
     return baseSpacing * Math.pow(GOLDEN_RATIO, scale);
   },
@@ -71,7 +71,7 @@ export const goldenRatioUtils = {
 
 /**
  * Predefined golden ratio breakpoints for responsive design
- */
+ */;
 export const goldenBreakpoints = {
   mobile: Math.round(480 * GOLDEN_RATIO), // ~777px
   tablet: Math.round(768 * GOLDEN_RATIO), // ~1242px
@@ -81,7 +81,7 @@ export const goldenBreakpoints = {
 
 /**
  * CSS custom property names for golden ratio values
- */
+ */;
 export const goldenRatioCSSVars = {
   ratio: "--golden-ratio",
   inverse: "--inverse-golden-ratio",

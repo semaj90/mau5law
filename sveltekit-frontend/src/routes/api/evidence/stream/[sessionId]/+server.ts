@@ -15,7 +15,7 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
   const upgradeHeader = request.headers.get('upgrade')?.toLowerCase();
   
   if (upgradeHeader !== 'websocket') {
-    // Non-WebSocket request - return missed messages via HTTP
+    // Non-WebSocket request - return missed messages via HTTP;
     try {
       const since = url.searchParams.get('since');
       const messages = await getMissedMessages(sessionId, since || undefined);
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
       return new Response(JSON.stringify({
         sessionId,
         messages,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }), {
         headers: {
           'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
     }
   }
   
-  // WebSocket upgrade request
+  // WebSocket upgrade request;
   try {
     // Note: This is a simplified example. In production, you'll need to handle
     // WebSocket upgrades according to your specific SvelteKit adapter
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ request, params, url }) => {
   }
 };
 
-// For development/testing - simple server-sent events alternative
+// For development/testing - simple server-sent events alternative;
 export const POST: RequestHandler = async ({ request, params }) => {
   const { sessionId } = params;
   
@@ -74,28 +74,28 @@ export const POST: RequestHandler = async ({ request, params }) => {
       
       const stream = new ReadableStream({
         start(controller) {
-          // Send initial connection event
+          // Send initial connection event;
           const message = `data: ${JSON.stringify({
             type: 'connection-established',
             sessionId,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           })}\n\n`;
           
-          controller.enqueue(encoder.encode(message));
+          controller.enqueue(encoder.encode(message);
           
           // TODO: Set up subscription to receive progress messages
           // and forward them to the controller
           
-          // For now, just keep the connection alive
+          // For now, just keep the connection alive;
           const keepAlive = setInterval(() => {
             try {
-              controller.enqueue(encoder.encode('data: {"type":"heartbeat"}\n\n'));
+              controller.enqueue(encoder.encode('data: {"type":"heartbeat"}\n\n');
             } catch (error: any) {
               clearInterval(keepAlive);
             }
           }, 30000);
           
-          // Cleanup after 1 hour
+          // Cleanup after 1 hour;
           setTimeout(() => {
             clearInterval(keepAlive);
             controller.close();

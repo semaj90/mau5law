@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import type { RequestHandler } from './$types.js';
 
 
-// A light wrapper that accepts multipart form uploads and stores the file in MinIO under 'evidence' bucket.
+// A light wrapper that accepts multipart form uploads and stores the file in MinIO under 'evidence' bucket.;
 export const POST: RequestHandler = (async ({ request }) => {
   try {
     const form = await request.formData();
@@ -12,7 +12,7 @@ export const POST: RequestHandler = (async ({ request }) => {
 
     if (!file) return json({ success: false, error: 'No file' }, { status: 400 });
 
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const buffer = Buffer.from(await file.arrayBuffer();
     const id = randomUUID();
     const objectName = `${id}_${file.name}`;
 

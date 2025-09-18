@@ -13,7 +13,7 @@ export class BrowserAdapter {
     try {
       const data = localStorage.getItem(`loki:${dbname}`);
       if (data) {
-        callback(JSON.parse(data));
+        callback(JSON.parse(data);
       } else {
         callback(null);
       }
@@ -55,7 +55,7 @@ export const browserLokiConfig = {
   },
   autosave: true,
   autosaveInterval: 4000,
-  persistenceMethod: 'localStorage'
+  persistenceMethod: 'localStorage',
 };
 
 export default BrowserAdapter;

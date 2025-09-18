@@ -1,11 +1,11 @@
 
-// --- Qdrant passthroughs for admin API (enhanced with logging) ---
+// --- Qdrant passthroughs for admin API (enhanced with logging) ---;
 export async function getCollections(): Promise<any> {
   const wrapper = getQdrantWrapper();
   if (!wrapper) {
     logger.error("Qdrant not configured", undefined, {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     });
     throw new Error("Qdrant not configured");
   }
@@ -18,7 +18,7 @@ export async function getCollection(collection: string): Promise<any> {
   if (!wrapper) {
     logger.error("Qdrant not configured", undefined, {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     });
     throw new Error("Qdrant not configured");
   }
@@ -31,7 +31,7 @@ export async function createCollection(name: string, config: any): Promise<any> 
   if (!wrapper) {
     logger.error("Qdrant not configured", undefined, {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     });
     throw new Error("Qdrant not configured");
   }
@@ -44,7 +44,7 @@ export async function deleteCollection(name: string): Promise<any> {
   if (!wrapper) {
     logger.error("Qdrant not configured", undefined, {
       component: 'QdrantService', 
-      service: 'qdrant'
+      service: 'qdrant',
     });
     throw new Error("Qdrant not configured");
   }
@@ -61,7 +61,7 @@ import { productionLogger as logger } from '../production-logger.js';
 
 let qdrantWrapper: QdrantApiWrapper | null = null;
 
-// Initialize Qdrant wrapper (enhanced API compatibility)
+// Initialize Qdrant wrapper (enhanced API compatibility);
 function getQdrantWrapper(): QdrantApiWrapper | null {
   if (!import.meta.env.QDRANT_URL) {
     return null;
@@ -79,7 +79,7 @@ function getQdrantWrapper(): QdrantApiWrapper | null {
 function getQdrantClient() {
   return getQdrantWrapper();
 }
-// Collection names (optimized for memory efficiency)
+// Collection names (optimized for memory efficiency);
 const COLLECTIONS = {
   CASES: "prosecutor_cases",
   EVIDENCE: "prosecutor_evidence", 
@@ -87,7 +87,7 @@ const COLLECTIONS = {
   // New collections for optimized storage
   LEGAL_DOCUMENTS: "legal_documents",
   CASE_SUMMARIES: "case_summaries",
-  EVIDENCE_METADATA: "evidence_metadata"
+  EVIDENCE_METADATA: "evidence_metadata",
 } as const;
 
 // Vector dimensions (adjusted for memory optimization)
@@ -95,13 +95,13 @@ const COLLECTIONS = {
 const VECTOR_DIMENSION = 384;
 const LEGACY_VECTOR_DIMENSION = 1536; // For backward compatibility
 
-// Initialize collections with memory optimization
+// Initialize collections with memory optimization;
 export async function initializeCollections(): Promise<void> {
   const client = getQdrantClient();
   if (!client) {
     logger.warn("Qdrant not configured, skipping collection initialization", {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     });
     return;
   }
@@ -115,10 +115,10 @@ export async function initializeCollections(): Promise<void> {
         await client.getCollection(collectionName);
         logger.info(`Qdrant collection ${collectionName} already exists`, {
           component: 'QdrantService',
-          service: 'qdrant'
+          service: 'qdrant',
         });
       } catch (error: any) {
-        // Collection doesn't exist, create it with optimized config
+        // Collection doesn't exist, create it with optimized config;
         const config = {
           vectors: {
             size: VECTOR_DIMENSION,
@@ -142,31 +142,31 @@ export async function initializeCollections(): Promise<void> {
             scalar: {
               type: "int8" as const,    // Aggressive quantization for memory
               quantile: 0.99,
-              always_ram: false         // Allow disk storage
+              always_ram: false         // Allow disk storage,
             },
           },
-          // Additional memory optimizations
+          // Additional memory optimizations;
           wal_config: {
             wal_capacity_mb: isWindows ? 32 : 16,  // Smaller WAL for memory
-            wal_segments_ahead: 1
+            wal_segments_ahead: 1,
           }
         };
         
         await client.createCollection(collectionName, config);
         logger.info(`Created optimized Qdrant collection ${collectionName}`, {
           component: 'QdrantService',
-          service: 'qdrant'
+          service: 'qdrant',
         }, {
           windowsOptimized: isWindows,
           vectorDimension: VECTOR_DIMENSION,
-          quantizationEnabled: true
+          quantizationEnabled: true,
         });
       }
     }
   } catch (error: any) {
     logger.error("Failed to initialize Qdrant collections", error instanceof Error ? error : undefined, {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     });
   }
 }
@@ -184,18 +184,18 @@ export async function searchCases(
   options: SearchOptions = {}
 ): Promise<any[]> {
   try {
-    // Use optimized service with caching and memory efficiency
+    // Use optimized service with caching and memory efficiency;
     return await qdrantOptimized.search(COLLECTIONS.CASES, query, {
       limit: options.limit || 20,
       offset: options.offset || 0,
       filter: options.filter,
       threshold: options.scoreThreshold || 0.7,
-      useCache: true // Enable caching for better performance
+      useCache: true // Enable caching for better performance,
     });
   } catch (error: any) {
     logger.error("Optimized case search failed", error instanceof Error ? error : undefined, {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     }, {
       query: typeof query === 'string' ? query.substring(0, 100) : 'vector_query',
       options
@@ -209,18 +209,18 @@ export async function searchEvidence(
   options: SearchOptions = {}
 ): Promise<any[]> {
   try {
-    // Use optimized service with caching and memory efficiency
+    // Use optimized service with caching and memory efficiency;
     return await qdrantOptimized.search(COLLECTIONS.EVIDENCE, query, {
       limit: options.limit || 20,
       offset: options.offset || 0,
       filter: options.filter,
       threshold: options.scoreThreshold || 0.7,
-      useCache: true // Enable caching for better performance
+      useCache: true // Enable caching for better performance,
     });
   } catch (error: any) {
     logger.error("Optimized evidence search failed", error instanceof Error ? error : undefined, {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     }, {
       query: typeof query === 'string' ? query.substring(0, 100) : 'vector_query',
       options
@@ -232,13 +232,13 @@ export async function searchEvidence(
 export async function upsertCase(
   id: string,
   embedding: number[],
-  payload: any
+  payload: any;
 ): Promise<void> {
   const wrapper = getQdrantWrapper();
   if (!wrapper) {
     logger.warn("Qdrant not configured for case upsert", {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     });
     return;
   }
@@ -249,7 +249,7 @@ export async function upsertCase(
     
     await wrapper.upsert(COLLECTIONS.CASES, {
       wait: true,
-      points: [
+      points: [);
         {
           id,
           vector: vectorArray,
@@ -260,19 +260,19 @@ export async function upsertCase(
     
     logger.debug('Case upserted successfully', {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     }, {
       caseId: id,
       vectorDimension: embedding.length,
-      payloadSize: JSON.stringify(payload).length
+      payloadSize: JSON.stringify(payload).length,
     });
   } catch (error: any) {
     logger.error("Failed to upsert case in Qdrant", error instanceof Error ? error : undefined, {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     }, {
       caseId: id,
-      vectorDimension: embedding.length
+      vectorDimension: embedding.length,
     });
   }
 }
@@ -280,13 +280,13 @@ export async function upsertCase(
 export async function upsertEvidence(
   id: string,
   embedding: number[],
-  payload: any
+  payload: any;
 ): Promise<void> {
   const wrapper = getQdrantWrapper();
   if (!wrapper) {
     logger.warn("Qdrant not configured for evidence upsert", {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     });
     return;
   }
@@ -297,7 +297,7 @@ export async function upsertEvidence(
     
     await wrapper.upsert(COLLECTIONS.EVIDENCE, {
       wait: true,
-      points: [
+      points: [);
         {
           id,
           vector: vectorArray,
@@ -308,32 +308,32 @@ export async function upsertEvidence(
     
     logger.debug('Evidence upserted successfully', {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     }, {
       evidenceId: id,
       vectorDimension: embedding.length,
-      payloadSize: JSON.stringify(payload).length
+      payloadSize: JSON.stringify(payload).length,
     });
   } catch (error: any) {
     logger.error("Failed to upsert evidence in Qdrant", error instanceof Error ? error : undefined, {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     }, {
       evidenceId: id,
-      vectorDimension: embedding.length
+      vectorDimension: embedding.length,
     });
   }
 }
 // Delete a point from Qdrant (with enhanced logging)
 export async function deletePoint(
   collection: string,
-  id: string
+  id: string;
 ): Promise<void> {
   const wrapper = getQdrantWrapper();
   if (!wrapper) {
     logger.warn("Qdrant not configured for point deletion", {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     });
     return;
   }
@@ -346,25 +346,25 @@ export async function deletePoint(
     
     logger.info('Point deleted successfully', {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     }, {
       collection,
-      pointId: id
+      pointId: id,
     });
   } catch (error: any) {
     logger.error("Failed to delete point from Qdrant", error instanceof Error ? error : undefined, {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     }, {
       collection,
-      pointId: id
+      pointId: id,
     });
   }
 }
-// Health check (using wrapper and optimized service)
+// Health check (using wrapper and optimized service);
 export async function isQdrantHealthy(): Promise<boolean> {
   try {
-    // Try optimized service first
+    // Try optimized service first;
     if (qdrantOptimized && qdrantOptimized.isHealthy) {
       return await qdrantOptimized.isHealthy();
     }
@@ -380,12 +380,12 @@ export async function isQdrantHealthy(): Promise<boolean> {
   } catch (error: any) {
     logger.error("Qdrant health check failed", error instanceof Error ? error : undefined, {
       component: 'QdrantService',
-      service: 'qdrant'
+      service: 'qdrant',
     });
     return false;
   }
 }
-// Export for easier usage (enhanced with optimized service)
+// Export for easier usage (enhanced with optimized service);
 export const qdrant = {
   // Optimized search methods
   searchCases,

@@ -15,12 +15,12 @@ import { BrowserCacheManager } from './browser-cache-manager.js';
 import { ShaderCache } from './webgl-shader-cache.js';
 import { MatrixTransformLib } from './matrix-transform-lib.js';
 
-// Types for our "sprite sheet" system
+// Types for our "sprite sheet" system;
 export interface CanvasSprite {
   id: string;
   name: string; // e.g., 'idle', 'text_creation', 'object_move'
   sequence: number; // Frame number in animation sequence
-  jsonState: string; // Serialized Fabric.js canvas state
+  jsonState: string; // Serialized Fabric.js canvas state;
   metadata: {
     objects: number;
     complexity: number;
@@ -39,7 +39,7 @@ export interface UserActivity {
   context: Record<string, any>;
   timestamp: number;
   canvasState?: string; // Current canvas state when action occurred
-  sequence: number; // Position in user's action sequence
+  sequence: number; // Position in user's action sequence,
 }
 
 export interface AnimationSequence {
@@ -49,10 +49,10 @@ export interface AnimationSequence {
   loop: boolean;
   fps: number;
   triggers: string[];
-  confidence: number; // AI confidence this sequence will be used
+  confidence: number; // AI confidence this sequence will be used,
 }
 
-// Self-Organizing Map Node
+// Self-Organizing Map Node;
 export interface SOMNode {
   id: string;
   position: { x: number; y: number };
@@ -60,10 +60,10 @@ export interface SOMNode {
   activationHistory: number[];
   connectedSprites: string[];
   learningRate: number;
-  neighborhoodRadius: number;
+  neighborhoodRadius: number;,
 }
 
-// Multi-core Processing Task
+// Multi-core Processing Task;
 export interface ProcessingTask {
   id: string;
   type: "sprite_analysis" | "som_update" | "prediction" | "optimization";
@@ -75,7 +75,7 @@ export interface ProcessingTask {
   result?: unknown;
 }
 
-// Performance Analytics
+// Performance Analytics;
 export interface PerformanceMetrics {
   frameRate: number;
   cacheHitRate: number;
@@ -84,10 +84,10 @@ export interface PerformanceMetrics {
   memoryUsage: number;
   cpuUsage: number;
   predictiveAccuracy: number;
-  selfOrganizationEfficiency: number;
+  selfOrganizationEfficiency: number;,
 }
 
-// Main Self-Organizing Neural Sprite Engine class
+// Main Self-Organizing Neural Sprite Engine class;
 export class NeuralSpriteEngine {
   private db: Loki = new Loki('neural-sprites.db');
   private sprites: any;
@@ -163,7 +163,7 @@ export class NeuralSpriteEngine {
       persistToDisk: false,
     });
     
-    // Initialize browser cache with defaults
+    // Initialize browser cache with defaults;
     this.browserCache = new BrowserCacheManager({
       cachePrefix: "neural-sprite-",
       maxCacheSize: 100 * 1024 * 1024,
@@ -171,7 +171,7 @@ export class NeuralSpriteEngine {
       enableServiceWorkerIntegration: false,
     });
     
-    // Initialize matrix lib with defaults
+    // Initialize matrix lib with defaults;
     this.matrixLib = new MatrixTransformLib({
       enableGPUAcceleration: false,
       optimizeForCSS: true,
@@ -209,7 +209,7 @@ export class NeuralSpriteEngine {
       this.db.getCollection<AnimationSequence>("sequences") ||
       this.db.addCollection<AnimationSequence>("sequences", { indices: ["name", "confidence"] });
 
-    // Load default "idle" state if database is empty
+    // Load default "idle" state if database is empty;
     if (this.sprites.count() === 0) {
       this.createDefaultSprites();
     }
@@ -223,7 +223,7 @@ export class NeuralSpriteEngine {
   }
 
   private setupPerformanceMonitoring(): void {
-    // Enhanced performance monitoring with self-organizing features
+    // Enhanced performance monitoring with self-organizing features;
     setInterval(() => {
       const hitRate = this.cacheHits / (this.cacheHits + this.cacheMisses);
       this.cacheHitRate.set(isNaN(hitRate) ? 1.0 : hitRate);
@@ -239,7 +239,7 @@ export class NeuralSpriteEngine {
   }
 
   private initializeEnhancedCaching(): void {
-    // Initialize WebGL2 context for shader caching (with error handling)
+    // Initialize WebGL2 context for shader caching (with error handling);
     try {
       const canvasElement = this.canvas.getElement();
       this.webglContext = canvasElement?.getContext?.("webgl2", {
@@ -249,7 +249,7 @@ export class NeuralSpriteEngine {
         alpha: false,
       }) as WebGL2RenderingContext || undefined;
 
-      // Update shader cache with actual context
+      // Update shader cache with actual context;
       if (this.webglContext) {
         this.shaderCache = new ShaderCache(this.webglContext, {
           enableNVIDIAOptimizations: true,
@@ -265,11 +265,11 @@ export class NeuralSpriteEngine {
 
   /**
    * Initialize Self-Organizing Map for sprite clustering
-   */
+   */;
   private initializeSelfOrganizingMap(): void {
     console.log("🧠 Initializing Self-Organizing Map...");
 
-    // Create SOM grid
+    // Create SOM grid;
     for (let y = 0; y < this.somGridSize.height; y++) {
       for (let x = 0; x < this.somGridSize.width; x++) {
         const nodeId = `som_${x}_${y}`;
@@ -284,7 +284,7 @@ export class NeuralSpriteEngine {
             Math.min(this.somGridSize.width, this.somGridSize.height) / 2,
         };
 
-        // Initialize weights randomly
+        // Initialize weights randomly;
         for (let i = 0; i < node.weights.length; i++) {
           node.weights[i] = Math.random() * 0.5 - 0.25;
         }
@@ -298,7 +298,7 @@ export class NeuralSpriteEngine {
 
   /**
    * Initialize multi-core processing worker pool
-   */
+   */;
   private initializeMultiCoreProcessing(): void {
     console.log(`🔧 Initializing ${this.maxWorkers} worker threads...`);
 
@@ -334,13 +334,13 @@ export class NeuralSpriteEngine {
           const typeIndex = docTypes.indexOf(sprite.documentType || 'contract');
           features[4] = typeIndex / docTypes.length;
 
-          // Fill remaining features with processed data
+          // Fill remaining features with processed data;
           for (let i = 5; i < 16; i++) {
             features[i] = Math.sin(i * sprite.metadata.complexity * 0.01);
           }
 
         } catch (error: any) {
-          // Fallback features
+          // Fallback features;
           for (let i = 0; i < 16; i++) {
             features[i] = Math.random() * 0.5;
           }
@@ -359,7 +359,7 @@ export class NeuralSpriteEngine {
         distance = Math.sqrt(distance);
 
         // Calculate neighborhood influence
-        const influence = Math.exp(-(distance * distance) / (2 * neighborhoodRadius * neighborhoodRadius));
+        const influence = Math.exp(-(distance * distance) / (2 * neighborhoodRadius * neighborhoodRadius);
 
         // Update weights
         const adjustedLearningRate = learningRate * influence;
@@ -374,7 +374,7 @@ export class NeuralSpriteEngine {
         // Simple pattern-based prediction
         const predictions = [];
 
-        // Based on current sprite type and recent activities
+        // Based on current sprite type and recent activities;
         if (sprite.name.includes('idle') && recentActivities.length > 0) {
           predictions.push('text_creation', 'object_move');
         } else if (sprite.name.includes('text')) {
@@ -394,16 +394,16 @@ export class NeuralSpriteEngine {
           initializeWorker();
 
           switch (type) {
-            case 'sprite_analysis':
+            case 'sprite_analysis':;
               result = {
                 spriteId: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.id,
                 features: processSprite((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite),
                 complexity: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.metadata.complexity,
-                timestamp: Date.now()
+                timestamp: Date.now(),
               };
               break;
 
-            case 'som_update':
+            case 'som_update':;
               result = {
                 nodeId: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).node.id,
                 updatedNode: updateSOMNode(
@@ -415,16 +415,16 @@ export class NeuralSpriteEngine {
               };
               break;
 
-            case 'prediction':
+            case 'prediction':;
               result = {
                 spriteId: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite.id,
                 predictedStates: predictNextStates((data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprite, (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).recentActivities),
-                confidence: 0.7 + Math.random() * 0.2
+                confidence: 0.7 + Math.random() * 0.2,
               };
               break;
 
             case 'optimization':
-              // Optimize sprite loading order based on usage patterns
+              // Optimize sprite loading order based on usage patterns;
               result = {
                 optimizedOrder: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprites.sort((a, b) => b.usageCount - a.usageCount),
                 cacheRecommendations: (data as { complexity?: any; sprite?: any; node?: any; inputVector?: any; learningRate?: any; neighborhoodRadius?: any; recentActivities?: any; sprites?: any; spriteId?: any; embedding?: any; stateIds?: any; sequence?: any; predictedStates?: any }).sprites.slice(0, 10).map((s: any) => s.id)
@@ -432,7 +432,7 @@ export class NeuralSpriteEngine {
               break;
 
             default:
-              throw new Error('Unknown task type: ' + type);
+              throw new Error('Unknown task type: ' + type);,
           }
 
           self.postMessage({ id, result, error: null });
@@ -448,7 +448,7 @@ export class NeuralSpriteEngine {
     });
     const workerUrl = URL.createObjectURL(workerBlob);
 
-    // Create worker pool
+    // Create worker pool;
     for (let i = 0; i < this.maxWorkers; i++) {
       const worker = new Worker(workerUrl);
 
@@ -477,7 +477,7 @@ export class NeuralSpriteEngine {
 
   /**
    * Submit task to worker pool
-   */
+   */;
   private submitTask(task: ProcessingTask): void {
     task.startTime = Date.now();
     this.taskQueue.push(task);
@@ -486,13 +486,13 @@ export class NeuralSpriteEngine {
 
   /**
    * Process next task in queue
-   */
+   */;
   private processNextTask(): void {
     if (this.taskQueue.length === 0 || this.activeWorkers >= this.maxWorkers) {
       return;
     }
 
-    // Sort by priority
+    // Sort by priority;
     this.taskQueue.sort((a, b) => {
       const priorities = { critical: 4, high: 3, medium: 2, low: 1 };
       return priorities[b.priority] - priorities[a.priority];
@@ -508,7 +508,7 @@ export class NeuralSpriteEngine {
     task.workerId = workerIndex;
     this.activeWorkers++;
 
-    // Send task to worker
+    // Send task to worker;
     worker.postMessage({
       id: task.id,
       type: task.type,
@@ -520,7 +520,7 @@ export class NeuralSpriteEngine {
 
   /**
    * Handle completed worker task results
-   */
+   */;
   private handleWorkerResult(taskId: string, result: any): void {
     const task = this.taskQueue.find((t) => t.id === taskId);
     if (task) {
@@ -528,7 +528,7 @@ export class NeuralSpriteEngine {
       task.result = result;
     }
 
-    // Process result based on task type
+    // Process result based on task type;
     if ((result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).spriteId && (result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).features) {
       // Update sprite with extracted features
       this.updateSpriteFeatures((result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).spriteId, (result as { spriteId?: any; features?: any; nodeId?: any; updatedNode?: any; predictedStates?: any; optimizedOrder?: any; cacheRecommendations?: any; timestamp?: any }).features);
@@ -555,7 +555,7 @@ export class NeuralSpriteEngine {
 
   /**
    * Update sprite features from worker analysis
-   */
+   */;
   private updateSpriteFeatures(spriteId: string, features: Float32Array): void {
     const sprite = this.sprites.findOne({ id: spriteId });
     if (sprite) {
@@ -569,9 +569,9 @@ export class NeuralSpriteEngine {
 
   /**
    * Find best matching SOM node ID for sprite (helper method)
-   */
+   */;
   private findBestSOMNodeForSprite(spriteId: string): string | null {
-    // Check if sprite already has an assigned SOM node
+    // Check if sprite already has an assigned SOM node;
     for (const node of this.somNodes.values()) {
       if (node.connectedSprites.includes(spriteId)) {
         return node.id;
@@ -585,7 +585,7 @@ export class NeuralSpriteEngine {
    */
   private findBestMatchingSOMNode(
     spriteId: string,
-    features: Float32Array
+    features: Float32Array;
   ): void {
     let bestNode: SOMNode | null = null;
     let bestDistance = Infinity;
@@ -605,7 +605,7 @@ export class NeuralSpriteEngine {
     }
 
     if (bestNode) {
-      // Add sprite to node's connected sprites
+      // Add sprite to node's connected sprites;
       if (!bestNode.connectedSprites.includes(spriteId)) {
         bestNode.connectedSprites.push(spriteId);
       }
@@ -616,7 +616,7 @@ export class NeuralSpriteEngine {
         bestNode.activationHistory.shift();
       }
 
-      // Submit SOM update task
+      // Submit SOM update task;
       this.submitTask({
         id: `som_update_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         type: "som_update",
@@ -633,7 +633,7 @@ export class NeuralSpriteEngine {
 
   /**
    * Update prediction cache
-   */
+   */;
   private updatePredictionCache(spriteId: string, predictions: string[]): void {
     const sprite = this.sprites.findOne({ id: spriteId });
     if (sprite) {
@@ -647,7 +647,7 @@ export class NeuralSpriteEngine {
    */
   private updateLoadingOptimizations(
     optimizedOrder: any[],
-    cacheRecommendations: string[]
+    cacheRecommendations: string[];
   ): void {
     // Cache recommended sprites
     this.preCacheRecommendedStates(cacheRecommendations);
@@ -655,7 +655,7 @@ export class NeuralSpriteEngine {
 
   /**
    * Update multi-core metrics
-   */
+   */;
   private updateMultiCoreMetrics(): void {
     const queueDepth = this.taskQueue.length;
     const completedTasksInLastSecond = Array.from(
@@ -684,7 +684,7 @@ export class NeuralSpriteEngine {
 
   /**
    * Update SOM visualization data
-   */
+   */;
   private updateSOMVisualization(): void {
     const nodes = Array.from(this.somNodes.values()).map((node) => ({
       x: node.position.x,
@@ -694,7 +694,7 @@ export class NeuralSpriteEngine {
           ? node.activationHistory[node.activationHistory.length - 1]
           : 0,
       sprites: node.connectedSprites.length,
-    }));
+    });
 
     // Generate connections between nearby nodes
     const connections: Array<any> =
@@ -725,9 +725,9 @@ export class NeuralSpriteEngine {
 
   /**
    * Calculate self-organization statistics
-   */
+   */;
   private updateSelfOrganizationStats(): void {
-    const nodes = Array.from(this.somNodes.values());
+    const nodes = Array.from(this.somNodes.values();
 
     // Calculate convergence rate
     let convergedNodes = 0;
@@ -769,19 +769,19 @@ export class NeuralSpriteEngine {
 
   /**
    * Calculate variance for convergence analysis
-   */
+   */;
   private calculateVariance(values: number[]): number {
     const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-    const squaredDiffs = values.map((val) => Math.pow(val - mean, 2));
+    const squaredDiffs = values.map((val) => Math.pow(val - mean, 2);
     return squaredDiffs.reduce((sum, diff) => sum + diff, 0) / values.length;
   }
 
   // Core "sprite sheet" operations with SOM integration
   public async captureCurrentState(
     name: string,
-    triggers: string[] = []
+    triggers: string[] = [];
   ): Promise<string> {
-    const jsonState = JSON.stringify(this.canvas.toJSON());
+    const jsonState = JSON.stringify(this.canvas.toJSON();
     const complexity = this.calculateComplexity(jsonState);
 
     const sprite: CanvasSprite = {
@@ -800,7 +800,7 @@ export class NeuralSpriteEngine {
 
     this.sprites.insert(sprite);
 
-    // Submit sprite analysis task to worker pool for SOM processing
+    // Submit sprite analysis task to worker pool for SOM processing;
     this.submitTask({
       id: `sprite_analysis_${sprite.id}`,
       type: "sprite_analysis",
@@ -817,7 +817,7 @@ export class NeuralSpriteEngine {
       data: { sprite, recentActivities },
     });
 
-    // Send to AI worker for embedding generation (legacy support)
+    // Send to AI worker for embedding generation (legacy support);
     if (this.aiWorker) {
       this.aiWorker.postMessage({
         type: "GENERATE_EMBEDDING",
@@ -831,7 +831,7 @@ export class NeuralSpriteEngine {
     return sprite.id;
   }
 
-  // NES-style rapid state switching with enhanced caching and multi-core processing
+  // NES-style rapid state switching with enhanced caching and multi-core processing;
   public async loadSprite(spriteId: string): Promise<boolean> {
     const loadStartTime = Date.now();
 
@@ -856,7 +856,7 @@ export class NeuralSpriteEngine {
     sprite.usageCount++;
     this.sprites.update(sprite);
 
-    // Submit optimization task to worker pool for usage pattern analysis
+    // Submit optimization task to worker pool for usage pattern analysis;
     this.submitTask({
       id: `optimization_${spriteId}`,
       type: "optimization",
@@ -867,7 +867,7 @@ export class NeuralSpriteEngine {
       },
     });
 
-    // 3. Enhanced loading with GPU acceleration and multi-core processing
+    // 3. Enhanced loading with GPU acceleration and multi-core processing;
     return new Promise(async (resolve) => {
       try {
         // Pre-warm shader programs if needed (async optimization)
@@ -885,7 +885,7 @@ export class NeuralSpriteEngine {
         // Wait for shader precompilation if needed
         await precompilePromise;
 
-        // Apply transforms to canvas container for hardware acceleration
+        // Apply transforms to canvas container for hardware acceleration;
         if (transforms.css3d) {
           const canvasContainer = this.canvas.getElement().parentElement;
           if (canvasContainer) {
@@ -900,10 +900,10 @@ export class NeuralSpriteEngine {
           }
         }
 
-        // Load the actual canvas state with error handling
+        // Load the actual canvas state with error handling;
         this.canvas.loadFromJSON(sprite.jsonState, () => {
           try {
-            // Apply GPU-accelerated rendering if available
+            // Apply GPU-accelerated rendering if available;
             if (this.webglContext && transforms.webgl) {
               this.shaderCache.applyTransforms({
                 matrix: transforms.webgl,
@@ -922,7 +922,7 @@ export class NeuralSpriteEngine {
               `✅ Loaded sprite: ${sprite.name} (${loadTime}ms, complexity: ${sprite.metadata.complexity})`
             );
 
-            // Clean up transform hints for next frame
+            // Clean up transform hints for next frame;
             setTimeout(() => {
               const canvasContainer = this.canvas.getElement().parentElement;
               if (canvasContainer) {
@@ -947,7 +947,7 @@ export class NeuralSpriteEngine {
     });
   }
 
-  // Play animation sequence (like NES sprite animation) with SOM-aware optimization
+  // Play animation sequence (like NES sprite animation) with SOM-aware optimization;
   public async playAnimation(sequenceName: string): Promise<void> {
     const sequence = this.sequences.findOne({ name: sequenceName });
 
@@ -961,14 +961,14 @@ export class NeuralSpriteEngine {
     );
     this.isAnimating.set(true);
 
-    // Pre-analyze animation sequence for SOM optimization
+    // Pre-analyze animation sequence for SOM optimization;
     this.submitTask({
       id: `anim_optimization_${sequenceName}`,
       type: "optimization",
       priority: "high",
       data: {
         sprites: sequence.frames
-          .map((frameId: string) => this.sprites.findOne({ id: frameId }))
+          .map((frameId: string) => this.sprites.findOne({ id: frameId })
           .filter(Boolean),
         animationType: "sequence",
         expectedFps: sequence.fps,
@@ -1063,7 +1063,7 @@ export class NeuralSpriteEngine {
       },
     });
 
-    // Send to AI worker for pattern analysis (legacy support)
+    // Send to AI worker for pattern analysis (legacy support);
     if (this.aiWorker) {
       this.aiWorker.postMessage({
         type: "ANALYZE_PATTERN",
@@ -1077,7 +1077,7 @@ export class NeuralSpriteEngine {
     );
   }
 
-  // AI worker message handling
+  // AI worker message handling;
   private handleAIWorkerMessage(event: MessageEvent): void {
     const { type, data } = event.data;
 
@@ -1100,7 +1100,7 @@ export class NeuralSpriteEngine {
     }
   }
 
-  // Create new animation sequences based on AI learning
+  // Create new animation sequences based on AI learning;
   private registerAIGeneratedSequence(sequenceData: any): void {
     const sequence: AnimationSequence = {
       id: `ai_seq_${Date.now()}`,
@@ -1115,15 +1115,15 @@ export class NeuralSpriteEngine {
     this.sequences.insert(sequence);
   }
 
-  // Predictive caching based on AI analysis
+  // Predictive caching based on AI analysis;
   private preCacheRecommendedStates(stateIds: string[]): void {
     this.predictedStates.set(stateIds);
 
-    // Pre-warm these states in background
+    // Pre-warm these states in background;
     stateIds.forEach((stateId) => {
       const sprite = this.sprites.findOne({ id: stateId });
       if (sprite) {
-        // Pre-parse JSON in background (like loading sprite data into VRAM)
+        // Pre-parse JSON in background (like loading sprite data into VRAM);
         try {
           JSON.parse(sprite.jsonState);
         } catch (e: any) {
@@ -1133,7 +1133,7 @@ export class NeuralSpriteEngine {
     });
   }
 
-  // Utility methods
+  // Utility methods;
   private calculateComplexity(jsonState: string): number {
     // Simple complexity calculation based on JSON size and object count
     const stateObj = JSON.parse(jsonState);
@@ -1188,7 +1188,7 @@ export class NeuralSpriteEngine {
 
   private createDefaultSprites(): void {
     // Create basic "idle" sprite
-    const idleState = JSON.stringify(this.canvas.toJSON());
+    const idleState = JSON.stringify(this.canvas.toJSON();
     this.sprites.insert({
       id: "sprite_idle_default",
       name: "idle",
@@ -1204,10 +1204,10 @@ export class NeuralSpriteEngine {
     });
   }
 
-  // Public API for Svelte components
+  // Public API for Svelte components;
   public getAvailableStates(): string[] {
     return Array.from(
-      new Set(this.sprites.find().map((sprite: any) => sprite.name))
+      new Set(this.sprites.find().map((sprite: any) => sprite.name)
     );
   }
 
@@ -1224,11 +1224,11 @@ export class NeuralSpriteEngine {
     };
   }
 
-  // Enhanced cleanup with multi-core system shutdown
+  // Enhanced cleanup with multi-core system shutdown;
   public destroy(): void {
     console.log("🛑 Shutting down Neural Sprite Engine...");
 
-    // Terminate AI worker
+    // Terminate AI worker;
     if (this.aiWorker) {
       this.aiWorker.terminate();
       console.log("✅ AI worker terminated");
@@ -1249,7 +1249,7 @@ export class NeuralSpriteEngine {
     this.somNodes.clear();
     console.log("✅ SOM nodes cleared");
 
-    // Clear database
+    // Clear database;
     if (this.db) {
       // Loki doesn't have a close method, just clear collections
       const collections = (this.db as any).collections || [];
@@ -1264,7 +1264,7 @@ export class NeuralSpriteEngine {
     this.cacheHits = 0;
     this.cacheMisses = 0;
 
-    // Clean up WebGL context
+    // Clean up WebGL context;
     if (this.webglContext) {
       const loseContext = this.webglContext.getExtension("WEBGL_lose_context");
       if (loseContext) {
@@ -1279,12 +1279,12 @@ export class NeuralSpriteEngine {
 
 // Factory function for Svelte integration
 export function createNeuralSpriteEngine(
-  canvas: any
+  canvas: any;
 ): NeuralSpriteEngine {
   return new NeuralSpriteEngine(canvas);
 }
 
-// Enhanced derived stores for performance monitoring with SOM integration
+// Enhanced derived stores for performance monitoring with SOM integration;
 export function createPerformanceStores(engine: NeuralSpriteEngine) {
   return {
     // Core engine stores

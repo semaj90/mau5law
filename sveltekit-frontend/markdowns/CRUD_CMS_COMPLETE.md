@@ -2,7 +2,8 @@
 
 ## 🚀 STATUS: ALL SYSTEMS OPERATIONAL ✅
 
-Your Legal AI Assistant now has **comprehensive CRUD operations** and **CMS functionality** that are **fully synchronized** with the PostgreSQL database.
+Your Legal AI Assistant now has **comprehensive CRUD operations** and **CMS functionality** that are
+**fully synchronized** with the PostgreSQL database.
 
 ---
 

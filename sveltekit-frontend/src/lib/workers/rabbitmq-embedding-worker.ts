@@ -10,6 +10,7 @@ import { db } from '$lib/server/db/unified-client';
 import { documents, document_chunks, cases } from '$lib/server/schema/documents';
 import { eq, sql } from 'drizzle-orm';
 import { redis } from '$lib/server/redis';
+}
 
 export interface EmbeddingJobPayload {
   entity_type: 'document' | 'case' | 'chunk';
@@ -39,7 +40,7 @@ class RabbitMQEmbeddingWorker {
 
   /**
    * Start the RabbitMQ embedding worker
-   */
+   */;
   async start(): Promise<void> {
     if (this.isRunning) {
       console.log('⚠️ RabbitMQ embedding worker is already running');
@@ -56,7 +57,7 @@ class RabbitMQEmbeddingWorker {
       // Connect to RabbitMQ
       await rabbitMQService.connect();
 
-      // Subscribe to embedding queues with different concurrency settings
+      // Subscribe to embedding queues with different concurrency settings;
       await rabbitMQService.subscribe(QUEUES.DOCUMENT_EMBEDDING, this.handleEmbeddingJob, {
         concurrency: 2, // Moderate concurrency for document embeddings
         prefetchCount: 5, // Buffer 5 jobs
@@ -73,7 +74,7 @@ class RabbitMQEmbeddingWorker {
         autoAck: false,
       });
 
-      // Subscribe to bulk embedding queue if configured
+      // Subscribe to bulk embedding queue if configured;
       try {
         await rabbitMQService.subscribe('legal_ai.embedding.bulk', this.handleBulkEmbeddingJob, {
           concurrency: 1, // Single concurrency for bulk operations
@@ -97,7 +98,7 @@ class RabbitMQEmbeddingWorker {
 
   /**
    * Stop the RabbitMQ embedding worker
-   */
+   */;
   async stop(): Promise<void> {
     if (!this.isRunning) {
       console.log('⚠️ RabbitMQ embedding worker is not running');
@@ -133,7 +134,7 @@ class RabbitMQEmbeddingWorker {
 
   /**
    * Handle single embedding job from RabbitMQ
-   */
+   */;
   private async handleEmbeddingJob(message: JobMessage): Promise<JobResult> {
     const startTime = Date.now();
 
@@ -143,7 +144,7 @@ class RabbitMQEmbeddingWorker {
         `🔤 Processing ${payload.entity_type} embedding job ${message.id} for entity ${payload.entity_id}`
       );
 
-      // Validate payload
+      // Validate payload;
       if (!payload.entity_type || !payload.entity_id) {
         throw new Error('Invalid payload: entity_type and entity_id are required');
       }
@@ -189,7 +190,7 @@ class RabbitMQEmbeddingWorker {
 
   /**
    * Handle bulk embedding job from RabbitMQ
-   */
+   */;
   private async handleBulkEmbeddingJob(message: JobMessage): Promise<JobResult> {
     const startTime = Date.now();
 
@@ -206,7 +207,7 @@ class RabbitMQEmbeddingWorker {
       const batchSize = payload.batch_size || 10;
       const results = [];
 
-      // Process in batches to avoid overwhelming the system
+      // Process in batches to avoid overwhelming the system;
       for (let i = 0; i < payload.entities.length; i += batchSize) {
         const batch = payload.entities.slice(i, i + batchSize);
         const batchNumber = Math.floor(i / batchSize) + 1;
@@ -218,10 +219,10 @@ class RabbitMQEmbeddingWorker {
 
         try {
           const batchResults = await Promise.allSettled(
-            batch.map((entity) => this.processEntityEmbedding(entity))
+            batch.map((entity) => this.processEntityEmbedding(entity)
           );
 
-          // Process batch results
+          // Process batch results;
           const batchProcessed = batchResults.map((result, index) => {
             if ((result as { status?: any; value?: any; reason?: any }).status === 'fulfilled') {
               return (result as { status?: any; value?: any; reason?: any }).value;
@@ -240,19 +241,18 @@ class RabbitMQEmbeddingWorker {
 
           console.log(`✅ Batch ${batchNumber}/${totalBatches} completed`);
 
-          // Small delay between batches to prevent overwhelming Ollama
+          // Small delay between batches to prevent overwhelming Ollama;
           if (i + batchSize < payload.entities.length) {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000);
           }
         } catch (batchError) {
           console.error(`❌ Batch ${batchNumber} failed:`, batchError);
-          // Add failure entries for the entire batch
-          results.push(
-            ...batch.map((entity) => ({
+          // Add failure entries for the entire batch;
+          results.push(...batch.map((entity) => ({
               success: false,
               entity_id: entity.entity_id,
               error: 'Batch processing failed',
-            }))
+            })
           );
         }
       }
@@ -293,7 +293,7 @@ class RabbitMQEmbeddingWorker {
 
   /**
    * Process document embedding
-   */
+   */;
   private async processDocumentEmbedding(payload: EmbeddingJobPayload): Promise<any> {
     const { entity_id, text_content, embedding_type = 'content' } = payload;
 
@@ -318,7 +318,7 @@ class RabbitMQEmbeddingWorker {
           textToEmbed = doc.ai_summary || doc.title;
           break;
         default:
-          textToEmbed = doc.content;
+          textToEmbed = doc.content;,
       }
     }
 
@@ -351,7 +351,7 @@ class RabbitMQEmbeddingWorker {
     const [updatedDoc] = await db
       .update(documents)
       .set(updateData)
-      .where(eq(documents.id, entity_id))
+      .where(eq(documents.id, entity_id)
       .returning();
 
     // Cache the embedding for quick access
@@ -386,7 +386,7 @@ class RabbitMQEmbeddingWorker {
 
   /**
    * Process case embedding
-   */
+   */;
   private async processCaseEmbedding(payload: EmbeddingJobPayload): Promise<any> {
     const { entity_id, text_content } = payload;
 
@@ -424,12 +424,12 @@ class RabbitMQEmbeddingWorker {
 
     // Update case in database
     const [updatedCase] = await db
-      .update(cases)
+      .update(cases);
       .set({
         case_embedding: sql`${JSON.stringify(embedding)}::vector`,
         updated_at: new Date(),
       })
-      .where(eq(cases.id, entity_id))
+      .where(eq(cases.id, entity_id)
       .returning();
 
     // Cache the embedding
@@ -460,7 +460,7 @@ class RabbitMQEmbeddingWorker {
 
   /**
    * Process chunk embedding
-   */
+   */;
   private async processChunkEmbedding(payload: EmbeddingJobPayload): Promise<any> {
     const { entity_id, text_content } = payload;
 
@@ -471,7 +471,7 @@ class RabbitMQEmbeddingWorker {
       const [chunk] = await db
         .select()
         .from(document_chunks)
-        .where(eq(document_chunks.id, entity_id))
+        .where(eq(document_chunks.id, entity_id)
         .limit(1);
 
       if (!chunk) {
@@ -491,11 +491,11 @@ class RabbitMQEmbeddingWorker {
 
     // Update chunk in database
     const [updatedChunk] = await db
-      .update(document_chunks)
+      .update(document_chunks);
       .set({
         embedding: sql`${JSON.stringify(embedding)}::vector`,
       })
-      .where(eq(document_chunks.id, entity_id))
+      .where(eq(document_chunks.id, entity_id)
       .returning();
 
     console.log(`✨ Generated chunk embedding for ${entity_id} (${embedding.length}D)`);
@@ -511,7 +511,7 @@ class RabbitMQEmbeddingWorker {
 
   /**
    * Process individual entity embedding (for bulk jobs)
-   */
+   */;
   private async processEntityEmbedding(entity: {
     entity_type: 'document' | 'case' | 'chunk';
     entity_id: string;
@@ -553,14 +553,14 @@ class RabbitMQEmbeddingWorker {
 
   /**
    * Get worker statistics
-   */
+   */;
   getStats(): {
     isRunning: boolean;
     processedJobs: number;
     failedJobs: number;
     successRate: number;
     uptime: number | null;
-    startTime: Date | null;
+    startTime: Date | null;,
   } {
     const uptime = this.startTime ? Date.now() - this.startTime.getTime() : null;
     const totalJobs = this.processedJobs + this.failedJobs;
@@ -578,7 +578,7 @@ class RabbitMQEmbeddingWorker {
 
   /**
    * Reset statistics
-   */
+   */;
   resetStats(): void {
     this.processedJobs = 0;
     this.failedJobs = 0;
@@ -588,7 +588,7 @@ class RabbitMQEmbeddingWorker {
 
   /**
    * Health check
-   */
+   */;
   async healthCheck(): Promise<any> {
     const stats = this.getStats();
     const rabbitHealth = await rabbitMQService.healthCheck();

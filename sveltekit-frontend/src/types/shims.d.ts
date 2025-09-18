@@ -1,4 +1,4 @@
-// Global shims for Vite workers and asset imports
+// Global shims for Vite workers and asset imports;
 declare module '*?worker' {
   // Constructor with optional options param
   const WorkerFactory: new (options?: WorkerOptions) => Worker;

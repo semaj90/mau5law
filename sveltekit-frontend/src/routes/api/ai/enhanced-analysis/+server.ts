@@ -9,7 +9,7 @@
  * - Binary protocol optimization for 60% performance gain
  *
  * Usage:
- * POST /api/ai/enhanced-analysis
+ * POST /api/ai/enhanced-analysis;
  * {
  *   "documents": [{ "id": "doc1", "content": "legal text...", "type": "contract" }],
  *   "analysisType": "full" | "semantic" | "entities" | "reasoning" | "batch",
@@ -49,13 +49,13 @@ interface EnhancedAnalysisResponse {
     analysisType: string;
     processingTime: number;
     performanceGain?: number;
-    data: any;
+    data: any;,
   };
   metrics: {
     protocol: 'grpc-binary' | 'json-http';
     totalEntities: number;
     averageComplexity: number;
-    serviceChain: string[];
+    serviceChain: string[];,
   };
   orchestration: {
     healthy: boolean;
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
       throw error(400, 'Invalid JSON in request body');
     }
 
-    // Validate request
+    // Validate request;
     if (!requestData.documents || !Array.isArray(requestData.documents) || requestData.documents.length === 0) {
       throw error(400, 'documents array is required and must not be empty');
     }
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log(`📋 Processing ${documents.length} documents with ${analysisType} analysis`);
 
-    // Validate documents
+    // Validate documents;
     for (const doc of documents) {
       if (!doc.id || !doc.content) {
         throw error(400, 'Each document must have id and content fields');
@@ -113,10 +113,10 @@ export const POST: RequestHandler = async ({ request }) => {
     let serviceChain: string[] = [];
     let performanceGain = 0;
 
-    // Route to appropriate analysis based on type
+    // Route to appropriate analysis based on type;
     switch (analysisType) {
       case 'full':
-        // Full orchestrated analysis
+        // Full orchestrated analysis;
         if (documents.length === 1) {
           const result = await grpcAIOrchestrator.orchestrateDocumentAnalysis(
             documents[0],
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request }) => {
           analysisResults = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).data.map((semantic, index) => ({
             documentId: documents[index].id,
             semantic
-          }));
+          });
           serviceChain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).serviceChain;
           performanceGain = (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).metrics.performanceGain || 0;
         }
@@ -170,7 +170,7 @@ export const POST: RequestHandler = async ({ request }) => {
             documentId: documents[index].id,
             reasoning: (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).status === 'fulfilled' ? (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).value: null,
             error: (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).status === 'rejected' ? String((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).reason) : null
-          }));
+          });
         }
         break;
 
@@ -195,7 +195,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let documentCount = 0;
 
     if (Array.isArray(analysisResults)) {
-      // Handle array of results
+      // Handle array of results;
       analysisResults.forEach((result: any) => {
         if ((result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).legalEntities) {
           totalEntities += (result as { data?: any; serviceChain?: any; metrics?: any; status?: any; value?: any; reason?: any; legalEntities?: any; semantic?: any; complexity?: any }).legalEntities.length;
@@ -212,7 +212,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       });
     } else if (analysisResults) {
-      // Handle single result or object
+      // Handle single result or object;
       if (analysisResults.legalEntities) {
         totalEntities = analysisResults.legalEntities.length;
       }
@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request }) => {
         documentCount = 1;
       }
 
-      // Handle full orchestration result
+      // Handle full orchestration result;
       if (analysisResults.semantic) {
         if (analysisResults.semantic.legalEntities) {
           totalEntities = analysisResults.semantic.legalEntities.length;
@@ -239,7 +239,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const healthStatus = await grpcAIOrchestrator.healthCheck();
     const orchestratorMetrics = grpcAIOrchestrator.getMetrics();
 
-    // Build response
+    // Build response;
     const response: EnhancedAnalysisResponse = {
       success: true,
       results: {
@@ -247,7 +247,7 @@ export const POST: RequestHandler = async ({ request }) => {
         analysisType,
         processingTime,
         performanceGain: Math.round(performanceGain * 100) / 100,
-        data: analysisResults
+        data: analysisResults,
       },
       metrics: {
         protocol: useGRPCOptimization ? 'grpc-binary' : 'json-http',
@@ -258,13 +258,13 @@ export const POST: RequestHandler = async ({ request }) => {
       orchestration: {
         healthy: healthStatus.healthy,
         servicesUsed: serviceChain,
-        compressionRatio: orchestratorMetrics.compressionRatio
+        compressionRatio: orchestratorMetrics.compressionRatio,
       }
     };
 
     console.log(`✅ Enhanced AI Analysis complete: ${documents.length} docs, ${totalEntities} entities, ${processingTime}ms`);
 
-    // Log performance achievements
+    // Log performance achievements;
     if (performanceGain > 0) {
       console.log(`🚀 Performance gain: ${performanceGain.toFixed(1)}% vs baseline JSON HTTP`);
     }
@@ -290,7 +290,7 @@ export const POST: RequestHandler = async ({ request }) => {
       error: {
         message: String(err),
         processingTime,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     }, { status: 500 });
   }
@@ -313,16 +313,16 @@ export const GET: RequestHandler = async () => {
         legalReasoning: true,
         batchProcessing: true,
         grpcOptimization: true,
-        binaryProtocol: true
+        binaryProtocol: true,
       },
       metrics: {
         totalOperations: metrics.totalOperations,
         averageLatency: Math.round(metrics.averageLatency),
         binaryProtocolSavings: Math.round(metrics.binaryProtocolSavings * 100) / 100,
-        successRate: Math.round(metrics.successRate * 100) / 100
+        successRate: Math.round(metrics.successRate * 100) / 100,
       },
       supportedAnalysisTypes: ['full', 'semantic', 'entities', 'reasoning', 'batch'],
-      version: '2.0.0-phase2'
+      version: '2.0.0-phase2',
     });
 
   } catch (error) {

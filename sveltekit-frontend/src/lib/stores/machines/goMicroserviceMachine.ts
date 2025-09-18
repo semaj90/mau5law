@@ -49,7 +49,7 @@ export const goMicroserviceMachine = createMachine({
           const start = Date.now();
           const res = await fetch(`${endpoint}/health`);
           if (!res.ok) throw new Error('health check failed');
-          await res.json().catch(() => ({}));
+          await res.json().catch(() => ({});
           return { responseTime: Date.now() - start } as HealthResult;
         }),
         input: ({ context }: any) => ({ endpoint: context.endpoint }),
@@ -58,11 +58,11 @@ export const goMicroserviceMachine = createMachine({
           actions: assign((_, e: any) => ({
             connectionStatus: 'connected' as any,
             healthCheck: { lastCheck: Date.now(), status: 'healthy' as 'healthy', responseTime: e.output.responseTime }
-          }))
+          })
         },
         onError: {
           target: 'error',
-          actions: assign((_, e: any) => ({ connectionStatus: 'error' as any, error: e.error?.message }))
+          actions: assign((_, e: any) => ({ connectionStatus: 'error' as any, error: e.error?.message })
         }
       },
       on: { DISCONNECT: { target: 'disconnected' } }
@@ -92,11 +92,11 @@ export const goMicroserviceMachine = createMachine({
               const start = Date.now();
               const res = await fetch(`${endpoint}${request.path}`, {
                 method: request.method,
-                headers: { 'Content-Type': 'application/json', ...(request.headers || {}) },
-                body: request.body ? JSON.stringify(request.body) : undefined
+                headers: { 'Content-Type': 'application/json', ...(request.headers || {,}) },
+                body: request.body ? JSON.stringify(request.body) : undefined,
               } as RequestInit);
               if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-              const data = await res.json().catch(() => ({}));
+              const data = await res.json().catch(() => ({});
               return { status: res.status, data, headers: Object.fromEntries(res.headers.entries()), duration: Date.now() - start } as GoServiceResponse;
             }),
             // Map MAKE_REQUEST event payload + current endpoint into promise input
@@ -107,11 +107,11 @@ export const goMicroserviceMachine = createMachine({
           on: {
             'done.invoke.doRequest': {
               target: 'idle',
-              actions: assign((_, e: any) => ({ response: e.output, retryCount: 0 }))
+              actions: assign((_, e: any) => ({ response: e.output, retryCount: 0 })
             },
             'error.invoke.doRequest': {
               target: 'idle',
-              actions: assign((c: any, e: any) => ({ error: e.error?.message, retryCount: (c.retryCount ?? 0) + 1 }))
+              actions: assign((c: any, e: any) => ({ error: e.error?.message, retryCount: (c.retryCount ?? 0) + 1 })
             }
           }
         },
@@ -123,7 +123,7 @@ export const goMicroserviceMachine = createMachine({
               const start = Date.now();
               const res = await fetch(`${endpoint}/health`);
               if (!res.ok) throw new Error('health check failed');
-              await res.json().catch(() => ({}));
+              await res.json().catch(() => ({});
               return { responseTime: Date.now() - start } as HealthResult;
             }),
             input: ({ context }: any) => ({ endpoint: context.endpoint })
@@ -133,11 +133,11 @@ export const goMicroserviceMachine = createMachine({
               target: 'idle',
               actions: assign((_, e: any) => ({
                 healthCheck: { lastCheck: Date.now(), status: 'healthy' as 'healthy', responseTime: e.output.responseTime }
-              }))
+              })
             },
             'error.invoke.periodicHealth': {
               target: 'idle',
-              actions: assign(() => ({ healthCheck: { lastCheck: Date.now(), status: 'unhealthy' as 'unhealthy' } }))
+              actions: assign(() => ({ healthCheck: { lastCheck: Date.now(), status: 'unhealthy' as 'unhealthy' } })
             }
           }
         }
@@ -155,7 +155,7 @@ export const goMicroserviceMachine = createMachine({
   }
 });
 
-// Service helpers turned into simple event factory functions
+// Service helpers turned into simple event factory functions;
 export const goMicroserviceServices = {
   parseJSON: (data: any, options?: { parallel?: boolean; chunkSize?: number }) => ({
     type: 'MAKE_REQUEST' as const,
@@ -168,7 +168,7 @@ export const goMicroserviceServices = {
         options: {
           parallel: options?.parallel ?? false,
           chunk_size: options?.chunkSize ?? 1024,
-          compression: true
+          compression: true,
         }
       }
     }
@@ -183,7 +183,7 @@ export const goMicroserviceServices = {
         labels,
         dimensions: { width: options?.width ?? 10, height: options?.height ?? 10 },
         iterations: options?.iterations ?? 1000,
-        learning_rate: options?.learningRate ?? 0.1
+        learning_rate: options?.learningRate ?? 0.1,
       }
     }
   }),
@@ -197,7 +197,7 @@ export const goMicroserviceServices = {
         input,
         batch_size: options?.batchSize ?? 1,
         precision: options?.precision ?? 'fp32',
-        streaming: options?.streaming ?? false
+        streaming: options?.streaming ?? false,
       }
     }
   }),
@@ -217,5 +217,5 @@ export const getConnectionStatus = (state: any) => ({
   lastHealthCheck: state.context.healthCheck.lastCheck,
   healthStatus: state.context.healthCheck.status,
   responseTime: state.context.healthCheck.responseTime,
-  error: state.context.error
+  error: state.context.error,
 });

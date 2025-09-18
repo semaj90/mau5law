@@ -394,12 +394,7 @@ python scripts/convert_model.py --input models/legal-bert-base-uncased --output 
       "active": true,
       "targets": "all",
       "identifier": "com.legal.ai.assistant",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
+      "icon": ["icons/32x32.png", "icons/128x128.png", "icons/icon.icns", "icons/icon.ico"],
       "resources": ["models/**/*"],
       "category": "Productivity",
       "shortDescription": "AI-powered legal case management",
@@ -479,7 +474,8 @@ if __name__ == "__main__":
 
 ## 5. Integration with SvelteKit
 
-The Tauri service integrates seamlessly with your existing RAG system through the enhanced AI service we created. The system will automatically:
+The Tauri service integrates seamlessly with your existing RAG system through the enhanced AI
+service we created. The system will automatically:
 
 1. **Detect Tauri Environment**: Check if running in desktop app vs web
 2. **Model Selection**: Prefer local legal-BERT for legal documents
@@ -487,4 +483,5 @@ The Tauri service integrates seamlessly with your existing RAG system through th
 4. **Cache Results**: Store embeddings and responses for performance
 5. **Background Sync**: Keep PostgreSQL and Qdrant in sync with local analysis
 
-This gives you the best of both worlds: privacy-focused local AI with cloud fallbacks for reliability.
+This gives you the best of both worlds: privacy-focused local AI with cloud fallbacks for
+reliability.

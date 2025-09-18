@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-console.log("🔧 Fixing all TypeScript and Svelte issues...\n");
+console.log('🔧 Fixing all TypeScript and Svelte issues...\n');
 
 // 1. First, update the database schema to include missing tables
-const schemaPath = join(__dirname, "src/lib/server/db/schema-postgres.ts");
-let schema = readFileSync(schemaPath, "utf8");
+const schemaPath = join(__dirname, 'src/lib/server/db/schema-postgres.ts');
+let schema = readFileSync(schemaPath, 'utf8');
 
 // Add missing tables to the schema
 const missingTables = `
@@ -223,19 +223,15 @@ export const caseEmbeddingsRelations = relations(caseEmbeddings, ({ one }) => ({
 `;
 
 // Insert the missing tables before the existing relations
-const insertPoint = schema.indexOf("// === RELATIONSHIPS ===");
+const insertPoint = schema.indexOf('// === RELATIONSHIPS ===');
 if (insertPoint !== -1) {
-  schema =
-    schema.slice(0, insertPoint) +
-    missingTables +
-    "\n" +
-    schema.slice(insertPoint);
+  schema = schema.slice(0, insertPoint) + missingTables + '\n' + schema.slice(insertPoint);
   writeFileSync(schemaPath, schema);
-  console.log("✅ Added missing tables to database schema");
+  console.log('✅ Added missing tables to database schema');
 }
 
 // 2. Create a comprehensive UI components export file
-const uiIndexPath = join(__dirname, "src/lib/components/ui/index.ts");
+const uiIndexPath = join(__dirname, 'src/lib/components/ui/index.ts');
 const uiExports = `// Comprehensive UI components exports
 export { default as Button } from './Button.svelte';
 export { default as Card } from './Card.svelte';
@@ -260,17 +256,13 @@ export * as Textarea from './textarea/index.js';
 
 try {
   writeFileSync(uiIndexPath, uiExports);
-  console.log("✅ Created comprehensive UI components index");
+  console.log('✅ Created comprehensive UI components index');
 } catch (error) {
-  console.log("⚠️  Could not write UI index:", error.message);
+  console.log('⚠️  Could not write UI index:', error.message);
 }
 
 // 3. Fix Card components to have proper structure
-const cardComponents = [
-  "CardHeader.svelte",
-  "CardContent.svelte",
-  "CardFooter.svelte",
-];
+const cardComponents = ['CardHeader.svelte', 'CardContent.svelte', 'CardFooter.svelte'];
 
 cardComponents.forEach((componentName) => {
   const cardPath = join(__dirname, `src/lib/components/ui/${componentName}`);
@@ -293,7 +285,7 @@ cardComponents.forEach((componentName) => {
 });
 
 // 4. Create missing context menu components
-const contextMenuPath = join(__dirname, "src/lib/components/ui/context-menu");
+const contextMenuPath = join(__dirname, 'src/lib/components/ui/context-menu');
 const contextMenuIndex = `// Context Menu components
 export { default as Root } from './ContextMenuRoot.svelte';
 export { default as Trigger } from './ContextMenuTrigger.svelte';
@@ -303,10 +295,10 @@ export { default as Separator } from './ContextMenuSeparator.svelte';
 `;
 
 try {
-  writeFileSync(join(contextMenuPath, "index.js"), contextMenuIndex);
-  console.log("✅ Created context menu index");
+  writeFileSync(join(contextMenuPath, 'index.js'), contextMenuIndex);
+  console.log('✅ Created context menu index');
 } catch (error) {
-  console.log("⚠️  Context menu directory may not exist");
+  console.log('⚠️  Context menu directory may not exist');
 }
 
 // 5. Fix import path issues in TypeScript/JavaScript files
@@ -319,46 +311,32 @@ function fixImportPaths(dir) {
 
       if (stat.isDirectory()) {
         fixImportPaths(filePath);
-      } else if (
-        file.endsWith(".ts") ||
-        file.endsWith(".js") ||
-        file.endsWith(".svelte")
-      ) {
+      } else if (file.endsWith('.ts') || file.endsWith('.js') || file.endsWith('.svelte')) {
         try {
-          let content = readFileSync(filePath, "utf8");
+          let content = readFileSync(filePath, 'utf8');
           let modified = false;
 
           // Fix database import paths
-          const dbImportRegex =
-            /from ['"](.*db\.js)['"]|from ['"](.*db)['"](?!\/)/g;
-          content = content.replace(
-            dbImportRegex,
-            "from '$lib/server/db/index.js'",
-          );
+          const dbImportRegex = /from ['"](.*db\.js)['"]|from ['"](.*db)['"](?!\/)/g;
+          content = content.replace(dbImportRegex, "from '$lib/server/db/index.js'");
 
           // Fix schema import paths
           const schemaImportRegex =
             /from ['"](.*schema\.js)['"]|from ['"](.*unified-schema\.js)['"](?!\/)/g;
-          content = content.replace(
-            schemaImportRegex,
-            "from '$lib/server/db/schema.js'",
-          );
+          content = content.replace(schemaImportRegex, "from '$lib/server/db/schema.js'");
 
           // Fix vector schema imports
           const vectorSchemaRegex = /from ['"](.*vector-schema\.js)['"](?!\/)/g;
           content = content.replace(
             vectorSchemaRegex,
-            "from '$lib/server/database/vector-schema.js'",
+            "from '$lib/server/database/vector-schema.js'"
           );
 
           // Fix UI component imports
           const uiImportRegex = /from ['"](.*components\/ui\.js)['"](?!\/)/g;
-          content = content.replace(
-            uiImportRegex,
-            "from '$lib/components/ui/index.js'",
-          );
+          content = content.replace(uiImportRegex, "from '$lib/components/ui/index.js'");
 
-          if (content !== readFileSync(filePath, "utf8")) {
+          if (content !== readFileSync(filePath, 'utf8')) {
             writeFileSync(filePath, content);
             modified = true;
           }
@@ -376,30 +354,30 @@ function fixImportPaths(dir) {
   }
 }
 
-console.log("\n🔍 Fixing import paths...");
-fixImportPaths(join(__dirname, "src"));
+console.log('\n🔍 Fixing import paths...');
+fixImportPaths(join(__dirname, 'src'));
 
 // 6. Fix specific critical files
 const criticalFixes = [
   {
-    file: "src/lib/server/lucia.ts",
+    file: 'src/lib/server/lucia.ts',
     fix: (content) => {
       // Fix Lucia adapter import and usage
       return content
         .replace(/from '\.\/db\.js'/, "from './db/index.js'")
         .replace(/from '\.\/db\/unified-schema\.js'/, "from './db/schema.js'")
-        .replace(/DrizzleSQLiteAdapter/g, "DrizzlePostgreSQLAdapter")
+        .replace(/DrizzleSQLiteAdapter/g, 'DrizzlePostgreSQLAdapter')
         .replace(
           /import.*DrizzleSQLiteAdapter.*from.*/,
-          "import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';",
+          "import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';"
         );
     },
   },
   {
-    file: "src/lib/components/ui/dialog/DialogRoot.svelte",
+    file: 'src/lib/components/ui/dialog/DialogRoot.svelte',
     fix: (content) => {
       // Fix Dialog component
-      return content.replace(/open,/, "open: open,");
+      return content.replace(/open,/, 'open: open,');
     },
   },
 ];
@@ -407,7 +385,7 @@ const criticalFixes = [
 criticalFixes.forEach(({ file, fix }) => {
   const filePath = join(__dirname, file);
   try {
-    const content = readFileSync(filePath, "utf8");
+    const content = readFileSync(filePath, 'utf8');
     const fixed = fix(content);
     if (fixed !== content) {
       writeFileSync(filePath, fixed);
@@ -419,7 +397,7 @@ criticalFixes.forEach(({ file, fix }) => {
 });
 
 // 7. Create missing type definitions
-const typesPath = join(__dirname, "src/lib/types/index.ts");
+const typesPath = join(__dirname, 'src/lib/types/index.ts');
 const typeDefinitions = `// Comprehensive type definitions
 export interface User {
   id: string;
@@ -520,14 +498,14 @@ export interface EmbeddingProvider {
 
 try {
   writeFileSync(typesPath, typeDefinitions);
-  console.log("✅ Created comprehensive type definitions");
+  console.log('✅ Created comprehensive type definitions');
 } catch (error) {
-  console.log("⚠️  Could not create types:", error.message);
+  console.log('⚠️  Could not create types:', error.message);
 }
 
-console.log("\n🎉 TypeScript and Svelte fixes completed!");
-console.log("\n📋 Next steps:");
-console.log("1. Run: npm run check -- to verify fixes");
-console.log("2. Run: npm run db:push -- to update database schema");
-console.log("3. Run: npm run dev -- to start development server");
-console.log("4. Check remaining errors and fix manually if needed");
+console.log('\n🎉 TypeScript and Svelte fixes completed!');
+console.log('\n📋 Next steps:');
+console.log('1. Run: npm run check -- to verify fixes');
+console.log('2. Run: npm run db:push -- to update database schema');
+console.log('3. Run: npm run dev -- to start development server');
+console.log('4. Check remaining errors and fix manually if needed');

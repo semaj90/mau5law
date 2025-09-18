@@ -9,7 +9,7 @@
 // These are the modern, Svelte 5 compatible components
 export * from './ui';
 
-// ===== QUICK ACCESS FOR COMMON COMPONENTS =====
+// ===== QUICK ACCESS FOR COMMON COMPONENTS =====;
 export {
   // Enhanced-bits components (primary)
   Button,
@@ -130,7 +130,7 @@ export { default as Typewriter } from './Typewriter.svelte.js';
 export { default as KeyboardShortcutProvider } from './KeyboardShortcutProvider.svelte.js';
 export { default as HeadlessDemo } from './HeadlessDemo.svelte.js';
 
-// ===== COMPONENT METADATA =====
+// ===== COMPONENT METADATA =====;
 export const COMPONENT_REGISTRY = {
   ui: 89,
   business: 24,
@@ -138,7 +138,7 @@ export const COMPONENT_REGISTRY = {
   ai: 8,
   legal: 15,
   realtime: 6,
-  total: 154
+  total: 154,
 } as const;
 
 export const COMPONENT_CATEGORIES = [
@@ -153,7 +153,7 @@ export const COMPONENT_CATEGORIES = [
 
 export type ComponentCategory = typeof COMPONENT_CATEGORIES[number];
 
-// ===== STORYBOOK SUPPORT =====
+// ===== STORYBOOK SUPPORT =====;
 export const STORYBOOK_STORIES = {
   'Button': () => import('./ui/enhanced/Button.svelte'),
   'Card': () => import('./ui/enhanced/Card.svelte'),
@@ -164,7 +164,7 @@ export const STORYBOOK_STORIES = {
   'EvidencePanel': () => import('./EvidencePanel.svelte')
 } as const;
 
-// Default export for convenience
+// Default export for convenience;
 export default {
   COMPONENT_REGISTRY,
   COMPONENT_CATEGORIES,

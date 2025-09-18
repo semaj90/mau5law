@@ -14,7 +14,7 @@ let wasmReady = false;
 
 /**
  * Initialize WebAssembly module for RabbitMQ operations
- */
+ */;
 export async function initializeWASMBridge(): Promise<boolean> {
   try {
     console.log('🔗 Initializing WASM-RabbitMQ Bridge...');
@@ -53,7 +53,7 @@ export function createWASMHandler(
       // First, enhance message with SIMD JSON parsing for nested JSON fields
       const simdEnhancedMessage = enhanceRabbitMQMessage(message);
       
-      // Check if message requires WASM acceleration
+      // Check if message requires WASM acceleration;
       if (shouldUseWASM(simdEnhancedMessage) && wasmReady && wasmModule) {
         console.log(`🚀 SIMD+WASM-accelerating message: ${(simdEnhancedMessage as any)?.type || 'unknown'}`);
         
@@ -81,7 +81,7 @@ export function createWASMHandler(
 
 /**
  * Determine if a message should use WASM acceleration
- */
+ */;
 function shouldUseWASM(message: any): boolean {
   // Check for vector operations, embeddings, or tensor data
   const wasmIndicators = [
@@ -116,7 +116,7 @@ async function enhanceMessageWithWASM(
   const floatView = new Float32Array(wasmMemory.buffer);
   
   try {
-    // Process embeddings with WASM normalization
+    // Process embeddings with WASM normalization;
     if (enhanced.embeddings && Array.isArray(enhanced.embeddings)) {
       console.log('🔧 Normalizing embeddings with WASM...');
       
@@ -127,7 +127,7 @@ async function enhanceMessageWithWASM(
       const inputPtr = (wasmModule.instance.exports.__new as Function)(length * 4, 0);
       const inputOffset = inputPtr > 2;
       
-      // Copy data to WASM
+      // Copy data to WASM;
       for (let i = 0; i < length; i++) {
         floatView[inputOffset + i] = embeddings[i];
       }
@@ -151,7 +151,7 @@ async function enhanceMessageWithWASM(
       (wasmModule.instance.exports.__unpin as Function)(normalizedPtr);
     }
     
-    // Process batch vectors
+    // Process batch vectors;
     if (enhanced.batchVectors && Array.isArray(enhanced.batchVectors)) {
       console.log('🔧 Batch processing vectors with WASM...');
       
@@ -163,7 +163,7 @@ async function enhanceMessageWithWASM(
         const vectorsPtr = (wasmModule.instance.exports.__new as Function)(numVectors * vectorLength * 4, 0);
         const vectorsOffset = vectorsPtr > 2;
         
-        // Copy all vectors to WASM
+        // Copy all vectors to WASM;
         for (let v = 0; v < numVectors; v++) {
           const vector = new Float32Array(enhanced.batchVectors[v]);
           for (let i = 0; i < vectorLength; i++) {
@@ -214,7 +214,7 @@ async function enhanceMessageWithWASM(
 export async function computeVectorSimilarityWASM(
   queryVector: number[], 
   targetVectors: number[][], 
-  algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine'
+  algorithm: 'cosine' | 'euclidean' | 'dot' | 'manhattan' = 'cosine';
 ): Promise<number[]> {
   if (!wasmModule || !wasmReady) {
     throw new Error('WASM module not ready for similarity computation');
@@ -278,34 +278,34 @@ export async function computeVectorSimilarityWASM(
 
 /**
  * Register WASM-accelerated handlers with RabbitMQ worker
- */
+ */;
 export function registerWASMAcceleratedHandlers(worker: typeof rabbitmqServiceWorker): void {
   console.log('🔗 Registering WASM-accelerated RabbitMQ handlers...');
   
-  // WASM Vector Embedding Handler
+  // WASM Vector Embedding Handler;
   const vectorEmbeddingHandler = createWASMHandler(async (message: any) => {
     console.log(`🔤 WASM-accelerated embedding generation: ${message.documentId}`);
     
-    // The message is already enhanced with normalized embeddings
+    // The message is already enhanced with normalized embeddings;
     if (message._wasmProcessed) {
       console.log('✅ Embeddings processed with WASM normalization');
       
       // Store in vector database (simulated)
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 100);
       
-      // Publish to next stage
+      // Publish to next stage;
       await worker.publishMessage('legal.chunks.store', {
         ...message,
         embeddings: message.embeddings,
         wasmAccelerated: true,
-        stage: 'ready_for_storage'
+        stage: 'ready_for_storage',
       });
     }
   }, { batchNormalization: true });
   
   worker.registerHandler('legal.chunks.embed', vectorEmbeddingHandler);
   
-  // WASM Similarity Search Handler
+  // WASM Similarity Search Handler;
   const similarityHandler = createWASMHandler(async (message: any) => {
     console.log(`🔍 WASM-accelerated similarity search: ${message.queryId || 'unknown'}`);
     
@@ -320,7 +320,7 @@ export function registerWASMAcceleratedHandlers(worker: typeof rabbitmqServiceWo
         ...message,
         similarities,
         wasmAccelerated: true,
-        processingTime: performance.now() - message.timestamp
+        processingTime: performance.now() - message.timestamp,
       });
     }
   }, { vectorSimilarity: true });
@@ -332,7 +332,7 @@ export function registerWASMAcceleratedHandlers(worker: typeof rabbitmqServiceWo
 
 /**
  * Bridge status and health check
- */
+ */;
 export function getBridgeStatus() {
   return {
     wasmReady,

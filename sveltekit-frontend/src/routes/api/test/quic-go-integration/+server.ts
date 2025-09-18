@@ -6,7 +6,7 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { ensureError } from '$lib/utils/ensure-error';
 
-// Mock Go service manager since the actual service doesn't exist
+// Mock Go service manager since the actual service doesn't exist;
 const goServiceManager = {
   async healthCheck() {
     return { success: true, message: 'Mock Go service health check' };
@@ -94,7 +94,7 @@ const goServiceManager = {
 
 /*
  * GET /api/test/quic-go-integration - Test all QUIC-Go integrations
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   const testResults: Record<string, any> = {};
   let overallSuccess = true;
@@ -190,7 +190,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Test 5: QUIC Endpoints Integration Test
     console.log('Testing QUIC endpoints...');
     try {
-      // Test RAG proxy endpoint
+      // Test RAG proxy endpoint;
       const ragProxyResponse = await fetch('/api/v1/quic/rag-proxy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -220,7 +220,7 @@ export const GET: RequestHandler = async ({ url }) => {
       overallSuccess = false;
     }
 
-    // Summary
+    // Summary;
     const summary = {
       overallStatus: overallSuccess ? 'ALL_TESTS_PASSED' : 'SOME_TESTS_FAILED',
       timestamp: new Date().toISOString(),
@@ -258,14 +258,14 @@ export const GET: RequestHandler = async ({ url }) => {
 
 /*
  * POST /api/test/quic-go-integration - Test specific integration with custom payload
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const testConfig = await request.json();
     const { service, endpoint, payload } = testConfig;
 
     if (!service || !endpoint) {
-      error(400, ensureError({ message: 'Service and endpoint are required' }));
+      error(400, ensureError({ message: 'Service and endpoint are required' });
     }
 
     let testResult: any = {};
@@ -290,7 +290,7 @@ export const POST: RequestHandler = async ({ request }) => {
       default:
         const client = goServiceManager.getClient(service as any);
         if (!client) {
-          error(400, ensureError({ message: `Unknown service: ${service}` }));
+          error(400, ensureError({ message: `Unknown service: ${service}` });
         }
         testResult = await client.request(endpoint, payload);
         break;

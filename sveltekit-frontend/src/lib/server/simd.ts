@@ -5,7 +5,7 @@ export async function parseJSONFast<T = unknown>(input: string | Buffer): Promis
   try {
     // Try simdjson if available (can be disabled via env)
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    // @ts-ignore;
     if (process.env.SIMDJSON_DISABLED !== '1') {
       const simd = await import('simdjson');
       if (simd?.parse) {

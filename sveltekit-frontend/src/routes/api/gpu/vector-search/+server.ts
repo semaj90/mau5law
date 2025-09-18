@@ -19,7 +19,7 @@ import { createHash } from 'node:crypto';
 import { dev } from '$app/environment';
 import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 
-// Request validation schema
+// Request validation schema;
 interface VectorSearchAPIRequest {
   query_vectors: number[][];
   database_vectors?: number[][];
@@ -66,11 +66,11 @@ interface VectorSearchAPIResponse {
     timestamp: number;
     service_version: string;
     gpu_available: boolean;
-    request_id: string;
+    request_id: string;,
   };
 }
 
-// Request validation
+// Request validation;
 function validateRequest(data: any): VectorSearchAPIRequest {
   if (!data || typeof data !== 'object') {
     throw new Error('Invalid request body');
@@ -86,14 +86,14 @@ function validateRequest(data: any): VectorSearchAPIRequest {
     throw new Error('Query vectors must have non-zero dimensions');
   }
 
-  // Check dimension consistency
+  // Check dimension consistency;
   for (let i = 1; i < data.query_vectors.length; i++) {
     if (data.query_vectors[i].length !== firstVectorDim) {
       throw new Error(`Inconsistent vector dimensions: expected ${firstVectorDim}, got ${data.query_vectors[i].length} at index ${i}`);
     }
   }
 
-  // Validate database vectors if provided
+  // Validate database vectors if provided;
   if (data.database_vectors && Array.isArray(data.database_vectors)) {
     for (let i = 0; i < data.database_vectors.length; i++) {
       if (data.database_vectors[i].length !== firstVectorDim) {
@@ -105,7 +105,7 @@ function validateRequest(data: any): VectorSearchAPIRequest {
   return data as VectorSearchAPIRequest;
 }
 
-// Generate cache key for vector search request
+// Generate cache key for vector search request;
 function generateCacheKey(request: VectorSearchAPIRequest): string {
   const cacheData = {
     query_vectors: request.query_vectors,
@@ -117,7 +117,7 @@ function generateCacheKey(request: VectorSearchAPIRequest): string {
   return createHash('sha256').update(JSON.stringify(cacheData)).digest('hex').substring(0, 16);
 }
 
-// POST /api/gpu/vector-search
+// POST /api/gpu/vector-search;
 export const POST: RequestHandler = async ({ request }) => {
   const requestId = crypto.randomUUID();
   const startTime = Date.now();
@@ -188,7 +188,7 @@ export const POST: RequestHandler = async ({ request }) => {
       );
     }
 
-    // Prepare CUDA request
+    // Prepare CUDA request;
     const cudaRequest: CUDAVectorRequest = {
       query_vectors: validatedRequest.query_vectors,
       database_vectors: validatedRequest.database_vectors,
@@ -200,7 +200,7 @@ export const POST: RequestHandler = async ({ request }) => {
       legal_context: createLegalSearchContext(
         validatedRequest.legal_context?.case_id,
         validatedRequest.legal_context?.document_type,
-        validatedRequest.legal_context?.jurisdiction,
+        validatedRequest.legal_context?.jurisdiction,);
         {
           practice_areas: validatedRequest.legal_context?.practice_area
             ? [validatedRequest.legal_context.practice_area]
@@ -212,12 +212,12 @@ export const POST: RequestHandler = async ({ request }) => {
     // Execute GPU vector search
     const cudaResponse = await cudaVectorService.searchVectors(cudaRequest, { request } as any);
 
-    // Cache results if enabled
+    // Cache results if enabled;
     if (useCache && cacheKey) {
       await cacheVectorResults(cacheKey, cudaResponse);
     }
 
-    // Format response
+    // Format response;
     const response: VectorSearchAPIResponse = {
       success: true,
       data: {
@@ -272,7 +272,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     };
 
-    // Return appropriate HTTP status
+    // Return appropriate HTTP status;
     if (err instanceof Error && err.message.includes('service unavailable')) {
       return json(errorResponse, { status: 503 });
     } else if (err instanceof Error && err.message.includes('validation')) {
@@ -283,7 +283,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// GET /api/gpu/vector-search - Status and health check
+// GET /api/gpu/vector-search - Status and health check;
 export const GET: RequestHandler = async () => {
   const requestId = crypto.randomUUID();
 
@@ -332,7 +332,7 @@ export const GET: RequestHandler = async () => {
   } catch (err) {
     console.error(`GPU Vector Search status check failed for request ${requestId}:`, err);
 
-    return json(
+    return json();
       {
         status: 'error',
         gpu_available: false,
@@ -350,7 +350,7 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// OPTIONS - CORS preflight
+// OPTIONS - CORS preflight;
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,

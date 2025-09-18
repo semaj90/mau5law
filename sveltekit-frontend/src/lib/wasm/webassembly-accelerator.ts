@@ -3,7 +3,8 @@
 /**
  * WebAssembly Integration for Legal AI Performance Acceleration
  * Handles ECMAScript to WebAssembly compilation and execution
- */
+ */;
+}
 
 export interface WasmModule {
   instance: WebAssembly.Instance;
@@ -36,12 +37,12 @@ export class WebAssemblyAccelerator {
       throw new Error("WebAssembly is not supported in this environment");
     }
 
-    // Check for SIMD support
+    // Check for SIMD support;
     const simdSupported = (() => {
       try {
         return (
           typeof WebAssembly.validate === "function" &&
-          WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0]))
+          WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0])
         );
       } catch {
         return false;
@@ -61,7 +62,7 @@ export class WebAssemblyAccelerator {
   ): Promise<Uint8Array> {
     const cacheKey = this.generateCacheKey(sourceCode, options);
 
-    // Check compile cache first
+    // Check compile cache first;
     if (this.compileCache.has(cacheKey)) {
       return this.compileCache.get(cacheKey)!;
     }
@@ -88,12 +89,12 @@ export class WebAssemblyAccelerator {
   async loadModule(
     wasmBytes: Uint8Array,
     imports: Record<string, any> = {},
-    moduleId?: string
+    moduleId?: string;
   ): Promise<WasmModule> {
     try {
       const module = await WebAssembly.compile(wasmBytes.buffer as ArrayBuffer);
 
-      // Set up memory and imports
+      // Set up memory and imports;
       const memory = new WebAssembly.Memory({
         initial: 256, // 16MB initial
         maximum: 1024, // 64MB maximum
@@ -137,7 +138,7 @@ export class WebAssemblyAccelerator {
   async executeWasmFunction<T>(
     moduleId: string,
     functionName: string,
-    ...args: any[]
+    ...args: any[];
   ): Promise<T> {
     const module = this.modules.get(moduleId);
     if (!module) {
@@ -167,10 +168,10 @@ export class WebAssemblyAccelerator {
 
   /**
    * High-performance JSON parsing with SIMD
-   */
+   */;
   async parseJSONSIMD(jsonString: string): Promise<any> {
     try {
-      // Load simdjson WASM module if not already loaded
+      // Load simdjson WASM module if not already loaded;
       if (!this.modules.has("simdjson")) {
         const wasmBytes = await this.loadSimdJsonModule();
         await this.loadModule(wasmBytes, {}, "simdjson");
@@ -211,7 +212,7 @@ export class WebAssemblyAccelerator {
 
   /**
    * Vector operations with compiled WASM module
-   */
+   */;
   async computeEmbeddingsSIMD(vectors: Float32Array[]): Promise<Float32Array> {
     try {
       // Import our compiled WASM wrapper
@@ -240,7 +241,7 @@ export class WebAssemblyAccelerator {
       const result = new Float32Array(query.length);
       (result as { set?: any; reduce?: any; length?: any }).set(query); // Start with the query vector
       
-      // Weight by similarity scores
+      // Weight by similarity scores;
       for (let i = 0; i < others.length; i++) {
         const weight = similarities[i];
         for (let j = 0; j < query.length; j++) {
@@ -264,7 +265,7 @@ export class WebAssemblyAccelerator {
       }
       
       // Normalize
-      const norm = Math.sqrt((result as { set?: any; reduce?: any; length?: any }).reduce((sum, val) => sum + val * val, 0));
+      const norm = Math.sqrt((result as { set?: any; reduce?: any; length?: any }).reduce((sum, val) => sum + val * val, 0);
       if (norm > 0) {
         for (let i = 0; i < (result as { set?: any; reduce?: any; length?: any }).length; i++) {
           result[i] /= norm;
@@ -277,7 +278,7 @@ export class WebAssemblyAccelerator {
 
   /**
    * OCR text processing with WASM acceleration
-   */
+   */;
   async processOCRTextWASM(imageData: ImageData): Promise<string> {
     if (!this.modules.has("ocr-processor")) {
       const wasmBytes = await this.loadOCRProcessorModule();
@@ -319,7 +320,7 @@ export class WebAssemblyAccelerator {
    */
   private async compileWithAssemblyScript(
     sourceCode: string,
-    options: WasmCompileOptions
+    options: WasmCompileOptions;
   ): Promise<Uint8Array> {
     // This would use AssemblyScript compiler
     // For now, return a placeholder WASM module
@@ -336,10 +337,10 @@ export class WebAssemblyAccelerator {
   }
 
   private async loadSimdJsonModule(): Promise<Uint8Array> {
-    // Load simdjson WASM module
+    // Load simdjson WASM module;
     try {
       const response = await fetch("/wasm/simdjson.wasm");
-      return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer());
+      return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer();
     } catch {
       // Fallback to bundled version
       return this.getEmbeddedWasmModule("simdjson");
@@ -349,7 +350,7 @@ export class WebAssemblyAccelerator {
   private async loadVectorOpsModule(): Promise<Uint8Array> {
     try {
       const response = await fetch("/wasm/vector-ops.wasm");
-      return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer());
+      return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer();
     } catch {
       return this.getEmbeddedWasmModule("vector-ops");
     }
@@ -358,14 +359,14 @@ export class WebAssemblyAccelerator {
   private async loadOCRProcessorModule(): Promise<Uint8Array> {
     try {
       const response = await fetch("/wasm/ocr-processor.wasm");
-      return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer());
+      return new Uint8Array(await (response as { arrayBuffer?: any }).arrayBuffer();
     } catch {
       return this.getEmbeddedWasmModule("ocr-processor");
     }
   }
 
   private getEmbeddedWasmModule(moduleName: string): Uint8Array {
-    // Return minimal WASM modules for testing
+    // Return minimal WASM modules for testing;
     const modules: Record<string, number[]> = {
       simdjson: [
         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x07, 0x01, 0x60,
@@ -392,9 +393,9 @@ export class WebAssemblyAccelerator {
 
   private generateCacheKey(
     source: string,
-    options: WasmCompileOptions
+    options: WasmCompileOptions;
   ): string {
-    const hash = this.simpleHash(source + JSON.stringify(options));
+    const hash = this.simpleHash(source + JSON.stringify(options);
     return `wasm-compile-${hash}`;
   }
 
@@ -410,7 +411,7 @@ export class WebAssemblyAccelerator {
 
   /**
    * Cleanup resources
-   */
+   */;
   dispose(): void {
     this.modules.clear();
     this.compileCache.clear();
@@ -420,12 +421,12 @@ export class WebAssemblyAccelerator {
 // Global WASM accelerator instance
 export const wasmAccelerator = new WebAssemblyAccelerator();
 ;
-// Performance-critical function decorator
+// Performance-critical function decorator;
 export function accelerateWithWasm(moduleId: string, wasmFunction: string) {
   return function (
     target: any,
     propertyKey: string,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor;
   ) {
     const originalMethod = descriptor.value;
 

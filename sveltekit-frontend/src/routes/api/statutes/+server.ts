@@ -6,7 +6,7 @@ import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async () => {
   try {
     // Mock statutes data - replace with actual database query
-    const statutes = [
+    const statutes = [;
       {
         id: "1",
         title: "Robbery - First Degree",
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const data = await request.json();
 
-    // Mock response - replace with actual database insertion
+    // Mock response - replace with actual database insertion;
     const newStatute = {
       id: Math.random().toString(36).substring(2, 11),
       ...data,

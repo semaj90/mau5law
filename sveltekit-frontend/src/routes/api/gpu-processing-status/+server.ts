@@ -1,5 +1,6 @@
 
 import type { RequestHandler } from './$types.js';
+}
 
 export interface GPUProcessingStatus {
   stage: string;
@@ -8,21 +9,21 @@ export interface GPUProcessingStatus {
     ollama: boolean;
     flashattention: boolean;
     concurrentSearch: boolean;
-    nativeServices: boolean;
+    nativeServices: boolean;,
   };
   models: {
     gemma3Legal: boolean;
-    nomicEmbed: boolean;
+    nomicEmbed: boolean;,
   };
   errors: {
     total: number;
     processed: number;
-    fixed: number;
+    fixed: number;,
   };
   performance: {
     gpu_utilization: number;
     tokens_per_second: number;
-    memory_usage_mb: number;
+    memory_usage_mb: number;,
   };
 }
 
@@ -30,7 +31,7 @@ async function checkOllamaStatus(): Promise<boolean> {
   try {
     const response = await fetch('http://localhost:11434/api/tags', {
       method: 'GET',
-      signal: AbortSignal.timeout(3000)
+      signal: AbortSignal.timeout(3000),
     });
     return response.ok;
   } catch (error: any) {
@@ -48,7 +49,7 @@ async function checkModels(): Promise<any> {
     
     return {
       gemma3Legal: modelNames.some((name: string) => name.includes('gemma3-legal')),
-      nomicEmbed: modelNames.some((name: string) => name.includes('nomic-embed-text'))
+      nomicEmbed: modelNames.some((name: string) => name.includes('nomic-embed-text'),
     };
   } catch (error: any) {
     return { gemma3Legal: false, nomicEmbed: false };
@@ -63,7 +64,7 @@ async function runTypeScriptCheck(): Promise<any> {
       return new Promise((resolve) => {
         const tscProcess = spawn('npx', ['tsc', '--noEmit'], {
           stdio: 'pipe',
-          cwd: process.cwd()
+          cwd: process.cwd(),
         });
 
         let output = '';
@@ -78,7 +79,7 @@ async function runTypeScriptCheck(): Promise<any> {
 
         tscProcess.on('close', () => {
           const errorLines = output.split('\n').filter(line => 
-            line.includes('TS') && (line.includes('error') || line.includes('warning'))
+            line.includes('TS') && (line.includes('error') || line.includes('warning')
           );
           
           resolve({
@@ -117,18 +118,18 @@ export const GET: RequestHandler = async () => {
         ollama: ollamaStatus,
         flashattention: true,
         concurrentSearch: true,
-        nativeServices: true
+        nativeServices: true,
       },
       models,
       errors: {
         total: typeScriptCheck.total,
         processed: 0,
-        fixed: 0
+        fixed: 0,
       },
       performance: {
         gpu_utilization: 0,
         tokens_per_second: 0,
-        memory_usage_mb: 0
+        memory_usage_mb: 0,
       }
     };
 
@@ -143,7 +144,7 @@ export const GET: RequestHandler = async () => {
       status,
       timestamp: new Date().toISOString(),
       message: 'GPU processing status retrieved successfully',
-      typeScriptSample: typeScriptCheck.sample
+      typeScriptSample: typeScriptCheck.sample,
     });
   } catch (error: any) {
     console.error('❌ Status check failed:', error);
@@ -151,7 +152,7 @@ export const GET: RequestHandler = async () => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -178,9 +179,9 @@ export const POST: RequestHandler = async ({ request }) => {
             processing_time_ms: 2500,
             gpu_utilization: 78,
             tokens_per_second: 145.7,
-            memory_usage_mb: 6144
+            memory_usage_mb: 6144,
           },
-          stage: 'completed'
+          stage: 'completed',
         };
 
         console.log('🎯 GPU Processing Results:');
@@ -193,21 +194,21 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           result: mockProcessingResult,
-          message: 'GPU error processing completed with gemma3-legal GGUF'
+          message: 'GPU error processing completed with gemma3-legal GGUF',
         });
         
-      case 'benchmark':
+      case 'benchmark':;
         const benchmarkResult = {
           processing_speed: 145.7,
           memory_efficiency: 0.85,
           accuracy_score: 0.92,
-          gpu_utilization: 78
+          gpu_utilization: 78,
         };
 
         return json({
           success: true,
           benchmark: benchmarkResult,
-          message: 'FlashAttention2 benchmark completed'
+          message: 'FlashAttention2 benchmark completed',
         });
         
       default:
@@ -216,7 +217,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };

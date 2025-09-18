@@ -9,7 +9,7 @@ export const performanceMetrics = writable({
     cpu: 0,
     memory: 0,
     eventLoopLag: 0,
-    uptime: 0
+    uptime: 0,
   },
   services: {
     postgresql: { status: 'unknown', responseTime: 0, connections: 0 },
@@ -24,7 +24,7 @@ export const performanceMetrics = writable({
       priority: 'high',
       batchSize: 100,
       processingRate: 0,
-      lagThreshold: 10
+      lagThreshold: 10,
     },
     caching: {
       l1: { size: 0, hits: 0, misses: 0, efficiency: 0 },
@@ -35,25 +35,25 @@ export const performanceMetrics = writable({
       total: 0,
       handled: 0,
       recovery: 0,
-      success_rate: 0
+      success_rate: 0,
     },
     patterns: {
       compiled: 0,
       matches: 0,
       confidence: 0,
-      processing_time: 0
+      processing_time: 0,
     },
     simd: {
       enabled: true,
       operations: 0,
       speedup: 0,
-      efficiency: 0
+      efficiency: 0,
     },
     jsonb: {
       queries: 0,
       avg_time: 0,
       index_usage: 0,
-      optimization_level: 0
+      optimization_level: 0,
     }
   },
   autoSolve: {
@@ -61,7 +61,7 @@ export const performanceMetrics = writable({
     requests: 0,
     successful: 0,
     errors_fixed: 0,
-    success_rate: 0
+    success_rate: 0,
   }
 });
 
@@ -95,8 +95,8 @@ async function updateMetrics() {
   performanceMetrics.update(current => ({
     ...current,
     ...metrics,
-    timestamp: Date.now()
-  }));
+    timestamp: Date.now(),
+  });
 }
 
 // Fetch metrics from various sources
@@ -126,7 +126,7 @@ async function fetchSystemMetrics() {
       cpu: data.cpu || 0,
       memory: data.memory || 0,
       eventLoopLag: data.eventLoopLag || 0,
-      uptime: data.uptime || 0
+      uptime: data.uptime || 0,
     };
   } catch (error) {
     console.warn('System metrics unavailable:', error);
@@ -134,7 +134,7 @@ async function fetchSystemMetrics() {
       cpu: Math.random() * 30 + 10, // Simulate for demo
       memory: Math.random() * 40 + 20,
       eventLoopLag: Math.random() * 5,
-      uptime: Date.now() / 1000
+      uptime: Date.now() / 1000,
     };
   }
 }
@@ -156,21 +156,21 @@ async function fetchServiceMetrics() {
       const start = performance.now();
       const response = await fetch(`http://localhost:${config.port}${config.path}`, {
         method: 'GET',
-        timeout: 3000
+        timeout: 3000,
       });
       const responseTime = performance.now() - start;
 
       results[name] = {
         status: response.ok ? 'healthy' : 'unhealthy',
         responseTime: Math.round(responseTime),
-        lastCheck: Date.now()
+        lastCheck: Date.now(),
       };
     } catch (error) {
       results[name] = {
         status: 'offline',
         responseTime: 0,
         lastCheck: Date.now(),
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -193,45 +193,45 @@ async function fetchOptimizationMetrics() {
         batchSize: 100,
         processingRate: Math.random() * 1000 + 500,
         lagThreshold: 10,
-        currentLag: Math.random() * 3
+        currentLag: Math.random() * 3,
       },
       caching: {
         l1: {
           size: Math.random() * 1024 * 1024,
           hits: Math.random() * 10000,
           misses: Math.random() * 1000,
-          efficiency: 85 + Math.random() * 10
+          efficiency: 85 + Math.random() * 10,
         },
         l2: {
           size: Math.random() * 100 * 1024 * 1024,
           hits: Math.random() * 5000,
           misses: Math.random() * 500,
-          efficiency: 78 + Math.random() * 15
+          efficiency: 78 + Math.random() * 15,
         }
       },
       interrupts: {
         total: Math.random() * 100,
         handled: Math.random() * 95,
         recovery: Math.random() * 90,
-        success_rate: 94 + Math.random() * 5
+        success_rate: 94 + Math.random() * 5,
       },
       patterns: {
         compiled: 24,
         matches: Math.random() * 1000,
         confidence: 0.89 + Math.random() * 0.1,
-        processing_time: Math.random() * 50 + 10
+        processing_time: Math.random() * 50 + 10,
       },
       simd: {
         enabled: true,
         operations: Math.random() * 50000,
         speedup: 3.2 + Math.random() * 1.8,
-        efficiency: 92 + Math.random() * 7
+        efficiency: 92 + Math.random() * 7,
       },
       jsonb: {
         queries: Math.random() * 10000,
         avg_time: Math.random() * 20 + 5,
         index_usage: 88 + Math.random() * 10,
-        optimization_level: 95 + Math.random() * 4
+        optimization_level: 95 + Math.random() * 4,
       }
     };
   }
@@ -250,7 +250,7 @@ async function fetchAutoSolveMetrics() {
       successful: Math.random() * 90,
       errors_fixed: Math.random() * 50,
       success_rate: 88 + Math.random() * 10,
-      last_run: Date.now() - Math.random() * 300000
+      last_run: Date.now() - Math.random() * 300000,
     };
   }
 }
@@ -269,7 +269,7 @@ export const performanceScore = derived(performanceMetrics, $metrics => {
 function calculateSystemScore(system) {
   const cpuScore = Math.max(0, 100 - system.cpu);
   const memoryScore = Math.max(0, 100 - system.memory);
-  const lagScore = Math.max(0, 100 - (system.eventLoopLag * 10));
+  const lagScore = Math.max(0, 100 - (system.eventLoopLag * 10);
 
   return (cpuScore + memoryScore + lagScore) / 3;
 }
@@ -300,5 +300,5 @@ export const monitoring = {
   start: startMonitoring,
   stop: stopMonitoring,
   getMetrics: () => performanceMetrics,
-  getScore: () => performanceScore
+  getScore: () => performanceScore,
 };

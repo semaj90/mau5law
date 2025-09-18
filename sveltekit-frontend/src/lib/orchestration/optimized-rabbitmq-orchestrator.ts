@@ -8,6 +8,7 @@
 import { createMachine, interpret, assign, type ActorRefFrom } from 'xstate';
 import { rabbitmqService, QUEUES } from '$lib/server/messaging/rabbitmq-service.js';
 import { PRIORITY, type ConsumerConfig, getConsumerConfig } from '$lib/config/rabbitmq-config.js';
+}
 
 export interface JobDefinition {
   id: string;
@@ -45,13 +46,14 @@ export type JobType =
   | 'wasm_embedding_compress';
 
 export type JobPriority = 'critical' | 'high' | 'normal' | 'low' | 'background';
+}
 
 export interface RetryConfig {
   maxAttempts: number;
   backoffStrategy: 'linear' | 'exponential' | 'fibonacci';
   baseDelay: number;
   maxDelay: number;
-  jitterEnabled: boolean;
+  jitterEnabled: boolean;,
 }
 
 export interface RoutingStrategy {
@@ -69,7 +71,7 @@ export interface OptimizationHints {
   network_dependent: boolean;
   cache_friendly: boolean;
   parallelizable: boolean;
-  batch_optimizable: boolean;
+  batch_optimizable: boolean;,
 }
 
 export interface ResourceRequirements {
@@ -91,7 +93,7 @@ export interface WorkerMetrics {
   success_rate: number;
   last_heartbeat: number;
   capabilities: string[];
-  current_jobs: string[];
+  current_jobs: string[];,
 }
 
 export interface OptimizationContext {
@@ -101,7 +103,7 @@ export interface OptimizationContext {
   performance_history: PerformanceHistory;
   system_resources: SystemResources;
   optimization_rules: OptimizationRule[];
-  auto_scaling: AutoScalingConfig;
+  auto_scaling: AutoScalingConfig;,
 }
 
 export interface PerformanceHistory {
@@ -109,7 +111,7 @@ export interface PerformanceHistory {
   queue_wait_times: Map<string, number[]>;
   worker_efficiency: Map<string, number[]>;
   resource_utilization: ResourceUtilization[];
-  bottlenecks_detected: BottleneckReport[];
+  bottlenecks_detected: BottleneckReport[];,
 }
 
 export interface SystemResources {
@@ -118,7 +120,7 @@ export interface SystemResources {
   available_gpus: GPUInfo[];
   network_bandwidth: number;
   storage_iops: number;
-  current_load: number;
+  current_load: number;,
 }
 
 export interface GPUInfo {
@@ -127,7 +129,7 @@ export interface GPUInfo {
   memory_gb: number;
   cuda_capability: string;
   utilization: number;
-  temperature: number;
+  temperature: number;,
 }
 
 export interface OptimizationRule {
@@ -135,7 +137,7 @@ export interface OptimizationRule {
   condition: (context: OptimizationContext) => boolean;
   action: (context: OptimizationContext) => OptimizationAction[];
   priority: number;
-  enabled: boolean;
+  enabled: boolean;,
 }
 
 export interface OptimizationAction {
@@ -147,7 +149,7 @@ export interface OptimizationAction {
     | 'preempt_job'
     | 'cache_warmup';
   parameters: any;
-  estimated_impact: number;
+  estimated_impact: number;,
 }
 
 export interface AutoScalingConfig {
@@ -157,7 +159,7 @@ export interface AutoScalingConfig {
   scale_up_threshold: number;
   scale_down_threshold: number;
   cooldown_period: number;
-  prediction_window: number;
+  prediction_window: number;,
 }
 
 export interface BottleneckReport {
@@ -166,7 +168,7 @@ export interface BottleneckReport {
   severity: 'low' | 'medium' | 'high' | 'critical';
   affected_jobs: string[];
   suggested_actions: string[];
-  auto_resolved: boolean;
+  auto_resolved: boolean;,
 }
 
 export interface ResourceUtilization {
@@ -175,7 +177,7 @@ export interface ResourceUtilization {
   memory_percent: number;
   gpu_percent?: number;
   queue_depth: number;
-  throughput_jobs_per_second: number;
+  throughput_jobs_per_second: number;,
 }
 
 // XState Machine for Orchestration
@@ -191,8 +193,7 @@ export type OrchestratorEvent =
   | { type: 'SYSTEM_OVERLOAD' }
   | { type: 'SYSTEM_UNDERUTILIZED' };
 
-const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent>(
-  {
+const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent>({
     id: 'rabbitMQOrchestrator',
     initial: 'initializing',
 
@@ -249,7 +250,7 @@ const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent
 
         states: {
           monitoring: {
-            invoke: [
+            invoke: [;
               {
                 id: 'performanceMonitor',
                 src: 'monitorPerformance',
@@ -386,7 +387,7 @@ const orchestratorMachine = createMachine<OptimizationContext, OrchestratorEvent
           // Update job completion times
           const times = updated.job_completion_times.get(job.type) || [];
           times.push(((event as any).metrics ?? {}).duration ?? 0);
-          updated.job_completion_times.set(job.type, times.slice(-100)); // Keep last 100
+          updated.job_completion_times.set(job.type, times.slice(-100); // Keep last 100
 
           return updated;
         },
@@ -534,21 +535,21 @@ export class OptimizedRabbitMQOrchestrator {
 
   private async initializeJobProcessors(): Promise<void> {
     // Legal Document Analysis
-    this.jobProcessors.set('legal_document_analysis', new LegalDocumentProcessor());
-    this.jobProcessors.set('evidence_processing', new EvidenceProcessor());
-    this.jobProcessors.set('cuda_acceleration', new CudaAccelerationProcessor());
-    this.jobProcessors.set('vector_embedding', new VectorEmbeddingProcessor());
-    this.jobProcessors.set('case_similarity', new CaseSimilarityProcessor());
-    this.jobProcessors.set('rag_processing', new RAGProcessor());
-    this.jobProcessors.set('pdf_ocr', new PDFOCRProcessor());
-    this.jobProcessors.set('image_analysis', new ImageAnalysisProcessor());
-    this.jobProcessors.set('video_timeline', new VideoTimelineProcessor());
-    this.jobProcessors.set('contract_extraction', new ContractExtractionProcessor());
-    this.jobProcessors.set('citation_validation', new CitationValidationProcessor());
-    this.jobProcessors.set('semantic_search', new SemanticSearchProcessor());
-    this.jobProcessors.set('ml_clustering', new MLClusteringProcessor());
-    this.jobProcessors.set('gpu_inference', new GPUInferenceProcessor());
-    this.jobProcessors.set('workflow_orchestration', new WorkflowOrchestrationProcessor());
+    this.jobProcessors.set('legal_document_analysis', new LegalDocumentProcessor();
+    this.jobProcessors.set('evidence_processing', new EvidenceProcessor();
+    this.jobProcessors.set('cuda_acceleration', new CudaAccelerationProcessor();
+    this.jobProcessors.set('vector_embedding', new VectorEmbeddingProcessor();
+    this.jobProcessors.set('case_similarity', new CaseSimilarityProcessor();
+    this.jobProcessors.set('rag_processing', new RAGProcessor();
+    this.jobProcessors.set('pdf_ocr', new PDFOCRProcessor();
+    this.jobProcessors.set('image_analysis', new ImageAnalysisProcessor();
+    this.jobProcessors.set('video_timeline', new VideoTimelineProcessor();
+    this.jobProcessors.set('contract_extraction', new ContractExtractionProcessor();
+    this.jobProcessors.set('citation_validation', new CitationValidationProcessor();
+    this.jobProcessors.set('semantic_search', new SemanticSearchProcessor();
+    this.jobProcessors.set('ml_clustering', new MLClusteringProcessor();
+    this.jobProcessors.set('gpu_inference', new GPUInferenceProcessor();
+    this.jobProcessors.set('workflow_orchestration', new WorkflowOrchestrationProcessor();
   }
 
   private async startJobProcessors(): Promise<void> {
@@ -619,8 +620,7 @@ export class OptimizedRabbitMQOrchestrator {
       // Default config for other types
     } as any;
 
-    return (
-      configs[jobType] || {
+    return (configs[jobType] || {
         maxAttempts: 3,
         backoffStrategy: 'exponential',
         baseDelay: 5000,
@@ -718,8 +718,7 @@ export class OptimizedRabbitMQOrchestrator {
       },
     } as any;
 
-    return (
-      resources[jobType] || {
+    return (resources[jobType] || {
         min_cpu_cores: 1,
         min_memory_gb: 2,
       }
@@ -755,7 +754,7 @@ export class OptimizedRabbitMQOrchestrator {
   }
 }
 
-// Job Processor Base Class
+// Job Processor Base Class;
 abstract class JobProcessor {
   abstract type: JobType;
 
@@ -771,7 +770,7 @@ abstract class JobProcessor {
   }
 }
 
-// Specific Job Processors
+// Specific Job Processors;
 class LegalDocumentProcessor extends JobProcessor {
   type: JobType = 'legal_document_analysis';
 
@@ -779,7 +778,7 @@ class LegalDocumentProcessor extends JobProcessor {
     console.log(`🧠 Processing legal document: ${job.id}`);
 
     // Simulate legal document analysis
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000);
 
     return {
       entities: ['contract', 'party', 'clause'],
@@ -796,7 +795,7 @@ class EvidenceProcessor extends JobProcessor {
   async process(job: JobDefinition): Promise<any> {
     console.log(`🔍 Processing evidence: ${job.id}`);
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1500);
 
     return {
       evidence_type: 'document',
@@ -816,7 +815,7 @@ class CudaAccelerationProcessor extends JobProcessor {
   async process(job: JobDefinition): Promise<any> {
     console.log(`⚡ CUDA processing: ${job.id}`);
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500);
 
     return {
       gpu_device: 'RTX 3060 Ti',
@@ -833,7 +832,7 @@ class VectorEmbeddingProcessor extends JobProcessor {
   async process(job: JobDefinition): Promise<any> {
     console.log(`🔤 Generating embeddings: ${job.id}`);
 
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000);
 
     return {
       embeddings: new Array(384).fill(0).map(() => Math.random() - 0.5),
@@ -844,11 +843,11 @@ class VectorEmbeddingProcessor extends JobProcessor {
   }
 }
 
-// Additional processors would follow similar patterns...
+// Additional processors would follow similar patterns...;
 class CaseSimilarityProcessor extends JobProcessor {
   type: JobType = 'case_similarity';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000);
     return { similar_cases: [], similarity_scores: [] };
   }
 }
@@ -856,7 +855,7 @@ class CaseSimilarityProcessor extends JobProcessor {
 class RAGProcessor extends JobProcessor {
   type: JobType = 'rag_processing';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 2500));
+    await new Promise((resolve) => setTimeout(resolve, 2500);
     return { response: 'Generated response', context: [], confidence: 0.85 };
   }
 }
@@ -864,7 +863,7 @@ class RAGProcessor extends JobProcessor {
 class PDFOCRProcessor extends JobProcessor {
   type: JobType = 'pdf_ocr';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 4000));
+    await new Promise((resolve) => setTimeout(resolve, 4000);
     return { extracted_text: 'OCR text', pages: 5, confidence: 0.94 };
   }
 }
@@ -872,7 +871,7 @@ class PDFOCRProcessor extends JobProcessor {
 class ImageAnalysisProcessor extends JobProcessor {
   type: JobType = 'image_analysis';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+    await new Promise((resolve) => setTimeout(resolve, 1200);
     return { objects_detected: [], text_regions: [], metadata: Record<string, any> };
   }
 }
@@ -880,7 +879,7 @@ class ImageAnalysisProcessor extends JobProcessor {
 class VideoTimelineProcessor extends JobProcessor {
   type: JobType = 'video_timeline';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 6000));
+    await new Promise((resolve) => setTimeout(resolve, 6000);
     return { timeline: [], key_moments: [], duration: 0 };
   }
 }
@@ -888,7 +887,7 @@ class VideoTimelineProcessor extends JobProcessor {
 class ContractExtractionProcessor extends JobProcessor {
   type: JobType = 'contract_extraction';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 3500));
+    await new Promise((resolve) => setTimeout(resolve, 3500);
     return { clauses: [], parties: [], terms: [] };
   }
 }
@@ -896,7 +895,7 @@ class ContractExtractionProcessor extends JobProcessor {
 class CitationValidationProcessor extends JobProcessor {
   type: JobType = 'citation_validation';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    await new Promise((resolve) => setTimeout(resolve, 800);
     return { valid_citations: [], invalid_citations: [], suggestions: [] };
   }
 }
@@ -904,7 +903,7 @@ class CitationValidationProcessor extends JobProcessor {
 class SemanticSearchProcessor extends JobProcessor {
   type: JobType = 'semantic_search';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 300);
     return { results: [], relevance_scores: [], query_interpretation: '' };
   }
 }
@@ -912,7 +911,7 @@ class SemanticSearchProcessor extends JobProcessor {
 class MLClusteringProcessor extends JobProcessor {
   type: JobType = 'ml_clustering';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 9000));
+    await new Promise((resolve) => setTimeout(resolve, 9000);
     return { clusters: [], centroids: [], silhouette_score: 0.7 };
   }
 }
@@ -920,7 +919,7 @@ class MLClusteringProcessor extends JobProcessor {
 class GPUInferenceProcessor extends JobProcessor {
   type: JobType = 'gpu_inference';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200);
     return { predictions: [], confidence_scores: [], inference_time_ms: 180 };
   }
 }
@@ -928,19 +927,19 @@ class GPUInferenceProcessor extends JobProcessor {
 class WorkflowOrchestrationProcessor extends JobProcessor {
   type: JobType = 'workflow_orchestration';
   async process(job: JobDefinition): Promise<any> {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500);
     return { workflow_status: 'completed', steps_executed: [], next_actions: [] };
   }
 }
 
-// Helper Functions
+// Helper Functions;
 function optimizeJobForSystem(job: JobDefinition, context: OptimizationContext): JobDefinition {
   // Apply system-level optimizations
   return job;
 }
 
 function findOptimalQueuePosition(job: JobDefinition, queue: JobDefinition[]): number {
-  // Find the best position in queue based on priority and dependencies
+  // Find the best position in queue based on priority and dependencies;
   for (let i = 0; i < queue.length; i++) {
     if (getPriorityValue(job.priority) > getPriorityValue(queue[i].priority)) {
       return i;
@@ -961,7 +960,7 @@ function getPriorityValue(priority: JobPriority): number {
 }
 
 function createDefaultOptimizationRules(): OptimizationRule[] {
-  return [
+  return [;
     {
       id: 'gpu_affinity',
       condition: (context) => context.job_queue.some((j) => j.optimization?.gpu_required),
@@ -975,11 +974,11 @@ function createDefaultOptimizationRules(): OptimizationRule[] {
 }
 
 async function discoverSystemCapabilities(): Promise<SystemResources> {
-  // Mock system discovery
+  // Mock system discovery;
   return {
     total_cpu_cores: 8,
     total_memory_gb: 32,
-    available_gpus: [
+    available_gpus: [;
       {
         id: 'gpu0',
         model: 'RTX 3060 Ti',

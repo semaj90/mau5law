@@ -1,7 +1,8 @@
 
 /**
  * Demo Data Generator for Legal AI System Testing
- */
+ */;
+}
 
 export interface DemoCase {
   id: string;
@@ -12,7 +13,7 @@ export interface DemoCase {
   createdAt: Date;
   updatedAt: Date;
   assignedTo?: string;
-  tags: string[];
+  tags: string[];,
 }
 
 export interface DemoEvidence {
@@ -31,7 +32,7 @@ export interface DemoEvidence {
   content: string;
   uploadedAt: Date;
   fileSize: number;
-  tags: string[];
+  tags: string[];,
 }
 
 export interface DemoPerson {
@@ -43,7 +44,7 @@ export interface DemoPerson {
     email?: string;
     address?: string;
   };
-  notes: string;
+  notes: string;,
 }
 
 class DemoDataGenerator {
@@ -53,9 +54,9 @@ class DemoDataGenerator {
 
   /**
    * Generate sample cases
-   */
+   */;
   generateCases(count: number = 5): DemoCase[] {
-    const caseTemplates = [
+    const caseTemplates = [;
       {
         title: "State v. Johnson - Embezzlement Investigation",
         description:
@@ -118,9 +119,9 @@ class DemoDataGenerator {
 
   /**
    * Generate sample evidence for a case
-   */
+   */;
   generateEvidence(caseId: string, count: number = 8): DemoEvidence[] {
-    const evidenceTemplates = [
+    const evidenceTemplates = [;
       {
         title: "Initial Police Report",
         type: "police_report" as const,
@@ -208,7 +209,7 @@ I am willing to testify in court if needed.
 STATEMENT CONCLUSION:
 This statement was given voluntarily. I have read this statement, and it is true and accurate to the best of my knowledge.
 
-Witness Signature: _________________ Date: _______
+Witness Signature: _________________ Date: _______,
 Officer: Detective Brown, Badge #3451
 Case Status: Open Investigation`,
         tags: ["witness", "drug-transaction", "firsthand-account"],
@@ -286,8 +287,8 @@ Date of Report: ${new Date().toLocaleDateString()}
 EVIDENCE INFORMATION:
 Item #: 2024-${caseId}-001
 Description: Apple iPhone 12 Pro, Black, 128GB
-Serial Number: G6QZ3L9KN72F
-IMEI: 356789101234567
+Serial Number: G6QZ3L9KN72F,
+IMEI: 356789101234567,
 Condition: Good, screen locked with passcode
 
 EXAMINATION SUMMARY:
@@ -389,9 +390,9 @@ Legal Review: Prosecutor Williams`,
 
   /**
    * Generate sample persons of interest
-   */
+   */;
   generatePersons(caseId: string, count: number = 6): DemoPerson[] {
-    const personTemplates = [
+    const personTemplates = [;
       {
         name: "John Michael Doe",
         role: "suspect" as const,
@@ -465,11 +466,11 @@ Legal Review: Prosecutor Williams`,
 
   /**
    * Generate a complete case with all related data
-   */
+   */;
   generateCompleteCase(): {
     case: DemoCase;
     evidence: DemoEvidence[];
-    persons: DemoPerson[];
+    persons: DemoPerson[];,
   } {
     const cases = this.generateCases(1);
     const caseData = cases[0];
@@ -483,7 +484,7 @@ Legal Review: Prosecutor Williams`,
 
   /**
    * Generate sample analysis results for testing
-   */
+   */;
   generateAnalysisResults(caseId: string, evidenceId: string) {
     return {
       sessionId: `analysis_${caseId}_${Date.now()}`,
@@ -498,7 +499,7 @@ Legal Review: Prosecutor Williams`,
             "Co-conspirator fled scene on foot",
             "Physical evidence secured in police custody",
           ],
-          timelineEvents: [
+          timelineEvents: [;
             {
               date: "2024-01-15",
               time: "14:30",
@@ -534,7 +535,7 @@ Legal Review: Prosecutor Williams`,
           confidence: 0.92,
         },
         persons_extracted: {
-          persons: [
+          persons: [;
             {
               personId: "per_001",
               fullName: "John Michael Doe",
@@ -562,7 +563,7 @@ Legal Review: Prosecutor Williams`,
               firstMentioned: "witness_statement",
             },
           ],
-          relationships: [
+          relationships: [;
             {
               person1Id: "per_001",
               person2Id: "per_002",
@@ -660,7 +661,7 @@ Legal Review: Prosecutor Williams`,
 // Export singleton instance
 export const demoDataGenerator = new DemoDataGenerator();
 ;
-// Export utility functions
+// Export utility functions;
 export function createTestEvidence(): string {
   return `POLICE INCIDENT REPORT - CASE DEMO-001
 

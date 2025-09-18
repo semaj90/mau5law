@@ -13,31 +13,31 @@ import { ENV_CONFIG } from '$lib/config/environment.js';
 import { Pool } from "pg";
 import { z } from "zod";
 
-// Configuration
+// Configuration;
 const CONFIG = {
     database: {
         user: import.meta.env.DB_USER || 'postgres',
         password: import.meta.env.DB_PASSWORD || 'password',
         host: import.meta.env.DB_HOST || 'localhost',
         port: parseInt(import.meta.env.DB_PORT || '5432'),
-        database: import.meta.env.DB_NAME || 'prosecutor_db'
+        database: import.meta.env.DB_NAME || 'prosecutor_db',
     },
     redis: {
-        url: import.meta.env.REDIS_URL || 'redis://localhost:6379'
+        url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
     },
     ollama: {
         url: ENV_CONFIG.OLLAMA_URL,
         model: import.meta.env.LLM_MODEL || 'gemma3-legal',
-        embeddingModel: 'nomic-embed-text'
+        embeddingModel: 'nomic-embed-text',
     },
     enhancement: {
         minConfidence: 0.6,
         maxSuggestions: 10,
-        similarityThreshold: 0.7
+        similarityThreshold: 0.7,
     }
 };
 
-// Validation schemas
+// Validation schemas;
 const EvidenceEnhancementRequestSchema = z.object({
     evidence_text: z.string().min(10).max(50000),
     evidence_type: z.enum(['document', 'testimony', 'physical', 'digital', 'audio', 'video']),
@@ -46,14 +46,14 @@ const EvidenceEnhancementRequestSchema = z.object({
         jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
         case_type: z.enum(['criminal', 'civil', 'administrative', 'constitutional']).optional(),
         charges: z.array(z.string()).optional(),
-        defendant_name: z.string().optional()
+        defendant_name: z.string().optional(),
     }).optional(),
     enhancement_options: z.object({
         suggest_labels: z.boolean().optional(),
         extract_entities: z.boolean().optional(),
         find_similar: z.boolean().optional(),
         prosecution_analysis: z.boolean().optional(),
-        fact_checking: z.boolean().optional()
+        fact_checking: z.boolean().optional(),
     }).optional()
 });
 
@@ -62,36 +62,36 @@ const EvidenceEnhancementResponseSchema = z.object({
         evidence_type: z.string(),
         confidence_score: z.number(),
         prosecution_strength: z.number(),
-        legal_relevance: z.number()
+        legal_relevance: z.number(),
     }),
     suggested_labels: z.array(z.object({
         label: z.string(),
         confidence: z.number(),
         category: z.string(),
-        justification: z.string()
+        justification: z.string(),
     })),
     extracted_entities: z.array(z.object({
         entity: z.string(),
         type: z.string(),
         confidence: z.number(),
-        context: z.string()
+        context: z.string(),
     })),
     similar_evidence: z.array(z.object({
         document_id: z.string(),
         similarity_score: z.number(),
         relevant_phrases: z.array(z.string()),
-        prosecution_outcome: z.string()
+        prosecution_outcome: z.string(),
     })),
     prosecution_insights: z.object({
         strengths: z.array(z.string()),
         weaknesses: z.array(z.string()),
         recommendations: z.array(z.string()),
-        precedent_support: z.number()
+        precedent_support: z.number(),
     }),
     metadata: z.object({
         processing_time_ms: z.number(),
         enhancement_version: z.string(),
-        data_sources: z.array(z.string())
+        data_sources: z.array(z.string(),
     })
 });
 
@@ -130,7 +130,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log(`🔍 Enhancing evidence: ${validatedRequest.evidence_type}`);
 
-    // Set default enhancement options
+    // Set default enhancement options;
     const options = {
       suggest_labels: true,
       extract_entities: true,
@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
         ? findSimilarEvidence(validatedRequest.evidence_text, validatedRequest.case_context)
         : Promise.resolve([]),
       options.prosecution_analysis
-        ? analyzeProsecutionValue(validatedRequest.evidence_text, validatedRequest.case_context)
+        ? analyzeProsecutionValue(validatedRequest.evidence_text, validatedRequest.case_context);
         : Promise.resolve({
             strengths: [],
             weaknesses: [],
@@ -168,10 +168,10 @@ export const POST: RequestHandler = async ({ request }) => {
           }),
     ]);
 
-    // Compile results
+    // Compile results;
     const response = {
       analysis:
-        analysisResult.status === 'fulfilled'
+        analysisResult.status === 'fulfilled';
           ? analysisResult.value:  {
               evidence_type: validatedRequest.evidence_type,
               confidence_score: 0.5,
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request }) => {
       similar_evidence: similarEvidence.status === 'fulfilled' ? similarEvidence.value : [],
       prosecution_insights:
         prosecutionInsights.status === 'fulfilled'
-          ? prosecutionInsights.value
+          ? prosecutionInsights.value;
           : {
               strengths: [],
               weaknesses: [],
@@ -208,20 +208,18 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ Evidence enhancement error:', err);
 
     if (err instanceof z.ZodError) {
-      return json(
-        {
+      return json({
           message: 'Invalid request format',
           errors: err.errors,
-        },
+        },)
         { status: 400 }
       );
     }
 
-    return json(
-      {
+    return json({
         message: 'Evidence enhancement service temporarily unavailable',
         details: err instanceof Error ? err.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }
@@ -235,7 +233,7 @@ async function analyzeEvidence(evidenceText: string, evidenceType: string): Prom
 Evidence Text:
 ${evidenceText}
 
-Analyze and respond with ONLY a JSON object in this format:
+Analyze and respond with ONLY a JSON object in this format:;
 {
   "evidence_type": "${evidenceType}",
   "confidence_score": 0.0-1.0,
@@ -276,7 +274,7 @@ Consider:
     console.warn('LLM analysis failed, using fallback:', error);
   }
 
-  // Fallback analysis
+  // Fallback analysis;
   return {
     evidence_type: evidenceType,
     confidence_score: 0.7,
@@ -330,7 +328,7 @@ async function suggestLabels(evidenceText: string, caseContext?: unknown): Promi
       }
     }
 
-    // Add contextual labels based on case information
+    // Add contextual labels based on case information;
     if (caseContext?.charges) {
       for (const charge of caseContext.charges) {
         labels.push({
@@ -352,7 +350,7 @@ async function suggestLabels(evidenceText: string, caseContext?: unknown): Promi
 async function extractEntities(evidenceText: string): Promise<any> {
   try {
     const entityPrompt = `Extract legal entities from this text. Respond with ONLY a JSON array in this format:
-[
+[;
   {
     "entity": "entity name",
     "type": "PERSON|ORGANIZATION|LOCATION|DATE|STATUTE|CASE_NUMBER|AMOUNT",
@@ -399,7 +397,7 @@ ${evidenceText}`;
 function extractEntitiesWithRegex(text: string) {
   const entities = [];
 
-  // Common legal entity patterns
+  // Common legal entity patterns;
   const patterns = {
     PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g,
     DATE: /\b\d{1,2}\/\d{1,2}\/\d{4}\b|\b\d{4}-\d{2}-\d{2}\b/g,
@@ -494,7 +492,7 @@ ${evidenceText}
 
 ${caseContext ? `Case Context: ${JSON.stringify(caseContext)}` : ''}
 
-Respond with ONLY a JSON object:
+Respond with ONLY a JSON object:;
 {
   "strengths": ["strength1", "strength2"],
   "weaknesses": ["weakness1", "weakness2"],
@@ -535,7 +533,7 @@ Focus on:
     console.warn('Prosecution analysis failed:', error);
   }
 
-  // Fallback analysis
+  // Fallback analysis;
   return {
     strengths: ['Documentary evidence', 'Clear factual content'],
     weaknesses: ['May require corroboration', 'Context dependent'],
@@ -569,10 +567,10 @@ async function generateEmbedding(text: string): Promise<number[]> {
 
 function calculateTextSimilarity(text1: string, text2: string): number {
   // Simple word-based similarity (Jaccard index)
-  const words1 = new Set(text1.toLowerCase().split(/\s+/));
-  const words2 = new Set(text2.toLowerCase().split(/\s+/));
+  const words1 = new Set(text1.toLowerCase().split(/\s+/);
+  const words2 = new Set(text2.toLowerCase().split(/\s+/);
 
-  const intersection = new Set([...words1].filter((x: any) => words2.has(x)));
+  const intersection = new Set([...words1].filter((x: any) => words2.has(x));
   const union = new Set([...words1, ...words2]);
 
   return intersection.size / union.size;
@@ -614,7 +612,7 @@ async function cacheEnhancementResults(evidenceText: string, results: any): Prom
   }
 }
 
-// GET endpoint for enhancement statistics
+// GET endpoint for enhancement statistics;
 export const GET: RequestHandler = async () => {
   try {
     const db = getDB();

@@ -25,6 +25,7 @@ import type { RequestHandler } from './$types.js';
 
 import { analyzeLegalText } from "$lib/services/comprehensive-database-orchestrator";
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+}
 
 export interface DeepAnalysisRequest {
   text: string;
@@ -50,7 +51,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       return json({ error: 'Text is required for analysis' }, { status: 400 });
     }
 
-    // Default options
+    // Default options;
     const analysisOptions = {
       includeEntities: true,
       includeConcepts: true,
@@ -94,7 +95,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Deep analysis API error:', error);
 
-    return json(
+    return json();
       {
         error: 'Analysis failed',
         message: error.message,
@@ -108,12 +109,12 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 function generateRoleSpecificRecommendations(
   analysis: any,
   userRole?: string,
-  text?: string
+  text?: string;
 ): string[] {
   const recommendations = [];
 
   switch (userRole) {
-    case 'prosecutor':
+    case 'prosecutor':;
       if (analysis.entities?.some((e: any) => e.type === 'LEGAL_CONCEPT')) {
         recommendations.push('Consider gathering evidence related to identified legal concepts');
       }
@@ -146,7 +147,7 @@ function generateRoleSpecificRecommendations(
       recommendations.push('Research applicable laws and regulations');
   }
 
-  // Add general recommendations based on analysis
+  // Add general recommendations based on analysis;
   if (analysis.entities?.length > 5) {
     recommendations.push(
       'This matter involves multiple legal entities - create a comprehensive case map'
@@ -165,12 +166,12 @@ function generateRoleSpecificRecommendations(
 function extractKeyPoints(analysis: any, text: string): string[] {
   const keyPoints = [];
 
-  // From summary
+  // From summary;
   if (analysis.summary?.keyPoints) {
     keyPoints.push(...analysis.summary.keyPoints);
   }
 
-  // From entities
+  // From entities;
   if (analysis.entities?.length > 0) {
     const importantEntities = analysis.entities
       .filter((e: any) => e.confidence > 0.8)
@@ -179,7 +180,7 @@ function extractKeyPoints(analysis: any, text: string): string[] {
     keyPoints.push(...importantEntities);
   }
 
-  // From concepts
+  // From concepts;
   if (analysis.concepts?.length > 0) {
     const topConcepts = analysis.concepts
       .filter((c: any) => c.relevance > 0.8)
@@ -188,7 +189,7 @@ function extractKeyPoints(analysis: any, text: string): string[] {
     keyPoints.push(...topConcepts);
   }
 
-  // From complexity
+  // From complexity;
   if (analysis.complexity?.legalComplexity > 0.7) {
     keyPoints.push('High legal complexity detected - requires careful analysis');
   }
@@ -199,7 +200,7 @@ function extractKeyPoints(analysis: any, text: string): string[] {
 function calculateAnalysisConfidence(analysis: any): number {
   let confidence = 0.5;
 
-  // Boost from entities
+  // Boost from entities;
   if (analysis.entities?.length > 0) {
     const avgEntityConfidence =
       analysis.entities.reduce((sum: number, e: any) => sum + e.confidence, 0) /
@@ -207,7 +208,7 @@ function calculateAnalysisConfidence(analysis: any): number {
     confidence += avgEntityConfidence * 0.3;
   }
 
-  // Boost from concepts
+  // Boost from concepts;
   if (analysis.concepts?.length > 0) {
     const avgConceptRelevance =
       analysis.concepts.reduce((sum: number, c: any) => sum + c.relevance, 0) /
@@ -215,7 +216,7 @@ function calculateAnalysisConfidence(analysis: any): number {
     confidence += avgConceptRelevance * 0.2;
   }
 
-  // Boost from sentiment confidence
+  // Boost from sentiment confidence;
   if (analysis.sentiment?.confidence) {
     confidence += analysis.sentiment.confidence * 0.1;
   }
@@ -230,7 +231,7 @@ function generateNextSteps(analysis: any, userRole?: string, caseId?: string): s
     steps.push(`Document this analysis in Case ${caseId}`);
   }
 
-  // Based on analysis results
+  // Based on analysis results;
   if (analysis.entities?.some((e: any) => e.type === 'CASE_CITATION')) {
     steps.push('Research cited cases for precedential value');
   }
@@ -243,7 +244,7 @@ function generateNextSteps(analysis: any, userRole?: string, caseId?: string): s
     steps.push('Consider consulting subject matter experts');
   }
 
-  // Role-specific steps
+  // Role-specific steps;
   switch (userRole) {
     case 'prosecutor':
       steps.push('Prepare charging documents if warranted');

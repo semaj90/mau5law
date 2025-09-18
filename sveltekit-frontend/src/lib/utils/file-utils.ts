@@ -5,7 +5,7 @@ export function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 Bytes";
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(bytes) / Math.log(k);
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 export function getFileTypeIcon(mimeType: string): string {
@@ -13,12 +13,12 @@ export function getFileTypeIcon(mimeType: string): string {
   if (mimeType.startsWith("video/")) return "video";
   if (mimeType.startsWith("audio/")) return "audio";
   if (mimeType.includes("pdf")) return "pdf";
-  if (mimeType.includes("word") || mimeType.includes("document"))
+  if (mimeType.includes("word") || mimeType.includes("document")
     return "document";
   if (mimeType.includes("text")) return "text";
-  if (mimeType.includes("spreadsheet") || mimeType.includes("excel"))
+  if (mimeType.includes("spreadsheet") || mimeType.includes("excel")
     return "spreadsheet";
-  if (mimeType.includes("presentation") || mimeType.includes("powerpoint"))
+  if (mimeType.includes("presentation") || mimeType.includes("powerpoint")
     return "presentation";
   return "file";
 }
@@ -27,12 +27,12 @@ export function getFileCategory(mimeType: string): string {
   if (mimeType.startsWith("video/")) return "Video";
   if (mimeType.startsWith("audio/")) return "Audio";
   if (mimeType.includes("pdf")) return "PDF";
-  if (mimeType.includes("word") || mimeType.includes("document"))
+  if (mimeType.includes("word") || mimeType.includes("document")
     return "Document";
   if (mimeType.includes("text")) return "Text";
-  if (mimeType.includes("spreadsheet") || mimeType.includes("excel"))
+  if (mimeType.includes("spreadsheet") || mimeType.includes("excel")
     return "Spreadsheet";
-  if (mimeType.includes("presentation") || mimeType.includes("powerpoint"))
+  if (mimeType.includes("presentation") || mimeType.includes("powerpoint")
     return "Presentation";
   return "Other";
 }
@@ -141,7 +141,7 @@ export function copyToClipboard(text: string): Promise<void> {
 export function generateThumbnail(
   file: File,
   maxWidth: number = 150,
-  maxHeight: number = 150
+  maxHeight: number = 150;
 ): Promise<string | null> {
   return new Promise((resolve) => {
     if (!isImageFile(file.type)) {
@@ -171,7 +171,7 @@ export function generateThumbnail(
       canvas.height = height;
 
       ctx?.drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL("image/jpeg", 0.8));
+      resolve(canvas.toDataURL("image/jpeg", 0.8);
     };
 
     img.onerror = () => resolve(null);

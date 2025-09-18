@@ -12,7 +12,7 @@ interface DetectiveCase {
   location: string;
   assignedDetective: string;
   openedDate: string;
-  lastUpdated: string;
+  lastUpdated: string;,
 }
 
 interface Suspect {
@@ -28,7 +28,7 @@ interface Suspect {
     aggression: number;
     deception: number;
     impulsivity: number;
-    planning: number;
+    planning: number;,
   };
   timeline: TimelineEvent[];
   contactInfo?: {
@@ -39,7 +39,7 @@ interface Suspect {
   priorRecord?: {
     arrests: number;
     convictions: number;
-    violentOffenses: boolean;
+    violentOffenses: boolean;,
   };
 }
 
@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ params }) => {
     
     if (!caseId) {
       return json(
-        { success: false, error: 'Case ID required' },
+        { success: false, error: 'Case ID required' },)
         { status: 400 }
       );
     }
@@ -82,7 +82,7 @@ export const GET: RequestHandler = async ({ params }) => {
     
     if (!caseData) {
       return json(
-        { success: false, error: 'Case not found' },
+        { success: false, error: 'Case not found' },)
         { status: 404 }
       );
     }
@@ -97,14 +97,14 @@ export const GET: RequestHandler = async ({ params }) => {
         totalSuspects: caseData.suspects.length,
         totalEvidence: caseData.evidence.length,
         timelineSpan: calculateTimelineSpan(caseData.timeline),
-        riskLevel: calculateOverallRiskLevel(caseData.suspects)
+        riskLevel: calculateOverallRiskLevel(caseData.suspects),
       }
     });
 
   } catch (error) {
     console.error('Detective case API error:', error);
     return json(
-      { success: false, error: 'Failed to retrieve case data', case: null },
+      { success: false, error: 'Failed to retrieve case data', case: null },)
       { status: 500 }
     );
   }
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
     if (!caseId) {
       return json(
-        { success: false, error: 'Case ID required' },
+        { success: false, error: 'Case ID required' },)
         { status: 400 }
       );
     }
@@ -128,13 +128,13 @@ export const POST: RequestHandler = async ({ params, request }) => {
     return json({
       success: true,
       case: updatedCase,
-      message: 'Case updated successfully'
+      message: 'Case updated successfully',
     });
 
   } catch (error) {
     console.error('Detective case update error:', error);
     return json(
-      { success: false, error: 'Failed to update case data' },
+      { success: false, error: 'Failed to update case data' },)
       { status: 500 }
     );
   }
@@ -142,7 +142,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
 async function getDetectiveCaseData(caseId: string): Promise<any> {
   
-  // Mock implementation - in production, query database
+  // Mock implementation - in production, query database;
   if (!caseId.startsWith('CASE-')) {
     return null;
   }
@@ -158,10 +158,10 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
     location: 'Downtown District',
     assignedDetective: 'Det. Sarah Martinez',
     openedDate: '2024-01-15T09:00:00Z',
-    lastUpdated: new Date().toISOString()
+    lastUpdated: new Date().toISOString(),
   };
 
-  const mockSuspects: Suspect[] = [
+  const mockSuspects: Suspect[] = [;
     {
       id: 'SUSPECT-001',
       name: 'John D. Anderson',
@@ -181,18 +181,18 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
         aggression: 78,
         deception: 65,
         impulsivity: 89,
-        planning: 45
+        planning: 45,
       },
       timeline: [],
       contactInfo: {
         phone: '(555) 123-4567',
         address: '123 Oak Street, Apt 4B',
-        email: 'j.anderson.email@domain.com'
+        email: 'j.anderson.email@domain.com',
       },
       priorRecord: {
         arrests: 3,
         convictions: 1,
-        violentOffenses: false
+        violentOffenses: false,
       }
     },
     {
@@ -212,7 +212,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
         aggression: 45,
         deception: 78,
         impulsivity: 32,
-        planning: 84
+        planning: 84,
       },
       timeline: [],
       contactInfo: {
@@ -222,12 +222,12 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       priorRecord: {
         arrests: 0,
         convictions: 0,
-        violentOffenses: false
+        violentOffenses: false,
       }
     }
   ];
 
-  const mockTimeline: TimelineEvent[] = [
+  const mockTimeline: TimelineEvent[] = [;
     {
       timestamp: '2024-01-15T10:30:00Z',
       event: 'Threatening email sent to victim from suspect\'s known email account',
@@ -235,7 +235,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       evidenceIds: ['E001', 'E007'],
       correlationScore: 0.92,
       location: 'Digital - Sent from home IP address',
-      witnesses: ['IT Administrator - Email server logs']
+      witnesses: ['IT Administrator - Email server logs'],
     },
     {
       timestamp: '2024-01-18T14:15:00Z', 
@@ -252,7 +252,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       significance: 'MEDIUM',
       evidenceIds: ['E002'],
       correlationScore: 0.78,
-      location: 'First National Bank - Downtown Branch'
+      location: 'First National Bank - Downtown Branch',
     },
     {
       timestamp: '2024-01-25T16:45:00Z',
@@ -279,11 +279,11 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       evidenceIds: ['E009'],
       correlationScore: 0.71,
       location: 'Hardware store - 5th Avenue',
-      witnesses: ['Store Clerk Peterson']
+      witnesses: ['Store Clerk Peterson'],
     }
   ];
 
-  const mockEvidence: Evidence[] = [
+  const mockEvidence: Evidence[] = [;
     {
       id: 'E001',
       type: 'DIGITAL',
@@ -294,7 +294,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       collectedBy: 'Digital Forensics Unit - Tech. Anderson',
       chainOfCustody: ['Tech. Anderson', 'Det. Martinez', 'Evidence Locker 247'],
       analysisStatus: 'COMPLETE',
-      findings: 'Email headers confirm origin from suspect\'s home IP address. Metadata shows creation time consistent with suspect alibi contradictions.'
+      findings: 'Email headers confirm origin from suspect\'s home IP address. Metadata shows creation time consistent with suspect alibi contradictions.',
     },
     {
       id: 'E002',
@@ -306,7 +306,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       collectedBy: 'Financial Crimes Unit - Det. Wilson',
       chainOfCustody: ['Det. Wilson', 'Det. Martinez', 'Evidence Locker 248'],
       analysisStatus: 'COMPLETE',
-      findings: 'Withdrawals occurred in amounts just below reporting thresholds. Pattern suggests deliberate avoidance of bank reporting requirements.'
+      findings: 'Withdrawals occurred in amounts just below reporting thresholds. Pattern suggests deliberate avoidance of bank reporting requirements.',
     },
     {
       id: 'E003',
@@ -318,7 +318,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       collectedBy: 'Det. Martinez',
       chainOfCustody: ['Det. Martinez', 'Evidence Locker 249'],
       analysisStatus: 'COMPLETE',
-      findings: 'Consistent statements from 4 independent witnesses describing escalating aggressive behavior and specific threats made by suspect.'
+      findings: 'Consistent statements from 4 independent witnesses describing escalating aggressive behavior and specific threats made by suspect.',
     },
     {
       id: 'E004',
@@ -330,7 +330,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       collectedBy: 'Crime Scene Unit - Off. Rodriguez',
       chainOfCustody: ['Off. Rodriguez', 'Det. Martinez', 'Evidence Locker 250'],
       analysisStatus: 'IN_PROGRESS',
-      findings: 'Clear video evidence shows suspect initiating physical contact. Audio analysis reveals specific threats made during altercation.'
+      findings: 'Clear video evidence shows suspect initiating physical contact. Audio analysis reveals specific threats made during altercation.',
     },
     {
       id: 'E005',
@@ -342,7 +342,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       collectedBy: 'Crime Scene Unit - Tech. Johnson',
       chainOfCustody: ['Tech. Johnson', 'Forensics Lab', 'Det. Martinez', 'Evidence Locker 251'],
       analysisStatus: 'PENDING',
-      findings: null
+      findings: null,
     },
     {
       id: 'E006',
@@ -366,7 +366,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       collectedBy: 'Digital Forensics Unit - Tech. Lee',
       chainOfCustody: ['Tech. Lee', 'Det. Martinez', 'Evidence Locker 253'],
       analysisStatus: 'COMPLETE',
-      findings: 'Screenshots captured before suspect deleted posts. Content shows escalating anger and veiled threats toward victim. Some posts were deleted before capture.'
+      findings: 'Screenshots captured before suspect deleted posts. Content shows escalating anger and veiled threats toward victim. Some posts were deleted before capture.',
     },
     {
       id: 'E008',
@@ -378,7 +378,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       collectedBy: 'Surveillance Unit - Det. Chen',
       chainOfCustody: ['Det. Chen', 'Det. Martinez', 'Evidence Locker 254'],
       analysisStatus: 'COMPLETE',
-      findings: 'High-resolution photos clearly identify suspect conducting surveillance over 3 separate days. Vehicle license plate matches suspect\'s registered vehicle.'
+      findings: 'High-resolution photos clearly identify suspect conducting surveillance over 3 separate days. Vehicle license plate matches suspect\'s registered vehicle.',
     },
     {
       id: 'E009',
@@ -390,7 +390,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
       collectedBy: 'Det. Martinez',
       chainOfCustody: ['Store Manager', 'Det. Martinez', 'Evidence Locker 255'],
       analysisStatus: 'COMPLETE',
-      findings: 'Credit card records and store surveillance confirm suspect purchased unusual combination of items consistent with restraint and confinement preparations.'
+      findings: 'Credit card records and store surveillance confirm suspect purchased unusual combination of items consistent with restraint and confinement preparations.',
     }
   ];
 
@@ -398,7 +398,7 @@ async function getDetectiveCaseData(caseId: string): Promise<any> {
     case: mockCase,
     suspects: mockSuspects,
     timeline: mockTimeline,
-    evidence: mockEvidence
+    evidence: mockEvidence,
   };
 }
 
@@ -410,19 +410,19 @@ async function updateDetectiveCase(caseId: string, updates: any): Promise<Detect
   return {
     ...existing.case,
     ...updates,
-    lastUpdated: new Date().toISOString()
+    lastUpdated: new Date().toISOString(),
   };
 }
 
 function calculateTimelineSpan(timeline: TimelineEvent[]): string {
   if (timeline.length === 0) return 'No events';
   
-  const dates = timeline.map(event => new Date(event.timestamp));
-  const earliest = new Date(Math.min(...dates.map(d => d.getTime())));
-  const latest = new Date(Math.max(...dates.map(d => d.getTime())));
+  const dates = timeline.map(event => new Date(event.timestamp);
+  const earliest = new Date(Math.min(...dates.map(d => d.getTime()));
+  const latest = new Date(Math.max(...dates.map(d => d.getTime()));
   
   const diffMs = latest.getTime() - earliest.getTime();
-  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24);
   
   return `${diffDays} days`;
 }

@@ -5,7 +5,7 @@ import { legalCaseManagementMachine, type LegalCaseContext } from './legal-case-
 import { cache } from '$lib/server/cache/redis';
 import { workflowQueue } from '$lib/server/message-queue';
 
-// Types for workflow orchestration
+// Types for workflow orchestration;
 export interface WorkflowInstance {
   id: string;
   type: 'document-processing' | 'legal-case-management' | 'evidence-analysis' | 'research';
@@ -45,7 +45,7 @@ class WorkflowOrchestrator {
     documentId: string,
     content: string,
     metadata: Record<string, any> = {},
-    parentWorkflow?: string
+    parentWorkflow?: string;
   ): Promise<string> {
     const workflowId = `doc_${documentId}_${Date.now()}`;
     
@@ -80,7 +80,7 @@ class WorkflowOrchestrator {
 
     this.workflows.set(workflowId, workflow);
 
-    // Set up event listeners
+    // Set up event listeners;
     actor.subscribe((snapshot) => {
       this.onWorkflowStateChange(workflowId, snapshot);
     });
@@ -99,7 +99,7 @@ class WorkflowOrchestrator {
     // Cache workflow state
     await this.persistWorkflow(workflowId);
     
-    // Emit event
+    // Emit event;
     this.emitEvent({
       type: 'WORKFLOW_STARTED',
       workflowId,
@@ -117,7 +117,7 @@ class WorkflowOrchestrator {
     caseType: string,
     jurisdiction: string,
     createdBy: string,
-    parentWorkflow?: string
+    parentWorkflow?: string;
   ): Promise<string> {
     const workflowId = `case_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
@@ -148,7 +148,7 @@ class WorkflowOrchestrator {
 
     this.workflows.set(workflowId, workflow);
 
-    // Set up event listeners
+    // Set up event listeners;
     actor.subscribe((snapshot) => {
       this.onWorkflowStateChange(workflowId, snapshot);
     });
@@ -169,7 +169,7 @@ class WorkflowOrchestrator {
     // Cache workflow state
     await this.persistWorkflow(workflowId);
     
-    // Emit event
+    // Emit event;
     this.emitEvent({
       type: 'WORKFLOW_STARTED',
       workflowId,
@@ -180,7 +180,7 @@ class WorkflowOrchestrator {
     return workflowId;
   }
 
-  // Send event to a specific workflow
+  // Send event to a specific workflow;
   async sendToWorkflow(workflowId: string, event: any): Promise<boolean> {
     const workflow = this.workflows.get(workflowId);
     if (!workflow || !workflow.actor) {
@@ -210,12 +210,12 @@ class WorkflowOrchestrator {
     }
   }
 
-  // Get workflow status
+  // Get workflow status;
   getWorkflowStatus(workflowId: string): WorkflowInstance | null {
     const workflow = this.workflows.get(workflowId);
     if (!workflow) return null;
 
-    // Update with current actor state
+    // Update with current actor state;
     if (workflow.actor) {
       const snapshot = workflow.actor.getSnapshot();
       workflow.context = snapshot.context;
@@ -225,7 +225,7 @@ class WorkflowOrchestrator {
     return workflow;
   }
 
-  // Get all workflows
+  // Get all workflows;
   getAllWorkflows(): WorkflowInstance[] {
     return Array.from(this.workflows.values()).map(workflow => {
       if (workflow.actor) {
@@ -237,17 +237,17 @@ class WorkflowOrchestrator {
     });
   }
 
-  // Get workflows by type
+  // Get workflows by type;
   getWorkflowsByType(type: WorkflowInstance['type']): WorkflowInstance[] {
     return this.getAllWorkflows().filter(workflow => workflow.type === type);
   }
 
-  // Get workflows by status
+  // Get workflows by status;
   getWorkflowsByStatus(status: WorkflowInstance['status']): WorkflowInstance[] {
     return this.getAllWorkflows().filter(workflow => workflow.status === status);
   }
 
-  // Pause a workflow
+  // Pause a workflow;
   async pauseWorkflow(workflowId: string): Promise<boolean> {
     const workflow = this.workflows.get(workflowId);
     if (!workflow) return false;
@@ -267,7 +267,7 @@ class WorkflowOrchestrator {
     return true;
   }
 
-  // Resume a workflow
+  // Resume a workflow;
   async resumeWorkflow(workflowId: string): Promise<boolean> {
     const workflow = this.workflows.get(workflowId);
     if (!workflow || workflow.status !== 'paused') return false;
@@ -287,7 +287,7 @@ class WorkflowOrchestrator {
     return true;
   }
 
-  // Cancel a workflow
+  // Cancel a workflow;
   async cancelWorkflow(workflowId: string): Promise<boolean> {
     const workflow = this.workflows.get(workflowId);
     if (!workflow) return false;
@@ -311,7 +311,7 @@ class WorkflowOrchestrator {
     return true;
   }
 
-  // Create workflow dependencies
+  // Create workflow dependencies;
   async createDependency(workflowId: string, dependsOnWorkflowId: string): Promise<boolean> {
     const workflow = this.workflows.get(workflowId);
     const dependencyWorkflow = this.workflows.get(dependsOnWorkflowId);
@@ -327,7 +327,7 @@ class WorkflowOrchestrator {
     return true;
   }
 
-  // Create parent-child workflow relationship
+  // Create parent-child workflow relationship;
   async createChildWorkflow(parentWorkflowId: string, childWorkflowId: string): Promise<boolean> {
     const parentWorkflow = this.workflows.get(parentWorkflowId);
     const childWorkflow = this.workflows.get(childWorkflowId);
@@ -347,7 +347,7 @@ class WorkflowOrchestrator {
     return true;
   }
 
-  // Subscribe to workflow events
+  // Subscribe to workflow events;
   subscribe(eventType: string, callback: (event: OrchestrationEvent) => void): () => void {
     if (!this.subscribers.has(eventType)) {
       this.subscribers.set(eventType, []);
@@ -355,7 +355,7 @@ class WorkflowOrchestrator {
     
     this.subscribers.get(eventType)!.push(callback);
     
-    // Return unsubscribe function
+    // Return unsubscribe function;
     return () => {
       const subscribers = this.subscribers.get(eventType);
       if (subscribers) {
@@ -367,7 +367,7 @@ class WorkflowOrchestrator {
     };
   }
 
-  // Event handling
+  // Event handling;
   private onWorkflowStateChange(workflowId: string, snapshot: any): void {
     const workflow = this.workflows.get(workflowId);
     if (!workflow) return;
@@ -376,7 +376,7 @@ class WorkflowOrchestrator {
     workflow.progress = snapshot.context.progress || 0;
     workflow.updatedAt = Date.now();
 
-    // Update status based on state
+    // Update status based on state;
     if (snapshot.matches('completed') || snapshot.matches('archived')) {
       workflow.status = 'completed';
       
@@ -396,19 +396,19 @@ class WorkflowOrchestrator {
         timestamp: Date.now(),
       });
     } else if (workflow.status === 'paused') {
-      // Keep paused status
+      // Keep paused status;
     } else {
       workflow.status = 'running';
     }
 
-    // Emit progress update
+    // Emit progress update;
     this.emitEvent({
       type: 'WORKFLOW_PROGRESS',
       workflowId,
       payload: { 
         progress: workflow.progress,
         stage: snapshot.context.processingStage || snapshot.context.workflowStage,
-        state: snapshot.value 
+        state: snapshot.value ,
       },
       timestamp: Date.now(),
     });
@@ -423,7 +423,7 @@ class WorkflowOrchestrator {
     // Add to event queue
     this.eventQueue.push(event);
     
-    // Keep only last 1000 events
+    // Keep only last 1000 events;
     if (this.eventQueue.length > 1000) {
       this.eventQueue.shift();
     }
@@ -441,25 +441,25 @@ class WorkflowOrchestrator {
     });
   }
 
-  // Persistence
+  // Persistence;
   private async persistWorkflow(workflowId: string): Promise<void> {
     const workflow = this.workflows.get(workflowId);
     if (!workflow) return;
 
     try {
-      // Create serializable version (exclude actor)
+      // Create serializable version (exclude actor);
       const serializable = {
         ...workflow,
         actor: null, // Don't serialize the actor
       };
 
-      await cache.set(`workflow:${workflowId}`, serializable, 86400); // 24h TTL
+      await cache.set(`workflow:${workflowId}`, serializable, 86400); // 24h TTL;
     } catch (error) {
       console.error(`❌ Failed to persist workflow ${workflowId}:`, error);
     }
   }
 
-  // Load workflow from cache
+  // Load workflow from cache;
   async loadWorkflow(workflowId: string): Promise<WorkflowInstance | null> {
     try {
       const cached = await cache.get<WorkflowInstance>(`workflow:${workflowId}`);
@@ -479,7 +479,7 @@ class WorkflowOrchestrator {
           return null;
       }
 
-      // Restore workflow
+      // Restore workflow;
       const workflow: WorkflowInstance = {
         ...cached,
         actor,
@@ -487,7 +487,7 @@ class WorkflowOrchestrator {
 
       this.workflows.set(workflowId, workflow);
 
-      // Set up event listeners
+      // Set up event listeners;
       actor.subscribe((snapshot) => {
         this.onWorkflowStateChange(workflowId, snapshot);
       });
@@ -499,13 +499,13 @@ class WorkflowOrchestrator {
     }
   }
 
-  // Orchestration statistics
+  // Orchestration statistics;
   getStatistics(): {
     total: number;
     byType: Record<string, number>;
     byStatus: Record<string, number>;
     averageProgress: number;
-    totalEvents: number;
+    totalEvents: number;,
   } {
     const workflows = this.getAllWorkflows();
     
@@ -528,7 +528,7 @@ class WorkflowOrchestrator {
     };
   }
 
-  // Cleanup completed workflows
+  // Cleanup completed workflows;
   async cleanup(olderThanMs: number = 24 * 60 * 60 * 1000): Promise<number> {
     const cutoff = Date.now() - olderThanMs;
     let cleaned = 0;
@@ -536,7 +536,7 @@ class WorkflowOrchestrator {
     for (const [workflowId, workflow] of this.workflows) {
       if (
         workflow.status === 'completed' &&
-        workflow.updatedAt < cutoff
+        workflow.updatedAt < cutoff;
       ) {
         if (workflow.actor) {
           workflow.actor.stop();
@@ -552,7 +552,7 @@ class WorkflowOrchestrator {
     return cleaned;
   }
 
-  // Shutdown orchestrator
+  // Shutdown orchestrator;
   async shutdown(): Promise<void> {
     console.log('🛑 Shutting down workflow orchestrator...');
     

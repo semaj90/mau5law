@@ -99,7 +99,7 @@ function createAutoMemoryStore() {
   const localMemories = $state([]);
   const userPatterns = $state({});
   const predictions = $state([]);
-  const searchCache = $state(new Map());
+  const searchCache = $state(new Map();
   const connectionStatus = $state("disconnected");
 
   let fuseIndex = null;

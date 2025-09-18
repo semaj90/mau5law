@@ -4,12 +4,13 @@
 import type { Writable } from 'svelte/store';
 import { writable, derived } from "svelte/store";
 import { browser } from "$app/environment";
+}
 
 export interface ContextMenuState {
   show: boolean;
   x: number;
   y: number;
-  item: any | null;
+  item: any | null;,
 }
 
 const defaultContextMenuState: ContextMenuState = {
@@ -28,10 +29,10 @@ export const contextMenuActions = {
     contextMenuStore.set({ show: true, x, y, item });
   },
   close: () => {
-    contextMenuStore.set({ ...defaultContextMenuState });
+    contextMenuStore.set({ ...defaultContextMenuState ,});
   },
   update: (state: Partial<ContextMenuState>) => {
-    contextMenuStore.update((s) => ({ ...s, ...state }));
+    contextMenuStore.update((s) => ({ ...s, ...state ,});
   },
 };
 
@@ -47,7 +48,7 @@ export type NotificationData = {
 };
 
 export type Notification = NotificationData & {
-  id: string;
+  id: string;,
 };
 
 // UI State stores
@@ -62,7 +63,7 @@ export const sidebar = writable({
   collapsed: false,
 });
 
-// Animation preferences
+// Animation preferences;
 export const motion = writable({
   reduceMotion: false,
   duration: "normal" as "fast" | "normal" | "slow",
@@ -72,7 +73,7 @@ export const motion = writable({
 // Component state
 export const forms = writable({});
 
-// Derived stores
+// Derived stores;
 export const isDarkMode = derived(theme, ($theme) => {
   if (browser) {
     if ($theme === "auto") {
@@ -99,9 +100,9 @@ export type FormState = {
   values: Record<string, any>;
 };
 
-// Store actions
+// Store actions;
 export const uiStore = {
-  // Notifications
+  // Notifications;
   notify: (notification: NotificationData) => {
     const id = (globalThis as any).crypto?.randomUUID?.() || (() => {
       const arr = new Uint8Array(16);
@@ -117,41 +118,41 @@ export const uiStore = {
 
     if ((notification as { duration?: any }).duration !== 0) {
       setTimeout(() => {
-        notifications.update((list) => list.filter((n) => n.id !== id));
+        notifications.update((list) => list.filter((n) => n.id !== id);
       }, (notification as { duration?: any }).duration || 5000);
     }
     return id;
   },
 
   dismissNotification: (id: string) => {
-    notifications.update((list) => list.filter((n) => n.id !== id));
+    notifications.update((list) => list.filter((n) => n.id !== id);
   },
 
-  // Modals
+  // Modals;
   openModal: (modalId: string) => {
-    modals.update((state) => ({ ...state, [modalId]: true }));
+    modals.update((state) => ({ ...state, [modalId]: true });
   },
 
   closeModal: (modalId: string) => {
-    modals.update((state) => ({ ...state, [modalId]: false }));
+    modals.update((state) => ({ ...state, [modalId]: false });
   },
 
-  // Loading states
+  // Loading states;
   setLoading: (key: string, isLoading: boolean) => {
-    loading.update((state) => ({ ...state, [key]: isLoading }));
+    loading.update((state) => ({ ...state, [key]: isLoading });
   },
 
-  // Sidebar
+  // Sidebar;
   toggleSidebar: () => {
-    sidebar.update((state) => ({ ...state, isOpen: !state.isOpen }));
+    sidebar.update((state) => ({ ...state, isOpen: !state.isOpen });
   },
 
-  // Forms
+  // Forms;
   updateForm: (formId: string, updates: Partial<FormState>) => {
     forms.update((state) => ({
       ...state,
       [formId]: { ...state[formId], ...updates },
-    }));
+    });
   },
 };
 

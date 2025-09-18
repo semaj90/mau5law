@@ -5,6 +5,7 @@ import type { RequestHandler } from './$types.js';
 
 import { json } from '@sveltejs/kit';
 import { URL } from "url";
+}
 
 export interface TestResult {
   test: string;
@@ -19,7 +20,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const results: TestResult[] = [];
 
   try {
-    // Test 1: Basic Configuration
+    // Test 1: Basic Configuration;
     if (testType === 'all' || testType === 'config') {
       const startTime = Date.now();
       try {
@@ -30,35 +31,35 @@ export const GET: RequestHandler = async ({ url }) => {
           enableBatching: true,
           enableSOMClustering: true,
           enableNESCache: true,
-          memoryLimit: '32MB'
+          memoryLimit: '32MB',
         };
 
         results.push({
           test: 'qdrant_config',
           status: 'success',
           data: config,
-          duration: Date.now() - startTime
+          duration: Date.now() - startTime,
         });
       } catch (error: any) {
         results.push({
           test: 'qdrant_config',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
+          duration: Date.now() - startTime,
         });
       }
     }
 
-    // Test 2: Vector Simulation
+    // Test 2: Vector Simulation;
     if (testType === 'all' || testType === 'vector') {
       const startTime = Date.now();
       try {
         // Simulate 768-dimensional vector operations
         const sampleVector = Array.from({ length: 768 }, () => Math.random() * 2 - 1);
-        const magnitude = Math.sqrt(sampleVector.reduce((sum, val) => sum + val * val, 0));
+        const magnitude = Math.sqrt(sampleVector.reduce((sum, val) => sum + val * val, 0);
         const normalizedVector = sampleVector.map(val => val / magnitude);
 
-        // Simulate search results
+        // Simulate search results;
         const mockResults = Array.from({ length: 5 }, (_, i) => ({
           id: `doc_${i + 1}`,
           score: Math.random() * 0.5 + 0.5,
@@ -67,7 +68,7 @@ export const GET: RequestHandler = async ({ url }) => {
             type: 'evidence',
             caseId: `case_${Math.floor(Math.random() * 3) + 1}`
           }
-        }));
+        });
 
         results.push({
           test: 'vector_operations',
@@ -76,21 +77,21 @@ export const GET: RequestHandler = async ({ url }) => {
             vector_dimensions: normalizedVector.length,
             is_normalized: Math.abs(magnitude - 1) < 0.001,
             mock_search_results: mockResults.length,
-            sample_scores: mockResults.map(r => Math.round(r.score * 1000) / 1000)
+            sample_scores: mockResults.map(r => Math.round(r.score * 1000) / 1000),
           },
-          duration: Date.now() - startTime
+          duration: Date.now() - startTime,
         });
       } catch (error: any) {
         results.push({
           test: 'vector_operations',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
+          duration: Date.now() - startTime,
         });
       }
     }
 
-    // Test 3: Memory Usage Simulation
+    // Test 3: Memory Usage Simulation;
     if (testType === 'all' || testType === 'memory') {
       const startTime = Date.now();
       try {
@@ -100,21 +101,21 @@ export const GET: RequestHandler = async ({ url }) => {
           usage_percentage: 26.5,
           cache_entries: 1247,
           som_clusters: 12,
-          status: 'optimal'
+          status: 'optimal',
         };
 
         results.push({
           test: 'memory_efficiency',
           status: 'success',
           data: memoryStats,
-          duration: Date.now() - startTime
+          duration: Date.now() - startTime,
         });
       } catch (error: any) {
         results.push({
           test: 'memory_efficiency',
           status: 'error',
           error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
+          duration: Date.now() - startTime,
         });
       }
     }
@@ -138,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
         embedding_model: 'nomic-embed-text',
         memory_efficient: true,
         clustering_enabled: true,
-        caching_enabled: true
+        caching_enabled: true,
       }
     });
 
@@ -146,7 +147,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };

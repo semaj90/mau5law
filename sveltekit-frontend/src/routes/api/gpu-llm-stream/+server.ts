@@ -10,7 +10,7 @@ import { error } from '@sveltejs/kit';
 // Single pipeline instance for efficiency
 let pipeline: GPULLMStreamingPipeline | null = null;
 
-// Initialize pipeline on first request
+// Initialize pipeline on first request;
 async function getPipeline(): Promise<GPULLMStreamingPipeline> {
   if (!pipeline) {
     pipeline = new GPULLMStreamingPipeline();
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
     
     const llmPipeline = await getPipeline();
     
-    // Default configuration
+    // Default configuration;
     const streamConfig = {
       modelPath: config.modelPath || '/models/gemma-3b',
       maxTokens: config.maxTokens || 2048,
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ...config
     };
     
-    // Create a ReadableStream for chunked response
+    // Create a ReadableStream for chunked response;
     const stream = new ReadableStream({
       async start(controller) {
         try {
@@ -47,37 +47,37 @@ export const POST: RequestHandler = async ({ request }) => {
           const generator = llmPipeline.streamGeneration(prompt, streamConfig);
           
           for await (const chunk of generator) {
-            // Send each chunk as a Server-Sent Event
+            // Send each chunk as a Server-Sent Event;
             const data = JSON.stringify({
               type: 'token',
               content: chunk,
-              timestamp: Date.now()
+              timestamp: Date.now(),
             });
             
-            controller.enqueue(new TextEncoder().encode(`data: ${data}\n\n`));
+            controller.enqueue(new TextEncoder().encode(`data: ${data}\n\n`);
           }
           
-          // Send completion event
+          // Send completion event;
           const completeData = JSON.stringify({
             type: 'complete',
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
-          controller.enqueue(new TextEncoder().encode(`data: ${completeData}\n\n`));
+          controller.enqueue(new TextEncoder().encode(`data: ${completeData}\n\n`);
           
           controller.close();
         } catch (err) {
           console.error('Streaming error:', err);
           const errorData = JSON.stringify({
             type: 'error',
-            message: err instanceof Error ? err.message: 'Unknown error'
+            message: err instanceof Error ? err.message: 'Unknown error',
           });
-          controller.enqueue(new TextEncoder().encode(`data: ${errorData}\n\n`));
+          controller.enqueue(new TextEncoder().encode(`data: ${errorData}\n\n`);
           controller.close();
         }
       }
     });
     
-    // Return as Server-Sent Events stream
+    // Return as Server-Sent Events stream;
     return new Response(stream, {
       headers: {
         'Content-Type': 'text/event-stream',
@@ -97,22 +97,22 @@ export const GET: RequestHandler = async () => {
   try {
     const llmPipeline = await getPipeline();
     
-    // Return memory stats and system info
+    // Return memory stats and system info;
     const stats = {
       status: 'ready',
       gpu: {
         available: typeof navigator !== 'undefined' && 'gpu' in navigator,
-        webgpu: typeof GPUAdapter !== 'undefined'
+        webgpu: typeof GPUAdapter !== 'undefined',
       },
       memory: {
         // Server-side memory info
         heapUsed: process.memoryUsage().heapUsed,
         heapTotal: process.memoryUsage().heapTotal,
-        external: process.memoryUsage().external
+        external: process.memoryUsage().external,
       },
       simd: {
         workers: 4, // Number of SIMD workers
-        supported: true
+        supported: true,
       }
     };
     
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// Cleanup on server shutdown
+// Cleanup on server shutdown;
 if (typeof process !== 'undefined') {
   process.on('SIGTERM', async () => {
     if (pipeline) {

@@ -21,7 +21,7 @@ export * from './types/index.js';
 // ===== TYPE GUARDS & UTILITIES =====
 export * from './utils/type-guards.js';
 
-// ===== ENHANCED API CLIENT =====
+// ===== ENHANCED API CLIENT =====;
 export { 
   EnhancedApiClient, 
   apiClient as enhancedApiClient 
@@ -35,7 +35,7 @@ export {
 export { default as localStorageFiles } from './services/localStorage-file-fallback.js';
 export { default as enhancedFileUpload } from './services/enhanced-file-upload.js';
 
-// ===== UTILITIES & TYPES =====
+// ===== UTILITIES & TYPES =====;
 export { 
   cn,
   formatFileSize,
@@ -56,7 +56,7 @@ export {
   theme
 } from './utils.js';
 
-// Export type helpers for Svelte 5 compatibility
+// Export type helpers for Svelte 5 compatibility;
 export type {
   WithoutChild,
   WithoutChildren,
@@ -64,7 +64,7 @@ export type {
   WithElementRef
 } from './utils.js';
 
-// ===== OLLAMA INTEGRATION SERVICES =====
+// ===== OLLAMA INTEGRATION SERVICES =====;
 export { 
   comprehensiveOllamaSummarizer,
   type ComprehensiveSummaryRequest,
@@ -100,10 +100,10 @@ export const FRAMEWORK_INFO = {
   sveltekit: '2.x',
   svelte: '5.x',
   typescript: '5.x',
-  vite: '5.x'
+  vite: '5.x',
 };
 
-// ===== FEATURE FLAGS =====
+// ===== FEATURE FLAGS =====;
 export const FEATURES = {
   GPU_ACCELERATION: true,
   VECTOR_SEARCH: true,
@@ -114,19 +114,19 @@ export const FEATURES = {
   MCP_INTEGRATION: true,
   WASM_SUPPORT: true,
   WEBGPU_SUPPORT: true,
-  CUDA_SUPPORT: true
+  CUDA_SUPPORT: true,
 } as const;
 
-// ===== DEVELOPMENT UTILITIES =====
+// ===== DEVELOPMENT UTILITIES =====;
 export const DEV_TOOLS = {
   COMPONENT_COUNT: 392,
   ROUTE_COUNT: 82,
   API_ENDPOINT_COUNT: 145,
   STORE_COUNT: 8,
-  SERVICE_COUNT: 12
+  SERVICE_COUNT: 12,
 } as const;
 
-// ===== BARREL STORE - MISSING FUNCTIONS & METHODS =====
+// ===== BARREL STORE - MISSING FUNCTIONS & METHODS =====;
 export { 
   barrelStore,
   testingFramework,
@@ -138,7 +138,7 @@ export {
   utilityFunctions
 } from './stores/barrel-functions.js';
 
-// ===== DATABASE COMPATIBILITY LAYER =====
+// ===== DATABASE COMPATIBILITY LAYER =====;
 export {
   default as drizzleCompatibilityFix,
   drizzleCompatibilityLayer,
@@ -151,7 +151,7 @@ export {
   createTypeSafeQuery
 } from './database/drizzle-compatibility-fix.js';
 
-// Make barrel store globally available
+// Make barrel store globally available;
 if (typeof globalThis !== 'undefined') {
   globalThis.barrelStore = barrelStore;
 }
@@ -161,7 +161,7 @@ if (typeof globalThis !== 'undefined') {
 // Global User Store with Svelte 5 Runes
 export { default as globalUserStore } from './stores/global-user-store.svelte.js';
 
-// Search Services with Fuse.js Integration
+// Search Services with Fuse.js Integration;
 export { 
   searchService, 
   globalSearch, 
@@ -171,7 +171,7 @@ export {
   searchDemos 
 } from './services/search-service.js';
 
-// Hybrid Vector Operations
+// Hybrid Vector Operations;
 export { 
   hybridVectorService, 
   hybridSearch, 
@@ -179,7 +179,7 @@ export {
   getVectorSystemHealth 
 } from './services/hybrid-vector-operations.js';
 
-// Search Types
+// Search Types;
 export type {
   SearchResult,
   SearchCategory,
@@ -188,7 +188,7 @@ export type {
   SearchState
 } from './types/search.types.js';
 
-// Default export for convenience
+// Default export for convenience;
 export default {
   VERSION,
   BUILD_DATE,
@@ -198,14 +198,14 @@ export default {
   barrelStore
 };
 
-// ===== TYPESCRIPT ERROR RESOLUTION UTILITIES =====
+// ===== TYPESCRIPT ERROR RESOLUTION UTILITIES =====;
 export const typeScriptErrorResolution = {
-  // Utility to enhance objects with missing properties
+  // Utility to enhance objects with missing properties;
   enhanceWithMissingProperties: <T extends object>(obj: T, properties: Partial<T>): T => {
     return { ...obj, ...properties };
   },
   
-  // Safe property access with type assertions
+  // Safe property access with type assertions;
   safeAccess: <T>(obj: any, path: string, defaultValue: T): T => {
     const keys = path.split('.');
     let current = obj;
@@ -219,7 +219,7 @@ export const typeScriptErrorResolution = {
     return current;
   },
   
-  // Type assertion with fallback
+  // Type assertion with fallback;
   assertType: <T>(value: any, fallback: T): T => {
     return value !== null && value !== undefined ? value : fallback;
   }

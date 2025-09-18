@@ -2,13 +2,13 @@ name: 🚀 CI/CD Pipeline - Legal AI Platform
 
 on:
   push:
-    branches: [ main, develop, space-elephant ]
+    branches: [main, develop, space-elephant]
     paths-ignore:
       - '*.md'
       - '.gitignore'
       - 'docs/**'
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
     types: [opened, synchronize, reopened]
 
 env:
@@ -368,14 +368,14 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "🚨 Legal AI Pipeline Failed - ${{ github.sha }}"
+          subject: '🚨 Legal AI Pipeline Failed - ${{ github.sha }}'
           body: |
             The CI/CD pipeline failed for commit ${{ github.sha }}.
-            
+
             Repository: ${{ github.repository }}
             Branch: ${{ github.ref }}
             Author: ${{ github.actor }}
-            
+
             Check the workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           to: ${{ secrets.NOTIFICATION_EMAIL }}
-          from: "Legal AI CI/CD <noreply@yourdomain.com>"
+          from: 'Legal AI CI/CD <noreply@yourdomain.com>'

@@ -12,7 +12,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
 
   console.log('🚀 Starting LLM Orchestrator Integration Tests...\n');
 
-  // Test 1: Basic chat functionality
+  // Test 1: Basic chat functionality;
   try {
     console.log('Test 1: Basic Chat Request...');
     const chatRequest: LLMBridgeRequest = {
@@ -62,7 +62,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
 
   console.log('');
 
-  // Test 2: Legal analysis
+  // Test 2: Legal analysis;
   try {
     console.log('Test 2: Legal Analysis Request...');
     const legalRequest: LLMBridgeRequest = {
@@ -116,7 +116,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
 
   console.log('');
 
-  // Test 3: Embedding generation
+  // Test 3: Embedding generation;
   try {
     console.log('Test 3: Embedding Generation...');
     const embeddingRequest: LLMBridgeRequest = {
@@ -169,7 +169,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
 
   console.log('');
 
-  // Test 4: Realtime chat (client-side preference)
+  // Test 4: Realtime chat (client-side preference);
   try {
     console.log('Test 4: Realtime Chat (Client Preference)...');
     const realtimeRequest: LLMBridgeRequest = {
@@ -225,7 +225,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
 
   console.log('');
 
-  // Test 5: Bridge status check
+  // Test 5: Bridge status check;
   try {
     console.log('Test 5: Bridge Status Check...');
     const status = await llmOrchestratorBridge.getStatus();
@@ -277,7 +277,7 @@ export async function testOrchestratorIntegration(): Promise<any> {
   };
 }
 
-// Function to run a quick health check
+// Function to run a quick health check;
 export async function quickHealthCheck(): Promise<any> {
   try {
     const status = await llmOrchestratorBridge.getStatus();
@@ -300,7 +300,7 @@ export async function quickHealthCheck(): Promise<any> {
 // Function to test specific orchestrator
 export async function testSpecificOrchestrator(
   orchestratorType: 'server' | 'client' | 'mcp',
-  content: string = 'Test message'
+  content: string = 'Test message';
 ): Promise<any> {
   const request: LLMBridgeRequest = {
     id: `test-specific-${orchestratorType}-${Date.now()}`,

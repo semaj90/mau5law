@@ -27,12 +27,12 @@ import type { RequestHandler } from './$types.js';
 const analysisSchema = z.object({
   evidenceId: z.string().uuid(),
   content: z.string().min(1).max(10000).optional(),
-  forceReanalyze: z.boolean().optional()
+  forceReanalyze: z.boolean().optional(),
 });
 
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.user) {
       return json({ error: 'Authentication required' }, { status: 401 });
     }
@@ -41,7 +41,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     const body = await request.json();
     const { evidenceId, content, forceReanalyze = false } = analysisSchema.parse(body);
 
-    // Get evidence from database
+    // Get evidence from database;
     const evidenceRecord = await db.query.evidence.findFirst({
       where: eq(evidence.id, evidenceId)
     });
@@ -66,7 +66,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       return json({ error: 'No content available for analysis' }, { status: 400 });
     }
 
-    // Check if analysis already exists and not forcing reanalysis
+    // Check if analysis already exists and not forcing reanalysis;
     if (evidenceRecord.aiSummary && !forceReanalyze) {
       return json({
         success: true,
@@ -76,7 +76,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
             summary: evidenceRecord.aiSummary,
             tags: evidenceRecord.aiTags || [],
             confidence: 0.85, // Default confidence for cached results
-            recommendations: []
+            recommendations: [],
           }
         }
       });
@@ -90,7 +90,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     );
 
     // Update evidence record with AI analysis
-    await db.update(evidence)
+    await db.update(evidence);
       .set({
         aiSummary: analysis.summary,
         aiTags: analysis.tags,
@@ -100,10 +100,10 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           keywords: analysis.keywords,
           recommendations: analysis.recommendations,
           analyzedAt: new Date().toISOString(),
-          model: 'gemma3-legal'
+          model: 'gemma3-legal',
         }
       })
-      .where(eq(evidence.id, evidenceId));
+      .where(eq(evidence.id, evidenceId);
 
     return json({
       success: true,
@@ -115,7 +115,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
           confidence: analysis.confidence,
           entities: analysis.entities,
           keywords: analysis.keywords,
-          recommendations: analysis.recommendations
+          recommendations: analysis.recommendations,
         }
       }
     });
@@ -124,20 +124,18 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     console.error('Evidence analysis API error:', error);
 
     if (error instanceof z.ZodError) {
-      return json(
-        { 
+      return json({ 
           error: 'Validation failed', 
-          details: error.errors 
-        }, 
+          details: error.errors ,
+        }, )
         { status: 400 }
       );
     }
 
-    return json(
-      { 
+    return json({ 
         error: 'Evidence analysis failed',
-        message: error instanceof Error ? error.message: 'Unknown error'
-      }, 
+        message: error instanceof Error ? error.message: 'Unknown error',
+      }, )
       { status: 500 }
     );
   }

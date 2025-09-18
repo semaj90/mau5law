@@ -1,9 +1,13 @@
 <script lang="ts">
-  export let label: string = 'Click Me';
-  export let type: 'primary' | 'success' | 'warning' | 'error' = 'primary';
-  export let onClick: () => void = () => {};
+  interface Props {
+    label?: string;
+    type?: 'primary' | 'success' | 'warning' | 'error';
+    onClick?: () => void;
+  }
+
+  let { label = 'Click Me', type = 'primary', onClick = () => {} }: Props = $props();
 </script>
 
-<button class={`nes-btn is-${type}`} on:click={onClick}>
+<button class={`nes-btn is-${type}`} onclick={onClick}>
   {label}
 </button>

@@ -20,7 +20,7 @@ export const GET: RequestHandler = async ({ url }) => {
           success: true,
           health,
           allSystemsOperational: Object.values(health).every(status => status),
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'analytics':
@@ -28,10 +28,10 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           success: true,
           analytics,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
-      default:
+      default:;
         return json({
           success: false,
           error: 'Unknown action. Available: health, analytics',
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json() as UnifiedVectorRequest;
 
-    // Validate request
+    // Validate request;
     if (!body.type || !body.payload) {
       return json({
         success: false,
@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
               useWebGPU: true,
               useWebAssembly: true,
               usePageRank: true,
-              generateGlyphs: true
+              generateGlyphs: true,
             }
           }
         }
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -95,7 +95,7 @@ export const PUT: RequestHandler = async ({ request }) => {
 
     switch (action) {
       case 'feedback':
-        // Submit user feedback to RAG PageRank system
+        // Submit user feedback to RAG PageRank system;
         const feedbackRequest: UnifiedVectorRequest = {
           type: 'recommend',
           payload: {
@@ -105,7 +105,7 @@ export const PUT: RequestHandler = async ({ request }) => {
               type: 'feedback',
               vote: data.vote,
               documentId: data.documentId,
-              relevanceScore: data.relevanceScore
+              relevanceScore: data.relevanceScore,
             }]
           }
         };
@@ -114,14 +114,14 @@ export const PUT: RequestHandler = async ({ request }) => {
         return json(feedbackResult);
 
       case 'retrain':
-        // Trigger model retraining
+        // Trigger model retraining;
         return json({
           success: false,
           error: 'Model retraining not yet implemented',
-          plannedFeature: true
+          plannedFeature: true,
         }, { status: 501 });
 
-      default:
+      default:;
         return json({
           success: false,
           error: 'Unknown action. Available: feedback, retrain',
@@ -134,7 +134,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -145,9 +145,9 @@ export const DELETE: RequestHandler = async ({ url }) => {
     const cacheKey = url.searchParams.get('cacheKey');
 
     if (documentId) {
-      // Delete document from vector systems
+      // Delete document from vector systems;
       const deleteRequest: UnifiedVectorRequest = {
-        type: 'ingest', // Use ingest type with delete operation
+        type: 'ingest', // Use ingest type with delete operation;
         payload: {
           documents: [{ id: documentId, operation: 'delete' }]
         }
@@ -158,11 +158,11 @@ export const DELETE: RequestHandler = async ({ url }) => {
     }
 
     if (cacheKey) {
-      // Clear specific cache
+      // Clear specific cache;
       return json({
         success: false,
         error: 'Cache clearing not yet implemented',
-        plannedFeature: true
+        plannedFeature: true,
       }, { status: 501 });
     }
 
@@ -180,7 +180,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };

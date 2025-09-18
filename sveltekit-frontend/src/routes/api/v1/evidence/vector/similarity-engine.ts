@@ -2,7 +2,8 @@
  * Lightweight AdvancedSimilarityEngine implementation
  * Provides performSimilaritySearch used by unified evidence analysis route.
  * This is a mock / placeholder; replace with real vector DB + embedding logic.
- */
+ */;
+}
 
 export interface PerformSimilaritySearchArgs {
   query: string;
@@ -15,7 +16,7 @@ export interface PerformSimilaritySearchArgs {
 interface ClusterResult {
   evidenceIds: string[];
   coherenceScore: number; // 0..1
-  themes: string[];
+  themes: string[];,
 }
 
 interface SimilaritySearchResult {
@@ -30,7 +31,7 @@ export class AdvancedSimilarityEngine {
     const start = Date.now();
     const { evidenceIds, algorithms, clustering, threshold = 0.7 } = args;
 
-    // Very small deterministic pseudo-random for repeatability in dev
+    // Very small deterministic pseudo-random for repeatability in dev;
     function pseudoRandom(seed: number) {
       let x = Math.sin(seed) * 10000; // deterministic
       return x - Math.floor(x);
@@ -46,11 +47,11 @@ export class AdvancedSimilarityEngine {
         const groupSize = Math.min(1 + Math.floor(pseudoRandom(seed + i) * 3) + 1, evidenceIds.length - i);
         const slice = evidenceIds.slice(i, i + groupSize);
         i += groupSize;
-        const coherence = Math.max(threshold, parseFloat((pseudoRandom(seed + i) * (1 - threshold) + threshold).toFixed(3)));
+        const coherence = Math.max(threshold, parseFloat((pseudoRandom(seed + i) * (1 - threshold) + threshold).toFixed(3));
         clusters.push({
           evidenceIds: slice,
             coherenceScore: coherence,
-          themes: deriveThemes(slice)
+          themes: deriveThemes(slice),
         });
       }
     }

@@ -1,5 +1,6 @@
 // Minimal, clean stub for EnhancedVectorOperations
-// Purpose: provide a syntactically-valid, safe fallback while migrating the project.
+// Purpose: provide a syntactically-valid, safe fallback while migrating the project.;
+}
 
 export interface VectorSearchResult {
   id: string;

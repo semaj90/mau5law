@@ -15,6 +15,7 @@ try {
 }
 
 import { EventEmitter } from "events";
+}
 
 export interface CommandMetrics {
   commandId: string;
@@ -22,22 +23,23 @@ export interface CommandMetrics {
   memoryUsed: number;
   timestamp: number;
   success: boolean;
-  resourceType: "json" | "wasm" | "vector" | "cache";
+  resourceType: "json" | "wasm" | "vector" | "cache";,
 }
 
 export interface MemoryPrediction {
   nextAllocation: number;
-  confidence: number;
+  confidence: number;,
 }
 
 export type LODLevel = "auto" | "ultra" | "high" | "medium" | "low";
+}
 
 export interface ExtensionConfig {
   maxMemoryMB: number;
   enableWebAssembly: boolean;
   enableNeuralOptimization: boolean;
   cacheStrategy: "aggressive" | "balanced" | "conservative";
-  lodLevel: LODLevel;
+  lodLevel: LODLevel;,
 }
 
 export interface AsyncCommandResult<T = any> {
@@ -49,7 +51,7 @@ export interface AsyncCommandResult<T = any> {
 
 /**
  * Neural Memory Manager for predictive memory allocation
- */
+ */;
 export class NeuralMemoryManager extends EventEmitter {
   private memoryPool: Map<string, any> = new Map();
   private predictions: Map<string, MemoryPrediction> = new Map();
@@ -76,7 +78,7 @@ export class NeuralMemoryManager extends EventEmitter {
 
 /**
  * Enhanced VS Code Extension Manager
- */
+ */;
 export class EnhancedVSCodeExtensionManager extends EventEmitter {
   private memoryManager: NeuralMemoryManager;
   private config: ExtensionConfig;
@@ -87,7 +89,7 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
     enableWebAssembly: true,
     enableNeuralOptimization: false,
     cacheStrategy: "balanced",
-    lodLevel: "auto"
+    lodLevel: "auto",
   }) {
     super();
     this.config = config;
@@ -111,7 +113,7 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
         memoryUsed: 0, // TODO: Implement memory tracking
         timestamp: Date.now(),
         success: true,
-        resourceType: "json"
+        resourceType: "json",
       };
 
       this.recordMetrics(commandId, metrics);
@@ -126,7 +128,7 @@ export class EnhancedVSCodeExtensionManager extends EventEmitter {
         memoryUsed: 0,
         timestamp: Date.now(),
         success: false,
-        resourceType: "json"
+        resourceType: "json",
       };
 
       this.recordMetrics(commandId, metrics);

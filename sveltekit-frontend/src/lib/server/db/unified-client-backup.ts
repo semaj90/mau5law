@@ -13,7 +13,7 @@
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { sql } from 'drizzle-orm';
 
-// Import centralized connection management
+// Import centralized connection management;
 import {
   getDrizzleDb,
   getPostgresJsClient,
@@ -43,7 +43,7 @@ interface HybridSearchResult {
   performance: {
     postgresqlTime?: number;
     qdrantTime?: number;
-    totalTime: number;
+    totalTime: number;,
   };
 }
 
@@ -77,7 +77,7 @@ async function initialize(): Promise<void> {
     await runtimeDb.execute(sql`SELECT 1 as test`);
     console.log('✅ Runtime database connection established');
 
-    // Test pgvector extension
+    // Test pgvector extension;
     try {
       await runtimeDb.execute(sql`SELECT '[1,2,3]'::vector`);
       console.log('✅ pgvector extension available');
@@ -85,7 +85,7 @@ async function initialize(): Promise<void> {
       console.warn('⚠️ pgvector extension not available:', error);
     }
 
-    // Test Qdrant connection
+    // Test Qdrant connection;
     if (qdrantClient) {
       try {
         await qdrantClient.getCollections();
@@ -109,7 +109,7 @@ async function initialize(): Promise<void> {
 async function ensureQdrantCollection(
   collectionName: string,
   vectorSize: number = 384,
-  distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine'
+  distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine';
 ): Promise<void> {
   if (!qdrantClient) return;
 
@@ -161,7 +161,7 @@ async function hybridVectorSearch(
   let postgresqlTime: number | undefined;
   let qdrantTime: number | undefined;
 
-  // PostgreSQL vector search
+  // PostgreSQL vector search;
   if (usePostgreSQL) {
     const pgStart = Date.now();
 
@@ -193,7 +193,7 @@ async function hybridVectorSearch(
     }
   }
 
-  // Qdrant vector search
+  // Qdrant vector search;
   if (useQdrant && qdrantClient) {
     const qdrantStart = Date.now();
 
@@ -214,7 +214,7 @@ async function hybridVectorSearch(
       qdrantTime = Date.now() - qdrantStart;
 
       // Get corresponding PostgreSQL records
-      const qdrantIds = qdrantResults.map((r) => r.id.toString());
+      const qdrantIds = qdrantResults.map((r) => r.id.toString();
 
       if (qdrantIds.length > 0) {
         const db = await getDrizzleDb();
@@ -223,10 +223,10 @@ async function hybridVectorSearch(
           .from(schema.documentMetadata)
           .where(sql`${schema.documentMetadata.id} = ANY(${qdrantIds})`);
 
-        const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]));
+        const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]);
 
         for (const result of qdrantResults) {
-          const document = docMap.get((result as { id?: any; score?: any }).id.toString());
+          const document = docMap.get((result as { id?: any; score?: any }).id.toString();
           if (document) {
             results.push({
               id: (result as { id?: any; score?: any }).id.toString(),
@@ -251,7 +251,7 @@ async function hybridVectorSearch(
     }
   }
 
-  const finalResults = Array.from(uniqueResults.values())
+  const finalResults = Array.from(uniqueResults.values()
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
 
@@ -283,7 +283,7 @@ async function healthCheck(): Promise<any> {
     await db.execute(sql`SELECT 1`);
     health.postgresql = true;
 
-    // Test pgvector
+    // Test pgvector;
     try {
       await db.execute(sql`SELECT '[1,2,3]'::vector`);
       health.pgvector = true;
@@ -291,7 +291,7 @@ async function healthCheck(): Promise<any> {
       console.warn('pgvector not available');
     }
 
-    // Test Qdrant
+    // Test Qdrant;
     if (qdrantClient) {
       try {
         await qdrantClient.getCollections();
@@ -320,7 +320,7 @@ export const db = () => getDrizzleDb();
 export const postgres = () => getPostgresJsClient();
 export const qdrant = () => qdrantClient;
 
-// Unified operations
+// Unified operations;
 export const unifiedDb = {
   // Core database access
   runtime: () => getDrizzleDb(),
@@ -339,7 +339,7 @@ export const unifiedDb = {
 // Re-export schema for convenience
 export * from './schema-unified.js';
 
-// Re-export types
+// Re-export types;
 export type {
   VectorSearchOptions,
   HybridSearchResult,

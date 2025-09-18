@@ -1,5 +1,6 @@
 // Type definitions for QUIC/HTTP3 integration
-// Supporting tensor processing, streaming, and real-time operations
+// Supporting tensor processing, streaming, and real-time operations;
+}
 
 export interface TensorOperation {
 	id: string;
@@ -49,7 +50,7 @@ export interface QUICMetrics {
 	bandwidth: number;
 	operationsPerSecond: number;
 	cacheHitRatio: number;
-	errorRate: number;
+	errorRate: number;,
 }
 
 export interface DocumentEmbedding {
@@ -70,7 +71,7 @@ export interface AttentionHeatmap {
 	timestamp: number;
 	activeRegions: AttentionRegion[];
 	documentId?: string;
-	confidence: number;
+	confidence: number;,
 }
 
 export interface AttentionRegion {
@@ -91,7 +92,7 @@ export interface SOMCluster {
 	labels: string[];
 	lastUpdated: number;
 	confidence: number;
-	neighbors: string[];
+	neighbors: string[];,
 }
 
 export interface SOMVisualization {
@@ -103,7 +104,7 @@ export interface SOMVisualization {
 	metadata: {
 		domain: string;
 		practiceAreas: string[];
-		totalDocuments: number;
+		totalDocuments: number;,
 	};
 }
 
@@ -126,7 +127,7 @@ export interface SOMPerformanceMetrics {
 	documentCoverage: number;
 	categoryDistribution: Record<string, number>;
 	convergenceRate: number;
-	trainingTime: number;
+	trainingTime: number;,
 }
 
 export interface Tensor4D {
@@ -138,7 +139,7 @@ export interface Tensor4D {
 	createdAt: number;
 	updatedAt: number;
 	documentId: string;
-	status: 'initializing' | 'ready' | 'processing' | 'error';
+	status: 'initializing' | 'ready' | 'processing' | 'error';,
 }
 
 export interface TensorMetadata {
@@ -152,7 +153,7 @@ export interface TensorMetadata {
 	quality: {
 		completeness: number;
 		accuracy: number;
-		relevance: number;
+		relevance: number;,
 	};
 }
 
@@ -163,7 +164,7 @@ export interface TileConfiguration {
 	totalTiles: number;
 	tileLayout: [number, number, number, number];
 	compressionLevel: number;
-	cachingStrategy: 'lru' | 'lfu' | 'ttl';
+	cachingStrategy: 'lru' | 'lfu' | 'ttl';,
 }
 
 export interface TensorTile {
@@ -177,7 +178,7 @@ export interface TensorTile {
 	updatedAt: number;
 	accessCount: number;
 	lastAccessed: number;
-	priority: number;
+	priority: number;,
 }
 
 export interface TricubicInterpolation {
@@ -189,9 +190,9 @@ export interface TricubicInterpolation {
 	parameters: {
 		smoothness: number;
 		boundaryCondition: 'zero' | 'periodic' | 'mirror';
-		accuracy: 'low' | 'medium' | 'high';
+		accuracy: 'low' | 'medium' | 'high';,
 	};
-	computeTime: number;
+	computeTime: number;,
 }
 
 export interface WebGPUContext {
@@ -203,12 +204,12 @@ export interface WebGPUContext {
 		maxComputeWorkgroupStorageSize: number;
 		maxComputeWorkgroupsPerDimension: number;
 		maxComputeInvocationsPerWorkgroup: number;
-		maxBufferSize: number;
+		maxBufferSize: number;,
 	};
 	memoryUsage: {
 		allocated: number;
 		available: number;
-		peak: number;
+		peak: number;,
 	};
 }
 
@@ -218,7 +219,7 @@ export interface GPUBufferInfo {
 	size: number;
 	usage: any; // GPUBufferUsageFlags when WebGPU is available
 	mapped: boolean;
-	destroyed: boolean;
+	destroyed: boolean;,
 }
 
 export interface ComputePipeline {
@@ -228,7 +229,7 @@ export interface ComputePipeline {
 	workgroupSize: [number, number, number];
 	bindingLayout: any; // GPUBindGroupLayout when WebGPU is available
 	lastUsed: number;
-	usageCount: number;
+	usageCount: number;,
 }
 
 export interface LegalDocumentAnalysis {
@@ -243,7 +244,7 @@ export interface LegalDocumentAnalysis {
 	practiceAreaClassification: {
 		primary: string;
 		secondary: string[];
-		confidence: number;
+		confidence: number;,
 	};
 	jurisdictionAnalysis: {
 		primary: string;
@@ -274,10 +275,10 @@ export interface RiskFactor {
 	impact: {
 		financial: number;
 		operational: number;
-		reputational: number;
+		reputational: number;,
 	};
 	probability: number;
-	timeframe: 'IMMEDIATE' | 'SHORT_TERM' | 'MEDIUM_TERM' | 'LONG_TERM';
+	timeframe: 'IMMEDIATE' | 'SHORT_TERM' | 'MEDIUM_TERM' | 'LONG_TERM';,
 }
 
 export interface CitedCase {
@@ -289,7 +290,7 @@ export interface CitedCase {
 	context: string;
 	relevanceScore: number;
 	precedentialValue: 'BINDING' | 'PERSUASIVE' | 'DISTINGUISHABLE';
-	keyPoints: string[];
+	keyPoints: string[];,
 }
 
 export interface SearchResult {
@@ -305,7 +306,7 @@ export interface SearchResult {
 	jurisdiction: string;
 	relevanceExplanation: string;
 	citationCount?: number;
-	lastUpdated: number;
+	lastUpdated: number;,
 }
 
 export interface VectorSearchRequest {
@@ -316,18 +317,18 @@ export interface VectorSearchRequest {
 		jurisdiction?: string[];
 		dateRange?: {
 			start: number;
-			end: number;
+			end: number;,
 		};
 		confidence?: {
 			min: number;
-			max: number;
+			max: number;,
 		};
 	};
 	limit: number;
 	offset: number;
 	includeMetadata: boolean;
 	rerank: boolean;
-	searchMode: 'semantic' | 'hybrid' | 'keyword';
+	searchMode: 'semantic' | 'hybrid' | 'keyword';,
 }
 
 export interface VectorSearchResponse {
@@ -346,13 +347,13 @@ export interface VectorSearchResponse {
 	relatedQueries?: string[];
 }
 
-// Event types for real-time updates
+// Event types for real-time updates;
 export interface WebSocketEvent {
 	type: 'tensor_update' | 'som_update' | 'analysis_complete' | 'search_result' | 'error' | 'metrics';
 	data: any;
 	timestamp: number;
 	source: 'gpu' | 'cpu' | 'quic' | 'redis' | 'postgres';
-	priority: 'low' | 'medium' | 'high' | 'critical';
+	priority: 'low' | 'medium' | 'high' | 'critical';,
 }
 
 export interface SystemMetrics {
@@ -360,42 +361,42 @@ export interface SystemMetrics {
 	cpu: {
 		usage: number;
 		cores: number;
-		frequency: number;
+		frequency: number;,
 	};
 	memory: {
 		used: number;
 		available: number;
 		total: number;
-		swap: number;
+		swap: number;,
 	};
 	gpu?: {
 		usage: number;
 		memory: {
 			used: number;
-			total: number;
+			total: number;,
 		};
 		temperature: number;
-		power: number;
+		power: number;,
 	};
 	network: {
 		latency: number;
 		throughput: number;
-		packetLoss: number;
+		packetLoss: number;,
 	};
 	storage: {
 		read: number;
 		write: number;
-		usage: number;
+		usage: number;,
 	};
 	services: {
 		redis: 'healthy' | 'degraded' | 'down';
 		postgres: 'healthy' | 'degraded' | 'down';
 		quic: 'healthy' | 'degraded' | 'down';
-		webgpu: 'available' | 'unavailable';
+		webgpu: 'available' | 'unavailable';,
 	};
 }
 
-// Configuration types
+// Configuration types;
 export interface QUICConfig {
 	serverUrl: string;
 	maxStreams: number;
@@ -408,7 +409,7 @@ export interface QUICConfig {
 	flowControl: {
 		initialWindow: number;
 		maxWindow: number;
-		autoTuning: boolean;
+		autoTuning: boolean;,
 	};
 }
 
@@ -419,7 +420,7 @@ export interface WebGPUConfig {
 	memoryLimit: number;
 	shaderOptimization: 'none' | 'basic' | 'aggressive';
 	debugging: boolean;
-	fallbackToCPU: boolean;
+	fallbackToCPU: boolean;,
 }
 
 export interface TensorConfig {
@@ -430,10 +431,10 @@ export interface TensorConfig {
 	cacheSize: number;
 	workerCount: number;
 	processingMode: 'cpu' | 'gpu' | 'hybrid';
-	precision: 'fp16' | 'fp32' | 'int8';
+	precision: 'fp16' | 'fp32' | 'int8';,
 }
 
-// Error types
+// Error types;
 export interface QUICError extends Error {
 	code: string;
 	streamId?: string;
@@ -450,10 +451,10 @@ export interface TensorError extends Error {
 	metadata?: Record<string, any>;
 }
 
-// Utility types
+// Utility types;
 export type AsyncIterableStream<T> = AsyncIterable<T> & {
 	cancel(): void;
-	closed: Promise<void>;
+	closed: Promise<void>;,
 };
 
 export type StreamProcessor<T, R> = (chunk: T) => Promise<R | null>;
@@ -489,7 +490,7 @@ export type TensorId = string & { readonly __brand: 'TensorId' };
 export type StreamId = string & { readonly __brand: 'StreamId' };
 export type SOMId = string & { readonly __brand: 'SOMId' };
 
-// Type guards
+// Type guards;
 export function isDocumentId(value: string): value is DocumentId {
 	return /^doc_[a-zA-Z0-9_-]+$/.test(value);
 }

@@ -4,12 +4,12 @@ import { EmbeddingsService } from "$lib/server/db/embeddings-client";
 import { json } from "@sveltejs/kit";
 import { z } from "zod";
 
-// Validation schemas
+// Validation schemas;
 const insertEmbeddingSchema = z.object({
   content: z.string().min(1, "Content is required").max(10000, "Content too long"),
   embedding: z.array(z.number()).length(512, "Embedding must be 512 dimensions"),
   metadata: z.record(z.any()).optional(),
-  source: z.string().default("user_input")
+  source: z.string().default("user_input"),
 });
 
 const searchEmbeddingSchema = z.object({
@@ -18,29 +18,29 @@ const searchEmbeddingSchema = z.object({
   limit: z.number().min(1).max(50).default(5),
   threshold: z.number().min(0).max(1).default(0.7),
   userId: z.string().uuid().optional(),
-  sessionId: z.string().optional()
+  sessionId: z.string().optional(),
 });
 
 /**
  * POST /api/embeddings/enhanced - Insert new embedding
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
     const validatedData = insertEmbeddingSchema.parse(body);
 
-    // Insert embedding into database
+    // Insert embedding into database;
     const result = await EmbeddingsService.insertEmbedding({
       content: validatedData.content,
       embedding: validatedData.embedding,
       metadata: validatedData.metadata,
-      source: validatedData.source
+      source: validatedData.source,
     });
 
     return json({
       success: true,
       data: result,
-      message: "Embedding created successfully"
+      message: "Embedding created successfully",
     }, { status: 201 });
 
   } catch (err: any) {
@@ -50,20 +50,20 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: "Validation failed",
-        details: err.errors
+        details: err.errors,
       }, { status: 400 });
     }
 
     return json({
       success: false,
-      error: "Failed to create embedding"
+      error: "Failed to create embedding",
     }, { status: 500 });
   }
 };
 
 /**
  * GET /api/embeddings/enhanced - Get recent embeddings or search
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const searchParams = url.searchParams;
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         data: embeddings,
-        count: embeddings.length
+        count: embeddings.length,
       });
     }
 
@@ -87,7 +87,7 @@ export const GET: RequestHandler = async ({ url }) => {
       if (!query || !embeddingParam) {
         return json({
           success: false,
-          error: "Query and embedding parameters required for search"
+          error: "Query and embedding parameters required for search",
         }, { status: 400 });
       }
 
@@ -101,17 +101,17 @@ export const GET: RequestHandler = async ({ url }) => {
         limit,
         threshold,
         userId: searchParams.get("userId"),
-        sessionId: searchParams.get("sessionId")
+        sessionId: searchParams.get("sessionId"),
       });
 
-      // Log search query for analytics
+      // Log search query for analytics;
       if (validatedSearch.userId) {
         await EmbeddingsService.logSearchQuery({
           query: validatedSearch.query,
           queryEmbedding: validatedSearch.embedding,
           userId: validatedSearch.userId,
           sessionId: validatedSearch.sessionId,
-          searchType: "semantic"
+          searchType: "semantic",
         });
       }
 
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async ({ url }) => {
         data: results,
         query: validatedSearch.query,
         count: results.length,
-        threshold: validatedSearch.threshold
+        threshold: validatedSearch.threshold,
       });
     }
 
@@ -136,7 +136,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         healthy: isHealthy,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
@@ -152,13 +152,13 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: false,
         error: "Validation failed",
-        details: err.errors
+        details: err.errors,
       }, { status: 400 });
     }
 
     return json({
       success: false,
-      error: "Internal server error"
+      error: "Internal server error",
     }, { status: 500 });
   }
 };

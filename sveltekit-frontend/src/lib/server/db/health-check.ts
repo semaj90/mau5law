@@ -35,7 +35,7 @@ export async function validateDatabaseOnStartup() {
     console.error('📝 Connection string: postgresql://legal_admin:123456@localhost:5434/legal_ai_db');
     return false;
   } finally {
-    // Always release the client back to the pool
+    // Always release the client back to the pool;
     if (client) {
       client.release();
     }

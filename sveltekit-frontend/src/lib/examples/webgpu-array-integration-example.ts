@@ -25,7 +25,7 @@ export async function processLegalDocumentEmbeddings(
     sourceType: 'openai' | 'sentence-transformers' | 'custom';
     data: ArrayBuffer | Float32Array | number[];
     metadata: { documentId: string; chunkIndex: number; };
-  }[]
+  }[];
 ) {
   console.log('🧠 Processing legal document embeddings with WebGPU...');
   
@@ -42,7 +42,7 @@ export async function processLegalDocumentEmbeddings(
     @group(0) @binding(1) var<storage, read> documentEmbeddings: array<f32>;
     @group(0) @binding(2) var<storage, read_write> similarities: array<f32>;
     
-    @compute @workgroup_size(64)
+    @compute @workgroup_size(64);
     fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       let idx = global_id.x;
       if (idx >= arrayLength(&similarities)) {
@@ -66,7 +66,7 @@ export async function processLegalDocumentEmbeddings(
         docNorm += docVal * docVal;
       }
       
-      similarities[idx] = dotProduct / (sqrt(queryNorm) * sqrt(docNorm));
+      similarities[idx] = dotProduct / (sqrt(queryNorm) * sqrt(docNorm);
     }
   `;
   
@@ -76,7 +76,7 @@ export async function processLegalDocumentEmbeddings(
   // Step 4: Filter results by threshold
   const results: Array<any> = [];
   
-  // Simulate results for demo
+  // Simulate results for demo;
   documentEmbeddings.forEach((_, documentId) => {
     const simulatedSimilarity = Math.random();
     if (simulatedSimilarity >= threshold) {
@@ -96,7 +96,7 @@ export async function processLegalDocumentEmbeddings(
 export async function optimizeModelWeights(
   device: GPUDevice,
   modelWeights: { [layerName: string]: Float32Array },
-  targetPrecision: 'fp16' | 'int8' = 'fp16'
+  targetPrecision: 'fp16' | 'int8' = 'fp16';
 ) {
   console.log(`🧮 Optimizing model weights with ${targetPrecision} quantization...`);
   
@@ -121,7 +121,7 @@ export async function optimizeModelWeights(
 export async function adaptiveQuantization(
   device: GPUDevice,
   data: Float32Array,
-  availableMemoryMB: number
+  availableMemoryMB: number;
 ) {
   console.log(`🎛️ Choosing quantization based on available GPU memory: ${availableMemoryMB}MB`);
   
@@ -168,11 +168,11 @@ export function integrateWithTextureStreaming(
   textureConfig: {
     width: number;
     height: number;
-    format: GPUTextureFormat;
+    format: GPUTextureFormat;,
   }
 ): {
   textureData: Uint8Array | Uint16Array | Float32Array;
-  compressionInfo: ArrayConversionResult;
+  compressionInfo: ArrayConversionResult;,
 } {
   console.log('🎨 Integrating embeddings with WebGPU texture streaming...');
   
@@ -214,7 +214,7 @@ export function integrateWithTextureStreaming(
         data: flatEmbeddings,
         originalSize: flatEmbeddings.length * 4,
         compressedSize: flatEmbeddings.length * 4,
-        compressionRatio: 1.0
+        compressionRatio: 1.0,
       };
       break;
   }

@@ -45,9 +45,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
     let embedding = data.embedding;
 
-    // Normalize embedding if requested
+    // Normalize embedding if requested;
     if (normalize && embedding) {
-      const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+      const norm = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
       if (norm > 0) {
         embedding = embedding.map(val => val / norm);
       }
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error('Embeddings API error:', error);
-    return json(
+    return json();
       {
         success: false,
         error: 'Failed to generate embeddings',

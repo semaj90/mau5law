@@ -218,7 +218,7 @@ const files = [
   'src/routes/RoutesList.svelte',
   'src/routes/semantic-search-demo/+page.svelte',
   'src/routes/upload/+page.svelte',
-  'src/routes/yorha/dashboard/+page.svelte'
+  'src/routes/yorha/dashboard/+page.svelte',
 ];
 
 function fixSvelteImports(filePath) {
@@ -230,7 +230,7 @@ function fixSvelteImports(filePath) {
     }
 
     const content = fs.readFileSync(fullPath, 'utf8');
-    
+
     // Pattern to match invalid Svelte 5 rune imports
     const patterns = [
       /import\s*\{\s*\$props\s*\}\s*from\s*['"']svelte['"];?\s*/g,
@@ -261,7 +261,7 @@ function fixSvelteImports(filePath) {
     let hasChanges = false;
 
     // Remove all patterns
-    patterns.forEach(pattern => {
+    patterns.forEach((pattern) => {
       const matches = newContent.match(pattern);
       if (matches) {
         hasChanges = true;
@@ -276,9 +276,15 @@ function fixSvelteImports(filePath) {
     newContent = newContent.replace(mixedImportPattern, (match, imports) => {
       const validImports = imports
         .split(',')
-        .map(imp => imp.trim())
-        .filter(imp => !imp.startsWith('$props') && !imp.startsWith('$state') && !imp.startsWith('$derived') && !imp.startsWith('$effect'))
-        .filter(imp => imp.length > 0);
+        .map((imp) => imp.trim())
+        .filter(
+          (imp) =>
+            !imp.startsWith('$props') &&
+            !imp.startsWith('$state') &&
+            !imp.startsWith('$derived') &&
+            !imp.startsWith('$effect')
+        )
+        .filter((imp) => imp.length > 0);
 
       if (validImports.length === 0) {
         hasChanges = true;
@@ -314,7 +320,7 @@ let totalFiles = files.length;
 
 console.log(`🚀 Starting Svelte 5 import fixes for ${totalFiles} files...\n`);
 
-files.forEach(filePath => {
+files.forEach((filePath) => {
   if (fixSvelteImports(filePath)) {
     fixedCount++;
   }

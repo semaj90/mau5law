@@ -4,7 +4,7 @@ import { writable, derived } from 'svelte/store';
 import { PNGEmbedExtractor } from '$lib/services/png-embed-extractor';
 import type { LegalAIMetadata } from '$lib/services/png-embed-extractor';
 
-// Evidence Processing State Machine
+// Evidence Processing State Machine;
 interface EvidenceContext {
   file: File | null;
   evidenceId: string;
@@ -14,14 +14,14 @@ interface EvidenceContext {
   uploadProgress: number;
   processingSteps: string[];
   error: string | null;
-  artifactUrl: string | null;
+  artifactUrl: string | null;,
 }
 
 type StartProcessingEvent = {
   type: 'START_PROCESSING';
   file: File;
   evidenceId: string;
-  caseId: string;
+  caseId: string;,
 };
 
 type RetryEvent = { type: 'RETRY' };
@@ -46,7 +46,7 @@ const evidenceProcessingMachine = createMachine({
     uploadProgress: 0,
     processingSteps: [],
     error: null,
-    artifactUrl: null
+    artifactUrl: null,
   },
   states: {
     idle: {
@@ -58,7 +58,7 @@ const evidenceProcessingMachine = createMachine({
             evidenceId: ({ event }) => (event as StartProcessingEvent).evidenceId,
             caseId: ({ event }) => (event as StartProcessingEvent).caseId,
             error: null,
-            processingSteps: []
+            processingSteps: [],
           })
         }
       }
@@ -71,7 +71,7 @@ const evidenceProcessingMachine = createMachine({
           if (!context.evidenceId) throw new Error('Evidence ID required');
           if (!context.caseId) throw new Error('Case ID required');
 
-          const maxSize = 50 * 1024 * 1024; // 50MB
+          const maxSize = 50 * 1024 * 1024; // 50MB;
           if (context.file.size > maxSize) {
             throw new Error('File too large (max 50MB)');
           }
@@ -102,7 +102,7 @@ const evidenceProcessingMachine = createMachine({
 
           const response = await fetch('/api/ai/analyze-evidence', {
             method: 'POST',
-            body: formData
+            body: formData,
           });
 
           if (!response.ok) {
@@ -161,11 +161,11 @@ const evidenceProcessingMachine = createMachine({
             file_data: Array.from(new Uint8Array(context.pngArtifact!)),
             metadata: {
               original_filename: context.file!.name,
-              processing_timestamp: new Date().toISOString()
+              processing_timestamp: new Date().toISOString(),
             },
             ai_analysis: context.metadata,
             risk_assessment: context.metadata?.riskAssessment || 'unknown',
-            confidence: context.metadata?.confidence || 0.5
+            confidence: context.metadata?.confidence || 0.5,
           };
 
           const response = await fetch('http://localhost:8095/api/artifacts/upload', {
@@ -173,7 +173,7 @@ const evidenceProcessingMachine = createMachine({
             headers: {
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(uploadData)
+            body: JSON.stringify(uploadData),
           });
 
           if (!response.ok) {
@@ -199,13 +199,13 @@ const evidenceProcessingMachine = createMachine({
     },
     completed: {
       on: {
-        RESET: 'idle'
+        RESET: 'idle',
       }
     },
     error: {
       on: {
         RETRY: 'validating',
-        RESET: 'idle'
+        RESET: 'idle',
       }
     }
   }
@@ -230,7 +230,7 @@ evidenceService.onTransition(state => {
   currentState.set(state);
 });
 
-// Evidence Processing Functions
+// Evidence Processing Functions;
 export const processEvidence = (file: File, evidenceId: string, caseId: string) => {
   evidenceService.send({
     type: 'START_PROCESSING',
@@ -248,7 +248,7 @@ export const resetProcessor = () => {
   evidenceService.send('RESET');
 };
 
-// Evidence Search and Retrieval
+// Evidence Search and Retrieval;
 export const searchArtifacts = async (searchParams: {
   query?: string;
   caseId?: string;
@@ -263,7 +263,7 @@ export const searchArtifacts = async (searchParams: {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(searchParams)
+    body: JSON.stringify(searchParams),
   });
 
   if (!response.ok) {
@@ -283,7 +283,7 @@ export const getArtifact = async (evidenceId: string) => {
   return await response.json();
 };
 
-// PNG Metadata Extraction (client-side)
+// PNG Metadata Extraction (client-side);
 export const extractPNGMetadata = async (file: File | ArrayBuffer): Promise<LegalAIMetadata | null> => {
 
   let buffer: ArrayBuffer;
@@ -296,12 +296,12 @@ export const extractPNGMetadata = async (file: File | ArrayBuffer): Promise<Lega
   return await PNGEmbedExtractor.extractMetadata(buffer);
 };
 
-// Utility Functions
+// Utility Functions;
 export const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(bytes) / Math.log(k);
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
@@ -311,7 +311,7 @@ export const formatProcessingTime = (startTime: Date): string => {
   return `${(elapsed / 1000).toFixed(1)}s`;
 };
 
-// Types for component props
+// Types for component props;
 export interface EvidenceUploadProps {
   caseId: string;
   onUploadComplete?: (artifactUrl: string) => void;

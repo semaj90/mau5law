@@ -12,7 +12,7 @@ let trainingState = {
   step: 0,
   loss: 0,
   accuracy: 0,
-  learningRate: 0
+  learningRate: 0,
 };
 
 // Simulated QLorA implementation (in production, would use actual ML library)
@@ -23,9 +23,9 @@ class QLorATrainer {
       alpha: 32,
       targetModules: ['attention', 'feedforward'],
       dropoutRate: 0.1,
-      ...config
+      ...config,
     };
-    
+
     this.model = null;
     this.optimizer = null;
     this.lossHistory = [];
@@ -34,12 +34,12 @@ class QLorATrainer {
 
   async initialize(modelPath) {
     console.log('Initializing QLorA trainer with model:', modelPath);
-    
+
     // Simulate model initialization
     this.model = {
       parameters: new Map(),
       loraLayers: new Map(),
-      baseModel: modelPath
+      baseModel: modelPath,
     };
 
     // Initialize LoRA layers
@@ -47,7 +47,7 @@ class QLorATrainer {
       this.model.loraLayers.set(module, {
         A: this.initializeMatrix(384, this.config.rank),
         B: this.initializeMatrix(this.config.rank, 384),
-        scaling: this.config.alpha / this.config.rank
+        scaling: this.config.alpha / this.config.rank,
       });
     }
 
@@ -59,7 +59,7 @@ class QLorATrainer {
       epsilon: 1e-8,
       weightDecay: 0.01,
       momentumBuffers: new Map(),
-      varianceBuffers: new Map()
+      varianceBuffers: new Map(),
     };
 
     return true;
@@ -95,13 +95,13 @@ class QLorATrainer {
       // Forward pass (simplified)
       const prediction = await this.forward(example.input);
       const loss = this.calculateLoss(prediction, example.target);
-      
+
       // Backward pass (simplified)
       const gradients = this.calculateGradients(prediction, example.target, example.input);
-      
+
       // Apply LoRA updates
       this.updateLoRALayers(gradients);
-      
+
       // Reinforcement learning update
       if (reinforcementReward !== 0) {
         this.reinforcementAgent.updatePolicy(example.state, example.action, reinforcementReward);
@@ -112,7 +112,7 @@ class QLorATrainer {
 
       // Yield control periodically
       if (Math.random() < 0.1) {
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
       }
     }
 
@@ -125,22 +125,22 @@ class QLorATrainer {
       loss: avgLoss,
       accuracy: accuracy,
       gradientNorm: this.calculateGradientNorm(gradients),
-      memoryUsage: this.estimateMemoryUsage()
+      memoryUsage: this.estimateMemoryUsage(),
     };
   }
 
   async forward(input) {
     // Simulate forward pass through model with LoRA layers
     const embedding = this.tokenizeAndEmbed(input);
-    
+
     // Apply base model (simplified)
     let hidden = embedding;
-    
+
     // Apply LoRA modifications
     for (const [module, lora] of this.model.loraLayers) {
       hidden = this.applyLoRA(hidden, lora);
     }
-    
+
     // Generate output probabilities
     return this.softmax(hidden);
   }
@@ -149,14 +149,14 @@ class QLorATrainer {
     // Simplified tokenization and embedding
     const tokens = input.split(/\s+/).slice(0, 512); // Limit sequence length
     const embedding = new Float32Array(tokens.length * 384);
-    
+
     tokens.forEach((token, i) => {
       const tokenHash = this.hashString(token);
       for (let j = 0; j < 384; j++) {
         embedding[i * 384 + j] = Math.sin(tokenHash * (j + 1)) * 0.1;
       }
     });
-    
+
     return embedding;
   }
 
@@ -164,7 +164,7 @@ class QLorATrainer {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash;
@@ -173,10 +173,10 @@ class QLorATrainer {
   applyLoRA(hidden, lora) {
     // Simplified LoRA application: output = hidden + (hidden * A * B) * scaling
     const result = new Float32Array(hidden.length);
-    
+
     for (let i = 0; i < hidden.length; i++) {
       result[i] = hidden[i];
-      
+
       // Apply low-rank adaptation
       let loraOutput = 0;
       for (let j = 0; j < lora.A.length / 384; j++) {
@@ -186,18 +186,18 @@ class QLorATrainer {
         }
         loraOutput += intermediate * lora.B[j * 384 + (i % 384)];
       }
-      
+
       result[i] += loraOutput * lora.scaling;
     }
-    
+
     return result;
   }
 
   softmax(logits) {
     const maxLogit = Math.max(...logits);
-    const exps = logits.map(x => Math.exp(x - maxLogit));
+    const exps = logits.map((x) => Math.exp(x - maxLogit));
     const sumExps = exps.reduce((a, b) => a + b, 0);
-    return exps.map(x => x / sumExps);
+    return exps.map((x) => x / sumExps);
   }
 
   calculateLoss(prediction, target) {
@@ -214,25 +214,25 @@ class QLorATrainer {
   calculateGradients(prediction, target, input) {
     // Simplified gradient calculation
     const gradients = new Map();
-    
+
     for (const [module, lora] of this.model.loraLayers) {
       const gradA = new Float32Array(lora.A.length);
       const gradB = new Float32Array(lora.B.length);
-      
+
       // Simplified gradient computation
       const error = prediction.map((p, i) => p - (target[i] || 0));
-      
+
       for (let i = 0; i < gradA.length; i++) {
         gradA[i] = error[i % error.length] * 0.01;
       }
-      
+
       for (let i = 0; i < gradB.length; i++) {
         gradB[i] = error[i % error.length] * 0.01;
       }
-      
+
       gradients.set(module, { A: gradA, B: gradB });
     }
-    
+
     return gradients;
   }
 
@@ -240,7 +240,7 @@ class QLorATrainer {
     for (const [module, grad] of gradients) {
       const lora = this.model.loraLayers.get(module);
       if (!lora) continue;
-      
+
       // Adam optimizer update (simplified)
       this.adamUpdate(lora.A, grad.A, `${module}_A`);
       this.adamUpdate(lora.B, grad.B, `${module}_B`);
@@ -252,28 +252,31 @@ class QLorATrainer {
       this.optimizer.momentumBuffers.set(key, new Float32Array(params.length));
       this.optimizer.varianceBuffers.set(key, new Float32Array(params.length));
     }
-    
+
     const momentum = this.optimizer.momentumBuffers.get(key);
     const variance = this.optimizer.varianceBuffers.get(key);
-    
+
     for (let i = 0; i < params.length; i++) {
       // Update biased first moment estimate
       momentum[i] = this.optimizer.beta1 * momentum[i] + (1 - this.optimizer.beta1) * gradients[i];
-      
+
       // Update biased second raw moment estimate
-      variance[i] = this.optimizer.beta2 * variance[i] + (1 - this.optimizer.beta2) * gradients[i] * gradients[i];
-      
+      variance[i] =
+        this.optimizer.beta2 * variance[i] +
+        (1 - this.optimizer.beta2) * gradients[i] * gradients[i];
+
       // Compute bias-corrected first moment estimate
       const mHat = momentum[i] / (1 - Math.pow(this.optimizer.beta1, trainingState.step + 1));
-      
+
       // Compute bias-corrected second raw moment estimate
       const vHat = variance[i] / (1 - Math.pow(this.optimizer.beta2, trainingState.step + 1));
-      
+
       // Update parameters
-      params[i] -= this.optimizer.learningRate * mHat / (Math.sqrt(vHat) + this.optimizer.epsilon);
-      
+      params[i] -=
+        (this.optimizer.learningRate * mHat) / (Math.sqrt(vHat) + this.optimizer.epsilon);
+
       // Weight decay
-      params[i] *= (1 - this.optimizer.learningRate * this.optimizer.weightDecay);
+      params[i] *= 1 - this.optimizer.learningRate * this.optimizer.weightDecay;
     }
   }
 
@@ -300,14 +303,14 @@ class QLorATrainer {
   estimateMemoryUsage() {
     // Estimate memory usage in bytes
     let usage = 0;
-    
+
     for (const [, lora] of this.model.loraLayers) {
       usage += lora.A.byteLength + lora.B.byteLength;
     }
-    
+
     usage += this.lossHistory.length * 4; // Float32 per loss value
     usage += 1024 * 1024; // Base overhead (1MB)
-    
+
     return usage;
   }
 
@@ -317,17 +320,17 @@ class QLorATrainer {
       config: this.config,
       loraLayers: {},
       lossHistory: this.lossHistory,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
-    
+
     for (const [module, lora] of this.model.loraLayers) {
       modelData.loraLayers[module] = {
         A: Array.from(lora.A),
         B: Array.from(lora.B),
-        scaling: lora.scaling
+        scaling: lora.scaling,
       };
     }
-    
+
     return JSON.stringify(modelData);
   }
 }
@@ -348,23 +351,23 @@ class ReinforcementLearningAgent {
     const lossLevel = loss < 0.5 ? 'low' : loss < 1.0 ? 'medium' : 'high';
     const accLevel = accuracy > 0.8 ? 'high' : accuracy > 0.6 ? 'medium' : 'low';
     const gradLevel = gradientNorm < 0.1 ? 'low' : gradientNorm < 1.0 ? 'medium' : 'high';
-    
+
     return `${lossLevel}_${accLevel}_${gradLevel}`;
   }
 
   selectAction(state) {
     const actions = ['increase_lr', 'decrease_lr', 'adjust_batch', 'modify_rank', 'continue'];
-    
+
     if (Math.random() < this.epsilon) {
       // Exploration: random action
       return actions[Math.floor(Math.random() * actions.length)];
     }
-    
+
     // Exploitation: best known action
     const stateActions = this.qTable.get(state) || new Map();
     let bestAction = actions[0];
     let bestValue = -Infinity;
-    
+
     for (const action of actions) {
       const value = stateActions.get(action) || 0;
       if (value > bestValue) {
@@ -372,7 +375,7 @@ class ReinforcementLearningAgent {
         bestAction = action;
       }
     }
-    
+
     return bestAction;
   }
 
@@ -380,16 +383,16 @@ class ReinforcementLearningAgent {
     if (!this.qTable.has(state)) {
       this.qTable.set(state, new Map());
     }
-    
+
     const stateActions = this.qTable.get(state);
     const currentQ = stateActions.get(action) || 0;
-    
+
     // Q-learning update: Q(s,a) = Q(s,a) + α[r + γ*max(Q(s',a')) - Q(s,a)]
     const newQ = currentQ + this.alpha * (reward - currentQ);
     stateActions.set(action, newQ);
-    
+
     this.rewardHistory.push(reward);
-    
+
     // Decay exploration rate
     this.epsilon = Math.max(0.1, this.epsilon * 0.999);
   }
@@ -412,21 +415,23 @@ class ReinforcementLearningAgent {
         // No change
         break;
     }
-    
+
     return action;
   }
 
   getStats() {
     const recentRewards = this.rewardHistory.slice(-100);
-    const averageReward = recentRewards.length > 0 ? 
-      recentRewards.reduce((a, b) => a + b, 0) / recentRewards.length : 0;
-    
+    const averageReward =
+      recentRewards.length > 0
+        ? recentRewards.reduce((a, b) => a + b, 0) / recentRewards.length
+        : 0;
+
     return {
       episodeCount: this.episodeCount,
       averageReward,
       bestReward: Math.max(...this.rewardHistory, 0),
       explorationRate: this.epsilon,
-      qTableSize: this.qTable.size
+      qTableSize: this.qTable.size,
     };
   }
 }
@@ -461,7 +466,7 @@ self.addEventListener('message', async (event) => {
   } catch (error) {
     self.postMessage({
       type: 'training_error',
-      data: { error: error.message }
+      data: { error: error.message },
     });
   }
 });
@@ -469,7 +474,7 @@ self.addEventListener('message', async (event) => {
 async function handleInit(config) {
   trainingConfig = config;
   await trainer.initialize(config.modelPath);
-  
+
   console.log('QLorA trainer initialized');
 }
 
@@ -480,17 +485,17 @@ async function handleStartTraining(jobData) {
 
   currentJob = jobData.job;
   isTraining = true;
-  
+
   const config = currentJob.config;
   const dataPoints = currentJob.dataPoints;
-  
+
   // Initialize training state
   trainingState = {
     epoch: 0,
     step: 0,
     loss: 0,
     accuracy: 0,
-    learningRate: config.trainingParams.learningRate
+    learningRate: config.trainingParams.learningRate,
   };
 
   console.log(`Starting QLorA training with ${dataPoints.length} examples`);
@@ -499,10 +504,10 @@ async function handleStartTraining(jobData) {
     // Training loop
     for (let epoch = 0; epoch < config.trainingParams.epochs && isTraining; epoch++) {
       trainingState.epoch = epoch;
-      
+
       // Shuffle data
       const shuffledData = shuffleArray([...dataPoints]);
-      
+
       // Process in batches
       const batchSize = config.trainingParams.batchSize;
       let epochLoss = 0;
@@ -511,18 +516,18 @@ async function handleStartTraining(jobData) {
 
       for (let i = 0; i < shuffledData.length && isTraining; i += batchSize) {
         const batch = shuffledData.slice(i, Math.min(i + batchSize, shuffledData.length));
-        
+
         // Convert training data to trainer format
-        const formattedBatch = batch.map(dp => ({
+        const formattedBatch = batch.map((dp) => ({
           input: dp.prompt,
           target: createTargetVector(dp.completion),
           state: trainer.reinforcementAgent.getState(trainingState.loss, trainingState.accuracy, 0),
-          action: 'continue'
+          action: 'continue',
         }));
 
         // Train batch
         const batchResults = await trainer.trainBatch(formattedBatch);
-        
+
         // Update training state
         trainingState.step++;
         epochLoss += batchResults.loss;
@@ -532,12 +537,16 @@ async function handleStartTraining(jobData) {
         // Reinforcement learning update
         if (config.useReinforcementLearning) {
           const reward = calculateReward(batchResults.loss, batchResults.accuracy);
-          const state = trainer.reinforcementAgent.getState(batchResults.loss, batchResults.accuracy, batchResults.gradientNorm);
+          const state = trainer.reinforcementAgent.getState(
+            batchResults.loss,
+            batchResults.accuracy,
+            batchResults.gradientNorm
+          );
           const action = trainer.reinforcementAgent.selectAction(state);
-          
+
           trainer.reinforcementAgent.updatePolicy(state, action, reward);
           trainer.reinforcementAgent.executeAction(action, trainer);
-          
+
           // Send RL update
           self.postMessage({
             type: 'reinforcement_update',
@@ -545,15 +554,15 @@ async function handleStartTraining(jobData) {
               reward,
               action,
               state,
-              qValue: trainer.reinforcementAgent.qTable.get(state)?.get(action) || 0
-            }
+              qValue: trainer.reinforcementAgent.qTable.get(state)?.get(action) || 0,
+            },
           });
         }
 
         // Send progress update
         trainingState.loss = epochLoss / Math.max(batchCount, 1);
         trainingState.accuracy = epochAccuracy / Math.max(batchCount, 1);
-        
+
         self.postMessage({
           type: 'training_progress',
           data: {
@@ -564,31 +573,36 @@ async function handleStartTraining(jobData) {
               totalSteps: currentJob.progress.totalSteps,
               loss: trainingState.loss,
               accuracy: trainingState.accuracy,
-              validationLoss: trainingState.loss * (0.95 + Math.random() * 0.1) // Simulated
+              validationLoss: trainingState.loss * (0.95 + Math.random() * 0.1), // Simulated
             },
             metrics: {
               trainingTime: Date.now() - currentJob.startedAt,
               memoryUsage: batchResults.memoryUsage,
               gpuUtilization: Math.random() * 0.8 + 0.2, // Simulated
-              throughput: (batchSize * 1000) / (Date.now() - (currentJob.lastUpdate || Date.now() - 1000))
+              throughput:
+                (batchSize * 1000) / (Date.now() - (currentJob.lastUpdate || Date.now() - 1000)),
             },
-            reinforcementLearning: config.useReinforcementLearning ? trainer.reinforcementAgent.getStats() : null
-          }
+            reinforcementLearning: config.useReinforcementLearning
+              ? trainer.reinforcementAgent.getStats()
+              : null,
+          },
         });
 
         // Yield control periodically
         if (trainingState.step % 10 === 0) {
-          await new Promise(resolve => setTimeout(resolve, 50));
+          await new Promise((resolve) => setTimeout(resolve, 50));
         }
       }
 
-      console.log(`Epoch ${epoch + 1} completed. Loss: ${trainingState.loss.toFixed(4)}, Accuracy: ${trainingState.accuracy.toFixed(3)}`);
+      console.log(
+        `Epoch ${epoch + 1} completed. Loss: ${trainingState.loss.toFixed(4)}, Accuracy: ${trainingState.accuracy.toFixed(3)}`
+      );
     }
 
     if (isTraining) {
       // Training completed successfully
       const modelData = trainer.saveModel(config.outputDir);
-      
+
       self.postMessage({
         type: 'training_completed',
         data: {
@@ -597,16 +611,15 @@ async function handleStartTraining(jobData) {
           totalSteps: trainingState.step,
           modelPath: config.outputDir,
           modelData,
-          reinforcementStats: trainer.reinforcementAgent.getStats()
-        }
+          reinforcementStats: trainer.reinforcementAgent.getStats(),
+        },
       });
     }
-
   } catch (error) {
     console.error('Training error:', error);
     self.postMessage({
       type: 'training_error',
-      data: { error: error.message }
+      data: { error: error.message },
     });
   } finally {
     isTraining = false;
@@ -616,17 +629,17 @@ async function handleStartTraining(jobData) {
 
 async function handlePauseTraining() {
   if (!isTraining) return;
-  
+
   isTraining = false;
   console.log('Training paused');
 }
 
 async function handleResumeTraining() {
   if (isTraining || !currentJob) return;
-  
+
   isTraining = true;
   console.log('Training resumed');
-  
+
   // Resume training would be implemented here
 }
 
@@ -648,14 +661,25 @@ function shuffleArray(array) {
 
 function createTargetVector(text) {
   // Convert text to target vector (simplified)
-  const vocab = ['legal', 'case', 'evidence', 'court', 'judge', 'law', 'statute', 'precedent', 'plaintiff', 'defendant'];
+  const vocab = [
+    'legal',
+    'case',
+    'evidence',
+    'court',
+    'judge',
+    'law',
+    'statute',
+    'precedent',
+    'plaintiff',
+    'defendant',
+  ];
   const vector = new Float32Array(vocab.length);
-  
+
   const words = text.toLowerCase().split(/\s+/);
   vocab.forEach((word, i) => {
     vector[i] = words.includes(word) ? 1.0 : 0.0;
   });
-  
+
   return vector;
 }
 
@@ -663,7 +687,7 @@ function calculateReward(loss, accuracy) {
   // Calculate reward based on training metrics
   const lossReward = Math.max(0, 1.0 - loss); // Higher reward for lower loss
   const accuracyReward = accuracy; // Direct accuracy reward
-  
+
   return (lossReward + accuracyReward) / 2;
 }
 

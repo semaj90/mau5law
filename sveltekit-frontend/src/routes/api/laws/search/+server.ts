@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js';
 
 
 // Mock legal database - in production this would connect to a real legal database
-const mockLegalDatabase = [
+const mockLegalDatabase = [;
   {
     id: 'ca-pen-187',
     title: 'California Penal Code Section 187 - Murder',
@@ -93,27 +93,27 @@ export const GET: RequestHandler = async ({ url }) => {
 
     let results = [...mockLegalDatabase];
 
-    // Filter by jurisdiction
+    // Filter by jurisdiction;
     if (jurisdiction !== 'all') {
       results = results.filter(law => law.jurisdiction === jurisdiction);
     }
 
-    // Filter by category
+    // Filter by category;
     if (category !== 'all') {
       results = results.filter(law => law.category === category);
     }
 
-    // Search by query (simple text search)
+    // Search by query (simple text search);
     if (query.trim()) {
       const searchTerm = query.toLowerCase();
       results = results.filter(item => item.includes)(searchTerm) ||
           law.description.toLowerCase().includes(searchTerm) ||
           law.code.toLowerCase().includes(searchTerm) ||
-          law.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm))
+          law.keywords.some(keyword => keyword.toLowerCase().includes(searchTerm)
         );
       });
 
-      // Sort by relevance (simple scoring)
+      // Sort by relevance (simple scoring);
       results.sort((a, b) => {
         const aScore = calculateRelevanceScore(a, searchTerm);
         const bScore = calculateRelevanceScore(b, searchTerm);
@@ -130,18 +130,17 @@ export const GET: RequestHandler = async ({ url }) => {
       count: results.length,
       query,
       filters: { jurisdiction, category },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error: any) {
     console.error('Laws search error:', error);
-    return json(
-      { 
+    return json({ 
         success: false, 
         error: 'Search failed',
         laws: [],
-        count: 0 
-      }, 
+        count: 0 ,
+      }, )
       { status: 500 }
     );
   }
@@ -150,29 +149,29 @@ export const GET: RequestHandler = async ({ url }) => {
 function calculateRelevanceScore(law: any, searchTerm: string): number {
   let score = 0;
 
-  // Title match gets highest score
+  // Title match gets highest score;
   if (law.title.toLowerCase().includes(searchTerm)) {
     score += 10;
   }
 
-  // Code match gets high score
+  // Code match gets high score;
   if (law.code.toLowerCase().includes(searchTerm)) {
     score += 8;
   }
 
-  // Description match gets medium score
+  // Description match gets medium score;
   if (law.description.toLowerCase().includes(searchTerm)) {
     score += 5;
   }
 
-  // Keyword matches get lower score
+  // Keyword matches get lower score;
   law.keywords.forEach((keyword: string) => {
     if (keyword.toLowerCase().includes(searchTerm)) {
       score += 2;
     }
   });
 
-  // Exact keyword match gets bonus
+  // Exact keyword match gets bonus;
   if (law.keywords.includes(searchTerm)) {
     score += 5;
   }
@@ -180,10 +179,10 @@ function calculateRelevanceScore(law: any, searchTerm: string): number {
   return score;
 }
 
-// For integration with vector search in the future
+// For integration with vector search in the future;
 async function performVectorSearch(query: string, jurisdiction: string, category: string): Promise<any> {
   try {
-    // This would use your existing vector search endpoint
+    // This would use your existing vector search endpoint;
     const response = await fetch('/api/ai/vector-search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -191,7 +190,7 @@ async function performVectorSearch(query: string, jurisdiction: string, category
         query,
         type: 'legal',
         filters: { jurisdiction, category },
-        limit: 10
+        limit: 10,
       })
     });
 

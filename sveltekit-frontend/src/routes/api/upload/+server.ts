@@ -11,7 +11,7 @@ import type { RequestHandler } from './$types.js';
 // Ensure upload directory exists
 const UPLOAD_DIR = "./uploads";
 
-// Basic upload handler
+// Basic upload handler;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData();
@@ -25,13 +25,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const fileName = `${fileId}_${file.name}`;
     const filePath = path.join(UPLOAD_DIR, fileName);
 
-    // Ensure upload directory exists
+    // Ensure upload directory exists;
     if (!existsSync(UPLOAD_DIR)) {
       await mkdir(UPLOAD_DIR, { recursive: true });
     }
 
     // Save file
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const buffer = Buffer.from(await file.arrayBuffer();
     await writeFile(filePath, buffer);
 
     return json({
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request }) => {
       fileId,
       fileName: file.name,
       filePath,
-      size: file.size
+      size: file.size,
     });
 
   } catch (error: any) {

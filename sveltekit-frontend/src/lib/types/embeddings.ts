@@ -1,7 +1,8 @@
 /**
  * Type definitions for embedding operations
  * Enhanced for WASM + Web Workers + GPU AI
- */
+ */;
+}
 
 export interface EmbeddingRequest {
   text: string;
@@ -47,7 +48,7 @@ export interface TextPreprocessingResult {
     originalLength: number;
     cleanedLength: number;
     tokenCount: number;
-    hasSpecialChars: boolean;
+    hasSpecialChars: boolean;,
   };
 }
 
@@ -66,7 +67,7 @@ export interface BatchEmbeddingResponse {
     total: number;
     successful: number;
     failed: number;
-    processingTime: string;
+    processingTime: string;,
   };
 }
 

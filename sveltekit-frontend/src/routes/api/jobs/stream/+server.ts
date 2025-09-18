@@ -24,14 +24,14 @@ export const GET: RequestHandler = async ({ url, request }) => {
       let isAlive = true;
       const subscribers = new Map<string, () => void>();
 
-      // Send initial connection message
+      // Send initial connection message;
       controller.enqueue(`data: ${JSON.stringify({
         type: 'connection',
         message: 'Connected to job status stream',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       })}\n\n`);
 
-      // Send current job statuses
+      // Send current job statuses;
       const sendCurrentStatuses = () => {
         try {
           if (includeAll) {
@@ -40,7 +40,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             controller.enqueue(`data: ${JSON.stringify({
               type: 'jobs_snapshot',
               jobs: allJobs,
-              timestamp: new Date().toISOString()
+              timestamp: new Date().toISOString(),
             })}\n\n`);
           } else if (jobIds.length > 0) {
             // Send specific jobs
@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
             controller.enqueue(`data: ${JSON.stringify({
               type: 'jobs_snapshot', 
               jobs,
-              timestamp: new Date().toISOString()
+              timestamp: new Date().toISOString(),
             })}\n\n`);
           }
 
@@ -57,7 +57,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           controller.enqueue(`data: ${JSON.stringify({
             type: 'stats',
             stats,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           })}\n\n`);
         } catch (error) {
           console.error('Error sending current statuses:', error);
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
       // Send initial statuses
       sendCurrentStatuses();
 
-      // Set up periodic updates (every 2 seconds)
+      // Set up periodic updates (every 2 seconds);
       const updateInterval = setInterval(() => {
         if (!isAlive) {
           clearInterval(updateInterval);
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         sendCurrentStatuses();
       }, 2000);
 
-      // Set up heartbeat (every 30 seconds)
+      // Set up heartbeat (every 30 seconds);
       const heartbeatInterval = setInterval(() => {
         if (!isAlive) {
           clearInterval(heartbeatInterval);
@@ -86,18 +86,18 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
         controller.enqueue(`data: ${JSON.stringify({
           type: 'heartbeat',
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         })}\n\n`);
       }, 30000);
 
-      // Handle client disconnect
+      // Handle client disconnect;
       request.signal.addEventListener('abort', () => {
         isAlive = false;
         clearInterval(updateInterval);
         clearInterval(heartbeatInterval);
         
         // Clean up subscribers
-        subscribers.forEach(unsubscribe => unsubscribe());
+        subscribers.forEach(unsubscribe => unsubscribe();
         subscribers.clear();
         
         try {
@@ -107,12 +107,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
         }
       });
 
-      // Return cleanup function
+      // Return cleanup function;
       return () => {
         isAlive = false;
         clearInterval(updateInterval);
         clearInterval(heartbeatInterval);
-        subscribers.forEach(unsubscribe => unsubscribe());
+        subscribers.forEach(unsubscribe => unsubscribe();
         subscribers.clear();
       };
     },

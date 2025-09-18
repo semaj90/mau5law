@@ -1,4 +1,4 @@
-// @ts-nocheck - Advanced experimental service
+// @ts-nocheck - Advanced experimental service;
 import {
   ensureFloat32Array,
   createWebGPUBuffer,
@@ -20,7 +20,7 @@ export async function initializeWebGPU(): Promise<any> {
   try {
     if (!cachedAdapter) {
       cachedAdapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance'
+        powerPreference: 'high-performance',
       });
     }
 
@@ -34,7 +34,7 @@ export async function initializeWebGPU(): Promise<any> {
         requiredFeatures: [],
         requiredLimits: {
           maxStorageBufferBindingSize: 128 * 1024 * 1024, // 128MB for large legal documents
-          maxBufferSize: 128 * 1024 * 1024
+          maxBufferSize: 128 * 1024 * 1024,
         }
       });
     }
@@ -101,12 +101,12 @@ export async function processQuery(
       quantizationApplied: conversionResult ? {
         precision: options?.quantization?.precision || 'adaptive',
         compressionRatio: conversionResult.compressionRatio,
-        memorySavedMB: (conversionResult.originalSize - conversionResult.compressedSize) / (1024 * 1024)
+        memorySavedMB: (conversionResult.originalSize - conversionResult.compressedSize) / (1024 * 1024),
       } : null,
       profiling: { 
         ttfbMs: Math.round(processingTime * 0.3), 
         totalMs: Math.round(processingTime),
-        gpuProcessingMs: Math.round(processingTime * 0.6)
+        gpuProcessingMs: Math.round(processingTime * 0.6),
       },
     };
   } catch (error) {
@@ -137,7 +137,7 @@ export const webgpuRAGService = {
                         [];
     
     // Simulate processing embeddings from context
-    const mockEmbeddings = new Float32Array(768); // Typical embedding dimension
+    const mockEmbeddings = new Float32Array(768); // Typical embedding dimension;
     for (let i = 0; i < mockEmbeddings.length; i++) {
       mockEmbeddings[i] = Math.random() * 2 - 1; // [-1, 1] range
     }
@@ -146,7 +146,7 @@ export const webgpuRAGService = {
       embeddings: mockEmbeddings,
       context: contextArray,
       quantization: { precision: 'fp16' }, // Default to FP16 for legal AI
-      memoryBudgetMB: 512 // Default 512MB budget
+      memoryBudgetMB: 512 // Default 512MB budget,
     });
     
     return {
@@ -193,7 +193,7 @@ export const webgpuRAGService = {
     cachedAdapter = null;
   },
 
-  // New utility methods
+  // New utility methods;
   processEmbeddings: async (embeddings: (Float32Array | number[])[]) => {
     const { device } = await initializeWebGPU();
     if (!device) return null;
@@ -205,7 +205,7 @@ export const webgpuRAGService = {
       embeddings.map((emb, idx) => ({
         name: `embedding_${idx}`,
         data: Array.isArray(emb) ? new Float32Array(emb) : emb,
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
       })),
       { precision: 'fp16' } // Default quantization for legal AI
     );
@@ -220,7 +220,7 @@ export const webgpuRAGService = {
     return {
       buffersCreated: bufferMap.size,
       averageCompression: totalCompression / bufferMap.size,
-      memoryOptimized: true
+      memoryOptimized: true,
     };
   },
 
@@ -228,12 +228,12 @@ export const webgpuRAGService = {
     const { adapter } = await initializeWebGPU();
     if (!adapter) return null;
 
-    // Note: Real implementation would query adapter.info when available
+    // Note: Real implementation would query adapter.info when available;
     return {
       maxBufferSize: '128MB',
       preferredQuantization: 'fp16',
       supportedFormats: ['fp32', 'fp16', 'int8', 'uint8'],
-      recommendedMemoryBudget: '512MB'
+      recommendedMemoryBudget: '512MB',
     };
   }
 };

@@ -29,7 +29,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const { caseId, context, currentPhase } = await request.json();
 
-    // Generate context-aware prompts based on prosecutor workflow
+    // Generate context-aware prompts based on prosecutor workflow;
     const response = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -49,7 +49,7 @@ Focus on practical prosecutor needs:
 
 Return only 4 concise, actionable questions as a JSON array:
 ["Question 1", "Question 2", "Question 3", "Question 4"]`,
-        stream: false
+        stream: false,
       })
     });
 
@@ -67,7 +67,7 @@ Return only 4 concise, actionable questions as a JSON array:
         ]
       });
     } catch (parseError) {
-      // Fallback suggestions
+      // Fallback suggestions;
       return json({ 
         success: true, 
         suggestions: [

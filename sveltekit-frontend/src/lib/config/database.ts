@@ -1,7 +1,8 @@
 /**
  * Centralized Database Configuration
  * Single source of truth for all database connections across the legal AI platform
- */
+ */;
+}
 
 export interface DatabaseConfig {
   host: string;
@@ -18,12 +19,12 @@ export interface DatabaseConfig {
 export interface DatabaseUrls {
   connectionString: string;
   appUrl: string;
-  adminUrl: string;
+  adminUrl: string;,
 }
 
 /**
  * Get database configuration from environment with smart defaults
- */
+ */;
 export function getDatabaseConfig(): DatabaseConfig {
   return {
     host: process.env.POSTGRES_HOST || 'localhost',
@@ -34,13 +35,13 @@ export function getDatabaseConfig(): DatabaseConfig {
     ssl: process.env.NODE_ENV === 'production',
     maxConnections: parseInt(process.env.DB_MAX_CONNECTIONS || '20'),
     idleTimeoutMs: parseInt(process.env.DB_IDLE_TIMEOUT || '30000'),
-    connectionTimeoutMs: parseInt(process.env.DB_CONNECTION_TIMEOUT || '10000')
+    connectionTimeoutMs: parseInt(process.env.DB_CONNECTION_TIMEOUT || '10000'),
   };
 }
 
 /**
  * Generate standardized database URLs
- */
+ */;
 export function getDatabaseUrls(): DatabaseUrls {
   const config = getDatabaseConfig();
   const baseUrl = `postgresql://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`;
@@ -48,13 +49,13 @@ export function getDatabaseUrls(): DatabaseUrls {
   return {
     connectionString: process.env.DATABASE_URL || baseUrl,
     appUrl: process.env.DATABASE_URL || baseUrl,
-    adminUrl: process.env.ADMIN_DATABASE_URL || baseUrl
+    adminUrl: process.env.ADMIN_DATABASE_URL || baseUrl,
   };
 }
 
 /**
  * Get connection string for specific service types
- */
+ */;
 export function getConnectionString(type: 'app' | 'admin' | 'migration' = 'app'): string {
   const urls = getDatabaseUrls();
 
@@ -64,13 +65,13 @@ export function getConnectionString(type: 'app' | 'admin' | 'migration' = 'app')
       return urls.adminUrl;
     case 'app':
     default:
-      return urls.appUrl;
+      return urls.appUrl;,
   }
 }
 
 /**
  * Validate database configuration
- */
+ */;
 export function validateDatabaseConfig(): { valid: boolean; errors: string[] } {
   const config = getDatabaseConfig();
   const errors: string[] = [];
@@ -89,7 +90,7 @@ export function validateDatabaseConfig(): { valid: boolean; errors: string[] } {
 
 /**
  * Get pool configuration for different environments
- */
+ */;
 export function getPoolConfig(environment: 'development' | 'production' | 'test' = 'development') {
   const config = getDatabaseConfig();
 
@@ -119,7 +120,7 @@ export function getPoolConfig(environment: 'development' | 'production' | 'test'
 
 /**
  * Export commonly used constants
- */
+ */;
 export const DATABASE_CONSTANTS = {
   DEFAULT_HOST: 'localhost',
   DEFAULT_PORT: 5432,
@@ -128,13 +129,13 @@ export const DATABASE_CONSTANTS = {
   VECTOR_DIMENSIONS: {
     EMBEDDING_GEMMA: 768,
     NOMIC_EMBED: 768,
-    OPENAI_ADA: 1536
+    OPENAI_ADA: 1536,
   }
 } as const;
 
 /**
  * Browser-safe configuration (no sensitive data)
- */
+ */;
 export function getBrowserSafeDatabaseInfo() {
   const config = getDatabaseConfig();
   return {
@@ -144,6 +145,6 @@ export function getBrowserSafeDatabaseInfo() {
     user: config.user,
     // Never expose password in browser
     ssl: config.ssl,
-    connected: true // This would be updated by a connection test
+    connected: true // This would be updated by a connection test,
   };
 }

@@ -51,12 +51,11 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     console.error("Case search error:", error);
-    return json(
-      {
+    return json({
         results: [],
         error: "Search failed",
         message: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)>
       { status: 500 },
     );
   }
@@ -77,7 +76,7 @@ async function searchCasesText(
       ),
     ];
 
-    // Add filters
+    // Add filters;
     if (filters.status) {
       whereConditions.push(sql`${cases.status} = ${filters.status}`);
     }
@@ -91,15 +90,15 @@ async function searchCasesText(
     const results = await db
       .select()
       .from(cases)
-      .where(and(...whereConditions))
-      .orderBy(desc(cases.createdAt))
+      .where(and(...whereConditions)
+      .orderBy(desc(cases.createdAt)
       .limit(limit);
 
     return results.map((case_) => ({
       ...case_,
       searchScore: 1.0,
       matchType: "text",
-    }));
+    });
   } catch (error: any) {
     console.error("Text search failed:", error);
     return [];

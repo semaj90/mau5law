@@ -9,7 +9,7 @@ import { db } from '$lib/server/db/connection';
 import { legalDocuments, documentChunks } from '$lib/server/db/schema';
 import { sql, desc, and, or, like, gte, lte } from 'drizzle-orm';
 
-// Mock Qdrant client
+// Mock Qdrant client;
 interface QdrantPoint {
   id: string;
   vector: number[];
@@ -20,7 +20,7 @@ interface QdrantPoint {
   };
 }
 
-// Mock MinIO metadata
+// Mock MinIO metadata;
 interface MinIOMetadata {
   bucket: string;
   key: string;
@@ -30,7 +30,7 @@ interface MinIOMetadata {
   metadata: Record<string, string>;
 }
 
-// Mock Loki.js log entries
+// Mock Loki.js log entries;
 interface LokiEntry {
   timestamp: string;
   level: string;
@@ -87,13 +87,13 @@ export const GET: RequestHandler = async ({ url }) => {
 
 /*
  * Build PostgreSQL + Drizzle index with pgvector
- */
+ */;
 async function buildPostgreSQLIndex() {
   console.log('📊 Building PostgreSQL + pgvector index...');
 
   try {
     // Query documents with embeddings using Drizzle ORM
-    const documents = await db
+    const documents = await db;
       .select({
         id: legalDocuments.id,
         title: legalDocuments.title,
@@ -104,10 +104,10 @@ async function buildPostgreSQLIndex() {
         uploadDate: legalDocuments.createdAt,
         metadata: legalDocuments.metadata,
         // pgvector similarity (would be calculated dynamically)
-  embedding: sql<number[]>`NULL`.as('embedding')
+  embedding: sql<number[]>`NULL`.as('embedding'),
       })
       .from(legalDocuments)
-      .orderBy(desc(legalDocuments.createdAt))
+      .orderBy(desc(legalDocuments.createdAt)
       .limit(1000);
 
     return documents.map(doc => ({
@@ -124,13 +124,13 @@ async function buildPostgreSQLIndex() {
         hasEmbedding: doc.embedding !== null,
         ...parseJsonMetadata(doc.metadata)
       }
-    }));
+    });
 
   } catch (error) {
     console.error('PostgreSQL index failed:', error);
 
     // Fallback mock data
-    return [
+    return [;
       {
         id: 'pg_001',
         title: 'Contract Analysis - PostgreSQL Source',
@@ -142,7 +142,7 @@ async function buildPostgreSQLIndex() {
           caseId: 'case_pg_001',
           uploadDate: new Date().toISOString(),
           source: 'postgresql',
-          hasEmbedding: true
+          hasEmbedding: true,
         }
       }
     ];
@@ -151,12 +151,12 @@ async function buildPostgreSQLIndex() {
 
 /*
  * Build Qdrant vector index
- */
+ */;
 async function buildVectorIndex() {
   console.log('🧠 Building Qdrant vector index...');
 
   try {
-    // In production: Query Qdrant collection
+    // In production: Query Qdrant collection;
     // const response = await qdrantClient.scroll({
     //   collection_name: 'legal_documents',
     //   limit: 1000,
@@ -165,7 +165,7 @@ async function buildVectorIndex() {
     // });
 
     // Mock Qdrant data
-    const mockQdrantPoints: QdrantPoint[] = [
+    const mockQdrantPoints: QdrantPoint[] = [;
       {
         id: 'qdrant_001',
         vector: new Array(768).fill(0).map(() => Math.random()),
@@ -176,7 +176,7 @@ async function buildVectorIndex() {
             practiceArea: 'Contract Law',
             documentType: 'PDF',
             confidence: 0.92,
-            embedding_model: 'nomic-embed-text'
+            embedding_model: 'nomic-embed-text',
           }
         }
       },
@@ -190,7 +190,7 @@ async function buildVectorIndex() {
             practiceArea: 'Criminal Law',
             documentType: 'Audio',
             confidence: 0.87,
-            embedding_model: 'nomic-embed-text'
+            embedding_model: 'nomic-embed-text',
           }
         }
       }
@@ -206,9 +206,9 @@ async function buildVectorIndex() {
         source: 'qdrant',
         vectorId: point.id,
         hasVector: true,
-        vectorDimensions: point.vector.length
+        vectorDimensions: point.vector.length,
       }
-    }));
+    });
 
   } catch (error) {
     console.error('Qdrant index failed:', error);
@@ -218,7 +218,7 @@ async function buildVectorIndex() {
 
 /*
  * Build MinIO object storage index
- */
+ */;
 async function buildMinIOIndex() {
   console.log('🗄️ Building MinIO storage index...');
 
@@ -227,7 +227,7 @@ async function buildMinIOIndex() {
     // const objects = await minioClient.listObjectsV2('legal-documents', '', true);
 
     // Mock MinIO metadata
-    const mockMinioObjects: MinIOMetadata[] = [
+    const mockMinioObjects: MinIOMetadata[] = [;
       {
         bucket: 'legal-documents',
         key: 'evidence/contracts/sla_template.pdf',
@@ -289,7 +289,7 @@ async function buildMinIOIndex() {
 
 /*
  * Build Loki.js log index
- */
+ */;
 async function buildLokiIndex() {
   console.log('📊 Building Loki.js log index...');
 
@@ -299,7 +299,7 @@ async function buildLokiIndex() {
     // const response = await lokiClient.queryRange(query, start, end, limit);
 
     // Mock Loki log entries
-    const mockLokiEntries: LokiEntry[] = [
+    const mockLokiEntries: LokiEntry[] = [;
       {
         timestamp: new Date().toISOString(),
         level: 'info',
@@ -307,13 +307,13 @@ async function buildLokiIndex() {
         labels: {
           job: 'legal-platform',
           service: 'evidence-upload',
-          case_id: 'case_123'
+          case_id: 'case_123',
         },
         metadata: {
           document_id: 'doc_upload_001',
           file_name: 'contract_evidence.pdf',
           file_size: 1024000,
-          processing_time: '2.3s'
+          processing_time: '2.3s',
         }
       },
       {
@@ -323,12 +323,12 @@ async function buildLokiIndex() {
         labels: {
           job: 'legal-platform',
           service: 'document-processor',
-          case_id: 'case_124'
+          case_id: 'case_124',
         },
         metadata: {
           document_id: 'doc_slow_001',
           processing_time: '45.7s',
-          reason: 'large_file_size'
+          reason: 'large_file_size',
         }
       }
     ];
@@ -349,7 +349,7 @@ async function buildLokiIndex() {
         job: entry.labels.job,
         ...entry.metadata
       }
-    }));
+    });
 
   } catch (error) {
     console.error('Loki index failed:', error);
@@ -357,7 +357,7 @@ async function buildLokiIndex() {
   }
 }
 
-// Utility functions
+// Utility functions;
 function extractEntitiesFromContent(content: string): string[] {
   if (!content) return [];
 
@@ -370,10 +370,10 @@ function extractEntitiesFromContent(content: string): string[] {
 
   const words = content.toLowerCase().split(/\W+/);
   const entities = legalTerms.filter(term =>
-    words.some(word => word.includes(term) || term.includes(word))
+    words.some(word => word.includes(term) || term.includes(word)
   );
 
-  return Array.from(new Set(entities));
+  return Array.from(new Set(entities);
 }
 
 function parseJsonMetadata(metadata: any): Record<string, any> {
@@ -391,6 +391,6 @@ function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 B';
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(bytes) / Math.log(k);
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }

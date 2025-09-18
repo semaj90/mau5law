@@ -1,5 +1,6 @@
 // Detective Board AI Assistant Store - Svelte 5 pattern
 import { writable, derived } from 'svelte/store';
+}
 
 export interface AIMessage {
   id: string;
@@ -37,7 +38,7 @@ export interface AIContext {
   connections: Array<{
     fromId: string;
     toId: string;
-    type: string;
+    type: string;,
   }>;
 }
 
@@ -59,7 +60,7 @@ export interface AIInsight {
   confidence: number;
   priority: 'low' | 'medium' | 'high' | 'critical';
   timestamp: number;
-  acknowledged: boolean;
+  acknowledged: boolean;,
 }
 
 // Store for AI contexts per case
@@ -92,7 +93,7 @@ export const priorityInsights = derived(
   (insights) => insights.filter(insight => insight.priority === 'critical' || insight.priority === 'high')
 );
 
-// Actions
+// Actions;
 export function initializeCaseAI(caseId: string, caseInfo: AIContext['caseInfo']) {
   const context: CaseAIContext = {
     caseId,
@@ -100,16 +101,16 @@ export function initializeCaseAI(caseId: string, caseInfo: AIContext['caseInfo']
     context: {
       evidenceItems: [],
       caseInfo,
-      connections: []
+      connections: [],
     },
     insights: [],
-    isProcessing: false
+    isProcessing: false,
   };
 
   aiAssistantContexts.update(contexts => ({
     ...contexts,
     [caseId]: context
-  }));
+  });
 
   currentAIContext.set(context);
   return context;
@@ -154,11 +155,11 @@ export function updateAIContext(caseId: string, contextUpdates: Partial<AIContex
 export async function sendToAI(
   caseId: string,
   message: string,
-  evidenceIds: string[] = []
+  evidenceIds: string[] = [];
 ): Promise<AIMessage> {
   aiProcessing.set(true);
 
-  // Add user message
+  // Add user message;
   const userMessage: AIMessage = {
     id: crypto.randomUUID(),
     text: message,
@@ -183,7 +184,7 @@ export async function sendToAI(
     // Build AI prompt with context
     const prompt = buildAIPrompt(message, context, evidenceIds);
 
-    // Send to AI service (integrate with your existing AI infrastructure)
+    // Send to AI service (integrate with your existing AI infrastructure);
     const response = await fetch('/api/ai/assistant', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -201,7 +202,7 @@ export async function sendToAI(
 
     const aiResponse = await response.json();
 
-    // Create assistant message
+    // Create assistant message;
     const assistantMessage: AIMessage = {
       id: crypto.randomUUID(),
       text: aiResponse.text || 'I encountered an issue processing your request.',
@@ -209,12 +210,12 @@ export async function sendToAI(
       timestamp: Date.now(),
       evidenceIds: aiResponse.referencedEvidence || [],
       suggestions: aiResponse.suggestions || [],
-      confidence: aiResponse.confidence || 0.8
+      confidence: aiResponse.confidence || 0.8,
     };
 
     addMessage(caseId, assistantMessage);
 
-    // Add any insights discovered
+    // Add any insights discovered;
     if (aiResponse.insights) {
       for (const insight of aiResponse.insights) {
         addInsight(caseId, insight);
@@ -231,7 +232,7 @@ export async function sendToAI(
       text: `I'm sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`,
       type: 'assistant',
       timestamp: Date.now(),
-      confidence: 0
+      confidence: 0,
     };
 
     addMessage(caseId, errorMessage);
@@ -269,7 +270,7 @@ export function addInsight(caseId: string, insight: Omit<AIInsight, 'id' | 'time
     ...insight,
     id: crypto.randomUUID(),
     timestamp: Date.now(),
-    acknowledged: false
+    acknowledged: false,
   };
 
   aiAssistantContexts.update(contexts => {
@@ -326,7 +327,7 @@ export function clearMessages(caseId: string) {
 
     const updatedContext = {
       ...context,
-      messages: []
+      messages: [],
     };
 
     // Update current context if active
@@ -341,7 +342,7 @@ export function clearMessages(caseId: string) {
   });
 }
 
-// Helper functions
+// Helper functions;
 function buildAIPrompt(userMessage: string, context: AIContext, evidenceIds: string[]): string {
   const relevantEvidence = context.evidenceItems.filter(item =>
     evidenceIds.includes(item.id)
@@ -356,7 +357,7 @@ function buildAIPrompt(userMessage: string, context: AIContext, evidenceIds: str
     prompt += `\nRelevant Evidence:\n`;
     relevantEvidence.forEach(evidence => {
       prompt += `- ${evidence.title} (${evidence.type}): ${evidence.content.substring(0, 200)}...\n`;
-    });
+    ,});
   }
 
   if (context.connections.length > 0) {
@@ -372,7 +373,7 @@ function buildAIPrompt(userMessage: string, context: AIContext, evidenceIds: str
   return prompt;
 }
 
-// Specialized AI functions
+// Specialized AI functions;
 export async function analyzeEvidence(caseId: string, evidenceId: string) {
   return sendToAI(
     caseId,

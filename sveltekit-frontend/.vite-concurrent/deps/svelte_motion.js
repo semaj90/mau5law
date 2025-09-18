@@ -1,47 +1,24 @@
-import {
-  MediaQuery
-} from "./chunk-C4DSKXON.js";
-import "./chunk-VHHKUK53.js";
-import "./chunk-7RQDXF5S.js";
-import {
-  loop,
-  raf,
-  writable
-} from "./chunk-5OCJKXG4.js";
-import "./chunk-VOC4A3DY.js";
-import {
-  deferred,
-  get,
-  noop,
-  render_effect,
-  set,
-  state,
-  tag
-} from "./chunk-YZBAU52E.js";
-import "./chunk-24FUCJ6P.js";
-import "./chunk-6SIJFJGE.js";
-import {
-  true_default
-} from "./chunk-UWMOYZ25.js";
-import "./chunk-KDVGFZWC.js";
-import {
-  linear
-} from "./chunk-7QVV7TAH.js";
-import {
-  __privateAdd,
-  __privateGet,
-  __privateMethod,
-  __privateSet
-} from "./chunk-KWPVD4H7.js";
+import { MediaQuery } from './chunk-C4DSKXON.js';
+import './chunk-VHHKUK53.js';
+import './chunk-7RQDXF5S.js';
+import { loop, raf, writable } from './chunk-5OCJKXG4.js';
+import './chunk-VOC4A3DY.js';
+import { deferred, get, noop, render_effect, set, state, tag } from './chunk-YZBAU52E.js';
+import './chunk-24FUCJ6P.js';
+import './chunk-6SIJFJGE.js';
+import { true_default } from './chunk-UWMOYZ25.js';
+import './chunk-KDVGFZWC.js';
+import { linear } from './chunk-7QVV7TAH.js';
+import { __privateAdd, __privateGet, __privateMethod, __privateSet } from './chunk-KWPVD4H7.js';
 
 // node_modules/svelte/src/motion/utils.js
 function is_date(obj) {
-  return Object.prototype.toString.call(obj) === "[object Date]";
+  return Object.prototype.toString.call(obj) === '[object Date]';
 }
 
 // node_modules/svelte/src/motion/spring.js
 function tick_spring(ctx, last_value, current_value, target_value) {
-  if (typeof current_value === "number" || is_date(current_value)) {
+  if (typeof current_value === 'number' || is_date(current_value)) {
     const delta = target_value - current_value;
     const velocity = (current_value - last_value) / (ctx.dt || 1 / 60);
     const spring2 = ctx.opts.stiffness * delta;
@@ -55,13 +32,11 @@ function tick_spring(ctx, last_value, current_value, target_value) {
       return is_date(current_value) ? new Date(current_value.getTime() + d) : current_value + d;
     }
   } else if (Array.isArray(current_value)) {
-    return current_value.map(
-      (_, i) => (
-        // @ts-ignore
-        tick_spring(ctx, last_value[i], current_value[i], target_value[i])
-      )
+    return current_value.map((_, i) =>
+      // @ts-ignore
+      tick_spring(ctx, last_value[i], current_value[i], target_value[i])
     );
-  } else if (typeof current_value === "object") {
+  } else if (typeof current_value === 'object') {
     const next_value = {};
     for (const k in current_value) {
       next_value[k] = tick_spring(ctx, last_value[k], current_value[k], target_value[k]);
@@ -77,25 +52,23 @@ function spring(value, opts = {}) {
   let last_time;
   let task;
   let current_token;
-  let last_value = (
+  let last_value =
     /** @type {T} */
-    value
-  );
-  let target_value = (
+    value;
+  let target_value =
     /** @type {T | undefined} */
-    value
-  );
+    value;
   let inv_mass = 1;
   let inv_mass_recovery_rate = 0;
   let cancel_task = false;
   function set2(new_value, opts2 = {}) {
     target_value = new_value;
-    const token = current_token = {};
-    if (value == null || opts2.hard || spring2.stiffness >= 1 && spring2.damping >= 1) {
+    const token = (current_token = {});
+    if (value == null || opts2.hard || (spring2.stiffness >= 1 && spring2.damping >= 1)) {
       cancel_task = true;
       last_time = raf.now();
       last_value = new_value;
-      store.set(value = target_value);
+      store.set((value = target_value));
       return Promise.resolve();
     } else if (opts2.soft) {
       const rate = opts2.soft === true ? 0.5 : +opts2.soft;
@@ -117,14 +90,12 @@ function spring(value, opts = {}) {
           inv_mass,
           opts: spring2,
           settled: true,
-          dt: elapsed * 60 / 1e3
+          dt: (elapsed * 60) / 1e3,
         };
         const next_value = tick_spring(ctx, last_value, value, target_value);
         last_time = now;
-        last_value = /** @type {T} */
-        value;
-        store.set(value = /** @type {T} */
-        next_value);
+        last_value = /** @type {T} */ value;
+        store.set((value = /** @type {T} */ next_value));
         if (ctx.settled) {
           task = null;
         }
@@ -139,20 +110,36 @@ function spring(value, opts = {}) {
   }
   const spring2 = {
     set: set2,
-    update: (fn, opts2) => set2(fn(
-      /** @type {T} */
-      target_value,
-      /** @type {T} */
-      value
-    ), opts2),
+    update: (fn, opts2) =>
+      set2(
+        fn(
+          /** @type {T} */
+          target_value,
+          /** @type {T} */
+          value
+        ),
+        opts2
+      ),
     subscribe: store.subscribe,
     stiffness,
     damping,
-    precision
+    precision,
   };
   return spring2;
 }
-var _stiffness, _damping, _precision, _current, _target, _last_value, _last_time, _inverse_mass, _momentum, _task, _deferred, _Spring_instances, update_fn;
+var _stiffness,
+  _damping,
+  _precision,
+  _current,
+  _target,
+  _last_value,
+  _last_time,
+  _inverse_mass,
+  _momentum,
+  _task,
+  _deferred,
+  _Spring_instances,
+  update_fn;
 var _Spring = class _Spring {
   /**
    * @param {T} value
@@ -173,17 +160,19 @@ var _Spring = class _Spring {
     __privateAdd(this, _task, null);
     /** @type {ReturnType<typeof deferred> | null} */
     __privateAdd(this, _deferred, null);
-    __privateSet(this, _current, true_default ? tag(state(value), "Spring.current") : state(value));
-    __privateSet(this, _target, true_default ? tag(state(value), "Spring.target") : state(value));
-    if (typeof options.stiffness === "number") __privateGet(this, _stiffness).v = clamp(options.stiffness, 0, 1);
-    if (typeof options.damping === "number") __privateGet(this, _damping).v = clamp(options.damping, 0, 1);
-    if (typeof options.precision === "number") __privateGet(this, _precision).v = options.precision;
+    __privateSet(this, _current, true_default ? tag(state(value), 'Spring.current') : state(value));
+    __privateSet(this, _target, true_default ? tag(state(value), 'Spring.target') : state(value));
+    if (typeof options.stiffness === 'number')
+      __privateGet(this, _stiffness).v = clamp(options.stiffness, 0, 1);
+    if (typeof options.damping === 'number')
+      __privateGet(this, _damping).v = clamp(options.damping, 0, 1);
+    if (typeof options.precision === 'number') __privateGet(this, _precision).v = options.precision;
     if (true_default) {
-      tag(__privateGet(this, _stiffness), "Spring.stiffness");
-      tag(__privateGet(this, _damping), "Spring.damping");
-      tag(__privateGet(this, _precision), "Spring.precision");
-      tag(__privateGet(this, _current), "Spring.current");
-      tag(__privateGet(this, _target), "Spring.target");
+      tag(__privateGet(this, _stiffness), 'Spring.stiffness');
+      tag(__privateGet(this, _damping), 'Spring.damping');
+      tag(__privateGet(this, _precision), 'Spring.precision');
+      tag(__privateGet(this, _current), 'Spring.current');
+      tag(__privateGet(this, _target), 'Spring.target');
     }
   }
   /**
@@ -223,7 +212,7 @@ var _Spring = class _Spring {
    */
   set(value, options) {
     var _a, _b;
-    (_a = __privateGet(this, _deferred)) == null ? void 0 : _a.reject(new Error("Aborted"));
+    (_a = __privateGet(this, _deferred)) == null ? void 0 : _a.reject(new Error('Aborted'));
     if ((options == null ? void 0 : options.instant) || __privateGet(this, _current).v === void 0) {
       (_b = __privateGet(this, _task)) == null ? void 0 : _b.abort();
       __privateSet(this, _task, null);
@@ -237,10 +226,12 @@ var _Spring = class _Spring {
     }
     var d = __privateSet(this, _deferred, deferred());
     d.promise.catch(noop);
-    __privateMethod(this, _Spring_instances, update_fn).call(this, value).then(() => {
-      if (d !== __privateGet(this, _deferred)) return;
-      d.resolve(void 0);
-    });
+    __privateMethod(this, _Spring_instances, update_fn)
+      .call(this, value)
+      .then(() => {
+        if (d !== __privateGet(this, _deferred)) return;
+        d.resolve(void 0);
+      });
     return d.promise;
   }
   get current() {
@@ -284,36 +275,51 @@ _task = new WeakMap();
 _deferred = new WeakMap();
 _Spring_instances = new WeakSet();
 /** @param {T} value */
-update_fn = function(value) {
+update_fn = function (value) {
   var _a;
   set(__privateGet(this, _target), value);
   (_a = __privateGet(this, _current)).v ?? (_a.v = value);
-  __privateGet(this, _last_value) ?? __privateSet(this, _last_value, __privateGet(this, _current).v);
+  __privateGet(this, _last_value) ??
+    __privateSet(this, _last_value, __privateGet(this, _current).v);
   if (!__privateGet(this, _task)) {
     __privateSet(this, _last_time, raf.now());
     var inv_mass_recovery_rate = 1e3 / (__privateGet(this, _momentum) * 60);
-    __privateGet(this, _task) ?? __privateSet(this, _task, loop((now) => {
-      __privateSet(this, _inverse_mass, Math.min(__privateGet(this, _inverse_mass) + inv_mass_recovery_rate, 1));
-      const elapsed = Math.min(now - __privateGet(this, _last_time), 1e3 / 30);
-      const ctx = {
-        inv_mass: __privateGet(this, _inverse_mass),
-        opts: {
-          stiffness: __privateGet(this, _stiffness).v,
-          damping: __privateGet(this, _damping).v,
-          precision: __privateGet(this, _precision).v
-        },
-        settled: true,
-        dt: elapsed * 60 / 1e3
-      };
-      var next = tick_spring(ctx, __privateGet(this, _last_value), __privateGet(this, _current).v, __privateGet(this, _target).v);
-      __privateSet(this, _last_value, __privateGet(this, _current).v);
-      __privateSet(this, _last_time, now);
-      set(__privateGet(this, _current), next);
-      if (ctx.settled) {
-        __privateSet(this, _task, null);
-      }
-      return !ctx.settled;
-    }));
+    __privateGet(this, _task) ??
+      __privateSet(
+        this,
+        _task,
+        loop((now) => {
+          __privateSet(
+            this,
+            _inverse_mass,
+            Math.min(__privateGet(this, _inverse_mass) + inv_mass_recovery_rate, 1)
+          );
+          const elapsed = Math.min(now - __privateGet(this, _last_time), 1e3 / 30);
+          const ctx = {
+            inv_mass: __privateGet(this, _inverse_mass),
+            opts: {
+              stiffness: __privateGet(this, _stiffness).v,
+              damping: __privateGet(this, _damping).v,
+              precision: __privateGet(this, _precision).v,
+            },
+            settled: true,
+            dt: (elapsed * 60) / 1e3,
+          };
+          var next = tick_spring(
+            ctx,
+            __privateGet(this, _last_value),
+            __privateGet(this, _current).v,
+            __privateGet(this, _target).v
+          );
+          __privateSet(this, _last_value, __privateGet(this, _current).v);
+          __privateSet(this, _last_time, now);
+          set(__privateGet(this, _current), next);
+          if (ctx.settled) {
+            __privateSet(this, _task, null);
+          }
+          return !ctx.settled;
+        })
+      );
   }
   return __privateGet(this, _task).promise;
 };
@@ -327,10 +333,10 @@ function get_interpolator(a, b) {
   if (a === b || a !== a) return () => a;
   const type = typeof a;
   if (type !== typeof b || Array.isArray(a) !== Array.isArray(b)) {
-    throw new Error("Cannot interpolate values of different type");
+    throw new Error('Cannot interpolate values of different type');
   }
   if (Array.isArray(a)) {
-    const arr = (
+    const arr =
       /** @type {Array<any>} */
       b.map((bi, i) => {
         return get_interpolator(
@@ -338,13 +344,12 @@ function get_interpolator(a, b) {
           a[i],
           bi
         );
-      })
-    );
+      });
     return (t) => arr.map((fn) => fn(t));
   }
-  if (type === "object") {
+  if (type === 'object') {
     if (!a || !b) {
-      throw new Error("Object cannot be null");
+      throw new Error('Object cannot be null');
     }
     if (is_date(a) && is_date(b)) {
       const an = a.getTime();
@@ -365,12 +370,10 @@ function get_interpolator(a, b) {
       return result;
     };
   }
-  if (type === "number") {
-    const delta = (
+  if (type === 'number') {
+    const delta =
       /** @type {number} */
-      b - /** @type {number} */
-      a
-    );
+      b - /** @type {number} */ a;
     return (t) => a + t * delta;
   }
   return () => b;
@@ -382,7 +385,7 @@ function tweened(value, defaults = {}) {
   function set2(new_value, opts) {
     target_value = new_value;
     if (value == null) {
-      store.set(value = new_value);
+      store.set((value = new_value));
       return Promise.resolve();
     }
     let previous_task = task;
@@ -391,14 +394,14 @@ function tweened(value, defaults = {}) {
       delay = 0,
       duration = 400,
       easing = linear,
-      interpolate = get_interpolator
+      interpolate = get_interpolator,
     } = { ...defaults, ...opts };
     if (duration === 0) {
       if (previous_task) {
         previous_task.abort();
         previous_task = null;
       }
-      store.set(value = target_value);
+      store.set((value = target_value));
       return Promise.resolve();
     }
     const start = raf.now() + delay;
@@ -411,7 +414,7 @@ function tweened(value, defaults = {}) {
           value,
           new_value
         );
-        if (typeof duration === "function")
+        if (typeof duration === 'function')
           duration = duration(
             /** @type {any} */
             value,
@@ -424,25 +427,28 @@ function tweened(value, defaults = {}) {
         previous_task = null;
       }
       const elapsed = now - start;
-      if (elapsed > /** @type {number} */
-      duration) {
-        store.set(value = new_value);
+      if (elapsed > /** @type {number} */ duration) {
+        store.set((value = new_value));
         return false;
       }
-      store.set(value = fn(easing(elapsed / duration)));
+      store.set((value = fn(easing(elapsed / duration))));
       return true;
     });
     return task.promise;
   }
   return {
     set: set2,
-    update: (fn, opts) => set2(fn(
-      /** @type {any} */
-      target_value,
-      /** @type {any} */
-      value
-    ), opts),
-    subscribe: store.subscribe
+    update: (fn, opts) =>
+      set2(
+        fn(
+          /** @type {any} */
+          target_value,
+          /** @type {any} */
+          value
+        ),
+        opts
+      ),
+    subscribe: store.subscribe,
   };
 }
 var _current2, _target2, _defaults, _task2;
@@ -462,8 +468,8 @@ var _Tween = class _Tween {
     __privateSet(this, _target2, state(value));
     __privateSet(this, _defaults, options);
     if (true_default) {
-      tag(__privateGet(this, _current2), "Tween.current");
-      tag(__privateGet(this, _target2), "Tween.target");
+      tag(__privateGet(this, _current2), 'Tween.current');
+      tag(__privateGet(this, _target2), 'Tween.target');
     }
   }
   /**
@@ -505,7 +511,7 @@ var _Tween = class _Tween {
       delay = 0,
       duration = 400,
       easing = linear,
-      interpolate = get_interpolator
+      interpolate = get_interpolator,
     } = { ...__privateGet(this, _defaults), ...options };
     if (duration === 0) {
       (_a = __privateGet(this, _task2)) == null ? void 0 : _a.abort();
@@ -516,29 +522,31 @@ var _Tween = class _Tween {
     let fn;
     let started = false;
     let previous_task = __privateGet(this, _task2);
-    __privateSet(this, _task2, loop((now) => {
-      if (now < start) {
-        return true;
-      }
-      if (!started) {
-        started = true;
-        const prev = __privateGet(this, _current2).v;
-        fn = interpolate(prev, value);
-        if (typeof duration === "function") {
-          duration = duration(prev, value);
+    __privateSet(
+      this,
+      _task2,
+      loop((now) => {
+        if (now < start) {
+          return true;
         }
-        previous_task == null ? void 0 : previous_task.abort();
-      }
-      const elapsed = now - start;
-      if (elapsed > /** @type {number} */
-      duration) {
-        set(__privateGet(this, _current2), value);
-        return false;
-      }
-      set(__privateGet(this, _current2), fn(easing(elapsed / /** @type {number} */
-      duration)));
-      return true;
-    }));
+        if (!started) {
+          started = true;
+          const prev = __privateGet(this, _current2).v;
+          fn = interpolate(prev, value);
+          if (typeof duration === 'function') {
+            duration = duration(prev, value);
+          }
+          previous_task == null ? void 0 : previous_task.abort();
+        }
+        const elapsed = now - start;
+        if (elapsed > /** @type {number} */ duration) {
+          set(__privateGet(this, _current2), value);
+          return false;
+        }
+        set(__privateGet(this, _current2), fn(easing(elapsed / /** @type {number} */ duration)));
+        return true;
+      })
+    );
     return __privateGet(this, _task2).promise;
   }
   get current() {
@@ -558,14 +566,6 @@ _task2 = new WeakMap();
 var Tween = _Tween;
 
 // node_modules/svelte/src/motion/index.js
-var prefersReducedMotion = new MediaQuery(
-  "(prefers-reduced-motion: reduce)"
-);
-export {
-  Spring,
-  Tween,
-  prefersReducedMotion,
-  spring,
-  tweened
-};
+var prefersReducedMotion = new MediaQuery('(prefers-reduced-motion: reduce)');
+export { Spring, Tween, prefersReducedMotion, spring, tweened };
 //# sourceMappingURL=svelte_motion.js.map

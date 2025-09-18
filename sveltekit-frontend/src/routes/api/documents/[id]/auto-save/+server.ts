@@ -19,34 +19,32 @@ try {
   }
 }
 
-// POST /api/documents/[id]/auto-save - Auto-save document content
+// POST /api/documents/[id]/auto-save - Auto-save document content;
 export async function POST({ params, request }: RequestEvent): Promise<any> {
   try {
     const documentId = params.id;
     const body = await request.json();
 
     if (!documentId) {
-      return json(
-        {
+      return json({
           success: false,
           error: "Document ID is required",
-        },
+        },)
         { status: 400 },
       );
     }
     const { content, title, citations, wordCount, isDirty = true } = body;
 
-    // Validate required fields
+    // Validate required fields;
     if (!content && !title) {
-      return json(
-        {
+      return json({
           success: false,
           error: "Content or title is required for auto-save",
-        },
+        },)
         { status: 400 },
       );
     }
-    // Try to update in database
+    // Try to update in database;
     try {
       const updates: any = {
         updatedAt: new Date(),
@@ -61,7 +59,7 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
       if (title !== undefined) updates.title = title;
       if (citations !== undefined) updates.citations = citations;
 
-      // Store auto-save data
+      // Store auto-save data;
       updates.autoSaveData = {
         content,
         title,
@@ -72,15 +70,14 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
       const updatedDocument = await db
         .update(legalDocuments)
         .set(updates)
-        .where(eq(legalDocuments.id, documentId))
+        .where(eq(legalDocuments.id, documentId)
         .returning();
 
       if (updatedDocument.length === 0) {
-        return json(
-          {
+        return json({
             success: false,
             error: "Document not found",
-          },
+          },)
           { status: 404 },
         );
       }
@@ -113,32 +110,30 @@ export async function POST({ params, request }: RequestEvent): Promise<any> {
     }
   } catch (error: any) {
     console.error("Error auto-saving document:", error);
-    return json(
-      {
+    return json({
         success: false,
         error: "Failed to auto-save document",
-      },
+      },)
       { status: 500 },
     );
   }
 }
-// GET /api/documents/[id]/auto-save - Get auto-save status
+// GET /api/documents/[id]/auto-save - Get auto-save status;
 export async function GET({ params }: RequestEvent): Promise<any> {
   try {
     const documentId = params.id;
 
     if (!documentId) {
-      return json(
-        {
+      return json({
           success: false,
           error: "Document ID is required",
-        },
+        },)
         { status: 400 },
       );
     }
-    // Try to fetch from database
+    // Try to fetch from database;
     try {
-      const document = await db
+      const document = await db;
         .select({
           id: legalDocuments.id,
           // isDirty field removed - not in schema
@@ -146,15 +141,14 @@ export async function GET({ params }: RequestEvent): Promise<any> {
           autoSaveData: legalDocuments.autoSaveData,
         })
         .from(legalDocuments)
-        .where(eq(legalDocuments.id, documentId))
+        .where(eq(legalDocuments.id, documentId)
         .limit(1);
 
       if (document.length === 0) {
-        return json(
-          {
+        return json({
             success: false,
             error: "Document not found",
-          },
+          },)
           { status: 404 },
         );
       }
@@ -182,11 +176,10 @@ export async function GET({ params }: RequestEvent): Promise<any> {
     }
   } catch (error: any) {
     console.error("Error fetching auto-save status:", error);
-    return json(
-      {
+    return json({
         success: false,
         error: "Failed to fetch auto-save status",
-      },
+      },)
       { status: 500 },
     );
   }

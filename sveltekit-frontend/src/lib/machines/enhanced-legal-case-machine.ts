@@ -15,7 +15,7 @@ import {
 } from '../server/db/schema-postgres.js';
 import { sql, eq, and, desc } from 'drizzle-orm';
 
-// Temporary type definition to fix import issues
+// Temporary type definition to fix import issues;
 export type CaseForm = {
   caseNumber: string;
   title: string;
@@ -29,9 +29,9 @@ export type CaseForm = {
   notifyAssignee?: boolean;
 };
 
-// Enhanced context with full database integration
+// Enhanced context with full database integration;
 export interface EnhancedLegalCaseContext {
-  // Case Management
+  // Case Management;
   currentCase: {
     id?: string;
     title?: string;
@@ -46,7 +46,7 @@ export interface EnhancedLegalCaseContext {
   // Evidence Management
   evidenceList: Array<any>;
 
-  // AI Analysis
+  // AI Analysis;
   aiAnalysis: {
     status: 'idle' | 'processing' | 'completed' | 'failed';
     results?: {
@@ -81,7 +81,7 @@ export type EnhancedLegalCaseEvent =
   | { type: 'UPDATE_CASE'; caseId: string; data: Partial<CaseForm> }
   | { type: 'DELETE_CASE'; caseId: string }
 
-  // Evidence operations
+  // Evidence operations;
   | {
       type: 'ADD_EVIDENCE';
       caseId: string;
@@ -96,11 +96,11 @@ export type EnhancedLegalCaseEvent =
   | { type: 'REMOVE_EVIDENCE'; evidenceId: string }
   | { type: 'UPDATE_EVIDENCE'; evidenceId: string; data: any }
 
-  // AI Analysis operations
+  // AI Analysis operations;
   | {
       type: 'START_AI_ANALYSIS';
       caseId: string;
-      analysisType: 'summary' | 'recommendation' | 'similarity' | 'full';
+      analysisType: 'summary' | 'recommendation' | 'similarity' | 'full';,
     }
   | { type: 'GENERATE_EMBEDDINGS'; documentId: string }
   | { type: 'FIND_SIMILAR_CASES'; caseId: string; threshold?: number }
@@ -116,7 +116,7 @@ export type EnhancedLegalCaseEvent =
   | { type: 'SYNC_DB' }
   | { type: 'REFRESH' };
 
-export const enhancedLegalCaseMachine = createMachine(
+export const enhancedLegalCaseMachine = createMachine();
   {
     id: 'enhancedLegalCase',
     initial: 'initializing',
@@ -259,7 +259,7 @@ export const enhancedLegalCaseMachine = createMachine(
           }),
           onDone: {
             target: 'caseLoaded',
-            actions: [
+            actions: [;
               assign({
                 evidenceList: ({ context, event }) => [
                   ...context.evidenceList,
@@ -268,7 +268,7 @@ export const enhancedLegalCaseMachine = createMachine(
                 loading: false,
                 error: null,
               }),
-              // Auto-trigger embedding generation for new evidence
+              // Auto-trigger embedding generation for new evidence;
               ({ self, event }) => {
                 if ((event as any).output?.id) {
                   self.send({
@@ -430,7 +430,7 @@ export const enhancedLegalCaseMachine = createMachine(
   },
   {
     actors: {
-      // Initialize system and check database connection
+      // Initialize system and check database connection;
       initializeSystem: fromPromise(async () => {
         try {
           // Test database connection
@@ -451,15 +451,14 @@ export const enhancedLegalCaseMachine = createMachine(
         }
       }),
 
-      // LOAD_CASE service - Load case with optional evidence
-      loadCase: fromPromise(
-        async ({ input }: { input: { caseId: string; includeEvidence: boolean } }) => {
+      // LOAD_CASE service - Load case with optional evidence;
+      loadCase: fromPromise(async ({ input }: { input: { caseId: string; includeEvidence: boolean } }) => {
           try {
             // Load case data
             const caseResult = await db
               .select()
               .from(cases)
-              .where(eq(cases.id, input.caseId))
+              .where(eq(cases.id, input.caseId)
               .limit(1);
 
             if (caseResult.length === 0) {
@@ -469,9 +468,9 @@ export const enhancedLegalCaseMachine = createMachine(
             const caseData = caseResult[0];
             let evidenceData: any[] = [];
 
-            // Load evidence if requested
+            // Load evidence if requested;
             if (input.includeEvidence) {
-              evidenceData = await db
+              evidenceData = await db;
                 .select({
                   id: evidence.id,
                   case_id: evidence.case_id,
@@ -490,8 +489,8 @@ export const enhancedLegalCaseMachine = createMachine(
                 END`,
                 })
                 .from(evidence)
-                .where(eq(evidence.case_id, input.caseId))
-                .orderBy(desc(evidence.created_at));
+                .where(eq(evidence.case_id, input.caseId)
+                .orderBy(desc(evidence.created_at);
             }
 
             return {
@@ -504,11 +503,11 @@ export const enhancedLegalCaseMachine = createMachine(
         }
       ),
 
-      // Create new case
+      // Create new case;
       createCase: fromPromise(async ({ input }: { input: CaseForm }) => {
         try {
           const [newCase] = await db
-            .insert(cases)
+            .insert(cases);
             .values({
               title: input.title,
               description: input.description,
@@ -523,9 +522,8 @@ export const enhancedLegalCaseMachine = createMachine(
         }
       }),
 
-      // ADD_EVIDENCE service - Add evidence with automatic embedding
-      addEvidence: fromPromise(
-        async ({
+      // ADD_EVIDENCE service - Add evidence with automatic embedding;
+      addEvidence: fromPromise(async ({
           input,
         }: {
           input: {
@@ -542,7 +540,7 @@ export const enhancedLegalCaseMachine = createMachine(
           try {
             // Insert evidence record
             const [newEvidence] = await db
-              .insert(evidence)
+              .insert(evidence);
               .values({
                 case_id: input.caseId,
                 title: input.evidence.title,
@@ -551,7 +549,7 @@ export const enhancedLegalCaseMachine = createMachine(
               })
               .returning();
 
-            // If there's file content, create document chunks for embedding
+            // If there's file content, create document chunks for embedding;
             if (input.evidence.file_content) {
               const chunks = chunkText(input.evidence.file_content, 500, 50);
 
@@ -576,14 +574,13 @@ export const enhancedLegalCaseMachine = createMachine(
         }
       ),
 
-      // START_AI_ANALYSIS service - Full AI analysis using Gemma:legal
-      startAIAnalysis: fromPromise(
-        async ({
+      // START_AI_ANALYSIS service - Full AI analysis using Gemma:legal,
+      startAIAnalysis: fromPromise(async ({
           input,
         }: {
           input: {
             caseId: string;
-            analysisType: 'summary' | 'recommendation' | 'similarity' | 'full';
+            analysisType: 'summary' | 'recommendation' | 'similarity' | 'full';,
           };
         }) => {
           try {
@@ -591,7 +588,7 @@ export const enhancedLegalCaseMachine = createMachine(
             const caseData = await db
               .select()
               .from(cases)
-              .where(eq(cases.id, input.caseId))
+              .where(eq(cases.id, input.caseId)
               .limit(1);
 
             if (caseData.length === 0) {
@@ -601,7 +598,7 @@ export const enhancedLegalCaseMachine = createMachine(
             const evidenceData = await db
               .select()
               .from(evidence)
-              .where(eq(evidence.case_id, input.caseId));
+              .where(eq(evidence.case_id, input.caseId);
 
             // Get document chunks for context
             const documentChunksData = await db
@@ -613,14 +610,14 @@ export const enhancedLegalCaseMachine = createMachine(
             )`
               );
 
-            // Prepare context for Gemma:legal
+            // Prepare context for Gemma:legal;
             const analysisContext = {
               case: caseData[0],
               evidence: evidenceData,
               content: documentChunksData.map((chunk) => chunk.content).join('\n\n'),
             };
 
-            // Call Gemma:legal for analysis (your existing Ollama setup)
+            // Call Gemma:legal for analysis (your existing Ollama setup);
             const analysisResponse = await fetch('http://localhost:11434/api/generate', {
               method: 'POST',
               headers: {
@@ -647,7 +644,7 @@ export const enhancedLegalCaseMachine = createMachine(
         }
       ),
 
-      // Generate embeddings using nomic-embed-text
+      // Generate embeddings using nomic-embed-text;
       generateEmbeddings: fromPromise(async ({ input }: { input: { documentId: string } }) => {
         try {
           // Get document chunks that need embeddings
@@ -662,7 +659,7 @@ export const enhancedLegalCaseMachine = createMachine(
             );
 
           for (const chunk of chunks) {
-            // Generate embedding using nomic-embed-text
+            // Generate embedding using nomic-embed-text;
             const embeddingResponse = await fetch('http://localhost:11436/api/embeddings', {
               method: 'POST',
               headers: {
@@ -682,11 +679,11 @@ export const enhancedLegalCaseMachine = createMachine(
 
             // Update chunk with embedding
             await db
-              .update(documentChunks)
+              .update(documentChunks);
               .set({
                 embedding: sql`${JSON.stringify(embeddingResult.embedding)}`,
               })
-              .where(eq(documentChunks.id, chunk.id));
+              .where(eq(documentChunks.id, chunk.id);
           }
 
           return { status: 'completed', chunksProcessed: chunks.length };
@@ -695,27 +692,26 @@ export const enhancedLegalCaseMachine = createMachine(
         }
       }),
 
-      // Find similar cases using pgvector
-      findSimilarCases: fromPromise(
-        async ({ input }: { input: { caseId: string; threshold: number } }) => {
+      // Find similar cases using pgvector;
+      findSimilarCases: fromPromise(async ({ input }: { input: { caseId: string; threshold: number } }) => {
           try {
             // Get case embedding (computed from case content)
-            const caseChunks = await db
+            const caseChunks = await db;
               .select({
                 embedding: documentChunks.embedding,
                 chunkId: documentChunks.id,
                 evidenceId: evidence.id,
               })
               .from(documentChunks)
-              .innerJoin(evidence, eq(documentChunks.document_id, evidence.id))
-              .where(eq(evidence.case_id, input.caseId));
+              .innerJoin(evidence, eq(documentChunks.document_id, evidence.id)
+              .where(eq(evidence.case_id, input.caseId);
 
             if (caseChunks.length === 0) {
               return [];
             }
 
             // Average embeddings for case representation
-            const caseEmbedding = computeAverageEmbedding(caseChunks.map((c) => c.embedding || []));
+            const caseEmbedding = computeAverageEmbedding(caseChunks.map((c) => c.embedding || []);
 
             // Find similar cases using cosine similarity
             const similarCases = await db.execute(
@@ -743,7 +739,7 @@ export const enhancedLegalCaseMachine = createMachine(
         }
       ),
 
-      // Sync database state
+      // Sync database state;
       syncDatabase: fromPromise(async () => {
         try {
           // Perform health checks and sync operations
@@ -757,14 +753,14 @@ export const enhancedLegalCaseMachine = createMachine(
   }
 );
 
-// Helper functions
+// Helper functions;
 function chunkText(text: string, chunkSize: number, overlap: number): string[] {
   const chunks = [];
   let start = 0;
 
   while (start < text.length) {
     const end = Math.min(start + chunkSize, text.length);
-    chunks.push(text.slice(start, end));
+    chunks.push(text.slice(start, end);
     start = end - overlap;
   }
 
@@ -791,17 +787,17 @@ Please provide a ${analysisType} analysis focusing on:`;
     case 'similarity':
       return basePrompt + '\n- Legal precedents\n- Similar case patterns\n- Jurisdictional considerations';
     default:
-      return basePrompt + '\n- Comprehensive case analysis\n- Risk assessment\n- Recommendations';
+      return basePrompt + '\n- Comprehensive case analysis\n- Risk assessment\n- Recommendations';,
   }
 }
 
 function parseAnalysisResults(response: string, analysisType: string) {
-  // Parse AI response into structured format
+  // Parse AI response into structured format;
   return {
     summary: response.slice(0, 500),
     keyFindings: response.split('\n').filter(line => line.includes('•')),
     recommendations: response.split('\n').filter(item => item.includes)('recommend')),
-    confidence: 0.85 // Placeholder - could be computed from response certainty
+    confidence: 0.85 // Placeholder - could be computed from response certainty,
   };
 }
 

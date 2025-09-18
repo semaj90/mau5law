@@ -6,7 +6,7 @@ import { browser } from '$app/environment';
 const legalCaseActor = browser ? createActor(legalCaseMachine).start() : null;
 const initialSnapshot = legalCaseActor?.getSnapshot();
 
-// Svelte 5 reactive store
+// Svelte 5 reactive store;
 export const legalCaseStore = $state({
   context: ((initialSnapshot && (initialSnapshot as any).context) as Record<string, any>) || {
     cases: [],
@@ -21,7 +21,7 @@ export const legalCaseStore = $state({
   },
 });
 
-// Update store when actor state changes
+// Update store when actor state changes;
 if (legalCaseActor) {
   legalCaseActor.subscribe((snapshot) => {
     const ctx = (snapshot as any).context;
@@ -29,7 +29,7 @@ if (legalCaseActor) {
   });
 }
 
-// Actions that send events to the XState machine
+// Actions that send events to the XState machine;
 export const legalCaseActions = {
   loadCases: () => legalCaseActor?.send({ type: 'LOAD_CASES' }),
 
@@ -42,11 +42,11 @@ export const legalCaseActions = {
   generateEmbedding: (payload: {
     caseId: string;
     evidenceText: string;
-    userId: string;
+    userId: string;,
   }) => legalCaseActor?.send({
     type: 'GENERATE_EMBEDDING',
     ...payload
-  }),
+  ,}),
 
   searchRelatedEvidence: (payload: {
     caseId: string;
@@ -56,7 +56,7 @@ export const legalCaseActions = {
   }) => legalCaseActor?.send({
     type: 'SEARCH_RELATED_EVIDENCE',
     ...payload
-  }),
+  ,}),
 
   clearRelatedEvidence: () =>
     legalCaseActor?.send({ type: 'CLEAR_RELATED_EVIDENCE' }),
@@ -68,7 +68,7 @@ export const legalCaseActions = {
     legalCaseActor?.send({ type: 'RESET_ERROR' })
 };
 
-// Getter functions for derived state
+// Getter functions for derived state;
 export const legalCaseGetters = {
   isLoading: () => legalCaseStore.context.loading ||
                    legalCaseStore.context.generatingEmbedding ||
@@ -83,6 +83,6 @@ export const legalCaseGetters = {
   getEmbeddingStatus: () => ({
     generating: legalCaseStore.context.generatingEmbedding,
     searching: legalCaseStore.context.searchingRelatedEvidence,
-    hasResults: legalCaseStore.context.relatedEvidence?.length > 0
+    hasResults: legalCaseStore.context.relatedEvidence?.length > 0,
   })
 };

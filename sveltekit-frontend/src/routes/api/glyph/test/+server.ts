@@ -11,7 +11,7 @@ export const GET: RequestHandler = async () => {
   return json({
     success: true,
     message: 'Glyph diffusion test endpoint is working',
-    status: 'ok'
+    status: 'ok',
   });
 };
 
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log('🎨 Testing glyph generation:', body);
 
-    // Simulate glyph generation without database/MinIO
+    // Simulate glyph generation without database/MinIO;
     const mockGlyphResponse = {
       success: true,
       data: {
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ Glyph test generation failed:', error);
     return json({
       success: false,
-      error: 'Glyph test generation failed: ' + error.message
+      error: 'Glyph test generation failed: ' + error.message,
     }, { status: 500 });
   }
 };

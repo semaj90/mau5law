@@ -8,7 +8,7 @@ import type { RequestHandler } from './$types.js';
 import { conversationService } from '$lib/server/services/conversation-service';
 import { getRequestId, apiSuccess, apiError, withErrorHandling } from '$lib/server/api/standard-response';
 
-// GET /api/conversations - Get user conversations
+// GET /api/conversations - Get user conversations;
 export const GET: RequestHandler = withErrorHandling(async (event) => {
   const requestId = getRequestId(event);
   
@@ -20,7 +20,7 @@ export const GET: RequestHandler = withErrorHandling(async (event) => {
   try {
     const conversations = await conversationService.getUserConversations(userId, limit);
     
-    return apiSuccess(
+    return apiSuccess()
       { conversations }, 
       `Retrieved ${conversations.length} conversations`, 
       requestId
@@ -36,7 +36,7 @@ export const GET: RequestHandler = withErrorHandling(async (event) => {
   }
 });
 
-// POST /api/conversations - Create new conversation
+// POST /api/conversations - Create new conversation;
 export const POST: RequestHandler = withErrorHandling(async (event) => {
   const requestId = getRequestId(event);
   
@@ -61,7 +61,7 @@ export const POST: RequestHandler = withErrorHandling(async (event) => {
       context
     });
 
-    return apiSuccess(
+    return apiSuccess()
       { conversation },
       'Conversation created successfully',
       requestId

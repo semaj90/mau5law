@@ -33,6 +33,7 @@ import { generateOllamaSuggestions, type OllamaSuggestion } from '$lib/services/
 import { generateVectorContextualSuggestions, type ContextualSuggestion } from '$lib/services/vector-suggestions-service.js';
 import { generateEnhancedRAGSuggestions, type RAGSuggestionResponse } from '$lib/services/enhanced-rag-suggestions-service.js';
 import { aiSuggestionsClient, ReportTypeUtils, type SuggestionResponse } from '$lib/services/ai-suggestions-grpc-client.js';
+}
 
 export interface EnhancedSuggestionRequest {
   content: string;
@@ -100,7 +101,7 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
       return json({ error: 'Content is required' }, { status: 400 });
     }
 
-    // Generate comprehensive AI suggestions using multiple services
+    // Generate comprehensive AI suggestions using multiple services;
     const suggestions = await generateComprehensiveSuggestions({
       content,
       reportType,
@@ -139,7 +140,7 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
         vectorSearch: useVectorSearch,
         ollamaAI: useOllamaAI,
         enhancedRAG: useEnhancedRAG,
-        protobufGRPC: useProtobuf
+        protobufGRPC: useProtobuf,
       },
       timestamp: new Date().toISOString(),
       metadata: {
@@ -153,7 +154,7 @@ export async function POST({ request, url }: RequestEvent): Promise<any> {
     console.error('Error generating AI suggestions:', error);
     return json({ 
       error: 'Failed to generate suggestions',
-      details: error instanceof Error ? error.message: 'Unknown error'
+      details: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 }
@@ -168,7 +169,7 @@ async function generateComprehensiveSuggestions({
   maxSuggestions = 5,
   confidenceThreshold = 0.6,
   temperature = 0.3,
-  userId
+  userId;
 }: {
   content: string;
   reportType: string;
@@ -188,10 +189,9 @@ async function generateComprehensiveSuggestions({
   // Service execution promises for parallel processing
   const servicePromises: Promise<void>[] = [];
 
-  // 1. Protocol Buffers gRPC Service (if enabled)
+  // 1. Protocol Buffers gRPC Service (if enabled);
   if (useProtobuf) {
-    servicePromises.push(
-      (async () => {
+    servicePromises.push((async () => {
         try {
           const grpcStartTime = Date.now();
           const reportTypeEnum = ReportTypeUtils.fromString(reportType);
@@ -205,7 +205,7 @@ async function generateComprehensiveSuggestions({
             context: {
               case_id: context.caseId,
               user_id: userId,
-              document_ids: context.evidenceIds
+              document_ids: context.evidenceIds,
             }
           });
 
@@ -223,7 +223,7 @@ async function generateComprehensiveSuggestions({
                 keywords: suggestion.metadata?.source_documents || [],
                 supportingContext: suggestion.supporting_evidence || [],
                 citations: suggestion.case_citations || [],
-                processingTimeMs: Date.now() - grpcStartTime
+                processingTimeMs: Date.now() - grpcStartTime,
               }
             });
           });
@@ -234,10 +234,9 @@ async function generateComprehensiveSuggestions({
     );
   }
 
-  // 2. Enhanced RAG Service
+  // 2. Enhanced RAG Service;
   if (useEnhancedRAG) {
-    servicePromises.push(
-      (async () => {
+    servicePromises.push((async () => {
         try {
           const ragStartTime = Date.now();
           const ragResponse = await generateEnhancedRAGSuggestions(content, reportType, {
@@ -264,7 +263,7 @@ async function generateComprehensiveSuggestions({
                 keywords: suggestion.metadata.contextDocuments || [],
                 supportingContext: suggestion.supportingContext,
                 citations: suggestion.relevantCitations,
-                processingTimeMs: Date.now() - ragStartTime
+                processingTimeMs: Date.now() - ragStartTime,
               }
             });
           });
@@ -275,16 +274,15 @@ async function generateComprehensiveSuggestions({
     );
   }
 
-  // 3. Ollama AI Service
+  // 3. Ollama AI Service;
   if (useOllamaAI) {
-    servicePromises.push(
-      (async () => {
+    servicePromises.push((async () => {
         try {
           const ollamaStartTime = Date.now();
           const ollamaSuggestions = await generateOllamaSuggestions(
             content,
             reportType,
-            context,
+            context,)
             { temperature, maxSuggestions }
           );
 
@@ -300,7 +298,7 @@ async function generateComprehensiveSuggestions({
                 category: suggestion.metadata.category,
                 keywords: suggestion.metadata.keywords || [],
                 urgency: suggestion.metadata.urgency,
-                processingTimeMs: Date.now() - ollamaStartTime
+                processingTimeMs: Date.now() - ollamaStartTime,
               }
             });
           });
@@ -311,10 +309,9 @@ async function generateComprehensiveSuggestions({
     );
   }
 
-  // 4. Vector Contextual Search
+  // 4. Vector Contextual Search;
   if (useVectorSearch) {
-    servicePromises.push(
-      (async () => {
+    servicePromises.push((async () => {
         try {
           const vectorStartTime = Date.now();
           const vectorSuggestions = await generateVectorContextualSuggestions(
@@ -336,7 +333,7 @@ async function generateComprehensiveSuggestions({
                 category: suggestion.metadata.category,
                 keywords: suggestion.metadata.keywords || [],
                 supportingContext: suggestion.metadata.sourceDocumentId ? [suggestion.metadata.sourceDocumentId] : [],
-                processingTimeMs: Date.now() - vectorStartTime
+                processingTimeMs: Date.now() - vectorStartTime,
               }
             });
           });
@@ -347,11 +344,10 @@ async function generateComprehensiveSuggestions({
     );
   }
 
-  // 5. Rule-based fallback (always enabled)
-  servicePromises.push(
-    (async () => {
+  // 5. Rule-based fallback (always enabled);
+  servicePromises.push((async () => {
       const ruleStartTime = Date.now();
-      const ruleBasedSuggestions = generateRuleBasedSuggestions(content, reportType, content.toLowerCase());
+      const ruleBasedSuggestions = generateRuleBasedSuggestions(content, reportType, content.toLowerCase();
       
       ruleBasedSuggestions.forEach((suggestion, index) => {
         allSuggestions.push({
@@ -364,7 +360,7 @@ async function generateComprehensiveSuggestions({
             source: 'rule_based',
             category: suggestion.metadata.category,
             keywords: suggestion.metadata.keywords || [],
-            processingTimeMs: Date.now() - ruleStartTime
+            processingTimeMs: Date.now() - ruleStartTime,
           }
         });
       });
@@ -386,7 +382,7 @@ async function generateComprehensiveSuggestions({
 function generateRuleBasedSuggestions(
   content: string,
   reportType: string,
-  contentLower: string
+  contentLower: string;
 ) {
   const suggestions: Array<any> = [];
 
@@ -459,7 +455,7 @@ function generateRuleBasedSuggestions(
     });
   }
 
-  // Generic content-based suggestions
+  // Generic content-based suggestions;
   if (content.length < 200) {
     suggestions.push({
       content: 'Consider expanding this section with more detailed analysis and supporting evidence.',
@@ -495,23 +491,23 @@ function generateRuleBasedSuggestions(
 
 async function getVectorBasedSuggestions(content: string, reportType: string): Promise<any> {
   try {
-    // Generate embedding for the content
+    // Generate embedding for the content;
     const embedding = await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
       legalDomain: true,
-      cache: true
+      cache: true,
     }) as number[];
 
     // Search for similar chat messages and their recommendations
-    const similarMessages = await db
+    const similarMessages = await db;
       .select({
         content: chatMessages.content,
         recommendations: chatRecommendations.content,
         confidence: chatRecommendations.confidence,
-        type: chatRecommendations.recommendationType
+        type: chatRecommendations.recommendationType,
       })
       .from(chatMessages)
-      .leftJoin(chatRecommendations, eq(chatMessages.id, chatRecommendations.messageId))
+      .leftJoin(chatRecommendations, eq(chatMessages.id, chatRecommendations.messageId)
       .where(
         // Note: This is a simplified similarity search
         // In production, you'd use pgvector operators for proper cosine similarity
@@ -520,14 +516,14 @@ async function getVectorBasedSuggestions(content: string, reportType: string): P
       .limit(10);
 
     return similarMessages
-      .filter(msg => msg.recommendations && msg.confidence && msg.confidence > 0.6)
+      .filter(msg => msg.recommendations && msg.confidence && msg.confidence > 0.6);
       .map(msg => ({
         content: msg.recommendations!,
         type: msg.type || 'vector_based',
         confidence: msg.confidence!,
         reasoning: 'Based on similar previous conversations',
         metadata: { source: 'vector_search', similarContent: msg.content }
-      }));
+      });
   } catch (error: any) {
     console.warn('Vector similarity search failed:', error);
     return [];
@@ -538,7 +534,7 @@ async function generateContextualSuggestions(content: string, context: any): Pro
   const suggestions: Array<any> = [];
 
   try {
-    // If we have case context, suggest case-specific improvements
+    // If we have case context, suggest case-specific improvements;
     if (context.caseId) {
       suggestions.push({
         content: 'Consider referencing related evidence from this case to strengthen your analysis.',
@@ -549,7 +545,7 @@ async function generateContextualSuggestions(content: string, context: any): Pro
       });
     }
 
-    // If we have evidence context, suggest evidence-specific analysis
+    // If we have evidence context, suggest evidence-specific analysis;
     if (context.evidenceIds && context.evidenceIds.length > 0) {
       suggestions.push({
         content: 'Review the chain of custody and authentication requirements for the referenced evidence.',
@@ -560,7 +556,7 @@ async function generateContextualSuggestions(content: string, context: any): Pro
       });
     }
 
-    // If we have previous messages, suggest consistency
+    // If we have previous messages, suggest consistency;
     if (context.previousMessages && context.previousMessages.length > 0) {
       suggestions.push({
         content: 'Ensure consistency with previous analysis and build upon established arguments.',
@@ -594,17 +590,17 @@ function deduplicateUnifiedSuggestions(suggestions: UnifiedSuggestion[]): Unifie
     }
   });
   
-  return Array.from(seen.values());
+  return Array.from(seen.values();
 }
 
 function rankSuggestionsByQuality(
   suggestions: UnifiedSuggestion[],
-  confidenceThreshold: number
+  confidenceThreshold: number;
 ): UnifiedSuggestion[] {
   return suggestions
-    .filter(s => s.confidence >= confidenceThreshold)
+    .filter(s => s.confidence >= confidenceThreshold);
     .sort((a, b) => {
-      // Multi-factor ranking: confidence, priority, source reliability
+      // Multi-factor ranking: confidence, priority, source reliability;
       const sourceWeights = {
         'enhanced_rag': 1.0,
         'protobuf_grpc': 0.95,
@@ -635,24 +631,24 @@ async function storeRecommendations({
   content,
   suggestions,
   recommendationId,
-  reportType
+  reportType;
 }: {
   userId: string;
   sessionId: string;
   content: string;
   suggestions: UnifiedSuggestion[];
   recommendationId: string;
-  reportType: string;
+  reportType: string;,
 }): Promise<any> {
   try {
-    // Generate embedding for the content
+    // Generate embedding for the content;
     const embedding = await generateEnhancedEmbedding(content, {
       provider: 'nomic-embed',
       legalDomain: true,
-      cache: true
+      cache: true,
     }) as number[];
 
-    // Store the message
+    // Store the message;
     const messageResult = await db.insert(chatMessages).values({
       id: uuidv4(),
       sessionId,
@@ -664,14 +660,14 @@ async function storeRecommendations({
         suggestionRequestId: recommendationId,
         servicesUsed: suggestions.map(s => s.metadata.source),
         totalSuggestions: suggestions.length,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     }).returning({ id: chatMessages.id });
 
     const messageId = messageResult[0]?.id;
     
     if (messageId) {
-      // Store each recommendation with enhanced metadata
+      // Store each recommendation with enhanced metadata;
       for (let i = 0; i < suggestions.length; i++) {
         const suggestion = suggestions[i];
         await db.insert(chatRecommendations).values({
@@ -692,7 +688,7 @@ async function storeRecommendations({
             urgency: suggestion.metadata.urgency,
             processingTimeMs: suggestion.metadata.processingTimeMs,
             rank: i + 1,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
         });
       }

@@ -49,7 +49,7 @@ import { z } from 'zod';
 // UUID validation schema
 const UUIDSchema = z.string().uuid('Invalid ID format');
 
-// Timeline event schemas
+// Timeline event schemas;
 const CreateTimelineEventSchema = z.object({
   eventType: z.enum(['case_created', 'evidence_added', 'interview_conducted', 'court_filing', 'hearing', 'investigation', 'analysis', 'decision', 'other']),
   title: z.string().min(1, 'Title is required'),
@@ -78,10 +78,10 @@ const TimelineQuerySchema = z.object({
 /*
  * GET /api/v1/timeline/[caseId]
  * Get timeline events for a specific case
- */
+ */;
 export const GET: RequestHandler = async ({ params, url, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -93,7 +93,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     const caseId = UUIDSchema.parse(params.caseId);
 
     // Parse query parameters
-    const queryParams = Object.fromEntries(url.searchParams.entries());
+    const queryParams = Object.fromEntries(url.searchParams.entries();
     const {
       eventType,
       importance,
@@ -106,7 +106,7 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     // Verify case exists and user has access
     const [caseData] = await db.select()
       .from(cases)
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .limit(1);
 
     if (!caseData) {
@@ -120,11 +120,11 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     const whereConditions = [eq(caseTimeline.caseId, caseId)];
 
     if (eventType) {
-      whereConditions.push(eq(caseTimeline.eventType, eventType));
+      whereConditions.push(eq(caseTimeline.eventType, eventType);
     }
 
     if (importance) {
-      whereConditions.push(eq(caseTimeline.importance, importance));
+      whereConditions.push(eq(caseTimeline.importance, importance);
     }
 
     if (startDate) {
@@ -136,16 +136,16 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
     }
 
     if (!includePrivate) {
-      whereConditions.push(eq(caseTimeline.isPublic, true));
+      whereConditions.push(eq(caseTimeline.isPublic, true);
     }
 
     // Get timeline events
     const timelineEvents = await db.select()
       .from(caseTimeline)
-      .where(and(...whereConditions))
-      .orderBy(sortOrder === 'desc' ? desc(caseTimeline.eventDate) : asc(caseTimeline.eventDate));
+      .where(and(...whereConditions)
+      .orderBy(sortOrder === 'desc' ? desc(caseTimeline.eventDate) : asc(caseTimeline.eventDate);
 
-    // Calculate timeline statistics
+    // Calculate timeline statistics;
     const statistics = {
       totalEvents: timelineEvents.length,
       eventTypes: [...new Set(timelineEvents.map(e => e.eventType))],
@@ -204,10 +204,10 @@ export const GET: RequestHandler = async ({ params, url, locals }) => {
 /*
  * POST /api/v1/timeline/[caseId]
  * Add a new timeline event to a case
- */
+ */;
 export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -225,7 +225,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Verify case exists and user has access
     const [caseData] = await db.select()
       .from(cases)
-      .where(eq(cases.id, caseId))
+      .where(eq(cases.id, caseId)
       .limit(1);
 
     if (!caseData) {
@@ -251,7 +251,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     // Update case updated timestamp
     await db.update(cases)
       .set({ updatedAt: new Date() })
-      .where(eq(cases.id, caseId));
+      .where(eq(cases.id, caseId);
 
     return json({
       success: true,

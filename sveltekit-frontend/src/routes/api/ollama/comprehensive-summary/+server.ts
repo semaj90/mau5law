@@ -7,7 +7,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
 import type { APIResponse } from '$lib/types/index';
 
-// Safely import the server-only summarizer logic
+// Safely import the server-only summarizer logic;
 import {
   comprehensiveOllamaSummarizer,
   type ComprehensiveSummaryRequest
@@ -15,16 +15,16 @@ import {
 
 /*
  * Handles POST requests to generate a comprehensive summary.
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // 1. Get the request body.
     const body = await request.json() as ComprehensiveSummaryRequest;
 
-    // 2. Validate the incoming payload.
+    // 2. Validate the incoming payload.;
     if (!body.content || typeof body.content !== 'string' || body.content.length < 10) {
       return json(
-        { error: 'Invalid request. "content" must be a string with at least 10 characters.' },
+        { error: 'Invalid request. "content" must be a string with at least 10 characters.' },)>
         { status: 400 }
       );
     }
@@ -33,13 +33,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const started = Date.now();
     const summaryResponse = await comprehensiveOllamaSummarizer.summarize(body);
 
-    // 4. Return the successful response (standard envelope).
+    // 4. Return the successful response (standard envelope).;
     return json({
       success: true,
       data: summaryResponse,
       metadata: {
         timestamp: new Date().toISOString(),
-        processingTimeMs: Date.now() - started
+        processingTimeMs: Date.now() - started,
       }
     } satisfies APIResponse<typeof summaryResponse>, { status: 200 });
 
@@ -58,7 +58,7 @@ export const POST: RequestHandler = async ({ request }) => {
       error: { code: 'INTERNAL_ERROR', message: errorMessage },
       metadata: {
         timestamp: new Date().toISOString(),
-        processingTimeMs: 0
+        processingTimeMs: 0,
       }
     } satisfies APIResponse<never>, { status: 500 });
   }

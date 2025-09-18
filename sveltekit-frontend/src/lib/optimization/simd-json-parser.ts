@@ -8,7 +8,7 @@ import crypto from "crypto";
 /**
  * SIMD JSON Parser for Legal AI Applications
  * Optimized for processing large legal documents, case files, and evidence
- */
+ */;
 export class SIMDJSONParser {
   private worker: Worker | null = null;
   private initialized = false;
@@ -32,7 +32,7 @@ export class SIMDJSONParser {
   /**
    * Parse large JSON buffer with SIMD acceleration
    * Target: 4-6 GB/s throughput for legal document processing
-   */
+   */;
   async parseBuffer(buffer: ArrayBuffer | SharedArrayBuffer): Promise<any> {
     if (!this.initialized || !this.worker) {
       return this.fallbackParse(buffer);
@@ -40,13 +40,13 @@ export class SIMDJSONParser {
 
     return new Promise((resolve, reject) => {
       const timeoutId = setTimeout(() => {
-        reject(new Error('SIMD JSON parsing timeout'));
+        reject(new Error('SIMD JSON parsing timeout');
       }, 30000); // 30 second timeout
 
       this.worker!.onmessage = (event: any) => {
         clearTimeout(timeoutId);
         if (event.data.error) {
-          reject(new Error(event.data.error));
+          reject(new Error(event.data.error);
         } else {
           resolve(event.data.result);
         }
@@ -64,7 +64,7 @@ export class SIMDJSONParser {
 
   /**
    * Parse legal document JSON with validation and optimization
-   */
+   */;
   async parseLegalDocument(jsonString: string): Promise<LegalDocument> {
     const encoded = new TextEncoder().encode(jsonString);
     const buffer = encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
@@ -76,7 +76,7 @@ export class SIMDJSONParser {
 
   /**
    * Parse evidence collection with SIMD optimization
-   */
+   */;
   async parseEvidenceCollection(jsonString: string): Promise<Evidence[]> {
     const encoded = new TextEncoder().encode(jsonString);
     const buffer = encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
@@ -86,16 +86,16 @@ export class SIMDJSONParser {
       throw new Error('Expected evidence array');
     }
 
-    return parsed.map((item: any) => this.validateEvidence(item));
+    return parsed.map((item: any) => this.validateEvidence(item);
   }
 
   /**
    * Parse streaming legal case data (for real-time processing)
-   */
+   */;
   async parseStreamingCaseData(chunks: string[]): Promise<any[]> {
     const results = [];
     
-    // Process chunks in parallel using SIMD
+    // Process chunks in parallel using SIMD;
     const promises = chunks.map(async (chunk) => {
       const encoded = new TextEncoder().encode(chunk);
       const buffer = encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
@@ -104,7 +104,7 @@ export class SIMDJSONParser {
 
     const parsedChunks = await Promise.all(promises);
     
-    // Merge and deduplicate results
+    // Merge and deduplicate results;
     for (const chunk of parsedChunks) {
       if (Array.isArray(chunk)) {
         results.push(...chunk);
@@ -118,7 +118,7 @@ export class SIMDJSONParser {
 
   /**
    * Fallback parser for environments without SIMD support
-   */
+   */;
   private fallbackParse(buffer: ArrayBuffer | SharedArrayBuffer): unknown {
     // TextDecoder can handle both ArrayBuffer and SharedArrayBuffer via Uint8Array
     const uint8Array = new Uint8Array(buffer);
@@ -128,7 +128,7 @@ export class SIMDJSONParser {
 
   /**
    * Validate legal document structure and sanitize sensitive data
-   */
+   */;
   private validateLegalDocument(data: any): LegalDocument {
     if (!data || typeof data !== 'object') {
       throw new Error('Invalid legal document format');
@@ -142,7 +142,7 @@ export class SIMDJSONParser {
       }
     }
 
-    // Sanitize sensitive fields
+    // Sanitize sensitive fields;
     if (data.socialSecurityNumber) {
       data.socialSecurityNumber = this.maskSensitiveData(data.socialSecurityNumber);
     }
@@ -152,13 +152,13 @@ export class SIMDJSONParser {
 
   /**
    * Validate evidence structure
-   */
+   */;
   private validateEvidence(data: any): Evidence {
     if (!data || typeof data !== 'object') {
       throw new Error('Invalid evidence format');
     }
 
-    // Ensure required fields
+    // Ensure required fields;
     if (!data.id || !data.title || !data.evidenceType) {
       throw new Error('Missing required evidence fields');
     }
@@ -168,11 +168,11 @@ export class SIMDJSONParser {
 
   /**
    * Mask sensitive data for compliance
-   */
+   */;
   private maskSensitiveData(value: string): string {
     if (typeof value !== 'string') return '';
     
-    // Mask all but last 4 characters
+    // Mask all but last 4 characters;
     if (value.length > 4) {
       return '*'.repeat(value.length - 4) + value.slice(-4);
     }
@@ -181,7 +181,7 @@ export class SIMDJSONParser {
 
   /**
    * Performance metrics for monitoring SIMD efficiency
-   */
+   */;
   getPerformanceMetrics() {
     return {
       simdEnabled: this.initialized,
@@ -204,7 +204,7 @@ export class SIMDJSONParser {
 
   /**
    * Cleanup worker resources
-   */
+   */;
   destroy() {
     if (this.worker) {
       this.worker.terminate();
@@ -217,7 +217,7 @@ export class SIMDJSONParser {
 // Singleton instance for application-wide use
 export const simdParser = new SIMDJSONParser();
 ;
-// Performance test utilities
+// Performance test utilities;
 export class SIMDPerformanceTester {
   static async benchmarkParsing(jsonString: string, iterations = 100) {
     const parser = new SIMDJSONParser();

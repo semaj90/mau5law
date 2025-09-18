@@ -1,6 +1,7 @@
 /**
  * Enhanced Search and Document Types with backward compatibility
- */
+ */;
+}
 
 export interface SearchResult {
   id: string;
@@ -64,7 +65,7 @@ export interface TestResults {
   timestamp: Date;
   performance: {
     duration: number;
-    documentsSearched: number;
+    documentsSearched: number;,
   };
   error?: unknown;
 }
@@ -82,7 +83,7 @@ export interface MetricData {
   labels?: Record<string, string>;
 }
 
-// GPU-specific types
+// GPU-specific types;
 export interface GPUChatMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
@@ -103,10 +104,10 @@ export interface GPUProcessingStatus {
   gpuMemory?: {
     total: number;
     used: number;
-    free: number;
+    free: number;,
   };
   activeJobs: number;
-  queueLength: number;
+  queueLength: number;,
 }
 
 export interface StreamingResponse {

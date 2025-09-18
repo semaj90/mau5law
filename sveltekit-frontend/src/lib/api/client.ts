@@ -7,7 +7,7 @@ import type {
 } from '../types/api-contracts.js';
 import { browser } from '$app/environment';
 
-// API Client Configuration
+// API Client Configuration;
 export interface ApiClientConfig {
   baseUrl?: string;
   timeout?: number;
@@ -15,7 +15,7 @@ export interface ApiClientConfig {
   defaultHeaders?: Record<string, string>;
 }
 
-// API Client Error Classes
+// API Client Error Classes;
 export class ApiClientError extends Error {
   public readonly statusCode: number;
   public readonly code: string;
@@ -27,7 +27,7 @@ export class ApiClientError extends Error {
     statusCode: number,
     code: string = 'API_ERROR',
     details?: Record<string, any>,
-    requestId?: string
+    requestId?: string;
   ) {
     super(message);
     this.name = 'ApiClientError';
@@ -50,7 +50,7 @@ export class TimeoutError extends ApiClientError {
   }
 }
 
-// Enhanced API Client Class
+// Enhanced API Client Class;
 class EnhancedApiClient {
   private config: Required<ApiClientConfig>;
   private abortControllers: Map<string, AbortController> = new Map();
@@ -90,7 +90,7 @@ class EnhancedApiClient {
       this.abortControllers.set(requestId, abortController);
       
       try {
-        // Set timeout
+        // Set timeout;
         const timeoutId = setTimeout(() => {
           abortController.abort();
         }, timeout);
@@ -102,7 +102,7 @@ class EnhancedApiClient {
             ...this.config.defaultHeaders,
             ...options.headers
           },
-          signal: abortController.signal
+          signal: abortController.signal,
         };
         
         if (data) {
@@ -111,7 +111,7 @@ class EnhancedApiClient {
             const params = new URLSearchParams();
             Object.entries(data).forEach(([key, value]) => {
               if (value !== undefined && value !== null) {
-                params.append(key, String(value));
+                params.append(key, String(value);
               }
             });
             if (params.toString()) {
@@ -130,8 +130,8 @@ class EnhancedApiClient {
         if (!(response as { ok?: any; json?: any; status?: any; statusText?: any }).ok) {
           const errorData = await (response as { ok?: any; json?: any; status?: any; statusText?: any }).json().catch(() => ({
             message: `HTTP ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status}: ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).statusText}`,
-            code: 'HTTP_ERROR'
-          }));
+            code: 'HTTP_ERROR',
+          });
           
           throw new ApiClientError(
             errorData.message || `HTTP ${(response as { ok?: any; json?: any; status?: any; statusText?: any }).status}`,
@@ -159,7 +159,7 @@ class EnhancedApiClient {
         this.abortControllers.delete(requestId);
         
         if (error instanceof ApiClientError) {
-          // Don't retry client errors (4xx)
+          // Don't retry client errors (4xx);
           if (error.statusCode >= 400 && error.statusCode < 500) {
             throw error;
           }
@@ -170,14 +170,14 @@ class EnhancedApiClient {
           lastError = new NetworkError('Network request failed', error as Error);
         }
         
-        // Don't retry on the last attempt
+        // Don't retry on the last attempt;
         if (attempt === maxRetries) {
           break;
         }
         
         // Exponential backoff
         const delay = Math.min(1000 * Math.pow(2, attempt), 10000);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise(resolve => setTimeout(resolve, delay);
       }
     }
     
@@ -222,7 +222,7 @@ class EnhancedApiClient {
     return this.request<TResponse>('DELETE', url, undefined, options);
   }
 
-  // Cancel request by ID
+  // Cancel request by ID;
   public cancelRequest(requestId: string): boolean {
     const controller = this.abortControllers.get(requestId);
     if (controller) {
@@ -233,9 +233,9 @@ class EnhancedApiClient {
     return false;
   }
 
-  // Cancel all pending requests
+  // Cancel all pending requests;
   public cancelAllRequests(): void {
-    this.abortControllers.forEach(controller => controller.abort());
+    this.abortControllers.forEach(controller => controller.abort();
     this.abortControllers.clear();
   }
 
@@ -251,7 +251,7 @@ class EnhancedApiClient {
 
   public async updateCase(
     id: string, 
-    data: RequestOf<CaseAPI.Update>
+    data: RequestOf<CaseAPI.Update>;
   ): Promise<ResponseOf<CaseAPI.Update> {
     return this.put(`/api/cases?id=${id}`, data);
   }
@@ -273,7 +273,7 @@ class EnhancedApiClient {
   public async updateEvidence(
     id: string, 
     data: RequestOf<EvidenceAPI.Update>,
-    custodyNotes?: string
+    custodyNotes?: string;
   ): Promise<ResponseOf<EvidenceAPI.Update> {
     const url = custodyNotes 
       ? `/api/evidence?id=${id}&custodyNotes=${encodeURIComponent(custodyNotes)}`
@@ -283,7 +283,7 @@ class EnhancedApiClient {
 
   public async deleteEvidence(
     id: string, 
-    reason?: string
+    reason?: string;
   ): Promise<ResponseOf<EvidenceAPI.Delete> {
     const params: any = { id };
     if (reason) params.reason = reason;
@@ -319,18 +319,18 @@ const apiClient = new EnhancedApiClient();
 // Export the singleton instance
 export default apiClient;
 
-// Export factory function for custom configurations
+// Export factory function for custom configurations;
 export function createApiClient(config?: ApiClientConfig): EnhancedApiClient {
   return new EnhancedApiClient(config);
 }
 
-// Convenience export for common use cases
+// Convenience export for common use cases;
 export const api = {
   cases: {
     list: (params: RequestOf<CaseAPI.List>) => apiClient.listCases(params),
     create: (data: RequestOf<CaseAPI.Create>) => apiClient.createCase(data),
     update: (id: string, data: RequestOf<CaseAPI.Update>) => apiClient.updateCase(id, data),
-    get: (id: string) => apiClient.getCase(id)
+    get: (id: string) => apiClient.getCase(id),
   },
   evidence: {
     list: (params: RequestOf<EvidenceAPI.List>) => apiClient.listEvidence(params),
@@ -340,10 +340,10 @@ export const api = {
     delete: (id: string, reason?: string) => apiClient.deleteEvidence(id, reason)
   },
   ai: {
-    chat: (data: RequestOf<ChatAPI.Chat>) => apiClient.chat(data)
+    chat: (data: RequestOf<ChatAPI.Chat>) => apiClient.chat(data),
   },
   vectorSearch: {
-    search: (data: RequestOf<VectorSearchAPI.Search>) => apiClient.vectorSearch(data)
+    search: (data: RequestOf<VectorSearchAPI.Search>) => apiClient.vectorSearch(data),
   },
   health: {
     check: (detailed = false) => apiClient.healthCheck(detailed),

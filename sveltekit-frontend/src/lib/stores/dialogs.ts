@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+}
 
 export interface Dialog {
   id: string;
@@ -75,13 +76,13 @@ function createDialogStore() {
     });
   }
 
-  // Convenience methods
+  // Convenience methods;
   function info(title: string, message?: string): Promise<void> {
     return add({
       type: 'info',
       title,
       message,
-      position: 'center'
+      position: 'center',
     });
   }
 
@@ -90,7 +91,7 @@ function createDialogStore() {
       type: 'success',
       title,
       message,
-      position: 'center'
+      position: 'center',
     });
   }
 
@@ -99,7 +100,7 @@ function createDialogStore() {
       type: 'warning',
       title,
       message,
-      position: 'center'
+      position: 'center',
     });
   }
 
@@ -109,7 +110,7 @@ function createDialogStore() {
       title,
       message,
       position: 'center',
-      persistent: true
+      persistent: true,
     });
   }
 
@@ -118,7 +119,7 @@ function createDialogStore() {
       type: 'confirm',
       title,
       message,
-      position: 'center'
+      position: 'center',
     }).then(() => true).catch(() => false);
   }
 
@@ -128,11 +129,11 @@ function createDialogStore() {
       title,
       message,
       value: defaultValue || '',
-      position: 'center'
+      position: 'center',
     }).then((result) => result?.value || null).catch(() => null);
   }
 
-  // Legal AI specific dialogs
+  // Legal AI specific dialogs;
   function confirmCaseDelete(caseId: string): Promise<boolean> {
     return confirm(
       'Delete Case',
@@ -161,7 +162,7 @@ function createDialogStore() {
       title,
       message,
       position: 'center',
-      persistent: true
+      persistent: true,
     });
   }
 
@@ -237,14 +238,14 @@ function createModalStore() {
     });
   }
 
-  // Convenience method for opening custom component modals
+  // Convenience method for opening custom component modals;
   function open(component: any, props: Record<string, any> = {}, options: Partial<Modal> = {}): Promise<any> {
     return add({
       component,
       props,
       size: options.size || 'md',
       type: options.type || 'default',
-      persistent: options.persistent || false
+      persistent: options.persistent || false,
     });
   }
 

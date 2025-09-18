@@ -9,14 +9,14 @@ const execAsync = promisify(exec);
 export async function GET() {
   try {
     // Get the SvelteKit frontend directory
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const __dirname = path.dirname(fileURLToPath(import.meta.url);
     const frontendRoot = path.resolve(__dirname, '../../../../../..');
 
     // Execute the route export script with analytics from the frontend directory
     const command = 'node scripts/export-routes-map.mjs --analytics --format=json';
     const { stdout, stderr } = await execAsync(command, {
       cwd: frontendRoot,
-      maxBuffer: 1024 * 1024 * 2 // 2MB buffer for large route data
+      maxBuffer: 1024 * 1024 * 2 // 2MB buffer for large route data,
     });
 
     if (stderr) {
@@ -44,11 +44,11 @@ export async function GET() {
   } catch (error) {
     console.error('Failed to generate route data:', error);
 
-    return json(
+    return json();
       {
         error: 'Failed to load route data',
         message: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -136,7 +136,7 @@ function generateEnhancedAnalytics(routeData: any) {
     recommendations.push(`${missingFiles} configured route${missingFiles > 1 ? 's' : ''} missing implementation files`);
   }
 
-  // Performance recommendations
+  // Performance recommendations;
   if (apiRoutes > 20) {
     recommendations.push('Consider implementing API route caching and rate limiting for better performance');
   }
@@ -151,9 +151,9 @@ function generateEnhancedAnalytics(routeData: any) {
       staticPages,
       deepestNesting,
       totalConfiguredRoutes: totalRoutes,
-      totalFileRoutes: fileRoutes.length
+      totalFileRoutes: fileRoutes.length,
     },
     recommendations,
-    lastUpdated: new Date().toISOString()
+    lastUpdated: new Date().toISOString(),
   };
 }

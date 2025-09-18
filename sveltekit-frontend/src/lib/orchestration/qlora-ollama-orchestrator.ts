@@ -8,7 +8,7 @@ import { qloraWasmLoader } from '$lib/wasm/qlora-wasm-loader';
 import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
 import type { Gemma3LegalConfig } from '$lib/config/gemma3-legal-config';
 
-// Agent Types for AutoGen-style orchestration
+// Agent Types for AutoGen-style orchestration;
 interface LegalAgent {
   id: string;
   role: 'router' | 'contract' | 'litigation' | 'compliance' | 'research' | 'synthesis';
@@ -17,20 +17,20 @@ interface LegalAgent {
   specialization: string[];
   modelPath: string;
   confidence: number;
-  isActive: boolean;
+  isActive: boolean;,
 }
 
-// Query Analysis Result
+// Query Analysis Result;
 interface QueryIntent {
   primaryDomain: 'contract' | 'litigation' | 'compliance' | 'research' | 'general';
   complexity: 'simple' | 'moderate' | 'complex' | 'expert';
   urgency: 'low' | 'medium' | 'high' | 'critical';
   requiredAgents: string[];
   suggestedWorkflow: string[];
-  confidence: number;
+  confidence: number;,
 }
 
-// Orchestration Plan
+// Orchestration Plan;
 interface OrchestrationPlan {
   queryId: string;
   intent: QueryIntent;
@@ -47,10 +47,10 @@ interface ExecutionStep {
   prompt: string;
   expectedOutput: string;
   dependencies: string[];
-  timeout: number;
+  timeout: number;,
 }
 
-// Ollama Integration
+// Ollama Integration;
 interface OllamaModelInfo {
   name: string;
   size: number;
@@ -61,7 +61,7 @@ interface OllamaModelInfo {
     family: string;
     families: string[];
     parameter_size: string;
-    quantization_level: string;
+    quantization_level: string;,
   };
 }
 
@@ -86,9 +86,9 @@ export class QLoRAOllamaOrchestrator {
 
   /**
    * Initialize specialized legal agents (AutoGen pattern)
-   */
+   */;
   private initializeAgents(): void {
-    const agents: LegalAgent[] = [
+    const agents: LegalAgent[] = [;
       {
         id: 'router',
         role: 'router', 
@@ -97,7 +97,7 @@ export class QLoRAOllamaOrchestrator {
         specialization: ['intent_analysis', 'query_classification', 'workflow_planning'],
         modelPath: 'gemma3-legal-router-q4:latest',
         confidence: 0.95,
-        isActive: true
+        isActive: true,
       },
       {
         id: 'contract_specialist',
@@ -107,7 +107,7 @@ export class QLoRAOllamaOrchestrator {
         specialization: ['contract_analysis', 'clause_review', 'risk_assessment', 'compliance_check'],
         modelPath: 'gemma3-legal-contract-q4:latest',
         confidence: 0.92,
-        isActive: false
+        isActive: false,
       },
       {
         id: 'litigation_specialist', 
@@ -117,7 +117,7 @@ export class QLoRAOllamaOrchestrator {
         specialization: ['case_analysis', 'precedent_research', 'evidence_review', 'legal_strategy'],
         modelPath: 'gemma3-legal-litigation-q4:latest',
         confidence: 0.90,
-        isActive: false
+        isActive: false,
       },
       {
         id: 'compliance_specialist',
@@ -127,7 +127,7 @@ export class QLoRAOllamaOrchestrator {
         specialization: ['regulatory_analysis', 'compliance_audit', 'policy_review', 'risk_management'],
         modelPath: 'gemma3-legal-compliance-q4:latest',
         confidence: 0.88,
-        isActive: false
+        isActive: false,
       },
       {
         id: 'research_specialist',
@@ -137,7 +137,7 @@ export class QLoRAOllamaOrchestrator {
         specialization: ['legal_research', 'citation_analysis', 'precedent_discovery', 'jurisprudence'],
         modelPath: 'gemma3-legal-research-q4:latest',
         confidence: 0.85,
-        isActive: false
+        isActive: false,
       },
       {
         id: 'synthesis_specialist',
@@ -147,7 +147,7 @@ export class QLoRAOllamaOrchestrator {
         specialization: ['multi_source_synthesis', 'recommendation_generation', 'report_writing'],
         modelPath: 'gemma3-legal-synthesis-q4:latest',
         confidence: 0.87,
-        isActive: false
+        isActive: false,
       }
     ];
 
@@ -158,7 +158,7 @@ export class QLoRAOllamaOrchestrator {
 
   /**
    * Setup agent crews for collaborative workflows (CrewAI pattern)
-   */
+   */;
   private setupAgentCrews(): void {
     // Contract Analysis Crew
     this.agentCrew.set('contract_analysis', [
@@ -186,14 +186,14 @@ export class QLoRAOllamaOrchestrator {
       this.agents.get('synthesis_specialist')!
     ]);
 
-    console.log('👥 Agent crews configured:', Array.from(this.agentCrew.keys()));
+    console.log('👥 Agent crews configured:', Array.from(this.agentCrew.keys());
   }
 
   /**
    * Analyze query and determine orchestration plan
-   */
+   */;
   async analyzeQuery(query: string, context: any = {}): Promise<OrchestrationPlan> {
-    console.log('🔍 Analyzing query for orchestration...', query.substring(0, 100));
+    console.log('🔍 Analyzing query for orchestration...', query.substring(0, 100);
 
     // Ensure router agent is loaded
     await this.ensureAgentLoaded('router');
@@ -210,7 +210,7 @@ Analyze this legal query and provide structured intent classification:
 Query: "${query}"
 Context: ${JSON.stringify(context)}
 
-Classify the query and respond with JSON:
+Classify the query and respond with JSON:;
 {
   "primaryDomain": "contract|litigation|compliance|research|general",
   "complexity": "simple|moderate|complex|expert", 
@@ -223,7 +223,7 @@ Classify the query and respond with JSON:
     try {
       const analysis = await qloraWasmLoader.generateText(routerModel, intentAnalysisPrompt, {
         maxTokens: 256,
-        temperature: 0.1
+        temperature: 0.1,
       });
 
       const intent = this.parseIntentFromResponse(analysis.text);
@@ -232,7 +232,7 @@ Classify the query and respond with JSON:
       console.log('📋 Orchestration plan created:', {
         domain: intent.primaryDomain,
         agents: plan.selectedAgents.length,
-        steps: plan.executionSteps.length
+        steps: plan.executionSteps.length,
       });
 
       return plan;
@@ -245,7 +245,7 @@ Classify the query and respond with JSON:
 
   /**
    * Execute orchestration plan with multi-agent coordination
-   */
+   */;
   async executeOrchestration(plan: OrchestrationPlan, onProgress?: (step: ExecutionStep, result: string) => void): Promise<any> {
     const startTime = performance.now();
     const results = new Map<string, string>();
@@ -255,12 +255,12 @@ Classify the query and respond with JSON:
     console.log(`   • ${plan.executionSteps.length} steps planned`);
 
     try {
-      // Ensure all required agents are loaded
+      // Ensure all required agents are loaded;
       for (const agent of plan.selectedAgents) {
         await this.ensureAgentLoaded(agent.id);
       }
 
-      // Execute steps in dependency order
+      // Execute steps in dependency order;
       for (const step of plan.executionSteps) {
         console.log(`⚡ Executing step: ${step.stepId} (${step.agentId})`);
         
@@ -269,11 +269,11 @@ Classify the query and respond with JSON:
           throw new Error(`Agent ${step.agentId} not loaded`);
         }
 
-        // Generate response using agent's specialized model
+        // Generate response using agent's specialized model;
         const response = await qloraWasmLoader.generateText(modelKey, step.prompt, {
           maxTokens: 512,
           temperature: 0.2,
-          streaming: false
+          streaming: false,
         });
 
         results.set(step.stepId, response.text);
@@ -283,7 +283,7 @@ Classify the query and respond with JSON:
         }
 
         // Small delay to prevent overwhelming the system
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100);
       }
 
       // Synthesize final results
@@ -292,7 +292,7 @@ Classify the query and respond with JSON:
       const endTime = performance.now();
       const duration = endTime - startTime;
 
-      // Record successful execution
+      // Record successful execution;
       this.workflowHistory.push({
         queryId: plan.queryId,
         intent: plan.intent,
@@ -311,23 +311,23 @@ Classify the query and respond with JSON:
         metadata: {
           agentsUsed: plan.selectedAgents.length,
           stepsExecuted: plan.executionSteps.length,
-          avgStepTime: duration / plan.executionSteps.length
+          avgStepTime: duration / plan.executionSteps.length,
         }
       };
 
     } catch (error) {
       console.error('❌ Orchestration execution failed:', error);
       
-      // Record failed execution
+      // Record failed execution;
       this.workflowHistory.push({
         queryId: plan.queryId,
         intent: plan.intent,
         agents: plan.selectedAgents.map(a => a.id),
         success: false,
-        duration: performance.now() - startTime
+        duration: performance.now() - startTime,
       });
 
-      // Try fallback plan if available
+      // Try fallback plan if available;
       if (plan.fallbackPlan) {
         console.log('🔄 Attempting fallback plan...');
         return this.executeOrchestration(plan.fallbackPlan, onProgress);
@@ -339,7 +339,7 @@ Classify the query and respond with JSON:
 
   /**
    * Ensure agent model is loaded in Ollama/WASM
-   */
+   */;
   private async ensureAgentLoaded(agentId: string): Promise<void> {
     if (this.activeModels.has(agentId)) {
       return; // Already loaded
@@ -362,14 +362,14 @@ Classify the query and respond with JSON:
         await this.pullOllamaModel(agent.modelPath);
       }
 
-      // Load model in WASM loader
+      // Load model in WASM loader;
       const modelKey = await qloraWasmLoader.loadDistilledModel({
         baseModel: {
           name: agent.modelPath,
           path: `${this.distilledModelsPath}/${agent.modelPath}`,
           size: 256, // Default distilled size
           contextLength: 2048,
-          vocabulary: 32000
+          vocabulary: 32000,
         },
         adapter: {
           name: `${agentId}-adapter`,
@@ -377,7 +377,7 @@ Classify the query and respond with JSON:
           rank: 16,
           alpha: 32,
           targetModules: ['q_proj', 'v_proj', 'k_proj', 'o_proj'],
-          size: 8
+          size: 8,
         }
       });
 
@@ -394,7 +394,7 @@ Classify the query and respond with JSON:
 
   /**
    * List available models in Ollama
-   */
+   */;
   private async listOllamaModels(): Promise<OllamaModelInfo[]> {
     try {
       const response = await fetch(`${this.ollamaEndpoint}/api/tags`);
@@ -413,7 +413,7 @@ Classify the query and respond with JSON:
 
   /**
    * Pull model from Ollama registry
-   */
+   */;
   private async pullOllamaModel(modelName: string): Promise<void> {
     try {
       const response = await fetch(`${this.ollamaEndpoint}/api/pull`, {
@@ -436,7 +436,7 @@ Classify the query and respond with JSON:
 
   /**
    * Parse intent from router agent response
-   */
+   */;
   private parseIntentFromResponse(response: string): QueryIntent {
     try {
       // Try to extract JSON from response
@@ -449,7 +449,7 @@ Classify the query and respond with JSON:
           urgency: parsed.urgency || 'medium',
           requiredAgents: this.mapSkillsToAgents(parsed.requiredSkills || []),
           suggestedWorkflow: parsed.suggestedWorkflow || ['analyze', 'synthesize'],
-          confidence: parsed.confidence || 0.7
+          confidence: parsed.confidence || 0.7,
         };
       }
     } catch (error) {
@@ -462,14 +462,14 @@ Classify the query and respond with JSON:
 
   /**
    * Create orchestration plan based on intent
-   */
+   */;
   private async createOrchestrationPlan(query: string, intent: QueryIntent): Promise<OrchestrationPlan> {
     const selectedAgents: LegalAgent[] = [];
     
     // Always include router
     selectedAgents.push(this.agents.get('router')!);
     
-    // Add specialized agents based on domain
+    // Add specialized agents based on domain;
     switch (intent.primaryDomain) {
       case 'contract':
         selectedAgents.push(this.agents.get('contract_specialist')!);
@@ -497,7 +497,7 @@ Classify the query and respond with JSON:
         selectedAgents.push(this.agents.get('research_specialist')!);
     }
     
-    // Always add synthesis for multi-agent workflows
+    // Always add synthesis for multi-agent workflows;
     if (selectedAgents.length > 2) {
       selectedAgents.push(this.agents.get('synthesis_specialist')!);
     }
@@ -510,7 +510,7 @@ Classify the query and respond with JSON:
       selectedAgents,
       executionSteps,
       expectedDuration: this.estimateExecutionTime(executionSteps),
-      fallbackPlan: this.createFallbackPlan(query)
+      fallbackPlan: this.createFallbackPlan(query),
     };
 
     return plan;
@@ -518,7 +518,7 @@ Classify the query and respond with JSON:
 
   /**
    * Synthesize results from multiple agents
-   */
+   */;
   private async synthesizeResults(plan: OrchestrationPlan, results: Map<string, string>): Promise<string> {
     const synthesisAgent = plan.selectedAgents.find(a => a.role === 'synthesis');
     
@@ -546,7 +546,7 @@ Synthesis:`;
     const modelKey = this.activeModels.get(synthesisAgent.id)!;
     const synthesis = await qloraWasmLoader.generateText(modelKey, synthesisPrompt, {
       maxTokens: 512,
-      temperature: 0.2
+      temperature: 0.2,
     });
 
     return synthesis.text;
@@ -587,7 +587,7 @@ Synthesis:`;
       urgency: 'medium',
       requiredAgents: [primaryDomain === 'general' ? 'contract_specialist' : `${primaryDomain}_specialist`],
       suggestedWorkflow: ['analyze', 'synthesize'],
-      confidence: 0.6
+      confidence: 0.6,
     };
   }
 
@@ -605,7 +605,7 @@ Synthesis:`;
         prompt: `As a ${agent.name}, analyze this legal query with your expertise in ${agent.specialization.join(', ')}:\n\n"${query}"\n\nProvide detailed analysis:`,
         expectedOutput: `${agent.role}_analysis`,
         dependencies: index === 0 ? [] : [`step_${index}_${workingAgents[index-1].role}`],
-        timeout: 30000
+        timeout: 30000,
       });
     });
     
@@ -625,7 +625,7 @@ Synthesis:`;
         urgency: 'low',
         requiredAgents: ['router'],
         suggestedWorkflow: ['basic_analysis'],
-        confidence: 0.5
+        confidence: 0.5,
       },
       selectedAgents: [this.agents.get('router')!],
       executionSteps: [{
@@ -635,15 +635,15 @@ Synthesis:`;
         prompt: `Provide a basic legal analysis for: "${query}"`,
         expectedOutput: 'basic_analysis',
         dependencies: [],
-        timeout: 15000
+        timeout: 15000,
       }],
-      expectedDuration: 15000
+      expectedDuration: 15000,
     };
   }
 
   /**
    * Get orchestrator performance statistics
-   */
+   */;
   getPerformanceStats() {
     const successfulRuns = this.workflowHistory.filter(h => h.success);
     const avgDuration = successfulRuns.length > 0 
@@ -654,7 +654,7 @@ Synthesis:`;
       successRate: successfulRuns.length / Math.max(this.workflowHistory.length, 1),
       averageDuration: avgDuration,
       activeAgents: Array.from(this.activeModels.keys()),
-      agentLoadingTime: avgDuration * 0.3 // Estimate
+      agentLoadingTime: avgDuration * 0.3 // Estimate,
     };
   }
 }

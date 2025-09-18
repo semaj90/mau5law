@@ -4,6 +4,7 @@
  */
 
 import { useLegalTextureStreaming } from './texture-streaming.svelte';
+}
 
 export interface EvidenceItem {
 	id: string;
@@ -14,7 +15,7 @@ export interface EvidenceItem {
 	scale: number;
 	textureId?: string;
 	metadata: Record<string, any>;
-	connections: string[];
+	connections: string[];,
 }
 
 export interface CanvasState {
@@ -23,32 +24,32 @@ export interface CanvasState {
 	selectedItems: string[];
 	mode: 'view' | 'edit' | 'present';
 	showConnections: boolean;
-	filter: 'all' | 'photos' | 'documents' | 'physical' | 'digital';
+	filter: 'all' | 'photos' | 'documents' | 'physical' | 'digital';,
 }
 
 /**
  * Headless evidence canvas component using Svelte 5 runes
- */
+ */;
 export function useEvidenceCanvas() {
 	// Evidence items state
-	let evidenceItems = $state<Map<string, EvidenceItem>(new Map());
-	let selectedItems = $state<Set<string>(new Set());
+	let evidenceItems = $state<Map<string, EvidenceItem>(new Map();
+	let selectedItems = $state<Set<string>(new Set();
 	let hoveredItem = $state<string | null>(null);
 
-	// Canvas state
+	// Canvas state;
 	let canvasState = $state<CanvasState>({
 		zoom: 1.0,
 		pan: { x: 0, y: 0 },
 		selectedItems: [],
 		mode: 'view',
 		showConnections: true,
-		filter: 'all'
+		filter: 'all',
 	});
 
 	// Interaction state
 	let isDragging = $state(false);
 	let dragStartPos = $state<{ x: number; y: number } | null>(null);
-	let draggedItems = $state<Set<string>(new Set());
+	let draggedItems = $state<Set<string>(new Set();
 
 	// Canvas dimensions
 	let canvasSize = $state({ width: 1024, height: 768 });
@@ -60,7 +61,7 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Add evidence item to canvas
-	 */
+	 */;
 	function addEvidenceItem(item: Omit<EvidenceItem, 'id'>) {
 		const id = `evidence_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 		const evidenceItem: EvidenceItem = {
@@ -69,7 +70,7 @@ export function useEvidenceCanvas() {
 			position: item.position || { x: canvasSize.width / 2, y: canvasSize.height / 2 },
 			rotation: item.rotation || 0,
 			scale: item.scale || 1.0,
-			connections: item.connections || []
+			connections: item.connections || [],
 		};
 
 		evidenceItems.set(id, evidenceItem);
@@ -80,17 +81,17 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Remove evidence item from canvas
-	 */
+	 */;
 	function removeEvidenceItem(itemId: string) {
 		evidenceItems.delete(itemId);
 		selectedItems.delete(itemId);
 		draggedItems.delete(itemId);
 
-		// Remove connections to this item
+		// Remove connections to this item;
 		for (const [id, item] of evidenceItems) {
 			if (item.connections.includes(itemId)) {
 				item.connections = item.connections.filter(connId => connId !== itemId);
-				evidenceItems.set(id, { ...item });
+				evidenceItems.set(id, { ...item ,});
 			}
 		}
 
@@ -99,7 +100,7 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Update evidence item
-	 */
+	 */;
 	function updateEvidenceItem(itemId: string, updates: Partial<EvidenceItem>) {
 		const item = evidenceItems.get(itemId);
 		if (!item) return;
@@ -111,7 +112,7 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Select evidence items
-	 */
+	 */;
 	function selectItems(itemIds: string[], addToSelection = false) {
 		if (!addToSelection) {
 			selectedItems.clear();
@@ -128,7 +129,7 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Clear selection
-	 */
+	 */;
 	function clearSelection() {
 		selectedItems.clear();
 		canvasState.selectedItems = [];
@@ -136,22 +137,22 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Create connection between evidence items
-	 */
+	 */;
 	function createConnection(fromId: string, toId: string) {
 		const fromItem = evidenceItems.get(fromId);
 		const toItem = evidenceItems.get(toId);
 
 		if (!fromItem || !toItem || fromId === toId) return;
 
-		// Add bidirectional connection
+		// Add bidirectional connection;
 		if (!fromItem.connections.includes(toId)) {
 			fromItem.connections.push(toId);
-			evidenceItems.set(fromId, { ...fromItem });
+			evidenceItems.set(fromId, { ...fromItem ,});
 		}
 
 		if (!toItem.connections.includes(fromId)) {
 			toItem.connections.push(fromId);
-			evidenceItems.set(toId, { ...toItem });
+			evidenceItems.set(toId, { ...toItem ,});
 		}
 
 		saveToHistory();
@@ -159,7 +160,7 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Remove connection between evidence items
-	 */
+	 */;
 	function removeConnection(fromId: string, toId: string) {
 		const fromItem = evidenceItems.get(fromId);
 		const toItem = evidenceItems.get(toId);
@@ -170,15 +171,15 @@ export function useEvidenceCanvas() {
 		fromItem.connections = fromItem.connections.filter(id => id !== toId);
 		toItem.connections = toItem.connections.filter(id => id !== fromId);
 
-		evidenceItems.set(fromId, { ...fromItem });
-		evidenceItems.set(toId, { ...toItem });
+		evidenceItems.set(fromId, { ...fromItem ,});
+		evidenceItems.set(toId, { ...toItem ,});
 
 		saveToHistory();
 	}
 
 	/**
 	 * Pan canvas
-	 */
+	 */;
 	function panCanvas(deltaX: number, deltaY: number) {
 		canvasState.pan.x += deltaX;
 		canvasState.pan.y += deltaY;
@@ -186,10 +187,10 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Zoom canvas
-	 */
+	 */;
 	function zoomCanvas(delta: number, centerX?: number, centerY?: number) {
 		const oldZoom = canvasState.zoom;
-		const newZoom = Math.max(0.1, Math.min(5.0, oldZoom + delta));
+		const newZoom = Math.max(0.1, Math.min(5.0, oldZoom + delta);
 
 		if (centerX !== undefined && centerY !== undefined) {
 			// Zoom towards point
@@ -203,7 +204,7 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Fit canvas to show all evidence
-	 */
+	 */;
 	function fitToContent() {
 		if (evidenceItems.size === 0) return;
 
@@ -229,7 +230,7 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Set canvas mode
-	 */
+	 */;
 	function setMode(mode: CanvasState['mode']) {
 		canvasState.mode = mode;
 		if (mode === 'present') {
@@ -239,21 +240,21 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Set filter
-	 */
+	 */;
 	function setFilter(filter: CanvasState['filter']) {
 		canvasState.filter = filter;
 	}
 
 	/**
 	 * Toggle connections visibility
-	 */
+	 */;
 	function toggleConnections() {
 		canvasState.showConnections = !canvasState.showConnections;
 	}
 
 	/**
 	 * Handle mouse/pointer events
-	 */
+	 */;
 	function handlePointerDown(x: number, y: number, itemId?: string) {
 		dragStartPos = { x, y };
 
@@ -276,14 +277,14 @@ export function useEvidenceCanvas() {
 		const deltaY = y - dragStartPos.y;
 
 		if (draggedItems.size > 0) {
-			// Drag selected items
+			// Drag selected items;
 			for (const itemId of draggedItems) {
 				const item = evidenceItems.get(itemId);
 				if (item) {
 					updateEvidenceItem(itemId, {
 						position: {
 							x: item.position.x + deltaX / canvasState.zoom,
-							y: item.position.y + deltaY / canvasState.zoom
+							y: item.position.y + deltaY / canvasState.zoom,
 						}
 					});
 				}
@@ -308,7 +309,7 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Handle wheel events for zooming
-	 */
+	 */;
 	function handleWheel(deltaY: number, x: number, y: number) {
 		const zoomDelta = -deltaY * 0.001;
 		zoomCanvas(zoomDelta, x, y);
@@ -316,18 +317,18 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Save current state to history
-	 */
+	 */;
 	function saveToHistory() {
-		// Remove future history if we're not at the end
+		// Remove future history if we're not at the end;
 		if (historyIndex < history.length - 1) {
 			history.splice(historyIndex + 1);
 		}
 
 		// Add current state
-		history.push(JSON.parse(JSON.stringify(canvasState)));
+		history.push(JSON.parse(JSON.stringify(canvasState));
 		historyIndex = history.length - 1;
 
-		// Limit history size
+		// Limit history size;
 		if (history.length > 50) {
 			history.shift();
 			historyIndex--;
@@ -336,39 +337,39 @@ export function useEvidenceCanvas() {
 
 	/**
 	 * Undo last action
-	 */
+	 */;
 	function undo() {
 		if (historyIndex > 0) {
 			historyIndex--;
-			canvasState = JSON.parse(JSON.stringify(history[historyIndex]));
+			canvasState = JSON.parse(JSON.stringify(history[historyIndex]);
 		}
 	}
 
 	/**
 	 * Redo last undone action
-	 */
+	 */;
 	function redo() {
 		if (historyIndex < history.length - 1) {
 			historyIndex++;
-			canvasState = JSON.parse(JSON.stringify(history[historyIndex]));
+			canvasState = JSON.parse(JSON.stringify(history[historyIndex]);
 		}
 	}
 
 	/**
 	 * Export canvas data
-	 */
+	 */;
 	function exportCanvas() {
 		return {
 			evidenceItems: Array.from(evidenceItems.entries()),
 			canvasState,
 			canvasSize,
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		};
 	}
 
 	/**
 	 * Import canvas data
-	 */
+	 */;
 	function importCanvas(data: any) {
 		try {
 			evidenceItems.clear();
@@ -388,9 +389,9 @@ export function useEvidenceCanvas() {
 		}
 	}
 
-	// Derived states
+	// Derived states;
 	const visibleItems = $derived(() => {
-		const items = Array.from(evidenceItems.values());
+		const items = Array.from(evidenceItems.values();
 		if (canvasState.filter === 'all') return items;
 		return items.filter(item => item.type === canvasState.filter);
 	});
@@ -412,9 +413,9 @@ export function useEvidenceCanvas() {
 		getEvidenceItems: () => new Map(evidenceItems),
 		getSelectedItems: () => new Set(selectedItems),
 		getHoveredItem: () => hoveredItem,
-		getCanvasState: () => ({ ...canvasState }),
-		getCanvasSize: () => ({ ...canvasSize }),
-		getViewport: () => ({ ...viewport }),
+		getCanvasState: () => ({ ...canvasState ,}),
+		getCanvasSize: () => ({ ...canvasSize ,}),
+		getViewport: () => ({ ...viewport ,}),
 
 		// Derived state
 		visibleItems: () => visibleItems,

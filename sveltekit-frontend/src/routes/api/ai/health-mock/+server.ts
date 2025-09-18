@@ -6,20 +6,20 @@ import type { RequestHandler } from './$types.js';
  * Production AI Health Check Endpoint
  * Performs comprehensive health checks across all AI services
  * Returns real-time status and performance metrics
- */
+ */;
 export const GET: RequestHandler = async () => {
   const startTime = Date.now();
   const healthData: any = {
     timestamp: new Date().toISOString(),
     services: {} as Record<string, any>,
-    overall: 'checking'
+    overall: 'checking',
   };
   
-  // Check Ollama service
+  // Check Ollama service;
   try {
     const ollamaCheck = await Promise.race([
       fetch('http://localhost:11434/api/tags', { method: 'GET' }),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3000))
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3000)
     ]) as Response;
     
     if (ollamaCheck.ok) {
@@ -29,79 +29,79 @@ export const GET: RequestHandler = async () => {
         endpoint: 'http://localhost:11434',
         models: ollamaData.models?.map((m: any) => m.name) || [],
         responseTime: Date.now() - startTime,
-        version: ollamaData.version || 'unknown'
+        version: ollamaData.version || 'unknown',
       };
     } else {
       healthData.services.ollama = {
         status: 'unhealthy',
         error: 'HTTP ' + ollamaCheck.status,
-        endpoint: 'http://localhost:11434'
+        endpoint: 'http://localhost:11434',
       };
     }
   } catch (error: any) {
     healthData.services.ollama = {
       status: 'unavailable',
       error: (error as Error).message,
-      endpoint: 'http://localhost:11434'
+      endpoint: 'http://localhost:11434',
     };
   }
   
-  // Check Enhanced RAG service
+  // Check Enhanced RAG service;
   try {
     const ragCheck = await Promise.race([
       fetch('http://localhost:8094/health', { method: 'GET' }),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3000))
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3000)
     ]) as Response;
     
     if (ragCheck.ok) {
-      const ragData = await ragCheck.json().catch(() => ({}));
+      const ragData = await ragCheck.json().catch(() => ({});
       healthData.services.enhancedRAG = {
         status: 'healthy',
         endpoint: 'http://localhost:8094',
         responseTime: Date.now() - startTime,
         capabilities: ['vector-search', 'semantic-analysis', 'legal-rag'],
-        version: ragData.version || '1.0.0'
+        version: ragData.version || '1.0.0',
       };
     } else {
       healthData.services.enhancedRAG = {
         status: 'unhealthy',
         error: 'HTTP ' + ragCheck.status,
-        endpoint: 'http://localhost:8094'
+        endpoint: 'http://localhost:8094',
       };
     }
   } catch (error: any) {
     healthData.services.enhancedRAG = {
       status: 'unavailable',
       error: (error as Error).message,
-      endpoint: 'http://localhost:8094'
+      endpoint: 'http://localhost:8094',
     };
   }
   
-  // Check Upload service
+  // Check Upload service;
   try {
     const uploadCheck = await Promise.race([
       fetch('http://localhost:8093/health', { method: 'GET' }),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2000))
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 2000)
     ]) as Response;
     
     if (uploadCheck.ok) {
       healthData.services.uploadService = {
         status: 'healthy',
         endpoint: 'http://localhost:8093',
-        responseTime: Date.now() - startTime
+        responseTime: Date.now() - startTime,
       };
     } else {
       healthData.services.uploadService = {
         status: 'unhealthy',
         error: 'HTTP ' + uploadCheck.status,
-        endpoint: 'http://localhost:8093'
+        endpoint: 'http://localhost:8093',
       };
     }
   } catch (error: any) {
     healthData.services.uploadService = {
       status: 'unavailable',
       error: (error as Error).message,
-      endpoint: 'http://localhost:8093'
+      endpoint: 'http://localhost:8093',
     };
   }
   
@@ -126,7 +126,7 @@ export const GET: RequestHandler = async () => {
     healthy_services: healthyCount,
     degraded_services: serviceStatuses.filter(item => item.length),
     unavailable_services: serviceStatuses.filter(item => item.length),
-    total_check_time: Date.now() - startTime
+    total_check_time: Date.now() - startTime,
   };
   
   healthData.available_models = [

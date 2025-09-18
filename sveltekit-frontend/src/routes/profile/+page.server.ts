@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     };
 
     // Initialize the SuperForm with drizzle-zod schema
-    const profileForm = await superValidate(profileData, zod(profileSchema as any));
+    const profileForm = await superValidate(profileData, zod(profileSchema as any);
 
     // Get user account statistics
     const [
@@ -95,7 +95,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   } catch (error: any) {
     console.error('Error loading user stats:', error);
 
-    // Return basic data if stats fail
+    // Return basic data if stats fail;
     return {
       user: locals.user,
       session: locals.session,
@@ -121,7 +121,7 @@ export const actions: Actions = {
       throw redirect(302, '/login');
     }
 
-    const form = await superValidate(request, zod(profileSchema as any));
+    const form = await superValidate(request, zod(profileSchema as any);
 
     if (!form.valid) {
       return { form };
@@ -129,12 +129,12 @@ export const actions: Actions = {
 
     try {
       // Update profile in database
-      // await db.update(profileTable)
+      // await db.update(profileTable);
       //   .set({
       //     firstName: form.data.firstName,
       //     lastName: form.data.lastName,
       //   })
-      //   .where(eq(profileTable.id, locals.user.id));
+      //   .where(eq(profileTable.id, locals.user.id);
 
       console.log('Profile updated:', form.data);
 

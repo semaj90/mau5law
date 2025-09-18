@@ -7,7 +7,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     throw error(401, 'Authentication required');
   }
 
-  // Check if user has admin privileges (implement your own auth logic)
+  // Check if user has admin privileges (implement your own auth logic);
   if (!isAdminUser(locals.user)) {
     throw error(403, 'Admin privileges required');
   }
@@ -34,7 +34,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   } catch (err) {
     console.error('Error loading Redis admin data:', err);
 
-    // Return mock data for development/demo
+    // Return mock data for development/demo;
     return {
       redisInfo: {
         version: '7.2.3',
@@ -155,13 +155,13 @@ async function getRedisInfo() {
 
 async function getKeyStatistics() {
   try {
-    // Get key statistics - replace with actual implementation
+    // Get key statistics - replace with actual implementation;
     return {
       total_keys: await redisService.dbsize() || 0,
       expired_count: 0,
       avg_ttl: 3600,
       memory_usage: '0MB',
-      fragmentation_ratio: 1.0
+      fragmentation_ratio: 1.0,
     };
   } catch (error) {
     throw new Error('Failed to get key statistics');
@@ -176,7 +176,7 @@ async function getRecentKeys() {
       key,
       type: 'string',
       ttl: -1,
-      size: '1KB'
+      size: '1KB',
     })) || [];
   } catch (error) {
     return [];
@@ -194,13 +194,13 @@ async function checkRedisConnection() {
 
 async function getPerformanceMetrics() {
   try {
-    // Calculate performance metrics from Redis INFO
+    // Calculate performance metrics from Redis INFO;
     return {
       hit_rate: 85.0,
       miss_rate: 15.0,
       ops_per_sec: 100,
       latency_avg: 1.0,
-      memory_efficiency: 80.0
+      memory_efficiency: 80.0,
     };
   } catch (error) {
     throw new Error('Failed to get performance metrics');

@@ -38,8 +38,8 @@ class RecursiveEvidenceChainProcessor {
         metadata: {
           processingTime: performance.now() - startTime,
           recursionPath: [...recursionPath, rootEvidenceId],
-          analysisTimestamp: new Date().toISOString()
-        }
+          analysisTimestamp: new Date().toISOString(),
+        },
       };
     }
 
@@ -55,12 +55,12 @@ class RecursiveEvidenceChainProcessor {
 
       // Recursive processing of children with progress tracking
       const children = await Promise.all(
-        relatedEvidence.slice(0, 10).map(async (related) => { // Limit to prevent explosion
-          return await this.processEvidenceHierarchy(
-            related.evidenceId,
-            currentDepth + 1,
-            [...recursionPath, rootEvidenceId]
-          );
+        relatedEvidence.slice(0, 10).map(async (related) => {
+          // Limit to prevent explosion
+          return await this.processEvidenceHierarchy(related.evidenceId, currentDepth + 1, [
+            ...recursionPath,
+            rootEvidenceId,
+          ]);
         })
       );
 
@@ -90,10 +90,9 @@ class RecursiveEvidenceChainProcessor {
         metadata: {
           processingTime,
           recursionPath: [...recursionPath, rootEvidenceId],
-          analysisTimestamp: new Date().toISOString()
-        }
+          analysisTimestamp: new Date().toISOString(),
+        },
       };
-
     } catch (error) {
       console.error(`Error processing evidence ${rootEvidenceId}:`, error);
       return {
@@ -107,8 +106,8 @@ class RecursiveEvidenceChainProcessor {
         metadata: {
           processingTime: performance.now() - startTime,
           recursionPath: [...recursionPath, rootEvidenceId],
-          analysisTimestamp: new Date().toISOString()
-        }
+          analysisTimestamp: new Date().toISOString(),
+        },
       };
     }
   }
@@ -149,8 +148,8 @@ class RecursiveEvidenceChainProcessor {
         body: JSON.stringify({
           evidenceIds: [evidenceId],
           analysisType: 'comprehensive',
-          includeWeakCorrelations: true
-        })
+          includeWeakCorrelations: true,
+        }),
       });
 
       if (!response.ok) {
@@ -160,13 +159,14 @@ class RecursiveEvidenceChainProcessor {
       const correlationResults = await response.json();
 
       // Transform correlation results to RelatedEvidence format
-      return correlationResults.correlations?.map((corr) => ({
-        evidenceId: corr.evidenceB === evidenceId ? corr.evidenceA : corr.evidenceB,
-        relationshipType: corr.correlationType,
-        strength: corr.strength,
-        metadata: corr
-      })) || [];
-
+      return (
+        correlationResults.correlations?.map((corr) => ({
+          evidenceId: corr.evidenceB === evidenceId ? corr.evidenceA : corr.evidenceB,
+          relationshipType: corr.correlationType,
+          strength: corr.strength,
+          metadata: corr,
+        })) || []
+      );
     } catch (error) {
       console.warn(`Could not find related evidence for ${evidenceId}:`, error);
       return [];
@@ -181,7 +181,10 @@ class RecursiveEvidenceChainProcessor {
         const relationship = await this.determineRelationshipType(evidenceId, related);
         relationships.push(relationship);
       } catch (error) {
-        console.warn(`Error analyzing relationship between ${evidenceId} and ${related.evidenceId}:`, error);
+        console.warn(
+          `Error analyzing relationship between ${evidenceId} and ${related.evidenceId}:`,
+          error
+        );
       }
     }
 
@@ -217,7 +220,7 @@ class RecursiveEvidenceChainProcessor {
       description: this.generateRelationshipDescription(relationshipType, strength),
       legalSignificance: significance,
       supportingEvidence: [evidenceId, related.evidenceId],
-      confidence: this.calculateRelationshipConfidence(strength, relationshipType)
+      confidence: this.calculateRelationshipConfidence(strength, relationshipType),
     };
   }
 
@@ -226,13 +229,15 @@ class RecursiveEvidenceChainProcessor {
     try {
       const [chain1, chain2] = await Promise.all([
         this.getChainOfCustody(evidenceId1),
-        this.getChainOfCustody(evidenceId2)
+        this.getChainOfCustody(evidenceId2),
       ]);
 
-      return chain1.some(entry1 =>
-        chain2.some(entry2 =>
-          entry1.officer_id === entry2.officer_id ||
-          Math.abs(new Date(entry1.timestamp).getTime() - new Date(entry2.timestamp).getTime()) < 3600000 // 1 hour
+      return chain1.some((entry1) =>
+        chain2.some(
+          (entry2) =>
+            entry1.officer_id === entry2.officer_id ||
+            Math.abs(new Date(entry1.timestamp).getTime() - new Date(entry2.timestamp).getTime()) <
+              3600000 // 1 hour
         )
       );
     } catch {
@@ -245,7 +250,7 @@ class RecursiveEvidenceChainProcessor {
     try {
       const [data1, data2] = await Promise.all([
         this.fetchEvidenceData(evidenceId1),
-        this.fetchEvidenceData(evidenceId2)
+        this.fetchEvidenceData(evidenceId2),
       ]);
 
       const time1 = new Date(data1.collectedAt || data1.uploadedAt || data1.createdAt);
@@ -263,11 +268,14 @@ class RecursiveEvidenceChainProcessor {
     try {
       const [data1, data2] = await Promise.all([
         this.fetchEvidenceData(evidenceId1),
-        this.fetchEvidenceData(evidenceId2)
+        this.fetchEvidenceData(evidenceId2),
       ]);
 
-      return data1.location && data2.location &&
-             data1.location.toLowerCase().includes(data2.location.toLowerCase());
+      return (
+        data1.location &&
+        data2.location &&
+        data1.location.toLowerCase().includes(data2.location.toLowerCase())
+      );
     } catch {
       return false;
     }
@@ -304,13 +312,17 @@ class RecursiveEvidenceChainProcessor {
     // Chain of custody implications
     const chainValidation = this.validateChainCompleteness(chainOfCustody);
     if (chainValidation < 0.8) {
-      implications.push(`Chain of custody integrity concern (${Math.round(chainValidation * 100)}% complete)`);
+      implications.push(
+        `Chain of custody integrity concern (${Math.round(chainValidation * 100)}% complete)`
+      );
     }
 
     // Relationship implications
-    const criticalRelationships = relationships.filter(r => r.legalSignificance === 'critical');
+    const criticalRelationships = relationships.filter((r) => r.legalSignificance === 'critical');
     if (criticalRelationships.length > 0) {
-      implications.push(`${criticalRelationships.length} critical evidence relationships identified`);
+      implications.push(
+        `${criticalRelationships.length} critical evidence relationships identified`
+      );
     }
 
     // Evidence type implications
@@ -346,13 +358,14 @@ class RecursiveEvidenceChainProcessor {
   async identifyTimelineGaps(chainOfCustody) {
     if (chainOfCustody.length < 2) return false;
 
-    const sortedChain = [...chainOfCustody].sort((a, b) =>
-      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    const sortedChain = [...chainOfCustody].sort(
+      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     );
 
     for (let i = 1; i < sortedChain.length; i++) {
-      const timeDiff = new Date(sortedChain[i].timestamp).getTime() -
-                      new Date(sortedChain[i-1].timestamp).getTime();
+      const timeDiff =
+        new Date(sortedChain[i].timestamp).getTime() -
+        new Date(sortedChain[i - 1].timestamp).getTime();
 
       // Flag gaps longer than 24 hours
       if (timeDiff > 86400000) {
@@ -365,11 +378,12 @@ class RecursiveEvidenceChainProcessor {
 
   calculateConfidence(chainOfCustody, relationships) {
     const chainValidation = this.validateChainCompleteness(chainOfCustody);
-    const relationshipStrength = relationships.length > 0
-      ? relationships.reduce((sum, rel) => sum + rel.confidence, 0) / relationships.length
-      : 0.5;
+    const relationshipStrength =
+      relationships.length > 0
+        ? relationships.reduce((sum, rel) => sum + rel.confidence, 0) / relationships.length
+        : 0.5;
 
-    return (chainValidation * 0.6) + (relationshipStrength * 0.4);
+    return chainValidation * 0.6 + relationshipStrength * 0.4;
   }
 
   // Reset state for new analysis
@@ -401,22 +415,22 @@ self.addEventListener('message', async (event) => {
         result,
         metadata: {
           totalNodesProcessed: processor.visitedEvidenceSize,
-          maxDepthReached: Math.max(result.depth, ...result.children.map(c => c.depth)),
+          maxDepthReached: Math.max(result.depth, ...result.children.map((c) => c.depth)),
           totalProcessingTime,
           analysisTimestamp: new Date().toISOString(),
           recursionStatistics: {
             visitedNodes: processor.visitedEvidenceSize,
             maxDepth: processor.maxDepthLimit,
-            actualDepth: result.depth
-          }
-        }
+            actualDepth: result.depth,
+          },
+        },
       });
     } catch (error) {
       self.postMessage({
         messageId,
         success: false,
         error: error.message,
-        stack: error.stack
+        stack: error.stack,
       });
     }
   } else if (type === 'RESET_PROCESSOR') {
@@ -426,13 +440,13 @@ self.addEventListener('message', async (event) => {
       self.postMessage({
         messageId,
         success: true,
-        message: 'Processor reset successfully'
+        message: 'Processor reset successfully',
       });
     } catch (error) {
       self.postMessage({
         messageId,
         success: false,
-        error: error.message
+        error: error.message,
       });
     }
   }

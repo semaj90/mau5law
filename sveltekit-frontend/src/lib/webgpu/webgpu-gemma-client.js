@@ -86,14 +86,14 @@ class WebGPUGemmaClient {
       device: this.device,
       quantization: 'q4_0', // 4-bit quantization
       contextLength: 2048,
-      maxTokens: 512
+      maxTokens: 512,
     };
 
     // Simulate WASM module creation
     return {
       config: wasmConfig,
       generate: this.generateText.bind(this),
-      embed: this.generateEmbedding.bind(this)
+      embed: this.generateEmbedding.bind(this),
     };
   }
 
@@ -131,10 +131,10 @@ class WebGPUGemmaClient {
         usage: {
           promptTokens: this.estimateTokens(prompt),
           completionTokens: this.estimateTokens(simulatedResponse),
-          totalTokens: this.estimateTokens(prompt + simulatedResponse)
+          totalTokens: this.estimateTokens(prompt + simulatedResponse),
         },
         model: 'gemma2:2b-wasm',
-        inference: 'client-side'
+        inference: 'client-side',
       };
 
     } catch (error) {
@@ -166,7 +166,7 @@ class WebGPUGemmaClient {
         dimensions: 2048,
         model: 'gemma2:2b-wasm',
         usage: {
-          tokens: this.estimateTokens(text)
+          tokens: this.estimateTokens(text),
         }
       };
 
@@ -202,8 +202,8 @@ class WebGPUGemmaClient {
 
   async simulateInference(prompt, options) {
     // Simulate realistic processing time
-    const processingTime = Math.max(500, Math.min(3000, prompt.length * 10));
-    await new Promise(resolve => setTimeout(resolve, processingTime));
+    const processingTime = Math.max(500, Math.min(3000, prompt.length * 10);
+    await new Promise(resolve => setTimeout(resolve, processingTime);
 
     // Generate contextual response based on prompt
     if (prompt.toLowerCase().includes('legal') || prompt.toLowerCase().includes('contract')) {

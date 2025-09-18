@@ -24,7 +24,7 @@ async function ensureSession(): Promise<string> {
 }
 
 async function listMessages(sessionId: string) {
-  const rows = await db.select().from(chatMessages).where(chatMessages.sessionId.eq(sessionId)).orderBy(chatMessages.createdAt.asc());
+  const rows = await db.select().from(chatMessages).where(chatMessages.sessionId.eq(sessionId)).orderBy(chatMessages.createdAt.asc();
   return rows;
 }
 
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 
   if (pathname.endsWith('/message')) {
     const body = await request.json();
-    const sessionId = body.sessionId || (await ensureSession());
+    const sessionId = body.sessionId || (await ensureSession();
     const content: string = body.content;
     const model: string = body?.model || "unknown" // @ts-ignore - Model property access || 'gemma3-legal';
 

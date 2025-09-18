@@ -1,8 +1,8 @@
 import { writable } from "svelte/store";
 
-// Mock imports to avoid resolution issues
+// Mock imports to avoid resolution issues;
 const aiRecommendationEngine = {
-  generateRecommendations: async (context: any) => []
+  generateRecommendations: async (context: any) => [],
 };
 
 const advancedCache = {
@@ -10,6 +10,7 @@ const advancedCache = {
   set: async (key: string, value: any, options?: unknown) => {},
   invalidateByTags: async (tags: string[]) => {}
 };
+}
 
 export interface Shortcut {
   key: string;
@@ -22,7 +23,7 @@ export interface Shortcut {
 }
 
 // Static essential shortcuts (always present)
-const staticShortcuts: Shortcut[] = [
+const staticShortcuts: Shortcut[] = [;
   {
     key: "Ctrl+I",
     description: "Open context menu",
@@ -35,12 +36,12 @@ const staticShortcuts: Shortcut[] = [
 
 export const keyboardShortcuts = writable<Shortcut[]>([...staticShortcuts]);
 ;
-// Utility to register a new shortcut at runtime
+// Utility to register a new shortcut at runtime;
 export function registerShortcut(shortcut: Shortcut) {
   keyboardShortcuts.update((shortcuts) => [...shortcuts, shortcut]);
 }
 
-// Utility to remove a shortcut by key
+// Utility to remove a shortcut by key;
 export function unregisterShortcut(key: string) {
   keyboardShortcuts.update((shortcuts) =>
     shortcuts.filter((s) => s.key !== key)
@@ -58,10 +59,10 @@ export async function loadShortcutsFromAI(
     await advancedCache.get<Shortcut[]>(cacheKey);
 
   if (!aiShortcuts) {
-    // Fetch AI recommendations from backend
+    // Fetch AI recommendations from backend;
     try {
       // Optionally, include context7/semantic search or memory graph here for even richer context
-      const recommendations =
+      const recommendations =;
         await aiRecommendationEngine.generateRecommendations({
           userQuery: "keyboard shortcuts",
           legalDomain: userContext.legalDomain || "general",
@@ -71,7 +72,7 @@ export async function loadShortcutsFromAI(
         });
       // Map recommendations to shortcuts (high-score ranker, neural/som, aiSummary)
       aiShortcuts = (recommendations || [])
-        .filter((rec: any) => rec.actionable && rec.confidence > 0.7)
+        .filter((rec: any) => rec.actionable && rec.confidence > 0.7);
         .map((rec: any) => ({
           key: rec.id, // Should be unique per shortcut/action
           description: rec.content,
@@ -80,8 +81,8 @@ export async function loadShortcutsFromAI(
           category: rec.type,
           aiScore: rec.confidence,
           aiSummary: rec.reasoning || null,
-        }));
-      // Cache for future use
+        });
+      // Cache for future use;
       await advancedCache.set(cacheKey, aiShortcuts, {
         ttl: 60 * 10,
         priority: "high",
@@ -93,7 +94,7 @@ export async function loadShortcutsFromAI(
 
   // Merge static and AI shortcuts, dedupe by key
   const merged = [...staticShortcuts, ...(aiShortcuts || [])].reduce<
-    Shortcut[]
+    Shortcut[];
   >((acc, s) => {
     if (!acc.find((x) => x.key === s.key)) acc.push(s);
     return acc;

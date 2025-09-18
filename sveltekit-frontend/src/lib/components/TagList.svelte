@@ -1,21 +1,18 @@
-<!-- @migration-task Error while migrating Svelte code: Unterminated string constant
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unterminated string constant -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { debounce } from "$lib/utils/debounce";
-  import { Plus, Tag, X } from "lucide-svelte";
-  import { createEventDispatcher } from "svelte";
-  import { scale } from "svelte/transition";
+  import { debounce } from '$lib/utils/debounce';
+  import { Plus, Tag, X } from 'lucide-svelte';
+  import { createEventDispatcher } from 'svelte';
+  import { scale } from 'svelte/transition';
 
   // Props using Svelte 5 syntax
   let {
     tags = [],
     availableTags = [],
-    placeholder = "Add tags...",
+    placeholder = 'Add tags...',
     maxTags = 10,
     allowCustomTags = true,
-    readonly = false
+    readonly = false,
   }: {
     tags?: string[];
     availableTags?: string[];
@@ -28,31 +25,29 @@ https://svelte.dev/e/js_parse_error -->
   const dispatch = createEventDispatcher();
 
   // State using Svelte 5 syntax
-  let inputValue = $state("");
+  let inputValue = $state('');
   let showSuggestions = $state(false);
   let inputElement: HTMLInputElement;
   let suggestionsContainer: HTMLElement;
   let activeIndex = $state(-1);
 
-  let filteredSuggestions = $derived(availableTags
-    .filter(
-      (tag) =>
-        !tags.includes(tag) &&
-        tag.toLowerCase().includes(inputValue.toLowerCase())
-    )
-    .slice(0, 5));
+  let filteredSuggestions = $derived(
+    availableTags
+      .filter((tag) => !tags.includes(tag) && tag.toLowerCase().includes(inputValue.toLowerCase()))
+      .slice(0, 5)
+  );
 
   let suggestions = $derived(filteredSuggestions);
 
   const debouncedSearch = debounce(async (query: string) => {
-    dispatch("search", query);
+    dispatch('search', query);
 
     // Also fetch suggestions from Qdrant API
     if (query.length > 1) {
       try {
-        const response = await fetch("/api/qdrant/tag", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const response = await fetch('/api/qdrant/tag', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query, limit: 5 }),
         });
 
@@ -63,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
           availableTags = [...new Set([...availableTags, ...apiSuggestions])];
         }
       } catch (error) {
-        console.error("Failed to fetch tag suggestions:", error);
+        console.error('Failed to fetch tag suggestions:', error);
       }
     }
   }, 300);
@@ -85,10 +80,10 @@ https://svelte.dev/e/js_parse_error -->
     const newTags = [...tags, trimmedTag];
     tags = newTags;
 
-    dispatch("change", newTags);
-    dispatch("add", trimmedTag);
+    dispatch('change', newTags);
+    dispatch('add', trimmedTag);
 
-    inputValue = "";
+    inputValue = '';
     showSuggestions = false;
     activeIndex = -1;
   }
@@ -97,15 +92,15 @@ https://svelte.dev/e/js_parse_error -->
     const newTags = tags.filter((t) => t !== tag);
     tags = newTags;
 
-    dispatch("change", newTags);
-    dispatch("remove", tag);
+    dispatch('change', newTags);
+    dispatch('remove', tag);
   }
 
   function handleKeyDown(event: KeyboardEvent) {
     if (readonly) return;
 
     switch (event.key) {
-      case "Enter":
+      case 'Enter':
         event.preventDefault();
         if (activeIndex >= 0 && suggestions[activeIndex]) {
           addTag(suggestions[activeIndex]);
@@ -114,23 +109,23 @@ https://svelte.dev/e/js_parse_error -->
         }
         break;
 
-      case "ArrowDown":
+      case 'ArrowDown':
         event.preventDefault();
         activeIndex = Math.min(activeIndex + 1, suggestions.length - 1);
         break;
 
-      case "ArrowUp":
+      case 'ArrowUp':
         event.preventDefault();
         activeIndex = Math.max(activeIndex - 1, -1);
         break;
 
-      case "Escape":
+      case 'Escape':
         showSuggestions = false;
         activeIndex = -1;
         inputElement?.blur();
         break;
 
-      case "Backspace":
+      case 'Backspace':
         if (!inputValue && tags.length > 0) {
           removeTag(tags[tags.length - 1]);
         }
@@ -378,6 +373,3 @@ https://svelte.dev/e/js_parse_error -->
     border-color: #e5e7eb;
   }
 </style>
-
-<!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
-

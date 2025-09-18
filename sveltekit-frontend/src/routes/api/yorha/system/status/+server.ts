@@ -4,6 +4,7 @@ import type { RequestHandler } from './$types.js';
 
 let startTime = Date.now();
 let requestCount = 0;
+}
 
 export interface YoRHaSystemStatus {
   database: { connected: boolean; latency: number; activeConnections: number; queryCount: number };
@@ -17,12 +18,12 @@ export interface YoRHaSystemStatus {
     activeTasks: number;
     totalTasks: number;
     completedTasks: number;
-    failedTasks: number;
+    failedTasks: number;,
   };
   timestamp: string;
   systemLoad: number;
   gpuUtilization: number;
-  networkLatency: number;
+  networkLatency: number;,
 }
 
 function collectStatus(): YoRHaSystemStatus {

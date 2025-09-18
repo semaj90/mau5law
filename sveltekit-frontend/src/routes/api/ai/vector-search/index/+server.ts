@@ -24,7 +24,7 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 import type { RequestHandler } from './$types.js';
 
 
-// Real-time document indexing endpoint
+// Real-time document indexing endpoint;
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const {
@@ -38,10 +38,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     } = await request.json();
 
     if (!documentId || !content) {
-      return json(
-        {
+      return json({
           error: "documentId and content are required",
-        },
+        },)
         { status: 400 }
       );
     }
@@ -50,14 +49,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const existingDocument = await db
       .select()
       .from(documents)
-      .where(eq(documents.id, documentId))
+      .where(eq(documents.id, documentId)
       .limit(1);
 
     if (existingDocument.length === 0) {
-      return json(
-        {
+      return json({
           error: "Document not found",
-        },
+        },)
         { status: 404 }
       );
     }
@@ -78,7 +76,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       keywords = analysisResult.keywords;
     }
 
-    // Index the document with vector embeddings
+    // Index the document with vector embeddings;
     await vectorSearchService.indexDocument(documentId, content, {
       filename,
       caseId,
@@ -105,26 +103,24 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error("Document indexing error:", error);
-    return json(
-      {
+    return json({
         error: "Document indexing failed",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 }
     );
   }
 };
 
-// Batch indexing endpoint
+// Batch indexing endpoint;
 const originalPUTHandler: RequestHandler = async ({ request }) => {
   try {
     const { documentIds, forceReindex = false } = await request.json();
 
     if (!Array.isArray(documentIds) || documentIds.length === 0) {
-      return json(
-        {
+      return json({
           error: "documentIds array is required",
-        },
+        },)
         { status: 400 }
       );
     }
@@ -139,7 +135,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
         const document = await db
           .select()
           .from(documents)
-          .where(eq(documents.id, documentId))
+          .where(eq(documents.id, documentId)
           .limit(1);
 
         if (document.length === 0) {
@@ -154,7 +150,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
 
         const doc = document[0];
 
-        // Skip if already indexed and not forcing reindex
+        // Skip if already indexed and not forcing reindex;
         if (doc.embedding && !forceReindex) {
           results.push({
             documentId,
@@ -175,7 +171,7 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
           true
         );
 
-        // Index the document
+        // Index the document;
         await vectorSearchService.indexDocument(documentId, documentContent, {
           filename: documentTitle,
           caseId: doc.caseId,
@@ -214,11 +210,10 @@ const originalPUTHandler: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error("Batch indexing error:", error);
-    return json(
-      {
+    return json({
         error: "Batch indexing failed",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 }
     );
   }
@@ -229,7 +224,7 @@ async function generateDocumentAnalysis(
   content: string,
   filename: string,
   generateSummary: boolean = true,
-  extractKeywords: boolean = true
+  extractKeywords: boolean = true;
 ): Promise<any> {
   try {
     if (!generateSummary && !extractKeywords) {
@@ -246,14 +241,14 @@ Please provide:
 ${generateSummary ? "1. A concise summary (2-3 sentences)" : ""}
 ${extractKeywords ? "2. Key legal terms and concepts (5-10 keywords)" : ""}
 
-Respond in JSON format:
+Respond in JSON format:;
 {
   "summary": "${generateSummary ? "brief summary here" : "null"}",
   "keywords": ${extractKeywords ? '["keyword1", "keyword2", "keyword3"]' : "null"}
 }
     `;
 
-    // Call Ollama for analysis
+    // Call Ollama for analysis;
     const response = await fetch("http://localhost:11434/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -296,7 +291,7 @@ Respond in JSON format:
       console.warn("Failed to parse AI analysis, using fallback");
     }
 
-    // Fallback analysis
+    // Fallback analysis;
     return {
       summary: generateSummary
         ? `Legal document analysis: ${filename}`

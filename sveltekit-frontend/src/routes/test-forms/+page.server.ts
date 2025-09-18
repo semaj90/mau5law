@@ -13,7 +13,7 @@ const testSchema = z.object({
 
 export const load: PageServerLoad = async () => {
   // Initialize empty form
-  const form = await superValidate(zod(testSchema));
+  const form = await superValidate(zod(testSchema);
 
   return {
     form
@@ -24,7 +24,7 @@ export const actions: Actions = {
   submit: async ({ request }) => {
     console.log('Server action called');
 
-    const form = await superValidate(request, zod(testSchema));
+    const form = await superValidate(request, zod(testSchema);
 
     if (!form.valid) {
       console.log('Form validation failed:', form.errors);
@@ -34,12 +34,12 @@ export const actions: Actions = {
     console.log('Form data received:', form.data);
 
     // Simulate processing
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 1000);
 
     return message(form, {
       type: 'success',
       text: 'Form submitted successfully!',
-      data: form.data
+      data: form.data,
     });
   }
 };

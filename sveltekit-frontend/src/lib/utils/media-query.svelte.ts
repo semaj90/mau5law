@@ -7,24 +7,24 @@ import { browser } from '$app/environment';
  * Creates a reactive media query store using Svelte 5 runes
  * @param query - CSS media query string
  * @returns Reactive boolean indicating if query matches
- */
+ */;
 export function createMediaQuery(query: string) {
   let matches = $state(false);
   let mediaQuery: MediaQueryList | null = null;
 
-  // Initialize if in browser
+  // Initialize if in browser;
   if (browser) {
     mediaQuery = window.matchMedia(query);
     matches = mediaQuery.matches;
 
-    // Update matches when media query changes
+    // Update matches when media query changes;
     const updateMatches = (e: MediaQueryListEvent) => {
       matches = e.matches;
     };
 
     mediaQuery.addEventListener('change', updateMatches);
 
-    // Cleanup function
+    // Cleanup function;
     $effect(() => {
       return () => {
         if (mediaQuery) {
@@ -43,7 +43,7 @@ export function createMediaQuery(query: string) {
 
 /**
  * Common breakpoint queries
- */
+ */;
 export const breakpoints = {
   sm: '(min-width: 640px)',
   md: '(min-width: 768px)', 
@@ -57,12 +57,12 @@ export const breakpoints = {
   landscape: '(orientation: landscape)',
   portrait: '(orientation: portrait)',
   prefersColorSchemeDark: '(prefers-color-scheme: dark)',
-  prefersReducedMotion: '(prefers-reduced-motion: reduce)'
+  prefersReducedMotion: '(prefers-reduced-motion: reduce)',
 } as const;
 
 /**
  * Predefined media query hooks
- */
+ */;
 export function useMediaQuery(query: string) {
   return createMediaQuery(query);
 }
@@ -71,7 +71,7 @@ export function useBreakpoint(breakpoint: keyof typeof breakpoints) {
   return createMediaQuery(breakpoints[breakpoint]);
 }
 
-// Convenience hooks for common breakpoints
+// Convenience hooks for common breakpoints;
 export function useIsMobile() {
   return createMediaQuery(breakpoints.mobile);
 }

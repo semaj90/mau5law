@@ -1,7 +1,8 @@
 
 /**
  * Common component types for better type safety
- */
+ */;
+}
 
 export interface ApiResponse<T = unknown> {
   success: boolean;
@@ -75,7 +76,7 @@ export interface SearchResult<T = unknown> {
   total: number;
   page: number;
   limit: number;
-  hasMore: boolean;
+  hasMore: boolean;,
 }
 
 export interface ComponentProps {
@@ -101,14 +102,14 @@ export interface CanvasContext {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D | WebGLRenderingContext;
   width: number;
-  height: number;
+  height: number;,
 }
 
 export interface WebGPUContext {
   device: GPUDevice;
   canvas: HTMLCanvasElement;
   context: GPUCanvasContext;
-  format: GPUTextureFormat;
+  format: GPUTextureFormat;,
 }
 
 // Utility types

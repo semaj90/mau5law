@@ -10,7 +10,7 @@ const patternIndex = argv.indexOf('--pattern');
 let pattern = '*';
 if (patternIndex !== -1 && argv[patternIndex + 1]) pattern = argv[patternIndex + 1];
 else {
-  const eq = argv.find(a => a.startsWith('--pattern='));
+  const eq = argv.find((a) => a.startsWith('--pattern='));
   if (eq) pattern = eq.split('=')[1] || '*';
 }
 const apply = argv.includes('--apply');
@@ -39,7 +39,12 @@ function tryHeuristics(raw) {
   // Heuristic 2: replace single quotes with double quotes (simple cases)
   try {
     const normalized = raw.replace(/(^'|'$)/g, '').replace(/'/g, '"');
-    return { ok: true, obj: JSON.parse(normalized), reason: 'single-quotes-normalized', normalized };
+    return {
+      ok: true,
+      obj: JSON.parse(normalized),
+      reason: 'single-quotes-normalized',
+      normalized,
+    };
   } catch (e) {}
 
   // Heuristic 3: unescape common escape sequences
@@ -60,7 +65,10 @@ async function main() {
   console.log(`redis-inspect-fix: connecting to ${url}  pattern=${pattern}  apply=${apply}`);
 
   const iter = client.scanIterator({ MATCH: pattern, COUNT: 500 });
-  let inspected = 0, valid = 0, repaired = 0, failed = 0;
+  let inspected = 0,
+    valid = 0,
+    repaired = 0,
+    failed = 0;
 
   for await (const key of iter) {
     inspected++;
@@ -88,7 +96,6 @@ async function main() {
 
       console.warn(`[UNRECOVERABLE] ${key} (manual review)`);
       failed++;
-
     } catch (err) {
       console.error('Error processing key', key, err && err.message ? err.message : err);
       failed++;
@@ -99,7 +106,7 @@ async function main() {
   console.log('Summary:', { inspected, valid, repaired, failed });
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Fatal:', err && err.message ? err.message : err);
   process.exit(2);
 });

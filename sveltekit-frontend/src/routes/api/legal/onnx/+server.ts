@@ -7,7 +7,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
-// Worker pool management
+// Worker pool management;
 class ONNXWorkerPool {
   private workers: Worker[] = [];
   private workerStats: Map<number, any> = new Map();
@@ -34,7 +34,7 @@ class ONNXWorkerPool {
           busy: false,
           totalTasks: 0,
           errors: 0,
-          averageLatency: 0
+          averageLatency: 0,
         });
         
         // Initialize worker
@@ -60,7 +60,7 @@ class ONNXWorkerPool {
       clearTimeout(task.timeout);
       
       if (type.includes('ERROR')) {
-        task.reject(new Error(payload.error || 'Task failed'));
+        task.reject(new Error(payload.error || 'Task failed');
       } else {
         task.resolve(payload);
       }
@@ -76,7 +76,7 @@ class ONNXWorkerPool {
       }
     }
     
-    // Handle special message types
+    // Handle special message types;
     switch (type) {
       case 'INITIALIZED':
         console.log(`🔧 Worker ${workerId} initialized:`, payload);
@@ -104,7 +104,7 @@ class ONNXWorkerPool {
     
     for (const [workerId, stats] of this.workerStats.entries()) {
       if (!stats.busy) {
-        const load = stats.totalTasks + stats.errors * 2; // Penalty for errors
+        const load = stats.totalTasks + stats.errors * 2; // Penalty for errors;
         if (load < minLoad) {
           minLoad = load;
           bestWorker = workerId;
@@ -112,7 +112,7 @@ class ONNXWorkerPool {
       }
     }
     
-    // Fallback to round-robin if all workers are busy
+    // Fallback to round-robin if all workers are busy;
     if (minLoad === Infinity) {
       bestWorker = this.roundRobinIndex % this.workers.length;
       this.roundRobinIndex++;
@@ -130,21 +130,21 @@ class ONNXWorkerPool {
     const workerId = this.selectBestWorker();
     
     return new Promise((resolve, reject) => {
-      // Set up timeout
+      // Set up timeout;
       const timeoutHandle = setTimeout(() => {
         const taskIndex = this.taskQueue.findIndex(task => task.id === taskId);
         if (taskIndex >= 0) {
           this.taskQueue.splice(taskIndex, 1);
-          reject(new Error(`Task ${taskId} timed out after ${timeout}ms`));
+          reject(new Error(`Task ${taskId} timed out after ${timeout}ms`);
         }
       }, timeout);
       
-      // Add to task queue
+      // Add to task queue;
       this.taskQueue.push({
         id: taskId,
         resolve,
         reject,
-        timeout: timeoutHandle
+        timeout: timeoutHandle,
       });
       
       // Mark worker as busy
@@ -153,7 +153,7 @@ class ONNXWorkerPool {
         stats.busy = true;
       }
       
-      // Send task to worker
+      // Send task to worker;
       this.workers[workerId].postMessage({
         type,
         payload,
@@ -168,7 +168,7 @@ class ONNXWorkerPool {
     
     return new Promise((resolve, reject) => {
       const timeoutHandle = setTimeout(() => {
-        reject(new Error(`Batch ${batchId} timed out`));
+        reject(new Error(`Batch ${batchId} timed out`);
       }, 60000); // 60 second timeout for batches
       
       this.taskQueue.push({
@@ -181,13 +181,13 @@ class ONNXWorkerPool {
           clearTimeout(timeoutHandle);
           reject(error);
         },
-        timeout: timeoutHandle
+        timeout: timeoutHandle,
       });
       
       this.workers[workerId].postMessage({
         type: 'BATCH_PROCESS',
         payload: { tasks },
-        taskId: batchId
+        taskId: batchId,
       });
     });
   }
@@ -197,7 +197,7 @@ class ONNXWorkerPool {
       totalWorkers: this.workers.length,
       workerStats: Array.from(this.workerStats.values()),
       queueLength: this.taskQueue.length,
-      isInitialized: this.isInitialized
+      isInitialized: this.isInitialized,
     };
   }
 }
@@ -212,7 +212,7 @@ function getWorkerPool(): ONNXWorkerPool {
   return workerPool;
 }
 
-// Entity Extraction Endpoint
+// Entity Extraction Endpoint;
 export const POST: RequestHandler = async ({ request, url }) => {
   const endpoint = url.pathname.split('/').pop();
   
@@ -281,7 +281,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           return json({ error: 'Tasks array is required and must not be empty' }, { status: 400 });
         }
         
-        // Validate task format
+        // Validate task format;
         for (const task of tasks) {
           if (!task.type || !task.payload || !task.payload.text) {
             return json({ error: 'Each task must have type and payload.text' }, { status: 400 });
@@ -326,7 +326,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           results: results.map(r => r.status === 'fulfilled' ? r.value:  { error: r.reason }),
           totalRequests: requests.length,
           processingTime: totalTime,
-          parallelExecution: true
+          parallelExecution: true,
         });
       }
       
@@ -337,13 +337,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
   } catch (error: any) {
     console.error('ONNX API error:', error);
     return json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: error.message },)
       { status: 500 }
     );
   }
 };
 
-// Get worker pool statistics
+// Get worker pool statistics;
 export const GET: RequestHandler = async ({ url }) => {
   const endpoint = url.pathname.split('/').pop();
   
@@ -356,11 +356,11 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         workerPool: stats,
         timestamp: new Date().toISOString(),
-        uptime: process.uptime ? process.uptime() * 1000 : 0
+        uptime: process.uptime ? process.uptime() * 1000 : 0,
       });
     } catch (error: any) {
       return json(
-        { error: 'Failed to get stats', details: error.message },
+        { error: 'Failed to get stats', details: error.message },)
         { status: 500 }
       );
     }

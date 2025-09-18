@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
   if (!hashes && !evidenceIds) {
     return json(
-      { error: "Either hashes or evidenceIds array required" },
+      { error: "Either hashes or evidenceIds array required" },)
       { status: 400 },
     );
   }
@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     if (hashes && Array.isArray(hashes)) {
       // Bulk hash search
-      const hashResults = await db
+      const hashResults = await db;
         .select({
           id: evidence.id,
           title: evidence.title,
@@ -35,8 +35,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           caseNumber: cases.caseNumber,
         })
         .from(evidence)
-        .leftJoin(cases, eq(evidence.caseId, cases.id))
-        .where(inArray(evidence.hash, hashes));
+        .leftJoin(cases, eq(evidence.caseId, cases.id)
+        .where(inArray(evidence.hash, hashes);
 
       results = hashes.map((hash) => {
         const found = hashResults.filter((item) => (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).hash === hash);
@@ -52,7 +52,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       const evidenceItems = await db
         .select()
         .from(evidence)
-        .where(inArray(evidence.id, evidenceIds));
+        .where(inArray(evidence.id, evidenceIds);
 
       const verificationResults = evidenceItems.map((item) => ({
         evidenceId: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).id,
@@ -60,11 +60,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         storedHash: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).hash,
         hasHash: !!(item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).hash,
         uploadedAt: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).uploadedAt,
-      }));
+      });
 
       results = verificationResults;
     }
-    // Calculate summary statistics
+    // Calculate summary statistics;
     const stats = {
       totalProcessed: results.length,
       verified: results.filter((r) => r.found || r.hasHash).length,
@@ -80,17 +80,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     });
   } catch (error: any) {
     console.error("Bulk hash operation failed:", error);
-    return json(
-      {
+    return json({
         error: "Bulk operation failed",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }
 };
 
-// GET endpoint for bulk status checking
+// GET endpoint for bulk status checking;
 export const GET: RequestHandler = async ({ url, locals }) => {
   const userId = locals.user?.id;
   if (!userId) {
@@ -98,7 +97,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   }
   try {
     // Get recent hash verification statistics
-    const recentEvidence = await db
+    const recentEvidence = await db;
       .select({
         id: evidence.id,
         fileName: evidence.fileName,
@@ -130,11 +129,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     });
   } catch (error: any) {
     console.error("Failed to get bulk hash status:", error);
-    return json(
-      {
+    return json({
         error: "Failed to get hash status",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }

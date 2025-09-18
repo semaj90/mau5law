@@ -1,17 +1,18 @@
 // TensorRT-LLM Client for SvelteKit 2
-// Production client for gemma3-legal:latest inference
+// Production client for gemma3-legal:latest inference;
+}
 
 export interface EmbeddingRequest {
   text: string;
   model: string;
-  dimensions: number;
+  dimensions: number;,
 }
 
 export interface EmbeddingResponse {
   embedding: number[];
   processing_time_ms: number;
   model_version: string;
-  dimensions: number;
+  dimensions: number;,
 }
 
 export interface LegalAnalysisRequest {
@@ -27,7 +28,7 @@ export interface LegalAnalysisResponse {
   content: string;
   processing_time_ms: number;
   model_version: string;
-  token_count: number;
+  token_count: number;,
 }
 
 export interface TensorRTHealthResponse {
@@ -45,7 +46,7 @@ export interface TensorRTHealthResponse {
     avg_inference_time_ms: number;
     avg_embedding_time_ms: number;
     target_latency_ms: number;
-    performance_ratio: number;
+    performance_ratio: number;,
   };
 }
 
@@ -72,7 +73,7 @@ export class TensorRTLegalClient {
         body: JSON.stringify({
           text: request.text,
           model: request.model,
-          dimensions: request.dimensions
+          dimensions: request.dimensions,
         })
       });
 
@@ -106,7 +107,7 @@ export class TensorRTLegalClient {
           context: request.context,
           model: request.model,
           max_tokens: request.max_tokens || 1024,
-          temperature: request.temperature || 0.1
+          temperature: request.temperature || 0.1,
         })
       });
 
@@ -130,7 +131,7 @@ export class TensorRTLegalClient {
   async checkHealth(): Promise<TensorRTHealthResponse | null> {
     try {
       const response = await this.makeRequest('/health', {
-        method: 'GET'
+        method: 'GET',
       });
 
       if (!response.ok) {
@@ -153,7 +154,7 @@ export class TensorRTLegalClient {
   async listModels(): Promise<any> {
     try {
       const response = await this.makeRequest('/v1/models', {
-        method: 'GET'
+        method: 'GET',
       });
 
       if (!response.ok) {
@@ -171,7 +172,7 @@ export class TensorRTLegalClient {
   async getPerformanceMetrics(): Promise<any> {
     try {
       const response = await this.makeRequest('/v1/performance', {
-        method: 'GET'
+        method: 'GET',
       });
 
       if (!response.ok) {
@@ -247,7 +248,7 @@ Provide a detailed, professional legal analysis:`;
         'Accept': 'application/json',
         ...options.headers
       },
-      signal: AbortSignal.timeout(this.timeout)
+      signal: AbortSignal.timeout(this.timeout),
     };
 
     let lastError: Error | null = null;
@@ -265,7 +266,7 @@ Provide a detailed, professional legal analysis:`;
         throw new Error(`Server error: ${response.status} ${response.statusText}`);
 
       } catch (error) {
-        lastError = error instanceof Error ? error : new Error(String(error));
+        lastError = error instanceof Error ? error : new Error(String(error);
 
         if (attempt === this.retryAttempts) {
           console.error(`TensorRT request failed after ${attempt} attempts:`, lastError);
@@ -275,7 +276,7 @@ Provide a detailed, professional legal analysis:`;
         const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
         console.warn(`TensorRT request failed (attempt ${attempt}), retrying in ${delay}ms:`, lastError.message);
 
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise(resolve => setTimeout(resolve, delay);
       }
     }
 
@@ -298,7 +299,7 @@ Provide a detailed, professional legal analysis:`;
         return {
           connected: false,
           latency,
-          error: 'Health check failed'
+          error: 'Health check failed',
         };
       }
 
@@ -315,7 +316,7 @@ Provide a detailed, professional legal analysis:`;
       return {
         connected: false,
         latency,
-        error: error instanceof Error ? error.message: 'Unknown error'
+        error: error instanceof Error ? error.message: 'Unknown error',
       };
     }
   }

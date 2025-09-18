@@ -1,5 +1,6 @@
 import type { BackendId } from '$lib/types/pipeline';
 import { embedText as embedWithService, getEmbeddingServiceStatus } from './ai/embedder.js';
+}
 
 export interface EmbedGatewayOptions {
   model?: string;
@@ -9,7 +10,7 @@ export interface EmbedGatewayOptions {
 export interface EmbedGatewayResult {
   embedding: number[];
   backend: BackendId;
-  model: string;
+  model: string;,
 }
 
 // Backend-agnostic embedding gateway: tries New Embedder -> FastAPI -> vLLM -> Ollama -> Go
@@ -26,7 +27,7 @@ export async function getEmbeddingViaGate(
     process.env.PUBLIC_EMBED_MODEL_DEFAULT ||
     'nomic-embed-text';
 
-  // Try new embedder service first (Local Gemma3 + Nomic fallback)
+  // Try new embedder service first (Local Gemma3 + Nomic fallback);
   try {
     const status = await getEmbeddingServiceStatus();
     if (status.activeService !== 'none') {
@@ -78,7 +79,7 @@ export async function getEmbeddingViaGate(
     } catch {}
   }
 
-  // Ollama
+  // Ollama;
   try {
     const ollamaUrl = (process.env.OLLAMA_URL || process.env.PUBLIC_OLLAMA_URL || 'http://localhost:11434').replace(/\/$/, '');
     const oResp = await fetchFn(`${ollamaUrl}/api/embeddings`, {
@@ -95,7 +96,7 @@ export async function getEmbeddingViaGate(
     }
   } catch {}
 
-  // Go bridge
+  // Go bridge;
   try {
     const goReq = {
       operation: 'vectorize',
@@ -106,7 +107,7 @@ export async function getEmbeddingViaGate(
     const goResp = await fetchFn('/api/tensor', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(goReq)
+      body: JSON.stringify(goReq),
     });
     if (goResp.ok) {
       const goJson = await goResp.json();
@@ -120,7 +121,7 @@ export async function getEmbeddingViaGate(
   throw new Error('No embedding backend available');
 }
 
-// Simple batch wrapper to align with sample endpoint usage
+// Simple batch wrapper to align with sample endpoint usage;
 export async function embedText(fetchFn: typeof fetch, texts: string[], model?: string): Promise<any> {
   let backend: BackendId = 'unknown';
   let lastModel = model || process.env.EMBED_MODEL || process.env.PUBLIC_EMBED_MODEL || 'nomic-embed-text';

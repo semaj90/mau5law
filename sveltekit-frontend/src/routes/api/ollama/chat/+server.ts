@@ -8,7 +8,7 @@ import { json } from '@sveltejs/kit';
 
 import { ollamaChatStream } from "$lib/services/ollamaChatStream";
 
-// GET method for health check and model info
+// GET method for health check and model info;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     // Health check endpoint
@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     if (action === 'health') {
       const healthCheck = await fetch('http://localhost:11434/api/version', {
-        signal: AbortSignal.timeout(3000)
+        signal: AbortSignal.timeout(3000),
       });
       
       if (!healthCheck.ok) {
@@ -33,9 +33,9 @@ export const GET: RequestHandler = async ({ url }) => {
         version: version.version || 'unknown',
         endpoints: {
           chat: '/api/ollama/chat',
-          stream: '/api/ollama/chat?stream=true'
+          stream: '/api/ollama/chat?stream=true',
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
     
@@ -47,13 +47,13 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         models: modelsData.models || [],
         default: 'legal:latest',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
     
     return json({
       success: false,
-      error: 'Invalid action. Use ?action=health or ?action=models'
+      error: 'Invalid action. Use ?action=health or ?action=models',
     }, { status: 400 });
     
   } catch (error: any) {
@@ -62,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
       success: false,
       status: 'unhealthy',
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 503 });
   }
 };
@@ -107,7 +107,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ error: 'Message is required' }, { status: 400 });
     }
 
-    // For streaming responses
+    // For streaming responses;
     if (stream) {
       const encoder = new TextEncoder();
       const readable = new ReadableStream({
@@ -126,10 +126,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
             for await (const chunk of streamGenerator) {
               const data = `data: ${JSON.stringify(chunk)}\n\n`;
-              controller.enqueue(encoder.encode(data));
+              controller.enqueue(encoder.encode(data);
             }
 
-            controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+            controller.enqueue(encoder.encode('data: [DONE]\n\n');
             controller.close();
           } catch (error: any) {
             console.error('Streaming error:', error);
@@ -137,7 +137,7 @@ export const POST: RequestHandler = async ({ request }) => {
               text: 'An error occurred while processing your request.',
               metadata: { type: 'error', error: error.message },
             };
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`);
             controller.close();
           }
         },
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error('Chat API error:', error);
-    return json(
+    return json();
       {
         success: false,
         error: 'Failed to process chat request',

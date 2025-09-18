@@ -39,7 +39,7 @@ export { useGamingEvolution } from './core/useGamingEvolution.js';
 // Gaming Evolution Manager
 export { GamingEvolutionManager } from './core/GamingEvolutionManager.js';
 
-// Types and Interfaces
+// Types and Interfaces;
 export type {
   GamingEra,
   NESColorPalette,
@@ -49,7 +49,7 @@ export type {
   GamingComponentProps
 } from './types/gaming-types.js';
 
-// Color Palettes and Constants
+// Color Palettes and Constants;
 export {
   NES_COLOR_PALETTE,
   SNES_COLOR_PALETTE,

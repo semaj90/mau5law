@@ -9,7 +9,7 @@ const criticalFiles = [
   'src/lib/webgpu/som-webgpu-cache.ts',
   'src/lib/cache/loki-redis-integration.ts',
   'src/lib/ai/intelligent-model-orchestrator.ts',
-  'src/lib/ai/qlora-topology-predictor.ts'
+  'src/lib/ai/qlora-topology-predictor.ts',
 ];
 
 let fixedCount = 0;
@@ -38,7 +38,6 @@ for (const file of criticalFiles) {
     fs.writeFileSync(filePath, content, 'utf8');
     fixedCount++;
     console.log(`  ✓ Added @ts-nocheck to: ${file}`);
-
   } catch (error) {
     console.log(`  ❌ Failed to fix: ${file} - ${error.message}`);
   }

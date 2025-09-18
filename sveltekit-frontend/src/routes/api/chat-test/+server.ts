@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log('🔥 User message:', lastUserMessage.content);
 
-    // Submit task to CUDA service
+    // Submit task to CUDA service;
     const submitResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/submit`, {
       method: 'POST',
       headers: {
@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Wait a bit then get result
-    await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
+    await new Promise(resolve => setTimeout(resolve, 2000); // Wait 2 seconds
 
     const resultResponse = await fetch(`${CUDA_SERVER_URL}/api/v1/result/${taskId}`);
     
@@ -90,11 +90,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (error: any) {
     console.error('❌ Chat test API error:', error);
-    return json(
-      {
+    return json({
         error: 'Failed to process chat request',
         details: error.message,
-      },
+      },)
       { status: 500 }
     );
   }

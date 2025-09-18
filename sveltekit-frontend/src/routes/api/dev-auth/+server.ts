@@ -22,7 +22,7 @@ async function findOrCreateDevUser(): Promise<any> {
   const anyAdmin = await db.select({ id: users.id }).from(users).where(eq(users.role, 'admin')).limit(1);
   if (anyAdmin.length) return { id: anyAdmin[0].id, created: false, passwordColumn: 'hashed_password' };
 
-  // Create dev user
+  // Create dev user;
   const inserted = await db.insert(users).values({
     email: 'dev@example.com',
     hashed_password: 'dev-hash',
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
             title: 'Sample Investigative Case',
             description: 'Demonstration case seeded in development environment for UI & API testing.',
             priority: 'medium',
-            status: 'open'
+            status: 'open',
           });
         }
       } catch (e) {
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
     await db.insert(sessions).values({
       id: sessionId,
       user_id: userInfo.id,
-      expires_at: expiresAt
+      expires_at: expiresAt,
     }).onConflictDoUpdate({ target: sessions.id, set: { expires_at: expiresAt } });
 
     cookies.set('session', sessionId, { path: '/', httpOnly: true, sameSite: 'lax', maxAge: 60 * 60 * 8 });
@@ -81,7 +81,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
   cookies.delete('session', { path: '/' });
   if (sessionId) {
     try {
-      await db.delete(sessions).where(eq(sessions.id, sessionId));
+      await db.delete(sessions).where(eq(sessions.id, sessionId);
     } catch {/* ignore */}
     logger.info('dev-auth.session.cleared', { sessionId });
   }

@@ -13,7 +13,7 @@ import type { Redis } from 'ioredis';
 import { createRedisInstance } from '$lib/server/redis';
 import { z } from 'zod';
 
-// Configuration
+// Configuration;
 const CONFIG = {
   redis: {
     url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
@@ -32,7 +32,7 @@ const CONFIG = {
   },
 };
 
-// Validation schemas
+// Validation schemas;
 const AutocompleteRequestSchema = z.object({
   query: z.string().min(1).max(200),
   context: z.enum(['legal_phrase', 'case_law', 'statute', 'evidence']).optional(),
@@ -85,7 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
       includeScores = false,
     } = validatedRequest;
 
-    // Check minimum query length
+    // Check minimum query length;
     if (query.length < CONFIG.autocomplete.minQueryLength) {
       return json({
         suggestions: [],
@@ -109,36 +109,33 @@ export const POST: RequestHandler = async ({ request }) => {
     // Combine and rank suggestions
     const allSuggestions = [];
 
-    // Add cached suggestions (highest priority)
+    // Add cached suggestions (highest priority);
     if (cacheSuggestions.status === 'fulfilled' && cacheSuggestions.value) {
-      allSuggestions.push(
-        ...cacheSuggestions.value.map((s: any) => ({
+      allSuggestions.push(...cacheSuggestions.value.map((s: any) => ({
           ...s,
           source: 'cache',
           boost: 1.2,
-        }))
+        })
       );
     }
 
-    // Add database suggestions
+    // Add database suggestions;
     if (dbSuggestions.status === 'fulfilled' && dbSuggestions.value) {
-      allSuggestions.push(
-        ...dbSuggestions.value.map((s: any) => ({
+      allSuggestions.push(...dbSuggestions.value.map((s: any) => ({
           ...s,
           source: 'database',
           boost: 1.0,
-        }))
+        })
       );
     }
 
-    // Add semantic suggestions
+    // Add semantic suggestions;
     if (semanticSuggestions.status === 'fulfilled' && semanticSuggestions.value) {
-      allSuggestions.push(
-        ...semanticSuggestions.value.map((s: any) => ({
+      allSuggestions.push(...semanticSuggestions.value.map((s: any) => ({
           ...s,
           source: 'semantic',
           boost: 0.8,
-        }))
+        })
       );
     }
 
@@ -153,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const response = {
       suggestions: topSuggestions.map((s: any) =>
         includeScores
-          ? s
+          ? s;
           : {
               suggestion: s.suggestion,
               context_type: s.context_type,
@@ -172,20 +169,18 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ Autocomplete error:', err);
 
     if (err instanceof z.ZodError) {
-      return json(
-        {
+      return json({
           message: 'Invalid request format',
           errors: err.errors,
-        },
+        },)
         { status: 400 }
       );
     }
 
-    return json(
-      {
+    return json({
         message: 'Autocomplete service temporarily unavailable',
         details: err instanceof Error ? err.message: 'Unknown error',
-      },
+      },)
       { status: 500 }
     );
   }
@@ -216,7 +211,7 @@ async function getDatabaseSuggestions(
   query: string,
   context: string,
   jurisdiction: string | undefined,
-  maxResults: number
+  maxResults: number;
 ): Promise<any> {
   const db = getDB();
 
@@ -238,7 +233,7 @@ async function getDatabaseSuggestions(
 
   const params = [`%${query}%`, context, maxResults];
 
-  // Add jurisdiction filter if specified
+  // Add jurisdiction filter if specified;
   if (jurisdiction) {
     sql = `
             SELECT DISTINCT
@@ -266,7 +261,7 @@ async function getDatabaseSuggestions(
 async function getSemanticSuggestions(query: string, maxResults: number): Promise<any> {
   const db = getDB();
 
-  // Use vector similarity search (requires embedding generation)
+  // Use vector similarity search (requires embedding generation);
   try {
     // For now, use text similarity as fallback
     const result = await db.query(
@@ -296,9 +291,9 @@ function generatePrefixes(query: string): string[] {
   const words = query.toLowerCase().trim().split(/\s+/);
   const prefixes = [];
 
-  // Generate cumulative prefixes
+  // Generate cumulative prefixes;
   for (let i = 1; i <= words.length; i++) {
-    prefixes.push(words.slice(0, i).join(' '));
+    prefixes.push(words.slice(0, i).join(' ');
   }
 
   // Add partial word prefixes for the last word
@@ -329,21 +324,21 @@ function removeDuplicates(suggestions: any[]): unknown[] {
 function rankSuggestions(suggestions: any[], query: string): unknown[] {
   const queryLower = query.toLowerCase();
 
-  return suggestions
+  return suggestions;
     .map((s: any) => {
       let finalScore = (s.score || 0) * (s.boost || 1);
 
-      // Boost exact prefix matches
+      // Boost exact prefix matches;
       if (s.suggestion.toLowerCase().startsWith(queryLower)) {
         finalScore *= 1.5;
       }
 
-      // Boost by frequency if available
+      // Boost by frequency if available;
       if (s.frequency) {
         finalScore *= Math.min(1 + s.frequency / 100, 2);
       }
 
-      // Boost by prosecution correlation
+      // Boost by prosecution correlation;
       if (s.prosecution_correlation) {
         finalScore *= 1 + s.prosecution_correlation * 0.5;
       }
@@ -357,7 +352,7 @@ function rankSuggestions(suggestions: any[], query: string): unknown[] {
 }
 
 function updateUsageStats(query: string, suggestions: any[]) {
-  // Async update without blocking response
+  // Async update without blocking response;
   setTimeout(async () => {
     try {
       const redis = getRedis();
@@ -365,7 +360,7 @@ function updateUsageStats(query: string, suggestions: any[]) {
       // Track query frequency
       await (redis as any).zincrby('query_frequency', 1, query);
 
-      // Track suggestion selections
+      // Track suggestion selections;
       for (const suggestion of suggestions.slice(0, 3)) {
         await (redis as any).zincrby('suggestion_popularity', 1, suggestion.suggestion);
       }
@@ -375,7 +370,7 @@ function updateUsageStats(query: string, suggestions: any[]) {
   }, 0);
 }
 
-// Health check endpoint
+// Health check endpoint;
 export const GET: RequestHandler = async () => {
   try {
     const redis = getRedis();

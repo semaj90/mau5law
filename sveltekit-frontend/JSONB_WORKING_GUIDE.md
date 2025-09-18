@@ -3,6 +3,7 @@
 ## Verified Configuration
 
 ### Database Details
+
 - **PostgreSQL Version:** 17
 - **JSONB Support:** ✅ Fully Operational
 - **GIN Indexing:** ✅ Working for performance optimization
@@ -11,6 +12,7 @@
 ## 🎯 Test Results Summary
 
 All JSONB operations tested and confirmed working:
+
 1. ✅ **INSERT** - Complex nested JSON structures
 2. ✅ **QUERY** - Using operators (@>, ->, ->>, ||)
 3. ✅ **UPDATE** - Merging and modifying JSON data
@@ -20,19 +22,22 @@ All JSONB operations tested and confirmed working:
 ## 📊 JSONB Columns in Your Schema
 
 ### Users Table
+
 ```sql
 permissions        jsonb DEFAULT '[]'::jsonb
-practice_areas     jsonb DEFAULT '[]'::jsonb  
+practice_areas     jsonb DEFAULT '[]'::jsonb
 metadata          jsonb DEFAULT '{}'::jsonb
 ```
 
 ### Cases Table
+
 ```sql
 tags              jsonb DEFAULT '[]'::jsonb
 metadata          jsonb DEFAULT '{}'::jsonb
 ```
 
 ### Evidence Table
+
 ```sql
 chain_of_custody  jsonb DEFAULT '[]'::jsonb
 tags              jsonb DEFAULT '[]'::jsonb
@@ -42,6 +47,7 @@ board_position    jsonb DEFAULT '{}'::jsonb
 ```
 
 ### Other Tables with JSONB
+
 - **user_profiles**: address, preferences
 - **user_activities**: details
 - **rag_cache**: results
@@ -51,6 +57,7 @@ board_position    jsonb DEFAULT '{}'::jsonb
 ## 💻 Working Code Examples
 
 ### 1. Inserting JSONB Data
+
 ```javascript
 const newUser = await sql`
   INSERT INTO users (
@@ -62,10 +69,10 @@ const newUser = await sql`
     ${email},
     ${JSON.stringify(['read', 'write'])},
     ${JSON.stringify(['criminal', 'civil'])},
-    ${JSON.stringify({ 
+    ${JSON.stringify({
       department: 'Legal',
       clearanceLevel: 'high',
-      settings: { theme: 'dark' }
+      settings: { theme: 'dark' },
     })}
   )
   RETURNING *
@@ -75,6 +82,7 @@ const newUser = await sql`
 ### 2. Querying JSONB Data
 
 #### Find users with specific permissions
+
 ```javascript
 const admins = await sql`
   SELECT * FROM users 
@@ -83,6 +91,7 @@ const admins = await sql`
 ```
 
 #### Access nested JSON fields
+
 ```javascript
 const userSettings = await sql`
   SELECT 
@@ -95,6 +104,7 @@ const userSettings = await sql`
 ```
 
 #### Search within arrays
+
 ```javascript
 const criminalLawyers = await sql`
   SELECT * FROM users
@@ -105,6 +115,7 @@ const criminalLawyers = await sql`
 ### 3. Updating JSONB Data
 
 #### Merge new data into existing JSONB
+
 ```javascript
 const updated = await sql`
   UPDATE users 
@@ -115,6 +126,7 @@ const updated = await sql`
 ```
 
 #### Add element to JSONB array
+
 ```javascript
 await sql`
   UPDATE users 
@@ -124,6 +136,7 @@ await sql`
 ```
 
 #### Remove field from JSONB
+
 ```javascript
 await sql`
   UPDATE users 
@@ -135,6 +148,7 @@ await sql`
 ### 4. Complex JSONB Operations
 
 #### Aggregate all unique tags across cases
+
 ```javascript
 const allTags = await sql`
   SELECT jsonb_agg(DISTINCT tag) as unique_tags
@@ -143,6 +157,7 @@ const allTags = await sql`
 ```
 
 #### Filter and transform JSONB data
+
 ```javascript
 const processedCases = await sql`
   SELECT 
@@ -161,6 +176,7 @@ const processedCases = await sql`
 ## 🚀 Performance Optimization
 
 ### GIN Indexes Created
+
 ```sql
 -- Already in your database:
 CREATE INDEX idx_users_metadata_gin ON users USING gin (metadata);
@@ -170,6 +186,7 @@ CREATE INDEX idx_evidence_ai_tags_gin ON evidence USING gin (ai_tags);
 ```
 
 ### Query Performance Tips
+
 1. Use `@>` operator for contains queries (uses GIN index)
 2. Use `?` operator to check if key exists
 3. Use `->>` to get text value (for WHERE clauses)
@@ -178,17 +195,19 @@ CREATE INDEX idx_evidence_ai_tags_gin ON evidence USING gin (ai_tags);
 ## 🔧 Drizzle ORM Integration
 
 ### Schema Definition
+
 ```typescript
 import { pgTable, jsonb } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   permissions: jsonb('permissions').notNull().default([]),
   practice_areas: jsonb('practice_areas').default([]),
-  metadata: jsonb('metadata').default({})
+  metadata: jsonb('metadata').default({}),
 });
 ```
 
 ### Querying with Drizzle
+
 ```typescript
 import { sql } from 'drizzle-orm';
 
@@ -202,7 +221,7 @@ const admins = await db
 const departments = await db
   .select({
     email: users.email,
-    department: sql`${users.metadata}->>'department'`
+    department: sql`${users.metadata}->>'department'`,
   })
   .from(users);
 ```
@@ -210,6 +229,7 @@ const departments = await db
 ## ✅ Verification Complete
 
 JSONB is fully operational in your PostgreSQL database with:
+
 - ✅ All CRUD operations working
 - ✅ Complex queries and operators functional
 - ✅ GIN indexing for performance
@@ -217,6 +237,7 @@ JSONB is fully operational in your PostgreSQL database with:
 - ✅ Support for nested structures and arrays
 
 Your Legal AI platform can leverage JSONB for:
+
 - Flexible user permissions and roles
 - Dynamic case metadata and tags
 - AI analysis results storage

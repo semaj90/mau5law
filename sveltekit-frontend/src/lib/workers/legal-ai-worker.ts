@@ -45,7 +45,7 @@ export interface LegalEntity {
   value: string;
   confidence: number;
   start_pos: number;
-  end_pos: number;
+  end_pos: number;,
 }
 
 export interface RiskAssessment {
@@ -53,12 +53,12 @@ export interface RiskAssessment {
   risk_score: number;
   risk_factors: string[];
   recommendations: string[];
-  confidence: number;
+  confidence: number;,
 }
 
 /**
  * Process document through Go Legal AI Server
- */
+ */;
 async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoServerResponse> {
   const requestPayload = {
     document_id: jobData.documentId,
@@ -100,30 +100,30 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
  */
 async function updateEvidenceWithResults(
   documentId: string,
-  results: GoServerResponse
+  results: GoServerResponse;
 ): Promise<void> {
   try {
     const updateData: Partial<typeof evidence.$inferInsert> = {
       updatedAt: new Date(),
     };
 
-    // Add AI-generated summary
+    // Add AI-generated summary;
     if (results.summary) {
       updateData.aiSummary = results.summary;
     }
 
-    // Add extracted entities as JSON
+    // Add extracted entities as JSON;
     if (results.entities && results.entities.length > 0) {
       updateData.aiExtractedEntities = JSON.stringify(results.entities);
     }
 
-    // Add risk assessment
+    // Add risk assessment;
     if (results.risk_assessment) {
       updateData.aiRiskScore = results.risk_assessment.risk_score;
       updateData.aiRiskFactors = JSON.stringify(results.risk_assessment.risk_factors);
     }
 
-    // Add processing metadata
+    // Add processing metadata;
     updateData.aiProcessingMetadata = JSON.stringify({
       processing_time: results.processing_time,
       processed_at: new Date().toISOString(),
@@ -131,7 +131,7 @@ async function updateEvidenceWithResults(
       success: results.success,
     });
 
-    await db.update(evidence).set(updateData).where(eq(evidence.id, documentId));
+    await db.update(evidence).set(updateData).where(eq(evidence.id, documentId);
 
     console.log(`✅ Evidence record ${documentId} updated with AI results`);
   } catch (error: any) {
@@ -142,7 +142,7 @@ async function updateEvidenceWithResults(
 
 /**
  * Create and start the Legal AI worker
- */
+ */;
 export function createLegalAIWorker(): Worker {
   const worker = new Worker(
     'legal-ai-processing',
@@ -171,7 +171,7 @@ export function createLegalAIWorker(): Worker {
         const processingTime = Date.now() - startTime;
         console.log(`✅ Legal AI job completed: ${job.id} in ${processingTime}ms`);
 
-        // Return comprehensive results
+        // Return comprehensive results;
         const jobResult = {
           success: true,
           documentId: (data as { documentId?: any }).documentId,
@@ -193,10 +193,10 @@ export function createLegalAIWorker(): Worker {
         const processingTime = Date.now() - startTime;
         console.error(`❌ Legal AI job failed: ${job.id} after ${processingTime}ms:`, error);
 
-        // Update evidence record with error status
+        // Update evidence record with error status;
         try {
           await db
-            .update(evidence)
+            .update(evidence);
             .set({
               aiAnalysis: {
                 error: error instanceof Error ? error.message: 'Unknown error',
@@ -206,7 +206,7 @@ export function createLegalAIWorker(): Worker {
               },
               updatedAt: new Date(),
             })
-            .where(eq(evidence.id, (data as { documentId?: any }).documentId));
+            .where(eq(evidence.id, (data as { documentId?: any }).documentId);
         } catch (dbError) {
           console.error(`❌ Failed to update evidence with error status:`, dbError);
         }
@@ -218,7 +218,7 @@ export function createLegalAIWorker(): Worker {
       connection: {
         host: 'localhost',
         port: 6379,
-        // Parse Redis URL if provided
+        // Parse Redis URL if provided;
         ...(REDIS_URL.startsWith('redis://') && {
           host: new URL(REDIS_URL).hostname,
           port: parseInt(new URL(REDIS_URL).port) || 6379,
@@ -230,7 +230,7 @@ export function createLegalAIWorker(): Worker {
     }
   );
 
-  // Event handlers
+  // Event handlers;
   worker.on('ready', () => {
     console.log('🟢 Legal AI Worker is ready and waiting for jobs');
   });
@@ -297,7 +297,7 @@ export async function addLegalAIJob(
 
 /**
  * Get job status
- */
+ */;
 export async function getLegalAIJobStatus(jobId: string): Promise<any> {
   const { Queue } = await import('bullmq');
 

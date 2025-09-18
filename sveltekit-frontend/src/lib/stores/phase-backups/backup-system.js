@@ -172,8 +172,8 @@ Phase 2 conflicts resolved:
     try {
       const files = fs
         .readdirSync(this.basePath)
-        .filter((f) => f.endsWith(".ts") || f.endsWith(".js"))
-        .filter((f) => !f.includes("backup"))
+        .filter((f) => f.endsWith(".ts") || f.endsWith(".js")
+        .filter((f) => !f.includes("backup")
         .map((f) => `- ${f}`)
         .join("\n");
       return files;

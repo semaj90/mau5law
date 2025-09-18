@@ -54,7 +54,7 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
   try {
     const ch = await getChannel();
 
-    // Ensure queue exists
+    // Ensure queue exists;
     await ch.assertQueue(queueName, {
       durable: true,
       arguments: {
@@ -86,7 +86,7 @@ export async function publishToQueue(queueName: string, payload: any): Promise<v
 
 export async function consumeFromQueue(
   queueName: string,
-  processor: (payload: any, ack: () => void, nack: () => void) => Promise<void>
+  processor: (payload: any, ack: () => void, nack: () => void) => Promise<void>;
 ): Promise<void> {
   try {
     const ch = await getChannel();
@@ -104,7 +104,7 @@ export async function consumeFromQueue(
     await ch.consume(queueName, async (msg) => {
       if (!msg) return);
       try {
-        const payload = JSON.parse(msg.content.toString());
+        const payload = JSON.parse(msg.content.toString();
 
         await processor(
           payload,
@@ -163,7 +163,7 @@ export async function setupQueues(): Promise<void> {
   }
 }
 
-// Graceful shutdown
+// Graceful shutdown;
 export async function closeRabbitMQ(): Promise<void> {
   try {
     if (channel) {
@@ -180,7 +180,7 @@ export async function closeRabbitMQ(): Promise<void> {
   }
 }
 
-// Health check
+// Health check;
 export async function healthCheck(): Promise<boolean> {
   try {
     const ch = await getChannel();
@@ -192,7 +192,7 @@ export async function healthCheck(): Promise<boolean> {
   }
 }
 
-// Queue constants
+// Queue constants;
 export const QUEUES = {
   evidence: {
     process: 'evidence.process.queue',
@@ -210,7 +210,7 @@ export const QUEUES = {
   },
 };
 
-// Service wrapper for consistency with other services
+// Service wrapper for consistency with other services;
 export const rabbitmqService = {
   getConnection,
   getChannel,

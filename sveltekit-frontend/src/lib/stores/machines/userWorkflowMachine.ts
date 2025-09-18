@@ -6,19 +6,19 @@
 
 import { createMachine, assign, type ActorRefFrom } from 'xstate';
 
-// Type definitions
+// Type definitions;
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: string;
+  role: string;,
 }
 
 export interface LegalCase {
   id: string;
   title: string;
   status: string;
-  createdAt: Date;
+  createdAt: Date;,
 }
 
 export interface Evidence {
@@ -26,7 +26,7 @@ export interface Evidence {
   title: string;
   type: string;
   caseId: string;
-  createdAt: Date;
+  createdAt: Date;,
 }
 
 export interface WorkflowContext {
@@ -57,7 +57,7 @@ export interface UserWorkflowContext extends WorkflowContext {
   preferences: {
     autoSave: boolean;
     notifications: boolean;
-    collaborationMode: 'real-time' | 'async';
+    collaborationMode: 'real-time' | 'async';,
   };
 }
 
@@ -101,14 +101,14 @@ export const userWorkflowMachine = createMachine({
       status: 'pending',
       steps: [],
       currentStepIndex: 0,
-      totalSteps: 0
+      totalSteps: 0,
     },
     collaborators: [],
     notifications: [],
     preferences: {
       autoSave: true,
       notifications: true,
-      collaborationMode: 'real-time'
+      collaborationMode: 'real-time',
     }
   },
   states: {
@@ -126,7 +126,7 @@ export const userWorkflowMachine = createMachine({
     authenticated: {
       initial: 'ready',
       entry: assign({
-        currentStep: 'authenticated'
+        currentStep: 'authenticated',
       }),
       states: {
         ready: {
@@ -142,7 +142,7 @@ export const userWorkflowMachine = createMachine({
                   steps: getWorkflowSteps(event.workflowType),
                   currentStepIndex: 0,
                   totalSteps: getWorkflowSteps(event.workflowType).length,
-                  startedAt: new Date()
+                  startedAt: new Date(),
                 }),
                 currentStep: 'workflow_started',
                 progress: 0,
@@ -187,7 +187,7 @@ export const userWorkflowMachine = createMachine({
                 COMPLETE_STEP: {
                   target: 'stepCompleted',
                   actions: assign({
-                    data: ({ context, event }) => ({ ...context.data, ...event.stepData }),
+                    data: ({ context, event }) => ({ ...context.data, ...event.stepData ,}),
                     progress: ({ context }) => 
                       Math.round((context.workflow.currentStepIndex + 1) / context.workflow.totalSteps * 100)
                   })
@@ -201,7 +201,7 @@ export const userWorkflowMachine = createMachine({
               }
             },
             stepCompleted: {
-              always: [
+              always: [;
                 {
                   target: '#userWorkflow.authenticated.workflowCompleted',
                   guard: ({ context }) => context.workflow.currentStepIndex >= context.workflow.totalSteps - 1,
@@ -209,10 +209,10 @@ export const userWorkflowMachine = createMachine({
                     workflow: ({ context }) => ({
                       ...context.workflow,
                       status: 'completed' as const,
-                      completedAt: new Date()
+                      completedAt: new Date(),
                     }),
                     progress: 100,
-                    currentStep: 'workflow_completed'
+                    currentStep: 'workflow_completed',
                   })
                 },
                 {
@@ -220,7 +220,7 @@ export const userWorkflowMachine = createMachine({
                   actions: assign({
                     workflow: ({ context }) => ({
                       ...context.workflow,
-                      currentStepIndex: context.workflow.currentStepIndex + 1
+                      currentStepIndex: context.workflow.currentStepIndex + 1,
                     }),
                     currentStep: ({ context }) => {
                       const nextIndex = context.workflow.currentStepIndex + 1;
@@ -235,7 +235,7 @@ export const userWorkflowMachine = createMachine({
                 RETRY: {
                   target: 'executingStep',
                   actions: assign({
-                    errors: []
+                    errors: [],
                   })
                 },
                 NEXT_STEP: {
@@ -276,9 +276,9 @@ export const userWorkflowMachine = createMachine({
               actions: assign({
                 workflow: ({ context }) => ({
                   ...context.workflow,
-                  status: 'cancelled' as const
+                  status: 'cancelled' as const,
                 }),
-                currentStep: 'workflow_cancelled'
+                currentStep: 'workflow_cancelled',
               })
             }
           }
@@ -297,7 +297,7 @@ export const userWorkflowMachine = createMachine({
                   currentStepIndex: 0,
                   totalSteps: getWorkflowSteps(event.workflowType).length,
                   startedAt: new Date(),
-                  completedAt: undefined
+                  completedAt: undefined,
                 }),
                 currentStep: 'workflow_started',
                 progress: 0,
@@ -313,7 +313,7 @@ export const userWorkflowMachine = createMachine({
                   status: 'pending' as const,
                   currentStepIndex: 0,
                   startedAt: undefined,
-                  completedAt: undefined
+                  completedAt: undefined,
                 }),
                 currentStep: 'ready',
                 progress: 0,
@@ -337,7 +337,7 @@ export const userWorkflowMachine = createMachine({
                   currentStepIndex: 0,
                   totalSteps: getWorkflowSteps(event.workflowType).length,
                   startedAt: new Date(),
-                  completedAt: undefined
+                  completedAt: undefined,
                 }),
                 currentStep: 'workflow_started',
                 progress: 0,
@@ -353,7 +353,7 @@ export const userWorkflowMachine = createMachine({
                   status: 'pending' as const,
                   currentStepIndex: 0,
                   startedAt: undefined,
-                  completedAt: undefined
+                  completedAt: undefined,
                 }),
                 currentStep: 'ready',
                 progress: 0,
@@ -374,7 +374,7 @@ export const userWorkflowMachine = createMachine({
                 type: event.notification.type,
                 message: event.notification.message,
                 timestamp: new Date(),
-                read: false
+                read: false,
               }
             ]
           })
@@ -388,7 +388,7 @@ export const userWorkflowMachine = createMachine({
         },
         CLEAR_NOTIFICATIONS: {
           actions: assign({
-            notifications: []
+            notifications: [],
           })
         },
         UPDATE_PREFERENCES: {
@@ -396,7 +396,7 @@ export const userWorkflowMachine = createMachine({
             preferences: ({ context, event }) => ({
               ...context.preferences,
               ...event.preferences
-            })
+            ,})
           })
         },
         LOGOUT: {
@@ -411,7 +411,7 @@ export const userWorkflowMachine = createMachine({
               status: 'pending' as const,
               steps: [],
               currentStepIndex: 0,
-              totalSteps: 0
+              totalSteps: 0,
             },
             collaborators: [],
             notifications: [],
@@ -425,7 +425,7 @@ export const userWorkflowMachine = createMachine({
     }
   }
 }, {
-  // Machine options
+  // Machine options;
   actions: {
     // Custom actions can be defined here if needed
   },
@@ -434,7 +434,7 @@ export const userWorkflowMachine = createMachine({
   }
 });
 
-// Workflow step definitions
+// Workflow step definitions;
 function getWorkflowSteps(workflowType: UserWorkflowContext['workflow']['type']): string[] {
   const workflowSteps = {
     case_creation: [
@@ -480,7 +480,7 @@ function getWorkflowSteps(workflowType: UserWorkflowContext['workflow']['type'])
 export type UserWorkflowMachine = typeof userWorkflowMachine;
 export type UserWorkflowActor = ActorRefFrom<UserWorkflowMachine>;
 
-// Utility functions
+// Utility functions;
 export function createUserWorkflowActor() {
   return userWorkflowMachine;
 }

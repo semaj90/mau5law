@@ -21,7 +21,7 @@ interface AIModule {
     performance?: {
       throughput: number;
       latency: number;
-      accuracy: number;
+      accuracy: number;,
     };
   };
 }
@@ -29,7 +29,7 @@ interface AIModule {
 // In-memory module registry (would be database in production)
 const moduleRegistry = new Map<string, AIModule>();
 
-// Initialize with default modules
+// Initialize with default modules;
 moduleRegistry.set('basic-legal-ai', {
   id: 'basic-legal-ai',
   name: 'Basic Legal AI',
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!moduleId) {
           return json({
             success: false,
-            error: 'Module ID is required'
+            error: 'Module ID is required',
           }, { status: 400 });
         }
 
@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         module.status = 'loading';
         
         // Would call actual module loading service
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1000);
         
         module.status = 'loaded';
         module.metadata.loadTime = Date.now();
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           module,
           loadTime: '1.2s',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!moduleId) {
           return json({
             success: false,
-            error: 'Module ID is required'
+            error: 'Module ID is required',
           }, { status: 400 });
         }
 
@@ -120,7 +120,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           success: true,
           module,
           unloadTime: '0.3s',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
@@ -142,10 +142,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           }, { status: 404 });
         }
 
-        // Load target module if not loaded
+        // Load target module if not loaded;
         if (targetModule.status !== 'loaded') {
           targetModule.status = 'loading';
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise(resolve => setTimeout(resolve, 500);
           targetModule.status = 'loaded';
           targetModule.metadata.loadTime = Date.now();
         }
@@ -162,12 +162,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
           metadata: {
             userId,
             switchedAt: Date.now(),
-            performance: targetModule.metadata.performance
+            performance: targetModule.metadata.performance,
           }
         });
       }
 
-      default:
+      default:;
         return json({
           success: false,
           error: `Unknown action: ${action}`
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }, { status: 500 });
   }
 };
@@ -200,15 +200,15 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         module,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     }
 
     // Return all active modules
-    const activeModules = Array.from(moduleRegistry.values())
+    const activeModules = Array.from(moduleRegistry.values()
       .filter(module => module.status === 'loaded');
 
-    const allModules = Array.from(moduleRegistry.values());
+    const allModules = Array.from(moduleRegistry.values();
 
     return json({
       service: 'module-manager',
@@ -235,14 +235,14 @@ export const GET: RequestHandler = async ({ url }) => {
         'Performance monitoring',
         'Memory optimization'
       ],
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }, { status: 500 });
   }
 };

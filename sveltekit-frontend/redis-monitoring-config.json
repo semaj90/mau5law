@@ -132,9 +132,7 @@
       "name": "connect-mock",
       "path": "src\\routes\\api\\ai\\connect-mock\\+server.ts",
       "complexity": "medium",
-      "methods": [
-        "POST"
-      ],
+      "methods": ["POST"],
       "monitoring": {
         "cacheHitTarget": 80,
         "responseTimeTarget": 100,
@@ -150,9 +148,7 @@
       "name": "connect",
       "path": "src\\routes\\api\\ai\\connect\\+server.ts",
       "complexity": "low",
-      "methods": [
-        "POST"
-      ],
+      "methods": ["POST"],
       "monitoring": {
         "cacheHitTarget": 90,
         "responseTimeTarget": 50,
@@ -520,9 +516,7 @@
       "name": "health-mock",
       "path": "src\\routes\\api\\ai\\health-mock\\+server.ts",
       "complexity": "medium",
-      "methods": [
-        "GET"
-      ],
+      "methods": ["GET"],
       "monitoring": {
         "cacheHitTarget": 80,
         "responseTimeTarget": 100,
@@ -538,9 +532,7 @@
       "name": "health",
       "path": "src\\routes\\api\\ai\\health\\+server.ts",
       "complexity": "low",
-      "methods": [
-        "GET"
-      ],
+      "methods": ["GET"],
       "monitoring": {
         "cacheHitTarget": 90,
         "responseTimeTarget": 50,
@@ -556,9 +548,7 @@
       "name": "health\\cloud",
       "path": "src\\routes\\api\\ai\\health\\cloud\\+server.ts",
       "complexity": "low",
-      "methods": [
-        "GET"
-      ],
+      "methods": ["GET"],
       "monitoring": {
         "cacheHitTarget": 90,
         "responseTimeTarget": 50,
@@ -574,10 +564,7 @@
       "name": "health\\local-fixed",
       "path": "src\\routes\\api\\ai\\health\\local-fixed\\+server.ts",
       "complexity": "high",
-      "methods": [
-        "GET",
-        "POST"
-      ],
+      "methods": ["GET", "POST"],
       "monitoring": {
         "cacheHitTarget": 70,
         "responseTimeTarget": 200,
@@ -593,10 +580,7 @@
       "name": "health\\local",
       "path": "src\\routes\\api\\ai\\health\\local\\+server.ts",
       "complexity": "high",
-      "methods": [
-        "GET",
-        "POST"
-      ],
+      "methods": ["GET", "POST"],
       "monitoring": {
         "cacheHitTarget": 70,
         "responseTimeTarget": 200,
@@ -1236,10 +1220,7 @@
       "name": "test-gemma3",
       "path": "src\\routes\\api\\ai\\test-gemma3\\+server.ts",
       "complexity": "medium",
-      "methods": [
-        "POST",
-        "GET"
-      ],
+      "methods": ["POST", "GET"],
       "monitoring": {
         "cacheHitTarget": 80,
         "responseTimeTarget": 100,
@@ -1271,10 +1252,7 @@
       "name": "test-orchestrator",
       "path": "src\\routes\\api\\ai\\test-orchestrator\\+server.ts",
       "complexity": "high",
-      "methods": [
-        "GET",
-        "POST"
-      ],
+      "methods": ["GET", "POST"],
       "monitoring": {
         "cacheHitTarget": 70,
         "responseTimeTarget": 200,

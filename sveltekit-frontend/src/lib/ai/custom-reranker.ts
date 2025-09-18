@@ -1,6 +1,7 @@
 
 // Custom Reranker for Legal AI - Replaces basic top-K ANN with intelligent scoring
-// Integrates with our existing Qdrant + PGVector setup
+// Integrates with our existing Qdrant + PGVector setup;
+}
 
 export interface RerankResult {
   id: string;
@@ -11,7 +12,7 @@ export interface RerankResult {
   intent?: string;
   timeOfDay?: string;
   position?: string;
-  confidence: number;
+  confidence: number;,
 }
 
 export interface UserContext {
@@ -21,7 +22,7 @@ export interface UserContext {
   currentCase?: string;
   recentActions: string[];
   userRole: "prosecutor" | "detective" | "admin" | "user";
-  workflowState: "draft" | "review" | "approved" | "archived";
+  workflowState: "draft" | "review" | "approved" | "archived";,
 }
 
 export class LegalAIReranker {
@@ -43,21 +44,21 @@ export class LegalAIReranker {
     userContext: UserContext,
     queryEmbedding?: number[],
   ): Promise<RerankResult[]> {
-    return annResults
+    return annResults;
       .map((result) => {
         let score = (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).originalScore;
 
-        // Intent matching (critical for legal workflows)
+        // Intent matching (critical for legal workflows);
         if ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).intent === userContext.intent) {
           score += this.contextWeights.intent;
         }
 
-        // Time-based relevance (court schedules, deadlines)
+        // Time-based relevance (court schedules, deadlines);
         if ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).timeOfDay === userContext.timeOfDay) {
           score += this.contextWeights.timeOfDay;
         }
 
-        // UI position context (focused evidence, active case)
+        // UI position context (focused evidence, active case);
         if ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).position === userContext.focusedElement) {
           score += this.contextWeights.position;
         }
@@ -84,7 +85,7 @@ export class LegalAIReranker {
 
   /**
    * Role-specific scoring for legal professionals
-   */
+   */;
   private calculateRoleScore(result: RerankResult, role: string): number {
     const roleBoosts = {
       prosecutor: {
@@ -162,18 +163,18 @@ export class LegalAIReranker {
 
   /**
    * Cosine similarity calculation
-   */
+   */;
   private cosineSimilarity(a: number[], b: number[]): number {
     const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
-    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
-    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0);
+    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0);
 
     return dotProduct / (magnitudeA * magnitudeB);
   }
 
   /**
    * Update context weights based on user feedback
-   */
+   */;
   updateWeights(feedbackData: Record<string, number>): void {
     Object.entries(feedbackData).forEach(([key, value]) => {
       if (key in this.contextWeights) {
@@ -183,7 +184,7 @@ export class LegalAIReranker {
   }
 }
 
-// Neo4j path context enhancement
+// Neo4j path context enhancement;
 export interface Neo4jPathContext {
   userPath: string[];
   relatedCases: string[];
@@ -213,7 +214,7 @@ export async function enhancedSearchWithNeo4j(
     limit * 2,
   ); // Get more for reranking
 
-  // Convert to rerank format with Neo4j enrichment
+  // Convert to rerank format with Neo4j enrichment;
   const rerankInput: RerankResult[] = annResults.map((result: any) => ({
     id: (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).id,
     content: (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.text || "",
@@ -228,7 +229,7 @@ export async function enhancedSearchWithNeo4j(
     originalScore: (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).score || 0,
     rerankScore: 0,
     confidence: ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).score || 0) * 100,
-  }));
+  });
 
   // Apply custom reranking with Neo4j context
   const reranker = new LegalAIReranker();
@@ -246,18 +247,18 @@ function calculatePathScore(
 ): number {
   let pathScore = 0;
 
-  // Check if result relates to user's recent path
+  // Check if result relates to user's recent path;
   neo4jContext.userPath.forEach((pathNode, index) => {
     if (
       (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).content?.includes(pathNode) ||
-      (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.tags?.includes(pathNode)
+      (result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.tags?.includes(pathNode);
     ) {
       pathScore +=
         (neo4jContext.userPath.length - index) / neo4jContext.userPath.length;
     }
   });
 
-  // Boost score for related cases
+  // Boost score for related cases;
   neo4jContext.relatedCases.forEach((caseId) => {
     if ((result as { originalScore?: any; intent?: any; timeOfDay?: any; position?: any; confidence?: any; metadata?: any; id?: any; payload?: any; score?: any; content?: any }).payload?.caseId === caseId) {
       pathScore += 1.5;
@@ -297,7 +298,7 @@ export { LegalAIReranker as default };
  * Multi-LLM synthesis function for advanced legal AI workflows
  * Accepts multiple LLM outputs, user history, uploaded files, MCP server data, and synthesizes a rich output.
  * Caches, auto-encodes, and trains on user feedback/history. Generates fixes, code review, analysis, summaries, next steps, and self-prompting.
- */
+ */;
 import type {
   AIModelOutput,
   UserHistory,

@@ -25,6 +25,7 @@ import type { RequestHandler } from './$types.js';
  * Handles local model processing for law PDFs with gemma3-legal and nomic-embed-text
  */
 
+}
 
 export interface LawPdfRequest {
   content: string;
@@ -45,7 +46,7 @@ export interface LawPdfResponse {
   riskAssessment: {
     riskLevel: 'low' | 'medium' | 'high';
     riskFactors: string[];
-    recommendations: string[];
+    recommendations: string[];,
   };
   embedding?: number[];
   metadata: {
@@ -53,7 +54,7 @@ export interface LawPdfResponse {
     modelUsed: string;
     embeddingModel: string;
     localProcessing: boolean;
-    confidence: number;
+    confidence: number;,
   };
 }
 
@@ -95,7 +96,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       response = await processWithCloudFallback(content, analysisType);
     }
 
-    // Add processing metadata
+    // Add processing metadata;
     response.metadata = {
       ...response.metadata,
       processingTime: Date.now() - startTime,
@@ -107,12 +108,11 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     console.error('[LawPDF API] Processing failed:', error);
     const message = error instanceof Error ? error.message: String(error);
 
-    return json(
-      {
+    return json({
         error: 'Document processing failed',
         details: message,
         fallbackSuggestion: 'Try with useLocalModels: false for cloud processing',
-      },
+      },)
       { status: 500 }
     );
   }
@@ -139,7 +139,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
         results.push({
           filename: file.name,
           success: false,
-          error: 'Only PDF files are supported'
+          error: 'Only PDF files are supported',
         });
         continue;
       }
@@ -162,7 +162,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
           steps.push('analysis'); // Default step
         }
         
-        // Start evidence processing pipeline
+        // Start evidence processing pipeline;
         const processResponse = await fetch(`${new URL(request.url).origin}/api/evidence/process`, {
           method: 'POST',
           headers: { 
@@ -198,7 +198,7 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
         results.push({
           filename: file.name,
           success: false,
-          error: error instanceof Error ? error.message: String(error)
+          error: error instanceof Error ? error.message: String(error),
         });
       }
     }
@@ -211,16 +211,16 @@ async function handleFileUpload(request: Request, locals: any): Promise<any> {
       message: `${successCount}/${files.length} files queued for processing`,
       totalFiles: files.length,
       successfulFiles: successCount,
-      failedFiles: files.length - successCount
+      failedFiles: files.length - successCount,
     });
     
   } catch (error: any) {
     console.error('[LawPDF] File upload handling failed:', error);
-    return json(
+    return json();
       {
         success: false,
         error: 'File upload processing failed',
-        details: error instanceof Error ? error.message: String(error)
+        details: error instanceof Error ? error.message: String(error),
       },
       { status: 500 }
     );
@@ -231,13 +231,13 @@ async function processWithLocalModels(
   content: string,
   summaryModel: string,
   embeddingModel: string,
-  analysisType: string
+  analysisType: string;
 ): Promise<LawPdfResponse> {
   // Enhanced legal prompt for gemma3-legal
   const legalPrompt = buildLegalAnalysisPrompt(content, analysisType);
 
   try {
-    // 1. Generate comprehensive legal summary with gemma3-legal
+    // 1. Generate comprehensive legal summary with gemma3-legal;
     const summaryResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -308,7 +308,7 @@ async function processWithLocalModels(
 
 async function processWithCloudFallback(
   content: string,
-  analysisType: string
+  analysisType: string;
 ): Promise<LawPdfResponse> {
   // Basic fallback processing without external dependencies
   const sentences = content.split(/[.!?]+/).filter((s) => s.trim().length > 10);
@@ -385,7 +385,7 @@ function parseGemmaLegalResponse(response: string): {
   legalConcepts: LawPdfResponse['legalConcepts'];
   keyTerms: string[];
   riskAssessment: LawPdfResponse['riskAssessment'];
-  confidence: number;
+  confidence: number;,
 } {
   const sections: {
     summary: string;
@@ -393,7 +393,7 @@ function parseGemmaLegalResponse(response: string): {
     legalConcepts: LawPdfResponse['legalConcepts'];
     keyTerms: string[];
     riskAssessment: LawPdfResponse['riskAssessment'];
-    confidence: number;
+    confidence: number;,
   } = {
     summary: '',
     entities: [] as LawPdfResponse['entities'],
@@ -415,24 +415,24 @@ function parseGemmaLegalResponse(response: string): {
 
     const entitiesMatch = response.match(/ENTITIES:\s*(.*?)(?=\n\n|LEGAL CONCEPTS:|$)/s);
     if (entitiesMatch) {
-      const entityLines = entitiesMatch[1].split('\n').filter((line) => line.trim());
-      sections.entities = entityLines
+      const entityLines = entitiesMatch[1].split('\n').filter((line) => line.trim();
+      sections.entities = entityLines;
         .map((line) => ({
           text: line.replace(/^[-•*]\s*/, '').trim(),
           type: 'LEGAL_CONCEPT' as const,
           confidence: 0.8,
-        }))
+        })
         .slice(0, 10);
     }
 
     const conceptsMatch = response.match(/LEGAL CONCEPTS:\s*(.*?)(?=\n\n|KEY TERMS:|$)/s);
     if (conceptsMatch) {
-      const conceptLines = conceptsMatch[1].split('\n').filter((line) => line.trim());
-      sections.legalConcepts = conceptLines
+      const conceptLines = conceptsMatch[1].split('\n').filter((line) => line.trim();
+      sections.legalConcepts = conceptLines;
         .map((line) => ({
           concept: line.replace(/^[-•*]\s*/, '').trim(),
           relevance: 0.8,
-        }))
+        })
         .slice(0, 8);
     }
 
@@ -440,7 +440,7 @@ function parseGemmaLegalResponse(response: string): {
     if (termsMatch) {
       sections.keyTerms = termsMatch[1]
         .split(/[,\n]/)
-        .map((term) => term.replace(/^[-•*]\s*/, '').trim())
+        .map((term) => term.replace(/^[-•*]\s*/, '').trim()
         .filter((term: string) => term.length > 2)
         .slice(0, 15);
     }
@@ -451,17 +451,17 @@ function parseGemmaLegalResponse(response: string): {
 
       if (
         riskText.toLowerCase().includes('high risk') ||
-        riskText.toLowerCase().includes('significant risk')
+        riskText.toLowerCase().includes('significant risk');
       ) {
         sections.riskAssessment.riskLevel = 'high';
       } else if (
         riskText.toLowerCase().includes('low risk') ||
-        riskText.toLowerCase().includes('minimal risk')
+        riskText.toLowerCase().includes('minimal risk');
       ) {
         sections.riskAssessment.riskLevel = 'low';
       }
 
-      const riskLines = riskText.split('\n').filter((line) => line.trim());
+      const riskLines = riskText.split('\n').filter((line) => line.trim();
       sections.riskAssessment.riskFactors = riskLines
         .filter(
           (line) => line.toLowerCase().includes('risk') || line.toLowerCase().includes('concern')
@@ -483,11 +483,11 @@ function parseGemmaLegalResponse(response: string): {
   return sections;
 }
 
-// Fallback processing functions
+// Fallback processing functions;
 function extractBasicEntities(content: string) {
   const entities = [];
 
-  // Simple regex patterns for common legal entities
+  // Simple regex patterns for common legal entities;
   const patterns = {
     PERSON: /\b[A-Z][a-z]+ [A-Z][a-z]+\b/g,
     ORGANIZATION: /\b[A-Z][a-z]+ (?:Inc|Corp|LLC|Ltd|Company)\b/g,
@@ -521,11 +521,11 @@ function detectLegalConcepts(content: string) {
   ];
 
   return concepts
-    .filter((concept) => content.toLowerCase().includes(concept.toLowerCase()))
+    .filter((concept) => content.toLowerCase().includes(concept.toLowerCase());
     .map((concept) => ({
       concept,
       relevance: 0.7,
-    }));
+    });
 }
 
 function extractKeyTerms(content: string) {
@@ -549,7 +549,7 @@ function assessBasicRisk(content: string) {
   const highRiskKeywords = ['unlimited liability', 'personal guarantee', 'liquidated damages'];
   const mediumRiskKeywords = ['termination', 'breach', 'penalty'];
 
-  const hasHighRisk = highRiskKeywords.some((keyword) => content.toLowerCase().includes(keyword));
+  const hasHighRisk = highRiskKeywords.some((keyword) => content.toLowerCase().includes(keyword);
 
   const hasMediumRisk = mediumRiskKeywords.some((keyword) =>
     content.toLowerCase().includes(keyword)

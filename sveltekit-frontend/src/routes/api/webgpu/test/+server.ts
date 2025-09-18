@@ -34,12 +34,11 @@ export const POST: RequestHandler = async ({ request }) => {
         result = await simulateCapabilityTest();
         break;
 
-      default:
-        return json(
-          {
+      default:;
+        return json({
             success: false,
             error: `Unknown operation: ${operation}`,
-          },
+          },)
           { status: 400 }
         );
     }
@@ -57,12 +56,11 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('❌ WebGPU test error:', error);
 
-    return json(
-      {
+    return json({
         success: false,
         error: error instanceof Error ? error.message: 'Test failed',
         operation: body?.operation || 'unknown',
-      },
+      },)
       { status: 500 }
     );
   }
@@ -78,14 +76,14 @@ async function simulateTextGeneration(input: string, fallback: boolean): Promise
         : 'wasm'
     : 'webgpu';
 
-  // Simulate processing time based on device
+  // Simulate processing time based on device;
   const processingTime = {
     webgpu: 150, // Fast GPU
     webgl: 300, // Slower WebGL
     wasm: 800, // CPU fallback
   }[deviceType];
 
-  await new Promise((resolve) => setTimeout(resolve, processingTime));
+  await new Promise((resolve) => setTimeout(resolve, processingTime);
 
   const legalResponse = generateLegalResponse(input);
 
@@ -103,13 +101,13 @@ async function simulateEmbeddingGeneration(input: string): Promise<any> {
   const deviceType = Math.random() > 0.6 ? 'webgpu' : 'wasm';
 
   const processingTime = deviceType === 'webgpu' ? 50 : 200;
-  await new Promise((resolve) => setTimeout(resolve, processingTime));
+  await new Promise((resolve) => setTimeout(resolve, processingTime);
 
   // Generate 768-dimensional embedding
   const embedding = Array.from({ length: 768 }, () => Math.random() - 0.5);
 
   // Normalize the embedding
-  const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
+  const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0);
   const normalizedEmbedding = embedding.map((val) => val / magnitude);
 
   return {
@@ -122,7 +120,7 @@ async function simulateEmbeddingGeneration(input: string): Promise<any> {
 }
 
 async function simulateCapabilityTest(): Promise<any> {
-  // Simulate browser capability detection
+  // Simulate browser capability detection;
   const capabilities = {
     webgpuSupported: Math.random() > 0.3, // 70% chance WebGPU supported
     webglSupported: true, // WebGL2 widely supported
@@ -141,7 +139,7 @@ async function simulateCapabilityTest(): Promise<any> {
     },
   };
 
-  // Determine device type based on capabilities
+  // Determine device type based on capabilities;
   if (capabilities.webgpuSupported) {
     capabilities.deviceType = 'webgpu';
   } else if (capabilities.webglSupported) {
@@ -219,37 +217,37 @@ function getRecommendedConfig(capabilities: any) {
 
 function estimatePerformance(deviceType: string) {
   const estimates: Record<
-    string,
+    string,>;
     {
       tokensPerSecond: number;
       embeddingTimeMs: number;
       memoryUsageMB: number;
-      powerEfficiency: string;
+      powerEfficiency: string;,
     }
   > & {
     webgpu: {
       tokensPerSecond: number;
       embeddingTimeMs: number;
       memoryUsageMB: number;
-      powerEfficiency: string;
+      powerEfficiency: string;,
     };
     webgl: {
       tokensPerSecond: number;
       embeddingTimeMs: number;
       memoryUsageMB: number;
-      powerEfficiency: string;
+      powerEfficiency: string;,
     };
     wasm: {
       tokensPerSecond: number;
       embeddingTimeMs: number;
       memoryUsageMB: number;
-      powerEfficiency: string;
+      powerEfficiency: string;,
     };
     none: {
       tokensPerSecond: number;
       embeddingTimeMs: number;
       memoryUsageMB: number;
-      powerEfficiency: string;
+      powerEfficiency: string;,
     };
   } = {
     webgpu: {
@@ -281,7 +279,7 @@ function estimatePerformance(deviceType: string) {
   return estimates[deviceType] || estimates.none;
 }
 
-// Health check for WebGPU service
+// Health check for WebGPU service;
 export const GET: RequestHandler = async () => {
   try {
     return json({

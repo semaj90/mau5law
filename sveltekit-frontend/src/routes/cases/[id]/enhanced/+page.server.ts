@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 	const caseId = params.id;
 	const analysisType = url.searchParams.get('analysis') || 'comprehensive';
 	
-	// In a real implementation, these would come from actual database queries and AI services
+	// In a real implementation, these would come from actual database queries and AI services;
 	const caseDetails = {
 		id: caseId,
 		title: `Enhanced Case Analysis - Case ${caseId}`,
@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 		jurisdiction: 'Federal - Northern District of California',
 		caseType: 'Contract Dispute',
 		estimated_value: 2500000,
-		confidence_score: 0.87
+		confidence_score: 0.87,
 	};
 
 	const analysisResults = {
@@ -44,7 +44,7 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 				discovery_phase: '3-4 months',
 				mediation: '6-8 months',
 				trial_ready: '12-15 months',
-				estimated_resolution: '8-10 months'
+				estimated_resolution: '8-10 months',
 			}
 		},
 		document_analysis: {
@@ -60,7 +60,7 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 				entities_found: 1247,
 				dates_extracted: 156,
 				monetary_amounts: 43,
-				legal_citations: 89
+				legal_citations: 89,
 			}
 		},
 		financial_analysis: {
@@ -71,7 +71,7 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 			roi_analysis: {
 				continue_litigation: 0.62,
 				settle_now: 0.78,
-				early_mediation: 0.85
+				early_mediation: 0.85,
 			}
 		}
 	};
@@ -85,24 +85,24 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
 	];
 
 	const aiInsights = {
-		strategy_recommendations: [
+		strategy_recommendations: [;
 			{
 				priority: 'high',
 				recommendation: 'Focus discovery on Section 4.2 performance metrics',
 				reasoning: 'Historical case analysis shows 89% success rate when performance data supports breach claims',
-				confidence: 0.91
+				confidence: 0.91,
 			},
 			{
 				priority: 'medium', 
 				recommendation: 'Prepare alternative damages calculation methodology',
 				reasoning: 'Opposing counsel likely to challenge current calculation based on similar cases',
-				confidence: 0.78
+				confidence: 0.78,
 			},
 			{
 				priority: 'high',
 				recommendation: 'Consider early mediation at 6-month mark',
 				reasoning: 'Settlement probability increases 34% when mediation occurs before discovery completion',
-				confidence: 0.85
+				confidence: 0.85,
 			}
 		],
 		risk_factors: [

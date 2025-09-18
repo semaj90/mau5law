@@ -36,7 +36,7 @@ export const lastConnectionTime = writable<Date | null>(null);
 ;
 // Real-time communication
 export const isTyping = writable(false);
-export const typingUsers = writable<Set<string>(new Set());
+export const typingUsers = writable<Set<string>(new Set();
 export const streamingResponse = writable('');
 export const streamingMessageId = writable<string | null>(null);
 ;
@@ -56,23 +56,23 @@ export const processingMetrics = writable({
   somCluster: -1,
   embeddingTime: 0,
   searchTime: 0,
-  generationTime: 0
+  generationTime: 0,
 });
 
 // Error handling
 export const lastError = writable<string | null>(null);
 export const errorHistory = writable<Array<any>([]);
 ;
-// User interaction
+// User interaction;
 export const userAttention = writable<AttentionData>({
   messageId: '',
   attentionWeights: [],
-  focusPoints: []
+  focusPoints: [],
 });
 
 export const userActivities = writable<UserActivity[]>([]);
 ;
-// Chat configuration
+// Chat configuration;
 export const chatConfig = writable({
   maxMessages: 100,
   enableAttentionTracking: true,
@@ -81,7 +81,7 @@ export const chatConfig = writable({
   autoScroll: true,
   showTypingIndicators: true,
   enableRecommendations: true,
-  streamingEnabled: true
+  streamingEnabled: true,
 });
 
 // Derived stores for computed values
@@ -105,7 +105,7 @@ export const conversationSummary = derived(chatMessages, ($messages) => {
     userMessages,
     aiMessages,
     totalTokens,
-    avgTokensPerMessage: $messages.length > 0 ? Math.round(totalTokens / $messages.length) : 0
+    avgTokensPerMessage: $messages.length > 0 ? Math.round(totalTokens / $messages.length) : 0,
   };
 });
 
@@ -121,7 +121,7 @@ export const sessionMetrics = derived([currentSession, chatMessages], ([$session
     messageCount: sessionMessages.length,
     tokensUsed: sessionMessages.reduce((sum, m) => sum + (m.token_count || 0), 0),
     duration: Date.now() - new Date($session.start_time).getTime(),
-    lastActivity: $session.last_activity
+    lastActivity: $session.last_activity,
   };
 });
 
@@ -136,12 +136,12 @@ export const attentionScore = derived(userAttention, ($attention) => {
   if (!$attention.focused) return 0;
   if (timeSinceActivity > maxInactiveTime) return 0.1;
   
-  return Math.max(0.1, 1 - (timeSinceActivity / maxInactiveTime));
+  return Math.max(0.1, 1 - (timeSinceActivity / maxInactiveTime);
 });
 
-// Store actions
+// Store actions;
 export const chatActions = {
-  // Session management
+  // Session management;
   createSession: async (userId: string, caseId?: string): Promise<ChatSession> => {
     try {
       const response = await fetch('/api/chat/session', {
@@ -157,7 +157,7 @@ export const chatActions = {
       const session: ChatSession = await response.json();
       currentSession.set(session);
       
-      // Update active sessions
+      // Update active sessions;
       activeSessions.update(sessions => {
         const filtered = sessions.filter(s => s.id !== session.id);
         return [...filtered, session];
@@ -188,7 +188,7 @@ export const chatActions = {
     }
   },
 
-  // Message management
+  // Message management;
   addMessage: (message: ChatMessage): void => {
     chatMessages.update(messages => {
       const filtered = messages.filter(m => m.id !== message.id);
@@ -234,7 +234,7 @@ export const chatActions = {
     didYouMean.set([]);
   },
 
-  // Streaming management
+  // Streaming management;
   startStreaming: (messageId: string): void => {
     streamingMessageId.set(messageId);
     streamingResponse.set('');
@@ -259,7 +259,7 @@ export const chatActions = {
         role: 'assistant',
         content: response,
         timestamp: Date.now(),
-        token_count: Math.ceil(response.length / 4) // Rough estimate
+        token_count: Math.ceil(response.length / 4) // Rough estimate,
       };
 
       chatActions.addMessage(aiMessage);
@@ -271,16 +271,16 @@ export const chatActions = {
     processingStage.set('complete');
   },
 
-  // Analysis and context
+  // Analysis and context;
   setAnalysis: (analysis: MessageAnalysis): void => {
     currentAnalysis.set(analysis);
     
-    // Update processing metrics
+    // Update processing metrics;
     processingMetrics.update(metrics => ({
       ...metrics,
       confidenceScore: analysis.confidence,
-      somCluster: typeof analysis.som_cluster === 'string' ? parseInt(analysis.som_cluster) : -1
-    }));
+      somCluster: typeof analysis.som_cluster === 'string' ? parseInt(analysis.som_cluster) : -1,
+    });
   },
 
   setRAGContext: (context: RAGContext): void => {
@@ -289,14 +289,14 @@ export const chatActions = {
     didYouMean.set(Array.isArray(context.did_you_mean) ? context.did_you_mean: []);
   },
 
-  // User interaction tracking
+  // User interaction tracking;
   trackActivity: (userId: string, sessionId: string, isTyping: boolean = false): void => {
     const activity: UserActivity = {
       userId,
       sessionId,
       isTyping,
       lastSeen: Date.now(),
-      status: 'online'
+      status: 'online',
     };
 
     userActivities.update(activities => {
@@ -305,23 +305,23 @@ export const chatActions = {
       return updated.slice(-100);
     });
 
-    // Update attention data
+    // Update attention data;
     userAttention.update(attention => ({
       ...attention,
       lastActivity: Date.now(),
-      interactionCount: attention.interactionCount + 1
-    }));
+      interactionCount: attention.interactionCount + 1,
+    });
   },
 
   updateAttention: (updates: Partial<AttentionData>): void => {
     userAttention.update(current => ({
       ...current,
       ...updates,
-      lastActivity: Date.now()
-    }));
+      lastActivity: Date.now(),
+    });
   },
 
-  // Error handling
+  // Error handling;
   addError: (message: string, context?: unknown): void => {
     const error = {
       timestamp: new Date(),
@@ -330,30 +330,30 @@ export const chatActions = {
     };
 
     lastError.set(message);
-    errorHistory.update(history => [...history, error].slice(-50)); // Keep last 50 errors
+    errorHistory.update(history => [...history, error].slice(-50); // Keep last 50 errors
   },
 
   clearError: (): void => {
     lastError.set(null);
   },
 
-  // Connection management
+  // Connection management;
   setConnectionStatus: (status: ConnectionStatus): void => {
     connectionStatus.set(status);
     isConnected.set(status === 'connected');
     
     if (status === 'connected') {
-      lastConnectionTime.set(new Date());
+      lastConnectionTime.set(new Date();
     }
   },
 
-  // Typing indicators
+  // Typing indicators;
   setTyping: (typing: boolean): void => {
     isTyping.set(typing);
   },
 
   addTypingUser: (userId: string): void => {
-    typingUsers.update(users => new Set([...users, userId]));
+    typingUsers.update(users => new Set([...users, userId]);
   },
 
   removeTypingUser: (userId: string): void => {
@@ -364,17 +364,17 @@ export const chatActions = {
     });
   },
 
-  // Configuration
+  // Configuration;
   updateConfig: (updates: Partial): void => {
-    chatConfig.update(current => ({ ...current, ...updates }));
+    chatConfig.update(current => ({ ...current, ...updates ,});
     
-    // Save to localStorage if available
+    // Save to localStorage if available;
     if (browser) {
-      localStorage.setItem('chat-config', JSON.stringify(get(chatConfig)));
+      localStorage.setItem('chat-config', JSON.stringify(get(chatConfig));
     }
   },
 
-  // Utility
+  // Utility;
   exportSession: (): string => {
     const session = get(currentSession);
     const messages = get(chatMessages);
@@ -386,7 +386,7 @@ export const chatActions = {
       messages,
       analysis,
       context,
-      exportedAt: new Date().toISOString()
+      exportedAt: new Date().toISOString(),
     }, null, 2);
   },
 
@@ -403,11 +403,11 @@ export const chatActions = {
     processingStage.set('complete');
     lastError.set(null);
     userActivities.set([]);
-    typingUsers.set(new Set());
+    typingUsers.set(new Set();
   }
 };
 
-// Initialize from localStorage if available
+// Initialize from localStorage if available;
 if (browser) {
   const savedConfig = localStorage.getItem('chat-config');
   if (savedConfig) {
@@ -420,7 +420,7 @@ if (browser) {
   }
 }
 
-// Export store collections for convenience
+// Export store collections for convenience;
 export const chatStores = {
   // Core state
   messages: chatMessages,
@@ -448,7 +448,7 @@ export const chatStores = {
   // Configuration
   config: chatConfig,
   
-  // Derived
+  // Derived;
   derived: {
     messageCount,
     lastUserMessage,

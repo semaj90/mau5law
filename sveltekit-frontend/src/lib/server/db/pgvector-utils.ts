@@ -10,6 +10,7 @@ import type {
   evidence, 
   documentEmbeddings 
 } from './schema-unified.js';
+}
 
 export interface VectorSearchResult {
   id: string;
@@ -27,7 +28,7 @@ export interface VectorSearchOptions {
 
 /**
  * Initialize pgvector extension and create necessary functions
- */
+ */;
 export async function initializePgVector(): Promise<boolean> {
   try {
     // Enable pgvector extension
@@ -119,13 +120,13 @@ export async function initializePgVector(): Promise<boolean> {
 
 /**
  * Convert JavaScript array to PostgreSQL vector format
- */
+ */;
 export function arrayToVector(embedding: number[]): string {
   if (!Array.isArray(embedding) || embedding.length === 0) {
     throw new Error('Invalid embedding: must be a non-empty array');
   }
   
-  // Ensure all values are finite numbers
+  // Ensure all values are finite numbers;
   const validEmbedding = embedding.map(val => {
     if (!isFinite(val)) return 0;
     return val;
@@ -136,7 +137,7 @@ export function arrayToVector(embedding: number[]): string {
 
 /**
  * Convert PostgreSQL vector to JavaScript array
- */
+ */;
 export function vectorToArray(vectorString: string): number[] {
   if (!vectorString || typeof vectorString !== 'string') {
     return [];
@@ -145,7 +146,7 @@ export function vectorToArray(vectorString: string): number[] {
   try {
     // Remove brackets and split by comma
     const cleaned = vectorString.replace(/^\[|\]$/g, '');
-    return cleaned.split(',').map(val => parseFloat(val.trim()));
+    return cleaned.split(',').map(val => parseFloat(val.trim());
   } catch (error: any) {
     console.warn('Failed to parse vector string:', vectorString);
     return [];
@@ -181,8 +182,8 @@ export async function searchSimilarMessages(
       content: row.content,
       similarity: row.similarity,
       metadata: includeMetadata ? row.metadata: undefined,
-      documentType: 'chat_message'
-    }));
+      documentType: 'chat_message',
+    });
   } catch (error: any) {
     console.error('Vector search for messages failed:', error);
     return [];
@@ -226,8 +227,8 @@ export async function searchSimilarEvidence(
         caseId: row.case_id,
         ...row.metadata
       } : undefined,
-      documentType: 'evidence'
-    }));
+      documentType: 'evidence',
+    });
   } catch (error: any) {
     console.error('Vector search for evidence failed:', error);
     return [];
@@ -236,9 +237,8 @@ export async function searchSimilarEvidence(
 
 /**
  * Insert chat message with vector embedding
- */
-export async function insertChatMessageWithEmbedding(
-  messageData: {
+ */;
+export async function insertChatMessageWithEmbedding(messageData: {
     id: string;
     sessionId: string;
     role: string;
@@ -276,19 +276,19 @@ export async function insertChatMessageWithEmbedding(
 export async function updateEvidenceEmbeddings(
   evidenceId: string,
   titleEmbedding?: number[],
-  contentEmbedding?: number[]
+  contentEmbedding?: number[];
 ): Promise<boolean> {
   try {
     const updates: string[] = [];
     const params: any[] = [];
 
     if (titleEmbedding && titleEmbedding.length > 0) {
-      updates.push('title_embedding = $' + (params.length + 2));
+      updates.push('title_embedding = $' + (params.length + 2);
       params.push(`${arrayToVector(titleEmbedding)}::vector`);
     }
 
     if (contentEmbedding && contentEmbedding.length > 0) {
-      updates.push('content_embedding = $' + (params.length + 2));
+      updates.push('content_embedding = $' + (params.length + 2);
       params.push(`${arrayToVector(contentEmbedding)}::vector`);
     }
 
@@ -330,20 +330,18 @@ export async function searchAcrossAllVectors(
 
   const searchPromises: Promise<VectorSearchResult[]>[] = [];
 
-  // Search messages
+  // Search messages;
   if (includeMessages) {
-    searchPromises.push(
-      searchSimilarMessages(queryEmbedding, { 
+    searchPromises.push(searchSimilarMessages(queryEmbedding, { 
         limit: Math.ceil(limit / 2), 
         threshold 
       })
     );
   }
 
-  // Search evidence
+  // Search evidence;
   if (includeEvidence) {
-    searchPromises.push(
-      searchSimilarEvidence(queryEmbedding, caseId, { 
+    searchPromises.push(searchSimilarEvidence(queryEmbedding, caseId, { 
         limit: Math.ceil(limit / 2), 
         threshold 
       })
@@ -366,7 +364,7 @@ export async function searchAcrossAllVectors(
 
 /**
  * Calculate cosine similarity between two vectors
- */
+ */;
 export function calculateCosineSimilarity(a: number[], b: number[]): number {
   if (a.length !== b.length) {
     throw new Error('Vectors must have the same dimension');
@@ -388,7 +386,7 @@ export function calculateCosineSimilarity(a: number[], b: number[]): number {
 
 /**
  * Health check for pgvector functionality
- */
+ */;
 export async function pgvectorHealthCheck(): Promise<any> {
   try {
     // Check if pgvector extension exists
@@ -403,7 +401,7 @@ export async function pgvectorHealthCheck(): Promise<any> {
       return {
         available: false,
         functions: [],
-        error: 'pgvector extension not installed'
+        error: 'pgvector extension not installed',
       };
     }
 
@@ -424,18 +422,18 @@ export async function pgvectorHealthCheck(): Promise<any> {
     return {
       available: true,
       version: (extensionCheck[0]?.version as string) || 'unknown',
-      functions: availableFunctions
+      functions: availableFunctions,
     };
   } catch (error: any) {
     return {
       available: false,
       functions: [],
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
 
-// Initialize on import (only in non-production)
+// Initialize on import (only in non-production);
 if (typeof process !== 'undefined' && import.meta.env.NODE_ENV !== 'production') {
   initializePgVector().catch(error => {
     console.warn('pgvector initialization failed:', error);

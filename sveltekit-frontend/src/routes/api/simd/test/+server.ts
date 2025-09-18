@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js';
 // SIMD + Redis Performance Testing API
 import { simdRedisClient } from "$lib/services/simd-redis-client";
 
-// Generate test data of various sizes
+// Generate test data of various sizes;
 function generateTestData(size: 'small' | 'medium' | 'large' | 'xlarge') {
   const baseObj = {
     id: crypto.randomUUID(),
@@ -27,7 +27,7 @@ function generateTestData(size: 'small' | 'medium' | 'large' | 'xlarge') {
     case 'xlarge':
       return { ...baseObj, data: 'x'.repeat(500000), chunks: Array(1000).fill(baseObj) }; // ~500KB
     default:
-      return baseObj;
+      return baseObj;,
   }
 }
 
@@ -70,9 +70,9 @@ export const POST: RequestHandler = async ({ request }) => {
         for (const size of testSizes) {
           const testData = generateTestData(size);
 
-          // SIMD benchmark
+          // SIMD benchmark;
           try {
-            const simdResult = await simdRedisClient.benchmark(testData, Math.min(iterations, 100));
+            const simdResult = await simdRedisClient.benchmark(testData, Math.min(iterations, 100);
             benchmarkResults[size] = simdResult;
           } catch (error: any) {
             benchmarkResults[size] = {
@@ -158,12 +158,11 @@ export const POST: RequestHandler = async ({ request }) => {
         break;
       }
 
-      default:
-        return json(
-          {
+      default:;
+        return json({
             error:
               'Invalid test_type. Use: simd_health, json_parsing_benchmark, cache_performance, redis_json_operations',
-          },
+          },)
           { status: 400 }
         );
     }
@@ -172,7 +171,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (error: any) {
     console.error('SIMD test API error:', error);
-    return json(
+    return json()
       { error: 'Test execution failed', details: String(error) },
       { status: 500 }
     );

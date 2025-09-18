@@ -1,6 +1,7 @@
 // @ts-nocheck - Complex experimental service with external dependencies
 // WebGPU Browser Diagnostics and Compatibility Check
-// Provides detailed WebGPU support detection and troubleshooting
+// Provides detailed WebGPU support detection and troubleshooting;
+}
 
 export interface WebGPUDiagnostics {
   isSupported: boolean;
@@ -11,22 +12,22 @@ export interface WebGPUDiagnostics {
     isChrome: boolean;
     isFirefox: boolean;
     isEdge: boolean;
-    isSafari: boolean;
+    isSafari: boolean;,
   };
   adapterInfo?: {
     vendor: string;
     architecture: string;
     device: string;
-    description: string;
+    description: string;,
   };
   deviceInfo?: {
     features: string[];
     limits: Record<string, number>;
     maxBufferSize: number;
-    maxComputeWorkgroupSize: number;
+    maxComputeWorkgroupSize: number;,
   };
   errors: string[];
-  recommendations: string[];
+  recommendations: string[];,
 }
 
 export class WebGPUDiagnosticsService {
@@ -38,11 +39,11 @@ export class WebGPUDiagnosticsService {
       isSupported: false,
       browserSupport: this.getBrowserSupport(),
       errors: [],
-      recommendations: []
+      recommendations: [],
     };
 
     try {
-      // Step 1: Check navigator.gpu availability
+      // Step 1: Check navigator.gpu availability;
       if (!diagnostics.browserSupport.hasNavigatorGPU) {
         diagnostics.errors.push('navigator.gpu is not available');
         this.addBrowserRecommendations(diagnostics);
@@ -52,12 +53,12 @@ export class WebGPUDiagnosticsService {
       // Step 2: Try to request adapter
       await this.testAdapterRequest(diagnostics);
 
-      // Step 3: Try to request device if adapter succeeded
+      // Step 3: Try to request device if adapter succeeded;
       if (this.adapter) {
         await this.testDeviceRequest(diagnostics);
       }
 
-      // Step 4: Test basic compute functionality
+      // Step 4: Test basic compute functionality;
       if (this.device) {
         await this.testComputeCapability(diagnostics);
         diagnostics.isSupported = true;
@@ -116,7 +117,7 @@ export class WebGPUDiagnosticsService {
       console.log('🔍 Testing WebGPU adapter request...');
       
       this.adapter = await (navigator as any).gpu.requestAdapter({
-        powerPreference: 'high-performance'
+        powerPreference: 'high-performance',
       });
 
       if (!this.adapter) {
@@ -125,14 +126,14 @@ export class WebGPUDiagnosticsService {
         return;
       }
 
-      // Get adapter info if available
+      // Get adapter info if available;
       try {
         const info = await this.adapter.requestAdapterInfo();
         diagnostics.adapterInfo = {
           vendor: info.vendor || 'Unknown',
           architecture: info.architecture || 'Unknown',  
           device: info.device || 'Unknown',
-          description: info.description || 'Unknown'
+          description: info.description || 'Unknown',
         };
         console.log('✅ WebGPU adapter info:', diagnostics.adapterInfo);
       } catch (error: any) {
@@ -141,7 +142,7 @@ export class WebGPUDiagnosticsService {
           vendor: 'Unknown',
           architecture: 'Unknown',
           device: 'Unknown', 
-          description: 'Unknown'
+          description: 'Unknown',
         };
       }
 
@@ -171,14 +172,14 @@ export class WebGPUDiagnosticsService {
         return;
       }
 
-      // Collect device info
+      // Collect device info;
       diagnostics.deviceInfo = {
         features: Array.from(this.device.features),
         limits: Object.fromEntries(
           Object.entries(this.device.limits).map(([key, value]) => [key, Number(value)])
         ),
         maxBufferSize: Number(this.device.limits.maxBufferSize),
-        maxComputeWorkgroupSize: Number(this.device.limits.maxComputeWorkgroupSize)
+        maxComputeWorkgroupSize: Number(this.device.limits.maxComputeWorkgroupSize),
       };
 
       console.log('✅ WebGPU device created successfully');
@@ -199,7 +200,7 @@ export class WebGPUDiagnosticsService {
 
       // Create a simple compute shader for testing
       const shaderCode = `
-        @compute @workgroup_size(1)
+        @compute @workgroup_size(1);
         fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           // Simple test - does nothing but validates compute pipeline
         }
@@ -211,7 +212,7 @@ export class WebGPUDiagnosticsService {
         layout: 'auto',
         compute: {
           module,
-          entryPoint: 'main'
+          entryPoint: 'main',
         }
       });
 
@@ -261,7 +262,7 @@ export class WebGPUDiagnosticsService {
   }
 }
 
-// Utility function for quick diagnostics
+// Utility function for quick diagnostics;
 export async function diagnoseWebGPU(): Promise<WebGPUDiagnostics> {
   const service = new WebGPUDiagnosticsService();
   const results = await service.runDiagnostics();
@@ -269,7 +270,7 @@ export async function diagnoseWebGPU(): Promise<WebGPUDiagnostics> {
   return results;
 }
 
-// Browser compatibility check
+// Browser compatibility check;
 export function checkBrowserCompatibility(): { compatible: boolean; message: string } {
   if (typeof navigator === 'undefined') {
     return { compatible: false, message: 'Running in server-side environment' };

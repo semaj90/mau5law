@@ -16,7 +16,7 @@ const db = drizzle(pool);
 
 let shuttingDown = false;
 
-// Wire globalLoki to Redis client if available
+// Wire globalLoki to Redis client if available;
 (async () => {
   try {
     const raw = cache.getClient?.();
@@ -29,11 +29,11 @@ let shuttingDown = false;
   } catch {}
 })();
 
-// Ensure DB-level idempotency support: unique index on metadata->>'jobId'
+// Ensure DB-level idempotency support: unique index on metadata->>'jobId';
 async function ensureDbIndexes() {
   try {
     await db.execute(
-      sql`CREATE UNIQUE INDEX IF NOT EXISTS document_chunks_jobid_uidx ON document_chunks ((metadata->>'jobId'));`
+      sql`CREATE UNIQUE INDEX IF NOT EXISTS document_chunks_jobid_uidx ON document_chunks ((metadata->>'jobId');`
     );
     console.log('🧱 Ensured unique index document_chunks_jobid_uidx');
   } catch (e: any) {
@@ -43,7 +43,7 @@ async function ensureDbIndexes() {
 
 async function processJob(job: { id: string; text: string; model?: string }) {
   console.log('📥 Processing job:', job.id);
-  // Dedupe: skip if already processed
+  // Dedupe: skip if already processed;
   try {
     const done = await redis.get(`jobs:done:${job.id}`);
     if (done) {
@@ -55,7 +55,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     }
   } catch {}
 
-  // Acquire in-flight dedupe lock (24h) using NX
+  // Acquire in-flight dedupe lock (24h) using NX;
   try {
     let locked: any = null;
     try {
@@ -64,7 +64,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
         EX: 24 * 60 * 60,
       });
     } catch {
-      // older ioredis style
+      // older ioredis style;
       try {
         locked = await (redis as any).set(`job:processed:${job.id}`, '1', 'NX', 'EX', 24 * 60 * 60);
       } catch {}
@@ -97,7 +97,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     // Use onConflictDoNothing to treat duplicates as success.
     let inserted = false;
     await db
-      .insert(document_chunks)
+      .insert(document_chunks);
       .values({
         chunk_text: job.text,
         chunk_index: 0,
@@ -121,7 +121,7 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     try {
       await globalLoki.completeJob(job.id, { embeddingSize: Array.isArray(emb) ? emb.length: 0 });
     } catch {}
-    // Notify clients to invalidate embedding caches
+    // Notify clients to invalidate embedding caches;
     try {
       emitCacheEvent({
         type: 'embedding_created',
@@ -140,9 +140,9 @@ async function processJob(job: { id: string; text: string; model?: string }) {
     console.error('❌ Job failed:', err?.message || err);
     await jobMachine.failJob(job.id, err, false);
     try {
-      await globalLoki.failJob(job.id, err?.message || String(err));
+      await globalLoki.failJob(job.id, err?.message || String(err);
     } catch {}
-    // Allow retry by clearing in-flight lock
+    // Allow retry by clearing in-flight lock;
     try {
       await (redis as any).del(`job:processed:${job.id}`);
     } catch {}
@@ -155,7 +155,7 @@ async function runRabbitConsumer() {
     const { consumeFromQueue } = await import('$lib/server/rabbitmq');
     await consumeFromQueue('evidence.embedding.queue', async (payload, ack, nack) => {
       try {
-        await processJob(payload as any));
+        await processJob(payload as any);
         ack();
       } catch (err: any) {
         console.error('❌ Error processing rabbitmq job:', err?.message || err);
@@ -188,7 +188,7 @@ async function runRedisLoop() {
       }
     } catch (e: any) {
       console.error('❌ Worker error (redis loop):', e?.message || e);
-      await new Promise((r) => setTimeout(r, 500));
+      await new Promise((r) => setTimeout(r, 500);
     }
   }
 }
@@ -203,7 +203,7 @@ async function runWorker() {
   }
 }
 
-// Graceful shutdown
+// Graceful shutdown;
 process.on('SIGINT', async () => {
   console.log('🛑 Worker shutting down (SIGINT)');
   shuttingDown = true;

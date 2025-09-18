@@ -20,7 +20,7 @@ export const DocumentUploadSchema = z.object({
     generateSummary: z.boolean().default(true),
     extractEntities: z.boolean().default(true),
     riskAssessment: z.boolean().default(true),
-    generateRecommendations: z.boolean().default(false)
+    generateRecommendations: z.boolean().default(false),
   }).default({})
 });
 
@@ -34,7 +34,7 @@ export const CaseCreationSchema = z.object({
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   tags: z.array(z.string()).default([]),
   estimatedDuration: z.number().min(1).max(365).optional(), // days
-  budget: z.number().min(0).optional()
+  budget: z.number().min(0).optional(),
 });
 
 export const SearchQuerySchema = z.object({
@@ -44,14 +44,14 @@ export const SearchQuerySchema = z.object({
     jurisdictions: z.array(z.string()).default([]),
     dateRange: z.object({
       from: z.date().optional(),
-      to: z.date().optional()
+      to: z.date().optional(),
     }).optional(),
     tags: z.array(z.string()).default([]),
     similarityThreshold: z.number().min(0).max(1).default(0.7),
-    maxResults: z.number().min(1).max(100).default(20)
+    maxResults: z.number().min(1).max(100).default(20),
   }).default({}),
   useAI: z.boolean().default(true),
-  cacheResults: z.boolean().default(true)
+  cacheResults: z.boolean().default(true),
 });
 
 export const AIAnalysisSchema = z.object({
@@ -62,13 +62,14 @@ export const AIAnalysisSchema = z.object({
     temperature: z.number().min(0).max(2).default(0.7),
     maxTokens: z.number().min(100).max(8000).default(2000),
     includeConfidence: z.boolean().default(true),
-    generateCitations: z.boolean().default(true)
+    generateCitations: z.boolean().default(true),
   }).default({})
 });
 
 // ============================================================================
 // STATE MACHINE CONTEXTS
-// ============================================================================
+// ============================================================================;
+}
 
 export interface DocumentUploadContext {
   formData: z.infer<typeof DocumentUploadSchema> | null;
@@ -79,7 +80,7 @@ export interface DocumentUploadContext {
   aiResults: any | null;
   error: string | null;
   retryCount: number;
-  maxRetries: number;
+  maxRetries: number;,
 }
 
 export interface CaseCreationContext {
@@ -89,7 +90,7 @@ export interface CaseCreationContext {
   relatedDocuments: any[];
   error: string | null;
   isAutoSaving: boolean;
-  lastSaved: Date | null;
+  lastSaved: Date | null;,
 }
 
 export interface SearchContext {
@@ -102,14 +103,14 @@ export interface SearchContext {
   pagination: {
     page: number;
     pageSize: number;
-    total: number;
+    total: number;,
   };
   analytics: {
     searchTime: number;
     resultCount: number;
-    cacheHit: boolean;
+    cacheHit: boolean;,
   } | null;
-  error: string | null;
+  error: string | null;,
 }
 
 export interface AIAnalysisContext {
@@ -122,14 +123,14 @@ export interface AIAnalysisContext {
   model: string;
   error: string | null;
   isStreaming: boolean;
-  streamedContent: string;
+  streamedContent: string;,
 }
 
 // ============================================================================
 // DOCUMENT UPLOAD STATE MACHINE
 // ============================================================================
 
-export const documentUploadMachine = createMachine(
+export const documentUploadMachine = createMachine();
   {
     /** @xstate-layout N4IgpgJg5mDOIC5QAoC2BDAxgCwJYDswBKAOhwRABtEJMAPVAQzAEsKwBiD3VAIwEcKAGwCuPAB4J4yHnT5cK8VBmwAlOvUQQAJBAAOEgBYJhIAB6JYugJYA2AEwAOSuYDsAGne0LLpWsun6gSCYoGDh4RCQUNAxEURBMFAAzMABrZFQpOXtZAGtUZCwsXDBwOXjMtOJyBBtEMzVLCyd9fXNzKe9fEECkELCIqJoFJEoKOOIU9MksHLzEotKyipq6hqam1vbOpOJOxBUXQdMlHWdpgx8-QOCQxEiqRFKKOKo1ZnXCwonc4rXYGOr6JQaKaqAy0cxOKb-YBBY4dCotZjHFZ3IhPTYvUQfXJ5JJ-f6A4F4sGeEG1OT+NqzZrwAImIA */
     id: 'documentUpload',
@@ -225,7 +226,7 @@ export const documentUploadMachine = createMachine(
         },
       },
       uploaded: {
-        always: [
+        always: [;
           {
             target: 'processing',
             guard: ({ context }) =>
@@ -268,7 +269,7 @@ export const documentUploadMachine = createMachine(
       },
       uploadError: {
         on: {
-          RETRY: [
+          RETRY: [;
             {
               target: 'uploading',
               guard: ({ context }) => context.retryCount < context.maxRetries,
@@ -284,7 +285,7 @@ export const documentUploadMachine = createMachine(
       },
       processingError: {
         on: {
-          RETRY: [
+          RETRY: [;
             {
               target: 'processing',
               guard: ({ context }) => context.retryCount < context.maxRetries,
@@ -332,9 +333,9 @@ export const documentUploadMachine = createMachine(
           if (key === 'file' && value instanceof File) {
             formData.append('file', value);
           } else if (typeof value === 'object' && value !== null) {
-            formData.append(key, JSON.stringify(value));
+            formData.append(key, JSON.stringify(value);
           } else if (value !== null && value !== undefined) {
-            formData.append(key, String(value));
+            formData.append(key, String(value);
           }
         });
 
@@ -370,7 +371,7 @@ export const documentUploadMachine = createMachine(
 // CASE CREATION STATE MACHINE
 // ============================================================================
 
-export const caseCreationMachine = createMachine(
+export const caseCreationMachine = createMachine();
   {
     id: 'caseCreation',
     initial: 'idle',
@@ -463,8 +464,7 @@ export const caseCreationMachine = createMachine(
               validationErrors: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'issues' in error) {
-                  return (error as any).issues.reduce(
-                    (acc: Record<string, string[]>, issue: any) => {
+                  return (error as any).issues.reduce((acc: Record<string, string[]>, issue: any) => {
                       const field = issue.path?.[0] || 'general';
                       if (!acc[field]) acc[field] = [];
                       acc[field].push(issue.message);
@@ -521,7 +521,7 @@ export const caseCreationMachine = createMachine(
       }),
       autoSave: fromPromise(async ({ input }) => {
         // Auto-save to localStorage
-        localStorage.setItem('case-draft', JSON.stringify(input));
+        localStorage.setItem('case-draft', JSON.stringify(input);
         return true;
       }),
       validateCase: fromPromise(async ({ input }) => {
@@ -556,7 +556,7 @@ export const caseCreationMachine = createMachine(
 // SEARCH STATE MACHINE
 // ============================================================================
 
-export const searchMachine = createMachine(
+export const searchMachine = createMachine();
   {
     id: 'search',
     initial: 'idle',
@@ -607,8 +607,7 @@ export const searchMachine = createMachine(
               validationErrors: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'issues' in error) {
-                  return (error as any).issues.reduce(
-                    (acc: Record<string, string[]>, issue: any) => {
+                  return (error as any).issues.reduce((acc: Record<string, string[]>, issue: any) => {
                       const field = issue.path?.[0] || 'general';
                       if (!acc[field]) acc[field] = [];
                       acc[field].push(issue.message);
@@ -735,7 +734,7 @@ export const searchMachine = createMachine(
         // Save to history
         const history = JSON.parse(localStorage.getItem('search-history') || '[]');
         const updatedHistory = [query, ...history.filter((q: string) => q !== query)].slice(0, 10);
-        localStorage.setItem('search-history', JSON.stringify(updatedHistory));
+        localStorage.setItem('search-history', JSON.stringify(updatedHistory);
 
         return data;
       }),
@@ -765,7 +764,7 @@ export const searchMachine = createMachine(
 // AI ANALYSIS STATE MACHINE
 // ============================================================================
 
-export const aiAnalysisMachine = createMachine(
+export const aiAnalysisMachine = createMachine();
   {
     id: 'aiAnalysis',
     initial: 'idle',
@@ -799,8 +798,7 @@ export const aiAnalysisMachine = createMachine(
               validationErrors: ({ event }) => {
                 const error = event.error;
                 if (error && typeof error === 'object' && 'issues' in error) {
-                  return (error as any).issues.reduce(
-                    (acc: Record<string, string[]>, issue: any) => {
+                  return (error as any).issues.reduce((acc: Record<string, string[]>, issue: any) => {
                       const field = issue.path?.[0] || 'general';
                       if (!acc[field]) acc[field] = [];
                       acc[field].push(issue.message);

@@ -13,9 +13,7 @@
         "DEBUG": "vite:*,kit:*"
       },
       "console": "integratedTerminal",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "Launch SvelteKit (GPU)",
@@ -34,9 +32,7 @@
         "DEBUG": "vite:*,kit:*"
       },
       "console": "integratedTerminal",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "name": "Debug Authentication",
@@ -51,9 +47,7 @@
         "DATABASE_URL": "postgresql://legal_admin:123456@localhost:5432/legal_ai_db"
       },
       "console": "integratedTerminal",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }

@@ -4,12 +4,12 @@ import { cases } from '$lib/db/schema';
 import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types.js';
 
-// Production API endpoint for case creation - PostgreSQL integration
+// Production API endpoint for case creation - PostgreSQL integration;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const data = await request.json();
 
-    // Validate required fields
+    // Validate required fields;
     if (!data.caseNumber || !data.title) {
       return json({ error: 'Case number and title are required' }, { status: 400 });
     }
@@ -32,7 +32,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     // ✅ REAL PostgreSQL DATABASE INSERT
     const [createdCase] = await db
-      .insert(cases)
+      .insert(cases);
       .values({
         case_number: data.caseNumber,
         title: data.title,
@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   } catch (error) {
     console.error('❌ PostgreSQL Case Creation Error:', error);
 
-    return json(
+    return json();
       {
         success: false,
         error: error instanceof Error ? error.message: 'Database error occurred',
@@ -91,11 +91,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   }
 };
 
-// GET endpoint for testing database connectivity
+// GET endpoint for testing database connectivity;
 export const GET: RequestHandler = async () => {
   try {
     // Test database connection by querying cases
-    const recentCases = await db
+    const recentCases = await db;
       .select({
         id: cases.id,
         case_number: cases.case_number,
@@ -127,7 +127,7 @@ export const GET: RequestHandler = async () => {
   } catch (error) {
     console.error('❌ Database connectivity test failed:', error);
 
-    return json(
+    return json();
       {
         status: 'Database connection failed',
         error: error instanceof Error ? error.message: 'Unknown database error',

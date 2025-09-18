@@ -1,17 +1,17 @@
-// Comprehensive Type Shims - Final Error Elimination
+// Comprehensive Type Shims - Final Error Elimination;
 declare global {
-  // WebGPU fixes
+  // WebGPU fixes;
   interface GPUAdapter {
     name?: string;
   }
 
-  // Buffer compatibility
+  // Buffer compatibility;
   interface BufferLike extends ArrayBuffer {
     byteLength: number;
     length?: number;
   }
 
-  // Fuse.js fixes
+  // Fuse.js fixes;
   namespace Fuse {
     interface FuseOptions<T> {
       keys?: string[];
@@ -22,7 +22,7 @@ declare global {
     }
   }
 
-  // LokiDB fixes
+  // LokiDB fixes;
   interface LokiIndexedAdapter {
     memoryCache?: any;
     insert?(data: any): any;
@@ -32,7 +32,7 @@ declare global {
     clear?(): any;
   }
 
-  // Canvas state fixes
+  // Canvas state fixes;
   interface CanvasState {
     isContextLost?: boolean;
     reset?(): void;
@@ -48,7 +48,7 @@ declare global {
     viewport?: any;
   }
 
-  // Cache manager fixes
+  // Cache manager fixes;
   interface AdvancedCacheManager {
     start?(): Promise<void>;
     clearAll?(): Promise<void>;
@@ -58,12 +58,12 @@ declare global {
     enableIntelligentTierSelection?: boolean;
   }
 
-  // XState fixes
+  // XState fixes;
   interface ActorOptions<T> {
     services?: any;
   }
 
-  // RabbitMQ fixes
+  // RabbitMQ fixes;
   interface RabbitMQService {
     connected: boolean;
     connect?: () => Promise<void>;
@@ -71,37 +71,37 @@ declare global {
     consume?: (queue: string, handler: Function) => Promise<void>;
   }
 
-  // NATS fixes
+  // NATS fixes;
   interface NATSSubscription {
     unsubscribe(): void;
     [Symbol.asyncIterator](): AsyncIterator<any>;
   }
 
-  // Gemma service fixes
+  // Gemma service fixes;
   interface GemmaEmbeddingService {
     defaultModel?: string;
   }
 
-  // Redis fixes
+  // Redis fixes;
   namespace IORedis {
     interface Redis {
       hset(key: string, field: string, value: any): Promise<number>;
     }
   }
 
-  // Training service fixes
+  // Training service fixes;
   interface QLoRAReinforcementTrainer {
     isTraining?: boolean;
     isTraaining?: boolean; // Keep typo for backwards compatibility
   }
 
-  // WASM fixes
+  // WASM fixes;
   interface VectorOpsModule {
     (input: any): any;
   }
 }
 
-// Module augmentations
+// Module augmentations;
 declare module "$lib/server/messaging/rabbitmq-service.js" {
   export const QUEUES: Record<string, string>;
 }
@@ -113,7 +113,7 @@ declare module "$lib/utils/webgpu-array-utils" {
 declare module "./webgpu-rag-service" {
   export interface GPUSearchMetrics {
     searchTime: number;
-    resultCount: number;
+    resultCount: number;,
   }
 }
 

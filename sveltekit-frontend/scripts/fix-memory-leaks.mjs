@@ -27,7 +27,7 @@ function processFile(filePath) {
         element: match[1],
         event: match[2],
         handler: match[3],
-        fullMatch: match[0]
+        fullMatch: match[0],
       });
     }
 
@@ -42,14 +42,17 @@ function processFile(filePath) {
 
         // Check if cleanup already exists
         if (!effectBody.includes('return') && !effectBody.includes('removeEventListener')) {
-          const effectListeners = eventListeners.filter(listener =>
+          const effectListeners = eventListeners.filter((listener) =>
             effectBody.includes(listener.fullMatch)
           );
 
           if (effectListeners.length > 0) {
-            const cleanup = effectListeners.map(listener =>
-              `    ${listener.element}.removeEventListener('${listener.event}', ${listener.handler});`
-            ).join('\n');
+            const cleanup = effectListeners
+              .map(
+                (listener) =>
+                  `    ${listener.element}.removeEventListener('${listener.event}', ${listener.handler});`
+              )
+              .join('\n');
 
             const newEffectBody = `${effectBody}
 
@@ -57,8 +60,7 @@ function processFile(filePath) {
 ${cleanup}
     };`;
 
-            content = content.replace(effectMatch[0],
-              `$effect(() => {${newEffectBody}});`);
+            content = content.replace(effectMatch[0], `$effect(() => {${newEffectBody}});`);
 
             needsCleanup = true;
             changes++;
@@ -67,15 +69,18 @@ ${cleanup}
         }
 
         if (needsCleanup) {
-          console.log(`    ✅ Added cleanup for ${effectListeners.length} event listeners in effect`);
+          console.log(
+            `    ✅ Added cleanup for ${effectListeners.length} event listeners in effect`
+          );
         }
       }
 
       // For addEventListener outside of effects, wrap in effect
-      eventListeners.forEach(listener => {
-        if (!content.includes(`${listener.element}.removeEventListener`) &&
-            !content.includes(`return () => {`)) {
-
+      eventListeners.forEach((listener) => {
+        if (
+          !content.includes(`${listener.element}.removeEventListener`) &&
+          !content.includes(`return () => {`)
+        ) {
           const newEffect = `
   $effect(() => {
     ${listener.fullMatch}
@@ -101,12 +106,12 @@ ${cleanup}
     while ((match = setIntervalRegex.exec(content)) !== null) {
       intervals.push({
         variable: match[1],
-        fullMatch: match[0]
+        fullMatch: match[0],
       });
     }
 
     if (intervals.length > 0) {
-      intervals.forEach(interval => {
+      intervals.forEach((interval) => {
         if (!content.includes(`clearInterval(${interval.variable})`)) {
           // Wrap in effect with cleanup
           const newEffect = `
@@ -134,22 +139,25 @@ ${cleanup}
     while ((match = setTimeoutRegex.exec(content)) !== null) {
       timeouts.push({
         variable: match[1],
-        fullMatch: match[0]
+        fullMatch: match[0],
       });
     }
 
     if (timeouts.length > 0) {
-      timeouts.forEach(timeout => {
-        if (!content.includes(`clearTimeout(${timeout.variable})`) &&
-            (content.includes('onDestroy') || content.includes('$effect'))) {
-
+      timeouts.forEach((timeout) => {
+        if (
+          !content.includes(`clearTimeout(${timeout.variable})`) &&
+          (content.includes('onDestroy') || content.includes('$effect'))
+        ) {
           // Add cleanup in existing effect or create new one
           if (content.includes('return () => {')) {
             const returnRegex = /(return \(\) => \{[^}]*)/;
             const returnMatch = content.match(returnRegex);
             if (returnMatch) {
-              content = content.replace(returnMatch[1],
-                `${returnMatch[1]}\n      clearTimeout(${timeout.variable});`);
+              content = content.replace(
+                returnMatch[1],
+                `${returnMatch[1]}\n      clearTimeout(${timeout.variable});`
+              );
               changes++;
               modified = true;
               console.log(`    ✅ Added clearTimeout to existing cleanup`);
@@ -167,12 +175,12 @@ ${cleanup}
     while ((match = webSocketRegex.exec(content)) !== null) {
       webSockets.push({
         variable: match[1],
-        fullMatch: match[0]
+        fullMatch: match[0],
       });
     }
 
     if (webSockets.length > 0) {
-      webSockets.forEach(ws => {
+      webSockets.forEach((ws) => {
         if (!content.includes(`${ws.variable}.close()`)) {
           const newEffect = `
   $effect(() => {
@@ -201,12 +209,12 @@ ${cleanup}
     while ((match = resizeObserverRegex.exec(content)) !== null) {
       resizeObservers.push({
         variable: match[1],
-        fullMatch: match[0]
+        fullMatch: match[0],
       });
     }
 
     if (resizeObservers.length > 0) {
-      resizeObservers.forEach(observer => {
+      resizeObservers.forEach((observer) => {
         if (!content.includes(`${observer.variable}.disconnect()`)) {
           // Find the observe call and wrap both in effect
           const observeRegex = new RegExp(`${observer.variable}\\.observe\\([^)]+\\);?`);
@@ -234,19 +242,20 @@ ${cleanup}
     }
 
     // 6. Fix IntersectionObserver without disconnect
-    const intersectionObserverRegex = /(?:const|let|var)\s+(\w+)\s*=\s*new\s+IntersectionObserver\([^)]+\);?/g;
+    const intersectionObserverRegex =
+      /(?:const|let|var)\s+(\w+)\s*=\s*new\s+IntersectionObserver\([^)]+\);?/g;
     const originalIntersectionObservers = content;
     const intersectionObservers = [];
 
     while ((match = intersectionObserverRegex.exec(content)) !== null) {
       intersectionObservers.push({
         variable: match[1],
-        fullMatch: match[0]
+        fullMatch: match[0],
       });
     }
 
     if (intersectionObservers.length > 0) {
-      intersectionObservers.forEach(observer => {
+      intersectionObservers.forEach((observer) => {
         if (!content.includes(`${observer.variable}.disconnect()`)) {
           const observeRegex = new RegExp(`${observer.variable}\\.observe\\([^)]+\\);?`);
           const observeMatch = content.match(observeRegex);
@@ -280,20 +289,22 @@ ${cleanup}
     while ((match = rafRegex.exec(content)) !== null) {
       rafs.push({
         variable: match[1],
-        fullMatch: match[0]
+        fullMatch: match[0],
       });
     }
 
     if (rafs.length > 0) {
-      rafs.forEach(raf => {
+      rafs.forEach((raf) => {
         if (!content.includes(`cancelAnimationFrame(${raf.variable})`)) {
           // Add to existing cleanup or create new effect
           if (content.includes('return () => {')) {
             const returnRegex = /(return \(\) => \{[^}]*)/;
             const returnMatch = content.match(returnRegex);
             if (returnMatch) {
-              content = content.replace(returnMatch[1],
-                `${returnMatch[1]}\n      cancelAnimationFrame(${raf.variable});`);
+              content = content.replace(
+                returnMatch[1],
+                `${returnMatch[1]}\n      cancelAnimationFrame(${raf.variable});`
+              );
               changes++;
               modified = true;
               console.log(`    ✅ Added cancelAnimationFrame to existing cleanup`);
@@ -325,10 +336,7 @@ ${cleanup}
     console.log('Component cleanup completed');
   }`;
 
-      content = content.replace(
-        /<script[^>]*>/,
-        `<script lang="ts">${cleanupUtility}`
-      );
+      content = content.replace(/<script[^>]*>/, `<script lang="ts">${cleanupUtility}`);
 
       changes++;
       modified = true;
@@ -533,7 +541,7 @@ function main() {
   const svelteFiles = walkDirectory(srcDir, '.svelte');
 
   // Filter files that might have memory leaks
-  const memoryLeakFiles = svelteFiles.filter(file => {
+  const memoryLeakFiles = svelteFiles.filter((file) => {
     try {
       const content = readFileSync(file, 'utf8');
       return (

@@ -5,19 +5,19 @@ import { URL } from "url";
 // Browser polyfills for Node.js modules and enhanced compatibility
 // This ensures Bits UI, and other dependencies work properly in browser context
 
-// Global polyfills for Node.js globals
+// Global polyfills for Node.js globals;
 declare global {
   interface Window {
     global: typeof globalThis;
     process: {
       env: Record<string, string | undefined>;
-      browser: boolean;
+      browser: boolean;,
     };
-    Buffer: any;
+    Buffer: any;,
   }
 }
 
-// Polyfill process.env for browser
+// Polyfill process.env for browser;
 if (typeof window !== 'undefined') {
   window.global = window.global || globalThis;
 
@@ -25,7 +25,7 @@ if (typeof window !== 'undefined') {
     window.process = {
       env: {
         NODE_ENV: import.meta.env.MODE || 'development',
-        PUBLIC_ENV: 'browser'
+        PUBLIC_ENV: 'browser',
       },
       browser: true,
       cwd: () => '/', // Fix process.cwd() error
@@ -33,34 +33,34 @@ if (typeof window !== 'undefined') {
       version: 'v18.0.0',
       versions: { node: '18.0.0' },
       platform: 'browser',
-      arch: 'x64'
+      arch: 'x64',
     } as any;
   }
 }
 
-// Polyfill Buffer for browser if needed
+// Polyfill Buffer for browser if needed;
 if (typeof window !== 'undefined' && !window.Buffer) {
-  // Lightweight Buffer polyfill for basic operations
+  // Lightweight Buffer polyfill for basic operations;
   window.Buffer = {
     from: (str: string, encoding?: string) => new TextEncoder().encode(str),
     isBuffer: (obj: any) => obj instanceof Uint8Array,
-    alloc: (size: number) => new Uint8Array(size)
+    alloc: (size: number) => new Uint8Array(size),
   } as any;
 }
 
-// Ensure crypto is available (for Node.js crypto module usage)
+// Ensure crypto is available (for Node.js crypto module usage);
 if (typeof window !== 'undefined' && !window.crypto) {
   // Modern browsers have crypto.subtle, but older browsers might need this
   console.warn('Crypto API not available, some features may be limited');
 }
 
-// Stream polyfill for browser (if needed by dependencies)
+// Stream polyfill for browser (if needed by dependencies);
 if (typeof window !== 'undefined' && typeof ReadableStream === 'undefined') {
   // Import streams-polyfill if available, or provide basic implementation
   console.warn('ReadableStream not available, some streaming features may be limited');
 }
 
-// Path manipulation utilities for browser
+// Path manipulation utilities for browser;
 export const pathUtils = {
   join: (...parts: string[]) => {
     return parts
@@ -94,7 +94,7 @@ export const pathUtils = {
   },
 };
 
-// URL utilities for better compatibility
+// URL utilities for better compatibility;
 export const urlUtils = {
   isAbsolute: (url: string) => {
     return /^https?:\/\//.test(url) || url.startsWith('/');
@@ -152,7 +152,7 @@ export const enhancedFetch = async (
 // Debounce utility for search and other operations
 export const debounce = <T extends (...args: any[]) => any>(
   func: T,
-  wait: number
+  wait: number;
 ): ((...args: Parameters<T>) => void) => {
   let timeout: ReturnType<typeof setTimeout>;
 
@@ -165,7 +165,7 @@ export const debounce = <T extends (...args: any[]) => any>(
 // Throttle utility for performance-sensitive operations
 export const throttle = <T extends (...args: any[]) => any>(
   func: T,
-  limit: number
+  limit: number;
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;
 
@@ -178,7 +178,7 @@ export const throttle = <T extends (...args: any[]) => any>(
   };
 };
 
-// Local storage utilities with error handling
+// Local storage utilities with error handling;
 export const storage = {
   get: <T = any>(key: string, defaultValue?: T): T | null => {
     try {
@@ -196,7 +196,7 @@ export const storage = {
     try {
       if (typeof window === 'undefined') return false;
 
-      localStorage.setItem(key, JSON.stringify(value));
+      localStorage.setItem(key, JSON.stringify(value);
       return true;
     } catch (error: any) {
       console.warn(`Failed to set localStorage item "${key}":`, error);
@@ -229,13 +229,13 @@ export const storage = {
   },
 };
 
-// Initialize polyfills
+// Initialize polyfills;
 if (typeof window !== 'undefined') {
   // Ensure all polyfills are applied
   console.log('Browser polyfills initialized for Legal AI Platform');
 }
 
-// Lightweight WebGPU utilities (safe in non-supporting browsers)
+// Lightweight WebGPU utilities (safe in non-supporting browsers);
 const webGPU = {
   isSupported: () =>
     typeof navigator !== 'undefined' && typeof (navigator as any).gpu !== 'undefined',

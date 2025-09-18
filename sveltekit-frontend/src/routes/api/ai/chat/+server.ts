@@ -48,7 +48,7 @@ const originalPOSTHandler: RequestHandler = async (event) => {
     // Extract conversation context
     const conversationHistory = messages.slice(0, -1).map(msg => `${msg.role}: ${msg.content}`);
 
-    // Create bridge request for intelligent routing
+    // Create bridge request for intelligent routing;
     const bridgeRequest: LLMBridgeRequest = {
       id: `chat_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
       type: 'chat',
@@ -75,7 +75,7 @@ const originalPOSTHandler: RequestHandler = async (event) => {
       },
     };
 
-    // Route through orchestrator bridge for optimal processing
+    // Route through orchestrator bridge for optimal processing;
     try {
       const result = await llmOrchestratorBridge.processRequest(bridgeRequest);
       
@@ -89,7 +89,7 @@ const originalPOSTHandler: RequestHandler = async (event) => {
         console.log(`🚀 Chat API completed via ${(result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).orchestratorUsed} orchestrator in ${totalTime.toFixed(2)}ms`);
       }
 
-      // Return OpenAI-compatible format
+      // Return OpenAI-compatible format;
       return json({
         choices: [{
           message: {
@@ -97,7 +97,7 @@ const originalPOSTHandler: RequestHandler = async (event) => {
             content: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).response
           },
           finish_reason: "stop",
-          index: 0
+          index: 0,
         }],
         usage: {
           total_tokens: Math.ceil((lastMessage.content + (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).response).length / 4), // Rough estimate
@@ -114,7 +114,7 @@ const originalPOSTHandler: RequestHandler = async (event) => {
           executionMetrics: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).executionMetrics,
           gpuAccelerated: (result as { success?: any; error?: any; orchestratorUsed?: any; response?: any; modelUsed?: any; requestId?: any; confidence?: any; executionMetrics?: any }).executionMetrics.gpuAccelerated,
         },
-        response_time_ms: totalTime
+        response_time_ms: totalTime,
       });
 
     } catch (orchestratorError) {
@@ -129,7 +129,7 @@ const originalPOSTHandler: RequestHandler = async (event) => {
     return json({ 
       error: "Failed to generate response",
       detail: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -139,7 +139,7 @@ async function fallbackToDirectOllama(
   prompt: string, 
   model: string, 
   temperature: number, 
-  startTime: number
+  startTime: number;
 ) {
   try {
     const ollamaResponse = await fetch(`${DEFAULT_OLLAMA_URL}/api/generate`, {
@@ -154,7 +154,7 @@ async function fallbackToDirectOllama(
           num_predict: 1024,
           top_k: 40,
           top_p: 0.9,
-          repeat_penalty: 1.1
+          repeat_penalty: 1.1,
         }
       })
     });
@@ -173,7 +173,7 @@ async function fallbackToDirectOllama(
           role: "assistant",
           content: (data as { response?: any; eval_count?: any; prompt_eval_count?: any }).response || "No response generated"
         },
-        finish_reason: "stop"
+        finish_reason: "stop",
       }],
       usage: {
         total_tokens: (data as { response?: any; eval_count?: any; prompt_eval_count?: any }).eval_count || 0,
@@ -191,14 +191,14 @@ async function fallbackToDirectOllama(
           gpuAccelerated: false,
         }
       },
-      response_time_ms: totalTime
+      response_time_ms: totalTime,
     });
   } catch (error) {
     throw new Error(`Fallback to direct Ollama failed: ${error instanceof Error ? error.message: 'Unknown error'}`);
   }
 }
 
-// Helper function to detect legal domain from content
+// Helper function to detect legal domain from content;
 function detectLegalDomain(content: string): string | undefined {
   const legalKeywords = {
     'contract': ['contract', 'agreement', 'terms', 'clause', 'breach'],

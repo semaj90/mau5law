@@ -23,7 +23,7 @@ const puppeteer = require('puppeteer');
     const categories = await page.evaluate(() => {
       const cards = document.querySelectorAll('.demo-route-card');
       const categoryCount = {};
-      cards.forEach(card => {
+      cards.forEach((card) => {
         const categoryElement = card.querySelector('[class*="uppercase"]');
         if (categoryElement) {
           const category = categoryElement.textContent.trim();
@@ -37,12 +37,12 @@ const puppeteer = require('puppeteer');
     // Get sample route titles
     const sampleTitles = await page.evaluate(() => {
       const cards = Array.from(document.querySelectorAll('.demo-route-card'));
-      return cards.slice(0, 10).map(card => {
+      return cards.slice(0, 10).map((card) => {
         const titleElement = card.querySelector('h4');
         const categoryElement = card.querySelector('[class*="uppercase"]');
         return {
           title: titleElement ? titleElement.textContent.trim() : 'No title',
-          category: categoryElement ? categoryElement.textContent.trim() : 'No category'
+          category: categoryElement ? categoryElement.textContent.trim() : 'No category',
         };
       });
     });
@@ -52,7 +52,7 @@ const puppeteer = require('puppeteer');
     console.log('📸 Taking full page screenshot...');
     await page.screenshot({
       path: 'homepage-demo-routes-full.png',
-      fullPage: true
+      fullPage: true,
     });
 
     // Take screenshot of just the demo routes section
@@ -73,7 +73,7 @@ const puppeteer = require('puppeteer');
         count: cards.length,
         hasTransition: computedStyle.transition !== 'none',
         hasGradient: firstCard.classList.toString().includes('bg-gradient'),
-        hasBorder: firstCard.classList.toString().includes('border')
+        hasBorder: firstCard.classList.toString().includes('border'),
       };
     });
     console.log('🎨 CardBits styling info:', cardBitsInfo);
@@ -87,7 +87,7 @@ const puppeteer = require('puppeteer');
           display: styles.display,
           flexWrap: styles.flexWrap,
           gap: styles.gap,
-          alignItems: styles.alignItems
+          alignItems: styles.alignItems,
         };
       }
       return null;
@@ -107,7 +107,6 @@ const puppeteer = require('puppeteer');
     console.log('  - homepage-demo-routes-full.png (full page)');
     console.log('  - demo-routes-grid.png (grid section)');
     console.log('  - demo-routes-hover-effect.png (hover effect)');
-
   } catch (error) {
     console.error('❌ Error:', error.message);
 

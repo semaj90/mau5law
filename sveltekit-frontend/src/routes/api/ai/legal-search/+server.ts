@@ -29,12 +29,12 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       return json({ error: 'Search query is required' }, { status: 400 });
     }
 
-    // First, get basic search results
+    // First, get basic search results;
     const searchParams = new URLSearchParams({
       q: query,
       jurisdiction,
       category,
-      limit: '20'
+      limit: '20',
     });
 
     const basicSearchResponse = await fetch(`/api/laws/search?${searchParams}`);
@@ -56,18 +56,17 @@ const originalPOSTHandler: RequestHandler = async ({ request, fetch }) => {
       query,
       filters: { jurisdiction, category },
       enhanced: true,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
   } catch (error: any) {
     console.error('AI legal search error:', error);
-    return json(
-      { 
+    return json({ 
         success: false, 
         error: 'AI search failed',
         laws: [],
-        count: 0 
-      }, 
+        count: 0 ,
+      }, )
       { status: 500 }
     );
   }
@@ -97,7 +96,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       body: JSON.stringify({
         message: aiAnalysisPrompt,
         temperature: 0.3, // Lower temperature for more focused analysis
-        model: 'gemma3-legal:latest'
+        model: 'gemma3-legal:latest',
       })
     });
 
@@ -108,7 +107,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
         // Try to parse AI response as JSON
         aiAnalysis = JSON.parse(aiData.response || '{}');
       } catch {
-        // If not valid JSON, create a basic analysis
+        // If not valid JSON, create a basic analysis;
         aiAnalysis = {
           summary: aiData.response?.substring(0, 200) || 'AI analysis unavailable',
           concepts: extractLegalConcepts(query),
@@ -118,7 +117,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       }
     }
 
-    // If AI analysis failed, use fallback analysis
+    // If AI analysis failed, use fallback analysis;
     if (!aiAnalysis) {
       aiAnalysis = {
         summary: `Search results for "${query}" - found ${laws.length} relevant laws`,
@@ -138,24 +137,24 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       }
     }
 
-    // Add AI confidence scores to laws
+    // Add AI confidence scores to laws;
     const enhancedLaws = reorderedLaws.map((law, index) => ({
       ...law,
       aiRelevanceScore: Math.max(0.9 - (index * 0.1), 0.1),
       aiInsights: generateLawInsights(law, query)
-    }));
+    });
 
     return {
       laws: enhancedLaws,
       summary: aiAnalysis.summary || 'AI analysis complete',
       suggestions: aiAnalysis.suggestions || generateSuggestions(query),
-      concepts: aiAnalysis.concepts || extractLegalConcepts(query)
+      concepts: aiAnalysis.concepts || extractLegalConcepts(query),
     };
 
   } catch (error: any) {
     console.error('AI enhancement error:', error);
     
-    // Return basic enhancement on AI failure
+    // Return basic enhancement on AI failure;
     return {
       laws: laws.map(law => ({
         ...law,
@@ -164,7 +163,7 @@ Format your response as JSON with these fields: summary, concepts, suggestions, 
       })),
       summary: `Found ${laws.length} laws related to "${query}"`,
       suggestions: generateSuggestions(query),
-      concepts: extractLegalConcepts(query)
+      concepts: extractLegalConcepts(query),
     };
   }
 }

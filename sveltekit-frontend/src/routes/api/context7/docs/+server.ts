@@ -25,7 +25,7 @@ interface SearchRequest {
   threshold?: number;
 }
 
-// GET /api/context7/docs - List available documentation
+// GET /api/context7/docs - List available documentation;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const action = url.searchParams.get('action') || 'list';
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({
         success: true,
         libraries,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
     
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url }) => {
         success: true,
         topics,
         library,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
     
@@ -83,24 +83,24 @@ export const GET: RequestHandler = async ({ url }) => {
         fetch: 'POST /api/context7/docs - Fetch documentation from Context7',
         search: 'POST /api/context7/docs?action=search - Search documentation',
         libraries: 'GET /api/context7/docs?action=libraries - List libraries',
-        topics: 'GET /api/context7/docs?action=topics - List topics'
+        topics: 'GET /api/context7/docs?action=topics - List topics',
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
   }
 };
 
-// POST /api/context7/docs - Fetch or search documentation
+// POST /api/context7/docs - Fetch or search documentation;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const req: DocFetchRequest = await request.json();
@@ -115,28 +115,27 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'list':
         return await listDocumentation();
       
-      default:
-        return json(
-          {
+      default:;
+        return json({
             success: false,
             error: `Unknown action: ${req.action}`
-          },
+          },)
           { status: 400 }
         );
     }
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
   }
 };
 
-// Fetch documentation from Context7 MCP server
+// Fetch documentation from Context7 MCP server;
 async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
   try {
     const libraries = [
@@ -153,7 +152,7 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
         continue;
       }
       
-      // Fetch from Context7 MCP server
+      // Fetch from Context7 MCP server;
       const response = await fetch(`${CONTEXT7_MCP_ENDPOINT}/tools/call`, {
         method: 'POST',
         headers: {
@@ -166,7 +165,7 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
             context7CompatibleLibraryID: library.id,
             topic: req.topic,
             tokens: 15000,
-            format: 'markdown'
+            format: 'markdown',
           }
         })
       });
@@ -192,7 +191,7 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
       action: 'fetch',
       results,
       count: results.length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     
   } catch (error: any) {
@@ -200,22 +199,21 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
   }
 }
 
-// Search documentation using Go RAG server with Gemma embeddings
+// Search documentation using Go RAG server with Gemma embeddings;
 async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
   try {
     if (!req.query) {
-      return json(
-        {
+      return json({
           success: false,
-          error: 'Query parameter is required for search'
-        },
+          error: 'Query parameter is required for search',
+        },)
         { status: 400 }
       );
     }
     
     let searchEndpoint = `${GO_RAG_QUERY_SERVER}/api/rag/search`;
     
-    // Use Enhanced RAG service if requested
+    // Use Enhanced RAG service if requested;
     if (req.useEnhancedRAG) {
       searchEndpoint = `${ENHANCED_RAG_SERVICE}/api/rag/query`;
     }
@@ -225,7 +223,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
       library: req.library,
       topic: req.topic,
       limit: req.limit || 10,
-      threshold: 0.7
+      threshold: 0.7,
     };
     
     const response = await fetch(searchEndpoint, {
@@ -234,7 +232,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify(searchRequest)
+      body: JSON.stringify(searchRequest),
     });
     
     if (!(response as { ok?: any; json?: any; statusText?: any }).ok) {
@@ -270,7 +268,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
       count: searchResults.count || searchResults.length,
       memory_context: memoryContext,
       service: req.useEnhancedRAG ? 'enhanced-rag' : 'go-rag',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     
   } catch (error: any) {
@@ -278,7 +276,7 @@ async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
   }
 }
 
-// List all available documentation
+// List all available documentation;
 async function listDocumentation(): Promise<Response> {
   try {
     // Get libraries list
@@ -299,7 +297,7 @@ async function listDocumentation(): Promise<Response> {
       libraries,
       topics,
       health,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     
   } catch (error: any) {

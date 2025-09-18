@@ -24,10 +24,10 @@ import { legalCaseMachine, legalCaseSelectors } from './legal-case-machine.js';
 export interface StoreState {
   appState: any;
   legalCaseState: any;
-  timestamp: number;
+  timestamp: number;,
 }
 
-// Configuration for store behavior
+// Configuration for store behavior;
 export interface XStateStoreConfig {
   persist?: boolean;
   persistKey?: string;
@@ -78,9 +78,9 @@ class XStateStoreManager {
 
   /**
    * Initialize browser-specific features
-   */
+   */;
   private initializeBrowserFeatures(): void {
-    // Set up cross-tab synchronization
+    // Set up cross-tab synchronization;
     if (this.config.syncAcrossTabs) {
       this.syncChannel = new BroadcastChannel('xstate-sync');
       this.syncChannel.addEventListener('message', (event: any) => {
@@ -88,19 +88,19 @@ class XStateStoreManager {
       });
     }
 
-    // Listen for page unload to persist state
+    // Listen for page unload to persist state;
     if (this.config.persist) {
       window.addEventListener('beforeunload', () => {
         this.persistState();
       });
 
-      // Periodic persistence (every 30 seconds)
+      // Periodic persistence (every 30 seconds);
       setInterval(() => {
         this.persistState();
       }, 30000);
     }
 
-    // Set up online/offline detection
+    // Set up online/offline detection;
     window.addEventListener('online', () => {
       this.appActor?.send({ type: 'ONLINE' });
     });
@@ -115,12 +115,12 @@ class XStateStoreManager {
 
   /**
    * Initialize the application machine and store
-   */
+   */;
   public initializeApp(): {
     appStore: Readable<any>;
     appActor: ActorRef<any>;
     send: (event: AppEvents) => void;
-    selectors: typeof appSelectors;
+    selectors: typeof appSelectors;,
   } {
     if (this.appActor) {
       throw new Error('App machine already initialized');
@@ -129,16 +129,16 @@ class XStateStoreManager {
     // Load persisted state if available
     const persistedState = this.loadPersistedState();
     
-    // Create app actor with persistence
+    // Create app actor with persistence;
     this.appActor = createActor(appMachine, {
       snapshot: persistedState?.appState,
       // Add devtools inspection
-      inspect: this.config.devtools ? this.createDevtoolsInspector('app') : undefined
+      inspect: this.config.devtools ? this.createDevtoolsInspector('app') : undefined,
     });
 
-    // Create reactive Svelte store
+    // Create reactive Svelte store;
     const { subscribe } = readable(this.appActor.getSnapshot(), (set) => {
-      // Subscribe to state changes
+      // Subscribe to state changes;
       const subscription = this.appActor!.subscribe((state) => {
         if (this.config.logTransitions) {
           console.log('🔄 App State Transition:', state.value, state.context);
@@ -146,11 +146,11 @@ class XStateStoreManager {
         
         set(state);
         
-        // Broadcast to other tabs
+        // Broadcast to other tabs;
         if (this.syncChannel) {
           this.syncChannel.postMessage({
             type: 'app-state-change',
-            state: state
+            state: state,
           });
         }
       });
@@ -158,13 +158,13 @@ class XStateStoreManager {
       // Start the machine
       this.appActor!.start();
 
-      // Cleanup subscription
+      // Cleanup subscription;
       return () => {
         subscription.unsubscribe();
       };
     });
 
-    // Send function for dispatching events
+    // Send function for dispatching events;
     const send = (event: AppEvents) => {
       if (this.config.logTransitions) {
         console.log('📤 App Event:', event);
@@ -176,18 +176,18 @@ class XStateStoreManager {
       appStore: { subscribe },
       appActor: this.appActor,
       send,
-      selectors: appSelectors
+      selectors: appSelectors,
     };
   }
 
   /**
    * Initialize the legal case machine and store
-   */
+   */;
   public initializeLegalCase(): {
     legalCaseStore: Readable<any>;
     legalCaseActor: ActorRef<any>;
     send: (event: any) => void;
-    selectors: typeof legalCaseSelectors;
+    selectors: typeof legalCaseSelectors;,
   } {
     if (this.legalCaseActor) {
       throw new Error('Legal case machine already initialized');
@@ -196,15 +196,15 @@ class XStateStoreManager {
     // Load persisted state if available
     const persistedState = this.loadPersistedState();
     
-    // Create legal case actor
+    // Create legal case actor;
     this.legalCaseActor = createActor(legalCaseMachine, {
       snapshot: persistedState?.legalCaseState,
-      inspect: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined
+      inspect: this.config.devtools ? this.createDevtoolsInspector('legalCase') : undefined,
     });
 
-    // Create reactive Svelte store
+    // Create reactive Svelte store;
     const { subscribe } = readable(this.legalCaseActor.getSnapshot(), (set) => {
-      // Subscribe to state changes
+      // Subscribe to state changes;
       const subscription = this.legalCaseActor!.subscribe((state) => {
         if (this.config.logTransitions) {
           console.log('⚖️ Legal Case State Transition:', state.value, state.context);
@@ -212,11 +212,11 @@ class XStateStoreManager {
         
         set(state);
         
-        // Broadcast to other tabs
+        // Broadcast to other tabs;
         if (this.syncChannel) {
           this.syncChannel.postMessage({
             type: 'legal-case-state-change',
-            state: state
+            state: state,
           });
         }
       });
@@ -224,13 +224,13 @@ class XStateStoreManager {
       // Start the machine
       this.legalCaseActor!.start();
 
-      // Cleanup subscription
+      // Cleanup subscription;
       return () => {
         subscription.unsubscribe();
       };
     });
 
-    // Send function for dispatching events
+    // Send function for dispatching events;
     const send = (event: any) => {
       if (this.config.logTransitions) {
         console.log('📤 Legal Case Event:', event);
@@ -242,13 +242,13 @@ class XStateStoreManager {
       legalCaseStore: { subscribe },
       legalCaseActor: this.legalCaseActor,
       send,
-      selectors: legalCaseSelectors
+      selectors: legalCaseSelectors,
     };
   }
 
   /**
    * Create derived stores for specific state slices
-   */
+   */;
   public createDerivedStores(appStore: Readable<any>) {
     return {
       // User and authentication
@@ -278,16 +278,16 @@ class XStateStoreManager {
       
       // Navigation
       currentRoute: derived(appStore, ($app) => appSelectors.getCurrentRoute($app)),
-      breadcrumbs: derived(appStore, ($app) => appSelectors.getBreadcrumbs($app))
+      breadcrumbs: derived(appStore, ($app) => appSelectors.getBreadcrumbs($app)
     };
   }
 
   /**
    * Create utility functions for state management
-   */
+   */;
   public createUtilities(appSend: (event: AppEvents) => void) {
     return {
-      // Notification helpers
+      // Notification helpers;
       notify: {
         success: (title: string, message: string) => 
           appSend({ type: 'ADD_NOTIFICATION', notification: { type: 'success', title, message } }),
@@ -305,28 +305,28 @@ class XStateStoreManager {
           appSend({ type: 'DISMISS_NOTIFICATION', id })
       },
 
-      // Theme helpers
+      // Theme helpers;
       theme: {
         setLight: () => appSend({ type: 'SET_THEME', theme: 'light' }),
         setDark: () => appSend({ type: 'SET_THEME', theme: 'dark' }),
         setAuto: () => appSend({ type: 'SET_THEME', theme: 'auto' })
       },
 
-      // Layout helpers
+      // Layout helpers;
       layout: {
         setDesktop: () => appSend({ type: 'SET_LAYOUT', layout: 'desktop' }),
         setTablet: () => appSend({ type: 'SET_LAYOUT', layout: 'tablet' }),
         setMobile: () => appSend({ type: 'SET_LAYOUT', layout: 'mobile' })
       },
 
-      // Error helpers
+      // Error helpers;
       error: {
         set: (error: AppContext['error']) => appSend({ type: 'SET_ERROR', error }),
         clear: () => appSend({ type: 'CLEAR_ERROR' }),
         retry: () => appSend({ type: 'RETRY_FAILED_ACTION' })
       },
 
-      // Loading helpers
+      // Loading helpers;
       loading: {
         start: (message?: string) => appSend({ type: 'GLOBAL_LOADING', message }),
         stop: () => appSend({ type: 'GLOBAL_LOADING_COMPLETE' })
@@ -336,7 +336,7 @@ class XStateStoreManager {
       navigate: (path: string, title?: string) => 
         appSend({ type: 'NAVIGATE', path, title }),
 
-      // Settings helpers
+      // Settings helpers;
       }); const settings = {
         update: (settings: Partial<AppContext['settings']>) => 
           appSend({ type: 'UPDATE_SETTINGS', settings }),
@@ -352,7 +352,7 @@ class XStateStoreManager {
       if (typeof window !== 'undefined' && (window as any).__REDUX_DEVTOOLS_EXTENSION__) {
         const devtools = (window as any).__REDUX_DEVTOOLS_EXTENSION__.connect({
           name: `XState: ${machineId}`,
-          trace: true
+          trace: true,
         });
 
         switch (inspectionEvent.type) {
@@ -374,10 +374,10 @@ class XStateStoreManager {
       const state: StoreState = {
         appState: this.appActor?.getSnapshot(),
         legalCaseState: this.legalCaseActor?.getSnapshot(),
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
 
-      localStorage.setItem(this.config.persistKey!, JSON.stringify(state));
+      localStorage.setItem(this.config.persistKey!, JSON.stringify(state);
     } catch (error: any) {
       console.warn('Failed to persist XState store:', error);
     }
@@ -407,7 +407,7 @@ class XStateStoreManager {
   }
 
   private handleCrossTabSync(data: any): void {
-    // Handle synchronization between tabs
+    // Handle synchronization between tabs;
     switch (data.type) {
       case 'app-state-change':
         // Update local state if needed
@@ -419,7 +419,7 @@ class XStateStoreManager {
   }
 
   private setupPerformanceMonitoring(): void {
-    // Monitor page load performance
+    // Monitor page load performance;
     if ('performance' in window) {
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
@@ -428,7 +428,7 @@ class XStateStoreManager {
             this.appActor?.send({
               type: 'UPDATE_PERFORMANCE_METRICS',
               metrics: {
-                pageLoadTime: navEntry.loadEventEnd - navEntry.loadEventStart
+                pageLoadTime: navEntry.loadEventEnd - navEntry.loadEventStart,
               }
             });
           }
@@ -437,14 +437,14 @@ class XStateStoreManager {
 
       observer.observe({ entryTypes: ['navigation'] });
 
-      // Monitor memory usage if available
+      // Monitor memory usage if available;
       if ('memory' in performance) {
         setInterval(() => {
           const memory = (performance as any).memory;
           this.appActor?.send({
             type: 'UPDATE_PERFORMANCE_METRICS',
             metrics: {
-              memoryUsage: memory.usedJSHeapSize
+              memoryUsage: memory.usedJSHeapSize,
             }
           });
         }, 30000); // Every 30 seconds
@@ -454,7 +454,7 @@ class XStateStoreManager {
 
   /**
    * Clean up resources
-   */
+   */;
   public destroy(): void {
     this.appActor?.stop();
     this.legalCaseActor?.stop();
@@ -469,12 +469,12 @@ class XStateStoreManager {
 // Export singleton instance and factory function
 export const xstateStore = XStateStoreManager.getInstance();
 ;
-// Factory function for creating custom store configurations
+// Factory function for creating custom store configurations;
 export function createXStateStore(config?: XStateStoreConfig) {
   return XStateStoreManager.getInstance(config);
 }
 
-// Convenience function for initializing all stores
+// Convenience function for initializing all stores;
 export function initializeStores(config?: XStateStoreConfig) {
   const storeManager = createXStateStore(config);
   
@@ -508,7 +508,7 @@ export function initializeStores(config?: XStateStoreConfig) {
 export type XStateStores = ReturnType<typeof initializeStores>;
 export type AppStoreState = ReturnType<typeof appSelectors.getCurrentUser>;
 
-// Hook for Svelte components
+// Hook for Svelte components;
 export function useXStateStore() {
   return initializeStores();
 }

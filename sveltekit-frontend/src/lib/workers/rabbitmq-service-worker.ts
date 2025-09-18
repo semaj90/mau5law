@@ -6,6 +6,7 @@
 
 import { rabbitmqService, {}, type MessageHandler } from '$lib/server/messaging/rabbitmq-service.js';
 import { publishToQueue } from '$lib/server/rabbitmq.js';
+}
 
 export interface ServiceWorkerConfig {
   enableLogging?: boolean;
@@ -23,7 +24,7 @@ export class RabbitMQServiceWorker {
     messagesProcessed: 0,
     errors: 0,
     startTime: Date.now(),
-    avgProcessingTime: 0
+    avgProcessingTime: 0,
   };
 
   constructor(config: ServiceWorkerConfig = {}) {
@@ -31,7 +32,7 @@ export class RabbitMQServiceWorker {
       enableLogging: config.enableLogging ?? true,
       maxRetries: config.maxRetries ?? 3,
       processingTimeout: config.processingTimeout ?? 30000,
-      enableN64Logging: config.enableN64Logging ?? false
+      enableN64Logging: config.enableN64Logging ?? false,
     };
   }
 
@@ -62,7 +63,7 @@ export class RabbitMQServiceWorker {
 
   /**
    * Register a message handler for a specific queue
-   */
+   */;
   registerHandler(queueName: string, handler: MessageHandler): void {
     this.handlers.set(queueName, handler);
     this.log(`Handler registered for queue: ${queueName}`);
@@ -70,7 +71,7 @@ export class RabbitMQServiceWorker {
 
   /**
    * Start the service worker and begin consuming messages
-   */
+   */;
   async start(): Promise<void> {
     if (this.isRunning) {
       this.log('Worker already running', 'info');
@@ -90,7 +91,7 @@ export class RabbitMQServiceWorker {
       // Setup default handlers
       this.setupDefaultHandlers();
 
-      // Start consuming messages from registered queues
+      // Start consuming messages from registered queues;
       for (const [queueName, handler] of this.handlers) {
         await this.startConsumer(queueName, handler);
       }
@@ -111,7 +112,7 @@ export class RabbitMQServiceWorker {
 
   /**
    * Stop the service worker
-   */
+   */;
   async stop(): Promise<void> {
     if (!this.isRunning) return;
 
@@ -128,10 +129,10 @@ export class RabbitMQServiceWorker {
 
   /**
    * Start consuming messages from a specific queue
-   */
+   */;
   private async startConsumer(queueName: string, handler: MessageHandler): Promise<void> {
     await rabbitmqService.consume(queueName, async (message, originalMessage) => {
-      const startTime = Date.now());
+      const startTime = Date.now();
       try {
         this.log(`Processing message from ${queueName}: ${JSON.stringify(message).substring(0, 100)}...`);
 
@@ -161,16 +162,16 @@ export class RabbitMQServiceWorker {
 
   /**
    * Setup default message handlers for legal AI operations
-   */
+   */;
   private setupDefaultHandlers(): void {
-    // Document processing handler
+    // Document processing handler;
     this.registerHandler({}.DOCUMENT_PROCESSING, async (message) => {
       this.log(`🧠 Processing document: ${message.documentId || 'unknown'}`);
 
       // Simulate document processing
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000);
 
-      // Publish to next stage
+      // Publish to next stage;
       await publishToQueue({}.VECTOR_EMBEDDING, {
         ...message,
         stage: 'embedding_ready',
@@ -178,12 +179,12 @@ export class RabbitMQServiceWorker {
       });
     });
 
-    // File upload handler
+    // File upload handler;
     this.registerHandler({}.FILE_UPLOAD, async (message) => {
       this.log(`📁 Processing file upload: ${message.fileName || 'unknown'}`);
 
       // Handle file upload processing
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500);
 
       if (message.evidenceId) {
         await publishToQueue({}.EVIDENCE_ANALYSIS, {
@@ -195,12 +196,12 @@ export class RabbitMQServiceWorker {
       }
     });
 
-    // Vector embedding handler
+    // Vector embedding handler;
     this.registerHandler({}.VECTOR_EMBEDDING, async (message) => {
       this.log(`🔤 Generating embeddings for: ${message.documentId || 'unknown'}`);
 
       // Simulate embedding generation
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000);
 
       await publishToQueue({}.SEARCH_INDEXING, {
         ...message,
@@ -209,12 +210,12 @@ export class RabbitMQServiceWorker {
       });
     });
 
-    // Evidence analysis handler
+    // Evidence analysis handler;
     this.registerHandler({}.EVIDENCE_ANALYSIS, async (message) => {
       this.log(`🔍 Analyzing evidence: ${message.evidenceId || 'unknown'}`);
 
       // Simulate AI analysis
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500);
 
       await publishToQueue({}.CASE_UPDATES, {
         caseId: message.caseId,
@@ -228,44 +229,44 @@ export class RabbitMQServiceWorker {
       });
     });
 
-    // RAG processing handler
+    // RAG processing handler;
     this.registerHandler({}.RAG_PROCESSING, async (message) => {
       this.log(`🤖 RAG processing query: ${message.query?.substring(0, 50) || 'unknown'}...`);
 
       // Simulate RAG processing
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 3000);
 
       // Could publish result back to a response queue
     });
 
-    // Email notifications handler
+    // Email notifications handler;
     this.registerHandler({}.EMAIL_NOTIFICATIONS, async (message) => {
       this.log(`📧 Sending notification: ${message.type || 'unknown'}`);
 
       // Simulate email sending
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await new Promise((resolve) => setTimeout(resolve, 800);
     });
 
-    // Search indexing handler
+    // Search indexing handler;
     this.registerHandler({}.SEARCH_INDEXING, async (message) => {
       this.log(`🔍 Indexing for search: ${message.documentId || 'unknown'}`);
 
       // Simulate search index update
-      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await new Promise((resolve) => setTimeout(resolve, 1200);
     });
 
-    // Case updates handler
+    // Case updates handler;
     this.registerHandler({}.CASE_UPDATES, async (message) => {
       this.log(`⚖️ Processing case update: ${message.caseId || 'unknown'}`);
 
       // Simulate case update processing
-      await new Promise(resolve => setTimeout(resolve, 600));
+      await new Promise(resolve => setTimeout(resolve, 600);
     });
   }
 
   /**
    * Update average processing time statistics
-   */
+   */;
   private updateAvgProcessingTime(processingTime: number): void {
     const currentAvg = this.processingStats.avgProcessingTime;
     const messageCount = this.processingStats.messagesProcessed;
@@ -276,18 +277,18 @@ export class RabbitMQServiceWorker {
 
   /**
    * Get worker performance statistics
-   */
+   */;
   getStats(): typeof this.processingStats & { uptime: number; isRunning: boolean } {
     return {
       ...this.processingStats,
       uptime: Date.now() - this.processingStats.startTime,
-      isRunning: this.isRunning
+      isRunning: this.isRunning,
     };
   }
 
   /**
    * Health check for the service worker
-   */
+   */;
   async healthCheck(): Promise<any> {
     const rabbitmqHealth = await rabbitmqService.healthCheck();
     const stats = this.getStats();
@@ -295,18 +296,18 @@ export class RabbitMQServiceWorker {
     return {
       status: this.isRunning && rabbitmqHealth.status === 'healthy' ? 'healthy' : 'unhealthy',
       stats,
-      rabbitmq: rabbitmqHealth
+      rabbitmq: rabbitmqHealth,
     };
   }
 
   /**
    * Publish a message to a queue (convenience method)
-   */
+   */;
   async publishMessage(queueName: string, message: any): Promise<boolean> {
     try {
       const success = await rabbitmqService.publish(
         'workers', // exchange name
-        queueName, // routing key
+        queueName, // routing key);
         {
           ...message,
           publishedAt: Date.now(),
@@ -331,7 +332,7 @@ export class RabbitMQServiceWorker {
 // Export singleton instance
 export const rabbitmqServiceWorker = RabbitMQServiceWorker.getInstance();
 
-// Export utility functions
+// Export utility functions;
 export async function startRabbitMQWorker(config?: ServiceWorkerConfig): Promise<RabbitMQServiceWorker> {
   const worker = RabbitMQServiceWorker.getInstance(config);
   await worker.start();

@@ -4,7 +4,8 @@
  * Replaces scattered type definitions with single source of truth
  */
 
-// ===== OLLAMA & AI TYPES =====
+// ===== OLLAMA & AI TYPES =====;
+}
 
 export interface EmbeddingResponse {
   embedding: number[];
@@ -36,9 +37,9 @@ export interface OllamaModel {
     family: string;
     families?: string[];
     parameter_size: string;
-    quantization_level: string;
+    quantization_level: string;,
   };
-  modified_at: string;
+  modified_at: string;,
 }
 
 export interface OllamaHealthCheck {
@@ -49,7 +50,8 @@ export interface OllamaHealthCheck {
   error?: string;
 }
 
-// ===== RAG SYSTEM TYPES =====
+// ===== RAG SYSTEM TYPES =====;
+}
 
 export interface RAGQuery {
   query: string;
@@ -90,10 +92,11 @@ export interface RAGSearchResponse {
   query: string;
   totalResults: number;
   processingTime: number;
-  model: string;
+  model: string;,
 }
 
-// ===== LEGAL DOMAIN TYPES =====
+// ===== LEGAL DOMAIN TYPES =====;
+}
 
 export interface LegalCase {
   id: string;
@@ -183,7 +186,8 @@ export interface LegalClause {
   analysis?: string;
 }
 
-// ===== USER & AUTHENTICATION TYPES =====
+// ===== USER & AUTHENTICATION TYPES =====;
+}
 
 export interface User {
   id: string;
@@ -197,12 +201,12 @@ export interface User {
   preferences?: UserPreferences;
   createdAt: Date;
   lastLogin?: Date;
-  isActive: boolean;
+  isActive: boolean;,
 }
 
 export interface Permission {
   resource: string;
-  actions: ('read' | 'write' | 'delete' | 'admin')[];
+  actions: ('read' | 'write' | 'delete' | 'admin')[];,
 }
 
 export interface UserPreferences {
@@ -212,11 +216,11 @@ export interface UserPreferences {
   notifications: {
     email: boolean;
     push: boolean;
-    sms: boolean;
+    sms: boolean;,
   };
   ui: {
     density: 'compact' | 'comfortable' | 'spacious';
-    sidebarCollapsed: boolean;
+    sidebarCollapsed: boolean;,
   };
 }
 
@@ -228,10 +232,11 @@ export interface AuthSession {
   expiresAt: Date;
   ipAddress?: string;
   userAgent?: string;
-  isActive: boolean;
+  isActive: boolean;,
 }
 
-// ===== API & RESPONSE TYPES =====
+// ===== API & RESPONSE TYPES =====;
+}
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -250,7 +255,7 @@ export interface PaginatedResponse<T = any> {
     total: number;
     pages: number;
     hasNext: boolean;
-    hasPrev: boolean;
+    hasPrev: boolean;,
   };
 }
 
@@ -270,18 +275,19 @@ export interface ApiError {
   validationErrors?: ValidationError[];
 }
 
-// ===== SEARCH & FILTERING TYPES =====
+// ===== SEARCH & FILTERING TYPES =====;
+}
 
 export interface SearchOptions {
   query?: string;
   filters?: Record<string, any>;
   sort?: {
     field: string;
-    direction: 'asc' | 'desc';
+    direction: 'asc' | 'desc';,
   };
   pagination?: {
     page: number;
-    limit: number;
+    limit: number;,
   };
 }
 
@@ -301,7 +307,8 @@ export interface SearchResponse<T = any> {
   suggestions?: string[];
 }
 
-// ===== CACHING & PERFORMANCE TYPES =====
+// ===== CACHING & PERFORMANCE TYPES =====;
+}
 
 export interface CacheEntry<T = any> {
   key: string;
@@ -322,10 +329,11 @@ export interface CacheStats {
   hitRate: number;
   missRate: number;
   evictionCount: number;
-  averageAccessTime: number;
+  averageAccessTime: number;,
 }
 
-// ===== AI ANALYSIS TYPES =====
+// ===== AI ANALYSIS TYPES =====;
+}
 
 export interface AIAnalysisRequest {
   content: string;
@@ -352,14 +360,15 @@ export interface AIAnalysisResponse {
     entities?: LegalEntity[];
     sentiment?: {
       score: number;
-      label: 'positive' | 'negative' | 'neutral';
+      label: 'positive' | 'negative' | 'neutral';,
     };
     riskScore?: number;
     tags?: string[];
   };
 }
 
-// ===== XSTATE & WORKFLOW TYPES =====
+// ===== XSTATE & WORKFLOW TYPES =====;
+}
 
 export interface WorkflowContext {
   caseId?: string;
@@ -376,10 +385,11 @@ export interface WorkflowEvent {
   type: string;
   payload?: unknown;
   timestamp: Date;
-  userId: string;
+  userId: string;,
 }
 
-// ===== MCP & INTEGRATION TYPES =====
+// ===== MCP & INTEGRATION TYPES =====;
+}
 
 export interface MCPRequest {
   tool: string;
@@ -403,10 +413,11 @@ export interface Context7Integration {
   bestPractices: boolean;
   integrationSuggestions: boolean;
   libraryDocs: boolean;
-  performanceOptimization: boolean;
+  performanceOptimization: boolean;,
 }
 
-// ===== FORM & VALIDATION TYPES =====
+// ===== FORM & VALIDATION TYPES =====;
+}
 
 export interface FormField {
   name: string;
@@ -429,7 +440,8 @@ export interface FormSchema {
   validation?: Record<string, any>;
 }
 
-// ===== COMPONENT PROPS TYPES =====
+// ===== COMPONENT PROPS TYPES =====;
+}
 
 export interface BaseComponentProps {
   class?: string;

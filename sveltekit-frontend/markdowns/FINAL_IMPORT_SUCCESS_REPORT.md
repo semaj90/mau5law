@@ -33,10 +33,10 @@ Many components import from non-existent UI module files:
 
 ```typescript
 // ❌ These files don't exist:
-import { Button } from "../../../lib/components/ui/button.js";
-import { Badge } from "../../../lib/components/ui/badge.js";
-import { Input } from "../../../lib/components/ui/input.js";
-import * as Dialog from "../../../lib/components/ui/dialog.js";
+import { Button } from '../../../lib/components/ui/button.js';
+import { Badge } from '../../../lib/components/ui/badge.js';
+import { Input } from '../../../lib/components/ui/input.js';
+import * as Dialog from '../../../lib/components/ui/dialog.js';
 ```
 
 **SOLUTION**: Either:
@@ -46,8 +46,8 @@ import * as Dialog from "../../../lib/components/ui/dialog.js";
 
 ```typescript
 // ✅ Should be:
-import Button from "../../../lib/components/ui/Button.svelte";
-import Badge from "../../../lib/components/ui/Badge.svelte";
+import Button from '../../../lib/components/ui/Button.svelte';
+import Badge from '../../../lib/components/ui/Badge.svelte';
 ```
 
 ### 2. Type Definition Issues (MEDIUM PRIORITY)
@@ -102,7 +102,8 @@ The application can now be tested! Run:
 npm run dev
 ```
 
-The dev server should start successfully. Remaining errors are runtime/component issues, not build-breaking problems.
+The dev server should start successfully. Remaining errors are runtime/component issues, not
+build-breaking problems.
 
 ## 🎉 SUCCESS METRICS
 
@@ -112,4 +113,5 @@ The dev server should start successfully. Remaining errors are runtime/component
 - ✅ Cleared all build-breaking file issues
 - ✅ Made application runnable for testing
 
-The foundational import and routing issues have been resolved. The app is now in a testable state with remaining issues being normal development polish items!
+The foundational import and routing issues have been resolved. The app is now in a testable state
+with remaining issues being normal development polish items!

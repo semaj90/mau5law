@@ -447,7 +447,7 @@
                 <input
                   type="text"
                   bind:value={currentMessage}
-                  on:keydown={handleKeydown}
+                  onkeydown={handleKeydown}
                   placeholder="Ask 9S about your investigation..."
                   class="nes-input chat-input-field"
                   disabled={isProcessing}

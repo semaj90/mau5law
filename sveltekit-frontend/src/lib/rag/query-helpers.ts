@@ -1,4 +1,5 @@
 import type { ChatMessage, RAGContext } from "$lib/types/ai-chat";
+}
 
 export interface RankedChunk {
   id: string;
@@ -11,7 +12,7 @@ export interface RankedChunk {
 export interface IntentPoint {
   x: number;
   y: number;
-  intent: string;
+  intent: string;,
 }
 
 export interface RAGInputs {
@@ -79,7 +80,7 @@ function detectIntent(queryText: string): string {
 }
 
 export function normalize(vector: number[]): number[] {
-  const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
+  const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0);
   return magnitude > 0 ? vector.map(val => val / magnitude) : vector;
 }
 
@@ -93,14 +94,14 @@ export class SOMGrid {
     this.height = height;
     this.grid = [];
 
-    // Initialize grid
+    // Initialize grid;
     for (let i = 0; i < height; i++) {
       this.grid[i] = [];
       for (let j = 0; j < width; j++) {
         this.grid[i][j] = {
           x: j,
           y: i,
-          intent: "unknown"
+          intent: "unknown",
         };
       }
     }
@@ -114,7 +115,7 @@ export class SOMGrid {
   train(vectors: number[][], intents: string[]): void {
     // Lightweight placeholder: map provided intents onto grid cells so parameters are used.
     // This assigns intents to grid positions deterministically by index; a real SOM would
-    // update neuron weights based on vector similarity.
+    // update neuron weights based on vector similarity.;
     if (!Array.isArray(vectors) || vectors.length === 0) {
       console.log("No vectors provided for SOM training");
       return;
@@ -124,7 +125,7 @@ export class SOMGrid {
       console.log("No intents provided; defaulting to 'unknown'");
     }
 
-    const count = Math.min(vectors.length, Math.max(intents.length, 1));
+    const count = Math.min(vectors.length, Math.max(intents.length, 1);
     for (let i = 0; i < count; i++) {
       const intent = intents[i] ?? "unknown";
       const x = i % this.width;

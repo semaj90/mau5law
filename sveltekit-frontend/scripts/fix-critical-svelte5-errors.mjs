@@ -13,83 +13,83 @@ const criticalFixes = [
   {
     pattern: /import\s+\{\s*\$state,?\s*\$derived,?\s*\$effect,?\s*\}\s+from\s+['"]svelte['"]/g,
     replacement: '// Svelte 5 runes are global - no import needed',
-    description: 'Remove invalid $state imports'
+    description: 'Remove invalid $state imports',
   },
-  
+
   // Fix $ prefix variables in imports
   {
     pattern: /import\s+\{[^}]*\$[^}]+\}\s+from/g,
-    replacement: match => {
+    replacement: (match) => {
       return match.replace(/\$\w+,?\s*/g, '');
     },
-    description: 'Remove $ prefix from imports'
+    description: 'Remove $ prefix from imports',
   },
-  
+
   // Fix duplicate attributes
   {
     pattern: /(\w+)=["'][^"']*["']\s+\1=["'][^"']*["']/g,
-    replacement: match => {
+    replacement: (match) => {
       const parts = match.split(/\s+/);
       return parts[0]; // Keep only the first occurrence
     },
-    description: 'Remove duplicate attributes'
+    description: 'Remove duplicate attributes',
   },
-  
+
   // Fix legacy reactive statements
   {
     pattern: /\$:\s*([^;]+);/g,
     replacement: '// TODO: Convert to $derived: $1',
-    description: 'Comment out legacy reactive statements'
+    description: 'Comment out legacy reactive statements',
   },
-  
+
   // Fix reserved words as variables
   {
     pattern: /\bcase\s*:/g,
     replacement: 'caseItem:',
-    description: 'Fix reserved word "case"'
+    description: 'Fix reserved word "case"',
   },
-  
+
   // Fix invalid element names
   {
     pattern: /<(\$\w+)>/g,
     replacement: '<div><!-- Invalid element: $1 -->',
-    description: 'Fix invalid element names'
+    description: 'Fix invalid element names',
   },
-  
+
   // Fix unclosed script tags
   {
     pattern: /<script[^>]*>(?!.*<\/script>)/g,
-    replacement: match => match + '\n</script>',
-    description: 'Close unclosed script tags'
+    replacement: (match) => match + '\n</script>',
+    description: 'Close unclosed script tags',
   },
-  
+
   // Fix invalid closing tags
   {
     pattern: /<\/([^>]+)>\s*attempted to close an element that was not open/g,
     replacement: '<!-- Invalid closing tag removed -->',
-    description: 'Fix invalid closing tags'
+    description: 'Fix invalid closing tags',
   },
-  
+
   // Fix unexpected tokens in script
   {
     pattern: /\blet\s+(\w+)\s*=\s*\{[^}]*\blet\s+/g,
-    replacement: match => match.replace(/\blet\s+(?![\w$])/, 'const '),
-    description: 'Fix nested let declarations'
+    replacement: (match) => match.replace(/\blet\s+(?![\w$])/, 'const '),
+    description: 'Fix nested let declarations',
   },
-  
+
   // Fix onclick|stopPropagation syntax
   {
     pattern: /onclick\|stopPropagation/g,
     replacement: 'onclick',
-    description: 'Fix invalid event syntax'
-  }
+    description: 'Fix invalid event syntax',
+  },
 ];
 
 function fixSvelteFile(filePath, content) {
   let fixed = content;
   let changes = 0;
-  
-  criticalFixes.forEach(fix => {
+
+  criticalFixes.forEach((fix) => {
     const before = fixed;
     if (typeof fix.replacement === 'function') {
       fixed = fixed.replace(fix.pattern, fix.replacement);
@@ -101,31 +101,33 @@ function fixSvelteFile(filePath, content) {
       console.log(`  ✓ ${fix.description}`);
     }
   });
-  
+
   return { content: fixed, changes };
 }
 
 function processDirectory(dir) {
   let totalChanges = 0;
   let filesFixed = 0;
-  
+
   function walkDir(currentPath) {
     const items = fs.readdirSync(currentPath);
-    
+
     for (const item of items) {
       const itemPath = path.join(currentPath, item);
       const stat = fs.statSync(itemPath);
-      
+
       if (stat.isDirectory() && !item.startsWith('.') && item !== 'node_modules') {
         walkDir(itemPath);
       } else if (item.endsWith('.svelte')) {
         try {
           const content = fs.readFileSync(itemPath, 'utf8');
           const result = fixSvelteFile(itemPath, content);
-          
+
           if (result.changes > 0) {
             fs.writeFileSync(itemPath, result.content, 'utf8');
-            console.log(`📝 Fixed ${result.changes} critical errors in ${path.relative(dir, itemPath)}`);
+            console.log(
+              `📝 Fixed ${result.changes} critical errors in ${path.relative(dir, itemPath)}`
+            );
             filesFixed++;
             totalChanges += result.changes;
           }
@@ -135,7 +137,7 @@ function processDirectory(dir) {
       }
     }
   }
-  
+
   walkDir(dir);
   return { totalChanges, filesFixed };
 }

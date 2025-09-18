@@ -2,6 +2,7 @@ import crypto from "crypto";
 
 // Real-time evidence store with WebSocket/SSE integration and local undo
 import { writable, derived, get } from "svelte/store";
+}
 
 export interface Evidence {
   id: string;
@@ -20,7 +21,7 @@ export interface Evidence {
   classification?: {
     category: string;
     relevance: number;
-    confidence: number;
+    confidence: number;,
   };
   timeline?: {
     createdAt: string;
@@ -78,7 +79,7 @@ class RealTimeEvidenceStore {
       this.loadFromLocalStorage();
     }
   }
-  // Connection Management
+  // Connection Management;
   private async initializeConnection() {
     try {
       // Try WebSocket first
@@ -101,9 +102,8 @@ class RealTimeEvidenceStore {
           this.isConnected.set(true);
           this.reconnectAttempts = 0;
 
-          // Subscribe to evidence updates
-          this.websocket?.send(
-            JSON.stringify({
+          // Subscribe to evidence updates;
+          this.websocket?.send(JSON.stringify({
               type: "subscribe",
               channels: ["evidence_update", "case_update"],
             }),
@@ -185,7 +185,7 @@ class RealTimeEvidenceStore {
       console.error("SSE connection failed:", error);
     }
   }
-  // Real-time update handling
+  // Real-time update handling;
   private handleRealtimeUpdate(message: any) {
     if (message.channel === "evidence_update") {
       const { type, evidenceId, data, changes, userId } = message.data;
@@ -205,14 +205,14 @@ class RealTimeEvidenceStore {
   }
   private handleEvidenceCreated(evidenceData: Evidence, userId?: string) {
     this.evidence.update((items) => {
-      // Check if evidence already exists (avoid duplicates)
+      // Check if evidence already exists (avoid duplicates);
       if (items.find((item) => (item as { id?: any; caseId?: any }).id === evidenceData.id)) {
         return items;
       }
       // Add to local cache
       this.localCache.set(evidenceData.id, evidenceData);
 
-      // Add operation to history
+      // Add operation to history;
       this.addToHistory({
         id: crypto.randomUUID(),
         type: "CREATE",
@@ -243,7 +243,7 @@ class RealTimeEvidenceStore {
       // Update local cache
       this.localCache.set(evidenceId, newState);
 
-      // Add operation to history
+      // Add operation to history;
       this.addToHistory({
         id: crypto.randomUUID(),
         type: "UPDATE",
@@ -257,7 +257,7 @@ class RealTimeEvidenceStore {
 
       items[index] = newState;
       return [...items];
-    });
+    ,});
 
     this.saveToLocalStorage();
   }
@@ -271,7 +271,7 @@ class RealTimeEvidenceStore {
       // Remove from local cache
       this.localCache.delete(evidenceId);
 
-      // Add operation to history
+      // Add operation to history;
       this.addToHistory({
         id: crypto.randomUUID(),
         type: "DELETE",
@@ -303,10 +303,10 @@ class RealTimeEvidenceStore {
     };
 
     // Optimistic update
-    this.handleEvidenceCreated(newEvidence, this.getCurrentUserId());
+    this.handleEvidenceCreated(newEvidence, this.getCurrentUserId();
 
     try {
-      // Send to server
+      // Send to server;
       const response = await fetch("/api/evidence", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -335,10 +335,10 @@ class RealTimeEvidenceStore {
       throw new Error(`Evidence ${evidenceId} not found`);
     }
     // Optimistic update
-    this.handleEvidenceUpdated(evidenceId, changes, this.getCurrentUserId());
+    this.handleEvidenceUpdated(evidenceId, changes, this.getCurrentUserId();
 
     try {
-      // Send to server
+      // Send to server;
       const response = await fetch(`/api/evidence/${evidenceId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -366,10 +366,10 @@ class RealTimeEvidenceStore {
       throw new Error(`Evidence ${evidenceId} not found`);
     }
     // Optimistic update
-    this.handleEvidenceDeleted(evidenceId, this.getCurrentUserId());
+    this.handleEvidenceDeleted(evidenceId, this.getCurrentUserId();
 
     try {
-      // Send to server
+      // Send to server;
       const response = await fetch(`/api/evidence/${evidenceId}`, {
         method: "DELETE",
       });
@@ -379,22 +379,22 @@ class RealTimeEvidenceStore {
       }
     } catch (error: any) {
       // Revert optimistic update on error
-      this.handleEvidenceCreated(currentEvidence, this.getCurrentUserId());
+      this.handleEvidenceCreated(currentEvidence, this.getCurrentUserId();
       throw error;
     }
   }
-  // Undo/Redo functionality
+  // Undo/Redo functionality;
   private addToHistory(operation: EvidenceOperation) {
     this.operationHistory.update((history) => {
       const currentIndex = get(this.currentHistoryIndex);
 
-      // Remove any operations after current index (when undoing then doing new operation)
+      // Remove any operations after current index (when undoing then doing new operation);
       if (currentIndex < history.length - 1) {
         history = history.slice(0, currentIndex + 1);
       }
       history.push(operation);
 
-      // Limit history size (keep last 100 operations)
+      // Limit history size (keep last 100 operations);
       if (history.length > 100) {
         history = history.slice(-100);
       }
@@ -420,16 +420,16 @@ class RealTimeEvidenceStore {
     const currentIndex = get(this.currentHistoryIndex);
     const operation = history[currentIndex];
 
-    // Reverse the operation
+    // Reverse the operation;
     switch (operation.type) {
-      case "CREATE":
+      case "CREATE":;
         if (operation.newState) {
           this.evidence.update((items) =>
             items.filter((item) => (item as { id?: any; caseId?: any }).id !== operation.evidenceId),
           );
         }
         break;
-      case "UPDATE":
+      case "UPDATE":;
         if (operation.previousState) {
           this.evidence.update((items) => {
             const index = items.findIndex(
@@ -439,10 +439,10 @@ class RealTimeEvidenceStore {
               items[index] = operation.previousState!;
             }
             return [...items];
-          });
+          ,});
         }
         break;
-      case "DELETE":
+      case "DELETE":;
         if (operation.previousState) {
           this.evidence.update((items) => [...items, operation.previousState!]);
         }
@@ -459,14 +459,14 @@ class RealTimeEvidenceStore {
     const currentIndex = get(this.currentHistoryIndex);
     const operation = history[currentIndex + 1];
 
-    // Replay the operation
+    // Replay the operation;
     switch (operation.type) {
-      case "CREATE":
+      case "CREATE":;
         if (operation.newState) {
           this.evidence.update((items) => [...items, operation.newState!]);
         }
         break;
-      case "UPDATE":
+      case "UPDATE":;
         if (operation.newState) {
           this.evidence.update((items) => {
             const index = items.findIndex(
@@ -476,7 +476,7 @@ class RealTimeEvidenceStore {
               items[index] = operation.newState!;
             }
             return [...items];
-          });
+          ,});
         }
         break;
       case "DELETE":
@@ -489,7 +489,7 @@ class RealTimeEvidenceStore {
     this.saveToLocalStorage();
     return true;
   }
-  // Local storage persistence
+  // Local storage persistence;
   private saveToLocalStorage() {
     if (!browser) return;
 
@@ -501,7 +501,7 @@ class RealTimeEvidenceStore {
         lastUpdated: new Date().toISOString(),
       };
 
-      localStorage.setItem("evidenceStore", JSON.stringify(data));
+      localStorage.setItem("evidenceStore", JSON.stringify(data);
     } catch (error: any) {
       console.error("Failed to save to localStorage:", error);
     }
@@ -525,7 +525,7 @@ class RealTimeEvidenceStore {
           this.operationHistory.set((data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).operationHistory || []);
           this.currentHistoryIndex.set((data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).currentHistoryIndex || -1);
 
-          // Rebuild local cache
+          // Rebuild local cache;
           (data as { lastUpdated?: any; evidence?: any; operationHistory?: any; currentHistoryIndex?: any }).evidence?.forEach((item: Evidence) => {
             this.localCache.set((item as { id?: any; caseId?: any }).id, item);
           });
@@ -535,7 +535,7 @@ class RealTimeEvidenceStore {
       console.error("Failed to load from localStorage:", error);
     }
   }
-  // Utility methods
+  // Utility methods;
   private getCurrentUserId(): string {
     // In a real app, get from auth store or session
     return "current-user-id";
@@ -551,10 +551,10 @@ class RealTimeEvidenceStore {
     }
     this.isConnected.set(false);
   }
-  // Derived stores for convenience
+  // Derived stores for convenience;
   public evidenceById = derived(this.evidence, (items) => {
     const map = new Map<string, Evidence>();
-    items.forEach((item) => map.set((item as { id?: any; caseId?: any }).id, item));
+    items.forEach((item) => map.set((item as { id?: any; caseId?: any }).id, item);
     return map;
   });
 

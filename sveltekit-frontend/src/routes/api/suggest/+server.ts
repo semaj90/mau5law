@@ -8,6 +8,7 @@ import { users, cases, evidence } from '$lib/server/db/schema-unified.js';
 import { generateEnhancedEmbedding } from '$lib/server/ai/embeddings-enhanced.js';
 import { or, ilike, sql } from 'drizzle-orm';
 import { URL } from "url";
+}
 
 export interface Suggestion {
   label: string;
@@ -16,14 +17,14 @@ export interface Suggestion {
   score: number;
   description: string;
   icon: string;
-  tags: string[];
+  tags: string[];,
 }
 
 export interface SuggestResponse {
   suggestions: Suggestion[];
   correctedQuery: string;
   explanation: string;
-  processingTimeMs: number;
+  processingTimeMs: number;,
 }
 
 // Mock data for development - replace with database queries
@@ -72,20 +73,20 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
           suggestions: serviceData.suggestions || [],
           correctedQuery: serviceData.corrected_query || query,
           explanation: serviceData.explanation || 'Suggestions from recommendations service',
-          processingTimeMs: Date.now() - startTime
+          processingTimeMs: Date.now() - startTime,
         });
       }
     } catch (e: any) {
       console.log('Recommendations service not available, using fallback');
     }
 
-    // Enhanced database search with fuzzy fallback
+    // Enhanced database search with fuzzy fallback;
     if (!useService) {
       // Search database first
       const dbSuggestions = await searchDatabase(query, contextType, limit);
       suggestions.push(...dbSuggestions);
       
-      // If not enough results from database, use fuzzy search on mock data
+      // If not enough results from database, use fuzzy search on mock data;
       if (suggestions.length < limit) {
         const fuzzySuggestions = await searchWithFuzzy(query, contextType, limit - suggestions.length);
         suggestions.push(...fuzzySuggestions);
@@ -103,7 +104,7 @@ export const GET: RequestHandler = async ({ url, fetch }) => {
       suggestions: limitedSuggestions,
       correctedQuery,
       explanation: `Found ${limitedSuggestions.length} suggestions for "${query}"`,
-      processingTimeMs: Date.now() - startTime
+      processingTimeMs: Date.now() - startTime,
     };
 
     return json(response);
@@ -134,7 +135,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     locals: Record<string, any>,
     platform: undefined,
     isDataRequest: false,
-    isSubRequest: false
+    isSubRequest: false,
   } as any);
 };
 
@@ -143,14 +144,14 @@ async function searchDatabase(query: string, contextType: string, limit: number)
   const queryLower = query.toLowerCase();
 
   try {
-    // Search people in database
+    // Search people in database;
     if (contextType === 'PERSON' || contextType === 'GENERAL') {
-      const people = await db
+      const people = await db;
         .select({
           id: users.id,
           displayName: users.displayName,
           email: users.email,
-          role: users.role
+          role: users.role,
         })
         .from(users)
         .where(
@@ -160,11 +161,11 @@ async function searchDatabase(query: string, contextType: string, limit: number)
             ilike(users.role, `%${queryLower}%`)
           )
         )
-        .limit(Math.ceil(limit / 3));
+        .limit(Math.ceil(limit / 3);
 
       people.forEach(person => {
         const name = person.displayName || person.email || 'Unknown User';
-        const similarity = calculateSimilarity(queryLower, name.toLowerCase());
+        const similarity = calculateSimilarity(queryLower, name.toLowerCase();
         if (similarity > 0.3) {
           suggestions.push({
             label: name,
@@ -179,15 +180,15 @@ async function searchDatabase(query: string, contextType: string, limit: number)
       });
     }
 
-    // Search cases in database
+    // Search cases in database;
     if (contextType === 'CASE' || contextType === 'GENERAL') {
-      const dbCases = await db
+      const dbCases = await db;
         .select({
           id: cases.id,
           title: cases.title,
           description: cases.description,
           status: cases.status,
-          caseType: cases.caseType
+          caseType: cases.caseType,
         })
         .from(cases)
         .where(
@@ -197,7 +198,7 @@ async function searchDatabase(query: string, contextType: string, limit: number)
             ilike(cases.caseType, `%${queryLower}%`)
           )
         )
-        .limit(Math.ceil(limit / 3));
+        .limit(Math.ceil(limit / 3);
 
       dbCases.forEach(caseItem => {
         const similarity = Math.max(
@@ -218,15 +219,15 @@ async function searchDatabase(query: string, contextType: string, limit: number)
       });
     }
 
-    // Search evidence/documents in database
+    // Search evidence/documents in database;
     if (contextType === 'DOCUMENT' || contextType === 'EVIDENCE' || contextType === 'GENERAL') {
-      const evidenceItems = await db
+      const evidenceItems = await db;
         .select({
           id: evidence.id,
           title: evidence.title,
           description: evidence.description,
           evidenceType: evidence.evidenceType,
-          fileName: evidence.fileName
+          fileName: evidence.fileName,
         })
         .from(evidence)
         .where(
@@ -237,7 +238,7 @@ async function searchDatabase(query: string, contextType: string, limit: number)
             ilike(evidence.fileName, `%${queryLower}%`)
           )
         )
-        .limit(Math.ceil(limit / 3));
+        .limit(Math.ceil(limit / 3);
 
       evidenceItems.forEach(evidenceItem => {
         const similarity = Math.max(
@@ -270,15 +271,15 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
   const suggestions: Suggestion[] = [];
 
   try {
-    // Search people
+    // Search people;
     if (contextType === 'PERSON' || contextType === 'GENERAL') {
       const peopleFuse = new Fuse(mockPeople, {
         keys: ['name', 'email', 'specialization'],
         threshold: 0.4,
-        includeScore: true
+        includeScore: true,
       });
       
-      const peopleResults = peopleFuse.search(query).slice(0, Math.ceil(limit / 3));
+      const peopleResults = peopleFuse.search(query).slice(0, Math.ceil(limit / 3);
       peopleResults.forEach(result => {
         suggestions.push({
           label: (result as { item?: any; score?: any }).item.name,
@@ -292,15 +293,15 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
       });
     }
 
-    // Search cases
+    // Search cases;
     if (contextType === 'CASE' || contextType === 'GENERAL') {
       const casesFuse = new Fuse(mockCases, {
         keys: ['title', 'description'],
         threshold: 0.5,
-        includeScore: true
+        includeScore: true,
       });
       
-      const caseResults = casesFuse.search(query).slice(0, Math.ceil(limit / 3));
+      const caseResults = casesFuse.search(query).slice(0, Math.ceil(limit / 3);
       caseResults.forEach(result => {
         suggestions.push({
           label: (result as { item?: any; score?: any }).item.title,
@@ -314,15 +315,15 @@ async function searchWithFuzzy(query: string, contextType: string, limit: number
       });
     }
 
-    // Search documents
+    // Search documents;
     if (contextType === 'DOCUMENT' || contextType === 'GENERAL') {
       const docsFuse = new Fuse(mockDocuments, {
         keys: ['title', 'type', 'category'],
         threshold: 0.4,
-        includeScore: true
+        includeScore: true,
       });
       
-      const docResults = docsFuse.search(query).slice(0, Math.ceil(limit / 3));
+      const docResults = docsFuse.search(query).slice(0, Math.ceil(limit / 3);
       docResults.forEach(result => {
         suggestions.push({
           label: (result as { item?: any; score?: any }).item.title,
@@ -356,7 +357,7 @@ function calculateSimilarity(str1: string, str2: string): number {
 }
 
 function levenshteinDistance(str1: string, str2: string): number {
-  const matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null));
+  const matrix = Array(str2.length + 1).fill(null).map(() => Array(str1.length + 1).fill(null);
   
   for (let i = 0; i <= str1.length; i++) {
     matrix[0][i] = i;

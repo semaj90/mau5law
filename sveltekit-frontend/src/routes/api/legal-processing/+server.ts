@@ -11,7 +11,7 @@ import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
 import { eq, desc } from 'drizzle-orm';
 import { langExtractService } from '$lib/services/langextract-ollama-service.js';
 
-// Types for API requests/responses
+// Types for API requests/responses;
 interface ProcessDocumentRequest {
   text: string;
   documentType: 'contract' | 'case' | 'statute' | 'brief';
@@ -27,19 +27,19 @@ interface ProcessDocumentResponse {
   contractTerms: any[];
   processingTime: number;
   cacheHit: boolean;
-  sessionId: string;
+  sessionId: string;,
 }
 
 interface DocumentSessionResponse {
   id: string;
   documents: Array<any>;
-  totalProcessed: number;
+  totalProcessed: number;,
 }
 
 /**
  * GET /api/legal-processing
  * Retrieve recent document processing sessions
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const sessionId = url.searchParams.get('sessionId');
@@ -47,38 +47,38 @@ export const GET: RequestHandler = async ({ url }) => {
 
     if (sessionId) {
       // Get specific session with documents
-      const documents = await db
+      const documents = await db;
         .select({
           id: legalDocuments.id,
           summary: legalDocuments.summary,
           keyTerms: legalDocuments.keyTerms,
-          createdAt: legalDocuments.createdAt
+          createdAt: legalDocuments.createdAt,
         })
         .from(legalDocuments)
-        .where(eq(legalDocuments.sessionId, sessionId))
-        .orderBy(desc(legalDocuments.createdAt))
+        .where(eq(legalDocuments.sessionId, sessionId)
+        .orderBy(desc(legalDocuments.createdAt)
         .limit(limit);
 
       const response: DocumentSessionResponse = {
         id: sessionId,
         documents: documents.map(doc => ({
           ...doc,
-          createdAt: doc.createdAt?.toISOString() || new Date().toISOString()
+          createdAt: doc.createdAt?.toISOString() || new Date().toISOString(),
         })),
-        totalProcessed: documents.length
+        totalProcessed: documents.length,
       };
 
       return json(response);
     } else {
       // Get recent sessions
-      const recentSessions = await db
+      const recentSessions = await db;
         .select({
           sessionId: legalDocuments.sessionId,
           count: legalDocuments.id, // Will be aggregated
-          lastProcessed: legalDocuments.createdAt
+          lastProcessed: legalDocuments.createdAt,
         })
         .from(legalDocuments)
-        .orderBy(desc(legalDocuments.createdAt))
+        .orderBy(desc(legalDocuments.createdAt)
         .limit(limit);
 
       return json({ sessions: recentSessions });
@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('Failed to fetch legal processing data:', error);
     return json(
-      { error: 'Failed to fetch processing data' },
+      { error: 'Failed to fetch processing data' },)
       { status: 500 }
     );
   }
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ url }) => {
 /**
  * POST /api/legal-processing
  * Process a legal document and store results in database
- */
+ */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: ProcessDocumentRequest = await request.json();
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!text?.trim()) {
       return json(
-        { error: 'Document text is required' },
+        { error: 'Document text is required' },)
         { status: 400 }
       );
     }
@@ -117,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const isAvailable = await langExtractService.isOllamaAvailable();
     if (!isAvailable) {
       return json(
-        { error: 'LangChain service not available' },
+        { error: 'LangChain service not available' },)
         { status: 503 }
       );
     }
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Store in database
     const [documentRecord] = await db
-      .insert(legalDocuments)
+      .insert(legalDocuments);
       .values({
         id: crypto.randomUUID(),
         sessionId: finalSessionId,
@@ -167,29 +167,29 @@ export const POST: RequestHandler = async ({ request }) => {
           processingTime,
           model: 'gemma3-legal',
           cacheHit: false,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .returning();
 
     // Update or create RAG session
     await db
-      .insert(ragSessions)
+      .insert(ragSessions);
       .values({
         id: finalSessionId,
         sessionName: `Legal Analysis - ${new Date().toLocaleDateString()}`,
         isActive: true,
         messageCount: 1,
         createdAt: new Date(),
-        updatedAt: new Date()
-      })
+        updatedAt: new Date(),
+      });
       .onConflictDoUpdate({
         target: ragSessions.id,
         set: {
           messageCount: ragSessions.messageCount + 1,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         }
       });
 
@@ -201,18 +201,17 @@ export const POST: RequestHandler = async ({ request }) => {
       contractTerms,
       processingTime,
       cacheHit: false,
-      sessionId: finalSessionId
+      sessionId: finalSessionId,
     };
 
     return json(response);
 
   } catch (error) {
     console.error('Document processing failed:', error);
-    return json(
-      { 
+    return json({ 
         error: 'Document processing failed',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },
+        details: error instanceof Error ? error.message: 'Unknown error',
+      },)
       { status: 500 }
     );
   }
@@ -221,7 +220,7 @@ export const POST: RequestHandler = async ({ request }) => {
 /**
  * PUT /api/legal-processing/[id]
  * Update document processing results
- */
+ */;
 export const PUT: RequestHandler = async ({ request, params }) => {
   try {
     const documentId = params.id;
@@ -232,12 +231,12 @@ export const PUT: RequestHandler = async ({ request, params }) => {
     const updates = await request.json();
     
     const [updatedDocument] = await db
-      .update(legalDocuments)
+      .update(legalDocuments);
       .set({
         ...updates,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
-      .where(eq(legalDocuments.id, documentId))
+      .where(eq(legalDocuments.id, documentId)
       .returning();
 
     if (!updatedDocument) {
@@ -249,7 +248,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
   } catch (error) {
     console.error('Failed to update document:', error);
     return json(
-      { error: 'Failed to update document' },
+      { error: 'Failed to update document' },)
       { status: 500 }
     );
   }
@@ -258,7 +257,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
 /**
  * DELETE /api/legal-processing/[id]
  * Delete document processing results
- */
+ */;
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
     const documentId = params.id;
@@ -268,14 +267,14 @@ export const DELETE: RequestHandler = async ({ params }) => {
 
     await db
       .delete(legalDocuments)
-      .where(eq(legalDocuments.id, documentId));
+      .where(eq(legalDocuments.id, documentId);
 
     return json({ success: true });
 
   } catch (error) {
     console.error('Failed to delete document:', error);
     return json(
-      { error: 'Failed to delete document' },
+      { error: 'Failed to delete document' },)
       { status: 500 }
     );
   }

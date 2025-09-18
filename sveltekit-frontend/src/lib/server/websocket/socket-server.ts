@@ -3,11 +3,12 @@ import type { WebSocket } from "ws";
 // WebSocket server for real-time updates
 import { WebSocketServer } from "ws";
 import { createClient } from '$lib/shims/redis-shim';
+}
 
 export interface ClientConnection {
   ws: WebSocket;
   userId?: string;
-  subscriptions: Set<string>;
+  subscriptions: Set<string>;,
 }
 class RealTimeServer {
   private wss: WebSocketServer;
@@ -23,7 +24,7 @@ class RealTimeServer {
   }
   private async initializeRedis() {
     try {
-      // Create Redis clients
+      // Create Redis clients;
       this.redisClient = await createClient({
         url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
       });
@@ -58,7 +59,7 @@ class RealTimeServer {
 
     for (const channel of channels) {
       await this.redisSub.subscribe(channel, (message) => {
-        this.broadcastToSubscribers(channel, message));
+        this.broadcastToSubscribers(channel, message);
       });
     }
   }
@@ -73,25 +74,24 @@ class RealTimeServer {
       this.clients.set(clientId, client);
       console.log(`📡 Client connected: ${clientId}`);
 
-      // Handle client messages
+      // Handle client messages;
       ws.on('message', (data: Buffer) => {
         try {
-          const message = JSON.parse(data.toString());
+          const message = JSON.parse(data.toString();
           this.handleClientMessage(clientId, message);
         } catch (error: any) {
           console.error('Invalid message format:', error);
         }
       });
 
-      // Handle client disconnect
+      // Handle client disconnect;
       ws.on('close', () => {
         this.clients.delete(clientId);
         console.log(`📡 Client disconnected: ${clientId}`);
       });
 
-      // Send welcome message
-      ws.send(
-        JSON.stringify({
+      // Send welcome message;
+      ws.send(JSON.stringify({
           type: 'connection',
           clientId,
           timestamp: new Date().toISOString(),
@@ -111,14 +111,14 @@ class RealTimeServer {
       case 'subscribe':
         const { channels } = message;
         if (Array.isArray(channels)) {
-          channels.forEach((channel) => client.subscriptions.add(channel));
+          channels.forEach((channel) => client.subscriptions.add(channel);
         }
         break;
 
       case 'unsubscribe':
         const { channels: unsubChannels } = message;
         if (Array.isArray(unsubChannels)) {
-          unsubChannels.forEach((channel) => client.subscriptions.delete(channel));
+          unsubChannels.forEach((channel) => client.subscriptions.delete(channel);
         }
         break;
 
@@ -173,10 +173,10 @@ class RealTimeServer {
     evidenceId: string,
     action: string,
     data: any,
-    userId?: string
+    userId?: string;
   ) {
     await this.publishUpdate(
-      'evidence_update',
+      'evidence_update',);
       {
         evidenceId,
         action, // 'created', 'updated', 'deleted'
@@ -187,7 +187,7 @@ class RealTimeServer {
   }
   public async publishCaseUpdate(caseId: string, action: string, data: any, userId?: string) {
     await this.publishUpdate(
-      'case_update',
+      'case_update',);
       {
         caseId,
         action,
@@ -198,7 +198,7 @@ class RealTimeServer {
   }
   public async publishCanvasUpdate(caseId: string, action: string, data: any, userId?: string) {
     await this.publishUpdate(
-      'canvas_update',
+      'canvas_update',);
       {
         caseId,
         action,
@@ -217,19 +217,19 @@ class RealTimeServer {
       uptime: process.uptime(),
     };
   }
-  // Additional methods for proper lifecycle management
+  // Additional methods for proper lifecycle management;
   public async initialize(): Promise<void> {
     await this.initializeRedis();
   }
   public async shutdown(): Promise<void> {
     try {
-      // Close all WebSocket connections
+      // Close all WebSocket connections;
       for (const [_, client] of this.clients) {
         client.ws.close();
       }
       this.clients.clear();
 
-      // Close Redis connections
+      // Close Redis connections;
       if (this.redisClient) {
         await this.redisClient.quit();
       }

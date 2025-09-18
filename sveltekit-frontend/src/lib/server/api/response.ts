@@ -23,12 +23,12 @@ export interface StandardApiResponse<T = any> {
       limit: number;
       total: number;
       hasNext: boolean;
-      hasPrev: boolean;
+      hasPrev: boolean;,
     };
   };
 }
 
-// Enhanced error class for API errors
+// Enhanced error class for API errors;
 export class ApiErrorClass extends Error {
   public readonly code: string;
   public readonly statusCode: number;
@@ -39,7 +39,7 @@ export class ApiErrorClass extends Error {
     message: string,
     code: string = 'UNKNOWN_ERROR',
     statusCode: number = 500,
-    details?: Record<string, any>
+    details?: Record<string, any>;
   ) {
     super(message);
     this.name = 'ApiError';
@@ -55,7 +55,7 @@ export function apiSuccess<T>(
   data: T,
   requestId: string = generateRequestId(),
   processingTime: number = 0,
-  pagination?: StandardApiResponse<T>['meta']['pagination']
+  pagination?: StandardApiResponse<T>['meta']['pagination'];
 ): Response {
   const response: StandardApiResponse<T> = {
     success: true,
@@ -65,7 +65,7 @@ export function apiSuccess<T>(
       requestId,
       processingTime,
       version: '2.0',
-      ...(pagination && { pagination }),
+      ...(pagination && { pagination ,}),
     },
   };
 
@@ -76,7 +76,7 @@ export function apiSuccess<T>(
 export function apiError(
   error: ApiErrorClass | Error | string,
   requestId: string = generateRequestId(),
-  processingTime: number = 0
+  processingTime: number = 0;
 ): Response {
   let apiErrorData: ApiError;
   let statusCode = 500;
@@ -121,10 +121,9 @@ export function apiError(
 export function validationError(
   validationResult: z.ZodError,
   requestId: string = generateRequestId(),
-  processingTime: number = 0
+  processingTime: number = 0;
 ): Response {
-  const details = validationResult.errors.reduce(
-    (acc, err) => {
+  const details = validationResult.errors.reduce((acc, err) => {
       const path = err.path.join('.');
       acc[path] = err.message;
       return acc;
@@ -173,7 +172,7 @@ export function buildFormSubmissionResult<T>(
   };
 }
 
-// Request ID generator
+// Request ID generator;
 function generateRequestId(): string {
   return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
@@ -181,7 +180,7 @@ function generateRequestId(): string {
 // API wrapper function for consistent error handling
 export async function withApiHandler<T>(
   handler: (event: RequestEvent) => Promise<T>,
-  event: RequestEvent
+  event: RequestEvent;
 ): Promise<Response> {
   const startTime = Date.now();
   const requestId = generateRequestId();
@@ -193,7 +192,7 @@ export async function withApiHandler<T>(
     const result = await handler(event);
     const processingTime = Date.now() - startTime;
 
-    // If the handler returned a Response, return it as-is
+    // If the handler returned a Response, return it as-is;
     if (result instanceof Response) {
       return result;
     }
@@ -203,7 +202,7 @@ export async function withApiHandler<T>(
   } catch (error: any) {
     const processingTime = Date.now() - startTime;
 
-    // Log error for monitoring
+    // Log error for monitoring;
     console.error(`API Error [${requestId}]:`, {
       error: error instanceof Error ? error.message: error,
       stack: error instanceof Error ? error.stack : undefined,
@@ -216,7 +215,7 @@ export async function withApiHandler<T>(
   }
 }
 
-// Common API errors
+// Common API errors;
 export const CommonErrors = {
   NotFound: (resource: string) =>
     new ApiErrorClass(`${resource} not found`, 'NOT_FOUND', 404),
@@ -251,7 +250,7 @@ export const CommonErrors = {
     new ApiErrorClass(
       `Validation failed for field '${field}': ${reason}`,
       'VALIDATION_ERROR',
-      400,
+      400,)
       { field, reason }
     )
 } as const;
@@ -259,7 +258,7 @@ export const CommonErrors = {
 // Type-safe request body parser with validation
 export async function parseRequestBody<T>(
   request: Request,
-  schema: z.ZodSchema<T>
+  schema: z.ZodSchema<T>;
 ): Promise<T> {
   try {
     const body = await request.json();
@@ -272,7 +271,7 @@ export async function parseRequestBody<T>(
   }
 }
 
-// Pagination helper
+// Pagination helper;
 export function createPagination(page: number, limit: number, total: number) {
   const offset = (page - 1) * limit;
   const hasNext = offset + limit < total;

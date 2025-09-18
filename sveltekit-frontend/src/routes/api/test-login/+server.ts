@@ -18,7 +18,7 @@ export async function POST({ request }): Promise<any> {
     const existingUser = await db
       .select()
       .from(users)
-      .where(eq(users.email, email))
+      .where(eq(users.email, email)
       .limit(1);
 
     if (!existingUser.length) {
@@ -26,7 +26,7 @@ export async function POST({ request }): Promise<any> {
       return json({ 
         success: false, 
         error: 'User not found',
-        step: 'user_lookup'
+        step: 'user_lookup',
       });
     }
 
@@ -38,7 +38,7 @@ export async function POST({ request }): Promise<any> {
       return json({ 
         success: false, 
         error: 'User has no password set',
-        step: 'password_check'
+        step: 'password_check',
       });
     }
 
@@ -47,7 +47,7 @@ export async function POST({ request }): Promise<any> {
       return json({ 
         success: false, 
         error: 'Account is deactivated',
-        step: 'active_check'
+        step: 'active_check',
       });
     }
 
@@ -61,7 +61,7 @@ export async function POST({ request }): Promise<any> {
       return json({ 
         success: false, 
         error: 'Invalid password',
-        step: 'password_verification'
+        step: 'password_verification',
       });
     }
 
@@ -78,11 +78,11 @@ export async function POST({ request }): Promise<any> {
       user: {
         id: user.id,
         email: user.email,
-        role: user.role
+        role: user.role,
       },
       session: {
         id: sessionId,
-        expiresAt: expiresAt.toISOString()
+        expiresAt: expiresAt.toISOString(),
       }
     });
 
@@ -91,7 +91,7 @@ export async function POST({ request }): Promise<any> {
     return json({
       success: false,
       error: error.message,
-      step: 'general_error'
+      step: 'general_error',
     }, { status: 500 });
   }
 }

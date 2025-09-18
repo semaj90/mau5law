@@ -13,7 +13,7 @@ try {
   documentProcessingWorker = {
     getStats: () => ({ isRunning: false, processedCount: 0, failedCount: 0, successRate: 0 }),
     start: () => Promise.reject(new Error('Worker not available')),
-    stop: () => Promise.reject(new Error('Worker not available'))
+    stop: () => Promise.reject(new Error('Worker not available'),
   };
 }
 
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ url }) => {
           worker: workerStats,
           queues: queueStats,
           messaging: healthCheck,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'health':
@@ -55,17 +55,17 @@ export const GET: RequestHandler = async ({ url }) => {
             running: stats.isRunning,
             processed: stats.processedCount,
             failed: stats.failedCount,
-            successRate: stats.successRate
+            successRate: stats.successRate,
           },
           messaging: {
             connected: health.healthy,
-            queues: health.queues
+            queues: health.queues,
           }
         });
 
-      default:
+      default:;
         return json({
-          error: 'Invalid action. Use ?action=status or ?action=health'
+          error: 'Invalid action. Use ?action=status or ?action=health',
         }, { status: 400 });
     }
 
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json({
       error: 'Failed to get worker status',
-      details: error.message
+      details: error.message,
     }, { status: 500 });
   }
 };
@@ -84,11 +84,11 @@ export const POST: RequestHandler = async ({ request }) => {
     const { action } = await request.json();
 
     switch (action) {
-      case 'start':
+      case 'start':;
         if (documentProcessingWorker.getStats().isRunning) {
           return json({
             message: 'Worker is already running',
-            status: 'running'
+            status: 'running',
           });
         }
 
@@ -96,14 +96,14 @@ export const POST: RequestHandler = async ({ request }) => {
 
         return json({
           message: 'Document processing worker started successfully',
-          status: 'started'
+          status: 'started',
         });
 
-      case 'stop':
+      case 'stop':;
         if (!documentProcessingWorker.getStats().isRunning) {
           return json({
             message: 'Worker is not running',
-            status: 'stopped'
+            status: 'stopped',
           });
         }
 
@@ -111,24 +111,24 @@ export const POST: RequestHandler = async ({ request }) => {
 
         return json({
           message: 'Document processing worker stopped successfully',
-          status: 'stopped'
+          status: 'stopped',
         });
 
-      case 'restart':
+      case 'restart':;
         if (documentProcessingWorker.getStats().isRunning) {
           await documentProcessingWorker.stop();
           // Wait a moment before restarting
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await new Promise(resolve => setTimeout(resolve, 1000);
         }
 
         await documentProcessingWorker.start();
 
         return json({
           message: 'Document processing worker restarted successfully',
-          status: 'restarted'
+          status: 'restarted',
         });
 
-      default:
+      default:;
         return json({
           error: 'Invalid action. Use start, stop, or restart'
         }, { status: 400 });
@@ -139,7 +139,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
       error: 'Failed to control worker',
-      details: error.message
+      details: error.message,
     }, { status: 500 });
   }
 };

@@ -28,16 +28,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const { action, ...params } = data;
 
     switch (action) {
-      // === DOCUMENT INGESTION ===
+      // === DOCUMENT INGESTION ===;
       case 'ingest_document': {
         const { title, content, filePath, mimeType, fileSize, metadata } = params;
 
         if (!title || !content) {
-          return json(
-            {
+          return json({
               success: false,
               error: 'Missing required fields: title, content',
-            },
+            },)
             { status: 400 }
           );
         }
@@ -60,7 +59,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           },
         });
 
-        // Async Neo4j sync if document ingestion succeeded
+        // Async Neo4j sync if document ingestion succeeded;
         if ((result as { success?: any; documentId?: any; jobId?: any; error?: any }).success && (result as { success?: any; documentId?: any; jobId?: any; error?: any }).documentId) {
           // Queue for background Neo4j sync
           await cache.rpush(
@@ -82,16 +81,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
         });
       }
 
-      // === FILE UPLOAD PROCESSING ===
+      // === FILE UPLOAD PROCESSING ===;
       case 'process_file': {
         const { file, userId, metadata } = params;
 
         if (!file || !file.buffer) {
-          return json(
-            {
+          return json({
               success: false,
               error: 'No file provided',
-            },
+            },)
             { status: 400 }
           );
         }
@@ -109,16 +107,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
         });
       }
 
-      // === UNIFIED SEARCH ===
+      // === UNIFIED SEARCH ===;
       case 'search': {
         const { query, filters, options } = params;
 
         if (!query?.text && !query?.vector) {
-          return json(
-            {
+          return json({
               success: false,
               error: 'Query text or vector required',
-            },
+            },)
             { status: 400 }
           );
         }
@@ -143,7 +140,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           },
         });
 
-        // Enhance with Neo4j recommendations if requested
+        // Enhance with Neo4j recommendations if requested;
         if (options?.neo4jRecommendations && searchResult.documents.length > 0) {
           try {
             const recommendations = await neo4jService.getRecommendations(searchResult.documents);
@@ -160,16 +157,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
         });
       }
 
-      // === SEMANTIC SIMILARITY ===
+      // === SEMANTIC SIMILARITY ===;
       case 'find_similar': {
         const { documentId, threshold, limit } = params;
 
         if (!documentId) {
-          return json(
-            {
+          return json({
               success: false,
               error: 'Document ID required',
-            },
+            },)
             { status: 400 }
           );
         }
@@ -179,7 +175,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         let similarDocs = await cache.get(cacheKey);
 
         if (!similarDocs) {
-          // Would implement vector similarity search
+          // Would implement vector similarity search;
           similarDocs = {
             documents: [],
             similarities: [],
@@ -197,16 +193,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
         });
       }
 
-      // === NEO4J OPERATIONS ===
+      // === NEO4J OPERATIONS ===;
       case 'sync_to_graph': {
         const { documentIds, force } = params;
 
         if (!documentIds || !Array.isArray(documentIds)) {
-          return json(
-            {
+          return json({
               success: false,
               error: 'Document IDs array required',
-            },
+            },)
             { status: 400 }
           );
         }
@@ -230,11 +225,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { documentIds, types } = params;
 
         if (!documentIds || !Array.isArray(documentIds)) {
-          return json(
-            {
+          return json({
               success: false,
               error: 'Document IDs array required',
-            },
+            },)
             { status: 400 }
           );
         }
@@ -264,11 +258,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { documentIds, analysisType } = params;
 
         if (!documentIds || !Array.isArray(documentIds)) {
-          return json(
-            {
+          return json({
               success: false,
               error: 'Document IDs array required',
-            },
+            },)
             { status: 400 }
           );
         }
@@ -283,7 +276,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         });
       }
 
-      // === WORKFLOW MANAGEMENT ===
+      // === WORKFLOW MANAGEMENT ===;
       case 'get_workflow_status': {
         const dashboardData = ingestionService.getDashboardData();
 
@@ -309,11 +302,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { documents, priority, metadata } = params;
 
         if (!documents || !Array.isArray(documents)) {
-          return json(
-            {
+          return json({
               success: false,
               error: 'Documents array required',
-            },
+            },)
             { status: 400 }
           );
         }
@@ -352,11 +344,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
         });
       }
 
-      // === ANALYTICS & MONITORING ===
+      // === ANALYTICS & MONITORING ===;
       case 'get_analytics': {
         const { timeRange, metrics } = params;
 
-        // Get comprehensive analytics
+        // Get comprehensive analytics;
         const analytics = {
           system: {
             uptime: process.uptime(),
@@ -378,7 +370,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         });
       }
 
-      // === HEALTH CHECK ===
+      // === HEALTH CHECK ===;
       case 'health': {
         const health = {
           status: 'healthy',
@@ -403,9 +395,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
         });
       }
 
-      default:
-        return json(
-          {
+      default:;
+        return json({
             success: false,
             error: `Unknown action: ${action}`,
             availableActions: [
@@ -421,14 +412,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
               'get_analytics',
               'health',
             ],
-          },
+          },)
           { status: 400 }
         );
     }
   } catch (error) {
     console.error('❌ Unified API error:', error);
 
-    return json(
+    return json();
       {
         success: false,
         error: 'Internal server error',
@@ -454,7 +445,7 @@ export const GET: RequestHandler = async ({ url }) => {
       });
     }
 
-    // API documentation
+    // API documentation;
     return json({
       success: true,
       api: {
@@ -515,7 +506,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     console.error('❌ Unified API GET error:', error);
 
-    return json(
+    return json();
       {
         success: false,
         error: 'Internal server error',
@@ -529,7 +520,7 @@ export const GET: RequestHandler = async ({ url }) => {
 // === ANALYTICS HELPERS ===
 
 async function getSearchAnalytics(timeRange: string) {
-  // Would implement search analytics from query_analytics table
+  // Would implement search analytics from query_analytics table;
   return {
     totalQueries: Math.floor(Math.random() * 1000) + 500,
     averageResponseTime: Math.floor(Math.random() * 200) + 50,
@@ -538,18 +529,18 @@ async function getSearchAnalytics(timeRange: string) {
     queryTypes: {
       semantic: 0.6,
       fulltext: 0.3,
-      hybrid: 0.1
+      hybrid: 0.1,
     }
   };
 }
 
 async function getCacheStats() {
-  // Would get Redis cache statistics
+  // Would get Redis cache statistics;
   return {
     hitRate: Math.random() * 0.2 + 0.8,
     memoryUsage: Math.floor(Math.random() * 512) + 256, // MB
     keyCount: Math.floor(Math.random() * 10000) + 5000,
-    evictionRate: Math.random() * 0.1
+    evictionRate: Math.random() * 0.1,
   };
 }
 
@@ -561,7 +552,7 @@ async function getPerformanceMetrics(timeRange: string) {
     resourceUtilization: {
       cpu: Math.random() * 0.4 + 0.3,
       memory: Math.random() * 0.3 + 0.4,
-      disk: Math.random() * 0.2 + 0.2
+      disk: Math.random() * 0.2 + 0.2,
     }
   };
 }

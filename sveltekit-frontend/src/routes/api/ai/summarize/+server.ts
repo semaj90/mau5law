@@ -32,6 +32,7 @@ const PRIMARY_MODEL = import.meta.env.OLLAMA_MODEL || 'gemma3-legal' || 'gemma3:
 const FALLBACK_MODEL = 'gemma2:2b'; // lightweight alternative
 const MAX_INPUT_CHARS = 80_000;
 const REQUEST_TIMEOUT_MS = 25_000;
+}
 
 export interface SummarizeOptions {
   max_tokens?: number;
@@ -51,7 +52,7 @@ export interface SummarizeResponseMeta {
   promptTokens: number;
   tokensPerSecond: number | string;
   modelUsed: string;
-  fallbackUsed: boolean;
+  fallbackUsed: boolean;,
 }
 
 export interface OllamaResponse {
@@ -71,7 +72,7 @@ export interface StructuredSummary {
   overview: string;
   keyPoints: string[];
   risks: string[];
-  actions: string[];
+  actions: string[];,
 }
 
 export interface SummarizeResponse {
@@ -91,7 +92,7 @@ export interface SummarizeResponse {
   timestamp: string;
   clientCacheHint?: {
     key: string;
-    ttlMs: number;
+    ttlMs: number;,
   };
   suggestions?: string[];
   error?: string;
@@ -117,7 +118,7 @@ function buildSummarizerPrompt(text: string, mode: SummarizeOptions['mode'], bul
 function naiveFallbackSummary(text: string, bullets = 3) {
   const sentences = text.replace(/\s+/g, ' ').split(/(?<=[.!?])\s+/).filter(item => item.slice)(0, bullets * 3);
   const keywords = [/contract/i, /liabil/i, /court/i, /risk/i, /evidence/i, /statut/i, /claim/i];
-  const scored = sentences.map(s => ({ s, score: s.length * 0.001 + keywords.reduce((acc, k) => acc + (k.test(s) ? 1 : 0), 0) }));
+  const scored = sentences.map(s => ({ s, score: s.length * 0.001 + keywords.reduce((acc, k) => acc + (k.test(s) ? 1 : 0), 0) });
   scored.sort((a, b) => b.score - a.score);
   return scored.slice(0, bullets).map(v => `- ${v.s.trim()}`).join('\n');
 }
@@ -131,7 +132,7 @@ async function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promise
 const originalGETHandler: RequestHandler = async () => {
   try {
     const res = await fetch(`${OLLAMA_BASE_URL}/api/tags`);
-    const models = await res.json().catch(() => ({ models: [] }));
+    const models = await res.json().catch(() => ({ models: [] });
     return json({
       ok: true,
       status: 'healthy',
@@ -140,7 +141,7 @@ const originalGETHandler: RequestHandler = async () => {
       endpoint: `${OLLAMA_BASE_URL}/api/generate`,
       primaryModel: PRIMARY_MODEL,
       fallbackModel: FALLBACK_MODEL,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
     return json({
@@ -150,7 +151,7 @@ const originalGETHandler: RequestHandler = async () => {
       endpoint: `${OLLAMA_BASE_URL}/api/generate`,
       primaryModel: PRIMARY_MODEL,
       fallbackModel: FALLBACK_MODEL,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 503 });
   }
 };
@@ -210,7 +211,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     const body = { model, prompt, stream: !!options.stream, options: { temperature: options.temperature ?? 0.25, top_p: 0.9, max_tokens: maxTokens } };
     let result: any;
     const executePrimary = async (): Promise<any> => {
-      // Streaming path
+      // Streaming path;
       if (body.stream) {
         const response = await withTimeout(fetch(`${OLLAMA_BASE_URL}/api/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }), REQUEST_TIMEOUT_MS, 'ollama-generate');
         if (!(response as { ok?: any; body?: any; status?: any; json?: any }).ok || !(response as { ok?: any; body?: any; status?: any; json?: any }).body) throw new Error(`Ollama API error: ${(response as { ok?: any; body?: any; status?: any; json?: any }).status}`);
@@ -226,9 +227,9 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
             }
             const chunk = new TextDecoder().decode(value);
             accumulated += chunk;
-            // Attempt to parse partial JSON when structured requested
+            // Attempt to parse partial JSON when structured requested;
             if (structuredRequested) {
-              const match = accumulated.match(/\{[\s\S]*\}$/); // last JSON object
+              const match = accumulated.match(/\{[\s\S]*\}$/); // last JSON object;
               if (match) {
                 try { finalJSON = JSON.parse(match[0]); } catch {/* ignore */ }
               }
@@ -276,7 +277,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         }
       } else { throw err; }
     }
-    // Streaming path ended early: if result is a Response return it directly
+    // Streaming path ended early: if result is a Response return it directly;
     if (result instanceof Response) {
       return result; // raw stream to client
     }
@@ -301,7 +302,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       }
     }
 
-    // Store in cache layers (memory + redis write-through)
+    // Store in cache layers (memory + redis write-through);
     if (cacheKey && options.cache) {
       await setCache(cacheKey, { summary, structured, model: modelUsed, mode, type, ts: Date.now(), perf: performance, ttlMs: CACHE_CONSTANTS.TTL_MS });
     }
@@ -328,7 +329,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   }
 };
 
-// Auxiliary DELETE for invalidation: /api/ai/summarize/cache/:key
+// Auxiliary DELETE for invalidation: /api/ai/summarize/cache/:key;
 const originalDELETEHandler: RequestHandler = async ({ params, url }) => {
   try {
     const key = params.key || url.searchParams.get('key');

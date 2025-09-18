@@ -3,7 +3,7 @@
  * Simulates AI-powered case analysis with mock data
  */
 
-// Simple type definitions for demo
+// Simple type definitions for demo;
 interface Evidence {
   id: string;
   filename: string;
@@ -18,7 +18,7 @@ interface Case {
   title: string;
   description: string;
   createdAt: Date;
-  status: 'open' | 'closed' | 'archived';
+  status: 'open' | 'closed' | 'archived';,
 }
 
 interface Report {
@@ -26,7 +26,7 @@ interface Report {
   title: string;
   content: string;
   createdAt: Date;
-  generatedBy: string;
+  generatedBy: string;,
 }
 
 export interface RAGDemoQuery {
@@ -43,17 +43,17 @@ export interface RAGDemoResponse {
   sources: Array<any>;
   confidence: number;
   tokensUsed: number;
-  reasoning: string[];
+  reasoning: string[];,
 }
 
 /**
  * Mock case data for testing
- */
+ */;
 const mockCaseData = {
   '1': {
     title: 'Financial Fraud Investigation',
     description: 'Investigation into suspicious financial transactions',
-    evidence: [
+    evidence: [;
       {
         id: 'e1',
         filename: 'bank_statements.pdf',
@@ -79,20 +79,20 @@ const mockCaseData = {
         metadata: { entries: 247, dateRange: '2023-12-01 to 2024-01-15' }
       }
     ],
-    reports: [
+    reports: [;
       {
         id: 'r1',
         title: 'Initial Assessment Report',
         content: 'Preliminary analysis shows patterns consistent with fraudulent activity...',
         createdAt: new Date('2024-01-18'),
-        generatedBy: 'AI Assistant'
+        generatedBy: 'AI Assistant',
       }
     ]
   },
   '2': {
     title: 'Corporate Espionage Case',
     description: 'Investigation into data theft and industrial espionage',
-    evidence: [
+    evidence: [;
       {
         id: 'e4',
         filename: 'security_footage.mp4',
@@ -110,16 +110,16 @@ const mockCaseData = {
         metadata: { size: '2.3MB', suspicious_ips: ['192.168.1.157', '10.0.0.233'] }
       }
     ],
-    reports: []
+    reports: [],
   }
 };
 
 /**
  * Simulate AI analysis with realistic responses
- */
+ */;
 export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse> {
   // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
+  await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200);
 
   const caseData = mockCaseData[query.caseId as keyof typeof mockCaseData];
   if (!caseData) {
@@ -130,7 +130,7 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
   const sources: RAGDemoResponse['sources'] = [];
   const reasoning: string[] = [];
 
-  // Analyze query against evidence
+  // Analyze query against evidence;
   caseData.evidence.forEach(evidence => {
     const relevance = calculateRelevance(queryLower, evidence);
     if (relevance > 0.3) {
@@ -144,7 +144,7 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
     }
   });
 
-  // Analyze query against reports
+  // Analyze query against reports;
   caseData.reports.forEach(report => {
     const relevance = calculateReportRelevance(queryLower, report);
     if (relevance > 0.3) {
@@ -153,7 +153,7 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
         type: 'report',
         relevance,
         excerpt: report.content.substring(0, 150) + '...'
-      });
+      ,});
       reasoning.push(`Referenced report: ${report.title} (${Math.round(relevance * 100)}% relevance)`);
     }
   });
@@ -172,7 +172,7 @@ export async function demoQueryLLM(query: RAGDemoQuery): Promise<RAGDemoResponse
 
 /**
  * Calculate relevance score for evidence
- */
+ */;
 function calculateRelevance(query: string, evidence: any): number {
   const terms = query.split(' ').filter(term => term.length > 2);
   let score = 0;
@@ -182,7 +182,7 @@ function calculateRelevance(query: string, evidence: any): number {
     if (evidence.description.toLowerCase().includes(term)) score += 0.3;
     if (evidence.type.toLowerCase().includes(term)) score += 0.2;
 
-    // Check metadata
+    // Check metadata;
     if (evidence.metadata) {
       const metadataStr = JSON.stringify(evidence.metadata).toLowerCase();
       if (metadataStr.includes(term)) score += 0.1;
@@ -194,7 +194,7 @@ function calculateRelevance(query: string, evidence: any): number {
 
 /**
  * Calculate relevance score for reports
- */
+ */;
 function calculateReportRelevance(query: string, report: any): number {
   const terms = query.split(' ').filter(term => term.length > 2);
   let score = 0;
@@ -209,7 +209,7 @@ function calculateReportRelevance(query: string, report: any): number {
 
 /**
  * Generate contextual excerpt from evidence
- */
+ */;
 function generateExcerpt(evidence: any, query: string): string {
   const terms = query.split(' ').filter(term => term.length > 2);
   const mainTerm = terms[0] || '';
@@ -229,7 +229,7 @@ function generateExcerpt(evidence: any, query: string): string {
 
 /**
  * Generate AI response based on query and context
- */
+ */;
 function generateResponse(query: string, caseData: any, sources: any[]): string {
   if (query.includes('summary') || query.includes('overview')) {
     return generateSummaryResponse(caseData, sources);
@@ -263,7 +263,7 @@ function generateEvidenceResponse(caseData: any, sources: any[]): string {
   const evidenceTypes = Array.from(new Set(sources.map(s => {
     const evidence = caseData.evidence.find((e: any) => e.id === s.id);
     return evidence?.type || 'unknown';
-  })));
+  }));
 
   return `I've identified ${sources.length} pieces of relevant evidence in this case:
 
@@ -278,7 +278,7 @@ Evidence types present: ${evidenceTypes.join(', ')}. Each piece contributes to b
 
 function generateTimelineResponse(caseData: any, sources: any[]): string {
   const timelineEvents = caseData.evidence
-    .sort((a: any, b: any) => new Date(a.uploadedAt).getTime() - new Date(b.uploadedAt).getTime())
+    .sort((a: any, b: any) => new Date(a.uploadedAt).getTime() - new Date(b.uploadedAt).getTime()
     .slice(0, 4);
 
   return `Based on the evidence timeline, here's the chronological sequence:
@@ -347,12 +347,12 @@ ${sources.length > 0
 
 /**
  * Demo case analysis functions
- */
+ */;
 export async function demoGenerateCaseSummary(caseId: string): Promise<string> {
   const caseData = mockCaseData[caseId as keyof typeof mockCaseData];
   if (!caseData) return 'Case not found in demo data.';
 
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise(resolve => setTimeout(resolve, 1000);
 
   return `# Case Summary: ${caseData.title}
 
@@ -377,7 +377,7 @@ ${caseData.evidence.map((e, i) => `${i + 1}. ${e.description}`).join('\n')}
 }
 
 export async function demoAnalyzeEvidencePatterns(evidence: Evidence[]): Promise<string[]> {
-  await new Promise(resolve => setTimeout(resolve, 600));
+  await new Promise(resolve => setTimeout(resolve, 600);
 
   const patterns = [
     'Evidence collection spans multiple data types (documents, communications, digital logs)',
@@ -388,19 +388,19 @@ export async function demoAnalyzeEvidencePatterns(evidence: Evidence[]): Promise
   ];
 
   // Randomize and return subset based on evidence count
-  const shuffled = patterns.sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, Math.min(evidence.length + 1, patterns.length));
+  const shuffled = patterns.sort(() => 0.5 - Math.random();
+  return shuffled.slice(0, Math.min(evidence.length + 1, patterns.length);
 }
 
 export async function demoSmartSearch(query: string, evidence: Evidence[]): Promise<Evidence[]> {
-  await new Promise(resolve => setTimeout(resolve, 400));
+  await new Promise(resolve => setTimeout(resolve, 400);
 
   const queryLower = query.toLowerCase();
-  return evidence
+  return evidence;
     .map(e => ({
       ...e,
       relevance: calculateRelevance(queryLower, e)
-    }))
+    })
     .filter(e => e.relevance > 0.2)
     .sort((a, b) => b.relevance - a.relevance)
     .slice(0, 5);

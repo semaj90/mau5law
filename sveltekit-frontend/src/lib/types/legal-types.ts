@@ -2,7 +2,7 @@
 // Legal AI System Type Definitions - Extended for Evidence and Case Management
 export * from './legal';
 
-// Additional Evidence Types
+// Additional Evidence Types;
 export interface Evidence {
   id: string;
   title: string;
@@ -54,10 +54,10 @@ export interface AIAnalysis {
   processingTime: number;
   model: string;
   version: string;
-  analyzedAt: Date;
+  analyzedAt: Date;,
 }
 
-// Extended Legal Document Interface
+// Extended Legal Document Interface;
 export interface LegalDocument {
   id: string;
   title: string;
@@ -94,7 +94,7 @@ export interface LegalDocument {
   embeddings?: number[]; // Vector embeddings for search
 }
 
-// Enhanced Case Interface
+// Enhanced Case Interface;
 export interface Case {
   id: string;
   caseNumber: string;
@@ -118,7 +118,7 @@ export interface Case {
   tags?: string[];
 }
 
-// API Response Types
+// API Response Types;
 export interface DocumentSearchResult {
   id: string;
   title: string;
@@ -126,7 +126,7 @@ export interface DocumentSearchResult {
   relevanceScore: number;
   documentType: string;
   caseId?: string;
-  lastModified: Date;
+  lastModified: Date;,
 }
 
 export interface EvidenceSearchResult {
@@ -140,7 +140,7 @@ export interface EvidenceSearchResult {
   aiSummary?: string;
 }
 
-// Vector Search Types
+// Vector Search Types;
 export interface VectorSearchOptions {
   query: string;
   threshold?: number;
@@ -155,10 +155,10 @@ export interface VectorSearchResult {
   score: number;
   content: string;
   metadata: Record<string, any>;
-  type: "document" | "evidence" | "case";
+  type: "document" | "evidence" | "case";,
 }
 
-// Export commonly used types from legal.ts
+// Export commonly used types from legal.ts;
 export type {
   LegalCase,
   AIInsights,

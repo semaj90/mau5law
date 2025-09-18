@@ -51,7 +51,7 @@ redis.on('error', (error) => {
 });
 redis.on('reconnecting', (delay) => {
   console.log(`[redis] 🔄 Reconnecting in ${delay}ms...`);
-});
+,});
 redis.on('close', () => {
   console.log('[redis] 🔌 Connection closed');
 });
@@ -77,7 +77,7 @@ export interface RedisBasicCommands {
   quit(): Promise<'OK'>;
 }
 
-// Multi-client factory for pub/sub correctness
+// Multi-client factory for pub/sub correctness;
 export interface RedisClientSet {
   primary: RedisBasicCommands & any;
   subscriber: RedisBasicCommands & any;
@@ -90,7 +90,7 @@ export function createRedisClientSet(): RedisClientSet {
   const subscriber = createRedisInstance();
   const publisher = createRedisInstance();
 
-  // Basic wiring of error logging
+  // Basic wiring of error logging;
   [primary, subscriber, publisher].forEach((client, idx) => {
     client.on('error', (err: any) => {
       console.error(`[redis-set] client${idx} error:`, err?.message || err);
@@ -103,7 +103,7 @@ export function createRedisClientSet(): RedisClientSet {
     publisher,
     async closeAll() {
       await Promise.all(
-        [primary.quit(), subscriber.quit(), publisher.quit()].map((p) => p.catch(() => {}))
+        [primary.quit(), subscriber.quit(), publisher.quit()].map((p) => p.catch(() => {})
       );
     },
   };
@@ -127,7 +127,7 @@ export async function getFromCache(key: string): Promise<string | null> {
 export async function setCache(
   key: string,
   value: string,
-  expireInSeconds?: number
+  expireInSeconds?: number;
 ): Promise<boolean> {
   try {
     const client = await createRedisClient();

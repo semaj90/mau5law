@@ -24,14 +24,15 @@ import type { RequestHandler } from './$types.js';
 
 
 // Multi-Agent AI Orchestration API
-// Unified endpoint for Autogen, CrewAI, and vLLM integration
+// Unified endpoint for Autogen, CrewAI, and vLLM integration;
+}
 
 export interface AutogenRequest {
   query: string;
   caseId?: string;
   evidenceIds: string[];
   analysisType: string;
-  priority: string;
+  priority: string;,
 }
 
 export interface WorkflowResult {
@@ -43,7 +44,7 @@ export interface WorkflowResult {
   totalTime?: number;
 }
 
-// Mock implementations for now
+// Mock implementations for now;
 class AutogenLegalTeam {
   constructor(config: any) {}
   
@@ -52,7 +53,7 @@ class AutogenLegalTeam {
       finalAnalysis: `Autogen analysis for: ${request.query}`,
       confidence: 0.8,
       recommendations: ['Review evidence chain', 'Check procedural compliance'],
-      processingTime: 1500
+      processingTime: 1500,
     };
   }
   
@@ -71,7 +72,7 @@ class CrewAILegalTeam {
       results: [{ confidence: 0.75 }],
       finalDeliverable: `CrewAI analysis for: ${context.query}`,
       recommendations: ['Schedule follow-up', 'Prepare documentation'],
-      totalTime: 2000
+      totalTime: 2000,
     };
   }
   
@@ -115,10 +116,10 @@ export interface MultiAgentResponse {
     totalTime: number;
     memoryUsage: string;
     tokensGenerated: number;
-    confidence: number;
+    confidence: number;,
   };
   recommendations: string[];
-  nextSteps: string[];
+  nextSteps: string[];,
 }
 
 // Initialize AI systems with memory-optimized configurations
@@ -126,7 +127,7 @@ let autogenTeam: AutogenLegalTeam | null = null;
 let crewaiTeam: CrewAILegalTeam | null = null;
 
 // Load memory configurations
-// Configuration for low-memory setups (placeholder)
+// Configuration for low-memory setups (placeholder);
 const lowMemoryConfigs = {
   ultra_low_memory: {
     max_tokens: 512,
@@ -181,7 +182,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const requestData: MultiAgentRequest = await request.json();
 
-    // Validate request
+    // Validate request;
     if (!requestData.query) {
       return json({ error: "Query is required" }, { status: 400 });
     }
@@ -203,7 +204,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           results.autogen = await runAutogenAnalysis(requestData, sessionId);
           totalTokens += (results.autogen as any).processingTime || 0;
           overallConfidence = (results.autogen as any).confidence || 0.7;
-          allRecommendations.push(...((results.autogen as any).recommendations || []));
+          allRecommendations.push(...((results.autogen as any).recommendations || []);
           break;
 
         case "crewai":
@@ -212,7 +213,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           overallConfidence =
             (results.crewai as WorkflowResult).results?.reduce((acc: number, r: any) => acc + r.confidence, 0) /
               ((results.crewai as WorkflowResult).results?.length || 1) || 0.7;
-          allRecommendations.push(...((results.crewai as WorkflowResult).recommendations || []));
+          allRecommendations.push(...((results.crewai as WorkflowResult).recommendations || []);
           break;
 
         case "vllm_only":
@@ -273,14 +274,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       return json(response);
     } catch (analysisError) {
       console.error("Multi-agent analysis failed:", analysisError);
-      return json(
-        {
+      return json({
           error: "Analysis failed",
           details:
             analysisError instanceof Error
               ? analysisError.message: "Unknown error",
           sessionId,
-        },
+        },)
         { status: 500 },
       );
     }
@@ -478,7 +478,7 @@ function mapToAutogenAnalysisType(
 ):
   | "case_review"
   | "evidence_analysis"
-  | "legal_research"
+  | "legal_research";
   | "prosecution_strategy" {
   switch (workflowType) {
     case "case_investigation":
@@ -488,7 +488,7 @@ function mapToAutogenAnalysisType(
     case "appeal_analysis":
       return "legal_research";
     default:
-      return "evidence_analysis";
+      return "evidence_analysis";,
   }
 }
 
@@ -498,7 +498,7 @@ function generateNextSteps(
 ): string[] {
   const steps: string[] = [];
 
-  // Add next steps based on analysis type
+  // Add next steps based on analysis type;
   if (request.analysisType === "hybrid") {
     steps.push("Review synthesized findings from multiple agent perspectives");
     steps.push("Cross-validate key recommendations between agent teams");
@@ -525,7 +525,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get("action");
 
   switch (action) {
-    case "status":
+    case "status":;
       return json({
         autogen_initialized: autogenTeam !== null,
         crewai_initialized: crewaiTeam !== null,
@@ -541,7 +541,7 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
     case "memory_profiles":
       return json(lowMemoryConfigs.low_memory_profiles);
 
-    case "agents":
+    case "agents":;
       const agentInfo = {
         autogen_agents: autogenTeam?.getAgents() || [],
         crewai_crews: crewaiTeam?.getCrews() || [],
@@ -549,12 +549,11 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       };
       return json(agentInfo);
 
-    default:
-      return json(
-        {
+    default:;
+      return json({
           error:
             "Invalid action. Available actions: status, memory_profiles, agents",
-        },
+        },)
         { status: 400 },
       );
   }

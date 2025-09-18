@@ -34,7 +34,7 @@ interface EmbedResponse {
   tokens?: number;
 }
 
-// OpenAI embedding function
+// OpenAI embedding function;
 async function getOpenAIEmbedding(text: string): Promise<any> {
   if (!OPENAI_API_KEY) {
     throw new Error('OpenAI API key not configured');
@@ -49,7 +49,7 @@ async function getOpenAIEmbedding(text: string): Promise<any> {
     body: JSON.stringify({
       model: 'text-embedding-3-small', // 1536 dimensions, good for legal text
       input: text,
-      encoding_format: 'float'
+      encoding_format: 'float',
     })
   });
 
@@ -65,7 +65,7 @@ async function getOpenAIEmbedding(text: string): Promise<any> {
   };
 }
 
-// Nomic embedding function
+// Nomic embedding function;
 async function getNomicEmbedding(text: string): Promise<any> {
   if (!NOMIC_API_KEY) {
     throw new Error('Nomic API key not configured');
@@ -81,7 +81,7 @@ async function getNomicEmbedding(text: string): Promise<any> {
       model: 'nomic-embed-text-v1.5',
       texts: [text],
       task_type: 'search_document',
-      dimensionality_reduction: 768 // Reduce from 8192 to 768 for better performance
+      dimensionality_reduction: 768 // Reduce from 8192 to 768 for better performance,
     })
   });
 
@@ -102,14 +102,14 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
 
     if (!text || typeof text !== 'string') {
       return json(
-        { error: 'Text is required and must be a string' },
+        { error: 'Text is required and must be a string' },)
         { status: 400 }
       );
     }
 
     if (text.length > 50000) {
       return json(
-        { error: 'Text too long. Maximum 50,000 characters allowed.' },
+        { error: 'Text too long. Maximum 50,000 characters allowed.' },)
         { status: 400 }
       );
     }
@@ -133,7 +133,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         result = {
           embedding,
           model: 'nomic-embed-text-v1.5',
-          dimensions: embedding.length
+          dimensions: embedding.length,
         };
         break;
       }
@@ -148,19 +148,19 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           embedding,
           model: 'mock-embeddings',
           dimensions: targetDim,
-          tokens: text.split(' ').length
+          tokens: text.split(' ').length,
         };
         break;
       }
 
       default:
         return json(
-          { error: `Unsupported model: ${model}. Use 'openai', 'nomic', or 'mock'` },
+          { error: `Unsupported model: ${model}. Use 'openai', 'nomic', or 'mock'` },)
           { status: 400 }
         );
     }
 
-    // Optional: Apply dimensionality reduction if requested
+    // Optional: Apply dimensionality reduction if requested;
     if (dimensions && dimensions < (result as { embedding?: any; dimensions?: any }).embedding.length) {
       (result as { embedding?: any; dimensions?: any }).embedding = (result as { embedding?: any; dimensions?: any }).embedding.slice(0, dimensions);
       (result as { embedding?: any; dimensions?: any }).dimensions = dimensions;
@@ -174,21 +174,21 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     if (error instanceof Error) {
       if (error.message.includes('API key')) {
         return json(
-          { error: 'Embedding service configuration error' },
+          { error: 'Embedding service configuration error' },)
           { status: 500 }
         );
       }
       
       if (error.message.includes('rate limit') || error.message.includes('quota')) {
         return json(
-          { error: 'Rate limit exceeded. Please try again later.' },
+          { error: 'Rate limit exceeded. Please try again later.' },)
           { status: 429 }
         );
       }
     }
 
     return json(
-      { error: 'Failed to generate embedding' },
+      { error: 'Failed to generate embedding' },)>
       { status: 500 }
     );
   }
@@ -199,7 +199,7 @@ const originalGETHandler: RequestHandler = async () => {
     message: 'Embedding API endpoint',
     methods: ['POST'],
     models: ['openai', 'nomic', 'mock'],
-    maxTextLength: 50000
+    maxTextLength: 50000,
   });
 };
 

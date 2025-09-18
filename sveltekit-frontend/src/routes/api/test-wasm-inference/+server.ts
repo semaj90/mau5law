@@ -149,7 +149,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const totalTime = Date.now() - startTime;
 
-    // Comprehensive test results
+    // Comprehensive test results;
     const testResults = {
       success: true,
       processingTime: totalTime,
@@ -216,7 +216,7 @@ export const POST: RequestHandler = async ({ request }) => {
     console.error('❌ WebAssembly inference test failed:', err);
 
     const errorTime = Date.now() - startTime;
-    return json(
+    return json();
       {
         success: false,
         error: err.message,
@@ -252,7 +252,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// GET endpoint for quick health check
+// GET endpoint for quick health check;
 export const GET: RequestHandler = async () => {
   try {
     console.log('🏥 WebAssembly inference health check');
@@ -260,14 +260,14 @@ export const GET: RequestHandler = async () => {
     const { WASMInferenceRAGService } = await import('$lib/services/webasm-inference-rag.js');
     const healthStatus = WASMInferenceRAGService.getHealthStatus();
 
-    // Quick connectivity tests
+    // Quick connectivity tests;
     const services = {
       wasmInferenceService: healthStatus.status === 'healthy',
       enhancedRAGService: false,
       postgresqlQdrantSync: false,
     };
 
-    // Test Enhanced RAG Service
+    // Test Enhanced RAG Service;
     try {
       const ragResponse = await fetch('http://localhost:8094/api/health', {
         method: 'GET',
@@ -277,7 +277,7 @@ export const GET: RequestHandler = async () => {
       services.enhancedRAGService = false;
     }
 
-    // Test PostgreSQL-Qdrant Sync
+    // Test PostgreSQL-Qdrant Sync;
     try {
       const { postgresqlQdrantSync } = await import('$lib/services/postgresql-qdrant-sync.js');
       const syncHealth = await postgresqlQdrantSync.healthCheck();
@@ -302,7 +302,7 @@ export const GET: RequestHandler = async () => {
     });
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error('Unknown error');
-    return json(
+    return json();
       {
         status: 'unhealthy',
         error: err.message,

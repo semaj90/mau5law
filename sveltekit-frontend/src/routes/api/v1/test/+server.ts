@@ -14,6 +14,7 @@ import { embeddingService } from '$lib/server/embedding-service.js';
 import type { APIResponse, APIRequestContext } from '$lib/types/api.js';
 import crypto from "crypto";
 import { URL } from "url";
+}
 
 export interface IntegrationTestResult {
   testName: string;
@@ -32,12 +33,12 @@ export interface ComprehensiveTestReport {
   duration: number;
   results: IntegrationTestResult[];
   systemHealth: Record<string, any>;
-  recommendations: string[];
+  recommendations: string[];,
 }
 
 /*
  * POST /api/v1/test - Run comprehensive integration tests
- */
+ */;
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   const startTime = Date.now();
   const requestId = crypto.randomUUID();
@@ -50,7 +51,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       requestId,
       startTime,
       clientIP: getClientAddress(),
-      userAgent: request.headers.get('user-agent') || undefined
+      userAgent: request.headers.get('user-agent') || undefined,
     };
 
     console.log(`🧪 Starting integration test suite: ${testSuite}`);
@@ -65,7 +66,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         requestId,
         timestamp: new Date().toISOString(),
         platform: 'Windows Native',
-        deployment: 'No Docker'
+        deployment: 'No Docker',
       }
     } satisfies APIResponse);
 
@@ -77,14 +78,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       error: dev ? String(err) : 'Internal server error',
       code: 'TEST_EXECUTION_ERROR',
       requestId,
-      timestamp: new Date().toISOString()
-    }));
+      timestamp: new Date().toISOString(),
+    });
   }
 };
 
 /*
  * GET /api/v1/test - Test suite information and health
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action');
   
@@ -96,7 +97,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return await handleTestSuites();
       case 'history':
         return await handleTestHistory();
-      default:
+      default:;
         return json({
           service: 'Integration Test API',
           version: '2.0.0',
@@ -104,7 +105,7 @@ export const GET: RequestHandler = async ({ url }) => {
             runTests: 'POST /api/v1/test',
             health: 'GET /api/v1/test?action=health',
             suites: 'GET /api/v1/test?action=suites',
-            history: 'GET /api/v1/test?action=history'
+            history: 'GET /api/v1/test?action=history',
           },
           testSuites: [
             'full - Complete system integration test',
@@ -119,15 +120,15 @@ export const GET: RequestHandler = async ({ url }) => {
             'Database Connection Testing',
             'Windows Native Process Validation'
           ],
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
     }
   } catch (err: any) {
     console.error('Test API Error:', err);
     return error(500, ensureError({
       message: 'Test service unavailable',
-      error: dev ? String(err) : 'Internal error'
-    }));
+      error: dev ? String(err) : 'Internal error',
+    });
   }
 };
 
@@ -136,7 +137,7 @@ export const GET: RequestHandler = async ({ url }) => {
  */
 async function runComprehensiveTests(
   testSuite: string,
-  context: APIRequestContext
+  context: APIRequestContext;
 ): Promise<ComprehensiveTestReport> {
   const startTime = Date.now();
   const results: IntegrationTestResult[] = [];
@@ -146,7 +147,7 @@ async function runComprehensiveTests(
   // Test Suite Selection
   const testsToRun = getTestsForSuite(testSuite);
   
-  // Run tests sequentially to avoid resource conflicts
+  // Run tests sequentially to avoid resource conflicts;
   for (const test of testsToRun) {
     const testResult = await runSingleTest(test, context);
     results.push(testResult);
@@ -180,7 +181,7 @@ async function runComprehensiveTests(
 
 /*
  * Get tests for specific suite
- */
+ */;
 function getTestsForSuite(testSuite: string): string[] {
   const allTests = [
     'system_health_check',
@@ -226,7 +227,7 @@ function getTestsForSuite(testSuite: string): string[] {
       ];
     case 'full':
     default:
-      return allTests;
+      return allTests;,
   }
 }
 
@@ -235,7 +236,7 @@ function getTestsForSuite(testSuite: string): string[] {
  */
 async function runSingleTest(
   testName: string,
-  context: APIRequestContext
+  context: APIRequestContext;
 ): Promise<IntegrationTestResult> {
   const testStartTime = Date.now();
 
@@ -288,12 +289,12 @@ async function runSingleTest(
       case 'ai_model_availability':
         result = await testAIModelAvailability();
         break;
-      default:
+      default:;
         return {
           testName,
           status: 'skipped',
           duration: Date.now() - testStartTime,
-          error: 'Test not implemented'
+          error: 'Test not implemented',
         };
     }
 
@@ -309,23 +310,23 @@ async function runSingleTest(
       testName,
       status: 'failed',
       duration: Date.now() - testStartTime,
-      error: String(error)
+      error: String(error),
     };
   }
 }
 
-// Individual test implementations
+// Individual test implementations;
 async function testSystemHealth(): Promise<any> {
   const health = await apiOrchestrator.performHealthCheck();
   const healthyServices = Object.values(health).filter(item => item.length);
   const totalServices = Object.values(health).length;
   
   return {
-    success: healthyServices / totalServices >= 0.8, // 80% healthy services required
+    success: healthyServices / totalServices >= 0.8, // 80% healthy services required;
     details: {
       healthyServices,
       totalServices,
-      healthScore: Math.round((healthyServices / totalServices) * 100)
+      healthScore: Math.round((healthyServices / totalServices) * 100),
     }
   };
 }
@@ -340,13 +341,13 @@ async function testAPIOrchestrator(): Promise<any> {
       details: {
         totalServices: services.length,
         activeServices: services.filter(item => item.length),
-        metricsAvailable: Object.keys(metrics).length > 0
+        metricsAvailable: Object.keys(metrics).length > 0,
       }
     };
   } catch (error: any) {
     return {
       success: false,
-      error: String(error)
+      error: String(error),
     };
   }
 }
@@ -364,13 +365,13 @@ async function testCoreServices(): Promise<any> {
         service,
         healthy: health.ok,
         status: health.status,
-        config: !!config
+        config: !!config,
       });
     } catch (error: any) {
       results.push({
         service,
         healthy: false,
-        error: String(error)
+        error: String(error),
       });
     }
   }
@@ -382,7 +383,7 @@ async function testCoreServices(): Promise<any> {
     details: {
       coreServices: results,
       healthyCount,
-      totalCount: coreServices.length
+      totalCount: coreServices.length,
     }
   };
 }
@@ -403,7 +404,7 @@ async function testRAGAPI(): Promise<any> {
   } catch (error: any) {
     return {
       success: false,
-      error: String(error)
+      error: String(error),
     };
   }
 }
@@ -424,7 +425,7 @@ async function testUploadAPI(): Promise<any> {
   } catch (error: any) {
     return {
       success: false,
-      error: String(error)
+      error: String(error),
     };
   }
 }
@@ -439,13 +440,13 @@ async function testDatabaseConnections(): Promise<any> {
       results.push({
         database: db,
         configured: !!config,
-        status: config?.status || 'unknown'
+        status: config?.status || 'unknown',
       });
     } catch (error: any) {
       results.push({
         database: db,
         configured: false,
-        error: String(error)
+        error: String(error),
       });
     }
   }
@@ -453,7 +454,7 @@ async function testDatabaseConnections(): Promise<any> {
   return {
     success: results.every(r => r.configured),
     details: {
-      databases: results
+      databases: results,
     }
   };
 }
@@ -468,18 +469,18 @@ async function testEmbeddingService(): Promise<any> {
       details: {
         healthy: isHealthy,
         availableModels: models,
-        modelCount: models.length
+        modelCount: models.length,
       }
     };
   } catch (error: any) {
     return {
       success: false,
-      error: String(error)
+      error: String(error),
     };
   }
 }
 
-// Placeholder implementations for remaining tests
+// Placeholder implementations for remaining tests;
 async function testMultiProtocolRouting(): Promise<any> {
   return {
     success: true,
@@ -541,7 +542,7 @@ async function testAIModelAvailability(): Promise<any> {
  */
 function generateRecommendations(
   results: IntegrationTestResult[],
-  systemHealth: Record<string, any>
+  systemHealth: Record<string, any>;
 ): string[] {
   const recommendations: string[] = [];
   
@@ -568,14 +569,14 @@ function generateRecommendations(
   return recommendations;
 }
 
-// Handler implementations
+// Handler implementations;
 async function handleTestSystemHealth(): Promise<Response> {
   const health = await apiOrchestrator.performHealthCheck();
   return json({
     service: 'Integration Test System',
     status: 'operational',
     systemHealth: health,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -584,16 +585,16 @@ async function handleTestSuites(): Promise<Response> {
     availableSuites: [
       { name: 'full', description: 'Complete system integration test', testCount: 15 },
       { name: 'core', description: 'Core services only', testCount: 5 },
-      { name: 'api', description: 'API endpoints and routing', testCount: 5 },
+      { name: 'api', description: 'API endpoints and routing', testCount: 5 },)
       { name: 'services', description: 'Go microservices health', testCount: 4 }
     ],
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
 async function handleTestHistory(): Promise<Response> {
   return json({
     message: 'Test history not implemented yet',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }

@@ -21,35 +21,35 @@ const PATTERNS = [
       } else {
         return `let { ${varName} } = $props();`;
       }
-    }
+    },
   },
 
   // 2. Convert let x = y; $: doubled = x * 2 to let x = $state(y); let doubled = $derived(x * 2)
   {
     name: '$: reactive declarations → $derived',
     regex: /\$:\s*(\w+)\s*=\s*([^;]+);?/g,
-    replacement: 'let $1 = $derived($2);'
+    replacement: 'let $1 = $derived($2);',
   },
 
   // 3. Convert $: { ... } to $effect(() => { ... })
   {
     name: '$: statements → $effect',
     regex: /\$:\s*\{([^}]+)\}/g,
-    replacement: '$effect(() => {$1});'
+    replacement: '$effect(() => {$1});',
   },
 
   // 4. Convert $: console.log(...) to $effect(() => { console.log(...) })
   {
     name: '$: single statements → $effect',
     regex: /\$:\s*([^;{]+);?/g,
-    replacement: '$effect(() => { $1; });'
+    replacement: '$effect(() => { $1; });',
   },
 
   // 5. Convert let x to let x = $state() for reactive variables
   {
     name: 'reactive let → $state',
     regex: /(?<!export\s)let\s+(\w+)\s*=\s*([^;]+)(?=.*\$:.*\1|.*bind:\w+.*\1)/g,
-    replacement: 'let $1 = $state($2)'
+    replacement: 'let $1 = $state($2)',
   },
 
   // 6. Fix slot patterns to snippet syntax
@@ -62,36 +62,36 @@ const PATTERNS = [
       } else {
         return `{@render children?.()}`;
       }
-    }
+    },
   },
 
   // 7. Fix slot usage with svelte:fragment
   {
     name: 'svelte:fragment slot → snippet',
     regex: /<svelte:fragment\s+slot="(\w+)"([^>]*)>(.*?)<\/svelte:fragment>/gs,
-    replacement: '{#snippet $1$2}$3{/snippet}'
+    replacement: '{#snippet $1$2}$3{/snippet}',
   },
 
   // 8. Fix Button imports to default import
   {
     name: 'named Button import → default import',
     regex: /import\s*\{\s*Button\s*\}\s*from\s*([^;]+);?/g,
-    replacement: 'import Button from $1;'
+    replacement: 'import Button from $1;',
   },
 
   // 9. Fix on:click → onclick
   {
     name: 'on:click → onclick',
     regex: /on:(\w+)=/g,
-    replacement: 'on$1='
+    replacement: 'on$1=',
   },
 
   // 10. Fix bind:value patterns for Svelte 5
   {
     name: 'bind:value cleanup',
     regex: /bind:value=\{([^}]+)\}/g,
-    replacement: 'bind:value={$1}'
-  }
+    replacement: 'bind:value={$1}',
+  },
 ];
 
 function processFile(filePath) {
@@ -128,7 +128,7 @@ function processFile(filePath) {
       while ((match = exportLetRegex.exec(content)) !== null) {
         exportLets.push({
           name: match[1],
-          defaultValue: match[2]
+          defaultValue: match[2],
         });
       }
 
@@ -137,13 +137,15 @@ function processFile(filePath) {
         content = content.replace(/export let\s+\w+(?:\s*=\s*[^;]+)?;?\n?/g, '');
 
         // Create a single $props destructuring
-        const propsPattern = exportLets.map(prop => {
-          if (prop.defaultValue) {
-            return `${prop.name} = ${prop.defaultValue}`;
-          } else {
-            return prop.name;
-          }
-        }).join(', ');
+        const propsPattern = exportLets
+          .map((prop) => {
+            if (prop.defaultValue) {
+              return `${prop.name} = ${prop.defaultValue}`;
+            } else {
+              return prop.name;
+            }
+          })
+          .join(', ');
 
         // Insert the $props destructuring after the script tag
         content = content.replace(
@@ -153,7 +155,9 @@ function processFile(filePath) {
 
         changes += exportLets.length;
         modified = true;
-        console.log(`    ✅ Combined ${exportLets.length} export let → single $props destructuring`);
+        console.log(
+          `    ✅ Combined ${exportLets.length} export let → single $props destructuring`
+        );
       }
     }
 

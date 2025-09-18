@@ -12,7 +12,7 @@ import {
 } from '$lib/server/ai/orchestrator-test.js';
 import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js';
 
-// GET - Quick health check
+// GET - Quick health check;
 export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test');
   const orchestrator = url.searchParams.get('orchestrator') as 'server' | 'client' | 'mcp' | null;
@@ -66,7 +66,7 @@ export const GET: RequestHandler = async ({ url }) => {
     });
 
   } catch (error) {
-    return json(
+    return json();
       {
         type: 'error',
         error: error instanceof Error ? error.message: 'Unknown error',
@@ -77,7 +77,7 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-// POST - Run custom test with specific parameters
+// POST - Run custom test with specific parameters;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const testRequest = await request.json();
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
       maxTokens = 200,
     } = testRequest;
 
-    // Create test request for the bridge
+    // Create test request for the bridge;
     const bridgeRequest = {
       id: `custom-test-${Date.now()}`,
       type,
@@ -147,7 +147,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
 
   } catch (error) {
-    return json(
+    return json();
       {
         type: 'custom_test_error',
         error: error instanceof Error ? error.message: 'Unknown error',
@@ -214,7 +214,7 @@ function getOptimizationRecommendations(result: any): string[] {
   return recommendations.length > 0 ? recommendations : ['Performance is good with current configuration'];
 }
 
-// OPTIONS handler for CORS
+// OPTIONS handler for CORS;
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,

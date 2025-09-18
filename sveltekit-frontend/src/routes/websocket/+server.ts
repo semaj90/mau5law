@@ -6,7 +6,7 @@
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ request }) => {
-  // Check if this is a WebSocket upgrade request
+  // Check if this is a WebSocket upgrade request;
   if (request.headers.get('upgrade')?.toLowerCase() === 'websocket') {
     
     // Get the WebSocket server from global reference
@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ request }) => {
       console.log('🔌 [WebSocket Route] Handling WebSocket upgrade request');
       
       // In SvelteKit, WebSocket upgrades need to be handled at the adapter level
-      // This route documents the endpoint but actual upgrade is handled by the server
+      // This route documents the endpoint but actual upgrade is handled by the server;
       return new Response('WebSocket upgrade should be handled by server', {
         status: 426,
         headers: {
@@ -31,7 +31,7 @@ export const GET: RequestHandler = async ({ request }) => {
     }
   }
   
-  // Return information about the WebSocket endpoint for non-upgrade requests
+  // Return information about the WebSocket endpoint for non-upgrade requests;
   return new Response(JSON.stringify({
     endpoint: '/websocket',
     protocol: 'Binary QLoRA WebSocket',
@@ -43,7 +43,7 @@ export const GET: RequestHandler = async ({ request }) => {
         query: 'analyze legal contract',
         topologyType: 'legal',
         accuracyTarget: 90,
-        streamBinary: true
+        streamBinary: true,
       }
     }
   }), {

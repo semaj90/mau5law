@@ -8,14 +8,14 @@ import pkg from 'pg';
 const { Client } = pkg;
 import { lucia } from './auth.js';
 
-// Simple user type for authentication
+// Simple user type for authentication;
 export interface SimpleUser {
   id: string;
   email: string;
   first_name?: string;
   last_name?: string;
   role: string;
-  is_active: boolean;
+  is_active: boolean;,
 }
 
 export class SimpleAuthService {
@@ -23,14 +23,14 @@ export class SimpleAuthService {
 
   /**
    * Get database client
-   */
+   */;
   private async getClient() {
     const client = new Client({
       host: 'localhost',
       port: 5432,
       database: 'legal_ai_db',
       user: 'legal_admin',
-      password: '123456'
+      password: '123456',
     });
     await client.connect();
     return client;
@@ -38,7 +38,7 @@ export class SimpleAuthService {
 
   /**
    * Login user with email and password
-   */
+   */;
   async login(email: string, password: string): Promise<SimpleUser> {
     const client = await this.getClient();
     
@@ -79,7 +79,7 @@ export class SimpleAuthService {
         first_name: user.first_name,
         last_name: user.last_name,
         role: user.role,
-        is_active: user.is_active
+        is_active: user.is_active,
       };
 
     } finally {
@@ -89,7 +89,7 @@ export class SimpleAuthService {
 
   /**
    * Create session for user
-   */
+   */;
   async createSession(userId: string) {
     const session = await lucia.createSession(userId, {});
     return session;
@@ -97,7 +97,7 @@ export class SimpleAuthService {
 
   /**
    * Demo user authentication (shortcut)
-   */
+   */;
   async authenticateDemoUser(): Promise<SimpleUser> {
     return await this.login('demo@legalai.gov', 'demo123456');
   }

@@ -6,36 +6,37 @@
 
 import { Redis } from 'ioredis';
 import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper';
+}
 
 export interface CHRROMPattern {
   id: string;
   patternType: 'ui_component' | 'document_layout' | 'visualization' | 'text_pattern';
   bankId: number; // 0-7, like NES CHR-ROM banks
-  tileData: Uint8Array; // 8x8 pixel patterns like NES tiles
+  tileData: Uint8Array; // 8x8 pixel patterns like NES tiles;
   metadata: {
     documentType: 'contract' | 'evidence' | 'brief' | 'citation';
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     cacheHits: number;
     lastAccessed: number;
-    compressionRatio: number;
+    compressionRatio: number;,
   };
   renderData?: {
     colors: [number, number, number, number][]; // RGBA colors
     positions: [number, number][]; // Tile positions
-    attributes: number[]; // Sprite attributes
+    attributes: number[]; // Sprite attributes,
   };
 }
 
 export interface CHRROMCache {
   patterns: Map<string, CHRROMPattern>;
   banks: ArrayBuffer[]; // 8 banks, 8KB each (like NES)
-  hotPatterns: string[]; // Most frequently accessed patterns
+  hotPatterns: string[]; // Most frequently accessed patterns;
   metrics: {
     cacheHits: number;
     cacheMisses: number;
     totalRequests: number;
     averageResponseTime: number;
-    bankUtilization: number[];
+    bankUtilization: number[];,
   };
 }
 
@@ -44,7 +45,7 @@ export interface PatternGenerationOptions {
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   visualStyle: 'modern' | 'classic' | 'minimal' | 'detailed';
   colorScheme: 'default' | 'accessibility' | 'high_contrast' | 'colorblind';
-  animated: boolean;
+  animated: boolean;,
 }
 
 export class CHRROMPatternCache {
@@ -71,7 +72,7 @@ export class CHRROMPatternCache {
         cacheMisses: 0,
         totalRequests: 0,
         averageResponseTime: 0,
-        bankUtilization: Array(this.MAX_BANKS).fill(0)
+        bankUtilization: Array(this.MAX_BANKS).fill(0),
       }
     };
     
@@ -80,12 +81,12 @@ export class CHRROMPatternCache {
   }
 
   private initializeBanks(): void {
-    // Initialize each CHR-ROM bank with default patterns
+    // Initialize each CHR-ROM bank with default patterns;
     for (let bankId = 0; bankId < this.MAX_BANKS; bankId++) {
       const bank = this.cache.banks[bankId];
       const bankView = new Uint8Array(bank);
       
-      // Fill with default tile patterns
+      // Fill with default tile patterns;
       for (let tileIndex = 0; tileIndex < this.BANK_SIZE / this.PATTERN_SIZE; tileIndex++) {
         const tileOffset = tileIndex * this.PATTERN_SIZE;
         this.generateDefaultTilePattern(bankView, tileOffset, bankId, tileIndex);
@@ -99,9 +100,9 @@ export class CHRROMPatternCache {
     bankView: Uint8Array, 
     offset: number, 
     bankId: number, 
-    tileIndex: number
+    tileIndex: number;
   ): void {
-    // Generate NES-style 8x8 tile patterns
+    // Generate NES-style 8x8 tile patterns;
     const patterns: { [key: number]: number[] } = {
       0: [0x3C, 0x42, 0x81, 0x81, 0x81, 0x81, 0x42, 0x3C], // Circle
       1: [0xFF, 0x81, 0x81, 0xBD, 0xBD, 0x81, 0x81, 0xFF], // Rectangle with border
@@ -115,7 +116,7 @@ export class CHRROMPatternCache {
     
     const patternData = patterns[bankId] || patterns[0];
     
-    // Each tile is 8x8, but we store it as 64 bytes for easier manipulation
+    // Each tile is 8x8, but we store it as 64 bytes for easier manipulation;
     for (let row = 0; row < 8; row++) {
       const rowPattern = patternData[row];
       for (let col = 0; col < 8; col++) {
@@ -130,13 +131,13 @@ export class CHRROMPatternCache {
    */
   async getCachedPattern(
     patternId: string,
-    options: PatternGenerationOptions
+    options: PatternGenerationOptions;
   ): Promise<CHRROMPattern | null> {
     const startTime = performance.now();
     this.cache.metrics.totalRequests++;
     
     try {
-      // First check local cache (L1)
+      // First check local cache (L1);
       if (this.cache.patterns.has(patternId)) {
         const pattern = this.cache.patterns.get(patternId)!;
         pattern.metadata.cacheHits++;
@@ -189,7 +190,7 @@ export class CHRROMPatternCache {
   async generateAndCachePattern(
     patternId: string,
     options: PatternGenerationOptions,
-    sourceDocument?: LegalDocumentJSON
+    sourceDocument?: LegalDocumentJSON;
   ): Promise<CHRROMPattern> {
     const startTime = performance.now();
     
@@ -213,7 +214,7 @@ export class CHRROMPatternCache {
           riskLevel: options.riskLevel,
           cacheHits: 0,
           lastAccessed: Date.now(),
-          compressionRatio: this.calculateCompressionRatio(tileData)
+          compressionRatio: this.calculateCompressionRatio(tileData),
         },
         renderData
       };
@@ -248,16 +249,16 @@ export class CHRROMPatternCache {
    */
   private generateLegalDocumentTilePattern(
     options: PatternGenerationOptions,
-    sourceDocument?: LegalDocumentJSON
+    sourceDocument?: LegalDocumentJSON;
   ): Uint8Array {
     const tileData = new Uint8Array(this.PATTERN_SIZE);
     
-    // Base patterns for different document types
+    // Base patterns for different document types;
     const basePatterns = {
       contract: this.generateContractPattern(options.riskLevel),
       evidence: this.generateEvidencePattern(options.riskLevel),
       brief: this.generateBriefPattern(options.riskLevel),
-      citation: this.generateCitationPattern(options.riskLevel)
+      citation: this.generateCitationPattern(options.riskLevel),
     };
     
     let basePattern = basePatterns[options.documentType];
@@ -282,7 +283,7 @@ export class CHRROMPatternCache {
       0xFF, 0x81, 0x81, 0x81, 0x81, 0x81, 0x81, 0xFF, // Border
     ];
     
-    // Add risk-based internal pattern
+    // Add risk-based internal pattern;
     if (riskLevel === 'critical') {
       // Dense pattern for critical risk
       lines[2] = 0xBD; lines[3] = 0xDB; lines[4] = 0xBD; lines[5] = 0xDB;
@@ -301,7 +302,7 @@ export class CHRROMPatternCache {
       0x7E, 0xFE, 0x82, 0x82, 0x82, 0x82, 0x82, 0xFE
     ];
     
-    // Risk-based modifications
+    // Risk-based modifications;
     if (riskLevel === 'critical') {
       lines[2] = 0xBA; lines[3] = 0xAB; lines[4] = 0xBA;
     }
@@ -350,19 +351,19 @@ export class CHRROMPatternCache {
     
     switch (riskLevel) {
       case 'critical':
-        // Increase pattern density
+        // Increase pattern density;
         for (let i = 0; i < modified.length; i += 2) {
           if (modified[i] === 0) modified[i] = 128;
         }
         break;
       case 'high':
-        // Moderate density increase
+        // Moderate density increase;
         for (let i = 0; i < modified.length; i += 4) {
           if (modified[i] === 0) modified[i] = 64;
         }
         break;
       case 'medium':
-        // Slight density increase
+        // Slight density increase;
         for (let i = 0; i < modified.length; i += 8) {
           if (modified[i] === 0) modified[i] = 32;
         }
@@ -389,7 +390,7 @@ export class CHRROMPatternCache {
     const positions: [number, number][] = [];
     const attributes: number[] = [];
     
-    // Convert tile data to render data
+    // Convert tile data to render data;
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
         const pixelValue = tileData[row * 8 + col];
@@ -443,7 +444,7 @@ export class CHRROMPatternCache {
     const bankView = new Uint8Array(bank);
     
     // Find free space in bank (simplified allocation)
-    const tileIndex = Math.floor(Math.random() * (this.BANK_SIZE / this.PATTERN_SIZE));
+    const tileIndex = Math.floor(Math.random() * (this.BANK_SIZE / this.PATTERN_SIZE);
     const offset = tileIndex * this.PATTERN_SIZE;
     
     // Store pattern data
@@ -467,7 +468,7 @@ export class CHRROMPatternCache {
     }
     this.cache.hotPatterns.unshift(patternId);
     
-    // Keep only top 10 hot patterns
+    // Keep only top 10 hot patterns;
     if (this.cache.hotPatterns.length > 10) {
       this.cache.hotPatterns.pop();
     }
@@ -480,10 +481,10 @@ export class CHRROMPatternCache {
   }
 
   private serializePattern(pattern: CHRROMPattern): string {
-    // Serialize pattern for Redis storage
+    // Serialize pattern for Redis storage;
     return JSON.stringify({
       ...pattern,
-      tileData: Array.from(pattern.tileData) // Convert Uint8Array to array
+      tileData: Array.from(pattern.tileData) // Convert Uint8Array to array,
     });
   }
 
@@ -492,12 +493,12 @@ export class CHRROMPatternCache {
     const parsed = JSON.parse(data);
     return {
       ...parsed,
-      tileData: new Uint8Array(parsed.tileData) // Convert array back to Uint8Array
+      tileData: new Uint8Array(parsed.tileData) // Convert array back to Uint8Array,
     };
   }
 
   private startMetricsCollection(): void {
-    // Collect and log metrics every 30 seconds
+    // Collect and log metrics every 30 seconds;
     setInterval(() => {
       this.logMetrics();
     }, 30000);
@@ -518,7 +519,7 @@ export class CHRROMPatternCache {
 
   /**
    * Get cache metrics
-   */
+   */;
   getMetrics() {
     return {
       ...this.cache.metrics,
@@ -531,7 +532,7 @@ export class CHRROMPatternCache {
 
   /**
    * Clear specific bank
-   */
+   */;
   async clearBank(bankId: number): Promise<void> {
     if (bankId < 0 || bankId >= this.MAX_BANKS) {
       throw new Error(`Invalid bank ID: ${bankId}`);
@@ -550,7 +551,7 @@ export class CHRROMPatternCache {
 
   /**
    * Dispose cache and connections
-   */
+   */;
   async dispose(): Promise<void> {
     await this.redis.quit();
     this.cache.patterns.clear();

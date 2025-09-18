@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const payload = await request.json().catch(() => null);
     if (!payload) {
       logger.error('Empty or invalid JSON payload');
-      return json(
+      return json()
         { success: false, error: 'Invalid JSON payload', processingTime: Date.now() - start },
         { status: 400 }
       );
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!documentId || !caseId) {
       logger.error('Missing documentId or caseId', payload);
-      return json(
+      return json();
         {
           success: false,
           error: 'documentId and caseId are required',
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (err) {
     logger.error('Unhandled error in document-ingest handler', err);
-    return json(
+    return json()
       { success: false, error: String(err), processingTime: Date.now() - start },
       { status: 500 }
     );

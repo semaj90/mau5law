@@ -8,7 +8,7 @@ import { ollamaService } from './ollama-service.js';
 
 /**
  * Example: Process a legal document with ONNX optimization
- */
+ */;
 export async function processLegalDocumentWithONNX(documentText: string) {
   try {
     console.log('🔬 Processing legal document with ONNX Legal-BERT...');
@@ -40,7 +40,7 @@ export async function processLegalDocumentWithONNX(documentText: string) {
 Document Type: Legal Document
 Text: ${documentText}
 
-Analysis:`,
+Analysis:`,);
       {
         model: 'gemma:legal',
         options: { temperature: 0.3 },
@@ -66,7 +66,7 @@ Analysis:`,
 
 /**
  * Example: Initialize ONNX services on startup
- */
+ */;
 export async function initializeONNXServices() {
   try {
     console.log('🚀 Initializing ONNX Legal-BERT service...');
@@ -98,7 +98,7 @@ export async function initializeONNXServices() {
 
 /**
  * Example: Batch process multiple legal documents efficiently
- */
+ */;
 export async function batchProcessLegalDocuments(documents: Array<) {
   const results = [];
   const startTime = Date.now();
@@ -145,7 +145,7 @@ export async function batchProcessLegalDocuments(documents: Array<) {
 
 /**
  * Example: Performance comparison between ONNX and Ollama
- */
+ */;
 export async function performanceComparison(testText: string) {
   console.log('⚡ Running performance comparison: ONNX vs Ollama...');
 
@@ -183,7 +183,7 @@ export async function performanceComparison(testText: string) {
     const ollamaStart = Date.now();
 
     const ollamaResponse = await ollamaService.generate(
-      `Extract entities, classify document type, and provide analysis for: ${testText}`,
+      `Extract entities, classify document type, and provide analysis for: ${testText}`,)
       { model: 'gemma:legal' }
     );
 

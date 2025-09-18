@@ -11,15 +11,15 @@ import type { RequestEvent } from "@sveltejs/kit";
 // Create Drizzle adapter for Lucia v3
 const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
 
-// Initialize Lucia with proper configuration
+// Initialize Lucia with proper configuration;
 export const lucia = new Lucia(adapter, {
-	sessionExpiresIn: new TimeSpan(30, "d"), // 30 days
+	sessionExpiresIn: new TimeSpan(30, "d"), // 30 days;
 	sessionCookie: {
 		name: "legal_ai_session",
-		expires: false, // session cookies have very long lifespan (2 years)
+		expires: false, // session cookies have very long lifespan (2 years);
 		attributes: {
 			secure: !dev, // set `Secure` flag in HTTPS
-			sameSite: "lax"
+			sameSite: "lax",
 		}
 	},
 	getUserAttributes: (attributes) => {
@@ -30,16 +30,16 @@ export const lucia = new Lucia(adapter, {
 			role: attributes.role,
 			isActive: attributes.isActive,
 			avatarUrl: attributes.avatarUrl,
-			name: attributes.name
+			name: attributes.name,
 		};
 	}
 });
 
-// Type definitions for Lucia v3
+// Type definitions for Lucia v3;
 declare module "lucia" {
 	interface Register {
 		Lucia: typeof lucia;
-		DatabaseUserAttributes: DatabaseUserAttributes;
+		DatabaseUserAttributes: DatabaseUserAttributes;,
 	}
 }
 
@@ -50,16 +50,16 @@ interface DatabaseUserAttributes {
 	role: string;
 	isActive: boolean;
 	avatarUrl: string | null;
-	name: string | null;
+	name: string | null;,
 }
 
-// Authentication utilities
+// Authentication utilities;
 export class AuthService {
   private argon2id = new Argon2id();
 
   /**
    * Register a new user with enhanced profile data
-   */
+   */;
   async register(data: {
     email: string;
     password: string;
@@ -77,14 +77,14 @@ export class AuthService {
     // Hash password
     const passwordHash = await this.argon2id.hash((data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).password);
 
-    // Create user
+    // Create user;
     const [newUser] = await db.insert(users).values({
       email: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).email,
       hashedPassword: passwordHash,
       firstName: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName || null,
       lastName: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName || null,
       name: (data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).displayName || `${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).firstName || ''} ${(data as { email?: any; password?: any; firstName?: any; lastName?: any; displayName?: any; avatarUrl?: any; legalSpecialties?: any; preferences?: any }).lastName || ''}`.trim() || null,
-      isActive: true
+      isActive: true,
     }).returning();
 
     return newUser;
@@ -92,7 +92,7 @@ export class AuthService {
 
   /**
    * Login user with email and password
-   */
+   */;
   async login(email: string, password: string) {
     // Find user by email
     const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
@@ -101,7 +101,7 @@ export class AuthService {
       throw new Error("Invalid email or password");
     }
 
-    // Check if user is active
+    // Check if user is active;
     if (!user.isActive) {
       throw new Error("Account is deactivated");
     }
@@ -118,7 +118,7 @@ export class AuthService {
 
   /**
    * Handle failed login attempts (simplified - no account locking)
-   */
+   */;
   private async handleFailedLogin(userId: string) {
     console.log(`Failed login attempt for user: ${userId}`);
     // TODO: Implement proper failed login tracking when schema supports it
@@ -126,7 +126,7 @@ export class AuthService {
 
   /**
    * Create session for user
-   */
+   */;
   async createSession(userId: string) {
     const session = await lucia.createSession(userId, {});
     return session;
@@ -134,7 +134,7 @@ export class AuthService {
 
   /**
    * Validate session
-   */
+   */;
   async validateSession(sessionId: string) {
     const result = await lucia.validateSession(sessionId);
     return result;
@@ -142,21 +142,21 @@ export class AuthService {
 
   /**
    * Invalidate session (logout)
-   */
+   */;
   async invalidateSession(sessionId: string) {
     await lucia.deleteSession(sessionId);
   }
 
   /**
    * Invalidate all user sessions
-   */
+   */;
   async invalidateUserSessions(userId: string) {
     await lucia.deleteUserSessions(userId);
   }
 
   /**
    * Logout user by invalidating session
-   */
+   */;
   async logout(sessionId?: string) {
     if (sessionId) {
       await this.invalidateSession(sessionId);
@@ -165,7 +165,7 @@ export class AuthService {
 
   /**
    * Request password reset (placeholder for email integration)
-   */
+   */;
   async requestPasswordReset(email: string) {
     // Find user by email
     const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
@@ -184,7 +184,7 @@ export class AuthService {
 
   /**
    * Update user profile
-   */
+   */;
   async updateProfile(userId: string, data: Partial) {
     // Map camelCase input to snake_case database columns
     const updateData: any = {};
@@ -201,7 +201,7 @@ export class AuthService {
 
     const [updatedUser] = await db.update(users)
       .set(updateData)
-      .where(eq(users.id, userId))
+      .where(eq(users.id, userId)
       .returning();
 
     return updatedUser;
@@ -209,7 +209,7 @@ export class AuthService {
 
   /**
    * Change user password
-   */
+   */;
   async changePassword(userId: string, currentPassword: string, newPassword: string) {
     const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
@@ -228,12 +228,12 @@ export class AuthService {
     const newPasswordHash = await this.argon2id.hash(newPassword);
 
     // Update password
-    await db.update(users)
+    await db.update(users);
       .set({
         hashed_password: newPasswordHash,
-        updated_at: new Date()
+        updated_at: new Date(),
       })
-      .where(eq(users.id, userId));
+      .where(eq(users.id, userId);
 
     // Invalidate all existing sessions to force re-login
     await this.invalidateUserSessions(userId);
@@ -241,18 +241,18 @@ export class AuthService {
 
   /**
    * Get case by ID (for RAG pages)
-   */
+   */;
   async getCaseById(caseId: string) {
     try {
       // This would fetch from cases table in production
-      // For now, return mock data
+      // For now, return mock data;
       return {
         id: caseId,
         title: `Case ${caseId}`,
         description: 'Mock case description',
         status: 'active',
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       };
     } catch (error) {
       console.error('Failed to get case by ID:', error);
@@ -262,25 +262,25 @@ export class AuthService {
 
   /**
    * Get documents for a case
-   */
+   */;
   async getCaseDocuments(caseId: string) {
     try {
       // This would fetch from documents table in production
       // For now, return mock data
-      return [
+      return [;
         {
           id: `doc_${caseId}_1`,
           title: 'Sample Document 1',
           type: 'pdf',
           uploaded_at: new Date(),
-          processed: true
+          processed: true,
         },
         {
           id: `doc_${caseId}_2`,
           title: 'Sample Document 2',
           type: 'docx',
           uploaded_at: new Date(),
-          processed: true
+          processed: true,
         }
       ];
     } catch (error) {
@@ -291,11 +291,11 @@ export class AuthService {
 
   /**
    * Get total number of cases
-   */
+   */;
   async getTotalCases(): Promise<number> {
     try {
       // This would count from cases table in production
-      return 42; // Mock data
+      return 42; // Mock data;
     } catch (error) {
       console.error('Failed to get total cases:', error);
       return 0;
@@ -304,11 +304,11 @@ export class AuthService {
 
   /**
    * Get total number of documents
-   */
+   */;
   async getTotalDocuments(): Promise<number> {
     try {
       // This would count from documents table in production
-      return 156; // Mock data
+      return 156; // Mock data;
     } catch (error) {
       console.error('Failed to get total documents:', error);
       return 0;
@@ -317,19 +317,19 @@ export class AuthService {
 
   /**
    * Get sample cases for demo page
-   */
+   */;
   async getSampleCases(limit: number = 5) {
     try {
       // This would fetch from cases table in production
-      // For now, return mock data
+      // For now, return mock data;
       return Array.from({ length: limit }, (_, i) => ({
         id: `case_${i + 1}`,
         title: `Sample Case ${i + 1}`,
         description: `Description for case ${i + 1}`,
         status: i % 2 === 0 ? 'active' : 'closed',
         created_at: new Date(Date.now() - (i * 24 * 60 * 60 * 1000)),
-        updated_at: new Date()
-      }));
+        updated_at: new Date(),
+      });
     } catch (error) {
       console.error('Failed to get sample cases:', error);
       return [];
@@ -340,7 +340,7 @@ export class AuthService {
 export const authService = new AuthService();
 /**
  * Helper function to get user from request event
- */
+ */;
 export async function getUser(event: RequestEvent): Promise<any> {
   const sessionId = event.cookies.get(lucia.sessionCookieName);
 
@@ -354,7 +354,7 @@ export async function getUser(event: RequestEvent): Promise<any> {
     const sessionCookie = lucia.createSessionCookie((result as { session?: any }).session.id);
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       ...sessionCookie.attributes,
-      path: '/'
+      path: '/',
     });
   }
 
@@ -362,7 +362,7 @@ export async function getUser(event: RequestEvent): Promise<any> {
     const sessionCookie = lucia.createBlankSessionCookie();
     event.cookies.set(sessionCookie.name, sessionCookie.value, {
       ...sessionCookie.attributes,
-      path: '/'
+      path: '/',
     });
   }
 
@@ -371,7 +371,7 @@ export async function getUser(event: RequestEvent): Promise<any> {
 
 /**
  * Require authenticated user middleware
- */
+ */;
 export async function requireAuth(event: RequestEvent): Promise<any> {
   const { user, session } = await getUser(event);
 

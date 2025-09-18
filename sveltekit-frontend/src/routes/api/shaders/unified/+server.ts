@@ -25,15 +25,15 @@ interface UnifiedShader {
     usageCount: number;
     averageExecutionTime: number;
     description: string;
-    tags: string[];
+    tags: string[];,
   };
   config: any;
   relevanceScore?: number;
   embeddingSimilarity?: number;
-  hasEmbedding: boolean;
+  hasEmbedding: boolean;,
 }
 
-// GET endpoint - Unified shader search capabilities
+// GET endpoint - Unified shader search capabilities;
 export const GET: RequestHandler = async () => {
   try {
     // Get stats from both WebGPU and WebGL caches
@@ -49,7 +49,7 @@ export const GET: RequestHandler = async () => {
       totalShaders: {
         webgpu: webgpuStats.totalShaders,
         webgl: webglShaderCount,
-        total: webgpuStats.totalShaders + webglShaderCount
+        total: webgpuStats.totalShaders + webglShaderCount,
       },
       searchOptions: {
         text: 'string (optional) - Semantic text search across shader code and descriptions',
@@ -83,14 +83,14 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// POST endpoint - Unified shader search
+// POST endpoint - Unified shader search;
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now();
 
   try {
     const query: UnifiedShaderQuery = await request.json();
 
-    // Validate query
+    // Validate query;
     if (query.limit && (query.limit < 1 || query.limit > 100)) {
       return json({ error: 'limit must be between 1 and 100' }, { status: 400 });
     }
@@ -102,7 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const results: UnifiedShader[] = [];
     const shaderType = query.shaderType || 'all';
 
-    // Search WebGPU shaders
+    // Search WebGPU shaders;
     if (shaderType === 'webgpu' || shaderType === 'all') {
       try {
         const webgpuResults = await shaderCacheManager.searchShaders({
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
           operation: query.operation,
           tags: query.tags,
           sortBy: query.sortBy,
-          limit: query.limit || 20
+          limit: query.limit || 20,
         });
 
         for (const shader of webgpuResults) {
@@ -127,12 +127,12 @@ export const POST: RequestHandler = async ({ request }) => {
               usageCount: shader.metadata.usageCount,
               averageExecutionTime: shader.metadata.averageExecutionTime,
               description: shader.metadata.description,
-              tags: shader.metadata.tags
+              tags: shader.metadata.tags,
             },
             config: shader.config,
             relevanceScore: shader.relevanceScore,
             embeddingSimilarity: shader.embeddingSimilarity,
-            hasEmbedding: !!shader.embedding
+            hasEmbedding: !!shader.embedding,
           });
         }
       } catch (error) {
@@ -140,11 +140,11 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
 
-    // Search WebGL shaders
+    // Search WebGL shaders;
     if (shaderType === 'webgl' || shaderType === 'all') {
       try {
         const unifiedIndex = await cache.get<string[]>('unified_shader_index') || [];
-        const webglShaderIds = unifiedIndex.filter(id => id.startsWith('webgl:')).map(id => id.replace('webgl:', ''));
+        const webglShaderIds = unifiedIndex.filter(id => id.startsWith('webgl:')).map(id => id.replace('webgl:', '');
 
         for (const shaderId of webglShaderIds) {
           const shaderData = await cache.get<any>(`webgl_shader:${shaderId}`);
@@ -158,13 +158,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
           if (query.tags && query.tags.length > 0) {
             const matchingTags = shaderData.metadata.tags.filter((tag: string) =>
-              query.tags!.some(queryTag => tag.toLowerCase().includes(queryTag.toLowerCase()))
+              query.tags!.some(queryTag => tag.toLowerCase().includes(queryTag.toLowerCase())
             );
             if (matchingTags.length === 0) continue;
             relevanceScore += matchingTags.length * 0.2;
           }
 
-          // Text search
+          // Text search;
           if (query.text) {
             const searchText = query.text.toLowerCase();
             const shaderText = [
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request }) => {
               relevanceScore += 0.5;
             }
 
-            // Semantic similarity using embeddings
+            // Semantic similarity using embeddings;
             if (shaderData.embedding && shaderData.embedding.length > 0) {
               try {
                 // Generate embedding for query text (simplified for WebGL)
@@ -190,7 +190,7 @@ export const POST: RequestHandler = async ({ request }) => {
             }
           }
 
-          // Performance and usage scoring
+          // Performance and usage scoring;
           if (shaderData.metadata.usageCount > 0) {
             relevanceScore += Math.log(shaderData.metadata.usageCount + 1) * 0.1;
           }
@@ -208,12 +208,12 @@ export const POST: RequestHandler = async ({ request }) => {
               usageCount: shaderData.metadata.usageCount,
               averageExecutionTime: shaderData.metadata.averageExecutionTime,
               description: shaderData.metadata.description,
-              tags: shaderData.metadata.tags
+              tags: shaderData.metadata.tags,
             },
             config: shaderData.config,
             relevanceScore,
             embeddingSimilarity,
-            hasEmbedding: !!shaderData.embedding
+            hasEmbedding: !!shaderData.embedding,
           });
         }
       } catch (error) {
@@ -221,7 +221,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
 
-    // Sort results
+    // Sort results;
     results.sort((a, b) => {
       switch (query.sortBy) {
         case 'performance':
@@ -233,7 +233,7 @@ export const POST: RequestHandler = async ({ request }) => {
           return new Date(b.metadata.lastUsed).getTime() - new Date(a.metadata.lastUsed).getTime();
         case 'relevance':
         default:
-          return (b.relevanceScore || 0) - (a.relevanceScore || 0);
+          return (b.relevanceScore || 0) - (a.relevanceScore || 0);,
       }
     });
 
@@ -248,14 +248,14 @@ export const POST: RequestHandler = async ({ request }) => {
         // Truncate shader code for list view
         shaderCodePreview: shader.shaderCode.length > 500 ?
           shader.shaderCode.substring(0, 500) + '...' : shader.shaderCode
-      })),
+      ,})),
       metadata: {
         totalResults: limitedResults.length,
         searchTime,
         query,
         breakdown: {
           webgpu: limitedResults.filter(item => item.length),
-          webgl: limitedResults.filter(item => item.length)
+          webgl: limitedResults.filter(item => item.length),
         }
       }
     };
@@ -273,15 +273,15 @@ export const POST: RequestHandler = async ({ request }) => {
         totalResults: 0,
         searchTime,
         query: Record<string, any>,
-        error: error.message || 'Unified search failed'
+        error: error.message || 'Unified search failed',
       }
     }, { status: 500 });
   }
 };
 
-// DELETE endpoint - Clean up shader caches
+// DELETE endpoint - Clean up shader caches;
 export const DELETE: RequestHandler = async ({ url }) => {
-  // Helper to safely delete a key regardless of underlying cache implementation
+  // Helper to safely delete a key regardless of underlying cache implementation;
   const safeDelete = async (key: string) => {
     const c: any = cache as any;
     if (c && typeof c.delete === 'function') return c.delete(key);
@@ -319,7 +319,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       const unifiedIndexRaw = await cache.get<any>('unified_shader_index');
       const unifiedIndex: string[] = Array.isArray(unifiedIndexRaw)
         ? unifiedIndexRaw
-        : (typeof unifiedIndexRaw === 'string'
+        : (typeof unifiedIndexRaw === 'string';
             ? (() => {
                 try {
                   const parsed = JSON.parse(unifiedIndexRaw);
@@ -331,8 +331,8 @@ export const DELETE: RequestHandler = async ({ url }) => {
             : []);
 
       const webglShaderIds = unifiedIndex
-        .filter(id => typeof id === 'string' && id.startsWith('webgl:'))
-        .map(id => id.replace('webgl:', ''));
+        .filter(id => typeof id === 'string' && id.startsWith('webgl:')
+        .map(id => id.replace('webgl:', '');
 
       for (const id of webglShaderIds) {
         await safeDelete(`webgl_shader:${id}`);
@@ -340,7 +340,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       }
 
       // Update unified index (remove webgl:* entries)
-      const remainingIndex = unifiedIndex.filter(id => !id.startsWith('webgl:'));
+      const remainingIndex = unifiedIndex.filter(id => !id.startsWith('webgl:');
       if (remainingIndex.length > 0) {
         await cache.set('unified_shader_index', remainingIndex, 24 * 60 * 60 * 1000);
       } else {

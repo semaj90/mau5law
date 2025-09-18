@@ -18,7 +18,7 @@ const ALLOWED_TYPES = [
   "image/webp",
 ];
 
-// Ensure upload directory exists
+// Ensure upload directory exists;
 if (!existsSync(UPLOAD_DIR)) {
   mkdirSync(UPLOAD_DIR, { recursive: true });
 }
@@ -47,23 +47,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       size: file.size,
     });
 
-    // Validate file type
+    // Validate file type;
     if (!ALLOWED_TYPES.includes(file.type)) {
       console.log("Invalid file type:", file.type);
-      return json(
-        {
+      return json({
           error: "Invalid file type. Allowed: JPEG, PNG, GIF, SVG, WebP",
-        },
+        },)
         { status: 400 },
       );
     }
-    // Validate file size
+    // Validate file size;
     if (file.size > MAX_FILE_SIZE) {
       console.log("File too large:", file.size);
-      return json(
-        {
+      return json({
           error: "File too large. Maximum size: 5MB",
-        },
+        },)
         { status: 400 },
       );
     }
@@ -87,7 +85,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     await db
       .update(users)
       .set({ avatarUrl })
-      .where(eq(users.id, locals.user.id));
+      .where(eq(users.id, locals.user.id);
 
     console.log("Database updated successfully");
 
@@ -113,7 +111,7 @@ export const DELETE: RequestHandler = async ({ locals }) => {
     await db
       .update(users)
       .set({ avatarUrl: null })
-      .where(eq(users.id, locals.user.id));
+      .where(eq(users.id, locals.user.id);
 
     return json({
       success: true,

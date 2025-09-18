@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({ error: 'Query is required' }, { status: 400 });
     }
 
-    // Use unified search across all systems
+    // Use unified search across all systems;
     const searchResults = await legalAI.searchDocuments({
       query: query.trim(),
       type,
@@ -40,17 +40,16 @@ export const POST: RequestHandler = async ({ request }) => {
         limit,
         threshold,
         caseId: caseId || null,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     });
 
   } catch (error) {
     console.error('Unified search error:', error);
-    return json(
-      { 
+    return json({ 
         error: 'Search failed',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      }, 
+        details: error instanceof Error ? error.message: 'Unknown error',
+      }, )
       { status: 500 }
     );
   }

@@ -7,12 +7,13 @@
 
 import { unifiedServiceRegistry } from '$lib/services/unifiedServiceRegistry';
 import { browser } from '$app/environment';
+}
 
 export interface GraphNode {
   id: string;
   label: string;
   properties: Record<string, any>;
-  type: 'Case' | 'Evidence' | 'Person' | 'Document' | 'Relationship';
+  type: 'Case' | 'Evidence' | 'Person' | 'Document' | 'Relationship';,
 }
 
 export interface GraphEdge {
@@ -30,7 +31,7 @@ export interface GraphResult {
   metadata: {
     queryTime: number;
     resultCount: number;
-    source: 'wasm' | 'cache' | 'remote';
+    source: 'wasm' | 'cache' | 'remote';,
   };
 }
 
@@ -47,7 +48,7 @@ export interface WasmEngineStats {
   memoryUsage: string;
   uptime: number;
   cacheHitRate: number;
-  lastHydration: Date | null;
+  lastHydration: Date | null;,
 }
 
 class TinyGoWasmGraphEngine implements WasmGraphEngine {
@@ -87,7 +88,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
 
   private async loadMockWasmModule() {
     // Mock WASM module until TinyGo compilation is ready
-    // TODO: Replace with actual WASM loading
+    // TODO: Replace with actual WASM loading;
     return {
       query: (queryStr: string) => {
         // Simulate WASM graph query execution
@@ -97,21 +98,21 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         return {
           nodes: nodeCount,
           edges: edgeCount,
-          executionTime: Math.floor(Math.random() * 10) + 1
+          executionTime: Math.floor(Math.random() * 10) + 1,
         };
       },
       
       recommend: (nodeId: string, nodeType: string) => {
-        // Simulate recommendation algorithm
+        // Simulate recommendation algorithm;
         return {
           recommendations: Math.floor(Math.random() * 5) + 1,
-          confidence: Math.random()
+          confidence: Math.random(),
         };
       },
       
       memory: () => ({
         used: Math.floor(Math.random() * 1000000) + 500000, // bytes
-        allocated: 2000000
+        allocated: 2000000,
       })
     };
   }
@@ -133,12 +134,12 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           metadata: {
             ...cached.metadata,
             source: 'cache',
-            queryTime: Date.now() - startTime
+            queryTime: Date.now() - startTime,
           }
         };
       }
 
-      // Execute via WASM if available
+      // Execute via WASM if available;
       if (this.wasmModule) {
         const wasmResult = this.wasmModule.query(query);
         const result = this.transformWasmResult(query, wasmResult);
@@ -152,7 +153,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           metadata: {
             ...result.metadata,
             source: 'wasm',
-            queryTime: Date.now() - startTime
+            queryTime: Date.now() - startTime,
           }
         };
       }
@@ -166,7 +167,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         metadata: {
           ...remoteResult.metadata,
           source: 'remote',
-          queryTime: Date.now() - startTime
+          queryTime: Date.now() - startTime,
         }
       };
 
@@ -181,7 +182,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
     const nodes: GraphNode[] = [];
     const edges: GraphEdge[] = [];
     
-    // Generate mock nodes based on WASM result
+    // Generate mock nodes based on WASM result;
     for (let i = 0; i < wasmResult.nodes; i++) {
       nodes.push({
         id: `node_${i}`,
@@ -189,12 +190,12 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         type: ['Case', 'Evidence', 'Person', 'Document'][Math.floor(Math.random() * 4)] as any,
         properties: {
           created: new Date().toISOString(),
-          source: 'wasm'
+          source: 'wasm',
         }
       });
     }
 
-    // Generate mock edges
+    // Generate mock edges;
     for (let i = 0; i < wasmResult.edges && i < nodes.length - 1; i++) {
       edges.push({
         id: `edge_${i}`,
@@ -203,7 +204,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
         label: 'RELATED_TO',
         properties: {
           weight: Math.random(),
-          created: new Date().toISOString()
+          created: new Date().toISOString(),
         }
       });
     }
@@ -214,7 +215,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: wasmResult.executionTime,
         resultCount: nodes.length + edges.length,
-        source: 'wasm'
+        source: 'wasm',
       }
     };
   }
@@ -222,10 +223,10 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
   private async executeRemoteQuery(query: string): Promise<GraphResult> {
     // This would hit a remote Neo4j or graph service
     // For now, return mock data
-    await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 50));
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 50);
     
     return {
-      nodes: [
+      nodes: [;
         {
           id: 'remote_1',
           label: 'Remote Case',
@@ -237,7 +238,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       metadata: {
         queryTime: 75,
         resultCount: 1,
-        source: 'remote'
+        source: 'remote',
       }
     };
   }
@@ -267,7 +268,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
           properties: {
             confidence: wasmResult.confidence,
             source: 'wasm_recommendation',
-            basedOn: nodeId
+            basedOn: nodeId,
           }
         });
       }
@@ -287,7 +288,7 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
       memoryUsage: `${Math.round(memoryInfo.used / 1024 / 1024 * 100) / 100}MB`,
       uptime: Date.now() - this.startTime,
       cacheHitRate: this.cacheRequests > 0 ? (this.cacheHits / this.cacheRequests) * 100 : 0,
-      lastHydration: this.lastHydration
+      lastHydration: this.lastHydration,
     };
   }
 
@@ -326,14 +327,14 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
   }
 
   private transformStoredResult(storedResult: any): GraphResult {
-    // Transform stored result to GraphResult format
+    // Transform stored result to GraphResult format;
     return {
       nodes: storedResult.nodes || [],
       edges: storedResult.edges || [],
       metadata: {
         queryTime: storedResult.queryTime || 0,
         resultCount: (storedResult.nodes?.length || 0) + (storedResult.edges?.length || 0),
-        source: 'cache'
+        source: 'cache',
       }
     };
   }
@@ -352,12 +353,12 @@ class TinyGoWasmGraphEngine implements WasmGraphEngine {
 // Export singleton instance
 export const wasmGraphEngine = new TinyGoWasmGraphEngine();
 ;
-// Export factory for testing
+// Export factory for testing;
 export function createWasmGraphEngine(): WasmGraphEngine {
   return new TinyGoWasmGraphEngine();
 }
 
-// Type declarations for global WASM engine
+// Type declarations for global WASM engine;
 declare global {
   var __WASM_GRAPH_ENGINE__: WasmGraphEngine | undefined;
   var __WASM_ENGINE_START_TIME__: number | undefined;

@@ -16,7 +16,7 @@ interface WasmModule {
   calculate_readability_score(text: string): number;
   detect_sensitive_information(text: string): string;
   compress_document_features(features: Uint8Array): Uint8Array;
-  memory: WebAssembly.Memory;
+  memory: WebAssembly.Memory;,
 }
 
 interface ProcessingResult {
@@ -28,7 +28,7 @@ interface ProcessingResult {
   fingerprint: string;
   similarity?: number;
   readabilityScore: number;
-  processingTime: number;
+  processingTime: number;,
 }
 
 interface LegalEntity {
@@ -37,7 +37,7 @@ interface LegalEntity {
   confidence: number;
   startIndex: number;
   endIndex: number;
-  context: string;
+  context: string;,
 }
 
 interface LegalCitation {
@@ -45,7 +45,7 @@ interface LegalCitation {
   citation: string;
   jurisdiction: string;
   year?: number;
-  relevance: number;
+  relevance: number;,
 }
 
 interface SensitiveInfo {
@@ -56,7 +56,7 @@ interface SensitiveInfo {
   location: { start: number; end: number };
 }
 
-// WebAssembly Legal Processor Class
+// WebAssembly Legal Processor Class;
 export class WasmLegalProcessor {
   private wasmModule: WasmModule | null = null;
   private isInitialized = false;
@@ -88,7 +88,7 @@ export class WasmLegalProcessor {
     await this.initPromise;
   }
 
-  // Process document with full analysis pipeline
+  // Process document with full analysis pipeline;
   async processDocument(file: File): Promise<ProcessingResult> {
     await this.ensureInitialized();
 
@@ -96,7 +96,7 @@ export class WasmLegalProcessor {
 
     try {
       // 1. Extract text content
-      const buffer = new Uint8Array(await file.arrayBuffer());
+      const buffer = new Uint8Array(await file.arrayBuffer();
       const extractedText = this.wasmModule!.extract_pdf_text(buffer);
 
       // 2. Classify document type
@@ -140,20 +140,20 @@ export class WasmLegalProcessor {
     }
   }
 
-  // Calculate similarity between two documents
+  // Calculate similarity between two documents;
   async calculateSimilarity(text1: string, text2: string): Promise<number> {
     await this.ensureInitialized();
     return this.wasmModule!.calculate_text_similarity(text1, text2);
   }
 
-  // Batch process multiple documents
+  // Batch process multiple documents;
   async batchProcess(files: File[]): Promise<ProcessingResult[]> {
     await this.ensureInitialized();
 
     const results: ProcessingResult[] = [];
 
     // Process documents in parallel with Web Workers simulation
-    const promises = files.map(file => this.processDocument(file));
+    const promises = files.map(file => this.processDocument(file);
     const batchResults = await Promise.allSettled(promises);
 
     batchResults.forEach((result, index) => {
@@ -161,7 +161,7 @@ export class WasmLegalProcessor {
         results.push((result as { status?: any; value?: any; reason?: any; text?: any; sensitiveInfo?: any }).value);
       } else {
         console.error(`Failed to process ${files[index].name}:`, (result as { status?: any; value?: any; reason?: any; text?: any; sensitiveInfo?: any }).reason);
-        // Add error result
+        // Add error result;
         results.push({
           text: '',
           documentType: 'error',
@@ -170,7 +170,7 @@ export class WasmLegalProcessor {
           sensitiveInfo: [],
           fingerprint: '',
           readabilityScore: 0,
-          processingTime: 0
+          processingTime: 0,
         });
       }
     });
@@ -178,7 +178,7 @@ export class WasmLegalProcessor {
     return results;
   }
 
-  // Real-time text analysis as user types
+  // Real-time text analysis as user types;
   async analyzeTextRealtime(text: string): Promise<any> {
     await this.ensureInitialized();
 
@@ -187,7 +187,7 @@ export class WasmLegalProcessor {
         entities: [],
         citations: [],
         documentType: 'fragment',
-        readability: 0
+        readability: 0,
       };
     }
 
@@ -204,7 +204,7 @@ export class WasmLegalProcessor {
     };
   }
 
-  // Generate document comparison report
+  // Generate document comparison report;
   async compareDocuments(doc1: ProcessingResult, doc2: ProcessingResult): Promise<any> {
     await this.ensureInitialized();
 
@@ -223,11 +223,11 @@ export class WasmLegalProcessor {
     );
 
     // Find unique content
-    const doc1Entities = new Set(doc1.legalEntities.map(e => e.text.toLowerCase()));
-    const doc2Entities = new Set(doc2.legalEntities.map(e => e.text.toLowerCase()));
+    const doc1Entities = new Set(doc1.legalEntities.map(e => e.text.toLowerCase());
+    const doc2Entities = new Set(doc2.legalEntities.map(e => e.text.toLowerCase());
 
-    const uniqueToDoc1 = [...doc1Entities].filter(e => !doc2Entities.has(e));
-    const uniqueToDoc2 = [...doc2Entities].filter(e => !doc1Entities.has(e));
+    const uniqueToDoc1 = [...doc1Entities].filter(e => !doc2Entities.has(e);
+    const uniqueToDoc2 = [...doc2Entities].filter(e => !doc1Entities.has(e);
 
     const fingerprintMatch = doc1.fingerprint === doc2.fingerprint;
 
@@ -241,7 +241,7 @@ export class WasmLegalProcessor {
     };
   }
 
-  // Privacy-safe processing (mask sensitive info)
+  // Privacy-safe processing (mask sensitive info);
   async processSafely(file: File): Promise<ProcessingResult> {
     const result = await this.processDocument(file);
 
@@ -255,18 +255,18 @@ export class WasmLegalProcessor {
 
     return {
       ...result,
-      text: maskedText
+      text: maskedText,
     };
   }
 
-  // Helper methods
+  // Helper methods;
   private bufferToHex(buffer: Uint8Array): string {
     return Array.from(buffer)
-      .map(b => b.toString(16).padStart(2, '0'))
+      .map(b => b.toString(16).padStart(2, '0')
       .join('');
   }
 
-  // Mock WASM module for demo (replace with actual WASM in production)
+  // Mock WASM module for demo (replace with actual WASM in production);
   private async createMockWasmModule(): Promise<WasmModule> {
     return {
       extract_pdf_text: (buffer: Uint8Array): string => {
@@ -279,7 +279,7 @@ export class WasmLegalProcessor {
           complexity: this.calculateComplexity(text),
           legalTermDensity: this.calculateLegalTermDensity(text),
           structure: this.analyzeStructure(text),
-          classification: this.classifyDocument(text)
+          classification: this.classifyDocument(text),
         };
         return JSON.stringify(analysis);
       },
@@ -287,7 +287,7 @@ export class WasmLegalProcessor {
       calculate_text_similarity: (text1: string, text2: string): number => {
         return this.jaccardSimilarity(
           this.tokenize(text1.toLowerCase()),
-          this.tokenize(text2.toLowerCase())
+          this.tokenize(text2.toLowerCase()
         );
       },
 
@@ -353,7 +353,7 @@ export class WasmLegalProcessor {
             type: 'case',
             citation: match[0],
             jurisdiction: 'Federal',
-            relevance: 0.8
+            relevance: 0.8,
           });
         }
 
@@ -364,7 +364,7 @@ export class WasmLegalProcessor {
             type: 'statute',
             citation: match[0],
             jurisdiction: 'Federal',
-            relevance: 0.9
+            relevance: 0.9,
           });
         }
 
@@ -383,7 +383,7 @@ export class WasmLegalProcessor {
         const avgSyllablesPerWord = syllables / words;
 
         const score = 206.835 - (1.015 * avgWordsPerSentence) - (84.6 * avgSyllablesPerWord);
-        return Math.max(0, Math.min(100, score));
+        return Math.max(0, Math.min(100, score);
       },
 
       detect_sensitive_information: (text: string): string => {
@@ -419,14 +419,14 @@ export class WasmLegalProcessor {
 
       compress_document_features: (features: Uint8Array): Uint8Array => {
         // Simple compression simulation
-        return new Uint8Array(features.buffer, 0, Math.floor(features.length * 0.7));
+        return new Uint8Array(features.buffer, 0, Math.floor(features.length * 0.7);
       },
 
       memory: new WebAssembly.Memory({ initial: 1 })
     };
   }
 
-  // Utility functions for mock implementation
+  // Utility functions for mock implementation;
   private calculateComplexity(text: string): number {
     const avgWordsPerSentence = text.split(/\s+/).length / text.split(/[.!?]+/).length;
     return Math.min(1, avgWordsPerSentence / 20);
@@ -443,7 +443,7 @@ export class WasmLegalProcessor {
     return {
       paragraphs: text.split(/\n\s*\n/).length,
       sections: (text.match(/^\d+\./gm) || []).length,
-      headers: (text.match(/^[A-Z\s]+$/gm) || []).length
+      headers: (text.match(/^[A-Z\s]+$/gm) || []).length,
     };
   }
 
@@ -456,7 +456,7 @@ export class WasmLegalProcessor {
   private jaccardSimilarity(set1: string[], set2: string[]): number {
     const s1 = new Set(set1);
     const s2 = new Set(set2);
-    const intersection = new Set([...s1].filter(x => s2.has(x)));
+    const intersection = new Set([...s1].filter(x => s2.has(x));
     const union = new Set([...s1, ...s2]);
     return union.size === 0 ? 0 : intersection.size / union.size;
   }
@@ -488,7 +488,7 @@ export class WasmLegalProcessor {
 // Singleton instance for global use
 export const wasmLegalProcessor = new WasmLegalProcessor();
 
-// Web Worker wrapper for heavy processing
+// Web Worker wrapper for heavy processing;
 export class WasmProcessingWorker {
   private worker: Worker | null = null;
 
@@ -514,7 +514,7 @@ export class WasmProcessingWorker {
     `;
 
     const blob = new Blob([workerScript], { type: 'application/javascript' });
-    this.worker = new Worker(URL.createObjectURL(blob));
+    this.worker = new Worker(URL.createObjectURL(blob);
   }
 
   async processInWorker(method: string, ...args: any[]): Promise<any> {
@@ -534,7 +534,7 @@ export class WasmProcessingWorker {
         if (e.data.id === id) {
           this.worker!.removeEventListener('message', handleMessage);
           if (e.data.error) {
-            reject(new Error(e.data.error));
+            reject(new Error(e.data.error);
           } else {
             resolve(e.data.result);
           }

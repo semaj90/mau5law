@@ -29,7 +29,7 @@ function isValidGpuStatus(payload: any): payload is GPUStatus {
 }
 
 async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms);
 }
 
 async function fetchWithTimeoutAndRetries(path: string, timeoutMs = TIMEOUT_MS, retries = RETRIES, delayMs = RETRY_DELAY_MS): Promise<GPUStatus> {
@@ -55,7 +55,7 @@ async function fetchWithTimeoutAndRetries(path: string, timeoutMs = TIMEOUT_MS, 
       if (attempt < retries) {
         // exponential backoff with small jitter
         const backoff = delayMs * 2 ** attempt;
-        const jitter = Math.floor(Math.random() * Math.max(10, Math.floor(backoff * 0.2)));
+        const jitter = Math.floor(Math.random() * Math.max(10, Math.floor(backoff * 0.2));
         await delay(backoff + jitter);
         continue;
       }
@@ -67,18 +67,18 @@ async function fetchWithTimeoutAndRetries(path: string, timeoutMs = TIMEOUT_MS, 
 }
 
 export const GET: RequestHandler = async () => {
-  // Quick health check for Ollama service. Any failure -> graceful shim/cache fallback.
+  // Quick health check for Ollama service. Any failure -> graceful shim/cache fallback.;
   try {
     const healthy = await ollamaService.isHealthy();
     if (!healthy) {
-      // If we have a recent cached result, return it instead of a hard shim
+      // If we have a recent cached result, return it instead of a hard shim;
       if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
         // return cached but mark as cache source
         return json({ ok: false, source: 'cache', gpu: cached.payload.gpu, reason: 'ollama_unhealthy' }, { status: 200 });
       }
 
       return json(
-        { ok: false, source: 'shim', gpu: { ...DEFAULT_SHIM }, reason: 'ollama_unhealthy' },
+        { ok: false, source: 'shim', gpu: { ...DEFAULT_SHIM }, reason: 'ollama_unhealthy' },)>
         { status: 200 }
       );
     }
@@ -90,12 +90,12 @@ export const GET: RequestHandler = async () => {
     return json({ ok: false, source: 'shim', gpu: { ...DEFAULT_SHIM }, reason: 'health_check_error' }, { status: 200 });
   }
 
-  // Serve from cache if fresh
+  // Serve from cache if fresh;
   if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
     return json({ ok: true, source: 'cache', gpu: cached.payload.gpu }, { status: 200 });
   }
 
-  // Attempt to fetch from GO service with retries and timeout
+  // Attempt to fetch from GO service with retries and timeout;
   try {
     const gpu = await fetchWithTimeoutAndRetries('/api/gpu-status', TIMEOUT_MS, RETRIES, RETRY_DELAY_MS);
     const payload: FetchResult = { ok: true, source: 'go', gpu };
@@ -104,7 +104,7 @@ export const GET: RequestHandler = async () => {
   } catch (err: any) {
     console.warn('gpu-status: upstream fetch failed:', err?.message ?? err);
 
-    // if cache exists (even stale), return it as best-effort
+    // if cache exists (even stale), return it as best-effort;
     if (cached) {
       // keep cache timestamp but return a negative ok to indicate degraded state
       const payload: FetchResult = { ok: false, source: 'cache', gpu: cached.payload.gpu, reason: 'upstream_unreachable' };

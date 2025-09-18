@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       return new Response(JSON.stringify({ error: 'No file provided' }), { status: 400 });
     }
     const bucket = url.searchParams.get('bucket') || undefined;
-    const ok = await minioService.initialize(); // idempotent ensure client ready
+    const ok = await minioService.initialize(); // idempotent ensure client ready;
     if (!ok) {
       return new Response(JSON.stringify({ error: 'MinIO unavailable' }), { status: 503 });
     }

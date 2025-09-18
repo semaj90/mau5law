@@ -5,6 +5,7 @@
 
 import { productionServiceRegistry, getOptimalServiceForRoute, type ServiceDefinition } from '$lib/services/production-service-registry.js';
 import { URL } from "url";
+}
 
 export interface ServiceRequest {
   route: string;
@@ -21,7 +22,7 @@ export interface ServiceResponse<T = any> {
   headers: Record<string, string>;
   protocol: string;
   service: string;
-  latency: number;
+  latency: number;,
 }
 
 export interface ProtocolClient {
@@ -39,7 +40,7 @@ class HTTPClient implements ProtocolClient {
         ...options.headers
       },
       body: options.body ? JSON.stringify(options.body) : undefined,
-      signal: AbortSignal.timeout(options.timeout || 30000)
+      signal: AbortSignal.timeout(options.timeout || 30000),
     });
 
     const data = await response.json();
@@ -71,8 +72,8 @@ class WebSocketClient implements ProtocolClient {
           route: options.route,
           method: options.method,
           body: options.body,
-          headers: options.headers
-        }));
+          headers: options.headers,
+        });
       };
 
       ws.onmessage = (event: any) => {
@@ -91,10 +92,10 @@ class WebSocketClient implements ProtocolClient {
         ws.close();
       };
 
-      ws.onerror = () => reject(new Error('WebSocket connection failed'));
+      ws.onerror = () => reject(new Error('WebSocket connection failed');
       ws.onclose = (event: any) => {
         if (event.code !== 1000) {
-          reject(new Error(`WebSocket closed with code: ${event.code}`));
+          reject(new Error(`WebSocket closed with code: ${event.code}`);
         }
       };
 
@@ -103,7 +104,7 @@ class WebSocketClient implements ProtocolClient {
   }
 }
 
-// QUIC Client (fallback to HTTP for browser compatibility)
+// QUIC Client (fallback to HTTP for browser compatibility);
 class QUICClient implements ProtocolClient {
   async request<T>(url: string, options: ServiceRequest): Promise<ServiceResponse<T> {
     // In browser environment, fallback to HTTP
@@ -114,7 +115,7 @@ class QUICClient implements ProtocolClient {
   }
 }
 
-// gRPC Client (uses gRPC-Web for browser compatibility)
+// gRPC Client (uses gRPC-Web for browser compatibility);
 class GRPCClient implements ProtocolClient {
   async request<T>(url: string, options: ServiceRequest): Promise<ServiceResponse<T> {
     // For browser environment, would use grpc-web
@@ -142,7 +143,7 @@ export class ProductionAPIClient {
 
     const { primary, fallbacks, protocol } = routeMapping;
     
-    // Try primary service first
+    // Try primary service first;
     try {
       const response = await this.executeRequest<T>(primary, protocol.protocol as any, options);
       this.recordMetrics(options.route, response.latency);
@@ -150,7 +151,7 @@ export class ProductionAPIClient {
     } catch (primaryError) {
       console.warn(`Primary service failed for ${options.route}:`, primaryError);
       
-      // Try fallback services
+      // Try fallback services;
       for (const fallbackService of fallbacks) {
         try {
           const response = await this.executeRequest<T>(fallbackService, 'http', options);
@@ -168,7 +169,7 @@ export class ProductionAPIClient {
   private async executeRequest<T>(
     service: ServiceDefinition, 
     protocol: 'http' | 'grpc' | 'quic' | 'websocket',
-    options: ServiceRequest
+    options: ServiceRequest;
   ): Promise<ServiceResponse<T> {
     const baseUrl = `http://localhost:${service.port}`;
     const fullUrl = `${baseUrl}${options.route}`;
@@ -195,7 +196,7 @@ export class ProductionAPIClient {
     const metrics = this.requestMetrics.get(route)!;
     metrics.push(latency);
     
-    // Keep only last 100 measurements
+    // Keep only last 100 measurements;
     if (metrics.length > 100) {
       metrics.shift();
     }
@@ -206,7 +207,7 @@ export class ProductionAPIClient {
     avgLatency: number;
     p95Latency: number;
     minLatency: number;
-    maxLatency: number;
+    maxLatency: number;,
   } {
     const metrics = this.requestMetrics.get(route) || [];
     if (metrics.length === 0) {
@@ -221,17 +222,17 @@ export class ProductionAPIClient {
       avgLatency: Math.round(metrics.reduce((sum, val) => sum + val, 0) / metrics.length),
       p95Latency: sorted[p95Index] || 0,
       minLatency: sorted[0] || 0,
-      maxLatency: sorted[sorted.length - 1] || 0
+      maxLatency: sorted[sorted.length - 1] || 0,
     };
   }
 
   async getClusterStatus(this: ProductionAPIClient): Promise<{
     health: any;
     metrics: Record<string, any>;
-    activeRoutes: string[];
+    activeRoutes: string[];,
   }> {
     const health = await productionServiceRegistry.getClusterHealth();
-    const activeRoutes: string[] = Array.from(this.requestMetrics.keys());
+    const activeRoutes: string[] = Array.from(this.requestMetrics.keys();
     const metrics = Object.fromEntries(
       activeRoutes.map(route => [route, this.getRouteMetrics(route)])
     );
@@ -240,7 +241,7 @@ export class ProductionAPIClient {
   }
 }
 
-// Convenience methods for specific service categories
+// Convenience methods for specific service categories;
 export class RAGAPIClient {
   constructor(private client: ProductionAPIClient) {}
 
@@ -275,23 +276,23 @@ export class UploadAPIClient {
   async uploadFile(file: File, metadata?: unknown): Promise<ServiceResponse> {
     const formData = new FormData();
     formData.append('file', file);
-    if (metadata) formData.append('metadata', JSON.stringify(metadata));
+    if (metadata) formData.append('metadata', JSON.stringify(metadata);
 
     return this.client.request({
       route: '/api/v1/upload/file',
       method: 'POST',
-      body: formData
+      body: formData,
     });
   }
 
   async batchUpload(files: File[]): Promise<ServiceResponse> {
     const formData = new FormData();
-    files.forEach((file, index) => formData.append(`file${index}`, file));
+    files.forEach((file, index) => formData.append(`file${index}`, file);
 
     return this.client.request({
       route: '/api/v1/upload/batch',
       method: 'POST',
-      body: formData
+      body: formData,
     });
   }
 }
@@ -302,21 +303,21 @@ export class ClusterAPIClient {
   async getHealth(): Promise<ServiceResponse> {
     return this.client.request({
       route: '/api/v1/cluster/health',
-      method: 'GET'
+      method: 'GET',
     });
   }
 
   async getServices(): Promise<ServiceResponse> {
     return this.client.request({
       route: '/api/v1/cluster/services',
-      method: 'GET'
+      method: 'GET',
     });
   }
 
   async getMetrics(): Promise<ServiceResponse> {
     return this.client.request({
       route: '/api/v1/cluster/metrics',
-      method: 'GET'
+      method: 'GET',
     });
   }
 }
@@ -335,7 +336,7 @@ export class XStateAPIClient {
   async getState(): Promise<ServiceResponse> {
     return this.client.request({
       route: '/api/v1/xstate/state',
-      method: 'GET'
+      method: 'GET',
     });
   }
 }

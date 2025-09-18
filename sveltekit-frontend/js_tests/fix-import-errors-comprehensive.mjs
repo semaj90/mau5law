@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import fs from "fs";
-import path from "path";
-import { glob } from "glob";
+import fs from 'fs';
+import path from 'path';
+import { glob } from 'glob';
 
-console.log("🔧 Comprehensive Import Error Fix for SvelteKit Project");
-console.log("=" * 60);
+console.log('🔧 Comprehensive Import Error Fix for SvelteKit Project');
+console.log('=' * 60);
 
 const fixes = [];
 const errors = [];
@@ -27,12 +27,9 @@ const importFixes = {
 
   // Common import corrections
   'from "$lib/components/ui/index.js/index"': 'from "$lib/components/ui"',
-  'from "$lib/components/ui/ExpandGrid.svelte/index"':
-    'from "$lib/components/ui"',
-  'from "$lib/components/ui/GoldenLayout.svelte/index"':
-    'from "$lib/components/ui"',
-  'from "$lib/components/ui/SmartTextarea.svelte/index"':
-    'from "$lib/components/ui"',
+  'from "$lib/components/ui/ExpandGrid.svelte/index"': 'from "$lib/components/ui"',
+  'from "$lib/components/ui/GoldenLayout.svelte/index"': 'from "$lib/components/ui"',
+  'from "$lib/components/ui/SmartTextarea.svelte/index"': 'from "$lib/components/ui"',
   'from "$lib/components/ui/Tooltip.svelte/index"': 'from "$lib/components/ui"',
 };
 
@@ -62,37 +59,34 @@ const componentImportFixes = {
 // Additional common fixes
 const additionalFixes = {
   // Fix tabindex attributes
-  'tabindex="0"': "tabindex={0}",
-  'tabindex="1"': "tabindex={1}",
-  'tabindex="-1"': "tabindex={-1}",
+  'tabindex="0"': 'tabindex={0}',
+  'tabindex="1"': 'tabindex={1}',
+  'tabindex="-1"': 'tabindex={-1}',
 
   // Fix boolean attributes
-  'disabled="true"': "disabled={true}",
-  'disabled="false"': "disabled={false}",
-  'readonly="true"': "readonly={true}",
-  'readonly="false"': "readonly={false}",
-  'checked="true"': "checked={true}",
-  'checked="false"': "checked={false}",
+  'disabled="true"': 'disabled={true}',
+  'disabled="false"': 'disabled={false}',
+  'readonly="true"': 'readonly={true}',
+  'readonly="false"': 'readonly={false}',
+  'checked="true"': 'checked={true}',
+  'checked="false"': 'checked={false}',
 
   // Fix CSS @apply for UnoCSS/Tailwind
-  "Unknown at-rule @apply": "", // This will be handled separately
+  'Unknown at-rule @apply': '', // This will be handled separately
 };
 
 async function findSvelteFiles() {
-  const patterns = ["src/**/*.svelte", "src/**/*.ts", "src/**/*.js"];
+  const patterns = ['src/**/*.svelte', 'src/**/*.ts', 'src/**/*.js'];
 
   const allFiles = [];
   for (const pattern of patterns) {
     try {
       const files = await glob(pattern, {
-        ignore: ["node_modules/**", ".svelte-kit/**"],
+        ignore: ['node_modules/**', '.svelte-kit/**'],
       });
       allFiles.push(...files);
     } catch (error) {
-      console.warn(
-        `Warning: Could not find files with pattern ${pattern}:`,
-        error.message,
-      );
+      console.warn(`Warning: Could not find files with pattern ${pattern}:`, error.message);
     }
   }
 
@@ -108,8 +102,8 @@ function fixFileContent(content, filePath) {
   for (const [badImport, goodImport] of Object.entries(importFixes)) {
     if (fixedContent.includes(badImport)) {
       fixedContent = fixedContent.replace(
-        new RegExp(badImport.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
-        goodImport,
+        new RegExp(badImport.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+        goodImport
       );
       fileFixCount++;
       appliedFixes.push(`Import: ${badImport} → ${goodImport}`);
@@ -120,8 +114,8 @@ function fixFileContent(content, filePath) {
   for (const [badImport, goodImport] of Object.entries(componentImportFixes)) {
     if (fixedContent.includes(badImport)) {
       fixedContent = fixedContent.replace(
-        new RegExp(badImport.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
-        goodImport,
+        new RegExp(badImport.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+        goodImport
       );
       fileFixCount++;
       appliedFixes.push(`Component: ${badImport} → ${goodImport}`);
@@ -132,8 +126,8 @@ function fixFileContent(content, filePath) {
   for (const [badPattern, goodPattern] of Object.entries(additionalFixes)) {
     if (goodPattern && fixedContent.includes(badPattern)) {
       fixedContent = fixedContent.replace(
-        new RegExp(badPattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
-        goodPattern,
+        new RegExp(badPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
+        goodPattern
       );
       fileFixCount++;
       appliedFixes.push(`Attribute: ${badPattern} → ${goodPattern}`);
@@ -146,21 +140,21 @@ function fixFileContent(content, filePath) {
     {
       pattern: /from\s+["'](\$lib\/components\/ui\/[^"']+)\/index["']/g,
       replacement: 'from "$1"',
-      description: "Remove /index from imports",
+      description: 'Remove /index from imports',
     },
 
     // Fix .svelte/index imports
     {
       pattern: /from\s+["'](\$lib\/components\/ui\/[^"']+)\.svelte\/index["']/g,
       replacement: 'from "$lib/components/ui"',
-      description: "Fix .svelte/index imports",
+      description: 'Fix .svelte/index imports',
     },
 
     // Fix duplicate .js extensions
     {
       pattern: /from\s+["'](\$lib\/[^"']+)\.js\.js["']/g,
       replacement: 'from "$1.js"',
-      description: "Fix duplicate .js extensions",
+      description: 'Fix duplicate .js extensions',
     },
   ];
 
@@ -169,9 +163,7 @@ function fixFileContent(content, filePath) {
     if (matches) {
       fixedContent = fixedContent.replace(fix.pattern, fix.replacement);
       fileFixCount += matches.length;
-      appliedFixes.push(
-        `Regex: ${fix.description} (${matches.length} matches)`,
-      );
+      appliedFixes.push(`Regex: ${fix.description} (${matches.length} matches)`);
     }
   }
 
@@ -180,11 +172,8 @@ function fixFileContent(content, filePath) {
 
 async function fixImportsInFile(filePath) {
   try {
-    const content = fs.readFileSync(filePath, "utf8");
-    const { fixedContent, fileFixCount, appliedFixes } = fixFileContent(
-      content,
-      filePath,
-    );
+    const content = fs.readFileSync(filePath, 'utf8');
+    const { fixedContent, fileFixCount, appliedFixes } = fixFileContent(content, filePath);
 
     if (fileFixCount > 0) {
       fs.writeFileSync(filePath, fixedContent);
@@ -208,7 +197,7 @@ async function fixImportsInFile(filePath) {
 }
 
 async function fixAllImports() {
-  console.log("🔍 Finding Svelte/TS/JS files...");
+  console.log('🔍 Finding Svelte/TS/JS files...');
 
   const files = await findSvelteFiles();
   console.log(`📁 Found ${files.length} files to process`);
@@ -228,22 +217,22 @@ async function fixAllImports() {
 
 // Additional function to fix CSS @apply issues
 async function fixCSSIssues() {
-  console.log("\n🎨 Fixing CSS @apply issues...");
+  console.log('\n🎨 Fixing CSS @apply issues...');
 
-  const svelteFiles = await glob("src/**/*.svelte");
+  const svelteFiles = await glob('src/**/*.svelte');
   let cssFixCount = 0;
 
   for (const file of svelteFiles) {
     try {
-      let content = fs.readFileSync(file, "utf8");
+      let content = fs.readFileSync(file, 'utf8');
       let modified = false;
 
       // Replace @apply with individual Tailwind classes for better compatibility
       const applyFixes = {
-        "@apply bg-blue-100 px-2 py-1 rounded text-sm font-mono;":
-          "background-color: rgb(219 234 254); padding: 0.5rem; border-radius: 0.25rem; font-size: 0.875rem; font-family: ui-monospace;",
-        "@apply text-gray-600 hover:text-gray-800;":
-          "color: rgb(75 85 99); &:hover { color: rgb(31 41 55); }",
+        '@apply bg-blue-100 px-2 py-1 rounded text-sm font-mono;':
+          'background-color: rgb(219 234 254); padding: 0.5rem; border-radius: 0.25rem; font-size: 0.875rem; font-family: ui-monospace;',
+        '@apply text-gray-600 hover:text-gray-800;':
+          'color: rgb(75 85 99); &:hover { color: rgb(31 41 55); }',
       };
 
       for (const [applyRule, replacement] of Object.entries(applyFixes)) {
@@ -278,15 +267,13 @@ async function main() {
     const cssFixCount = await fixCSSIssues();
 
     // Generate detailed report
-    console.log("\n📊 COMPREHENSIVE REPORT");
-    console.log("=" * 50);
+    console.log('\n📊 COMPREHENSIVE REPORT');
+    console.log('=' * 50);
     console.log(`✅ Total import fixes applied: ${totalFixes}`);
     console.log(`✅ CSS fixes applied: ${cssFixCount}`);
     console.log(`📁 Files processed: ${processedFiles}`);
     console.log(`❌ Files with errors: ${errors.length}`);
-    console.log(
-      `⏱️ Processing time: ${((Date.now() - startTime) / 1000).toFixed(2)}s`,
-    );
+    console.log(`⏱️ Processing time: ${((Date.now() - startTime) / 1000).toFixed(2)}s`);
 
     // Save detailed report
     const report = {
@@ -308,27 +295,25 @@ async function main() {
       },
     };
 
-    fs.writeFileSync("import-fix-report.json", JSON.stringify(report, null, 2));
-    console.log("\n📄 Detailed report saved to: import-fix-report.json");
+    fs.writeFileSync('import-fix-report.json', JSON.stringify(report, null, 2));
+    console.log('\n📄 Detailed report saved to: import-fix-report.json');
 
     // Show next steps
-    console.log("\n🎯 NEXT STEPS:");
-    console.log("1. Run: npm run check");
-    console.log("2. Test the application: npm run dev");
-    console.log("3. Review remaining errors in the TypeScript check");
-    console.log(
-      "4. Consider running the PowerShell script for additional fixes",
-    );
+    console.log('\n🎯 NEXT STEPS:');
+    console.log('1. Run: npm run check');
+    console.log('2. Test the application: npm run dev');
+    console.log('3. Review remaining errors in the TypeScript check');
+    console.log('4. Consider running the PowerShell script for additional fixes');
 
     if (totalFixes > 0 || cssFixCount > 0) {
-      console.log("\n🎉 Import fixes completed successfully!");
+      console.log('\n🎉 Import fixes completed successfully!');
       process.exit(0);
     } else {
-      console.log("\n💡 No fixes were needed - imports appear to be correct");
+      console.log('\n💡 No fixes were needed - imports appear to be correct');
       process.exit(0);
     }
   } catch (error) {
-    console.error("💥 Critical error during fix process:", error);
+    console.error('💥 Critical error during fix process:', error);
     process.exit(1);
   }
 }

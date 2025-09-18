@@ -15,7 +15,7 @@ interface AutomationConfig {
   batchSize: number;
   confidenceThreshold: number;
   processingOptions: string[];
-  createdAt: string;
+  createdAt: string;,
 }
 
 interface ProcessingJob {
@@ -33,12 +33,12 @@ interface ProcessingJob {
 const automationConfigs = new Map<string, AutomationConfig>();
 const processingJobs = new Map<string, ProcessingJob>();
 
-// POST: Create or update automation configuration
+// POST: Create or update automation configuration;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const config: AutomationConfig = await request.json();
     
-    // Validate required fields
+    // Validate required fields;
     if (!config.id || !config.type || !config.source) {
       return json({
         success: false,
@@ -64,10 +64,10 @@ export const POST: RequestHandler = async ({ request }) => {
       }, { status: 400 });
     }
 
-    // Store configuration
+    // Store configuration;
     automationConfigs.set(config.id, {
       ...config,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     });
 
     // Create initial processing job if auto-processing is enabled
@@ -80,11 +80,11 @@ export const POST: RequestHandler = async ({ request }) => {
         status: 'pending',
         documentsProcessed: 0,
         totalDocuments: config.batchSize || 50,
-        startTime: new Date()
+        startTime: new Date(),
       };
       processingJobs.set(jobId, job);
 
-      // Start background processing (simulate)
+      // Start background processing (simulate);
       processDocuments(jobId).catch(error => {
         console.error('Background processing failed:', error);
         const job = processingJobs.get(jobId!);
@@ -102,55 +102,55 @@ export const POST: RequestHandler = async ({ request }) => {
         configId: config.id,
         jobId,
         message: 'Automation configuration saved successfully',
-        autoProcessing: config.autoProcessing
+        autoProcessing: config.autoProcessing,
       }
     });
 
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Configuration failed'
+      error: error instanceof Error ? error.message: 'Configuration failed',
     }, { status: 500 });
   }
 };
 
-// GET: Retrieve automation configurations and job status
+// GET: Retrieve automation configurations and job status;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const configId = url.searchParams.get('configId');
     const jobId = url.searchParams.get('jobId');
     const status = url.searchParams.get('status');
 
-    // Get specific configuration
+    // Get specific configuration;
     if (configId) {
       const config = automationConfigs.get(configId);
       if (!config) {
         return json({
           success: false,
-          error: 'Configuration not found'
+          error: 'Configuration not found',
         }, { status: 404 });
       }
 
       // Find related jobs
-      const relatedJobs = Array.from(processingJobs.values())
+      const relatedJobs = Array.from(processingJobs.values()
         .filter(job => job.configId === configId);
 
       return json({
         success: true,
         data: {
           config,
-          jobs: relatedJobs
+          jobs: relatedJobs,
         }
       });
     }
 
-    // Get specific job status
+    // Get specific job status;
     if (jobId) {
       const job = processingJobs.get(jobId);
       if (!job) {
         return json({
           success: false,
-          error: 'Job not found'
+          error: 'Job not found',
         }, { status: 404 });
       }
 
@@ -161,8 +161,8 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     // List configurations with optional status filter
-    const configs = Array.from(automationConfigs.values());
-    const jobs = Array.from(processingJobs.values());
+    const configs = Array.from(automationConfigs.values();
+    const jobs = Array.from(processingJobs.values();
 
     let filteredJobs = jobs;
     if (status) {
@@ -178,7 +178,7 @@ export const GET: RequestHandler = async ({ url }) => {
           totalConfigs: configs.length,
           activeJobs: jobs.filter(item => item.length),
           completedJobs: jobs.filter(item => item.length),
-          failedJobs: jobs.filter(item => item.length)
+          failedJobs: jobs.filter(item => item.length),
         }
       }
     });
@@ -186,12 +186,12 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Request failed'
+      error: error instanceof Error ? error.message: 'Request failed',
     }, { status: 500 });
   }
 };
 
-// PUT: Update automation configuration
+// PUT: Update automation configuration;
 export const PUT: RequestHandler = async ({ request }) => {
   try {
     const updates = await request.json();
@@ -200,7 +200,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!id) {
       return json({
         success: false,
-        error: 'Configuration ID is required'
+        error: 'Configuration ID is required',
       }, { status: 400 });
     }
 
@@ -208,15 +208,15 @@ export const PUT: RequestHandler = async ({ request }) => {
     if (!existingConfig) {
       return json({
         success: false,
-        error: 'Configuration not found'
+        error: 'Configuration not found',
       }, { status: 404 });
     }
 
-    // Update configuration
+    // Update configuration;
     const updatedConfig = {
       ...existingConfig,
       ...configUpdates,
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     automationConfigs.set(id, updatedConfig);
@@ -225,19 +225,19 @@ export const PUT: RequestHandler = async ({ request }) => {
       success: true,
       data: {
         config: updatedConfig,
-        message: 'Configuration updated successfully'
+        message: 'Configuration updated successfully',
       }
     });
 
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Update failed'
+      error: error instanceof Error ? error.message: 'Update failed',
     }, { status: 500 });
   }
 };
 
-// DELETE: Remove automation configuration
+// DELETE: Remove automation configuration;
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
     const configId = url.searchParams.get('configId');
@@ -245,7 +245,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     if (!configId) {
       return json({
         success: false,
-        error: 'Configuration ID is required'
+        error: 'Configuration ID is required',
       }, { status: 400 });
     }
 
@@ -253,7 +253,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     if (!config) {
       return json({
         success: false,
-        error: 'Configuration not found'
+        error: 'Configuration not found',
       }, { status: 404 });
     }
 
@@ -261,7 +261,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     automationConfigs.delete(configId);
     
     // Cancel and remove related jobs
-    const relatedJobs = Array.from(processingJobs.entries())
+    const relatedJobs = Array.from(processingJobs.entries()
       .filter(([, job]) => job.configId === configId);
 
     relatedJobs.forEach(([jobId, job]) => {
@@ -277,19 +277,19 @@ export const DELETE: RequestHandler = async ({ url }) => {
       success: true,
       data: {
         message: 'Configuration and related jobs deleted successfully',
-        deletedJobs: relatedJobs.length
+        deletedJobs: relatedJobs.length,
       }
     });
 
   } catch (error) {
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Delete failed'
+      error: error instanceof Error ? error.message: 'Delete failed',
     }, { status: 500 });
   }
 };
 
-// Background document processing simulation
+// Background document processing simulation;
 async function processDocuments(jobId: string): Promise<void> {
   const job = processingJobs.get(jobId);
   const config = job ? automationConfigs.get(job.configId) : null;
@@ -310,16 +310,16 @@ async function processDocuments(jobId: string): Promise<void> {
       
       // Simulate processing delay based on automation type
       const processingDelay = getProcessingDelay(config.type);
-      await new Promise(resolve => setTimeout(resolve, processingDelay));
+      await new Promise(resolve => setTimeout(resolve, processingDelay);
       
-      // Simulate potential GPU acceleration speedup
+      // Simulate potential GPU acceleration speedup;
       if (config.gpuAcceleration) {
-        await new Promise(resolve => setTimeout(resolve, processingDelay * 0.3));
+        await new Promise(resolve => setTimeout(resolve, processingDelay * 0.3);
       }
       
       job.documentsProcessed += currentBatch;
       
-      // Simulate some processing failures based on confidence threshold
+      // Simulate some processing failures based on confidence threshold;
       if (Math.random() > config.confidenceThreshold) {
         if (!job.errors) job.errors = [];
         job.errors.push(`Low confidence processing for batch ${Math.floor(processed / batchSize) + 1}`);
@@ -337,7 +337,7 @@ async function processDocuments(jobId: string): Promise<void> {
   }
 }
 
-// Get processing delay based on automation type (simulation)
+// Get processing delay based on automation type (simulation);
 function getProcessingDelay(automationType: string): number {
   const delays = {
     folder_watch: 500,
@@ -346,7 +346,7 @@ function getProcessingDelay(automationType: string): number {
     batch_upload: 1000,
     evidence_automation: 1200,
     case_discovery: 1500,
-    contract_analysis: 2000
+    contract_analysis: 2000,
   };
   
   return delays[automationType as keyof typeof delays] || 800;

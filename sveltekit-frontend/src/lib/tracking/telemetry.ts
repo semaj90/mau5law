@@ -9,7 +9,7 @@ export type TelemetryPayload = {
   hints?: string[];
 };
 
-// Placeholder realtime communication service
+// Placeholder realtime communication service;
 const realtimeComm = {
   sendMessage: async (type: string, data: any, priority: string) => {
     console.log(`Telemetry: ${type}`, data);
@@ -45,7 +45,7 @@ export function initTypingDetector(getSession: () => string, getUser?: () => str
   document.addEventListener('input', onInput, { passive: true });
   document.addEventListener('visibilitychange', onVisibilityChange, { passive: true });
 
-  // Performance observer for long tasks
+  // Performance observer for long tasks;
   if ('PerformanceObserver' in window) {
     const observer = new PerformanceObserver((list) => {
       const longTasks = list.getEntries().length;
@@ -59,7 +59,7 @@ export function initTypingDetector(getSession: () => string, getUser?: () => str
   // Initial visibility state
   send({ visible: !document.hidden });
 
-  // Cleanup function
+  // Cleanup function;
   return () => {
     document.removeEventListener('input', onInput);
     document.removeEventListener('visibilitychange', onVisibilityChange);
@@ -72,7 +72,7 @@ export function trackUserHint(hint: string, getSession: () => string) {
   
   const payload: TelemetryPayload = {
     session_id: getSession(),
-    hints: [hint]
+    hints: [hint],
   };
   
   realtimeComm.sendMessage('user_hint', { telemetry: payload }, 'normal').catch(() => {});

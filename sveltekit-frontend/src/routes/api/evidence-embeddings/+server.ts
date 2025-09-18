@@ -26,23 +26,23 @@ export const POST: RequestHandler = async ({ request }) => {
         });
 
       case 'process-single':
-        // TODO: Process a single file by ID
+        // TODO: Process a single file by ID;
         return json({
           success: false,
-          error: 'Single file processing not yet implemented'
+          error: 'Single file processing not yet implemented',
         }, { status: 501 });
 
-      default:
+      default:;
         return json({
           success: false,
-          error: 'Invalid action. Use "backfill" or "process-single"'
+          error: 'Invalid action. Use "backfill" or "process-single"',
         }, { status: 400 });
     }
   } catch (error) {
     console.error('Embedding backfill error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error occurred'
+      error: error instanceof Error ? error.message: 'Unknown error occurred',
     }, { status: 500 });
   }
 };
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ url }) => {
       endpoints: {
         backfill: 'POST /api/evidence-embeddings with { "action": "backfill" }',
         search: 'GET /api/evidence-embeddings?search=query&limit=10&case_id=uuid',
-        stats: 'GET /api/evidence-embeddings'
+        stats: 'GET /api/evidence-embeddings',
       }
     });
 
@@ -75,7 +75,7 @@ export const GET: RequestHandler = async ({ url }) => {
     console.error('Evidence embeddings API error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Unknown error occurred'
+      error: error instanceof Error ? error.message: 'Unknown error occurred',
     }, { status: 500 });
   }
 };
@@ -88,14 +88,14 @@ async function performSemanticSearch(
   options: { limit: number; caseId?: string | null }
 ): Promise<Response> {
   try {
-    // Generate embedding for the search query
+    // Generate embedding for the search query;
     const response = await fetch('http://localhost:5174/api/ai/embed', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text: searchQuery,
         model: 'mock', // Use mock for testing
-        dimensions: 768
+        dimensions: 768,
       })
     });
 
@@ -130,7 +130,7 @@ async function performSemanticSearch(
     
     const params: any[] = [embeddingVector];
     
-    // Filter by case_id if provided
+    // Filter by case_id if provided;
     if (options.caseId) {
       searchSql += ` AND case_id = $2`;
       params.push(options.caseId);
@@ -142,7 +142,7 @@ async function performSemanticSearch(
 
     const { rows } = await query(searchSql, params);
 
-    // Format results with similarity scores
+    // Format results with similarity scores;
     const results = rows.map((row: any) => ({
       id: row.id,
       title: row.title,
@@ -152,8 +152,8 @@ async function performSemanticSearch(
       uploadedAt: row.uploaded_at,
       caseId: row.case_id,
       similarity: Math.max(0, Math.min(1, row.similarity_score)), // Clamp between 0-1
-      similarityDistance: row.similarity_distance
-    }));
+      similarityDistance: row.similarity_distance,
+    });
 
     return json({
       success: true,
@@ -162,7 +162,7 @@ async function performSemanticSearch(
       count: results.length,
       searchStats: {
         queryEmbeddingDimensions: queryEmbedding.length,
-        totalCandidates: rows.length
+        totalCandidates: rows.length,
       }
     });
 
@@ -170,7 +170,7 @@ async function performSemanticSearch(
     console.error('Semantic search error:', error);
     return json({
       success: false,
-      error: error instanceof Error ? error.message: 'Semantic search failed'
+      error: error instanceof Error ? error.message: 'Semantic search failed',
     }, { status: 500 });
   }
 }

@@ -18,7 +18,7 @@ import { embeddingService } from '$lib/server/embedding-service.js';
 import crypto from "crypto";
 import { URL } from "url";
 
-// Upload Service Configuration
+// Upload Service Configuration;
 const UPLOAD_SERVICE_CONFIG = {
   http: 'http://localhost:8093',
   health: '/health',
@@ -27,22 +27,22 @@ const UPLOAD_SERVICE_CONFIG = {
     process: '/api/process',
     status: '/api/status',
     metadata: '/api/metadata',
-    health: '/health'
+    health: '/health',
   }
 };
 
-// Document Processor Configuration
+// Document Processor Configuration;
 const DOCUMENT_PROCESSOR_CONFIG = {
   http: 'http://localhost:8081',
   endpoints: {
     process: '/api/process',
     ocr: '/api/ocr',
     analyze: '/api/analyze',
-    health: '/api/health'
+    health: '/api/health',
   }
 };
 
-// Supported file types and limits
+// Supported file types and limits;
 const FILE_CONFIG = {
   maxSize: 100 * 1024 * 1024, // 100MB
   allowedTypes: [
@@ -71,7 +71,7 @@ const FILE_CONFIG = {
 
 /*
  * POST /api/v1/upload - Enhanced File Upload with Processing
- */
+ */;
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   const startTime = Date.now();
   const requestId = crypto.randomUUID();
@@ -80,35 +80,35 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     
-    // Validate file presence
+    // Validate file presence;
     if (!file) {
       return error(400, ensureError({
         message: 'File is required',
         code: 'MISSING_FILE',
         requestId
-      }));
+      });
     }
 
-    // Validate file size
+    // Validate file size;
     if (file.size > FILE_CONFIG.maxSize) {
       return error(400, ensureError({
         message: `File too large. Maximum size: ${FILE_CONFIG.maxSize / 1024 / 1024}MB`,
         code: 'FILE_TOO_LARGE',
         requestId
-      }));
+      });
     }
 
-    // Validate file type
+    // Validate file type;
     if (!FILE_CONFIG.allowedTypes.includes(file.type)) {
       return error(400, ensureError({
         message: `File type not supported: ${file.type}`,
         code: 'UNSUPPORTED_FILE_TYPE',
         requestId,
         details: { supportedTypes: FILE_CONFIG.allowedTypes }
-      }));
+      });
     }
 
-    // Extract additional parameters
+    // Extract additional parameters;
     const uploadRequest: EnhancedUploadRequest = {
       file,
       filename: file.name,
@@ -131,7 +131,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       sessionId: uploadRequest.sessionId,
       clientIP: getClientAddress(),
       userAgent: request.headers.get('user-agent') || undefined,
-      caseId: uploadRequest.caseId
+      caseId: uploadRequest.caseId,
     };
 
     // Process upload
@@ -148,14 +148,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       code: 'UPLOAD_PROCESSING_ERROR',
       requestId,
       timestamp: new Date().toISOString(),
-      retryable: true
-    }));
+      retryable: true,
+    });
   }
 };
 
 /*
  * GET /api/v1/upload - Upload Service Info and Health
- */
+ */;
 export const GET: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action');
   const documentId = url.searchParams.get('id');
@@ -164,14 +164,14 @@ export const GET: RequestHandler = async ({ url }) => {
     switch (action) {
       case 'health':
         return await handleHealthCheck();
-      case 'status':
+      case 'status':;
         if (!documentId) {
-          return error(400, ensureError({ message: 'Document ID required for status check' }));
+          return error(400, ensureError({ message: 'Document ID required for status check' });
         }
         return await handleStatusCheck(documentId);
       case 'config':
         return await handleConfigInfo();
-      default:
+      default:;
         return json({
           service: 'Enhanced Upload API',
           version: '2.0.0',
@@ -179,7 +179,7 @@ export const GET: RequestHandler = async ({ url }) => {
             upload: 'POST /api/v1/upload',
             health: 'GET /api/v1/upload?action=health',
             status: 'GET /api/v1/upload?action=status&id={documentId}',
-            config: 'GET /api/v1/upload?action=config'
+            config: 'GET /api/v1/upload?action=config',
           },
           features: [
             'File Upload & Storage',
@@ -189,22 +189,22 @@ export const GET: RequestHandler = async ({ url }) => {
             'Content Analysis',
             'Metadata Extraction'
           ],
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
     }
   } catch (err: any) {
     console.error('Upload GET Error:', err);
     return error(500, ensureError({
       message: 'Service unavailable',
-      error: dev ? String(err) : 'Internal error'
-    }));
+      error: dev ? String(err) : 'Internal error',
+    });
   }
 };
 
 // Implementation functions would be added here...
-// (The complete implementation is too long for this response)
+// (The complete implementation is too long for this response);
 async function processEnhancedUpload(request: EnhancedUploadRequest, context: APIRequestContext): Promise<EnhancedUploadResponse> {
-  // Implementation stub - full implementation would include all stages
+  // Implementation stub - full implementation would include all stages;
   return {
     success: true,
     documentId: crypto.randomUUID(),
@@ -215,7 +215,7 @@ async function processEnhancedUpload(request: EnhancedUploadRequest, context: AP
     processingStatus: 'completed',
     metadata: Record<string, any>,
     requestId: context.requestId,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 }
 
@@ -228,7 +228,7 @@ async function handleHealthCheck(): Promise<Response> {
       documentProcessor: { status: 'healthy', endpoint: DOCUMENT_PROCESSOR_CONFIG.http },
       embeddingService: { status: 'healthy', model: 'nomic-embed-text' }
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -236,7 +236,7 @@ async function handleStatusCheck(documentId: string): Promise<Response> {
   return json({
     documentId,
     status: 'completed',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -253,6 +253,6 @@ async function handleConfigInfo(): Promise<Response> {
         contentAnalysis: { supported: true, types: ['legal', 'entities', 'summary'] }
       }
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }

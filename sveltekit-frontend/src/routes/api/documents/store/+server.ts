@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (!content) {
       return json({
         success: false,
-        error: 'Content is required'
+        error: 'Content is required',
       }, { status: 400 });
     }
 
@@ -35,13 +35,13 @@ export const POST: RequestHandler = async ({ request }) => {
       return json({
         success: false,
         error: 'Database temporarily unavailable',
-        healthStatus: dbHealth
+        healthStatus: dbHealth,
       }, { status: 503 });
     }
 
     console.log(`[Storage] Storing document: ${filename}`);
 
-    // Store document in legal_documents table with proper schema
+    // Store document in legal_documents table with proper schema;
     const documentData = {
       title: filename || 'untitled',
       content,
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request }) => {
       is_confidential: metadata.isConfidential || false,
       created_by: metadata.userId || null,
       created_at: new Date(),
-      updated_at: new Date()
+      updated_at: new Date(),
     };
 
     const documentResult = await db
@@ -88,15 +88,15 @@ export const POST: RequestHandler = async ({ request }) => {
         hasEmbedding: !!embedding,
         hasLegalAnalysis: !!legalAnalysis,
         isConfidential: documentData.is_confidential,
-        processingStatus: 'completed'
+        processingStatus: 'completed',
       },
       meta: {
         timestamp: new Date().toISOString(),
-        databaseHealth: dbHealth.overall
+        databaseHealth: dbHealth.overall,
       }
     };
 
-    // Cache the stored document for future retrieval
+    // Cache the stored document for future retrieval;
     await cognitiveCacheManager.set({
       key: `document_${documentId}`,
       type: 'legal-data' as const,
@@ -104,11 +104,11 @@ export const POST: RequestHandler = async ({ request }) => {
         action: 'document-storage',
         documentId,
         documentType: documentData.document_type,
-        priority: 'medium' as const
+        priority: 'medium' as const,
       }
     }, responseData.document, {
       distributeAcrossCaches: true,
-      cognitiveValue: 0.8
+      cognitiveValue: 0.8,
     });
 
     return json(responseData);
@@ -118,7 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
       success: false,
-      error: err.message || 'Storage failed'
+      error: err.message || 'Storage failed',
     }, { status: err.status || 500 });
   }
 };
@@ -147,25 +147,25 @@ export const GET: RequestHandler = async () => {
         vectorEmbeddings: dbHealth.postgres.connected,
         cognitiveCaching: true,
         minioIntegration: false, // TODO: Implement MinIO integration
-        legalAnalysis: true
+        legalAnalysis: true,
       },
       database: {
         status: dbHealth.overall,
-        documents: documentCount
+        documents: documentCount,
       },
       message: 'POST to store legal documents with embeddings and analysis',
       endpoints: {
         store: 'POST /api/documents/store',
         retrieve: 'GET /api/documents/[id]',
-        search: 'POST /api/documents/search'
+        search: 'POST /api/documents/search',
       },
-      version: '3.0.0'
+      version: '3.0.0',
     });
   } catch (err: any) {
     return json({
       status: 'unhealthy',
       error: err.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 503 });
   }
 };

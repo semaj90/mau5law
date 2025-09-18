@@ -8,7 +8,7 @@ const meta = {
     layout: 'fullscreen',
     docs: {
       description: {
-        component: 'AI-powered chat interface for legal assistance and case analysis'
+        component: 'AI-powered chat interface for legal assistance and case analysis',
       }
     }
   },
@@ -31,7 +31,7 @@ const meta = {
       control: { type: 'boolean' }
     }
   },
-  tags: ['autodocs']
+  tags: ['autodocs'],
 } satisfies Meta<AIChat>;
 
 export default meta;
@@ -43,7 +43,7 @@ export const Default: Story = {
     provider: 'ollama',
     temperature: 0.7,
     maxTokens: 2000,
-    streaming: true
+    streaming: true,
   }
 };
 
@@ -53,7 +53,7 @@ export const OpenAI: Story = {
     provider: 'openai',
     temperature: 0.5,
     maxTokens: 1500,
-    streaming: true
+    streaming: true,
   }
 };
 
@@ -63,7 +63,7 @@ export const Conservative: Story = {
     provider: 'ollama',
     temperature: 0.1,
     maxTokens: 1000,
-    streaming: false
+    streaming: false,
   }
 };
 
@@ -73,6 +73,6 @@ export const Creative: Story = {
     provider: 'ollama',
     temperature: 1.5,
     maxTokens: 3000,
-    streaming: true
+    streaming: true,
   }
 };

@@ -6,11 +6,11 @@
 import type { ComponentType } from 'svelte';
 
 type LazyComponent<T extends Record<string, unknown> = {}> = {
-  default: ComponentType<T>;
+  default: ComponentType<T>;,
 };
 
 export function lazy<T extends Record<string, unknown> = {}>(
-  importFn: () => Promise<LazyComponent<T>
+  importFn: () => Promise<LazyComponent<T>;
 ): ComponentType<T> {
   let component: ComponentType<T> | null = null;
   let loadPromise: Promise<ComponentType<T> | null = null;
@@ -28,7 +28,7 @@ export function lazy<T extends Record<string, unknown> = {}>(
         });
       }
 
-      // Return a placeholder or loading component
+      // Return a placeholder or loading component;
       return {
         $set: () => {},
         $destroy: () => {},
@@ -43,7 +43,7 @@ export function lazy<T extends Record<string, unknown> = {}>(
  * Preload a component for better UX
  */
 export function preload<T extends Record<string, unknown> = {}>(
-  importFn: () => Promise<LazyComponent<T>
+  importFn: () => Promise<LazyComponent<T>;
 ): Promise<ComponentType<T> {
   return importFn().then(module => module.default);
 }

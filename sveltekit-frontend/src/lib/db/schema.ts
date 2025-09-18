@@ -9,7 +9,7 @@ import { relations } from 'drizzle-orm';
 import { createSelectSchema, createUpdateSchema, createInsertSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
-// Legal Documents with vector embeddings from gemma3-legal:latest
+// Legal Documents with vector embeddings from gemma3-legal:latest;
 export const legalDocuments = pgTable('legal_documents', {
   id: serial('id').primaryKey(),
   title: text('title').notNull(),
@@ -42,7 +42,7 @@ export const legalDocuments = pgTable('legal_documents', {
   // Timestamps
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
-  lastAccessedAt: timestamp('last_accessed_at')
+  lastAccessedAt: timestamp('last_accessed_at'),
 }, (table) => ({
   // Indexes for performance
   embeddingIndex: index('embedding_idx').on(table.embedding),
@@ -51,10 +51,10 @@ export const legalDocuments = pgTable('legal_documents', {
   caseIdIndex: index('case_id_idx').on(table.caseId),
   clientIdIndex: index('client_id_idx').on(table.clientId),
   createdAtIndex: index('created_at_idx').on(table.createdAt),
-  documentHashIndex: index('document_hash_idx').on(table.documentHash)
-}));
+  documentHashIndex: index('document_hash_idx').on(table.documentHash),
+});
 
-// Vector similarity queries for analytics
+// Vector similarity queries for analytics;
 export const vectorSimilarityQueries = pgTable('vector_similarity_queries', {
   id: serial('id').primaryKey(),
   queryText: text('query_text').notNull(),
@@ -78,15 +78,15 @@ export const vectorSimilarityQueries = pgTable('vector_similarity_queries', {
   queryIntent: text('query_intent'), // 'research', 'analysis', 'template', 'precedent'
   userSatisfaction: real('user_satisfaction'), // 1-5 rating
 
-  timestamp: timestamp('timestamp').defaultNow()
+  timestamp: timestamp('timestamp').defaultNow(),
 }, (table) => ({
   userIdIndex: index('user_id_idx').on(table.userId),
   sessionIdIndex: index('session_id_idx').on(table.sessionId),
   timestampIndex: index('timestamp_idx').on(table.timestamp),
-  queryIntentIndex: index('query_intent_idx').on(table.queryIntent)
-}));
+  queryIntentIndex: index('query_intent_idx').on(table.queryIntent),
+});
 
-// Legal analysis results cache
+// Legal analysis results cache;
 export const legalAnalysisCache = pgTable('legal_analysis_cache', {
   id: serial('id').primaryKey(),
 
@@ -112,13 +112,13 @@ export const legalAnalysisCache = pgTable('legal_analysis_cache', {
   lastAccessedAt: timestamp('last_accessed_at').defaultNow(),
   expiresAt: timestamp('expires_at'),
 
-  createdAt: timestamp('created_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow(),
 }, (table) => ({
   inputHashIndex: index('input_hash_idx').on(table.inputHash),
   analysisTypeIndex: index('analysis_type_idx').on(table.analysisType),
   lastAccessedIndex: index('last_accessed_idx').on(table.lastAccessedAt),
-  expiresAtIndex: index('expires_at_idx').on(table.expiresAt)
-}));
+  expiresAtIndex: index('expires_at_idx').on(table.expiresAt),
+});
   user_id: integer("user_id").references(() => users.id).notNull(),
   title: text("title").notNull(),
   description: text("description"),
@@ -133,7 +133,7 @@ export const legalAnalysisCache = pgTable('legal_analysis_cache', {
   metadata: jsonb("metadata").default('{}')
 });
 
-// Document chunks for RAG (chunked documents with embeddings)
+// Document chunks for RAG (chunked documents with embeddings);
 export const document_chunks = pgTable("document_chunks", {
   id: uuid("id").primaryKey().defaultRandom(),
   document_id: text("document_id").references(() => documents.id, { onDelete: 'cascade' }),
@@ -146,7 +146,7 @@ export const document_chunks = pgTable("document_chunks", {
   metadata: jsonb("metadata").default('{}')
 });
 
-// Citations table (fixed schema with proper foreign keys)
+// Citations table (fixed schema with proper foreign keys);
 export const citations = pgTable("citations", {
   id: uuid("id").primaryKey().defaultRandom(),
   case_id: uuid("case_id").references(() => cases.id, { onDelete: 'cascade' }),
@@ -163,15 +163,15 @@ export const citations = pgTable("citations", {
   metadata: jsonb("metadata").default('{}')
 });
 
-// Sessions table for authentication
+// Sessions table for authentication;
 export const sessions = pgTable("sessions", {
   id: text("id").primaryKey(),
   user_id: integer("user_id").references(() => users.id, { onDelete: 'cascade' }).notNull(),
   expires_at: timestamp("expires_at", { withTimezone: true }).notNull(),
-  created_at: timestamp("created_at").defaultNow().notNull()
+  created_at: timestamp("created_at").defaultNow().notNull(),
 });
 
-// AI History table for agent interactions
+// AI History table for agent interactions;
 export const aiHistory = pgTable("ai_history", {
   id: uuid("id").primaryKey().defaultRandom(),
   user_id: integer("user_id").references(() => users.id, { onDelete: 'cascade' }).notNull(),
@@ -185,80 +185,80 @@ export const aiHistory = pgTable("ai_history", {
   metadata: jsonb("metadata").default('{}')
 });
 
-// Relations for better query experience
+// Relations for better query experience;
 export const usersRelations = relations(users, ({ many }: any) => ({
   documents: many(documents),
   cases: many(cases),
   evidence: many(evidence),
   sessions: many(sessions),
-  aiHistory: many(aiHistory)
-}));
+  aiHistory: many(aiHistory),
+});
 
 export const documentsRelations = relations(documents, ({ one, many }: any) => ({
   user: one(users, {
     fields: [documents.user_id],
-    references: [users.id]
+    references: [users.id],
   }),
   chunks: many(document_chunks),
-  citations: many(citations)
-}));
+  citations: many(citations),
+});
 
 export const casesRelations = relations(cases, ({ one, many }: any) => ({
   user: one(users, {
     fields: [cases.user_id],
-    references: [users.id]
+    references: [users.id],
   }),
   evidence: many(evidence),
-  citations: many(citations)
-}));
+  citations: many(citations),
+});
 
 export const evidenceRelations = relations(evidence, ({ one, many }: any) => ({
   case: one(cases, {
     fields: [evidence.case_id],
-    references: [cases.id]
+    references: [cases.id],
   }),
   user: one(users, {
     fields: [evidence.user_id],
-    references: [users.id]
+    references: [users.id],
   }),
-  chunks: many(document_chunks)
-}));
+  chunks: many(document_chunks),
+});
 
 export const documentChunksRelations = relations(document_chunks, ({ one }: any) => ({
   document: one(documents, {
     fields: [document_chunks.document_id],
-    references: [documents.id]
+    references: [documents.id],
   }),
   evidence: one(evidence, {
     fields: [document_chunks.evidence_id],
-    references: [evidence.id]
+    references: [evidence.id],
   })
-}));
+});
 
 export const citationsRelations = relations(citations, ({ one }: any) => ({
   case: one(cases, {
     fields: [citations.case_id],
-    references: [cases.id]
+    references: [cases.id],
   }),
   document: one(documents, {
     fields: [citations.document_id],
-    references: [documents.id]
+    references: [documents.id],
   })
-}));
+});
 
 export const sessionsRelations = relations(sessions, ({ one }: any) => ({
   user: one(users, {
     fields: [sessions.user_id],
-    references: [users.id]
+    references: [users.id],
   })
-}));
+});
 
 export const aiHistoryRelations = relations(aiHistory, ({ one }: any) => ({
   user: one(users, {
     fields: [aiHistory.user_id],
-    references: [users.id]
+    references: [users.id],
   })
-}));
+});
 
 // Type exports for TypeScript
 export type User = typeof users.$inferSelect;
@@ -285,20 +285,20 @@ export type NewSession = typeof sessions.$inferInsert;
 export type AiHistory = typeof aiHistory.$inferSelect;
 export type NewAiHistory = typeof aiHistory.$inferInsert;
 
-// Profile table for user profiles
+// Profile table for user profiles;
 export const profileTable = pgTable('profile', {
   id: uuid('id').primaryKey(),
   firstName: text('first_name').notNull(),
-  lastName: text('last_name').notNull()
+  lastName: text('last_name').notNull(),
 });
 
-// Profile relations
+// Profile relations;
 export const profileRelations = relations(profileTable, ({ one }: any) => ({
   user: one(users, {
     fields: [profileTable.id],
-    references: [users.id]
+    references: [users.id],
   })
-}));
+});
 
 // Profile types
 export type Profile = typeof profileTable.$inferSelect;
@@ -318,7 +318,7 @@ export const casesSelectSchema = createSelectSchema(cases);
 export const casesUpdateSchema = createUpdateSchema(cases);
 export const casesInsertSchema = createInsertSchema(cases);
 ;
-// Helper function to extract Zod schema from drizzle-zod BuildSchema for SuperForms compatibility
+// Helper function to extract Zod schema from drizzle-zod BuildSchema for SuperForms compatibility;
 export function extractZodSchema<T extends any>(drizzleZodSchema: T) {
   return drizzleZodSchema;
 }

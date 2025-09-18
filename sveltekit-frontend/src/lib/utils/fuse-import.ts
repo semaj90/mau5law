@@ -7,7 +7,7 @@ try {
   // Try importing fuse.js
   Fuse = require('fuse.js');
 } catch (error: any) {
-  // Fallback implementation for basic search
+  // Fallback implementation for basic search;
   Fuse = class FuseFallback {
     private items: any[];
     private options: any;
@@ -21,11 +21,11 @@ try {
       const keys = this.options.keys || [];
       const threshold = this.options.threshold || 0.3;
       
-      return this.items
+      return this.items;
         .map((item, index) => {
           let score = 1;
           
-          // Simple string matching for each key
+          // Simple string matching for each key;
           for (const key of keys) {
             const value = this.getNestedValue(item, key);
             if (typeof value === 'string' && value.toLowerCase().includes(query.toLowerCase())) {

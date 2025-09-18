@@ -18,7 +18,7 @@ async function testProtobufIntegration() {
     console.log('Generated files:', protoFiles);
 
     const expectedFiles = ['legal_api_pb.js', 'legal_api_pb.d.ts'];
-    const hasAllFiles = expectedFiles.every(file => protoFiles.includes(file));
+    const hasAllFiles = expectedFiles.every((file) => protoFiles.includes(file));
 
     if (hasAllFiles) {
       console.log('✅ All protobuf files generated successfully\n');
@@ -40,12 +40,12 @@ async function testProtobufIntegration() {
           email: 'test@example.com',
           password: 'password123',
           rememberMe: true,
-          clientInfo: 'test-client'
+          clientInfo: 'test-client',
         });
 
         console.log('✅ AuthRequest message created:', {
           email: authReq.email,
-          rememberMe: authReq.rememberMe
+          rememberMe: authReq.rememberMe,
         });
 
         // Test serialization/deserialization
@@ -68,7 +68,7 @@ async function testProtobufIntegration() {
         const healthData = await healthResponse.json();
         console.log('✅ Protobuf API endpoint available:', {
           status: healthData.status,
-          protobuf_support: healthData.protobuf_support
+          protobuf_support: healthData.protobuf_support,
         });
 
         // Test protobuf authentication
@@ -76,16 +76,16 @@ async function testProtobufIntegration() {
         const authRequest = legal.api.AuthRequest.create({
           email: 'test@nier.legal',
           password: 'yorha-password',
-          rememberMe: true
+          rememberMe: true,
         });
 
         const encoded = legal.api.AuthRequest.encode(authRequest).finish();
         const authResponse = await fetch('http://localhost:5174/api/proto/auth', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/x-protobuf'
+            'Content-Type': 'application/x-protobuf',
           },
-          body: encoded
+          body: encoded,
         });
 
         if (authResponse.ok && authResponse.headers.get('content-type')?.includes('protobuf')) {
@@ -95,27 +95,27 @@ async function testProtobufIntegration() {
           console.log('✅ Protobuf authentication test passed:', {
             success: decodedResponse.success,
             hasUser: !!decodedResponse.user,
-            userTheme: decodedResponse.user?.preferences?.theme
+            userTheme: decodedResponse.user?.preferences?.theme,
           });
         } else {
           console.log('⚠️ API returned non-protobuf response, testing JSON fallback...');
           const jsonResponse = await fetch('http://localhost:5174/api/proto/auth', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               email: 'test@nier.legal',
               password: 'yorha-password',
-              remember_me: true
-            })
+              remember_me: true,
+            }),
           });
 
           if (jsonResponse.ok) {
             const jsonData = await jsonResponse.json();
             console.log('✅ JSON fallback works:', {
               success: jsonData.success,
-              userTheme: jsonData.user?.preferences?.theme
+              userTheme: jsonData.user?.preferences?.theme,
             });
           }
         }
@@ -131,7 +131,7 @@ async function testProtobufIntegration() {
       email: 'performance.test@nier.legal',
       password: 'complex-password-for-testing-123',
       rememberMe: true,
-      clientInfo: 'performance-test-client-with-longer-string'
+      clientInfo: 'performance-test-client-with-longer-string',
     };
 
     // JSON size
@@ -148,7 +148,7 @@ async function testProtobufIntegration() {
       console.log('📊 Size comparison:');
       console.log(`   JSON: ${jsonSize} bytes`);
       console.log(`   Protobuf: ${protoSize} bytes`);
-      console.log(`   Savings: ${((jsonSize - protoSize) / jsonSize * 100).toFixed(1)}%`);
+      console.log(`   Savings: ${(((jsonSize - protoSize) / jsonSize) * 100).toFixed(1)}%`);
 
       // Speed test
       const iterations = 1000;
@@ -172,9 +172,13 @@ async function testProtobufIntegration() {
       console.log(`   JSON: ${jsonTime.toFixed(2)}ms`);
       console.log(`   Protobuf: ${protoTime.toFixed(2)}ms`);
       if (jsonTime > protoTime) {
-        console.log(`   Protobuf is ${((jsonTime - protoTime) / jsonTime * 100).toFixed(1)}% faster`);
+        console.log(
+          `   Protobuf is ${(((jsonTime - protoTime) / jsonTime) * 100).toFixed(1)}% faster`
+        );
       } else {
-        console.log(`   JSON is ${((protoTime - jsonTime) / protoTime * 100).toFixed(1)}% faster`);
+        console.log(
+          `   JSON is ${(((protoTime - jsonTime) / protoTime) * 100).toFixed(1)}% faster`
+        );
       }
     } catch (perfError) {
       console.log('⚠️ Performance test skipped due to import error');
@@ -190,7 +194,6 @@ async function testProtobufIntegration() {
     console.log('   ✅ Performance benefits demonstrated');
 
     return true;
-
   } catch (error) {
     console.error('❌ Protobuf integration test failed:', error);
     return false;
@@ -200,10 +203,10 @@ async function testProtobufIntegration() {
 // Run test if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   testProtobufIntegration()
-    .then(success => {
+    .then((success) => {
       process.exit(success ? 0 : 1);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Test runner error:', error);
       process.exit(1);
     });

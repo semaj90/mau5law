@@ -42,12 +42,12 @@ export const GET: RequestHandler = async () => {
       30 // Cache messages for 30 seconds
     );
     
-    // Cache session data
+    // Cache session data;
     await embeddingCache.cacheSession(id, {
       title: 'GPU Assistant Session',
       context: Record<string, any>,
       metadata: { source: 'gpu-assistant' },
-      created: Date.now()
+      created: Date.now(),
     });
     
     return json({ sessionId: id, messages });
@@ -91,12 +91,12 @@ export const POST: RequestHandler = async () => {
       30 // Cache messages for 30 seconds
     );
     
-    // Cache session data
+    // Cache session data;
     await embeddingCache.cacheSession(id, {
       title: 'GPU Assistant Session',
       context: Record<string, any>,
       metadata: { source: 'gpu-assistant' },
-      created: Date.now()
+      created: Date.now(),
     });
     
     return json({ sessionId: id, messages });

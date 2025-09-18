@@ -2,7 +2,9 @@
 
 ## Overview
 
-This implementation brings modern SvelteKit patterns and best practices to your legal case management app, focusing on fast navigation, intelligent UI components, and powerful user interactions.
+This implementation brings modern SvelteKit patterns and best practices to your legal case
+management app, focusing on fast navigation, intelligent UI components, and powerful user
+interactions.
 
 ## 🚀 Key Features Implemented
 
@@ -220,4 +222,6 @@ Visit `/modern-demo` to see all components in action:
 5. **Golden ratio layouts** provide optimal visual balance
 6. **Hover effects** add delightful micro-interactions
 
-This implementation transforms your legal case management app into a modern, efficient, and user-friendly application that leverages the best of SvelteKit's capabilities and modern web standards.
+This implementation transforms your legal case management app into a modern, efficient, and
+user-friendly application that leverages the best of SvelteKit's capabilities and modern web
+standards.

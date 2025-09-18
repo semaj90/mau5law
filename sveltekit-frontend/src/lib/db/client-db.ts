@@ -16,7 +16,8 @@ import type { Table } from 'dexie';
 
 // ============================================================================
 // TYPE DEFINITIONS
-// ============================================================================
+// ============================================================================;
+}
 
 export interface ChatMessage {
   id?: number;
@@ -77,7 +78,7 @@ export interface VectorSearchCache {
   timestamp: Date;
   expiresAt: Date;
   lodLevel: number;
-  hitCount: number; // Track cache usage
+  hitCount: number; // Track cache usage,
 }
 
 export interface UserAnnotation {
@@ -95,7 +96,7 @@ export interface UserAnnotation {
   importance: 'low' | 'medium' | 'high' | 'critical';
   userId?: string;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt: Date;,
 }
 
 export interface LegalEntity {
@@ -109,7 +110,7 @@ export interface LegalEntity {
   extractedFrom: {
     documentId: string;
     chunkId?: string;
-    context: string;
+    context: string;,
   }[];
   metadata: {
     jurisdiction?: string;
@@ -117,7 +118,7 @@ export interface LegalEntity {
     role?: string;
     importance?: number;
   };
-  lastUpdated: Date;
+  lastUpdated: Date;,
 }
 
 export interface GraphVisualizationData {
@@ -129,12 +130,12 @@ export interface GraphVisualizationData {
   layout: {
     algorithm: string;
     parameters: any;
-    dimensions: 2 | 3;
+    dimensions: 2 | 3;,
   };
   cameraPosition?: { x: number; y: number; z: number };
   createdAt: Date;
   lastAccessed: Date;
-  computationTime: number;
+  computationTime: number;,
 }
 
 export interface AIAnalysisCache {
@@ -147,7 +148,7 @@ export interface AIAnalysisCache {
   confidence: number;
   processingTime: number;
   timestamp: Date;
-  expiresAt: Date;
+  expiresAt: Date;,
 }
 
 export interface UserPreferences {
@@ -160,22 +161,22 @@ export interface UserPreferences {
     cacheSettings: {
       maxDocuments: number;
       maxSearchResults: number;
-      cacheExpiry: number; // hours
+      cacheExpiry: number; // hours,
     };
     visualization: {
       defaultGraphType: string;
       showLabels: boolean;
       enablePhysics: boolean;
-      colorScheme: string;
+      colorScheme: string;,
     };
     ai: {
       preferredModel: string;
       temperature: number;
       includeAnalysis: boolean;
-      autoSummarize: boolean;
+      autoSummarize: boolean;,
     };
   };
-  lastUpdated: Date;
+  lastUpdated: Date;,
 }
 
 // ============================================================================
@@ -197,7 +198,7 @@ export class LegalAIClientDB extends Dexie {
   constructor() {
     super('LegalAIClientDB');
     
-    // Database schema with optimized indexes
+    // Database schema with optimized indexes;
     this.version(1).stores({
       chatHistory: '++id, sessionId, timestamp, role',
       documentCache: '++id, documentId, hash, lastAccessed, title',
@@ -210,7 +211,7 @@ export class LegalAIClientDB extends Dexie {
       userPreferences: '++id, userId, lastUpdated'
     });
 
-    // Hooks for data management
+    // Hooks for data management;
     this.chatHistory.hook('creating', (primaryKey, obj, trans) => {
       obj.timestamp = new Date();
     });
@@ -232,11 +233,11 @@ export class LegalAIClientDB extends Dexie {
 
 export const legalDB = new LegalAIClientDB();
 ;
-// Database utility functions
+// Database utility functions;
 export class LegalDBUtils {
   /**
    * Clean up expired cache entries
-   */
+   */;
   static async cleanupExpiredCache(): Promise<void> {
     const now = new Date();
     
@@ -257,7 +258,7 @@ export class LegalDBUtils {
 
   /**
    * Manage document cache size (LRU eviction)
-   */
+   */;
   static async manageDocumentCacheSize(maxDocuments = 1000): Promise<void> {
     const count = await legalDB.documentCache.count();
     
@@ -277,12 +278,12 @@ export class LegalDBUtils {
 
   /**
    * Get database statistics
-   */
+   */;
   static async getStorageStats(): Promise<any> {
     const stats = {
       totalRecords: 0,
       storageUsed: 'Unknown',
-      tables: [] as Array<
+      tables: [] as Array<,
     };
 
     // Count records in each table
@@ -304,7 +305,7 @@ export class LegalDBUtils {
       stats.totalRecords += count;
     }
 
-    // Estimate storage usage (if available)
+    // Estimate storage usage (if available);
     if ('storage' in navigator && 'estimate' in navigator.storage) {
       const estimate = await navigator.storage.estimate();
       if (estimate.usage) {
@@ -317,7 +318,7 @@ export class LegalDBUtils {
 
   /**
    * Create content hash for caching
-   */
+   */;
   static createHash(content: string): string {
     let hash = 0;
     if (content.length === 0) return hash.toString();
@@ -333,7 +334,7 @@ export class LegalDBUtils {
 
   /**
    * Intelligent cache cleanup based on usage patterns
-   */
+   */;
   static async intelligentCleanup(): Promise<void> {
     console.log('[ClientDB] Starting intelligent cleanup...');
     
@@ -343,9 +344,9 @@ export class LegalDBUtils {
     // 2. Clean low-hit vector search cache
     await legalDB.vectorSearchCache
       .where('hitCount')
-      .below(2) // Remove rarely used cached searches
+      .below(2) // Remove rarely used cached searches;
       .and(item => {
-        const daysSinceCreated = (Date.now() - (item as { timestamp?: any }).timestamp.getTime()) / (1000 * 60 * 60 * 24));
+        const daysSinceCreated = (Date.now() - (item as { timestamp?: any ,}).timestamp.getTime()) / (1000 * 60 * 60 * 24);
         return daysSinceCreated > 7; // Older than a week
       })
       .delete();
@@ -373,7 +374,7 @@ import { liveQuery } from 'dexie';
 
 /**
  * Reactive store for recent chat messages
- */
+ */;
 export const recentChatMessages = liveQuery(async () => {
   return await legalDB.chatHistory
     .orderBy('timestamp')
@@ -384,7 +385,7 @@ export const recentChatMessages = liveQuery(async () => {
 
 /**
  * Reactive store for search history
- */
+ */;
 export const searchHistory = liveQuery(async () => {
   return await legalDB.searchHistory
     .orderBy('timestamp')
@@ -395,14 +396,14 @@ export const searchHistory = liveQuery(async () => {
 
 /**
  * Reactive store for cached documents count
- */
+ */;
 export const cachedDocumentsCount = liveQuery(async () => {
   return await legalDB.documentCache.count();
 });
 
 /**
  * Reactive store for user annotations count
- */
+ */;
 export const annotationsCount = liveQuery(async () => {
   return await legalDB.userAnnotations.count();
 });
@@ -412,7 +413,7 @@ export const annotationsCount = liveQuery(async () => {
  */
 export const storageStats = writable({ totalRecords: 0, storageUsed: 'Unknown', tables: [] });
 ;
-// Update storage stats periodically
+// Update storage stats periodically;
 if (typeof window !== 'undefined') {
   setInterval(async () => {
     const stats = await LegalDBUtils.getStorageStats();
@@ -424,9 +425,9 @@ if (typeof window !== 'undefined') {
 // INITIALIZATION & CLEANUP
 // ============================================================================
 
-// Initialize database and set up periodic cleanup
+// Initialize database and set up periodic cleanup;
 if (typeof window !== 'undefined') {
-  // Set up automatic cleanup every hour
+  // Set up automatic cleanup every hour;
   setInterval(() => {
     LegalDBUtils.intelligentCleanup().catch(console.error);
   }, 60 * 60 * 1000);

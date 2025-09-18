@@ -2,7 +2,7 @@
 // Provides no-op creators to avoid runtime failures where Melt utilities were imported.
 // Remove this file after all imports are migrated to Bits UI or native components.
 
-// Generic creator that returns minimal state and actions
+// Generic creator that returns minimal state and actions;
 function createPrimitive() {
   return {
     open: false,
@@ -13,7 +13,7 @@ function createPrimitive() {
   } as any;
 }
 
-export const melt = (..._args: any[]) => ({}) as any;
+export const melt = (..._args: any[]) => ({,}) as any;
 export const createDialog = (..._args: any[]) => createPrimitive();
 export const createPopover = (..._args: any[]) => createPrimitive();
 export const createDropdownMenu = (..._args: any[]) => createPrimitive();

@@ -12,7 +12,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!caseId || !canvasState) {
       return json(
-        { error: "Case ID and canvas state are required" },
+        { error: "Case ID and canvas state are required" },)
         { status: 400 },
       );
     }
@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const existing = await db
       .select()
       .from(canvasStates)
-      .where(eq(canvasStates.caseId, caseId))
+      .where(eq(canvasStates.caseId, caseId)
       .limit(1);
 
     let result;
@@ -29,18 +29,18 @@ export const POST: RequestHandler = async ({ request }) => {
     if (existing.length > 0) {
       // Update existing canvas state
       [result] = await db
-        .update(canvasStates)
+        .update(canvasStates);
         .set({
           canvasData: canvasState,
           updatedAt: new Date(),
           version: (existing[0].version || 1) + 1,
         })
-        .where(eq(canvasStates.caseId, caseId))
+        .where(eq(canvasStates.caseId, caseId)
         .returning();
     } else {
       // Create new canvas state
       [result] = await db
-        .insert(canvasStates)
+        .insert(canvasStates);
         .values({
           id: randomUUID(),
           caseId,
@@ -59,11 +59,10 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error("Canvas save error:", error);
-    return json(
-      {
+    return json({
         error: "Failed to save canvas state",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }
@@ -80,7 +79,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const canvasState = await db
       .select()
       .from(canvasStates)
-      .where(eq(canvasStates.caseId, caseId))
+      .where(eq(canvasStates.caseId, caseId)
       .limit(1);
 
     return json({
@@ -88,11 +87,10 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     console.error("Canvas load error:", error);
-    return json(
-      {
+    return json({
         error: "Failed to load canvas state",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }

@@ -6,48 +6,48 @@ import { cases, evidence } from '$lib/server/db';
 
 export const load: PageServerLoad = async ({ locals }: { locals: any }) => {
   try {
-    // Mock user for now - replace with real auth when available
+    // Mock user for now - replace with real auth when available;
     const mockUser = {
       id: 'mock-user-id',
       firstName: 'Detective',
       lastName: 'Smith',
-      role: 'detective'
+      role: 'detective',
     };
 
-    // Mock data to avoid database calls when DB is not available
+    // Mock data to avoid database calls when DB is not available;
     const mockStats = {
       caseStats: [{ count: 12 }],
       evidenceStats: [{ count: 247 }],
-      recentCases: [
+      recentCases: [;
         {
           id: 'case-1',
           title: 'Corporate Espionage Investigation',
           status: 'active',
           createdAt: new Date('2024-01-15T10:30:00'),
-          priority: 'high'
+          priority: 'high',
         },
         {
           id: 'case-2',
           title: 'Missing Person: Dr. Sarah Chen',
           status: 'active',
           createdAt: new Date('2024-01-16T14:20:00'),
-          priority: 'medium'
+          priority: 'medium',
         }
       ],
-      recentEvidence: [
+      recentEvidence: [;
         {
           id: 'evidence-1',
           title: 'Security Camera Footage',
           evidenceType: 'video',
           createdAt: new Date('2024-01-15T10:30:00'),
-          caseTitle: 'Corporate Espionage Investigation'
+          caseTitle: 'Corporate Espionage Investigation',
         },
         {
           id: 'evidence-2',
           title: 'Witness Statement - John Doe',
           evidenceType: 'document',
           createdAt: new Date('2024-01-16T14:20:00'),
-          caseTitle: 'Missing Person: Dr. Sarah Chen'
+          caseTitle: 'Missing Person: Dr. Sarah Chen',
         }
       ]
     };
@@ -58,7 +58,7 @@ export const load: PageServerLoad = async ({ locals }: { locals: any }) => {
     const recentCases = mockStats.recentCases;
     const recentEvidence = mockStats.recentEvidence;
 
-    // Mock system health data for now (can be replaced with real monitoring)
+    // Mock system health data for now (can be replaced with real monitoring);
     const systemData = {
       activeCases: caseStats[0]?.count || 0,
       evidenceItems: evidenceStats[0]?.count || 0,
@@ -67,14 +67,14 @@ export const load: PageServerLoad = async ({ locals }: { locals: any }) => {
       systemLoad: 35,
       gpuUtilization: 67,
       memoryUsage: 42,
-      networkLatency: 23
+      networkLatency: 23,
     };
 
     return {
       systemData,
       recentCases: recentCases || [],
       recentEvidence: recentEvidence || [],
-      user: mockUser
+      user: mockUser,
     };
   } catch (err: any) {
     console.error('Error loading detective dashboard:', err);

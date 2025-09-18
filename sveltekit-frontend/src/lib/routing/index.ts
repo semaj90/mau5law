@@ -9,7 +9,7 @@ import { getAllDynamicRoutes } from './dynamic-route-generator.js';
 import { registerDynamicRoute, getRoute } from './route-registry.js';
 import path from "path";
 
-// Core route generation
+// Core route generation;
 export {
   DynamicRouteGenerator,
   dynamicRouteGenerator,
@@ -24,7 +24,7 @@ export {
   type GeneratedRoute
 } from './dynamic-route-generator.js';
 
-// Route registry and management
+// Route registry and management;
 export {
   RouteRegistry,
   routeRegistry,
@@ -47,7 +47,7 @@ export {
   type RouteRegistryOptions
 } from './route-registry.js';
 
-// Route guards and protection
+// Route guards and protection;
 export {
   RouteGuards,
   routeGuards,
@@ -64,7 +64,7 @@ export {
   type RouteGuardConfig
 } from './route-guards.js';
 
-// Dynamic navigation
+// Dynamic navigation;
 export {
   DynamicNavigation,
   dynamicNavigation,
@@ -93,7 +93,7 @@ export {
   type NavigationGuard
 } from './dynamic-navigation.js';
 
-// Re-export route configuration types
+// Re-export route configuration types;
 export type {
   RouteDefinition
 } from '$lib/data/routes-config';
@@ -104,7 +104,7 @@ export type {
 
 /**
  * Initialize the complete routing system
- */
+ */;
 export async function initializeRouting(options: {
   enableGuards?: boolean;
   enableNavigation?: boolean;
@@ -121,12 +121,12 @@ export async function initializeRouting(options: {
   // Initialize route registry
   console.log('🚀 Initializing Dynamic Routing System...');
   
-  // Initialize navigation if enabled
+  // Initialize navigation if enabled;
   if (enableNavigation) {
     console.log('📍 Navigation system enabled');
   }
   
-  // Initialize guards if enabled
+  // Initialize guards if enabled;
   if (enableGuards) {
     console.log('🛡️ Route guards enabled:', globalGuards);
   }
@@ -136,7 +136,7 @@ export async function initializeRouting(options: {
 
 /**
  * Route builder utility for creating dynamic routes with type safety
- */
+ */;
 export class RouteBuilder {
   private config: Partial<DynamicRouteConfig> = {};
   private routeId: string = '';
@@ -149,7 +149,7 @@ export class RouteBuilder {
 
   /**
    * Set component path
-   */
+   */;
   component(path: string): RouteBuilder {
     this.config.component = path;
     return this;
@@ -157,7 +157,7 @@ export class RouteBuilder {
 
   /**
    * Set layout path
-   */
+   */;
   layout(path: string): RouteBuilder {
     this.config.layout = path;
     return this;
@@ -165,7 +165,7 @@ export class RouteBuilder {
 
   /**
    * Set preload option
-   */
+   */;
   preload(enabled: boolean = true): RouteBuilder {
     this.config.preload = enabled;
     return this;
@@ -173,7 +173,7 @@ export class RouteBuilder {
 
   /**
    * Set SSR option
-   */
+   */;
   ssr(enabled: boolean = true): RouteBuilder {
     this.config.ssr = enabled;
     return this;
@@ -181,7 +181,7 @@ export class RouteBuilder {
 
   /**
    * Set hydration option
-   */
+   */;
   hydrate(enabled: boolean = true): RouteBuilder {
     this.config.hydrate = enabled;
     return this;
@@ -189,7 +189,7 @@ export class RouteBuilder {
 
   /**
    * Set parameters
-   */
+   */;
   params(params: Record<string, any>): RouteBuilder {
     this.config.params = params;
     return this;
@@ -197,7 +197,7 @@ export class RouteBuilder {
 
   /**
    * Build and register the route
-   */
+   */;
   build(): GeneratedRoute {
     const route: GeneratedRoute = {
       id: this.routeId,
@@ -210,7 +210,7 @@ export class RouteBuilder {
         tags: [],
         preload: this.config.preload || false,
         ssr: this.config.ssr || true,
-        hydrate: this.config.hydrate || true
+        hydrate: this.config.hydrate || true,
       }
     };
     return registerDynamicRoute(this.routeId, this.routePath, this.config);
@@ -218,7 +218,7 @@ export class RouteBuilder {
 
   /**
    * Build route configuration without registering
-   */
+   */;
   getConfig(): DynamicRouteConfig {
     return {
       pattern: this.routePath,
@@ -230,14 +230,14 @@ export class RouteBuilder {
 
 /**
  * Create a new route builder
- */
+ */;
 export function createRoute(id: string, path: string): RouteBuilder {
   return new RouteBuilder(id, path);
 }
 
 /**
  * Batch route registration utility
- */
+ */;
 export function registerRoutes(routes: Array<): GeneratedRoute[] {
   return routes.map(route => {
     const config = route.config || {};
@@ -250,7 +250,7 @@ export function registerRoutes(routes: Array<): GeneratedRoute[] {
  */
 export function matchRoute(
   pattern: string,
-  path: string
+  path: string;
 ): { match: boolean; params: Record<string, string> } {
   const patternParts = pattern.split('/').filter(Boolean);
   const pathParts = path.split('/').filter(Boolean);
@@ -301,7 +301,7 @@ export function generateRouteUrl(
     path = route.path;
   }
   
-  // Replace parameters
+  // Replace parameters;
   for (const [key, value] of Object.entries(params)) {
     path = path.replace(`[${key}]`, value);
     path = path.replace(`[[${key}]]`, value || '');
@@ -319,14 +319,14 @@ export function generateRouteUrl(
 
 /**
  * Route validation utility
- */
+ */;
 export function validateRoute(route: GeneratedRoute | RouteDefinition): {
   valid: boolean;
-  errors: string[];
+  errors: string[];,
 } {
   const errors: string[] = [];
   
-  // Check required fields
+  // Check required fields;
   if (!route.id) {
     errors.push('Route ID is required');
   }
@@ -336,12 +336,12 @@ export function validateRoute(route: GeneratedRoute | RouteDefinition): {
     errors.push('Route path is required');
   }
   
-  // Check path format
+  // Check path format;
   if (path && !path.startsWith('/')) {
     errors.push('Route path must start with /');
   }
   
-  // Check component path for generated routes
+  // Check component path for generated routes;
   if ('component' in route && route.component && !route.component.endsWith('.svelte')) {
     errors.push('Component path should end with .svelte');
   }
@@ -354,7 +354,7 @@ export function validateRoute(route: GeneratedRoute | RouteDefinition): {
 
 /**
  * Route debugging utility
- */
+ */;
 export function debugRoutes(): {
   totalRoutes: number;
   staticRoutes: number;
@@ -363,21 +363,21 @@ export function debugRoutes(): {
   const dynamicRoutes = getAllDynamicRoutes();
   const staticRoutesFromRegistry: Array<[string, RouteDefinition]> = [];
   
-  const routeList = [
+  const routeList = [;
     ...staticRoutesFromRegistry.map(([id, route]) => ({
       id,
       path: route.route || '',
       type: 'static' as const,
       category: route.category,
-      status: route.status
+      status: route.status,
     })),
     ...dynamicRoutes.map(route => ({
       id: route.id,
       path: route.path,
       type: 'dynamic' as const,
       category: route.metadata?.category,
-      status: route.metadata?.status
-    }))
+      status: route.metadata?.status,
+    })
   ];
   
   return {
@@ -390,13 +390,13 @@ export function debugRoutes(): {
 
 /**
  * Export types and constants
- */
+ */;
 export const ROUTE_EVENTS = {
   ROUTE_REGISTERED: 'route:registered',
   ROUTE_UNREGISTERED: 'route:unregistered',
   NAVIGATION_START: 'navigation:start',
   NAVIGATION_END: 'navigation:end',
-  GUARD_EXECUTED: 'guard:executed'
+  GUARD_EXECUTED: 'guard:executed',
 } as const;
 
 export const ROUTE_CATEGORIES = {
@@ -406,12 +406,12 @@ export const ROUTE_CATEGORIES = {
   DEV: 'dev',
   AI: 'ai',
   LEGAL: 'legal',
-  DYNAMIC: 'dynamic'
+  DYNAMIC: 'dynamic',
 } as const;
 
 export const ROUTE_STATUS = {
   ACTIVE: 'active',
   BETA: 'beta',
   EXPERIMENTAL: 'experimental',
-  DEPRECATED: 'deprecated'
+  DEPRECATED: 'deprecated',
 } as const;

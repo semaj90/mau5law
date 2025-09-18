@@ -2,7 +2,8 @@
 
 ## What We Built
 
-I've implemented a **complete SSR/SPA hybrid architecture** for your legal case management system using SvelteKit, addressing all your requirements:
+I've implemented a **complete SSR/SPA hybrid architecture** for your legal case management system
+using SvelteKit, addressing all your requirements:
 
 ### ✅ Core Features Implemented
 
@@ -151,4 +152,5 @@ The implementation is **production-ready** and follows SvelteKit best practices:
 ✅ **Real-time updates** without page reloads  
 ✅ **Secure** with proper authentication
 
-This implementation provides the modern, robust foundation you requested for your legal case management system!
+This implementation provides the modern, robust foundation you requested for your legal case
+management system!

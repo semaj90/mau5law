@@ -4,6 +4,7 @@ import type { RequestHandler } from './$types.js';
 // Tests complete integration: Auth → Session → AI → Services
 import { json } from '@sveltejs/kit';
 import { productionServiceClient, services } from '$lib/services/productionServiceClient.js';
+}
 
 export interface AuthFlowTestResult {
   step: string;
@@ -24,7 +25,7 @@ export interface TestSuite {
     sessionManagement: boolean;
     aiAssistant: boolean;
     productionServices: boolean;
-    gpuAcceleration: boolean;
+    gpuAcceleration: boolean;,
   };
 }
 
@@ -45,7 +46,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       sessionManagement: false,
       aiAssistant: false,
       productionServices: false,
-      gpuAcceleration: false
+      gpuAcceleration: false,
     }
   };
 
@@ -58,7 +59,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     testSuite.results.push(authResult);
     testSuite.systemHealth.authentication = authResult.success;
 
-    // Test 2: Session Management
+    // Test 2: Session Management;
     if (authResult.success) {
       const sessionResult = await testSessionManagement(authResult.data);
       testSuite.results.push(sessionResult);
@@ -70,14 +71,14 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     testSuite.results.push(servicesResult);
     testSuite.systemHealth.productionServices = servicesResult.success;
 
-    // Test 4: AI Assistant (if enabled)
+    // Test 4: AI Assistant (if enabled);
     if (includeAI) {
       const aiResult = await testAIAssistant();
       testSuite.results.push(aiResult);
       testSuite.systemHealth.aiAssistant = aiResult.success;
     }
 
-    // Test 5: GPU Acceleration (if enabled)
+    // Test 5: GPU Acceleration (if enabled);
     if (includeGPU) {
       const gpuResult = await testGPUAcceleration();
       testSuite.results.push(gpuResult);
@@ -102,7 +103,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         passed: testSuite.results.filter(item => item.length),
         failed: testSuite.results.filter(item => item.length),
         total: testSuite.results.length,
-        duration: testSuite.totalDuration
+        duration: testSuite.totalDuration,
       }
     });
 
@@ -115,7 +116,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       step: 'test_execution',
       success: false,
       duration: testSuite.totalDuration,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     });
 
     return json({
@@ -126,20 +127,20 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   }
 };
 
-// Test authentication system
+// Test authentication system;
 async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestResult> {
   const stepStart = Date.now();
   
   try {
     console.log('🔐 Testing authentication system...');
     
-    // Test login endpoint
+    // Test login endpoint;
     const loginResponse = await fetch('http://localhost:5173/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: testUser,
-        password: 'password'
+        password: 'password',
       })
     });
 
@@ -161,7 +162,7 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       duration: Date.now() - stepStart,
       data: {
         user: loginData.user,
-        sessionCookie: loginResponse.headers.get('set-cookie')
+        sessionCookie: loginResponse.headers.get('set-cookie'),
       }
     };
   } catch (error: any) {
@@ -171,19 +172,19 @@ async function testAuthenticationSystem(testUser: string): Promise<AuthFlowTestR
       step: 'authentication_system',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
 
-// Test session management
+// Test session management;
 async function testSessionManagement(authData: any): Promise<AuthFlowTestResult> {
   const stepStart = Date.now();
   
   try {
     console.log('📊 Testing session management...');
     
-    // Simulate session validation
+    // Simulate session validation;
     const sessionValidation = {
       userId: authData.user.id,
       sessionActive: true,
@@ -191,11 +192,11 @@ async function testSessionManagement(authData: any): Promise<AuthFlowTestResult>
       permissions: ['cases:read', 'evidence:read', 'ai:analyze']
     };
 
-    // Test session health
+    // Test session health;
     const sessionHealth = {
       isValid: true,
       warningCount: 0,
-      lastCheck: new Date()
+      lastCheck: new Date(),
     };
 
     console.log('✅ Session management test passed');
@@ -206,7 +207,7 @@ async function testSessionManagement(authData: any): Promise<AuthFlowTestResult>
       duration: Date.now() - stepStart,
       data: {
         validation: sessionValidation,
-        health: sessionHealth
+        health: sessionHealth,
       }
     };
   } catch (error: any) {
@@ -216,12 +217,12 @@ async function testSessionManagement(authData: any): Promise<AuthFlowTestResult>
       step: 'session_management',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
 
-// Test production services
+// Test production services;
 async function testProductionServices(): Promise<AuthFlowTestResult> {
   const stepStart = Date.now();
   
@@ -231,10 +232,10 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
     // Test service health
     const serviceHealth = await productionServiceClient.checkAllServicesHealth();
     
-    // Test enhanced RAG service
+    // Test enhanced RAG service;
     const ragResponse = await services.queryRAG('Test legal query for authentication flow', {
       userId: 'test_user',
-      testMode: true
+      testMode: true,
     });
 
     const healthyServices = Object.values(serviceHealth).filter(item => item.length);
@@ -254,7 +255,7 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
         serviceHealth,
         ragResponse: ragResponse ? 'Success' : 'No response',
         healthyCount: healthyServices,
-        totalCount: totalServices
+        totalCount: totalServices,
       }
     };
   } catch (error: any) {
@@ -264,12 +265,12 @@ async function testProductionServices(): Promise<AuthFlowTestResult> {
       step: 'production_services',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
 
-// Test AI assistant
+// Test AI assistant;
 async function testAIAssistant(): Promise<AuthFlowTestResult> {
   const stepStart = Date.now();
   
@@ -295,7 +296,7 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
     const aiResponse = await services.queryRAG(aiQuery, {
       model: 'gemma3-legal',
       temperature: 0.7,
-      testMode: true
+      testMode: true,
     });
 
     console.log(`✅ AI assistant test passed (${healthyOllama}/3 Ollama instances healthy)`);
@@ -308,10 +309,10 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
         ollamaHealth: {
           primary: ollamaHealthChecks[0].status === 'fulfilled',
           secondary: ollamaHealthChecks[1].status === 'fulfilled',
-          embeddings: ollamaHealthChecks[2].status === 'fulfilled'
+          embeddings: ollamaHealthChecks[2].status === 'fulfilled',
         },
         aiResponse: aiResponse ? 'Success' : 'No response',
-        healthyInstances: healthyOllama
+        healthyInstances: healthyOllama,
       }
     };
   } catch (error: any) {
@@ -321,31 +322,31 @@ async function testAIAssistant(): Promise<AuthFlowTestResult> {
       step: 'ai_assistant',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
 
-// Test GPU acceleration
+// Test GPU acceleration;
 async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
   const stepStart = Date.now();
   
   try {
     console.log('⚡ Testing GPU acceleration...');
     
-    // Test GPU availability (simulated - in real implementation would check actual GPU)
+    // Test GPU availability (simulated - in real implementation would check actual GPU);
     const gpuInfo = {
       available: true,
       model: 'RTX 3060 Ti',
       memory: '8GB VRAM',
-      utilization: '45%'
+      utilization: '45%',
     };
 
-    // Test GPU-accelerated query
+    // Test GPU-accelerated query;
     const gpuQuery = await services.queryRAG('GPU-accelerated legal document analysis test', {
       useGPU: true,
       model: 'gemma3-legal',
-      testMode: true
+      testMode: true,
     });
 
     console.log('✅ GPU acceleration test passed');
@@ -357,7 +358,7 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
       data: {
         gpuInfo,
         gpuQuery: gpuQuery ? 'Success' : 'No response',
-        accelerationEnabled: true
+        accelerationEnabled: true,
       }
     };
   } catch (error: any) {
@@ -367,26 +368,26 @@ async function testGPUAcceleration(): Promise<AuthFlowTestResult> {
       step: 'gpu_acceleration',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }
 
-// Test end-to-end integration
+// Test end-to-end integration;
 async function testEndToEndIntegration(testUser: string): Promise<AuthFlowTestResult> {
   const stepStart = Date.now();
   
   try {
     console.log('🔄 Testing end-to-end integration...');
     
-    // Simulate complete user flow
+    // Simulate complete user flow;
     const workflow = {
       login: true,
       sessionCreated: true,
       aiQueryExecuted: true,
       servicesAccessed: true,
       gpuAccelerated: true,
-      securityValidated: true
+      securityValidated: true,
     };
 
     // Test workflow completion
@@ -407,7 +408,7 @@ async function testEndToEndIntegration(testUser: string): Promise<AuthFlowTestRe
         workflow,
         completedSteps: workflowSteps,
         totalSteps,
-        integrationScore: '100%'
+        integrationScore: '100%',
       }
     };
   } catch (error: any) {
@@ -417,7 +418,7 @@ async function testEndToEndIntegration(testUser: string): Promise<AuthFlowTestRe
       step: 'end_to_end_integration',
       success: false,
       duration: Date.now() - stepStart,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     };
   }
 }

@@ -3,7 +3,7 @@ import { db } from "$lib/server/db";
 import type { RequestHandler } from './$types.js';
 
 
-// Fallback raw query (table created dynamically by summarization script)
+// Fallback raw query (table created dynamically by summarization script);
 export const GET: RequestHandler = async () => {
   try {
     const rows = await db.execute(sql`SELECT id, generated_at, model, embed_model, docs_count, topics, parameters, created_at FROM corpus_summaries ORDER BY id DESC LIMIT 1`);

@@ -1,5 +1,5 @@
 
-// UnoCSS shortcuts for common patterns
+// UnoCSS shortcuts for common patterns;
 export const shortcuts = {
   // Layout shortcuts
   container: "mx-auto px-4 max-w-7xl",

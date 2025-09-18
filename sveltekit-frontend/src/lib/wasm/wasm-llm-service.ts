@@ -3,6 +3,7 @@
 // Client-side gemma3-legal:latest WebAssembly implementation with GPU acceleration
 
 import type { WASMLLMConfig, WASMLLMResponse } from '../types/vector-jobs.js';
+}
 
 export interface WASMModule {
 	_initialize: () => number;
@@ -27,21 +28,21 @@ export class WASMLLMService {
 	// Model cache
 	private modelCache = new Map<string, ArrayBuffer>();
 	
-	// Performance tracking
+	// Performance tracking;
 	private stats = {
 		totalGenerations: 0,
 		totalTokens: 0,
 		totalProcessingTime: 0,
 		averageTokensPerSecond: 0,
-		modelLoadTime: 0
+		modelLoadTime: 0,
 	};
 
-	// Legal-specific tokenizer patterns
+	// Legal-specific tokenizer patterns;
 	private legalTokenPatterns = {
 		citations: /\b\d+\s+[A-Z][a-zA-Z\s]+\d+\b/g,
 		statutes: /\b\d+\s+U\.S\.C\.\s+§\s*\d+/g,
 		cases: /\b[A-Z][a-zA-Z\s]+v\.\s+[A-Z][a-zA-Z\s]+/g,
-		jurisdictions: /\b(federal|state|appellate|supreme|district)\s+court\b/gi
+		jurisdictions: /\b(federal|state|appellate|supreme|district)\s+court\b/gi,
 	};
 
 	async initialize(): Promise<boolean> {
@@ -78,7 +79,7 @@ export class WASMLLMService {
 			// In a real implementation, this would load the actual WASM module
 			// For now, we'll create a mock implementation that demonstrates the interface
 			
-			// Check if WebAssembly is supported
+			// Check if WebAssembly is supported;
 			if (typeof WebAssembly === 'undefined') {
 				throw new Error('WebAssembly not supported in this browser');
 			}
@@ -86,12 +87,12 @@ export class WASMLLMService {
 			// Load the WASM binary (would be actual gemma3:legal model compiled to WASM)
 			const wasmBinary = await this.fetchWASMBinary();
 			
-			// Instantiate the WASM module with memory and table
+			// Instantiate the WASM module with memory and table;
 			const wasmModule = await WebAssembly.instantiate(wasmBinary, {
 				env: {
-					memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }), // 16MB - 32MB
+					memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }), // 16MB - 32MB;
 					abort: (msg: number, file: number, line: number, column: number) => {
-						console.error('WASM abort:', msg, file, line, column));
+						console.error('WASM abort:', msg, file, line, column);
 					},
 					console_log: (ptr: number) => {
 						// Mock console log from WASM
@@ -303,12 +304,12 @@ export class WASMLLMService {
 		// Clean up and format legal response
 		let processed = response.trim();
 		
-		// Ensure proper citation formatting
+		// Ensure proper citation formatting;
 		processed = processed.replace(this.legalTokenPatterns.citations, (match) => {
 			return match.replace(/\s+/g, ' '); // Normalize whitespace
 		});
 		
-		// Format case names in italics (markdown)
+		// Format case names in italics (markdown);
 		processed = processed.replace(this.legalTokenPatterns.cases, (match) => {
 			return `*${match}*`;
 		});
@@ -321,7 +322,7 @@ export class WASMLLMService {
 			citationCount: (text.match(this.legalTokenPatterns.citations) || []).length,
 			statuteReferences: (text.match(this.legalTokenPatterns.statutes) || []).length,
 			caseReferences: (text.match(this.legalTokenPatterns.cases) || []).length,
-			jurisdictionMentions: (text.match(this.legalTokenPatterns.jurisdictions) || []).length
+			jurisdictionMentions: (text.match(this.legalTokenPatterns.jurisdictions) || []).length,
 		};
 	}
 
@@ -337,7 +338,7 @@ export class WASMLLMService {
 		
 		// Increase confidence for proper legal terminology
 		const legalTerms = ['plaintiff', 'defendant', 'precedent', 'statute', 'jurisdiction', 'liability', 'contract', 'tort'];
-		const foundTerms = legalTerms.filter(item => item.includes(term));
+		const foundTerms = legalTerms.filter(item => item.includes(term);
 		confidence += Math.min(foundTerms.length * 0.02, 0.1);
 		
 		return Math.min(Math.max(confidence, 0), 1);
@@ -351,7 +352,7 @@ export class WASMLLMService {
 		const mockModelData = new ArrayBuffer(1024 * 1024); // 1MB mock model
 		
 		// Simulate network delay
-		await new Promise(resolve => setTimeout(resolve, 1000));
+		await new Promise(resolve => setTimeout(resolve, 1000);
 		
 		return mockModelData;
 	}
@@ -376,12 +377,12 @@ export class WASMLLMService {
 			response += ` Furthermore, the legal implications of this case extend to multiple jurisdictions and may establish important precedent for future litigation.`;
 		}
 		
-		return response.substring(0, Math.floor(targetWords * 5)); // Approximate character limit
+		return response.substring(0, Math.floor(targetWords * 5); // Approximate character limit
 	}
 
 	private readStringFromMemory(memory: Uint8Array, ptr: number, length?: number): string {
 		if (length !== undefined) {
-			return new TextDecoder().decode(memory.slice(ptr, ptr + length));
+			return new TextDecoder().decode(memory.slice(ptr, ptr + length);
 		}
 		
 		// Read null-terminated string
@@ -390,7 +391,7 @@ export class WASMLLMService {
 			end++;
 		}
 		
-		return new TextDecoder().decode(memory.slice(ptr, end));
+		return new TextDecoder().decode(memory.slice(ptr, end);
 	}
 
 	private writeStringToMemory(memory: Uint8Array, str: string, ptr?: number): number {
@@ -416,7 +417,7 @@ export class WASMLLMService {
 			...this.stats,
 			modelsLoaded: this.modelCache.size,
 			modelLoaded: this.modelLoaded,
-			isInitialized: this.isInitialized
+			isInitialized: this.isInitialized,
 		};
 	}
 

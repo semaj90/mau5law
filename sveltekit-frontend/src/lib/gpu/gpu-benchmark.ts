@@ -1,5 +1,6 @@
 import { gpuVectorProcessor } from './gpu-vector-processor.js';
 import { telemetryBus } from '../telemetry/telemetry-bus.js';
+}
 
 export interface EmbeddingBenchmarkOptions {
   runs?: number;            // number of repetitions per mode
@@ -21,7 +22,7 @@ export interface EmbeddingBenchmarkResultEntry {
   dimension: number;
   segments: number;
   backend: string;
-  statsUsed: boolean;      // whether GPU stats were applied (for gpu mode)
+  statsUsed: boolean;      // whether GPU stats were applied (for gpu mode),
 }
 
 export interface EmbeddingBenchmarkSummary {
@@ -29,7 +30,7 @@ export interface EmbeddingBenchmarkSummary {
   dimension: number;
   segments: number;
   entries: EmbeddingBenchmarkResultEntry[];
-  timestamp: number;
+  timestamp: number;,
 }
 
 function downloadText(filename: string, text: string) {
@@ -62,7 +63,7 @@ export function downloadBenchmarkCSV(summary: EmbeddingBenchmarkSummary) {
 function percentile(arr: number[], p: number) {
   if (!arr.length) return 0;
   const sorted = [...arr].sort((a, b) => a - b);
-  const idx = Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length));
+  const idx = Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length);
   return sorted[idx];
 }
 
@@ -77,7 +78,7 @@ export async function runEmbeddingBenchmark(
   const dim = (gpuVectorProcessor as any).getCurrentEmbeddingDimension?.() || opts.size || 384;
   const label = opts.label || 'embedding-benchmark';
 
-  // Synthetic input: segments * dim random-ish floats in [-0.5,0.5]
+  // Synthetic input: segments * dim random-ish floats in [-0.5,0.5];
   function makeBatch() {
     const data = new Float32Array(segments * dim);
     for (let i = 0; i < data.length; i++)
@@ -102,7 +103,7 @@ export async function runEmbeddingBenchmark(
     }
 
     // Capture approximate memory usage before/after the timed runs
-    const beforeMem = (performance as any).memory
+    const beforeMem = (performance as any).memory;
       ? {
           jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
           totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
@@ -121,7 +122,7 @@ export async function runEmbeddingBenchmark(
       if (i >= warmup) durations.push(dur);
       if (mode === 'gpu' && result?.stats) statsUsed = true;
     }
-    const afterMem = (performance as any).memory
+    const afterMem = (performance as any).memory;
       ? {
           jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
           totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
@@ -171,7 +172,7 @@ export async function runEmbeddingBenchmark(
   return summary;
 }
 
-// Attach helper to window in browser context automatically
+// Attach helper to window in browser context automatically;
 if (typeof window !== 'undefined') {
   (window as any).runEmbeddingBenchmark = runEmbeddingBenchmark;
   (window as any).downloadBenchmarkCSV = downloadBenchmarkCSV;

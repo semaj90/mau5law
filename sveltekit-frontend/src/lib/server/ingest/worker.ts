@@ -41,12 +41,12 @@ interface WorkerJobResult {
   result?: any;
   error?: string;
   processingTime: number;
-  workerId: string;
+  workerId: string;,
 }
 
 const workerId = `worker_${process.pid}_${Date.now()}`;
 
-// Message handler
+// Message handler;
 parentPort.on('message', async (jobData: WorkerJobData) => {
   const startTime = Date.now();
 
@@ -102,7 +102,7 @@ parentPort.on('message', async (jobData: WorkerJobData) => {
   }
 });
 
-// Job handlers
+// Job handlers;
 async function handleOCR(payload: {
   buffer: number[]; // Buffer as array
   contentType?: string;
@@ -119,7 +119,7 @@ async function handleOCR(payload: {
 
 async function handleAudioExtraction(payload: {
   buffer: number[];
-  filename: string;
+  filename: string;,
 }) {
   const buffer = Buffer.from(payload.buffer);
   return await extractAudioFromBuffer(buffer, payload.filename);
@@ -135,7 +135,7 @@ async function handleVideoFrames(payload: {
 }
 
 async function handleJsonParsing(payload: {
-  jsonText: string;
+  jsonText: string;,
 }) {
   return await parseJsonWithSimd(payload.jsonText);
 }
@@ -164,22 +164,22 @@ async function handleImageProcessing(payload: {
   const sharp = await import('sharp');
   let image = sharp.default(buffer);
 
-  // Apply operations sequentially
+  // Apply operations sequentially;
   for (const operation of payload.operations) {
     switch (operation.type) {
-      case 'resize':
+      case 'resize':;
         image = image.resize(operation.params?.width, operation.params?.height, {
           fit: operation.params?.fit || 'inside',
-          withoutEnlargement: operation.params?.withoutEnlargement !== false
+          withoutEnlargement: operation.params?.withoutEnlargement !== false,
         });
         break;
 
-      case 'crop':
+      case 'crop':;
         image = image.extract({
           left: operation.params?.left || 0,
           top: operation.params?.top || 0,
           width: operation.params?.width,
-          height: operation.params?.height
+          height: operation.params?.height,
         });
         break;
 
@@ -206,16 +206,16 @@ async function handleImageProcessing(payload: {
 
   return {
     success: true,
-    buffer: Array.from(processedBuffer), // Convert back to array for JSON transport
+    buffer: Array.from(processedBuffer), // Convert back to array for JSON transport;
     metadata: {
       originalSize: buffer.length,
       processedSize: processedBuffer.length,
-      operations: payload.operations.length
+      operations: payload.operations.length,
     }
   };
 }
 
-// Error handling
+// Error handling;
 process.on('uncaughtException', (error) => {
   const response: WorkerJobResult = {
     success: false,

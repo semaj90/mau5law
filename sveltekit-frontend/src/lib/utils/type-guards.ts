@@ -122,7 +122,7 @@ export function isWorkerMessage(value: unknown): value is WorkerMessage {
 
 // --- Legal Domain Type Guards ---
 
-// TODO: Uncomment when LegalCase type is available
+// TODO: Uncomment when LegalCase type is available;
 // export function isLegalCase(value: unknown): value is LegalCase {
 //   return (
 //     typeof value === 'object' &&
@@ -144,7 +144,7 @@ export function isWorkerMessage(value: unknown): value is WorkerMessage {
 //   );
 // }
 
-// TODO: Uncomment when Evidence type is available  
+// TODO: Uncomment when Evidence type is available;
 // export function isEvidence(value: unknown): value is Evidence {
 //   return (
 //     typeof value === 'object' &&
@@ -166,7 +166,7 @@ export function isWorkerMessage(value: unknown): value is WorkerMessage {
 
 // --- Authentication Type Guards ---
 
-// TODO: Uncomment when User type is available
+// TODO: Uncomment when User type is available;
 // export function isUser(value: unknown): value is User {
 //   return (
 //     typeof value === 'object' &&
@@ -185,13 +185,13 @@ export function isWorkerMessage(value: unknown): value is WorkerMessage {
 
 // --- UI Type Guards ---
 
-// TODO: Uncomment when NotificationType is available
+// TODO: Uncomment when NotificationType is available;
 // export function isNotificationType(value: unknown): value is NotificationType {
 //   return typeof value === 'string' && 
 //     ['info', 'success', 'warning', 'error'].includes(value);
 // }
 
-// TODO: Uncomment when Notification type is available
+// TODO: Uncomment when Notification type is available;
 // export function isNotification(value: unknown): value is Notification {
 //   return (
 //     typeof value === 'object' &&
@@ -289,7 +289,7 @@ export function safeGet<T>(obj: unknown, path: string, defaultValue: T): T {
 
 export function hasProperty<K extends string>(
   obj: unknown,
-  prop: K
+  prop: K;
 ): obj is Record<K, unknown> {
   return typeof obj === 'object' && obj !== null && prop in obj;
 }

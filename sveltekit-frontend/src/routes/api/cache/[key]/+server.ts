@@ -6,12 +6,12 @@ import type { RequestHandler } from './$types.js';
  * GET /api/cache/[key] - Get specific cache entry
  */
 
-// Mock cache implementation - would integrate with actual Redis in production
+// Mock cache implementation - would integrate with actual Redis in production;
 const mockCache = new Map<string, {
   value: any;
   timestamp: number;
   ttl: number;
-  version: string;
+  version: string;,
 }>();
 
 export const GET: RequestHandler = async ({ params }) => {
@@ -23,16 +23,16 @@ export const GET: RequestHandler = async ({ params }) => {
     
     if (!entry) {
       return json(
-        { success: false, error: 'Cache key not found' },
+        { success: false, error: 'Cache key not found' },)
         { status: 404 }
       );
     }
     
-    // Check if expired
+    // Check if expired;
     if (Date.now() - entry.timestamp > entry.ttl) {
       mockCache.delete(decodedKey);
       return json(
-        { success: false, error: 'Cache key expired' },
+        { success: false, error: 'Cache key expired' },)
         { status: 404 }
       );
     }
@@ -43,13 +43,13 @@ export const GET: RequestHandler = async ({ params }) => {
       value: entry.value,
       version: entry.version,
       timestamp: entry.timestamp,
-      ttl: entry.ttl
+      ttl: entry.ttl,
     });
     
   } catch (error: any) {
     console.error('[Cache API] Individual key fetch failed:', error);
     return json(
-      { success: false, error: error.message },
+      { success: false, error: error.message },)
       { status: 500 }
     );
   }

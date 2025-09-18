@@ -9,13 +9,13 @@ import type { LegalAISession, LegalContext, SessionStatus } from '$lib/types/yor
 // Session storage (in production, use database)
 const activeSessions = new Map<string, LegalAISession>();
 
-/* POST /api/v1/legal/session/create - Create new legal AI session */
+/* POST /api/v1/legal/session/create - Create new legal AI session */;
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json();
 		const { user_id, case_id, context } = body;
 
-		// Validate required fields
+		// Validate required fields;
 		if (!user_id) {
 			return json({ error: 'user_id is required' }, { status: 400 });
 		}
@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		const session_id = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 		const timestamp = new Date().toISOString();
 
-		// Create legal AI session
+		// Create legal AI session;
 		const session: LegalAISession = {
 			session_id,
 			user_id,
@@ -34,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			status: 'ACTIVE',
 			query_count: 0,
 			processing_time_total: 0,
-			context: validateAndEnhanceContext(context)
+			context: validateAndEnhanceContext(context),
 		};
 
 		// Store session
@@ -53,12 +53,12 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({
 			success: false,
 			error: 'Failed to create legal AI session',
-			details: error instanceof Error ? error.message: 'Unknown error'
+			details: error instanceof Error ? error.message: 'Unknown error',
 		}, { status: 500 });
 	}
 };
 
-/* GET /api/v1/legal/session/create - Get session creation info and active sessions */
+/* GET /api/v1/legal/session/create - Get session creation info and active sessions */;
 export const GET: RequestHandler = async () => {
 	return json({
 		service: 'Legal AI Session Manager',
@@ -71,7 +71,7 @@ export const GET: RequestHandler = async () => {
 			priority_level: 'number (1-10)',
 			security_classification: 'SecurityLevel',
 			related_cases: 'string[]',
-			key_entities: 'string[]'
+			key_entities: 'string[]',
 		},
 		session_statuses: ['ACTIVE', 'IDLE', 'PAUSED', 'TERMINATED', 'ERROR'],
 		security_levels: ['MINIMUM', 'STANDARD', 'HIGH', 'MAXIMUM', 'CLASSIFIED'],
@@ -81,7 +81,7 @@ export const GET: RequestHandler = async () => {
 			update_session: 'PUT /api/v1/legal/session/{session_id}',
 			terminate_session: 'DELETE /api/v1/legal/session/{session_id}'
 		},
-		timestamp: new Date().toISOString()
+		timestamp: new Date().toISOString(),
 	});
 };
 
@@ -95,7 +95,7 @@ function validateAndEnhanceContext(context: any): LegalContext {
 		priority_level: 5,
 		security_classification: 'STANDARD',
 		related_cases: [],
-		key_entities: []
+		key_entities: [],
 	};
 
 	if (!context) return defaultContext;
@@ -107,7 +107,7 @@ function validateAndEnhanceContext(context: any): LegalContext {
     case_type: context.case_type || defaultContext.case_type,
     priority_level:
       typeof context.priority_level === 'number'
-        ? Math.max(1, Math.min(10, context.priority_level))
+        ? Math.max(1, Math.min(10, context.priority_level)
         : defaultContext.priority_level,
     security_classification: isValidSecurityLevel(context.security_classification)
       ? context.security_classification

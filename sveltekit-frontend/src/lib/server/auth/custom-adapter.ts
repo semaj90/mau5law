@@ -1,7 +1,7 @@
 // Custom Drizzle PostgreSQL Adapter for Lucia with fixed JOIN queries
 // import { type Adapter, type DatabaseSession, type DatabaseUser } from 'lucia';
 
-// Temporary type stubs for Lucia (not installed)
+// Temporary type stubs for Lucia (not installed);
 interface Adapter {
   deleteSession(sessionId: string): Promise<void>;
   deleteUserSessions(userId: string): Promise<void>;
@@ -31,7 +31,7 @@ import { eq, lte } from 'drizzle-orm';
 export class FixedDrizzlePostgreSQLAdapter implements Adapter {
   async deleteSession(sessionId: string): Promise<void> {
     try {
-      await db.delete(sessions).where(eq(sessions.id, sessionId));
+      await db.delete(sessions).where(eq(sessions.id, sessionId);
     } catch (error) {
       console.error('[AUTH] Error deleting session:', error);
       throw error;
@@ -39,14 +39,14 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
   }
 
   async deleteUserSessions(userId: string): Promise<void> {
-    await db.delete(sessions).where(eq(sessions.user_id, userId));
+    await db.delete(sessions).where(eq(sessions.user_id, userId);
   }
 
   async getSessionAndUser(
-    sessionId: string
+    sessionId: string;
   ): Promise<[session: DatabaseSession | null, user: DatabaseUser | null]> {
     try {
-      // Check if db and db.select exist
+      // Check if db and db.select exist;
       if (!db || typeof db.select !== 'function') {
         console.error('[AUTH] Database connection not available:', {
           dbExists: !!db,
@@ -57,7 +57,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
       }
 
       // Build the correct JOIN query manually
-      const result = await db
+      const result = await db;
         .select({
           // User fields
           user: users,
@@ -65,8 +65,8 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
           session: sessions,
         })
         .from(sessions)
-        .innerJoin(users, eq(sessions.user_id, users.id))
-        .where(eq(sessions.id, sessionId))
+        .innerJoin(users, eq(sessions.user_id, users.id)
+        .where(eq(sessions.id, sessionId)
         .limit(1);
 
       if ((result as { length?: any; map?: any }).length === 0) {
@@ -75,7 +75,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
 
       const { user, session } = result[0];
 
-      // Transform to Lucia's expected format
+      // Transform to Lucia's expected format;
       const databaseSession: DatabaseSession = {
         id: session.id,
         userId: session.user_id,
@@ -109,7 +109,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
   }
 
   async getUserSessions(userId: string): Promise<DatabaseSession[]> {
-    const result = await db.select().from(sessions).where(eq(sessions.user_id, userId));
+    const result = await db.select().from(sessions).where(eq(sessions.user_id, userId);
 
     return (result as { length?: any; map?: any }).map((session) => ({
       id: session.id,
@@ -121,7 +121,7 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
         session_context: session.session_context,
         created_at: session.created_at,
       },
-    }));
+    });
   }
 
   async setSession(session: DatabaseSession): Promise<void> {
@@ -137,10 +137,10 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
   }
 
   async updateSessionExpiration(sessionId: string, expiresAt: Date): Promise<void> {
-    await db.update(sessions).set({ expires_at: expiresAt }).where(eq(sessions.id, sessionId));
+    await db.update(sessions).set({ expires_at: expiresAt }).where(eq(sessions.id, sessionId);
   }
 
   async deleteExpiredSessions(): Promise<void> {
-    await db.delete(sessions).where(lte(sessions.expires_at, new Date()));
+    await db.delete(sessions).where(lte(sessions.expires_at, new Date());
   }
 }

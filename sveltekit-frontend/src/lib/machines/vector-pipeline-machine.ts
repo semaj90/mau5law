@@ -5,7 +5,7 @@
 import { setup, assign, createActor, fromPromise } from 'xstate';
 import { writable } from 'svelte/store';
 
-// Mock implementations for undefined variables
+// Mock implementations for undefined variables;
 const webgpuWASM = {
   getStatus: () => ({ capabilities: { webgpuSupported: true } })
 };
@@ -14,7 +14,7 @@ const vectorPipeline = {
   submitJob: async (job: any) => ({ jobId: `job_${Date.now()}`, status: 'enqueued' })
 };
 
-// Add loadModel method to webgpuWASM
+// Add loadModel method to webgpuWASM;
 const webgpuWASMExtended = {
   ...webgpuWASM,
   loadModel: async () => ({ modelLoaded: true, status: 'ready' })
@@ -36,23 +36,23 @@ export interface VectorPipelineContext {
   // Current job being processed
   currentJob: VectorPipelineJob | null;
   
-  // Batch processing
+  // Batch processing;
   batch: {
     jobs: VectorPipelineJob[];
     totalJobs: number;
     completedJobs: number;
     failedJobs: number;
-    progress: number;
+    progress: number;,
   };
 
-  // Pipeline status
+  // Pipeline status;
   pipeline: {
     postgresql: boolean;
     redis: boolean;
     goMicroservice: boolean;
     cudaWorker: boolean;
     qdrant: boolean;
-    webgpu: boolean;
+    webgpu: boolean;,
   };
 
   // Error tracking
@@ -60,12 +60,12 @@ export interface VectorPipelineContext {
   retryAttempts: number;
   maxRetries: number;
 
-  // Performance metrics
+  // Performance metrics;
   metrics: {
     averageProcessingTime: number;
     totalJobsProcessed: number;
     throughputPerMinute: number;
-    lastProcessedAt: Date | null;
+    lastProcessedAt: Date | null;,
   };
 }
 
@@ -112,10 +112,10 @@ const initialContext: VectorPipelineContext = {
 export const vectorPipelineMachine = setup({
   types: Record<string, any> as {
     context: VectorPipelineContext;
-    events: VectorPipelineEvent;
+    events: VectorPipelineEvent;,
   },
   actions: {
-    // Job management actions
+    // Job management actions;
     setCurrentJob: assign({
       currentJob: ({ event }) => (event as any).job || null,
     }),
@@ -190,7 +190,7 @@ export const vectorPipelineMachine = setup({
       errors: ({ context, event }) => [...context.errors, (event as any).error],
     }),
 
-    // Pipeline status actions
+    // Pipeline status actions;
     updatePipelineStatus: assign({
       pipeline: ({ event }) => (event as any).status || {},
     }),
@@ -209,7 +209,7 @@ export const vectorPipelineMachine = setup({
       }),
     }),
 
-    // Error handling actions
+    // Error handling actions;
     incrementRetry: assign({
       retryAttempts: ({ context }) => context.retryAttempts + 1,
     }),
@@ -222,7 +222,7 @@ export const vectorPipelineMachine = setup({
       errors: () => [],
     }),
 
-    // Reset actions
+    // Reset actions;
     resetBatch: assign({
       batch: () => ({
         jobs: [],
@@ -235,7 +235,7 @@ export const vectorPipelineMachine = setup({
 
     resetPipeline: assign(() => initialContext),
 
-    // Metrics actions
+    // Metrics actions;
     updateMetrics: assign({
       metrics: ({ context }) => {
         const completedJobs = context.batch.jobs.filter(j => j.status === 'succeeded');
@@ -245,7 +245,7 @@ export const vectorPipelineMachine = setup({
         // Calculate throughput (jobs per minute)
         const now = Date.now();
         const oneMinuteAgo = now - 60 * 1000;
-        const recentJobs = completedJobs.filter(item => item.getTime)() > oneMinuteAgo
+        const recentJobs = completedJobs.filter(item => item.getTime() > oneMinuteAgo
         );
 
         return {
@@ -273,7 +273,7 @@ export const vectorPipelineMachine = setup({
   actors: {
     submitJob: fromPromise(async ({ input }: { input: any }) => {
       const { job } = input;
-      // Mock implementation for now
+      // Mock implementation for now;
       return {
         jobId: `job_${Date.now()}`,
         status: 'enqueued',
@@ -283,16 +283,16 @@ export const vectorPipelineMachine = setup({
 
     submitBatch: fromPromise(async ({ input }: { input: any }) => {
       const { jobs } = input;
-      // Mock implementation for now
+      // Mock implementation for now;
       return jobs.map((job: any, index: number) => ({
         jobId: `batch_job_${Date.now()}_${index}`,
         status: 'enqueued',
         progress: 0,
-      }));
+      });
     }),
 
     healthCheck: fromPromise(async () => {
-      // Mock health check - in real implementation would check services
+      // Mock health check - in real implementation would check services;
       return {
         postgresql: true,
         redis: true,
@@ -306,14 +306,13 @@ export const vectorPipelineMachine = setup({
     retryFailedJobs: fromPromise(async ({ input }: { input: any }) => {
       const { failedJobs } = input;
       
-      const retryResults = await Promise.allSettled(
-        failedJobs.map(async (job: VectorPipelineJob) => {
-          // Reset job for retry
+      const retryResults = await Promise.allSettled(failedJobs.map(async (job: VectorPipelineJob) => {
+          // Reset job for retry;
           return await vectorPipeline.submitJob({
             ownerType: job.ownerType,
             ownerId: job.ownerId,
             event: job.event,
-          })));
+          }));
         })
       );
 
@@ -321,7 +320,7 @@ export const vectorPipelineMachine = setup({
         job: failedJobs[index],
         success: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled',
         result: (result as { status?: any; value?: any; reason?: any }).status === 'fulfilled' ? (result as { status?: any; value?: any; reason?: any }).value: (result as { status?: any; value?: any; reason?: any }).reason,
-      }));
+      });
     }),
 
     loadWebGPUModel: fromPromise(async () => {
@@ -382,7 +381,7 @@ export const vectorPipelineMachine = setup({
           target: 'idle',
           actions: ['completeJob', 'updateMetrics'],
         },
-        onError: [
+        onError: [;
           {
             target: 'retrying',
             guard: 'canRetry',
@@ -405,7 +404,7 @@ export const vectorPipelineMachine = setup({
       invoke: {
         src: 'submitBatch',
         input: ({ context }) => ({ jobs: context.batch.jobs }),
-        onDone: [
+        onDone: [;
           {
             target: 'idle',
             guard: 'allJobsCompleted',
@@ -516,9 +515,9 @@ export const vectorPipelineMachine = setup({
 export const vectorPipelineActor = createActor(vectorPipelineMachine);
 ;
 // Create Svelte store for reactive state
-export const vectorPipelineState = writable(vectorPipelineActor.getSnapshot());
+export const vectorPipelineState = writable(vectorPipelineActor.getSnapshot();
 ;
-// Update store when state changes
+// Update store when state changes;
 vectorPipelineActor.subscribe((snapshot) => {
   vectorPipelineState.set(snapshot);
 });
@@ -526,7 +525,7 @@ vectorPipelineActor.subscribe((snapshot) => {
 // Start the actor
 vectorPipelineActor.start();
 
-// Convenience functions for common operations
+// Convenience functions for common operations;
 export const vectorPipelineActions = {
   submitJob: (job: Omit<VectorPipelineJob, 'jobId' | 'status' | 'progress' | 'createdAt'>) => {
     vectorPipelineActor.send({ type: 'SUBMIT_JOB', job });

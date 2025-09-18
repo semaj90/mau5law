@@ -46,7 +46,7 @@ export const POST: RequestHandler = async ({ request }) => {
         
         if (!query) {
           return json({
-            error: 'Query is required for semantic search'
+            error: 'Query is required for semantic search',
           }, { status: 400 });
         }
 
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
           query,
           results: searchResults,
           totalResults: searchResults.length,
-          processingMethod: 'pgvector_similarity'
+          processingMethod: 'pgvector_similarity',
         });
       }
 
@@ -67,7 +67,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return json({
           success: true,
           systemStats,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       }
 
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({
       error: 'Internal server error',
       message: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -102,20 +102,20 @@ export const GET: RequestHandler = async ({ url }) => {
         endpoints: {
           process: 'POST /api/legal/simd-process (action: "process")',
           search: 'POST /api/legal/simd-process (action: "search")',
-          stats: 'GET /api/legal/simd-process?action=stats'
+          stats: 'GET /api/legal/simd-process?action=stats',
         },
         systemInfo: {
           simdEnabled: true,
           gpuAccelerated: true,
           pgvectorEnabled: true,
-          threadSafe: true
+          threadSafe: true,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
     if (action === 'health') {
-      // Basic health check
+      // Basic health check;
       return json({
         success: true,
         status: 'healthy',
@@ -123,14 +123,14 @@ export const GET: RequestHandler = async ({ url }) => {
           simd_parser: 'operational',
           pgvector: 'operational', 
           gpu_orchestrator: 'operational',
-          cognitive_cache: 'operational'
+          cognitive_cache: 'operational',
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     }
 
     return json({
-      error: 'Invalid action parameter'
+      error: 'Invalid action parameter',
     }, { status: 400 });
 
   } catch (error) {
@@ -139,7 +139,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: false,
       status: 'degraded',
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     }, { status: 500 });
   }
 };

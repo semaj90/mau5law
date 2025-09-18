@@ -55,13 +55,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         },
       });
 
-      return json(
-        {
+      return json({
           success: false,
           error: 'Rate limit exceeded. Please try again later.',
           remaining: securityCheck.rateLimitInfo.remaining,
           resetTime: securityCheck.rateLimitInfo.resetTime,
-        },
+        },);
         {
           status: 429,
           headers: securityService.getSecurityHeaders(),
@@ -82,7 +81,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       filters,
     } = body || ({} as EnhancedSearchRequest);
 
-    // Enhanced input validation
+    // Enhanced input validation;
     if (!query || !query.trim()) {
       securityService.logAuditEvent({
         action: 'semantic_search_validation_error',
@@ -92,11 +91,10 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         success: false,
         errorMessage: 'Empty query provided',
       });
-      return json(
-        {
+      return json({
           success: false,
           error: 'Query is required and must not be empty',
-        },
+        },);
         {
           status: 400,
           headers: securityService.getSecurityHeaders(),
@@ -104,13 +102,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       );
     }
 
-    // Validate query length
+    // Validate query length;
     if (query.length > 500) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Query too long. Maximum 500 characters allowed.',
-        },
+        },);
         {
           status: 400,
           headers: securityService.getSecurityHeaders(),
@@ -118,13 +115,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       );
     }
 
-    // Validate limit bounds
+    // Validate limit bounds;
     if (limit && (limit < 1 || limit > 50)) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Limit must be between 1 and 50',
-        },
+        },);
         {
           status: 400,
           headers: securityService.getSecurityHeaders(),
@@ -132,13 +128,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       );
     }
 
-    // Validate threshold bounds
+    // Validate threshold bounds;
     if (threshold && (threshold < 0.1 || threshold > 1.0)) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Threshold must be between 0.1 and 1.0',
-        },
+        },);
         {
           status: 400,
           headers: securityService.getSecurityHeaders(),
@@ -146,7 +141,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       );
     }
 
-    // Prepare semantic search options
+    // Prepare semantic search options;
     const searchOptions: SemanticSearchOptions = {
       limit,
       threshold,
@@ -191,7 +186,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       },
     });
 
-    // Prepare response with comprehensive metadata
+    // Prepare response with comprehensive metadata;
     const response = {
       success: true,
       query,
@@ -215,7 +210,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           },
         }),
       },
-      ...(searchResult.suggestions &&
+      ...(searchResult.suggestions &&;
         searchResult.suggestions.length > 0 && {
           suggestions: searchResult.suggestions,
         }),
@@ -233,7 +228,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   } catch (error: any) {
     const responseTime = Date.now() - startTime;
 
-    // Enhanced error logging with context
+    // Enhanced error logging with context;
     securityService.logAuditEvent({
       action: 'semantic_search_error',
       resource: '/api/search/vector',
@@ -249,7 +244,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     });
 
     console.error('Enhanced semantic search error:', error);
-    return json(
+    return json();
       {
         success: false,
         error: 'Semantic search failed. Please try again with a simpler query.',
@@ -271,7 +266,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   try {
     switch (action) {
       case 'health':
-        return json(
+        return json();
           {
             success: true,
             status: 'healthy',
@@ -301,7 +296,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         );
 
       case 'cache':
-        // Get cache statistics from both in-memory and Redis
+        // Get cache statistics from both in-memory and Redis;
         const memoryCacheStats = {
           entries: queryCache.size,
           ttl: CACHE_TTL,
@@ -310,7 +305,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           ).length,
         };
 
-        return json(
+        return json();
           {
             success: true,
             cache: {
@@ -327,7 +322,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
 
       case 'performance':
         const analytics = await performanceOptimizer.getPerformanceAnalytics();
-        return json(
+        return json();
           {
             success: true,
             performance: {
@@ -351,7 +346,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         );
 
       case 'analytics':
-        return json(
+        return json();
           {
             success: true,
             analytics: {
@@ -388,12 +383,11 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
           }
         );
 
-      default:
-        return json(
-          {
+      default:;
+        return json({
             success: false,
             error: 'Invalid action. Available: health, cache, performance, analytics',
-          },
+          },);
           {
             status: 400,
             headers: securityService.getSecurityHeaders(),
@@ -402,12 +396,12 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     }
   } catch (error: any) {
     console.error('GET /api/search/vector error:', error);
-    return json(
+    return json();
       {
         success: false,
         error: 'Service temporarily unavailable',
         timestamp: new Date().toISOString(),
-      },
+      },>;
       {
         status: 500,
         headers: securityService.getSecurityHeaders(),

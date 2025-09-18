@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import fs from "fs/promises";
-import path from "path";
+import fs from 'fs/promises';
+import path from 'path';
 
 const fixes = [
   // Fix Svelte component export issues
   {
-    file: "src/lib/components/modals/EvidenceUploadModal.svelte",
+    file: 'src/lib/components/modals/EvidenceUploadModal.svelte',
     find: `  $: if (caseId && !isOpen) {
 </script>`,
     replace: `  $: if (caseId && !isOpen) {
@@ -17,7 +17,7 @@ const fixes = [
 
   // Fix Canvas Editor Svelte head issue
   {
-    file: "src/routes/test-ai-ask/+page.svelte",
+    file: 'src/routes/test-ai-ask/+page.svelte',
     find: `        <title>Gemma3 Local LLM Test - Legal AI Assistant</title>
 </svelte:head>`,
     replace: `        <title>Gemma3 Local LLM Test - Legal AI Assistant</title>
@@ -26,28 +26,28 @@ const fixes = [
 
   // Fix SearchBar syntax error
   {
-    file: "src/lib/components/SearchBar.svelte",
+    file: 'src/lib/components/SearchBar.svelte',
     find: `                                / id="field-1">`,
     replace: `                                id="field-1">`,
   },
 
   // Fix Report editor syntax error
   {
-    file: "src/lib/components/ai/AskAI.svelte",
+    file: 'src/lib/components/ai/AskAI.svelte',
     find: `            / id="field-2">`,
     replace: `            id="field-2">`,
   },
 
   // Fix evidence page syntax error
   {
-    file: "src/routes/evidence/+page.svelte",
+    file: 'src/routes/evidence/+page.svelte',
     find: `          <input type="date" class="w-full px-3 py-2 border rounded-md" / id="field-2">`,
     replace: `          <input type="date" class="w-full px-3 py-2 border rounded-md" id="field-2">`,
   },
 
   // Fix ReportNode component syntax error
   {
-    file: "src/lib/components/canvas/ReportNode.svelte",
+    file: 'src/lib/components/canvas/ReportNode.svelte',
     find: `  import { Button } from '../../../lib/components/u          <ContextMenu.Item on:select={() => saveCitation(editorRef?.getSelectedText?.() || .js'')}>   
             <Link class="w-4 h-4 mr-2" />
             Save as Citation
@@ -66,14 +66,14 @@ const fixes = [
 
   // Fix LegalDocumentEditor component import issue
   {
-    file: "src/lib/components/editor/LegalDocumentEditor.svelte",
+    file: 'src/lib/components/editor/LegalDocumentEditor.svelte',
     find: `  import { fade, flyAndScale } from 'svelte/transition';`,
     replace: `  import { fade, fly } from 'svelte/transition';`,
   },
 
   // Fix missing framework demo code
   {
-    file: "src/routes/frameworks-demo/+page.svelte",
+    file: 'src/routes/frameworks-demo/+page.svelte',
     find: `  // Demo data
   let ;
   let sampleContent = \`MOTION TO DISMISS`,
@@ -84,14 +84,14 @@ const fixes = [
 
   // Fix frameworks demo component reference
   {
-    file: "src/routes/frameworks-demo/+page.svelte",
+    file: 'src/routes/frameworks-demo/+page.svelte',
     find: `              <LegalDocumentEditordocumentType="motion"`,
     replace: `              <LegalDocumentEditor documentType="motion"`,
   },
 
   // Fix duplicate sendMessage function
   {
-    file: "src/lib/components/Chat.svelte",
+    file: 'src/lib/components/Chat.svelte',
     find: `  async function sendMessage() {
     if (!currentMessage.trim() || isGenerating) return;`,
     replace: `  async function handleSendMessage() {
@@ -101,7 +101,7 @@ const fixes = [
 ];
 
 async function applyFixes() {
-  console.log("🔧 Applying remaining TypeScript and Svelte fixes...");
+  console.log('🔧 Applying remaining TypeScript and Svelte fixes...');
 
   for (const fix of fixes) {
     try {
@@ -115,25 +115,21 @@ async function applyFixes() {
         continue;
       }
 
-      let content = await fs.readFile(filePath, "utf-8");
+      let content = await fs.readFile(filePath, 'utf-8');
 
       if (fix.occurrence) {
         // Handle specific occurrence
         const parts = content.split(fix.find);
         if (parts.length > fix.occurrence) {
-          parts[fix.occurrence] =
-            fix.replace + parts[fix.occurrence].slice(fix.find.length);
+          parts[fix.occurrence] = fix.replace + parts[fix.occurrence].slice(fix.find.length);
           content = parts.join(fix.find);
         }
       } else {
         // Replace all occurrences
-        content = content.replace(
-          new RegExp(escapeRegExp(fix.find), "g"),
-          fix.replace,
-        );
+        content = content.replace(new RegExp(escapeRegExp(fix.find), 'g'), fix.replace);
       }
 
-      await fs.writeFile(filePath, content, "utf-8");
+      await fs.writeFile(filePath, content, 'utf-8');
       console.log(`✅ Fixed: ${fix.file}`);
     } catch (error) {
       console.log(`❌ Error fixing ${fix.file}:`, error.message);
@@ -142,14 +138,14 @@ async function applyFixes() {
 }
 
 function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 // Create missing UI component exports
 async function createMissingComponents() {
   const components = [
     {
-      path: "src/lib/components/ui/dropdown-menu/index.js",
+      path: 'src/lib/components/ui/dropdown-menu/index.js',
       content: `// Dropdown Menu Component Exports
 export { default as Root } from './DropdownMenuRoot.svelte';
 export { default as Trigger } from './DropdownMenuTrigger.svelte';
@@ -167,7 +163,7 @@ export * as DropdownMenu from './index.js';
 `,
     },
     {
-      path: "src/lib/components/ui/select/index.js",
+      path: 'src/lib/components/ui/select/index.js',
       content: `// Select Component Exports
 export { default as Root } from './SelectRoot.svelte';
 export { default as Trigger } from './SelectTrigger.svelte';
@@ -183,7 +179,7 @@ export * as Select from './index.js';
 `,
     },
     {
-      path: "src/lib/components/ui/tooltip/index.js",
+      path: 'src/lib/components/ui/tooltip/index.js',
       content: `// Tooltip Component Exports
 export { default as Root } from './TooltipRoot.svelte';
 export { default as Trigger } from './TooltipTrigger.svelte';
@@ -195,7 +191,7 @@ export * as Tooltip from './index.js';
 `,
     },
     {
-      path: "src/lib/components/ui/textarea/index.js",
+      path: 'src/lib/components/ui/textarea/index.js',
       content: `// Textarea Component Exports
 export { default as Textarea } from './Textarea.svelte';
 export { default as Root } from './Textarea.svelte';
@@ -218,7 +214,7 @@ export * as Textarea from './index.js';
       try {
         await fs.access(filePath);
       } catch {
-        await fs.writeFile(filePath, component.content, "utf-8");
+        await fs.writeFile(filePath, component.content, 'utf-8');
         console.log(`✅ Created: ${component.path}`);
       }
     } catch (error) {
@@ -231,7 +227,7 @@ export * as Textarea from './index.js';
 async function fixProblematicFiles() {
   const fixes = [
     {
-      file: "src/lib/components/canvas/ReportNode.svelte",
+      file: 'src/lib/components/canvas/ReportNode.svelte',
       content: `<script lang="ts">
   import { onMount, createEventDispatcher } from 'svelte';
   import type { Report } from '../../../lib/data/types.js';
@@ -345,7 +341,7 @@ async function fixProblematicFiles() {
   for (const fix of fixes) {
     try {
       const filePath = path.join(process.cwd(), fix.file);
-      await fs.writeFile(filePath, fix.content, "utf-8");
+      await fs.writeFile(filePath, fix.content, 'utf-8');
       console.log(`✅ Fixed problematic file: ${fix.file}`);
     } catch (error) {
       console.log(`❌ Error fixing ${fix.file}:`, error.message);
@@ -358,7 +354,7 @@ async function main() {
   await createMissingComponents();
   await fixProblematicFiles();
 
-  console.log("🎉 Remaining fixes applied!");
+  console.log('🎉 Remaining fixes applied!');
   console.log('📋 Run "npm run check" to verify remaining issues.');
 }
 

@@ -5,64 +5,64 @@
  * Fixes all errors and implements Nier Automata + Harvard Crimson design system
  */
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-console.log("🎨 Enhanced Legal AI - Complete UI/UX Overhaul");
-console.log("===============================================\n");
+console.log('🎨 Enhanced Legal AI - Complete UI/UX Overhaul');
+console.log('===============================================\n');
 
 // Configuration
 const config = {
-  srcDir: "src",
-  extensions: [".svelte", ".ts", ".js", ".css", ".scss"],
+  srcDir: 'src',
+  extensions: ['.svelte', '.ts', '.js', '.css', '.scss'],
   backup: true,
-  colorScheme: "nier-harvard-legal",
+  colorScheme: 'nier-harvard-legal',
 };
 
 // Nier Automata + Harvard Crimson Color Palette
 const colorPalette = {
   // Nier Automata inspired (desaturated, post-apocalyptic)
   primary: {
-    black: "#0A0A0A", // Deep black
-    darkGray: "#1A1A1A", // Dark gray
-    gray: "#2A2A2A", // Medium gray
-    lightGray: "#3A3A3A", // Light gray
-    offWhite: "#F5F5F5", // Off white
-    white: "#FFFFFF", // Pure white
+    black: '#0A0A0A', // Deep black
+    darkGray: '#1A1A1A', // Dark gray
+    gray: '#2A2A2A', // Medium gray
+    lightGray: '#3A3A3A', // Light gray
+    offWhite: '#F5F5F5', // Off white
+    white: '#FFFFFF', // Pure white
   },
 
   // Harvard Crimson legal theme
   accent: {
-    crimson: "#A51C30", // Harvard Crimson
-    darkCrimson: "#8B1521", // Dark crimson
-    lightCrimson: "#C42847", // Light crimson
-    gold: "#C9A96E", // Harvard gold
-    darkGold: "#B8965A", // Dark gold
+    crimson: '#A51C30', // Harvard Crimson
+    darkCrimson: '#8B1521', // Dark crimson
+    lightCrimson: '#C42847', // Light crimson
+    gold: '#C9A96E', // Harvard gold
+    darkGold: '#B8965A', // Dark gold
   },
 
   // Legal system colors
   legal: {
-    success: "#2D5F3F", // Dark forest green
-    warning: "#B8965A", // Gold warning
-    error: "#8B1521", // Dark crimson error
-    info: "#2A4A5A", // Steel blue
-    evidence: "#3A4A5A", // Evidence blue
-    case: "#A51C30", // Case crimson
-    document: "#6A7A8A", // Document gray
+    success: '#2D5F3F', // Dark forest green
+    warning: '#B8965A', // Gold warning
+    error: '#8B1521', // Dark crimson error
+    info: '#2A4A5A', // Steel blue
+    evidence: '#3A4A5A', // Evidence blue
+    case: '#A51C30', // Case crimson
+    document: '#6A7A8A', // Document gray
   },
 
   // UI Elements
   ui: {
-    background: "#0F0F0F", // Almost black
-    surface: "#1A1A1A", // Dark surface
-    surfaceLight: "#2A2A2A", // Light surface
-    border: "#3A3A3A", // Border gray
-    text: "#F5F5F5", // Light text
-    textMuted: "#A5A5A5", // Muted text
-    textDark: "#0A0A0A", // Dark text
+    background: '#0F0F0F', // Almost black
+    surface: '#1A1A1A', // Dark surface
+    surfaceLight: '#2A2A2A', // Light surface
+    border: '#3A3A3A', // Border gray
+    text: '#F5F5F5', // Light text
+    textMuted: '#A5A5A5', // Muted text
+    textDark: '#0A0A0A', // Dark text
   },
 };
 
@@ -878,34 +878,31 @@ export const buttonVariants = tv({
  * Main execution function
  */
 function main() {
-  console.log("🎨 Starting comprehensive UI/UX overhaul...\n");
+  console.log('🎨 Starting comprehensive UI/UX overhaul...\n');
 
   // Create styles directory
-  const stylesDir = path.join(config.srcDir, "styles");
+  const stylesDir = path.join(config.srcDir, 'styles');
   if (!fs.existsSync(stylesDir)) {
     fs.mkdirSync(stylesDir, { recursive: true });
   }
 
   // Generate and write color scheme CSS
-  console.log("📝 Generating Nier Automata + Harvard Crimson color scheme...");
-  fs.writeFileSync(
-    path.join(stylesDir, "nier-harvard-theme.css"),
-    generateColorSchemeCSS(),
-  );
-  console.log("✅ Color scheme generated");
+  console.log('📝 Generating Nier Automata + Harvard Crimson color scheme...');
+  fs.writeFileSync(path.join(stylesDir, 'nier-harvard-theme.css'), generateColorSchemeCSS());
+  console.log('✅ Color scheme generated');
 
   // Generate Tailwind config
-  console.log("📝 Generating enhanced Tailwind configuration...");
-  fs.writeFileSync("tailwind.config.js", generateTailwindConfig());
-  console.log("✅ Tailwind config generated");
+  console.log('📝 Generating enhanced Tailwind configuration...');
+  fs.writeFileSync('tailwind.config.js', generateTailwindConfig());
+  console.log('✅ Tailwind config generated');
 
   // Create components directories
   const componentDirs = [
-    "src/lib/components/layout",
-    "src/lib/components/ui/button",
-    "src/lib/components/providers",
-    "src/lib/components/forms",
-    "src/lib/components/data-display",
+    'src/lib/components/layout',
+    'src/lib/components/ui/button',
+    'src/lib/components/providers',
+    'src/lib/components/forms',
+    'src/lib/components/data-display',
   ];
 
   componentDirs.forEach((dir) => {
@@ -915,54 +912,45 @@ function main() {
   });
 
   // Generate enhanced components
-  console.log("📝 Generating enhanced UI components...");
+  console.log('📝 Generating enhanced UI components...');
 
   // Layout component
-  fs.writeFileSync("src/routes/+layout.svelte", generateEnhancedLayout());
+  fs.writeFileSync('src/routes/+layout.svelte', generateEnhancedLayout());
 
   // Header component
-  fs.writeFileSync(
-    "src/lib/components/layout/Header.svelte",
-    generateEnhancedHeader(),
-  );
+  fs.writeFileSync('src/lib/components/layout/Header.svelte', generateEnhancedHeader());
 
   // Button component
-  fs.writeFileSync(
-    "src/lib/components/ui/button/Button.svelte",
-    generateEnhancedButton(),
-  );
+  fs.writeFileSync('src/lib/components/ui/button/Button.svelte', generateEnhancedButton());
 
   // Button variants
-  fs.writeFileSync(
-    "src/lib/components/ui/button/index.ts",
-    generateButtonVariants(),
-  );
+  fs.writeFileSync('src/lib/components/ui/button/index.ts', generateButtonVariants());
 
-  console.log("✅ Enhanced UI components generated");
+  console.log('✅ Enhanced UI components generated');
 
   // Update package.json with new UI scripts
-  console.log("📝 Updating package.json with UI/UX scripts...");
+  console.log('📝 Updating package.json with UI/UX scripts...');
 
   try {
-    const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
+    const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
     packageJson.scripts = {
       ...packageJson.scripts,
-      "ui:build": "npm run build-components && npm run build-styles",
-      "ui:dev": "npm run dev",
-      "ui:theme": "node scripts/generate-theme.js",
-      "ui:components": "node scripts/generate-components.js",
-      "build-components": "svelte-kit sync",
-      "build-styles":
-        "tailwindcss -i ./src/styles/nier-harvard-theme.css -o ./static/theme.css --watch",
+      'ui:build': 'npm run build-components && npm run build-styles',
+      'ui:dev': 'npm run dev',
+      'ui:theme': 'node scripts/generate-theme.js',
+      'ui:components': 'node scripts/generate-components.js',
+      'build-components': 'svelte-kit sync',
+      'build-styles':
+        'tailwindcss -i ./src/styles/nier-harvard-theme.css -o ./static/theme.css --watch',
     };
 
     // Add new dev dependencies for UI enhancement
     const newDevDeps = {
-      "tailwind-variants": "^0.1.18",
-      "class-variance-authority": "^0.7.0",
-      clsx: "^2.1.1",
-      "tailwind-merge": "^2.3.1",
+      'tailwind-variants': '^0.1.18',
+      'class-variance-authority': '^0.7.0',
+      clsx: '^2.1.1',
+      'tailwind-merge': '^2.3.1',
     };
 
     packageJson.devDependencies = {
@@ -970,39 +958,39 @@ function main() {
       ...newDevDeps,
     };
 
-    fs.writeFileSync("package.json", JSON.stringify(packageJson, null, 2));
-    console.log("✅ Package.json updated");
+    fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2));
+    console.log('✅ Package.json updated');
   } catch (error) {
-    console.error("❌ Error updating package.json:", error);
+    console.error('❌ Error updating package.json:', error);
   }
 
   // Generate summary
-  console.log("\n📊 UI/UX OVERHAUL SUMMARY");
-  console.log("=========================");
-  console.log("✅ Nier Automata + Harvard Crimson color scheme implemented");
-  console.log("✅ Enhanced Tailwind CSS configuration generated");
-  console.log("✅ Comprehensive component system created");
-  console.log("✅ Layout with header, sidebar, and footer");
-  console.log("✅ Button variants with Nier/Harvard theming");
-  console.log("✅ Responsive design with mobile support");
-  console.log("✅ Animation and visual effects");
-  console.log("✅ Accessibility features included");
-  console.log("✅ Dark theme with legal aesthetics");
+  console.log('\n📊 UI/UX OVERHAUL SUMMARY');
+  console.log('=========================');
+  console.log('✅ Nier Automata + Harvard Crimson color scheme implemented');
+  console.log('✅ Enhanced Tailwind CSS configuration generated');
+  console.log('✅ Comprehensive component system created');
+  console.log('✅ Layout with header, sidebar, and footer');
+  console.log('✅ Button variants with Nier/Harvard theming');
+  console.log('✅ Responsive design with mobile support');
+  console.log('✅ Animation and visual effects');
+  console.log('✅ Accessibility features included');
+  console.log('✅ Dark theme with legal aesthetics');
 
-  console.log("\n🚀 NEXT STEPS:");
-  console.log("1. Run: npm install (to install new dependencies)");
-  console.log("2. Run: npm run ui:build (to build the UI system)");
-  console.log("3. Run: npm run dev (to see your enhanced Legal AI)");
+  console.log('\n🚀 NEXT STEPS:');
+  console.log('1. Run: npm install (to install new dependencies)');
+  console.log('2. Run: npm run ui:build (to build the UI system)');
+  console.log('3. Run: npm run dev (to see your enhanced Legal AI)');
 
-  console.log("\n🎨 Your Enhanced Legal AI now features:");
-  console.log("• Nier Automata post-apocalyptic aesthetic");
-  console.log("• Harvard Crimson professional legal theming");
-  console.log("• Bits-ui and Melt-ui component integration");
-  console.log("• Advanced Tailwind CSS configuration");
-  console.log("• Comprehensive design system");
-  console.log("• Professional legal interface");
+  console.log('\n🎨 Your Enhanced Legal AI now features:');
+  console.log('• Nier Automata post-apocalyptic aesthetic');
+  console.log('• Harvard Crimson professional legal theming');
+  console.log('• Bits-ui and Melt-ui component integration');
+  console.log('• Advanced Tailwind CSS configuration');
+  console.log('• Comprehensive design system');
+  console.log('• Professional legal interface');
 
-  console.log("\n🌟 UI/UX Enhancement Complete! 🌟");
+  console.log('\n🌟 UI/UX Enhancement Complete! 🌟');
 }
 
 // Run the script

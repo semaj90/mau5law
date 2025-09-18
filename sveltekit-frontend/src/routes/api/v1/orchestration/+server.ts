@@ -15,7 +15,7 @@ import type {
 // Initialize the service orchestrator
 const orchestrator = new ServiceOrchestrator();
 
-/* POST /api/v1/orchestration - Orchestrate services */
+/* POST /api/v1/orchestration - Orchestrate services */;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as OrchestrationRequest;
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
   } catch (error: any) {
     console.error('Orchestration Error:', error);
 
-    return json(
+    return json();
       {
         success: false,
         error: 'Service orchestration failed',
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-/* GET /api/v1/orchestration - Get orchestration status and capabilities */
+/* GET /api/v1/orchestration - Get orchestration status and capabilities */;
 export const GET: RequestHandler = async () => {
 	try {
 		const status = await orchestrator.getSystemStatus();
@@ -100,7 +100,7 @@ export const GET: RequestHandler = async () => {
 	}
 };
 
-/* GET /api/v1/orchestration/health - Comprehensive health check */
+/* GET /api/v1/orchestration/health - Comprehensive health check */;
 export const GET_HEALTH: RequestHandler = async () => {
 	try {
 		const healthReport = await orchestrator.comprehensiveHealthCheck();
@@ -124,7 +124,7 @@ export const GET_HEALTH: RequestHandler = async () => {
 	}
 };
 
-/* POST /api/v1/orchestration/emergency - Emergency service management */
+/* POST /api/v1/orchestration/emergency - Emergency service management */;
 export const POST_EMERGENCY: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json();
@@ -168,7 +168,7 @@ export const POST_EMERGENCY: RequestHandler = async ({ request }) => {
 	}
 };
 
-// Helper functions
+// Helper functions;
 function generateOrchestrationId(): string {
 	return `orch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }

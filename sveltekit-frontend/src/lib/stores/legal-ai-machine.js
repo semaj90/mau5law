@@ -33,7 +33,7 @@ class GPUServiceWorkerClient {
         try {
             // Register service worker
             const registration = await navigator.serviceWorker.register('/service-worker.js', {
-                scope: '/'
+                scope: '/',
             });
 
             console.log('✅ Service Worker registered:', registration.scope);
@@ -85,7 +85,7 @@ class GPUServiceWorkerClient {
                 if (success) {
                     resolve(result);
                 } else {
-                    reject(new Error(error));
+                    reject(new Error(error);
                 }
             };
 
@@ -97,7 +97,7 @@ class GPUServiceWorkerClient {
 
             // Timeout after 30 seconds
             setTimeout(() => {
-                reject(new Error('GPU operation timeout'));
+                reject(new Error('GPU operation timeout');
             }, 30000);
         });
     }
@@ -164,7 +164,7 @@ const legalAIConfig = {
         activeCases: [],
         currentCase: null,
         evidenceUploads: [],
-        precedentSearch: null
+        precedentSearch: null,
     },
     
     states: {
@@ -176,7 +176,7 @@ const legalAIConfig = {
                 UPLOAD_DOCUMENT: 'uploadingDocument',
                 ANALYZE_CASE: 'analyzingCase',
                 CONNECT_GPU: 'initializingGPU',
-                ERROR: 'error'
+                ERROR: 'error',
             }
         },
         
@@ -186,11 +186,11 @@ const legalAIConfig = {
                 src: 'initializeGPU',
                 onDone: {
                     target: 'idle',
-                    actions: ['setGPUStatus']
+                    actions: ['setGPUStatus'],
                 },
                 onError: {
                     target: 'error',
-                    actions: ['setError']
+                    actions: ['setError'],
                 }
             }
         },
@@ -201,17 +201,17 @@ const legalAIConfig = {
                 src: 'performSearch',
                 onDone: {
                     target: 'idle',
-                    actions: ['setSearchResults']
+                    actions: ['setSearchResults'],
                 },
                 onError: {
                     target: 'error',
-                    actions: ['setError']
+                    actions: ['setError'],
                 }
             },
             on: {
                 CANCEL_SEARCH: 'idle',
                 UPDATE_QUERY: {
-                    actions: ['updateQuery']
+                    actions: ['updateQuery'],
                 }
             }
         },
@@ -223,7 +223,7 @@ const legalAIConfig = {
                     on: {
                         SEND_MESSAGE: 'processing',
                         CLEAR_CHAT: {
-                            actions: ['clearChatHistory']
+                            actions: ['clearChatHistory'],
                         }
                     }
                 },
@@ -233,18 +233,18 @@ const legalAIConfig = {
                         src: 'processChat',
                         onDone: {
                             target: 'idle',
-                            actions: ['addAIResponse']
+                            actions: ['addAIResponse'],
                         },
                         onError: {
                             target: 'idle',
-                            actions: ['setError']
+                            actions: ['setError'],
                         }
                     }
                 }
             },
             initial: 'idle',
             on: {
-                STOP_CHAT: 'idle'
+                STOP_CHAT: 'idle',
             }
         },
         
@@ -254,15 +254,15 @@ const legalAIConfig = {
                 src: 'uploadDocument',
                 onDone: {
                     target: 'analyzingDocument',
-                    actions: ['setUploadResult']
+                    actions: ['setUploadResult'],
                 },
                 onError: {
                     target: 'error',
-                    actions: ['setError']
+                    actions: ['setError'],
                 }
             },
             on: {
-                CANCEL_UPLOAD: 'idle'
+                CANCEL_UPLOAD: 'idle',
             }
         },
         
@@ -272,11 +272,11 @@ const legalAIConfig = {
                 src: 'analyzeDocument',
                 onDone: {
                     target: 'idle',
-                    actions: ['setDocumentAnalysis']
+                    actions: ['setDocumentAnalysis'],
                 },
                 onError: {
                     target: 'error',
-                    actions: ['setError']
+                    actions: ['setError'],
                 }
             }
         },
@@ -287,19 +287,19 @@ const legalAIConfig = {
                 gatheringEvidence: {
                     invoke: {
                         src: 'gatherEvidence',
-                        onDone: 'computingSimilarity'
+                        onDone: 'computingSimilarity',
                     }
                 },
                 computingSimilarity: {
                     invoke: {
                         src: 'computeVectorSimilarity',
-                        onDone: 'searchingPrecedents'
+                        onDone: 'searchingPrecedents',
                     }
                 },
                 searchingPrecedents: {
                     invoke: {
                         src: 'searchPrecedents',
-                        onDone: 'generatingAnalysis'
+                        onDone: 'generatingAnalysis',
                     }
                 },
                 generatingAnalysis: {
@@ -307,12 +307,12 @@ const legalAIConfig = {
                         src: 'generateCaseAnalysis',
                         onDone: {
                             target: '#legalAI.idle',
-                            actions: ['setCaseAnalysis']
+                            actions: ['setCaseAnalysis'],
                         }
                     }
                 }
             },
-            initial: 'gatheringEvidence'
+            initial: 'gatheringEvidence',
         },
         
         error: {
@@ -322,19 +322,19 @@ const legalAIConfig = {
                     {
                         target: 'idle',
                         cond: 'canRetry',
-                        actions: ['incrementRetry']
+                        actions: ['incrementRetry'],
                     },
                     {
-                        target: 'criticalError'
+                        target: 'criticalError',
                     }
                 ],
-                CLEAR_ERROR: 'idle'
+                CLEAR_ERROR: 'idle',
             }
         },
         
         criticalError: {
             entry: ['handleCriticalError'],
-            type: 'final'
+            type: 'final',
         }
     }
 };
@@ -386,7 +386,7 @@ const legalAIActions = {
                 role: 'user',
                 content: event.message,
                 timestamp: new Date(),
-                sessionId: context.sessionId
+                sessionId: context.sessionId,
             }
         ]
     }),
@@ -400,13 +400,13 @@ const legalAIActions = {
                 content: event.data.response,
                 timestamp: new Date(),
                 sessionId: context.sessionId,
-                metadata: event.data.metadata
+                metadata: event.data.metadata,
             }
         ]
     }),
     
     clearChatHistory: assign({
-        chatHistory: []
+        chatHistory: [],
     }),
     
     startUpload: (context) => {
@@ -435,7 +435,7 @@ const legalAIActions = {
     setCaseAnalysis: assign({
         currentCase: (_, event) => ({
             ...event.data,
-            analysisTimestamp: new Date()
+            analysisTimestamp: new Date(),
         })
     }),
     
@@ -446,13 +446,13 @@ const legalAIActions = {
                 id: crypto.randomUUID(),
                 message: event.data?.message || 'Unknown error',
                 timestamp: new Date(),
-                context: event.data?.context
+                context: event.data?.context,
             }
         ]
     }),
     
     incrementRetry: assign({
-        retryCount: (context) => context.retryCount + 1
+        retryCount: (context) => context.retryCount + 1,
     }),
     
     logError: (context, event) => {
@@ -491,7 +491,7 @@ const legalAIServices = {
                 sessionId: context.sessionId,
                 options: {
                     includeVectorSimilarity: true,
-                    includePrecedents: true
+                    includePrecedents: true,
                 }
             })
         });
@@ -517,7 +517,7 @@ const legalAIServices = {
                 message: event.message,
                 context: context.chatHistory.slice(-10),
                 sessionId: context.sessionId,
-                embedding: Array.from(embedding)
+                embedding: Array.from(embedding),
             })
         });
         
@@ -537,7 +537,7 @@ const legalAIServices = {
         
         const response = await fetch('/api/upload', {
             method: 'POST',
-            body: formData
+            body: formData,
         });
         
         if (!response.ok) {
@@ -554,7 +554,7 @@ const legalAIServices = {
             body: JSON.stringify({
                 documentId: event.documentId,
                 analysisType: 'comprehensive',
-                sessionId: context.sessionId
+                sessionId: context.sessionId,
             })
         });
         
@@ -607,7 +607,7 @@ const legalAIServices = {
                 caseType: context.currentCase?.type,
                 keywords: context.currentCase?.keywords,
                 jurisdiction: context.currentCase?.jurisdiction,
-                similarities: event.data.similarities
+                similarities: event.data.similarities,
             })
         });
         
@@ -623,7 +623,7 @@ const legalAIServices = {
                 evidence: event.data.evidence,
                 precedents: event.data.precedents,
                 similarities: event.data.similarities,
-                sessionId: context.sessionId
+                sessionId: context.sessionId,
             })
         });
         
@@ -644,7 +644,7 @@ const legalAIGuards = {
     
     isConnected: (context) => context.wsConnected,
     
-    hasActiveCase: (context) => context.currentCase !== null
+    hasActiveCase: (context) => context.currentCase !== null,
 };
 
 // ============================================================================
@@ -655,7 +655,7 @@ export function createLegalAIMachine() {
     return createMachine(legalAIConfig, {
         actions: legalAIActions,
         services: legalAIServices,
-        guards: legalAIGuards
+        guards: legalAIGuards,
     });
 }
 
@@ -667,7 +667,7 @@ export function useLegalAI() {
     // Derived stores for specific state slices
     const currentState = derived(state, ($state) => $state.value);
     const context = derived(state, ($state) => $state.context);
-    const canTransition = derived(state, ($state) => (event) => $state.can(event));
+    const canTransition = derived(state, ($state) => (event) => $state.can(event);
     
     // Specific context slices
     const chatHistory = derived(context, ($context) => $context.chatHistory);
@@ -735,12 +735,12 @@ export function createWebSocketService(url) {
             reconnectAttempts: 0,
             maxReconnectAttempts: 5,
             messages: [],
-            subscriptions: []
+            subscriptions: [],
         },
         states: {
             disconnected: {
                 on: {
-                    CONNECT: 'connecting'
+                    CONNECT: 'connecting',
                 }
             },
             connecting: {
@@ -748,11 +748,11 @@ export function createWebSocketService(url) {
                     src: 'connectWebSocket',
                     onDone: {
                         target: 'connected',
-                        actions: ['setSocket']
+                        actions: ['setSocket'],
                     },
                     onError: {
                         target: 'reconnecting',
-                        actions: ['incrementReconnectAttempts']
+                        actions: ['incrementReconnectAttempts'],
                     }
                 }
             },
@@ -760,16 +760,16 @@ export function createWebSocketService(url) {
                 entry: ['resetReconnectAttempts'],
                 invoke: {
                     src: 'listenToSocket',
-                    onError: 'reconnecting'
+                    onError: 'reconnecting',
                 },
                 on: {
                     SEND_MESSAGE: {
-                        actions: ['sendMessage']
+                        actions: ['sendMessage'],
                     },
                     SUBSCRIBE: {
-                        actions: ['addSubscription']
+                        actions: ['addSubscription'],
                     },
-                    DISCONNECT: 'disconnected'
+                    DISCONNECT: 'disconnected',
                 }
             },
             reconnecting: {
@@ -777,17 +777,17 @@ export function createWebSocketService(url) {
                     3000: [
                         {
                             target: 'connecting',
-                            cond: 'canReconnect'
-                        },
+                            cond: 'canReconnect',
+                        },)
                         {
-                            target: 'failed'
+                            target: 'failed',
                         }
                     ]
                 }
             },
             failed: {
                 on: {
-                    RETRY: 'connecting'
+                    RETRY: 'connecting',
                 }
             }
         }
@@ -798,7 +798,7 @@ export function createWebSocketService(url) {
                     const socket = new WebSocket(context.url);
                     
                     socket.onopen = () => resolve(socket);
-                    socket.onerror = () => reject(new Error('WebSocket connection failed'));
+                    socket.onerror = () => reject(new Error('WebSocket connection failed');
                     
                     setTimeout(() => reject(new Error('Connection timeout')), 10000);
                 });
@@ -818,8 +818,8 @@ export function createWebSocketService(url) {
                         }
                     };
                     
-                    socket.onclose = () => reject(new Error('WebSocket closed'));
-                    socket.onerror = () => reject(new Error('WebSocket error'));
+                    socket.onclose = () => reject(new Error('WebSocket closed');
+                    socket.onerror = () => reject(new Error('WebSocket error');
                 });
             }
         },
@@ -830,16 +830,16 @@ export function createWebSocketService(url) {
             }),
             
             incrementReconnectAttempts: assign({
-                reconnectAttempts: (context) => context.reconnectAttempts + 1
+                reconnectAttempts: (context) => context.reconnectAttempts + 1,
             }),
             
             resetReconnectAttempts: assign({
-                reconnectAttempts: 0
+                reconnectAttempts: 0,
             }),
             
             sendMessage: (context, event) => {
                 if (context.socket && context.socket.readyState === WebSocket.OPEN) {
-                    context.socket.send(JSON.stringify(event.message));
+                    context.socket.send(JSON.stringify(event.message);
                 }
             },
             
@@ -852,7 +852,7 @@ export function createWebSocketService(url) {
         },
         
         guards: {
-            canReconnect: (context) => context.reconnectAttempts < context.maxReconnectAttempts
+            canReconnect: (context) => context.reconnectAttempts < context.maxReconnectAttempts,
         }
     });
 }
@@ -911,7 +911,7 @@ import { useLegalAI, createWebSocketService } from '$lib/stores/legal-ai-machine
     let isSearching = $derived($currentState === 'searching');
     let isChatting = $derived(typeof $currentState === 'object' && $currentState.chatting);
     let gpuReady = $derived($gpuStatus === 'initialized');
-    let wsConnected = $derived($wsState.matches('connected'));
+    let wsConnected = $derived($wsState.matches('connected');
 </script>
 
 <div class="legal-ai-interface">

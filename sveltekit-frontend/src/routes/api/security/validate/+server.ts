@@ -7,7 +7,7 @@ interface SecurityValidationRequest {
   firstName?: string;
   lastName?: string;
   organizationName?: string;
-  validationType: 'registration' | 'login' | 'password_reset';
+  validationType: 'registration' | 'login' | 'password_reset';,
 }
 
 interface SecurityValidationResponse {
@@ -16,7 +16,7 @@ interface SecurityValidationResponse {
   progress: {
     stage: string;
     percentage: number;
-    message: string;
+    message: string;,
   };
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
   warnings: string[];
@@ -32,14 +32,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Generate unique validation ID
     const validationId = `val_${Date.now()}_${Math.random().toString(36).substring(7)}`;
     
-    // Initialize validation response
+    // Initialize validation response;
     const response: SecurityValidationResponse = {
       success: true,
       validationId,
       progress: {
         stage: 'initializing',
         percentage: 0,
-        message: 'Starting security validation process...'
+        message: 'Starting security validation process...',
       },
       riskLevel: 'low',
       warnings: [],
@@ -56,7 +56,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       return json(response, { status: 400 });
     }
 
-    // Password strength validation
+    // Password strength validation;
     const passwordChecks = {
       minLength: password.length >= 8,
       hasUppercase: /[A-Z]/.test(password),
@@ -76,14 +76,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
       response.warnings.push('Password could be stronger');
     }
 
-    // Simulate AI-powered security analysis
+    // Simulate AI-powered security analysis;
     response.progress = {
       stage: 'ai_analysis',
       percentage: 25,
-      message: 'Running AI-powered security analysis...'
+      message: 'Running AI-powered security analysis...',
     };
 
-    // Check against Enhanced RAG service for threat intelligence
+    // Check against Enhanced RAG service for threat intelligence;
     try {
       const ragResponse = await fetch('http://localhost:8094/api/security/check', {
         method: 'POST',
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
           domain: email.split('@')[1],
           validationType
         }),
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(5000),
       });
 
       if (ragResponse.ok) {
@@ -108,15 +108,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
     }
 
     // Simulate comprehensive validation stages
-    await new Promise(resolve => setTimeout(resolve, 100)); // Simulate processing time
+    await new Promise(resolve => setTimeout(resolve, 100); // Simulate processing time
 
     response.progress = {
       stage: 'completed',
       percentage: 100,
-      message: 'Security validation completed successfully'
+      message: 'Security validation completed successfully',
     };
 
-    // Add context-specific recommendations
+    // Add context-specific recommendations;
     if (validationType === 'registration') {
       response.recommendations.push('Enable two-factor authentication after registration');
       response.recommendations.push('Review privacy settings upon first login');
@@ -139,11 +139,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
       progress: {
         stage: 'error',
         percentage: 0,
-        message: 'Security validation failed'
+        message: 'Security validation failed',
       },
       riskLevel: 'critical',
       warnings: ['Validation service temporarily unavailable'],
-      recommendations: ['Please try again later']
+      recommendations: ['Please try again later'],
     } as SecurityValidationResponse, { status: 500 });
   }
 };

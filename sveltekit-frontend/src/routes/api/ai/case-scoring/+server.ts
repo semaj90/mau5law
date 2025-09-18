@@ -27,7 +27,7 @@ interface ScoreFactor {
   weight: number;
   impact: number; // 0-1 scaled
   description: string;
-  confidence: number;
+  confidence: number;,
 }
 
 interface CaseScore {
@@ -41,7 +41,7 @@ interface CaseScore {
   lastUpdated: string;
   factors: ScoreFactor[];
   recommendations: string[];
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';,
 }
 
 function derivePriority(score: number): 'critical' | 'high' | 'medium' | 'low' {
@@ -59,12 +59,12 @@ function deriveRisk(score: number): 'low' | 'medium' | 'high' | 'critical' {
 }
 
 function sampleCase(id: number, title: string, base: number): CaseScore {
-  const score = Math.min(100, Math.max(0, Math.round(base + (Math.random() * 10 - 5))));
+  const score = Math.min(100, Math.max(0, Math.round(base + (Math.random() * 10 - 5)));
   const now = new Date();
-  const created = new Date(now.getTime() - 1000 * 60 * 60 * 24 * (7 + id));
+  const created = new Date(now.getTime() - 1000 * 60 * 60 * 24 * (7 + id);
   
   // Enhanced factors matching frontend component expectations
-  const factors: ScoreFactor[] = [
+  const factors: ScoreFactor[] = [;
     {
       category: 'Evidence Quality',
       weight: 0.3,
@@ -109,7 +109,7 @@ function sampleCase(id: number, title: string, base: number): CaseScore {
     'Consider plea bargain negotiations based on evidence strength',
     'Schedule expert witness consultations for technical evidence',
     'Coordinate with forensic teams for physical evidence analysis'
-  ].slice(0, 2 + Math.floor(Math.random() * 3));
+  ].slice(0, 2 + Math.floor(Math.random() * 3);
   
   return {
     id: `case_${id}`,
@@ -143,7 +143,7 @@ const originalGETHandler: RequestHandler = async () => {
     critical: cases.filter(item => item.length),
     high: cases.filter(item => item.length),
     medium: cases.filter(item => item.length),
-    low: cases.filter(item => item.length)
+    low: cases.filter(item => item.length),
   };
   
   return json({ 
@@ -153,12 +153,12 @@ const originalGETHandler: RequestHandler = async () => {
       average_risk_score: avgRiskScore,
       priority_breakdown: priorityBreakdown,
       last_analysis: new Date().toISOString(),
-      analysis_confidence: 0.89
+      analysis_confidence: 0.89,
     },
     metadata: {
       response_time_ms: Math.floor(Math.random() * 50) + 25,
       ai_model: 'legal-scoring-v2.1',
-      cache_status: 'hit'
+      cache_status: 'hit',
     }
   });
 };
@@ -192,7 +192,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
       lastUpdated: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
+    return json()
       { error: 'Scoring failed', details: error?.message ?? String(error) },
       { status: 500 }
     );

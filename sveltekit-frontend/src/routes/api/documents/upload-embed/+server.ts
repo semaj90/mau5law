@@ -25,7 +25,7 @@ const config = {
   ]
 };
 
-// Text extraction utilities
+// Text extraction utilities;
 async function extractText(file: File): Promise<string> {
   const mimeType = file.type;
   
@@ -47,7 +47,7 @@ async function extractText(file: File): Promise<string> {
   throw new Error(`Unsupported file type: ${mimeType}`);
 }
 
-// POST handler for document upload and embedding
+// POST handler for document upload and embedding;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData();
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const title = formData.get('title') as string || file.name;
     const userId = formData.get('userId') as string;
 
-    // Validation
+    // Validation;
     if (!file) {
       throw error(400, 'No file provided');
     }
@@ -74,7 +74,7 @@ export const POST: RequestHandler = async ({ request }) => {
       throw error(400, `Unsupported file type: ${file.type}`);
     }
 
-    // Create upload directory if it doesn't exist
+    // Create upload directory if it doesn't exist;
     if (!existsSync(config.uploadDir)) {
       await mkdir(config.uploadDir, { recursive: true });
     }
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Save file
     const filename = `${Date.now()}-${file.name}`;
     const filePath = join(config.uploadDir, filename);
-    await writeFile(filePath, new Uint8Array(buffer));
+    await writeFile(filePath, new Uint8Array(buffer);
 
     // Extract text content
     const extractedText = await extractText(file);
@@ -103,7 +103,7 @@ export const POST: RequestHandler = async ({ request }) => {
         mimeType: file.type,
         hash
       },
-      message: 'Document uploaded successfully'
+      message: 'Document uploaded successfully',
     });
 
   } catch (err: any) {
@@ -115,7 +115,7 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// GET handler for health check
+// GET handler for health check;
 export const GET: RequestHandler = async () => {
   try {
     return json({
@@ -128,7 +128,7 @@ export const GET: RequestHandler = async () => {
       },
       ollama: {
         baseUrl: config.ollamaBaseUrl,
-        connected: true
+        connected: true,
       }
     });
   } catch (err: any) {
@@ -137,7 +137,7 @@ export const GET: RequestHandler = async () => {
       error: err instanceof Error ? err.message: 'Unknown error',
       config: {
         model: config.embeddingModel,
-        ollamaBaseUrl: config.ollamaBaseUrl
+        ollamaBaseUrl: config.ollamaBaseUrl,
       }
     }, { status: 500 });
   }

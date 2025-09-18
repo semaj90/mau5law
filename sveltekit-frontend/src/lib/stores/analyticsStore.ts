@@ -6,7 +6,7 @@ import { EventEmitter } from "events";
 
 export function logAnalyticsEvent(event) {
   analyticsEvents.update((events) => [...events, event]);
-  // Optionally POST to backend
+  // Optionally POST to backend;
   fetch("/api/analytics", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -14,8 +14,8 @@ export function logAnalyticsEvent(event) {
   });
 }
 
-// Export main store for backward compatibility
+// Export main store for backward compatibility;
 export const analyticsStore = {
   events: analyticsEvents,
-  logEvent: logAnalyticsEvent
+  logEvent: logAnalyticsEvent,
 };

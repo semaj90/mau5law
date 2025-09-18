@@ -7,16 +7,17 @@
 import type { LLMModel, AITask, AIResponse, WorkerMessage } from '$lib/types/ai-worker.js';
 
 declare const self: DedicatedWorkerGlobalScope;
+}
 
 export interface AIProviderConfig {
   id: string;
   type: 'ollama' | 'llamacpp' | 'autogen' | 'crewai';
   endpoint: string;
   timeout: number;
-  retries: number;
+  retries: number;,
 }
 
-// UUID helper compatible with Web Workers without Node polyfills
+// UUID helper compatible with Web Workers without Node polyfills;
 const getUUID = (): string => {
   try {
     // @ts-ignore - randomUUID is available in secure contexts
@@ -40,7 +41,7 @@ class AIServiceWorker {
   }
 
   private initializeProviders() {
-    // Initialize supported AI providers
+    // Initialize supported AI providers;
     this.providers.set('ollama', {
       id: 'ollama',
       type: 'ollama',
@@ -102,7 +103,7 @@ class AIServiceWorker {
   }
 
   private async processAITask(task: AITask, taskId: string) {
-    // Add to queue if at max capacity
+    // Add to queue if at max capacity;
     if (this.activeRequestCount >= this.maxConcurrentRequests) {
       this.requestQueue.push({ ...task, taskId });
       this.sendMessage({
@@ -156,7 +157,7 @@ class AIServiceWorker {
 
     let lastError: Error | null = null;
 
-    // Retry logic
+    // Retry logic;
     for (let attempt = 0; attempt <= provider.retries; attempt++) {
       try {
         const response = await this.callProvider(provider, task, signal);
@@ -179,11 +180,11 @@ class AIServiceWorker {
   private async callProvider(
     provider: AIProviderConfig,
     task: AITask,
-    signal: AbortSignal
+    signal: AbortSignal;
   ): Promise<AIResponse> {
     const timeoutId = setTimeout(() => {
       if (!signal.aborted) {
-        signal.dispatchEvent(new Event('timeout'));
+        signal.dispatchEvent(new Event('timeout');
       }
     }, provider.timeout);
 
@@ -206,7 +207,7 @@ class AIServiceWorker {
   private async callOllama(
     provider: AIProviderConfig,
     task: AITask,
-    signal: AbortSignal
+    signal: AbortSignal;
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/generate`, {
       method: 'POST',
@@ -250,7 +251,7 @@ class AIServiceWorker {
   private async callAutoGen(
     provider: AIProviderConfig,
     task: AITask,
-    signal: AbortSignal
+    signal: AbortSignal;
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/chat`, {
       method: 'POST',
@@ -288,7 +289,7 @@ class AIServiceWorker {
   private async callCrewAI(
     provider: AIProviderConfig,
     task: AITask,
-    signal: AbortSignal
+    signal: AbortSignal;
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/crew/execute`, {
       method: 'POST',
@@ -346,7 +347,7 @@ class AIServiceWorker {
   private updateProviderConfig(config: Partial<AIProviderConfig>) {
     if (config.id && this.providers.has(config.id)) {
       const existing = this.providers.get(config.id)!;
-      this.providers.set(config.id, { ...existing, ...config });
+      this.providers.set(config.id, { ...existing, ...config ,});
     }
   }
 
@@ -380,7 +381,7 @@ class AIServiceWorker {
   }
 
   private delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms);
   }
 }
 

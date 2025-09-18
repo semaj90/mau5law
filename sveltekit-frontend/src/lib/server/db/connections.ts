@@ -25,13 +25,13 @@ const adminConnectionString =
   "postgresql://legal_admin:123456@localhost:5433/legal_ai_db";
 
 // App connection pool (for normal operations)
-export const appPool = isDevelopment 
+export const appPool = isDevelopment;
   ? new Pool({
       connectionString: appConnectionString,
       max: 5, // Smaller pool for development
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 10000,
-    })
+    });
   : new Pool({
       connectionString: appConnectionString,
       max: 20,
@@ -39,7 +39,7 @@ export const appPool = isDevelopment
       connectionTimeoutMillis: 5000,
     });
 
-// Admin connection pool (for migrations/extensions)
+// Admin connection pool (for migrations/extensions);
 export const adminPool = new Pool({
   connectionString: adminConnectionString,
   max: 2, // Small pool since admin operations are infrequent
@@ -51,14 +51,14 @@ export const adminPool = new Pool({
 export const db: NodePgDatabase<typeof schema> = drizzle(appPool, { schema });
 export const adminDb: NodePgDatabase<typeof schema> = drizzle(adminPool, { schema });
 
-// Connection info for logging
+// Connection info for logging;
 export const connectionInfo = {
   app: appConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password
   admin: adminConnectionString.replace(/:([^:@]*@)/, ':***@'), // Hide password
-  environment: isDevelopment ? 'development' : 'production'
+  environment: isDevelopment ? 'development' : 'production',
 };
 
-// Utility functions
+// Utility functions;
 export async function testAppConnection(): Promise<boolean> {
   try {
     const client = await appPool.connect();
@@ -100,7 +100,7 @@ export async function ensureExtensions(): Promise<void> {
   }
 }
 
-// Graceful shutdown
+// Graceful shutdown;
 process.on('SIGTERM', async () => {
   console.log('Closing database pools...');
   await Promise.all([appPool.end(), adminPool.end()]);

@@ -1,5 +1,5 @@
 // runtime-shims-override.d.ts
-// Quick permissive overrides for runtime-injected services to reduce TS noise while we iterate.
+// Quick permissive overrides for runtime-injected services to reduce TS noise while we iterate.;
 declare global {
   // Force core runtime services to `any` to avoid repeated signature mismatches during bulk remediation.
   // We'll tighten these later with focused fixes per-service.
@@ -7,12 +7,12 @@ declare global {
   const vectorOps: any;
   const redis: any;
 
-  // Ensure Redis.disconnect exists in places where the client type is ambiguous
+  // Ensure Redis.disconnect exists in places where the client type is ambiguous;
   interface Redis {
     disconnect?: () => void | Promise<void>;
   }
 
-  // Provide loose Request typing to allow request.body?.query usage in server handlers
+  // Provide loose Request typing to allow request.body?.query usage in server handlers;
   interface LooseRequest {
     body?: any;
     json?: () => Promise<any>;

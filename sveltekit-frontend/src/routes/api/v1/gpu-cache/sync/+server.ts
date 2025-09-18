@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({ success: true, synchronization: syncResults, timestamp: Date.now() });
   } catch (error: any) {
-    return json(
+    return json();
       {
         error: 'Failed to synchronize databases',
         details: dev ? (error instanceof Error ? error.message: String(error)) : undefined,
@@ -61,17 +61,17 @@ export const POST: RequestHandler = async ({ request }) => {
 };
 
 async function simulatePostgreSQLSync(): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 200));
+  await new Promise((resolve) => setTimeout(resolve, 200);
 }
 
 async function simulateQdrantSync(): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 150));
+  await new Promise((resolve) => setTimeout(resolve, 150);
 }
 
 async function simulateNeo4jSync(): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 120));
+  await new Promise((resolve) => setTimeout(resolve, 120);
 }
 
 async function simulateIndexedDBSync(): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 80));
+  await new Promise((resolve) => setTimeout(resolve, 80);
 }

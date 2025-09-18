@@ -5,6 +5,7 @@ import type {
   CanvasConnection,
   InteractiveCanvasState,
 } from "$lib/types/canvas";
+}
 
 export interface CanvasContext {
   nodes: CanvasNode[];
@@ -12,7 +13,7 @@ export interface CanvasContext {
   selectedNode: string | null;
   draggedNode: string | null;
   canvasState: InteractiveCanvasState;
-  error: string | null;
+  error: string | null;,
 }
 
 type CanvasEvent =
@@ -116,9 +117,9 @@ export const canvasSystemMachine = setup({
         viewport: { x: 0, y: 0, zoom: 1 },
       };
 
-      // Save to localStorage or API
+      // Save to localStorage or API;
       if (typeof window !== "undefined") {
-        localStorage.setItem("canvasState", JSON.stringify(state));
+        localStorage.setItem("canvasState", JSON.stringify(state);
       }
 
       return state;

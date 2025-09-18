@@ -1,4 +1,4 @@
-// Fallback stub: neo4j service may not be available; provide a simple health response
+// Fallback stub: neo4j service may not be available; provide a simple health response;
 const getNeo4jService = () => ({
   async getHealthStatus() {
     return { connected: false, mode: 'stub' };
@@ -11,8 +11,7 @@ export const GET: RequestHandler = async () => {
     const neo4jService = getNeo4jService();
     const health = await neo4jService.getHealthStatus();
 
-    return new Response(
-      JSON.stringify({
+    return new Response(JSON.stringify({
         neo4j: health,
         timestamp: new Date().toISOString(),
       }),
@@ -21,8 +20,7 @@ export const GET: RequestHandler = async () => {
       }
     );
   } catch (error) {
-    return new Response(
-      JSON.stringify({
+    return new Response(JSON.stringify({
         neo4j: {
           connected: false,
           mode: 'error',

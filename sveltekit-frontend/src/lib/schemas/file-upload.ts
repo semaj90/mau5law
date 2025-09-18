@@ -64,17 +64,17 @@ const allowedMimeTypes = [
   'application/zip', 'application/x-rar-compressed'
 ];
 
-// Chain of custody entry schema
+// Chain of custody entry schema;
 export const chainOfCustodyEntrySchema = z.object({
   timestamp: z.string().datetime(),
   officer: z.string().min(1, 'Officer name is required'),
   action: z.enum(['collected', 'transferred', 'analyzed', 'stored', 'returned']),
   location: z.string().min(1, 'Location is required'),
   notes: z.string().optional(),
-  signature: z.string().optional()
+  signature: z.string().optional(),
 });
 
-// File metadata schema
+// File metadata schema;
 export const fileMetadataSchema = z.object({
   originalName: z.string().min(1, 'Original filename is required'),
   size: z.number().positive('File size must be positive'),
@@ -82,15 +82,15 @@ export const fileMetadataSchema = z.object({
   hash: z.string().optional(),
   dimensions: z.object({
     width: z.number().optional(),
-    height: z.number().optional()
+    height: z.number().optional(),
   }).optional(),
   duration: z.number().optional(),
   pages: z.number().optional(),
   extractedText: z.string().optional(),
-  ocrConfidence: z.number().min(0).max(1).optional()
+  ocrConfidence: z.number().min(0).max(1).optional(),
 });
 
-// Single file upload schema: accepts a file-like object (works in SSR/browser)
+// Single file upload schema: accepts a file-like object (works in SSR/browser);
 export const fileUploadSchema = z.object({
   file: z.any()
     .refine((file) => typeof file !== 'undefined' && file != null, { message: 'File is required' })
@@ -136,21 +136,21 @@ export const fileUploadSchema = z.object({
   metadata: z.record(z.any()).default({})
 });
 
-// Multiple file upload schema
+// Multiple file upload schema;
 export const multipleFileUploadSchema = z.object({
-  files: z.array(z.any())
+  files: z.array(z.any()
     .min(1, 'At least one file is required')
-    .max(10, 'Cannot upload more than 10 files at once')
+    .max(10, 'Cannot upload more than 10 files at once');
     .refine((files) => {
       const totalSize = files.reduce((sum: number, file: any) => sum + ((file && typeof file.size === 'number') ? file.size: 0), 0);
       return totalSize <= 500 * 1024 * 1024; // 500MB total limit
     }, { message: 'Total file size cannot exceed 500MB' }),
 
   caseId: z.string().uuid().optional(),
-  enableAiAnalysis: z.boolean().default(true)
+  enableAiAnalysis: z.boolean().default(true),
 });
 
-// Case creation with file upload schema
+// Case creation with file upload schema;
 export const caseWithFilesSchema = z.object({
   // Case information
   title: z.string()
@@ -190,7 +190,7 @@ export const caseWithFilesSchema = z.object({
   tags: z.array(z.string()).max(20, 'Cannot have more than 20 tags').default([]),
 
   // Files to upload with the case (file-like objects)
-  files: z.array(z.any())
+  files: z.array(z.any()
     .min(0)
     .max(20, 'Cannot upload more than 20 files when creating a case')
     .default([]),
@@ -199,10 +199,10 @@ export const caseWithFilesSchema = z.object({
   fileDescriptions: z.array(z.string()).default([]),
   fileTitles: z.array(z.string()).default([]),
   fileTypes: z.array(fileTypeEnum).default([]),
-  fileEvidenceTypes: z.array(evidenceTypeEnum).default([])
+  fileEvidenceTypes: z.array(evidenceTypeEnum).default([]),
 });
 
-// File search schema
+// File search schema;
 export const fileSearchSchema = z.object({
   query: z.string().max(200, 'Search query cannot exceed 200 characters').optional(),
   caseId: z.string().uuid().optional(),
@@ -220,17 +220,17 @@ export const fileSearchSchema = z.object({
   sortBy: z.enum(['created_at', 'updated_at', 'title', 'size', 'relevance']).default('created_at'),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
   limit: z.number().min(1).max(100).default(20),
-  offset: z.number().min(0).default(0)
+  offset: z.number().min(0).default(0),
 });
 
-// AI analysis result schema
+// AI analysis result schema;
 export const aiAnalysisResultSchema = z.object({
   summary: z.string().optional(),
   keyPoints: z.array(z.string()).default([]),
   entities: z.array(z.object({
     name: z.string(),
     type: z.string(),
-    confidence: z.number().min(0).max(1)
+    confidence: z.number().min(0).max(1),
   })).default([]),
   sentiment: z.object({
     score: z.number().min(-1).max(1),
@@ -240,7 +240,7 @@ export const aiAnalysisResultSchema = z.object({
   confidence: z.number().min(0).max(1).default(0),
   processingTime: z.number().positive().optional(),
   model: z.string().optional(),
-  embedding: z.array(z.number()).optional()
+  embedding: z.array(z.number()).optional(),
 });
 
 // Export types
@@ -258,7 +258,7 @@ export type EvidenceType = z.infer<typeof evidenceTypeEnum>;
 export type ConfidentialityLevel = z.infer<typeof confidentialityLevelEnum>;
 export type CasePriority = z.infer<typeof casePriorityEnum>;
 
-// Helper functions for file validation (file-like object)
+// Helper functions for file validation (file-like object);
 export const validateFileSize = (file: any, maxSizeMB: number = 100): boolean => {
   if (!file || typeof file.size !== 'number') return false;
   return file.size <= maxSizeMB * 1024 * 1024;
@@ -280,11 +280,11 @@ export const getFileCategory = (mimeType: string): FileType => {
 export const formatFileSize = (bytes: number): string => {
   const sizes = ['B', 'KB', 'MB', 'GB'];
   if (bytes === 0) return '0 B';
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  const i = Math.floor(Math.log(bytes) / Math.log(1024);
   return `${Math.round(bytes / Math.pow(1024, i) * 100) / 100} ${sizes[i]}`;
 };
 
-// Default form values
+// Default form values;
 export const defaultFileUploadValues: Partial<FileUpload> = {
   title: '',
   description: '',
@@ -313,5 +313,5 @@ export const defaultCaseWithFilesValues: Partial<CaseWithFiles> = {
   fileDescriptions: [],
   fileTitles: [],
   fileTypes: [],
-  fileEvidenceTypes: []
+  fileEvidenceTypes: [],
 };

@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 
-// Document templates with pre-filled content
+// Document templates with pre-filled content;
 const documentTemplates = {
   brief: {
     title: "Criminal Case Brief",
@@ -253,7 +253,7 @@ Respectfully submitted,
   },
 };
 
-// GET /api/documents/templates - Get available document templates
+// GET /api/documents/templates - Get available document templates;
 export async function GET({ url }: RequestEvent): Promise<any> {
   try {
     const documentType = url.searchParams.get("type");
@@ -263,11 +263,10 @@ export async function GET({ url }: RequestEvent): Promise<any> {
         documentTemplates[documentType as keyof typeof documentTemplates];
 
       if (!template) {
-        return json(
-          {
+        return json({
             success: false,
             error: `Template not found for document type: ${documentType}`,
-          },
+          },)
           { status: 404 },
         );
       }
@@ -276,9 +275,8 @@ export async function GET({ url }: RequestEvent): Promise<any> {
         template,
       });
     }
-    // Return all templates with metadata
-    const templates = Object.entries(documentTemplates).map(
-      ([key, template]) => ({
+    // Return all templates with metadata;
+    const templates = Object.entries(documentTemplates).map(([key, template]) => ({
         id: key,
         name: template.title,
         documentType: template.documentType,
@@ -293,16 +291,15 @@ export async function GET({ url }: RequestEvent): Promise<any> {
     });
   } catch (error: any) {
     console.error("Error fetching templates:", error);
-    return json(
-      {
+    return json({
         success: false,
         error: "Failed to fetch templates",
-      },
+      },)
       { status: 500 },
     );
   }
 }
-// Helper function to get template descriptions
+// Helper function to get template descriptions;
 function getTemplateDescription(templateKey: string): string {
   const descriptions = {
     brief:
@@ -323,7 +320,7 @@ function getTemplateDescription(templateKey: string): string {
     "Legal document template"
   );
 }
-// POST /api/documents/templates/[type] - Create a new document from a template
+// POST /api/documents/templates/[type] - Create a new document from a template;
 export async function POST({ url, request }: RequestEvent): Promise<any> {
   try {
     const templateType = url.pathname.split("/").pop();
@@ -331,13 +328,12 @@ export async function POST({ url, request }: RequestEvent): Promise<any> {
 
     if (
       !templateType ||
-      !documentTemplates[templateType as keyof typeof documentTemplates]
+      !documentTemplates[templateType as keyof typeof documentTemplates];
     ) {
-      return json(
-        {
+      return json({
           success: false,
           error: `Template not found for type: ${templateType}`,
-        },
+        },)
         { status: 404 },
       );
     }
@@ -348,7 +344,7 @@ export async function POST({ url, request }: RequestEvent): Promise<any> {
     // Apply customizations to the template
     let customizedContent = template.content;
 
-    // Replace placeholders with customizations
+    // Replace placeholders with customizations;
     Object.entries(customizations).forEach(([key, value]) => {
       const placeholder = `[${key}]`;
       customizedContent = customizedContent.replace(
@@ -357,7 +353,7 @@ export async function POST({ url, request }: RequestEvent): Promise<any> {
       );
     });
 
-    // Create the document
+    // Create the document;
     const newDocument = {
       id: `doc-${Date.now()}`,
       title: title || template.title,
@@ -385,11 +381,10 @@ export async function POST({ url, request }: RequestEvent): Promise<any> {
     });
   } catch (error: any) {
     console.error("Error creating document from template:", error);
-    return json(
-      {
+    return json({
         success: false,
         error: "Failed to create document from template",
-      },
+      },)
       { status: 500 },
     );
   }

@@ -35,7 +35,7 @@ export const insertProfileSchema = z.object({
   preferences: z.any().default({}),
   specializations: z.array(z.string()).default([]),
   experienceLevel: z.string().optional(),
-  visibility: z.string().default('private')
+  visibility: z.string().default('private'),
 });
 
 export const updateProfileSchema = insertProfileSchema.partial();
@@ -82,7 +82,7 @@ export const users = pgTable('users', {
   ),
   createdAtIdx: index('users_created_at_idx').on(table.createdAt),
   isActiveIdx: index('users_is_active_idx').on(table.isActive),
-}));
+});
 
 // ============================================================================
 // USER SESSIONS TABLE
@@ -107,7 +107,7 @@ export const userSessions = pgTable('user_sessions', {
   userIdIdx: index('user_sessions_user_id_idx').on(table.userId),
   expiresAtIdx: index('user_sessions_expires_at_idx').on(table.expiresAt),
   isActiveIdx: index('user_sessions_is_active_idx').on(table.isActive),
-}));
+});
 
 // ============================================================================
 // USER PROFILES TABLE (Extended Information)
@@ -138,7 +138,7 @@ export const userProfiles = pgTable('user_profiles', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 }, (table) => ({
   userIdIdx: uniqueIndex('user_profiles_user_id_idx').on(table.userId),
-}));
+});
 
 // ============================================================================
 // USER ACTIVITY LOG TABLE
@@ -173,13 +173,13 @@ export const userActivityLog = pgTable('user_activity_log', {
   actionIdx: index('user_activity_log_action_idx').on(table.action),
   timestampIdx: index('user_activity_log_timestamp_idx').on(table.timestamp),
   sessionIdIdx: index('user_activity_log_session_id_idx').on(table.sessionId),
-}));
+});
 
 // ============================================================================
 // ZONT SCHEMAS FOR VALIDATION
 // ============================================================================
 
-// User insert/update schemas (commented out until drizzle-zod is available)
+// User insert/update schemas (commented out until drizzle-zod is available);
 // export const insertUserSchema = createInsertSchema(users, {
 //   email: z.string().email(),
 //   firstName: z.string().min(1).max(100),
@@ -238,25 +238,25 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   }),
   sessions: many(userSessions),
   activities: many(userActivityLog),
-}));
+});
 
 export const userProfilesRelations = relations(userProfiles, ({ one }) => ({
   user: one(users, {
     fields: [userProfiles.userId],
     references: [users.id],
   }),
-}));
+});
 
 export const userSessionsRelations = relations(userSessions, ({ one }) => ({
   user: one(users, {
     fields: [userSessions.userId],
     references: [users.id],
   }),
-}));
+});
 
 export const userActivityLogRelations = relations(userActivityLog, ({ one }) => ({
   user: one(users, {
     fields: [userActivityLog.userId],
     references: [users.id],
   }),
-}));
+});

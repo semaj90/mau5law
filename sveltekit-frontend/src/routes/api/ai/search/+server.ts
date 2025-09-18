@@ -27,12 +27,12 @@ const searchSchema = z.object({
   query: z.string().min(1).max(1000),
   limit: z.number().min(1).max(50).optional(),
   threshold: z.number().min(0).max(1).optional(),
-  documentType: z.string().optional()
+  documentType: z.string().optional(),
 });
 
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.user) {
       return json({ error: 'Authentication required' }, { status: 401 });
     }
@@ -51,7 +51,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       threshold
     );
 
-    // Format results for response
+    // Format results for response;
     const formattedResults = results.map((result: any) => ({
       content: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).content,
       similarity: Math.round((result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).similarity * 100) / 100,
@@ -59,7 +59,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
       documentType: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.documentType || 'unknown',
       confidence: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.analysis?.confidence || null,
       tags: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.analysis?.tags || []
-    }));
+    });
 
     return json({
       success: true,
@@ -70,7 +70,7 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
         searchParams: {
           limit,
           threshold,
-          embeddingModel: 'nomic-embed-text'
+          embeddingModel: 'nomic-embed-text',
         }
       }
     });
@@ -79,20 +79,18 @@ const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
     console.error('Vector search API error:', error);
 
     if (error instanceof z.ZodError) {
-      return json(
-        { 
+      return json({ 
           error: 'Validation failed', 
-          details: error.errors 
-        }, 
+          details: error.errors ,
+        }, )
         { status: 400 }
       );
     }
 
-    return json(
-      { 
+    return json({ 
         error: 'Vector search failed',
-        message: error instanceof Error ? error.message: 'Unknown error'
-      }, 
+        message: error instanceof Error ? error.message: 'Unknown error',
+      }, )
       { status: 500 }
     );
   }
@@ -127,14 +125,14 @@ const originalGETHandler: RequestHandler = async ({ url, locals }) => {
       data: {
         query,
         results,
-        totalResults: results.length
+        totalResults: results.length,
       }
     });
 
   } catch (error: any) {
     console.error('Vector search GET API error:', error);
     return json(
-      { error: 'Vector search failed' }, 
+      { error: 'Vector search failed' }, )
       { status: 500 }
     );
   }

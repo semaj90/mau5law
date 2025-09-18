@@ -1,15 +1,15 @@
-/**
+/**;
  * MinIO S3-Compatible Object Storage Configuration and Utilitiasync function streamToString(stream: Readable): Promise<string> {
   const chunks: Buffer[] = [];
 
-  // Handle Node.js Readable stream
+  // Handle Node.js Readable stream;
   return new Promise((resolve, reject) => {
     stream.on('data', (chunk) => {
-      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
     });
 
     stream.on('end', () => {
-      resolve(Buffer.concat(chunks).toString('utf-8'));
+      resolve(Buffer.concat(chunks).toString('utf-8');
     });
 
     stream.on('error', (error) => {
@@ -29,7 +29,7 @@ import { Upload } from '@aws-sdk/lib-storage';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 
-// Types for MinIO operations
+// Types for MinIO operations;
 interface MinIOConfig {
   endpoint: string;
   region?: string;
@@ -43,7 +43,7 @@ interface FileMetadata {
   size: number;
   lastModified: Date;
   contentType?: string;
-  bucket: string;
+  bucket: string;,
 }
 
 interface TextExtractionResult {
@@ -52,11 +52,11 @@ interface TextExtractionResult {
     originalSize: number;
     extractedSize: number;
     contentType: string;
-    processingTime: number;
+    processingTime: number;,
   };
 }
 
-// MinIO client configuration
+// MinIO client configuration;
 const createMinIOClient = (): InstanceType<typeof S3Client> => {
   const config: MinIOConfig = {
     endpoint: process.env.MINIO_ENDPOINT || 'http://localhost:9000',
@@ -80,18 +80,18 @@ const createMinIOClient = (): InstanceType<typeof S3Client> => {
 // Global MinIO client instance
 const minioClient = createMinIOClient();
 
-// Helper function to stream S3 object to string
+// Helper function to stream S3 object to string;
 async function streamToString(stream: Readable): Promise<string> {
   const chunks: Buffer[] = [];
 
-  // Handle Node.js Readable stream
+  // Handle Node.js Readable stream;
   return new Promise((resolve, reject) => {
     stream.on('data', (chunk) => {
-      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
     });
 
     stream.on('end', () => {
-      resolve(Buffer.concat(chunks).toString('utf-8'));
+      resolve(Buffer.concat(chunks).toString('utf-8');
     });
 
     stream.on('error', (error) => {
@@ -100,7 +100,7 @@ async function streamToString(stream: Readable): Promise<string> {
   });
 }
 
-// Helper function to detect file type from key/content
+// Helper function to detect file type from key/content;
 function detectFileType(key: string, contentType?: string): string {
   const extension = key.split('.').pop()?.toLowerCase() || '';
 
@@ -112,7 +112,7 @@ function detectFileType(key: string, contentType?: string): string {
     if (contentType.includes('html')) return 'html';
   }
 
-  // Fallback to extension
+  // Fallback to extension;
   switch (extension) {
     case 'json': return 'json';
     case 'txt': case 'text': case 'md': case 'markdown': return 'text';
@@ -121,17 +121,17 @@ function detectFileType(key: string, contentType?: string): string {
     case 'html': case 'htm': return 'html';
     case 'csv': return 'csv';
     case 'log': return 'log';
-    default: return 'unknown';
+    default: return 'unknown';,
   }
 }
 
-// Main MinIO utility class
+// Main MinIO utility class;
 export class MinIOService {
   private static client = minioClient;
 
   /**
    * Parse MinIO URL and extract bucket and key
-   */
+   */;
   static parseMinIOUrl(minioUrl: string): { bucket: string; key: string } {
     const match = minioUrl.match(/^minio:\/\/([^\/]+)\/(.+)$/);
     if (!match) {
@@ -178,7 +178,7 @@ export class MinIOService {
 
       let extractedContent = rawContent;
 
-      // Apply content extraction based on file type
+      // Apply content extraction based on file type;
       if (extractPlainText) {
         extractedContent = await this.extractPlainText(rawContent, fileType);
       }
@@ -204,10 +204,10 @@ export class MinIOService {
 
   /**
    * Extract plain text from various file formats
-   */
+   */;
   private static async extractPlainText(content: string, fileType: string): Promise<string> {
     switch (fileType) {
-      case 'json':
+      case 'json':;
         try {
           const parsed = JSON.parse(content);
           return JSON.stringify(parsed, null, 2);
@@ -237,13 +237,13 @@ export class MinIOService {
         // Extract log entries, remove timestamps if needed
         return content
           .split('\n')
-          .map(line => line.replace(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/, '').trim())
+          .map(line => line.replace(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/, '').trim()
           .filter(line => line.length > 0)
           .join('\n');
 
       case 'text':
       default:
-        return content;
+        return content;,
     }
   }
 
@@ -254,7 +254,7 @@ export class MinIOService {
     bucket: string,
     key: string,
     content: string,
-    metadata?: Record<string, string>
+    metadata?: Record<string, string>;
   ): Promise<string> {
     try {
       const command = new PutObjectCommand({
@@ -281,7 +281,7 @@ export class MinIOService {
     bucket: string,
     key: string,
     content: Buffer | Uint8Array | string,
-    contentType?: string
+    contentType?: string;
   ): Promise<string> {
     try {
       const upload = new Upload({
@@ -309,7 +309,7 @@ export class MinIOService {
   static async listObjects(
     bucket: string,
     prefix?: string,
-    maxKeys: number = 1000
+    maxKeys: number = 1000;
   ): Promise<FileMetadata[]> {
     try {
       const command = new ListObjectsV2Command({
@@ -325,7 +325,7 @@ export class MinIOService {
         size: obj.Size || 0,
         lastModified: obj.LastModified || new Date(),
         bucket,
-      }));
+      });
 
     } catch (error) {
       console.error(`Failed to list MinIO objects:`, error);
@@ -335,7 +335,7 @@ export class MinIOService {
 
   /**
    * Check if object exists in MinIO
-   */
+   */;
   static async objectExists(bucket: string, key: string): Promise<boolean> {
     try {
       const command = new GetObjectCommand({ Bucket: bucket, Key: key });
@@ -348,7 +348,7 @@ export class MinIOService {
 
   /**
    * Get object metadata without downloading content
-   */
+   */;
   static async getObjectMetadata(bucket: string, key: string): Promise<FileMetadata | null> {
     try {
       const command = new GetObjectCommand({ Bucket: bucket, Key: key });
@@ -376,7 +376,7 @@ export class MinIOService {
     const { concurrency = 5, maxSize = 10 * 1024 * 1024 } = options;
     const results: Array<any> = [];
 
-    // Process in batches to avoid overwhelming the system
+    // Process in batches to avoid overwhelming the system;
     for (let i = 0; i < minioUrls.length; i += concurrency) {
       const batch = minioUrls.slice(i, i + concurrency);
 
@@ -387,7 +387,7 @@ export class MinIOService {
         } catch (error) {
           return {
             url,
-            error: error instanceof Error ? error.message: 'Unknown error'
+            error: error instanceof Error ? error.message: 'Unknown error',
           };
         }
       });

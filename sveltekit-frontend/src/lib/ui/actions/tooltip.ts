@@ -68,12 +68,12 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
     let left = clientX + 12;
     let top = clientY + 12;
 
-    // Keep on screen horizontally
+    // Keep on screen horizontally;
     if (left + rect.width + padding > window.innerWidth) {
       left = Math.max(padding, clientX - rect.width - 12);
     }
 
-    // Keep on screen vertically
+    // Keep on screen vertically;
     if (top + rect.height + padding > window.innerHeight) {
       top = Math.max(padding, clientY - rect.height - 12);
     }
@@ -114,7 +114,7 @@ export function tooltip(node: HTMLElement, params: TooltipParams = {}) {
     if (tooltipEl) {
       tooltipEl.style.opacity = '0';
       tooltipEl.style.transform = 'translateY(6px)';
-      // remove after transition
+      // remove after transition;
       const to = window.setTimeout(() => {
         removeTooltip();
         window.clearTimeout(to);

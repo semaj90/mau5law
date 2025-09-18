@@ -9,13 +9,13 @@ import { createMachine, assign, fromPromise } from "xstate";
 import { browser } from "$app/environment";
 import { goto } from "$app/navigation";
 
-// Authentication context
+// Authentication context;
 export interface AuthContext {
   user: SessionUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  redirectPath: string | null;
+  redirectPath: string | null;,
 }
 
 // Authentication events
@@ -28,6 +28,7 @@ type AuthEvents =
   | { type: 'SET_REDIRECT'; path: string }
   | { type: 'AUTHENTICATED'; user: SessionUser }
   | { type: 'UNAUTHENTICATED' };
+}
 
 export interface RegisterData {
   email: string;
@@ -37,9 +38,8 @@ export interface RegisterData {
   role?: string;
 }
 
-// API services
-const loginService = fromPromise(
-  async ({ input }: { input: { email: string; password: string } }) => {
+// API services;
+const loginService = fromPromise(async ({ input }: { input: { email: string; password: string } }) => {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -92,7 +92,7 @@ const checkAuthService = fromPromise(async () => {
   return await response.json();
 });
 
-// Authentication state machine
+// Authentication state machine;
 const authMachine = createMachine({
   id: 'auth',
   types: {
@@ -114,7 +114,7 @@ const authMachine = createMachine({
         src: checkAuthService,
         onDone: {
           target: 'authenticated',
-          actions: [
+          actions: [;
             assign({
               user: ({ event }) => event.output.user,
               isAuthenticated: true,
@@ -158,21 +158,21 @@ const authMachine = createMachine({
       }),
       invoke: {
         src: loginService,
-        // fromPromise passes original event as event in invoke meta; route it via event for LOGIN
+        // fromPromise passes original event as event in invoke meta; route it via event for LOGIN;
         input: ({ event }: { event: any }) => ({
           email: event.email,
           password: event.password,
         }),
         onDone: {
           target: 'authenticated',
-          actions: [
+          actions: [;
             assign({
               user: ({ event }) => event.output.user,
               isAuthenticated: true,
               isLoading: false,
               error: null,
             }),
-            // Handle redirect after successful login
+            // Handle redirect after successful login;
             ({ context }) => {
               if (browser && context.redirectPath) {
                 goto(context.redirectPath);
@@ -202,14 +202,14 @@ const authMachine = createMachine({
         input: ({ event }: { event: any }) => event.userData,
         onDone: {
           target: 'authenticated',
-          actions: [
+          actions: [;
             assign({
               user: ({ event }) => event.output.user,
               isAuthenticated: true,
               isLoading: false,
               error: null,
             }),
-            // Redirect to dashboard after registration
+            // Redirect to dashboard after registration;
             () => {
               if (browser) {
                 goto('/dashboard');
@@ -253,14 +253,14 @@ const authMachine = createMachine({
         src: logoutService,
         onDone: {
           target: 'unauthenticated',
-          actions: [
+          actions: [;
             assign({
               user: null,
               isAuthenticated: false,
               isLoading: false,
               error: null,
             }),
-            // Redirect to home after logout
+            // Redirect to home after logout;
             () => {
               if (browser) {
                 goto('/');
@@ -289,7 +289,7 @@ const authMachine = createMachine({
   },
 });
 
-// Create global auth store using SvelteKit 2 patterns
+// Create global auth store using SvelteKit 2 patterns;
 class AuthStore {
   #machineState: any = $state({
     context: {
@@ -305,14 +305,14 @@ class AuthStore {
 
   constructor() {
     if (browser) {
-      // Initialize actor only in browser
+      // Initialize actor only in browser;
       import('xstate').then(({ createActor }) => {
         this.#actor = createActor(authMachine);
         this.#actor.start();
 
-        // Subscribe to authentication state changes
+        // Subscribe to authentication state changes;
         this.#actor.subscribe((state: any) => {
-          // Update reactive state
+          // Update reactive state;
           this.#machineState = {
             context: state.context,
             value: state.value,
@@ -325,7 +325,7 @@ class AuthStore {
     }
   }
 
-  // Reactive getters using proper typing
+  // Reactive getters using proper typing;
   get isAuthenticated() {
     return this.#machineState?.context?.isAuthenticated ?? false;
   }
@@ -346,7 +346,7 @@ class AuthStore {
     return this.#machineState?.value ?? 'checking';
   }
 
-  // User role helpers
+  // User role helpers;
   get isAdmin() {
     return this.user?.role === 'admin';
   }
@@ -359,7 +359,7 @@ class AuthStore {
     return this.user?.role === 'detective';
   }
 
-  // Actions
+  // Actions;
   login = (email: string, password: string) => {
     this.#actor?.send({ type: 'LOGIN', email, password });
   };
@@ -384,7 +384,7 @@ class AuthStore {
     this.#actor?.send({ type: 'CHECK_AUTH' });
   };
 
-  // Permission helpers
+  // Permission helpers;
   hasPermission = (permission: string): boolean => {
     if (!this.user) return false;
 
@@ -417,7 +417,7 @@ class AuthStore {
 // Export singleton instance
 export const authStore = new AuthStore();
 ;
-// Auth guards for routes
+// Auth guards for routes;
 export function requireAuth() {
   return {
     beforeNavigate: ({ to }: { to: any }) => {

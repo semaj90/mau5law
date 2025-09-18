@@ -1,6 +1,7 @@
 
 // Enhanced draggable action for detective board evidence nodes
 import { evidenceStore } from '$lib/stores/evidence';
+}
 
 export interface DraggableOptions {
   id?: string; // Evidence ID for store updates
@@ -20,7 +21,7 @@ export interface DraggableOptions {
 
 /**
  * Enhanced draggable action for making elements draggable on the detective board
- */
+ */;
 export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
   let { id, onDrag, onDragStart, onDragEnd, handle, disabled = false, constraint } = options;
 
@@ -37,7 +38,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
     currentY = y;
     node.style.transform = `translate(${x}px, ${y}px)`;
 
-    // Update evidence store if ID provided
+    // Update evidence store if ID provided;
     if (id) {
       evidenceStore.updateEvidence(id, { x, y });
     }
@@ -53,8 +54,8 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
       if (constraint.container) {
         const containerRect = constraint.container.getBoundingClientRect();
         const nodeRect = node.getBoundingClientRect();
-        constrainedX = Math.max(0, Math.min(containerRect.width - nodeRect.width, x));
-        constrainedY = Math.max(0, Math.min(containerRect.height - nodeRect.height, y));
+        constrainedX = Math.max(0, Math.min(containerRect.width - nodeRect.width, x);
+        constrainedY = Math.max(0, Math.min(containerRect.height - nodeRect.height, y);
       } else {
         if (constraint.minX !== undefined) constrainedX = Math.max(constraint.minX, constrainedX);
         if (constraint.maxX !== undefined) constrainedX = Math.min(constraint.maxX, constrainedX);
@@ -69,7 +70,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
   function handleMouseDown(event: MouseEvent) {
     if (disabled || event.button !== 0) return; // Only left mouse button
 
-    // Check if we're dragging from the handle
+    // Check if we're dragging from the handle;
     if (handle) {
       const handleElement = node.querySelector(handle);
       if (!handleElement || !handleElement.contains(event.target as Node)) {
@@ -141,7 +142,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
     onDragEnd?.(currentX, currentY);
   }
 
-  // Touch support
+  // Touch support;
   function handleTouchStart(event: TouchEvent) {
     if (disabled || event.touches.length !== 1) return;
 
@@ -149,7 +150,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
     const mouseEvent = new MouseEvent('mousedown', {
       clientX: touch.clientX,
       clientY: touch.clientY,
-      button: 0
+      button: 0,
     });
 
     handleMouseDown(mouseEvent);
@@ -163,7 +164,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
     const touch = event.touches[0];
     const mouseEvent = new MouseEvent('mousemove', {
       clientX: touch.clientX,
-      clientY: touch.clientY
+      clientY: touch.clientY,
     });
 
     handleMouseMove(mouseEvent);
@@ -174,7 +175,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
 
     const mouseEvent = new MouseEvent('mouseup', {
       clientX: 0,
-      clientY: 0
+      clientY: 0,
     });
 
     handleMouseUp(mouseEvent);
@@ -190,7 +191,7 @@ export function draggable(node: HTMLElement, options: DraggableOptions = {}) {
   node.addEventListener('touchmove', handleTouchMove);
   node.addEventListener('touchend', handleTouchEnd);
 
-  // Cleanup function
+  // Cleanup function;
   return {
     destroy() {
       node.removeEventListener('mousedown', handleMouseDown);

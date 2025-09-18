@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 
+}
 
 export interface Notification {
   id: string;
@@ -7,10 +8,11 @@ export interface Notification {
   title: string;
   message?: string;
   duration?: number;
-  actions?: Array<any>
+  actions?: Array<any>;
+}
 
 export interface NotificationState {
-  notifications: Notification[];
+  notifications: Notification[];,
 }
 
 const initialState: NotificationState = {
@@ -23,7 +25,7 @@ function createNotificationStore() {
   const store = {
     subscribe,
 
-    // Add a notification
+    // Add a notification;
     add: (notification: Omit<Notification, "id">) => {
       const id = `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const newNotification: Notification = {
@@ -34,9 +36,9 @@ function createNotificationStore() {
 
       update((state) => ({
         notifications: [...state.notifications, newNotification],
-      }));
+      });
 
-      // Auto-remove after duration (unless duration is 0)
+      // Auto-remove after duration (unless duration is 0);
       if ((newNotification.duration ?? 0) > 0) {
         setTimeout(() => {
           store.remove(id);
@@ -45,14 +47,14 @@ function createNotificationStore() {
       return id;
     },
 
-    // Remove a notification
+    // Remove a notification;
     remove: (id: string) => {
       update((state) => ({
         notifications: state.notifications.filter((n) => n.id !== id),
-      }));
+      });
     },
 
-    // Clear all notifications
+    // Clear all notifications;
     clear: () => {
       set(initialState);
     },
@@ -63,7 +65,7 @@ function createNotificationStore() {
       message?: string,
       options?: Partial<Notification>,
     ) => {
-      return store.add({ type: "success", title, message, ...options });
+      return store.add({ type: "success", title, message, ...options ,});
     },
 
     error: (
@@ -85,7 +87,7 @@ function createNotificationStore() {
       message?: string,
       options?: Partial<Notification>,
     ) => {
-      return store.add({ type: "warning", title, message, ...options });
+      return store.add({ type: "warning", title, message, ...options ,});
     },
 
     info: (
@@ -93,10 +95,10 @@ function createNotificationStore() {
       message?: string,
       options?: Partial<Notification>,
     ) => {
-      return store.add({ type: "info", title, message, ...options });
+      return store.add({ type: "info", title, message, ...options ,});
     },
 
-    // Legacy compatibility methods that accept objects without title
+    // Legacy compatibility methods that accept objects without title;
     addLegacy: (notification: {
       type: "success" | "error" | "warning" | "info";
       message: string;

@@ -3,18 +3,18 @@
 /// <reference types="vite/client" />
 
 declare global {
-  // WebGPU support (avoid conflict with @webgpu/types)
+  // WebGPU support (avoid conflict with @webgpu/types);
   interface Navigator {
     gpu?: any; // Use 'any' to avoid Navigator interface conflicts
   }
 
-  // Global WebGPU types (simplified)
+  // Global WebGPU types (simplified);
   interface GPU {
     requestAdapter(): Promise<any>;
   }
 }
 
-// Stub out problematic drizzle-orm gel module types
+// Stub out problematic drizzle-orm gel module types;
 declare module 'gel' {
   export interface Duration {
   [key: string]: any;

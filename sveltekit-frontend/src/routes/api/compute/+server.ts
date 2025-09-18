@@ -18,7 +18,7 @@ const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:1
 const db = drizzle(sql);
 
 const redis = createClient({ 
-  url: import.meta.env.REDIS_URL || 'redis://localhost:6379' 
+  url: import.meta.env.REDIS_URL || 'redis://localhost:6379' ,
 });
 
 let redisConnected = false;
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = await request.json();
     const { jobId, type, data, ownerType, ownerId } = body;
 
-    // Validate required fields
+    // Validate required fields;
     if (!type || !ownerType || !ownerId) {
       return json({ 
         error: 'Missing required fields: type, ownerType, ownerId' 
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log(`🚀 Processing compute job: ${finalJobId} (${type})`);
 
-    // Step 1: Write to PostgreSQL using outbox pattern
+    // Step 1: Write to PostgreSQL using outbox pattern;
     const [outboxRow] = await db.insert(vectorOutbox).values({
       ownerType: ownerType as 'evidence' | 'report' | 'case' | 'document',
       ownerId,
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
       attempts: 0,
     }).returning();
 
-    // Step 2: Create job tracking entry
+    // Step 2: Create job tracking entry;
     const [jobRow] = await db.insert(vectorJobs).values({
       jobId: finalJobId,
       ownerType: ownerType as 'evidence' | 'report' | 'case' | 'document',
@@ -91,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Step 4: Optional RabbitMQ fan-out (for scaling)
     // TODO: Add RabbitMQ publisher here for high-volume scenarios
 
-    // Step 5: Return job tracking information
+    // Step 5: Return job tracking information;
     return json({
       success: true,
       jobId: finalJobId,
@@ -121,7 +121,7 @@ export const GET: RequestHandler = async ({ url }) => {
     
     if (!jobId) {
       return json({ 
-        error: 'Missing jobId parameter' 
+        error: 'Missing jobId parameter' ,
       }, { status: 400 });
     }
 
@@ -129,12 +129,12 @@ export const GET: RequestHandler = async ({ url }) => {
     const [job] = await db
       .select()
       .from(vectorJobs)
-      .where(eq(vectorJobs.jobId, jobId))
+      .where(eq(vectorJobs.jobId, jobId)
       .limit(1);
 
     if (!job) {
       return json({ 
-        error: 'Job not found' 
+        error: 'Job not found' ,
       }, { status: 404 });
     }
 
@@ -142,7 +142,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const [outbox] = await db
       .select()
       .from(vectorOutbox)
-      .where(eq(vectorOutbox.ownerId, job.ownerId))
+      .where(eq(vectorOutbox.ownerId, job.ownerId)
       .orderBy(vectorOutbox.createdAt)
       .limit(1);
 
@@ -152,7 +152,7 @@ export const GET: RequestHandler = async ({ url }) => {
       const [vector] = await db
         .select()
         .from(vectors)
-        .where(eq(vectors.ownerId, job.ownerId))
+        .where(eq(vectors.ownerId, job.ownerId)
         .limit(1);
       
       vectorResult = vector ? {
@@ -194,13 +194,13 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-// Helper function to estimate processing time based on job type
+// Helper function to estimate processing time based on job type;
 function getEstimatedTime(type: string, data: any): number {
   switch (type) {
     case 'upsert':
       // Estimate based on content length
       const contentLength = JSON.stringify(data).length;
-      return Math.max(500, Math.min(5000, contentLength / 10));
+      return Math.max(500, Math.min(5000, contentLength / 10);
     
     case 'reembed':
       return 2000; // Re-embedding typically takes 2 seconds
@@ -209,6 +209,6 @@ function getEstimatedTime(type: string, data: any): number {
       return 100; // Deletion is fast
     
     default:
-      return 1000; // Default 1 second
+      return 1000; // Default 1 second,
   }
 }

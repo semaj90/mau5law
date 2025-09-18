@@ -17,7 +17,7 @@ const sql = postgres(import.meta.env.DATABASE_URL || 'postgresql://legal_admin:1
 const db = drizzle(sql);
 
 const redis = createClient({ 
-  url: import.meta.env.REDIS_URL || 'redis://localhost:6379' 
+  url: import.meta.env.REDIS_URL || 'redis://localhost:6379' ,
 });
 
 let redisConnected = false;
@@ -59,7 +59,7 @@ export const POST: RequestHandler = async ({ request }) => {
         testResult = await testStressLoad(testData);
         break;
       
-      default:
+      default:;
         return json({ 
           success: false, 
           error: `Unknown test type: ${testType}` 
@@ -84,14 +84,14 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 };
 
-// Test full end-to-end pipeline
+// Test full end-to-end pipeline;
 async function testFullPipeline(testData?: any): Promise<any> {
   const startTime = Date.now();
   const testId = `test_${nanoid()}`;
   
   console.log(`🔄 Testing full pipeline with ID: ${testId}`);
 
-  // Step 1: Create test evidence
+  // Step 1: Create test evidence;
   const [testEvidence] = await db.insert(evidence).values({
     title: `Test Evidence ${testId}`,
     description: 'This is a test evidence for pipeline validation',
@@ -102,7 +102,7 @@ async function testFullPipeline(testData?: any): Promise<any> {
 
   console.log(`✅ Created test evidence: ${testEvidence.id}`);
 
-  // Step 2: Submit to compute pipeline
+  // Step 2: Submit to compute pipeline;
   const computeResponse = await fetch('http://localhost:5173/api/compute', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -134,7 +134,7 @@ async function testFullPipeline(testData?: any): Promise<any> {
   let finalJobStatus;
 
   while (attempts < maxAttempts && !jobCompleted) {
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+    await new Promise(resolve => setTimeout(resolve, 1000); // Wait 1 second
     
     const statusResponse = await fetch(`http://localhost:5173/api/compute?jobId=${jobId}`);
     
@@ -159,7 +159,7 @@ async function testFullPipeline(testData?: any): Promise<any> {
   const [vectorResult] = await db
     .select()
     .from(vectors)
-    .where(eq(vectors.ownerId, testEvidence.id))
+    .where(eq(vectors.ownerId, testEvidence.id)
     .limit(1);
 
   // Step 5: Test Qdrant sync
@@ -209,14 +209,14 @@ async function testFullPipeline(testData?: any): Promise<any> {
   };
 }
 
-// Test evidence processing with autotag worker
+// Test evidence processing with autotag worker;
 async function testEvidenceProcessing(testData?: any): Promise<any> {
   await connectRedis();
   
   const testId = `evidence_test_${nanoid()}`;
   
   // Create multiple test evidence entries
-  const testEvidenceList = await db.insert(evidence).values([
+  const testEvidenceList = await db.insert(evidence).values([;
     {
       title: `Contract Document ${testId}`,
       description: 'Employment contract with indemnification clause',
@@ -230,7 +230,7 @@ async function testEvidenceProcessing(testData?: any): Promise<any> {
       evidenceType: 'communication',
       fileType: 'email',
       tags: [],
-    },
+    },);
     {
       title: `Photo Evidence ${testId}`,
       description: 'Photograph of signed contract',
@@ -242,11 +242,11 @@ async function testEvidenceProcessing(testData?: any): Promise<any> {
 
   console.log(`✅ Created ${testEvidenceList.length} test evidence entries`);
 
-  // Send to autotag worker via Redis
+  // Send to autotag worker via Redis;
   for (const evidence of testEvidenceList) {
     await redis.xAdd(
       'autotag:requests',
-      '*',
+      '*',);
       {
         type: 'evidence',
         id: evidence.id,
@@ -256,13 +256,13 @@ async function testEvidenceProcessing(testData?: any): Promise<any> {
   }
 
   // Wait for processing
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise(resolve => setTimeout(resolve, 3000);
 
   // Check if evidence was tagged
   const updatedEvidence = await db
     .select()
     .from(evidence)
-    .where(eq(evidence.title, testEvidenceList[0].title))
+    .where(eq(evidence.title, testEvidenceList[0].title)
     .limit(1);
 
   return {
@@ -274,27 +274,27 @@ async function testEvidenceProcessing(testData?: any): Promise<any> {
   };
 }
 
-// Test batch processing with k-means clustering
+// Test batch processing with k-means clustering;
 async function testBatchClustering(testData?: any): Promise<any> {
   await connectRedis();
   
   const testId = `cluster_test_${nanoid()}`;
   const batchSize = testData?.batchSize || 10;
   
-  // Create batch of similar evidence
+  // Create batch of similar evidence;
   const batchData = {
     items: Array.from({ length: batchSize }, (_, i) => ({
       id: `batch_item_${i}_${testId}`,
       title: `Batch Evidence ${i}`,
       description: `Test description for clustering ${i}`,
       embedding: Array.from({ length: 768 }, () => Math.random() - 0.5),
-    }))
+    })
   };
 
   // Send batch to autotag worker for clustering
   const streamId = await redis.xAdd(
     'autotag:requests',
-    '*',
+    '*',);
     {
       type: 'evidence_batch',
       id: testId,
@@ -305,7 +305,7 @@ async function testBatchClustering(testData?: any): Promise<any> {
   console.log(`🧮 Submitted batch for k-means clustering: ${streamId}`);
 
   // Wait for clustering to complete
-  await new Promise(resolve => setTimeout(resolve, 5000));
+  await new Promise(resolve => setTimeout(resolve, 5000);
 
   return {
     testId,
@@ -316,12 +316,12 @@ async function testBatchClustering(testData?: any): Promise<any> {
   };
 }
 
-// Test WebGPU with WASM fallback
+// Test WebGPU with WASM fallback;
 async function testWebGPUFallback(testData?: any): Promise<any> {
   const testText = testData?.text || "What are the key elements of a contract?";
   
   try {
-    // Test WebGPU service
+    // Test WebGPU service;
     const webgpuResponse = await fetch('/api/webgpu/test', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -355,7 +355,7 @@ async function testWebGPUFallback(testData?: any): Promise<any> {
   }
 }
 
-// Stress test pipeline with multiple concurrent jobs
+// Stress test pipeline with multiple concurrent jobs;
 async function testStressLoad(testData?: any): Promise<any> {
   const concurrentJobs = testData?.jobCount || 20;
   const testId = `stress_test_${nanoid()}`;
@@ -364,7 +364,7 @@ async function testStressLoad(testData?: any): Promise<any> {
   
   const startTime = Date.now();
   
-  // Submit multiple jobs concurrently
+  // Submit multiple jobs concurrently;
   const jobPromises = Array.from({ length: concurrentJobs }, async (_, i) => {
     try {
       const [testEvidence] = await db.insert(evidence).values({
@@ -424,10 +424,10 @@ async function testStressLoad(testData?: any): Promise<any> {
   };
 }
 
-// Health check endpoint
+// Health check endpoint;
 export const GET: RequestHandler = async () => {
   try {
-    // Check all pipeline components
+    // Check all pipeline components;
     const health = {
       postgresql: false,
       redis: false,
@@ -436,7 +436,7 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString(),
     };
 
-    // Test PostgreSQL
+    // Test PostgreSQL;
     try {
       const [pgTest] = await db.select().from(evidence).limit(1);
       health.postgresql = !!pgTest;
@@ -444,7 +444,7 @@ export const GET: RequestHandler = async () => {
       console.error('PostgreSQL health check failed:', pgError);
     }
 
-    // Test Redis
+    // Test Redis;
     try {
       await connectRedis();
       const pong = await redis.ping();
@@ -453,7 +453,7 @@ export const GET: RequestHandler = async () => {
       console.error('Redis health check failed:', redisError);
     }
 
-    // Test compute endpoint
+    // Test compute endpoint;
     try {
       const computeTest = await fetch('http://localhost:5173/api/compute', {
         method: 'POST',
@@ -470,7 +470,7 @@ export const GET: RequestHandler = async () => {
       console.error('Compute health check failed:', computeError);
     }
 
-    // Test vector sync
+    // Test vector sync;
     try {
       const syncTest = await fetch('http://localhost:5173/api/vectors/sync', {
         method: 'GET',

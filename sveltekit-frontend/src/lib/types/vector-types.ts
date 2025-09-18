@@ -1,6 +1,7 @@
 /**
  * Type definitions for vector operations and API interfaces
- */
+ */;
+}
 
 export interface VectorSimilarityRequest {
   operation: 'cosine' | 'euclidean' | 'dot' | 'manhattan' | 'batch';
@@ -23,7 +24,7 @@ export interface VectorSimilarityResponse {
     gpuTime?: number;
     parallelWorkers: number;
     memoryUsed: number;
-    timestamp: string;
+    timestamp: string;,
   };
 }
 
@@ -48,7 +49,7 @@ export interface EmbeddingResponse {
     cudaTime?: number;
     chunksProcessed: number;
     tokensProcessed: number;
-    parallelWorkers: number;
+    parallelWorkers: number;,
   };
 }
 
@@ -131,7 +132,7 @@ export interface VectorSearchResponse {
   query: {
     original: string;
     embedding?: number[];
-    filters: any;
+    filters: any;,
   };
 }
 
@@ -152,7 +153,7 @@ export interface ChunkingResponse {
     averageChunkSize: number;
     chunkingMethod: string;
     chunkSize: number;
-    chunkOverlap: number;
+    chunkOverlap: number;,
   };
 }
 
@@ -173,22 +174,22 @@ export interface LegalDocumentMetadata {
     parties: Array<{
       role: string;
       name: string;
-      type: string;
+      type: string;,
     }>;
     datesFiled: string[];
-    courtLevel: 'district' | 'appellate' | 'supreme';
+    courtLevel: 'district' | 'appellate' | 'supreme';,
   };
   classification: {
     documentType: 'contract' | 'evidence' | 'brief' | 'citation';
     practiceArea: string[];
     confidenceLevel: number;
-    riskLevel: 'low' | 'medium' | 'high' | 'critical';
+    riskLevel: 'low' | 'medium' | 'high' | 'critical';,
   };
   processing: {
     extractedEntities: string[];
     keyTerms: string[];
     sentiment: number;
-    complexity: number;
+    complexity: number;,
   };
 }
 
@@ -199,14 +200,14 @@ export interface CUDAConfig {
     search: string;
     submit: string;
     workers: string;
-    metrics: string;
+    metrics: string;,
   };
   gpu: {
     model: string;
     cudaCores: number;
     tensorCores: number;
     memoryGB: number;
-    computeCapability: string;
+    computeCapability: string;,
   };
 }
 

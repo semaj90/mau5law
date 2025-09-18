@@ -13,7 +13,10 @@ declare global {
 // Mock SvelteKit environment
 const mockEnvironment = { browser: true };
 
-import { unifiedRuntime, type InferenceRequest } from './src/lib/webgpu/unified-runtime-abstraction.js';
+import {
+  unifiedRuntime,
+  type InferenceRequest,
+} from './src/lib/webgpu/unified-runtime-abstraction.js';
 
 async function testUnifiedRuntime() {
   console.log('Testing unified runtime...');
@@ -22,7 +25,7 @@ async function testUnifiedRuntime() {
     model: 'gemma3:270m',
     prompt: 'Hello, this is a test prompt',
     useCase: 'chat',
-    useCHRROMCache: true
+    useCHRROMCache: true,
   };
 
   try {

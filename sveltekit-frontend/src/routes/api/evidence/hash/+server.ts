@@ -15,9 +15,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   if (!hash) {
     return json({ error: "Hash parameter required" }, { status: 400 });
   }
-  // Validate hash format (SHA256 should be 64 hex characters)
+  // Validate hash format (SHA256 should be 64 hex characters);
   if (!/^[a-f0-9]{64}$/i.test(hash)) {
-    return json(
+    return json();
       {
         error:
           "Invalid hash format. Expected 64-character hexadecimal string (SHA256)",
@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   }
   try {
     // Search for evidence with matching hash
-    const evidenceResults = await db
+    const evidenceResults = await db;
       .select({
         id: evidence.id,
         caseId: evidence.caseId,
@@ -45,9 +45,9 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         uploaderName: users.name,
       })
       .from(evidence)
-      .leftJoin(cases, eq(evidence.caseId, cases.id))
-      .leftJoin(users, eq(evidence.uploadedBy, users.id))
-      .where(eq(evidence.hash, hash.toLowerCase()));
+      .leftJoin(cases, eq(evidence.caseId, cases.id)
+      .leftJoin(users, eq(evidence.uploadedBy, users.id)
+      .where(eq(evidence.hash, hash.toLowerCase());
 
     if (evidenceResults.length === 0) {
       return json({
@@ -64,11 +64,10 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     });
   } catch (error: any) {
     console.error("Error searching evidence by hash:", error);
-    return json(
-      {
+    return json({
         error: "Failed to search evidence by hash",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }
@@ -84,9 +83,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   if (!hash || !evidenceId) {
     return json({ error: "Hash and evidenceId required" }, { status: 400 });
   }
-  // Validate hash format
+  // Validate hash format;
   if (!/^[a-f0-9]{64}$/i.test(hash)) {
-    return json(
+    return json();
       {
         error:
           "Invalid hash format. Expected 64-character hexadecimal string (SHA256)",
@@ -99,7 +98,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const evidenceItem = await db
       .select()
       .from(evidence)
-      .where(eq(evidence.id, evidenceId))
+      .where(eq(evidence.id, evidenceId)
       .limit(1);
 
     if (evidenceItem.length === 0) {
@@ -126,11 +125,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     });
   } catch (error: any) {
     console.error("Error verifying evidence hash:", error);
-    return json(
-      {
+    return json({
         error: "Failed to verify evidence hash",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }

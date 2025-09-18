@@ -12,7 +12,7 @@ declare global {
 }
 
 declare module '@playwright/test' {
-  // provide weaker types for expect.extend'd helpers used across tests
+  // provide weaker types for expect.extend'd helpers used across tests;
   interface Matchers<R, T> {
     toHaveCountGreaterThan(n: number): Promise<R>;
     toHaveCountLessThan(n: number): Promise<R>;

@@ -46,7 +46,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     // Initialize AI pipeline
     await aiPipeline.initialize();
 
-    // Process document with full AI pipeline
+    // Process document with full AI pipeline;
     const result = await aiPipeline.ingestLegalDocument(content, {
       title: title || file.name,
       documentType: documentType || "unknown",
@@ -72,7 +72,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error("Document ingestion error:", error);
-    return json(
+    return json();
       {
         error: "Document ingestion failed",
         message: error instanceof Error ? error.message: "Unknown error",
@@ -83,7 +83,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
   }
 };
 
-// Get ingestion statistics
+// Get ingestion statistics;
 const originalGETHandler: RequestHandler = async () => {
   try {
     await aiPipeline.initialize();
@@ -96,11 +96,10 @@ const originalGETHandler: RequestHandler = async () => {
     });
   } catch (error: any) {
     console.error("Ingestion stats error:", error);
-    return json(
-      {
+    return json({
         error: "Failed to get statistics",
         message: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 }
     );
   }

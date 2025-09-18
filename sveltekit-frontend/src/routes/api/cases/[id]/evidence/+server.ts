@@ -24,20 +24,20 @@ export const GET: RequestHandler = async ({ params }) => {
     const evidence = await db
       .select()
       .from(evidenceTable)
-      .where(eq(evidenceTable.case_id, caseId))
-      .orderBy(desc(evidenceTable.uploaded_at));
+      .where(eq(evidenceTable.case_id, caseId)
+      .orderBy(desc(evidenceTable.uploaded_at);
 
     return json({
       success: true,
       evidence,
-      count: evidence.length
+      count: evidence.length,
     });
 
   } catch (error: any) {
     console.error('Error fetching evidence:', error);
     return json({ 
       error: 'Failed to fetch evidence',
-      details: error.message 
+      details: error.message ,
     }, { status: 500 });
   }
 };

@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	try {
 		// Get user details with profile
-		const userResult = await db
+		const userResult = await db;
 			.select({
 				id: users.id,
 				email: users.email,
@@ -32,11 +32,11 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				// Profile data
 				profile_id: profileTable.id,
 				firstName: profileTable.firstName,
-				lastName: profileTable.lastName
+				lastName: profileTable.lastName,
 			})
 			.from(users)
-			.leftJoin(profileTable, eq(profileTable.id, users.id))
-			.where(eq(users.id, userId))
+			.leftJoin(profileTable, eq(profileTable.id, users.id)
+			.where(eq(users.id, userId)
 			.limit(1);
 
 		if (userResult.length === 0) {
@@ -51,48 +51,48 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			db
 				.select({ count: count() })
 				.from(cases)
-				.where(eq(cases.user_id, userId))
+				.where(eq(cases.user_id, userId)
 				.then(result => result[0]?.count || 0),
 
 			// Evidence count
 			db
 				.select({ count: count() })
 				.from(evidence)
-				.where(eq(evidence.user_id, userId))
+				.where(eq(evidence.user_id, userId)
 				.then(result => result[0]?.count || 0),
 
 			// Active sessions count
 			db
 				.select({ count: count() })
 				.from(sessions)
-				.where(eq(sessions.user_id, userId))
+				.where(eq(sessions.user_id, userId)
 				.then(result => result[0]?.count || 0),
 
 			// AI interactions count
 			db
 				.select({ count: count() })
 				.from(aiHistory)
-				.where(eq(aiHistory.user_id, userId))
+				.where(eq(aiHistory.user_id, userId)
 				.then(result => result[0]?.count || 0)
 		]);
 
 		// Get recent cases
-		const recentCases = await db
+		const recentCases = await db;
 			.select({
 				id: cases.id,
 				title: cases.title,
 				status: cases.status,
 				priority: cases.priority,
 				created_at: cases.created_at,
-				updated_at: cases.updated_at
+				updated_at: cases.updated_at,
 			})
 			.from(cases)
-			.where(eq(cases.user_id, userId))
-			.orderBy(desc(cases.updated_at))
+			.where(eq(cases.user_id, userId)
+			.orderBy(desc(cases.updated_at)
 			.limit(5);
 
 		// Get recent AI interactions
-		const recentAIInteractions = await db
+		const recentAIInteractions = await db;
 			.select({
 				id: aiHistory.id,
 				agent_type: aiHistory.agent_type,
@@ -101,23 +101,23 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				response: aiHistory.response,
 				model_used: aiHistory.model_used,
 				tokens_used: aiHistory.tokens_used,
-				created_at: aiHistory.created_at
+				created_at: aiHistory.created_at,
 			})
 			.from(aiHistory)
-			.where(eq(aiHistory.user_id, userId))
-			.orderBy(desc(aiHistory.created_at))
+			.where(eq(aiHistory.user_id, userId)
+			.orderBy(desc(aiHistory.created_at)
 			.limit(10);
 
 		// Get active sessions
-		const activeSessions = await db
+		const activeSessions = await db;
 			.select({
 				id: sessions.id,
 				expires_at: sessions.expires_at,
-				created_at: sessions.created_at
+				created_at: sessions.created_at,
 			})
 			.from(sessions)
-			.where(eq(sessions.user_id, userId))
-			.orderBy(desc(sessions.created_at))
+			.where(eq(sessions.user_id, userId)
+			.orderBy(desc(sessions.created_at)
 			.limit(5);
 
 		return {
@@ -128,7 +128,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				lastName: user.lastName,
 				created_at: user.created_at,
 				updated_at: user.updated_at,
-				profile_id: user.profile_id
+				profile_id: user.profile_id,
 			},
 			stats: {
 				casesCount,
@@ -168,22 +168,22 @@ export const actions: Actions = {
 			const existingProfile = await db
 				.select()
 				.from(profileTable)
-				.where(eq(profileTable.id, userId))
+				.where(eq(profileTable.id, userId)
 				.limit(1);
 
 			if (existingProfile.length > 0) {
 				// Update existing profile
 				await db
-					.update(profileTable)
+					.update(profileTable);
 					.set({
 						firstName,
 						lastName
 					})
-					.where(eq(profileTable.id, userId));
+					.where(eq(profileTable.id, userId);
 			} else {
 				// Create new profile
 				await db
-					.insert(profileTable)
+					.insert(profileTable);
 					.values({
 						id: userId,
 						firstName,
@@ -214,7 +214,7 @@ export const actions: Actions = {
 		try {
 			await db
 				.delete(sessions)
-				.where(eq(sessions.id, sessionId));
+				.where(eq(sessions.id, sessionId);
 
 			return { success: true, message: 'Session revoked successfully' };
 		} catch (err) {
@@ -244,22 +244,22 @@ export const actions: Actions = {
 				memoryCost: 19456,
 				timeCost: 2,
 				outputLen: 32,
-				parallelism: 1
+				parallelism: 1,
 			});
 
 			// Update user password
 			await db
-				.update(users)
+				.update(users);
 				.set({
 					password_hash: passwordHash,
-					updated_at: new Date()
+					updated_at: new Date(),
 				})
-				.where(eq(users.id, userId));
+				.where(eq(users.id, userId);
 
 			// Revoke all existing sessions for this user
 			await db
 				.delete(sessions)
-				.where(eq(sessions.user_id, userId));
+				.where(eq(sessions.user_id, userId);
 
 			return { success: true, message: 'Password reset successfully. All sessions have been revoked.' };
 		} catch (err) {

@@ -10,17 +10,17 @@ import { citations } from '$lib/server/db/schemas/cases-schema';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 
-// Verification request schema
+// Verification request schema;
 const VerificationRequestSchema = z.object({
   citationId: z.string().uuid().optional(),
   citationText: z.string().optional(),
   verificationLevel: z.enum(['basic', 'comprehensive', 'deep']).default('basic'),
   autoUpdate: z.boolean().default(false),
 }).refine(data => (data as { citationId?: any; citationText?: any }).citationId || (data as { citationId?: any; citationText?: any }).citationText, {
-  message: "Either citationId or citationText must be provided"
+  message: "Either citationId or citationText must be provided",
 });
 
-// External API configurations (mock endpoints for demonstration)
+// External API configurations (mock endpoints for demonstration);
 const LEGAL_DATABASES = {
   westlaw: 'https://api.westlaw.com/verify',
   lexis: 'https://api.lexisnexis.com/verify',
@@ -31,10 +31,10 @@ const LEGAL_DATABASES = {
 /*
  * POST /api/v1/citations/verify
  * Verify citation validity using multiple legal databases
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -49,11 +49,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     let citation = null;
     let citationToVerify = citationText;
 
-    // If citationId provided, get citation from database
+    // If citationId provided, get citation from database;
     if (citationId) {
       const [dbCitation] = await db.select()
         .from(citations)
-        .where(eq(citations.id, citationId))
+        .where(eq(citations.id, citationId)
         .limit(1);
 
       if (!dbCitation) {
@@ -83,9 +83,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       citation
     );
 
-    // Update citation in database if requested and citationId provided
+    // Update citation in database if requested and citationId provided;
     if (autoUpdate && citationId && citation) {
-      await db.update(citations)
+      await db.update(citations);
         .set({
           verified: verificationResult.isValid,
           metadata: {
@@ -98,7 +98,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           },
           updatedAt: new Date(),
         })
-        .where(eq(citations.id, citationId));
+        .where(eq(citations.id, citationId);
     }
 
     return json({
@@ -152,7 +152,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 async function performCitationVerification(
   citationText: string,
   level: string,
-  existingCitation?: any
+  existingCitation?: any;
 ): Promise<any> {
   const verification = {
     isValid: false,
@@ -178,7 +178,7 @@ async function performCitationVerification(
     verification.details.format = formatValidation;
     verification.confidence += formatValidation.score * 0.3;
 
-    // Database verification (mock implementation)
+    // Database verification (mock implementation);
     if (level === 'comprehensive' || level === 'deep') {
       const databaseVerification = await verifyWithLegalDatabases(citationText);
       verification.sources = databaseVerification.sources;
@@ -186,7 +186,7 @@ async function performCitationVerification(
       verification.confidence += databaseVerification.confidence * 0.4;
     }
 
-    // Content accuracy verification
+    // Content accuracy verification;
     if (level === 'deep') {
       const accuracyVerification = await verifyContentAccuracy(citationText, existingCitation);
       verification.details.accuracy = accuracyVerification;
@@ -217,7 +217,7 @@ async function performCitationVerification(
 
 /*
  * Validate citation format
- */
+ */;
 async function validateCitationFormat(citationText: string): Promise<any> {
   const formatChecks = {
     hasCourtName: /v\.|vs\.|versus/i.test(citationText),
@@ -244,9 +244,9 @@ async function validateCitationFormat(citationText: string): Promise<any> {
 
 /*
  * Verify with legal databases (mock implementation)
- */
+ */;
 async function verifyWithLegalDatabases(citationText: string): Promise<any> {
-  // Mock verification results - in production, would call actual legal APIs
+  // Mock verification results - in production, would call actual legal APIs;
   const mockResults = {
     westlaw: { found: true, confidence: 0.92, url: 'https://westlaw.com/result/...' },
     lexis: { found: true, confidence: 0.89, url: 'https://lexisnexis.com/result/...' },
@@ -255,13 +255,13 @@ async function verifyWithLegalDatabases(citationText: string): Promise<any> {
   };
 
   const sources = Object.entries(mockResults)
-    .filter(([_, result]) => (result as { found?: any; confidence?: any; url?: any }).found)
+    .filter(([_, result]) => (result as { found?: any; confidence?: any; url?: any }).found);
     .map(([source, result]) => ({
       database: source,
       confidence: (result as { found?: any; confidence?: any; url?: any }).confidence,
       url: (result as { found?: any; confidence?: any; url?: any }).url,
       verified: true,
-    }));
+    });
 
   const averageConfidence = sources.length > 0
     ? sources.reduce((sum, source) => sum + source.confidence, 0) / sources.length: 0;
@@ -279,9 +279,9 @@ async function verifyWithLegalDatabases(citationText: string): Promise<any> {
 
 /*
  * Verify content accuracy (mock implementation)
- */
+ */;
 async function verifyContentAccuracy(citationText: string, existingCitation?: any): Promise<any> {
-  // Mock accuracy verification - would compare with actual case content
+  // Mock accuracy verification - would compare with actual case content;
   return {
     score: 0.88,
     contentMatch: true,
@@ -301,7 +301,7 @@ async function verifyContentAccuracy(citationText: string, existingCitation?: an
 
 /*
  * Detect citation format type
- */
+ */;
 function detectCitationFormat(citationText: string): string {
   if (/\d+\s+U\.S\./.test(citationText)) return 'US Supreme Court';
   if (/\d+\s+F\.\d*d?\s+\d+/.test(citationText)) return 'Federal Reporter';
@@ -314,7 +314,7 @@ function detectCitationFormat(citationText: string): string {
 
 /*
  * Generate verification suggestions
- */
+ */;
 function generateVerificationSuggestions(verification: any): string[] {
   const suggestions = [];
 
@@ -343,7 +343,7 @@ function generateVerificationSuggestions(verification: any): string[] {
 
 /*
  * Generate verification warnings
- */
+ */;
 function generateVerificationWarnings(verification: any): string[] {
   const warnings = [];
 

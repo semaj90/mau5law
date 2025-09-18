@@ -28,7 +28,7 @@ import { nanoid } from 'nanoid';
 import { createHash } from 'crypto';
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
-// Ollama AI Analysis Endpoint
+// Ollama AI Analysis Endpoint;
 const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
   try {
     // Validate authentication
@@ -93,7 +93,7 @@ Please analyze this document and provide:
 Document content:
 ${textContent.slice(0, 8000)} ${textContent.length > 8000 ? '...[truncated]' : ''}
 
-Respond in JSON format with the following structure:
+Respond in JSON format with the following structure:;
 {
   "summary": "string",
   "entities": [{"type": "person|organization|date|money|legal_term", "value": "string", "confidence": 0.0-1.0}],
@@ -107,7 +107,7 @@ Respond in JSON format with the following structure:
   "confidence": 0.0-1.0
 }`;
 
-    // Call Ollama API
+    // Call Ollama API;
     const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
       method: 'POST',
       headers: {
@@ -121,7 +121,7 @@ Respond in JSON format with the following structure:
         options: {
           temperature: 0.3, // Lower temperature for more consistent legal analysis
           top_p: 0.9,
-          num_ctx: 4096
+          num_ctx: 4096,
         }
       })
     });
@@ -136,7 +136,7 @@ Respond in JSON format with the following structure:
     try {
       analysisResult = JSON.parse(ollamaResult.response);
     } catch (error) {
-      // Fallback if JSON parsing fails
+      // Fallback if JSON parsing fails;
       analysisResult = {
         summary: ollamaResult.response.slice(0, 500),
         entities: [],
@@ -147,11 +147,11 @@ Respond in JSON format with the following structure:
         relevanceScore: 0.5,
         riskFactors: [],
         suggestedTags: ['legal_document'],
-        confidence: 0.6
+        confidence: 0.6,
       };
     }
 
-    // Store document in database
+    // Store document in database;
     await db.insert(documents).values({
       id: documentId,
       fileName: file.name,
@@ -176,7 +176,7 @@ Respond in JSON format with the following structure:
       }
     });
 
-    // Generate and store vector embeddings for semantic search
+    // Generate and store vector embeddings for semantic search;
     if (textContent.length > 0) {
       try {
         const embeddingResponse = await fetch('http://localhost:11434/api/embeddings', {
@@ -200,7 +200,7 @@ Respond in JSON format with the following structure:
             content: textContent.slice(0, 2000),
             metadata: {
               model: 'mxbai-embed-large',
-              createdAt: new Date().toISOString()
+              createdAt: new Date().toISOString(),
             }
           });
         }
@@ -221,7 +221,7 @@ Respond in JSON format with the following structure:
       relevanceScore: analysisResult.relevanceScore,
       riskFactors: analysisResult.riskFactors,
       tags: analysisResult.suggestedTags,
-      confidence: analysisResult.confidence
+      confidence: analysisResult.confidence,
     });
 
   } catch (error) {
@@ -230,7 +230,7 @@ Respond in JSON format with the following structure:
   }
 };
 
-// Helper functions (you would implement these based on your needs)
+// Helper functions (you would implement these based on your needs);
 async function extractPDFText(buffer: ArrayBuffer): Promise<string> {
   // Implement PDF text extraction
   // You could use pdf-parse, pdf2pic, or similar libraries

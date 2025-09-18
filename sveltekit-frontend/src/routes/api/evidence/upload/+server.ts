@@ -35,17 +35,17 @@ const logger = {
   info: console.log,
   debug: console.log,
   warn: console.warn,
-  error: console.error
+  error: console.error,
 };
 
 // Minimal stub for documentMetadata Drizzle table reference used when linking ingest results back to evidence.
-// Replace this with the real table import from your DB schema.
+// Replace this with the real table import from your DB schema.;
 const documentMetadata: any = {
-  id: 'id'
+  id: 'id',
 };
 
 // Minimal Ollama/CUDA service stub to avoid TypeScript/Runtime errors during development.
-// Replace with your real implementation or import.
+// Replace with your real implementation or import.;
 const ollamaCudaService: any = {
   currentModel: 'local-ollama',
   async generateEmbedding(_text: string): Promise<number[]> { return []; },
@@ -57,7 +57,7 @@ const ollamaCudaService: any = {
 class SystemMessage { constructor(public content: string) {} }
 class HumanMessage { constructor(public content: string) {} }
 
-// File upload types for compatibility
+// File upload types for compatibility;
 export interface FileUpload {
   userId?: string;
   caseId?: string;
@@ -77,14 +77,14 @@ export interface AiAnalysisResult {
   entities?: string[];
   confidence: number;
   processingTime: number;
-  model: string;
+  model: string;,
 }
 const minioClient = new MinioClient({
   endPoint: 'localhost',
   port: 9000,
   useSSL: false,
   accessKey: 'minioadmin',
-  secretKey: 'minioadmin'
+  secretKey: 'minioadmin',
 });
 
 // Redis client for publishing worker events
@@ -106,7 +106,7 @@ async function getRedisPublisher(): Promise<any> {
   return redisPublisher;
 }
 
-// Publish event to Redis stream for worker processing
+// Publish event to Redis stream for worker processing;
 async function publishWorkerEvent(eventType: 'evidence' | 'document', targetId: string, options: {
   action?: string;
   caseId?: string;
@@ -125,7 +125,7 @@ async function publishWorkerEvent(eventType: 'evidence' | 'document', targetId: 
       userId: options.userId || '',
       correlationId: options.correlationId || '',
       priority: options.priority || 'medium',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
     
     await redis.xAdd('autotag:requests', '*', eventData);
@@ -136,7 +136,7 @@ async function publishWorkerEvent(eventType: 'evidence' | 'document', targetId: 
   }
 }
 
-// Send content to Go ingest service for embedding generation
+// Send content to Go ingest service for embedding generation;
 async function sendToIngestService(evidenceId: string, content: string, options: {
   caseId?: string;
   title?: string;
@@ -153,7 +153,7 @@ async function sendToIngestService(evidenceId: string, content: string, options:
         evidence_id: evidenceId,
         source: 'evidence_upload',
         correlation_id: options.correlationId,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     };
     
@@ -163,18 +163,18 @@ async function sendToIngestService(evidenceId: string, content: string, options:
         'Content-Type': 'application/json',
         'X-Correlation-ID': options.correlationId || 'unknown'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
     
     if ((response as { ok?: any; json?: any; status?: any }).ok) {
       const result = await (response as { ok?: any; json?: any; status?: any }).json();
       console.log(`📊 Sent evidence ${evidenceId} to ingest service: ${(result as { document_id?: any; embedding?: any; response?: any }).document_id}`);
       
-      // Link the document to evidence in PostgreSQL
+      // Link the document to evidence in PostgreSQL;
       if ((result as { document_id?: any; embedding?: any; response?: any }).document_id) {
         await db.update(documentMetadata)
           .set({ evidenceId: evidenceId })
-          .where(eq(documentMetadata.id, (result as { document_id?: any; embedding?: any; response?: any }).document_id));
+          .where(eq(documentMetadata.id, (result as { document_id?: any; embedding?: any; response?: any }).document_id);
       }
     } else {
       console.warn(`⚠️  Ingest service error for evidence ${evidenceId}:`, (response as { ok?: any; json?: any; status?: any }).status);
@@ -184,12 +184,12 @@ async function sendToIngestService(evidenceId: string, content: string, options:
   }
 }
 
-// WebGPU multi-core vector operations
+// WebGPU multi-core vector operations;
 class GPUVectorProcessor {
   static async normalizeVectors(vectors: number[][]): Promise<number[][]> {
-    // Normalize vectors once on server → cosine becomes dot product
+    // Normalize vectors once on server → cosine becomes dot product;
     return vectors.map(vector => {
-      const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
+      const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0);
       return magnitude > 0 ? vector.map(val => val / magnitude) : vector;
     });
   }
@@ -204,7 +204,7 @@ class GPUVectorProcessor {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: 'nomic-embed-text',
-            prompt: text
+            prompt: text,
           })
         });
         const result = await (response as { ok?: any; json?: any; status?: any }).json();
@@ -218,7 +218,7 @@ class GPUVectorProcessor {
   }
 }
 
-// Qdrant vector storage with payload filters
+// Qdrant vector storage with payload filters;
 class QdrantService {
   static async upsertToQdrant(id: string, embedding: number[], metadata: any) {
     try {
@@ -237,7 +237,7 @@ class QdrantService {
               // Payload filters for efficient search
               is_contract: metadata.tags?.includes('contract') || false,
               is_admissible: metadata.isAdmissible || true,
-              priority: metadata.priority || 'normal'
+              priority: metadata.priority || 'normal',
             }
           }]
         })
@@ -257,7 +257,7 @@ class QdrantService {
           vector: queryVector,
           filter: filters,
           limit,
-          with_payload: true
+          with_payload: true,
         })
       });
       return await (response as { ok?: any; json?: any; status?: any }).json();
@@ -270,6 +270,7 @@ class QdrantService {
 
 // OCR integration (optional)
 // import Tesseract from 'tesseract.js';
+}
 
 export interface UploadResult {
   id: string;
@@ -364,7 +365,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
             stream.unpipe();
             writeStream.destroy();
       logger.warn('upload.file.too_large', { file: filename, size: rec.size, correlationId, userId });
-      reject(new Error(`File ${filename} exceeds ${getMaxFileSize() / 1024 / 1024}MB limit`));
+      reject(new Error(`File ${filename} exceeds ${getMaxFileSize() / 1024 / 1024}MB limit`);
             return;
           }
         });
@@ -471,6 +472,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   return fail(500, 'File upload failed', { correlationId }, correlationId);
   }
 };
+}
 
 export interface StreamedFileMeta { filename:string; mimeType:string; size:number; tempPath:string; hash: ReturnType<typeof createHash> }
 // Enhanced to accept correlation + user for structured logging and to cleanup tmp file
@@ -478,7 +480,7 @@ async function processFileStreamed(
   meta: StreamedFileMeta,
   uploadData: Partial<FileUpload>,
   correlationId?: string,
-  userId?: string
+  userId?: string;
 ): Promise<UploadResult> {
   const fileId = uuidv4();
   const fileExtension = meta.filename.split('.').pop() || '';
@@ -509,13 +511,13 @@ async function processFileStreamed(
       else if (meta.mimeType === 'application/pdf') textContent = `[PDF text from ${meta.filename}]`;
       else if (meta.mimeType.startsWith('image/')) textContent = `Image: ${meta.filename}`;
     }
-    // Only perform AI analysis if requested (no embedding generation here - let Go ingest service handle it)
+    // Only perform AI analysis if requested (no embedding generation here - let Go ingest service handle it);
     if (buffer && uploadData.enableAiAnalysis) {
       // Node may not provide the browser File constructor; create a minimal file-like object instead
       const fileLike: FileLike = { name: meta.filename, type: meta.mimeType };
       aiAnalysis = await performEnhancedAIAnalysis(fileLike, textContent, uploadData);
     }
-    // Insert evidence into PostgreSQL (single source of truth)
+    // Insert evidence into PostgreSQL (single source of truth);
     await db.insert(evidence).values({
       id: fileId,
       userId: (uploadData as any).userId || 'system',
@@ -539,18 +541,18 @@ async function processFileStreamed(
       processingStatus: 'completed', // File upload completed
       ingestStatus: 'pending', // Awaiting ingest service
       isAdmissible: (uploadData as any).isAdmissible ?? true,
-      confidentialityLevel: (uploadData as any).confidentialityLevel || 'internal'
+      confidentialityLevel: (uploadData as any).confidentialityLevel || 'internal',
     } as any).returning();
-    // Publish Redis event for worker processing (PostgreSQL-first approach)
+    // Publish Redis event for worker processing (PostgreSQL-first approach);
     await publishWorkerEvent('evidence', fileId, {
       action: 'tag',
       caseId: uploadData.caseId,
       userId: (uploadData as any).userId,
       correlationId: correlationId,
-      priority: uploadData.enableAiAnalysis ? 'high' : 'medium'
+      priority: uploadData.enableAiAnalysis ? 'high' : 'medium',
     });
     
-    // Send file to Go ingest service for embedding generation (if text content available)
+    // Send file to Go ingest service for embedding generation (if text content available);
     if (textContent && textContent.trim() && uploadData.enableEmbeddings !== false) {
       await sendToIngestService(fileId, textContent, {
         caseId: uploadData.caseId,
@@ -577,7 +579,7 @@ async function processFileStreamed(
       hash,
       tags: (uploadData.tags as any) || [],
       isAdmissible: (uploadData as any).isAdmissible ?? true,
-      confidentialityLevel: (uploadData as any).confidentialityLevel || 'standard'
+      confidentialityLevel: (uploadData as any).confidentialityLevel || 'standard',
     }).onConflictDoNothing();
     const presignedUrl = await minioClient.presignedGetObject('evidence', minioPath, 900);
     fs.promises.unlink(meta.tempPath).catch(()=>{});
@@ -589,10 +591,10 @@ async function generateThumbnail(buffer: Buffer, fileId: string): Promise<string
   try {
     const thumbnailPath = join(THUMBNAIL_DIR, `${fileId}_thumb.webp`);
 
-    await sharp(buffer)
+    await sharp(buffer);
       .resize(300, 300, {
         fit: 'inside',
-        withoutEnlargement: true
+        withoutEnlargement: true,
       })
       .webp({ quality: 80 })
       .toFile(thumbnailPath);
@@ -632,7 +634,7 @@ async function performOCR(buffer: Buffer, mimeType: string): Promise<string> {
 async function performEnhancedAIAnalysis(
   file: File,
   textContent: string,
-  uploadData: Partial<FileUpload>
+  uploadData: Partial<FileUpload>;
 ): Promise<AiAnalysisResult | undefined> {
   try {
   const summaryType = ((uploadData as any).summaryType || 'narrative') as string;
@@ -653,7 +655,7 @@ ${styleInstruction}
 File: ${file.name} (${file.type})
 Content: ${textContent.substring(0, 4000)}
 
-Provide structured JSON analysis:
+Provide structured JSON analysis:;
 {
   "summary": "Brief ${summaryType} oriented legal summary",
   "keyFindings": ["finding1", "finding2"],
@@ -665,7 +667,7 @@ Provide structured JSON analysis:
   "evidenceType": "direct|circumstantial|demonstrative",
   "recommendedActions": ["action1", "action2"]
 }`,
-        stream: false
+        stream: false,
       })
     });
 
@@ -681,7 +683,7 @@ Provide structured JSON analysis:
   // extra fields ignored if schema mismatch
         confidence: parsed.confidence || 0.5,
         processingTime: Date.now(),
-        model: 'gemma3-legal:latest'
+        model: 'gemma3-legal:latest',
       };
     } catch (parseError) {
       return {
@@ -690,7 +692,7 @@ Provide structured JSON analysis:
         categories: [],
         confidence: 0.5,
         processingTime: Date.now(),
-        model: 'gemma3-legal:latest'
+        model: 'gemma3-legal:latest',
       };
     }
   } catch (error: any) {
@@ -703,12 +705,12 @@ async function performAIAnalysis(
   file: File,
   buffer: Buffer,
   uploadData: Partial<FileUpload>,
-  ocrText?: string
+  ocrText?: string;
 ): Promise<any> {
   try {
     let textContent = '';
 
-    // Extract text content based on file type
+    // Extract text content based on file type;
     if (file.type === 'text/plain') {
       textContent = buffer.toString('utf-8');
     } else if (ocrText) {
@@ -721,7 +723,7 @@ async function performAIAnalysis(
 
     const results: { analysis?: AiAnalysisResult; embedding?: number[] } = {};
 
-    // Generate embedding
+    // Generate embedding;
     if (uploadData.enableEmbeddings && textContent.trim()) {
       try {
         const embedding = await ollamaCudaService.generateEmbedding(textContent);
@@ -731,7 +733,7 @@ async function performAIAnalysis(
       }
     }
 
-    // Perform AI analysis
+    // Perform AI analysis;
     if (uploadData.enableAiAnalysis && textContent.trim()) {
       try {
         await ollamaCudaService.optimizeForUseCase('legal-analysis');
@@ -745,7 +747,7 @@ Analyze the following legal document/evidence and provide:
 
 Content: ${textContent.substring(0, 4000)} // Limit content for analysis
 
-Format your response as JSON with the following structure:
+Format your response as JSON with the following structure:;
 {
   "summary": "Brief summary of the content",
   "keyPoints": ["key point 1", "key point 2"],
@@ -755,14 +757,14 @@ Format your response as JSON with the following structure:
 
         const analysisResult = await ollamaCudaService.chatCompletion([
           new SystemMessage('You are a legal AI assistant specializing in document analysis.'),
-          new HumanMessage(analysisPrompt)
+          new HumanMessage(analysisPrompt);
         ], {
             temperature: 0.3,
-            maxTokens: 1000
+            maxTokens: 1000,
           }
         );
 
-        // Parse AI response
+        // Parse AI response;
         try {
           const parsedAnalysis = JSON.parse(analysisResult);
           results.analysis = {
@@ -771,17 +773,17 @@ Format your response as JSON with the following structure:
             categories: parsedAnalysis.categories || [],
             confidence: parsedAnalysis.confidence || 0.5,
             processingTime: Date.now(),
-            model: ollamaCudaService.currentModel
+            model: ollamaCudaService.currentModel,
           };
         } catch (parseError) {
-          // If JSON parsing fails, use the raw response as summary
+          // If JSON parsing fails, use the raw response as summary;
           results.analysis = {
             summary: analysisResult.substring(0, 500),
             keyPoints: [],
             categories: [],
             confidence: 0.5,
             processingTime: Date.now(),
-            model: ollamaCudaService.currentModel
+            model: ollamaCudaService.currentModel,
           };
         }
       } catch (error: any) {
@@ -801,7 +803,7 @@ async function cacheEmbedding(contentHash: string, embedding: number[]): Promise
     await db.insert(embeddingCache).values({
       textHash: contentHash,
       embedding: embedding,
-      model: 'nomic-embed-text'
+      model: 'nomic-embed-text',
     }).onConflictDoNothing();
   } catch (error: any) {
     console.error('Failed to cache embedding:', error);
@@ -814,7 +816,7 @@ void performOCR;
 void performAIAnalysis;
 void cacheEmbedding;
 
-// File serving endpoints
+// File serving endpoints;
 export const GET: RequestHandler = async ({ url }) => {
   const correlationId = uuidv4();
   const fileId = url.pathname.split('/').pop();
@@ -829,7 +831,7 @@ export const GET: RequestHandler = async ({ url }) => {
     const evidenceRecord = await db
       .select()
       .from(evidence)
-      .where(eq(evidence.id, fileId))
+      .where(eq(evidence.id, fileId)
       .limit(1);
 
     if (evidenceRecord.length === 0) {
@@ -875,7 +877,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     // Delete from database
     const deleted = await db
       .delete(evidence)
-      .where(eq(evidence.id, fileId))
+      .where(eq(evidence.id, fileId)
       .returning();
 
     if (deleted.length === 0) {

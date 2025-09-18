@@ -44,7 +44,9 @@ async function testSearchAPI() {
   console.log('3. Testing simple text search (GET)...');
   try {
     const query = 'legal contract terms';
-    const response = await fetch(`${BASE_URL}/api/rag/search?action=search&query=${encodeURIComponent(query)}&limit=3`);
+    const response = await fetch(
+      `${BASE_URL}/api/rag/search?action=search&query=${encodeURIComponent(query)}&limit=3`
+    );
     const result = await response.json();
     console.log('✅ Simple search:', result.success ? 'PASSED' : 'FAILED');
     console.log('   Query:', result.query);

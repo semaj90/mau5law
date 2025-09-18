@@ -16,7 +16,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     // Save chunk compressed to redis (hot cache)
     await cache.setCompressed(cacheKey, payload, 60 * 60); // 1h TTL
 
-    // Optionally compute embedding synchronously for small chunks (and also enqueue)
+    // Optionally compute embedding synchronously for small chunks (and also enqueue);
     try {
       const model =
         payload?.model ||
@@ -39,10 +39,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
       await publishToQueue('evidence.embedding.queue', job);
       console.log('📤 Enqueued job to RabbitMQ: ', id);
     } catch (e) {
-      // Fall back to Redis list-based queue
+      // Fall back to Redis list-based queue;
       try {
         if (cache.client) {
-          await cache.rpush('embedding:jobs', JSON.stringify(job));
+          await cache.rpush('embedding:jobs', JSON.stringify(job);
           console.log('📤 Enqueued job to Redis list: ', id);
         }
       } catch (err) {

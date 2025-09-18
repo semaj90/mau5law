@@ -15,7 +15,7 @@ const requiredFiles = [
   'src/lib/ai/comprehensive-ai-synthesis-orchestrator.ts',
   'src/lib/gpu/search-cache-neural-engine.ts',
   'src/routes/api/ai/qlora-topology/+server.ts',
-  'src/lib/components/ai/QLoRAMonitoringDashboard.svelte'
+  'src/lib/components/ai/QLoRAMonitoringDashboard.svelte',
 ];
 
 console.log('✅ File Integrity Check:');
@@ -43,7 +43,7 @@ function checkImports(filePath) {
       hasRabbitMQ: content.includes('RabbitMQ') || content.includes('rabbitmq'),
       hasCache: content.includes('cache') || content.includes('Cache'),
       hasQLoRA: content.includes('QLoRA') || content.includes('qlora'),
-      lines: content.split('\n').length
+      lines: content.split('\n').length,
     };
   } catch (error) {
     return null;
@@ -66,8 +66,12 @@ const apiCheck = checkImports('src/routes/api/ai/qlora-topology/+server.ts');
 if (apiCheck) {
   console.log('✅ QLoRA API Endpoint:');
   console.log(`   - Lines of code: ${apiCheck.lines}`);
-  console.log(`   - Has POST handler: ${fs.readFileSync(path.join(__dirname, 'src/routes/api/ai/qlora-topology/+server.ts'), 'utf8').includes('export const POST') ? '✅' : '❌'}`);
-  console.log(`   - Has GET handler: ${fs.readFileSync(path.join(__dirname, 'src/routes/api/ai/qlora-topology/+server.ts'), 'utf8').includes('export const GET') ? '✅' : '❌'}`);
+  console.log(
+    `   - Has POST handler: ${fs.readFileSync(path.join(__dirname, 'src/routes/api/ai/qlora-topology/+server.ts'), 'utf8').includes('export const POST') ? '✅' : '❌'}`
+  );
+  console.log(
+    `   - Has GET handler: ${fs.readFileSync(path.join(__dirname, 'src/routes/api/ai/qlora-topology/+server.ts'), 'utf8').includes('export const GET') ? '✅' : '❌'}`
+  );
 }
 
 // Test 4: Chat Interface Integration

@@ -12,12 +12,12 @@ export function highlightDocuments(indices) {
         index,
         position: { 
             x: 150 + (index * 90) + Math.sin(index) * 20, 
-            y: 200 + (index % 4) * 70 + Math.cos(index) * 15 
+            y: 200 + (index % 4) * 70 + Math.cos(index) * 15 ,
         },
         highlight: true,
         confidence: 0.88 + Math.random() * 0.12,
-        accelerated: false // Indicates this is JavaScript fallback
-    }));
+        accelerated: false // Indicates this is JavaScript fallback,
+    });
 }
 
 // Export initialization function for when WASM is available
@@ -26,7 +26,7 @@ export function initialize() {
     return Promise.resolve({
         ready: false,
         type: 'stub',
-        message: 'Run build-wasm.ps1 to enable native acceleration'
+        message: 'Run build-wasm.ps1 to enable native acceleration',
     });
 }
 
@@ -40,7 +40,7 @@ export function queryNearest(queryVector, k = 5) {
         results.push({
             index: i,
             distance: Math.random() * 0.5,
-            confidence: 0.8 + Math.random() * 0.2
+            confidence: 0.8 + Math.random() * 0.2,
         });
     }
     

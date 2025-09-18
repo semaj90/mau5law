@@ -1,4 +1,4 @@
-// Re-export from enhanced-bits with fallback compatibility
+// Re-export from enhanced-bits with fallback compatibility;
 export { 
   Dialog,
   Button as DialogTrigger,

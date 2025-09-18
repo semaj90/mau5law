@@ -8,7 +8,7 @@ import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
 import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user-scoped-crud';
 import { z } from 'zod';
 
-// Connection mapping request schema
+// Connection mapping request schema;
 const ConnectionMappingSchema = z.object({
   caseId: z.string().uuid(),
   focusTypes: z.array(z.enum(['people', 'evidence', 'locations', 'events', 'communications', 'financial'])).optional(),
@@ -26,10 +26,10 @@ const ConnectionMappingSchema = z.object({
 /*
  * POST /api/v1/detective/connections
  * Generate comprehensive connection maps for case analysis
- */
+ */;
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Check authentication
+    // Check authentication;
     if (!locals.session || !locals.user) {
       return error(
         401,
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       options
     );
 
-    // Update case metadata with connection analysis
+    // Update case metadata with connection analysis;
     await casesService.update(caseId, {
       metadata: {
         ...caseData.metadata,
@@ -164,7 +164,7 @@ async function generateConnectionMap(
   try {
     const types = entityTypes || ['people', 'evidence', 'locations', 'events', 'communications', 'financial'];
 
-    // Generate nodes for different entity types
+    // Generate nodes for different entity types;
     if (types.includes('evidence')) {
       const evidenceNodes = await generateEvidenceNodes(evidence);
       map.nodes.push(...evidenceNodes);
@@ -198,7 +198,7 @@ async function generateConnectionMap(
     // Generate edges (connections) between nodes
     map.edges = await generateConnections(map.nodes, connectionStrength, options);
 
-    // Generate clusters if enabled
+    // Generate clusters if enabled;
     if (options.clusterSimilar) {
       map.clusters = await generateClusters(map.nodes, map.edges);
     }
@@ -222,14 +222,14 @@ async function generateConnectionMap(
 
 /*
  * Generate evidence nodes with Gemma embeddings integration
- */
+ */;
 async function generateEvidenceNodes(evidence: any[]): Promise<any[]> {
   // Enhanced with MCP multi-core processing for semantic analysis
   const mcpEndpoint = 'http://localhost:3002';
   
   return await Promise.all(evidence.map(async (item, index) => {
-    let semanticData = null));
-    // Call MCP server for Gemma embeddings semantic analysis
+    let semanticData = null);
+    // Call MCP server for Gemma embeddings semantic analysis;
     try {
       const response = await fetch(`${mcpEndpoint}/mcp/semantic-analyze`, {
         method: 'POST',
@@ -237,7 +237,7 @@ async function generateEvidenceNodes(evidence: any[]): Promise<any[]> {
         body: JSON.stringify({
           text: (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).content || (item as { content?: any; title?: any; id?: any; evidenceType?: any; createdAt?: any; metadata?: any }).title || '',
           analysisType: 'evidence_classification',
-          useGemmaEmbeddings: true
+          useGemmaEmbeddings: true,
         })
       });
       
@@ -272,12 +272,12 @@ async function generateEvidenceNodes(evidence: any[]): Promise<any[]> {
       },
       position: generateRandomPosition(),
     };
-  }));
+  });
 }
 
 /*
  * Generate people nodes from evidence mentions
- */
+ */;
 async function generatePeopleNodes(evidence: any[]): Promise<any[]> {
   // Mock people extraction from evidence
   const people = [
@@ -299,12 +299,12 @@ async function generatePeopleNodes(evidence: any[]): Promise<any[]> {
       importance: person.mentions > 3 ? 'high' : 'medium',
     },
     position: generateRandomPosition(),
-  }));
+  });
 }
 
 /*
  * Generate location nodes
- */
+ */;
 async function generateLocationNodes(evidence: any[]): Promise<any[]> {
   // Mock location extraction
   const locations = [
@@ -326,14 +326,14 @@ async function generateLocationNodes(evidence: any[]): Promise<any[]> {
       significance: location.frequency > 3 ? 'high' : 'medium',
     },
     position: generateRandomPosition(),
-  }));
+  });
 }
 
 /*
  * Generate event nodes
- */
+ */;
 async function generateEventNodes(evidence: any[]): Promise<any[]> {
-  // Mock event extraction from evidence timestamps
+  // Mock event extraction from evidence timestamps;
   return evidence.slice(0, 5).map((item, index) => ({
     id: `event_${index + 1}`,
     label: `Event ${index + 1}`,
@@ -347,12 +347,12 @@ async function generateEventNodes(evidence: any[]): Promise<any[]> {
       eventType: 'evidence_collection',
     },
     position: generateRandomPosition(),
-  }));
+  });
 }
 
 /*
  * Generate communication nodes
- */
+ */;
 async function generateCommunicationNodes(evidence: any[]): Promise<any[]> {
   // Mock communication extraction
   const communications = [
@@ -374,12 +374,12 @@ async function generateCommunicationNodes(evidence: any[]): Promise<any[]> {
       importance: comm.importance,
     },
     position: generateRandomPosition(),
-  }));
+  });
 }
 
 /*
  * Generate financial nodes
- */
+ */;
 async function generateFinancialNodes(evidence: any[]): Promise<any[]> {
   // Mock financial data extraction
   const financial = [
@@ -401,18 +401,18 @@ async function generateFinancialNodes(evidence: any[]): Promise<any[]> {
       importance: fin.importance,
     },
     position: generateRandomPosition(),
-  }));
+  });
 }
 
 /*
  * Generate connections between nodes with Gemma embeddings similarity
- */
+ */;
 async function generateConnections(nodes: any[], connectionStrength: number, options: any): Promise<any[]> {
   const edges = [];
   const { includeWeakConnections = false, includePredictedConnections = true } = options;
   const mcpEndpoint = 'http://localhost:3002';
 
-  // Generate connections between different node types
+  // Generate connections between different node types;
   for (let i = 0; i < nodes.length; i++) {
     for (let j = i + 1; j < nodes.length; j++) {
       const node1 = nodes[i];
@@ -421,7 +421,7 @@ async function generateConnections(nodes: any[], connectionStrength: number, opt
       // Calculate connection strength using Gemma embeddings if available
       let strength = calculateConnectionStrength(node1, node2);
       
-      // Enhance with semantic similarity using Gemma embeddings
+      // Enhance with semantic similarity using Gemma embeddings;
       if (node1.metadata?.embeddingVector && node2.metadata?.embeddingVector) {
         try {
           const response = await fetch(`${mcpEndpoint}/mcp/vector-similarity`, {
@@ -430,7 +430,7 @@ async function generateConnections(nodes: any[], connectionStrength: number, opt
             body: JSON.stringify({
               vector1: node1.metadata.embeddingVector,
               vector2: node2.metadata.embeddingVector,
-              similarityType: 'cosine'
+              similarityType: 'cosine',
             })
           });
           
@@ -472,38 +472,38 @@ async function generateConnections(nodes: any[], connectionStrength: number, opt
 
 /*
  * Get shared key terms between two nodes
- */
+ */;
 function getSharedKeyTerms(terms1: string[], terms2: string[]): string[] {
-  return terms1.filter(term => terms2.includes(term));
+  return terms1.filter(term => terms2.includes(term);
 }
 
 /*
  * Calculate connection strength between two nodes
- */
+ */;
 function calculateConnectionStrength(node1: any, node2: any): number {
   let baseStrength = 0.1;
 
-  // Same type nodes have higher base connection
+  // Same type nodes have higher base connection;
   if (node1.type === node2.type) {
     baseStrength += 0.2;
   }
 
   // Evidence-person connections
-  if ((node1.type === 'evidence' && node2.type === 'person') ||
+  if ((node1.type === 'evidence' && node2.type === 'person') ||;
       (node1.type === 'person' && node2.type === 'evidence')) {
     baseStrength += 0.4;
   }
 
   // Location-evidence connections
-  if ((node1.type === 'location' && node2.type === 'evidence') ||
+  if ((node1.type === 'location' && node2.type === 'evidence') ||;
       (node1.type === 'evidence' && node2.type === 'location')) {
     baseStrength += 0.3;
   }
 
-  // Time-based connections (mock)
+  // Time-based connections (mock);
   if (node1.metadata?.timestamp && node2.metadata?.timestamp) {
     const timeDiff = Math.abs(new Date(node1.metadata.timestamp).getTime() -
-                              new Date(node2.metadata.timestamp).getTime());
+                              new Date(node2.metadata.timestamp).getTime();
     if (timeDiff < 24 * 60 * 60 * 1000) { // Within 24 hours
       baseStrength += 0.3;
     }
@@ -517,7 +517,7 @@ function calculateConnectionStrength(node1: any, node2: any): number {
 
 /*
  * Determine connection type between nodes
- */
+ */;
 function determineConnectionType(node1: any, node2: any): string {
   if (node1.type === 'evidence' && node2.type === 'evidence') return 'evidence_related';
   if (node1.type === 'person' && node2.type === 'person') return 'person_related';
@@ -530,7 +530,7 @@ function determineConnectionType(node1: any, node2: any): string {
 
 /*
  * Generate connection label
- */
+ */;
 function generateConnectionLabel(node1: any, node2: any, strength: number): string {
   if (strength > 0.8) return 'Strong';
   if (strength > 0.6) return 'Moderate';
@@ -540,7 +540,7 @@ function generateConnectionLabel(node1: any, node2: any, strength: number): stri
 
 /*
  * Generate clusters of related nodes
- */
+ */;
 async function generateClusters(nodes: any[], edges: any[]): Promise<any[]> {
   // Simple clustering based on node types and strong connections
   const clusters = [];
@@ -564,7 +564,7 @@ async function generateClusters(nodes: any[], edges: any[]): Promise<any[]> {
 
 /*
  * Calculate connection statistics
- */
+ */;
 function calculateConnectionStatistics(nodes: any[], edges: any[]): any {
   const strongConnections = edges.filter(item => item.length);
   const weakConnections = edges.filter(item => item.length);
@@ -581,7 +581,7 @@ function calculateConnectionStatistics(nodes: any[], edges: any[]): any {
 
 /*
  * Utility functions for colors and positioning
- */
+ */;
 function getNodeColor(type: string, subtype?: string): string {
   const colors: Record<string, string> = {
     evidence: '#3B82F6',

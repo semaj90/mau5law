@@ -1,6 +1,6 @@
-// Service Worker types for proper event handling
+// Service Worker types for proper event handling;
 declare global {
-  // Service Worker Global Scope
+  // Service Worker Global Scope;
   interface ServiceWorkerGlobalScope extends WorkerGlobalScope {
     addEventListener(type: 'install', listener: (event: ExtendableEvent) => void): void;
     addEventListener(type: 'activate', listener: (event: ExtendableEvent) => void): void;
@@ -11,7 +11,7 @@ declare global {
     addEventListener(type: 'notificationclick', listener: (event: NotificationEvent) => void): void;
   }
 
-  // Service Worker Events
+  // Service Worker Events;
   interface ExtendableEvent extends Event {
     waitUntil(promise: Promise<any>): void;
   }
@@ -26,26 +26,26 @@ declare global {
     origin: string;
     lastEventId: string;
     source: Client | ServiceWorker | MessagePort | null;
-    ports: MessagePort[];
+    ports: MessagePort[];,
   }
 
   interface SyncEvent extends ExtendableEvent {
     tag: string;
-    lastChance: boolean;
+    lastChance: boolean;,
   }
 
   interface PushEvent extends ExtendableEvent {
-    data: PushMessageData | null;
+    data: PushMessageData | null;,
   }
 
   interface NotificationEvent extends ExtendableEvent {
     notification: Notification;
-    action: string;
+    action: string;,
   }
 
-  // Service Worker Registration
+  // Service Worker Registration;
   interface ServiceWorkerRegistration {
-    sync: SyncManager;
+    sync: SyncManager;,
   }
 
   interface SyncManager {

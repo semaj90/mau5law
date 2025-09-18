@@ -8,6 +8,7 @@ import { ensureError } from '$lib/utils/ensure-error';
 import { error } from '@sveltejs/kit';
 
 const GPU_SERVICE_URL = 'http://localhost:8231';
+}
 
 export interface GPURequest {
 	service: string;
@@ -28,27 +29,27 @@ export interface GPUResponse {
 	error?: string;
 }
 
-/* POST /api/v1/gpu - GPU-accelerated processing proxy */
+/* POST /api/v1/gpu - GPU-accelerated processing proxy */;
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.json() as GPURequest;
 
-		// Validate request
+		// Validate request;
 		if (!body.service || !body.operation) {
 			throw error(400, ensureError({
-				message: 'Invalid GPU request: service and operation are required'
-			}));
+				message: 'Invalid GPU request: service and operation are required',
+			});
 		}
 
 		if (!body.data || !Array.isArray(body.data) || body.data.length === 0) {
 			throw error(400, ensureError({
-				message: 'Invalid GPU request: data array is required and cannot be empty'
-			}));
+				message: 'Invalid GPU request: data array is required and cannot be empty',
+			});
 		}
 
 		console.log(`🔥 GPU API: Processing ${body.service}/${body.operation} with ${body.data.length} data points`);
 
-		// Route to appropriate GPU service endpoint
+		// Route to appropriate GPU service endpoint;
 		const serviceEndpoints = {
 			'legal': '/api/gpu/legal/similarity',
 			'rag': '/api/gpu/process',
@@ -60,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		const endpoint = serviceEndpoints[body.service as keyof typeof serviceEndpoints] || '/api/gpu/process';
 		
-		// Forward request to CUDA Integration Service
+		// Forward request to CUDA Integration Service;
 		const response = await fetch(`${GPU_SERVICE_URL}${endpoint}`, {
 			method: 'POST',
 			headers: {
@@ -71,7 +72,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				...body,
 				gpu_acceleration: true,
 				frontend_request: true,
-				timestamp: Date.now()
+				timestamp: Date.now(),
 			})
 		});
 
@@ -90,7 +91,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			...result,
 			api_version: '1.0.0',
 			proxy_processed: true,
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		});
 
 	} catch (err: any) {
@@ -105,15 +106,15 @@ export const POST: RequestHandler = async ({ request }) => {
 			error: 'GPU processing service unavailable',
 			details: err instanceof Error ? err.message: 'Unknown error',
 			fallback_available: true,
-			gpu_utilized: false
+			gpu_utilized: false,
 		}, { status: 503 });
 	}
 };
 
-/* GET /api/v1/gpu - GPU service status and capabilities */
+/* GET /api/v1/gpu - GPU service status and capabilities */;
 export const GET: RequestHandler = async () => {
 	try {
-		// Check GPU service health
+		// Check GPU service health;
 		const healthResponse = await fetch(`${GPU_SERVICE_URL}/health`, {
 			method: 'GET',
 			headers: { 'Accept': 'application/json' }
@@ -142,15 +143,15 @@ export const GET: RequestHandler = async () => {
 				services_supported: ['legal', 'rag', 'upload', 'indexer', 'typescript', 'embedding'],
 				operations_supported: ['embedding', 'similarity', 'clustering', 'som_train', 'autoindex'],
 				gpu_model: status?.gpu_model || 'Unknown',
-				cuda_available: status?.gpu_available || false
+				cuda_available: status?.gpu_available || false,
 			},
 			performance: {
 				expected_latency: '5-25ms',
 				throughput: '500+ operations/second', 
 				speedup_vs_cpu: '3-10x faster',
-				concurrent_requests: '4-8 parallel'
+				concurrent_requests: '4-8 parallel',
 			},
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		});
 
 	} catch (err: any) {
@@ -162,7 +163,7 @@ export const GET: RequestHandler = async () => {
 			health: { status: 'error', message: 'GPU service unavailable' },
 			gpu_status: { gpu_available: false },
 			error: err instanceof Error ? err.message: 'Unknown error',
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		}, { status: 503 });
 	}
 };

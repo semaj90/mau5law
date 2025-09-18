@@ -6,14 +6,15 @@
 
 // =====================================
 // Core API Types & Interfaces
-// =====================================
+// =====================================;
+}
 
 export interface ApiResponse<T = any> {
   data?: T;
   error?: string;
   status: "success" | "error" | "loading";
   timestamp: string;
-  requestId: string;
+  requestId: string;,
 }
 
 export interface PaginatedResponse<T> extends ApiResponse<T[]> {
@@ -21,7 +22,7 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
     page: number;
     limit: number;
     total: number;
-    hasMore: boolean;
+    hasMore: boolean;,
   };
 }
 
@@ -71,7 +72,8 @@ export interface ChatMessage {
 
 // =====================================
 // Authentication & User Management
-// =====================================
+// =====================================;
+}
 
 export interface AuthUser {
   id: string;
@@ -79,7 +81,7 @@ export interface AuthUser {
   role: "admin" | "prosecutor" | "detective" | "user";
   permissions: string[];
   lastLogin?: string;
-  preferences: UserPreferences;
+  preferences: UserPreferences;,
 }
 
 export interface UserPreferences {
@@ -88,11 +90,11 @@ export interface UserPreferences {
   notifications: {
     email: boolean;
     browser: boolean;
-    mobile: boolean;
+    mobile: boolean;,
   };
   dashboard: {
     layout: "grid" | "list";
-    widgets: string[];
+    widgets: string[];,
   };
 }
 
@@ -110,7 +112,8 @@ export interface RegisterData extends LoginCredentials {
 
 // =====================================
 // Document Processing API
-// =====================================
+// =====================================;
+}
 
 export interface DocumentUploadOptions {
   caseId: string;
@@ -132,7 +135,7 @@ export interface DocumentProcessingResult {
   embeddings?: {
     model: string;
     dimensions: number;
-    vectors: number[];
+    vectors: number[];,
   };
   analysis?: {
     entities: Array<any>;
@@ -144,7 +147,8 @@ export interface DocumentProcessingResult {
 
 // =====================================
 // Vector Search & Embeddings
-// =====================================
+// =====================================;
+}
 
 export interface VectorSearchOptions {
   query: string | number[];
@@ -176,12 +180,13 @@ export interface EmbeddingResponse {
   model: string;
   dimensions: number;
   tokensUsed: number;
-  processingTime: number;
+  processingTime: number;,
 }
 
 // =====================================
 // Real-time Chat & Streaming
-// =====================================
+// =====================================;
+}
 
 export interface ChatSessionOptions {
   caseId?: string;
@@ -203,12 +208,13 @@ export interface StreamingChatResponse {
     ragContext?: Array<any>;
     error?: string;
   };
-  done: boolean;
+  done: boolean;,
 }
 
 // =====================================
 // Case Management
-// =====================================
+// =====================================;
+}
 
 export interface LegalCase {
   id: string;
@@ -241,9 +247,10 @@ export interface Evidence {
   analysis?: {
     findings: string[];
     confidence: number;
-    methodology: string;
+    methodology: string;,
   };
-  files: Array<any>
+  files: Array<any>;
+}
 
 export interface CaseNote {
   id: string;
@@ -255,7 +262,7 @@ export interface CaseNote {
   private: boolean;
   createdAt: string;
   updatedAt: string;
-  tags: string[];
+  tags: string[];,
 }
 
 export interface CaseTimelineEntry {
@@ -287,7 +294,8 @@ export interface ChainOfCustodyEntry {
 
 // =====================================
 // API Client Configuration
-// =====================================
+// =====================================;
+}
 
 export interface ApiClientConfig {
   baseUrl: string;
@@ -306,7 +314,7 @@ export interface ServiceEndpoints {
   sveltekit: {
     baseUrl: string;
     port: number;
-    healthCheck: string;
+    healthCheck: string;,
   };
   goMicroservice: {
     baseUrl: string;
@@ -317,7 +325,7 @@ export interface ServiceEndpoints {
       documents: string;
       search: string;
       embeddings: string;
-      chat: string;
+      chat: string;,
     };
   };
   ollama: {
@@ -328,7 +336,7 @@ export interface ServiceEndpoints {
       generate: string;
       chat: string;
       embeddings: string;
-      models: string;
+      models: string;,
     };
   };
   redis: {
@@ -352,7 +360,7 @@ export interface ServiceEndpoints {
     collections: {
       documents: string;
       cases: string;
-      precedents: string;
+      precedents: string;,
     };
   };
 }
@@ -400,7 +408,7 @@ export * from './utils/rate-limiter.js';
 // =====================================
 
 export const API_ROUTES = {
-  // Authentication
+  // Authentication;
   AUTH: {
     LOGIN: "/api/auth/login",
     LOGOUT: "/api/auth/logout",
@@ -410,7 +418,7 @@ export const API_ROUTES = {
     CHANGE_PASSWORD: "/api/auth/change-password",
   },
 
-  // Document Management
+  // Document Management;
   DOCUMENTS: {
     LIST: "/api/documents",
     UPLOAD: "/api/documents/upload",
@@ -422,7 +430,7 @@ export const API_ROUTES = {
     EXTRACT_TEXT: "/api/documents/extract-text",
   },
 
-  // Search & AI
+  // Search & AI;
   SEARCH: {
     SEMANTIC: "/api/search/semantic",
     FULLTEXT: "/api/search/fulltext",
@@ -437,7 +445,7 @@ export const API_ROUTES = {
     CLEAR: "/api/chat/sessions/:id/clear",
   },
 
-  // Vector Operations
+  // Vector Operations;
   VECTORS: {
     EMBED: "/api/vectors/embed",
     SEARCH: "/api/vectors/search",
@@ -446,7 +454,7 @@ export const API_ROUTES = {
     DELETE: "/api/vectors/delete",
   },
 
-  // Case Management
+  // Case Management;
   CASES: {
     LIST: "/api/cases",
     CREATE: "/api/cases",
@@ -460,7 +468,7 @@ export const API_ROUTES = {
     EXPORT: "/api/cases/:id/export",
   },
 
-  // Evidence
+  // Evidence;
   EVIDENCE: {
     LIST: "/api/evidence",
     CREATE: "/api/evidence",
@@ -471,7 +479,7 @@ export const API_ROUTES = {
     ANALYSIS: "/api/evidence/:id/analysis",
   },
 
-  // System & Health
+  // System & Health;
   SYSTEM: {
     HEALTH: "/api/health",
     METRICS: "/api/metrics",
@@ -480,7 +488,7 @@ export const API_ROUTES = {
     LOGS: "/api/logs",
   },
 
-  // External Services
+  // External Services;
   EXTERNAL: {
     OLLAMA_HEALTH: "http://localhost:8086/api/version",
     GO_SERVICE_HEALTH: "http://localhost:8080/health",

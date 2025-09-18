@@ -8,7 +8,7 @@ export const isPostgreSQL = true; // Since we're using PostgreSQL with pgvector
 // Re-export all database tables and relations from schema
 export * from './schema-postgres.js';
 
-// Explicitly export tables to ensure they're available
+// Explicitly export tables to ensure they're available;
 import {
   users,
   sessions,
@@ -32,7 +32,7 @@ export {
 // Re-export performance optimizations (optional - may not exist)
 // export { OptimizedQueries, CacheService } from '$lib/performance/optimizations';
 
-// Type-safe database queries helper
+// Type-safe database queries helper;
 export function getTableByName(tableName: string) {
   const tableMap = {
     users,
@@ -47,7 +47,7 @@ export function getTableByName(tableName: string) {
   return tableMap[tableName as keyof typeof tableMap];
 }
 
-// Database connection health check with enhanced error handling
+// Database connection health check with enhanced error handling;
 export async function healthCheck() {
   try {
     if (!db) {
@@ -81,13 +81,13 @@ export async function healthCheck() {
     return { 
       status: "healthy" as const, 
       timestamp: new Date(),
-      tablesAccessible: tableTests.length 
+      tablesAccessible: tableTests.length ,
     };
   } catch (error: any) {
     return { 
       status: "unhealthy" as const, 
       error: error.message, 
-      timestamp: new Date() 
+      timestamp: new Date() ,
     };
   }
 }

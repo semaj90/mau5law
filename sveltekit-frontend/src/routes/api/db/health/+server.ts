@@ -17,7 +17,7 @@ export const GET: RequestHandler = async () => {
   let sql: postgres.Sql | null = null;
   
   try {
-    // Create database connection
+    // Create database connection;
     sql = postgres(connectionString, {
       max: 1, // Single connection for health check
       idle_timeout: 5, // 5 seconds idle timeout
@@ -59,7 +59,7 @@ export const GET: RequestHandler = async () => {
       }
     }
 
-    // Collect health metrics
+    // Collect health metrics;
     const health = {
       database: {
         connected: true,
@@ -113,7 +113,7 @@ export const GET: RequestHandler = async () => {
       status: isHealthy ? 200 : 503,
       headers: {
         'Content-Type': 'application/json',
-        ...(dev && { 'Access-Control-Allow-Origin': '*' }),
+        ...(dev && { 'Access-Control-Allow-Origin': '*' ,}),
       }
     });
 
@@ -143,7 +143,7 @@ export const GET: RequestHandler = async () => {
     });
     
   } finally {
-    // Always close the connection
+    // Always close the connection;
     if (sql) {
       try {
         await sql.end();
@@ -154,7 +154,7 @@ export const GET: RequestHandler = async () => {
   }
 };
 
-// OPTIONS handler for CORS preflight requests
+// OPTIONS handler for CORS preflight requests;
 export const OPTIONS: RequestHandler = async () => {
   return new Response(null, {
     status: 200,

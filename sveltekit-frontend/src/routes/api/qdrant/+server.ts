@@ -56,25 +56,25 @@ export interface SearchRequest {
   threshold?: number;           // Similarity threshold
 }
 
-// Enhanced error handling and logging
+// Enhanced error handling and logging;
 class QdrantAPIError extends Error {
   constructor(
     message: string,
     public statusCode: number = 500,
-    public details?: any
+    public details?: any;
   ) {
     super(message);
     this.name = 'QdrantAPIError';
   }
 }
 
-// Utility functions for Windows optimization
+// Utility functions for Windows optimization;
 function getOptimizedQdrantConfig(vectorSize: number) {
-  // Windows-specific optimizations for Qdrant
+  // Windows-specific optimizations for Qdrant;
   const config: any = {
     vectors: {
       size: vectorSize,
-      distance: "Cosine"
+      distance: "Cosine",
     },
     optimizers_config: {
       deleted_threshold: 0.2,
@@ -91,13 +91,13 @@ function getOptimizedQdrantConfig(vectorSize: number) {
     }
   };
 
-  // Additional Windows optimizations
+  // Additional Windows optimizations;
   if (process.platform === 'win32') {
     config.hnsw_config = {
       m: 16,
       ef_construct: 128,
       full_scan_threshold: 10000,
-      max_indexing_threads: Math.max(1, Math.floor(require('os').cpus().length / 2))
+      max_indexing_threads: Math.max(1, Math.floor(require('os').cpus().length / 2)
     };
   }
 
@@ -111,7 +111,7 @@ async function validateQdrantConnection(): Promise<void> {
   }
 }
 
-// Sync data from PostgreSQL to Qdrant with Windows optimization
+// Sync data from PostgreSQL to Qdrant with Windows optimization;
 export const POST: RequestHandler = async ({ request, locals, getClientAddress }) => {
   const clientIP = getClientAddress();
 
@@ -121,15 +121,14 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_sync:${clientIP}:${locals.user?.id || 'anonymous'}`,
       ...rateLimitConfig
-    });
+    ,});
 
     if (!rateLimitResult.allowed) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter
-        },
+          retryAfter: rateLimitResult.retryAfter,
+        },);
         { 
           status: 429,
           headers: {
@@ -139,13 +138,12 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
       );
     }
 
-    // Check admin permissions for sync operations
+    // Check admin permissions for sync operations;
     if (!locals.user || locals.user.role !== "admin") {
-      return json(
-        {
+      return json({
           success: false,
           error: "Admin privileges required for sync operations",
-        },
+        },)
         { status: 403 }
       );
     }
@@ -164,7 +162,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
 
     const startTime = Date.now();
 
-    // Enhanced sync logic with Windows optimizations
+    // Enhanced sync logic with Windows optimizations;
     try {
       let syncResults;
 
@@ -186,14 +184,14 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
           }
 
           // TODO: Implement actual PostgreSQL sync
-          // For now, return success with stub data
+          // For now, return success with stub data;
           syncResults = {
             synced: 0,
             errors: 0,
             collection,
             message: "PostgreSQL sync implementation needed",
             batchSize,
-            windowsOptimized: process.platform === 'win32'
+            windowsOptimized: process.platform === 'win32',
           };
           break;
         }
@@ -216,7 +214,7 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
             limit,
             rateLimit: {
               remaining: rateLimitResult.remaining,
-              resetTime: rateLimitResult.resetTime
+              resetTime: rateLimitResult.resetTime,
             }
           }
         },
@@ -235,47 +233,45 @@ export const POST: RequestHandler = async ({ request, locals, getClientAddress }
     console.error("Qdrant sync error:", error);
     
     if (error instanceof QdrantAPIError) {
-      return json(
-        {
+      return json({
           success: false,
           error: error.message,
           details: error.details,
-        },
+        },)
         { status: error.statusCode }
       );
     }
 
-    return json(
+    return json();
       {
         success: false,
         error: "Failed to sync with Qdrant",
         details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
   }
 };
 
-// Enhanced GET endpoint with search capabilities
+// Enhanced GET endpoint with search capabilities;
 export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => {
   const clientIP = getClientAddress();
 
   try {
-    // Rate limiting for GET requests
+    // Rate limiting for GET requests;
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_get:${clientIP}`,
       limit: 200, // More generous for read operations
-      windowSec: 60
+      windowSec: 60,
     });
 
     if (!rateLimitResult.allowed) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter
-        },
+          retryAfter: rateLimitResult.retryAfter,
+        },)
         { status: 429 }
       );
     }
@@ -293,7 +289,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
 
         if (!query) {
           return json(
-            { success: false, error: "Query parameter required for search" },
+            { success: false, error: "Query parameter required for search" },)
             { status: 400 }
           );
         }
@@ -307,7 +303,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           }
         } catch {
           return json(
-            { success: false, error: "Query must be a valid JSON array of numbers" },
+            { success: false, error: "Query must be a valid JSON array of numbers" },)
             { status: 400 }
           );
         }
@@ -318,7 +314,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           limit,
           offset,
           with_payload: true,
-          with_vector: false
+          with_vector: false,
         };
 
         const searchResults = await qdrant.search(searchParams);
@@ -338,14 +334,14 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
               resultsCount: searchResults.length,
               rateLimit: {
                 remaining: rateLimitResult.remaining,
-                resetTime: rateLimitResult.resetTime
+                resetTime: rateLimitResult.resetTime,
               }
             }
           }
         });
       }
 
-      case 'status':
+      case 'status':;
       default: {
         let collections, collectionInfo;
         try {
@@ -360,7 +356,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           );
         }
 
-        // Get system information
+        // Get system information;
         const systemInfo = {
           platform: process.platform,
           arch: process.arch,
@@ -368,7 +364,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
           windowsOptimizations: process.platform === 'win32',
           rateLimit: {
             remaining: rateLimitResult.remaining,
-            resetTime: rateLimitResult.resetTime
+            resetTime: rateLimitResult.resetTime,
           }
         };
 
@@ -380,7 +376,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
             currentCollection: {
               name: collection,
               ...collectionInfo,
-              windowsOptimized: process.platform === 'win32'
+              windowsOptimized: process.platform === 'win32',
             },
             system: systemInfo,
             endpoints: {
@@ -395,7 +391,7 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
               bulkSync: true,
               windowsOptimized: process.platform === 'win32',
               rateLimiting: true,
-              adminControls: locals.user?.role === 'admin'
+              adminControls: locals.user?.role === 'admin',
             }
           },
         });
@@ -406,58 +402,55 @@ export const GET: RequestHandler = async ({ url, locals, getClientAddress }) => 
     console.error("Qdrant GET error:", error);
     
     if (error instanceof QdrantAPIError) {
-      return json(
-        {
+      return json({
           success: false,
           error: error.message,
           details: error.details,
-        },
+        },)
         { status: error.statusCode }
       );
     }
 
-    return json(
+    return json();
       {
         success: false,
         error: "Failed to get Qdrant status",
         details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
   }
 };
 
-// Enhanced collection management with Windows optimizations
+// Enhanced collection management with Windows optimizations;
 export const PUT: RequestHandler = async ({ request, locals, getClientAddress }) => {
   const clientIP = getClientAddress();
 
   try {
-    // Rate limiting for collection operations
+    // Rate limiting for collection operations;
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_collection:${clientIP}:${locals.user?.id || 'anonymous'}`,
       limit: 10, // Stricter for collection operations
-      windowSec: 60
+      windowSec: 60,
     });
 
     if (!rateLimitResult.allowed) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Rate limit exceeded',
-          retryAfter: rateLimitResult.retryAfter
-        },
+          retryAfter: rateLimitResult.retryAfter,
+        },)
         { status: 429 }
       );
     }
 
-    // Check admin permissions
+    // Check admin permissions;
     if (!locals.user || locals.user.role !== "admin") {
-      return json(
-        {
+      return json({
           success: false,
           error: "Admin privileges required for collection management",
-        },
+        },)
         { status: 403 }
       );
     }
@@ -474,11 +467,10 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     } = body;
 
     if (!name || name.trim().length === 0) {
-      return json(
-        {
+      return json({
           success: false,
           error: "Collection name is required",
-        },
+        },)
         { status: 400 }
       );
     }
@@ -486,7 +478,7 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     // Create collection with Windows optimizations
     const collectionConfig = getOptimizedQdrantConfig(vectorSize);
     
-    // Override with custom configs if provided
+    // Override with custom configs if provided;
     if (optimizersConfig) {
       collectionConfig.optimizers_config = { ...collectionConfig.optimizers_config, ...optimizersConfig };
     }
@@ -512,13 +504,13 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
             platform: process.platform,
             memoryMappingThreshold: collectionConfig.optimizers_config.memmap_threshold,
             segmentConfiguration: collectionConfig.optimizers_config.default_segment_number,
-            flushInterval: collectionConfig.optimizers_config.flush_interval_sec
+            flushInterval: collectionConfig.optimizers_config.flush_interval_sec,
           }
         },
         result,
         rateLimit: {
           remaining: rateLimitResult.remaining,
-          resetTime: rateLimitResult.resetTime
+          resetTime: rateLimitResult.resetTime,
         }
       },
     });
@@ -527,58 +519,55 @@ export const PUT: RequestHandler = async ({ request, locals, getClientAddress })
     console.error("Qdrant collection creation error:", error);
     
     if (error instanceof QdrantAPIError) {
-      return json(
-        {
+      return json({
           success: false,
           error: error.message,
           details: error.details,
-        },
+        },)
         { status: error.statusCode }
       );
     }
 
-    return json(
+    return json();
       {
         success: false,
         error: "Failed to create collection",
         details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
   }
 };
 
-// Enhanced collection deletion with safety checks
+// Enhanced collection deletion with safety checks;
 export const DELETE: RequestHandler = async ({ request, locals, getClientAddress }) => {
   const clientIP = getClientAddress();
 
   try {
-    // Rate limiting for deletion operations
+    // Rate limiting for deletion operations;
     const rateLimitResult = await redisRateLimit({
       key: `qdrant_delete:${clientIP}:${locals.user?.id || 'anonymous'}`,
       limit: 5, // Very strict for deletions
-      windowSec: 300 // 5-minute window
+      windowSec: 300 // 5-minute window,
     });
 
     if (!rateLimitResult.allowed) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Rate limit exceeded for deletion operations',
-          retryAfter: rateLimitResult.retryAfter
-        },
+          retryAfter: rateLimitResult.retryAfter,
+        },)
         { status: 429 }
       );
     }
 
-    // Check admin permissions
+    // Check admin permissions;
     if (!locals.user || locals.user.role !== "admin") {
-      return json(
-        {
+      return json({
           success: false,
           error: "Admin privileges required for collection deletion",
-        },
+        },)
         { status: 403 }
       );
     }
@@ -588,11 +577,10 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     const { collection, forceDelete = false, confirmationToken } = await request.json();
 
     if (!collection || collection.trim().length === 0) {
-      return json(
-        {
+      return json({
           success: false,
           error: "Collection name is required",
-        },
+        },)
         { status: 400 }
       );
     }
@@ -600,47 +588,43 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     // Safety checks for critical collections
     const protectedCollections = ['legal_documents', 'default', 'production'];
     if (protectedCollections.includes(collection) && !forceDelete) {
-      return json(
-        {
+      return json({
           success: false,
           error: `Cannot delete protected collection '${collection}'. Use forceDelete=true with confirmationToken to override.`,
-          hint: 'Protected collections require explicit confirmation'
-        },
+          hint: 'Protected collections require explicit confirmation',
+        },)
         { status: 400 }
       );
     }
 
-    // Additional confirmation for forced deletions
+    // Additional confirmation for forced deletions;
     if (forceDelete && !confirmationToken) {
-      return json(
-        {
+      return json({
           success: false,
           error: "Confirmation token required for force deletion",
-          hint: 'Add confirmationToken with collection name to confirm'
-        },
+          hint: 'Add confirmationToken with collection name to confirm',
+        },)
         { status: 400 }
       );
     }
 
     if (forceDelete && confirmationToken !== collection) {
-      return json(
-        {
+      return json({
           success: false,
           error: "Invalid confirmation token",
-        },
+        },)
         { status: 400 }
       );
     }
 
-    // Check if collection exists before deletion
+    // Check if collection exists before deletion;
     try {
       await qdrant.getCollection(collection);
     } catch {
-      return json(
-        {
+      return json({
           success: false,
           error: `Collection '${collection}' does not exist`,
-        },
+        },)
         { status: 404 }
       );
     }
@@ -656,9 +640,9 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
         result,
         rateLimit: {
           remaining: rateLimitResult.remaining,
-          resetTime: rateLimitResult.resetTime
+          resetTime: rateLimitResult.resetTime,
         },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
     });
 
@@ -666,22 +650,21 @@ export const DELETE: RequestHandler = async ({ request, locals, getClientAddress
     console.error("Qdrant collection deletion error:", error);
     
     if (error instanceof QdrantAPIError) {
-      return json(
-        {
+      return json({
           success: false,
           error: error.message,
           details: error.details,
-        },
+        },)
         { status: error.statusCode }
       );
     }
 
-    return json(
+    return json();
       {
         success: false,
         error: "Failed to delete collection",
         details: dev ? (error instanceof Error ? error.message: "Unknown error") : undefined,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );

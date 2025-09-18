@@ -12,10 +12,10 @@ export interface AIState {
   history: Array<any>;
   isProcessing: boolean;
   lastResult: any;
-  error: string | null;
+  error: string | null;,
 }
 
-// Main AI store
+// Main AI store;
 export const aiStore = writable<AIState>({
   current: "",
   history: [],
@@ -28,7 +28,7 @@ export const aiStore = writable<AIState>({
 export const aiCommandResult = writable(null);
 /**
  * Parse AI commands with enhanced capabilities
- */
+ */;
 export async function parseAICommand(command: string): Promise<any> {
   try {
     setProcessing(true);
@@ -81,10 +81,10 @@ export function applyAIClasses(
 
   if (add.length) element.classList.add(...add);
   if (remove.length) element.classList.remove(...remove);
-  if (toggle.length) toggle.forEach((cls) => element.classList.toggle(cls));
+  if (toggle.length) toggle.forEach((cls) => element.classList.toggle(cls);
 }
 
-// Store management functions
+// Store management functions;
 export const addCommand = (command: string, result: any = null) => {
   aiStore.update((store) => ({
     ...store,
@@ -97,19 +97,19 @@ export const addCommand = (command: string, result: any = null) => {
       },
     ],
     lastResult: result,
-  }));
+  });
 };
 
 export const setCurrentCommand = (command: string) => {
-  aiStore.update((store) => ({ ...store, current: command }));
+  aiStore.update((store) => ({ ...store, current: command });
 };
 
 export const setProcessing = (isProcessing: boolean) => {
-  aiStore.update((store) => ({ ...store, isProcessing }));
+  aiStore.update((store) => ({ ...store, isProcessing });
 };
 
 export const setError = (error: string | null) => {
-  aiStore.update((store) => ({ ...store, error }));
+  aiStore.update((store) => ({ ...store, error });
 };
 
 export const clearHistory = () => {
@@ -119,10 +119,10 @@ export const clearHistory = () => {
     current: "",
     lastResult: null,
     error: null,
-  }));
+  });
 };
 
-// Simple command service for Phase 2 compatibility
+// Simple command service for Phase 2 compatibility;
 export const aiCommandService = {
   state: writable("idle"),
   context: writable({}),
@@ -133,7 +133,7 @@ export const aiCommandService = {
 
     setTimeout(() => {
       this.state.set("completed");
-      this.context.update((ctx) => ({ ...ctx, lastCommand: event }));
+      this.context.update((ctx) => ({ ...ctx, lastCommand: event });
     }, 1000);
   },
 
@@ -143,7 +143,7 @@ export const aiCommandService = {
 };
 
 // Derived stores (repaired syntax)
-export const recentCommands = derived(aiStore, ($store) => $store.history.slice(-10));
+export const recentCommands = derived(aiStore, ($store) => $store.history.slice(-10);
 
 export const isAIActive = derived(aiStore, ($store) => $store.isProcessing || $store.current.length > 0);
 

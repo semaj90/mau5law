@@ -4,9 +4,9 @@ import { sql, eq, and, or, like, desc, asc } from 'drizzle-orm';
 import type { SQL } from 'drizzle-orm';
 import type { PgColumn } from 'drizzle-orm/pg-core';
 
-// Database field mapping utilities
+// Database field mapping utilities;
 export const fieldMap = {
-  // User fields
+  // User fields;
   user: {
     createdAt: 'created_at',
     updatedAt: 'updated_at',
@@ -15,9 +15,9 @@ export const fieldMap = {
     firstName: 'first_name',
     lastName: 'last_name',
     avatarUrl: 'avatar_url',
-    isActive: 'is_active'
+    isActive: 'is_active',
   },
-  // Case fields
+  // Case fields;
   case: {
     caseNumber: 'case_number',
     incidentDate: 'incident_date',
@@ -33,9 +33,9 @@ export const fieldMap = {
     createdBy: 'created_by',
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    closedAt: 'closed_at'
+    closedAt: 'closed_at',
   },
-  // Evidence fields
+  // Evidence fields;
   evidence: {
     caseId: 'case_id',
     criminalId: 'criminal_id',
@@ -66,18 +66,18 @@ export const fieldMap = {
     summaryEmbedding: 'summary_embedding',
     uploadedBy: 'uploaded_by',
     uploadedAt: 'uploaded_at',
-    updatedAt: 'updated_at'
+    updatedAt: 'updated_at',
   }
 } as const;
 
-// Query builder helpers with proper type safety
+// Query builder helpers with proper type safety;
 export function buildFilters(filters: SQL[]): SQL | undefined {
   return filters.length > 0 ? and(...filters) : undefined;
 }
 
 export function buildSearchFilters(
   searchColumns: PgColumn[],
-  searchTerm: string
+  searchTerm: string;
 ): SQL {
   const searchFilters = searchColumns.map((col: any) => like(col, `%${searchTerm}%`)
   );
@@ -86,12 +86,12 @@ export function buildSearchFilters(
 
 export function applySorting(
   column: PgColumn,
-  order: 'asc' | 'desc' = 'desc'
+  order: 'asc' | 'desc' = 'desc';
 ): SQL {
   return order === 'asc' ? asc(column) : desc(column);
 }
 
-// Type-safe filter builders
+// Type-safe filter builders;
 export const filterBuilders = {
   textFilter: (column: PgColumn, value: string) =>
     eq(column, value),
@@ -107,22 +107,22 @@ export const filterBuilders = {
     )
 };
 
-// Pagination helpers
+// Pagination helpers;
 export interface PaginationParams {
   page: number;
-  limit: number;
+  limit: number;,
 }
 
 export function getPaginationParams(
   page: string | null,
-  limit: string | null
+  limit: string | null;
 ): PaginationParams {
-  const pageNum = Math.max(1, parseInt(page || '1'));
-  const limitNum = Math.min(100, Math.max(1, parseInt(limit || '20')));
+  const pageNum = Math.max(1, parseInt(page || '1');
+  const limitNum = Math.min(100, Math.max(1, parseInt(limit || '20'));
 
   return {
     page: pageNum,
-    limit: limitNum
+    limit: limitNum,
   };
 }
 
@@ -134,9 +134,9 @@ export function applyPagination(params: PaginationParams) {
   };
 }
 
-// Common query patterns
+// Common query patterns;
 export const queryPatterns = {
-  // Safe case filtering
+  // Safe case filtering;
   caseFilters: (filters: {
     search?: string;
     status?: string;
@@ -157,7 +157,7 @@ export const queryPatterns = {
     return buildFilters(conditions);
   },
 
-  // Safe evidence filtering
+  // Safe evidence filtering;
   evidenceFilters: (filters: {
     caseId?: string;
     evidenceType?: string;

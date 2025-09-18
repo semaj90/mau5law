@@ -7,13 +7,14 @@ import { ingestionWorkflowActor, createIngestionJob, type IngestionJob } from '$
 import { jobTracker } from '$lib/services/job-tracker.js';
 import { publishToQueue, setupQueues } from '$lib/server/rabbitmq.js';
 import { cache } from '$lib/server/cache/redis.js';
+}
 
 export interface IngestionServiceConfig {
   enableRabbitMQ: boolean;
   enableRedisQueues: boolean;
   maxConcurrency: number;
   retryAttempts: number;
-  jobTimeout: number;
+  jobTimeout: number;,
 }
 
 export class IngestionService {
@@ -37,13 +38,13 @@ export class IngestionService {
 
     console.log('🚀 Initializing Ingestion Service...');
 
-    // Start XState workflow actor
+    // Start XState workflow actor;
     if (!(this.workflowActor.getSnapshot() as any).status) {
       this.workflowActor.start();
       console.log('✅ XState workflow actor started');
     }
 
-    // Setup RabbitMQ queues if enabled
+    // Setup RabbitMQ queues if enabled;
     if (this.config.enableRabbitMQ) {
       try {
         await setupQueues();
@@ -54,7 +55,7 @@ export class IngestionService {
       }
     }
 
-    // Subscribe to workflow events for RabbitMQ integration
+    // Subscribe to workflow events for RabbitMQ integration;
     this.workflowActor.subscribe((state) => {
       this.handleWorkflowStateChange(state);
     });
@@ -66,7 +67,7 @@ export class IngestionService {
   async submitDocument(
     documentId: string,
     chunks: string[],
-    metadata?: Record<string, any>
+    metadata?: Record<string, any>;
   ): Promise<any> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -85,21 +86,21 @@ export class IngestionService {
       // Queue job in XState workflow
       this.workflowActor.send({ type: 'QUEUE_JOB', job });
 
-      // Publish to RabbitMQ for worker processing
+      // Publish to RabbitMQ for worker processing;
       if (this.config.enableRabbitMQ) {
         await this.publishJobToQueue(job);
       } else if (this.config.enableRedisQueues) {
         await this.publishJobToRedis(job);
       }
 
-      // Record metrics
+      // Record metrics;
       jobTracker.recordMetric('job_submitted', {
         jobId: job.id,
         documentId,
         chunksCount: chunks.length,
         priority: job.metadata.priority,
         userId: job.metadata.userId,
-        messageQueue: this.config.enableRabbitMQ ? 'rabbitmq' : 'redis'
+        messageQueue: this.config.enableRabbitMQ ? 'rabbitmq' : 'redis',
       });
 
       const workflowState = this.workflowActor.getSnapshot();
@@ -115,14 +116,14 @@ export class IngestionService {
       console.error('❌ Failed to submit document:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message: String(error)
+        error: error instanceof Error ? error.message: String(error),
       };
     }
   }
 
   private async publishJobToQueue(job: IngestionJob): Promise<void> {
     try {
-      // Split job into chunk processing tasks for worker pool
+      // Split job into chunk processing tasks for worker pool;
       for (const [index, chunk] of job.chunks.entries()) {
         const chunkJob = {
           jobId: job.id,
@@ -133,7 +134,7 @@ export class IngestionService {
             ...job.metadata,
             totalChunks: job.chunks.length,
             priority: job.metadata.priority,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
         };
 
@@ -146,7 +147,7 @@ export class IngestionService {
     } catch (error) {
       console.error(`❌ Failed to publish job ${job.id} to RabbitMQ:`, error);
 
-      // Fallback to Redis if RabbitMQ fails
+      // Fallback to Redis if RabbitMQ fails;
       if (this.config.enableRedisQueues) {
         await this.publishJobToRedis(job);
       } else {
@@ -162,16 +163,16 @@ export class IngestionService {
           jobId: job.id,
           documentId: job.documentId,
           chunkIndex: index,
-          text: chunk, // Note: Redis worker expects 'text' field
+          text: chunk, // Note: Redis worker expects 'text' field;
           metadata: {
             ...job.metadata,
             totalChunks: job.chunks.length,
             priority: job.metadata.priority,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           }
         };
 
-        await cache.rpush('embedding:jobs', JSON.stringify(chunkJob));
+        await cache.rpush('embedding:jobs', JSON.stringify(chunkJob);
       }
 
       console.log(`📤 Published job ${job.id} (${job.chunks.length} chunks) to Redis`);
@@ -182,7 +183,7 @@ export class IngestionService {
   }
 
   private getQueueNameForJob(job: IngestionJob): string {
-    // Route based on job priority and type
+    // Route based on job priority and type;
     if (job.metadata.priority === 'high') {
       return 'evidence.embedding.priority';
     }
@@ -195,7 +196,7 @@ export class IngestionService {
     const context = state.context;
     const currentJob = context.currentJob;
 
-    // Update job tracking based on workflow state
+    // Update job tracking based on workflow state;
     if (currentJob) {
       jobTracker.updateJob(currentJob.id, {
         state: this.mapWorkflowStateToJobState(state.value),
@@ -203,7 +204,7 @@ export class IngestionService {
         metadata: {
           ...currentJob.metadata,
           workflowState: state.value,
-          lastUpdated: new Date().toISOString()
+          lastUpdated: new Date().toISOString(),
         }
       });
     }
@@ -213,7 +214,7 @@ export class IngestionService {
   }
 
   private mapWorkflowStateToJobState(workflowState: any): IngestionJob['state'] {
-    // Map XState workflow states to job tracker states
+    // Map XState workflow states to job tracker states;
     const stateMap: Record<string, IngestionJob['state']> = {
       'idle': 'queued',
       'processing': 'processing',
@@ -239,18 +240,18 @@ export class IngestionService {
   }
 
   private emitWorkflowEvent(state: string, context: any): void {
-    // Record workflow state changes as metrics
+    // Record workflow state changes as metrics;
     jobTracker.recordMetric('workflow_state_change', {
       state,
       queueLength: context.jobQueue?.length || 0,
       currentJobId: context.currentJob?.id,
       concurrency: context.concurrency,
       stats: context.stats,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   }
 
-  // Job Management API
+  // Job Management API;
   async getJobStatus(jobId: string): Promise<any> {
     try {
       // Try cache first, then LokiJS
@@ -280,7 +281,7 @@ export class IngestionService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message: String(error)
+        error: error instanceof Error ? error.message: String(error),
       };
     }
   }
@@ -303,7 +304,7 @@ export class IngestionService {
           } as any,
         });
 
-        // Re-publish to queue
+        // Re-publish to queue;
         if (this.config.enableRabbitMQ) {
           await this.publishJobToQueue(currentJob);
         } else if (this.config.enableRedisQueues) {
@@ -318,7 +319,7 @@ export class IngestionService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message: String(error)
+        error: error instanceof Error ? error.message: String(error),
       };
     }
   }
@@ -328,7 +329,7 @@ export class IngestionService {
       // Cancel in workflow
       this.workflowActor.send({ type: 'CANCEL_JOB', jobId });
 
-      // Update tracking
+      // Update tracking;
       jobTracker.updateJob(jobId, {
         state: 'failed',
         error: 'Cancelled by user',
@@ -342,12 +343,12 @@ export class IngestionService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message: String(error)
+        error: error instanceof Error ? error.message: String(error),
       };
     }
   }
 
-  // Workflow Control API
+  // Workflow Control API;
   async pauseProcessing(): Promise<any> {
     this.workflowActor.send({ type: 'PAUSE_PROCESSING' });
     return { success: true, message: 'Processing paused' };
@@ -362,7 +363,7 @@ export class IngestionService {
     if (concurrency < 1 || concurrency > 10) {
       return {
         success: false,
-        error: 'Concurrency must be between 1 and 10'
+        error: 'Concurrency must be between 1 and 10',
       };
     }
 
@@ -373,7 +374,7 @@ export class IngestionService {
     };
   }
 
-  // Monitoring API
+  // Monitoring API;
   getDashboardData() {
     const dashboardData = jobTracker.getDashboardData();
     const workflowState = this.workflowActor.getSnapshot();
@@ -402,7 +403,7 @@ export class IngestionService {
     };
   }
 
-  // Cleanup and maintenance
+  // Cleanup and maintenance;
   async clearCompletedJobs(): Promise<any> {
     this.workflowActor.send({ type: 'CLEAR_COMPLETED' });
     const cleared = jobTracker.clearCompletedJobs();
@@ -419,7 +420,7 @@ export class IngestionService {
 
     return {
       success: true,
-      message: 'Statistics reset'
+      message: 'Statistics reset',
     };
   }
 

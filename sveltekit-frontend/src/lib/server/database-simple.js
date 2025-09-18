@@ -9,7 +9,7 @@ const config = {
   port: parseInt(import.meta.env.POSTGRES_PORT || '5433'),
   database: import.meta.env.POSTGRES_DB || 'legal_ai_db',
   user: import.meta.env.POSTGRES_USER || 'legal_admin',
-  password: import.meta.env.POSTGRES_PASSWORD || '123456'
+  password: import.meta.env.POSTGRES_PASSWORD || '123456',
 };
 
 // Connection string

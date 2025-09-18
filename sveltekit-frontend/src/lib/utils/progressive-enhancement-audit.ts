@@ -1,5 +1,6 @@
 // Progressive Enhancement Audit Utility
-// Provides tools and guidelines for ensuring forms work without JavaScript
+// Provides tools and guidelines for ensuring forms work without JavaScript;
+}
 
 export interface FormAuditResult {
   formId: string;
@@ -20,7 +21,7 @@ export interface FormAuditResult {
     score: number; // 0-100
     level: 'poor' | 'basic' | 'good' | 'excellent';
     issues: FormIssue[];
-    recommendations: string[];
+    recommendations: string[];,
   };
 }
 
@@ -59,7 +60,7 @@ export interface ProgressiveEnhancementConfig {
   confirmBeforeLeaving: boolean;
   highlightRequiredFields: boolean;
   showCharacterCounts: boolean;
-  enableKeyboardShortcuts: boolean;
+  enableKeyboardShortcuts: boolean;,
 }
 
 export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
@@ -84,10 +85,10 @@ export const DEFAULT_PE_CONFIG: ProgressiveEnhancementConfig = {
   confirmBeforeLeaving: false, // Only for complex forms
   highlightRequiredFields: true,
   showCharacterCounts: false, // For text fields with limits
-  enableKeyboardShortcuts: false // For power users
+  enableKeyboardShortcuts: false // For power users,
 };
 
-// Form audit functions
+// Form audit functions;
 export function auditFormElement(formElement: HTMLFormElement): FormAuditResult {
   const result: FormAuditResult = {
     formId: formElement.id || formElement.name || 'unnamed-form',
@@ -108,7 +109,7 @@ export function auditFormElement(formElement: HTMLFormElement): FormAuditResult 
       score: 0,
       level: 'poor',
       issues: [],
-      recommendations: []
+      recommendations: [],
     }
   };
 
@@ -193,7 +194,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       category: 'functionality',
       message: 'Form lacks action attribute - will not work without JavaScript',
       element: 'form',
-      fix: 'Add action="/api/form-handler" attribute to form element'
+      fix: 'Add action="/api/form-handler" attribute to form element',
     });
   }
   
@@ -205,7 +206,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       category: 'functionality', 
       message: 'Form method not explicitly set - defaults to GET',
       element: 'form',
-      fix: 'Add method="POST" attribute to form element'
+      fix: 'Add method="POST" attribute to form element',
     });
   }
   
@@ -216,7 +217,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'ux',
       message: 'Form does not use SvelteKit enhance - missing progressive enhancement',
-      fix: 'Add use:enhance action to form element'
+      fix: 'Add use:enhance action to form element',
     });
   }
 
@@ -225,7 +226,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
   if ((result as { hasFormElement?: any; hasActionAttribute?: any; hasMethodAttribute?: any; usesEnhance?: any; usesSuperForms?: any; hasClientValidation?: any; hasServerValidation?: any; hasProgressiveLabels?: any; hasAccessibilityFeatures?: any; hasErrorHandling?: any; hasLoadingStates?: any; compliance?: any; formId?: any; formAction?: any; method?: any }).hasClientValidation) score += 8;
   if ((result as { hasFormElement?: any; hasActionAttribute?: any; hasMethodAttribute?: any; usesEnhance?: any; usesSuperForms?: any; hasClientValidation?: any; hasServerValidation?: any; hasProgressiveLabels?: any; hasAccessibilityFeatures?: any; hasErrorHandling?: any; hasLoadingStates?: any; compliance?: any; formId?: any; formAction?: any; method?: any }).hasServerValidation) score += 7;
 
-  // Accessibility (20 points) 
+  // Accessibility (20 points);
   if ((result as { hasFormElement?: any; hasActionAttribute?: any; hasMethodAttribute?: any; usesEnhance?: any; usesSuperForms?: any; hasClientValidation?: any; hasServerValidation?: any; hasProgressiveLabels?: any; hasAccessibilityFeatures?: any; hasErrorHandling?: any; hasLoadingStates?: any; compliance?: any; formId?: any; formAction?: any; method?: any }).hasProgressiveLabels) {
     score += 10;
   } else {
@@ -233,7 +234,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'critical',
       category: 'accessibility',
       message: 'Form inputs missing proper labels',
-      fix: 'Ensure all inputs have associated <label> elements or aria-label attributes'
+      fix: 'Ensure all inputs have associated <label> elements or aria-label attributes',
     });
   }
   
@@ -244,11 +245,11 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'accessibility',
       message: 'Form lacks accessibility features like live regions or fieldsets',
-      fix: 'Add aria-live regions for error announcements and fieldsets for grouping'
+      fix: 'Add aria-live regions for error announcements and fieldsets for grouping',
     });
   }
 
-  // Error handling and UX (15 points)
+  // Error handling and UX (15 points);
   if ((result as { hasFormElement?: any; hasActionAttribute?: any; hasMethodAttribute?: any; usesEnhance?: any; usesSuperForms?: any; hasClientValidation?: any; hasServerValidation?: any; hasProgressiveLabels?: any; hasAccessibilityFeatures?: any; hasErrorHandling?: any; hasLoadingStates?: any; compliance?: any; formId?: any; formAction?: any; method?: any }).hasErrorHandling) {
     score += 8;
   } else {
@@ -256,7 +257,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'warning',
       category: 'ux',
       message: 'No error handling elements detected',
-      fix: 'Add error message elements with role="alert" or aria-live="polite"'
+      fix: 'Add error message elements with role="alert" or aria-live="polite"',
     });
   }
   
@@ -267,7 +268,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
       type: 'info',
       category: 'ux',
       message: 'No loading state indicators found',
-      fix: 'Add loading spinners and disable form during submission'
+      fix: 'Add loading spinners and disable form during submission',
     });
   }
 
@@ -282,7 +283,7 @@ function calculateComplianceScore(result: FormAuditResult): void {
     score,
     level,
     issues,
-    recommendations: []
+    recommendations: [],
   };
 }
 
@@ -321,17 +322,17 @@ function generateRecommendations(result: FormAuditResult): void {
   (result as { hasFormElement?: any; hasActionAttribute?: any; hasMethodAttribute?: any; usesEnhance?: any; usesSuperForms?: any; hasClientValidation?: any; hasServerValidation?: any; hasProgressiveLabels?: any; hasAccessibilityFeatures?: any; hasErrorHandling?: any; hasLoadingStates?: any; compliance?: any; formId?: any; formAction?: any; method?: any }).compliance.recommendations = recommendations;
 }
 
-// Batch audit multiple forms
+// Batch audit multiple forms;
 export function auditAllForms(): FormAuditResult[] {
   const forms = document.querySelectorAll('form');
-  return Array.from(forms).map(form => auditFormElement(form as HTMLFormElement));
+  return Array.from(forms).map(form => auditFormElement(form as HTMLFormElement);
 }
 
-// Generate audit report
+// Generate audit report;
 export function generateAuditReport(results: FormAuditResult[]): string {
   const totalForms = results.length;
   const averageScore = results.reduce((sum, r) => sum + r.compliance.score, 0) / totalForms;
-  const criticalIssues = results.flatMap(r => r.compliance.issues.filter(i => i.type === 'critical'));
+  const criticalIssues = results.flatMap(r => r.compliance.issues.filter(i => i.type === 'critical');
   const excellentForms = results.filter(item => item.length);
 
   return `
@@ -368,14 +369,14 @@ ${(result as { hasFormElement?: any; hasActionAttribute?: any; hasMethodAttribut
 `;
 }
 
-// Progressive enhancement validator for Svelte components
+// Progressive enhancement validator for Svelte components;
 export function createProgressiveForm(config: Partial<ProgressiveEnhancementConfig> = {}) {
   const finalConfig = { ...DEFAULT_PE_CONFIG, ...config };
   
   return {
     config: finalConfig,
     
-    // Form validation helpers
+    // Form validation helpers;
     validateRequired: (value: any, fieldName: string) => {
       if (!value || (typeof value === 'string' && !value.trim())) {
         return `${fieldName} is required`;
@@ -401,7 +402,7 @@ export function createProgressiveForm(config: Partial<ProgressiveEnhancementConf
       return null;
     },
     
-    // Accessibility helpers
+    // Accessibility helpers;
     generateFieldId: (fieldName: string, formId?: string) => {
       return formId ? `${formId}-${fieldName}` : fieldName;
     },
@@ -414,7 +415,7 @@ export function createProgressiveForm(config: Partial<ProgressiveEnhancementConf
       return `${fieldId}-description`;
     },
     
-    // Form state management
+    // Form state management;
     createFormState: (initialData: Record<string, any> = {}) => {
       return {
         data: initialData,
@@ -422,18 +423,18 @@ export function createProgressiveForm(config: Partial<ProgressiveEnhancementConf
         touched: Record<string, any> as Record<string, boolean>,
         isSubmitting: false,
         hasSubmitted: false,
-        isDirty: false
+        isDirty: false,
       };
     }
   };
 }
 
-// Utility to check if JavaScript is available
+// Utility to check if JavaScript is available;
 export function supportsJavaScript(): boolean {
   return typeof window !== 'undefined' && 'addEventListener' in window;
 }
 
-// Utility to enhance form progressively
+// Utility to enhance form progressively;
 export function enhanceFormProgressively(form: HTMLFormElement, options: {
   onSubmit?: (formData: FormData) => Promise<any>;
   onSuccess?: (result: any) => void;
@@ -442,7 +443,7 @@ export function enhanceFormProgressively(form: HTMLFormElement, options: {
 } = {}) {
   if (!supportsJavaScript()) return;
   
-  // Add enhanced submission handling
+  // Add enhanced submission handling;
   form.addEventListener('submit', async (e) => {
     if (options.onSubmit) {
       e.preventDefault();

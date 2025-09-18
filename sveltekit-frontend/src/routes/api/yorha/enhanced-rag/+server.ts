@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     if (!query) {
       return json(
-        { success: false, error: "Query is required" },
+        { success: false, error: "Query is required" },)
         { status: 400 }
       );
     }
@@ -110,7 +110,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Core results
       results: analysisResults.slice(0, limit),
 
-      // Analysis metadata
+      // Analysis metadata;
       analysis: {
         totalResultsAnalyzed: rerankedResults.length + dbResults.length,
         confidenceScore: calculateOverallConfidence(analysisResults),
@@ -123,7 +123,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Enhanced features
       recommendations: includeRecommendations ? recommendations : [],
 
-      // Legal-specific insights
+      // Legal-specific insights;
       legalInsights: {
         jurisdiction: extractJurisdiction(analysisResults),
         legalAreas: extractLegalAreas(analysisResults),
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
 
       // YoRHa-specific formatting
-      yorhaMetadata: includeMetadata
+      yorhaMetadata: includeMetadata;
         ? {
             systemStatus: 'OPERATIONAL',
             securityLevel: 'AUTHORIZED',
@@ -153,7 +153,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   } catch (error: any) {
     console.error("YoRHa Enhanced RAG error:", error);
-    return json(
+    return json();
       {
         success: false,
         error: error.message || 'Enhanced RAG analysis failed',
@@ -177,10 +177,10 @@ async function performYoRHaAnalysis(
   query: string,
   rerankedResults: any[],
   dbResults: any[],
-  analysisType: string
+  analysisType: string;
 ): Promise<any[]> {
   // Combine all results
-  const allResults = [
+  const allResults = [;
     ...rerankedResults.map((r) => ({
       ...r,
       source: 'enhanced-rag',
@@ -197,7 +197,7 @@ async function performYoRHaAnalysis(
   ];
 
   // Apply YoRHa-specific scoring and analysis
-  return allResults
+  return allResults;
     .map((result) => ({
       ...result,
       yorha_id: `ANALYSIS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -210,7 +210,7 @@ async function performYoRHaAnalysis(
         actionRequired: determineActionRequired(result),
         classification: classifyResult(result),
       },
-    }))
+    })
     .sort((a, b) => b.yorha_confidence - a.yorha_confidence);
 }
 
@@ -218,10 +218,10 @@ async function performYoRHaAnalysis(
 async function generateYoRHaRecommendations(
   query: string,
   analysisResults: any[],
-  dataType: string
+  dataType: string;
 ): Promise<any[]> {
   // Basic recommendation logic (would be enhanced with actual AI)
-  const recommendations = [
+  const recommendations = [;
     {
       id: `REC-${Date.now()}-1`,
       type: 'INVESTIGATE',
@@ -251,7 +251,7 @@ async function generateYoRHaRecommendations(
   return recommendations;
 }
 
-// Utility functions for YoRHa legal analysis
+// Utility functions for YoRHa legal analysis;
 function calculateOverallConfidence(results: any[]): number {
   if (!results.length) return 0;
   const sum = results.reduce((acc, r) => acc + (r.yorha_confidence || 0), 0);
@@ -262,21 +262,21 @@ function calculateRelevance(query: string, content: string): number {
   if (!content) return 0;
   const queryWords = query.toLowerCase().split(/\s+/);
   const contentLower = content.toLowerCase();
-  const matches = queryWords.filter(word => contentLower.includes(word));
+  const matches = queryWords.filter(word => contentLower.includes(word);
   return matches.length / queryWords.length;
 }
 
 function calculateLegalWeight(result: any): number {
   const legalTerms = ["contract", "liability", "breach", "damages", "jurisdiction", "statute", "precedent"];
   const content = ((result as { content?: any; documentType?: any; evidenceType?: any; source?: any }).content || "").toLowerCase();
-  const matches = legalTerms.filter(term => content.includes(term));
+  const matches = legalTerms.filter(term => content.includes(term);
   return Math.min(matches.length / 3, 1); // Normalize to 0-1
 }
 
 function calculateRiskFactor(result: any): number {
   const riskTerms = ["litigation", "penalty", "violation", "breach", "liability", "damages"];
   const content = ((result as { content?: any; documentType?: any; evidenceType?: any; source?: any }).content || "").toLowerCase();
-  const matches = riskTerms.filter(term => content.includes(term));
+  const matches = riskTerms.filter(term => content.includes(term);
   return Math.min(matches.length / 2, 1); // Normalize to 0-1
 }
 
@@ -320,7 +320,7 @@ function extractLegalAreas(results: any[]): string[] {
   const areas = new Set<string>();
   results.forEach(r => {
     if (r.legalCategory) areas.add(r.legalCategory);
-    if (r.topics) r.topics.forEach((topic: string) => areas.add(topic));
+    if (r.topics) r.topics.forEach((topic: string) => areas.add(topic);
   });
   return Array.from(areas);
 }
@@ -334,7 +334,7 @@ function findRelevantPrecedents(results: any[]): unknown[] {
 function extractKeyTerms(results: any[]): string[] {
   const terms = new Set<string>();
   results.forEach(r => {
-    if (r.keywords) r.keywords.forEach((keyword: string) => terms.add(keyword));
+    if (r.keywords) r.keywords.forEach((keyword: string) => terms.add(keyword);
   });
   return Array.from(terms).slice(0, 10);
 }

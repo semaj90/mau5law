@@ -12,6 +12,7 @@ import { db } from '$lib/server/db/unified-client';
 import { evidence, documents } from '$lib/db/schema';
 import crypto from 'crypto';
 import { URL } from 'url';
+}
 
 export interface WebhookEvent {
   eventName: string;
@@ -39,7 +40,7 @@ export interface IngestionJob {
   metadata?: Record<string, any>;
 }
 
-// Local helper to safely parse values that may be strings or already-parsed objects
+// Local helper to safely parse values that may be strings or already-parsed objects;
 function parseMaybeString<T = any>(val: unknown): T {
   if (typeof val === 'string') {
     try {
@@ -51,20 +52,19 @@ function parseMaybeString<T = any>(val: unknown): T {
   return (val as T);
 }
 
-// POST /api/v1/upload/webhook - Handle MinIO upload completion
+// POST /api/v1/upload/webhook - Handle MinIO upload completion;
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   try {
     console.log('📥 POST /api/v1/upload/webhook - Processing upload completion');
 
     const webhookEvent: WebhookEvent = await request.json();
 
-    // Validate webhook event
+    // Validate webhook event;
     if (!webhookEvent.bucket || !webhookEvent.objectName) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Invalid webhook payload',
-        },
+        },)
         { status: 400 }
       );
     }
@@ -76,7 +76,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     // Only process object creation events
     if (
       webhookEvent.eventName !== 's3:ObjectCreated:Put' &&
-      webhookEvent.eventName !== 's3:ObjectCreated:Post'
+      webhookEvent.eventName !== 's3:ObjectCreated:Post';
     ) {
       return json({
         success: true,
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     let uploadMetadata = null;
     let uploadId = webhookEvent.uploadId;
 
-    // Try to extract upload ID from object name if not provided
+    // Try to extract upload ID from object name if not provided;
     if (!uploadId) {
       const pathParts = webhookEvent.objectName.split('/');
       const fileName = pathParts[pathParts.length - 1];
@@ -149,25 +149,25 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 
     // Store job in Redis for tracking
     const jobKey = `ingestion:${jobId}`;
-    await (redisService as any).setex(jobKey, 86400, JSON.stringify(ingestionJob)); // keep cast: setex not on typed interface
+    await (redisService as any).setex(jobKey, 86400, JSON.stringify(ingestionJob); // keep cast: setex not on typed interface
 
     // Add to ingestion queue
-    await (redisService as any).lpush('ingestion:queue', JSON.stringify(ingestionJob));
+    await (redisService as any).lpush('ingestion:queue', JSON.stringify(ingestionJob);
 
-    // Update upload status if we have the upload metadata
+    // Update upload status if we have the upload metadata;
     if (uploadId && uploadMetadata) {
       const uploadKey = `upload:${uploadId}`;
       uploadMetadata.status = 'processing';
       uploadMetadata.ingestionJobId = jobId;
       uploadMetadata.webhookReceivedAt = new Date().toISOString();
-      await (redisService as any).setex(uploadKey, 3600, JSON.stringify(uploadMetadata));
+      await (redisService as any).setex(uploadKey, 3600, JSON.stringify(uploadMetadata);
     }
 
-    // If this is a case-related upload, create evidence entry
+    // If this is a case-related upload, create evidence entry;
     if (uploadMetadata.caseId) {
       try {
         const [evidenceEntry] = await db
-          .insert(evidence)
+          .insert(evidence);
           .values({
             caseId: uploadMetadata.caseId,
             title: uploadMetadata.fileName,
@@ -177,7 +177,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
             fileSize: uploadMetadata.contentLength,
             mimeType: uploadMetadata.contentType,
             hash: null, // TODO: Calculate file hash
-            createdBy: '00000000-0000-0000-0000-000000000001', // TODO: Get from auth
+            createdBy: '00000000-0000-0000-0000-000000000001', // TODO: Get from auth;
             metadata: {
               bucket: webhookEvent.bucket,
               objectName: webhookEvent.objectName,
@@ -187,12 +187,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
           })
           .returning();
 
-        // Update job with evidence ID
+        // Update job with evidence ID;
         ingestionJob.metadata = {
           ...ingestionJob.metadata,
           evidenceId: evidenceEntry.id,
         };
-        await (redisService as any).setex(jobKey, 86400, JSON.stringify(ingestionJob));
+        await (redisService as any).setex(jobKey, 86400, JSON.stringify(ingestionJob);
 
         console.log(`📋 Evidence entry created: ${evidenceEntry.id}`);
       } catch (dbError) {
@@ -247,16 +247,15 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error('Unknown error');
     console.error('❌ POST /api/v1/upload/webhook error:', err);
-    return json(
-      {
+    return json({
         success: false,
         error: err.message,
-      },
+      },)
       { status: 500 }
     );
   }
 };
-// GET /api/v1/upload/webhook/jobs - List ingestion jobs
+// GET /api/v1/upload/webhook/jobs - List ingestion jobs;
 export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   try {
     console.log('📋 GET /api/v1/upload/webhook/jobs - Listing ingestion jobs');
@@ -271,7 +270,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
 
     const jobs: any[] = [];
 
-    // Add queued jobs
+    // Add queued jobs;
     for (const jobData of queuedJobs || []) {
       try {
         const job = parseMaybeString(jobData);
@@ -283,7 +282,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
       }
     }
 
-    // Add stored jobs (completed, failed, etc.)
+    // Add stored jobs (completed, failed, etc.);
     for (const jobKey of (allJobKeys || []).filter((k: string) => k.startsWith('ingestion:job_'))) {
       if (jobs.length >= limit) break;
 
@@ -292,7 +291,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
         if (jobData) {
           const job = parseMaybeString(jobData);
           if ((!status || job.status === status) && (!caseId || job.caseId === caseId)) {
-            // Don't duplicate queued jobs
+            // Don't duplicate queued jobs;
             if (!jobs.find((j) => j.id === job.id)) {
               jobs.push(job);
             }
@@ -304,7 +303,7 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
     }
 
     // Sort by creation time (newest first)
-    jobs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    jobs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 
     const response = {
       success: true,
@@ -324,11 +323,10 @@ export const GET: RequestHandler = async ({ url, getClientAddress }) => {
   } catch (error: unknown) {
     const err = error instanceof Error ? error : new Error('Unknown error');
     console.error('❌ GET /api/v1/upload/webhook/jobs error:', err);
-    return json(
-      {
+    return json({
         success: false,
         error: err.message,
-      },
+      },)
       { status: 500 }
     );
   }

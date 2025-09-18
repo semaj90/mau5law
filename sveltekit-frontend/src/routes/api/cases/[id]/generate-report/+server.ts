@@ -19,12 +19,12 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
     const caseData = await db
       .select()
       .from(cases)
-      .where(and(eq(cases.id, caseId), eq(cases.createdBy, locals.user.id)))
+      .where(and(eq(cases.id, caseId), eq(cases.createdBy, locals.user.id))
       .limit(1);
 
     if (!caseData.length) {
       return json(
-        { error: "Case not found or access denied" },
+        { error: "Case not found or access denied" },)
         { status: 404 }
       );
     }
@@ -37,10 +37,10 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
       evidenceData = await db
         .select()
         .from(evidence)
-        .where(eq(evidence.caseId, caseId));
+        .where(eq(evidence.caseId, caseId);
     }
 
-    // Generate report content
+    // Generate report content;
     const reportContent = {
       case: caseRecord,
       evidence: evidenceData,
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
 
     // Create report record
     const newReport = await db
-      .insert(reports)
+      .insert(reports);
       .values({
         title: `${reportType} - ${caseRecord.title}`,
         content: JSON.stringify(reportContent),
@@ -80,7 +80,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     const userReports = await db
       .select()
       .from(reports)
-      .where(eq(reports.createdBy, locals.user.id));
+      .where(eq(reports.createdBy, locals.user.id);
 
     return json({ reports: userReports });
   } catch (error: any) {

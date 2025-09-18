@@ -21,7 +21,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { text, metadata } = body;
 
         if (!text || typeof text !== 'string') {
-          return json(
+          return json();
             {
               error: 'Text is required and must be a string',
               timestamp: new Date().toISOString(),
@@ -47,7 +47,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { documents, options = {} } = body;
 
         if (!documents || !Array.isArray(documents)) {
-          return json(
+          return json();
             {
               error: 'Documents array is required',
               timestamp: new Date().toISOString(),
@@ -72,7 +72,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { documentId, content, docMetadata } = body;
 
         if (!documentId || !content) {
-          return json(
+          return json();
             {
               error: 'documentId and content are required',
               timestamp: new Date().toISOString(),
@@ -81,14 +81,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
           );
         }
 
-        // Generate embedding
+        // Generate embedding;
         const embeddingResult = await gemmaEmbeddingService.generateEmbedding(content, {
           documentId,
           ...docMetadata,
         });
 
         if (!embeddingResult.success) {
-          return json(
+          return json();
             {
               error: `Embedding generation failed: ${embeddingResult.error}`,
               timestamp: new Date().toISOString(),
@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Store in pgvector (Gemma generates 768-dimensional embeddings)
         let finalEmbedding = embeddingResult.embedding;
 
-        // Ensure embedding is 768 dimensions for pgvector compatibility
+        // Ensure embedding is 768 dimensions for pgvector compatibility;
         if (finalEmbedding && finalEmbedding.length !== 768) {
           if (finalEmbedding.length < 768) {
             // Pad with zeros
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const storeResult = await pgVectorService.insertDocumentWithEmbedding(
           documentId,
           content,
-          finalEmbedding!,
+          finalEmbedding!,);
           {
             ...docMetadata,
             embeddingMetadata: embeddingResult.metadata,
@@ -163,12 +163,12 @@ export const POST: RequestHandler = async ({ request, url }) => {
         });
 
       default:
-        return json(
+        return json();
           {
             error: `Unknown action: ${action}`,
             availableActions: ['generate', 'batch', 'store', 'health', 'model-info'],
             timestamp: new Date().toISOString(),
-          },
+          },>
           { status: 400 }
         );
     }
@@ -178,7 +178,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
       error: `Request processing failed: ${error instanceof Error ? error.message: 'Unknown error'}`,
       action,
       responseTime: `${Date.now() - startTime}ms`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 }
@@ -193,7 +193,7 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           action: 'gemma_health_check',
           ...healthResult,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
       case 'model-info':
@@ -204,21 +204,21 @@ export const GET: RequestHandler = async ({ url }) => {
         return json({
           action: 'gemma_model_info',
           ...infoResult,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
-      default:
+      default:;
         return json({
           error: `Unknown GET action: ${action}`,
           availableActions: ['health', 'model-info'],
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         }, { status: 400 });
     }
 
   } catch (error) {
     return json({
       error: `GET request failed: ${error instanceof Error ? error.message: 'Unknown error'}`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };

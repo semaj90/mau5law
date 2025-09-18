@@ -48,7 +48,7 @@ interface ChunkingResponse {
     totalTokens: number;
     processingTime: number;
     chunkingMethod: string;
-    usedCUDA: boolean;
+    usedCUDA: boolean;,
   };
   embeddings?: number[][];
 }
@@ -84,7 +84,7 @@ export const POST: RequestHandler = async ({ request }) => {
     let text = providedText;
     let documentMetadata: any = {};
 
-    // Load text from MinIO if URL provided
+    // Load text from MinIO if URL provided;
     if (minioUrl) {
       const minioResult = await MinIOService.getTextContent(minioUrl);
       text = minioResult.content;
@@ -127,7 +127,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (generateEmbeddings && useCUDA) {
       embeddings = await generateChunkEmbeddings(chunks.map(c => c.content), useCUDA);
 
-      // Add embeddings to chunks
+      // Add embeddings to chunks;
       chunks.forEach((chunk, index) => {
         chunk.embedding = embeddings![index];
       });
@@ -147,7 +147,7 @@ export const POST: RequestHandler = async ({ request }) => {
         chunkingMethod: useSemanticChunking ? 'semantic' : preserveParagraphs ? 'paragraph-aware' : 'basic',
         usedCUDA
       },
-      embeddings: generateEmbeddings ? embeddings : undefined
+      embeddings: generateEmbeddings ? embeddings : undefined,
     };
 
     return json(response);
@@ -165,7 +165,7 @@ async function performSemanticChunking(
     chunkOverlap: number;
     minChunkSize: number;
     maxChunkSize: number;
-    extractMetadata: boolean;
+    extractMetadata: boolean;,
   }
 ): Promise<SemanticChunk[]> {
   const { chunkSize, chunkOverlap, minChunkSize, maxChunkSize, extractMetadata } = options;
@@ -189,7 +189,7 @@ async function performSemanticChunking(
     const sentence = sentences[i];
     const tentativeChunk = currentChunk + (currentChunk ? ' ' : '') + sentence;
 
-    // Check if adding this sentence would exceed max chunk size
+    // Check if adding this sentence would exceed max chunk size;
     if (tentativeChunk.length > maxChunkSize && currentChunk.length >= minChunkSize) {
       // Create chunk from current content
       const chunk = await createSemanticChunk(
@@ -203,7 +203,7 @@ async function performSemanticChunking(
       chunks.push(chunk);
 
       // Start new chunk with overlap
-      const overlapSentences = currentSentences.slice(-Math.ceil(currentSentences.length * (chunkOverlap / 100)));
+      const overlapSentences = currentSentences.slice(-Math.ceil(currentSentences.length * (chunkOverlap / 100));
       currentChunk = overlapSentences.join(' ');
       currentStartIndex = text.indexOf(currentChunk);
       currentSentences = [...overlapSentences];
@@ -213,7 +213,7 @@ async function performSemanticChunking(
     currentChunk = tentativeChunk;
     currentSentences.push(sentence);
 
-    // If we've reached target chunk size, look for semantic boundary
+    // If we've reached target chunk size, look for semantic boundary;
     if (currentChunk.length >= chunkSize && i < sentences.length - 1) {
       const currentEmbedding = sentenceEmbeddings[i];
       const nextEmbedding = sentenceEmbeddings[i + 1];
@@ -221,7 +221,7 @@ async function performSemanticChunking(
       // Calculate semantic similarity between current and next sentence
       const similarity = cosineSimilarity(currentEmbedding, nextEmbedding);
 
-      // If similarity is low (semantic boundary), create chunk
+      // If similarity is low (semantic boundary), create chunk;
       if (similarity < 0.7) {
         const chunk = await createSemanticChunk(
           currentChunk,
@@ -234,7 +234,7 @@ async function performSemanticChunking(
         chunks.push(chunk);
 
         // Start new chunk
-        const overlapSentences = currentSentences.slice(-Math.ceil(currentSentences.length * (chunkOverlap / 100)));
+        const overlapSentences = currentSentences.slice(-Math.ceil(currentSentences.length * (chunkOverlap / 100));
         currentChunk = overlapSentences.join(' ');
         currentStartIndex = text.indexOf(sentence);
         currentSentences = [...overlapSentences];
@@ -242,7 +242,7 @@ async function performSemanticChunking(
     }
   }
 
-  // Add final chunk if it has content
+  // Add final chunk if it has content;
   if (currentChunk.trim().length >= minChunkSize) {
     const chunk = await createSemanticChunk(
       currentChunk,
@@ -265,7 +265,7 @@ async function performParagraphAwareChunking(
     chunkOverlap: number;
     minChunkSize: number;
     maxChunkSize: number;
-    extractMetadata: boolean;
+    extractMetadata: boolean;,
   }
 ): Promise<SemanticChunk[]> {
   const { chunkSize, chunkOverlap, minChunkSize, maxChunkSize, extractMetadata } = options;
@@ -304,7 +304,7 @@ async function performParagraphAwareChunking(
       currentChunk = tentativeChunk;
     }
 
-    // If chunk reaches target size, finalize it
+    // If chunk reaches target size, finalize it;
     if (currentChunk.length >= chunkSize) {
       const chunk = await createSemanticChunk(
         currentChunk,
@@ -323,7 +323,7 @@ async function performParagraphAwareChunking(
     }
   }
 
-  // Add final chunk
+  // Add final chunk;
   if (currentChunk.trim().length >= minChunkSize) {
     const chunk = await createSemanticChunk(
       currentChunk,
@@ -344,7 +344,7 @@ async function performBasicChunking(
   options: {
     chunkSize: number;
     chunkOverlap: number;
-    extractMetadata: boolean;
+    extractMetadata: boolean;,
   }
 ): Promise<SemanticChunk[]> {
   const { chunkSize, chunkOverlap, extractMetadata } = options;
@@ -379,7 +379,7 @@ async function createSemanticChunk(
   startIndex: number,
   endIndex: number,
   sentences: string[],
-  extractMetadata: boolean
+  extractMetadata: boolean;
 ): Promise<SemanticChunk> {
   const wordCount = content.split(/\s+/).length;
   const sentenceCount = sentences.length;
@@ -404,7 +404,7 @@ async function createSemanticChunk(
       sentenceCount,
       complexity,
       entities: extractMetadata ? entities : undefined,
-      keyTerms: extractMetadata ? keyTerms : undefined
+      keyTerms: extractMetadata ? keyTerms : undefined,
     }
   };
 }
@@ -420,14 +420,14 @@ async function generateChunkEmbeddings(texts: string[], useCUDA: boolean): Promi
       model: getEmbeddingModel(),
       config: {
         normalize: true,
-        use_tensor_cores: true
+        use_tensor_cores: true,
       }
     };
 
     const response = await fetch(cudaUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
@@ -467,7 +467,7 @@ function splitIntoSentences(text: string): string[] {
   return text
     .split(/(?<=[.!?])\s+(?=[A-Z])/)
     .filter(item => item.length) > 10) // Filter out very short sentences
-    .map(sentence => sentence.trim());
+    .map(sentence => sentence.trim();
 }
 
 function extractLegalEntities(text: string): string[] {
@@ -486,7 +486,7 @@ function extractLegalEntities(text: string): string[] {
   patterns.forEach(pattern => {
     const matches = text.match(pattern);
     if (matches) {
-      entities.push(...matches.map(match => match.trim()));
+      entities.push(...matches.map(match => match.trim());
     }
   });
 
@@ -502,7 +502,7 @@ function extractKeyTerms(text: string): string[] {
     'breach', 'default', 'negligence', 'fraud', 'misrepresentation'
   ];
 
-  const foundTerms = legalTerms.filter(item => item.includes(term.toLowerCase())
+  const foundTerms = legalTerms.filter(item => item.includes(term.toLowerCase()
   );
 
   return foundTerms;
@@ -524,7 +524,7 @@ function calculateComplexity(text: string): number {
     (legalTermCount * 2) +
     (citationCount * 3) +
     (longSentenceCount * 1.5)
-  ));
+  );
 }
 
 function cosineSimilarity(a: number[], b: number[]): number {
@@ -542,7 +542,7 @@ function cosineSimilarity(a: number[], b: number[]): number {
 
   if (normA === 0 || normB === 0) return 0;
 
-  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
 }
 
 function estimateTokens(text: string): number {
@@ -559,7 +559,7 @@ export const GET: RequestHandler = async () => {
       semanticChunking: true,
       metadataExtraction: true,
       embeddingGeneration: true,
-      cudaAcceleration: true
+      cudaAcceleration: true,
     },
     defaultOptions: {
       chunkSize: 512,
@@ -570,8 +570,8 @@ export const GET: RequestHandler = async () => {
       maxChunkSize: 2048,
       extractMetadata: true,
       useCUDA: true,
-      generateEmbeddings: false
+      generateEmbeddings: false,
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 };

@@ -31,16 +31,16 @@ export const load: PageServerLoad = async ({ params, locals }) => {
         description: caseData.description,
         status: caseData.status,
         createdAt: caseData.created_at,
-        updatedAt: caseData.updated_at
+        updatedAt: caseData.updated_at,
       },
       documents: documents.map(doc => ({
         id: doc.id,
         title: doc.title,
         type: doc.type,
         uploadedAt: doc.uploaded_at,
-        processed: doc.processed
+        processed: doc.processed,
       })),
-      ragHistory: ragHistory || []
+      ragHistory: ragHistory || [],
     };
   } catch (err) {
     console.error('Error loading case RAG data:', err);
@@ -63,20 +63,20 @@ export const actions: Actions = {
     }
 
     try {
-      // Perform RAG query against case documents
+      // Perform RAG query against case documents;
       const response = await legalRAGService.queryCaseDocuments(caseId, query, {
         userId: locals.user.id,
         includeMetadata: true,
-        maxResults: 10
+        maxResults: 10,
       });
 
-      // Save query to history
+      // Save query to history;
       await legalRAGService.saveRAGInteraction(caseId, {
         query,
         response: response.answer,
         sources: response.sources,
         userId: locals.user.id,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       return json({
@@ -85,7 +85,7 @@ export const actions: Actions = {
           answer: response.answer,
           sources: response.sources,
           confidence: response.confidence,
-          processingTime: response.processingTime
+          processingTime: response.processingTime,
         }
       });
     } catch (err) {

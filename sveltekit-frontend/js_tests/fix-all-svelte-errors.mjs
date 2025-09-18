@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { exec } from "child_process";
-import { promisify } from "util";
-import fs from "fs/promises";
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import fs from 'fs/promises';
 
 const execAsync = promisify(exec);
 
@@ -33,70 +33,70 @@ async function runCommand(command, description) {
 }
 
 async function main() {
-  console.log("================================================");
-  console.log("🚀 Comprehensive Svelte/TypeScript Error Fixer");
-  console.log("================================================\n");
+  console.log('================================================');
+  console.log('🚀 Comprehensive Svelte/TypeScript Error Fixer');
+  console.log('================================================\n');
 
   // Step 1: Sync SvelteKit files
-  await runCommand("npx svelte-kit sync", "Syncing SvelteKit files");
+  await runCommand('npx svelte-kit sync', 'Syncing SvelteKit files');
 
   // Step 2: Fix import errors
-  console.log("\n📦 Fixing import errors...");
+  console.log('\n📦 Fixing import errors...');
   try {
-    await import("./fix-svelte-check-errors.mjs");
+    await import('./fix-svelte-check-errors.mjs');
   } catch (error) {
-    console.error("Could not run import fixes:", error.message);
+    console.error('Could not run import fixes:', error.message);
   }
 
   // Step 3: Fix TypeScript issues
-  console.log("\n🔧 Fixing TypeScript issues...");
+  console.log('\n🔧 Fixing TypeScript issues...');
   try {
-    await import("./fix-typescript-issues.mjs");
+    await import('./fix-typescript-issues.mjs');
   } catch (error) {
-    console.error("Could not run TypeScript fixes:", error.message);
+    console.error('Could not run TypeScript fixes:', error.message);
   }
 
   // Step 4: Run svelte-check to see remaining issues
-  console.log("\n🔍 Running final check...\n");
-  const checkResult = await runCommand("npm run check", "Running svelte-check");
+  console.log('\n🔍 Running final check...\n');
+  const checkResult = await runCommand('npm run check', 'Running svelte-check');
 
   // Parse results
   if (checkResult.stdout || checkResult.stderr) {
-    const output = (checkResult.stdout || "") + (checkResult.stderr || "");
+    const output = (checkResult.stdout || '') + (checkResult.stderr || '');
     const errorMatch = output.match(/(\d+)\s+errors/);
     const warningMatch = output.match(/(\d+)\s+warnings/);
 
     const errors = errorMatch ? parseInt(errorMatch[1]) : 0;
     const warnings = warningMatch ? parseInt(warningMatch[1]) : 0;
 
-    console.log("\n================================================");
-    console.log("📊 Final Results");
-    console.log("================================================");
+    console.log('\n================================================');
+    console.log('📊 Final Results');
+    console.log('================================================');
     console.log(`Errors: ${errors}`);
     console.log(`Warnings: ${warnings}`);
 
     if (errors === 0) {
-      console.log("\n✅ All errors have been fixed!");
+      console.log('\n✅ All errors have been fixed!');
 
       if (warnings > 0) {
-        console.log("\n⚠️  Some warnings remain:");
-        console.log("- Unused CSS selectors for dark mode are expected");
-        console.log("- These can generally be ignored");
+        console.log('\n⚠️  Some warnings remain:');
+        console.log('- Unused CSS selectors for dark mode are expected');
+        console.log('- These can generally be ignored');
       }
     } else {
-      console.log("\n❌ Some errors remain. Please check the output above.");
-      console.log("\nCommon remaining issues:");
-      console.log("- Complex type mismatches that need manual review");
-      console.log("- Missing dependencies or modules");
-      console.log("- Custom component prop validation");
+      console.log('\n❌ Some errors remain. Please check the output above.');
+      console.log('\nCommon remaining issues:');
+      console.log('- Complex type mismatches that need manual review');
+      console.log('- Missing dependencies or modules');
+      console.log('- Custom component prop validation');
 
       // Save remaining errors
-      await fs.writeFile("remaining-check-errors.txt", output);
-      console.log("\nRemaining errors saved to: remaining-check-errors.txt");
+      await fs.writeFile('remaining-check-errors.txt', output);
+      console.log('\nRemaining errors saved to: remaining-check-errors.txt');
     }
   }
 
-  console.log("\n🎉 Fix process complete!\n");
+  console.log('\n🎉 Fix process complete!\n');
 }
 
 // Run the comprehensive fixer

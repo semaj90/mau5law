@@ -4,10 +4,10 @@
  * Quick Fix for Database Import Paths
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from "fs";
-import { join } from "path";
+import { readFileSync, writeFileSync, readdirSync, statSync } from 'fs';
+import { join } from 'path';
 
-function findFiles(dir, extension = ".ts") {
+function findFiles(dir, extension = '.ts') {
   let results = [];
   const files = readdirSync(dir);
 
@@ -25,40 +25,40 @@ function findFiles(dir, extension = ".ts") {
   return results;
 }
 
-const routesDir = join(process.cwd(), "src/routes");
+const routesDir = join(process.cwd(), 'src/routes');
 const files = findFiles(routesDir);
 
 let fixedCount = 0;
 
-console.log("🔧 Quick-fixing database import paths...\n");
+console.log('🔧 Quick-fixing database import paths...\n');
 
 for (const file of files) {
   try {
-    let content = readFileSync(file, "utf-8");
+    let content = readFileSync(file, 'utf-8');
     let modified = false;
 
     // Fix all variations of database import paths
     const fixes = [
       // Main database imports
-      { from: /lib\/server\/db\.js/g, to: "lib/server/db/index.js" },
+      { from: /lib\/server\/db\.js/g, to: 'lib/server/db/index.js' },
       {
         from: /lib\/server\/database\/connection\.js/g,
-        to: "lib/server/db/index.js",
+        to: 'lib/server/db/index.js',
       },
-      { from: /lib\/server\/db\/pg\.js/g, to: "lib/server/db/index.js" },
+      { from: /lib\/server\/db\/pg\.js/g, to: 'lib/server/db/index.js' },
 
       // Schema imports
       {
         from: /lib\/server\/db\/schema-postgres\.js/g,
-        to: "lib/server/db/schema.js",
+        to: 'lib/server/db/schema.js',
       },
       {
         from: /lib\/server\/db\/schema-canvas\.js/g,
-        to: "lib/server/db/schema.js",
+        to: 'lib/server/db/schema.js',
       },
       {
         from: /lib\/server\/database\/vector-schema\.js/g,
-        to: "lib/server/db/schema.js",
+        to: 'lib/server/db/schema.js',
       },
     ];
 
@@ -71,7 +71,7 @@ for (const file of files) {
 
     if (modified) {
       writeFileSync(file, content);
-      console.log(`✅ Fixed: ${file.replace(process.cwd(), ".")}`);
+      console.log(`✅ Fixed: ${file.replace(process.cwd(), '.')}`);
       fixedCount++;
     }
   } catch (error) {
@@ -80,4 +80,4 @@ for (const file of files) {
 }
 
 console.log(`\n🎉 Fixed ${fixedCount} files`);
-console.log("✅ All database import paths should now be correct!");
+console.log('✅ All database import paths should now be correct!');

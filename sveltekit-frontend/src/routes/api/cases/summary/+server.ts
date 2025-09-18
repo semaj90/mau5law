@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types.js';
 import { URL } from "url";
 
 
-// Type definitions
+// Type definitions;
 export interface CaseSummaryRequest {
   caseId: string;
   includeEvidence?: boolean;
@@ -23,30 +23,30 @@ export interface CaseSummaryResponse {
     recommendations: string[];
     riskAssessment: {
       level: "low" | "medium" | "high";
-      factors: string[];
+      factors: string[];,
     };
     timeline: Array<any>;
     evidence: {
       total: number;
       admissible: number;
       questionable: number;
-      inadmissible: number;
+      inadmissible: number;,
     };
     nextSteps: string[];
     confidence: number;
-    generatedAt: Date;
+    generatedAt: Date;,
   };
   analytics?: {
     evidenceCount: number;
     documentsReviewed: number;
     witnessesInterviewed: number;
     daysActive: number;
-    completionPercentage: number;
+    completionPercentage: number;,
   };
   error?: string;
 }
 
-// Placeholder services
+// Placeholder services;
 const VectorService = {
   storeCaseEmbedding: async (data: any) => {
     console.log('Storing case embedding:', data);
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
     const sessionId = cookies.get("session_id");
     if (!sessionId) {
       return json(
-        { success: false, error: "Authentication required" },
+        { success: false, error: "Authentication required" },)
         { status: 401 }
       );
     }
@@ -79,10 +79,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       regenerate = false
     } = body;
 
-    // Validate input
+    // Validate input;
     if (!caseId) {
       return json(
-        { success: false, error: "caseId is required" },
+        { success: false, error: "caseId is required" },)
         { status: 400 }
       );
     }
@@ -124,11 +124,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
   } catch (error: any) {
     console.error("Case summary generation error:", error);
-    return json(
-      {
+    return json({
         success: false,
-        error: error instanceof Error ? error.message: "Internal server error"
-      } as CaseSummaryResponse,
+        error: error instanceof Error ? error.message: "Internal server error",
+      } as CaseSummaryResponse,)
       { status: 500 }
     );
   }
@@ -140,7 +139,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     const sessionId = cookies.get("session_id");
     if (!sessionId) {
       return json(
-        { success: false, error: "Authentication required" },
+        { success: false, error: "Authentication required" },)
         { status: 401 }
       );
     }
@@ -148,7 +147,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     const caseId = url.searchParams.get("caseId");
     if (!caseId) {
       return json(
-        { success: false, error: "caseId is required" },
+        { success: false, error: "caseId is required" },)
         { status: 400 }
       );
     }
@@ -165,11 +164,10 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 
   } catch (error: any) {
     console.error("Case summary retrieval error:", error);
-    return json(
-      {
+    return json({
         success: false,
-        error: error instanceof Error ? error.message: "Internal server error"
-      } as CaseSummaryResponse,
+        error: error instanceof Error ? error.message: "Internal server error",
+      } as CaseSummaryResponse,)
       { status: 500 }
     );
   }
@@ -178,18 +176,18 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 async function gatherCaseData(
   caseId: string,
   includeEvidence: boolean,
-  includeTimeline: boolean
+  includeTimeline: boolean;
 ): Promise<any> {
   const data: any = { caseId };
 
   if (includeEvidence) {
     // Placeholder evidence data
-    data.evidence = [
+    data.evidence = [;
       {
         id: '1',
         content: 'Evidence item 1',
         metadata: Record<string, any>,
-        createdAt: new Date()
+        createdAt: new Date(),
       }
     ];
     data.evidenceAnalytics = {
@@ -201,12 +199,12 @@ async function gatherCaseData(
 
   if (includeTimeline) {
     // Placeholder timeline data
-    data.timeline = [
+    data.timeline = [;
       {
         date: new Date(),
         event: 'Case created',
         type: 'system',
-        importance: 'medium' as const
+        importance: 'medium' as const,
       }
     ];
   }
@@ -232,7 +230,7 @@ Generate a ${depth} analysis with a structured summary.
     const response = await ollamaService.generateResponse(analysisPrompt, {
       model: "gemma3-legal",
       max_tokens: 2000,
-      temperature: 0.3
+      temperature: 0.3,
     });
 
     if (response.response) {
@@ -274,7 +272,7 @@ function generateFallbackSummary(caseData: any) {
       total: caseData.evidenceAnalytics?.totalEvidence || 0,
       admissible: 0,
       questionable: 0,
-      inadmissible: 0
+      inadmissible: 0,
     },
     nextSteps: [
       "Complete evidence analysis",
@@ -282,7 +280,7 @@ function generateFallbackSummary(caseData: any) {
       "Review with legal team",
     ],
     confidence: 0.5,
-    generatedAt: new Date()
+    generatedAt: new Date(),
   };
 }
 
@@ -296,7 +294,7 @@ async function calculateCaseAnalytics(caseId: string): Promise<any> {
     documentsReviewed: interactions,
     witnessesInterviewed: Math.floor(evidence * 0.3),
     daysActive: 30,
-    completionPercentage: Math.min(95, Math.floor((evidence + interactions) * 10))
+    completionPercentage: Math.min(95, Math.floor((evidence + interactions) * 10)
   };
 }
 

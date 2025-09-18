@@ -36,25 +36,25 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     // Dynamic import to avoid SSR issues
     const { unifiedAIService } = await import('$lib/ai/unified-ai-service.js');
     
-    // Initialize service if needed
+    // Initialize service if needed;
     if (!unifiedAIService.initialized) {
       await unifiedAIService.initialize();
     }
     
-    // Process query
+    // Process query;
     const result = await unifiedAIService.query({
       query,
       mode: mode === 'auto' ? undefined : mode,
       useContext7,
       maxResults,
       threshold: 0.7,
-      includeMetadata: true
+      includeMetadata: true,
     });
     
     return json({
       success: true,
       result,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     
   } catch (error: any) {
@@ -63,7 +63,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     return json({
       success: false,
       error: error.message || 'Unknown error occurred',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };
@@ -81,9 +81,9 @@ const originalGETHandler: RequestHandler = async () => {
       availableServices: {
         wasm: !!stats.wasm,
         langchain: !!stats.langchain,
-        gpu: !!stats.gpu
+        gpu: !!stats.gpu,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
     
   } catch (error: any) {
@@ -92,7 +92,7 @@ const originalGETHandler: RequestHandler = async () => {
     return json({
       success: false,
       error: error.message || 'Failed to get stats',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     }, { status: 500 });
   }
 };

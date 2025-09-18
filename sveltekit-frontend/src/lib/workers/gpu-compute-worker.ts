@@ -11,7 +11,7 @@ declare type GPUAdapter = any;
 declare const GPUBufferUsage: any;
 declare const GPUMapMode: any;
 
-// Types for tensor operations
+// Types for tensor operations;
 export interface TensorOp {
     type: 'matmul' | 'conv2d' | 'attention' | 'fft' | 'embedding';
     inputA: Float32Array;
@@ -23,7 +23,7 @@ export interface VertexCache {
     url: string;
     buffer: Float32Array;
     timestamp: number;
-    score: number;
+    score: number;,
 }
 
 class GPUWorker {
@@ -33,7 +33,7 @@ class GPUWorker {
     private urlHeuristics: Map<string, number> = new Map();
 
     async initialize() {
-        // Initialize WebGPU
+        // Initialize WebGPU;
         if ('gpu' in navigator) {
             const adapter = await (navigator as any).gpu.requestAdapter();
             if (adapter) {
@@ -58,12 +58,12 @@ class GPUWorker {
         console.log('WebAssembly module loaded');
     }
 
-    // Create GPU compute pipeline for matrix multiplication
+    // Create GPU compute pipeline for matrix multiplication;
     async createMatMulPipeline() {
         if (!this.gpuDevice) return null;
 
         const shaderModule = this.gpuDevice.createShaderModule({
-            code: `
+            code: `;
                 struct Matrix {
                     data: array<f32>,
                     rows: u32,
@@ -74,7 +74,7 @@ class GPUWorker {
                 @group(0) @binding(1) var<storage, read> b: Matrix;
                 @group(0) @binding(2) var<storage, read_write> result: Matrix;
 
-                @compute @workgroup_size(8, 8)
+                @compute @workgroup_size(8, 8);
                 fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
                     let row = global_id.x;
                     let col = global_id.y;
@@ -102,7 +102,7 @@ class GPUWorker {
         });
     }
 
-    // Create GPU pipeline for convolution
+    // Create GPU pipeline for convolution;
     async createConv2DPipeline() {
         if (!this.gpuDevice) return null;
 
@@ -113,7 +113,7 @@ class GPUWorker {
                 @group(0) @binding(2) var<storage, read_write> output: array<f32>;
                 @group(0) @binding(3) var<uniform> params: vec4<u32>; // width, height, kernel_size, padding
 
-                @compute @workgroup_size(8, 8)
+                @compute @workgroup_size(8, 8);
                 fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
                     let x = global_id.x;
                     let y = global_id.y;
@@ -154,7 +154,7 @@ class GPUWorker {
         });
     }
 
-    // Process tensor operation
+    // Process tensor operation;
     async processTensorOp(op: TensorOp): Promise<Float32Array> {
         // Check vertex cache first
         const cacheKey = this.getCacheKey(op);
@@ -183,7 +183,7 @@ class GPUWorker {
         return result;
     }
 
-    // Process with WebGPU
+    // Process with WebGPU;
     async processWithWebGPU(op: TensorOp): Promise<Float32Array> {
         switch (op.type) {
             case 'matmul':
@@ -191,18 +191,18 @@ class GPUWorker {
             case 'conv2d':
                 return this.gpuConv2D(op.inputA, op.inputB!, op.params);
             default:
-                return this.processWithWASM(op);
+                return this.processWithWASM(op);,
         }
     }
 
-    // GPU Matrix Multiplication
+    // GPU Matrix Multiplication;
     async gpuMatMul(a: Float32Array, b: Float32Array, params: any): Promise<Float32Array> {
         if (!this.gpuDevice) return new Float32Array();
 
         const pipeline = await this.createMatMulPipeline();
         if (!pipeline) return new Float32Array();
 
-        // Create buffers
+        // Create buffers;
         const aBuffer = this.gpuDevice.createBuffer({
             size: a.byteLength,
             usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
@@ -223,7 +223,7 @@ class GPUWorker {
         this.gpuDevice.queue.writeBuffer(aBuffer, 0, a);
         this.gpuDevice.queue.writeBuffer(bBuffer, 0, b);
 
-        // Create bind group
+        // Create bind group;
         const bindGroup = this.gpuDevice.createBindGroup({
             layout: pipeline.getBindGroupLayout(0),
             entries: [
@@ -244,7 +244,7 @@ class GPUWorker {
         );
         passEncoder.end();
 
-        // Read back result
+        // Read back result;
         const readBuffer = this.gpuDevice.createBuffer({
             size: resultSize,
             usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
@@ -254,20 +254,20 @@ class GPUWorker {
         this.gpuDevice.queue.submit([commandEncoder.finish()]);
 
         await readBuffer.mapAsync(GPUMapMode.READ);
-        const result = new Float32Array(readBuffer.getMappedRange().slice(0));
+        const result = new Float32Array(readBuffer.getMappedRange().slice(0);
         readBuffer.unmap();
 
         return result;
     }
 
-    // GPU Convolution
+    // GPU Convolution;
     async gpuConv2D(input: Float32Array, kernel: Float32Array, params: any): Promise<Float32Array> {
         // Similar to matmul but with conv2d shader
         // Implementation would follow same pattern
         return new Float32Array(input.length);
     }
 
-    // Process with WebAssembly
+    // Process with WebAssembly;
     processWithWASM(op: TensorOp): Float32Array {
         if (!this.wasmModule) return new Float32Array();
 
@@ -281,11 +281,11 @@ class GPUWorker {
             case 'fft':
                 return this.wasmModule.fft(op.inputA);
             default:
-                return op.inputA;
+                return op.inputA;,
         }
     }
 
-    // CPU fallback
+    // CPU fallback;
     processWithCPU(op: TensorOp): Float32Array {
         switch (op.type) {
             case 'matmul':
@@ -293,11 +293,11 @@ class GPUWorker {
             case 'conv2d':
                 return this.cpuConv2D(op.inputA, op.inputB!);
             default:
-                return op.inputA;
+                return op.inputA;,
         }
     }
 
-    // Simple CPU implementations
+    // Simple CPU implementations;
     cpuMatMul(a: Float32Array, b: Float32Array): Float32Array {
         // Simple matrix multiplication
         const result = new Float32Array(a.length);
@@ -326,7 +326,7 @@ class GPUWorker {
         return result;
     }
 
-    // Cache management
+    // Cache management;
     getCacheKey(op: TensorOp): string {
         return `${op.type}-${op.inputA.length}-${op.inputB?.length || 0}`;
     }
@@ -336,24 +336,24 @@ class GPUWorker {
             url: key,
             buffer: buffer,
             timestamp: Date.now(),
-            score: 1
+            score: 1,
         });
 
-        // Limit cache size
+        // Limit cache size;
         if (this.vertexCache.size > 100) {
             // Remove least recently used
-            const sorted = Array.from(this.vertexCache.entries())
+            const sorted = Array.from(this.vertexCache.entries()
                 .sort((a, b) => a[1].score - b[1].score);
             this.vertexCache.delete(sorted[0][0]);
         }
     }
 
-    // Heuristic learning for URL patterns
+    // Heuristic learning for URL patterns;
     updateURLHeuristics(url: string) {
         const count = this.urlHeuristics.get(url) || 0;
         this.urlHeuristics.set(url, count + 1);
 
-        // Learn patterns from frequently accessed URLs
+        // Learn patterns from frequently accessed URLs;
         if (count > 10) {
             // Preload similar operations
             this.preloadSimilarOperations(url);
@@ -379,14 +379,14 @@ self.addEventListener('message', async (event: any) => {
             self.postMessage({ type: 'ready' });
             break;
 
-        case 'process':
+        case 'process':;
             if (gpuWorker) {
                 const result = await gpuWorker.processTensorOp(data);
                 self.postMessage({ type: 'result', data: result });
             }
             break;
 
-        case 'cache-stats':
+        case 'cache-stats':;
             if (gpuWorker) {
                 // Return cache statistics
                 self.postMessage({ type: 'stats', data: Record<string, any> });

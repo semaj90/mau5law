@@ -5,7 +5,7 @@
 import { createMachine, assign } from 'xstate';
 import type { ActorRefFrom } from 'xstate';
 
-// Types for the graph cache system
+// Types for the graph cache system;
 export interface GraphCacheContext {
   query: string | null;
   params: Record<string, any>;
@@ -23,14 +23,14 @@ export interface GraphCacheContext {
     hitRate: number;
     avgLatencyMs: number;
     p95LatencyMs: number;
-    p99LatencyMs: number;
+    p99LatencyMs: number;,
   };
   worker: any;
   refreshJob: string | null;
   lastRefresh: number;
   backgroundRefreshEnabled: boolean;
   retryCount: number;
-  maxRetries: number;
+  maxRetries: number;,
 }
 
 export type GraphCacheEvent =
@@ -52,7 +52,7 @@ export type GraphCacheEvent =
   | { type: 'IDLE_CALLBACK' }
   | { type: 'RETRY' };
 
-// XState machine for graph cache orchestration
+// XState machine for graph cache orchestration;
 export const graphCacheMachine = createMachine({
   id: 'graphCache',
   initial: 'initializing',
@@ -90,7 +90,7 @@ export const graphCacheMachine = createMachine({
       entry: 'initializeWorker',
       on: {
         WORKER_READY: 'idle',
-        WORKER_ERROR: 'error'
+        WORKER_ERROR: 'error',
       }
     },
 
@@ -103,10 +103,10 @@ export const graphCacheMachine = createMachine({
         ENABLE_BACKGROUND_REFRESH: { actions: 'enableBackgroundRefresh' },
         DISABLE_BACKGROUND_REFRESH: { actions: 'disableBackgroundRefresh' },
         INVALIDATE_CACHE: { actions: 'invalidateCache' },
-        IDLE_CALLBACK: [
+        IDLE_CALLBACK: [;
           {
             target: 'backgroundRefreshing',
-            guard: 'shouldBackgroundRefresh'
+            guard: 'shouldBackgroundRefresh',
           }
         ]
       }
@@ -122,22 +122,22 @@ export const graphCacheMachine = createMachine({
           on: {
             CACHE_HIT: {
               target: 'cacheHit',
-              actions: 'setCacheResult'
+              actions: 'setCacheResult',
             },
-            CACHE_MISS: 'cacheMiss'
+            CACHE_MISS: 'cacheMiss',
           }
         },
 
         cacheHit: {
           entry: ['notifyCacheHit', 'updateTelemetry'],
           after: {
-            100: [
+            100: [;
               {
                 target: '#graphCache.backgroundRefreshing',
-                guard: 'isStaleResult'
+                guard: 'isStaleResult',
               },
               {
-                target: '#graphCache.idle'
+                target: '#graphCache.idle',
               }
             ]
           }
@@ -157,7 +157,7 @@ export const graphCacheMachine = createMachine({
                 }
               },
               after: {
-                5000: 'authoritativeQuery' // Fallback if WASM times out
+                5000: 'authoritativeQuery' // Fallback if WASM times out,
               }
             },
 
@@ -166,29 +166,29 @@ export const graphCacheMachine = createMachine({
               on: {
                 AUTHORITATIVE_RESULT: {
                   target: '#graphCache.rehydrated',
-                  actions: 'setAuthoritativeResult'
+                  actions: 'setAuthoritativeResult',
                 },
-                REFRESH_FAILED: [
+                REFRESH_FAILED: [;
                   {
                     target: 'authoritativeQuery',
                     guard: 'canRetry',
-                    actions: 'incrementRetry'
+                    actions: 'incrementRetry',
                   },
                   {
                     target: '#graphCache.error',
-                    actions: 'setError'
+                    actions: 'setError',
                   }
                 ]
               },
               after: {
-                10000: [
+                10000: [;
                   {
                     target: 'authoritativeQuery',
                     guard: 'canRetry',
-                    actions: 'incrementRetry'
+                    actions: 'incrementRetry',
                   },
                   {
-                    target: '#graphCache.error'
+                    target: '#graphCache.error',
                   }
                 ]
               }
@@ -207,13 +207,13 @@ export const graphCacheMachine = createMachine({
         },
         REFRESH_FAILED: {
           target: 'idle',
-          actions: 'clearRefreshJob'
+          actions: 'clearRefreshJob',
         }
       },
       after: {
         15000: {
           target: 'idle',
-          actions: 'clearRefreshJob'
+          actions: 'clearRefreshJob',
         }
       }
     },
@@ -221,31 +221,31 @@ export const graphCacheMachine = createMachine({
     rehydrated: {
       entry: ['notifyRehydration', 'updateCaches', 'updateTelemetry'],
       after: {
-        500: 'idle'
+        500: 'idle',
       }
     },
 
     revalidated: {
       entry: ['notifyRevalidation', 'updateCaches', 'updateTelemetry'],
       after: {
-        500: 'idle'
+        500: 'idle',
       }
     },
 
     error: {
       entry: 'notifyError',
       on: {
-        RETRY: [
+        RETRY: [);
           {
             target: 'querying',
             guard: 'canRetry',
-            actions: 'incrementRetry'
+            actions: 'incrementRetry',
           }
         ],
-        QUERY: 'querying'
+        QUERY: 'querying',
       },
       after: {
-        5000: 'idle' // Auto-recover after 5 seconds
+        5000: 'idle' // Auto-recover after 5 seconds,
       }
     }
   }
@@ -263,9 +263,9 @@ export const graphCacheMachine = createMachine({
               case 'worker_ready':
                 // Handle in machine
                 break;
-              case 'query_result':
+              case 'query_result':;
                 if (data.cache_hit) {
-                  // Send CACHE_HIT event
+                  // Send CACHE_HIT event;
                 } else if (data.source === 'wasm') {
                   // Send WASM_RESULT event
                 }
@@ -301,13 +301,13 @@ export const graphCacheMachine = createMachine({
         }
         return null;
       },
-      retryCount: 0
+      retryCount: 0,
     }),
 
     incrementQueryCount: assign({
       telemetry: ({ context }) => ({
         ...context.telemetry,
-        totalQueries: context.telemetry.totalQueries + 1
+        totalQueries: context.telemetry.totalQueries + 1,
       })
     }),
 
@@ -318,7 +318,7 @@ export const graphCacheMachine = createMachine({
       latency: ({ event }) => event.type === 'CACHE_HIT' ? event.latency : 0,
       telemetry: ({ context }) => ({
         ...context.telemetry,
-        cacheHits: context.telemetry.cacheHits + 1
+        cacheHits: context.telemetry.cacheHits + 1,
       })
     }),
 
@@ -339,7 +339,7 @@ export const graphCacheMachine = createMachine({
         return 'neo4j' as const;
       },
       isAuthoritative: true,
-      lastRefresh: Date.now()
+      lastRefresh: Date.now(),
     }),
 
     setRefreshJob: assign({
@@ -347,7 +347,7 @@ export const graphCacheMachine = createMachine({
     }),
 
     clearRefreshJob: assign({
-      refreshJob: null
+      refreshJob: null,
     }),
 
     incrementRetry: assign({
@@ -355,11 +355,11 @@ export const graphCacheMachine = createMachine({
     }),
 
     enableBackgroundRefresh: assign({
-      backgroundRefreshEnabled: true
+      backgroundRefreshEnabled: true,
     }),
 
     disableBackgroundRefresh: assign({
-      backgroundRefreshEnabled: false
+      backgroundRefreshEnabled: false,
     }),
 
     updateTelemetry: assign({
@@ -391,7 +391,7 @@ export const graphCacheMachine = createMachine({
           type: 'query',
           data: {
             query: context.query,
-            params: context.params
+            params: context.params,
           }
         });
       }
@@ -447,7 +447,7 @@ export const graphCacheMachine = createMachine({
       if (context.worker) {
         context.worker.postMessage({
           type: 'cache_clear',
-          key: event.type === 'INVALIDATE_CACHE' ? event.key: undefined
+          key: event.type === 'INVALIDATE_CACHE' ? event.key: undefined,
         });
       }
     },
@@ -482,7 +482,7 @@ export const graphCacheMachine = createMachine({
 export type GraphCacheMachine = typeof graphCacheMachine;
 export type GraphCacheActor = ActorRefFrom<GraphCacheMachine>;
 
-// Export machine service for SvelteKit integration
+// Export machine service for SvelteKit integration;
 export function createGraphCacheService() {
   return graphCacheMachine;
 }

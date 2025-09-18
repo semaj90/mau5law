@@ -19,7 +19,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const fileContent = await file.text();
     let data: any;
 
-    // Parse file based on type
+    // Parse file based on type;
     try {
       switch (file.type) {
         case "application/json":
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     } catch (parseError) {
       return json(
-        { error: "Invalid file format or corrupted data" },
+        { error: "Invalid file format or corrupted data" },)
         { status: 400 }
       );
     }
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
       errors: [] as string[],
     };
 
-    // Process import based on type
+    // Process import based on type;
     switch (importType) {
       case "cases":
         await importCases(data, overwriteExisting, results);
@@ -78,10 +78,9 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error("Import error:", error);
-    return json(
-      {
+    return json({
         error: error instanceof Error ? error.message: "Import failed",
-      },
+      },)
       { status: 500 }
     );
   }
@@ -90,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
 async function importCases(
   casesData: any[],
   overwriteExisting: boolean,
-  results: any
+  results: any;
 ): Promise<any> {
   if (!Array.isArray(casesData)) {
     results.errors.push("Cases data must be an array");
@@ -98,7 +97,7 @@ async function importCases(
   }
   for (const caseData of casesData) {
     try {
-      // Validate required fields
+      // Validate required fields;
       if (!caseData.title || !caseData.status) {
         results.errors.push(
           `Case missing required fields: ${JSON.stringify(caseData)}`
@@ -111,14 +110,14 @@ async function importCases(
         ? await db
             .select()
             .from(cases)
-            .where(eq(cases.id, caseData.id))
+            .where(eq(cases.id, caseData.id)
             .limit(1)
         : [];
 
       if (existingCase.length > 0) {
         if (overwriteExisting) {
           await db
-            .update(cases)
+            .update(cases);
             .set({
               title: caseData.title,
               description: caseData.description,
@@ -126,13 +125,13 @@ async function importCases(
               priority: caseData.priority,
               updatedAt: new Date(),
             })
-            .where(eq(cases.id, caseData.id));
+            .where(eq(cases.id, caseData.id);
           results.updated++;
         } else {
           results.skipped++;
         }
       } else {
-        // Create new case - map to correct schema fields
+        // Create new case - map to correct schema fields;
         const newCase = {
           title: caseData.title,
           caseNumber: caseData.caseNumber || `CASE-${Date.now()}`,
@@ -159,7 +158,7 @@ async function importCases(
 async function importEvidence(
   evidenceData: any[],
   overwriteExisting: boolean,
-  results: any
+  results: any;
 ): Promise<any> {
   if (!Array.isArray(evidenceData)) {
     results.errors.push("Evidence data must be an array");
@@ -171,7 +170,7 @@ async function importEvidence(
       if (
         !evidenceItem.case_id ||
         !evidenceItem.type ||
-        !evidenceItem.description
+        !evidenceItem.description;
       ) {
         results.errors.push(
           `Evidence missing required fields: ${JSON.stringify(evidenceItem)}`
@@ -184,14 +183,14 @@ async function importEvidence(
         ? await db
             .select()
             .from(evidence)
-            .where(eq(evidence.id, evidenceItem.id))
+            .where(eq(evidence.id, evidenceItem.id)
             .limit(1)
         : [];
 
       if (existingEvidence.length > 0) {
         if (overwriteExisting) {
           await db
-            .update(evidence)
+            .update(evidence);
             .set({
               caseId: evidenceItem.case_id,
               evidenceType: evidenceItem.type,
@@ -199,13 +198,13 @@ async function importEvidence(
               fileUrl: evidenceItem.file_path,
               updatedAt: new Date(),
             })
-            .where(eq(evidence.id, evidenceItem.id));
+            .where(eq(evidence.id, evidenceItem.id);
           results.updated++;
         } else {
           results.skipped++;
         }
       } else {
-        // Create new evidence - map to correct schema fields
+        // Create new evidence - map to correct schema fields;
         const newEvidence = {
           caseId: evidenceItem.case_id,
           title: evidenceItem.title || "Imported Evidence",
@@ -250,7 +249,7 @@ async function importEvidence(
 async function importParticipants(
   participantsData: any[],
   overwriteExisting: boolean,
-  results: any
+  results: any;
 ): Promise<any> {
   if (!Array.isArray(participantsData)) {
     results.errors.push("Participants data must be an array");
@@ -258,7 +257,7 @@ async function importParticipants(
   }
   for (const participant of participantsData) {
     try {
-      // Validate required fields
+      // Validate required fields;
       if (!participant.case_id || !participant.name || !participant.role) {
         results.errors.push(
           `Participant missing required fields: ${JSON.stringify(participant)}`
@@ -271,14 +270,14 @@ async function importParticipants(
         ? await db
             .select()
             .from(criminals)
-            .where(eq(criminals.id, participant.id))
+            .where(eq(criminals.id, participant.id)
             .limit(1)
         : [];
 
       if (existingParticipant.length > 0) {
         if (overwriteExisting) {
           await db
-            .update(criminals)
+            .update(criminals);
             .set({
               firstName: (participant.name || "").split(" ")[0] || "Unknown",
               lastName:
@@ -289,7 +288,7 @@ async function importParticipants(
               phone: participant.contact_info?.phone || null,
               updatedAt: new Date(),
             })
-            .where(eq(criminals.id, participant.id));
+            .where(eq(criminals.id, participant.id);
           results.updated++;
         } else {
           results.skipped++;
@@ -324,14 +323,14 @@ function parseCSV(csvContent: string): unknown[] {
   const lines = csvContent.split("\n");
   if (lines.length < 2) return [];
 
-  const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, ""));
+  const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, "");
   const data = [];
 
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim();
     if (!line) continue;
 
-    const values = line.split(",").map((v) => v.trim().replace(/"/g, ""));
+    const values = line.split(",").map((v) => v.trim().replace(/"/g, "");
     const row: any = {};
 
     headers.forEach((header, index) => {
@@ -343,7 +342,7 @@ function parseCSV(csvContent: string): unknown[] {
   return data;
 }
 function parseXML(xmlContent: string): unknown {
-  // Simple XML parser - in production, use a proper XML parser like 'fast-xml-parser'
+  // Simple XML parser - in production, use a proper XML parser like 'fast-xml-parser';
   try {
     // This is a simplified parser - for production use a proper XML library
     const parser = new DOMParser();

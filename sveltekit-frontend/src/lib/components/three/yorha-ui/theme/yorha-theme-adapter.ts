@@ -6,7 +6,7 @@
 
 import { YORHA_COLORS } from '../YoRHaUI3D.js';
 
-// NES.css retro fallback palette (selected core colors)
+// NES.css retro fallback palette (selected core colors);
 export const NES_PALETTE = {
   blue: '#209cee',
   green: '#92cc41',
@@ -15,11 +15,11 @@ export const NES_PALETTE = {
   orange: '#f59e0b',
   grey: '#7c7c7c',
   black: '#000000',
-  white: '#ffffff'
+  white: '#ffffff',
 } as const;
 
 // Bits UI v2 style semantic roles we want to map (simplified)
-// These reference UnoCSS theme token names (see uno.config.ts)
+// These reference UnoCSS theme token names (see uno.config.ts);
 const TOKEN_ROLE_MAP: Record<string, { bg: string; border: string; text: string; accent?: string }> = {
   primary: { bg: 'yorha-accent', border: 'yorha-border', text: 'yorha-text-primary' },
   secondary: { bg: 'yorha-bg-secondary', border: 'yorha-border', text: 'yorha-text-secondary' },
@@ -37,18 +37,18 @@ const TOKEN_ROLE_MAP: Record<string, { bg: string; border: string; text: string;
 // Cache of resolved tokens to numeric hex for Three.js
 const resolvedCache = new Map<string, number>();
 
-// Simple hex validator
+// Simple hex validator;
 function isHexColor(str: string): boolean {
   return /^#?[0-9a-fA-F]{6}$/.test(str);
 }
 
-// Convert hex string (with or without #) to number for Three.js
+// Convert hex string (with or without #) to number for Three.js;
 function hexToNumber(hex: string): number {
   const clean = hex.startsWith('#') ? hex.slice(1) : hex;
   return parseInt(clean, 16);
 }
 
-// Attempt to read CSS variable from document (runtime fallback).
+// Attempt to read CSS variable from document (runtime fallback).;
 function readCssVar(name: string): string | undefined {
   if (typeof window === 'undefined' || !window.document) return undefined;
   const val = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -61,14 +61,14 @@ function readCssVar(name: string): string | undefined {
 // 3. CSS var --color-name
 // 4. Uno token -> try css var --uno-color-name (common pattern)
 // 5. NES palette fallback
-// 6. YORHA_COLORS fallback
+// 6. YORHA_COLORS fallback;
 export function resolveColorToken(tokenOrHex: string | number | undefined, fallback: number = YORHA_COLORS.primary.beige): number {
   if (tokenOrHex === undefined) return fallback;
   if (typeof tokenOrHex === 'number') return tokenOrHex;
 
   if (resolvedCache.has(tokenOrHex)) return resolvedCache.get(tokenOrHex)!;
 
-  // Hex literal
+  // Hex literal;
   if (isHexColor(tokenOrHex)) {
     const v = hexToNumber(tokenOrHex);
     resolvedCache.set(tokenOrHex, v);
@@ -101,7 +101,7 @@ export function resolveColorToken(tokenOrHex: string | number | undefined, fallb
     }
   }
 
-  // NES palette fallback
+  // NES palette fallback;
   if ((NES_PALETTE as any)[tokenOrHex]) {
     const v = hexToNumber((NES_PALETTE as any)[tokenOrHex]);
     resolvedCache.set(tokenOrHex, v);
@@ -132,7 +132,7 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
   const glow = options?.enableGlow ? {
     enabled: true,
     color: backgroundColor,
-    intensity: 0.35
+    intensity: 0.35,
   } : undefined;
 
   // Derive simple hover (lighten by adding small value) – naive approach
@@ -147,7 +147,7 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
   };
 }
 
-// Central exported theme adapter
+// Central exported theme adapter;
 export const yoRHaThemeAdapter = {
   resolveVariantStyle,
   resolveColorToken,

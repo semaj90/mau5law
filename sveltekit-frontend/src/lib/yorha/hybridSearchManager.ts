@@ -5,6 +5,7 @@ let lokiDb: any = null;
 let lokiCollection: any = null;
 let lastRefresh = 0;
 let refreshing = false;
+}
 
 export interface HybridInitOptions {
   refreshIntervalMs?: number;
@@ -45,8 +46,8 @@ export async function refreshRemote(opts: RefreshOpts = {}): Promise<any> {
         content: d.content || d.text || d.body || '',
         type: d.type || d.category || 'Legal Document',
         status: d.status || 'active',
-        metadata: d
-      }));
+        metadata: d,
+      });
       addOrUpdateDocuments(docs);
       if (lokiCollection) {
         lokiCollection.clear();
@@ -79,7 +80,7 @@ export async function reRankWithPgVector(query: string, current: any[], endpoint
     return current.map(item => {
       const raw = scoreMap.get((item as { id?: any; source?: any }).id);
       if (raw == null) return item;
-      const scaled = raw <= 1 ? Math.round(raw * 100) : Math.round(Math.min(100, raw));
+      const scaled = raw <= 1 ? Math.round(raw * 100) : Math.round(Math.min(100, raw);
       return { ...item, relevance: scaled, source: (item as { id?: any; source?: any }).source || 'hybrid' };
     }).sort((a, b) => b.relevance - a.relevance);
   } catch (e: any) {

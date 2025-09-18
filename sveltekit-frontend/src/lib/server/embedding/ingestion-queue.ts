@@ -16,7 +16,7 @@ export async function enqueue(job: IngestionJobRequest): Promise<IngestionJobSta
     jobId,
     evidenceId: job.evidenceId,
     status: 'queued',
-    model: job?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text'
+    model: job?.model || "unknown" // @ts-ignore - Model property access || 'nomic-embed-text',
   };
   STATUS_STORE.set(jobId, initial);
   try {

@@ -1,4 +1,4 @@
-// Minimal SSE client stub
+// Minimal SSE client stub;
 export function connectSSE(url: string): EventSource {
   return new EventSource(url);
 }

@@ -74,7 +74,7 @@ class KMeansWorker {
       hasConverged = true;
 
       // Clear previous assignments
-      clusters.forEach((cluster) => (cluster.length = 0));
+      clusters.forEach((cluster) => (cluster.length = 0);
 
       // Assign points to nearest centroid (parallelizable operation)
       for (let i = 0; i < data.length; i++) {

@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types.js';
 
 export const GET: RequestHandler = async () => {
 	try {
-		// Forward request to Enhanced Semantic Architecture service
+		// Forward request to Enhanced Semantic Architecture service;
 		const response = await fetch('http://localhost:8095/api/cache-stats', {
 			method: 'GET',
 			headers: {
@@ -35,7 +35,7 @@ export const GET: RequestHandler = async () => {
 				]
 			},
 			timestamp: new Date().toISOString(),
-			source: 'Enhanced Semantic Architecture'
+			source: 'Enhanced Semantic Architecture',
 		});
 		
 	} catch (error: any) {
@@ -49,16 +49,16 @@ export const GET: RequestHandler = async () => {
 			last_update: now.toISOString(),
 			max_size: 10000,
 			hit_ratio: 0.87 + Math.random() * 0.1, // 87-97% hit ratio
-			webgpu_enabled: false, // Fallback mode
+			webgpu_enabled: false, // Fallback mode;
 			memory_usage: {
 				used: Math.floor(Math.random() * 256) + 128, // MB
 				allocated: 512,
-				peak: Math.floor(Math.random() * 400) + 200
+				peak: Math.floor(Math.random() * 400) + 200,
 			},
 			performance: {
 				avg_lookup_time: Math.random() * 2 + 0.5, // ms
 				cache_operations_per_second: Math.floor(Math.random() * 10000) + 5000,
-				gpu_utilization: 0 // CPU fallback
+				gpu_utilization: 0 // CPU fallback,
 			},
 			technologies: [
 				'CPU Fallback Mode',
@@ -73,7 +73,7 @@ export const GET: RequestHandler = async () => {
 			data: mockStats,
 			timestamp: new Date().toISOString(),
 			source: 'Fallback Cache Monitor',
-			note: 'Using mock cache statistics. Start Enhanced Semantic Architecture service for real WebGPU-accelerated cache metrics.'
+			note: 'Using mock cache statistics. Start Enhanced Semantic Architecture service for real WebGPU-accelerated cache metrics.',
 		});
 	}
 };
@@ -82,7 +82,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const { action, options } = await request.json();
 		
-		// Forward cache management commands to Enhanced Semantic Architecture
+		// Forward cache management commands to Enhanced Semantic Architecture;
 		const response = await fetch('http://localhost:8095/api/cache-stats', {
 			method: 'POST',
 			headers: {
@@ -110,28 +110,28 @@ export const POST: RequestHandler = async ({ request }) => {
 		let result = {};
 		
 		switch (action) {
-			case 'clear':
+			case 'clear':;
 				result = {
 					cleared_entries: Math.floor(Math.random() * 1000),
 					cache_size_after: 0,
-					operation_time: Math.random() * 100 + 50
+					operation_time: Math.random() * 100 + 50,
 				};
 				break;
-			case 'optimize':
+			case 'optimize':;
 				result = {
 					optimized_entries: Math.floor(Math.random() * 500),
 					space_freed: Math.floor(Math.random() * 100) + 50,
-					operation_time: Math.random() * 200 + 100
+					operation_time: Math.random() * 200 + 100,
 				};
 				break;
-			case 'rebuild':
+			case 'rebuild':;
 				result = {
 					rebuilt_entries: Math.floor(Math.random() * 2000),
 					index_size_after: Math.floor(Math.random() * 3000) + 1000,
-					operation_time: Math.random() * 500 + 200
+					operation_time: Math.random() * 500 + 200,
 				};
 				break;
-			default:
+			default:;
 				return json({
 					success: false,
 					error: `Unknown cache action: ${action}`
@@ -143,7 +143,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			action,
 			result,
 			timestamp: new Date().toISOString(),
-			source: 'Fallback Cache Manager'
+			source: 'Fallback Cache Manager',
 		});
 	}
 };

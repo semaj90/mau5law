@@ -363,13 +363,13 @@ class DevFullManager {
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 2000);
-        
+
         const response = await fetch(`http://localhost:${port}/api/tags`, {
-          signal: controller.signal
+          signal: controller.signal,
         });
-        
+
         clearTimeout(timeoutId);
-        
+
         if (response.ok) {
           const data = await response.json();
           runningInstance = { port, models: data.models || [] };
@@ -381,19 +381,23 @@ class DevFullManager {
     }
 
     if (runningInstance) {
-      this.log('Ollama', `✅ Found running Ollama instance on port ${runningInstance.port}`, 'green');
+      this.log(
+        'Ollama',
+        `✅ Found running Ollama instance on port ${runningInstance.port}`,
+        'green'
+      );
       this.log('Ollama', `📚 Available models: ${runningInstance.models.length}`, 'cyan');
-      
+
       // Update configuration to use the running instance
       this.discoveredPorts.ollama = runningInstance.port;
       process.env.OLLAMA_URL = `http://localhost:${runningInstance.port}`;
-      
+
       return { port: runningInstance.port, models: runningInstance.models };
     }
 
     // If no running instance found, try to start one
     this.log('Ollama', '🚀 No running instance found, attempting to start...', 'yellow');
-    
+
     const ollamaPort = this.discoveredPorts.ollama;
     this.log('Ollama', `📍 Using port ${ollamaPort}`, 'yellow');
 

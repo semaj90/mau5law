@@ -19,10 +19,9 @@ export const POST: RequestHandler = async ({ request }) => {
     } = await request.json();
 
     if (!caseId || !title || !content) {
-      return json(
-        {
+      return json({
           error: "Case ID, title, and content are required",
-        },
+        },)
         { status: 400 },
       );
     }
@@ -56,11 +55,10 @@ export const POST: RequestHandler = async ({ request }) => {
     });
   } catch (error: any) {
     console.error("Report save error:", error);
-    return json(
-      {
+    return json({
         error: "Failed to save report",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }
@@ -78,11 +76,11 @@ export const GET: RequestHandler = async ({ url }) => {
     const conditions = [eq(aiReports.caseId, caseId)];
 
     if (reportType) {
-      conditions.push(eq(aiReports.reportType, reportType));
+      conditions.push(eq(aiReports.reportType, reportType);
     }
 
     const finalQuery = conditions.length > 0
-      ? query.where(and(...conditions))
+      ? query.where(and(...conditions)
       : query;
 
     const reports = await finalQuery.orderBy(aiReports.createdAt);
@@ -92,11 +90,10 @@ export const GET: RequestHandler = async ({ url }) => {
     });
   } catch (error: any) {
     console.error("Reports load error:", error);
-    return json(
-      {
+    return json({
         error: "Failed to load reports",
         details: error instanceof Error ? error.message: "Unknown error",
-      },
+      },)
       { status: 500 },
     );
   }

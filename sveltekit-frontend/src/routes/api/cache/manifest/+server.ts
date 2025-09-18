@@ -6,14 +6,14 @@ import type { RequestHandler } from './$types.js';
  * GET /api/cache/manifest - Get cache manifest for synchronization
  */
 
-// Mock implementation - would integrate with actual Redis tensor cache
+// Mock implementation - would integrate with actual Redis tensor cache;
 const mockCache = new Map<string, {
   value: any;
   timestamp: number;
   ttl: number;
   version: string;
   source: string;
-  size: number;
+  size: number;,
 }>();
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -23,15 +23,15 @@ export const GET: RequestHandler = async ({ url }) => {
     const offset = parseInt(url.searchParams.get('offset') || '0');
     
     // Filter keys by pattern
-    const allKeys = Array.from(mockCache.keys());
+    const allKeys = Array.from(mockCache.keys();
     const filteredKeys = pattern === '*' 
       ? allKeys 
-      : allKeys.filter(key => key.includes(pattern.replace('*', '')));
+      : allKeys.filter(key => key.includes(pattern.replace('*', ''));
     
     // Apply pagination
     const paginatedKeys = filteredKeys.slice(offset, offset + limit);
     
-    // Build manifest entries
+    // Build manifest entries;
     const entries = paginatedKeys.map(key => {
       const entry = mockCache.get(key)!;
       return {
@@ -41,18 +41,18 @@ export const GET: RequestHandler = async ({ url }) => {
         ttl: entry.ttl,
         size: entry.size,
         source: entry.source,
-        expired: Date.now() - entry.timestamp > entry.ttl
+        expired: Date.now() - entry.timestamp > entry.ttl,
       };
     });
     
-    // Calculate statistics
+    // Calculate statistics;
     const stats = {
       totalKeys: filteredKeys.length,
       activeKeys: entries.filter(item => item.length),
       expiredKeys: entries.filter(item => item.length),
       totalSize: entries.reduce((sum, e) => sum + e.size, 0),
       oldestEntry: Math.min(...entries.map(e => e.timestamp)),
-      newestEntry: Math.max(...entries.map(e => e.timestamp))
+      newestEntry: Math.max(...entries.map(e => e.timestamp),
     };
     
     return json({
@@ -63,7 +63,7 @@ export const GET: RequestHandler = async ({ url }) => {
           offset,
           limit,
           total: filteredKeys.length,
-          hasMore: offset + limit < filteredKeys.length
+          hasMore: offset + limit < filteredKeys.length,
         },
         stats,
         timestamp: Date.now(),
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('[Cache Manifest] Failed to generate manifest:', error);
     return json(
-      { success: false, error: error.message },
+      { success: false, error: error.message },)>
       { status: 500 }
     );
   }

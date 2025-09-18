@@ -7,7 +7,7 @@ databaseOrchestrator // alias
 import { EventEmitter } from "events";
 import { URL } from "url";
 
-// GET /api/database-orchestrator/events - Get recent events
+// GET /api/database-orchestrator/events - Get recent events;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const limit = parseInt(url.searchParams.get('limit') || '50');
@@ -35,15 +35,15 @@ export const GET: RequestHandler = async ({ url }) => {
       'orchestrator:stopped',
     ];
 
-    // Add temporary listeners
+    // Add temporary listeners;
     eventTypes.forEach((type) => {
       databaseOrchestrator.on(type, eventCollector);
     });
 
     // Wait briefly to collect any immediate events
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100);
 
-    // Remove temporary listeners
+    // Remove temporary listeners;
     eventTypes.forEach((type) => {
       databaseOrchestrator.off(type, eventCollector);
     });
@@ -74,7 +74,7 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error.message,
@@ -85,17 +85,16 @@ export const GET: RequestHandler = async ({ url }) => {
   }
 };
 
-// POST /api/database-orchestrator/events - Trigger custom events
+// POST /api/database-orchestrator/events - Trigger custom events;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const { eventType, data, metadata } = await request.json();
 
     if (!eventType) {
-      return json(
-        {
+      return json({
           success: false,
           error: 'Event type is required',
-        },
+        },)
         { status: 400 }
       );
     }
@@ -118,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    return json(
+    return json();
       {
         success: false,
         error: error.message,

@@ -8,6 +8,7 @@ import type { IncomingMessage } from 'http';
 import * as pako from 'pako';
 import { UnifiedCacheEnhancedOrchestrator } from '$lib/ai/unified-cache-enhanced-orchestrator';
 import { QLoRABinaryCodec, type QLoRAProtobufTopologyResponse } from '$lib/types/qlora-protobuf';
+}
 
 export interface StreamingQLoRARequest {
   query: string;
@@ -39,7 +40,7 @@ async function getOrchestrator(): Promise<UnifiedCacheEnhancedOrchestrator> {
  * Stream QLoRA processing with binary compression
  */
 async function* streamQLoRAResponse(
-  request: StreamingQLoRARequest
+  request: StreamingQLoRARequest;
 ): AsyncGenerator<StreamingResponse> {
   const { query, topologyType = 'general', accuracyTarget = 90, streamBinary = true } = request;
 
@@ -119,7 +120,7 @@ async function* streamQLoRAResponse(
     const metrics = await orch.getSystemMetrics();
     const cacheStats = await orch.getCacheStatistics();
 
-    // Construct full response
+    // Construct full response;
     const qloraResponse: QLoRAProtobufTopologyResponse = {
       prediction: {
         type: (result as any).prediction?.type || 'legal_document',
@@ -164,7 +165,7 @@ async function* streamQLoRAResponse(
       const binaryData = QLoRABinaryCodec.encode(qloraResponse);
       const compressionStats = QLoRABinaryCodec.getCompressionStats(qloraResponse, binaryData);
 
-      // Update metadata
+      // Update metadata;
       qloraResponse.binaryMetadata = {
         ...compressionStats,
         encoding: 'gzip',
@@ -188,7 +189,7 @@ async function* streamQLoRAResponse(
       const tokens = responseText.split(' ');
 
       for (const token of tokens) {
-        await new Promise((resolve) => setTimeout(resolve, 50)); // Simulate streaming
+        await new Promise((resolve) => setTimeout(resolve, 50); // Simulate streaming
         yield { type: 'token', value: token + ' ' };
       }
     }
@@ -209,7 +210,7 @@ async function* streamQLoRAResponse(
 
 export function createWebSocketServer() {
   console.log('🚀 Creating Binary QLoRA WebSocket server...');
-  const wss = new WebSocketServer({ noServer: true });
+  const wss = new WebSocketServer({ noServer: true ,});
 
   wss.on('connection', (ws: WebSocket, request: IncomingMessage) => {
     console.log('🔌 WebSocket client connected');
@@ -218,15 +219,14 @@ export function createWebSocketServer() {
 
     ws.on('message', async (message: Buffer) => {
       try {
-        const requestData: StreamingQLoRARequest = JSON.parse(message.toString());
+        const requestData: StreamingQLoRARequest = JSON.parse(message.toString();
         console.log(`[WebSocket] Received request:`, requestData.query.substring(0, 50) + '...');
 
-        // Stream QLoRA response
+        // Stream QLoRA response;
         for await (const event of streamQLoRAResponse(requestData)) {
           if (event.type === 'binary') {
-            // Send binary data directly
-            ws.send(
-              JSON.stringify({
+            // Send binary data directly;
+            ws.send(JSON.stringify({
                 type: 'binary_metadata',
                 metadata: event.metadata,
               })
@@ -234,13 +234,12 @@ export function createWebSocketServer() {
             ws.send(event.data);
           } else {
             // Send JSON event
-            ws.send(JSON.stringify(event));
+            ws.send(JSON.stringify(event);
           }
         }
       } catch (error: any) {
         console.error('[WebSocket] Message processing error:', error);
-        ws.send(
-          JSON.stringify({
+        ws.send(JSON.stringify({
             type: 'error',
             message: 'Failed to process request: ' + error.message,
           })
@@ -256,9 +255,8 @@ export function createWebSocketServer() {
       console.error(`[WebSocket] Client ${clientIP} error:`, error);
     });
 
-    // Send welcome message
-    ws.send(
-      JSON.stringify({
+    // Send welcome message;
+    ws.send(JSON.stringify({
         type: 'status',
         message: 'Connected to Binary QLoRA WebSocket server',
       })

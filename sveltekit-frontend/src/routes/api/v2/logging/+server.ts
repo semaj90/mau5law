@@ -11,6 +11,7 @@ import { URL } from "url";
 
 // Log levels
 type LogLevel = 'error' | 'warn' | 'info' | 'debug';
+}
 
 export interface LogEntry {
   level: LogLevel;
@@ -31,7 +32,7 @@ export interface LogBatch {
   clientInfo: {
     userAgent: string;
     url: string;
-    timestamp: string;
+    timestamp: string;,
   };
 }
 
@@ -39,7 +40,7 @@ export interface LogBatch {
 const logStore: LogEntry[] = [];
 const MAX_LOG_ENTRIES = 10000; // Keep last 10k entries in memory
 
-// Log processing functions
+// Log processing functions;
 function processLogEntry(entry: LogEntry): LogEntry {
   return {
     ...entry,
@@ -51,17 +52,17 @@ function processLogEntry(entry: LogEntry): LogEntry {
 function storeLogEntry(entry: LogEntry): void {
   logStore.push(entry);
 
-  // Keep only recent entries
+  // Keep only recent entries;
   if (logStore.length > MAX_LOG_ENTRIES) {
     logStore.splice(0, logStore.length - MAX_LOG_ENTRIES);
   }
 
-  // In production, forward to external logging service
+  // In production, forward to external logging service;
   if (import.meta.env.NODE_ENV === 'production') {
     forwardToExternalService(entry);
   }
 
-  // Print to console for development
+  // Print to console for development;
   if (import.meta.env.NODE_ENV === 'development') {
     console.log(`[${entry.level.toUpperCase()}] ${entry.message}`, entry);
   }
@@ -76,13 +77,13 @@ async function forwardToExternalService(entry: LogEntry): Promise<void> {
   // - Custom logging infrastructure
 
   try {
-    // Example: Forward to Sentry or similar service
+    // Example: Forward to Sentry or similar service;
     if (import.meta.env.SENTRY_DSN && entry.level === 'error') {
       // Sentry integration would go here
       console.log('Forwarding error to Sentry:', entry);
     }
 
-    // Example: Forward to custom logging service
+    // Example: Forward to custom logging service;
     if (import.meta.env.CUSTOM_LOGGING_ENDPOINT) {
       await fetch(import.meta.env.CUSTOM_LOGGING_ENDPOINT, {
         method: 'POST',
@@ -90,7 +91,7 @@ async function forwardToExternalService(entry: LogEntry): Promise<void> {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${import.meta.env.LOGGING_API_KEY}`
         },
-        body: JSON.stringify(entry)
+        body: JSON.stringify(entry),
       });
     }
   } catch (err: any) {
@@ -98,14 +99,14 @@ async function forwardToExternalService(entry: LogEntry): Promise<void> {
   }
 }
 
-// POST endpoint for logging
+// POST endpoint for logging;
 export const POST: RequestHandler = async ({ request, getClientAddress, url }) => {
   try {
     const body = await request.json();
     const clientAddress = getClientAddress();
     const userAgent = request.headers.get('user-agent') || 'Unknown';
 
-    // Handle single log entry
+    // Handle single log entry;
     if (body.level && body.message) {
       const entry: LogEntry = processLogEntry({
         ...body,
@@ -119,14 +120,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
       return json({
         success: true,
         message: 'Log entry recorded',
-        entryId: entry.requestId
+        entryId: entry.requestId,
       });
     }
 
-    // Handle batch log entries
+    // Handle batch log entries;
     if (body.logs && Array.isArray(body.logs)) {
       const batch: LogBatch = body;
-      const processedEntries = batch.logs.map((log) =>
+      const processedEntries = batch.logs.map((log) =>;
         processLogEntry({
           ...log,
           userAgent: batch.clientInfo?.userAgent || userAgent,
@@ -141,7 +142,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
         success: true,
         message: 'Log batch recorded',
         entriesProcessed: processedEntries.length,
-        entryIds: processedEntries.map(e => e.requestId)
+        entryIds: processedEntries.map(e => e.requestId),
       });
     }
 
@@ -153,15 +154,15 @@ export const POST: RequestHandler = async ({ request, getClientAddress, url }) =
   }
 };
 
-// GET endpoint for retrieving logs (development/debugging)
+// GET endpoint for retrieving logs (development/debugging);
 export const GET: RequestHandler = async ({ url, request }) => {
-  // Only allow in development or with proper authorization
+  // Only allow in development or with proper authorization;
   if (import.meta.env.NODE_ENV === 'production') {
     const authHeader = request.headers.get('authorization');
     if (
       !authHeader ||
       !authHeader.startsWith('Bearer ') ||
-      authHeader.split(' ')[1] !== import.meta.env.ADMIN_API_KEY
+      authHeader.split(' ')[1] !== import.meta.env.ADMIN_API_KEY;
     ) {
       throw error(401, 'Unauthorized');
     }
@@ -175,24 +176,24 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
   let filteredLogs = [...logStore];
 
-  // Filter by level
+  // Filter by level;
   if (level) {
     filteredLogs = filteredLogs.filter(log => log.level === level);
   }
 
-  // Filter by timestamp
+  // Filter by timestamp;
   if (since) {
     const sinceDate = new Date(since);
     filteredLogs = filteredLogs.filter(log => new Date(log.timestamp) >= sinceDate);
   }
 
-  // Filter by user ID
+  // Filter by user ID;
   if (userId) {
     filteredLogs = filteredLogs.filter(log => log.userId === userId);
   }
 
   // Sort by timestamp (newest first)
-  filteredLogs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  filteredLogs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
 
   // Apply limit
   filteredLogs = filteredLogs.slice(0, limit);
@@ -210,7 +211,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
   });
 };
 
-// DELETE endpoint for clearing logs (development only)
+// DELETE endpoint for clearing logs (development only);
 export const DELETE: RequestHandler = async ({ request }) => {
   if (import.meta.env.NODE_ENV === 'production') {
     throw error(403, 'Log clearing not allowed in production');
@@ -227,6 +228,6 @@ export const DELETE: RequestHandler = async ({ request }) => {
   return json({
     success: true,
     message: `Cleared ${originalCount} log entries`,
-    clearedCount: originalCount
+    clearedCount: originalCount,
   });
 };

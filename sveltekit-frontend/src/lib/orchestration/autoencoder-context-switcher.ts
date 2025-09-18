@@ -12,22 +12,22 @@ import { qloraWasmLoader } from '$lib/wasm/qlora-wasm-loader';
 import { qloraOllamaOrchestrator } from './qlora-ollama-orchestrator.js';
 import { predictiveAssetEngine } from '$lib/services/predictive-asset-engine';
 
-// FlatBuffer-like serialization structure
+// FlatBuffer-like serialization structure;
 interface ContextVector {
   userId: string;
   sessionId: string;
   timestamp: number;
-  embedding: Float32Array; // 256-dimensional context embedding
+  embedding: Float32Array; // 256-dimensional context embedding;
   metadata: {
     domain: string;
     complexity: number;
     urgency: number;
     memoryPressure: number;
-    gpuUtilization: number;
+    gpuUtilization: number;,
   };
 }
 
-// Model switching decision
+// Model switching decision;
 interface SwitchingDecision {
   targetModelId: string;
   confidence: number;
@@ -35,10 +35,10 @@ interface SwitchingDecision {
   expectedBenefit: number;
   shouldSwitch: boolean;
   gcRequired: boolean; // Garbage collection needed
-  contextCompressionRatio: number;
+  contextCompressionRatio: number;,
 }
 
-// GPU Memory State
+// GPU Memory State;
 interface GPUMemoryState {
   totalVRAM: number;
   usedVRAM: number;
@@ -46,20 +46,20 @@ interface GPUMemoryState {
   modelMemoryUsage: Map<string, number>;
   fragmentationLevel: number;
   gcThreshold: number;
-  lastGCTime: number;
+  lastGCTime: number;,
 }
 
-// QUIC Connection State
+// QUIC Connection State;
 interface QUICConnectionState {
   connectionId: string;
   latency: number;
   bandwidth: number;
   packetLoss: number;
   isActive: boolean;
-  lastActivity: number;
+  lastActivity: number;,
 }
 
-// Dynamic Model Usage Pattern
+// Dynamic Model Usage Pattern;
 interface ModelUsagePattern {
   modelId: string;
   totalUsage: number;
@@ -68,7 +68,7 @@ interface ModelUsagePattern {
   successRate: number;
   userPreference: number;
   contextSimilarity: number[];
-  lastAccessed: number;
+  lastAccessed: number;,
 }
 
 export class AutoencoderContextSwitcher {
@@ -107,7 +107,7 @@ export class AutoencoderContextSwitcher {
   async switchContext(
     userId: string,
     query: string,
-    currentContext: any
+    currentContext: any;
   ): Promise<any> {
     const startTime = performance.now();
     
@@ -117,7 +117,7 @@ export class AutoencoderContextSwitcher {
     // 2. Predict optimal model using compressed context
     const switchingDecision = await this.predictOptimalModel(contextVector);
     
-    // 3. Perform garbage collection if needed
+    // 3. Perform garbage collection if needed;
     if (switchingDecision.gcRequired) {
       await this.performIntelligentGC();
     }
@@ -134,17 +134,17 @@ export class AutoencoderContextSwitcher {
     const endTime = performance.now();
     this.switchingLatency = endTime - startTime;
     
-    // 6. Record switching decision for learning
+    // 6. Record switching decision for learning;
     this.switchingHistory.push({
       ...switchingDecision,
-      switchingCost: this.switchingLatency
+      switchingCost: this.switchingLatency,
     });
     
     return {
       modelId: targetModelId,
       switchingLatency: this.switchingLatency,
       compressionRatio: switchingDecision.contextCompressionRatio,
-      memoryState: await this.gpuMemoryManager.getMemoryState()
+      memoryState: await this.gpuMemoryManager.getMemoryState(),
     };
   }
 
@@ -154,7 +154,7 @@ export class AutoencoderContextSwitcher {
   private async generateContextVector(
     userId: string,
     query: string,
-    context: any
+    context: any;
   ): Promise<ContextVector> {
     // Extract features for autoencoder input
     const features = this.extractContextFeatures(query, context);
@@ -175,7 +175,7 @@ export class AutoencoderContextSwitcher {
         complexity: this.calculateComplexity(query),
         urgency: context.urgency || 0.5,
         memoryPressure: 1.0 - (memoryState.freeVRAM / memoryState.totalVRAM),
-        gpuUtilization: context.gpuUtilization || 0.5
+        gpuUtilization: context.gpuUtilization || 0.5,
       }
     };
     
@@ -190,16 +190,16 @@ export class AutoencoderContextSwitcher {
 
   /**
    * Predict optimal model using autoencoder-compressed context
-   */
+   */;
   private async predictOptimalModel(contextVector: ContextVector): Promise<SwitchingDecision> {
-    const candidates = Array.from(this.modelUsagePatterns.values());
+    const candidates = Array.from(this.modelUsagePatterns.values();
     const currentModelId = await this.getCurrentActiveModel();
     
     let bestModel = currentModelId;
     let bestScore = 0;
     let shouldSwitch = false;
     
-    // Score each model candidate
+    // Score each model candidate;
     for (const pattern of candidates) {
       const score = this.calculateModelScore(contextVector, pattern);
       
@@ -228,13 +228,13 @@ export class AutoencoderContextSwitcher {
       expectedBenefit: improvement,
       shouldSwitch,
       gcRequired,
-      contextCompressionRatio: this.contextAutoencoder.getLastCompressionRatio()
+      contextCompressionRatio: this.contextAutoencoder.getLastCompressionRatio(),
     };
   }
 
   /**
    * Intelligent garbage collection based on usage patterns
-   */
+   */;
   private async performIntelligentGC(): Promise<void> {
     const startTime = performance.now();
     console.log('🗑️ Performing intelligent GPU garbage collection...');
@@ -245,7 +245,7 @@ export class AutoencoderContextSwitcher {
     // Find models to unload (LRU + usage pattern based)
     const modelsToUnload = this.selectModelsForGC(memoryState);
     
-    // Unload models through QUIC protocol for speed
+    // Unload models through QUIC protocol for speed;
     for (const modelId of modelsToUnload) {
       const wasmKey = this.activeModels.get(modelId);
       if (wasmKey) {
@@ -268,22 +268,22 @@ export class AutoencoderContextSwitcher {
 
   /**
    * Execute fast model switching using QUIC protocol
-   */
+   */;
   private async executeFastModelSwitch(decision: SwitchingDecision): Promise<string> {
     console.log(`🔄 Fast switching to model: ${decision.targetModelId}`);
     
-    // Check if model is already loaded
+    // Check if model is already loaded;
     if (this.activeModels.has(decision.targetModelId)) {
       console.log('⚡ Model already loaded, instant switch');
       return decision.targetModelId;
     }
     
-    // Use QUIC for ultra-low latency model loading
+    // Use QUIC for ultra-low latency model loading;
     const loadCommand = {
       modelId: decision.targetModelId,
       priority: 'high',
       compressionEnabled: true,
-      streamingEnabled: true
+      streamingEnabled: true,
     };
     
     const loadResponse = await this.quicServer.sendLoadCommand(loadCommand);
@@ -306,7 +306,7 @@ export class AutoencoderContextSwitcher {
    */
   private async updateUsagePatterns(
     contextVector: ContextVector, 
-    usedModelId: string
+    usedModelId: string;
   ): Promise<void> {
     const pattern = this.modelUsagePatterns.get(usedModelId) || {
       modelId: usedModelId,
@@ -316,7 +316,7 @@ export class AutoencoderContextSwitcher {
       successRate: 1.0,
       userPreference: 0.5,
       contextSimilarity: new Array(this.contextDimensions).fill(0),
-      lastAccessed: 0
+      lastAccessed: 0,
     };
     
     // Update usage statistics
@@ -324,7 +324,7 @@ export class AutoencoderContextSwitcher {
     pattern.recentUsage += 1;
     pattern.lastAccessed = Date.now();
     
-    // Update context similarity using exponential moving average
+    // Update context similarity using exponential moving average;
     for (let i = 0; i < this.contextDimensions; i++) {
       pattern.contextSimilarity[i] = 
         pattern.contextSimilarity[i] * 0.9 + contextVector.embedding[i] * 0.1;
@@ -338,7 +338,7 @@ export class AutoencoderContextSwitcher {
     
     this.modelUsagePatterns.set(usedModelId, pattern);
     
-    // Check if we should create a new specialized model
+    // Check if we should create a new specialized model;
     if (pattern.totalUsage > 100 && pattern.recentUsage > 50) {
       await this.considerCreatingSpecializedModel(contextVector, pattern);
     }
@@ -349,7 +349,7 @@ export class AutoencoderContextSwitcher {
    */
   private async considerCreatingSpecializedModel(
     contextVector: ContextVector,
-    pattern: ModelUsagePattern
+    pattern: ModelUsagePattern;
   ): Promise<void> {
     console.log(`🧠 Considering specialized model creation for ${pattern.modelId}...`);
     
@@ -381,7 +381,7 @@ export class AutoencoderContextSwitcher {
     trainingData: {
       domain: string;
       examples: Array<any>;
-      patterns: Float32Array;
+      patterns: Float32Array;,
     }
   ): Promise<void> {
     // This would interface with the QLoRA training system
@@ -390,12 +390,12 @@ export class AutoencoderContextSwitcher {
       rank: this.calculateOptimalRank(trainingData.examples.length),
       alpha: this.calculateOptimalAlpha(trainingData.patterns),
       targetModules: this.selectTargetModules(trainingData.domain),
-      trainingData: trainingData.examples
+      trainingData: trainingData.examples,
     };
     
     // Simulate QLoRA training (in production, would use actual training)
     console.log(`🔄 Training QLoRA adapter with ${trainingData.examples.length} examples...`);
-    await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate training time
+    await new Promise(resolve => setTimeout(resolve, 3000); // Simulate training time
     
     // Store adapter configuration
     const adapterPath = `~/.ollama/models/distilled-qlora/adapters/${adapterName}.json`;
@@ -404,23 +404,23 @@ export class AutoencoderContextSwitcher {
 
   /**
    * Store model to local disk with efficient caching
-   */
+   */;
   private async storeModelToDisk(modelName: string, domain: string): Promise<void> {
     const diskPath = `~/.ollama/models/distilled-qlora/${domain}/${modelName}`;
     
     // Create directory structure
     await this.createDirectoryStructure(diskPath);
     
-    // Store with compression and metadata
+    // Store with compression and metadata;
     const modelData = {
       name: modelName,
       domain: domain,
       created: Date.now(),
       version: '1.0',
-      compression: 'lz4', // Fast compression for quick loading
+      compression: 'lz4', // Fast compression for quick loading;
       metadata: {
         usagePattern: this.modelUsagePatterns.get(modelName),
-        contextEmbedding: this.calculateDomainEmbedding(domain)
+        contextEmbedding: this.calculateDomainEmbedding(domain),
       }
     };
     
@@ -515,8 +515,8 @@ export class AutoencoderContextSwitcher {
   }
 
   private selectModelsForGC(memoryState: GPUMemoryState): string[] {
-    const candidates = Array.from(this.modelUsagePatterns.entries())
-      .filter(([modelId]) => this.activeModels.has(modelId))
+    const candidates = Array.from(this.modelUsagePatterns.entries()
+      .filter(([modelId]) => this.activeModels.has(modelId);
       .sort(([,a], [,b]) => {
         // Sort by LRU + usage pattern
         const scoreA = (Date.now() - a.lastAccessed) / 1000 - a.recentUsage;
@@ -553,7 +553,7 @@ export class AutoencoderContextSwitcher {
       normB += b[i] * b[i];
     }
     
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
   }
 
   private hashString(str: string): number {
@@ -566,7 +566,7 @@ export class AutoencoderContextSwitcher {
     return Math.abs(hash);
   }
 
-  // Mock implementations for complex components
+  // Mock implementations for complex components;
   private async getCurrentActiveModel(): Promise<string | null> {
     return this.activeModels.size > 0 ? Array.from(this.activeModels.keys())[0] : null;
   }
@@ -580,16 +580,16 @@ export class AutoencoderContextSwitcher {
   private async loadModelFromDisk(modelId: string): Promise<string> {
     // Mock implementation - would load actual model
     console.log(`📦 Loading model from disk: ${modelId}`);
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 500);
     return `wasm_${modelId}_${Date.now()}`;
   }
 
   private analyzeContextClusters(modelId: string): {coherence: number; uniqueness: number; domain: string} {
-    // Mock analysis
+    // Mock analysis;
     return {
       coherence: 0.85,
       uniqueness: 0.72,
-      domain: 'specialized_contract_analysis'
+      domain: 'specialized_contract_analysis',
     };
   }
 
@@ -597,7 +597,7 @@ export class AutoencoderContextSwitcher {
     return {
       domain: clusters.domain,
       examples: [], // Would extract from usage history
-      patterns: new Float32Array(256)
+      patterns: new Float32Array(256),
     };
   }
 
@@ -606,7 +606,7 @@ export class AutoencoderContextSwitcher {
   }
 
   private calculateOptimalAlpha(patterns: Float32Array): number {
-    return Math.max(16, Math.min(64, Math.floor(patterns.reduce((a, b) => a + b, 0) * 32)));
+    return Math.max(16, Math.min(64, Math.floor(patterns.reduce((a, b) => a + b, 0) * 32));
   }
 
   private selectTargetModules(domain: string): string[] {
@@ -636,7 +636,7 @@ export class AutoencoderContextSwitcher {
 
   /**
    * Get performance statistics
-   */
+   */;
   getPerformanceStats() {
     return {
       switchingLatency: this.switchingLatency,
@@ -650,7 +650,7 @@ export class AutoencoderContextSwitcher {
   }
 }
 
-// Supporting classes (simplified implementations)
+// Supporting classes (simplified implementations);
 class ContextAutoencoder {
   constructor(private dimensions: number) {}
   
@@ -690,13 +690,13 @@ class GPUMemoryManager {
       ]),
       fragmentationLevel: 0.15,
       gcThreshold: this.gcThresholdMB,
-      lastGCTime: Date.now() - 300000
+      lastGCTime: Date.now() - 300000,
     };
   }
   
   async forceGarbageCollection(): Promise<void> {
     console.log('🗑️ Force GPU garbage collection');
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise(resolve => setTimeout(resolve, 200);
   }
 }
 
@@ -707,13 +707,13 @@ class QUICProtocolServer {
   
   async sendLoadCommand(command: any): Promise<any> {
     // Simulate ultra-low latency QUIC communication
-    await new Promise(resolve => setTimeout(resolve, 5)); // 5ms latency
+    await new Promise(resolve => setTimeout(resolve, 5); // 5ms latency
     return { success: true, latency: 5 };
   }
   
   async sendUnloadCommand(modelId: string, wasmKey: string): Promise<void> {
     console.log(`⚡ QUIC unload command: ${modelId}`);
-    await new Promise(resolve => setTimeout(resolve, 2)); // 2ms latency
+    await new Promise(resolve => setTimeout(resolve, 2); // 2ms latency
   }
 }
 

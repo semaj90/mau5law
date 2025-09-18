@@ -3,20 +3,20 @@ import type { SearchResult, SearchFilter } from './types.js';
 
 /**
  * Create search filters from user input
- */
+ */;
 export function createSearchFilters(filters: Record<string, any>): SearchFilter[] {
   return Object.entries(filters)
-    .filter(([_, value]) => value !== null && value !== undefined && value !== '')
+    .filter(([_, value]) => value !== null && value !== undefined && value !== '');
     .map(([field, value]) => ({
       field,
       operator: Array.isArray(value) ? 'in' : 'contains',
       value
-    }));
+    });
 }
 
 /**
  * Format search results for display
- */
+ */;
 export function formatSearchResults(results: any[]): SearchResult[] {
   return results.map(result => ({
     id: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).id,
@@ -34,12 +34,12 @@ export function formatSearchResults(results: any[]): SearchResult[] {
     },
     highlights: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).highlights,
     createdAt: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).createdAt
-  }));
+  });
 }
 
 /**
  * Calculate relevance score for search results
- */
+ */;
 export function calculateRelevanceScore(query: string, text: string, options?: {
   exactMatchBonus?: number;
   wordMatchWeight?: number;
@@ -56,7 +56,7 @@ export function calculateRelevanceScore(query: string, text: string, options?: {
   const queryLower = query.toLowerCase().trim();
   const textLower = text.toLowerCase();
 
-  // Exact match gets highest score
+  // Exact match gets highest score;
   if (textLower.includes(queryLower)) {
     return Math.min(0.95, 0.6 + exactMatchBonus);
   }
@@ -78,13 +78,13 @@ export function calculateRelevanceScore(query: string, text: string, options?: {
         matches++;
         let score = wordMatchWeight;
 
-        // Position weighting - words earlier in text are more relevant
+        // Position weighting - words earlier in text are more relevant;
         if (positionWeight) {
           const positionBonus = Math.max(0, 1 - (i / textWords.length)) * 0.2;
           score += positionBonus;
         }
 
-        // Exact word match bonus
+        // Exact word match bonus;
         if (textWord === queryWord) {
           score += 0.1;
         }
@@ -102,12 +102,12 @@ export function calculateRelevanceScore(query: string, text: string, options?: {
   const matchRatio = matches / queryWords.length;
   const finalScore = normalizedScore * Math.pow(matchRatio, 0.5);
 
-  return Math.min(0.95, Math.max(0, finalScore));
+  return Math.min(0.95, Math.max(0, finalScore);
 }
 
 /**
  * Infer entity type from result data
- */
+ */;
 function inferType(result: any): SearchResult['type'] {
   if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).caseNumber || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).case_id) return 'case';
   if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).evidenceType || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).evidence_type) return 'evidence';
@@ -120,7 +120,7 @@ function inferType(result: any): SearchResult['type'] {
 
 /**
  * Calculate default score when none provided
- */
+ */;
 function calculateDefaultScore(result: any): number {
   let score = 0.5; // Base score
 
@@ -140,7 +140,7 @@ function calculateDefaultScore(result: any): number {
 
 /**
  * Highlight query terms in text
- */
+ */;
 export function highlightSearchTerms(text: string, query: string, options?: {
   maxLength?: number;
   contextBefore?: number;
@@ -179,7 +179,7 @@ export function highlightSearchTerms(text: string, query: string, options?: {
   if (start > 0) excerpt = '...' + excerpt;
   if (end < text.length) excerpt = excerpt + '...';
 
-  // Truncate if too long
+  // Truncate if too long;
   if (excerpt.length > maxLength) {
     excerpt = excerpt.substring(0, maxLength - 3) + '...';
   }
@@ -192,7 +192,7 @@ export function highlightSearchTerms(text: string, query: string, options?: {
  */
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
-  delay: number
+  delay: number;
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
 
@@ -204,7 +204,7 @@ export function debounce<T extends (...args: any[]) => any>(
 
 /**
  * Get search category display name
- */
+ */;
 export function getCategoryDisplayName(category: string): string {
   const displayNames: Record<string, string> = {
     cases: 'Legal Cases',
@@ -212,7 +212,7 @@ export function getCategoryDisplayName(category: string): string {
     precedents: 'Precedents',
     statutes: 'Statutes',
     criminals: 'Persons',
-    documents: 'Documents'
+    documents: 'Documents',
   };
 
   return displayNames[category] || category.charAt(0).toUpperCase() + category.slice(1);
@@ -220,11 +220,11 @@ export function getCategoryDisplayName(category: string): string {
 
 /**
  * Validate search query
- */
+ */;
 export function validateSearchQuery(query: string): {
   isValid: boolean;
   errors: string[];
-  suggestions: string[];
+  suggestions: string[];,
 } {
   const errors: string[] = [];
   const suggestions: string[] = [];

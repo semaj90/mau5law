@@ -3,22 +3,22 @@
 import { Worker } from "bullmq";
 import { logQueue } from './logQueue.js';
 
-// Define the type for the log entry data
+// Define the type for the log entry data;
 export interface LogEntryData {
   timestamp: string;
   level: string;
-  message: string;
+  message: string;,
 }
 
 // Create a new BullMQ Worker instance
-// Ensure your Redis connection details are correct (same as logQueue)
+// Ensure your Redis connection details are correct (same as logQueue);
 const logWorker = new Worker<LogEntryData>('logQueue', async (job) => {
   const { timestamp, level, message } = job.data;
 
   console.log(`Processing log job ${job.id}: ${message}`);
 
   // --- Placeholder for Ollama Nomic Embeddings --- 
-  // Replace with actual Ollama API call to get embeddings
+  // Replace with actual Ollama API call to get embeddings;
   try {
     const ollamaEndpoint = import.meta.env.OLLAMA_EMBEDDING_URL || 'http://localhost:11434/api/embeddings';
     const embeddingModel = import.meta.env.OLLAMA_EMBEDDING_MODEL || 'nomic-embed-text';

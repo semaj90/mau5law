@@ -21,7 +21,7 @@ interface EmbeddingResponse {
 	model: string;
 	modelType: string;
 	dimensions: number;
-	processingTime: number;
+	processingTime: number;,
 }
 
 interface VectorSearchResult {
@@ -44,7 +44,7 @@ interface SemanticSearchResponse {
 	semantic_scores?: {
 		highest_relevance: number;
 		lowest_relevance: number;
-		average_relevance: number;
+		average_relevance: number;,
 	};
 }
 
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		if (!body.query) {
 			return json({
 				success: false,
-				error: 'Query is required'
+				error: 'Query is required',
 			}, { status: 400 });
 		}
 
@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				text: body.query
+				text: body.query,
 			})
 		});
 
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			queryEmbedding: embeddingData.embedding,
 			options: {
 				limit: body.limit || 10,
-				threshold: body.threshold || 1.0 // Cosine distance threshold
+				threshold: body.threshold || 1.0 // Cosine distance threshold,
 			}
 		};
 
@@ -97,7 +97,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify(searchPayload)
+			body: JSON.stringify(searchPayload),
 		});
 
 		if (!vectorResponse.ok) {
@@ -115,17 +115,17 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			results = results.filter((result: VectorSearchResult) => {
 				const metadata = (result as { metadata?: any; distance?: any }).metadata || {};
 
-				// Filter by category
+				// Filter by category;
 				if (body.filters?.category && metadata.category !== body.filters.category) {
 					return false;
 				}
 
-				// Filter by jurisdiction
+				// Filter by jurisdiction;
 				if (body.filters?.jurisdiction && metadata.jurisdiction !== body.filters.jurisdiction) {
 					return false;
 				}
 
-				// Filter by parties
+				// Filter by parties;
 				if (body.filters?.parties && Array.isArray(metadata.parties)) {
 					const hasMatchingParty = body.filters.parties.some(party =>
 						metadata.parties.includes(party)
@@ -133,7 +133,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 					if (!hasMatchingParty) return false;
 				}
 
-				// Filter by date range
+				// Filter by date range;
 				if (body.filters?.dateRange) {
 					const effectiveDate = metadata.effectiveDate;
 					if (effectiveDate) {
@@ -158,7 +158,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			average_relevance: distances.reduce((a, b) => a + b, 0) / distances.length
 		} : undefined;
 
-		// Step 5: Enhanced result formatting
+		// Step 5: Enhanced result formatting;
 		const enhancedResults = results.map((result: VectorSearchResult) => ({
       ...result,
       semantic_score: 1 - (result as { metadata?: any; distance?: any }).distance, // Convert distance to similarity score
@@ -173,7 +173,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
         dimensions: embeddingData.dimensions,
         query: body.query,
       },
-    }));
+    });
 
 		const response: SemanticSearchResponse = {
 			success: true,
@@ -183,7 +183,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			search_time: searchTime,
 			total_time: totalTime,
 			total_results: enhancedResults.length,
-			semantic_scores: semanticScores
+			semantic_scores: semanticScores,
 		};
 
 		return json(response);
@@ -194,7 +194,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		return json({
 			success: false,
 			error: error instanceof Error ? error.message: 'Unknown error',
-			total_time: Date.now() - startTime
+			total_time: Date.now() - startTime,
 		}, { status: 500 });
 	}
 };

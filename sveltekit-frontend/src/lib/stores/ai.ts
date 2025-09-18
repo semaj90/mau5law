@@ -18,15 +18,15 @@ export interface AIContext {
   model: string;
   stream: string;
   cacheKey: string;
-  sources: any[];
+  sources: any[];,
 }
-type AIEvent =
+type AIEvent =;
   | {
     type: "SUMMARIZE";
     caseId: string;
     evidence: any[];
     userId: string;
-    model: string;
+    model: string;,
   }
   | { type: "SAVE_SUMMARY" }
   | { type: "RETRY" }
@@ -83,12 +83,12 @@ export const aiGlobalMachine = setup({
   },
   actors: {
     summarizeEvidence: fromPromise(async ({ input }: { input: AIContext }) => {
-      // Memoization: check cache first
+      // Memoization: check cache first;
       if (summaryCache.has(input.cacheKey)) {
         return summaryCache.get(input.cacheKey)!;
       }
 
-      // Backend endpoint from component documentation
+      // Backend endpoint from component documentation;
       const res = await fetch("/api/ai/process-evidence", {
         method: "POST",
         body: JSON.stringify({
@@ -108,7 +108,7 @@ export const aiGlobalMachine = setup({
       const data = await res.json();
       if (!data.summary) throw new Error("No summary returned from API");
 
-      // Cache the result
+      // Cache the result;
       const result = {
         summary: data.summary,
         sources: data.sources || [],
@@ -213,9 +213,9 @@ export const aiGlobalMachine = setup({
   },
 });
 
-// Utility: hash evidence array for cache key
+// Utility: hash evidence array for cache key;
 function hashEvidence(evidence: any[]): string {
-  // Simple hash, replace with a better hash for production
+  // Simple hash, replace with a better hash for production;
   try {
     // Use crypto for a more robust hash if available (Node.js/modern browsers)
     // This is a placeholder for a real implementation.
@@ -238,9 +238,9 @@ function hashEvidence(evidence: any[]): string {
 export const aiGlobalActor = createActor(aiGlobalMachine);
 ;
 // Svelte store wrapper for reactivity
-export const aiGlobalStore = writable(aiGlobalActor.getSnapshot());
+export const aiGlobalStore = writable(aiGlobalActor.getSnapshot();
 ;
-// Subscribe to actor state changes
+// Subscribe to actor state changes;
 aiGlobalActor.subscribe((snapshot) => {
   aiGlobalStore.set(snapshot);
 });
@@ -248,13 +248,13 @@ aiGlobalActor.subscribe((snapshot) => {
 // Start the actor
 aiGlobalActor.start();
 
-// Export convenience functions
+// Export convenience functions;
 export const aiGlobalActions = {
   summarize: (
     caseId: string,
     evidence: any[],
     userId: string,
-    model: string = "gemma3-legal:latest"
+    model: string = "gemma3-legal:latest";
   ) => {
     aiGlobalActor.send({
       type: "SUMMARIZE",

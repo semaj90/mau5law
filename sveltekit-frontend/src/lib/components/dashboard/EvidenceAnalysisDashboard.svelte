@@ -229,15 +229,15 @@
         <!-- Upload Zone -->
         <div
           class="upload-zone {dropZoneActive ? 'active' : ''}"
-          on:drop={handleDrop}
-          on:dragover={handleDragOver}
+          ondrop={handleDrop}
+          ondragover={handleDragOver}
           on:dragleave={handleDragLeave}
         >
           <input
             type="file"
             id="file-upload"
             class="hidden"
-            on:change={handleFileUpload}
+            onchange={handleFileUpload}
           />
           <label for="file-upload" class="upload-label">
             <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -255,7 +255,7 @@
           {#each $evidenceItems as evidence}
             <button
               class="evidence-item {$selectedEvidence?.id === evidence.id ? 'selected' : ''}"
-              on:click={() => analyzeEvidence(evidence)}
+              onclick={() => analyzeEvidence(evidence)}
               transition:fly={{ x: -20, duration: 300 }}
             >
               <span class="evidence-icon">{getEvidenceIcon(evidence.type)}</span>
@@ -293,11 +293,11 @@
       {:else if $currentAnalysis}
         <div class="analysis-content" transition:fade>
           <div class="analysis-actions">
-            <Button on:click={exportAnalysis} variant="secondary">
+            <Button onclick={exportAnalysis} variant="secondary">
               Export Analysis
             </Button>
             <Button
-              on:click={() => $selectedEvidence && analyzeEvidence($selectedEvidence)}
+              onclick={() => $selectedEvidence && analyzeEvidence($selectedEvidence)}
               variant="primary"
             >
               Re-analyze

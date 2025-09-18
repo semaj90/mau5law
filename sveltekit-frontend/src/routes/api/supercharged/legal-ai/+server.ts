@@ -14,7 +14,7 @@ import {
 } from '$lib/integrations/redis-webgpu-simd-integration.js';
 import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js';
 
-// GET: Demonstrate system capabilities and status
+// GET: Demonstrate system capabilities and status;
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const demo = url.searchParams.get('demo');
@@ -66,12 +66,12 @@ export const GET: RequestHandler = async ({ url }) => {
         });
         
       case 'showcase':
-        // Show what's possible with the integrated system
+        // Show what's possible with the integrated system;
         return json({
           success: true,
           data: {
             title: "🎯 What You Can Do With Redis + WebGPU + SIMD",
-            use_cases: [
+            use_cases: [;
               {
                 scenario: "Large Legal Document Analysis",
                 traditional: "30-60 seconds processing time",
@@ -92,7 +92,7 @@ export const GET: RequestHandler = async ({ url }) => {
                 optimized: "Parallel + cached, 10 seconds for 100 docs",
                 improvement: "30x faster",
                 technologies: ["Smart caching", "GPU parallelization", "Cross-user optimization"]
-              },
+              },);
               {
                 scenario: "Real-time Legal Search",
                 traditional: "Database queries, 1-3 seconds response",
@@ -105,13 +105,13 @@ export const GET: RequestHandler = async ({ url }) => {
               cost_savings: "70% reduction in compute costs",
               user_experience: "Sub-second responses for all operations",
               scaling: "10x more concurrent users on same hardware",
-              competitive_advantage: "Industry-leading performance"
+              competitive_advantage: "Industry-leading performance",
             }
           }
         });
         
       default:
-        // System overview
+        // System overview;
         return json({
           success: true,
           data: {
@@ -120,13 +120,13 @@ export const GET: RequestHandler = async ({ url }) => {
             endpoints: {
               status: "/api/supercharged/legal-ai?demo=status",
               benchmark: "/api/supercharged/legal-ai?demo=benchmark", 
-              showcase: "/api/supercharged/legal-ai?demo=showcase"
+              showcase: "/api/supercharged/legal-ai?demo=showcase",
             },
             operations: {
               legal_document: "POST with legal document JSON for analysis",
               vector_similarity: "POST with query vector and candidates",
               intelligent_todos: "POST with NPM error output for SOM analysis",
-              batch_operations: "POST with array of mixed operations"
+              batch_operations: "POST with array of mixed operations",
             }
           }
         });
@@ -135,12 +135,12 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     return json({
       success: false,
-      error: error.message
+      error: error.message,
     }, { status: 500 });
   }
 };
 
-// POST: Process operations with the supercharged system
+// POST: Process operations with the supercharged system;
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Use SIMD JSON parsing for the request body
@@ -156,7 +156,7 @@ export const POST: RequestHandler = async ({ request }) => {
           {
             useCache: options.useCache !== false,
             pipeline: options.pipeline || ['document-analysis', 'entity-extraction', 'risk-assessment'],
-            priority: options.priority || 2
+            priority: options.priority || 2,
           }
         );
         
@@ -164,7 +164,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           operation: 'legal_document',
           result: docResult,
-          total_time: performance.now() - startTime
+          total_time: performance.now() - startTime,
         });
         
       case 'vector_similarity':
@@ -173,17 +173,17 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!Array.isArray(queryVector) || !Array.isArray(candidateVectors)) {
           return json({
             success: false,
-            error: 'queryVector and candidateVectors must be arrays'
+            error: 'queryVector and candidateVectors must be arrays',
           }, { status: 400 });
         }
         
         const simResult = await computeVectorSimilarityOptimized(
           queryVector,
-          candidateVectors,
+          candidateVectors,);
           {
             algorithm,
             useCache: options.useCache !== false,
-            threshold: options.threshold || 0.8
+            threshold: options.threshold || 0.8,
           }
         );
         
@@ -191,7 +191,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           operation: 'vector_similarity',
           result: simResult,
-          total_time: performance.now() - startTime
+          total_time: performance.now() - startTime,
         });
         
       case 'intelligent_todos':
@@ -200,15 +200,15 @@ export const POST: RequestHandler = async ({ request }) => {
         if (typeof npmOutput !== 'string') {
           return json({
             success: false,
-            error: 'npmOutput must be a string'
+            error: 'npmOutput must be a string',
           }, { status: 400 });
         }
         
         const todosResult = await generateIntelligentTodosOptimized(
-          npmOutput,
+          npmOutput,);
           {
             useCache: options.useCache !== false,
-            webgpuRanking: options.webgpuRanking !== false
+            webgpuRanking: options.webgpuRanking !== false,
           }
         );
         
@@ -216,7 +216,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           operation: 'intelligent_todos',
           result: todosResult,
-          total_time: performance.now() - startTime
+          total_time: performance.now() - startTime,
         });
         
       case 'batch_operations':
@@ -225,7 +225,7 @@ export const POST: RequestHandler = async ({ request }) => {
         if (!Array.isArray(operations)) {
           return json({
             success: false,
-            error: 'operations must be an array'
+            error: 'operations must be an array',
           }, { status: 400 });
         }
         
@@ -235,7 +235,7 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           operation: 'batch_operations',
           result: batchResult,
-          total_time: performance.now() - startTime
+          total_time: performance.now() - startTime,
         });
         
       case 'performance_test':
@@ -246,10 +246,10 @@ export const POST: RequestHandler = async ({ request }) => {
           success: true,
           operation: 'performance_test',
           result: perfResult,
-          total_time: performance.now() - startTime
+          total_time: performance.now() - startTime,
         });
         
-      default:
+      default:;
         return json({
           success: false,
           error: `Unknown operation: ${operation}`,
@@ -270,7 +270,7 @@ export const POST: RequestHandler = async ({ request }) => {
       success: false,
       error: {
         message: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       }
     }, { status: 500 });
   }
@@ -278,7 +278,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 /**
  * Run performance benchmark comparing traditional vs optimized approaches
- */
+ */;
 async function runPerformanceBenchmark(): Promise<any> {
   const results = {
     traditional: Record<string, any> as any,
@@ -286,7 +286,7 @@ async function runPerformanceBenchmark(): Promise<any> {
     improvement: Record<string, any> as any
   };
   
-  // Test 1: JSON Parsing Speed
+  // Test 1: JSON Parsing Speed;
   const largeJson = JSON.stringify({
     documents: Array.from({ length: 100 }, (_, i) => ({
       id: `doc-${i}`,
@@ -294,9 +294,9 @@ async function runPerformanceBenchmark(): Promise<any> {
       metadata: {
         created: new Date().toISOString(),
         size: 'large',
-        embeddings: Array.from({ length: 768 }, () => Math.random())
+        embeddings: Array.from({ length: 768 }, () => Math.random()
       }
-    }))
+    })
   });
   
   // Traditional JSON parsing
@@ -314,9 +314,9 @@ async function runPerformanceBenchmark(): Promise<any> {
   results.optimized.jsonParsing = (performance.now() - optimizedStart) * 0.33; // 3x improvement
   
   // Test 2: Vector Similarity
-  const queryVector = Array.from({ length: 768 }, () => Math.random());
+  const queryVector = Array.from({ length: 768 }, () => Math.random();
   const candidateVectors = Array.from({ length: 1000 }, () => 
-    Array.from({ length: 768 }, () => Math.random())
+    Array.from({ length: 768 }, () => Math.random()
   );
   
   // Traditional CPU similarity
@@ -328,7 +328,7 @@ async function runPerformanceBenchmark(): Promise<any> {
       normA += queryVector[i] * queryVector[i];
       normB += candidate[i] * candidate[i];
     }
-    return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+    return dot / (Math.sqrt(normA) * Math.sqrt(normB);
   });
   results.traditional.vectorSimilarity = performance.now() - cpuSimStart;
   
@@ -343,7 +343,7 @@ async function runPerformanceBenchmark(): Promise<any> {
   const recomputeStart = performance.now();
   for (let i = 0; i < 10; i++) {
     // Simulate expensive computation
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise(resolve => setTimeout(resolve, 50);
   }
   results.traditional.cacheOperations = performance.now() - recomputeStart;
   
@@ -361,14 +361,14 @@ async function runPerformanceBenchmark(): Promise<any> {
       average_improvement: "25-100x faster across operations",
       memory_usage: "60% reduction",
       server_resources: "70% less CPU usage",
-      user_experience: "Sub-second responses"
+      user_experience: "Sub-second responses",
     }
   };
 }
 
 /**
  * Run comprehensive performance test with real workload
- */
+ */;
 async function runComprehensivePerformanceTest(testConfig: any): Promise<any> {
   const { 
     documentCount = 50,
@@ -379,10 +379,10 @@ async function runComprehensivePerformanceTest(testConfig: any): Promise<any> {
   
   const results: any = {
     workload: { documentCount, vectorDimensions, candidateCount, iterations },
-    phases: []
+    phases: [],
   };
   
-  // Phase 1: Document Processing Test
+  // Phase 1: Document Processing Test;
   const legalDocs = Array.from({ length: documentCount }, (_, i) => ({
     id: `legal-doc-${i}`,
     content: `Legal document ${i} content. `.repeat(500) + 
@@ -393,12 +393,12 @@ async function runComprehensivePerformanceTest(testConfig: any): Promise<any> {
       complexity: Math.random(),
       parties: [`Party ${i}A`, `Party ${i}B`]
     }
-  }));
+  });
   
   const docProcessingStart = performance.now();
   const docResults = [];
   
-  for (const doc of legalDocs.slice(0, Math.min(5, documentCount))) { // Test subset
+  for (const doc of legalDocs.slice(0, Math.min(5, documentCount))) { // Test subset;
     const result = await processLegalDocumentOptimized(JSON.stringify(doc), {
       useCache: true,
       pipeline: ['document-analysis', 'entity-extraction', 'risk-assessment']
@@ -412,19 +412,19 @@ async function runComprehensivePerformanceTest(testConfig: any): Promise<any> {
     documentsProcessed: docResults.length,
     averageTime: (performance.now() - docProcessingStart) / docResults.length,
     cacheHits: docResults.filter(item => item.length),
-    processingPaths: docResults.map(r => r.processingPath)
+    processingPaths: docResults.map(r => r.processingPath),
   });
   
   // Phase 2: Vector Similarity Test
   const vectorStart = performance.now();
-  const queryVec = Array.from({ length: vectorDimensions }, () => Math.random());
+  const queryVec = Array.from({ length: vectorDimensions }, () => Math.random();
   const candidates = Array.from({ length: Math.min(100, candidateCount) }, () => 
-    Array.from({ length: vectorDimensions }, () => Math.random())
+    Array.from({ length: vectorDimensions }, () => Math.random()
   );
   
   const vectorResult = await computeVectorSimilarityOptimized(queryVec, candidates, {
     algorithm: 'cosine',
-    useCache: true
+    useCache: true,
   });
   
   results.phases.push({
@@ -434,7 +434,7 @@ async function runComprehensivePerformanceTest(testConfig: any): Promise<any> {
     candidatesProcessed: candidates.length,
     topSimilarity: Math.max(...(vectorResult.similarities || [])),
     processingPath: vectorResult.processingPath,
-    cacheHit: vectorResult.performance?.cacheHit
+    cacheHit: vectorResult.performance?.cacheHit,
   });
   
   // Phase 3: System Resource Usage
@@ -446,7 +446,7 @@ async function runComprehensivePerformanceTest(testConfig: any): Promise<any> {
     cacheEfficiency: systemMetrics.efficiency,
     memoryUsage: typeof (performance as any).memory !== 'undefined' ? {
       used: Math.round(((performance as any).memory.usedJSHeapSize / 1024 / 1024)),
-      total: Math.round(((performance as any).memory.totalJSHeapSize / 1024 / 1024))
+      total: Math.round(((performance as any).memory.totalJSHeapSize / 1024 / 1024),
     } : 'not_available'
   };
   

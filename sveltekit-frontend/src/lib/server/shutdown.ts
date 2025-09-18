@@ -21,7 +21,7 @@ function ensureHandlers() {
   if (registered) return;
   registered = true;
   ['SIGINT','SIGTERM'].forEach(sig => {
-    process.on(sig as any, () => runCleanups(sig));
+    process.on(sig as any, () => runCleanups(sig);
   });
   process.on('uncaughtException', (e) => {
     console.error('[shutdown] uncaughtException', e);

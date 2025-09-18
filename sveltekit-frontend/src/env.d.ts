@@ -3,7 +3,7 @@
 /**
  * Enhanced Vite Environment Variables
  * Production-ready typing for all environment configurations
- */
+ */;
 interface ImportMetaEnv {
   // Core Configuration  
   readonly OLLAMA_URL: string;
@@ -50,18 +50,18 @@ interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
 
-// Extended global types for enhanced development experience
+// Extended global types for enhanced development experience;
 declare global {
   interface Window {
     // GPU Context Management
     __GPU_MANAGER__?: import('$lib/gpu/global-gpu-manager').GlobalGPUManager;
     __TELEMETRY__?: import('$lib/telemetry/event-bus').TelemetryEventBus;
     
-    // Development Utilities
+    // Development Utilities;
     __DEV_TOOLS__?: {
       showGPUStats: () => void;
       exportTelemetry: () => Promise<Blob>;
-      resetMemoryBanks: () => void;
+      resetMemoryBanks: () => void;,
     };
     
     // Performance Monitoring
@@ -69,18 +69,18 @@ declare global {
     __MEMORY_TRACKER__?: {
       l1GpuUsage: number;
       l2RamUsage: number; 
-      l3RedisUsage: number;
+      l3RedisUsage: number;,
     };
   }
 
-  // Nintendo Memory Architecture Types
+  // Nintendo Memory Architecture Types;
   namespace Nintendo {
     interface MemoryBank {
       id: number;
       size: number;
       used: number;
       available: number;
-      type: 'L1_GPU' | 'L2_RAM' | 'L3_REDIS' | 'CHR_ROM' | 'PRG_ROM';
+      type: 'L1_GPU' | 'L2_RAM' | 'L3_REDIS' | 'CHR_ROM' | 'PRG_ROM';,
     }
 
     interface CHRROMBank {
@@ -88,11 +88,11 @@ declare global {
       address: number;
       size: 0x1000; // 4KB per bank
       patternData: Uint8Array;
-      isDirty: boolean;
+      isDirty: boolean;,
     }
   }
 
-  // Enhanced Telemetry Events
+  // Enhanced Telemetry Events;
   namespace Telemetry {
     interface BaseEvent {
       timestamp: number;
@@ -111,14 +111,14 @@ declare global {
       type: 'render_time' | 'api_latency' | 'cache_hit' | 'vector_encoding';
       duration: number;
       operation: string;
-      success: boolean;
+      success: boolean;,
     }
 
     interface ErrorEvent extends BaseEvent {
       type: 'error' | 'warning' | 'critical';
       message: string;
       stack?: string;
-      component: string;
+      component: string;,
     }
   }
 }

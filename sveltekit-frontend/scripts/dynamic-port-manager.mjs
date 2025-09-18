@@ -16,9 +16,9 @@ class DynamicPortManager {
       hmr: { start: 5201, end: 5230 },
       api: { start: 8080, end: 8100 },
       gpu: { start: 8101, end: 8120 },
-      ollama: { start: 11434, end: 11450 }
+      ollama: { start: 11434, end: 11450 },
     };
-    
+
     this.configFile = path.join(process.cwd(), '.port-allocation.json');
     this.loadPortCache();
   }
@@ -49,27 +49,27 @@ class DynamicPortManager {
   async isPortAvailable(port) {
     return new Promise((resolve) => {
       const server = createServer();
-      
+
       server.listen(port, () => {
         server.once('close', () => resolve(true));
         server.close();
       });
-      
+
       server.on('error', () => resolve(false));
     });
   }
 
   async findAvailablePort(service, preferredPort = null) {
     console.log(`🔍 Finding available port for ${service}...`);
-    
+
     // Try cached port first
-    if (this.portCache[service] && await this.isPortAvailable(this.portCache[service])) {
+    if (this.portCache[service] && (await this.isPortAvailable(this.portCache[service]))) {
       console.log(`✅ Using cached port ${this.portCache[service]} for ${service}`);
       return this.portCache[service];
     }
 
     // Try preferred port
-    if (preferredPort && await this.isPortAvailable(preferredPort)) {
+    if (preferredPort && (await this.isPortAvailable(preferredPort))) {
       this.portCache[service] = preferredPort;
       console.log(`✅ Using preferred port ${preferredPort} for ${service}`);
       return preferredPort;
@@ -85,7 +85,9 @@ class DynamicPortManager {
       }
     }
 
-    throw new Error(`❌ No available ports found for ${service} in range ${range.start}-${range.end}`);
+    throw new Error(
+      `❌ No available ports found for ${service} in range ${range.start}-${range.end}`
+    );
   }
 
   async getPortAllocation() {
@@ -94,7 +96,7 @@ class DynamicPortManager {
       hmr: await this.findAvailablePort('hmr', null),
       api: await this.findAvailablePort('api', 8080),
       gpu: await this.findAvailablePort('gpu', 8095),
-      ollama: await this.findAvailablePort('ollama', 11435)
+      ollama: await this.findAvailablePort('ollama', 11435),
     };
 
     // Ensure HMR port is different from Vite port
@@ -142,10 +144,10 @@ DYNAMIC_PORTS=true
 
   async updateViteConfig(allocation) {
     const viteConfigPath = path.join(process.cwd(), 'vite.config.js');
-    
+
     try {
       let content = readFileSync(viteConfigPath, 'utf8');
-      
+
       // Update server config dynamically
       const newServerConfig = `	server: {
 		port: ${allocation.vite},
@@ -157,13 +159,12 @@ DYNAMIC_PORTS=true
 		}
 	},`;
 
-      content = content.replace(
-        /server:\s*{[\s\S]*?},/,
-        newServerConfig
-      );
+      content = content.replace(/server:\s*{[\s\S]*?},/, newServerConfig);
 
       writeFileSync(viteConfigPath, content);
-      console.log(`🔧 Updated vite.config.js with ports: Vite=${allocation.vite}, HMR=${allocation.hmr}`);
+      console.log(
+        `🔧 Updated vite.config.js with ports: Vite=${allocation.vite}, HMR=${allocation.hmr}`
+      );
     } catch (error) {
       console.warn('⚠️ Failed to update vite.config.js:', error.message);
     }
@@ -191,7 +192,7 @@ DYNAMIC_PORTS=true
   async run() {
     try {
       console.log('🚀 Dynamic Port Manager - Legal AI Platform');
-      console.log('='*50);
+      console.log('=' * 50);
 
       // Check existing conflicts
       await this.checkConflicts();

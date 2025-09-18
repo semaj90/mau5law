@@ -65,8 +65,5 @@
     "transform": [],
     "lib": ["ESNext"]
   },
-  "include": [
-    "src/wasm/**/*.as",
-    "src/wasm/**/*.ts"
-  ]
+  "include": ["src/wasm/**/*.as", "src/wasm/**/*.ts"]
 }

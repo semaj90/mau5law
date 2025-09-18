@@ -11,7 +11,7 @@ interface WASMEmbeddings {
   get_embedding_dim: () => number;
   cleanup: (ptr: number) => void;
   malloc: (size: number) => number;
-  free: (ptr: number) => void;
+  free: (ptr: number) => void;,
 }
 
 class EmbeddingsWorker {
@@ -117,7 +117,7 @@ class EmbeddingsWorker {
       } catch (error) {
         console.warn(`⚠️ Failed to generate embedding for text: ${text.substring(0, 50)}...`);
         // Return zero vector on failure
-        results.push(new Float32Array(this.embeddingDim));
+        results.push(new Float32Array(this.embeddingDim);
       }
     }
 
@@ -131,7 +131,7 @@ class EmbeddingsWorker {
       originalLength: number;
       cleanedLength: number;
       tokenCount: number;
-      hasSpecialChars: boolean;
+      hasSpecialChars: boolean;,
     };
   }> {
     if (!this.isInitialized || !this.wasmModule) {
@@ -161,7 +161,7 @@ class EmbeddingsWorker {
           originalLength: text.length,
           cleanedLength: cleanText.length,
           tokenCount: tokens.length,
-          hasSpecialChars: /[^\w\s]/.test(text)
+          hasSpecialChars: /[^\w\s]/.test(text),
         }
       };
     } catch (error) {
@@ -174,7 +174,7 @@ class EmbeddingsWorker {
 // Worker instance
 const embeddingsWorker = new EmbeddingsWorker();
 
-// Message handler
+// Message handler;
 self.addEventListener('message', async (event) => {
   const { type, id, data } = event.data;
 
@@ -191,7 +191,7 @@ self.addEventListener('message', async (event) => {
         const response: EmbeddingResponse = {
           embedding: Array.from(embedding),
           dimension: embedding.length,
-          processingTime: performance.now() - (data.startTime || 0)
+          processingTime: performance.now() - (data.startTime || 0),
         };
         self.postMessage({ type: 'embedding_result', id, data: response });
         break;
@@ -203,7 +203,7 @@ self.addEventListener('message', async (event) => {
           embeddings: embeddings.map(emb => Array.from(emb)),
           count: embeddings.length,
           dimension: embeddings[0]?.length || 0,
-          processingTime: performance.now() - (data.startTime || 0)
+          processingTime: performance.now() - (data.startTime || 0),
         };
         self.postMessage({ type: 'batch_embedding_result', id, data: batchResponse });
         break;
@@ -221,12 +221,12 @@ self.addEventListener('message', async (event) => {
     self.postMessage({
       type: 'error',
       id,
-      error: error instanceof Error ? error.message: 'Unknown error'
+      error: error instanceof Error ? error.message: 'Unknown error',
     });
   }
 });
 
-// Health check
+// Health check;
 self.addEventListener('message', (event) => {
   if (event.data.type === 'ping') {
     self.postMessage({ type: 'pong', timestamp: Date.now() });

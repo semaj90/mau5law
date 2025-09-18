@@ -30,7 +30,7 @@ interface OrchestrationResult {
     totalTime: number;
     apiCalls: number;
     cacheHits: number;
-    gpuAccelerated: boolean;
+    gpuAccelerated: boolean;,
   };
 }
 
@@ -40,10 +40,10 @@ interface WorkflowStep {
   result?: any;
   error?: string;
   duration: number;
-  apiEndpoint: string;
+  apiEndpoint: string;,
 }
 
-// Workflow orchestration class
+// Workflow orchestration class;
 class LegalAIOrchestrator {
   private activeWorkflows = new Map<string, OrchestrationResult>();
   private stepExecutors = new Map<string, (params: any, options?: any) => Promise<any>();
@@ -54,24 +54,24 @@ class LegalAIOrchestrator {
 
   private initializeStepExecutors() {
     // Legal research workflow steps
-    this.stepExecutors.set('search-legal-documents', this.executeSearchLegalDocuments.bind(this));
-    this.stepExecutors.set('analyze-precedents', this.executeAnalyzePrecedents.bind(this));
-    this.stepExecutors.set('generate-research-summary', this.executeGenerateResearchSummary.bind(this));
+    this.stepExecutors.set('search-legal-documents', this.executeSearchLegalDocuments.bind(this);
+    this.stepExecutors.set('analyze-precedents', this.executeAnalyzePrecedents.bind(this);
+    this.stepExecutors.set('generate-research-summary', this.executeGenerateResearchSummary.bind(this);
     
     // Document processing workflow steps  
-    this.stepExecutors.set('extract-document-entities', this.executeExtractDocumentEntities.bind(this));
-    this.stepExecutors.set('analyze-document-content', this.executeAnalyzeDocumentContent.bind(this));
-    this.stepExecutors.set('generate-document-summary', this.executeGenerateDocumentSummary.bind(this));
+    this.stepExecutors.set('extract-document-entities', this.executeExtractDocumentEntities.bind(this);
+    this.stepExecutors.set('analyze-document-content', this.executeAnalyzeDocumentContent.bind(this);
+    this.stepExecutors.set('generate-document-summary', this.executeGenerateDocumentSummary.bind(this);
     
     // Case creation workflow steps
-    this.stepExecutors.set('score-case-strength', this.executeScoreCaseStrength.bind(this));
-    this.stepExecutors.set('suggest-research-topics', this.executeSuggestResearchTopics.bind(this));
-    this.stepExecutors.set('create-case-timeline', this.executeCreateCaseTimeline.bind(this));
+    this.stepExecutors.set('score-case-strength', this.executeScoreCaseStrength.bind(this);
+    this.stepExecutors.set('suggest-research-topics', this.executeSuggestResearchTopics.bind(this);
+    this.stepExecutors.set('create-case-timeline', this.executeCreateCaseTimeline.bind(this);
     
     // Evidence analysis workflow steps
-    this.stepExecutors.set('process-evidence-metadata', this.executeProcessEvidenceMetadata.bind(this));
-    this.stepExecutors.set('analyze-evidence-relevance', this.executeAnalyzeEvidenceRelevance.bind(this));
-    this.stepExecutors.set('generate-evidence-report', this.executeGenerateEvidenceReport.bind(this));
+    this.stepExecutors.set('process-evidence-metadata', this.executeProcessEvidenceMetadata.bind(this);
+    this.stepExecutors.set('analyze-evidence-relevance', this.executeAnalyzeEvidenceRelevance.bind(this);
+    this.stepExecutors.set('generate-evidence-report', this.executeGenerateEvidenceReport.bind(this);
   }
 
   async executeWorkflow(request: OrchestrationRequest): Promise<OrchestrationResult> {
@@ -87,7 +87,7 @@ class LegalAIOrchestrator {
         totalTime: 0,
         apiCalls: 0,
         cacheHits: 0,
-        gpuAccelerated: request.options?.useGPU || false
+        gpuAccelerated: request.options?.useGPU || false,
       }
     };
 
@@ -101,7 +101,7 @@ class LegalAIOrchestrator {
           name: stepConfig.name,
           status: 'processing',
           duration: 0,
-          apiEndpoint: stepConfig.endpoint
+          apiEndpoint: stepConfig.endpoint,
         };
         
         (result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).steps.push(step);
@@ -115,7 +115,7 @@ class LegalAIOrchestrator {
             throw new Error(`No executor found for step: ${stepConfig.name}`);
           }
 
-          step.result = await executor(
+          step.result = await executor()
             { ...request.parameters, previousResults: this.getPreviousResults((result as { steps?: any; metrics?: any; status?: any; error?: any; result?: any; workflowId?: any }).steps) },
             request.options
           );
@@ -148,7 +148,7 @@ class LegalAIOrchestrator {
     return result;
   }
 
-  // Step executor implementations
+  // Step executor implementations;
   private async executeSearchLegalDocuments(params: any, options?: any): Promise<any> {
     const response = await fetch('/api/ai/enhanced-legal-search', {
       method: 'POST',
@@ -157,7 +157,7 @@ class LegalAIOrchestrator {
         query: params.query,
         jurisdiction: params.jurisdiction,
         maxResults: params.maxResults || 20,
-        useAI: true
+        useAI: true,
       })
     });
 
@@ -179,7 +179,7 @@ class LegalAIOrchestrator {
         jurisdiction: params.jurisdiction,
         sources: ['cases', 'statutes'],
         includeAnalysis: true,
-        userRole: params.userRole
+        userRole: params.userRole,
       })
     });
 
@@ -199,7 +199,7 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         message: `Generate a comprehensive legal research summary for: ${params.query}. Include key findings, precedents, and strategic recommendations based on the following analysis: ${precedentData.substring(0, 2000)}`,
         model: 'gemma3-legal:latest',
-        temperature: 0.3
+        temperature: 0.3,
       })
     });
 
@@ -218,7 +218,7 @@ class LegalAIOrchestrator {
         content: params.content,
         documentType: params.documentType || 'legal_document',
         extractEntities: true,
-        includeKeyTerms: true
+        includeKeyTerms: true,
       })
     });
 
@@ -236,7 +236,7 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         text: params.content,
         analysisType: 'legal_document',
-        includeMetadata: true
+        includeMetadata: true,
       })
     });
 
@@ -255,7 +255,7 @@ class LegalAIOrchestrator {
         content: params.content,
         maxLength: 500,
         includeKeyPoints: true,
-        legalFocus: true
+        legalFocus: true,
       })
     });
 
@@ -274,7 +274,7 @@ class LegalAIOrchestrator {
         caseTitle: params.title,
         description: params.description,
         caseType: params.caseType,
-        jurisdiction: params.jurisdiction
+        jurisdiction: params.jurisdiction,
       })
     });
 
@@ -292,7 +292,7 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         context: `New ${params.caseType} case: ${params.title}. ${params.description}`,
         suggestionType: 'research',
-        maxSuggestions: 10
+        maxSuggestions: 10,
       })
     });
 
@@ -304,14 +304,14 @@ class LegalAIOrchestrator {
   }
 
   private async executeCreateCaseTimeline(params: any, options?: any): Promise<any> {
-    // This would typically integrate with a calendar/timeline service
+    // This would typically integrate with a calendar/timeline service;
     const timeline = {
       milestones: [
         { name: 'Case Created', date: new Date(), type: 'created' },
         { name: 'Initial Research Due', date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), type: 'deadline' },
         { name: 'Discovery Phase', date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), type: 'phase' }
       ],
-      generated: new Date()
+      generated: new Date(),
     };
 
     return timeline;
@@ -324,7 +324,7 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         evidenceId: params.evidenceId,
         metadata: params.metadata,
-        extractAdditional: true
+        extractAdditional: true,
       })
     });
 
@@ -342,7 +342,7 @@ class LegalAIOrchestrator {
       body: JSON.stringify({
         query: params.caseContext || params.title,
         evidenceItems: [params.evidenceId],
-        analysisDepth: 'comprehensive'
+        analysisDepth: 'comprehensive',
       })
     });
 
@@ -363,7 +363,7 @@ class LegalAIOrchestrator {
         reportType: 'evidence_analysis',
         evidenceId: params.evidenceId,
         relevanceScore: relevanceData,
-        includeRecommendations: true
+        includeRecommendations: true,
       })
     });
 
@@ -374,7 +374,7 @@ class LegalAIOrchestrator {
     return await (response as { ok?: any; status?: any; json?: any }).json();
   }
 
-  // Helper methods
+  // Helper methods;
   private getWorkflowSteps(workflow: string) {
     const workflows = {
       'legal-research': [
@@ -414,29 +414,29 @@ class LegalAIOrchestrator {
       workflow,
       completedSteps: steps.filter(item => item.length),
       totalSteps: steps.length,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     switch (workflow) {
-      case 'legal-research':
+      case 'legal-research':;
         return {
           ...baseResult,
           searchResults: results[0]?.results || [],
           precedentAnalysis: results[1]?.analysis || '',
           summary: results[2]?.response || '',
-          recommendations: results[1]?.recommendations || []
+          recommendations: results[1]?.recommendations || [],
         };
 
-      case 'document-processing':
+      case 'document-processing':;
         return {
           ...baseResult,
           entities: results[0]?.entities || [],
           analysis: results[1]?.analysis || {},
           summary: results[2]?.summary || '',
-          keyTerms: results[2]?.keyTerms || []
+          keyTerms: results[2]?.keyTerms || [],
         };
 
-      case 'case-creation':
+      case 'case-creation':;
         return {
           ...baseResult,
           caseScore: results[0]?.score || 0,
@@ -444,12 +444,12 @@ class LegalAIOrchestrator {
           timeline: results[2] || {}
         };
 
-      case 'evidence-analysis':
+      case 'evidence-analysis':;
         return {
           ...baseResult,
           metadata: results[0] || {},
           relevanceAnalysis: results[1] || {},
-          report: results[2]?.report || ''
+          report: results[2]?.report || '',
         };
 
       default:
@@ -473,11 +473,11 @@ class LegalAIOrchestrator {
 // Global orchestrator instance
 const orchestrator = new LegalAIOrchestrator();
 
-// API handlers
+// API handlers;
 export const POST: RequestHandler = withSSRHandler(async ({ request }) => {
   const requestData: OrchestrationRequest = await request.json();
 
-  // Validate request
+  // Validate request;
   if (!requestData.workflow || !requestData.parameters) {
     return createSSRErrorResponse('Missing required fields: workflow and parameters', 400);
   }
@@ -523,11 +523,11 @@ export const GET: RequestHandler = withSSRHandler(async ({ url }) => {
   return createSSRResponse({
     activeWorkflows,
     total: activeWorkflows.length,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
-// Health check
+// Health check;
 export const OPTIONS: RequestHandler = withSSRHandler(async () => {
   return createSSRResponse({
     service: 'legal-ai-orchestrator',
@@ -540,6 +540,6 @@ export const OPTIONS: RequestHandler = withSSRHandler(async () => {
       'Error recovery',
       'Progress tracking'
     ],
-    version: '1.0.0'
+    version: '1.0.0',
   });
 });

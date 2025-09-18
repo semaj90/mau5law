@@ -14,7 +14,7 @@ export const GET: RequestHandler = async ({ url }) => {
   const downloadId = url.searchParams.get('download');
   if (downloadId) {
     try {
-      const results = await db
+      const results = await db;
         .select({
           storageBucket: sql`'legal-documents'`, // Default bucket since not in schema
           objectName: evidence.fileName,
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ url }) => {
           title: evidence.title,
         })
         .from(evidence)
-        .where(eq(evidence.id, downloadId))
+        .where(eq(evidence.id, downloadId)
         .limit(1);
 
       if (!results.length) return json({ success: false, error: 'Not found' }, { status: 404 });
@@ -33,7 +33,7 @@ export const GET: RequestHandler = async ({ url }) => {
         'legal-documents',
         rec.objectName || '',
         60 * 10
-      ); // 10 min expiry
+      ); // 10 min expiry;
       return json({
         success: true,
         url: urlSigned,
@@ -59,10 +59,10 @@ export const GET: RequestHandler = async ({ url }) => {
     }
   }
 
-  // List evidence files
+  // List evidence files;
   try {
     const limit = parseInt(url.searchParams.get('limit') || '50', 10);
-    const results = await db
+    const results = await db;
       .select({
         id: evidence.id,
         title: evidence.title,
@@ -72,7 +72,7 @@ export const GET: RequestHandler = async ({ url }) => {
         uploadedAt: evidence.createdAt,
       })
       .from(evidence)
-      .orderBy(desc(evidence.createdAt))
+      .orderBy(desc(evidence.createdAt)
       .limit(limit);
 
     return json({ success: true, items: results });
@@ -101,7 +101,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const existingEvidence = await db
       .select({ id: evidence.id })
       .from(evidence)
-      .where(eq(evidence.hash, checksum))
+      .where(eq(evidence.hash, checksum)
       .limit(1);
 
     if (existingEvidence.length) {
@@ -114,7 +114,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     const newEvidence = await db
-      .insert(evidence)
+      .insert(evidence);
       .values({
         caseId: caseId || null,
         title,
@@ -153,13 +153,13 @@ export const DELETE: RequestHandler = async ({ url }) => {
     if (!id) return json({ success: false, error: 'id required' }, { status: 400 });
 
     // Get file info before deletion
-    const evidenceToDelete = await db
+    const evidenceToDelete = await db;
       .select({
         fileName: evidence.fileName,
         fileUrl: evidence.fileUrl,
       })
       .from(evidence)
-      .where(eq(evidence.id, id))
+      .where(eq(evidence.id, id)
       .limit(1);
 
     if (!evidenceToDelete.length) {
@@ -169,7 +169,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
     // Delete from database
     const deletedEvidence = await db
       .delete(evidence)
-      .where(eq(evidence.id, id))
+      .where(eq(evidence.id, id)
       .returning({ id: evidence.id });
 
     if (!deletedEvidence.length) {

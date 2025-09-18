@@ -37,7 +37,7 @@ interface EmbeddingResult {
   embedding: number[];
   metadata: Record<string, any>;
   processing_time: number;
-  model_used: string;
+  model_used: string;,
 }
 
 class VectorPipelineService {
@@ -51,7 +51,7 @@ class VectorPipelineService {
 
   /*
    * Process documents from MinIO with FastEmbed integration
-   */
+   */;
   async processDocuments(request: VectorPipelineRequest): Promise<ProcessingResult> {
     const startTime = Date.now();
     const results: EmbeddingResult[] = [];
@@ -63,7 +63,7 @@ class VectorPipelineService {
         request.batch_objects ||
         (request.object_key
           ? [request.object_key]
-          : await this.listBucketObjects(request.bucket_name));
+          : await this.listBucketObjects(request.bucket_name);
 
       if (objectsToProcess.length === 0) {
         throw new Error('No objects found to process');
@@ -73,7 +73,7 @@ class VectorPipelineService {
         `Processing ${objectsToProcess.length} objects from bucket: ${request.bucket_name}`
       );
 
-      // Process each object
+      // Process each object;
       for (const objectKey of objectsToProcess) {
         try {
           const objectResults = await this.processDocument(request.bucket_name, objectKey, request);
@@ -108,9 +108,9 @@ class VectorPipelineService {
   private async processDocument(
     bucketName: string,
     objectKey: string,
-    request: VectorPipelineRequest
+    request: VectorPipelineRequest;
   ): Promise<EmbeddingResult[]> {
-    // Check if already processed (unless force_reprocess is true)
+    // Check if already processed (unless force_reprocess is true);
     if (!request.force_reprocess) {
       const existingEmbeddings = await this.checkExistingEmbeddings(objectKey);
       if (existingEmbeddings.length > 0) {
@@ -138,7 +138,7 @@ class VectorPipelineService {
       request.embed_model || 'BAAI/bge-small-en-v1.5'
     );
 
-    // Create results
+    // Create results;
     const results: EmbeddingResult[] = chunks.map((chunk, index) => ({
       document_id: objectKey,
       chunk_id: `${objectKey}_chunk_${index}`,
@@ -155,7 +155,7 @@ class VectorPipelineService {
       },
       processing_time: 0, // Will be set by caller
       model_used: request.embed_model || 'BAAI/bge-small-en-v1.5',
-    }));
+    });
 
     // Store in database
     await this.storeEmbeddings(results);
@@ -165,16 +165,16 @@ class VectorPipelineService {
 
   /*
    * Download document from MinIO
-   */
+   */;
   private async downloadFromMinio(bucketName: string, objectKey: string): Promise<Buffer> {
     try {
       const stream = await minio.getObject(bucketName, objectKey);
       const chunks: Buffer[] = [];
 
       return new Promise<Buffer>((resolve, reject) => {
-        stream.on('data', (chunk: Buffer) => chunks.push(chunk));
-        stream.on('end', () => resolve(Buffer.concat(chunks)));
-        stream.on('error', (err: unknown) => reject(err));
+        stream.on('data', (chunk: Buffer) => chunks.push(chunk);
+        stream.on('end', () => resolve(Buffer.concat(chunks));
+        stream.on('error', (err: unknown) => reject(err);
       });
     } catch (err) {
       throw new Error(`Failed to download ${objectKey} from MinIO: ${err}`);
@@ -183,7 +183,7 @@ class VectorPipelineService {
 
   /*
    * Extract text content from document
-   */
+   */;
   private async extractTextContent(content: Buffer, filename: string): Promise<string> {
     const extension = filename.split('.').pop()?.toLowerCase();
 
@@ -197,9 +197,9 @@ class VectorPipelineService {
       case 'md':
         return content.toString('utf8');
 
-      case 'json':
+      case 'json':;
         try {
-          const jsonData = JSON.parse(content.toString('utf8'));
+          const jsonData = JSON.parse(content.toString('utf8');
           return JSON.stringify(jsonData, null, 2);
         } catch {
           return content.toString('utf8');
@@ -213,7 +213,7 @@ class VectorPipelineService {
 
   /*
    * Split text into chunks with overlap
-   */
+   */;
   private chunkText(text: string, chunkSize: number, overlap: number): string[] {
     const words = text.split(/\s+/).filter((word: string) => word.length > 0);
 
@@ -235,7 +235,7 @@ class VectorPipelineService {
 
   /*
    * Generate embeddings using FastEmbed service
-   */
+   */;
   private async generateEmbeddings(texts: string[], model: string): Promise<number[][]> {
     try {
       const response = await fetch(`${this.fastEmbedUrl}/embed`, {
@@ -264,7 +264,7 @@ class VectorPipelineService {
 
   /*
    * Store embeddings in PostgreSQL
-   */
+   */;
   private async storeEmbeddings(results: EmbeddingResult[]): Promise<void> {
     try {
       // Begin transaction
@@ -307,7 +307,7 @@ class VectorPipelineService {
 
   /*
    * Check for existing embeddings
-   */
+   */;
   private async checkExistingEmbeddings(documentId: string): Promise<EmbeddingResult[]> {
     try {
       const rows = await (db as any).execute(
@@ -328,7 +328,7 @@ class VectorPipelineService {
         metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata,
         processing_time: 0,
         model_used: row.model_used,
-      }));
+      });
     } catch (err) {
       console.error('Failed to check existing embeddings:', err);
       return [];
@@ -337,7 +337,7 @@ class VectorPipelineService {
 
   /*
    * List objects in MinIO bucket
-   */
+   */;
   private async listBucketObjects(bucketName: string): Promise<string[]> {
     try {
       const objectsList: string[] = [];
@@ -349,8 +349,8 @@ class VectorPipelineService {
             objectsList.push(obj.name);
           }
         });
-        stream.on('end', () => resolve(objectsList));
-        stream.on('error', (err: unknown) => reject(err));
+        stream.on('end', () => resolve(objectsList);
+        stream.on('error', (err: unknown) => reject(err);
       });
     } catch (err) {
       throw new Error(`Failed to list bucket objects: ${err}`);
@@ -420,7 +420,7 @@ class VectorPipelineService {
         model_used: row.model_used,
         processed_at: row.processed_at,
         similarity: parseFloat(row.similarity),
-      }));
+      });
     } catch (err) {
       throw new Error(`Similarity search failed: ${err}`);
     }
@@ -428,7 +428,7 @@ class VectorPipelineService {
 
   /*
    * Get pipeline statistics
-   */
+   */;
   async getStats(): Promise<any> {
     try {
       const stats = await (db as any).execute(`
@@ -473,7 +473,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
     const body = (await request.json()) as VectorPipelineRequest;
 
-    // Validate required fields
+    // Validate required fields;
     if (!body.bucket_name) {
       return error(400, 'bucket_name is required');
     }
@@ -496,7 +496,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		const query = url.searchParams.get('q');
 
 		switch (action) {
-			case 'search':
+			case 'search':;
 				if (!query) {
 					return error(400, 'Query parameter q is required for search');
 				}
@@ -518,7 +518,7 @@ export const GET: RequestHandler = async ({ url }) => {
 					limit,
 					threshold,
 					model,
-					filters: Object.keys(filters).length > 0 ? filters : undefined
+					filters: Object.keys(filters).length > 0 ? filters : undefined,
 				});
 
 				return json({

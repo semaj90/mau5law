@@ -17,7 +17,7 @@ export const CaseLogic = {
     // Simple deterministic risk score for demo purposes
     const pages = caseFile.pages ?? 1;
     const attachments = caseFile.attachments ?? 0;
-    let score = Math.min(100, Math.round(pages * 0.5 + attachments * 5));
+    let score = Math.min(100, Math.round(pages * 0.5 + attachments * 5);
     // Boost short titles for demo
     if ((caseFile.title || '').length > 40) score = Math.min(100, score + 5);
     return score;

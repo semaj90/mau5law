@@ -7,6 +7,7 @@ export { default as MasonryGrid } from './MasonryGrid.svelte';
 
 export type GridLayout = 'masonry' | 'grid' | 'flex' | 'auto';
 export type ResponsiveBreakpoint = 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+}
 
 export interface LayoutConfig {
   type: GridLayout;

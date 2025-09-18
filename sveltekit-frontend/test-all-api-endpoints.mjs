@@ -17,9 +17,9 @@ class APITester {
     try {
       const response = await fetch(url, {
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       });
 
       if (!response.ok) {
@@ -85,9 +85,8 @@ class APITester {
         passed,
         issues,
         dataPreview: Array.isArray(data) ? `Array[${data.length}]` : typeof data,
-        sampleData: Array.isArray(data) && data.length > 0 ? data[0] : data
+        sampleData: Array.isArray(data) && data.length > 0 ? data[0] : data,
       });
-
     } catch (error) {
       console.log('❌ FAILED');
       console.log(`   Error: ${error.message}`);
@@ -98,7 +97,7 @@ class APITester {
         passed: false,
         issues: [error.message],
         dataPreview: 'Error',
-        sampleData: null
+        sampleData: null,
       });
     }
   }
@@ -112,10 +111,10 @@ class APITester {
       const response = await fetch(url, {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -161,9 +160,8 @@ class APITester {
         passed,
         issues,
         dataPreview: Array.isArray(data) ? `Array[${data.length}]` : typeof data,
-        sampleData: Array.isArray(data) && data.length > 0 ? data[0] : data
+        sampleData: Array.isArray(data) && data.length > 0 ? data[0] : data,
       });
-
     } catch (error) {
       console.log('❌ FAILED');
       console.log(`   Error: ${error.message}`);
@@ -175,7 +173,7 @@ class APITester {
         passed: false,
         issues: [error.message],
         dataPreview: 'Error',
-        sampleData: null
+        sampleData: null,
       });
     }
   }
@@ -186,10 +184,10 @@ class APITester {
     console.log('='.repeat(60));
     console.log(`✅ Passed: ${this.passedTests}/${this.totalTests}`);
     console.log(`❌ Failed: ${this.totalTests - this.passedTests}/${this.totalTests}`);
-    console.log(`📈 Success Rate: ${Math.round((this.passedTests/this.totalTests)*100)}%`);
+    console.log(`📈 Success Rate: ${Math.round((this.passedTests / this.totalTests) * 100)}%`);
 
     console.log('\n📋 DETAILED RESULTS:');
-    this.testResults.forEach(result => {
+    this.testResults.forEach((result) => {
       const status = result.passed ? '✅' : '❌';
       console.log(`${status} ${result.name}`);
       if (!result.passed) {
@@ -199,9 +197,8 @@ class APITester {
     });
 
     console.log('\n🗄️  DATABASE INTEGRATION STATUS:');
-    const dbIntegratedEndpoints = this.testResults.filter(r =>
-      r.passed &&
-      !r.issues.some(i => i.includes('Mock data detected'))
+    const dbIntegratedEndpoints = this.testResults.filter(
+      (r) => r.passed && !r.issues.some((i) => i.includes('Mock data detected'))
     ).length;
 
     console.log(`Database-integrated endpoints: ${dbIntegratedEndpoints}/${this.totalTests}`);
@@ -209,8 +206,8 @@ class APITester {
     if (dbIntegratedEndpoints < this.totalTests) {
       console.log('\n⚠️  ENDPOINTS STILL USING MOCK DATA:');
       this.testResults
-        .filter(r => r.issues.some(i => i.includes('Mock data detected')))
-        .forEach(r => console.log(`   - ${r.name}`));
+        .filter((r) => r.issues.some((i) => i.includes('Mock data detected')))
+        .forEach((r) => console.log(`   - ${r.name}`));
     }
   }
 }
@@ -222,52 +219,34 @@ async function runAllTests() {
   console.log(`🎯 Target: ${BASE_URL}`);
 
   // Test all known API endpoints
-  await tester.test(
-    'Persons of Interest API',
-    `${BASE_URL}/api/persons-of-interest`,
-    [
-      (data) => ({
-        pass: Array.isArray(data) && data.length > 0,
-        message: 'Should return array of persons'
-      }),
-      (data) => ({
-        pass: data.some(p => p.name && p.threatLevel && p.profileData),
-        message: 'Should have proper person structure'
-      })
-    ]
-  );
+  await tester.test('Persons of Interest API', `${BASE_URL}/api/persons-of-interest`, [
+    (data) => ({
+      pass: Array.isArray(data) && data.length > 0,
+      message: 'Should return array of persons',
+    }),
+    (data) => ({
+      pass: data.some((p) => p.name && p.threatLevel && p.profileData),
+      message: 'Should have proper person structure',
+    }),
+  ]);
 
-  await tester.test(
-    'Cases API',
-    `${BASE_URL}/api/cases`,
-    [
-      (data) => ({
-        pass: Array.isArray(data) && data.length > 0,
-        message: 'Should return array of cases'
-      })
-    ]
-  );
+  await tester.test('Cases API', `${BASE_URL}/api/cases`, [
+    (data) => ({
+      pass: Array.isArray(data) && data.length > 0,
+      message: 'Should return array of cases',
+    }),
+  ]);
 
-  await tester.test(
-    'Evidence API',
-    `${BASE_URL}/api/evidence`,
-    [
-      (data) => ({
-        pass: Array.isArray(data) && data.length > 0,
-        message: 'Should return array of evidence'
-      })
-    ]
-  );
+  await tester.test('Evidence API', `${BASE_URL}/api/evidence`, [
+    (data) => ({
+      pass: Array.isArray(data) && data.length > 0,
+      message: 'Should return array of evidence',
+    }),
+  ]);
 
-  await tester.test(
-    'Legal Documents API',
-    `${BASE_URL}/api/legal-documents`
-  );
+  await tester.test('Legal Documents API', `${BASE_URL}/api/legal-documents`);
 
-  await tester.test(
-    'Activities API',
-    `${BASE_URL}/api/activities`
-  );
+  await tester.test('Activities API', `${BASE_URL}/api/activities`);
 
   // Test specific case data
   await tester.test(
@@ -276,18 +255,12 @@ async function runAllTests() {
   );
 
   // Test search endpoints
-  await tester.testPOST(
-    'Search API',
-    `${BASE_URL}/api/search`,
-    { query: 'test', type: 'persons' }
-  );
+  await tester.testPOST('Search API', `${BASE_URL}/api/search`, { query: 'test', type: 'persons' });
 
   // Test chat/AI endpoints
-  await tester.testPOST(
-    'Chat API',
-    `${BASE_URL}/api/chat`,
-    { messages: [{ role: 'user', content: 'Hello' }] }
-  );
+  await tester.testPOST('Chat API', `${BASE_URL}/api/chat`, {
+    messages: [{ role: 'user', content: 'Hello' }],
+  });
 
   tester.printSummary();
 }

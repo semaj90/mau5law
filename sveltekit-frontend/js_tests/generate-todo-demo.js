@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 
-import { execSync } from "child_process";
-import fs from "fs";
-import path from "path";
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 
-console.log("🚀 SvelteKit TODO Generation System - DEMO");
-console.log("==========================================");
+console.log('🚀 SvelteKit TODO Generation System - DEMO');
+console.log('==========================================');
 
 // Check if we're in the right directory
 const currentDir = process.cwd();
 console.log(`📁 Current directory: ${currentDir}`);
 
 // Check if package.json exists
-if (!fs.existsSync("package.json")) {
+if (!fs.existsSync('package.json')) {
   console.log(
-    "❌ Error: package.json not found. Please run this from the sveltekit-frontend directory.",
+    '❌ Error: package.json not found. Please run this from the sveltekit-frontend directory.'
   );
   process.exit(1);
 }
@@ -23,7 +23,7 @@ console.log("✅ Found package.json - we're in the right place!");
 
 // Function to create comprehensive TODO.md
 function createTodoFile(issues = [], hasErrors = false) {
-  const timestamp = new Date().toISOString().replace("T", " ").slice(0, 19);
+  const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
 
   let content = `# ✅ Project Issues Todo List
 
@@ -50,7 +50,7 @@ The automation workflow is working perfectly:
 
 `;
 
-    let currentFile = "";
+    let currentFile = '';
     issues.forEach((issue) => {
       if (issue.file !== currentFile) {
         content += `### 📄 File: \`${issue.file}\`\n`;
@@ -187,112 +187,98 @@ http://localhost:5173/modern-demo
 }
 
 // Run the check
-console.log("\n🔄 Running npm run check...");
+console.log('\n🔄 Running npm run check...');
 
 try {
-  const output = execSync("npm run check", {
-    encoding: "utf8",
-    stdio: "pipe",
+  const output = execSync('npm run check', {
+    encoding: 'utf8',
+    stdio: 'pipe',
   });
 
-  console.log("✅ Check completed successfully!");
+  console.log('✅ Check completed successfully!');
 
   // Parse for any issues (basic parsing)
-  const lines = output.split("\n");
+  const lines = output.split('\n');
   const issues = [];
-  let currentFile = "";
+  let currentFile = '';
 
   lines.forEach((line) => {
-    if (
-      line.includes("src/") &&
-      (line.includes(".svelte") || line.includes(".ts"))
-    ) {
+    if (line.includes('src/') && (line.includes('.svelte') || line.includes('.ts'))) {
       const match = line.match(/src\/[^:]+/);
       if (match) currentFile = match[0];
     }
 
-    if (
-      line.includes("Error:") ||
-      line.includes("Warning:") ||
-      line.includes("✖")
-    ) {
+    if (line.includes('Error:') || line.includes('Warning:') || line.includes('✖')) {
       if (currentFile) {
         issues.push({
           file: currentFile,
-          type: line.includes("Error:") ? "Error" : "Warning",
-          message: line.replace(/^.*?:/, "").trim(),
+          type: line.includes('Error:') ? 'Error' : 'Warning',
+          message: line.replace(/^.*?:/, '').trim(),
         });
       }
     }
   });
 
   const todoContent = createTodoFile(issues, issues.length > 0);
-  fs.writeFileSync("TODO.md", todoContent);
+  fs.writeFileSync('TODO.md', todoContent);
 
-  console.log("\n🎉 SUCCESS! TODO.md has been generated!");
-  console.log("📍 Location: " + path.join(currentDir, "TODO.md"));
+  console.log('\n🎉 SUCCESS! TODO.md has been generated!');
+  console.log('📍 Location: ' + path.join(currentDir, 'TODO.md'));
 
   if (issues.length > 0) {
     console.log(`\n⚠️  Found ${issues.length} issues that need attention.`);
   } else {
-    console.log("\n✅ No issues found! Your project is clean.");
+    console.log('\n✅ No issues found! Your project is clean.');
   }
 
-  console.log("\n📊 Summary:");
-  console.log("   📄 TODO.md updated with latest status");
-  console.log("   🎨 Modern components documented");
-  console.log("   🔧 Automation system active");
-  console.log("   🎯 Demo page ready at /modern-demo");
+  console.log('\n📊 Summary:');
+  console.log('   📄 TODO.md updated with latest status');
+  console.log('   🎨 Modern components documented');
+  console.log('   🔧 Automation system active');
+  console.log('   🎯 Demo page ready at /modern-demo');
 } catch (error) {
-  console.log("⚠️  Check completed with issues - parsing error output...");
+  console.log('⚠️  Check completed with issues - parsing error output...');
 
   const errorOutput = error.stdout || error.stderr || error.message;
-  console.log("📝 Error output length:", errorOutput.length);
+  console.log('📝 Error output length:', errorOutput.length);
 
   // Parse error output for issues
-  const lines = errorOutput.split("\n");
+  const lines = errorOutput.split('\n');
   const issues = [];
-  let currentFile = "";
+  let currentFile = '';
 
   lines.forEach((line) => {
-    if (
-      line.includes("src/") &&
-      (line.includes(".svelte") || line.includes(".ts"))
-    ) {
+    if (line.includes('src/') && (line.includes('.svelte') || line.includes('.ts'))) {
       const match = line.match(/src\/[^:]+/);
       if (match) currentFile = match[0];
     }
 
     if (
-      line.includes("Error:") ||
-      line.includes("Warning:") ||
-      line.includes("✖") ||
-      line.includes("Cannot find")
+      line.includes('Error:') ||
+      line.includes('Warning:') ||
+      line.includes('✖') ||
+      line.includes('Cannot find')
     ) {
-      if (currentFile || line.includes("src/")) {
+      if (currentFile || line.includes('src/')) {
         issues.push({
-          file: currentFile || "unknown",
-          type: "Error",
-          message: line.replace(/^.*?:/, "").trim(),
+          file: currentFile || 'unknown',
+          type: 'Error',
+          message: line.replace(/^.*?:/, '').trim(),
         });
       }
     }
   });
 
   const todoContent = createTodoFile(issues, true);
-  fs.writeFileSync("TODO.md", todoContent);
+  fs.writeFileSync('TODO.md', todoContent);
 
-  console.log(
-    `\n🎉 Generated TODO.md with ${issues.length} issues documented.`,
-  );
-  console.log("📍 Location: " + path.join(currentDir, "TODO.md"));
+  console.log(`\n🎉 Generated TODO.md with ${issues.length} issues documented.`);
+  console.log('📍 Location: ' + path.join(currentDir, 'TODO.md'));
 
   if (issues.length > 0) {
     console.log(`\n📋 Found ${issues.length} issues to address:`);
     issues.slice(0, 3).forEach((issue, i) => {
-      console.log(
-        `   ${i + 1}. ${issue.file}: ${issue.message.slice(0, 60)}...`,
-      );
+      console.log(`   ${i + 1}. ${issue.file}: ${issue.message.slice(0, 60)}...`);
     });
     if (issues.length > 3) {
       console.log(`   ... and ${issues.length - 3} more (see TODO.md)`);
@@ -300,13 +286,13 @@ try {
   }
 }
 
-console.log("\n🎯 Next Steps:");
-console.log("   1. 📖 Review TODO.md for any issues");
-console.log("   2. 🎮 Visit /modern-demo to test components");
-console.log("   3. 🔧 Integrate modern components into your app");
-console.log("   4. 🔄 Run this script regularly for updates");
+console.log('\n🎯 Next Steps:');
+console.log('   1. 📖 Review TODO.md for any issues');
+console.log('   2. 🎮 Visit /modern-demo to test components');
+console.log('   3. 🔧 Integrate modern components into your app');
+console.log('   4. 🔄 Run this script regularly for updates');
 
-console.log("\n💡 Pro Tip: Add this to your package.json scripts:");
+console.log('\n💡 Pro Tip: Add this to your package.json scripts:');
 console.log('   "todo": "node generate-todo-demo.js"');
 
-console.log("\n✨ Happy coding with your modern SvelteKit setup!");
+console.log('\n✨ Happy coding with your modern SvelteKit setup!');

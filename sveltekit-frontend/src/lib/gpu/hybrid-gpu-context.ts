@@ -13,6 +13,7 @@ import type { MatrixLODSystem } from '../ui/matrix-lod.js';
 import type { lodCacheEngine } from '../ai/lod-cache-engine.js';
 
 export type GPUContextType = 'webgpu' | 'webgl2' | 'webgl' | 'cpu-fallback';
+}
 
 export interface GPUCapabilities {
   type: GPUContextType;
@@ -23,7 +24,7 @@ export interface GPUCapabilities {
   supportsInt32: boolean;
   maxWorkgroupSize?: number; // WebGPU only
   maxVertexAttributes: number;
-  extensions: string[];
+  extensions: string[];,
 }
 
 export interface HybridRenderingOptions {
@@ -32,7 +33,7 @@ export interface HybridRenderingOptions {
   allowWebGL1: boolean;
   requireCompute: boolean;
   lodSystemIntegration: boolean;
-  nesMemoryOptimization: boolean;
+  nesMemoryOptimization: boolean;,
 }
 
 export class HybridGPUContext {
@@ -53,7 +54,7 @@ export class HybridGPUContext {
       allowWebGL1: true,
       requireCompute: false,
       lodSystemIntegration: true,
-      nesMemoryOptimization: true
+      nesMemoryOptimization: true,
     }
   ) {
     this.canvas = canvas;
@@ -62,25 +63,25 @@ export class HybridGPUContext {
 
   /**
    * Initialize the best available GPU context with graceful fallback
-   */
+   */;
   async initialize(): Promise<GPUContextType> {
     console.log('🔄 Initializing Hybrid GPU Context...');
 
-    // Attempt WebGPU first (best performance + compute)
+    // Attempt WebGPU first (best performance + compute);
     if (this.options.preferWebGPU && await this.initializeWebGPU()) {
       this.activeContextType = 'webgpu';
       console.log('✅ WebGPU initialized - Full compute + rendering available');
       return 'webgpu';
     }
 
-    // Fallback to WebGL2 (good rendering + limited compute)
+    // Fallback to WebGL2 (good rendering + limited compute);
     if (this.options.allowWebGL2 && await this.initializeWebGL2()) {
       this.activeContextType = 'webgl2';
       console.log('✅ WebGL2 initialized - Rendering + transform feedback available');
       return 'webgl2';
     }
 
-    // Fallback to WebGL1 (basic rendering only)
+    // Fallback to WebGL1 (basic rendering only);
     if (this.options.allowWebGL1 && await this.initializeWebGL()) {
       this.activeContextType = 'webgl';
       console.log('✅ WebGL initialized - Basic rendering available');
@@ -101,7 +102,7 @@ export class HybridGPUContext {
       }
 
       const adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance'
+        powerPreference: 'high-performance',
       });
 
       if (!adapter) {
@@ -122,10 +123,10 @@ export class HybridGPUContext {
       context.configure({
         device: this.gpuDevice,
         format,
-        alphaMode: 'premultiplied'
+        alphaMode: 'premultiplied',
       });
 
-      // Update capabilities
+      // Update capabilities;
       this.capabilities = {
         type: 'webgpu',
         hasCompute: true,
@@ -135,10 +136,10 @@ export class HybridGPUContext {
         supportsInt32: true,
         maxWorkgroupSize: adapter.limits.maxComputeWorkgroupSizeX,
         maxVertexAttributes: 16,
-        extensions: []
+        extensions: [],
       };
 
-      // Initialize LOD system with WebGPU
+      // Initialize LOD system with WebGPU;
       if (this.options.lodSystemIntegration) {
         await this.initializeLODWithWebGPU();
       }
@@ -157,7 +158,7 @@ export class HybridGPUContext {
         alpha: true,
         depth: true,
         stencil: true,
-        powerPreference: 'high-performance'
+        powerPreference: 'high-performance',
       });
 
       if (!this.webgl2Context) return false;
@@ -185,10 +186,10 @@ export class HybridGPUContext {
         supportsFloat32: availableExtensions.includes('EXT_color_buffer_float'),
         supportsInt32: true,
         maxVertexAttributes: gl.getParameter(gl.MAX_VERTEX_ATTRIBS),
-        extensions: availableExtensions
+        extensions: availableExtensions,
       };
 
-      // Initialize LOD system with WebGL2
+      // Initialize LOD system with WebGL2;
       if (this.options.lodSystemIntegration) {
         await this.initializeLODWithWebGL2();
       }
@@ -207,7 +208,7 @@ export class HybridGPUContext {
         alpha: true,
         depth: true,
         stencil: true,
-        powerPreference: 'high-performance'
+        powerPreference: 'high-performance',
       });
 
       if (!this.webglContext) return false;
@@ -222,7 +223,7 @@ export class HybridGPUContext {
         supportsFloat32: !!gl.getExtension('OES_texture_float'),
         supportsInt32: false,
         maxVertexAttributes: gl.getParameter(gl.MAX_VERTEX_ATTRIBS),
-        extensions: []
+        extensions: [],
       };
 
       return true;
@@ -239,7 +240,7 @@ export class HybridGPUContext {
     name: string, 
     webgpuCode: string, 
     webgl2Code: string,
-    fallbackCPU?: (data: Float32Array) => Float32Array
+    fallbackCPU?: (data: Float32Array) => Float32Array;
   ): Promise<boolean> {
     switch (this.activeContextType) {
       case 'webgpu':
@@ -250,7 +251,7 @@ export class HybridGPUContext {
       
       case 'webgl':
       case 'cpu-fallback':
-        // Store CPU fallback for later use
+        // Store CPU fallback for later use;
         if (fallbackCPU) {
           this.computeShaders.set(name, fallbackCPU as any);
           return true;
@@ -268,7 +269,7 @@ export class HybridGPUContext {
         layout: 'auto',
         compute: {
           module: shaderModule,
-          entryPoint: 'main'
+          entryPoint: 'main',
         }
       });
 
@@ -306,7 +307,7 @@ export class HybridGPUContext {
       gl.linkProgram(program);
 
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.error('Transform feedback link failed:', gl.getProgramInfoLog(program));
+        console.error('Transform feedback link failed:', gl.getProgramInfoLog(program);
         return false;
       }
 
@@ -325,7 +326,7 @@ export class HybridGPUContext {
   async executeCompute(
     shaderName: string, 
     inputData: Float32Array, 
-    outputSize: number
+    outputSize: number;
   ): Promise<Float32Array> {
     const shader = this.computeShaders.get(shaderName);
     if (!shader) {
@@ -340,7 +341,7 @@ export class HybridGPUContext {
         return this.executeWebGL2TransformFeedback(shader as WebGLProgram, inputData, outputSize);
       
       default:
-        // CPU fallback
+        // CPU fallback;
         if (typeof shader === 'function') {
           return (shader as Function)(inputData);
         }
@@ -351,30 +352,30 @@ export class HybridGPUContext {
   private async executeWebGPUCompute(
     pipeline: GPUComputePipeline, 
     inputData: Float32Array, 
-    outputSize: number
+    outputSize: number;
   ): Promise<Float32Array> {
     if (!this.gpuDevice) throw new Error('WebGPU device not available');
 
-    // Create buffers
+    // Create buffers;
     const inputBuffer = this.gpuDevice.createBuffer({
       size: inputData.byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
 
     const outputBuffer = this.gpuDevice.createBuffer({
       size: outputSize * 4, // 4 bytes per float32
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
     });
 
     const readBuffer = this.gpuDevice.createBuffer({
       size: outputSize * 4,
-      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
     });
 
     // Upload input data
-    this.gpuDevice.queue.writeBuffer(inputBuffer, 0, new Float32Array(inputData));
+    this.gpuDevice.queue.writeBuffer(inputBuffer, 0, new Float32Array(inputData);
 
-    // Create bind group
+    // Create bind group;
     const bindGroup = this.gpuDevice.createBindGroup({
       layout: pipeline.getBindGroupLayout(0),
       entries: [
@@ -388,7 +389,7 @@ export class HybridGPUContext {
     const computePass = commandEncoder.beginComputePass();
     computePass.setPipeline(pipeline);
     computePass.setBindGroup(0, bindGroup);
-    computePass.dispatchWorkgroups(Math.ceil(outputSize / 64));
+    computePass.dispatchWorkgroups(Math.ceil(outputSize / 64);
     computePass.end();
 
     // Copy result to readable buffer
@@ -397,7 +398,7 @@ export class HybridGPUContext {
 
     // Read results
     await readBuffer.mapAsync(GPUMapMode.READ);
-    const result = new Float32Array(readBuffer.getMappedRange().slice(0));
+    const result = new Float32Array(readBuffer.getMappedRange().slice(0);
     readBuffer.unmap();
 
     // Cleanup
@@ -411,7 +412,7 @@ export class HybridGPUContext {
   private async executeWebGL2TransformFeedback(
     program: WebGLProgram, 
     inputData: Float32Array, 
-    outputSize: number
+    outputSize: number;
   ): Promise<Float32Array> {
     if (!this.webgl2Context) throw new Error('WebGL2 context not available');
 
@@ -453,7 +454,7 @@ export class HybridGPUContext {
 
   /**
    * Integrate with Matrix LOD System
-   */
+   */;
   private async initializeLODWithWebGPU(): Promise<void> {
     console.log('🎯 Initializing LOD system with WebGPU acceleration');
     
@@ -464,7 +465,7 @@ export class HybridGPUContext {
         @group(0) @binding(0) var<storage, read> input: array<f32>);
         @group(0) @binding(1) var<storage, read_write> output: array<f32>;
         
-        @compute @workgroup_size(64)
+        @compute @workgroup_size(64);
         fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
           let index = global_id.x;
           if (index >= arrayLength(&input)) { return; }
@@ -477,12 +478,12 @@ export class HybridGPUContext {
           // Calculate optimal LOD level (0=low, 1=mid, 2=high)
           var lod_level = 0.0;
           if (distance < 0.3 && performance > 0.7) {
-            lod_level = 2.0; // High detail
+            lod_level = 2.0; // High detail;
           } else if (distance < 0.7 && performance > 0.4) {
             lod_level = 1.0; // Medium detail
           }
           
-          // Boost for AI-flagged important content
+          // Boost for AI-flagged important content;
           if (importance > 0.8) {
             lod_level = min(lod_level + 0.5, 2.0);
           }
@@ -517,7 +518,7 @@ export class HybridGPUContext {
           gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
         }
       `,
-      // CPU fallback
+      // CPU fallback;
       (data: Float32Array) => {
         const result = new Float32Array((data as { length?: any }).length / 3);
         for (let i = 0; i < (result as { length?: any }).length; i++) {
@@ -545,22 +546,22 @@ export class HybridGPUContext {
 
   /**
    * Optimize for NES memory patterns
-   */
+   */;
   optimizeForNESMemory(): void {
     if (!this.options.nesMemoryOptimization) return;
 
     console.log('🎮 Applying NES memory optimization patterns');
     
-    // Configure memory layout similar to NES constraints
+    // Configure memory layout similar to NES constraints;
     const NES_CONSTRAINTS = {
       CHR_ROM_SIZE: 8192,  // 8KB CHR-ROM
       PRG_RAM_SIZE: 2048,  // 2KB PRG-RAM  
       PATTERN_TABLES: 2,   // 2 pattern tables
       SPRITE_LIMIT: 64,    // 64 sprites max
-      TILE_SIZE: 8         // 8x8 pixel tiles
+      TILE_SIZE: 8         // 8x8 pixel tiles,
     };
 
-    // Apply constraints based on active context
+    // Apply constraints based on active context;
     switch (this.activeContextType) {
       case 'webgpu':
         // Use WebGPU buffer size limits to simulate NES memory
@@ -572,14 +573,14 @@ export class HybridGPUContext {
     }
   }
 
-  // Helper methods
+  // Helper methods;
   private compileShader(gl: WebGL2RenderingContext, source: string, type: number): WebGLShader | null {
     const shader = gl.createShader(type)!;
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      console.error('Shader compilation failed:', gl.getShaderInfoLog(shader));
+      console.error('Shader compilation failed:', gl.getShaderInfoLog(shader);
       gl.deleteShader(shader);
       return null;
     }
@@ -596,11 +597,11 @@ export class HybridGPUContext {
       supportsFloat32: false,
       supportsInt32: false,
       maxVertexAttributes: 4,
-      extensions: []
+      extensions: [],
     };
   }
 
-  // Public API
+  // Public API;
   getActiveContextType(): GPUContextType {
     return this.activeContextType;
   }
@@ -612,7 +613,7 @@ export class HybridGPUContext {
   async calculateLOD(
     positions: Float32Array, 
     distances: Float32Array, 
-    importance: Float32Array
+    importance: Float32Array;
   ): Promise<Float32Array> {
     // Interleave data for compute shader
     const inputData = new Float32Array(positions.length);
@@ -626,7 +627,7 @@ export class HybridGPUContext {
   }
 
   dispose(): void {
-    // Clean up all contexts and resources
+    // Clean up all contexts and resources;
     if (this.gpuDevice) {
       this.gpuDevice.destroy();
     }
@@ -639,7 +640,7 @@ export class HybridGPUContext {
 // Factory function for easy integration
 export async function createHybridGPUContext(
   canvas: HTMLCanvasElement,
-  options?: Partial<HybridRenderingOptions>
+  options?: Partial<HybridRenderingOptions>;
 ): Promise<HybridGPUContext> {
   const context = new HybridGPUContext(canvas, {
     preferWebGPU: true,
@@ -649,7 +650,7 @@ export async function createHybridGPUContext(
     lodSystemIntegration: true,
     nesMemoryOptimization: true,
     ...options
-  });
+  ,});
 
   await context.initialize();
   return context;

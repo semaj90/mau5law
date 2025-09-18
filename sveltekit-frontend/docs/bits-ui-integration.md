@@ -2,7 +2,10 @@
 
 ## 🎯 Overview
 
-This document provides comprehensive documentation for the bits-ui integration with Svelte 5, featuring professional legal AI theming and gaming-inspired aesthetics. The integration combines modern web development patterns with retro gaming elements to create an engaging, accessible, and professional user interface.
+This document provides comprehensive documentation for the bits-ui integration with Svelte 5,
+featuring professional legal AI theming and gaming-inspired aesthetics. The integration combines
+modern web development patterns with retro gaming elements to create an engaging, accessible, and
+professional user interface.
 
 ## 📋 Table of Contents
 
@@ -34,7 +37,7 @@ This document provides comprehensive documentation for the bits-ui integration w
 
 ```html
 <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
 ```
 
 ### File Structure
@@ -72,7 +75,9 @@ src/lib/components/ui/
 Professional button component with gaming-enhanced styling.
 
 **Props:**
-- `variant`: `'primary' | 'secondary' | 'ghost' | 'outline' | 'destructive' | 'success' | 'warning' | 'info'`
+
+- `variant`:
+  `'primary' | 'secondary' | 'ghost' | 'outline' | 'destructive' | 'success' | 'warning' | 'info'`
 - `size`: `'xs' | 'sm' | 'md' | 'lg' | 'xl'`
 - `loading`: `boolean` - Shows loading state
 - `disabled`: `boolean` - Disables the button
@@ -80,18 +85,15 @@ Professional button component with gaming-enhanced styling.
 - `to`: `string` - Optional href for link behavior
 
 **Usage:**
+
 ```svelte
 <script>
   import { ButtonBits } from '$lib/components/ui/bits-ui';
 </script>
 
-<ButtonBits variant="primary" size="md" loading={isSubmitting}>
-  Submit Form
-</ButtonBits>
+<ButtonBits variant="primary" size="md" loading={isSubmitting}>Submit Form</ButtonBits>
 
-<ButtonBits variant="ghost" onclick={() => console.log('Clicked!')}>
-  Cancel
-</ButtonBits>
+<ButtonBits variant="ghost" onclick={() => console.log('Clicked!')}>Cancel</ButtonBits>
 ```
 
 ### InputBits
@@ -99,6 +101,7 @@ Professional button component with gaming-enhanced styling.
 Enhanced input component with validation states and professional styling.
 
 **Props:**
+
 - `variant`: `'default' | 'filled' | 'outlined'`
 - `size`: `'sm' | 'md' | 'lg'`
 - `type`: Standard HTML input types
@@ -113,6 +116,7 @@ Enhanced input component with validation states and professional styling.
 - `required`: `boolean`
 
 **Usage:**
+
 ```svelte
 <script>
   import { InputBits } from '$lib/components/ui/bits-ui';
@@ -137,6 +141,7 @@ Enhanced input component with validation states and professional styling.
 Professional dropdown selection component with search and validation.
 
 **Props:**
+
 - `options`: `Array<{value: string, label: string, disabled?: boolean}>`
 - `selected`: `string` (bindable)
 - `placeholder`: `string`
@@ -149,6 +154,7 @@ Professional dropdown selection component with search and validation.
 - `disabled`: `boolean`
 
 **Usage:**
+
 ```svelte
 <script>
   import { SelectBits } from '$lib/components/ui/bits-ui';
@@ -158,7 +164,7 @@ Professional dropdown selection component with search and validation.
   const options = [
     { value: 'corporate', label: '🏢 Corporate Law' },
     { value: 'litigation', label: '⚖️ Litigation' },
-    { value: 'ip', label: '🧠 Intellectual Property' }
+    { value: 'ip', label: '🧠 Intellectual Property' },
   ];
 </script>
 
@@ -176,6 +182,7 @@ Professional dropdown selection component with search and validation.
 Modern tab navigation with multiple styling variants.
 
 **Props:**
+
 - `tabs`: `Array<{value: string, label: string, content?: Snippet}>`
 - `value`: `string` (bindable) - Active tab
 - `variant`: `'default' | 'pills' | 'underline'`
@@ -183,6 +190,7 @@ Modern tab navigation with multiple styling variants.
 - `onValueChange`: `(value: string) => void`
 
 **Usage:**
+
 ```svelte
 <script>
   import { TabsBits } from '$lib/components/ui/bits-ui';
@@ -192,16 +200,11 @@ Modern tab navigation with multiple styling variants.
   const tabItems = [
     { value: 'tab1', label: '📋 Basic Info' },
     { value: 'tab2', label: '📝 Details' },
-    { value: 'tab3', label: '✅ Review' }
+    { value: 'tab3', label: '✅ Review' },
   ];
 </script>
 
-<TabsBits
-  tabs={tabItems}
-  bind:value={activeTab}
-  variant="pills"
-  size="md"
->
+<TabsBits tabs={tabItems} bind:value={activeTab} variant="pills" size="md">
   {#if activeTab === 'tab1'}
     <div>Basic information content</div>
   {:else if activeTab === 'tab2'}
@@ -217,6 +220,7 @@ Modern tab navigation with multiple styling variants.
 Contextual tooltip component with accessibility support.
 
 **Props:**
+
 - `content`: `string` - Tooltip text
 - `side`: `'top' | 'right' | 'bottom' | 'left'`
 - `align`: `'start' | 'center' | 'end'`
@@ -224,6 +228,7 @@ Contextual tooltip component with accessibility support.
 - `sideOffset`: `number` - Distance from trigger
 
 **Usage:**
+
 ```svelte
 <script>
   import { TooltipBits, ButtonBits } from '$lib/components/ui/bits-ui';
@@ -239,11 +244,13 @@ Contextual tooltip component with accessibility support.
 Flexible card container with multiple variants.
 
 **Props:**
+
 - `variant`: `'default' | 'elevated' | 'outlined' | 'filled'`
 - `padding`: `'none' | 'sm' | 'md' | 'lg' | 'xl'`
 - `class`: Additional CSS classes
 
 **Usage:**
+
 ```svelte
 <script>
   import { CardBits } from '$lib/components/ui/bits-ui';
@@ -260,12 +267,14 @@ Flexible card container with multiple variants.
 Modal dialog component with smooth transitions.
 
 **Props:**
+
 - `open`: `boolean` (bindable) - Dialog visibility
 - `size`: `'sm' | 'md' | 'lg' | 'xl' | 'full'`
 - `closeOnEscape`: `boolean` - Close on Escape key
 - `closeOnOutsideClick`: `boolean` - Close when clicking overlay
 
 **Usage:**
+
 ```svelte
 <script>
   import { DialogBits, ButtonBits } from '$lib/components/ui/bits-ui';
@@ -273,17 +282,13 @@ Modal dialog component with smooth transitions.
   let dialogOpen = $state(false);
 </script>
 
-<ButtonBits onclick={() => dialogOpen = true}>
-  Open Dialog
-</ButtonBits>
+<ButtonBits onclick={() => (dialogOpen = true)}>Open Dialog</ButtonBits>
 
 <DialogBits bind:open={dialogOpen} size="md">
   <div class="dialog-content">
     <h2>Dialog Title</h2>
     <p>Dialog content...</p>
-    <ButtonBits onclick={() => dialogOpen = false}>
-      Close
-    </ButtonBits>
+    <ButtonBits onclick={() => (dialogOpen = false)}>Close</ButtonBits>
   </div>
 </DialogBits>
 ```
@@ -338,8 +343,15 @@ Components include gaming-inspired enhancements:
 
 /* N64 glow animation */
 @keyframes n64-glow {
-  0%, 100% { box-shadow: 0 0 5px var(--n64-primary); }
-  50% { box-shadow: 0 0 20px var(--n64-primary), 0 0 30px var(--n64-success); }
+  0%,
+  100% {
+    box-shadow: 0 0 5px var(--n64-primary);
+  }
+  50% {
+    box-shadow:
+      0 0 20px var(--n64-primary),
+      0 0 30px var(--n64-success);
+  }
 }
 ```
 
@@ -349,7 +361,7 @@ Gaming-inspired typography with professional readability:
 
 ```css
 :global(body) {
-  font-family: "Press Start 2P", cursive;
+  font-family: 'Press Start 2P', cursive;
   background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
 }
 ```
@@ -363,6 +375,7 @@ Gaming-inspired typography with professional readability:
 A comprehensive multi-step form demonstrating advanced patterns:
 
 **Features:**
+
 - Multi-step navigation with tabs
 - Real-time validation
 - Progress tracking
@@ -370,6 +383,7 @@ A comprehensive multi-step form demonstrating advanced patterns:
 - Professional legal workflow
 
 **Usage:**
+
 ```svelte
 <script>
   import LegalCaseForm from '$lib/components/forms/LegalCaseForm.svelte';
@@ -381,6 +395,7 @@ A comprehensive multi-step form demonstrating advanced patterns:
 **Key Implementation Patterns:**
 
 1. **State Management with Svelte 5 Runes:**
+
 ```javascript
 let formData = $state({
   caseTitle: '',
@@ -393,21 +408,19 @@ let formErrors = $state({});
 
 // Computed validation
 let isFormValid = $derived(() => {
-  return formData.caseTitle.trim() &&
-         formData.clientName.trim() &&
-         formData.practiceArea;
+  return formData.caseTitle.trim() && formData.clientName.trim() && formData.practiceArea;
 });
 
 // Progress calculation
 let formProgress = $derived(() => {
   const totalFields = 12;
-  const filledFields = Object.values(formData)
-    .filter(value => value.trim()).length;
+  const filledFields = Object.values(formData).filter((value) => value.trim()).length;
   return Math.round((filledFields / totalFields) * 100);
 });
 ```
 
 2. **Validation Function:**
+
 ```javascript
 function validateForm() {
   const errors = {};
@@ -426,6 +439,7 @@ function validateForm() {
 ```
 
 3. **Form Submission:**
+
 ```javascript
 async function handleSubmit() {
   if (!validateForm()) return;
@@ -433,11 +447,13 @@ async function handleSubmit() {
   isSubmitting = true;
   try {
     // API call simulation
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     console.log('Form submitted:', formData);
 
     // Reset form on success
-    formData = { /* reset values */ };
+    formData = {
+      /* reset values */
+    };
     alert('✅ Legal case created successfully!');
   } catch (error) {
     console.error('Submission error:', error);
@@ -521,12 +537,7 @@ All components maintain WCAG 2.1 AA compliance:
 />
 
 <!-- Screen reader support -->
-<ButtonBits
-  aria-label="Submit legal case form"
-  aria-describedby="submit-help"
->
-  Submit
-</ButtonBits>
+<ButtonBits aria-label="Submit legal case form" aria-describedby="submit-help">Submit</ButtonBits>
 
 <!-- Focus management -->
 <DialogBits
@@ -545,6 +556,7 @@ All components maintain WCAG 2.1 AA compliance:
 ### Component Usage
 
 1. **Import Components Properly:**
+
 ```javascript
 // ✅ Correct - Import from index
 import { ButtonBits, InputBits } from '$lib/components/ui/bits-ui';
@@ -554,6 +566,7 @@ import ButtonBits from '$lib/components/ui/button/ButtonBits.svelte';
 ```
 
 2. **Use Svelte 5 Runes:**
+
 ```javascript
 // ✅ Modern Svelte 5 patterns
 let value = $state('');
@@ -565,6 +578,7 @@ $: isValid = value.length > 0;
 ```
 
 3. **Leverage TypeScript:**
+
 ```typescript
 import type { ButtonVariant, InputSize } from '$lib/components/ui/bits-ui';
 
@@ -577,15 +591,17 @@ interface FormData {
 ### Performance Optimization
 
 1. **Use Proper Binding:**
+
 ```svelte
 <!-- ✅ Efficient binding -->
 <InputBits bind:value={formData.title} />
 
 <!-- ❌ Inefficient event handling -->
-<InputBits onInput={(e) => formData.title = e.target.value} />
+<InputBits onInput={(e) => (formData.title = e.target.value)} />
 ```
 
 2. **Minimize Reactive Computations:**
+
 ```javascript
 // ✅ Computed once
 let isFormValid = $derived(() => validateForm(formData));
@@ -599,6 +615,7 @@ let isFormValid = $derived(() => {
 ### Styling Guidelines
 
 1. **Use CSS Custom Properties:**
+
 ```css
 .custom-button {
   background: var(--n64-primary);
@@ -607,6 +624,7 @@ let isFormValid = $derived(() => {
 ```
 
 2. **Follow Gaming Aesthetic:**
+
 ```css
 .game-element {
   border: 3px solid var(--n64-primary);
@@ -622,6 +640,7 @@ let isFormValid = $derived(() => {
 ### Common Issues
 
 1. **Components Not Loading:**
+
 ```javascript
 // Check import path
 import { ButtonBits } from '$lib/components/ui/bits-ui';
@@ -631,6 +650,7 @@ npm list bits-ui
 ```
 
 2. **Styling Issues:**
+
 ```html
 <!-- Ensure NES.css is loaded -->
 <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
@@ -645,6 +665,7 @@ npm list bits-ui
 ```
 
 3. **TypeScript Errors:**
+
 ```typescript
 // Import types explicitly
 import type { ButtonVariant } from '$lib/components/ui/bits-ui';
@@ -654,15 +675,16 @@ const variant: ButtonVariant = 'primary';
 ```
 
 4. **Form Validation Issues:**
+
 ```javascript
 // Ensure proper state management
 let formData = $state({
-  field: '' // Initialize all fields
+  field: '', // Initialize all fields
 });
 
 // Use derived state for validation
 let isValid = $derived(() => {
-  return Object.values(formData).every(value =>
+  return Object.values(formData).every((value) =>
     typeof value === 'string' ? value.trim() : !!value
   );
 });
@@ -693,6 +715,7 @@ let isValid = $derived(() => {
 ### From Legacy Components
 
 1. **Update Imports:**
+
 ```javascript
 // Old
 import Button from '$lib/components/Button.svelte';
@@ -702,15 +725,17 @@ import { ButtonBits } from '$lib/components/ui/bits-ui';
 ```
 
 2. **Update Props:**
+
 ```svelte
 <!-- Old -->
 <Button class="primary" disabled={loading}>Submit</Button>
 
 <!-- New -->
-<ButtonBits variant="primary" loading={loading}>Submit</ButtonBits>
+<ButtonBits variant="primary" {loading}>Submit</ButtonBits>
 ```
 
 3. **Update State Management:**
+
 ```javascript
 // Old
 let value = '';
@@ -725,19 +750,20 @@ let isValid = $derived(value.length > 0);
 
 ## 🚀 Conclusion
 
-The bits-ui + Svelte 5 integration provides a comprehensive, accessible, and visually engaging component system that perfectly balances professional functionality with gaming-inspired aesthetics. The system is designed for scalability, maintainability, and exceptional user experience.
+The bits-ui + Svelte 5 integration provides a comprehensive, accessible, and visually engaging
+component system that perfectly balances professional functionality with gaming-inspired aesthetics.
+The system is designed for scalability, maintainability, and exceptional user experience.
 
 ### Key Achievements:
 
-✅ **8 Professional Components** with full TypeScript support
-✅ **Gaming-Enhanced Styling** with NES.css + N64 aesthetics
-✅ **Svelte 5 Integration** using modern runes and patterns
-✅ **WCAG 2.1 AA Compliance** for accessibility
-✅ **Complex Form Patterns** with validation and multi-step navigation
-✅ **Comprehensive Documentation** with examples and best practices
+✅ **8 Professional Components** with full TypeScript support ✅ **Gaming-Enhanced Styling** with
+NES.css + N64 aesthetics ✅ **Svelte 5 Integration** using modern runes and patterns ✅ **WCAG 2.1
+AA Compliance** for accessibility ✅ **Complex Form Patterns** with validation and multi-step
+navigation ✅ **Comprehensive Documentation** with examples and best practices
 
-The integration is production-ready and provides a solid foundation for building modern, engaging legal AI applications with professional gaming aesthetics.
+The integration is production-ready and provides a solid foundation for building modern, engaging
+legal AI applications with professional gaming aesthetics.
 
 ---
 
-*Generated with bits-ui + Svelte 5 + Legal AI Gaming Integration* 🎮⚖️
+_Generated with bits-ui + Svelte 5 + Legal AI Gaming Integration_ 🎮⚖️

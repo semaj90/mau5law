@@ -9,44 +9,45 @@ import { ENV_CONFIG } from '$lib/config/environment.js';
 // Type interfaces will be defined below
 import { generateEmbedding } from './embeddings-simple.js';
 
-// Type definitions will be defined later in file
+// Type definitions will be defined later in file;
+}
 
 export interface LegalEmbeddingResult {
   embedding: number[];
   model: string;
   dimensions: number;
-  processingTime: number;
+  processingTime: number;,
 }
 
-// Metrics stub (replace with proper metrics service later)
+// Metrics stub (replace with proper metrics service later);
 const metrics = {
   increment: (name: string, value: number = 1) => console.log(`[METRIC] ${name}: +${value}`),
   gauge: (name: string, value: number) => console.log(`[METRIC] ${name}: ${value}`),
   histogram: (name: string, value: number) => console.log(`[METRIC] ${name}: ${value}ms`),
 };
 
-// Utility functions
+// Utility functions;
 async function withRetry<T>(fn: () => Promise<T>, retries: number = 3): Promise<T> {
   for (let i = 0; i < retries; i++) {
     try {
       return await fn();
     } catch (error: any) {
       if (i === retries - 1) throw error;
-      await new Promise((resolve) => setTimeout(resolve, 1000 * Math.pow(2, i)));
+      await new Promise((resolve) => setTimeout(resolve, 1000 * Math.pow(2, i));
     }
   }
   throw new Error('Max retries exceeded');
 }
 
-// LegalBERT model configurations
+// LegalBERT model configurations;
 const LEGALBERT_MODELS = {
-  // Local Ollama models
+  // Local Ollama models;
   local: {
     embedding: 'nomic-embed-text:latest',
     analysis: 'gemma3-legal:latest',
     baseUrl: ENV_CONFIG.OLLAMA_URL,
   },
-  // Remote API endpoints
+  // Remote API endpoints;
   huggingface: {
     embedding: 'nlpaueb/legal-bert-base-uncased',
     analysis: 'nlpaueb/legal-bert-small-uncased',
@@ -61,7 +62,7 @@ const LEGALBERT_MODELS = {
   },
 };
 
-// Legal domain-specific entity types
+// Legal domain-specific entity types;
 const LEGAL_ENTITY_TYPES = {
   CASE_CITATION: 'case_citation',
   STATUTE: 'statute_reference',
@@ -77,29 +78,29 @@ const LEGAL_ENTITY_TYPES = {
   LEGAL_PRINCIPLE: 'legal_principle',
 } as const;
 
-// Legal text analysis results
+// Legal text analysis results;
 export interface LegalBertAnalysisResult {
   entities: Array<any>;
   concepts: Array<any>;
   sentiment: {
     polarity: number; // -1 to 1
     confidence: number;
-    classification: 'positive' | 'neutral' | 'negative';
+    classification: 'positive' | 'neutral' | 'negative';,
   };
   complexity: {
     readabilityScore: number;
     legalComplexity: number;
-    technicalTerms: number;
+    technicalTerms: number;,
   };
   keyPhrases: Array<any>;
   summary: {
     abstractive: string;
     extractive: string[];
-    keyPoints: string[];
+    keyPoints: string[];,
   };
 }
 
-// LegalBERT embedding result
+// LegalBERT embedding result;
 export interface LegalEmbeddingResult {
   embedding: number[];
   dimensions: number;
@@ -109,11 +110,11 @@ export interface LegalEmbeddingResult {
   metadata: {
     textLength: number;
     legalTerms: number;
-    complexity: number;
+    complexity: number;,
   };
 }
 
-// Legal document classification
+// Legal document classification;
 export interface LegalClassificationResult {
   documentType: string;
   confidence: number;
@@ -121,10 +122,10 @@ export interface LegalClassificationResult {
   jurisdiction: string;
   practiceArea: string;
   urgency: 'low' | 'medium' | 'high';
-  recommendations: string[];
+  recommendations: string[];,
 }
 
-// LegalBERT middleware class
+// LegalBERT middleware class;
 export class LegalBERTMiddleware {
   private modelConfig: any;
   private cache = new Map<string, any>();
@@ -156,7 +157,7 @@ export class LegalBERTMiddleware {
 
   /**
    * Generate legal-domain specialized embeddings
-   */
+   */;
   async generateLegalEmbedding(text: string): Promise<LegalEmbeddingResult> {
     const startTime = Date.now();
     const textHash = this.hashText(text);
@@ -229,7 +230,7 @@ export class LegalBERTMiddleware {
 
   /**
    * Comprehensive legal text analysis
-   */
+   */;
   async analyzeLegalText(text: string): Promise<LegalBertAnalysisResult> {
     const startTime = Date.now();
     const textHash = this.hashText(text);
@@ -273,7 +274,7 @@ export class LegalBERTMiddleware {
 
   /**
    * Classify legal documents
-   */
+   */;
   async classifyLegalDocument(text: string): Promise<LegalClassificationResult> {
     try {
       const classification = await this.performDocumentClassification(text);
@@ -290,7 +291,7 @@ export class LegalBERTMiddleware {
    */
   async calculateLegalSimilarity(
     text1: string,
-    text2: string
+    text2: string;
   ): Promise<any> {
     try {
       const [emb1, emb2] = await Promise.all([
@@ -327,7 +328,7 @@ export class LegalBERTMiddleware {
 
   private async generateLocalEmbedding(text: string): Promise<number[]> {
     return await withRetry(async () => {
-      const embedding = await generateEmbedding(text, { model: 'local' }));
+      const embedding = await generateEmbedding(text, { model: 'local' });
       if (!embedding || embedding.length === 0) {
         throw new Error('Local embedding generation failed');
       }
@@ -347,7 +348,7 @@ export class LegalBERTMiddleware {
           inputs: text,
           options: { wait_for_model: true },
         }),
-      }));
+      });
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`HuggingFace API error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
@@ -369,7 +370,7 @@ export class LegalBERTMiddleware {
           model: this.modelConfig.embedding,
           input: text,
         }),
-      }));
+      });
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`OpenAI API error: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
@@ -512,12 +513,12 @@ export class LegalBERTMiddleware {
     let negativeScore = 0;
 
     positiveWords.forEach((word) => {
-      const matches = textLower.match(new RegExp(`\\b${word}\\b`, 'g'));
+      const matches = textLower.match(new RegExp(`\\b${word}\\b`, 'g');
       if (matches) positiveScore += matches.length;
     });
 
     negativeWords.forEach((word) => {
-      const matches = textLower.match(new RegExp(`\\b${word}\\b`, 'g'));
+      const matches = textLower.match(new RegExp(`\\b${word}\\b`, 'g');
       if (matches) negativeScore += matches.length;
     });
 
@@ -553,13 +554,13 @@ export class LegalBERTMiddleware {
     let technicalTerms = 0;
     const textLower = text.toLowerCase();
     complexTerms.forEach((term) => {
-      const matches = textLower.match(new RegExp(`\\b${term}\\b`, 'g'));
+      const matches = textLower.match(new RegExp(`\\b${term}\\b`, 'g');
       if (matches) technicalTerms += matches.length;
     });
 
     const readabilityScore = Math.max(
       0,
-      Math.min(100, 206.835 - 1.015 * avgWordsPerSentence - 84.6 * (technicalTerms / words.length))
+      Math.min(100, 206.835 - 1.015 * avgWordsPerSentence - 84.6 * (technicalTerms / words.length)
     );
     const legalComplexity = Math.min(1, (technicalTerms / words.length) * 100);
 
@@ -599,7 +600,7 @@ export class LegalBERTMiddleware {
     const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
 
     // Simple extractive summary - take first and most important sentences
-    const extractive = sentences.slice(0, 3).map((s) => s.trim());
+    const extractive = sentences.slice(0, 3).map((s) => s.trim();
 
     // Key points extraction
     const keyPoints = [];
@@ -680,7 +681,7 @@ export class LegalBERTMiddleware {
       normB += b[i] * b[i];
     }
 
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
   }
 
   private calculateStructuralSimilarity(text1: string, text2: string): number {
@@ -699,8 +700,8 @@ export class LegalBERTMiddleware {
     const concepts1 = this.extractBasicConcepts(text1);
     const concepts2 = this.extractBasicConcepts(text2);
 
-    const intersection = concepts1.filter((c) => concepts2.includes(c));
-    const union = Array.from(new Set([...concepts1, ...concepts2]));
+    const intersection = concepts1.filter((c) => concepts2.includes(c);
+    const union = Array.from(new Set([...concepts1, ...concepts2]);
 
     return union.length > 0 ? intersection.length / union.length: 0;
   }
@@ -722,7 +723,7 @@ export class LegalBERTMiddleware {
     ];
 
     const textLower = text.toLowerCase();
-    return legalTerms.filter((term) => textLower.includes(term));
+    return legalTerms.filter((term) => textLower.includes(term);
   }
 
   private countLegalTerms(text: string): number {
@@ -749,7 +750,7 @@ export class LegalBERTMiddleware {
 
     const textLower = text.toLowerCase();
     return legalTerms.reduce((count, term) => {
-      const matches = textLower.match(new RegExp(`\\b${term}\\b`, 'g'));
+      const matches = textLower.match(new RegExp(`\\b${term}\\b`, 'g');
       return count + (matches ? matches.length: 0);
     }, 0);
   }
@@ -857,7 +858,7 @@ export class LegalBERTMiddleware {
 
   /**
    * Get middleware statistics
-   */
+   */;
   getStatistics(): Record<string, any> {
     return {
       requestCount: this.requestCount,
@@ -869,7 +870,7 @@ export class LegalBERTMiddleware {
 
   /**
    * Clear cache
-   */
+   */;
   clearCache(): void {
     this.cache.clear();
     logger.info('[LegalBERT] Cache cleared');
@@ -877,7 +878,7 @@ export class LegalBERTMiddleware {
 
   /**
    * Health check
-   */
+   */;
   async healthCheck(): Promise<any> {
     try {
       const testResult = await this.generateLegalEmbedding('health check');

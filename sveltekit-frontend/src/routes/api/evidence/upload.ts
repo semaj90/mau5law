@@ -4,6 +4,7 @@ import path from "path";
 import { json } from "@sveltejs/kit";
 import { randomUUID } from "crypto";
 import { promises as fs } from "fs";
+}
 
 export interface EvidenceRecord {
   id: string;
@@ -21,7 +22,7 @@ export interface EvidenceRecord {
   updatedAt: Date;
   fileName: string;
   summary: string | null;
-  aiSummary: string | null;
+  aiSummary: string | null;,
 }
 
 import type { RequestHandler } from './$types.js';
@@ -51,7 +52,7 @@ export const POST: RequestHandler = (async ({ request, locals }) => {
   try {
     await fs.mkdir(uploadDir, { recursive: true });
     const arrayBuffer = await file.arrayBuffer();
-    await fs.writeFile(filePath, Buffer.from(arrayBuffer));
+    await fs.writeFile(filePath, Buffer.from(arrayBuffer);
   } catch (e: any) {
     return json({ error: "File upload failed", details: String(e) }, { status: 500 });
   }

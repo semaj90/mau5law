@@ -19,13 +19,13 @@ export const GET = async ({ url }): Promise<any> => {
     const db: any = mod.db ?? mod.default ?? mod;
     if (!db) return json({ available: false, exists: false });
 
-    // attempt a naive query - adapt to your db API
+    // attempt a naive query - adapt to your db API;
     if (typeof db.query === 'function') {
       const user = await db.query.users.findFirst({ where: { email } }).catch(() => null);
       return json({ available: true, exists: !!user });
     }
 
-    // if Drizzle-style raw SQL client
+    // if Drizzle-style raw SQL client;
     if (typeof db.prepare === 'function' || typeof db.execute === 'function') {
       // can't reliably query without schema; return available
       return json({ available: true, exists: false });

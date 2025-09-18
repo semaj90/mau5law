@@ -7,7 +7,7 @@
 export * from './schema-postgres.js';
 import { users, sessions, cases, evidence, reports, legalDocuments, notes } from './schema-postgres.js';
 
-// Re-export evidence domain tables (camelCase variants) with aliases where names overlap
+// Re-export evidence domain tables (camelCase variants) with aliases where names overlap;
 export {
   evidenceProcessTable,
   evidenceOcrTable,
@@ -33,11 +33,11 @@ import { sql } from 'drizzle-orm';
 import { relations } from 'drizzle-orm/relations';
 import { createId } from '@paralleldrive/cuid2';
 
-// Type definitions for complex JSON fields
+// Type definitions for complex JSON fields;
 export interface DocumentMetadataExt {
   keywords: string[];
   customFields: Record<string, unknown>;
-  confidentialityLevel: 'public' | 'restricted' | 'confidential' | 'top_secret';
+  confidentialityLevel: 'public' | 'restricted' | 'confidential' | 'top_secret';,
 }
 
 export interface Citation {
@@ -52,13 +52,13 @@ export interface AutoSaveData {
   content: string;
   citations: Citation[];
   autoSavedAt: string;
-  isDirty: boolean;
+  isDirty: boolean;,
 }
 
 export interface Collaborator {
   userId: string;
   role: 'viewer' | 'editor' | 'owner';
-  addedAt: string;
+  addedAt: string;,
 }
 
 // === CORE TABLES REMOVED HERE ===
@@ -165,12 +165,12 @@ export const personsOfInterest = pgTable("persons_of_interest", {
   profileImageUrl: text("profile_image_url"),
 
   // The structured "Who, What, Why, How" profile data
-  profileData: jsonb("profile_data")
+  profileData: jsonb("profile_data");
     .default({
       who: "",
       what: "",
       why: "",
-      how: ""
+      how: "",
     })
     .notNull(),
 
@@ -295,18 +295,18 @@ export const citationPoints = pgTable("citation_points", {
   tags: jsonb("tags").default([]).notNull(),
   caseId: uuid("case_id").references(() => cases.id, { onDelete: "cascade" }),
   reportId: uuid("report_id").references(() => reports.id, {
-    onDelete: "cascade"
+    onDelete: "cascade",
   }),
   evidenceId: uuid("evidence_id").references(() => evidence.id, {
-    onDelete: "set null"
+    onDelete: "set null",
   }),
   statuteId: uuid("statute_id").references(() => statutes.id, {
-    onDelete: "set null"
+    onDelete: "set null",
   }),
   aiSummary: text("ai_summary"),
   relevanceScore: decimal("relevance_score", {
     precision: 4,
-    scale: 3
+    scale: 3,
   }).default("0.0"),
   metadata: jsonb("metadata").default({}).notNull(),
   isBookmarked: boolean("is_bookmarked").default(false).notNull(),
@@ -319,7 +319,7 @@ export const citationPoints = pgTable("citation_points", {
 // === SAVED CITATIONS ===
 
 export const savedCitations = pgTable(
-  "saved_citations",
+  "saved_citations",);
   {
     id: text("id")
       .primaryKey()
@@ -357,7 +357,7 @@ export const savedCitations = pgTable(
     userIdIdx: index("saved_citations_user_id_idx").on(table.userId),
     categoryIdx: index("saved_citations_category_idx").on(table.category),
     isFavoriteIdx: index("saved_citations_favorite_idx").on(table.isFavorite),
-    usageCountIdx: index("saved_citations_usage_idx").on(table.usageCount)
+    usageCountIdx: index("saved_citations_usage_idx").on(table.usageCount),
   })
 );
 // (citationPoints moved above savedCitations to prevent TDZ runtime errors)
@@ -408,7 +408,7 @@ export const crimes = pgTable("crimes", {
   id: uuid("id").primaryKey().defaultRandom(),
   caseId: uuid("case_id").references(() => cases.id, { onDelete: "cascade" }),
   criminalId: uuid("criminal_id").references(() => criminals.id, {
-    onDelete: "cascade"
+    onDelete: "cascade",
   }),
   statuteId: uuid("statute_id").references(() => statutes.id),
   name: varchar("name", { length: 255 }).notNull(),
@@ -441,105 +441,105 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   reports: many(reports),
   legalDocuments: many(legalDocuments),
   notes: many(notes),
-  savedCitations: many(savedCitations)
-}));
+  savedCitations: many(savedCitations),
+});
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
-    references: [users.id]
+    references: [users.id],
   })
-}));
+});
 
 export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
     fields: [cases.leadProsecutor],
     references: [users.id],
-    relationName: "leadProsecutor"
+    relationName: "leadProsecutor",
   }),
   createdBy: one(users, {
     fields: [cases.createdBy],
     references: [users.id],
-    relationName: "createdBy"
+    relationName: "createdBy",
   }),
   criminals: many(caseCriminals),
   evidence: many(evidence),
   activities: many(caseActivities),
   personsOfInterest: many(personsOfInterest),
   legalDocuments: many(legalDocuments),
-  notes: many(notes)
-}));
+  notes: many(notes),
+});
 
 export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [criminals.createdBy],
-    references: [users.id]
+    references: [users.id],
   }),
   cases: many(caseCriminals),
-  evidence: many(evidence)
-}));
+  evidence: many(evidence),
+});
 
 export const caseCriminalsRelations = relations(caseCriminals, ({ one }) => ({
   case: one(cases, {
     fields: [caseCriminals.caseId],
-    references: [cases.id]
+    references: [cases.id],
   }),
   criminal: one(criminals, {
     fields: [caseCriminals.criminalId],
-    references: [criminals.id]
+    references: [criminals.id],
   }),
   addedBy: one(users, {
     fields: [caseCriminals.addedBy],
-    references: [users.id]
+    references: [users.id],
   })
-}));
+});
 
 export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
     fields: [evidence.uploadedBy],
-    references: [users.id]
+    references: [users.id],
   }),
   case: one(cases, {
     fields: [evidence.caseId],
-    references: [cases.id]
+    references: [cases.id],
   })
-}));
+});
 
 export const themesRelations = relations(themes, ({ one }) => ({
   createdBy: one(users, {
     fields: [themes.createdBy],
-    references: [users.id]
+    references: [users.id],
   })
-}));
+});
 
 export const reportsRelations = relations(reports, ({ one }) => ({
   createdBy: one(users, {
     fields: [reports.createdBy],
-    references: [users.id]
+    references: [users.id],
   }),
   lastEditedBy: one(users, {
     fields: [reports.lastEditedBy],
-    references: [users.id]
+    references: [users.id],
   }),
   generatedBy: one(users, {
     fields: [reports.generatedBy],
-    references: [users.id]
+    references: [users.id],
   })
-}));
+});
 
 export const citationPointsRelations = relations(citationPoints, ({ one }) => ({
   createdBy: one(users, {
     fields: [citationPoints.createdBy],
-    references: [users.id]
+    references: [users.id],
   })
-}));
+});
 
 export const attachmentVerificationsRelations = relations(
   attachmentVerifications,
   ({ one }) => ({
     verifiedBy: one(users, {
       fields: [attachmentVerifications.verifiedBy],
-      references: [users.id]
+      references: [users.id],
     })
   }),
 );
@@ -549,11 +549,11 @@ export const personsOfInterestRelations = relations(
   ({ one }) => ({
     case: one(cases, {
       fields: [personsOfInterest.caseId],
-      references: [cases.id]
+      references: [cases.id],
     }),
     createdBy: one(users, {
       fields: [personsOfInterest.createdBy],
-      references: [users.id]
+      references: [users.id],
     })
   }),
 );
@@ -561,21 +561,21 @@ export const personsOfInterestRelations = relations(
 export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
   case: one(cases, {
     fields: [legalDocuments.caseId],
-    references: [cases.id]
+    references: [cases.id],
   }),
   user: one(users, {
     fields: [legalDocuments.userId],
-    references: [users.id]
+    references: [users.id],
   })
-}));
+});
 
 export const notesRelations = relations(notes, ({ one }) => ({
   case: one(cases, {
     fields: [notes.caseId],
-    references: [cases.id]
+    references: [cases.id],
   }),
   user: one(users, {
     fields: [notes.userId],
-    references: [users.id]
+    references: [users.id],
   })
-}));
+});

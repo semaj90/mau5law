@@ -1,13 +1,14 @@
 /**
  * Bits-UI Integration Test
  * Validates that all bits-ui components are working correctly
- */
+ */;
+}
 
 export interface BitsUITestResult {
   component: string;
   status: 'pass' | 'fail' | 'warning';
   message: string;
-  timestamp: number;
+  timestamp: number;,
 }
 
 export class BitsUIIntegrationTester {
@@ -88,7 +89,7 @@ export class BitsUIIntegrationTester {
 
   private testAccessibility(): void {
     try {
-      // Test ARIA attributes and keyboard navigation
+      // Test ARIA attributes and keyboard navigation;
       if (typeof document !== 'undefined') {
         // Check for ARIA-compliant elements
         const ariaElements = document.querySelectorAll('[aria-label], [aria-labelledby], [role]');
@@ -122,7 +123,7 @@ export class BitsUIIntegrationTester {
       // Test component render time
       const startTime = performance.now();
 
-      // Simulate component operations
+      // Simulate component operations;
       setTimeout(() => {
         const endTime = performance.now();
         const renderTime = endTime - startTime;
@@ -146,7 +147,7 @@ export class BitsUIIntegrationTester {
       component,
       status,
       message,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 

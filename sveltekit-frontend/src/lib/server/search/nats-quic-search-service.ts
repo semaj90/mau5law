@@ -14,7 +14,7 @@ import { redisService } from '../redis-service.js';
 import { createHash } from 'crypto';
 import { fastStringify, fastParse } from '../../utils/fast-json.js';
 
-// QUIC Configuration for ultra-low latency
+// QUIC Configuration for ultra-low latency;
 const QUIC_CONFIG = {
   // QUIC provides 0-RTT connection establishment
   enableQuic: true,
@@ -24,7 +24,7 @@ const QUIC_CONFIG = {
   congestionControl: 'bbr', // Google BBR for optimal throughput
 } as const;
 
-// NATS Search Topics
+// NATS Search Topics;
 const SEARCH_TOPICS = {
   SEARCH_REQUEST: 'legal.search.request',
   SEARCH_RESPONSE: 'legal.search.response',
@@ -33,7 +33,7 @@ const SEARCH_TOPICS = {
   SEARCH_CACHE_INVALIDATE: 'legal.search.cache.invalidate',
 } as const;
 
-// Search Request/Response Types
+// Search Request/Response Types;
 export interface SearchRequest {
   id: string;
   query: string;
@@ -54,7 +54,7 @@ export interface SearchRequest {
   };
   userId?: string;
   sessionId?: string;
-  timestamp: number;
+  timestamp: number;,
 }
 
 export interface SearchResponse {
@@ -67,17 +67,17 @@ export interface SearchResponse {
     processingTime: number;
     cacheHit: boolean;
     searchType: string;
-    hasEmbedding: boolean;
+    hasEmbedding: boolean;,
   };
   suggestions?: string[];
-  timestamp: number;
+  timestamp: number;,
 }
 
 export interface SearchSuggestion {
   query: string;
   score: number;
   frequency: number;
-  lastUsed: number;
+  lastUsed: number;,
 }
 
 export class NatsQuicSearchService {
@@ -87,7 +87,7 @@ export class NatsQuicSearchService {
   private searchQueue: Map<string, (response: SearchResponse) => void> = new Map();
   private suggestionCache: Map<string, SearchSuggestion[]> = new Map();
 
-  // Performance metrics
+  // Performance metrics;
   private metrics = {
     requestsProcessed: 0,
     avgResponseTime: 0,
@@ -100,7 +100,7 @@ export class NatsQuicSearchService {
     this.initialize();
   }
 
-  /** Public health probe replacing earlier direct private access in tests */
+  /** Public health probe replacing earlier direct private access in tests */;
   async healthCheck(): Promise<any> {
     return {
       initialized: this.isInitialized,
@@ -109,26 +109,26 @@ export class NatsQuicSearchService {
     };
   }
 
-  /** Public simplified search wrapper (non-stream) for integration tests */
+  /** Public simplified search wrapper (non-stream) for integration tests */;
   async searchSimple(query: string, options: { type?: 'semantic' | 'text' | 'hybrid'; limit?: number; threshold?: number } = {}): Promise<SearchResponse> {
     const request: SearchRequest = {
       id: `test_${Date.now()}`,
       query,
       searchType: options.type || 'hybrid',
       options: { limit: options.limit, threshold: options.threshold },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
-    return this.performSearch(request, Date.now());
+    return this.performSearch(request, Date.now();
   }
 
   /**
    * Initialize NATS connection with QUIC transport
-   */
+   */;
   async initialize(): Promise<void> {
     try {
       console.log('🚀 Initializing NATS+QUIC Search Service...');
 
-      // Connect to NATS with QUIC configuration - force IPv4
+      // Connect to NATS with QUIC configuration - force IPv4;
       try {
         this.nats = await connect({
           servers: [
@@ -173,7 +173,7 @@ export class NatsQuicSearchService {
 
   /**
    * Process async search requests
-   */
+   */;
   private async setupRequestHandler(): Promise<void> {
     if (!this.nats) return;
 
@@ -199,7 +199,7 @@ export class NatsQuicSearchService {
         let response: SearchResponse;
 
         if (cachedResponse) {
-          // Cache hit - ultra-fast response
+          // Cache hit - ultra-fast response;
           response = {
             ...cachedResponse,
             id: request.id,
@@ -224,17 +224,17 @@ export class NatsQuicSearchService {
           this.updateCacheHitRate(false);
         }
 
-        // Generate search suggestions
+        // Generate search suggestions;
         if (request.query.length >= 3) {
           this.generateSuggestions(request.query);
         }
 
-        // Send response
+        // Send response;
         if (msg.reply) {
-          this.nats.publish(msg.reply, this.codec.encode(response));
+          this.nats.publish(msg.reply, this.codec.encode(response);
         } else {
           // Publish to response topic
-          this.nats.publish(`${SEARCH_TOPICS.SEARCH_RESPONSE}.${request.id}`, this.codec.encode(response));
+          this.nats.publish(`${SEARCH_TOPICS.SEARCH_RESPONSE}.${request.id}`, this.codec.encode(response);
         }
 
         // Update metrics
@@ -243,7 +243,7 @@ export class NatsQuicSearchService {
       } catch (error) {
         console.error('❌ Search processing error:', error);
 
-        // Send error response
+        // Send error response;
         if (msg.reply) {
           const errorResponse: SearchResponse = {
             id: 'error',
@@ -251,7 +251,7 @@ export class NatsQuicSearchService {
             error: error instanceof Error ? error.message: 'Search processing failed',
             timestamp: Date.now(),
           };
-          this.nats.publish(msg.reply, this.codec.encode(errorResponse));
+          this.nats.publish(msg.reply, this.codec.encode(errorResponse);
         }
       }
     }
@@ -259,13 +259,13 @@ export class NatsQuicSearchService {
 
   /**
    * Perform the actual search operation
-   */
+   */;
   private async performSearch(request: SearchRequest, startTime: number): Promise<SearchResponse> {
     try {
       let results: any[] = [];
       let queryEmbedding: number[] | null = null;
 
-      // Generate embedding for semantic/hybrid search
+      // Generate embedding for semantic/hybrid search;
       if (request.searchType === 'semantic' || request.searchType === 'hybrid') {
         // Use internal fetch for embeddings
         queryEmbedding = await this.generateEmbedding(request.query, request.options?.model || 'unknown');
@@ -281,7 +281,7 @@ export class NatsQuicSearchService {
         }
       }
 
-      // Perform text search
+      // Perform text search;
       if (request.searchType === 'text' || request.searchType === 'hybrid') {
         const textResults = await this.performTextSearch(
           request.query,
@@ -321,7 +321,7 @@ export class NatsQuicSearchService {
 
   /**
    * Generate embeddings using Gemma
-   */
+   */;
   private async generateEmbedding(query: string, model?: string): Promise<number[] | null> {
     try {
       const response = await fetch('http://localhost:11434/api/embeddings', {
@@ -338,7 +338,7 @@ export class NatsQuicSearchService {
         throw new Error(`Embedding API failed: ${response.status}`);
       }
 
-      const data = await fastParse(await response.text());
+      const data = await fastParse(await response.text();
       return data.embedding || null;
     } catch (error) {
       console.error('❌ Embedding generation failed:', error);
@@ -348,7 +348,7 @@ export class NatsQuicSearchService {
 
   /**
    * Generate cache key for search request
-   */
+   */;
   private generateCacheKey(request: SearchRequest): string {
     const keyData = {
       query: request.query,
@@ -362,14 +362,14 @@ export class NatsQuicSearchService {
     };
 
     return createHash('sha256')
-      .update(JSON.stringify(keyData))
+      .update(JSON.stringify(keyData)
       .digest('hex')
       .substring(0, 16);
   }
 
   /**
    * Get cached search response
-   */
+   */;
   private async getCachedResponse(cacheKey: string): Promise<SearchResponse | null> {
     try {
       const cached = await redisService.get(`search:${cacheKey}`);
@@ -382,7 +382,7 @@ export class NatsQuicSearchService {
 
   /**
    * Cache search response with TTL based on priority
-   */
+   */;
   private async cacheResponse(cacheKey: string, response: SearchResponse, priority: string): Promise<void> {
     try {
       // Set TTL based on priority
@@ -392,7 +392,7 @@ export class NatsQuicSearchService {
         case 'high': ttl = 300; break;         // 5 minutes
         case 'normal': ttl = 1800; break;      // 30 minutes
         case 'low': ttl = 3600; break;         // 1 hour
-        default: ttl = 1800;
+        default: ttl = 1800;,
       }
 
       await redisService.set(`search:${cacheKey}`, response, ttl);
@@ -403,7 +403,7 @@ export class NatsQuicSearchService {
 
   /**
    * Generate real-time search suggestions
-   */
+   */;
   private async generateSuggestions(query: string): Promise<void> {
     const prefix = query.toLowerCase().trim();
 
@@ -427,7 +427,7 @@ export class NatsQuicSearchService {
         });
       }
 
-      // Sort by relevance (frequency + recency)
+      // Sort by relevance (frequency + recency);
       suggestions.sort((a, b) => {
         const scoreA = a.frequency * 0.7 + (a.lastUsed / Date.now()) * 0.3;
         const scoreB = b.frequency * 0.7 + (b.lastUsed / Date.now()) * 0.3;
@@ -440,13 +440,13 @@ export class NatsQuicSearchService {
       // Update cache
       this.suggestionCache.set(prefix, suggestions);
 
-      // Publish suggestions for real-time updates
+      // Publish suggestions for real-time updates;
       if (this.nats) {
         this.nats.publish(SEARCH_TOPICS.SEARCH_SUGGESTIONS, this.codec.encode({
           prefix,
           suggestions: suggestions.map(s => s.query),
           timestamp: Date.now(),
-        }));
+        });
       }
 
       this.metrics.suggestionsGenerated++;
@@ -458,7 +458,7 @@ export class NatsQuicSearchService {
 
   /**
    * Public API: Submit async search request
-   */
+   */;
   async searchAsync(request: Omit<SearchRequest, 'id' | 'timestamp'>): Promise<string> {
     if (!this.nats || !this.isInitialized) {
       console.warn('⚠️ NATS Search Service not available, using direct search fallback');
@@ -473,14 +473,14 @@ export class NatsQuicSearchService {
     };
 
     // Publish search request
-    this.nats.publish(SEARCH_TOPICS.SEARCH_REQUEST, this.codec.encode(searchRequest));
+    this.nats.publish(SEARCH_TOPICS.SEARCH_REQUEST, this.codec.encode(searchRequest);
 
     return searchRequest.id;
   }
 
   /**
    * Public API: Get search results (with timeout)
-   */
+   */;
   async getSearchResults(searchId: string, timeoutMs: number = 5000): Promise<SearchResponse> {
     if (!this.nats) {
       throw new Error('NATS Search Service not initialized');
@@ -489,7 +489,7 @@ export class NatsQuicSearchService {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         this.searchQueue.delete(searchId);
-        reject(new Error('Search timeout'));
+        reject(new Error('Search timeout');
       }, timeoutMs);
 
       // Subscribe to response
@@ -503,7 +503,7 @@ export class NatsQuicSearchService {
 
           const responseDecoded = this.codec.decode(msg.data) as unknown;
             if (typeof responseDecoded !== 'object' || responseDecoded === null) {
-              reject(new Error('Malformed search response'));
+              reject(new Error('Malformed search response');
               break;
             }
           resolve(responseDecoded as SearchResponse);
@@ -515,7 +515,7 @@ export class NatsQuicSearchService {
 
   /**
    * Public API: Get search suggestions
-   */
+   */;
   getSearchSuggestions(prefix: string): string[] {
     const suggestions = this.suggestionCache.get(prefix.toLowerCase()) || [];
     return suggestions.map(s => s.query);
@@ -523,7 +523,7 @@ export class NatsQuicSearchService {
 
   /**
    * Get service metrics
-   */
+   */;
   getMetrics() {
     return {
       ...this.metrics,
@@ -537,15 +537,15 @@ export class NatsQuicSearchService {
   /**
    * Publish lightweight analytics event (stubbed for now so routes can type-check)
    * Accepts arbitrary shape; enriches with timestamp. Safe no-op if NATS unavailable.
-   */
+   */;
   async publishAnalytics(data: Record<string, any>): Promise<void> {
     try {
-      if (!this.nats) return; // silent no-op when not connected
+      if (!this.nats) return; // silent no-op when not connected;
       this.nats.publish(SEARCH_TOPICS.SEARCH_ANALYTICS, this.codec.encode({
         type: 'analytics',
         ...data,
         timestamp: Date.now(),
-      }));
+      });
     } catch (error) {
       console.warn('⚠️ publishAnalytics failed:', error);
     }
@@ -553,22 +553,22 @@ export class NatsQuicSearchService {
 
   /**
    * Publish chat context event used by chat routes (stub topic for future refinement)
-   */
+   */;
   async publishChatContext(context: Record<string, any>): Promise<void> {
     try {
       if (!this.nats) return;
-      // Reuse analytics topic until a dedicated chat topic is defined
+      // Reuse analytics topic until a dedicated chat topic is defined;
       this.nats.publish(SEARCH_TOPICS.SEARCH_ANALYTICS, this.codec.encode({
         type: 'chat-context',
         ...context,
         timestamp: Date.now(),
-      }));
+      });
     } catch (error) {
       console.warn('⚠️ publishChatContext failed:', error);
     }
   }
 
-  // Helper methods for vector and text search
+  // Helper methods for vector and text search;
   private async performVectorSearch(embedding: number[], limit: number, threshold: number, filters: any): Promise<any[]> {
     // Implementation would call the existing vector search logic
     return [];
@@ -581,14 +581,14 @@ export class NatsQuicSearchService {
 
   private deduplicateAndScore(results: any[], limit: number): any[] {
     // Deduplicate by ID and apply combined scoring
-    const unique = results.filter((r, i, arr) => i === arr.findIndex(x => x.id === r.id));
+    const unique = results.filter((r, i, arr) => i === arr.findIndex(x => x.id === r.id);
     return unique
-      .sort((a, b) => (b.score || 0) - (a.score || 0))
+      .sort((a, b) => (b.score || 0) - (a.score || 0)
       .slice(0, limit);
   }
 
   private setupCacheManagement(): void {
-    // Clean up old suggestions every 5 minutes
+    // Clean up old suggestions every 5 minutes;
     setInterval(() => {
       const now = Date.now();
       const fiveMinutesAgo = now - 5 * 60 * 1000;
@@ -605,13 +605,13 @@ export class NatsQuicSearchService {
   }
 
   private setupAnalytics(): void {
-    // Publish metrics every 30 seconds
+    // Publish metrics every 30 seconds;
     setInterval(() => {
       if (this.nats) {
         this.nats.publish(SEARCH_TOPICS.SEARCH_ANALYTICS, this.codec.encode({
           metrics: this.getMetrics(),
           timestamp: Date.now(),
-        }));
+        });
       }
     }, 30 * 1000);
   }
@@ -632,7 +632,7 @@ export class NatsQuicSearchService {
 
   /**
    * Shutdown service gracefully
-   */
+   */;
   async shutdown(): Promise<void> {
     console.log('🛑 Shutting down NATS+QUIC Search Service...');
 

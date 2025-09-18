@@ -42,7 +42,7 @@ export class EmbeddingBackfillWorker {
 
   /**
    * Process all evidence files that don't have embeddings yet
-   */
+   */;
   async processAll(): Promise<BackfillResult> {
     if (this.isRunning) {
       throw new Error('Backfill worker is already running');
@@ -70,16 +70,15 @@ export class EmbeddingBackfillWorker {
         processed: 0,
         success: 0,
         failed: 0,
-        errors: []
+        errors: [],
       };
 
-      // Process in batches to avoid overwhelming the system
+      // Process in batches to avoid overwhelming the system;
       for (let i = 0; i < evidenceFiles.length; i += this.batchSize) {
         const batch = evidenceFiles.slice(i, i + this.batchSize);
         console.log(`📦 Processing batch ${Math.floor(i / this.batchSize) + 1}/${Math.ceil(evidenceFiles.length / this.batchSize)}`);
 
-        await Promise.allSettled(
-          batch.map(async (file) => {
+        await Promise.allSettled(batch.map(async (file) => {
             (result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).processed++;
             try {
               await this.processEvidenceFile(file);
@@ -95,7 +94,7 @@ export class EmbeddingBackfillWorker {
         );
 
         // Small delay between batches to prevent overwhelming the system
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1000);
       }
 
       console.log(`🎉 Backfill complete! Processed: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).processed}, Success: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).success}, Failed: ${(result as { processed?: any; success?: any; failed?: any; errors?: any; embedding?: any }).failed}`);
@@ -108,7 +107,7 @@ export class EmbeddingBackfillWorker {
 
   /**
    * Process a single evidence file and generate its embeddings
-   */
+   */;
   private async processEvidenceFile(file: EvidenceFile): Promise<void> {
     // Extract text content from the file
     const textContent = await this.extractTextContent(file);
@@ -128,7 +127,7 @@ export class EmbeddingBackfillWorker {
       } catch (error) {
         console.warn(`⚠️  Embedding attempt ${attempt}/${this.retryCount} failed for ${file.title}:`, error);
         if (attempt === this.retryCount) throw error;
-        await new Promise(resolve => setTimeout(resolve, 1000 * attempt)); // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt); // Exponential backoff
       }
     }
 
@@ -142,7 +141,7 @@ export class EmbeddingBackfillWorker {
 
   /**
    * Extract text content from evidence file
-   */
+   */;
   private async extractTextContent(file: EvidenceFile): Promise<string> {
     // Initialize MinIO service
     await minioService.initialize();
@@ -162,7 +161,7 @@ export class EmbeddingBackfillWorker {
     // - OCR for images using tesseract.js
 
     switch (file.mime_type) {
-      case 'text/plain':
+      case 'text/plain':;
         try {
           // Get file from MinIO and extract text
           const fileUrl = await minioService.getFileUrl(file.storage_bucket, file.object_name, 60);
@@ -174,7 +173,7 @@ export class EmbeddingBackfillWorker {
         }
         break;
 
-      case 'application/json':
+      case 'application/json':;
         try {
           const fileUrl = await minioService.getFileUrl(file.storage_bucket, file.object_name, 60);
           const response = await fetch(fileUrl);
@@ -195,16 +194,16 @@ export class EmbeddingBackfillWorker {
 
   /**
    * Generate embedding for text content
-   */
+   */;
   private async generateEmbedding(text: string): Promise<any> {
-    // Call our embedding API endpoint
+    // Call our embedding API endpoint;
     const response = await fetch('http://localhost:5174/api/ai/embed', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         text: text.substring(0, 50000), // Limit text length
         model: 'mock', // Use mock for testing - change to 'openai' or 'nomic' when ready
-        dimensions: 768
+        dimensions: 768,
       })
     });
 
@@ -223,7 +222,7 @@ export class EmbeddingBackfillWorker {
 
   /**
    * Store embedding vector in database
-   */
+   */;
   private async storeEmbedding(fileId: number, embedding: number[]): Promise<void> {
     // Convert embedding array to PostgreSQL vector format
     const embeddingVector = `[${embedding.join(',')}]`;
@@ -240,7 +239,7 @@ export class EmbeddingBackfillWorker {
 
   /**
    * Get statistics about embedding status
-   */
+   */;
   async getStats(): Promise<any> {
     const [totalResult, withEmbeddingsResult] = await Promise.all([
       query('SELECT COUNT(*) as count FROM evidence_files'),
@@ -256,14 +255,14 @@ export class EmbeddingBackfillWorker {
       total,
       withEmbeddings,
       withoutEmbeddings,
-      percentage: Math.round(percentage * 100) / 100
+      percentage: Math.round(percentage * 100) / 100,
     };
   }
 }
 
-// Export singleton instance
+// Export singleton instance;
 export const embeddingBackfillWorker = new EmbeddingBackfillWorker({
   batchSize: 10,
   retryCount: 3,
-  enableTextExtraction: true
+  enableTextExtraction: true,
 });

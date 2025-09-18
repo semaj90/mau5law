@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request, locals, url }) => {
   
   await fs.mkdir(uploadDir, { recursive: true });
   const arrayBuffer = await file.arrayBuffer();
-  await fs.writeFile(filePath, Buffer.from(arrayBuffer));
+  await fs.writeFile(filePath, Buffer.from(arrayBuffer);
 
   // Auto-tagging (simple: by file type)
   const tags = [ext.replace(".", ""), "uploaded", `case:${caseId}`];

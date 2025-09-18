@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     let citations: any[] = [];
 
     // This is a mock - in reality you'd query the database
-    const mockCitations = [
+    const mockCitations = [;
       {
         id: "1",
         title: "Fourth Amendment Search and Seizure",

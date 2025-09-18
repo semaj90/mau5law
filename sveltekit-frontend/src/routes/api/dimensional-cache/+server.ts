@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!key || !embeddings) {
           return json({
             success: false,
-            error: 'Key and embeddings are required'
+            error: 'Key and embeddings are required',
           }, { status: 400 });
         }
 
@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           cached: result,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
@@ -45,7 +45,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         if (!key) {
           return json({
             success: false,
-            error: 'Key is required'
+            error: 'Key is required',
           }, { status: 400 });
         }
 
@@ -57,9 +57,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
           data: cached ? {
             embeddings: Array.from(cached.embeddings.slice(0, 10)), // First 10 for demo
             attentionWeights: cached.attentionWeights ? Array.from(cached.attentionWeights.slice(0, 16)) : null,
-            metadata: cached.metadata
+            metadata: cached.metadata,
           } : null,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
@@ -71,11 +71,11 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           cleared,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
 
-      default:
+      default:;
         return json({
           success: false,
           error: `Unknown action: ${action}`
@@ -86,7 +86,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }, { status: 500 });
   }
 };
@@ -102,13 +102,13 @@ export const GET: RequestHandler = async ({ url }) => {
         cacheSize: stats.size,
         capacity: stats.capacity,
         hitRate: stats.hitRate,
-        memoryUsage: stats.memoryUsage
+        memoryUsage: stats.memoryUsage,
       },
       endpoints: {
         store: '/api/dimensional-cache?action=store (POST)',
         get: '/api/dimensional-cache?action=get (POST)', 
         clear: '/api/dimensional-cache?action=clear (POST)',
-        stats: '/api/dimensional-cache (GET)'
+        stats: '/api/dimensional-cache (GET)',
       },
       capabilities: [
         'Multi-dimensional array storage',
@@ -118,14 +118,14 @@ export const GET: RequestHandler = async ({ url }) => {
         'Metadata association',
         'Pattern-based clearing'
       ],
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
   } catch (error: any) {
     return json({
       success: false,
       error: error instanceof Error ? error.message: String(error),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }, { status: 500 });
   }
 };

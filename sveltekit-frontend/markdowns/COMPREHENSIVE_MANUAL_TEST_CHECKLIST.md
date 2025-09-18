@@ -2,7 +2,8 @@
 
 ## Legal Case Management System - Full User Flow Testing
 
-This checklist covers the complete user journey from registration to case creation, testing all integrated systems.
+This checklist covers the complete user journey from registration to case creation, testing all
+integrated systems.
 
 ---
 
@@ -15,8 +16,7 @@ cd "c:\Users\james\Downloads\Deeds-App-doesn-t-work--main (2)\web-app\sveltekit-
 npm run dev
 ```
 
-**Expected Result:** ✅ Server starts on `http://localhost:5173`
-**Status:** [ ] Pass [ ] Fail
+**Expected Result:** ✅ Server starts on `http://localhost:5173` **Status:** [ ] Pass [ ] Fail
 
 ### 1.2 Open Application
 
@@ -61,8 +61,8 @@ Fill out the form with:
 - **Password:** `TestPassword123!`
 - **Title:** `Prosecutor`
 
-**Expected Result:** ✅ Form submits successfully, user is created in database
-**Status:** [ ] Pass [ ] Fail
+**Expected Result:** ✅ Form submits successfully, user is created in database **Status:** [ ] Pass
+[ ] Fail
 
 ### 3.3 Verify Registration
 
@@ -87,8 +87,7 @@ Use credentials from registration or:
 - **Email:** `admin@prosecutor.com`
 - **Password:** `admin123`
 
-**Expected Result:** ✅ Successful login, redirect to dashboard
-**Status:** [ ] Pass [ ] Fail
+**Expected Result:** ✅ Successful login, redirect to dashboard **Status:** [ ] Pass [ ] Fail
 
 ### 4.3 Session Management
 
@@ -115,8 +114,7 @@ Update the following fields:
 - **Title:** `Senior Prosecutor`
 - **Department:** `Criminal Justice`
 
-**Expected Result:** ✅ Profile updates successfully save to database
-**Status:** [ ] Pass [ ] Fail
+**Expected Result:** ✅ Profile updates successfully save to database **Status:** [ ] Pass [ ] Fail
 
 ### 5.3 Verify Profile Updates
 
@@ -144,8 +142,8 @@ Click "Create Case" or similar button and fill out:
 - **Priority:** `High`
 - **Status:** `Active`
 
-**Expected Result:** ✅ Case is created and saved to PostgreSQL database
-**Status:** [ ] Pass [ ] Fail
+**Expected Result:** ✅ Case is created and saved to PostgreSQL database **Status:** [ ] Pass [ ]
+Fail
 
 ### 6.3 Verify Case Creation
 

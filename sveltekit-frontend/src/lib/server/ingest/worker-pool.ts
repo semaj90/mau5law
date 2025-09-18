@@ -26,6 +26,7 @@ export type Job = {
   contentType?: string;
   metadata?: Record<string, any>;
 };
+}
 
 export interface WorkerJobData {
   id: string;
@@ -81,7 +82,7 @@ export class SimpleWorkerPool {
           this.jobCallbacks.delete(message.jobId);
 
           if (message.error) {
-            reject(new Error(message.error));
+            reject(new Error(message.error);
           } else {
             resolve(message);
           }
@@ -128,12 +129,12 @@ export class SimpleWorkerPool {
       busyWorkers: this.free.filter(item => item.length),
       freeWorkers: this.free.filter(item => item.length),
       queuedJobs: this.queue.length,
-      pendingCallbacks: this.jobCallbacks.size
+      pendingCallbacks: this.jobCallbacks.size,
     };
   }
 
   async shutdown(): Promise<void> {
-    // Terminate all workers
+    // Terminate all workers;
     for (const worker of this.pool) {
       await worker.terminate();
     }
@@ -170,13 +171,13 @@ class WorkerInstance {
     this.lastUsed = Date.now();
 
     return new Promise((resolve, reject) => {
-      // Set timeout
+      // Set timeout;
       this.jobTimeout = setTimeout(() => {
         this.worker.terminate();
-        reject(new Error(`Job ${jobData.id} timed out after ${timeout}ms`));
+        reject(new Error(`Job ${jobData.id} timed out after ${timeout}ms`);
       }, timeout);
 
-      // Listen for result
+      // Listen for result;
       const onMessage = (result: WorkerJobResult) => {
         this.cleanup();
         resolve(result);
@@ -189,7 +190,7 @@ class WorkerInstance {
 
       const onExit = (code: number) => {
         this.cleanup();
-        reject(new Error(`Worker exited with code ${code}`));
+        reject(new Error(`Worker exited with code ${code}`);
       };
 
       this.worker.once('message', onMessage);
@@ -256,7 +257,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       minWorkers: options.minWorkers || 1,
       idleTimeout: options.idleTimeout || 30000, // 30 seconds
       jobTimeout: options.jobTimeout || 300000, // 5 minutes
-      retryAttempts: options.retryAttempts || 2
+      retryAttempts: options.retryAttempts || 2,
     };
 
     // Worker script path
@@ -265,14 +266,14 @@ export class AdvancedWorkerPool extends EventEmitter {
     // Start with minimum workers
     this.scaleWorkers();
 
-    // Periodic cleanup of idle workers
+    // Periodic cleanup of idle workers;
     this.cleanupInterval = setInterval(() => {
       this.cleanupIdleWorkers();
     }, this.options.idleTimeout / 2);
 
     this.emit('initialized', {
       maxWorkers: this.options.maxWorkers,
-      minWorkers: this.options.minWorkers
+      minWorkers: this.options.minWorkers,
     });
   }
 
@@ -294,7 +295,7 @@ export class AdvancedWorkerPool extends EventEmitter {
     };
 
     return new Promise((resolve, reject) => {
-      this.jobQueue.enqueue(
+      this.jobQueue.enqueue()
         { jobData, resolve, reject, options },
         options.priority || 0
       );
@@ -309,7 +310,7 @@ export class AdvancedWorkerPool extends EventEmitter {
 
     const availableWorker = this.getAvailableWorker();
     if (!availableWorker) {
-      // Try to scale up if possible
+      // Try to scale up if possible;
       if (this.workers.size < this.options.maxWorkers) {
         this.addWorker();
         // Retry after adding worker
@@ -328,7 +329,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       jobId: jobData.id,
       type: jobData.type,
       workerId: availableWorker.id,
-      activeJobs: this.activeJobs
+      activeJobs: this.activeJobs,
     });
 
     try {
@@ -354,7 +355,7 @@ export class AdvancedWorkerPool extends EventEmitter {
         jobId: jobData.id,
         type: jobData.type,
         workerId: availableWorker.id,
-        error: error instanceof Error ? error.message: String(error)
+        error: error instanceof Error ? error.message: String(error),
       });
 
       // Retry logic
@@ -373,11 +374,11 @@ export class AdvancedWorkerPool extends EventEmitter {
           this.processNextJob();
         }, retryDelay);
       } else {
-        reject(error instanceof Error ? error : new Error(String(error)));
+        reject(error instanceof Error ? error : new Error(String(error));
       }
     }
 
-    // Process next job if queue has items
+    // Process next job if queue has items;
     if (this.jobQueue.length > 0) {
       setTimeout(() => this.processNextJob(), 0);
     }
@@ -447,7 +448,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       if (
         !worker.busy &&
         this.workers.size > this.options.minWorkers &&
-        now - worker.lastUsed > this.options.idleTimeout
+        now - worker.lastUsed > this.options.idleTimeout;
       ) {
         workersToRemove.push(workerId);
       }
@@ -465,7 +466,7 @@ export class AdvancedWorkerPool extends EventEmitter {
       queuedJobs: this.jobQueue.length,
       totalProcessed: this.totalProcessed,
       busyWorkers: Array.from(this.workers.values()).filter(item => item.length),
-      idleWorkers: Array.from(this.workers.values()).filter(item => item.length)
+      idleWorkers: Array.from(this.workers.values()).filter(item => item.length),
     };
   }
 
@@ -480,14 +481,14 @@ export class AdvancedWorkerPool extends EventEmitter {
       // Wait for active jobs to complete
       const startTime = Date.now();
       while (this.activeJobs > 0 && Date.now() - startTime < timeout) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100);
       }
     }
 
     // Clear queue
     this.jobQueue.clear();
 
-    // Terminate all workers
+    // Terminate all workers;
     for (const worker of Array.from(this.workers.values())) {
       worker.terminate();
     }

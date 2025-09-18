@@ -7,7 +7,7 @@
 // === Memory Management ===
 import { allocateVectorMemory, freeVectorMemory } from './vector-operations.js';
 
-// === Legal Document Structure ===
+// === Legal Document Structure ===;
 class LegalDocument {
   id: string = "";
   title: string = "";
@@ -51,7 +51,7 @@ const LEGAL_ENTITIES = [
   "petitioner", "respondent", "appellant", "appellee", "party", "witness"
 ];
 
-// === Memory Allocator for JS Interface ===
+// === Memory Allocator for JS Interface ===;
 export function allocateMemory(size: i32): usize {
   return heap.alloc(size);
 }
@@ -60,7 +60,7 @@ export function freeMemory(ptr: usize): void {
   heap.free(ptr);
 }
 
-// === String Processing Utilities ===
+// === String Processing Utilities ===;
 function charCodeAt(str: string, index: i32): i32 {
   if (index < 0 || index >= str.length) return 0;
   return str.charCodeAt(index);
@@ -103,7 +103,7 @@ function substring(str: string, start: i32, end: i32 = -1): string {
   
   let result = "";
   for (let i = start; i < end; i++) {
-    result += String.fromCharCode(str.charCodeAt(i));
+    result += String.fromCharCode(str.charCodeAt(i);
   }
   return result;
 }
@@ -114,13 +114,13 @@ function split(str: string, delimiter: string): Array<string> {
   let pos = indexOf(str, delimiter, start);
   
   while (pos >= 0) {
-    (result as { push?: any }).push(substring(str, start, pos));
+    (result as { push?: any }).push(substring(str, start, pos);
     start = pos + delimiter.length;
     pos = indexOf(str, delimiter, start);
   }
   
   if (start < str.length) {
-    (result as { push?: any }).push(substring(str, start));
+    (result as { push?: any }).push(substring(str, start);
   }
   
   return result;
@@ -130,14 +130,14 @@ function trim(str: string): string {
   let start = 0;
   let end = str.length;
   
-  // Trim leading whitespace
+  // Trim leading whitespace;
   while (start < end) {
     let char = str.charCodeAt(start);
     if (char != 32 && char != 9 && char != 10 && char != 13) break;
     start++;
   }
   
-  // Trim trailing whitespace
+  // Trim trailing whitespace;
   while (end > start) {
     let char = str.charCodeAt(end - 1);
     if (char != 32 && char != 9 && char != 10 && char != 13) break;
@@ -147,7 +147,7 @@ function trim(str: string): string {
   return substring(str, start, end);
 }
 
-// === Citation Extraction ===
+// === Citation Extraction ===;
 function extractCitations(text: string): Array<string> {
   let citations = new Array<string>();
   let lowerText = toLowerCase(text);
@@ -163,7 +163,7 @@ function extractCitations(text: string): Array<string> {
       let end = pos + pattern.length + 50;
       if (end > text.length) end = text.length;
       
-      let citation = trim(substring(text, start, end));
+      let citation = trim(substring(text, start, end);
       if (citation.length > 10) { // Minimum citation length
         citations.push(citation);
       }
@@ -175,7 +175,7 @@ function extractCitations(text: string): Array<string> {
   return citations;
 }
 
-// === Entity Extraction ===
+// === Entity Extraction ===;
 function extractEntities(text: string): Array<string> {
   let entities = new Array<string>();
   let lowerText = toLowerCase(text);
@@ -203,7 +203,7 @@ function extractEntities(text: string): Array<string> {
   return entities;
 }
 
-// === Keyword Extraction ===
+// === Keyword Extraction ===;
 function extractKeywords(text: string): Array<string> {
   let keywords = new Array<string>();
   let lowerText = toLowerCase(text);
@@ -224,7 +224,7 @@ function extractKeywords(text: string): Array<string> {
   return keywords;
 }
 
-// === Document Type Detection ===
+// === Document Type Detection ===;
 function detectDocumentType(content: string): string {
   let lowerContent = toLowerCase(content);
   
@@ -243,7 +243,7 @@ function detectDocumentType(content: string): string {
   }
 }
 
-// === Summary Generation ===
+// === Summary Generation ===;
 function generateSummary(content: string): string {
   // Extract first 200 characters as basic summary
   if (content.length <= 200) return content;
@@ -261,7 +261,7 @@ function generateSummary(content: string): string {
 
 /**
  * Parse a single legal document from JSON string
- */
+ */;
 function parseLegalDocument(jsonText: string): LegalDocument {
   let doc = new LegalDocument();
   
@@ -296,7 +296,7 @@ function parseLegalDocument(jsonText: string): LegalDocument {
     }
   }
   
-  // Process extracted content
+  // Process extracted content;
   if (doc.content.length > 0) {
     doc.documentType = detectDocumentType(doc.content);
     doc.citations = extractCitations(doc.content);
@@ -310,7 +310,7 @@ function parseLegalDocument(jsonText: string): LegalDocument {
 
 /**
  * Main parsing entry point - called from JavaScript
- */
+ */;
 export function parseDocuments(jsonPtr: usize, jsonLength: i32): bool {
   if (jsonLength <= 0) {
     globalResult.success = false;
@@ -324,10 +324,10 @@ export function parseDocuments(jsonPtr: usize, jsonLength: i32): bool {
   // Convert memory to string
   let jsonText = "";
   for (let i = 0; i < jsonLength; i++) {
-    jsonText += String.fromCharCode(load<u8>(jsonPtr + i));
+    jsonText += String.fromCharCode(load<u8>(jsonPtr + i);
   }
   
-  // Basic validation
+  // Basic validation;
   if (jsonText.length == 0) {
     globalResult.success = false;
     globalResult.errorMessage = "Empty JSON text";
@@ -342,7 +342,7 @@ export function parseDocuments(jsonPtr: usize, jsonLength: i32): bool {
     for (let i = 0; i < docs.length; i++) {
       let docJson = docs[i];
       
-      // Fix array boundaries
+      // Fix array boundaries;
       if (i == 0) {
         docJson = substring(docJson, 1); // Remove leading '['
       }
@@ -373,21 +373,21 @@ export function parseDocuments(jsonPtr: usize, jsonLength: i32): bool {
 
 /**
  * Get parsing results count
- */
+ */;
 export function getResultCount(): i32 {
   return globalResult.documents.length;
 }
 
 /**
  * Get processing time
- */
+ */;
 export function getProcessingTime(): f32 {
   return globalResult.processingTime;
 }
 
 /**
  * Get a parsed document by index (returns JSON string pointer)
- */
+ */;
 export function getDocument(index: i32, outputPtr: usize, maxLength: i32): i32 {
   if (index < 0 || index >= globalResult.documents.length) {
     return 0;
@@ -444,7 +444,7 @@ export function getDocument(index: i32, outputPtr: usize, maxLength: i32): i32 {
   }
   
   for (let i = 0; i < copyLength; i++) {
-    store<u8>(outputPtr + i, json.charCodeAt(i));
+    store<u8>(outputPtr + i, json.charCodeAt(i);
   }
   store<u8>(outputPtr + copyLength, 0); // Null terminator
   
@@ -453,7 +453,7 @@ export function getDocument(index: i32, outputPtr: usize, maxLength: i32): i32 {
 
 /**
  * Initialize temporary buffers
- */
+ */;
 export function initializeParser(): bool {
   if (tempBuffer == 0) {
     tempBuffer = heap.alloc(TEMP_BUFFER_SIZE);
@@ -463,7 +463,7 @@ export function initializeParser(): bool {
 
 /**
  * Cleanup parser resources
- */
+ */;
 export function cleanupParser(): void {
   if (tempBuffer != 0) {
     heap.free(tempBuffer);
@@ -474,7 +474,7 @@ export function cleanupParser(): void {
 
 /**
  * Get memory usage statistics
- */
+ */;
 export function getMemoryUsage(): i32 {
   return memory.size() * 65536; // Convert pages to bytes
 }

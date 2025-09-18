@@ -27,7 +27,7 @@ import type { RequestHandler } from './$types.js';
 
 const originalGETHandler: RequestHandler = async ({ url }) => {
   try {
-    const documentTypes = [
+    const documentTypes = [;
       {
         id: 'motion_to_suppress',
         name: 'Motion to Suppress Evidence',
@@ -125,14 +125,14 @@ const originalGETHandler: RequestHandler = async ({ url }) => {
       meta: {
         total: documentTypes.length,
         categories: Array.from(new Set(documentTypes.map(dt => dt.category))),
-        complexityLevels: Array.from(new Set(documentTypes.map(dt => dt.complexity)))
+        complexityLevels: Array.from(new Set(documentTypes.map(dt => dt.complexity)),
       }
     });
 
   } catch (error) {
     console.error('Error fetching document types:', error);
     return json(
-      { success: false, message: 'Failed to fetch document types' },
+      { success: false, message: 'Failed to fetch document types' },)
       { status: 500 }
     );
   }

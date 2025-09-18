@@ -15,7 +15,10 @@ const { chromium } = require('playwright');
     for (const port of ports) {
       try {
         console.log(`Trying port ${port}...`);
-        await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'domcontentloaded', timeout: 10000 });
+        await page.goto(`http://127.0.0.1:${port}/`, {
+          waitUntil: 'domcontentloaded',
+          timeout: 10000,
+        });
 
         // Wait for potential content to load
         await page.waitForTimeout(3000);
@@ -30,13 +33,12 @@ const { chromium } = require('playwright');
         // Take screenshot
         await page.screenshot({
           path: `final-demo-routes.png`,
-          fullPage: true
+          fullPage: true,
         });
 
         console.log(`✅ Final screenshot saved: final-demo-routes.png`);
         successful = true;
         break;
-
       } catch (e) {
         console.log(`❌ Port ${port} failed: ${e.message.substring(0, 100)}`);
         continue;
@@ -47,7 +49,6 @@ const { chromium } = require('playwright');
       console.log('⚠️ All ports failed, taking blank page screenshot...');
       await page.screenshot({ path: 'final-demo-routes.png' });
     }
-
   } catch (error) {
     console.error('❌ Final error:', error.message);
     await page.screenshot({ path: 'final-demo-routes.png' });

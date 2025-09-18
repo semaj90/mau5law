@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 
-// Minimal OCR fallback endpoint: forwards to Python FastAPI if configured
+// Minimal OCR fallback endpoint: forwards to Python FastAPI if configured;
 export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const contentType = request.headers.get('content-type') || '';

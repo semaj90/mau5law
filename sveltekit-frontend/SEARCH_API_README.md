@@ -2,13 +2,15 @@
 
 ## Overview
 
-The RAG search functionality has been fully fleshed out and wired up with advanced features, comprehensive error handling, and intelligent fallback mechanisms.
+The RAG search functionality has been fully fleshed out and wired up with advanced features,
+comprehensive error handling, and intelligent fallback mechanisms.
 
 ## API Endpoints
 
 ### 1. `/api/rag/search` - Primary Search Endpoint
 
 #### POST - Advanced Search
+
 ```javascript
 POST /api/rag/search
 Content-Type: application/json
@@ -21,7 +23,7 @@ Content-Type: application/json
   "model": "embeddinggemma:latest",     // embedding model
   "includeMetadata": true,              // default: true
   "includeContent": true,               // default: true
-  
+
   // Advanced filters
   "caseId": "case-123",
   "documentTypes": ["contract", "evidence"],
@@ -34,15 +36,17 @@ Content-Type: application/json
 ```
 
 #### GET - Quick Operations
+
 ```
 GET /api/rag/search?action=health     # Health check
-GET /api/rag/search?action=stats      # Database statistics  
+GET /api/rag/search?action=stats      # Database statistics
 GET /api/rag/search?action=search&query=terms&limit=5  # Simple search
 ```
 
 ### 2. `/api/rag` - Main RAG Endpoint (Enhanced)
 
 The main RAG endpoint now includes intelligent fallback:
+
 1. **Primary**: Attempts Enhanced RAG Backend (localhost:8000)
 2. **Fallback**: Uses local search API if backend unavailable
 3. **Graceful degradation**: Returns clear indicators of which source was used
@@ -50,11 +54,13 @@ The main RAG endpoint now includes intelligent fallback:
 ## Key Features Implemented
 
 ### 🔍 Multi-Modal Search
+
 - **Semantic Search**: Vector similarity using pgvector with cosine distance
 - **Text Search**: PostgreSQL full-text search with ranking
 - **Hybrid Search**: Combines both approaches with intelligent scoring
 
 ### 🎯 Advanced Filtering
+
 - **Case-based filtering**: Filter by specific legal cases
 - **Document type filtering**: Filter by document categories
 - **Date range filtering**: Time-based document filtering
@@ -62,6 +68,7 @@ The main RAG endpoint now includes intelligent fallback:
 - **Metadata filtering**: JSONB-based flexible filtering
 
 ### 🚀 Performance Optimizations
+
 - **Vector quantization ready**: Supports embedding compression
 - **Parallel search execution**: Concurrent vector and text searches
 - **Optimized database queries**: Proper indexing and query optimization
@@ -69,12 +76,14 @@ The main RAG endpoint now includes intelligent fallback:
 - **Timeout handling**: 30-second timeouts with graceful fallback
 
 ### 🛡️ Error Handling & Resilience
+
 - **Multi-backend embedding**: Primary Gemma, fallback to nomic-embed-text
 - **Graceful degradation**: Backend failure → local search → simple text search
 - **Comprehensive logging**: Detailed error tracking and performance metrics
 - **Input validation**: Robust parameter validation and sanitization
 
 ### 📊 Analytics & Scoring
+
 - **Advanced scoring**: Combines similarity + confidence + relevance
 - **Result deduplication**: Intelligent duplicate removal across search types
 - **Performance metrics**: Processing time, average scores, result counts
@@ -83,6 +92,7 @@ The main RAG endpoint now includes intelligent fallback:
 ## Database Schema
 
 ### Documents Table
+
 ```sql
 CREATE TABLE documents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -98,6 +108,7 @@ CREATE TABLE documents (
 ```
 
 ### Embeddings Table
+
 ```sql
 CREATE TABLE legal_embeddings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -111,6 +122,7 @@ CREATE TABLE legal_embeddings (
 ```
 
 ### Search Sessions Table
+
 ```sql
 CREATE TABLE search_sessions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -127,16 +139,16 @@ CREATE TABLE search_sessions (
 
 ```sql
 -- Vector similarity search
-CREATE INDEX legal_embeddings_embedding_idx 
-ON legal_embeddings USING ivfflat (embedding vector_cosine_ops) 
+CREATE INDEX legal_embeddings_embedding_idx
+ON legal_embeddings USING ivfflat (embedding vector_cosine_ops)
 WITH (lists = 100);
 
 -- Full-text search
-CREATE INDEX documents_content_fts_idx 
+CREATE INDEX documents_content_fts_idx
 ON documents USING gin(to_tsvector('english', content));
 
 -- Metadata search
-CREATE INDEX documents_metadata_idx 
+CREATE INDEX documents_metadata_idx
 ON documents USING gin(metadata);
 ```
 
@@ -159,6 +171,7 @@ ON documents USING gin(metadata);
 ## Usage Examples
 
 ### Frontend Integration
+
 ```javascript
 // Simple search
 const results = await fetch('/api/rag/search', {
@@ -167,8 +180,8 @@ const results = await fetch('/api/rag/search', {
   body: JSON.stringify({
     query: 'contract terms and conditions',
     searchType: 'hybrid',
-    limit: 10
-  })
+    limit: 10,
+  }),
 });
 
 // Advanced filtered search
@@ -181,12 +194,13 @@ const filteredResults = await fetch('/api/rag/search', {
     caseId: 'case-2024-001',
     documentTypes: ['contract', 'agreement'],
     confidenceMin: 0.8,
-    limit: 5
-  })
+    limit: 5,
+  }),
 });
 ```
 
 ### Health Monitoring
+
 ```javascript
 // Check system health
 const health = await fetch('/api/rag/search?action=health');
@@ -196,11 +210,13 @@ const stats = await fetch('/api/rag/search?action=stats');
 ## Testing
 
 Run the comprehensive test suite:
+
 ```bash
 node test-search-api.js
 ```
 
 Tests cover:
+
 - Health checks and database connectivity
 - Search statistics and metrics
 - Simple text searches via GET
@@ -225,6 +241,5 @@ Tests cover:
 
 ---
 
-✅ **Status**: Fully implemented and ready for production use
-🔧 **Maintenance**: Regular index optimization recommended
-📈 **Performance**: Sub-second search response times for typical queries
+✅ **Status**: Fully implemented and ready for production use 🔧 **Maintenance**: Regular index
+optimization recommended 📈 **Performance**: Sub-second search response times for typical queries

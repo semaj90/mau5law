@@ -6,21 +6,21 @@
 
 // Enhanced NES-RL Configuration
 const NES_CONFIG = {
-  populationSize: 50,         // Population for evolution
-  learningRate: 0.01,        // Learning rate for policy updates
-  noiseStdDev: 0.1,          // Standard deviation for noise
-  eliteRatio: 0.2,           // Top performers ratio
-  maxGenerations: 1000,      // Maximum training generations
+  populationSize: 50, // Population for evolution
+  learningRate: 0.01, // Learning rate for policy updates
+  noiseStdDev: 0.1, // Standard deviation for noise
+  eliteRatio: 0.2, // Top performers ratio
+  maxGenerations: 1000, // Maximum training generations
   convergenceThreshold: 1e-6, // Convergence threshold
-  parallelEvaluations: 8,    // Parallel fitness evaluations
+  parallelEvaluations: 8, // Parallel fitness evaluations
 
   // Multi-model specific settings
-  modelSwitchPenalty: 0.1,   // Penalty for switching models
-  contextMemorySize: 512,    // Context memory for user patterns
+  modelSwitchPenalty: 0.1, // Penalty for switching models
+  contextMemorySize: 512, // Context memory for user patterns
   intentPredictionHorizon: 5, // Steps ahead for intent prediction
-  somGridSize: 16,           // SOM grid size (16x16)
-  userLearningRate: 0.005,   // Learning rate for user pattern learning
-  metaLearningEnabled: true  // Enable meta-learning across models
+  somGridSize: 16, // SOM grid size (16x16)
+  userLearningRate: 0.005, // Learning rate for user pattern learning
+  metaLearningEnabled: true, // Enable meta-learning across models
 };
 
 // Model-specific configurations
@@ -30,36 +30,36 @@ const MODEL_CONFIGS = {
     speedWeight: 0.9,
     accuracyWeight: 0.6,
     memoryEfficiency: 0.8,
-    trainingFocus: 'speed_accuracy'
+    trainingFocus: 'speed_accuracy',
   },
   'gemma-270m-context': {
     complexityWeight: 0.5,
     speedWeight: 0.6,
     accuracyWeight: 0.8,
     memoryEfficiency: 0.7,
-    trainingFocus: 'context_understanding'
+    trainingFocus: 'context_understanding',
   },
   'gemma3:legal-latest': {
     complexityWeight: 0.7,
     speedWeight: 0.6,
     accuracyWeight: 0.9,
     memoryEfficiency: 0.6,
-    trainingFocus: 'legal_analysis'
+    trainingFocus: 'legal_analysis',
   },
   'legal-bert-fast': {
     complexityWeight: 0.4,
     speedWeight: 0.9,
     accuracyWeight: 0.8,
     memoryEfficiency: 0.9,
-    trainingFocus: 'legal_entity_extraction'
-  }
+    trainingFocus: 'legal_entity_extraction',
+  },
 };
 
 // Model alias map to unify naming across legacy references
 const MODEL_ALIASES = {
   'gemma3:legal-latest': 'gemma:legal',
   'gemma-legal': 'gemma:legal',
-  'gemma_legal': 'gemma:legal'
+  gemma_legal: 'gemma:legal',
 };
 
 function resolveModelAlias(id) {
@@ -78,7 +78,7 @@ class EnhancedNESRLAgent {
 
     // Multi-model policy networks
     this.modelPolicies = new Map(); // modelId -> policy parameters
-    this.modelFitness = new Map();  // modelId -> fitness history
+    this.modelFitness = new Map(); // modelId -> fitness history
     this.bestModelParams = new Map(); // modelId -> best parameters
 
     // Meta-learning policy for model selection
@@ -574,7 +574,7 @@ class EnhancedNESRLAgent {
         switchCount: 0,
         userSatisfaction: 0.5,
         successRate: 0.5,
-        lastUsed: Date.now()
+        lastUsed: Date.now(),
       });
 
       this.modelUsagePatterns.set(modelId, new Float32Array(24)); // Hourly usage pattern
@@ -591,7 +591,8 @@ class EnhancedNESRLAgent {
    */
   initializeMetaPolicy() {
     // Meta-policy input: [context, user_pattern, model_states, time_of_day]
-    const metaStateSize = this.stateSize + this.config.contextMemorySize + Object.keys(MODEL_CONFIGS).length * 4 + 24;
+    const metaStateSize =
+      this.stateSize + this.config.contextMemorySize + Object.keys(MODEL_CONFIGS).length * 4 + 24;
     const metaActionSize = Object.keys(MODEL_CONFIGS).length; // One action per model
 
     const paramCount = this.calculateMetaPolicyParamCount(metaStateSize, metaActionSize);
@@ -625,7 +626,7 @@ class EnhancedNESRLAgent {
       featureSize,
       weights: new Float32Array(gridSize * gridSize * featureSize),
       learningRate: this.config.userLearningRate,
-      neighborhoodRadius: gridSize / 4
+      neighborhoodRadius: gridSize / 4,
     };
 
     // Initialize SOM weights randomly
@@ -680,7 +681,7 @@ class EnhancedNESRLAgent {
       inputSize,
       encodedSize,
       encoderParams,
-      decoderParams
+      decoderParams,
     };
   }
 
@@ -721,19 +722,16 @@ class EnhancedNESRLAgent {
       return {
         selectedModel: this.currentModel,
         confidence: softmaxProbs[selectedModelIndex],
-        probabilities: Object.fromEntries(
-          modelIds.map((id, i) => [id, softmaxProbs[i]])
-        ),
-        switchOccurred: shouldSwitch && selectedModel !== this.currentModel
+        probabilities: Object.fromEntries(modelIds.map((id, i) => [id, softmaxProbs[i]])),
+        switchOccurred: shouldSwitch && selectedModel !== this.currentModel,
       };
-
     } catch (error) {
       console.error('Model selection failed:', error);
       return {
         selectedModel: this.currentModel || Object.keys(MODEL_CONFIGS)[0],
         confidence: 0.5,
         probabilities: {},
-        switchOccurred: false
+        switchOccurred: false,
       };
     }
   }
@@ -888,11 +886,15 @@ class EnhancedNESRLAgent {
     input[offset++] = this.epsilon; // Current exploration rate
     input[offset++] = this.generation / 1000; // Normalized training progress
     input[offset++] = this.bestFitness / 100; // Normalized best fitness
-    input[offset++] = this.fitnessHistory.length > 0 ?
-      this.fitnessHistory[this.fitnessHistory.length - 1] / 100 : 0; // Recent fitness
+    input[offset++] =
+      this.fitnessHistory.length > 0
+        ? this.fitnessHistory[this.fitnessHistory.length - 1] / 100
+        : 0; // Recent fitness
     input[offset++] = this.modelSwitchHistory.length / 100; // Switch frequency
-    input[offset++] = this.userSatisfactionSignals.length > 0 ?
-      this.userSatisfactionSignals[this.userSatisfactionSignals.length - 1] : 0.5; // Recent satisfaction
+    input[offset++] =
+      this.userSatisfactionSignals.length > 0
+        ? this.userSatisfactionSignals[this.userSatisfactionSignals.length - 1]
+        : 0.5; // Recent satisfaction
     input[offset++] = Math.min(1, this.experienceBuffer.length / this.maxExperienceSize); // Experience buffer fullness
     input[offset++] = (Date.now() % 86400000) / 86400000; // Time of day (0-1)
 
@@ -954,7 +956,7 @@ class EnhancedNESRLAgent {
         to: newModel,
         reason,
         timestamp: Date.now(),
-        success: true
+        success: true,
       });
 
       // Update model metrics
@@ -973,9 +975,8 @@ class EnhancedNESRLAgent {
         success: true,
         from: previousModel,
         to: newModel,
-        switchTime: Date.now() - startTime
+        switchTime: Date.now() - startTime,
       };
-
     } catch (error) {
       console.error('Model switch failed:', error);
       this.currentModel = previousModel; // Rollback
@@ -984,7 +985,7 @@ class EnhancedNESRLAgent {
         success: false,
         error: error.message,
         from: previousModel,
-        to: newModel
+        to: newModel,
       };
     }
   }
@@ -1030,7 +1031,6 @@ class EnhancedNESRLAgent {
         const pattern = this.modelUsagePatterns.get(this.currentModel);
         pattern[hour] = Math.min(1, pattern[hour] + 0.1); // Increment usage for current hour
       }
-
     } catch (error) {
       console.error('Failed to update user context:', error);
     }
@@ -1075,7 +1075,8 @@ class EnhancedNESRLAgent {
 
     // Find best matching unit (BMU)
     let bestDistance = Infinity;
-    let bestX = 0, bestY = 0;
+    let bestX = 0,
+      bestY = 0;
 
     for (let x = 0; x < gridSize; x++) {
       for (let y = 0; y < gridSize; y++) {
@@ -1154,15 +1155,16 @@ class EnhancedNESRLAgent {
         await this.trainAutoEncoder();
       }
 
-      console.log(`✅ Multi-model training complete. Models trained: ${Array.from(modelResults.keys()).join(', ')}`);
+      console.log(
+        `✅ Multi-model training complete. Models trained: ${Array.from(modelResults.keys()).join(', ')}`
+      );
 
       return {
         modelsUpdated: Array.from(modelResults.keys()),
         modelResults: Object.fromEntries(modelResults),
         metaPolicyUpdated: true,
-        generation: this.generation
+        generation: this.generation,
       };
-
     } catch (error) {
       console.error('Multi-model training failed:', error);
       throw error;
@@ -1192,13 +1194,12 @@ class EnhancedNESRLAgent {
     if (modelConfig) {
       // Weight fitness by model-specific metrics
       const avgLatency = episodes.reduce((sum, ep) => sum + (ep.latency || 0), 0) / episodes.length;
-      const successRate = episodes.filter(ep => ep.success !== false).length / episodes.length;
+      const successRate = episodes.filter((ep) => ep.success !== false).length / episodes.length;
 
-      fitness = (
+      fitness =
         avgReward * 0.4 +
-        (2000 - Math.min(2000, avgLatency)) / 2000 * modelConfig.speedWeight * 0.3 +
-        successRate * modelConfig.accuracyWeight * 0.3
-      );
+        ((2000 - Math.min(2000, avgLatency)) / 2000) * modelConfig.speedWeight * 0.3 +
+        successRate * modelConfig.accuracyWeight * 0.3;
     }
 
     // Perform NES update for this model
@@ -1220,8 +1221,9 @@ class EnhancedNESRLAgent {
 
     // Select elite individuals
     const eliteCount = Math.floor(this.config.populationSize * this.config.eliteRatio);
-    const sortedIndices = Array.from({length: populationFitness.length}, (_, i) => i)
-      .sort((a, b) => populationFitness[b] - populationFitness[a]);
+    const sortedIndices = Array.from({ length: populationFitness.length }, (_, i) => i).sort(
+      (a, b) => populationFitness[b] - populationFitness[a]
+    );
 
     // Update parameters using elite individuals
     const eliteIndices = sortedIndices.slice(0, eliteCount);
@@ -1245,7 +1247,7 @@ class EnhancedNESRLAgent {
       const metrics = this.modelPerformanceMetrics.get(modelId);
       metrics.totalReward += totalReward;
       metrics.episodeCount += episodes.length;
-      metrics.successRate = (metrics.successRate * 0.9) + (successRate * 0.1);
+      metrics.successRate = metrics.successRate * 0.9 + successRate * 0.1;
 
       console.log(`📈 Model ${modelId} improved: fitness ${bestCurrentFitness.toFixed(4)}`);
 
@@ -1365,7 +1367,7 @@ class EnhancedNESRLAgent {
   async trainAutoEncoder() {
     if (this.experienceBuffer.length < 50) return;
 
-    const trainingData = this.experienceBuffer.slice(-100).map(exp => exp.state);
+    const trainingData = this.experienceBuffer.slice(-100).map((exp) => exp.state);
     const learningRate = 0.001;
 
     for (const sample of trainingData) {
@@ -1412,9 +1414,9 @@ class EnhancedNESRLAgent {
    */
   softmax(logits) {
     const maxLogit = Math.max(...logits);
-    const exps = logits.map(x => Math.exp(x - maxLogit));
+    const exps = logits.map((x) => Math.exp(x - maxLogit));
     const sumExps = exps.reduce((sum, x) => sum + x, 0);
-    return exps.map(x => x / sumExps);
+    return exps.map((x) => x / sumExps);
   }
 
   argmax(array) {
@@ -1442,9 +1444,12 @@ class EnhancedNESRLAgent {
       epsilon: this.epsilon,
       modelPerformance: Object.fromEntries(this.modelPerformanceMetrics),
       recentSwitches: this.modelSwitchHistory.slice(-5),
-      userSatisfaction: this.userSatisfactionSignals.length > 0 ?
-        this.userSatisfactionSignals[this.userSatisfactionSignals.length - 1] : 0.5,
-      contextMemoryUtilization: this.contextMemory.reduce((sum, x) => sum + Math.abs(x), 0) / this.config.contextMemorySize,
+      userSatisfaction:
+        this.userSatisfactionSignals.length > 0
+          ? this.userSatisfactionSignals[this.userSatisfactionSignals.length - 1]
+          : 0.5,
+      contextMemoryUtilization:
+        this.contextMemory.reduce((sum, x) => sum + Math.abs(x), 0) / this.config.contextMemorySize,
       totalExperience: this.experienceBuffer.length,
       modelExperienceDistribution: Object.fromEntries(
         Array.from(this.modelExperience.entries()).map(([id, exp]) => [id, exp.length])
@@ -1452,8 +1457,8 @@ class EnhancedNESRLAgent {
       somLearningProgress: {
         gridSize: this.userSOM.gridSize,
         learningRate: this.userSOM.learningRate,
-        neighborhoodRadius: this.userSOM.neighborhoodRadius
-      }
+        neighborhoodRadius: this.userSOM.neighborhoodRadius,
+      },
     };
   }
 }
@@ -1528,7 +1533,10 @@ console.log('🧬 NES-RL module loaded successfully');
           // --- Compatibility alias for legacy INIT_WASM (wasm not required here) ---
           case 'INIT_WASM': {
             const ag = ensureAgent(payload || {});
-            self.postMessage({ type: 'INIT_WASM_OK', payload: { stats: ag.getStats(), note: 'WASM init not required; NES RL active.' } });
+            self.postMessage({
+              type: 'INIT_WASM_OK',
+              payload: { stats: ag.getStats(), note: 'WASM init not required; NES RL active.' },
+            });
             break;
           }
           case 'SELECT': {
@@ -1547,11 +1555,19 @@ console.log('🧬 NES-RL module loaded successfully');
             // Simple heuristic + RL policy probability
             const query = (payload && payload.query) || '';
             const lengthScore = Math.min(1, query.length / 400);
-            const legalHint = /(statute|contract|agreement|court|plaintiff|defendant|clause|section)/i.test(query) ? 0.25 : 0;
+            const legalHint =
+              /(statute|contract|agreement|court|plaintiff|defendant|clause|section)/i.test(query)
+                ? 0.25
+                : 0;
             const complexity = Math.min(1, lengthScore * 0.6 + legalHint);
             // Choose model via meta-policy soft preference
             const candidateModels = Object.keys(MODEL_CONFIGS);
-            const chosen = complexity > 0.55 ? 'gemma3:legal-latest' : (complexity > 0.35 ? 'gemma-270m-context' : 'gemma-270m-fast');
+            const chosen =
+              complexity > 0.55
+                ? 'gemma3:legal-latest'
+                : complexity > 0.35
+                  ? 'gemma-270m-context'
+                  : 'gemma-270m-fast';
             const action = ag.selectAction(new Float32Array(ag.stateSize));
             self.postMessage({
               type: 'SMART_MODEL_SELECTED',
@@ -1560,8 +1576,8 @@ console.log('🧬 NES-RL module loaded successfully');
                 confidence: 0.65 + complexity * 0.3,
                 exploration: action.explorationBonus,
                 rlTemperature: action.temperature,
-                meta: { complexityEstimate: complexity, heuristic: true }
-              }
+                meta: { complexityEstimate: complexity, heuristic: true },
+              },
             });
             break;
           }
@@ -1596,17 +1612,22 @@ console.log('🧬 NES-RL module loaded successfully');
               const res = await fetch('/api/ai/inference', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt, model: resolveModelAlias(model), temperature, maxTokens })
+                body: JSON.stringify({
+                  prompt,
+                  model: resolveModelAlias(model),
+                  temperature,
+                  maxTokens,
+                }),
               });
               if (res.ok) {
                 const data = await res.json();
                 text = data.text || data.response || data.output || '';
                 quality = data.qualityScore || data.confidence || quality;
               } else {
-                text = `Fallback (${model}) response: ${prompt.slice(0,160)}${prompt.length>160?'…':''}`;
+                text = `Fallback (${model}) response: ${prompt.slice(0, 160)}${prompt.length > 160 ? '…' : ''}`;
               }
             } catch (_) {
-              text = `Offline (${model}) response: ${prompt.slice(0,160)}${prompt.length>160?'…':''}`;
+              text = `Offline (${model}) response: ${prompt.slice(0, 160)}${prompt.length > 160 ? '…' : ''}`;
             }
             self.postMessage({
               type: 'GENERATE_OK',
@@ -1614,9 +1635,12 @@ console.log('🧬 NES-RL module loaded successfully');
                 model,
                 text,
                 qualityScore: quality,
-                rlMetrics: { temperature: action.temperature, exploration: action.explorationBonus },
-                meta: { maxTokens, requestedTemperature: temperature }
-              }
+                rlMetrics: {
+                  temperature: action.temperature,
+                  exploration: action.explorationBonus,
+                },
+                meta: { maxTokens, requestedTemperature: temperature },
+              },
             });
             break;
           }
@@ -1640,8 +1664,8 @@ console.log('🧬 NES-RL module loaded successfully');
                   documentType: legalCtx.documentType || 'generic',
                   model: baseModel,
                   temperature: action.temperature,
-                  maxTokens: data.maxTokens || 512
-                })
+                  maxTokens: data.maxTokens || 512,
+                }),
               });
               if (res.ok) {
                 const d = await res.json();
@@ -1649,11 +1673,11 @@ console.log('🧬 NES-RL module loaded successfully');
                 confidenceBase = d.qualityScore || d.confidence || confidenceBase;
               } else {
                 const summary = prompt.split(/\s+/).slice(0, 40).join(' ');
-                text = `Fallback legal analysis (${baseModel}): ${summary}${summary.length<prompt.length?'…':''}`;
+                text = `Fallback legal analysis (${baseModel}): ${summary}${summary.length < prompt.length ? '…' : ''}`;
               }
             } catch (_) {
               const summary = prompt.split(/\s+/).slice(0, 40).join(' ');
-              text = `Offline legal analysis (${baseModel}): ${summary}${summary.length<prompt.length?'…':''}`;
+              text = `Offline legal analysis (${baseModel}): ${summary}${summary.length < prompt.length ? '…' : ''}`;
             }
             self.postMessage({
               type: 'GENERATE_LEGAL_OK',
@@ -1665,10 +1689,10 @@ console.log('🧬 NES-RL module loaded successfully');
                 rlMetrics: {
                   temperature: action.temperature,
                   exploration: action.explorationBonus,
-                  probability: action.probability
+                  probability: action.probability,
                 },
-                legalContext: legalCtx
-              }
+                legalContext: legalCtx,
+              },
             });
             break;
           }

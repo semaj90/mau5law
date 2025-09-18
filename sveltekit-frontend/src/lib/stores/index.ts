@@ -16,7 +16,7 @@ export { authService } from "./auth.svelte";
 export { default as userStore } from "./user";
 export { avatarStore } from "./avatarStore";
 
-// Session Management with XState
+// Session Management with XState;
 export {
   sessionManager,
   isSessionActive,
@@ -35,7 +35,7 @@ export { default as casesStore } from "./cases";
 export { default as citationsStore } from "./citations";
 export { report as reportStore } from "./report";
 
-// AI & Machine Learning stores
+// AI & Machine Learning stores;
 export {
   aiStore,
   parseAICommand,
@@ -49,7 +49,7 @@ export { aiHistory as aiHistoryStore } from "./aiHistoryStore";
 export { chatStore } from "./chatStore";
 export { enhancedRAGStore } from "./enhanced-rag-store";
 
-// AI Assistant with Ollama Cluster + Context7
+// AI Assistant with Ollama Cluster + Context7;
 export {
   aiAssistantManager,
   isAIActive as isAIAssistantActive,
@@ -69,7 +69,7 @@ export {
   checkAIClusterHealth
 } from "./aiAssistant.svelte";
 
-// Evidence & Document stores
+// Evidence & Document stores;
 export {
   evidenceStore,
   evidenceById,
@@ -93,7 +93,7 @@ export {
 } from "./enhancedStateMachines";
 export { aiCommandMachine } from "./ai-command-machine";
 
-// Production XState Machines
+// Production XState Machines;
 export {
   sessionMachine,
   sessionServices,
@@ -123,7 +123,7 @@ export * from "./keyboardShortcuts";
 // UI Integration utilities
 export * from "./melt-ui-integration";
 
-// Demo and testing
+// Demo and testing;
 export {
   runPhase2Demo,
   phase2HealthCheck,

@@ -4,7 +4,8 @@ import { Pool } from 'pg';
 // Load environment variables
 config();
 
-const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
+const DATABASE_URL =
+  process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5433/legal_ai_db';
 
 async function testDatabase() {
   console.log('🔍 Testing database connection...');
@@ -58,7 +59,6 @@ async function testDatabase() {
     client.release();
     await pool.end();
     return true;
-
   } catch (error) {
     console.error('❌ Database test failed:', error.message);
 
