@@ -1,9 +1,8 @@
 <!-- @migration-task Error while migrating Svelte code: Expected token }
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
-<script>
+<script lang="ts">
   import 'nes.css/css/nes.min.css';
-</script>
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';
   import {
@@ -11,8 +10,8 @@ https://svelte.dev/e/expected_token -->
     CardHeader,
     CardTitle,
     CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  
+  } from '$lib/components/ui/enhanced-bits';
+
   let isProcessing = $state(false);
   let results = $state([]);
   let selectedMode = $state('langchain-simd');
@@ -20,7 +19,7 @@ https://svelte.dev/e/expected_token -->
   let qualityTier = $state('nes');
   let batchMode = $state(false);
   let enableInstantUI = $state(true);
-  
+
   const sampleTexts = [
     {
       title: 'Legal Contract Analysis',
@@ -43,7 +42,7 @@ https://svelte.dev/e/expected_token -->
       type: 'financial'
     }
   ];
-  
+
   let systemStats = $state({
     totalProcessed: 0,
     averageCompressionRatio: 0,
@@ -52,18 +51,18 @@ https://svelte.dev/e/expected_token -->
     gpuUtilizationAverage: 0,
     memoryEfficiencyAverage: 0
   });
-  
+
   let liveRenderedComponents = $state([]);
   let processingLogs = $state([]);
-  
+
   async function processSingleText(sampleIndex = 0) {
     try {
       isProcessing = true;
       const sample = sampleTexts[sampleIndex];
-      
+
       addLog(`🚀 Starting ${selectedMode} processing: "${sample.title}"`);
       addLog(`📊 Target compression: ${compressionTarget}:1, Quality: ${qualityTier.toUpperCase()}`);
-      
+
       const requestData = {
         text: sample.text,
         model: 'nomic-embed-text',
@@ -78,28 +77,28 @@ https://svelte.dev/e/expected_token -->
         enable_vertex_caching: true,
         compression_target: compressionTarget
       };
-      
-      const apiEndpoint = selectedMode === 'direct-simd' 
+
+      const apiEndpoint = selectedMode === 'direct-simd'
         ? '/api/ocr/simd-langextract'
         : '/api/v1/webgpu/langextract';
-      
+
       const startTime = Date.now();
       const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestData)
       });
-      
+
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
         throw new Error(`API request failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
       }
-      
+
       const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
       const processingTime = Date.now() - startTime;
-      
+
       if ((result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).success || (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).simd_results) {
         const simdData = (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).simd_results || (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).result?.simd_results;
-        
+
         if (simdData) {
           const newResult = {
             id: `result-${Date.now()}`,
@@ -111,41 +110,41 @@ https://svelte.dev/e/expected_token -->
             compressionTarget: compressionTarget,
             qualityTier: qualityTier,
             processingTime,
-            
+
             // SIMD results
             compressedTiles: simdData.compressed_tiles || [],
             totalCompressionRatio: simdData.processing_stats?.total_compression_ratio || 0,
             gpuUtilization: simdData.processing_stats?.gpu_utilization || 0,
             semanticPreservation: simdData.processing_stats?.semantic_preservation_score || 0,
-            
+
             // UI components
             instantComponents: simdData.ui_components?.instant_render || false,
             componentCount: simdData.ui_components?.instant_render ? simdData.compressed_tiles?.length || 0 : 0,
             renderingInstructions: simdData.ui_components?.rendering_instructions || '',
             cssOptimized: simdData.ui_components?.css_optimized || '',
-            
+
             // Performance stats
             memoryEfficiency: calculateMemoryEfficiency(sample.text.length, simdData),
             cacheHits: simdData.processing_stats?.cache_hits || 0
           };
-          
+
           results = [newResult, ...results.slice(0, 9)]; // Keep last 10 results
           updateSystemStats(newResult);
-          
+
           if (enableInstantUI && simdData.ui_components?.instant_render) {
             await renderLiveComponents(newResult);
           }
-          
+
           addLog(`✅ Processing complete: ${processingTime}ms, ${newResult.totalCompressionRatio.toFixed(1)}:1 compression`);
           addLog(`📱 Generated ${newResult.componentCount} instant UI components`);
-          
+
         } else {
           throw new Error('No SIMD results in response');
         }
       } else {
         throw new Error((result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).error || 'Processing failed');
       }
-      
+
     } catch (error) {
       console.error('Text processing failed:', error);
       addLog(`❌ Error: ${error.message}`);
@@ -154,80 +153,80 @@ https://svelte.dev/e/expected_token -->
       isProcessing = false;
     }
   }
-  
+
   async function processBatchTexts() {
     try {
       isProcessing = true;
       batchMode = true;
-      
+
       addLog(`🚀 Starting batch processing: ${sampleTexts.length} texts`);
-      
+
       const batchResults = [];
-      
+
       for (let i = 0; i < sampleTexts.length; i++) {
         await processSingleText(i);
         await new Promise(resolve => setTimeout(resolve, 500)); // Brief pause between requests
-        
+
         if (!isProcessing) break; // Allow cancellation
       }
-      
+
       addLog(`✅ Batch processing complete: ${results.length} texts processed`);
-      
+
     } finally {
       batchMode = false;
       isProcessing = false;
     }
   }
-  
+
   async function benchmarkCompressionLevels() {
     try {
       isProcessing = true;
       addLog('🧪 Starting compression benchmark...');
-      
+
       const compressionLevels = [10, 25, 50, 109, 200];
       const originalTarget = compressionTarget;
       const sampleText = sampleTexts[0];
-      
+
       for (const level of compressionLevels) {
         compressionTarget = level;
         addLog(`📊 Testing ${level}:1 compression...`);
-        
+
         await processSingleText(0);
         await new Promise(resolve => setTimeout(resolve, 300));
-        
+
         if (!isProcessing) break;
       }
-      
+
       compressionTarget = originalTarget;
       addLog('✅ Compression benchmark complete');
-      
+
     } finally {
       isProcessing = false;
     }
   }
-  
+
   function updateSystemStats(result) {
     systemStats.totalProcessed++;
-    
+
     // Rolling averages
-    systemStats.averageCompressionRatio = 
+    systemStats.averageCompressionRatio =
       (systemStats.averageCompressionRatio * (systemStats.totalProcessed - 1) + (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).totalCompressionRatio) / systemStats.totalProcessed;
-    
+
     systemStats.averageProcessingTime =
       (systemStats.averageProcessingTime * (systemStats.totalProcessed - 1) + (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).processingTime) / systemStats.totalProcessed;
-    
+
     systemStats.gpuUtilizationAverage =
       (systemStats.gpuUtilizationAverage * (systemStats.totalProcessed - 1) + (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).gpuUtilization) / systemStats.totalProcessed;
-    
+
     systemStats.memoryEfficiencyAverage =
       (systemStats.memoryEfficiencyAverage * (systemStats.totalProcessed - 1) + (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).memoryEfficiency) / systemStats.totalProcessed;
-    
+
     systemStats.instantComponentsGenerated += (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).componentCount;
   }
-  
+
   async function renderLiveComponents(result) {
     if (!(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).cssOptimized || !(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).renderingInstructions) return;
-    
+
     try {
       // Create live rendered component
       const liveComponent = {
@@ -237,20 +236,20 @@ https://svelte.dev/e/expected_token -->
         html: generateLiveHTML(result),
         timestamp: Date.now()
       };
-      
+
       liveRenderedComponents = [liveComponent, ...liveRenderedComponents.slice(0, 4)]; // Keep last 5
-      
+
       // Inject CSS dynamically
       injectCSS(liveComponent.css, liveComponent.id);
-      
+
     } catch (error) {
       console.warn('Live component rendering failed:', error);
     }
   }
-  
+
   function generateLiveHTML(result) {
     const tiles = (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).compressedTiles || [];
-    
+
     return tiles.slice.map((tile, index) => { // Show first 10 tiles
       const tileId = `tile-${(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).id}-${index}`;
       return `<div class="text-tile-${tileId} inline-block p-2 m-1 rounded border">
@@ -259,34 +258,34 @@ https://svelte.dev/e/expected_token -->
       </div>`;
     }).join('');
   }
-  
+
   function injectCSS(css, componentId) {
     const existingStyle = document.getElementById(`style-${componentId}`);
     if (existingStyle) {
       existingStyle.remove();
     }
-    
+
     const style = document.createElement('style');
     style.id = `style-${componentId}`;
     style.textContent = css;
     document.head.appendChild(style);
   }
-  
+
   function calculateMemoryEfficiency(originalSize, simdData) {
     if (!simdData.compressed_tiles) return 0;
-    
-    const compressedSize = simdData.compressed_tiles.reduce((sum, tile) => 
+
+    const compressedSize = simdData.compressed_tiles.reduce((sum, tile) =>
       sum + (tile.compressed_data?.length || 7), 0
     );
-    
+
     return Math.max(0, 1 - (compressedSize / (originalSize * 4)));
   }
-  
+
   function addLog(message) {
     const timestamp = new Date().toLocaleTimeString();
     processingLogs = [`[${timestamp}] ${message}`, ...processingLogs.slice(0, 19)]; // Keep last 20 logs
   }
-  
+
   function getCompressionColor(ratio) {
     if (ratio > 100) return 'text-purple-600 font-bold';
     if (ratio > 50) return 'text-green-600 font-bold';
@@ -294,7 +293,7 @@ https://svelte.dev/e/expected_token -->
     if (ratio > 10) return 'text-orange-600';
     return 'text-red-600';
   }
-  
+
   function getQualityTierColor(tier) {
     switch (tier) {
       case 'nes': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
@@ -303,7 +302,7 @@ https://svelte.dev/e/expected_token -->
       default: return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   }
-  
+
   function clearAll() {
     results = [];
     liveRenderedComponents = [];
@@ -317,7 +316,7 @@ https://svelte.dev/e/expected_token -->
       memoryEfficiencyAverage: 0
     };
   }
-  
+
   onMount(() => {
     addLog('🧬 SIMD Text Tiling Demo initialized');
     addLog('💡 Select processing mode and compression target, then click "Process Sample"');
@@ -343,7 +342,7 @@ https://svelte.dev/e/expected_token -->
             <option value="langchain-simd">LangChain + SIMD Bridge</option>
           </select>
         </div>
-        
+
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2" for="compression-target">Compression Target</label><select id="compression-target" bind:value={compressionTarget} class="w-full p-2 border rounded-md text-sm">
             <option value={10}>10:1 (High Quality)</option>
@@ -353,7 +352,7 @@ https://svelte.dev/e/expected_token -->
             <option value={200}>200:1 (Ultra)</option>
           </select>
         </div>
-        
+
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2" for="quality-tier">Quality Tier</label><select id="quality-tier" bind:value={qualityTier} class="w-full p-2 border rounded-md text-sm">
             <option value="nes">NES (8-bit)</option>
@@ -361,7 +360,7 @@ https://svelte.dev/e/expected_token -->
             <option value="n64">N64 (64-bit)</option>
           </select>
         </div>
-        
+
         <div class="flex flex-col">
           <label class="block text-sm font-medium text-gray-700 mb-2">Options</label>
           <div class="flex items-center space-x-2">
@@ -369,9 +368,9 @@ https://svelte.dev/e/expected_token -->
             <label for="instant-ui" class="text-xs">Instant UI</label>
           </div>
         </div>
-        
+
         <div class="flex items-end">
-          <Button class="bits-btn" 
+          <Button class="bits-btn"
             onclick={() =>
 processSingleText(Math.floor(Math.random() * sampleTexts.length))}
             disabled={isProcessing}
@@ -381,7 +380,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
 
         </div>
       </div>
-      
+
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-2">
         <Button class="bits-btn" onclick={processBatchTexts} disabled={isProcessing} variant="outline" size="sm">
@@ -394,7 +393,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
 🗑️ Clear All
 
       </div>
-      
+
       <!-- System Statistics -->
       {#if systemStats.totalProcessed > 0}
         <div class="grid grid-cols-2 md:grid-cols-6 gap-4 p-4 bg-blue-50 rounded-lg">
@@ -436,7 +435,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
       {/if}
     </div>
   </div>
-  
+
   <!-- Live Rendered Components -->
   {#if liveRenderedComponents.length > 0}
     <div class="nes-container">
@@ -457,7 +456,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
       </div>
     </div>
   {/if}
-  
+
   <!-- Processing Results -->
   {#if results.length > 0}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -477,7 +476,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
               {(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).type} • {new Date((result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).timestamp).toLocaleTimeString()}
             </div>
           </div>
-          
+
           <div class="yorha-panel-content space-y-4">
             <!-- Original Text Preview -->
             <div class="text-xs bg-gray-100 p-2 rounded">
@@ -486,7 +485,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
                 {(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).originalText.substring(0, 150)}{(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).originalText.length > 150 ? '...' : ''}
               </div>
             </div>
-            
+
             <!-- SIMD Compression Stats -->
             <div class="grid grid-cols-2 gap-4 text-sm">
               <div>
@@ -516,7 +515,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
                 <span class="text-teal-600">{((result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).semanticPreservation * 100).toFixed(0)}%</span>
               </div>
             </div>
-            
+
             <!-- Tile Visualization -->
             {#if (result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).compressedTiles.length > 0}
               <div class="space-y-2">
@@ -539,7 +538,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
                 </div>
               </div>
             {/if}
-            
+
             <!-- Performance Metrics -->
             <div class="bg-gray-50 p-3 rounded text-xs space-y-1">
               <div><strong>Memory Efficiency:</strong> {((result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).memoryEfficiency * 100).toFixed(1)}%</div>
@@ -558,7 +557,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
         <div class="text-6xl mb-4">🧬</div>
         <h3 class="text-lg font-medium mb-2">No SIMD Text Processing Results Yet</h3>
         <p class="mb-4">Process your first text with ultra-compressed 7-bit tiling!</p>
-        <Button class="bits-btn" 
+        <Button class="bits-btn"
           onclick={() =>
 processSingleText(0)}
           disabled={isProcessing}
@@ -568,7 +567,7 @@ processSingleText(0)}
       </div>
     </div>
   {/if}
-  
+
   <!-- Processing Logs -->
   {#if processingLogs.length > 0}
     <div class="nes-container">
@@ -596,47 +595,47 @@ processingLogs = []} variant="outline" size="sm">
   .simd-text-demo {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
-  
+
   /* NES-style rendering for live components */
   :global(.rendered-component) {
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
   }
-  
+
   /* Enhance tile visualizations */
   .grid > div {
     transition: transform 0.2s ease-in-out;
   }
-  
+
   .grid > div:hover {
     transform: scale(1.05);
   }
-  
+
   /* Processing animation */
   @keyframes processing-pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
   }
-  
+
   .processing {
     animation: processing-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-  
+
   /* Log terminal styling */
   .bg-black {
     scrollbar-width: thin;
     scrollbar-color: #22c55e #000;
   }
-  
+
   .bg-black: :-webkit-scrollbar {
     width: 8px;
   }
-  
+
   .bg-black: :-webkit-scrollbar-track {
     background: #000;
   }
-  
+
   .bg-black: :-webkit-scrollbar-thumb {
     background: #22c55e;
     border-radius: 4px;

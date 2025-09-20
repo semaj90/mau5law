@@ -680,7 +680,7 @@ comprehensive-all-routes-phase-file.txt
 # Go binaries
 
 ########################################
-# TensorRT-LLM Python environments  
+# TensorRT-LLM Python environments
 ########################################
 tensorrt_llm_ubuntu_env/
 tensorrt_test_env/
@@ -690,3 +690,47 @@ TensorRT-LLM/tensorrt_env/
 .venv/
 venv/
 **/venv/
+
+########################################
+# Large model files and TensorRT artifacts
+########################################
+# Model weight files
+*.safetensors
+*.engine
+*.plan
+*.onnx
+*.pt
+*.pth
+*.bin
+*.ckpt
+*.h5
+*.pb
+*.tflite
+*.pkl
+*.joblib
+*.msgpack
+*.npy
+*.npz
+*.whl
+
+# Model directories
+model_unsloth_hf_f16/
+gemma_checkpoint_fixed/
+gemma3_*/
+**/checkpoint*/
+**/engine*/
+tensorrt_*/
+trt_*/
+legal-ai/models/
+legal-ai/engines/
+legal-ai-system/models/
+legal-ai-system/engines/
+
+# Python scripts and reports
+combine_safetensors.py
+build_gemma3_trt.sh
+
+# Large binary files
+quic-nats-bridge-test
+ubuntu-tensorrt/*.deb
+*.deb
