@@ -1,42 +1,49 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected token
-https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<script lang="ts">
-  import 'nes.css/css/nes.min.css';
+<script context="module" lang="ts">
+  export type Role = 'suspect' | 'witness' | 'victim' | 'associate' | 'unknown';
 
-  interface Props {
-    class?: string;
-    children?: import('svelte').Snippet;
+  export interface PersonDetails {
+    age?: number;
+    address?: string;
+    phone?: string;
+    occupation?: string;
+    aliases?: string[];
   }
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';;
-  import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/button';
-  // import { Avatar } from '$lib/components/ui/Avatar.svelte';
-  let { person = $bindable()  }: { person = $bindable() : any } = $props(); // {
+
+  export interface Person {
     name: string;
-    role: 'suspect' | 'witness' | 'victim' | 'associate' | 'unknown';
-    details?: {
-      age?: number;
-      address?: string;
-      phone?: string;
-      occupation?: string;
-      aliases?: string[];
-    };
+    role: Role;
+    details?: PersonDetails;
     confidence: number;
     sourceContext?: string;
+  }
+
+  export interface Relationship {
+    person1: string;
+    person2: string;
+    relationship?: string;
+    confidence: number;
+    context?: string;
+  }
+</script>
+
+<script lang="ts">
+  import 'nes.css/css/nes.min.css';
+  import { Badge } from '$lib/components/ui/badge';
+
+  // Exposed props (use standard Svelte exports)
+  export let person: Person = {
+    name: 'Unknown',
+    role: 'unknown',
+    confidence: 0
   };
 
-  let { relationships = $bindable()  }: { relationships = $bindable() : any } = $props(); // Array = [];
+  export let relationships: Relationship[] = [];
 
   // Filter relationships for this person
-  let personRelationships = $derived(relationships.filter(rel => 
-    rel.person1 === person.name || rel.person2 === person.name
-  ));
+  $: personRelationships = relationships.filter(
+    (rel) => rel.person1 === person.name || rel.person2 === person.name
+  );
 
   // Role styling
   const roleConfig = {
@@ -65,13 +72,18 @@ https://svelte.dev/e/js_parse_error -->
       icon: '❓',
       label: 'Unknown Role'
     }
-  };
+  } as const;
 
-  let roleInfo = $derived(roleConfig[person.role] ?? roleConfig.unknown);
+  $: roleInfo = roleConfig[person.role] ?? roleConfig.unknown;
+
   // Confidence level styling
-  let confidenceColor = $derived(person.confidence > 0.8 ? 'text-green-600' : 
-                      person.confidence > 0.6 ? 'text-yellow-600' : 'text-red-600');
-  let showFullDetails = $state(false);
+  $: confidenceColor =
+    person.confidence > 0.8 ? 'text-green-600' : person.confidence > 0.6 ? 'text-yellow-600' : 'text-red-600';
+
+  $: barColor =
+    person.confidence > 0.8 ? 'bg-green-500' : person.confidence > 0.6 ? 'bg-yellow-500' : 'bg-red-500';
+
+  let showFullDetails = false;
 </script>
 
 <div class="w-full max-w-md hover:shadow-lg transition-shadow nes-container">
@@ -83,22 +95,21 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <div>
           <h3 class="nes-text is-primary text-lg font-semibold">{person.name}</h3>
-          <Badge class="mt-1 text-xs {roleInfo.color}">
+          <Badge class={"mt-1 text-xs " + roleInfo.color}>
             {roleInfo.label}
           </Badge>
         </div>
       </div>
-      
+
       <!-- Confidence Indicator -->
       <div class="text-right">
         <div class="text-xs text-gray-500 mb-1">Confidence</div>
-        <div class="text-sm font-medium {confidenceColor}">
+        <div class={"text-sm font-medium " + confidenceColor}>
           {Math.round(person.confidence * 100)}%
         </div>
         <div class="w-16 bg-gray-200 rounded-full h-1.5 mt-1">
-          <div 
-            class="h-1.5 rounded-full {person.confidence > 0.8 ? 'bg-green-500' : 
-                                      person.confidence > 0.6 ? 'bg-yellow-500' : 'bg-red-500'}" 
+          <div
+            class={"h-1.5 rounded-full " + barColor}
             style="width: {person.confidence * 100}%"
           ></div>
         </div>
@@ -118,28 +129,28 @@ https://svelte.dev/e/js_parse_error -->
               <span class="ml-1 font-medium">{person.details.age}</span>
             </div>
           {/if}
-          
+
           {#if person.details.occupation}
             <div class="col-span-2">
               <span class="text-gray-500">Occupation:</span>
               <span class="ml-1 font-medium">{person.details.occupation}</span>
             </div>
           {/if}
-          
+
           {#if person.details.phone}
             <div class="col-span-2">
               <span class="text-gray-500">Phone:</span>
               <span class="ml-1 font-mono text-sm">{person.details.phone}</span>
             </div>
           {/if}
-          
+
           {#if person.details.address && showFullDetails}
             <div class="col-span-2">
               <span class="text-gray-500">Address:</span>
               <span class="ml-1">{person.details.address}</span>
             </div>
           {/if}
-          
+
           {#if person.details.aliases && person.details.aliases.length > 0}
             <div class="col-span-2">
               <span class="text-gray-500">Aliases:</span>
@@ -172,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
         </h4>
         <div class="space-y-2 max-h-32 overflow-y-auto">
           {#each personRelationships.slice(0, showFullDetails ? undefined : 2) as rel}
-            {@const otherPerson = rel.person1 === person.name ? rel.person2: rel.person1}
+            {@const otherPerson = rel.person1 === person.name ? rel.person2 : rel.person1}
             <div class="text-xs bg-blue-50 p-2 rounded border-l-2 border-blue-300">
               <div class="flex items-center justify-between">
                 <div>
@@ -188,7 +199,7 @@ https://svelte.dev/e/js_parse_error -->
               {/if}
             </div>
           {/each}
-          
+
           {#if !showFullDetails && personRelationships.length > 2}
             <div class="text-xs text-gray-500 text-center py-1">
               +{personRelationships.length - 2} more relationships
@@ -197,36 +208,33 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     {/if}
-
     <!-- Action Buttons -->
     <div class="flex gap-2 pt-3 border-t">
-      <Button 
-        variant="outline" 
-        size="sm" 
-        class="flex-1 text-xs bits-btn bits-btn"
-        onclick={() =>
-showFullDetails = !showFullDetails}
+      <button
+        class="flex-1 text-xs bits-btn bits-btn border border-gray-300 rounded px-2 py-1 bg-white"
+        on:click={() => (showFullDetails = !showFullDetails)}
+        type="button"
       >
         {showFullDetails ? 'Less' : 'More'} Info
-</Button>
-      
-      <Button 
-        variant="outline" 
-        size="sm" 
-        class="flex-1 text-xs bits-btn bits-btn"
+      </button>
+
+      <button
+        class="flex-1 text-xs bits-btn bits-btn border border-gray-300 rounded px-2 py-1 bg-white"
+        type="button"
       >
-🕸️ Graph View
-</Button>
-      
+        🕸️ Graph View
+      </button>
+
       {#if person.role === 'suspect'}
-        <Button size="sm" class="flex-1 text-xs bits-btn bits-btn">
-📋 Profile
-</Button>
+        <button type="button" class="flex-1 text-xs bits-btn bits-btn border border-gray-300 rounded px-2 py-1 bg-white">
+          📋 Profile
+        </button>
       {:else if person.role === 'witness'}
-        <Button size="sm" class="flex-1 text-xs bits-btn bits-btn">
-📞 Contact
-</Button>
+        <button type="button" class="flex-1 text-xs bits-btn bits-btn border border-gray-300 rounded px-2 py-1 bg-white">
+          📞 Contact
+        </button>
       {/if}
+    </div>
     </div>
   </div>
 </div>
@@ -236,16 +244,16 @@ showFullDetails = !showFullDetails}
     scrollbar-width: thin;
     scrollbar-color: #cbd5e0 #f7fafc;
   }
-  
-  .max-h-32: :-webkit-scrollbar {
+
+  .max-h-32::-webkit-scrollbar {
     width: 4px;
   }
-  
-  .max-h-32: :-webkit-scrollbar-track {
+
+  .max-h-32::-webkit-scrollbar-track {
     background: #f7fafc;
   }
-  
-  .max-h-32: :-webkit-scrollbar-thumb {
+
+  .max-h-32::-webkit-scrollbar-thumb {
     background-color: #cbd5e0;
     border-radius: 2px;
   }

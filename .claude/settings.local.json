@@ -336,7 +336,10 @@
       "Bash(git restore:*)",
       "Bash(REDIS_PASSWORD=\"redis\" npm run dev:quic)",
       "Bash(tensorrt_llm_ubuntu_env/bin/python:*)",
-      "Bash(code:*)"
+      "Bash(code:*)",
+      "WebFetch(domain:pypi.org)",
+      "Bash(mv:*)",
+      "Bash(wsl.exe:*)"
     ],
     "deny": [],
     "ask": []
