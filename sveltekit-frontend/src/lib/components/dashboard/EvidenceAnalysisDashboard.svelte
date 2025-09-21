@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { fade, fly } from 'svelte/transition';
@@ -11,7 +13,7 @@
   let evidenceItems = writable<EvidenceItem[]>([]);
   let selectedEvidence = writable<EvidenceItem | null>(null);
   let currentAnalysis = writable<EvidenceAnalysis | null>(null);
-  let isAnalyzing = writable(false);
+  let isAnalyzing = $state(false);
   let uploadedFile: File | null = null;
   let dropZoneActive = false;
 
@@ -25,7 +27,7 @@
     { value: 'physical', label: '📦 Physical', icon: '📦' }
   ];
 
-  onMount(() => {
+  $effect(() => {
     analyzer = new AIEvidenceAnalyzer();
     loadSampleEvidence();
   });

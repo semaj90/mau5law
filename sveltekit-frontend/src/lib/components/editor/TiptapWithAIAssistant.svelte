@@ -1,4 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script>` element and/or a single top-level `<script module>` element
+<!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script>
+  // Svelte 5 runes are auto-imported
+` element and/or a single top-level `<script module>` element
 https://svelte.dev/e/script_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script>` element and/or a single top-level `<script module>` element -->
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
@@ -64,7 +66,7 @@ export default ;
   const userIntent = $derived($state.context.userIntent);
   const focusSchema = $derived($state.context.focusSchema);
 
-  onMount(async () => {
+  $effect(async () => {
     await initializeEditor();
     setupEventListeners();
   });

@@ -1,7 +1,9 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
 
   interface Props {
     variant?: 'primary' | 'success' | 'warning' | 'error' | 'default';
@@ -24,7 +26,7 @@
     ...restProps
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   let variantClass = $derived({
     primary: 'is-primary',
@@ -53,7 +55,7 @@
       e.preventDefault();
       return;
     }
-    dispatch('click', e);
+    ondispatch?.(e);
     onclick?.(e);
   }
 </script>

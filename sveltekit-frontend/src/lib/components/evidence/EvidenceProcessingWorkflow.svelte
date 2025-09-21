@@ -1,5 +1,7 @@
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   /**
    * xState-Powered Evidence Processing Workflow Component
@@ -20,7 +22,7 @@
     CardTitle,
     CardContent
   } from '$lib/ui/card.svelte';
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy,   } from "svelte";
   import type { IFrame } from '@stomp/stompjs';
 
   // Explicit actor snapshot typing to satisfy accesses to currentState.context / matches
@@ -74,7 +76,7 @@
   }: Props = $props();
 
   // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  // 
 
   // xState actor for client-side state management
   const actor = createActor(evidenceProcessingMachine);
@@ -231,7 +233,7 @@
   recomputeDerived();
 
   // Initialize actor subscription
-  onMount(() => {
+  $effect(() => {
     actor.start();
 
     // Subscribe to state changes

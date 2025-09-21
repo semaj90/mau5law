@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Legal Case Manager with Production Features -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, tick } from 'svelte';
     import { page } from '$app/stores';
@@ -500,7 +502,7 @@ https://svelte.dev/e/js_parse_error -->
     }
 
     // Lifecycle
-    onMount(async () => {
+    $effect(async () => {
         // Initialize OCR processor
         ocrProcessor.on('initialized', (message) => {
             console.log('OCR Service:', message);

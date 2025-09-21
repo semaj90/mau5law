@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import {
     Card,
@@ -18,7 +20,7 @@
   const { data } = $props() as { data: unknown };
 let EnhancedFuseSearch = $state<any >(null);
 
-  onMount(async () => {
+  $effect(async () => {
     EnhancedFuseSearch = (await import('$lib/components/search/EnhancedFuseSearch.svelte')).default;
   });
 

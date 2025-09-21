@@ -1,5 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Cannot use explicit children snippet at the same time as implicit children content. Remove either the non-whitespace content or the children snippet block -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import Svelte5Examples from '$lib/components/examples/Svelte5Examples.svelte';
   import { useMediaQuery } from '$lib/utils/media-query.svelte';

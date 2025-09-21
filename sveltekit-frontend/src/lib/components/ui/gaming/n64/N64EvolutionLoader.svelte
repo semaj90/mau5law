@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
 
@@ -116,7 +118,7 @@
   let rotation = $state(0);
   let evolutionProgress = $state(0);
 
-  onMount(() => {
+  $effect(() => {
     if (!headless && canvas) {
       ctx = canvas.getContext('2d')!;
       startAnimation();

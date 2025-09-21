@@ -12,8 +12,10 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy,   } from "svelte";
   import { page } from '$app/state';
   import HeadlessTypingListener from '$lib/components/HeadlessTypingListener.svelte';
   import DetectiveWebSocketManager, { type CollaborativeUser } from '$lib/websocket/DetectiveWebSocketManager.js';
@@ -37,7 +39,7 @@
   }: Props = $props();
   
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  
   
   // State
   let userInput = $state('');
@@ -66,7 +68,7 @@
   /**
    * Initialize the component
    */
-  onMount(async () => {
+  $effect(async () => {
     // Load initial evidence if caseId provided
     if (caseId && !initialEvidence.length) {
       await loadCaseEvidence();
@@ -201,7 +203,7 @@
       contextualPrompts.push('Generate location timeline?');
     }
     
-    dispatch('contextualPromptTriggered', {
+    ondispatch?.({
       prompts: contextualPrompts,
       context: event.detail.context
     });
@@ -283,7 +285,7 @@
           wsManager.sendConnectionMapUpdate.data.metadata);
         }
         
-        dispatch('connectionMapGenerated', {
+        ondispatch?.({
           map: connectionMap,
           metadata: (data as { evidence?: any; action?: any; connectionMap?: any; evidenceId?: any; analysis?: any; data?: any }).data.metadata
         });

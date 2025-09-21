@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 	import type { Snippet } from 'svelte';
 	import { cva, type VariantProps } from 'class-variance-authority';
@@ -183,7 +185,7 @@
 	}
 
 	// Register with searchable index on mount
-	onMount(() => {
+	$effect(() => {
 		if (browser && searchKeywords.length > 0) {
 			searchableButtonIndex.addButton({
 				id,

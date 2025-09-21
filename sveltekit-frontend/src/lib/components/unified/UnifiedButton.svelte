@@ -14,6 +14,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   // Replaced melt with bits-ui components
@@ -82,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
     memoryUsed: 0
   });
 
-  onMount(() => {
+  $effect(() => {
     if (gpuEffects && canvas) {
       initWebGL();
       startAnimation();

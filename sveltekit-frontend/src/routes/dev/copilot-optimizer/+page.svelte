@@ -9,6 +9,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
@@ -44,7 +46,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Load initial data
-  onMount(async () => {
+  $effect(async () => {
     await loadCopilotContent();
     await loadSystemStatus();
 

@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount, onDestroy } from 'svelte';
@@ -210,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
     return status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
   }
 
-  onMount(() => {
+  $effect(() => {
     initializeWebGPUWebAssembly();
   });
 

@@ -1,9 +1,11 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
     import { legalAIClient, legalAIUtils, type LegalDocumentResponse, type RecommendationResponse } from '$lib/services/legal-ai-client';
-    import { createEventDispatcher } from 'svelte';
+    import {   } from "svelte";
 
-    const dispatch = createEventDispatcher();
+    
 
     // State management with Svelte 5 patterns
     let uploadedFile = $state<File | null>(null);
@@ -81,7 +83,7 @@
                 currentStep = 'complete';
             }
 
-            dispatch('complete', { analysisResult, recommendations });
+            ondispatch?.({ analysisResult, recommendations });
         } catch (err: unknown) {
             error = err.message || 'Processing failed';
             console.error('Document processing failed:', err);
@@ -382,7 +384,7 @@
         <div class="action-buttons">
             <button onclick={reset} class="secondary-btn">Analyze Another Document</button>
             <button 
-                onclick={() => dispatch('export', { analysisResult, recommendations })}
+                onclick={() => ondispatch?.({ analysisResult, recommendations })}
                 class="primary-btn"
             >
                 Export Results

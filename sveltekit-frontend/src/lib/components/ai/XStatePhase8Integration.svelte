@@ -4,6 +4,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Cannot subscribe to stores that are not declared at the top level of the component
 https://svelte.dev/e/store_invalid_scoped_subscription -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { useMachine } from '@xstate/svelte';
@@ -64,7 +66,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     return stateMapping[stateValue as keyof typeof stateMapping] || 'step-1';
   }
 
-  onMount(async () => {
+  $effect(async () => {
     // Initialize Phase 8 components
     matrixCompiler = new MatrixUICompiler();
     reranker = new LegalAIReranker();

@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { telemetryBus } from '../../telemetry/telemetry-bus.js';
@@ -49,7 +51,7 @@
 
   let unsubscribe: (() => void) | null = null;
 
-  onMount(() => {
+  $effect(() => {
     unsubscribe = telemetryBus.subscribe((ev: unknown) => {
       if (!ev || !ev.type) return;
       recordEvent(ev);

@@ -1,5 +1,7 @@
 <!-- YoRHa Detective Form Component - Fixed dynamic type binding -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface FormField {
     name: string;

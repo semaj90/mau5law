@@ -13,6 +13,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { writable, derived } from 'svelte/store';
@@ -84,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
   // INITIALIZATION
   // ============================================================================
 
-  onMount(async () => {
+  $effect(async () => {
     try {
       await initializeWebGPU();
       await loadGraphData();

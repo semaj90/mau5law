@@ -1,5 +1,7 @@
 <!-- NES-Style Texture Streaming Component for Legal Document Visualization -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { N64LODManager } from '$lib/services/n64-lod-manager';
@@ -70,7 +72,7 @@
     return descriptions[currentLOD] || 'Unknown';
   });
   
-  onMount(async () => {
+  $effect(async () => {
     lodManager = new N64LODManager();
     
     // Generate sample legal document texture

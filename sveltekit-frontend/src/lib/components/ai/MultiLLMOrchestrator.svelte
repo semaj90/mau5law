@@ -3,6 +3,8 @@ Multi-LLM Orchestration Component
 Provides UI for managing multiple AI workers and orchestrating parallel processing
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { derived, writable } from 'svelte/store';
@@ -111,7 +113,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
     Math.round(processingMetrics.reduce((sum, m) => sum + (m.processingTime || 0), 0) / processingMetrics.length)
   );
 
-  onMount(async () => {
+  $effect(async () => {
     if (autoStart) {
       await initializeOrchestrator();
     }

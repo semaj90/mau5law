@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   /**
    * Single Page App Demo Route
@@ -20,7 +22,7 @@
   let currentView: 'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases' = 'dashboard';
   let isLoading = true;
 
-  onMount(async () => {
+  $effect(async () => {
     // Simulate loading legal data
     await loadSampleData();
     isLoading = false;

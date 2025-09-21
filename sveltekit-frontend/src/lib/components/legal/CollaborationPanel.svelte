@@ -6,6 +6,8 @@ Collaboration Panel Component
 Real-time collaboration interface for multiple investigators working on evidence custody
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     collaborationSession: {;
@@ -65,7 +67,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     }
   });
 
-  onMount(() => {
+  $effect(() => {
     // Set up WebSocket message listeners for real-time collaboration
     if (wsConnection) {
       const originalOnMessage = wsConnection.onmessage;

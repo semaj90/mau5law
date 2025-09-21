@@ -1,7 +1,9 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import { fade, scale } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
 
@@ -29,7 +31,7 @@
     actions
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
   let modalElement: HTMLDivElement = $state()!;
   let contentElement: HTMLDivElement = $state()!;
 
@@ -56,7 +58,7 @@
   };
 
   function handleClose() {
-    dispatch('close');
+    ondispatch?.();
   }
 
   function handleKeydown(event: KeyboardEvent) {
@@ -65,7 +67,7 @@
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     if (isOpen && modalElement) {
       modalElement.focus();
     }

@@ -3,6 +3,8 @@
   Displays security events, system health, and security metrics
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import Button from '$lib/components/ui/enhanced-bits';;
   import { notifications } from "$lib/stores/notification";
@@ -54,7 +56,7 @@
     network: "healthy",
   });
 
-  onMount(() => {
+  $effect(() => {
     loadSecurityEvents();
     startAutoRefresh();
   });

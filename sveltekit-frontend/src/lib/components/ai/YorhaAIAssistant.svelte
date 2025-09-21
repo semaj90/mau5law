@@ -4,6 +4,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- YorhaAI Assistant - Advanced Chat Interface with SvelteKit 5 + Bits UI + Melt UI -->
 <!-- Integrates with go-llama, MCP orchestrator, and tensor transport services -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, tick } from 'svelte';
   	import { browser } from '$app/environment';
@@ -107,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
   	);
 
   	// Lifecycle
-  	onMount(() => {
+  	$effect(() => {
   		if (browser) {
   			initializeAI();
   			setupActivityTracking();

@@ -1,5 +1,7 @@
 <!-- Enhanced RAG Interface Component for SvelteKit 2 + Svelte 5 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Fuse from 'fuse.js';
@@ -23,7 +25,7 @@
     legalModel: 'gemma3-legal'
   };
   // Initialize component
-  onMount(async () => {
+  $effect(async () => {
     await loadDocuments();
     initializeFuseSearch();
     updateAnalytics();

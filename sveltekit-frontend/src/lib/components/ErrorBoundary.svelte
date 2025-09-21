@@ -2,6 +2,8 @@
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import Button from '$lib/components/ui/enhanced-bits';;
   import {
@@ -33,7 +35,7 @@ https://svelte.dev/e/attribute_duplicate -->
   let showDetails = $state(false);
   let retryInProgress = $state(false);
 
-  onMount(() => {
+  $effect(() => {
     const unsubscribe = errorHandler.subscribe((error) => {
       currentError = error;
 

@@ -3,13 +3,15 @@
   Combines EvidenceCanvas with YoRHa CanvasBoard for comprehensive evidence visualization
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import { writable } from 'svelte/store';
   import EvidenceCanvas from '$lib/ui/enhanced/EvidenceCanvas.svelte';
   import CanvasBoard from '$lib/components/yorha/CanvasBoard.svelte';
   import Button from '$lib/components/ui/enhanced-bits';;
-  const dispatch = createEventDispatcher();
+  
   interface Props {
     caseId?: string;
     enableYoRHaBoard?: boolean;
@@ -60,7 +62,7 @@
       }));
       canvasObjects = [...evidenceObjects, ...yorhaDrawings];
       // Dispatch sync event
-      dispatch('canvasSynced', {
+      ondispatch?.({
         evidenceObjects,
         drawingObjects: yorhaDrawings,
         totalObjects: canvasObjects.length,
@@ -85,14 +87,14 @@
       ...state,
       mode: newMode
     }));
-    dispatch('modeChanged', { mode: newMode });
+    ondispatch?.({ mode: newMode });
   }
   // Event handlers
   function handleEvidenceUploaded(event: CustomEvent) {
     console.log('📁 Evidence uploaded:', event.detail);
     // Sync canvases after evidence upload
     setTimeout(syncCanvasBoards, 500);
-    dispatch('evidenceUploaded', event.detail);
+    ondispatch?.(event.detail);
   }
   function handleAnalysisComplete(event: CustomEvent) {
     console.log('🔍 Analysis complete:', event.detail);
@@ -101,7 +103,7 @@
       ...state,
       analysisResults: event.detail
     }));
-    dispatch('analysisComplete', event.detail);
+    ondispatch?.(event.detail);
   }
   function handleYoRHaDrawing(event: CustomEvent) {
     console.log('🎨 YoRHa drawing update:', event.detail);
@@ -109,11 +111,11 @@
     if (syncCanvases) {
       setTimeout(syncCanvasBoards, 100);
     }
-    dispatch('drawingUpdated', event.detail);
+    ondispatch?.(event.detail);
   }
   function handleNeuralEngineReady(event: CustomEvent) {
     console.log('🧠 Neural engine ready:', event.detail);
-    dispatch('neuralEngineReady', event.detail);
+    ondispatch?.(event.detail);
   }
   // Canvas operations
   function clearAllCanvases() {
@@ -130,7 +132,7 @@
       drawingObjects: [],
       selectedObjects: []
     }));
-    dispatch('canvasCleared');
+    ondispatch?.();
   }
   function exportCanvasState() {
     const state = {
@@ -146,11 +148,11 @@
         version: '1.0'
       }
     };
-    dispatch('canvasExported', state);
+    ondispatch?.(state);
     return state;
   }
   // Initialize
-  onMount(() => {
+  $effect(() => {
     console.log('🎮 Unified Canvas Integration initialized');
     // Set up periodic sync if enabled
     if (syncCanvases) {

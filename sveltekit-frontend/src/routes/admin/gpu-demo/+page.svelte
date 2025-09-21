@@ -2,6 +2,8 @@
 <!-- Real-time GPU-accelerated legal AI visualizations -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';;
@@ -88,7 +90,7 @@
   let attentionData = $state<Float32Array>(new Float32Array(0));
   let documentData = $state<Float32Array>(new Float32Array(0));
   let timelineData = $state<Float32Array>(new Float32Array(0));
-  onMount(async () => {
+  $effect(async () => {
     // Create GPU manager then init (shader cache created after GL context is ready)
     gpuManager = createGPUClusterManager();
     await initializeGPUDemo();

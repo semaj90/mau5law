@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
@@ -277,7 +279,7 @@
   }
 
   // System monitoring simulation
-  onMount(() => {
+  $effect(() => {
     const interval = setInterval(() => {
       systemMetrics.cpuUsage = Math.floor(Math.random() * 30) + 15
       systemMetrics.memoryUsage = Math.floor(Math.random() * 20) + 60

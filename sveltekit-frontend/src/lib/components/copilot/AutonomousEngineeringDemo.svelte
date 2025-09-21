@@ -3,6 +3,8 @@ Autonomous Engineering Demo Component
 Showcases Copilot self-prompting with comprehensive AI orchestration
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';;
@@ -113,7 +115,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
     }
   ];
 
-  onMount(() => {
+  $effect(() => {
     if (autoExecuteExamples) {
       executeExample(demoExamples[0]);
     }

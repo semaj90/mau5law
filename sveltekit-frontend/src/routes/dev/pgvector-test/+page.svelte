@@ -7,6 +7,8 @@ https://svelte.dev/e/expected_token -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
@@ -256,7 +258,7 @@ https://svelte.dev/e/expected_token -->
   }
 
   // Initialize dashboard on mount
-  onMount(() => {
+  $effect(() => {
     testConnection();
   });
 </script>

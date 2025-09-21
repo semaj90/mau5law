@@ -3,6 +3,8 @@ Evidence Canvas Route - Lazy Loaded for Performance
 Heavy components: Fabric.js canvas, drag-drop, image processing
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import EssentialRoutePage from '$lib/templates/EssentialRoutePage.svelte';
@@ -104,7 +106,7 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 	}
 
 	// Auto-load components when route loads
-	onMount(() => {
+	$effect(() => {
 		loadCanvasComponents();
 	});
 
@@ -131,8 +133,8 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 	{#snippet children()}
 		{#if canvasComponents.loading}
 			<!-- Loading State with Progress -->
-			<Card.Root class="nes-container is-rounded">
-				<Card.Content class="p-8 text-center">
+			<Card class="nes-container is-rounded">
+				<CardContent class="p-8 text-center">
 					<div class="loading-animation mb-6">
 						<div class="text-6xl mb-4 animate-pulse"><�</div>
 						<h2 class="nes-text is-primary text-lg mb-2">
@@ -165,8 +167,8 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 
 		{:else if canvasComponents.error}
 			<!-- Error State -->
-			<Card.Root class="nes-container is-rounded">
-				<Card.Content class="p-8 text-center">
+			<Card class="nes-container is-rounded">
+				<CardContent class="p-8 text-center">
 					<div class="text-4xl mb-4">�</div>
 					<h2 class="nes-text is-error text-lg mb-2">
 						Failed to Load Canvas
@@ -195,13 +197,13 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 
 				<!-- Tools Sidebar -->
 				<div class="lg:col-span-1">
-					<Card.Root class="nes-container is-rounded mb-4">
-						<Card.Header>
-							<Card.Title class="nes-text is-primary text-sm">
+					<Card class="nes-container is-rounded mb-4">
+						<CardHeader>
+							<CardTitle class="nes-text is-primary text-sm">
 								Canvas Tools
 							</div.Title>
 						</div.Header>
-						<Card.Content>
+						<CardContent>
 							<div class="space-y-2">
 								<Button class="nes-btn w-full text-xs" size="sm">
 									<� Select Mode
@@ -220,8 +222,8 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 					</div.Root>
 
 					<!-- Upload Zone -->
-					<Card.Root class="nes-container is-rounded">
-						<Card.Content class="p-4">
+					<Card class="nes-container is-rounded">
+						<CardContent class="p-4">
 							{#if canvasComponents.DragDropZone}
 								<svelte:component
 									this={canvasComponents.DragDropZone}
@@ -237,10 +239,10 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 
 				<!-- Main Canvas Area -->
 				<div class="lg:col-span-3">
-					<Card.Root class="nes-container is-rounded h-[600px]">
-						<Card.Header>
+					<Card class="nes-container is-rounded h-[600px]">
+						<CardHeader>
 							<div class="flex justify-between items-center">
-								<Card.Title class="nes-text is-primary">
+								<CardTitle class="nes-text is-primary">
 									Evidence Canvas - Case #{caseId}
 								</div.Title>
 								<div class="flex items-center gap-2">
@@ -253,7 +255,7 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 								</div>
 							</div>
 						</div.Header>
-						<Card.Content class="p-0 h-full">
+						<CardContent class="p-0 h-full">
 							{#if canvasComponents.FabricCanvas && canvasData.canvasReady}
 								<svelte:component
 									this={canvasComponents.FabricCanvas}
@@ -274,11 +276,11 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 			</div>
 
 			<!-- Evidence List -->
-			<Card.Root class="nes-container is-rounded mt-6">
-				<Card.Header>
-					<Card.Title class="nes-text is-primary">Evidence Items</div.Title>
+			<Card class="nes-container is-rounded mt-6">
+				<CardHeader>
+					<CardTitle class="nes-text is-primary">Evidence Items</div.Title>
 				</div.Header>
-				<Card.Content>
+				<CardContent>
 					{#if canvasData.evidence.length > 0}
 						<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 							{#each canvasData.evidence as item}
@@ -303,8 +305,8 @@ Heavy components: Fabric.js canvas, drag-drop, image processing
 
 		{:else}
 			<!-- Initial State -->
-			<Card.Root class="nes-container is-rounded">
-				<Card.Content class="p-8 text-center">
+			<Card class="nes-container is-rounded">
+				<CardContent class="p-8 text-center">
 					<div class="text-4xl mb-4"><�</div>
 					<h2 class="nes-text is-primary text-lg mb-2">
 						Evidence Canvas Ready

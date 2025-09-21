@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import Button from '$lib/components/ui/button/Button.svelte';
 	import Card from '$lib/components/ui/Card/Card.svelte';
 	import CardContent from '$lib/components/ui/Card/CardContent.svelte';
@@ -10,7 +12,7 @@
 	import { aiAssistant } from '$lib/stores/ai-assistant-unified.svelte';
 	import { acceleratedLegalAssistant, enhanceAIResponse } from '$lib/ai/accelerated-legal-assistant';
 	import { MessageSquare, Bot, User, Loader, Lightbulb, Link, FileText, Search, Zap } from 'lucide-svelte';
-	import { createEventDispatcher } from 'svelte';
+	import {   } from "svelte";
 
 	// Props using Svelte 5 $props rune
 	let {
@@ -129,7 +131,7 @@
 			});
 
 			// Trigger action suggestions in parent component
-			dispatch('action-trigger', {
+			ondispatch?.({
 				type: 'suggestions',
 				data: response.metadata?.suggestions || []
 			});
@@ -153,7 +155,7 @@
 
 	function handleInsightClick(insight: any) {
 		if (insight.evidenceIds && insight.evidenceIds.length > 0) {
-			dispatch('evidence-highlight', { evidenceIds: insight.evidenceIds });
+			ondispatch?.({ evidenceIds: insight.evidenceIds });
 		}
 	}
 
@@ -260,7 +262,7 @@
 									{#each message.evidenceIds as evidenceId}
 										<button
 											class="evidence-ref-btn text-xs bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary/20 transition-colors"
-											onclick={() => dispatch('evidence-select', { evidenceId })}
+											onclick={() => ondispatch?.({ evidenceId })}
 										>
 											{evidenceId}
 										</button>

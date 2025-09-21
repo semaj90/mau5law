@@ -1,6 +1,8 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { onMount, createEventDispatcher, tick } from 'svelte';
+  import { onMount,  , tick  } from "svelte";
   import { fade, fly, scale } from 'svelte/transition';
   import type { Snippet } from 'svelte';
   // Svelte 5 props interface
@@ -85,7 +87,7 @@
     renderQuality = 'medium'
    }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   let dialogElement: HTMLDialogElement;
   let backdropElement: HTMLDivElement;
@@ -164,7 +166,7 @@
   });
 
   // Initialize audio and GPU contexts
-  onMount(async () => {
+  $effect(async () => {
     if (spatialAudio && typeof window !== 'undefined') {
       try {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
@@ -279,7 +281,7 @@
     // Play open sound
     playSpatialSound('open', 440, 0.1);
 
-    dispatch('open');
+    ondispatch?.();
   }
 
   function closeDialog() {
@@ -297,7 +299,7 @@
     // Play close sound
     playSpatialSound('close', 330, 0.08);
 
-    dispatch('close');
+    ondispatch?.();
   }
 
   function setupFocusTrap() {

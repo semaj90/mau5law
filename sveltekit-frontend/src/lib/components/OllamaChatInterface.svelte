@@ -1,5 +1,7 @@
 <!-- OllamaChatInterface.svelte - Svelte 5 + SvelteKit 2.0 Enhanced AI Chat -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import TokenUsageManager from "$lib/components/TokenUsageManager.svelte";
   import { Badge } from "$lib/components/ui/badge";
@@ -72,7 +74,7 @@
   );
 
   // Initialize component
-  onMount(async () => {
+  $effect(async () => {
     await checkOllamaHealth();
     await loadAvailableModels();
 

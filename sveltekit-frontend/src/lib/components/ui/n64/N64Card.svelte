@@ -2,8 +2,10 @@
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove syntax -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount,   } from "svelte";
   import type { Snippet } from 'svelte';
   // Svelte 5 props interface
   interface Props {
@@ -77,7 +79,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }: Props = $props();
 
   // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  // 
 
   let cardElement: HTMLElement;
   let container: HTMLDivElement;
@@ -158,7 +160,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
 
   // Initialize audio and GPU contexts
-  onMount(async () => {
+  $effect(async () => {
     if (spatialAudio && typeof window !== 'undefined') {
       try {
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext();
@@ -254,7 +256,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     if (!hoverable) return;
     isHovered = true;
     playSpatialSound('hover', 880, 0.03);
-    dispatch('mouseenter');
+    ondispatch?.();
   }
 
   function handleMouseLeave() {
@@ -265,7 +267,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     translateZ = 0;
     mouseX = 0;
     mouseY = 0;
-    dispatch('mouseleave');
+    ondispatch?.();
   }
 
   function handleMouseDown() {

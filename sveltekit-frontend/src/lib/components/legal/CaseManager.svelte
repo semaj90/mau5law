@@ -8,6 +8,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -19,12 +21,12 @@ https://svelte.dev/e/js_parse_error -->
 
   // Component state
   let cases = writable<CaseData[]>([]);
-  let loading = writable(false);
-  let error = writable('');
-  let searchQuery = writable('');
+  let loading = $state(false);
+  let error = $state('');
+  let searchQuery = $state('');
   let selectedCase = writable<CaseData | null>(null);
-  let isCreateDialogOpen = writable(false);
-  let isEditDialogOpen = writable(false);
+  let isCreateDialogOpen = $state(false);
+  let isEditDialogOpen = $state(false);
 
   // Form state
   let formData = writable<Partial<CaseData>({
@@ -54,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
   ];
 
   // Load cases on component mount
-  onMount(async () => {
+  $effect(async () => {
     await loadCases();
   });
 

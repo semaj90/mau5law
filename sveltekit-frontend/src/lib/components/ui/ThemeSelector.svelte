@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
 
@@ -26,7 +28,7 @@
   	applyTheme(t);
   }
 
-  onMount(() => {
+  $effect(() => {
   	try {
   	  const stored = localStorage.getItem(THEME_KEY) as Theme | null;
   	  if (stored === 'light' || stored === 'dark' || stored === 'system') {

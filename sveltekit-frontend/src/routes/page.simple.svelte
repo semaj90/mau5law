@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import 'nes.css/css/nes.min.css';
   import 'nes.css/css/nes.min.css';
@@ -11,7 +13,7 @@
     lastSync: '2 minutes ago'
   });
 
-  onMount(() => {
+  $effect(() => {
     console.log('YoRHa Legal AI Platform loaded');
   });
 </script>

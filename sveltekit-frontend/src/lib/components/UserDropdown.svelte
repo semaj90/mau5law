@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     user: unknown ;
@@ -12,7 +14,7 @@
   	import Avatar from './Avatar.svelte';
   let dropdownOpen = $state(false);
   let dropdownElement: HTMLElement = $state(undefined as any);
-  	onMount(() => {
+  	$effect(() => {
   		// Close dropdown when clicking outside
   		function handleClickOutside(event: MouseEvent) {
   			if (dropdownElement && !dropdownElement.contains(event.target as Node)) {

@@ -2,7 +2,7 @@
   import 'nes.css/css/nes.min.css';
   	import type {    Snippet    } from 'svelte';
   	import { Dialog as BitsDialog } from 'bits-ui';
-  	import { createEventDispatcher } from 'svelte';
+  	import {   } from "svelte";
   	import { cn } from '$lib/utils';
 
   	interface Props {
@@ -42,17 +42,17 @@
   		footer,
   		onClose
   	}: Props = $props();
-  	const dispatch = createEventDispatcher();
+  	
 
   	function handleOpenChange(newOpen: boolean) {
   		if (onOpenChange) {
   			onOpenChange(newOpen);
   		}
-  		dispatch('open-change', { open: newOpen });
+  		ondispatch?.({ open: newOpen });
   		if (newOpen) {
-  			dispatch('open');
+  			ondispatch?.();
   		} else {
-  			dispatch('close');
+  			ondispatch?.();
   			if (onClose) {
   				onClose();
   			}

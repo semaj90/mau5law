@@ -4,6 +4,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     items: unknown[] ;
@@ -61,7 +63,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Initialize Masonry
-    onMount(() => {
+    $effect(() => {
       if (container) {
         setTimeout(() => {
           masonry = new Masonry(container, masonryOptions);
@@ -123,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
     }, 150);
   };
 
-    onMount(() => {
+    $effect(() => {
       if (resize) {
         window.addEventListener('resize', handleResize);
       }

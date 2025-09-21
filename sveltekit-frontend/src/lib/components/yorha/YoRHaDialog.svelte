@@ -3,8 +3,10 @@ https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <!-- YoRHa Dialog Component - Lightweight Terminal Dialog -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade, fly } from "svelte/transition";
   import type { Snippet } from 'svelte';
@@ -41,7 +43,7 @@ https://svelte.dev/e/attribute_duplicate -->
     children
   : unknown } = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   let dialogElement = $state<HTMLDivElement | null>(null);
   let inputElement = $state<HTMLInputElement | null>(null);
@@ -109,19 +111,19 @@ https://svelte.dev/e/attribute_duplicate -->
   }
 
   function handleClose() {
-    dispatch("close");
+    ondispatch?.();
   }
 
   function handleConfirm() {
     if (type === "prompt") {
-      dispatch("confirm", { value: promptValue });
+      ondispatch?.({ value: promptValue });
     } else {
-      dispatch("confirm");
+      ondispatch?.();
     }
   }
 
   function handleCancel() {
-    dispatch("cancel");
+    ondispatch?.();
   }
 
   // Focus management

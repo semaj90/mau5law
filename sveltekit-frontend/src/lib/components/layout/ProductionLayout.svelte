@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
@@ -127,7 +129,7 @@
   );
 
   // Update time every second
-  onMount(() => {
+  $effect(() => {
     const timer = setInterval(() => {
       currentTime = new Date();
     }, 1000);

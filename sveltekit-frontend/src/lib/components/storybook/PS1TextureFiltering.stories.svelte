@@ -65,7 +65,7 @@ https://svelte.dev/e/expected_token -->
     offsetY: 0
   });
 
-  onMount(() =&gt; {
+  $effect(() =&gt; {
     updateFilteringProperties();
     startPerformanceMonitoring();
     animateTextures();

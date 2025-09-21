@@ -5,6 +5,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Shows real-time updates for document re-embedding and re-ranking -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import {
     documentUpdateNotifications,

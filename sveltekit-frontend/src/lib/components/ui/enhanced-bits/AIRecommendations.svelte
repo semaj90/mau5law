@@ -1,5 +1,7 @@
 <!-- AI Recommendations: Svelte 5, Bits UI, UnoCSS, analytics logging -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { UiCard as Card, UiCardHeader as CardHeader, UiCardTitle as CardTitle, UiCardContent as CardContent } from '$lib/index.js';
@@ -41,7 +43,7 @@
     }
   }
 
-  onMount(fetchRecommendations);
+  $effect(fetchRecommendations);
 </script>
 
 <div class="w-full nes-container">

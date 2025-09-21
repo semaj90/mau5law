@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // Integrated System Demo - All XState Machines Working Together
   // Demonstrates authentication, session management, AI assistant, and production services
@@ -70,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Component lifecycle
-  onMount(async () => {
+  $effect(async () => {
     // Initialize system health monitoring
     await checkSystemHealth();
     // Set up periodic health checks

@@ -3,6 +3,8 @@ Enhanced File Upload Component with localStorage Fallback
 Automatically handles server upload with localStorage fallback
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import enhancedFileUpload from '$lib/services/enhanced-file-upload.js';
@@ -152,7 +154,7 @@ Automatically handles server upload with localStorage fallback
   }
 
   // Update storage stats periodically
-  onMount(() => {
+  $effect(() => {
     const interval = setInterval(() => {
       storageStats = localStorageFiles.getStorageUsage();
     }, 5000);

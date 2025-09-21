@@ -3,7 +3,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte code: `{@render ...}` tags can only contain call expressions -->
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
   import { X } from "lucide-svelte";
 
   let { open = $bindable()   }: { open = $bindable() : unknown } = $props(); // false;
@@ -12,11 +12,11 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   let { side = $bindable()  }: { side = $bindable() : unknown } = $props(); // "left" | "right" | "top" | "bottom" = "right";
   let { size = $bindable()  }: { size = $bindable() : unknown } = $props(); // "sm" | "md" | "lg" | "xl" = "md";
 
-  const dispatch = createEventDispatcher();
+  
 
   function handleClose() {
     open = false;
-    dispatch("close");
+    ondispatch?.();
   }
 
   function handleBackdropClick(e: MouseEvent) {

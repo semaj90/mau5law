@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import { onMount } from 'svelte';
 
 	interface Props {
@@ -81,7 +83,7 @@
 		searchInput?.focus();
 	};
 
-	onMount(() => {
+	$effect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (!event.target || !(event.target as Element).closest('.search-container')) {
 				isExpanded = false;

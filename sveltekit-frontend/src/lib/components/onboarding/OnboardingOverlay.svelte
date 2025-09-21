@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // @ts-nocheck
   import { onMount } from 'svelte';
@@ -86,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
   // Reactive derived value for current step data
   // TODO: Convert to $derived: currentStepData = steps[currentStep] || null
 
-  onMount(() => {
+  $effect(() => {
     if (browser) {
       document.addEventListener("keydown", handleKeydown);
       window.addEventListener("resize", updateTargetHighlight);

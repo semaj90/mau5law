@@ -4,6 +4,8 @@
   Supports drag-and-drop positioning, evidence visualization, and interactive manipulation
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { fabric } from 'fabric';
@@ -73,7 +75,7 @@
   let evidenceCount = $derived(evidenceItems.length);
   let activeJobsCount = $derived(processingJobs.size);
 
-  onMount(() => {
+  $effect(() => {
     initializeFabricCanvas();
   });
 

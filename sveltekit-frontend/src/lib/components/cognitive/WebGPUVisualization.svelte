@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { useWebGPUCapability } from '$lib/services/webgpu-capability-service';
@@ -28,7 +30,7 @@
   let fps = $state(60);
   let frameCount = $state(0);
   let lastTime = $state(0);
-  onMount(async () => {
+  $effect(async () => {
     // Initialize WebGPU capability service first
     await webgpuCapability.initialize();
     await initializeWebGPU();

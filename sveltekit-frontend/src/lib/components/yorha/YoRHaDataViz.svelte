@@ -1,5 +1,7 @@
 <!-- YoRHa Data Visualization Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
 
@@ -37,7 +39,7 @@
   let isVisible = $state(false);
   let animationDelay = $state(0);
 
-  onMount(() => {
+  $effect(() => {
     // Intersection observer for animation triggers
     const observer = new IntersectionObserver(
       (entries) => {

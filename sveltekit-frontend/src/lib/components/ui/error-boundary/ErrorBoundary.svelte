@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
@@ -61,7 +63,7 @@
   function reloadPage() {
     globalThis.location?.reload();
   }
-  onMount(() => {
+  $effect(() => {
     // Add global error listeners
     globalThis.addEventListener('error', handleGlobalError);
     globalThis.addEventListener('unhandledrejection', handleUnhandledRejection);

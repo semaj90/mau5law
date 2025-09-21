@@ -3,6 +3,8 @@ Enhanced AI Chat Assistant for Prosecutors
 Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import type { Props } from "$lib/types/global";
   import {
@@ -51,7 +53,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   let selfPromptSuggestions: string[] = $state([]);
 
   // Initialize chat with prosecutor context
-  onMount(() => {
+  $effect(() => {
     if (enableSelfPrompting) {
       generateSelfPromptSuggestions();
     }

@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Ollama Agent Shell - Real-time Terminal Modal with Streaming Support -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import type { OllamaAgentShellProps } from '$lib/types/component-props.js';
 
@@ -53,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
   let inputElement = $state<HTMLTextAreaElement// WebSocket for real-time updates
   let ws: WebSocket  | null>(null); const data = null);
 
-  onMount(() => {
+  $effect(() => {
     // Initialize with system message
     messages.push({
       role: "system",

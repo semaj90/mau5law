@@ -6,6 +6,8 @@ https://svelte.dev/e/js_parse_error -->
   Demonstrates the validation utilities in practice
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import {
     FormValidator,
@@ -13,7 +15,7 @@ https://svelte.dev/e/js_parse_error -->
     type ValidationResult,
   } from "$lib/utils/validation";
   import { AlertCircle, CheckCircle, Eye, EyeOff, Info } from "lucide-svelte";
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
 
   let { name = $bindable()  }: { name = $bindable() : unknown } = $props(); // string;
   let { label = $bindable()  }: { label = $bindable() : unknown } = $props(); // string;
@@ -45,7 +47,7 @@ https://svelte.dev/e/js_parse_error -->
   let { showValidation = $bindable()  }: { showValidation = $bindable() : unknown } = $props(); // boolean = true;
   let { showPasswordToggle = $bindable()  }: { showPasswordToggle = $bindable() : unknown } = $props(); // boolean = true;
 
-  const dispatch = createEventDispatcher();
+  
 
   // Local validation state
   let errors = $state<string[] >([]);
@@ -68,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
     isDirty = true;
 
     validateField();
-    dispatch("input", {
+    ondispatch?.({
       value,
       validation: { isValid, errors, warnings, value },
     });
@@ -79,18 +81,18 @@ https://svelte.dev/e/js_parse_error -->
     isDirty = true;
 
     validateField();
-    dispatch("change", {
+    ondispatch?.({
       value,
       validation: { isValid, errors, warnings, value },
     });
   }
   function handleFocus() {
-    dispatch("focus", { name });
+    ondispatch?.({ name });
   }
   function handleBlur() {
     isDirty = true;
     validateField();
-    dispatch("blur", { name });
+    ondispatch?.({ name });
   }
   function validateField() {
     if (validator && config) {

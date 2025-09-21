@@ -4,6 +4,8 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token >
 https://svelte.dev/e/expected_token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { scale, fly } from 'svelte/transition';
@@ -79,7 +81,7 @@ https://svelte.dev/e/expected_token -->
     }, 1000)
     onToggle()
   }
-  onMount(() => {
+  $effect(() => {
     // Auto-hide expanded menu after inactivity
     let timeoutId: number
     const resetExpanded = () => {

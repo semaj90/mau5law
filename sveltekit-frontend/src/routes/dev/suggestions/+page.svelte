@@ -1,9 +1,11 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from "svelte";
   let items: unknown[] = $state([]);
   let count = $state(0);
-  onMount(async () => {
+  $effect(async () => {
     try {
       const res = await fetch("/logs/svelte-suggestions.json");
       const data = await res.json();

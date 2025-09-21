@@ -13,6 +13,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
@@ -177,7 +179,7 @@
   );
   
   // Initialize real-time updates
-  onMount(() => {
+  $effect(() => {
     if (realTimeUpdates) {
       const interval = setInterval(updateMetrics, 5000);
       return () => clearInterval(interval);

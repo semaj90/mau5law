@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   // Export prop callbacks for Svelte consumers
@@ -28,7 +30,7 @@
 
   // Derive a safe display name from the store without relying on a specific ChatContext shape
   let displayName: string = 'Assistant';
-  $: displayName = ( ($aiPersonality as any)?.name ?? ($aiPersonality as any)?.displayName ?? 'Assistant' );
+  const displayName = $derived(( ($aiPersonality as any)?.name ?? ($aiPersonality as any)?.displayName ?? 'Assistant' ));
 
   function handleAccept() {
     onaccept?.();

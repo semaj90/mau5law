@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Legal Document Editor with UnoCSS + bits-ui -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import {
     createDialog,
@@ -25,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
     /* Share moved to bits-ui */
     X,
   } from "lucide-svelte";
-  import { createEventDispatcher, onMount } from "svelte";
+  import {  , onMount  } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade } from "svelte/transition";
 
@@ -65,7 +67,7 @@ https://svelte.dev/e/js_parse_error -->
     updatedAt: string;
     citations?: Array;
   }
-  const dispatch = createEventDispatcher();
+  
 
   // Melt UI Dialog for AI Assistant
   // Melt UI component creation removed - replace with bits-ui declarative components
@@ -104,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
       query = "";
       $aiOpen = false;
 
-      dispatch("aiRequest", { query, context: content });
+      ondispatch?.({ query, context: content });
     } catch (err) {
       error = err instanceof Error ? err.message: "AI request failed";
     } finally {
@@ -114,10 +116,10 @@ https://svelte.dev/e/js_parse_error -->
     const citationText = `[${citation.source}]`;
     content += citationText;
     citations = [...citations, citation];
-    dispatch("citationAdded", { citation });
+    ondispatch?.({ citation });
   }
   function saveDocument() {
-    dispatch("save", { content, title });
+    ondispatch?.({ content, title });
   }
   // Enhanced auto-save function with debouncing
   function scheduleAutoSave() {
@@ -227,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
       default:
         return FileText;
   }}
-  onMount(() => {
+  $effect(() => {
     // Load document content if documentId is provided
     if (documentId) {
       loadDocument();

@@ -1,6 +1,8 @@
 <!-- Unified AI Assistant Chat Interface -->
 <!-- Integrates Ollama, LLaMA.cpp WebASM, WebGPU acceleration, and Go microservices -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   	import { onMount, onDestroy, tick } from 'svelte';
   	import {
@@ -70,7 +72,7 @@
   	} = $props();
 
   	// Initialize AI systems
-  	onMount(async () => {
+  	$effect(async () => {
   		console.log('🤖 Initializing Unified AI Assistant');
   		await initializeBackends();
   		await loadConversationHistory();

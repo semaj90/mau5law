@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import type { ComponentProps } from 'svelte';
@@ -31,7 +33,7 @@
   	let glowEffect = $state(false);
   	// Experience bar percentage
   	let experiencePercent = $derived(() => Math.round((experience / maxExperience) * 100));
-  	onMount(() => {
+  	$effect(() => {
   		// Update time every second
   		const timeInterval = setInterval(() => {
   			const now = new Date();

@@ -1,5 +1,7 @@
 <!-- FOAF Recommendations Modal - SSR compatible with Svelte 5 runes + Melt-UI -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import * as Dialog from 'bits-ui';
   import { fade, fly } from 'svelte/transition';

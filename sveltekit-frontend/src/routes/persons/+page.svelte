@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
@@ -226,7 +228,7 @@
     linkElement.click();
   }
 
-  onMount(() => {
+  $effect(() => {
     // Load persons data from API
     console.log('Loading persons of interest...');
   });

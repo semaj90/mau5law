@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from "svelte";
   import { apiFetch } from "$lib/api/clients/api-client";
@@ -52,7 +54,7 @@
     context_window: 4096,
   });
 
-  onMount(async () => {
+  $effect(async () => {
     const { fabric } = await import("fabric");
     fabricCanvas = new fabric.Canvas(canvasEl, {
       backgroundColor: '#ffffff',

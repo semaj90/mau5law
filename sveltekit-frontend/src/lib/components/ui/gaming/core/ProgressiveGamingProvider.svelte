@@ -12,6 +12,8 @@ https://svelte.dev/e/js_parse_error -->
   - Integration with YoRHa theming system
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { setContext, onMount, onDestroy } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
@@ -170,7 +172,7 @@ https://svelte.dev/e/js_parse_error -->
     };
   };
 
-  onMount(async () => {
+  $effect(async () => {
     // Initialize gaming evolution manager
     evolutionManager = GamingEvolutionManager.getInstance($gamingConfig);
     // Subscribe to state changes

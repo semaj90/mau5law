@@ -1,5 +1,7 @@
 <!-- N64 Gaming-Style MinIO Upload with Retro Progress Bars -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap } from 'lucide-svelte';
@@ -845,7 +847,7 @@
     if (!disabled && !uploading && fileInput) fileInput.click();
   }
 
-  onMount(async () => {
+  $effect(async () => {
     restoreSession();
     try {
       const res = await fetch('/api/v1/minio/health');

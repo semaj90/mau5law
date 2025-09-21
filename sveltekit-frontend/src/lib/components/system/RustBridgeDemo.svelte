@@ -1,5 +1,7 @@
 <!-- Rust WASM Bridge Demo Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { 
@@ -29,7 +31,7 @@
   let isLoading = $state(false);
   let errorMessage = $state<string | null>(null);
 
-  onMount(async () => {
+  $effect(async () => {
     try {
       isLoading = true;
       errorMessage = null;

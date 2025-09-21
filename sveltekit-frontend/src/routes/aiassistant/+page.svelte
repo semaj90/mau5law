@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // Svelte 5 runes are built-in, no import needed
   // Web Speech API type declarations
@@ -205,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
   // Enhanced AI suggestions from real-time search
   let searchSuggestions = $state<string[]>([]);
 
-  onMount(async () => {
+  $effect(async () => {
     aiService.start();
     await loadInitialData();
     initializeWebSpeech();

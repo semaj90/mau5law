@@ -4,6 +4,8 @@ Connects to Ollama legal model, CUDA services, and MinIO storage
 Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { goto } from '$app/navigation';
@@ -98,7 +100,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     evidenceItems.filter(item => item.status) === 'ready').length
   );
 
-  onMount(async () => {
+  $effect(async () => {
   await loadExistingEvidence();
   await loadBuckets();
   await checkServiceStatus();

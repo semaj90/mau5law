@@ -2,6 +2,8 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount, onDestroy } from 'svelte';
@@ -38,7 +40,7 @@ https://svelte.dev/e/expected_token -->
   let webgpuDevice: GPUDevice | null = null;
   let webglContext: WebGLRenderingContext | WebGL2RenderingContext | null = null;
   
-  onMount(() => {
+  $effect(() => {
     if (autoRender) {
       startRendering();
     }

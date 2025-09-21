@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     documentId: string | null ;
@@ -66,7 +68,7 @@ https://svelte.dev/e/js_parse_error -->
   let speechSynthesis: SpeechSynthesis | null = null;
   let currentUtterance: SpeechSynthesisUtterance | null = null;
 
-  onMount(() => {
+  $effect(() => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       speechSynthesis = window.speechSynthesis;
     }

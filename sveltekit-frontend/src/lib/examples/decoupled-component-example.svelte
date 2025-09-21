@@ -8,6 +8,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   
@@ -100,7 +102,7 @@
     live: isProcessing ? 'polite' : 'off'
   });
   
-  onMount(() => {
+  $effect(() => {
     // Announce service availability
     if (langchainState.isAvailable) {
       a11yUtils.announce('Legal AI service is ready');

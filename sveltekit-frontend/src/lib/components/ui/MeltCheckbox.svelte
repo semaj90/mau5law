@@ -2,7 +2,7 @@
   import 'nes.css/css/nes.min.css';
   	import type {    Snippet    } from 'svelte';
   	import { Checkbox as BitsCheckbox } from 'bits-ui';
-  	import { createEventDispatcher } from 'svelte';
+  	import {   } from "svelte";
   	import { cn } from '$lib/utils';
 
   	type CheckedState = boolean | 'indeterminate';
@@ -47,13 +47,13 @@
   		'data-testid': testId,
   		onCheckedChange
   	}: Props = $props();
-  	const dispatch = createEventDispatcher();
+  	
 
   	function handleCheckedChange(newChecked: CheckedState) {
   		if (onCheckedChange) {
   			onCheckedChange(newChecked);
   		}
-  		dispatch('checked-change', { checked: newChecked });
+  		ondispatch?.({ checked: newChecked });
   	}
   	// Default checkbox styles
   	const checkboxClass = cn(

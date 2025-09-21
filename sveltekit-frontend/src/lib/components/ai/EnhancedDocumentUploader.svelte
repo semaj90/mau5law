@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Document Uploader with Bits UI v2, AI Processing, and Real-time Status -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // Updated to use melt-ui components
   import Button from '$lib/components/ui/bitsbutton.svelte';
@@ -39,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
     Upload,
     X,
   } from "lucide-svelte";
-  import { createEventDispatcher, onMount } from "svelte";
+  import {  , onMount  } from "svelte";
   import { derived, writable } from "svelte/store";
 
   // Props with Svelte 5 syntax
@@ -311,12 +313,12 @@ https://svelte.dev/e/js_parse_error -->
         updateFileStatus(uploadFile.id, "completed", 100);
 
         // Emit events
-        dispatch("complete", {
+        ondispatch?.({
           fileId: uploadFile.id,
           result: processingResult,
         });
 
-        dispatch("upload", {
+        ondispatch?.({
           files: [
             {
               id: uploadFile.id,
@@ -334,7 +336,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     } catch (error) {
       updateFileStatus(uploadFile.id, "error", 0, String(error));
-      dispatch("error", {
+      ondispatch?.({
         fileId: uploadFile.id,
         error: String(error),
       });
@@ -356,7 +358,7 @@ https://svelte.dev/e/js_parse_error -->
     );
 
     if (status === "processing") {
-      dispatch("processing", { fileId, progress });
+      ondispatch?.({ fileId, progress });
     }
   }
 
@@ -421,7 +423,7 @@ https://svelte.dev/e/js_parse_error -->
   // LIFECYCLE
   // ============================================================================
 
-  onMount(() => {
+  $effect(() => {
     // Set up global drag and drop prevention
     const preventDefaults = (e: Event) => {
       e.preventDefault();

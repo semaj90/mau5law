@@ -5,6 +5,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { ocrTensorProcessor, type ProcessingResult } from '$lib/client/ocr-tensor-processor.js';
@@ -32,7 +34,7 @@
   // File input reference
   let fileInput: HTMLInputElement;
 
-  onMount(async () => {
+  $effect(async () => {
     try {
       addLog('🚀 Initializing OCR + Tensor Processing...');
       await ocrTensorProcessor.initialize();

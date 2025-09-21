@@ -3,15 +3,17 @@ https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Enhanced Case Form with proper schema mapping -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { notifications } from "$lib/stores/notification";
   import type { User } from "$lib/types/user";
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
   import type { Case } from "$lib/types/index";
 
   let { case_ = $bindable(), user = $bindable() } = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   // Form data matching the database schema
   let formData = $state({
@@ -391,7 +393,7 @@ https://svelte.dev/e/props_duplicate -->
 
   <!-- Form Actions -->
   <div class="container mx-auto px-4">
-    <button type="button" onclick={() => dispatch("cancel")}> Cancel </button>
+    <button type="button" onclick={() => ondispatch?.()}> Cancel </button>
     <button type="submit" disabled={loading} class="container mx-auto px-4">
       {#if loading}
         Saving...

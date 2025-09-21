@@ -4,6 +4,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
@@ -27,7 +29,7 @@
   let refreshInterval: NodeJS.Timeout;
   let autoRefresh = $state(true);
 
-  onMount(() => {
+  $effect(() => {
     loadMetrics();
     if (autoRefresh) {
       refreshInterval = setInterval(loadMetrics, 30000); // Refresh every 30 seconds

@@ -3,6 +3,8 @@ Demo AI Chat Component with RAG Integration
 Tests the demo RAG functionality with a working interface
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { demoQueryLLM, demoGenerateCaseSummary, type RAGDemoQuery, type RAGDemoResponse } from '$lib/rag/demo-rag';
 
   // Simple reactive state instead of stores

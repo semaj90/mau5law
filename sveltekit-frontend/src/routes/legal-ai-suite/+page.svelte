@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import {
@@ -41,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   );
   let canQuery = $derived(ragQuery.trim.length > 0);
 
-  onMount(async () => {
+  $effect(async () => {
     await checkSystemStatus();
     // Start real-time logging
     startRealTimeLogging();

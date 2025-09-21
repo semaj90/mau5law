@@ -1,5 +1,7 @@
 <!-- Toast Container with NES.css Styling -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { toastService, type Toast } from '$lib/services/toast-service';
@@ -8,7 +10,7 @@
   let toasts = $state<Toast[]>([]);
   let unsubscribe: (() => void) | null = null;
 
-  onMount(() => {
+  $effect(() => {
     unsubscribe = toastService.subscribe((newToasts) => {
       toasts = newToasts;
     });

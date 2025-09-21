@@ -2,6 +2,8 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';
@@ -317,7 +319,7 @@ https://svelte.dev/e/expected_token -->
     };
   }
 
-  onMount(() => {
+  $effect(() => {
     addLog('🧬 SIMD Text Tiling Demo initialized');
     addLog('💡 Select processing mode and compression target, then click "Process Sample"');
   });

@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- @migration-task Error while migrating Svelte code: A component can have a single top-level `<script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount } from 'svelte';
 
 </script>` element and/or a single top-level `<script module>
@@ -23,7 +25,7 @@ https://svelte.dev/e/script_duplicate -->
     results = await res.json()
   }
 
-  onMount(() => {
+  $effect(() => {
     try {
       const ws = new WebSocket('ws://localhost:7071/logs')
       ws.onmessage = (e) => { wsMsg = e.data }
@@ -175,7 +177,7 @@ https://svelte.dev/e/script_duplicate -->
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     checkServiceHealth();
   });
 </script>

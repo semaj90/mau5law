@@ -5,6 +5,8 @@ https://svelte.dev/e/element_invalid_closing_tag -->
 https://svelte.dev/e/element_invalid_closing_tag -->
 <!-- Legal Case Analysis Dialog - Bits UI Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { Dialog, Select, Button, Badge, Progress } from 'bits-ui';
   import { legalCaseStore } from '$lib/stores/legal-case.store.svelte';

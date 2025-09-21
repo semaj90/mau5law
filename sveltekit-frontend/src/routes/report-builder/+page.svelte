@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import type { Evidence } from '$lib/types/api';
   	import { onMount } from 'svelte';
@@ -18,7 +20,7 @@
   	// Demo case ID - in real app this would come from the route
   	const caseId = page.params.caseId || 'demo-case-123';
 
-  	onMount(async () => {
+  	$effect(async () => {
   		await loadDemoData();
   	});
 

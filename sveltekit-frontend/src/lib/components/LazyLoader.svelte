@@ -3,6 +3,8 @@ https://svelte.dev/e/bindable_invalid_location -->
 <!-- @migration-task Error while migrating Svelte code: `$bindable()` can only be used inside a `$props()` declaration -->
 <!-- LazyLoader.svelte - Universal lazy loading wrapper component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { 
@@ -98,7 +100,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
 
   // Setup intersection observer
-  onMount(() => {
+  $effect(() => {
     if (containerElement) {
       if (enableProfiling) {
         lazyLoadProfiler.startObserving(containerElement);

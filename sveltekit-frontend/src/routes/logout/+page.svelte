@@ -1,8 +1,10 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { goto, invalidateAll } from '$app/navigation';
   import { onMount } from 'svelte';
-  onMount(async () => {
+  $effect(async () => {
     try {
       // Call logout API endpoint
       const response = await fetch('/api/auth/logout', {

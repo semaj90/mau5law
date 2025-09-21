@@ -1,5 +1,7 @@
 <!-- WebGPU Client-Side Acceleration Demo -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { webGPUAccelerator, type WebGPUCapabilities } from '$lib/services/webgpu-accelerator';
@@ -335,7 +337,7 @@
     return 'text-red-600';
   }
 
-  onMount(() => {
+  $effect(() => {
     initializeWebGPU();
   });
 </script>

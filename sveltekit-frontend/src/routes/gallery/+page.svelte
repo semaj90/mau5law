@@ -3,6 +3,8 @@ Unified Gallery - Main Gallery Route
 Displays all media: evidence, generated images, documents, uploads
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
@@ -98,7 +100,7 @@ Displays all media: evidence, generated images, documents, uploads
     filteredItems = processedItems;
   });
 
-  onMount(() => {
+  $effect(() => {
     loadGalleryData();
     loadCases();
 

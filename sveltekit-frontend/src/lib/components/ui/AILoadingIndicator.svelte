@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount, onDestroy } from 'svelte';
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
@@ -99,7 +101,7 @@
     elapsedTime = (Date.now() - startTime) / 1000;
   }
 
-  onMount(() => {
+  $effect(() => {
     if (isLoading) {
       startTime = Date.now();
       intervalId = setInterval(updateElapsedTime, 100);

@@ -2,6 +2,8 @@
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   // ======================================================================
@@ -96,7 +98,7 @@ https://svelte.dev/e/attribute_duplicate -->
   // INITIALIZATION
   // ======================================================================
 
-  onMount(async () => {
+  $effect(async () => {
     try {
       // Initialize enhanced Loki database
       await enhancedLoki.init();

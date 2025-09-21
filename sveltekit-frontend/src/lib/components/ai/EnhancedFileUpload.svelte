@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced File Upload with Real OCR, Embeddings, and Database Integration -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { createUploadMachine } from '$lib/machines/uploadMachine';
   import type { ProcessingPipeline } from '$lib/types/upload';
@@ -319,7 +321,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Mount lifecycle: connect WebSocket + initial status
-  onMount(async () => {
+  $effect(async () => {
     connectStatusSocket();
     await checkSystemStatus();
   });

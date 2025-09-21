@@ -18,8 +18,8 @@ export function cosineSimilarity(aPtr: usize, bPtr: usize, length: i32): f32 {
   let normB: f32 = 0.0;
 
   for (let i = 0; i < length; i++) {
-    const aVal = load<f32>(aPtr + (i << 2); // i * 4 bytes
-    const bVal = load<f32>(bPtr + (i << 2);
+    const aVal = load<f32>(aPtr + (i << 2)); // i * 4 bytes
+    const bVal = load<f32>(bPtr + (i << 2));
 
     dotProduct += aVal * bVal;
     normA += aVal * aVal;

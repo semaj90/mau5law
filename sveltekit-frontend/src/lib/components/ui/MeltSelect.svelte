@@ -1,8 +1,10 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   	import type {    Snippet    } from 'svelte';
   	import { Select as BitsSelect } from 'bits-ui';
-  	import { createEventDispatcher } from 'svelte';
+  	import {   } from "svelte";
   	import { cn } from '$lib/utils';
 
   	interface SelectOption {
@@ -56,20 +58,20 @@
   		'aria-labelledby': ariaLabelledBy,
   		'data-testid': testId
   	}: Props = $props();
-  	const dispatch = createEventDispatcher();
+  	
 
   	function handleValueChange(newValue: string | undefined) {
   		if (onValueChange) {
   			onValueChange(newValue);
   		}
-  		dispatch('value-change', { value: newValue });
+  		ondispatch?.({ value: newValue });
   	}
 
   	function handleOpenChange(newOpen: boolean) {
   		if (onOpenChange) {
   			onOpenChange(newOpen);
   		}
-  		dispatch('open-change', { open: newOpen });
+  		ondispatch?.({ open: newOpen });
   	}
   	// Default styles
   	const defaultTriggerClass = 'flex h-10 items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-950 dark:ring-offset-gray-950 dark:placeholder:text-gray-400 dark:focus:ring-gray-800';

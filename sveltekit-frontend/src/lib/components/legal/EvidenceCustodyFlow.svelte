@@ -7,6 +7,8 @@ Main UI component for managing the complete custody workflow with real-time coll
 and AI-powered verification features.
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     evidenceId: string
@@ -76,7 +78,7 @@ and AI-powered verification features.
   // WebSocket for real-time updates
   let wsConnection: WebSocket | null = null;
 
-  onMount(() => {
+  $effect(() => {
     // Start the state machine actor
     custodyActor.start();
     // Subscribe to state changes

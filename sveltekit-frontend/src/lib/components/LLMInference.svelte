@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
@@ -11,7 +13,7 @@
   let loading = $state(false);
   let error = $state('');
 
-  onMount(async () => {
+  $effect(async () => {
     try {
       models = await getAvailableModels();
       if (models.length > 0) selectedModel = models[0];

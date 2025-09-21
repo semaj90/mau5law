@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced Canvas Evidence Board with Fabric.js Integration -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     onevidenceUpdated?: (event?: unknown) => void;
@@ -46,7 +48,7 @@ https://svelte.dev/e/js_parse_error -->
   function setWorkflowMode(mode: string) {
     if (canvasService) canvasService.send(mode.toUpperCase());
   }
-  onMount(async () => {
+  $effect(async () => {
     if (!browser) return;
     try {
       // Dynamically import Fabric.js

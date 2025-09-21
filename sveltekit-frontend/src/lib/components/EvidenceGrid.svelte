@@ -2,6 +2,8 @@
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Attributes need to be unique -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import type { Evidence } from '$lib/types';
   import Button from '$lib/components/ui/enhanced-bits';;
@@ -81,7 +83,7 @@ https://svelte.dev/e/attribute_duplicate -->
   let error = $derived(gridData?.error);
 
   // Load evidence on mount
-  onMount(() => {
+  $effect(() => {
     evidenceActions.loadEvidence(caseId);
   });
 

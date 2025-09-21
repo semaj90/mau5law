@@ -2,6 +2,8 @@
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   import Dialog from 'bits-ui/Dialog.svelte';
@@ -46,7 +48,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 
   // Use zod adapter for superValidate
   import { zod } from 'sveltekit-superforms/adapters';
-  onMount(async () => {
+  $effect(async () => {
     form = await superValidate(zod(evidenceSchema), { initialValues: item });
     if (form && form.values && form.values.jsonData) {
       title = form.values.jsonData.title || '';

@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
@@ -181,7 +183,7 @@
     isOpen = false;
   }
   // Load model statuses on mount
-  onMount(async () => {
+  $effect(async () => {
     await refreshModelStatuses()
     // Auto-refresh every 10 seconds
     const interval = setInterval(refreshModelStatuses, 10000)

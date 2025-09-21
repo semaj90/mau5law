@@ -5,6 +5,8 @@
 https://svelte.dev/e/bind_invalid_expression -->
 <!-- @migration-task Error while migrating Svelte code: Can only bind to an Identifier or MemberExpression -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';;
@@ -82,7 +84,7 @@ https://svelte.dev/e/bind_invalid_expression -->
   });
 
   // Component lifecycle
-  onMount(async () => {
+  $effect(async () => {
     // Focus input if enabled
     if (autoFocus && messageInput) {
       messageInput.focus();

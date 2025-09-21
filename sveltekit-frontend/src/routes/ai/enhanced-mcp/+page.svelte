@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 	/**
 	 * Enhanced MCP Integration Demo Page
@@ -29,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
 	let showMetrics = $state(true);
 	let enableClusterMode = $state(true);
 
-	onMount(async () => {
+	$effect(async () => {
 		await checkSystemStatus();
 		startSystemMonitoring();
 		logMessage('info', 'Enhanced MCP Integration Demo loaded', 'system');

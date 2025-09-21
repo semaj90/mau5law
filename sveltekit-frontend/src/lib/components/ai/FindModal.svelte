@@ -2,10 +2,12 @@
 https://svelte.dev/e/component_invalid_directive -->
 <!-- @migration-task Error while migrating Svelte code: This type of directive is not valid on components -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import Dialog from '$lib/components/ui/MeltDialog.svelte';
   import { Search, Sparkles, FileText, Users, Calendar, Zap, Brain, Target } from 'lucide-svelte';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import { fade, fly, scale } from 'svelte/transition';
   import { quintInOut, elasticOut } from 'svelte/easing';
   import { 
@@ -32,10 +34,10 @@ https://svelte.dev/e/component_invalid_directive -->
   let autoSuggestions = $state<AutoMCPSuggestion[]>([]);
   let phase13Status = $state<any>(null);
   let systemHealth = $state<any>(null);
-  const dispatch = createEventDispatcher();
+  
 
   // Load search history from localStorage and initialize Phase 13
-  onMount(async () => {
+  $effect(async () => {
     const saved = localStorage.getItem('ai-search-history');
     if (saved) {
       searchHistory = JSON.parse(saved);
@@ -217,7 +219,7 @@ https://svelte.dev/e/component_invalid_directive -->
 
   // Handle result selection
   function selectResult(result: any) {
-    dispatch('select', result);
+    ondispatch?.(result);
     close();
   }
 

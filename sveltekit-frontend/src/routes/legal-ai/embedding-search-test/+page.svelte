@@ -1,5 +1,7 @@
 <!-- Legal AI Embedding & Search Test Component -->
 <script>
+  // Svelte 5 runes are auto-imported
+
   import { onMount } from 'svelte';
 
   interface Props {
@@ -27,7 +29,7 @@
   const CUDA_BASE = 'http://localhost:8096/api/v1';
 
   // Health check on component mount
-  onMount(async () => {
+  $effect(async () => {
     await checkSystemHealth();
     await loadSearchStats();
     await checkCUDAStatus();

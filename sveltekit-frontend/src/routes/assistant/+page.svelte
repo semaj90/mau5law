@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, setContext } from 'svelte';
 
@@ -28,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   };
   setContext('user', () => mockUser);
 
-  onMount(async () => {
+  $effect(async () => {
     // Load recent evidence files as context
     try {
       const response = await fetch('/api/evidence-files?limit=10');

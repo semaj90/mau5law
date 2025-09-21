@@ -5,6 +5,8 @@ https://svelte.dev/e/attribute_duplicate -->
 https://svelte.dev/e/js_parse_error -->
 <!-- Enhanced Vector Search Interface with Ranking, Analytics, and Real-time Results -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // Updated to use melt-ui components
   import Button from '$lib/components/ui/bitsbutton.svelte';
@@ -49,7 +51,7 @@ https://svelte.dev/e/js_parse_error -->
     TrendingUp,
     Zap,
   } from "lucide-svelte";
-  import { createEventDispatcher, onMount } from "svelte";
+  import {  , onMount  } from "svelte";
   import { derived, get, writable } from "svelte/store";
 
   // Props
@@ -290,8 +292,8 @@ https://svelte.dev/e/js_parse_error -->
       }
 
       // Dispatch events
-      dispatch("search", { query: searchTerm, results });
-      dispatch("analytics", {
+      ondispatch?.({ query: searchTerm, results });
+      ondispatch?.({
         event: "search_performed",
         data: {
           query: searchTerm,
@@ -312,7 +314,7 @@ https://svelte.dev/e/js_parse_error -->
 
     // Track click analytics
     if (enableAnalytics) {
-      dispatch("analytics", {
+      ondispatch?.({
         event: "result_clicked",
         data: {
           resultId: (result as { similarity?: any; metadata?: any; highlights?: any; snippet?: any; content?: any; id?: any; rank?: any; title?: any }).id,
@@ -322,7 +324,7 @@ https://svelte.dev/e/js_parse_error -->
       });
     }
 
-    dispatch("select", { result });
+    ondispatch?.({ result });
   }
 
   function applySorting(
@@ -360,7 +362,7 @@ https://svelte.dev/e/js_parse_error -->
   // ============================================================================
 
   function applyFilters() {
-    dispatch("filter", { filters: get(searchFilters) });
+    ondispatch?.({ filters: get(searchFilters) });
     if (get(searchQuery).trim()) {
       performSearch();
     }
@@ -431,7 +433,7 @@ https://svelte.dev/e/js_parse_error -->
   // LIFECYCLE
   // ============================================================================
 
-  onMount(() => {
+  $effect(() => {
     // Load search history from localStorage
     const savedHistory = localStorage.getItem("vector-search-history");
     if (savedHistory) {

@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import type { Snippet } from 'svelte';
 
   interface CardProps {

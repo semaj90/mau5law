@@ -6,6 +6,8 @@ Vector Intelligence Demo Component
 Comprehensive showcase of Phase 4 Vector Intelligence capabilities
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
@@ -130,7 +132,7 @@ Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
     }
   ];
 
-  onMount(async () => {
+  $effect(async () => {
     await loadSystemHealth();
   });
 

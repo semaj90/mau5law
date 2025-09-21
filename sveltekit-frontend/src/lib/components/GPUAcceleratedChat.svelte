@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   import { onMount, onDestroy } from 'svelte';
@@ -434,7 +436,7 @@
   }
 
   // Lifecycle
-  onMount(() => {
+  $effect(() => {
     // Generate or retrieve session ID
     if (!sessionStorage.getItem('sessionId')) {
       sessionStorage.setItem('sessionId', crypto.randomUUID());

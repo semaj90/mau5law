@@ -12,8 +12,10 @@ https://svelte.dev/e/js_parse_error -->
   - Advanced filtering capabilities
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import { Combobox } from 'bits-ui';
   import { Search, FileText, Scale, Shield, Users, Zap, Clock } from 'lucide-svelte';
   import { debounce } from 'lodash-es';
@@ -63,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
   let recentSearches = $state<string[] >([]);
   let suggestions = $state<string[] >([]);
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  
   // Icons for different types
   const typeIcons = {
     caseItem: Scale,
@@ -82,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
     document: 'text-gray-600'
   };
   // Load recent searches from localStorage
-  onMount(() => {
+  $effect(() => {
     const stored = localStorage.getItem('legalSearchHistory');
     if (stored) {
       recentSearches = JSON.parse.slice(0, 5);
@@ -128,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
           },
           highlights: (result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).highlights || []
         }));
-        dispatch('search', { query, results: searchResults });
+        ondispatch?.({ query, results: searchResults });
       } else {
         console.error(error);
         searchResults = [];
@@ -174,7 +176,7 @@ https://svelte.dev/e/js_parse_error -->
       recentSearches = [(result as { id?: unknown; title?: unknown; content?: unknown; type?: unknown; summary?: unknown; score?: unknown; similarity?: unknown; createdAt?: unknown; date?: unknown; jurisdiction?: unknown; status?: unknown; confidentialityLevel?: unknown; caseId?: unknown; tags?: unknown; highlights?: unknown; metadata?: unknown }).title, ...recentSearches.slice(0, 4)];
       localStorage.setItem('legalSearchHistory', JSON.stringify(recentSearches));
     }
-    dispatch('select', result);
+    ondispatch?.(result);
   }
   // Handle clear
   function handleClear() {
@@ -182,7 +184,7 @@ https://svelte.dev/e/js_parse_error -->
     value = "";
     selectedResult = null;
     searchResults = [];
-    dispatch('clear');
+    ondispatch?.();
   }
   // Get display results (includes recent searches when no query)
   let displayResults = $derived(inputValue.length < 2 );

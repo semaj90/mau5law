@@ -1,6 +1,8 @@
 <!-- Enhanced AI Chat Assistant with EmbeddingGemma + RAG Integration -->
 <!-- Uses Svelte 5 patterns with bits-ui components -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import Button from '$lib/components/ui/enhanced-bits';
   import { Textarea } from "$lib/components/ui/textarea/index";

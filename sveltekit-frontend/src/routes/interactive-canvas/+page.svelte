@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     data: PageData;
@@ -41,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   	let mainContainer: HTMLElement;
   	let sidebarOpen = $state(false);
 
-  	onMount(() => {
+  	$effect(() => {
   		// Initialize canvas dimensions
   		updateCanvasDimensions();
   		window.addEventListener('resize', updateCanvasDimensions);

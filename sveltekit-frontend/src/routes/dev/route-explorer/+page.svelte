@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -95,7 +97,7 @@
     return [...tags].sort();
   });
 
-  onMount(async () => {
+  $effect(async () => {
     if (!browser) return;
 
     try {

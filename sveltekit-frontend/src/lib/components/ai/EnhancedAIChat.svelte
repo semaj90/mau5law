@@ -1,5 +1,7 @@
 <!-- Enhanced AI Chat Component - Svelte 5 Compatible -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
@@ -238,7 +240,7 @@
   }
 
   // Initialize on mount
-  onMount(async () => {
+  $effect(async () => {
     if (!sessionId) {
       sessionId = `session_${Date.now()}_${Math.random.toString-substr(2, 9)}`;
     }
@@ -404,7 +406,7 @@ Clear
         </div>
       {/if}
     </div>
-  </Card.Root>
+  </Card>
 
   <!-- Analysis Dialog -->
   {#if showAnalysisPanel}

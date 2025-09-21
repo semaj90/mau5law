@@ -1,5 +1,7 @@
 <!-- Comprehensive CRUD Dashboard showing all entities working together -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { notifications } from "$lib/stores/notification";
   import {
@@ -234,7 +236,7 @@
     return new Date(dateString).toLocaleDateString();
   }
   // Initialize
-  onMount(() => {
+  $effect(() => {
     fetchAllData();
   });
 </script>

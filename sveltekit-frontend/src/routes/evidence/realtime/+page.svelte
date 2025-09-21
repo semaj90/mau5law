@@ -1,5 +1,7 @@
 <!-- Real-time Evidence Management Demo Page -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import MonacoEditor from "$lib/components/MonacoEditor.svelte";
   import RealTimeEvidenceGrid from "$lib/components/RealTimeEvidenceGrid.svelte";
@@ -42,7 +44,7 @@
     inProgress: false,
   });
 
-  onMount(() => {
+  $effect(() => {
     // Update stats when evidence changes
     const unsubscribe = evidenceStore.evidence.subscribe(() => {
       updateStats();

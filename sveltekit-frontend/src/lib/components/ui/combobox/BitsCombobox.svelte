@@ -1,5 +1,7 @@
 <!-- Combobox Component for Legal AI App -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { Combobox } from 'bits-ui';
   import { Check, ChevronDown, Search, X } from 'lucide-svelte';

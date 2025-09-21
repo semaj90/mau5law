@@ -3,8 +3,10 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Smart Document Form with OCR Auto-Population -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   	// Updated to use melt-ui components
   	import Button from '$lib/components/ui/Button.svelte';
   	import Card from '$lib/components/ui/MeltCard.svelte';
@@ -28,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   	let { enableSmartSuggestions = $bindable()  }: { enableSmartSuggestions = $bindable() : unknown } = $props(); // true;
   	let { documentTypes = $bindable()  }: { documentTypes = $bindable() : unknown } = $props(); // string[] = ['legal_document', 'contract', 'form'];
 
-  	const dispatch = createEventDispatcher();
+  	
 
   	// Component state
   let fileInput = $state<HTMLInputElementlet uploadedFile: File  | null>(null); const data = null);
@@ -52,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
   let suggestionLoading = $state<Record<string, boolean>(false) >( );
 
   	// Default form schema if none provided
-  	onMount(() => {
+  	$effect(() => {
   				{ name: 'case_number', type: 'case_number', label: 'Case Number', required: false },
   				{ name: 'document_date', type: 'date', label: 'Document Date', required: true },
   				{ name: 'jurisdiction', type: 'text_block', label: 'Jurisdiction', required: false },
@@ -86,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
   			}
 
   			showPreview = true;
-  			dispatch('ocrComplete', { result, extractedFields: $extractedFields });
+  			ondispatch?.({ result, extractedFields: $extractedFields });
 
   		} catch (error) {
   			console.error('OCR processing failed:', error);
@@ -128,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
   		// Validate field
   		validateField(fieldName, value);
 
-  		dispatch('fieldChange', { fieldName, value, confidence });
+  		ondispatch?.({ fieldName, value, confidence });
   	};
 
   	// Apply suggestion to field
@@ -175,7 +177,7 @@ https://svelte.dev/e/js_parse_error -->
   				return acc;
   			}, as Record<string, any>);
 
-  			dispatch('submit', { formData, extractedFields: $extractedFields });
+  			ondispatch?.({ formData, extractedFields: $extractedFields });
   		}
   	};
 

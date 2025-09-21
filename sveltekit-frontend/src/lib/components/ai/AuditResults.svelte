@@ -2,6 +2,8 @@
 This Svelte component displays semantic audit results and TODOs from the backend.
 TODO: After initial test, wire up real Context7 audit API, agent triggers, and live updates. -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import type { SemanticAuditResult } from '$lib/ai/types';
@@ -31,7 +33,7 @@ TODO: After initial test, wire up real Context7 audit API, agent triggers, and l
     }
   }
 
-  onMount(fetchAuditResults);
+  $effect(fetchAuditResults);
 
   // TODO: Add actions to trigger agent fixes, mark TODOs as resolved, and live update from backend
 </script>

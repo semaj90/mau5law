@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // Updated to use melt-ui components
   import Button from '$lib/components/ui/bitsbutton.svelte';
@@ -245,7 +247,7 @@
     return "Negative";
   }
 
-  onMount(() => {
+  $effect(() => {
     checkServiceHealth();
     // Refresh health status every 30 seconds
     const interval = setInterval(checkServiceHealth, 30000);

@@ -12,6 +12,8 @@ Features:
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 import { onMount } from 'svelte';
 import Button from './Button.svelte';
 import Card from './Card.svelte';
@@ -89,7 +91,7 @@ let gpuMetrics = $state({
 
 
 // Check service health on mount
-onMount(async () => {
+$effect(async () => {
 	await checkServiceHealth();
 
 	if (enableRealTimeUpdates) {

@@ -2,9 +2,11 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
   import { draggable } from '$lib/actions/draggable';
   import { aiService } from '$lib/services/aiService';
   // UI Components
@@ -19,7 +21,7 @@ https://svelte.dev/e/js_parse_error -->
   // Icons
   import { Edit, Save, Sparkles, Tag, User as UserIcon, X } from "lucide-svelte";
 
-  const dispatch = createEventDispatcher();
+  
 
   // Simple POI interface for the component
   interface POIData {
@@ -104,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
     poi = updatedPoi;
 
     // Dispatch update event
-    dispatch("update", updatedPoi);
+    ondispatch?.(updatedPoi);
 
     isEditing = false;
   }
@@ -162,7 +164,7 @@ https://svelte.dev/e/js_parse_error -->
     posY = event.detail.y;
 
     // Dispatch position update event
-    dispatch("updatePosition", { id: poi.id, x: posX, y: posY });
+    ondispatch?.({ id: poi.id, x: posX, y: posY });
   }
 </script>
 
@@ -176,7 +178,7 @@ https://svelte.dev/e/js_parse_error -->
         onDrag: (x, y) => {
           posX = x;
           posY = y;
-          dispatch("updatePosition", { id: poi.id, x: posX, y: posY });
+          ondispatch?.({ id: poi.id, x: posX, y: posY });
         }
       }}
       oncontextmenu={handleContextMenu}
@@ -184,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
       tabindex={0}
       aria-label="POI context menu"
     >
-      <!-- Card usage fix: replace Card.Root, Card.Header, etc. with Card, CardHeader, CardContent, CardFooter -->
+      <!-- Card usage fix: replace Card, CardHeader, etc. with Card, CardHeader, CardContent, CardFooter -->
       <div class="nier-nier-bits-card nier-shadow nier-border nier-bg p-4 rounded-xl max-w-md min-w-[320px]">
         <div class="nier-header flex items-center gap-2 mb-2">
           <UserIcon class="nier-icon text-gray-400 w-6 h-6" />
@@ -324,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
     <ContextMenu.Item
       onselect={() => {
         poi = { ...poi, threatLevel: "low" };
-        dispatch("update", poi);
+        ondispatch?.(poi);
       }}
     >
       <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Low</span>
@@ -333,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
     <ContextMenu.Item
       onselect={() => {
         poi = { ...poi, threatLevel: "medium" };
-        dispatch("update", poi);
+        ondispatch?.(poi);
       }}
     >
       <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Medium</span>
@@ -342,7 +344,7 @@ https://svelte.dev/e/js_parse_error -->
     <ContextMenu.Item
       onselect={() => {
         poi = { ...poi, threatLevel: "high" };
-        dispatch("update", poi);
+        ondispatch?.(poi);
       }}
     >
       <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">High</span>
@@ -351,7 +353,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <ContextMenu.Separator />
 
-    <ContextMenu.Item onselect={() => dispatch("delete", poi.id)}>
+    <ContextMenu.Item onselect={() => ondispatch?.(poi.id)}>
       <X class="container mx-auto px-4" />
       Delete POI
     </ContextMenu.Item>

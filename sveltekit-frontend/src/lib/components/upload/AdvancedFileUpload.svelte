@@ -1,5 +1,7 @@
 <!-- Component exported by default -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import Button from '$lib/components/ui/button/Button.svelte';
@@ -19,9 +21,9 @@
     Upload,
     Video,
   } from 'lucide-svelte';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
 
-  const dispatch = createEventDispatcher();
+  
 
   // Props using Svelte 5 syntax
   let {
@@ -94,7 +96,7 @@
     url?: string;
     thumbnailUrl?: string;
   }
-  onMount(() => {
+  $effect(() => {
     if (browser && enablePasteUpload) {
       document.addEventListener("paste", handlePaste);
   }
@@ -224,7 +226,7 @@
       `${validFiles.length} file(s) added. Total: ${files.length} files`
     );
 
-    dispatch("filesAdded", { files: validFiles });
+    ondispatch?.({ files: validFiles });
   }
   async function compressFile(file: File): Promise<File> {
     if (!enableCompression || !file.type.startsWith("image/")) {
@@ -295,7 +297,7 @@
     isUploading = false;
     updateTotalProgress();
 
-    dispatch("uploadComplete", { files: filesToUpload });
+    ondispatch?.({ files: filesToUpload });
   }
   async function uploadFile(fileItem: FileUploadItem) {
     fileItem.status = "uploading";
@@ -406,7 +408,7 @@
     updateTotalProgress();
 
     FocusManager.announceToScreenReader("File removed");
-    dispatch("fileRemoved", { fileId });
+    ondispatch?.({ fileId });
   }
   function retryUpload(fileId: string) {
     const fileItem = files.find((f) => f.id === fileId);

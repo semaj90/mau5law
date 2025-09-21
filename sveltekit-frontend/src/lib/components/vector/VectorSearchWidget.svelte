@@ -5,6 +5,8 @@ Vector Search Widget
 Compact searchable component for embedding in other interfaces
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';;
@@ -118,7 +120,7 @@ Compact searchable component for embedding in other interfaces
     return 'vector-confidence-low';
   }
 
-  onMount(() => {
+  $effect(() => {
     // Close dropdown when clicking outside
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Element;

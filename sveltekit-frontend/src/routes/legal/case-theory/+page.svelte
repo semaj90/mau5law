@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
@@ -56,7 +58,7 @@
     { id: 'technical-based', label: 'Technical-Driven', description: 'Focus on legal technicalities' }
   ];
 
-  onMount(async () => {
+  $effect(async () => {
     // Initialize with case data if coming from case page
     const urlParams = new URLSearchParams(window.location.search);
     const paramCaseId = urlParams.get('caseId');

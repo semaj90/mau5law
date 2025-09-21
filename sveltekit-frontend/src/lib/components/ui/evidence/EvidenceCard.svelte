@@ -1,6 +1,6 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { Card } from '$lib/components/ui/enhanced-bits';
+  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/enhanced-bits';
   import Button from '$lib/components/ui/nes-button.svelte';
   import { CaseLogic, type CaseFile } from '$lib/core/logic/case-logic';
 
@@ -15,18 +15,18 @@
   }
 </script>
 
-<Card.Root class="nes-container is-dark with-title">
-  <Card.Header>
-    <Card.Title class="title">{caseFile.title}</Card.Title>
-    <Card.Description>{displayStatus}</Card.Description>
-  </Card.Header>
+<Card class="nes-container is-dark with-title">
+  <CardHeader>
+    <CardTitle class="title">{caseFile.title}</CardTitle>
+    <CardDescription>{displayStatus}</CardDescription>
+  </CardHeader>
 
-  <Card.Content class="space-y-4">
+  <CardContent class="space-y-4">
     <p>{caseFile.summary}</p>
     <div class="flex justify-end">
       <Button class="nes-btn is-primary" onclick={handleAnalyzeClick}>
         Analyze
       </Button>
     </div>
-  </Card.Content>
-</Card.Root>
+  </CardContent>
+</Card>

@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	// Debounce + streaming support
@@ -100,12 +102,16 @@ https://svelte.dev/e/js_parse_error -->
   let event = $state('message');
   let dataStr = $state('');
   					for (const line of lines) {
-  						if (line.startsWith('event:')) event = line.slice.trim();
-  						else if (line.startsWith('data:')) dataStr += line.slice.trim();
+  						if (line.startsWith('event:')) event = line.slice(6).trim();
+  						else if (line.startsWith('data:')) dataStr += line.slice(5).trim();
   					}
   					if (dataStr) {
-  						try { handleStreamEvent(event, JSON.parse(dataStr)); } catch }
-  				}
+  						try {
+  							handleStreamEvent(event, JSON.parse(dataStr));
+  						} catch (e) {
+  							console.error('Failed to parse stream data:', e);
+  						}
+  					}
   			}
   		} catch (e: unknown) {
   			if (e?.name !== 'AbortError') errorMsg = e?.message || String(e);
@@ -139,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
   		streaming = false;
   	}
 
-  	onMount(() => {
+  	$effect(() => {
   		if (autoFocus) {
   			const el = document.getElementById('query-input');
   			el?.focus();

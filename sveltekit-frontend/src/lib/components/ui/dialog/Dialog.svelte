@@ -1,11 +1,11 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
   import { X } from "lucide-svelte";
   import { quadOut } from "svelte/easing";
   import { cn } from '$lib/utils';
 
-  const dispatch = createEventDispatcher();
+  
 
   let { open = $bindable(),
     title = $bindable(),
@@ -40,7 +40,7 @@
   // close function exposed to footer slot via {close}
   function close() {
     open = false;
-    dispatch("close");
+    ondispatch?.();
   }
 
   function handleKeydown(event: KeyboardEvent) {

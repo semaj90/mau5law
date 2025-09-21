@@ -2,15 +2,17 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 mcp<script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 
   import Button from '$lib/components/ui/enhanced-bits';;
   import { notifications, type Notification } from "$lib/stores/notification";
   import { FocusManager } from "$lib/utils/accessibility";
   import { AlertCircle, AlertTriangle, Check, Info, X } from "lucide-svelte";
-  import { createEventDispatcher, onMount } from "svelte";
+  import {  , onMount  } from "svelte";
 
   // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  // 
   let container = $state<HTMLElementlet notificationElements  | null>(null); const data = new Map<string, HTMLElement>());
   let isVisible = $state(false);
   let maxVisible = $state(5);
@@ -32,7 +34,7 @@ mcp<script lang="ts">
     $notifications.notifications.length - maxVisible
   ));
 
-  onMount(() => {
+  $effect(() => {
     // Announce notifications to screen readers
     const unsubscribe = notifications.subscribe((notifs) => {
       const latestNotification = notifs.notifications[0];
@@ -92,12 +94,12 @@ mcp<script lang="ts">
   function dismissNotification(id: string) {
     notifications.remove(id);
     notificationElements.delete(id);
-    dispatch("dismiss", { id });
+    ondispatch?.({ id });
   }
   function dismissAll() {
     notifications.clear();
     notificationElements.clear();
-    dispatch("dismissAll");
+    ondispatch?.();
   }
   // Action to set notification element in the Map
   function setNotificationElement(node: HTMLElement, notificationId: string) {

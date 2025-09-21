@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { ButtonBits, CardBits, InputBits } from '$lib/components/ui/bits-ui';
   import CitationsSaveButton from '$lib/components/citations/CitationsSaveButton.svelte';
   import { authDemo } from '$lib/modules/auth-demo';

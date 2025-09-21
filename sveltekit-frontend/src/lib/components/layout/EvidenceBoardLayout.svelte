@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
 
@@ -22,7 +24,7 @@
   // Connection status (matching Evidence Board)
   let isConnected = $state(false);
 
-  onMount(() => {
+  $effect(() => {
     // Simulate connection status
     setTimeout(() => {
       isConnected = false; // Keep as "Demo Mode - Server Not Connected" to match screenshot

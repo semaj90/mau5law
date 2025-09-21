@@ -1,5 +1,7 @@
 <!-- Enhanced AI Chat Test Component - Svelte 5 with bits-ui and shadcn-svelte -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { browser } from '$app/environment';
   import { onMount, tick } from 'svelte';
@@ -50,7 +52,7 @@
   let inputElement: HTMLInputElement = $state(undefined as any);
 
   // Check system status on mount
-  onMount(async () => {
+  $effect(async () => {
     if (browser) {
       await checkSystemHealth();
 

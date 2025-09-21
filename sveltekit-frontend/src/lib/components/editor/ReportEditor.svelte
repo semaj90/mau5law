@@ -4,6 +4,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { , onDestroy, onMount } from 'svelte';
 
@@ -56,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
     editorHeight = $reportUI.fullscreen ? window.innerHeight - 200 : 500;
   }
 
-  onMount(() => {
+  $effect(() => {
     window.addEventListener('resize', updateEditorHeight);
   });
 
@@ -65,7 +67,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Initialize auto-save
-  onMount(() => {
+  $effect(() => {
     if ($report.settings.autoSave) {
       cleanupAutoSave = setupAutoSave();
     }

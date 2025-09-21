@@ -3,6 +3,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 <!-- @migration-task Error while migrating Svelte code: Mixing old (on:input) and new syntaxes for event handling is not allowed. Use only the oninput syntax -->
 <!-- YoRHa Main Interface Page -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { goto } from '$app/navigation';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
@@ -70,7 +72,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let legalSession = $state<LegalAISession | null>(null);
   let commandHistory = $state<CommandResult[]>([]);
 
-  onMount(() => {
+  $effect(() => {
     // Fire and forget async initialization
     (async () => {
       try {
@@ -240,7 +242,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   const debouncedSearch = debounce((q: string) => performSemanticSearch(q), 400);
 
   // Build local index lazily after mount (non-blocking)
-  onMount(() => {
+  $effect(() => {
     // Restore mode
     if (typeof localStorage !== 'undefined') {
       const saved = localStorage.getItem('yorha-search-mode');

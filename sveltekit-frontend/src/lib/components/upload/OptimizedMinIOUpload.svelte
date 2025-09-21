@@ -1,5 +1,7 @@
 <!-- Optimized MinIO Upload with Parallel Processing, Toast Notifications & Redis Sync -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   // @ts-nocheck - Service import compatibility
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
@@ -712,7 +714,7 @@
   function openFileDialog() { if (!disabled && !uploading && fileInput) fileInput.click(); }
 
   // Pre-flight MinIO health (non-blocking if fails)
-  onMount(async () => {
+  $effect(async () => {
     restoreSession();
     try {
       const res = await fetch('/api/v1/minio/health');

@@ -6,6 +6,8 @@ Enhanced Legal AI Chat with Input Synthesis and LegalBERT Integration
 Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipeline, and streaming
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import type { SystemStatus } from "$lib/types/global";
   import type { Props } from "$lib/types/global";
@@ -128,7 +130,7 @@ Combines all advanced services: input synthesis, LegalBERT analysis, RAG pipelin
     $messages.some((m) => m.synthesizedInput || m.legalAnalysis || m.ragResults)
   );
 
-  onMount(async () => {
+  $effect(async () => {
     if (browser) {
       // Initialize chat session with database
       await initializeChatSession();

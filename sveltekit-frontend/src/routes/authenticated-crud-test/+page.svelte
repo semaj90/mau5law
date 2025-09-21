@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
@@ -377,7 +379,7 @@
   }
 
   // Initialize on mount
-  onMount(async () => {
+  $effect(async () => {
     await checkAuth();
     if (isAuthenticated) {
       await testAuthenticatedGET();

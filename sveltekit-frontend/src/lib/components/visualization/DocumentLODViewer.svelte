@@ -15,6 +15,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { browser } from '$app/environment';
   import { onMount, onDestroy } from 'svelte';
@@ -106,7 +108,7 @@
   }));
 
   // Initialize WebGPU for document rendering
-  onMount(async () => {
+  $effect(async () => {
     if (!browser || !enableWebGPU) return;
     
     try {

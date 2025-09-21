@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import Button from '$lib/components/nes/Button.svelte';
   import Card from '$lib/components/nes/Card.svelte';
   import Dialog from '$lib/components/nes/Dialog.svelte';
@@ -26,7 +28,7 @@
   type AvatarSize = typeof avatarSizes[number]
 
   let focusReady = false
-  onMount(() => { focusReady = true })
+  $effect(() => { focusReady = true })
 </script>
 
 <style>

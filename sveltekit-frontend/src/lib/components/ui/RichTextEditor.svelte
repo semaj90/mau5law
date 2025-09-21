@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     content?: unknown;
@@ -32,9 +34,9 @@ https://svelte.dev/e/js_parse_error -->
     ListOrdered,
     Save,
   } from "lucide-svelte";
-  import { createEventDispatcher, onDestroy, onMount } from "svelte";
+  import {  , onDestroy, onMount  } from "svelte";
 
-  const dispatch = createEventDispatcher();
+  
 
   let element: HTMLElement;
   let editor: Editor;
@@ -47,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
   let isBulletList = $state(false);
   let isOrderedList = $state(false);
 
-  onMount(() => {
+  $effect(() => {
         }),
         Image.configure({
           inline: true,
@@ -100,14 +102,14 @@ https://svelte.dev/e/js_parse_error -->
     // Convert to markdown (simple conversion)
     const markdown = htmlToMarkdown(html);
 
-    dispatch("change", { html, markdown, json });
+    ondispatch?.({ html, markdown, json });
 
     if (autoSave) {
       if (autoSaveTimer) {
         clearTimeout(autoSaveTimer);
   }
       autoSaveTimer = setTimeout(() => {
-        dispatch("save", { html, markdown, json });
+        ondispatch?.({ html, markdown, json });
       }, autoSaveDelay);
   }}
   function htmlToMarkdown(html: string): string {
@@ -168,7 +170,7 @@ https://svelte.dev/e/js_parse_error -->
     const json = editor.getJSON();
     const markdown = htmlToMarkdown(html);
 
-    dispatch("save", { html, markdown, json });
+    ondispatch?.({ html, markdown, json });
   }
   // Public methods
   export function getContent() {

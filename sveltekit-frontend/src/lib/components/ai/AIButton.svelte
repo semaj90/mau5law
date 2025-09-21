@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     position: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left' ;
@@ -82,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
   	function hideTooltipHandler() {
   		showTooltip = false;
   	}
-  	onMount(() => {
+  	$effect(() => {
   		mounted = true;
   		// Add global keyboard shortcut (Ctrl/Cmd + K)
   		function handleGlobalKeydown(event: KeyboardEvent) {

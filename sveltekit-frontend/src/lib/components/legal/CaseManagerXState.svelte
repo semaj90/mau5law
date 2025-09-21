@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 /// <reference types="vite/client" />
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   // Component props
   let { ...props }: unknown = $props();
 

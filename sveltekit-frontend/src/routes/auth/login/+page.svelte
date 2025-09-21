@@ -3,6 +3,8 @@
   Now with NES.css Retro Gaming Modal Option
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { enhance } from '$app/forms';
   

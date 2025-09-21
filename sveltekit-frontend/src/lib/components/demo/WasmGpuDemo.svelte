@@ -4,6 +4,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { createWasmGpuService, WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';
@@ -45,7 +47,7 @@
     }
   ];
   let selectedScenario = $state(legalTestScenarios[0]);
-  onMount(async () => {
+  $effect(async () => {
     console.log('🎮 WASM GPU Demo component mounted');
     // Wait for initialization
     const unsubscribe = isReady.subscribe(ready => {

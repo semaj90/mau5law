@@ -1,5 +1,7 @@
 <!-- Legal AI Performance Metrics Dashboard -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { 
@@ -17,7 +19,7 @@
   let metricsHistory: PerformanceSnapshot[] = $state([]);
   let refreshInterval: number;
   
-  onMount(() => {
+  $effect(() => {
     // Refresh metrics every 5 seconds
     refreshInterval = setInterval(() => {
       metricsHistory = legalPerformanceMonitor.getHistoricalMetrics(10);

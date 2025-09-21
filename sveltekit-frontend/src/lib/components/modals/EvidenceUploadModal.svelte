@@ -2,8 +2,10 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
 
 
   import Button from '$lib/components/ui/button/Button.svelte';
@@ -20,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   } from "lucide-svelte";
   
 
-  const dispatch = createEventDispatcher();
+  
 
   let fileInput: HTMLInputElement;
   let dragActive = $state(false);
@@ -59,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   function closeModal() {
     uploadActions.closeModal();
-    dispatch("close");
+    ondispatch?.();
   }
 </script>
 
@@ -214,7 +216,7 @@ closeModal()}>
 
           {#if completedUploads.length > 0}
             <Button class="bits-btn" onclick={() =>
-dispatch("viewEvidence", completedUploads)}>
+ondispatch?.(completedUploads)}>
               View Evidence
 </Button>
           {/if}

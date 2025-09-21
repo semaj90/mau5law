@@ -1,6 +1,6 @@
 <script lang="ts">
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
 
   interface Props {
     variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'magic' | 'item';
@@ -22,7 +22,7 @@
     children
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   const variantClasses = {
     primary: 'bg-gradient-to-b from-blue-500 to-blue-700 hover:from-blue-400 hover:to-blue-600 border-blue-300',
@@ -41,7 +41,7 @@
 
   function handleClick(event: MouseEvent) {
     if (!disabled && !loading) {
-      dispatch('click', event);
+      ondispatch?.(event);
     }
   }
 </script>

@@ -3,13 +3,15 @@ https://svelte.dev/e/rune_missing_parentheses -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use rune without parentheses -->
 <!-- Enhanced YoRHa Case Creation Form with Superforms + XState Integration -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount, onDestroy } from 'svelte';
+  import {  , onMount, onDestroy  } from "svelte";
   import { createCaseCreationForm, FormStatePersistence, FORM_STORAGE_KEYS } from '$lib/forms/superforms-xstate-integration';
   import { enhancedCaseAPI } from '$lib/api/enhanced-case-api';
   import { goto } from '$app/navigation';
   import { z } from 'zod';
-  const dispatch = createEventDispatcher();
+  
 
   // Enhanced Zod schema for case creation with legal AI context
   const CaseCreationSchema = z.object.min(3, 'Title must be at least 3 characters'),
@@ -36,7 +38,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   let formContext = $derived(formIntegration?.context?.get() || );
 
   // Initialize form integration on mount
-  onMount(async () => {
+  $effect(async () => {
     // Load saved form data if available
     const savedData = formStatePersistence.load();
     const initialData = savedData || {
@@ -65,7 +67,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
 
     // Subscribe to state changes for debugging and events
     unsubscribe = formIntegration.state.subscribe((state: string) => {
-      dispatch('stateChange', { 
+      ondispatch?.({ 
         state, 
         context: formIntegration.context.get() 
       });
@@ -111,7 +113,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // Success handler
   function handleFormSuccess(result: unknown) {
     console.log('🎉 Form submission successful:', result);
-    dispatch('success', { caseItem: result });
+    ondispatch?.({ caseItem: result });
     // Clear saved draft
     formStatePersistence.clear();
     // Navigate to the new case
@@ -123,7 +125,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // Error handler
   function handleFormError(error: unknown) {
     console.error('❌ Form submission error:', error);
-    dispatch('error', { message: error.message || error || 'Case creation failed' });
+    ondispatch?.({ message: error.message || error || 'Case creation failed' });
   }
 
   // Step navigation
@@ -472,7 +474,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
         <div class="final-actions flex space-x-4">
           <button
             type="button"
-            onclick={() => dispatch('close')}
+            onclick={() => ondispatch?.()}
             disabled={isSubmitting}
             class="cancel-btn px-6 py-3 border border-yorha-accent-warm/50 text-yorha-light rounded hover:bg-yorha-accent-warm/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >

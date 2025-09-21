@@ -2,9 +2,11 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import type { User } from '$lib/types';
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount,   } from "svelte";
   import { Search, File, Briefcase, User as UserIcon, Settings, Command } from "lucide-svelte";
   import { cn } from '$lib/utils';
   interface Props {
@@ -24,7 +26,7 @@ https://svelte.dev/e/js_parse_error -->
     action?: () => void;
   }
   // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  // 
   let searchInput: HTMLInputElement;
   let searchQuery = $state('');
   let selectedIndex = $state(0);
@@ -99,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
       href: '/settings'
   }
   ];
-  onMount(() => {
+  $effect(() => {
     if (open && searchInput) {
       searchInput.focus();
   }
@@ -141,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   function close() {
     open = false;
-    dispatch('close');
+    ondispatch?.();
   }
   // TODO: Convert to $derived: if (filteredItems.length > 0 && selectedIndex >= filteredItems.length) {
     selectedIndex = 0

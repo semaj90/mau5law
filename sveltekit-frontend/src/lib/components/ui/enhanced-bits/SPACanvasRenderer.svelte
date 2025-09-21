@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   /**
    * Single Page App Canvas Renderer
@@ -69,7 +71,7 @@
   let frameCount = 0;
   let lastFpsUpdate = 0;
 
-  onMount(async () => {
+  $effect(async () => {
     if (!canvas) return;
 
     ctx = canvas.getContext('2d');

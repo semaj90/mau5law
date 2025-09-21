@@ -1,5 +1,7 @@
 <!-- Modular Badge Component - Bits UI + UnoCSS + Svelte 5 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import type { Snippet } from 'svelte';
   import 'nes.css/css/nes.min.css';
   import { cva, type VariantProps } from 'class-variance-authority';

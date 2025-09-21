@@ -1,5 +1,7 @@
 <!-- YoRHa Detective Modal Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import type {     Snippet     } from 'svelte';
@@ -25,7 +27,7 @@
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     const handleEscape = (e: CustomEvent<any>) => handleKeydown(e);
     document.addEventListener('keydown', handleEscape);
     return () => {

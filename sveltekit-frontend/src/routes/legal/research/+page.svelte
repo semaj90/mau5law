@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
@@ -52,7 +54,7 @@
     precedentialValues: ['High', 'Medium', 'Low', 'Informational']
   });
 
-  onMount(async () => {
+  $effect(async () => {
     await initializeResearchSession();
     await loadSavedCitations();
     await loadAISuggestions();

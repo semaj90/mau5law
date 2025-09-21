@@ -1,7 +1,9 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { ButtonBits } from '$lib/components/ui/bits-ui';
   import { citationsManager, type Citation, type CitationCollection } from '$lib/modules/citations-manager';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
 
   interface Props {
     citation: Citation;
@@ -17,7 +19,7 @@
     showText = true
   } = $props<Props>();
 
-  const dispatch = createEventDispatcher();
+  
 
   let isAuthenticated = $state(citationsManager.isAuthenticated());
   let isSaved = $state(false);
@@ -49,7 +51,7 @@
 
   async function handleSave() {
     if (!isAuthenticated) {
-      dispatch('error', {
+      ondispatch?.({
         citation,
         error: 'Please sign in to save citations'
       });
@@ -61,15 +63,15 @@
       const success = await citationsManager.saveCitation(citation);
       if (success) {
         isSaved = true;
-        dispatch('saved', { citation, success: true });
+        ondispatch?.({ citation, success: true });
       } else {
-        dispatch('error', {
+        ondispatch?.({
           citation,
           error: 'Failed to save citation'
         });
       }
     } catch (error) {
-      dispatch('error', {
+      ondispatch?.({
         citation,
         error: error instanceof Error ? error.message: 'Unknown error'
       });
@@ -86,10 +88,10 @@
       const success = citationsManager.removeSavedCitation(citation.id);
       if (success) {
         isSaved = false;
-        dispatch('saved', { citation, success: false });
+        ondispatch?.({ citation, success: false });
       }
     } catch (error) {
-      dispatch('error', {
+      ondispatch?.({
         citation,
         error: error instanceof Error ? error.message: 'Failed to remove citation'
       });
@@ -111,9 +113,9 @@
         await citationsManager.addCitationToCollection(collectionId, citation.id);
       }
       showCollectionSelector = false;
-      dispatch('saved', { citation, success: true });
+      ondispatch?.({ citation, success: true });
     } catch (error) {
-      dispatch('error', {
+      ondispatch?.({
         citation,
         error: error instanceof Error ? error.message: 'Failed to save to collection'
       });

@@ -1,7 +1,9 @@
 <!-- YoRHa Notification/Alert System Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import { fade, fly } from 'svelte/transition';
 
   interface NotificationProps {
@@ -36,7 +38,7 @@
     showProgress = true
   : unknown } = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   let visible = $state(true);
   let progress = $state(100);
@@ -45,7 +47,7 @@
   let notificationElement = $state<HTMLDivElement | null>(null);
 
   // Auto-close functionality
-  onMount(() => {
+  $effect(() => {
     if (!persistent && duration > 0) {
       // Progress bar animation
       if (showProgress) {
@@ -70,7 +72,7 @@
   function closeNotification() {
     visible = false;
     setTimeout(() => {
-      dispatch('close');
+      ondispatch?.();
     }, 300);
   }
 

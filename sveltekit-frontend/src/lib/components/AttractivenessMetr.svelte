@@ -2,16 +2,18 @@
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   let { score = $bindable()  }: { score = $bindable() : any } = $props(); // number = 5; // Current attractiveness score (1-10)
   let { label = $bindable()  }: { label = $bindable() : any } = $props(); // string = 'Attractiveness Rating';
   let { readOnly = $bindable()  }: { readOnly = $bindable() : any } = $props(); // boolean = false;
   let { showDescription = $bindable()  }: { showDescription = $bindable() : any } = $props(); // boolean = true;
   let { size = $bindable()  }: { size = $bindable() : any } = $props(); // 'sm' | 'md' | 'lg' = 'md';
   // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  // 
   let hoveredScore = $state<number | null >(null);
   const descriptions = {
     1: 'Very Low',

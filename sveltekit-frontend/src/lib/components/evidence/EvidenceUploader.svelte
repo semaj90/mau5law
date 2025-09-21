@@ -8,9 +8,9 @@ https://svelte.dev/e/js_parse_error -->
 // Auto-generated default export
 export default ;
 </script>
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
 
-  const dispatch = createEventDispatcher();
+  
 
   // Props interface
   interface Props {
@@ -48,7 +48,7 @@ export default ;
 	for (const f of arr) {
 	  if (!multiple && files.length + accepted.length >= 1) break;
 	  if (maxSize && f.size > maxSize) {
-		dispatch('error', { file: f, reason: 'file-too-large' });
+		ondispatch?.({ file: f, reason: 'file-too-large' });
 		continue;
 	  }
 	  // Basic accept check: compare MIME or file extension when MIME absent
@@ -66,7 +66,7 @@ export default ;
 		  return f.type === p;
 		});
 		if (!ok) {
-		  dispatch('error', { file: f, reason: 'file-type-not-allowed' });
+		  ondispatch?.({ file: f, reason: 'file-type-not-allowed' });
 		  continue;
 		}
 	  }
@@ -74,7 +74,7 @@ export default ;
 	}
 	if (accepted.length === 0) return;
 	files = multiple ? files.concat(accepted) : [accepted[0]];
-	dispatch('change', { files });
+	ondispatch?.({ files });
   }
 
   function onInputChange(e) {
@@ -97,13 +97,13 @@ export default ;
   function removeAt(index) {
 	if (disabled) return;
 	files = files.slice.concat(files.slice(index + 1));
-	dispatch('change', { files });
+	ondispatch?.({ files });
   }
 
   // Expose a method to clear files (can be used by parent via bind:this)
   export function clear() {
 	files = [];
-	dispatch('change', { files });
+	ondispatch?.({ files });
   }
 </script>
 

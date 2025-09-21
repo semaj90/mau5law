@@ -1,7 +1,9 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   import Button from '$lib/components/ui/bitsbutton.svelte';
   import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
@@ -37,7 +39,7 @@
     formData = ,
     evidenceData = }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
   let isAnalyzing = $state(false);
   let analysisProgress = writable(0);
   let currentAnalysisStep = writable('');
@@ -98,7 +100,7 @@
       };
 
       analysisResults.set(mockResults);
-      dispatch('analysisComplete', mockResults);
+      ondispatch?.(mockResults);
 
     } catch (error) {
       console.error('Analysis failed:', error);

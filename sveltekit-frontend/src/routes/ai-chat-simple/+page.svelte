@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
 	import { onMount } from 'svelte';
 
 	// Svelte 5 runes
@@ -91,7 +93,7 @@
 	}
 
 	// Initialize
-	onMount(() => {
+	$effect(() => {
 		checkServiceHealth();
 		messages = [{
 			id: 'welcome',

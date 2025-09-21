@@ -19,6 +19,8 @@
   - Real-time metrics and chain of custody validation
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount, onDestroy } from 'svelte';
   import { fabric } from 'fabric';
   import { evidenceHierarchy, processingStatus, recursionMetrics } from '$lib/stores/evidence-stores.js';
@@ -75,7 +77,7 @@
     layoutTime: 0
   });
 
-  onMount(async () => {
+  $effect(async () => {
     await initializeCanvas();
     await initializeRecursiveWorker();
 

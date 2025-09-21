@@ -11,8 +11,10 @@
   - Integration with YoRHa design system
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import type { GamingComponentProps, N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
 
@@ -100,7 +102,7 @@
     class: className = ''
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   let isFocused = $state(false);
   let isHovered = $state(false);
@@ -218,7 +220,7 @@
       isAnimating = false;
     }, animationDuration);
 
-    dispatch('change', { checked: newValue, value });
+    ondispatch?.({ checked: newValue, value });
   };
 
   const handleFocus = () => {
@@ -405,7 +407,7 @@
     ${enableSpringPhysics && isAnimating ? `rotateZ(${checked ? 5 : -5}deg)` : ''}
   `);
 
-  onMount(() => {
+  $effect(() => {
     // Add particle explosion keyframe
     const style = document.createElement('style');
     style.textContent = `

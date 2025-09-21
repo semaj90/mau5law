@@ -2,6 +2,8 @@
 <!-- Cases, POI, Evidence, Documents, and more -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { globalSearch, searchServices } from '$lib/services/search-service.js';
@@ -77,7 +79,7 @@
   });
 
   // Load recent searches from localStorage and optimize component
-  onMount(() => {
+  $effect(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('recentSearches');
       if (stored) {

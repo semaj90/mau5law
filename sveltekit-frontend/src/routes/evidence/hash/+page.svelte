@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
@@ -7,7 +9,7 @@
   let loading = $state(false);
   let error = $state('');
 
-  onMount(() => {
+  $effect(() => {
     // Check if hash was provided in URL
     const urlHash = page.url.searchParams.get('hash');
     if (urlHash) {

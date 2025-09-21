@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { Badge } from '$lib/components/ui/badge';
   import Button from '$lib/components/ui/enhanced-bits';;
@@ -12,10 +14,10 @@
     CardContent
   } from '$lib/components/ui/enhanced-bits';;
   import { Search, Bot, Sparkles, FileText, Users, Clock, Tags } from 'lucide-svelte';
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount,   } from "svelte";
   import Fuse from 'fuse.js';
 
-  const dispatch = createEventDispatcher();
+  
 
   interface Props {
     selectedNode?: unknown;
@@ -101,7 +103,7 @@
           suggestedActions: analysis.suggestedActions || []
         };
 
-        dispatch('tagsUpdate', analysis);
+        ondispatch?.(analysis);
         processingStatus = 'Analysis complete!';
       } else {
         throw new Error(`Analysis failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
@@ -149,11 +151,11 @@
   }
 
   function selectEvidence(item: unknown) {
-    dispatch('evidenceSelect', { id: (item as { id?: unknown }).id });
+    ondispatch?.({ id: (item as { id?: unknown }).id });
   }
 
   function selectConnection(connection: unknown) {
-    dispatch('connectionSelect', { connection });
+    ondispatch?.({ connection });
   }
 </script>
 

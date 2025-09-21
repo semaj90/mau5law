@@ -2,9 +2,11 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
-  	import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  	import { onMount, onDestroy,   } from "svelte";
   import { fade, fly } from 'svelte/transition';
   	import { quintOut, elasticOut } from 'svelte/easing';
   	import { advancedCache } from '$lib/services/advanced-cache-manager';
@@ -50,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
   let replaySpeed = $state(1.0);
 
   	// Event dispatcher
-  	const dispatch = createEventDispatcher();
+  	
 
   	// Thinking phrases for different phases
   	const thinkingPhrases = {
@@ -147,7 +149,7 @@ https://svelte.dev/e/js_parse_error -->
   					displayedText += char;
   					index++;
   					// Dispatch progress
-  					dispatch('progress', {
+  					ondispatch?.({
   						progress: (index / textToType.length) * 100,
   						phase: 'typing'
   					});
@@ -156,7 +158,7 @@ https://svelte.dev/e/js_parse_error -->
   				} else {
   					isTyping = false;
   					thinkingState.phase = 'complete';
-  					dispatch('complete');
+  					ondispatch?.();
   					resolve();
   				}
   			};
@@ -178,7 +180,7 @@ https://svelte.dev/e/js_parse_error -->
   				const thoughts = thinkingPhrases[currentPhase];
   				thinkingState.currentThought = thoughts[Math.floor(Math.random() * thoughts.length)];
   				thinkingState.progress += 10 + Math.random() * 15;
-  				dispatch('progress', {
+  				ondispatch?.({
   					progress: thinkingState.progress,
   					phase: currentPhase
   				});
@@ -214,7 +216,7 @@ https://svelte.dev/e/js_parse_error -->
   			const replayNext = () => {
   				if (activityIndex >= userActivity.length) {
   					isReplayingActivity = false;
-  					dispatch('activityComplete');
+  					ondispatch?.();
   					resolve();
   					return;
   				}

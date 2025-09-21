@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { FileText, Image as ImageIcon, Video, Volume2, HardDrive, Play, Download, Eye, Shield } from 'lucide-svelte';
   import type { EvidenceItem } from './types';

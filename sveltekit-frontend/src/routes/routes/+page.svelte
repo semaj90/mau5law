@@ -1,9 +1,11 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
 
-  onMount(() => {
+  $effect(() => {
     // client-side fallback if server redirect isn't available in dev
     goto('/all-routes');
   });

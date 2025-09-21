@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Enhanced YoRHa AI Assistant with RAG Integration & Evidence Mode -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import type { Props } from "$lib/types/global";
   import { onMount, onDestroy } from 'svelte';
@@ -39,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
   let containerWidth = $state(800);
   let containerHeight = $state(containerWidth / GOLDEN_RATIO);
 
-  onMount(() => {
+  $effect(() => {
     if (isOpen && searchBarRef) {
       setTimeout(() => searchBarRef.focus(), 200);
     }

@@ -3,6 +3,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Observability Panel: Real-time alerts + sustained monitoring dashboard -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import type { ObservabilityState } from '$lib/services/observability-persistence';
@@ -143,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
       default: return 'alert-info';
     }
   }
-  onMount(async () => {
+  $effect(async () => {
     await loadState();
     connectWebSocket();
     // Refresh state every 30 seconds

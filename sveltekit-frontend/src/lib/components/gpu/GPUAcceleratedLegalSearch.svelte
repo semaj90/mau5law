@@ -2,6 +2,8 @@
 <!-- Demonstrates RTX 3060 Ti CUDA acceleration for legal document similarity -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   	import { onMount } from 'svelte';
   	import Button from '$lib/components/ui/enhanced-bits';
@@ -47,7 +49,7 @@
   	];
 
   	// Check GPU status on component mount
-  	onMount(async () => {
+  	$effect(async () => {
   		await checkGPUStatus();
   	});
 

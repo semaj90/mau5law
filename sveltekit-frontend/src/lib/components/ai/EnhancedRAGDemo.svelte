@@ -1,5 +1,7 @@
 <!-- Enhanced RAG Demo Component with Semantic Analysis -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import {
@@ -150,7 +152,7 @@
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
 
-  onMount(() => {
+  $effect(() => {
     console.log('Enhanced RAG Demo loaded');
   });
 </script>

@@ -1,6 +1,8 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher,  } from 'svelte';
+  import {  ,   } from "svelte";
 
 
   	
@@ -10,7 +12,7 @@
 
   	import { Sparkles, Bot } from 'lucide-svelte';
 
-  	const dispatch = createEventDispatcher();
+  	
 
   	// Reactive state
   	let dialogOpen = $derived($aiStore.dialogOpen);
@@ -24,7 +26,7 @@
   	}
 
   	function handleAIRequest(event: CustomEvent) {
-  		dispatch('aiRequest', event.detail);
+  		ondispatch?.(event.detail);
   	}
 </script>
 

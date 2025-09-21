@@ -4,6 +4,8 @@
   Integrates with Phase 1 recursive evidence chain processing
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import RecursiveEvidenceNode from './RecursiveEvidenceNode.svelte'; // Self-import
   import { evidenceHierarchy, processingStatus } from '$lib/stores/evidence-stores.js';
 

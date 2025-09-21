@@ -2,6 +2,8 @@
 <!-- Real-time monitoring and control for Node.js cluster architecture -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import Button from '$lib/components/ui/enhanced-bits';;
@@ -49,7 +51,7 @@
   let updateInterval = $state<NodeJS.Timeout | null>(null);
   let eventSource = $state<EventSource | null>(null);
 
-  onMount(() => {
+  $effect(() => {
     initializeClusterMonitoring();
   });
 

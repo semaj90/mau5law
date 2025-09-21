@@ -5,6 +5,8 @@
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { debounce } from '$lib/utils/debounce';
   import 'nes.css/css/nes.min.css';
   	import { onMount, tick } from 'svelte';
@@ -100,7 +102,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   let windowElement = $state<HTMLDivElement | null >(null);
 
   	// Initialize welcome message
-  	onMount(() => {
+  	$effect(() => {
   		if (typeof window !== 'undefined') {
   			addMessage('system', `Hello! I'm your YoRHa Legal AI Assistant powered by ${modelName}. I can help you with:
 

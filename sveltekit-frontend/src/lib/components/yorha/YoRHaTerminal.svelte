@@ -1,5 +1,7 @@
 <!-- YoRHa Terminal/Console Component -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   interface TerminalProps {
@@ -43,7 +45,7 @@
   let isProcessing = $state(false);
   let cursor = $state(true);
 
-  onMount(() => {
+  $effect(() => {
     // Focus input when terminal is clicked
     terminalRef?.addEventListener('click', () => {
       inputRef?.focus();

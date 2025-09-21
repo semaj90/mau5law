@@ -7,6 +7,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   const { documents: DocumentInput[] = [], autoStart: boolean = false, maxConcurrent: number = 5 } = $props();
 
@@ -41,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   let priority = $state(5);
 
   // Start the actor
-  onMount(() => {
+  $effect(() => {
     gpuActor.start();
     // Subscribe to state changes
     const subscription = gpuActor.subscribe((snapshot) => {

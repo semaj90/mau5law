@@ -2,9 +2,11 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
   interface Props {
     class?: string;
     ratio?: "golden" | "thirds" | "half" | "custom";
@@ -31,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
     gap = "1rem"
   }: Props = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   // Calculate flex values based on ratio
   let calculatedMainFlex = $state<number;
@@ -56,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
   }}
   function toggleSidebar() {
     collapsed = !collapsed;
-    dispatch("toggle", { collapsed });
+    ondispatch?.({ collapsed });
   }
   function handleKeydown(e: KeyboardEvent) {
     if (collapsible && (e.ctrlKey || e.metaKey) && e.key === "\\") {

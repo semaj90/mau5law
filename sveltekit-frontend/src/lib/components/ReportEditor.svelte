@@ -2,6 +2,8 @@
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { browser } from "$app/environment";
   import type { CitationPoint, Report, ReportSection } from "$lib/data/types";
@@ -39,7 +41,7 @@ https://svelte.dev/e/props_duplicate -->
   let currentSelection = $state<Range | null >(null);
   let cursorPosition = $state(0);
 
-  onMount(async () => {
+  $effect(async () => {
     if (browser && editorElement) {
       setupEditor();
       loadAvailableCitations();

@@ -3,6 +3,8 @@
   Tests GPU accelerated authentication, XState integration, and Context7 documentation
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { authStore } from '$lib/stores/auth-store';
@@ -52,7 +54,7 @@
     }
   };
 
-  onMount(async () => {
+  $effect(async () => {
     await runInitialTests();
   });
 
@@ -222,17 +224,17 @@
   </div>
 
   <!-- Test Status Overview -->
-  <Card.Root>
-    <Card.Header>
-      <Card.Title class="flex items-center gap-2">
+  <Card>
+    <CardHeader>
+      <CardTitle class="flex items-center gap-2">
         <Activity class="h-5 w-5" />
         System Test Status
       </div.Title>
-      <Card.Description>
+      <CardDescription>
         Real-time testing of core authentication and AI services
       </div.Description>
     </div.Header>
-    <Card.Content>
+    <CardContent>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <!-- GPU Cluster Status -->
         <div class="flex items-center gap-3 p-3 border rounded-lg">
@@ -310,17 +312,17 @@
     <Tabs.Content value="auth" class="space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Login Testing -->
-        <Card.Root>
-          <Card.Header>
-            <Card.Title class="flex items-center gap-2">
+        <Card>
+          <CardHeader>
+            <CardTitle class="flex items-center gap-2">
               <Shield class="h-5 w-5" />
               Login Form Test
             </div.Title>
-            <Card.Description>
+            <CardDescription>
               Test login with GPU-enhanced security analysis
             </div.Description>
           </div.Header>
-          <Card.Content class="space-y-4">
+          <CardContent class="space-y-4">
             <Button class="bits-btn"
               onclick={() => populateTestData('login')}
               variant="ghost"
@@ -337,17 +339,17 @@
         </div.Root>
 
         <!-- Registration Testing -->
-        <Card.Root>
-          <Card.Header>
-            <Card.Title class="flex items-center gap-2">
+        <Card>
+          <CardHeader>
+            <CardTitle class="flex items-center gap-2">
               <Users class="h-5 w-5" />
               Registration Form Test
             </div.Title>
-            <Card.Description>
+            <CardDescription>
               Test registration with legal professional validation
             </div.Description>
           </div.Header>
-          <Card.Content class="space-y-4">
+          <CardContent class="space-y-4">
             <Button class="bits-btn"
               onclick={() => populateTestData('register')}
               variant="ghost"
@@ -365,14 +367,14 @@
       </div>
 
       <!-- Auth Store Status -->
-      <Card.Root>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+      <Card>
+        <CardHeader>
+          <CardTitle class="flex items-center gap-2">
             <Database class="h-5 w-5" />
             XState Auth Store Status
           </div.Title>
         </div.Header>
-        <Card.Content>
+        <CardContent>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="space-y-2">
               <div class="text-sm font-medium">User Status</div>
@@ -397,14 +399,14 @@
 
     <!-- GPU Testing -->
     <Tabs.Content value="gpu" class="space-y-6">
-      <Card.Root>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+      <Card>
+        <CardHeader>
+          <CardTitle class="flex items-center gap-2">
             <Cpu class="h-5 w-5" />
             MCP GPU Orchestrator Status
           </div.Title>
         </div.Header>
-        <Card.Content>
+        <CardContent>
           {#if clusterStatus}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-4">
@@ -459,14 +461,14 @@
 
     <!-- Context7 Documentation -->
     <Tabs.Content value="context7" class="space-y-6">
-      <Card.Root>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+      <Card>
+        <CardHeader>
+          <CardTitle class="flex items-center gap-2">
             <Code class="h-5 w-5" />
             Context7 Documentation Status
           </div.Title>
         </div.Header>
-        <Card.Content>
+        <CardContent>
           {#if context7Docs}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               {#each ['Svelte 5', 'Bits UI v2', 'XState'] as lib, index}
@@ -502,14 +504,14 @@
 
     <!-- Test Results -->
     <Tabs.Content value="results" class="space-y-6">
-      <Card.Root>
-        <Card.Header>
-          <Card.Title class="flex items-center gap-2">
+      <Card>
+        <CardHeader>
+          <CardTitle class="flex items-center gap-2">
             <Eye class="h-5 w-5" />
             Detailed Test Results
           </div.Title>
         </div.Header>
-        <Card.Content>
+        <CardContent>
           <div class="space-y-4">
             {#each Object.entries(testResults) as [testKey, testData]}
               <div class="border rounded-lg p-4">

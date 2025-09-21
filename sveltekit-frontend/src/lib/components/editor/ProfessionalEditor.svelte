@@ -2,9 +2,11 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount,   } from "svelte";
   import { writable } from 'svelte/store';
   import { Save, Maximize, Minimize, Eye, EyeOff, FileText, Keyboard } from 'lucide-svelte';
 
@@ -34,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
   let readingTime = $state(0);
   let hasUnsavedChanges = $state(false);
 
-  const dispatch = createEventDispatcher();
+  
 
   // Auto-save functionality
   let autoSaveTimer = $state<NodeJS.Timeout | null>(null);
@@ -52,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function saveDocument() {
-    dispatch('save', { content, title });
+    ondispatch?.({ content, title });
     hasUnsavedChanges = false;
     lastSaved = new Date();
   }
@@ -129,7 +131,7 @@ https://svelte.dev/e/js_parse_error -->
     updateStatistics();
   }
 
-  onMount(() => {
+  $effect(() => {
     if (autoSave) startAutoSave();
     // Listen for fullscreen changes
     document.addEventListener('fullscreenchange', () => {

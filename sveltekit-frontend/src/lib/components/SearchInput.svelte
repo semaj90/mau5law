@@ -1,6 +1,8 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   import { Search, X } from 'lucide-svelte';
 
   // Convert to Svelte 5 runes pattern
@@ -11,13 +13,13 @@
     onsearch = undefined
   } = $props();
 
-  const dispatch = createEventDispatcher();
+  
   let debounceTimer = $state<number | undefined>(undefined);
   let inputElement = $state<HTMLInputElement | null>(null);
   let isFocused = $state(false);
 
   function triggerSearch() {
-  	dispatch('search', { query: value });
+  	ondispatch?.({ query: value });
   	onsearch?.({ query: value });
   }
 

@@ -4,6 +4,8 @@
   Uses Bits UI v2 + GPU orchestrator + Context7 documentation
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   // Card components removed - using native HTML elements
@@ -57,7 +59,7 @@
   let unsubscribeUser = $state<(() =>(null) void) | null>(null);
   let unsubscribeHealth = $state<(() =>(null) void) | null>(null);
 
-  onMount(() => {
+  $effect(() => {
     // Subscribe to all relevant stores
     unsubscribeAuth = authState.subscribe(value => auth = value);
     unsubscribeSession = sessionState.subscribe(value => session = value);

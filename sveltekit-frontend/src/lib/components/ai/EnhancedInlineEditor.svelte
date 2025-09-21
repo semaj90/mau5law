@@ -6,6 +6,8 @@ https://svelte.dev/e/js_parse_error -->
   Real-time AI-powered editing with mini text box suggestions
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy, tick } from 'svelte';
   import { createActor } from 'xstate';
@@ -311,7 +313,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     document.addEventListener('click', handleClickOutside);
     return () => {
       document.removeEventListener('click', handleClickOutside);

@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import Typewriter from "$lib/components/Typewriter.svelte";
@@ -9,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
   import { browser } from '$app/environment';
   let recentCases: unknown[] = $state([]);
   let heroText = $state("Advanced Legal Case Management");
-  onMount(async () => {
+  $effect(async () => {
     // Load recent cases
     try {
       const casesRes = await fetch('/api/cases/recent');

@@ -2,6 +2,8 @@
 <!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   import { onMount } from 'svelte';
@@ -319,8 +321,8 @@ provideFeedback(message.id, 'negative'}>
                         </div>
                       {/if}
                     </div>
-                  </Card.Content>
-                </Card.Root>
+                  </CardContent>
+                </Card>
 
                 <!-- AI Suggestions -->
                 {#if message.suggestions && message.suggestions.length > 0}
@@ -358,14 +360,14 @@ handleSuggestionClick(suggestion}>
                 </div>
               </div>
               <div class="flex-1 max-w-[80%]">
-                <Card.Root>
+                <Card>
                   <div.Content class="p-3">
                     <div class="flex items-center gap-2 nes-text is-disabled">
                       <Loader2 class="h-4 w-4 animate-spin" />
                       <span>Thinking...</span>
                     </div>
-                  </Card.Content>
-                </Card.Root>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           {/if}

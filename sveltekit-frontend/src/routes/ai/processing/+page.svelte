@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
@@ -45,7 +47,7 @@
   let selectedBankView = $state('RAM');
   let realTimeStats = $state(true);
 
-  onMount(async () => {
+  $effect(async () => {
     await initializeNESGPUBridge();
     if (realTimeStats) {
       startRealtimeMonitoring();

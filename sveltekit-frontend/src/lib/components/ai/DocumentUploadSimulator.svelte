@@ -5,6 +5,8 @@ https://svelte.dev/e/js_parse_error -->
 https://svelte.dev/e/expected_token -->
 <!-- Document Upload Simulator with AI Processing -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   interface DocumentUpload {
@@ -234,7 +236,7 @@ https://svelte.dev/e/expected_token -->
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     // Clean up old localStorage entries on mount
     const keys = Object.keys.filter(key => key.startsWith('doc_'));
     console.log(`Found ${keys.length} cached documents in localStorage`);

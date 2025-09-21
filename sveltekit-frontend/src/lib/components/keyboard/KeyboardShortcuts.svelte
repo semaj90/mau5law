@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props import type { User } from '$lib/types/user';
   import { browser } from "$app/environment";
@@ -217,7 +219,7 @@ https://svelte.dev/e/js_parse_error -->
   });
 
   // Optionally, load AI-driven shortcuts on mount
-  onMount(async () => {
+  $effect(async () => {
     await loadShortcutsFromAI();
   });
 
@@ -318,7 +320,7 @@ https://svelte.dev/e/js_parse_error -->
     }
     selectedIndex = 0;
   });
-  onMount(() => {
+  $effect(() => {
     if (!browser) return;
 
     const handleKeydown = (event: KeyboardEvent) => {

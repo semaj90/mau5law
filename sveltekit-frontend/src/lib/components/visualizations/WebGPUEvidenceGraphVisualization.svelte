@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { onMount, onDestroy } from 'svelte';
   import { WebGPUEvidenceGraph, type GraphNode, type GraphEdge } from '$lib/services/webgpu-evidence-graph';
   import type { EvidenceAnalysis, Correlation, Entity } from '$lib/services/ai-evidence-analyzer';
@@ -22,7 +24,7 @@
   let showLabels = true;
   let animationSpeed = 1;
 
-  onMount(async () => {
+  $effect(async () => {
     // Check WebGPU support
     if (!navigator.gpu) {
       error = 'WebGPU is not supported in this browser. Please use a modern browser with WebGPU enabled.';

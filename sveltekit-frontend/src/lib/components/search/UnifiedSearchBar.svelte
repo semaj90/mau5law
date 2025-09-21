@@ -3,6 +3,8 @@
   Integrates: Fuse.js + MinIO + PostgreSQL + pgvector + Qdrant + Loki.js
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, tick } from 'svelte';
   import { goto } from '$app/navigation';
@@ -63,7 +65,7 @@
   }
 
   // Initialize search services
-  onMount(async () => {
+  $effect(async () => {
     await initializeSearchServices();
     setupKeyboardNavigation();
   });

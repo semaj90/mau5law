@@ -2,6 +2,8 @@
 <!-- Professional help panel for displaying available keyboard shortcuts -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -153,7 +155,7 @@
     }
   }
 
-  onMount(() => {
+  $effect(() => {
     if (!browser) return;
 
     // Listen for global keyboard help shortcut

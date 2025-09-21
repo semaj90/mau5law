@@ -2,15 +2,17 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   import Button from 'bits-ui';
   import { fade, slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
   import type { OCRResult } from '$lib/services/ocr-processor';
 
-  const dispatch = createEventDispatcher();
+  
 
   let { formData = $bindable()  }: { formData = $bindable() : unknown } = $props(); // {
     extracted_entities: Array;
@@ -229,15 +231,15 @@ https://svelte.dev/e/js_parse_error -->
       return;
     }
 
-    dispatch('next', { step: 'evidence', data: formData });
+    ondispatch?.({ step: 'evidence', data: formData });
   }
 
   function handlePrevious() {
-    dispatch('previous', { step: 'evidence' });
+    ondispatch?.({ step: 'evidence' });
   }
 
   function handleSaveDraft() {
-    dispatch('saveDraft', { step: 'evidence', data: formData });
+    ondispatch?.({ step: 'evidence', data: formData });
   }
 </script>
 

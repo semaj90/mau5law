@@ -6,6 +6,8 @@ https://svelte.dev/e/js_parse_error -->
   Modern Svelte 5 implementation with gaming aesthetics
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
   import { Upload, File, X } from 'lucide-svelte';

@@ -1,5 +1,7 @@
 <!-- YoRHa Terminal Interface -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   // $state is declared globally in src/types/svelte-helpers.d.ts
   import { onMount, onDestroy } from 'svelte';
@@ -75,7 +77,7 @@
     }
   };
 
-  onMount(() => {
+  $effect(() => {
     // Initialize terminal with welcome message
     addOutput('YORHA TERMINAL v1.0.0 - Legal AI System Interface', 'system');
     addOutput('Type "help" for available commands.', 'system');

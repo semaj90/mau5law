@@ -2,9 +2,11 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
-  	import { onMount, createEventDispatcher } from 'svelte';
+  	import { onMount,   } from "svelte";
   	import { writable, derived, get } from 'svelte/store';
   	import { browser } from '$app/environment';
   	// Enhanced types for comprehensive integration
@@ -98,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
   	});
 
   	// Event dispatcher for parent communication
-  	const dispatch = createEventDispatcher();
+  	
 
   	// API integration functions
   	async function fetchIntelligentTodos() {
@@ -122,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
   					...status,
   					semantic_architecture: true
   				}));
-  				dispatch('todos-updated', { count: (result as { data?: any; status?: any; value?: any }).data?.length || 0 });
+  				ondispatch?.({ count: (result as { data?: any; status?: any; value?: any }).data?.length || 0 });
   			} else {
   				console.error(statusText);
   			}
@@ -150,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
   				const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
   				semanticAnalysis.set.data);
   				processingProgress.set(100);
-  				dispatch('text-analyzed', { 
+  				ondispatch?.({ 
   					text, 
   					analysis: (result as { data?: any; status?: any; value?: any }).data 
   				});
@@ -313,7 +315,7 @@ https://svelte.dev/e/js_parse_error -->
   	}
 
   	// Lifecycle
-  	onMount(async () => {
+  	$effect(async () => {
   		await initializeWebGPU();
   		await checkSystemStatus();
   		await fetchCacheStats();
@@ -325,11 +327,11 @@ https://svelte.dev/e/js_parse_error -->
 
   	// Reactive statements for automatic updates
   	// TODO: Convert to $derived: if ($todos.length > 0 && showPageRankGraph) {
-  		dispatch('pagerank-updated', generatePageRankGraph($todos))
+  		ondispatch?.(generatePageRankGraph($todos))
   	}
 
   	// TODO: Convert to $derived: if ($semanticAnalysis && showSOMVisualization) {
-  		dispatch('som-updated', generateSOMVisualization($semanticAnalysis))
+  		ondispatch?.(generateSOMVisualization($semanticAnalysis))
   	}
 </script>
 

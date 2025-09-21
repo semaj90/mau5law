@@ -2,6 +2,8 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script>
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
 	import { onMount, onDestroy } from 'svelte';
@@ -32,7 +34,7 @@ https://svelte.dev/e/expected_token -->
 		lastFrameTime: 0
 	};
 	
-	onMount(() => {
+	$effect(() => {
 		detectDeviceCapabilities();
 		initializeParallaxLayers();
 		requestGyroscopePermission();

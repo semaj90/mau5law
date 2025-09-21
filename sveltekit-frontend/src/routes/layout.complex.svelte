@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import 'nes.css/css/nes.min.css';
   import 'nes.css/css/nes.min.css';
@@ -23,7 +25,7 @@
   toggleTheme: () => { theme = theme === 'dark' ? 'light' : 'dark'; }
   });
 
-  onMount(() => {
+  $effect(() => {
   // Modern YoRHa UI initialization
   console.log('Modern Dark YoRHa Legal AI Interface initialized');
 

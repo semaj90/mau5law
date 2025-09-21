@@ -1,5 +1,7 @@
 <!-- Enhanced Chat Component with bits-ui, melt-ui, shadcn-svelte integration -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy, tick } from 'svelte';
   import { useMachine } from '@xstate/svelte';
@@ -20,7 +22,7 @@
 	// Auto-scroll integration for Svelte 5 + bits-ui: subscribe to the machine state on mount
 	let machineUnsub: (() => void) | undefined;
 
-	onMount(() => {
+	$effect(() => {
 		// subscribe to the XState store when it's available (it will be assigned later in the file)
 		if (typeof state !== 'undefined' && state?.subscribe) {
 			machineUnsub = state.subscribe((s: unknown) => {
@@ -257,7 +259,7 @@ const { state, send } = useMachine(enhancedChatMachine);
   		return new Intl.DateTimeFormat.format(date);
   	}
 
-  	onMount(() => {
+  	$effect(() => {
   		send({ type: 'CONNECT' });
   	});
 

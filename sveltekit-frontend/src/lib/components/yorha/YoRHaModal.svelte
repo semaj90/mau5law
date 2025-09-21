@@ -1,7 +1,9 @@
 <!-- YoRHa Modal Component with Terminal Styling -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from "svelte";
+  import {   } from "svelte";
   import { quintOut } from "svelte/easing";
   import { fade, scale } from "svelte/transition";
 
@@ -51,7 +53,7 @@
     footer,
   : unknown } = $props();
 
-  const dispatch = createEventDispatcher();
+  
 
   let modalElement = $state<HTMLDivElement | null>(null);
   let focusedElementBeforeModal: HTMLElement | null = null;
@@ -83,16 +85,16 @@
 
   function handleClose() {
     if (closable && !persistent) {
-      dispatch("close");
+      ondispatch?.();
     }
   }
 
   function handleConfirm() {
-    dispatch("confirm");
+    ondispatch?.();
   }
 
   function handleCancel() {
-    dispatch("cancel");
+    ondispatch?.();
   }
 
   // Focus management

@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { Search, X, Loader, Filter, Zap, History } from 'lucide-svelte';
   import type { VectorSearchResult } from './types';

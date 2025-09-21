@@ -2,6 +2,8 @@
 https://svelte.dev/e/block_unexpected_character -->
 <!-- @migration-task Error while migrating Svelte code: Expected a `#` character immediately following the opening bracket -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     evidence: ExtendedEvidence;

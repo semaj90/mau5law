@@ -13,8 +13,10 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   - Optional effects (scanlines, CRT)
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   import type { GamingComponentProps } from '../types/gaming-types.js';
   import { NES_COLOR_PALETTE } from '../constants/gaming-constants.js';
 
@@ -53,18 +55,18 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }: Props = $props();
 
   // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  // 
 
   const handleClick = () => {
     if (disabled) return;
     onClick?.();
-    dispatch('click');
+    ondispatch?.();
   };
 
   const handleHover = () => {
     if (disabled) return;
     onHover?.();
-    dispatch('hover');
+    ondispatch?.();
   };
 
   // Get container color based on variant

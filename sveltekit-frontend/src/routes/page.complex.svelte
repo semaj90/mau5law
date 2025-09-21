@@ -1,5 +1,7 @@
 <!-- Modern Dark YoRHa Legal AI Platform -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import 'nes.css/css/nes.min.css';
   import 'nes.css/css/nes.min.css';
@@ -83,7 +85,7 @@
     }
   ]);
 
-  onMount(() => {
+  $effect(() => {
     console.log('YoRHa Legal AI Detective Interface initialized');
   });
 

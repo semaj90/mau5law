@@ -2,6 +2,8 @@
 https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
@@ -24,7 +26,7 @@ https://svelte.dev/e/expected_token -->
     }
   }
 
-  onMount(run);
+  $effect(run);
 </script>
 
 <style>

@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount, onDestroy } from 'svelte';
   import { gpuPerformanceOptimizer, type GPUPerformanceMetrics, type PerformanceAlert } from '$lib/services/gpu-performance-optimizer';
@@ -50,7 +52,7 @@
   // Available optimization profiles
   let availableProfiles = $state<any[]>([]);
   // Component lifecycle
-  onMount(async () => {
+  $effect(async () => {
     // Subscribe to metrics and alerts
     const unsubscribeMetrics = gpuPerformanceOptimizer.metricsStore.subscribe(value => {
       metrics = value;

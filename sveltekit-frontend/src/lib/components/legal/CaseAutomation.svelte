@@ -1,10 +1,12 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import Dropdown from '$lib/components/ui/Dropdown.svelte';
   import Checkbox from '$lib/components/ui/Checkbox.svelte';
   import { goTensorService, type TensorRequest, generateTensorRequest } from '$lib/services/go-tensor-service-client';
-  const dispatch = createEventDispatcher();
+  
 
   // Automation configuration
   let selectedAutomationType: string = $state('');
@@ -67,7 +69,7 @@
   // Handle automation configuration submission
   const handleSubmit = async () => {
     if (!selectedAutomationType || !selectedSource) {
-      dispatch('automationError', 'Please select automation type and source');
+      ondispatch?.('Please select automation type and source');
       return;
     }
 
@@ -117,7 +119,7 @@
       }
 
       processingStats.processingTime = Date.now() - startTime;
-      dispatch('automationSuccess', {
+      ondispatch?.({
         type: selectedAutomationType,
         source: selectedSource,
         config: automationConfig
@@ -129,7 +131,7 @@
       enableAutoProcessing = false;
       selectedProcessingOptions.clear();
     } catch (error) {
-      dispatch('automationError', error instanceof Error ? error.message: 'Configuration failed');
+      ondispatch?.(error instanceof Error ? error.message: 'Configuration failed');
     } finally {
       processing = false;
     }
@@ -141,7 +143,7 @@
     processingStats.totalDocuments = mockDocuments.length;
     processingStats.totalBatches = Math.ceil(mockDocuments.length / 10);
     const batchId = `batch_${Date.now()}`;
-    dispatch('processingStarted', { batchId, documentCount: mockDocuments.length });
+    ondispatch?.({ batchId, documentCount: mockDocuments.length });
 
     for (let i = 0; i < processingStats.totalBatches; i++) {
       processingStats.currentBatch = i + 1;
@@ -172,7 +174,7 @@
     }));
   }
 
-  onMount(() => {
+  $effect(() => {
     fetchAutomationTypes();
   });
 </script>

@@ -2,6 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
   	import { onMount, onDestroy } from 'svelte';
@@ -48,7 +50,7 @@ https://svelte.dev/e/js_parse_error -->
   	let text = writable(["bold"]);
   	let align = writable("");
 
-  	onMount(async () => {
+  	$effect(async () => {
   		if (browser) {
   			await loadFabricJs();
   			initializeCanvas();

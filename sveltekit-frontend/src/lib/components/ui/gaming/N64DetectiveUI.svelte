@@ -8,6 +8,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   import { detectiveAnalysisEngine, type EvidenceItem, type ConflictAnalysis, type SearchSuggestion } from '$lib/evidence/detective-analysis-engine.js';
@@ -52,7 +54,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   // File input reference
   let fileInput: HTMLInputElement;
 
-  onMount(async () => {
+  $effect(async () => {
     if (!browser) return;
 
     try {

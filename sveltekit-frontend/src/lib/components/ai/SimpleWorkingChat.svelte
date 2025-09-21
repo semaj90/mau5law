@@ -3,6 +3,8 @@ https://svelte.dev/e/tag_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: Expected a valid element or component name. Components must have a valid variable name or dot notation expression -->
 <!-- Simple Working Chat Component for CUDA AI Backend -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 </script>
   import { onMount } from 'svelte';
@@ -29,7 +31,7 @@ https://svelte.dev/e/tag_invalid_name -->
   let lastResponse = $state<any>(null);
 
   // Test connection to CUDA service on mount
-  onMount(async () => {
+  $effect(async () => {
     await testConnection();
   });
 

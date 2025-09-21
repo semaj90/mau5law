@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 	import { onMount, onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -60,7 +62,7 @@
 
 	let updateInterval: NodeJS.Timeout;
 
-	onMount(async () => {
+	$effect(async () => {
 		await fetchMetrics();
 		// Update metrics every 3 seconds
 		updateInterval = setInterval(fetchMetrics, 3000);

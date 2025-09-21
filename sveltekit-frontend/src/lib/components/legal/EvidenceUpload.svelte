@@ -7,6 +7,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   const { maxFiles = 10, maxFileSize = 100 * 1024 * 1024, acceptedTypes = [
     'image/*',
@@ -19,7 +21,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     'audio/wav'
   ], enableGPUProcessing = true, enableAIAnalysis = true } = $props();
 
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   import { goTensorService, generateTensorRequest, mockTensorData } from '$lib/services/go-tensor-service-client';
   import { fade, fly, scale } from 'svelte/transition';
 
@@ -58,7 +60,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   
 
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  
 
   // State
   let dragActive = $state(false);
@@ -104,13 +106,13 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     const validFiles = newFiles.filter(file => {
       // Check file count
       if (files.length >= maxFiles) {
-        dispatch('error', { message: `Maximum ${maxFiles} files allowed` });
+        ondispatch?.({ message: `Maximum ${maxFiles} files allowed` });
         return false;
       }
 
       // Check file size
       if (file.size > maxFileSize) {
-        dispatch('error', { 
+        ondispatch?.({ 
           message: `File "${file.name}" exceeds ${formatFileSize(maxFileSize)} limit` 
         });
         return false;
@@ -125,7 +127,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       });
 
       if (!isValidType) {
-        dispatch('error', { 
+        ondispatch?.({ 
           message: `File type "${file.type}" not supported for "${file.name}"` 
         });
         return false;
@@ -192,7 +194,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     processingStats.failed = files.filter(item => item.length);
     processingStats.processing = 0;
     isProcessing = false;
-    dispatch('complete', { files, stats: processingStats });
+    ondispatch?.({ files, stats: processingStats });
   }
 
   // Process individual file
@@ -229,12 +231,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         (processingStats.averageTime * processingStats.completed + processingTime) / 
         (processingStats.completed + 1);
       files = [...files];
-      dispatch('upload', { file: evidenceFile });
+      ondispatch?.({ file: evidenceFile });
     } catch (error) {
       evidenceFile.status = 'error';
       evidenceFile.error = error instanceof Error ? error.message: 'Processing failed';
       files = [...files];
-      dispatch('error', { 
+      ondispatch?.({ 
         message: `Failed to process "${evidenceFile.file.name}": ${evidenceFile.error}`,
         file: evidenceFile 
       });

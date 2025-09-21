@@ -2,6 +2,8 @@
 <!-- Global keyboard shortcut management for the entire application -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { setContext, onMount } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
@@ -90,7 +92,7 @@
   setContext('keyboardContext', keyboardContext);
 
   // Initialize custom shortcuts
-  onMount(() => {
+  $effect(() => {
     customShortcuts.forEach(shortcut => {
       keyboardContext.registerShortcut(shortcut);
     });

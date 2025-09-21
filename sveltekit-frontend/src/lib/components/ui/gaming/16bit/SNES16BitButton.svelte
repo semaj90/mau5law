@@ -10,9 +10,11 @@
   - Enhanced audio capabilities
 -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { Button as BitsButton } from 'bits-ui';
-  import { createEventDispatcher } from 'svelte';
+  import {   } from "svelte";
   import type { GamingComponentProps } from '../types/gaming-types.js';
   import { SNES_COLOR_PALETTE } from '../constants/gaming-constants.js';
 
@@ -63,7 +65,7 @@
   }: Props = $props();
 
   // Events now handled via props in Svelte 5
-  // const dispatch = createEventDispatcher();
+  // 
 
   let isPressed = $state(false);
   let isHovered = $state(false);
@@ -118,14 +120,14 @@
       isPressed = false;
     }, 120);
     onClick?.();
-    dispatch('click');
+    ondispatch?.();
   };
 
   const handleHover = () => {
     if (disabled) return;
     isHovered = true;
     onHover?.();
-    dispatch('hover');
+    ondispatch?.();
   };
 
   const handleUnhover = () => {
@@ -135,7 +137,7 @@
   const handleFocus = () => {
     if (disabled) return;
     onFocus?.();
-    dispatch('focus');
+    ondispatch?.();
   };
 
   // Get SNES gradient based on variant

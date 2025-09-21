@@ -2,11 +2,13 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
 
-  import { createEventDispatcher, onMount } from 'svelte';
+  import {  , onMount  } from "svelte";
   import { writable } from 'svelte/store';
-  const dispatch = createEventDispatcher();
+  
   let { selectedNode = $bindable()  }: { selectedNode = $bindable() : unknown } = $props(); // any = null;
   let { readOnly = $bindable()  }: { readOnly = $bindable() : unknown } = $props(); // false;
   // Enhanced form fields with auto-population
@@ -99,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
     hasUnsavedChanges = true
     scheduleAutoSave();
   }
-  onMount(() => {
+  $effect(() => {
     return () => {
       if (autoSaveTimer) clearTimeout(autoSaveTimer);
     };
@@ -223,7 +225,7 @@ https://svelte.dev/e/js_parse_error -->
           recommendations: [...(aiTags.recommendations || [])]
         });
         // Notify parent components
-        dispatch('aiAnalysisComplete', { node, aiTags });
+        ondispatch?.({ node, aiTags });
   }
     } catch (error) {
       console.error('Enhanced AI analysis failed:', error);
@@ -343,7 +345,7 @@ https://svelte.dev/e/js_parse_error -->
       if ((response as { ok?: unknown; json?: unknown }).ok) {
         hasUnsavedChanges = false;
         lastSavedAt = new Date();
-        dispatch('autoSaved', updatedNode);
+        ondispatch?.(updatedNode);
   }
     } catch (error) {
       console.warn('Auto-save failed:', error);
@@ -383,8 +385,8 @@ https://svelte.dev/e/js_parse_error -->
         const result = await (response as { ok?: unknown; json?: unknown }).json();
         hasUnsavedChanges = false;
         lastSavedAt = new Date();
-        dispatch('save', (result as { evidence?: unknown }).evidence);
-        dispatch('showNotification', {
+        ondispatch?.((result as { evidence?: unknown }).evidence);
+        ondispatch?.({
           type: 'success',
           message: 'Evidence saved successfully'
         });
@@ -393,7 +395,7 @@ https://svelte.dev/e/js_parse_error -->
   }
     } catch (error) {
       console.error('Save failed:', error);
-      dispatch('showNotification', {
+      ondispatch?.({
         type: 'error',
         message: 'Failed to save evidence'
       });
@@ -409,13 +411,13 @@ https://svelte.dev/e/js_parse_error -->
       selectedNode.aiTags = null;
       // Trigger fresh AI analysis
       await triggerEnhancedAIAnalysis(selectedNode, $formData);
-      dispatch('showNotification', {
+      ondispatch?.({
         type: 'success',
         message: 'AI re-analysis completed'
       });
     } catch (error) {
       console.error('Re-analysis failed:', error);
-      dispatch('showNotification', {
+      ondispatch?.({
         type: 'error',
         message: 'AI re-analysis failed'
       });

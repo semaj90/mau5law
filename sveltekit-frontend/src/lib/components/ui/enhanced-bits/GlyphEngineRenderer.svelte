@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   /**
    * Glyph Engine Renderer: Gaming LOD architecture for heavy text/UI processing
@@ -65,7 +67,7 @@
     }
   };
 
-  onMount(async () => {
+  $effect(async () => {
     if (!canvas) return;
 
     ctx = canvas.getContext('2d');

@@ -2,9 +2,11 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { aiStore } from "$lib/stores/canvas";
-  	import { createEventDispatcher, onMount } from 'svelte';
+  	import {  , onMount  } from "svelte";
   	import { quintOut } from 'svelte/easing';
   	import { fade, fly } from 'svelte/transition';
   	import { Bot, Send, User, X } from 'lucide-svelte';
@@ -16,7 +18,7 @@ https://svelte.dev/e/js_parse_error -->
 
   	let { title = 'AI Assistant', open = false }: Props = $props();
 
-  	const dispatch = createEventDispatcher();
+  	
   let dialogElement = $state<HTMLElement | null>(null);
   	let promptInput: HTMLTextAreaElement;
   	let messagesContainer: HTMLElement;
@@ -38,7 +40,7 @@ https://svelte.dev/e/js_parse_error -->
   	let history = $derived($aiStore.history);
   let currentPrompt = $state('');
 
-  	onMount(() => {
+  	$effect(() => {
   		if (open) {
   			focusInput();
   		}
@@ -52,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
 
   	function handleClose() {
   		aiStore.update(state => ({ ...state, dialogOpen: false }));
-  		dispatch('close');
+  		ondispatch?.();
   	}
 
   	function handleKeydown(event: KeyboardEvent) {
@@ -124,7 +126,7 @@ https://svelte.dev/e/js_parse_error -->
   			}));
 
   			// Emit event for parent component
-  			dispatch('aiRequest', {
+  			ondispatch?.({
   				prompt: userMessage.content,
   				response: data.response,
   				vibe: selectedVibe

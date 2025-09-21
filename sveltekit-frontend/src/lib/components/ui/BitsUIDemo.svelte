@@ -1,5 +1,7 @@
 <!-- Comprehensive Bits-UI Demo for Legal AI App -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import BitsDialog from './dialog/BitsDialog.svelte';
   import BitsSelect from './select/BitsSelect.svelte';

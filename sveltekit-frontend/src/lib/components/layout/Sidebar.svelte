@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { page } from '$app/stores';
   import { Button } from '$lib/components/ui/enhanced-bits';
@@ -25,7 +27,7 @@
   import { onMount } from "svelte";
   let mounted = $state(false);
 
-  onMount(() => {
+  $effect(() => {
     mounted = true;
   });
 

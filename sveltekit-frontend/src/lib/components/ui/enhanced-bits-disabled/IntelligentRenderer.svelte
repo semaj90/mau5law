@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   /**
    * Intelligent Renderer: Decides between regular DOM and canvas
@@ -68,14 +70,14 @@
   </div>
 {:else}
   <!-- Regular Enhanced-Bits + NES.css UI (90% of app) -->
-  <Card.Root class="enhanced-bits-nier-bits-card legal-case-priority-{priority} gaming-transition gaming-hover nes-container">
-    <Card.Header class="nes-container">
-      <Card.Title class="nes-text text-yorha-white nes-container">
+  <Card class="enhanced-bits-nier-bits-card legal-case-priority-{priority} gaming-transition gaming-hover nes-container">
+    <CardHeader class="nes-container">
+      <CardTitle class="nes-text text-yorha-white nes-container">
         {title}
-      </Card.Title>
-    </Card.Header>
+      </CardTitle>
+    </CardHeader>
 
-    <Card.Content class="space-y-4 nes-container">
+    <CardContent class="space-y-4 nes-container">
       {#if type === 'evidence-card' && (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).evidence}
         <!-- Regular DOM evidence display -->
         <div class="grid gap-2">
@@ -139,8 +141,8 @@ Process
         >
 Details
       </div>
-    </Card.Content>
-  </Card.Root>
+    </CardContent>
+  </Card>
 {/if}
 
 <style>

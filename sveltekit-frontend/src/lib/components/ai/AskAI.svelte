@@ -3,6 +3,8 @@
 <!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
 <!-- Ask AI Component with Vector Search Integration -->
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import { debounce } from '$lib/utils/debounce';
   import 'nes.css/css/nes.min.css';
   interface Props {
@@ -33,7 +35,7 @@
     MessageCircle,
     Search,
   } from "lucide-svelte/icons";
-  import { createEventDispatcher, onMount } from "svelte";
+  import {  , onMount  } from "svelte";
   import { speakWithCoqui, loadCoquiTTS } from '$lib/services/coquiTTS';
   import type { Case } from '$lib/types';
 
@@ -119,7 +121,7 @@
       console.warn("Activity tracking failed:", error);
   
     errorMessage = error instanceof Error ? error.message: 'An error occurred';}}
-  onMount(() => {
+  $effect(() => {
     // Initialize speech recognition if supported and enabled
     if (enableVoiceInput && "webkitSpeechRecognition" in window) {
       recognition = new (window as any).webkitSpeechRecognition();
@@ -284,7 +286,7 @@
         }
         // Save conversation and dispatch event after stream ends
         await saveConversationHistory();
-        dispatch("response", {
+        ondispatch?.({
           answer: aiMessage.content,
           references: aiMessage.references || [],
           confidence: aiMessage.confidence ?? 0,
@@ -318,12 +320,12 @@
         conversation = conversation.map((m) => m.id === aiMessageId ? aiMessage : m);
         setTimeout(() => scrollToBottom(), 100);
         await saveConversationHistory();
-        dispatch("response", aiResponse);
+        ondispatch?.(aiResponse);
       }
     } catch (err) {
       error = err instanceof Error ? err.message: "An error occurred";
       console.error("AI request failed:", err);
-      dispatch("error", error);
+      ondispatch?.(error);
     } finally {
       isLoading = false;
   }}
@@ -409,7 +411,7 @@
   function handleReferenceClick(
     reference: NonNullable<ConversationMessage["references"]>[0]
   ) {
-    dispatch("referenceClicked", {
+    ondispatch?.({
       id: reference.id,
       type: reference.type,
     });

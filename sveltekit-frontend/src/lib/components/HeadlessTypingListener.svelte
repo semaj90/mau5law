@@ -13,9 +13,11 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { createActor } from 'xstate';
-  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+  import { onMount, onDestroy,   } from "svelte";
   import { userTypingStateMachine, type TypingContext, type TypingState } from '$lib/machines/userTypingStateMachine.js';
 
   // Props
@@ -38,7 +40,7 @@
   }: Props = $props();
 
   // Event dispatcher
-  const dispatch = createEventDispatcher();
+  
 
   // XState actor
   const typingActor = createActor(userTypingStateMachine);
@@ -59,7 +61,7 @@
   /**
    * Initialize the typing listener
    */
-  onMount(() => {
+  $effect(() => {
     // Start the XState machine
     typingActor.start();
 
@@ -69,7 +71,7 @@
       currentContext = state.context;
 
       // Dispatch state change event
-      dispatch('stateChange', {
+      ondispatch?.({
         state: currentState,
         context: currentContext
       });
@@ -286,7 +288,7 @@
   function handleStateChange(state: TypingState, context: TypingContext) {
     // Dispatch contextual prompts
     if (state === 'waiting_user' && context.contextualPrompts.length > 0 && enableContextualPrompts) {
-      dispatch('contextualPrompt', {
+      ondispatch?.({
         prompts: context.contextualPrompts,
         context
       });
@@ -294,21 +296,21 @@
 
     // Dispatch analytics updates
     if (enableAnalytics && context.analytics) {
-      dispatch('analyticsUpdate', {
+      ondispatch?.({
         analytics: context.analytics
       });
     }
 
     // Dispatch user behavior updates
     if (context.userBehavior) {
-      dispatch('userBehaviorUpdate', {
+      ondispatch?.({
         behavior: context.userBehavior
       });
     }
 
     // Dispatch MCP worker status
     if (context.mcpWorkerStatus) {
-      dispatch('mcpWorkerStatus', {
+      ondispatch?.({
         status: context.mcpWorkerStatus
       });
     }

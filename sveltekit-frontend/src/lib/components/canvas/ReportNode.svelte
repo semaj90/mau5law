@@ -1,4 +1,6 @@
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   interface Props {
     report: Report;
@@ -51,7 +53,7 @@
     // Implementation for AI summary
     console.log("Summarizing report");
   }
-  onMount(() => {
+  $effect(() => {
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
 

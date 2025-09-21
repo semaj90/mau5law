@@ -4,6 +4,8 @@
 -->
 
 <script lang="ts">
+  // Svelte 5 runes are auto-imported
+
   import 'nes.css/css/nes.min.css';
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
@@ -93,7 +95,7 @@
     constraints: string[];
   }
   
-  onMount(() => {
+  $effect(() => {
     loadExistingRecommendations();
     loadContextData();
   });
@@ -408,7 +410,7 @@
     {:else}
       {#each filteredRecommendations as recommendation}
         <div.Root class="recommendation-nier-bits-card">
-          <Card.Header>
+          <CardHeader>
             <div class="recommendation-header">
               <div class="recommendation-title-section">
                 <div class="recommendation-icon">{getCategoryIcon(recommendation.category)}</div>
@@ -434,9 +436,9 @@
             <div.Description class="recommendation-description">
               {recommendation.description}
             </div.Description>
-          </Card.Header>
+          </CardHeader>
           
-          <Card.Content>
+          <CardContent>
             <div class="recommendation-stats">
               <div class="stat-grid">
                 <div class="stat">
@@ -496,7 +498,7 @@
                 {/if}
               </div>
             {/if}
-          </Card.Content>
+          </CardContent>
           
           <div.Footer>
             <div class="nier-bits-card-actions">
@@ -508,7 +510,7 @@
               </button>
             </div>
           </div.Footer>
-        </Card.Root>
+        </Card>
       {/each}
     {/if}
   </main>
